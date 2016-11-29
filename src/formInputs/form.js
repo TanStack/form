@@ -5,7 +5,7 @@ import FormInput from '../formInput'
 export default function FormInputForm ({field, form, ...rest}) {
   const FormComponent = form
   return (
-    <FormInput field={field}>
+    <FormInput field={field} errorBefore>
       {({setValue, getValue, getTouched}) => {
         return (
           <FormComponent

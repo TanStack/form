@@ -42,7 +42,7 @@ function set (obj, path, value) {
     if (isStringValidNumber(keys[0]) && !isArray(obj[keyPart])) {
       obj[keyPart] = []
     }
-    if (!isObject(obj[keyPart])) {
+    if (!isStringValidNumber(keys[0]) && !isObject(obj[keyPart])) {
       obj[keyPart] = {}
     }
     obj = obj[keyPart]

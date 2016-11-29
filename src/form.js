@@ -35,12 +35,7 @@ export default function Form (config = {}) {
         this.emitChange(this.state)
       },
       componentWillReceiveProps (props) {
-        // This condition is used to disallow clobbering a nested form's
-        // values as a result of a nested forms error object being undefined.
-        // See the nested form component and setFormState for more information.
-        const wasUndefined = this.expectUndefinedValues
-        this.expectUndefinedValues = false
-        if (props.values === undefined && wasUndefined) {
+        if (props.values === undefined && this.state.errors) {
           return
         }
 
@@ -52,7 +47,7 @@ export default function Form (config = {}) {
       // API
       setValue (field, value) {
         const state = this.state
-        const values = state.values
+        const values = state.values || {}
         _.set(values, field, value)
         // Also set touched since the value is changing
         const touched = state.touched
@@ -61,14 +56,14 @@ export default function Form (config = {}) {
       },
       getValue (field, fallback) {
         const state = this.state
-        const val = !field ? state.values : _.get(state.values, field)
+        const val = _.get(state.values, field)
         return typeof val !== 'undefined' ? val : fallback
       },
       getError (field) {
         return _.get(this.state.errors, field)
       },
       setTouched (field, value = true) {
-        const touched = this.state.touched
+        const touched = this.state.touched || {}
         _.set(touched, field, value)
         this.setFormState({touched})
       },
@@ -81,7 +76,7 @@ export default function Form (config = {}) {
       },
       addValue (field, value) {
         const state = this.state
-        const values = state.values
+        const values = state.values || {}
         _.set(values, field, [
           ..._.get(values, field, []),
           value
@@ -90,7 +85,7 @@ export default function Form (config = {}) {
       },
       removeValue (field, index) {
         const state = this.state
-        const values = state.values
+        const values = state.values || {}
         const fieldValue = _.get(values, field, [])
         _.set(values, field, [
           ...fieldValue.slice(0, index),
@@ -98,9 +93,9 @@ export default function Form (config = {}) {
         ])
         this.setFormState({values})
       },
-      swapValue (field, index, destIndex) {
+      swapValues (field, index, destIndex) {
         const state = this.state
-        const values = state.values
+        const values = state.values || {}
         const fieldValues = _.get(values, field, [])
         _.set(values, field, [
           ...fieldValues.slice(0, index),
@@ -134,7 +129,7 @@ export default function Form (config = {}) {
           getTouched: this.getTouched,
           addValue: this.addValue,
           removeValue: this.removeValue,
-          swapValue: this.swapValue,
+          swapValues: this.swapValues,
           setAllTouched: this.setAllTouched,
           submitForm: this.submitForm
         }
@@ -146,14 +141,6 @@ export default function Form (config = {}) {
         }
         this.setState(newState, () => {
           if (!silent) {
-            if (this.state.errors) {
-              // This is a bit hacky for now, but to keep nested forms that
-              // have errors from reingesting undefined values given to their
-              // parent form, we set a temporary flag for the nested form to
-              // expect an undefined value and not clobber the nested form's
-              // state.
-              this.expectUndefinedValues = true
-            }
             this.emitChange(this.state)
           }
         })

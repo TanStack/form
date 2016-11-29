@@ -1,4 +1,5 @@
 import React from 'react'
+import classnames from 'classnames'
 //
 import FormField from './formField'
 
@@ -11,9 +12,10 @@ export default function FormError ({field, className, style}) {
         const styles = {
           display: touched && error ? 'block' : 'none'
         }
+        const classes = classnames('FormError', className)
         return (
           <div
-            className={className || ''}
+            className={classes}
             style={Object.assign({}, styles, style)}
           >
             {touched ? error : ''}
