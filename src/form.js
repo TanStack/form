@@ -115,7 +115,7 @@ export default function Form (config = {}) {
         this.setFormState({dirty: true})
       },
       submitForm (e) {
-        e.preventDefault(e)
+        e && e.preventDefault && e.preventDefault(e)
         this.setAllTouched()
         const state = this.state
         if (state.errors) {
@@ -135,7 +135,8 @@ export default function Form (config = {}) {
           addValue: this.addValue,
           removeValue: this.removeValue,
           swapValue: this.swapValue,
-          setAllTouched: this.setAllTouched
+          setAllTouched: this.setAllTouched,
+          submitForm: this.submitForm
         }
       },
       setFormState (newState, silent) {
