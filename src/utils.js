@@ -4,7 +4,9 @@ export default {
   set,
   mapValues,
   makePathArray,
-  pickBy
+  pickBy,
+  isObject,
+  isArray
 }
 
 function clone (a) {
@@ -44,9 +46,7 @@ function set (obj, path, value) {
 function mapValues (obj, cb) {
   const newObj = {}
   for (var key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      newObj[key] = cb(newObj[key], key)
-    }
+    newObj[key] = cb(obj[key], key)
   }
   return newObj
 }
@@ -62,16 +62,12 @@ function makePathArray (obj) {
 function pickBy (obj, cb) {
   const newObj = {}
   for (var key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      if (cb(obj[key], key)) {
-        newObj[key] = obj[key]
-      }
+    if (cb(obj[key], key)) {
+      newObj[key] = obj[key]
     }
   }
   return newObj
 }
-
-// Sub Utils
 
 function flattenDeep (arr, newArr = []) {
   if (!isArray(arr)) {

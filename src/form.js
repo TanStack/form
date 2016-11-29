@@ -71,14 +71,14 @@ export default function Form (config = {}) {
       },
       getTouched (field, includeObj) {
         const state = this.state
-        if (this.state.touched === true || this.props.touched) {
+        if (this.state.dirty === true || this.props.touched) {
           return true
         }
         const val = !field ? state.touched : _.get(state.touched, field)
         return includeObj ? val : val === true
       },
       setAllTouched () {
-        this.setFormState({touched: true})
+        this.setFormState({dirty: true})
       },
       submitForm (e) {
         e.preventDefault(e)

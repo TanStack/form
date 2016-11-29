@@ -4,11 +4,6 @@ import CodeHighlight from 'components/codeHighlight'
 import { Form, Text } from 'react-form'
 
 const MyForm = Form({
-  defaultValues: {
-    firstName: '',
-    lastName: '',
-    hobby: ''
-  },
   validate: values => {
     return {
       firstName: !values.firstName ? 'Required' : undefined,
@@ -63,11 +58,6 @@ function getCode () {
 import { Form, Text } from 'react-form'
 
 const MyForm = Form({
-  defaultValues: {
-    firstName: '',
-    lastName: '',
-    hobby: ''
-  },
   validate: values => {
     return {
       firstName: !values.firstName ? 'Required' : undefined,
