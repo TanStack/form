@@ -8,6 +8,13 @@ const MyForm = Form({
     firstName: '',
     lastName: '',
     hobby: ''
+  },
+  validate: values => {
+    return {
+      firstName: !values.firstName ? 'Required' : undefined,
+      lastName: !values.lastName ? 'Required' : undefined,
+      hobby: !values.hobby ? 'Required' : undefined
+    }
   }
 })(Component({
   render () {
@@ -53,13 +60,20 @@ export default Component({
 
 function getCode () {
   return `
-import { Form, Text } from '../../../lib/index.js'
+import { Form, Text } from 'react-form'
 
 const MyForm = Form({
   defaultValues: {
     firstName: '',
     lastName: '',
     hobby: ''
+  },
+  validate: values => {
+    return {
+      firstName: !values.firstName ? 'Required' : undefined,
+      lastName: !values.lastName ? 'Required' : undefined,
+      hobby: !values.hobby ? 'Required' : undefined
+    }
   }
 })(({ submitForm }) => {
   return (
@@ -79,5 +93,15 @@ const MyForm = Form({
     </form>
   )
 })
+
+export default props => {
+  return (
+    <MyForm
+      onSubmit={(values) => {
+        window.alert(JSON.stringify(values, null, 2))
+      }}
+    />
+  )
+}
   `
 }
