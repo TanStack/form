@@ -1,0 +1,97 @@
+export default {
+  clone,
+  get,
+  set,
+  mapValues,
+  makePathArray,
+  pickBy
+}
+
+function clone (a) {
+  return JSON.parse(JSON.stringify(a, (key, value) => {
+    if (typeof value === 'function') {
+      return value.toString()
+    }
+    return value
+  }))
+}
+
+function get (obj, path, def) {
+  const pathObj = makePathArray(path)
+  let val
+  try {
+    val = pathObj.reduce((current, pathPart) => current[pathPart], obj)
+  } catch (e) {}
+  return typeof val !== 'undefined' ? val : def
+}
+
+function set (obj, path, value) {
+  const keys = makePathArray(path)
+  let keyPart
+
+  while ((keyPart = keys.shift()) && keys.length) {
+    if (isStringValidNumber(keys[0]) && !isArray(obj[keyPart])) {
+      obj[keyPart] = []
+    }
+    if (!isObject(obj[keyPart])) {
+      obj[keyPart] = {}
+    }
+    obj = obj[keyPart]
+  }
+  obj[keyPart] = value
+}
+
+function mapValues (obj, cb) {
+  const newObj = {}
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      newObj[key] = cb(newObj[key], key)
+    }
+  }
+  return newObj
+}
+
+function makePathArray (obj) {
+  return flattenDeep(obj)
+      .join('.')
+      .replace('[', '.')
+      .replace(']', '')
+      .split('.')
+}
+
+function pickBy (obj, cb) {
+  const newObj = {}
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      if (cb(obj[key], key)) {
+        newObj[key] = obj[key]
+      }
+    }
+  }
+  return newObj
+}
+
+// Sub Utils
+
+function flattenDeep (arr, newArr = []) {
+  if (!isArray(arr)) {
+    newArr.push(arr)
+  } else {
+    for (var i = 0; i < arr.length; i++) {
+      flattenDeep(arr[i], newArr)
+    }
+  }
+  return newArr
+}
+
+function isArray (a) {
+  return Array.isArray(a)
+}
+
+function isObject (a) {
+  return !Array.isArray(a) && typeof a === 'object'
+}
+
+function isStringValidNumber (str) {
+  return !isNaN(str)
+}

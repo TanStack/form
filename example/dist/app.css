@@ -1,0 +1,211 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,600");
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-family: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+body {
+  line-height: 1;
+  color: #000;
+  background: #fff;
+}
+ol,
+ul {
+  list-style: none;
+}
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  vertical-align: middle;
+}
+caption,
+th,
+td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+a img {
+  border: none;
+}
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+html {
+  min-height: 100vh;
+}
+body {
+  background: #fff;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+}
+h1 {
+  font-size: 2.5em;
+  color: #fff;
+}
+a {
+  color: #02bfe6;
+  font-weight: bold;
+  text-decoration: none;
+}
+strong {
+  font-weight: bold;
+}
+.logo {
+  width: 400px;
+  max-width: 100%;
+}
+.container {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: box;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -o-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  -o-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -moz-box-pack: center;
+  -o-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding-top: 20px;
+}
+.container .github-addon {
+  font-size: 20px;
+  padding: 10px;
+}
+.viewport {
+  width: 100%;
+}
+.table-wrap {
+  width: 90%;
+  margin: auto;
+  padding: 10px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 0 20px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 0 20px 0 rgba(0,0,0,0.2);
+}
+.menu {
+  display: block;
+  margin: 0 10px 20px;
+}
+.menu ul {
+  display: block;
+}
+.menu li {
+  display: inline-block;
+}
+.menu a {
+  display: block;
+  padding: 10px;
+  margin: 5px;
+  background: rgba(0,0,0,0.4);
+  color: #fff;
+  border-radius: 3px;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  -ms-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+.menu a.active,
+.menu a:hover {
+  background: rgba(0,0,0,0.9);
+}
+.ReactTable thead th.-sort-asc,
+.ReactTable thead td.-sort-asc {
+  -webkit-box-shadow: inset 0 3px 0 0 rgba(0,0,0,0.6);
+  box-shadow: inset 0 3px 0 0 rgba(0,0,0,0.6);
+}
+.ReactTable thead th.-sort-desc,
+.ReactTable thead td.-sort-desc {
+  -webkit-box-shadow: inset 0 -3px 0 0 rgba(0,0,0,0.6);
+  box-shadow: inset 0 -3px 0 0 rgba(0,0,0,0.6);
+}
+pre {
+  display: block;
+  font-family: monospace;
+  font-size: 15px;
+  line-height: 20px;
+  border-radius: 5px;
+  margin: 20px auto;
+  max-width: 90%;
+  padding: 0 20px !important;
+}

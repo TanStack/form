@@ -1,0 +1,73 @@
+{
+  "name": "react-form",
+  "version": "0.0.1",
+  "description": "A fast, lightweight, opinionated table and datagrid built on React",
+  "license": "MIT",
+  "homepage": "https://github.com/tannerlinsley/react-form#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tannerlinsley/react-form.git"
+  },
+  "keywords": [
+    "react",
+    "table",
+    "react-form",
+    "datagrid"
+  ],
+  "main": "lib/index.js",
+  "files": [
+    "lib/",
+    "react-form.js",
+    "react-form.css",
+    "media/*.png"
+  ],
+  "scripts": {
+    "build:node": "babel src --out-dir lib --source-maps inline",
+    "watch": "onchange 'src/**' -i -- npm-run-all build:*",
+    "test": "standard",
+    "umd": "rm -rf react-form.js && browserify lib/index.js -s reactForm -x react -t babelify -g uglifyify -o react-form.js",
+    "prepublish": "npm-run-all build:* && npm run umd",
+    "postpublish": "git push --tags"
+  },
+  "dependencies": {
+    "classnames": "^2.2.5"
+  },
+  "peerDependencies": {
+    "react": "^15.3.1"
+  },
+  "devDependencies": {
+    "babel-cli": "6.14.0",
+    "babel-eslint": "6.1.2",
+    "babel-preset-es2015": "6.14.0",
+    "babel-preset-react": "6.11.1",
+    "babel-preset-stage-2": "6.13.0",
+    "babelify": "^7.3.0",
+    "browserify": "13.1.0",
+    "nib": "^1.1.2",
+    "npm-run-all": "^3.1.1",
+    "onchange": "^3.0.2",
+    "standard": "^8.0.0",
+    "stylus": "^0.54.5",
+    "uglifyify": "3.0.3"
+  },
+  "browserify-shim": {
+    "react": "global:React"
+  },
+  "standard": {
+    "parser": "babel-eslint",
+    "ignore": [
+      "node_modules",
+      "dist",
+      "lib",
+      "example",
+      "react-form.js"
+    ]
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "stage-2",
+      "react"
+    ]
+  }
+}
