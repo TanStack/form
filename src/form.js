@@ -22,8 +22,12 @@ export default function Form (config = {}) {
       getDefaultProps () {
         return Object.assign({
           values: {},
+          onValidationFail: () => {},
+          preValidate: values => values,
+          validate: () => null,
           onChange: () => {},
-          onValidationFail: () => {}
+          preSubmit: values => values,
+          onSubmit: () => {}
         }, config)
       },
       getInitialState () {
@@ -87,16 +91,13 @@ export default function Form (config = {}) {
         if (state.errors) {
           return this.props.onValidationFail()
         }
-        if (this.props.onSubmit) {
-          this.props.onSubmit(this.state.values)
-        } else {
-          console.warn('No onSubmit prop found!', this)
-        }
+        this.props.onSubmit(this.props.preSubmit(this.state.values))
       },
 
       // Utils
       setFormState (newState, silent) {
         if (newState && newState.values) {
+          newState.values = this.props.preValidate(newState.values)
           newState.errors = this.validate(newState.values)
         }
         this.setState(newState, () => {
@@ -109,9 +110,6 @@ export default function Form (config = {}) {
         this.props.onChange(state)
       },
       validate (values) {
-        if (!this.props.validate) {
-          return
-        }
         return cleanErrors(this.props.validate(values))
       },
       // Render
