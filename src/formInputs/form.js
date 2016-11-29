@@ -2,8 +2,8 @@ import React from 'react'
 //
 import FormInput from '../formInput'
 
-export default function FormInputForm ({field, component, ...rest}) {
-  const FormComponent = component
+export default function FormInputForm ({field, form, ...rest}) {
+  const FormComponent = form
   return (
     <FormInput field={field}>
       {({setValue, getValue, getTouched}) => {

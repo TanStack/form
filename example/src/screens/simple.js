@@ -1,19 +1,36 @@
 import { Component } from 'jumpsuit'
 
 import CodeHighlight from 'components/codeHighlight'
-import { Form, Text } from 'react-form'
+import { Form, Text, Select, Textarea, NestedForm } from 'react-form'
+
+const MyNestedForm = Form({
+  validate: values => {
+    return {
+      moreNotes: !values.moreNotes ? 'Required' : undefined
+    }
+  }
+})(({values}) => {
+  return (
+    <div>
+      <Textarea
+        field='moreNotes'
+        placeholder='More Notes'
+      />
+    </div>
+  )
+})
 
 const MyForm = Form({
   validate: values => {
     return {
       firstName: !values.firstName ? 'Required' : undefined,
       lastName: !values.lastName ? 'Required' : undefined,
-      hobby: !values.hobby ? 'Required' : undefined
+      hobby: !values.hobby ? 'Required' : undefined,
     }
   }
 })(Component({
   render () {
-    const { submitForm } = this.props
+    const { values, errors, touched, submitForm } = this.props
     return (
       <form onSubmit={submitForm}>
         <Text
@@ -28,9 +45,44 @@ const MyForm = Form({
           field='hobby'
           placeholder='Hobby'
         />
+        <Select
+          field='status'
+          options={[{
+            label: 'Available',
+            value: 'available'
+          }, {
+            label: 'Unavailable',
+            value: 'unavailable'
+          }]}
+        />
+        <Textarea
+          field='notes'
+          placeholder='Notes'
+        />
+        <NestedForm
+          field='nestedFormValues'
+          form={MyNestedForm}
+        />
         <button>
           Submit
         </button>
+
+        <br />
+        <br />
+        <br />
+
+        <strong>Values</strong>
+        <CodeHighlight>
+          {JSON.stringify(values, null, 2)}
+        </CodeHighlight>
+        <strong>Errors</strong>
+        <CodeHighlight>
+          {JSON.stringify(errors, null, 2)}
+        </CodeHighlight>
+        <strong>Touched</strong>
+        <CodeHighlight>
+          {JSON.stringify(touched, null, 2)}
+        </CodeHighlight>
       </form>
     )
   }
@@ -70,12 +122,33 @@ const MyForm = Form({
     <form onSubmit={submitForm}>
       <Text
         field='firstName'
+        placeholder='First Name'
       />
       <Text
         field='lastName'
+        placeholder='Last Name'
       />
       <Text
         field='hobby'
+        placeholder='Hobby'
+      />
+      <Select
+        field='status'
+        options={[{
+          label: 'Available',
+          value: 'available'
+        }, {
+          label: 'Unavailable',
+          value: 'unavailable'
+        }]}
+      />
+      <Textarea
+        field='notes'
+        placeholder='Notes'
+      />
+      <NestedForm
+        field='nestedFormValues'
+        form={MyNestedForm}
       />
       <button>
         Submit
@@ -83,6 +156,24 @@ const MyForm = Form({
     </form>
   )
 })
+
+const MyNestedForm = Form({
+  validate: values => {
+    return {
+      moreNotes: !values.moreNotes ? 'moreNotes' : undefined
+    }
+  }
+})(({values}) => {
+  return (
+    <div>
+      <Textarea
+        field='moreNotes'
+        placeholder='More Notes'
+      />
+    </div>
+  )
+})
+
 
 export default props => {
   return (

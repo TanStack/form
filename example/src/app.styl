@@ -74,14 +74,23 @@ strong
     &:hover
       background: alpha(black, .9)
 
-.ReactTable
-	thead
-		th
-		td
-			&.-sort-asc
-				box-shadow:inset 0 3px 0 0 alpha(black, .6)
-			&.-sort-desc
-				box-shadow:inset 0 -3px 0 0 alpha(black, .6)
+.FormInput
+  margin-bottom: 10px
+
+input
+textarea
+select
+  font-size: 15px
+  padding:5px
+  border-radius: 3px
+  border: 1px solid alpha(black, .2)
+  .FormInput.-error &
+    border-color: red
+  + div
+    color: red
+    font-size: 12px
+    font-weight: bold
+    margin: 5px
 
 pre
   display:block
@@ -91,4 +100,4 @@ pre
   border-radius: 5px
   margin: 20px auto
   max-width: 90%
-  padding: 0 20px !important
+  padding: 20px !important
