@@ -11,10 +11,10 @@ export default function FormInputForm ({field, form, ...rest}) {
           <FormComponent
             {...rest}
             /* Let the parent form set defaultValues */
-            values={getValue()}
+            values={getValue(undefined, true)}
             /* Respond to the parent form's dirty submission attempts */
             touched={getTouched()}
-            /* Update the parent form with any values and errors */
+            /* Update the parent form with data if there are no errors */
             onChange={({values, errors}) => {
               setValue(errors ? undefined : values)
             }}

@@ -10,15 +10,22 @@ export default {
 }
 
 function clone (a) {
-  return JSON.parse(JSON.stringify(a, (key, value) => {
-    if (typeof value === 'function') {
-      return value.toString()
-    }
-    return value
-  }))
+  try {
+    return JSON.parse(JSON.stringify(a, (key, value) => {
+      if (typeof value === 'function') {
+        return value.toString()
+      }
+      return value
+    }))
+  } catch (e) {
+    return a
+  }
 }
 
 function get (obj, path, def) {
+  if (!path) {
+    return obj
+  }
   const pathObj = makePathArray(path)
   let val
   try {
