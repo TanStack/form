@@ -141,7 +141,7 @@ function cleanErrors (err) {
     return Object.keys(found).length ? found : undefined
   }
   if (_.isArray(err)) {
-    const resolved = _.map(err, cleanErrors)
+    const resolved = err.map(cleanErrors)
     const found = resolved.filter(d => typeof d !== 'undefined')
     return found.length ? found : undefined
   }
