@@ -9,7 +9,7 @@ export default function FormInputText ({field, ...rest}) {
         return (
           <input className='full'
             {...rest}
-            value={getValue()}
+            value={getValue('')}
             onChange={e => setValue(e.target.value)}
             onBlur={() => setTouched(true)}
           />
