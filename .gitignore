@@ -3,3 +3,5 @@ lib
 dist
 
 react-form.js
+
+*.log
