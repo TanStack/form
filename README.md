@@ -6,9 +6,15 @@ A microscopic form framework for REact
 
 ## Features
 
-- 1
-- 2
-- 3
+- **4kb!** (minified)
+- **Dynamic Fields** - no pre-defined schema or field names required)
+- Highly functional and flexible **validation**
+- Built-in Form Inputs
+- Input Utility - Easily and quickly build your own input types
+- Field Utility - Functionally control any field, anywhere in a form
+- Nested forms and form splitting
+- Powerful form lifecycle hooks and events
+- Serializable Event and State hooks (think redux/mobx/etc & HMR)
 
 ## [Demo](http://react-form.zabapps.com)
 
@@ -25,6 +31,62 @@ $ npm install react-form
 <a name="example"></a>
 ## Example
 ```javascript
+import React from 'react'
+import { Form, Text } from 'react-form'
+
+const MyForm = Form({
+  validate: values => {
+    return {
+      firstName: !values.firstName ? 'Required' : undefined,
+      lastName: !values.lastName ? 'Required' : undefined,
+      hobby: !values.hobby ? 'Required' : undefined
+    }
+  }
+})(({ submitForm }) => {
+  return (
+    <form onSubmit={submitForm}>
+      <Text
+        field='firstName'
+        placeholder='First Name'
+      />
+      <Text
+        field='lastName'
+        placeholder='Last Name'
+      />
+      <Text
+        field='hobby'
+        placeholder='Hobby'
+      />
+      <Select
+        field='status'
+        options={[{
+          label: 'Available',
+          value: 'available'
+        }, {
+          label: 'Unavailable',
+          value: 'unavailable'
+        }]}
+      />
+      <Textarea
+        field='notes'
+        placeholder='Notes'
+      />
+      <button>
+        Submit
+      </button>
+    </form>
+  )
+})
+
+export default props => {
+  return (
+    <MyForm
+      onSubmit={(values) => {
+        window.alert(JSON.stringify(values, null, 2))
+      }}
+    />
+  )
+}
 ```
 
 

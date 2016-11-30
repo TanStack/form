@@ -1,5 +1,5 @@
 {
-  "name": "react-table",
+  "name": "react-form",
   "root": "dist",
   "routes": [{
     "src": "/**",

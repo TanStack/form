@@ -23,6 +23,7 @@
     "jumpsuit": "^1.0.0",
     "lodash": "^4.16.4",
     "namor": "^0.3.0",
+    "react-prism": "^4.0.0",
     "react-syntax-highlighter": "^3.0.0"
   }
 }
