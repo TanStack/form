@@ -1,8 +1,12 @@
-# react-form
-A microscopic form framework for React
+<div align="center">
+  <a href="https://github.com/tannerlinsley/react-form"><img src="/media/banner.png?raw=true" alt="React Table Logo" /></a>
+  <br />
+  <br />
+</div>
 
-[![Build Status](https://travis-ci.org/tannerlinsley/react-form.svg?branch=master)](https://travis-ci.org/tannerlinsley/react-form)
-[![react-form on Slack](https://img.shields.io/badge/slack-react--table-blue.svg)](https://react-form-slack.herokuapp.com/)
+[![npm version](https://badge.fury.io/js/react-form.svg)](https://badge.fury.io/js/react-form) [![Build Status](https://travis-ci.org/tannerlinsley/react-form.svg?branch=master)](https://travis-ci.org/tannerlinsley/react-form) [![Libraries.io for GitHub](https://img.shields.io/librariesio/github/tannerlinsley/react-form.svg)]()
+
+React Form is a lightweight framework and utility for building powerful forms in React applications.
 
 ## Features
 
