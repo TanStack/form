@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://github.com/tannerlinsley/react-form"><img src="/media/banner.png?raw=true" alt="React Table Logo" /></a>
+  <a href="https://github.com/tannerlinsley/react-form"><img src="/media/banner.png?raw=true" alt="React Table Logo" style="width:550px;"/></a>
   <br />
   <br />
 </div>
