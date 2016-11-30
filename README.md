@@ -7,8 +7,8 @@ A microscopic form framework for REact
 ## Features
 
 - **4kb!** (minified)
-- **Dynamic Fields** - no pre-defined schema or field names required)
-- Highly functional and flexible **validation**
+- Dynamic Fields - no pre-defined schema or field names required)
+- Highly functional and flexible validation
 - Built-in Form Inputs
 - Input Utility - Easily and quickly build your own input types
 - Field Utility - Functionally control any field, anywhere in a form
