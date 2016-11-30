@@ -19,7 +19,7 @@ A microscopic form framework for React
 ## [Demo](http://react-form.zabapps.com)
 
 ## Table of Contents
-- [Installation](#nstallation)
+- [Installation](#installation)
 - [Example](#example)
 
 <a name="installation"></a>
