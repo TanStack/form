@@ -1,5 +1,5 @@
 # react-form
-A microscopic form framework for REact
+A microscopic form framework for React
 
 [![Build Status](https://travis-ci.org/tannerlinsley/react-form.svg?branch=master)](https://travis-ci.org/tannerlinsley/react-form)
 [![react-form on Slack](https://img.shields.io/badge/slack-react--table-blue.svg)](https://react-form-slack.herokuapp.com/)
