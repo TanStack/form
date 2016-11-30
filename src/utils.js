@@ -34,20 +34,30 @@ function get (obj, path, def) {
   return typeof val !== 'undefined' ? val : def
 }
 
-function set (obj, path, value) {
+function set (obj = {}, path, value) {
   const keys = makePathArray(path)
   let keyPart
 
-  while ((keyPart = keys.shift()) && keys.length) {
-    if (isStringValidNumber(keys[0]) && !isArray(obj[keyPart])) {
-      obj[keyPart] = []
-    }
-    if (!isStringValidNumber(keys[0]) && !isObject(obj[keyPart])) {
-      obj[keyPart] = {}
-    }
-    obj = obj[keyPart]
+  if (isStringValidNumber(keys[0]) && !isArray(obj)) {
+    obj = []
   }
-  obj[keyPart] = value
+  if (!isStringValidNumber(keys[0]) && !isObject(obj)) {
+    obj = {}
+  }
+
+  let cursor = obj
+
+  while ((keyPart = keys.shift()) && keys.length) {
+    if (isStringValidNumber(keys[0]) && !isArray(cursor[keyPart])) {
+      cursor[keyPart] = []
+    }
+    if (!isStringValidNumber(keys[0]) && !isObject(cursor[keyPart])) {
+      cursor[keyPart] = {}
+    }
+    cursor = cursor[keyPart]
+  }
+  cursor[keyPart] = value
+  return obj
 }
 
 function mapValues (obj, cb) {
@@ -92,7 +102,7 @@ function isArray (a) {
 }
 
 function isObject (a) {
-  return !Array.isArray(a) && typeof a === 'object'
+  return !Array.isArray(a) && typeof a === 'object' && a !== null
 }
 
 function isStringValidNumber (str) {

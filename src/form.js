@@ -28,14 +28,15 @@ export default function Form (config = {}) {
         return {
           values,
           touched: {},
-          errors: this.validate(values)
+          errors: this.validate(values),
+          nestedErrors: {}
         }
       },
       componentWillMount () {
         this.emitChange(this.state)
       },
       componentWillReceiveProps (props) {
-        if (props.values === undefined && this.state.errors) {
+        if (props.values === this.props.values) {
           return
         }
 
@@ -47,11 +48,9 @@ export default function Form (config = {}) {
       // API
       setValue (field, value) {
         const state = this.state
-        const values = state.values || {}
-        _.set(values, field, value)
+        const values = _.set(state.values, field, value)
         // Also set touched since the value is changing
-        const touched = state.touched
-        _.set(touched, field, value)
+        const touched = _.set(state.touched, field, value)
         this.setFormState({values, touched})
       },
       getValue (field, fallback) {
@@ -59,35 +58,36 @@ export default function Form (config = {}) {
         const val = _.get(state.values, field)
         return typeof val !== 'undefined' ? val : fallback
       },
+      setNestedError (field, value = true) {
+        const nestedErrors = _.set(this.state.nestedErrors, field, value)
+        this.setFormState({nestedErrors})
+      },
       getError (field) {
         return _.get(this.state.errors, field)
       },
       setTouched (field, value = true) {
-        const touched = this.state.touched || {}
-        _.set(touched, field, value)
+        const touched = _.set(this.state.touched, field, value)
         this.setFormState({touched})
       },
       getTouched (field) {
         const state = this.state
-        if (this.state.dirty === true || this.props.touched) {
+        if (this.state.dirty === true || this.props.touched === true) {
           return true
         }
         return _.get(state.touched, field)
       },
       addValue (field, value) {
         const state = this.state
-        const values = state.values || {}
-        _.set(values, field, [
-          ..._.get(values, field, []),
+        const values = _.set(state.values, field, [
+          ..._.get(state.values, field, []),
           value
         ])
         this.setFormState({values})
       },
       removeValue (field, index) {
         const state = this.state
-        const values = state.values || {}
-        const fieldValue = _.get(values, field, [])
-        _.set(values, field, [
+        const fieldValue = _.get(state.values, field, [])
+        const values = _.set(state.values, field, [
           ...fieldValue.slice(0, index),
           ...fieldValue.slice(index + 1)
         ])
@@ -95,9 +95,8 @@ export default function Form (config = {}) {
       },
       swapValues (field, index, destIndex) {
         const state = this.state
-        const values = state.values || {}
-        const fieldValues = _.get(values, field, [])
-        _.set(values, field, [
+        const fieldValues = _.get(state.values, field, [])
+        const values = _.set(state.values, field, [
           ...fieldValues.slice(0, index),
           fieldValues[destIndex],
           ...fieldValues.slice(index + 1, destIndex),
@@ -124,6 +123,7 @@ export default function Form (config = {}) {
         return {
           setValue: this.setValue,
           getValue: this.getValue,
+          setNestedError: this.setNestedError,
           getError: this.getError,
           setTouched: this.setTouched,
           getTouched: this.getTouched,
@@ -149,7 +149,7 @@ export default function Form (config = {}) {
         this.props.onChange(state)
       },
       validate (values) {
-        return cleanErrors(this.props.validate(values))
+        return cleanErrors(this.props.validate(removeNestedErrorValues(values, this.state ? this.state.nestedErrors : {})))
       },
       // Render
       render () {
@@ -180,4 +180,24 @@ function cleanErrors (err) {
     return found.length ? found : undefined
   }
   return typeof err !== 'undefined' ? err : undefined
+}
+
+function removeNestedErrorValues (value, nestedErrors) {
+  const recurse = (value, path = []) => {
+    if (_.isObject(value)) {
+      return _.mapValues(value, (d, i) => {
+        return recurse(d, [...path, i])
+      })
+    }
+    if (_.isArray(value)) {
+      return value.map((d, key) => {
+        return recurse(d, [...path, key])
+      })
+    }
+    if (_.get(nestedErrors, path)) {
+      return undefined
+    }
+    return value
+  }
+  return recurse(value)
 }
