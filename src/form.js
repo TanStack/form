@@ -33,7 +33,7 @@ export default function Form (config = {}) {
         }
       },
       componentWillMount () {
-        this.emitChange(this.state)
+        // this.emitChange(this.state)
       },
       componentWillReceiveProps (props) {
         if (props.values === this.props.values) {
@@ -110,9 +110,10 @@ export default function Form (config = {}) {
       },
       submitForm (e) {
         e && e.preventDefault && e.preventDefault(e)
-        this.setAllTouched()
         const state = this.state
-        if (state.errors) {
+        const errors = this.validate(state.values)
+        if (errors) {
+          this.setAllTouched()
           return this.props.onValidationFail()
         }
         this.props.onSubmit(this.props.preSubmit(this.state.values))
@@ -149,7 +150,9 @@ export default function Form (config = {}) {
         this.props.onChange(state)
       },
       validate (values) {
-        return cleanErrors(this.props.validate(removeNestedErrorValues(values, this.state ? this.state.nestedErrors : {})))
+        return cleanErrors(this.props.validate(
+          removeNestedErrorValues(values, this.state ? this.state.nestedErrors : {}))
+        )
       },
       // Render
       render () {
@@ -172,18 +175,21 @@ function cleanErrors (err) {
   if (_.isObject(err)) {
     const resolved = _.mapValues(err, cleanErrors)
     const found = _.pickBy(resolved, d => typeof d !== 'undefined')
-    return Object.keys(found).length ? found : undefined
+    return Object.keys(found).length ? resolved : undefined
   }
   if (_.isArray(err)) {
     const resolved = err.map(cleanErrors)
-    const found = resolved.filter(d => typeof d !== 'undefined')
-    return found.length ? found : undefined
+    const found = resolved.find(d => typeof d !== 'undefined')
+    return found ? resolved : undefined
   }
   return typeof err !== 'undefined' ? err : undefined
 }
 
 function removeNestedErrorValues (value, nestedErrors) {
   const recurse = (value, path = []) => {
+    if (_.get(nestedErrors, path)) {
+      return undefined
+    }
     if (_.isObject(value)) {
       return _.mapValues(value, (d, i) => {
         return recurse(d, [...path, i])
@@ -193,9 +199,6 @@ function removeNestedErrorValues (value, nestedErrors) {
       return value.map((d, key) => {
         return recurse(d, [...path, key])
       })
-    }
-    if (_.get(nestedErrors, path)) {
-      return undefined
     }
     return value
   }

@@ -4,23 +4,24 @@ import classnames from 'classnames'
 import FormField from './formField'
 import FormError from './formError'
 
-export default function FormInput ({ field, showErrors = true, isForm, children }) {
+export default function FormInput ({ field, showErrors = true, errorBefore, isForm, children }) {
   return (
     <FormField field={field}>
       {({ ...api }) => {
+        const showAnyErrors = showErrors && (isForm ? api.getTouched() === true : true)
         const classes = classnames('FormInput', {
-          '-hasError': !isForm && showErrors && api.getTouched() && api.getError()
+          '-hasError': !errorBefore && showAnyErrors && api.getTouched() && api.getError()
         })
 
         return (
           <div className={classes}>
-            {isForm && showErrors && (
+            {errorBefore && showAnyErrors && (
               <FormError field={field} />
             )}
             {children({
               ...api
             })}
-            {!isForm && showErrors && (
+            {!errorBefore && showAnyErrors && (
               <FormError field={field} />
             )}
           </div>

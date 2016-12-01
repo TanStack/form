@@ -5,7 +5,11 @@ import FormInput from '../formInput'
 export default function FormInputForm ({field, form, ...rest}) {
   const FormComponent = form
   return (
-    <FormInput field={field} errorBefore>
+    <FormInput
+      field={field}
+      errorBefore
+      isForm
+    >
       {({setValue, getValue, getTouched, setNestedError}) => {
         return (
           <FormComponent
