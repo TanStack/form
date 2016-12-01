@@ -33,7 +33,7 @@ export default function Form (config = {}) {
         }
       },
       componentWillMount () {
-        // this.emitChange(this.state)
+        this.emitChange(this.state, true)
       },
       componentWillReceiveProps (props) {
         if (props.values === this.props.values) {
@@ -41,15 +41,18 @@ export default function Form (config = {}) {
         }
 
         this.setFormState({
-          values: _.clone(props.values)
+          values: _.clone(props.values) || {}
         }, true)
       },
 
       // API
-      setValue (field, value) {
+      setValue (field, value, noTouch) {
         const state = this.state
         const values = _.set(state.values, field, value)
         // Also set touched since the value is changing
+        if (noTouch) {
+          return this.setFormState({values})
+        }
         const touched = _.set(state.touched, field, value)
         this.setFormState({values, touched})
       },
@@ -146,8 +149,8 @@ export default function Form (config = {}) {
           }
         })
       },
-      emitChange (state) {
-        this.props.onChange(state)
+      emitChange (state, initial) {
+        this.props.onChange(state, initial)
       },
       validate (values) {
         return cleanErrors(this.props.validate(
