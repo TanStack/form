@@ -1,4 +1,4 @@
-import Form from './form'
+import Form, { FormDefaultProps } from './form'
 import FormField from './formField'
 import FormError from './formError'
 import FormInput from './formInput'
@@ -11,6 +11,7 @@ import Text from './formInputs/text'
 
 module.exports = {
   Form,
+  FormDefaultProps,
   FormField,
   FormError,
   FormInput,

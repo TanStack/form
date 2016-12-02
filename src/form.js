@@ -1,6 +1,21 @@
 import React from 'react'
 import _ from './utils'
 
+const noop = () => {}
+const reop = d => d
+
+export const FormDefaultProps = {
+  loadState: noop,
+  preValidate: reop,
+  validate: () => null,
+  onValidationFail: noop,
+  onChange: noop,
+  saveState: noop,
+  clearState: noop,
+  preSubmit: reop,
+  onSubmit: noop
+}
+
 export default function Form (config = {}) {
   return (Comp) => {
     return React.createClass({
@@ -14,18 +29,11 @@ export default function Form (config = {}) {
       },
       // Lifecycle
       getDefaultProps () {
-        return Object.assign({
-          onValidationFail: () => {},
-          preValidate: values => values,
-          validate: () => null,
-          onChange: () => {},
-          preSubmit: values => values,
-          onSubmit: () => {}
-        }, config)
+        return Object.assign({}, FormDefaultProps, config)
       },
       getInitialState () {
-        const values = Object.assign({}, config.defaultValues, _.clone(this.props.values))
-        return {
+        const values = Object.assign({}, _.clone(config.defaultValues), _.clone(this.props.values))
+        return this.props.loadState(this.props) || {
           values,
           touched: {},
           errors: this.validate(values),
@@ -43,6 +51,9 @@ export default function Form (config = {}) {
         this.setFormState({
           values: _.clone(props.values) || {}
         }, true)
+      },
+      componentWillUnmount () {
+        this.props.clearState(this.props)
       },
 
       // API
@@ -144,6 +155,7 @@ export default function Form (config = {}) {
           newState.errors = this.validate(newState.values)
         }
         this.setState(newState, () => {
+          this.props.saveState(this.state, this.props)
           if (!silent) {
             this.emitChange(this.state)
           }
