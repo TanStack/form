@@ -7,7 +7,7 @@ export default function FormInputText ({field, ...rest}) {
     <FormInput field={field}>
       {({setValue, getValue, setTouched}) => {
         return (
-          <input className='full'
+          <input
             {...rest}
             value={getValue('')}
             onChange={e => setValue(e.target.value)}

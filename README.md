@@ -25,6 +25,8 @@ React Form is a lightweight framework and utility for building powerful forms in
 ## Table of Contents
 - [Installation](#installation)
 - [Example](#example)
+- [API](#api)
+<!-- - [Recipes](#recipes) -->
 
 <a name="installation"></a>
 ## Installation
@@ -93,6 +95,19 @@ export default props => {
 }
 ```
 
+## API
+
+### { Form }
+- This is the main component for creating a react-form. Call it first with any default props for your form and its lifecycle, then call the returned function with your react component.
+
+**Example**
+```javascript
+import { Form } from 'react-form'
+
+const myFormComponent = Form({
+  // defaultProps
+})(myReactClassOrComponent)
+```
 
 ## Contributing
 To suggest a feature, create an issue if it does not already exist.
