@@ -98,15 +98,58 @@ export default props => {
 ## API
 
 ### { Form }
-- This is the main component for creating a react-form. Call it first with any default props for your form and its lifecycle, then call the returned function with your react component.
+- Usage: `Form(defaultProps)(component)`
+- Returns a new react-form component
+- Call it first with any default props for your form including lifecycle methods, validation, etc, then call the returned function with a react component to render the form.
 
 **Example**
 ```javascript
 import { Form } from 'react-form'
 
 const myFormComponent = Form({
-  // defaultProps
-})(myReactClassOrComponent)
+  validate () {...},
+  // other default props
+})(myReactComponent)
+```
+
+### { FormDefaultProps }
+- An object of the global default props for every react-form you create.
+- You can assign new global defaults to this object anywhere before creating a new react-form
+
+**Example**
+```javascript
+import { FormDefaultProps } from 'react-form'
+
+Object.assign(FormDefaultProps, {
+  onValidationFail: () => { console.log('uh oh...') }
+})
+```
+
+### { FormField }
+- A low-level react component that can be used anywhere within a form to expose the api for any field.
+- The child of `FormField` must be a function that returns valid JSX. This function is passed one parameter, the form api object.
+- The form api object contains every method to manage the form state.
+- If a `field` is passed, every API method will be auto-bound to use that field. Otherwise, they operate at the form-level as usual.
+
+**Example**
+```javascript
+import { FormField } from 'react-form'
+
+function customInput ({field, ...rest}) {
+  return (
+    <FormField field={field}>
+      {({ setValue, getValue, setTouched }) => {
+        return (
+          <input
+            value={getValue()}
+            onChange={e => setValue(e.target.value)}
+            onBlur={() => setTouched()}
+          />
+        )
+      }}
+    </FormField>
+  )
+}
 ```
 
 ## Contributing
