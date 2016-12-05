@@ -539,8 +539,7 @@ const usageExample = () => {
 ### { FormDefaultProps }
 - An object of the global default props for every react-form you create.
 - You can assign new global defaults to this object anywhere before creating a new react-form
-
-**Example**
+- Example:
 ```javascript
 import { FormDefaultProps } from 'react-form'
 
