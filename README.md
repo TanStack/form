@@ -40,7 +40,7 @@ React Form is a lightweight framework and utility for building powerful forms in
 <a name="installation"></a>
 ## Installation
 ```bash
-$ npm install react-form
+$ npm install tl-react-form
 ```
 
 <a name="example"></a>
