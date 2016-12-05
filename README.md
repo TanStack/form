@@ -138,7 +138,7 @@ You can define form props and lifecycle methods at 3 different levels:
 
 Here is a list of all available properties and lifecycle methods that React-Form uses:
 
-#### defaultValues{}
+#### defaultValues {}
 - To hardcode any default values to the form, just pass them in an object here.
 - Example:
 ```javascript
@@ -150,11 +150,11 @@ Form({
 })(component)
 ```
 
-#### loadState(props)
+#### loadState (props)
 - When a form mounts, `loadState` is called. If a saved form state object is returned, it will hydrate the form state from this object.
 - An ideal callback to load the form state from an external state manager (Redux/MobX/other)
 
-#### preValidate(values, state, props)
+#### preValidate (values, state, props)
 - This method is a value filter that happens before each validation.
 - Use it to scrub and/or clean your values before they are validated.
 - Whatever you return will replace all of the values in that form's state.
@@ -168,7 +168,7 @@ Form({
 })(component)
 ```
 
-#### validate(values, state, props)
+#### validate (values, state, props)
 - Using the current values, you may return an object of error strings that map 1:1 to any fields that do not meet any condition you specify
 - Any falsey errors will be recursively stripped from the object you return, so if a field is valid, simply return a falsey value of your choice.
 - If attempting to submit, and `validate` returns any errors, `setAllTouched(true)` will automatically be called on the form. Likewise, if the form has been marked as globally dirty, and no errors are returned, `setAllTouched(false)` will automatically clear the global dirty state
@@ -184,22 +184,22 @@ Form({
 })(component)
 ```
 
-#### onValidationFail(values, state, props)
+#### onValidationFail (values, state, props)
 - If and when a forms validation fails, you can handle it here
 
-#### onChange(state, props, initial)
+#### onChange (state, props, initial)
 - Called any time a form's `values` change
 - If `initial` is set to true, this indicates that the component just mounted and is firing `onChange` for the first time (this is utilized by nested forms)
 
-#### saveState(state, props)
+#### saveState (state, props)
 - Called anytime a form's internal `state` is changed.
 - An ideal callback to export/save the form state from an external state manager (Redux/MobX/other)
 
-#### willUnmount(state, props)
+#### willUnmount (state, props)
 - Called when a form is about to unmount
 - An ideal callback to remove the form state from an external state manager (Redux/MobX/other)
 
-#### preSubmit(state, props)
+#### preSubmit (state, props)
 - This method is a value filter that happens after validation and before a successful submission.
 - Use it to scrub and/or clean your values before they are submitted.
 - Whatever you return will **not** replace all of the values in that form's state, but will be passed to the `onSubmit` method.
@@ -213,7 +213,7 @@ Form({
 })(component)
 ```
 
-#### onSubmit(values, state, props)
+#### onSubmit (values, state, props)
 - When a form is submitted via `submitForm`, this method will be called **only if validation succeeds**.
 - Example:
 ```javascript
@@ -225,7 +225,7 @@ Form({
 })(component)
 ```
 
-#### postSubmit(values, state, props)
+#### postSubmit (values, state, props)
 - After a form is successfully submitted via `submitForm`, this method will be called.
 - Example:
 ```javascript
@@ -246,7 +246,7 @@ All of the following props are available on the component used to render your fo
 
 *Note: If a prop of the same name is passed to the form instance, it will override these props below.*
 
-#### values{}
+#### values {}
 - The current read-only values in the form state.
 - Again, these values immutable, so just like any traditional react state or redux state, they should not be changed or mutated outside of the form lifecycle methods
 - Example:
@@ -265,7 +265,7 @@ Form()(
 )
 ```
 
-#### errors{}
+#### errors {}
 - The current read-only errors in the form state.
 - This prop is not recommended for displaying errors. For that, we recommend relying on a `FormInput` or using the `FieldError` component.
 - Errors are set via the optional `validate` lifecycle method
@@ -284,7 +284,7 @@ Form()(
 )
 ```
 
-#### nestedErrors{}
+#### nestedErrors {}
 - The current read-only nested form errors in the form state
 - `nestedErrors` is an object map indicating any nested forms that did not pass their own validation
 - This prop is not recommended for displaying errors. For that, we recommend relying on a `FormInput` or using the `FieldError` component.
@@ -302,7 +302,7 @@ Form()(
 )
 ```
 
-#### touched{}
+#### touched {}
 - The current read-only touched fields map in the form state
 - When a field is changed via `setValue()` or `setTouched()`, its corresponding field location in this object is marked as true.
 - This props is not recommended for displaying errors. For that, we recommend relying on a `FormInput` or using the `FieldError` component.
@@ -319,7 +319,7 @@ Form()(
 )
 ```
 
-#### setValue(field, value, noTouch)
+#### setValue (field, value, noTouch)
 - Sets any given `field` to `value`. Usually this functionality is contained in an InputField of sorts, but it is still available on the form itself in its generic form.
 - `field` can be a **string or array property location** eg.
   - `my.field.name` == `['my', 'field', 'name']`
@@ -339,7 +339,7 @@ Form()(
 )
 ```
 
-#### getValue(field, fallback)
+#### getValue (field, fallback)
 - Gets the current value located at `field`. Usually this functionality is contained in an InputField of sorts, but it is still available on the form itself in its generic form.
 - `field` can be a **string or array property location** eg.
   - `my.field.name` == `['my', 'field', 'name']`
@@ -357,13 +357,13 @@ Form()(
 )
 ```
 
-#### setNestedError(field, value)
+#### setNestedError (field, value)
 - Mostly used internally, this method sets the `field` in `nestedErrors` to `value` to indicate that a nested form did or did not not pass its own validation.
 - If a nested form error is set, its value in its parent `validate` lifecycle method will be set to undefined.
 - This is necessary to check if a nested form is valid from a the parent form's `validate` lifecycle method.
 - For example usage, see the source for the [`NestedForm` component](https://github.com/tannerlinsley/react-form/blob/master/src/formInputs/form.js)
 
-#### getError(field)
+#### getError (field)
 - Gets the current error located at `field`. Usually this functionality is contained in an InputField of sorts, but it is still available on the form itself in its generic form.
 - `field` can be a **string or array property location** eg.
   - `my.field.name` == `['my', 'field', 'name']`
@@ -380,7 +380,7 @@ Form()(
 )
 ```
 
-#### setTouched(field, value = true)
+#### setTouched (field, value = true)
 - Sets the `field` in the `touched` state to `value` (which defaults to true). Usually this functionality is contained in an InputField of sorts, but it is still available on the form itself in its generic form.
 - `field` can be a **string or array property location** eg.
   - `my.field.name` == `['my', 'field', 'name']`
@@ -399,7 +399,7 @@ Form()(
 )
 ```
 
-#### getTouched(field)
+#### getTouched (field)
 - Gets the current touched value for `field`. Usually this functionality is contained in an InputField of sorts, but it is still available on the form itself in its generic form.
 - `field` can be a **string or array property location** eg.
   - `my.field.name` == `['my', 'field', 'name']`
@@ -417,7 +417,7 @@ Form()(
 ```
 
 
-#### addValue(field, value)
+#### addValue (field, value)
 - Pushes `value` into an **array-like** `field` as a new value.
 - `field` can be a **string or array property location** eg.
   - `my.field.name` == `['my', 'field', 'name']`
@@ -436,7 +436,7 @@ Form()(
 )
 ```
 
-#### removeValue(field, index)
+#### removeValue (field, index)
 - Removes the field at the specified index from an **array-like** `field`.
 - `field` can be a **string or array property location** eg.
   - `my.field.name` == `['my', 'field', 'name']`
@@ -461,7 +461,7 @@ Form()(
 )
 ```
 
-#### swapValues(field, i, j)
+#### swapValues (field, i, j)
 - Swaps the fields at the specified indices inside an **array-like** `field`.
 - `field` can be a **string or array property location** eg.
   - `my.field.name` == `['my', 'field', 'name']`
@@ -486,7 +486,7 @@ Form()(
 )
 ```
 
-#### setAllTouched(value = true)
+#### setAllTouched (value = true)
 - Sets the form's `dirty` state to `!!value` (which defaults to `true`). If `true`, its value will override any value retrieved using `getTouched`.
 - When set to true, all validation errors in a form will be visible regardless if they are touched.
 - Used internally by the `submitForm` lifecycle method when a forms validation is failed
@@ -503,7 +503,7 @@ Form()(
 )
 ```
 
-#### submitForm()
+#### submitForm ()
 - Submits the form with the following optional lifecycle events:
   - `preValidate(values, state, props)` filter your values before they are validated
   - `validate(values, state, props)` validate your form
