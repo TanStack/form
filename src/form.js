@@ -6,14 +6,16 @@ const reop = d => d
 
 export const FormDefaultProps = {
   loadState: noop,
+  defaultValues: {},
   preValidate: reop,
   validate: () => null,
   onValidationFail: noop,
   onChange: noop,
   saveState: noop,
-  clearState: noop,
+  willUnmount: noop,
   preSubmit: reop,
-  onSubmit: noop
+  onSubmit: noop,
+  postSubmit: noop
 }
 
 export default function Form (config = {}) {
@@ -53,7 +55,7 @@ export default function Form (config = {}) {
         }, true)
       },
       componentWillUnmount () {
-        this.props.clearState(this.props)
+        this.props.willUnmount(this.state, this.props)
       },
 
       // API
@@ -119,18 +121,20 @@ export default function Form (config = {}) {
         ])
         this.setFormState({values})
       },
-      setAllTouched () {
-        this.setFormState({dirty: true})
+      setAllTouched (dirty = true) {
+        this.setFormState({dirty: !!dirty})
       },
       submitForm (e) {
         e && e.preventDefault && e.preventDefault(e)
         const state = this.state
-        const errors = this.validate(state.values)
+        const errors = this.validate(state.values, state, this.props)
         if (errors) {
           this.setAllTouched()
-          return this.props.onValidationFail()
+          return this.props.onValidationFail(state, this.props)
         }
-        this.props.onSubmit(this.props.preSubmit(this.state.values))
+        const preSubmitValues = this.props.preSubmit(state.values, state, this.props)
+        this.props.onSubmit(preSubmitValues, state, this.props)
+        this.props.postSubmit(preSubmitValues, state, this.props)
       },
 
       // Utils
@@ -151,23 +155,28 @@ export default function Form (config = {}) {
       },
       setFormState (newState, silent) {
         if (newState && newState.values) {
-          newState.values = this.props.preValidate(newState.values)
-          newState.errors = this.validate(newState.values)
+          newState.values = this.props.preValidate(newState.values, newState, this.props)
+          newState.errors = this.validate(newState.values, newState, this.props)
+        }
+        // If all errors have been removed, mark the form as globally clean again
+        if (!newState.errors && this.state.dirty) {
+          this.setAllTouched(false)
         }
         this.setState(newState, () => {
           this.props.saveState(this.state, this.props)
           if (!silent) {
-            this.emitChange(this.state)
+            this.emitChange(this.state, this.props)
           }
         })
       },
       emitChange (state, initial) {
-        this.props.onChange(state, initial)
+        this.props.onChange(state, this.props, initial)
       },
       validate (values) {
-        return cleanErrors(this.props.validate(
-          removeNestedErrorValues(values, this.state ? this.state.nestedErrors : {}))
+        const errors = this.props.validate(
+          removeNestedErrorValues(values, this.state ? this.state.nestedErrors : {})
         )
+        return cleanErrors(errors)
       },
       // Render
       render () {
@@ -189,15 +198,15 @@ export default function Form (config = {}) {
 function cleanErrors (err) {
   if (_.isObject(err)) {
     const resolved = _.mapValues(err, cleanErrors)
-    const found = _.pickBy(resolved, d => typeof d !== 'undefined')
+    const found = _.pickBy(resolved, d => d)
     return Object.keys(found).length ? resolved : undefined
   }
   if (_.isArray(err)) {
     const resolved = err.map(cleanErrors)
-    const found = resolved.find(d => typeof d !== 'undefined')
+    const found = resolved.find(d => d)
     return found ? resolved : undefined
   }
-  return typeof err !== 'undefined' ? err : undefined
+  return err
 }
 
 function removeNestedErrorValues (value, nestedErrors) {

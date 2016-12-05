@@ -19,7 +19,7 @@ export default function FormInputForm ({field, form, ...rest}) {
             /* Respond to the parent form's dirty submission attempts */
             touched={getTouched()}
             /* Notify the parent of any nestedForm-level errors and values */
-            onChange={({values, errors}, initial) => {
+            onChange={({values, errors}, props, initial) => {
               errors ? setNestedError(true) : setNestedError(false)
               setValue(values, initial)
             }}

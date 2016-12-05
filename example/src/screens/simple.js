@@ -1,7 +1,7 @@
 import { Component } from 'jumpsuit'
 
 import CodeHighlight from 'components/codeHighlight'
-import { Form, Text, Select, Textarea, NestedForm } from 'react-form'
+import { Form, Text, Select, Checkbox, Textarea, NestedForm } from 'react-form'
 
 const MyNestedForm = Form({
   validate: values => {
@@ -21,30 +21,37 @@ const MyNestedForm = Form({
 })
 
 const MyForm = Form({
+  defaultValues: {
+    status: 'available',
+    createAccount: true
+  },
   validate: values => {
     return {
       firstName: !values.firstName ? 'Required' : undefined,
       lastName: !values.lastName ? 'Required' : undefined,
-      hobby: !values.hobby ? 'Required' : undefined,
+      hobby: !values.hobby ? 'Required' : undefined
     }
   }
 })(Component({
   render () {
-    const { values, errors, touched, submitForm } = this.props
+    const { values, errors, nestedErrors, touched, submitForm } = this.props
     return (
       <form onSubmit={submitForm}>
         <Text
           field='firstName'
           placeholder='First Name'
         />
+
         <Text
           field='lastName'
           placeholder='Last Name'
         />
+
         <Text
           field='hobby'
           placeholder='Hobby'
         />
+
         <Select
           field='status'
           options={[{
@@ -55,14 +62,24 @@ const MyForm = Form({
             value: 'unavailable'
           }]}
         />
+
         <Textarea
           field='notes'
           placeholder='Notes'
         />
+
         <NestedForm
           field='nestedFormValues'
           form={MyNestedForm}
         />
+
+        <label>
+          Create Account
+          <Checkbox
+            field='createAccount'
+          />
+        </label>
+
         <button>
           Submit
         </button>
@@ -78,6 +95,10 @@ const MyForm = Form({
         <strong>Errors</strong>
         <CodeHighlight>
           {JSON.stringify(errors, null, 2)}
+        </CodeHighlight>
+        <strong>Nest Forms with Errors</strong>
+        <CodeHighlight>
+          {JSON.stringify(nestedErrors, null, 2)}
         </CodeHighlight>
         <strong>Touched</strong>
         <CodeHighlight>
