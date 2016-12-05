@@ -129,7 +129,9 @@ export default function Form (config = {}) {
         const state = this.state
         const errors = this.validate(state.values, state, this.props)
         if (errors) {
-          this.setAllTouched()
+          if (!state.dirty) {
+            this.setAllTouched()
+          }
           return this.props.onValidationFail(state, this.props)
         }
         const preSubmitValues = this.props.preSubmit(state.values, state, this.props)
@@ -160,7 +162,7 @@ export default function Form (config = {}) {
         }
         // If all errors have been removed, mark the form as globally clean again
         if (!newState.errors && this.state.dirty) {
-          this.setAllTouched(false)
+          newState.dirty = false
         }
         this.setState(newState, () => {
           this.props.saveState(this.state, this.props)
