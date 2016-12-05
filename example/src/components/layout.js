@@ -7,9 +7,9 @@ export default Component({
         <div style={{textAlign: 'center'}}>
           <h1>
             <span style={{position: 'absolute', textIndent: '-9999em'}}>
-              react-Form
+              react-form
             </span>
-            {/*<img src='/Banner.png' className='logo' />*/}
+            <img src='/banner.png' className='logo' />
           </h1>
           <br />
           <div>
