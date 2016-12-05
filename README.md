@@ -24,8 +24,17 @@ React Form is a lightweight framework and utility for building powerful forms in
 
 ## Table of Contents
 - [Installation](#installation)
-- [Example](#example)
+- [Quick Example](#quick-example)
 - [API](#api)
+  - [{ Form }](#-form-)
+  - [Form Lifecycle & Default Props](#form-lifecycle--default-props)
+  - [Form Component Props](#form-component-props)
+  - [{ FormDefaultProps }](#-formdefaultprops-)
+  - [{ FormInput }](#-forminput-)
+  - [{ FormError }](#-formerror-)
+  - [{ FormField }](#-formfield-)
+  - [{ Text, Select, Checkbox, Textarea }](#-text-select-checkbox-textarea-)
+  - [{ NestedForm }](#-nestedform-)
 <!-- - [Recipes](#recipes) -->
 
 <a name="installation"></a>
@@ -35,7 +44,7 @@ $ npm install react-form
 ```
 
 <a name="example"></a>
-## Example
+## Quick Example
 ```javascript
 import React from 'react'
 import { Form, Text } from 'react-form'
@@ -111,39 +120,23 @@ export default props => {
 ```javascript
 import { Form } from 'react-form'
 
-const myFormComponent = Form({
-  // lifecycle methods
+// Create a new form by passing `Form` any default props and/or lifecycle methods
+const myForm = Form({
   validate () {...},
-  // any other hardcoded default props
-})(props => {
-  console.log(props)
-  {
-    // Current Form State
-    values,
-    errors,
-    nestedErrors,
-    touched,
-
-    // Methods
-    setValue, // see formProps
-    getValue, // see formProps
-    setNestedError, // see formProps
-    getError, // see formProps
-    setTouched, // see formProps
-    getTouched, // see formProps
-    addValue, // see formProps
-    removeValue, // see formProps
-    swapValues, // see formProps
-    setAllTouched, // see formProps
-    submitForm, // see formProps
-  }
-})
+})(validReactComponent)) // Then pass in any valid react component, component class or stateless component
 ```
 
 ---
 
-## Form Lifecycle & Default Props
+## Default Props & Form Lifecycle
 The form lifecycle is what makes React-Form tick, so naturally you can configure just about anything in react-form to your needs through these lifecycle methods.
+
+You can define form props and lifecycle methods at 3 different levels:
+1. Globally via `FormDefaultProps` (See [{FormDefaultProps}](#-formdefaultprops-))
+1. Per form by passing `defaultProps` to `Form`
+1. Per instance by using a standard react prop when rendering the form.
+
+Here is a list of all available properties and lifecycle methods that React-Form uses:
 
 ##### defaultValues{}
 - To hardcode any default values to the form, just pass them in an object here.
@@ -250,6 +243,7 @@ Form({
 
 ## Form Component Props
 All of the following props are available on the component used to render your form
+
 *Note: If a prop of the same name is passed to the form instance, it will override these props below.*
 
 ##### values{}
