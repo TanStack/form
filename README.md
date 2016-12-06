@@ -4,7 +4,7 @@
   <br />
 </div>
 
-[![npm version](https://badge.fury.io/js/react-form.svg)](https://badge.fury.io/js/react-form) [![Build Status](https://travis-ci.org/tannerlinsley/react-form.svg?branch=master)](https://travis-ci.org/tannerlinsley/react-form) [![Libraries.io for GitHub](https://img.shields.io/librariesio/github/tannerlinsley/react-form.svg)]()
+[![Build Status](https://travis-ci.org/tannerlinsley/react-form.svg?branch=master)](https://travis-ci.org/tannerlinsley/react-form) [![npm](https://img.shields.io/npm/dm/react-form.svg)]()  [![GitHub stars](https://img.shields.io/github/stars/tannerlinsley/react-form.svg?style=social&label=Star)]() [![Twitter Follow](https://img.shields.io/twitter/follow/tannerlinsley.svg?style=social&label=Follow)](https://twitter.com/tannerlinsley)
 
 React Form is a lightweight framework and utility for building powerful forms in React applications.
 
