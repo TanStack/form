@@ -10,9 +10,10 @@
   },
   "keywords": [
     "react",
-    "table",
-    "react-form",
-    "datagrid"
+    "form",
+    "forms",
+    "form builder",
+    "nested forms"
   ],
   "main": "lib/index.js",
   "files": [
