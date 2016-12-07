@@ -2,6 +2,7 @@
   <a href="https://github.com/tannerlinsley/react-form"><img src="/media/banner.png?raw=true" alt="React Table Logo" style="width:550px;"/></a>
   <br />
   <br />
+  
 </div>
 
 [![Build Status](https://travis-ci.org/tannerlinsley/react-form.svg?branch=master)](https://travis-ci.org/tannerlinsley/react-form) [![npm](https://img.shields.io/npm/dm/react-form.svg)]()  [![GitHub stars](https://img.shields.io/github/stars/tannerlinsley/react-form.svg?style=social&label=Star)]() [![Twitter Follow](https://img.shields.io/twitter/follow/tannerlinsley.svg?style=social&label=Follow)](https://twitter.com/tannerlinsley)
