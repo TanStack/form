@@ -2,7 +2,7 @@
   <a href="https://github.com/tannerlinsley/react-form"><img src="/media/banner.png?raw=true" alt="React Table Logo" style="width:550px;"/></a>
   <br />
   <br />
-  
+
 </div>
 
 [![Build Status](https://travis-ci.org/tannerlinsley/react-form.svg?branch=master)](https://travis-ci.org/tannerlinsley/react-form) [![npm](https://img.shields.io/npm/dm/react-form.svg)]()  [![GitHub stars](https://img.shields.io/github/stars/tannerlinsley/react-form.svg?style=social&label=Star)]() [![Twitter Follow](https://img.shields.io/twitter/follow/tannerlinsley.svg?style=social&label=Follow)](https://twitter.com/tannerlinsley)
@@ -113,9 +113,9 @@ export default props => {
 - Call it first with any default props for your form. **This includes lifecycle methods, validation, etc**
 - Call it again with the react component that will render the form.
 - The React Component you provide will receive the following as props:
-  1. Current Form State
-  1. Form API methods
-  1. Finally, any other props passed to your form component
+  - Current Form State
+  - Form API methods
+  - Finally, any other props passed to your form component
 
 **Example**
 ```javascript
@@ -133,9 +133,9 @@ const myForm = Form({
 The form lifecycle is what makes React-Form tick, so naturally you can configure just about anything in react-form to your needs through these lifecycle methods.
 
 You can define form props and lifecycle methods at 3 different levels:
-1. Globally via `FormDefaultProps` (See [{FormDefaultProps}](#-formdefaultprops-))
-1. Per form by passing `defaultProps` to `Form`
-1. Per instance by using a standard react prop when rendering the form.
+- Globally via `FormDefaultProps` (See [{FormDefaultProps}](#-formdefaultprops-))
+- Per form by passing `defaultProps` to `Form`
+- Per instance by using a standard react prop when rendering the form.
 
 Here is a list of all available properties and lifecycle methods that React-Form uses:
 
