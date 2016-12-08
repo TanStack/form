@@ -395,7 +395,7 @@ Form()(
 #### nestedErrors {}
 - The current read-only nested form errors in the form state
 - `nestedErrors` is an object map indicating any nested forms that did not pass their own validation
-- This prop is not recommended for displaying errors. For that, we recommend relying on a `FormInput` or using the `FieldError` component.
+- This prop is not recommended for displaying nested form errors. For that, we recommend relying on a `FormInput` or using the `FieldError` component.
 - If a nested form contains an error in its own validation lifecycle method, its corresponding `nestedErrors` field will be set to true.
 - Defaults to `{}`
 - Example:
@@ -418,10 +418,10 @@ Form()(
 - Example:
 ```javascript
 Form()(
-  ({nestedErrors}) => {
-    console.log(nestedErrors)
+  ({touched}) => {
+    console.log(touched)
     // {
-    //   nestedForm: true // there must be an error in the form located at the "nestedForm" field
+    //   touched: { myField: true } // the `myField` field has been touched
     // }
   }
 )
