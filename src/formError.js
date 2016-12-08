@@ -18,7 +18,7 @@ export default function FormError ({field, className, style}) {
             className={classes}
             style={Object.assign({}, styles, style)}
           >
-            {touched ? error : ''}
+            {touched && typeof error === 'string' ? error : ''}
           </div>
         )
       }}

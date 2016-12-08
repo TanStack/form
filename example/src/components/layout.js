@@ -1,4 +1,4 @@
-import { Component, Link } from 'jumpsuit'
+import { Component } from 'jumpsuit'
 
 export default Component({
   render () {

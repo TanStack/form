@@ -160,10 +160,6 @@ export default function Form (config = {}) {
           newState.values = this.props.preValidate(newState.values, newState, this.props)
           newState.errors = this.validate(newState.values, newState, this.props)
         }
-        // If all errors have been removed, mark the form as globally clean again
-        if (!newState.errors && this.state.dirty) {
-          newState.dirty = false
-        }
         this.setState(newState, () => {
           this.props.saveState(this.state, this.props)
           if (!silent) {

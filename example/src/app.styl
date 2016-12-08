@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,600')
+@import './assets/prism.css'
 @import 'nib'
 
 global-reset()
@@ -77,6 +78,13 @@ strong
 .FormInput
   margin-bottom: 10px
 
+label
+  > span
+    font-size: .8em
+    display: block
+    font-weight: bold
+    margin-bottom:5px
+
 input
 textarea
 select
@@ -86,11 +94,12 @@ select
   border: 1px solid alpha(black, .2)
   .FormInput.-error &
     border-color: red
-  + div
-    color: red
-    font-size: 12px
-    font-weight: bold
-    margin: 5px
+
+.FormError
+  color: red
+  font-size: 12px
+  font-weight: bold
+  margin: 5px
 
 pre
   display:block
@@ -98,6 +107,16 @@ pre
   font-size: 15px
   line-height: 20px
   border-radius: 5px
-  margin: 20px auto
+  margin: 20px auto !important
   max-width: 90%
-  padding: 20px !important
+
+em
+  font-style: italic
+
+.nested
+  padding: 10px
+  > div
+    background: alpha(black, .05)
+    border-radius: 5px
+    margin-bottom:5px
+    padding: 10px
