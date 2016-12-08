@@ -38,55 +38,128 @@ React Form is a lightweight framework and utility for building powerful forms in
   - [{ NestedForm }](#-nestedform-)
 <!-- - [Recipes](#recipes) -->
 
-<a name="installation"></a>
 ## Installation
 ```bash
 $ npm install react-form
 ```
 
-<a name="example"></a>
-## Quick Example
+## Usage
 ```javascript
 import React from 'react'
-import { Form, Text } from 'react-form'
+import { Form, Text, Checkbox, Textarea, Select } from 'react-form'
+
+// To create a new form, simply call `Form(config)(component)`
 
 const MyForm = Form({
-  validate: values => {
-    return {
-      firstName: !values.firstName ? 'Required' : undefined,
-      lastName: !values.lastName ? 'Required' : undefined,
-      hobby: !values.hobby ? 'Required' : undefined
-    }
+  // This is our config for the form. Think of it as the default props for your Form :)
+
+  // Let's give the form some hard-coded default values
+  defaultValues: {
+    status: 'single'
+    friends: [],
   }
-})(({ submitForm }) => {
+
+  // Validating your form is super easy, just use the `validate` life-cycle method
+  validate: values => {
+    // To create form errors, return an object that maps field names with error messages.
+    // There are many ways to do this, below is just one example:
+    return {
+      // If a field has a validation error, set that field to a string that is the error message for that field
+      // If the field is valid, return any falsey value to mark it as valid.
+      name: !values.name ? 'A name is required' : undefined,
+      hobby: (values.hobby && values.hobby.length < 5) ? 'Your hobby must be at least 5 characters long' : false,
+      status: !values.status ? 'A status is required' : null,
+      address: !values.address ? 'A valid address is required' : 0
+      // you don't need to return anything at all for fields you don't need to validate
+    }
+  },
+
+  // `onValidationFail` is another handy form life-cycle method
+  onValidationFail () {
+    window.alert('There is something wrong with your form!  Please check for any required values and try again :)')
+  }
+})(({ values, submitForm, addValue, removeValue }) => {
+  // This is a stateless component, but you can use any valid react component to render your form.
+  // Forms also supply plenty of useful props for your components to utilize. See the docs for a complete list.
   return (
+    // When the form is submitted, call the `sumbitForm` callback prop
     <form onSubmit={submitForm}>
-      <Text
-        field='firstName'
-        placeholder='First Name'
+
+      <Text // This is the built-in Text formInput
+        field='name' // field is a string version of the field location
+        placeholder='Full Name' // all other props are sent through to the underlying component, in this case an <input />
       />
-      <Text
-        field='lastName'
-        placeholder='Last Name'
-      />
-      <Text
-        field='hobby'
-        placeholder='Hobby'
-      />
-      <Select
+
+      <Select // This is the built-in Select formInput
         field='status'
-        options={[{
-          label: 'Available',
-          value: 'available'
+        options={[{ // You can ship it some options like usual
+          label: 'Single',
+          value: 'single'
         }, {
-          label: 'Unavailable',
-          value: 'unavailable'
+          label: 'In a Relationship',
+          value: 'relationship'
+        }, {
+          label: 'It\'s Complicated',
+          value: 'complicated'
         }]}
       />
-      <Textarea
-        field='notes'
-        placeholder='Notes'
+
+      <Textarea // This is the built-in Textarea formInput
+        field='bio'
+        placeholder='Short Bio'
       />
+
+      // Arrays in forms are super easy to handle
+      {values.friends.map((friends, i) => ( // Loop over the values however you'd like
+        <div>
+
+          <Text
+            field={['friends', i, 'name']} // You can easily pass an array-style field path. Perfect for passing down as props or nested values
+            placeholder='Friend Name'
+          />
+
+          <Select
+            field={`friends.${i}.relationship`} // If you don't like arrays, you can also use a string template
+            options={[{
+              label: 'Friend',
+              value: 'friend'
+            }, {
+              label: 'Acquaintance',
+              value: 'acquaintance'
+            }, {
+              label: 'Colleague',
+              value: 'colleague'
+            }]}
+          />
+
+          // This button will remove this friend from the `friends` field
+          <button
+            type='button'
+            onClick={removeValue(['friends', i])} // `removeValue` takes a field location for an item in an array
+          >
+            Remove Friend
+          </button>
+
+        </div>
+      ))}
+
+      // This button will add a new blank friend item to the `friends` field
+      <button
+        type='button'
+        onClick={addValue('friends', {})} // `addValue` takes an array-like field, and the value to add
+       >
+        Remove Friend
+      </button>
+
+      // An address has a couple of parts to it, and will probably have its own validation function.
+      // Let's make it reusable by using a nested form
+      <NestedForm
+        form={AddressForm} // This is just another form that we built below
+        field='address' // The results of this nested form will be set here on this form.
+      />
+
+      // Since this is the parent form, let's put a submit button in there ;)
+      // You can submit your form however you want, as long as you call the `submitForm` callback
       <button>
         Submit
       </button>
@@ -94,9 +167,43 @@ const MyForm = Form({
   )
 })
 
+// This is our reusable address form
+const AddressForm = Form({
+  // It can have its own validation function!
+  validate: values => {
+    return {
+      street: !values.street ? 'street' : undefined
+      city: !values.city ? 'city' : undefined
+      state: !values.state ? 'state' : undefined
+    }
+  }
+})(({values}) => {
+  return (
+    <div>
+      <Text
+        field='street'
+        placeholder='Address'
+      />
+      <Text
+        field='city'
+        placeholder='City'
+      />
+      <Text
+        field='state'
+        placeholder='State'
+      />
+    </div>
+  )
+})
+
+
 export default props => {
   return (
     <MyForm
+      // If you wanted to feed your form some existing values, use the `values` prop
+      values={{
+        name: 'Tanner Linsley'
+      }}
       onSubmit={(values) => {
         window.alert(JSON.stringify(values, null, 2))
       }}
