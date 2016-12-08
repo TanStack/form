@@ -26,6 +26,7 @@ React Form is a lightweight framework and utility for building powerful forms in
 ## Table of Contents
 - [Installation](#installation)
 - [Example](#example)
+- [Custom Input Example](#custom-input-example)
 - [API](#api)
   - [{ Form }](#-form-)
   - [Default Props & Form Lifecycle](#default-props--form-lifecycle)
@@ -44,6 +45,7 @@ $ npm install react-form
 ```
 
 ## Example
+Enjoy this annotated example demonstrating a majority of React-Table's features.
 ```javascript
 import React from 'react'
 import { Form, Text, Select, Textarea, NestedForm, FormError } from 'react-form'
@@ -242,6 +244,49 @@ export default () => {
     </div>
   )
 }
+```
+
+## Custom Input Example
+Creating custom form inputs is extremely simple.  This is a quick example of how to wrap the [React-Select](https://github.com/JedWatson/react-select) component:
+```javascript
+// formReactSelect.js
+
+import React from 'react'
+import { FormInput } from 'react-form'
+import Select from 'react-select'
+
+export default ({field, ...rest}) => {
+  return (
+    <FormInput field={field}> // Use FormInput with a fieldName to get the field's api
+      // FormInput's is a function that provides you the field api and returns valid jsx or a react component
+      {({ setValue, getValue, setTouched }) => {
+        return (
+          <Select
+            {...rest} // Send the rest of your props to React-Select
+            value={getValue()} // Set the value to the forms value
+            onChange={val => setValue(val)} // On Change, update the form value
+            onBlur={() => setTouched()} // And the same goes for touched
+          />
+        )
+      }}
+    </FormInput>
+  )
+}
+
+// Now you can use it in a form!
+import React from 'react'
+import FormReactSelect from './formReactSelect'
+
+Form()(() => {
+  return (
+    <FormReactSelect
+      field='my.field'
+      clearable={false}
+      options={[...]}
+    />
+  )
+})
+
 ```
 
 # API
