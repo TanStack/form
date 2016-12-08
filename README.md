@@ -25,7 +25,7 @@ React Form is a lightweight framework and utility for building powerful forms in
 
 ## Table of Contents
 - [Installation](#installation)
-- [Quick Example](#quick-example)
+- [Example](#example)
 - [API](#api)
   - [{ Form }](#-form-)
   - [Default Props & Form Lifecycle](#default-props--form-lifecycle)
@@ -43,7 +43,7 @@ React Form is a lightweight framework and utility for building powerful forms in
 $ npm install react-form
 ```
 
-## Usage
+## Example
 ```javascript
 import React from 'react'
 import { Form, Text, Checkbox, Textarea, Select } from 'react-form'
