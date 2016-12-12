@@ -1,3 +1,4 @@
+import 'babel-polyfill'
 import './assets/prism'
 import { Render, Router, Route, IndexRoute } from 'jumpsuit'
 //

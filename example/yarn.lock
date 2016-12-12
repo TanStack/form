@@ -713,6 +713,14 @@ babel-plugin-transform-strict-mode@^6.18.0:
     babel-runtime "^6.0.0"
     babel-types "^6.18.0"
 
+babel-polyfill:
+  version "6.20.0"
+  resolved "https://registry.yarnpkg.com/babel-polyfill/-/babel-polyfill-6.20.0.tgz#de4a371006139e20990aac0be367d398331204e7"
+  dependencies:
+    babel-runtime "^6.20.0"
+    core-js "^2.4.0"
+    regenerator-runtime "^0.10.0"
+
 babel-preset-es2015@6.14.0:
   version "6.14.0"
   resolved "https://registry.yarnpkg.com/babel-preset-es2015/-/babel-preset-es2015-6.14.0.tgz#cd2437a96f02a4d19bb87e87980bf0b0288d13eb"
@@ -791,6 +799,13 @@ babel-runtime@^6.0.0, babel-runtime@^6.11.6, babel-runtime@^6.2.0, babel-runtime
   dependencies:
     core-js "^2.4.0"
     regenerator-runtime "^0.9.5"
+
+babel-runtime@^6.20.0:
+  version "6.20.0"
+  resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.20.0.tgz#87300bdcf4cd770f09bf0048c64204e17806d16f"
+  dependencies:
+    core-js "^2.4.0"
+    regenerator-runtime "^0.10.0"
 
 babel-runtime@6.11.6:
   version "6.11.6"
@@ -3375,6 +3390,10 @@ react-mixin@^1.7.0:
     object-assign "^2.0.0"
     smart-mixin "^1.2.0"
 
+react-prism@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/react-prism/-/react-prism-4.0.0.tgz#9a2bc384820dfa9ba8f5e08120ef62eed868fb50"
+
 react-pure-render@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-pure-render/-/react-pure-render-1.0.2.tgz#9d8a928c7f2c37513c2d064e57b3e3c356e9fabb"
@@ -3584,6 +3603,10 @@ redux@^3.5.2, redux@^3.6.0, redux@3.6.0:
 regenerate@^1.2.1:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.3.2.tgz#d1941c67bad437e1be76433add5b385f95b19260"
+
+regenerator-runtime@^0.10.0:
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.10.1.tgz#257f41961ce44558b18f7814af48c17559f9faeb"
 
 regenerator-runtime@^0.9.5:
   version "0.9.6"

@@ -31,8 +31,7 @@
     "postpublish": "git push --tags"
   },
   "dependencies": {
-    "classnames": "^2.2.5",
-    "core-js": "^2.4.1"
+    "classnames": "^2.2.5"
   },
   "peerDependencies": {
     "react": "^15.3.1"
