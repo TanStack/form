@@ -5,7 +5,7 @@
 
 </div>
 
-[![Build Status](https://travis-ci.org/tannerlinsley/react-form.svg?branch=master)](https://travis-ci.org/tannerlinsley/react-form) [![npm](https://img.shields.io/npm/dm/react-form.svg)](https://npmjs.com/packag/react-form) [![react-form on Slack](https://img.shields.io/badge/slack-react--form-blue.svg)](https://react-table-slack.herokuapp.com/) [![GitHub stars](https://img.shields.io/github/stars/tannerlinsley/react-form.svg?style=social&label=Star)](https://github.com/tannerlinsley/react-form) [![Twitter Follow](https://img.shields.io/twitter/follow/tannerlinsley.svg?style=social&label=Follow)](https://twitter.com/tannerlinsley)
+[![Build Status](https://travis-ci.org/tannerlinsley/react-form.svg?branch=master)](https://travis-ci.org/tannerlinsley/react-form) [![npm](https://img.shields.io/npm/dm/react-form.svg)](https://npmjs.com/package/react-form) [![react-form on Slack](https://img.shields.io/badge/slack-react--form-blue.svg)](https://react-table-slack.herokuapp.com/) [![GitHub stars](https://img.shields.io/github/stars/tannerlinsley/react-form.svg?style=social&label=Star)](https://github.com/tannerlinsley/react-form) [![Twitter Follow](https://img.shields.io/twitter/follow/tannerlinsley.svg?style=social&label=Follow)](https://twitter.com/tannerlinsley)
 
 React Form is a lightweight framework and utility for building powerful forms in React applications.
 
