@@ -399,13 +399,22 @@ Form({
 ```
 
 #### onSubmit (values, state, props)
-- When a form is submitted via `submitForm`, this method will be called **only if validation succeeds**.
+- When a form is successfully submitted via [`submitForm`](#submitform-), this method will be called with the values of the parent form.
 - Example:
 ```javascript
+// Per Instance (usually this way)
+const example = (
+  <MyForm
+    onSubmit={(values) => {
+      console.log('Form Submitted with these values:', values)
+    }}
+  />
+)
+
+// Per Form
 Form({
-  preSubmit: (values) => {
-    values.hobby = values.hobby.toLowerCase() // Scrub the hobby field to be lowercase on submit
-    return values
+  onSubmit: (values) => {
+    console.log('Form Submitted with these values:', values)
   }
 })(component)
 ```
