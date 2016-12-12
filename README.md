@@ -26,7 +26,7 @@ React Form is a lightweight framework and utility for building powerful forms in
 ## Table of Contents
 - [Installation](#installation)
 - [Example](#example)
-- [Example](#annotated-demo-example)
+- [Annotated Demo Example](#annotated-demo-example)
 - [Custom Input Example](#custom-input-example)
 - [API](#api)
   - [{ Form }](#-form-)
