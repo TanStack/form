@@ -26,6 +26,7 @@ React Form is a lightweight framework and utility for building powerful forms in
 ## Table of Contents
 - [Installation](#installation)
 - [Example](#example)
+- [Example](#annotated-demo-example)
 - [Custom Input Example](#custom-input-example)
 - [API](#api)
   - [{ Form }](#-form-)
@@ -45,7 +46,39 @@ $ npm install react-form
 ```
 
 ## Example
-Enjoy this annotated example demonstrating a majority of React-Table's features.
+What does React-Form look like? This is the shortest and most concise example we could think of. Looking for more detail? Dive deep with the [Annotated Demo Example](#annotated-demo-example)
+```javascript
+import React from 'react'
+import { Form, Text } from 'react-form'
+
+const MyForm = Form({
+  validate: ({ name }) => {
+    return {
+      name: !name ? 'A name is required' : undefined
+    }
+  },
+})(({submitForm}) => {
+  return (
+    <form onSubmit={submitForm}>    
+      <Text field='name' />
+      <button type='submit'>Submit</button>
+    </form>
+  )
+})
+
+export default () => {
+  return (
+    <MyForm
+      onSubmit={(values) => {
+        console.log('Success!', values)
+      }}
+    />
+  )
+}
+```
+
+## Annotated Demo Example
+This is an annotated example of the demo, demonstrating a majority of React-Table's features.
 ```javascript
 import React from 'react'
 import { Form, Text, Select, Textarea, NestedForm, FormError } from 'react-form'
