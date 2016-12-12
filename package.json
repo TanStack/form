@@ -31,7 +31,8 @@
     "postpublish": "git push --tags"
   },
   "dependencies": {
-    "classnames": "^2.2.5"
+    "classnames": "^2.2.5",
+    "core-js": "^2.4.1"
   },
   "peerDependencies": {
     "react": "^15.3.1"
@@ -39,6 +40,7 @@
   "devDependencies": {
     "babel-cli": "^6.18.0",
     "babel-eslint": "^7.1.1",
+    "babel-plugin-transform-object-assign": "^6.8.0",
     "babel-preset-es2015": "^6.14.0",
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-2": "^6.13.0",
@@ -69,6 +71,9 @@
       "es2015",
       "stage-2",
       "react"
+    ],
+    "plugins": [
+      "transform-object-assign"
     ]
   }
 }

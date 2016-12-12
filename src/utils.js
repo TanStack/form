@@ -1,4 +1,6 @@
 export default {
+  assign,
+  find,
   clone,
   get,
   set,
@@ -7,6 +9,49 @@ export default {
   pickBy,
   isObject,
   isArray
+}
+
+function assign (target) {
+  if (Object.assign) {
+    return Object.assign.apply(this, arguments)
+  }
+  if (target == null) {
+    throw new TypeError('Cannot convert undefined or null to object')
+  }
+  const to = Object(target)
+  for (var index = 1; index < arguments.length; index++) {
+    const nextSource = arguments[index]
+    if (nextSource != null) {
+      for (var nextKey in nextSource) {
+        if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+          to[nextKey] = nextSource[nextKey]
+        }
+      }
+    }
+  }
+  return to
+}
+
+function find (target, predicate) {
+  if (Array.prototype.find) {
+    return target.find(predicate)
+  }
+  'use strict'
+  if (target == null) {
+    throw new TypeError('Array.prototype.find called on null or undefined')
+  }
+  if (typeof predicate !== 'function') {
+    throw new TypeError('predicate must be a function')
+  }
+  const list = Object(target)
+  const length = list.length >>> 0
+  for (var i = 0; i < length; i++) {
+    const value = list[i]
+    if (predicate(value, i, list)) {
+      return value
+    }
+  }
+  return undefined
 }
 
 function clone (a) {

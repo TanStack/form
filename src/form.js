@@ -31,10 +31,10 @@ export default function Form (config = {}) {
       },
       // Lifecycle
       getDefaultProps () {
-        return Object.assign({}, FormDefaultProps, config)
+        return _.assign({}, FormDefaultProps, config)
       },
       getInitialState () {
-        const values = Object.assign({}, _.clone(config.defaultValues), _.clone(this.props.values))
+        const values = _.assign({}, _.clone(config.defaultValues), _.clone(this.props.values))
         return this.props.loadState(this.props) || {
           values,
           touched: {},

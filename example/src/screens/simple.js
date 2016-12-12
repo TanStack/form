@@ -156,23 +156,23 @@ const MyForm = Form({
       <br />
 
       <strong>Values</strong>
-      <CodeHighlight>
+      <CodeHighlight language='javascript'>
         {() => JSON.stringify(values, null, 2)}
       </CodeHighlight>
       <strong>Errors</strong>
-      <CodeHighlight>
+      <CodeHighlight language='javascript'>
         {() => JSON.stringify(errors, null, 2)}
       </CodeHighlight>
       <strong>Nest Forms with Errors</strong>
-      <CodeHighlight>
+      <CodeHighlight language='javascript'>
         {() => JSON.stringify(nestedErrors, null, 2)}
       </CodeHighlight>
       <strong>Touched</strong>
-      <CodeHighlight>
+      <CodeHighlight language='javascript'>
         {() => JSON.stringify(touched, null, 2)}
       </CodeHighlight>
       <strong>Form is Dirty</strong>
-      <CodeHighlight>
+      <CodeHighlight language='javascript'>
         {() => `${!!dirty}`}
       </CodeHighlight>
     </form>
