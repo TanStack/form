@@ -291,7 +291,7 @@ import Select from 'react-select'
 export default ({field, ...rest}) => {
   return (
     <FormInput field={field}> // Use FormInput with a fieldName to get the field's api
-      // FormInput's is a function that provides you the field api and returns valid jsx or a react component
+      // FormInput's only child should be a function that provides you the field api and returns valid jsx or a react component
       {({ setValue, getValue, setTouched }) => {
         return (
           <Select
