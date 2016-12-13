@@ -36,7 +36,7 @@ React Form is a lightweight framework and utility for building powerful forms in
   - [{ FormInput }](#-forminput-)
   - [{ FormError }](#-formerror-)
   - [{ FormField }](#-formfield-)
-  - [{ Text, Select, Checkbox, Textarea }](#-text-select-checkbox-textarea-)
+  - [{ Text, Select, Checkbox, Textarea, Radio }](#-text-select-checkbox-textarea-radio-)
   - [{ NestedForm }](#-nestedform-)
 <!-- - [Recipes](#recipes) -->
 
@@ -884,7 +884,7 @@ function customInput ({field, ...rest}) {
 }
 ```
 
-### { Text, Select, Checkbox, Textarea }
+### { Text, Select, Checkbox, Textarea, Radio }
 - These are all pre-packaged form inputs created with our very own `FormInput` component.
 - Each requires a `field` prop to be passed
 - All other props will be passed through to the underlying input component
@@ -893,7 +893,7 @@ function customInput ({field, ...rest}) {
 
 **Example**
 ```javascript
-import { Text, Select, Checkbox, Textarea } from 'react-form'
+import { Text, Select, Checkbox, Textarea, Radio } from 'react-form'
 
 const example = (
   <div>
@@ -922,6 +922,21 @@ const example = (
       field='notes'
       placeholder='Notes'
     />
+
+    <radiogroup>
+      <Radio
+        field='notificationType'
+        value='email'
+      />
+      <Radio
+        field='notificationType'
+        value='text'
+      />
+      <Radio
+        field='notificationType'
+        value='phone'
+      />
+    </radiogroup>
 
   </div>
 )
