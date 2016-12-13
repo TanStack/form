@@ -76,14 +76,24 @@ strong
       background: alpha(black, .9)
 
 .FormInput
-  margin-bottom: 10px
+  display:inline-block
+
+form > div
+  margin-bottom: 1em
+
+h6
+  font-size: .8em
+  font-weight: bold
+  margin-bottom: .5em
 
 label
-  > span
-    font-size: .8em
-    display: block
-    font-weight: bold
-    margin-bottom:5px
+  display:block
+
+radiogroup
+  padding: 10px
+  border: 1px solid alpha(black, .1)
+  display: inline-block
+  border-radius: 3px
 
 input
 textarea
@@ -92,6 +102,7 @@ select
   padding:5px
   border-radius: 3px
   border: 1px solid alpha(black, .2)
+  margin-bottom: 2px
   .FormInput.-error &
     border-color: red
 

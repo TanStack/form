@@ -8,6 +8,7 @@ import Checkbox from './formInputs/checkbox'
 import Textarea from './formInputs/textarea'
 import NestedForm from './formInputs/form'
 import Text from './formInputs/text'
+import Radio from './formInputs/radio'
 
 module.exports = {
   Form,
@@ -20,5 +21,6 @@ module.exports = {
   Checkbox,
   Textarea,
   NestedForm,
-  Text
+  Text,
+  Radio
 }

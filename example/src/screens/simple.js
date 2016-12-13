@@ -1,7 +1,7 @@
 import React from 'react'
 
 import CodeHighlight from 'components/codeHighlight'
-import { Form, Text, Select, Textarea, NestedForm, FormError } from 'react-form'
+import { Form, Text, Select, Textarea, Checkbox, Radio, NestedForm, FormError } from 'react-form'
 
 // To create a new form, simply call `Form(config)(component)`
 
@@ -42,16 +42,16 @@ const MyForm = Form({
     // When the form is submitted, call the `sumbitForm` callback prop
     <form onSubmit={submitForm}>
 
-      <label>
-        <span>Full Name</span>
+      <div>
+        <h6>Full Name</h6>
         <Text // This is the built-in Text formInput
           field='name' // field is a string version of the field location
           placeholder='Your name' // all other props are sent through to the underlying component, in this case an <input />
         />
-      </label>
+      </div>
 
-      <label>
-        <span>Relationship Status</span>
+      <div>
+        <h6>Relationship Status</h6>
         <Select // This is the built-in Select formInput
           field='status'
           options={[{ // You can ship it some options like usual
@@ -65,21 +65,18 @@ const MyForm = Form({
             value: 'complicated'
           }]}
         />
-      </label>
+      </div>
 
-      <label>
-        <span>Short Bio</span>
+      <div>
+        <h6>Short Bio</h6>
         <Textarea // This is the built-in Textarea formInput
           field='bio'
           placeholder='Short Bio'
         />
-      </label>
-
-      <label>
-        <span>Friends</span>
-      </label>
+      </div>
 
       {/* Arrays in forms are super easy to handle */}
+      <h6>Friends</h6>
       {/* This is a custom form error for the root of the friends list (see validation function) */}
       <FormError field='friends' />
       <div className='nested'>
@@ -88,16 +85,16 @@ const MyForm = Form({
         ) : values.friends.map((friends, i) => ( // Loop over the values however you'd like
           <div key={i}>
 
-            <label>
-              <span>Full Name</span>
+            <div>
+              <h6>Full Name</h6>
               <Text
                 field={['friends', i, 'name']} // You can easily pass an array-style field path. Perfect for passing down as props or nested values
                 placeholder='Friend Name'
               />
-            </label>
+            </div>
 
-            <label>
-              <span>Full Name</span>
+            <div>
+              <h6>Relationship</h6>
               <Select
                 field={`friends.${i}.relationship`} // If you don't like arrays, you can also use a string template
                 options={[{
@@ -111,7 +108,7 @@ const MyForm = Form({
                   value: 'colleague'
                 }]}
               />
-            </label>
+            </div>
 
             <button // This button will remove this friend from the `friends` field
               type='button'
@@ -124,25 +121,63 @@ const MyForm = Form({
         ))}
       </div>
 
-      <button // This button will add a new blank friend item to the `friends` field
-        type='button'
-        onClick={() => addValue('friends', {})} // `addValue` takes an array-like field, and the value to add
-      >
-        Add Friend
-      </button>
+      <div>
+        <button // This button will add a new blank friend item to the `friends` field
+          type='button'
+          onClick={() => addValue('friends', {})} // `addValue` takes an array-like field, and the value to add
+        >
+          Add Friend
+        </button>
+      </div>
+
+      <div>
+        <h6>Address</h6>
+        {/* An address has a couple of parts to it, and will probably have its own validation function. */}
+        {/* Let's make it reusable by using a nested form */}
+        <NestedForm
+          form={AddressForm} // This is just another form that we built below
+          field='address' // The results of this nested form will be set to this field value on this form.
+        />
+      </div>
+
+      <div>
+        <label>
+          <Checkbox // This is the built-in checkbox formInput
+            field='createAccount'
+          />
+          <span>Create Account?</span>
+        </label>
+      </div>
+
+      <div>
+        <h6>Notify me via</h6>
+        <radiogroup>
+          <label>
+            <Radio // This is the built-in radio formInput
+              field='notificationType'
+              value='email'
+            />
+            <span>Email</span>
+          </label>
+          <label>
+            <Radio // This is the built-in radio formInput
+              field='notificationType'
+              value='text'
+            />
+            <span>Text</span>
+          </label>
+          <label>
+            <Radio // This is the built-in radio formInput
+              field='notificationType'
+              value='phone'
+            />
+            <span>Phone</span>
+          </label>
+        </radiogroup>
+      </div>
 
       <br />
       <br />
-
-      <label>
-        <span>Address</span>
-      </label>
-      {/* An address has a couple of parts to it, and will probably have its own validation function. */}
-      {/* Let's make it reusable by using a nested form */}
-      <NestedForm
-        form={AddressForm} // This is just another form that we built below
-        field='address' // The results of this nested form will be set to this field value on this form.
-      />
 
       {/* // Since this is the parent form, let's put a submit button in there ;) */}
       {/* // You can submit your form however you want, as long as you call the `submitForm` callback */}
@@ -196,10 +231,12 @@ const AddressForm = Form({
         field='street'
         placeholder='Street'
       />
+      <br />
       <Text
         field='city'
         placeholder='City'
       />
+      <br />
       <Text
         field='state'
         placeholder='State'
@@ -229,9 +266,7 @@ export default () => {
 function getCode () {
   return `
 import React from 'react'
-
-import CodeHighlight from 'components/codeHighlight'
-import { Form, Text, Select, Textarea, NestedForm, FormError } from 'react-form'
+import { Form, Text, Select, Textarea, Checkbox, Radio, NestedForm, FormError } from 'react-form'
 
 // To create a new form, simply call \`Form(config)(component)\`
 
@@ -272,16 +307,16 @@ const MyForm = Form({
     // When the form is submitted, call the \`sumbitForm\` callback prop
     <form onSubmit={submitForm}>
 
-      <label>
-        <span>Full Name</span>
+      <div>
+        <h6>Full Name</h6>
         <Text // This is the built-in Text formInput
           field='name' // field is a string version of the field location
           placeholder='Your name' // all other props are sent through to the underlying component, in this case an <input />
         />
-      </label>
+      </div>
 
-      <label>
-        <span>Relationship Status</span>
+      <div>
+        <h6>Relationship Status</h6>
         <Select // This is the built-in Select formInput
           field='status'
           options={[{ // You can ship it some options like usual
@@ -295,21 +330,18 @@ const MyForm = Form({
             value: 'complicated'
           }]}
         />
-      </label>
+      </div>
 
-      <label>
-        <span>Short Bio</span>
+      <div>
+        <h6>Short Bio</h6>
         <Textarea // This is the built-in Textarea formInput
           field='bio'
           placeholder='Short Bio'
         />
-      </label>
-
-      <label>
-        <span>Friends</span>
-      </label>
+      </div>
 
       {/* Arrays in forms are super easy to handle */}
+      <h6>Friends</h6>
       {/* This is a custom form error for the root of the friends list (see validation function) */}
       <FormError field='friends' />
       <div className='nested'>
@@ -318,18 +350,18 @@ const MyForm = Form({
         ) : values.friends.map((friends, i) => ( // Loop over the values however you'd like
           <div key={i}>
 
-            <label>
-              <span>Full Name</span>
+            <div>
+              <h6>Full Name</h6>
               <Text
                 field={['friends', i, 'name']} // You can easily pass an array-style field path. Perfect for passing down as props or nested values
                 placeholder='Friend Name'
               />
-            </label>
+            </div>
 
-            <label>
-              <span>Full Name</span>
+            <div>
+              <h6>Relationship</h6>
               <Select
-                field={\`friends.$\{i}.relationship\`} // If you don't like arrays, you can also use a string template
+                field={\`friends.\${i}.relationship\`} // If you don't like arrays, you can also use a string template
                 options={[{
                   label: 'Friend',
                   value: 'friend'
@@ -341,7 +373,7 @@ const MyForm = Form({
                   value: 'colleague'
                 }]}
               />
-            </label>
+            </div>
 
             <button // This button will remove this friend from the \`friends\` field
               type='button'
@@ -354,25 +386,63 @@ const MyForm = Form({
         ))}
       </div>
 
-      <button // This button will add a new blank friend item to the \`friends\` field
-        type='button'
-        onClick={() => addValue('friends', {})} // \`addValue\` takes an array-like field, and the value to add
-      >
-        Add Friend
-      </button>
+      <div>
+        <button // This button will add a new blank friend item to the \`friends\` field
+          type='button'
+          onClick={() => addValue('friends', {})} // \`addValue\` takes an array-like field, and the value to add
+        >
+          Add Friend
+        </button>
+      </div>
+
+      <div>
+        <h6>Address</h6>
+        {/* An address has a couple of parts to it, and will probably have its own validation function. */}
+        {/* Let's make it reusable by using a nested form */}
+        <NestedForm
+          form={AddressForm} // This is just another form that we built below
+          field='address' // The results of this nested form will be set to this field value on this form.
+        />
+      </div>
+
+      <div>
+        <label>
+          <Checkbox // This is the built-in checkbox formInput
+            field='createAccount'
+          />
+          <span>Create Account?</span>
+        </label>
+      </div>
+
+      <div>
+        <h6>Notify me via</h6>
+        <radiogroup>
+          <label>
+            <Radio // This is the built-in radio formInput
+              field='notificationType'
+              value='email' // This is the value the field will be set to when this radio button is active
+            />
+            <span>Email</span>
+          </label>
+          <label>
+            <Radio
+              field='notificationType'
+              value='text'
+            />
+            <span>Text</span>
+          </label>
+          <label>
+            <Radio
+              field='notificationType'
+              value='phone'
+            />
+            <span>Phone</span>
+          </label>
+        </radiogroup>
+      </div>
 
       <br />
       <br />
-
-      <label>
-        <span>Address</span>
-      </label>
-      {/* An address has a couple of parts to it, and will probably have its own validation function. */}
-      {/* Let's make it reusable by using a nested form */}
-      <NestedForm
-        form={AddressForm} // This is just another form that we built below
-        field='address' // The results of this nested form will be set to this field value on this form.
-      />
 
       {/* // Since this is the parent form, let's put a submit button in there ;) */}
       {/* // You can submit your form however you want, as long as you call the \`submitForm\` callback */}
@@ -400,10 +470,12 @@ const AddressForm = Form({
         field='street'
         placeholder='Street'
       />
+      <br />
       <Text
         field='city'
         placeholder='City'
       />
+      <br />
       <Text
         field='state'
         placeholder='State'

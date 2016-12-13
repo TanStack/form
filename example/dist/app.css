@@ -313,13 +313,24 @@ strong {
   background: rgba(0,0,0,0.9);
 }
 .FormInput {
-  margin-bottom: 10px;
+  display: inline-block;
 }
-label > span {
+form > div {
+  margin-bottom: 1em;
+}
+h6 {
   font-size: 0.8em;
-  display: block;
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 0.5em;
+}
+label {
+  display: block;
+}
+radiogroup {
+  padding: 10px;
+  border: 1px solid rgba(0,0,0,0.1);
+  display: inline-block;
+  border-radius: 3px;
 }
 input,
 textarea,
@@ -328,6 +339,7 @@ select {
   padding: 5px;
   border-radius: 3px;
   border: 1px solid rgba(0,0,0,0.2);
+  margin-bottom: 2px;
 }
 .FormInput.-error input,
 .FormInput.-error textarea,
