@@ -2,9 +2,9 @@ import React from 'react'
 //
 import FormInput from '../formInput'
 
-export default function FormInputSelect ({options, field, ...rest}) {
+export default function FormInputSelect ({options, field, showErrors, errorBefore, isForm, ...rest}) {
   return (
-    <FormInput field={field}>
+    <FormInput field={field} showErrors={showErrors} errorBefore={errorBefore} isForm={isForm}>
       {({setValue, getValue, setTouched}) => {
         const resolvedOptions = options.find(d => d.value === '') ? options : [{
           label: 'Select One...',
