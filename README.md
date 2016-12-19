@@ -78,7 +78,7 @@ export default () => {
 ```
 
 ## Annotated Demo Example
-This is an annotated example of the demo, demonstrating a majority of React-Table's features.
+This is an annotated example of the demo, demonstrating a majority of React-Form's features.
 ```javascript
 import React from 'react'
 import { Form, Text, Select, Textarea, Checkbox, Radio, NestedForm, FormError } from 'react-form'
