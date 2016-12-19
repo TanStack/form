@@ -59,7 +59,7 @@ const MyForm = Form({
   },
 })(({submitForm}) => {
   return (
-    <form onSubmit={submitForm}>    
+    <form onSubmit={submitForm}>
       <Text field='name' />
       <button type='submit'>Submit</button>
     </form>
@@ -589,6 +589,7 @@ Form()(
   - `my.fields[3]` == `['my', 'fields', 3]`
   - Array properties can also be nested (great for passing down via props) `[['my', 'fields'], [5], 'stuff']` == `my.fields[5].stuff`
 - The field will be created if it does not exist and will automatically infer object/array structure from field location
+- If `noTouch` is true, the `touched` state of the field won't change.
 - Example:
 ```javascript
 Form()(
@@ -890,6 +891,7 @@ function customInput ({field, ...rest}) {
 - All other props will be passed through to the underlying input component
 - Automatically show errors and receive error classes (.-has-error)
 - Their source serves as great example of how to create your own custom Form Inputs
+- Pass `noTouch` to avoid validation while the value is changing
 
 **Example**
 ```javascript
