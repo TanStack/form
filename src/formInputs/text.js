@@ -2,7 +2,7 @@ import React from 'react'
 //
 import FormInput from '../formInput'
 
-export default function FormInputText ({field, showErrors, errorBefore, isForm, ...rest}) {
+export default function FormInputText ({field, showErrors, errorBefore, isForm, noTouch, ...rest}) {
   return (
     <FormInput field={field} showErrors={showErrors} errorBefore={errorBefore} isForm={isForm}>
       {({setValue, getValue, setTouched}) => {
@@ -10,7 +10,7 @@ export default function FormInputText ({field, showErrors, errorBefore, isForm, 
           <input
             {...rest}
             value={getValue('')}
-            onChange={e => setValue(e.target.value)}
+            onChange={e => setValue(e.target.value, noTouch)}
             onBlur={() => setTouched(true)}
           />
         )

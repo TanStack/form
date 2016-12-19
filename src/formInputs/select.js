@@ -2,7 +2,7 @@ import React from 'react'
 //
 import FormInput from '../formInput'
 
-export default function FormInputSelect ({options, field, showErrors, errorBefore, isForm, ...rest}) {
+export default function FormInputSelect ({options, field, showErrors, errorBefore, isForm, noTouch, ...rest}) {
   return (
     <FormInput field={field} showErrors={showErrors} errorBefore={errorBefore} isForm={isForm}>
       {({setValue, getValue, setTouched}) => {
@@ -18,7 +18,7 @@ export default function FormInputSelect ({options, field, showErrors, errorBefor
             {...rest}
             onChange={(e) => {
               const val = resolvedOptions[e.target.value].value
-              setValue(val)
+              setValue(val, noTouch)
             }}
             onBlur={() => setTouched()}
             value={selectedIndex > -1 ? selectedIndex : nullIndex}
