@@ -28,15 +28,19 @@
     "test": "standard",
     "umd": "rm -rf react-form.js && browserify lib/index.js -s reactForm -x react -t babelify -g uglifyify -o react-form.js",
     "prepublish": "npm-run-all build:* && npm run umd",
-    "postpublish": "git push --tags"
+    "postpublish": "git push --tags",
+    "storybook": "start-storybook -p 8085 -c .storybook"
   },
   "dependencies": {
-    "classnames": "^2.2.5"
+    "classnames": "^2.2.5",
+    "react": "^15.4.1",
+    "react-dom": "^15.4.1"
   },
   "peerDependencies": {
     "react": "^15.3.1"
   },
   "devDependencies": {
+    "@kadira/storybook": "^2.35.1",
     "babel-cli": "^6.18.0",
     "babel-eslint": "^7.1.1",
     "babel-plugin-transform-object-assign": "^6.8.0",
