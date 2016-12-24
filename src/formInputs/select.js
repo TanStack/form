@@ -1,33 +1,47 @@
 import React from 'react'
-//
 import FormInput from '../formInput'
 
-export default function FormInputSelect ({options, field, showErrors, errorBefore, isForm, noTouch, ...rest}) {
+export default function FormInputSelect ({
+  options,
+  field,
+  showErrors,
+  errorBefore,
+  isForm,
+  noTouch,
+  placeholder = 'Select One...',
+  ...rest
+}) {
+  const placeholderOption = {
+    label: placeholder,
+    value: 'null',
+    disabled: true
+  }
+
   return (
     <FormInput field={field} showErrors={showErrors} errorBefore={errorBefore} isForm={isForm}>
       {({setValue, getValue, setTouched}) => {
-        const resolvedOptions = options.find(d => d.value === '') ? options : [{
-          label: 'Select One...',
-          value: '',
-          disabled: true
-        }, ...options]
-        const selectedIndex = resolvedOptions.findIndex(d => d.value === getValue())
-        const nullIndex = resolvedOptions.findIndex(d => d.value === '')
+        const currentValue = getValue()
+        let selectedIndex = options.findIndex(d => d.value === currentValue)
+        let resolvedOptions = options
+        if (selectedIndex === -1) {
+          // If the current value isn't found in the options, set it to the placeholder
+          resolvedOptions = [placeholderOption, ...options]
+          selectedIndex = 0
+        }
         return (
           <select
             {...rest}
             onChange={(e) => {
-              const val = resolvedOptions[e.target.value].value
-              setValue(val, noTouch)
+              setValue(e.target.value, noTouch)
             }}
             onBlur={() => setTouched()}
-            value={selectedIndex > -1 ? selectedIndex : nullIndex}
+            value={resolvedOptions[selectedIndex].value}
           >
             {resolvedOptions.map((option, i) => {
               return (
                 <option
                   key={i}
-                  value={i}
+                  value={option.value}
                   disabled={option.disabled}
                 >
                   {option.label}
