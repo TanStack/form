@@ -906,6 +906,7 @@ const example = (
     />
 
     <Select
+      placeholder='choose status...'
       field='employed'
       options={[{
         label: 'Employed',
@@ -983,6 +984,10 @@ If you would like to preview your changes, you can link and utilize the example 
 - `npm watch`
 - Make changes to the example in `src/screens/index.js` if needed
 - View changes at `localhost:8000`
+
+Also you may use [react-storybooks](https://getstorybook.io/) to view changes. Feel free to add new storybooks if they don't exist yet.
+- `npm run storybook`
+- view changes at `localhost:8085`
 
 ## Used By
 

@@ -17,6 +17,12 @@ const SimpleSelect = Form({
     {label: 'Sunday', value: 'sun'}
   ]
 
+  const allPlans = [
+    {label: 'No plan', value: 'no answer is an answer!'},
+    {label: 'Plan A', value: 'run away'},
+    {label: 'Plan B', value: 'run even more away'}
+  ]
+
   return (
     <form onSubmit={submitForm}>
       <p>Submit event would have 3 objects: values, state and props.</p>
@@ -46,6 +52,17 @@ const SimpleSelect = Form({
           placeholder='common, pick one!'
         />
         <pre>[no default value is set]</pre>
+        <pre>selected number is: {!values.number ? 'pick one!' : values.number} </pre>
+      </div>
+      <div>
+        <h6>Choose your favorite number</h6>
+        <Select
+          field='plan'
+          options={allPlans}
+          placeholder={null}
+        />
+        <pre>[no default value is set, placeholder is <b>null</b>]</pre>
+        <pre>selected plan is: {!values.plan ? 'decide!' : values.plan} </pre>
       </div>
       <button type='submit'>Submit</button>
     </form>

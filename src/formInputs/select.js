@@ -25,7 +25,9 @@ export default function FormInputSelect ({
         let resolvedOptions = options
         if (selectedIndex === -1) {
           // If the current value isn't found in the options, set it to the placeholder
-          resolvedOptions = [placeholderOption, ...options]
+          if (placeholderOption.label !== null) {
+            resolvedOptions = [placeholderOption, ...options]
+          }
           selectedIndex = 0
         }
         return (
