@@ -1,12 +1,12 @@
 {
-  "name": "react-form",
+  "name": "react-form-ali",
   "version": "0.11.0",
-  "description": "A fast, lightweight, opinionated table and datagrid built on React",
+  "description": "A fast, lightweight, opinionated table and datagrid built on React-Form",
   "license": "MIT",
-  "homepage": "https://github.com/tannerlinsley/react-form#readme",
+  "homepage": "https://github.com/thg303/react-form#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tannerlinsley/react-form.git"
+    "url": "git+https://github.com/thg303/react-form.git#npm"
   },
   "keywords": [
     "react",
