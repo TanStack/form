@@ -42,7 +42,7 @@ React Form is a lightweight framework and utility for building powerful forms in
 
 ## Installation
 ```bash
-$ npm install react-form
+$ npm install react-form-ali
 ```
 
 ## Example

@@ -6,7 +6,7 @@
   "homepage": "https://github.com/thg303/react-form#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thg303/react-form.git#npm"
+    "url": "https://github.com/thg303/react-form.git"
   },
   "keywords": [
     "react",
