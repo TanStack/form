@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://github.com/tannerlinsley/react-form"><img src="/media/banner.png?raw=true" alt="React Table Logo" style="width:550px;"/></a>
+  <a href="https://github.com/thg303/react-form"><img src="/media/banner.png?raw=true" alt="React Table Logo" style="width:550px;"/></a>
   <br />
   <br />
 
@@ -917,6 +917,19 @@ const example = (
       }]}
     />
 
+    <Select
+      placeholder='choose favorite sports...'
+      field='sports'
+      options={[{
+        label: 'Baseball',
+        values: 'baseball'
+      }, {
+        label: 'Soccer',
+        value: 'soccer'
+      }]}
+      multiple
+    />
+
     <Checkbox
       field='createAccount'
     />
@@ -994,3 +1007,6 @@ Also you may use [react-storybooks](https://getstorybook.io/) to view changes. F
 <a href='https://nozzle.io'>
   <img src='https://nozzle.io/img/logo-blue.png' alt='Nozzle Logo' style='width:300px;'/>
 </a>
+
+##Credits
+This is a fork from https://github.com/tannerlinsley/react-form with some minor improvements

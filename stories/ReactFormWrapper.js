@@ -6,7 +6,7 @@ class ReactFormWrapper extends React.Component {
   render () {
     const WrappedForm = this.props.wrappedForm
     return (
-      <div className='form_wrapper'>
+      <div className="form_wrapper">
         <WrappedForm
           onSubmit={action('submitted')}
           values={this.props.default_values}

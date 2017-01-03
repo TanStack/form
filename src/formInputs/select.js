@@ -8,6 +8,7 @@ export default function FormInputSelect ({
   errorBefore,
   isForm,
   noTouch,
+  multiple = false,
   placeholder = 'Select One...',
   ...rest
 }) {
@@ -20,24 +21,35 @@ export default function FormInputSelect ({
   return (
     <FormInput field={field} showErrors={showErrors} errorBefore={errorBefore} isForm={isForm}>
       {({setValue, getValue, setTouched}) => {
-        const currentValue = getValue()
-        let selectedIndex = options.findIndex(d => d.value === currentValue)
+        var currentValue = getValue()
         let resolvedOptions = options
-        if (selectedIndex === -1) {
+        if (currentValue === undefined) {
           // If the current value isn't found in the options, set it to the placeholder
           if (placeholderOption.label !== null) {
             resolvedOptions = [placeholderOption, ...options]
           }
-          selectedIndex = 0
+          currentValue = resolvedOptions[0].value
         }
         return (
           <select
             {...rest}
             onChange={(e) => {
-              setValue(e.target.value, noTouch)
+              if (!multiple) {
+                setValue(e.target.value, noTouch)
+                return undefined
+              }
+              let values = []
+              let options = e.target.options
+              for (let i = 0, length = options.length; i < length; i++) {
+                if (options[i].selected) {
+                  values.push(options[i].value)
+                }
+              }
+              setValue(values, noTouch)
             }}
             onBlur={() => setTouched()}
-            value={resolvedOptions[selectedIndex].value}
+            value={currentValue}
+            multiple={multiple}
           >
             {resolvedOptions.map((option, i) => {
               return (

@@ -4,7 +4,8 @@ import Select from '../src/formInputs/select'
 
 const SimpleSelect = Form({
   defaultValues: {
-    weekday: 'fri'
+    weekday: 'fri',
+    all_weekdays: ['mon', 'wed']
   }
 })(({submitForm, values}) => {
   const allOptions = [
@@ -29,18 +30,18 @@ const SimpleSelect = Form({
       <div>
         <h6>Choose your lucky day</h6>
         <Select
-          field='weekday'
+          field="weekday"
           options={allOptions}
-          placeholder='common, pick one!'
+          placeholder="common, pick one!"
         />
         <p>default value can be set via text field below in the KNOBS tab</p>
         <pre>current default value: {values.weekday} <br />
-        available options: [{ allOptions.map(element => element.value).join(', ') }]</pre>
+        available options: [{allOptions.map(element => element.value).join(', ')}]</pre>
       </div>
       <div>
         <h6>Choose your favorite number</h6>
         <Select
-          field='number'
+          field="number"
           options={[
             {label: 'One', value: '1'},
             {label: 'Two', value: '2'},
@@ -49,7 +50,7 @@ const SimpleSelect = Form({
             {label: 'Five', value: '5'},
             {label: 'DADA', value: 'null'}
           ]}
-          placeholder='common, pick one!'
+          placeholder="common, pick one!"
         />
         <pre>[no default value is set]</pre>
         <pre>selected number is: {!values.number ? 'pick one!' : values.number} </pre>
@@ -57,14 +58,26 @@ const SimpleSelect = Form({
       <div>
         <h6>Choose your favorite number</h6>
         <Select
-          field='plan'
+          field="plan"
           options={allPlans}
           placeholder={null}
         />
         <pre>[no default value is set, placeholder is <b>null</b>]</pre>
         <pre>selected plan is: {!values.plan ? 'decide!' : values.plan} </pre>
       </div>
-      <button type='submit'>Submit</button>
+      <div>
+        <h6>Now choose multi lucky days</h6>
+        <Select
+          field="all_weekdays"
+          options={allOptions}
+          placeholder="common, pick away!"
+          multiple
+        />
+        <p>default value can be set via text field below in the KNOBS tab</p>
+        <pre>current value(s): [{values.all_weekdays && values.all_weekdays.join(', ')}] <br />
+        available options: [{allOptions.map(element => element.value).join(', ')}]</pre>
+      </div>
+      <button type="submit">Submit</button>
     </form>
   )
 })

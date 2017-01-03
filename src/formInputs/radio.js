@@ -9,7 +9,7 @@ export default function FormInputRadio ({ field, value, showErrors, errorBefore,
         return (
           <input
             {...rest}
-            type='radio'
+            type="radio"
             checked={getValue(false) === value}
             onClick={e => setValue(value, noTouch)}
             onBlur={() => setTouched()}

@@ -14,7 +14,7 @@ const SimpleCheckbox = Form({
       <div>
         <label>
           <Checkbox
-            field='subscribe'
+            field="subscribe"
           />
           <span>subscribe to newsletter <pre>[default is true]</pre></span>
         </label>
@@ -22,7 +22,7 @@ const SimpleCheckbox = Form({
       <div>
         <label>
           <Checkbox
-            field='adult'
+            field="adult"
           />
           <span>I am over 18 years old <pre>[default is false]</pre></span>
         </label>
@@ -30,12 +30,12 @@ const SimpleCheckbox = Form({
       <div>
         <label>
           <Checkbox
-            field='ads'
+            field="ads"
           />
           <span>subscribe to advertisements <pre>[no default value is set]</pre></span>
         </label>
       </div>
-      <button type='submit'>Submit</button>
+      <button type="submit">Submit</button>
     </form>
   )
 })

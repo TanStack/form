@@ -13,9 +13,9 @@ const SimpleText = Form({
     <form onSubmit={submitForm}>
       <p>Submit event would have 3 objects: values, state and props.</p>
       <label>name:*</label>
-      <Text field='name' placeholder='type something...' />
+      <Text field="name" placeholder="type something..." />
       <pre>By default validation performs on <b>blur</b> and <b>submit</b> events</pre>
-      <button type='submit'>Submit</button>
+      <button type="submit">Submit</button>
     </form>
   )
 })

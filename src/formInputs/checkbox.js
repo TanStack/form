@@ -9,7 +9,7 @@ export default function FormInputCheckbox ({ field, showErrors, errorBefore, isF
         return (
           <input
             {...rest}
-            type='checkbox'
+            type="checkbox"
             checked={getValue(false)}
             onChange={e => setValue(e.target.checked, noTouch)}
             onBlur={() => setTouched()}
