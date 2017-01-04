@@ -34,7 +34,7 @@ export default function Form (config = {}) {
         return Object.assign({}, FormDefaultProps, config)
       },
       getInitialState () {
-        const values = Object.assign({}, _.clone(config.defaultValues), _.clone(this.props.values))
+        const values = Object.assign({}, _.clone(this.props.defaultValues), _.clone(this.props.values))
         return this.props.loadState(this.props) || {
           values,
           touched: {},
