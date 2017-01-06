@@ -170,9 +170,11 @@ export default function Form (config = {}) {
       emitChange (state, initial) {
         this.props.onChange(state, this.props, initial)
       },
-      validate (values) {
+      validate (values, state, props) {
         const errors = this.props.validate(
-          removeNestedErrorValues(values, this.state ? this.state.nestedErrors : {})
+          removeNestedErrorValues(values, this.state ? this.state.nestedErrors : {}),
+          state,
+          props
         )
         return cleanErrors(errors)
       },
