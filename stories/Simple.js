@@ -6,9 +6,13 @@ import SimpleCheckbox from './SimpleCheckbox'
 
 storiesOf('Simple Form', module)
   .add('with a single text field', () => (
-    <ReactFormWrapper wrappedForm={SimpleText} />
+    <ReactFormWrapper>
+      {SimpleText}
+    </ReactFormWrapper>
   ))
 
   .add('with checkbox and default values', () => (
-    <ReactFormWrapper wrappedForm={SimpleCheckbox} />
+    <ReactFormWrapper>
+      {SimpleCheckbox}
+    </ReactFormWrapper>
   ))

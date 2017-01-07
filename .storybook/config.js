@@ -1,9 +1,8 @@
 import { configure } from '@kadira/storybook'
 
-function loadStories() {
-  require('../stories/Simple.js')
+function loadStories () {
   require('../stories/Demo.js')
-  // You can require as many stories as you need.
+  require('../stories/Simple.js')
 }
 
 configure(loadStories, module)

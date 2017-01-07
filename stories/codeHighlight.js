@@ -1,6 +1,6 @@
-import { Component } from 'jumpsuit'
+import React from 'react'
 
-export default Component({
+export default React.createClass({
   render () {
     const { language, children } = this.props
     return (
