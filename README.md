@@ -690,9 +690,9 @@ Form()(
 - Example:
 ```javascript
 Form()(
-  ({addField}) => {
+  ({addValue}) => {
     return (
-      <button onClick={() => addField('todos', {})}>
+      <button onClick={() => addValue('todos', {})}>
         Add Todo
       </button>
     )
@@ -709,12 +709,12 @@ Form()(
 - Example:
 ```javascript
 Form()(
-  ({removeField}) => {
+  ({removeValue}) => {
     return (
       <div>
         {todos.map((todo, i) => {
           return (
-            <button onClick={() => removeField('todos', i)}>
+            <button onClick={() => removeValue('todos', i)}>
               Remove Todo
             </button>
           )
