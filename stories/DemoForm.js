@@ -7,6 +7,7 @@ import Text from '../src/formInputs/text'
 import Select from '../src/formInputs/select'
 import Textarea from '../src/formInputs/textarea'
 import Checkbox from '../src/formInputs/checkbox'
+import RadioGroup from '../src/formInputs/radioGroup'
 import Radio from '../src/formInputs/radio'
 import NestedForm from '../src/formInputs/nestedForm'
 
@@ -21,7 +22,7 @@ const myForm = (
 
     // Validating your form is super easy, just use the `validate` life-cycle method
     validate={values => {
-      const { name, hobby, status, friends, address } = values
+      const { name, hobby, status, friends, address, notificationType } = values
       return {
         name: !name ? 'A name is required' : undefined,
         hobby: (hobby && hobby.length < 5) ? 'Your hobby must be at least 5 characters long' : false,
@@ -33,7 +34,8 @@ const myForm = (
             relationship: !relationship ? 'A relationship is required' : undefined
           }
         }),
-        address: !address ? 'A valid address is required' : 0
+        address: !address ? 'A valid address is required' : 0,
+        notificationType: !notificationType ? 'A notification type is required' : undefined
       }
     }}
 
@@ -155,29 +157,28 @@ const myForm = (
 
           <div>
             <h6>Notify me via</h6>
-            <radiogroup>
+            <RadioGroup // This is the built-in radio formInput
+              field='notificationType'
+            >
               <label>
                 <Radio // This is the built-in radio formInput
-                  field='notificationType'
                   value='email'
                 />
                 <span>Email</span>
               </label>
               <label>
                 <Radio // This is the built-in radio formInput
-                  field='notificationType'
                   value='text'
                 />
                 <span>Text</span>
               </label>
               <label>
                 <Radio // This is the built-in radio formInput
-                  field='notificationType'
                   value='phone'
                 />
                 <span>Phone</span>
               </label>
-            </radiogroup>
+            </RadioGroup>
           </div>
 
           <br />
