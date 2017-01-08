@@ -1,6 +1,6 @@
 {
   "name": "react-form",
-  "version": "1.0.0-beta",
+  "version": "1.0.0-beta.1",
   "description": "A fast, lightweight, opinionated table and datagrid built on React",
   "license": "MIT",
   "homepage": "https://github.com/tannerlinsley/react-form#readme",
