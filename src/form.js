@@ -65,7 +65,7 @@ export default React.createClass({
     if (noTouch) {
       return this.setFormState({values})
     }
-    const touched = _.set(state.touched, field, value)
+    const touched = _.set(state.touched, field)
     this.setFormState({values, touched})
   },
   getValue (field, fallback) {
