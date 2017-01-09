@@ -30,14 +30,19 @@ React Form is a lightweight framework and utility for building powerful forms in
 - [Custom Input Example](#custom-input-example)
 - [API](#api)
   - [{ Form }](#-form-)
-  - [Default Props & Form Lifecycle](#default-props--form-lifecycle)
-  - [Form Component Props](#form-component-props)
+  - [Props](#props)
+  - [Form API](#form-api)
   - [{ FormDefaultProps }](#-formdefaultprops-)
   - [{ FormInput }](#-forminput-)
   - [{ FormError }](#-formerror-)
   - [{ FormField }](#-formfield-)
-  - [{ Text, Select, Checkbox, Textarea, Radio }](#-text-select-checkbox-textarea-radio-)
-  - [{ NestedForm }](#-nestedform-)
+  - [Form Components](#form-components)
+    - [{ Text }](#-text-)
+    - [{ Select }](#-select-)
+    - [{ Checkbox }](#-checkbox-)
+    - [{ Textarea }](#-textarea-)
+    - [{ RadioGroup, Radio }](#-radiogroup-radio-)
+    - [{ NestedForm }](#-nestedform-)
 <!-- - [Recipes](#recipes) -->
 
 ## Installation
@@ -51,30 +56,27 @@ What does React-Form look like? This is the shortest and most concise example we
 import React from 'react'
 import { Form, Text } from 'react-form'
 
-const MyForm = Form({
-  validate: ({ name }) => {
-    return {
-      name: !name ? 'A name is required' : undefined
-    }
-  },
-})(({submitForm}) => {
-  return (
-    <form onSubmit={submitForm}>
-      <Text field='name' />
-      <button type='submit'>Submit</button>
-    </form>
-  )
-})
-
-export default () => {
-  return (
-    <MyForm
-      onSubmit={(values) => {
-        console.log('Success!', values)
-      }}
-    />
-  )
-}
+const myForm = (
+  <Form
+    onSubmit={(values) => {
+      console.log('Success!', values)
+    }}
+    validate={({ name }) => {
+      return {
+        name: !name ? 'A name is required' : undefined
+      }
+    }}
+  >
+    {({submitForm}) => {
+      return (
+        <form onSubmit={submitForm}>
+          <Text field='name' />
+          <button type='submit'>Submit</button>
+        </form>
+      )
+    }}
+  </Form>
+)
 ```
 
 ## Annotated Demo Example
@@ -83,236 +85,225 @@ This is an annotated example of the demo, demonstrating a majority of React-Form
 import React from 'react'
 import { Form, Text, Select, Textarea, Checkbox, Radio, NestedForm, FormError } from 'react-form'
 
-// To create a new form, simply call `Form(config)(component)`
+const MyForm = (
+  <Form
+    onSubmit={(values) => {
+      console.log('Success!', values)
+    }}
 
-const MyForm = Form({
-  // This is our config for the form. Think of it as the default props for your Form :)
+    // Let's give the form some default values
+    defaultValues={{
+      friends: []
+    }}
 
-  // Let's give the form some hard-coded default values
-  defaultValues: {
-    friends: []
-  },
+    // Validating your form is super easy, just use the `validate` life-cycle method
+    validate={values => {
+      const { name, hobby, status, friends, address } = values
+      return {
+        name: !name ? 'A name is required' : undefined,
+        hobby: (hobby && hobby.length < 5) ? 'Your hobby must be at least 5 characters long' : false,
+        status: !status ? 'A status is required' : null,
+        friends: (!friends || !friends.length) ? 'You need at least one friend!' : friends.map(friend => {
+          const { name, relationship } = friend
+          return {
+            name: !name ? 'A name is required' : undefined,
+            relationship: !relationship ? 'A relationship is required' : undefined
+          }
+        }),
+        address: !address ? 'A valid address is required' : 0
+      }
+    }}
 
-  // Validating your form is super easy, just use the `validate` life-cycle method
-  validate: values => {
-    const { name, hobby, status, friends, address } = values
-    return {
-      name: !name ? 'A name is required' : undefined,
-      hobby: (hobby && hobby.length < 5) ? 'Your hobby must be at least 5 characters long' : false,
-      status: !status ? 'A status is required' : null,
-      friends: (!friends || !friends.length) ? 'You need at least one friend!' : friends.map(friend => {
-        const { name, relationship } = friend
-        return {
-          name: !name ? 'A name is required' : undefined,
-          relationship: !relationship ? 'A relationship is required' : undefined
-        }
-      }),
-      address: !address ? 'A valid address is required' : 0
-    }
-  },
+    // `onValidationFail` is another handy form life-cycle method
+    onValidationFail={() => {
+      window.alert('There is something wrong with your form!  Please check for any required values and try again :)')
+    }}
+  >
+    {({ values, submitForm, addValue, removeValue, getError }) => {
+      // A Form's direct child will usually be a function that returns a component
+      // This way you have access to form methods and form values to use in your component. See the docs for a complete list.
+      return (
+        // When the form is submitted, call the `sumbitForm` callback prop
+        <form onSubmit={submitForm}>
 
-  // `onValidationFail` is another handy form life-cycle method
-  onValidationFail () {
-    window.alert('There is something wrong with your form!  Please check for any required values and try again :)')
-  }
-})(({ values, submitForm, addValue, removeValue, getError }) => {
-  // This is a stateless component, but you can use any valid react component to render your form.
-  // Forms also supply plenty of useful props for your components to utilize. See the docs for a complete list.
-  return (
-    // When the form is submitted, call the `sumbitForm` callback prop
-    <form onSubmit={submitForm}>
-
-      <div>
-        <h6>Full Name</h6>
-        <Text // This is the built-in Text formInput
-          field='name' // field is a string version of the field location
-          placeholder='Your name' // all other props are sent through to the underlying component, in this case an <input />
-        />
-      </div>
-
-      <div>
-        <h6>Relationship Status</h6>
-        <Select // This is the built-in Select formInput
-          field='status'
-          options={[{ // You can ship it some options like usual
-            label: 'Single',
-            value: 'single'
-          }, {
-            label: 'In a Relationship',
-            value: 'relationship'
-          }, {
-            label: 'It\'s Complicated',
-            value: 'complicated'
-          }]}
-        />
-      </div>
-
-      <div>
-        <h6>Short Bio</h6>
-        <Textarea // This is the built-in Textarea formInput
-          field='bio'
-          placeholder='Short Bio'
-        />
-      </div>
-
-      {/* Arrays in forms are super easy to handle */}
-      <h6>Friends</h6>
-      {/* This is a custom form error for the root of the friends list (see validation function) */}
-      <FormError field='friends' />
-      <div className='nested'>
-        {!values.friends.length ? (
-          <em>No friends have been added yet</em>
-        ) : values.friends.map((friends, i) => ( // Loop over the values however you'd like
-          <div key={i}>
-
-            <div>
-              <h6>Full Name</h6>
-              <Text
-                field={['friends', i, 'name']} // You can easily pass an array-style field path. Perfect for passing down as props or nested values
-                placeholder='Friend Name'
-              />
-            </div>
-
-            <div>
-              <h6>Relationship</h6>
-              <Select
-                field={`friends.${i}.relationship`} // If you don't like arrays, you can also use a string template
-                options={[{
-                  label: 'Friend',
-                  value: 'friend'
-                }, {
-                  label: 'Acquaintance',
-                  value: 'acquaintance'
-                }, {
-                  label: 'Colleague',
-                  value: 'colleague'
-                }]}
-              />
-            </div>
-
-            <button // This button will remove this friend from the `friends` field
-              type='button'
-              onClick={() => removeValue('friends', i)} // `removeValue` takes a field location for an array, and the index for the item to remove
-            >
-              Remove Friend
-            </button>
-
+          <div>
+            <h6>Full Name</h6>
+            <Text // This is the built-in Text formInput
+              field='name' // field is a string version of the field location
+              placeholder='Your name' // all other props are sent through to the underlying component, in this case an <input />
+            />
           </div>
-        ))}
-      </div>
 
-      <div>
-        <button // This button will add a new blank friend item to the `friends` field
-          type='button'
-          onClick={() => addValue('friends', {})} // `addValue` takes an array-like field, and the value to add
-        >
-          Add Friend
-        </button>
-      </div>
-
-      <div>
-        <h6>Address</h6>
-        {/* An address has a couple of parts to it, and will probably have its own validation function. */}
-        {/* Let's make it reusable by using a nested form */}
-        <NestedForm
-          form={AddressForm} // This is just another form that we built below
-          field='address' // The results of this nested form will be set to this field value on this form.
-        />
-      </div>
-
-      <div>
-        <label>
-          <Checkbox // This is the built-in checkbox formInput
-            field='createAccount'
-          />
-          <span>Create Account?</span>
-        </label>
-      </div>
-
-      <div>
-        <h6>Notify me via</h6>
-        <radiogroup>
-          <label>
-            <Radio // This is the built-in radio formInput
-              field='notificationType'
-              value='email' // This is the value the field will be set to when this radio button is active
+          <div>
+            <h6>Relationship Status</h6>
+            <Select // This is the built-in Select formInput
+              field='status'
+              options={[{ // You can ship it some options like usual
+                label: 'Single',
+                value: 'single'
+              }, {
+                label: 'In a Relationship',
+                value: 'relationship'
+              }, {
+                label: 'It\'s Complicated',
+                value: 'complicated'
+              }]}
             />
-            <span>Email</span>
-          </label>
-          <label>
-            <Radio
-              field='notificationType'
-              value='text'
-            />
-            <span>Text</span>
-          </label>
-          <label>
-            <Radio
-              field='notificationType'
-              value='phone'
-            />
-            <span>Phone</span>
-          </label>
-        </radiogroup>
-      </div>
+          </div>
 
-      <br />
-      <br />
+          <div>
+            <h6>Short Bio</h6>
+            <Textarea // This is the built-in Textarea formInput
+              field='bio'
+              placeholder='Short Bio'
+            />
+          </div>
 
-      {/* // Since this is the parent form, let's put a submit button in there ;) */}
-      {/* // You can submit your form however you want, as long as you call the `submitForm` callback */}
-      <button>
-        Submit
-      </button>
-    </form>
-  )
-})
+          {/* Arrays in forms are super easy to handle */}
+          <h6>Friends</h6>
+          {/* This is a custom form error for the root of the friends list (see validation function) */}
+          <FormError field='friends' />
+          <div className='nested'>
+            {!values.friends.length ? (
+              <em>No friends have been added yet</em>
+            ) : values.friends.map((friends, i) => ( // Loop over the values however you'd like
+              <div key={i}>
+
+                <div>
+                  <h6>Full Name</h6>
+                  <Text
+                    field={['friends', i, 'name']} // You can easily pass an array-style field path. Perfect for passing down as props or nested values
+                    placeholder='Friend Name'
+                  />
+                </div>
+
+                <div>
+                  <h6>Relationship</h6>
+                  <Select
+                    field={`friends.${i}.relationship`} // If you don't like arrays, you can also use a string template
+                    options={[{
+                      label: 'Friend',
+                      value: 'friend'
+                    }, {
+                      label: 'Acquaintance',
+                      value: 'acquaintance'
+                    }, {
+                      label: 'Colleague',
+                      value: 'colleague'
+                    }]}
+                  />
+                </div>
+
+                <button // This button will remove this friend from the `friends` field
+                  type='button'
+                  onClick={() => removeValue('friends', i)} // `removeValue` takes a field location for an array, and the index for the item to remove
+                >
+                  Remove Friend
+                </button>
+
+              </div>
+            ))}
+          </div>
+
+          <div>
+            <button // This button will add a new blank friend item to the `friends` field
+              type='button'
+              onClick={() => addValue('friends', {})} // `addValue` takes an array-like field, and the value to add
+            >
+              Add Friend
+            </button>
+          </div>
+
+          <div>
+            <h6>Address</h6>
+            {/* An address has a couple of parts to it, and will probably have its own validation function. */}
+            {/* Let's make it reusable by using a nested form */}
+            <NestedForm
+              field='address' // The results of this nested form will be set to this field value on this form.
+            >
+              {AddressForm} // This is our reusable address form (see below)
+            </NestedForm>
+          </div>
+
+          <div>
+            <label>
+              <Checkbox // This is the built-in checkbox formInput
+                field='createAccount'
+              />
+              <span>Create Account?</span>
+            </label>
+          </div>
+
+          <div>
+            <h6>Notify me via</h6>
+            <radiogroup>
+              <label>
+                <Radio // This is the built-in radio formInput
+                  field='notificationType'
+                  value='email' // This is the value the field will be set to when this radio button is active
+                />
+                <span>Email</span>
+              </label>
+              <label>
+                <Radio
+                  field='notificationType'
+                  value='text'
+                />
+                <span>Text</span>
+              </label>
+              <label>
+                <Radio
+                  field='notificationType'
+                  value='phone'
+                />
+                <span>Phone</span>
+              </label>
+            </radiogroup>
+          </div>
+
+          <br />
+          <br />
+
+          {/* // Since this is the parent form, let's put a submit button in there ;) */}
+          {/* // You can submit your form however you want, as long as you call the `submitForm` callback */}
+          <button>
+            Submit
+          </button>
+        </form>
+      )
+    }}
+  </Form>
+)
 
 // This is our reusable address form
-const AddressForm = Form({
-  // It can have its own validation function!
-  validate: values => {
-    return {
-      street: !values.street ? 'A street is required' : undefined,
-      city: !values.city ? 'A city is required' : undefined,
-      state: !values.state ? 'A state is required' : undefined
-    }
-  }
-})(() => {
-  return (
-    <div>
-      <Text
-        field='street'
-        placeholder='Street'
-      />
-      <br />
-      <Text
-        field='city'
-        placeholder='City'
-      />
-      <br />
-      <Text
-        field='state'
-        placeholder='State'
-      />
-    </div>
-  )
-})
-
-export default () => {
-  return (
-    <div>
-      <div className='table-wrap'>
-        <MyForm
-          onSubmit={(values) => {
-            window.alert(JSON.stringify(values, null, 2))
-          }}
-          // For more available props, see the docs!
-        />
-      </div>
-    </div>
-  )
-}
+const AddressForm = (
+  <Form
+    // It can have its own validation function too! This keeps our parent validation function clean and flat
+    validate={values => {
+      return {
+        street: !values.street ? 'A street is required' : undefined,
+        city: !values.city ? 'A city is required' : undefined,
+        state: !values.state ? 'A state is required' : undefined
+      }
+    }}
+  >
+    // If you don't need access to any form methods or props, you can simply return JSX without wrapping it in a function
+    <Text
+      field='street'
+      placeholder='Street'
+    />
+    <br />
+    <Text
+      field='city'
+      placeholder='City'
+    />
+    <br />
+    <Text
+      field='state'
+      placeholder='State'
+    />
+  </Form>
+)
 ```
 
 ## Custom Input Example
@@ -346,14 +337,14 @@ export default ({field, ...rest}) => {
 import React from 'react'
 import FormReactSelect from './formReactSelect'
 
-Form()(() => {
-  return (
+const myForm = (
+  <Form>
     <FormReactSelect
       field='my.field'
       clearable={false}
       options={[...]}
     />
-  )
+  </Form>
 })
 
 ```
@@ -361,47 +352,56 @@ Form()(() => {
 # API
 
 ### { Form }
-- Usage: `Form(defaultPropsAndLifecycleMethods)(component)`
-- Returns a new react-form component
-- Call it first with any default props for your form. **This includes lifecycle methods, validation, etc**
-- Call it again with the react component that will render the form.
-- The React Component you provide will receive the following as props:
-  - Current Form State
-  - Form API methods
-  - Finally, any other props passed to your form component
+- Props
+  - defaultValues {}
+  - loadState ()
+  - preValidate ()
+  - validate ()
+  - onValidationFail ()
+  - onChange ()
+  - saveState ()
+  - willUnmount ()
+  - preSubmit ()
+  - onSubmit ()
+  - postSubmit ()
+- Child can be either:
+  - A function that returns a component (**this function is called with an object that contains:**)
+    - Current Form State
+    - Form API methods
+    - Any other props passed to your form component
+  - A component or JSX (if you do not need access to any methods or form state)
 
 **Example**
 ```javascript
 import { Form } from 'react-form'
 
-// Create a new form by passing `Form` any default props and/or lifecycle methods
-const myForm = Form({
-  validate () {...},
-})(validReactComponent)) // Then pass in any valid react component, component class or stateless component
+// Create a new form by passing `Form` and Form props
+const myForm = (
+  <Form
+    onSubmit={}
+    validate={() => {...}}
+    // any other props
+  >
+    ...
+  </Form>
 ```
 
 ---
 
-## Default Props & Form Lifecycle
-The form lifecycle is what makes React-Form tick, so naturally you can configure just about anything in react-form to your needs through these lifecycle methods.
-
-You can define form props and lifecycle methods at 3 different levels:
-- Globally via `FormDefaultProps` (See [{FormDefaultProps}](#-formdefaultprops-))
-- Per form by passing `defaultProps` to `Form`
-- Per instance by using a standard react prop when rendering the form.
-
-Here is a list of all available properties and lifecycle methods that React-Form uses:
+## Props
+Everything in react-form is configurable with the following props.
+*Note: You can also change the default props for every form component via `FormDefaultProps` (See [{FormDefaultProps}](#-formdefaultprops-))*
 
 #### defaultValues {}
 - To hardcode any default values to the form, just pass them in an object here.
 - Example:
 ```javascript
-Form({
-  defaultValues: {
+<Form
+  defaultValues={{
     name: 'Tanner Linsley'
     hobby: 'javascript'
-  }
-})(component)
+  }}
+>
 ```
 
 #### loadState (props)
@@ -414,12 +414,12 @@ Form({
 - Whatever you return will replace all of the values in that form's state.
 - Example:
 ```javascript
-Form({
-  preValidate: (values) => {
+<Form
+  preValidate={(values) => {
     values.hobby = values.hobby.substring(0, 6) // Constantly scrub the hobby field to never be more than 6 characters long
     return values
-  }
-})(component)
+  }}
+>
 ```
 
 #### validate (values, state, props)
@@ -428,14 +428,14 @@ Form({
 - If attempting to submit, and `validate` returns any errors, `setAllTouched(true)` will automatically be called on the form. Likewise, if the form has been marked as globally dirty, and no errors are returned, `setAllTouched(false)` will automatically clear the global dirty state
 - Example:
 ```javascript
-Form({
-  validate: ({name, password}) => {
+<Form
+  validate={({name, password}) => {
     return {
       name: !name ? 'A name is required' : null,
       password: (!password || password.length < 6) ? 'A password of 6 or more characters is required' : null
     }
-  }
-})(component)
+  }}
+>
 ```
 
 #### onValidationFail (values, state, props)
@@ -459,12 +459,12 @@ Form({
 - Whatever you return will **not** replace all of the values in that form's state, but will be passed to the `onSubmit` method.
 - Example:
 ```javascript
-Form({
-  preSubmit: (values) => {
+<Form
+  preSubmit={(values) => {
     values.hobby = values.hobby.toLowerCase() // Scrub the hobby field to be lowercase on submit
     return values
-  }
-})(component)
+  }}
+>
 ```
 
 #### onSubmit (values, state, props)
@@ -472,50 +472,52 @@ Form({
 - Example:
 ```javascript
 // Per Instance (usually this way)
-const example = (
-  <MyForm
-    onSubmit={(values) => {
-      console.log('Form Submitted with these values:', values)
-    }}
-  />
-)
-
-// Per Form
-Form({
-  onSubmit: (values) => {
+<Form
+  onSubmit={(values) => {
     console.log('Form Submitted with these values:', values)
-  }
-})(component)
+  }}
+/>
 ```
 
 #### postSubmit (values, state, props)
 - After a form is successfully submitted via `submitForm`, this method will be called.
 - Example:
 ```javascript
-Form({
-  postSubmit: (values) => {
+<Form
+  postSubmit={(values) => {
     console.log('Success!', values)
-  }
-})(component)
+  }}
+>
 ```
-
-#### Other Custom Default Props
-- Any other properties passed in a forms `defaultProps` will function as hardcoded defaultProps. They will be available on the componentused to render the form unless overridden by a prop passed tot he instance
 
 ---
 
-## Form Component Props
-All of the following props are available on the component used to render your form
+## Form API
+When a function is passed as the child of a form, it is passed the form API as a parameter. eg.
+```javascript
+<Form>
+  {(api) => {
+    ...
+  }}
+</Form>
+```
+This also makes it extremely easy to destructure exactly what you need from the api!
+```javascript
+<Form>
+  {({submitForm, values, addValue, removeValue}) => {
+    ...
+  }}
+</Form>
+```
 
-*Note: If a prop of the same name is passed to the form instance, it will override these props below.*
 
 #### values {}
 - The current read-only values in the form state.
 - Again, these values immutable, so just like any traditional react state or redux state, they should not be changed or mutated outside of the form lifecycle methods
 - Example:
 ```javascript
-Form()(
-  ({values}) => {
+<Form>
+  {({values}) => {
     console.log(values)
     // {
     //   name: 'Tanner Linsley',
@@ -524,8 +526,8 @@ Form()(
     //     notes: 'These are some notes from a nested form'
     //   }
     // }
-  }
-)
+  }}
+</Form>
 ```
 
 #### errors {}
@@ -535,16 +537,16 @@ Form()(
 - Defaults to `null`
 - Example:
 ```javascript
-Form()(
-  ({errors}) => {
+<Form>
+  {({errors}) => {
     console.log(errors)
     // {
     //   name: 'Name is required and must be at least 5 characters',
     //   hobby: 'Required',
     //   nestedForm: 'Requires some valid nested fields' // See "nestedErrors" section
     // }
-  }
-)
+  }}
+</Form>
 ```
 
 #### nestedErrors {}
@@ -555,14 +557,14 @@ Form()(
 - Defaults to `{}`
 - Example:
 ```javascript
-Form()(
-  ({nestedErrors}) => {
+<Form>
+  {({nestedErrors}) => {
     console.log(nestedErrors)
     // {
     //   nestedForm: true // there must be an error in the form located at the "nestedForm" field
     // }
-  }
-)
+  }}
+</Form>
 ```
 
 #### touched {}
@@ -572,14 +574,14 @@ Form()(
 - Defaults to `{}`
 - Example:
 ```javascript
-Form()(
-  ({touched}) => {
+<Form>
+  {({touched}) => {
     console.log(touched)
     // {
     //   touched: { myField: true } // the `myField` field has been touched
     // }
-  }
-)
+  }}
+</Form>
 ```
 
 #### setValue (field, value, noTouch)
@@ -592,15 +594,15 @@ Form()(
 - If `noTouch` is true, the `touched` state of the field won't change.
 - Example:
 ```javascript
-Form()(
-  ({setValue}) => {
+<Form>
+  {({setValue}) => {
     return (
       <button onClick={() => setValue('some.field', true)}>
         Set Some Field to TRUE
       </button>
     )
-  }
-)
+  }}
+</Form>
 ```
 
 #### getValue (field, fallback)
@@ -612,13 +614,13 @@ Form()(
 - You can pass a `fallback` value which will be used if the field does not exist or if its `value === undefined`
 - Example:
 ```javascript
-Form()(
-  ({getValue}) => {
+<Form>
+  {({getValue}) => {
     return (
       <span>Current Value: {getValue('my.field')}</span>
     )
-  }
-)
+  }}
+</Form>
 ```
 
 #### setNestedError (field, value)
@@ -635,13 +637,13 @@ Form()(
   - Array properties can also be nested (great for passing down via props) `[['my', 'fields'], [5], 'stuff']` == `my.fields[5].stuff`
 - Example:
 ```javascript
-Form()(
-  ({getError}) => {
+<Form>
+  {({getError}) => {
     return (
       <span>Current Error: {getError('my.field')}</span>
     )
-  }
-)
+  }}
+</Form>
 ```
 
 #### setTouched (field, value = true)
@@ -652,15 +654,15 @@ Form()(
   - Array properties can also be nested (great for passing down via props) `[['my', 'fields'], [5], 'stuff']` == `my.fields[5].stuff`
 - Example:
 ```javascript
-Form()(
-  ({setTouched}) => {
+<Form>
+  {({setTouched}) => {
     return (
       <button onClick={() => setTouched('some.field', true)}>
         Set some fields touched value to TRUE
       </button>
     )
-  }
-)
+  }}
+</Form>
 ```
 
 #### getTouched (field)
@@ -671,13 +673,13 @@ Form()(
   - Array properties can also be nested (great for passing down via props) `[['my', 'fields'], [5], 'stuff']` == `my.fields[5].stuff`
 - Example:
 ```javascript
-Form()(
-  ({getTouched}) => {
+<Form>
+  {({getTouched}) => {
     return (
       <span>Current Touched: {getTouched('my.field')}</span>
     )
-  }
-)
+  }}
+</Form>
 ```
 
 
@@ -689,15 +691,15 @@ Form()(
   - Array properties can also be nested (great for passing down via props) `[['my', 'fields'], [5], 'stuff']` == `my.fields[5].stuff`
 - Example:
 ```javascript
-Form()(
-  ({addField}) => {
+<Form>
+  {({addValue}) => {
     return (
-      <button onClick={() => addField('todos', {})}>
+      <button onClick={() => addValue('todos', {})}>
         Add Todo
       </button>
     )
-  }
-)
+  }}
+</Form>
 ```
 
 #### removeValue (field, index)
@@ -708,21 +710,21 @@ Form()(
   - Array properties can also be nested (great for passing down via props) `[['my', 'fields'], [5], 'stuff']` == `my.fields[5].stuff`
 - Example:
 ```javascript
-Form()(
-  ({removeField}) => {
+<Form>
+  {({removeValue}) => {
     return (
       <div>
         {todos.map((todo, i) => {
           return (
-            <button onClick={() => removeField('todos', i)}>
+            <button onClick={() => removeValue('todos', i)}>
               Remove Todo
             </button>
           )
         })}
       </div>
     )
-  }
-)
+  }}
+</Form>
 ```
 
 #### swapValues (field, i, j)
@@ -733,8 +735,8 @@ Form()(
   - Array properties can also be nested (great for passing down via props) `[['my', 'fields'], [5], 'stuff']` == `my.fields[5].stuff`
 - Example:
 ```javascript
-Form()(
-  ({swapValues}) => {
+<Form>
+  {({swapValues}) => {
     return (
       <div>
         {todos.map((todo, i) => {
@@ -746,8 +748,8 @@ Form()(
         })}
       </div>
     )
-  }
-)
+  }}
+</Form>
 ```
 
 #### setAllTouched (value = true)
@@ -756,15 +758,15 @@ Form()(
 - Used internally by the `submitForm` lifecycle method when a forms validation is failed
 - Example:
 ```javascript
-Form()(
-  ({setAllTouched}) => {
+<Form>
+  {({setAllTouched}) => {
     return (
       <button onClick={setAllTouched}>
         Touch / Dirty the entire form // innuendo? hmm....
       </button>
     )
-  }
-)
+  }}
+</Form>
 ```
 
 #### submitForm ()
@@ -777,25 +779,19 @@ Form()(
   - `postSubmit(values, state, props)` handle after a successful submission
 - Example:
 ```javascript
-const MyForm = Form()(
-  ({submitForm}) => {
+<Form
+  onSubmit={(values, state, props) => {
+    console.log(values)
+  }}
+>
+  {({submitForm}) => {
     return (
       <form onSubmit={submitForm}>
         <button type='submit'>Submit Form</button>
       </form>
     )
-  }
-)
-
-const usageExample = () => {
-  return (
-    <MyForm
-      onSubmit={(values, state, props) => {
-        console.log(values)
-      }}
-    />
-  )
-}
+  }}
+</Form>
 ```
 
 ---
@@ -885,11 +881,19 @@ function customInput ({field, ...rest}) {
 }
 ```
 
-### { Text, Select, Checkbox, Textarea, Radio }
+## Form Components
+React-Form ships with plenty of standard form components and even provides an extremely easy way to create your own custom form components
+
+### { Text }
+### { Select }
+### { Checkbox }
+### { Textarea }
+### { RadioGroup, Radio }
 - These are all pre-packaged form inputs created with our very own `FormInput` component.
 - Each requires a `field` prop to be passed
 - All other props will be passed through to the underlying input component
-- Automatically show errors and receive error classes (.-has-error)
+- Automatically show errors and receive error classes (.-has-error). Set the `showErrors` prop to `false` to disable
+- To display the error before the component, set the `errorBefore` prop to `true`
 - Their source serves as great example of how to create your own custom Form Inputs
 - Pass `noTouch` to avoid validation while the value is changing
 
@@ -925,20 +929,11 @@ const example = (
       placeholder='Notes'
     />
 
-    <radiogroup>
-      <Radio
-        field='notificationType'
-        value='email'
-      />
-      <Radio
-        field='notificationType'
-        value='text'
-      />
-      <Radio
-        field='notificationType'
-        value='phone'
-      />
-    </radiogroup>
+    <RadioGroup field='notificationType'>
+      <Radio value='email'/>
+      <Radio value='text'/>
+      <Radio value='phone'/>
+    </RadioGroup>
 
   </div>
 )
