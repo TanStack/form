@@ -123,7 +123,7 @@ const MyForm = (
       // A Form's direct child will usually be a function that returns a component
       // This way you have access to form methods and form values to use in your component. See the docs for a complete list.
       return (
-        // When the form is submitted, call the `sumbitForm` callback prop
+        // When the form is submitted, call the `submitForm` callback prop
         <form onSubmit={submitForm}>
 
           <div>
