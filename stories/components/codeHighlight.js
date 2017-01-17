@@ -1,4 +1,5 @@
 import React from 'react'
+import '../utils/prism'
 
 export default React.createClass({
   render () {
@@ -10,6 +11,9 @@ export default React.createClass({
         </code>
       </pre>
     )
+  },
+  componentDidMount () {
+    window.Prism.highlightAll()
   },
   componentDidUpdate () {
     window.Prism.highlightAll()

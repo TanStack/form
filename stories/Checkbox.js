@@ -1,18 +1,20 @@
 import React from 'react'
-import Form from '../src/form'
-import Checkbox from '../src/formInputs/checkbox'
+//
+import CodeHighlight from './components/codeHighlight.js'
+import { Form, Checkbox } from '../src/index'
 
-export default (
+export default () => (
   <Form
     defaultValues={{
       subscribe: true,
       adult: false
     }}
   >
-    {({submitForm}) => {
+    {({submitForm, values}) => {
       return (
         <form onSubmit={submitForm}>
           <p>Submit event would have 3 objects: values, state and props.</p>
+          <br />
           <div>
             <label>
               <Checkbox
@@ -38,6 +40,12 @@ export default (
             </label>
           </div>
           <button type='submit'>Submit</button>
+          <br />
+          <br />
+          <strong>Values:</strong>
+          <CodeHighlight language='javascript'>
+            {() => JSON.stringify(values, null, 2)}
+          </CodeHighlight>
         </form>
       )
     }}

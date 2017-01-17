@@ -1,8 +1,9 @@
 import React from 'react'
-import Form from '../src/form'
-import Text from '../src/formInputs/text'
+//
+import CodeHighlight from './components/codeHighlight.js'
+import { Form, Text } from '../src/index'
 
-export default (
+export default () => (
   <Form
     validate={({ name }) => {
       return {
@@ -10,7 +11,7 @@ export default (
       }
     }}
   >
-    {({submitForm}) => {
+    {({submitForm, values}) => {
       return (
         <form onSubmit={submitForm}>
           <p>Submit event would have 3 objects: values, state and props.</p>
@@ -18,6 +19,12 @@ export default (
           <Text field='name' placeholder='type something...' />
           <pre>By default validation performs on <b>blur</b> and <b>submit</b> events</pre>
           <button type='submit'>Submit</button>
+          <br />
+          <br />
+          <strong>Values:</strong>
+          <CodeHighlight language='javascript'>
+            {() => JSON.stringify(values, null, 2)}
+          </CodeHighlight>
         </form>
       )
     }}

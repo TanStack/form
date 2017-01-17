@@ -29,12 +29,14 @@
     "umd": "rm -rf react-form.js && browserify lib/index.js -s reactForm -x react -t babelify -g uglifyify -o react-form.js",
     "prepublish": "npm-run-all build:* && npm run umd",
     "postpublish": "git push --tags",
-    "storybook": "start-storybook -p 8085 -c .storybook",
+    "storybook": "start-storybook -p 8000 -c .storybook",
     "docs": "build-storybook -o docs"
-
   },
   "dependencies": {
     "classnames": "^2.2.5",
+    "github-markdown-css": "^2.4.1",
+    "html-loader": "^0.4.4",
+    "markdown-loader": "^0.1.7",
     "react": "^15.4.1",
     "react-dom": "^15.4.1"
   },

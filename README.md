@@ -1,11 +1,26 @@
 <div align="center">
-  <a href="https://github.com/tannerlinsley/react-form"><img src="/media/banner.png?raw=true" alt="React Table Logo" style="width:550px;"/></a>
+  <a href="https://github.com/tannerlinsley/react-form" target="\_parent">
+    <img src="https://github.com/tannerlinsley/react-form/raw/master/media/banner.png" alt="React Table Logo" style="width:550px;"/>
+  </a>
   <br />
   <br />
-
 </div>
 
-[![Build Status](https://travis-ci.org/tannerlinsley/react-form.svg?branch=master)](https://travis-ci.org/tannerlinsley/react-form) [![npm](https://img.shields.io/npm/dm/react-form.svg)](https://npmjs.com/package/react-form) [![react-form on Slack](https://img.shields.io/badge/slack-react--form-blue.svg)](https://react-table-slack.herokuapp.com/) [![GitHub stars](https://img.shields.io/github/stars/tannerlinsley/react-form.svg?style=social&label=Star)](https://github.com/tannerlinsley/react-form) [![Twitter Follow](https://img.shields.io/twitter/follow/tannerlinsley.svg?style=social&label=Follow)](https://twitter.com/tannerlinsley)
+<a href="https://travis-ci.org/tannerlinsley/react-form" target="\_parent">
+  <img alt="" src="https://travis-ci.org/tannerlinsley/react-form.svg?branch=master" />
+</a>
+<a href="https://npmjs.com/package/react-form" target="\_parent">
+  <img alt="" src="https://img.shields.io/npm/dm/react-form.svg" />
+</a>
+<a href="https://react-form-slack.herokuapp.com/" target="\_parent">
+  <img alt="" src="https://img.shields.io/badge/slack-react--form-blue.svg" />
+</a>
+<a href="https://github.com/tannerlinsley/react-form" target="\_parent">
+  <img alt="" src="https://img.shields.io/github/stars/tannerlinsley/react-form.svg?style=social&label=Star" />
+</a>
+<a href="https://twitter.com/tannerlinsley" target="\_parent">
+  <img alt="" src="https://img.shields.io/twitter/follow/tannerlinsley.svg?style=social&label=Follow" />
+</a>
 
 React Form is a lightweight framework and utility for building powerful forms in React applications.
 
@@ -307,7 +322,7 @@ const AddressForm = (
 ```
 
 ## Custom Input Example
-Creating custom form inputs is extremely simple.  This is a quick example of how to wrap the [React-Select](https://github.com/JedWatson/react-select) component:
+Creating custom form inputs is extremely simple.  This is a quick example of how to wrap the <a href="https://github.com/JedWatson/react-select" target="\_parent">React-Select</a> component:
 ```javascript
 // formReactSelect.js
 
@@ -627,7 +642,7 @@ This also makes it extremely easy to destructure exactly what you need from the 
 - Mostly used internally, this method sets the `field` in `nestedErrors` to `value` to indicate that a nested form did or did not not pass its own validation.
 - If a nested form error is set, its value in its parent `validate` lifecycle method will be set to undefined.
 - This is necessary to check if a nested form is valid from a the parent form's `validate` lifecycle method.
-- For example usage, see the source for the [`NestedForm` component](https://github.com/tannerlinsley/react-form/blob/master/src/formInputs/form.js)
+- For example usage, see the source for the <a href="https://github.com/tannerlinsley/react-form/blob/master/src/formInputs/form.js" target="\_parent">`NestedForm` component</a>
 
 #### getError (field)
 - Gets the current error located at `field`. Usually this functionality is contained in an InputField of sorts, but it is still available on the form itself in its generic form.
@@ -969,18 +984,15 @@ If you would like to help develop a suggested feature follow these steps:
 - Implement your changes to files in the `src/` directory
 - Submit PR for review
 
-If you would like to preview your changes, you can link and utilize the example like so:
+If you would like to preview your changes as you develop, you can link and utilize our <a href="https://github.com/storybooks/react-storybook" target="\_parent">React Storybook</a> like so:
 
-- `npm link`
-- `cd example`
 - `npm install`
-- `npm link react-form`
-- `npm watch`
-- Make changes to the example in `src/screens/index.js` if needed
+- `run storybook` (or run them in separate tabs)
+- Make changes to stories in `/stories`, or create a new one if needed
 - View changes at `localhost:8000`
 
 ## Used By
 
-<a href='https://nozzle.io'>
+<a href='https://nozzle.io' target="\_parent">
   <img src='https://nozzle.io/img/logo-blue.png' alt='Nozzle Logo' style='width:300px;'/>
 </a>
