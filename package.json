@@ -29,7 +29,9 @@
     "umd": "rm -rf react-form.js && browserify lib/index.js -s reactForm -x react -t babelify -g uglifyify -o react-form.js",
     "prepublish": "npm-run-all build:* && npm run umd",
     "postpublish": "git push --tags",
-    "storybook": "start-storybook -p 8085 -c .storybook"
+    "storybook": "start-storybook -p 8085 -c .storybook",
+    "docs": "build-storybook -o docs"
+
   },
   "dependencies": {
     "classnames": "^2.2.5",
