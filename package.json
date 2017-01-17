@@ -70,7 +70,8 @@
       "dist",
       "lib",
       "example",
-      "react-form.js"
+      "react-form.js",
+      "stories"
     ]
   },
   "babel": {
