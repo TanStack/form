@@ -71,7 +71,8 @@
       "lib",
       "example",
       "react-form.js",
-      "stories"
+      "stories",
+      "docs"
     ]
   },
   "babel": {
