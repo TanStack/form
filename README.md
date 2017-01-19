@@ -36,7 +36,7 @@ React Form is a lightweight framework and utility for building powerful forms in
 - Powerful form lifecycle hooks and events
 - Serializable Event and State hooks (think redux/mobx/etc & HMR)
 
-## [Demo](http://react-form.zabapps.com)
+## [Demo](https://react-form.js.org/?selectedKind=2.%20Demos&selectedStory=Kitchen%20Sink&full=0&down=0&left=1&panelRight=0&downPanel=kadirahq%2Fstorybook-addon-actions%2Factions-panel)
 
 ## Table of Contents
 - [Installation](#installation)
