@@ -30,7 +30,7 @@
     "prepublish": "npm-run-all build:* && npm run umd",
     "postpublish": "git push --tags",
     "storybook": "start-storybook -p 8000 -c .storybook",
-    "docs": "build-storybook -o docs"
+    "docs": "build-storybook -o docs && cp .storybook/CNAME docs/CNAME"
   },
   "dependencies": {
     "classnames": "^2.2.5",
