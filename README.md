@@ -12,8 +12,8 @@
 <a href="https://npmjs.com/package/react-form" target="\_parent">
   <img alt="" src="https://img.shields.io/npm/dm/react-form.svg" />
 </a>
-<a href="https://react-form-slack.herokuapp.com/" target="\_parent">
-  <img alt="" src="https://img.shields.io/badge/slack-react--form-blue.svg" />
+<a href="https://react-chat-signup.herokuapp.com/" target="\_parent">
+  <img alt="" src="https://img.shields.io/badge/slack-react--chat-blue.svg" />
 </a>
 <a href="https://github.com/tannerlinsley/react-form" target="\_parent">
   <img alt="" src="https://img.shields.io/github/stars/tannerlinsley/react-form.svg?style=social&label=Star" />
@@ -979,17 +979,19 @@ To suggest a feature, create an issue if it does not already exist.
 If you would like to help develop a suggested feature follow these steps:
 
 - Fork this repo
-- `npm install`
-- `npm watch`
+- `$ yarn`
+- `$ yarn run storybook`
 - Implement your changes to files in the `src/` directory
+- View changes as you code via our <a href="https://github.com/storybooks/react-storybook" target="\_parent">React Storybook</a> `localhost:8000`
+- Make changes to stories in `/stories`, or create a new one if needed
 - Submit PR for review
 
-If you would like to preview your changes as you develop, you can link and utilize our <a href="https://github.com/storybooks/react-storybook" target="\_parent">React Storybook</a> like so:
+#### Scripts
 
-- `npm install`
-- `run storybook` (or run them in separate tabs)
-- Make changes to stories in `/stories`, or create a new one if needed
-- View changes at `localhost:8000`
+- `$ yarn run storybook` Runs the storybook server
+- `$ yarn run test` Runs the test suite
+- `$ yarn run prepublish` Builds the distributable bundle
+- `$ yarn run docs` Builds the website/docs from the storybook for github pages
 
 ## Used By
 
