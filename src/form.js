@@ -120,8 +120,11 @@ export default React.createClass({
     ])
     this.setFormState({values})
   },
-  setAllTouched (dirty = true) {
-    this.setFormState({dirty: !!dirty})
+  setAllTouched (dirty = true, state) {
+    this.setFormState({
+      ...state,
+      dirty: !!dirty
+    })
   },
   submitForm (e) {
     e && e.preventDefault && e.preventDefault(e)
@@ -129,7 +132,7 @@ export default React.createClass({
     const errors = this.validate(state.values, state, this.props)
     if (errors) {
       if (!state.dirty) {
-        this.setAllTouched()
+        this.setAllTouched(true, {errors})
       }
       return this.props.onValidationFail(state, this.props)
     }
@@ -155,7 +158,7 @@ export default React.createClass({
     }
   },
   setFormState (newState, silent) {
-    if (newState && newState.values) {
+    if (newState && newState.values && !newState.errors) {
       newState.values = this.props.preValidate(newState.values, newState, this.props)
       newState.errors = this.validate(newState.values, newState, this.props)
     }
