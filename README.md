@@ -911,6 +911,7 @@ React-Form ships with plenty of standard form components and even provides an ex
 - To display the error before the component, set the `errorBefore` prop to `true`
 - Their source serves as great example of how to create your own custom Form Inputs
 - Pass `noTouch` to avoid validation while the value is changing
+- You may pass onBlur and onChange functions to augment their behaviour. Your function will be called with the event and the original function which you may choose to call. Radio does not have an onChange handler but you may augment the onClick handler in the same fashion.
 
 **Example**
 ```javascript
@@ -920,6 +921,10 @@ const example = (
   <div>
 
     <Text
+      onChange{(e, onChange) => {
+        console.log('it changed')
+        onChange()
+      }}
       field='name'
       placeholder='Full name'
     />
