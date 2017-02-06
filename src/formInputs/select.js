@@ -1,8 +1,19 @@
 import React from 'react'
 //
+import { buildHandler } from './util'
 import FormInput from '../formInput'
 
-export default function FormInputSelect ({options, field, showErrors, errorBefore, isForm, noTouch, ...rest}) {
+export default function FormInputSelect ({
+  options,
+  field,
+  showErrors,
+  errorBefore,
+  onChange,
+  onBlur,
+  isForm,
+  noTouch,
+  ...rest
+}) {
   return (
     <FormInput field={field} showErrors={showErrors} errorBefore={errorBefore} isForm={isForm}>
       {({setValue, getValue, setTouched}) => {
@@ -16,11 +27,11 @@ export default function FormInputSelect ({options, field, showErrors, errorBefor
         return (
           <select
             {...rest}
-            onChange={(e) => {
+            onChange={buildHandler(onChange, (e) => {
               const val = resolvedOptions[e.target.value].value
               setValue(val, noTouch)
-            }}
-            onBlur={() => setTouched()}
+            })}
+            onBlur={buildHandler(onBlur, () => setTouched())}
             value={selectedIndex > -1 ? selectedIndex : nullIndex}
           >
             {resolvedOptions.map((option, i) => {

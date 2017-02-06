@@ -1,8 +1,18 @@
 import React from 'react'
 //
+import { buildHandler } from './util'
 import FormInput from '../formInput'
 
-export default function FormInputCheckbox ({ field, showErrors, errorBefore, isForm, noTouch, ...rest }) {
+export default function FormInputCheckbox ({
+  field,
+  showErrors,
+  errorBefore,
+  onChange,
+  onBlur,
+  isForm,
+  noTouch,
+  ...rest
+}) {
   return (
     <FormInput field={field} showErrors={showErrors} errorBefore={errorBefore} isForm={isForm}>
       {({setValue, getValue, setTouched}) => {
@@ -11,8 +21,8 @@ export default function FormInputCheckbox ({ field, showErrors, errorBefore, isF
             {...rest}
             type='checkbox'
             checked={getValue(false)}
-            onChange={e => setValue(e.target.checked, noTouch)}
-            onBlur={() => setTouched()}
+            onChange={buildHandler(onChange, e => setValue(e.target.checked, noTouch))}
+            onBlur={buildHandler(onBlur, () => setTouched())}
           />
         )
       }}
