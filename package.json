@@ -33,12 +33,7 @@
     "docs": "build-storybook -o docs && cp .storybook/CNAME docs/CNAME"
   },
   "dependencies": {
-    "classnames": "^2.2.5",
-    "github-markdown-css": "^2.4.1",
-    "html-loader": "^0.4.4",
-    "markdown-loader": "^0.1.7",
-    "react": "^15.4.1",
-    "react-dom": "^15.4.1"
+    "classnames": "^2.2.5"
   },
   "peerDependencies": {
     "react": "^15.3.1"
@@ -53,9 +48,14 @@
     "babel-preset-stage-2": "^6.13.0",
     "babelify": "^7.3.0",
     "browserify": "^13.1.0",
+    "github-markdown-css": "^2.4.1",
+    "html-loader": "^0.4.4",
+    "markdown-loader": "^0.1.7",
     "nib": "^1.1.2",
     "npm-run-all": "^3.1.1",
     "onchange": "^3.0.2",
+    "react": "^15.4.1",
+    "react-dom": "^15.4.1",
     "standard": "^8.0.0",
     "stylus": "^0.54.5",
     "uglifyify": "^3.0.3"
