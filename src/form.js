@@ -33,11 +33,19 @@ export default React.createClass({
     return FormDefaultProps
   },
   getInitialState () {
-    const values = Object.assign({}, _.clone(this.props.defaultValues), _.clone(this.props.values))
-    return this.props.loadState(this.props) || {
+    const {
+      defaultValues,
       values,
+      loadState
+    } = this.props
+    const mergedValues = {
+      ..._.clone(defaultValues),
+      ..._.clone(values)
+    }
+    return loadState(this.props, this) || {
+      values: mergedValues,
       touched: {},
-      errors: this.validate(values),
+      errors: this.validate(mergedValues),
       nestedErrors: {}
     }
   },
@@ -54,7 +62,7 @@ export default React.createClass({
     }, true)
   },
   componentWillUnmount () {
-    this.props.willUnmount(this.state, this.props)
+    this.props.willUnmount(this.state, this.props, this)
   },
 
   // API
@@ -126,6 +134,9 @@ export default React.createClass({
       dirty: !!dirty
     })
   },
+  resetForm () {
+    return this.setState(this.getInitialState())
+  },
   submitForm (e) {
     e && e.preventDefault && e.preventDefault(e)
     const state = this.state
@@ -134,11 +145,11 @@ export default React.createClass({
       if (!state.dirty) {
         this.setAllTouched(true, {errors})
       }
-      return this.props.onValidationFail(state, this.props)
+      return this.props.onValidationFail(state.values, state, this.props, this)
     }
-    const preSubmitValues = this.props.preSubmit(state.values, state, this.props)
-    this.props.onSubmit(preSubmitValues, state, this.props)
-    this.props.postSubmit(preSubmitValues, state, this.props)
+    const preSubmitValues = this.props.preSubmit(state.values, state, this.props, this)
+    this.props.onSubmit(preSubmitValues, state, this.props, this)
+    this.props.postSubmit(preSubmitValues, state, this.props, this)
   },
 
   // Utils
@@ -154,29 +165,31 @@ export default React.createClass({
       removeValue: this.removeValue,
       swapValues: this.swapValues,
       setAllTouched: this.setAllTouched,
+      resetForm: this.resetForm,
       submitForm: this.submitForm
     }
   },
   setFormState (newState, silent) {
     if (newState && newState.values && !newState.errors) {
-      newState.values = this.props.preValidate(newState.values, newState, this.props)
+      newState.values = this.props.preValidate(newState.values, newState, this.props, this)
       newState.errors = this.validate(newState.values, newState, this.props)
     }
     this.setState(newState, () => {
-      this.props.saveState(this.state, this.props)
+      this.props.saveState(this.state, this.props, this)
       if (!silent) {
         this.emitChange(this.state, this.props)
       }
     })
   },
   emitChange (state, initial) {
-    this.props.onChange(state, this.props, initial)
+    this.props.onChange(state, this.props, initial, this)
   },
   validate (values, state, props) {
     const errors = this.props.validate(
       removeNestedErrorValues(values, this.state ? this.state.nestedErrors : {}),
       state,
-      props
+      props,
+      this
     )
     return cleanErrors(errors)
   },

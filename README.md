@@ -38,6 +38,8 @@ React Form is a lightweight framework and utility for building powerful forms in
 
 ## [Demo](https://react-form.js.org/?selectedKind=2.%20Demos&selectedStory=Kitchen%20Sink&full=0&down=0&left=1&panelRight=0&downPanel=kadirahq%2Fstorybook-addon-actions%2Factions-panel)
 
+## [Webpack-Bin](http://www.webpackbin.com/V1AI--xtz)
+
 ## Table of Contents
 - [Installation](#installation)
 - [Example](#example)
@@ -419,11 +421,11 @@ Everything in react-form is configurable with the following props.
 >
 ```
 
-#### loadState (props)
+#### loadState (props, instance)
 - When a form mounts, `loadState` is called. If a saved form state object is returned, it will hydrate the form state from this object.
 - An ideal callback to load the form state from an external state manager (Redux/MobX/other)
 
-#### preValidate (values, state, props)
+#### preValidate (values, state, props, instance)
 - This method is a value filter that happens before each validation.
 - Use it to scrub and/or clean your values before they are validated.
 - Whatever you return will replace all of the values in that form's state.
@@ -437,7 +439,7 @@ Everything in react-form is configurable with the following props.
 >
 ```
 
-#### validate (values, state, props)
+#### validate (values, state, props, instance)
 - Using the current values, you may return an object of error strings that map 1:1 to any fields that do not meet any condition you specify
 - Any falsey errors will be recursively stripped from the object you return, so if a field is valid, simply return a falsey value of your choice.
 - If attempting to submit, and `validate` returns any errors, `setAllTouched(true)` will automatically be called on the form. Likewise, if the form has been marked as globally dirty, and no errors are returned, `setAllTouched(false)` will automatically clear the global dirty state
@@ -453,22 +455,22 @@ Everything in react-form is configurable with the following props.
 >
 ```
 
-#### onValidationFail (values, state, props)
+#### onValidationFail (values, state, props, instance)
 - If and when a forms validation fails, you can handle it here
 
-#### onChange (state, props, initial)
+#### onChange (state, props, initial, instance)
 - Called any time a form's `values` change
 - If `initial` is set to true, this indicates that the component just mounted and is firing `onChange` for the first time (this is utilized by nested forms)
 
-#### saveState (state, props)
+#### saveState (state, props, instance)
 - Called anytime a form's internal `state` is changed.
 - An ideal callback to export/save the form state from an external state manager (Redux/MobX/other)
 
-#### willUnmount (state, props)
+#### willUnmount (state, props, instance)
 - Called when a form is about to unmount
 - An ideal callback to remove the form state from an external state manager (Redux/MobX/other)
 
-#### preSubmit (state, props)
+#### preSubmit (values, state, props, instance)
 - This method is a value filter that happens after validation and before a successful submission.
 - Use it to scrub and/or clean your values before they are submitted.
 - Whatever you return will **not** replace all of the values in that form's state, but will be passed to the `onSubmit` method.
@@ -482,7 +484,7 @@ Everything in react-form is configurable with the following props.
 >
 ```
 
-#### onSubmit (values, state, props)
+#### onSubmit (values, state, props, instance)
 - When a form is successfully submitted via [`submitForm`](#submitform-), this method will be called with the values of the parent form.
 - Example:
 ```javascript
@@ -494,7 +496,7 @@ Everything in react-form is configurable with the following props.
 />
 ```
 
-#### postSubmit (values, state, props)
+#### postSubmit (values, state, props, instance)
 - After a form is successfully submitted via `submitForm`, this method will be called.
 - Example:
 ```javascript
@@ -778,6 +780,21 @@ This also makes it extremely easy to destructure exactly what you need from the 
     return (
       <button onClick={setAllTouched}>
         Touch / Dirty the entire form // innuendo? hmm....
+      </button>
+    )
+  }}
+</Form>
+```
+
+#### resetForm ()
+- Resets all of the values of the form back to it's default values.
+- Example:
+```javascript
+<Form>
+  {({resetForm}) => {
+    return (
+      <button onClick={resetForm}>
+        Start over!
       </button>
     )
   }}
