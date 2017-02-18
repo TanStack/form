@@ -135,7 +135,7 @@ export default React.createClass({
     })
   },
   resetForm () {
-    return this.setState(this.getInitialState())
+    return this.setFormState(this.getInitialState())
   },
   submitForm (e) {
     e && e.preventDefault && e.preventDefault(e)
