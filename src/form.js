@@ -237,8 +237,16 @@ function cleanErrors (err) {
   return err
 }
 
+// removeNestedErrorValues recurses the values object and turns any
+// field that has a truthy corresponding nested form error field into undefined.
+// This allows properly validating a nested form by detecting that undefined value
+// in the validation function
 function removeNestedErrorValues (value, nestedErrors) {
   const recurse = (value, path = []) => {
+    const errorVal = _.get(nestedErrors, path)
+    if (!_.isObject(errorVal) && !_.isArray(errorVal) && errorVal) {
+      return undefined
+    }
     if (_.isObject(value)) {
       return _.mapValues(value, (d, i) => {
         return recurse(d, [...path, i])
