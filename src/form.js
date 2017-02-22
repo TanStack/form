@@ -15,7 +15,8 @@ export const FormDefaultProps = {
   willUnmount: noop,
   preSubmit: reop,
   onSubmit: noop,
-  postSubmit: noop
+  postSubmit: noop,
+  component: 'div'
 }
 
 export default React.createClass({
@@ -201,10 +202,11 @@ export default React.createClass({
       ...this.state,
       ...this.getAPI()
     }
-    const { children, ...rest } = props
+    const { component, children, ...rest } = props
     const resolvedChild = typeof children === 'function' ? children(rest) : children
+    const RootEl = component
     return (
-      <div className='ReactForm'>{resolvedChild}</div>
+      <RootEl className='ReactForm'>{resolvedChild}</RootEl>
     )
   }
 })

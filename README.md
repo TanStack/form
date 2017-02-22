@@ -507,6 +507,19 @@ Everything in react-form is configurable with the following props.
 >
 ```
 
+#### component (string or component)
+- If set, the form will use this tag or component as the root for the form.
+- Defaults to 'div'
+- If using a custom component, make sure to pass through all props, including `children` for your form to render correctly
+- Example:
+```javascript
+<Form
+  component={props => (
+    <CustomComponent {...props} />
+  )}
+>
+```
+
 ---
 
 ## Form API
