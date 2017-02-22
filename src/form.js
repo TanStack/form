@@ -33,8 +33,16 @@ export default React.createClass({
     return FormDefaultProps
   },
   getInitialState () {
-    const mergedValues = this.getCurrentValues()
-    const { loadState } = this.props
+    const {
+      defaultValues,
+      values,
+      loadState
+    } = this.props
+    const mergedValues = {
+      ..._.clone(defaultValues),
+      ..._.clone(values)
+    }
+
     return loadState(this.props, this) || {
       values: mergedValues,
       touched: {},
@@ -50,24 +58,12 @@ export default React.createClass({
       return
     }
 
-    const values = this.getCurrentValues()
-
     this.setFormState({
-      values
+      values: this.props.values
     }, true)
   },
   componentWillUnmount () {
     this.props.willUnmount(this.state, this.props, this)
-  },
-  getCurrentValues () {
-    const {
-      defaultValues,
-      values
-    } = this.props
-    return {
-      ..._.clone(defaultValues),
-      ..._.clone(values)
-    }
   },
 
   // API
