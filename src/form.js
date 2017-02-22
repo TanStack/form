@@ -68,6 +68,12 @@ export default React.createClass({
   },
 
   // API
+  setAllValues (values, noTouch) {
+    if (noTouch) {
+      return this.setFormState({values})
+    }
+    this.setFormState({values, touched: {}})
+  },
   setValue (field, value, noTouch) {
     const state = this.state
     const values = _.set(state.values, field, value)
@@ -157,6 +163,7 @@ export default React.createClass({
   // Utils
   getAPI () {
     return {
+      setAllValues: this.setAllValues,
       setValue: this.setValue,
       getValue: this.getValue,
       setNestedError: this.setNestedError,

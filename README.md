@@ -615,6 +615,26 @@ This also makes it extremely easy to destructure exactly what you need from the 
 </Form>
 ```
 
+#### setAllValues (values, noTouch)
+- Sets (replaces) all form values to `values`
+- If `noTouch` is true, the `touched` state of the field won't change.
+- Example:
+```javascript
+<Form>
+  {({setAllValues}) => {
+    return (
+      <button onClick={() => setAllValues({
+        name: 'Tanner Linsley',
+        job: 'Software Developer',
+        age: 27
+      })}>
+        Set all field values
+      </button>
+    )
+  }}
+</Form>
+```
+
 #### setValue (field, value, noTouch)
 - Sets any given `field` to `value`. Usually this functionality is contained in an InputField of sorts, but it is still available on the form itself in its generic form.
 - `field` can be a **string or array property location** eg.
