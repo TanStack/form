@@ -59,7 +59,7 @@ export default React.createClass({
     }
 
     this.setFormState({
-      values: this.props.values
+      values: _.clone(props.values) || {}
     }, true)
   },
   componentWillUnmount () {
