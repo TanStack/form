@@ -507,8 +507,9 @@ Everything in react-form is configurable with the following props.
 >
 ```
 
-#### component (string or component)
-- If set, the form will use this tag or component as the root for the form.
+#### component (string / component / false)
+- If truthy, the form will use the tag or component as the root for the form.
+- If falsey, the form will not be wrapped and you must return a single element from your form's children or render function
 - Defaults to 'div'
 - If using a custom component, make sure to pass through all props, including `children` for your form to render correctly
 - Example:

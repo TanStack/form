@@ -205,6 +205,9 @@ export default React.createClass({
     const { component, children, ...rest } = props
     const resolvedChild = typeof children === 'function' ? children(rest) : children
     const RootEl = component
+    if (!RootEl) {
+      return resolvedChild
+    }
     return (
       <RootEl className='ReactForm'>{resolvedChild}</RootEl>
     )
