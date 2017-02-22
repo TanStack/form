@@ -239,9 +239,6 @@ function cleanErrors (err) {
 
 function removeNestedErrorValues (value, nestedErrors) {
   const recurse = (value, path = []) => {
-    if (_.get(nestedErrors, path)) {
-      return undefined
-    }
     if (_.isObject(value)) {
       return _.mapValues(value, (d, i) => {
         return recurse(d, [...path, i])
@@ -251,6 +248,9 @@ function removeNestedErrorValues (value, nestedErrors) {
       return value.map((d, key) => {
         return recurse(d, [...path, key])
       })
+    }
+    if (_.get(nestedErrors, path)) {
+      return undefined
     }
     return value
   }
