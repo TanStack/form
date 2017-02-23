@@ -40,8 +40,8 @@ export default React.createClass({
       loadState
     } = this.props
     const mergedValues = {
-      ..._.clone(defaultValues),
-      ..._.clone(values)
+      ...defaultValues,
+      ...values
     }
 
     return loadState(this.props, this) || {
@@ -60,7 +60,7 @@ export default React.createClass({
     }
 
     this.setFormState({
-      values: _.clone(props.values) || {}
+      values: props.values || {}
     }, true)
   },
   componentWillUnmount () {
@@ -241,26 +241,23 @@ function cleanErrors (err) {
 // field that has a truthy corresponding nested form error field into undefined.
 // This allows properly validating a nested form by detecting that undefined value
 // in the validation function
-function removeNestedErrorValues (value, nestedErrors) {
-  const recurse = (value, path = []) => {
-    const errorVal = _.get(nestedErrors, path)
-    if (!_.isObject(errorVal) && !_.isArray(errorVal) && errorVal) {
-      return undefined
-    }
-    if (_.isObject(value)) {
-      return _.mapValues(value, (d, i) => {
+function removeNestedErrorValues (values, nestedErrors) {
+  const recurse = (current, path = []) => {
+    if (_.isObject(current)) {
+      return _.mapValues(current, (d, i) => {
         return recurse(d, [...path, i])
       })
     }
-    if (_.isArray(value)) {
-      return value.map((d, key) => {
+    if (_.isArray(current)) {
+      return current.map((d, key) => {
         return recurse(d, [...path, key])
       })
     }
-    if (_.get(nestedErrors, path)) {
-      return undefined
+    if (!_.isObject(current) && !_.isArray(current) && current) {
+      return _.set(values, path, undefined)
     }
-    return value
+    return current
   }
-  return recurse(value)
+  recurse(nestedErrors)
+  return values
 }
