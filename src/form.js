@@ -126,13 +126,17 @@ export default React.createClass({
   },
   swapValues (field, index, destIndex) {
     const state = this.state
+
+    const min = Math.min(index, destIndex)
+    const max = Math.max(index, destIndex)
+
     const fieldValues = _.get(state.values, field, [])
     const values = _.set(state.values, field, [
-      ...fieldValues.slice(0, index),
-      fieldValues[destIndex],
-      ...fieldValues.slice(index + 1, destIndex),
-      fieldValues[index],
-      ...fieldValues.slice(destIndex + 1)
+      ...fieldValues.slice(0, min),
+      fieldValues[max],
+      ...fieldValues.slice(min + 1, max),
+      fieldValues[min],
+      ...fieldValues.slice(max + 1)
     ])
     this.setFormState({values})
   },
