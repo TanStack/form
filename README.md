@@ -383,8 +383,8 @@ const myForm = (
   - postSubmit ()
 - Child can be either:
   - A function that returns a component (**this function is called with an object that contains:**)
-    - Current Form State
-    - Form API methods
+    - Current [Form State](#form-state)
+    - [Form API methods](#form-api-methods)
     - Any other props passed to your form component
   - A component or JSX (if you do not need access to any methods or form state)
 
@@ -422,7 +422,7 @@ Everything in react-form is configurable with the following props.
 ```
 
 #### loadState (props, instance)
-- When a form mounts, `loadState` is called. If a saved form state object is returned, it will hydrate the form state from this object.
+- When a form mounts, `loadState` is called. If a saved [form state object](#form-state) is returned, it will hydrate the form state from this object.
 - An ideal callback to load the form state from an external state manager (Redux/MobX/other)
 
 #### preValidate (values, state, props, instance)
@@ -464,11 +464,11 @@ Everything in react-form is configurable with the following props.
 
 #### saveState (state, props, instance)
 - Called anytime a form's internal `state` is changed.
-- An ideal callback to export/save the form state from an external state manager (Redux/MobX/other)
+- An ideal callback to export/save the [form state](#form-state) from an external state manager (Redux/MobX/other)
 
 #### willUnmount (state, props, instance)
 - Called when a form is about to unmount
-- An ideal callback to remove the form state from an external state manager (Redux/MobX/other)
+- An ideal callback to remove the [form state](#form-state) from an external state manager (Redux/MobX/other)
 
 #### preSubmit (values, state, props, instance)
 - This method is a value filter that happens after validation and before a successful submission.
@@ -541,6 +541,9 @@ This also makes it extremely easy to destructure exactly what you need from the 
 </Form>
 ```
 
+The form API is a merge of the form state object and API methods
+
+### Form State
 
 #### values {}
 - The current read-only values in the form state.
@@ -614,6 +617,8 @@ This also makes it extremely easy to destructure exactly what you need from the 
   }}
 </Form>
 ```
+
+### Form API methods
 
 #### setAllValues (values, noTouch)
 - Sets (replaces) all form values to `values`
@@ -1054,3 +1059,4 @@ If you would like to help develop a suggested feature follow these steps:
 <a href='https://nozzle.io' target="\_parent">
   <img src='https://nozzle.io/img/logo-blue.png' alt='Nozzle Logo' style='width:300px;'/>
 </a>
+
