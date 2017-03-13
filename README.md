@@ -971,7 +971,7 @@ React-Form ships with plenty of standard form components and even provides an ex
 
 **Example**
 ```javascript
-import { Text, Select, Checkbox, Textarea, Radio } from 'react-form'
+import { Text, Select, Checkbox, Textarea, Radio, RadioGroup } from 'react-form'
 
 const example = (
   <div>
