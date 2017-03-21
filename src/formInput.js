@@ -4,7 +4,7 @@ import classnames from 'classnames'
 import FormField from './formField'
 import FormError from './formError'
 
-export default function FormInput ({ field, showErrors = true, errorBefore, isForm, className, children }) {
+export default function FormInput ({ field, showErrors = true, errorBefore, isForm, className, children: Child }) {
   return (
     <FormField field={field}>
       {({ ...api }) => {
@@ -18,9 +18,7 @@ export default function FormInput ({ field, showErrors = true, errorBefore, isFo
             {errorBefore && showAnyErrors && (
               <FormError field={field} />
             )}
-            {children({
-              ...api
-            })}
+            <Child {...api} />
             {!errorBefore && showAnyErrors && (
               <FormError field={field} />
             )}
