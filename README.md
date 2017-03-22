@@ -547,7 +547,7 @@ The form API is a merge of the form state object and API methods
 
 #### values {}
 - The current read-only values in the form state.
-- Again, these values immutable, so just like any traditional react state or redux state, they should not be changed or mutated outside of the form lifecycle methods
+- Again, these values are immutable, so just like any traditional react state or redux state, they should not be changed or mutated outside of the form lifecycle methods
 - Example:
 ```javascript
 <Form>
