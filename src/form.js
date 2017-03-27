@@ -213,8 +213,8 @@ export default React.createClass({
       ...this.state,
       ...this.getAPI()
     }
-    const { component, children: Child, ...rest } = props
-    const resolvedChild = typeof children === 'function' ? <Child {...rest} /> : Child
+    const { component, children, ...rest } = props
+    const resolvedChild = _.normalizeComponent(children, formAPI)
     const RootEl = component
     if (!RootEl) {
       return resolvedChild
