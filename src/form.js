@@ -214,7 +214,7 @@ export default React.createClass({
       ...this.getAPI()
     }
     const { component, children: Child, ...rest } = props
-    const resolvedChild = typeof children === 'function' ? <Child {...rest} /> : Child
+    const resolvedChild = typeof Child === 'function' ? <Child {...rest} /> : Child
     const RootEl = component
     if (!RootEl) {
       return resolvedChild
