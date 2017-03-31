@@ -1,6 +1,5 @@
 import React from 'react'
 import classnames from 'classnames'
-import _ from './utils'
 
 import FormField from './formField'
 import FormError from './formError'
