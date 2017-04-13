@@ -1,4 +1,6 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import createClass from 'create-react-class'
 import _ from './utils'
 
 const noop = () => {}
@@ -19,10 +21,10 @@ export const FormDefaultProps = {
   component: 'div'
 }
 
-export default React.createClass({
+export default createClass({
   displayName: 'Form',
   childContextTypes: {
-    formAPI: React.PropTypes.object
+    formAPI: PropTypes.object
   },
   getChildContext () {
     return {

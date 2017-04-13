@@ -1,10 +1,12 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import createClass from 'create-react-class'
 //
 import FormInput from '../formInput'
 
-export default React.createClass({
+export default createClass({
   childContextTypes: {
-    formRadioGroup: React.PropTypes.object
+    formRadioGroup: PropTypes.object
   },
   getChildContext () {
     return {
