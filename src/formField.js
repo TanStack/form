@@ -1,4 +1,4 @@
-import React from 'react'
+import PropTypes from 'prop-types'
 //
 import _ from './utils'
 
@@ -7,5 +7,5 @@ export default function FormField ({field, children}, context) {
   return children(field ? _.mapValues(context.formAPI, d => bind(d, field)) : context.formAPI)
 }
 FormField.contextTypes = {
-  formAPI: React.PropTypes.object
+  formAPI: PropTypes.object
 }

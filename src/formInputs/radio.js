@@ -1,11 +1,12 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 //
 import { buildHandler } from './util'
 const noop = () => {}
 
 export default React.createClass({
   contextTypes: {
-    formRadioGroup: React.PropTypes.object
+    formRadioGroup: PropTypes.object
   },
   render () {
     const { value, onClick, onChange, onBlur, ...rest } = this.props
