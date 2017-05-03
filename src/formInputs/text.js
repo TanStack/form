@@ -11,6 +11,7 @@ export default function FormInputText ({
   onBlur,
   isForm,
   noTouch,
+  inputRef,
   ...rest
 }) {
   return (
@@ -19,6 +20,7 @@ export default function FormInputText ({
         return (
           <input
             {...rest}
+            ref={inputRef}
             value={getValue('')}
             onChange={buildHandler(onChange, e => setValue(e.target.value, noTouch))}
             onBlur={buildHandler(onBlur, () => setTouched())}
