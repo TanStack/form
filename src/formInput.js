@@ -1,10 +1,11 @@
 import React from 'react'
 import classnames from 'classnames'
 
+import _ from './utils'
 import FormField from './formField'
 import FormError from './formError'
 
-export default function FormInput ({ field, showErrors = true, errorBefore, isForm, className, children: Child }) {
+export default function FormInput ({ field, showErrors = true, errorBefore, isForm, className, children }) {
   return (
     <FormField field={field}>
       {({ ...api }) => {
@@ -18,7 +19,7 @@ export default function FormInput ({ field, showErrors = true, errorBefore, isFo
             {errorBefore && showAnyErrors && (
               <FormError field={field} />
             )}
-            <Child {...api} />
+              {_.normalizeComponent(children, api)}
             {!errorBefore && showAnyErrors && (
               <FormError field={field} />
             )}

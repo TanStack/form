@@ -1,3 +1,5 @@
+import React from 'react';
+
 export default {
   clone,
   get,
@@ -6,7 +8,8 @@ export default {
   makePathArray,
   pickBy,
   isObject,
-  isArray
+  isArray,
+  normalizeComponent
 }
 
 function clone (a) {
@@ -107,4 +110,12 @@ function isObject (a) {
 
 function isStringValidNumber (str) {
   return !isNaN(str)
+}
+
+function normalizeComponent (Comp, props) {
+  return (
+    React.isValidElement(Comp) ? React.cloneElement(Comp, props) :
+    typeof Comp === 'function' ? <Comp {...props} /> : 
+      null
+  );
 }
