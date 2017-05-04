@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 export default {
   clone,
@@ -114,8 +114,8 @@ function isStringValidNumber (str) {
 
 function normalizeComponent (Comp, props) {
   return (
-    React.isValidElement(Comp) ? React.cloneElement(Comp, props) :
-    typeof Comp === 'function' ? <Comp {...props} /> : 
-      null
-  );
+    React.isValidElement(Comp) ? React.cloneElement(Comp, props)
+    : typeof Comp === 'function' ? <Comp {...props} />
+      : null
+  )
 }

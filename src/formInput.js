@@ -19,7 +19,7 @@ export default function FormInput ({ field, showErrors = true, errorBefore, isFo
             {errorBefore && showAnyErrors && (
               <FormError field={field} />
             )}
-              {_.normalizeComponent(children, api)}
+            {_.normalizeComponent(children, api)}
             {!errorBefore && showAnyErrors && (
               <FormError field={field} />
             )}
