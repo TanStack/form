@@ -243,7 +243,6 @@ class Form extends React.Component {
 
 Form.displayName = 'Form'
 Form.defaultProps = FormDefaultProps
-Form.propTypes = {}
 Form.childContextTypes = { formAPI: PropTypes.object }
 
 export default Form;
