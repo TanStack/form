@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import createClass from 'create-react-class'
 import _ from './utils'
 
 const noop = () => {}
@@ -22,8 +21,8 @@ export const FormDefaultProps = {
 }
 
 class Form extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
 
     const {
       defaultValues,
@@ -44,17 +43,17 @@ class Form extends React.Component {
     }
   }
 
-  getChildContext() {
+  getChildContext () {
     return {
       formAPI: this.getAPI()
     }
   }
 
-  componentWillMount() {
+  componentWillMount () {
     this.emitChange(this.state, true)
   }
 
-  componentWillReceiveProps(props) {
+  componentWillReceiveProps (props) {
     if (props.values === this.props.values) {
       return
     }
@@ -64,8 +63,8 @@ class Form extends React.Component {
     }, true)
   }
 
-  componentWillUmount() {
-    this.props.willUnmount(this.state, this.props, this);
+  componentWillUmount () {
+    this.props.willUnmount(this.state, this.props, this)
   }
 
   // API
@@ -102,12 +101,12 @@ class Form extends React.Component {
     return _.get(this.state.errors, field)
   }
 
-  setTouched(field, value = true) {
+  setTouched (field, value = true) {
     const touched = _.set(this.state.touched, field, value)
     this.setFormState({touched})
   }
 
-  getTouched(field) {
+  getTouched (field) {
     const state = this.state
     if (this.state.dirty === true || this.props.touched === true) {
       return true
@@ -115,7 +114,7 @@ class Form extends React.Component {
     return _.get(state.touched, field)
   }
 
-  addValue(field, value) {
+  addValue (field, value) {
     const state = this.state
     const values = _.set(state.values, field, [
       ..._.get(state.values, field, []),
@@ -124,7 +123,7 @@ class Form extends React.Component {
     this.setFormState({values})
   }
 
-  removeValue(field, index) {
+  removeValue (field, index) {
     const state = this.state
     const fieldValue = _.get(state.values, field, [])
     const values = _.set(state.values, field, [
@@ -134,7 +133,7 @@ class Form extends React.Component {
     this.setFormState({values})
   }
 
-  swapValues(field, index, destIndex) {
+  swapValues (field, index, destIndex) {
     const state = this.state
 
     const min = Math.min(index, destIndex)
@@ -151,18 +150,18 @@ class Form extends React.Component {
     this.setFormState({values})
   }
 
-  setAllTouched(dirty = true, state) {
+  setAllTouched (dirty = true, state) {
     this.setFormState({
       ...state,
       dirty: !!dirty
     })
   }
 
-  resetForm() {
+  resetForm () {
     return this.setFormState(this.getInitialState())
   }
 
-  submitForm(e) {
+  submitForm (e) {
     e && e.preventDefault && e.preventDefault(e)
     const state = this.state
     const errors = this.validate(state.values, state, this.props)
@@ -178,7 +177,7 @@ class Form extends React.Component {
   }
 
   // Utils
-  getAPI() {
+  getAPI () {
     return {
       setAllValues: this.setAllValues,
       setValue: this.setValue,
@@ -196,7 +195,7 @@ class Form extends React.Component {
     }
   }
 
-  setFormState(newState, silent) {
+  setFormState (newState, silent) {
     if (newState && newState.values && !newState.errors) {
       newState.values = this.props.preValidate(newState.values, newState, this.props, this)
       newState.errors = this.validate(newState.values, newState, this.props)
@@ -209,11 +208,11 @@ class Form extends React.Component {
     })
   }
 
-  emitChange(state, initial) {
+  emitChange (state, initial) {
     this.props.onChange(state, this.props, initial, this)
   }
 
-  validate(values, state, props) {
+  validate (values, state, props) {
     const errors = this.props.validate(
       removeNestedErrorValues(values, this.state ? this.state.nestedErrors : {}),
       state,
@@ -223,7 +222,7 @@ class Form extends React.Component {
     return cleanErrors(errors)
   }
 
-  render() {
+  render () {
     const props = {
       ...this.props,
       ...this.state,
@@ -245,7 +244,7 @@ Form.displayName = 'Form'
 Form.defaultProps = FormDefaultProps
 Form.childContextTypes = { formAPI: PropTypes.object }
 
-export default Form;
+export default Form
 
 // Utils
 
