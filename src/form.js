@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import createClass from 'create-react-class'
 import _ from './utils'
 
 const noop = () => {}
@@ -21,41 +20,39 @@ export const FormDefaultProps = {
   component: 'div'
 }
 
-export default createClass({
-  displayName: 'Form',
-  childContextTypes: {
-    formAPI: PropTypes.object
-  },
-  getChildContext () {
-    return {
-      formAPI: this.getAPI()
-    }
-  },
-  // Lifecycle
-  getDefaultProps () {
-    return FormDefaultProps
-  },
-  getInitialState () {
+class Form extends React.Component {
+  constructor (props) {
+    super(props)
+
     const {
       defaultValues,
       values,
       loadState
     } = this.props
+
     const mergedValues = {
       ...defaultValues,
       ...values
     }
 
-    return loadState(this.props, this) || {
+    this.state = loadState(this.props, this) || {
       values: mergedValues,
       touched: {},
       errors: this.validate(mergedValues),
       nestedErrors: {}
     }
-  },
+  }
+
+  getChildContext () {
+    return {
+      formAPI: this.getAPI()
+    }
+  }
+
   componentWillMount () {
     this.emitChange(this.state, true)
-  },
+  }
+
   componentWillReceiveProps (props) {
     if (props.values === this.props.values) {
       return
@@ -64,10 +61,11 @@ export default createClass({
     this.setFormState({
       values: props.values || {}
     }, true)
-  },
-  componentWillUnmount () {
+  }
+
+  componentWillUmount () {
     this.props.willUnmount(this.state, this.props, this)
-  },
+  }
 
   // API
   setAllValues (values, noTouch) {
@@ -75,7 +73,8 @@ export default createClass({
       return this.setFormState({values})
     }
     this.setFormState({values, touched: {}})
-  },
+  }
+
   setValue (field, value, noTouch) {
     const state = this.state
     const values = _.set(state.values, field, value)
@@ -85,30 +84,36 @@ export default createClass({
     }
     const touched = _.set(state.touched, field)
     this.setFormState({values, touched})
-  },
+  }
+
   getValue (field, fallback) {
     const state = this.state
     const val = _.get(state.values, field)
     return typeof val !== 'undefined' ? val : fallback
-  },
+  }
+
   setNestedError (field, value = true) {
     const nestedErrors = _.set(this.state.nestedErrors, field, value)
     this.setFormState({nestedErrors})
-  },
+  }
+
   getError (field) {
     return _.get(this.state.errors, field)
-  },
+  }
+
   setTouched (field, value = true) {
     const touched = _.set(this.state.touched, field, value)
     this.setFormState({touched})
-  },
+  }
+
   getTouched (field) {
     const state = this.state
     if (this.state.dirty === true || this.props.touched === true) {
       return true
     }
     return _.get(state.touched, field)
-  },
+  }
+
   addValue (field, value) {
     const state = this.state
     const values = _.set(state.values, field, [
@@ -116,7 +121,8 @@ export default createClass({
       value
     ])
     this.setFormState({values})
-  },
+  }
+
   removeValue (field, index) {
     const state = this.state
     const fieldValue = _.get(state.values, field, [])
@@ -125,7 +131,8 @@ export default createClass({
       ...fieldValue.slice(index + 1)
     ])
     this.setFormState({values})
-  },
+  }
+
   swapValues (field, index, destIndex) {
     const state = this.state
 
@@ -141,16 +148,19 @@ export default createClass({
       ...fieldValues.slice(max + 1)
     ])
     this.setFormState({values})
-  },
+  }
+
   setAllTouched (dirty = true, state) {
     this.setFormState({
       ...state,
       dirty: !!dirty
     })
-  },
+  }
+
   resetForm () {
     return this.setFormState(this.getInitialState())
-  },
+  }
+
   submitForm (e) {
     e && e.preventDefault && e.preventDefault(e)
     const state = this.state
@@ -164,7 +174,7 @@ export default createClass({
     const preSubmitValues = this.props.preSubmit(state.values, state, this.props, this)
     this.props.onSubmit(preSubmitValues, state, this.props, this)
     this.props.postSubmit(preSubmitValues, state, this.props, this)
-  },
+  }
 
   // Utils
   getAPI () {
@@ -183,7 +193,8 @@ export default createClass({
       resetForm: this.resetForm,
       submitForm: this.submitForm
     }
-  },
+  }
+
   setFormState (newState, silent) {
     if (newState && newState.values && !newState.errors) {
       newState.values = this.props.preValidate(newState.values, newState, this.props, this)
@@ -195,10 +206,12 @@ export default createClass({
         this.emitChange(this.state, this.props)
       }
     })
-  },
+  }
+
   emitChange (state, initial) {
     this.props.onChange(state, this.props, initial, this)
-  },
+  }
+
   validate (values, state, props) {
     const errors = this.props.validate(
       removeNestedErrorValues(values, this.state ? this.state.nestedErrors : {}),
@@ -207,8 +220,8 @@ export default createClass({
       this
     )
     return cleanErrors(errors)
-  },
-  // Render
+  }
+
   render () {
     const props = {
       ...this.props,
@@ -225,7 +238,13 @@ export default createClass({
       <RootEl className='ReactForm'>{resolvedChild}</RootEl>
     )
   }
-})
+}
+
+Form.displayName = 'Form'
+Form.defaultProps = FormDefaultProps
+Form.childContextTypes = { formAPI: PropTypes.object }
+
+export default Form
 
 // Utils
 
