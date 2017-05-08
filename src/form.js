@@ -41,6 +41,20 @@ class Form extends React.Component {
       errors: this.validate(mergedValues),
       nestedErrors: {}
     }
+
+    this.setAllValues = this.setAllValues.bind(this)
+    this.setValue = this.setValue.bind(this)
+    this.getValue = this.getValue.bind(this)
+    this.setNestedError = this.setNestedError.bind(this)
+    this.getError = this.getError.bind(this)
+    this.setTouched = this.setTouched.bind(this)
+    this.getTouched = this.getTouched.bind(this)
+    this.addValue = this.addValue.bind(this)
+    this.removeValue = this.removeValue.bind(this)
+    this.swapValues = this.swapValues.bind(this)
+    this.setAllTouched = this.setAllTouched.bind(this)
+    this.resetForm = this.resetForm.bind(this)
+    this.submitForm = this.submitForm.bind(this)
   }
 
   getChildContext () {

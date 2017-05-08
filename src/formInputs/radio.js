@@ -4,10 +4,10 @@ import PropTypes from 'prop-types'
 import { buildHandler } from './util'
 const noop = () => {}
 
-export default React.createClass({
-  contextTypes: {
+export default class Radio extends React.Component {
+  static contextTypes = {
     formRadioGroup: PropTypes.object
-  },
+  }
   render () {
     const { value, onClick, onChange, onBlur, ...rest } = this.props
     const {setValue, getValue, setTouched, props: { noTouch }} = this.context.formRadioGroup
@@ -22,4 +22,4 @@ export default React.createClass({
       />
     )
   }
-})
+}
