@@ -37,8 +37,8 @@ export default function FormInputSelect ({
             {resolvedOptions.map((option, i) => {
               return (
                 <option
-                  key={i}
-                  value={i}
+                  key={option.value || i}
+                  value={option.value || i}
                   disabled={option.disabled}
                 >
                   {option.label}
