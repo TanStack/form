@@ -24,17 +24,6 @@ class Form extends React.Component {
   constructor (props) {
     super(props)
 
-    const {
-      defaultValues,
-      values,
-      loadState
-    } = this.props
-
-    const mergedValues = {
-      ...defaultValues,
-      ...values
-    }
-
     this.state = this.getInitialState()
 
     this.setAllValues = this.setAllValues.bind(this)
@@ -54,6 +43,17 @@ class Form extends React.Component {
   }
 
   getInitialState () {
+    const {
+      defaultValues,
+      values,
+      loadState
+    } = this.props
+
+    const mergedValues = {
+      ...defaultValues,
+      ...values
+    }
+
     return loadState(this.props, this) || {
       values: mergedValues,
       touched: {},
