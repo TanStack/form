@@ -61,7 +61,7 @@ class Form extends React.Component {
       nestedErrors: {}
     }
   }
-  
+
   getChildContext () {
     return {
       formAPI: this.getAPI()
