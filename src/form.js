@@ -35,12 +35,7 @@ class Form extends React.Component {
       ...values
     }
 
-    this.state = loadState(this.props, this) || {
-      values: mergedValues,
-      touched: {},
-      errors: this.validate(mergedValues),
-      nestedErrors: {}
-    }
+    this.state = this.getInitialState()
 
     this.setAllValues = this.setAllValues.bind(this)
     this.setValue = this.setValue.bind(this)
@@ -55,8 +50,18 @@ class Form extends React.Component {
     this.setAllTouched = this.setAllTouched.bind(this)
     this.resetForm = this.resetForm.bind(this)
     this.submitForm = this.submitForm.bind(this)
+    this.getInitialState = this.getInitialState.bind(this)
   }
 
+  getInitialState () {
+    return loadState(this.props, this) || {
+      values: mergedValues,
+      touched: {},
+      errors: this.validate(mergedValues),
+      nestedErrors: {}
+    }
+  }
+  
   getChildContext () {
     return {
       formAPI: this.getAPI()
