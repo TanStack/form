@@ -4,12 +4,7 @@ import CodeHighlight from './components/codeHighlight.js'
 import { Form, Checkbox } from '../src/index'
 
 export default () => (
-  <Form
-    defaultValues={{
-      subscribe: true,
-      adult: false
-    }}
-  >
+  <Form>
     {({submitForm, values}) => {
       return (
         <form onSubmit={submitForm}>
@@ -19,6 +14,7 @@ export default () => (
             <label>
               <Checkbox
                 field='subscribe'
+                defaultChecked={true}
               />
               <span>subscribe to newsletter <pre>[default is true]</pre></span>
             </label>
@@ -27,6 +23,7 @@ export default () => (
             <label>
               <Checkbox
                 field='adult'
+                defaultChecked={false}
               />
               <span>I am over 18 years old <pre>[default is false]</pre></span>
             </label>

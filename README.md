@@ -244,8 +244,10 @@ const MyForm = (
 
           <div>
             <label>
+              {/* Checkbox values can be retrieved with onChange handler prop using event.target.checked */}
               <Checkbox // This is the built-in checkbox formInput
                 field='createAccount'
+                defaultChecked={true}
               />
               <span>Create Account?</span>
             </label>
@@ -995,6 +997,7 @@ const example = (
 
     <Checkbox
       field='createAccount'
+      defaultChecked={true}
     />
 
     <Textarea
