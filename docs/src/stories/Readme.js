@@ -2,7 +2,7 @@
 import React from 'react'
 import marked from 'marked'
 //
-import Readme from '!raw!../lib/README.md'
+import Readme from '!raw!../../../README.md'
 
 import 'github-markdown-css/github-markdown.css'
 
