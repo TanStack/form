@@ -22,7 +22,7 @@
   <img alt="" src="https://img.shields.io/twitter/follow/tannerlinsley.svg?style=social&label=Follow" />
 </a>
 
-React Form is a lightweight framework and utility for building powerful forms in React applications.
+React Form is a powerful and lightweight form framework for React.
 
 ## Features
 
@@ -1056,4 +1056,3 @@ If you would like to help develop a suggested feature follow these steps:
 <a href='https://nozzle.io' target="\_parent">
   <img src='https://nozzle.io/img/logo-blue.png' alt='Nozzle Logo' style='width:300px;'/>
 </a>
-

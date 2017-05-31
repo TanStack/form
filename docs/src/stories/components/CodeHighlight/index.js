@@ -1,21 +1,23 @@
 import React from 'react'
-import '../utils/prism'
+//
+import './prism.css'
+import './prism'
 
-export default React.createClass({
+export default class CodeHighlight extends React.Component {
   render () {
     const { language, children } = this.props
     return (
       <pre>
         <code className={'language-' + (language || 'jsx')}>
-          {children()}
+          {children}
         </code>
       </pre>
     )
-  },
+  }
   componentDidMount () {
     window.Prism.highlightAll()
-  },
+  }
   componentDidUpdate () {
     window.Prism.highlightAll()
   }
-})
+}

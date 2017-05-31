@@ -26,11 +26,11 @@
     "build:node": "babel src --out-dir lib --source-maps inline",
     "watch": "onchange 'src/**' -i -- npm-run-all build:*",
     "test": "standard",
-    "umd": "rm -rf react-form.js && browserify lib/index.js -s reactForm -x react -t babelify -g uglifyify -o react-form.js",
+    "umd": "rimraf react-form.js && webpack --config umd.webpack.js",
     "prepublish": "npm-run-all build:* && npm run umd",
     "postpublish": "git push --tags",
-    "storybook": "start-storybook -p 8000 -c .storybook",
-    "docs": "build-storybook -o docs && cp .storybook/CNAME docs/CNAME"
+    "docs": "cd docs && yarn && yarn start",
+    "docs:build": "cd docs && yarn && yarn run build"
   },
   "dependencies": {
     "classnames": "^2.2.5",
@@ -40,7 +40,6 @@
     "react": "^15.3.1"
   },
   "devDependencies": {
-    "@kadira/storybook": "^2.35.1",
     "babel-cli": "^6.18.0",
     "babel-eslint": "^7.1.1",
     "babel-plugin-transform-object-assign": "^6.8.0",
