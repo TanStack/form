@@ -56,9 +56,11 @@
     "onchange": "^3.0.2",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
+    "rimraf": "^2.6.1",
     "standard": "^8.0.0",
     "stylus": "^0.54.5",
-    "uglifyify": "^3.0.3"
+    "uglifyify": "^3.0.3",
+    "webpack": "^2.6.1"
   },
   "browserify-shim": {
     "react": "global:React"
