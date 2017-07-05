@@ -974,7 +974,7 @@ const example = (
   <div>
 
     <Text
-      onChange{(e, onChange) => {
+      onChange={(e, onChange) => {
         console.log('it changed')
         onChange()
       }}
