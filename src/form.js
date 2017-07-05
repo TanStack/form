@@ -248,7 +248,7 @@ class Form extends React.Component {
       ...this.getAPI()
     }
     const { component, children, ...rest } = props
-    const resolvedChild = typeof children === 'function' ? children(rest) : children
+    const resolvedChild = _.normalizeComponent(children, rest)
     const RootEl = component
     if (!RootEl) {
       return resolvedChild
