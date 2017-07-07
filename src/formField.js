@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import _ from './utils'
 
 export default function FormField ({ field, children }, context) {
-  const bind = (cb, ...args) => (...args2) => cb(...args, ...args2)
+  const bind = (fn, ...args) => (...args2) => fn(...args, ...args2)
   return children(
     field ? _.mapValues(context.formAPI, d => bind(d, field)) : context.formAPI
   )

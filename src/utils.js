@@ -6,17 +6,19 @@ export default {
   makePathArray,
   pickBy,
   isObject,
-  isArray
+  isArray,
 }
 
 function clone (a) {
   try {
-    return JSON.parse(JSON.stringify(a, (key, value) => {
-      if (typeof value === 'function') {
-        return value.toString()
-      }
-      return value
-    }))
+    return JSON.parse(
+      JSON.stringify(a, (key, value) => {
+        if (typeof value === 'function') {
+          return value.toString()
+        }
+        return value
+      })
+    )
   } catch (e) {
     return a
   }
@@ -70,10 +72,10 @@ function mapValues (obj, cb) {
 
 function makePathArray (obj) {
   return flattenDeep(obj)
-      .join('.')
-      .replace('[', '.')
-      .replace(']', '')
-      .split('.')
+    .join('.')
+    .replace('[', '.')
+    .replace(']', '')
+    .split('.')
 }
 
 function pickBy (obj, cb) {
