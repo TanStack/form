@@ -25,20 +25,6 @@ class Form extends React.Component {
   constructor (props) {
     super(props)
 
-    const { defaultValues, values, loadState } = this.props
-
-    const mergedValues = {
-      ...defaultValues,
-      ...values,
-    }
-
-    this.state = loadState(this.props, this) || {
-      values: mergedValues,
-      touched: {},
-      errors: this.validate(mergedValues),
-      nestedErrors: {},
-    }
-
     this.setAllValues = this.setAllValues.bind(this)
     this.setValue = this.setValue.bind(this)
     this.getValue = this.getValue.bind(this)
@@ -52,6 +38,27 @@ class Form extends React.Component {
     this.setAllTouched = this.setAllTouched.bind(this)
     this.resetForm = this.resetForm.bind(this)
     this.submitForm = this.submitForm.bind(this)
+    this.getDefaultState = this.getDefaultState.bind(this) // using 'Default' since `Initial` will now throw deprecation warnings
+
+    this.state = this.getDefaultState()
+  }
+
+  getDefaultState () {
+    const { defaultValues, values, loadState } = this.props
+
+    const mergedValues = {
+      ...defaultValues,
+      ...values,
+    }
+
+    return (
+      loadState(this.props, this) || {
+        values: mergedValues,
+        touched: {},
+        errors: {},
+        nestedErrors: {},
+      }
+    )
   }
 
   getChildContext () {
@@ -181,7 +188,7 @@ class Form extends React.Component {
   }
 
   resetForm () {
-    return this.setFormState(this.getInitialState())
+    return this.setFormState(this.getDefaultState(), true)
   }
 
   submitForm (e) {

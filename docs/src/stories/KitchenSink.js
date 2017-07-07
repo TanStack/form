@@ -98,7 +98,8 @@ class Story extends React.Component {
             submitForm,
             addValue,
             removeValue,
-            getError
+            getError,
+            resetForm
           }) => {
             // This is a stateless component, but you can use any valid react component to render your form.
             // Forms also supply plenty of useful props for your components to utilize. See the docs for a complete list.
@@ -240,6 +241,9 @@ class Story extends React.Component {
                 {/* // Since this is the parent form, let's put a submit button in there ;) */}
                 {/* // You can submit your form however you want, as long as you call the `submitForm` callback */}
                 <button>Submit</button>
+                <button type="button" onClick={resetForm}>
+                  Reset Form
+                </button>
                 <br />
                 <br />
                 <hr />
