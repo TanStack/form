@@ -17,14 +17,27 @@ export const FormDefaultProps = {
   preSubmit: reop,
   onSubmit: noop,
   postSubmit: noop,
-  component: 'div'
 }
 
 class Form extends React.Component {
+  static defaultProps = FormDefaultProps
+  static childContextTypes = { formAPI: PropTypes.object }
   constructor (props) {
     super(props)
 
-    this.state = this.getInitialState()
+    const { defaultValues, values, loadState } = this.props
+
+    const mergedValues = {
+      ...defaultValues,
+      ...values,
+    }
+
+    this.state = loadState(this.props, this) || {
+      values: mergedValues,
+      touched: {},
+      errors: this.validate(mergedValues),
+      nestedErrors: {},
+    }
 
     this.setAllValues = this.setAllValues.bind(this)
     this.setValue = this.setValue.bind(this)
@@ -39,32 +52,11 @@ class Form extends React.Component {
     this.setAllTouched = this.setAllTouched.bind(this)
     this.resetForm = this.resetForm.bind(this)
     this.submitForm = this.submitForm.bind(this)
-    this.getInitialState = this.getInitialState.bind(this)
-  }
-
-  getInitialState () {
-    const {
-      defaultValues,
-      values,
-      loadState
-    } = this.props
-
-    const mergedValues = {
-      ...defaultValues,
-      ...values
-    }
-
-    return loadState(this.props, this) || {
-      values: mergedValues,
-      touched: {},
-      errors: this.validate(mergedValues),
-      nestedErrors: {}
-    }
   }
 
   getChildContext () {
     return {
-      formAPI: this.getAPI()
+      formAPI: this.getAPI(),
     }
   }
 
@@ -77,9 +69,12 @@ class Form extends React.Component {
       return
     }
 
-    this.setFormState({
-      values: props.values || {}
-    }, true)
+    this.setFormState(
+      {
+        values: props.values || {},
+      },
+      true
+    )
   }
 
   componentWillUmount () {
@@ -89,9 +84,9 @@ class Form extends React.Component {
   // API
   setAllValues (values, noTouch) {
     if (noTouch) {
-      return this.setFormState({values})
+      return this.setFormState({ values })
     }
-    this.setFormState({values, touched: {}})
+    this.setFormState({ values, touched: {} })
   }
 
   setValue (field, value, noTouch) {
@@ -99,10 +94,10 @@ class Form extends React.Component {
     const values = _.set(state.values, field, value)
     // Also set touched since the value is changing
     if (noTouch) {
-      return this.setFormState({values})
+      return this.setFormState({ values })
     }
     const touched = _.set(state.touched, field)
-    this.setFormState({values, touched})
+    this.setFormState({ values, touched })
   }
 
   getValue (field, fallback) {
@@ -113,7 +108,7 @@ class Form extends React.Component {
 
   setNestedError (field, value = true) {
     const nestedErrors = _.set(this.state.nestedErrors, field, value)
-    this.setFormState({nestedErrors})
+    this.setFormState({ nestedErrors })
   }
 
   getError (field) {
@@ -122,7 +117,7 @@ class Form extends React.Component {
 
   setTouched (field, value = true) {
     const touched = _.set(this.state.touched, field, value)
-    this.setFormState({touched})
+    this.setFormState({ touched })
   }
 
   getTouched (field) {
@@ -137,9 +132,9 @@ class Form extends React.Component {
     const state = this.state
     const values = _.set(state.values, field, [
       ..._.get(state.values, field, []),
-      value
+      value,
     ])
-    this.setFormState({values})
+    this.setFormState({ values })
   }
 
   removeValue (field, index) {
@@ -147,9 +142,9 @@ class Form extends React.Component {
     const fieldValue = _.get(state.values, field, [])
     const values = _.set(state.values, field, [
       ...fieldValue.slice(0, index),
-      ...fieldValue.slice(index + 1)
+      ...fieldValue.slice(index + 1),
     ])
-    this.setFormState({values})
+    this.setFormState({ values })
   }
 
   swapValues (field, index, destIndex) {
@@ -164,15 +159,15 @@ class Form extends React.Component {
       fieldValues[max],
       ...fieldValues.slice(min + 1, max),
       fieldValues[min],
-      ...fieldValues.slice(max + 1)
+      ...fieldValues.slice(max + 1),
     ])
-    this.setFormState({values})
+    this.setFormState({ values })
   }
 
   setAllTouched (dirty = true, state) {
     this.setFormState({
       ...state,
-      dirty: !!dirty
+      dirty: !!dirty,
     })
   }
 
@@ -186,11 +181,16 @@ class Form extends React.Component {
     const errors = this.validate(state.values, state, this.props)
     if (errors) {
       if (!state.dirty) {
-        this.setAllTouched(true, {errors})
+        this.setAllTouched(true, { errors })
       }
       return this.props.onValidationFail(state.values, state, this.props, this)
     }
-    const preSubmitValues = this.props.preSubmit(state.values, state, this.props, this)
+    const preSubmitValues = this.props.preSubmit(
+      state.values,
+      state,
+      this.props,
+      this
+    )
     this.props.onSubmit(preSubmitValues, state, this.props, this)
     this.props.postSubmit(preSubmitValues, state, this.props, this)
   }
@@ -210,13 +210,18 @@ class Form extends React.Component {
       swapValues: this.swapValues,
       setAllTouched: this.setAllTouched,
       resetForm: this.resetForm,
-      submitForm: this.submitForm
+      submitForm: this.submitForm,
     }
   }
 
   setFormState (newState, silent) {
     if (newState && newState.values && !newState.errors) {
-      newState.values = this.props.preValidate(newState.values, newState, this.props, this)
+      newState.values = this.props.preValidate(
+        newState.values,
+        newState,
+        this.props,
+        this
+      )
       newState.errors = this.validate(newState.values, newState, this.props)
     }
     this.setState(newState, () => {
@@ -233,7 +238,10 @@ class Form extends React.Component {
 
   validate (values, state, props) {
     const errors = this.props.validate(
-      removeNestedErrorValues(values, this.state ? this.state.nestedErrors : {}),
+      removeNestedErrorValues(
+        values,
+        this.state ? this.state.nestedErrors : {}
+      ),
       state,
       props,
       this
@@ -245,23 +253,14 @@ class Form extends React.Component {
     const props = {
       ...this.props,
       ...this.state,
-      ...this.getAPI()
+      ...this.getAPI(),
     }
-    const { component, children, ...rest } = props
-    const resolvedChild = typeof children === 'function' ? children(rest) : children
-    const RootEl = component
-    if (!RootEl) {
-      return resolvedChild
-    }
-    return (
-      <RootEl className='ReactForm'>{resolvedChild}</RootEl>
-    )
+    const { children, ...rest } = props
+    const resolvedChild =
+      typeof children === 'function' ? children(rest) : children
+    return resolvedChild
   }
 }
-
-Form.displayName = 'Form'
-Form.defaultProps = FormDefaultProps
-Form.childContextTypes = { formAPI: PropTypes.object }
 
 export default Form
 

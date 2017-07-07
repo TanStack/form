@@ -29,11 +29,14 @@ class Story extends React.Component {
           }
         }}
       >
-        <Text field="street" placeholder="Street" />
-        <br />
-        <Text field="city" placeholder="City" />
-        <br />
-        <Text field="state" placeholder="State" />
+        {() =>
+          <div>
+            <Text field="street" placeholder="Street" />
+            <br />
+            <Text field="city" placeholder="City" />
+            <br />
+            <Text field="state" placeholder="State" />
+          </div>}
       </Form>
     )
 
@@ -56,21 +59,23 @@ class Story extends React.Component {
             } = values
             return {
               name: !name ? 'A name is required' : undefined,
-              hobby: hobby && hobby.length < 5
-                ? 'Your hobby must be at least 5 characters long'
-                : false,
+              hobby:
+                hobby && hobby.length < 5
+                  ? 'Your hobby must be at least 5 characters long'
+                  : false,
               status: !status ? 'A status is required' : null,
-              friends: !friends || !friends.length
-                ? 'You need at least one friend!'
-                : friends.map(friend => {
-                    const { name, relationship } = friend
-                    return {
-                      name: !name ? 'A name is required' : undefined,
-                      relationship: !relationship
-                        ? 'A relationship is required'
-                        : undefined
-                    }
-                  }),
+              friends:
+                !friends || !friends.length
+                  ? 'You need at least one friend!'
+                  : friends.map(friend => {
+                      const { name, relationship } = friend
+                      return {
+                        name: !name ? 'A name is required' : undefined,
+                        relationship: !relationship
+                          ? 'A relationship is required'
+                          : undefined
+                      }
+                    }),
               address: !address ? 'A valid address is required' : 0,
               notificationType: !notificationType
                 ? 'A notification type is required'
@@ -99,16 +104,19 @@ class Story extends React.Component {
             // Forms also supply plenty of useful props for your components to utilize. See the docs for a complete list.
             return (
               <form onSubmit={submitForm}>
-                {' '}
-                {/* When the form is submitted, call the `sumbitForm` callback prop */}
+                {' '}{/* When the form is submitted, call the `sumbitForm` callback prop */}
                 <div>
                   <h6>Full Name</h6>
                   <Text // This is the built-in Text formInput
                     field="name" // field is a string version of the field location
                     placeholder="Your name" // all other props are sent through to the underlying component, in this case an <input />
+                    errorProps={{
+                      style: {
+                        background: 'blue'
+                      }
+                    }}
                   />
                 </div>
-
                 <div>
                   <h6>Relationship Status</h6>
                   <Select // This is the built-in Select formInput
@@ -130,7 +138,6 @@ class Story extends React.Component {
                     ]}
                   />
                 </div>
-
                 <div>
                   <h6>Short Bio</h6>
                   <Textarea // This is the built-in Textarea formInput
@@ -138,7 +145,6 @@ class Story extends React.Component {
                     placeholder="Short Bio"
                   />
                 </div>
-
                 {/* Arrays in forms are super easy to handle */}
                 <h6>Friends</h6>
                 {/* This is a custom form error for the root of the friends list (see validation function) */}
@@ -146,9 +152,11 @@ class Story extends React.Component {
                 <div className="nested">
                   {!values.friends.length
                     ? <em>No friends have been added yet</em>
-                    : values.friends.map((friends, i) => ( // Loop over the values however you'd like
+                    : values.friends.map((
+                        friends,
+                        i // Loop over the values however you'd like
+                      ) =>
                         <div key={i}>
-
                           <div>
                             <h6>Full Name</h6>
                             <Text
@@ -184,11 +192,9 @@ class Story extends React.Component {
                           >
                             Remove Friend
                           </button>
-
                         </div>
-                      ))}
+                      )}
                 </div>
-
                 <div>
                   <button // This button will add a new blank friend item to the `friends` field
                     type="button"
@@ -197,7 +203,6 @@ class Story extends React.Component {
                     Add Friend
                   </button>
                 </div>
-
                 <div>
                   <h6>Address</h6>
                   {/* An address has a couple of parts to it, and will probably have its own validation function. */}
@@ -207,55 +212,43 @@ class Story extends React.Component {
                     {/* This is our reusable address form (see below) */}
                   </NestedForm>
                 </div>
-
                 <div>
                   <label>
-                    <Checkbox field="createAccount" />
-                    {' '}
+                    <Checkbox field="createAccount" />{' '}
                     {/*This is the built-in checkbox formInput*/}
                     <span>Create Account?</span>
                   </label>
                 </div>
-
                 <div>
                   <h6>Notify me via</h6>
                   <RadioGroup field="notificationType">
                     {' '}{/*This is the built-in radio formInput*/}
                     <label>
-                      <Radio value="email" />
-                      {' '}
+                      <Radio value="email" />{' '}
                       {/*This is the built-in radio formInput*/}
                       <span>Email</span>
                     </label>
                     <label>
-                      <Radio value="text" />
-                      {' '}
+                      <Radio value="text" />{' '}
                       {/*This is the built-in radio formInput*/}
                       <span>Text</span>
                     </label>
                     <label>
-                      <Radio value="phone" />
-                      {' '}
+                      <Radio value="phone" />{' '}
                       {/*This is the built-in radio formInput*/}
                       <span>Phone</span>
                     </label>
                   </RadioGroup>
                 </div>
-
                 <br />
                 <br />
-
                 {/* // Since this is the parent form, let's put a submit button in there ;) */}
                 {/* // You can submit your form however you want, as long as you call the `submitForm` callback */}
-                <button>
-                  Submit
-                </button>
-
+                <button>Submit</button>
                 <br />
                 <br />
                 <hr />
                 <br />
-
                 <strong>Values</strong>
                 <CodeHighlight language="javascript">
                   {JSON.stringify(values, null, 2)}
@@ -288,9 +281,12 @@ class Story extends React.Component {
 // Source Code
 const source = require('!raw!./KitchenSink')
 
-export default () => (
+export default () =>
   <div>
     <Story />
-    <strong>Source: </strong><br /><CodeHighlight>{source}</CodeHighlight>
+    <strong>Source: </strong>
+    <br />
+    <CodeHighlight>
+      {source}
+    </CodeHighlight>
   </div>
-)

@@ -11,16 +11,25 @@ export default function FormInputText ({
   onBlur,
   isForm,
   noTouch,
+  errorProps,
   ...rest
 }) {
   return (
-    <FormInput field={field} showErrors={showErrors} errorBefore={errorBefore} isForm={isForm}>
-      {({setValue, getValue, setTouched}) => {
+    <FormInput
+      field={field}
+      showErrors={showErrors}
+      errorBefore={errorBefore}
+      isForm={isForm}
+      errorProps={errorProps}
+    >
+      {({ setValue, getValue, setTouched }) => {
         return (
           <input
             {...rest}
             value={getValue('')}
-            onChange={buildHandler(onChange, e => setValue(e.target.value, noTouch))}
+            onChange={buildHandler(onChange, e =>
+              setValue(e.target.value, noTouch)
+            )}
             onBlur={buildHandler(onBlur, () => setTouched())}
           />
         )

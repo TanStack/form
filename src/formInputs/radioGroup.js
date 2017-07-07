@@ -5,18 +5,32 @@ import FormInput from '../formInput'
 
 export default class RadioGroup extends React.Component {
   static childContextTypes = {
-    formRadioGroup: PropTypes.object
+    formRadioGroup: PropTypes.object,
   }
   getChildContext () {
     return {
-      formRadioGroup: this
+      formRadioGroup: this,
     }
   }
   render () {
-    const { field, showErrors, errorBefore = true, isForm, children, ...rest } = this.props
+    const {
+      field,
+      showErrors,
+      errorBefore = true,
+      isForm,
+      errorProps,
+      children,
+      ...rest
+    } = this.props
     return (
-      <FormInput field={field} showErrors={showErrors} errorBefore={errorBefore} isForm={isForm}>
-        {(api) => {
+      <FormInput
+        field={field}
+        showErrors={showErrors}
+        errorBefore={errorBefore}
+        isForm={isForm}
+        errorProps={errorProps}
+      >
+        {api => {
           Object.assign(this, api)
           return (
             <radiogroup {...rest}>

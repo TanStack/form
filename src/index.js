@@ -24,5 +24,5 @@ module.exports = {
   NestedForm,
   Text,
   RadioGroup,
-  Radio
+  Radio,
 }

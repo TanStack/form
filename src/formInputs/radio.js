@@ -6,11 +6,16 @@ const noop = () => {}
 
 export default class Radio extends React.Component {
   static contextTypes = {
-    formRadioGroup: PropTypes.object
+    formRadioGroup: PropTypes.object,
   }
   render () {
     const { value, onClick, onChange, onBlur, ...rest } = this.props
-    const {setValue, getValue, setTouched, props: { noTouch }} = this.context.formRadioGroup
+    const {
+      setValue,
+      getValue,
+      setTouched,
+      props: { noTouch },
+    } = this.context.formRadioGroup
     return (
       <input
         {...rest}

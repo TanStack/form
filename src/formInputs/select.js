@@ -12,22 +12,36 @@ export default function FormInputSelect ({
   onBlur,
   isForm,
   noTouch,
+  errorProps,
   ...rest
 }) {
   return (
-    <FormInput field={field} showErrors={showErrors} errorBefore={errorBefore} isForm={isForm}>
-      {({setValue, getValue, setTouched}) => {
-        const resolvedOptions = options.find(d => d.value === '') ? options : [{
-          label: 'Select One...',
-          value: '',
-          disabled: true
-        }, ...options]
-        const selectedIndex = resolvedOptions.findIndex(d => d.value === getValue())
+    <FormInput
+      field={field}
+      showErrors={showErrors}
+      errorBefore={errorBefore}
+      isForm={isForm}
+      errorProps={errorProps}
+    >
+      {({ setValue, getValue, setTouched }) => {
+        const resolvedOptions = options.find(d => d.value === '')
+          ? options
+          : [
+            {
+              label: 'Select One...',
+              value: '',
+              disabled: true,
+            },
+            ...options,
+          ]
+        const selectedIndex = resolvedOptions.findIndex(
+          d => d.value === getValue()
+        )
         const nullIndex = resolvedOptions.findIndex(d => d.value === '')
         return (
           <select
             {...rest}
-            onChange={buildHandler(onChange, (e) => {
+            onChange={buildHandler(onChange, e => {
               const val = resolvedOptions[e.target.value].value
               setValue(val, noTouch)
             })}
@@ -36,11 +50,7 @@ export default function FormInputSelect ({
           >
             {resolvedOptions.map((option, i) => {
               return (
-                <option
-                  key={i}
-                  value={i}
-                  disabled={option.disabled}
-                >
+                <option key={i} value={i} disabled={option.disabled}>
                   {option.label}
                 </option>
               )

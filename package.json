@@ -29,8 +29,8 @@
     "umd": "rimraf react-form.js && webpack --config umd.webpack.js",
     "prepublish": "npm-run-all build:* && npm run umd",
     "postpublish": "git push --tags",
-    "docs": "cd docs && yarn && yarn start",
-    "docs:build": "cd docs && yarn && yarn run build"
+    "docs": "yarn watch & cd docs && yarn && yarn start",
+    "docs:build": "yarn build && cd docs && yarn && yarn run build"
   },
   "dependencies": {
     "classnames": "^2.2.5",
@@ -48,6 +48,13 @@
     "babel-preset-stage-2": "^6.13.0",
     "babelify": "^7.3.0",
     "browserify": "^13.1.0",
+    "eslint": "^4.1.1",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.1.0",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-react": "^7.1.0",
+    "eslint-plugin-standard": "^3.0.1",
     "github-markdown-css": "^2.4.1",
     "html-loader": "^0.4.4",
     "markdown-loader": "^0.1.7",

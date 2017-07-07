@@ -11,17 +11,26 @@ export default function FormInputCheckbox ({
   onBlur,
   isForm,
   noTouch,
+  errorProps,
   ...rest
 }) {
   return (
-    <FormInput field={field} showErrors={showErrors} errorBefore={errorBefore} isForm={isForm}>
-      {({setValue, getValue, setTouched}) => {
+    <FormInput
+      field={field}
+      showErrors={showErrors}
+      errorBefore={errorBefore}
+      isForm={isForm}
+      errorProps={errorProps}
+    >
+      {({ setValue, getValue, setTouched }) => {
         return (
           <input
             {...rest}
             type='checkbox'
             checked={getValue(false)}
-            onChange={buildHandler(onChange, e => setValue(e.target.checked, noTouch))}
+            onChange={buildHandler(onChange, e =>
+              setValue(e.target.checked, noTouch)
+            )}
             onBlur={buildHandler(onBlur, () => setTouched())}
           />
         )
