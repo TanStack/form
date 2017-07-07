@@ -65,13 +65,22 @@ class Form extends React.Component {
   }
 
   componentWillReceiveProps (props) {
-    if (props.values === this.props.values) {
+    const { defaultValues, values } = props
+    if (
+      this.props.defaultValues === defaultValues &&
+      this.props.values === values
+    ) {
       return
     }
 
+    const mergedValues =
+      this.props.defaultValues === defaultValues
+        ? values
+        : { ...defaultValues, ...values }
+
     this.setFormState(
       {
-        values: props.values || {},
+        values: mergedValues || {},
       },
       true
     )
