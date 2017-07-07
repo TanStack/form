@@ -13,6 +13,7 @@ export default function FormInputSelect ({
   isForm,
   noTouch,
   errorProps,
+  placeholder,
   ...rest
 }) {
   return (
@@ -28,7 +29,7 @@ export default function FormInputSelect ({
           ? options
           : [
             {
-              label: 'Select One...',
+              label: placeholder || 'Select One...',
               value: '',
               disabled: true,
             },
@@ -50,7 +51,7 @@ export default function FormInputSelect ({
           >
             {resolvedOptions.map((option, i) => {
               return (
-                <option key={i} value={i} disabled={option.disabled}>
+                <option key={option.value} value={i} disabled={option.disabled}>
                   {option.label}
                 </option>
               )
