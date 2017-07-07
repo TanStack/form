@@ -4629,6 +4629,10 @@ react-fastclick@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/react-fastclick/-/react-fastclick-3.0.1.tgz#e438f9a63cad77c0bb61bb7fa4fd6668451ed83d"
 
+react-fastclick@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/react-fastclick/-/react-fastclick-3.0.2.tgz#2994c60088cda90b0b2cbfac4b6e7c6bc73d6a3a"
+
 react-html-attributes@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/react-html-attributes/-/react-html-attributes-1.3.0.tgz#c97896e9cac47ad9c4e6618b835029a826f5d28c"

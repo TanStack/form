@@ -26,7 +26,7 @@ export default function FormInputTextarea ({
         return (
           <textarea
             {...rest}
-            value={getValue()}
+            value={getValue('')}
             onChange={buildHandler(onChange, e =>
               setValue(e.target.value, noTouch)
             )}
