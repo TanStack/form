@@ -110,11 +110,6 @@ class Story extends React.Component {
                   <Text // This is the built-in Text formInput
                     field="name" // field is a string version of the field location
                     placeholder="Your name" // all other props are sent through to the underlying component, in this case an <input />
-                    errorProps={{
-                      style: {
-                        background: 'blue'
-                      }
-                    }}
                   />
                 </div>
                 <div>

@@ -885,6 +885,7 @@ Object.assign(FormDefaultProps, {
 - If the `showErrors` prop is set to `false`, errors will be hidden
 - If the `errorBefore` prop is set to `true`, any error will be shown before the component, instead of after
 - If the `isForm` props is set to `true`, the field error will only be shown if the parent form has been unsuccessfully submitted. This is normally only used for `NestedForm` components to avoid unnecessary or duplicate error messages.
+- If the `errorProps` props is present, this object's properties will be forwarded to the underlying `FormError` component used in `FormInput`
 
 **Example** - A simple wrapper for React Select
 ```javascript
