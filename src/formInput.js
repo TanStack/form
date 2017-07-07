@@ -21,11 +21,7 @@ export default function FormInput ({
         const classes = classnames(
           'FormInput',
           {
-            '-hasError':
-              !errorBefore &&
-              showAnyErrors &&
-              api.getTouched() &&
-              api.getError(),
+            '-hasError': showAnyErrors && api.getTouched() && api.getError(),
           },
           className
         )
