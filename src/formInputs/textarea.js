@@ -12,6 +12,7 @@ export default function FormInputTextarea ({
   isForm,
   noTouch,
   errorProps,
+  wrapperClassName,
   ...rest
 }) {
   return (
@@ -21,6 +22,7 @@ export default function FormInputTextarea ({
       errorBefore={errorBefore}
       isForm={isForm}
       errorProps={errorProps}
+      className={wrapperClassName}
     >
       {({ setValue, getValue, setTouched }) => {
         return (
