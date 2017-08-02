@@ -9,11 +9,12 @@ export default React.createClass({
     formRadioGroup: PropTypes.object
   },
   render () {
-    const { value, onClick, onChange, onBlur, ...rest } = this.props
+    const { value, onClick, onChange, onBlur, inputRef, ...rest } = this.props
     const {setValue, getValue, setTouched, props: { noTouch }} = this.context.formRadioGroup
     return (
       <input
         {...rest}
+        ref={inputRef}
         type='radio'
         checked={getValue(false) === value}
         onChange={buildHandler(onChange, noop)}

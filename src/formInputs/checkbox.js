@@ -11,6 +11,7 @@ export default function FormInputCheckbox ({
   onBlur,
   isForm,
   noTouch,
+  inputRef,
   ...rest
 }) {
   return (
@@ -19,6 +20,7 @@ export default function FormInputCheckbox ({
         return (
           <input
             {...rest}
+            ref={inputRef}
             type='checkbox'
             checked={getValue(false)}
             onChange={buildHandler(onChange, e => setValue(e.target.checked, noTouch))}
