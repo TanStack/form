@@ -26,7 +26,7 @@ export default function FormInputNestedForm ({
           touched: getTouched(),
           /* Notify the parent of any nestedForm-level errors and values */
           onChange: ({ values, errors }, props, initial) => {
-            errors ? setNestedError(true) : setNestedError(false)
+            errors && Object.keys(errors).length > 0 ? setNestedError(true) : setNestedError(false)
             setValue(values, initial)
           },
         })
