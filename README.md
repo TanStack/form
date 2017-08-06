@@ -987,7 +987,7 @@ const example = (
       field='employed'
       options={[{
         label: 'Employed',
-        values: true
+        value: true
       }, {
         label: 'Unemployed',
         value: false
