@@ -53,7 +53,7 @@ class Form extends React.Component {
 
     return (
       loadState(this.props, this) || {
-        values: mergedValues,
+        values: _.clone(mergedValues),
         touched: {},
         errors: {},
         nestedErrors: {},
@@ -87,7 +87,7 @@ class Form extends React.Component {
 
     this.setFormState(
       {
-        values: mergedValues || {},
+        values: !!mergedValues ? _.clone(mergedValues) : {},
       },
       true
     )
