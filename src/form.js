@@ -87,7 +87,7 @@ class Form extends React.Component {
 
     this.setFormState(
       {
-        values: !!mergedValues ? _.clone(mergedValues) : {},
+        values: mergedValues ? _.clone(mergedValues) : {},
       },
       true
     )
