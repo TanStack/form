@@ -9,13 +9,13 @@ export default function FormError ({ field, className, style }) {
       {({ getTouched, getError }) => {
         const touched = getTouched()
         const error = getError()
-        const styles = {
-          display: touched && error ? 'block' : 'none',
+        if (!(touched && typeof error === 'string' && error)) {
+          return null
         }
         const classes = classnames('FormError', className)
         return (
-          <div className={classes} style={Object.assign({}, styles, style)}>
-            {touched && typeof error === 'string' ? error : ''}
+          <div className={classes} style={style}>
+            {error}
           </div>
         )
       }}
