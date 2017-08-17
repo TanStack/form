@@ -167,6 +167,34 @@ const MyForm = (
               }]}
             />
           </div>
+          
+          <div>
+            <h6>Favorite Heros</h6>
+            <Select // This is the built-in Select formInput
+              field='heros'
+              options={[
+                {
+                  // You can ship it some options like usual
+                  label: 'Batman',
+                  value: 'batman'
+                },
+                {
+                  label: 'Superman',
+                  value: 'superman'
+                },
+                {
+                  label: "Catwoman",
+                  value: 'catwoman'
+                },
+                {
+                  label: "Joker",
+                  value: 'joker'
+                }
+              ]}
+              placeholder="choose all your favorite heros"
+              multiple // allows multiple selection
+            />
+          </div>
 
           <div>
             <h6>Short Bio</h6>
