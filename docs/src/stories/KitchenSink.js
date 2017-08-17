@@ -53,6 +53,7 @@ class Story extends React.Component {
               name,
               hobby,
               status,
+              heros,
               friends,
               address,
               notificationType
@@ -64,6 +65,7 @@ class Story extends React.Component {
                   ? 'Your hobby must be at least 5 characters long'
                   : false,
               status: !status ? 'A status is required' : null,
+              heros: !heros || !heros.length ? 'At least one hero is required' : null,
               friends:
                 !friends || !friends.length
                   ? 'You need at least one friend!'
@@ -132,6 +134,33 @@ class Story extends React.Component {
                         value: 'complicated'
                       }
                     ]}
+                  />
+                </div>
+                <div>
+                  <h6>Favorite Heros</h6>
+                  <Select // This is the built-in Select formInput
+                    field="heros"
+                    options={[
+                      {
+                        // You can ship it some options like usual
+                        label: 'Batman',
+                        value: 'batman'
+                      },
+                      {
+                        label: 'Superman',
+                        value: 'superman'
+                      },
+                      {
+                        label: "Catwoman",
+                        value: 'catwoman'
+                      },
+                      {
+                        label: "Joker",
+                        value: 'joker'
+                      }
+                    ]}
+                    placeholder="choose all your favorite heros"
+                    multiple
                   />
                 </div>
                 <div>
