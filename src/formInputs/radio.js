@@ -9,7 +9,7 @@ export default class Radio extends React.Component {
     formRadioGroup: PropTypes.object,
   }
   render () {
-    const { value, onClick, onChange, onBlur, ...rest } = this.props
+    const { value, onClick, onChange, onBlur, inputRef, ...rest } = this.props
     const {
       setValue,
       getValue,
@@ -19,6 +19,7 @@ export default class Radio extends React.Component {
     return (
       <input
         {...rest}
+        ref={inputRef}
         type='radio'
         checked={getValue(false) === value}
         onChange={buildHandler(onChange, noop)}

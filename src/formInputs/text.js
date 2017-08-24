@@ -12,6 +12,7 @@ export default function FormInputText ({
   isForm,
   noTouch,
   errorProps,
+  inputRef,
   ...rest
 }) {
   return (
@@ -26,6 +27,7 @@ export default function FormInputText ({
         return (
           <input
             {...rest}
+            ref={inputRef}
             value={getValue('')}
             onChange={buildHandler(onChange, e =>
               setValue(e.target.value, noTouch)

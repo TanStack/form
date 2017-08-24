@@ -13,6 +13,7 @@ export default function FormInputSelect ({
   isForm,
   noTouch,
   errorProps,
+  inputRef,
   placeholder,
   ...rest
 }) {
@@ -42,6 +43,7 @@ export default function FormInputSelect ({
         return (
           <select
             {...rest}
+            ref={inputRef}
             onChange={buildHandler(onChange, e => {
               const val = resolvedOptions[e.target.value].value
               setValue(val, noTouch)

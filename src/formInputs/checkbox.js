@@ -12,6 +12,7 @@ export default function FormInputCheckbox ({
   isForm,
   noTouch,
   errorProps,
+  inputRef,
   ...rest
 }) {
   return (
@@ -26,6 +27,7 @@ export default function FormInputCheckbox ({
         return (
           <input
             {...rest}
+            ref={inputRef}
             type='checkbox'
             checked={getValue()}
             onChange={buildHandler(onChange, e =>
