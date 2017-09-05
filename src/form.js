@@ -207,7 +207,7 @@ class Form extends React.Component {
       this.props,
       this
     )
-    this.props.onSubmit(preSubmitValues, state, this.props, this)
+    this.props.onSubmit(preSubmitValues, state, this.props, e, this)
     this.props.postSubmit(preSubmitValues, state, this.props, this)
   }
 
