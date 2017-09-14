@@ -98,7 +98,7 @@ const myForm = (
 
 ### Hints for production build
 If you use only few `react-form` components and you care about your app's bundle size, you can use direct imports instead of named imports:
-- Higher order components:
+- for higher-order components:
 ```
 // named import
 import { Form, FormField } from 'react-form';
@@ -107,7 +107,7 @@ import { Form, FormField } from 'react-form';
 import Form from 'react-form/lib/form';
 import FormField from 'react-form/lib/formField';
 ```
-- Form components:
+- for Form components:
 ```
 // named import
 import { Text, Select } from 'react-form';
@@ -116,6 +116,8 @@ import { Text, Select } from 'react-form';
 import Text from 'react-form/lib/formInputs/text';
 import Select from 'react-form/lib/formInputs/select';
 ```
+
+This way you can avoid whole library to be included into your bundle.
 
 ## Annotated Demo Example
 This is an annotated example of the demo, demonstrating a majority of React-Form's features.
