@@ -43,6 +43,7 @@ React Form is a powerful and lightweight form framework for React.
 ## Table of Contents
 - [Installation](#installation)
 - [Example](#example)
+- [Hints for production build](#hints-for-production-build)
 - [Annotated Demo Example](#annotated-demo-example)
 - [Custom Input Example](#custom-input-example)
 - [API](#api)
@@ -95,6 +96,33 @@ const myForm = (
   </Form>
 )
 ```
+
+## Hints for production build
+If you use only few `react-form` components and you care about your app's bundle size, you can use direct imports instead of named imports:
+
+- for higher-order components:
+
+```javascript
+// named import
+import { Form, FormField } from 'react-form';
+
+// direct imports
+import Form from 'react-form/lib/form';
+import FormField from 'react-form/lib/formField';
+```
+
+- for Form components:
+
+```javascript
+// named import
+import { Text, Select } from 'react-form';
+
+// direct imports
+import Text from 'react-form/lib/formInputs/text';
+import Select from 'react-form/lib/formInputs/select';
+```
+
+This way you can avoid whole library to be included into your bundle.
 
 ## Annotated Demo Example
 This is an annotated example of the demo, demonstrating a majority of React-Form's features.
