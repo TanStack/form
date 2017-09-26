@@ -72,10 +72,11 @@ class Form extends React.Component {
   }
 
   componentWillReceiveProps (props) {
-    const { defaultValues, values } = props
+    const { defaultValues } = props
+    const { values } = this.state
     if (
       this.props.defaultValues === defaultValues &&
-      this.props.values === values
+      this.state.values === values
     ) {
       return
     }
