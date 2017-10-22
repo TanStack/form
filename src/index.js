@@ -1,28 +1,25 @@
-import Form, { FormDefaultProps } from './form'
-import FormField from './formField'
-import FormError from './formError'
-import FormInput from './formInput'
-// Inputs
-import Select from './formInputs/select'
-import Checkbox from './formInputs/checkbox'
-import Textarea from './formInputs/textarea'
-import NestedForm from './formInputs/nestedForm'
-import Text from './formInputs/text'
-import RadioGroup from './formInputs/radioGroup'
-import Radio from './formInputs/radio'
+/* ---------- imports ---------- */
 
-module.exports = {
+import Form from './components/ReduxForm';
+import Text from './components/form-fields/Text';
+import Radio from './components/form-fields/Radio';
+import TextArea from './components/form-fields/TextArea';
+import Select from './components/form-fields/Select';
+import Checkbox from './components/form-fields/Checkbox';
+import RadioGroup from './components/form-fields/RadioGroup';
+import NestedForm from './components/form-fields/NestedForm';
+import FormField from './components/FormField';
+
+/* ---------- exports ---------- */
+
+export {
   Form,
-  FormDefaultProps,
-  FormField,
-  FormError,
-  FormInput,
-  // Inputs
-  Select,
-  Checkbox,
-  Textarea,
-  NestedForm,
   Text,
+  NestedForm,
+  FormField,
   RadioGroup,
   Radio,
-}
+  Select,
+  Checkbox,
+  TextArea
+};

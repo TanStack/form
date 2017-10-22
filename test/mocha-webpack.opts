@@ -1,0 +1,4 @@
+--webpack-config config/webpack/webpack.test.config.js
+--require babel-polyfill
+--require test/setup.js
+test/**/*.spec.js

@@ -1,58 +1,91 @@
 {
   "name": "react-form",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "description": "React Form is a lightweight framework and utility for building powerful forms in React applications.",
-  "license": "MIT",
-  "homepage": "https://github.com/tannerlinsley/react-form#readme",
+  "main": "index.js",
+  "scripts": {
+    "test": "NODE_ENV=test mocha-webpack --opts test/mocha-webpack.opts",
+    "test:watch": "npm run test -- --watch",
+    "start": "NODE_ENV=development webpack-dev-server -d --config config/webpack/webpack.dev.config.js --port 4005 --hot",
+    "build:dev": "NODE_ENV=development webpack --config config/webpack/webpack.dev.config.js",
+    "build:dist": "NODE_ENV=production webpack -p --config config/webpack/webpack.dist.config.js",
+    "build:prod": "NODE_ENV=production webpack -p --config config/webpack/webpack.prod.config.js",
+    "eslint": "eslint src/** --fix"
+  },
+  "author": {
+    "name": "Joseph Puzzo",
+    "email": "jgpuzzo2@gmail.com",
+    "url": "http://joepuzzo.github.io"
+  },
+  "keywords": [
+    "react",
+    "reactjs",
+    "redux",
+    "react-redux",
+    "redux-form",
+    "form",
+    "react-form",
+    "async",
+    "async-form",
+    "asynchronous-form",
+    "asynchronous"
+  ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tannerlinsley/react-form.git"
+    "url": "https://github.com/react-tools/react-form"
   },
-  "keywords": ["react", "form", "forms", "form builder", "nested forms"],
-  "main": "lib/index.js",
-  "files": ["lib/", "react-form.js", "react-form.css", "media/*.png"],
-  "scripts": {
-    "build": "babel src --out-dir lib --source-maps inline",
-    "watch": "onchange 'src/**' -i -- yarn build",
-    "test": "eslint src",
-    "umd": "rimraf react-form.js && webpack --config umd.webpack.js",
-    "prepublish": "yarn build && yarn umd",
-    "postpublish": "git push --tags",
-    "docs": "yarn watch & cd docs && yarn && yarn start",
-    "docs:build": "yarn build && cd docs && yarn && yarn run build"
-  },
+  "license": "MIT",
   "dependencies": {
-    "classnames": "^2.2.5",
-    "prop-types": "^15.5.10"
-  },
-  "peerDependencies": {
-    "react": "^15.3.1"
+    "prop-types": "^15.5.10",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.18.0",
-    "babel-eslint": "^7.1.1",
-    "babel-plugin-transform-object-assign": "^6.8.0",
-    "babel-preset-es2015": "^6.14.0",
-    "babel-preset-react": "^6.11.1",
-    "babel-preset-stage-2": "^6.13.0",
-    "eslint": "^4.1.1",
-    "eslint-config-standard": "^10.2.1",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^7.2.3",
+    "babel-loader": "^7.1.1",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "bootstrap": "^4.0.0-alpha.6",
+    "chai": "^4.1.1",
+    "copy-webpack-plugin": "^4.0.1",
+    "css-loader": "^0.28.5",
+    "enzyme": "^2.9.1",
+    "eslint": "^4.5.0",
+    "eslint-config-airbnb": "^15.1.0",
     "eslint-plugin-import": "^2.7.0",
-    "eslint-plugin-node": "^5.1.0",
-    "eslint-plugin-promise": "^3.5.0",
-    "eslint-plugin-react": "^7.1.0",
-    "eslint-plugin-standard": "^3.0.1",
-    "github-markdown-css": "^2.4.1",
-    "html-loader": "^0.4.4",
-    "markdown-loader": "^0.1.7",
-    "onchange": "^3.0.2",
-    "react": "^15.4.1",
-    "react-dom": "^15.4.1",
-    "rimraf": "^2.6.1",
-    "webpack": "^2.6.1"
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.3.0",
+    "jsdom": "^9.9.1",
+    "mocha": "^3.5.0",
+    "mocha-webpack": "^0.7.0",
+    "node-sass": "^4.5.3",
+    "prismjs": "^1.6.0",
+    "raw-loader": "^0.5.1",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-hot-loader": "^3.0.0-beta.7",
+    "react-prism": "^4.3.0",
+    "sass-loader": "^6.0.6",
+    "sinon": "^3.2.1",
+    "style-loader": "^0.18.2",
+    "url-loader": "^0.5.9",
+    "webpack": "^3.5.5",
+    "webpack-dev-server": "^2.7.1",
+    "webpack-node-externals": "^1.6.0"
   },
   "babel": {
-    "presets": ["es2015", "stage-2", "react"],
-    "plugins": ["transform-object-assign"]
+    "presets": [
+      "env",
+      "stage-0",
+      "react"
+    ],
+    "plugins": [
+      "react-hot-loader/babel"
+    ]
   }
 }
