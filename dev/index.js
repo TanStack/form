@@ -10,7 +10,7 @@ import Examples from './Examples';
 
 const render = (Component) => {
   ReactDOM.render(
-    <div className="container">
+    <div className="container-fluid">
       <Component />
     </div>,
     document.getElementById('app'),
