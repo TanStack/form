@@ -15,7 +15,7 @@ class Examples extends Component {
   render() {
     return (
       <div className="mt-4">
-        <h1>React Savage Form</h1>
+        <h1>React Form</h1>
         <hr /><br />
         <Intro />
         <hr /><br />

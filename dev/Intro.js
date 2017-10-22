@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { PrismCode } from 'react-prism';
 import rawStyles from 'raw-loader!./styles.txt';
 
+// TODO Break this file apart... its way to big :)
+
 /* ------------- Form  Library Imports -------------- */
 import {
   Form,
@@ -11,30 +13,75 @@ import {
 
 import Data from './Data';
 
-const formApiCodeExample = `
-import { Form, Text } from 'react-savage-form';
 
-const ExampleFormContent = (props) => {
-  return (
-    <form onSubmit={props.formApi.submitForm} id="form1">
-      <label htmlFor="hello">Hello World</label>
+const childRender =
+` <Form>
+    { formApi => (
+      <form onSubmit={formApi.submitForm}>
+        <Text field="hello" id="hello" />
+        <button type="submit">Submit</button>
+      </form>
+    )}
+  </Form>
+`;
+
+const renderRender =
+` <Form render={ formApi => (
+      <form onSubmit={formApi.submitForm}>
+        <Text field="hello" id="hello" />
+        <button type="submit">Submit</button>
+      </form>
+    )}>
+  </Form>
+`;
+
+const childChild =
+` const FormContent = props => (
+    <form onSubmit={props.formApi.submitForm}>
       <Text field="hello" id="hello" />
-      <button type="submit" className="btn btn-primary">Submit</button>
+      <button type="submit">Submit</button>
     </form>
   );
-}
+
+  <Form>
+    <FormContent />
+  </Form>
+`;
+
+const componentProp =
+` const FormContent = props => (
+    <form onSubmit={props.formApi.submitForm}>
+      <Text field="hello" id="hello" />
+      <button type="submit">Submit</button>
+    </form>
+  );
+
+  <Form component={FormContent} />
+`;
+
+const formApiCodeExample = `
+import { Form, Text } from 'react-form';
 
 const ExampleForm = ( ) => {
   return (
-    <Form>
-      <ExampleFormContent />
+    <Form
+      validateWarning={warningValidator}
+      validateSuccess={successValidator}
+      validateError={errorValidator} >
+      { formApi => (
+        <form onSubmit={formApi.submitForm} id="form1" className="mb-4">
+          <label htmlFor="hello">Hello World</label>
+          <Text field="hello" id="hello" />
+          <button type="submit" className="btn btn-primary">Submit</button>
+        </form>
+      )}
     </Form>
   );
 }
 `;
 
 const formApiCodeExampleWithValidation = `
-import { Form, Text } from 'react-savage-form';
+import { Form, Text } from 'react-form';
 
 const errorValidator = (values) => {
   return {
@@ -57,23 +104,19 @@ const successValidator = (values) => {
   };
 };
 
-const ExampleFormContent = (props) => {
-  return (
-    <form onSubmit={props.formApi.submitForm} id="form1">
-      <label htmlFor="hello">Hello World</label>
-      <Text field="hello" id="hello" />
-      <button type="submit" className="btn btn-primary">Submit</button>
-    </form>
-  );
-}
-
 const ExampleForm = ( ) => {
   return (
     <Form
       validateWarning={warningValidator}
       validateSuccess={successValidator}
-      validateError={errorValidator}>
-      <ExampleFormContent />
+      validateError={errorValidator} >
+      { formApi => (
+        <form onSubmit={formApi.submitForm} id="form1" className="mb-4">
+          <label htmlFor="hello">Hello World</label>
+          <Text field="hello" id="hello" />
+          <button type="submit" className="btn btn-primary">Submit</button>
+        </form>
+      )}
     </Form>
   );
 }
@@ -98,27 +141,25 @@ const successValidator = (values) => {
   };
 };
 
-const ExampleFormContent = (props) => {
-  return (
-    <div className="mb-4">
-      <form onSubmit={props.formApi.submitForm} id="form1" className="mb-4">
-        <label htmlFor="hello">Hello World</label>
-        <Text field="hello" id="hello" />
-        <button type="submit" className="btn btn-primary">Submit</button>
-      </form>
-      <h5 className="mb-4">The <code>formApi</code> attributes:</h5>
-      <FormApi formApi={props.formApi} />
-    </div>
-  );
-};
-
 const ExampleForm = ( ) => {
   return (
     <Form
       validateWarning={warningValidator}
       validateSuccess={successValidator}
-      validateError={errorValidator}>
-      <ExampleFormContent />
+      validateError={errorValidator} >
+      { formApi => (
+        <div className="mb-4">
+          <form onSubmit={formApi.submitForm} id="form1" className="mb-4">
+            <label htmlFor="hello">Hello World</label>
+            <Text field="hello" id="hello" />
+            <button type="submit" className="btn btn-primary">Submit</button>
+          </form>
+          <h5 className="mb-4">The <code>formApi</code> attributes:</h5>
+          <FormApi formApi={formApi} />
+          <h5 className="mb-4">The <code>formApi</code> methods:</h5>
+          <FormApiMethods formApi={formApi} />
+        </div>
+      )}
     </Form>
   );
 };
@@ -237,6 +278,76 @@ const FormApi = ({ formApi }) => {
   );
 };
 
+const FormApiMethods = ({ formApi }) => {
+  return (
+    <div>
+      <table className="table" style={{ tableLayout: 'fixed' }}>
+        <thead className="thead-inverse">
+          <tr>
+            <th style={{ width: '150px' }}>Attribute</th>
+            <th>Example</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">submitForm</th>
+            <td><pre><PrismCode className="language-jsx">submitForm( event )</PrismCode></pre></td>
+            <td>
+              This function will submit the form and tirgger all lifecycle events:
+              <ul>
+                <li>validateError</li>
+                <li>validateWarning</li>
+                <li>validateSuccess</li>
+                <li>preValidate</li>
+                <li>allAsyncValidators</li>
+                <li>onSubmit ( if form is valid )</li>
+              </ul>
+              Tie the native html <code>forms</code> <code>onSubmit</code> function to this function,
+              and clicking the submit button will trigger the form submission.
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">setValue</th>
+            <td><pre><PrismCode className="language-jsx">setValue( 'hello', 'HelloWorld!' )</PrismCode></pre></td>
+            <td>
+              Function that takes two parameters, the first is the <code>field</code> name, and the second is the value you want to set it to.
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">setError</th>
+            <td><pre><PrismCode className="language-jsx">setError( 'hello', 'Error message!' )</PrismCode></pre></td>
+            <td>
+              Function that takes two parameters, the first is the <code>field</code> name, and the second is an error message.
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">setWarning</th>
+            <td><pre><PrismCode className="language-jsx">setWarning( 'hello', 'Warning message!' )</PrismCode></pre></td>
+            <td>
+              Function that takes two parameters, the first is the <code>field</code> name, and the second is a warning message.
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">setSuccess</th>
+            <td><pre><PrismCode className="language-jsx">setSuccess( 'hello', 'Success message!' )</PrismCode></pre></td>
+            <td>
+              Function that takes two parameters, the first is the <code>field</code> name, and the second is a success message.
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">setTouched</th>
+            <td><pre><PrismCode className="language-jsx">setTouched( 'hello', true )</PrismCode></pre></td>
+            <td>
+              Function that takes two parameters, the first is the <code>field</code> name, and the second is true or false.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
 const FormProps = () => {
   return (
     <div>
@@ -253,9 +364,21 @@ const FormProps = () => {
         <tbody>
           <tr>
             <th scope="row"><code>children</code></th>
+            <td><pre>node</pre><pre>func</pre></td>
+            <td>no</td>
+            <td>A function or React component that is given the form api as a prop.</td>
+          </tr>
+          <tr>
+            <th scope="row"><code>component</code></th>
             <td><pre>node</pre></td>
-            <td>yes</td>
-            <td>React component that is given the form api as a prop.</td>
+            <td>no</td>
+            <td>A React component that is given the form api as a prop.</td>
+          </tr>
+          <tr>
+            <th scope="row"><code>render</code></th>
+            <td><pre>func</pre></td>
+            <td>no</td>
+            <td>A render function that is given the form api as a prop.</td>
           </tr>
           <tr>
             <th scope="row"><code>onSubmit</code></th>
@@ -355,7 +478,7 @@ class Intro extends Component {
         <h3>Intro</h3>
         <p className="mb-4">
           Say hello to the best react form library you have ever used!
-          <code>react-savage-form</code> is an extensive, simple, and efficient
+          <code>react-form</code> is an extensive, simple, and efficient
           solution to creating simple to complex forms in react. Out of the box
           you get the ability to grab and manipulate values; set errors,
           warnings, and successes; customize your inputs, and much more!
@@ -364,8 +487,8 @@ class Intro extends Component {
         <p className="mb-4">
           Simplicity and efficiency. This form works in IE! and its fast!
           There are many other libraries that exist, but they dont function in
-          IE and, can get pretty complex. I must give credit to <a href="https://github.com/tannerlinsley/react-form">react-form</a> as
-          this library was the inspiration for building <code>react-savage-form</code>.
+          IE and, can get pretty complex. You can create very complex forms quickly
+          with only a few lines of code.
         </p>
         <h3>Notes</h3>
         <p className="mb-4">
@@ -389,9 +512,37 @@ class Intro extends Component {
         <hr /><br />
         <h3>Form Api</h3>
         <p className="mb-4">
-          React Savage Form gives you access to the <code>formApi</code> through props.
-          This works by passing the form Api as a prop to the direct child of
-          the <code>&lt;Form&gt;</code>, see example below where we tie the
+          React Form gives you access to the <code>formApi</code> in four
+          different ways. You as the developer can use whichever method you want.
+        </p>
+        <ol>
+          <li>By passing the <code>formApi</code> as a parameter to a child render function.</li>
+          <pre>
+            <PrismCode className="language-jsx">
+              {childRender}
+            </PrismCode>
+          </pre>
+          <li>By passing the <code>formApi</code> as a parameter to a render prop.</li>
+          <pre>
+            <PrismCode className="language-jsx">
+              {renderRender}
+            </PrismCode>
+          </pre>
+          <li>By passing the <code>formApi</code> as a prop to a child component.</li>
+          <pre>
+            <PrismCode className="language-jsx">
+              {childChild}
+            </PrismCode>
+          </pre>
+          <li>By passing the <code>formApi</code> as a prop to a component prop.</li>
+          <pre>
+            <PrismCode className="language-jsx">
+              {componentProp}
+            </PrismCode>
+          </pre>
+        </ol>
+        <p className="mb-4">
+          Below is an example of a react form that uses the first method. Note how we the
           <code>formApis.submitForm</code> to the native <code>&lt;form&gt;</code> onSubmit.
         </p>
         <h5>Source Code:</h5>

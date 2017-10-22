@@ -19,17 +19,6 @@ import Code from './Code';
 
 /* ------------------ Form Stuff --------------------*/
 
-const Radios = ({ group }) => {
-  return (
-    <div>
-      <label htmlFor="male" className="mr-2">Male</label>
-      <Radio group={group} value="male" id="male" className="mr-3 d-inline-block" />
-      <label htmlFor="female" className="mr-2">Female</label>
-      <Radio group={group} value="female" id="female" className="d-inline-block" />
-    </div>
-  );
-};
-
 const FormContent = ({ formApi, submittedValues }) => {
 
   const statusOptions = [
@@ -55,7 +44,14 @@ const FormContent = ({ formApi, submittedValues }) => {
         <label htmlFor="lastName">Last name</label>
         <Text field="lastName" id="lastName" />
         <RadioGroup field="gender">
-          <Radios />
+          { group => (
+            <div>
+              <label htmlFor="male" className="mr-2">Male</label>
+              <Radio group={group} value="male" id="male" className="mr-3 d-inline-block" />
+              <label htmlFor="female" className="mr-2">Female</label>
+              <Radio group={group} value="female" id="female" className="d-inline-block" />
+            </div>
+          )}
         </RadioGroup>
         <label htmlFor="bio">Bio</label>
         <TextArea field="bio" id="bio" />
@@ -80,17 +76,6 @@ const BasicFormCode = () => {
 
   const code = `
   import { Form, Text, Radio, RadioGroup, Select, Checkbox } from 'react-savage-form';
-
-  const Radios = ({ group }) => {
-    return (
-      <div>
-        <label htmlFor="male" className="mr-2">Male</label>
-        <Radio group={group} value="male" id="male" className="mr-3 d-inline-block" />
-        <label htmlFor="female" className="mr-2">Female</label>
-        <Radio group={group} value="female" id="female" className="d-inline-block" />
-      </div>
-    );
-  };
 
   const FormContent = ({ formApi }) => {
 
@@ -117,7 +102,14 @@ const BasicFormCode = () => {
           <label htmlFor="lastName">Last name</label>
           <Text field="lastName" id="lastName" />
           <RadioGroup field="gender">
-            <Radios />
+            { group => (
+              <div>
+                <label htmlFor="male" className="mr-2">Male</label>
+                <Radio group={group} value="male" id="male" className="mr-3 d-inline-block" />
+                <label htmlFor="female" className="mr-2">Female</label>
+                <Radio group={group} value="female" id="female" className="d-inline-block" />
+              </div>
+            )}
           </RadioGroup>
           <TextArea field="bio" id="bio" />
           <TextArea field="bio" />

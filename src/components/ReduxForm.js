@@ -321,8 +321,18 @@ class Form extends Component {
   render() {
 
     const {
-      children
+      children,
+      component,
+      render
     } = this.props;
+
+    if ( component ) {
+      return React.createElement(component, { formApi: this.api } );
+    }
+
+    if ( render ) {
+      return render(this.api);
+    }
 
     if ( typeof children === 'function' ) {
       return children(this.api);
