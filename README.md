@@ -1,9 +1,12 @@
-# A powerful and lightweight form library for React.
+# React-Form
+A powerful and lightweight form library for React.
 
-[![Build Status](https://travis-ci.org/joepuzzo/react-savage-form.svg?branch=master)](https://travis-ci.org/joepuzzo/react-savage-form)
+### Go to [live examples, code and docs](https://react-form.js.org)!
+
+[![Build Status](https://travis-ci.org/react-tools/react-form.svg?branch=v0.11.1)](https://travis-ci.org/react-tools/react-form)
 
 # Intro
-Say hello to the best react form library you have ever used! `react-form` is an extensive, simple, and efficient solution for creating simple to complex forms in react. Out of the box you get the ability to grab and manipulate values; set errors, warnings, and successes; customize your inputs, perform asynchronous validation, and much more! If you want to check out the cool stuff and how to use this library, head over to the docs [here](https://react-savage-form.cfapps.io).
+Say hello to the best react form library you have ever used! `react-form` is an extensive, simple, and efficient solution for creating simple to complex forms in react. Out of the box you get the ability to grab and manipulate values; set errors, warnings, and successes; customize your inputs, perform asynchronous validation, and much more! If you want to check out the cool stuff and how to use this library, head over to the docs [here](https://react-form.js.org).
 
 # Motivation
 Simplicity and efficiency. This form works in IE! and its fast!
@@ -34,4 +37,7 @@ const ExampleForm = ( ) => {
 ```
 
 # Examples & Documentation
-Go [here](https://react-savage-form.cfapps.io) for examples and documentation.
+Go [here](https://react-form.js.org) for examples and documentation for **2.x.x** of React-Form.
+
+Older versions:
+* [Version 1.x.x](https://github.com/react-tools/react-form/tree/v1.3.0)
