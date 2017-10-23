@@ -11,6 +11,6 @@ deploy:
   organization: puzzo.sandbox
   space: development
   on:
-    repo: joepuzzo/react-savage-form
+    repo: joepuzzo/react-form
   password:
     secure: mxOkpctCosEYEIGEboK85vuPaBDLmVhmc+UA+qlvNYwlJ888FsfPWDwNgzLDot7p2V1S0NM0SZzzo84XVadyK999B3uCF7o8zXyB3Z6ZXFiWnhnZ4AIjUhLZbaVHNOmxL32wvtGns4YAfQaCg55XpCvav5fnSQgKMyJoibbkRSsWzRS7Id8at3xXnjdF+z5A6y8rQgQ7uJpj8s9y0NM44VXNWLkxIlAah0Gih+nUsRdsOQxfdEpEA0rQaoQmVPQ9vNPL+KwkwvXww+g47n9eYPzRzJYxhWIw53vZNIzE0JHzijuaR5B57fpPIUsd7cpI0Jf1Vj9Bof+/ydp0v5EtNFZ9GN08ydc+c1hqUkep1W37zDkYuaBouCm/6178aVTmEHto4jWTfsD06qi710ExjpibTxpSgEy+HEpNhwz5vlE69vPOHqIFouGbNdvn6a4pCkoDs8jW26dgTPnicGILui16lhAyaa/r37vRyW4PmwDTDXXeQPL6cZPRr9rhaykuVNnKpgPhyQkEZEuZp8LFtYu4+qcK3mQ3Ij/4WqeZmCXdTFmjfVi+Fjf4BooYH6eqFd/lQIMLfvpJNryBTIRMh2A7gV/Ed8aUV3ALYNEB2AchJL1e5+TTRwYPMm4FaYXI5C1FLoB+RpvQD6utklqdFdqCYyG9p0/vUf+ADwVFGJo=
