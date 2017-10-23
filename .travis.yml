@@ -12,8 +12,6 @@ deploy:
   space: development
   on:
     repo: react-tools/react-form
-    branches: 
-    only:
-      - react-form-2.0
+    branch: react-form-2.0
   password:
     secure: FGSw5XtRXMCnMkYpbvOAhWtzAY1rrq74ZZi88eDiJNUjo3WMfT0LBpgkrAxy8ampr2gnG5vhWxB+duVv610lT7N0BR20K3Sa6dtGCZ3xpP4axKm25u6DvJa4wISa90jONL0m7x0fXqJTyYBmUcX9mySvhLXHqNerYhib+be36IXXrlwjjuFWw53gWC6kvKmzF05BrJtITsMxID4wGBVQ5TdhbYBOnt7wl3zaPZcuKyCC0uKJCAPPklOwSAgkE7iYqkJqkVAhaQXotHEa7kWqZ8uc3cieQPxeVhOXbt8XMC1c/j9o2OsVUS9oOwWeEojdh5PQObXu2aYxLaCzSk3TO+kyoSpOgIjAA+m01G0KpELCOVE40Sc94sCqlUDLIwgukHbhKxOji/VgjP7YVlfg0LwUA/nXtxKNVOsxJ2Sqs+h96J/9iH5Q4EsaWsok2wndHlPyytsowq1M8FDDEBBn5YnoUH3azxZQTqXL3WMQa2+ElzjR3F/gh/G0ZeFDZqmuQ20v6ADf2FZ9R6jsz5T5jxAs9jeOt8qYWHFB2WfWelgY0YDSh49VGuRt0+JuyvjzvT7toIAufo5ZORAId2/J8QAVzPNbmlRc4Z1hghdg6fq23NsK4+TCXT1WzDgtQNDkXuwoNC9EvqtV0AcJwS9my2F+NoayrIdiRM2a8iTGbyw=
