@@ -17,19 +17,25 @@ import Code from './Code';
 
 let nestedFormApi = {};
 
-const NestedFormContent = ({ formApi }) => {
-  nestedFormApi = formApi;
-  return (
-    <div>
-      <label htmlFor="color">Whats your favorite color?</label>
-      <Text field="color" id="color" />
-      <label htmlFor="food">Whats your favorite food?</label>
-      <Text field="food" id="food" />
-      <label htmlFor="car">Whats type of car do you drive?</label>
-      <Text field="car" id="car" />
-    </div>
-  );
-};
+const Questions = () => (
+  <NestedForm field="questions">
+    <Form>
+      { ( formApi ) => {
+        nestedFormApi = formApi;
+        return (
+          <div>
+            <label htmlFor="color">Whats your favorite color?</label>
+            <Text field="color" id="color" />
+            <label htmlFor="food">Whats your favorite food?</label>
+            <Text field="food" id="food" />
+            <label htmlFor="car">Whats type of car do you drive?</label>
+            <Text field="car" id="car" />
+          </div>
+        );
+      }}
+    </Form>
+  </NestedForm>
+);
 
 const FormContent = ({ formApi, submittedValues }) => {
 
@@ -38,11 +44,7 @@ const FormContent = ({ formApi, submittedValues }) => {
       <form onSubmit={formApi.submitForm} id="form4">
         <label htmlFor="firstName3">First name</label>
         <Text field="firstName" id="firstName3" />
-        <NestedForm field="questions">
-          <Form>
-            <NestedFormContent />
-          </Form>
-        </NestedForm>
+        <Questions />
         <button type="submit" className="mb-4 btn btn-primary">Submit</button>
       </form>
       <br />
@@ -97,37 +99,22 @@ const NestedFormCode = () => {
   const code = `
   import { Form, Text, NestedForm } from 'react-savage-form';
 
-  const NestedFormContent = ({ nestedFormsApi }) => {
-    return (
-      <div>
-        <label htmlFor="color">Whats your favorite color?</label>
-        <Text field="color" id="color" />
-        <label htmlFor="food">Whats your favorite food?</label>
-        <Text field="food" id="food" />
-        <label htmlFor="car">Whats type of car do you drive?</label>
-        <Text field="car" id="car" />
-      </div>
-    );
-  };
-
-  const FormContent = ({ formApi }) => {
-
-    return (
-      <div>
-        <form onSubmit={formApi.submitForm} id="form4">
-          <label htmlFor="firstName3">First name</label>
-          <Text field="firstName" id="firstName3" />
-          <NestedForm field="questions">
-            <Form>
-              <NestedFormContent />
-            </Form>
-          </NestedForm>
-          <button type="submit" className="mb-4 btn btn-primary">Submit</button>
-        </form>
-      </div>
-    );
-  };
-
+  const Questions = () => (
+    <NestedForm field="questions">
+      <Form>
+        { formApi => (
+          <div>
+            <label htmlFor="color">Whats your favorite color?</label>
+            <Text field="color" id="color" />
+            <label htmlFor="food">Whats your favorite food?</label>
+            <Text field="food" id="food" />
+            <label htmlFor="car">Whats type of car do you drive?</label>
+            <Text field="car" id="car" />
+          </div>
+        )}
+      </Form>
+    </NestedForm>
+  );
 
   class NestedFormExample extends Component {
 
@@ -140,7 +127,14 @@ const NestedFormCode = () => {
       return (
         <div>
           <Form onSubmit={submittedValues => this.setState( { submittedValues } )}>
-            <FormContent />
+            { formApi => (
+              <form onSubmit={formApi.submitForm} id="form4">
+                <label htmlFor="firstName3">First name</label>
+                <Text field="firstName" id="firstName3" />
+                <Questions />
+                <button type="submit" className="mb-4 btn btn-primary">Submit</button>
+              </form>
+            )}
           </Form>
         </div>
       );

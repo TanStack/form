@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import {
   HashRouter as Router,
   Route,
-  Link
+  NavLink as Link
 } from 'react-router-dom'
 
 /* ------------- Form  Library Imports -------------- */
@@ -25,7 +25,7 @@ class Examples extends Component {
         <div>
           <div className="mt-4 row">
             <SideNav>
-              <Link to="/" className="nav-link">Introduction</Link>
+              <Link to="/" exact className="nav-link">Introduction</Link>
               <Link to="/basic-form" className="nav-link">Basic form</Link>
               <Link to="/array-form" className="nav-link">Forms with arrays</Link>
               <Link to="/nested-form" className="nav-link">Nested forms</Link>

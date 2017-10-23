@@ -479,7 +479,7 @@ class Intro extends Component {
         <p className="mb-4">
           Say hello to the best react form library you have ever used!
           <code>react-form</code> is an extensive, simple, and efficient
-          solution to creating simple to complex forms in react. Out of the box
+          solution for creating basic to complex forms in react. Out of the box
           you get the ability to grab and manipulate values; set errors,
           warnings, and successes; customize your inputs, and much more!
         </p>

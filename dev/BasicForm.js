@@ -19,7 +19,10 @@ import Code from './Code';
 
 /* ------------------ Form Stuff --------------------*/
 
-const FormContent = ({ formApi, submittedValues }) => {
+const BasicFormCode = () => {
+
+  const code = `
+  import { Form, Text, Radio, RadioGroup, Select, Checkbox } from 'react-form';
 
   const statusOptions = [
     {
@@ -36,94 +39,6 @@ const FormContent = ({ formApi, submittedValues }) => {
     }
   ];
 
-  return (
-    <div>
-      <form onSubmit={formApi.submitForm} id="form2">
-        <label htmlFor="firstName">First name</label>
-        <Text field="firstName" id="firstName" />
-        <label htmlFor="lastName">Last name</label>
-        <Text field="lastName" id="lastName" />
-        <RadioGroup field="gender">
-          { group => (
-            <div>
-              <label htmlFor="male" className="mr-2">Male</label>
-              <Radio group={group} value="male" id="male" className="mr-3 d-inline-block" />
-              <label htmlFor="female" className="mr-2">Female</label>
-              <Radio group={group} value="female" id="female" className="d-inline-block" />
-            </div>
-          )}
-        </RadioGroup>
-        <label htmlFor="bio">Bio</label>
-        <TextArea field="bio" id="bio" />
-        <label htmlFor="authorize" className="mr-2">Authorize</label>
-        <Checkbox field="authorize" id="authorize" className="d-inline-block" />
-        <label htmlFor="status" className="d-block">Relationship status</label>
-        <Select field="status" id="status" options={statusOptions} className="mb-4" />
-        <button type="submit" className="mb-4 btn btn-primary">Submit</button>
-      </form>
-      <br />
-      <Data title="Values" reference="formApi.values" data={formApi.values} />
-      <Data title="Touched" reference="formApi.touched" data={formApi.touched} />
-      <Data title="Submission attempts" reference="formApi.submits" data={formApi.submits} />
-      <Data title="Submitted" reference="formApi.submitted" data={formApi.submitted} />
-      <Data title="Submitted values" reference="onSubmit={submittedValues => this.setState( { submittedValues } )}" data={submittedValues} />
-    </div>
-  );
-
-};
-
-const BasicFormCode = () => {
-
-  const code = `
-  import { Form, Text, Radio, RadioGroup, Select, Checkbox } from 'react-savage-form';
-
-  const FormContent = ({ formApi }) => {
-
-    const statusOptions = [
-      {
-        label: 'Single',
-        value: 'single'
-      },
-      {
-        label: 'In a Relationship',
-        value: 'relationship'
-      },
-      {
-        label: "It's Complicated",
-        value: 'complicated'
-      }
-    ];
-
-    return (
-      <div>
-        <form onSubmit={formApi.submitForm} id="form2">
-          <label htmlFor="firstName">First name</label>
-          <Text field="firstName" id="firstName" />
-          <label htmlFor="lastName">Last name</label>
-          <Text field="lastName" id="lastName" />
-          <RadioGroup field="gender">
-            { group => (
-              <div>
-                <label htmlFor="male" className="mr-2">Male</label>
-                <Radio group={group} value="male" id="male" className="mr-3 d-inline-block" />
-                <label htmlFor="female" className="mr-2">Female</label>
-                <Radio group={group} value="female" id="female" className="d-inline-block" />
-              </div>
-            )}
-          </RadioGroup>
-          <TextArea field="bio" id="bio" />
-          <TextArea field="bio" />
-          <label htmlFor="authorize" className="mr-2">Authorize</label>
-          <Checkbox field="authorize" id="authorize" className="d-inline-block" />
-          <label htmlFor="status" className="d-block">Relationship status</label>
-          <Select field="status" id="status" options={statusOptions} />
-          <button type="submit" className="mb-4 btn btn-primary">Submit</button>
-        </form>
-      </div>
-    );
-  };
-
-
   class BasicForm extends Component {
 
     constructor( props ) {
@@ -135,7 +50,31 @@ const BasicFormCode = () => {
       return (
         <div>
           <Form onSubmit={submittedValues => this.setState( { submittedValues } )}>
-            <FormContent />
+            { formApi => (
+              <form onSubmit={formApi.submitForm} id="form2">
+                <label htmlFor="firstName">First name</label>
+                <Text field="firstName" id="firstName" />
+                <label htmlFor="lastName">Last name</label>
+                <Text field="lastName" id="lastName" />
+                <RadioGroup field="gender">
+                  { group => (
+                    <div>
+                      <label htmlFor="male" className="mr-2">Male</label>
+                      <Radio group={group} value="male" id="male" className="mr-3 d-inline-block" />
+                      <label htmlFor="female" className="mr-2">Female</label>
+                      <Radio group={group} value="female" id="female" className="d-inline-block" />
+                    </div>
+                  )}
+                </RadioGroup>
+                <label htmlFor="bio">Bio</label>
+                <TextArea field="bio" id="bio" />
+                <label htmlFor="authorize" className="mr-2">Authorize</label>
+                <Checkbox field="authorize" id="authorize" className="d-inline-block" />
+                <label htmlFor="status" className="d-block">Relationship status</label>
+                <Select field="status" id="status" options={statusOptions} />
+                <button type="submit" className="mb-4 btn btn-primary">Submit</button>
+              </form>
+            )}
           </Form>
         </div>
       );
@@ -153,6 +92,21 @@ const BasicFormCode = () => {
   );
 };
 
+const statusOptions = [
+  {
+    label: 'Single',
+    value: 'single'
+  },
+  {
+    label: 'In a Relationship',
+    value: 'relationship'
+  },
+  {
+    label: "It's Complicated",
+    value: 'complicated'
+  }
+];
+
 class BasicForm extends Component {
 
   constructor( props ) {
@@ -168,7 +122,39 @@ class BasicForm extends Component {
         <p>Here is an example of a basic form that has various input types.</p>
         <Form
           onSubmit={submittedValues => this.setState( { submittedValues } )}>
-          <FormContent submittedValues={this.state.submittedValues} />
+          { formApi => (
+            <div>
+              <form onSubmit={formApi.submitForm} id="form2">
+                <label htmlFor="firstName">First name</label>
+                <Text field="firstName" id="firstName" />
+                <label htmlFor="lastName">Last name</label>
+                <Text field="lastName" id="lastName" />
+                <RadioGroup field="gender">
+                  { group => (
+                    <div>
+                      <label htmlFor="male" className="mr-2">Male</label>
+                      <Radio group={group} value="male" id="male" className="mr-3 d-inline-block" />
+                      <label htmlFor="female" className="mr-2">Female</label>
+                      <Radio group={group} value="female" id="female" className="d-inline-block" />
+                    </div>
+                  )}
+                </RadioGroup>
+                <label htmlFor="bio">Bio</label>
+                <TextArea field="bio" id="bio" />
+                <label htmlFor="authorize" className="mr-2">Authorize</label>
+                <Checkbox field="authorize" id="authorize" className="d-inline-block" />
+                <label htmlFor="status" className="d-block">Relationship status</label>
+                <Select field="status" id="status" options={statusOptions} className="mb-4" />
+                <button type="submit" className="mb-4 btn btn-primary">Submit</button>
+              </form>
+              <br />
+              <Data title="Values" reference="formApi.values" data={formApi.values} />
+              <Data title="Touched" reference="formApi.touched" data={formApi.touched} />
+              <Data title="Submission attempts" reference="formApi.submits" data={formApi.submits} />
+              <Data title="Submitted" reference="formApi.submitted" data={formApi.submitted} />
+              <Data title="Submitted values" reference="onSubmit={submittedValues => this.setState( { submittedValues } )}" data={this.state.submittedValues} />
+            </div>
+          )}
         </Form>
         <br />
         <BasicFormCode />
