@@ -2,7 +2,8 @@
   "name": "react-form",
   "version": "2.0.0",
   "description": "React Form is a lightweight framework and utility for building powerful forms in React applications.",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "files": ["dist/"],
   "scripts": {
     "test": "NODE_ENV=test mocha-webpack --opts test/mocha-webpack.opts",
     "test:watch": "npm run test -- --watch",
@@ -10,7 +11,8 @@
     "build:dev": "NODE_ENV=development webpack --config config/webpack/webpack.dev.config.js",
     "build:dist": "NODE_ENV=production webpack -p --config config/webpack/webpack.dist.config.js",
     "build:prod": "NODE_ENV=production webpack -p --config config/webpack/webpack.prod.config.js",
-    "eslint": "eslint src/** --fix"
+    "eslint": "eslint src/** --fix",
+    "postpublish": "git push --tags"
   },
   "author": {
     "name": "Joseph Puzzo",

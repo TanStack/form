@@ -18,7 +18,7 @@ import Code from './Code';
 const NestedAsynchronousValidationCode = () => {
 
   const code = `
-  import { Form, Text, NestedForm } from 'react-savage-form';
+  import { Form, Text, NestedForm } from 'react-form';
 
   const NestedNestedFormContent = ({ formApi }) => {
     return (

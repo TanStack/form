@@ -104,7 +104,7 @@ const FormContent = ({ formApi }) => {
 const CustomFormCode = () => {
 
   const code = `
-  import { Form, Text, FormField } from 'react-savage-form';
+  import { Form, Text, FormField } from 'react-form';
 
   // Define a custom message component
   const Message = ({ color, message }) => {
@@ -164,6 +164,7 @@ const CustomFormCode = () => {
   }
 
   // Use the form field and your custom input together to create your very own input!
+  // Note, You must use the child component syntax for creating custom inputs with form fields.
   class CustomText extends Component {
     render() {
       const {
@@ -177,21 +178,6 @@ const CustomFormCode = () => {
       );
     }
   }
-
-  const FormContent = ({ formApi }) => {
-
-    return (
-      <div>
-        <form onSubmit={formApi.submitForm} id="form5">
-          <label htmlFor="firstName4">First name</label>
-          <Text field="firstName" id="firstName4" />
-          <label htmlFor="hello2">Custom hello world</label>
-          <CustomText field="hello" id="hello2" />
-          <button type="submit" className="mb-4 btn btn-primary">Submit</button>
-        </form>
-      </div>
-    );
-  };
 
   const errorValidator = (values) => {
     return {
@@ -220,7 +206,15 @@ const CustomFormCode = () => {
             validateWarning={warningValidator}
             validateSuccess={successValidator}
             validateError={errorValidator}>
-            <FormContent />
+            { formApi => (
+              <form onSubmit={formApi.submitForm} id="form5">
+                <label htmlFor="firstName4">First name</label>
+                <Text field="firstName" id="firstName4" />
+                <label htmlFor="hello2">Custom hello world</label>
+                <CustomText field="hello" id="hello2" />
+                <button type="submit" className="mb-4 btn btn-primary">Submit</button>
+              </form>
+            )}
           </Form>
         </div>
       );
@@ -272,7 +266,7 @@ class CustomInput extends Component {
         <p>
           If the out of the box inputs are not enough for you. You can simply
           customize them, by creating your very own input elements. This is done
-          by leverageing the FormField element that is availible in react-savage-form.
+          by leverageing the FormField element that is availible in react-form.
           Below is an example of a form that uses a custom input. Our custom input has
           internal error, success, and warning messages that know when to get shown.
         </p>

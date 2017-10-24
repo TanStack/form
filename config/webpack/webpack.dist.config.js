@@ -1,6 +1,5 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: [
@@ -23,10 +22,5 @@ module.exports = {
     path: path.join(__dirname, '../../dist/'),
     library: 'react-form',
     libraryTarget: 'umd',
-  },
-  plugins: [
-    new CopyWebpackPlugin([
-      { from: path.join(__dirname, '../../package.json'), to: path.join(__dirname, '../../dist/package.json') }
-    ])
-  ]
+  }
 };

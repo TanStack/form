@@ -42,20 +42,7 @@ const FormContent = ({ formApi }) => {
 const AsynchronousValidationCode = () => {
 
   const code = `
-  import { Form, Text } from 'react-savage-form';
-
-  const FormContent = ({ formApi }) => {
-
-    return (
-      <div>
-        <form onSubmit={formApi.submitForm} id="form6">
-          <label htmlFor="username">Username</label>
-          <Text field="username" id="username" />
-          <button type="submit" className="mb-4 btn btn-primary">Submit</button>
-        </form>
-      </div>
-    );
-  };
+  import { Form, Text } from 'react-form';
 
   const errorValidator = (values) => {
     return {
@@ -97,7 +84,13 @@ const AsynchronousValidationCode = () => {
             validateError={errorValidator}
             validateSuccess={successValidator}
             asyncValidators={asyncValidators}>
-            <FormContent />
+            { formApi => (
+              <form onSubmit={formApi.submitForm} id="form6">
+                <label htmlFor="username">Username</label>
+                <Text field="username" id="username" />
+                <button type="submit" className="mb-4 btn btn-primary">Submit</button>
+              </form>  
+            )}
           </Form>
         </div>
       );

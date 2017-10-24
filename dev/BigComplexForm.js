@@ -241,7 +241,7 @@ const FormContent = ({ formApi, aprop, setProp }) => {
           }
           <button type="submit" className="mb-2 btn btn-primary">Submit</button>
         </form>
-        <button type="button" onClick={setProp} key="propbutton" className="mb-2 btn btn-primary">SETPROP</button>
+        {/* <button type="button" onClick={setProp} key="propbutton" className="mb-2 btn btn-primary">SETPROP</button> */}
       </div>
       <div className="col-sm-8">
         <Data title="values" data={formApi.values} />
@@ -278,8 +278,17 @@ class BigComplexForm extends Component {
       <div>
         <h3>Big Complex Form</h3>
         <br />
-        <h3 style={{ backgroundColor: 'red' }}>Docs for big complex form are a work in progress</h3>
+        <h5 style={{ backgroundColor: 'red' }}>Docs for big complex form are a work in progress but still shows off powerfull stuff.</h5>
         <br />
+        <p>You can make very compex forms with react-form. The below form includes the following:</p>
+        <ul>
+          <li>Normal Text fields</li>
+          <li>Array of Text fields</li>
+          <li>Nested form</li>
+          <li>Nested nested form</li>
+          <li>Array of nested forms</li>
+          <li>Hidden form</li>
+        </ul>
         <Form
           onSubmit={((values) => { console.log('SUBMIT:', values); })}
           formDidUpdate={ state => console.log( "STATE:", state )}

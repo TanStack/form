@@ -97,7 +97,7 @@ const FormContent = ({ formApi, submittedValues }) => {
 const NestedFormCode = () => {
 
   const code = `
-  import { Form, Text, NestedForm } from 'react-savage-form';
+  import { Form, Text, NestedForm } from 'react-form';
 
   const Questions = () => (
     <NestedForm field="questions">
