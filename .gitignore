@@ -1,5 +1,6 @@
 node_modules
 /index.js
 /build/*
+/docs/*
 /dist/*
 .tmp/

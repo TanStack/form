@@ -3,7 +3,7 @@ node_js:
 - '7'
 script:
 - npm test
-- npm run build:prod
+- npm run build:docs
 deploy:
   provider: cloudfoundry
   api: https://api.run.pivotal.io

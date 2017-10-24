@@ -8,7 +8,7 @@ module.exports = {
   ],
   output: {
     filename: 'bundle.js',
-    path: path.join(__dirname, '../../build'),
+    path: path.join(__dirname, '../../docs/public'),
     publicPath: '/'
   },
   module: {
@@ -35,8 +35,8 @@ module.exports = {
   },
   plugins: [
     new CopyWebpackPlugin([
-      { from: path.join(__dirname, '../../dev/index.html'), to: path.join(__dirname, '../../build/index.html') },
-      { from: path.join(__dirname, '../../dev/assets'), to: path.join(__dirname, '../../build/assets') },
+      { from: path.join(__dirname, '../../dev/index.html'), to: path.join(__dirname, '../../docs/public/index.html') },
+      { from: path.join(__dirname, '../../dev/assets'), to: path.join(__dirname, '../../docs/public/assets') },
     ])
   ]
 };

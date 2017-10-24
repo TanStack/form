@@ -10,8 +10,10 @@
     "start": "NODE_ENV=development webpack-dev-server -d --config config/webpack/webpack.dev.config.js --port 4005 --hot",
     "build:dev": "NODE_ENV=development webpack --config config/webpack/webpack.dev.config.js",
     "build:dist": "NODE_ENV=production webpack -p --config config/webpack/webpack.dist.config.js",
-    "build:prod": "NODE_ENV=production webpack -p --config config/webpack/webpack.prod.config.js",
+    "build:docs": "NODE_ENV=production webpack -p --config config/webpack/webpack.prod.config.js",
     "eslint": "eslint src/** --fix",
+    "preversion": "npm test",
+    "version": "npm run build:dist",
     "postpublish": "git push --tags"
   },
   "author": {
