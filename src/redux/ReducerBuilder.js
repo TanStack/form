@@ -503,10 +503,15 @@ class ReducerBuilder {
     const {
       validateError,
       validateWarning,
-      validateSuccess
+      validateSuccess,
+      defaultValues
     } = properties;
 
-    const reducer = (state = INITIAL_STATE, action) => {
+    const COMBINED_INITIAL_STATE = Object.assign({}, INITIAL_STATE, {
+      values: defaultValues || {}
+    });
+
+    const reducer = (state = COMBINED_INITIAL_STATE, action) => {
       switch ( action.type ) {
         case SET_VALUE:
           return setValue( state, action );

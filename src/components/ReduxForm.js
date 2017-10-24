@@ -372,11 +372,12 @@ class ReduxForm extends Component {
       validateError,
       validateWarning,
       validateSuccess,
-      preValidate
+      preValidate,
+      defaultValues
     } = props;
 
     this.store = createStore(
-      ReducerBuilder.build( { validateError, validateWarning, validateSuccess, preValidate } ),
+      ReducerBuilder.build( { validateError, validateWarning, validateSuccess, preValidate, defaultValues } ),
       applyMiddleware(
         thunkMiddleware, // lets us dispatch() functions
         // createLogger() // neat middleware that logs actions

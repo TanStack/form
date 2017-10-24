@@ -381,6 +381,16 @@ const FormProps = () => {
             <td>A render function that is given the form api as a prop.</td>
           </tr>
           <tr>
+            <th scope="row"><code>defaultValues</code></th>
+            <td><pre>obj</pre></td>
+            <td>no</td>
+            <td>
+              Use this if you want to populate the form with initial values.
+              Note, this does not affect any nested forms. If you want to initialize
+              nested forms, pass in their own defaultValues prop.
+            </td>
+          </tr>
+          <tr>
             <th scope="row"><code>onSubmit</code></th>
             <td><pre>func</pre></td>
             <td>no</td>
