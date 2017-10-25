@@ -84,10 +84,12 @@ class Form extends Component {
   }
 
   componentDidMount() {
-    // PreValidate
-    this.props.dispatch(actions.preValidate());
-    // Validate
-    this.props.dispatch(actions.validate());
+    if ( !this.props.dontValidateOnMount ) {
+      // PreValidat
+      this.props.dispatch(actions.preValidate());
+      // Validate
+      this.props.dispatch(actions.validate());
+    }
     // Register async validators if you are a nested form ( only nested forms have registerAsync prop )
     if ( this.props.registerAsyncValidation ) {
       this.props.registerAsyncValidation( this.callAsynchronousValidators );

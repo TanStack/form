@@ -381,6 +381,14 @@ const FormProps = () => {
             <td>A render function that is given the form api as a prop.</td>
           </tr>
           <tr>
+            <th scope="row"><code>dontValidateOnMount</code></th>
+            <td><pre>bool</pre></td>
+            <td>no</td>
+            <td>
+              Use this if you dont want the form to validate when it gets mounted.
+            </td>
+          </tr>
+          <tr>
             <th scope="row"><code>defaultValues</code></th>
             <td><pre>obj</pre></td>
             <td>no</td>
