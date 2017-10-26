@@ -14,6 +14,8 @@ import { createLogger } from 'redux-logger';
 import ReducerBuilder from '../redux/ReducerBuilder';
 import * as actions from '../redux/actions';
 
+import Utils from '../redux/utils';
+
 /* ----- Recursive Check to see if form is valid  -----*/
 
 // TODO maybe a better way to do this
@@ -46,7 +48,7 @@ const newState = ( state ) => {
     warnings: newWarnings(state),
     successes: newSuccesses(state)
   });
-}
+};
 
 /* ---------- Form Component ----------*/
 
@@ -214,34 +216,19 @@ class Form extends Component {
   }
 
   getValue( field ) {
-    if ( Array.isArray(field) ) {
-      return this.props.formState.values[field[0]] ? this.props.formState.values[field[0]][field[1]] : undefined;
-    }
-    return this.props.formState.values[field];
+    return Utils.get( this.props.formState.values, field );
   }
 
   getError( field ) {
-    const errors = this.errors;
-    if ( Array.isArray(field) ) {
-      return errors[field[0]] ? errors[field[0]][field[1]] : undefined;
-    }
-    return errors[field];
+    return Utils.get( this.errors, field );
   }
 
   getWarning( field ) {
-    const warnings = this.warnings;
-    if ( Array.isArray(field) ) {
-      return warnings[field[0]] ? warnings[field[0]][field[1]] : undefined;
-    }
-    return warnings[field];
+    return Utils.get( this.warnings, field );
   }
 
   getSuccess( field ) {
-    const successes = this.successes;
-    if ( Array.isArray(field) ) {
-      return successes[field[0]] ? successes[field[0]][field[1]] : undefined;
-    }
-    return successes[field];
+    return Utils.get( this.successes, field );
   }
 
   registerAsyncValidation( func ) {

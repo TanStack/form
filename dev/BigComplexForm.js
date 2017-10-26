@@ -23,8 +23,8 @@ const errorValidator = (values) => {
   };
 
   const validateNickName = ( nickname ) => {
-    if ( !nickname || nickname === '' ) {
-      return 'Nickname field cannot be empty';
+    if ( nickname.length <= 1 ) {
+      return 'Nickname must be longer than 1 character!';
     }
     return null;
   };
@@ -36,11 +36,26 @@ const errorValidator = (values) => {
     return values.nicknames.map( nickname => validateNickName(nickname) );
   };
 
+  const validateFriend = ( friend ) => {
+    if ( !friend.name || friend.name === '' ) {
+      return 'Fried must have a name.';
+    }
+    return null;
+  };
+
+  const validateFriends = ( ) => {
+    if ( !values.friends || values.friends.length < 2 ) {
+      return 'You must enter two friends!';
+    }
+    return values.friends.map( friend => validateFriend(friend) );
+  };
+
   return {
     foo: validateField('foo'),
     bar: validateField('bar'),
     baz: validateField('baz'),
     nicknames: validateNicknames(),
+    friends: validateFriends(),
     hey: validateField('hey'),
     a: validateField('a'),
     b: validateField('b'),
@@ -213,6 +228,8 @@ const FormContent = ({ formApi, aprop, setProp }) => {
           <Text field="baz" />
           <Text field={['nicknames', 0]} />
           <Text field={['nicknames', 1]} />
+          <Text field={`friends.${0}.name`} />
+          <Text field={`friends.${1}.name`} />
           <Text field="hey" />
           <Text field="a" />
           <Text field="b" />

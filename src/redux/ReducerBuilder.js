@@ -22,6 +22,8 @@ import {
   REMOVE_ASYNC_SUCCESS
 } from './actions';
 
+import Utils from './utils';
+
 const INITIAL_STATE = {
   values: {},
   touched: {},
@@ -46,15 +48,9 @@ const setValue = ( state, action ) => {
     value
   } = action;
 
-  const newValues = JSON.parse(JSON.stringify(state.values));
+  let newValues = JSON.parse(JSON.stringify(state.values));
 
-  if ( Array.isArray(field) ) {
-    newValues[field[0]] = newValues[field[0]] || [];
-    newValues[field[0]][field[1]] = value;
-  }
-  else {
-    newValues[field] = value;
-  }
+  newValues = Utils.set( newValues, field, value );
 
   return {
     ...state,
@@ -69,15 +65,9 @@ const format = ( state, action ) => {
     field
   } = action;
 
-  const newValues = { ...state.values };
+  let newValues = JSON.parse(JSON.stringify(state.values));
 
-  if ( Array.isArray(field) ) {
-    newValues[field[0]] = newValues[field[0]] || [];
-    newValues[field[0]][field[1]] = action.format( newValues[field[0]][field[1]] );
-  }
-  else {
-    newValues[field] = action.format( newValues[field] );
-  }
+  newValues = Utils.set( newValues, field, action.format( Utils.get( newValues, field ) ) );
 
   return {
     ...state,
@@ -93,15 +83,9 @@ const setTouched = ( state, action ) => {
     touched
   } = action;
 
-  const newTouched = JSON.parse(JSON.stringify(state.touched));
+  let newTouched = JSON.parse(JSON.stringify(state.touched));
 
-  if ( Array.isArray(field) ) {
-    newTouched[field[0]] = newTouched[field[0]] || [];
-    newTouched[field[0]][field[1]] = touched;
-  }
-  else {
-    newTouched[field] = touched;
-  }
+  newTouched = Utils.set( newTouched, field, touched );
 
   return {
     ...state,
@@ -117,15 +101,9 @@ const setWarning = ( state, action ) => {
     warning
   } = action;
 
-  const newWarnings = JSON.parse(JSON.stringify(state.warnings));
+  let newWarnings = JSON.parse(JSON.stringify(state.warnings));
 
-  if ( Array.isArray(field) ) {
-    newWarnings[field[0]] = newWarnings[field[0]] || [];
-    newWarnings[field[0]][field[1]] = warning;
-  }
-  else {
-    newWarnings[field] = warning;
-  }
+  newWarnings = Utils.set( newWarnings, field, warning );
 
   return {
     ...state,
@@ -141,15 +119,9 @@ const setError = ( state, action ) => {
     error
   } = action;
 
-  const newErrors = JSON.parse(JSON.stringify(state.errors));
+  let newErrors = JSON.parse(JSON.stringify(state.errors));
 
-  if ( Array.isArray(field) ) {
-    newErrors[field[0]] = newErrors[field[0]] || [];
-    newErrors[field[0]][field[1]] = error;
-  }
-  else {
-    newErrors[field] = error;
-  }
+  newErrors = Utils.set( newErrors, field, error );
 
   return {
     ...state,
@@ -165,15 +137,9 @@ const setSuccess = ( state, action ) => {
     success
   } = action;
 
-  const newSuccesses = JSON.parse(JSON.stringify(state.successes));
+  let newSuccesses = JSON.parse(JSON.stringify(state.successes));
 
-  if ( Array.isArray(field) ) {
-    newSuccesses[field[0]] = newSuccesses[field[0]] || [];
-    newSuccesses[field[0]][field[1]] = success;
-  }
-  else {
-    newSuccesses[field] = success;
-  }
+  newSuccesses = Utils.set( newSuccesses, field, success );
 
   return {
     ...state,
@@ -336,7 +302,7 @@ const validate = ( state, action, validateError, validateWarning, validateSucces
 
 const preValidate = ( state, action, preValidator ) => {
 
-  const values = preValidator ? preValidator( state.values ) : state.values;
+  const values = preValidator ? preValidator( JSON.parse( JSON.stringify( state.values) ) ) : state.values;
 
   return {
     ...state,
