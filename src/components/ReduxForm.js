@@ -60,6 +60,8 @@ class Form extends Component {
 
     this.getValue = this.getValue.bind(this);
     this.setValue = this.setValue.bind(this);
+    this.addValue = this.addValue.bind(this);
+    this.removeValue = this.removeValue.bind(this);
     this.getTouched = this.getTouched.bind(this);
     this.setTouched = this.setTouched.bind(this);
     this.setError = this.setError.bind(this);
@@ -155,7 +157,9 @@ class Form extends Component {
       reset: this.reset,
       validatingField: this.validatingField,
       doneValidatingField: this.doneValidatingField,
-      registerAsyncValidation: this.registerAsyncValidation
+      registerAsyncValidation: this.registerAsyncValidation,
+      addValue: this.addValue,
+      removeValue: this.removeValue
     };
   }
 
@@ -229,6 +233,36 @@ class Form extends Component {
 
   getSuccess( field ) {
     return Utils.get( this.successes, field );
+  }
+
+  addValue( field, value ) {
+    this.props.dispatch(actions.setValue(field, [
+      ...( Utils.get( this.props.formState.values, field ) || []),
+      value,
+    ]));
+    this.props.dispatch(actions.removeAsyncError(field));
+    this.props.dispatch(actions.removeAsyncWarning(field));
+    this.props.dispatch(actions.removeAsyncSuccess(field));
+    this.props.dispatch(actions.preValidate());
+    this.props.dispatch(actions.validate());
+  }
+
+  removeValue( field, index ) {
+    const fieldValue = Utils.get( this.props.formState.values, field ) || [];
+    this.props.dispatch(actions.setValue( field, [
+      ...fieldValue.slice(0, index),
+      ...fieldValue.slice(index + 1)
+    ]));
+    const fieldTouched = Utils.get( this.props.formState.touched, field ) || [];
+    this.props.dispatch(actions.setTouched( field, [
+      ...fieldTouched.slice(0, index),
+      ...fieldTouched.slice(index + 1)
+    ]));
+    this.props.dispatch(actions.removeAsyncError(field));
+    this.props.dispatch(actions.removeAsyncWarning(field));
+    this.props.dispatch(actions.removeAsyncSuccess(field));
+    this.props.dispatch(actions.preValidate());
+    this.props.dispatch(actions.validate());
   }
 
   registerAsyncValidation( func ) {

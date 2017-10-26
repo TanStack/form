@@ -342,6 +342,25 @@ const FormApiMethods = ({ formApi }) => {
               Function that takes two parameters, the first is the <code>field</code> name, and the second is true or false.
             </td>
           </tr>
+          <tr>
+            <th scope="row">addValue</th>
+            <td><pre><PrismCode className="language-jsx">addValue( 'hello', 'value!' )</PrismCode></pre></td>
+            <td>
+              Function that takes two parameters, the first is the <code>field</code>
+              name of an array field, and the second is the value you would like to add.
+              Go look at the dynamic forms section to get a better understanding.
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">removeValue</th>
+            <td><pre><PrismCode className="language-jsx">removeValue( 'hello', 3 )</PrismCode></pre></td>
+            <td>
+              Function that takes two parameters, the first is the <code>field</code>
+              name of an array field, and the second is the index in that array
+              that you would like to remove. Go look at the dynamic forms section
+              to get a better understanding.
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
