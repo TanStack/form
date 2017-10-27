@@ -105,8 +105,9 @@ class FormField extends Component {
       submits: formApi.submits
     };
 
-    return React.cloneElement(children, { fieldApi } );
-
+    return typeof children === "function"
+      ? children(fieldApi)
+      : React.cloneElement(children, { fieldApi });
   }
 
 }
