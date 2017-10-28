@@ -20,6 +20,49 @@ class FormField extends Component {
     }
   }
 
+  // Optimization to only rerender if nessisary
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+
+    if ( this.context.optimize ) {
+      // Grab needed values
+      const field = this.props.field;
+      const currentApi = this.context.formApi;
+      const nextApi = nextContext.formApi;
+
+      // Check child props for changes so we know to re-render
+      const props1 = { ...this.props.children.props };
+      const props2 = { ...nextProps.children.props };
+
+      // Remove children so we can do shallow compare
+      props1.children = null;
+      props2.children = null;
+
+      if ( !Array.isArray(field) ) {
+        const shouldUpdate = nextApi.values[field] !== currentApi.values[field] ||
+               nextApi.touched[field] !== currentApi.touched[field] ||
+               nextApi.errors[field] !== currentApi.errors[field] ||
+               nextApi.warnings[field] !== currentApi.warnings[field] ||
+               nextApi.successes[field] !== currentApi.successes[field] ||
+               JSON.stringify( props1 ) !== JSON.stringify( props2 ) ||
+               nextContext.formApi.submits !== this.context.formApi.submits;
+
+        return shouldUpdate || false;
+      }
+
+      const shouldUpdate = nextApi.values[field[0]] !== currentApi.values[field[0]] ||
+             nextApi.touched[field[0]] !== currentApi.touched[field[0]] ||
+             nextApi.errors[field[0]] !== currentApi.errors[field[0]] ||
+             nextApi.warnings[field[0]] !== currentApi.warnings[field[0]] ||
+             nextApi.successes[field[0]] !== currentApi.successes[field[0]] ||
+             JSON.stringify( props1 ) !== JSON.stringify( props2 ) ||
+             nextContext.formApi.submits !== this.context.formApi.submits;
+
+      return shouldUpdate || false;
+    }
+
+    return true;
+  }
+
   render() {
 
     // console.log("RENDER FIELD", this.props.field);
@@ -73,7 +116,8 @@ class FormField extends Component {
 }
 
 FormField.contextTypes = {
-  formApi: PropTypes.object
+  formApi: PropTypes.object,
+  optimize: PropTypes.bool
 };
 
 export default FormField;

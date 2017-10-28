@@ -84,6 +84,7 @@ class Form extends Component {
   getChildContext() {
     return {
       formApi: this.api,
+      optimize: this.props.optimize
     };
   }
 
@@ -368,7 +369,8 @@ class Form extends Component {
 }
 
 Form.childContextTypes = {
-  formApi: PropTypes.object
+  formApi: PropTypes.object,
+  optimize: PropTypes.bool
 };
 
 /* ---------- Container ---------- */
