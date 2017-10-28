@@ -59,7 +59,7 @@ class Text extends Component {
     } = this.props;
 
     //console.log("REST", rest);
-    //console.log("RENDER1");
+    // console.log("RENDER1");
 
     return (
       <FormField field={field}>

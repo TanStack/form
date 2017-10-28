@@ -23,7 +23,7 @@ const errorValidator = (values) => {
   };
 
   const validateNickName = ( nickname ) => {
-    if ( nickname.length <= 1 ) {
+    if ( !nickname || nickname.length <= 1 ) {
       return 'Nickname must be longer than 1 character!';
     }
     return null;
