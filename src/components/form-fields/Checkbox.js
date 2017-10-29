@@ -30,7 +30,7 @@ class CheckboxWrapper extends Component {
 
     return (
       <input
-        checked={getValue()}
+        checked={!!getValue()}
         onBlur={() => setTouched()}
         onChange={(e) => {
           setValue(e.target.checked);

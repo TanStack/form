@@ -31,7 +31,7 @@ class TextWrapper extends Component {
 
     return (
       <input
-        value={getValue()}
+        value={getValue() || ''}
         onInput={( e ) => {
           setValue(e.target.value);
           if ( fieldDidUpdate ) {

@@ -31,7 +31,7 @@ class TextAreaWrapper extends Component {
 
     return (
       <textarea
-        value={getValue('')}
+        value={getValue() || ''}
         onInput={( e ) => {
           setValue(e.target.value);
           if ( fieldDidUpdate ) {
