@@ -501,26 +501,6 @@ const FormProps = () => {
                default, regardless of this prop.
             </td>
           </tr>
-          <tr>
-            <th scope="row"><code>optimize</code></th>
-            <td><pre>bool</pre></td>
-            <td>no</td>
-            <td>
-              Somtimes when you create some complex custom inputs you may run
-              into performance issues in IE. This happens for 3 reasons.
-              <ol>
-                <li>IE sucks</li>
-                <li>IE sucks</li>
-                <li>
-                  Every time the form updates every input gets rerendered.
-                  In order to prevent this, react-form takes advantage of reacts
-                  shouldComponentUpdate internally. However, this optimization
-                  is not clean and may cause other problems. Therefore, by default
-                  we disable this optimization. If you need it, pass in this prop.
-                </li>
-              </ol>
-            </td>
-          </tr>
         </tbody>
       </table>
     </div>

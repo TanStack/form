@@ -13,7 +13,7 @@ class TextWrapper extends Component {
 
   render() {
 
-    //console.log('RENDER');
+    // console.log('RENDER');
 
     const {
       fieldDidUpdate,
