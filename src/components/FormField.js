@@ -6,9 +6,6 @@ import React, { Component } from 'react';
 // Import PropTypes library
 import PropTypes from 'prop-types';
 
-// Import CircularStringify lib for optimization
-import CircularJSON from 'circular-json';
-
 import Utils from '../redux/utils';
 
 /* ---------- Form Component ----------*/
@@ -47,7 +44,7 @@ class FormField extends Component {
       Utils.get( nextApi.errors, field ) !== Utils.get( currentApi.errors, field ) ||
       Utils.get( nextApi.warnings, field ) !== Utils.get( currentApi.warnings, field ) ||
       Utils.get( nextApi.successes, field ) !== Utils.get( currentApi.successes, field ) ||
-      CircularJSON.stringify( nextChildProps ) !== CircularJSON.stringify( childProps ) ||
+      !Utils.isShallowEqual(nextChildProps, childProps) ||
       nextContext.formApi.submits !== this.context.formApi.submits;
 
     return shouldUpdate || false;
