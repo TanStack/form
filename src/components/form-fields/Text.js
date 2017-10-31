@@ -10,38 +10,26 @@ import PropTypes from 'prop-types';
 import FormField from '../FormField';
 
 class TextWrapper extends Component {
-
   render() {
-
     // console.log('RENDER');
 
-    const {
-      fieldApi,
-      onChange,
-      onBlur,
-      ...rest
-    } = this.props;
+    const { fieldApi, onChange, onBlur, ...rest } = this.props;
 
-    const {
-      getValue,
-      setValue,
-      setTouched
-    } = fieldApi;
+    const { getValue, setValue, setTouched } = fieldApi;
 
     return (
       <input
         {...rest}
         value={getValue() || ''}
-        onChange={( e ) => {
+        onChange={(e) => {
           setValue(e.target.value);
-          if ( onChange ) {
+          if (onChange) {
             onChange(e.target.value, e);
           }
-        }
-        }
+        }}
         onBlur={(e) => {
           setTouched();
-          if ( onBlur ) {
+          if (onBlur) {
             onBlur(e);
           }
         }}
@@ -51,14 +39,10 @@ class TextWrapper extends Component {
 }
 
 class Text extends Component {
-
   render() {
-    const {
-      field,
-      ...rest
-    } = this.props;
+    const { field, ...rest } = this.props;
 
-    //console.log("REST", rest);
+    // console.log("REST", rest);
     // console.log("RENDER1");
 
     return (
@@ -67,14 +51,10 @@ class Text extends Component {
       </FormField>
     );
   }
-
 }
 
 Text.propTypes = {
-  field: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.array,
-  ]).isRequired,
+  field: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
 };
 
 export default Text;
