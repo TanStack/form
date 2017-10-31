@@ -19,7 +19,6 @@ class SelectWrapper extends Component {
       fieldApi,
       options,
       onChange,
-      fieldDidUpdate,
       onBlur,
       placeholder,
       ...rest
@@ -50,12 +49,6 @@ class SelectWrapper extends Component {
         onChange={(e) => {
           const val = resolvedOptions[e.target.value].value;
           setValue(val);
-          if (fieldDidUpdate) {
-            if (process.env.NODE_ENV === 'development') {
-              console.warn('fieldDidUpdate has been deprecated in favor of onChange. Please check the latest docs and update your app!')
-            }
-            fieldDidUpdate(val);
-          }
           if (onChange) {
             onChange(val, e);
           }

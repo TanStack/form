@@ -28,17 +28,10 @@ class RadioGroupWrapper extends Component {
       component,
       render,
       onChange,
-      fieldDidUpdate,
       onBlur
     } = this.props;
 
     fieldApi.onChange = ( val ) => {
-      if (fieldDidUpdate) {
-        if (process.env.NODE_ENV === 'development') {
-          console.warn('fieldDidUpdate has been deprecated in favor of onChange. Please check the latest docs and update your app!')
-        }
-        fieldDidUpdate(val);
-      }
       if ( onChange ) {
         onChange( val );
       }

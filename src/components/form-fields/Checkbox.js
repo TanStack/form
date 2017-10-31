@@ -17,7 +17,6 @@ class CheckboxWrapper extends Component {
 
     const {
       fieldApi,
-      fieldDidUpdate,
       onChange,
       onBlur,
       ...rest
@@ -35,12 +34,6 @@ class CheckboxWrapper extends Component {
         checked={!!getValue()}
         onChange={(e) => {
           setValue(e.target.checked);
-          if (fieldDidUpdate) {
-            if (process.env.NODE_ENV === 'development') {
-              console.warn('fieldDidUpdate has been deprecated in favor of onChange. Please check the latest docs and update your app!')
-            }
-            fieldDidUpdate(e.target.checked);
-          }
           if (onChange) {
             onChange(e.target.checked, e);
           }
