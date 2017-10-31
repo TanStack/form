@@ -6,9 +6,6 @@ import React, { Component } from 'react';
 // Import PropTypes library
 import PropTypes from 'prop-types';
 
-// Import CircularStringify lib for optimization
-import CircularJSON from 'circular-json';
-
 import Utils from '../redux/utils';
 
 /* ---------- Form Component ----------*/
