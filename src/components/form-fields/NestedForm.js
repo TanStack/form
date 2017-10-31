@@ -49,7 +49,8 @@ const NestedFormWrapper = (props) => {
       setSuccess( success ? successes : null );
       if ( asyncValidations > 0 ) {
         validatingField();
-      } else {
+      }
+      else {
         doneValidatingField();
       }
     },

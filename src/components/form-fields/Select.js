@@ -16,10 +16,10 @@ class SelectWrapper extends Component {
     // console.log('RENDER');
 
     const {
-      fieldDidUpdate,
       fieldApi,
       options,
       onChange,
+      onBlur,
       placeholder,
       ...rest
     } = this.props;
@@ -44,19 +44,22 @@ class SelectWrapper extends Component {
 
     return (
       <select
-        onBlur={() => setTouched()}
+        {...rest}
+        value={selectedIndex > -1 ? selectedIndex : nullIndex}
         onChange={(e) => {
           const val = resolvedOptions[e.target.value].value;
           setValue(val);
           if (onChange) {
-            onChange(e);
-          }
-          if ( fieldDidUpdate ) {
-            fieldDidUpdate( val );
+            onChange(val, e);
           }
         }}
-        value={selectedIndex > -1 ? selectedIndex : nullIndex}
-        {...rest}>
+        onBlur={(e) => {
+          setTouched();
+          if ( onBlur ) {
+            onBlur(e);
+          }
+        }}
+      >
         {resolvedOptions.map((option, i) => (
           <option
             key={option.value}
