@@ -7,12 +7,23 @@ import React, { Component } from 'react';
 import FormField from '../FormField';
 
 class CheckboxWrapper extends Component {
+
   render() {
+
     // console.log('RENDER');
 
-    const { fieldDidUpdate, fieldApi, onChange, ...rest } = this.props;
+    const {
+      fieldDidUpdate,
+      fieldApi,
+      onChange,
+      ...rest
+    } = this.props;
 
-    const { getValue, setValue, setTouched } = fieldApi;
+    const {
+      getValue,
+      setValue,
+      setTouched
+    } = fieldApi;
 
     return (
       <input
@@ -23,17 +34,35 @@ class CheckboxWrapper extends Component {
           if (onChange) {
             onChange(e);
           }
-          if (fieldDidUpdate) {
-            fieldDidUpdate(e.target.checked);
+          if ( fieldDidUpdate ) {
+            fieldDidUpdate( e.target.checked );
           }
         }}
         type="checkbox"
-        {...rest}
-      />
+        {...rest} />
     );
   }
 }
 
-const Checkbox = FormField(CheckboxWrapper);
+class Checkbox extends Component {
+
+  render() {
+    const {
+      field,
+      ...rest
+    } = this.props;
+
+    return (
+      <FormField field={field}>
+        <CheckboxWrapper {...rest} />
+      </FormField>
+    );
+  }
+
+}
+
+Checkbox.propTypes = {
+  field: PropTypes.string.isRequired
+};
 
 export default Checkbox;

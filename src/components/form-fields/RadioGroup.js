@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import FormField from '../FormField';
 
 class RadioGroupWrapper extends Component {
+
   // Set the initial value
   componentWillMount() {
     if (this.props.value) {
@@ -18,6 +19,7 @@ class RadioGroupWrapper extends Component {
   }
 
   render() {
+
     // console.log('RENDER');
 
     const {
@@ -25,37 +27,52 @@ class RadioGroupWrapper extends Component {
       children,
       component,
       render,
-      fieldDidUpdate,
+      fieldDidUpdate
     } = this.props;
 
     // Add fieldDidUpdate to field api
-    fieldApi.fieldDidUpdate = (val) => {
-      if (fieldDidUpdate) {
-        fieldDidUpdate(val);
+    fieldApi.fieldDidUpdate = ( val ) => {
+      if ( fieldDidUpdate ) {
+        fieldDidUpdate( val );
       }
     };
 
     // Expose field api as group
-    if (component) {
-      return React.createElement(component, { group: fieldApi });
+    if ( component ) {
+      return React.createElement(component, { group: fieldApi } );
     }
 
-    if (render) {
+    if ( render ) {
       return render(fieldApi);
     }
 
-    if (typeof children === 'function') {
+    if ( typeof children === 'function' ) {
       return children(fieldApi);
     }
 
-    return React.cloneElement(children, { group: fieldApi });
+    return React.cloneElement(children, { group: fieldApi } );
   }
 }
 
-const RadioGroup = FormField(RadioGroupWrapper);
+class RadioGroup extends Component {
+
+  render() {
+    const {
+      field,
+      ...rest
+    } = this.props;
+
+    return (
+      <FormField field={field}>
+        <RadioGroupWrapper {...rest} />
+      </FormField>
+    );
+  }
+
+}
 
 RadioGroup.propTypes = {
-  field: PropTypes.string.isRequired,
+  field: PropTypes.string.isRequired
 };
 
 export default RadioGroup;
