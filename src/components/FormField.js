@@ -32,11 +32,11 @@ function FormField(FormComponent) {
 
       // Check child props for changes so we know to re-render
       const nonChildrenProps = {
-        ...this.props.children.props,
+        ...this.props,
         children: null // do not compare children, that would be an anti-pattern
       };
       const nextNonChildrenProps = {
-        ...nextProps.children.props,
+        ...nextProps,
         children: null
       };
 
