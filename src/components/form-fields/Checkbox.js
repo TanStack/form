@@ -3,9 +3,6 @@
 // Import React
 import React, { Component } from 'react';
 
-// Import PropTypes library
-import PropTypes from 'prop-types';
-
 // Inport the form input
 import FormField from '../FormField';
 
