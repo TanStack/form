@@ -19,6 +19,7 @@ class TextWrapper extends Component {
       fieldApi,
       onChange,
       onBlur,
+      fieldDidUpdate,
       ...rest
     } = this.props;
 
@@ -34,11 +35,16 @@ class TextWrapper extends Component {
         value={getValue() || ''}
         onChange={( e ) => {
           setValue(e.target.value);
+          if (fieldDidUpdate) {
+            if (process.env.NODE_ENV === 'development') {
+              console.warn('fieldDidUpdate has been deprecated in favor of onChange. Please check the latest docs and update your app!')
+            }
+            fieldDidUpdate(e.target.value);
+          }
           if ( onChange ) {
             onChange(e.target.value, e);
           }
-        }
-        }
+        }}
         onBlur={(e) => {
           setTouched();
           if ( onBlur ) {
