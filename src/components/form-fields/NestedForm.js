@@ -1,10 +1,7 @@
 /* ---------- Imports ---------- */
 
 // Import React
-import React, { Component } from 'react';
-
-// Import PropTypes library
-import PropTypes from 'prop-types';
+import React from 'react';
 
 // Inport the form input
 import FormField from '../FormField';
@@ -59,30 +56,6 @@ const NestedFormWrapper = (props) => {
 
 };
 
-class NestedForm extends Component {
-
-  render() {
-
-    const {
-      field,
-      children
-    } = this.props;
-
-    return (
-      <FormField field={field} nestedForm>
-        <NestedFormWrapper field={field} {...children.props}>
-          {children}
-        </NestedFormWrapper>
-      </FormField>
-    );
-  }
-}
-
-NestedForm.propTypes = {
-  field: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.array,
-  ]).isRequired,
-};
+const NestedForm = FormField(NestedFormWrapper);
 
 export default NestedForm;

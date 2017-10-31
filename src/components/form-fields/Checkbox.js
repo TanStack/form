@@ -3,9 +3,6 @@
 // Import React
 import React, { Component } from 'react';
 
-// Import PropTypes library
-import PropTypes from 'prop-types';
-
 // Inport the form input
 import FormField from '../FormField';
 
@@ -50,25 +47,6 @@ class CheckboxWrapper extends Component {
   }
 }
 
-class Checkbox extends Component {
-
-  render() {
-    const {
-      field,
-      ...rest
-    } = this.props;
-
-    return (
-      <FormField field={field}>
-        <CheckboxWrapper {...rest} />
-      </FormField>
-    );
-  }
-
-}
-
-Checkbox.propTypes = {
-  field: PropTypes.string.isRequired
-};
+const Checkbox = FormField(CheckboxWrapper);
 
 export default Checkbox;

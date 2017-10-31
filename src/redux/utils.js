@@ -67,9 +67,22 @@ function get(obj, path, def) {
   return typeof val !== 'undefined' ? val : def;
 }
 
+function isShallowEqual(obj1, obj2) {
+  if (Object.keys(obj1).length !== Object.keys(obj2).length) {
+    return false;
+  }
+  for (var prop in obj1) {
+    if (obj1[prop] !== obj2[prop]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 export default {
   get,
   set,
   isObject,
-  isArray
+  isArray,
+  isShallowEqual
 };

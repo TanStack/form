@@ -3,9 +3,6 @@
 // Import React
 import React, { Component } from 'react';
 
-// Import PropTypes library
-import PropTypes from 'prop-types';
-
 // Inport the form input
 import FormField from '../FormField';
 
@@ -38,23 +35,6 @@ class TextWrapper extends Component {
   }
 }
 
-class Text extends Component {
-  render() {
-    const { field, ...rest } = this.props;
-
-    // console.log("REST", rest);
-    // console.log("RENDER1");
-
-    return (
-      <FormField field={field}>
-        <TextWrapper {...rest} />
-      </FormField>
-    );
-  }
-}
-
-Text.propTypes = {
-  field: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
-};
+const Text = FormField(TextWrapper);
 
 export default Text;
