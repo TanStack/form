@@ -13,7 +13,6 @@ class Radio extends Component {
   render() {
 
     const {
-      onChange,
       onClick,
       group,
       value,
@@ -22,17 +21,21 @@ class Radio extends Component {
 
     return (
       <input
+        {...rest}
         checked={group.getValue() === value}
-        onBlur={() => group.setTouched()}
         onClick={(e) => {
           group.setValue(value);
-          group.fieldDidUpdate(value);
+          group.onChange(value, e);
           if (onClick) {
             onClick(e);
           }
         }}
+        onBlur={(e) => {
+          group.setTouched();
+          group.onBlur(e);
+        }}
         type="radio"
-        {...rest} />
+      />
     );
 
   }

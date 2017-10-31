@@ -7,41 +7,30 @@ import React, { Component } from 'react';
 import FormField from '../FormField';
 
 class TextWrapper extends Component {
-
   render() {
-
     // console.log('RENDER');
 
-    const {
-      fieldDidUpdate,
-      fieldApi,
-      onInput,
-      ...rest
-    } = this.props;
+    const { fieldApi, onChange, onBlur, ...rest } = this.props;
 
-    const {
-      getValue,
-      setValue,
-      setTouched,
-    } = fieldApi;
+    const { getValue, setValue, setTouched } = fieldApi;
 
     return (
       <input
+        {...rest}
         value={getValue() || ''}
-        onInput={( e ) => {
+        onChange={(e) => {
           setValue(e.target.value);
-          if ( fieldDidUpdate ) {
-            fieldDidUpdate(e.target.value);
+          if (onChange) {
+            onChange(e.target.value, e);
           }
-          if ( onInput ) {
-            onInput( e );
-          }
-        }
-        }
-        onBlur={() => {
-          setTouched();
         }}
-        {...rest} />
+        onBlur={(e) => {
+          setTouched();
+          if (onBlur) {
+            onBlur(e);
+          }
+        }}
+      />
     );
   }
 }

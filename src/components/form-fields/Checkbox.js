@@ -13,9 +13,9 @@ class CheckboxWrapper extends Component {
     // console.log('RENDER');
 
     const {
-      fieldDidUpdate,
       fieldApi,
       onChange,
+      onBlur,
       ...rest
     } = this.props;
 
@@ -27,19 +27,22 @@ class CheckboxWrapper extends Component {
 
     return (
       <input
+        {...rest}
         checked={!!getValue()}
-        onBlur={() => setTouched()}
         onChange={(e) => {
           setValue(e.target.checked);
           if (onChange) {
-            onChange(e);
+            onChange(e.target.checked, e);
           }
-          if ( fieldDidUpdate ) {
-            fieldDidUpdate( e.target.checked );
+        }}
+        onBlur={(e) => {
+          setTouched();
+          if ( onBlur ) {
+            onBlur(e);
           }
         }}
         type="checkbox"
-        {...rest} />
+      />
     );
   }
 }

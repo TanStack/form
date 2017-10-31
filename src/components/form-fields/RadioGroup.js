@@ -24,13 +24,19 @@ class RadioGroupWrapper extends Component {
       children,
       component,
       render,
-      fieldDidUpdate
+      onChange,
+      onBlur
     } = this.props;
 
-    // Add fieldDidUpdate to field api
-    fieldApi.fieldDidUpdate = ( val ) => {
-      if ( fieldDidUpdate ) {
-        fieldDidUpdate( val );
+    fieldApi.onChange = ( val ) => {
+      if ( onChange ) {
+        onChange( val );
+      }
+    };
+
+    fieldApi.onBlur = () => {
+      if (onBlur) {
+        onBlur();
       }
     };
 
