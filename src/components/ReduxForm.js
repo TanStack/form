@@ -310,7 +310,7 @@ class Form extends Component {
     this.finishSubmission();
   }
 
-  async finishSubmission() {
+  async finishSubmission(e) {
     // Call asynchronous validators
     await this.callAsynchronousValidators();
     // Only submit if we have no errors
@@ -321,7 +321,7 @@ class Form extends Component {
       // Update submitted
       this.props.dispatch(actions.submitted());
       if ( this.props.onSubmit ) {
-        this.props.onSubmit( this.props.formState.values );
+        this.props.onSubmit( this.props.formState.values, e );
       }
     }
   }
