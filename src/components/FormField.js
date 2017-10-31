@@ -98,6 +98,11 @@ function FormField(FormComponent) {
         submits: formApi.submits
       };
 
+      // Handle deprecated usage
+      if (typeof FormComponent === 'object' && FormComponent.children) {
+        return React.cloneElement(this.props.children, { fieldApi } );
+      }
+
       return <FormComponent fieldApi={fieldApi} {...rest} />;
 
     }
@@ -106,6 +111,16 @@ function FormField(FormComponent) {
   ConnectedFormField.contextTypes = {
     formApi: PropTypes.object
   };
+
+  // Handle deprecated usage
+  if (typeof FormComponent === 'object' && FormComponent.children) {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('Using FormField directly as a component is deprecated. Please refer to the latest docs on new HOC usage.');
+    }
+    return (
+      <ConnectedFormField {...FormComponent} />
+    );
+  }
 
   return ConnectedFormField;
 }
