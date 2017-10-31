@@ -3,9 +3,6 @@
 // Import React
 import React, { Component } from 'react';
 
-// Import PropTypes library
-import PropTypes from 'prop-types';
-
 // Inport the form input
 import FormField from '../FormField';
 
@@ -54,25 +51,6 @@ class RadioGroupWrapper extends Component {
   }
 }
 
-class RadioGroup extends Component {
-
-  render() {
-    const {
-      field,
-      ...rest
-    } = this.props;
-
-    return (
-      <FormField field={field}>
-        <RadioGroupWrapper {...rest} />
-      </FormField>
-    );
-  }
-
-}
-
-RadioGroup.propTypes = {
-  field: PropTypes.string.isRequired
-};
+const RadioGroup = FormField(RadioGroupWrapper);
 
 export default RadioGroup;

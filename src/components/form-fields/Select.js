@@ -67,30 +67,6 @@ class SelectWrapper extends Component {
   }
 }
 
-class Select extends Component {
-
-  render() {
-    const {
-      field,
-      ...rest
-    } = this.props;
-
-    //console.log("REST", rest);
-
-    return (
-      <FormField field={field}>
-        <SelectWrapper {...rest} />
-      </FormField>
-    );
-  }
-
-}
-
-Select.propTypes = {
-  field: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.array,
-  ]).isRequired,
-};
+const Select = FormField(SelectWrapper);
 
 export default Select;

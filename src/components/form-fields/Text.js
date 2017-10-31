@@ -23,7 +23,6 @@ class TextWrapper extends Component {
       getValue,
       setValue,
       setTouched,
-      format
     } = fieldApi;
 
     return (
@@ -47,31 +46,6 @@ class TextWrapper extends Component {
   }
 }
 
-class Text extends Component {
-
-  render() {
-    const {
-      field,
-      ...rest
-    } = this.props;
-
-    //console.log("REST", rest);
-    // console.log("RENDER1");
-
-    return (
-      <FormField field={field}>
-        <TextWrapper {...rest} />
-      </FormField>
-    );
-  }
-
-}
-
-Text.propTypes = {
-  field: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.array,
-  ]).isRequired,
-};
+const Text = FormField(TextWrapper);
 
 export default Text;

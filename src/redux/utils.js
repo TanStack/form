@@ -68,12 +68,15 @@ function get(obj, path, def) {
 }
 
 function isShallowEqual(obj1, obj2) {
+  if (Object.keys(obj1).length !== Object.keys(obj2).length) {
+    return false;
+  }
   for (var prop in obj1) {
     if (obj1[prop] !== obj2[prop]) {
-      return false
+      return false;
     }
   }
-  return true
+  return true;
 }
 
 export default {

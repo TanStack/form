@@ -44,25 +44,6 @@ class CheckboxWrapper extends Component {
   }
 }
 
-class Checkbox extends Component {
-
-  render() {
-    const {
-      field,
-      ...rest
-    } = this.props;
-
-    return (
-      <FormField field={field}>
-        <CheckboxWrapper {...rest} />
-      </FormField>
-    );
-  }
-
-}
-
-Checkbox.propTypes = {
-  field: PropTypes.string.isRequired
-};
+const Checkbox = FormField(CheckboxWrapper);
 
 export default Checkbox;

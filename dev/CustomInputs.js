@@ -21,7 +21,7 @@ const Message = ({ color, message }) => {
       <small>{message}</small>
     </div>
   );
-}
+};
 
 class CustomTextWrapper extends Component {
 
@@ -68,20 +68,7 @@ class CustomTextWrapper extends Component {
   }
 }
 
-class CustomText extends Component {
-  render() {
-    const {
-      field,
-      ...rest
-    } = this.props;
-    return (
-      <FormField field={field}>
-        <CustomTextWrapper {...rest} />
-      </FormField>
-    );
-  }
-}
-
+const CustomText = FormField(CustomTextWrapper);
 
 const FormContent = ({ formApi }) => {
 
@@ -165,19 +152,7 @@ const CustomFormCode = () => {
 
   // Use the form field and your custom input together to create your very own input!
   // Note, You must use the child component syntax for creating custom inputs with form fields.
-  class CustomText extends Component {
-    render() {
-      const {
-        field,
-        ...rest
-      } = this.props;
-      return (
-        <FormField field={field}>
-          <CustomTextWrapper {...rest} />
-        </FormField>
-      );
-    }
-  }
+  const CustomText = FormField(CustomTextWrapper);
 
   const errorValidator = (values) => {
     return {
@@ -266,7 +241,7 @@ class CustomInput extends Component {
         <p>
           If the out of the box inputs are not enough for you. You can simply
           customize them, by creating your very own input elements. This is done
-          by leverageing the FormField element that is availible in react-form.
+          by leverageing the FormField HOC that is availible in react-form.
           Below is an example of a form that uses a custom input. Our custom input has
           internal error, success, and warning messages that know when to get shown.
         </p>
