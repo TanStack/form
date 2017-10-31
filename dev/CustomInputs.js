@@ -49,7 +49,7 @@ class CustomTextWrapper extends Component {
     return (
       <div>
         <input
-          value={getValue()}
+          value={getValue() || ''}
           onInput={( e ) => {
             setValue(e.target.value);
             if ( onInput ) {

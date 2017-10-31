@@ -60,10 +60,7 @@ function FormField(FormComponent) {
         formApi
       } = this.context;
 
-      const {
-        field,
-        rest
-      } = this.props;
+      const { field, ...rest } = this.props;
 
       // Build field api from form api
       const fieldApi = {
@@ -113,7 +110,7 @@ function FormField(FormComponent) {
   };
 
   // Handle deprecated usage
-  if (typeof FormComponent === 'object' && FormComponent.children) {
+  if (typeof FormComponent === 'object') {
     if (process.env.NODE_ENV === 'development') {
       console.warn('Using FormField directly as a component is deprecated. Please refer to the latest docs on new HOC usage.');
     }

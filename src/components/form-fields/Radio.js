@@ -23,7 +23,10 @@ class Radio extends Component {
       <input
         {...rest}
         checked={group.getValue() === value}
-        onClick={(e) => {
+        onChange={(e) => {
+          if (!e.target.checked) {
+            return;
+          }
           group.setValue(value);
           group.onChange(value, e);
           if (onClick) {
