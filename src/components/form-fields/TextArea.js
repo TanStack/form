@@ -17,9 +17,8 @@ class TextAreaWrapper extends Component {
 
     const {
       onChange,
+      onBlur,
       fieldApi,
-      fieldDidUpdate,
-      onInput,
       ...rest
     } = this.props;
 
@@ -31,18 +30,21 @@ class TextAreaWrapper extends Component {
 
     return (
       <textarea
+        {...rest}
         value={getValue() || ''}
-        onInput={( e ) => {
+        onChange={( e ) => {
           setValue(e.target.value);
-          if ( fieldDidUpdate ) {
-            fieldDidUpdate(e.target.value);
-          }
-          if ( onInput ) {
-            onInput( e );
+          if ( onChange ) {
+            onChange(e.target.value, e);
           }
         }}
-        onBlur={() => setTouched()}
-        {...rest} />
+        onBlur={(e) => {
+          setTouched();
+          if ( onBlur ) {
+            onBlur(e);
+          }
+        }}
+      />
     );
 
   }

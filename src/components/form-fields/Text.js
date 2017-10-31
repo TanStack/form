@@ -16,36 +16,36 @@ class TextWrapper extends Component {
     // console.log('RENDER');
 
     const {
-      fieldDidUpdate,
       fieldApi,
-      onInput,
+      onChange,
+      onBlur,
       ...rest
     } = this.props;
 
     const {
       getValue,
       setValue,
-      setTouched,
-      format
+      setTouched
     } = fieldApi;
 
     return (
       <input
+        {...rest}
         value={getValue() || ''}
-        onInput={( e ) => {
+        onChange={( e ) => {
           setValue(e.target.value);
-          if ( fieldDidUpdate ) {
-            fieldDidUpdate(e.target.value);
-          }
-          if ( onInput ) {
-            onInput( e );
+          if ( onChange ) {
+            onChange(e.target.value, e);
           }
         }
         }
-        onBlur={() => {
+        onBlur={(e) => {
           setTouched();
+          if ( onBlur ) {
+            onBlur(e);
+          }
         }}
-        {...rest} />
+      />
     );
   }
 }
