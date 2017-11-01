@@ -24,13 +24,13 @@ const NestedFormArrayCode = () => {
     <NestedForm field={['friends', i]} key={\`nested-friend-\${i}\`}>
       <Form>
         { formApi => (
-          <form onSubmit={formApi.submitForm} id="form2">
+          <div>
             <h2>Friend</h2>
             <label htmlFor={\`nested-friend-first-\${i}\`}>First name</label>
             <Text field="firstName" id={\`nested-friend-first-\${i}\`} />
             <label htmlFor={\`nested-friend-last-\${i}\`}>Last name</label>
             <Text field="lastName" id={\`nested-friend-last-\${i}\`} />
-          </form>
+          </div>
         )}
       </Form>
     </NestedForm>
@@ -79,13 +79,13 @@ const Friend = ({ i }) => (
   <NestedForm field={['friends', i]} key={`nested-friend-${i}`}>
     <Form>
       { formApi => (
-        <form onSubmit={formApi.submitForm} id="form2">
+        <div>
           <h2>Friend</h2>
           <label htmlFor={`nested-friend-first-${i}`}>First name</label>
           <Text field="firstName" id={`nested-friend-first-${i}`} />
           <label htmlFor={`nested-friend-last-${i}`}>Last name</label>
           <Text field="lastName" id={`nested-friend-last-${i}`} />
-        </form>
+        </div>
       )}
     </Form>
   </NestedForm>

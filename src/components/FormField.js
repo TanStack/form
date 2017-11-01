@@ -8,6 +8,8 @@ import PropTypes from 'prop-types';
 
 import Utils from '../redux/utils';
 
+import DepricatedFormField from './DepricatedFormField';
+
 /* ---------- Form Component ----------*/
 
 function FormField(FormComponent) {
@@ -67,9 +69,9 @@ function FormField(FormComponent) {
         setValue: ( value ) => {
           formApi.setValue( field, value );
         },
-        format: ( format ) => {
-          formApi.format( field, format );
-        },
+        // format: ( format ) => {
+        //   formApi.format( field, format ); // TODO not supported yet WIP
+        // },
         setTouched: ( touched ) => {
           formApi.setTouched( field, touched );
         },
@@ -94,14 +96,7 @@ function FormField(FormComponent) {
         submitted: formApi.submitted,
         submits: formApi.submits
       };
-
-      // Handle deprecated usage
-      if (typeof FormComponent === 'object' && FormComponent.children) {
-        return React.cloneElement(this.props.children, { fieldApi } );
-      }
-
       return <FormComponent fieldApi={fieldApi} {...rest} />;
-
     }
   }
 
@@ -115,7 +110,7 @@ function FormField(FormComponent) {
       console.warn('Using FormField directly as a component is deprecated. Please refer to the latest docs on new HOC usage.');
     }
     return (
-      <ConnectedFormField {...FormComponent} />
+      <DepricatedFormField {...FormComponent} />
     );
   }
 
