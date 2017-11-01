@@ -10,6 +10,7 @@ import {
   SUBMITS,
   SUBMITTED,
   RESET,
+  RESET_ALL,
   VALIDATING_FIELD,
   DONE_VALIDATING_FIELD,
   VALIDATION_FAILURE,
@@ -513,6 +514,8 @@ class ReducerBuilder {
           return submits( state, action );
         case RESET:
           return reset( state, action );
+        case RESET_ALL:
+          return INITIAL_STATE;
         case VALIDATION_FAILURE:
           return validationFailure( state, action );
         case VALIDATION_SUCCESS:

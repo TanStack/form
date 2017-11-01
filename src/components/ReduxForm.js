@@ -70,6 +70,7 @@ class Form extends Component {
     this.setSuccess = this.setSuccess.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.reset = this.reset.bind(this);
+    this.resetAll = this.resetAll.bind(this);
     this.getError = this.getError.bind(this);
     this.getWarning = this.getWarning.bind(this);
     this.getSuccess = this.getSuccess.bind(this);
@@ -155,6 +156,7 @@ class Form extends Component {
       submitted: this.props.formState.submitted,
       submits: this.props.formState.submits,
       reset: this.reset,
+      resetAll: this.resetAll,
       validatingField: this.validatingField,
       doneValidatingField: this.doneValidatingField,
       registerAsyncValidation: this.registerAsyncValidation,
@@ -277,6 +279,10 @@ class Form extends Component {
 
   reset( field ) {
     this.props.dispatch(actions.reset(field));
+  }
+
+  resetAll() {
+    this.props.dispatch(actions.resetAll());
   }
 
   // This is an internal method used by nested forms to tell the parent that its validating

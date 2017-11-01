@@ -63,6 +63,11 @@ export function reset( field ) {
   return { type: RESET, field };
 }
 
+export const RESET_ALL = 'RESET_ALL';
+export function resetAll() {
+  return { type: RESET_ALL };
+}
+
 export const PRE_VALIDATE = 'PRE_VALIDATE';
 export function preValidate() {
   return { type: PRE_VALIDATE };
