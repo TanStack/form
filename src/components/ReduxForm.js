@@ -71,6 +71,12 @@ class Form extends Component {
     };
   }
 
+  componentWillMount() {
+    if (this.props.getApi) {
+      this.props.getApi(this.api);
+    }
+  }
+
   componentDidMount() {
     if ( !this.props.dontValidateOnMount ) {
       // PreValidat
