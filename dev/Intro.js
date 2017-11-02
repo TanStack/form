@@ -361,6 +361,13 @@ const FormApiMethods = ({ formApi }) => {
               to get a better understanding.
             </td>
           </tr>
+          <tr>
+            <th scope="row">resetAll</th>
+            <td><pre><PrismCode className="language-jsx">resetAll()</PrismCode></pre></td>
+            <td>
+              Function that resets the entire form to its initial state.
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
