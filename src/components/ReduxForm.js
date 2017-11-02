@@ -80,6 +80,12 @@ class Form extends Component {
     this.callAsynchronousValidators = this.callAsynchronousValidators.bind(this);
 
     this.asyncValidators = [];
+
+    // Unfortunately, babel has some stupid bug with auto-binding async arrow functions
+    // So we still need to manually bind them here
+    // https://github.com/gaearon/react-hot-loader/issues/391
+    this.finishSubmission = this.finishSubmission.bind(this);
+    this.callAsynchronousValidators = this.callAsynchronousValidators.bind(this);
   }
 
   getChildContext() {

@@ -58,6 +58,7 @@
     "babel-core": "^6.26.0",
     "babel-eslint": "^7.2.3",
     "babel-loader": "^7.1.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.0",
     "babel-preset-react": "^6.24.1",
@@ -91,16 +92,5 @@
     "webpack": "^3.5.5",
     "webpack-dev-server": "^2.7.1",
     "webpack-node-externals": "^1.6.0"
-  },
-  "babel": {
-    "presets": [
-      "env",
-      "stage-0",
-      "react"
-    ],
-    "plugins": [
-      "react-hot-loader/babel",
-      "transform-runtime"
-    ]
   }
 }
