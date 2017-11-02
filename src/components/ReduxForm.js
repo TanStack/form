@@ -55,7 +55,30 @@ const newState = ( state ) => {
 class Form extends Component {
 
   constructor(props) {
+
     super(props);
+
+    this.getValue = this.getValue.bind(this);
+    this.setValue = this.setValue.bind(this);
+    this.addValue = this.addValue.bind(this);
+    this.removeValue = this.removeValue.bind(this);
+    this.getTouched = this.getTouched.bind(this);
+    this.setTouched = this.setTouched.bind(this);
+    this.setError = this.setError.bind(this);
+    this.format = this.format.bind(this);
+    this.setWarning = this.setWarning.bind(this);
+    this.setSuccess = this.setSuccess.bind(this);
+    this.submitForm = this.submitForm.bind(this);
+    this.reset = this.reset.bind(this);
+    this.resetAll = this.resetAll.bind(this);
+    this.getError = this.getError.bind(this);
+    this.getWarning = this.getWarning.bind(this);
+    this.getSuccess = this.getSuccess.bind(this);
+    this.doneValidatingField = this.doneValidatingField.bind(this);
+    this.validatingField = this.validatingField.bind(this);
+    this.registerAsyncValidation = this.registerAsyncValidation.bind(this);
+    this.callAsynchronousValidators = this.callAsynchronousValidators.bind(this);
+
     this.asyncValidators = [];
   }
 
@@ -162,7 +185,7 @@ class Form extends Component {
     });
   }
 
-  setValue = ( field, value ) => {
+  setValue( field, value ) {
     this.props.dispatch(actions.setValue(field, value));
     this.props.dispatch(actions.removeAsyncError(field));
     this.props.dispatch(actions.removeAsyncWarning(field));
@@ -171,7 +194,7 @@ class Form extends Component {
     this.props.dispatch(actions.validate());
   }
 
-  setTouched = ( field, touch = true, validate = true ) => {
+  setTouched( field, touch = true, validate = true ) {
     this.props.dispatch(actions.setTouched(field, touch));
     // We have a flag to perform async validate when touched
     if ( validate ) {
@@ -179,42 +202,42 @@ class Form extends Component {
     }
   }
 
-  setError = ( field, error ) => {
+  setError( field, error ) {
     this.props.dispatch(actions.setError(field, error));
   }
 
-  setWarning = ( field, warning ) => {
+  setWarning( field, warning ) {
     this.props.dispatch(actions.setWarning(field, warning));
   }
 
-  setSuccess = ( field, success ) => {
+  setSuccess( field, success ) {
     this.props.dispatch(actions.setSuccess(field, success));
   }
 
-  getTouched = ( field ) => {
+  getTouched( field ) {
     if ( Array.isArray(field) ) {
       return this.props.formState.touched[field[0]] ? this.props.formState.touched[field[0]][field[1]] : undefined;
     }
     return this.props.formState.touched[field];
   }
 
-  getValue = ( field ) => {
+  getValue( field ) {
     return Utils.get( this.props.formState.values, field );
   }
 
-  getError = ( field ) => {
+  getError( field ) {
     return Utils.get( this.errors, field );
   }
 
-  getWarning = ( field ) => {
+  getWarning( field ) {
     return Utils.get( this.warnings, field );
   }
 
-  getSuccess = ( field ) => {
+  getSuccess( field ) {
     return Utils.get( this.successes, field );
   }
 
-  addValue = ( field, value ) => {
+  addValue( field, value ) {
     this.props.dispatch(actions.setValue(field, [
       ...( Utils.get( this.props.formState.values, field ) || []),
       value,
@@ -226,7 +249,7 @@ class Form extends Component {
     this.props.dispatch(actions.validate());
   }
 
-  removeValue = ( field, index ) => {
+  removeValue( field, index ) {
     const fieldValue = Utils.get( this.props.formState.values, field ) || [];
     this.props.dispatch(actions.setValue( field, [
       ...fieldValue.slice(0, index),
@@ -244,35 +267,35 @@ class Form extends Component {
     this.props.dispatch(actions.validate());
   }
 
-  registerAsyncValidation = ( func ) => {
+  registerAsyncValidation( func ) {
     this.asyncValidators.push( func );
   }
 
-  format = ( field, format ) => {
+  format( field, format ) {
     this.props.dispatch(actions.format(field, format));
     this.props.dispatch(actions.preValidate());
     this.props.dispatch(actions.validate());
   }
 
-  reset = ( field ) => {
+  reset( field ) {
     this.props.dispatch(actions.reset(field));
   }
 
-  resetAll = () => {
+  resetAll() {
     this.props.dispatch(actions.resetAll());
   }
 
   // This is an internal method used by nested forms to tell the parent that its validating
-  validatingField = ( field ) => {
+  validatingField( field ) {
     this.props.dispatch(actions.validatingField(field));
   }
 
   // This is an internal method used by nested forms to tell the parent that its done validating
-  doneValidatingField = ( field ) => {
+  doneValidatingField( field ) {
     this.props.dispatch(actions.doneValidatingField(field));
   }
 
-  submitForm = ( e ) => {
+  submitForm( e ) {
     // PreValidate
     this.props.dispatch(actions.preValidate());
     // Validate
@@ -293,7 +316,7 @@ class Form extends Component {
     this.finishSubmission();
   }
 
-  finishSubmission = async (e) => {
+  async finishSubmission(e) {
     // Call asynchronous validators
     await this.callAsynchronousValidators();
     // Only submit if we have no errors
@@ -309,7 +332,7 @@ class Form extends Component {
     }
   }
 
-  callAsynchronousValidators = async () => {
+  async callAsynchronousValidators() {
     // Build up list of async functions that need to be called
     let validators = this.props.asyncValidators ? Object.keys(this.props.asyncValidators).map( ( field ) => {
       return this.props.dispatch(actions.asyncValidate(field, this.props.asyncValidators ));
