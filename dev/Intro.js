@@ -508,6 +508,17 @@ const FormProps = () => {
                default, regardless of this prop.
             </td>
           </tr>
+          <tr>
+            <th scope="row"><code>getApi</code></th>
+            <td><pre>function</pre></td>
+            <td>no</td>
+            <td>
+              To retrieve the form api as a callback, you can pass a function to the `getApi` prop.
+              Your function will be called with the formApi as the only parameter. You can save this as a reference
+              to easily manipulate your form from outside of the form scope.
+              <pre><PrismCode className="language-jsx">{`getApi( formApi )`}</PrismCode></pre>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
