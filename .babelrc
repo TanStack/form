@@ -1,0 +1,12 @@
+{
+  "presets": [
+    "env",
+    "stage-0",
+    "react"
+  ],
+  "plugins": [
+    "react-hot-loader/babel",
+    "transform-runtime",
+    "transform-class-properties"
+  ]
+}
