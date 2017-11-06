@@ -10,7 +10,7 @@ import Utils from '../redux/utils';
 
 /* ---------- Form Component ----------*/
 
-class DepricatedFormField extends Component {
+class DeprecatedFormField extends Component {
 
   // We want to set touched to true when the form was submitted ( not for nested forms! )
   componentWillReceiveProps(nextProps, nextContext) {
@@ -102,8 +102,8 @@ class DepricatedFormField extends Component {
 
 }
 
-DepricatedFormField.contextTypes = {
+DeprecatedFormField.contextTypes = {
   formApi: PropTypes.object
 };
 
-export default DepricatedFormField;
+export default DeprecatedFormField;

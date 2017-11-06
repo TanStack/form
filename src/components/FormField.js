@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 
 import Utils from '../redux/utils';
 
-import DepricatedFormField from './DepricatedFormField';
+import DeprecatedFormField from './DeprecatedFormField';
 
 /* ---------- Form Component ----------*/
 
@@ -110,7 +110,7 @@ function FormField(FormComponent) {
       console.warn('Using FormField directly as a component is deprecated. Please refer to the latest docs on new HOC usage.');
     }
     return (
-      <DepricatedFormField {...FormComponent} />
+      <DeprecatedFormField {...FormComponent} />
     );
   }
 
