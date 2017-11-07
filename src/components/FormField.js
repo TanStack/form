@@ -84,6 +84,7 @@ function FormField(FormComponent) {
         setSuccess: ( success ) => {
           formApi.setSuccess( field, success );
         },
+        getFieldName: ( ) => field,
         getValue: ( ) => formApi.getValue( field ),
         getTouched: ( ) => formApi.getTouched( field ),
         getError: ( ) => formApi.getError( field ),
