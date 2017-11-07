@@ -3,6 +3,11 @@ export function setValue( field, value ) {
   return { type: SET_VALUE, field, value };
 }
 
+export const SET_ALL_VALUES = 'SET_ALL_VALUES';
+export function setAllValues( values ) {
+  return { type: SET_ALL_VALUES, values };
+}
+
 export const FORMAT = 'FORMAT';
 export function format( field, fmt ) {
   return { type: FORMAT, field, format: fmt };

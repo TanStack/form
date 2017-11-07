@@ -1,5 +1,6 @@
 import {
   SET_VALUE,
+  SET_ALL_VALUES,
   SET_ERROR,
   SET_WARNING,
   SET_SUCCESS,
@@ -56,6 +57,21 @@ const setValue = ( state, action ) => {
   return {
     ...state,
     values: newValues
+  };
+
+};
+
+const setAllValues = ( state, action ) => {
+
+  const {
+    values
+  } = action;
+
+  const oldValues = JSON.parse(JSON.stringify(state.values));
+
+  return {
+    ...state,
+    values: { ...oldValues, ...values }
   };
 
 };
@@ -482,6 +498,8 @@ class ReducerBuilder {
       switch ( action.type ) {
         case SET_VALUE:
           return setValue( state, action );
+        case SET_ALL_VALUES:
+          return setAllValues( state, action );
         case FORMAT:
           return format( state, action );
         case SET_ERROR:

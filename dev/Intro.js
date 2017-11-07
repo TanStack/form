@@ -315,6 +315,14 @@ const FormApiMethods = ({ formApi }) => {
             </td>
           </tr>
           <tr>
+            <th scope="row">setAllValues</th>
+            <td><pre><PrismCode className="language-jsx">setAllValues( { "{ hello: 'HelloWorld!' }" } )</PrismCode></pre></td>
+            <td>
+              Function that takes an object where the field is the <code>field</code> name, and the value is the value you want to set it to.
+              Note, dont try to set nested forms values. If you want to do this, call the nested forms <code>setAllValues</code>.
+            </td>
+          </tr>
+          <tr>
             <th scope="row">setError</th>
             <td><pre><PrismCode className="language-jsx">setError( 'hello', 'Error message!' )</PrismCode></pre></td>
             <td>
@@ -442,6 +450,17 @@ const FormProps = () => {
               Function that gets called when form updates.
               Function accepts the formApi as a parameter. <br />
               <pre><PrismCode className="language-jsx">formDidUpdate( formApi )</PrismCode></pre>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row"><code>preValidate</code></th>
+            <td><pre>func</pre></td>
+            <td>no</td>
+            <td>
+              Function that gets called before the form performs validation.
+              Function accepts the values as a parameter, and must return a new values object,
+              where the key is the field name, and the value is the value<br />
+              <pre><PrismCode className="language-jsx">preValidate( values ) => {'{ firstName: values.firstName + "!", lastName: values.lastName}'}</PrismCode></pre>
             </td>
           </tr>
           <tr>

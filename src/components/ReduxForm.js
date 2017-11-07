@@ -62,6 +62,7 @@ class Form extends Component {
     // So we still need to manually bind them here
     // https://github.com/gaearon/react-hot-loader/issues/391
     this.finishSubmission = this.finishSubmission.bind(this);
+    this.setAllValues = this.setAllValues.bind(this);
     this.callAsynchronousValidators = this.callAsynchronousValidators.bind(this);
   }
 
@@ -150,7 +151,8 @@ class Form extends Component {
       doneValidatingField: this.doneValidatingField,
       registerAsyncValidation: this.registerAsyncValidation,
       addValue: this.addValue,
-      removeValue: this.removeValue
+      removeValue: this.removeValue,
+      setAllValues: this.setAllValues
     };
   }
 
@@ -201,6 +203,17 @@ class Form extends Component {
 
   setSuccess = ( field, success ) => {
     this.props.dispatch(actions.setSuccess(field, success));
+  }
+
+  async setAllValues( values ) {
+    this.props.dispatch(actions.setAllValues( values ));
+    this.props.dispatch(actions.preValidate());
+    this.props.dispatch(actions.validate());
+    // Build up list of async functions that need to be called
+    const validators = this.props.asyncValidators ? Object.keys(this.props.asyncValidators).map( ( field ) => {
+      return this.props.dispatch(actions.asyncValidate(field, this.props.asyncValidators ));
+    }) : [];
+    await Promise.all( validators );
   }
 
   getTouched = ( field ) => {
