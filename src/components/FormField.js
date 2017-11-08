@@ -42,12 +42,18 @@ function FormField(FormComponent) {
         children: null
       };
 
+      // TODO debug async error issue
+      // console.log("WTF1", Utils.get( currentApi.errors, field ) );
+      // console.log("WTF2", Utils.get( nextApi.errors, field ) );
+
       const shouldUpdate =
         Utils.get( nextApi.values, field ) !== Utils.get( currentApi.values, field ) ||
         Utils.get( nextApi.touched, field ) !== Utils.get( currentApi.touched, field ) ||
         Utils.get( nextApi.errors, field ) !== Utils.get( currentApi.errors, field ) ||
         Utils.get( nextApi.warnings, field ) !== Utils.get( currentApi.warnings, field ) ||
         Utils.get( nextApi.successes, field ) !== Utils.get( currentApi.successes, field ) ||
+        Utils.get( nextApi.validating, field ) !== Utils.get( currentApi.validating, field ) ||
+        Utils.get( nextApi.validationFailed, field ) !== Utils.get( currentApi.validationFailed, field ) ||
         !Utils.isShallowEqual(nextNonChildrenProps, nonChildrenProps) ||
         nextContext.formApi.submits !== this.context.formApi.submits;
 
