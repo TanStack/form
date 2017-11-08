@@ -370,6 +370,14 @@ const FormApiMethods = ({ formApi }) => {
             </td>
           </tr>
           <tr>
+            <th scope="row">swapValues</th>
+            <td><pre><PrismCode className="language-jsx">swapValues( 'friends', 0, 2 )</PrismCode></pre></td>
+            <td>
+              Function that takes three parameters, the first is the <code>field</code>
+              name of an array field, the next two are the indexes you want to switch.
+            </td>
+          </tr>
+          <tr>
             <th scope="row">resetAll</th>
             <td><pre><PrismCode className="language-jsx">resetAll()</PrismCode></pre></td>
             <td>
