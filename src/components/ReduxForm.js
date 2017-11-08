@@ -152,7 +152,8 @@ class Form extends Component {
       registerAsyncValidation: this.registerAsyncValidation,
       addValue: this.addValue,
       removeValue: this.removeValue,
-      setAllValues: this.setAllValues
+      setAllValues: this.setAllValues,
+      swapValues: this.swapValues
     };
   }
 
@@ -267,6 +268,22 @@ class Form extends Component {
     this.props.dispatch(actions.removeAsyncSuccess(field));
     this.props.dispatch(actions.preValidate());
     this.props.dispatch(actions.validate());
+  }
+
+  swapValues = ( field, index, destIndex ) => {
+
+    const min = Math.min(index, destIndex);
+    const max = Math.max(index, destIndex);
+
+    const fieldValues = Utils.get( this.props.formState.values, field ) || [];
+
+    this.props.dispatch(actions.setValue(field, [
+      ...fieldValues.slice(0, min),
+      fieldValues[max],
+      ...fieldValues.slice(min + 1, max),
+      fieldValues[min],
+      ...fieldValues.slice(max + 1),
+    ] ));
   }
 
   registerAsyncValidation = ( func ) => {
