@@ -351,6 +351,14 @@ const FormApiMethods = ({ formApi }) => {
             </td>
           </tr>
           <tr>
+            <th scope="row">setAllTouched</th>
+            <td><pre><PrismCode className="language-jsx">setAllTouched( { "{ hello: true }" } )</PrismCode></pre></td>
+            <td>
+              Function that takes an object where the field is the <code>field</code> name, and the value is true or false.
+              Note, dont try to set nested forms touched. If you want to do this, call the nested forms <code>setAllTouched</code>.
+            </td>
+          </tr>
+          <tr>
             <th scope="row">addValue</th>
             <td><pre><PrismCode className="language-jsx">addValue( 'hello', 'value!' )</PrismCode></pre></td>
             <td>
