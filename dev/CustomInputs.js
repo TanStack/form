@@ -1,5 +1,7 @@
 /* ------------- Imports -------------- */
 import React, { Component } from 'react';
+import { PrismCode } from 'react-prism';
+
 
 /* ------------- Form  Library Imports -------------- */
 import {
@@ -225,6 +227,101 @@ const successValidator = (values) => {
   };
 };
 
+const FieldApiMethods = ({ fieldApi }) => {
+  return (
+    <div>
+      <table className="table" style={{ tableLayout: 'fixed' }}>
+        <thead className="thead-inverse">
+          <tr>
+            <th style={{ width: '150px' }}>Attribute</th>
+            <th>Example</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">getValue</th>
+            <td><pre><PrismCode className="language-jsx">getValue()</PrismCode></pre></td>
+            <td>
+              Function that returns the value of the field.
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">getError</th>
+            <td><pre><PrismCode className="language-jsx">getError()</PrismCode></pre></td>
+            <td>
+              Function that returns the fields error.
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">getWarning</th>
+            <td><pre><PrismCode className="language-jsx">getWarning()</PrismCode></pre></td>
+            <td>
+              Function that returns the fields warning.
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">getSuccess</th>
+            <td><pre><PrismCode className="language-jsx">getSuccess()</PrismCode></pre></td>
+            <td>
+              Function that returns the fields success.
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">getTouched</th>
+            <td><pre><PrismCode className="language-jsx">getTouched()</PrismCode></pre></td>
+            <td>
+              Function that returns the fields touched.
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">getFieldName</th>
+            <td><pre><PrismCode className="language-jsx">getFieldName()</PrismCode></pre></td>
+            <td>
+              Function that returns the fields name ( when you passed in field="yourFieldName" ).
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">setValue</th>
+            <td><pre><PrismCode className="language-jsx">setValue( 'HelloWorld!' )</PrismCode></pre></td>
+            <td>
+              Function that takes the value you want to set the field to.
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">setError</th>
+            <td><pre><PrismCode className="language-jsx">setError( 'Error message!' )</PrismCode></pre></td>
+            <td>
+              Function that takes the value you want to set the fields error to.
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">setWarning</th>
+            <td><pre><PrismCode className="language-jsx">setWarning( 'Warning message!' )</PrismCode></pre></td>
+            <td>
+              Function that takes the value you want to set the fields warning to.
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">setSuccess</th>
+            <td><pre><PrismCode className="language-jsx">setSuccess( 'Success message!' )</PrismCode></pre></td>
+            <td>
+              Function that takes the value you want to set the fields success to.
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">setTouched</th>
+            <td><pre><PrismCode className="language-jsx">setTouched( true )</PrismCode></pre></td>
+            <td>
+              Function that sets the fields touched to true or false.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
 class CustomInput extends Component {
 
   constructor( props ) {
@@ -243,6 +340,7 @@ class CustomInput extends Component {
           by leverageing the FormField HOC that is availible in react-form.
           Below is an example of a form that uses a custom input. Our custom input has
           internal error, success, and warning messages that know when to get shown.
+          See docs at bottom of this page.
         </p>
         <p>
           Play around with the Hello World field and see how the custom text input reacts.
@@ -258,6 +356,16 @@ class CustomInput extends Component {
         </Form>
         <br />
         <CustomFormCode />
+        <br />
+        <hr />
+        <h3 className="mb-4">Docs</h3>
+        <p>
+          <code>FormField</code> gives you access to the <code>fieldApi</code>.
+          This is very similar to how a <code>Form</code> gives you the <code>formApi</code>.
+          The difference is that <code>fieldApi</code>s functions are scoped to the field, and it only
+          has a subset of the formApis functions.
+        </p>
+        <FieldApiMethods />
       </div>
     );
   }
