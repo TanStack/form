@@ -8,6 +8,7 @@ import {
   SET_WARNING,
   SET_SUCCESS,
   SET_TOUCHED,
+  SET_ALL_TOUCHED,
   PRE_VALIDATE,
   VALIDATE,
   SUBMITS,
@@ -104,6 +105,14 @@ describe('ReducerBuilder', () => {
       const expectedState = getState({ touched: { foo: true } });
       const action = actions.setTouched('foo', true);
       const nextState = reducer(undefined, action);
+      expect(nextState).to.deep.equal(expectedState);
+    });
+
+    it(`handles ${SET_ALL_TOUCHED}`, () => {
+      const reducer = ReducerBuilder.build();
+      const expectedState = getState({ touched: { foo: true, baz: true } });
+      const action = actions.setAllTouched( { foo: true, baz: true } );
+      const nextState = reducer(getState({ touched: { foo: false, baz: false } }), action);
       expect(nextState).to.deep.equal(expectedState);
     });
 

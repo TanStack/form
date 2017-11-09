@@ -64,6 +64,7 @@ describe('ReduxForm', () => {
       expect( api ).to.have.own.property( 'setError' );
       expect( api ).to.have.own.property( 'setSuccess' );
       expect( api ).to.have.own.property( 'setTouched' );
+      expect( api ).to.have.own.property( 'setAllTouched' );
       expect( api ).to.have.own.property( 'setValue' );
       expect( api ).to.have.own.property( 'setAllValues' );
       expect( api ).to.have.own.property( 'setWarning' );

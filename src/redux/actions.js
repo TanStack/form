@@ -63,6 +63,11 @@ export function setTouched( field, touched ) {
   return { type: SET_TOUCHED, field, touched };
 }
 
+export const SET_ALL_TOUCHED = 'SET_ALL_TOUCHED';
+export function setAllTouched( touched ) {
+  return { type: SET_ALL_TOUCHED, touched };
+}
+
 export const RESET = 'RESET';
 export function reset( field ) {
   return { type: RESET, field };

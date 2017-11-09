@@ -5,6 +5,7 @@ import {
   SET_WARNING,
   SET_SUCCESS,
   SET_TOUCHED,
+  SET_ALL_TOUCHED,
   PRE_VALIDATE,
   VALIDATE,
   FORMAT,
@@ -107,6 +108,21 @@ const setTouched = ( state, action ) => {
   return {
     ...state,
     touched: newTouched
+  };
+
+};
+
+const setAllTouched = ( state, action ) => {
+
+  const {
+    touched
+  } = action;
+
+  const oldTouched = JSON.parse(JSON.stringify(state.touched));
+
+  return {
+    ...state,
+    touched: { ...oldTouched, ...touched }
   };
 
 };
@@ -516,6 +532,8 @@ class ReducerBuilder {
           return setAsyncSuccess( state, action );
         case SET_TOUCHED:
           return setTouched( state, action );
+        case SET_ALL_TOUCHED:
+          return setAllTouched( state, action );
         case REMOVE_ASYNC_ERROR:
           return removeAsyncError( state, action );
         case REMOVE_ASYNC_WARNING:

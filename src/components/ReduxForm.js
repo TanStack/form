@@ -63,6 +63,7 @@ class Form extends Component {
     // https://github.com/gaearon/react-hot-loader/issues/391
     this.finishSubmission = this.finishSubmission.bind(this);
     this.setAllValues = this.setAllValues.bind(this);
+    this.setAllTouched = this.setAllTouched.bind(this);
     this.callAsynchronousValidators = this.callAsynchronousValidators.bind(this);
   }
 
@@ -153,6 +154,7 @@ class Form extends Component {
       addValue: this.addValue,
       removeValue: this.removeValue,
       setAllValues: this.setAllValues,
+      setAllTouched: this.setAllTouched,
       swapValues: this.swapValues
     };
   }
@@ -194,6 +196,17 @@ class Form extends Component {
     }
   }
 
+  async setAllTouched( touched ) {
+    this.props.dispatch(actions.setAllTouched( touched ));
+    this.props.dispatch(actions.preValidate());
+    this.props.dispatch(actions.validate());
+    // Build up list of async functions that need to be called
+    const validators = this.props.asyncValidators ? Object.keys(this.props.asyncValidators).map( ( field ) => {
+      return this.props.dispatch(actions.asyncValidate(field, this.props.asyncValidators ));
+    }) : [];
+    await Promise.all( validators );
+  }
+
   setError = ( field, error ) => {
     this.props.dispatch(actions.setError(field, error));
   }
@@ -218,10 +231,7 @@ class Form extends Component {
   }
 
   getTouched = ( field ) => {
-    if ( Array.isArray(field) ) {
-      return this.props.formState.touched[field[0]] ? this.props.formState.touched[field[0]][field[1]] : undefined;
-    }
-    return this.props.formState.touched[field];
+    return Utils.get( this.props.formState.touched, field );
   }
 
   getValue = ( field ) => {
