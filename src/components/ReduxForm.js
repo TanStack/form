@@ -356,7 +356,7 @@ class Form extends Component {
       // Update submitted
       this.props.dispatch(actions.submitted());
       if ( this.props.onSubmit ) {
-        this.props.onSubmit( this.props.formState.values, e );
+        this.props.onSubmit( this.props.formState.values, e, this.api );
       }
     }
   }

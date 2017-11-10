@@ -454,8 +454,9 @@ const FormProps = () => {
             <td>no</td>
             <td>
               Function that gets called when form is submitted successfully.
-              Function accepts the values as a parameter. <br />
-              <pre><PrismCode className="language-jsx">onSubmit( values )</PrismCode></pre>
+              This function will pass three parameters: the form values,
+              the submission event, and the formApi. <br />
+              <pre><PrismCode className="language-jsx">onSubmit( values, e, formApi )</PrismCode></pre>
             </td>
           </tr>
           <tr>
