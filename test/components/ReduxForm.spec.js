@@ -8,19 +8,67 @@ describe('ReduxForm', () => {
 
   const sandbox = sinon.sandbox.create();
 
-  const formApi = {
-    values: {},
-    errors: {},
-    warnings: {},
-    successes: {},
-    touched: {},
-    asyncValidations: 0,
-    validating: {},
-    validationFailures: 0,
-    validationFailed: {},
-    submitted: false,
-    submits: 0
+  const checkFormApi = ( api ) => {
+    const formApi = {
+      values: {},
+      errors: {},
+      warnings: {},
+      successes: {},
+      touched: {},
+      asyncValidations: 0,
+      validating: {},
+      validationFailures: 0,
+      validationFailed: {},
+      submitted: false,
+      submits: 0
+    };
+    expect( JSON.stringify( api ) ).to.deep.equal( JSON.stringify( formApi ) );
+    expect( api ).to.have.own.property( 'getError' );
+    expect( api ).to.have.own.property( 'getSuccess' );
+    expect( api ).to.have.own.property( 'getTouched' );
+    expect( api ).to.have.own.property( 'getValue' );
+    expect( api ).to.have.own.property( 'getWarning' );
+    expect( api ).to.have.own.property( 'getFormState' );
+    expect( api ).to.have.own.property( 'registerAsyncValidation' );
+    expect( api ).to.have.own.property( 'reset' );
+    expect( api ).to.have.own.property( 'resetAll' );
+    expect( api ).to.have.own.property( 'format' );
+    expect( api ).to.have.own.property( 'setError' );
+    expect( api ).to.have.own.property( 'setSuccess' );
+    expect( api ).to.have.own.property( 'setTouched' );
+    expect( api ).to.have.own.property( 'setAllTouched' );
+    expect( api ).to.have.own.property( 'setValue' );
+    expect( api ).to.have.own.property( 'setAllValues' );
+    expect( api ).to.have.own.property( 'setWarning' );
+    expect( api ).to.have.own.property( 'submitForm' );
+    expect( api ).to.have.own.property( 'setWarning' );
+    expect( api ).to.have.own.property( 'swapValues' );
+    expect( api ).to.have.own.property( 'removeValue' );
+    expect( api ).to.have.own.property( 'validatingField' );
+    expect( api ).to.have.own.property( 'addValue' );
+    expect( api ).to.have.own.property( 'doneValidatingField' );
   };
+
+  const getState = (state) => {
+    const defaultState = {
+      values: {},
+      touched: {},
+      errors: {},
+      warnings: {},
+      successes: {},
+      asyncErrors: {},
+      asyncWarnings: {},
+      asyncSuccesses: {},
+      submitted: false,
+      submits: 0,
+      validating: {},
+      validationFailed: {},
+      validationFailures: 0,
+      asyncValidations: 0,
+    };
+    return Object.assign({}, defaultState, state);
+  };
+
 
   beforeEach(() => {
     sandbox.restore();
@@ -35,15 +83,99 @@ describe('ReduxForm', () => {
     );
     const input = wrapper.find('input');
     input.simulate('change', { target: { value: 'hello' } });
+    expect(spy.called).to.equal( true );
+    expect(spy.args[0][0].values).to.deep.equal({ greeting: 'hello' });
+  });
+
+  it('should call onSubmit function with values when the form is submitted', (done) => {
+    const spy = sandbox.spy();
+    const wrapper = mount(
+      <Form onSubmit={spy}>
+        { api => (
+          <form onSubmit={api.submitForm}>
+            <Text field="greeting" />
+            <button type="submit">Submit</button>
+          </form>
+        ) }
+      </Form>
+    );
+    const input = wrapper.find('input');
+    input.simulate('change', { target: { value: 'hello' } });
+    const button = wrapper.find('button');
+    button.simulate('submit');
     setImmediate( () => {
       expect(spy.called).to.equal( true );
-      expect(spy.args[0][0].values).to.deep.equal({ greeting: 'hello' });
+      expect(spy.args[0][0]).to.deep.equal({ greeting: 'hello' });
+      done();
     });
+  });
+
+  it('should call preSubmit function with values when the form is submitted', (done) => {
+    const spy = sandbox.spy();
+    const wrapper = mount(
+      <Form preSubmit={spy}>
+        { api => (
+          <form onSubmit={api.submitForm}>
+            <Text field="greeting" />
+            <button type="submit">Submit</button>
+          </form>
+        ) }
+      </Form>
+    );
+    const input = wrapper.find('input');
+    input.simulate('change', { target: { value: 'hello' } });
+    const button = wrapper.find('button');
+    button.simulate('submit');
+    setImmediate( () => {
+      expect(spy.called).to.equal( true );
+      expect(spy.args[0][0]).to.deep.equal({ greeting: 'hello' });
+      done();
+    });
+  });
+
+  it('getApi should give the passed function the formApi', () => {
+    let api;
+    const setApi = ( param ) => {
+      api = param;
+    };
+    mount(
+      <Form getApi={setApi}>
+        { () => <Text field="greeting" /> }
+      </Form>
+    );
+    checkFormApi( api );
+  });
+
+  it('should set default values when default values are passed', () => {
+    let api;
+    const setApi = ( param ) => {
+      api = param;
+    };
+    mount(
+      <Form getApi={setApi} defaultValues={{ greeting: 'hello' }}>
+        { () => <Text field="greeting" /> }
+      </Form>
+    );
+    expect( api.getFormState().values ).to.deep.equal( { greeting: 'hello' } );
+  });
+
+  it('setFormState should set the formState', () => {
+    let api;
+    const setApi = ( param ) => {
+      api = param;
+    };
+    mount(
+      <Form getApi={setApi}>
+        { () => <Text field="greeting" /> }
+      </Form>
+    );
+    api.setFormState( { values: { greeting: 'hello' } } );
+    expect( api.getFormState() ).to.deep.equal( getState( { values: { greeting: 'hello' } } ) );
   });
 
   it('should give child function access to formApi', (done) => {
     const inputs = ( api ) => {
-      expect( JSON.stringify( api ) ).to.deep.equal( JSON.stringify( formApi ) );
+      checkFormApi( api );
       done();
     };
     mount(<Form >{ api => inputs(api) }</Form>);
@@ -51,30 +183,7 @@ describe('ReduxForm', () => {
 
   it('form Api should conain all properties and functions', (done) => {
     const inputs = ( api ) => {
-      expect( JSON.stringify( api ) ).to.deep.equal( JSON.stringify( formApi ) );
-      expect( api ).to.have.own.property( 'getError' );
-      expect( api ).to.have.own.property( 'getSuccess' );
-      expect( api ).to.have.own.property( 'getTouched' );
-      expect( api ).to.have.own.property( 'getValue' );
-      expect( api ).to.have.own.property( 'getWarning' );
-      expect( api ).to.have.own.property( 'registerAsyncValidation' );
-      expect( api ).to.have.own.property( 'reset' );
-      expect( api ).to.have.own.property( 'resetAll' );
-      expect( api ).to.have.own.property( 'format' );
-      expect( api ).to.have.own.property( 'setError' );
-      expect( api ).to.have.own.property( 'setSuccess' );
-      expect( api ).to.have.own.property( 'setTouched' );
-      expect( api ).to.have.own.property( 'setAllTouched' );
-      expect( api ).to.have.own.property( 'setValue' );
-      expect( api ).to.have.own.property( 'setAllValues' );
-      expect( api ).to.have.own.property( 'setWarning' );
-      expect( api ).to.have.own.property( 'submitForm' );
-      expect( api ).to.have.own.property( 'setWarning' );
-      expect( api ).to.have.own.property( 'swapValues' );
-      expect( api ).to.have.own.property( 'removeValue' );
-      expect( api ).to.have.own.property( 'validatingField' );
-      expect( api ).to.have.own.property( 'addValue' );
-      expect( api ).to.have.own.property( 'doneValidatingField' );
+      checkFormApi( api );
       done();
     };
     mount(<Form >{ api => inputs(api) }</Form>);
@@ -82,7 +191,7 @@ describe('ReduxForm', () => {
 
   it('should give render function access to formApi', (done) => {
     const inputs = ( api ) => {
-      expect( JSON.stringify( api ) ).to.deep.equal( JSON.stringify( formApi ) );
+      checkFormApi( api );
       done();
     };
     mount(<Form render={inputs} />);
@@ -90,7 +199,7 @@ describe('ReduxForm', () => {
 
   it('should give child component access to formApi as prop', (done) => {
     const Inputs = ( props ) => {
-      expect( JSON.stringify( props.formApi ) ).to.deep.equal( JSON.stringify( formApi ) );
+      checkFormApi( props.formApi );
       done();
     };
     mount(<Form ><Inputs /></Form>);
@@ -101,7 +210,7 @@ describe('ReduxForm', () => {
     const comp = mount(<Form component={Inputs} />);
     const inputs = comp.find('Inputs');
     expect( inputs.length ).to.equal( 1 );
-    expect( JSON.stringify( inputs.props().formApi ) ).to.equal( JSON.stringify( formApi ) );
+    checkFormApi( inputs.props().formApi );
   });
 
   it('errors should update when input is changed', () => {

@@ -140,6 +140,8 @@ class Form extends Component {
       getWarning: this.getWarning,
       getError: this.getError,
       getSuccess: this.getSuccess,
+      getFormState: this.getFormState,
+      setFormState: this.setFormState,
       setError: this.setError,
       setWarning: this.setWarning,
       setSuccess: this.setSuccess,
@@ -157,6 +159,10 @@ class Form extends Component {
       setAllTouched: this.setAllTouched,
       swapValues: this.swapValues
     };
+  }
+
+  getFormState = () => {
+    return newState( this.props.formState );
   }
 
   get errors() {
@@ -228,6 +234,10 @@ class Form extends Component {
       return this.props.dispatch(actions.asyncValidate(field, this.props.asyncValidators ));
     }) : [];
     await Promise.all( validators );
+  }
+
+  setFormState = ( formState ) => {
+    this.props.dispatch( actions.setFormState( formState ) );
   }
 
   getTouched = ( field ) => {
@@ -353,10 +363,15 @@ class Form extends Component {
     const invalid = isFormValid( errors );
     // Only update submitted if we are not invalid and there are no active asynchronous validations
     if ( !invalid && this.props.formState.asyncValidations === 0 ) {
+      let values = JSON.parse( JSON.stringify( this.props.formState.values ) );
+      // Call pre submit
+      if ( this.props.preSubmit ) {
+        values = this.props.preSubmit( values, this.api );
+      }
       // Update submitted
       this.props.dispatch(actions.submitted());
       if ( this.props.onSubmit ) {
-        this.props.onSubmit( this.props.formState.values, e, this.api );
+        this.props.onSubmit( values, e, this.api );
       }
     }
   }

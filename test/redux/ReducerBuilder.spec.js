@@ -2,6 +2,7 @@ import { expect } from 'chai';
 
 import ReducerBuilder from '../../src/redux/ReducerBuilder';
 import {
+  SET_FORM_STATE,
   SET_VALUE,
   SET_ALL_VALUES,
   SET_ERROR,
@@ -56,6 +57,14 @@ describe('ReducerBuilder', () => {
       const reducer = ReducerBuilder.build();
       const expectedState = getState();
       const action = { type: 'NOTHING' };
+      const nextState = reducer(undefined, action);
+      expect(nextState).to.deep.equal(expectedState);
+    });
+
+    it(`handles ${SET_FORM_STATE}`, () => {
+      const reducer = ReducerBuilder.build();
+      const expectedState = getState({ values: { foo: 'bar' }, submits: 3 });
+      const action = actions.setFormState(expectedState);
       const nextState = reducer(undefined, action);
       expect(nextState).to.deep.equal(expectedState);
     });

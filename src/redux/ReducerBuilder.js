@@ -1,4 +1,5 @@
 import {
+  SET_FORM_STATE,
   SET_VALUE,
   SET_ALL_VALUES,
   SET_ERROR,
@@ -42,6 +43,10 @@ const INITIAL_STATE = {
   asyncValidations: 0,
   submitted: false,
   submits: 0
+};
+
+const setFormState = ( state, action ) => {
+  return { ...INITIAL_STATE, ...action.formState };
 };
 
 const setValue = ( state, action ) => {
@@ -512,6 +517,8 @@ class ReducerBuilder {
 
     const reducer = (state = COMBINED_INITIAL_STATE, action) => {
       switch ( action.type ) {
+        case SET_FORM_STATE:
+          return setFormState( state, action );
         case SET_VALUE:
           return setValue( state, action );
         case SET_ALL_VALUES:

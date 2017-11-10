@@ -154,7 +154,7 @@ const ExampleForm = ( ) => {
             <Text field="hello" id="hello" />
             <button type="submit" className="btn btn-primary">Submit</button>
           </form>
-          <h5 className="mb-4">The <code>formApi</code> attributes:</h5>
+          <h5 className="mb-4">The <code>formApi</code> attributes ( <code>formState</code> ):</h5>
           <FormApi formApi={formApi} />
           <h5 className="mb-4">The <code>formApi</code> methods:</h5>
           <FormApiMethods formApi={formApi} />
@@ -392,6 +392,22 @@ const FormApiMethods = ({ formApi }) => {
               Function that resets the entire form to its initial state.
             </td>
           </tr>
+          <tr>
+            <th scope="row">getFormState</th>
+            <td><pre><PrismCode className="language-jsx">getFormState()</PrismCode></pre></td>
+            <td>
+              Function that returns the <code>formState</code>. Use this if you
+              need to save the current state of the form.
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">setFormState</th>
+            <td><pre><PrismCode className="language-jsx">setFormState()</PrismCode></pre></td>
+            <td>
+              Function that accepts a <code>formState</code>. Use this if you
+              want to load a saved form state. <strong>Warning:</strong> this will override the whole form state.
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -460,13 +476,29 @@ const FormProps = () => {
             </td>
           </tr>
           <tr>
+            <th scope="row"><code>preSubmit</code></th>
+            <td><pre>func</pre></td>
+            <td>no</td>
+            <td>
+              Function that is a value filter that happens after validation,
+              and before a successful submission. Use it to scrub and/or clean
+              your values before they are submitted. Whatever you return will
+              NOT replace all of the values in that form's state, but will be
+              passed to the onSubmit method. <strong>Warning:</strong> We pass <code>formApi</code>
+              to this function because some use cases warrent needing the Api, however,
+              I would try to avoid making modifications to the form state here because it may
+              allow you to submit an invalid form!<br />
+              <pre><PrismCode className="language-jsx">preSubmit( values, formApi ) => {'({ firstName: values.firstName + "!", lastName: values.lastName})'}</PrismCode></pre>
+            </td>
+          </tr>
+          <tr>
             <th scope="row"><code>formDidUpdate</code></th>
             <td><pre>func</pre></td>
             <td>no</td>
             <td>
               Function that gets called when form updates.
-              Function accepts the formApi as a parameter. <br />
-              <pre><PrismCode className="language-jsx">formDidUpdate( formApi )</PrismCode></pre>
+              Function recieves the <code>formState</code> as a parameter. <br />
+              <pre><PrismCode className="language-jsx">formDidUpdate( formState )</PrismCode></pre>
             </td>
           </tr>
           <tr>
@@ -477,7 +509,7 @@ const FormProps = () => {
               Function that gets called before the form performs validation.
               Function accepts the values as a parameter, and must return a new values object,
               where the key is the field name, and the value is the value<br />
-              <pre><PrismCode className="language-jsx">preValidate( values ) => {'{ firstName: values.firstName + "!", lastName: values.lastName}'}</PrismCode></pre>
+              <pre><PrismCode className="language-jsx">preValidate( values ) => {'({ firstName: values.firstName + "!", lastName: values.lastName})'}</PrismCode></pre>
             </td>
           </tr>
           <tr>
@@ -489,7 +521,7 @@ const FormProps = () => {
               Function accepts the values as a parameter and must return errors
               object where the key is the field name, and the value is an error
               message or null<br />
-              <pre><PrismCode className="language-jsx">validateError( values ) => {'{ firstName: null, lastName: "Last name is required"}'}</PrismCode></pre>
+              <pre><PrismCode className="language-jsx">validateError( values ) => {'({ firstName: null, lastName: "Last name is required"})'}</PrismCode></pre>
             </td>
           </tr>
           <tr>
@@ -501,7 +533,7 @@ const FormProps = () => {
               Function accepts the values as a parameter and must return warnings
               object where the key is the field name, and the value is an warning
               message or null<br />
-              <pre><PrismCode className="language-jsx">validateWarning( values ) => {'{ firstName: null, lastName: "To short"}'}</PrismCode></pre>
+              <pre><PrismCode className="language-jsx">validateWarning( values ) => {'({ firstName: null, lastName: "To short"})'}</PrismCode></pre>
             </td>
           </tr>
           <tr>
@@ -513,7 +545,7 @@ const FormProps = () => {
               Function accepts the values and current errors as a parameters, and must return successes
               object where the key is the field name, and the value is an success
               message or null<br />
-              <pre><PrismCode className="language-jsx">validateSuccess( values, errors ) => {'{ firstName: null, lastName: "Nice name!"}'}</PrismCode></pre>
+              <pre><PrismCode className="language-jsx">validateSuccess( values, errors ) => {'({ firstName: null, lastName: "Nice name!"})'}</PrismCode></pre>
             </td>
           </tr>
           <tr>
@@ -528,7 +560,7 @@ const FormProps = () => {
               If you do not want to overwrite the error, warning, or success values that were set by your syncronous validators,
               simply dont pass that parameter in the object you return.
               <br />
-              <pre><PrismCode className="language-jsx">{'{ username: async () => { error: "Username already taken :(" } }'}</PrismCode></pre>
+              <pre><PrismCode className="language-jsx">{'{ username: async () => ({ error: "Username already taken :(" }) }'}</PrismCode></pre>
             </td>
           </tr>
           <tr>
@@ -551,7 +583,9 @@ const FormProps = () => {
             <td>
               To retrieve the form api as a callback, you can pass a function to the `getApi` prop.
               Your function will be called with the formApi as the only parameter. You can save this as a reference
-              to easily manipulate your form from outside of the form scope.
+              to easily manipulate your form from outside of the form scope. <strong>Warning:</strong>
+              this will give you the formApi when the component mounts. Dont try and use anything from the <code>formState</code>,
+              as it will be out of date. In other words, only call formApi methods such as <code>formApi.setValue( {"{ foo: 'bar' }"} )</code>
               <pre><PrismCode className="language-jsx">{`getApi( formApi )`}</PrismCode></pre>
             </td>
           </tr>
@@ -644,7 +678,7 @@ class Intro extends Component {
         </pre>
         <h5>Rendered example:</h5>
         <p>
-          Play around with the Hello World field and see how the api updates
+          Play around with the Hello World field and see how the <code>formState</code> updates
           in the table! <strong>Hint:</strong> try typing {'"Foo", "Hello World", and "Hello World!!!"'}
         </p>
         <ExampleForm />

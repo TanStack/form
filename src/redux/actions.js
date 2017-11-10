@@ -1,3 +1,8 @@
+export const SET_FORM_STATE = 'SET_FORM_STATE';
+export function setFormState( formState ) {
+  return { type: SET_FORM_STATE, formState };
+}
+
 export const SET_VALUE = 'SET_VALUE';
 export function setValue( field, value ) {
   return { type: SET_VALUE, field, value };
