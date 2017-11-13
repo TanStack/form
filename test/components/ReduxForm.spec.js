@@ -173,6 +173,78 @@ describe('ReduxForm', () => {
     expect( api.getFormState() ).to.deep.equal( getState( { values: { greeting: 'hello' } } ) );
   });
 
+  it('resetAll should reset the form to its initial state', () => {
+    let api;
+    const setApi = ( param ) => {
+      api = param;
+    };
+    mount(
+      <Form getApi={setApi}>
+        { () => <Text field="greeting" /> }
+      </Form>
+    );
+    api.setFormState( { values: { greeting: 'hello' } } );
+    expect( api.getFormState() ).to.deep.equal( getState( { values: { greeting: 'hello' } } ) );
+    api.resetAll();
+    expect( api.getFormState() ).to.deep.equal( getState() );
+  });
+
+  it('setValue should set a value', () => {
+    let api;
+    const setApi = ( param ) => {
+      api = param;
+    };
+    mount(
+      <Form getApi={setApi}>
+        { () => <Text field="greeting" /> }
+      </Form>
+    );
+    api.setValue( 'greeting', 'hello');
+    expect( api.getFormState() ).to.deep.equal( getState( { values: { greeting: 'hello' } } ) );
+  });
+
+  it('setError should set an error', () => {
+    let api;
+    const setApi = ( param ) => {
+      api = param;
+    };
+    mount(
+      <Form getApi={setApi}>
+        { () => <Text field="greeting" /> }
+      </Form>
+    );
+    api.setError( 'greeting', 'error');
+    expect( api.getFormState() ).to.deep.equal( getState( { errors: { greeting: 'error' } } ) );
+  });
+
+  it('setWarning should set a warning', () => {
+    let api;
+    const setApi = ( param ) => {
+      api = param;
+    };
+    mount(
+      <Form getApi={setApi}>
+        { () => <Text field="greeting" /> }
+      </Form>
+    );
+    api.setWarning( 'greeting', 'warning');
+    expect( api.getFormState() ).to.deep.equal( getState( { warnings: { greeting: 'warning' } } ) );
+  });
+
+  it('setWarning should set a success', () => {
+    let api;
+    const setApi = ( param ) => {
+      api = param;
+    };
+    mount(
+      <Form getApi={setApi}>
+        { () => <Text field="greeting" /> }
+      </Form>
+    );
+    api.setSuccess( 'greeting', 'success');
+    expect( api.getFormState() ).to.deep.equal( getState( { successes: { greeting: 'success' } } ) );
+  });
+
   it('should give child function access to formApi', (done) => {
     const inputs = ( api ) => {
       checkFormApi( api );
