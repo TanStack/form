@@ -16,6 +16,7 @@ class TextAreaWrapper extends Component {
       onChange,
       onBlur,
       fieldApi,
+      defaultValue,
       ...rest
     } = this.props;
 
@@ -28,7 +29,7 @@ class TextAreaWrapper extends Component {
     return (
       <textarea
         {...rest}
-        value={getValue() || ''}
+        value={getValue() || defaultValue || ''}
         onChange={( e ) => {
           setValue(e.target.value);
           if ( onChange ) {
