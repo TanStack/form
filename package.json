@@ -1,6 +1,6 @@
 {
   "name": "react-form",
-  "version": "2.9.1",
+  "version": "2.10.0",
   "description": "React Form is a lightweight framework and utility for building powerful forms in React applications.",
   "main": "dist/index.js",
   "files": [
