@@ -25,7 +25,8 @@ import {
   SET_ASYNC_SUCCESS,
   REMOVE_ASYNC_ERROR,
   REMOVE_ASYNC_WARNING,
-  REMOVE_ASYNC_SUCCESS
+  REMOVE_ASYNC_SUCCESS,
+  CLEAR_ALL
 } from '../../src/redux/actions';
 import * as actions from '../../src/redux/actions';
 
@@ -191,6 +192,16 @@ describe('ReducerBuilder', () => {
       const action1 = actions.setValue('foo', 'bar');
       const state1 = reducer(undefined, action1);
       const action2 = actions.resetAll();
+      const state2 = reducer(state1, action2);
+      expect(state2).to.deep.equal(expectedState);
+    });
+
+    it(`handles ${CLEAR_ALL}`, () => {
+      const reducer = ReducerBuilder.build();
+      const expectedState = getState();
+      const action1 = actions.setValue('foo', 'bar');
+      const state1 = reducer(undefined, action1);
+      const action2 = actions.clearAll();
       const state2 = reducer(state1, action2);
       expect(state2).to.deep.equal(expectedState);
     });

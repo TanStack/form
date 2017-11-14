@@ -83,6 +83,11 @@ export function resetAll() {
   return { type: RESET_ALL };
 }
 
+export const CLEAR_ALL = 'CLEAR_ALL';
+export function clearAll() {
+  return { type: CLEAR_ALL };
+}
+
 export const PRE_VALIDATE = 'PRE_VALIDATE';
 export function preValidate() {
   return { type: PRE_VALIDATE };
