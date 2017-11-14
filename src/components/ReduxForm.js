@@ -150,6 +150,7 @@ class Form extends Component {
       submits: this.props.formState.submits,
       reset: this.reset,
       resetAll: this.resetAll,
+      clearAll: this.clearAll,
       validatingField: this.validatingField,
       doneValidatingField: this.doneValidatingField,
       registerAsyncValidation: this.registerAsyncValidation,
@@ -322,6 +323,10 @@ class Form extends Component {
 
   resetAll = () => {
     this.props.dispatch(actions.resetAll());
+  }
+
+  clearAll = () => {
+    this.props.dispatch(actions.clearAll());
   }
 
   // This is an internal method used by nested forms to tell the parent that its validating
