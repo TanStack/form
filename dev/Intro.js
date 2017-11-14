@@ -496,7 +496,7 @@ const FormProps = () => {
             <td><pre>func</pre></td>
             <td>no</td>
             <td>
-              Function that gets called when form is failed to get submitted.
+              Function that gets called when submission fails due to errors.
               This function will pass two parameters: the form errors, and the formApi. <br />
               <pre><PrismCode className="language-jsx">onSubmitFailure( errors, formApi )</PrismCode></pre>
             </td>
@@ -616,7 +616,8 @@ class Intro extends Component {
           <code>react-form</code> is an extensive, simple, and efficient
           solution for creating basic to complex forms in react. Out of the box
           you get the ability to grab and manipulate values; set errors,
-          warnings, and successes; customize your inputs, and much more!
+          warnings, and successes; customize your inputs, perform asynchronous
+          validation, and much more!
         </p>
         <h3>Motivation</h3>
         <p className="mb-4">
