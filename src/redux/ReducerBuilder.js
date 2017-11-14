@@ -558,7 +558,7 @@ class ReducerBuilder {
         case RESET:
           return reset( state, action );
         case RESET_ALL:
-          return INITIAL_STATE;
+          return COMBINED_INITIAL_STATE;
         case VALIDATION_FAILURE:
           return validationFailure( state, action );
         case VALIDATION_SUCCESS:

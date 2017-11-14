@@ -186,8 +186,8 @@ describe('ReducerBuilder', () => {
 
 
     it(`handles ${RESET_ALL}`, () => {
-      const reducer = ReducerBuilder.build();
-      const expectedState = getState();
+      const reducer = ReducerBuilder.build({ defaultValues: { foo: 'foo' } });
+      const expectedState = getState({ values: { foo: 'foo' } });
       const action1 = actions.setValue('foo', 'bar');
       const state1 = reducer(undefined, action1);
       const action2 = actions.resetAll();
