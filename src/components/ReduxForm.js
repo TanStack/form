@@ -366,6 +366,10 @@ class Form extends Component {
     // Only submit if we have no errors
     const errors = this.errors;
     const invalid = isFormValid( errors );
+    // Call on validation fail if we are invalid
+    if( invalid && this.props.onSubmitFailure ){
+      this.props.onSubmitFailure( errors, this.api );
+    }
     // Only update submitted if we are not invalid and there are no active asynchronous validations
     if ( !invalid && this.props.formState.asyncValidations === 0 ) {
       let values = JSON.parse( JSON.stringify( this.props.formState.values ) );

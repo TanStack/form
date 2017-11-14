@@ -110,6 +110,57 @@ describe('ReduxForm', () => {
     });
   });
 
+  it('should NOT call onSubmit function with values when the invalid form is submitted', (done) => {
+    const spy = sandbox.spy();
+    let api;
+    const setApi = ( param ) => {
+      api = param;
+    };
+    const wrapper = mount(
+      <Form onSubmit={spy} getApi={setApi}>
+        { api => (
+          <form onSubmit={api.submitForm}>
+            <Text field="greeting" />
+            <button type="submit">Submit</button>
+          </form>
+        ) }
+      </Form>
+    );
+    api.setError( 'greeting', 'error');
+    const button = wrapper.find('button');
+    button.simulate('submit');
+    setImmediate( () => {
+      expect(spy.called).to.equal( false );
+      done();
+    });
+  });
+
+  it('should call onSubmitFailure function with errors when the invalid form is submitted', (done) => {
+    const spy = sandbox.spy();
+    let api;
+    const setApi = ( param ) => {
+      api = param;
+    };
+    const wrapper = mount(
+      <Form onSubmitFailure={spy} getApi={setApi}>
+        { api => (
+          <form onSubmit={api.submitForm}>
+            <Text field="greeting" />
+            <button type="submit">Submit</button>
+          </form>
+        ) }
+      </Form>
+    );
+    api.setError( 'greeting', 'error');
+    const button = wrapper.find('button');
+    button.simulate('submit');
+    setImmediate( () => {
+      expect(spy.called).to.equal( true );
+      expect(spy.args[0][0]).to.deep.equal({ greeting: 'error' });
+      done();
+    });
+  });
+
   it('should call preSubmit function with values when the form is submitted', (done) => {
     const spy = sandbox.spy();
     const wrapper = mount(

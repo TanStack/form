@@ -492,6 +492,16 @@ const FormProps = () => {
             </td>
           </tr>
           <tr>
+            <th scope="row"><code>onSubmitFailure</code></th>
+            <td><pre>func</pre></td>
+            <td>no</td>
+            <td>
+              Function that gets called when form is failed to get submitted.
+              This function will pass two parameters: the form errors, and the formApi. <br />
+              <pre><PrismCode className="language-jsx">onSubmitFailure( errors, formApi )</PrismCode></pre>
+            </td>
+          </tr>
+          <tr>
             <th scope="row"><code>formDidUpdate</code></th>
             <td><pre>func</pre></td>
             <td>no</td>
