@@ -39,6 +39,7 @@ class Examples extends Component {
               <Link to="/async-validation" className="nav-link">Async validation</Link>
               <Link to="/nested-async" className="nav-link">Nested async validation</Link>
               <Link to="/big-complex" className="nav-link">Big complex form</Link>
+              <a href="https://github.com/react-tools/react-form" className="nav-link fixed-bottom" title="React Form on Github">React Form on Github</a>
             </SideNav>
             <MainContent>
               <h1>React Form</h1>
