@@ -25,11 +25,11 @@ const FormWithSpecialFieldSyntaxCode = () => {
       <label htmlFor={\`friend-first-\${i}\`}>First name</label>
       <Text field={['friends', i, 'firstName']} id={\`friend-first-\${i}\`} />
       <label htmlFor={\`friend-last-\${i}\`}>Last name</label>
-      <Text field={\`friends.\${i}.lastName\`} id={\`friend-last-\${i}\`} />
+      <Text field={[['friends', i], 'lastName']} id={\`friend-last-\${i}\`} />
       <label htmlFor={\`friend-street-\${i}\`}>Street</label>
-      <Text field={['friends', i, 'address', 'street']} id={\`friend-street-\${i}\`} />
+      <Text field={[['friends', i], ['address', 'street']]} id={\`friend-street-\${i}\`} />
       <label htmlFor={\`friend-zip-\${i}\`}>Zipcode</label>
-      <Text field={\`friends.\${i}.address.zip\`} id={\`friend-zip-\${i}\`} />
+      <Text field={[['friends', i], 'lastName.zip']} id={\`friend-zip-\${i}\`} />
     </div>
   );
 
@@ -79,11 +79,11 @@ const Friend = ({ i }) => (
     <label htmlFor={`friend-first-${i}`}>First name</label>
     <Text field={['friends', i, 'firstName']} id={`friend-first-${i}`} />
     <label htmlFor={`friend-last-${i}`}>Last name</label>
-    <Text field={`friends.${i}.lastName`} id={`friend-last-${i}`} />
+    <Text field={[['friends', i], 'lastName']} id={`friend-last-${i}`} />
     <label htmlFor={`friend-street-${i}`}>Street</label>
-    <Text field={['friends', i, 'address', 'street']} id={`friend-street-${i}`} />
+    <Text field={[['friends', i], ['address', 'street']]} id={`friend-street-${i}`} />
     <label htmlFor={`friend-zip-${i}`}>Zipcode</label>
-    <Text field={`friends.${i}.address.zip`} id={`friend-zip-${i}`} />
+    <Text field={[['friends', i], 'address.zip']} id={`friend-zip-${i}`} />
   </div>
 );
 
@@ -101,29 +101,65 @@ class FormWithSpecialFieldSyntax extends Component {
         <h2 className="mb-4">Field syntax</h2>
         <p>
           Every input in <code>react-form</code> needs an associated field name.
-          In its simplest form, field names are just strings. However, somtimes
+          In its simplest form, field names are just arrays. However, sometimes
           you may have some complex forms that require special ways of organizing
           your fields, this is where the special syntax comes in.
         </p>
         <p>
-          Fields can be simple <code>strings</code>, <code>arrays</code>,
-          or strings that contain <code>"."</code> seperating information.
-          Below are some examples of field names.
+          Fields can be simple <code>strings</code> that contain <code>"."</code>,
+          and <code>"[ ]"</code>, much like how you access and write to objects and
+          arrays in javascript.
+          You can also use <code>arrays</code> and even <code>nested arrays</code>
+          that contain this syntax as well. This helps with deep form composition.
+          Below are some examples of field names and what they resolve to internally.
         </p>
-        <ul>
-          <li><code>"username"</code></li>
-          <li><code>["friends", 0 ]</code></li>
-          <li><code>["friends", 0, "firstName" ]</code></li>
-          <li><code>"friends.0.lastName"</code></li>
-          <li><code>["friends", 0, "address", "street" ]</code></li>
-          <li><code>"friends.0.address.street"</code></li>
-        </ul>
+        <p className="mb-4">
+          <table>
+            <thead>
+              <tr>
+                <th>Input</th>
+                <th>Resolution</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"friends"</td>
+                <td>["friends"]</td></tr>
+              <tr>
+                <td>"friends[0]"</td>
+                <td>["friends", 0]</td></tr>
+              <tr>
+                <td>["friends", 0]</td>
+                <td>["friends", 0]</td></tr>
+              <tr>
+                <td>["friends", 0, "address"]</td>
+                <td>["friends", 0, "address"]</td></tr>
+              <tr>
+                <td>"friends[0].address"</td>
+                <td>["friends", 0, "address"]</td></tr>
+              <tr>
+                <td>["friends", 0, "address.street"]</td>
+                <td>["friends", 0, "address", "street"]</td></tr>
+              <tr>
+                <td>[[["friends[0]", "address"], "street"], "alt"] &nbsp;</td>
+                <td>["friends", 0, "address", "street", "alt"]</td></tr>
+              <tr>
+                <td>"friends.0.address"</td>
+                <td>["friends", "0", "address", "street"]</td></tr>
+            </tbody>
+          </table>
+        </p>
         <p className="mb-4">
           <strong>Note:</strong> I would highly recomend that if you find yourself writing code
-          that contains <code>["friends", 0, "address", "street" ]</code> that
+          that contains <code>["friends", 0, "address", "street"]</code> that
           you think about using nested forms instead. In fact i would even recomend
-          using nested forms when you find yourself writing <code>["friends", 0, "firstName" ]</code>.
+          using nested forms when you find yourself writing <code>["friends", 0, "firstName"]</code>.
           Do yourself this favor and you will have cleaner more consumable code!!
+        </p>
+        <p className="mb-4">
+          <strong>Warning:</strong> Be very aware that using numbers in dot-notation (eg. "friends.0.address")
+          acts exactly as it would in javascript. This will set and get a <strong>property of an object</strong>,
+          not the position in an array.
         </p>
         <h3 className="mb-4">Example</h3>
         <Form
