@@ -22,31 +22,47 @@ function flattenDeep(arr, newArr = []) {
 }
 
 function makePathArray(obj) {
-  return flattenDeep(obj)
-    .join('.')
-    .replace('[', '.')
-    .replace(']', '')
-    .split('.');
+  let path = [];
+  const flat = flattenDeep(obj);
+  flat.forEach((part) => {
+    if (typeof part === 'string') {
+      path = path.concat(
+        part
+          .replace(/\[(\d*)\]/gm, '.__int__$1')
+          .replace('[', '.')
+          .replace(']', '')
+          .split('.')
+          .map((d) => {
+            if (d.indexOf('__int__') === 0) {
+              return parseInt(d.subString(6), 10);
+            }
+            return d;
+          })
+      );
+    } else {
+      path.push(part);
+    }
+  });
+  return path;
 }
 
 function set(obj = {}, path, value) {
   const keys = makePathArray(path);
   let keyPart;
 
-  if (isStringValidNumber(keys[0]) && !isArray(obj)) {
+  if (typeof keys[0] === 'number' && !isArray(obj)) {
     obj = [];
-  }
-  if (!isStringValidNumber(keys[0]) && !isObject(obj)) {
+  } else if (typeof keys[0] === 'string' && !isObject(obj)) {
     obj = {};
   }
 
   let cursor = obj
 
-  while ((keyPart = keys.shift()) && keys.length) {
-    if (isStringValidNumber(keys[0]) && !isArray(cursor[keyPart])) {
+  while (typeof (keyPart = keys.shift()) !== 'undefined' && keys.length) {
+    if (typeof keys[0] === 'number' && !isArray(cursor[keyPart])) {
       cursor[keyPart] = [];
     }
-    if (!isStringValidNumber(keys[0]) && !isObject(cursor[keyPart])) {
+    if (typeof keys[0] !== 'number' && !isObject(cursor[keyPart])) {
       cursor[keyPart] = {};
     }
     cursor = cursor[keyPart];
