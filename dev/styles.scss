@@ -1,3 +1,6 @@
+$red: #c32128;
+$opaq-red: #feeced;
+
 input {
   margin-bottom: 1rem;
   display: block;
@@ -11,4 +14,52 @@ textarea {
 select {
   margin-bottom: 1rem;
   display: block;
+}
+
+.react-form-input {
+
+}
+
+.react-form-text {
+
+}
+
+.react-form-input-error {
+  border-color: $red;
+}
+
+.react-form-input-warning {
+  border-color: orange;
+}
+
+.react-form-input-success {
+  border-color: green;
+}
+
+.react-form-message {
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.react-form-message-error {
+  color: $red;
+}
+
+.react-form-message-warning {
+  color: orange;
+}
+
+.react-form-message-success {
+  color: green;
+}
+
+.react-form-radio-group{
+  display: inline-block;
+  padding: .5rem .7rem 0rem 0rem;
+  margin-bottom: .5rem;
+}
+
+.react-form-radio-group-error {
+  background-color: $opaq-red;
+  padding: .5rem .7rem 0rem .7rem;
 }
