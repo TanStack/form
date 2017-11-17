@@ -8,6 +8,7 @@ import {
 
 /* ------------- Form  Library Imports -------------- */
 import BasicForm from './BasicForm';
+import StyledForm from './StyledForm';
 import NestedFormExample from './NestedFormExample';
 import FormWithArrays from './FormWithArrays';
 import FieldSyntax from './FieldSyntax';
@@ -35,6 +36,7 @@ class Examples extends Component {
               <Link to="/nested-form" className="nav-link">Nested forms</Link>
               <Link to="/dynamic-form" className="nav-link">Dynamic forms</Link>
               <Link to="/array-nested-forms" className="nav-link">Array of nested forms</Link>
+              <Link to="/styled-form" className="nav-link">Styled form</Link>
               <Link to="/custom-input" className="nav-link">Custom inputs</Link>
               <Link to="/async-validation" className="nav-link">Async validation</Link>
               <Link to="/nested-async" className="nav-link">Nested async validation</Link>
@@ -46,6 +48,7 @@ class Examples extends Component {
               <hr /><br />
               <Route exact path="/" component={Intro} />
               <Route exact path="/basic-form" component={BasicForm} />
+              <Route exact path="/styled-form" component={StyledForm} />
               <Route exact path="/array-form" component={FormWithArrays} />
               <Route exact path="/field-syntax" component={FieldSyntax} />
               <Route exact path="/nested-form" component={NestedFormExample} />

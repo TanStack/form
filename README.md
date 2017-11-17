@@ -35,6 +35,14 @@ const ExampleForm = ( ) => {
   );
 }
 ```
+---
+
+![FormExample](https://react-form.js.org/assets/FormExample.gif "FormExample")
+
+---
+
+![StyledFormExample](https://react-form.js.org/assets/StyledFormExample.gif "StyledFormExample")
+
 
 # Examples & Documentation
 Go [here](https://react-form.js.org) for examples and documentation for **2.x.x** of React-Form.

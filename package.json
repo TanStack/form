@@ -44,6 +44,7 @@
   "dependencies": {
     "babel-runtime": "^6.26.0",
     "circular-json": "^0.4.0",
+    "classnames": "^2.2.5",
     "prop-types": "^15.5.10",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
@@ -86,6 +87,7 @@
     "react-hot-loader": "^3.0.0-beta.7",
     "react-prism": "^4.3.0",
     "react-router-dom": "^4.2.2",
+    "react-router-hash-link": "^1.1.1",
     "react-test-renderer": "^15.6.2",
     "sass-loader": "^6.0.6",
     "sinon": "^3.2.1",

@@ -1,3 +1,4 @@
+/* ----------------- Variables -------------------- */
 $red: #c32128;
 $opaq-red: #feeced;
 $green: #52712d;
@@ -5,21 +6,6 @@ $opaq-green: #dff0d8;
 $orange: #ad611c;
 $opaq-orange: #f9dfc3;
 $grey: #7b7b7b;
-
-input {
-  margin-bottom: 1rem;
-  display: block;
-}
-
-textarea {
-  margin-bottom: 1rem;
-  display: block;
-}
-
-select {
-  margin-bottom: 1rem;
-  display: block;
-}
 
 /* ----------------- Input styles ----------------- */
 

@@ -10,6 +10,13 @@ import RadioGroup from './components/form-fields/RadioGroup';
 import NestedForm from './components/form-fields/NestedForm';
 import FormField from './components/FormField';
 
+import StyledText from './components/styled-form-fields/Text';
+import StyledRadio from './components/styled-form-fields/Radio';
+import StyledTextArea from './components/styled-form-fields/TextArea';
+import StyledSelect from './components/styled-form-fields/Select';
+import StyledCheckbox from './components/styled-form-fields/Checkbox';
+import StyledRadioGroup from './components/styled-form-fields/RadioGroup';
+
 /* ---------- exports ---------- */
 
 export {
@@ -21,5 +28,11 @@ export {
   Radio,
   Select,
   Checkbox,
-  TextArea
+  TextArea,
+  StyledText,
+  StyledRadio,
+  StyledTextArea,
+  StyledSelect,
+  StyledCheckbox,
+  StyledRadioGroup
 };
