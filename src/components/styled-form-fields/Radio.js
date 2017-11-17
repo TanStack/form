@@ -22,6 +22,8 @@ class Radio extends Component {
       value,
       label,
       className,
+      valueValidation,
+      touchValidation,
       ...rest
     } = this.props;
 
@@ -29,13 +31,21 @@ class Radio extends Component {
       getError,
       getWarning,
       getSuccess,
+      getTouched
     } = group;
 
     const error = getError();
     const warning = getWarning();
     const success = getSuccess();
+    const touched = getTouched();
 
     const type = Utils.getMessageType( error, warning, success );
+    const showValidation = Utils.shouldShowValidation( {
+      valueValidation,
+      touchValidation,
+      touched,
+      value
+    });
 
     const labelClasses = classNames(
       className,
@@ -48,8 +58,8 @@ class Radio extends Component {
       'react-form-input',
       'react-form-radio',
       {
-        [`react-form-input-${type}`]: type,
-        [`react-form-radio-${type}`]: type
+        [`react-form-input-${type}`]: type && showValidation,
+        [`react-form-radio-${type}`]: type && showValidation
       }
     );
 

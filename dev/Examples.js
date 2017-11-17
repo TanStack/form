@@ -31,12 +31,12 @@ class Examples extends Component {
             <SideNav>
               <Link to="/" exact className="nav-link">Introduction</Link>
               <Link to="/basic-form" className="nav-link">Basic form</Link>
-              <Link to="/styled-form" className="nav-link">Styled form</Link>
               <Link to="/array-form" className="nav-link">Forms with arrays</Link>
               <Link to="/field-syntax" className="nav-link">Field syntax</Link>
               <Link to="/nested-form" className="nav-link">Nested forms</Link>
               <Link to="/dynamic-form" className="nav-link">Dynamic forms</Link>
               <Link to="/array-nested-forms" className="nav-link">Array of nested forms</Link>
+              <Link to="/styled-form" className="nav-link">Styled form</Link>
               <Link to="/custom-input" className="nav-link">Custom inputs</Link>
               <Link to="/async-validation" className="nav-link">Async validation</Link>
               <Link to="/nested-async" className="nav-link">Nested async validation</Link>

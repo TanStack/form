@@ -3,6 +3,9 @@
 // Import React
 import React, { Component } from 'react';
 
+// Import classNames for generating classes
+import classNames from 'classnames';
+
 // Inport the form input
 import FormField from '../FormField';
 
@@ -11,9 +14,6 @@ import Message from './Message';
 
 // Import styled utils
 import Utils from './utils';
-
-// Import classNames for generating classes
-import classNames from 'classnames';
 
 
 class TextWrapper extends Component {
@@ -67,7 +67,8 @@ class TextWrapper extends Component {
 
     return (
       <div>
-        { type && showValidation && !noMessage && messageBefore ? <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
+        { type && showValidation && !noMessage && messageBefore ?
+          <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
         <input
           {...rest}
           className={classes}
@@ -85,7 +86,8 @@ class TextWrapper extends Component {
             }
           }}
         />
-        { type && showValidation && !noMessage && !messageBefore ? <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
+        { type && showValidation && !noMessage && !messageBefore ?
+          <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
       </div>
     );
   }

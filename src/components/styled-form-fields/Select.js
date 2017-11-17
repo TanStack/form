@@ -29,6 +29,8 @@ class SelectWrapper extends Component {
       className,
       noMessage,
       messageBefore,
+      valueValidation,
+      touchValidation,
       ...rest
     } = this.props;
 
@@ -37,6 +39,7 @@ class SelectWrapper extends Component {
       getError,
       getWarning,
       getSuccess,
+      getTouched,
       setValue,
       setTouched,
     } = fieldApi;
@@ -44,16 +47,24 @@ class SelectWrapper extends Component {
     const error = getError();
     const warning = getWarning();
     const success = getSuccess();
+    const touched = getTouched();
+    const value = getValue();
 
     const type = Utils.getMessageType( error, warning, success );
+    const showValidation = Utils.shouldShowValidation( {
+      valueValidation,
+      touchValidation,
+      touched,
+      value
+    });
 
     const classes = classNames(
       className,
       'react-form-input',
       'react-form-select',
       {
-        [`react-form-input-${type}`]: type,
-        [`react-form-select-${type}`]: type
+        [`react-form-input-${type}`]: type && showValidation,
+        [`react-form-select-${type}`]: type && showValidation
       }
     );
 
@@ -71,7 +82,8 @@ class SelectWrapper extends Component {
 
     return (
       <div>
-        { type && !noMessage && messageBefore ? <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
+        { type && showValidation && !noMessage && messageBefore ?
+          <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
         <div className={classes}>
           <select
             {...rest}
@@ -101,7 +113,8 @@ class SelectWrapper extends Component {
           </select>
           <div className="react-form-select-arrow" />
         </div>
-        { type && !noMessage && !messageBefore ? <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
+        { type && showValidation && !noMessage && !messageBefore ?
+          <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
       </div>
     );
   }

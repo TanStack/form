@@ -35,28 +35,40 @@ class RadioGroupWrapper extends Component {
       onBlur,
       noMessage,
       className,
-      messageBefore
+      messageBefore,
+      valueValidation,
+      touchValidation
     } = this.props;
 
     const {
       getError,
       getWarning,
       getSuccess,
+      getTouched,
+      getValue
     } = fieldApi;
 
     const error = getError();
     const warning = getWarning();
     const success = getSuccess();
+    const touched = getTouched();
+    const value = getValue();
 
     const type = Utils.getMessageType( error, warning, success );
+    const showValidation = Utils.shouldShowValidation( {
+      valueValidation,
+      touchValidation,
+      touched,
+      value
+    });
 
     const classes = classNames(
       className,
       'react-form-input',
       'react-form-radio-group',
       {
-        [`react-form-input-${type}`]: type,
-        [`react-form-radio-group-${type}`]: type
+        [`react-form-input-${type}`]: type && showValidation,
+        [`react-form-radio-group-${type}`]: type && showValidation
       }
     );
 
@@ -90,11 +102,13 @@ class RadioGroupWrapper extends Component {
 
     return (
       <div>
-        { type && !noMessage && messageBefore ? <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
+        { type && showValidation && !noMessage && messageBefore ?
+          <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
         <div className={classes}>
           {content}
         </div>
-        { type && !noMessage && !messageBefore ? <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
+        { type && showValidation && !noMessage && !messageBefore ?
+          <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
       </div>
     );
   }

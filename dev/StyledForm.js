@@ -67,6 +67,15 @@ const StyledInputProps = () => {
               For example, if you pass this into a text field it will not show validation until you type something.
             </td>
           </tr>
+          <tr>
+            <th scope="row"><code>label</code></th>
+            <td><pre>string</pre></td>
+            <td>no</td>
+            <td>
+              This is only to be used for radios and check boxes. Because the radio and checkbox inputs
+              are special controled inputs they have labels internally, so pass in the label prop to render a label.
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -145,7 +154,7 @@ const StyledFormCode = () => {
         return lastName && lastName.length < 2 ? 'Last name must be longer than 2 characters.' : null;
       };
       const validateBio = ( bio ) => {
-        return bio && bio.replace(/\s+/g, ' ').trim().split(' ').length < 5 ? 'Bio must have more than 5 words.' : null;
+        return bio && bio.replace(/\s+/g, ' ').trim().split(' ').length < 5 ? 'Bio should have more than 5 words.' : null;
       };
       return {
         firstName: validateFirstName( values.firstName ),
@@ -287,7 +296,7 @@ class StyledForm extends Component {
       return lastName && lastName.length < 2 ? 'Last name must be longer than 2 characters.' : null;
     };
     const validateBio = ( bio ) => {
-      return bio && bio.replace(/\s+/g, ' ').trim().split(' ').length < 5 ? 'Bio must have more than 5 words.' : null;
+      return bio && bio.replace(/\s+/g, ' ').trim().split(' ').length < 5 ? 'Bio should have more than 5 words.' : null;
     };
     return {
       firstName: validateFirstName( values.firstName ),
@@ -336,7 +345,7 @@ class StyledForm extends Component {
         <p>
           React Form also comes bundled with a basic set of styled inputs.
           Styled inputs will automatically add classes to the internal
-          <code>input</code>, <code>radio</code>, <code>select</code> etc elements.
+          <code>input</code>, <code>radio</code>, <code>select</code> ... etc elements.
         </p>
         <p>
           Below is an example of a styled form that has various styled inputs.
@@ -347,9 +356,9 @@ class StyledForm extends Component {
           the inputs via the classes that are added by react form.
         </p>
         <p>
-          A good starting point would be to copy the <code>.scss</code> file from the bottom of this
-          page. It serves as a perfect example on how you can use the classes to
-          style your components.
+          A good starting point would be to copy the <code>.scss</code> file from the
+          <Link to="#react-form-scss"> bottom of this page</Link>. It serves as a
+          perfect example on how you can use the classes to style your components.
         </p>
         <p>
           <strong>Note:</strong> in many cases styled inputs are not enough for developers needs.
@@ -405,9 +414,35 @@ class StyledForm extends Component {
         </Form>
         <br />
         <StyledFormCode />
-        <br />
+        <hr /><br />
         <StyledInputProps />
-        <br />
+        <hr /><br />
+        <h3 className="mb-4" id="react-form-scss">React Form <code>.scss</code></h3>
+        <p>
+          Below is the stylesheet that was used to style the form above.
+          This is a good starting point if you dont want to write a bunch of styles from scratch.
+          Note, styleing radio buttons, checkboxes, and selects sucks! React form also applies
+          what is commonly reffered to as custom <code>control</code> input classes to the
+          radios and checkboxes. The stylesheet below takes advantage of these classes to
+          implement custom radios and checkboxes.
+        </p>
+        <p>
+          Basically all styled inputs have two classes on them by default.
+        </p>
+        <ol>
+          <li><code>react-form-input</code></li>
+          <li><code>react-form-{'<input-type-here>'}</code></li>
+        </ol>
+        <p>
+          For example, the <code>StyledText</code> component will have the class <code>react-form-text</code>.
+        </p>
+        <p>
+          When a stlyed input goes into an error, warning, or success state; the classes
+          <code>react-form-input-error</code>, <code>react-form-input-warning</code>,
+          or <code>react-form-input-success</code> are applied respectively. Additionally,
+          <code>react-form-input-{'<input-type>'}-error</code>, <code>react-form-{'<input-type>'}-warning</code>,
+          or <code>react-form-{'<input-type>'}-success</code> are also applied respectively.
+        </p>
         <pre className="mb-4">
           <PrismCode className="language-css">
             {rawStyles}

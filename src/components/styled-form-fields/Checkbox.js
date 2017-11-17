@@ -24,6 +24,10 @@ class CheckboxWrapper extends Component {
       onChange,
       onBlur,
       label,
+      noMessage,
+      messageBefore,
+      valueValidation,
+      touchValidation,
       ...rest
     } = this.props;
 
@@ -34,13 +38,22 @@ class CheckboxWrapper extends Component {
       getError,
       getWarning,
       getSuccess,
+      getTouched
     } = fieldApi;
 
     const error = getError();
     const warning = getWarning();
     const success = getSuccess();
+    const touched = getTouched();
+    const value = getValue();
 
     const type = Utils.getMessageType( error, warning, success );
+    const showValidation = Utils.shouldShowValidation( {
+      valueValidation,
+      touchValidation,
+      touched,
+      value
+    });
 
     const labelClasses = classNames(
       'react-form-control',
@@ -53,13 +66,15 @@ class CheckboxWrapper extends Component {
       'react-form-input',
       'react-form-checkbox',
       {
-        [`react-form-input-${type}`]: type,
-        [`react-form-checkbox-${type}`]: type
+        [`react-form-input-${type}`]: type && showValidation,
+        [`react-form-checkbox-${type}`]: type && showValidation
       }
     );
 
     return (
       <div>
+        { type && showValidation && !noMessage && messageBefore ?
+          <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
         <label className={labelClasses} htmlFor={rest.id}>{label}
           <input
             {...rest}
@@ -80,7 +95,8 @@ class CheckboxWrapper extends Component {
           />
           <div className={indicatorClasses} />
         </label>
-        { type ? <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
+        { type && showValidation && !noMessage && !messageBefore ?
+          <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
       </div>
     );
   }
