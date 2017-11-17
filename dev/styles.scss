@@ -1,5 +1,10 @@
 $red: #c32128;
 $opaq-red: #feeced;
+$green: #52712d;
+$opaq-green: #dff0d8;
+$orange: #ad611c;
+$opaq-orange: #f9dfc3;
+$grey: #7b7b7b;
 
 input {
   margin-bottom: 1rem;
@@ -16,25 +21,28 @@ select {
   display: block;
 }
 
+/* ----------------- Input styles ----------------- */
+
 .react-form-input {
-
-}
-
-.react-form-text {
-
+  border-color: $grey;
+  border-width: 1px;
 }
 
 .react-form-input-error {
   border-color: $red;
+  border-width: 2px;
 }
 
 .react-form-input-warning {
-  border-color: orange;
+  border-color: $orange;
+  border-width: 2px;
 }
 
 .react-form-input-success {
-  border-color: green;
+  // Style form input success here
 }
+
+/* ----------------- Message styles ----------------- */
 
 .react-form-message {
   margin-bottom: 1rem;
@@ -46,20 +54,250 @@ select {
 }
 
 .react-form-message-warning {
-  color: orange;
+  color: $orange;
 }
 
 .react-form-message-success {
-  color: green;
+  color: $green;
 }
 
-.react-form-radio-group{
-  display: inline-block;
-  padding: .5rem .7rem 0rem 0rem;
-  margin-bottom: .5rem;
+/* ----------------- Text styles ----------------- */
+
+.react-form-text {
+  // Style form text here
 }
 
-.react-form-radio-group-error {
-  background-color: $opaq-red;
-  padding: .5rem .7rem 0rem .7rem;
+.react-form-text-error {
+  // Style form text error here
+}
+
+.react-form-text-warning {
+  // Style form text warning here
+}
+
+.react-form-text-success {
+  // Style form text success here
+}
+
+/* ----------------- Radio styles ----------------- */
+.react-form-radio {
+  // Style form radio here
+}
+
+.react-form-radio-error {
+  background: $opaq-red!important;
+  border-color: $red!important;
+}
+
+.react-form-radio-warning {
+  background: $opaq-orange!important;
+  border-color: $orange!important;
+}
+
+.react-form-radio-success {
+  // Style form radio success here
+}
+
+/* ----------------- Checkbox styles ----------------- */
+.react-form-checkbox {
+  // Style form checkbox here
+}
+
+.react-form-checkbox-error {
+  background: $opaq-red!important;
+  border-color: $red!important;
+}
+
+.react-form-checkbox-warning {
+  background: $opaq-orange!important;
+  border-color: $orange!important;
+}
+
+.react-form-checkbox-success {
+  // Style form checkbox success here
+}
+
+/* ----------------- Control ----------------- */
+
+/* Control */
+.react-form-control {
+	position: relative;
+	margin-bottom: 15px;
+	padding-left: 30px;
+	cursor: pointer;
+}
+
+/* Hides control inputs */
+.react-form-control input {
+	position: absolute;
+	z-index: -1;
+	opacity: 0;
+}
+
+/* ----------------- Control Indicator ----------------- */
+
+/* Control indicator */
+.react-form-control-indicator {
+	position: absolute;
+	top: 2px;
+	left: 0;
+  background: #e6e6e6;
+  border: solid;
+  border-color: $grey;
+  border-width: 1px;
+}
+
+/* Hover and focus states */
+.react-form-control:hover input ~ .react-form-control-indicator,
+.react-form-control input:focus ~ .react-form-control-indicator {
+	background: #ccc;
+}
+
+/* Checked state */
+.react-form-control input:checked ~ .react-form-control-indicator {
+	background: #2aa1c0;
+}
+
+/* Hover state whilst checked */
+.react-form-control:hover input:not([disabled]):checked ~ .react-form-control-indicator,
+.react-form-control input:checked:focus ~ .react-form-control-indicator {
+	background: #0e647d;
+}
+
+/* Disabled state */
+.react-form-control input:disabled ~ .react-form-control-indicator {
+	pointer-events: none;
+	opacity: .6;
+	background: #e6e6e6;
+}
+
+/* ----------------- Radio Control ----------------- */
+
+/* Radio button */
+.react-form-control-radio .react-form-control-indicator {
+	border-radius: 50%;
+  width: 20px;
+  height: 20px;
+}
+
+/* Radio button inner circle */
+.react-form-control-radio .react-form-control-indicator:after {
+	top: 6px;
+	left: 6px;
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: #fff;
+}
+
+/* Disabled circle colour */
+.react-form-control-radio input:disabled ~ .react-form-control-indicator:after {
+	background: #7b7b7b;
+}
+
+/* ----------------- Checkbox Control ----------------- */
+
+/* Checkbox */
+.react-form-control-checkbox .react-form-control-indicator {
+  width: 18px;
+  height: 18px;
+}
+
+/* Check mark */
+.react-form-control-indicator:after {
+	position: absolute;
+	display: none;
+	content: '';
+}
+
+/* Show check mark */
+.react-form-control input:checked ~ .react-form-control-indicator:after {
+	display: block;
+}
+
+/* Checkbox tick */
+.react-form-control-checkbox .react-form-control-indicator:after {
+	top: 4px;
+	left: 7px;
+	width: 3px;
+	height: 8px;
+	transform: rotate(45deg);
+	border: solid #fff;
+	border-width: 0 2px 2px 0;
+}
+
+/* Disabled tick colour */
+.react-form-control-checkbox input:disabled ~ .react-form-control-indicator:after {
+	border-color: #7b7b7b;
+}
+
+/* ----------------- Select ----------------- */
+
+.react-form-select {
+	position: relative;
+	display: inline-block;
+}
+
+.react-form-select select {
+	display: inline-block;
+	padding: 5px 30px 5px 15px;
+	cursor: pointer;
+	color: #7b7b7b;
+	border: 0;
+	border-radius: 0;
+	outline: 0;
+	background: #e6e6e6;
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+  border: solid 1px;
+}
+
+.react-form-select select::-ms-expand {
+	display: none;
+}
+
+.react-form-select select:hover,
+.react-form-select select:focus {
+	color: #000;
+	background: #ccc;
+}
+
+.react-form-select select:disabled {
+	pointer-events: none;
+	opacity: .5;
+}
+
+.react-form-select-arrow {
+	position: absolute;
+	top: 16px;
+	right: 15px;
+	width: 0;
+	height: 0;
+	pointer-events: none;
+	border-width: 8px 5px 0 5px;
+	border-style: solid;
+	border-color: #7b7b7b transparent transparent transparent;
+}
+.react-form-select select:hover ~ .react-form-select-arrow,
+.react-form-select select:focus ~ .react-form-select-arrow {
+	border-top-color: #000;
+}
+
+.react-form-select select:disabled ~ .react-form-select-arrow {
+	border-top-color: #ccc;
+}
+
+.react-form-select-error select{
+  border-color: $red;
+  background: $opaq-red;
+}
+
+.react-form-select-warning select{
+  border-color: $orange;
+  background: $opaq-orange;
+}
+
+.react-form-select-success select{
+  // Style form select success here
 }

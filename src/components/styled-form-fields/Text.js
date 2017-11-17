@@ -9,6 +9,13 @@ import FormField from '../FormField';
 // Import our message
 import Message from './Message';
 
+// Import styled utils
+import Utils from './utils';
+
+// Import classNames for generating classes
+import classNames from 'classnames';
+
+
 class TextWrapper extends Component {
   render() {
 
@@ -32,17 +39,22 @@ class TextWrapper extends Component {
     const warning = getWarning();
     const success = getSuccess();
 
-    let type = null;
-    if ( error ) type = 'error';
-    if ( !error && warning ) type = 'warning';
-    if ( !error && !warning && success ) type = 'success';
-    const typeClass = type ? `react-form-input-${type}` : '';
+    const type = Utils.getMessageType( error, warning, success );
+
+    const classes = classNames(
+      'react-form-input',
+      'react-form-text',
+      {
+        [`react-form-input-${type}`]: type,
+        [`react-form-text-${type}`]: type
+      }
+    );
 
     return (
       <div>
         <input
           {...rest}
-          className={`react-form-input react-form-text ${typeClass}`}
+          className={classes}
           value={getValue() || ''}
           onChange={(e) => {
             setValue(e.target.value);
@@ -57,9 +69,7 @@ class TextWrapper extends Component {
             }
           }}
         />
-        { type && type === 'error' ? <Message message={error} type="error" /> : null }
-        { type && type === 'warning' ? <Message message={warning} type="warning" /> : null }
-        { type && type === 'success' ? <Message message={success} type="success" /> : null }
+        { type ? <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
       </div>
     );
   }

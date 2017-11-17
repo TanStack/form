@@ -3,9 +3,18 @@
 // Import React
 import React from 'react';
 
+// Import classNames for generating classes
+import classNames from 'classnames';
+
 const Message = ({ message, type, ...rest }) => {
+  const classes = classNames(
+    'react-form-message',
+    {
+      [`react-form-message-${type}`]: type,
+    }
+  );
   return (
-    <small {...rest} className={`react-form-message react-form-message-${type}`}>{message}</small>
+    <small {...rest} className={classes}>{message}</small>
   );
 };
 
