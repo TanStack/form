@@ -14,8 +14,6 @@ import Utils from './utils';
 
 class Radio extends Component {
 
-  // console.log('RENDER');
-
   render() {
 
     const {
@@ -23,6 +21,7 @@ class Radio extends Component {
       group,
       value,
       label,
+      className,
       ...rest
     } = this.props;
 
@@ -39,9 +38,9 @@ class Radio extends Component {
     const type = Utils.getMessageType( error, warning, success );
 
     const labelClasses = classNames(
+      className,
       'react-form-control',
-      'react-form-control-radio',
-      rest.className || ''
+      'react-form-control-radio'
     );
 
     const indicatorClasses = classNames(

@@ -26,6 +26,9 @@ class SelectWrapper extends Component {
       onChange,
       onBlur,
       placeholder,
+      className,
+      noMessage,
+      messageBefore,
       ...rest
     } = this.props;
 
@@ -45,6 +48,7 @@ class SelectWrapper extends Component {
     const type = Utils.getMessageType( error, warning, success );
 
     const classes = classNames(
+      className,
       'react-form-input',
       'react-form-select',
       {
@@ -67,6 +71,7 @@ class SelectWrapper extends Component {
 
     return (
       <div>
+        { type && !noMessage && messageBefore ? <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
         <div className={classes}>
           <select
             {...rest}
@@ -96,7 +101,7 @@ class SelectWrapper extends Component {
           </select>
           <div className="react-form-select-arrow" />
         </div>
-        { type ? <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
+        { type && !noMessage && !messageBefore ? <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
       </div>
     );
   }

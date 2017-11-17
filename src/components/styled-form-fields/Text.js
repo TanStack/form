@@ -23,6 +23,11 @@ class TextWrapper extends Component {
       fieldApi,
       onChange,
       onBlur,
+      className,
+      noMessage,
+      messageBefore,
+      touchValidation,
+      valueValidation,
       ...rest
     } = this.props;
 
@@ -31,27 +36,38 @@ class TextWrapper extends Component {
       getError,
       getWarning,
       getSuccess,
+      getTouched,
       setValue,
-      setTouched,
+      setTouched
     } = fieldApi;
 
     const error = getError();
     const warning = getWarning();
     const success = getSuccess();
+    const touched = getTouched();
+    const value = getValue();
 
     const type = Utils.getMessageType( error, warning, success );
+    const showValidation = Utils.shouldShowValidation( {
+      valueValidation,
+      touchValidation,
+      touched,
+      value
+    });
 
     const classes = classNames(
+      className,
       'react-form-input',
       'react-form-text',
       {
-        [`react-form-input-${type}`]: type,
-        [`react-form-text-${type}`]: type
+        [`react-form-input-${type}`]: type && showValidation,
+        [`react-form-text-${type}`]: type && showValidation
       }
     );
 
     return (
       <div>
+        { type && showValidation && !noMessage && messageBefore ? <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
         <input
           {...rest}
           className={classes}
@@ -69,7 +85,7 @@ class TextWrapper extends Component {
             }
           }}
         />
-        { type ? <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
+        { type && showValidation && !noMessage && !messageBefore ? <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
       </div>
     );
   }

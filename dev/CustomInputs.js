@@ -333,7 +333,7 @@ class CustomInput extends Component {
 
     return (
       <div>
-        <h2 className="mb-4">Custom Input</h2>
+        <h2 className="mb-4" id="custom-inputs">Custom Input</h2>
         <p>
           If the out of the box inputs are not enough for you. You can simply
           customize them, by creating your very own input elements. This is done

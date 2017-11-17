@@ -1,6 +1,13 @@
 /* ------------- Imports -------------- */
 import React, { Component } from 'react';
 
+import { HashLink as Link } from 'react-router-hash-link';
+
+import { PrismCode } from 'react-prism';
+
+import rawStyles from 'raw-loader!./styled-input-styles.txt';
+
+
 /* ------------- Form  Library Imports -------------- */
 import {
   Form,
@@ -18,6 +25,53 @@ import Data from './Data';
 import Code from './Code';
 
 /* ------------------ Form Stuff --------------------*/
+
+const StyledInputProps = () => {
+  return (
+    <div>
+      <h3 className="mb-4" id="styled-input-props">Styled Input Props</h3>
+      <table className="table" style={{ tableLayout: 'fixed' }}>
+        <thead className="thead-inverse">
+          <tr>
+            <th style={{ width: '180px' }}>Name</th>
+            <th style={{ width: '100px' }}>Type</th>
+            <th style={{ width: '100px' }}>Required</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row"><code>noMessage</code></th>
+            <td><pre>bool</pre></td>
+            <td>no</td>
+            <td>Pass this in if you dont want a message showing up in an error, warning, or success state.</td>
+          </tr>
+          <tr>
+            <th scope="row"><code>messageBefore</code></th>
+            <td><pre>bool</pre></td>
+            <td>no</td>
+            <td>Pass this in if you want the error, warning, or success message to show up above the field.</td>
+          </tr>
+          <tr>
+            <th scope="row"><code>touchValidation</code></th>
+            <td><pre>bool</pre></td>
+            <td>no</td>
+            <td>Pass this in when you dont want validation styles to get applied until the field has been touched.</td>
+          </tr>
+          <tr>
+            <th scope="row"><code>valueValidation</code></th>
+            <td><pre>bool</pre></td>
+            <td>no</td>
+            <td>
+              Pass this in when you dont want validation styles to get applied until a value exists in the field.
+              For example, if you pass this into a text field it will not show validation until you type something.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
 const StyledFormCode = () => {
 
@@ -54,39 +108,113 @@ const StyledFormCode = () => {
       this.state = {};
     }
 
-    render() {
-      return (
-        <div>
-          <Form onSubmit={submittedValues => this.setState( { submittedValues } )}>
-            { formApi => (
-              <form onSubmit={formApi.submitForm} id="form2">
-                <label htmlFor="firstName">First name</label>
-                <Text field="firstName" id="firstName" />
-                <label htmlFor="lastName">Last name</label>
-                <Text field="lastName" id="lastName" />
-                <RadioGroup field="gender">
-                  { group => (
-                    <div>
-                      <label htmlFor="male" className="mr-2">Male</label>
-                      <Radio group={group} value="male" id="male" className="mr-3 d-inline-block" />
-                      <label htmlFor="female" className="mr-2">Female</label>
-                      <Radio group={group} value="female" id="female" className="d-inline-block" />
-                    </div>
-                  )}
-                </RadioGroup>
-                <label htmlFor="bio">Bio</label>
-                <TextArea field="bio" id="bio" />
-                <label htmlFor="authorize" className="mr-2">Authorize</label>
-                <Checkbox field="authorize" id="authorize" className="d-inline-block" />
-                <label htmlFor="status" className="d-block">Relationship status</label>
-                <Select field="status" id="status" options={statusOptions} />
-                <button type="submit" className="mb-4 btn btn-primary">Submit</button>
-              </form>
-            )}
-          </Form>
-        </div>
-      );
+    errorValidator = ( values ) => {
+      const validateFirstName = ( firstName ) => {
+        return !firstName ? 'First name is required.' : null;
+      };
+      const validateLastName = ( lastName ) => {
+        return !lastName ? 'Last name is required.' : null;
+      };
+      const validateGender = ( gender ) => {
+        return !gender ? 'Gender is required.' : null;
+      };
+      const validateBio = ( bio ) => {
+        return !bio ? 'Bio is required.' : null;
+      };
+      const validateAuthorize = ( authorize ) => {
+        return !authorize ? 'Please check authorize.' : null;
+      };
+      const validateStatus = ( status ) => {
+        return !status ? 'Status is required.' : null;
+      };
+      return {
+        firstName: validateFirstName( values.firstName ),
+        lastName: validateLastName( values.lastName ),
+        gender: validateGender( values.gender ),
+        bio: validateBio( values.bio ),
+        authorize: validateAuthorize( values.authorize ),
+        status: validateStatus( values.status )
+      };
     }
+
+    warningValidator = ( values ) => {
+      const validateFirstName = ( firstName ) => {
+        return firstName && firstName.length < 2 ? 'First name must be longer than 2 characters.' : null;
+      };
+      const validateLastName = ( lastName ) => {
+        return lastName && lastName.length < 2 ? 'Last name must be longer than 2 characters.' : null;
+      };
+      const validateBio = ( bio ) => {
+        return bio && bio.replace(/\s+/g, ' ').trim().split(' ').length < 5 ? 'Bio must have more than 5 words.' : null;
+      };
+      return {
+        firstName: validateFirstName( values.firstName ),
+        lastName: validateLastName( values.lastName ),
+        gender: null,
+        bio: validateBio( values.bio ),
+        authorize: null,
+        status: null
+      };
+    }
+
+    successValidator = ( values, errors ) => {
+      const validateFirstName = ( ) => {
+        return !errors.firstName ? 'Nice name!' : null;
+      };
+      const validateLastName = ( ) => {
+        return !errors.lastName ? 'Your last name is sick!' : null;
+      };
+      const validateGender = ( ) => {
+        return !errors.gender ? 'Thanks for entering your gender.' : null;
+      };
+      const validateBio = ( ) => {
+        return !errors.bio ? 'Cool Bio!' : null;
+      };
+      const validateAuthorize = ( ) => {
+        return !errors.authorize ? 'You are now authorized.' : null;
+      };
+      const validateStatus = ( ) => {
+        return !errors.status ? 'Thanks for entering your status.' : null;
+      };
+      return {
+        firstName: validateFirstName( values.firstName ),
+        lastName: validateLastName( values.lastName ),
+        gender: validateGender( values.gender ),
+        bio: validateBio( values.bio ),
+        authorize: validateAuthorize( values.authorize ),
+        status: validateStatus( values.status )
+      };
+    }
+
+    <Form
+      validateError={this.errorValidator}
+      validateWarning={this.warningValidator}
+      validateSuccess={this.successValidator}
+      onSubmit={submittedValues => this.setState( { submittedValues } )}>
+      { formApi => (
+        <form onSubmit={formApi.submitForm} id="form2">
+          <label htmlFor="firstName">First name</label>
+          <StyledText field="firstName" id="firstName" />
+          <label htmlFor="lastName">Last name</label>
+          <StyledText field="lastName" id="lastName" />
+          <label>Choose Gender</label>
+          <StyledRadioGroup field="gender">
+            { group => (
+              <div>
+                <StyledRadio group={group} value="male" id="male" label="Male" className="mr-3 d-inline-block" />
+                <StyledRadio group={group} value="female" id="female" label="Female" className="d-inline-block" />
+              </div>
+            )}
+          </StyledRadioGroup>
+          <label htmlFor="bio">Bio</label>
+          <StyledTextArea field="bio" id="bio" />
+          <StyledCheckbox field="authorize" id="authorize" label="Authorize" className="d-inline-block" />
+          <label htmlFor="status" className="d-block">Relationship status</label>
+          <StyledSelect field="status" id="status" options={statusOptions} />
+          <button type="submit" className="mb-4 btn btn-primary">Submit</button>
+        </form>
+      )}
+    </Form>
   }
 `;
 
@@ -126,7 +254,7 @@ class StyledForm extends Component {
     const validateFirstName = ( firstName ) => {
       return !firstName ? 'First name is required.' : null;
     };
-    const validateLasttName = ( lastName ) => {
+    const validateLastName = ( lastName ) => {
       return !lastName ? 'Last name is required.' : null;
     };
     const validateGender = ( gender ) => {
@@ -143,7 +271,7 @@ class StyledForm extends Component {
     };
     return {
       firstName: validateFirstName( values.firstName ),
-      lastName: validateLasttName( values.lastName ),
+      lastName: validateLastName( values.lastName ),
       gender: validateGender( values.gender ),
       bio: validateBio( values.bio ),
       authorize: validateAuthorize( values.authorize ),
@@ -175,7 +303,7 @@ class StyledForm extends Component {
     const validateFirstName = ( ) => {
       return !errors.firstName ? 'Nice name!' : null;
     };
-    const validateLasttName = ( ) => {
+    const validateLastName = ( ) => {
       return !errors.lastName ? 'Your last name is sick!' : null;
     };
     const validateGender = ( ) => {
@@ -192,7 +320,7 @@ class StyledForm extends Component {
     };
     return {
       firstName: validateFirstName( values.firstName ),
-      lastName: validateLasttName( values.lastName ),
+      lastName: validateLastName( values.lastName ),
       gender: validateGender( values.gender ),
       bio: validateBio( values.bio ),
       authorize: validateAuthorize( values.authorize ),
@@ -205,7 +333,36 @@ class StyledForm extends Component {
     return (
       <div>
         <h2 className="mb-4">Styled Form</h2>
-        <p>Here is an example of a styled form that has various input types.</p>
+        <p>
+          React Form also comes bundled with a basic set of styled inputs.
+          Styled inputs will automatically add classes to the internal
+          <code>input</code>, <code>radio</code>, <code>select</code> etc elements.
+        </p>
+        <p>
+          Below is an example of a styled form that has various styled inputs.
+          Note, these inputs look the way they do because of the stylesheet that
+          can be seen at the bottom of this page. In order to keep things simple,
+          <code>react-form</code> does <strong>NOT</strong> come bundled with any css.
+          If you want to use styled inputs, you must create your own stylesheet, and style
+          the inputs via the classes that are added by react form.
+        </p>
+        <p>
+          A good starting point would be to copy the <code>.scss</code> file from the bottom of this
+          page. It serves as a perfect example on how you can use the classes to
+          style your components.
+        </p>
+        <p>
+          <strong>Note:</strong> in many cases styled inputs are not enough for developers needs.
+          You will more than likeley find yourselves needing more customization very quikly. If this
+          is the case, we highly recommend you create your own <strong>Custom Form Fields</strong>.
+          See the <Link to="/custom-input">custom inputs section</Link> in the documentation for more details.
+        </p>
+        <p>
+          For information on what props are availible see the <Link to="#styled-input-props">styled input props</Link> section.
+        </p>
+        <p>
+          Now go ahead and play with this form!
+        </p>
         <Form
           validateError={this.errorValidator}
           validateWarning={this.warningValidator}
@@ -231,7 +388,7 @@ class StyledForm extends Component {
                 <StyledTextArea field="bio" id="bio" />
                 <StyledCheckbox field="authorize" id="authorize" label="Authorize" className="d-inline-block" />
                 <label htmlFor="status" className="d-block">Relationship status</label>
-                <StyledSelect field="status" id="status" options={statusOptions} className="mb-4" />
+                <StyledSelect field="status" id="status" options={statusOptions} />
                 <button type="submit" className="mb-4 btn btn-primary">Submit</button>
               </form>
               <br />
@@ -248,6 +405,14 @@ class StyledForm extends Component {
         </Form>
         <br />
         <StyledFormCode />
+        <br />
+        <StyledInputProps />
+        <br />
+        <pre className="mb-4">
+          <PrismCode className="language-css">
+            {rawStyles}
+          </PrismCode>
+        </pre>
       </div>
     );
   }

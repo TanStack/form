@@ -32,7 +32,10 @@ class RadioGroupWrapper extends Component {
       component,
       render,
       onChange,
-      onBlur
+      onBlur,
+      noMessage,
+      className,
+      messageBefore
     } = this.props;
 
     const {
@@ -48,6 +51,7 @@ class RadioGroupWrapper extends Component {
     const type = Utils.getMessageType( error, warning, success );
 
     const classes = classNames(
+      className,
       'react-form-input',
       'react-form-radio-group',
       {
@@ -86,10 +90,11 @@ class RadioGroupWrapper extends Component {
 
     return (
       <div>
+        { type && !noMessage && messageBefore ? <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
         <div className={classes}>
           {content}
         </div>
-        { type ? <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
+        { type && !noMessage && !messageBefore ? <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
       </div>
     );
   }

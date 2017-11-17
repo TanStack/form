@@ -22,6 +22,9 @@ class TextAreaWrapper extends Component {
       fieldApi,
       onChange,
       onBlur,
+      className,
+      noMessage,
+      messageBefore,
       ...rest
     } = this.props;
 
@@ -41,6 +44,7 @@ class TextAreaWrapper extends Component {
     const type = Utils.getMessageType( error, warning, success );
 
     const classes = classNames(
+      className,
       'react-form-input',
       'react-form-textarea',
       {
@@ -51,6 +55,7 @@ class TextAreaWrapper extends Component {
 
     return (
       <div>
+        { type && !noMessage && messageBefore ? <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
         <textarea
           {...rest}
           className={classes}
@@ -68,7 +73,7 @@ class TextAreaWrapper extends Component {
             }
           }}
         />
-        { type ? <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
+        { type && !noMessage && !messageBefore ? <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
       </div>
     );
   }

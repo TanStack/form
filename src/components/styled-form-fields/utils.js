@@ -16,8 +16,23 @@ function getMessage( error, warning, success ) {
   return message;
 }
 
+function shouldShowValidation({
+  touchValidation,
+  valueValidation,
+  touched,
+  value
+}) {
+  if ( touchValidation && !touched ) {
+    return false;
+  }
+  if ( valueValidation && !value ) {
+    return false;
+  }
+  return true;
+}
 
 export default {
   getMessage,
-  getMessageType
+  getMessageType,
+  shouldShowValidation
 };
