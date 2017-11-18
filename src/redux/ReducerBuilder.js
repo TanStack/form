@@ -325,10 +325,10 @@ const removeAsyncSuccess = ( state, action ) => {
 
 const validate = ( state, action, validateError, validateWarning, validateSuccess ) => {
 
-  const errors = validateError ? validateError( state.values ) : {};
-  const warnings = validateWarning ? validateWarning( state.values ) : {};
-  const successes = validateSuccess ? validateSuccess( state.values, errors ) : {};
-  
+  const errors = validateError ? validateError( state.values ) : state.errors;
+  const warnings = validateWarning ? validateWarning( state.values ) : state.warnings;
+  const successes = validateSuccess ? validateSuccess( state.values, errors ) : state.successes;
+
   return {
     ...state,
     errors,
