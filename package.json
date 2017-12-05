@@ -4,7 +4,8 @@
   "description": "React Form is a lightweight framework and utility for building powerful forms in React applications.",
   "main": "dist/index.js",
   "files": [
-    "dist/"
+    "dist/",
+    "types.d.ts"
   ],
   "scripts": {
     "test": "NODE_ENV=test mocha-webpack --opts test/mocha-webpack.opts",
@@ -97,5 +98,6 @@
     "webpack": "^3.5.5",
     "webpack-dev-server": "^2.7.1",
     "webpack-node-externals": "^1.6.0"
-  }
+  },
+  "types": "./types.d.ts"
 }
