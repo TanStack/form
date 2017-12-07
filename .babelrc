@@ -6,12 +6,7 @@
   ],
   "plugins": [
     "react-hot-loader/babel",
-    [
-      "transform-runtime",
-      {
-        "polyfill": false
-      }
-    ],
+    "transform-runtime",
     "transform-class-properties"
   ]
 }
