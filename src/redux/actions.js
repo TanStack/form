@@ -138,7 +138,8 @@ export function asyncValidate( field, validators = () => { return {}; } ) {
     // Field could be array, if so we pull of the first param
     const fld = Array.isArray(field) ? field[0] : field
     // Only validate if there exists an async validator for this field
-    if ( validators[fld] ) {
+    // AND a syncronous validation does not exist
+    if ( validators[fld] && !getState().errors[fld] ) {
       // We are validating the specified field
       dispatch( validatingField( field ) );
       try {
