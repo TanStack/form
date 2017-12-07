@@ -357,7 +357,7 @@ class Form extends Component {
         e.preventDefault(e);
       }
     }
-    this.finishSubmission();
+    this.finishSubmission(e);
   }
 
   async finishSubmission(e) {
