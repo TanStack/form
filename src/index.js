@@ -17,6 +17,10 @@ import StyledSelect from './components/styled-form-fields/Select';
 import StyledCheckbox from './components/styled-form-fields/Checkbox';
 import StyledRadioGroup from './components/styled-form-fields/RadioGroup';
 
+//TODO remove these when IE is no longer a thing ( ie never :( )
+require('./polyfills/find.js');
+require('./polyfills/includes.js');
+
 /* ---------- exports ---------- */
 
 export {
