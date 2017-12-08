@@ -12,6 +12,7 @@ import {
   FORMAT,
   SUBMITS,
   SUBMITTED,
+  SUBMITTING,
   RESET,
   RESET_ALL,
   CLEAR_ALL,
@@ -43,7 +44,8 @@ const INITIAL_STATE = {
   validationFailures: 0,
   asyncValidations: 0,
   submitted: false,
-  submits: 0
+  submits: 0,
+  submitting: false
 };
 
 const setFormState = ( state, action ) => {
@@ -363,6 +365,13 @@ const submitted = ( state ) => {
   };
 };
 
+const submitting = ( state, action ) => {
+  return {
+    ...state,
+    submitting: action.submitting,
+  };
+};
+
 const reset = ( state, action ) => {
 
   const {
@@ -556,6 +565,8 @@ class ReducerBuilder {
           return submitted( state, action );
         case SUBMITS:
           return submits( state, action );
+        case SUBMITTING:
+          return submitting( state, action );
         case RESET:
           return reset( state, action );
         case RESET_ALL:

@@ -113,6 +113,11 @@ export function submits() {
   return { type: SUBMITS };
 }
 
+export const SUBMITTING = 'SUBMITTING';
+export function submitting( isSubmitting ) {
+  return { type: SUBMITTING, submitting: isSubmitting };
+}
+
 export const VALIDATING_FIELD = 'VALIDATING_FIELD';
 export function validatingField( field ) {
   return { type: VALIDATING_FIELD, field };

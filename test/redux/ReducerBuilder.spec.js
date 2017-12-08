@@ -14,6 +14,7 @@ import {
   VALIDATE,
   SUBMITS,
   SUBMITTED,
+  SUBMITTING,
   RESET,
   RESET_ALL,
   VALIDATING_FIELD,
@@ -46,6 +47,7 @@ describe('ReducerBuilder', () => {
         asyncSuccesses: {},
         submitted: false,
         submits: 0,
+        submitting: false,
         validating: {},
         validationFailed: {},
         validationFailures: 0,
@@ -162,6 +164,14 @@ describe('ReducerBuilder', () => {
       const reducer = ReducerBuilder.build();
       const expectedState = getState({ submits: 1 });
       const action = actions.submits();
+      const nextState = reducer(undefined, action);
+      expect(nextState).to.deep.equal(expectedState);
+    });
+
+    it(`handles ${SUBMITTING}`, () => {
+      const reducer = ReducerBuilder.build();
+      const expectedState = getState({ submitting: true });
+      const action = actions.submitting( true );
       const nextState = reducer(undefined, action);
       expect(nextState).to.deep.equal(expectedState);
     });

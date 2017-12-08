@@ -237,6 +237,13 @@ const FormApi = ({ formApi }) => {
             </td>
           </tr>
           <tr>
+            <th scope="row">submitting</th>
+            <td><pre><PrismCode className="language-json">{JSON.stringify(formApi.submitting)}</PrismCode></pre></td>
+            <td>
+              True while the form is in the process of submitting. False when its not.
+            </td>
+          </tr>
+          <tr>
             <th scope="row">asyncValidations</th>
             <td><pre><PrismCode className="language-json">{JSON.stringify(formApi.asyncValidations)}</PrismCode></pre></td>
             <td>

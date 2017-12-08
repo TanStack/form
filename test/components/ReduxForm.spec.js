@@ -20,7 +20,8 @@ describe('ReduxForm', () => {
       validationFailures: 0,
       validationFailed: {},
       submitted: false,
-      submits: 0
+      submits: 0,
+      submitting: false
     };
     expect( JSON.stringify( api ) ).to.deep.equal( JSON.stringify( formApi ) );
     expect( api ).to.have.own.property( 'getError' );
@@ -61,6 +62,7 @@ describe('ReduxForm', () => {
       asyncSuccesses: {},
       submitted: false,
       submits: 0,
+      submitting: false,
       validating: {},
       validationFailed: {},
       validationFailures: 0,
@@ -180,6 +182,56 @@ describe('ReduxForm', () => {
     setImmediate( () => {
       expect(spy.called).to.equal( true );
       expect(spy.args[0][0]).to.deep.equal({ greeting: 'hello' });
+      done();
+    });
+  });
+
+  it('should update submitted when the form is submitting', (done) => {
+    let savedApi;
+    const setApi = ( param ) => {
+      savedApi = param;
+    };
+    const wrapper = mount(
+      <Form getApi={setApi}>
+        { api => (
+          <form onSubmit={api.submitForm}>
+            <Text field="greeting" />
+            <button type="submit">Submit</button>
+          </form>
+        ) }
+      </Form>
+    );
+    const input = wrapper.find('input');
+    input.simulate('change', { target: { value: 'hello' } });
+    const button = wrapper.find('button');
+    button.simulate('submit');
+    setImmediate( () => {
+      expect( savedApi.getFormState().submitted ).to.equal( true );
+      done();
+    });
+  });
+
+  it('should update submits when the form has been submitted', (done) => {
+    let savedApi;
+    const setApi = ( param ) => {
+      savedApi = param;
+    };
+    const wrapper = mount(
+      <Form getApi={setApi}>
+        { api => (
+          <form onSubmit={api.submitForm}>
+            <Text field="greeting" />
+            <button type="submit">Submit</button>
+          </form>
+        ) }
+      </Form>
+    );
+    const input = wrapper.find('input');
+    input.simulate('change', { target: { value: 'hello' } });
+    const button = wrapper.find('button');
+    button.simulate('submit');
+    setImmediate( () => {
+      expect( savedApi.getFormState().submits ).to.equal( 1 );
       done();
     });
   });

@@ -148,6 +148,7 @@ class Form extends Component {
       format: this.format,
       submitted: this.props.formState.submitted,
       submits: this.props.formState.submits,
+      submitting: this.props.formState.submitting,
       reset: this.reset,
       resetAll: this.resetAll,
       clearAll: this.clearAll,
@@ -340,6 +341,8 @@ class Form extends Component {
   }
 
   submitForm = ( e ) => {
+    // Let the user know we are submitting
+    this.props.dispatch(actions.submitting(true));
     // PreValidate
     this.props.dispatch(actions.preValidate());
     // Validate
@@ -362,12 +365,19 @@ class Form extends Component {
 
   async finishSubmission(e) {
     // Call asynchronous validators
-    await this.callAsynchronousValidators();
+    try {
+      await this.callAsynchronousValidators();
+    }
+    catch (err) {
+      // Let the user know we are done submitting
+      this.props.dispatch(actions.submitting(false));
+      throw err;
+    }
     // Only submit if we have no errors
     const errors = this.errors;
     const invalid = isFormValid( errors );
     // Call on validation fail if we are invalid
-    if( invalid && this.props.onSubmitFailure ){
+    if ( invalid && this.props.onSubmitFailure ) {
       this.props.onSubmitFailure( errors, this.api );
     }
     // Only update submitted if we are not invalid and there are no active asynchronous validations
@@ -383,6 +393,8 @@ class Form extends Component {
         this.props.onSubmit( values, e, this.api );
       }
     }
+    // Let the user know we are done submitting
+    this.props.dispatch(actions.submitting(false));
   }
 
   async callAsynchronousValidators() {
