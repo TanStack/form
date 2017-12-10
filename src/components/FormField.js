@@ -93,6 +93,7 @@ function FormField(FormComponent) {
         getFieldName: ( ) => field,
         getValue: ( ) => formApi.getValue( field ),
         getTouched: ( ) => formApi.getTouched( field ),
+        getValidating: ( ) => formApi.getValidating( field ),
         getError: ( ) => formApi.getError( field ),
         getWarning: ( ) => formApi.getWarning( field ),
         getSuccess: ( ) => formApi.getSuccess( field ),

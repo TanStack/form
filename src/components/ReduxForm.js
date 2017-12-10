@@ -136,6 +136,7 @@ class Form extends Component {
       submitForm: this.submitForm,
       setValue: this.setValue,
       getValue: this.getValue,
+      getValidating: this.getValidating,
       setTouched: this.setTouched,
       getTouched: this.getTouched,
       getWarning: this.getWarning,
@@ -249,6 +250,10 @@ class Form extends Component {
 
   getValue = ( field ) => {
     return Utils.get( this.props.formState.values, field );
+  }
+
+  getValidating = ( field ) => {
+    return Utils.get( this.props.formState.validating, field );
   }
 
   getError = ( field ) => {

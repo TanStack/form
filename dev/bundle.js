@@ -1876,6 +1876,9 @@ function FormField(FormComponent) {
           getTouched: function getTouched() {
             return formApi.getTouched(field);
           },
+          getValidating: function getValidating() {
+            return formApi.getValidating(field);
+          },
           getError: function getError() {
             return formApi.getError(field);
           },
@@ -32190,6 +32193,10 @@ var Form = function (_Component) {
       return _this.__getValue__REACT_HOT_LOADER__.apply(_this, arguments);
     };
 
+    _this.getValidating = function () {
+      return _this.__getValidating__REACT_HOT_LOADER__.apply(_this, arguments);
+    };
+
     _this.getError = function () {
       return _this.__getError__REACT_HOT_LOADER__.apply(_this, arguments);
     };
@@ -32328,6 +32335,11 @@ var Form = function (_Component) {
     key: '__getError__REACT_HOT_LOADER__',
     value: function __getError__REACT_HOT_LOADER__() {
       return this.__getError__REACT_HOT_LOADER__.apply(this, arguments);
+    }
+  }, {
+    key: '__getValidating__REACT_HOT_LOADER__',
+    value: function __getValidating__REACT_HOT_LOADER__() {
+      return this.__getValidating__REACT_HOT_LOADER__.apply(this, arguments);
     }
   }, {
     key: '__getValue__REACT_HOT_LOADER__',
@@ -32577,6 +32589,11 @@ var Form = function (_Component) {
     key: '__getValue__REACT_HOT_LOADER__',
     value: function __getValue__REACT_HOT_LOADER__(field) {
       return _utils2.default.get(this.props.formState.values, field);
+    }
+  }, {
+    key: '__getValidating__REACT_HOT_LOADER__',
+    value: function __getValidating__REACT_HOT_LOADER__(field) {
+      return _utils2.default.get(this.props.formState.validating, field);
     }
   }, {
     key: '__getError__REACT_HOT_LOADER__',
@@ -32838,6 +32855,7 @@ var Form = function (_Component) {
         submitForm: this.submitForm,
         setValue: this.setValue,
         getValue: this.getValue,
+        getValidating: this.getValidating,
         setTouched: this.setTouched,
         getTouched: this.getTouched,
         getWarning: this.getWarning,
