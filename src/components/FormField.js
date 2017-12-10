@@ -78,8 +78,8 @@ function FormField(FormComponent) {
         // format: ( format ) => {
         //   formApi.format( field, format ); // TODO not supported yet WIP
         // },
-        setTouched: ( touched ) => {
-          formApi.setTouched( field, touched );
+        setTouched: async ( touched ) => {
+          await formApi.setTouched( field, touched );
         },
         setError: ( error ) => {
           formApi.setError( field, error );

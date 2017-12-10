@@ -62,6 +62,7 @@ class Form extends Component {
     // So we still need to manually bind them here
     // https://github.com/gaearon/react-hot-loader/issues/391
     this.finishSubmission = this.finishSubmission.bind(this);
+    this.setTouched = this.setTouched.bind(this);
     this.setAllValues = this.setAllValues.bind(this);
     this.setAllTouched = this.setAllTouched.bind(this);
     this.callAsynchronousValidators = this.callAsynchronousValidators.bind(this);
@@ -196,11 +197,11 @@ class Form extends Component {
     this.props.dispatch(actions.validate());
   }
 
-  setTouched = ( field, touch = true, validate = true ) => {
+  async setTouched( field, touch = true, validate = true ) {
     this.props.dispatch(actions.setTouched(field, touch));
     // We have a flag to perform async validate when touched
     if ( validate ) {
-      this.props.dispatch(actions.asyncValidate(field, this.props.asyncValidators ));
+      await this.props.dispatch(actions.asyncValidate(field, this.props.asyncValidators ));
     }
   }
 
