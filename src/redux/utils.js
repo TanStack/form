@@ -77,9 +77,7 @@ function get(obj, path, def) {
   }
   const pathObj = makePathArray(path);
   let val;
-  try {
-    val = pathObj.reduce((current, pathPart) => current[pathPart], obj);
-  } catch (e) {}
+  val = pathObj.reduce((current, pathPart) => (typeof current !== 'undefined' ? current[pathPart] : undefined), obj);
   return typeof val !== 'undefined' ? val : def;
 }
 
