@@ -31,15 +31,15 @@ const isFormValid = (errors) => {
 
 /* ---------- Helper Methods ----------*/
 const newErrors = (state) => {
-  return Object.assign(state.errors, state.asyncErrors);
+  return Object.assign( {}, state.errors, state.asyncErrors);
 };
 
 const newWarnings = (state) => {
-  return Object.assign(state.warnings, state.asyncWarnings);
+  return Object.assign( {}, state.warnings, state.asyncWarnings);
 };
 
 const newSuccesses = (state) => {
-  return Object.assign(state.successes, state.asyncSuccesses);
+  return Object.assign( {}, state.successes, state.asyncSuccesses);
 };
 
 const newState = ( state ) => {
@@ -168,15 +168,15 @@ class Form extends Component {
   }
 
   get errors() {
-    return Object.assign(this.props.formState.errors, this.props.formState.asyncErrors);
+    return Object.assign( {}, this.props.formState.errors, this.props.formState.asyncErrors );
   }
 
   get warnings() {
-    return Object.assign(this.props.formState.warnings, this.props.formState.asyncWarnings);
+    return Object.assign( {}, this.props.formState.warnings, this.props.formState.asyncWarnings );
   }
 
   get successes() {
-    return Object.assign(this.props.formState.successes, this.props.formState.asyncSuccesses);
+    return Object.assign( {}, this.props.formState.successes, this.props.formState.asyncSuccesses );
   }
 
   get currentState() {
