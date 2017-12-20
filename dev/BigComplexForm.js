@@ -228,8 +228,8 @@ const FormContent = ({ formApi, aprop, setProp }) => {
           <Text field="baz" />
           <Text field={['nicknames', 0]} />
           <Text field={['nicknames', 1]} />
-          <Text field={`friends.${0}.name`} />
-          <Text field={`friends.${1}.name`} />
+          <Text field={`friends[0].name`} />
+          <Text field={`friends[1].name`} />
           <Text field="hey" />
           <Text field="a" />
           <Text field="b" />

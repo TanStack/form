@@ -442,4 +442,74 @@ describe('ReduxForm', () => {
     expect( currentSuccesses ).to.deep.equal({ name: 'ooo thats awesome!' });
   });
 
+  describe('option flag', () => {
+
+    it('validateOnSubmit should prevent validation until the form has been submitted', () => {
+      let api;
+      const validate = ( values ) => {
+        return {
+          greeting: values.greeting === 'Foo' ? 'ooo thats no good' : null
+        };
+      };
+      const wrapper = mount(
+        <Form
+          getApi={(param) => {
+            api = param;
+          }}
+          validateError={validate}
+          validateOnSubmit>
+          { api => (
+            <form onSubmit={api.submitForm}>
+              <Text field="greeting" />
+              <button type="submit">Submit</button>
+            </form>
+          ) }
+        </Form>
+      );
+      const input = wrapper.find('input');
+      input.simulate('change', { target: { value: 'Foo' } });
+      expect( api.getFormState() ).to.deep.equal( getState( {
+        errors: { greeting: null },
+        values: { greeting: 'Foo' }
+      }));
+      const button = wrapper.find('button');
+      button.simulate('submit');
+      expect( api.getFormState().errors ).to.deep.equal( { greeting: 'ooo thats no good' });
+    });
+
+    it('validateOnSubmit and dontValidateOnMount should prevent all validation until the form has been submitted', () => {
+      let api;
+      const validate = ( values ) => {
+        return {
+          greeting: values.greeting === 'Foo' ? 'ooo thats no good' : null
+        };
+      };
+      const wrapper = mount(
+        <Form
+          getApi={(param) => {
+            api = param;
+          }}
+          validateError={validate}
+          dontValidateOnMount
+          validateOnSubmit>
+          { api => (
+            <form onSubmit={api.submitForm}>
+              <Text field="greeting" />
+              <button type="submit">Submit</button>
+            </form>
+          ) }
+        </Form>
+      );
+      const input = wrapper.find('input');
+      input.simulate('change', { target: { value: 'Foo' } });
+      expect( api.getFormState() ).to.deep.equal( getState( {
+        values: { greeting: 'Foo' }
+      }));
+      const button = wrapper.find('button');
+      button.simulate('submit');
+      expect( api.getFormState().errors ).to.deep.equal( { greeting: 'ooo thats no good' });
+    });
+
+  });
+
 });

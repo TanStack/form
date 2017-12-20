@@ -192,27 +192,33 @@ class Form extends Component {
     this.props.dispatch(actions.removeAsyncError(field));
     this.props.dispatch(actions.removeAsyncWarning(field));
     this.props.dispatch(actions.removeAsyncSuccess(field));
-    this.props.dispatch(actions.preValidate());
-    this.props.dispatch(actions.validate());
+    if ( !this.props.validateOnSubmit ) {
+      this.props.dispatch(actions.preValidate());
+      this.props.dispatch(actions.validate());
+    }
   }
 
   setTouched = ( field, touch = true, validate = true ) => {
     this.props.dispatch(actions.setTouched(field, touch));
     // We have a flag to perform async validate when touched
-    if ( validate ) {
+    if ( validate && !this.props.validateOnSubmit ) {
+      this.props.dispatch(actions.preValidate());
+      this.props.dispatch(actions.validate());
       this.props.dispatch(actions.asyncValidate(field, this.props.asyncValidators ));
     }
   }
 
   async setAllTouched( touched ) {
     this.props.dispatch(actions.setAllTouched( touched ));
-    this.props.dispatch(actions.preValidate());
-    this.props.dispatch(actions.validate());
-    // Build up list of async functions that need to be called
-    const validators = this.props.asyncValidators ? Object.keys(this.props.asyncValidators).map( ( field ) => {
-      return this.props.dispatch(actions.asyncValidate(field, this.props.asyncValidators ));
-    }) : [];
-    await Promise.all( validators );
+    if ( !this.props.validateOnSubmit ) {
+      this.props.dispatch(actions.preValidate());
+      this.props.dispatch(actions.validate());
+      // Build up list of async functions that need to be called
+      const validators = this.props.asyncValidators ? Object.keys(this.props.asyncValidators).map( ( field ) => {
+        return this.props.dispatch(actions.asyncValidate(field, this.props.asyncValidators ));
+      }) : [];
+      await Promise.all( validators );
+    }
   }
 
   setError = ( field, error ) => {
@@ -229,13 +235,15 @@ class Form extends Component {
 
   async setAllValues( values ) {
     this.props.dispatch(actions.setAllValues( values ));
-    this.props.dispatch(actions.preValidate());
-    this.props.dispatch(actions.validate());
-    // Build up list of async functions that need to be called
-    const validators = this.props.asyncValidators ? Object.keys(this.props.asyncValidators).map( ( field ) => {
-      return this.props.dispatch(actions.asyncValidate(field, this.props.asyncValidators ));
-    }) : [];
-    await Promise.all( validators );
+    if ( !this.props.validateOnSubmit ) {
+      this.props.dispatch(actions.preValidate());
+      this.props.dispatch(actions.validate());
+      // Build up list of async functions that need to be called
+      const validators = this.props.asyncValidators ? Object.keys(this.props.asyncValidators).map( ( field ) => {
+        return this.props.dispatch(actions.asyncValidate(field, this.props.asyncValidators ));
+      }) : [];
+      await Promise.all( validators );
+    }
   }
 
   setFormState = ( formState ) => {
@@ -270,8 +278,10 @@ class Form extends Component {
     this.props.dispatch(actions.removeAsyncError(field));
     this.props.dispatch(actions.removeAsyncWarning(field));
     this.props.dispatch(actions.removeAsyncSuccess(field));
-    this.props.dispatch(actions.preValidate());
-    this.props.dispatch(actions.validate());
+    if ( !this.props.dontValidateOnMount && !this.props.validateOnSubmit ) {
+      this.props.dispatch(actions.preValidate());
+      this.props.dispatch(actions.validate());
+    }
   }
 
   removeValue = ( field, index ) => {
@@ -288,8 +298,10 @@ class Form extends Component {
     this.props.dispatch(actions.removeAsyncError(field));
     this.props.dispatch(actions.removeAsyncWarning(field));
     this.props.dispatch(actions.removeAsyncSuccess(field));
-    this.props.dispatch(actions.preValidate());
-    this.props.dispatch(actions.validate());
+    if ( !this.props.dontValidateOnMount && !this.props.validateOnSubmit ) {
+      this.props.dispatch(actions.preValidate());
+      this.props.dispatch(actions.validate());
+    }
   }
 
   swapValues = ( field, index, destIndex ) => {

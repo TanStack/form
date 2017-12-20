@@ -462,6 +462,16 @@ const FormProps = () => {
             </td>
           </tr>
           <tr>
+            <th scope="row"><code>validateOnSubmit</code></th>
+            <td><pre>bool</pre></td>
+            <td>no</td>
+            <td>
+              Use this if you dont want the form to validate until it gets submitted.
+              Note, you may need to combine this with the dontValidateOnMount prop to get what you need.
+              This will prevent asyncValidation, syncValidation, and preValidate from getting called until submit.
+            </td>
+          </tr>
+          <tr>
             <th scope="row"><code>defaultValues</code></th>
             <td><pre>obj</pre></td>
             <td>no</td>

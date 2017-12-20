@@ -34,7 +34,7 @@ function makePathArray(obj) {
           .split('.')
           .map((d) => {
             if (d.indexOf('__int__') === 0) {
-              return parseInt(d.substring(6), 10);
+              return parseInt(d.substring(7), 10);
             }
             return d;
           })
