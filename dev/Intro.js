@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { PrismCode } from 'react-prism';
 import rawStyles from 'raw-loader!./styles.txt';
 
-// TODO Break this file apart... its way to big :)
+// TODO Break this file apart... it's way too big :)
 
 /* ------------- Form  Library Imports -------------- */
 import {
@@ -226,7 +226,7 @@ const FormApi = ({ formApi }) => {
             <th scope="row">submits</th>
             <td><pre><PrismCode className="language-json">{JSON.stringify(formApi.submits)}</PrismCode></pre></td>
             <td>
-              Submission attempts. ( the number of times the submit button was clicked )
+              Count of submission attempts. ( the number of times the submit button was clicked )
             </td>
           </tr>
           <tr>
@@ -240,7 +240,7 @@ const FormApi = ({ formApi }) => {
             <th scope="row">submitting</th>
             <td><pre><PrismCode className="language-json">{JSON.stringify(formApi.submitting)}</PrismCode></pre></td>
             <td>
-              True while the form is in the process of submitting. False when its not.
+              True while the form is in the process of submitting. False when it's not.
             </td>
           </tr>
           <tr>
@@ -256,7 +256,7 @@ const FormApi = ({ formApi }) => {
             <td><pre><PrismCode className="language-json">{JSON.stringify(formApi.validating)}</PrismCode></pre></td>
             <td>
               Key value pair where key is the form <code>field</code>, and value
-              is a bool. Value is true when that field is activley validating, and falsey otherwise.
+              is a bool. Value is true when that field is actively validating, and falsey otherwise.
               See the <a href="#async-validation">asynchronous validation section</a> of these docs for additional details.
             </td>
           </tr>
@@ -264,9 +264,9 @@ const FormApi = ({ formApi }) => {
             <th scope="row">validationFailures</th>
             <td><pre><PrismCode className="language-json">{JSON.stringify(formApi.validationFailures)}</PrismCode></pre></td>
             <td>
-              The number of asynchronous validation failures that have occured. This value will get
-              incimented each time an asynchronous validation fails, and decrimented if it succeeds.
-              Note, it will NOT get incrimented twice for the same field.
+              The number of asynchronous validation failures that have occurred. This value will get
+              incremented each time an asynchronous validation fails, and decremented if it succeeds.
+              Note, it will NOT get incremented twice for the same field.
               See the <a href="#async-validation">asynchronous validation section</a> of these docs for additional details.
             </td>
           </tr>
@@ -301,7 +301,7 @@ const FormApiMethods = ({ formApi }) => {
             <th scope="row">submitForm</th>
             <td><pre><PrismCode className="language-jsx">submitForm( event )</PrismCode></pre></td>
             <td>
-              This function will submit the form and tirgger all lifecycle events:
+              This function will submit the form and trigger all lifecycle events:
               <ul>
                 <li>validateError</li>
                 <li>validateWarning</li>
@@ -326,7 +326,7 @@ const FormApiMethods = ({ formApi }) => {
             <td><pre><PrismCode className="language-jsx">setAllValues( { "{ hello: 'HelloWorld!' }" } )</PrismCode></pre></td>
             <td>
               Function that takes an object where the field is the <code>field</code> name, and the value is the value you want to set it to.
-              Note, dont try to set nested forms values. If you want to do this, call the nested forms <code>setAllValues</code>.
+              Note, don't try to set nested forms values. If you want to do this, call the nested forms <code>setAllValues</code>.
             </td>
           </tr>
           <tr>
@@ -362,7 +362,7 @@ const FormApiMethods = ({ formApi }) => {
             <td><pre><PrismCode className="language-jsx">setAllTouched( { "{ hello: true }" } )</PrismCode></pre></td>
             <td>
               Function that takes an object where the field is the <code>field</code> name, and the value is true or false.
-              Note, dont try to set nested forms touched. If you want to do this, call the nested forms <code>setAllTouched</code>.
+              Note, don't try to set nested forms touched. If you want to do this, call the nested forms <code>setAllTouched</code>.
             </td>
           </tr>
           <tr>
@@ -458,7 +458,7 @@ const FormProps = () => {
             <td><pre>bool</pre></td>
             <td>no</td>
             <td>
-              Use this if you dont want the form to validate when it gets mounted.
+              Use this if you don't want the form to validate when it gets mounted.
             </td>
           </tr>
           <tr>
@@ -466,7 +466,7 @@ const FormProps = () => {
             <td><pre>bool</pre></td>
             <td>no</td>
             <td>
-              Use this if you dont want the form to validate until it gets submitted.
+              Use this if you don't want the form to validate until it gets submitted.
               Note, you may need to combine this with the dontValidateOnMount prop to get what you need.
               This will prevent asyncValidation, syncValidation, and preValidate from getting called until submit.
             </td>
@@ -502,7 +502,7 @@ const FormProps = () => {
               your values before they are submitted. Whatever you return will
               NOT replace all of the values in that form's state, but will be
               passed to the onSubmit method. <strong>Warning:</strong> We pass <code>formApi</code>
-              to this function because some use cases warrent needing the Api, however,
+              to this function because some use cases warrant needing the Api, however,
               I would try to avoid making modifications to the form state here because it may
               allow you to submit an invalid form!<br />
               <pre><PrismCode className="language-jsx">preSubmit( values, formApi ) => {'({ firstName: values.firstName + "!", lastName: values.lastName})'}</PrismCode></pre>
@@ -524,7 +524,7 @@ const FormProps = () => {
             <td>no</td>
             <td>
               Function that gets called when form updates.
-              Function recieves the <code>formState</code> as a parameter. <br />
+              Function receives the <code>formState</code> as a parameter. <br />
               <pre><PrismCode className="language-jsx">formDidUpdate( formState )</PrismCode></pre>
             </td>
           </tr>
@@ -584,8 +584,8 @@ const FormProps = () => {
               Each function accepts the value as a parameter, and must return a validation object,
               where the keys are one of ['error', 'warning', 'success'], and the value is a message or null.
               The function will get called when you tab out of the field for the associated function.
-              If you do not want to overwrite the error, warning, or success values that were set by your syncronous validators,
-              simply dont pass that parameter in the object you return.
+              If you do not want to overwrite the error, warning, or success values that were set by your synchronous validators,
+              simply don't pass that parameter in the object you return.
               <br />
               <pre><PrismCode className="language-jsx">{'{ username: async () => ({ error: "Username already taken :(" }) }'}</PrismCode></pre>
             </td>
@@ -610,9 +610,9 @@ const FormProps = () => {
             <td>
               To retrieve the form api as a callback, you can pass a function to the `getApi` prop.
               Your function will be called with the formApi as the only parameter. You can save this as a reference
-              to easily manipulate your form from outside of the form scope. <strong>Warning:</strong>
-              this will give you the formApi when the component mounts. Dont try and use anything from the <code>formState</code>,
-              as it will be out of date. In other words, only call formApi methods such as <code>formApi.setValue( {"{ foo: 'bar' }"} )</code>
+              to easily manipulate your form from outside of the form scope. <strong>Warning:</strong> this
+              will give you the formApi when the component mounts. Don't try and use anything from the <code>formState</code>,
+              as it will be out-of-date. In other words, only call formApi methods such as <code>formApi.setValue( {"{ foo: 'bar' }"} )</code>
               <pre><PrismCode className="language-jsx">{`getApi( formApi )`}</PrismCode></pre>
             </td>
           </tr>
@@ -638,9 +638,9 @@ class Intro extends Component {
         </p>
         <h3>Motivation</h3>
         <p className="mb-4">
-          Simplicity and efficiency. This form works in IE! and its fast!
-          There are many other libraries that exist, but they dont function in
-          IE and, can get pretty complex. You can create very complex forms quickly
+          Simplicity and efficiency. This form works in IE! and it's fast!
+          There are many other libraries that exist, but don't function in
+          IE, and they can get pretty complex. You can create very complex forms quickly
           with only a few lines of code.
         </p>
         <h3>Notes</h3>
@@ -652,7 +652,7 @@ class Intro extends Component {
           etc. I just added some simple styles to make them look good for
           presentation. So if you see classes in the example code like
           <code>"mb-4"</code>, or if you are quick to point out that inputs are
-          not block elements by default dont freak out! Focus on the core
+          not block elements by default don't freak out! Focus on the core
           structure of the forms.
         </p>
         <pre className="mb-4">
@@ -695,8 +695,8 @@ class Intro extends Component {
           </pre>
         </ol>
         <p className="mb-4">
-          Below is an example of a react form that uses the first method. Note how we the
-          <code>formApis.submitForm</code> to the native <code>&lt;form&gt;</code> onSubmit.
+          Below is an example of a react form that uses the first method. Note how we pass 
+          <code>formApis.submitForm</code> to the native form onSubmit event handler.
         </p>
         <h5>Source Code:</h5>
         <pre className="mb-4">
@@ -707,12 +707,13 @@ class Intro extends Component {
         <h5>Rendered example:</h5>
         <p>
           Play around with the Hello World field and see how the <code>formState</code> updates
-          in the table! <strong>Hint:</strong> try typing {'"Foo", "Hello World", and "Hello World!!!"'}
+          in the attributes table below! <strong>Hint:</strong> try typing {'"Foo", "Hello World", and "Hello World!!!"'}
+          and check the dynamically updated values, errors and warnings attributes.
         </p>
         <ExampleForm />
         <h5>Source code with validation:</h5>
         <p>
-          The validation occured in the Hello World example above because of the
+          The validation occurred in the Hello World example above because of the
           validators that were passed in, see code below.
         </p>
         <pre className="mb-4">

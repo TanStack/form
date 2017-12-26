@@ -295,9 +295,9 @@ class BigComplexForm extends Component {
       <div>
         <h3>Big Complex Form</h3>
         <br />
-        <h5 style={{ backgroundColor: 'red' }}>Docs for big complex form are a work in progress but still shows off powerfull stuff.</h5>
+        <h5 style={{ backgroundColor: 'red' }}>Docs for big complex form are a work in progress but still shows off powerful stuff.</h5>
         <br />
-        <p>You can make very compex forms with react-form. The below form includes the following:</p>
+        <p>You can make very complex forms with react-form. The below form includes the following:</p>
         <ul>
           <li>Normal Text fields</li>
           <li>Array of Text fields</li>

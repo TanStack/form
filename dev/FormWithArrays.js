@@ -74,7 +74,7 @@ class FormWithArrays extends Component {
       <div>
         <h2 className="mb-4">Form With Array</h2>
         <p>
-          Fields can also be assotiated with an array. Here is an example
+          Fields can also be associated with an array. Here is an example
           where you can input three friends.
         </p>
         <Form

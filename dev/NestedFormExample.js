@@ -24,11 +24,11 @@ const Questions = () => (
         nestedFormApi = formApi;
         return (
           <div>
-            <label htmlFor="color">Whats your favorite color?</label>
+            <label htmlFor="color">What's your favorite color?</label>
             <Text field="color" id="color" />
-            <label htmlFor="food">Whats your favorite food?</label>
+            <label htmlFor="food">What's your favorite food?</label>
             <Text field="food" id="food" />
-            <label htmlFor="car">Whats type of car do you drive?</label>
+            <label htmlFor="car">What type of car do you drive?</label>
             <Text field="car" id="car" />
           </div>
         );
@@ -104,11 +104,11 @@ const NestedFormCode = () => {
       <Form>
         { formApi => (
           <div>
-            <label htmlFor="color">Whats your favorite color?</label>
+            <label htmlFor="color">What's your favorite color?</label>
             <Text field="color" id="color" />
-            <label htmlFor="food">Whats your favorite food?</label>
+            <label htmlFor="food">What's your favorite food?</label>
             <Text field="food" id="food" />
-            <label htmlFor="car">Whats type of car do you drive?</label>
+            <label htmlFor="car">What type of car do you drive?</label>
             <Text field="car" id="car" />
           </div>
         )}
@@ -166,7 +166,7 @@ class NestedFormExample extends Component {
         <h2 className="mb-4">Nested Forms</h2>
         <p>
           You can also choose to create nested forms. This can become very
-          usefull for complex forms. Nested forms should always have one child,
+          useful for complex forms. Nested forms should always have one child,
           a <code>&lt;Form&gt;</code> component. <code>&lt;Form&gt;</code>s within
           a <code>&lt;NestedForm&gt;</code> have all the same properties as a normal
           <code>&lt;Form&gt;</code>
