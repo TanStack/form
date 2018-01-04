@@ -104,7 +104,7 @@ class ArrayOfNestedForms extends Component {
       <div>
         <h2 className="mb-4">Array of nested forms</h2>
         <p>
-          React Form also allows you to create an array of nested foms! How cool is that!
+          React Form also allows you to create an array of nested forms! How cool is that!
         </p>
         <Form
           onSubmit={submittedValues => this.setState( { submittedValues } )}>

@@ -84,7 +84,7 @@ const NestedAsynchronousValidationCode = () => {
     if (['joe', 'tanner', 'billy', 'bob'].includes(username)) {
       resolve( { error: 'That username is taken', success: null } );
     }
-    // Simulate request faulure
+    // Simulate request failure
     if ( username === 'reject' ) {
       reject('Failure while making call to validate username does not exist');
     }
@@ -156,7 +156,7 @@ const doesUsernameExist = ( username, ms ) => new Promise( ( resolve, reject ) =
   if (['joe', 'tanner', 'billy', 'bob'].includes(username)) {
     resolve( { error: 'That username is taken', success: null } );
   }
-  // Simulate request faulure
+  // Simulate request failure
   if ( username === 'reject' ) {
     reject('Failure while making call to validate username does not exist');
   }

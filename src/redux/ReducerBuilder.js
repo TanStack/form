@@ -405,12 +405,12 @@ const validatingField = ( state, action ) => {
   let asyncValidations = state.asyncValidations;
 
   if ( Array.isArray(field) ) {
-    // Only incriment validations if this field is going from falsey to true
+    // Only increment validations if this field is going from falsey to true
     asyncValidations = !validating[field[0]] ? asyncValidations + 1 : asyncValidations;
     validating[field[0]] = true;
   }
   else {
-    // Only incriment validations if this field is going from falsey to true
+    // Only increment validations if this field is going from falsey to true
     asyncValidations = !validating[field] ? asyncValidations + 1 : asyncValidations;
     validating[field] = true;
   }
@@ -434,12 +434,12 @@ const doneValidatingField = ( state, action ) => {
   let asyncValidations = state.asyncValidations;
 
   if ( Array.isArray(field) ) {
-    // Only deccriment validations if this field is going from true to false
+    // Only decrement validations if this field is going from true to false
     asyncValidations = validating[field[0]] ? asyncValidations - 1 : asyncValidations;
     validating[field[0]] = false;
   }
   else {
-    // Only deccriment validations if this field is going from true to false
+    // Only decrement validations if this field is going from true to false
     asyncValidations = validating[field] ? asyncValidations - 1 : asyncValidations;
     validating[field] = false;
   }
@@ -463,12 +463,12 @@ const validationFailure = ( state, action ) => {
   let validationFailures = state.validationFailures;
 
   if ( Array.isArray(field) ) {
-    // Only incriment faulures if this field is going from false to true
+    // Only increment failures if this field is going from false to true
     validationFailures = validationFailed[field[0]] === false ? validationFailures + 1 : validationFailures;
     validationFailed[field[0]] = true;
   }
   else {
-    // Only incriment faulures if this field is going from falsey to true
+    // Only increment failures if this field is going from falsey to true
     validationFailures = !validationFailed[field] ? validationFailures + 1 : validationFailures;
     validationFailed[field] = true;
   }
@@ -492,12 +492,12 @@ const validationSuccess = ( state, action ) => {
   const validationFailed = JSON.parse(JSON.stringify(state.validationFailed));
 
   if ( Array.isArray(field) ) {
-    // Only devcriment faulures if this field is going from true to false
+    // Only devcriment failures if this field is going from true to false
     validationFailures = validationFailed[field[0]] === true ? validationFailures - 1 : validationFailures;
     validationFailed[field[0]] = false;
   }
   else {
-    // Only devcriment faulures if this field is going from true to false
+    // Only devcriment failures if this field is going from true to false
     validationFailures = validationFailed[field] === true ? validationFailures - 1 : validationFailures;
     validationFailed[field] = false;
   }
