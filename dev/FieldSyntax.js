@@ -101,13 +101,13 @@ class FormWithSpecialFieldSyntax extends Component {
         <h2 className="mb-4">Field syntax</h2>
         <p>
           Every input in <code>react-form</code> needs an associated field name.
-          In its simplest form, field names are just strings. However, sometimes
+          In their simplest form, field names are just strings. However, sometimes
           you may have some complex forms that require special ways of organizing
           your fields, this is where the special syntax comes in.
         </p>
         <p>
-          Fields can be simple <code>strings</code>, <code>strigs</code> that contain <code>"."</code>,
-          and <code>strigs</code> that contain <code>"[ ]"</code>, much like how you access and write to objects and
+          Fields can be simple <code>strings</code>, <code>strings</code> that contain <code>"."</code>,
+          and <code>strings</code> that contain <code>"[ ]"</code>, much like how you access and write to objects and
           arrays in javascript.
           You can also use <code>arrays</code> and even <code>nested arrays</code>
           that contain this syntax as well. This helps with deep form composition.
@@ -150,9 +150,9 @@ class FormWithSpecialFieldSyntax extends Component {
           </table>
         </div>
         <p className="mb-4">
-          <strong>Note:</strong> I would highly recomend that if you find yourself writing code
+          <strong>Note:</strong> I would highly recommend that if you find yourself writing code
           that contains <code>["friends", 0, "address", "street"]</code> that
-          you think about using nested forms instead. In fact i would even recomend
+          you think about using nested forms instead. In fact I would even recommend
           using nested forms when you find yourself writing <code>["friends", 0, "firstName"]</code>.
           Do yourself this favor and you will have cleaner more consumable code!!
         </p>
