@@ -179,14 +179,14 @@ describe('ReducerBuilder', () => {
     it(`handles ${RESET}`, () => {
       const reducer = ReducerBuilder.build();
       const expectedState = getState({
-        errors: { foo: null },
-        warnings: { foo: null },
-        successes: { foo: null },
-        asyncErrors: { foo: null },
-        asyncWarnings: { foo: null },
-        asyncSuccesses: { foo: null },
-        values: { foo: null },
-        touched: { foo: null },
+        errors: { foo: undefined },
+        warnings: { foo: undefined },
+        successes: { foo: undefined },
+        asyncErrors: { foo: undefined },
+        asyncWarnings: { foo: undefined },
+        asyncSuccesses: { foo: undefined },
+        values: { foo: undefined },
+        touched: { foo: undefined },
       });
       const action1 = actions.setValue('foo', 'bar');
       const state1 = reducer(undefined, action1);

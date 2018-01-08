@@ -379,14 +379,14 @@ const reset = ( state, action ) => {
   } = action;
 
   const newState = JSON.parse( JSON.stringify( state ) );
-  newState.values[field] = null;
-  newState.touched[field] = null;
-  newState.errors[field] = null;
-  newState.warnings[field] = null;
-  newState.successes[field] = null;
-  newState.asyncErrors[field] = null;
-  newState.asyncWarnings[field] = null;
-  newState.asyncSuccesses[field] = null;
+  Utils.set( newState.values, field, undefined );
+  Utils.set( newState.touched, field, undefined );
+  Utils.set( newState.errors, field, undefined );
+  Utils.set( newState.warnings, field, undefined );
+  Utils.set( newState.successes, field, undefined );
+  Utils.set( newState.asyncErrors, field, undefined );
+  Utils.set( newState.asyncWarnings, field, undefined );
+  Utils.set( newState.asyncSuccesses, field, undefined );
 
   return {
     ...state,
