@@ -115,7 +115,7 @@ class Form extends Component {
 
   componentWillUnmount() {
     // Reset the form if it has reset
-    if ( this.props.reset ) {
+    if ( this.props.reset && this.props.resetFormOnUnmount ) {
       // Basically calling parent forms reset function
       this.props.reset();
     }
