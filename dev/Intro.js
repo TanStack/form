@@ -513,9 +513,11 @@ const FormProps = () => {
             <td><pre>func</pre></td>
             <td>no</td>
             <td>
-              Function that gets called when submission fails due to errors.
-              This function will pass two parameters: the form errors, and the formApi. <br />
-              <pre><PrismCode className="language-jsx">onSubmitFailure( errors, formApi )</PrismCode></pre>
+              Function that gets called when submission fails due to errors, or when
+              <code>onSubmit</code> threw an error.
+              This function will pass two parameters: the form validation errors, the formApi, and
+              an error thrown during the call to <code>onSubmit</code>. <br />
+              <pre><PrismCode className="language-jsx">onSubmitFailure( errors, formApi, onSubmitError )</PrismCode></pre>
             </td>
           </tr>
           <tr>
