@@ -93,7 +93,7 @@ class Radio extends Component {
 }
 
 Radio.propTypes = {
-  value: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
   group: PropTypes.object.isRequired
 };
 
