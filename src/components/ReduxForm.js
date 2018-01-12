@@ -402,7 +402,12 @@ class Form extends Component {
       // Update submitted
       this.props.dispatch(actions.submitted());
       if ( this.props.onSubmit ) {
-        this.props.onSubmit( values, e, this.api );
+        try {
+          await this.props.onSubmit( values, e, this.api );
+        }
+        catch (error) {
+          this.props.onSubmitFailure( {}, this.api, error );
+        }
       }
     }
     // Let the user know we are done submitting

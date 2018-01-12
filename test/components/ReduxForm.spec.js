@@ -512,4 +512,52 @@ describe('ReduxForm', () => {
 
   });
 
+  it('should call onSubmitFailure function when submit throws', (done) => {
+    const spy = sandbox.spy();
+    const error = new Error('Submission Error');
+    const wrapper = mount(
+      <Form onSubmitFailure={spy} onSubmit={() => { throw error; }}>
+        { ({ submitForm }) => (
+          <form onSubmit={submitForm}>
+            <Text field="greeting" />
+            <button type="submit">Submit</button>
+          </form>
+        ) }
+      </Form>
+    );
+    const button = wrapper.find('button');
+    button.simulate('submit');
+    setImmediate( () => {
+      expect(spy.called).to.equal( true );
+      const { args: [[validationErrors,, submitError]] } = spy;
+      expect(validationErrors).to.deep.equal({});
+      expect(submitError).to.equal(error);
+      done();
+    });
+  });
+
+  it('should call onSubmitFailure function when submit throws (async)', (done) => {
+    const spy = sandbox.spy();
+    const error = new Error('Submission Error');
+    const wrapper = mount(
+      <Form onSubmitFailure={spy} onSubmit={async () => { throw error; }}>
+        { ({ submitForm }) => (
+          <form onSubmit={submitForm}>
+            <Text field="greeting" />
+            <button type="submit">Submit</button>
+          </form>
+        ) }
+      </Form>
+    );
+    const button = wrapper.find('button');
+    button.simulate('submit');
+    setImmediate( () => {
+      expect(spy.called).to.equal( true );
+      const { args: [[validationErrors,, submitError]] } = spy;
+      expect(validationErrors).to.deep.equal({});
+      expect(submitError).to.equal(error);
+      done();
+    });
+  });
+
 });
