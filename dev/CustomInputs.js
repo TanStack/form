@@ -31,7 +31,8 @@ class CustomTextWrapper extends Component {
 
     const {
       fieldApi,
-      onInput,
+      onChange,
+      onBlur,
       ...rest
     } = this.props;
 
@@ -51,17 +52,21 @@ class CustomTextWrapper extends Component {
     return (
       <div>
         <input
+          {...rest}
           value={getValue() || ''}
-          onInput={( e ) => {
+          onChange={( e ) => {
             setValue(e.target.value);
-            if ( onInput ) {
-              onInput( e );
+            if ( onChange ) {
+              onChange( e.target.value, e );
             }
           }}
-          onBlur={() => {
+          onBlur={( e ) => {
             setTouched();
+            if ( onBlur ) {
+              onBlur ( e );
+            }
           }}
-          {...rest} />
+        />
         { error ? <Message color="red" message={error} /> : null }
         { !error && warning ? <Message color="orange" message={warning} /> : null }
         { !error && !warning && success ? <Message color="green" message={success} /> : null }
@@ -113,7 +118,8 @@ const CustomFormCode = () => {
 
       const {
         fieldApi,
-        onInput,
+        onChange,
+        onBlur,
         ...rest
       } = this.props;
 
@@ -133,17 +139,21 @@ const CustomFormCode = () => {
       return (
         <div>
           <input
-            value={getValue()}
-            onInput={( e ) => {
+            {...rest} 
+            value={getValue() || ''}
+            onChange={( e ) => {
               setValue(e.target.value);
-              if ( onInput ) {
-                onInput( e );
+              if ( onChange ) {
+                onChange( e );
               }
             }}
-            onBlur={() => {
+            onBlur={( e ) => {
               setTouched();
+              if ( onBlur ) {
+                onBlur( e );
+              }
             }}
-            {...rest} />
+          />
           { error ? <Message color="red" message={error} /> : null }
           { !error && warning ? <Message color="orange" message={warning} /> : null }
           { !error && !warning && success ? <Message color="green" message={success} /> : null }
