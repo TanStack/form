@@ -4,10 +4,9 @@
 import React, { Component } from 'react';
 
 // Inport the form input
-import FormField from '../FormField';
+import withFormField from '../withFormField';
 
 class RadioGroupWrapper extends Component {
-
   // Set the initial value
   componentWillMount() {
     if (this.props.value) {
@@ -16,7 +15,6 @@ class RadioGroupWrapper extends Component {
   }
 
   render() {
-
     // console.log('RENDER');
 
     const {
@@ -25,12 +23,12 @@ class RadioGroupWrapper extends Component {
       component,
       render,
       onChange,
-      onBlur
+      onBlur,
     } = this.props;
 
-    fieldApi.onChange = ( val ) => {
-      if ( onChange ) {
-        onChange( val );
+    fieldApi.onChange = (val) => {
+      if (onChange) {
+        onChange(val);
       }
     };
 
@@ -41,22 +39,22 @@ class RadioGroupWrapper extends Component {
     };
 
     // Expose field api as group
-    if ( component ) {
-      return React.createElement(component, { group: fieldApi } );
+    if (component) {
+      return React.createElement(component, { group: fieldApi });
     }
 
-    if ( render ) {
+    if (render) {
       return render(fieldApi);
     }
 
-    if ( typeof children === 'function' ) {
+    if (typeof children === 'function') {
       return children(fieldApi);
     }
 
-    return React.cloneElement(children, { group: fieldApi } );
+    return React.cloneElement(children, { group: fieldApi });
   }
 }
 
-const RadioGroup = FormField(RadioGroupWrapper);
+const RadioGroup = withFormField(RadioGroupWrapper);
 
 export default RadioGroup;

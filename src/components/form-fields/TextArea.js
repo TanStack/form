@@ -4,49 +4,37 @@
 import React, { Component } from 'react';
 
 // Inport the form input
-import FormField from '../FormField';
+import withFormField from '../withFormField';
 
 class TextAreaWrapper extends Component {
-
   render() {
-
     // console.log('RENDER');
 
-    const {
-      onChange,
-      onBlur,
-      fieldApi,
-      ...rest
-    } = this.props;
+    const { onChange, onBlur, fieldApi, ...rest } = this.props;
 
-    const {
-      getValue,
-      setValue,
-      setTouched
-    } = fieldApi;
+    const { getValue, setValue, setTouched } = fieldApi;
 
     return (
       <textarea
         {...rest}
         value={getValue() || ''}
-        onChange={( e ) => {
+        onChange={(e) => {
           setValue(e.target.value);
-          if ( onChange ) {
+          if (onChange) {
             onChange(e.target.value, e);
           }
         }}
         onBlur={(e) => {
           setTouched();
-          if ( onBlur ) {
+          if (onBlur) {
             onBlur(e);
           }
         }}
       />
     );
-
   }
 }
 
-const TextArea = FormField(TextAreaWrapper);
+const TextArea = withFormField(TextAreaWrapper);
 
 export default TextArea;

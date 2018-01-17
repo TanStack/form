@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 
 // Inport the form input
-import FormField from '../FormField';
+import withFormField from '../withFormField';
 
 // Import our message
 import Message from './Message';
@@ -15,10 +15,8 @@ import Message from './Message';
 // Import styled utils
 import Utils from './utils';
 
-
 class TextWrapper extends Component {
   render() {
-
     const {
       fieldApi,
       onChange,
@@ -38,7 +36,7 @@ class TextWrapper extends Component {
       getSuccess,
       getTouched,
       setValue,
-      setTouched
+      setTouched,
     } = fieldApi;
 
     const error = getError();
@@ -47,12 +45,12 @@ class TextWrapper extends Component {
     const touched = getTouched();
     const value = getValue();
 
-    const type = Utils.getMessageType( error, warning, success );
-    const showValidation = Utils.shouldShowValidation( {
+    const type = Utils.getMessageType(error, warning, success);
+    const showValidation = Utils.shouldShowValidation({
       valueValidation,
       touchValidation,
       touched,
-      value
+      value,
     });
 
     const classes = classNames(
@@ -61,14 +59,18 @@ class TextWrapper extends Component {
       'react-form-text',
       {
         [`react-form-input-${type}`]: type && showValidation,
-        [`react-form-text-${type}`]: type && showValidation
-      }
+        [`react-form-text-${type}`]: type && showValidation,
+      },
     );
 
     return (
       <div>
-        { type && showValidation && !noMessage && messageBefore ?
-          <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
+        {type && showValidation && !noMessage && messageBefore ? (
+          <Message
+            message={Utils.getMessage(error, warning, success)}
+            type={type}
+          />
+        ) : null}
         <input
           {...rest}
           className={classes}
@@ -86,13 +88,17 @@ class TextWrapper extends Component {
             }
           }}
         />
-        { type && showValidation && !noMessage && !messageBefore ?
-          <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
+        {type && showValidation && !noMessage && !messageBefore ? (
+          <Message
+            message={Utils.getMessage(error, warning, success)}
+            type={type}
+          />
+        ) : null}
       </div>
     );
   }
 }
 
-const Text = FormField(TextWrapper);
+const Text = withFormField(TextWrapper);
 
 export default Text;

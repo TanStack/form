@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 
 // Inport the form input
-import FormField from '../FormField';
+import withFormField from '../withFormField';
 
 // Import our message
 import Message from './Message';
@@ -17,7 +17,6 @@ import Utils from './utils';
 
 class TextAreaWrapper extends Component {
   render() {
-
     const {
       fieldApi,
       onChange,
@@ -37,7 +36,7 @@ class TextAreaWrapper extends Component {
       getSuccess,
       getTouched,
       setValue,
-      setTouched
+      setTouched,
     } = fieldApi;
 
     const error = getError();
@@ -46,12 +45,12 @@ class TextAreaWrapper extends Component {
     const touched = getTouched();
     const value = getValue();
 
-    const type = Utils.getMessageType( error, warning, success );
-    const showValidation = Utils.shouldShowValidation( {
+    const type = Utils.getMessageType(error, warning, success);
+    const showValidation = Utils.shouldShowValidation({
       valueValidation,
       touchValidation,
       touched,
-      value
+      value,
     });
 
     const classes = classNames(
@@ -60,14 +59,18 @@ class TextAreaWrapper extends Component {
       'react-form-textarea',
       {
         [`react-form-input-${type}`]: type && showValidation,
-        [`react-form-textarea-${type}`]: type && showValidation
-      }
+        [`react-form-textarea-${type}`]: type && showValidation,
+      },
     );
 
     return (
       <div>
-        { type && showValidation && !noMessage && messageBefore ?
-          <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
+        {type && showValidation && !noMessage && messageBefore ? (
+          <Message
+            message={Utils.getMessage(error, warning, success)}
+            type={type}
+          />
+        ) : null}
         <textarea
           {...rest}
           className={classes}
@@ -85,13 +88,17 @@ class TextAreaWrapper extends Component {
             }
           }}
         />
-        { type && showValidation && !noMessage && !messageBefore ?
-          <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
+        {type && showValidation && !noMessage && !messageBefore ? (
+          <Message
+            message={Utils.getMessage(error, warning, success)}
+            type={type}
+          />
+        ) : null}
       </div>
     );
   }
 }
 
-const TextArea = FormField(TextAreaWrapper);
+const TextArea = withFormField(TextAreaWrapper);
 
 export default TextArea;

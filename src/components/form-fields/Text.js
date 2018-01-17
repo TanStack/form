@@ -4,11 +4,11 @@
 import React, { Component } from 'react';
 
 // Inport the form input
-import FormField from '../FormField';
+import withFormField from '../withFormField';
 
 class TextWrapper extends Component {
   render() {
-    //console.log('RENDER');
+    // console.log('RENDER');
 
     const { fieldApi, onChange, onBlur, ...rest } = this.props;
 
@@ -35,6 +35,6 @@ class TextWrapper extends Component {
   }
 }
 
-const Text = FormField(TextWrapper);
+const Text = withFormField(TextWrapper);
 
 export default Text;

@@ -1,4 +1,3 @@
-
 // Import React
 import React, { Component } from 'react';
 
@@ -6,7 +5,7 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 
 // Inport the form input
-import FormField from '../FormField';
+import withFormField from '../withFormField';
 
 // Import our message
 import Message from './Message';
@@ -15,9 +14,7 @@ import Message from './Message';
 import Utils from './utils';
 
 class SelectWrapper extends Component {
-
   render() {
-
     // console.log('RENDER');
 
     const {
@@ -50,12 +47,12 @@ class SelectWrapper extends Component {
     const touched = getTouched();
     const value = getValue();
 
-    const type = Utils.getMessageType( error, warning, success );
-    const showValidation = Utils.shouldShowValidation( {
+    const type = Utils.getMessageType(error, warning, success);
+    const showValidation = Utils.shouldShowValidation({
       valueValidation,
       touchValidation,
       touched,
-      value
+      value,
     });
 
     const classes = classNames(
@@ -64,26 +61,34 @@ class SelectWrapper extends Component {
       'react-form-select',
       {
         [`react-form-input-${type}`]: type && showValidation,
-        [`react-form-select-${type}`]: type && showValidation
-      }
+        [`react-form-select-${type}`]: type && showValidation,
+      },
     );
 
-    const resolvedOptions = options.find(d => d.value === '') ? options : [
-      {
-        label: placeholder || 'Select One...',
-        value: '',
-        disabled: true
-      },
-      ...options
-    ];
+    const resolvedOptions = options.find(d => d.value === '')
+      ? options
+      : [
+        {
+          label: placeholder || 'Select One...',
+          value: '',
+          disabled: true,
+        },
+        ...options,
+      ];
 
     const nullIndex = resolvedOptions.findIndex(d => d.value === '');
-    const selectedIndex = resolvedOptions.findIndex(d => d.value === getValue());
+    const selectedIndex = resolvedOptions.findIndex(
+      d => d.value === getValue(),
+    );
 
     return (
       <div>
-        { type && showValidation && !noMessage && messageBefore ?
-          <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
+        {type && showValidation && !noMessage && messageBefore ? (
+          <Message
+            message={Utils.getMessage(error, warning, success)}
+            type={type}
+          />
+        ) : null}
         <div className={classes}>
           <select
             {...rest}
@@ -97,29 +102,30 @@ class SelectWrapper extends Component {
             }}
             onBlur={(e) => {
               setTouched();
-              if ( onBlur ) {
+              if (onBlur) {
                 onBlur(e);
               }
             }}
           >
             {resolvedOptions.map((option, i) => (
-              <option
-                key={option.value}
-                value={i}
-                disabled={option.disabled}>
+              <option key={option.value} value={i} disabled={option.disabled}>
                 {option.label}
               </option>
             ))}
           </select>
           <div className="react-form-select-arrow" />
         </div>
-        { type && showValidation && !noMessage && !messageBefore ?
-          <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
+        {type && showValidation && !noMessage && !messageBefore ? (
+          <Message
+            message={Utils.getMessage(error, warning, success)}
+            type={type}
+          />
+        ) : null}
       </div>
     );
   }
 }
 
-const Select = FormField(SelectWrapper);
+const Select = withFormField(SelectWrapper);
 
 export default Select;

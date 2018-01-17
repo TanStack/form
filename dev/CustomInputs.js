@@ -2,13 +2,8 @@
 import React, { Component } from 'react';
 import { PrismCode } from 'react-prism';
 
-
 /* ------------- Form  Library Imports -------------- */
-import {
-  Form,
-  Text,
-  FormField
-} from '../src/index';
+import { Form, Text, withFormField } from '../src/index';
 
 /* ---------------- Other Imports ------------------ */
 
@@ -26,14 +21,8 @@ const Message = ({ color, message }) => {
 };
 
 class CustomTextWrapper extends Component {
-
   render() {
-
-    const {
-      fieldApi,
-      onInput,
-      ...rest
-    } = this.props;
+    const { fieldApi, onInput, ...rest } = this.props;
 
     const {
       getValue,
@@ -52,28 +41,32 @@ class CustomTextWrapper extends Component {
       <div>
         <input
           value={getValue() || ''}
-          onInput={( e ) => {
+          onInput={(e) => {
             setValue(e.target.value);
-            if ( onInput ) {
-              onInput( e );
+            if (onInput) {
+              onInput(e);
             }
           }}
           onBlur={() => {
             setTouched();
           }}
-          {...rest} />
-        { error ? <Message color="red" message={error} /> : null }
-        { !error && warning ? <Message color="orange" message={warning} /> : null }
-        { !error && !warning && success ? <Message color="green" message={success} /> : null }
+          {...rest}
+        />
+        {error ? <Message color="red" message={error} /> : null}
+        {!error && warning ? (
+          <Message color="orange" message={warning} />
+        ) : null}
+        {!error && !warning && success ? (
+          <Message color="green" message={success} />
+        ) : null}
       </div>
     );
   }
 }
 
-const CustomText = FormField(CustomTextWrapper);
+const CustomText = withFormField(CustomTextWrapper);
 
 const FormContent = ({ formApi }) => {
-
   return (
     <div>
       <form onSubmit={formApi.submitForm} id="form5">
@@ -81,17 +74,17 @@ const FormContent = ({ formApi }) => {
         <Text field="firstName" id="firstName4" />
         <label htmlFor="hello2">Custom hello world</label>
         <CustomText field="hello" id="hello2" />
-        <button type="submit" className="mb-4 btn btn-primary">Submit</button>
+        <button type="submit" className="mb-4 btn btn-primary">
+          Submit
+        </button>
       </form>
       <br />
       <Data title="Values" reference="formApi.values" data={formApi.values} />
     </div>
   );
-
 };
 
 const CustomFormCode = () => {
-
   const code = `
   import { Form, Text, FormField } from 'react-form';
 
@@ -153,7 +146,7 @@ const CustomFormCode = () => {
   }
 
   // Use the form field and your custom input together to create your very own input!
-  const CustomText = FormField(CustomTextWrapper);
+  const CustomText = withFormFieldCustomTextWrapper);
 
   const errorValidator = (values) => {
     return {
@@ -201,29 +194,35 @@ const CustomFormCode = () => {
   return (
     <div>
       <h5>Source Code:</h5>
-      <Code type="html">
-        {code}
-      </Code>
+      <Code type="html">{code}</Code>
     </div>
   );
 };
 
 const errorValidator = (values) => {
   return {
-    hello: !values.hello || !values.hello.match( /Hello World/ ) ? "Input must contain 'Hello World'" : null
+    hello:
+      !values.hello || !values.hello.match(/Hello World/)
+        ? "Input must contain 'Hello World'"
+        : null,
   };
 };
 
 const warningValidator = (values) => {
   return {
-    hello: !values.hello ||
-           !values.hello.match( /^Hello World$/ ) ? "Input should equal 'Hello World'" : null
+    hello:
+      !values.hello || !values.hello.match(/^Hello World$/)
+        ? "Input should equal 'Hello World'"
+        : null,
   };
 };
 
 const successValidator = (values) => {
   return {
-    hello: values.hello && values.hello.match( /Hello World/ ) ? "Thanks for entering 'Hello World'!" : null
+    hello:
+      values.hello && values.hello.match(/Hello World/)
+        ? "Thanks for entering 'Hello World'!"
+        : null,
   };
 };
 
@@ -241,80 +240,123 @@ const FieldApiMethods = ({ fieldApi }) => {
         <tbody>
           <tr>
             <th scope="row">getValue</th>
-            <td><pre><PrismCode className="language-jsx">getValue()</PrismCode></pre></td>
             <td>
-              Function that returns the value of the field.
+              <pre>
+                <PrismCode className="language-jsx">getValue()</PrismCode>
+              </pre>
             </td>
+            <td>Function that returns the value of the field.</td>
           </tr>
           <tr>
             <th scope="row">getError</th>
-            <td><pre><PrismCode className="language-jsx">getError()</PrismCode></pre></td>
             <td>
-              Function that returns the fields error.
+              <pre>
+                <PrismCode className="language-jsx">getError()</PrismCode>
+              </pre>
             </td>
+            <td>Function that returns the fields error.</td>
           </tr>
           <tr>
             <th scope="row">getWarning</th>
-            <td><pre><PrismCode className="language-jsx">getWarning()</PrismCode></pre></td>
             <td>
-              Function that returns the fields warning.
+              <pre>
+                <PrismCode className="language-jsx">getWarning()</PrismCode>
+              </pre>
             </td>
+            <td>Function that returns the fields warning.</td>
           </tr>
           <tr>
             <th scope="row">getSuccess</th>
-            <td><pre><PrismCode className="language-jsx">getSuccess()</PrismCode></pre></td>
             <td>
-              Function that returns the fields success.
+              <pre>
+                <PrismCode className="language-jsx">getSuccess()</PrismCode>
+              </pre>
             </td>
+            <td>Function that returns the fields success.</td>
           </tr>
           <tr>
             <th scope="row">getTouched</th>
-            <td><pre><PrismCode className="language-jsx">getTouched()</PrismCode></pre></td>
             <td>
-              Function that returns the fields touched.
+              <pre>
+                <PrismCode className="language-jsx">getTouched()</PrismCode>
+              </pre>
             </td>
+            <td>Function that returns the fields touched.</td>
           </tr>
           <tr>
             <th scope="row">getFieldName</th>
-            <td><pre><PrismCode className="language-jsx">getFieldName()</PrismCode></pre></td>
             <td>
-              Function that returns the fields name ( when you passed in field="yourFieldName" ).
+              <pre>
+                <PrismCode className="language-jsx">getFieldName()</PrismCode>
+              </pre>
+            </td>
+            <td>
+              Function that returns the fields name ( when you passed in
+              field="yourFieldName" ).
             </td>
           </tr>
           <tr>
             <th scope="row">setValue</th>
-            <td><pre><PrismCode className="language-jsx">setValue( 'HelloWorld!' )</PrismCode></pre></td>
             <td>
-              Function that takes the value you want to set the field to.
+              <pre>
+                <PrismCode className="language-jsx">
+                  setValue( 'HelloWorld!' )
+                </PrismCode>
+              </pre>
             </td>
+            <td>Function that takes the value you want to set the field to.</td>
           </tr>
           <tr>
             <th scope="row">setError</th>
-            <td><pre><PrismCode className="language-jsx">setError( 'Error message!' )</PrismCode></pre></td>
+            <td>
+              <pre>
+                <PrismCode className="language-jsx">
+                  setError( 'Error message!' )
+                </PrismCode>
+              </pre>
+            </td>
             <td>
               Function that takes the value you want to set the fields error to.
             </td>
           </tr>
           <tr>
             <th scope="row">setWarning</th>
-            <td><pre><PrismCode className="language-jsx">setWarning( 'Warning message!' )</PrismCode></pre></td>
             <td>
-              Function that takes the value you want to set the fields warning to.
+              <pre>
+                <PrismCode className="language-jsx">
+                  setWarning( 'Warning message!' )
+                </PrismCode>
+              </pre>
+            </td>
+            <td>
+              Function that takes the value you want to set the fields warning
+              to.
             </td>
           </tr>
           <tr>
             <th scope="row">setSuccess</th>
-            <td><pre><PrismCode className="language-jsx">setSuccess( 'Success message!' )</PrismCode></pre></td>
             <td>
-              Function that takes the value you want to set the fields success to.
+              <pre>
+                <PrismCode className="language-jsx">
+                  setSuccess( 'Success message!' )
+                </PrismCode>
+              </pre>
+            </td>
+            <td>
+              Function that takes the value you want to set the fields success
+              to.
             </td>
           </tr>
           <tr>
             <th scope="row">setTouched</th>
-            <td><pre><PrismCode className="language-jsx">setTouched( true )</PrismCode></pre></td>
             <td>
-              Function that sets the fields touched to true or false.
+              <pre>
+                <PrismCode className="language-jsx">
+                  setTouched( true )
+                </PrismCode>
+              </pre>
             </td>
+            <td>Function that sets the fields touched to true or false.</td>
           </tr>
         </tbody>
       </table>
@@ -323,35 +365,38 @@ const FieldApiMethods = ({ fieldApi }) => {
 };
 
 class CustomInput extends Component {
-
-  constructor( props ) {
-    super( props );
+  constructor(props) {
+    super(props);
     this.state = {};
   }
 
   render() {
-
     return (
       <div>
-        <h2 className="mb-4" id="custom-inputs">Custom Input</h2>
+        <h2 className="mb-4" id="custom-inputs">
+          Custom Input
+        </h2>
         <p>
           If the out of the box inputs are not enough for you. You can simply
           customize them, by creating your very own input elements. This is done
           by leverageing the FormField HOC that is availible in react-form.
-          Below is an example of a form that uses a custom input. Our custom input has
-          internal error, success, and warning messages that know when to get shown.
-          See docs at bottom of this page.
+          Below is an example of a form that uses a custom input. Our custom
+          input has internal error, success, and warning messages that know when
+          to get shown. See docs at bottom of this page.
         </p>
         <p>
-          Play around with the Hello World field and see how the custom text input reacts.
+          Play around with the Hello World field and see how the custom text
+          input reacts.
         </p>
         <p>
-          <strong> Hint: </strong> try typing {'"Foo", "Hello World", and "Hello World!!!"'}
+          <strong> Hint: </strong> try typing{' '}
+          {'"Foo", "Hello World", and "Hello World!!!"'}
         </p>
         <Form
           validateWarning={warningValidator}
           validateSuccess={successValidator}
-          validateError={errorValidator}>
+          validateError={errorValidator}
+        >
           <FormContent />
         </Form>
         <br />
@@ -361,9 +406,10 @@ class CustomInput extends Component {
         <h3 className="mb-4">Docs</h3>
         <p>
           <code>FormField</code> gives you access to the <code>fieldApi</code>.
-          This is very similar to how a <code>Form</code> gives you the <code>formApi</code>.
-          The difference is that <code>fieldApi</code>s functions are scoped to the field, and it only
-          has a subset of the formApis functions.
+          This is very similar to how a <code>Form</code> gives you the{' '}
+          <code>formApi</code>. The difference is that <code>fieldApi</code>s
+          functions are scoped to the field, and it only has a subset of the
+          formApis functions.
         </p>
         <FieldApiMethods />
       </div>

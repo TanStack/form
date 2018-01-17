@@ -4,26 +4,15 @@
 import React, { Component } from 'react';
 
 // Inport the form input
-import FormField from '../FormField';
+import withFormField from '../withFormField';
 
 class CheckboxWrapper extends Component {
-
   render() {
-
     // console.log('RENDER');
 
-    const {
-      fieldApi,
-      onChange,
-      onBlur,
-      ...rest
-    } = this.props;
+    const { fieldApi, onChange, onBlur, ...rest } = this.props;
 
-    const {
-      getValue,
-      setValue,
-      setTouched
-    } = fieldApi;
+    const { getValue, setValue, setTouched } = fieldApi;
 
     return (
       <input
@@ -37,7 +26,7 @@ class CheckboxWrapper extends Component {
         }}
         onBlur={(e) => {
           setTouched();
-          if ( onBlur ) {
+          if (onBlur) {
             onBlur(e);
           }
         }}
@@ -47,6 +36,6 @@ class CheckboxWrapper extends Component {
   }
 }
 
-const Checkbox = FormField(CheckboxWrapper);
+const Checkbox = withFormField(CheckboxWrapper);
 
 export default Checkbox;

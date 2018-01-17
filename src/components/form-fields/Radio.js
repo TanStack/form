@@ -7,17 +7,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 class Radio extends Component {
-
   // console.log('RENDER');
 
   render() {
-
-    const {
-      onClick,
-      group,
-      value,
-      ...rest
-    } = this.props;
+    const { onClick, group, value, ...rest } = this.props;
 
     return (
       <input
@@ -40,14 +33,12 @@ class Radio extends Component {
         type="radio"
       />
     );
-
   }
-
 }
 
 Radio.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
-  group: PropTypes.object.isRequired
+  group: PropTypes.object.isRequired,
 };
 
 export default Radio;

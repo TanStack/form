@@ -9,6 +9,7 @@ import Checkbox from './components/form-fields/Checkbox';
 import RadioGroup from './components/form-fields/RadioGroup';
 import NestedForm from './components/form-fields/NestedForm';
 import FormField from './components/FormField';
+import withFormField from './components/withFormField';
 
 import StyledText from './components/styled-form-fields/Text';
 import StyledRadio from './components/styled-form-fields/Radio';
@@ -17,7 +18,7 @@ import StyledSelect from './components/styled-form-fields/Select';
 import StyledCheckbox from './components/styled-form-fields/Checkbox';
 import StyledRadioGroup from './components/styled-form-fields/RadioGroup';
 
-//TODO remove these when IE is no longer a thing ( ie never :( )
+// TODO remove these when IE is no longer a thing ( ie never :( )
 require('./polyfills/find.js');
 require('./polyfills/includes.js');
 
@@ -28,6 +29,7 @@ export {
   Text,
   NestedForm,
   FormField,
+  withFormField,
   RadioGroup,
   Radio,
   Select,
@@ -38,5 +40,5 @@ export {
   StyledTextArea,
   StyledSelect,
   StyledCheckbox,
-  StyledRadioGroup
+  StyledRadioGroup,
 };

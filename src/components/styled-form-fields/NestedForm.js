@@ -4,14 +4,10 @@
 import React from 'react';
 
 // Inport the form input
-import FormField from '../FormField';
+import withFormField from '../withFormField';
 
 const NestedFormWrapper = (props) => {
-
-  const {
-    children,
-    fieldApi
-  } = props;
+  const { children, fieldApi } = props;
 
   const {
     setValue,
@@ -24,7 +20,7 @@ const NestedFormWrapper = (props) => {
     validatingField,
     doneValidatingField,
     registerAsyncValidation,
-    reset
+    reset,
   } = fieldApi;
 
   return React.cloneElement(children, {
@@ -33,29 +29,38 @@ const NestedFormWrapper = (props) => {
     submits,
     reset,
     // Update is an internal method that is used to update the parent form
-    update: ({ values, errors, successes, warnings, touched, asyncValidations }) => {
+    update: ({
+      values,
+      errors,
+      successes,
+      warnings,
+      touched,
+      asyncValidations,
+    }) => {
+      const invalid = errors ? Object.keys(errors).some(k => errors[k]) : false;
+      const success = successes
+        ? Object.keys(successes).some(k => successes[k])
+        : false;
+      const warning = warnings
+        ? Object.keys(warnings).some(k => warnings[k])
+        : false;
 
-      const invalid = errors ? Object.keys(errors).some( k => errors[k]) : false;
-      const success = successes ? Object.keys(successes).some( k => successes[k]) : false;
-      const warning = warnings ? Object.keys(warnings).some( k => warnings[k]) : false;
-
-      setValue( values );
-      setTouched( touched );
-      setError( invalid ? errors : null );
-      setWarning( warning ? warnings : null );
-      setSuccess( success ? successes : null );
-      if ( asyncValidations > 0 ) {
+      setValue(values);
+      setTouched(touched);
+      setError(invalid ? errors : null);
+      setWarning(warning ? warnings : null);
+      setSuccess(success ? successes : null);
+      if (asyncValidations > 0) {
         validatingField();
       }
       else {
         doneValidatingField();
       }
     },
-    registerAsyncValidation
+    registerAsyncValidation,
   });
-
 };
 
-const NestedForm = FormField(NestedFormWrapper);
+const NestedForm = withFormField(NestedFormWrapper);
 
 export default NestedForm;

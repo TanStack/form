@@ -4,12 +4,10 @@
 import React, { Component } from 'react';
 
 // Inport the form input
-import FormField from '../FormField';
+import withFormField from '../withFormField';
 
 class SelectWrapper extends Component {
-
   render() {
-
     // console.log('RENDER');
 
     const {
@@ -21,23 +19,23 @@ class SelectWrapper extends Component {
       ...rest
     } = this.props;
 
-    const {
-      getValue,
-      setValue,
-      setTouched
-    } = fieldApi;
+    const { getValue, setValue, setTouched } = fieldApi;
 
-    const resolvedOptions = options.find(d => d.value === '') ? options : [
-      {
-        label: placeholder || 'Select One...',
-        value: '',
-        disabled: true
-      },
-      ...options
-    ];
+    const resolvedOptions = options.find(d => d.value === '')
+      ? options
+      : [
+        {
+          label: placeholder || 'Select One...',
+          value: '',
+          disabled: true,
+        },
+        ...options,
+      ];
 
     const nullIndex = resolvedOptions.findIndex(d => d.value === '');
-    const selectedIndex = resolvedOptions.findIndex(d => d.value === getValue());
+    const selectedIndex = resolvedOptions.findIndex(
+      d => d.value === getValue(),
+    );
 
     return (
       <select
@@ -52,16 +50,13 @@ class SelectWrapper extends Component {
         }}
         onBlur={(e) => {
           setTouched();
-          if ( onBlur ) {
+          if (onBlur) {
             onBlur(e);
           }
         }}
       >
         {resolvedOptions.map((option, i) => (
-          <option
-            key={option.value}
-            value={i}
-            disabled={option.disabled}>
+          <option key={option.value} value={i} disabled={option.disabled}>
             {option.label}
           </option>
         ))}
@@ -70,6 +65,6 @@ class SelectWrapper extends Component {
   }
 }
 
-const Select = FormField(SelectWrapper);
+const Select = withFormField(SelectWrapper);
 
 export default Select;

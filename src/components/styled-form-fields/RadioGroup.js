@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 
 // Inport the form input
-import FormField from '../FormField';
+import withFormField from '../withFormField';
 
 // Import our message
 import Message from './Message';
@@ -16,7 +16,6 @@ import Message from './Message';
 import Utils from './utils';
 
 class RadioGroupWrapper extends Component {
-
   // Set the initial value
   componentWillMount() {
     if (this.props.value) {
@@ -25,7 +24,6 @@ class RadioGroupWrapper extends Component {
   }
 
   render() {
-
     const {
       fieldApi,
       children,
@@ -37,16 +35,10 @@ class RadioGroupWrapper extends Component {
       className,
       messageBefore,
       valueValidation,
-      touchValidation
+      touchValidation,
     } = this.props;
 
-    const {
-      getError,
-      getWarning,
-      getSuccess,
-      getTouched,
-      getValue
-    } = fieldApi;
+    const { getError, getWarning, getSuccess, getTouched, getValue } = fieldApi;
 
     const error = getError();
     const warning = getWarning();
@@ -54,12 +46,12 @@ class RadioGroupWrapper extends Component {
     const touched = getTouched();
     const value = getValue();
 
-    const type = Utils.getMessageType( error, warning, success );
-    const showValidation = Utils.shouldShowValidation( {
+    const type = Utils.getMessageType(error, warning, success);
+    const showValidation = Utils.shouldShowValidation({
       valueValidation,
       touchValidation,
       touched,
-      value
+      value,
     });
 
     const classes = classNames(
@@ -68,13 +60,13 @@ class RadioGroupWrapper extends Component {
       'react-form-radio-group',
       {
         [`react-form-input-${type}`]: type && showValidation,
-        [`react-form-radio-group-${type}`]: type && showValidation
-      }
+        [`react-form-radio-group-${type}`]: type && showValidation,
+      },
     );
 
-    fieldApi.onChange = ( val ) => {
-      if ( onChange ) {
-        onChange( val );
+    fieldApi.onChange = (val) => {
+      if (onChange) {
+        onChange(val);
       }
     };
 
@@ -87,33 +79,39 @@ class RadioGroupWrapper extends Component {
     let content;
 
     // Expose field api as group
-    if ( component ) {
-      content = React.createElement(component, { group: fieldApi } );
+    if (component) {
+      content = React.createElement(component, { group: fieldApi });
     }
-    else if ( render ) {
+    else if (render) {
       content = render(fieldApi);
     }
-    else if ( typeof children === 'function' ) {
+    else if (typeof children === 'function') {
       content = children(fieldApi);
     }
     else {
-      content = React.cloneElement(children, { group: fieldApi } );
+      content = React.cloneElement(children, { group: fieldApi });
     }
 
     return (
       <div>
-        { type && showValidation && !noMessage && messageBefore ?
-          <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
-        <div className={classes}>
-          {content}
-        </div>
-        { type && showValidation && !noMessage && !messageBefore ?
-          <Message message={Utils.getMessage( error, warning, success )} type={type} /> : null }
+        {type && showValidation && !noMessage && messageBefore ? (
+          <Message
+            message={Utils.getMessage(error, warning, success)}
+            type={type}
+          />
+        ) : null}
+        <div className={classes}>{content}</div>
+        {type && showValidation && !noMessage && !messageBefore ? (
+          <Message
+            message={Utils.getMessage(error, warning, success)}
+            type={type}
+          />
+        ) : null}
       </div>
     );
   }
 }
 
-const RadioGroup = FormField(RadioGroupWrapper);
+const RadioGroup = withFormField(RadioGroupWrapper);
 
 export default RadioGroup;
