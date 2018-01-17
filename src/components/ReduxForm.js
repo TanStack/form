@@ -189,9 +189,11 @@ class Form extends Component {
 
   setValue = ( field, value ) => {
     this.props.dispatch(actions.setValue(field, value));
-    this.props.dispatch(actions.removeAsyncError(field));
-    this.props.dispatch(actions.removeAsyncWarning(field));
-    this.props.dispatch(actions.removeAsyncSuccess(field));
+    if ( this.props.asyncValidators ) {
+      this.props.dispatch(actions.removeAsyncError(field));
+      this.props.dispatch(actions.removeAsyncWarning(field));
+      this.props.dispatch(actions.removeAsyncSuccess(field));
+    }
     if ( !this.props.validateOnSubmit ) {
       this.props.dispatch(actions.preValidate());
       this.props.dispatch(actions.validate());
@@ -204,7 +206,9 @@ class Form extends Component {
     if ( validate && !this.props.validateOnSubmit ) {
       this.props.dispatch(actions.preValidate());
       this.props.dispatch(actions.validate());
-      this.props.dispatch(actions.asyncValidate(field, this.props.asyncValidators ));
+      if (this.props.asyncValidators) {
+        this.props.dispatch(actions.asyncValidate(field, this.props.asyncValidators ));
+      }
     }
   }
 
