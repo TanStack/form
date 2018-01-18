@@ -1,0 +1,10 @@
+# 3.0.0
+#### New Features
+- The `FormField` component is now a FAAC (function-as-a-child) component which supports `component`, or `render`/`children` child as a function format.
+- `withFormField` is a new dedicated HOC function, which mirrors the capabilities of `FormField` but with the HOC syntax.
+- Added a new `FormApi` component (and its companion `withFormApi` HOC), which allows you to access the nearest formApi ancestor from anywhere in your component tree.
+- Added `strict` prop to `FormField` and `withFormField` components. While using the `strict` prop, the `FormField` instance will only rerender when form state or shallow prop values change. Use this to increase performance on large forms as long as you are aware of its capabilities.
+- The api supplied by `FormField`/`withFormField` now contains field-level methods for `addValue`, `removeValue`, and `swapValue`.
+#### Breaking Changes
+- `FormField` is now a FAAC, not an HOC. You can either directly replace it with the `withFormField` HOC, or adopt the inline FAAC format.
+- All `RadioGroup` components have been deprecated in favor of using the `field` prop directly on any `Radio` components.
