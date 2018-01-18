@@ -77,6 +77,8 @@ class FormField extends React.Component {
   }
 
   buildApi = (props) => {
+    // This binds all of the functions less often, and also won't trigger
+    // changes when spreading the fieldApi as shallow props
     const { formApi } = this.context;
     const { field } = props;
     this.fieldApi = {
@@ -115,12 +117,16 @@ class FormField extends React.Component {
     } = this.props;
 
     if (component) {
-      return React.createElement(component, {
-        fieldApi: this.fieldApi,
-        ...rest,
-      });
+      return React.createElement(
+        component,
+        {
+          fieldApi: this.fieldApi,
+          ...rest,
+        },
+        children,
+      );
     }
-    return (render || children)(this.fieldApi);
+    return (render || children)({ ...this.fieldApi, ...rest });
   }
 }
 
