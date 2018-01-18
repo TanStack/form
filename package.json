@@ -1,21 +1,18 @@
 {
   "name": "react-form",
   "version": "2.16.1",
-  "description":
-    "React Form is a lightweight framework and utility for building powerful forms in React applications.",
+  "description": "React Form is a lightweight framework and utility for building powerful forms in React applications.",
   "main": "dist/index.js",
-  "files": ["dist/"],
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "test": "NODE_ENV=test mocha-webpack --opts test/mocha-webpack.opts",
     "test:watch": "npm run test -- --watch",
-    "start":
-      "NODE_ENV=development webpack-dev-server -d --config config/webpack/webpack.dev.config.js --port 4005 --hot",
-    "build:dev":
-      "NODE_ENV=development webpack --config config/webpack/webpack.dev.config.js",
-    "build:dist":
-      "NODE_ENV=production webpack -p --config config/webpack/webpack.dist.config.js",
-    "build:docs":
-      "NODE_ENV=production webpack -p --config config/webpack/webpack.prod.config.js",
+    "start": "NODE_ENV=development webpack-dev-server -d --config config/webpack/webpack.dev.config.js --port 4005 --hot",
+    "build:dev": "NODE_ENV=development webpack --config config/webpack/webpack.dev.config.js",
+    "build:dist": "NODE_ENV=production webpack -p --config config/webpack/webpack.dist.config.js",
+    "build:docs": "NODE_ENV=production webpack -p --config config/webpack/webpack.prod.config.js",
     "eslint": "eslint src/** --fix",
     "format": "prettier-eslint src/**/*.js",
     "preversion": "npm test",
@@ -81,7 +78,7 @@
     "css-loader": "^0.28.5",
     "enzyme": "^2.9.1",
     "eslint": "^4.5.0",
-    "eslint-config-airbnb": "^15.1.0",
+    "eslint-config-react-tools": "^1.0.10",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^7.3.0",

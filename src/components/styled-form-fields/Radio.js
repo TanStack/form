@@ -1,20 +1,13 @@
-/* ---------- Imports ---------- */
+import React, { Component } from 'react'
+import classNames from 'classnames'
 
-// Import React
-import React, { Component } from 'react';
+//
 
-// Import classNames for generating classes
-import classNames from 'classnames';
-
-// Import PropTypes library
-import PropTypes from 'prop-types';
-
-// Import styled utils
-import Utils from '../../utils';
-import withFormField from '../withFormField';
+import Utils from '../../utils'
+import withFormField from '../withFormField'
 
 class RadioComp extends Component {
-  render() {
+  render () {
     const {
       onClick,
       group,
@@ -25,36 +18,24 @@ class RadioComp extends Component {
       touchValidation,
       onChange,
       onBlur,
-      fieldApi: {
-        getValue,
-        setValue,
-        setTouched,
-        getError,
-        getWarning,
-        getSuccess,
-        getTouched,
-      },
+      fieldApi: { getValue, setValue, setTouched, getError, getWarning, getSuccess, getTouched },
       ...rest
-    } = this.props;
+    } = this.props
 
-    const error = getError();
-    const warning = getWarning();
-    const success = getSuccess();
-    const touched = getTouched();
+    const error = getError()
+    const warning = getWarning()
+    const success = getSuccess()
+    const touched = getTouched()
 
-    const type = Utils.getMessageType(error, warning, success);
+    const type = Utils.getMessageType(error, warning, success)
     const showValidation = Utils.shouldShowValidation({
       valueValidation,
       touchValidation,
       touched,
       value,
-    });
+    })
 
-    const labelClasses = classNames(
-      className,
-      'react-form-control',
-      'react-form-control-radio',
-    );
+    const labelClasses = classNames(className, 'react-form-control', 'react-form-control-radio')
 
     const indicatorClasses = classNames(
       'react-form-control-indicator',
@@ -64,7 +45,7 @@ class RadioComp extends Component {
         [`react-form-input-${type}`]: type && showValidation,
         [`react-form-radio-${type}`]: type && showValidation,
       },
-    );
+    )
 
     return (
       <label className={labelClasses} htmlFor={rest.id}>
@@ -72,32 +53,32 @@ class RadioComp extends Component {
         <input
           {...rest}
           checked={getValue() === value}
-          onChange={(e) => {
+          onChange={e => {
             if (!e.target.checked) {
-              return;
+              return
             }
-            setValue(value);
+            setValue(value)
             if (onChange) {
-              onChange(value, e);
+              onChange(value, e)
             }
             if (onClick) {
-              onClick(e);
+              onClick(e)
             }
           }}
-          onBlur={(e) => {
-            setTouched();
+          onBlur={e => {
+            setTouched()
             if (onBlur) {
-              onBlur(e);
+              onBlur(e)
             }
           }}
           type="radio"
         />
         <div className={indicatorClasses} />
       </label>
-    );
+    )
   }
 }
 
-const Radio = withFormField(RadioComp);
+const Radio = withFormField(RadioComp)
 
-export default Radio;
+export default Radio

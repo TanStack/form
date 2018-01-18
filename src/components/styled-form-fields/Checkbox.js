@@ -1,22 +1,14 @@
-/* ---------- Imports ---------- */
+import React, { Component } from 'react'
+import classNames from 'classnames'
 
-// Import React
-import React, { Component } from 'react';
+//
 
-// Import classNames for generating classes
-import classNames from 'classnames';
-
-// Inport the form input
-import withFormField from '../withFormField';
-
-// Import our message
-import Message from './Message';
-
-// Import styled utils
-import Utils from '../../utils';
+import withFormField from '../withFormField'
+import Message from './Message'
+import Utils from '../../utils'
 
 class CheckboxWrapper extends Component {
-  render() {
+  render () {
     const {
       fieldApi,
       onChange,
@@ -27,7 +19,7 @@ class CheckboxWrapper extends Component {
       valueValidation,
       touchValidation,
       ...rest
-    } = this.props;
+    } = this.props
 
     const {
       getValue,
@@ -37,27 +29,27 @@ class CheckboxWrapper extends Component {
       getWarning,
       getSuccess,
       getTouched,
-    } = fieldApi;
+    } = fieldApi
 
-    const error = getError();
-    const warning = getWarning();
-    const success = getSuccess();
-    const touched = getTouched();
-    const value = getValue();
+    const error = getError()
+    const warning = getWarning()
+    const success = getSuccess()
+    const touched = getTouched()
+    const value = getValue()
 
-    const type = Utils.getMessageType(error, warning, success);
+    const type = Utils.getMessageType(error, warning, success)
     const showValidation = Utils.shouldShowValidation({
       valueValidation,
       touchValidation,
       touched,
       value,
-    });
+    })
 
     const labelClasses = classNames(
       'react-form-control',
       'react-form-control-checkbox',
       rest.className || '',
-    );
+    )
 
     const indicatorClasses = classNames(
       'react-form-control-indicator',
@@ -67,31 +59,28 @@ class CheckboxWrapper extends Component {
         [`react-form-input-${type}`]: type && showValidation,
         [`react-form-checkbox-${type}`]: type && showValidation,
       },
-    );
+    )
 
     return (
       <div>
         {type && showValidation && !noMessage && messageBefore ? (
-          <Message
-            message={Utils.getMessage(error, warning, success)}
-            type={type}
-          />
+          <Message message={Utils.getMessage(error, warning, success)} type={type} />
         ) : null}
         <label className={labelClasses} htmlFor={rest.id}>
           {label}
           <input
             {...rest}
             checked={!!getValue()}
-            onChange={(e) => {
-              setValue(e.target.checked);
+            onChange={e => {
+              setValue(e.target.checked)
               if (onChange) {
-                onChange(e.target.checked, e);
+                onChange(e.target.checked, e)
               }
             }}
-            onBlur={(e) => {
-              setTouched();
+            onBlur={e => {
+              setTouched()
               if (onBlur) {
-                onBlur(e);
+                onBlur(e)
               }
             }}
             type="checkbox"
@@ -99,16 +88,13 @@ class CheckboxWrapper extends Component {
           <div className={indicatorClasses} />
         </label>
         {type && showValidation && !noMessage && !messageBefore ? (
-          <Message
-            message={Utils.getMessage(error, warning, success)}
-            type={type}
-          />
+          <Message message={Utils.getMessage(error, warning, success)} type={type} />
         ) : null}
       </div>
-    );
+    )
   }
 }
 
-const Checkbox = withFormField(CheckboxWrapper);
+const Checkbox = withFormField(CheckboxWrapper)
 
-export default Checkbox;
+export default Checkbox

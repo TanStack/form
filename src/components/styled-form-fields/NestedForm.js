@@ -1,13 +1,13 @@
 /* ---------- Imports ---------- */
 
 // Import React
-import React from 'react';
+import React from 'react'
 
 // Inport the form input
-import withFormField from '../withFormField';
+import withFormField from '../withFormField'
 
-const NestedFormWrapper = (props) => {
-  const { children, fieldApi } = props;
+const NestedFormWrapper = props => {
+  const { children, fieldApi } = props
 
   const {
     setValue,
@@ -21,7 +21,7 @@ const NestedFormWrapper = (props) => {
     doneValidatingField,
     registerAsyncValidation,
     reset,
-  } = fieldApi;
+  } = fieldApi
 
   return React.cloneElement(children, {
     // We pass down the fact that the parent form was submitted to the nested form
@@ -37,30 +37,29 @@ const NestedFormWrapper = (props) => {
       touched,
       asyncValidations,
     }) => {
-      const invalid = errors ? Object.keys(errors).some(k => errors[k]) : false;
+      const invalid = errors ? Object.keys(errors).some(k => errors[k]) : false
       const success = successes
         ? Object.keys(successes).some(k => successes[k])
-        : false;
+        : false
       const warning = warnings
         ? Object.keys(warnings).some(k => warnings[k])
-        : false;
+        : false
 
-      setValue(values);
-      setTouched(touched);
-      setError(invalid ? errors : null);
-      setWarning(warning ? warnings : null);
-      setSuccess(success ? successes : null);
+      setValue(values)
+      setTouched(touched)
+      setError(invalid ? errors : null)
+      setWarning(warning ? warnings : null)
+      setSuccess(success ? successes : null)
       if (asyncValidations > 0) {
-        validatingField();
-      }
-      else {
-        doneValidatingField();
+        validatingField()
+      } else {
+        doneValidatingField()
       }
     },
     registerAsyncValidation,
-  });
-};
+  })
+}
 
-const NestedForm = withFormField(NestedFormWrapper);
+const NestedForm = withFormField(NestedFormWrapper)
 
-export default NestedForm;
+export default NestedForm

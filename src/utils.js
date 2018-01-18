@@ -1,30 +1,34 @@
-function isArray(a) {
-  return Array.isArray(a);
+export default {
+  get,
+  set,
+  isObject,
+  isArray,
+  isShallowEqual,
 }
 
-function isObject(a) {
-  return !Array.isArray(a) && typeof a === 'object' && a !== null;
+function isArray (a) {
+  return Array.isArray(a)
 }
 
-function isStringValidNumber(str) {
-  return !isNaN(str);
+function isObject (a) {
+  return !Array.isArray(a) && typeof a === 'object' && a !== null
 }
 
-function flattenDeep(arr, newArr = []) {
+function flattenDeep (arr, newArr = []) {
   if (!isArray(arr)) {
-    newArr.push(arr);
+    newArr.push(arr)
   } else {
     for (let i = 0; i < arr.length; i++) {
-      flattenDeep(arr[i], newArr);
+      flattenDeep(arr[i], newArr)
     }
   }
-  return newArr;
+  return newArr
 }
 
-function makePathArray(obj) {
-  let path = [];
-  const flat = flattenDeep(obj);
-  flat.forEach((part) => {
+function makePathArray (obj) {
+  let path = []
+  const flat = flattenDeep(obj)
+  flat.forEach(part => {
     if (typeof part === 'string') {
       path = path.concat(
         part
@@ -32,75 +36,66 @@ function makePathArray(obj) {
           .replace('[', '.')
           .replace(']', '')
           .split('.')
-          .map((d) => {
+          .map(d => {
             if (d.indexOf('__int__') === 0) {
-              return parseInt(d.substring(7), 10);
+              return parseInt(d.substring(7), 10)
             }
-            return d;
-          })
-      );
+            return d
+          }),
+      )
     } else {
-      path.push(part);
+      path.push(part)
     }
-  });
-  return path;
+  })
+  return path
 }
 
-function set(obj = {}, path, value) {
-  const keys = makePathArray(path);
-  let keyPart;
+function set (obj = {}, path, value) {
+  const keys = makePathArray(path)
+  let keyPart
 
   if (typeof keys[0] === 'number' && !isArray(obj)) {
-    obj = [];
+    obj = []
   } else if (typeof keys[0] === 'string' && !isObject(obj)) {
-    obj = {};
+    obj = {}
   }
 
   let cursor = obj
 
   while (typeof (keyPart = keys.shift()) !== 'undefined' && keys.length) {
     if (typeof keys[0] === 'number' && !isArray(cursor[keyPart])) {
-      cursor[keyPart] = [];
+      cursor[keyPart] = []
     }
     if (typeof keys[0] !== 'number' && !isObject(cursor[keyPart])) {
-      cursor[keyPart] = {};
+      cursor[keyPart] = {}
     }
-    cursor = cursor[keyPart];
+    cursor = cursor[keyPart]
   }
-  cursor[keyPart] = value;
-  return obj;
+  cursor[keyPart] = value
+  return obj
 }
 
-function get(obj, path, def) {
+function get (obj, path, def) {
   if (!path) {
-    return obj;
+    return obj
   }
-  const pathObj = makePathArray(path);
+  const pathObj = makePathArray(path)
   const val = pathObj.reduce((current, pathPart) => {
     if (typeof current !== 'undefined' && current !== null) {
-      return current[pathPart];
+      return current[pathPart]
     }
-    return undefined;
-  }, obj);
-  return typeof val !== 'undefined' ? val : def;
+    return undefined
+  }, obj)
+  return typeof val !== 'undefined' ? val : def
 }
 
-function isShallowEqual(obj1, obj2) {
+function isShallowEqual (obj1, obj2) {
   if (Object.keys(obj1).length !== Object.keys(obj2).length) {
-    return false;
+    return false
   }
-  for (var prop in obj1) {
-    if (obj1[prop] !== obj2[prop]) {
-      return false;
-    }
+  const isEqual = Object.keys(obj1).every(prop => obj1[prop] === obj2[prop])
+  if (!isEqual) {
+    return false
   }
-  return true;
+  return true
 }
-
-export default {
-  get,
-  set,
-  isObject,
-  isArray,
-  isShallowEqual
-};

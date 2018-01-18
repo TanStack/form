@@ -1,22 +1,14 @@
-/* ---------- Imports ---------- */
+import React, { Component } from 'react'
+import classNames from 'classnames'
 
-// Import React
-import React, { Component } from 'react';
+//
 
-// Import classNames for generating classes
-import classNames from 'classnames';
-
-// Inport the form input
-import withFormField from '../withFormField';
-
-// Import our message
-import Message from './Message';
-
-// Import styled utils
-import Utils from '../../utils';
+import withFormField from '../withFormField'
+import Message from './Message'
+import Utils from '../../utils'
 
 class TextWrapper extends Component {
-  render() {
+  render () {
     const {
       fieldApi,
       onChange,
@@ -27,7 +19,7 @@ class TextWrapper extends Component {
       touchValidation,
       valueValidation,
       ...rest
-    } = this.props;
+    } = this.props
 
     const {
       getValue,
@@ -37,68 +29,57 @@ class TextWrapper extends Component {
       getTouched,
       setValue,
       setTouched,
-    } = fieldApi;
+    } = fieldApi
 
-    const error = getError();
-    const warning = getWarning();
-    const success = getSuccess();
-    const touched = getTouched();
-    const value = getValue();
+    const error = getError()
+    const warning = getWarning()
+    const success = getSuccess()
+    const touched = getTouched()
+    const value = getValue()
 
-    const type = Utils.getMessageType(error, warning, success);
+    const type = Utils.getMessageType(error, warning, success)
     const showValidation = Utils.shouldShowValidation({
       valueValidation,
       touchValidation,
       touched,
       value,
-    });
+    })
 
-    const classes = classNames(
-      className,
-      'react-form-input',
-      'react-form-text',
-      {
-        [`react-form-input-${type}`]: type && showValidation,
-        [`react-form-text-${type}`]: type && showValidation,
-      },
-    );
+    const classes = classNames(className, 'react-form-input', 'react-form-text', {
+      [`react-form-input-${type}`]: type && showValidation,
+      [`react-form-text-${type}`]: type && showValidation,
+    })
 
     return (
       <div>
         {type && showValidation && !noMessage && messageBefore ? (
-          <Message
-            message={Utils.getMessage(error, warning, success)}
-            type={type}
-          />
+          <Message message={Utils.getMessage(error, warning, success)} type={type} />
         ) : null}
         <input
           {...rest}
           className={classes}
           value={getValue() || ''}
-          onChange={(e) => {
-            setValue(e.target.value);
+          onChange={e => {
+            setValue(e.target.value)
             if (onChange) {
-              onChange(e.target.value, e);
+              onChange(e.target.value, e)
             }
           }}
-          onBlur={(e) => {
-            setTouched();
+          onBlur={e => {
+            setTouched()
             if (onBlur) {
-              onBlur(e);
+              onBlur(e)
             }
           }}
         />
         {type && showValidation && !noMessage && !messageBefore ? (
-          <Message
-            message={Utils.getMessage(error, warning, success)}
-            type={type}
-          />
+          <Message message={Utils.getMessage(error, warning, success)} type={type} />
         ) : null}
       </div>
-    );
+    )
   }
 }
 
-const Text = withFormField(TextWrapper);
+const Text = withFormField(TextWrapper)
 
-export default Text;
+export default Text

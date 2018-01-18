@@ -1,84 +1,75 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
 //
 
-import Utils from '../utils';
+import Utils from '../utils'
 
 class FormField extends React.Component {
-  componentWillMount() {
-    this.buildApi(this.props);
+  componentWillMount () {
+    this.buildApi(this.props)
   }
   // We want to set touched to true when the form was submitted ( not for nested forms! )
-  componentWillReceiveProps(nextProps, nextContext) {
-    this.buildApi(nextProps);
+  componentWillReceiveProps (nextProps, nextContext) {
+    this.buildApi(nextProps)
     if (
       nextContext.formApi.submitted !== this.context.formApi.submitted &&
       !this.props.nestedForm
     ) {
-      this.context.formApi.setTouched(this.props.field, true, false);
+      this.context.formApi.setTouched(this.props.field, true, false)
     }
-    if (
-      nextContext.formApi.submits !== this.context.formApi.submits &&
-      !this.props.nestedForm
-    ) {
-      this.context.formApi.setTouched(this.props.field, true, false);
+    if (nextContext.formApi.submits !== this.context.formApi.submits && !this.props.nestedForm) {
+      this.context.formApi.setTouched(this.props.field, true, false)
     }
   }
 
   // Optimization to only rerender if nessisary
-  shouldComponentUpdate(nextProps, nextState, nextContext) {
+  shouldComponentUpdate (nextProps, nextState, nextContext) {
     // Grab needed values
-    const field = this.props.field;
-    const currentApi = this.context.formApi;
-    const nextApi = nextContext.formApi;
-    const pure = nextProps.pure;
+    const field = this.props.field
+    const currentApi = this.context.formApi
+    const nextApi = nextContext.formApi
+    const pure = nextProps.pure
 
     // When pure, we need to check props and form state to determine if we
     // should update. Otherwise, update all the time.
     if (!pure) {
-      return true;
+      return true
     }
     // check child props for changes so we know to re-render
     const nonChildrenProps = {
       ...this.props,
       children: null, // do not compare children, that would be an anti-pattern
-    };
+    }
     const nextNonChildrenProps = {
       ...nextProps,
       children: null,
-    };
+    }
 
     // TODO debug async error issue
     // console.log("WTF1", Utils.get( currentApi.errors, field ) );
     // console.log("WTF2", Utils.get( nextApi.errors, field ) );
 
     const shouldUpdate =
-      Utils.get(nextApi.values, field) !==
-        Utils.get(currentApi.values, field) ||
-      Utils.get(nextApi.touched, field) !==
-        Utils.get(currentApi.touched, field) ||
-      Utils.get(nextApi.errors, field) !==
-        Utils.get(currentApi.errors, field) ||
-      Utils.get(nextApi.warnings, field) !==
-        Utils.get(currentApi.warnings, field) ||
-      Utils.get(nextApi.successes, field) !==
-        Utils.get(currentApi.successes, field) ||
-      Utils.get(nextApi.validating, field) !==
-        Utils.get(currentApi.validating, field) ||
+      Utils.get(nextApi.values, field) !== Utils.get(currentApi.values, field) ||
+      Utils.get(nextApi.touched, field) !== Utils.get(currentApi.touched, field) ||
+      Utils.get(nextApi.errors, field) !== Utils.get(currentApi.errors, field) ||
+      Utils.get(nextApi.warnings, field) !== Utils.get(currentApi.warnings, field) ||
+      Utils.get(nextApi.successes, field) !== Utils.get(currentApi.successes, field) ||
+      Utils.get(nextApi.validating, field) !== Utils.get(currentApi.validating, field) ||
       Utils.get(nextApi.validationFailed, field) !==
         Utils.get(currentApi.validationFailed, field) ||
       !Utils.isShallowEqual(nextNonChildrenProps, nonChildrenProps) ||
-      nextContext.formApi.submits !== this.context.formApi.submits;
+      nextContext.formApi.submits !== this.context.formApi.submits
 
-    return shouldUpdate || false;
+    return shouldUpdate || false
   }
 
-  buildApi = (props) => {
+  buildApi = props => {
     // This binds all of the functions less often, and also won't trigger
     // changes when spreading the fieldApi as shallow props
-    const { formApi } = this.context;
-    const { field } = props;
+    const { formApi } = this.context
+    const { field } = props
     this.fieldApi = {
       setValue: value => formApi.setValue(field, value),
       setTouched: touched => formApi.setTouched(field, touched),
@@ -94,7 +85,7 @@ class FormField extends React.Component {
       registerAsyncValidation: formApi.registerAsyncValidation,
       submitted: formApi.submitted,
       submits: formApi.submits,
-    };
+    }
 
     this.getFieldValues = () => ({
       fieldName: field,
@@ -103,24 +94,16 @@ class FormField extends React.Component {
       error: formApi.getError(field),
       warning: formApi.getWarning(field),
       success: formApi.getSuccess(field),
-    });
-  };
+    })
+  }
 
-  render() {
-    const {
-      field,
-      pure,
-      nestedForm,
-      render,
-      component,
-      children,
-      ...rest
-    } = this.props;
+  render () {
+    const { field, pure, nestedForm, render, component, children, ...rest } = this.props
 
     const renderedFieldApi = {
       ...this.fieldApi,
       ...this.getFieldValues(),
-    };
+    }
 
     if (component) {
       return React.createElement(
@@ -130,14 +113,14 @@ class FormField extends React.Component {
           ...rest,
         },
         children,
-      );
+      )
     }
-    return (render || children)({ ...renderedFieldApi, ...rest });
+    return (render || children)({ ...renderedFieldApi, ...rest })
   }
 }
 
 FormField.contextTypes = {
   formApi: PropTypes.object,
-};
+}
 
-export default FormField;
+export default FormField

@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 //
 
-import withFormField from '../withFormField';
+import withFormField from '../withFormField'
 
 class RadioComp extends Component {
-  render() {
+  render () {
     const {
       fieldApi: { getValue, setValue, setTouched },
       onClick,
@@ -14,36 +14,36 @@ class RadioComp extends Component {
       onChange,
       onBlur,
       ...rest
-    } = this.props;
+    } = this.props
 
     return (
       <input
         {...rest}
         checked={getValue() === value}
-        onChange={(e) => {
+        onChange={e => {
           if (!e.target.checked) {
-            return;
+            return
           }
-          setValue(value);
+          setValue(value)
           if (onChange) {
-            onChange(value, e);
+            onChange(value, e)
           }
           if (onClick) {
-            onClick(e);
+            onClick(e)
           }
         }}
-        onBlur={(e) => {
-          setTouched();
+        onBlur={e => {
+          setTouched()
           if (onBlur) {
-            onBlur(e);
+            onBlur(e)
           }
         }}
         type="radio"
       />
-    );
+    )
   }
 }
 
-const Radio = withFormField(RadioComp);
+const Radio = withFormField(RadioComp)
 
-export default Radio;
+export default Radio

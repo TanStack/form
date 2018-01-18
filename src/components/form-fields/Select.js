@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 //
 
-import withFormField from '../withFormField';
+import withFormField from '../withFormField'
 
 class SelectWrapper extends Component {
-  render() {
+  render () {
     const {
       fieldApi,
       options,
@@ -13,9 +13,9 @@ class SelectWrapper extends Component {
       onBlur,
       placeholder,
       ...rest
-    } = this.props;
+    } = this.props
 
-    const { getValue, setValue, setTouched } = fieldApi;
+    const { getValue, setValue, setTouched } = fieldApi
 
     const resolvedOptions = options.find(d => d.value === '')
       ? options
@@ -26,28 +26,28 @@ class SelectWrapper extends Component {
           disabled: true,
         },
         ...options,
-      ];
+      ]
 
-    const nullIndex = resolvedOptions.findIndex(d => d.value === '');
+    const nullIndex = resolvedOptions.findIndex(d => d.value === '')
     const selectedIndex = resolvedOptions.findIndex(
       d => d.value === getValue(),
-    );
+    )
 
     return (
       <select
         {...rest}
         value={selectedIndex > -1 ? selectedIndex : nullIndex}
-        onChange={(e) => {
-          const val = resolvedOptions[e.target.value].value;
-          setValue(val);
+        onChange={e => {
+          const val = resolvedOptions[e.target.value].value
+          setValue(val)
           if (onChange) {
-            onChange(val, e);
+            onChange(val, e)
           }
         }}
-        onBlur={(e) => {
-          setTouched();
+        onBlur={e => {
+          setTouched()
           if (onBlur) {
-            onBlur(e);
+            onBlur(e)
           }
         }}
       >
@@ -57,10 +57,10 @@ class SelectWrapper extends Component {
           </option>
         ))}
       </select>
-    );
+    )
   }
 }
 
-const Select = withFormField(SelectWrapper);
+const Select = withFormField(SelectWrapper)
 
-export default Select;
+export default Select
