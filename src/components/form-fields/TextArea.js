@@ -8,12 +8,12 @@ class TextAreaWrapper extends Component {
   render () {
     const { onChange, onBlur, fieldApi, ...rest } = this.props
 
-    const { getValue, setValue, setTouched } = fieldApi
+    const { value, setValue, setTouched } = fieldApi
 
     return (
       <textarea
         {...rest}
-        value={getValue() || ''}
+        value={value || ''}
         onChange={e => {
           setValue(e.target.value)
           if (onChange) {

@@ -3,6 +3,9 @@ node_modules
 /build/*
 /docs/*
 /dist/*
+/es/*
+/lib/*
+/umd/*
 .tmp/
 .idea
 .gitconfig

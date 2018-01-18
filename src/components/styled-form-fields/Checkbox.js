@@ -5,7 +5,7 @@ import classNames from 'classnames'
 
 import withFormField from '../withFormField'
 import Message from './Message'
-import Utils from '../../utils'
+import Utils from './utils'
 
 class CheckboxWrapper extends Component {
   render () {
@@ -21,21 +21,7 @@ class CheckboxWrapper extends Component {
       ...rest
     } = this.props
 
-    const {
-      getValue,
-      setValue,
-      setTouched,
-      getError,
-      getWarning,
-      getSuccess,
-      getTouched,
-    } = fieldApi
-
-    const error = getError()
-    const warning = getWarning()
-    const success = getSuccess()
-    const touched = getTouched()
-    const value = getValue()
+    const { value, setValue, setTouched, error, warning, success, touched } = fieldApi
 
     const type = Utils.getMessageType(error, warning, success)
     const showValidation = Utils.shouldShowValidation({
@@ -70,7 +56,7 @@ class CheckboxWrapper extends Component {
           {label}
           <input
             {...rest}
-            checked={!!getValue()}
+            checked={!!value}
             onChange={e => {
               setValue(e.target.checked)
               if (onChange) {

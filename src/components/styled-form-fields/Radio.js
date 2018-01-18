@@ -3,29 +3,24 @@ import classNames from 'classnames'
 
 //
 
-import Utils from '../../utils'
 import withFormField from '../withFormField'
+import Utils from './utils'
 
 class RadioComp extends Component {
   render () {
     const {
       onClick,
       group,
-      value,
+      value: parentValue,
       label,
       className,
       valueValidation,
       touchValidation,
       onChange,
       onBlur,
-      fieldApi: { getValue, setValue, setTouched, getError, getWarning, getSuccess, getTouched },
+      fieldApi: { value, setValue, setTouched, error, warning, success, touched },
       ...rest
     } = this.props
-
-    const error = getError()
-    const warning = getWarning()
-    const success = getSuccess()
-    const touched = getTouched()
 
     const type = Utils.getMessageType(error, warning, success)
     const showValidation = Utils.shouldShowValidation({
@@ -52,7 +47,7 @@ class RadioComp extends Component {
         {label}
         <input
           {...rest}
-          checked={getValue() === value}
+          checked={parentValue === value}
           onChange={e => {
             if (!e.target.checked) {
               return

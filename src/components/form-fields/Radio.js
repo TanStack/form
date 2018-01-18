@@ -7,10 +7,10 @@ import withFormField from '../withFormField'
 class RadioComp extends Component {
   render () {
     const {
-      fieldApi: { getValue, setValue, setTouched },
+      fieldApi: { value, setValue, setTouched },
       onClick,
       group,
-      value,
+      value: parentValue,
       onChange,
       onBlur,
       ...rest
@@ -19,7 +19,7 @@ class RadioComp extends Component {
     return (
       <input
         {...rest}
-        checked={getValue() === value}
+        checked={parentValue === value}
         onChange={e => {
           if (!e.target.checked) {
             return

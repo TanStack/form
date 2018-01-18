@@ -5,7 +5,7 @@ import classNames from 'classnames'
 
 import withFormField from '../withFormField'
 import Message from './Message'
-import Utils from '../../utils'
+import Utils from './utils'
 
 class SelectWrapper extends Component {
   render () {
@@ -23,21 +23,7 @@ class SelectWrapper extends Component {
       ...rest
     } = this.props
 
-    const {
-      getValue,
-      getError,
-      getWarning,
-      getSuccess,
-      getTouched,
-      setValue,
-      setTouched,
-    } = fieldApi
-
-    const error = getError()
-    const warning = getWarning()
-    const success = getSuccess()
-    const touched = getTouched()
-    const value = getValue()
+    const { value, error, warning, success, touched, setValue, setTouched } = fieldApi
 
     const type = Utils.getMessageType(error, warning, success)
     const showValidation = Utils.shouldShowValidation({
@@ -64,7 +50,7 @@ class SelectWrapper extends Component {
       ]
 
     const nullIndex = resolvedOptions.findIndex(d => d.value === '')
-    const selectedIndex = resolvedOptions.findIndex(d => d.value === getValue())
+    const selectedIndex = resolvedOptions.findIndex(d => d.value === value)
 
     return (
       <div>

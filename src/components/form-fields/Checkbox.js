@@ -8,12 +8,12 @@ class CheckboxWrapper extends Component {
   render () {
     const { fieldApi, onChange, onBlur, ...rest } = this.props
 
-    const { getValue, setValue, setTouched } = fieldApi
+    const { value, setValue, setTouched } = fieldApi
 
     return (
       <input
         {...rest}
-        checked={!!getValue()}
+        checked={!!value}
         onChange={e => {
           setValue(e.target.checked)
           if (onChange) {

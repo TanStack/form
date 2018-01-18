@@ -8,12 +8,12 @@ class TextWrapper extends Component {
   render () {
     const { fieldApi, onChange, onBlur, ...rest } = this.props
 
-    const { getValue, setValue, setTouched } = fieldApi
+    const { value, setValue, setTouched } = fieldApi
 
     return (
       <input
         {...rest}
-        value={getValue() || ''}
+        value={value || ''}
         onChange={e => {
           setValue(e.target.value)
           if (onChange) {

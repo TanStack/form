@@ -5,7 +5,7 @@ import classNames from 'classnames'
 
 import withFormField from '../withFormField'
 import Message from './Message'
-import Utils from '../../utils'
+import Utils from './utils'
 
 class TextAreaWrapper extends Component {
   render () {
@@ -21,21 +21,7 @@ class TextAreaWrapper extends Component {
       ...rest
     } = this.props
 
-    const {
-      getValue,
-      getError,
-      getWarning,
-      getSuccess,
-      getTouched,
-      setValue,
-      setTouched,
-    } = fieldApi
-
-    const error = getError()
-    const warning = getWarning()
-    const success = getSuccess()
-    const touched = getTouched()
-    const value = getValue()
+    const { value, error, warning, success, touched, setValue, setTouched } = fieldApi
 
     const type = Utils.getMessageType(error, warning, success)
     const showValidation = Utils.shouldShowValidation({
@@ -58,7 +44,7 @@ class TextAreaWrapper extends Component {
         <textarea
           {...rest}
           className={classes}
-          value={getValue() || ''}
+          value={value || ''}
           onChange={e => {
             setValue(e.target.value)
             if (onChange) {

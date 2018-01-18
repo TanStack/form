@@ -15,7 +15,7 @@ class SelectWrapper extends Component {
       ...rest
     } = this.props
 
-    const { getValue, setValue, setTouched } = fieldApi
+    const { value, setValue, setTouched } = fieldApi
 
     const resolvedOptions = options.find(d => d.value === '')
       ? options
@@ -30,7 +30,7 @@ class SelectWrapper extends Component {
 
     const nullIndex = resolvedOptions.findIndex(d => d.value === '')
     const selectedIndex = resolvedOptions.findIndex(
-      d => d.value === getValue(),
+      d => d.value === value,
     )
 
     return (
