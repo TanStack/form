@@ -15,7 +15,7 @@ import Utils from './utils';
 
 class SelectWrapper extends Component {
   render() {
-    // console.log('RENDER');
+    
 
     const {
       fieldApi,

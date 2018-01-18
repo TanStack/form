@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import { mount } from 'enzyme';
 import { Form, Text } from '../../src';
 
-describe('ReduxForm', () => {
+describe('Form', () => {
 
   const sandbox = sinon.sandbox.create();
 

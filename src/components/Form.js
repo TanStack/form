@@ -503,7 +503,7 @@ const mapDispatchToProps = dispatch => ({
 const FormContainer = connect(mapStateToProps, mapDispatchToProps)(Form);
 
 /* ---------- Exports ---------- */
-class ReduxForm extends Component {
+class ReactForm extends Component {
   constructor(props) {
     super(props);
     const {
@@ -540,4 +540,4 @@ class ReduxForm extends Component {
   }
 }
 
-export default ReduxForm;
+export default ReactForm;

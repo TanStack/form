@@ -8,7 +8,7 @@ import withFormField from '../withFormField';
 
 class TextAreaWrapper extends Component {
   render() {
-    // console.log('RENDER');
+    
 
     const { onChange, onBlur, fieldApi, ...rest } = this.props;
 

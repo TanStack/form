@@ -8,7 +8,7 @@ import withFormField from '../withFormField';
 
 class SelectWrapper extends Component {
   render() {
-    // console.log('RENDER');
+    
 
     const {
       fieldApi,

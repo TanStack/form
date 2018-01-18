@@ -8,7 +8,7 @@ import withFormField from '../withFormField';
 
 class CheckboxWrapper extends Component {
   render() {
-    // console.log('RENDER');
+    
 
     const { fieldApi, onChange, onBlur, ...rest } = this.props;
 

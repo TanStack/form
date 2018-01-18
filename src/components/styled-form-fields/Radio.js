@@ -11,11 +11,10 @@ import PropTypes from 'prop-types';
 
 // Import styled utils
 import Utils from './utils';
+import withFormField from '../withFormField';
 
-class Radio extends Component {
-
+class RadioComp extends Component {
   render() {
-
     const {
       onClick,
       group,
@@ -24,33 +23,37 @@ class Radio extends Component {
       className,
       valueValidation,
       touchValidation,
+      onChange,
+      onBlur,
+      fieldApi: {
+        getValue,
+        setValue,
+        setTouched,
+        getError,
+        getWarning,
+        getSuccess,
+        getTouched,
+      },
       ...rest
     } = this.props;
-
-    const {
-      getError,
-      getWarning,
-      getSuccess,
-      getTouched
-    } = group;
 
     const error = getError();
     const warning = getWarning();
     const success = getSuccess();
     const touched = getTouched();
 
-    const type = Utils.getMessageType( error, warning, success );
-    const showValidation = Utils.shouldShowValidation( {
+    const type = Utils.getMessageType(error, warning, success);
+    const showValidation = Utils.shouldShowValidation({
       valueValidation,
       touchValidation,
       touched,
-      value
+      value,
     });
 
     const labelClasses = classNames(
       className,
       'react-form-control',
-      'react-form-control-radio'
+      'react-form-control-radio',
     );
 
     const indicatorClasses = classNames(
@@ -59,42 +62,42 @@ class Radio extends Component {
       'react-form-radio',
       {
         [`react-form-input-${type}`]: type && showValidation,
-        [`react-form-radio-${type}`]: type && showValidation
-      }
+        [`react-form-radio-${type}`]: type && showValidation,
+      },
     );
 
     return (
-      <label className={labelClasses} htmlFor={rest.id}>{label}
+      <label className={labelClasses} htmlFor={rest.id}>
+        {label}
         <input
           {...rest}
-          checked={group.getValue() === value}
+          checked={getValue() === value}
           onChange={(e) => {
             if (!e.target.checked) {
               return;
             }
-            group.setValue(value);
-            group.onChange(value, e);
+            setValue(value);
+            if (onChange) {
+              onChange(value, e);
+            }
             if (onClick) {
               onClick(e);
             }
           }}
           onBlur={(e) => {
-            group.setTouched();
-            group.onBlur(e);
+            setTouched();
+            if (onBlur) {
+              onBlur(e);
+            }
           }}
           type="radio"
         />
         <div className={indicatorClasses} />
       </label>
     );
-
   }
-
 }
 
-Radio.propTypes = {
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
-  group: PropTypes.object.isRequired
-};
+const Radio = withFormField(RadioComp);
 
 export default Radio;

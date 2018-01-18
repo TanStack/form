@@ -115,8 +115,10 @@ class FormField extends React.Component {
     } = this.props;
 
     if (component) {
-      const Comp = component;
-      return <Comp fieldApi={this.fieldApi} {...rest} />;
+      return React.createElement(component, {
+        fieldApi: this.fieldApi,
+        ...rest,
+      });
     }
     return (render || children)(this.fieldApi);
   }
