@@ -9,6 +9,8 @@ import Checkbox from './components/form-fields/Checkbox';
 import NestedForm from './components/form-fields/NestedForm';
 import FormField from './components/FormField';
 import withFormField from './components/withFormField';
+import FormApi from './components/FormApi';
+import withFormApi from './components/withFormApi';
 
 import StyledText from './components/styled-form-fields/Text';
 import StyledRadio from './components/styled-form-fields/Radio';
@@ -28,6 +30,8 @@ export {
   NestedForm,
   FormField,
   withFormField,
+  FormApi,
+  withFormApi,
   Radio,
   Select,
   Checkbox,
