@@ -22,11 +22,18 @@
     "version": "npm run build:dist",
     "postpublish": "git push --tags"
   },
-  "author": {
-    "name": "Joseph Puzzo",
-    "email": "jgpuzzo2@gmail.com",
-    "url": "http://joepuzzo.github.io"
-  },
+  "authors": [
+    {
+      "name": "Joseph Puzzo",
+      "email": "jgpuzzo2@gmail.com",
+      "url": "http://joepuzzo.github.io"
+    },
+    {
+      "name": "Tanner Linsley",
+      "email": "tannerlinsley@gmail.com",
+      "url": "http://github.com/tannerlinsley"
+    }
+  ],
   "keywords": [
     "react",
     "reactjs",

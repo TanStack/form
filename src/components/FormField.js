@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 //
 
-import Utils from '../redux/utils';
+import Utils from '../utils';
 
 class FormField extends React.Component {
   componentWillMount() {
@@ -32,11 +32,11 @@ class FormField extends React.Component {
     const field = this.props.field;
     const currentApi = this.context.formApi;
     const nextApi = nextContext.formApi;
-    const strict = nextProps.strict;
+    const pure = nextProps.pure;
 
-    // When strict, we need to check props and form state to determine if we
+    // When pure, we need to check props and form state to determine if we
     // should update. Otherwise, update all the time.
-    if (!strict) {
+    if (!pure) {
       return true;
     }
     // check child props for changes so we know to re-render
@@ -88,12 +88,6 @@ class FormField extends React.Component {
       addValue: value => formApi.addValue(field, value),
       removeValue: index => formApi.addValue(field, index),
       swapValues: (...args) => formApi.addValue(field, ...args),
-      getFieldName: () => field,
-      getValue: () => formApi.getValue(field),
-      getTouched: () => formApi.getTouched(field),
-      getError: () => formApi.getError(field),
-      getWarning: () => formApi.getWarning(field),
-      getSuccess: () => formApi.getSuccess(field),
       validatingField: () => formApi.validatingField(field),
       doneValidatingField: () => formApi.doneValidatingField(field),
       reset: () => formApi.reset(field),
@@ -101,12 +95,21 @@ class FormField extends React.Component {
       submitted: formApi.submitted,
       submits: formApi.submits,
     };
+
+    this.getFieldValues = () => ({
+      fieldName: field,
+      value: formApi.getValue(field),
+      touched: formApi.getTouched(field),
+      error: formApi.getError(field),
+      warning: formApi.getWarning(field),
+      success: formApi.getSuccess(field),
+    });
   };
 
   render() {
     const {
       field,
-      strict,
+      pure,
       nestedForm,
       render,
       component,
@@ -114,17 +117,22 @@ class FormField extends React.Component {
       ...rest
     } = this.props;
 
+    const renderedFieldApi = {
+      ...this.fieldApi,
+      ...this.getFieldValues(),
+    };
+
     if (component) {
       return React.createElement(
         component,
         {
-          fieldApi: this.fieldApi,
+          fieldApi: renderedFieldApi,
           ...rest,
         },
         children,
       );
     }
-    return (render || children)({ ...this.fieldApi, ...rest });
+    return (render || children)({ ...renderedFieldApi, ...rest });
   }
 }
 

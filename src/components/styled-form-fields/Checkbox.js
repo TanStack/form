@@ -13,7 +13,7 @@ import withFormField from '../withFormField';
 import Message from './Message';
 
 // Import styled utils
-import Utils from './utils';
+import Utils from '../../utils';
 
 class CheckboxWrapper extends Component {
   render() {

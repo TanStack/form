@@ -1,15 +1,11 @@
-/* ---------- Imports ---------- */
-
-// Import React
 import React, { Component } from 'react';
 
-// Inport the form input
+//
+
 import withFormField from '../withFormField';
 
 class SelectWrapper extends Component {
   render() {
-    
-
     const {
       fieldApi,
       options,

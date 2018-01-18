@@ -1,9 +1,7 @@
-/* ---------- Imports ---------- */
-
-// Import React
 import React from 'react';
 
-// Inport the form input
+//
+
 import withFormField from '../withFormField';
 
 const NestedFormWrapper = (props) => {

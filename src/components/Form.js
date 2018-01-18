@@ -14,7 +14,7 @@ import { createLogger } from 'redux-logger';
 import ReducerBuilder from '../redux/ReducerBuilder';
 import * as actions from '../redux/actions';
 
-import Utils from '../redux/utils';
+import Utils from '../utils';
 
 /* ----- Recursive Check to see if form is valid  -----*/
 
@@ -81,7 +81,7 @@ class Form extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.dontValidateOnMount) {
+    if (this.props.validateOnMount) {
       // PreValidat
       this.props.dispatch(actions.preValidate());
       // Validate
@@ -305,7 +305,7 @@ class Form extends Component {
     this.props.dispatch(actions.removeAsyncError(field));
     this.props.dispatch(actions.removeAsyncWarning(field));
     this.props.dispatch(actions.removeAsyncSuccess(field));
-    if (!this.props.dontValidateOnMount && !this.props.validateOnSubmit) {
+    if (this.props.validateOnMount && !this.props.validateOnSubmit) {
       this.props.dispatch(actions.preValidate());
       this.props.dispatch(actions.validate());
     }
@@ -329,7 +329,7 @@ class Form extends Component {
     this.props.dispatch(actions.removeAsyncError(field));
     this.props.dispatch(actions.removeAsyncWarning(field));
     this.props.dispatch(actions.removeAsyncSuccess(field));
-    if (!this.props.dontValidateOnMount && !this.props.validateOnSubmit) {
+    if (this.props.validateOnMount && !this.props.validateOnSubmit) {
       this.props.dispatch(actions.preValidate());
       this.props.dispatch(actions.validate());
     }

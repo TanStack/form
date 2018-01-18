@@ -1,15 +1,11 @@
-/* ---------- Imports ---------- */
-
-// Import React
 import React, { Component } from 'react';
 
-// Inport the form input
+//
+
 import withFormField from '../withFormField';
 
 class TextAreaWrapper extends Component {
   render() {
-    
-
     const { onChange, onBlur, fieldApi, ...rest } = this.props;
 
     const { getValue, setValue, setTouched } = fieldApi;

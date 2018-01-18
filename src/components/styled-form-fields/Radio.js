@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
 // Import styled utils
-import Utils from './utils';
+import Utils from '../../utils';
 import withFormField from '../withFormField';
 
 class RadioComp extends Component {
