@@ -6,7 +6,7 @@
 - Added a new `FormApi` FAAC component and companion `withFormApi` HOC which allow you to access the nearest formApi ancestor from anywhere in your component tree.
 - Added `pure` prop to `Field` and `withField` components. While using the `pure` prop, the `Field` instance will only rerender when form state or shallow prop values change. Use this to increase performance on large forms as long as you are aware of its implications.
 - The api supplied by `Field`/`withField` now contains field-level methods for `addValue`, `removeValue`, and `swapValue`.
-- `FieldContext`/`withFieldContext` is a new component that is replacing and deprecatin the `NestedForm` components. `FieldContext` allows you to set a new field context for any child `Field` and `FormApi` components. This allows for extremely implicit field declarations within components without having to worry about form composition. It also optionally provides you with the same api as using the `FormApi` component for convenience.
+- `FieldContext`/`withFieldContext` is a new component that is replacing and deprecatin the `NestedForm` components. `FieldContext` allows you to set a new field context for any child `Field` and `FormApi` components. This allows for extremely implicit field declarations within components without having to worry about form composition.
 #### Breaking Changes
 - `Field` is now a FAAC, not an HOC. You can either directly replace it with the `withFormField` HOC, or adopt the inline FAAC format.
 - All `RadioGroup` components have been deprecated in favor of using the `field` prop directly on any `Radio` components.

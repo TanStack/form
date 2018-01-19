@@ -9,16 +9,13 @@ class Field extends React.Component {
   componentWillMount () {
     this.buildApi(this.props)
   }
-  // We want to set touched to true when the form was submitted ( not for nested forms! )
+  // We want to set touched to true when the form was submitted
   componentWillReceiveProps (nextProps, nextContext) {
     this.buildApi(nextProps)
-    if (
-      nextContext.formApi.submitted !== this.context.formApi.submitted &&
-      !this.props.nestedForm
-    ) {
+    if (nextContext.formApi.submitted !== this.context.formApi.submitted) {
       this.context.formApi.setTouched(this.props.field, true, false)
     }
-    if (nextContext.formApi.submits !== this.context.formApi.submits && !this.props.nestedForm) {
+    if (nextContext.formApi.submits !== this.context.formApi.submits) {
       this.context.formApi.setTouched(this.props.field, true, false)
     }
   }
@@ -98,7 +95,7 @@ class Field extends React.Component {
   }
 
   render () {
-    const { field, pure, nestedForm, render, component, children, ...rest } = this.props
+    const { field, pure, render, component, children, ...rest } = this.props
 
     const inlineProps = {
       ...rest,

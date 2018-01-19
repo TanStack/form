@@ -23,10 +23,9 @@ class Field extends React.Component {
     if (render) {
       return render(inlineProps)
     }
-    if (typeof children === 'function') {
-      return children(inlineProps)
-    }
-    return children
+    // There's no reason for form api to simply return it's children, so only
+    // support a child function
+    return children(inlineProps)
   }
 }
 

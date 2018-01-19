@@ -25,7 +25,7 @@ import {
   SET_ASYNC_SUCCESS,
   REMOVE_ASYNC_ERROR,
   REMOVE_ASYNC_WARNING,
-  REMOVE_ASYNC_SUCCESS,
+  REMOVE_ASYNC_SUCCESS
 } from './actions'
 
 import Utils from '../utils'
@@ -45,7 +45,7 @@ const INITIAL_STATE = {
   asyncValidations: 0,
   submitted: false,
   submits: 0,
-  submitting: false,
+  submitting: false
 }
 
 const setFormState = (state, action) => ({ ...INITIAL_STATE, ...action.formState })
@@ -59,7 +59,7 @@ const setValue = (state, action) => {
 
   return {
     ...state,
-    values: newValues,
+    values: newValues
   }
 }
 
@@ -70,7 +70,7 @@ const setAllValues = (state, action) => {
 
   return {
     ...state,
-    values: { ...oldValues, ...values },
+    values: { ...oldValues, ...values }
   }
 }
 
@@ -83,7 +83,7 @@ const format = (state, action) => {
 
   return {
     ...state,
-    values: newValues,
+    values: newValues
   }
 }
 
@@ -96,7 +96,7 @@ const setTouched = (state, action) => {
 
   return {
     ...state,
-    touched: newTouched,
+    touched: newTouched
   }
 }
 
@@ -107,7 +107,7 @@ const setAllTouched = (state, action) => {
 
   return {
     ...state,
-    touched: { ...oldTouched, ...touched },
+    touched: { ...oldTouched, ...touched }
   }
 }
 
@@ -120,7 +120,7 @@ const setWarning = (state, action) => {
 
   return {
     ...state,
-    warnings: newWarnings,
+    warnings: newWarnings
   }
 }
 
@@ -133,7 +133,7 @@ const setError = (state, action) => {
 
   return {
     ...state,
-    errors: newErrors,
+    errors: newErrors
   }
 }
 
@@ -146,7 +146,7 @@ const setSuccess = (state, action) => {
 
   return {
     ...state,
-    successes: newSuccesses,
+    successes: newSuccesses
   }
 }
 
@@ -163,7 +163,7 @@ const setAsyncWarning = (state, action) => {
 
   return {
     ...state,
-    asyncWarnings: newWarnings,
+    asyncWarnings: newWarnings
   }
 }
 
@@ -180,7 +180,7 @@ const setAsyncError = (state, action) => {
 
   return {
     ...state,
-    asyncErrors: newErrors,
+    asyncErrors: newErrors
   }
 }
 
@@ -197,7 +197,7 @@ const setAsyncSuccess = (state, action) => {
 
   return {
     ...state,
-    asyncSuccesses: newSuccesses,
+    asyncSuccesses: newSuccesses
   }
 }
 
@@ -214,7 +214,7 @@ const removeAsyncWarning = (state, action) => {
 
   return {
     ...state,
-    asyncWarnings: newWarnings,
+    asyncWarnings: newWarnings
   }
 }
 
@@ -231,7 +231,7 @@ const removeAsyncError = (state, action) => {
 
   return {
     ...state,
-    asyncErrors: newErrors,
+    asyncErrors: newErrors
   }
 }
 
@@ -248,7 +248,7 @@ const removeAsyncSuccess = (state, action) => {
 
   return {
     ...state,
-    asyncSuccesses: newSuccesses,
+    asyncSuccesses: newSuccesses
   }
 }
 
@@ -263,7 +263,7 @@ const validate = (state, action, validateError, validateWarning, validateSuccess
     ...state,
     errors,
     warnings,
-    successes,
+    successes
   }
 }
 
@@ -274,23 +274,23 @@ const preValidate = (state, action, preValidator) => {
 
   return {
     ...state,
-    values,
+    values
   }
 }
 
 const submits = state => ({
   ...state,
-  submits: state.submits + 1,
+  submits: state.submits + 1
 })
 
 const submitted = state => ({
   ...state,
-  submitted: true,
+  submitted: true
 })
 
 const submitting = (state, action) => ({
   ...state,
-  submitting: action.submitting,
+  submitting: action.submitting
 })
 
 const reset = (state, action) => {
@@ -308,7 +308,7 @@ const reset = (state, action) => {
 
   return {
     ...state,
-    ...newState,
+    ...newState
   }
 }
 
@@ -332,7 +332,7 @@ const validatingField = (state, action) => {
   return {
     ...state,
     asyncValidations,
-    validating,
+    validating
   }
 }
 
@@ -356,7 +356,7 @@ const doneValidatingField = (state, action) => {
   return {
     ...state,
     asyncValidations,
-    validating,
+    validating
   }
 }
 
@@ -381,7 +381,7 @@ const validationFailure = (state, action) => {
   return {
     ...state,
     validationFailures,
-    validationFailed,
+    validationFailed
   }
 }
 
@@ -407,7 +407,7 @@ const validationSuccess = (state, action) => {
   return {
     ...state,
     validationFailures,
-    validationFailed,
+    validationFailed
   }
 }
 
@@ -415,9 +415,10 @@ class ReducerBuilder {
   static build (properties = {}) {
     const { validateError, validateWarning, validateSuccess, defaultValues } = properties
 
-    const COMBINED_INITIAL_STATE = Object.assign({}, INITIAL_STATE, {
-      values: defaultValues || {},
-    })
+    const COMBINED_INITIAL_STATE = {
+      ...INITIAL_STATE,
+      values: defaultValues || {}
+    }
 
     const reducer = (state = COMBINED_INITIAL_STATE, action) => {
       switch (action.type) {

@@ -3,12 +3,10 @@ import PropTypes from 'prop-types'
 
 //
 
-import FormApi from './FormApi'
-
 class FieldContext extends React.Component {
   getChildContext () {
     return {
-      formApi: this.formApi
+      formApi: this.getFormApi()
     }
   }
 
@@ -30,9 +28,9 @@ class FieldContext extends React.Component {
     const { field } = props
 
     const proxyWithField = (method, field) => (subField, ...rest) =>
-      method([field, subField], ...rest)
+      method([field, subField].filter(d => d), ...rest)
 
-    const proxiedApiMethods = {
+    this.proxiedFormApiMethods = {
       getValue: proxyWithField(formApi.getValue, field),
       getTouched: proxyWithField(formApi.getTouched, field),
       getError: proxyWithField(formApi.getError, field),
@@ -50,10 +48,13 @@ class FieldContext extends React.Component {
       doneValidatingField: proxyWithField(formApi.doneValidatingField, field),
       reset: proxyWithField(formApi.rese, field)
     }
+  }
 
-    this.formApi = {
-      ...formApi,
-      ...proxiedApiMethods
+  getFormApi = () => {
+    const api = this.proxiedFormApiMethods
+    return {
+      ...api,
+      values: api.getValue()
     }
   }
 
@@ -61,15 +62,27 @@ class FieldContext extends React.Component {
     if (!props.defaultValue) {
       return
     }
-    const currentValue = this.formApi.getValue()
+    const formApi = this.getFormApi()
+    const currentValue = formApi.getValue()
     if (currentValue) {
       return
     }
-    this.formApi.setValue(props.defaultValue)
+    formApi.setValue(props.defaultValue)
   }
 
   render () {
-    return <FormApi {...this.props} />
+    const { render, component, children, ...rest } = this.props
+
+    if (component) {
+      return React.createElement(component, rest, children)
+    }
+    if (render) {
+      return render(rest)
+    }
+    if (typeof children === 'function') {
+      return children(rest)
+    }
+    return children
   }
 }
 
