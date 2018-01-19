@@ -34,7 +34,7 @@ const newState = state =>
   Object.assign(JSON.parse(JSON.stringify(state)), {
     errors: newErrors(state),
     warnings: newWarnings(state),
-    successes: newSuccesses(state),
+    successes: newSuccesses(state)
   })
 
 /* ---------- Form Component ----------*/
@@ -55,7 +55,7 @@ class Form extends Component {
 
   getChildContext () {
     return {
-      formApi: this.api,
+      formApi: this.api
     }
   }
 
@@ -146,7 +146,7 @@ class Form extends Component {
       removeValue: this.removeValue,
       setAllValues: this.setAllValues,
       setAllTouched: this.setAllTouched,
-      swapValues: this.swapValues,
+      swapValues: this.swapValues
     }
   }
 
@@ -168,7 +168,7 @@ class Form extends Component {
     return Object.assign(JSON.parse(JSON.stringify(this.props.formState)), {
       errors: this.errors,
       warnings: this.warnings,
-      successes: this.successes,
+      successes: this.successes
     })
   }
 
@@ -201,7 +201,7 @@ class Form extends Component {
       // Build up list of async functions that need to be called
       const validators = this.props.asyncValidators
         ? Object.keys(this.props.asyncValidators).map(field =>
-          this.props.dispatch(actions.asyncValidate(field, this.props.asyncValidators)),
+          this.props.dispatch(actions.asyncValidate(field, this.props.asyncValidators))
         )
         : []
       await Promise.all(validators)
@@ -228,7 +228,7 @@ class Form extends Component {
       // Build up list of async functions that need to be called
       const validators = this.props.asyncValidators
         ? Object.keys(this.props.asyncValidators).map(field =>
-          this.props.dispatch(actions.asyncValidate(field, this.props.asyncValidators)),
+          this.props.dispatch(actions.asyncValidate(field, this.props.asyncValidators))
         )
         : []
       await Promise.all(validators)
@@ -251,7 +251,7 @@ class Form extends Component {
 
   addValue = (field, value) => {
     this.props.dispatch(
-      actions.setValue(field, [...(Utils.get(this.props.formState.values, field) || []), value]),
+      actions.setValue(field, [...(Utils.get(this.props.formState.values, field) || []), value])
     )
     this.props.dispatch(actions.removeAsyncError(field))
     this.props.dispatch(actions.removeAsyncWarning(field))
@@ -265,14 +265,11 @@ class Form extends Component {
   removeValue = (field, index) => {
     const fieldValue = Utils.get(this.props.formState.values, field) || []
     this.props.dispatch(
-      actions.setValue(field, [...fieldValue.slice(0, index), ...fieldValue.slice(index + 1)]),
+      actions.setValue(field, [...fieldValue.slice(0, index), ...fieldValue.slice(index + 1)])
     )
     const fieldTouched = Utils.get(this.props.formState.touched, field) || []
     this.props.dispatch(
-      actions.setTouched(field, [
-        ...fieldTouched.slice(0, index),
-        ...fieldTouched.slice(index + 1),
-      ]),
+      actions.setTouched(field, [...fieldTouched.slice(0, index), ...fieldTouched.slice(index + 1)])
     )
     this.props.dispatch(actions.removeAsyncError(field))
     this.props.dispatch(actions.removeAsyncWarning(field))
@@ -295,8 +292,8 @@ class Form extends Component {
         fieldValues[max],
         ...fieldValues.slice(min + 1, max),
         fieldValues[min],
-        ...fieldValues.slice(max + 1),
-      ]),
+        ...fieldValues.slice(max + 1)
+      ])
     )
   }
 
@@ -396,13 +393,13 @@ class Form extends Component {
     // Build up list of async functions that need to be called
     let validators = this.props.asyncValidators
       ? Object.keys(this.props.asyncValidators).map(field =>
-        this.props.dispatch(actions.asyncValidate(field, this.props.asyncValidators)),
+        this.props.dispatch(actions.asyncValidate(field, this.props.asyncValidators))
       )
       : []
     const childValidators = this.asyncValidators
       ? this.asyncValidators.map(validator =>
         // This looks strange but you call an async function to generate a promise
-        validator(),
+        validator()
       )
       : []
     // Add all other subscribed validators to the validators list
@@ -412,36 +409,47 @@ class Form extends Component {
   }
 
   render () {
-    const { children, component, render } = this.props
+    const { children, component, render, ...rest } = this.props
+
+    const formApi = this.api
+
+    const inlineProps = {
+      ...rest,
+      ...formApi
+    }
 
     if (component) {
-      return React.createElement(component, { formApi: this.api })
+      return React.createElement(
+        component,
+        {
+          formApi,
+          ...rest
+        },
+        children
+      )
     }
-
     if (render) {
-      return render(this.api)
+      return render(inlineProps)
     }
-
     if (typeof children === 'function') {
-      return children(this.api)
+      return children(inlineProps)
     }
-
-    return React.cloneElement(children, { formApi: this.api })
+    return children
   }
 }
 
 Form.childContextTypes = {
-  formApi: PropTypes.object,
+  formApi: PropTypes.object
 }
 
 /* ---------- Container ---------- */
 
 const mapStateToProps = state => ({
-  formState: state,
+  formState: state
 })
 
 const mapDispatchToProps = dispatch => ({
-  dispatch,
+  dispatch
 })
 
 const FormContainer = connect(mapStateToProps, mapDispatchToProps)(Form)
@@ -458,12 +466,12 @@ class ReactForm extends Component {
         validateWarning,
         validateSuccess,
         preValidate,
-        defaultValues,
+        defaultValues
       }),
       applyMiddleware(
-        thunkMiddleware, // lets us dispatch() functions
+        thunkMiddleware // lets us dispatch() functions
         // createLogger() // neat middleware that logs actions
-      ),
+      )
     )
   }
 

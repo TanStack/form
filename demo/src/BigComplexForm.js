@@ -123,30 +123,33 @@ const hiddenFormErrorValidator = values => {
 
 const NestedForm2 = () => (
   <div>
-    <Text field="pizza" />
-    <Text field="burrito" />
-    <Text field="sandwich" />
+    Pizza: <Text field="pizza" />
+    Burrito: <Text field="burrito" />
+    Sandwich: <Text field="sandwich" />
   </div>
 )
 
 const NestedForm1 = () => (
   <div>
-    <Text field="red" />
-    <Text field="green" />
-    <Text field="blue" />
-    <FieldContext field="food" component={NestedForm2} />
+    Red: <Text field="red" />
+    Green: <Text field="green" />
+    Blue: <Text field="blue" />
+    Food: <FieldContext field="food" component={NestedForm2} />
   </div>
 )
 
 const TestForm = () => (
   <div>
-    <Text field="one" />
-    <Text field="two" />
+    One: <Text field="one" />
+    Two: <Text field="two" />
   </div>
 )
 
 const TestNestedForm = ({ index }) => (
-  <FieldContext field={['forms', index]} key={`bar${index}`} component={TestForm} />
+  <div>
+    Form Index {index}:{' '}
+    <FieldContext field={['forms', index]} key={`bar${index}`} component={TestForm} />
+  </div>
 )
 
 const NestedForms = () => (
@@ -157,8 +160,8 @@ const NestedForms = () => (
 
 const HiddenForm = () => (
   <div>
-    <Text field="oh" />
-    <Text field="no" />
+    Oh: <Text field="oh" />
+    No: <Text field="no" />
   </div>
 )
 
@@ -167,38 +170,38 @@ const Group = ({ field }) => (
     <label className="d-block">Hide form:</label>
     <label htmlFor="yes" className="mr-1">
       Yes
+      <Radio field={field} value="yes" id="yes" className="mr-2" />
     </label>
-    <Radio field={field} value="yes" id="yes" className="mr-2" />
     <label htmlFor="no" className="mr-1">
       No
+      <Radio field={field} value="no" id="no" />
     </label>
-    <Radio field={field} value="no" id="no" />
   </div>
 )
 
-const FormContent = ({ formApi, aprop, setProp }) => {
+const FormContent = ({ formApi, aprop }) => {
   const hidden = !formApi.values.hideform || formApi.values.hideform === 'yes'
 
   return (
     <div className="row">
       <div className="col-sm-4">
         <form onSubmit={formApi.submitForm} id="form1">
-          <Text field="foo" />
-          <Text field="bar" />
-          <Text field="baz" />
-          <Text field={['nicknames', 0]} />
-          <Text field={['nicknames', 1]} />
-          <Text field={'friends[0].name'} />
-          <Text field={'friends[1].name'} />
-          <Text field="hey" />
-          <Text field="a" />
-          <Text field="b" />
-          <Text field="c" />
-          <Text field="d" />
-          <Text field="e" />
-          <Text field="f" />
-          <Text field="g" />
-          <Text field="h" />
+          foo: <Text field="foo" />
+          bar: <Text field="bar" />
+          baz: <Text field="baz" />
+          nicknames[0]: <Text field={['nicknames', 0]} />
+          nicknames[1]: <Text field={['nicknames', 1]} />
+          friends[0].name: <Text field={'friends[0].name'} />
+          friends[1].name: <Text field={'friends[1].name'} />
+          hey: <Text field="hey" />
+          a: <Text field="a" />
+          b: <Text field="b" />
+          c: <Text field="c" />
+          d: <Text field="d" />
+          e: <Text field="e" />
+          f: <Text field="f" />
+          g: <Text field="g" />
+          h: <Text field="h" />
           <FieldContext field="color" component={NestedForm1} aprop={aprop} />
           <NestedForms />
           <Group field="hideform" />

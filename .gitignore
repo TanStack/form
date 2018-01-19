@@ -3,6 +3,7 @@ node_modules
 /build/*
 /docs/*
 /dist/*
+/demo/dist/*
 /es/*
 /lib/*
 /umd/*
