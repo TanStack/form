@@ -3,13 +3,14 @@ import classNames from 'classnames'
 
 //
 
-import withFormField from '../withFormField'
+import withField from '../withField'
 import Message from './Message'
 import Utils from './utils'
 
 class SelectWrapper extends Component {
   render () {
     const {
+      fieldApi: { value, error, warning, success, touched, setValue, setTouched },
       options,
       onChange,
       onBlur,
@@ -19,13 +20,6 @@ class SelectWrapper extends Component {
       messageBefore,
       valueValidation,
       touchValidation,
-      value,
-      error,
-      warning,
-      success,
-      touched,
-      setValue,
-      setTouched,
       ...rest
     } = this.props
 
@@ -95,6 +89,6 @@ class SelectWrapper extends Component {
   }
 }
 
-const Select = withFormField(SelectWrapper)
+const Select = withField(SelectWrapper)
 
 export default Select

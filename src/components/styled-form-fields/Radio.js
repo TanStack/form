@@ -3,12 +3,13 @@ import classNames from 'classnames'
 
 //
 
-import withFormField from '../withFormField'
+import withField from '../withField'
 import Utils from './utils'
 
 class RadioComp extends Component {
   render () {
     const {
+      fieldApi: { value, setValue, setTouched, error, warning, success, touched },
       onClick,
       group,
       value: parentValue,
@@ -18,13 +19,6 @@ class RadioComp extends Component {
       touchValidation,
       onChange,
       onBlur,
-      value,
-      setValue,
-      setTouched,
-      error,
-      warning,
-      success,
-      touched,
       ...rest
     } = this.props
 
@@ -80,6 +74,6 @@ class RadioComp extends Component {
   }
 }
 
-const Radio = withFormField(RadioComp)
+const Radio = withField(RadioComp)
 
 export default Radio

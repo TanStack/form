@@ -2,11 +2,11 @@ import React, { Component } from 'react'
 
 //
 
-import withFormField from '../withFormField'
+import withField from '../withField'
 
 class TextAreaWrapper extends Component {
   render () {
-    const { onChange, onBlur, value, setValue, setTouched, ...rest } = this.props
+    const { fieldApi: { value, setValue, setTouched }, onChange, onBlur, ...rest } = this.props
 
     return (
       <textarea
@@ -29,6 +29,6 @@ class TextAreaWrapper extends Component {
   }
 }
 
-const TextArea = withFormField(TextAreaWrapper)
+const TextArea = withField(TextAreaWrapper)
 
 export default TextArea

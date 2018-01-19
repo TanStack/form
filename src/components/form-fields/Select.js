@@ -2,14 +2,12 @@ import React, { Component } from 'react'
 
 //
 
-import withFormField from '../withFormField'
+import withField from '../withField'
 
 class SelectWrapper extends Component {
   render () {
     const {
-      value,
-      setValue,
-      setTouched,
+      fieldApi: { value, setValue, setTouched },
       options,
       onChange,
       onBlur,
@@ -59,6 +57,6 @@ class SelectWrapper extends Component {
   }
 }
 
-const Select = withFormField(SelectWrapper)
+const Select = withField(SelectWrapper)
 
 export default Select

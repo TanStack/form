@@ -2,17 +2,15 @@ import React, { Component } from 'react'
 
 //
 
-import withFormField from '../withFormField'
+import withField from '../withField'
 
 class RadioComp extends Component {
   render () {
     const {
-      setValue,
-      setTouched,
+      fieldApi: { value, setValue, setTouched },
       onClick,
       group,
       value: parentValue,
-      value,
       onChange,
       onBlur,
       ...rest
@@ -46,6 +44,6 @@ class RadioComp extends Component {
   }
 }
 
-const Radio = withFormField(RadioComp)
+const Radio = withField(RadioComp)
 
 export default Radio

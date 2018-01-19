@@ -2,11 +2,11 @@ import React, { Component } from 'react'
 
 //
 
-import withFormField from '../withFormField'
+import withField from '../withField'
 
 class CheckboxWrapper extends Component {
   render () {
-    const { value, setValue, setTouched, onChange, onBlur, ...rest } = this.props
+    const { fieldApi: { value, setValue, setTouched }, onChange, onBlur, ...rest } = this.props
 
     return (
       <input
@@ -30,6 +30,6 @@ class CheckboxWrapper extends Component {
   }
 }
 
-const Checkbox = withFormField(CheckboxWrapper)
+const Checkbox = withField(CheckboxWrapper)
 
 export default Checkbox

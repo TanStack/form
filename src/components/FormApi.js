@@ -3,26 +3,35 @@ import PropTypes from 'prop-types'
 
 //
 
-class FormField extends React.Component {
+class Field extends React.Component {
   render () {
     const { render, component, children, ...rest } = this.props
 
-    if (component) {
-      return React.createElement(
-        component,
-        {
-          formApi: this.context.formApi,
-          ...rest,
-        },
-        children,
-      )
+    const inlineProps = {
+      ...this.context.formApi,
+      ...rest
     }
-    return (render || children)({ ...this.context.formApi, ...rest })
+
+    const componentProps = {
+      formApi: this.context.formApi,
+      ...rest
+    }
+
+    if (component) {
+      return React.createElement(component, componentProps, children)
+    }
+    if (render) {
+      return render(inlineProps)
+    }
+    if (typeof children === 'function') {
+      return children(inlineProps)
+    }
+    return children
   }
 }
 
-FormField.contextTypes = {
-  formApi: PropTypes.object,
+Field.contextTypes = {
+  formApi: PropTypes.object
 }
 
-export default FormField
+export default Field

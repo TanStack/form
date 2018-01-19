@@ -3,7 +3,7 @@ import classNames from 'classnames'
 
 //
 
-import withFormField from '../withFormField'
+import withField from '../withField'
 import Message from './Message'
 import Utils from './utils'
 
@@ -17,13 +17,7 @@ class TextWrapper extends Component {
       messageBefore,
       touchValidation,
       valueValidation,
-      value,
-      error,
-      warning,
-      success,
-      touched,
-      setValue,
-      setTouched,
+      fieldApi: { value, error, warning, success, touched, setValue, setTouched },
       ...rest
     } = this.props
 
@@ -70,6 +64,6 @@ class TextWrapper extends Component {
   }
 }
 
-const Text = withFormField(TextWrapper)
+const Text = withField(TextWrapper)
 
 export default Text

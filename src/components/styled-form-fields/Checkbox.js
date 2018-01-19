@@ -3,20 +3,14 @@ import classNames from 'classnames'
 
 //
 
-import withFormField from '../withFormField'
+import withField from '../withField'
 import Message from './Message'
 import Utils from './utils'
 
 class CheckboxWrapper extends Component {
   render () {
     const {
-      value,
-      setValue,
-      setTouched,
-      error,
-      warning,
-      success,
-      touched,
+      fieldApi: { value, setValue, setTouched, error, warning, success, touched },
       onChange,
       onBlur,
       label,
@@ -85,6 +79,6 @@ class CheckboxWrapper extends Component {
   }
 }
 
-const Checkbox = withFormField(CheckboxWrapper)
+const Checkbox = withField(CheckboxWrapper)
 
 export default Checkbox

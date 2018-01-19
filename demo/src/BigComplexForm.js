@@ -1,47 +1,47 @@
 /* ------------- Imports -------------- */
-import React, { Component } from 'react';
-import Data from './Data';
+import React, { Component } from 'react'
+import Data from './Data'
 
 /* ------------- Form  Library Imports -------------- */
-import { Form, Text, Radio, NestedForm } from '../../src/';
+import { Form, Text, Radio, FieldContext } from '../../src/'
 
 /* ------------------ Validators ----------------- */
 
-const errorValidator = (values) => {
-  const validateField = (field) => {
+const errorValidator = values => {
+  const validateField = field => {
     if (values[field] !== field) {
-      return `Not ${field}`;
+      return `Not ${field}`
     }
-    return null;
-  };
+    return null
+  }
 
-  const validateNickName = (nickname) => {
+  const validateNickName = nickname => {
     if (!nickname || nickname.length <= 1) {
-      return 'Nickname must be longer than 1 character!';
+      return 'Nickname must be longer than 1 character!'
     }
-    return null;
-  };
+    return null
+  }
 
   const validateNicknames = () => {
     if (!values.nicknames || values.nicknames.length < 2) {
-      return 'You must enter two nicknames!';
+      return 'You must enter two nicknames!'
     }
-    return values.nicknames.map(nickname => validateNickName(nickname));
-  };
+    return values.nicknames.map(nickname => validateNickName(nickname))
+  }
 
-  const validateFriend = (friend) => {
+  const validateFriend = friend => {
     if (!friend.name || friend.name === '') {
-      return 'Fried must have a name.';
+      return 'Fried must have a name.'
     }
-    return null;
-  };
+    return null
+  }
 
   const validateFriends = () => {
     if (!values.friends || values.friends.length < 2) {
-      return 'You must enter two friends!';
+      return 'You must enter two friends!'
     }
-    return values.friends.map(friend => validateFriend(friend));
-  };
+    return values.friends.map(friend => validateFriend(friend))
+  }
 
   return {
     foo: validateField('foo'),
@@ -57,151 +57,127 @@ const errorValidator = (values) => {
     e: validateField('e'),
     f: validateField('f'),
     g: validateField('g'),
-    h: validateField('h'),
-  };
-};
+    h: validateField('h')
+  }
+}
 
-const nestedErrorValidator = (values) => {
-  const validateField = (field) => {
+const nestedErrorValidator = values => {
+  const validateField = field => {
     if (values[field] !== field) {
-      return `Not ${field}`;
+      return `Not ${field}`
     }
-    return null;
-  };
+    return null
+  }
 
   return {
     red: validateField('red'),
     green: validateField('green'),
-    blue: validateField('blue'),
-  };
-};
+    blue: validateField('blue')
+  }
+}
 
-const nestedNestedErrorValidator = (values) => {
-  const validateField = (field) => {
+const nestedNestedErrorValidator = values => {
+  const validateField = field => {
     if (values[field] !== field) {
-      return `Not ${field}`;
+      return `Not ${field}`
     }
-    return null;
-  };
+    return null
+  }
 
   return {
     pizza: validateField('pizza'),
     burrito: validateField('burrito'),
-    sandwich: validateField('sandwich'),
-  };
-};
+    sandwich: validateField('sandwich')
+  }
+}
 
-const mappedNestedErrorValidator = (values) => {
-  const validateField = (field) => {
+const mappedNestedErrorValidator = values => {
+  const validateField = field => {
     if (values[field] !== field) {
-      return `Not ${field}`;
+      return `Not ${field}`
     }
-    return null;
-  };
+    return null
+  }
 
   return {
     one: validateField('one'),
-    two: validateField('two'),
-  };
-};
+    two: validateField('two')
+  }
+}
 
-const hiddenFormErrorValidator = (values) => {
-  const validateField = (field) => {
+const hiddenFormErrorValidator = values => {
+  const validateField = field => {
     if (values[field] !== field) {
-      return `Not ${field}`;
+      return `Not ${field}`
     }
-    return null;
-  };
+    return null
+  }
 
   return {
     oh: validateField('oh'),
-    no: validateField('no'),
-  };
-};
+    no: validateField('no')
+  }
+}
 
 /* --------------------- Forms --------------------*/
 
-const NestedForm2 = () => {
-  return (
-    <div>
-      <Text field="pizza" />
-      <Text field="burrito" />
-      <Text field="sandwich" />
-    </div>
-  );
-};
+const NestedForm2 = () => (
+  <div>
+    <Text field="pizza" />
+    <Text field="burrito" />
+    <Text field="sandwich" />
+  </div>
+)
 
-const NestedForm1 = () => {
-  return (
-    <div>
-      <Text field="red" />
-      <Text field="green" />
-      <Text field="blue" />
-      <NestedForm field="food">
-        <Form validateError={nestedNestedErrorValidator}>
-          <NestedForm2 />
-        </Form>
-      </NestedForm>
-    </div>
-  );
-};
+const NestedForm1 = () => (
+  <div>
+    <Text field="red" />
+    <Text field="green" />
+    <Text field="blue" />
+    <FieldContext field="food" component={NestedForm2} />
+  </div>
+)
 
-const TestNestedForm = ({ index }) => {
-  return (
-    <NestedForm field={['forms', index]} key={`bar${index}`}>
-      <Form validateError={mappedNestedErrorValidator} key={`foo${index}`}>
-        <TestForm />
-      </Form>
-    </NestedForm>
-  );
-};
+const TestForm = () => (
+  <div>
+    <Text field="one" />
+    <Text field="two" />
+  </div>
+)
 
-const TestForm = () => {
-  return (
-    <div>
-      <Text field="one" />
-      <Text field="two" />
-    </div>
-  );
-};
+const TestNestedForm = ({ index }) => (
+  <FieldContext field={['forms', index]} key={`bar${index}`} component={TestForm} />
+)
 
-const NestedForms = () => {
-  return (
-    <div>
-      {[1, 2, 3].map((elem, index) => {
-        return <TestNestedForm index={`${index}`} key={`nested${elem}`} />;
-      })}
-    </div>
-  );
-};
+const NestedForms = () => (
+  <div>
+    {[1, 2, 3].map((elem, index) => <TestNestedForm index={`${index}`} key={`nested${elem}`} />)}
+  </div>
+)
 
-const HiddenForm = () => {
-  return (
-    <div>
-      <Text field="oh" />
-      <Text field="no" />
-    </div>
-  );
-};
+const HiddenForm = () => (
+  <div>
+    <Text field="oh" />
+    <Text field="no" />
+  </div>
+)
 
-const Group = ({ field }) => {
-  return (
-    <div className="mb-2">
-      <label className="d-block">Hide form:</label>
-      <label htmlFor="yes" className="mr-1">
-        Yes
-      </label>
-      <Radio field={field} value="yes" id="yes" className="mr-2" />
-      <label htmlFor="no" className="mr-1">
-        No
-      </label>
-      <Radio field={field} value="no" id="no" />
-    </div>
-  );
-};
+const Group = ({ field }) => (
+  <div className="mb-2">
+    <label className="d-block">Hide form:</label>
+    <label htmlFor="yes" className="mr-1">
+      Yes
+    </label>
+    <Radio field={field} value="yes" id="yes" className="mr-2" />
+    <label htmlFor="no" className="mr-1">
+      No
+    </label>
+    <Radio field={field} value="no" id="no" />
+  </div>
+)
 
 const FormContent = ({ formApi, aprop, setProp }) => {
-  const hidden = !formApi.values.hideform || formApi.values.hideform === 'yes';
+  const hidden = !formApi.values.hideform || formApi.values.hideform === 'yes'
 
   return (
     <div className="row">
@@ -223,20 +199,10 @@ const FormContent = ({ formApi, aprop, setProp }) => {
           <Text field="f" />
           <Text field="g" />
           <Text field="h" />
-          <NestedForm field="color">
-            <Form validateError={nestedErrorValidator}>
-              <NestedForm1 aprop={aprop} />
-            </Form>
-          </NestedForm>
+          <FieldContext field="color" component={NestedForm1} aprop={aprop} />
           <NestedForms />
           <Group field="hideform" />
-          {!hidden ? (
-            <NestedForm field="hidden">
-              <Form validateError={hiddenFormErrorValidator}>
-                <HiddenForm />
-              </Form>
-            </NestedForm>
-          ) : null}
+          {!hidden ? <FieldContext field="hidden" component={HiddenForm} /> : null}
           <button type="submit" className="mb-2 btn btn-primary">
             Submit
           </button>
@@ -249,44 +215,39 @@ const FormContent = ({ formApi, aprop, setProp }) => {
         <Data title="touched" data={formApi.touched} />
       </div>
     </div>
-  );
-};
+  )
+}
 
 class BigComplexForm extends Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
     this.state = {
       aprop: false,
       hidden: true,
-      clicked: 0,
-    };
-    this.setProp = this.setProp.bind(this);
+      clicked: 0
+    }
+    this.setProp = this.setProp.bind(this)
   }
 
-  setProp(e) {
-    e.preventDefault();
-    this.setState((prevState) => {
-      return {
-        aprop:
-          this.state.clicked % 2 === 0 ? !prevState.aprop : prevState.aprop,
-        clicked: prevState.clicked + 1,
-      };
-    });
+  setProp (e) {
+    e.preventDefault()
+    this.setState(prevState => ({
+      aprop: this.state.clicked % 2 === 0 ? !prevState.aprop : prevState.aprop,
+      clicked: prevState.clicked + 1
+    }))
   }
 
-  render() {
+  render () {
     return (
       <div>
         <h3>Big Complex Form</h3>
         <br />
         <h5 style={{ backgroundColor: 'red' }}>
-          Docs for big complex form are a work in progress but still shows off
-          powerfull stuff.
+          Docs for big complex form are a work in progress but still shows off powerfull stuff.
         </h5>
         <br />
         <p>
-          You can make very compex forms with react-form. The below form
-          includes the following:
+          You can make very compex forms with react-form. The below form includes the following:
         </p>
         <ul>
           <li>Normal Text fields</li>
@@ -297,8 +258,8 @@ class BigComplexForm extends Component {
           <li>Hidden form</li>
         </ul>
         <Form
-          onSubmit={(values) => {
-            console.log('SUBMIT:', values);
+          onSubmit={values => {
+            console.log('SUBMIT:', values)
           }}
           formDidUpdate={state => console.log('STATE:', state)}
           validateError={errorValidator}
@@ -306,8 +267,8 @@ class BigComplexForm extends Component {
           <FormContent aprop={this.state.aprop} setProp={this.setProp} />
         </Form>
       </div>
-    );
+    )
   }
 }
 
-export default BigComplexForm;
+export default BigComplexForm

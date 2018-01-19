@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 // import { PrismCode } from 'react-prism';
 
 /* ------------- Form  Library Imports -------------- */
-import { Form, Text, withFormField } from '../../src/'
+import { Form, Text, withField } from '../../src/'
 
 /* ---------------- Other Imports ------------------ */
 
@@ -20,18 +20,20 @@ const Message = ({ color, message }) => (
 
 class CustomTextWrapper extends Component {
   render () {
-    const { fieldApi, onInput, ...rest } = this.props
-
-    const { value, error, warning, success, setValue, setTouched } = fieldApi
+    const {
+      fieldApi: { value, error, warning, success, setValue, setTouched },
+      onChange,
+      ...rest
+    } = this.props
 
     return (
       <div>
         <input
           value={value || ''}
-          onInput={e => {
+          onChange={e => {
             setValue(e.target.value)
-            if (onInput) {
-              onInput(e)
+            if (onChange) {
+              onChange(e)
             }
           }}
           onBlur={() => {
@@ -47,7 +49,7 @@ class CustomTextWrapper extends Component {
   }
 }
 
-const CustomText = withFormField(CustomTextWrapper)
+const CustomText = withField(CustomTextWrapper)
 
 const FormContent = ({ formApi }) => (
   <div>
@@ -67,7 +69,7 @@ const FormContent = ({ formApi }) => (
 
 const CustomFormCode = () => {
   const code = `
-  import { Form, Text, FormField } from '../../src';
+  import { Form, Text, Field } from '../../src';
 
   // Define a custom message component
   const Message = ({ color, message }) => {
@@ -87,7 +89,7 @@ const CustomFormCode = () => {
 
       const {
         fieldApi,
-        onInput,
+        onChange,
         ...rest
       } = this.props;
 
@@ -108,10 +110,10 @@ const CustomFormCode = () => {
         <div>
           <input
             value={value}
-            onInput={( e ) => {
+            onChange={( e ) => {
               setValue(e.target.value);
-              if ( onInput ) {
-                onInput( e );
+              if ( onChange ) {
+                onChange( e );
               }
             }}
             onBlur={() => {
@@ -127,7 +129,7 @@ const CustomFormCode = () => {
   }
 
   // Use the form field and your custom input together to create your very own input!
-  const CustomText = withFormFieldCustomTextWrapper);
+  const CustomText = withFieldCustomTextWrapper);
 
   const errorValidator = (values) => {
     return {
@@ -182,22 +184,22 @@ const CustomFormCode = () => {
 
 const errorValidator = values => ({
   hello:
-    !values.hello || !values.hello.match(/Hello World/) ? "Input must contain 'Hello World'" : null,
+    !values.hello || !values.hello.match(/Hello World/) ? "Input must contain 'Hello World'" : null
 })
 
 const warningValidator = values => ({
   hello:
     !values.hello || !values.hello.match(/^Hello World$/)
       ? "Input should equal 'Hello World'"
-      : null,
+      : null
 })
 
 const successValidator = values => ({
   hello:
-    values.hello && values.hello.match(/Hello World/) ? "Thanks for entering 'Hello World'!" : null,
+    values.hello && values.hello.match(/Hello World/) ? "Thanks for entering 'Hello World'!" : null
 })
 
-const FieldApiMethods = ({ fieldApi }) => (
+const FieldApiMethods = () => (
   <div>
     <table className="table" style={{ tableLayout: 'fixed' }}>
       <thead className="thead-inverse">
@@ -350,8 +352,8 @@ class CustomInput extends Component {
         </h2>
         <p>
           If the out of the box inputs are not enough for you. You can simply customize them, by
-          creating your very own input elements. This is done by leverageing the FormField HOC that
-          is availible in react-form. Below is an example of a form that uses a custom input. Our
+          creating your very own input elements. This is done by leverageing the Field HOC that is
+          availible in react-form. Below is an example of a form that uses a custom input. Our
           custom input has internal error, success, and warning messages that know when to get
           shown. See docs at bottom of this page.
         </p>
@@ -372,8 +374,8 @@ class CustomInput extends Component {
         <hr />
         <h3 className="mb-4">Docs</h3>
         <p>
-          <code>FormField</code> gives you access to the <code>fieldApi</code>. This is very similar
-          to how a <code>Form</code> gives you the <code>formApi</code>. The difference is that{' '}
+          <code>Field</code> gives you access to the <code>fieldApi</code>. This is very similar to
+          how a <code>Form</code> gives you the <code>formApi</code>. The difference is that{' '}
           <code>fieldApi</code>s functions are scoped to the field, and it only has a subset of the
           formApis functions.
         </p>

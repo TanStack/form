@@ -3,20 +3,14 @@ import classNames from 'classnames'
 
 //
 
-import withFormField from '../withFormField'
+import withField from '../withField'
 import Message from './Message'
 import Utils from './utils'
 
 class TextAreaWrapper extends Component {
   render () {
     const {
-      value,
-      error,
-      warning,
-      success,
-      touched,
-      setValue,
-      setTouched,
+      fieldApi: { value, error, warning, success, touched, setValue, setTouched },
       onChange,
       onBlur,
       className,
@@ -70,6 +64,6 @@ class TextAreaWrapper extends Component {
   }
 }
 
-const TextArea = withFormField(TextAreaWrapper)
+const TextArea = withField(TextAreaWrapper)
 
 export default TextArea
