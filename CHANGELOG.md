@@ -10,4 +10,4 @@
 - All `RadioGroup` components have been deprecated in favor of using the `field` prop directly on any `Radio` components.
 - `Form`'s '`dontValidateOnMount` is now `validatedOnMount` and defaults to false. If you want to validate on mount, use the `validateOnMount` prop.
 - Polyfills for `Array.find`, `Array.findIndex` and `Array.includes` are no longer provided with the library. If your target browsers do not support these methods, please manually include a polyfill for these methods in your app.
-- All value getters located on the `fieldApi` are now static values (`getValue()` is now `value`, `setTouched()` is now `touched`, and so on with `getError`, `getSuccess` and `getWarning`)
+- All value getters located on the `fieldApi` are now static values (`getValue()` is now `value`, `setTouched()` is now `touched`, and so on with `getError`, `getSuccess` and `getWarning`).
