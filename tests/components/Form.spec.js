@@ -1,8 +1,14 @@
 import React from 'react'
 import { expect } from 'chai'
 import sinon from 'sinon'
-import { mount } from 'enzyme'
+import Enzyme, { mount } from 'enzyme'
+import EnzymeAdapter from 'enzyme-adapter-react-16'
+
+//
+
 import { Form, Text } from '../../src'
+
+Enzyme.configure({ adapter: new EnzymeAdapter() })
 
 describe('Form', () => {
   const sandbox = sinon.sandbox.create()
@@ -20,7 +26,7 @@ describe('Form', () => {
       validationFailed: {},
       submitted: false,
       submits: 0,
-      submitting: false,
+      submitting: false
     }
     expect(JSON.stringify(api)).to.deep.equal(JSON.stringify(formApi))
     expect(api).to.have.own.property('getError')
@@ -65,7 +71,7 @@ describe('Form', () => {
       validating: {},
       validationFailed: {},
       validationFailures: 0,
-      asyncValidations: 0,
+      asyncValidations: 0
     }
     return Object.assign({}, defaultState, state)
   }
@@ -93,7 +99,7 @@ describe('Form', () => {
             <button type="submit">Submit</button>
           </form>
         )}
-      </Form>,
+      </Form>
     )
     const input = wrapper.find('input')
     input.simulate('change', { target: { value: 'hello' } })
@@ -120,7 +126,7 @@ describe('Form', () => {
             <button type="submit">Submit</button>
           </form>
         )}
-      </Form>,
+      </Form>
     )
     api.setError('greeting', 'error')
     const button = wrapper.find('button')
@@ -145,7 +151,7 @@ describe('Form', () => {
             <button type="submit">Submit</button>
           </form>
         )}
-      </Form>,
+      </Form>
     )
     api.setError('greeting', 'error')
     const button = wrapper.find('button')
@@ -167,7 +173,7 @@ describe('Form', () => {
             <button type="submit">Submit</button>
           </form>
         )}
-      </Form>,
+      </Form>
     )
     const input = wrapper.find('input')
     input.simulate('change', { target: { value: 'hello' } })
@@ -193,7 +199,7 @@ describe('Form', () => {
             <button type="submit">Submit</button>
           </form>
         )}
-      </Form>,
+      </Form>
     )
     const input = wrapper.find('input')
     input.simulate('change', { target: { value: 'hello' } })
@@ -218,7 +224,7 @@ describe('Form', () => {
             <button type="submit">Submit</button>
           </form>
         )}
-      </Form>,
+      </Form>
     )
     const input = wrapper.find('input')
     input.simulate('change', { target: { value: 'hello' } })
@@ -247,7 +253,7 @@ describe('Form', () => {
     mount(
       <Form getApi={setApi} defaultValues={{ greeting: 'hello' }}>
         {() => <Text field="greeting" />}
-      </Form>,
+      </Form>
     )
     expect(api.getFormState().values).to.deep.equal({ greeting: 'hello' })
   })
@@ -346,7 +352,7 @@ describe('Form', () => {
     mount(
       <Form>
         <Inputs />
-      </Form>,
+      </Form>
     )
   })
 
@@ -360,7 +366,7 @@ describe('Form', () => {
 
   it('errors should update when input is changed', () => {
     const validate = values => ({
-      name: values.name === 'Foo' ? 'ooo thats no good' : null,
+      name: values.name === 'Foo' ? 'ooo thats no good' : null
     })
     let currentErrors
     const inputs = ({ errors }) => {
@@ -376,7 +382,7 @@ describe('Form', () => {
 
   it('warnings should update when input is changed', () => {
     const validate = values => ({
-      name: values.name === 'Foo' ? 'ooo thats no good' : null,
+      name: values.name === 'Foo' ? 'ooo thats no good' : null
     })
     let currentWarnings
     const inputs = ({ warnings }) => {
@@ -392,7 +398,7 @@ describe('Form', () => {
 
   it('successes should update when input is changed', () => {
     const validate = values => ({
-      name: values.name === 'Foo' ? 'ooo thats awesome!' : null,
+      name: values.name === 'Foo' ? 'ooo thats awesome!' : null
     })
     let currentSuccesses
     const inputs = ({ successes }) => {
@@ -410,7 +416,7 @@ describe('Form', () => {
     it('validateOnSubmit should prevent validation until the form has been submitted', () => {
       let api
       const validate = values => ({
-        greeting: values.greeting === 'Foo' ? 'ooo thats no good' : null,
+        greeting: values.greeting === 'Foo' ? 'ooo thats no good' : null
       })
       const wrapper = mount(
         <Form
@@ -426,15 +432,15 @@ describe('Form', () => {
               <button type="submit">Submit</button>
             </form>
           )}
-        </Form>,
+        </Form>
       )
       const input = wrapper.find('input')
       input.simulate('change', { target: { value: 'Foo' } })
       expect(api.getFormState()).to.deep.equal(
         getState({
           errors: { greeting: null },
-          values: { greeting: 'Foo' },
-        }),
+          values: { greeting: 'Foo' }
+        })
       )
       const button = wrapper.find('button')
       button.simulate('submit')
@@ -444,7 +450,7 @@ describe('Form', () => {
     it('validateOnSubmit and dontValidateOnMount should prevent all validation until the form has been submitted', () => {
       let api
       const validate = values => ({
-        greeting: values.greeting === 'Foo' ? 'ooo thats no good' : null,
+        greeting: values.greeting === 'Foo' ? 'ooo thats no good' : null
       })
       const wrapper = mount(
         <Form
@@ -461,14 +467,14 @@ describe('Form', () => {
               <button type="submit">Submit</button>
             </form>
           )}
-        </Form>,
+        </Form>
       )
       const input = wrapper.find('input')
       input.simulate('change', { target: { value: 'Foo' } })
       expect(api.getFormState()).to.deep.equal(
         getState({
-          values: { greeting: 'Foo' },
-        }),
+          values: { greeting: 'Foo' }
+        })
       )
       const button = wrapper.find('button')
       button.simulate('submit')
@@ -492,7 +498,7 @@ describe('Form', () => {
             <button type="submit">Submit</button>
           </form>
         )}
-      </Form>,
+      </Form>
     )
     const button = wrapper.find('button')
     button.simulate('submit')
@@ -521,7 +527,7 @@ describe('Form', () => {
             <button type="submit">Submit</button>
           </form>
         )}
-      </Form>,
+      </Form>
     )
     const button = wrapper.find('button')
     button.simulate('submit')

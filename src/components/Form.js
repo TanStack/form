@@ -6,8 +6,8 @@ import { connect } from 'react-redux'
 
 //
 
-import ReducerBuilder from './redux/ReducerBuilder'
-import * as actions from './redux/actions'
+import ReducerBuilder from '../redux/ReducerBuilder'
+import * as actions from '../redux/actions'
 
 import Utils from '../utils'
 

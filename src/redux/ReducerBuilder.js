@@ -28,7 +28,7 @@ import {
   REMOVE_ASYNC_SUCCESS,
 } from './actions'
 
-import Utils from '../../utils'
+import Utils from '../utils'
 
 const INITIAL_STATE = {
   values: {},

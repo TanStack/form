@@ -1,15 +1,11 @@
 {
   "name": "react-form",
   "version": "2.16.1",
-  "description": "React Form is a lightweight framework and utility for building powerful forms in React applications.",
+  "description":
+    "React Form is a lightweight framework and utility for building powerful forms in React applications.",
   "main": "lib/index.js",
   "module": "es/index.js",
-  "files": [
-    "css",
-    "es",
-    "lib",
-    "umd"
-  ],
+  "files": ["css", "es", "lib", "umd"],
   "scripts": {
     "build": "nwb build-react-component --title React Form",
     "clean": "nwb clean-module && nwb clean-demo",
@@ -65,7 +61,9 @@
   },
   "devDependencies": {
     "babel-runtime": "^6.26.0",
-    "enzyme": "^2.9.1",
+    "chai": "^4.1.2",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^4.5.0",
     "eslint-config-react-tools": "^1.0.10",
     "eslint-plugin-import": "^2.7.0",
@@ -73,10 +71,12 @@
     "eslint-plugin-react": "^7.3.0",
     "nwb": "^0.21.2",
     "prettier-eslint-cli": "^4.7.0",
-    "prismjs": "^1.6.0",
     "react": "^15.6.1",
+    "react-addons": "^0.9.1-deprecated",
+    "react-addons-test-utils": "^15.6.2",
     "react-dom": "^15.6.1",
     "react-router-dom": "^4.2.2",
-    "react-router-hash-link": "^1.1.1"
+    "react-router-hash-link": "^1.1.1",
+    "sinon": "^4.1.6"
   }
 }
