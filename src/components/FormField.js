@@ -39,11 +39,11 @@ class FormField extends React.Component {
     // check child props for changes so we know to re-render
     const nonChildrenProps = {
       ...this.props,
-      children: null, // do not compare children, that would be an anti-pattern
+      children: null // do not compare children, that would be an anti-pattern
     }
     const nextNonChildrenProps = {
       ...nextProps,
-      children: null,
+      children: null
     }
 
     // TODO debug async error issue
@@ -84,7 +84,7 @@ class FormField extends React.Component {
       reset: () => formApi.reset(field),
       registerAsyncValidation: formApi.registerAsyncValidation,
       submitted: formApi.submitted,
-      submits: formApi.submits,
+      submits: formApi.submits
     }
 
     this.getFieldValues = () => ({
@@ -93,34 +93,28 @@ class FormField extends React.Component {
       touched: formApi.getTouched(field),
       error: formApi.getError(field),
       warning: formApi.getWarning(field),
-      success: formApi.getSuccess(field),
+      success: formApi.getSuccess(field)
     })
   }
 
   render () {
     const { field, pure, nestedForm, render, component, children, ...rest } = this.props
 
-    const renderedFieldApi = {
+    const finalProps = {
       ...this.fieldApi,
       ...this.getFieldValues(),
+      ...rest
     }
 
     if (component) {
-      return React.createElement(
-        component,
-        {
-          fieldApi: renderedFieldApi,
-          ...rest,
-        },
-        children,
-      )
+      return React.createElement(component, finalProps, children)
     }
-    return (render || children)({ ...renderedFieldApi, ...rest })
+    return (render || children)(finalProps)
   }
 }
 
 FormField.contextTypes = {
-  formApi: PropTypes.object,
+  formApi: PropTypes.object
 }
 
 export default FormField
