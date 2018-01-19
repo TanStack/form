@@ -10,7 +10,6 @@ import Utils from './utils'
 class TextWrapper extends Component {
   render () {
     const {
-      fieldApi,
       onChange,
       onBlur,
       className,
@@ -18,22 +17,27 @@ class TextWrapper extends Component {
       messageBefore,
       touchValidation,
       valueValidation,
+      value,
+      error,
+      warning,
+      success,
+      touched,
+      setValue,
+      setTouched,
       ...rest
     } = this.props
-
-    const { value, error, warning, success, touched, setValue, setTouched } = fieldApi
 
     const type = Utils.getMessageType(error, warning, success)
     const showValidation = Utils.shouldShowValidation({
       valueValidation,
       touchValidation,
       touched,
-      value,
+      value
     })
 
     const classes = classNames(className, 'react-form-input', 'react-form-text', {
       [`react-form-input-${type}`]: type && showValidation,
-      [`react-form-text-${type}`]: type && showValidation,
+      [`react-form-text-${type}`]: type && showValidation
     })
 
     return (

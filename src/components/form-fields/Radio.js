@@ -7,10 +7,12 @@ import withFormField from '../withFormField'
 class RadioComp extends Component {
   render () {
     const {
-      fieldApi: { value, setValue, setTouched },
+      setValue,
+      setTouched,
       onClick,
       group,
       value: parentValue,
+      value,
       onChange,
       onBlur,
       ...rest

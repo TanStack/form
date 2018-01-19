@@ -10,7 +10,13 @@ import Utils from './utils'
 class CheckboxWrapper extends Component {
   render () {
     const {
-      fieldApi,
+      value,
+      setValue,
+      setTouched,
+      error,
+      warning,
+      success,
+      touched,
       onChange,
       onBlur,
       label,
@@ -21,20 +27,18 @@ class CheckboxWrapper extends Component {
       ...rest
     } = this.props
 
-    const { value, setValue, setTouched, error, warning, success, touched } = fieldApi
-
     const type = Utils.getMessageType(error, warning, success)
     const showValidation = Utils.shouldShowValidation({
       valueValidation,
       touchValidation,
       touched,
-      value,
+      value
     })
 
     const labelClasses = classNames(
       'react-form-control',
       'react-form-control-checkbox',
-      rest.className || '',
+      rest.className || ''
     )
 
     const indicatorClasses = classNames(
@@ -43,8 +47,8 @@ class CheckboxWrapper extends Component {
       'react-form-checkbox',
       {
         [`react-form-input-${type}`]: type && showValidation,
-        [`react-form-checkbox-${type}`]: type && showValidation,
-      },
+        [`react-form-checkbox-${type}`]: type && showValidation
+      }
     )
 
     return (

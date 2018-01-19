@@ -10,7 +10,13 @@ import Utils from './utils'
 class TextAreaWrapper extends Component {
   render () {
     const {
-      fieldApi,
+      value,
+      error,
+      warning,
+      success,
+      touched,
+      setValue,
+      setTouched,
       onChange,
       onBlur,
       className,
@@ -21,19 +27,17 @@ class TextAreaWrapper extends Component {
       ...rest
     } = this.props
 
-    const { value, error, warning, success, touched, setValue, setTouched } = fieldApi
-
     const type = Utils.getMessageType(error, warning, success)
     const showValidation = Utils.shouldShowValidation({
       valueValidation,
       touchValidation,
       touched,
-      value,
+      value
     })
 
     const classes = classNames(className, 'react-form-input', 'react-form-textarea', {
       [`react-form-input-${type}`]: type && showValidation,
-      [`react-form-textarea-${type}`]: type && showValidation,
+      [`react-form-textarea-${type}`]: type && showValidation
     })
 
     return (

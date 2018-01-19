@@ -7,9 +7,8 @@ import React from 'react'
 import withFormField from '../withFormField'
 
 const NestedFormWrapper = props => {
-  const { children, fieldApi } = props
-
   const {
+    children,
     setValue,
     setError,
     setWarning,
@@ -20,8 +19,8 @@ const NestedFormWrapper = props => {
     validatingField,
     doneValidatingField,
     registerAsyncValidation,
-    reset,
-  } = fieldApi
+    reset
+  } = props
 
   return React.cloneElement(children, {
     // We pass down the fact that the parent form was submitted to the nested form
@@ -29,21 +28,10 @@ const NestedFormWrapper = props => {
     submits,
     reset,
     // Update is an internal method that is used to update the parent form
-    update: ({
-      values,
-      errors,
-      successes,
-      warnings,
-      touched,
-      asyncValidations,
-    }) => {
+    update: ({ values, errors, successes, warnings, touched, asyncValidations }) => {
       const invalid = errors ? Object.keys(errors).some(k => errors[k]) : false
-      const success = successes
-        ? Object.keys(successes).some(k => successes[k])
-        : false
-      const warning = warnings
-        ? Object.keys(warnings).some(k => warnings[k])
-        : false
+      const success = successes ? Object.keys(successes).some(k => successes[k]) : false
+      const warning = warnings ? Object.keys(warnings).some(k => warnings[k]) : false
 
       setValue(values)
       setTouched(touched)
@@ -56,7 +44,7 @@ const NestedFormWrapper = props => {
         doneValidatingField()
       }
     },
-    registerAsyncValidation,
+    registerAsyncValidation
   })
 }
 

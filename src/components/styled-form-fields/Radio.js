@@ -18,7 +18,13 @@ class RadioComp extends Component {
       touchValidation,
       onChange,
       onBlur,
-      fieldApi: { value, setValue, setTouched, error, warning, success, touched },
+      value,
+      setValue,
+      setTouched,
+      error,
+      warning,
+      success,
+      touched,
       ...rest
     } = this.props
 
@@ -27,7 +33,7 @@ class RadioComp extends Component {
       valueValidation,
       touchValidation,
       touched,
-      value,
+      value
     })
 
     const labelClasses = classNames(className, 'react-form-control', 'react-form-control-radio')
@@ -38,8 +44,8 @@ class RadioComp extends Component {
       'react-form-radio',
       {
         [`react-form-input-${type}`]: type && showValidation,
-        [`react-form-radio-${type}`]: type && showValidation,
-      },
+        [`react-form-radio-${type}`]: type && showValidation
+      }
     )
 
     return (

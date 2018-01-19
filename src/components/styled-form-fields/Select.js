@@ -10,7 +10,6 @@ import Utils from './utils'
 class SelectWrapper extends Component {
   render () {
     const {
-      fieldApi,
       options,
       onChange,
       onBlur,
@@ -20,22 +19,27 @@ class SelectWrapper extends Component {
       messageBefore,
       valueValidation,
       touchValidation,
+      value,
+      error,
+      warning,
+      success,
+      touched,
+      setValue,
+      setTouched,
       ...rest
     } = this.props
-
-    const { value, error, warning, success, touched, setValue, setTouched } = fieldApi
 
     const type = Utils.getMessageType(error, warning, success)
     const showValidation = Utils.shouldShowValidation({
       valueValidation,
       touchValidation,
       touched,
-      value,
+      value
     })
 
     const classes = classNames(className, 'react-form-input', 'react-form-select', {
       [`react-form-input-${type}`]: type && showValidation,
-      [`react-form-select-${type}`]: type && showValidation,
+      [`react-form-select-${type}`]: type && showValidation
     })
 
     const resolvedOptions = options.find(d => d.value === '')
@@ -44,9 +48,9 @@ class SelectWrapper extends Component {
         {
           label: placeholder || 'Select One...',
           value: '',
-          disabled: true,
+          disabled: true
         },
-        ...options,
+        ...options
       ]
 
     const nullIndex = resolvedOptions.findIndex(d => d.value === '')

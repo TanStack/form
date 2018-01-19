@@ -7,7 +7,9 @@ import withFormField from '../withFormField'
 class SelectWrapper extends Component {
   render () {
     const {
-      fieldApi,
+      value,
+      setValue,
+      setTouched,
       options,
       onChange,
       onBlur,
@@ -15,23 +17,19 @@ class SelectWrapper extends Component {
       ...rest
     } = this.props
 
-    const { value, setValue, setTouched } = fieldApi
-
     const resolvedOptions = options.find(d => d.value === '')
       ? options
       : [
         {
           label: placeholder || 'Select One...',
           value: '',
-          disabled: true,
+          disabled: true
         },
-        ...options,
+        ...options
       ]
 
     const nullIndex = resolvedOptions.findIndex(d => d.value === '')
-    const selectedIndex = resolvedOptions.findIndex(
-      d => d.value === value,
-    )
+    const selectedIndex = resolvedOptions.findIndex(d => d.value === value)
 
     return (
       <select
