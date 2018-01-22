@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 
 /* ------------- Form  Library Imports -------------- */
-import { Form, Text, FieldContext } from '../../src/'
+import { Form, Text, NestedField } from '../../src/'
 
 /* ---------------- Other Imports ------------------ */
 
@@ -95,9 +95,9 @@ class ArrayOfNestedForms extends Component {
           {formApi => (
             <div>
               <form onSubmit={formApi.submitForm} id="form3">
-                <FieldContext field={['friends', 0]} component={Friend} />
-                <FieldContext field={['friends', 1]} component={Friend} />
-                <FieldContext field={['friends', 2]} component={Friend} />
+                <NestedField field={['friends', 0]} component={Friend} />
+                <NestedField field={['friends', 1]} component={Friend} />
+                <NestedField field={['friends', 2]} component={Friend} />
                 <button type="submit" className="mb-4 btn btn-primary">
                   Submit
                 </button>

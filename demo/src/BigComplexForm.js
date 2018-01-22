@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import Data from './Data'
 
 /* ------------- Form  Library Imports -------------- */
-import { Form, Text, Radio, FieldContext } from '../../src/'
+import { Form, Text, Radio, NestedField } from '../../src/'
 
 /* ------------------ Validators ----------------- */
 
@@ -134,7 +134,7 @@ const NestedForm1 = () => (
     Red: <Text field="red" />
     Green: <Text field="green" />
     Blue: <Text field="blue" />
-    Food: <FieldContext field="food" component={NestedForm2} />
+    Food: <NestedField field="food" component={NestedForm2} />
   </div>
 )
 
@@ -148,7 +148,7 @@ const TestForm = () => (
 const TestNestedForm = ({ index }) => (
   <div>
     Form Index {index}:{' '}
-    <FieldContext field={['forms', index]} key={`bar${index}`} component={TestForm} />
+    <NestedField field={['forms', index]} key={`bar${index}`} component={TestForm} />
   </div>
 )
 
@@ -202,10 +202,10 @@ const FormContent = ({ formApi, aprop }) => {
           f: <Text field="f" />
           g: <Text field="g" />
           h: <Text field="h" />
-          <FieldContext field="color" component={NestedForm1} aprop={aprop} />
+          <NestedField field="color" component={NestedForm1} aprop={aprop} />
           <NestedForms />
           <Group field="hideform" />
-          {!hidden ? <FieldContext field="hidden" component={HiddenForm} /> : null}
+          {!hidden ? <NestedField field="hidden" component={HiddenForm} /> : null}
           <button type="submit" className="mb-2 btn btn-primary">
             Submit
           </button>

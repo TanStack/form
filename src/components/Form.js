@@ -89,14 +89,10 @@ class Form extends Component {
       // Inciment submit
       this.props.dispatch(actions.submits())
     }
-    const didUpdate = JSON.stringify(nextProps.formState) !== JSON.stringify(this.props.formState)
-    // Call form did update
-    if (this.props.formDidUpdate && didUpdate) {
-      this.props.formDidUpdate(newState(nextProps.formState))
-    }
-    // Call update function if it exists
-    if (this.props.update && didUpdate) {
-      this.props.update(newState(nextProps.formState))
+    const didUpdate = Utils.isDeepEqual(nextProps.formState, this.props.formState)
+    // Call onChange function if it exists
+    if (this.props.onChange && didUpdate) {
+      this.props.onChange(newState(nextProps.formState))
     }
   }
 

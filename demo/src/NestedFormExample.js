@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 
 /* ------------- Form  Library Imports -------------- */
-import { Form, Text, FieldContext } from '../../src/'
+import { Form, Text, NestedField } from '../../src/'
 
 /* ---------------- Other Imports ------------------ */
 
@@ -11,7 +11,7 @@ import Code from './Code'
 
 /* ------------------ Form Stuff --------------------*/
 
-const nestedFormApi = {}
+const nestedFieldApi = {}
 
 const QuestionFields = () => (
   <div>
@@ -29,7 +29,7 @@ const FormContent = ({ formApi, submittedValues }) => (
     <form onSubmit={formApi.submitForm} id="form4">
       <label htmlFor="firstName3">First name</label>
       <Text field="firstName" id="firstName3" />
-      <FieldContext field="questions" component={QuestionFields} />
+      <NestedField field="questions" component={QuestionFields} />
       <button type="submit" className="mb-4 btn btn-primary">
         Submit
       </button>
@@ -48,7 +48,7 @@ const FormContent = ({ formApi, submittedValues }) => (
         <Data title="Values" reference="formApi.values" data={formApi.values} />
       </div>
       <div className="col-sm-6">
-        <Data title="Values" reference="nestedFormsApi.values" data={nestedFormApi.values} />
+        <Data title="Values" reference="nestedFormsApi.values" data={nestedFieldApi.values} />
       </div>
     </div>
     <div className="row">
@@ -56,7 +56,7 @@ const FormContent = ({ formApi, submittedValues }) => (
         <Data title="Touched" reference="formApi.touched" data={formApi.touched} />
       </div>
       <div className="col-sm-6">
-        <Data title="Touched" reference="nestedFormsApi.touched" data={nestedFormApi.touched} />
+        <Data title="Touched" reference="nestedFormsApi.touched" data={nestedFieldApi.touched} />
       </div>
     </div>
     <div className="row">
@@ -67,7 +67,7 @@ const FormContent = ({ formApi, submittedValues }) => (
         <Data
           title="Submission attempts"
           reference="nestedFormsApi.submits"
-          data={nestedFormApi.submits}
+          data={nestedFieldApi.submits}
         />
       </div>
     </div>
@@ -79,7 +79,7 @@ const FormContent = ({ formApi, submittedValues }) => (
         <Data
           title="Submitted"
           reference="nestedFormsApi.submitted"
-          data={nestedFormApi.submitted}
+          data={nestedFieldApi.submitted}
         />
       </div>
     </div>

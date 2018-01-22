@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 
 /* ------------- Form  Library Imports -------------- */
-import { Form, Text, FieldContext } from '../../src/'
+import { Form, Text, NestedField } from '../../src/'
 
 /* ---------------- Other Imports ------------------ */
 
@@ -189,7 +189,7 @@ const NestedFormContent = () => (
   <div>
     <label htmlFor="username3">Nested Username</label>
     <Text field="username" id="username3" />
-    <FieldContext field="nestednested" component={NestedNestedFormContent} />
+    <NestedField field="nestednested" component={NestedNestedFormContent} />
   </div>
 )
 
@@ -198,7 +198,7 @@ const FormContent = ({ formApi }) => (
     <form onSubmit={formApi.submitForm} id="form7">
       <label htmlFor="username2">Username</label>
       <Text field="username" id="username2" />
-      <FieldContext field="nested" component={NestedFormContent} />
+      <NestedField field="nested" component={NestedFormContent} />
       <button type="submit" className="mb-4 btn btn-primary">
         Submit
       </button>

@@ -3,8 +3,8 @@ import Field from './components/Field'
 import withField from './components/withField'
 import FormApi from './components/FormApi'
 import withFormApi from './components/withFormApi'
-import FieldContext from './components/FieldContext'
-import withFieldContext from './components/withFieldContext'
+import NestedField from './components/NestedField'
+import withNestedField from './components/withNestedField'
 
 import Text from './components/form-fields/Text'
 import Radio from './components/form-fields/Radio'
@@ -24,8 +24,8 @@ export {
   withField,
   FormApi,
   withFormApi,
-  FieldContext,
-  withFieldContext,
+  NestedField,
+  withNestedField,
   Text,
   Radio,
   TextArea,

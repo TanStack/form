@@ -149,17 +149,17 @@ const ExampleForm = () => (
         <h5 className="mb-4">
           The <code>formApi</code> attributes ( <code>formState</code> ):
         </h5>
-        <FormApi formApi={formApi} />
+        <FieldApi formApi={formApi} />
         <h5 className="mb-4">
           The <code>formApi</code> methods:
         </h5>
-        <FormApiMethods formApi={formApi} />
+        <FieldApiMethods formApi={formApi} />
       </div>
     )}
   </Form>
 )
 
-const FormApi = ({ formApi }) => (
+const FieldApi = ({ formApi }) => (
   <div>
     <table className="table" style={{ tableLayout: 'fixed' }}>
       <thead className="thead-inverse">
@@ -351,7 +351,7 @@ const FormApi = ({ formApi }) => (
   </div>
 )
 
-const FormApiMethods = ({ formApi }) => (
+const FieldApiMethods = ({ formApi }) => (
   <div>
     <table className="table" style={{ tableLayout: 'fixed' }}>
       <thead className="thead-inverse">

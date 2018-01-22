@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 //
 
-class FieldContext extends React.Component {
+class NestedField extends React.Component {
   getChildContext () {
     return {
       formApi: this.getFormApi()
@@ -12,13 +12,11 @@ class FieldContext extends React.Component {
 
   componentWillMount () {
     this.buildApi(this.props)
-    this.setDefaults(this.props)
   }
 
   componentWillReceiveProps (next) {
     if (next.field !== this.props.field) {
       this.buildApi(next)
-      this.setDefaults(this.props)
     }
   }
 
@@ -58,18 +56,6 @@ class FieldContext extends React.Component {
     }
   }
 
-  setDefaults = props => {
-    if (!props.defaultValue) {
-      return
-    }
-    const formApi = this.getFormApi()
-    const currentValue = formApi.getValue()
-    if (currentValue) {
-      return
-    }
-    formApi.setValue(props.defaultValue)
-  }
-
   render () {
     const { render, component, children, ...rest } = this.props
 
@@ -86,12 +72,12 @@ class FieldContext extends React.Component {
   }
 }
 
-FieldContext.contextTypes = {
+NestedField.contextTypes = {
   formApi: PropTypes.object
 }
 
-FieldContext.childContextTypes = {
+NestedField.childContextTypes = {
   formApi: PropTypes.object
 }
 
-export default FieldContext
+export default NestedField
