@@ -115,9 +115,14 @@ const ExampleForm = () => (
         <div>
           Friends
           {values.friends.map((friend, i) => (
-            <NestedField field={['friends', i]} render={() => (
-              <UserFields /> // Now the user fields will map to each friend!
-            )} />
+            <div>
+              <NestedField field={['friends', i]} render={() => (
+                <UserFields /> // Now the user fields will map to each friend!
+              )} />
+              <button onClick={() => removeValue('friends', i)>
+                Remove Friend
+              </div>
+            </div>
           ))}
           <button onClick={() => addValue('friends', {})>
             Add Friend
