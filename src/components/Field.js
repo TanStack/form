@@ -41,10 +41,6 @@ class Field extends React.Component {
       children: null
     }
 
-    // TODO debug async error issue
-    // console.log("WTF1", Utils.get( currentApi.errors, field ) );
-    // console.log("WTF2", Utils.get( nextApi.errors, field ) );
-
     const shouldUpdate =
       Utils.get(nextFormState.values, field) !== Utils.get(currentFormState.values, field) ||
       Utils.get(nextFormState.touched, field) !== Utils.get(currentFormState.touched, field) ||

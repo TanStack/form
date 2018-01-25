@@ -1,3 +1,5 @@
+import Utils from '../utils'
+
 export const SET_FORM_STATE = 'SET_FORM_STATE'
 export function setFormState (formState) {
   return { type: SET_FORM_STATE, formState }
@@ -140,16 +142,15 @@ export function validationSuccess (field) {
 
 export function asyncValidate (field, validators = () => ({})) {
   return async (dispatch, getState) => {
-    // Field could be array, if so we pull of the first param
-    const fld = Array.isArray(field) ? field[0] : field
+    const validator = Utils.get(validators, field)
     // Only validate if there exists an async validator for this field
     // AND a syncronous validation does not exist
-    if (validators[fld] && !getState().errors[fld]) {
+    if (validator && !Utils.get(getState().errors, field)) {
       // We are validating the specified field
       dispatch(validatingField(field))
       try {
         // Call the asyncrounous validation function
-        const result = await validators[fld](getState().values[fld])
+        const result = await validator(Utils.get(getState().values, field))
         // TODO null check on result??? Should we make the user return object
         // Dispatch the setters for error, success and warning if they exsit on object
         if (Object.prototype.hasOwnProperty.call(result, 'error')) {

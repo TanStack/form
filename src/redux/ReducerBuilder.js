@@ -153,13 +153,9 @@ const setSuccess = (state, action) => {
 const setAsyncWarning = (state, action) => {
   const { field, warning } = action
 
-  const newWarnings = JSON.parse(JSON.stringify(state.asyncWarnings))
+  let newWarnings = JSON.parse(JSON.stringify(state.asyncWarnings))
 
-  if (Array.isArray(field)) {
-    newWarnings[field[0]] = warning
-  } else {
-    newWarnings[field] = warning
-  }
+  newWarnings = Utils.set(newWarnings, field, warning)
 
   return {
     ...state,
@@ -170,13 +166,9 @@ const setAsyncWarning = (state, action) => {
 const setAsyncError = (state, action) => {
   const { field, error } = action
 
-  const newErrors = JSON.parse(JSON.stringify(state.asyncErrors))
+  let newErrors = JSON.parse(JSON.stringify(state.asyncErrors))
 
-  if (Array.isArray(field)) {
-    newErrors[field[0]] = error
-  } else {
-    newErrors[field] = error
-  }
+  newErrors = Utils.set(newErrors, field, error)
 
   return {
     ...state,
@@ -187,13 +179,9 @@ const setAsyncError = (state, action) => {
 const setAsyncSuccess = (state, action) => {
   const { field, success } = action
 
-  const newSuccesses = JSON.parse(JSON.stringify(state.asyncSuccesses))
+  let newSuccesses = JSON.parse(JSON.stringify(state.asyncSuccesses))
 
-  if (Array.isArray(field)) {
-    newSuccesses[field[0]] = success
-  } else {
-    newSuccesses[field] = success
-  }
+  newSuccesses = Utils.set(newSuccesses, field, success)
 
   return {
     ...state,

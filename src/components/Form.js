@@ -11,12 +11,11 @@ import Utils from '../utils'
 
 /* ----- Recursive Check to see if form is valid  -----*/
 
-// TODO maybe a better way to do this
-const isFormValid = errors => {
+const isNotValid = errors => {
   if (Array.isArray(errors)) {
-    return errors.some(k => isFormValid(k))
+    return errors.some(k => isNotValid(k))
   } else if (errors !== null && typeof errors === 'object') {
-    return Object.keys(errors).some(k => isFormValid(errors[k]))
+    return Object.keys(errors).some(k => isNotValid(errors[k]))
   }
   return errors
 }
@@ -27,6 +26,7 @@ const newState = state => JSON.parse(JSON.stringify(state))
 /* ---------- Form Component ----------*/
 
 class Form extends Component {
+
   constructor (props) {
     super(props)
     this.asyncValidators = []
@@ -62,8 +62,7 @@ class Form extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    // const didUpdate = Utils.isDeepEqual(nextProps.formState, this.props.formState);
-    const didUpdate = JSON.stringify(nextProps.formState) !== JSON.stringify(this.props.formState)
+    const didUpdate = !Utils.isDeepEqual(nextProps.formState, this.props.formState)
     // Call onChange function if it exists
     if (this.props.onChange && didUpdate) {
       this.props.onChange(newState(nextProps.formState))
@@ -95,20 +94,8 @@ class Form extends Component {
     }
   }
 
-  getFormState = () => {
+  getFormState () {
     return newState(this.props.formState)
-  }
-
-  get errors () {
-    return Object.assign({}, this.props.formState.errors, this.props.formState.asyncErrors)
-  }
-
-  get warnings () {
-    return Object.assign({}, this.props.formState.warnings, this.props.formState.asyncWarnings)
-  }
-
-  get successes () {
-    return Object.assign({}, this.props.formState.successes, this.props.formState.asyncSuccesses)
   }
 
   setValue = (field, value) => {
@@ -277,17 +264,9 @@ class Form extends Component {
     this.props.dispatch(actions.validate())
     // update submits
     this.props.dispatch(actions.submits())
-    // We prevent default, by default, unless override is passed
-    if (e && e.preventDefault && !this.props.dontPreventDefault) {
-      e.preventDefault(e)
-    }
-    // We need to prevent default if override is passed and form is invalid
-    if (this.props.dontPreventDefault) {
-      const invalid = isFormValid(this.errors)
-      if (invalid && e && e.preventDefault) {
-        e.preventDefault(e)
-      }
-    }
+    // prevent default
+    e.preventDefault(e)
+    // finish submission process
     this.finishSubmission(e)
   }
 
@@ -300,27 +279,34 @@ class Form extends Component {
       this.props.dispatch(actions.submitting(false))
       throw err
     }
+    // Pull off errors from form state
+    const {
+      errors,
+      asyncErrors
+    } = this.props.formState
     // Only submit if we have no errors
-    const errors = this.errors
-    const invalid = isFormValid(errors)
+    const invalid = isNotValid(errors)
+    const asyncInvalid = isNotValid(asyncErrors)
     // Call on validation fail if we are invalid
-    if (invalid && this.props.onSubmitFailure) {
-      this.props.onSubmitFailure(errors, this.api, this.getFormState())
+    if ((invalid || asyncInvalid) && this.props.onSubmitFailure) {
+      this.props.onSubmitFailure(errors)
     }
-    // Only update submitted if we are not invalid and there are no active asynchronous validations
-    if (!invalid && this.props.formState.asyncValidations === 0) {
+    // Only update submitted if we are not invalid
+    // And there are no active asynchronous validations
+    if (!(invalid || asyncInvalid) && this.props.formState.asyncValidations === 0) {
       let values = JSON.parse(JSON.stringify(this.props.formState.values))
       // Call pre submit
       if (this.props.preSubmit) {
-        values = this.props.preSubmit(values, this.api, this.getFormState())
+        values = this.props.preSubmit(values)
       }
       // Update submitted
       this.props.dispatch(actions.submitted())
+      // If onSubmit was passed then call it
       if (this.props.onSubmit) {
         try {
-          await this.props.onSubmit(values, e, this.api, this.getFormState())
+          await this.props.onSubmit(values)
         } catch (error) {
-          this.props.onSubmitFailure({}, this.api, this.getFormState(), error)
+          this.props.onSubmitFailure({}, error)
         }
       }
     }
@@ -358,15 +344,13 @@ class Form extends Component {
       ...formState
     }
 
+    const componentProps = {
+      formApi,
+      formState
+    }
+
     if (component) {
-      return React.createElement(
-        component,
-        {
-          formApi,
-          formState
-        },
-        children
-      )
+      return React.createElement(component, componentProps, children)
     }
     if (render) {
       return render(inlineProps)
@@ -374,13 +358,7 @@ class Form extends Component {
     if (typeof children === 'function') {
       return children(inlineProps)
     }
-    return React.cloneElement(
-      children,
-      {
-        formApi,
-        formState
-      }
-    )
+    return children
   }
 }
 
@@ -405,7 +383,14 @@ const FormContainer = connect(mapStateToProps, mapDispatchToProps)(Form)
 class ReactForm extends Component {
   constructor (props) {
     super(props)
-    const { validateError, validateWarning, validateSuccess, preValidate, defaultValues } = props
+
+    const {
+      validateError,
+      validateWarning,
+      validateSuccess,
+      preValidate,
+      defaultValues
+    } = props
 
     this.store = createStore(
       ReducerBuilder.build({
