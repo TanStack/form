@@ -1,8 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-//
-
 import Utils from '../utils'
 
 class Field extends React.Component {
@@ -12,10 +10,10 @@ class Field extends React.Component {
   // We want to set touched to true when the form was submitted
   componentWillReceiveProps (nextProps, nextContext) {
     this.buildApi(nextProps)
-    if (nextContext.formApi.submitted !== this.context.formApi.submitted) {
+    if (nextContext.formState.submitted !== this.context.formState.submitted) {
       this.context.formApi.setTouched(this.props.field, true, false)
     }
-    if (nextContext.formApi.submits !== this.context.formApi.submits) {
+    if (nextContext.formState.submits !== this.context.formState.submits) {
       this.context.formApi.setTouched(this.props.field, true, false)
     }
   }
@@ -24,8 +22,8 @@ class Field extends React.Component {
   shouldComponentUpdate (nextProps, nextState, nextContext) {
     // Grab needed values
     const field = this.props.field
-    const currentApi = this.context.formApi
-    const nextApi = nextContext.formApi
+    const currentFormState = this.context.formState
+    const nextFormState = nextContext.formState
     const pure = nextProps.pure
 
     // When pure, we need to check props and form state to determine if we
@@ -48,16 +46,15 @@ class Field extends React.Component {
     // console.log("WTF2", Utils.get( nextApi.errors, field ) );
 
     const shouldUpdate =
-      Utils.get(nextApi.values, field) !== Utils.get(currentApi.values, field) ||
-      Utils.get(nextApi.touched, field) !== Utils.get(currentApi.touched, field) ||
-      Utils.get(nextApi.errors, field) !== Utils.get(currentApi.errors, field) ||
-      Utils.get(nextApi.warnings, field) !== Utils.get(currentApi.warnings, field) ||
-      Utils.get(nextApi.successes, field) !== Utils.get(currentApi.successes, field) ||
-      Utils.get(nextApi.validating, field) !== Utils.get(currentApi.validating, field) ||
-      Utils.get(nextApi.validationFailed, field) !==
-        Utils.get(currentApi.validationFailed, field) ||
+      Utils.get(nextFormState.values, field) !== Utils.get(currentFormState.values, field) ||
+      Utils.get(nextFormState.touched, field) !== Utils.get(currentFormState.touched, field) ||
+      Utils.get(nextFormState.errors, field) !== Utils.get(currentFormState.errors, field) ||
+      Utils.get(nextFormState.warnings, field) !== Utils.get(currentFormState.warnings, field) ||
+      Utils.get(nextFormState.successes, field) !== Utils.get(currentFormState.successes, field) ||
+      Utils.get(nextFormState.validating, field) !== Utils.get(currentFormState.validating, field) ||
+      Utils.get(nextFormState.validationFailed, field) !== Utils.get(currentFormState.validationFailed, field) ||
       !Utils.isShallowEqual(nextNonChildrenProps, nonChildrenProps) ||
-      nextContext.formApi.submits !== this.context.formApi.submits
+      nextFormState.submits !== currentFormState.submits
 
     return shouldUpdate || false
   }
@@ -77,11 +74,7 @@ class Field extends React.Component {
       removeValue: index => formApi.addValue(field, index),
       swapValues: (...args) => formApi.addValue(field, ...args),
       validatingField: () => formApi.validatingField(field),
-      doneValidatingField: () => formApi.doneValidatingField(field),
-      reset: () => formApi.reset(field),
-      registerAsyncValidation: formApi.registerAsyncValidation,
-      submitted: formApi.submitted,
-      submits: formApi.submits
+      doneValidatingField: () => formApi.doneValidatingField(field)
     }
 
     this.getFieldValues = () => ({
@@ -125,7 +118,8 @@ class Field extends React.Component {
 }
 
 Field.contextTypes = {
-  formApi: PropTypes.object
+  formApi: PropTypes.object,
+  formState: PropTypes.object
 }
 
 export default Field

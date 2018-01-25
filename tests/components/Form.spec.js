@@ -2,43 +2,23 @@ import React from 'react'
 import { expect } from 'chai'
 import sinon from 'sinon'
 import Enzyme, { mount } from 'enzyme'
-import EnzymeAdapter from 'enzyme-adapter-react-16'
+// import Adapter from 'enzyme-adapter-react-16'
 
-//
+// Enzyme.configure({ adapter: new Adapter() })
 
 import { Form, Text } from '../../src'
-
-Enzyme.configure({ adapter: new EnzymeAdapter() })
 
 describe('Form', () => {
   const sandbox = sinon.sandbox.create()
 
   const checkFormApi = api => {
-    const formApi = {
-      values: {},
-      errors: {},
-      warnings: {},
-      successes: {},
-      touched: {},
-      asyncValidations: 0,
-      validating: {},
-      validationFailures: 0,
-      validationFailed: {},
-      submitted: false,
-      submits: 0,
-      submitting: false
-    }
-    expect(JSON.stringify(api)).to.deep.equal(JSON.stringify(formApi))
     expect(api).to.have.own.property('getError')
     expect(api).to.have.own.property('getSuccess')
     expect(api).to.have.own.property('getTouched')
     expect(api).to.have.own.property('getValue')
     expect(api).to.have.own.property('getWarning')
     expect(api).to.have.own.property('getFormState')
-    expect(api).to.have.own.property('registerAsyncValidation')
-    expect(api).to.have.own.property('reset')
     expect(api).to.have.own.property('resetAll')
-    expect(api).to.have.own.property('format')
     expect(api).to.have.own.property('setError')
     expect(api).to.have.own.property('setSuccess')
     expect(api).to.have.own.property('setTouched')
@@ -50,9 +30,28 @@ describe('Form', () => {
     expect(api).to.have.own.property('setWarning')
     expect(api).to.have.own.property('swapValues')
     expect(api).to.have.own.property('removeValue')
-    expect(api).to.have.own.property('validatingField')
     expect(api).to.have.own.property('addValue')
-    expect(api).to.have.own.property('doneValidatingField')
+  }
+
+  const checkFormState = state => {
+    const formState = {
+      values: {},
+      touched: {},
+      errors: {},
+      warnings: {},
+      successes: {},
+      asyncErrors: {},
+      asyncWarnings: {},
+      asyncSuccesses: {},
+      validating: {},
+      validationFailed: {},
+      validationFailures: 0,
+      asyncValidations: 0,
+      submitted: false,
+      submits: 0,
+      submitting: false
+    }
+    expect(JSON.stringify(state)).to.deep.equal(JSON.stringify(formState))
   }
 
   const getState = state => {
@@ -80,9 +79,9 @@ describe('Form', () => {
     sandbox.restore()
   })
 
-  it('should call formDidUpdate function when value changes', () => {
+  it('should call onChange function when value changes', () => {
     const spy = sandbox.spy()
-    const wrapper = mount(<Form formDidUpdate={spy}>{() => <Text field="greeting" />}</Form>)
+    const wrapper = mount(<Form onChange={spy}>{() => <Text field="greeting" />}</Form>)
     const input = wrapper.find('input')
     input.simulate('change', { target: { value: 'hello' } })
     expect(spy.called).to.equal(true)
@@ -336,9 +335,10 @@ describe('Form', () => {
     mount(<Form>{api => inputs(api)}</Form>)
   })
 
-  it('should give render function access to formApi', done => {
+  it('should give render function access to formApi and formState', done => {
     const inputs = api => {
       checkFormApi(api)
+      checkFormState(api)
       done()
     }
     mount(<Form render={inputs} />)
@@ -374,7 +374,7 @@ describe('Form', () => {
       return <Text field="name" />
     }
     const wrapper = mount(<Form validateError={validate}>{api => inputs(api)}</Form>)
-    expect(currentErrors).to.deep.equal({ name: null })
+    expect(currentErrors).to.deep.equal({})
     const input = wrapper.find('input')
     input.simulate('change', { target: { value: 'Foo' } })
     expect(currentErrors).to.deep.equal({ name: 'ooo thats no good' })
@@ -390,7 +390,7 @@ describe('Form', () => {
       return <Text field="name" />
     }
     const wrapper = mount(<Form validateWarning={validate}>{api => inputs(api)}</Form>)
-    expect(currentWarnings).to.deep.equal({ name: null })
+    expect(currentWarnings).to.deep.equal({})
     const input = wrapper.find('input')
     input.simulate('change', { target: { value: 'Foo' } })
     expect(currentWarnings).to.deep.equal({ name: 'ooo thats no good' })
@@ -406,7 +406,7 @@ describe('Form', () => {
       return <Text field="name" />
     }
     const wrapper = mount(<Form validateSuccess={validate}>{api => inputs(api)}</Form>)
-    expect(currentSuccesses).to.deep.equal({ name: null })
+    expect(currentSuccesses).to.deep.equal({})
     const input = wrapper.find('input')
     input.simulate('change', { target: { value: 'Foo' } })
     expect(currentSuccesses).to.deep.equal({ name: 'ooo thats awesome!' })
@@ -438,7 +438,7 @@ describe('Form', () => {
       input.simulate('change', { target: { value: 'Foo' } })
       expect(api.getFormState()).to.deep.equal(
         getState({
-          errors: { greeting: null },
+          errors: {},
           values: { greeting: 'Foo' }
         })
       )
@@ -504,7 +504,7 @@ describe('Form', () => {
     button.simulate('submit')
     setImmediate(() => {
       expect(spy.called).to.equal(true)
-      const { args: [[validationErrors, , submitError]] } = spy
+      const { args: [[validationErrors, , , submitError]] } = spy
       expect(validationErrors).to.deep.equal({})
       expect(submitError).to.equal(error)
       done()
@@ -533,7 +533,7 @@ describe('Form', () => {
     button.simulate('submit')
     setImmediate(() => {
       expect(spy.called).to.equal(true)
-      const { args: [[validationErrors, , submitError]] } = spy
+      const { args: [[validationErrors, , , submitError]] } = spy
       expect(validationErrors).to.deep.equal({})
       expect(submitError).to.equal(error)
       done()

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { PrismCode } from 'react-prism'
 
 class Data extends Component {
   render () {
@@ -16,7 +17,7 @@ class Data extends Component {
         ) : null}
         <pre>
           <pre>
-            <code className="language-json">{code}</code>
+            <PrismCode className="language-json">{code}</PrismCode>
           </pre>
         </pre>
       </div>

@@ -1,14 +1,28 @@
 /* ------------- Imports -------------- */
 import React, { Component } from 'react'
-// import { PrismCode } from 'react-prism'
-// import rawStyles from 'raw-loader!./styles.txt';
+import { PrismCode } from 'react-prism'
 
 // TODO Break this file apart... its way to big :)
 
 /* ------------- Form  Library Imports -------------- */
 import { Form, Text } from '../../src/'
 
-import Data from './Data'
+const rawStyles = `
+input {
+  margin-bottom: 1rem;
+  display: block;
+}
+
+textarea {
+  margin-bottom: 1rem;
+  display: block;
+}
+
+select {
+  margin-bottom: 1rem;
+  display: block;
+}
+`
 
 const childRender = ` <Form>
     { formApi => (
@@ -175,7 +189,7 @@ const FieldApi = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-json">{JSON.stringify(formApi.values)}</code>
+                <PrismCode className="language-json">{JSON.stringify(formApi.values)}</PrismCode>
               </pre>
             </pre>
           </td>
@@ -189,7 +203,7 @@ const FieldApi = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-json">{JSON.stringify(formApi.touched)}</code>
+                <PrismCode className="language-json">{JSON.stringify(formApi.touched)}</PrismCode>
               </pre>
             </pre>
           </td>
@@ -204,7 +218,7 @@ const FieldApi = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-json">{JSON.stringify(formApi.errors)}</code>
+                <PrismCode className="language-json">{JSON.stringify(formApi.errors)}</PrismCode>
               </pre>
             </pre>
           </td>
@@ -219,7 +233,7 @@ const FieldApi = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-json">{JSON.stringify(formApi.warnings)}</code>
+                <PrismCode className="language-json">{JSON.stringify(formApi.warnings)}</PrismCode>
               </pre>
             </pre>
           </td>
@@ -235,7 +249,7 @@ const FieldApi = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-json">{JSON.stringify(formApi.successes)}</code>
+                <PrismCode className="language-json">{JSON.stringify(formApi.successes)}</PrismCode>
               </pre>
             </pre>
           </td>
@@ -251,7 +265,7 @@ const FieldApi = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-json">{JSON.stringify(formApi.submits)}</code>
+                <PrismCode className="language-json">{JSON.stringify(formApi.submits)}</PrismCode>
               </pre>
             </pre>
           </td>
@@ -262,7 +276,7 @@ const FieldApi = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-json">{JSON.stringify(formApi.submitted)}</code>
+                <PrismCode className="language-json">{JSON.stringify(formApi.submitted)}</PrismCode>
               </pre>
             </pre>
           </td>
@@ -276,7 +290,7 @@ const FieldApi = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-json">{JSON.stringify(formApi.submitting)}</code>
+                <PrismCode className="language-json">{JSON.stringify(formApi.submitting)}</PrismCode>
               </pre>
             </pre>
           </td>
@@ -287,7 +301,7 @@ const FieldApi = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-json">{JSON.stringify(formApi.asyncValidations)}</code>
+                <PrismCode className="language-json">{JSON.stringify(formApi.asyncValidations)}</PrismCode>
               </pre>
             </pre>
           </td>
@@ -302,7 +316,7 @@ const FieldApi = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-json">{JSON.stringify(formApi.validating)}</code>
+                <PrismCode className="language-json">{JSON.stringify(formApi.validating)}</PrismCode>
               </pre>
             </pre>
           </td>
@@ -318,7 +332,7 @@ const FieldApi = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-json">{JSON.stringify(formApi.validationFailures)}</code>
+                <PrismCode className="language-json">{JSON.stringify(formApi.validationFailures)}</PrismCode>
               </pre>
             </pre>
           </td>
@@ -335,7 +349,7 @@ const FieldApi = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-json">{JSON.stringify(formApi.validationFailed)}</code>
+                <PrismCode className="language-json">{JSON.stringify(formApi.validationFailed)}</PrismCode>
               </pre>
             </pre>
           </td>
@@ -367,7 +381,7 @@ const FieldApiMethods = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">submitForm( event )</code>
+                <PrismCode className="language-jsx">submitForm( event )</PrismCode>
               </pre>
             </pre>
           </td>
@@ -390,7 +404,7 @@ const FieldApiMethods = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">setValue( 'hello', 'HelloWorld!' )</code>
+                <PrismCode className="language-jsx">setValue( 'hello', 'HelloWorld!' )</PrismCode>
               </pre>
             </pre>
           </td>
@@ -404,7 +418,7 @@ const FieldApiMethods = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">setAllValues( {"{ hello: 'HelloWorld!' }"} )</code>
+                <PrismCode className="language-jsx">setAllValues( {"{ hello: 'HelloWorld!' }"} )</PrismCode>
               </pre>
             </pre>
           </td>
@@ -419,7 +433,7 @@ const FieldApiMethods = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">setError( 'hello', 'Error message!' )</code>
+                <PrismCode className="language-jsx">setError( 'hello', 'Error message!' )</PrismCode>
               </pre>
             </pre>
           </td>
@@ -433,7 +447,7 @@ const FieldApiMethods = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">setWarning( 'hello', 'Warning message!' )</code>
+                <PrismCode className="language-jsx">setWarning( 'hello', 'Warning message!' )</PrismCode>
               </pre>
             </pre>
           </td>
@@ -447,7 +461,7 @@ const FieldApiMethods = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">setSuccess( 'hello', 'Success message!' )</code>
+                <PrismCode className="language-jsx">setSuccess( 'hello', 'Success message!' )</PrismCode>
               </pre>
             </pre>
           </td>
@@ -461,7 +475,7 @@ const FieldApiMethods = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">setTouched( 'hello', true )</code>
+                <PrismCode className="language-jsx">setTouched( 'hello', true )</PrismCode>
               </pre>
             </pre>
           </td>
@@ -475,7 +489,7 @@ const FieldApiMethods = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">setAllTouched( {'{ hello: true }'} )</code>
+                <PrismCode className="language-jsx">setAllTouched( {'{ hello: true }'} )</PrismCode>
               </pre>
             </pre>
           </td>
@@ -490,7 +504,7 @@ const FieldApiMethods = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">addValue( 'hello', 'value!' )</code>
+                <PrismCode className="language-jsx">addValue( 'hello', 'value!' )</PrismCode>
               </pre>
             </pre>
           </td>
@@ -505,7 +519,7 @@ const FieldApiMethods = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">removeValue( 'hello', 3 )</code>
+                <PrismCode className="language-jsx">removeValue( 'hello', 3 )</PrismCode>
               </pre>
             </pre>
           </td>
@@ -520,7 +534,7 @@ const FieldApiMethods = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">swapValues( 'friends', 0, 2 )</code>
+                <PrismCode className="language-jsx">swapValues( 'friends', 0, 2 )</PrismCode>
               </pre>
             </pre>
           </td>
@@ -534,7 +548,7 @@ const FieldApiMethods = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">resetAll()</code>
+                <PrismCode className="language-jsx">resetAll()</PrismCode>
               </pre>
             </pre>
           </td>
@@ -545,7 +559,7 @@ const FieldApiMethods = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">getFormState()</code>
+                <PrismCode className="language-jsx">getFormState()</PrismCode>
               </pre>
             </pre>
           </td>
@@ -559,7 +573,7 @@ const FieldApiMethods = ({ formApi }) => (
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">setFormState()</code>
+                <PrismCode className="language-jsx">setFormState()</PrismCode>
               </pre>
             </pre>
           </td>
@@ -669,7 +683,7 @@ const FormProps = () => (
             three parameters: the form values, the submission event, and the formApi. <br />
             <pre>
               <pre>
-                <code className="language-jsx">onSubmit( values, e, formApi )</code>
+                <PrismCode className="language-jsx">onSubmit( values, e, formApi )</PrismCode>
               </pre>
             </pre>
           </td>
@@ -692,10 +706,10 @@ const FormProps = () => (
             invalid form!<br />
             <pre>
               <pre>
-                <code className="language-jsx">
+                <PrismCode className="language-jsx">
                   preSubmit( values, formApi ) =>{' '}
                   {'({ firstName: values.firstName + "!", lastName: values.lastName})'}
-                </code>
+                </PrismCode>
               </pre>
             </pre>
           </td>
@@ -715,9 +729,9 @@ const FormProps = () => (
             <code>onSubmit</code>. <br />
             <pre>
               <pre>
-                <code className="language-jsx">
+                <PrismCode className="language-jsx">
                   onSubmitFailure( errors, formApi, onSubmitError )
-                </code>
+                </PrismCode>
               </pre>
             </pre>
           </td>
@@ -735,7 +749,7 @@ const FormProps = () => (
             <code>formState</code> as a parameter. <br />
             <pre>
               <pre>
-                <code className="language-jsx">formDidUpdate( formState )</code>
+                <PrismCode className="language-jsx">formDidUpdate( formState )</PrismCode>
               </pre>
             </pre>
           </td>
@@ -754,10 +768,10 @@ const FormProps = () => (
             name, and the value is the value<br />
             <pre>
               <pre>
-                <code className="language-jsx">
+                <PrismCode className="language-jsx">
                   preValidate( values ) =>{' '}
                   {'({ firstName: values.firstName + "!", lastName: values.lastName})'}
-                </code>
+                </PrismCode>
               </pre>
             </pre>
           </td>
@@ -776,10 +790,10 @@ const FormProps = () => (
             is an error message or null<br />
             <pre>
               <pre>
-                <code className="language-jsx">
+                <PrismCode className="language-jsx">
                   validateError( values ) =>{' '}
                   {'({ firstName: null, lastName: "Last name is required"})'}
-                </code>
+                </PrismCode>
               </pre>
             </pre>
           </td>
@@ -798,9 +812,9 @@ const FormProps = () => (
             value is an warning message or null<br />
             <pre>
               <pre>
-                <code className="language-jsx">
+                <PrismCode className="language-jsx">
                   validateWarning( values ) => {'({ firstName: null, lastName: "To short"})'}
-                </code>
+                </PrismCode>
               </pre>
             </pre>
           </td>
@@ -819,10 +833,10 @@ const FormProps = () => (
             field name, and the value is an success message or null<br />
             <pre>
               <pre>
-                <code className="language-jsx">
+                <PrismCode className="language-jsx">
                   validateSuccess( values, errors ) =>{' '}
                   {'({ firstName: null, lastName: "Nice name!"})'}
-                </code>
+                </PrismCode>
               </pre>
             </pre>
           </td>
@@ -846,9 +860,9 @@ const FormProps = () => (
             <br />
             <pre>
               <pre>
-                <code className="language-jsx">
+                <PrismCode className="language-jsx">
                   {'{ username: async () => ({ error: "Username already taken :(" }) }'}
-                </code>
+                </PrismCode>
               </pre>
             </pre>
           </td>
@@ -887,7 +901,7 @@ const FormProps = () => (
             methods such as <code>formApi.setValue( {"{ foo: 'bar' }"} )</code>
             <pre>
               <pre>
-                <code className="language-jsx">{'getApi( formApi )'}</code>
+                <PrismCode className="language-jsx">{'getApi( formApi )'}</PrismCode>
               </pre>
             </pre>
           </td>
@@ -926,7 +940,7 @@ class Intro extends Component {
           by default dont freak out! Focus on the core structure of the forms.
         </p>
         <pre className="mb-4">
-          {/* <pre><code className="language-css">{rawStyles}</code></pre> */}
+          <pre><PrismCode className="language-css">{rawStyles}</PrismCode></pre>
         </pre>
         <hr />
         <br />
@@ -944,7 +958,7 @@ class Intro extends Component {
           </li>
           <pre>
             <pre>
-              <code className="language-jsx">{childRender}</code>
+              <PrismCode className="language-jsx">{childRender}</PrismCode>
             </pre>
           </pre>
           <li>
@@ -952,7 +966,7 @@ class Intro extends Component {
           </li>
           <pre>
             <pre>
-              <code className="language-jsx">{renderRender}</code>
+              <PrismCode className="language-jsx">{renderRender}</PrismCode>
             </pre>
           </pre>
           <li>
@@ -960,7 +974,7 @@ class Intro extends Component {
           </li>
           <pre>
             <pre>
-              <code className="language-jsx">{childChild}</code>
+              <PrismCode className="language-jsx">{childChild}</PrismCode>
             </pre>
           </pre>
           <li>
@@ -968,7 +982,7 @@ class Intro extends Component {
           </li>
           <pre>
             <pre>
-              <code className="language-jsx">{componentProp}</code>
+              <PrismCode className="language-jsx">{componentProp}</PrismCode>
             </pre>
           </pre>
         </ol>
@@ -979,7 +993,7 @@ class Intro extends Component {
         <h5>Source Code:</h5>
         <pre className="mb-4">
           <pre>
-            <code className="language-jsx">{formApiCodeExample}</code>
+            <PrismCode className="language-jsx">{formApiCodeExample}</PrismCode>
           </pre>
         </pre>
         <h5>Rendered example:</h5>
@@ -996,7 +1010,7 @@ class Intro extends Component {
         </p>
         <pre className="mb-4">
           <pre>
-            <code className="language-jsx">{formApiCodeExampleWithValidation}</code>
+            <PrismCode className="language-jsx">{formApiCodeExampleWithValidation}</PrismCode>
           </pre>
         </pre>
       </div>

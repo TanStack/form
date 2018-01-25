@@ -4,8 +4,6 @@ import thunkMiddleware from 'redux-thunk'
 import { createStore, applyMiddleware } from 'redux'
 import { connect } from 'react-redux'
 
-//
-
 import ReducerBuilder from '../redux/ReducerBuilder'
 import * as actions from '../redux/actions'
 
@@ -24,18 +22,7 @@ const isFormValid = errors => {
 }
 
 /* ---------- Helper Methods ----------*/
-const newErrors = state => Object.assign({}, state.errors, state.asyncErrors)
-
-const newWarnings = state => Object.assign({}, state.warnings, state.asyncWarnings)
-
-const newSuccesses = state => Object.assign({}, state.successes, state.asyncSuccesses)
-
-const newState = state =>
-  Object.assign(JSON.parse(JSON.stringify(state)), {
-    errors: newErrors(state),
-    warnings: newWarnings(state),
-    successes: newSuccesses(state)
-  })
+const newState = state => JSON.parse(JSON.stringify(state))
 
 /* ---------- Form Component ----------*/
 
@@ -43,7 +30,6 @@ class Form extends Component {
   constructor (props) {
     super(props)
     this.asyncValidators = []
-
     // Unfortunately, babel has some stupid bug with auto-binding async arrow functions
     // So we still need to manually bind them here
     // https://github.com/gaearon/react-hot-loader/issues/391
@@ -55,7 +41,8 @@ class Form extends Component {
 
   getChildContext () {
     return {
-      formApi: this.api
+      formApi: this.api,
+      formState: this.getFormState()
     }
   }
 
@@ -72,49 +59,19 @@ class Form extends Component {
       // Validate
       this.props.dispatch(actions.validate())
     }
-    // Register async validators if you are a nested form ( only nested forms
-    // have registerAsync prop )
-    if (this.props.registerAsyncValidation) {
-      this.props.registerAsyncValidation(this.callAsynchronousValidators)
-    }
   }
 
   componentWillReceiveProps (nextProps) {
-    // If submits was incrimented
-    if (nextProps.submits > this.props.submits) {
-      // PreValidate
-      this.props.dispatch(actions.preValidate())
-      // Validate
-      this.props.dispatch(actions.validate())
-      // Inciment submit
-      this.props.dispatch(actions.submits())
-    }
-    const didUpdate = Utils.isDeepEqual(nextProps.formState, this.props.formState)
+    // const didUpdate = Utils.isDeepEqual(nextProps.formState, this.props.formState);
+    const didUpdate = JSON.stringify(nextProps.formState) !== JSON.stringify(this.props.formState)
     // Call onChange function if it exists
     if (this.props.onChange && didUpdate) {
       this.props.onChange(newState(nextProps.formState))
     }
   }
 
-  componentWillUnmount () {
-    // Reset the form if it has reset
-    if (this.props.reset && this.props.resetFormOnUnmount) {
-      // Basically calling parent forms reset function
-      this.props.reset()
-    }
-  }
-
   get api () {
     return {
-      values: this.props.formState.values,
-      errors: this.errors,
-      warnings: this.warnings,
-      successes: this.successes,
-      touched: this.props.formState.touched,
-      asyncValidations: this.props.formState.asyncValidations,
-      validating: this.props.formState.validating,
-      validationFailures: this.props.formState.validationFailures,
-      validationFailed: this.props.formState.validationFailed,
       submitForm: this.submitForm,
       setValue: this.setValue,
       getValue: this.getValue,
@@ -128,16 +85,8 @@ class Form extends Component {
       setError: this.setError,
       setWarning: this.setWarning,
       setSuccess: this.setSuccess,
-      format: this.format,
-      submitted: this.props.formState.submitted,
-      submits: this.props.formState.submits,
-      submitting: this.props.formState.submitting,
-      reset: this.reset,
       resetAll: this.resetAll,
       clearAll: this.clearAll,
-      validatingField: this.validatingField,
-      doneValidatingField: this.doneValidatingField,
-      registerAsyncValidation: this.registerAsyncValidation,
       addValue: this.addValue,
       removeValue: this.removeValue,
       setAllValues: this.setAllValues,
@@ -146,7 +95,9 @@ class Form extends Component {
     }
   }
 
-  getFormState = () => newState(this.props.formState)
+  getFormState = () => {
+    return newState(this.props.formState)
+  }
 
   get errors () {
     return Object.assign({}, this.props.formState.errors, this.props.formState.asyncErrors)
@@ -158,14 +109,6 @@ class Form extends Component {
 
   get successes () {
     return Object.assign({}, this.props.formState.successes, this.props.formState.asyncSuccesses)
-  }
-
-  get currentState () {
-    return Object.assign(JSON.parse(JSON.stringify(this.props.formState)), {
-      errors: this.errors,
-      warnings: this.warnings,
-      successes: this.successes
-    })
   }
 
   setValue = (field, value) => {
@@ -239,11 +182,11 @@ class Form extends Component {
 
   getValue = field => Utils.get(this.props.formState.values, field)
 
-  getError = field => Utils.get(this.errors, field)
+  getError = field => Utils.get(this.props.formState.errors, field)
 
-  getWarning = field => Utils.get(this.warnings, field)
+  getWarning = field => Utils.get(this.props.formState.warnings, field)
 
-  getSuccess = field => Utils.get(this.successes, field)
+  getSuccess = field => Utils.get(this.props.formState.successes, field)
 
   addValue = (field, value) => {
     this.props.dispatch(
@@ -362,22 +305,22 @@ class Form extends Component {
     const invalid = isFormValid(errors)
     // Call on validation fail if we are invalid
     if (invalid && this.props.onSubmitFailure) {
-      this.props.onSubmitFailure(errors, this.api)
+      this.props.onSubmitFailure(errors, this.api, this.getFormState())
     }
     // Only update submitted if we are not invalid and there are no active asynchronous validations
     if (!invalid && this.props.formState.asyncValidations === 0) {
       let values = JSON.parse(JSON.stringify(this.props.formState.values))
       // Call pre submit
       if (this.props.preSubmit) {
-        values = this.props.preSubmit(values, this.api)
+        values = this.props.preSubmit(values, this.api, this.getFormState())
       }
       // Update submitted
       this.props.dispatch(actions.submitted())
       if (this.props.onSubmit) {
         try {
-          await this.props.onSubmit(values, e, this.api)
+          await this.props.onSubmit(values, e, this.api, this.getFormState())
         } catch (error) {
-          this.props.onSubmitFailure({}, this.api, error)
+          this.props.onSubmitFailure({}, this.api, this.getFormState(), error)
         }
       }
     }
@@ -405,13 +348,14 @@ class Form extends Component {
   }
 
   render () {
-    const { children, component, render, ...rest } = this.props
+    const { children, component, render } = this.props
 
     const formApi = this.api
+    const formState = this.getFormState()
 
     const inlineProps = {
-      ...rest,
-      ...formApi
+      ...formApi,
+      ...formState
     }
 
     if (component) {
@@ -419,7 +363,7 @@ class Form extends Component {
         component,
         {
           formApi,
-          ...rest
+          formState
         },
         children
       )
@@ -430,12 +374,19 @@ class Form extends Component {
     if (typeof children === 'function') {
       return children(inlineProps)
     }
-    return children
+    return React.cloneElement(
+      children,
+      {
+        formApi,
+        formState
+      }
+    )
   }
 }
 
 Form.childContextTypes = {
-  formApi: PropTypes.object
+  formApi: PropTypes.object,
+  formState: PropTypes.object
 }
 
 /* ---------- Container ---------- */

@@ -1,22 +1,16 @@
 /* ------------- Imports -------------- */
 import React, { Component } from 'react'
-// import { PrismCode } from 'react-prism';
+import { PrismCode } from 'react-prism';
 
 class Code extends Component {
   render () {
     const { children } = this.props
 
     return (
-      <code>
-        <pre>{children}</pre>
-      </code>
+      <pre>
+        <PrismCode className="language-jsx">{children}</PrismCode>
+      </pre>
     )
-
-    // return (
-    //   <pre>
-    //     <pre><code className="language-jsx">{children}</code></pre>
-    //   </pre>
-    // )
   }
 }
 
