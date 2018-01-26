@@ -59,11 +59,12 @@ import { Form, Text } from 'react-form';
 
 const ExampleForm = () => (
   <Form render={({
+    submitForm,
     values,
     addValue,
     removeValue
   }) => (
-    <form onSubmit={formApi.submitForm}>
+    <form onSubmit={submitForm}>
       <Text field="firstName" placeholder='First Name' />
       <Text field="lastName" placeholder='Last Name' />
       <div>
@@ -105,11 +106,12 @@ const UserFields = () => (
 
 const ExampleForm = () => (
   <Form render={({
+    submitForm,
     values,
     addValue,
     removeValue
   }) => (
-    <form onSubmit={formApi.submitForm}>
+    <form onSubmit={submitForm}>
       <UserFields />
       <NestedField field='friends' render={() => ( // Create a new nested field context
         <div>
