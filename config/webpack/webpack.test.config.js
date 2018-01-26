@@ -13,8 +13,25 @@ module.exports = {
       {
         test: /\.(js)$/,
         exclude: /node_modules/,
-        use: ['babel-loader']
-      },
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['env', 'stage-0', 'react'],
+            plugins: [
+              'transform-class-properties',
+              [
+                'transform-runtime',
+                {
+                  helpers: false,
+                  polyfill: false,
+                  regenerator: true,
+                  moduleName: 'babel-runtime'
+                }
+              ]
+            ]
+          }
+        }
+      }
     ]
   }
 }

@@ -1,15 +1,11 @@
 {
   "name": "react-form",
   "version": "2.16.1",
-  "description": "React Form is a lightweight framework and utility for building powerful forms in React applications.",
+  "description":
+    "React Form is a lightweight framework and utility for building powerful forms in React applications.",
   "main": "lib/index.js",
   "module": "es/index.js",
-  "files": [
-    "css",
-    "es",
-    "lib",
-    "umd"
-  ],
+  "files": ["css", "es", "lib", "umd"],
   "scripts": {
     "build": "nwb build-react-component --title React Form",
     "clean": "nwb clean-module && nwb clean-demo",
