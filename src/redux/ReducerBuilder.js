@@ -7,8 +7,6 @@ import {
   SET_SUCCESS,
   SET_TOUCHED,
   SET_ALL_TOUCHED,
-  PRE_VALIDATE,
-  VALIDATE,
   FORMAT,
   SUBMITS,
   SUBMITTED,
@@ -240,32 +238,6 @@ const removeAsyncSuccess = (state, action) => {
   }
 }
 
-const validate = (state, action, validateError, validateWarning, validateSuccess) => {
-  let errors = validateError ? validateError(state.values) : {}
-  let warnings = validateWarning ? validateWarning(state.values) : {}
-  let successes = validateSuccess ? validateSuccess(state.values, errors) : {}
-  errors = { ...state.errors, ...errors }
-  warnings = { ...state.warnings, ...warnings }
-  successes = { ...state.successes, ...successes }
-  return {
-    ...state,
-    errors,
-    warnings,
-    successes
-  }
-}
-
-const preValidate = (state, action, preValidator) => {
-  const values = preValidator
-    ? preValidator(JSON.parse(JSON.stringify(state.values)))
-    : state.values
-
-  return {
-    ...state,
-    values
-  }
-}
-
 const submits = state => ({
   ...state,
   submits: state.submits + 1
@@ -401,7 +373,7 @@ const validationSuccess = (state, action) => {
 
 class ReducerBuilder {
   static build (properties = {}) {
-    const { validateError, validateWarning, validateSuccess, defaultValues } = properties
+    const { defaultValues } = properties
 
     const COMBINED_INITIAL_STATE = {
       ...INITIAL_STATE,
@@ -440,10 +412,6 @@ class ReducerBuilder {
           return removeAsyncWarning(state, action)
         case REMOVE_ASYNC_SUCCESS:
           return removeAsyncSuccess(state, action)
-        case PRE_VALIDATE:
-          return preValidate(state, action, properties.preValidate)
-        case VALIDATE:
-          return validate(state, action, validateError, validateWarning, validateSuccess)
         case SUBMITTED:
           return submitted(state, action)
         case SUBMITS:

@@ -90,16 +90,6 @@ export function clearAll () {
   return { type: CLEAR_ALL }
 }
 
-export const PRE_VALIDATE = 'PRE_VALIDATE'
-export function preValidate () {
-  return { type: PRE_VALIDATE }
-}
-
-export const VALIDATE = 'VALIDATE'
-export function validate () {
-  return { type: VALIDATE }
-}
-
 export const SUBMIT = 'SUBMIT'
 export function submit () {
   return { type: SUBMIT }
@@ -140,12 +130,10 @@ export function validationSuccess (field) {
   return { type: VALIDATION_SUCCESS, field }
 }
 
-export function asyncValidate (field, validators = () => ({})) {
+export function asyncValidate (field, validator) {
   return async (dispatch, getState) => {
-    const validator = Utils.get(validators, field)
-    // Only validate if there exists an async validator for this field
-    // AND a syncronous validation does not exist
-    if (validator && !Utils.get(getState().errors, field)) {
+    // Only validate if syncronous validation does not exist
+    if (!Utils.get(getState().errors, field)) {
       // We are validating the specified field
       dispatch(validatingField(field))
       try {

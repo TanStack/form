@@ -9,5 +9,8 @@
     "afterEach": true,
     "window": true,
     "document": true
+  },
+  "rules": {
+    "padded-blocks": 0, 
   }
 }

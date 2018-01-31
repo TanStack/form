@@ -4,19 +4,23 @@ import PropTypes from 'prop-types'
 import Utils from '../utils'
 
 class Field extends React.Component {
+
   componentWillMount () {
     this.buildApi(this.props)
   }
-  // We want to set touched to true when the form was submitted
-  componentWillReceiveProps (nextProps, nextContext) {
-    this.buildApi(nextProps)
-    if (nextContext.formState.submitted !== this.context.formState.submitted) {
-      this.context.formApi.setTouched(this.props.field, true, false)
-    }
-    if (nextContext.formState.submits !== this.context.formState.submits) {
-      this.context.formApi.setTouched(this.props.field, true, false)
-    }
+
+  componentDidMount () {
+    this.context.formApi.register(this.props.field, this.fieldApi)
   }
+
+  componentWillUnmount () {
+    this.context.formApi.deregister(this.props.field)
+  }
+
+  //TODO ask Tanner why?
+  // componentWillReceiveProps (nextProps, nextContext) {
+  //   this.buildApi(nextProps)
+  // }
 
   // Optimization to only rerender if nessisary
   shouldComponentUpdate (nextProps, nextState, nextContext) {
@@ -69,8 +73,11 @@ class Field extends React.Component {
       addValue: value => formApi.addValue(field, value),
       removeValue: index => formApi.addValue(field, index),
       swapValues: (...args) => formApi.addValue(field, ...args),
+      reset: () => formApi.reset(field),
       validatingField: () => formApi.validatingField(field),
-      doneValidatingField: () => formApi.doneValidatingField(field)
+      doneValidatingField: () => formApi.doneValidatingField(field),
+      validate: () => this.props.validate(formApi.getValue(field)),
+      asyncValidate: () => formApi.asyncValidate(field, this.props.asyncValidate)
     }
 
     this.getFieldValues = () => ({
