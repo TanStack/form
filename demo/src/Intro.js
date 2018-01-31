@@ -128,34 +128,19 @@ const ExampleForm = ( ) => {
 }
 `
 
-const errorValidator = values => ({
-  hello:
-    !values.hello || !values.hello.match(/Hello World/) ? "Input must contain 'Hello World'" : null,
-})
-
-const warningValidator = values => ({
-  hello:
-    !values.hello || !values.hello.match(/^Hello World$/)
-      ? "Input should equal 'Hello World'"
-      : null,
-})
-
-const successValidator = values => ({
-  hello:
-    values.hello && values.hello.match(/Hello World/) ? "Thanks for entering 'Hello World'!" : null,
+const validate = hello => ({
+  error: !hello || !hello.match(/Hello World/) ? "Input must contain 'Hello World'" : null,
+  warning: !hello || !hello.match(/^Hello World$/) ? "Input should equal 'Hello World'" : null,
+  success: hello && hello.match(/Hello World/) ? "Thanks for entering 'Hello World'!" : null,
 })
 
 const ExampleForm = () => (
-  <Form
-    validateWarning={warningValidator}
-    validateSuccess={successValidator}
-    validateError={errorValidator}
-  >
+  <Form>
     {formApi => (
       <div className="mb-4">
         <form onSubmit={formApi.submitForm} id="form1" className="mb-4">
           <label htmlFor="hello">Hello World</label>
-          <Text field="hello" id="hello" />
+          <Text field="hello" id="hello" validate={validate} />
           <button type="submit" className="btn btn-primary">
             Submit
           </button>

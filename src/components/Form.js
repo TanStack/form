@@ -90,7 +90,9 @@ class Form extends Component {
       setAllTouched: this.setAllTouched,
       swapValues: this.swapValues,
       register: this.register,
-      asyncValidate: this.asyncValidate
+      deregister: this.deregister,
+      asyncValidate: this.asyncValidate,
+      validate: this.validate
     }
   }
 
@@ -118,12 +120,16 @@ class Form extends Component {
     this.props.dispatch(actions.setSuccess(field, success))
   }
 
+  validate = (field, validate) => {
+    this.props.dispatch(actions.validate(field, validate))
+  }
+
   asyncValidate = (field, validate) => {
     this.props.dispatch(actions.asyncValidate(field, validate))
   }
 
   setAllTouched = () => {
-    this.fields.forEach(([name]) => {
+    [...this.fields].forEach(([name]) => {
       this.setTouched(name, true)
     })
   }
@@ -142,24 +148,15 @@ class Form extends Component {
   }
 
   validateAll = () => {
-    this.fields.forEach(([name, field]) => {
+    [...this.fields].forEach(([name, field]) => {
       if (field.validate) {
-        const result = field.validate()
-        if (result.error) {
-          this.setError(name, result.error)
-        }
-        if (result.warning) {
-          this.setWarning(name, result.warning)
-        }
-        if (result.success) {
-          this.setSuccess(name, result.success)
-        }
+        field.validate()
       }
     })
   }
 
   preValidateAll = () => {
-    this.fields.forEach(([name, field]) => {
+    [...this.fields].forEach(([name, field]) => {
       if (field.preValidate) {
         const result = field.preValidate()
         this.setValue(name, result)
@@ -216,6 +213,7 @@ class Form extends Component {
   }
 
   register = (name, field) => {
+    console.log("REGISTERING:", name);
     this.fields.set(name, field)
   }
 
@@ -241,6 +239,7 @@ class Form extends Component {
 
   submitForm = e => {
     this.props.dispatch(actions.submitting(true))
+    this.props.dispatch(actions.submits())
     this.setAllTouched()
     this.preValidateAll()
     this.validateAll()

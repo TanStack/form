@@ -130,10 +130,30 @@ export function validationSuccess (field) {
   return { type: VALIDATION_SUCCESS, field }
 }
 
+export function validate (field, validator) {
+  return (dispatch, getState) => {
+    if (validator) {
+      // Call the validation function
+      const result = validator(Utils.get(getState().values, field))
+      // TODO null check on result??? Should we make the user return object
+      // Dispatch the setters for error, success and warning if they exsit on object
+      if (Object.prototype.hasOwnProperty.call(result, 'error')) {
+        dispatch(setError(field, result.error))
+      }
+      if (Object.prototype.hasOwnProperty.call(result, 'warning')) {
+        dispatch(setWarning(field, result.warning))
+      }
+      if (Object.prototype.hasOwnProperty.call(result, 'success')) {
+        dispatch(setSuccess(field, result.success))
+      }
+    }
+  }
+}
+
 export function asyncValidate (field, validator) {
   return async (dispatch, getState) => {
-    // Only validate if syncronous validation does not exist
-    if (!Utils.get(getState().errors, field)) {
+    // Only validate if syncronous validation does not exist and there is a validator
+    if (!Utils.get(getState().errors, field) && validator) {
       // We are validating the specified field
       dispatch(validatingField(field))
       try {

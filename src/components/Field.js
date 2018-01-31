@@ -65,8 +65,16 @@ class Field extends React.Component {
     const { formApi } = this.context
     const { field } = props
     this.fieldApi = {
-      setValue: value => formApi.setValue(field, value),
-      setTouched: touched => formApi.setTouched(field, touched),
+      setValue: value => {
+        formApi.setValue(field, value)
+        formApi.validate(field, this.props.validate)
+        formApi.asyncValidate(field, this.props.asyncValidate)
+      },
+      setTouched: touched => {
+        formApi.setTouched(field, touched)
+        formApi.validate(field, this.props.validate)
+        formApi.asyncValidate(field, this.props.asyncValidate)
+      },
       setError: error => formApi.setError(field, error),
       setWarning: warning => formApi.setWarning(field, warning),
       setSuccess: success => formApi.setSuccess(field, success),
@@ -76,8 +84,8 @@ class Field extends React.Component {
       reset: () => formApi.reset(field),
       validatingField: () => formApi.validatingField(field),
       doneValidatingField: () => formApi.doneValidatingField(field),
-      validate: () => this.props.validate(formApi.getValue(field)),
-      asyncValidate: () => formApi.asyncValidate(field, this.props.asyncValidate)
+      validate: this.props.validate ? () => formApi.validate( field, this.props.validate ) : null,
+      asyncValidate: this.props.asyncValidate ? () => formApi.asyncValidate(field, this.props.asyncValidate) : null
     }
 
     this.getFieldValues = () => ({
@@ -91,7 +99,7 @@ class Field extends React.Component {
   }
 
   render () {
-    const { field, pure, render, component, children, ...rest } = this.props
+    const { field, pure, render, component, children, validate, asyncValidate, ...rest } = this.props
 
     const inlineProps = {
       ...rest,
