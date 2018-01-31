@@ -24,7 +24,7 @@ class RadioComp extends Component {
           if (!e.target.checked) {
             return
           }
-          setValue(value)
+          setValue(parentValue)
           if (onChange) {
             onChange(value, e)
           }
