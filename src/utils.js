@@ -72,7 +72,11 @@ function set (obj = {}, path, value) {
     }
     cursor = cursor[keyPart]
   }
-  cursor[keyPart] = value
+  if (!value) {
+    delete cursor[keyPart]
+  } else {
+    cursor[keyPart] = value
+  }
   return obj
 }
 

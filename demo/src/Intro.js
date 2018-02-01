@@ -43,18 +43,6 @@ const renderRender = ` <Form render={ formApi => (
   </Form>
 `
 
-const childChild = ` const FormContent = props => (
-    <form onSubmit={props.formApi.submitForm}>
-      <Text field="hello" id="hello" />
-      <button type="submit">Submit</button>
-    </form>
-  );
-
-  <Form>
-    <FormContent />
-  </Form>
-`
-
 const componentProp = ` const FormContent = props => (
     <form onSubmit={props.formApi.submitForm}>
       <Text field="hello" id="hello" />
@@ -68,70 +56,46 @@ const componentProp = ` const FormContent = props => (
 const formApiCodeExample = `
 import { Form, Text } from '../../src';
 
-const ExampleForm = ( ) => {
-  return (
-    <Form
-      validateWarning={warningValidator}
-      validateSuccess={successValidator}
-      validateError={errorValidator} >
-      { formApi => (
-        <form onSubmit={formApi.submitForm} id="form1" className="mb-4">
-          <label htmlFor="hello">Hello World</label>
-          <Text field="hello" id="hello" />
-          <button type="submit" className="btn btn-primary">Submit</button>
-        </form>
-      )}
-    </Form>
-  );
+<Form>
+  {formApi => (
+    <form onSubmit={formApi.submitForm} id="form1" className="mb-4">
+      <label htmlFor="hello">Hello World</label>
+      <Text field="hello" id="hello" validate={validate} />
+      <button type="submit" className="btn btn-primary">
+        Submit
+      </button>
+    </form>
+  )}
+</Form>
 }
 `
 
 const formApiCodeExampleWithValidation = `
 import { Form, Text } from '../../src';
 
-const errorValidator = (values) => {
-  return {
-    hello: !values.hello ||
-           !values.hello.match( /Hello World/ ) ? "Input must contain 'Hello World'" : null
-  };
-};
+const validate = value => ({
+  error: !value || !/Hello World/.test(value) ? "Input must contain 'Hello World'" : null,
+  warning: !value || !/^Hello World$/.test(value) ? "Input should equal just 'Hello World'" : null,
+  success: value && /Hello World/.test(value) ? "Thanks for entering 'Hello World'!" : null
+})
 
-const warningValidator = (values) => {
-  return {
-    hello: !values.hello ||
-           !values.hello.match( /^Hello World$/ ) ? "Input should equal 'Hello World'" : null
-  };
-};
-
-const successValidator = (values) => {
-  return {
-    hello: values.hello &&
-           values.hello.match( /Hello World/ ) ? "Thanks for entering 'Hello World'!" : null
-  };
-};
-
-const ExampleForm = ( ) => {
-  return (
-    <Form
-      validateWarning={warningValidator}
-      validateSuccess={successValidator}
-      validateError={errorValidator} >
-      { formApi => (
-        <form onSubmit={formApi.submitForm} id="form1" className="mb-4">
-          <label htmlFor="hello">Hello World</label>
-          <Text field="hello" id="hello" />
-          <button type="submit" className="btn btn-primary">Submit</button>
-        </form>
-      )}
-    </Form>
-  );
-}
+<Form>
+  {formApi => (
+    <form onSubmit={formApi.submitForm} id="form1" className="mb-4">
+      <label htmlFor="hello">Hello World</label>
+      <Text field="hello" id="hello" validate={validate} />
+      <button type="submit" className="btn btn-primary">
+        Submit
+      </button>
+    </form>
+  )}
+</Form>
 `
 
-const validate = hello => ({
-  error: !hello || !hello.match(/Hello World/) ? "Input must contain 'Hello World'" : null,
-  warning: !hello || !hello.match(/^Hello World$/) ? "Input should equal 'Hello World'" : null,
-  success: hello && hello.match(/Hello World/) ? "Thanks for entering 'Hello World'!" : null,
+const validate = value => ({
+  error: !value || !/Hello World/.test(value) ? "Input must contain 'Hello World'" : null,
+  warning: !value || !/^Hello World$/.test(value) ? "Input should equal just 'Hello World'" : null,
+  success: value && /Hello World/.test(value) ? "Thanks for entering 'Hello World'!" : null
 })
 
 const ExampleForm = () => (
@@ -173,9 +137,7 @@ const FieldApi = ({ formApi }) => (
           <th scope="row">values</th>
           <td>
             <pre>
-              <pre>
-                <PrismCode className="language-json">{JSON.stringify(formApi.values)}</PrismCode>
-              </pre>
+              <PrismCode className="language-json">{JSON.stringify(formApi.values)}</PrismCode>
             </pre>
           </td>
           <td>
@@ -187,9 +149,7 @@ const FieldApi = ({ formApi }) => (
           <th scope="row">touched</th>
           <td>
             <pre>
-              <pre>
-                <PrismCode className="language-json">{JSON.stringify(formApi.touched)}</PrismCode>
-              </pre>
+              <PrismCode className="language-json">{JSON.stringify(formApi.touched)}</PrismCode>
             </pre>
           </td>
           <td>
@@ -202,9 +162,7 @@ const FieldApi = ({ formApi }) => (
           <th scope="row">errors</th>
           <td>
             <pre>
-              <pre>
-                <PrismCode className="language-json">{JSON.stringify(formApi.errors)}</PrismCode>
-              </pre>
+              <PrismCode className="language-json">{JSON.stringify(formApi.errors)}</PrismCode>
             </pre>
           </td>
           <td>
@@ -217,9 +175,7 @@ const FieldApi = ({ formApi }) => (
           <th scope="row">warnings</th>
           <td>
             <pre>
-              <pre>
-                <PrismCode className="language-json">{JSON.stringify(formApi.warnings)}</PrismCode>
-              </pre>
+              <PrismCode className="language-json">{JSON.stringify(formApi.warnings)}</PrismCode>
             </pre>
           </td>
           <td>
@@ -233,9 +189,7 @@ const FieldApi = ({ formApi }) => (
           <th scope="row">successes</th>
           <td>
             <pre>
-              <pre>
-                <PrismCode className="language-json">{JSON.stringify(formApi.successes)}</PrismCode>
-              </pre>
+              <PrismCode className="language-json">{JSON.stringify(formApi.successes)}</PrismCode>
             </pre>
           </td>
           <td>
@@ -249,9 +203,7 @@ const FieldApi = ({ formApi }) => (
           <th scope="row">submits</th>
           <td>
             <pre>
-              <pre>
-                <PrismCode className="language-json">{JSON.stringify(formApi.submits)}</PrismCode>
-              </pre>
+              <PrismCode className="language-json">{JSON.stringify(formApi.submits)}</PrismCode>
             </pre>
           </td>
           <td>Submission attempts. ( the number of times the submit button was clicked )</td>
@@ -260,9 +212,7 @@ const FieldApi = ({ formApi }) => (
           <th scope="row">submitted</th>
           <td>
             <pre>
-              <pre>
-                <PrismCode className="language-json">{JSON.stringify(formApi.submitted)}</PrismCode>
-              </pre>
+              <PrismCode className="language-json">{JSON.stringify(formApi.submitted)}</PrismCode>
             </pre>
           </td>
           <td>
@@ -274,9 +224,7 @@ const FieldApi = ({ formApi }) => (
           <th scope="row">submitting</th>
           <td>
             <pre>
-              <pre>
-                <PrismCode className="language-json">{JSON.stringify(formApi.submitting)}</PrismCode>
-              </pre>
+              <PrismCode className="language-json">{JSON.stringify(formApi.submitting)}</PrismCode>
             </pre>
           </td>
           <td>True while the form is in the process of submitting. False when its not.</td>
@@ -285,9 +233,7 @@ const FieldApi = ({ formApi }) => (
           <th scope="row">asyncValidations</th>
           <td>
             <pre>
-              <pre>
-                <PrismCode className="language-json">{JSON.stringify(formApi.asyncValidations)}</PrismCode>
-              </pre>
+              <PrismCode className="language-json">{JSON.stringify(formApi.asyncValidations)}</PrismCode>
             </pre>
           </td>
           <td>
@@ -300,9 +246,7 @@ const FieldApi = ({ formApi }) => (
           <th scope="row">validating</th>
           <td>
             <pre>
-              <pre>
-                <PrismCode className="language-json">{JSON.stringify(formApi.validating)}</PrismCode>
-              </pre>
+              <PrismCode className="language-json">{JSON.stringify(formApi.validating)}</PrismCode>
             </pre>
           </td>
           <td>
@@ -316,9 +260,7 @@ const FieldApi = ({ formApi }) => (
           <th scope="row">validationFailures</th>
           <td>
             <pre>
-              <pre>
-                <PrismCode className="language-json">{JSON.stringify(formApi.validationFailures)}</PrismCode>
-              </pre>
+              <PrismCode className="language-json">{JSON.stringify(formApi.validationFailures)}</PrismCode>
             </pre>
           </td>
           <td>
@@ -333,9 +275,7 @@ const FieldApi = ({ formApi }) => (
           <th scope="row">validationFailed</th>
           <td>
             <pre>
-              <pre>
-                <PrismCode className="language-json">{JSON.stringify(formApi.validationFailed)}</PrismCode>
-              </pre>
+              <PrismCode className="language-json">{JSON.stringify(formApi.validationFailed)}</PrismCode>
             </pre>
           </td>
           <td>
@@ -594,7 +534,7 @@ const FormProps = () => (
             <pre>func</pre>
           </td>
           <td>no</td>
-          <td>A function or React component that is given the form api as a prop.</td>
+          <td>A function that is given the form api as a parameter. FAAC ( Function As A Child )</td>
         </tr>
         <tr>
           <th scope="row">
@@ -614,7 +554,7 @@ const FormProps = () => (
             <pre>func</pre>
           </td>
           <td>no</td>
-          <td>A render function that is given the form api as a prop.</td>
+          <td>A render function that is given the form api as a parameter.</td>
         </tr>
         <tr>
           <th scope="row">
@@ -624,7 +564,8 @@ const FormProps = () => (
             <pre>bool</pre>
           </td>
           <td>no</td>
-          <td>Use this if you want the form to validate when it gets mounted.</td>
+          <td>Use this if you want the form to validate when it gets mounted. This will
+          call asyncValidation, syncValidation, and preValidate when the form mounts</td>
         </tr>
         <tr>
           <th scope="row">
@@ -635,8 +576,7 @@ const FormProps = () => (
           </td>
           <td>no</td>
           <td>
-            Use this if you dont want the form to validate until it gets submitted. Note, you may
-            need to combine this with the validateOnMount prop to get what you need. This will
+            Use this if you dont want the form to validate until it gets submitted. This will
             prevent asyncValidation, syncValidation, and preValidate from getting called until
             submit.
           </td>
@@ -650,9 +590,7 @@ const FormProps = () => (
           </td>
           <td>no</td>
           <td>
-            Use this if you want to populate the form with initial values. Note, this does not
-            affect any nested forms. If you want to initialize nested forms, pass in their own
-            defaultValues prop.
+            Use this if you want to populate the form with initial values.
           </td>
         </tr>
         <tr>
@@ -665,10 +603,10 @@ const FormProps = () => (
           <td>no</td>
           <td>
             Function that gets called when form is submitted successfully. This function will pass
-            three parameters: the form values, the submission event, and the formApi. <br />
+            two parameters: the form values, and the submission event<br />
             <pre>
               <pre>
-                <PrismCode className="language-jsx">onSubmit( values, e, formApi )</PrismCode>
+                <PrismCode className="language-jsx">onSubmit( values, e )</PrismCode>
               </pre>
             </pre>
           </td>
@@ -934,7 +872,7 @@ class Intro extends Component {
         <br />
         <h3>Form Api</h3>
         <p className="mb-4">
-          React Form gives you access to the <code>formApi</code> in four different ways. You as the
+          React Form gives you access to the <code>formApi</code> in three different ways. You as the
           developer can use whichever method you want.
         </p>
         <ol>
@@ -952,14 +890,6 @@ class Intro extends Component {
           <pre>
             <pre>
               <PrismCode className="language-jsx">{renderRender}</PrismCode>
-            </pre>
-          </pre>
-          <li>
-            By passing the <code>formApi</code> as a prop to a child component.
-          </li>
-          <pre>
-            <pre>
-              <PrismCode className="language-jsx">{childChild}</PrismCode>
             </pre>
           </pre>
           <li>

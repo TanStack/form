@@ -50,21 +50,6 @@ export function setAsyncSuccess (field, success) {
   return { type: SET_ASYNC_SUCCESS, field, success }
 }
 
-export const REMOVE_ASYNC_ERROR = 'REMOVE_ASYNC_ERROR'
-export function removeAsyncError (field) {
-  return { type: REMOVE_ASYNC_ERROR, field }
-}
-
-export const REMOVE_ASYNC_WARNING = 'REMOVE_ASYNC_WARNING'
-export function removeAsyncWarning (field) {
-  return { type: REMOVE_ASYNC_WARNING, field }
-}
-
-export const REMOVE_ASYNC_SUCCESS = 'REMOVE_ASYNC_SUCCESS'
-export function removeAsyncSuccess (field) {
-  return { type: REMOVE_ASYNC_SUCCESS, field }
-}
-
 export const SET_TOUCHED = 'SET_TOUCHED'
 export function setTouched (field, touched) {
   return { type: SET_TOUCHED, field, touched }
@@ -128,6 +113,17 @@ export function validationFailure (field, error) {
 export const VALIDATION_SUCCESS = 'VALIDATION_SUCCESS'
 export function validationSuccess (field) {
   return { type: VALIDATION_SUCCESS, field }
+}
+
+
+export function preValidate (field, validator) {
+  return (dispatch, getState) => {
+    if (validator) {
+      // Call the validation function
+      const result = validator(Utils.get(getState().values, field))
+      dispatch(setValue(field, result))
+    }
+  }
 }
 
 export function validate (field, validator) {

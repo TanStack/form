@@ -54,8 +54,9 @@ class Form extends Component {
 
   componentDidMount () {
     if (this.props.validateOnMount) {
-      this.preValidate()
-      this.validate()
+      this.preValidateAll()
+      this.validateAll()
+      this.asyncValidateAll()
     }
   }
 
@@ -92,7 +93,8 @@ class Form extends Component {
       register: this.register,
       deregister: this.deregister,
       asyncValidate: this.asyncValidate,
-      validate: this.validate
+      validate: this.validate,
+      preValidate: this.preValidate
     }
   }
 
@@ -102,10 +104,24 @@ class Form extends Component {
 
   setValue = (field, value) => {
     this.props.dispatch(actions.setValue(field, value))
+    if (!this.props.validateOnSubmit) {
+      // Get fields api
+      const fieldApi = this.fields.get(field)
+      if (fieldApi.preValidate) fieldApi.preValidate()
+      if (fieldApi.validate) fieldApi.validate()
+      if (fieldApi.asyncValidate) fieldApi.asyncValidate()
+    }
   }
 
   setTouched = (field, touch = true) => {
     this.props.dispatch(actions.setTouched(field, touch))
+    if (!this.props.validateOnSubmit) {
+      // Get fields api
+      const fieldApi = this.fields.get(field)
+      if (fieldApi.preValidate) fieldApi.preValidate()
+      if (fieldApi.validate) fieldApi.validate()
+      if (fieldApi.asyncValidate) fieldApi.asyncValidate()
+    }
   }
 
   setError = (field, error) => {
@@ -118,6 +134,10 @@ class Form extends Component {
 
   setSuccess = (field, success) => {
     this.props.dispatch(actions.setSuccess(field, success))
+  }
+
+  preValidate = (field, validate) => {
+    this.props.dispatch(actions.preValidate(field, validate))
   }
 
   validate = (field, validate) => {
@@ -281,7 +301,7 @@ class Form extends Component {
       // If onSubmit was passed then call it
       if (this.props.onSubmit) {
         try {
-          await this.props.onSubmit(values)
+          await this.props.onSubmit(values, e)
         } catch (error) {
           this.props.onSubmitFailure({}, error)
         }

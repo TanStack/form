@@ -65,16 +65,8 @@ class Field extends React.Component {
     const { formApi } = this.context
     const { field } = props
     this.fieldApi = {
-      setValue: value => {
-        formApi.setValue(field, value)
-        formApi.validate(field, this.props.validate)
-        formApi.asyncValidate(field, this.props.asyncValidate)
-      },
-      setTouched: touched => {
-        formApi.setTouched(field, touched)
-        formApi.validate(field, this.props.validate)
-        formApi.asyncValidate(field, this.props.asyncValidate)
-      },
+      setValue: value => formApi.setValue(field, value),
+      setTouched: touched => formApi.setTouched(field, touched),
       setError: error => formApi.setError(field, error),
       setWarning: warning => formApi.setWarning(field, warning),
       setSuccess: success => formApi.setSuccess(field, success),
@@ -85,6 +77,7 @@ class Field extends React.Component {
       validatingField: () => formApi.validatingField(field),
       doneValidatingField: () => formApi.doneValidatingField(field),
       validate: this.props.validate ? () => formApi.validate( field, this.props.validate ) : null,
+      preValidate: this.props.preValidate ? () => formApi.preValidate( field, this.props.preValidate ) : null,
       asyncValidate: this.props.asyncValidate ? () => formApi.asyncValidate(field, this.props.asyncValidate) : null
     }
 

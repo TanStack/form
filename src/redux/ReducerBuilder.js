@@ -20,10 +20,7 @@ import {
   VALIDATION_SUCCESS,
   SET_ASYNC_ERROR,
   SET_ASYNC_WARNING,
-  SET_ASYNC_SUCCESS,
-  REMOVE_ASYNC_ERROR,
-  REMOVE_ASYNC_WARNING,
-  REMOVE_ASYNC_SUCCESS
+  SET_ASYNC_SUCCESS
 } from './actions'
 
 import Utils from '../utils'
@@ -406,12 +403,6 @@ class ReducerBuilder {
           return setTouched(state, action)
         case SET_ALL_TOUCHED:
           return setAllTouched(state, action)
-        case REMOVE_ASYNC_ERROR:
-          return removeAsyncError(state, action)
-        case REMOVE_ASYNC_WARNING:
-          return removeAsyncWarning(state, action)
-        case REMOVE_ASYNC_SUCCESS:
-          return removeAsyncSuccess(state, action)
         case SUBMITTED:
           return submitted(state, action)
         case SUBMITS:
