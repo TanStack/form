@@ -3,17 +3,17 @@ import PropTypes from 'prop-types'
 
 //
 
-class FormApi extends React.Component {
+class FormState extends React.Component {
   render () {
     const { render, component, children, ...rest } = this.props
 
     const inlineProps = {
-      ...this.context.formApi,
+      ...this.context.formState,
       ...rest
     }
 
     const componentProps = {
-      formApi: this.context.formApi,
+      formState: this.context.formState,
       ...rest
     }
 
@@ -29,8 +29,8 @@ class FormApi extends React.Component {
   }
 }
 
-FormApi.contextTypes = {
-  formApi: PropTypes.object
+FormState.contextTypes = {
+  formState: PropTypes.object
 }
 
-export default FormApi
+export default FormState

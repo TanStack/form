@@ -106,7 +106,7 @@ class Form extends Component {
     this.props.dispatch(actions.setValue(field, value))
     if (!this.props.validateOnSubmit) {
       // Get fields api
-      const fieldApi = this.fields.get(field)
+      const fieldApi = this.fields.get(JSON.stringify(field))
       if (fieldApi.preValidate) fieldApi.preValidate()
       if (fieldApi.validate) fieldApi.validate()
       if (fieldApi.asyncValidate) fieldApi.asyncValidate()
@@ -117,7 +117,7 @@ class Form extends Component {
     this.props.dispatch(actions.setTouched(field, touch))
     if (!this.props.validateOnSubmit) {
       // Get fields api
-      const fieldApi = this.fields.get(field)
+      const fieldApi = this.fields.get(JSON.stringify(field))
       if (fieldApi.preValidate) fieldApi.preValidate()
       if (fieldApi.validate) fieldApi.validate()
       if (fieldApi.asyncValidate) fieldApi.asyncValidate()
@@ -150,7 +150,7 @@ class Form extends Component {
 
   setAllTouched = () => {
     [...this.fields].forEach(([name]) => {
-      this.setTouched(name, true)
+      this.setTouched(JSON.parse(name), true)
     })
   }
 
@@ -179,7 +179,7 @@ class Form extends Component {
     [...this.fields].forEach(([name, field]) => {
       if (field.preValidate) {
         const result = field.preValidate()
-        this.setValue(name, result)
+        this.setValue(JSON.parse(name), result)
       }
     })
   }
@@ -233,12 +233,12 @@ class Form extends Component {
   }
 
   register = (name, field) => {
-    console.log("REGISTERING:", name);
-    this.fields.set(name, field)
+    //console.log("REGISTERING:", name);
+    this.fields.set(JSON.stringify(name), field)
   }
 
   deregister = name => {
-    this.fields.delete(name)
+    this.fields.delete(JSON.stringify(name))
   }
 
   format = (field, format) => {
@@ -263,7 +263,23 @@ class Form extends Component {
     this.setAllTouched()
     this.preValidateAll()
     this.validateAll()
-    e.preventDefault(e)
+
+    // We prevent default, by default, unless override is passed
+    if (e && e.preventDefault && !this.props.dontPreventDefault) {
+      e.preventDefault(e)
+    }
+    // We need to prevent default if override is passed and form is invalid
+    if (this.props.dontPreventDefault) {
+      // Pull off errors from form state
+      const { errors, asyncErrors } = this.props.formState
+      // Check to see if its invalid
+      const invalid = isInvalid(errors) || isInvalid(asyncErrors)
+      // Prevent default becaues form is invalid
+      if (invalid && e && e.preventDefault) {
+        e.preventDefault(e)
+      }
+    }
+
     this.finishSubmission(e)
   }
 

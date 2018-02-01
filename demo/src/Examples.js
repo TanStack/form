@@ -4,6 +4,7 @@ import { HashRouter as Router, Route, NavLink as Link } from 'react-router-dom'
 
 /* ------------- Form  Library Imports -------------- */
 import BasicForm from './BasicForm'
+import FormInputs from './FormInputs'
 import StyledForm from './StyledForm'
 import NestedFormExample from './NestedFormExample'
 import FormWithArrays from './FormWithArrays'
@@ -27,6 +28,9 @@ class Examples extends Component {
             <SideNav>
               <Link to="/" exact className="nav-link">
                 Introduction
+              </Link>
+              <Link to="/form-inputs" exact className="nav-link">
+                Form Inputs
               </Link>
               <Link to="/basic-form" className="nav-link">
                 Basic form
@@ -74,6 +78,7 @@ class Examples extends Component {
               <hr />
               <br />
               <Route exact path="/" component={Intro} />
+              <Route exact path="/form-inputs" component={FormInputs} />
               <Route exact path="/basic-form" component={BasicForm} />
               <Route exact path="/styled-form" component={StyledForm} />
               <Route exact path="/array-form" component={FormWithArrays} />

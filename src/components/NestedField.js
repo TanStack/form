@@ -4,9 +4,11 @@ import PropTypes from 'prop-types'
 //
 
 class NestedField extends React.Component {
+
   getChildContext () {
     return {
-      formApi: this.getFormApi()
+      formApi: this.proxiedFormApiMethods,
+      formState: this.context.formState
     }
   }
 
@@ -44,7 +46,12 @@ class NestedField extends React.Component {
       swapValues: proxyWithField(formApi.swapValues, field),
       validatingField: proxyWithField(formApi.validatingField, field),
       doneValidatingField: proxyWithField(formApi.doneValidatingField, field),
-      reset: proxyWithField(formApi.rese, field)
+      reset: proxyWithField(formApi.reset, field),
+      validate: proxyWithField(formApi.validate, field),
+      preValidate: proxyWithField(formApi.preValidate, field),
+      asyncValidate: proxyWithField(formApi.asyncValidate, field),
+      register: proxyWithField(formApi.register, field),
+      deregister: proxyWithField(formApi.deregister, field)
     }
   }
 
@@ -73,11 +80,13 @@ class NestedField extends React.Component {
 }
 
 NestedField.contextTypes = {
-  formApi: PropTypes.object
+  formApi: PropTypes.object,
+  formState: PropTypes.object
 }
 
 NestedField.childContextTypes = {
-  formApi: PropTypes.object
+  formApi: PropTypes.object,
+  formState: PropTypes.object
 }
 
 export default NestedField

@@ -11,8 +11,6 @@ import Code from './Code'
 
 /* ------------------ Form Stuff --------------------*/
 
-const nestedFieldApi = {}
-
 const QuestionFields = () => (
   <div>
     <label htmlFor="color">Whats your favorite color?</label>
@@ -24,95 +22,22 @@ const QuestionFields = () => (
   </div>
 )
 
-const FormContent = ({ formApi, submittedValues }) => (
-  <div>
-    <form onSubmit={formApi.submitForm} id="form4">
-      <label htmlFor="firstName3">First name</label>
-      <Text field="firstName" id="firstName3" />
-      <NestedField field="questions" component={QuestionFields} />
-      <button type="submit" className="mb-4 btn btn-primary">
-        Submit
-      </button>
-    </form>
-    <br />
-    <div className="row mb-4">
-      <div className="col-sm-6">
-        <h4>Full form properties</h4>
-      </div>
-      <div className="col-sm-6">
-        <h4>Nested form properties</h4>
-      </div>
-    </div>
-    <div className="row">
-      <div className="col-sm-6">
-        <Data title="Values" reference="formApi.values" data={formApi.values} />
-      </div>
-      <div className="col-sm-6">
-        <Data title="Values" reference="nestedFormsApi.values" data={nestedFieldApi.values} />
-      </div>
-    </div>
-    <div className="row">
-      <div className="col-sm-6">
-        <Data title="Touched" reference="formApi.touched" data={formApi.touched} />
-      </div>
-      <div className="col-sm-6">
-        <Data title="Touched" reference="nestedFormsApi.touched" data={nestedFieldApi.touched} />
-      </div>
-    </div>
-    <div className="row">
-      <div className="col-sm-6">
-        <Data title="Submission attempts" reference="formApi.submits" data={formApi.submits} />
-      </div>
-      <div className="col-sm-6">
-        <Data
-          title="Submission attempts"
-          reference="nestedFormsApi.submits"
-          data={nestedFieldApi.submits}
-        />
-      </div>
-    </div>
-    <div className="row">
-      <div className="col-sm-6">
-        <Data title="Submitted" reference="formApi.submitted" data={formApi.submitted} />
-      </div>
-      <div className="col-sm-6">
-        <Data
-          title="Submitted"
-          reference="nestedFormsApi.submitted"
-          data={nestedFieldApi.submitted}
-        />
-      </div>
-    </div>
-    <Data
-      title="Submitted values"
-      reference="onSubmit={submittedValues => this.setState( { submittedValues } )}"
-      data={submittedValues}
-    />
-  </div>
-)
-
 const NestedFormCode = () => {
   const code = `
-  import { Form, Text, NestedForm } from '../../src';
+  import { Form, Text, NestedField } from 'react-form';
 
-  const Questions = () => (
-    <NestedForm field="questions">
-      <Form>
-        { formApi => (
-          <div>
-            <label htmlFor="color">Whats your favorite color?</label>
-            <Text field="color" id="color" />
-            <label htmlFor="food">Whats your favorite food?</label>
-            <Text field="food" id="food" />
-            <label htmlFor="car">Whats type of car do you drive?</label>
-            <Text field="car" id="car" />
-          </div>
-        )}
-      </Form>
-    </NestedForm>
-  );
+  const QuestionFields = () => (
+    <div>
+      <label htmlFor="color">Whats your favorite color?</label>
+      <Text field="color" id="color" />
+      <label htmlFor="food">Whats your favorite food?</label>
+      <Text field="food" id="food" />
+      <label htmlFor="car">Whats type of car do you drive?</label>
+      <Text field="car" id="car" />
+    </div>
+  )
 
-  class NestedFormExample extends Component {
+  class NestedFieldExample extends Component {
 
     constructor( props ) {
       super( props );
@@ -121,18 +46,20 @@ const NestedFormCode = () => {
 
     render() {
       return (
-        <div>
-          <Form onSubmit={submittedValues => this.setState( { submittedValues } )}>
-            { formApi => (
-              <form onSubmit={formApi.submitForm} id="form4">
-                <label htmlFor="firstName3">First name</label>
-                <Text field="firstName" id="firstName3" />
-                <Questions />
-                <button type="submit" className="mb-4 btn btn-primary">Submit</button>
-              </form>
-            )}
-          </Form>
-        </div>
+        <Form onSubmit={submittedValues => this.setState({ submittedValues })}>
+          { formApi => (
+            <form onSubmit={formApi.submitForm} id="form4">
+              <label htmlFor="firstName3">First name</label>
+              <Text field="firstName" id="firstName3" />
+              <NestedField field="questions">
+                <QuestionFields />
+              </NestedField>
+              <button type="submit" className="mb-4 btn btn-primary">
+                Submit
+              </button>
+            </form>
+          )}
+        </Form>
       );
     }
   }
@@ -155,16 +82,53 @@ class NestedFormExample extends Component {
   render () {
     return (
       <div>
-        <h2 className="mb-4">Nested Forms</h2>
+        <h2 className="mb-4">Nested Fields</h2>
         <p>
-          You can also choose to create nested forms. This can become very usefull for complex
-          forms. Nested forms should always have one child, a <code>&lt;Form&gt;</code> component.{' '}
-          <code>&lt;Form&gt;</code>s within a <code>&lt;NestedForm&gt;</code> have all the same
-          properties as a normal
-          <code>&lt;Form&gt;</code>
+          You can also choose to create nested fields. This can become very usefull for complex
+          forms. <code>NestedFields</code> allow you to put all child fields in the context of
+          that nested field. This makes way more sense when you see an example:
         </p>
         <Form onSubmit={submittedValues => this.setState({ submittedValues })}>
-          <FormContent submittedValues={this.state.submittedValues} />
+          { formApi => (
+            <div>
+              <form onSubmit={formApi.submitForm} id="form4">
+                <label htmlFor="firstName3">First name</label>
+                <Text field="firstName" id="firstName3" />
+                <NestedField field="questions">
+                  <QuestionFields />
+                </NestedField>
+                <button type="submit" className="mb-4 btn btn-primary">
+                  Submit
+                </button>
+              </form>
+              <br />
+              <Data
+                title="Values"
+                reference="formApi.values"
+                data={formApi.values}
+              />
+              <Data
+                title="Touched"
+                reference="formApi.touched"
+                data={formApi.touched}
+              />
+              <Data
+                title="Submission attempts"
+                reference="formApi.submits"
+                data={formApi.submits}
+              />
+              <Data
+                title="Submitted"
+                reference="formApi.submitted"
+                data={formApi.submitted}
+              />
+              <Data
+                title="Submitted values"
+                reference="onSubmit={submittedValues => this.setState( { submittedValues } )}"
+                data={this.state.submittedValues}
+              />
+            </div>
+          )}
         </Form>
         <br />
         <NestedFormCode />
