@@ -13,10 +13,19 @@ class Field extends React.Component {
     this.context.formApi.deregister(this.props.field)
   }
 
-  // TODO ask Tanner why?
-  // componentWillReceiveProps (nextProps, nextContext) {
-  //   this.buildApi(nextProps)
-  // }
+  componentWillReceiveProps (nextProps) {
+    // If the field name or any validators change, we need to rebuild the api
+    if (
+      !Utils.isShallowEqual(this.props, nextProps, [
+        'field',
+        'preValidate',
+        'validate',
+        'asyncValidate'
+      ])
+    ) {
+      this.buildApi(nextProps)
+    }
+  }
 
   // Optimization to only rerender if nessisary
   shouldComponentUpdate (nextProps, nextState, nextContext) {

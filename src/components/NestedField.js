@@ -23,9 +23,17 @@ class NestedField extends React.Component {
     }
   }
 
-  componentWillReceiveProps (next) {
-    if (next.field !== this.props.field) {
-      this.buildApi(next)
+  componentWillReceiveProps (nextProps) {
+    // If the field or validators change, we have to rebuild
+    if (
+      !Utils.isShallowEqual(this.props, nextProps, [
+        'field',
+        'preValidate',
+        'validate',
+        'asyncValidate'
+      ])
+    ) {
+      this.buildApi(nextProps)
     }
   }
 

@@ -96,11 +96,19 @@ function get (obj, path, def) {
   return typeof val !== 'undefined' ? val : def
 }
 
-function isShallowEqual (obj1, obj2) {
-  if (Object.keys(obj1).length !== Object.keys(obj2).length) {
+function isShallowEqual (obj1, obj2, keys) {
+  if (!keys && Object.keys(obj1).length !== Object.keys(obj2).length) {
     return false
   }
-  const isEqual = Object.keys(obj1).every(prop => obj1[prop] === obj2[prop])
+  const isEqual = Object.keys(obj1).every(prop => {
+    if (keys) {
+      if (keys.includes(prop)) {
+        return obj1[prop] === obj2[prop]
+      }
+      return true
+    }
+    return obj1[prop] === obj2[prop]
+  })
   if (!isEqual) {
     return false
   }
