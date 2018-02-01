@@ -23,6 +23,7 @@ const isInvalid = errors => {
 
 /* -------------- Generates a new state ------------- */
 
+//TODO figure out way to make state immutable
 const newState = state => JSON.parse(JSON.stringify(state))
 
 /* ----------------- Form Component ---------------- */
@@ -103,13 +104,13 @@ class Form extends Component {
   }
 
   setValue = (field, value) => {
+    //TODO option to debounce validators && add async validate
     this.props.dispatch(actions.setValue(field, value))
     if (!this.props.validateOnSubmit) {
       // Get fields api
       const fieldApi = this.fields.get(JSON.stringify(field))
       if (fieldApi.preValidate) fieldApi.preValidate()
       if (fieldApi.validate) fieldApi.validate()
-      if (fieldApi.asyncValidate) fieldApi.asyncValidate()
     }
   }
 
@@ -234,6 +235,7 @@ class Form extends Component {
 
   register = (name, field) => {
     //console.log("REGISTERING:", name);
+    //TODO look into getting rid of stringify maybe
     this.fields.set(JSON.stringify(name), field)
   }
 

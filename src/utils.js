@@ -51,7 +51,8 @@ function makePathArray (obj) {
   return path
 }
 
-function set (obj = {}, path, value) {
+//TODO figure out way to make state immutable
+function set (obj = {}, path, value, deleteWhenFalsey) {
   const keys = makePathArray(path)
   let keyPart
 
@@ -72,7 +73,7 @@ function set (obj = {}, path, value) {
     }
     cursor = cursor[keyPart]
   }
-  if (!value) {
+  if (!value && deleteWhenFalsey) {
     delete cursor[keyPart]
   } else {
     cursor[keyPart] = value

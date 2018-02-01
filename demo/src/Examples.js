@@ -6,7 +6,7 @@ import { HashRouter as Router, Route, NavLink as Link } from 'react-router-dom'
 import BasicForm from './BasicForm'
 import FormInputs from './FormInputs'
 import StyledForm from './StyledForm'
-import NestedFormExample from './NestedFormExample'
+import NestedFieldExample from './NestedFieldExample'
 import FormWithArrays from './FormWithArrays'
 import FieldSyntax from './FieldSyntax'
 import BigComplexForm from './BigComplexForm'
@@ -41,8 +41,8 @@ class Examples extends Component {
               <Link to="/field-syntax" className="nav-link">
                 Field syntax
               </Link>
-              <Link to="/nested-form" className="nav-link">
-                Nested forms
+              <Link to="/nested-field" className="nav-link">
+                Nested fields
               </Link>
               <Link to="/dynamic-form" className="nav-link">
                 Dynamic forms
@@ -83,7 +83,7 @@ class Examples extends Component {
               <Route exact path="/styled-form" component={StyledForm} />
               <Route exact path="/array-form" component={FormWithArrays} />
               <Route exact path="/field-syntax" component={FieldSyntax} />
-              <Route exact path="/nested-form" component={NestedFormExample} />
+              <Route exact path="/nested-field" component={NestedFieldExample} />
               <Route exact path="/dynamic-form" component={DynamicForms} />
               <Route exact path="/array-nested-forms" component={ArrayOfNestedForms} />
               <Route exact path="/custom-input" component={CustomInputs} />
