@@ -23,21 +23,19 @@ const isInvalid = errors => {
 
 /* -------------- Generates a new state ------------- */
 
-//TODO figure out way to make state immutable
+// TODO figure out way to make state immutable
 const newState = state => JSON.parse(JSON.stringify(state))
 
 /* ----------------- Form Component ---------------- */
 
 class Form extends Component {
+  static defaultProps = {
+    preventDefault: true
+  }
 
   constructor (props) {
     super(props)
-    this.fields = new Map()
-    // Unfortunately, babel has some stupid bug with auto-binding async arrow functions
-    // So we still need to manually bind them here
-    // https://github.com/gaearon/react-hot-loader/issues/391
-    this.finishSubmission = this.finishSubmission.bind(this)
-    this.asyncValidateAll = this.asyncValidateAll.bind(this)
+    this.fields = []
   }
 
   getChildContext () {
@@ -104,25 +102,11 @@ class Form extends Component {
   }
 
   setValue = (field, value) => {
-    //TODO option to debounce validators && add async validate
     this.props.dispatch(actions.setValue(field, value))
-    if (!this.props.validateOnSubmit) {
-      // Get fields api
-      const fieldApi = this.fields.get(JSON.stringify(field))
-      if (fieldApi.preValidate) fieldApi.preValidate()
-      if (fieldApi.validate) fieldApi.validate()
-    }
   }
 
   setTouched = (field, touch = true) => {
     this.props.dispatch(actions.setTouched(field, touch))
-    if (!this.props.validateOnSubmit) {
-      // Get fields api
-      const fieldApi = this.fields.get(JSON.stringify(field))
-      if (fieldApi.preValidate) fieldApi.preValidate()
-      if (fieldApi.validate) fieldApi.validate()
-      if (fieldApi.asyncValidate) fieldApi.asyncValidate()
-    }
   }
 
   setError = (field, error) => {
@@ -137,53 +121,69 @@ class Form extends Component {
     this.props.dispatch(actions.setSuccess(field, success))
   }
 
-  preValidate = (field, validate) => {
+  preValidate = (field, validate, opts = {}) => {
+    if (!validate || (!opts.submitting && this.props.validateOnSubmit)) {
+      return
+    }
     this.props.dispatch(actions.preValidate(field, validate))
   }
 
-  validate = (field, validate) => {
+  validate = (field, validate, opts = {}) => {
+    if (!validate || (!opts.submitting && this.props.validateOnSubmit)) {
+      return
+    }
     this.props.dispatch(actions.validate(field, validate))
   }
 
-  asyncValidate = (field, validate) => {
+  asyncValidate = (field, validate, opts = {}) => {
+    if (!validate || (!opts.submitting && this.props.validateOnSubmit)) {
+      return
+    }
     this.props.dispatch(actions.asyncValidate(field, validate))
   }
 
   setAllTouched = () => {
-    [...this.fields].forEach(([name]) => {
-      this.setTouched(JSON.parse(name), true)
-    })
+    const recurse = (node, parentName) => {
+      const fullName = [parentName, node.field].filter(d => d)
+      node.childFields.forEach(childNode => recurse(childNode, fullName))
+      if (node.isNestedField) {
+        return
+      }
+      this.setTouched(fullName, true)
+    }
+
+    recurse(this.fields)
   }
 
   setAllValues = values => this.props.dispatch(actions.setAllValues(values))
 
-  async asyncValidateAll () {
-    // Build up list of async functions that need to be called
-    const validators = [...this.fields].reduce((acc, [, field]) => {
-      if (field.asyncValidate) {
-        return acc.push(field.asyncValidate())
-      }
-      return acc
-    }, [])
-    await Promise.all(validators)
+  preValidateAll = () => {
+    const recurse = node => {
+      node.childFields.forEach(recurse)
+      node.fieldApi.preValidate({ submitting: true })
+    }
+
+    recurse(this.fields)
   }
 
   validateAll = () => {
-    [...this.fields].forEach(([name, field]) => {
-      if (field.validate) {
-        field.validate()
-      }
-    })
+    const recurse = node => {
+      node.childFields.forEach(recurse)
+      node.fieldApi.validate({ submitting: true })
+    }
+
+    recurse(this.fields)
   }
 
-  preValidateAll = () => {
-    [...this.fields].forEach(([name, field]) => {
-      if (field.preValidate) {
-        const result = field.preValidate()
-        this.setValue(JSON.parse(name), result)
+  asyncValidateAll = () =>
+    (async () => {
+      const recurse = async node => {
+        await Promise.all(node.childFields.map(recurse))
+        await node.fieldApi.asyncValidate({ submitting: true })
       }
-    })
-  }
+
+      await recurse(this.fields)
+    })()
 
   setFormState = formState => {
     this.props.dispatch(actions.setFormState(formState))
@@ -233,14 +233,16 @@ class Form extends Component {
     )
   }
 
-  register = (name, field) => {
-    //console.log("REGISTERING:", name);
-    //TODO look into getting rid of stringify maybe
-    this.fields.set(JSON.stringify(name), field)
+  register = (childField, childFieldApi, childFields) => {
+    this.fields.push({
+      field: childField,
+      fieldApi: childFieldApi,
+      childFields
+    })
   }
 
-  deregister = name => {
-    this.fields.delete(JSON.stringify(name))
+  deregister = childField => {
+    this.fields = this.fields.filter(d => d.field !== childField)
   }
 
   format = (field, format) => {
@@ -259,7 +261,7 @@ class Form extends Component {
     this.props.dispatch(actions.clearAll())
   }
 
-  submitForm = e => {
+  submitForm = async e => {
     this.props.dispatch(actions.submitting(true))
     this.props.dispatch(actions.submits())
     this.setAllTouched()
@@ -267,11 +269,11 @@ class Form extends Component {
     this.validateAll()
 
     // We prevent default, by default, unless override is passed
-    if (e && e.preventDefault && !this.props.dontPreventDefault) {
+    if (e && e.preventDefault && this.props.preventDefault) {
       e.preventDefault(e)
     }
     // We need to prevent default if override is passed and form is invalid
-    if (this.props.dontPreventDefault) {
+    if (!this.props.preventDefault) {
       // Pull off errors from form state
       const { errors, asyncErrors } = this.props.formState
       // Check to see if its invalid
@@ -282,10 +284,6 @@ class Form extends Component {
       }
     }
 
-    this.finishSubmission(e)
-  }
-
-  async finishSubmission (e) {
     // Call asynchronous validators
     try {
       await this.asyncValidateAll()
@@ -295,10 +293,7 @@ class Form extends Component {
       throw err
     }
     // Pull off errors from form state
-    const {
-      errors,
-      asyncErrors
-    } = this.props.formState
+    const { errors, asyncErrors } = this.props.formState
     // Only submit if we have no errors
     const invalid = isInvalid(errors)
     const asyncInvalid = isInvalid(asyncErrors)
@@ -380,9 +375,7 @@ class ReactForm extends Component {
   constructor (props) {
     super(props)
 
-    const {
-      defaultValues
-    } = props
+    const { defaultValues } = props
 
     this.store = createStore(
       ReducerBuilder.build({

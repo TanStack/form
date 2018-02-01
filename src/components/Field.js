@@ -4,20 +4,16 @@ import PropTypes from 'prop-types'
 import Utils from '../utils'
 
 class Field extends React.Component {
-
   componentWillMount () {
     this.buildApi(this.props)
-  }
-
-  componentDidMount () {
-    this.context.formApi.register(this.props.field, this.fieldApi)
+    this.context.formApi.register(this.props.field, this.fieldApi, [])
   }
 
   componentWillUnmount () {
     this.context.formApi.deregister(this.props.field)
   }
 
-  //TODO ask Tanner why?
+  // TODO ask Tanner why?
   // componentWillReceiveProps (nextProps, nextContext) {
   //   this.buildApi(nextProps)
   // }
@@ -51,8 +47,10 @@ class Field extends React.Component {
       Utils.get(nextFormState.errors, field) !== Utils.get(currentFormState.errors, field) ||
       Utils.get(nextFormState.warnings, field) !== Utils.get(currentFormState.warnings, field) ||
       Utils.get(nextFormState.successes, field) !== Utils.get(currentFormState.successes, field) ||
-      Utils.get(nextFormState.validating, field) !== Utils.get(currentFormState.validating, field) ||
-      Utils.get(nextFormState.validationFailed, field) !== Utils.get(currentFormState.validationFailed, field) ||
+      Utils.get(nextFormState.validating, field) !==
+        Utils.get(currentFormState.validating, field) ||
+      Utils.get(nextFormState.validationFailed, field) !==
+        Utils.get(currentFormState.validationFailed, field) ||
       !Utils.isShallowEqual(nextNonChildrenProps, nonChildrenProps) ||
       nextFormState.submits !== currentFormState.submits
 
@@ -63,10 +61,16 @@ class Field extends React.Component {
     // This binds all of the functions less often, and also won't trigger
     // changes when spreading the fieldApi as shallow props
     const { formApi } = this.context
-    const { field } = props
+    const { field, validate, preValidate, asyncValidate } = props
+
+    const proxyWithValidateAll = (func, proxyArg) => (...args) => {
+      func(...args)
+      this.fieldApi.validateAll(proxyArg)
+    }
+
     this.fieldApi = {
-      setValue: value => formApi.setValue(field, value),
-      setTouched: touched => formApi.setTouched(field, touched),
+      setValue: proxyWithValidateAll(value => formApi.setValue(field, value)),
+      setTouched: proxyWithValidateAll(touched => formApi.setTouched(field, touched), true),
       setError: error => formApi.setError(field, error),
       setWarning: warning => formApi.setWarning(field, warning),
       setSuccess: success => formApi.setSuccess(field, success),
@@ -76,9 +80,19 @@ class Field extends React.Component {
       reset: () => formApi.reset(field),
       validatingField: () => formApi.validatingField(field),
       doneValidatingField: () => formApi.doneValidatingField(field),
-      validate: this.props.validate ? () => formApi.validate( field, this.props.validate ) : null,
-      preValidate: this.props.preValidate ? () => formApi.preValidate( field, this.props.preValidate ) : null,
-      asyncValidate: this.props.asyncValidate ? () => formApi.asyncValidate(field, this.props.asyncValidate) : null
+      validate: opts => formApi.validate(field, validate, opts),
+      preValidate: opts => formApi.preValidate(field, preValidate, opts),
+      asyncValidate: opts => formApi.asyncValidate(field, asyncValidate, opts),
+      validateAll: immediateAsync => {
+        this.fieldApi.preValidate()
+        this.fieldApi.validate()
+        if (immediateAsync) {
+          this.fieldApi.asyncValidate()
+        } else {
+          // TODO debounce this with `this.props.debounce`
+          // this.fieldApi.asyncValidate()
+        }
+      }
     }
 
     this.getFieldValues = () => ({
@@ -92,7 +106,16 @@ class Field extends React.Component {
   }
 
   render () {
-    const { field, pure, render, component, children, validate, asyncValidate, ...rest } = this.props
+    const {
+      field,
+      pure,
+      render,
+      component,
+      children,
+      validate,
+      asyncValidate,
+      ...rest
+    } = this.props
 
     const inlineProps = {
       ...rest,

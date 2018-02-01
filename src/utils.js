@@ -4,7 +4,8 @@ export default {
   isObject,
   isArray,
   isShallowEqual,
-  isDeepEqual
+  isDeepEqual,
+  noop
 }
 
 function isArray (a) {
@@ -51,7 +52,7 @@ function makePathArray (obj) {
   return path
 }
 
-//TODO figure out way to make state immutable
+// TODO figure out way to make state immutable
 function set (obj = {}, path, value, deleteWhenFalsey) {
   const keys = makePathArray(path)
   let keyPart
@@ -146,3 +147,5 @@ function isDeepEqual (a, b) {
 
   return false
 }
+
+function noop () {}
