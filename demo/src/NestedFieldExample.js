@@ -96,6 +96,9 @@ class NestedFormExample extends Component {
                 <Text field="firstName" id="firstName3" />
                 <NestedField
                   field="questions"
+                  defaultValue={{
+                    color: 'red'
+                  }}
                   validate={values => ({
                     error: values.color === 'red' && 'No red please!'
                   })}

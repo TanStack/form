@@ -14,9 +14,13 @@ class NestedField extends React.Component {
   }
 
   componentWillMount () {
+    const { field, defaultValue } = this.props
     this.fields = []
     this.buildApi(this.props)
-    this.context.formApi.register(this.props.field, this.fieldApi)
+    this.context.formApi.register(field, this.fieldApi)
+    if (defaultValue) {
+      this.fieldApi.setValue(defaultValue)
+    }
   }
 
   componentWillReceiveProps (next) {
@@ -36,6 +40,7 @@ class NestedField extends React.Component {
 
     this.fieldApi = {
       nestedField: true,
+      setValue: value => formApi.setValue(field, value),
       validate: validate ? opts => formApi.validate(field, validate, opts) : Utils.noop,
       preValidate: preValidate ? opts => formApi.preValidate(field, preValidate, opts) : Utils.noop,
       asyncValidate: asyncValidate
