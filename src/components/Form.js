@@ -101,6 +101,17 @@ class Form extends Component {
     return newState(this.props.formState)
   }
 
+  recurseUpFields = cb => {
+    const recurse = async (node, parentName) => {
+      const fullName = [parentName, node.field].filter(d => d)
+      await Promise.all(node.childFields.map(childNode => recurse(childNode, fullName)))
+      return cb(node, parentName)
+    }
+    return Promise.all(this.fields.map(recurse))
+  }
+
+  // Field Api
+
   setValue = (field, value) => {
     this.props.dispatch(actions.setValue(field, value))
   }
@@ -140,56 +151,6 @@ class Form extends Component {
       return
     }
     this.props.dispatch(actions.asyncValidate(field, validate))
-  }
-
-  setAllTouched = () => {
-    const recurse = (node, parentName) => {
-      // Set touched is unique because we dont want to set touched on nested fields
-      // We also dont want to call the internal setTouched because that would
-      // Execute validation, therefore we need to build the full name in this recursion
-      const fullName = [parentName, node.field].filter(d => d)
-      node.childFields.forEach(childNode => recurse(childNode, fullName))
-      if (node.fieldApi.nestedField) {
-        return
-      }
-      this.setTouched(fullName, true)
-    }
-    console.log(this.fields)
-    this.fields.forEach(node => recurse(node))
-  }
-
-  setAllValues = values => this.props.dispatch(actions.setAllValues(values))
-
-  preValidateAll = () => {
-    const recurse = node => {
-      node.childFields.forEach(recurse)
-      node.fieldApi.preValidate({ submitting: true })
-    }
-
-    this.fields.forEach(recurse)
-  }
-
-  validateAll = () => {
-    const recurse = node => {
-      node.childFields.forEach(recurse)
-      node.fieldApi.validate({ submitting: true })
-    }
-
-    this.fields.forEach(recurse)
-  }
-
-  asyncValidateAll = () =>
-    (async () => {
-      const recurse = async node => {
-        await Promise.all(node.childFields.map(recurse))
-        await node.fieldApi.asyncValidate({ submitting: true })
-      }
-
-      await Promise.all(this.fields.map(recurse))
-    })()
-
-  setFormState = formState => {
-    this.props.dispatch(actions.setFormState(formState))
   }
 
   getTouched = field => Utils.get(this.props.formState.touched, field)
@@ -236,6 +197,51 @@ class Form extends Component {
     )
   }
 
+  format = (field, format) => {
+    this.props.dispatch(actions.format(field, format))
+  }
+
+  reset = field => {
+    this.props.dispatch(actions.reset(field))
+  }
+
+  // Form API
+
+  setAllTouched = () => {
+    this.recurseUpFields((node, fullName) => {
+      // Set touched is unique because we dont want to set touched on nested fields
+      // We also dont want to call the internal setTouched because that would
+      // Execute validation, therefore we need to build the full name in this recursion
+      if (node.fieldApi.nestedField) {
+        return
+      }
+      this.setTouched(fullName, true)
+    })
+  }
+
+  setAllValues = values => this.props.dispatch(actions.setAllValues(values))
+
+  preValidateAll = () => {
+    this.recurseUpFields(node => {
+      node.fieldApi.preValidate({ submitting: true })
+    })
+  }
+
+  validateAll = () => {
+    this.recurseUpFields(node => {
+      node.fieldApi.validate({ submitting: true })
+    })
+  }
+
+  asyncValidateAll = () =>
+    (async () => {
+      this.recurseUpFields(node => node.fieldApi.asyncValidate({ submitting: true }))
+    })()
+
+  setFormState = formState => {
+    this.props.dispatch(actions.setFormState(formState))
+  }
+
   register = (childField, childFieldApi, childFields) => {
     this.fields.push({
       field: childField,
@@ -246,14 +252,6 @@ class Form extends Component {
 
   deregister = childField => {
     this.fields = this.fields.filter(d => d.field !== childField)
-  }
-
-  format = (field, format) => {
-    this.props.dispatch(actions.format(field, format))
-  }
-
-  reset = field => {
-    this.props.dispatch(actions.reset(field))
   }
 
   resetAll = () => {
