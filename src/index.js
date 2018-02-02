@@ -2,9 +2,7 @@ import Form from './components/Form'
 import Field from './components/Field'
 import withField from './components/withField'
 import FormApi from './components/FormApi'
-import FormState from './components/FormState'
 import withFormApi from './components/withFormApi'
-import withFormState from './components/withFormState'
 import NestedField from './components/NestedField'
 import withNestedField from './components/withNestedField'
 
@@ -37,7 +35,5 @@ export {
   StyledRadio,
   StyledTextArea,
   StyledSelect,
-  StyledCheckbox,
-  FormState,
-  withFormState
+  StyledCheckbox
 }

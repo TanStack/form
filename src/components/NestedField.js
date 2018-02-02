@@ -17,10 +17,14 @@ class NestedField extends React.Component {
     const { field, defaultValue } = this.props
     this.fields = []
     this.buildApi(this.props)
-    this.context.formApi.register(field, this.fieldApi)
+    this.context.formApi.register(field, this.fieldApi, this.fields)
     if (defaultValue) {
       this.fieldApi.setValue(defaultValue)
     }
+  }
+
+  componentWillUnmount () {
+    this.context.formApi.deregister(this.props.field)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -91,7 +95,6 @@ class NestedField extends React.Component {
         if (childValidate) {
           formApi.preValidate(prefixedField, childValidate, opts)
         }
-
         if (!opts.submitting && preValidate) {
           formApi.preValidate(field, preValidate, opts)
         }
@@ -124,12 +127,12 @@ class NestedField extends React.Component {
           fieldApi: childFieldApi,
           childFields
         })
-        formApi.register(field, this.fieldApi, this.fields)
+        //formApi.register(field, this.fieldApi, this.fields)
       },
 
       deregister: childField => {
         this.fields = this.fields.filter(d => d.field !== childField)
-        formApi.register(field, this.fieldApi, this.fields)
+        //formApi.register(field, this.fieldApi, this.fields)
       }
     }
   }

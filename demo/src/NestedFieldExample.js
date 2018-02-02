@@ -96,13 +96,9 @@ class NestedFormExample extends Component {
                 <Text field="firstName" id="firstName3" />
                 <NestedField
                   field="questions"
-                  defaultValue={{
-                    color: 'red'
-                  }}
                   validate={values => ({
-                    error: values.color === 'red' && 'No red please!'
-                  })}
-                >
+                    error: values && values.color === 'red' && 'No red please!'
+                  })}>
                   <QuestionFields />
                 </NestedField>
                 {/* <label htmlFor="questions.foo">First name</label>

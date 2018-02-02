@@ -9,11 +9,15 @@ class FormApi extends React.Component {
 
     const inlineProps = {
       ...this.context.formApi,
+      ...this.context.formState,
       ...rest
     }
 
     const componentProps = {
-      formApi: this.context.formApi,
+      formApi: {
+        ...this.context.formApi,
+        ...this.context.formApi,
+      },
       ...rest
     }
 

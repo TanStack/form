@@ -144,15 +144,15 @@ class Form extends Component {
 
   setAllTouched = () => {
     const recurse = (node, parentName) => {
+      // Set touched is unique because we dont want to set touched on nested fields
       const fullName = [parentName, node.field].filter(d => d)
       node.childFields.forEach(childNode => recurse(childNode, fullName))
       if (node.isNestedField) {
         return
       }
-      this.setTouched(fullName, true)
+      this.setTouched(node.field, true)
     }
-
-    recurse(this.fields)
+    this.fields.forEach(recurse)
   }
 
   setAllValues = values => this.props.dispatch(actions.setAllValues(values))
@@ -163,7 +163,7 @@ class Form extends Component {
       node.fieldApi.preValidate({ submitting: true })
     }
 
-    recurse(this.fields)
+    this.fields.forEach(recurse)
   }
 
   validateAll = () => {
@@ -172,7 +172,7 @@ class Form extends Component {
       node.fieldApi.validate({ submitting: true })
     }
 
-    recurse(this.fields)
+    this.fields.forEach(recurse)
   }
 
   asyncValidateAll = () =>
@@ -182,7 +182,7 @@ class Form extends Component {
         await node.fieldApi.asyncValidate({ submitting: true })
       }
 
-      await recurse(this.fields)
+      await Promise.all(this.fields.map(recurse))
     })()
 
   setFormState = formState => {

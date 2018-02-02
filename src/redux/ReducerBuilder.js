@@ -87,7 +87,7 @@ const setTouched = (state, action) => {
 
   let newTouched = JSON.parse(JSON.stringify(state.touched))
 
-  newTouched = Utils.set(newTouched, field, touched)
+  newTouched = Utils.set(newTouched, field, touched, true)
 
   return {
     ...state,
@@ -111,7 +111,7 @@ const setWarning = (state, action) => {
 
   let newWarnings = JSON.parse(JSON.stringify(state.warnings))
 
-  newWarnings = Utils.set(newWarnings, field, warning)
+  newWarnings = Utils.set(newWarnings, field, warning, true)
 
   return {
     ...state,
@@ -124,7 +124,7 @@ const setError = (state, action) => {
 
   let newErrors = JSON.parse(JSON.stringify(state.errors))
 
-  newErrors = Utils.set(newErrors, field, error)
+  newErrors = Utils.set(newErrors, field, error, true)
 
   return {
     ...state,
@@ -137,7 +137,7 @@ const setSuccess = (state, action) => {
 
   let newSuccesses = JSON.parse(JSON.stringify(state.successes))
 
-  newSuccesses = Utils.set(newSuccesses, field, success)
+  newSuccesses = Utils.set(newSuccesses, field, success, true)
 
   return {
     ...state,
@@ -150,7 +150,7 @@ const setAsyncWarning = (state, action) => {
 
   let newWarnings = JSON.parse(JSON.stringify(state.asyncWarnings))
 
-  newWarnings = Utils.set(newWarnings, field, warning)
+  newWarnings = Utils.set(newWarnings, field, warning, true)
 
   return {
     ...state,
@@ -163,7 +163,7 @@ const setAsyncError = (state, action) => {
 
   let newErrors = JSON.parse(JSON.stringify(state.asyncErrors))
 
-  newErrors = Utils.set(newErrors, field, error)
+  newErrors = Utils.set(newErrors, field, error, true)
 
   return {
     ...state,
@@ -176,7 +176,7 @@ const setAsyncSuccess = (state, action) => {
 
   let newSuccesses = JSON.parse(JSON.stringify(state.asyncSuccesses))
 
-  newSuccesses = Utils.set(newSuccesses, field, success)
+  newSuccesses = Utils.set(newSuccesses, field, success, true)
 
   return {
     ...state,
