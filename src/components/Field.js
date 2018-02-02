@@ -57,9 +57,9 @@ class Field extends React.Component {
       Utils.get(nextFormState.warnings, field) !== Utils.get(currentFormState.warnings, field) ||
       Utils.get(nextFormState.successes, field) !== Utils.get(currentFormState.successes, field) ||
       Utils.get(nextFormState.validating, field) !==
-        Utils.get(currentFormState.validating, field) ||
+      Utils.get(currentFormState.validating, field) ||
       Utils.get(nextFormState.validationFailed, field) !==
-        Utils.get(currentFormState.validationFailed, field) ||
+      Utils.get(currentFormState.validationFailed, field) ||
       !Utils.isShallowEqual(nextNonChildrenProps, nonChildrenProps) ||
       nextFormState.submits !== currentFormState.submits
 
