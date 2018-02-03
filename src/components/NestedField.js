@@ -79,13 +79,40 @@ class NestedField extends React.Component {
       ...this.context.formApi,
       getFullField: d => [fullFieldName, d],
       register: (name, childField) => {
-        this.fields[name] = {
-          ...childField,
-          parent: this.field
-        }
+        const pathArray = Utils.makePathArray(name)
+        // set this field as the cursor
+        let cursor = this.field
+        // for each middle path key, reuse or create a field obj
+        pathArray.forEach((key, i) => {
+          // create filler field obj
+          if (i < pathArray.length - 1) {
+            cursor.children[key] = cursor.children[key] || {
+              field: [cursor.field, key],
+              getProps: () => ({}),
+              api: {},
+              children: {},
+              parent: cursor
+            }
+            cursor = cursor.children[key]
+          } else {
+            // set the last field as the actual child field
+            cursor.children[key] = { ...childField, parent: cursor }
+          }
+        })
       },
-      deregister: childField => {
-        delete this.fields[childField]
+      deregister: name => {
+        const pathArray = Utils.makePathArray(name)
+        // set this field as the cursor
+        let cursor = this.field
+        // for each middle path key, reuse or create a field obj
+        pathArray.forEach((key, i) => {
+          if (i < pathArray.length - 1) {
+            cursor = cursor.children[key]
+          } else {
+            // delete the last field
+            delete cursor.children[key]
+          }
+        })
       }
     }
   }

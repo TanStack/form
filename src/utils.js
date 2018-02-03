@@ -5,7 +5,8 @@ export default {
   isArray,
   isShallowEqual,
   isDeepEqual,
-  noop
+  noop,
+  makePathArray
 }
 
 function isArray (a) {
@@ -53,8 +54,11 @@ function makePathArray (obj) {
 }
 
 // TODO figure out way to make state immutable
-function set (obj = {}, path, value, deleteWhenFalsey) {
-  const keys = makePathArray(path)
+function set (obj = {}, path, value, deleteWhenFalsey, nestKey) {
+  let keys = makePathArray(path)
+  if (nestKey) {
+    keys = insertBetween(keys, nestKey)
+  }
   let keyPart
 
   if (typeof keys[0] === 'number' && !isArray(obj)) {
