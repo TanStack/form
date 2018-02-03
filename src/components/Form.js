@@ -113,7 +113,7 @@ class Form extends Component {
     return Promise.all(Object.keys(this.fields).map(key => recurse(this.fields[key])))
   }
 
-  fieldCallback = (field, cb, { bubble } = {}) => {
+  fieldCallback = (field, cb, { bubble = true } = {}) => {
     const recurse = async node => {
       await cb(node)
       if (bubble && node.parent) {
@@ -169,22 +169,21 @@ class Form extends Component {
   // Public Field Api
 
   setValue = (field, value, { validate = true } = {}) => {
-    console.log(field, value)
     this.props.dispatch(actions.setValue(field, value))
     if (validate && !this.props.validateOnSubmit) {
-      this.fieldCallback(field, node => node.api.preValidate(), { bubble: true })
-      this.fieldCallback(field, node => node.api.validate(), { bubble: true })
+      this.private_preValidate(field)
+      this.private_validate(field)
       // TODO debounce this somehow
-      // await this.fieldCallback(field, node => node.api.asyncValidate(), bubble)
+      // await this.private_asyncValidate(field)
     }
   }
 
   setTouched = async (field, touch = true, { validate = true } = {}) => {
     this.props.dispatch(actions.setTouched(field, touch))
     if (validate && !this.props.validateOnSubmit) {
-      this.fieldCallback(field, node => node.api.preValidate(), { bubble: true })
-      this.fieldCallback(field, node => node.api.validate(), { bubble: true })
-      await this.fieldCallback(field, node => node.api.asyncValidate(), { bubble: true })
+      this.private_preValidate(field)
+      this.private_validate(field)
+      await this.private_asyncValidate(field)
     }
   }
 
