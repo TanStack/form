@@ -8,23 +8,18 @@ import Utils from '../utils'
 class NestedField extends React.Component {
   getChildContext () {
     return {
-      formApi: this.prefixedFormApiMethods,
+      formApi: this.formApi,
       formState: this.context.formState
     }
   }
 
   componentWillMount () {
-    const { field, defaultValue } = this.props
-    this.fields = []
+    const { defaultValue } = this.props
+    this.fields = {}
     this.buildApi(this.props)
-    this.context.formApi.register(field, this.fieldApi, this.fields)
     if (defaultValue) {
       this.fieldApi.setValue(defaultValue)
     }
-  }
-
-  componentWillUnmount () {
-    this.context.formApi.deregister(this.props.field)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -37,6 +32,11 @@ class NestedField extends React.Component {
         'asyncValidate'
       ])
     ) {
+      // If the field is changing, we need to deregister it
+      if (this.props.field !== nextProps.field) {
+        this.context.formApi.deregister(this.props.field)
+      }
+      // Rebuild the api, including the field registration
       this.buildApi(nextProps)
     }
   }
@@ -50,13 +50,17 @@ class NestedField extends React.Component {
     const { formApi } = this.context
     const { field, preValidate, validate, asyncValidate } = props
 
+    const fullFieldName = formApi.getFullField(field)
+
     this.fieldApi = {
       nestedField: true,
-      setValue: value => formApi.setValue(field, value),
-      validate: validate ? opts => formApi.validate(field, validate, opts) : Utils.noop,
-      preValidate: preValidate ? opts => formApi.preValidate(field, preValidate, opts) : Utils.noop,
+      setValue: value => formApi.setValue(fullFieldName, value),
+      validate: validate ? opts => formApi.validate(fullFieldName, validate, opts) : Utils.noop,
+      preValidate: preValidate
+        ? opts => formApi.preValidate(fullFieldName, preValidate, opts)
+        : Utils.noop,
       asyncValidate: asyncValidate
-        ? opts => formApi.asyncValidate(field, asyncValidate, opts)
+        ? opts => formApi.asyncValidate(fullFieldName, asyncValidate, opts)
         : Utils.noop,
       validateAll: immediateAsync => {
         this.fieldApi.preValidate()
@@ -70,69 +74,26 @@ class NestedField extends React.Component {
       }
     }
 
-    const prefixWithField = (method, field) => (subField, ...rest) =>
-      method([field, subField].filter(d => d), ...rest)
+    this.field = {
+      fullName: fullFieldName,
+      getProps: () => this.props,
+      api: this.fieldApi,
+      children: this.fields
+    }
 
-    this.prefixedFormApiMethods = {
-      getValue: prefixWithField(formApi.getValue, field),
-      getTouched: prefixWithField(formApi.getTouched, field),
-      getError: prefixWithField(formApi.getError, field),
-      getWarning: prefixWithField(formApi.getWarning, field),
-      getSuccess: prefixWithField(formApi.getSuccess, field),
-      setValue: prefixWithField(formApi.setValue, field),
-      setTouched: prefixWithField(formApi.setTouched, field),
-      setError: prefixWithField(formApi.setError, field),
-      setWarning: prefixWithField(formApi.setWarning, field),
-      setSuccess: prefixWithField(formApi.setSuccess, field),
-      addValue: prefixWithField(formApi.addValue, field),
-      removeValue: prefixWithField(formApi.removeValue, field),
-      swapValues: prefixWithField(formApi.swapValues, field),
-      validatingField: prefixWithField(formApi.validatingField, field),
-      doneValidatingField: prefixWithField(formApi.doneValidatingField, field),
-      reset: prefixWithField(formApi.reset, field),
+    this.context.formApi.register(field, this.field)
 
-      preValidate: prefixWithField((prefixedField, childValidate, opts = {}) => {
-        if (childValidate) {
-          formApi.preValidate(prefixedField, childValidate, opts)
+    this.formApi = {
+      ...this.context.formApi,
+      getFullField: d => [fullFieldName, d],
+      register: (name, childField) => {
+        this.fields[name] = {
+          ...childField,
+          parent: this.field
         }
-        if (!opts.submitting && preValidate) {
-          formApi.preValidate(field, preValidate, opts)
-        }
-      }, field),
-
-      validate: prefixWithField((prefixedField, childValidate, opts = {}) => {
-        if (childValidate) {
-          formApi.validate(prefixedField, childValidate, opts)
-        }
-        if (!opts.submitting) {
-          formApi.validate(field, validate, opts)
-        }
-      }, field),
-      asyncValidate: prefixWithField(
-        (prefixedField, childValidate, opts = {}) =>
-          (async () => {
-            if (childValidate) {
-              await formApi.asyncValidate(prefixedField, childValidate, opts)
-            }
-            if (!opts.submitting && asyncValidate) {
-              formApi.asyncValidate(field, asyncValidate, opts)
-            }
-          })(),
-        field
-      ),
-
-      register: (childField, childFieldApi, childFields) => {
-        this.fields.push({
-          field: childField,
-          fieldApi: childFieldApi,
-          childFields
-        })
-        //formApi.register(field, this.fieldApi, this.fields)
       },
-
       deregister: childField => {
-        this.fields = this.fields.filter(d => d.field !== childField)
-        //formApi.register(field, this.fieldApi, this.fields)
+        delete this.fields[childField]
       }
     }
   }

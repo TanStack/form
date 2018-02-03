@@ -6,11 +6,6 @@ import Utils from '../utils'
 class Field extends React.Component {
   componentWillMount () {
     this.buildApi(this.props)
-    this.context.formApi.register(this.props.field, this.fieldApi, [])
-  }
-
-  componentWillUnmount () {
-    this.context.formApi.deregister(this.props.field)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -23,6 +18,11 @@ class Field extends React.Component {
         'asyncValidate'
       ])
     ) {
+      // If the field is changing, we need to deregister it
+      if (this.props.field !== nextProps.field) {
+        this.context.formApi.deregister(this.props.field)
+      }
+      // Rebuild the api, including the field registration
       this.buildApi(nextProps)
     }
   }
@@ -57,60 +57,67 @@ class Field extends React.Component {
       Utils.get(nextFormState.warnings, field) !== Utils.get(currentFormState.warnings, field) ||
       Utils.get(nextFormState.successes, field) !== Utils.get(currentFormState.successes, field) ||
       Utils.get(nextFormState.validating, field) !==
-      Utils.get(currentFormState.validating, field) ||
+        Utils.get(currentFormState.validating, field) ||
       Utils.get(nextFormState.validationFailed, field) !==
-      Utils.get(currentFormState.validationFailed, field) ||
+        Utils.get(currentFormState.validationFailed, field) ||
       !Utils.isShallowEqual(nextNonChildrenProps, nonChildrenProps) ||
       nextFormState.submits !== currentFormState.submits
 
     return shouldUpdate || false
   }
 
+  componentWillUnmount () {
+    this.context.formApi.deregister(this.props.field)
+  }
+
   buildApi = props => {
     // This binds all of the functions less often, and also won't trigger
     // changes when spreading the fieldApi as shallow props
     const { formApi } = this.context
-    const { field, validate, preValidate, asyncValidate } = props
+    const { field } = props
 
-    const proxyWithValidateAll = (func, proxyArg) => (...args) => {
-      func(...args)
-      this.fieldApi.validateAll(proxyArg)
-    }
+    const fullFieldName = formApi.getFullField(field)
+
+    console.log(fullFieldName)
 
     this.fieldApi = {
-      setValue: proxyWithValidateAll(value => formApi.setValue(field, value)),
-      setTouched: proxyWithValidateAll(touched => formApi.setTouched(field, touched), true),
-      setError: error => formApi.setError(field, error),
-      setWarning: warning => formApi.setWarning(field, warning),
-      setSuccess: success => formApi.setSuccess(field, success),
-      addValue: value => formApi.addValue(field, value),
-      removeValue: index => formApi.addValue(field, index),
-      swapValues: (...args) => formApi.addValue(field, ...args),
-      reset: () => formApi.reset(field),
-      validatingField: () => formApi.validatingField(field),
-      doneValidatingField: () => formApi.doneValidatingField(field),
-      validate: opts => formApi.validate(field, validate, opts),
-      preValidate: opts => formApi.preValidate(field, preValidate, opts),
-      asyncValidate: opts => formApi.asyncValidate(field, asyncValidate, opts),
-      validateAll: immediateAsync => {
+      setValue: value => formApi.setValue(fullFieldName, value),
+      setTouched: touched => formApi.setTouched(fullFieldName, touched),
+      setError: error => formApi.setError(fullFieldName, error),
+      setWarning: warning => formApi.setWarning(fullFieldName, warning),
+      setSuccess: success => formApi.setSuccess(fullFieldName, success),
+      addValue: value => formApi.addValue(fullFieldName, value),
+      removeValue: index => formApi.addValue(fullFieldName, index),
+      swapValues: (...args) => formApi.addValue(fullFieldName, ...args),
+      reset: () => formApi.reset(fullFieldName),
+      validatingField: () => formApi.validatingField(fullFieldName),
+      doneValidatingField: () => formApi.doneValidatingField(fullFieldName),
+      validate: opts => formApi.validate(fullFieldName, opts),
+      preValidate: opts => formApi.preValidate(fullFieldName, opts),
+      asyncValidate: opts => formApi.asyncValidate(fullFieldName, opts),
+      validateAll: () => {
         this.fieldApi.preValidate()
         this.fieldApi.validate()
-        if (immediateAsync) {
-          this.fieldApi.asyncValidate()
-        } else {
-          // TODO debounce this with `this.props.debounce`
-          // this.fieldApi.asyncValidate()
-        }
+        return this.fieldApi.asyncValidate()
       }
     }
 
+    this.field = {
+      fullName: fullFieldName,
+      getProps: () => this.props,
+      api: this.fieldApi,
+      children: {}
+    }
+
+    this.context.formApi.register(field, this.field)
+
     this.getFieldValues = () => ({
-      fieldName: field,
-      value: formApi.getValue(field),
-      touched: formApi.getTouched(field),
-      error: formApi.getError(field),
-      warning: formApi.getWarning(field),
-      success: formApi.getSuccess(field)
+      fieldName: fullFieldName,
+      value: formApi.getValue(fullFieldName),
+      touched: formApi.getTouched(fullFieldName),
+      error: formApi.getError(fullFieldName),
+      warning: formApi.getWarning(fullFieldName),
+      success: formApi.getSuccess(fullFieldName)
     })
   }
 

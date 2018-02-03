@@ -82,11 +82,12 @@ function set (obj = {}, path, value, deleteWhenFalsey) {
   return obj
 }
 
-function get (obj, path, def) {
+function get (obj, path, def, nestKey) {
   if (!path) {
     return obj
   }
-  const pathObj = makePathArray(path)
+  const pathArray = makePathArray(path)
+  const pathObj = nestKey ? insertBetween(pathArray, nestKey) : pathArray
   const val = pathObj.reduce((current, pathPart) => {
     if (typeof current !== 'undefined' && current !== null) {
       return current[pathPart]
@@ -157,3 +158,14 @@ function isDeepEqual (a, b) {
 }
 
 function noop () {}
+
+function insertBetween (arr, item) {
+  const newArr = []
+  arr.forEach((r, i) => {
+    newArr.push(r)
+    if (i < arr.length - 1) {
+      newArr.push(item)
+    }
+  })
+  return newArr
+}
