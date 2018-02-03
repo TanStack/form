@@ -115,7 +115,6 @@ export function validationSuccess (field) {
   return { type: VALIDATION_SUCCESS, field }
 }
 
-
 export function preValidate (field, validator) {
   return (dispatch, getState) => {
     if (validator) {
@@ -133,13 +132,13 @@ export function validate (field, validator) {
       const result = validator(Utils.get(getState().values, field))
       // TODO null check on result??? Should we make the user return object
       // Dispatch the setters for error, success and warning if they exsit on object
-      if (Object.prototype.hasOwnProperty.call(result, 'error')) {
+      if (typeof result.error !== 'undefined') {
         dispatch(setError(field, result.error))
       }
-      if (Object.prototype.hasOwnProperty.call(result, 'warning')) {
+      if (typeof result.warning !== 'undefined') {
         dispatch(setWarning(field, result.warning))
       }
-      if (Object.prototype.hasOwnProperty.call(result, 'success')) {
+      if (typeof result.success !== 'undefined') {
         dispatch(setSuccess(field, result.success))
       }
     }
@@ -157,13 +156,13 @@ export function asyncValidate (field, validator) {
         const result = await validator(Utils.get(getState().values, field))
         // TODO null check on result??? Should we make the user return object
         // Dispatch the setters for error, success and warning if they exsit on object
-        if (Object.prototype.hasOwnProperty.call(result, 'error')) {
+        if (typeof result.error !== 'undefined') {
           dispatch(setAsyncError(field, result.error))
         }
-        if (Object.prototype.hasOwnProperty.call(result, 'warning')) {
+        if (typeof result.warning !== 'undefined') {
           dispatch(setAsyncWarning(field, result.warning))
         }
-        if (Object.prototype.hasOwnProperty.call(result, 'success')) {
+        if (typeof result.success !== 'undefined') {
           dispatch(setAsyncSuccess(field, result.success))
         }
         // We successfully validated so dispatch

@@ -133,7 +133,7 @@ class Form extends Component {
       node => {
         const { preValidate } = node.getProps()
         if (preValidate) {
-          return this.props.dispatch(actions.preValidate(field, preValidate))
+          return this.props.dispatch(actions.preValidate(node.field, preValidate))
         }
       },
       opts
@@ -146,7 +146,7 @@ class Form extends Component {
       node => {
         const { validate } = node.getProps()
         if (validate) {
-          return this.props.dispatch(actions.preValidate(field, validate))
+          this.props.dispatch(actions.validate(node.field, validate))
         }
       },
       opts
@@ -159,7 +159,7 @@ class Form extends Component {
       node => {
         const { asyncValidate } = node.getProps()
         if (asyncValidate) {
-          return this.props.dispatch(actions.preValidate(field, asyncValidate))
+          return this.props.dispatch(actions.asyncValidate(node.field, asyncValidate))
         }
       },
       opts

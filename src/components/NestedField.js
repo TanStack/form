@@ -48,34 +48,26 @@ class NestedField extends React.Component {
   buildApi = props => {
     // Here we will prefix the calls to the formApi to reflect the new field context
     const { formApi } = this.context
-    const { field, preValidate, validate, asyncValidate } = props
+    const { field } = props
 
     const fullFieldName = formApi.getFullField(field)
 
     this.fieldApi = {
       nestedField: true,
       setValue: value => formApi.setValue(fullFieldName, value),
-      validate: validate ? opts => formApi.validate(fullFieldName, validate, opts) : Utils.noop,
-      preValidate: preValidate
-        ? opts => formApi.preValidate(fullFieldName, preValidate, opts)
-        : Utils.noop,
-      asyncValidate: asyncValidate
-        ? opts => formApi.asyncValidate(fullFieldName, asyncValidate, opts)
-        : Utils.noop,
-      validateAll: immediateAsync => {
-        this.fieldApi.preValidate()
-        this.fieldApi.validate()
-        if (immediateAsync) {
-          this.fieldApi.asyncValidate()
-        } else {
-          // TODO debounce this with `this.props.debounce`
-          // this.fieldApi.asyncValidate()
-        }
+      validate: opts => formApi.validate(fullFieldName, opts),
+      preValidate: opts => formApi.preValidate(fullFieldName, opts),
+      asyncValidate: opts => formApi.asyncValidate(fullFieldName, opts),
+      validateAll: opts => {
+        this.fieldApi.preValidate(opts)
+        this.fieldApi.validate(opts)
+        // TODO debounce this with `this.props.debounce`
+        this.fieldApi.asyncValidate(opts)
       }
     }
 
     this.field = {
-      fullName: fullFieldName,
+      field: fullFieldName,
       getProps: () => this.props,
       api: this.fieldApi,
       children: this.fields

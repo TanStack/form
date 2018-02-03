@@ -78,8 +78,6 @@ class Field extends React.Component {
 
     const fullFieldName = formApi.getFullField(field)
 
-    console.log(fullFieldName)
-
     this.fieldApi = {
       setValue: value => formApi.setValue(fullFieldName, value),
       setTouched: touched => formApi.setTouched(fullFieldName, touched),
@@ -95,15 +93,15 @@ class Field extends React.Component {
       validate: opts => formApi.validate(fullFieldName, opts),
       preValidate: opts => formApi.preValidate(fullFieldName, opts),
       asyncValidate: opts => formApi.asyncValidate(fullFieldName, opts),
-      validateAll: () => {
-        this.fieldApi.preValidate()
-        this.fieldApi.validate()
-        return this.fieldApi.asyncValidate()
+      validateAll: opts => {
+        this.fieldApi.preValidate(opts)
+        this.fieldApi.validate(opts)
+        return this.fieldApi.asyncValidate(opts)
       }
     }
 
     this.field = {
-      fullName: fullFieldName,
+      field: fullFieldName,
       getProps: () => this.props,
       api: this.fieldApi,
       children: {}
