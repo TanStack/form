@@ -79,6 +79,7 @@ class NestedField extends React.Component {
       ...this.context.formApi,
       getFullField: d => [fullFieldName, d],
       register: (name, childField) => {
+        // TODO try to share this function with the similar one in Form.js
         const pathArray = Utils.makePathArray(name)
         // set this field as the cursor
         let cursor = this.field
@@ -87,9 +88,14 @@ class NestedField extends React.Component {
           // create filler field obj
           if (i < pathArray.length - 1) {
             cursor.children[key] = cursor.children[key] || {
-              field: [cursor.field, key],
+              field: [cursor.field, key].filter(d => d),
               getProps: () => ({}),
-              api: {},
+              api: {
+                nestedField: true,
+                preValidate: Utils.noop,
+                validate: Utils.noop,
+                asyncValidate: Utils.noop
+              },
               children: {},
               parent: cursor
             }

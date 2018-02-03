@@ -103,12 +103,9 @@ class Form extends Component {
   }
 
   recurseUpAllFields = cb => {
-    const recurse = async (node, parentName) => {
-      const fullName = [parentName, node.field].filter(d => d)
-      await Promise.all(
-        Object.keys(node.childFields).map(key => recurse(node.childFields[key], fullName))
-      )
-      return cb(node, parentName)
+    const recurse = async node => {
+      await Promise.all(Object.keys(node.children).map(key => recurse(node.children[key])))
+      return cb(node)
     }
     return Promise.all(Object.keys(this.fields).map(key => recurse(this.fields[key])))
   }
@@ -268,14 +265,14 @@ class Form extends Component {
   getFullField = d => d
 
   setAllTouched = () => {
-    this.recurseUpAllFields((node, fullName) => {
+    this.recurseUpAllFields(node => {
       // Set touched is unique because we dont want to set touched on nested fields
       // We also dont want to call the internal setTouched because that would
       // Execute validation, therefore we need to build the full name in this recursion
       if (node.api.nestedField) {
         return
       }
-      this.setTouched(fullName, true, { validate: false })
+      this.setTouched(node.field, true, { validate: false })
     })
   }
 
@@ -313,9 +310,14 @@ class Form extends Component {
       // create filler field obj
       if (i < pathArray.length - 1) {
         cursor.children[key] = cursor.children[key] || {
-          field: [cursor.field, key],
+          field: [cursor.field, key].filter(d => d),
           getProps: () => ({}),
-          api: {},
+          api: {
+            nestedField: true,
+            preValidate: Utils.noop,
+            validate: Utils.noop,
+            asyncValidate: Utils.noop
+          },
           children: {},
           parent: cursor
         }
