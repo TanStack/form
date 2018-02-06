@@ -1,6 +1,10 @@
 # React-Form
 A powerful and lightweight form library for React.
 
+# *Update:* V3 is comming!  
+
+We are activley working on V3 of React Form. This update will include many enhancements including field level validation, and a simplified iterface. Stay tuned! For additional information we have created a Git issue called 3.0.
+
 ### Go to [live examples, code and docs](https://react-form.js.org)!
 
 [![Build Status](https://travis-ci.org/react-tools/react-form.svg?branch=v0.11.1)](https://travis-ci.org/react-tools/react-form)
