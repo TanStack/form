@@ -20,7 +20,7 @@ class Field extends React.Component {
     ) {
       // If the field is changing, we need to deregister it
       if (this.props.field !== nextProps.field) {
-        this.context.formApi.deregister(this.props.field)
+        this.context.formApi.deregister(this.node)
       }
       // Rebuild the api, including the field registration
       this.buildApi(nextProps)
@@ -67,7 +67,7 @@ class Field extends React.Component {
   }
 
   componentWillUnmount () {
-    this.context.formApi.deregister(this.props.field)
+    this.context.formApi.deregister(this.node)
   }
 
   buildApi = props => {
@@ -76,8 +76,10 @@ class Field extends React.Component {
     const { formApi } = this.context
     const { field } = props
 
+    // Get the full field name
     const fullFieldName = formApi.getFullField(field)
 
+    // Wrap the formApi methods to reflect the new field context
     this.fieldApi = {
       setValue: value => formApi.setValue(fullFieldName, value),
       setTouched: touched => formApi.setTouched(fullFieldName, touched),
@@ -90,19 +92,23 @@ class Field extends React.Component {
       reset: () => formApi.reset(fullFieldName),
       validatingField: () => formApi.validatingField(fullFieldName),
       doneValidatingField: () => formApi.doneValidatingField(fullFieldName),
-      validate: () => formApi.validate(fullFieldName),
-      preValidate: () => formApi.preValidate(fullFieldName),
-      asyncValidate: () => formApi.asyncValidate(fullFieldName),
+      validate: () => formApi.validate(fullFieldName, this.props.validate),
+      preValidate: () => formApi.preValidate(fullFieldName, this.props.preValidate),
+      asyncValidate: () => formApi.asyncValidate(fullFieldName, this.props.asyncValidate),
     }
 
-    const node = {
+    // Define node for field
+    // Note a field is obviously a leaf node
+    this.node = {
       field: fullFieldName,
       api: this.fieldApi,
       children: []
     }
 
-    this.context.formApi.register(field, node)
+    // Register field
+    this.context.formApi.register(this.node)
 
+    // define function to generate field values
     this.getFieldValues = () => ({
       fieldName: fullFieldName,
       value: formApi.getValue(fullFieldName),

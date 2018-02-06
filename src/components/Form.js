@@ -26,6 +26,25 @@ const isInvalid = errors => {
 // TODO figure out way to make state immutable
 const newState = state => JSON.parse(JSON.stringify(state))
 
+//
+// recurseUpAllFields = cb => {
+//   const recurse = async node => {
+//     await Promise.all(Object.keys(node.children).map(key => recurse(node.children[key])))
+//     return cb(node)
+//   }
+//   return Promise.all(Object.keys(this.fields).map(key => recurse(this.fields[key])))
+// }
+//
+// fieldCallback = (field, cb, { bubble = true } = {}) => {
+//   const recurse = async node => {
+//     await cb(node)
+//     if (bubble && node.parent) {
+//       return recurse(node.parent)
+//     }
+//   }
+//   return recurse(this.getField(field))
+// }
+
 /* ----------------- Form Component ---------------- */
 
 class Form extends Component {
@@ -38,12 +57,14 @@ class Form extends Component {
     this.root = {
       children: []
     }
+    this.fieldMap = new Map()
   }
 
   getChildContext () {
     return {
       formApi: this.getFormApi(),
-      formState: this.getFormState()
+      formState: this.getFormState(),
+      privateFormApi: this.getPrivateFormApi()
     }
   }
 
@@ -95,7 +116,15 @@ class Form extends Component {
       deregister: this.deregister,
       asyncValidate: this.asyncValidate,
       validate: this.validate,
-      preValidate: this.preValidate
+      preValidate: this.preValidate,
+      getFullField: this.getFullField
+    }
+  }
+
+  getPrivateFormApi () {
+    return {
+      registerWithForm: this.registerWithForm,
+      deregisterFromForm: this.deregisterFromForm,
     }
   }
 
@@ -106,11 +135,17 @@ class Form extends Component {
   setValue = (field, value) => {
     this.props.dispatch(actions.setValue(field, value))
     // Validate up the tree
+    this.recurUp(field, node => node.api.preValidate())
+    this.recurUp(field, node => node.api.validate())
+    this.recurUp(field, node => node.api.asyncValidate())
   }
 
   setTouched = (field, touch = true) => {
     this.props.dispatch(actions.setTouched(field, touch))
     // Validate up the tree
+    this.recurUp(field, node => node.api.preValidate())
+    this.recurUp(field, node => node.api.validate())
+    this.recurUp(field, node => node.api.asyncValidate())
   }
 
   setError = (field, error) => {
@@ -147,18 +182,18 @@ class Form extends Component {
   }
 
   setAllTouched = () => {
-    const recurse = (node, parentName) => {
+    const recurse = node => {
       // Set touched is unique because we dont want to set touched on nested fields
       // We also dont want to call the internal setTouched because that would
       // Execute validation, therefore we need to build the full name in this recursion
-      const fullName = [parentName, node.field].filter(d => d)
-      node.childFields.forEach(childNode => recurse(childNode, fullName))
-      if (node.fieldApi.nestedField) {
+      const fullName = [node.field].filter(d => d)
+      node.children.forEach(childNode => recurse(childNode, fullName))
+      if (node.api.nestedField) {
         return
       }
-      this.setTouched(fullName, true)
+      this.props.dispatch(actions.setTouched(fullName, true))
     }
-    console.log(this.root.children)
+    // console.log(this.root.children[1])
     this.root.children.forEach(node => recurse(node))
   }
 
@@ -166,16 +201,16 @@ class Form extends Component {
 
   preValidateAll = () => {
     const recurse = node => {
-      node.childFields.forEach(recurse)
-      node.fieldApi.preValidate({ submitting: true })
+      node.children.forEach(recurse)
+      node.api.preValidate({ submitting: true })
     }
     this.root.children.forEach(recurse)
   }
 
   validateAll = () => {
     const recurse = node => {
-      node.childFields.forEach(recurse)
-      node.fieldApi.validate({ submitting: true })
+      node.children.forEach(recurse)
+      node.api.validate({ submitting: true })
     }
 
     this.root.children.forEach(recurse)
@@ -184,8 +219,8 @@ class Form extends Component {
   asyncValidateAll = () =>
     (async () => {
       const recurse = async node => {
-        await Promise.all(node.childFields.map(recurse))
-        await node.fieldApi.asyncValidate({ submitting: true })
+        await Promise.all(node.children.map(recurse))
+        await node.api.asyncValidate({ submitting: true })
       }
 
       await Promise.all(this.root.children.map(recurse))
@@ -204,6 +239,8 @@ class Form extends Component {
   getWarning = field => Utils.get(this.props.formState.warnings, field)
 
   getSuccess = field => Utils.get(this.props.formState.successes, field)
+
+  getFullField = field => field
 
   addValue = (field, value) => {
     this.props.dispatch(
@@ -240,11 +277,24 @@ class Form extends Component {
   }
 
   register = node => {
-    this.root.children.push(node)
+    this.root.children.push({
+      ...node,
+      parent: this.root
+    })
+    this.registerWithForm(node)
   }
 
-  deregister = field => {
-    this.root.children = this.root.children.filter(d => d.field !== field)
+  registerWithForm = node => {
+    this.fieldMap.set(node.field, node)
+  }
+
+  deregister = node => {
+    this.root.children = this.root.children.filter(d => d.field !== node.field)
+    this.deregisterFromForm(node)
+  }
+
+  deregisterFromForm = node => {
+    this.fieldMap.delete(node.field)
   }
 
   format = (field, format) => {
@@ -326,6 +376,24 @@ class Form extends Component {
     this.props.dispatch(actions.submitting(false))
   }
 
+  recurUp = (field, cb) => {
+    // Step1. get the target node from the map
+    const target = this.fieldMap.get(field)
+
+    // Step2. Define recur function
+    const recurse = async node => {
+      // Call the cb with the node
+      await cb(node)
+      // If we have parent recur
+      if (node.parent) {
+        recurse(node.parent)
+      }
+    }
+
+    // Step3. start recursion
+    recurse(target)
+  }
+
   render () {
     const { children, component, render } = this.props
 
@@ -357,7 +425,8 @@ class Form extends Component {
 
 Form.childContextTypes = {
   formApi: PropTypes.object,
-  formState: PropTypes.object
+  formState: PropTypes.object,
+  privateFormApi: PropTypes.object
 }
 
 /* ---------- Container ---------- */
