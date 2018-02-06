@@ -26,25 +26,6 @@ const isInvalid = errors => {
 // TODO figure out way to make state immutable
 const newState = state => JSON.parse(JSON.stringify(state))
 
-//
-// recurseUpAllFields = cb => {
-//   const recurse = async node => {
-//     await Promise.all(Object.keys(node.children).map(key => recurse(node.children[key])))
-//     return cb(node)
-//   }
-//   return Promise.all(Object.keys(this.fields).map(key => recurse(this.fields[key])))
-// }
-//
-// fieldCallback = (field, cb, { bubble = true } = {}) => {
-//   const recurse = async node => {
-//     await cb(node)
-//     if (bubble && node.parent) {
-//       return recurse(node.parent)
-//     }
-//   }
-//   return recurse(this.getField(field))
-// }
-
 /* ----------------- Form Component ---------------- */
 
 class Form extends Component {
