@@ -90,9 +90,9 @@ class Field extends React.Component {
       reset: () => formApi.reset(fullFieldName),
       validatingField: () => formApi.validatingField(fullFieldName),
       doneValidatingField: () => formApi.doneValidatingField(fullFieldName),
-      validate: opts => formApi.validate(fullFieldName, opts),
-      preValidate: opts => formApi.preValidate(fullFieldName, opts),
-      asyncValidate: opts => formApi.asyncValidate(fullFieldName, opts),
+      validate: () => formApi.validate(fullFieldName),
+      preValidate: () => formApi.preValidate(fullFieldName),
+      asyncValidate: () => formApi.asyncValidate(fullFieldName),
     }
 
     const node = {

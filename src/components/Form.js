@@ -105,10 +105,12 @@ class Form extends Component {
 
   setValue = (field, value) => {
     this.props.dispatch(actions.setValue(field, value))
+    // Validate up the tree
   }
 
   setTouched = (field, touch = true) => {
     this.props.dispatch(actions.setTouched(field, touch))
+    // Validate up the tree
   }
 
   setError = (field, error) => {
