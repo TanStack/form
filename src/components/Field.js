@@ -57,9 +57,9 @@ class Field extends React.Component {
       Utils.get(nextFormState.warnings, field) !== Utils.get(currentFormState.warnings, field) ||
       Utils.get(nextFormState.successes, field) !== Utils.get(currentFormState.successes, field) ||
       Utils.get(nextFormState.validating, field) !==
-        Utils.get(currentFormState.validating, field) ||
+      Utils.get(currentFormState.validating, field) ||
       Utils.get(nextFormState.validationFailed, field) !==
-        Utils.get(currentFormState.validationFailed, field) ||
+      Utils.get(currentFormState.validationFailed, field) ||
       !Utils.isShallowEqual(nextNonChildrenProps, nonChildrenProps) ||
       nextFormState.submits !== currentFormState.submits
 
@@ -93,21 +93,15 @@ class Field extends React.Component {
       validate: opts => formApi.validate(fullFieldName, opts),
       preValidate: opts => formApi.preValidate(fullFieldName, opts),
       asyncValidate: opts => formApi.asyncValidate(fullFieldName, opts),
-      validateAll: opts => {
-        this.fieldApi.preValidate(opts)
-        this.fieldApi.validate(opts)
-        return this.fieldApi.asyncValidate(opts)
-      }
     }
 
-    this.field = {
+    const node = {
       field: fullFieldName,
-      getProps: () => this.props,
       api: this.fieldApi,
-      children: {}
+      children: []
     }
 
-    this.context.formApi.register(field, this.field)
+    this.context.formApi.register(field, node)
 
     this.getFieldValues = () => ({
       fieldName: fullFieldName,

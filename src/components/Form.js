@@ -35,7 +35,9 @@ class Form extends Component {
 
   constructor (props) {
     super(props)
-    this.fields = {}
+    this.root = {
+      children: []
+    }
   }
 
   getChildContext () {
@@ -93,8 +95,7 @@ class Form extends Component {
       deregister: this.deregister,
       asyncValidate: this.asyncValidate,
       validate: this.validate,
-      preValidate: this.preValidate,
-      getFullField: this.getFullField
+      preValidate: this.preValidate
     }
   }
 
@@ -102,86 +103,12 @@ class Form extends Component {
     return newState(this.props.formState)
   }
 
-  recurseUpAllFields = cb => {
-    const recurse = async node => {
-      await Promise.all(Object.keys(node.children).map(key => recurse(node.children[key])))
-      return cb(node)
-    }
-    return Promise.all(Object.keys(this.fields).map(key => recurse(this.fields[key])))
-  }
-
-  fieldCallback = (field, cb, { bubble = true } = {}) => {
-    const recurse = async node => {
-      await cb(node)
-      if (bubble && node.parent) {
-        return recurse(node.parent)
-      }
-    }
-    return recurse(this.getField(field))
-  }
-
-  getField = field => Utils.get(this.fields, field, undefined, 'children')
-
-  // Private Field Api
-
-  private_preValidate = (field, opts) => {
-    this.fieldCallback(
-      field,
-      node => {
-        const { preValidate } = node.getProps()
-        if (preValidate) {
-          return this.props.dispatch(actions.preValidate(node.field, preValidate))
-        }
-      },
-      opts
-    )
-  }
-
-  private_validate = (field, opts) => {
-    this.fieldCallback(
-      field,
-      node => {
-        const { validate } = node.getProps()
-        if (validate) {
-          this.props.dispatch(actions.validate(node.field, validate))
-        }
-      },
-      opts
-    )
-  }
-
-  private_asyncValidate = async (field, opts) => {
-    this.fieldCallback(
-      field,
-      node => {
-        const { asyncValidate } = node.getProps()
-        if (asyncValidate) {
-          return this.props.dispatch(actions.asyncValidate(node.field, asyncValidate))
-        }
-      },
-      opts
-    )
-  }
-
-  // Public Field Api
-
-  setValue = (field, value, { validate = true } = {}) => {
+  setValue = (field, value) => {
     this.props.dispatch(actions.setValue(field, value))
-    if (validate && !this.props.validateOnSubmit) {
-      this.private_preValidate(field)
-      this.private_validate(field)
-      // TODO debounce this somehow
-      // await this.private_asyncValidate(field)
-    }
   }
 
-  setTouched = async (field, touch = true, { validate = true } = {}) => {
+  setTouched = (field, touch = true) => {
     this.props.dispatch(actions.setTouched(field, touch))
-    if (validate && !this.props.validateOnSubmit) {
-      this.private_preValidate(field)
-      this.private_validate(field)
-      await this.private_asyncValidate(field)
-    }
   }
 
   setError = (field, error) => {
@@ -196,17 +123,75 @@ class Form extends Component {
     this.props.dispatch(actions.setSuccess(field, success))
   }
 
-  validateAll = (() => async field => {
-    this.preValidate(field)
-    this.validate(field)
-    await this.asyncValidate(field)
-  })()
+  preValidate = (field, validate, opts = {}) => {
+    if (!validate || (!opts.submitting && this.props.validateOnSubmit)) {
+      return
+    }
+    this.props.dispatch(actions.preValidate(field, validate))
+  }
 
-  preValidate = (field, opts) => this.private_preValidate(field, opts)
+  validate = (field, validate, opts = {}) => {
+    if (!validate || (!opts.submitting && this.props.validateOnSubmit)) {
+      return
+    }
+    this.props.dispatch(actions.validate(field, validate))
+  }
 
-  validate = (field, opts) => this.private_validate(field, opts)
+  asyncValidate = (field, validate, opts = {}) => {
+    if (!validate || (!opts.submitting && this.props.validateOnSubmit)) {
+      return
+    }
+    this.props.dispatch(actions.asyncValidate(field, validate))
+  }
 
-  asyncValidate = (field, opts) => this.private_asyncValidate(field, opts)
+  setAllTouched = () => {
+    const recurse = (node, parentName) => {
+      // Set touched is unique because we dont want to set touched on nested fields
+      // We also dont want to call the internal setTouched because that would
+      // Execute validation, therefore we need to build the full name in this recursion
+      const fullName = [parentName, node.field].filter(d => d)
+      node.childFields.forEach(childNode => recurse(childNode, fullName))
+      if (node.fieldApi.nestedField) {
+        return
+      }
+      this.setTouched(fullName, true)
+    }
+    console.log(this.root.children)
+    this.root.children.forEach(node => recurse(node))
+  }
+
+  setAllValues = values => this.props.dispatch(actions.setAllValues(values))
+
+  preValidateAll = () => {
+    const recurse = node => {
+      node.childFields.forEach(recurse)
+      node.fieldApi.preValidate({ submitting: true })
+    }
+    this.root.children.forEach(recurse)
+  }
+
+  validateAll = () => {
+    const recurse = node => {
+      node.childFields.forEach(recurse)
+      node.fieldApi.validate({ submitting: true })
+    }
+
+    this.root.children.forEach(recurse)
+  }
+
+  asyncValidateAll = () =>
+    (async () => {
+      const recurse = async node => {
+        await Promise.all(node.childFields.map(recurse))
+        await node.fieldApi.asyncValidate({ submitting: true })
+      }
+
+      await Promise.all(this.root.children.map(recurse))
+    })()
+
+  setFormState = formState => {
+    this.props.dispatch(actions.setFormState(formState))
+  }
 
   getTouched = field => Utils.get(this.props.formState.touched, field)
 
@@ -252,96 +237,20 @@ class Form extends Component {
     )
   }
 
+  register = node => {
+    this.root.children.push(node)
+  }
+
+  deregister = field => {
+    this.root.children = this.root.children.filter(d => d.field !== field)
+  }
+
   format = (field, format) => {
     this.props.dispatch(actions.format(field, format))
   }
 
   reset = field => {
     this.props.dispatch(actions.reset(field))
-  }
-
-  // Public Form API
-
-  getFullField = d => d
-
-  setAllTouched = () => {
-    this.recurseUpAllFields(node => {
-      // Set touched is unique because we dont want to set touched on nested fields
-      // We also dont want to call the internal setTouched because that would
-      // Execute validation, therefore we need to build the full name in this recursion
-      if (node.api.nestedField) {
-        return
-      }
-      this.setTouched(node.field, true, { validate: false })
-    })
-  }
-
-  setAllValues = values => this.props.dispatch(actions.setAllValues(values))
-
-  preValidateAll = () => {
-    this.recurseUpAllFields(node => {
-      node.api.preValidate({ bubble: false })
-    })
-  }
-
-  validateAll = () => {
-    this.recurseUpAllFields(node => {
-      node.api.validate({ bubble: false })
-    })
-  }
-
-  asyncValidateAll = () =>
-    (async () => {
-      this.recurseUpAllFields(node => node.api.asyncValidate({ bubble: false }))
-    })()
-
-  setFormState = formState => {
-    this.props.dispatch(actions.setFormState(formState))
-  }
-
-  register = (name, childField) => {
-    const pathArray = Utils.makePathArray(name)
-    // set this field as the cursor
-    let cursor = {
-      children: this.fields
-    }
-    // for each middle path key, reuse or create a field obj
-    pathArray.forEach((key, i) => {
-      // create filler field obj
-      if (i < pathArray.length - 1) {
-        cursor.children[key] = cursor.children[key] || {
-          field: [cursor.field, key].filter(d => d),
-          getProps: () => ({}),
-          api: {
-            nestedField: true,
-            preValidate: Utils.noop,
-            validate: Utils.noop,
-            asyncValidate: Utils.noop
-          },
-          children: {},
-          parent: cursor
-        }
-        cursor = cursor.children[key]
-      } else {
-        // set the last field as the actual child field
-        cursor.children[key] = childField
-      }
-    })
-  }
-
-  deregister = name => {
-    const pathArray = Utils.makePathArray(name)
-    // set this field as the cursor
-    let cursor = { children: this.fields }
-    // for each middle path key, reuse or create a field obj
-    pathArray.forEach((key, i) => {
-      if (i < pathArray.length - 1) {
-        cursor = cursor.children[key]
-      } else {
-        // delete the last field
-        delete cursor.children[key]
-      }
-    })
   }
 
   resetAll = () => {

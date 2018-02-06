@@ -57,13 +57,7 @@ class NestedField extends React.Component {
       setValue: value => formApi.setValue(fullFieldName, value),
       validate: opts => formApi.validate(fullFieldName, opts),
       preValidate: opts => formApi.preValidate(fullFieldName, opts),
-      asyncValidate: opts => formApi.asyncValidate(fullFieldName, opts),
-      validateAll: opts => {
-        this.fieldApi.preValidate(opts)
-        this.fieldApi.validate(opts)
-        // TODO debounce this with `this.props.debounce`
-        this.fieldApi.asyncValidate(opts)
-      }
+      asyncValidate: opts => formApi.asyncValidate(fullFieldName, opts)
     }
 
     this.field = {
@@ -77,49 +71,7 @@ class NestedField extends React.Component {
 
     this.formApi = {
       ...this.context.formApi,
-      getFullField: d => [fullFieldName, d],
-      register: (name, childField) => {
-        // TODO try to share this function with the similar one in Form.js
-        const pathArray = Utils.makePathArray(name)
-        // set this field as the cursor
-        let cursor = this.field
-        // for each middle path key, reuse or create a field obj
-        pathArray.forEach((key, i) => {
-          // create filler field obj
-          if (i < pathArray.length - 1) {
-            cursor.children[key] = cursor.children[key] || {
-              field: [cursor.field, key].filter(d => d),
-              getProps: () => ({}),
-              api: {
-                nestedField: true,
-                preValidate: Utils.noop,
-                validate: Utils.noop,
-                asyncValidate: Utils.noop
-              },
-              children: {},
-              parent: cursor
-            }
-            cursor = cursor.children[key]
-          } else {
-            // set the last field as the actual child field
-            cursor.children[key] = { ...childField, parent: cursor }
-          }
-        })
-      },
-      deregister: name => {
-        const pathArray = Utils.makePathArray(name)
-        // set this field as the cursor
-        let cursor = this.field
-        // for each middle path key, reuse or create a field obj
-        pathArray.forEach((key, i) => {
-          if (i < pathArray.length - 1) {
-            cursor = cursor.children[key]
-          } else {
-            // delete the last field
-            delete cursor.children[key]
-          }
-        })
-      }
+      getFullField: d => [fullFieldName, d]
     }
   }
 
