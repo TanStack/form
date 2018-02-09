@@ -12,11 +12,12 @@ import TextArea from './components/form-fields/TextArea'
 import Select from './components/form-fields/Select'
 import Checkbox from './components/form-fields/Checkbox'
 
-import StyledText from './components/styled-form-fields/Text'
-import StyledRadio from './components/styled-form-fields/Radio'
-import StyledTextArea from './components/styled-form-fields/TextArea'
-import StyledSelect from './components/styled-form-fields/Select'
-import StyledCheckbox from './components/styled-form-fields/Checkbox'
+// These should move to a react-form-styled package
+// import StyledText from './components/styled-form-fields/Text'
+// import StyledRadio from './components/styled-form-fields/Radio'
+// import StyledTextArea from './components/styled-form-fields/TextArea'
+// import StyledSelect from './components/styled-form-fields/Select'
+// import StyledCheckbox from './components/styled-form-fields/Checkbox'
 
 export {
   Form,
@@ -31,9 +32,4 @@ export {
   TextArea,
   Select,
   Checkbox,
-  StyledText,
-  StyledRadio,
-  StyledTextArea,
-  StyledSelect,
-  StyledCheckbox
 }
