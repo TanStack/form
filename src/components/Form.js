@@ -38,7 +38,6 @@ class Form extends Component {
     this.root = {
       children: []
     }
-    this.fieldMap = new Map()
   }
 
   getChildContext () {
@@ -105,7 +104,7 @@ class Form extends Component {
   getPrivateFormApi () {
     return {
       registerWithForm: this.registerWithForm,
-      deregisterFromForm: this.deregisterFromForm,
+      deregisterFromForm: this.deregisterFromForm
     }
   }
 
@@ -262,20 +261,12 @@ class Form extends Component {
       ...node,
       parent: this.root
     })
-    this.registerWithForm(node)
-  }
-
-  registerWithForm = node => {
-    this.fieldMap.set(node.field, node)
+    console.log(this.root)
+    window.tanner = this
   }
 
   deregister = node => {
-    this.root.children = this.root.children.filter(d => d.field !== node.field)
-    this.deregisterFromForm(node)
-  }
-
-  deregisterFromForm = node => {
-    this.fieldMap.delete(node.field)
+    this.root.children = this.root.children.filter(d => d.field !== Utils.makePathArray(node.field))
   }
 
   format = (field, format) => {
@@ -358,20 +349,35 @@ class Form extends Component {
   }
 
   recurUp = (field, cb) => {
-    // Step1. get the target node from the map
-    const target = this.fieldMap.get(field)
+    const fieldPath = Utils.makePathArray(field)
+    let target
 
-    // Step2. Define recur function
+    // get the deepest matching node we can find from the field tree
+    while (fieldPath.length) {
+      target = this.root.children.find(d => d.field === fieldPath[0])
+      if (!target) {
+        // target doesn't exist, we're done here
+        break
+      }
+      fieldPath.shift()
+    }
+
+    // If there is no target at all, stop
+    if (!target) {
+      return
+    }
+
+    // Define recur function
     const recurse = async node => {
       // Call the cb with the node
       await cb(node)
-      // If we have parent recur
+      // If we have parent recur up
       if (node.parent) {
         recurse(node.parent)
       }
     }
 
-    // Step3. start recursion
+    // start recursion from the target
     recurse(target)
   }
 

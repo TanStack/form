@@ -57,9 +57,9 @@ class Field extends React.Component {
       Utils.get(nextFormState.warnings, field) !== Utils.get(currentFormState.warnings, field) ||
       Utils.get(nextFormState.successes, field) !== Utils.get(currentFormState.successes, field) ||
       Utils.get(nextFormState.validating, field) !==
-      Utils.get(currentFormState.validating, field) ||
+        Utils.get(currentFormState.validating, field) ||
       Utils.get(nextFormState.validationFailed, field) !==
-      Utils.get(currentFormState.validationFailed, field) ||
+        Utils.get(currentFormState.validationFailed, field) ||
       !Utils.isShallowEqual(nextNonChildrenProps, nonChildrenProps) ||
       nextFormState.submits !== currentFormState.submits
 
@@ -94,13 +94,13 @@ class Field extends React.Component {
       doneValidatingField: () => formApi.doneValidatingField(fullFieldName),
       validate: () => formApi.validate(fullFieldName, this.props.validate),
       preValidate: () => formApi.preValidate(fullFieldName, this.props.preValidate),
-      asyncValidate: () => formApi.asyncValidate(fullFieldName, this.props.asyncValidate),
+      asyncValidate: () => formApi.asyncValidate(fullFieldName, this.props.asyncValidate)
     }
 
     // Define node for field
     // Note a field is obviously a leaf node
     this.node = {
-      field: fullFieldName,
+      field,
       api: this.fieldApi,
       children: []
     }

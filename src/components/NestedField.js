@@ -70,14 +70,10 @@ class NestedField extends React.Component {
           ...node,
           parent: this.node
         })
-        // Dont forget to call the internal register function
-        this.context.privateFormApi.registerWithForm(node)
       },
       // Override deregister function to remove from this fields node
       deregister: node => {
         this.node.children = this.node.children.filter(d => d.field !== node.field)
-        // Dont forget to call the internal deregister function
-        this.context.privateFormApi.deregisterFromForm(node)
       },
       // Override the getFullField to reflect the new field context
       getFullField: field => [fullFieldName, field]
@@ -86,7 +82,7 @@ class NestedField extends React.Component {
     // Build our node
     this.node = {
       ...this.node,
-      field: fullFieldName,
+      field,
       api: this.fieldApi
     }
 
