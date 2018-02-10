@@ -77,30 +77,31 @@ class Field extends React.Component {
     const { field } = props
 
     // Get the full field name
-    const fullFieldName = formApi.getFullField(field)
+    const fullField = formApi.getFullField(field)
 
     // Wrap the formApi methods to reflect the new field context
     this.fieldApi = {
-      setValue: value => formApi.setValue(fullFieldName, value),
-      setTouched: touched => formApi.setTouched(fullFieldName, touched),
-      setError: error => formApi.setError(fullFieldName, error),
-      setWarning: warning => formApi.setWarning(fullFieldName, warning),
-      setSuccess: success => formApi.setSuccess(fullFieldName, success),
-      addValue: value => formApi.addValue(fullFieldName, value),
-      removeValue: index => formApi.addValue(fullFieldName, index),
-      swapValues: (...args) => formApi.addValue(fullFieldName, ...args),
-      reset: () => formApi.reset(fullFieldName),
-      validatingField: () => formApi.validatingField(fullFieldName),
-      doneValidatingField: () => formApi.doneValidatingField(fullFieldName),
-      validate: () => formApi.validate(fullFieldName, this.props.validate),
-      preValidate: () => formApi.preValidate(fullFieldName, this.props.preValidate),
-      asyncValidate: () => formApi.asyncValidate(fullFieldName, this.props.asyncValidate)
+      setValue: value => formApi.setValue(fullField, value),
+      setTouched: touched => formApi.setTouched(fullField, touched),
+      setError: error => formApi.setError(fullField, error),
+      setWarning: warning => formApi.setWarning(fullField, warning),
+      setSuccess: success => formApi.setSuccess(fullField, success),
+      addValue: value => formApi.addValue(fullField, value),
+      removeValue: index => formApi.addValue(fullField, index),
+      swapValues: (...args) => formApi.addValue(fullField, ...args),
+      reset: () => formApi.reset(fullField),
+      validatingField: () => formApi.validatingField(fullField),
+      doneValidatingField: () => formApi.doneValidatingField(fullField),
+      validate: () => formApi.validate(fullField, this.props.validate),
+      preValidate: () => formApi.preValidate(fullField, this.props.preValidate),
+      asyncValidate: () => formApi.asyncValidate(fullField, this.props.asyncValidate)
     }
 
     // Define node for field
     // Note a field is obviously a leaf node
     this.node = {
       field,
+      fullField,
       api: this.fieldApi,
       children: []
     }
@@ -110,12 +111,12 @@ class Field extends React.Component {
 
     // define function to generate field values
     this.getFieldValues = () => ({
-      fieldName: fullFieldName,
-      value: formApi.getValue(fullFieldName),
-      touched: formApi.getTouched(fullFieldName),
-      error: formApi.getError(fullFieldName),
-      warning: formApi.getWarning(fullFieldName),
-      success: formApi.getSuccess(fullFieldName)
+      fieldName: fullField,
+      value: formApi.getValue(fullField),
+      touched: formApi.getTouched(fullField),
+      error: formApi.getError(fullField),
+      warning: formApi.getWarning(fullField),
+      success: formApi.getSuccess(fullField)
     })
   }
 

@@ -166,7 +166,7 @@ class Form extends Component {
       // Set touched is unique because we dont want to set touched on nested fields
       // We also dont want to call the internal setTouched because that would
       // Execute validation, therefore we need to build the full name in this recursion
-      const fullName = [node.field].filter(d => d)
+      const fullName = [node.fullField].filter(d => d)
       node.children.forEach(childNode => recurse(childNode, fullName))
       if (node.api.nestedField) {
         return

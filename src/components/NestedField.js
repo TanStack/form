@@ -57,7 +57,7 @@ class NestedField extends React.Component {
     const { formApi } = this.context
     const { field } = props
 
-    const fullFieldName = formApi.getFullField(field)
+    const fullField = formApi.getFullField(field)
 
     this.fieldApi = {
       // Mark this node as a nested field
@@ -76,13 +76,14 @@ class NestedField extends React.Component {
         this.node.children = this.node.children.filter(d => d.field !== node.field)
       },
       // Override the getFullField to reflect the new field context
-      getFullField: field => [fullFieldName, field]
+      getFullField: field => [fullField, field]
     }
 
     // Build our node
     this.node = {
       ...this.node,
       field,
+      fullField,
       api: this.fieldApi
     }
 
