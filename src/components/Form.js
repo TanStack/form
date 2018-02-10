@@ -350,11 +350,11 @@ class Form extends Component {
 
   recurUp = (field, cb) => {
     const fieldPath = Utils.makePathArray(field)
-    let target
+    let target = this.root
 
     // get the deepest matching node we can find from the field tree
     while (fieldPath.length) {
-      target = this.root.children.find(d => d.field === fieldPath[0])
+      target = target.children.find(d => d.field === fieldPath[0])
       if (!target) {
         // target doesn't exist, we're done here
         break
