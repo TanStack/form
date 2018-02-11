@@ -102,8 +102,7 @@ class Field extends React.Component {
     this.node = {
       field,
       fullField,
-      api: this.fieldApi,
-      children: {}
+      api: this.fieldApi
     }
 
     // Register field

@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import ReducerBuilder from '../redux/ReducerBuilder'
 import * as actions from '../redux/actions'
 import Utils from '../utils'
+import Tree from '../Tree/Tree'
 
 /* ---------------------------- Helper Methods ----------------------------- */
 
@@ -35,10 +36,11 @@ class Form extends Component {
 
   constructor (props) {
     super(props)
-    this.root = {
+    this.tree = new Tree({
       children: {},
       api: this.getFormApi()
-    }
+    })
+    this.node = this.tree.root
   }
 
   getChildContext () {
@@ -104,8 +106,7 @@ class Form extends Component {
 
   getPrivateFormApi () {
     return {
-      registerWithForm: this.registerWithForm,
-      deregisterFromForm: this.deregisterFromForm
+      tree: this.tree
     }
   }
 
@@ -196,9 +197,11 @@ class Form extends Component {
       if (node.api.nestedField) {
         return
       }
-      this.props.dispatch(actions.setTouched(fullName, true))
+      if (fullName.length) {
+        this.props.dispatch(actions.setTouched(fullName, true))
+      }
     }
-    Utils.mapObject(this.root.children, node => recurse(node))
+    Utils.mapObject(this.node.children, node => recurse(node))
   }
 
   setAllValues = values => this.props.dispatch(actions.setAllValues(values))
@@ -210,7 +213,7 @@ class Form extends Component {
         node.api.preValidate({ submitting: true })
       }
     }
-    Utils.mapObject(this.root.children, recurse)
+    Utils.mapObject(this.node.children, recurse)
   }
 
   validateAll = () => {
@@ -221,7 +224,7 @@ class Form extends Component {
       }
     }
 
-    Utils.mapObject(this.root.children, recurse)
+    Utils.mapObject(this.node.children, recurse)
   }
 
   asyncValidateAll = () =>
@@ -233,7 +236,7 @@ class Form extends Component {
         }
       }
 
-      await Promise.all(Utils.mapObject(this.root.children, recurse))
+      await Promise.all(Utils.mapObject(this.node.children, recurse))
     })()
 
   setFormState = formState => {
@@ -287,15 +290,12 @@ class Form extends Component {
   }
 
   register = node => {
-    this.root.children[node.field] = {
-      ...node,
-      parent: this.root
-    }
-    window.tanner = this
+    //console.log( this.tree.root.parent )
+    this.tree.add(this.node, node)
   }
 
   deregister = node => {
-    delete this.root.children[node.field]
+    this.tree.delete(this.node, node)
   }
 
   format = (field, format) => {
@@ -379,7 +379,7 @@ class Form extends Component {
 
   recurUp = (field, cb) => {
     const fieldPath = Utils.makePathArray(field)
-    let target = this.root
+    let target = this.node
 
     // get the deepest matching node we can find from the field tree
     while (fieldPath.length) {

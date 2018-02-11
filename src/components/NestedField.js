@@ -2,15 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import Utils from '../utils'
+import Node from '../Tree/Node'
 
 //
 
 class NestedField extends React.Component {
   constructor (props) {
     super(props)
-    this.node = {
-      children: []
-    }
+    this.node = new Node()
   }
 
   getChildContext () {
@@ -54,7 +53,7 @@ class NestedField extends React.Component {
   }
 
   buildApi = props => {
-    const { formApi } = this.context
+    const { formApi, privateFormApi } = this.context
     const { field } = props
 
     const fullField = formApi.getFullField(field)
@@ -66,21 +65,11 @@ class NestedField extends React.Component {
       ...this.context.formApi,
       // Override register function to push to this fields node
       register: node => {
-        // TODO: Sometimes, node.field is using deep notation
-        // We need to make sure the node tree uses individual fields at each
-        // step, and not complex field names, else all hell breaks loose
-        const target = this.node
-        // You'll probaby want to get the array representation like this:
-        // const fieldPath = Utils.makePathArray(node.field)
-
-        target.children[node.field] = {
-          ...node,
-          parent: target
-        }
+        privateFormApi.tree.add(this.node, node)
       },
       // Override deregister function to remove from this fields node
       deregister: node => {
-        delete this.node.children[node.field]
+        privateFormApi.tree.delete(this.node, node)
       },
       // Override the getFullField to reflect the new field context
       getFullField: field => [fullField, field]
