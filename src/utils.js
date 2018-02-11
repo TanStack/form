@@ -6,7 +6,8 @@ export default {
   isShallowEqual,
   isDeepEqual,
   noop,
-  makePathArray
+  makePathArray,
+  mapObject
 }
 
 function isArray (a) {
@@ -172,4 +173,8 @@ function insertBetween (arr, item) {
     }
   })
   return newArr
+}
+
+function mapObject (obj, cb) {
+  return Object.keys(obj).map(key => cb(obj[key], key))
 }

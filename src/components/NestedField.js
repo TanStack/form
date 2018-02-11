@@ -66,14 +66,21 @@ class NestedField extends React.Component {
       ...this.context.formApi,
       // Override register function to push to this fields node
       register: node => {
-        this.node.children.push({
+        // TODO: Sometimes, node.field is using deep notation
+        // We need to make sure the node tree uses individual fields at each
+        // step, and not complex field names, else all hell breaks loose
+        const target = this.node
+        // You'll probaby want to get the array representation like this:
+        // const fieldPath = Utils.makePathArray(node.field)
+
+        target.children[node.field] = {
           ...node,
-          parent: this.node
-        })
+          parent: target
+        }
       },
       // Override deregister function to remove from this fields node
       deregister: node => {
-        this.node.children = this.node.children.filter(d => d.field !== node.field)
+        delete this.node.children[node.field]
       },
       // Override the getFullField to reflect the new field context
       getFullField: field => [fullField, field]

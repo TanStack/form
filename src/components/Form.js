@@ -36,7 +36,8 @@ class Form extends Component {
   constructor (props) {
     super(props)
     this.root = {
-      children: []
+      children: {},
+      api: this.getFormApi()
     }
   }
 
@@ -115,17 +116,41 @@ class Form extends Component {
   setValue = (field, value) => {
     this.props.dispatch(actions.setValue(field, value))
     // Validate up the tree
-    this.recurUp(field, node => node.api.preValidate())
-    this.recurUp(field, node => node.api.validate())
-    this.recurUp(field, node => node.api.asyncValidate())
+    this.recurUp(field, node => {
+      if (node.api.preValidate) {
+        node.api.preValidate()
+      }
+    })
+    this.recurUp(field, node => {
+      if (node.api.validate) {
+        node.api.validate()
+      }
+    })
+    this.recurUp(field, node => {
+      if (node.api.asyncValidate) {
+        node.api.asyncValidate()
+      }
+    })
   }
 
   setTouched = (field, touch = true) => {
     this.props.dispatch(actions.setTouched(field, touch))
     // Validate up the tree
-    this.recurUp(field, node => node.api.preValidate())
-    this.recurUp(field, node => node.api.validate())
-    this.recurUp(field, node => node.api.asyncValidate())
+    this.recurUp(field, node => {
+      if (node.api.preValidate) {
+        node.api.preValidate()
+      }
+    })
+    this.recurUp(field, node => {
+      if (node.api.validate) {
+        node.api.validate()
+      }
+    })
+    this.recurUp(field, node => {
+      if (node.api.asyncValidate) {
+        node.api.asyncValidate()
+      }
+    })
   }
 
   setError = (field, error) => {
@@ -167,43 +192,48 @@ class Form extends Component {
       // We also dont want to call the internal setTouched because that would
       // Execute validation, therefore we need to build the full name in this recursion
       const fullName = [node.fullField].filter(d => d)
-      node.children.forEach(childNode => recurse(childNode, fullName))
+      Utils.mapObject(node.children, childNode => recurse(childNode, fullName))
       if (node.api.nestedField) {
         return
       }
       this.props.dispatch(actions.setTouched(fullName, true))
     }
-    // console.log(this.root.children[1])
-    this.root.children.forEach(node => recurse(node))
+    Utils.mapObject(this.root.children, node => recurse(node))
   }
 
   setAllValues = values => this.props.dispatch(actions.setAllValues(values))
 
   preValidateAll = () => {
     const recurse = node => {
-      node.children.forEach(recurse)
-      node.api.preValidate({ submitting: true })
+      Utils.mapObject(node.children, recurse)
+      if (node.api.preValidate) {
+        node.api.preValidate({ submitting: true })
+      }
     }
-    this.root.children.forEach(recurse)
+    Utils.mapObject(this.root.children, recurse)
   }
 
   validateAll = () => {
     const recurse = node => {
-      node.children.forEach(recurse)
-      node.api.validate({ submitting: true })
+      Utils.mapObject(node.children, recurse)
+      if (node.api.validate) {
+        node.api.validate({ submitting: true })
+      }
     }
 
-    this.root.children.forEach(recurse)
+    Utils.mapObject(this.root.children, recurse)
   }
 
   asyncValidateAll = () =>
     (async () => {
       const recurse = async node => {
-        await Promise.all(node.children.map(recurse))
-        await node.api.asyncValidate({ submitting: true })
+        await Promise.all(Utils.mapObject(node.children, recurse))
+        if (node.api.asyncValidate) {
+          await node.api.asyncValidate({ submitting: true })
+        }
       }
 
-      await Promise.all(this.root.children.map(recurse))
+      await Promise.all(Utils.mapObject(this.root.children, recurse))
     })()
 
   setFormState = formState => {
@@ -257,16 +287,15 @@ class Form extends Component {
   }
 
   register = node => {
-    this.root.children.push({
+    this.root.children[node.field] = {
       ...node,
       parent: this.root
-    })
-    console.log(this.root)
+    }
     window.tanner = this
   }
 
   deregister = node => {
-    this.root.children = this.root.children.filter(d => d.field !== Utils.makePathArray(node.field))
+    delete this.root.children[node.field]
   }
 
   format = (field, format) => {
@@ -354,7 +383,7 @@ class Form extends Component {
 
     // get the deepest matching node we can find from the field tree
     while (fieldPath.length) {
-      target = target.children.find(d => d.field === fieldPath[0])
+      target = target.children[fieldPath[0]]
       if (!target) {
         // target doesn't exist, we're done here
         break
