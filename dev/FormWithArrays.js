@@ -78,6 +78,7 @@ class FormWithArrays extends Component {
           where you can input three friends.
         </p>
         <Form
+          defaultValues={{ numberField: 0 }}
           onSubmit={submittedValues => this.setState( { submittedValues } )}>
           { formApi => (
             <div>
@@ -90,6 +91,8 @@ class FormWithArrays extends Component {
                 <Text field={['friends', 1]} id="friend2" />
                 <label htmlFor="friend3">Friend3</label>
                 <Text field={['friends', 2]} id="friend3" />
+                <label htmlFor="numberField">Number field</label>
+                <Text field="numberField" id="numberField" type="number" />
                 <button type="submit" className="mb-4 btn btn-primary">Submit</button>
               </form>
               <br />

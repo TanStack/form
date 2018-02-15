@@ -14,10 +14,16 @@ class TextWrapper extends Component {
 
     const { getValue, setValue, setTouched } = fieldApi;
 
+    let value = getValue();
+
+    if (!value && value !== 0) {
+      value = '';
+    }
+
     return (
       <input
         {...rest}
-        value={getValue() || ''}
+        value={value}
         onChange={(e) => {
           setValue(e.target.value);
           if (onChange) {
