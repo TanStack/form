@@ -97,8 +97,14 @@ class NestedFormExample extends Component {
                 <NestedField
                   field="questions"
                   validate={values => ({
-                    error: values && values.color === 'red' && 'No red please!'
-                  })}>
+                    color: values && values.color === 'red' && 'No red please!',
+                    food: values &&
+                      values.food === 'pizza' && {
+                      error: 'No pizza please!',
+                      warning: 'Try another food!'
+                    }
+                  })}
+                >
                   <QuestionFields />
                 </NestedField>
                 {/* <label htmlFor="questions.foo">First name</label>
@@ -110,6 +116,7 @@ class NestedFormExample extends Component {
               <br />
               <Data title="Values" reference="formApi.values" data={formApi.values} />
               <Data title="Errors" reference="formApi.errors" data={formApi.errors} />
+              <Data title="Warnings" reference="formApi.warnings" data={formApi.warnings} />
               <Data title="Touched" reference="formApi.touched" data={formApi.touched} />
               <Data
                 title="Submission attempts"

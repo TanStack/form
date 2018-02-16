@@ -11,12 +11,9 @@ class Field extends React.Component {
   componentWillReceiveProps (nextProps) {
     // If the field name or any validators change, we need to rebuild the api
     if (
-      !Utils.isShallowEqual(this.props, nextProps, [
-        'field',
-        'preValidate',
-        'validate',
-        'asyncValidate'
-      ])
+      !Utils.isShallowEqual(this.props, nextProps, ['preValidate', 'validate', 'asyncValidate']) ||
+      Utils.makePathArray(this.props.field).join('.') !==
+        Utils.makePathArray(nextProps.field).join('.')
     ) {
       // If the field is changing, we need to deregister it
       if (this.props.field !== nextProps.field) {
@@ -81,32 +78,12 @@ class Field extends React.Component {
 
     // Wrap the formApi methods to reflect the new field context
     this.fieldApi = {
-      setValue: value => formApi.setValue(fullField, value),
-      setTouched: touched => formApi.setTouched(fullField, touched),
-      setError: error => formApi.setError(fullField, error),
-      setWarning: warning => formApi.setWarning(fullField, warning),
-      setSuccess: success => formApi.setSuccess(fullField, success),
-      addValue: value => formApi.addValue(fullField, value),
-      removeValue: index => formApi.addValue(fullField, index),
-      swapValues: (...args) => formApi.addValue(fullField, ...args),
-      reset: () => formApi.reset(fullField),
       validatingField: () => formApi.validatingField(fullField),
       doneValidatingField: () => formApi.doneValidatingField(fullField),
-      validate: () => formApi.validate(fullField, this.props.validate),
-      preValidate: () => formApi.preValidate(fullField, this.props.preValidate),
-      asyncValidate: () => formApi.asyncValidate(fullField, this.props.asyncValidate)
+      validate: () => formApi.validate(fullField),
+      preValidate: () => formApi.preValidate(fullField),
+      asyncValidate: () => formApi.asyncValidate(fullField)
     }
-
-    // Define node for field
-    // Note a field is obviously a leaf node
-    this.node = {
-      field,
-      fullField,
-      api: this.fieldApi
-    }
-
-    // Register field
-    this.context.formApi.register(this.node)
 
     // define function to generate field values
     this.getFieldValues = () => ({
@@ -117,6 +94,17 @@ class Field extends React.Component {
       warning: formApi.getWarning(fullField),
       success: formApi.getSuccess(fullField)
     })
+
+    // Define the leaf node
+    this.node = {
+      field,
+      fullField,
+      api: this.fieldApi,
+      getProps: () => this.props
+    }
+
+    // Register field
+    formApi.register(this.node)
   }
 
   render () {

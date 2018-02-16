@@ -1,4 +1,5 @@
 export default {
+  clone,
   get,
   set,
   isObject,
@@ -7,7 +8,8 @@ export default {
   isDeepEqual,
   noop,
   makePathArray,
-  mapObject
+  mapObject,
+  cleanError
 }
 
 function isArray (a) {
@@ -51,48 +53,54 @@ function makePathArray (obj) {
       path.push(part)
     }
   })
-  return path
+  return path.filter(d => typeof d !== 'undefined')
+}
+
+function clone (obj) {
+  try {
+    return JSON.parse(JSON.stringify(obj))
+  } catch (err) {
+    return undefined
+  }
 }
 
 // TODO figure out way to make state immutable
-function set (obj = {}, path, value, deleteWhenFalsey, nestKey) {
-  let keys = makePathArray(path)
-  if (nestKey) {
-    keys = insertBetween(keys, nestKey)
+function set (obj = {}, path, value, deleteWhenFalsey) {
+  if (!path) {
+    return value
   }
-  let keyPart
-
-  if (typeof keys[0] === 'number' && !isArray(obj)) {
-    obj = []
-  } else if (typeof keys[0] === 'string' && !isObject(obj)) {
-    obj = {}
-  }
+  const keys = makePathArray(path)
 
   let cursor = obj
 
-  while (typeof (keyPart = keys.shift()) !== 'undefined' && keys.length) {
-    if (typeof keys[0] === 'number' && !isArray(cursor[keyPart])) {
-      cursor[keyPart] = []
+  while (keys.length > 1) {
+    const key = keys[0]
+    const nextKey = keys[1]
+    if (typeof nextKey === 'number' && !isArray(cursor[key])) {
+      cursor[key] = []
     }
-    if (typeof keys[0] !== 'number' && !isObject(cursor[keyPart])) {
-      cursor[keyPart] = {}
+    if (typeof nextKey !== 'number' && !isObject(cursor[key])) {
+      cursor[key] = {}
     }
-    cursor = cursor[keyPart]
+    cursor = cursor[key]
+    keys.shift()
   }
+
   if (!value && deleteWhenFalsey) {
-    delete cursor[keyPart]
+    delete cursor[keys[0]]
   } else {
-    cursor[keyPart] = value
+    cursor[keys[0]] = value
   }
+
   return obj
 }
 
-function get (obj, path, def, nestKey) {
+function get (obj, path, def) {
   if (!path) {
     return obj
   }
   const pathArray = makePathArray(path)
-  const pathObj = nestKey ? insertBetween(pathArray, nestKey) : pathArray
+  const pathObj = pathArray
   const val = pathObj.reduce((current, pathPart) => {
     if (typeof current !== 'undefined' && current !== null) {
       return current[pathPart]
@@ -164,17 +172,30 @@ function isDeepEqual (a, b) {
 
 function noop () {}
 
-function insertBetween (arr, item) {
-  const newArr = []
-  arr.forEach((r, i) => {
-    newArr.push(r)
-    if (i < arr.length - 1) {
-      newArr.push(item)
-    }
-  })
-  return newArr
-}
-
 function mapObject (obj, cb) {
   return Object.keys(obj).map(key => cb(obj[key], key))
+}
+
+function cleanError (obj) {
+  if (!obj) {
+    return undefined
+  }
+  if (isObject(obj)) {
+    Object.keys(obj).forEach(key => {
+      obj[key] = cleanError(obj[key]) // clean nested objects
+      if (!obj[key]) {
+        delete obj[key] // remove falsey keys
+      }
+    })
+    if (!Object.keys(obj).length) {
+      return undefined
+    }
+  }
+  if (isArray(obj)) {
+    obj = obj.map(cleanError).filter(d => !!d) // clean nested falsey arrays
+    if (!obj.length) {
+      return undefined
+    }
+  }
+  return obj
 }

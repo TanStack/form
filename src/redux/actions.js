@@ -1,123 +1,58 @@
 import Utils from '../utils'
 
+const makeAction = type => payload => ({ type, payload })
+
 export const SET_FORM_STATE = 'SET_FORM_STATE'
-export function setFormState (formState) {
-  return { type: SET_FORM_STATE, formState }
-}
-
 export const SET_VALUE = 'SET_VALUE'
-export function setValue (field, value) {
-  return { type: SET_VALUE, field, value }
-}
-
 export const SET_ALL_VALUES = 'SET_ALL_VALUES'
-export function setAllValues (values) {
-  return { type: SET_ALL_VALUES, values }
-}
-
 export const FORMAT = 'FORMAT'
-export function format (field, fmt) {
-  return { type: FORMAT, field, format: fmt }
-}
-
 export const SET_ERROR = 'SET_ERROR'
-export function setError (field, error) {
-  return { type: SET_ERROR, field, error }
-}
-
 export const SET_WARNING = 'SET_WARNING'
-export function setWarning (field, warning) {
-  return { type: SET_WARNING, field, warning }
-}
-
 export const SET_SUCCESS = 'SET_SUCCESS'
-export function setSuccess (field, success) {
-  return { type: SET_SUCCESS, field, success }
-}
-
 export const SET_ASYNC_ERROR = 'SET_ASYNC_ERROR'
-export function setAsyncError (field, error) {
-  return { type: SET_ASYNC_ERROR, field, error }
-}
-
 export const SET_ASYNC_WARNING = 'SET_ASYNC_WARNING'
-export function setAsyncWarning (field, warning) {
-  return { type: SET_ASYNC_WARNING, field, warning }
-}
-
 export const SET_ASYNC_SUCCESS = 'SET_ASYNC_SUCCESS'
-export function setAsyncSuccess (field, success) {
-  return { type: SET_ASYNC_SUCCESS, field, success }
-}
-
 export const SET_TOUCHED = 'SET_TOUCHED'
-export function setTouched (field, touched) {
-  return { type: SET_TOUCHED, field, touched }
-}
-
 export const SET_ALL_TOUCHED = 'SET_ALL_TOUCHED'
-export function setAllTouched (touched) {
-  return { type: SET_ALL_TOUCHED, touched }
-}
-
 export const RESET = 'RESET'
-export function reset (field) {
-  return { type: RESET, field }
-}
-
 export const RESET_ALL = 'RESET_ALL'
-export function resetAll () {
-  return { type: RESET_ALL }
-}
-
 export const CLEAR_ALL = 'CLEAR_ALL'
-export function clearAll () {
-  return { type: CLEAR_ALL }
-}
-
 export const SUBMIT = 'SUBMIT'
-export function submit () {
-  return { type: SUBMIT }
-}
-
 export const SUBMITTED = 'SUBMITTED'
-export function submitted () {
-  return { type: SUBMITTED }
-}
-
 export const SUBMITS = 'SUBMITS'
-export function submits () {
-  return { type: SUBMITS }
-}
-
 export const SUBMITTING = 'SUBMITTING'
-export function submitting (isSubmitting) {
-  return { type: SUBMITTING, submitting: isSubmitting }
-}
-
 export const VALIDATING_FIELD = 'VALIDATING_FIELD'
-export function validatingField (field) {
-  return { type: VALIDATING_FIELD, field }
-}
-
 export const DONE_VALIDATING_FIELD = 'DONE_VALIDATING_FIELD'
-export function doneValidatingField (field) {
-  return { type: DONE_VALIDATING_FIELD, field }
-}
-
 export const VALIDATION_FAILURE = 'VALIDATION_FAILURE'
-export function validationFailure (field, error) {
-  return { type: VALIDATION_FAILURE, field, error }
-}
-
 export const VALIDATION_SUCCESS = 'VALIDATION_SUCCESS'
-export function validationSuccess (field) {
-  return { type: VALIDATION_SUCCESS, field }
-}
 
-export function preValidate (field, validator) {
+export const setFormState = makeAction(SET_FORM_STATE)
+export const setValue = makeAction(SET_VALUE)
+export const setAllValues = makeAction(SET_ALL_VALUES)
+export const format = makeAction(FORMAT)
+export const setError = makeAction(SET_ERROR)
+export const setWarning = makeAction(SET_WARNING)
+export const setSuccess = makeAction(SET_SUCCESS)
+export const setAsyncError = makeAction(SET_ASYNC_ERROR)
+export const setAsyncWarning = makeAction(SET_ASYNC_WARNING)
+export const setAsyncSuccess = makeAction(SET_ASYNC_SUCCESS)
+export const setTouched = makeAction(SET_TOUCHED)
+export const setAllTouched = makeAction(SET_ALL_TOUCHED)
+export const reset = makeAction(RESET)
+export const resetAll = makeAction(RESET_ALL)
+export const clearAll = makeAction(CLEAR_ALL)
+export const submit = makeAction(SUBMIT)
+export const submitted = makeAction(SUBMITTED)
+export const submits = makeAction(SUBMITS)
+export const submitting = makeAction(SUBMITTING)
+export const validatingField = makeAction(VALIDATING_FIELD)
+export const doneValidatingField = makeAction(DONE_VALIDATING_FIELD)
+export const validationFailure = makeAction(VALIDATION_FAILURE)
+export const validationSuccess = makeAction(VALIDATION_SUCCESS)
+
+export function preValidate ({ field, validator }) {
   return (dispatch, getState) => {
-    if (validator) {
+    if (validator && validator !== Utils.noop) {
       // Call the validation function
       const result = validator(Utils.get(getState().values, field))
       dispatch(setValue(field, result))
@@ -125,51 +60,116 @@ export function preValidate (field, validator) {
   }
 }
 
-export function validate (field, validator) {
+export function validate ({ field, validator }) {
   return (dispatch, getState) => {
-    if (validator) {
+    if (validator && validator !== Utils.noop) {
       // Call the validation function
       const result = validator(Utils.get(getState().values, field))
-      // TODO null check on result??? Should we make the user return object
-      // Dispatch the setters for error, success and warning if they exsit on object
-      if (typeof result.error !== 'undefined') {
-        dispatch(setError(field, result.error))
+
+      const recurse = (current, path) => {
+        // Normalize fieldPath
+        path = Utils.makePathArray(path)
+        // If other than object, assume an error string or value directly
+        if (!Utils.isObject(current)) {
+          // Nested errors aren't allowed if using string errors, so return
+          return dispatch(setError({ field: path, value: current }))
+        }
+
+        // If it's an error object, set a clean slate
+        if (current.error || current.warning || current.success) {
+          dispatch(setError({ field: path, value: false }))
+          dispatch(setWarning({ field: path, value: false }))
+          dispatch(setSuccess({ field: path, value: false }))
+        }
+
+        // Now handle accordingly
+        if (current.error) {
+          return dispatch(setError({ field: path, value: current.error }))
+        }
+        if (current.warning) {
+          return dispatch(setWarning({ field: path, value: current.warning }))
+        }
+        if (current.success) {
+          return dispatch(setSuccess({ field: path, value: current.success }))
+        }
+
+        // It must be a normal object, recurse on each key to set nested errors!
+        Utils.mapObject(result, (subResult, key) => recurse(subResult, [path, key]))
       }
-      if (typeof result.warning !== 'undefined') {
-        dispatch(setWarning(field, result.warning))
-      }
-      if (typeof result.success !== 'undefined') {
-        dispatch(setSuccess(field, result.success))
-      }
+
+      recurse(result, field)
     }
   }
 }
 
-export function asyncValidate (field, validator) {
+export function asyncValidate ({ field, validator, validationPromiseIDs }) {
   return async (dispatch, getState) => {
     // Only validate if syncronous validation does not exist and there is a validator
-    if (!Utils.get(getState().errors, field) && validator) {
+    if (!Utils.get(getState().errors, field) && validator && validator !== Utils.noop) {
       // We are validating the specified field
       dispatch(validatingField(field))
+
+      const fieldPathArray = Utils.makePathArray(field).join('.')
+
+      // Set up an autoincrementing promise UID for this field on the form
+      const uid = (validationPromiseIDs.get(fieldPathArray) || 0) + 1
+      validationPromiseIDs.set(fieldPathArray, uid)
+
       try {
         // Call the asyncrounous validation function
-        const result = await validator(Utils.get(getState().values, field))
-        // TODO null check on result??? Should we make the user return object
-        // Dispatch the setters for error, success and warning if they exsit on object
-        if (typeof result.error !== 'undefined') {
-          dispatch(setAsyncError(field, result.error))
+        const result = Utils.cleanError(await validator(Utils.get(getState().values, field)))
+
+        if (validationPromiseIDs.get(fieldPathArray) !== uid) {
+          // If the promise ID doesn't match we we originally sent, it means a
+          // new promise has replaced it. Bail out!
+          return
         }
-        if (typeof result.warning !== 'undefined') {
-          dispatch(setAsyncWarning(field, result.warning))
+
+        // Set up the error recursion
+        const recurse = async (current, path) => {
+          // Normalize fieldPath
+          path = Utils.makePathArray(path)
+          // If other than object, assume an error string or value directly
+          if (!Utils.isObject(current)) {
+            // Nested errors aren't allowed if using string errors, so return
+            return dispatch(setAsyncError({ field: path, value: current }))
+          }
+
+          // If it's an error object, respond accordingly
+          if (current.error || current.warning || current.success) {
+            dispatch(setAsyncError({ field: path, value: false }))
+            dispatch(setAsyncWarning({ field: path, value: false }))
+            dispatch(setAsyncSuccess({ field: path, value: false }))
+          }
+
+          if (current.error) {
+            dispatch(setAsyncError({ field: path, value: current.error }))
+            return
+          }
+          if (current.warning) {
+            dispatch(setAsyncWarning({ field: path, value: current.warning }))
+            return
+          }
+          if (current.success) {
+            dispatch(setAsyncSuccess({ field: path, value: current.success }))
+            return
+          }
+
+          // It must be a normal object, recurse on each key to set nested errors!
+          Utils.mapObject(current, (subResult, key) => recurse(subResult, [path, key]))
         }
-        if (typeof result.success !== 'undefined') {
-          dispatch(setAsyncSuccess(field, result.success))
-        }
+
+        // Handle the error
+        recurse(result, field)
+
         // We successfully validated so dispatch
         dispatch(validationSuccess(field))
-      } catch (e) {
-        dispatch(validationFailure(field, e))
+      } catch (err) {
+        // An validation error happened!
+        dispatch(validationFailure({ field, value: err }))
       }
+
+      // Mark the field as done validating
       dispatch(doneValidatingField(field))
     }
   }

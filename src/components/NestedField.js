@@ -2,26 +2,21 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import Utils from '../utils'
-import Node from '../Tree/Node'
+import { makeNode } from '../utils/Tree'
 
 //
 
 class NestedField extends React.Component {
-  constructor (props) {
-    super(props)
-    this.node = new Node()
-  }
-
   getChildContext () {
     return {
       // Any children are now within the context of this nestedField
-      formApi: this.fieldApi,
-      formState: this.context.formState,
-      privateFormApi: this.context.privateFormApi
+      formApi: this.formApi,
+      formState: this.context.formState
     }
   }
 
   componentWillMount () {
+    this.node = {}
     const { defaultValue } = this.props
     this.buildApi(this.props)
     if (defaultValue) {
@@ -32,12 +27,9 @@ class NestedField extends React.Component {
   componentWillReceiveProps (nextProps) {
     // If the field or validators change, we have to rebuild
     if (
-      !Utils.isShallowEqual(this.props, nextProps, [
-        'field',
-        'preValidate',
-        'validate',
-        'asyncValidate'
-      ])
+      !Utils.isShallowEqual(this.props, nextProps, ['preValidate', 'validate', 'asyncValidate']) ||
+      Utils.makePathArray(this.props.field).join('.') !==
+        Utils.makePathArray(nextProps.field).join('.')
     ) {
       // If the field is changing, we need to deregister it
       if (this.props.field !== nextProps.field) {
@@ -53,38 +45,50 @@ class NestedField extends React.Component {
   }
 
   buildApi = props => {
-    const { formApi, privateFormApi } = this.context
+    const { formApi } = this.context
     const { field } = props
 
     const fullField = formApi.getFullField(field)
 
-    this.fieldApi = {
-      // Mark this node as a nested field
-      nestedField: true,
+    // Overrides on the form api for child nodes
+    this.formApi = {
       // Spread the current form api
       ...this.context.formApi,
-      // Override register function to push to this fields node
-      register: node => {
-        privateFormApi.tree.add(this.node, node)
-      },
-      // Override deregister function to remove from this fields node
-      deregister: node => {
-        privateFormApi.tree.delete(this.node, node)
-      },
       // Override the getFullField to reflect the new field context
       getFullField: field => [fullField, field]
     }
 
-    // Build our node
-    this.node = {
-      ...this.node,
-      field,
-      fullField,
-      api: this.fieldApi
+    // Set up the node's field-level api
+    this.fieldApi = {
+      ...this.context.formApi,
+      setValue: value => formApi.setValue(fullField, value),
+      setTouched: touched => formApi.setTouched(fullField, touched),
+      setError: error => formApi.setError(fullField, error),
+      setWarning: warning => formApi.setWarning(fullField, warning),
+      setSuccess: success => formApi.setSuccess(fullField, success),
+      addValue: value => formApi.addValue(fullField, value),
+      removeValue: index => formApi.addValue(fullField, index),
+      swapValues: (...args) => formApi.addValue(fullField, ...args),
+      reset: () => formApi.reset(fullField),
+      validatingField: () => formApi.validatingField(fullField),
+      doneValidatingField: () => formApi.doneValidatingField(fullField),
+      validate: () => formApi.validate(fullField),
+      preValidate: () => formApi.preValidate(fullField),
+      asyncValidate: () => formApi.asyncValidate(fullField)
     }
 
+    // Build our node
+    this.node = makeNode({
+      ...this.node,
+      nested: true,
+      field,
+      fullField,
+      api: this.fieldApi,
+      getProps: () => this.props
+    })
+
     // We need to register our node after building the API
-    this.context.formApi.register(this.node)
+    formApi.register(this.node)
   }
 
   render () {
@@ -92,12 +96,12 @@ class NestedField extends React.Component {
 
     const inlineProps = {
       ...rest,
-      ...this.fieldApi
+      ...this.formApi
     }
 
     const componentProps = {
       ...rest,
-      fieldApi: this.fieldApi
+      fieldApi: this.formApi
     }
 
     if (component) {
@@ -115,14 +119,12 @@ class NestedField extends React.Component {
 
 NestedField.contextTypes = {
   formApi: PropTypes.object,
-  formState: PropTypes.object,
-  privateFormApi: PropTypes.object
+  formState: PropTypes.object
 }
 
 NestedField.childContextTypes = {
   formApi: PropTypes.object,
-  formState: PropTypes.object,
-  privateFormApi: PropTypes.object
+  formState: PropTypes.object
 }
 
 export default NestedField

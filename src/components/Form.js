@@ -4,10 +4,10 @@ import thunkMiddleware from 'redux-thunk'
 import { createStore, applyMiddleware } from 'redux'
 import { connect } from 'react-redux'
 
-import ReducerBuilder from '../redux/ReducerBuilder'
+import BuildReducer from '../redux/BuildReducer'
 import * as actions from '../redux/actions'
 import Utils from '../utils'
-import Tree from '../Tree/Tree'
+import Tree, { makeNode } from '../utils/Tree'
 
 /* ---------------------------- Helper Methods ----------------------------- */
 
@@ -38,16 +38,17 @@ class Form extends Component {
     super(props)
     this.tree = new Tree({
       children: {},
-      api: this.getFormApi()
+      api: this.getFormApi(),
+      getProps: () => this.props
     })
     this.node = this.tree.root
+    this.validationPromiseIDs = new Map()
   }
 
   getChildContext () {
     return {
       formApi: this.getFormApi(),
-      formState: this.getFormState(),
-      privateFormApi: this.getPrivateFormApi()
+      formState: this.getFormState()
     }
   }
 
@@ -104,104 +105,130 @@ class Form extends Component {
     }
   }
 
-  getPrivateFormApi () {
-    return {
-      tree: this.tree
-    }
-  }
+  // Utils
 
   getFormState () {
     return newState(this.props.formState)
   }
 
+  recurseUpFromNode = (field, cb) => {
+    // Find the node using the field
+    const target = this.tree.getNodeByField(field, { closest: true })
+
+    // If there is no target at all, stop
+    if (!target) {
+      return
+    }
+
+    // Define recur function
+    const recurse = async node => {
+      // Call the cb with the node
+      await cb(node)
+      // If we have parent recur up
+      if (node.parent) {
+        recurse(node.parent)
+      }
+    }
+
+    // start recursion from the target
+    recurse(target)
+  }
+
+  recurseAllNodes = cb => {
+    // Define recur function
+    const recurse = async node => {
+      // Call the cb with the node
+      await cb(node)
+      // If we have children recurse down
+      if (node.children) {
+        await Utils.mapObject(node.children, recurse)
+      }
+    }
+
+    // start recursion from the target
+    return recurse(this.node)
+  }
+
+  getFieldProps = field => {
+    const node = field ? this.tree.getNodeByField(field) || makeNode() : this.node
+    return node.getProps()
+  }
+
+  // Public Api
+
   setValue = (field, value) => {
-    this.props.dispatch(actions.setValue(field, value))
+    this.props.dispatch(actions.setValue({ field, value }))
     // Validate up the tree
-    this.recurUp(field, node => {
-      if (node.api.preValidate) {
-        node.api.preValidate()
-      }
-    })
-    this.recurUp(field, node => {
-      if (node.api.validate) {
-        node.api.validate()
-      }
-    })
-    this.recurUp(field, node => {
-      if (node.api.asyncValidate) {
-        node.api.asyncValidate()
-      }
-    })
+    this.recurseUpFromNode(field, node => node.api.preValidate())
+    this.recurseUpFromNode(field, node => node.api.validate())
+    this.recurseUpFromNode(field, node => node.api.asyncValidate())
   }
 
-  setTouched = (field, touch = true) => {
-    this.props.dispatch(actions.setTouched(field, touch))
+  setTouched = (field, value = true) => {
+    this.props.dispatch(actions.setTouched({ field, value }))
     // Validate up the tree
-    this.recurUp(field, node => {
-      if (node.api.preValidate) {
-        node.api.preValidate()
-      }
-    })
-    this.recurUp(field, node => {
-      if (node.api.validate) {
-        node.api.validate()
-      }
-    })
-    this.recurUp(field, node => {
-      if (node.api.asyncValidate) {
-        node.api.asyncValidate()
-      }
-    })
+    this.recurseUpFromNode(field, node => node.api.preValidate())
+    this.recurseUpFromNode(field, node => node.api.validate())
+    this.recurseUpFromNode(field, node => node.api.asyncValidate())
   }
 
-  setError = (field, error) => {
-    this.props.dispatch(actions.setError(field, error))
+  setError = (field, value) => {
+    this.props.dispatch(actions.setError({ field, value }))
   }
 
-  setWarning = (field, warning) => {
-    this.props.dispatch(actions.setWarning(field, warning))
+  setWarning = (field, value) => {
+    this.props.dispatch(actions.setWarning({ field, value }))
   }
 
-  setSuccess = (field, success) => {
-    this.props.dispatch(actions.setSuccess(field, success))
+  setSuccess = (field, value) => {
+    this.props.dispatch(actions.setSuccess({ field, value }))
   }
 
-  preValidate = (field, validate, opts = {}) => {
+  preValidate = (field, opts = {}) => {
+    // Get the preValidate prop from the field node
+    const { preValidate } = this.getFieldProps(field)
+    if (!preValidate || (!opts.submitting && this.props.validateOnSubmit)) {
+      return
+    }
+    this.props.dispatch(actions.preValidate({ field, preValidate }))
+  }
+
+  validate = (field, opts = {}) => {
+    // Get the validate prop from the field node
+    const { validate } = this.getFieldProps(field)
     if (!validate || (!opts.submitting && this.props.validateOnSubmit)) {
       return
     }
-    this.props.dispatch(actions.preValidate(field, validate))
+    this.props.dispatch(actions.validate({ field, validate }))
   }
 
-  validate = (field, validate, opts = {}) => {
-    if (!validate || (!opts.submitting && this.props.validateOnSubmit)) {
+  asyncValidate = (field, opts = {}) => {
+    // Get the asyncValidate prop from the field node
+    const { asyncValidate } = this.getFieldProps(field)
+    if (!asyncValidate || (!opts.submitting && this.props.validateOnSubmit)) {
       return
     }
-    this.props.dispatch(actions.validate(field, validate))
-  }
-
-  asyncValidate = (field, validate, opts = {}) => {
-    if (!validate || (!opts.submitting && this.props.validateOnSubmit)) {
-      return
-    }
-    this.props.dispatch(actions.asyncValidate(field, validate))
+    this.props.dispatch(
+      actions.asyncValidate({
+        field,
+        asyncValidate,
+        validationPromiseIDs: this.validationPromiseIDs
+      })
+    )
   }
 
   setAllTouched = () => {
-    const recurse = node => {
-      // Set touched is unique because we dont want to set touched on nested fields
-      // We also dont want to call the internal setTouched because that would
-      // Execute validation, therefore we need to build the full name in this recursion
-      const fullName = [node.fullField].filter(d => d)
-      Utils.mapObject(node.children, childNode => recurse(childNode, fullName))
-      if (node.api.nestedField) {
+    // Set touched is unique because we dont want to set touched on nested fields
+    // We also dont want to call the internal setTouched because that would
+    // Execute validation.
+    this.recurseAllNodes(node => {
+      if (node.nested) {
         return
       }
-      if (fullName.length) {
-        this.props.dispatch(actions.setTouched(fullName, true))
+      if (node.fullField) {
+        this.props.dispatch(actions.setTouched({ field: node.fullField, value: true }))
       }
-    }
-    Utils.mapObject(this.node.children, node => recurse(node))
+    })
   }
 
   setAllValues = values => this.props.dispatch(actions.setAllValues(values))
@@ -257,18 +284,27 @@ class Form extends Component {
 
   addValue = (field, value) => {
     this.props.dispatch(
-      actions.setValue(field, [...(Utils.get(this.props.formState.values, field) || []), value])
+      actions.setValue({
+        field,
+        value: [...(Utils.get(this.props.formState.values, field) || []), value]
+      })
     )
   }
 
   removeValue = (field, index) => {
     const fieldValue = Utils.get(this.props.formState.values, field) || []
     this.props.dispatch(
-      actions.setValue(field, [...fieldValue.slice(0, index), ...fieldValue.slice(index + 1)])
+      actions.setValue({
+        field,
+        value: [...fieldValue.slice(0, index), ...fieldValue.slice(index + 1)]
+      })
     )
     const fieldTouched = Utils.get(this.props.formState.touched, field) || []
     this.props.dispatch(
-      actions.setTouched(field, [...fieldTouched.slice(0, index), ...fieldTouched.slice(index + 1)])
+      actions.setTouched({
+        field,
+        value: [...fieldTouched.slice(0, index), ...fieldTouched.slice(index + 1)]
+      })
     )
   }
 
@@ -279,27 +315,25 @@ class Form extends Component {
     const fieldValues = Utils.get(this.props.formState.values, field) || []
 
     this.props.dispatch(
-      actions.setValue(field, [
-        ...fieldValues.slice(0, min),
-        fieldValues[max],
-        ...fieldValues.slice(min + 1, max),
-        fieldValues[min],
-        ...fieldValues.slice(max + 1)
-      ])
+      actions.setValue({
+        field,
+        value: [
+          ...fieldValues.slice(0, min),
+          fieldValues[max],
+          ...fieldValues.slice(min + 1, max),
+          fieldValues[min],
+          ...fieldValues.slice(max + 1)
+        ]
+      })
     )
   }
 
   register = node => {
-    //console.log( this.tree.root.parent )
-    this.tree.add(this.node, node)
+    this.tree.addNode(node)
   }
 
   deregister = node => {
-    this.tree.delete(this.node, node)
-  }
-
-  format = (field, format) => {
-    this.props.dispatch(actions.format(field, format))
+    this.tree.removeNode(node)
   }
 
   reset = field => {
@@ -377,39 +411,6 @@ class Form extends Component {
     this.props.dispatch(actions.submitting(false))
   }
 
-  recurUp = (field, cb) => {
-    const fieldPath = Utils.makePathArray(field)
-    let target = this.node
-
-    // get the deepest matching node we can find from the field tree
-    while (fieldPath.length) {
-      target = target.children[fieldPath[0]]
-      if (!target) {
-        // target doesn't exist, we're done here
-        break
-      }
-      fieldPath.shift()
-    }
-
-    // If there is no target at all, stop
-    if (!target) {
-      return
-    }
-
-    // Define recur function
-    const recurse = async node => {
-      // Call the cb with the node
-      await cb(node)
-      // If we have parent recur up
-      if (node.parent) {
-        recurse(node.parent)
-      }
-    }
-
-    // start recursion from the target
-    recurse(target)
-  }
-
   render () {
     const { children, component, render } = this.props
 
@@ -422,8 +423,10 @@ class Form extends Component {
     }
 
     const componentProps = {
-      formApi,
-      formState
+      formApi: {
+        ...formApi,
+        ...formState
+      }
     }
 
     if (component) {
@@ -441,8 +444,7 @@ class Form extends Component {
 
 Form.childContextTypes = {
   formApi: PropTypes.object,
-  formState: PropTypes.object,
-  privateFormApi: PropTypes.object
+  formState: PropTypes.object
 }
 
 /* ---------- Container ---------- */
@@ -465,7 +467,7 @@ class ReactForm extends Component {
     const { defaultValues } = props
 
     this.store = createStore(
-      ReducerBuilder.build({
+      BuildReducer({
         defaultValues
       }),
       applyMiddleware(
