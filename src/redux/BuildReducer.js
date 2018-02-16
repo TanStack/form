@@ -128,7 +128,7 @@ const setAsyncSuccess = (state, { payload: { field = '__root', value } }) => {
   }
 }
 
-const validatingField = (state, { payload: { field = '__root' } }) => {
+const validatingField = (state, { payload: field = '__root' }) => {
   let validating = Utils.clone(state.validating)
   let asyncValidations = state.asyncValidations
 
@@ -144,7 +144,7 @@ const validatingField = (state, { payload: { field = '__root' } }) => {
   }
 }
 
-const doneValidatingField = (state, { payload: { field = '__root' } }) => {
+const doneValidatingField = (state, { payload: field = '__root' }) => {
   let validating = Utils.clone(state.validating)
   let asyncValidations = state.asyncValidations
 
@@ -178,7 +178,7 @@ const validationFailure = (state, { payload: { field = '__root', value } }) => {
   }
 }
 
-const validationSuccess = (state, { payload: { field = '__root' } }) => {
+const validationSuccess = (state, { payload: field = '__root' }) => {
   let validationFailed = Utils.clone(state.validationFailed)
   let validationFailures = state.validationFailures
 

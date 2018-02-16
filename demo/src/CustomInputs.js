@@ -21,6 +21,7 @@ const Message = ({ color, message }) => (
 class CustomTextWrapper extends Component {
   render () {
     const {
+      fieldApi,
       fieldApi: { value, error, warning, success, setValue, setTouched },
       onChange,
       ...rest
@@ -51,9 +52,9 @@ class CustomTextWrapper extends Component {
 
 const CustomText = withField(CustomTextWrapper)
 
-const FormContent = ({ formApi }) => (
+const FormContent = ({ formApi: { submitForm, values, errors, warnings, success } }) => (
   <div>
-    <form onSubmit={formApi.submitForm} id="form5">
+    <form onSubmit={submitForm} id="form5">
       <label htmlFor="firstName4">First name</label>
       <Text field="firstName" id="firstName4" />
       <label htmlFor="hello2">Custom hello world</label>
@@ -63,7 +64,10 @@ const FormContent = ({ formApi }) => (
       </button>
     </form>
     <br />
-    <Data title="Values" reference="formApi.values" data={formApi.values} />
+    <Data title="Values" reference="formApi.values" data={values} />
+    <Data title="Errors" reference="formApi.errors" data={errors} />
+    <Data title="Warnings" reference="formApi.warnings" data={warnings} />
+    <Data title="Successes" reference="formApi.success" data={success} />
   </div>
 )
 
@@ -182,21 +186,13 @@ const CustomFormCode = () => {
   )
 }
 
-const errorValidator = values => ({
+const validator = values => ({
   hello:
-    !values.hello || !values.hello.match(/Hello World/) ? "Input must contain 'Hello World'" : null
-})
-
-const warningValidator = values => ({
-  hello:
-    !values.hello || !values.hello.match(/^Hello World$/)
-      ? "Input should equal 'Hello World'"
-      : null
-})
-
-const successValidator = values => ({
-  hello:
-    values.hello && values.hello.match(/Hello World/) ? "Thanks for entering 'Hello World'!" : null
+    !values.hello || !values.hello.match(/Hello World/)
+      ? { error: "Input must contain 'Hello World'" }
+      : !values.hello || !values.hello.match(/^Hello World!!!$/)
+        ? { warning: "Input should equal 'Hello World!!!'" }
+        : { success: "Thanks for entering 'Hello World!!!'" }
 })
 
 const FieldApiMethods = () => (
@@ -361,13 +357,7 @@ class CustomInput extends Component {
         <p>
           <strong> Hint: </strong> try typing {'"Foo", "Hello World", and "Hello World!!!"'}
         </p>
-        <Form
-          validateWarning={warningValidator}
-          validateSuccess={successValidator}
-          validateError={errorValidator}
-        >
-          <FormContent />
-        </Form>
+        <Form validate={validator} component={FormContent} />
         <br />
         <CustomFormCode />
         <br />

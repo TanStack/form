@@ -132,11 +132,16 @@ class Form extends Component {
     }
 
     // start recursion from the target
-    recurse(target)
+    try {
+      return recurse(target)
+    } catch (err) {
+      throw err
+    }
   }
 
   recurseUpAllNodes = cb => {
     // Define recur function
+
     const recurse = async node => {
       // If we have children recurse down
       if (node.children) {
@@ -147,7 +152,11 @@ class Form extends Component {
     }
 
     // start recursion from the target
-    return recurse(this.node)
+    try {
+      return recurse(this.node)
+    } catch (err) {
+      throw err
+    }
   }
 
   getFieldProps = field => {
@@ -191,7 +200,7 @@ class Form extends Component {
     if (preValidate === Utils.noop || (!opts.submitting && this.props.validateOnSubmit)) {
       return
     }
-    this.props.dispatch(actions.preValidate({ field, preValidate }))
+    this.props.dispatch(actions.preValidate({ field, validator: preValidate }))
   }
 
   validate = (field, opts = {}) => {
@@ -200,7 +209,7 @@ class Form extends Component {
     if (validate === Utils.noop || (!opts.submitting && this.props.validateOnSubmit)) {
       return
     }
-    this.props.dispatch(actions.validate({ field, validate }))
+    this.props.dispatch(actions.validate({ field, validator: validate }))
   }
 
   asyncValidate = (field, opts = {}) => {
@@ -212,7 +221,7 @@ class Form extends Component {
     this.props.dispatch(
       actions.asyncValidate({
         field,
-        asyncValidate,
+        validator: asyncValidate,
         validationPromiseIDs: this.validationPromiseIDs
       })
     )
@@ -252,13 +261,11 @@ class Form extends Component {
   }
 
   asyncValidateAll = () =>
-    (async () => {
-      this.recurseUpAllNodes(node => {
-        if (node.api.asyncValidate) {
-          return node.api.asyncValidate({ submitting: true })
-        }
-      })
-    })()
+    this.recurseUpAllNodes(node => {
+      if (node.api.asyncValidate) {
+        return node.api.asyncValidate({ submitting: true })
+      }
+    })
 
   setFormState = formState => {
     this.props.dispatch(actions.setFormState(formState))
@@ -393,7 +400,11 @@ class Form extends Component {
         try {
           await this.props.onSubmit(values, e)
         } catch (error) {
-          this.props.onSubmitFailure({}, error)
+          if (this.props.onSubmitFailure) {
+            this.props.onSubmitFailure({}, error)
+          } else {
+            throw error
+          }
         }
       }
     }

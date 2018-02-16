@@ -31,6 +31,7 @@ class Tree {
       // Ensure a linkage node is preset
       if (!parent.children[path[0]]) {
         parent.children[path[0]] = makeNode({
+          nested: true,
           field: path[0],
           fullField: Utils.makePathArray([parent.fullField, path[0]]),
           parent

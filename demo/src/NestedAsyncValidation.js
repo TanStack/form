@@ -12,117 +12,7 @@ import Code from './Code'
 /* ------------------ Form Stuff --------------------*/
 
 const NestedAsynchronousValidationCode = () => {
-  const code = `
-  import { Form, Text, NestedForm } from '../../src';
-
-  const NestedNestedFormContent = ({ formApi }) => {
-    return (
-      <div>
-        <label htmlFor="username4">Nested Username</label>
-        <Text field="username" id="username4" />
-      </div>
-    );
-  };
-
-  const NestedFormContent = ({ formApi }) => {
-    return (
-      <div>
-        <label htmlFor="username3">Nested Username</label>
-        <Text field="username" id="username3" />
-        <NestedForm field="nestednested">
-          <Form
-            validateError={errorValidator}
-            validateSuccess={successValidator}
-            asyncValidators={asyncValidators3}>
-            <NestedNestedFormContent />
-          </Form>
-        </NestedForm>
-      </div>
-    );
-  };
-
-  const FormContent = ({ formApi }) => {
-
-    return (
-      <div>
-        <form onSubmit={formApi.submitForm} id="form7">
-          <label htmlFor="username2">Username</label>
-          <Text field="username" id="username2" />
-          <NestedForm field="nested">
-            <Form
-              validateError={errorValidator}
-              validateSuccess={successValidator}
-              asyncValidators={asyncValidators2}>
-              <NestedFormContent />
-            </Form>
-          </NestedForm>
-          <button type="submit" className="mb-4 btn btn-primary">Submit</button>
-        </form>
-      </div>
-    );
-  };
-
-  const errorValidator = (values) => {
-    return {
-      username: !values.username || values.username.trim() === '' ? 'Username is a required field' : null
-    };
-  };
-
-  const successValidator = (values, errors) => {
-    return {
-      username: !errors.username ? 'Awesome! your username is good to go!' : null
-    };
-  };
-
-  const doesUsernameExist = ( username, ms ) => new Promise( ( resolve, reject ) => setTimeout(() => {
-    // Simulate username check
-    if (['joe', 'tanner', 'billy', 'bob'].includes(username)) {
-      resolve( { error: 'That username is taken', success: null } );
-    }
-    // Simulate request faulure
-    if ( username === 'reject' ) {
-      reject('Failure while making call to validate username does not exist');
-    }
-    // Sumulate username success check
-    resolve({});
-  }, ms));
-
-  const asyncValidators = {
-    username: async ( username ) => {
-      const validations = await doesUsernameExist( username, 2000 );
-      return validations;
-    }
-  };
-
-  const asyncValidators2 = {
-    username: async ( username ) => {
-      const validations = await doesUsernameExist( username, 4000 );
-      return validations;
-    }
-  };
-
-  const asyncValidators3 = {
-    username: async ( username ) => {
-      const validations = await doesUsernameExist( username, 6000 );
-      return validations;
-    }
-  };
-
-  class NestedAsynchronousFormValidation extends Component {
-    render() {
-      return (
-        <div>
-          <Form
-            validateError={errorValidator}
-            validateSuccess={successValidator}
-            asyncValidators={asyncValidators}>
-            <FormContent />
-          </Form>
-        </div>
-      );
-    }
-  }
-`
+  const code = ''
 
   return (
     <div>
@@ -132,13 +22,11 @@ const NestedAsynchronousValidationCode = () => {
   )
 }
 
-const errorValidator = values => ({
+const validator = values => ({
   username:
-    !values.username || values.username.trim() === '' ? 'Username is a required field' : null
-})
-
-const successValidator = (values, errors) => ({
-  username: !errors.username ? 'Awesome! your username is good to go!' : null
+    !values.username || values.username.trim() === ''
+      ? 'Username is a required field'
+      : { success: 'Awesome! your username is good to go!' }
 })
 
 const doesUsernameExist = (username, ms) =>
@@ -146,88 +34,20 @@ const doesUsernameExist = (username, ms) =>
     setTimeout(() => {
       // Simulate username check
       if (['joe', 'tanner', 'billy', 'bob'].includes(username)) {
-        resolve({ error: 'That username is taken', success: null })
+        return resolve('That username is taken')
       }
       // Simulate request faulure
       if (username === 'reject') {
-        reject('Failure while making call to validate username does not exist')
+        return reject('Failure while making call to validate username does not exist')
       }
       // Sumulate username success check
-      resolve({})
+      resolve()
     }, ms)
   )
 
-const asyncValidators = {
-  username: async username => {
-    const validations = await doesUsernameExist(username, 2000)
-    return validations
-  }
-}
-
-const asyncValidators2 = {
-  username: async username => {
-    const validations = await doesUsernameExist(username, 4000)
-    return validations
-  }
-}
-
-const asyncValidators3 = {
-  username: async username => {
-    const validations = await doesUsernameExist(username, 6000)
-    return validations
-  }
-}
-
-const NestedNestedFormContent = () => (
-  <div>
-    <label htmlFor="username4">Nested Username</label>
-    <Text field="username" id="username4" />
-  </div>
-)
-
-const NestedFormContent = () => (
-  <div>
-    <label htmlFor="username3">Nested Username</label>
-    <Text field="username" id="username3" />
-    <NestedField field="nestednested" component={NestedNestedFormContent} />
-  </div>
-)
-
-const FormContent = ({ formApi }) => (
-  <div>
-    <form onSubmit={formApi.submitForm} id="form7">
-      <label htmlFor="username2">Username</label>
-      <Text field="username" id="username2" />
-      <NestedField field="nested" component={NestedFormContent} />
-      <button type="submit" className="mb-4 btn btn-primary">
-        Submit
-      </button>
-    </form>
-    <br />
-    <Data title="Values" reference="formApi.values" data={formApi.values} />
-    <Data title="Touched" reference="formApi.touched" data={formApi.touched} />
-    <Data title="Errors" reference="formApi.errors" data={formApi.errors} />
-    <Data title="Success" reference="formApi.successes" data={formApi.successes} />
-    <Data
-      title="AsyncValidations"
-      reference="formApi.asyncValidations"
-      data={formApi.asyncValidations}
-    />
-    <Data title="Validating" reference="formApi.validating" data={formApi.validating} />
-    <Data
-      title="ValidationFailures"
-      reference="formApi.validationFailures"
-      data={formApi.validationFailures}
-    />
-    <Data
-      title="ValidationFailed"
-      reference="formApi.validationFailed"
-      data={formApi.validationFailed}
-    />
-    <Data title="Submission attempts" reference="formApi.submits" data={formApi.submits} />
-    <Data title="Submitted" reference="formApi.submitted" data={formApi.submitted} />
-  </div>
-)
+const asyncValidator = delay => async values => ({
+  username: await doesUsernameExist(values.username, delay)
+})
 
 class NestedAsynchronousValidation extends Component {
   constructor (props) {
@@ -251,12 +71,66 @@ class NestedAsynchronousValidation extends Component {
           4, and the third 6 seconds.
         </p>
         <Form
-          validateError={errorValidator}
-          validateSuccess={successValidator}
-          asyncValidators={asyncValidators}
-        >
-          <FormContent />
-        </Form>
+          validate={validator}
+          asyncValidate={asyncValidator(2000)}
+          render={formApi => (
+            <div>
+              <form onSubmit={formApi.submitForm} id="form7">
+                <label htmlFor="username2">Username</label>
+                <Text field="username" id="username2" />
+                <NestedField
+                  field="nested"
+                  validate={validator}
+                  asyncValidate={asyncValidator(4000)}
+                >
+                  <div>
+                    <label htmlFor="username3">Nested Username</label>
+                    <Text field="username" id="username3" />
+                    <NestedField
+                      field="deepNested"
+                      validate={validator}
+                      asyncValidate={asyncValidator(6000)}
+                    >
+                      <div>
+                        <label htmlFor="username4">Deep nested Username</label>
+                        <Text field="username" id="username4" />
+                      </div>
+                    </NestedField>
+                  </div>
+                </NestedField>
+                <button type="submit" className="mb-4 btn btn-primary">
+                  Submit
+                </button>
+              </form>
+              <br />
+              <Data title="Values" reference="formApi.values" data={formApi.values} />
+              <Data title="Errors" reference="formApi.errors" data={formApi.errors} />
+              <Data title="Success" reference="formApi.successes" data={formApi.successes} />
+              <Data
+                title="AsyncValidations"
+                reference="formApi.asyncValidations"
+                data={formApi.asyncValidations}
+              />
+              <Data title="Validating" reference="formApi.validating" data={formApi.validating} />
+              <Data
+                title="ValidationFailures"
+                reference="formApi.validationFailures"
+                data={formApi.validationFailures}
+              />
+              <Data
+                title="ValidationFailed"
+                reference="formApi.validationFailed"
+                data={formApi.validationFailed}
+              />
+              <Data
+                title="Submission attempts"
+                reference="formApi.submits"
+                data={formApi.submits}
+              />
+              <Data title="Submitted" reference="formApi.submitted" data={formApi.submitted} />
+            </div>
+          )}
+        />
         <br />
         <NestedAsynchronousValidationCode />
       </div>
