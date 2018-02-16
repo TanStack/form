@@ -60,7 +60,7 @@ function clone (obj) {
   try {
     return JSON.parse(JSON.stringify(obj))
   } catch (err) {
-    return undefined
+    return obj
   }
 }
 
@@ -181,7 +181,7 @@ function cleanError (obj) {
     return undefined
   }
   if (isObject(obj)) {
-    Object.keys(obj).forEach(key => {
+    mapObject(obj, (val, key) => {
       obj[key] = cleanError(obj[key]) // clean nested objects
       if (!obj[key]) {
         delete obj[key] // remove falsey keys

@@ -63,24 +63,26 @@ const validate = values => ({
     !values.username || values.username.trim() === '' ? 'Username is a required field' : null
 })
 
-const asyncValidate = async ({ username }) => ({
-  username: await new Promise((resolve, reject) =>
-    setTimeout(() => {
-      // Simulate username check
-      if (['joe', 'tanner', 'billy', 'bob'].includes(username)) {
-        resolve({ error: 'That username is taken', success: null })
-      }
-      // Simulate request faulure
-      if (username === 'reject') {
-        reject('Failure while making call to validate username does not exist')
-      }
-      // Sumulate username success check
-      resolve({
-        success: 'Awesome! your username is good to go!'
-      })
-    }, 2000)
-  )
-})
+// TODO: figure out why this isn't triggering
+const asyncValidate = async ({ username }) =>
+  console.log('hello') || {
+    username: await new Promise((resolve, reject) =>
+      setTimeout(() => {
+        // Simulate username check
+        if (['joe', 'tanner', 'billy', 'bob'].includes(username)) {
+          resolve({ error: 'That username is taken', success: null })
+        }
+        // Simulate request faulure
+        if (username === 'reject') {
+          reject('Failure while making call to validate username does not exist')
+        }
+        // Sumulate username success check
+        resolve({
+          success: 'Awesome! your username is good to go!'
+        })
+      }, 2000)
+    )
+  }
 
 class AsynchronousValidation extends Component {
   constructor (props) {

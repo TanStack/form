@@ -37,6 +37,7 @@ class Form extends Component {
   constructor (props) {
     super(props)
     this.tree = new Tree({
+      nested: true,
       children: {},
       api: this.getFormApi(),
       getProps: () => this.props
@@ -134,15 +135,15 @@ class Form extends Component {
     recurse(target)
   }
 
-  recurseAllNodes = cb => {
+  recurseUpAllNodes = cb => {
     // Define recur function
     const recurse = async node => {
-      // Call the cb with the node
-      await cb(node)
       // If we have children recurse down
       if (node.children) {
-        await Utils.mapObject(node.children, recurse)
+        await Promise.all(Utils.mapObject(node.children, recurse))
       }
+      // Call the cb with the node
+      await cb(node)
     }
 
     // start recursion from the target
@@ -187,7 +188,7 @@ class Form extends Component {
   preValidate = (field, opts = {}) => {
     // Get the preValidate prop from the field node
     const { preValidate } = this.getFieldProps(field)
-    if (!preValidate || (!opts.submitting && this.props.validateOnSubmit)) {
+    if (preValidate === Utils.noop || (!opts.submitting && this.props.validateOnSubmit)) {
       return
     }
     this.props.dispatch(actions.preValidate({ field, preValidate }))
@@ -196,7 +197,7 @@ class Form extends Component {
   validate = (field, opts = {}) => {
     // Get the validate prop from the field node
     const { validate } = this.getFieldProps(field)
-    if (!validate || (!opts.submitting && this.props.validateOnSubmit)) {
+    if (validate === Utils.noop || (!opts.submitting && this.props.validateOnSubmit)) {
       return
     }
     this.props.dispatch(actions.validate({ field, validate }))
@@ -205,7 +206,7 @@ class Form extends Component {
   asyncValidate = (field, opts = {}) => {
     // Get the asyncValidate prop from the field node
     const { asyncValidate } = this.getFieldProps(field)
-    if (!asyncValidate || (!opts.submitting && this.props.validateOnSubmit)) {
+    if (asyncValidate === Utils.noop || (!opts.submitting && this.props.validateOnSubmit)) {
       return
     }
     this.props.dispatch(
@@ -217,11 +218,12 @@ class Form extends Component {
     )
   }
 
+  // TODO: array syntax does not work well here
   setAllTouched = () => {
     // Set touched is unique because we dont want to set touched on nested fields
     // We also dont want to call the internal setTouched because that would
     // Execute validation.
-    this.recurseAllNodes(node => {
+    this.recurseUpAllNodes(node => {
       if (node.nested) {
         return
       }
@@ -234,36 +236,28 @@ class Form extends Component {
   setAllValues = values => this.props.dispatch(actions.setAllValues(values))
 
   preValidateAll = () => {
-    const recurse = node => {
-      Utils.mapObject(node.children, recurse)
+    this.recurseUpAllNodes(node => {
       if (node.api.preValidate) {
         node.api.preValidate({ submitting: true })
       }
-    }
-    Utils.mapObject(this.node.children, recurse)
+    })
   }
 
   validateAll = () => {
-    const recurse = node => {
-      Utils.mapObject(node.children, recurse)
+    this.recurseUpAllNodes(node => {
       if (node.api.validate) {
         node.api.validate({ submitting: true })
       }
-    }
-
-    Utils.mapObject(this.node.children, recurse)
+    })
   }
 
   asyncValidateAll = () =>
     (async () => {
-      const recurse = async node => {
-        await Promise.all(Utils.mapObject(node.children, recurse))
+      this.recurseUpAllNodes(node => {
         if (node.api.asyncValidate) {
-          await node.api.asyncValidate({ submitting: true })
+          return node.api.asyncValidate({ submitting: true })
         }
-      }
-
-      await Promise.all(Utils.mapObject(this.node.children, recurse))
+      })
     })()
 
   setFormState = formState => {
@@ -328,13 +322,9 @@ class Form extends Component {
     )
   }
 
-  register = node => {
-    this.tree.addNode(node)
-  }
+  register = node => this.tree.addNode(node)
 
-  deregister = node => {
-    this.tree.removeNode(node)
-  }
+  deregister = node => this.tree.removeNode(node)
 
   reset = field => {
     this.props.dispatch(actions.reset(field))

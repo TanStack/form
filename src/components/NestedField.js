@@ -60,16 +60,6 @@ class NestedField extends React.Component {
 
     // Set up the node's field-level api
     this.fieldApi = {
-      ...this.context.formApi,
-      setValue: value => formApi.setValue(fullField, value),
-      setTouched: touched => formApi.setTouched(fullField, touched),
-      setError: error => formApi.setError(fullField, error),
-      setWarning: warning => formApi.setWarning(fullField, warning),
-      setSuccess: success => formApi.setSuccess(fullField, success),
-      addValue: value => formApi.addValue(fullField, value),
-      removeValue: index => formApi.addValue(fullField, index),
-      swapValues: (...args) => formApi.addValue(fullField, ...args),
-      reset: () => formApi.reset(fullField),
       validatingField: () => formApi.validatingField(fullField),
       doneValidatingField: () => formApi.doneValidatingField(fullField),
       validate: () => formApi.validate(fullField),

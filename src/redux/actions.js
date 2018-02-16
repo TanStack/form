@@ -69,8 +69,9 @@ export function validate ({ field, validator }) {
       const recurse = (current, path) => {
         // Normalize fieldPath
         path = Utils.makePathArray(path)
-        // If other than object, assume an error string or value directly
-        if (!Utils.isObject(current)) {
+
+        // If it's a non object/array, treat it as an error
+        if (!Utils.isObject(current) && !Utils.isArray(current)) {
           // Nested errors aren't allowed if using string errors, so return
           return dispatch(setError({ field: path, value: current }))
         }
@@ -80,17 +81,23 @@ export function validate ({ field, validator }) {
           dispatch(setError({ field: path, value: false }))
           dispatch(setWarning({ field: path, value: false }))
           dispatch(setSuccess({ field: path, value: false }))
+
+          // Now handle accordingly
+          if (current.error) {
+            dispatch(setError({ field: path, value: current.error }))
+          }
+          if (current.warning) {
+            dispatch(setWarning({ field: path, value: current.warning }))
+          }
+          if (current.success) {
+            dispatch(setSuccess({ field: path, value: current.success }))
+          }
+          return
         }
 
-        // Now handle accordingly
-        if (current.error) {
-          return dispatch(setError({ field: path, value: current.error }))
-        }
-        if (current.warning) {
-          return dispatch(setWarning({ field: path, value: current.warning }))
-        }
-        if (current.success) {
-          return dispatch(setSuccess({ field: path, value: current.success }))
+        // If result is an array, recurse into each item
+        if (Utils.isArray(current)) {
+          return current.map((subResult, i) => recurse(subResult, [path, i]))
         }
 
         // It must be a normal object, recurse on each key to set nested errors!
@@ -117,7 +124,7 @@ export function asyncValidate ({ field, validator, validationPromiseIDs }) {
 
       try {
         // Call the asyncrounous validation function
-        const result = Utils.cleanError(await validator(Utils.get(getState().values, field)))
+        const result = await validator(Utils.get(getState().values, field))
 
         if (validationPromiseIDs.get(fieldPathArray) !== uid) {
           // If the promise ID doesn't match we we originally sent, it means a
@@ -126,11 +133,12 @@ export function asyncValidate ({ field, validator, validationPromiseIDs }) {
         }
 
         // Set up the error recursion
-        const recurse = async (current, path) => {
+        const recurse = (current, path) => {
           // Normalize fieldPath
           path = Utils.makePathArray(path)
-          // If other than object, assume an error string or value directly
-          if (!Utils.isObject(current)) {
+
+          // If it's a non object/array, treat it as an error
+          if (!Utils.isObject(current) && !Utils.isArray(current)) {
             // Nested errors aren't allowed if using string errors, so return
             return dispatch(setAsyncError({ field: path, value: current }))
           }
@@ -140,19 +148,21 @@ export function asyncValidate ({ field, validator, validationPromiseIDs }) {
             dispatch(setAsyncError({ field: path, value: false }))
             dispatch(setAsyncWarning({ field: path, value: false }))
             dispatch(setAsyncSuccess({ field: path, value: false }))
+            if (current.error) {
+              dispatch(setAsyncError({ field: path, value: current.error }))
+            }
+            if (current.warning) {
+              dispatch(setAsyncWarning({ field: path, value: current.warning }))
+            }
+            if (current.success) {
+              dispatch(setAsyncSuccess({ field: path, value: current.success }))
+            }
+            return
           }
 
-          if (current.error) {
-            dispatch(setAsyncError({ field: path, value: current.error }))
-            return
-          }
-          if (current.warning) {
-            dispatch(setAsyncWarning({ field: path, value: current.warning }))
-            return
-          }
-          if (current.success) {
-            dispatch(setAsyncSuccess({ field: path, value: current.success }))
-            return
+          // If result is an array, recurse into each item
+          if (Utils.isArray(current)) {
+            return current.map((subResult, i) => recurse(subResult, [path, i]))
           }
 
           // It must be a normal object, recurse on each key to set nested errors!
