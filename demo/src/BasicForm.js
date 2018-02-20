@@ -146,8 +146,8 @@ class BasicForm extends Component {
         <br />
         <BasicFormCode />
       </div>
-    );
+    )
   }
 }
 
-export default BasicForm;
+export default BasicForm

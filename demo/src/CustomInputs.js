@@ -1,9 +1,9 @@
 /* ------------- Imports -------------- */
 import React, { Component } from 'react'
-// import { PrismCode } from 'react-prism';
+import { PrismCode } from 'react-prism'
 
 /* ------------- Form  Library Imports -------------- */
-import { Form, Text, withField } from '../../src/'
+import { Form, Text, Field } from '../../src/'
 
 /* ---------------- Other Imports ------------------ */
 
@@ -18,164 +18,148 @@ const Message = ({ color, message }) => (
   </div>
 )
 
-class CustomTextWrapper extends Component {
-  render () {
-    const {
-      fieldApi,
-      fieldApi: { value, error, warning, success, setValue, setTouched },
-      onChange,
-      ...rest
-    } = this.props
 
-    return (
+const validate = value => ({
+  error: !value || !/Hello World/.test(value) ? "Input must contain 'Hello World'" : null,
+  warning: !value || !/^Hello World$/.test(value) ? "Input should equal just 'Hello World'" : null,
+  success: value && /Hello World/.test(value) ? "Thanks for entering 'Hello World'!" : null
+})
+
+const CustomText = props => (
+  <Field validate={validate} field={props.field}>
+    { fieldApi => {
+
+      // Remember to pull off everything you dont want ending up on the <input>
+      // thats why we pull off onChange, onBlur, and field
+      // Note, the ...rest is important because it allows you to pass any
+      // additional fields to the internal <input>.
+      const { onChange, onBlur, field, ...rest } = props
+
+      const { value, error, warning, success, setValue, setTouched } = fieldApi
+
+      return (
+        <div>
+          <input
+            {...rest}
+            value={value || ''}
+            onChange={e => {
+              setValue(e.target.value)
+              if (onChange) {
+                onChange(e.target.value, e)
+              }
+            }}
+            onBlur={e => {
+              setTouched()
+              if (onBlur) {
+                onBlur(e)
+              }
+            }}
+          />
+          {error ? <Message color="red" message={error} /> : null}
+          {!error && warning ? <Message color="orange" message={warning} /> : null}
+          {!error && !warning && success ? <Message color="green" message={success} /> : null}
+        </div>
+      )
+    }}
+  </Field>
+)
+
+const FormContent = () => (
+  <Form >
+    { formApi => (
       <div>
-        <input
-          value={value || ''}
-          onChange={e => {
-            setValue(e.target.value)
-            if (onChange) {
-              onChange(e)
-            }
-          }}
-          onBlur={() => {
-            setTouched()
-          }}
-          {...rest}
-        />
-        {error ? <Message color="red" message={error} /> : null}
-        {!error && warning ? <Message color="orange" message={warning} /> : null}
-        {!error && !warning && success ? <Message color="green" message={success} /> : null}
+        <form onSubmit={formApi.submitForm} id="form5">
+          <label htmlFor="firstName4">First name</label>
+          <Text field="firstName" id="firstName4" />
+          <label htmlFor="hello2">Custom hello world</label>
+          <CustomText field="hello" id="hello2" />
+          <button type="submit" className="mb-4 btn btn-primary">
+            Submit
+          </button>
+        </form>
+        <br />
+        <Data title="Values" reference="formApi.values" data={formApi.values} />
+        <Data title="Errors" reference="formApi.errors" data={formApi.errors} />
+        <Data title="Warnings" reference="formApi.warnings" data={formApi.warnings} />
+        <Data title="Successes" reference="formApi.success" data={formApi.successes} />
       </div>
-    )
-  }
-}
-
-const CustomText = withField(CustomTextWrapper)
-
-const FormContent = ({ formApi: { submitForm, values, errors, warnings, success } }) => (
-  <div>
-    <form onSubmit={submitForm} id="form5">
-      <label htmlFor="firstName4">First name</label>
-      <Text field="firstName" id="firstName4" />
-      <label htmlFor="hello2">Custom hello world</label>
-      <CustomText field="hello" id="hello2" />
-      <button type="submit" className="mb-4 btn btn-primary">
-        Submit
-      </button>
-    </form>
-    <br />
-    <Data title="Values" reference="formApi.values" data={values} />
-    <Data title="Errors" reference="formApi.errors" data={errors} />
-    <Data title="Warnings" reference="formApi.warnings" data={warnings} />
-    <Data title="Successes" reference="formApi.success" data={success} />
-  </div>
+    )}
+  </Form>
 )
 
 const CustomFormCode = () => {
   const code = `
   import { Form, Text, Field } from '../../src';
 
-  // Define a custom message component
-  const Message = ({ color, message }) => {
-    return (
-      <div className="mb-4" style={{ color }}>
-        <small>{message}</small>
-      </div>
-    );
-  }
+  const Message = ({ color, message }) => (
+    <div className="mb-4" style={{ color }}>
+      <small>{message}</small>
+    </div>
+  )
 
-  // Define your custom input
-  // Note, the ...rest is important because it allows you to pass any
-  // additional fields to the internal <input>.
-  class CustomTextWrapper extends Component {
 
-    render() {
+  const validate = value => ({
+    error: !value || !/Hello World/.test(value) ? "Input must contain 'Hello World'" : null,
+    warning: !value || !/^Hello World$/.test(value) ? "Input should equal just 'Hello World'" : null,
+    success: value && /Hello World/.test(value) ? "Thanks for entering 'Hello World'!" : null
+  })
 
-      const {
-        fieldApi,
-        onChange,
-        ...rest
-      } = this.props;
+  const CustomText = props => (
 
-      const {
-        getValue,
-        getError,
-        getWarning,
-        getSuccess,
-        setValue,
-        setTouched,
-      } = fieldApi;
+    // Use the form field and your custom input together to create your very own input!
+    <Field validate={validate} field={props.field}>
+      { fieldApi => {
 
-      const error = getError();
-      const warning = getWarning();
-      const success = getSuccess();
+        // Remember to pull off everything you dont want ending up on the <input>
+        // thats why we pull off onChange, onBlur, and field
+        // Note, the ...rest is important because it allows you to pass any
+        // additional fields to the internal <input>.
+        const { onChange, onBlur, field, ...rest } = props
 
-      return (
-        <div>
-          <input
-            value={value}
-            onChange={( e ) => {
-              setValue(e.target.value);
-              if ( onChange ) {
-                onChange( e );
-              }
-            }}
-            onBlur={() => {
-              setTouched();
-            }}
-            {...rest} />
-          { error ? <Message color="red" message={error} /> : null }
-          { !error && warning ? <Message color="orange" message={warning} /> : null }
-          { !error && !warning && success ? <Message color="green" message={success} /> : null }
-        </div>
-      );
-    }
-  }
+        const { value, error, warning, success, setValue, setTouched } = fieldApi
 
-  // Use the form field and your custom input together to create your very own input!
-  const CustomText = withFieldCustomTextWrapper);
+        return (
+          <div>
+            <input
+              {...rest}
+              value={value || ''}
+              onChange={e => {
+                setValue(e.target.value)
+                if (onChange) {
+                  onChange(e.target.value, e)
+                }
+              }}
+              onBlur={e => {
+                setTouched()
+                if (onBlur) {
+                  onBlur(e)
+                }
+              }}
+            />
+            {error ? <Message color="red" message={error} /> : null}
+            {!error && warning ? <Message color="orange" message={warning} /> : null}
+            {!error && !warning && success ? <Message color="green" message={success} /> : null}
+          </div>
+        )
+      }}
+    </Field>
+  )
 
-  const errorValidator = (values) => {
-    return {
-      hello: !values.hello || !values.hello.match( /Hello World/ ) ? "Input must contain 'Hello World'" : null
-    };
-  };
-
-  const warningValidator = (values) => {
-    return {
-      hello: !values.hello ||
-             !values.hello.match( /^Hello World$/ ) ? "Input should equal 'Hello World'" : null
-    };
-  };
-
-  const successValidator = (values) => {
-    return {
-      hello: values.hello && values.hello.match( /Hello World/ ) ? "Thanks for entering 'Hello World'!" : null
-    };
-  };
-
-  class FormWithCustomInput extends Component {
-    render() {
-      return (
-        <div>
-          <Form
-            validateWarning={warningValidator}
-            validateSuccess={successValidator}
-            validateError={errorValidator}>
-            { formApi => (
-              <form onSubmit={formApi.submitForm} id="form5">
-                <label htmlFor="firstName4">First name</label>
-                <Text field="firstName" id="firstName4" />
-                <label htmlFor="hello2">Custom hello world</label>
-                <CustomText field="hello" id="hello2" />
-                <button type="submit" className="mb-4 btn btn-primary">Submit</button>
-              </form>
-            )}
-          </Form>
-        </div>
-      );
-    }
-  }
+  FormWithCustomInput = () => (
+    <Form >
+      { formApi => (
+        <form onSubmit={formApi.submitForm} id="form5">
+          <label htmlFor="firstName4">First name</label>
+          <Text field="firstName" id="firstName4" />
+          <label htmlFor="hello2">Custom hello world</label>
+          <CustomText field="hello" id="hello2" />
+          <button type="submit" className="mb-4 btn btn-primary">
+            Submit
+          </button>
+        </form>
+      )}
+    </Form>
+  )
 `
 
   return (
@@ -185,15 +169,6 @@ const CustomFormCode = () => {
     </div>
   )
 }
-
-const validator = values => ({
-  hello:
-    !values.hello || !values.hello.match(/Hello World/)
-      ? { error: "Input must contain 'Hello World'" }
-      : !values.hello || !values.hello.match(/^Hello World!!!$/)
-        ? { warning: "Input should equal 'Hello World!!!'" }
-        : { success: "Thanks for entering 'Hello World!!!'" }
-})
 
 const FieldApiMethods = () => (
   <div>
@@ -207,71 +182,71 @@ const FieldApiMethods = () => (
       </thead>
       <tbody>
         <tr>
-          <th scope="row">getValue</th>
+          <th scope="row">value</th>
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">value</code>
+                <PrismCode className="language-jsx">"hello"</PrismCode>
               </pre>
             </pre>
           </td>
-          <td>Function that returns the value of the field.</td>
+          <td>The value of the field.</td>
         </tr>
         <tr>
-          <th scope="row">getError</th>
+          <th scope="row">error</th>
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">getError()</code>
+                <PrismCode className="language-jsx">"This is a required field"</PrismCode>
               </pre>
             </pre>
           </td>
-          <td>Function that returns the fields error.</td>
+          <td>The fields error.</td>
         </tr>
         <tr>
-          <th scope="row">getWarning</th>
+          <th scope="row">warning</th>
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">getWarning()</code>
+                <PrismCode className="language-jsx">"The password should be longer"</PrismCode>
               </pre>
             </pre>
           </td>
-          <td>Function that returns the fields warning.</td>
+          <td>The fields warning.</td>
         </tr>
         <tr>
-          <th scope="row">getSuccess</th>
+          <th scope="row">success</th>
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">getSuccess()</code>
+                <PrismCode className="language-jsx">"Your field looks good!"</PrismCode>
               </pre>
             </pre>
           </td>
-          <td>Function that returns the fields success.</td>
+          <td>The fields success.</td>
         </tr>
         <tr>
-          <th scope="row">getTouched</th>
+          <th scope="row">touched</th>
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">getTouched()</code>
+                <PrismCode className="language-jsx">true</PrismCode>
               </pre>
             </pre>
           </td>
-          <td>Function that returns the fields touched.</td>
+          <td>The fields touched.</td>
         </tr>
         <tr>
-          <th scope="row">getFieldName</th>
+          <th scope="row">fieldName</th>
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">getFieldName()</code>
+                <PrismCode className="language-jsx">"firstName"</PrismCode>
               </pre>
             </pre>
           </td>
           <td>
-            Function that returns the fields name ( when you passed in field="yourFieldName" ).
+            The fields name ( when you passed in field="yourFieldName" ).
           </td>
         </tr>
         <tr>
@@ -279,7 +254,7 @@ const FieldApiMethods = () => (
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">setValue( 'HelloWorld!' )</code>
+                <PrismCode className="language-jsx">setValue( 'HelloWorld!' )</PrismCode>
               </pre>
             </pre>
           </td>
@@ -290,7 +265,7 @@ const FieldApiMethods = () => (
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">setError( 'Error message!' )</code>
+                <PrismCode className="language-jsx">setError( 'Error message!' )</PrismCode>
               </pre>
             </pre>
           </td>
@@ -301,7 +276,7 @@ const FieldApiMethods = () => (
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">setWarning( 'Warning message!' )</code>
+                <PrismCode className="language-jsx">setWarning( 'Warning message!' )</PrismCode>
               </pre>
             </pre>
           </td>
@@ -312,7 +287,7 @@ const FieldApiMethods = () => (
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">setSuccess( 'Success message!' )</code>
+                <PrismCode className="language-jsx">setSuccess( 'Success message!' )</PrismCode>
               </pre>
             </pre>
           </td>
@@ -323,7 +298,7 @@ const FieldApiMethods = () => (
           <td>
             <pre>
               <pre>
-                <code className="language-jsx">setTouched( true )</code>
+                <PrismCode className="language-jsx">setTouched( true )</PrismCode>
               </pre>
             </pre>
           </td>
@@ -348,7 +323,7 @@ class CustomInput extends Component {
         </h2>
         <p>
           If the out of the box inputs are not enough for you. You can simply customize them, by
-          creating your very own input elements. This is done by leverageing the Field HOC that is
+          creating your very own input elements. This is done by leverageing the `Field` component that is
           availible in react-form. Below is an example of a form that uses a custom input. Our
           custom input has internal error, success, and warning messages that know when to get
           shown. See docs at bottom of this page.
@@ -357,7 +332,7 @@ class CustomInput extends Component {
         <p>
           <strong> Hint: </strong> try typing {'"Foo", "Hello World", and "Hello World!!!"'}
         </p>
-        <Form validate={validator} component={FormContent} />
+        <FormContent />
         <br />
         <CustomFormCode />
         <br />

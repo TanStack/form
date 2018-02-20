@@ -98,6 +98,16 @@ const validate = value => ({
   success: value && /Hello World/.test(value) ? "Thanks for entering 'Hello World'!" : null
 })
 
+// const validate = value => !value || !/Hello World/.test(value) ? "Input must contain 'Hello World'" : null
+
+// const formValidate = values => ({
+//   hello: {
+//     error: !values.hello || !/Hello World/.test(values.hello) ? "Input must contain 'Hello World'" : null,
+//     warning: !values.hello || !/^Hello World$/.test(values.hello) ? "Input should equal just 'Hello World'" : null,
+//     success: values.hello && /Hello World/.test(values.hello) ? "Thanks for entering 'Hello World'!" : null
+//   }
+// })
+
 const ExampleForm = () => (
   <Form>
     {formApi => (
@@ -551,6 +561,21 @@ const FormProps = () => (
           </td>
           <td>no</td>
           <td>A render function that is given the form api as a parameter.</td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <code>pure</code>
+          </th>
+          <td>
+            <pre>bool</pre>
+          </td>
+          <td>no</td>
+          <td>
+            By default every time the form updates all inputs will rerender.
+            This can cause problems whith larger forms, especially in IE!
+            Pass in this prop and the inputs will only rerender when somthing that
+            pertains to them updates.
+          </td>
         </tr>
         <tr>
           <th scope="row">

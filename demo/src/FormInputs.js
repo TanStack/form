@@ -321,13 +321,18 @@ const InputProps = () => (
           <td>no</td>
           <td>
             Function that gets called when form performs validation. Function accepts the value as
-            a parameter and must return a validation object,
+            a parameter and must return either a validation object,
             where the keys are one of ['error', 'warning', 'success'], and the value is a message or
-            null.
+            null, OR if you only care about errors you can simple return an error!
             <pre>
               <pre>
                 <Code className="language-jsx">
-                  {'( value ) => ({ error: "username is required field" }) }'}
+  {`value => "username is required field"\n`}
+OR{'\n'}
+{`value => ({
+  error: "username is required field",
+  warning: "make sure your username is correct!",
+}) }`}
                 </Code>
               </pre>
             </pre>
@@ -343,9 +348,10 @@ const InputProps = () => (
           <td>no</td>
           <td>
             An asynchronous function that accepts the value as a parameter,
-            and must return a validation object,
+            and must return either a validation object,
             where the keys are one of ['error', 'warning', 'success'], and the value is a message or
-            null. The function will get called when you tab out of the field for the associated
+            null, OR if you only care about errors you can simple return an error!.
+            The function will get called when you tab out of the field for the associated
             function.
             <br />
             <pre>

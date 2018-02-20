@@ -11,25 +11,21 @@ import Code from './Code'
 
 /* ------------------ Form Stuff --------------------*/
 
-const NestedFormArrayCode = () => {
+const NestedFieldArrayCode = () => {
   const code = `
-  import { Form, Text, NestedForm } from '../../src';
+  import { Form, Text, NestedField } from '../../src';
 
-  const Friend = ({ i }) => (
-    <NestedForm field={['friends', i]} key={\`nested-friend-\${i}\`}>
-      <Form>
-        { formApi => (
-          <div>
-            <h2>Friend</h2>
-            <label htmlFor={\`nested-friend-first-\${i}\`}>First name</label>
-            <Text field="firstName" id={\`nested-friend-first-\${i}\`} />
-            <label htmlFor={\`nested-friend-last-\${i}\`}>Last name</label>
-            <Text field="lastName" id={\`nested-friend-last-\${i}\`} />
-          </div>
-        )}
-      </Form>
-    </NestedForm>
-  );
+  const Friend = () => (
+    <div>
+      <h2>Friend</h2>
+      <label>
+        First name <Text field="firstName" />
+      </label>
+      <label>
+        Last name <Text field="lastName" />
+      </label>
+    </div>
+  )
 
   class FormWithArrayOfNestedForms extends Component {
 
@@ -40,21 +36,18 @@ const NestedFormArrayCode = () => {
 
     render() {
       return (
-        <div>
-          <Form
-            onSubmit={submittedValues => this.setState( { submittedValues } )}>
-            { formApi => (
-              <div>
-                <form onSubmit={formApi.submitForm} id="form3">
-                  <Friend i={0} />
-                  <Friend i={1} />
-                  <Friend i={2} />
-                  <button type="submit" className="mb-4 btn btn-primary">Submit</button>
-                </form>
-              </div>
-            )}
-          </Form>
-        </div>
+        <Form onSubmit={submittedValues => this.setState({ submittedValues })}>
+          {formApi => (
+            <form onSubmit={formApi.submitForm} id="form3">
+              <NestedField field={['friends', 0]} component={Friend} />
+              <NestedField field={['friends', 1]} component={Friend} />
+              <NestedField field={['friends', 2]} component={Friend} />
+              <button type="submit" className="mb-4 btn btn-primary">
+                Submit
+              </button>
+            </form>
+          )}
+        </Form>
       );
     }
   }
@@ -80,7 +73,7 @@ const Friend = () => (
   </div>
 )
 
-class ArrayOfNestedForms extends Component {
+class ArrayOfNestedFields extends Component {
   constructor (props) {
     super(props)
     this.state = {}
@@ -89,8 +82,8 @@ class ArrayOfNestedForms extends Component {
   render () {
     return (
       <div>
-        <h2 className="mb-4">Array of nested forms</h2>
-        <p>React Form also allows you to create an array of nested foms! How cool is that!</p>
+        <h2 className="mb-4">Array of nested fields</h2>
+        <p>React Form also allows you to create an array of nested fields! How cool is that!</p>
         <Form onSubmit={submittedValues => this.setState({ submittedValues })}>
           {formApi => (
             <div>
@@ -120,10 +113,10 @@ class ArrayOfNestedForms extends Component {
           )}
         </Form>
         <br />
-        <NestedFormArrayCode />
+        <NestedFieldArrayCode />
       </div>
     )
   }
 }
 
-export default ArrayOfNestedForms
+export default ArrayOfNestedFields

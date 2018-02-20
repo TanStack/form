@@ -17,7 +17,7 @@ import NestedAsyncValidation from './NestedAsyncValidation'
 import SideNav from './SideNav'
 import MainContent from './MainContent'
 import DynamicForms from './DynamicForms'
-import ArrayOfNestedForms from './ArrayOfNestedForms'
+import ArrayOfNestedFields from './ArrayOfNestedFields'
 
 class Examples extends Component {
   render () {
@@ -47,12 +47,12 @@ class Examples extends Component {
               <Link to="/dynamic-form" className="nav-link">
                 Dynamic forms
               </Link>
-              <Link to="/array-nested-forms" className="nav-link">
-                Array of nested forms
+              <Link to="/array-nested-fields" className="nav-link">
+                Array of nested fields
               </Link>
-              <Link to="/styled-form" className="nav-link">
+              {/* <Link to="/styled-form" className="nav-link">
                 Styled form
-              </Link>
+              </Link> */}
               <Link to="/custom-input" className="nav-link">
                 Custom inputs
               </Link>
@@ -80,12 +80,12 @@ class Examples extends Component {
               <Route exact path="/" component={Intro} />
               <Route exact path="/form-inputs" component={FormInputs} />
               <Route exact path="/basic-form" component={BasicForm} />
-              <Route exact path="/styled-form" component={StyledForm} />
+              {/* <Route exact path="/styled-form" component={StyledForm} /> */}
               <Route exact path="/array-form" component={FormWithArrays} />
               <Route exact path="/field-syntax" component={FieldSyntax} />
               <Route exact path="/nested-field" component={NestedFieldExample} />
               <Route exact path="/dynamic-form" component={DynamicForms} />
-              <Route exact path="/array-nested-forms" component={ArrayOfNestedForms} />
+              <Route exact path="/array-nested-fields" component={ArrayOfNestedFields} />
               <Route exact path="/custom-input" component={CustomInputs} />
               <Route exact path="/async-validation" component={AsyncValidation} />
               <Route exact path="/nested-async" component={NestedAsyncValidation} />

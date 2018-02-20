@@ -101,7 +101,7 @@ export function validate ({ field, validator }) {
         }
 
         // It must be a normal object, recurse on each key to set nested errors!
-        Utils.mapObject(result, (subResult, key) => recurse(subResult, [path, key]))
+        Utils.mapObject(current, (subResult, key) => recurse(subResult, [path, key]))
       }
 
       recurse(result, field)
