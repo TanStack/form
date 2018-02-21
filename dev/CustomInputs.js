@@ -337,7 +337,7 @@ class CustomInput extends Component {
         <p>
           If the out of the box inputs are not enough for you. You can simply
           customize them, by creating your very own input elements. This is done
-          by leverageing the FormField HOC that is availible in react-form.
+          by leveraging the FormField HOC that is available in react-form.
           Below is an example of a form that uses a custom input. Our custom input has
           internal error, success, and warning messages that know when to get shown.
           See docs at bottom of this page.

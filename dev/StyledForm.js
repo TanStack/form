@@ -362,12 +362,12 @@ class StyledForm extends Component {
         </p>
         <p>
           <strong>Note:</strong> in many cases styled inputs are not enough for developers needs.
-          You will more than likeley find yourselves needing more customization very quikly. If this
+          You will more than likely find yourselves needing more customization very quickly. If this
           is the case, we highly recommend you create your own <strong>Custom Form Fields</strong>.
           See the <Link to="/custom-input">custom inputs section</Link> in the documentation for more details.
         </p>
         <p>
-          For information on what props are availible see the <Link to="#styled-input-props">styled input props</Link> section.
+          For information on what props are available see the <Link to="#styled-input-props">styled input props</Link> section.
         </p>
         <p>
           Now go ahead and play with this form!

@@ -89,7 +89,7 @@ class DynamicForms extends Component {
         </p>
         <p>
           <strong>Note:</strong> the add and remove functions used in the example
-          below are limited to adding and removing fields from a array field.
+          below are limited to adding and removing fields from an array field.
         </p>
         <Form
           onSubmit={submittedValues => this.setState( { submittedValues } )}>
