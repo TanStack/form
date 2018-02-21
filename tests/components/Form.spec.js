@@ -37,14 +37,6 @@ describe('Form', () => {
     const formState = {
       values: {},
       touched: {},
-      errors: {},
-      warnings: {},
-      successes: {},
-      asyncErrors: {},
-      asyncWarnings: {},
-      asyncSuccesses: {},
-      validating: {},
-      validationFailed: {},
       validationFailures: 0,
       asyncValidations: 0,
       submitted: false,
@@ -58,17 +50,9 @@ describe('Form', () => {
     const defaultState = {
       values: {},
       touched: {},
-      errors: {},
-      warnings: {},
-      successes: {},
-      asyncErrors: {},
-      asyncWarnings: {},
-      asyncSuccesses: {},
       submitted: false,
       submits: 0,
       submitting: false,
-      validating: {},
-      validationFailed: {},
       validationFailures: 0,
       asyncValidations: 0
     }
@@ -264,7 +248,7 @@ describe('Form', () => {
     }
     mount(<Form getApi={setApi}>{() => <Text field="greeting" />}</Form>)
     api.setFormState({ values: { greeting: 'hello' } })
-    expect(api.getFormState()).to.deep.equal(getState({ values: { greeting: 'hello' } }))
+    expect(api.getFormState().values).to.deep.equal({ greeting: 'hello' })
   })
 
   it('resetAll should reset the form to its initial state', () => {
@@ -344,18 +328,6 @@ describe('Form', () => {
     mount(<Form render={inputs} />)
   })
 
-  it('should give child component access to formApi as prop', done => {
-    const Inputs = props => {
-      checkFormApi(props.formApi)
-      done()
-    }
-    mount(
-      <Form>
-        <Inputs />
-      </Form>
-    )
-  })
-
   it('should give component passed in access to formApi as prop', () => {
     const Inputs = () => null
     const comp = mount(<Form component={Inputs} />)
@@ -364,56 +336,74 @@ describe('Form', () => {
     checkFormApi(inputs.props().formApi)
   })
 
-  it('errors should update when input is changed', () => {
+  it('errors should update when input is changed', done => {
     const validate = values => ({
       name: values.name === 'Foo' ? 'ooo thats no good' : null
     })
-    let currentErrors
-    const inputs = ({ errors }) => {
-      currentErrors = errors
-      return <Text field="name" />
+    let api
+    const setApi = param => {
+      api = param
     }
-    const wrapper = mount(<Form validateError={validate}>{api => inputs(api)}</Form>)
-    expect(currentErrors).to.deep.equal({})
+    const wrapper = mount(
+      <Form validate={validate} getApi={setApi}>
+        <Text field="name" />
+      </Form>
+    )
+    expect(api.getFormState().errors).to.equal(undefined)
     const input = wrapper.find('input')
     input.simulate('change', { target: { value: 'Foo' } })
-    expect(currentErrors).to.deep.equal({ name: 'ooo thats no good' })
+    setImmediate(() => {
+      expect(api.getFormState().errors).to.deep.equal({ name: 'ooo thats no good' })
+      done()
+    })
   })
 
-  it('warnings should update when input is changed', () => {
-    const validate = values => ({
-      name: values.name === 'Foo' ? 'ooo thats no good' : null
+  it('warnings should update when input is changed', done => {
+    const validate = name => ({
+      warning: name === 'Foo' ? 'ooo thats no good' : null
     })
-    let currentWarnings
-    const inputs = ({ warnings }) => {
-      currentWarnings = warnings
-      return <Text field="name" />
+    let api
+    const setApi = param => {
+      api = param
     }
-    const wrapper = mount(<Form validateWarning={validate}>{api => inputs(api)}</Form>)
-    expect(currentWarnings).to.deep.equal({})
+    const wrapper = mount(
+      <Form getApi={setApi}>
+        <Text field="name" validate={validate} />
+      </Form>
+    )
+    expect(api.getFormState().errors).to.equal(undefined)
     const input = wrapper.find('input')
     input.simulate('change', { target: { value: 'Foo' } })
-    expect(currentWarnings).to.deep.equal({ name: 'ooo thats no good' })
+    setImmediate(() => {
+      expect(api.getFormState().warnings).to.deep.equal({ name: 'ooo thats no good' })
+      done()
+    })
   })
 
-  it('successes should update when input is changed', () => {
-    const validate = values => ({
-      name: values.name === 'Foo' ? 'ooo thats awesome!' : null
+  it('successes should update when input is changed', done => {
+    const validate = name => ({
+      success: name === 'Foo' ? 'ooo thats awesome!' : null
     })
-    let currentSuccesses
-    const inputs = ({ successes }) => {
-      currentSuccesses = successes
-      return <Text field="name" />
+    let api
+    const setApi = param => {
+      api = param
     }
-    const wrapper = mount(<Form validateSuccess={validate}>{api => inputs(api)}</Form>)
-    expect(currentSuccesses).to.deep.equal({})
+    const wrapper = mount(
+      <Form getApi={setApi}>
+        <Text field="name" validate={validate} />
+      </Form>
+    )
+    expect(api.getFormState().errors).to.equal(undefined)
     const input = wrapper.find('input')
     input.simulate('change', { target: { value: 'Foo' } })
-    expect(currentSuccesses).to.deep.equal({ name: 'ooo thats awesome!' })
+    setImmediate(() => {
+      expect(api.getFormState().successes).to.deep.equal({ name: 'ooo thats awesome!' })
+      done()
+    })
   })
 
   describe('option flag', () => {
-    it('validateOnSubmit should prevent validation until the form has been submitted', () => {
+    it('validateOnSubmit should prevent validation until the form has been submitted', done => {
       let api
       const validate = values => ({
         greeting: values.greeting === 'Foo' ? 'ooo thats no good' : null
@@ -423,7 +413,7 @@ describe('Form', () => {
           getApi={param => {
             api = param
           }}
-          validateError={validate}
+          validate={validate}
           validateOnSubmit
         >
           {api => (
@@ -438,16 +428,18 @@ describe('Form', () => {
       input.simulate('change', { target: { value: 'Foo' } })
       expect(api.getFormState()).to.deep.equal(
         getState({
-          errors: {},
           values: { greeting: 'Foo' }
         })
       )
       const button = wrapper.find('button')
       button.simulate('submit')
-      expect(api.getFormState().errors).to.deep.equal({ greeting: 'ooo thats no good' })
+      setImmediate(() => {
+        expect(api.getFormState().errors).to.deep.equal({ greeting: 'ooo thats no good' })
+        done()
+      })
     })
 
-    it('validateOnSubmit and dontValidateOnMount should prevent all validation until the form has been submitted', () => {
+    it('validateOnMount should validate on mount', done => {
       let api
       const validate = values => ({
         greeting: values.greeting === 'Foo' ? 'ooo thats no good' : null
@@ -457,10 +449,9 @@ describe('Form', () => {
           getApi={param => {
             api = param
           }}
-          validateError={validate}
-          dontValidateOnMount
-          validateOnSubmit
-        >
+          validate={validate}
+          defaultValues={{ greeting: 'Foo' }}
+          validateOnMount>
           {api => (
             <form onSubmit={api.submitForm}>
               <Text field="greeting" />
@@ -469,16 +460,10 @@ describe('Form', () => {
           )}
         </Form>
       )
-      const input = wrapper.find('input')
-      input.simulate('change', { target: { value: 'Foo' } })
-      expect(api.getFormState()).to.deep.equal(
-        getState({
-          values: { greeting: 'Foo' }
-        })
-      )
-      const button = wrapper.find('button')
-      button.simulate('submit')
-      expect(api.getFormState().errors).to.deep.equal({ greeting: 'ooo thats no good' })
+      setImmediate(() => {
+        expect(api.getFormState().errors).to.deep.equal({ greeting: 'ooo thats no good' })
+        done()
+      })
     })
   })
 
@@ -504,7 +489,7 @@ describe('Form', () => {
     button.simulate('submit')
     setImmediate(() => {
       expect(spy.called).to.equal(true)
-      const { args: [[validationErrors, , , submitError]] } = spy
+      const { args: [[validationErrors, submitError]] } = spy
       expect(validationErrors).to.deep.equal({})
       expect(submitError).to.equal(error)
       done()
@@ -533,7 +518,7 @@ describe('Form', () => {
     button.simulate('submit')
     setImmediate(() => {
       expect(spy.called).to.equal(true)
-      const { args: [[validationErrors, , , submitError]] } = spy
+      const { args: [[validationErrors, submitError]] } = spy
       expect(validationErrors).to.deep.equal({})
       expect(submitError).to.equal(error)
       done()

@@ -62,9 +62,9 @@ class NestedField extends React.Component {
     this.fieldApi = {
       validatingField: () => formApi.validatingField(fullField),
       doneValidatingField: () => formApi.doneValidatingField(fullField),
-      validate: () => formApi.validate(fullField),
-      preValidate: () => formApi.preValidate(fullField),
-      asyncValidate: () => formApi.asyncValidate(fullField)
+      validate: opts => formApi.validate(fullField, opts),
+      preValidate: opts => formApi.preValidate(fullField, opts),
+      asyncValidate: opts => formApi.asyncValidate(fullField, opts)
     }
 
     // Build our node

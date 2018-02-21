@@ -1,4 +1,6 @@
 import { expect } from 'chai'
+import thunk from 'redux-thunk'
+import configureMockStore from 'redux-mock-store'
 
 import BuildReducer from '../../src/redux/BuildReducer'
 import * as actions from '../../src/redux/actions'
@@ -33,22 +35,26 @@ const {
 } = actions
 
 describe('BuildReducer', () => {
+
+  const middlewares = [thunk]
+  const mockStore = configureMockStore(middlewares)
+
   describe('generated reducer', () => {
     const getState = state => {
       const defaultState = {
         values: {},
         touched: {},
-        errors: {},
-        warnings: {},
-        successes: {},
-        asyncErrors: {},
-        asyncWarnings: {},
-        asyncSuccesses: {},
+        errors: undefined,
+        warnings: undefined,
+        successes: undefined,
+        asyncErrors: undefined,
+        asyncWarnings: undefined,
+        asyncSuccesses: undefined,
         submitted: false,
         submits: 0,
         submitting: false,
-        validating: {},
-        validationFailed: {},
+        validating: undefined,
+        validationFailed: undefined,
         validationFailures: 0,
         asyncValidations: 0
       }
@@ -128,27 +134,37 @@ describe('BuildReducer', () => {
     })
 
     it(`handles ${PRE_VALIDATE}`, () => {
-      const reducer = BuildReducer.build({
-        preValidate: values => ({ foo: `${values.foo}baz` })
-      })
-      const expectedState = getState({ values: { foo: 'barbaz' } })
-      const action1 = actions.setValue({ field: 'foo', value: 'bar' })
-      const state1 = reducer(undefined, action1)
-      const action2 = actions.preValidate()
-      const state2 = reducer(state1, action2)
-      expect(state2).to.deep.equal(expectedState)
+      const store = mockStore(getState({ values: { foo: 'bar' } }))
+      const preValidate = value => `${value}baz`
+      const expectedActions = [
+        actions.setValue({ field: 'foo', value: 'barbaz' })
+      ]
+      store.dispatch(actions.preValidate({ field: 'foo', validator: preValidate }))
+      expect(store.getActions()).to.deep.equal(expectedActions)
     })
 
     it(`handles ${VALIDATE}`, () => {
-      const reducer = BuildReducer.build({
-        validateError: () => ({ foo: 'error!!' })
+      const store = mockStore(getState())
+      const validateError = () => 'error!!'
+      const expectedActions = [
+        actions.setError({ field: ['foo'], value: 'error!!' })
+      ]
+      store.dispatch(actions.validate({ field: 'foo', validator: validateError }))
+      expect(store.getActions()).to.deep.equal(expectedActions)
+    })
+
+    it('handles ASYNC_VALIDATE', () => {
+      const store = mockStore(getState())
+      const validateError = async () => new Promise(res => res('error!!'))
+      const expectedActions = [
+        actions.validatingField('foo'),
+        actions.setAsyncError({ field: ['foo'], value: 'error!!' }),
+        actions.validationSuccess('foo'),
+        actions.doneValidatingField('foo')
+      ]
+      return store.dispatch(actions.asyncValidate({ field: 'foo', validator: validateError,   validationPromiseIDs: new Map() })).then(() => {
+        expect(store.getActions()).to.deep.equal(expectedActions)
       })
-      const expectedState = getState({ values: { foo: 'bar' }, errors: { foo: 'error!!' } })
-      const action1 = actions.setValue({ field: 'foo', value: 'bar' })
-      const state1 = reducer(undefined, action1)
-      const action2 = actions.validate()
-      const state2 = reducer(state1, action2)
-      expect(state2).to.deep.equal(expectedState)
     })
 
     it(`handles ${SUBMITTED}`, () => {
@@ -178,24 +194,28 @@ describe('BuildReducer', () => {
     it(`handles ${RESET}`, () => {
       const reducer = BuildReducer()
       const expectedState = getState({
-        errors: { foo: undefined },
-        warnings: { foo: undefined },
-        successes: { foo: undefined },
-        asyncErrors: { foo: undefined },
-        asyncWarnings: { foo: undefined },
-        asyncSuccesses: { foo: undefined },
-        values: { foo: undefined },
-        touched: { foo: undefined }
+        errors: undefined,
+        warnings: undefined,
+        successes: undefined,
+        asyncErrors: undefined,
+        asyncWarnings: undefined,
+        asyncSuccesses: undefined,
+        values: {
+          foo: undefined
+        },
+        touched: {
+          foo: undefined
+        }
       })
       const action1 = actions.setValue({ field: 'foo', value: 'bar' })
       const state1 = reducer(undefined, action1)
-      const action2 = actions.reset('foo')
+      const action2 = actions.reset({ field: ['foo'] })
       const state2 = reducer(state1, action2)
       expect(state2).to.deep.equal(expectedState)
     })
 
     it(`handles ${RESET_ALL}`, () => {
-      const reducer = BuildReducer.build({ defaultValues: { foo: 'foo' } })
+      const reducer = BuildReducer({ defaultValues: { foo: 'foo' } })
       const expectedState = getState({ values: { foo: 'foo' } })
       const action1 = actions.setValue({ field: 'foo', value: 'bar' })
       const state1 = reducer(undefined, action1)
@@ -225,7 +245,7 @@ describe('BuildReducer', () => {
     it(`handles ${DONE_VALIDATING_FIELD}`, () => {
       const reducer = BuildReducer()
       const expectedState1 = getState({ asyncValidations: 1, validating: { foo: true } })
-      const expectedState2 = getState({ validating: { foo: false } })
+      const expectedState2 = getState({ validating: undefined })
       const action1 = actions.validatingField('foo')
       const state1 = reducer(undefined, action1)
       expect(state1).to.deep.equal(expectedState1)
@@ -236,17 +256,17 @@ describe('BuildReducer', () => {
 
     it(`handles ${VALIDATION_FAILURE}`, () => {
       const reducer = BuildReducer()
-      const expectedState = getState({ validationFailures: 1, validationFailed: { foo: true } })
-      const action = actions.validationFailure('foo')
+      const expectedState = getState({ validationFailures: 1, validationFailed: { foo: 'error' } })
+      const action = actions.validationFailure({ field: 'foo', value: 'error' })
       const nextState = reducer(undefined, action)
       expect(nextState).to.deep.equal(expectedState)
     })
 
     it(`handles ${VALIDATION_SUCCESS}`, () => {
       const reducer = BuildReducer()
-      const expectedState1 = getState({ validationFailures: 1, validationFailed: { foo: true } })
-      const expectedState2 = getState({ validationFailed: { foo: false } })
-      const action1 = actions.validationFailure('foo')
+      const expectedState1 = getState({ validationFailures: 1, validationFailed: { foo: 'error' } })
+      const expectedState2 = getState({ validationFailed: undefined })
+      const action1 = actions.validationFailure({ field: 'foo', value: 'error' })
       const state1 = reducer(undefined, action1)
       expect(state1).to.deep.equal(expectedState1)
       const action2 = actions.validationSuccess('foo')
@@ -257,7 +277,7 @@ describe('BuildReducer', () => {
     it(`handles ${SET_ASYNC_ERROR}`, () => {
       const reducer = BuildReducer()
       const expectedState = getState({ asyncErrors: { foo: 'error' } })
-      const action = actions.setAsyncError({ field: 'foo', error: 'error' })
+      const action = actions.setAsyncError({ field: 'foo', value: 'error' })
       const nextState = reducer(undefined, action)
       expect(nextState).to.deep.equal(expectedState)
     })
@@ -265,7 +285,7 @@ describe('BuildReducer', () => {
     it(`handles ${SET_ASYNC_WARNING}`, () => {
       const reducer = BuildReducer()
       const expectedState = getState({ asyncWarnings: { foo: 'warning' } })
-      const action = actions.setAsyncWarning({ field: 'foo', warning: 'warning' })
+      const action = actions.setAsyncWarning({ field: 'foo', value: 'warning' })
       const nextState = reducer(undefined, action)
       expect(nextState).to.deep.equal(expectedState)
     })
@@ -273,35 +293,8 @@ describe('BuildReducer', () => {
     it(`handles ${SET_ASYNC_SUCCESS}`, () => {
       const reducer = BuildReducer()
       const expectedState = getState({ asyncSuccesses: { foo: 'success' } })
-      const action = actions.setAsyncSuccess({ field: 'foo', success: 'success' })
+      const action = actions.setAsyncSuccess({ field: 'foo', value: 'success' })
       const nextState = reducer(undefined, action)
-      expect(nextState).to.deep.equal(expectedState)
-    })
-
-    it(`handles ${REMOVE_ASYNC_ERROR}`, () => {
-      const reducer = BuildReducer()
-      const expectedState = getState({ asyncErrors: {} })
-      const action = actions.removeAsyncError('foo')
-      const initialState = getState({ asyncErrors: { foo: 'error' } })
-      const nextState = reducer(initialState, action)
-      expect(nextState).to.deep.equal(expectedState)
-    })
-
-    it(`handles ${REMOVE_ASYNC_WARNING}`, () => {
-      const reducer = BuildReducer()
-      const expectedState = getState({ asyncWarnings: {} })
-      const action = actions.removeAsyncWarning('foo')
-      const initialState = getState({ asyncWarnings: { foo: 'warning' } })
-      const nextState = reducer(initialState, action)
-      expect(nextState).to.deep.equal(expectedState)
-    })
-
-    it(`handles ${REMOVE_ASYNC_SUCCESS}`, () => {
-      const reducer = BuildReducer()
-      const expectedState = getState({ asyncSuccesses: {} })
-      const action = actions.removeAsyncSuccess('foo')
-      const initialState = getState({ asyncSuccesses: { foo: 'success' } })
-      const nextState = reducer(initialState, action)
       expect(nextState).to.deep.equal(expectedState)
     })
 
@@ -311,7 +304,7 @@ describe('BuildReducer', () => {
       const actionsToReduce = [
         actions.setValue({ field: 'foo', value: 'bar' }),
         actions.setValue({ field: 'baz', value: 'hello' }),
-        actions.setAsyncError({ field: 'foo', error: 'error' }),
+        actions.setAsyncError({ field: 'foo', value: 'error' }),
         actions.submitted()
       ]
 

@@ -39,7 +39,12 @@ class Form extends Component {
     this.tree = new Tree({
       nested: true,
       children: {},
-      api: this.getFormApi(),
+      api: {
+        ...this.getFormApi(),
+        validate: opts => this.validate(undefined, opts),
+        preValidate: opts => this.preValidate(undefined, opts),
+        asyncValidate: opts => this.asyncValidate(undefined, opts)
+      },
       getProps: () => this.props
     })
     this.node = this.tree.root
@@ -109,9 +114,7 @@ class Form extends Component {
 
   // Utils
 
-  getFormState () {
-    return newState(this.props.formState)
-  }
+  getFormState = () => newState(this.props.formState)
 
   recurseUpFromNode = (field, cb) => {
     // Find the node using the field
@@ -335,7 +338,7 @@ class Form extends Component {
   deregister = node => this.tree.removeNode(node)
 
   reset = field => {
-    this.props.dispatch(actions.reset(field))
+    this.props.dispatch(actions.reset({ field }))
   }
 
   resetAll = () => {

@@ -55,7 +55,7 @@ export function preValidate ({ field, validator }) {
     if (validator && validator !== Utils.noop) {
       // Call the validation function
       const result = validator(Utils.get(getState().values, field))
-      dispatch(setValue(field, result))
+      dispatch(setValue({ field, value: result }))
     }
   }
 }
@@ -67,6 +67,7 @@ export function validate ({ field, validator }) {
       const result = validator(Utils.get(getState().values, field))
 
       const recurse = (current, path) => {
+
         // Normalize fieldPath
         path = Utils.makePathArray(path)
 

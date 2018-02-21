@@ -211,7 +211,7 @@ const submitting = (state, { payload: submitting }) => ({
   submitting
 })
 
-const reset = (state, { field }) => {
+const reset = (state, { payload: { field = '__root' } }) => {
   const newState = Utils.clone(state)
 
   Utils.set(newState.values, field, undefined)

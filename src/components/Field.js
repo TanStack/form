@@ -89,9 +89,9 @@ class Field extends React.Component {
       reset: () => formApi.reset(fullField),
       validatingField: () => formApi.validatingField(fullField),
       doneValidatingField: () => formApi.doneValidatingField(fullField),
-      validate: () => formApi.validate(fullField),
-      preValidate: () => formApi.preValidate(fullField),
-      asyncValidate: () => formApi.asyncValidate(fullField)
+      validate: opts => formApi.validate(fullField, opts),
+      preValidate: opts => formApi.preValidate(fullField, opts),
+      asyncValidate: opts => formApi.asyncValidate(fullField, opts)
     }
 
     // define function to generate field values
