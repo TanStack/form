@@ -61,7 +61,7 @@ const AsynchronousValidationCode = () => {
     if (['joe', 'tanner', 'billy', 'bob'].includes(username)) {
       resolve( { error: 'That username is taken', success: null } );
     }
-    // Simulate request faulure
+    // Simulate request failure
     if ( username === 'reject' ) {
       reject('Failure while making call to validate username does not exist');
     }
@@ -125,7 +125,7 @@ const doesUsernameExist = username => new Promise( ( resolve, reject ) => setTim
   if (['joe', 'tanner', 'billy', 'bob'].includes(username)) {
     resolve( { error: 'That username is taken', success: null } );
   }
-  // Simulate request faulure
+  // Simulate request failure
   if ( username === 'reject' ) {
     reject('Failure while making call to validate username does not exist');
   }

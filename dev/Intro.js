@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { PrismCode } from 'react-prism';
 import rawStyles from 'raw-loader!./styles.txt';
 
-// TODO Break this file apart... its way to big :)
+// TODO Break this file apart... it's way to big :)
 
 /* ------------- Form  Library Imports -------------- */
 import {
@@ -247,7 +247,7 @@ const FormApi = ({ formApi }) => {
             <th scope="row">asyncValidations</th>
             <td><pre><PrismCode className="language-json">{JSON.stringify(formApi.asyncValidations)}</PrismCode></pre></td>
             <td>
-              The number of asynchronous validations currently occuring.
+              The number of asynchronous validations currently occurring.
               See the <a href="#async-validation">asynchronous validation section</a> of these docs for additional details.
             </td>
           </tr>
@@ -256,7 +256,7 @@ const FormApi = ({ formApi }) => {
             <td><pre><PrismCode className="language-json">{JSON.stringify(formApi.validating)}</PrismCode></pre></td>
             <td>
               Key value pair where key is the form <code>field</code>, and value
-              is a bool. Value is true when that field is activley validating, and falsey otherwise.
+              is a bool. Value is true when that field is actively validating, and falsey otherwise.
               See the <a href="#async-validation">asynchronous validation section</a> of these docs for additional details.
             </td>
           </tr>
@@ -264,9 +264,9 @@ const FormApi = ({ formApi }) => {
             <th scope="row">validationFailures</th>
             <td><pre><PrismCode className="language-json">{JSON.stringify(formApi.validationFailures)}</PrismCode></pre></td>
             <td>
-              The number of asynchronous validation failures that have occured. This value will get
-              incimented each time an asynchronous validation fails, and decrimented if it succeeds.
-              Note, it will NOT get incrimented twice for the same field.
+              The number of asynchronous validation failures that have occurred. This value will get
+              incremented each time an asynchronous validation fails, and decremented if it succeeds.
+              Note, it will NOT get incremented twice for the same field.
               See the <a href="#async-validation">asynchronous validation section</a> of these docs for additional details.
             </td>
           </tr>
@@ -301,7 +301,7 @@ const FormApiMethods = ({ formApi }) => {
             <th scope="row">submitForm</th>
             <td><pre><PrismCode className="language-jsx">submitForm( event )</PrismCode></pre></td>
             <td>
-              This function will submit the form and tirgger all lifecycle events:
+              This function will submit the form and trigger all lifecycle events:
               <ul>
                 <li>validateError</li>
                 <li>validateWarning</li>
@@ -502,7 +502,7 @@ const FormProps = () => {
               your values before they are submitted. Whatever you return will
               NOT replace all of the values in that form's state, but will be
               passed to the onSubmit method. <strong>Warning:</strong> We pass <code>formApi</code>
-              to this function because some use cases warrent needing the Api, however,
+              to this function because some use cases warrant needing the Api, however,
               I would try to avoid making modifications to the form state here because it may
               allow you to submit an invalid form!<br />
               <pre><PrismCode className="language-jsx">preSubmit( values, formApi ) => {'({ firstName: values.firstName + "!", lastName: values.lastName})'}</PrismCode></pre>
@@ -526,7 +526,7 @@ const FormProps = () => {
             <td>no</td>
             <td>
               Function that gets called when form updates.
-              Function recieves the <code>formState</code> as a parameter. <br />
+              Function receives the <code>formState</code> as a parameter. <br />
               <pre><PrismCode className="language-jsx">formDidUpdate( formState )</PrismCode></pre>
             </td>
           </tr>
@@ -714,7 +714,7 @@ class Intro extends Component {
         <ExampleForm />
         <h5>Source code with validation:</h5>
         <p>
-          The validation occured in the Hello World example above because of the
+          The validation occurred in the Hello World example above because of the
           validators that were passed in, see code below.
         </p>
         <pre className="mb-4">
