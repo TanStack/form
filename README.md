@@ -55,85 +55,93 @@ const ExampleForm = () => (
 
 ### Array and Data-driven fields
 ```javascript
-import { Form, Text } from 'react-form';
+
+import { Form, Text } from "react-form";
 
 const ExampleForm = () => (
-  <Form render={({
-    submitForm,
-    values,
-    addValue,
-    removeValue
-  }) => (
-    <form onSubmit={submitForm}>
-      <Text field="firstName" placeholder='First Name' />
-      <Text field="lastName" placeholder='Last Name' />
-      <div>
-        Friends
-        {values.friends && values.friends.map((friend, i) => (
-          // Loop over the friend values and create fields for each friend
-          <div>
-            <Text field={['friends', i, 'firstName']} placeholder='First Name' />
-            <Text field={['friends', i, 'lastName']} placeholder='Last Name' />
-
-            // Use the form api to add or remove values to the friends array
-            <button onClick={() => removeValue('friends', i)>
-              Remove Friend
-            </div>
-          </div>
-        ))}
-        // Use the form api to add or remove values to the friends array
-        <button onClick={() => addValue('friends', {})>
-          Add Friend
-        </button>
-      </div>
-      <button type="submit">Submit</button>
-    </form>
-  )} />
-)
+  <Form
+    render={({ submitForm, values, addValue, removeValue }) => (
+      <form onSubmit={submitForm}>
+        <Text field="firstName" placeholder="First Name" />
+        <Text field="lastName" placeholder="Last Name" />
+        <div>
+          Friends
+          {values.friends &&
+            values.friends.map((friend, i) => (
+              // Loop over the friend values and create fields for each friend
+              <div>
+                <Text
+                  field={["friends", i, "firstName"]}
+                  placeholder="First Name"
+                />
+                <Text
+                  field={["friends", i, "lastName"]}
+                  placeholder="Last Name"
+                />
+                // Use the form api to add or remove values to the friends array
+                <button type="button" onClick={() => removeValue("friends", i)}>
+                  Remove Friend
+                </button>
+              </div>
+            ))}
+          // Use the form api to add or remove values to the friends array
+          <button type="button" onClick={() => addValue("friends", {})}>Add Friend</button>
+        </div>
+        <button type="submit">Submit</button>
+      </form>
+    )}
+  />
+);
 ```
 
 ### Advanced Field reuse, and Nested Fields
 ```javascript
-import { Form, FormApi, NestedField, Text } from 'react-form';
+import { Form, FormApi, NestedField, Text } from "react-form"
 
 // Reuse The user fields for the user and their friends!
 const UserFields = () => (
   <div>
-    <Text field="firstName" placeholder='First Name' />
-    <Text field="lastName" placeholder='Last Name' />
+    <Text field="firstName" placeholder="First Name" />
+    <Text field="lastName" placeholder="Last Name" />
   </div>
 )
 
 const ExampleForm = () => (
-  <Form render={({
-    submitForm,
-    values,
-    addValue,
-    removeValue
-  }) => (
-    <form onSubmit={submitForm}>
-      <UserFields />
-      <NestedField field='friends' render={() => ( // Create a new nested field context
-        <div>
-          Friends
-          {values.friends.map((friend, i) => (
+  <Form
+    onSubmit={values => console.log(values)}
+    render={({ submitForm, values, addValue, removeValue }) => (
+      <form onSubmit={submitForm}>
+        <UserFields />
+        <NestedField
+          field="friends"
+          render={() => (
+            // Create a new nested field context
             <div>
-              <NestedField field={['friends', i]} render={() => (
-                <UserFields /> // Now the user fields will map to each friend!
-              )} />
-              <button onClick={() => removeValue('friends', i)>
-                Remove Friend
-              </div>
+              Friends
+              {values.friends &&
+                values.friends.map((friend, i) => (
+                  <div key={i}>
+                    <NestedField
+                      field={i}
+                      render={() => (
+                        <UserFields /> // Now the user fields will map to each friend!
+                      )}
+                    />
+                    <button type="button" onClick={() => removeValue("friends", i)}>
+                      Remove Friend
+                    </button>
+                  </div>
+                ))}
+              <button type="button" onClick={() => addValue("friends", {})}>
+                Add Friend
+              </button>
             </div>
-          ))}
-          <button onClick={() => addValue('friends', {})>
-            Add Friend
-          </button>
-        </div>
-      )}/>
-      <button type="submit">Submit</button>
-    </form>
-  )} />
+          )}
+        />
+        <button type="submit">Submit</button>
+      </form>
+    )}
+  />
 )
 ```
 

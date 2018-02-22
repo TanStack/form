@@ -11,7 +11,7 @@ class TextWrapper extends Component {
     return (
       <input
         {...rest}
-        value={value || ''}
+        value={!value && value !== 0 ? '' : value}
         onChange={e => {
           setValue(e.target.value)
           if (onChange) {
