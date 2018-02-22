@@ -11,11 +11,32 @@ import Code from './Code'
 
 /* ------------------ Form Stuff --------------------*/
 
+const validate = username => !username || username.trim() === '' ? 'Username is a required field' : null
+
+const asyncValidate = username => new Promise((resolve, reject) =>
+  setTimeout(() => {
+    // Simulate username check
+    if (['joe', 'tanner', 'billy', 'bob'].includes(username)) {
+      resolve({ error: 'That username is taken', success: null })
+    }
+    // Simulate request faulure
+    if (username === 'reject') {
+      reject('Failure while making call to validate username does not exist')
+    }
+    // Sumulate username success check
+    resolve({
+      success: 'Awesome! your username is good to go!'
+    })
+  }, 2000)
+)
+
 const FormContent = ({ formApi }) => (
   <div>
     <form onSubmit={formApi.submitForm} id="form6">
       <label htmlFor="username">Username</label>
-      <Text field="username" id="username" />
+      <Text
+        field="username" id="username"
+        validate={validate} asyncValidate={asyncValidate} />
       <button type="submit" className="mb-4 btn btn-primary">
         Submit
       </button>
@@ -23,6 +44,7 @@ const FormContent = ({ formApi }) => (
     <br />
     <Data title="Values" reference="formApi.values" data={formApi.values} />
     <Data title="Touched" reference="formApi.touched" data={formApi.touched} />
+    <Data title="SyncErrors" reference="formApi.errors" data={formApi.errors} />
     <Data title="AsyncErrors" reference="formApi.asyncErrors" data={formApi.asyncErrors} />
     <Data title="AsyncSuccess" reference="formApi.asyncSuccesses" data={formApi.asyncSuccesses} />
     <Data
@@ -50,35 +72,32 @@ const AsynchronousValidationCode = () => {
   const code = `
   import { Form, Text } from 'react-form';
 
-  const validate = values => ({
-    username:
-      !values.username || values.username.trim() === '' ? 'Username is a required field' : null
-  })
+  const validate = username => !username || username.trim() === '' ? 'Username is a required field' : null
 
-  const asyncValidate = async ({ username }) => ({
-    username: await new Promise((resolve, reject) =>
-      setTimeout(() => {
-        // Simulate username check
-        if (['joe', 'tanner', 'billy', 'bob'].includes(username)) {
-          resolve({ error: 'That username is taken', success: null })
-        }
-        // Simulate request faulure
-        if (username === 'reject') {
-          reject('Failure while making call to validate username does not exist')
-        }
-        // Sumulate username success check
-        resolve({
-          success: 'Awesome! your username is good to go!'
-        })
-      }, 2000)
-    )
-  })
+  const asyncValidate = username => new Promise((resolve, reject) =>
+    setTimeout(() => {
+      // Simulate username check
+      if (['joe', 'tanner', 'billy', 'bob'].includes(username)) {
+        resolve({ error: 'That username is taken', success: null })
+      }
+      // Simulate request faulure
+      if (username === 'reject') {
+        reject('Failure while making call to validate username does not exist')
+      }
+      // Sumulate username success check
+      resolve({
+        success: 'Awesome! your username is good to go!'
+      })
+    }, 2000)
+  )
 
-  <Form validate={validate} asyncValidate={asyncValidate}>
+  <Form >
     {formApi => (
       <form onSubmit={formApi.submitForm} id="form6">
         <label htmlFor="username">Username</label>
-        <Text field="username" id="username" />
+        <Text
+          field="username" id="username"
+          validate={validate} asyncValidate={asyncValidate} />
         <button type="submit" className="mb-4 btn btn-primary">
           Submit
         </button>
@@ -95,30 +114,6 @@ const AsynchronousValidationCode = () => {
     </div>
   )
 }
-
-const validate = values => ({
-  username:
-    !values.username || values.username.trim() === '' ? 'Username is a required field' : null
-})
-
-const asyncValidate = async ({ username }) => ({
-  username: await new Promise((resolve, reject) =>
-    setTimeout(() => {
-      // Simulate username check
-      if (['joe', 'tanner', 'billy', 'bob'].includes(username)) {
-        resolve({ error: 'That username is taken', success: null })
-      }
-      // Simulate request faulure
-      if (username === 'reject') {
-        reject('Failure while making call to validate username does not exist')
-      }
-      // Sumulate username success check
-      resolve({
-        success: 'Awesome! your username is good to go!'
-      })
-    }, 2000)
-  )
-})
 
 class AsynchronousValidation extends Component {
   constructor (props) {
@@ -150,7 +145,7 @@ class AsynchronousValidation extends Component {
           Oh and also note that in this case we passed a form level validation function.
           You can just as easily pass async validator at the field level!
         </p>
-        <Form validate={validate} asyncValidate={asyncValidate} component={FormContent} />
+        <Form component={FormContent} />
         <br />
         <AsynchronousValidationCode />
       </div>
