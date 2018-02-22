@@ -30,7 +30,7 @@ class Field extends React.Component {
     const field = this.props.field
     const currentFormState = this.context.formState
     const nextFormState = nextContext.formState
-    const pure = nextProps.pure || nextContext.formProps.pure
+    const pure = nextProps.pure && nextContext.formProps.pure
 
     // When pure, we need to check props and form state to determine if we
     // should update. Otherwise, update all the time.
@@ -160,6 +160,14 @@ Field.contextTypes = {
   formApi: PropTypes.object,
   formState: PropTypes.object,
   formProps: PropTypes.object
+}
+
+Field.propTypes = {
+  field: PropTypes.string.isRequired
+}
+
+Field.defaultProps = {
+  pure: true
 }
 
 export default Field

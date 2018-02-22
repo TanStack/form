@@ -4,10 +4,7 @@
 - The `FormField` component has been renamed to `Field` and is now a render-prop component which supports the "big three" render-prop formats (`component` and `render`/`children` functions).
 - `withFormField` is a new dedicated HOC function, which mirrors the capabilities of `Field` but with the HOC syntax.
 - Added a new `FormApi` render-prop component and companion `withFormApi` HOC which allow you to access the nearest formApi ancestor from anywhere in your component tree.
-- Added `pure` prop to `Form`, `Field` and `withField` components. While using the `pure` prop, the `Field` instance will only rerender when form state or shallow prop values change. Use this to increase performance on large forms as long as you are aware of its implications.
-
-- The api supplied by `Field`/`withField` now contains field-level methods for `addValue`, `removeValue`, and `swapValue`.
-
+- Added `pure` prop to `Form`, `Field` and `withField` components. While using the `pure` prop, the `Field` instance will only rerender when form state or shallow prop values change. Use this to increase performance on large forms. By default this prop is true. Set it to false to deactivate the Optimization (rare cases).
 - `NestedField`/`withNestedField` is a new component that is replacing and deprecating the `NestedForm` components. `NestedField` allows you to set a new field context for any child `Field` and `FormApi` components. This allows for extremely implicit field declarations within components without having to worry about form composition.
 
 #### Breaking Changes

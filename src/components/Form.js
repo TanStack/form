@@ -453,6 +453,10 @@ Form.childContextTypes = {
   formProps: PropTypes.object
 }
 
+Form.defaultProps = {
+  pure: true
+}
+
 /* ---------- Container ---------- */
 
 const mapStateToProps = state => ({

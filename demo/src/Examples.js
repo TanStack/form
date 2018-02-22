@@ -62,9 +62,9 @@ class Examples extends Component {
               <Link to="/nested-async" className="nav-link">
                 Nested async validation
               </Link>
-              <Link to="/big-complex" className="nav-link">
+              {/* <Link to="/big-complex" className="nav-link">
                 Big complex form
-              </Link>
+              </Link> */}
               <a
                 href="https://github.com/react-tools/react-form"
                 className="nav-link"

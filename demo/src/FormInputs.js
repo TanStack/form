@@ -365,6 +365,21 @@ OR{'\n'}
         </tr>
         <tr>
           <th scope="row">
+            <code>pure</code>
+          </th>
+          <td>
+            <pre>bool</pre>
+          </td>
+          <td>no</td>
+          <td>
+            By default every time the form updates, inputs will only rerender themselves whith
+            changes that involve themselves. This is a huge Optimization in comparison to
+            other form libraries. However, there may be cases where you dont want this. If that
+            is the case, simply pass in <code>pure={'{false}'}</code>. ( pure is true by default )
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">
             <code>{'<input> props'}</code>
           </th>
           <td>
