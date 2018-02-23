@@ -577,6 +577,86 @@ const FormProps = () => (
             is the case, simply pass in <code>pure={'{false}'}</code>. ( pure is true by default )
           </td>
         </tr>
+
+        <tr>
+          <th scope="row">
+            <code>preValidate</code>
+          </th>
+          <td>
+            <pre>func</pre>
+          </td>
+          <td>no</td>
+          <td>
+            Function that gets called before the form performs validation. Function accepts the
+            values as a parameter, and must return an object with new values.
+            Note: you can also use this at the field level!
+            <pre>
+              <pre>
+                <PrismCode className="language-jsx">
+                  { "( values ) => ({ greeting: values.greeting + '!')}" }
+                </PrismCode>
+              </pre>
+            </pre>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <code>validate</code>
+          </th>
+          <td>
+            <pre>func</pre>
+          </td>
+          <td>no</td>
+          <td>
+            Function that gets called when form performs validation. Function accepts the values as
+            a parameter and must return either a validation object,
+            where the keys are the field names and each value is an object with the values
+            ['error', 'warning', 'success'], and the value is a message or
+            null, OR if you only care about errors you can simple return an error message!
+            Note: you can also use this at the field level!
+            <pre>
+              <pre>
+                <PrismCode className="language-jsx">
+        {`values => ({ username: "username is required field"`})}
+        {'\n'}OR{'\n'}
+        {`values => ({
+          username: {
+            error: "username is required field",
+            warning: "make sure your username is correct!"
+          }
+        })}`}
+                </PrismCode>
+              </pre>
+            </pre>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <code>asyncValidate</code>
+          </th>
+          <td>
+            <pre>func</pre>
+          </td>
+          <td>no</td>
+          <td>
+            An asynchronous function that accepts the values as a parameter,
+            and must return either a validation object,
+            where the keys are the field names and each value is an object with the values
+            ['error', 'warning', 'success'], and the value is a message or
+            null, OR if you only care about errors you can simple return an error message!
+            Note: you can also use this at the field level!
+            <br />
+            <pre>
+              <pre>
+                <PrismCode className="language-jsx">
+                  {'async (values) => ({ username: "Username already taken :(" }) }'}
+                </PrismCode>
+              </pre>
+            </pre>
+          </td>
+        </tr>
+
+
         <tr>
           <th scope="row">
             <code>validateOnMount</code>
