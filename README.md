@@ -1,6 +1,10 @@
 # React-Form
 Simple, powerful, highly composable forms in React
 
+# *Update:* V3 is comming!  
+
+We are actively working on V3 of React Form. This update will include many enhancements including field level validation, and a simplified interface. Stay tuned! For additional information we have created a Git issue called `React Form 3.0`.
+
 ### Go to [live examples, code and docs](https://react-form.js.org)!
 
 [![Build Status](https://travis-ci.org/react-tools/react-form.svg?branch=master)](https://travis-ci.org/react-tools/react-form)
