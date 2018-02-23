@@ -13,7 +13,7 @@ import Code from './Code'
 
 const FormWithArraysCode = () => {
   const code = `
-  import { Form, Text } from '../../src';
+  import { Form, Text } from 'react-form';
 
   class FormWithArrays extends Component {
 

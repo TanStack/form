@@ -13,7 +13,7 @@ import Code from './Code'
 
 const NestedFieldArrayCode = () => {
   const code = `
-  import { Form, Text, NestedField } from '../../src';
+  import { Form, Text, NestedField } from 'react-form';
 
   const Friend = () => (
     <div>

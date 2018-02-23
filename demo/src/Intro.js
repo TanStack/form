@@ -54,7 +54,7 @@ const componentProp = ` const FormContent = props => (
 `
 
 const formApiCodeExample = `
-import { Form, Text } from '../../src';
+import { Form, Text } from 'react-form';
 
 <Form>
   {formApi => (
@@ -71,7 +71,7 @@ import { Form, Text } from '../../src';
 `
 
 const formApiCodeExampleWithValidation = `
-import { Form, Text } from '../../src';
+import { Form, Text } from 'react-form';
 
 const validate = value => ({
   error: !value || !/Hello World/.test(value) ? "Input must contain 'Hello World'" : null,

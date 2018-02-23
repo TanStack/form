@@ -17,7 +17,7 @@ import Code from './Code';
 const FormWithSpecialFieldSyntaxCode = () => {
 
   const code = `
-  import { Form, Text } from '../../src';
+  import { Form, Text } from 'react-form';
 
   const Friend = ({ i }) => (
     <div>

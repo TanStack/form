@@ -17,7 +17,7 @@ import Code from './Code';
 const DynamicFormsCode = () => {
 
   const code = `
-  import { Form, Text } from '../../src';
+  import { Form, Text } from 'react-form';
 
   class DynamicForm extends Component {
 

@@ -89,7 +89,7 @@ const FormContent = () => (
 
 const CustomFormCode = () => {
   const code = `
-  import { Form, Text, Field } from '../../src';
+  import { Form, Text, Field } from 'react-form';
 
   const Message = ({ color, message }) => (
     <div className="mb-4" style={{ color }}>

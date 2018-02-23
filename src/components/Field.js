@@ -27,7 +27,7 @@ class Field extends React.Component {
   // Optimization to only rerender if nessisary
   shouldComponentUpdate (nextProps, nextState, nextContext) {
     // Grab needed values
-    const field = this.props.field
+    const field = nextContext.formApi.getFullField(this.props.field)
     const currentFormState = this.context.formState
     const nextFormState = nextContext.formState
     const pure = nextProps.pure && nextContext.formProps.pure
