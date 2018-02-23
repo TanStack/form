@@ -8,8 +8,6 @@ class TextWrapper extends Component {
   render () {
     const { fieldApi: { value, setValue, setTouched }, onChange, onBlur, ...rest } = this.props
 
-    let value = getValue();
-
     if (!value && value !== 0) {
       value = '';
     }
