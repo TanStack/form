@@ -1,53 +1,49 @@
-/* ---------- Imports ---------- */
+import React, { Component } from 'react'
 
-// Import React
-import React, { Component } from 'react';
+//
 
-// Import PropTypes library
-import PropTypes from 'prop-types';
+import withField from '../withField'
 
-class Radio extends Component {
-
-  // console.log('RENDER');
-
-  render() {
-
+class RadioComp extends Component {
+  render () {
     const {
+      fieldApi: { value, setValue, setTouched },
       onClick,
       group,
-      value,
+      value: parentValue,
+      onChange,
+      onBlur,
       ...rest
-    } = this.props;
+    } = this.props
 
     return (
       <input
         {...rest}
-        checked={group.getValue() === value}
-        onChange={(e) => {
+        checked={parentValue === value}
+        onChange={e => {
           if (!e.target.checked) {
-            return;
+            return
           }
-          group.setValue(value);
-          group.onChange(value, e);
+          setValue(parentValue)
+          if (onChange) {
+            onChange(value, e)
+          }
           if (onClick) {
-            onClick(e);
+            onClick(e)
           }
         }}
-        onBlur={(e) => {
-          group.setTouched();
-          group.onBlur(e);
+        onBlur={e => {
+          setTouched()
+          if (onBlur) {
+            onBlur(e)
+          }
         }}
         type="radio"
       />
-    );
-
+    )
   }
-
 }
 
-Radio.propTypes = {
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
-  group: PropTypes.object.isRequired
-};
+const Radio = withField(RadioComp)
 
-export default Radio;
+export default Radio

@@ -1,52 +1,34 @@
-/* ---------- Imports ---------- */
+import React, { Component } from 'react'
 
-// Import React
-import React, { Component } from 'react';
+//
 
-// Inport the form input
-import FormField from '../FormField';
+import withField from '../withField'
 
 class TextAreaWrapper extends Component {
-
-  render() {
-
-    // console.log('RENDER');
-
-    const {
-      onChange,
-      onBlur,
-      fieldApi,
-      ...rest
-    } = this.props;
-
-    const {
-      getValue,
-      setValue,
-      setTouched
-    } = fieldApi;
+  render () {
+    const { fieldApi: { value, setValue, setTouched }, onChange, onBlur, ...rest } = this.props
 
     return (
       <textarea
         {...rest}
-        value={getValue() || ''}
-        onChange={( e ) => {
-          setValue(e.target.value);
-          if ( onChange ) {
-            onChange(e.target.value, e);
+        value={value || ''}
+        onChange={e => {
+          setValue(e.target.value)
+          if (onChange) {
+            onChange(e.target.value, e)
           }
         }}
-        onBlur={(e) => {
-          setTouched();
-          if ( onBlur ) {
-            onBlur(e);
+        onBlur={e => {
+          setTouched()
+          if (onBlur) {
+            onBlur(e)
           }
         }}
       />
-    );
-
+    )
   }
 }
 
-const TextArea = FormField(TextAreaWrapper);
+const TextArea = withField(TextAreaWrapper)
 
-export default TextArea;
+export default TextArea

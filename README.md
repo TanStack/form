@@ -1,55 +1,152 @@
 # React-Form
-A powerful and lightweight form library for React.
-
-# *Update:* V3 is comming!  
-
-We are actively working on V3 of React Form. This update will include many enhancements including field level validation, and a simplified interface. Stay tuned! For additional information we have created a Git issue called `React Form 3.0`.
+Simple, powerful, highly composable forms in React
 
 ### Go to [live examples, code and docs](https://react-form.js.org)!
 
-[![Build Status](https://travis-ci.org/react-tools/react-form.svg?branch=v0.11.1)](https://travis-ci.org/react-tools/react-form)
+[![Build Status](https://travis-ci.org/react-tools/react-form.svg?branch=master)](https://travis-ci.org/react-tools/react-form)
+[![npm version](https://img.shields.io/npm/v/react-form.svg)](https://www.npmjs.com/package/react-form)
+[![npm downloads](https://img.shields.io/npm/dm/react-form.svg)](https://www.npmjs.com/package/react-form)
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/react-tools/react-form/blob/master/LICENSE)
+[![React-Tools-Chat](https://img.shields.io/badge/slack-react--chat-blue.svg)](https://react-chat-signup.herokuapp.com/)
 
-# Intro
-Say hello to the best react form library you have ever used! `react-form` is an extensive, simple, and efficient solution for creating simple to complex forms in react. Out of the box you get the ability to grab and manipulate values; set errors, warnings, and successes; customize your inputs, perform asynchronous validation, and much more! If you want to check out the cool stuff and how to use this library, head over to the docs [here](https://react-form.js.org).
+# Features
+- 🚀 Lightweight and fast.
+- 🔥 Built-in input primitives for building quickly.
+- ⚖️ Scales from tiny to massively complex forms with ease.
+- 🚚 Easily integrate with 3rd party components or build your own!
+- ✍️ Nested Fields and ultra-composable syntax for complex form shapes.
+- ⏲ Asynchronous validation
+- 🎛 Simple API that supports manipulating values, errors, warnings, and successes
+- 👉 Render Props!
+- 😂 Works in IE (with a polyfill or two)
 
-# Motivation
-Simplicity and efficiency. This form works in IE! and its fast!
-There are many other libraries that exist, but they don't function in
-IE and, can get pretty complex. You can create very complex forms quickly,
-with only a few lines of code.
+## Questions? Ideas? Chat with us!
+Sign up for the [React-Tools Slack Org](https://react-chat-signup.herokuapp.com/)!
 
-# Installation
+### Installation
 `npm install --save react-form`
 
-# Basic usage
+### Basic Usage
 ```javascript
-import { Form, Text } from 'react-form';
+import { Form, Text, Radio, TextArea, Checkbox } from 'react-form';
 
-const ExampleForm = ( ) => {
-  return (
-    <Form>
-    { formApi => (
-      <form onSubmit={formApi.submitForm} id="form1">
-        <label htmlFor="hello">Hello World</label>
-        <Text field="hello" id="hello" />
+const ExampleForm = () => (
+  <Form render={({
+    submitForm
+  }) => (
+    <form onSubmit={submitForm}>
+      <Text field="firstName" placeholder='First Name' />
+      <Text field="lastName" placeholder='Last Name' />
+      <div>
+        <label>
+          Male <Radio field='gender' value="male" />
+        </label>
+        <label>
+          Female <Radio field='gender' value="female" />
+        </label>
+      </div>
+      <TextArea field="bio" />
+      <Checkbox field="agreesToTerms" />
+      <button type="submit">Submit</button>
+    </form>
+  )} />
+)
+```
+
+### Array and Data-driven fields
+```javascript
+
+import { Form, Text } from "react-form";
+
+const ExampleForm = () => (
+  <Form
+    render={({ submitForm, values, addValue, removeValue }) => (
+      <form onSubmit={submitForm}>
+        <Text field="firstName" placeholder="First Name" />
+        <Text field="lastName" placeholder="Last Name" />
+        <div>
+          Friends
+          {values.friends &&
+            values.friends.map((friend, i) => (
+              // Loop over the friend values and create fields for each friend
+              <div>
+                <Text
+                  field={["friends", i, "firstName"]}
+                  placeholder="First Name"
+                />
+                <Text
+                  field={["friends", i, "lastName"]}
+                  placeholder="Last Name"
+                />
+                // Use the form api to add or remove values to the friends array
+                <button type="button" onClick={() => removeValue("friends", i)}>
+                  Remove Friend
+                </button>
+              </div>
+            ))}
+          // Use the form api to add or remove values to the friends array
+          <button type="button" onClick={() => addValue("friends", {})}>Add Friend</button>
+        </div>
         <button type="submit">Submit</button>
       </form>
     )}
-    </Form>
-  );
-}
+  />
+);
 ```
----
 
-![FormExample](https://react-form.js.org/assets/FormExample.gif "FormExample")
+### Advanced Field reuse, and Nested Fields
+```javascript
+import { Form, FormApi, NestedField, Text } from "react-form"
 
----
+// Reuse The user fields for the user and their friends!
+const UserFields = () => (
+  <div>
+    <Text field="firstName" placeholder="First Name" />
+    <Text field="lastName" placeholder="Last Name" />
+  </div>
+)
 
-![StyledFormExample](https://react-form.js.org/assets/StyledFormExample.gif "StyledFormExample")
+const ExampleForm = () => (
+  <Form
+    onSubmit={values => console.log(values)}
+    render={({ submitForm, values, addValue, removeValue }) => (
+      <form onSubmit={submitForm}>
+        <UserFields />
+        <NestedField
+          field="friends"
+          render={() => (
+            // Create a new nested field context
+            <div>
+              Friends
+              {values.friends &&
+                values.friends.map((friend, i) => (
+                  <div key={i}>
+                    <NestedField
+                      field={i}
+                      render={() => (
+                        <UserFields /> // Now the user fields will map to each friend!
+                      )}
+                    />
+                    <button type="button" onClick={() => removeValue("friends", i)}>
+                      Remove Friend
+                    </button>
+                  </div>
+                ))}
+              <button type="button" onClick={() => addValue("friends", {})}>
+                Add Friend
+              </button>
+            </div>
+          )}
+        />
+        <button type="submit">Submit</button>
+      </form>
+    )}
+  />
+)
+```
 
-
-# Examples & Documentation
-Go [here](https://react-form.js.org) for examples and documentation for **2.x.x** of React-Form.
+### Examples & Documentation
+[Visit react-form.js.org](https://react-form.js.org) for examples and documentation for **2.x.x** of React-Form.
 
 Older versions:
 * [Version 1.x.x](https://github.com/react-tools/react-form/tree/v1.3.0)

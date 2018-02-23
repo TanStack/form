@@ -1,46 +1,34 @@
-/* ---------- Imports ---------- */
+import React, { Component } from 'react'
 
-// Import React
-import React, { Component } from 'react';
+//
 
-// Inport the form input
-import FormField from '../FormField';
+import withField from '../withField'
 
 class TextWrapper extends Component {
-  render() {
-    //console.log('RENDER');
-
-    const { fieldApi, onChange, onBlur, ...rest } = this.props;
-
-    const { getValue, setValue, setTouched } = fieldApi;
-
-    let value = getValue();
-
-    if (!value && value !== 0) {
-      value = '';
-    }
+  render () {
+    const { fieldApi: { value, setValue, setTouched }, onChange, onBlur, ...rest } = this.props
 
     return (
       <input
         {...rest}
-        value={value}
-        onChange={(e) => {
-          setValue(e.target.value);
+        value={!value && value !== 0 ? '' : value}
+        onChange={e => {
+          setValue(e.target.value)
           if (onChange) {
-            onChange(e.target.value, e);
+            onChange(e.target.value, e)
           }
         }}
-        onBlur={(e) => {
-          setTouched();
+        onBlur={e => {
+          setTouched()
           if (onBlur) {
-            onBlur(e);
+            onBlur(e)
           }
         }}
       />
-    );
+    )
   }
 }
 
-const Text = FormField(TextWrapper);
+const Text = withField(TextWrapper)
 
-export default Text;
+export default Text

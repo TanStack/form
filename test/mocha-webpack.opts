@@ -1,3 +1,0 @@
---webpack-config config/webpack/webpack.test.config.js
---require test/setup.js
-test/**/*.spec.js

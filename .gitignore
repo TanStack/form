@@ -1,8 +1,13 @@
 node_modules
 /index.js
-/build/*
-/docs/*
-/dist/*
+/build
+/docs
+/dist
+/demo/dist
+/es
+/lib
+/umd
 .tmp/
 .idea
 .gitconfig
+.DS_Store

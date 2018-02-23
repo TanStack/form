@@ -1,29 +1,39 @@
 {
   "name": "react-form",
-  "version": "2.16.2",
+  "version": "3.0.0",
   "description": "React Form is a lightweight framework and utility for building powerful forms in React applications.",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
+  "module": "es/index.js",
   "files": [
-    "dist/"
+    "css",
+    "es",
+    "lib",
+    "umd"
   ],
   "scripts": {
-    "test": "cross-env NODE_ENV=test mocha-webpack --opts test/mocha-webpack.opts",
+    "build": "nwb build-react-component --title React Form",
+    "clean": "nwb clean-module && nwb clean-demo",
+    "start": "nwb serve-react-demo",
+    "test": "mocha-webpack --opts tests/mocha-webpack.opts",
     "test:watch": "npm run test -- --watch",
-    "start": "cross-env NODE_ENV=development webpack-dev-server -d --config config/webpack/webpack.dev.config.js --port 4005 --hot",
-    "build:dev": "cross-env NODE_ENV=development webpack --config config/webpack/webpack.dev.config.js",
-    "build:dist": "cross-env NODE_ENV=production webpack -p --config config/webpack/webpack.dist.config.js",
-    "build:docs": "cross-env NODE_ENV=production webpack -p --config config/webpack/webpack.prod.config.js",
+    "prepublishOnly": "yarn build",
+    "postPublish": "git push --tags",
     "eslint": "eslint src/** --fix",
     "format": "prettier-eslint src/**/*.js",
-    "preversion": "npm test",
-    "version": "npm run build:dist",
-    "postpublish": "git push --tags"
+    "docs": "gitdocs serve"
   },
-  "author": {
-    "name": "Joseph Puzzo",
-    "email": "jgpuzzo2@gmail.com",
-    "url": "http://joepuzzo.github.io"
-  },
+  "authors": [
+    {
+      "name": "Joseph Puzzo",
+      "email": "jgpuzzo2@gmail.com",
+      "url": "http://joepuzzo.github.io"
+    },
+    {
+      "name": "Tanner Linsley",
+      "email": "tannerlinsley@gmail.com",
+      "url": "http://github.com/tannerlinsley"
+    }
+  ],
   "keywords": [
     "react",
     "reactjs",
@@ -43,13 +53,10 @@
   },
   "license": "MIT",
   "dependencies": {
-    "babel-runtime": "^6.26.0",
-    "circular-json": "^0.4.0",
     "classnames": "^2.2.5",
     "prop-types": "^15.5.10",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
-    "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0"
   },
   "peerDependencies": {
@@ -57,48 +64,39 @@
     "react-dom": "^15.6.1 || 16"
   },
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-eslint": "^7.2.3",
-    "babel-loader": "^7.1.1",
-    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.6.0",
+    "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
+    "babel-runtime": "^6.26.0",
+    "chai": "^4.1.2",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
     "bootstrap": "^4.0.0-alpha.6",
     "chai": "^4.1.1",
     "copy-webpack-plugin": "^4.0.1",
     "cross-env": "^5.1.3",
     "css-loader": "^0.28.5",
-    "enzyme": "^2.9.1",
     "eslint": "^4.5.0",
-    "eslint-config-airbnb": "^15.1.0",
+    "eslint-config-react-tools": "^1.0.10",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^7.3.0",
-    "file-loader": "^1.1.5",
-    "jsdom": "^9.9.1",
-    "mocha": "^3.5.0",
-    "mocha-webpack": "^0.7.0",
-    "node-sass": "^4.5.3",
+    "gitdocs": "^1.3.2",
+    "jsdom": "^11.6.0",
+    "mocha": "^5.0.0",
+    "mocha-webpack": "^1.0.1",
+    "nwb": "^0.21.2",
+    "nwb-sass": "^0.8.2",
     "prettier-eslint-cli": "^4.7.0",
-    "prismjs": "^1.6.0",
-    "raw-loader": "^0.5.1",
-    "react": "^15.6.1",
+    "react": "^16.2.0",
+    "react-addons": "^0.9.1-deprecated",
     "react-addons-test-utils": "^15.6.2",
-    "react-dom": "^15.6.1",
-    "react-hot-loader": "^3.0.0-beta.7",
-    "react-prism": "^4.3.0",
+    "react-dom": "^16.2.0",
+    "react-prism": "^4.3.2",
     "react-router-dom": "^4.2.2",
     "react-router-hash-link": "^1.1.1",
-    "react-test-renderer": "^15.6.2",
-    "sass-loader": "^6.0.6",
-    "sinon": "^3.2.1",
-    "style-loader": "^0.18.2",
-    "uglify-js": "^3.1.10",
-    "url-loader": "^0.5.9",
-    "webpack": "^3.5.5",
-    "webpack-dev-server": "^2.7.1",
-    "webpack-node-externals": "^1.6.0"
+    "redux-mock-store": "^1.5.1",
+    "sinon": "^4.1.6"
   }
 }
