@@ -95,6 +95,48 @@ describe('Form', () => {
     })
   })
 
+  it('should call preventDefault when the form is submitted', done => {
+    const spy = sandbox.spy()
+    const wrapper = mount(
+      <Form onSubmit={() => {}}>
+        {api => (
+          <form onSubmit={api.submitForm}>
+            <button type="submit">Submit</button>
+          </form>
+        )}
+      </Form>
+    )
+    const button = wrapper.find('button')
+    button.simulate('submit', {
+      preventDefault: spy
+    })
+    setImmediate(() => {
+      expect(spy.called).to.equal(true)
+      done()
+    })
+  })
+
+  it('should call not preventDefault if set to false', done => {
+    const spy = sandbox.spy()
+    const wrapper = mount(
+      <Form onSubmit={() => {}} preventDefault={false}>
+        {api => (
+          <form onSubmit={api.submitForm}>
+            <button type="submit">Submit</button>
+          </form>
+        )}
+      </Form>
+    )
+    const button = wrapper.find('button')
+    button.simulate('submit', {
+      preventDefault: spy
+    })
+    setImmediate(() => {
+      expect(spy.called).to.equal(false)
+      done()
+    })
+  })
+
   it('should NOT call onSubmit function with values when the invalid form is submitted', done => {
     const spy = sandbox.spy()
     let api

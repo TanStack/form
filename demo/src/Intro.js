@@ -778,16 +778,16 @@ const FormProps = () => (
         </tr>
         <tr>
           <th scope="row">
-            <code>dontPreventDefault</code>
+            <code>preventDefault</code>
           </th>
           <td>
             <pre>bool</pre>
           </td>
           <td>no</td>
           <td>
-            Pass this in if you want to prevent the form submission from "preventingDefault". You
-            would, for example, use this when you want to use a good old form submission using
-            action="/foo.php" on your form. Note: using this method will only guarentee
+            The default is to always "preventDefault". Set this to "false" to disable "preventingDefault".
+            You would, for example, set this to "false" when you want to use a good old form submission using
+            action="/foo.php" on your form. Note: using this setting will only guarentee
             that the syncronous validators were called. In other words the form will
             not wait around for async validators during submittion if you are
             using this old school method of submission.

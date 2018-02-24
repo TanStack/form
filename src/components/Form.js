@@ -30,10 +30,6 @@ const newState = state => JSON.parse(JSON.stringify(state))
 /* ----------------- Form Component ---------------- */
 
 class Form extends Component {
-  static defaultProps = {
-    preventDefault: true
-  }
-
   constructor (props) {
     super(props)
     this.tree = new Tree({
@@ -454,7 +450,8 @@ Form.childContextTypes = {
 }
 
 Form.defaultProps = {
-  pure: true
+  pure: true,
+  preventDefault: true
 }
 
 /* ---------- Container ---------- */
