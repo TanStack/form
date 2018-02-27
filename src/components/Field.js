@@ -163,7 +163,10 @@ Field.contextTypes = {
 }
 
 Field.propTypes = {
-  field: PropTypes.string.isRequired
+  field: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array
+  ])
 }
 
 Field.defaultProps = {
