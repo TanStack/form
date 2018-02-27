@@ -18,6 +18,7 @@ import SideNav from './SideNav'
 import MainContent from './MainContent'
 import DynamicForms from './DynamicForms'
 import ArrayOfNestedFields from './ArrayOfNestedFields'
+import Tester from './Tester'
 
 class Examples extends Component {
   render () {
@@ -90,6 +91,7 @@ class Examples extends Component {
               <Route exact path="/async-validation" component={AsyncValidation} />
               <Route exact path="/nested-async" component={NestedAsyncValidation} />
               <Route exact path="/big-complex" component={BigComplexForm} />
+              <Route exact path="/tester" component={Tester} />
             </MainContent>
           </div>
         </div>

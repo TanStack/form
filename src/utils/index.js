@@ -192,8 +192,8 @@ function cleanError (obj) {
     }
   }
   if (isArray(obj)) {
-    obj = obj.map(cleanError).filter(d => !!d) // clean nested falsey arrays
-    if (!obj.length) {
+    obj = obj.map(cleanError) // clean nested falsey arrays
+    if (!obj.length || obj.every(d => !d)) {
       return undefined
     }
   }
