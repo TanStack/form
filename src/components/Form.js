@@ -72,7 +72,7 @@ class Form extends Component {
   componentWillReceiveProps (nextProps) {
     const didUpdate = !Utils.isDeepEqual(nextProps.formState, this.props.formState)
     if (this.props.onChange && didUpdate) {
-      this.props.onChange(newState(nextProps.formState))
+      this.props.onChange(newState(nextProps.formState), this.getFormApi())
     }
   }
 
@@ -383,7 +383,7 @@ class Form extends Component {
     const asyncInvalid = isInvalid(asyncErrors)
     // Call on validation fail if we are invalid
     if ((invalid || asyncInvalid) && this.props.onSubmitFailure) {
-      this.props.onSubmitFailure(errors)
+      this.props.onSubmitFailure(errors, null, this.getFormApi())
     }
     // Only update submitted if we are not invalid
     // And there are no active asynchronous validations
@@ -398,10 +398,10 @@ class Form extends Component {
       // If onSubmit was passed then call it
       if (this.props.onSubmit) {
         try {
-          await this.props.onSubmit(values, e)
+          await this.props.onSubmit(values, e, this.getFormApi())
         } catch (error) {
           if (this.props.onSubmitFailure) {
-            this.props.onSubmitFailure({}, error)
+            this.props.onSubmitFailure({}, error, this.getFormApi())
           } else {
             throw error
           }
