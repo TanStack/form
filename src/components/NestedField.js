@@ -20,7 +20,7 @@ class NestedField extends React.Component {
     const { defaultValues } = this.props
     this.buildApi(this.props)
 
-    if (typeof defaultValues !== 'undefined') {
+    if (typeof defaultValues !== 'undefined' && typeof this.fieldApi.getValue() === 'undefined') {
       this.fieldApi.setValue(defaultValues)
     }
   }
@@ -61,6 +61,7 @@ class NestedField extends React.Component {
 
     // Set up the node's field-level api
     this.fieldApi = {
+      getValue: () => formApi.setValue(fullField),
       setValue: value => formApi.setValue(fullField, value),
       setTouched: touched => formApi.setTouched(fullField, touched),
       setError: error => formApi.setError(fullField, error),

@@ -8,7 +8,7 @@ class Field extends React.Component {
     const { defaultValue } = this.props
     this.buildApi(this.props)
 
-    if (typeof defaultValue !== 'undefined') {
+    if (typeof defaultValue !== 'undefined' && typeof this.getFieldValues().value === 'undefined') {
       this.fieldApi.setValue(defaultValue)
     }
   }
