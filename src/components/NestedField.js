@@ -17,10 +17,11 @@ class NestedField extends React.Component {
 
   componentWillMount () {
     this.node = {}
-    const { defaultValue } = this.props
+    const { defaultValues } = this.props
     this.buildApi(this.props)
-    if (defaultValue) {
-      this.fieldApi.setValue(defaultValue)
+
+    if (defaultValues) {
+      this.fieldApi.setValue(defaultValues)
     }
   }
 
@@ -53,13 +54,22 @@ class NestedField extends React.Component {
     // Overrides on the form api for child nodes
     this.formApi = {
       // Spread the current form api
-      ...this.context.formApi,
+      ...formApi,
       // Override the getFullField to reflect the new field context
       getFullField: field => [fullField, field]
     }
 
     // Set up the node's field-level api
     this.fieldApi = {
+      setValue: value => formApi.setValue(fullField, value),
+      setTouched: touched => formApi.setTouched(fullField, touched),
+      setError: error => formApi.setError(fullField, error),
+      setWarning: warning => formApi.setWarning(fullField, warning),
+      setSuccess: success => formApi.setSuccess(fullField, success),
+      addValue: value => formApi.addValue(fullField, value),
+      removeValue: index => formApi.addValue(fullField, index),
+      swapValues: (...args) => formApi.addValue(fullField, ...args),
+      reset: () => formApi.reset(fullField),
       validatingField: () => formApi.validatingField(fullField),
       doneValidatingField: () => formApi.doneValidatingField(fullField),
       validate: opts => formApi.validate(fullField, opts),

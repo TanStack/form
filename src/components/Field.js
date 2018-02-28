@@ -5,7 +5,12 @@ import Utils from '../utils'
 
 class Field extends React.Component {
   componentWillMount () {
+    const { defaultValue } = this.props
     this.buildApi(this.props)
+
+    if (defaultValue) {
+      this.fieldApi.setValue(defaultValue)
+    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -117,7 +122,6 @@ class Field extends React.Component {
   }
 
   render () {
-
     const {
       field,
       pure,
@@ -163,10 +167,7 @@ Field.contextTypes = {
 }
 
 Field.propTypes = {
-  field: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.array
-  ])
+  field: PropTypes.oneOfType([PropTypes.string, PropTypes.array])
 }
 
 Field.defaultProps = {

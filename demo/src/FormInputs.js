@@ -293,6 +293,18 @@ const InputProps = () => (
         </tr>
         <tr>
           <th scope="row">
+            <code>defaultValue</code>
+          </th>
+          <td>
+            <pre>any</pre>
+          </td>
+          <td>no</td>
+          <td>
+            If supplied, the field's value will be set to this on mount.
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">
             <code>preValidate</code>
           </th>
           <td>
