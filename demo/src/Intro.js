@@ -704,10 +704,11 @@ const FormProps = () => (
           <td>no</td>
           <td>
             Function that gets called when form is submitted successfully. This function will pass
-            two parameters: the form values, and the submission event<br />
+            three parameters: the form values, the submission event, and the
+            <code>formApi</code><br />
             <pre>
               <pre>
-                <PrismCode className="language-jsx">onSubmit( values, e )</PrismCode>
+                <PrismCode className="language-jsx">onSubmit( values, e, formApi )</PrismCode>
               </pre>
             </pre>
           </td>
@@ -746,13 +747,13 @@ const FormProps = () => (
           <td>no</td>
           <td>
             Function that gets called when submission fails due to errors, or when
-            <code>onSubmit</code> threw an error. This function will pass two parameters: the form
-            validation errors, and an error thrown during the call to{' '}
-            <code>onSubmit</code>. <br />
+            <code>onSubmit</code> threw an error. This function will pass three parameters: the form
+            validation errors, an error thrown during the call to{' '}
+            <code>onSubmit</code> and the <code>formApi</code>. <br />
             <pre>
               <pre>
                 <PrismCode className="language-jsx">
-                  onSubmitFailure( errors, onSubmitError )
+                  onSubmitFailure( errors, onSubmitError, formApi )
                 </PrismCode>
               </pre>
             </pre>
@@ -768,10 +769,10 @@ const FormProps = () => (
           <td>no</td>
           <td>
             Function that gets called when form updates. Function recieves the{' '}
-            <code>formState</code> as a parameter. <br />
+            <code>formState</code> and <code>formApi</code> as parameters. <br />
             <pre>
               <pre>
-                <PrismCode className="language-jsx">onChange( formState )</PrismCode>
+                <PrismCode className="language-jsx">onChange( formState, formApi )</PrismCode>
               </pre>
             </pre>
           </td>
