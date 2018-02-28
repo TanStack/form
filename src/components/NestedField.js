@@ -20,7 +20,7 @@ class NestedField extends React.Component {
     const { defaultValues } = this.props
     this.buildApi(this.props)
 
-    if (defaultValues) {
+    if (typeof defaultValues !== 'undefined') {
       this.fieldApi.setValue(defaultValues)
     }
   }
