@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 
 /* ------------- Form  Library Imports -------------- */
-import { Form, Text, Radio, TextArea, Select, Checkbox } from '../../src/'
+import { Form, Text, Radio, RadioGroup, TextArea, Select, Checkbox } from '../../src/'
 
 /* ---------------- Other Imports ------------------ */
 
@@ -13,7 +13,7 @@ import Code from './Code'
 
 const BasicFormCode = () => {
   const code = `
-  import { Form, Text, Radio, Select, Checkbox } from 'react-form';
+  import { Form, Text, Radio, RadioGroup, Select, Checkbox } from 'react-form';
 
   const statusOptions = [
     {
@@ -37,12 +37,12 @@ const BasicFormCode = () => {
         <Text field="firstName" id="firstName" />
         <label htmlFor="lastName">Last name</label>
         <Text field="lastName" id="lastName" />
-        <div>
+        <RadioGroup field="gender">
           <label htmlFor="male" className="mr-2">Male</label>
-          <Radio field="gender" value="male" id="male" className="mr-3 d-inline-block" />
+          <Radio value="male" id="male" className="mr-3 d-inline-block" />
           <label htmlFor="female" className="mr-2">Female</label>
-          <Radio field="gender" value="female" id="female" className="d-inline-block" />
-        </div>
+          <Radio value="female" id="female" className="d-inline-block" />
+        </RadioGroup>
         <label htmlFor="bio">Bio</label>
         <TextArea field="bio" id="bio" />
         <label htmlFor="authorize" className="mr-2">Authorize</label>
@@ -98,12 +98,12 @@ class BasicForm extends Component {
                 <Text field="firstName" id="firstName" />
                 <label htmlFor="lastName">Last name</label>
                 <Text field="lastName" id="lastName" />
-                <div>
+                <RadioGroup field="gender">
                   <label htmlFor="male" className="mr-2">Male</label>
-                  <Radio field="gender" value="male" id="male" className="mr-3 d-inline-block" />
+                  <Radio value="male" id="male" className="mr-3 d-inline-block" />
                   <label htmlFor="female" className="mr-2">Female</label>
-                  <Radio field="gender" value="female" id="female" className="d-inline-block" />
-                </div>
+                  <Radio value="female" id="female" className="d-inline-block" />
+                </RadioGroup>
                 <label htmlFor="bio">Bio</label>
                 <TextArea field="bio" id="bio" />
                 <label htmlFor="authorize" className="mr-2">Authorize</label>
