@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import withRadioGroup from '../withRadioGroup'
 
 //
 
@@ -11,19 +12,20 @@ class Radio extends Component {
 
   render () {
     const {
+      // Radio props
       onChange,
       onBlur,
       value,
+      // RadioGroup props
+      radioGroup: {
+        setValue,
+        setTouched,
+        value: groupValue,
+        onChange: groupOnChange,
+        onBlur: groupOnBlur,
+      },
       ...rest
     } = this.props
-
-    const {
-      setValue,
-      setTouched,
-      value: groupValue,
-      onChange: groupOnChange,
-      onBlur: groupOnBlur,
-    } = this.context.reactFormGroup
 
     return (
       <input
@@ -56,4 +58,4 @@ class Radio extends Component {
   }
 }
 
-export default Radio
+export default withRadioGroup(Radio)

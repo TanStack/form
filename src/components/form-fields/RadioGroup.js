@@ -8,16 +8,9 @@ import withField from '../withField'
 class RadioGroupWrapper extends Component {
 
   getChildContext () {
-    const {
-      setValue,
-      setTouched,
-      value,
-    } = this.props.fieldApi
     return {
       reactFormGroup: {
-        setValue,
-        setTouched,
-        value,
+        ...this.props.fieldApi,
         onChange: this.props.onChange,
         onBlur: this.props.onBlur,
       },

@@ -16,7 +16,7 @@ class FormApi extends React.Component {
     const componentProps = {
       formApi: {
         ...this.context.formApi,
-        ...this.context.formApi,
+        ...this.context.formState,
       },
       ...rest
     }
@@ -34,7 +34,8 @@ class FormApi extends React.Component {
 }
 
 FormApi.contextTypes = {
-  formApi: PropTypes.object
+  formApi: PropTypes.object,
+  formState: PropTypes.object
 }
 
 export default FormApi

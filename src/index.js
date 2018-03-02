@@ -4,7 +4,9 @@ import withField from './components/withField'
 import FormApi from './components/FormApi'
 import withFormApi from './components/withFormApi'
 import NestedField from './components/NestedField'
-import withNestedField from './components/withNestedField'
+import withNestedField from './components/FieldApi'
+import FieldApi from './components/withNestedField'
+import withFieldApi from './components/withFieldApi'
 
 import Text from './components/form-fields/Text'
 import Radio from './components/form-fields/Radio'
@@ -12,6 +14,7 @@ import TextArea from './components/form-fields/TextArea'
 import Select from './components/form-fields/Select'
 import Checkbox from './components/form-fields/Checkbox'
 import RadioGroup from './components/form-fields/RadioGroup'
+import withRadioGroup from './components/withRadioGroup'
 
 // These should move to a react-form-styled package
 // import StyledText from './components/styled-form-fields/Text'
@@ -34,4 +37,7 @@ export {
   Select,
   Checkbox,
   RadioGroup,
+  withRadioGroup,
+  FieldApi,
+  withFieldApi,
 }
