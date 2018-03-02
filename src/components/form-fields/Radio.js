@@ -1,35 +1,44 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 //
 
-import withField from '../withField'
+class Radio extends Component {
 
-class RadioComp extends Component {
+  static contextTypes = {
+    reactFormGroup: PropTypes.object,
+  }
+
   render () {
     const {
-      fieldApi: { value, setValue, setTouched },
-      onClick,
-      group,
-      value: parentValue,
       onChange,
       onBlur,
+      value,
       ...rest
     } = this.props
+
+    const {
+      setValue,
+      setTouched,
+      value: groupValue,
+      onChange: groupOnChange,
+      onBlur: groupOnBlur,
+    } = this.context.reactFormGroup
 
     return (
       <input
         {...rest}
-        checked={parentValue === value}
+        checked={groupValue === value}
         onChange={e => {
           if (!e.target.checked) {
             return
           }
-          setValue(parentValue)
+          setValue(value)
           if (onChange) {
-            onChange(value, e)
+            onChange(e)
           }
-          if (onClick) {
-            onClick(e)
+          if (groupOnChange) {
+            groupOnChange(e)
           }
         }}
         onBlur={e => {
@@ -37,13 +46,14 @@ class RadioComp extends Component {
           if (onBlur) {
             onBlur(e)
           }
+          if (groupOnBlur) {
+            groupOnBlur(e)
+          }
         }}
         type="radio"
       />
     )
   }
 }
-
-const Radio = withField(RadioComp)
 
 export default Radio
