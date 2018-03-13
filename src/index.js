@@ -15,6 +15,7 @@ import Select from './components/form-fields/Select'
 import Checkbox from './components/form-fields/Checkbox'
 import RadioGroup from './components/form-fields/RadioGroup'
 import withRadioGroup from './components/withRadioGroup'
+import MultiSelect from './components/form-fields/MultiSelect'
 
 // These should move to a react-form-styled package
 // import StyledText from './components/styled-form-fields/Text'
@@ -40,4 +41,5 @@ export {
   withRadioGroup,
   FieldApi,
   withFieldApi,
+  MultiSelect
 }
