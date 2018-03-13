@@ -74,6 +74,9 @@ class Form extends Component {
     if (this.props.onChange && didUpdate) {
       this.props.onChange(newState(nextProps.formState), this.getFormApi())
     }
+    if (!Utils.isDeepEqual(nextProps.values, this.props.values)) {
+      this.setAllValues(nextProps.values)
+    }
   }
 
   getFormApi () {
@@ -242,7 +245,13 @@ class Form extends Component {
     })
   }
 
-  setAllValues = values => this.props.dispatch(actions.setAllValues(values))
+  setAllValues = (values = {}) =>
+    this.props.dispatch(
+      actions.setAllValues({
+        ...this.props.defaultValues,
+        ...values
+      })
+    )
 
   preValidateAll = () => {
     this.recurseUpAllNodes(node => {
@@ -451,7 +460,8 @@ Form.childContextTypes = {
 
 Form.defaultProps = {
   pure: true,
-  preventDefault: true
+  preventDefault: true,
+  defaultValues: {}
 }
 
 /* ---------- Container ---------- */
@@ -471,11 +481,12 @@ class ReactForm extends Component {
   constructor (props) {
     super(props)
 
-    const { defaultValues } = props
+    const { defaultValues, values } = props
 
     this.store = createStore(
       BuildReducer({
-        defaultValues
+        defaultValues,
+        values
       }),
       applyMiddleware(
         thunkMiddleware // lets us dispatch() functions
