@@ -12,4 +12,3 @@ node_modules
 .idea
 .gitconfig
 .DS_Store
-demo/dist/index.html

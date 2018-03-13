@@ -7,6 +7,9 @@ import { makeNode } from '../utils/Tree'
 //
 
 class NestedField extends React.Component {
+  static defaultProps = {
+    defaultValues: {}
+  }
   getChildContext () {
     return {
       // Any children are now within the context of this nestedField
@@ -59,20 +62,24 @@ class NestedField extends React.Component {
       getFullField: field => [fullField, field]
     }
 
+    const proxySubField = method => (subField, ...args) =>
+      method([fullField, subField].filter(Boolean), ...args)
+
     // Set up the node's field-level api
     this.fieldApi = {
-      getValue: () => formApi.setValue(fullField),
-      setValue: value => formApi.setValue(fullField, value),
-      setTouched: touched => formApi.setTouched(fullField, touched),
-      setError: error => formApi.setError(fullField, error),
-      setWarning: warning => formApi.setWarning(fullField, warning),
-      setSuccess: success => formApi.setSuccess(fullField, success),
-      addValue: (subField, value) => formApi.addValue([fullField, subField].filter(Boolean), value),
-      removeValue: (subField, index) =>
-        formApi.addValue([fullField, subField].filter(Boolean), index),
-      swapValues: (subField, ...args) =>
-        formApi.addValue([fullField, subField].filter(Boolean), ...args),
-      reset: () => formApi.reset(fullField),
+      // Most of these methods should act just like the form api methods,
+      // since a nested field operates on multiple fields, not a single
+      // field
+      getValue: proxySubField(formApi.setValue),
+      setValue: proxySubField(formApi.setValue),
+      setTouched: proxySubField(formApi.setTouched),
+      setError: proxySubField(formApi.setError),
+      setWarning: proxySubField(formApi.setWarning),
+      setSuccess: proxySubField(formApi.setSuccess),
+      addValue: proxySubField(formApi.addValue),
+      removeValue: proxySubField(formApi.removeValue),
+      swapValues: proxySubField(formApi.swapValues),
+      reset: proxySubField(formApi.reset),
       validatingField: () => formApi.validatingField(fullField),
       doneValidatingField: () => formApi.doneValidatingField(fullField),
       validate: opts => formApi.validate(fullField, opts),
@@ -109,14 +116,14 @@ class NestedField extends React.Component {
 
     const inlineProps = {
       ...rest,
-      ...this.formApi,
+      ...this.fieldApi,
       ...this.getFieldValues()
     }
 
     const componentProps = {
       ...rest,
       fieldApi: {
-        ...this.formApi,
+        ...this.fieldApi,
         ...this.getFieldValues()
       }
     }
