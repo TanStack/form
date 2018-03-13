@@ -81,7 +81,7 @@ class NestedField extends React.Component {
     // define function to generate field values
     this.getFieldValues = () => ({
       fieldName: fullField,
-      value: formApi.getValue(fullField),
+      values: formApi.getValue(fullField),
       touched: formApi.getTouched(fullField),
       error: formApi.getError(fullField),
       warning: formApi.getWarning(fullField),
