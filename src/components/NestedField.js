@@ -78,6 +78,16 @@ class NestedField extends React.Component {
       asyncValidate: opts => formApi.asyncValidate(fullField, opts)
     }
 
+    // define function to generate field values
+    this.getFieldValues = () => ({
+      fieldName: fullField,
+      value: formApi.getValue(fullField),
+      touched: formApi.getTouched(fullField),
+      error: formApi.getError(fullField),
+      warning: formApi.getWarning(fullField),
+      success: formApi.getSuccess(fullField)
+    })
+
     // Build our node
     this.node = makeNode({
       ...this.node,
@@ -97,12 +107,16 @@ class NestedField extends React.Component {
 
     const inlineProps = {
       ...rest,
-      ...this.formApi
+      ...this.formApi,
+      ...this.getFieldValues()
     }
 
     const componentProps = {
       ...rest,
-      fieldApi: this.formApi
+      fieldApi: {
+        ...this.formApi,
+        ...this.getFieldValues()
+      }
     }
 
     if (component) {
