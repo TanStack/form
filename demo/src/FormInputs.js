@@ -437,6 +437,44 @@ OR{'\n'}
 )
 
 
+
+
+/* ------------------------------- Input Props ----------------------------- */
+
+const SelectProps = () => (
+  <div>
+    <h3 className="mb-4">Select Props</h3>
+    <table className="table" style={{ tableLayout: 'fixed' }}>
+      <thead className="thead-inverse">
+        <tr>
+          <th style={{ width: '180px' }}>Name</th>
+          <th style={{ width: '100px' }}>Type</th>
+          <th style={{ width: '100px' }}>Required</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">
+            <code>placeholder</code>
+          </th>
+          <td>
+            <pre>string</pre>
+            <pre>false</pre>
+          </td>
+          <td>no</td>
+          <td>
+            You can override the default placeholder by passing in a string for
+            the placeholder. If you dont want a placeholder at all then simply pass
+            <code>placeholder={'{false}'}</code>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+)
+
+
 /* ------------------------------- Form Inputs ----------------------------- */
 
 class FormInputs extends Component {
@@ -471,6 +509,8 @@ class FormInputs extends Component {
         <CheckboxInput />
         <hr />
         <SelectInput />
+        <br />
+        <SelectProps />
         <hr />
         <DisabledTextInput />
       </div>
