@@ -13,6 +13,12 @@ describe('RadioButton', () => {
     sandbox.restore()
   })
 
+  it('should pass value to the vanilla input', () => {
+    const wrapper = mount(<Radio id="radio-example-yes" value="yes" radioGroup={{}} />)
+    const input = wrapper.find('input').at(0)
+    expect(input.prop('value')).to.equal('yes')
+  })
+
   it('should update value when user clicks radio', () => {
     let savedApi
     const wrapper = mount(
