@@ -313,6 +313,13 @@ class Form extends Component {
         value: [...fieldTouched.slice(0, index), ...fieldTouched.slice(index + 1)]
       })
     )
+    const fieldError = Utils.get(this.props.formState.errors, field) || []
+    this.props.dispatch(
+      actions.setError({
+        field,
+        value: [...fieldError.slice(0, index), ...fieldError.slice(index + 1)]
+      })
+    )
   }
 
   swapValues = (field, index, destIndex) => {
