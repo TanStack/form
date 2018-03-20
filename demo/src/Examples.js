@@ -19,6 +19,7 @@ import MainContent from './MainContent'
 import DynamicForms from './DynamicForms'
 import ArrayOfNestedFields from './ArrayOfNestedFields'
 import Tester from './Tester'
+import MultiSelectExample from "./MultiSelectExample";
 
 class Examples extends Component {
   render () {
@@ -66,6 +67,9 @@ class Examples extends Component {
               <Link to="/nested-async" className="nav-link">
                 Nested async validation
               </Link>
+              <Link to="/multi-select" className="nav-link">
+                Multi-Select
+              </Link>
               {/* <Link to="/big-complex" className="nav-link">
                 Big complex form
               </Link> */}
@@ -96,6 +100,7 @@ class Examples extends Component {
               <Route exact path="/big-complex" component={BigComplexForm} />
               <Route exact path="/tester" component={Tester} />
               <Route exact path="/hoc" component={HighOrderComponents} />
+              <Route exact path="/multi-select" component={MultiSelectExample} />
             </MainContent>
           </div>
         </div>
