@@ -30,6 +30,7 @@ class Radio extends Component {
     return (
       <input
         {...rest}
+        value={value}
         checked={groupValue === value}
         onChange={e => {
           if (!e.target.checked) {
