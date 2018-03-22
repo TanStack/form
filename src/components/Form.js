@@ -115,7 +115,7 @@ class Form extends Component {
 
   getFormState = () => newState(this.props.formState)
 
-  recurseUpFromNode = (field, cb) => {
+  recurseUpFromNode = (field, cb, sync) => {
     // Find the node using the field
     const target = this.tree.getNodeByField(field, { closest: true })
 
@@ -125,14 +125,23 @@ class Form extends Component {
     }
 
     // Define recur function
-    const recurse = async node => {
-      // Call the cb with the node
-      await cb(node)
-      // If we have parent recur up
-      if (node.parent) {
-        recurse(node.parent)
+    const recurse = sync
+      ? node => {
+        // Call the cb with the node
+        cb(node)
+        // If we have parent recur up
+        if (node.parent) {
+          recurse(node.parent)
+        }
       }
-    }
+      : async node => {
+        // Call the cb with the node
+        await cb(node)
+        // If we have parent recur up
+        if (node.parent) {
+          recurse(node.parent)
+        }
+      }
 
     // start recursion from the target
     try {
