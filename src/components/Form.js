@@ -361,7 +361,10 @@ class Form extends Component {
 
   register = node => this.tree.addNode(node)
 
-  deregister = node => this.tree.removeNode(node)
+  deregister = node => {
+    this.tree.removeNode(node)
+    this.reset(node.fullField)
+  }
 
   reset = field => {
     this.props.dispatch(actions.reset({ field }))
