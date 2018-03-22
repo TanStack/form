@@ -10,6 +10,7 @@ class NestedField extends React.Component {
   static defaultProps = {
     defaultValues: {}
   }
+
   getChildContext () {
     return {
       // Any children are now within the context of this nestedField
@@ -23,8 +24,8 @@ class NestedField extends React.Component {
     const { defaultValues } = this.props
     this.buildApi(this.props)
 
-    if (typeof defaultValues !== 'undefined' && typeof this.fieldApi.getValue() === 'undefined') {
-      this.fieldApi.setValue(defaultValues)
+    if (typeof this.fieldApi.getValue() === 'undefined') {
+      this.fieldApi.setValue(undefined, defaultValues)
     }
   }
 
