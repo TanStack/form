@@ -228,25 +228,27 @@ class Form extends Component {
       actions.asyncValidate({
         field,
         validator: asyncValidate,
-        validationPromiseIDs: this.validationPromiseIDs
+        validationPromiseIDs: this.validationPromiseIDs,
       })
     )
   }
 
-  // TODO: array syntax does not work well here
-  setAllTouched = () => {
+  setAllTouched = async () => {
+    let touched = {}
     // Set touched is unique because we dont want to set touched on nested fields
     // We also dont want to call the internal setTouched because that would
     // Execute validation.
-    this.recurseUpAllNodes(node => {
+    await this.recurseUpAllNodes(node => {
       if (node.nested) {
         return
       }
       if (node.fullField) {
-        this.props.dispatch(actions.setTouched({ field: node.fullField, value: true }))
+        touched = Utils.set(touched, node.fullField, true)
       }
     })
+    this.props.dispatch(actions.setAllTouched(touched))
   }
+
 
   setAllValues = values => this.props.dispatch(actions.setAllValues(values))
 
