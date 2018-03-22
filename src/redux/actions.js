@@ -55,6 +55,11 @@ export function preValidate ({ field, validator }) {
     if (validator && validator !== Utils.noop) {
       // Call the validation function
       const result = validator(Utils.get(getState().values, field))
+      if (typeof result === 'undefined') {
+        console.info(
+          `You have returned undefined from preValidate for the field: ${field.toString()}. If this was intentional, disregard this message.`
+        )
+      }
       dispatch(setValue({ field, value: result }))
     }
   }
@@ -67,7 +72,6 @@ export function validate ({ field, validator }) {
       const result = validator(Utils.get(getState().values, field))
 
       const recurse = (current, path) => {
-
         // Normalize fieldPath
         path = Utils.makePathArray(path)
 
