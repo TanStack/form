@@ -146,7 +146,8 @@ const ExampleForm = () => (
 ```
 
 ### Examples & Documentation
-[Visit react-form.js.org](https://react-form.js.org) for examples and documentation for **2.x.x** of React-Form.
+[Visit react-form.js.org](https://react-form.js.org) for examples and documentation for **3.x.x** of React-Form.
 
 Older versions:
+* [Version 2.x.x](https://dazzling-keller-a8107a.netlify.com)
 * [Version 1.x.x](https://github.com/react-tools/react-form/tree/v1.3.0)

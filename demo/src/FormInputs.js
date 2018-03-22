@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 
 /* ------------- Form  Library Imports -------------- */
-import { Form, Text, Radio, TextArea, Select, Checkbox } from '../../src/'
+import { Form, Text, Radio, RadioGroup, TextArea, Select, Checkbox } from '../../src/'
 
 /* ---------------- Other Imports ------------------ */
 
@@ -150,15 +150,17 @@ const TextAreaInput = () => (
 /* ------------------------------- Radio Input ----------------------------- */
 
 const radioInputCode = `
-import { Form, Radio } from 'react-form';
+import { Form, Radio, RadioGroup } from 'react-form';
 
 <Form>
   {formApi => (
     <form onSubmit={formApi.submitForm} id="radio-input-form">
-      <label htmlFor="radio-input-male" className="mr-2">Male</label>
-      <Radio field="gender" value="male" id="radio-input-male" />
-      <label htmlFor="radio-input-female" className="mr-2">Female</label>
-      <Radio field="gender" value="female" id="radio-input-female" />
+      <RadioGroup field="gender">
+        <label htmlFor="radio-input-male" className="mr-2">Male</label>
+        <Radio value="male" id="radio-input-male" />
+        <label htmlFor="radio-input-female" className="mr-2">Female</label>
+        <Radio value="female" id="radio-input-female" />
+      </RadioGroup>
       <button type="submit" className="mb-4 btn btn-primary">
         Submit
       </button>
@@ -172,10 +174,12 @@ const RadioInput = () => (
     <Form>
       {formApi => (
         <form onSubmit={formApi.submitForm} id="radio-input-form">
-          <label htmlFor="radio-input-male" className="mr-2">Male</label>
-          <Radio field="gender" value="male" id="radio-input-male" />
-          <label htmlFor="radio-input-female" className="mr-2">Female</label>
-          <Radio field="gender" value="female" id="radio-input-female" />
+          <RadioGroup field="gender">
+            <label htmlFor="radio-input-male" className="mr-2">Male</label>
+            <Radio value="male" id="radio-input-male" />
+            <label htmlFor="radio-input-female" className="mr-2">Female</label>
+            <Radio value="female" id="radio-input-female" />
+          </RadioGroup>
           <button type="submit" className="mb-4 btn btn-primary">
             Submit
           </button>
@@ -229,6 +233,21 @@ const CheckboxInput = () => (
 
 const selectInputCode = `
 import { Form, Select } from 'react-form';
+
+const statusOptions = [
+  {
+    label: 'Single',
+    value: 'single',
+  },
+  {
+    label: 'In a Relationship',
+    value: 'relationship',
+  },
+  {
+    label: "It's Complicated",
+    value: 'complicated',
+  },
+]
 
 <Form>
   {formApi => (
@@ -418,6 +437,44 @@ OR{'\n'}
 )
 
 
+
+
+/* ------------------------------- Input Props ----------------------------- */
+
+const SelectProps = () => (
+  <div>
+    <h3 className="mb-4">Select Props</h3>
+    <table className="table" style={{ tableLayout: 'fixed' }}>
+      <thead className="thead-inverse">
+        <tr>
+          <th style={{ width: '180px' }}>Name</th>
+          <th style={{ width: '100px' }}>Type</th>
+          <th style={{ width: '100px' }}>Required</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">
+            <code>placeholder</code>
+          </th>
+          <td>
+            <pre>string</pre>
+            <pre>false</pre>
+          </td>
+          <td>no</td>
+          <td>
+            You can override the default placeholder by passing in a string for
+            the placeholder. If you dont want a placeholder at all then simply pass
+            <code>placeholder={'{false}'}</code>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+)
+
+
 /* ------------------------------- Form Inputs ----------------------------- */
 
 class FormInputs extends Component {
@@ -452,6 +509,8 @@ class FormInputs extends Component {
         <CheckboxInput />
         <hr />
         <SelectInput />
+        <br />
+        <SelectProps />
         <hr />
         <DisabledTextInput />
       </div>

@@ -107,7 +107,8 @@ class Form extends Component {
       asyncValidate: this.asyncValidate,
       validate: this.validate,
       preValidate: this.preValidate,
-      getFullField: this.getFullField
+      getFullField: this.getFullField,
+      getNodeByField: this.getNodeByField,
     }
   }
 
@@ -174,6 +175,11 @@ class Form extends Component {
   getFieldProps = field => {
     const node = field ? this.tree.getNodeByField(field) || makeNode() : this.node
     return node.getProps()
+  }
+
+  getNodeByField = field => {
+    const node = this.tree.getNodeByField(field)
+    return node
   }
 
   // Public Api

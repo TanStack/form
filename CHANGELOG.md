@@ -9,7 +9,6 @@
 
 #### Breaking Changes
 - `Field` is now a render-prop component, not an HOC. You can either directly replace it with the `withFormField` HOC, or adopt the inline FAAC format.
-- All `RadioGroup` components have been deprecated in favor of using the `field` prop directly on any `Radio` components.
 - `Form`'s '`dontValidateOnMount` is now `validatedOnMount` and defaults to false. If you want to validate on mount, use the `validateOnMount` prop.
 - Polyfills for `Array.find`, `Array.findIndex` and `Array.includes` are no longer provided with the library. If your target browsers do not support these methods, please manually include a polyfill for these methods in your app.
 - The `fieldApi` prop continues to be available, but only when using HOC or FAAC-component-prop syntaxes. When using the FAAC render prop or child-as-a-function syntax's, the `fieldApi` object is directly spread into the render and child-as-a-function's main prop parameter.

@@ -15,7 +15,7 @@ class SelectWrapper extends Component {
       ...rest
     } = this.props
 
-    const resolvedOptions = options.find(d => d.value === '')
+    const resolvedOptions = options.find(d => d.value === '') || placeholder === false
       ? options
       : [
         {

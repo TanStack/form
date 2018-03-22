@@ -5,7 +5,7 @@ import { HashRouter as Router, Route, NavLink as Link } from 'react-router-dom'
 /* ------------- Form  Library Imports -------------- */
 import BasicForm from './BasicForm'
 import FormInputs from './FormInputs'
-import StyledForm from './StyledForm'
+import HighOrderComponents from './HighOrderComponents'
 import NestedFieldExample from './NestedFieldExample'
 import FormWithArrays from './FormWithArrays'
 import FieldSyntax from './FieldSyntax'
@@ -57,6 +57,9 @@ class Examples extends Component {
               <Link to="/custom-input" className="nav-link">
                 Custom inputs
               </Link>
+              <Link to="/hoc" className="nav-link">
+                Higher-Order Components
+              </Link>
               <Link to="/async-validation" className="nav-link">
                 Async validation
               </Link>
@@ -92,6 +95,7 @@ class Examples extends Component {
               <Route exact path="/nested-async" component={NestedAsyncValidation} />
               <Route exact path="/big-complex" component={BigComplexForm} />
               <Route exact path="/tester" component={Tester} />
+              <Route exact path="/hoc" component={HighOrderComponents} />
             </MainContent>
           </div>
         </div>

@@ -98,7 +98,7 @@ class Field extends React.Component {
       doneValidatingField: () => formApi.doneValidatingField(fullField),
       validate: opts => formApi.validate(fullField, opts),
       preValidate: opts => formApi.preValidate(fullField, opts),
-      asyncValidate: opts => formApi.asyncValidate(fullField, opts)
+      asyncValidate: opts => formApi.asyncValidate(fullField, opts),
     }
 
     // define function to generate field values
@@ -108,7 +108,7 @@ class Field extends React.Component {
       touched: formApi.getTouched(fullField),
       error: formApi.getError(fullField),
       warning: formApi.getWarning(fullField),
-      success: formApi.getSuccess(fullField)
+      success: formApi.getSuccess(fullField),
     })
 
     // Define the leaf node
@@ -116,7 +116,8 @@ class Field extends React.Component {
       field,
       fullField,
       api: this.fieldApi,
-      getProps: () => this.props
+      getState: this.getFieldValues,
+      getProps: () => this.props,
     }
 
     // Register field
