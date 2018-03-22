@@ -289,7 +289,19 @@ class Form extends Component {
     this.props.dispatch(actions.setFormState(formState))
   }
 
-  getTouched = field => Utils.get(this.props.formState.touched, field)
+  getTouched = field => {
+    let touched
+    this.recurseUpFromNode(
+      field,
+      node => {
+        if (!touched) {
+          touched = Utils.get(this.props.formState.touched, node.fullField)
+        }
+      },
+      true
+    )
+    return touched
+  }
 
   getValue = field => Utils.get(this.props.formState.values, field)
 
