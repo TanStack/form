@@ -71,7 +71,7 @@ class NestedField extends React.Component {
       // Most of these methods should act just like the form api methods,
       // since a nested field operates on multiple fields, not a single
       // field
-      getValue: proxySubField(formApi.setValue),
+      getValue: proxySubField(formApi.getValue),
       setValue: proxySubField(formApi.setValue),
       setTouched: proxySubField(formApi.setTouched),
       setError: proxySubField(formApi.setError),
