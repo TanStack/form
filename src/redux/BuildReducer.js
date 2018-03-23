@@ -48,7 +48,7 @@ const setValue = (state, { payload: { field, value } }) => {
   const newValues = Utils.set(Utils.clone(state.values), field, value)
   return {
     ...state,
-    values: newValues
+    values: newValues,
   }
 }
 
@@ -56,30 +56,27 @@ const setValue = (state, { payload: { field, value } }) => {
 // add a `setValues` method
 const setAllValues = (state, { payload: values }) => ({
   ...state,
-  values
+  values,
 })
 
 const setTouched = (state, { payload: { field, value } }) => {
   const newTouched = Utils.set(Utils.clone(state.touched), field, value, true)
   return {
     ...state,
-    touched: newTouched
+    touched: newTouched,
   }
 }
 
-const setAllTouched = (state, action) => {
-  const { payload: touched } = action
-  return {
-    ...state,
-    touched
-  }
-}
+const setAllTouched = (state, { payload: touched }) => ({
+  ...state,
+  touched,
+})
 
 const setError = (state, { payload: { field = '__root', value } }) => {
   const newErrors = Utils.cleanError(Utils.set(Utils.clone(state.errors), field, value, true))
   return {
     ...state,
-    errors: newErrors
+    errors: newErrors,
   }
 }
 

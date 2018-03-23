@@ -91,11 +91,19 @@ class NestedField extends React.Component {
     // define function to generate field values
     this.getFieldValues = () => ({
       fieldName: fullField,
+<<<<<<< HEAD
       values: formApi.getValue(fullField),
       touched: formApi.getTouched(fullField),
       error: formApi.getError(fullField),
       warning: formApi.getWarning(fullField),
       success: formApi.getSuccess(fullField)
+=======
+      value: formApi.getValue(fullField),
+      touched: formApi.getTouched(fullField),
+      error: formApi.getError(fullField),
+      warning: formApi.getWarning(fullField),
+      success: formApi.getSuccess(fullField),
+>>>>>>> master
     })
 
     // Build our node
@@ -105,7 +113,8 @@ class NestedField extends React.Component {
       field,
       fullField,
       api: this.fieldApi,
-      getProps: () => this.props
+      getState: this.getFieldValues,
+      getProps: () => this.props,
     })
 
     // We need to register our node after building the API
