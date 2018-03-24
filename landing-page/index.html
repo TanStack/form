@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>React Form Lander</title>
+    <link rel="stylesheet" href="css/prism.css">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <header>
+      <div class="container flex flex-sm align-items-center justify-content-center">
+        <div class="logo">
+          <div class="logo__mark">
+            <div class="logo__mark__input logo__mark__input--first"></div>
+            <div class="logo__mark__input logo__mark__input--second"></div>
+            <div class="logo__mark__input logo__mark__input--third"></div>
+            <div class="logo__mark__input logo__mark__input--fourth"></div>
+          </div>
+          <div class="logo-type">
+            React <span>Form</span>
+          </div>
+        </div>
+        <nav class="nav">
+          <a class="nav__link" href="#">Tutorial</a>
+          <a class="nav__link" href="#">Documentation</a>
+          <a class="nav__link nav__link__icon" href="#">
+            <i class="fab fa-github fa-lg"></i>
+            <span>v2.16.1</span>
+          </a>
+        </nav>
+      </div>
+      <div class="hero container flex">
+        <div class="hero__cta">
+          <h1 class="hero__heading">React Form</h1>
+          <p class="hero__text">Say hello to the best react form library you will ever use.</p>
+          <div class="button-group">
+            <a class="button button--primary text-center" href="#">Get Started</a>
+            <a class="button button--primary text-center" href="#">Read the Docs</a>
+          </div>
+        </div>
+        <div class="hero__animation">
+          <div class="browser">
+            <div class="browser__head">
+              <div class="browser__buttons">
+                <div class="browser__button browser__button--close"></div>
+                <div class="browser__button browser__button--minimize"></div>
+                <div class="browser__button browser__button--maximize"></div>
+              </div>
+              <div class="browser__url-bar"></div>
+              <div class="browser__options">
+                <div class="browser__option-bar"></div>
+                <div class="browser__option-bar"></div>
+                <div class="browser__option-bar"></div>
+              </div>
+            </div>
+            <div class="browser__viewport">
+              <div class="flex">
+                <div class="half mr-small">
+                  <div class="browser__image"></div>
+                  <div class="browser__text"></div>
+                  <div class="browser__text"></div>
+                  <div class="browser__text"></div>
+                </div>
+                <div class="half flex-column">
+                  <div class="browser__form-input"></div>
+                  <div class="browser__form-input"></div>
+                  <div class="browser__form-input"></div>
+                  <div class="browser__form-input browser__form-input--button third"></div>
+                </div>
+              </div>
+              <div class="flex">
+                <div class="browser__two-col third mr-small">
+                  <div class="browser__image browser__image__small"></div>
+                  <div class="browser__text"></div>
+                  <div class="browser__text"></div>
+                  <div class="browser__text"></div>
+                </div>
+                <div class="browser__two-col third mr-small">
+                  <div class="browser__image browser__image__small"></div>
+                  <div class="browser__text"></div>
+                  <div class="browser__text"></div>
+                  <div class="browser__text"></div>
+                </div>
+                <div class="browser__two-col third">
+                  <div class="browser__image browser__image__small"></div>
+                  <div class="browser__text"></div>
+                  <div class="browser__text"></div>
+                  <div class="browser__text"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-components">
+            <div class="form-component slide">
+              <div class="form-component__icon--input"></div>
+              <div class="form-component__text">
+                Input
+              </div>
+            </div>
+            <div class="form-component slide">
+              <div class="form-component__icon--input"></div>
+              <div class="form-component__text">
+                Input
+              </div>
+            </div>
+            <div class="form-component slide">
+              <div class="form-component__icon--input"></div>
+              <div class="form-component__text">
+                Input
+              </div>
+            </div>
+            <div class="form-component slide">
+              <div class="form-component__icon--button"></div>
+              <div class="form-component__text">
+                Button
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="container">
+      <div class="text-center">
+        <h2>Building Forms in React has never been faster</h2>
+        <p>
+          React Form is an extensive, simple and efficient solution for
+          creating basic to complex forms in React. Out of the box you get
+          the ability to grab and manipulate values, set validation (errors, warnings
+          and successes), customize your inputs, perform asynchronous validation
+          and much more!
+        </p>
+      </div>
+      <hr />
+      <h3>Basic Setup</h3>
+      <p>
+        Hop into your existing React project and install React Form. New to React?
+        <a href="https://reactjs.org/docs/hello-world.html">Don't fret!</a>
+      </p>
+      <pre class="language-bash"><code>npm i react-form</code></pre>
+      <h3>A Simple Form</h3>
+      <span>index.js</span>
+      <script type="text/plain" class="language-jsx">import {
+  Form,
+  Text
+} from 'react-form';
+
+class SimpleForm extends Component {
+  constructor( props ) {
+    super(props);
+    this.state = {};
+  }
+  render() {
+    return (
+      <div>
+        <Form onSubmit={submittedValues => this.setState({ submittedValues })}>
+          {formApi => (
+            <form onSubmit={formApi.submitForm} id="form2">
+              <label htmlFor="firstName">First name</label>
+              <Text field="firstName" id="firstName" />
+              <label htmlFor="lastName">Last name</label>
+              <Text field="lastName" id="lastName" />
+              <button type="submit">Submit</button>
+            </form>
+          )}
+        </Form>
+      </div>
+    );
+  }
+}</script>
+    </div>
+    <footer>
+      <div class="container flex align-items-center flex-column-mobile">
+        <div class="copyright-container flex align-items-center">
+          <div class="logo__mark mr-small">
+            <div class="logo__mark__input logo__mark__input--first"></div>
+            <div class="logo__mark__input logo__mark__input--second"></div>
+            <div class="logo__mark__input logo__mark__input--third"></div>
+            <div class="logo__mark__input logo__mark__input--fourth"></div>
+          </div>
+          <small class="copyright">&copy;</small>
+        </div>
+        <div class="contributors flex align-items-center flex-column-mobile">
+          <small class="mr-small-desktop">Contributors</small>
+          <div class="contributor-links">
+            <a class="no-hover" href="https://github.com/joepuzzo">
+              <img class="contributors__image mr-small" src="assets/puzzo.png" />
+            </a>
+            <a class="no-hover" href="https://github.com/tannerlinsley">
+              <img class="contributors__image" src="assets/tanner.jpeg" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <script src="js/prism.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
