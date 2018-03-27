@@ -67,8 +67,7 @@ export function preValidate ({ field, validator }) {
 
 export function validate ({ field, validator }) {
   return (dispatch, getState) => {
-    const hasChildErrors = Utils.isObject(Utils.get(getState().errors, field))
-    if (!validator || validator === Utils.noop || hasChildErrors) {
+    if (!validator || validator === Utils.noop) {
       return
     }
     // Call the validation function and clean the result
@@ -114,14 +113,15 @@ export function validate ({ field, validator }) {
 
     // Recurse to set all errors
     recurse(result, field)
+
+    return Utils.cleanError(result, { removeSuccess: true })
   }
 }
 
 export function asyncValidate ({ field, validator, validationPromiseIDs }) {
   return async (dispatch, getState) => {
-    const hasChildErrors = Utils.get(getState().errors, field)
     // Only validate if syncronous validation does not exist and there is a validator
-    if (!validator || validator === Utils.noop || hasChildErrors) {
+    if (!validator || validator === Utils.noop) {
       return
     }
     // We are validating the specified field
@@ -133,9 +133,11 @@ export function asyncValidate ({ field, validator, validationPromiseIDs }) {
     const uid = (validationPromiseIDs.get(fieldPathArray) || 0) + 1
     validationPromiseIDs.set(fieldPathArray, uid)
 
+    let result
+
     try {
       // Call the asyncrounous validation function
-      const result = await validator(Utils.get(getState().values, field))
+      result = await validator(Utils.get(getState().values, field))
 
       if (validationPromiseIDs.get(fieldPathArray) !== uid) {
         // If the promise ID doesn't match we we originally sent, it means a
@@ -187,10 +189,14 @@ export function asyncValidate ({ field, validator, validationPromiseIDs }) {
       dispatch(validationSuccess(field))
     } catch (err) {
       // An validation error happened!
+      // Set the error result to true to stop further validation up the chain
+      result = true
       dispatch(validationFailure({ field, value: err }))
     }
 
     // Mark the field as done validating
     dispatch(doneValidatingField(field))
+
+    return Utils.cleanError(result, { removeSuccess: true })
   }
 }
