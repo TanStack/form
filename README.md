@@ -28,7 +28,7 @@ Sign up for the [React-Tools Slack Org](https://react-chat-signup.herokuapp.com/
 
 ### Basic Usage
 ```javascript
-import { Form, Text, Radio, TextArea, Checkbox } from 'react-form';
+import { Form, Text, Radio, RadioGroup, TextArea, Checkbox } from 'react-form';
 
 const ExampleForm = () => (
   <Form render={({
@@ -37,14 +37,10 @@ const ExampleForm = () => (
     <form onSubmit={submitForm}>
       <Text field="firstName" placeholder='First Name' />
       <Text field="lastName" placeholder='Last Name' />
-      <div>
-        <label>
-          Male <Radio field='gender' value="male" />
-        </label>
-        <label>
-          Female <Radio field='gender' value="female" />
-        </label>
-      </div>
+      <RadioGroup field="gender">
+        <Radio value="male" />
+        <Radio value="female" />
+      </RadioGroup>
       <TextArea field="bio" />
       <Checkbox field="agreesToTerms" />
       <button type="submit">Submit</button>
