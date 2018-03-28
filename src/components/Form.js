@@ -108,7 +108,7 @@ class Form extends Component {
       validate: this.validate,
       preValidate: this.preValidate,
       getFullField: this.getFullField,
-      getNodeByField: this.getNodeByField,
+      getNodeByField: this.getNodeByField
     }
   }
 
@@ -116,7 +116,7 @@ class Form extends Component {
 
   getFormState = () => newState(this.props.formState)
 
-  recurseUpFromNode = (field, cb, sync) => {
+  recurseUpFromNode = (field, cb, isAsync) => {
     // Find the node using the field
     const target = this.tree.getNodeByField(field, { closest: true })
 
@@ -125,21 +125,26 @@ class Form extends Component {
       return
     }
 
+    let stopped = false
+    const stop = () => {
+      stopped = true
+    }
+
     // Define recur function
-    const recurse = sync
-      ? node => {
+    const recurse = isAsync
+      ? async node => {
         // Call the cb with the node
-        cb(node)
+        await cb(node, stop)
         // If we have parent recur up
-        if (node.parent) {
+        if (!stopped && node.parent) {
           recurse(node.parent)
         }
       }
-      : async node => {
+      : node => {
         // Call the cb with the node
-        await cb(node)
+        cb(node, stop)
         // If we have parent recur up
-        if (node.parent) {
+        if (!stopped && node.parent) {
           recurse(node.parent)
         }
       }
@@ -153,23 +158,28 @@ class Form extends Component {
   }
 
   recurseUpAllNodes = cb => {
-    // Define recur function
+    // Define recurse function
 
-    const recurse = async node => {
+    const recurse = async (node, parentStop) => {
+      let stopped = false
+      const stop = () => {
+        stopped = true
+      }
       // If we have children recurse down
       if (node.children) {
-        await Promise.all(Utils.mapObject(node.children, recurse))
+        await Promise.all(Utils.mapObject(node.children, d => recurse(d, stop)))
       }
-      // Call the cb with the node
-      await cb(node)
+      if (stopped) {
+        // If stopped, propagate up
+        parentStop()
+      } else {
+        // Call the cb with the node
+        await cb(node, parentStop)
+      }
     }
 
     // start recursion from the target
-    try {
-      return recurse(this.node)
-    } catch (err) {
-      throw err
-    }
+    return recurse(this.node, () => {})
   }
 
   getFieldProps = field => {
@@ -187,17 +197,13 @@ class Form extends Component {
   setValue = (field, value) => {
     this.props.dispatch(actions.setValue({ field, value }))
     // Validate up the tree
-    this.recurseUpFromNode(field, node => node.api.preValidate())
-    this.recurseUpFromNode(field, node => node.api.validate())
-    this.recurseUpFromNode(field, node => node.api.asyncValidate())
+    this.validateUpFromNode(field)
   }
 
   setTouched = (field, value = true) => {
     this.props.dispatch(actions.setTouched({ field, value }))
     // Validate up the tree
-    this.recurseUpFromNode(field, node => node.api.preValidate())
-    this.recurseUpFromNode(field, node => node.api.validate())
-    this.recurseUpFromNode(field, node => node.api.asyncValidate())
+    this.validateUpFromNode(field)
   }
 
   setError = (field, value) => {
@@ -227,16 +233,16 @@ class Form extends Component {
     if (validate === Utils.noop || (!opts.submitting && this.props.validateOnSubmit)) {
       return
     }
-    this.props.dispatch(actions.validate({ field, validator: validate }))
+    return this.props.dispatch(actions.validate({ field, validator: validate }))
   }
 
-  asyncValidate = (field, opts = {}) => {
+  asyncValidate = async (field, opts = {}) => {
     // Get the asyncValidate prop from the field node
     const { asyncValidate } = this.getFieldProps(field)
     if (asyncValidate === Utils.noop || (!opts.submitting && this.props.validateOnSubmit)) {
       return
     }
-    this.props.dispatch(
+    return this.props.dispatch(
       actions.asyncValidate({
         field,
         validator: asyncValidate,
@@ -244,6 +250,35 @@ class Form extends Component {
       })
     )
   }
+
+  validateUpFromNode = field => {
+    // comboValidate all fields up from the node
+    this.recurseUpFromNode(field, node => node.api.preValidate())
+    this.recurseUpFromNode(field, (node, stop) => {
+      // If a validation causes an error, stop all parent validation
+      if (node.api.validate()) {
+        stop()
+      }
+    })
+    this.recurseUpFromNode(
+      field,
+      async (node, stop) => {
+        if (await node.api.asyncValidate()) {
+          stop()
+        }
+      },
+      true
+    )
+  }
+
+  setAllValues = (values = {}) =>
+    this.props.dispatch(
+      actions.setAllValues({
+        ...this.props.defaultValues,
+        ...values
+      })
+    )
+
 
   setAllTouched = async () => {
     let touched = {}
@@ -261,14 +296,6 @@ class Form extends Component {
     this.props.dispatch(actions.setAllTouched(touched))
   }
 
-  setAllValues = (values = {}) =>
-    this.props.dispatch(
-      actions.setAllValues({
-        ...this.props.defaultValues,
-        ...values
-      })
-    )
-
   preValidateAll = () => {
     this.recurseUpAllNodes(node => {
       if (node.api.preValidate) {
@@ -277,18 +304,22 @@ class Form extends Component {
     })
   }
 
-  validateAll = () => {
-    this.recurseUpAllNodes(node => {
+  validateAll = () =>
+    this.recurseUpAllNodes((node, stop) => {
       if (node.api.validate) {
-        node.api.validate({ submitting: true })
+        // Stop all parent validation if error is encountered
+        if (node.api.validate({ submitting: true })) {
+          stop()
+        }
       }
     })
-  }
 
   asyncValidateAll = () =>
-    this.recurseUpAllNodes(node => {
+    this.recurseUpAllNodes(async (node, stop) => {
       if (node.api.asyncValidate) {
-        return node.api.asyncValidate({ submitting: true })
+        if (await node.api.asyncValidate({ submitting: true })) {
+          stop()
+        }
       }
     })
 
@@ -298,15 +329,11 @@ class Form extends Component {
 
   getTouched = field => {
     let touched
-    this.recurseUpFromNode(
-      field,
-      node => {
-        if (!touched) {
-          touched = Utils.get(this.props.formState.touched, node.fullField)
-        }
-      },
-      true
-    )
+    this.recurseUpFromNode(field, node => {
+      if (!touched) {
+        touched = Utils.get(this.props.formState.touched, node.fullField)
+      }
+    })
     return touched
   }
 
@@ -370,7 +397,6 @@ class Form extends Component {
 
   deregister = node => {
     this.tree.removeNode(node)
-    this.reset(node.fullField)
   }
 
   reset = field => {

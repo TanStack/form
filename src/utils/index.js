@@ -176,13 +176,16 @@ function mapObject (obj, cb) {
   return Object.keys(obj).map(key => cb(obj[key], key))
 }
 
-function cleanError (obj) {
+function cleanError (obj, { removeSuccess } = {}) {
   if (!obj) {
     return undefined
   }
   if (isObject(obj)) {
     mapObject(obj, (val, key) => {
       obj[key] = cleanError(obj[key]) // clean nested objects
+      if (removeSuccess && key === 'success') {
+        delete obj[key]
+      }
       if (!obj[key]) {
         delete obj[key] // remove falsey keys
       }
