@@ -228,7 +228,7 @@ const reset = (state, { payload: { field = '__root' } }) => {
 
 //
 
-export default function BuildReducer ({ defaultValues = {}, values = {} }) {
+export default function BuildReducer ({ defaultValues = {}, values = {} } = {}) {
   const COMBINED_INITIAL_STATE = {
     ...INITIAL_STATE,
     values: {

@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 
 /* ------------- Form  Library Imports -------------- */
-import { Form, Text, NestedField } from '../../src/'
+import { Form, Text, NestedField, withFieldApi } from '../../src/'
 
 /* ---------------- Other Imports ------------------ */
 
@@ -73,6 +73,16 @@ const NestedFormCode = () => {
   )
 }
 
+const AButton =({ fieldApi }) => {
+  return (
+    <button type="button" className="mb-4 btn btn-primary" onClick={()=>fieldApi.setValue({color: 'blue'})}>
+      ASDF
+    </button>
+  )
+}
+
+const AButtonWithFieldApi = withFieldApi('questions')(AButton)
+
 class NestedFormExample extends Component {
   constructor (props) {
     super(props)
@@ -112,6 +122,7 @@ class NestedFormExample extends Component {
                 <button type="submit" className="mb-4 btn btn-primary">
                   Submit
                 </button>
+                <AButtonWithFieldApi />
               </form>
               <br />
               <Data title="Values" reference="formApi.values" data={formApi.values} />
