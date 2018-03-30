@@ -224,7 +224,7 @@ class Form extends Component {
     if (asyncValidate === Utils.noop || (!opts.submitting && this.props.validateOnSubmit)) {
       return
     }
-    this.props.dispatch(
+    return this.props.dispatch(
       actions.asyncValidate({
         field,
         validator: asyncValidate,
