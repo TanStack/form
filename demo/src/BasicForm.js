@@ -13,7 +13,7 @@ import Code from './Code'
 
 const BasicFormCode = () => {
   const code = `
-  import { Form, Text, Radio, RadioGroup, Select, Checkbox } from 'react-form';
+  import { Form, Text, TextArea, Radio, RadioGroup, Select, Checkbox } from 'react-form';
 
   const statusOptions = [
     {
