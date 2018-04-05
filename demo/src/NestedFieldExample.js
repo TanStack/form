@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 
 /* ------------- Form  Library Imports -------------- */
-import { Form, Text, NestedField } from '../../src/'
+import { Form, Text, NestedField, withFieldApi } from '../../src/'
 
 /* ---------------- Other Imports ------------------ */
 

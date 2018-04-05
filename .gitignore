@@ -1,4 +1,5 @@
 node_modules
+/docs-dist
 /index.js
 /build
 /docs

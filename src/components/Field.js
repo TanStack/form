@@ -88,9 +88,11 @@ class Field extends React.Component {
       setError: error => formApi.setError(fullField, error),
       setWarning: warning => formApi.setWarning(fullField, warning),
       setSuccess: success => formApi.setSuccess(fullField, success),
-      addValue: value => formApi.addValue(fullField, value),
-      removeValue: index => formApi.removeValue(fullField, index),
-      swapValues: (...args) => formApi.swapValues(fullField, ...args),
+      addValue: (subField, value) => formApi.addValue([fullField, subField].filter(Boolean), value),
+      removeValue: (subField, index) =>
+        formApi.addValue([fullField, subField].filter(Boolean), index),
+      swapValues: (subField, ...args) =>
+        formApi.addValue([fullField, subField].filter(Boolean), ...args),
       reset: () => formApi.reset(fullField),
       validatingField: () => formApi.validatingField(fullField),
       doneValidatingField: () => formApi.doneValidatingField(fullField),
