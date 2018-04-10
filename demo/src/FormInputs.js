@@ -411,6 +411,20 @@ OR{'\n'}
         </tr>
         <tr>
           <th scope="row">
+            <code>validateOnSubmit</code>
+          </th>
+          <td>
+            <pre>bool</pre>
+          </td>
+          <td>no</td>
+          <td>
+            Use this if you dont want this fields validation to validate until it gets submitted. This will
+            prevent asyncValidation, syncValidation, and preValidate from getting called until submit.
+            Please note, this does not affect validation occurring on this field at the form level.
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">
             <code>{'<input> props'}</code>
           </th>
           <td>

@@ -346,26 +346,38 @@ describe('Form', () => {
   })
 
   it('should give child function access to formApi', done => {
+    let doneCalled = false
     const inputs = api => {
       checkFormApi(api)
-      done()
+      if (!doneCalled) {
+        doneCalled = true
+        done()
+      }
     }
     mount(<Form>{api => inputs(api)}</Form>)
   })
 
   it('form Api should conain all properties and functions', done => {
+    let doneCalled = false
     const inputs = api => {
       checkFormApi(api)
-      done()
+      if (!doneCalled) {
+        doneCalled = true
+        done()
+      }
     }
     mount(<Form>{api => inputs(api)}</Form>)
   })
 
   it('should give render function access to formApi and formState', done => {
+    let doneCalled = false
     const inputs = api => {
       checkFormApi(api)
       checkFormState(api)
-      done()
+      if (!doneCalled) {
+        doneCalled = true
+        done()
+      }
     }
     mount(<Form render={inputs} />)
   })

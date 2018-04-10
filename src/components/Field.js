@@ -133,6 +133,7 @@ class Field extends React.Component {
       children,
       validate,
       asyncValidate,
+      validateOnSubmit,
       ...rest
     } = this.props
 

@@ -220,8 +220,8 @@ class Form extends Component {
 
   preValidate = (field, opts = {}) => {
     // Get the preValidate prop from the field node
-    const { preValidate } = this.getFieldProps(field)
-    if (preValidate === Utils.noop || (!opts.submitting && this.props.validateOnSubmit)) {
+    const { preValidate, validateOnSubmit } = this.getFieldProps(field)
+    if (preValidate === Utils.noop || ( !opts.submitting && (this.props.validateOnSubmit || validateOnSubmit))) {
       return
     }
     this.props.dispatch(actions.preValidate({ field, validator: preValidate }))
@@ -229,8 +229,8 @@ class Form extends Component {
 
   validate = (field, opts = {}) => {
     // Get the validate prop from the field node
-    const { validate } = this.getFieldProps(field)
-    if (validate === Utils.noop || (!opts.submitting && this.props.validateOnSubmit)) {
+    const { validate, validateOnSubmit } = this.getFieldProps(field)
+    if (validate === Utils.noop || ( !opts.submitting && (this.props.validateOnSubmit || validateOnSubmit))) {
       return
     }
     return this.props.dispatch(actions.validate({ field, validator: validate }))
@@ -238,8 +238,8 @@ class Form extends Component {
 
   asyncValidate = async (field, opts = {}) => {
     // Get the asyncValidate prop from the field node
-    const { asyncValidate } = this.getFieldProps(field)
-    if (asyncValidate === Utils.noop || (!opts.submitting && this.props.validateOnSubmit)) {
+    const { asyncValidate, validateOnSubmit } = this.getFieldProps(field)
+    if (asyncValidate === Utils.noop || ( !opts.submitting && (this.props.validateOnSubmit || validateOnSubmit))) {
       return
     }
     return this.props.dispatch(
@@ -327,7 +327,7 @@ class Form extends Component {
     this.props.dispatch(actions.setFormState(formState))
   }
 
-	getTouched = field => Utils.get(this.props.formState.touched, field) 
+	getTouched = field => Utils.get(this.props.formState.touched, field)
 
   getValue = field => Utils.get(this.props.formState.values, field)
 
