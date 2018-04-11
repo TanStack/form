@@ -76,6 +76,13 @@ class Examples extends Component {
               >
                 React Form on Github
               </a>
+              <a
+                href="https://www.npmjs.com/package/react-form"
+                className="nav-link"
+                title="React Form on NPM"
+              >
+                React Form on NPM
+              </a>
             </SideNav>
             <MainContent>
               <h1>React Form</h1>

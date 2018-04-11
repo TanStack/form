@@ -24,6 +24,8 @@ select {
 }
 `
 
+const install = 'npm install --save react-form'
+
 const childRender = ` <Form>
     { formApi => (
       <form onSubmit={formApi.submitForm}>
@@ -823,6 +825,8 @@ class Intro extends Component {
   render () {
     return (
       <div className="mb-4">
+
+        {/* =============================Intro============================= */}
         <h3>Intro</h3>
         <p className="mb-4">
           Say hello to the best react form library you have ever used!
@@ -852,9 +856,36 @@ class Intro extends Component {
         </pre>
         <hr />
         <br />
-        <FormProps />
+        {/* ========================= Intro End =========================== */}
+
+        {/* ========================== Install ============================ */}
+        <h3 className="mb-4">Installation</h3>
+        <pre className="mb-4">
+          <PrismCode className="language-js">{install}</PrismCode>
+        </pre>
         <hr />
         <br />
+        {/* ======================== Install End ========================== */}
+
+
+        {/* =========================== Example1 ========================== */}
+        <h4>Example</h4>
+        <pre className="mb-4">
+          <pre>
+            <PrismCode className="language-jsx">{formApiCodeExampleWithValidation}</PrismCode>
+          </pre>
+        </pre>
+        <p>
+          Play around with the Hello World field and see how the <code>formState</code> updates in
+          the table! <strong>Hint:</strong> try typing{' '}
+          {'"Foo", "Hello World", and "Hello World!!!"'}
+        </p>
+        <ExampleForm />
+        <hr />
+        <br />
+        {/* ========================= Example1 End ======================== */}
+
+        {/* =========================== FormApi =========================== */}
         <h3>Form Api</h3>
         <p className="mb-4">
           React Form gives you access to the <code>formApi</code> in three different ways. You as the
@@ -896,23 +927,16 @@ class Intro extends Component {
             <PrismCode className="language-jsx">{formApiCodeExample}</PrismCode>
           </pre>
         </pre>
-        <h5>Rendered example:</h5>
-        <p>
-          Play around with the Hello World field and see how the <code>formState</code> updates in
-          the table! <strong>Hint:</strong> try typing{' '}
-          {'"Foo", "Hello World", and "Hello World!!!"'}
-        </p>
-        <ExampleForm />
-        <h5>Source code with validation:</h5>
-        <p>
-          The validation occured in the Hello World example above because of the validator that
-          was passed in, see code below.
-        </p>
-        <pre className="mb-4">
-          <pre>
-            <PrismCode className="language-jsx">{formApiCodeExampleWithValidation}</PrismCode>
-          </pre>
-        </pre>
+        <hr />
+        <br />
+        {/* ========================= FormApi End ========================= */}
+
+        {/* ========================= Form Props ========================== */}
+        <FormProps />
+        <hr />
+        <br />
+        {/* ======================= Form Props End ======================== */}
+
       </div>
     )
   }
