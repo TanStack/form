@@ -30,6 +30,10 @@ class SelectWrapper extends Component {
     const nullIndex = resolvedOptions.findIndex(d => d.value === '')
     const selectedIndex = resolvedOptions.findIndex(d => d.value === value)
     const initialIndex = resolvedOptions.findIndex(d => d.value === initalValue)
+    if (selectedIndex <= -1 && initialIndex > -1) {
+      const val = resolvedOptions[initialIndex].value
+      setValue(val)
+    }
 
     return (
       <select
