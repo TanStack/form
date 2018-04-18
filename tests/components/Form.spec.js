@@ -578,4 +578,23 @@ describe('Form', () => {
       done()
     })
   })
+
+  describe('remove value', () => {
+    let api
+    const setApi = param => {
+      api = param
+    }
+
+    beforeEach(() => {
+      mount(<Form getApi={setApi}>{api => <form onSubmit={api.submitForm} />}</Form>)
+    })
+
+    it('remove errors when removing value', () => {
+      api.setError(['arrayFields', 0], 'foo')
+      api.setError(['arrayFields', 1], 'error')
+      api.setError(['arrayFields', 2], 'bar')
+      api.removeValue('arrayFields', 1)
+      expect(api.getError('arrayFields')).to.eql(['foo', 'bar'])
+    })
+  })
 })

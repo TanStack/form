@@ -349,20 +349,19 @@ class Form extends Component {
   }
 
   removeValue = (field, index) => {
-    const fieldValue = Utils.get(this.props.formState.values, field) || []
-    this.props.dispatch(
-      actions.setValue({
-        field,
-        value: [...fieldValue.slice(0, index), ...fieldValue.slice(index + 1)]
-      })
-    )
-    const fieldTouched = Utils.get(this.props.formState.touched, field) || []
-    this.props.dispatch(
-      actions.setTouched({
-        field,
-        value: [...fieldTouched.slice(0, index), ...fieldTouched.slice(index + 1)]
-      })
-    )
+    [
+      { attribute: 'values', action: 'setValue' },
+      { attribute: 'touched', action: 'setTouched' },
+      { attribute: 'errors', action: 'setError' },
+    ].forEach(({ attribute, action }) => {
+      const fieldAttribute = Utils.get(this.props.formState[attribute], field) || []
+      this.props.dispatch(
+        actions[action]({
+          field,
+          value: [...fieldAttribute.slice(0, index), ...fieldAttribute.slice(index + 1)],
+        })
+      )
+    })
   }
 
   swapValues = (field, index, destIndex) => {
