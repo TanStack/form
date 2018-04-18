@@ -43,7 +43,7 @@ const DynamicFormsCode = () => {
                   { formApi.values.siblings && formApi.values.siblings.map( ( sibling, i ) => (
                     <div key={\`sibling\${i}\`}>
                       <label htmlFor={\`sibling-name-\${i}\`}>Name</label>
-                      <Text field={['siblings', i]} id={\`sibling-name-\${i}\`} />
+                      <Text field={['siblings', i]} id={\`sibling-name-$\{i}\`} validateOnMount validate={value => ({ error: !value ? \`Required-$\{i}\` : null })} />
                       <button
                         onClick={() => formApi.removeValue('siblings', i)}
                         type="button"
@@ -105,7 +105,7 @@ class DynamicForms extends Component {
                 { formApi.values.siblings && formApi.values.siblings.map( ( sibling, i ) => (
                   <div key={`sibling${i}`}>
                     <label htmlFor={`sibling-name-${i}`}>Name</label>
-                    <Text field={['siblings', i]} id={`sibling-name-${i}`} />
+                    <Text field={['siblings', i]} id={`sibling-name-${i}`} validateOnMount validate={value => ({ error: !value ? `Required-${i}` : null })} />
                     <button
                       onClick={() => formApi.removeValue('siblings', i)}
                       type="button"
@@ -120,6 +120,7 @@ class DynamicForms extends Component {
               <Data title="Submission attempts" reference="formApi.submits" data={formApi.submits} />
               <Data title="Submitted" reference="formApi.submitted" data={formApi.submitted} />
               <Data title="Submitted values" reference="onSubmit={submittedValues => this.setState( { submittedValues } )}" data={this.state.submittedValues} />
+              <Data title="Errors" reference="formApi.errors" data={formApi.errors} />
             </div>
           )}
         </Form>

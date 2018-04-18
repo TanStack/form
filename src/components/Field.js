@@ -5,11 +5,17 @@ import Utils from '../utils'
 
 class Field extends React.Component {
   componentWillMount () {
-    const { defaultValue } = this.props
+    const { defaultValue, validateOnMount, field } = this.props
     this.buildApi(this.props)
 
     if (typeof defaultValue !== 'undefined' && typeof this.getFieldValues().value === 'undefined') {
       this.fieldApi.setValue(defaultValue)
+    }
+
+    if (validateOnMount) {
+      this.fieldApi.validate(field)
+      this.fieldApi.preValidate(field)
+      this.fieldApi.asyncValidate(field)
     }
   }
 
@@ -69,6 +75,10 @@ class Field extends React.Component {
   }
 
   componentWillUnmount () {
+    const { field, validateOnMount } = this.props
+    if (validateOnMount) {
+      this.context.formApi.clearError(field)
+    }
     this.context.formApi.deregister(this.node)
   }
 
@@ -134,6 +144,7 @@ class Field extends React.Component {
       validate,
       asyncValidate,
       validateOnSubmit,
+      validateOnMount,
       ...rest
     } = this.props
 
@@ -171,11 +182,13 @@ Field.contextTypes = {
 }
 
 Field.propTypes = {
-  field: PropTypes.oneOfType([PropTypes.string, PropTypes.array])
+  field: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  validateOnMount: PropTypes.bool
 }
 
 Field.defaultProps = {
-  pure: true
+  pure: true,
+  validateOnMount: false
 }
 
 export default Field

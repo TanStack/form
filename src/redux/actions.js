@@ -25,6 +25,7 @@ export const VALIDATING_FIELD = 'VALIDATING_FIELD'
 export const DONE_VALIDATING_FIELD = 'DONE_VALIDATING_FIELD'
 export const VALIDATION_FAILURE = 'VALIDATION_FAILURE'
 export const VALIDATION_SUCCESS = 'VALIDATION_SUCCESS'
+export const SET_ALL_ERRORS = 'SET_ALL_ERRORS'
 
 export const setFormState = makeAction(SET_FORM_STATE)
 export const setValue = makeAction(SET_VALUE)
@@ -49,6 +50,7 @@ export const validatingField = makeAction(VALIDATING_FIELD)
 export const doneValidatingField = makeAction(DONE_VALIDATING_FIELD)
 export const validationFailure = makeAction(VALIDATION_FAILURE)
 export const validationSuccess = makeAction(VALIDATION_SUCCESS)
+export const setAllErrors = makeAction(SET_ALL_ERRORS)
 
 export function preValidate ({ field, validator }) {
   return (dispatch, getState) => {
@@ -115,6 +117,13 @@ export function validate ({ field, validator }) {
     recurse(result, field)
 
     return Utils.cleanError(result, { removeSuccess: true })
+  }
+}
+
+export function clearError ({ field }) {
+  return (dispatch, getState) => {
+    const newErrors = Utils.removeError(field, getState().errors)
+    dispatch(setAllErrors({ errors: newErrors }))
   }
 }
 
