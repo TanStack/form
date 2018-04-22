@@ -19,7 +19,8 @@ import {
   VALIDATION_SUCCESS,
   SET_ASYNC_ERROR,
   SET_ASYNC_WARNING,
-  SET_ASYNC_SUCCESS
+  SET_ASYNC_SUCCESS,
+  SET_ALL_ERRORS,
 } from './actions'
 
 import Utils from '../utils'
@@ -226,6 +227,11 @@ const reset = (state, { payload: { field = '__root' } }) => {
   }
 }
 
+const replaceErrors = (state, { payload: { errors } }) => ({
+  ...state,
+  errors,
+})
+
 //
 
 export default function BuildReducer ({ defaultValues = {}, values = {} } = {}) {
@@ -281,6 +287,8 @@ export default function BuildReducer ({ defaultValues = {}, values = {} } = {}) 
         return doneValidatingField(state, action)
       case VALIDATING_FIELD:
         return validatingField(state, action)
+      case SET_ALL_ERRORS:
+        return replaceErrors(state, action)
       default:
         return state
     }

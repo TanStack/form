@@ -108,7 +108,8 @@ class Form extends Component {
       validate: this.validate,
       preValidate: this.preValidate,
       getFullField: this.getFullField,
-      getNodeByField: this.getNodeByField
+      getNodeByField: this.getNodeByField,
+      clearError: this.clearError,
     }
   }
 
@@ -400,6 +401,10 @@ class Form extends Component {
 
   clearAll = () => {
     this.props.dispatch(actions.clearAll())
+  }
+
+  clearError = field => {
+    this.props.dispatch(actions.clearError({ field }))
   }
 
   preSubmit = values => {

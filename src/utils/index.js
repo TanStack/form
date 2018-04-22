@@ -9,7 +9,8 @@ export default {
   noop,
   makePathArray,
   mapObject,
-  cleanError
+  cleanError,
+  removeError
 }
 
 function isArray (a) {
@@ -201,4 +202,37 @@ function cleanError (obj, { removeSuccess } = {}) {
     }
   }
   return obj
+}
+
+function removeError (field = undefined, errors = undefined) {
+  if (!field || !errors) {
+    return errors
+  }
+  // field is array
+  if (isArray(field)) {
+    const fieldName = field[0]
+    const fieldIndex = field[1]
+    // check if field and error exist in errors
+    if (!errors[fieldName] || errors[fieldName].length < fieldIndex) {
+      return errors
+    }
+    // remove key if the only field
+    if (errors[fieldName].length - 1 === 0) {
+      delete errors[fieldName]
+      return { ...errors }
+    }
+    // remove field error
+    return { ...errors,
+      [fieldName]: [
+        ...errors[fieldName].slice(0, fieldIndex),
+        ...errors[fieldName].slice(fieldIndex + 1)
+      ] }
+  }
+  // remove simple field error
+  if (errors[field]) {
+    delete errors[field]
+    return { ...errors }
+  }
+  // return original errors
+  return errors
 }
