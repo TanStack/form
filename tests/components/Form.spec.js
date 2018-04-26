@@ -2,6 +2,9 @@ import React from 'react'
 import { expect } from 'chai'
 import sinon from 'sinon'
 import Enzyme, { mount } from 'enzyme'
+import { renderToString } from 'react-dom/server'
+import { hydrate } from 'react-dom'
+import { JSDOM } from 'jsdom'
 // import Adapter from 'enzyme-adapter-react-16'
 
 // Enzyme.configure({ adapter: new Adapter() })
@@ -88,6 +91,50 @@ describe('Form', () => {
     input.simulate('change', { target: { value: 'hello' } })
     const button = wrapper.find('button')
     button.simulate('submit')
+    setImmediate(() => {
+      expect(spy.called).to.equal(true)
+      expect(spy.args[0][0]).to.deep.equal({ greeting: 'hello' })
+      done()
+    })
+  })
+
+  it.only('should provide correct values of hydrated and autofilled form elements', done => {
+    const spy = sandbox.spy()
+    // TODO: maybe also test all the other types of form elements
+    const reactElem = (
+      <Form onSubmit={spy}>
+        {api => (
+          <form onSubmit={api.submitForm}>
+            <Text id="greeting" field="greeting" />
+            <button id="button" type="submit">
+              Submit
+            </button>
+          </form>
+        )}
+      </Form>
+    )
+
+    // create a dom
+    const dom = new JSDOM('<!DOCTYPE html><div id="root"></div>')
+    const doc = dom.window.document
+    const root = doc.getElementById('root')
+
+    // simulate SSR
+    const html = renderToString(reactElem)
+    root.innerHTML = html
+
+    // manipulate the dom directly, simulating native browser autofill
+    const greeting = doc.getElementById('greeting')
+    greeting.value = 'hello'
+
+    // hydrate react
+    hydrate(reactElem, root)
+
+    // submit the form
+    const button = doc.getElementById('button')
+    button.click()
+
+    // check that we get the correct values
     setImmediate(() => {
       expect(spy.called).to.equal(true)
       expect(spy.args[0][0]).to.deep.equal({ greeting: 'hello' })
@@ -505,7 +552,8 @@ describe('Form', () => {
           }}
           validate={validate}
           defaultValues={{ greeting: 'Foo' }}
-          validateOnMount>
+          validateOnMount
+        >
           {api => (
             <form onSubmit={api.submitForm}>
               <Text field="greeting" />
