@@ -34,6 +34,7 @@ describe('Form', () => {
     expect(api).to.have.own.property('setDirty')
     expect(api).to.have.own.property('setAllDirty')
     expect(api).to.have.own.property('getDirty')
+    expect(api).to.have.own.property('getPristine')
   }
 
   const checkFormState = state => {

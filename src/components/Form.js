@@ -111,7 +111,8 @@ class Form extends Component {
       getNodeByField: this.getNodeByField,
       setDirty: this.setDirty,
       setAllDirty: this.setAllDirty,
-      getDirty: this.getDirty
+      getDirty: this.getDirty,
+      getPristine: this.getPristine
     }
   }
 
@@ -199,6 +200,7 @@ class Form extends Component {
 
   setValue = (field, value) => {
     this.props.dispatch(actions.setValue({ field, value }))
+    this.setDirty(field)
     // Validate up the tree
     this.validateUpFromNode(field)
   }
@@ -279,13 +281,15 @@ class Form extends Component {
     )
   }
 
-  setAllValues = (values = {}) =>
+  setAllValues = (values = {}) => {
     this.props.dispatch(
       actions.setAllValues({
         ...this.props.defaultValues,
         ...values
       })
     )
+    this.setAllDirty()
+  }
 
 
   setAllTouched = async () => {
@@ -335,7 +339,7 @@ class Form extends Component {
     this.props.dispatch(actions.setFormState(formState))
   }
 
-  setAllDirty  = () => {
+  setAllDirty = async () => {
     let dirty = {}
 
     await this.recurseUpAllNodes(node => {
@@ -349,7 +353,7 @@ class Form extends Component {
     this.props.dispatch(actions.setAllDirty(dirty))
   }
 
-	getTouched = field => Utils.get(this.props.formState.touched, field)
+  getTouched = field => Utils.get(this.props.formState.touched, field)
 
   getValue = field => Utils.get(this.props.formState.values, field)
 
@@ -361,7 +365,9 @@ class Form extends Component {
 
   getFullField = field => field
 
-  getDirty = field => Utils.get(this.props.formState.dirty, field);
+  getDirty = field => Utils.get(this.props.formState.dirty, field)
+
+  getPristine = () => Object.keys(this.props.formState.dirty) === 0
 
   addValue = (field, value) => {
     this.props.dispatch(
