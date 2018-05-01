@@ -31,6 +31,9 @@ describe('Form', () => {
     expect(api).to.have.own.property('swapValues')
     expect(api).to.have.own.property('removeValue')
     expect(api).to.have.own.property('addValue')
+    expect(api).to.have.own.property('setDirty')
+    expect(api).to.have.own.property('setAllDirty')
+    expect(api).to.have.own.property('getDirty')
   }
 
   const checkFormState = state => {
@@ -41,7 +44,8 @@ describe('Form', () => {
       asyncValidations: 0,
       submitted: false,
       submits: 0,
-      submitting: false
+      submitting: false,
+      dirty: {}
     }
     expect(JSON.stringify(state)).to.deep.equal(JSON.stringify(formState))
   }
@@ -54,7 +58,8 @@ describe('Form', () => {
       submits: 0,
       submitting: false,
       validationFailures: 0,
-      asyncValidations: 0
+      asyncValidations: 0,
+      dirty: {}
     }
     return Object.assign({}, defaultState, state)
   }
@@ -312,7 +317,7 @@ describe('Form', () => {
     }
     mount(<Form getApi={setApi}>{() => <Text field="greeting" />}</Form>)
     api.setValue('greeting', 'hello')
-    expect(api.getFormState()).to.deep.equal(getState({ values: { greeting: 'hello' } }))
+    expect(api.getFormState()).to.deep.equal(getState({ values: { greeting: 'hello' }, dirty: { greeting: true} }))
   })
 
   it('setError should set an error', () => {
@@ -482,7 +487,8 @@ describe('Form', () => {
       input.simulate('change', { target: { value: 'Foo' } })
       expect(api.getFormState()).to.deep.equal(
         getState({
-          values: { greeting: 'Foo' }
+          values: { greeting: 'Foo' },
+          dirty: { greeting: true }
         })
       )
       const button = wrapper.find('button')
