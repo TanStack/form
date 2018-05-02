@@ -131,6 +131,7 @@ class Field extends React.Component {
       render,
       component,
       children,
+      preValidate,
       validate,
       asyncValidate,
       validateOnSubmit,
