@@ -339,7 +339,7 @@ class Form extends Component {
     this.props.dispatch(actions.setFormState(formState))
   }
 
-  setAllDirty = async () => {
+  setAllDirty = async (value = true) => {
     let dirty = {}
 
     await this.recurseUpAllNodes(node => {
@@ -347,7 +347,7 @@ class Form extends Component {
         return
       }
       if (node.fullField) {
-        dirty = Utils.set(dirty, node.fullField, true)
+        dirty = Utils.set(dirty, node.fullField, value, true)
       }
     })
     this.props.dispatch(actions.setAllDirty(dirty))
@@ -422,10 +422,12 @@ class Form extends Component {
 
   reset = field => {
     this.props.dispatch(actions.reset({ field }))
+    this.setDirty(field, false);
   }
 
   resetAll = () => {
     this.props.dispatch(actions.resetAll())
+    this.setAllDirty(false);
   }
 
   clearAll = () => {
@@ -491,6 +493,7 @@ class Form extends Component {
       values = this.preSubmit(values)
       // Update submitted
       this.props.dispatch(actions.submitted())
+      this.setAllDirty(false);
       // If onSubmit was passed then call it
       if (this.props.onSubmit) {
         try {
