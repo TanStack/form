@@ -343,7 +343,7 @@ class Form extends Component {
     this.props.dispatch(
       actions.setValue({
         field,
-        value: [...(Utils.get(this.props.formState.values, field) || []), value]
+        value: [...(Utils.get(this.props.formState.values, field) || []), value],
       })
     )
   }
@@ -378,8 +378,8 @@ class Form extends Component {
           fieldValues[max],
           ...fieldValues.slice(min + 1, max),
           fieldValues[min],
-          ...fieldValues.slice(max + 1)
-        ]
+          ...fieldValues.slice(max + 1),
+        ],
       })
     )
   }
@@ -402,9 +402,9 @@ class Form extends Component {
     this.props.dispatch(actions.clearAll())
   }
 
-  preSubmit = values => {
+  preSubmit = async values => {
     const newValues = Utils.clone(values)
-    this.recurseUpAllNodes(node => {
+    await this.recurseUpAllNodes(node => {
       const { preSubmit } = node.getProps()
       if (preSubmit) {
         Utils.set(newValues, node.fullField, preSubmit(Utils.get(newValues, node.fullField)))
@@ -458,7 +458,7 @@ class Form extends Component {
     if (!(invalid || asyncInvalid) && this.props.formState.asyncValidations === 0) {
       let values = JSON.parse(JSON.stringify(this.props.formState.values))
       // Call pre submit
-      values = this.preSubmit(values)
+      values = await this.preSubmit(values)
       // Update submitted
       this.props.dispatch(actions.submitted())
       // If onSubmit was passed then call it

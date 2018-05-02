@@ -58,13 +58,21 @@ class TestForm extends Component {
   render () {
     return (
       <div>
-        <Form onChange={(api)=>console.log(JSON.stringify(api.values), JSON.stringify(api.errors))}>
-          {() =>
-            <RadioGroup field="happy" validate={()=>'Error'}>
-              <Radio value="yes" />
-              <Radio value="no" />
-            </RadioGroup>
-          }
+        <Form
+          preSubmit={values => {
+            console.log('preSubmit')
+            return values
+          }}
+          onSubmit={() => console.log('Submitted')} >
+          {formApi => (
+            <form onSubmit={formApi.submitForm}>
+              <RadioGroup field="happy">
+                <Radio value="yes" />
+                <Radio value="no" />
+              </RadioGroup>
+              <button type="submit">Submit</button>
+            </form>
+          )}
         </Form>
       </div>
     )
