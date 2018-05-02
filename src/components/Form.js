@@ -108,7 +108,11 @@ class Form extends Component {
       validate: this.validate,
       preValidate: this.preValidate,
       getFullField: this.getFullField,
-      getNodeByField: this.getNodeByField
+      getNodeByField: this.getNodeByField,
+      setDirty: this.setDirty,
+      setAllDirty: this.setAllDirty,
+      getDirty: this.getDirty,
+      getPristine: this.getPristine
     }
   }
 
@@ -196,6 +200,7 @@ class Form extends Component {
 
   setValue = (field, value) => {
     this.props.dispatch(actions.setValue({ field, value }))
+    this.setDirty(field)
     // Validate up the tree
     this.validateUpFromNode(field)
   }
@@ -216,6 +221,11 @@ class Form extends Component {
 
   setSuccess = (field, value) => {
     this.props.dispatch(actions.setSuccess({ field, value }))
+  }
+  setDirty = (field, value = true) => {
+    this.props.dispatch(actions.setDirty({ field, value }))
+    // Validate up the tree
+    this.validateUpFromNode(field)
   }
 
   preValidate = (field, opts = {}) => {
@@ -271,13 +281,15 @@ class Form extends Component {
     )
   }
 
-  setAllValues = (values = {}) =>
+  setAllValues = (values = {}) => {
     this.props.dispatch(
       actions.setAllValues({
         ...this.props.defaultValues,
         ...values
       })
     )
+    this.setAllDirty()
+  }
 
 
   setAllTouched = async () => {
@@ -327,7 +339,21 @@ class Form extends Component {
     this.props.dispatch(actions.setFormState(formState))
   }
 
-	getTouched = field => Utils.get(this.props.formState.touched, field)
+  setAllDirty = async (value = true) => {
+    let dirty = {}
+
+    await this.recurseUpAllNodes(node => {
+      if (node.nested) {
+        return
+      }
+      if (node.fullField) {
+        dirty = Utils.set(dirty, node.fullField, value, true)
+      }
+    })
+    this.props.dispatch(actions.setAllDirty(dirty))
+  }
+
+  getTouched = field => Utils.get(this.props.formState.touched, field)
 
   getValue = field => Utils.get(this.props.formState.values, field)
 
@@ -338,6 +364,10 @@ class Form extends Component {
   getSuccess = field => Utils.get(this.props.formState.successes, field)
 
   getFullField = field => field
+
+  getDirty = field => Utils.get(this.props.formState.dirty, field)
+
+  getPristine = () => Object.keys(this.props.formState.dirty) === 0
 
   addValue = (field, value) => {
     this.props.dispatch(
@@ -392,10 +422,12 @@ class Form extends Component {
 
   reset = field => {
     this.props.dispatch(actions.reset({ field }))
+    this.setDirty(field, false);
   }
 
   resetAll = () => {
     this.props.dispatch(actions.resetAll())
+    this.setAllDirty(false);
   }
 
   clearAll = () => {
@@ -461,6 +493,7 @@ class Form extends Component {
       values = await this.preSubmit(values)
       // Update submitted
       this.props.dispatch(actions.submitted())
+      this.setAllDirty(false);
       // If onSubmit was passed then call it
       if (this.props.onSubmit) {
         try {

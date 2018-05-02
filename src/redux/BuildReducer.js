@@ -19,7 +19,9 @@ import {
   VALIDATION_SUCCESS,
   SET_ASYNC_ERROR,
   SET_ASYNC_WARNING,
-  SET_ASYNC_SUCCESS
+  SET_ASYNC_SUCCESS,
+  SET_DIRTY,
+  SET_ALL_DIRTY
 } from './actions'
 
 import Utils from '../utils'
@@ -39,7 +41,8 @@ const INITIAL_STATE = {
   asyncValidations: 0,
   submitted: false,
   submits: 0,
-  submitting: false
+  submitting: false,
+  dirty: {}
 }
 
 const setFormState = (state, { payload }) => ({ ...INITIAL_STATE, ...payload })
@@ -70,6 +73,19 @@ const setTouched = (state, { payload: { field, value } }) => {
 const setAllTouched = (state, { payload: touched }) => ({
   ...state,
   touched,
+})
+
+const setDirty = (state, { payload: { field, value } }) => {
+  const newDirty = Utils.set(Utils.clone(state.dirty), field, value, true)
+  return {
+    ...state,
+    dirty: newDirty
+  }
+}
+
+const setAllDirty = (state, { payload: dirty }) => ({
+  ...state,
+  dirty
 })
 
 const setError = (state, { payload: { field = '__root', value } }) => {
@@ -219,6 +235,7 @@ const reset = (state, { payload: { field = '__root' } }) => {
   Utils.set(newState.asyncErrors, field, undefined)
   Utils.set(newState.asyncWarnings, field, undefined)
   Utils.set(newState.asyncSuccesses, field, undefined)
+  Utils.set(newState.dirty, field, undefined)
 
   return {
     ...state,
@@ -281,6 +298,10 @@ export default function BuildReducer ({ defaultValues = {}, values = {} } = {}) 
         return doneValidatingField(state, action)
       case VALIDATING_FIELD:
         return validatingField(state, action)
+      case SET_DIRTY:
+        return setDirty(state, action)
+      case SET_ALL_DIRTY:
+        return setAllDirty(state, action)
       default:
         return state
     }

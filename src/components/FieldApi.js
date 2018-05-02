@@ -26,7 +26,8 @@ class FieldApi extends React.Component {
         touched: formApi.getTouched(fullField),
         error: formApi.getError(fullField),
         warning: formApi.getWarning(fullField),
-        success: formApi.getSuccess(fullField)
+        success: formApi.getSuccess(fullField),
+        dirty: formApi.getDirty(fullField)
       }
       : {}
 

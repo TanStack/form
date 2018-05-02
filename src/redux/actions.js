@@ -25,6 +25,8 @@ export const VALIDATING_FIELD = 'VALIDATING_FIELD'
 export const DONE_VALIDATING_FIELD = 'DONE_VALIDATING_FIELD'
 export const VALIDATION_FAILURE = 'VALIDATION_FAILURE'
 export const VALIDATION_SUCCESS = 'VALIDATION_SUCCESS'
+export const SET_DIRTY = 'SET_DIRTY'
+export const SET_ALL_DIRTY = 'SET_ALL_DIRTY'
 
 export const setFormState = makeAction(SET_FORM_STATE)
 export const setValue = makeAction(SET_VALUE)
@@ -49,6 +51,8 @@ export const validatingField = makeAction(VALIDATING_FIELD)
 export const doneValidatingField = makeAction(DONE_VALIDATING_FIELD)
 export const validationFailure = makeAction(VALIDATION_FAILURE)
 export const validationSuccess = makeAction(VALIDATION_SUCCESS)
+export const setDirty = makeAction(SET_DIRTY)
+export const setAllDirty = makeAction(SET_ALL_DIRTY)
 
 export function preValidate ({ field, validator }) {
   return (dispatch, getState) => {

@@ -31,7 +31,9 @@ const {
   REMOVE_ASYNC_ERROR,
   REMOVE_ASYNC_WARNING,
   REMOVE_ASYNC_SUCCESS,
-  CLEAR_ALL
+  CLEAR_ALL,
+  SET_DIRTY,
+  SET_ALL_DIRTY
 } = actions
 
 describe('BuildReducer', () => {
@@ -56,7 +58,8 @@ describe('BuildReducer', () => {
         validating: undefined,
         validationFailed: undefined,
         validationFailures: 0,
-        asyncValidations: 0
+        asyncValidations: 0,
+        dirty: {}
       }
       return Object.assign({}, defaultState, state)
     }
@@ -205,6 +208,9 @@ describe('BuildReducer', () => {
         },
         touched: {
           foo: undefined
+        },
+        dirty: {
+          foo: undefined
         }
       })
       const action1 = actions.setValue({ field: 'foo', value: 'bar' })
@@ -322,6 +328,20 @@ describe('BuildReducer', () => {
       const finalState = actionsToReduce.reduce(reducer, undefined)
 
       expect(finalState).to.deep.equal(expectedFinalState)
+    })
+    it(`handles ${SET_DIRTY}`, () => {
+      const reducer = BuildReducer()
+      const expectedState = getState({ dirty: { foo: true } })
+      const action = actions.setDirty({ field: 'foo', value: true })
+      const nextState = reducer(undefined, action)
+      expect(nextState).to.deep.equal(expectedState)
+    })
+    it(`handles ${SET_ALL_DIRTY}`, () => {
+      const reducer = BuildReducer()
+      const expectedState = getState({ dirty: { foo: true, baz: true } })
+      const action = actions.setAllDirty({ foo: true, baz: true })
+      const nextState = reducer(getState({ dirty: { foo: false, baz: false } }), action)
+      expect(nextState).to.deep.equal(expectedState)
     })
   })
 })
