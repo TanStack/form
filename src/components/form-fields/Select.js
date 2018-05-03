@@ -5,36 +5,74 @@ import React, { Component } from 'react'
 import withField from '../withField'
 
 class SelectWrapper extends Component {
+
+  constructor (props) {
+    super(props)
+    this.state = SelectWrapper.parseOptions(props)
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (this.props.options !== nextProps.options ||
+        this.props.placeholder !== nextProps.placeholder) {
+      this.setState(SelectWrapper.parseOptions(nextProps))
+    }
+  }
+
+  static parseOptions ({ options, placeholder }) {
+    const resolvedOpts = options.find(d => d.value === '') || placeholder === false
+      ? options
+      : [
+        {
+          label: placeholder || 'Select One...',
+          value: '',
+          disabled: true,
+        },
+        ...options,
+      ]
+
+    const indexes = resolvedOpts.reduce((acc, cur) => {
+      if (cur.options) {
+        return [...acc, ...cur.options]
+      }
+      return [...acc, cur]
+    }, [])
+
+    const values = indexes.reduce((acc, cur, i) => {
+      acc[cur.value] = i
+      return acc
+    }, {})
+
+    return { indexes, values, options: resolvedOpts }
+  }
+
+  static renderOpt (option, values) {
+    return (
+      <option key={option.value} value={values[option.value]} disabled={option.disabled}>
+        {option.label}
+      </option>
+    )
+  }
+
   render () {
     const {
       fieldApi: { value, setValue, setTouched },
-      options,
       onChange,
       onBlur,
       placeholder,
       ...rest
     } = this.props
 
-    const resolvedOptions = options.find(d => d.value === '') || placeholder === false
-      ? options
-      : [
-        {
-          label: placeholder || 'Select One...',
-          value: '',
-          disabled: true
-        },
-        ...options
-      ]
+    const { options, indexes, values } = this.state
 
-    const nullIndex = resolvedOptions.findIndex(d => d.value === '')
-    const selectedIndex = resolvedOptions.findIndex(d => d.value === value)
+    const nullIndex = values['']
+    const selectedIndex = values[value]
 
     return (
       <select
         {...rest}
-        value={selectedIndex > -1 ? selectedIndex : nullIndex}
+        value={typeof selectedIndex !== 'undefined' ? selectedIndex : nullIndex}
         onChange={e => {
-          const val = resolvedOptions[e.target.value].value
+          const val = indexes[e.target.value].value
           setValue(val)
           if (onChange) {
             onChange(val, e)
@@ -47,11 +85,18 @@ class SelectWrapper extends Component {
           }
         }}
       >
-        {resolvedOptions.map((option, i) => (
-          <option key={option.value} value={i} disabled={option.disabled}>
-            {option.label}
-          </option>
-        ))}
+
+        {options.map(option => {
+          if (option.options) {
+            return (
+              <optgroup key={option.label} label={option.label}>
+                {option.options.map(inneropt => (
+                  SelectWrapper.renderOpt(inneropt, values)))}
+              </optgroup>
+            )
+          }
+          return SelectWrapper.renderOpt(option, values)
+        })}
       </select>
     )
   }
