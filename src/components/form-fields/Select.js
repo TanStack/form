@@ -12,6 +12,7 @@ class SelectWrapper extends Component {
       onChange,
       onBlur,
       placeholder,
+      initalValue,
       ...rest
     } = this.props
 
@@ -28,11 +29,16 @@ class SelectWrapper extends Component {
 
     const nullIndex = resolvedOptions.findIndex(d => d.value === '')
     const selectedIndex = resolvedOptions.findIndex(d => d.value === value)
+    const initialIndex = resolvedOptions.findIndex(d => d.value === initalValue)
+    if (selectedIndex <= -1 && initialIndex > -1) {
+      const val = resolvedOptions[initialIndex].value
+      setValue(val)
+    }
 
     return (
       <select
         {...rest}
-        value={selectedIndex > -1 ? selectedIndex : nullIndex}
+        value={selectedIndex > -1 ? selectedIndex : initialIndex > -1 ? initialIndex : nullIndex}
         onChange={e => {
           const val = resolvedOptions[e.target.value].value
           setValue(val)
