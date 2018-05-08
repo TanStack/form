@@ -107,6 +107,7 @@ class Form extends Component {
       asyncValidate: this.asyncValidate,
       validate: this.validate,
       preValidate: this.preValidate,
+      validateForm: this.validateForm,
       getFullField: this.getFullField,
       getNodeByField: this.getNodeByField
     }
@@ -249,6 +250,12 @@ class Form extends Component {
         validationPromiseIDs: this.validationPromiseIDs,
       })
     )
+  }
+
+  validateForm = () => {
+      this.preValidateAll()
+      this.validateAll()
+      this.asyncValidateAll()
   }
 
   validateUpFromNode = field => {
