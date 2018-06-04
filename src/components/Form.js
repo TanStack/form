@@ -88,6 +88,7 @@ class Form extends Component {
       getTouched: this.getTouched,
       getWarning: this.getWarning,
       getError: this.getError,
+      getAsyncError: this.getAsyncError,
       getSuccess: this.getSuccess,
       getFormState: this.getFormState,
       setFormState: this.setFormState,
@@ -332,6 +333,8 @@ class Form extends Component {
   getValue = field => Utils.get(this.props.formState.values, field)
 
   getError = field => Utils.get(this.props.formState.errors, field)
+
+  getAsyncError = field => Utils.get(this.props.formState.asyncErrors, field)
 
   getWarning = field => Utils.get(this.props.formState.warnings, field)
 

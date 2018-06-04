@@ -204,6 +204,17 @@ const FieldApiMethods = () => (
           <td>The fields error.</td>
         </tr>
         <tr>
+          <th scope="row">asyncError</th>
+          <td>
+            <pre>
+              <pre>
+                <PrismCode className="language-jsx">"This is a required field"</PrismCode>
+              </pre>
+            </pre>
+          </td>
+          <td>The fields async error.</td>
+        </tr>
+        <tr>
           <th scope="row">warning</th>
           <td>
             <pre>
