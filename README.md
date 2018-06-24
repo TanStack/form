@@ -7,7 +7,7 @@ Simple, powerful, highly composable forms in React
 [![npm version](https://img.shields.io/npm/v/react-form.svg)](https://www.npmjs.com/package/react-form)
 [![npm downloads](https://img.shields.io/npm/dm/react-form.svg)](https://www.npmjs.com/package/react-form)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/react-tools/react-form/blob/master/LICENSE)
-[![React-Tools-Chat](https://img.shields.io/badge/slack-react--chat-blue.svg)](https://react-chat-signup.herokuapp.com/)
+[![Join the community on Spectrum](https://withspectrum.github.io/badge/badge.svg)](https://spectrum.chat/react-form)
 
 # Features
 - 🚀 Lightweight and fast.
