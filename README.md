@@ -1,3 +1,33 @@
+# We Have Moved!
+
+## This library is no longer supported and has been rewritten from scratch as `informed`!
+
+### Documentation: [HERE](https://joepuzzo.github.io/informed)
+### NPM: [HERE](https://www.npmjs.com/package/informed)
+
+[![Informed-Chat](https://img.shields.io/badge/slack-informed--chat-blue.svg)](https://spectrum.chat/informed)
+
+## Why Move?? How could you do this to me?
+
+DON'T FRET!
+
+`react-form` became two large and bloated to maintain. We wanted a fresh start where we could cover the 90% use case
+and also purge the library of unnecessary dependencies such as Redux. Informed is completely from scratch, but it keeps
+almost the exact same interface, so migration is very simple!
+
+### Key considerations that were made when rewriting:
+
+1. Test coverage! When writing informed we focused heavily on test coverage. Therefore informed is very stable.
+2. Simplicity! We wanted a simpler interface that allowed developers to get up and running quicker.
+3. Efficiency! Informed focuses on efficient rendering, so you can scale your forms easily.
+4. 90% usecase. Informed has most of the bells and whistles that `react-form` had, however, in order to create a more stable library, we wanted to focus on providing a library that could support the 90% usecase. So we got rid of a few things that we decided could be up to the developer.
+
+## Migration
+
+We are currently working on migration docs but for now please look at the [Changelog.md](https://github.com/joepuzzo/informed/blob/master/CHANGELOG.md).
+
+---
+
 # React-Form
 Simple, powerful, highly composable forms in React
 
