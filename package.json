@@ -1,104 +1,59 @@
 {
   "name": "react-form",
-  "version": "3.5.7",
-  "description": "React Form is a lightweight framework and utility for building powerful forms in React applications.",
-  "main": "lib/index.js",
-  "module": "es/index.js",
-  "files": [
-    "css",
-    "es",
-    "lib",
-    "umd"
-  ],
-  "scripts": {
-    "build": "nwb build-react-component --title React Form",
-    "clean": "nwb clean-module && nwb clean-demo",
-    "start": "nwb serve-react-demo",
-    "test": "mocha-webpack --opts tests/mocha-webpack.opts",
-    "test:watch": "npm run test -- --watch",
-    "prepublishOnly": "yarn build",
-    "postPublish": "git push --tags",
-    "eslint": "eslint src/** --fix",
-    "format": "prettier-eslint src/**/*.js",
-    "startDocs": "gitdocs serve",
-    "buildDocs": "gitdocs build",
-    "serveDocs": "serve docs-dist -p 3000"
-  },
-  "authors": [
-    {
-      "name": "Joseph Puzzo",
-      "email": "jgpuzzo2@gmail.com",
-      "url": "http://joepuzzo.github.io"
-    },
-    {
-      "name": "Tanner Linsley",
-      "email": "tannerlinsley@gmail.com",
-      "url": "http://github.com/tannerlinsley"
-    }
-  ],
-  "keywords": [
-    "react",
-    "reactjs",
-    "redux",
-    "react-redux",
-    "redux-form",
-    "form",
-    "react-form",
-    "async",
-    "async-form",
-    "asynchronous-form",
-    "asynchronous"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/react-tools/react-form"
-  },
+  "version": "4.0.0-alpha.0",
+  "description": "⚛️ 💼 React hooks for managing form state and lifecycle",
+  "author": "tannerlinsley",
   "license": "MIT",
-  "dependencies": {
-    "classnames": "^2.2.5",
-    "prop-types": "^15.5.10",
-    "react-redux": "^5.0.6",
-    "redux": "^3.7.2",
-    "redux-thunk": "^2.2.0"
+  "repository": "tannerlinsley/react-form",
+  "main": "dist/index.js",
+  "_module": "dist/index.es.js",
+  "_jsnext:main": "dist/index.es.js",
+  "scripts": {
+    "test": "cross-env CI=1 react-scripts test --env=jsdom",
+    "test:watch": "react-scripts test --env=jsdom",
+    "build": "rollup -c",
+    "start": "rollup -c -w",
+    "prepare": "yarn build",
+    "release": "yarn publish",
+    "releaseNext": "yarn publish --tag next"
   },
   "peerDependencies": {
-    "react": "^15.6.1 || 16",
-    "react-dom": "^15.6.1 || 16"
+    "prop-types": "^15.5.4",
+    "react": "^16.8.3"
+  },
+  "dependencies": {
+    "immer": "^3.1.3"
   },
   "devDependencies": {
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
-    "babel-runtime": "^6.26.0",
-    "bootstrap": "^4.0.0-alpha.6",
-    "chai": "^4.1.1",
-    "copy-webpack-plugin": "^4.0.1",
-    "cross-env": "^5.1.3",
-    "css-loader": "^0.28.5",
-    "enzyme": "^3.3.0",
-    "enzyme-adapter-react-16": "^1.1.1",
-    "eslint": "^4.5.0",
-    "eslint-config-react-tools": "^1.0.10",
-    "eslint-plugin-import": "^2.7.0",
-    "eslint-plugin-jsx-a11y": "^6.0.2",
-    "eslint-plugin-react": "^7.3.0",
-    "gitdocs": "^1.5.17",
-    "jsdom": "^11.6.0",
-    "mocha": "^5.0.0",
-    "mocha-webpack": "^1.0.1",
-    "nwb": "^0.21.2",
-    "nwb-sass": "^0.8.2",
-    "prettier-eslint-cli": "^4.7.0",
-    "react": "^16.2.0",
-    "react-addons": "^0.9.1-deprecated",
-    "react-addons-test-utils": "^15.6.2",
-    "react-dom": "^16.2.0",
-    "react-prism": "^4.3.2",
-    "react-router-dom": "^4.2.2",
-    "react-router-hash-link": "^1.1.1",
-    "redux-mock-store": "^1.5.1",
-    "serve": "^6.5.2",
-    "sinon": "^4.1.6"
-  }
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/preset-react": "^7.0.0",
+    "@svgr/rollup": "^4.3.0",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-eslint": "9.x",
+    "cross-env": "^5.1.4",
+    "eslint": "5.x",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-config-react-app": "^4.0.1",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-config-standard-react": "^7.0.2",
+    "eslint-plugin-flowtype": "2.x",
+    "eslint-plugin-import": "2.x",
+    "eslint-plugin-jsx-a11y": "6.x",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-react": "7.x",
+    "eslint-plugin-react-hooks": "1.5.0",
+    "eslint-plugin-standard": "^4.0.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "rollup": "^1.12.4",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-commonjs": "^10.0.0",
+    "rollup-plugin-node-resolve": "^5.0.0",
+    "rollup-plugin-peer-deps-external": "^2.2.0"
+  },
+  "files": [
+    "dist"
+  ]
 }

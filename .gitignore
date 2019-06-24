@@ -12,3 +12,4 @@ node_modules
 .idea
 .gitconfig
 .DS_Store
+.history
