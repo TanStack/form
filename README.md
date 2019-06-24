@@ -1,6 +1,6 @@
-# React Form
+# ⚛️ 💼 React Form
 
-⚛️ 💼 React hooks for managing form state and lifecycle
+React hooks for managing form state and lifecycle
 
 <a href="https://travis-ci.org/react-charts/react-charts" target="\_parent">
   <img alt="" src="https://travis-ci.org/react-charts/react-charts.svg?branch=master" />
