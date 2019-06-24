@@ -49,7 +49,7 @@ This will render a very basic form:
 
 ```javascript
 import React from 'react'
-import { useForm, useField, splitFormProps } from 'react-form'
+import { useForm, useField } from 'react-form'
 
 // Build an input field
 const InputField = React.forwardRef(function TextField(
@@ -133,3 +133,4 @@ Any sparse documentation available in this Readme is being progressively improve
 React Charts exposes these top-level exports:
 
 - `useForm` - The primary hook for creating a form.
+- `useField` - A hook for utilizing form state and lifecycle on the field level.
