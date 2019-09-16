@@ -1,424 +1,379 @@
 import React from 'react'
-import immer from 'immer'
 //
-import usePrevious from 'hooks/usePrevious'
+import useAsyncDebounce from './hooks/useAsyncDebounce'
 
 const formContext = React.createContext()
 
-function useImmer(initialState) {
-  let [state, originalSetState] = React.useState(initialState)
-
-  const setState = React.useCallback(value => {
-    originalSetState(old => {
-      if (typeof value === 'function') {
-        value = immer(old, value)
-      }
-      return value
-    })
-  }, [])
-
-  return [state, setState]
-}
-
 function makeState(decor) {
   return {
-    fieldErrors: null,
-    formErrors: null,
-    info: {},
-    touched: {},
-    validating: {},
-    submitting: false,
-    dirty: false,
-    submitted: false,
-    submitAttempts: 0,
-    ...decor
+    meta: {
+      isSubmitting: false,
+      isTouched: false,
+      isSubmitted: false,
+      submissionAttempts: 0,
+    },
+    __fieldMeta: {},
+    ...decor,
   }
 }
 
-export function useForm({ onSubmit, defaultValues, validate }) {
-  defaultValues = React.useMemo(() => defaultValues || {}, [defaultValues])
+const defaultDefaultValue = {}
 
-  let [
-    {
-      values,
-      fieldErrors,
-      formErrors,
-      info,
-      touched,
-      validating,
-      submitting,
-      dirty,
-      submitted,
-      submitAttempts
-    },
-    setState
-  ] = useImmer(
+export function useForm({
+  onSubmit,
+  defaultValues = defaultDefaultValue,
+  validate,
+  validatePristine,
+  debug,
+}) {
+  let [{ values, meta, __fieldMeta }, setState] = React.useState(() =>
     makeState({
-      values: defaultValues
+      values: defaultValues,
     })
   )
 
-  fieldErrors = React.useMemo(() => cleanErrors(fieldErrors), [fieldErrors])
-  formErrors = React.useMemo(() => cleanErrors(formErrors), [formErrors])
+  const { isSubmitting, isTouched } = meta
 
-  const errors = React.useMemo(() => fieldErrors || formErrors, [
-    fieldErrors,
-    formErrors
-  ])
+  // Can we submit this form?
+  const isValid =
+    isTouched &&
+    !someObject(__fieldMeta, field => field && field.error) &&
+    !meta.error
 
-  const canSubmit = errors === null
+  const canSubmit = isValid && !isSubmitting
 
-  const formRef = React.useRef({})
-  const fieldsRef = React.useRef([])
-  const validateRef = React.useRef()
-  validateRef.current = validate
+  // Decorate form meta
+  meta = React.useMemo(
+    () => ({
+      ...meta,
+      isValid,
+      canSubmit,
+    }),
+    [canSubmit, meta, isValid]
+  )
 
-  const __registerField = React.useCallback(fieldContext => {
-    fieldsRef.current = [...fieldsRef.current, fieldContext]
-    return () => {
-      fieldsRef.current = fieldsRef.current.filter(d => d !== fieldContext)
-    }
-  }, [])
+  const apiRef = React.useRef()
 
-  const runFieldValidation = React.useCallback(() => {
-    return fieldsRef.current.find(fieldContext => {
-      const validationError = cleanErrors(
-        fieldContext.field.runValidation({
-          bypassTouch: true
-        })
-      )
-      if (validationError) {
-        return validationError
-      }
-    })
-  }, [])
+  // We want the apiRef to change every time state updates
+  apiRef.current = React.useMemo(
+    () => ({
+      values,
+      meta,
+      __fieldMeta,
+      debug,
+    }),
+    [debug, __fieldMeta, meta, values]
+  )
 
-  const runValidation = React.useCallback(() => {
-    const validationErrors = validateRef.current
-      ? cleanErrors(validateRef.current(values, formRef.current))
-      : null
-    setState(draft => {
-      draft.formErrors = validationErrors
-    })
-    return validationErrors
-  }, [values, setState])
+  const metaRef = React.useRef({})
+  const __fieldMetaRefsRef = React.useRef({})
 
-  const reset = React.useCallback(() => {
+  apiRef.current.__fieldMetaRefs = __fieldMetaRefsRef.current
+  apiRef.current.onSubmit = onSubmit
+
+  apiRef.current.reset = React.useCallback(() => {
     setState(() =>
       makeState({
-        values: defaultValues
+        values: defaultValues,
       })
     )
   }, [defaultValues, setState])
 
   // On submit
-  const handleSubmit = React.useCallback(
-    async e => {
-      e.persist()
-      e.preventDefault()
+  apiRef.current.handleSubmit = React.useCallback(async e => {
+    e.persist()
+    e.preventDefault()
 
-      if (e.__handled) {
-        return
-      }
-
-      e.__handled = true
-
-      setState(old => {
-        old.dirty = true
-        old.submitted = true
-        old.submitAttempts += 1
-      })
-
-      // Don't allow submitting
-      if (submitting) {
-        return
-      }
-
-      // Check field validations
-      if (runFieldValidation()) {
-        return
-      }
-
-      // Check validation
-      if (runValidation()) {
-        return
-      }
-
-      setState(draft => {
-        draft.submitting = true
-      })
-
-      try {
-        // Run the submit code
-        await onSubmit(values, formRef.current)
-      } catch (err) {
-        throw err
-      } finally {
-        setState(draft => {
-          draft.submitting = false
-        })
-      }
-    },
-    [setState, submitting, runFieldValidation, runValidation, onSubmit, values]
-  )
-
-  const getByOn = base => field => {
-    return getBy(base, field)
-  }
-
-  const getValue = React.useCallback(getByOn(values), [values])
-  const getError = React.useCallback(getByOn(errors), [errors])
-  const getInfo = React.useCallback(getByOn(info), [info])
-  const getValidating = React.useCallback(getByOn(validating), [validating])
-  const getTouched = React.useCallback(
-    field => {
-      if (submitted) {
-        return true
-      }
-      return getBy(touched, field, true)
-    },
-    [touched, submitted]
-  )
-
-  const setByOn = key => (field, value) => {
-    setState(draft => {
-      setBy(draft, [key, field], value)
-    })
-  }
-
-  const setError = React.useCallback(setByOn('fieldErrors'), [setState])
-  const setInfo = React.useCallback(setByOn('info'), [setState])
-  const setValidating = React.useCallback(setByOn('validating'), [setState])
-  const setValue = React.useCallback(
-    (field, value, bypassTouch) => {
-      setState(draft => {
-        setBy(draft.values, field, value)
-        if (!bypassTouch) {
-          draft.dirty = true
-          setBy(draft.touched, field, true)
-        }
-      })
-    },
-    [setState]
-  )
-
-  const setTouched = React.useCallback(
-    (field, value) => {
-      setState(draft => {
-        draft.dirty = true
-        setBy(draft.touched, field, value)
-      })
-    },
-    [setState]
-  )
-
-  const pushField = React.useCallback(
-    (path, value) => {
-      setState(draft => {
-        const old = getBy(draft.values, path)
-        setBy(draft.values, [path, Array.isArray(old) ? old.length : 0], value)
-      })
-    },
-    [setState]
-  )
-
-  const insertField = React.useCallback(
-    (path, index, value) => {
-      setState(draft => {
-        const old = getBy(draft.values, path)
-        if (Array.isArray(old)) {
-          old.splice(index, 0, value)
-        } else {
-          throw new Error(
-            `You are trying to insert a new field on a non-array parent field at path: ${path} index: ${index} with value ${value}`
-          )
-        }
-      })
-    },
-    [setState]
-  )
-
-  const removeField = React.useCallback(
-    (path, key) => {
-      setState(draft => {
-        const old = getBy(draft.values, path)
-        if (Array.isArray(old)) {
-          old.splice(key, 1)
-        } else if (typeof old === 'object') {
-          delete old[key]
-        }
-      })
-    },
-    [setState]
-  )
-
-  const swapFields = React.useCallback(
-    (path, index1, index2) => {
-      setState(draft => {
-        const old = getBy(draft.values, path)
-        const old1 = getBy(draft.values, [path, index1])
-        const old2 = getBy(draft.values, [path, index2])
-        if (Array.isArray(old)) {
-          setBy(draft.values, [path, index1], old2)
-          setBy(draft.values, [path, index2], old1)
-        } else {
-          throw new Error(
-            `You are trying to swap field values on a non-array parent field at path: ${path} index1: ${index1} index2: ${index2}`
-          )
-        }
-      })
-    },
-    [setState]
-  )
-
-  const setValues = React.useCallback(
-    values => {
-      setState(draft => {
-        draft.values = values
-      })
-    },
-    [setState]
-  )
-
-  // When values update, and there are no field-level errors, run validation
-  React.useEffect(() => {
-    if (!fieldErrors) {
-      runValidation()
+    // This lets sub-forms with form elements (despite them being invalid HTML)
+    // handle submissions without triggering parent forms
+    if (e.__handled) {
+      return
     }
-  }, [fieldErrors, runValidation, values])
+    e.__handled = true
 
-  const previousDefaultValues = usePrevious(defaultValues)
+    apiRef.current.setMeta(old => ({
+      ...old,
+      // Submission attempts make the form dirty
+      isTouched: true,
+      // Submittion attempts mark the form as not submitted
+      isSubmitted: false,
+      // Count submission attempts
+      submissionAttempts: old.submissionAttempts + 1,
+    }))
+
+    // Don't allow isSubmitting
+    if (apiRef.current.meta.isSubmitting) {
+      return
+    }
+
+    apiRef.current.setMeta({ isSubmitting: true })
+
+    try {
+      // Run the submit code
+      await apiRef.current.onSubmit(apiRef.current.values, apiRef.current)
+
+      apiRef.current.setMeta({ isSubmitted: true })
+    } catch (err) {
+      throw err
+    } finally {
+      apiRef.current.setMeta({ isSubmitting: false })
+    }
+  }, [])
+
+  const validateRef = React.useRef()
+  validateRef.current = validate
+
+  // Create a debounce for this field hook instance (not all instances)
+  apiRef.current.debounce = useAsyncDebounce()
+
+  apiRef.current.setMeta = React.useCallback(
+    updater => {
+      setState(old => ({
+        ...old,
+        meta:
+          typeof updater === 'function'
+            ? updater(old.meta)
+            : { ...old.meta, ...updater },
+      }))
+    },
+    [setState]
+  )
+
+  apiRef.current.runValidation = React.useCallback(async () => {
+    if (!validateRef.current) {
+      return
+    }
+    apiRef.current.setMeta({ validating: true })
+
+    // Use the validationCount for all field instances to
+    // track freshness of the validation
+    const id = (metaRef.current.validationCount || 0) + 1
+    metaRef.current.validationCount = id
+
+    const checkLatest = () => id === metaRef.current.validationCount
+
+    const error = await validateRef.current(
+      apiRef.current.values,
+      apiRef.current
+    )
+
+    if (checkLatest()) {
+      apiRef.current.setMeta({ validating: false })
+      if (typeof error !== 'undefined') {
+        if (error) {
+          if (typeof error === 'string') {
+            apiRef.current.setMeta({ error })
+          }
+        } else {
+          apiRef.current.setMeta({ error: null })
+        }
+      }
+    }
+  }, [])
+
+  // When the form gets dirty and when the value changes
+  // validate
+  React.useEffect(() => {
+    if (!validatePristine && !isTouched) {
+      return
+    }
+
+    apiRef.current.runValidation(values)
+  }, [isTouched, validatePristine, values])
+
+  apiRef.current.getFieldValue = React.useCallback(
+    field => getBy(apiRef.current.values, field),
+    []
+  )
+
+  apiRef.current.getFieldMeta = React.useCallback(field => {
+    const fieldID = getFieldID(field)
+    return apiRef.current.__fieldMeta[fieldID]
+  }, [])
+
+  apiRef.current.__getFieldMetaRef = React.useCallback(field => {
+    const fieldID = getFieldID(field)
+    if (!apiRef.current.__fieldMetaRefs[fieldID]) {
+      apiRef.current.__fieldMetaRefs[fieldID] = { current: {} }
+    }
+    return apiRef.current.__fieldMetaRefs[field]
+  }, [])
+
+  apiRef.current.setFieldMeta = React.useCallback(
+    (field, updater) => {
+      const fieldID = getFieldID(field)
+      setState(old => ({
+        ...old,
+        __fieldMeta: {
+          ...old.__fieldMeta,
+          [fieldID]:
+            typeof updater === 'function'
+              ? updater(old.__fieldMeta[fieldID])
+              : { ...old.__fieldMeta[fieldID], ...updater },
+        },
+      }))
+    },
+    [setState]
+  )
+
+  apiRef.current.setFieldValue = React.useCallback(
+    (field, updater, { isTouched = true } = {}) => {
+      setState(old => ({
+        ...old,
+        values: setBy(
+          old.values,
+          field,
+          typeof updater === 'function'
+            ? updater(getBy(old.values, field))
+            : updater
+        ),
+      }))
+      if (isTouched) {
+        apiRef.current.setFieldMeta(field, {
+          isTouched: true,
+        })
+        apiRef.current.setMeta({ isTouched: true })
+      }
+    },
+    [setState]
+  )
+
+  apiRef.current.pushFieldValue = React.useCallback((field, value, options) => {
+    apiRef.current.setFieldValue(
+      field,
+      old => {
+        if (Array.isArray(old)) {
+          return [...old, value]
+        } else {
+          throw Error(
+            `Cannot push a field value into a non-array field. Check that this field's existing value is an array: ${field}.`
+          )
+        }
+      },
+      options
+    )
+  }, [])
+
+  apiRef.current.insertFieldValue = React.useCallback(
+    (field, index, value, options) => {
+      apiRef.current.setFieldValue(
+        field,
+        old => {
+          if (Array.isArray(old)) {
+            return old.map((d, i) => (i === index ? value : d))
+          } else {
+            throw Error(
+              `Cannot insert a field value into a non-array field. Check that this field's existing value is an array: ${field}.`
+            )
+          }
+        },
+        options
+      )
+    },
+    []
+  )
+
+  apiRef.current.removeFieldValue = React.useCallback(
+    (field, index, options) => {
+      apiRef.current.setFieldValue(
+        field,
+        old => {
+          if (Array.isArray(old)) {
+            return old.filter((d, i) => i !== index)
+          } else {
+            throw Error(
+              `Cannot remove a field value from a non-array field. Check that this field's existing value is an array: ${field}.`
+            )
+          }
+        },
+        options
+      )
+    },
+    []
+  )
+
+  apiRef.current.swapFieldValues = React.useCallback(
+    (path, index1, index2) => {
+      setState(old => {
+        const old1 = getBy(old.values, [path, index1])
+        const old2 = getBy(old.values, [path, index2])
+
+        let values = setBy(old.values, [path, index1], old2)
+        values = setBy(values, [path, index2], old1)
+
+        return {
+          ...old,
+          values,
+        }
+      })
+    },
+    [setState]
+  )
+
+  apiRef.current.setValues = React.useCallback(
+    values => {
+      setState(old => ({
+        ...old,
+        values: values,
+      }))
+    },
+    [setState]
+  )
 
   // When defaultValues update, set them
   React.useEffect(() => {
-    if (defaultValues === values) {
-      return
+    if (defaultValues !== apiRef.current.values) {
+      setState(old => ({
+        ...old,
+        values: defaultValues,
+      }))
     }
-    if (previousDefaultValues !== defaultValues) {
-      setState(draft => {
-        draft.values = defaultValues
-      })
-    }
-  }, [defaultValues, previousDefaultValues, setState, values])
+  }, [defaultValues, setState])
 
-  const scope = React.useMemo(
-    () => ({
-      reset,
-      getValue,
-      getError,
-      getInfo,
-      getTouched,
-      getValidating,
-      setValue,
-      setError,
-      setInfo,
-      setTouched,
-      setValidating,
-      pushField,
-      insertField,
-      removeField,
-      swapFields,
-      setValues
-    }),
-    [
-      reset,
-      getValue,
-      getError,
-      getInfo,
-      getTouched,
-      getValidating,
-      setValue,
-      setError,
-      setInfo,
-      setTouched,
-      setValidating,
-      pushField,
-      insertField,
-      removeField,
-      swapFields,
-      setValues
-    ]
-  )
+  const FormRef = React.useRef()
 
-  formRef.current = React.useMemo(
-    () => ({
-      form: {
-        values,
-        errors,
-        info,
-        touched,
-        validating,
-        submitting,
-        setState,
-        canSubmit,
-        handleSubmit,
-        runValidation,
-        dirty,
-        submitted,
-        submitAttempts,
-        __registerField,
-        // Pass the root scope methods to the form
-        ...scope
-      },
-      // Then pass them as the root scope
-      scope,
-      fieldPath: []
-    }),
-    [
-      values,
-      errors,
-      info,
-      touched,
-      validating,
-      submitting,
-      setState,
-      canSubmit,
-      handleSubmit,
-      runValidation,
-      dirty,
-      submitted,
-      submitAttempts,
-      __registerField,
-      scope
-    ]
-  )
-
-  // Set up a persistant form element
-  const FormComponentRef = React.useRef()
-
-  if (!FormComponentRef.current) {
-    FormComponentRef.current = makeForm()
+  if (!FormRef.current) {
+    FormRef.current = makeForm()
   }
 
   // Pass the full context to the form element
-  FormComponentRef.current.contextValue = formRef.current
+  apiRef.current.Form = FormRef.current
+  apiRef.current.Form.contextValue = apiRef.current
 
   // Return the root form and the Form component to the hook user
-  return React.useMemo(
-    () => ({
-      ...formRef.current.form,
-      Form: FormComponentRef.current
-    }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [formRef.current.form]
-  )
+  return apiRef.current
 }
 
-function useFormContext() {
-  let context = React.useContext(formContext)
+export function useFormContext() {
+  let formApi = React.useContext(formContext)
 
-  if (!context) {
-    throw new Error(
-      `You are trying to use the form or field API outside of a form!`
-    )
+  if (!formApi) {
+    throw new Error(`You are trying to use the form API outside of a form!`)
   }
 
-  return context
+  return formApi
 }
 
+const methodMap = [
+  'setFieldValue',
+  'setFieldMeta',
+  'pushFieldValue',
+  'insertFieldValue',
+  'removeFieldValue',
+  'swapFieldValues',
+]
+
+const defaultDefaultMeta = {}
 export function useField(
   fieldName,
-  { defaultValue, validate, validateOnMount } = {}
+  {
+    defaultValue,
+    defaultIsTouched = false,
+    defaultError = null,
+    defaultMeta = defaultDefaultMeta,
+    validatePristine,
+    validate,
+  } = {}
 ) {
   if (!fieldName) {
     throw new Error(
@@ -426,148 +381,197 @@ export function useField(
     )
   }
 
-  let context = useFormContext()
+  let formApi = useFormContext()
 
-  // Proxy's the field API for a new parent field context
+  // Support field prefixing from FieldScope
+  let fieldPrefix = ''
 
-  // At this point, the form API get's proxied to behave for both
-  // the new scope level and for the pre-bound field specific methods.
-  // This gives us three versions of the API: form (root), scope, and field
-  // each with it's own conveniences.
-  context = React.useMemo(() => {
-    const parentScope = context.scope
+  if (formApi.fieldName) {
+    // This is okay because any `.[`'s will get replace to just `.`
+    fieldPrefix = `${formApi.fieldName}.`
+    formApi = formApi.form
+  }
 
-    const field = {
-      value: parentScope.getValue(fieldName),
-      error: parentScope.getError(fieldName),
-      info: parentScope.getInfo(fieldName),
-      touched: parentScope.getTouched(fieldName),
-      validating: parentScope.getValidating(fieldName),
-      setValue: (value, bypassTouch) =>
-        parentScope.setValue(fieldName, value, bypassTouch),
-      setError: value => parentScope.setError(fieldName, value),
-      setInfo: value => parentScope.setInfo(fieldName, value),
-      setTouched: value => parentScope.setTouched(fieldName, value),
-      setValidating: value => parentScope.setValidating(fieldName, value),
-      pushField: value => parentScope.pushField(fieldName, value),
-      insertField: value => parentScope.insertField(fieldName, value),
-      removeField: value => parentScope.removeField(fieldName, value),
-      swapFields: (value1, value2) =>
-        parentScope.swapFields(fieldName, value1, value2)
+  fieldName = fieldPrefix + fieldName
+
+  const formApiRef = React.useRef()
+  const apiRef = React.useRef({})
+
+  // An escape hatch for accessing latest formAPI
+  formApiRef.current = formApi
+
+  const preValue = formApi.getFieldValue(fieldName)
+  const preMeta = formApi.getFieldMeta(fieldName)
+  const __metaRef = formApi.__getFieldMetaRef(fieldName)
+
+  // Let's scope some field-level methods for convenience
+  const [
+    setValue,
+    setMeta,
+    pushValue,
+    insertValue,
+    removeValue,
+    swapValues,
+  ] = methodMap.map(d => {
+    // Since this array is stable and always the same, we can disable
+    // the react-hooks linter here:
+
+    // eslint-disable-next-line
+    return React.useCallback(
+      (...args) => formApiRef.current[d](fieldName, ...args),
+      // eslint-disable-next-line
+      [fieldName]
+    )
+  })
+
+  // Let's scope some field-level methods for convenience
+  const [
+    setFieldValue,
+    setFieldMeta,
+    pushFieldValue,
+    insertFieldValue,
+    removeFieldValue,
+    swapFieldValues,
+  ] = methodMap.map(d => {
+    // Since this array is stable and always the same, we can disable
+    // the react-hooks linter here:
+
+    // eslint-disable-next-line
+    return React.useCallback(
+      (subField, ...args) =>
+        formApiRef.current[d](`${fieldName}.${subField}`, ...args),
+      // eslint-disable-next-line
+      [fieldName]
+    )
+  })
+
+  // Handle default values
+  const value = React.useMemo(
+    () =>
+      typeof preValue === 'undefined' && typeof defaultValue !== 'undefined'
+        ? defaultValue
+        : preValue,
+    [defaultValue, preValue]
+  )
+
+  React.useLayoutEffect(() => {
+    if (typeof preValue === 'undefined') {
+      setValue(value, { isTouched: false })
     }
+  }, [preValue, setValue, value])
 
-    const scope = {
-      ...field,
-      getValue: subField => getBy(field.value, subField),
-      getError: subField => getBy(field.error, subField),
-      getInfo: subField => getBy(field.info, subField),
-      getTouched: subField => getBy(field.touched, subField, true),
-      getValidating: subField => getBy(field.validating, subField),
-      setValue: (subField, value, bypassTouch) =>
-        parentScope.setValue([fieldName, subField], value, bypassTouch),
-      setError: (subField, value) =>
-        parentScope.setError([fieldName, subField], value),
-      setInfo: (subField, value) =>
-        parentScope.setInfo([fieldName, subField], value),
-      setTouched: (subField, value) =>
-        parentScope.setTouched([fieldName, subField], value),
-      setValidating: (subField, value) =>
-        parentScope.setValidating([fieldName, subField], value),
-      pushField: (subField, value) =>
-        parentScope.pushField([fieldName, subField], value),
-      insertField: (subField, value) =>
-        parentScope.insertField([fieldName, subField], value),
-      removeField: (subField, value) =>
-        parentScope.removeField([fieldName, subField], value),
-      swapFields: (subField, value1, value2) =>
-        parentScope.swapFields([fieldName, subField], value1, value2)
+  // Handle default meta
+  const meta = React.useMemo(
+    () =>
+      typeof preMeta === 'undefined'
+        ? {
+            error: defaultError,
+            isTouched: defaultIsTouched,
+            ...defaultMeta,
+          }
+        : preMeta,
+    [defaultError, defaultMeta, defaultIsTouched, preMeta]
+  )
+
+  React.useLayoutEffect(() => {
+    if (typeof preMeta === 'undefined') {
+      setMeta(meta)
     }
+  }, [meta, preMeta, setMeta, setValue, value])
 
-    return {
-      ...context,
-      scope,
-      field,
-      fieldPath: [...context.fieldPath, fieldName],
-      fieldName: fieldName
-    }
-  }, [context, fieldName])
+  apiRef.current = React.useMemo(
+    () => ({
+      value,
+      meta,
+      form: formApi,
+      fieldName,
+    }),
+    [fieldName, formApi, meta, value]
+  )
 
-  const {
-    field: { value, touched, setValue, setError }
-  } = context
+  Object.assign(apiRef.current, {
+    __metaRef,
+    setValue,
+    setMeta,
+    pushValue,
+    insertValue,
+    removeValue,
+    swapValues,
+    setFieldValue,
+    setFieldMeta,
+    pushFieldValue,
+    insertFieldValue,
+    removeFieldValue,
+    swapFieldValues,
+  })
 
   const validateRef = React.useRef()
   validateRef.current = validate
 
-  const runSyncValidation = React.useCallback(() => {
-    const validationError = cleanErrors(validateRef.current(value, context))
-    setError(validationError)
-    return validationError
-  }, [context, setError, value])
+  // Create a debounce for this field hook instance (not all instances)
+  apiRef.current.debounce = useAsyncDebounce()
 
-  const runValidation = React.useCallback(
-    ({ bypassTouch } = {}) => {
-      if (
-        validateRef.current &&
-        (validateOnMount || (bypassTouch ? true : touched))
-      ) {
-        const validationErrors = runSyncValidation()
-        if (validationErrors) {
-          return validationErrors
+  apiRef.current.runValidation = React.useCallback(async () => {
+    if (!validateRef.current) {
+      return
+    }
+    setMeta({ validating: true })
+
+    // Use the validationCount for all field instances to
+    // track freshness of the validation
+    const id = (__metaRef.current.validationCount || 0) + 1
+    __metaRef.current.validationCount = id
+
+    const checkLatest = () => id === __metaRef.current.validationCount
+
+    const error = await validateRef.current(
+      apiRef.current.value,
+      apiRef.current
+    )
+
+    if (checkLatest()) {
+      setMeta({ validating: false })
+      if (typeof error !== 'undefined') {
+        if (error) {
+          if (typeof error === 'string') {
+            setMeta({ error })
+          }
+        } else {
+          setMeta({ error: null })
         }
       }
-    },
-    [runSyncValidation, touched, validateOnMount]
-  )
-
-  Object.assign(context.field, {
-    runValidation
-  })
-
-  // When the value changes, run field-level validation
-  React.useEffect(() => {
-    runValidation()
-  }, [value, touched, runValidation])
-
-  // Queue up an effect to update the value to the default
-  // value if needed
-  React.useEffect(() => {
-    if (typeof value === 'undefined' && typeof defaultValue !== 'undefined') {
-      setValue(defaultValue, true)
     }
-  }, [value, defaultValue, setValue])
+  }, [__metaRef, setMeta])
 
-  // Additionally, pass that default value down if needed
-  context.field.value = React.useMemo(
-    () =>
-      typeof context.field.value === 'undefined'
-        ? defaultValue
-        : context.field.value,
-    [context.field.value, defaultValue]
-  )
-
+  // When the form gets dirty and when the value changes
+  // validate
   React.useEffect(() => {
-    return context.form.__registerField(context)
-  }, [context])
+    if (!validatePristine && !meta.isTouched) {
+      return
+    }
 
-  const FieldRef = React.useRef()
+    apiRef.current.runValidation(value)
+  }, [meta.isTouched, validatePristine, value])
 
-  if (!FieldRef.current) {
-    FieldRef.current = makeField()
+  const FieldScopeRef = React.useRef()
+
+  // Provide a FieldScope for nested field syntax
+  if (!FieldScopeRef.current) {
+    FieldScopeRef.current = makeField()
   }
 
-  FieldRef.current.contextValue = context
+  apiRef.current.FieldScope = FieldScopeRef.current
+  apiRef.current.FieldScope.contextValue = apiRef.current
 
-  return {
-    ...context,
-    Field: FieldRef.current
-  }
+  return apiRef.current
 }
 
-export function makeForm() {
+function makeForm() {
   return function Form({ children, noFormElement, ...rest }) {
     const {
-      form: { handleSubmit, submitting }
+      handleSubmit,
+      meta: { isSubmitting },
+      debug,
     } = Form.contextValue
 
     return (
@@ -575,8 +579,13 @@ export function makeForm() {
         {noFormElement ? (
           children
         ) : (
-          <form onSubmit={handleSubmit} disabled={submitting} {...rest}>
+          <form onSubmit={handleSubmit} disabled={isSubmitting} {...rest}>
             {children}
+            {debug ? (
+              <pre>
+                <code>{JSON.stringify(Form.contextValue, null, 2)}</code>
+              </pre>
+            ) : null}
           </form>
         )}
       </formContext.Provider>
@@ -584,8 +593,8 @@ export function makeForm() {
   }
 }
 
-export function makeField() {
-  return function Field({ children, ...rest }) {
+function makeField() {
+  return function Field({ children }) {
     return (
       <formContext.Provider value={Field.contextValue}>
         {children}
@@ -597,136 +606,132 @@ export function makeField() {
 export function splitFormProps({
   field,
   defaultValue,
+  defaultIsTouched,
+  defaultError,
+  defaultMeta,
+  validatePristine,
   validate,
-  validateOnMount,
   ...rest
 }) {
   return [
     {
       field,
       defaultValue,
+      defaultIsTouched,
+      defaultError,
+      defaultMeta,
+      validatePristine,
       validate,
-      validateOnMount
     },
-    rest
+    rest,
   ]
 }
 
 // Utils
 
-function getBy(obj, path, inheritTrue) {
+function getBy(obj, path) {
   if (!path) {
-    throw new Error('A path is required to use getBy')
+    throw new Error('A path string is required to use getBy')
   }
   const pathArray = makePathArray(path)
   const pathObj = pathArray
   return pathObj.reduce((current, pathPart) => {
     if (typeof current !== 'undefined') {
-      if (
-        current === true &&
-        inheritTrue &&
-        typeof current[pathPart] === 'undefined'
-      ) {
-        return current
-      } else if (current[pathPart] !== 'null') {
-        return current[pathPart]
-      }
+      return current[pathPart]
     }
     return undefined
   }, obj)
 }
 
-function setBy(obj, path, value, deleteWhenFalsey) {
-  if (!path) {
-    throw new Error('A path is required to use setBy')
-  }
+function setBy(obj, path, updater) {
+  path = path
+    .replace(/\[(\d*)\]/gm, '__int__$1')
+    .replace('[', '')
+    .replace(']', '.')
+    .replace(/\.{2,}/, '.')
+    .split('.')
+    .map(d => {
+      if (d.indexOf('__int__') === 0) {
+        return parseInt(d.substring('__int__'.length), 10)
+      }
+      return d
+    })
 
-  const keys = makePathArray(path)
-
-  let cursor = obj
-
-  while (keys.length > 1) {
-    const key = keys[0]
-    const nextKey = keys[1]
-    if (typeof nextKey === 'number' && !Array.isArray(cursor[key])) {
-      cursor[key] = []
+  function doSet(parent) {
+    if (!path.length) {
+      return typeof updater === 'function' ? updater(parent) : updater
     }
-    if (
-      typeof nextKey !== 'number' &&
-      (typeof cursor[key] !== 'object' || cursor[key] === null)
-    ) {
-      cursor[key] = {}
+
+    const key = path.shift()
+
+    if (typeof key === 'string') {
+      if (typeof parent === 'object') {
+        return {
+          ...parent,
+          [key]: doSet(parent[key]),
+        }
+      }
+      return {
+        [key]: doSet(),
+      }
     }
-    cursor = cursor[key]
-    keys.shift()
+
+    if (typeof key === 'number') {
+      if (Array.isArray(parent)) {
+        const prefix = parent.slice(0, key)
+        return [
+          ...(prefix.length ? prefix : new Array(key)),
+          doSet(parent[key]),
+          ...parent.slice(key + 1),
+        ]
+      }
+      return [...new Array(key), doSet()]
+    }
+
+    throw new Error('Uh oh!')
   }
 
-  if (!value && deleteWhenFalsey) {
-    delete cursor[keys[0]]
-  } else {
-    cursor[keys[0]] = value
-  }
-
-  return obj
+  return doSet(obj)
 }
 
-function makePathArray(obj) {
-  let path = []
-  const flat = flattenDeep(obj)
-  flat.forEach(part => {
-    if (typeof part === 'string') {
-      path = path.concat(
-        part
-          .replace(/\[(\d*)\]/gm, '.__int__$1')
-          .replace('[', '.')
-          .replace(']', '')
-          .split('.')
-          .map(d => {
-            if (d.indexOf('__int__') === 0) {
-              return parseInt(d.substring('__int__'.length), 10)
-            }
-            return d
-          })
-      )
-    } else {
-      path.push(part)
+function getFieldID(str) {
+  return str
+    .replace('[', '.')
+    .replace(']', '')
+    .replace(/\.{2,}/gm, '.')
+}
+
+function makePathArray(str) {
+  return str
+    .replace(/\[(\d*)\]/gm, '__int__$1')
+    .replace('[', '.')
+    .replace(']', '')
+    .split('.')
+    .map(d => {
+      if (d.indexOf('__int__') === 0) {
+        return parseInt(d.substring('__int__'.length), 10)
+      }
+      return d
+    })
+}
+
+function loopObject(obj, fn, callback) {
+  Object.keys(obj).forEach(key => {
+    callback(fn(obj[key], key), key)
+  })
+}
+
+function someObject(obj, fn) {
+  let found = false
+
+  loopObject(obj, fn, (result, key) => {
+    if (found) {
+      return
+    }
+    if (result) {
+      found = true
     }
   })
-  return path.filter(d => typeof d !== 'undefined')
-}
 
-function flattenDeep(arr, newArr = []) {
-  if (!Array.isArray(arr)) {
-    newArr.push(arr)
-  } else {
-    for (let i = 0; i < arr.length; i++) {
-      flattenDeep(arr[i], newArr)
-    }
-  }
-  return newArr
-}
-
-function cleanErrors(obj) {
-  if (!obj) {
-    return undefined
-  }
-  if (typeof obj === 'object') {
-    const newObj = {}
-    Object.keys(obj).forEach(key => {
-      const val = cleanErrors(obj[key]) // clean nested objects
-      if (val) {
-        newObj[key] = val
-      }
-    })
-    if (!Object.keys(newObj).length) {
-      return undefined
-    }
-  }
-  if (Array.isArray(obj)) {
-    const newObj = obj.map(cleanErrors) // clean nested falsey arrays
-    if (!newObj.length || newObj.every(d => !d)) {
-      return undefined
-    }
-  }
-  return obj
+  return found
 }

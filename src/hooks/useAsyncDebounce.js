@@ -1,0 +1,40 @@
+import React from 'react'
+
+export default function useAsyncDebounce(defaultFn, defaultWait = 0) {
+  const debounceRef = React.useRef({})
+  debounceRef.current.defaultFn = defaultFn
+  debounceRef.current.defaultWait = defaultWait
+
+  const debounce = React.useCallback(
+    async (
+      fn = debounceRef.current.defaultFn,
+      wait = debounceRef.current.defaultWait
+    ) => {
+      if (!debounceRef.current.promise) {
+        debounceRef.current.promise = new Promise(resolve => {
+          debounceRef.current.resolve = resolve
+        })
+      }
+
+      if (debounceRef.current.timeout) {
+        clearTimeout(debounceRef.current.timeout)
+      }
+
+      debounceRef.current.timeout = setTimeout(async () => {
+        delete debounceRef.current.timeout
+        try {
+          debounceRef.current.resolve(await fn())
+        } catch (err) {
+          debounceRef.current.reject(err)
+        } finally {
+          delete debounceRef.current.promise
+        }
+      }, wait)
+
+      return debounceRef.current.promise
+    },
+    []
+  )
+
+  return debounce
+}
