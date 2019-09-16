@@ -24,7 +24,7 @@ export function useForm({
   defaultValues = defaultDefaultValue,
   validate,
   validatePristine,
-  debug,
+  debugForm,
 }) {
   let [{ values, meta, __fieldMeta }, setState] = React.useState(() =>
     makeState({
@@ -60,9 +60,9 @@ export function useForm({
       values,
       meta,
       __fieldMeta,
-      debug,
+      debugForm,
     }),
-    [debug, __fieldMeta, meta, values]
+    [debugForm, __fieldMeta, meta, values]
   )
 
   const metaRef = React.useRef({})
@@ -572,7 +572,7 @@ function makeForm() {
     const {
       handleSubmit,
       meta: { isSubmitting },
-      debug,
+      debugForm,
     } = Form.contextValue
 
     return (
@@ -582,7 +582,7 @@ function makeForm() {
         ) : (
           <form onSubmit={handleSubmit} disabled={isSubmitting} {...rest}>
             {children}
-            {debug ? (
+            {debugForm ? (
               <pre>
                 <code>{JSON.stringify(Form.contextValue, null, 2)}</code>
               </pre>
@@ -612,6 +612,9 @@ export function splitFormProps({
   defaultMeta,
   validatePristine,
   validate,
+  onSubmit,
+  defaultValues,
+  debugForm,
   ...rest
 }) {
   return [
@@ -623,6 +626,9 @@ export function splitFormProps({
       defaultMeta,
       validatePristine,
       validate,
+      onSubmit,
+      defaultValues,
+      debugForm,
     },
     rest,
   ]

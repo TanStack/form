@@ -35,20 +35,20 @@ React Form is currently in **alpha**! This means:
 - [Installation](#installation)
 - [Quick Example](#quick-example)
 - [Documentation](#documentation)
-  - [`useForm`](#useform) - The primary hook for creating a form.
-    - [Form Validation](#form-validation)
-    - [Synchronous Validation](#synchronous-validation)
-    - [Asynchronous Validation](#asynchronous-validation)
-    - [Mixed Sync + Async Validation:](#mixed-sync--async-validation)
-    - [Debouncing Form Validation](#debouncing-form-validation)
-    - [Sync Debouncing](#sync-debouncing)
-    - [Async Debouncing](#async-debouncing)
-    - [Mixed Sync/Async Debouncing](#mixed-syncasync-debouncing)
-    - [Manually manage `meta` and field `meta`](#manually-manage-formmeta-and-field-meta)
-  - [`useField`](#usefield) - A hook for utilizing form state and lifecycle on the field level.
-    - [Field Validation](#field-validation)
-  - [`useFormContext`](#useformcontext) - Use this hook to gain access to the form state within a `useForm`'s `Form` component.
-  - [`splitFormProps`](#splitformprops) - A function for automatically extracting React-Form-related props from an object
+  - [`useForm`](#useform)
+  - [`useField`](#usefield)
+  - [Validation](#validation)
+  - [Synchronous Validation](#synchronous-validation)
+  - [Asynchronous Validation](#asynchronous-validation)
+  - [Mixed Sync + Async Validation:](#mixed-sync--async-validation)
+  - [Debouncing Form Validation](#debouncing-form-validation)
+  - [Sync Debouncing](#sync-debouncing)
+  - [Async Debouncing](#async-debouncing)
+  - [Mixed Sync/Async Debouncing](#mixed-syncasync-debouncing)
+  - [Manually manage form `meta` and field `meta`](#manually-manage-form-meta-and-field-meta)
+  - [Field Scoping](#field-scoping)
+  - [`useFormContext`](#useformcontext)
+  - [`splitFormProps`](#splitformprops)
 
 ## Installation
 
@@ -190,7 +190,7 @@ An `object` with the following components, properties and methods:
     - This can be used to enable/disable a submit button for the form.
   - `...any`
     - Any other meta information can be stored here via the `field.setMeta` or `instance.setFieldMeta` functions
-- `debug: Bool`
+- `debugForm: Bool`
   - If set to `true` the form instance will be serialized and rendered after the `Form` element returned by the instance
 - `reset() => void`
   - This function will reset the form's state, and set `instance.values` to the `defaultValues` option
@@ -468,7 +468,7 @@ const options = {
 }
 ```
 
-### Manually manage `meta` or a field `meta`
+### Manually manage form `meta` and field `meta`
 
 Returning an error string or false from validate is simply shorthand for setting/unsetting the `error` property on either the form's `instance.meta` object or a field's `meta` object. If you don't want to set an error and would rather set a success or warning message, you can use the `instance.setMeta` (for form-level validation) or the `instance.setMeta` function (for field-level validation). More than just the error field can be set/used on both the `instance.meta` object and each individual field's `meta` object. You could use this meta information for success messages, warnings, or any other information about a field. Only the `error` and `isTouched` meta properties are used internally by React Form to determine form validity.
 
@@ -573,3 +573,67 @@ function ConfigField({ field: parentField }) {
 ```
 
 Using this approach, you can avoid having to compose deeply nested field names!
+
+## `useFormContext`
+
+A hook for gaining access to the form state from within a `Form` component
+
+```js
+import { useFormContext } from 'react-form'
+
+function App() {
+  const { Form } = useForm()
+
+  return (
+    <Form>
+      <Stuff />
+    </Form>
+  )
+}
+
+function Stuff() {
+  const formInstance = useFormContext()
+
+  console.log(formInstance)
+}
+```
+
+## `splitFormProps`
+
+A utility function for filter React-Form-related props from an object.
+
+```js
+import { splitFormProps } from 'react-form'
+
+function TextField(props) {
+  const [
+    {
+      field,
+      defaultValue,
+      defaultIsTouched,
+      defaultError,
+      defaultMeta,
+      validatePristine,
+      validate,
+      onSubmit,
+      defaultValues,
+      debugForm,
+    },
+    ...rest
+  ] = props
+
+  const fieldInstance = useField(field, {
+    defaultValue,
+    defaultIsTouched,
+    defaultError,
+    defaultMeta,
+    validatePristine,
+    validate,
+    onSubmit,
+    defaultValues,
+    debugForm,
+  })
+
+  return <input {...rest} />
+}
+```
