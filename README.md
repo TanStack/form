@@ -259,9 +259,7 @@ const fieldInstance = useField(fieldPath, options)
   - **Required**
   - The path the value for this field.
   - Supports deeply nested object notation, eg. `foo[3].bar[1].baz`
-  - Periods and brackets are used to specify array indices vs object keys.
-  - Object keys should not contain quotes or use bracket syntax, eg. `foo.bar` is correct. Do not use `foo[bar]` or `foo['bar']`
-  - Array indices should be integers and not contain quotes. eg. use `foo[3].bar[1].baz`. Do not use `foo.3.bar.1.baz`, as this would result in objects with keys `3` and `1` instead of arrays and indices.
+  - Any integers that can be reliably detected between notation boundaries will be treated as array indices: `1`, `[1]`, `1.`, `.1.` or `.1`
 - `options` - An optional object to configure the field
   - `defaultValue: any`
     - Use `defaultValue` to set the default `value` state for the field.

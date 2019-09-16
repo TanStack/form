@@ -188,6 +188,8 @@ export function useForm({
 
   apiRef.current.getFieldMeta = React.useCallback(field => {
     const fieldID = getFieldID(field)
+    apiRef.current.__fieldMeta[fieldID] =
+      apiRef.current.__fieldMeta[fieldID] || {}
     return apiRef.current.__fieldMeta[fieldID]
   }, [])
 
@@ -196,7 +198,7 @@ export function useForm({
     if (!apiRef.current.__fieldMetaRefs[fieldID]) {
       apiRef.current.__fieldMetaRefs[fieldID] = { current: {} }
     }
-    return apiRef.current.__fieldMetaRefs[field]
+    return apiRef.current.__fieldMetaRefs[fieldID]
   }, [])
 
   apiRef.current.setFieldMeta = React.useCallback(
@@ -205,7 +207,6 @@ export function useForm({
       setState(old => ({
         ...old,
         __fieldMeta: {
-          ...old.__fieldMeta,
           [fieldID]:
             typeof updater === 'function'
               ? updater(old.__fieldMeta[fieldID])
@@ -454,8 +455,8 @@ export function useField(
     [defaultValue, preValue]
   )
 
-  React.useLayoutEffect(() => {
-    if (typeof preValue === 'undefined') {
+  React.useEffect(() => {
+    if (typeof preValue === 'undefined' && typeof value !== 'undefined') {
       setValue(value, { isTouched: false })
     }
   }, [preValue, setValue, value])
@@ -465,16 +466,16 @@ export function useField(
     () =>
       typeof preMeta === 'undefined'
         ? {
+            ...defaultMeta,
             error: defaultError,
             isTouched: defaultIsTouched,
-            ...defaultMeta,
           }
         : preMeta,
     [defaultError, defaultMeta, defaultIsTouched, preMeta]
   )
 
-  React.useLayoutEffect(() => {
-    if (typeof preMeta === 'undefined') {
+  React.useEffect(() => {
+    if (typeof preMeta === 'undefined' && typeof meta !== 'undefined') {
       setMeta(meta)
     }
   }, [meta, preMeta, setMeta, setValue, value])
@@ -644,18 +645,7 @@ function getBy(obj, path) {
 }
 
 function setBy(obj, path, updater) {
-  path = path
-    .replace(/\[(\d*)\]/gm, '__int__$1')
-    .replace('[', '')
-    .replace(']', '.')
-    .replace(/\.{2,}/, '.')
-    .split('.')
-    .map(d => {
-      if (d.indexOf('__int__') === 0) {
-        return parseInt(d.substring('__int__'.length), 10)
-      }
-      return d
-    })
+  path = makePathArray(path)
 
   function doSet(parent) {
     if (!path.length) {
@@ -695,17 +685,24 @@ function setBy(obj, path, updater) {
 }
 
 function getFieldID(str) {
-  return str
-    .replace('[', '.')
-    .replace(']', '')
-    .replace(/\.{2,}/gm, '.')
+  return makePathArray(str).join('_')
 }
+
+const reFindNumbers0 = /^(\d*)$/gm
+const reFindNumbers1 = /\.(\d*)\./gm
+const reFindNumbers2 = /^(\d*)\./gm
+const reFindNumbers3 = /\.(\d*$)/gm
+const reFindMultiplePeriods = /\.{2,}/gm
 
 function makePathArray(str) {
   return str
-    .replace(/\[(\d*)\]/gm, '__int__$1')
-    .replace('[', '.')
-    .replace(']', '')
+    .replace('[', '')
+    .replace(']', '.')
+    .replace(reFindNumbers0, '__int__$1')
+    .replace(reFindNumbers1, '.__int__$1.')
+    .replace(reFindNumbers2, '__int__$1.')
+    .replace(reFindNumbers3, '.__int__$1')
+    .replace(reFindMultiplePeriods, '.')
     .split('.')
     .map(d => {
       if (d.indexOf('__int__') === 0) {
