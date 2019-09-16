@@ -1,13 +1,12 @@
 {
   "name": "react-form",
-  "version": "4.0.0-alpha.0",
+  "version": "4.0.0-alpha.1",
   "description": "⚛️ 💼 React hooks for managing form state and lifecycle",
   "author": "tannerlinsley",
   "license": "MIT",
   "repository": "tannerlinsley/react-form",
   "main": "dist/index.js",
-  "_module": "dist/index.es.js",
-  "_jsnext:main": "dist/index.es.js",
+  "module": "dist/index.es.js",
   "scripts": {
     "test": "cross-env CI=1 react-scripts test --env=jsdom",
     "test:watch": "react-scripts test --env=jsdom",
@@ -21,9 +20,7 @@
     "prop-types": "^15.5.4",
     "react": "^16.8.3"
   },
-  "dependencies": {
-    "immer": "^3.1.3"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
