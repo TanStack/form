@@ -382,17 +382,17 @@ const options = {
 
 ### Asynchronous Validation
 
-Asynchronous validation is as easy as returning a promise:
+Asynchronous validation is as easy as returning a promise that resolves to the standard return types shown above in the synchronous validation example:
 
 ```js
 const options = {
   validate: async value => {
-    // If you need to perform async validation, you can return a promise
     const error = await validateOnServer(values)
 
     if (error) {
       return error
     }
+
     return false
   },
 }
@@ -400,14 +400,16 @@ const options = {
 
 ### Mixed Sync + Async Validation:
 
+You also mix both synchronous and asynchronous validation easily with this pattern as well:
+
 ```js
 const options = {
   validate: async value => {
-    // You can mix synchronous and asynchronous validation easily with this pattern
     // First check for synchronous errors
     if (!values.foo || !values.bar) {
       return 'Foo and bar are required!'
     }
+
     // Then return a promise that resolves any async errors
     const error = await validateOnServer(values)
     return error ? error : false
@@ -420,6 +422,8 @@ const options = {
 If you're validation is firing too often, you can debounce any stage of your validation function (sync or async) with React Form's built-in debounce utility. `instance.debounce` returns a promise that only resolves for the latest call after a given amount of time. This way, any outdated validation attempts are discarded automatically.
 
 ### Sync Debouncing
+
+To debounce synchronous validation, return the promise from `debounce`, called with a synchronous function:
 
 ```js
 const options = {
@@ -438,26 +442,34 @@ const options = {
 
 ### Async Debouncing
 
+To debounce asynchronous validation, return the promise from `debounce`, called with an asynchronous function:
+
 ```js
 const options = {
   validate: async (values, instance) => {
-    return instance.debounce(() => {
+    return instance.debounce(async () => {
       // Wait 2 seconds before validating on the server
       const error = await validateOnServer(values)
       return error ? error : false
     }, 2000)
-  }
+  },
 }
 ```
 
 ### Mixed Sync/Async Debouncing
 
+Again, you can mix both sync/async and immediate/debounced behavior however you'd like!
+
+> **Pro Tip**: This is my favorite and recommended approach to mixed validation.
+
 ```js
 const options = {
   validate: async (values, instance) => {
+    // Check for synchronous errors immediately without debouncing them
     if (!values.foo || !values.bar) {
       return 'Foo and bar are required!'
     }
+
     // Then, if sync validation passes
     return instance.debounce(() => {
       // Wait 2 seconds before validating on the server
