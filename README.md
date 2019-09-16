@@ -361,11 +361,11 @@ For example, if our field had the `fieldPath` of `foo`, then `setFieldValue('[0]
 
 ### Synchronous Validation
 
-If you don't need to perform any async validation in your form or field, you can just return a value directly:
+If you don't need to perform any async validation in your form or field, you can just return an error string directly (or `false` clear an error):
 
-- If this function resolve truthy, the value returned will be stored in either the form's `instance.meta.error` or the field's `meta.error` value
-- If this function resolve `false`, the error in either the form's `instance.meta.error` or the field's `meta.error` value the will be set to `null`
-- if this function resolve `undefined`, no changes will happen
+- If a validation function returns a `string`, the value returned will be stored in either the form's `instance.meta.error` or the field's `meta.error` value
+- If a validation function returns `false`, the error in either the form's `instance.meta.error` or the field's `meta.error` value the will be set to `null`
+- if a validation function returns `undefined`, no changes will happen
 
 ```js
 const options = {
