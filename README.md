@@ -39,6 +39,7 @@ React Form is currently in **alpha**! This means:
 - No nonsense meta management for both forms and form fields
 - Highly memoized for frequent and fast rerenders
 - Flexible form API at the field, scope, and form levels
+- 7 kb (gzipped)
 
 ## Table of Contents
 
@@ -70,74 +71,106 @@ $ npm i react-form --save
 
 ## Quick Example
 
-This will render a very basic form:
+Next, let's build a reusable input field.
 
 ```js
-import React from 'react'
-import { useForm, useField } from 'react-form'
+import { useField, splitFormProps } from 'react-form'
 
-// Build an basic TextInput field
-const InputField = React.forwardRef(({ field, validate, ...rest }, ref) => {
-  // Use the useField hook with form props to access form state
+const InputField = React.forwardRef((props, ref) => {
+  // Let's use splitFormProps to get form-specific props
+  const [field, fieldOptions, rest] = splitFormProps(props)
+
+  // Use the useField hook with a field and field options
+  // to access field state
   const {
-    value,
-    meta: { error, isTouched },
-    setValue,
-    setMeta,
-  } = useField(field, {
-    validate,
-  })
+    meta: { error, isTouched, isValidating },
+    getInputProps,
+  } = useField(field, fieldOptions)
 
-  // Build your form input
+  // Build the field
   return (
     <>
       <input
-        ref={ref}
-        // Use setValue to update form values
-        onChange={e => setValue(e.target.value)}
-        // Use setMeta to update form touch state
-        onBlur={() => setMeta({ isTouched: true })}
-        value={value}
-        {...rest}
+        {...getInputProps({ ref, ...rest })}
+
+        // This will give us the following props:
+        // {
+        //   value: field.value,
+        //   onChange: e => field.setValue(e.target.value),
+        //   onBlur: e => field.setMeta({ isTouched: true }),
+        //   ref,
+        //   ...rest
+        // }
+        //
+        // You can always wire this up on your own, but prop
+        // getters are great for this!
       />
-      {/* Use isTouched and error state to show errors */}
-      {isTouched && error ? <em>{error}</em> : null}
+
+      {/*
+        Let's inline some validation and error information
+        for our field
+      */}
+
+      {isValidating ? (
+        <em>Validating...</em>
+      ) : isTouched && error ? (
+        <em>{error}</em>
+      ) : null}
     </>
   )
 })
+```
 
+Now that we have an input field, we can build our form!
+
+```js
 function MyForm() {
-  // Pass default values (be sure to memoize any options used)
+  // Memoize some default values
   const defaultValues = React.useMemo(
     () => ({
-      foo: 'hello',
-      bar: {
-        baz: 'world',
+      name: 'Tanner',
+      address: {
+        street: '123 React Road',
       },
     }),
     []
   )
 
   // Use the useForm hook to create a form instance
-  const { Form } = useForm({
-    // Pass the default values
+  const {
+    Form,
+    meta: { isSubmitting, canSubmit },
+  } = useForm({
     defaultValues,
-    // Handle form submission
-    onSubmit: values => {
-      console.log('These are the values:', values)
+    onSubmit: async (values, instance) => {
+      // onSubmit (and everything else in React Form)
+      // has async support out-of-the-box
+      await sendToServer(values)
+
+      // The entire up-to-date form api is
+      // always available, everywhere
+      instance.reset()
     },
   })
 
   return (
-    // Form is just a thin wrapper around the `form` html element.
-    // It automatically wires up the onSubmit logic and context for `useField`
     <Form>
-      <InputField field="foo" />
-      <InputField
-        field="bar.baz"
-        validate={value => (!value ? 'Baz is required!' : false)}
-      />
-      <button type="submit">Submit</button>
+      <label>
+        Name: <InputField field="name" />
+      </label>
+      <label>
+        Address Street:{' '}
+        <InputField
+          field="address.street"
+          validate={value => (!value ? 'Baz is required!' : false)}
+        />
+      </label>
+
+      {isSubmitting ? 'Submitting...' : null}
+
+      <button type="submit" disabled={!canSubmit}>
+        Submit
+      </button>
     </Form>
   )
 }
@@ -628,33 +661,21 @@ A utility function for filter React-Form-related props from an object.
 import { splitFormProps } from 'react-form'
 
 function TextField(props) {
-  const [
-    {
-      field,
-      defaultValue,
-      defaultIsTouched,
-      defaultError,
-      defaultMeta,
-      validatePristine,
-      validate,
-      onSubmit,
-      defaultValues,
-      debugForm,
-    },
-    ...rest
-  ] = props
+  const [field, options, rest] = splitFormProps(props)
 
-  const fieldInstance = useField(field, {
-    defaultValue,
-    defaultIsTouched,
-    defaultError,
-    defaultMeta,
-    validatePristine,
-    validate,
-    onSubmit,
-    defaultValues,
-    debugForm,
-  })
+  // options === {
+  //   defaultValue,
+  //   defaultIsTouched,
+  //   defaultError,
+  //   defaultMeta,
+  //   validatePristine,
+  //   validate,
+  //   onSubmit,
+  //   defaultValues,
+  //   debugForm,
+  // }
+
+  const fieldInstance = useField(field, options)
 
   return <input {...rest} />
 }

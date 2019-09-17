@@ -26,13 +26,27 @@ export function useForm({
   validatePristine,
   debugForm,
 }) {
-  let [{ values, meta, __fieldMeta }, setState] = React.useState(() =>
+  let [
+    {
+      values,
+      meta,
+      meta: { isSubmitting, isTouched },
+      __fieldMeta,
+    },
+    setState,
+  ] = React.useState(() =>
     makeState({
       values: defaultValues,
     })
   )
 
-  const { isSubmitting, isTouched } = meta
+  const apiRef = React.useRef()
+  const metaRef = React.useRef({})
+  const __fieldMetaRefsRef = React.useRef({})
+  const validateRef = React.useRef()
+
+  // Keep validate up to date with the latest version
+  validateRef.current = validate
 
   // Can we submit this form?
   const isValid =
@@ -52,10 +66,8 @@ export function useForm({
     [canSubmit, meta, isValid]
   )
 
-  const apiRef = React.useRef()
-
   // We want the apiRef to change every time state updates
-  apiRef.current = React.useMemo(
+  const api = React.useMemo(
     () => ({
       values,
       meta,
@@ -64,14 +76,10 @@ export function useForm({
     }),
     [debugForm, __fieldMeta, meta, values]
   )
+  // Keep the apiRef up to date with the latest version of the api
+  apiRef.current = api
 
-  const metaRef = React.useRef({})
-  const __fieldMetaRefsRef = React.useRef({})
-
-  apiRef.current.__fieldMetaRefs = __fieldMetaRefsRef.current
-  apiRef.current.onSubmit = onSubmit
-
-  apiRef.current.reset = React.useCallback(() => {
+  const reset = React.useCallback(() => {
     setState(() =>
       makeState({
         values: defaultValues,
@@ -80,7 +88,7 @@ export function useForm({
   }, [defaultValues, setState])
 
   // On submit
-  apiRef.current.handleSubmit = React.useCallback(async e => {
+  const handleSubmit = React.useCallback(async e => {
     e.persist()
     e.preventDefault()
 
@@ -120,13 +128,10 @@ export function useForm({
     }
   }, [])
 
-  const validateRef = React.useRef()
-  validateRef.current = validate
-
   // Create a debounce for this field hook instance (not all instances)
-  apiRef.current.debounce = useAsyncDebounce()
+  const debounce = useAsyncDebounce()
 
-  apiRef.current.setMeta = React.useCallback(
+  const setMeta = React.useCallback(
     updater => {
       setState(old => ({
         ...old,
@@ -139,11 +144,11 @@ export function useForm({
     [setState]
   )
 
-  apiRef.current.runValidation = React.useCallback(async () => {
+  const runValidation = React.useCallback(async () => {
     if (!validateRef.current) {
       return
     }
-    apiRef.current.setMeta({ validating: true })
+    apiRef.current.setMeta({ isValidating: true })
 
     // Use the validationCount for all field instances to
     // track freshness of the validation
@@ -158,7 +163,7 @@ export function useForm({
     )
 
     if (checkLatest()) {
-      apiRef.current.setMeta({ validating: false })
+      apiRef.current.setMeta({ isValidating: false })
       if (typeof error !== 'undefined') {
         if (error) {
           if (typeof error === 'string') {
@@ -171,29 +176,19 @@ export function useForm({
     }
   }, [])
 
-  // When the form gets dirty and when the value changes
-  // validate
-  React.useEffect(() => {
-    if (!validatePristine && !isTouched) {
-      return
-    }
-
-    apiRef.current.runValidation(values)
-  }, [isTouched, validatePristine, values])
-
-  apiRef.current.getFieldValue = React.useCallback(
+  const getFieldValue = React.useCallback(
     field => getBy(apiRef.current.values, field),
     []
   )
 
-  apiRef.current.getFieldMeta = React.useCallback(field => {
+  const getFieldMeta = React.useCallback(field => {
     const fieldID = getFieldID(field)
     apiRef.current.__fieldMeta[fieldID] =
       apiRef.current.__fieldMeta[fieldID] || {}
     return apiRef.current.__fieldMeta[fieldID]
   }, [])
 
-  apiRef.current.__getFieldMetaRef = React.useCallback(field => {
+  const __getFieldMetaRef = React.useCallback(field => {
     const fieldID = getFieldID(field)
     if (!apiRef.current.__fieldMetaRefs[fieldID]) {
       apiRef.current.__fieldMetaRefs[fieldID] = { current: {} }
@@ -201,7 +196,7 @@ export function useForm({
     return apiRef.current.__fieldMetaRefs[fieldID]
   }, [])
 
-  apiRef.current.setFieldMeta = React.useCallback(
+  const setFieldMeta = React.useCallback(
     (field, updater) => {
       const fieldID = getFieldID(field)
       setState(old => ({
@@ -217,7 +212,7 @@ export function useForm({
     [setState]
   )
 
-  apiRef.current.setFieldValue = React.useCallback(
+  const setFieldValue = React.useCallback(
     (field, updater, { isTouched = true } = {}) => {
       setState(old => ({
         ...old,
@@ -239,7 +234,7 @@ export function useForm({
     [setState]
   )
 
-  apiRef.current.pushFieldValue = React.useCallback((field, value, options) => {
+  const pushFieldValue = React.useCallback((field, value, options) => {
     apiRef.current.setFieldValue(
       field,
       old => {
@@ -255,45 +250,39 @@ export function useForm({
     )
   }, [])
 
-  apiRef.current.insertFieldValue = React.useCallback(
-    (field, index, value, options) => {
-      apiRef.current.setFieldValue(
-        field,
-        old => {
-          if (Array.isArray(old)) {
-            return old.map((d, i) => (i === index ? value : d))
-          } else {
-            throw Error(
-              `Cannot insert a field value into a non-array field. Check that this field's existing value is an array: ${field}.`
-            )
-          }
-        },
-        options
-      )
-    },
-    []
-  )
+  const insertFieldValue = React.useCallback((field, index, value, options) => {
+    apiRef.current.setFieldValue(
+      field,
+      old => {
+        if (Array.isArray(old)) {
+          return old.map((d, i) => (i === index ? value : d))
+        } else {
+          throw Error(
+            `Cannot insert a field value into a non-array field. Check that this field's existing value is an array: ${field}.`
+          )
+        }
+      },
+      options
+    )
+  }, [])
 
-  apiRef.current.removeFieldValue = React.useCallback(
-    (field, index, options) => {
-      apiRef.current.setFieldValue(
-        field,
-        old => {
-          if (Array.isArray(old)) {
-            return old.filter((d, i) => i !== index)
-          } else {
-            throw Error(
-              `Cannot remove a field value from a non-array field. Check that this field's existing value is an array: ${field}.`
-            )
-          }
-        },
-        options
-      )
-    },
-    []
-  )
+  const removeFieldValue = React.useCallback((field, index, options) => {
+    apiRef.current.setFieldValue(
+      field,
+      old => {
+        if (Array.isArray(old)) {
+          return old.filter((d, i) => i !== index)
+        } else {
+          throw Error(
+            `Cannot remove a field value from a non-array field. Check that this field's existing value is an array: ${field}.`
+          )
+        }
+      },
+      options
+    )
+  }, [])
 
-  apiRef.current.swapFieldValues = React.useCallback(
+  const swapFieldValues = React.useCallback(
     (path, index1, index2) => {
       setState(old => {
         const old1 = getBy(old.values, [path, index1])
@@ -311,7 +300,7 @@ export function useForm({
     [setState]
   )
 
-  apiRef.current.setValues = React.useCallback(
+  const setValues = React.useCallback(
     values => {
       setState(old => ({
         ...old,
@@ -320,6 +309,40 @@ export function useForm({
     },
     [setState]
   )
+
+  // Create the Form element if necessary
+  const Form = useFormElement(api)
+
+  Object.assign(api, {
+    __fieldMetaRefs: __fieldMetaRefsRef.current,
+    onSubmit,
+    reset,
+    handleSubmit,
+    debounce,
+    setMeta,
+    runValidation,
+    getFieldValue,
+    getFieldMeta,
+    __getFieldMetaRef,
+    setFieldMeta,
+    setFieldValue,
+    pushFieldValue,
+    insertFieldValue,
+    removeFieldValue,
+    swapFieldValues,
+    setValues,
+    Form,
+  })
+
+  // When the form gets dirty and when the value changes
+  // validate
+  React.useEffect(() => {
+    if (!validatePristine && !isTouched) {
+      return
+    }
+
+    apiRef.current.runValidation(values)
+  }, [isTouched, validatePristine, values])
 
   // When defaultValues update, set them
   React.useEffect(() => {
@@ -330,16 +353,6 @@ export function useForm({
       }))
     }
   }, [defaultValues, setState])
-
-  const FormRef = React.useRef()
-
-  if (!FormRef.current) {
-    FormRef.current = makeForm()
-  }
-
-  // Pass the full context to the form element
-  apiRef.current.Form = FormRef.current
-  apiRef.current.Form.contextValue = apiRef.current
 
   // Return the root form and the Form component to the hook user
   return apiRef.current
@@ -364,7 +377,12 @@ const methodMap = [
   'swapFieldValues',
 ]
 
-const defaultDefaultMeta = {}
+const defaultDefaultMeta = {
+  error: null,
+  isTouched: false,
+  isValidating: false,
+}
+
 export function useField(
   fieldName,
   {
@@ -382,28 +400,69 @@ export function useField(
     )
   }
 
+  const formApiRef = React.useRef()
+  const fieldApiRef = React.useRef({})
+  const validateRef = React.useRef()
+
+  // Keep validate up to date with the latest version
+  validateRef.current = validate
+
   let formApi = useFormContext()
 
   // Support field prefixing from FieldScope
   let fieldPrefix = ''
-
   if (formApi.fieldName) {
-    // This is okay because any `.[`'s will get replace to just `.`
     fieldPrefix = `${formApi.fieldName}.`
     formApi = formApi.form
   }
-
   fieldName = fieldPrefix + fieldName
 
-  const formApiRef = React.useRef()
-  const apiRef = React.useRef({})
+  // Create a debounce for this field hook instance (not all instances)
+  const debounce = useAsyncDebounce()
 
   // An escape hatch for accessing latest formAPI
   formApiRef.current = formApi
 
+  // Get the field value, meta, and metaRef
   const preValue = formApi.getFieldValue(fieldName)
   const preMeta = formApi.getFieldMeta(fieldName)
   const __metaRef = formApi.__getFieldMetaRef(fieldName)
+
+  // Handle default value
+  const value = React.useMemo(
+    () =>
+      typeof preValue === 'undefined' && typeof defaultValue !== 'undefined'
+        ? defaultValue
+        : preValue,
+    [defaultValue, preValue]
+  )
+
+  // Handle default meta
+  const meta = React.useMemo(
+    () =>
+      typeof preMeta === 'undefined'
+        ? {
+            ...defaultMeta,
+            error: defaultError,
+            isTouched: defaultIsTouched,
+          }
+        : preMeta,
+    [defaultError, defaultMeta, defaultIsTouched, preMeta]
+  )
+
+  // Create the fieldApi
+  const fieldApi = React.useMemo(
+    () => ({
+      value,
+      meta,
+      form: formApi,
+      fieldName,
+    }),
+    [fieldName, formApi, meta, value]
+  )
+
+  // Keep the fieldApiRef up to date
+  fieldApiRef.current = fieldApi
 
   // Let's scope some field-level methods for convenience
   const [
@@ -446,51 +505,73 @@ export function useField(
     )
   })
 
-  // Handle default values
-  const value = React.useMemo(
-    () =>
-      typeof preValue === 'undefined' && typeof defaultValue !== 'undefined'
-        ? defaultValue
-        : preValue,
-    [defaultValue, preValue]
-  )
-
-  React.useEffect(() => {
-    if (typeof preValue === 'undefined' && typeof value !== 'undefined') {
-      setValue(value, { isTouched: false })
+  const runValidation = React.useCallback(async () => {
+    if (!validateRef.current) {
+      return
     }
-  }, [preValue, setValue, value])
+    setMeta({ isValidating: true })
 
-  // Handle default meta
-  const meta = React.useMemo(
-    () =>
-      typeof preMeta === 'undefined'
-        ? {
-            ...defaultMeta,
-            error: defaultError,
-            isTouched: defaultIsTouched,
+    // Use the validationCount for all field instances to
+    // track freshness of the validation
+    const id = (__metaRef.current.validationCount || 0) + 1
+    __metaRef.current.validationCount = id
+
+    const checkLatest = () => id === __metaRef.current.validationCount
+
+    try {
+      const error = await validateRef.current(
+        fieldApiRef.current.value,
+        fieldApiRef.current
+      )
+      if (checkLatest()) {
+        setMeta({ isValidating: false })
+        if (typeof error !== 'undefined') {
+          if (error) {
+            if (typeof error === 'string') {
+              setMeta({ error })
+            }
+          } else {
+            setMeta({ error: null })
           }
-        : preMeta,
-    [defaultError, defaultMeta, defaultIsTouched, preMeta]
-  )
-
-  React.useEffect(() => {
-    if (typeof preMeta === 'undefined' && typeof meta !== 'undefined') {
-      setMeta(meta)
+        }
+      }
+    } catch (error) {
+      if (checkLatest()) {
+        throw error
+      }
+    } finally {
+      if (checkLatest()) {
+        setMeta({ isValidating: false })
+      }
     }
-  }, [meta, preMeta, setMeta, setValue, value])
+  }, [__metaRef, setMeta])
 
-  apiRef.current = React.useMemo(
-    () => ({
-      value,
-      meta,
-      form: formApi,
-      fieldName,
-    }),
-    [fieldName, formApi, meta, value]
+  const getInputProps = React.useCallback(
+    ({ onChange, onBlur, ...rest } = {}) => {
+      return {
+        value,
+        onChange: e => {
+          setValue(e.target.value)
+          if (onChange) {
+            onChange(e)
+          }
+        },
+        onBlur: e => {
+          setMeta({ isTouched: true })
+          if (onBlur) {
+            onBlur(e)
+          }
+        },
+        ...rest,
+      }
+    },
+    [setMeta, setValue, value]
   )
 
-  Object.assign(apiRef.current, {
+  const FieldScope = useFieldScope(fieldApi)
+
+  // Fill in the rest of the fieldApi
+  Object.assign(fieldApi, {
     __metaRef,
     setValue,
     setMeta,
@@ -504,104 +585,94 @@ export function useField(
     insertFieldValue,
     removeFieldValue,
     swapFieldValues,
+    debounce,
+    runValidation,
+    getInputProps,
+    FieldScope,
   })
 
-  const validateRef = React.useRef()
-  validateRef.current = validate
-
-  // Create a debounce for this field hook instance (not all instances)
-  apiRef.current.debounce = useAsyncDebounce()
-
-  apiRef.current.runValidation = React.useCallback(async () => {
-    if (!validateRef.current) {
-      return
+  // The default value effect handler
+  React.useEffect(() => {
+    if (typeof preValue === 'undefined' && typeof value !== 'undefined') {
+      setValue(value, { isTouched: false })
     }
-    setMeta({ validating: true })
+  }, [preValue, setValue, value])
 
-    // Use the validationCount for all field instances to
-    // track freshness of the validation
-    const id = (__metaRef.current.validationCount || 0) + 1
-    __metaRef.current.validationCount = id
-
-    const checkLatest = () => id === __metaRef.current.validationCount
-
-    const error = await validateRef.current(
-      apiRef.current.value,
-      apiRef.current
-    )
-
-    if (checkLatest()) {
-      setMeta({ validating: false })
-      if (typeof error !== 'undefined') {
-        if (error) {
-          if (typeof error === 'string') {
-            setMeta({ error })
-          }
-        } else {
-          setMeta({ error: null })
-        }
-      }
+  // The default meta effect handler
+  React.useEffect(() => {
+    if (typeof preMeta === 'undefined' && typeof meta !== 'undefined') {
+      setMeta(meta)
     }
-  }, [__metaRef, setMeta])
+  }, [meta, preMeta, setMeta, setValue, value])
 
-  // When the form gets dirty and when the value changes
-  // validate
+  // When the form gets dirty and when the value changes, run the validation
   React.useEffect(() => {
     if (!validatePristine && !meta.isTouched) {
       return
     }
 
-    apiRef.current.runValidation(value)
-  }, [meta.isTouched, validatePristine, value])
+    runValidation(value)
+  }, [meta.isTouched, runValidation, validatePristine, value])
 
+  return fieldApiRef.current
+}
+
+function useFormElement(contextValue) {
+  const FormRef = React.useRef()
+  const FormApiRef = React.useRef()
+
+  FormApiRef.current = contextValue
+
+  // Create a new form element
+  if (!FormRef.current) {
+    FormRef.current = function Form({ children, noFormElement, ...rest }) {
+      const {
+        handleSubmit,
+        meta: { isSubmitting },
+        debugForm,
+      } = FormApiRef.current
+
+      return (
+        <formContext.Provider value={FormApiRef.current}>
+          {noFormElement ? (
+            children
+          ) : (
+            <form onSubmit={handleSubmit} disabled={isSubmitting} {...rest}>
+              {children}
+              {debugForm ? (
+                <pre>
+                  <code>{JSON.stringify(FormApiRef.current, null, 2)}</code>
+                </pre>
+              ) : null}
+            </form>
+          )}
+        </formContext.Provider>
+      )
+    }
+  }
+
+  // Return the form element
+  return FormRef.current
+}
+
+function useFieldScope(contextValue) {
   const FieldScopeRef = React.useRef()
+  const FieldScopeApiRef = React.useRef()
 
-  // Provide a FieldScope for nested field syntax
+  FieldScopeApiRef.current = contextValue
+
+  // Create a new form element
   if (!FieldScopeRef.current) {
-    FieldScopeRef.current = makeField()
+    FieldScopeRef.current = function Field({ children }) {
+      return (
+        <formContext.Provider value={FieldScopeApiRef.current}>
+          {children}
+        </formContext.Provider>
+      )
+    }
   }
 
-  apiRef.current.FieldScope = FieldScopeRef.current
-  apiRef.current.FieldScope.contextValue = apiRef.current
-
-  return apiRef.current
-}
-
-function makeForm() {
-  return function Form({ children, noFormElement, ...rest }) {
-    const {
-      handleSubmit,
-      meta: { isSubmitting },
-      debugForm,
-    } = Form.contextValue
-
-    return (
-      <formContext.Provider value={Form.contextValue}>
-        {noFormElement ? (
-          children
-        ) : (
-          <form onSubmit={handleSubmit} disabled={isSubmitting} {...rest}>
-            {children}
-            {debugForm ? (
-              <pre>
-                <code>{JSON.stringify(Form.contextValue, null, 2)}</code>
-              </pre>
-            ) : null}
-          </form>
-        )}
-      </formContext.Provider>
-    )
-  }
-}
-
-function makeField() {
-  return function Field({ children }) {
-    return (
-      <formContext.Provider value={Field.contextValue}>
-        {children}
-      </formContext.Provider>
-    )
-  }
+  return FieldScopeRef.current
 }
 
 export function splitFormProps({
@@ -618,8 +689,8 @@ export function splitFormProps({
   ...rest
 }) {
   return [
+    field,
     {
-      field,
       defaultValue,
       defaultIsTouched,
       defaultError,
