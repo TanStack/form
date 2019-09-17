@@ -1,6 +1,6 @@
 # ⚛️ 💼 React Form
 
-React hooks for managing form state and validation
+Hooks for managing form state and validation in React
 
 <a href="https://travis-ci.org/tannerlinsley/react-form" target="\_parent">
   <img alt="" src="https://travis-ci.org/tannerlinsley/react-form.svg?branch=master" />
@@ -20,11 +20,6 @@ React hooks for managing form state and validation
 <a href="https://twitter.com/tannerlinsley" target="\_parent">
   <img alt="" src="https://img.shields.io/twitter/follow/tannerlinsley.svg?style=social&label=Follow" />
 </a>
-
-<!--
-## Features
-- Put some features here
--->
 
 ## Intro
 
