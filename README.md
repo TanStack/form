@@ -1,6 +1,6 @@
 # ⚛️ 💼 React Form
 
-React hooks for managing form state and lifecycle
+React hooks for managing form state and validation
 
 <a href="https://travis-ci.org/tannerlinsley/react-form" target="\_parent">
   <img alt="" src="https://travis-ci.org/tannerlinsley/react-form.svg?branch=master" />
