@@ -30,6 +30,16 @@ React Form is currently in **alpha**! This means:
 - The existing API is not stable. Expect major changes/additions **as minor and patch releases** while use-cases evolve.
 - It is not recommended for **mission critical** production code.
 
+## Features
+
+- Built **with** React hooks **for** React hooks
+- Highly practical validation API with 1st-class asynchronous support
+- Built-in validation debouncing with auto cancellation for stale promises
+- Field Scoping for deeply nested form values
+- No nonsense meta management for both forms and form fields
+- Highly memoized for frequent and fast rerenders
+- Flexible form API at the field, scope, and form levels
+
 ## Table of Contents
 
 - [Installation](#installation)
