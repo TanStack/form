@@ -42,7 +42,7 @@ React Form is currently in **alpha**! This means:
 - No nonsense meta management for both forms and form fields
 - Highly memoized for frequent and fast rerenders
 - Flexible form API at the field, scope, and form levels
-- 7 kb (gzipped)
+- 4.3 kb (minzipped)
 
 ## Examples & Demos
 
