@@ -8,6 +8,9 @@ React hooks for managing form state and lifecycle
 <a href="https://npmjs.com/package/react-form" target="\_parent">
   <img alt="" src="https://img.shields.io/npm/dm/react-form.svg" />
 </a>
+<a href="https://bundlephobia.com/result?p=react-form@next" target="\_parent">
+  <img alt="" src="https://badgen.net/bundlephobia/minzip/react-form@next" />
+</a>
 <a href="https://spectrum.chat/react-form">
   <img alt="Join the community on Spectrum" src="https://withspectrum.github.io/badge/badge.svg" />
 </a>
