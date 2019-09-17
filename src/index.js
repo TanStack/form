@@ -538,7 +538,6 @@ export function useField(
         fieldApiRef.current.value,
         fieldApiRef.current
       )
-      console.log(error)
       if (checkLatest()) {
         setMeta({ isValidating: false })
         if (typeof error !== 'undefined') {
