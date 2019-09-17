@@ -25,7 +25,7 @@ export function useForm({
   validate,
   validatePristine,
   debugForm,
-}) {
+} = {}) {
   let [
     {
       values,
@@ -183,8 +183,6 @@ export function useForm({
 
   const getFieldMeta = React.useCallback(field => {
     const fieldID = getFieldID(field)
-    apiRef.current.__fieldMeta[fieldID] =
-      apiRef.current.__fieldMeta[fieldID] || {}
     return apiRef.current.__fieldMeta[fieldID]
   }, [])
 
@@ -202,6 +200,7 @@ export function useForm({
       setState(old => ({
         ...old,
         __fieldMeta: {
+          ...old.__fieldMeta,
           [fieldID]:
             typeof updater === 'function'
               ? updater(old.__fieldMeta[fieldID])
@@ -214,16 +213,22 @@ export function useForm({
 
   const setFieldValue = React.useCallback(
     (field, updater, { isTouched = true } = {}) => {
-      setState(old => ({
-        ...old,
-        values: setBy(
-          old.values,
-          field,
+      const __metaRef = apiRef.current.__getFieldMetaRef(field)
+      setState(old => {
+        let newValue =
           typeof updater === 'function'
             ? updater(getBy(old.values, field))
             : updater
-        ),
-      }))
+
+        if (__metaRef.current.filterValue) {
+          newValue = __metaRef.current.filterValue(newValue, apiRef.current)
+        }
+
+        return {
+          ...old,
+          values: setBy(old.values, field, newValue),
+        }
+      })
       if (isTouched) {
         apiRef.current.setFieldMeta(field, {
           isTouched: true,
@@ -332,6 +337,7 @@ export function useForm({
     swapFieldValues,
     setValues,
     Form,
+    formContext: api,
   })
 
   // When the form gets dirty and when the value changes
@@ -358,8 +364,12 @@ export function useForm({
   return apiRef.current
 }
 
-export function useFormContext() {
+export function useFormContext(manualFormContext) {
   let formApi = React.useContext(formContext)
+
+  if (manualFormContext) {
+    return manualFormContext
+  }
 
   if (!formApi) {
     throw new Error(`You are trying to use the form API outside of a form!`)
@@ -392,6 +402,8 @@ export function useField(
     defaultMeta = defaultDefaultMeta,
     validatePristine,
     validate,
+    filterValue,
+    formContext: manualFormContext,
   } = {}
 ) {
   if (!fieldName) {
@@ -407,7 +419,7 @@ export function useField(
   // Keep validate up to date with the latest version
   validateRef.current = validate
 
-  let formApi = useFormContext()
+  let formApi = useFormContext(manualFormContext)
 
   // Support field prefixing from FieldScope
   let fieldPrefix = ''
@@ -427,6 +439,9 @@ export function useField(
   const preValue = formApi.getFieldValue(fieldName)
   const preMeta = formApi.getFieldMeta(fieldName)
   const __metaRef = formApi.__getFieldMetaRef(fieldName)
+
+  // Keep the filter function up to date
+  __metaRef.current.filterValue = filterValue
 
   // Handle default value
   const value = React.useMemo(
@@ -523,6 +538,7 @@ export function useField(
         fieldApiRef.current.value,
         fieldApiRef.current
       )
+      console.log(error)
       if (checkLatest()) {
         setMeta({ isValidating: false })
         if (typeof error !== 'undefined') {
@@ -603,7 +619,7 @@ export function useField(
     if (typeof preMeta === 'undefined' && typeof meta !== 'undefined') {
       setMeta(meta)
     }
-  }, [meta, preMeta, setMeta, setValue, value])
+  }, [__metaRef, fieldName, meta, preMeta, setMeta, setValue, value])
 
   // When the form gets dirty and when the value changes, run the validation
   React.useEffect(() => {
@@ -641,7 +657,13 @@ function useFormElement(contextValue) {
               {children}
               {debugForm ? (
                 <pre>
-                  <code>{JSON.stringify(FormApiRef.current, null, 2)}</code>
+                  <code>
+                    {JSON.stringify(
+                      { ...FormApiRef.current, formContext: undefined },
+                      null,
+                      2
+                    )}
+                  </code>
                 </pre>
               ) : null}
             </form>
@@ -685,6 +707,7 @@ export function splitFormProps({
   validate,
   onSubmit,
   defaultValues,
+  filterValue,
   debugForm,
   ...rest
 }) {
@@ -699,6 +722,7 @@ export function splitFormProps({
       validate,
       onSubmit,
       defaultValues,
+      filterValue,
       debugForm,
     },
     rest,

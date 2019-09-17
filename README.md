@@ -41,6 +41,10 @@ React Form is currently in **alpha**! This means:
 - Flexible form API at the field, scope, and form levels
 - 7 kb (gzipped)
 
+## Examples & Demos
+
+- [Basic Form](https://codesandbox.io/s/react-form-demo-q9mgm)
+
 ## Table of Contents
 
 - [Installation](#installation)
@@ -233,6 +237,9 @@ An `object` with the following components, properties and methods:
     - This can be used to enable/disable a submit button for the form.
   - `...any`
     - Any other meta information can be stored here via the `field.setMeta` or `instance.setFieldMeta` functions
+- `formContext: FormInstance`
+  - This can be used to manually link `useField` instances to a parent form. This is useful if `useField` is in the same block scope as `useForm`.
+  - Simply pass `formContext` to `useField` like so: `useField(fieldName, { formContext })`. That field is now linked to the form that provided the `formContext`.
 - `debugForm: Bool`
   - If set to `true` the form instance will be serialized and rendered after the `Form` element returned by the instance
 - `reset() => void`
@@ -321,6 +328,9 @@ const fieldInstance = useField(fieldPath, options)
     - `instance` is the latest version of the field instance (the same instance that is returned from `useField`)
     - [See below](#validation) for more information on field validation
     - Form level validation is also available. [See `useForm`](#useform)
+  - `filterValue: (value, instance) => newValue`
+    - The `filterValue` function is used to manipulate new values before they are set via `field.setValue` and `instance.setFieldValue`.
+    - This is useful for restricting fields to specific values, eg. min/max, length, regex replacement, disallowing invalid values (as opposed to warning about them), among limitless others.
   - `validatePristine: Bool`
     - If you want validation to run when instance.isDirty is false, you can set the `validatePristine` option to `true`
 
@@ -678,5 +688,22 @@ function TextField(props) {
   const fieldInstance = useField(field, options)
 
   return <input {...rest} />
+}
+```
+
+## Manually Link a Field to a Form
+
+If you get into a situation where you need to use `useForm` and `useField` in the same block scope, you may see a missing form context error. This is because your `useField` usage is not inside of a `<Form>` component. To get around this error for this use case, you can pass the form's `instance.formContext` value to the `useField` options to manually link them together:
+
+```js
+function App() {
+  const { Form, formContext } = useForm()
+
+  // This field will now be manually linked to the form above
+  const fieldInstance = useField('age', {
+    formContext,
+  })
+
+  return <Form>...</Form>
 }
 ```
