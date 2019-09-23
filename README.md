@@ -26,13 +26,6 @@ React hooks for managing form state and lifecycle
 - Put some features here
 -->
 
-## Intro
-
-React Form is currently in **alpha**! This means:
-
-- The existing API is not stable. Expect major changes/additions **as minor and patch releases** while use-cases evolve.
-- It is not recommended for **mission critical** production code.
-
 ## Features
 
 - Built **with** React hooks **for** React hooks
@@ -40,9 +33,8 @@ React Form is currently in **alpha**! This means:
 - Built-in validation debouncing with auto cancellation for stale promises
 - Field Scoping for deeply nested form values
 - No nonsense meta management for both forms and form fields
-- Highly memoized for frequent and fast rerenders
+- Fully memoized for frequent and fast rerenders
 - Flexible form API at the field, scope, and form levels
-- 4.3 kb (minzipped)
 
 ## Examples & Demos
 

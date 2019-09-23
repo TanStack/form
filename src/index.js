@@ -33,6 +33,7 @@ export function useForm({
       meta: { isSubmitting, isTouched },
       __fieldMeta,
     },
+
     setState,
   ] = React.useState(() =>
     makeState({
@@ -99,6 +100,11 @@ export function useForm({
     }
     e.__handled = true
 
+    // Don't let invalid forms submit
+    if (!apiRef.current.meta.canSubmit) {
+      return
+    }
+
     apiRef.current.setMeta(old => ({
       ...old,
       // Submission attempts make the form dirty
@@ -108,11 +114,6 @@ export function useForm({
       // Count submission attempts
       submissionAttempts: old.submissionAttempts + 1,
     }))
-
-    // Don't allow isSubmitting
-    if (apiRef.current.meta.isSubmitting) {
-      return
-    }
 
     apiRef.current.setMeta({ isSubmitting: true })
 
@@ -655,15 +656,28 @@ function useFormElement(contextValue) {
             <form onSubmit={handleSubmit} disabled={isSubmitting} {...rest}>
               {children}
               {debugForm ? (
-                <pre>
-                  <code>
-                    {JSON.stringify(
-                      { ...FormApiRef.current, formContext: undefined },
-                      null,
-                      2
-                    )}
-                  </code>
-                </pre>
+                <div
+                  style={{
+                    margin: '2rem 0',
+                  }}
+                >
+                  <div
+                    style={{
+                      fontWeight: 'bolder',
+                    }}
+                  >
+                    Form State
+                  </div>
+                  <pre>
+                    <code>
+                      {JSON.stringify(
+                        { ...FormApiRef.current, formContext: undefined },
+                        null,
+                        2
+                      )}
+                    </code>
+                  </pre>
+                </div>
               ) : null}
             </form>
           )}
