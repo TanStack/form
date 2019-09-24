@@ -26,16 +26,7 @@ export default function useForm({
   validatePristine,
   debugForm,
 } = {}) {
-  let [
-    {
-      values,
-      meta,
-      meta: { isSubmitting, isTouched },
-      __fieldMeta,
-    },
-
-    setState,
-  ] = React.useState(() =>
+  let [{ values, meta, __fieldMeta }, setState] = React.useState(() =>
     makeState({
       values: defaultValues,
     })
@@ -58,7 +49,7 @@ export default function useForm({
   // Can we submit this form?
   const isValid = !fieldsAreValidating && fieldsAreValid && !meta.error
 
-  const canSubmit = isValid && !isSubmitting
+  const canSubmit = isValid && !meta.isValidating && !meta.isSubmitting
 
   // Decorate form meta
   meta = React.useMemo(
@@ -454,12 +445,12 @@ export default function useForm({
   // When the form gets dirty and when the value changes
   // validate
   React.useEffect(() => {
-    if (!validatePristine && !isTouched) {
+    if (!validatePristine && !meta.isTouched) {
       return
     }
 
     apiRef.current.runValidation(values)
-  }, [isTouched, validatePristine, values])
+  }, [meta.isTouched, validatePristine, values])
 
   // When defaultValues update, set them
   React.useEffect(() => {

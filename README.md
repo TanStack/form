@@ -445,7 +445,7 @@ Every time a submission attempt is made, the following submission flow will take
       - A new submission will be attempted with the new post-validation state 🔁
 - If there are any field or form validation(s) errors
   - The current submission will abort 🛑
-- The form's `onSubmit` function will be called
+- The form's `onSubmit` function will be called ✅
 
 ### Synchronous Validation
 
