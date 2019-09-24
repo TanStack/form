@@ -25,7 +25,7 @@ Hooks for managing form state and validation in React
 
 - Built **with** React hooks **for** React hooks
 - Highly practical validation API with 1st-class asynchronous support
-- Built-in validation debouncing with auto cancellation for stale promises
+- Built-in validation debouncing with auto cancellation for stale validations
 - Field Scoping for deeply nested form values
 - No nonsense meta management for both forms and form fields
 - Fully memoized for frequent and fast rerenders
@@ -401,6 +401,51 @@ For example, if our field had the `fieldPath` of `foo`, then `setFieldValue('[0]
 - `swapFieldValues(subFieldPath, ...)` - [See Form Instance](#form-instance)
 
 ## Validation
+
+Validation in React Form supports validation both individual fields and the entire form.
+
+A form submission can be attempted when either:
+
+- The form has not been touched `!instance.meta.isTouched`
+
+**OR**
+
+- All fields **with a validation option**
+  - Have been touched (`field.meta.isTouched`)
+  - Are not validating (`!field.meta.isValidating`)
+  - Do not have an error (`field.meta.error`)
+- The form has been touched `instance.meta.isTouched`
+- The form is not validating `!instance.meta.isValidating`
+- The form does not have an error `instance.meta.error`
+
+To simplify handling this state, the following additional booleans are available on the `instance.meta`:
+
+- `instance.meta.fieldsAreValidating`
+  - Will be `true` if there are any fields validating
+- `instance.meta.fieldsAreValid`
+  - Will be `true` if there are no fields with an error (`field.meta.error`)
+- `instance.meta.isValid`
+  - Will be `true` if every field is valid and there is no form error (`allFieldsValid && !meta.error`)
+- `instance.meta.canSubmit`
+  - Will be `true` if the form is valid and not in the middle of a submission attempt (`instance.meta.isValid && !instance.meta.isSubmitting`)
+
+### Submission Attempt Flow
+
+Every time a submission attempt is made, the following submission flow will takes place:
+
+- If there are fields that have not been touched or the form has not been touched:
+  - All fields will be touched (`field.meta.isTouched === true`)
+  - The form is touched (`instance.meta.isTouched === true`)
+  - All fields with a `validate` option that have not been touched will be validated
+  - If the form `validate` option is set and has not been touched, the form will be validated
+  - The submission attempt will wait for any field and form validations to resolve
+    - If any field validations or the form validation throw a runtime error
+      - The submission attempt will abort 🛑
+    - Once all validations settle
+      - A new submission will be attempted with the new post-validation state 🔁
+- If there are any field or form validation(s) errors
+  - The current submission will abort 🛑
+- The form's `onSubmit` function will be called
 
 ### Synchronous Validation
 
