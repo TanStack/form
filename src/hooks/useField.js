@@ -251,16 +251,16 @@ export default function useField(
   })
 
   React.useEffect(() => {
+    const { current: meta } = formApiRef.current.__getFieldMetaRef(fieldName)
+
+    meta.instanceRefs = meta.instanceRefs || {}
+    meta.instanceRefs[instanceID] = fieldApiRef
+
     const fieldID = getFieldID(fieldName)
 
-    const { current: metaRef } = formApiRef.current.__fieldMetaRefs[fieldID]
-
-    metaRef.instanceRefs = metaRef.instanceRefs || {}
-    metaRef.instanceRefs[instanceID] = fieldApiRef
-
     return () => {
-      delete metaRef.instanceRefs[instanceID]
-      if (!Object.keys(metaRef.instanceRefs).length) {
+      delete meta.instanceRefs[instanceID]
+      if (!Object.keys(meta.instanceRefs).length) {
         fieldApiRef.current.setMeta(() => undefined)
         delete formApiRef.current.__fieldMetaRefs[fieldID]
       }
