@@ -1,4 +1,6 @@
-# ⚛️ 💼 React Form
+![React Form Header](https://github.com/tannerlinsley/react-form/raw/master/media/header.png)
+
+<img src='https://github.com/tannerlinsley/react-form/raw/master/media/logo.png' width='300'/>
 
 Hooks for managing form state and validation in React
 
