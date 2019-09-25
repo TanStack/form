@@ -22,6 +22,11 @@ Hooks for managing form state and validation in React
 <a href="https://twitter.com/tannerlinsley" target="\_parent">
   <img alt="" src="https://img.shields.io/twitter/follow/tannerlinsley.svg?style=social&label=Follow" />
 </a>
+<br />
+<br />
+<a href="https://patreon.com/tannerlinsley">
+  <img width="180" alt="" src="https://raw.githubusercontent.com/tannerlinsley/files/master/images/patreon/become-a-patron.png" />
+</a>
 
 ## Features
 
@@ -212,6 +217,7 @@ An `object` with the following components, properties and methods:
 - `values: any`
   - The current values for the entire form
 - `meta: Object`
+
   - `error: String | any`
     - If an error is returned by the form's `validation` function, or if it is set programmatically, it will be stored here.
   - `isSubmitting: Bool`
@@ -224,11 +230,18 @@ An `object` with the following components, properties and methods:
     - Will be incremented, starting from `0`, every time a form submission is attempted
   - `isValid: Bool`
     - Will be set to `true` if `isDirty === true` and `isValid === true`, meaning that the form has been touched and there are no field-level or form-level errors
+  - `fieldsAreValidating`
+    - Will be `true` if there are any fields validating (`field.meta.isValidating`)
+  - `fieldsAreValid`
+    - Will be `true` if there are no fields with an error (`field.meta.error`)
+  - `isValid`
+    - Will be `true` if every field is valid and there is no form error (`instance.meta.allFieldsValid && !instance.meta.error`)
   - `canSubmit: Bool`
-    - Will be set to `true` if `isValid === true` and `isSubmitting === false`
+    - Will be `true` if the form is valid and not in the middle of a submission attempt (`instance.meta.isValid && !instance.meta.isSubmitting`)
     - This can be used to enable/disable a submit button for the form.
   - `...any`
     - Any other meta information can be stored here via the `field.setMeta` or `instance.setFieldMeta` functions
+
 - `formContext: FormInstance`
   - This can be used to manually link `useField` instances to a parent form. This is useful if `useField` is in the same block scope as `useForm`.
   - Simply pass `formContext` to `useField` like so: `useField(fieldName, { formContext })`. That field is now linked to the form that provided the `formContext`.
@@ -423,13 +436,11 @@ A form submission can be attempted when either:
 To simplify handling this state, the following additional booleans are available on the `instance.meta`:
 
 - `instance.meta.fieldsAreValidating`
-  - Will be `true` if there are any fields validating
 - `instance.meta.fieldsAreValid`
-  - Will be `true` if there are no fields with an error (`field.meta.error`)
 - `instance.meta.isValid`
-  - Will be `true` if every field is valid and there is no form error (`allFieldsValid && !meta.error`)
 - `instance.meta.canSubmit`
-  - Will be `true` if the form is valid and not in the middle of a submission attempt (`instance.meta.isValid && !instance.meta.isSubmitting`)
+
+See [Form Instance](#form-instance) for more information
 
 ### Submission Attempt Flow
 
