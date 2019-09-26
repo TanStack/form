@@ -81,8 +81,8 @@ Hooks for managing form state and validation in React
         </a>
       </td>
        <td align="center" valign="middle">
-        <a href="https://patreon.com/tannerlinsley" target="_blank">
-          <img width="150" src="https://raw.githubusercontent.com/tannerlinsley/files/master/images/patreon/gold-placeholder.png">
+        <a href="https://nozzle.io" target="_blank">
+          <img width='230' src="https://nozzle.io/img/logo-blue.png">
         </a>
       </td>
        <td align="center" valign="middle">
