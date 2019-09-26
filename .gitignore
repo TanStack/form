@@ -2,7 +2,6 @@ node_modules
 /docs-dist
 /index.js
 /build
-/docs
 /dist
 /demo/dist
 /es
