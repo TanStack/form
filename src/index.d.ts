@@ -108,7 +108,7 @@ declare module 'react-form' {
         Pick<HTMLProps<HTMLInputElement>, 'onSubmit'> &
         Pick<HTMLProps<HTMLInputElement>, 'onBlur'>
     ) => {
-      value: string | string[] | number
+      value: T
       onChange: ChangeEventHandler<HTMLInputElement>
       onBlur: FocusEventHandler<HTMLInputElement>
     } & Partial<HTMLProps<HTMLInputElement>>
