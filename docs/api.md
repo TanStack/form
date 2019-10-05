@@ -2,7 +2,7 @@
 
 - [`useForm`](#useform)
 - [`useField`](#usefield)
-- [`splitFormProps](#splitformprops)
+- [`splitFormProps`](#splitformprops)
 - [`useFormContext`](#useformcontext)
 
 ## `useForm`
@@ -197,6 +197,12 @@ An `object` with the following components, properties and methods:
 - `runValidation() => void`
   - Use this function to manually run this field's validation.
   - This function does not run validation for fields.
+- `getInputProps(props: Object {}) => enhanced props Object`
+  - `onChange: ChangeEventHandler`
+  - `onBlur: FormEventHandler`
+  - `...rest` - any other props that will be spread into the enhanced props
+  - Use this function to set props on input elements. If set, `onChange` and `onBlur` will be wrapped to update the field `value`.
+  - The enhanced props will always contain `value`, `onChange`, and `onBlur`. Any of the rest that are passed in will also be returned.
 
 #### Field-Specific Methods
 
