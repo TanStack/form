@@ -141,7 +141,7 @@ declare module 'react-form' {
     options?: FieldOptions<T>
   ): FieldInstance
 
-  interface FieldOptionProps<T = any, Form = any> extends FieldOptions<T> {
+  interface FieldOptionProps<T = any, Form = {}> extends FieldOptions<T> {
     onSubmit?: (value: T, instance: FormInstance<Form>) => OptionalPromise<void>
     defaultValues?: Form
     debugForm?: boolean
