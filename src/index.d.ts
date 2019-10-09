@@ -10,7 +10,7 @@ declare module 'react-form' {
     SetStateAction,
   } from 'react'
 
-  type Debounce = <T>(fn: (...args: any[]) => T, wait: number) => Promise<T>
+  type Debounce = <T>(fn: () => T, wait: number) => Promise<T>
   type ValidatorReturn = string | false | undefined
   type OptionalPromise<T> = Promise<T> | T
 
