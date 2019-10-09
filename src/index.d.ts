@@ -95,7 +95,7 @@ declare module 'react-form' {
     | Partial<FieldMeta>
     | ((previousMeta: FieldMeta) => FieldMeta)
 
-  interface FieldInstance<T = any, F = any> {
+  interface FieldInstance<T = any, F = {}> {
     form: FormInstance<F>
     fieldName: string
     value: T
@@ -130,9 +130,9 @@ declare module 'react-form' {
     defaultMeta?: FieldMeta
     validate?: (
       value: T,
-      instance: FieldInstance
+      instance: FieldInstance<T>
     ) => OptionalPromise<ValidatorReturn>
-    filterValue?: <T = any>(values: T, instance: FieldInstance) => T
+    filterValue?: (value: T, instance: FieldInstance<T>) => T
     validatePristine?: boolean
   }
 
@@ -141,8 +141,7 @@ declare module 'react-form' {
     options?: FieldOptions<T>
   ): FieldInstance
 
-  interface FieldOptionProps<T = any, Form = any>
-    extends FieldOptions<T> {
+  interface FieldOptionProps<T = any, Form = any> extends FieldOptions<T> {
     onSubmit?: (value: T, instance: FormInstance<Form>) => OptionalPromise<void>
     defaultValues?: Form
     debugForm?: boolean
