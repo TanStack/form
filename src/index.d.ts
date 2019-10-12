@@ -10,12 +10,23 @@ declare module 'react-form' {
     SetStateAction,
   } from 'react'
 
+  type SerializableObject = { [key: string]: Serializable }
+  interface SerializableArray extends Array<Serializable> {}
+  type Serializable =
+    | string
+    | number
+    | boolean
+    | null
+    | SerializableObject
+    | SerializableArray
+
   type Debounce = <T>(fn: () => T, wait: number) => Promise<T>
   type ValidatorReturn = string | false | undefined
   type OptionalPromise<T> = Promise<T> | T
+  type ValidationError = string | false | null | undefined
 
   interface FormMeta {
-    error: string | any
+    error: ValidationError
     isSubmitting: boolean
     isDirty: boolean
     isSubmitted: boolean
@@ -30,77 +41,92 @@ declare module 'react-form' {
     | Partial<FormMeta & C>
     | ((previousMeta: FormMeta & C) => FormMeta & C)
 
-  interface FormInstance<T, C = Record<string, any>> {
+  interface FormInstance<TValues, CustomFormMeta> {
     Form: ComponentType<Omit<HTMLProps<HTMLFormElement>, 'onSubmit'>>
-    values: T
-    meta: FormMeta & C
-    formContext: FormInstance<T>
+    values: TValues
+    meta: FormMeta & CustomFormMeta
+    formContext: FormInstance<TValues, CustomFormMeta>
     reset: () => void
-    setMeta: (value: SetFormMeta<C>) => void
+    setMeta: (value: SetFormMeta<CustomFormMeta>) => void
     handleSubmit: FormEventHandler<HTMLFormElement>
     debounce: Debounce
-    setValues: Dispatch<SetStateAction<T>>
+    setValues: Dispatch<SetStateAction<TValues>>
     runValidation: () => void
-    getFieldValue: <V = any>(fieldPath: keyof T | string) => V
-    getFieldMeta: (
-      fieldPath: keyof T | string
-    ) => { error: string | null; [k: string]: any }
-    setFieldValue: <V = any>(
-      fieldPath: keyof T | string,
+    getFieldValue: <V = unknown>(fieldPath: keyof TValues) => V
+    getFieldMeta: <M = unknown>(fieldPath: keyof TValues) => FieldMeta & M
+    setFieldValue: <V = unknown>(
+      fieldPath: keyof TValues,
       updater: SetValue<V>,
       options?: { isTouched: boolean }
     ) => void
-    setFieldMeta: (fieldPath: keyof T | string, value: SetFieldMeta) => void
-    pushFieldValue: <V = any>(fieldPath: keyof T | string, value: V) => void
-    insertFieldValue: <V = any>(
-      fieldPath: keyof T | string,
+    setFieldMeta: <M = unknown>(
+      fieldPath: keyof TValues,
+      value: SetFieldMeta<M>
+    ) => void
+    pushFieldValue: <T extends SerializableArray>(
+      fieldPath: keyof TValues,
+      value: T extends (infer U)[] ? U : never
+    ) => void
+    insertFieldValue: <T extends SerializableArray>(
+      fieldPath: keyof TValues,
       insertIndex: number,
-      value: V
+      value: T extends (infer U)[] ? U : never
     ) => void
-    removeFieldValue: (
-      fieldPath: keyof T | string,
-      removalIndex: number
-    ) => void
+    removeFieldValue: (fieldPath: keyof TValues, removalIndex: number) => void
     swapFieldValues: (
-      fieldPath: keyof T | string,
+      fieldPath: keyof TValues,
       firstIndex: number,
       secondIndex: number
     ) => void
   }
 
-  interface FormOptions<T> {
-    defaultValues: T
-    onSubmit: (values: T, instance: FormInstance<T>) => OptionalPromise<void>
+  interface FormOptions<TValues, CustomFormMeta> {
+    defaultValues: TValues
+    onSubmit: (
+      values: TValues,
+      instance: FormInstance<TValues, CustomFormMeta>
+    ) => OptionalPromise<void>
     validate: (
-      values: Partial<T>,
-      instance: FormInstance<T>
+      values: Partial<TValues>,
+      instance: FormInstance<TValues, CustomFormMeta>
     ) => OptionalPromise<ValidatorReturn>
     validatePristine?: boolean
     debugForm: boolean
   }
 
-  export function useForm<T extends {} = {}>(
-    options?: Partial<FormOptions<T>>
-  ): FormInstance<T>
+  export function useForm<
+    TValues extends {} = SerializableObject,
+    CustomFormMeta extends {} = Record<string, any>
+  >(
+    options?: Partial<FormOptions<TValues, CustomFormMeta>>
+  ): FormInstance<TValues, CustomFormMeta>
 
-  export function useFormContext<T extends {} = {}>(): FormInstance<T>
+  export function useFormContext<
+    TValues extends {} = SerializableObject,
+    CustomFormMeta extends {} = Record<string, any>
+  >(): FormInstance<TValues, CustomFormMeta>
 
   interface FieldMeta {
     error: string | false
     isTouched: boolean
-    [k: string]: any
+    isValidating?: boolean
   }
 
   type SetValue<S> = S | ((prevState: S) => S)
-  type SetFieldMeta =
-    | Partial<FieldMeta>
-    | ((previousMeta: FieldMeta) => FieldMeta)
+  type SetFieldMeta<C> =
+    | Partial<FieldMeta & C>
+    | ((previousMeta: FieldMeta & C) => FieldMeta & C)
 
-  interface FieldInstance<T = any, F = {}> {
-    form: FormInstance<F>
+  interface FieldInstance<
+    TValue,
+    CustomFieldMeta,
+    TFormValues,
+    CustomFormMeta
+  > {
+    form: FormInstance<TFormValues, CustomFormMeta>
     fieldName: string
-    value: T
-    meta: FieldMeta
+    value: TValue
+    meta: FieldMeta & CustomFieldMeta
     FieldScope?: ComponentType<Provider<any>>
     debounce: Debounce
     runValidation: () => void
@@ -109,50 +135,100 @@ declare module 'react-form' {
         Pick<HTMLProps<HTMLInputElement>, 'onSubmit'> &
         Pick<HTMLProps<HTMLInputElement>, 'onBlur'>
     ) => {
-      value: T
+      value: TValue
       onChange: ChangeEventHandler<HTMLInputElement>
       onBlur: FocusEventHandler<HTMLInputElement>
     } & Partial<HTMLProps<HTMLInputElement>>
-    setValue: <V = any>(
-      updater: SetValue<V>,
+    setValue: (
+      updater: SetValue<TValue>,
       options?: { isTouched: boolean }
     ) => void
-    setMeta: (value: SetFieldMeta) => void
-    pushValue: <V = any>(value: V) => void
-    insertValue: <V = any>(insertIndex: number, value: V) => void
+    setMeta: (value: SetFieldMeta<CustomFieldMeta>) => void
+    pushValue: (value: TValue extends (infer U)[] ? U : never) => void
+    insertValue: (
+      insertIndex: number,
+      value: TValue extends (infer U)[] ? U : never
+    ) => void
     removeValue: (removalIndex: number) => void
     swapValues: (firstIndex: number, secondIndex: number) => void
   }
 
-  interface FieldOptions<T> {
-    defaultValue?: T
+  interface FieldOptions<TValue, CustomFieldMeta, TFormValues, CustomFormMeta> {
+    defaultValue?: TValue
     defaultError?: string
     defaultIsTouched?: boolean
-    defaultMeta?: FieldMeta
+    defaultMeta?: FieldMeta & CustomFieldMeta
     validate?: (
-      value: T,
-      instance: FieldInstance<T>
+      value: TValue,
+      instance: FieldInstance<
+        TValue,
+        CustomFieldMeta,
+        TFormValues,
+        CustomFormMeta
+      >
     ) => OptionalPromise<ValidatorReturn>
-    filterValue?: (value: T, instance: FieldInstance<T>) => T
+    filterValue?: (
+      value: TValue,
+      instance: FieldInstance<
+        TValue,
+        CustomFieldMeta,
+        TFormValues,
+        CustomFormMeta
+      >
+    ) => TValue
     validatePristine?: boolean
   }
 
-  export function useField<T = any>(
+  export function useField<
+    TValue = Serializable,
+    CustomFieldMeta extends {} = Record<string, any>,
+    TFormValues extends {} = SerializableObject,
+    CustomFormMeta extends {} = Record<string, any>
+  >(
     fieldPath: string,
-    options?: FieldOptions<T>
-  ): FieldInstance
+    options?: FieldOptions<TValue, CustomFieldMeta, TFormValues, CustomFormMeta>
+  ): FieldInstance<TValue, CustomFieldMeta, TFormValues, CustomFormMeta>
 
-  interface FieldOptionProps<T = any, Form = {}> extends FieldOptions<T> {
-    onSubmit?: (value: T, instance: FormInstance<Form>) => OptionalPromise<void>
-    defaultValues?: Form
+  interface FieldOptionProps<
+    TValue = Serializable,
+    CustomFieldMeta extends {} = Record<string, any>,
+    TFormValues extends {} = SerializableObject,
+    CustomFormMeta extends {} = Record<string, any>
+  > extends FieldOptions<TValue, CustomFieldMeta, TFormValues, CustomFormMeta> {
+    onSubmit?: (
+      value: TValue,
+      instance: FormInstance<TFormValues, CustomFormMeta>
+    ) => OptionalPromise<void>
+    defaultValues?: TFormValues
     debugForm?: boolean
   }
 
-  export function splitFormProps<P = {}, T = any>(
-    props: FieldProps<T> & P
-  ): [typeof props['field'], FieldOptionProps<T>, P]
+  export function splitFormProps<
+    P = {},
+    TValue = Serializable,
+    CustomFieldMeta extends {} = Record<string, any>,
+    TFormValues extends {} = SerializableObject,
+    CustomFormMeta extends {} = Record<string, any>
+  >(
+    props: FieldProps<TValue, CustomFieldMeta, TFormValues, CustomFormMeta> & P
+  ): [
+    typeof props['field'],
+    FieldOptionProps<TValue, CustomFieldMeta, TFormValues, CustomFormMeta>,
+    P
+  ]
 
-  export interface FieldProps<T = any> extends FieldOptionProps<T> {
+  export interface FieldProps<
+    TValue = Serializable,
+    CustomFieldMeta extends {} = Record<string, any>,
+    TFormValues extends {} = SerializableObject,
+    CustomFormMeta extends {} = Record<string, any>
+  >
+    extends FieldOptionProps<
+      TValue,
+      CustomFieldMeta,
+      TFormValues,
+      CustomFormMeta
+    > {
     field: string
   }
 }
