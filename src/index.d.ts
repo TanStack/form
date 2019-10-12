@@ -107,7 +107,7 @@ declare module 'react-form' {
   >(): FormInstance<TValues, CustomFormMeta>
 
   interface FieldMeta {
-    error: string | false
+    error: ValidationError
     isTouched: boolean
     isValidating?: boolean
   }
@@ -155,7 +155,7 @@ declare module 'react-form' {
 
   interface FieldOptions<TValue, CustomFieldMeta, TFormValues, CustomFormMeta> {
     defaultValue?: TValue
-    defaultError?: string
+    defaultError?: ValidationError
     defaultIsTouched?: boolean
     defaultMeta?: FieldMeta & CustomFieldMeta
     validate?: (
