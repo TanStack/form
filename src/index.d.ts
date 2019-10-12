@@ -24,18 +24,19 @@ declare module 'react-form' {
     fieldsAreValidating: boolean
     fieldsAreValid: boolean
     canSubmit: boolean
-    [k: string]: any
   }
 
-  type SetFormMeta = Partial<FormMeta> | ((previousMeta: FormMeta) => FormMeta)
+  type SetFormMeta<C> =
+    | Partial<FormMeta & C>
+    | ((previousMeta: FormMeta & C) => FormMeta & C)
 
-  interface FormInstance<T> {
+  interface FormInstance<T, C = Record<string, any>> {
     Form: ComponentType<Omit<HTMLProps<HTMLFormElement>, 'onSubmit'>>
     values: T
-    meta: FormMeta
+    meta: FormMeta & C
     formContext: FormInstance<T>
     reset: () => void
-    setMeta: (value: SetFormMeta) => void
+    setMeta: (value: SetFormMeta<C>) => void
     handleSubmit: FormEventHandler<HTMLFormElement>
     debounce: Debounce
     setValues: Dispatch<SetStateAction<T>>
