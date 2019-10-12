@@ -131,7 +131,7 @@ declare module 'react-form' {
     debounce: Debounce
     runValidation: () => void
     getInputProps: (
-      value: Partial<HTMLProps<HTMLInputElement>> &
+      value?: Partial<HTMLProps<HTMLInputElement>> &
         Pick<HTMLProps<HTMLInputElement>, 'onSubmit'> &
         Pick<HTMLProps<HTMLInputElement>, 'onBlur'>
     ) => {
