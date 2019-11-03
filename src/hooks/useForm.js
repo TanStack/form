@@ -279,6 +279,11 @@ export default function useForm({
             ? updater(old.__fieldMeta[fieldID])
             : { ...old.__fieldMeta[fieldID], ...updater }
 
+        // If field has been blured, update form touched status
+        if (newFieldMeta.isTouched) {
+          apiRef.current.setMeta({ isTouched: true })
+        }
+
         return {
           ...old,
           // Any errors in fields should visually stop
@@ -297,11 +302,11 @@ export default function useForm({
         }
       })
     },
-    [setState]
+    [setState, apiRef]
   )
 
   const setFieldValue = React.useCallback(
-    (field, updater, { isTouched = true } = {}) => {
+    (field, updater, { isTouched = false } = {}) => {
       const fieldInstances = apiRef.current.__getFieldInstances(field)
 
       setState(old => {
