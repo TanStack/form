@@ -30,7 +30,9 @@ const instance = useForm(options)
   - Field level validation is also available. [See `useField`](#useField)
 - `validatePristine: Bool`
   - If you want validation to run when instance.isDirty is false, you can set the `validatePristine` option to `true`
-
+- `debugForm: Bool`
+  - If set to `true` the form instance will be serialized and rendered after the `Form` element returned by the instance
+  
 ### Form Instance
 
 An `object` with the following components, properties and methods:
@@ -71,8 +73,6 @@ An `object` with the following components, properties and methods:
 - `formContext: FormInstance`
   - This can be used to manually link `useField` instances to a parent form. This is useful if `useField` is in the same block scope as `useForm`.
   - Simply pass `formContext` to `useField` like so: `useField(fieldName, { formContext })`. That field is now linked to the form that provided the `formContext`.
-- `debugForm: Bool`
-  - If set to `true` the form instance will be serialized and rendered after the `Form` element returned by the instance
 - `reset() => void`
   - This function will reset the form's state, and set `instance.values` to the `defaultValues` option
 - `setMeta((updater(previousMeta: Object) => newMeta: Object) | newMeta: Object)`
