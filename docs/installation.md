@@ -14,6 +14,8 @@ Once it is installed, you can import and use `react-form`'s hooks and utilities:
 import { useForm, useField, splitFormProps } from 'react-form'
 ```
 
+**NOTE:** React Form does not transpile asynchronous functions or polyfill promises. If you need to target any browsers that don't support async functions or promises, you will need to transpile them with babel and/or a promise polyfill.
+
 To learn how to use React Form, you should:
 
 - [See a basic example]()

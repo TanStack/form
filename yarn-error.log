@@ -1,8 +1,8 @@
 Arguments: 
-  /Users/tannerlinsley/.nvm/versions/node/v10.16.0/bin/node /Users/tannerlinsley/.yarn/bin/yarn.js publish --tag next
+  /Users/tannerlinsley/.nvm/versions/node/v10.16.0/bin/node /Users/tannerlinsley/.yarn/bin/yarn.js publish
 
 PATH: 
-  /var/folders/81/2xfh5h0s08s003qy6fhj0kj00000gn/T/yarn--1569257540299-0.5615039405753228:/Users/tannerlinsley/GitHub/react-form/node_modules/.bin:/Users/tannerlinsley/.config/yarn/link/node_modules/.bin:/Users/tannerlinsley/GitHub/react-form/node_modules/.bin:/Users/tannerlinsley/.config/yarn/link/node_modules/.bin:/Users/tannerlinsley/.nvm/versions/node/v10.16.0/libexec/lib/node_modules/npm/bin/node-gyp-bin:/Users/tannerlinsley/.nvm/versions/node/v10.16.0/lib/node_modules/npm/bin/node-gyp-bin:/Users/tannerlinsley/.nvm/versions/node/v10.16.0/bin/node_modules/npm/bin/node-gyp-bin:/Users/tannerlinsley/google-cloud-sdk/bin:/Users/tannerlinsley/.nvm/versions/node/v10.16.0/bin:/Applications/Minecraft.app/Contents/runtime/jre-x64/1.8.0_74/bin/:/Users/tannerlinsley/.yarn/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/tannerlinsley/go/bin:/Users/tannerlinsley/google-cloud-sdk/bin:/usr/local/bin:/Applications/mongodb/:/Users/tannerlinsley/bin:~/Library/Python/3.6/bin:./node_modules/.bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/tannerlinsley/go/bin:/Users/tannerlinsley/google-cloud-sdk/bin:/usr/local/bin:/Applications/mongodb/:/Users/tannerlinsley/bin:~/Library/Python/3.6/bin
+  /Users/tannerlinsley/google-cloud-sdk/bin:/Users/tannerlinsley/.nvm/versions/node/v10.16.0/bin:/Applications/Minecraft.app/Contents/runtime/jre-x64/1.8.0_74/bin/:/Users/tannerlinsley/.yarn/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/tannerlinsley/go/bin:/Users/tannerlinsley/google-cloud-sdk/bin:/usr/local/bin:/Applications/mongodb/:/Users/tannerlinsley/bin:~/Library/Python/3.6/bin:./node_modules/.bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/tannerlinsley/go/bin:/Users/tannerlinsley/google-cloud-sdk/bin:/usr/local/bin:/Applications/mongodb/:/Users/tannerlinsley/bin:~/Library/Python/3.6/bin
 
 Yarn version: 
   1.12.1
@@ -29,7 +29,7 @@ Trace:
 npm manifest: 
   {
     "name": "react-form",
-    "version": "4.0.0-alpha.9",
+    "version": "4.0.0",
     "description": "⚛️ 💼 React hooks for managing form state and lifecycle",
     "author": "tannerlinsley",
     "license": "MIT",

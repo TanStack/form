@@ -98,8 +98,8 @@ const reFindMultiplePeriods = /\.{2,}/gm
 
 function makePathArray(str) {
   return str
-    .replace('[', '')
-    .replace(']', '.')
+    .replace('[', '.')
+    .replace(']', '')
     .replace(reFindNumbers0, '__int__$1')
     .replace(reFindNumbers1, '.__int__$1.')
     .replace(reFindNumbers2, '__int__$1.')
