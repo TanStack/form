@@ -11,8 +11,9 @@ export default function useAsyncDebounce(defaultFn, defaultWait = 0) {
       wait = debounceRef.current.defaultWait
     ) => {
       if (!debounceRef.current.promise) {
-        debounceRef.current.promise = new Promise(resolve => {
+        debounceRef.current.promise = new Promise((resolve, reject) => {
           debounceRef.current.resolve = resolve
+          debounceRef.current.reject = reject
         })
       }
 
@@ -28,6 +29,8 @@ export default function useAsyncDebounce(defaultFn, defaultWait = 0) {
           debounceRef.current.reject(err)
         } finally {
           delete debounceRef.current.promise
+          delete debounceRef.current.resolve
+          delete debounceRef.current.reject
         }
       }, wait)
 
