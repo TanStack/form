@@ -4,8 +4,8 @@
 
 Hooks for managing form state and validation in React
 
-<a href="https://travis-ci.org/tannerlinsley/react-form" target="\_parent">
-  <img alt="" src="https://travis-ci.org/tannerlinsley/react-form.svg?branch=master" />
+<a href="https://twitter.com/intent/tweet?button_hashtag=TanStack" target="\_parent">
+  <img alt="#TanStack" src="https://img.shields.io/twitter/url?color=%2308a0e9&label=%23TanStack&style=social&url=https%3A%2F%2Ftwitter.com%2Fintent%2Ftweet%3Fbutton_hashtag%3DTanStack">
 </a>
 <a href="https://npmjs.com/package/react-form" target="\_parent">
   <img alt="" src="https://img.shields.io/npm/dm/react-form.svg" />
