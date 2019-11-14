@@ -22,6 +22,7 @@ Hooks for managing form state and validation in React
 <a href="https://twitter.com/tannerlinsley" target="\_parent">
   <img alt="" src="https://img.shields.io/twitter/follow/tannerlinsley.svg?style=social&label=Follow" />
 </a>
+<br />
 
 Enjoy this library? Try them all! [React Table](https://github.com/tannerlinsley/react-table), [React Query](https://github.com/tannerlinsley/react-query), [React Charts](https://github.com/tannerlinsley/react-charts)
 
