@@ -10,9 +10,9 @@ declare module 'react-form' {
     SetStateAction,
   } from 'react'
 
-  type SerializableObject = { [key: string]: Serializable }
-  interface SerializableArray extends Array<Serializable> {}
-  type Serializable =
+  export type SerializableObject = { [key: string]: Serializable }
+  export interface SerializableArray extends Array<Serializable> {}
+  export type Serializable =
     | string
     | number
     | boolean
@@ -20,12 +20,16 @@ declare module 'react-form' {
     | SerializableObject
     | SerializableArray
 
-  type Debounce = <T>(fn: () => T, wait: number) => Promise<T>
-  type ValidatorReturn = string | false | undefined
-  type OptionalPromise<T> = Promise<T> | T
-  type ValidationError = string | false | null | undefined
+  export type Debounce = <T>(fn: () => T, wait: number) => Promise<T>
+  export type FieldValidator<
+    TValue,
+    Instance = FieldInstance<TValue, {}, {}, {}>
+  > = (value: TValue, instance: Instance) => OptionalPromise<ValidatorReturn>
+  export type ValidatorReturn = string | false | undefined
+  export type OptionalPromise<T> = Promise<T> | T
+  export type ValidationError = string | false | null | undefined
 
-  interface FormMeta {
+  export interface FormMeta {
     error: ValidationError
     isSubmitting: boolean
     isDirty: boolean
@@ -37,11 +41,11 @@ declare module 'react-form' {
     canSubmit: boolean
   }
 
-  type SetFormMeta<C> =
+  export type SetFormMeta<C> =
     | Partial<FormMeta & C>
     | ((previousMeta: FormMeta & C) => FormMeta & C)
 
-  interface FormInstance<TValues, CustomFormMeta> {
+  export interface FormInstance<TValues, CustomFormMeta> {
     Form: ComponentType<Omit<HTMLProps<HTMLFormElement>, 'onSubmit'>>
     values: TValues
     meta: FormMeta & CustomFormMeta
@@ -80,7 +84,7 @@ declare module 'react-form' {
     ) => void
   }
 
-  interface FormOptions<TValues, CustomFormMeta> {
+  export interface FormOptions<TValues, CustomFormMeta> {
     defaultValues: TValues
     onSubmit: (
       values: TValues,
@@ -96,28 +100,28 @@ declare module 'react-form' {
 
   export function useForm<
     TValues extends {} = SerializableObject,
-    CustomFormMeta extends {} = Record<string, any>
+    CustomFormMeta extends {} = {}
   >(
     options?: Partial<FormOptions<TValues, CustomFormMeta>>
   ): FormInstance<TValues, CustomFormMeta>
 
   export function useFormContext<
     TValues extends {} = SerializableObject,
-    CustomFormMeta extends {} = Record<string, any>
+    CustomFormMeta extends {} = {}
   >(): FormInstance<TValues, CustomFormMeta>
 
-  interface FieldMeta {
+  export interface FieldMeta {
     error: ValidationError
     isTouched: boolean
     isValidating?: boolean
   }
 
-  type SetValue<S> = S | ((prevState: S) => S)
-  type SetFieldMeta<C> =
+  export type SetValue<S> = S | ((prevState: S) => S)
+  export type SetFieldMeta<C> =
     | Partial<FieldMeta & C>
     | ((previousMeta: FieldMeta & C) => FieldMeta & C)
 
-  interface FieldInstance<
+  export interface FieldInstance<
     TValue,
     CustomFieldMeta,
     TFormValues,
@@ -153,20 +157,20 @@ declare module 'react-form' {
     swapValues: (firstIndex: number, secondIndex: number) => void
   }
 
-  interface FieldOptions<TValue, CustomFieldMeta, TFormValues, CustomFormMeta> {
+  export interface FieldOptions<
+    TValue,
+    CustomFieldMeta,
+    TFormValues,
+    CustomFormMeta
+  > {
     defaultValue?: TValue
     defaultError?: ValidationError
     defaultIsTouched?: boolean
     defaultMeta?: FieldMeta & CustomFieldMeta
-    validate?: (
-      value: TValue,
-      instance: FieldInstance<
-        TValue,
-        CustomFieldMeta,
-        TFormValues,
-        CustomFormMeta
-      >
-    ) => OptionalPromise<ValidatorReturn>
+    validate?: FieldValidator<
+      TValue,
+      FieldInstance<TValue, CustomFieldMeta, TFormValues, CustomFormMeta>
+    >
     filterValue?: (
       value: TValue,
       instance: FieldInstance<
@@ -181,19 +185,19 @@ declare module 'react-form' {
 
   export function useField<
     TValue = Serializable,
-    CustomFieldMeta extends {} = Record<string, any>,
+    CustomFieldMeta extends {} = {},
     TFormValues extends {} = SerializableObject,
-    CustomFormMeta extends {} = Record<string, any>
+    CustomFormMeta extends {} = {}
   >(
     fieldPath: string,
     options?: FieldOptions<TValue, CustomFieldMeta, TFormValues, CustomFormMeta>
   ): FieldInstance<TValue, CustomFieldMeta, TFormValues, CustomFormMeta>
 
-  interface FieldOptionProps<
+  export interface FieldOptionProps<
     TValue = Serializable,
-    CustomFieldMeta extends {} = Record<string, any>,
+    CustomFieldMeta extends {} = {},
     TFormValues extends {} = SerializableObject,
-    CustomFormMeta extends {} = Record<string, any>
+    CustomFormMeta extends {} = {}
   > extends FieldOptions<TValue, CustomFieldMeta, TFormValues, CustomFormMeta> {
     onSubmit?: (
       value: TValue,
@@ -206,9 +210,9 @@ declare module 'react-form' {
   export function splitFormProps<
     P = {},
     TValue = Serializable,
-    CustomFieldMeta extends {} = Record<string, any>,
+    CustomFieldMeta extends {} = {},
     TFormValues extends {} = SerializableObject,
-    CustomFormMeta extends {} = Record<string, any>
+    CustomFormMeta extends {} = {}
   >(
     props: FieldProps<TValue, CustomFieldMeta, TFormValues, CustomFormMeta> & P
   ): [
@@ -219,9 +223,9 @@ declare module 'react-form' {
 
   export interface FieldProps<
     TValue = Serializable,
-    CustomFieldMeta extends {} = Record<string, any>,
+    CustomFieldMeta extends {} = {},
     TFormValues extends {} = SerializableObject,
-    CustomFormMeta extends {} = Record<string, any>
+    CustomFormMeta extends {} = {}
   >
     extends FieldOptionProps<
       TValue,
