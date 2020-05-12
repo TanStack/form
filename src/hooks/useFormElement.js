@@ -11,7 +11,10 @@ export default function useFormElement(contextValue) {
 
   // Create a new form element
   if (!FormRef.current) {
-    FormRef.current = function Form({ children, noFormElement, ...rest }) {
+    FormRef.current = React.forwardRef(function Form(
+      { children, noFormElement, ...rest },
+      ref
+    ) {
       const {
         handleSubmit,
         meta: { isSubmitting },
@@ -23,7 +26,7 @@ export default function useFormElement(contextValue) {
           {noFormElement ? (
             children
           ) : (
-            <form onSubmit={handleSubmit} disabled={isSubmitting} {...rest}>
+            <form onSubmit={handleSubmit} disabled={isSubmitting} ref={ref} {...rest}>
               {children}
               {debugForm ? (
                 <div
@@ -53,7 +56,7 @@ export default function useFormElement(contextValue) {
           )}
         </FormContextProvider>
       )
-    }
+    })
   }
 
   // Return the form element
