@@ -18,6 +18,6 @@ import { useForm, useField, splitFormProps } from 'react-form'
 
 To learn how to use React Form, you should:
 
-- [See a basic example]()
-- [Study a more complex example]()
-- [Get to know the API]()
+- [See a basic example](https://codesandbox.io/s/react-form-demo-950ww)
+- [Study a more complex example](https://codesandbox.io/s/react-form-demo-q9mgm)
+- [Get to know the API](https://github.com/tannerlinsley/react-form/blob/master/docs/api.md)
