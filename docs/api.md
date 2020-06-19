@@ -31,8 +31,9 @@ const instance = useForm(options)
 - `validatePristine: Bool`
   - If you want validation to run when instance.isDirty is false, you can set the `validatePristine` option to `true`
 - `debugForm: Bool`
+
   - If set to `true` the form instance will be serialized and rendered after the `Form` element returned by the instance
-  
+
 ### Form Instance
 
 An `object` with the following components, properties and methods:
@@ -89,7 +90,7 @@ An `object` with the following components, properties and methods:
   - A new promise is returned for each call to this function
   - Over the course of multiple overlapping calls to this function, only the latest active promise that both fires and finishes will actually resolve or reject. In other words, if you call this function before a previous call to it resolves, all previous calls will be discarded and never resolve or reject so as to avoid unwanted side effects from stale promises. Turns out this is easier than cancelling promises :)
 - `setValues(updater(previousValues: Object) => newValues: Object) | newValues: Object`
-  - Use this function to update the form's `meta` value.
+  - Use this function to update the form's `values` value.
   - If a callback is passed, it will be given the previous value and be expected to return a new one, similar to React's `setState` callback style.
   - If a value is passed, it **will replace the entire values** object, similar to React's `setState` callback style.
 - `runValidation() => void`

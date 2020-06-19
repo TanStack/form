@@ -399,10 +399,10 @@ export default function useForm({
   )
 
   const setValues = React.useCallback(
-    values => {
+    updater => {
       setState(old => ({
         ...old,
-        values: values,
+        values: typeof updater === 'function' ? updater(old.values) : updater,
       }))
     },
     [setState]
