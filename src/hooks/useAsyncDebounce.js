@@ -5,6 +5,26 @@ export default function useAsyncDebounce(defaultFn, defaultWait = 0) {
   debounceRef.current.defaultFn = defaultFn
   debounceRef.current.defaultWait = defaultWait
 
+  React.useEffect(() => {
+    return () => {
+      if (debounceRef.current.timeout) {
+        clearTimeout(debounceRef.current.timeout)
+        delete debounceRef.current.timeout
+      }
+
+      if (debounceRef.current.promise) {
+        debounceRef.current.reject(
+          'Component unmounted while promise was not settled.'
+        )
+
+        delete debounceRef.current.promise
+      }
+
+      debounceRef.current.resolve = () => {}
+      debounceRef.current.reject = () => {}
+    }
+  }, [])
+
   const debounce = React.useCallback(
     async (
       fn = debounceRef.current.defaultFn,
