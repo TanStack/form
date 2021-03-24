@@ -50,7 +50,7 @@ An `object` with the following components, properties and methods:
     - If an error is returned by the form's `validation` function, or if it is set programmatically, it will be stored here.
   - `isSubmitting: Bool`
     - Will be set to `true` if the form is currently submitting
-  - `isDirty: Bool`
+  - `isTouched: Bool`
     - Will be set to `true` if the form is dirty
   - `isSubmitted: Bool`
     - Will be set to `true` if the form has been submitted successfully
