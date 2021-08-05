@@ -24,7 +24,7 @@ Hooks for managing form state and validation in React
 </a>
 <br />
 
-Enjoy this library? Try them all! [React Table](https://github.com/tannerlinsley/react-table), [React Query](https://github.com/tannerlinsley/react-query), [React Charts](https://github.com/tannerlinsley/react-charts)
+Enjoy this library? Try them all! [React Table](https://github.com/tannerlinsley/react-table), [React Query](https://github.com/tannerlinsley/react-query), [React Charts](https://github.com/tannerlinsley/react-charts), [React Virtual](https://github.com/tannerlinsley/react-virtual)
 
 ## Features
 
