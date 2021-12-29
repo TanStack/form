@@ -19,7 +19,7 @@
   },
   "peerDependencies": {
     "prop-types": "^15.5.4",
-    "react": "^16.8.3"
+    "react": "^16.8.3 || ^17.0.0"
   },
   "dependencies": {},
   "devDependencies": {
