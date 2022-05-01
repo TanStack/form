@@ -160,7 +160,7 @@ export default function useForm({
 
     apiRef.current.setMeta(old => ({
       ...old,
-      // Submittion attempts mark the form as not submitted
+      // Submission attempts mark the form as not submitted
       isSubmitted: false,
       // Count submission attempts
       submissionAttempts: old.submissionAttempts + 1,
