@@ -26,28 +26,9 @@ Hooks for fetching, caching and updating asynchronous data in React, Solid, Svel
   <img src="https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod" alt="Gitpod Ready-to-Code"/>
 </a>
 
-Enjoy this library? Try the entire [TanStack](https://tanstack.com)! [TanStack Table](https://github.com/TanStack/table), [TanStack Router](https://github.com/tanstack/router), [TanStack Virtual](https://github.com/tanstack/virtual), [React Charts](https://github.com/TanStack/react-charts), [React Ranger](https://github.com/TanStack/ranger)
+Enjoy this library? Try the entire [TanStack](https://tanstack.com)! [TanStack Query](https://github.com/TanStack/query), [TanStack Table](https://github.com/TanStack/table), [TanStack Router](https://github.com/tanstack/router), [TanStack Virtual](https://github.com/tanstack/virtual), [React Charts](https://github.com/TanStack/react-charts), [React Ranger](https://github.com/TanStack/ranger)
 
 ## Visit [tanstack.com/form](https://tanstack.com/form) for docs, guides, API and more!
-
-Still on **React Form v2**? No problem! Check out the v2 docs here: https://github.com/TanStack/form/tree/2.x/docs/src/pages/docs. <br />
-Still on **React Form v3**? No problem! Check out the v3 docs here: https://tanstack.com/form/v3/docs/.
-
-## Quick Features
-
-- Transport/protocol/backend agnostic data fetching (REST, GraphQL, promises, whatever!)
-- Auto Caching + Refetching (stale-while-revalidate, Window Refocus, Polling/Realtime)
-- Parallel + Dependent Queries
-- Mutations + Reactive Form Refetching
-- Multi-layer Cache + Automatic Garbage Collection
-- Paginated + Cursor-based Queries
-- Load-More + Infinite Scroll Queries w/ Scroll Recovery
-- Request Cancellation
-- [React Suspense](https://reactjs.org/docs/concurrent-mode-suspense.html) + Fetch-As-You-Render Form Prefetching
-- Dedicated Devtools
-- <a href="https://bundlephobia.com/package/@tanstack/form@latest" target="\_parent">
-  <img alt="" src="https://badgen.net/bundlephobia/minzip/@tanstack/form" />
-  </a> (depending on features imported)
 
 ### [Become a Sponsor!](https://github.com/sponsors/tannerlinsley/)
 
