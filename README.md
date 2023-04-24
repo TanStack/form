@@ -1,161 +1,54 @@
-![React Form Header](https://github.com/tannerlinsley/react-form/raw/master/media/header.png)
+<img src="https://static.scarf.sh/a.png?x-pxid=be2d8a11-9712-4c1d-9963-580b2d4fb133" />
 
-<img src='https://github.com/tannerlinsley/react-form/raw/master/media/logo.png' width='300'/>
+![TanStack Form Header](https://github.com/TanStack/form/raw/beta/media/repo-header.png)
 
-Hooks for managing form state and validation in React
+Hooks for fetching, caching and updating asynchronous data in React, Solid, Svelte and Vue
 
 <a href="https://twitter.com/intent/tweet?button_hashtag=TanStack" target="\_parent">
   <img alt="#TanStack" src="https://img.shields.io/twitter/url?color=%2308a0e9&label=%23TanStack&style=social&url=https%3A%2F%2Ftwitter.com%2Fintent%2Ftweet%3Fbutton_hashtag%3DTanStack">
-</a>
-<a href="https://npmjs.com/package/react-form" target="\_parent">
-  <img alt="" src="https://img.shields.io/npm/dm/react-form.svg" />
-</a>
-<a href="https://bundlephobia.com/result?p=react-form@next" target="\_parent">
-  <img alt="" src="https://badgen.net/bundlephobia/minzip/react-form@next" />
-</a>
-<a href="https://spectrum.chat/react-form">
-  <img alt="Join the community on Spectrum" src="https://withspectrum.github.io/badge/badge.svg" />
-</a>
-<a href="https://github.com/tannerlinsley/react-form" target="\_parent">
-  <img alt="" src="https://img.shields.io/github/stars/tannerlinsley/react-form.svg?style=social&label=Star" />
-</a>
-<a href="https://twitter.com/tannerlinsley" target="\_parent">
+</a><a href="https://discord.com/invite/WrRKjPJ" target="\_parent">
+  <img alt="" src="https://img.shields.io/badge/Discord-TanStack-%235865F2" />
+</a><a href="https://github.com/TanStack/form/actions?query=workflow%3A%22form+tests%22">
+<img src="https://github.com/TanStack/form/workflows/form%20tests/badge.svg" />
+</a><a href="https://www.npmjs.com/package/@tanstack/form-core" target="\_parent">
+  <img alt="" src="https://img.shields.io/npm/dm/@tanstack/form-core.svg" />
+</a><a href="https://bundlephobia.com/package/@tanstack/form@latest" target="\_parent">
+  <img alt="" src="https://badgen.net/bundlephobia/minzip/@tanstack/form" />
+</a><a href="#badge">
+    <img alt="semantic-release" src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg">
+  </a><a href="https://github.com/TanStack/form/discussions">
+  <img alt="Join the discussion on Github" src="https://img.shields.io/badge/Github%20Discussions%20%26%20Support-Chat%20now!-blue" />
+</a><a href="https://bestofjs.org/projects/tanstack-form"><img alt="Best of JS" src="https://img.shields.io/endpoint?url=https://bestofjs-serverless.now.sh/api/project-badge?fullName=TanStack%2Fform%26since=daily" /></a><a href="https://github.com/TanStack/form/" target="\_parent">
+  <img alt="" src="https://img.shields.io/github/stars/TanStack/form.svg?style=social&label=Star" />
+</a><a href="https://twitter.com/tannerlinsley" target="\_parent">
   <img alt="" src="https://img.shields.io/twitter/follow/tannerlinsley.svg?style=social&label=Follow" />
+</a> <a href="https://gitpod.io/from-referrer/">
+  <img src="https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod" alt="Gitpod Ready-to-Code"/>
 </a>
-<br />
 
-Enjoy this library? Try them all! [React Table](https://github.com/tannerlinsley/react-table), [React Query](https://github.com/tannerlinsley/react-query), [React Charts](https://github.com/tannerlinsley/react-charts), [React Virtual](https://github.com/tannerlinsley/react-virtual)
+Enjoy this library? Try the entire [TanStack](https://tanstack.com)! [TanStack Table](https://github.com/TanStack/table), [TanStack Router](https://github.com/tanstack/router), [TanStack Virtual](https://github.com/tanstack/virtual), [React Charts](https://github.com/TanStack/react-charts), [React Ranger](https://github.com/TanStack/ranger)
 
-## Features
+## Visit [tanstack.com/form](https://tanstack.com/form) for docs, guides, API and more!
 
-- Built **with** React hooks **for** React hooks
-- Highly practical validation API with 1st-class asynchronous support
-- Built-in validation debouncing with auto cancellation for stale validations
-- Field Scoping for deeply nested form values
-- No nonsense meta management for both forms and form fields
-- Fully memoized for frequent and fast rerenders
-- Flexible form API at the field, scope, and form levels
+Still on **React Form v2**? No problem! Check out the v2 docs here: https://github.com/TanStack/form/tree/2.x/docs/src/pages/docs. <br />
+Still on **React Form v3**? No problem! Check out the v3 docs here: https://tanstack.com/form/v3/docs/.
 
-## Sponsors
+## Quick Features
 
-This library is being built and maintained by me, @tannerlinsley and I am always in need of more support to keep projects like this afloat. If you would like to get premium support, add your logo or name on this README, or simply just contribute to my open source Sponsorship goal, [visit my Github Sponsors page!](https://github.com/sponsors/tannerlinsley/)
+- Transport/protocol/backend agnostic data fetching (REST, GraphQL, promises, whatever!)
+- Auto Caching + Refetching (stale-while-revalidate, Window Refocus, Polling/Realtime)
+- Parallel + Dependent Queries
+- Mutations + Reactive Form Refetching
+- Multi-layer Cache + Automatic Garbage Collection
+- Paginated + Cursor-based Queries
+- Load-More + Infinite Scroll Queries w/ Scroll Recovery
+- Request Cancellation
+- [React Suspense](https://reactjs.org/docs/concurrent-mode-suspense.html) + Fetch-As-You-Render Form Prefetching
+- Dedicated Devtools
+- <a href="https://bundlephobia.com/package/@tanstack/form@latest" target="\_parent">
+  <img alt="" src="https://badgen.net/bundlephobia/minzip/@tanstack/form" />
+  </a> (depending on features imported)
 
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="middle">
-        <a href="https://github.com/sponsors/tannerlinsley" target="_blank">
-          <img width='150' src="https://raw.githubusercontent.com/tannerlinsley/files/master/images/patreon/diamond.png">
-        </a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://github.com/sponsors/tannerlinsley" target="_blank">
-          Become a Sponsor!
-        </a>
-      </td>
-    </tr>
-  </tbody>
-</table>
+### [Become a Sponsor!](https://github.com/sponsors/tannerlinsley/)
 
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="middle">
-        <a href="https://github.com/sponsors/tannerlinsley/" target="_blank">
-          <img width='150' src="https://raw.githubusercontent.com/tannerlinsley/files/master/images/patreon/platinum.png">
-        </a>
-      </td>
-      <td align="center" valign="middle">
-       <a href="https://github.com/sponsors/tannerlinsley" target="_blank">
-          Become a Sponsor!
-        </a>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="middle">
-        <a href="https://github.com/sponsors/tannerlinsley/" target="_blank">
-          <img width='150' src="https://raw.githubusercontent.com/tannerlinsley/files/master/images/patreon/gold.png">
-        </a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://github.com/sponsors/tannerlinsley" target="_blank">
-          Become a Sponsor!
-        </a>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="middle">
-        <a href="https://github.com/sponsors/tannerlinsley/" target="_blank">
-          <img width='150' src="https://raw.githubusercontent.com/tannerlinsley/files/master/images/patreon/silver.png">
-        </a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://github.com/sponsors/tannerlinsley" target="_blank">
-          Become a Sponsor!
-        </a>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<table>
-  <tbody>
-    <tr>
-      <td valign="top">
-        <a href="https://github.com/sponsors/tannerlinsley/">
-          <img width='150' src="https://raw.githubusercontent.com/tannerlinsley/files/master/images/patreon/supporters.png" />
-        </a>
-      </td>
-      <!-- <td>
-        <ul>
-        <li><a href=""><a></li>
-        </ul>
-      </td> -->
-      <td>
-        <a href="https://github.com/sponsors/tannerlinsley" target="_blank">
-          Become a Supporter!
-        </a>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<table>
-  <tbody>
-    <tr>
-      <td valign="top">
-        <a href="https://github.com/sponsors/tannerlinsley/">
-          <img width='150' src="https://raw.githubusercontent.com/tannerlinsley/files/master/images/patreon/fans.png" />
-        </a>
-      </td>
-      <!-- <td>
-        <ul>
-        <li></li>
-        </ul>
-      </td> -->
-      <td>
-        <a href="https://github.com/sponsors/tannerlinsley" target="_blank">
-          Become a Fan!
-        </a>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-# Documentation
-
-- [Installation](./docs/installation.md)
-- [Examples](./docs/examples.md)
-- [API](./docs/api.md)
-- [Validation Guide](./docs/validation.md)
-- [Field Scoping Guide](./docs/field-scoping.md)
+<!-- Use the force, Luke -->

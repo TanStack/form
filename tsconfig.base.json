@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
+    "target": "ES2020",
+    "module": "ES2020",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noUncheckedIndexedAccess": true,
+    "strictNullChecks": true,
+    "jsx": "react",
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@tanstack/form-core": ["packages/form-core/src"],
+      "@tanstack/react-form": ["packages/react-form/src"]
+      // "@tanstack/react-form-devtools": ["packages/react-form-devtools/src"],
+      // "@tanstack/solid-form": ["packages/solid-form/src"],
+      // "@tanstack/vue-form": ["packages/vue-form/src"],
+    }
+  }
+}

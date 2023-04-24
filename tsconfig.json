@@ -1,0 +1,10 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/form-core" },
+    { "path": "packages/react-form" }
+    // { "path": "packages/react-form-devtools" }
+    // { "path": "packages/solid-form" },
+    // { "path": "packages/vue-form" },
+  ]
+}

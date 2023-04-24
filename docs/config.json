@@ -1,0 +1,58 @@
+{
+  "docSearch": {
+    "appId": "",
+    "apiKey": "",
+    "indexName": "tanstack-form"
+  },
+  "menu": [
+    {
+      "framework": "react",
+      "menuItems": [
+        {
+          "label": "Getting Started",
+          "children": [
+            {
+              "label": "Overview",
+              "to": "react/overview"
+            },
+            {
+              "label": "Installation",
+              "to": "react/installation"
+            },
+            {
+              "label": "Quick Start",
+              "to": "react/quick-start"
+            }
+          ]
+        },
+        {
+          "label": "Guides & Concepts",
+          "children": [
+            {
+              "label": "Important Defaults",
+              "to": "react/guides/important-defaults"
+            }
+          ]
+        },
+        {
+          "label": "Examples",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "react/examples/react/simple"
+            }
+          ]
+        },
+        {
+          "label": "API Reference",
+          "children": [
+            {
+              "label": "useForm",
+              "to": "react/reference/useForm"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
