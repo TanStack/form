@@ -35,7 +35,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm --filter "./packages/**" --filter form --prefer-offline install
+        run: pnpm --prefer-offline install
       - name: Run Tests
         uses: nick-fields/retry@v2.8.3
         with:
