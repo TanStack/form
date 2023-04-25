@@ -6,40 +6,62 @@
   },
   "menu": [
     {
-      "framework": "react",
+      "framework": "core",
       "menuItems": [
         {
           "label": "Getting Started",
           "children": [
             {
               "label": "Overview",
-              "to": "react/overview"
+              "to": "core/overview"
             },
             {
               "label": "Installation",
-              "to": "react/installation"
+              "to": "core/installation"
             },
             {
-              "label": "Quick Start",
-              "to": "react/quick-start"
+              "label": "Comparison",
+              "to": "core/comparison"
+            },
+            {
+              "label": "TypeScript",
+              "to": "core/typescript"
             }
           ]
         },
         {
-          "label": "Guides & Concepts",
+          "label": "Guides",
           "children": [
             {
               "label": "Important Defaults",
-              "to": "react/guides/important-defaults"
+              "to": "core/guides/important-defaults"
             }
           ]
         },
         {
-          "label": "Examples",
+          "label": "API Reference",
           "children": [
             {
-              "label": "Simple",
-              "to": "react/examples/react/simple"
+              "label": "FormApi",
+              "to": "core/reference/formApi"
+            },
+            {
+              "label": "FieldApi",
+              "to": "core/reference/fieldApi"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "framework": "react",
+      "menuItems": [
+        {
+          "label": "Getting Started",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "react/quick-start"
             }
           ]
         },
@@ -49,6 +71,27 @@
             {
               "label": "useForm",
               "to": "react/reference/useForm"
+            },
+            {
+              "label": "useField",
+              "to": "react/reference/useField"
+            },
+            {
+              "label": "Field",
+              "to": "react/reference/Field"
+            },
+            {
+              "label": "FormApi",
+              "to": "react/reference/formApi"
+            }
+          ]
+        },
+        {
+          "label": "Examples",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "react/examples/simple"
             }
           ]
         }

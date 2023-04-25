@@ -23,6 +23,13 @@ export type FieldOptions<TData, TFormData> = {
     | 'submit'
 }
 
+export type FieldMeta = {
+  isTouched: boolean
+  touchedError?: ValidationError
+  error?: ValidationError
+  isValidating: boolean
+}
+
 export type ChangeProps<TData> = {
   onChange: (updater: Updater<TData>) => void
   onBlur: (event: any) => void
@@ -31,13 +38,6 @@ export type ChangeProps<TData> = {
 export type InputProps = {
   onChange: (event: any) => void
   onBlur: (event: any) => void
-}
-
-export type FieldMeta = {
-  isTouched: boolean
-  touchedError?: ValidationError
-  error?: ValidationError
-  isValidating: boolean
 }
 
 export type FieldApiOptions<TData, TFormData> = RequiredByKey<
@@ -211,17 +211,25 @@ export class FieldApi<TData, TFormData> {
     }
 
     try {
-      const error = await this.options.validate(this.state.value, this)
+      const rawError = await this.options.validate(this.state.value, this)
 
       if (checkLatest()) {
+        const error = (() => {
+          if (rawError) {
+            if (typeof rawError !== 'string') {
+              return 'Invalid Form Values'
+            }
+
+            return null
+          }
+
+          return undefined
+        })()
+
         this.setMeta((prev) => ({
           ...prev,
           isValidating: false,
-          error: error
-            ? typeof error === 'string'
-              ? error
-              : 'Invalid Form Values'
-            : null,
+          error,
         }))
         this.getInfo().validationResolve?.(error)
       }
@@ -245,6 +253,7 @@ export class FieldApi<TData, TFormData> {
   ): ChangeProps<TData> & Omit<T, keyof ChangeProps<TData>> => {
     return {
       ...props,
+      value: this.state.value,
       onChange: (value) => {
         this.setValue(value)
         props.onChange(value)
@@ -268,6 +277,7 @@ export class FieldApi<TData, TFormData> {
   ): InputProps & Omit<T, keyof InputProps> => {
     return {
       ...props,
+      value: String(this.state.value),
       onChange: (e) => {
         this.setValue(e.target.value)
         props.onChange(e.target.value)

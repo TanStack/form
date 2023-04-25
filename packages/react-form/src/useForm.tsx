@@ -6,7 +6,6 @@ import React from 'react'
 import { createFieldComponent, type FieldComponent } from './Field'
 import { createUseField, type UseField } from './useField'
 import { formContext } from './formContext'
-//
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
@@ -25,22 +24,27 @@ declare module '@tanstack/form-core' {
     }) => any
   }
 }
+//
 
-export function useForm<TData>(
-  opts?: FormOptions<TData> & { listen?: (state: FormState<TData>) => any },
-): FormApi<TData> {
-  //  & { listened: TListen }
+export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
   const [formApi] = React.useState(() => {
+    // @ts-ignore
     const api = new FormApi<TData>(opts || {})
 
     api.Form = createFormComponent(api)
     api.Field = createFieldComponent(api)
     api.useField = createUseField(api)
-    api.useStore = (selector) => {
+    api.useStore = (
+      // @ts-ignore
+      selector,
+    ) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       return useStore(api.store, selector) as any
     }
-    api.Subscribe = (props) => {
+    api.Subscribe = (
+      // @ts-ignore
+      props,
+    ) => {
       return functionalUpdate(
         props.children,
         // eslint-disable-next-line react-hooks/rules-of-hooks
