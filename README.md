@@ -32,4 +32,4 @@ Enjoy this library? Try the entire [TanStack](https://tanstack.com)! [TanStack Q
 
 ### [Become a Sponsor!](https://github.com/sponsors/tannerlinsley/)
 
-<!-- Use the force, Luke -->
+<!-- Use the force, Luke! -->
