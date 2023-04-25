@@ -12,16 +12,20 @@ export type FieldOptions<TData, TFormData> = {
   validate?: (
     value: TData,
     fieldApi: FieldApi<TData, TFormData>,
+  ) => ValidationError
+  validateAsync?: (
+    value: TData,
+    fieldApi: FieldApi<TData, TFormData>,
   ) => ValidationError | Promise<ValidationError>
-  validatePristine?: boolean
+  validatePristine?: boolean // Default: false
+  validateOn?: ValidateOn // Default: 'change'
+  validateAsyncOn?: ValidateOn // Default: 'blur'
+  validateAsyncDebounceMs?: number
   filterValue?: (value: TData) => TData
   defaultMeta?: Partial<FieldMeta>
   change?: boolean
   blur?: boolean
   submit?: boolean
-  validateUntouched?: boolean // Default: false
-  validateOn?: ValidateOn // Default: 'change'
-  validateAsyncOn?: ValidateOn // Default: 'blur'
 }
 
 export type FieldMeta = {
@@ -148,7 +152,12 @@ export class FieldApi<TData, TFormData> {
   }
 
   update = (opts: FieldApiOptions<TData, TFormData>) => {
-    this.options = { validateOn: 'change', validateAsyncOn: 'blur', ...opts }
+    this.options = {
+      validateOn: 'change',
+      validateAsyncOn: 'blur',
+      validateAsyncDebounceMs: 0,
+      ...opts,
+    }
 
     // Default Value
     if (
@@ -191,7 +200,7 @@ export class FieldApi<TData, TFormData> {
       form: this.form,
     })
 
-  validate = async () => {
+  #validate = async (isAsync: boolean) => {
     if (!this.options.validate) {
       return
     }
@@ -250,6 +259,9 @@ export class FieldApi<TData, TFormData> {
 
     return this.getInfo().validationPromise
   }
+
+  validate = () => this.#validate(false)
+  validateAsync = () => this.#validate(true)
 
   getChangeProps = <T extends ChangeProps<any>>(
     props: T = {} as T,

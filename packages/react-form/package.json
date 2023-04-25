@@ -1,7 +1,7 @@
 {
   "name": "@tanstack/react-form",
-  "version": "4.29.5",
-  "description": "Hooks for managing form state in React",
+  "version": "0.0.1",
+  "description": "Powerful, type-safe forms for React.",
   "author": "tannerlinsley",
   "license": "MIT",
   "repository": "tanstack/form",
@@ -13,9 +13,7 @@
   "types": "build/types/index.d.ts",
   "main": "build/cjs/index.js",
   "module": "build/esm/index.js",
-  "sideEffects": [
-    "./src/setBatchUpdatesFn.ts"
-  ],
+  "sideEffects": false,
   "scripts": {
     "clean": "rimraf ./build",
     "test:eslint": "eslint --ext .ts,.tsx ./src",
@@ -25,8 +23,7 @@
     "build:types": "tsc --build"
   },
   "files": [
-    "build/lib/*",
-    "build/umd/*",
+    "build/**",
     "src"
   ],
   "devDependencies": {

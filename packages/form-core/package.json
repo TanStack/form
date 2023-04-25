@@ -1,7 +1,7 @@
 {
   "name": "@tanstack/form-core",
-  "version": "4.29.5",
-  "description": "The framework agnostic core that powers TanStack Form",
+  "version": "0.0.1",
+  "description": "Powerful, type-safe, framework agnostic forms.",
   "author": "tannerlinsley",
   "license": "MIT",
   "repository": "tanstack/form",
@@ -15,8 +15,7 @@
   "module": "build/esm/index.js",
   "sideEffects": false,
   "files": [
-    "build/lib/*",
-    "build/umd/*",
+    "build/**",
     "src"
   ],
   "scripts": {

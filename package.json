@@ -1,5 +1,6 @@
 {
   "name": "form",
+  "private": true,
   "repository": "https://github.com/tanstack/form.git",
   "scripts": {
     "nx-reset": "nx reset",
