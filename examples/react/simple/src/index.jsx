@@ -32,6 +32,9 @@ export default function App() {
               <>
                 <label htmlFor={field.name}>First Name:</label>
                 <input name={field.name} {...field.getInputProps()} />
+                {field.state.meta.touchedError && (
+                  <em>{field.state.meta.touchedError}</em>
+                )}
               </>
             )}
           />
@@ -43,6 +46,9 @@ export default function App() {
               <>
                 <label htmlFor={field.name}>Last Name:</label>
                 <input name={field.name} {...field.getInputProps()} />
+                {field.state.meta.touchedError && (
+                  <em>{field.state.meta.touchedError}</em>
+                )}
               </>
             )}
           />

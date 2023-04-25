@@ -1,27 +1,30 @@
-import type { OutputOptions, RollupOptions } from 'rollup'
+import type { RollupOptions } from 'rollup'
 import babel from '@rollup/plugin-babel'
 import { terser } from 'rollup-plugin-terser'
+// @ts-ignore
 import size from 'rollup-plugin-size'
 import visualizer from 'rollup-plugin-visualizer'
 import replace from '@rollup/plugin-replace'
 import nodeResolve from '@rollup/plugin-node-resolve'
-import commonJS from '@rollup/plugin-commonjs'
+import commonjs from '@rollup/plugin-commonjs'
 import path from 'path'
-import preserveDirectives from 'rollup-plugin-preserve-directives'
+// import svelte from 'rollup-plugin-svelte'
+import dts from 'rollup-plugin-dts'
+//
+import { packages } from './scripts/config'
+import { readJsonSync } from 'fs-extra'
 
 type Options = {
-  input: string | string[]
+  input: string
   packageDir: string
+  umdExternal: RollupOptions['external']
   external: RollupOptions['external']
   banner: string
   jsName: string
-  outputFile: string
   globals: Record<string, string>
-  forceDevEnv: boolean
-  forceBundle: boolean
 }
 
-const forceEnvPlugin = (type: 'development' | 'production') =>
+const umdDevPlugin = (type: 'development' | 'production') =>
   replace({
     'process.env.NODE_ENV': `"${type}"`,
     delimiters: ['', ''],
@@ -31,355 +34,168 @@ const forceEnvPlugin = (type: 'development' | 'production') =>
 const babelPlugin = babel({
   babelHelpers: 'bundled',
   exclude: /node_modules/,
-  extensions: ['.ts', '.tsx', '.native.ts'],
+  extensions: ['.ts', '.tsx'],
 })
 
 export default function rollup(options: RollupOptions): RollupOptions[] {
-  return [
-    ...buildConfigs({
-      name: 'form-core',
-      packageDir: 'packages/form-core',
-      jsName: 'FormCore',
-      outputFile: 'index',
-      entryFile: ['src/index.ts'],
-      globals: {},
-    }),
-    ...buildConfigs({
-      name: 'react-form',
-      packageDir: 'packages/react-form',
-      jsName: 'ReactForm',
-      outputFile: 'index',
-      entryFile: ['src/index.ts'],
-      globals: {
-        react: 'React',
-        'react-dom': 'ReactDOM',
-        '@tanstack/form-core': 'FormCore',
-        'use-sync-external-store/shim/index.js': 'UseSyncExternalStore',
-        'use-sync-external-store/shim/index.native.js':
-          'UseSyncExternalStoreNative',
-      },
-      bundleUMDGlobals: [
-        '@tanstack/form-core',
-        'use-sync-external-store/shim/index.js',
-      ],
-    }),
-    // ...buildConfigs({
-    //   name: 'react-form-devtools',
-    //   packageDir: 'packages/react-form-devtools',
-    //   jsName: 'ReactFormDevtools',
-    //   outputFile: 'index',
-    //   entryFile: 'src/index.ts',
-    //   globals: {
-    //     react: 'React',
-    //     'react-dom': 'ReactDOM',
-    //     '@tanstack/react-form': 'ReactForm',
-    //     '@tanstack/match-sorter-utils': 'MatchSorterUtils',
-    //     'use-sync-external-store/shim/index.js': 'UseSyncExternalStore',
-    //     superjson: 'SuperJson',
-    //   },
-    //   bundleUMDGlobals: [
-    //     '@tanstack/match-sorter-utils',
-    //     'use-sync-external-store/shim/index.js',
-    //     'superjson',
-    //   ],
-    // }),
-    // ...buildConfigs({
-    //   name: 'react-form-devtools-prod',
-    //   packageDir: 'packages/react-form-devtools',
-    //   jsName: 'ReactFormDevtools',
-    //   outputFile: 'index.prod',
-    //   entryFile: 'src/index.ts',
-    //   globals: {
-    //     react: 'React',
-    //     'react-dom': 'ReactDOM',
-    //     '@tanstack/react-form': 'ReactForm',
-    //     '@tanstack/match-sorter-utils': 'MatchSorterUtils',
-    //     'use-sync-external-store/shim/index.js': 'UseSyncExternalStore',
-    //     superjson: 'SuperJson',
-    //   },
-    //   forceDevEnv: true,
-    //   forceBundle: true,
-    //   skipUmdBuild: true,
-    // }),
-    // ...buildConfigs({
-    //   name: 'solid-form',
-    //   packageDir: 'packages/solid-form',
-    //   jsName: 'SolidForm',
-    //   outputFile: 'index',
-    //   entryFile: 'src/index.ts',
-    //   globals: {
-    //     'solid-js/store': 'SolidStore',
-    //     'solid-js': 'Solid',
-    //     '@tanstack/form-core': 'FormCore',
-    //   },
-    //   bundleUMDGlobals: ['@tanstack/form-core'],
-    // }),
-    // ...buildConfigs({
-    //   name: 'vue-form',
-    //   packageDir: 'packages/vue-form',
-    //   jsName: 'VueForm',
-    //   outputFile: 'index',
-    //   entryFile: 'src/index.ts',
-    //   globals: {
-    //     '@tanstack/form-core': 'FormCore',
-    //     vue: 'Vue',
-    //     'vue-demi': 'Vue',
-    //     '@tanstack/match-sorter-utils': 'MatchSorter',
-    //     '@vue/devtools-api': 'DevtoolsApi',
-    //   },
-    //   bundleUMDGlobals: [
-    //     '@tanstack/form-core',
-    //     '@tanstack/match-sorter-utils',
-    //     '@vue/devtools-api',
-    //   ],
-    // }),
-  ]
+  return packages.flatMap((pkg) => {
+    return buildConfigs({
+      name: pkg.packageDir,
+      packageDir: `packages/${pkg.packageDir}`,
+      jsName: pkg.jsName,
+      outputFile: pkg.packageDir,
+      entryFile: pkg.entryFile,
+      globals: pkg.globals ?? {},
+      esm: pkg.esm ?? true,
+      cjs: pkg.cjs ?? true,
+      umd: pkg.umd ?? true,
+    })
+  })
 }
 
 function buildConfigs(opts: {
+  esm: boolean
+  cjs: boolean
+  umd: boolean
   packageDir: string
   name: string
   jsName: string
   outputFile: string
-  entryFile: string | string[]
+  entryFile: string
   globals: Record<string, string>
-  // This option allows to bundle specified dependencies for umd build
-  bundleUMDGlobals?: string[]
-  // Force prod env build
-  forceDevEnv?: boolean
-  forceBundle?: boolean
-  skipUmdBuild?: boolean
 }): RollupOptions[] {
-  const firstEntry = path.resolve(
-    opts.packageDir,
-    Array.isArray(opts.entryFile) ? opts.entryFile[0] : opts.entryFile,
-  )
-  const entries = Array.isArray(opts.entryFile)
-    ? opts.entryFile
-    : [opts.entryFile]
-  const input = entries.map((entry) => path.resolve(opts.packageDir, entry))
-  const externalDeps = Object.keys(opts.globals)
+  const input = path.resolve(opts.packageDir, opts.entryFile)
 
-  const bundleUMDGlobals = opts.bundleUMDGlobals || []
-  const umdExternal = externalDeps.filter(
-    (external) => !bundleUMDGlobals.includes(external),
-  )
+  const packageJson =
+    readJsonSync(
+      path.resolve(process.cwd(), opts.packageDir, 'package.json'),
+    ) ?? {}
 
-  const external = (moduleName) => externalDeps.includes(moduleName)
-  const banner = '' //createBanner(opts.name)
+  const banner = createBanner(opts.name)
 
   const options: Options = {
     input,
     jsName: opts.jsName,
-    outputFile: opts.outputFile,
     packageDir: opts.packageDir,
-    external,
+    external: [
+      ...Object.keys(packageJson.dependencies ?? {}),
+      ...Object.keys(packageJson.peerDependencies ?? {}),
+    ],
+    umdExternal: Object.keys(packageJson.peerDependencies ?? {}),
     banner,
     globals: opts.globals,
-    forceDevEnv: opts.forceDevEnv || false,
-    forceBundle: opts.forceBundle || false,
   }
 
-  let builds = [mjs(options), esm(options), cjs(options)]
-
-  if (!opts.skipUmdBuild) {
-    builds = builds.concat([
-      umdDev({ ...options, external: umdExternal, input: firstEntry }),
-      umdProd({ ...options, external: umdExternal, input: firstEntry }),
-    ])
-  }
-
-  return builds
+  return [
+    opts.esm ? esm(options) : null,
+    opts.cjs ? cjs(options) : null,
+    opts.umd ? umdDev(options) : null,
+    opts.umd ? umdProd(options) : null,
+    types(options),
+  ].filter(Boolean) as any
 }
 
-function mjs({
-  input,
-  packageDir,
-  external,
-  banner,
-  outputFile,
-  forceDevEnv,
-  forceBundle,
-}: Options): RollupOptions {
-  const bundleOutput: OutputOptions = {
-    format: 'esm',
-    file: `${packageDir}/build/lib/${outputFile}.mjs`,
-    sourcemap: true,
-    banner,
-  }
-
-  const normalOutput: OutputOptions = {
-    format: 'esm',
-    dir: `${packageDir}/build/lib`,
-    sourcemap: true,
-    banner,
-    preserveModules: true,
-    entryFileNames: '[name].mjs',
-  }
-
+function esm({ input, packageDir, external, banner }: Options): RollupOptions {
   return {
     // ESM
     external,
     input,
-    output: forceBundle ? bundleOutput : normalOutput,
+    output: {
+      format: 'esm',
+      sourcemap: true,
+      dir: `${packageDir}/build/esm`,
+      banner,
+    },
     plugins: [
+      // svelte({
+      //   compilerOptions: {
+      //     hydratable: true,
+      //   },
+      // }),
       babelPlugin,
-      commonJS(),
-      nodeResolve({ extensions: ['.ts', '.tsx', '.native.ts'] }),
-      forceDevEnv ? forceEnvPlugin('development') : undefined,
-      preserveDirectives(),
+      nodeResolve({ extensions: ['.ts', '.tsx'] }),
     ],
   }
 }
 
-function esm({
-  input,
-  packageDir,
-  external,
-  banner,
-  outputFile,
-  forceDevEnv,
-  forceBundle,
-}: Options): RollupOptions {
-  const bundleOutput: OutputOptions = {
-    format: 'esm',
-    file: `${packageDir}/build/lib/${outputFile}.esm.js`,
-    sourcemap: true,
-    banner,
-  }
-
-  const normalOutput: OutputOptions = {
-    format: 'esm',
-    dir: `${packageDir}/build/lib`,
-    sourcemap: true,
-    banner,
-    preserveModules: true,
-    entryFileNames: '[name].esm.js',
-  }
-
-  return {
-    // ESM
-    external,
-    input,
-    output: forceBundle ? bundleOutput : normalOutput,
-    plugins: [
-      babelPlugin,
-      commonJS(),
-      nodeResolve({ extensions: ['.ts', '.tsx', '.native.ts'] }),
-      forceDevEnv ? forceEnvPlugin('development') : undefined,
-      preserveDirectives(),
-    ],
-  }
-}
-
-function cjs({
-  input,
-  external,
-  packageDir,
-  banner,
-  outputFile,
-  forceDevEnv,
-  forceBundle,
-}: Options): RollupOptions {
-  const bundleOutput: OutputOptions = {
-    format: 'cjs',
-    file: `${packageDir}/build/lib/${outputFile}.js`,
-    sourcemap: true,
-    exports: 'named',
-    banner,
-  }
-
-  const normalOutput: OutputOptions = {
-    format: 'cjs',
-    dir: `${packageDir}/build/lib`,
-    sourcemap: true,
-    exports: 'named',
-    banner,
-    preserveModules: true,
-    entryFileNames: '[name].js',
-  }
-
+function cjs({ input, external, packageDir, banner }: Options): RollupOptions {
   return {
     // CJS
     external,
     input,
-    output: forceBundle ? bundleOutput : normalOutput,
+    output: {
+      format: 'cjs',
+      sourcemap: true,
+      dir: `${packageDir}/build/cjs`,
+      preserveModules: true,
+      exports: 'named',
+      banner,
+    },
     plugins: [
+      // svelte(),
       babelPlugin,
-      commonJS(),
-      nodeResolve({ extensions: ['.ts', '.tsx', '.native.ts'] }),
-      forceDevEnv ? forceEnvPlugin('development') : undefined,
-      replace({
-        // TODO: figure out a better way to produce extensionless cjs imports
-        "require('./logger.js')": "require('./logger')",
-        "require('./reactBatchedUpdates.js')":
-          "require('./reactBatchedUpdates')",
-        "require('./useSyncExternalStore.js')":
-          "require('./useSyncExternalStore')",
-        preventAssignment: true,
-        delimiters: ['', ''],
-      }),
-      preserveDirectives(),
+      commonjs(),
+      nodeResolve({ extensions: ['.ts', '.tsx'] }),
     ],
   }
 }
 
 function umdDev({
   input,
-  external,
+  umdExternal,
   packageDir,
-  outputFile,
   globals,
   banner,
   jsName,
 }: Options): RollupOptions {
   return {
     // UMD (Dev)
-    external,
+    external: umdExternal,
     input,
     output: {
       format: 'umd',
       sourcemap: true,
-      file: `${packageDir}/build/umd/${outputFile}.development.js`,
+      file: `${packageDir}/build/umd/index.development.js`,
       name: jsName,
       globals,
       banner,
     },
     plugins: [
-      commonJS(),
+      // svelte(),
       babelPlugin,
-      nodeResolve({ extensions: ['.ts', '.tsx', '.native.ts'] }),
-      forceEnvPlugin('development'),
+      commonjs(),
+      nodeResolve({ extensions: ['.ts', '.tsx'] }),
+      umdDevPlugin('development'),
     ],
   }
 }
 
 function umdProd({
   input,
-  external,
+  umdExternal,
   packageDir,
-  outputFile,
   globals,
   banner,
   jsName,
 }: Options): RollupOptions {
   return {
     // UMD (Prod)
-    external,
+    external: umdExternal,
     input,
     output: {
       format: 'umd',
       sourcemap: true,
-      file: `${packageDir}/build/umd/${outputFile}.production.js`,
+      file: `${packageDir}/build/umd/index.production.js`,
       name: jsName,
       globals,
       banner,
     },
     plugins: [
-      commonJS(),
+      // svelte(),
       babelPlugin,
-      nodeResolve({ extensions: ['.ts', '.tsx', '.native.ts'] }),
-      forceEnvPlugin('production'),
+      commonjs(),
+      nodeResolve({ extensions: ['.ts', '.tsx'] }),
+      umdDevPlugin('production'),
       terser({
         mangle: true,
         compress: true,
@@ -390,9 +206,34 @@ function umdProd({
         gzipSize: true,
       }),
       visualizer({
-        filename: `${packageDir}/build/stats.json`,
-        json: true,
+        filename: `${packageDir}/build/stats-react.json`,
+        // template: 'treemap',
         gzipSize: true,
+        json: true,
+      }),
+    ],
+  }
+}
+
+function types({
+  input,
+  packageDir,
+  external,
+  banner,
+}: Options): RollupOptions {
+  return {
+    // TYPES
+    external,
+    input,
+    output: {
+      format: 'es',
+      file: `${packageDir}/build/types/index.d.ts`,
+      banner,
+    },
+    plugins: [
+      dts({
+        // tsconfig: path.resolve(process.cwd(), 'tsconfig.json'),
+        // tsconfig: path.resolve(packageDir, 'tsconfig.json'),
       }),
     ],
   }

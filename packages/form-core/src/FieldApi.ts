@@ -3,6 +3,8 @@ import type { DeepKeys, DeepValue, RequiredByKey, Updater } from './utils'
 import type { FormApi, ValidationError } from './FormApi'
 import { Store } from '@tanstack/store'
 
+type ValidateOn = 'change' | 'blur' | 'submit'
+
 export type FieldOptions<TData, TFormData> = {
   name: unknown extends TFormData ? string : DeepKeys<TFormData>
   defaultValue?: TData
@@ -14,13 +16,12 @@ export type FieldOptions<TData, TFormData> = {
   validatePristine?: boolean
   filterValue?: (value: TData) => TData
   defaultMeta?: Partial<FieldMeta>
-  validateOn?:
-    | 'change'
-    | 'blur'
-    | 'change-blur'
-    | 'change-submit'
-    | 'blur-submit'
-    | 'submit'
+  change?: boolean
+  blur?: boolean
+  submit?: boolean
+  validateUntouched?: boolean // Default: false
+  validateOn?: ValidateOn // Default: 'change'
+  validateAsyncOn?: ValidateOn // Default: 'blur'
 }
 
 export type FieldMeta = {
@@ -31,13 +32,13 @@ export type FieldMeta = {
 }
 
 export type ChangeProps<TData> = {
-  onChange: (updater: Updater<TData>) => void
-  onBlur: (event: any) => void
+  onChange?: (updater: Updater<TData>) => void
+  onBlur?: (event: any) => void
 }
 
 export type InputProps = {
-  onChange: (event: any) => void
-  onBlur: (event: any) => void
+  onChange?: (event: any) => void
+  onBlur?: (event: any) => void
 }
 
 export type FieldApiOptions<TData, TFormData> = RequiredByKey<
@@ -58,8 +59,10 @@ export class FieldApi<TData, TFormData> {
   name!: DeepKeys<TFormData>
   store!: Store<FieldState<TData>>
   state!: FieldState<TData>
-  options: RequiredByKey<FieldOptions<TData, TFormData>, 'validateOn'> =
-    {} as any
+  options: RequiredByKey<
+    FieldOptions<TData, TFormData>,
+    'validateOn' | 'validateAsyncOn'
+  > = {} as any
 
   constructor(opts: FieldApiOptions<TData, TFormData>) {
     this.form = opts.form
@@ -117,7 +120,7 @@ export class FieldApi<TData, TFormData> {
     info.instances[this.uid] = this
 
     const unsubscribe = this.form.store.subscribe(() => {
-      this.updateStore()
+      this.#updateStore()
     })
 
     return () => {
@@ -129,7 +132,7 @@ export class FieldApi<TData, TFormData> {
     }
   }
 
-  updateStore = () => {
+  #updateStore = () => {
     this.store.batch(() => {
       const nextValue = this.getValue()
       const nextMeta = this.getMeta()
@@ -145,7 +148,7 @@ export class FieldApi<TData, TFormData> {
   }
 
   update = (opts: FieldApiOptions<TData, TFormData>) => {
-    this.options = { validateOn: 'blur', ...opts }
+    this.options = { validateOn: 'change', validateAsyncOn: 'blur', ...opts }
 
     // Default Value
     if (
@@ -220,7 +223,7 @@ export class FieldApi<TData, TFormData> {
               return 'Invalid Form Values'
             }
 
-            return null
+            return rawError
           }
 
           return undefined
@@ -256,7 +259,7 @@ export class FieldApi<TData, TFormData> {
       value: this.state.value,
       onChange: (value) => {
         this.setValue(value)
-        props.onChange(value)
+        props.onChange?.(value)
       },
       onBlur: (e) => {
         this.setMeta((prev) => ({ ...prev, isTouched: true }))
@@ -267,7 +270,7 @@ export class FieldApi<TData, TFormData> {
           this.validate()
         }
 
-        props.onBlur(e)
+        props.onBlur?.(e)
       },
     } as ChangeProps<TData> & Omit<T, keyof ChangeProps<TData>>
   }
@@ -280,7 +283,7 @@ export class FieldApi<TData, TFormData> {
       value: String(this.state.value),
       onChange: (e) => {
         this.setValue(e.target.value)
-        props.onChange(e.target.value)
+        props.onChange?.(e.target.value)
       },
       onBlur: this.getChangeProps(props).onBlur,
     }

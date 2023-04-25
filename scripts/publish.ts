@@ -1,9 +1,16 @@
-import { branchConfigs, latestBranch, packages, rootDir } from './config'
+import {
+  branchConfigs,
+  examplesDirs,
+  latestBranch,
+  packages,
+  rootDir,
+} from './config'
 import type { BranchConfig, Commit, Package } from './types'
 
-// Originally ported to TS from https://github.com/remix-run/react-router/tree/main/scripts/{version,publish}.js
+// Originally ported to TS from https://github.com/remix-run/router/tree/main/scripts/{version,publish}.js
 import path from 'path'
-import { execSync } from 'child_process'
+import { exec, execSync } from 'child_process'
+import fsp from 'fs/promises'
 import chalk from 'chalk'
 import jsonfile from 'jsonfile'
 import semver from 'semver'
@@ -24,7 +31,7 @@ async function run() {
     // (process.env.PR_NUMBER ? `pr-${process.env.PR_NUMBER}` : currentGitBranch())
     currentGitBranch()
 
-  const branchConfig: BranchConfig | undefined = branchConfigs[branchName]
+  const branchConfig: BranchConfig = branchConfigs[branchName]
 
   if (!branchConfig) {
     console.log(`No publish config found for branch: ${branchName}`)
@@ -34,6 +41,10 @@ async function run() {
 
   const isLatestBranch = branchName === latestBranch
   const npmTag = isLatestBranch ? 'latest' : branchName
+
+  let remoteURL = execSync('git config --get remote.origin.url').toString()
+
+  remoteURL = remoteURL.substring(0, remoteURL.indexOf('.git'))
 
   // Get tags
   let tags: string[] = execSync('git tag').toString().split('\n')
@@ -60,6 +71,7 @@ async function run() {
   // If RELEASE_ALL is set via a commit subject or body, all packages will be
   // released regardless if they have changed files matching the package srcDir.
   let RELEASE_ALL = false
+  let SKIP_TESTS = false
 
   if (!latestTag || process.env.TAG) {
     if (process.env.TAG) {
@@ -140,6 +152,13 @@ async function run() {
         RELEASE_ALL = true
       }
 
+      if (
+        commit.subject.includes('SKIP_TESTS') ||
+        commit.body.includes('SKIP_TESTS')
+      ) {
+        SKIP_TESTS = true
+      }
+
       return releaseLevel
     },
     -1,
@@ -154,47 +173,33 @@ async function run() {
 
   const changedPackages = RELEASE_ALL
     ? packages
-    : changedFiles.reduce((acc, file) => {
+    : changedFiles.reduce((changedPackages, file) => {
         const pkg = packages.find((p) =>
           file.startsWith(path.join('packages', p.packageDir, p.srcDir)),
         )
-        if (pkg && !acc.find((d) => d.name === pkg.name)) {
-          acc.push(pkg)
+        if (pkg && !changedPackages.find((d) => d.name === pkg.name)) {
+          changedPackages.push(pkg)
         }
-        return acc
+        return changedPackages
       }, [] as Package[])
 
   // If a package has a dependency that has been updated, we need to update the
   // package that depends on it as well.
-  // run this multiple times so that dependencies of dependencies are also included
-  for (let runs = 0; runs < 3; runs++) {
-    for (const pkg of packages) {
-      const packageJson = await readPackageJson(
+  await Promise.all(
+    packages.map(async (pkg) => {
+      const pkgJson = await readPackageJson(
         path.resolve(rootDir, 'packages', pkg.packageDir, 'package.json'),
       )
-      const allDependencies = Object.keys(
-        Object.assign(
-          {},
-          packageJson.dependencies ?? {},
-          packageJson.peerDependencies ?? {},
-        ),
-      )
-
       if (
-        allDependencies.find((dep) =>
+        Object.keys(pkgJson.dependencies ?? {}).find((dep) =>
           changedPackages.find((d) => d.name === dep),
         ) &&
         !changedPackages.find((d) => d.name === pkg.name)
       ) {
-        console.info(
-          'adding package dependency',
-          pkg.name,
-          'to changed packages',
-        )
         changedPackages.push(pkg)
       }
-    }
-  }
+    }),
+  )
 
   if (!process.env.TAG) {
     if (recommendedReleaseLevel === 2) {
@@ -239,7 +244,7 @@ async function run() {
     : await Promise.all(
         Object.entries(
           commitsSinceLatestTag.reduce((acc, next) => {
-            const type = next.parsed.type?.toLowerCase() ?? 'other'
+            const type = next.parsed.type.toLowerCase() ?? 'other'
 
             return {
               ...acc,
@@ -270,7 +275,7 @@ async function run() {
 
                 if (process.env.GH_TOKEN) {
                   const query = `${
-                    commit.author.email || commit.committer.email
+                    commit.author.email ?? commit.committer.email
                   }`
 
                   const res = await axios.get(
@@ -291,15 +296,16 @@ async function run() {
                 const scope = commit.parsed.scope
                   ? `${commit.parsed.scope}: `
                   : ''
-                const subject = commit.parsed.subject || commit.subject
+                const subject = commit.parsed.subject ?? commit.subject
+                // const commitUrl = `${remoteURL}/commit/${commit.commit.long}`;
 
                 return `- ${scope}${subject} (${commit.commit.short}) ${
                   username
                     ? `by @${username}`
-                    : `by ${commit.author.name || commit.author.email}`
+                    : `by ${commit.author.name ?? commit.author.email}`
                 }`
               }),
-            ).then((c) => [type, c] as const)
+            ).then((commits) => [type, commits] as const)
           }),
       ).then((groups) => {
         return groups
@@ -350,20 +356,63 @@ async function run() {
   console.info(changelogMd)
   console.info()
 
-  if (changedPackages.length === 0) {
-    console.info('No packages have been affected.')
-    return
-  }
-
   console.info('Building packages...')
-  execSync(`pnpm run build --skip-nx-cache`, {
-    encoding: 'utf8',
-    stdio: 'inherit',
-  })
+  execSync(`pnpm build`, { encoding: 'utf8', stdio: 'inherit' })
   console.info('')
 
+  // console.info('Building types...')
+  // execSync(`yarn types`, { encoding: 'utf8', stdio: 'inherit' })
+  // console.info('')
+
   console.info('Validating packages...')
-  execSync(`pnpm run validatePackages`, { encoding: 'utf8', stdio: 'inherit' })
+  const failedValidations: string[] = []
+
+  await Promise.all(
+    packages.map(async (pkg) => {
+      const pkgJson = await readPackageJson(
+        path.resolve(rootDir, 'packages', pkg.packageDir, 'package.json'),
+      )
+
+      await Promise.all(
+        (['module', 'main', 'browser', 'types'] as const).map(
+          async (entryKey) => {
+            const entry = pkgJson[entryKey] as string
+
+            if (!entry) {
+              throw new Error(
+                `Missing entry for "${entryKey}" in ${pkg.packageDir}/package.json!`,
+              )
+            }
+
+            const filePath = path.resolve(
+              rootDir,
+              'packages',
+              pkg.packageDir,
+              entry,
+            )
+
+            try {
+              await fsp.access(filePath)
+            } catch (err) {
+              failedValidations.push(`Missing build file: ${filePath}`)
+            }
+          },
+        ),
+      )
+    }),
+  )
+  console.info('')
+  if (failedValidations.length > 0) {
+    throw new Error(
+      'Some packages failed validation:\n\n' + failedValidations.join('\n'),
+    )
+  }
+
+  console.info('Testing packages...')
+  execSync(`pnpm test:ci ${SKIP_TESTS ? '|| exit 0' : ''}`, {
+    encoding: 'utf8',
+  })
+  console.info('')
 
   console.info(`Updating all changed packages to version ${version}...`)
   // Update each package to the new version
@@ -377,6 +426,122 @@ async function run() {
       },
     )
   }
+
+  // console.info(`Updating all package dependencies to latest versions...`)
+  // // Update all changed package dependencies to their correct versions
+  // for (const pkg of packages) {
+  //   await updatePackageJson(
+  //     path.resolve(rootDir, 'packages', pkg.packageDir, 'package.json'),
+  //     async (config) => {
+  //       await Promise.all(
+  //         (pkg.dependencies ?? []).map(async (dep) => {
+  //           const depPackage = packages.find((d) => d.name === dep)
+
+  //           if (!depPackage) {
+  //             throw new Error(`Could not find package ${dep}`)
+  //           }
+
+  //           const depVersion = await getPackageVersion(
+  //             path.resolve(
+  //               rootDir,
+  //               'packages',
+  //               depPackage.packageDir,
+  //               'package.json',
+  //             ),
+  //           )
+
+  //           if (
+  //             config.dependencies?.[dep] &&
+  //             config.dependencies[dep] !== depVersion
+  //           ) {
+  //             console.info(
+  //               `  Updating ${pkg.name}'s dependency on ${dep} to version ${depVersion}.`,
+  //             )
+  //             config.dependencies[dep] = depVersion
+  //           }
+  //         }),
+  //       )
+
+  //       await Promise.all(
+  //         (pkg.peerDependencies ?? []).map(async (peerDep) => {
+  //           const peerDepPackage = packages.find((d) => d.name === peerDep)
+
+  //           if (!peerDepPackage) {
+  //             throw new Error(`Could not find package ${peerDep}`)
+  //           }
+
+  //           const depVersion = await getPackageVersion(
+  //             path.resolve(
+  //               rootDir,
+  //               'packages',
+  //               peerDepPackage.packageDir,
+  //               'package.json',
+  //             ),
+  //           )
+
+  //           if (
+  //             config.peerDependencies?.[peerDep] &&
+  //             config.peerDependencies[peerDep] !== depVersion
+  //           ) {
+  //             console.info(
+  //               `  Updating ${pkg.name}'s peerDependency on ${peerDep} to version ${depVersion}.`,
+  //             )
+  //             config.peerDependencies[peerDep] = depVersion
+  //           }
+  //         }),
+  //       )
+  //     },
+  //   )
+  // }
+
+  console.info(`Updating all example dependencies...`)
+  await Promise.all(
+    examplesDirs.map(async (examplesDir) => {
+      examplesDir = path.resolve(rootDir, examplesDir)
+      const exampleDirs = await fsp.readdir(examplesDir)
+      for (const exampleName of exampleDirs) {
+        const exampleDir = path.resolve(examplesDir, exampleName)
+        const stat = await fsp.stat(exampleDir)
+        if (!stat.isDirectory()) continue
+
+        await Promise.all([
+          fsp.rm(path.resolve(exampleDir, 'package-lock.json'), {
+            force: true,
+          }),
+          fsp.rm(path.resolve(exampleDir, 'yarn.lock'), {
+            force: true,
+          }),
+          updatePackageJson(
+            path.resolve(exampleDir, 'package.json'),
+            async (config) => {
+              await Promise.all(
+                changedPackages.map(async (pkg) => {
+                  const depVersion = await getPackageVersion(
+                    path.resolve(
+                      rootDir,
+                      'packages',
+                      pkg.packageDir,
+                      'package.json',
+                    ),
+                  )
+
+                  if (
+                    config.dependencies?.[pkg.name] &&
+                    config.dependencies[pkg.name] !== depVersion
+                  ) {
+                    console.info(
+                      `  Updating ${exampleName}'s dependency on ${pkg.name} to version ${depVersion}.`,
+                    )
+                    config.dependencies[pkg.name] = depVersion
+                  }
+                }),
+              )
+            },
+          ),
+        ])
+      }
+    }),
+  )
 
   if (!process.env.CI) {
     console.warn(
@@ -400,15 +565,14 @@ async function run() {
   console.info(`Publishing all packages to npm with tag "${npmTag}"`)
 
   // Publish each package
-  changedPackages.forEach((pkg) => {
+  changedPackages.map((pkg) => {
     const packageDir = path.join(rootDir, 'packages', pkg.packageDir)
     const cmd = `cd ${packageDir} && pnpm publish --tag ${npmTag} --access=public --no-git-checks`
     console.info(
       `  Publishing ${pkg.name}@${version} to npm with tag "${npmTag}"...`,
     )
-    execSync(cmd, {
-      stdio: [process.stdin, process.stdout, process.stderr],
-    })
+    // execSync(`${cmd} --token ${process.env.NPM_TOKEN}`)
+    execSync(cmd)
   })
 
   console.info()
@@ -423,7 +587,7 @@ async function run() {
     execSync(
       `gh release create v${version} ${
         !isLatestBranch ? '--prerelease' : ''
-      } --notes '${changelogMd.replace(/'/g, '"')}'`,
+      } --notes '${changelogMd}'`,
     )
     console.info(`  Github release created.`)
 
@@ -448,6 +612,12 @@ async function run() {
 
 run().catch((err) => {
   console.info(err)
+  if (err.stdout) {
+    console.log(err.stdout.toString())
+  }
+  if (err.stderr) {
+    console.log(err.stderr.toString())
+  }
   process.exit(1)
 })
 
@@ -468,6 +638,29 @@ async function updatePackageJson(
   await jsonfile.writeFile(pathName, json, {
     spaces: 2,
   })
+}
+
+async function getPackageVersion(pathName: string) {
+  const json = await readPackageJson(pathName)
+
+  if (!json.version) {
+    throw new Error(`No version found for package: ${pathName}`)
+  }
+
+  return json.version
+}
+
+function updateExampleLockfile(example: string) {
+  // execute npm to update lockfile, ignoring any stdout or stderr
+  const exampleDir = path.join(rootDir, 'examples', example)
+  execSync(`cd ${exampleDir} && pnpm install`, { stdio: 'ignore' })
+}
+
+function getPackageNameDirectory(pathName: string) {
+  return pathName
+    .split('/')
+    .filter((d) => !d.startsWith('@'))
+    .join('/')
 }
 
 function getTaggedVersion() {

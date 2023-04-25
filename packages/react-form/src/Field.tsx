@@ -1,10 +1,11 @@
 import * as React from 'react'
-import type {
-  DeepKeys,
-  DeepValue,
-  FieldApi,
-  FieldOptions,
-  FormApi,
+import {
+  functionalUpdate,
+  type DeepKeys,
+  type DeepValue,
+  type FieldApi,
+  type FieldOptions,
+  type FormApi,
 } from '@tanstack/form-core'
 import { useField } from './useField'
 
@@ -32,7 +33,5 @@ export function Field<TData, TFormData>({
   children: (fieldApi: FieldApi<TData, TFormData>) => any
 } & FieldOptions<TData, TFormData>) {
   const fieldApi = useField(fieldOptions as any)
-  return typeof children === 'function'
-    ? React.createElement(children, fieldApi as any)
-    : children
+  return functionalUpdate(children, fieldApi as any)
 }

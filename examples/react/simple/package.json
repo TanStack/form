@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "main": "src/index.jsx",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port=3001",
     "build": "vite build",
     "preview": "vite preview"
   },

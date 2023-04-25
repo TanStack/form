@@ -2,6 +2,7 @@
   "name": "form",
   "repository": "https://github.com/tanstack/form.git",
   "scripts": {
+    "nx-reset": "nx reset",
     "clean": "pnpm --filter \"./packages/**\" run clean",
     "preinstall": "node -e \"if(process.env.CI == 'true') {console.log('Skipping preinstall...'); process.exit(1)}\" || npx -y only-allow pnpm",
     "install:csb": "pnpm install --frozen-lockfile",
@@ -20,8 +21,7 @@
     "dev": "pnpm run watch",
     "prettier": "prettier --plugin-search-dir . \"{packages,examples}/**/src/**/*.{md,js,jsx,ts,tsx,json,vue,svelte}\"",
     "prettier:write": "pnpm run prettier --write",
-    "cipublish": "ts-node scripts/publish.ts",
-    "validatePackages": "ts-node scripts/validate-packages.ts"
+    "cipublish": "ts-node scripts/publish.ts"
   },
   "nx": {
     "includedScripts": [
@@ -113,5 +113,9 @@
         "path": "packages/*/build/umd/*.production.js"
       }
     ]
+  },
+  "dependencies": {
+    "fs-extra": "^11.1.1",
+    "rollup-plugin-dts": "^5.3.0"
   }
 }

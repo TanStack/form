@@ -109,7 +109,7 @@ export class FormApi<TFormData> {
           const isFormValid = !next.formError
           const isValid = isFieldsValid && isFormValid
           const canSubmit =
-            next.submissionAttempts === 0 ||
+            (next.submissionAttempts === 0 && !isTouched) ||
             (!isValidating && !next.isSubmitting && isValid)
 
           next = {

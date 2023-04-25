@@ -1,11 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "composite": true,
-    "rootDir": "./src",
-    "outDir": "./build/lib",
-    "tsBuildInfoFile": "./build/.tsbuildinfo"
+    // "composite": true,
+    // "rootDir": "./src",
+    "outDir": "./build/types"
   },
-  "include": ["src"],
-  "references": [{ "path": "../form-core" }]
+  "include": ["./src/**/*"]
 }
