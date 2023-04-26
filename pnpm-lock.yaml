@@ -240,7 +240,7 @@ importers:
   examples/react/simple:
     dependencies:
       '@tanstack/react-form':
-        specifier: workspace:^
+        specifier: 4.0.2
         version: link:../../../packages/react-form
       axios:
         specifier: ^0.26.1
