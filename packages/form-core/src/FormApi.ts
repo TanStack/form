@@ -3,16 +3,19 @@ import { Store } from '@tanstack/store'
 //
 import type { DeepKeys, DeepValue, Updater } from './utils'
 import { functionalUpdate, getBy, setBy } from './utils'
-import type { FieldApi, FieldMeta } from './FieldApi'
+import type { FieldApi, FieldMeta, ValidationCause } from './FieldApi'
 
 export type FormOptions<TData> = {
   defaultValues?: TData
   defaultState?: Partial<FormState<TData>>
-  onSubmit?: (values: TData, formApi: FormApi<TData>) => Promise<any>
+  onSubmit?: (values: TData, formApi: FormApi<TData>) => void
   onInvalidSubmit?: (values: TData, formApi: FormApi<TData>) => void
   validate?: (values: TData, formApi: FormApi<TData>) => Promise<any>
   debugForm?: boolean
-  validatePristine?: boolean
+  defaultValidatePristine?: boolean
+  defaultValidateOn?: ValidationCause
+  defaultValidateAsyncOn?: ValidationCause
+  defaultValidateAsyncDebounceMs?: number
 }
 
 export type FieldInfo<TFormData> = {
@@ -21,6 +24,7 @@ export type FieldInfo<TFormData> = {
 
 export type ValidationMeta = {
   validationCount?: number
+  validationAsyncCount?: number
   validationPromise?: Promise<ValidationError>
   validationResolve?: (error: ValidationError) => void
   validationReject?: (error: unknown) => void

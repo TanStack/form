@@ -1,6 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { useForm } from "@tanstack/react-form";
+import { useForm, FieldApi } from "@tanstack/react-form";
+
+function FieldInfo({ field }: { field: FieldApi<any, any> }) {
+  return (
+    <>
+      {field.state.meta.touchedError ? (
+        <em>{field.state.meta.touchedError}</em>
+      ) : null}{" "}
+      {field.state.meta.isValidating ? "Validating..." : null}
+    </>
+  );
+}
 
 export default function App() {
   const form = useForm({
@@ -12,8 +23,9 @@ export default function App() {
       }),
       []
     ),
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       // Do something with form data
+      console.log(values);
     },
   });
 
@@ -27,14 +39,20 @@ export default function App() {
           <form.Field
             name="firstName"
             validate={(value) => !value && "A first name is required"}
+            validateAsyncOn="change"
+            validateAsyncDebounceMs={500}
+            validateAsync={async (value) => {
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+              return (
+                value.includes("error") && 'No "error" allowed in first name'
+              );
+            }}
             children={(field) => (
               // Avoid hasty abstractions. Render props are great!
               <>
                 <label htmlFor={field.name}>First Name:</label>
                 <input name={field.name} {...field.getInputProps()} />
-                {field.state.meta.touchedError && (
-                  <em>{field.state.meta.touchedError}</em>
-                )}
+                <FieldInfo field={field} />
               </>
             )}
           />
@@ -46,9 +64,7 @@ export default function App() {
               <>
                 <label htmlFor={field.name}>Last Name:</label>
                 <input name={field.name} {...field.getInputProps()} />
-                {field.state.meta.touchedError && (
-                  <em>{field.state.meta.touchedError}</em>
-                )}
+                <FieldInfo field={field} />
               </>
             )}
           />
@@ -66,5 +82,5 @@ export default function App() {
   );
 }
 
-const rootElement = document.getElementById("root");
+const rootElement = document.getElementById("root")!;
 ReactDOM.createRoot(rootElement).render(<App />);

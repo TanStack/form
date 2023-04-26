@@ -27,8 +27,14 @@ An object representing the options for a form.
   - A function for custom validation logic for the form.
 - `debugForm?: boolean`
   - A boolean flag to enable or disable form debugging.
-- `validatePristine?: boolean`
+- `defaultValidatePristine?: boolean`
   - A boolean flag to enable or disable validation for pristine fields.
+- `defaultValidateOn?: ValidationCause`
+  - The default minimum cause for a field to be synchronously validated
+- `defaultValidateAsyncOn?: ValidationCause`
+  - The default minimum cause for a field to be asynchronously validated
+- `defaultValidateAsyncDebounceMs?: number`
+  - The default time in milliseconds that if set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds.
 
 ### `FormApi<TFormData>`
 

@@ -25,12 +25,20 @@ An object type representing the options for a field in a form.
   - An optional validation function for the field.
 - `validatePristine?: boolean`
   - An optional flag indicating whether to validate the field when it is pristine (untouched).
-- `filterValue?: (value: TData) => TData`
-  - An optional function to filter the field value before setting it in the form state.
 - `defaultMeta?: Partial<FieldMeta>`
   - An optional object with default metadata for the field.
-- `validateOn?: 'change' | 'blur' | 'change-blur' | 'change-submit' | 'blur-submit' | 'submit'`
+- `validateOn?: ValidationCause`
   - An optional string indicating when to perform field validation.
+- `validateAsyncOn?: ValidationCause`
+  - An optional string indicating when to perform async field validation.
+- `validateAsyncDebounceMs?: number`
+  - If set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds.
+
+### `ValidationCause`
+
+A type representing the cause of a validation event.
+
+- 'change' | 'blur' | 'submit'
 
 ### `FieldMeta`
 

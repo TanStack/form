@@ -3,7 +3,7 @@ import type { DeepKeys, DeepValue, RequiredByKey, Updater } from './utils'
 import type { FormApi, ValidationError } from './FormApi'
 import { Store } from '@tanstack/store'
 
-type ValidateOn = 'change' | 'blur' | 'submit'
+export type ValidationCause = 'change' | 'blur' | 'submit'
 
 export type FieldOptions<TData, TFormData> = {
   name: unknown extends TFormData ? string : DeepKeys<TFormData>
@@ -18,14 +18,10 @@ export type FieldOptions<TData, TFormData> = {
     fieldApi: FieldApi<TData, TFormData>,
   ) => ValidationError | Promise<ValidationError>
   validatePristine?: boolean // Default: false
-  validateOn?: ValidateOn // Default: 'change'
-  validateAsyncOn?: ValidateOn // Default: 'blur'
+  validateOn?: ValidationCause // Default: 'change'
+  validateAsyncOn?: ValidationCause // Default: 'blur'
   validateAsyncDebounceMs?: number
-  filterValue?: (value: TData) => TData
   defaultMeta?: Partial<FieldMeta>
-  change?: boolean
-  blur?: boolean
-  submit?: boolean
 }
 
 export type FieldMeta = {
@@ -65,7 +61,10 @@ export class FieldApi<TData, TFormData> {
   state!: FieldState<TData>
   options: RequiredByKey<
     FieldOptions<TData, TFormData>,
-    'validateOn' | 'validateAsyncOn'
+    | 'validatePristine'
+    | 'validateOn'
+    | 'validateAsyncOn'
+    | 'validateAsyncDebounceMs'
   > = {} as any
 
   constructor(opts: FieldApiOptions<TData, TFormData>) {
@@ -96,21 +95,12 @@ export class FieldApi<TData, TFormData> {
             : undefined
 
           // Do not validate pristine fields
-          if (!this.options.validatePristine && !next.meta.isTouched) return
-
-          // If validateOn is set to a variation of change, run the validation
-          if (
-            this.options.validateOn === 'change' ||
-            this.options.validateOn.split('-')[0] === 'change'
-          ) {
-            try {
-              this.validate()
-            } catch (err) {
-              console.error('An error occurred during validation', err)
-            }
-          }
-
+          const prevState = this.state
           this.state = next
+          if (next.value !== prevState.value) {
+            console.log('change')
+            this.validate('change', next.value)
+          }
         },
       },
     )
@@ -153,9 +143,11 @@ export class FieldApi<TData, TFormData> {
 
   update = (opts: FieldApiOptions<TData, TFormData>) => {
     this.options = {
-      validateOn: 'change',
-      validateAsyncOn: 'blur',
-      validateAsyncDebounceMs: 0,
+      validatePristine: this.form.options.defaultValidatePristine ?? false,
+      validateOn: this.form.options.defaultValidateOn ?? 'change',
+      validateAsyncOn: this.form.options.defaultValidateAsyncOn ?? 'blur',
+      validateAsyncDebounceMs:
+        this.form.options.defaultValidateAsyncDebounceMs ?? 0,
       ...opts,
     }
 
@@ -200,20 +192,64 @@ export class FieldApi<TData, TFormData> {
       form: this.form,
     })
 
-  #validate = async (isAsync: boolean) => {
-    if (!this.options.validate) {
+  validateSync = async (value = this.state.value) => {
+    const { validate } = this.options
+
+    if (!validate) {
       return
     }
-
-    this.setMeta((prev) => ({ ...prev, isValidating: true }))
 
     // Use the validationCount for all field instances to
     // track freshness of the validation
     const validationCount = (this.getInfo().validationCount || 0) + 1
-
     this.getInfo().validationCount = validationCount
+    const error = normalizeError(validate(value, this))
 
-    const checkLatest = () => validationCount === this.getInfo().validationCount
+    if (this.state.meta.error !== error) {
+      this.setMeta((prev) => ({
+        ...prev,
+        error,
+      }))
+    }
+
+    // If a sync error is encountered, cancel any async validation
+    if (this.state.meta.error) {
+      this.cancelValidateAsync()
+    }
+  }
+
+  #leaseValidateAsync = () => {
+    const count = (this.getInfo().validationAsyncCount || 0) + 1
+    this.getInfo().validationAsyncCount = count
+    return count
+  }
+
+  cancelValidateAsync = () => {
+    // Lease a new validation count to ignore any pending validations
+    this.#leaseValidateAsync()
+    // Cancel any pending validation state
+    this.setMeta((prev) => ({
+      ...prev,
+      isValidating: false,
+    }))
+  }
+
+  validateAsync = async (value = this.state.value) => {
+    const { validateAsync, validateAsyncDebounceMs } = this.options
+
+    if (!validateAsync) {
+      return
+    }
+
+    if (this.state.meta.isValidating !== true)
+      this.setMeta((prev) => ({ ...prev, isValidating: true }))
+
+    // Use the validationCount for all field instances to
+    // track freshness of the validation
+    const validationAsyncCount = this.#leaseValidateAsync()
+
+    const checkLatest = () =>
+      validationAsyncCount === this.getInfo().validationAsyncCount
 
     if (!this.getInfo().validationPromise) {
       this.getInfo().validationPromise = new Promise((resolve, reject) => {
@@ -222,46 +258,80 @@ export class FieldApi<TData, TFormData> {
       })
     }
 
-    try {
-      const rawError = await this.options.validate(this.state.value, this)
+    if (validateAsyncDebounceMs > 0) {
+      await new Promise((r) => setTimeout(r, validateAsyncDebounceMs))
+    }
 
-      if (checkLatest()) {
-        const error = (() => {
-          if (rawError) {
-            if (typeof rawError !== 'string') {
-              return 'Invalid Form Values'
-            }
+    // Only kick off validation if this validation is the latest attempt
+    if (checkLatest()) {
+      try {
+        const rawError = await validateAsync(value, this)
 
-            return rawError
-          }
-
-          return undefined
-        })()
-
-        this.setMeta((prev) => ({
-          ...prev,
-          isValidating: false,
-          error,
-        }))
-        this.getInfo().validationResolve?.(error)
-      }
-    } catch (error) {
-      if (checkLatest()) {
-        this.getInfo().validationReject?.(error)
-        throw error
-      }
-    } finally {
-      if (checkLatest()) {
-        this.setMeta((prev) => ({ ...prev, isValidating: false }))
-        delete this.getInfo().validationPromise
+        if (checkLatest()) {
+          const error = normalizeError(rawError)
+          this.setMeta((prev) => ({
+            ...prev,
+            isValidating: false,
+            error,
+          }))
+          this.getInfo().validationResolve?.(error)
+        }
+      } catch (error) {
+        if (checkLatest()) {
+          this.getInfo().validationReject?.(error)
+          throw error
+        }
+      } finally {
+        if (checkLatest()) {
+          this.setMeta((prev) => ({ ...prev, isValidating: false }))
+          delete this.getInfo().validationPromise
+        }
       }
     }
 
+    // Always return the latest validation promise to the caller
     return this.getInfo().validationPromise
   }
 
-  validate = () => this.#validate(false)
-  validateAsync = () => this.#validate(true)
+  shouldValidate = (isAsync: boolean, cause?: ValidationCause) => {
+    const { validateOn, validateAsyncOn } = this.options
+    const level = getValidationCauseLevel(cause)
+
+    // Must meet *at least* the validation level to validate,
+    // e.g. if validateOn is 'change' and validateCause is 'blur',
+    // the field will still validate
+    return Object.keys(validateCauseLevels).some((d) =>
+      isAsync
+        ? validateAsyncOn
+        : validateOn === d && level >= validateCauseLevels[d],
+    )
+  }
+
+  validate = async (
+    cause?: ValidationCause,
+    value?: TData,
+  ): Promise<ValidationError> => {
+    // If the field is pristine and validatePristine is false, do not validate
+    if (!this.options.validatePristine && !this.state.meta.isTouched) return
+
+    // Attempt to sync validate first
+    if (this.shouldValidate(false, cause)) {
+      this.validateSync(value)
+    }
+
+    // If there is an error, return it, do not attempt async validation
+    if (this.state.meta.error) {
+      return this.state.meta.error
+    }
+
+    // No error? Attempt async validation
+    if (this.shouldValidate(true, cause)) {
+      return this.validateAsync(value)
+    }
+
+    // If there is no sync error or async validation attempt, there is no error
+    return undefined
+  }
 
   getChangeProps = <T extends ChangeProps<any>>(
     props: T = {} as T,
@@ -275,13 +345,7 @@ export class FieldApi<TData, TFormData> {
       },
       onBlur: (e) => {
         this.setMeta((prev) => ({ ...prev, isTouched: true }))
-
-        const { validateOn } = this.options
-
-        if (validateOn === 'blur' || validateOn.split('-')[0] === 'blur') {
-          this.validate()
-        }
-
+        this.validate('blur')
         props.onBlur?.(e)
       },
     } as ChangeProps<TData> & Omit<T, keyof ChangeProps<TData>>
@@ -300,4 +364,26 @@ export class FieldApi<TData, TFormData> {
       onBlur: this.getChangeProps(props).onBlur,
     }
   }
+}
+
+const validateCauseLevels = {
+  change: 0,
+  blur: 1,
+  submit: 2,
+}
+
+function getValidationCauseLevel(cause?: ValidationCause) {
+  return !cause ? 3 : validateCauseLevels[cause]
+}
+
+function normalizeError(rawError?: ValidationError) {
+  if (rawError) {
+    if (typeof rawError !== 'string') {
+      return 'Invalid Form Values'
+    }
+
+    return rawError
+  }
+
+  return undefined
 }
