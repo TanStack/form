@@ -1,11 +1,11 @@
 export type Commit = {
   commit: CommitOrTree
   tree: CommitOrTree
-  author: AuthorOrCommitter
+  author?: AuthorOrCommitter
   committer: AuthorOrCommitter
   subject: string
   body: string
-  parsed: Parsed
+  parsed?: Parsed
 }
 
 export type CommitOrTree = {
@@ -14,13 +14,13 @@ export type CommitOrTree = {
 }
 
 export type AuthorOrCommitter = {
-  name: string
+  name?: string
   email: string
   date: string
 }
 
 export type Parsed = {
-  type: string
+  type?: string
   scope?: string | null
   subject: string
   merge?: null

@@ -31,7 +31,7 @@ async function run() {
     // (process.env.PR_NUMBER ? `pr-${process.env.PR_NUMBER}` : currentGitBranch())
     currentGitBranch()
 
-  const branchConfig: BranchConfig = branchConfigs[branchName]
+  const branchConfig = branchConfigs[branchName]
 
   if (!branchConfig) {
     console.log(`No publish config found for branch: ${branchName}`)
@@ -136,11 +136,13 @@ async function run() {
   // Pares the commit messsages, log them, and determine the type of release needed
   let recommendedReleaseLevel: number = commitsSinceLatestTag.reduce(
     (releaseLevel, commit) => {
-      if (['fix', 'refactor', 'perf'].includes(commit.parsed.type!)) {
-        releaseLevel = Math.max(releaseLevel, 0)
-      }
-      if (['feat'].includes(commit.parsed.type!)) {
-        releaseLevel = Math.max(releaseLevel, 1)
+      if (commit.parsed) {
+        if (['fix', 'refactor', 'perf'].includes(commit.parsed.type || '')) {
+          releaseLevel = Math.max(releaseLevel, 0)
+        }
+        if (['feat'].includes(commit.parsed.type || '')) {
+          releaseLevel = Math.max(releaseLevel, 1)
+        }
       }
       if (commit.body.includes('BREAKING CHANGE')) {
         releaseLevel = Math.max(releaseLevel, 2)
@@ -173,14 +175,14 @@ async function run() {
 
   const changedPackages = RELEASE_ALL
     ? packages
-    : changedFiles.reduce((changedPackages, file) => {
+    : changedFiles.reduce((changedPackagesAcc: Package[], file) => {
         const pkg = packages.find((p) =>
           file.startsWith(path.join('packages', p.packageDir, p.srcDir)),
         )
-        if (pkg && !changedPackages.find((d) => d.name === pkg.name)) {
-          changedPackages.push(pkg)
+        if (pkg && !changedPackagesAcc.find((d) => d.name === pkg.name)) {
+          changedPackagesAcc.push(pkg)
         }
-        return changedPackages
+        return changedPackagesAcc
       }, [] as Package[])
 
   // If a package has a dependency that has been updated, we need to update the
@@ -244,7 +246,7 @@ async function run() {
     : await Promise.all(
         Object.entries(
           commitsSinceLatestTag.reduce((acc, next) => {
-            const type = next.parsed.type.toLowerCase() ?? 'other'
+            const type = next.parsed?.type?.toLowerCase() ?? 'other'
 
             return {
               ...acc,
@@ -275,7 +277,7 @@ async function run() {
 
                 if (process.env.GH_TOKEN) {
                   const query = `${
-                    commit.author.email ?? commit.committer.email
+                    commit.author?.email ?? commit.committer.email
                   }`
 
                   const res = await axios.get(
@@ -293,19 +295,19 @@ async function run() {
                   username = res.data.items[0]?.login
                 }
 
-                const scope = commit.parsed.scope
+                const scope = commit.parsed?.scope
                   ? `${commit.parsed.scope}: `
                   : ''
-                const subject = commit.parsed.subject ?? commit.subject
+                const subject = commit.parsed?.subject ?? commit.subject
                 // const commitUrl = `${remoteURL}/commit/${commit.commit.long}`;
 
                 return `- ${scope}${subject} (${commit.commit.short}) ${
                   username
                     ? `by @${username}`
-                    : `by ${commit.author.name ?? commit.author.email}`
+                    : `by ${commit.author?.name ?? commit.author?.email}`
                 }`
               }),
-            ).then((commits) => [type, commits] as const)
+            ).then((commitDescriptions) => [type, commitDescriptions] as const)
           }),
       ).then((groups) => {
         return groups
@@ -409,7 +411,7 @@ async function run() {
   // }
 
   console.info('Testing packages...')
-  execSync(`pnpm test:ci ${SKIP_TESTS ? '|| exit 0' : ''}`, {
+  execSync(`pnpm test:ci ${(SKIP_TESTS as boolean) ? '|| exit 0' : ''}`, {
     encoding: 'utf8',
   })
   console.info('')
