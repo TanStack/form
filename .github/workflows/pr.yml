@@ -22,7 +22,7 @@ jobs:
           node-version: 16.14.2
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm --filter "./packages/**" --filter form --prefer-offline install
+        run: pnpm --filter "./packages/**" --filter form --prefer-offline install --no-frozen-lockfile
       - name: Run Tests
         uses: nick-fields/retry@v2.8.3
         with:
@@ -48,7 +48,7 @@ jobs:
           node-version: 16.14.2
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm --filter "./packages/**" --filter form --prefer-offline install
+        run: pnpm --filter "./packages/**" --filter form --prefer-offline install --no-frozen-lockfile
       - run: pnpm run test:eslint --base=${{ github.event.pull_request.base.sha }}
   typecheck:
     name: 'Typecheck'
@@ -67,7 +67,7 @@ jobs:
           node-version: 16.14.2
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm --filter "./packages/**" --filter form --prefer-offline install
+        run: pnpm --filter "./packages/**" --filter form --prefer-offline install --no-frozen-lockfile
       - run: pnpm run test:types --base=${{ github.event.pull_request.base.sha }}
   format:
     name: 'Format'
@@ -86,7 +86,7 @@ jobs:
           node-version: 16.14.2
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm --filter "./packages/**" --filter form --prefer-offline install
+        run: pnpm --filter "./packages/**" --filter form --prefer-offline install --no-frozen-lockfile
       - run: pnpm run test:format --base=${{ github.event.pull_request.base.sha }}
   test-react-17:
     name: 'Test React 17'
@@ -105,7 +105,7 @@ jobs:
           node-version: 16.14.2
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm --filter "./packages/**" --filter form --prefer-offline install
+        run: pnpm --filter "./packages/**" --filter form --prefer-offline install --no-frozen-lockfile
       - name: Run Tests
         uses: nick-fields/retry@v2.8.3
         with:
@@ -127,7 +127,7 @@ jobs:
           node-version: 16.14.2
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm --filter "./packages/**" --filter form --prefer-offline install
+        run: pnpm --filter "./packages/**" --filter form --prefer-offline install --no-frozen-lockfile
       - run: pnpm run test:build
         env:
           BUNDLEWATCH_GITHUB_TOKEN: ${{ secrets.BUNDLEWATCH_GITHUB_TOKEN }}

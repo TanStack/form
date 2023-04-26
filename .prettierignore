@@ -1,1 +1,2 @@
 /packages/svelte-form/.svelte-kit
+/packages/*/build
