@@ -110,9 +110,9 @@ A class representing the API for managing a form field.
   - Gets a subfield instance.
 - `validate(): Promise<any>`
   - Validates the field value.
-- `getChangeProps<T extends ChangeProps<any>>(props: T = {} as T): ChangeProps<TData> & Omit<T, keyof ChangeProps<TData>>`
+- `getChangeProps<T extends UserChangeProps<any>>(props: T = {} as T): ChangeProps<TData> & Omit<T, keyof ChangeProps<TData>>`
   - Gets the change and blur event handlers.
-- `getInputProps<T extends InputProps>(props: T = {} as T): InputProps & Omit<T, keyof InputProps>`
+- `getInputProps<T extends UserInputProps>(props: T = {} as T): InputProps & Omit<T, keyof InputProps>`
   - Gets the input event handlers.
 
 ### `FieldState<TData>`
@@ -123,6 +123,24 @@ An object type representing the state of a field.
   - The current value of the field.
 - `meta: FieldMeta`
   - The current metadata of the field.
+
+### `UserChangeProps<TData>`
+
+An object type representing the change and blur event handlers for a field.
+
+- `onChange?: (updater: Updater<TData>) => void`
+  - An optional function to further handle the change event.
+- `onBlur?: (event: any) => void`
+  - An optional function to further handle the blur event.
+
+### `UserInputProps`
+
+An object type representing the input event handlers for a field.
+
+- `onChange?: (event: any) => void`
+  - An optional function to further handle the change event.
+- `onBlur?: (event: any) => void`
+  - An optional function to further handle the blur event.
 
 ### `ChangeProps<TData>`
 

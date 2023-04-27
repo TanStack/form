@@ -31,14 +31,26 @@ export type FieldMeta = {
   isValidating: boolean
 }
 
-export type ChangeProps<TData> = {
+export type UserChangeProps<TData> = {
   onChange?: (updater: Updater<TData>) => void
   onBlur?: (event: any) => void
 }
 
-export type InputProps = {
+export type UserInputProps = {
   onChange?: (event: any) => void
   onBlur?: (event: any) => void
+}
+
+export type ChangeProps<TData> = {
+  value: TData
+  onChange: (updater: Updater<TData>) => void
+  onBlur: (event: any) => void
+}
+
+export type InputProps = {
+  value: string
+  onChange: (event: any) => void
+  onBlur: (event: any) => void
 }
 
 export type FieldApiOptions<TData, TFormData> = RequiredByKey<
@@ -332,7 +344,7 @@ export class FieldApi<TData, TFormData> {
     return undefined
   }
 
-  getChangeProps = <T extends ChangeProps<any>>(
+  getChangeProps = <T extends UserChangeProps<any>>(
     props: T = {} as T,
   ): ChangeProps<TData> & Omit<T, keyof ChangeProps<TData>> => {
     return {
@@ -350,7 +362,7 @@ export class FieldApi<TData, TFormData> {
     } as ChangeProps<TData> & Omit<T, keyof ChangeProps<TData>>
   }
 
-  getInputProps = <T extends InputProps>(
+  getInputProps = <T extends UserInputProps>(
     props: T = {} as T,
   ): InputProps & Omit<T, keyof InputProps> => {
     return {

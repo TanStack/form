@@ -10,19 +10,19 @@
       "children": [
         {
           "label": "Overview",
-          "to": "core/overview"
+          "to": "overview"
         },
         {
           "label": "Installation",
-          "to": "core/installation"
+          "to": "installation"
         },
         {
           "label": "Comparison",
-          "to": "core/comparison"
+          "to": "comparison"
         },
         {
           "label": "TypeScript",
-          "to": "core/typescript"
+          "to": "typescript"
         }
       ]
     },
@@ -31,7 +31,7 @@
       "children": [
         {
           "label": "Important Defaults",
-          "to": "core/guides/important-defaults"
+          "to": "guides/important-defaults"
         }
       ]
     },
@@ -40,11 +40,11 @@
       "children": [
         {
           "label": "FormApi",
-          "to": "core/reference/formApi"
+          "to": "reference/formApi"
         },
         {
           "label": "FieldApi",
-          "to": "core/reference/fieldApi"
+          "to": "reference/fieldApi"
         }
       ]
     }
