@@ -6,53 +6,50 @@
   },
   "menu": [
     {
-      "framework": "core",
-      "menuItems": [
+      "label": "Getting Started",
+      "children": [
         {
-          "label": "Getting Started",
-          "children": [
-            {
-              "label": "Overview",
-              "to": "core/overview"
-            },
-            {
-              "label": "Installation",
-              "to": "core/installation"
-            },
-            {
-              "label": "Comparison",
-              "to": "core/comparison"
-            },
-            {
-              "label": "TypeScript",
-              "to": "core/typescript"
-            }
-          ]
+          "label": "Overview",
+          "to": "core/overview"
         },
         {
-          "label": "Guides",
-          "children": [
-            {
-              "label": "Important Defaults",
-              "to": "core/guides/important-defaults"
-            }
-          ]
+          "label": "Installation",
+          "to": "core/installation"
         },
         {
-          "label": "API Reference",
-          "children": [
-            {
-              "label": "FormApi",
-              "to": "core/reference/formApi"
-            },
-            {
-              "label": "FieldApi",
-              "to": "core/reference/fieldApi"
-            }
-          ]
+          "label": "Comparison",
+          "to": "core/comparison"
+        },
+        {
+          "label": "TypeScript",
+          "to": "core/typescript"
         }
       ]
     },
+    {
+      "label": "Guides",
+      "children": [
+        {
+          "label": "Important Defaults",
+          "to": "core/guides/important-defaults"
+        }
+      ]
+    },
+    {
+      "label": "API Reference",
+      "children": [
+        {
+          "label": "FormApi",
+          "to": "core/reference/formApi"
+        },
+        {
+          "label": "FieldApi",
+          "to": "core/reference/fieldApi"
+        }
+      ]
+    }
+  ],
+  "frameworkMenus": [
     {
       "framework": "react",
       "menuItems": [
