@@ -28,13 +28,17 @@ export function useField<TData, TFormData>(
 
 A hook for managing a field in a form.
 
-- `opts: FieldOptions<TData, TFormData>`
+- ```tsx
+  opts: FieldOptions<TData, TFormData>
+  ```
   - An object with field options.
 
 #### Returns
 
-- `FieldApi<TData, TFormData>`
-  - `FieldApi` instance for the specified field.
+- ```tsx
+  FieldApi<TData, TFormData>
+  ```
+  - The `FieldApi` instance for the specified field.
 
 ### `createUseField`
 

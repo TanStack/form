@@ -33,9 +33,13 @@ export function Field<TData, TFormData>({
 
 A functional React component that renders a form field.
 
-- `children: (fieldApi: FieldApi<TData, TFormData>) => any`
+- ```tsx
+  children: (fieldApi: FieldApi<TData, TFormData>) => any
+  ```
   - A render function that takes a field API instance and returns a React element.
-- `fieldOptions: FieldOptions<TData, TFormData>`
+- ```tsx
+  fieldOptions: FieldOptions<TData, TFormData>
+  ```
   - The field options.
 
 The `Field` component uses the `useField` hook internally to manage the field instance.
@@ -50,5 +54,7 @@ export function createFieldComponent<TFormData>(
 
 A factory function that creates a connected field component for a specific form API instance.
 
-- `formApi: FormApi<TFormData>`
+- ```tsx
+  formApi: FormApi<TFormData>
+  ```
   - The form API instance to connect the field component to.

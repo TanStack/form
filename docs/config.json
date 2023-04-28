@@ -58,7 +58,7 @@
           "children": [
             {
               "label": "Quick Start",
-              "to": "react/quick-start"
+              "to": "framework/react/quick-start"
             }
           ]
         },
@@ -67,19 +67,19 @@
           "children": [
             {
               "label": "useForm",
-              "to": "react/reference/useForm"
+              "to": "framework/react/reference/useForm"
             },
             {
               "label": "useField",
-              "to": "react/reference/useField"
+              "to": "framework/react/reference/useField"
             },
             {
               "label": "Field",
-              "to": "react/reference/Field"
+              "to": "framework/react/reference/Field"
             },
             {
               "label": "FormApi",
-              "to": "react/reference/formApi"
+              "to": "framework/react/reference/formApi"
             }
           ]
         },
@@ -88,7 +88,7 @@
           "children": [
             {
               "label": "Simple",
-              "to": "react/examples/simple"
+              "to": "framework/react/examples/simple"
             }
           ]
         }
