@@ -21,7 +21,7 @@ By providing a complete solution for these challenges, TanStack Form empowers de
 
 ## Enough talk, show me some code already!
 
-In the example below, you can see TanStack Form in action, showcasing its simplicity and effectiveness in handling form data:
+In the example below, you can see TanStack Form in action with the React framework adapter:
 
 [Open in CodeSandbox](https://codesandbox.io/s/github/tannerlinsley/react-form/tree/main/examples/react/simple)
 
