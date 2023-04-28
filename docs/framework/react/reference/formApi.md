@@ -5,7 +5,7 @@ title: Form API
 
 ### `FormApi<TFormData>`
 
-When using `@tanstack/react-form`, the [core form API](../../core//reference/formApi.md) is extended with additional methods for React-specific functionality:
+When using `@tanstack/react-form`, the [core form API](../../reference/formApi) is extended with additional methods for React-specific functionality:
 
 - ```tsx
   Form: FormComponent

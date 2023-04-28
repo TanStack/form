@@ -3,7 +3,7 @@ id: field
 title: Field
 ---
 
-### `type FieldComponent<TFormData>`
+### `FieldComponent<TFormData>`
 
 A type alias representing a field component for a specific form data type.
 
