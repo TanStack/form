@@ -29,5 +29,5 @@ Feature/Capability Key:
 
 [bpl-tanstack-form]: https://bundlephobia.com/result?p=@tanstack/react-form
 [bp-tanstack-form]: https://badgen.net/bundlephobia/minzip/@tanstack/react-form?label=💾
-[gh-tanstack-form]: https://github.com/tannerlinsley/@tanstack/form
-[stars-tanstack-form]: https://img.shields.io/github/stars/@tanstack/form?label=%F0%9F%8C%9F
+[gh-tanstack-form]: https://github.com/TanStack/form
+[stars-tanstack-form]: https://img.shields.io/github/stars/TanStack/form?label=%F0%9F%8C%9F
