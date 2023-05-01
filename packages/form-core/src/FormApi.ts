@@ -4,6 +4,16 @@ import type { DeepKeys, DeepValue, Updater } from './utils'
 import { functionalUpdate, getBy, setBy } from './utils'
 import type { FieldApi, FieldMeta, ValidationCause } from './FieldApi'
 
+export interface Register {
+  // FormSubmitEvent
+}
+
+export type FormSubmitEvent = Register extends {
+  FormSubmitEvent: infer E
+}
+  ? E
+  : Event
+
 export type FormOptions<TData> = {
   defaultValues?: TData
   defaultState?: Partial<FormState<TData>>
@@ -245,7 +255,7 @@ export class FormApi<TFormData> {
     return this.validationMeta.validationPromise
   }
 
-  handleSubmit = async (e: Event) => {
+  handleSubmit = async (e: FormSubmitEvent) => {
     e.preventDefault()
     e.stopPropagation()
 

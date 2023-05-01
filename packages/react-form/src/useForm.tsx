@@ -8,6 +8,10 @@ import { createUseField, type UseField } from './useField'
 import { formContext } from './formContext'
 
 declare module '@tanstack/form-core' {
+  interface Register {
+    FormSubmitEvent: React.FormEvent<HTMLFormElement>
+  }
+
   // eslint-disable-next-line no-shadow
   interface FormApi<TFormData> {
     Form: FormComponent
