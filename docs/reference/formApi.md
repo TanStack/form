@@ -36,10 +36,6 @@ An object representing the options for a form.
   ```
   - A function for custom validation logic for the form.
 - ```tsx
-    debugForm?: boolean
-  ```
-  - A boolean flag to enable or disable form debugging.
-- ```tsx
     defaultValidatePristine?: boolean
   ```
   - A boolean flag to enable or disable validation for pristine fields.

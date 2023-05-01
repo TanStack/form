@@ -2,10 +2,22 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { FieldApi, createFormFactory } from "@tanstack/react-form";
 
-const formFactory = createFormFactory({
+type Person = {
+  firstName: string;
+  lastName: string;
+  hobbies: Hobby[];
+};
+
+type Hobby = {
+  name: string;
+  description: string;
+};
+
+const formFactory = createFormFactory<Person>({
   defaultValues: {
     firstName: "",
     lastName: "",
+    hobbies: [],
   },
 });
 
@@ -59,6 +71,18 @@ export default function App() {
         <div>
           <form.Field
             name="lastName"
+            children={(field) => (
+              <>
+                <label htmlFor={field.name}>Last Name:</label>
+                <input name={field.name} {...field.getInputProps()} />
+                <FieldInfo field={field} />
+              </>
+            )}
+          />
+        </div>
+        <div>
+          <form.Field
+            name="hobbies"
             children={(field) => (
               <>
                 <label htmlFor={field.name}>Last Name:</label>

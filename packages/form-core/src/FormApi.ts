@@ -1,4 +1,3 @@
-import type { FormEvent } from 'react'
 import { Store } from '@tanstack/store'
 //
 import type { DeepKeys, DeepValue, Updater } from './utils'
@@ -11,7 +10,6 @@ export type FormOptions<TData> = {
   onSubmit?: (values: TData, formApi: FormApi<TData>) => void
   onInvalidSubmit?: (values: TData, formApi: FormApi<TData>) => void
   validate?: (values: TData, formApi: FormApi<TData>) => Promise<any>
-  debugForm?: boolean
   defaultValidatePristine?: boolean
   defaultValidateOn?: ValidationCause
   defaultValidateAsyncOn?: ValidationCause
@@ -53,7 +51,7 @@ export type FormState<TData> = {
   submissionAttempts: number
 }
 
-export function getDefaultFormState<TData>(
+function getDefaultFormState<TData>(
   defaultState: Partial<FormState<TData>>,
 ): FormState<TData> {
   return {
@@ -247,7 +245,7 @@ export class FormApi<TFormData> {
     return this.validationMeta.validationPromise
   }
 
-  handleSubmit = async (e: FormEvent & { __handled?: boolean }) => {
+  handleSubmit = async (e: Event) => {
     e.preventDefault()
     e.stopPropagation()
 

@@ -54,8 +54,6 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
     return api
   })
 
-  // React.useEffect(() => formApi.mount(), [])
-
   return formApi as any
 }
 
@@ -66,7 +64,7 @@ export type FormProps = React.HTMLProps<HTMLFormElement> & {
 
 export type FormComponent = (props: FormProps) => any
 
-export function createFormComponent(formApi: FormApi<any>) {
+function createFormComponent(formApi: FormApi<any>) {
   const Form: FormComponent = ({ children, noFormElement, ...rest }) => {
     const isSubmitting = formApi.useStore((state) => state.isSubmitting)
 
@@ -80,26 +78,6 @@ export function createFormComponent(formApi: FormApi<any>) {
             disabled={isSubmitting}
             {...rest}
           >
-            {formApi.options.debugForm ? (
-              <div
-                style={{
-                  margin: '2rem 0',
-                }}
-              >
-                <div
-                  style={{
-                    fontWeight: 'bolder',
-                  }}
-                >
-                  Form State
-                </div>
-                <pre>
-                  <code>
-                    {JSON.stringify(formApi, safeStringifyReplace(), 2)}
-                  </code>
-                </pre>
-              </div>
-            ) : null}
             {children}
           </form>
         )}
@@ -108,17 +86,4 @@ export function createFormComponent(formApi: FormApi<any>) {
   }
 
   return Form
-}
-
-function safeStringifyReplace() {
-  const set = new Set()
-  return (_key: string, value: any) => {
-    if (typeof value === 'object' || Array.isArray(value)) {
-      if (set.has(value)) {
-        return '(circular value)'
-      }
-      set.add(value)
-    }
-    return typeof value === 'function' ? undefined : value
-  }
 }
