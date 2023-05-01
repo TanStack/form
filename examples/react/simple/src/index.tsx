@@ -1,6 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { useForm, FieldApi } from "@tanstack/react-form";
+import { FieldApi, createFormFactory } from "@tanstack/react-form";
+
+const formFactory = createFormFactory({
+  defaultValues: {
+    firstName: "",
+    lastName: "",
+  },
+});
 
 function FieldInfo({ field }: { field: FieldApi<any, any> }) {
   return (
@@ -14,15 +21,7 @@ function FieldInfo({ field }: { field: FieldApi<any, any> }) {
 }
 
 export default function App() {
-  const form = useForm({
-    // Memoize your default values to prevent re-renders
-    defaultValues: React.useMemo(
-      () => ({
-        firstName: "",
-        lastName: "",
-      }),
-      []
-    ),
+  const form = formFactory.useForm({
     onSubmit: async (values) => {
       // Do something with form data
       console.log(values);

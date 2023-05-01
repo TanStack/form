@@ -5,10 +5,9 @@ import { Store } from '@tanstack/store'
 
 export type ValidationCause = 'change' | 'blur' | 'submit'
 
-export type FieldOptions<TData, TFormData> = {
+export interface FieldOptions<TData, TFormData> {
   name: unknown extends TFormData ? string : DeepKeys<TFormData>
   defaultValue?: TData
-  form?: FormApi<TFormData>
   validate?: (
     value: TData,
     fieldApi: FieldApi<TData, TFormData>,
@@ -22,6 +21,13 @@ export type FieldOptions<TData, TFormData> = {
   validateAsyncOn?: ValidationCause // Default: 'blur'
   validateAsyncDebounceMs?: number
   defaultMeta?: Partial<FieldMeta>
+}
+
+export type FieldApiOptions<TData, TFormData> = FieldOptions<
+  TData,
+  TFormData
+> & {
+  form: FormApi<TFormData>
 }
 
 export type FieldMeta = {
@@ -52,11 +58,6 @@ export type InputProps = {
   onChange: (event: any) => void
   onBlur: (event: any) => void
 }
-
-export type FieldApiOptions<TData, TFormData> = RequiredByKey<
-  FieldOptions<TData, TFormData>,
-  'form'
->
 
 let uid = 0
 

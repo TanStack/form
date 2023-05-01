@@ -5,7 +5,6 @@ import {
   type DeepValue,
   type FieldApi,
   type FieldOptions,
-  type FormApi,
 } from '@tanstack/form-core'
 import { useField } from './useField'
 
@@ -19,9 +18,9 @@ export type FieldComponent<TFormData> = <TField extends DeepKeys<TFormData>>({
   name: TField
 } & Omit<FieldOptions<DeepValue<TFormData, TField>, TFormData>, 'name'>) => any
 
-export function createFieldComponent<TFormData>(formApi: FormApi<TFormData>) {
+export function createFieldComponent<TFormData>() {
   const ConnectedField: FieldComponent<TFormData> = (props) => (
-    <Field {...(props as any)} form={formApi} />
+    <Field {...(props as any)} />
   )
   return ConnectedField
 }

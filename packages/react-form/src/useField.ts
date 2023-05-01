@@ -1,14 +1,17 @@
 import * as React from 'react'
 //
 import { useStore } from '@tanstack/react-store'
-import type {
-  DeepKeys,
-  DeepValue,
-  FieldOptions,
-  FormApi,
-} from '@tanstack/form-core'
+import type { DeepKeys, DeepValue, FieldOptions } from '@tanstack/form-core'
 import { FieldApi } from '@tanstack/form-core'
 import { useFormContext } from './formContext'
+import type { FormFactory } from './createFormFactory'
+
+declare module '@tanstack/form-core' {
+  // eslint-disable-next-line no-shadow
+  interface FieldOptions<TData, TFormData> {
+    formFactory?: FormFactory<TFormData>
+  }
+}
 
 export type UseField<TFormData> = <TField extends DeepKeys<TFormData>>(
   opts?: { name: TField } & FieldOptions<
@@ -17,12 +20,10 @@ export type UseField<TFormData> = <TField extends DeepKeys<TFormData>>(
   >,
 ) => FieldApi<DeepValue<TFormData, TField>, TFormData>
 
-export function createUseField<TFormData>(formApi: FormApi<TFormData>) {
-  const useFormField: UseField<TFormData> = (opts) => {
-    return useField({ ...opts, form: formApi } as any)
+export function createUseField<TFormData>(): UseField<TFormData> {
+  return (opts) => {
+    return useField(opts as any)
   }
-
-  return useFormField
 }
 
 export function useField<TData, TFormData>(
@@ -30,13 +31,8 @@ export function useField<TData, TFormData>(
     // selector: (state: FieldApi<TData, TFormData>) => TSelected
   },
 ): FieldApi<TData, TFormData> {
-  // invariant( // TODO:
-  //   opts.name,
-  //   `useField: A field is required to use this hook. eg, useField('myField', options)`
-  // )
-
   // Get the form API either manually or from context
-  const formApi = useFormContext(opts.form)
+  const formApi = useFormContext()
 
   const [fieldApi] = React.useState<FieldApi<TData, TFormData>>(
     () => new FieldApi({ ...opts, form: formApi }),

@@ -3,12 +3,8 @@ import * as React from 'react'
 
 export const formContext = React.createContext<FormApi<any> | null>(null)
 
-export function useFormContext(customFormApi?: FormApi<any>) {
+export function useFormContext() {
   const formApi = React.useContext(formContext)
-
-  if (customFormApi) {
-    return customFormApi
-  }
 
   if (!formApi) {
     throw new Error(`You are trying to use the form API outside of a form!`)

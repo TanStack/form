@@ -24,22 +24,21 @@ declare module '@tanstack/form-core' {
     }) => any
   }
 }
-//
 
 export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
   const [formApi] = React.useState(() => {
     // @ts-ignore
-    const api = new FormApi<TData>(opts || {})
+    const api = new FormApi<TData>(opts)
 
     api.Form = createFormComponent(api)
-    api.Field = createFieldComponent(api)
-    api.useField = createUseField(api)
+    api.Field = createFieldComponent<TData>()
+    api.useField = createUseField<TData>()
     api.useStore = (
       // @ts-ignore
       selector,
     ) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      return useStore(api.store, selector) as any
+      return useStore(api.store, selector as any) as any
     }
     api.Subscribe = (
       // @ts-ignore
@@ -48,7 +47,7 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
       return functionalUpdate(
         props.children,
         // eslint-disable-next-line react-hooks/rules-of-hooks
-        useStore(api.store, props.selector),
+        useStore(api.store, props.selector as any),
       ) as any
     }
 
@@ -57,7 +56,7 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
 
   // React.useEffect(() => formApi.mount(), [])
 
-  return formApi
+  return formApi as any
 }
 
 export type FormProps = React.HTMLProps<HTMLFormElement> & {
