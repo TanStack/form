@@ -14,9 +14,6 @@ export function functionalUpdate<TInput, TOutput = TInput>(
 }
 
 export function getBy(obj: any, path: any) {
-  if (!path) {
-    throw new Error('A path string is required to use getBy')
-  }
   const pathArray = makePathArray(path)
   const pathObj = pathArray
   return pathObj.reduce((current: any, pathPart: any) => {
@@ -73,19 +70,26 @@ const reFindNumbers2 = /^(\d*)\./gm
 const reFindNumbers3 = /\.(\d*$)/gm
 const reFindMultiplePeriods = /\.{2,}/gm
 
+const intPrefix = '__int__'
+const intReplace = `${intPrefix}$1`
+
 function makePathArray(str: string) {
+  if (typeof str !== 'string') {
+    throw new Error()
+  }
+
   return str
     .replace('[', '.')
     .replace(']', '')
-    .replace(reFindNumbers0, '__int__$1')
-    .replace(reFindNumbers1, '.__int__$1.')
-    .replace(reFindNumbers2, '__int__$1.')
-    .replace(reFindNumbers3, '.__int__$1')
+    .replace(reFindNumbers0, intReplace)
+    .replace(reFindNumbers1, `.${intReplace}.`)
+    .replace(reFindNumbers2, `${intReplace}.`)
+    .replace(reFindNumbers3, `.${intReplace}`)
     .replace(reFindMultiplePeriods, '.')
     .split('.')
     .map((d) => {
-      if (d.indexOf('__int__') === 0) {
-        return parseInt(d.substring('__int__'.length), 10)
+      if (d.indexOf(intPrefix) === 0) {
+        return parseInt(d.substring(intPrefix.length), 10)
       }
       return d
     })
