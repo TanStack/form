@@ -7,6 +7,7 @@ export type ValidationCause = 'change' | 'blur' | 'submit'
 
 export interface FieldOptions<TData, TFormData> {
   name: unknown extends TFormData ? string : DeepKeys<TFormData>
+  index?: TData extends any[] ? number : never
   defaultValue?: TData
   validate?: (
     value: TData,
@@ -84,12 +85,12 @@ export class FieldApi<TData, TFormData> {
     this.form = opts.form
     this.uid = uid++
     // Support field prefixing from FieldScope
-    let fieldPrefix = ''
-    if (this.form.fieldName) {
-      fieldPrefix = `${this.form.fieldName}.`
-    }
+    // let fieldPrefix = ''
+    // if (this.form.fieldName) {
+    //   fieldPrefix = `${this.form.fieldName}.`
+    // }
 
-    this.name = (fieldPrefix + opts.name) as any
+    this.name = opts.name as any
 
     this.store = new Store<FieldState<TData>>(
       {
@@ -113,6 +114,7 @@ export class FieldApi<TData, TFormData> {
           if (next.value !== prevState.value) {
             this.validate('change', next.value)
           }
+          console.log(this)
         },
       },
     )
@@ -178,7 +180,9 @@ export class FieldApi<TData, TFormData> {
     }
   }
 
-  getValue = (): TData => this.form.getFieldValue(this.name)
+  getValue = (): TData => {
+    return this.form.getFieldValue(this.name)
+  }
   setValue = (
     updater: Updater<TData>,
     options?: { touch?: boolean; notify?: boolean },
@@ -190,11 +194,11 @@ export class FieldApi<TData, TFormData> {
 
   getInfo = () => this.form.getFieldInfo(this.name)
 
-  pushValue = (value: TData) =>
+  pushValue = (value: TData extends any[] ? TData[number] : never) =>
     this.form.pushFieldValue(this.name, value as any)
   insertValue = (index: number, value: TData) =>
     this.form.insertFieldValue(this.name, index, value as any)
-  removeValue = (index: number) => this.form.spliceFieldValue(this.name, index)
+  removeValue = (index: number) => this.form.removeFieldValue(this.name, index)
   swapValues = (aIndex: number, bIndex: number) =>
     this.form.swapFieldValues(this.name, aIndex, bIndex)
 

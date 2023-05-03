@@ -138,7 +138,7 @@ A class representing the Form API. It handles the logic and interactions with th
   ```
   - Inserts a value into an array field at the specified index.
 - ```tsx
-    spliceFieldValue<TField extends DeepKeys<TFormData>>(field: TField, index: number, opts?: { touch?: boolean })
+    removeFieldValue<TField extends DeepKeys<TFormData>>(field: TField, index: number, opts?: { touch?: boolean })
   ```
   - Removes a value from an array field at the specified index.
 - ```tsx

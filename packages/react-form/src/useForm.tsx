@@ -3,8 +3,7 @@ import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import type { NoInfer } from '@tanstack/react-store'
 import { useStore } from '@tanstack/react-store'
 import React from 'react'
-import { createFieldComponent, type FieldComponent } from './Field'
-import { createUseField, type UseField } from './useField'
+import { type UseField, type FieldComponent, Field, useField } from './useField'
 import { formContext } from './formContext'
 
 declare module '@tanstack/form-core' {
@@ -15,7 +14,7 @@ declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
   interface FormApi<TFormData> {
     Form: FormComponent
-    Field: FieldComponent<TFormData>
+    Field: FieldComponent<TFormData, TFormData>
     useField: UseField<TFormData>
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
       selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,
@@ -35,8 +34,8 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
     const api = new FormApi<TData>(opts)
 
     api.Form = createFormComponent(api)
-    api.Field = createFieldComponent<TData>()
-    api.useField = createUseField<TData>()
+    api.Field = Field as any
+    api.useField = useField as any
     api.useStore = (
       // @ts-ignore
       selector,
@@ -73,7 +72,7 @@ function createFormComponent(formApi: FormApi<any>) {
     const isSubmitting = formApi.useStore((state) => state.isSubmitting)
 
     return (
-      <formContext.Provider value={formApi}>
+      <formContext.Provider value={{ formApi }}>
         {noFormElement ? (
           children
         ) : (

@@ -11,6 +11,7 @@ type Person = {
 type Hobby = {
   name: string;
   description: string;
+  yearsOfExperience: number;
 };
 
 const formFactory = createFormFactory<Person>({
@@ -61,8 +62,7 @@ export default function App() {
             children={(field) => (
               // Avoid hasty abstractions. Render props are great!
               <>
-                <label htmlFor={field.name}>First Name:</label>
-                <input name={field.name} {...field.getInputProps()} />
+                <input {...field.getInputProps()} />
                 <FieldInfo field={field} />
               </>
             )}
@@ -73,8 +73,7 @@ export default function App() {
             name="lastName"
             children={(field) => (
               <>
-                <label htmlFor={field.name}>Last Name:</label>
-                <input name={field.name} {...field.getInputProps()} />
+                <input {...field.getInputProps()} />
                 <FieldInfo field={field} />
               </>
             )}
@@ -83,12 +82,84 @@ export default function App() {
         <div>
           <form.Field
             name="hobbies"
-            children={(field) => (
-              <>
-                <label htmlFor={field.name}>Last Name:</label>
-                <input name={field.name} {...field.getInputProps()} />
-                <FieldInfo field={field} />
-              </>
+            mode="array"
+            children={(hobbiesField) => (
+              <div>
+                Hobbies
+                <div
+                  style={{
+                    paddingLeft: "1rem",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "1rem",
+                  }}
+                >
+                  {!hobbiesField.state.value.length
+                    ? "No hobbies found."
+                    : hobbiesField.state.value.map((value, i) => (
+                        <div
+                          key={i}
+                          style={{
+                            borderLeft: "2px solid gray",
+                            paddingLeft: ".5rem",
+                          }}
+                        >
+                          <hobbiesField.Field
+                            index={i}
+                            name="name"
+                            children={(field) => {
+                              return (
+                                <div>
+                                  <label htmlFor={field.name}>Name:</label>
+                                  <input
+                                    name={field.name}
+                                    {...field.getInputProps()}
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => hobbiesField.removeValue(i)}
+                                  >
+                                    X
+                                  </button>
+                                  <FieldInfo field={field} />
+                                </div>
+                              );
+                            }}
+                          />
+                          <hobbiesField.Field
+                            index={i}
+                            name="description"
+                            children={(field) => {
+                              return (
+                                <div>
+                                  <label htmlFor={field.name}>
+                                    Description:
+                                  </label>
+                                  <input
+                                    name={field.name}
+                                    {...field.getInputProps()}
+                                  />
+                                  <FieldInfo field={field} />
+                                </div>
+                              );
+                            }}
+                          />
+                        </div>
+                      ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() =>
+                    hobbiesField.pushValue({
+                      name: "",
+                      description: "",
+                      yearsOfExperience: 0,
+                    })
+                  }
+                >
+                  Add hobby
+                </button>
+              </div>
             )}
           />
         </div>

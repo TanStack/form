@@ -138,6 +138,7 @@ export class FormApi<TFormData> {
           // Write it back to the store
           this.store.state = next
           this.state = next
+          console.log(this.state)
         },
       },
     )
@@ -402,7 +403,7 @@ export class FormApi<TFormData> {
     )
   }
 
-  spliceFieldValue = <TField extends DeepKeys<TFormData>>(
+  removeFieldValue = <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,
     opts?: { touch?: boolean },

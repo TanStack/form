@@ -130,7 +130,7 @@ export type DeepKeys<T> = unknown extends T
   : T extends readonly any[] & IsTuple<T>
   ? AllowedIndexes<T> | DeepKeysPrefix<T, AllowedIndexes<T>>
   : T extends any[]
-  ? never & 'Dynamic length array indexing is not supported'
+  ? DeepKeys<T[number]>
   : T extends Date
   ? never
   : T extends object
@@ -146,3 +146,18 @@ export type DeepValue<T, TProp> = T extends Record<string | number, any>
     ? DeepValue<T[TBranch], TDeepProp>
     : T[TProp & string]
   : never
+
+type Narrowable = string | number | bigint | boolean
+
+type NarrowRaw<A> =
+  | (A extends [] ? [] : never)
+  | (A extends Narrowable ? A : never)
+  | {
+      [K in keyof A]: A[K] extends Function ? A[K] : NarrowRaw<A[K]>
+    }
+
+export type Narrow<A extends any> = Try<A, [], NarrowRaw<A>>
+
+type Try<A1 extends any, A2 extends any, Catch = never> = A1 extends A2
+  ? A1
+  : Catch

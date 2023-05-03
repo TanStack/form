@@ -1,7 +1,10 @@
 import type { FormApi } from '@tanstack/form-core'
 import * as React from 'react'
 
-export const formContext = React.createContext<FormApi<any> | null>(null)
+export const formContext = React.createContext<{
+  formApi: FormApi<any>
+  parentFieldName?: string
+} | null>(null!)
 
 export function useFormContext() {
   const formApi = React.useContext(formContext)
