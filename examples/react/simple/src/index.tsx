@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { FieldApi, createFormFactory } from "@tanstack/react-form";
+import { FieldApi, createFormFactory, useField } from "@tanstack/react-form";
 
 type Person = {
   firstName: string;
@@ -96,7 +96,7 @@ export default function App() {
                 >
                   {!hobbiesField.state.value.length
                     ? "No hobbies found."
-                    : hobbiesField.state.value.map((value, i) => (
+                    : hobbiesField.state.value.map((_, i) => (
                         <div
                           key={i}
                           style={{
