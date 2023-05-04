@@ -114,7 +114,6 @@ export class FieldApi<TData, TFormData> {
           if (next.value !== prevState.value) {
             this.validate('change', next.value)
           }
-          console.log(this)
         },
       },
     )

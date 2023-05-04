@@ -138,7 +138,6 @@ export class FormApi<TFormData> {
           // Write it back to the store
           this.store.state = next
           this.state = next
-          console.log(this.state)
         },
       },
     )
