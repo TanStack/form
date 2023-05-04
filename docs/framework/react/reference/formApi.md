@@ -8,9 +8,9 @@ title: Form API
 When using `@tanstack/react-form`, the [core form API](../../reference/formApi) is extended with additional methods for React-specific functionality:
 
 - ```tsx
-  Form: FormComponent
+  getFormProps: () => FormProps
   ```
-  - A pre-bound and type-safe form component, specific to this forms instance.
+  - A function that returns props for the form element.
 - ```tsx
   Field: FieldComponent<TFormData>
   ```

@@ -45,7 +45,7 @@ export default function App() {
     <div>
       <h1>Simple Form Example</h1>
       {/* A pre-bound form component */}
-      <form.Form>
+      <form {...form.getFormProps()}>
         <div>
           {/* A type-safe and pre-bound field component*/}
           <form.Field

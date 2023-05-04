@@ -32,14 +32,3 @@ A type representing a form component.
 
 - `(props: FormProps) => any`
   - A function that takes `FormProps` as an argument and returns a form component.
-
-### `createFormComponent`
-
-```tsx
-export function createFormComponent(formApi: FormApi<any>): FormComponent
-```
-
-A function that creates a form component with the provided form API instance.
-
-- `formApi`
-  - An instance of the `FormApi<any>` class.
