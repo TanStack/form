@@ -57,6 +57,8 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
     return api
   })
 
+  formApi.update(opts)
+
   return formApi as any
 }
 

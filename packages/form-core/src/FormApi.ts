@@ -148,7 +148,9 @@ export class FormApi<TFormData> {
     this.update(opts || {})
   }
 
-  update = (options: FormOptions<TFormData>) => {
+  update = (options?: FormOptions<TFormData>) => {
+    if (!options) return
+
     this.store.batch(() => {
       if (
         options.defaultState &&
