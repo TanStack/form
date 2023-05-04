@@ -15,6 +15,7 @@ declare module '@tanstack/form-core' {
 
   // eslint-disable-next-line no-shadow
   interface FormApi<TFormData> {
+    Provider: (props: { children: any }) => any
     getFormProps: () => FormProps
     Field: FieldComponent<TFormData, TFormData>
     useField: UseField<TFormData>
@@ -40,6 +41,9 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
     // @ts-ignore
     const api = new FormApi<TData>(opts)
 
+    api.Provider = (props) => (
+      <formContext.Provider {...props} value={{ formApi: api }} />
+    )
     api.getFormProps = () => {
       return {
         onSubmit: formApi.handleSubmit,

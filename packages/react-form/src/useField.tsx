@@ -129,6 +129,7 @@ export function Field<TData, TFormData>({
   children: (fieldApi: FieldApi<TData, TFormData>) => any
 } & UseFieldOptions<TData, TFormData>) {
   const fieldApi = useField(fieldOptions as any)
+
   return (
     <formContext.Provider
       value={{ formApi: fieldApi.form, parentFieldName: fieldApi.name }}
