@@ -1,6 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { FieldApi, createFormFactory } from "@tanstack/react-form";
+import {
+  FieldApi,
+  FormApi,
+  createFormFactory,
+  useField,
+} from "@tanstack/react-form";
 
 type Person = {
   firstName: string;
@@ -35,7 +40,7 @@ function FieldInfo({ field }: { field: FieldApi<any, any> }) {
 
 export default function App() {
   const form = formFactory.useForm({
-    onSubmit: async (values) => {
+    onSubmit: async (values, formApi) => {
       // Do something with form data
       console.log(values);
     },
@@ -54,11 +59,14 @@ export default function App() {
             {/* A type-safe and pre-bound field component*/}
             <form.Field
               name="firstName"
-              validateOn="change"
-              validate={(value) => !value && "A first name is required"}
-              validateAsyncOn="change"
-              validateAsyncDebounceMs={500}
-              validateAsync={async (value) => {
+              onChange={(value) =>
+                !value
+                  ? "A first name is required"
+                  : value.length < 3
+                  ? "First name must be at least 3 characters"
+                  : undefined
+              }
+              onChangeAsync={async (value) => {
                 await new Promise((resolve) => setTimeout(resolve, 1000));
                 return (
                   value.includes("error") && 'No "error" allowed in first name'
@@ -68,7 +76,6 @@ export default function App() {
                 // Avoid hasty abstractions. Render props are great!
                 return (
                   <>
-                    <input placeholder="uncontrolled" />
                     <input {...field.getInputProps()} />
                     <FieldInfo field={field} />
                   </>
@@ -76,7 +83,7 @@ export default function App() {
               }}
             />
           </div>
-          <div>
+          {/* <div>
             <form.Field
               name="lastName"
               children={(field) => (
@@ -172,7 +179,7 @@ export default function App() {
                 </div>
               )}
             />
-          </div>
+          </div> */}
           <form.Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}
             children={([canSubmit, isSubmitting]) => (
@@ -188,4 +195,5 @@ export default function App() {
 }
 
 const rootElement = document.getElementById("root")!;
+
 ReactDOM.createRoot(rootElement).render(<App />);

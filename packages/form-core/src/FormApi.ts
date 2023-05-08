@@ -17,13 +17,27 @@ export type FormSubmitEvent = Register extends {
 export type FormOptions<TData> = {
   defaultValues?: TData
   defaultState?: Partial<FormState<TData>>
-  onSubmit?: (values: TData, formApi: FormApi<TData>) => void
-  onInvalidSubmit?: (values: TData, formApi: FormApi<TData>) => void
-  validate?: (values: TData, formApi: FormApi<TData>) => Promise<any>
-  defaultValidatePristine?: boolean
-  defaultValidateOn?: ValidationCause
-  defaultValidateAsyncOn?: ValidationCause
-  defaultValidateAsyncDebounceMs?: number
+  asyncDebounceMs?: number
+  onMount?: (values: TData, formApi: FormApi<TData>) => ValidationError
+  onMountAsync?: (
+    values: TData,
+    formApi: FormApi<TData>,
+  ) => ValidationError | Promise<ValidationError>
+  onMountAsyncDebounceMs?: number
+  onChange?: (values: TData, formApi: FormApi<TData>) => ValidationError
+  onChangeAsync?: (
+    values: TData,
+    formApi: FormApi<TData>,
+  ) => ValidationError | Promise<ValidationError>
+  onChangeAsyncDebounceMs?: number
+  onBlur?: (values: TData, formApi: FormApi<TData>) => ValidationError
+  onBlurAsync?: (
+    values: TData,
+    formApi: FormApi<TData>,
+  ) => ValidationError | Promise<ValidationError>
+  onBlurAsyncDebounceMs?: number
+  onSubmit?: (values: TData, formApi: FormApi<TData>) => any | Promise<any>
+  onSubmitInvalid?: (values: TData, formApi: FormApi<TData>) => void
 }
 
 export type FieldInfo<TFormData> = {
@@ -99,7 +113,7 @@ export class FormApi<TFormData> {
       getDefaultFormState({
         ...opts?.defaultState,
         values: opts?.defaultValues ?? opts?.defaultState?.values,
-        isFormValid: !opts?.validate,
+        isFormValid: true,
       }),
       {
         onUpdate: (next) => {
@@ -175,7 +189,7 @@ export class FormApi<TFormData> {
   reset = () =>
     this.store.setState(() => getDefaultFormState(this.options.defaultValues!))
 
-  validateAllFields = async () => {
+  validateAllFields = async (cause: ValidationCause) => {
     const fieldValidationPromises: Promise<ValidationError>[] = [] as any
 
     this.store.batch(() => {
@@ -187,9 +201,9 @@ export class FormApi<TFormData> {
               // Mark them as touched
               instance.setMeta((prev) => ({ ...prev, isTouched: true }))
               // Validate the field
-              if (instance.options.validate) {
-                fieldValidationPromises.push(instance.validate())
-              }
+              fieldValidationPromises.push(
+                Promise.resolve().then(() => instance.validate(cause)),
+              )
             }
           })
         },
@@ -199,63 +213,7 @@ export class FormApi<TFormData> {
     return Promise.all(fieldValidationPromises)
   }
 
-  validateForm = async () => {
-    const { validate } = this.options
-
-    if (!validate) {
-      return
-    }
-
-    // Use the formValidationCount for all field instances to
-    // track freshness of the validation
-    this.store.setState((prev) => ({
-      ...prev,
-      isValidating: true,
-      formValidationCount: prev.formValidationCount + 1,
-    }))
-
-    const formValidationCount = this.state.formValidationCount
-
-    const checkLatest = () =>
-      formValidationCount === this.state.formValidationCount
-
-    if (!this.validationMeta.validationPromise) {
-      this.validationMeta.validationPromise = new Promise((resolve, reject) => {
-        this.validationMeta.validationResolve = resolve
-        this.validationMeta.validationReject = reject
-      })
-    }
-
-    const doValidation = async () => {
-      try {
-        const error = await validate(this.state.values, this)
-
-        if (checkLatest()) {
-          this.store.setState((prev) => ({
-            ...prev,
-            isValidating: false,
-            error: error
-              ? typeof error === 'string'
-                ? error
-                : 'Invalid Form Values'
-              : null,
-          }))
-
-          this.validationMeta.validationResolve?.(error)
-        }
-      } catch (err) {
-        if (checkLatest()) {
-          this.validationMeta.validationReject?.(err)
-        }
-      } finally {
-        delete this.validationMeta.validationPromise
-      }
-    }
-
-    doValidation()
-
-    return this.validationMeta.validationPromise
-  }
+  validateForm = async () => {}
 
   handleSubmit = async (e: FormSubmitEvent) => {
     e.preventDefault()
@@ -284,12 +242,12 @@ export class FormApi<TFormData> {
     }
 
     // Validate all fields
-    await this.validateAllFields()
+    await this.validateAllFields('submit')
 
     // Fields are invalid, do not submit
     if (!this.state.isFieldsValid) {
       done()
-      this.options.onInvalidSubmit?.(this.state.values, this)
+      this.options.onSubmitInvalid?.(this.state.values, this)
       return
     }
 
@@ -298,7 +256,7 @@ export class FormApi<TFormData> {
 
     if (!this.state.isValid) {
       done()
-      this.options.onInvalidSubmit?.(this.state.values, this)
+      this.options.onSubmitInvalid?.(this.state.values, this)
       return
     }
 
@@ -352,22 +310,22 @@ export class FormApi<TFormData> {
     updater: Updater<DeepValue<TFormData, TField>>,
     opts?: { touch?: boolean },
   ) => {
-    const touch = opts?.touch ?? true
+    const touch = opts?.touch
 
     this.store.batch(() => {
-      this.store.setState((prev) => {
-        return {
-          ...prev,
-          values: setBy(prev.values, field, updater),
-        }
-      })
-
       if (touch) {
         this.setFieldMeta(field, (prev) => ({
           ...prev,
           isTouched: true,
         }))
       }
+
+      this.store.setState((prev) => {
+        return {
+          ...prev,
+          values: setBy(prev.values, field, updater),
+        }
+      })
     })
   }
 
@@ -392,10 +350,6 @@ export class FormApi<TFormData> {
     this.setFieldValue(
       field,
       (prev) => {
-        // invariant( // TODO: bring in invariant
-        //   Array.isArray(prev),
-        //   `Cannot insert a field value into a non-array field. Check that this field's existing value is an array: ${field}.`
-        // )
         return (prev as DeepValue<TFormData, TField>[]).map((d, i) =>
           i === index ? value : d,
         ) as any
@@ -412,10 +366,6 @@ export class FormApi<TFormData> {
     this.setFieldValue(
       field,
       (prev) => {
-        // invariant( // TODO: bring in invariant
-        //   Array.isArray(prev),
-        //   `Cannot insert a field value into a non-array field. Check that this field's existing value is an array: ${field}.`
-        // )
         return (prev as DeepValue<TFormData, TField>[]).filter(
           (_d, i) => i !== index,
         ) as any

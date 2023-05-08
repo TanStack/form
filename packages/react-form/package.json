@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/react-store": "0.0.1-beta.84"
+    "@tanstack/react-store": "0.0.1-beta.85"
   },
   "peerDependencies": {
     "react": "^17.0.0 || ^18.0.0",
