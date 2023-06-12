@@ -116,9 +116,10 @@ export class FormApi<TFormData> {
         isFormValid: true,
       }),
       {
-        onUpdate: (next) => {
+        onUpdate: () => {
+          let { state } = this.store
           // Computed state
-          const fieldMetaValues = Object.values(next.fieldMeta) as (
+          const fieldMetaValues = Object.values(state.fieldMeta) as (
             | FieldMeta
             | undefined
           )[]
@@ -131,15 +132,15 @@ export class FormApi<TFormData> {
 
           const isTouched = fieldMetaValues.some((field) => field?.isTouched)
 
-          const isValidating = isFieldsValidating || next.isFormValidating
-          const isFormValid = !next.formError
+          const isValidating = isFieldsValidating || state.isFormValidating
+          const isFormValid = !state.formError
           const isValid = isFieldsValid && isFormValid
           const canSubmit =
-            (next.submissionAttempts === 0 && !isTouched) ||
-            (!isValidating && !next.isSubmitting && isValid)
+            (state.submissionAttempts === 0 && !isTouched) ||
+            (!isValidating && !state.isSubmitting && isValid)
 
-          next = {
-            ...next,
+          state = {
+            ...state,
             isFieldsValidating,
             isFieldsValid,
             isFormValid,
@@ -148,10 +149,8 @@ export class FormApi<TFormData> {
             isTouched,
           }
 
-          // Create a shortcut for the state
-          // Write it back to the store
-          this.store.state = next
-          this.state = next
+          this.store.state = state
+          this.state = state
         },
       },
     )
@@ -176,10 +175,7 @@ export class FormApi<TFormData> {
       }
 
       if (options.defaultValues !== this.options.defaultValues) {
-        this.store.setState((prev) => ({
-          ...prev,
-          values: options.defaultValues as TFormData,
-        }))
+        this.store.setState(() => getDefaultFormState(options.defaultValues!))
       }
     })
 

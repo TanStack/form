@@ -27,6 +27,6 @@
     "build:types": "tsc --build"
   },
   "dependencies": {
-    "@tanstack/store": "0.0.1-beta.88"
+    "@tanstack/store": "0.0.1-beta.89"
   }
 }

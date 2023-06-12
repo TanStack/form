@@ -81,6 +81,7 @@ export class FieldApi<TData, TFormData> {
   name!: DeepKeys<TFormData>
   store!: Store<FieldState<TData>>
   state!: FieldState<TData>
+  #prevState!: FieldState<TData>
   options: FieldOptions<TData, TFormData> = {} as any
 
   constructor(opts: FieldApiOptions<TData, TFormData>) {
@@ -105,24 +106,25 @@ export class FieldApi<TData, TFormData> {
         },
       },
       {
-        onUpdate: (next) => {
-          next.meta.touchedError = next.meta.isTouched
-            ? next.meta.error
+        onUpdate: () => {
+          const state = this.store.state
+
+          state.meta.touchedError = state.meta.isTouched
+            ? state.meta.error
             : undefined
 
-          const prev = this.state
-          this.state = next
-
-          if (next.value !== prev.value) {
-            this.validate('change', next.value)
+          if (state.value !== this.#prevState.value) {
+            this.validate('change', state.value)
           }
 
-          return this.state
+          this.#prevState = state
+          this.state = state
         },
       },
     )
 
     this.state = this.store.state
+    this.#prevState = this.state
     this.update(opts)
   }
 
@@ -130,7 +132,7 @@ export class FieldApi<TData, TFormData> {
     const info = this.getInfo()
     info.instances[this.uid] = this
 
-    const unsubscribe = this.form.store.subscribe((next) => {
+    const unsubscribe = this.form.store.subscribe(() => {
       this.store.batch(() => {
         const nextValue = this.getValue()
         const nextMeta = this.getMeta()
