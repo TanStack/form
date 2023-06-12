@@ -27,17 +27,19 @@ export default function App() {
 
   return (
     <div>
-      <form {...form.getFormProps()}>
-        <div>
-          <form.Field
-            name="fullName"
-            children={(field) => (
-              <input name={field.name} {...field.getInputProps()} />
-            )}
-          />
-        </div>
-        <button type="submit">Submit</button>
-      </form>
+      <form.Provider>
+        <form {...form.getFormProps()}>
+          <div>
+            <form.Field
+              name="fullName"
+              children={(field) => (
+                <input name={field.name} {...field.getInputProps()} />
+              )}
+            />
+          </div>
+          <button type="submit">Submit</button>
+        </form>
+      <form.Provider>
     </div>
   )
 }
