@@ -58,7 +58,7 @@ export type UserInputProps = {
 
 export type ChangeProps<TData> = {
   value: TData
-  onChange: (updater: Updater<TData>) => void
+  onChange: (value: TData) => void
   onBlur: (event: any) => void
 }
 

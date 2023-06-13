@@ -57,7 +57,7 @@ export function useField<TData, TFormData>(
   fieldApi.update({ ...opts, form: formApi })
 
   useStore(
-    fieldApi.store,
+    fieldApi.store as any,
     opts.mode === 'array'
       ? (state: any) => {
           return [state.meta, Object.keys(state.value || []).length]

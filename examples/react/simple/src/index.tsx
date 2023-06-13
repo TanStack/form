@@ -181,12 +181,16 @@ export default function App() {
             />
           </div> */}
           <form.Subscribe
-            selector={(state) => [state.canSubmit, state.isSubmitting]}
-            children={([canSubmit, isSubmitting]) => (
-              <button type="submit" disabled={!canSubmit}>
-                {isSubmitting ? "..." : "Submit"}
-              </button>
-            )}
+            {...{
+              // TS bug - inference isn't working with props, so use object
+              selector: (state) =>
+                [state.canSubmit, state.isSubmitting] as const,
+              children: ([canSubmit, isSubmitting]) => (
+                <button type="submit" disabled={!canSubmit}>
+                  {isSubmitting ? "..." : "Submit"}
+                </button>
+              ),
+            }}
           />
         </form>
       </form.Provider>
