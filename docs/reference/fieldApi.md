@@ -205,7 +205,7 @@ An object type representing the state of a field.
 An object type representing the change and blur event handlers for a field.
 
 - ```tsx
-  onChange?: (updater: Updater<TData>) => void
+  onChange?: (value: TData) => void
   ```
   - An optional function to further handle the change event.
 - ```tsx
@@ -235,7 +235,7 @@ An object type representing the change and blur event handlers for a field.
   ```
   - The current value of the field.
 - ```tsx
-  onChange: (updater: Updater<TData>) => void
+  onChange: (value: TData) => void
   ```
   - A function to handle the change event.
 - ```tsx
