@@ -168,11 +168,20 @@ export class FieldApi<TData, TFormData> {
     }
 
     // Default Value
-    if (
-      this.state.value === undefined &&
-      this.options.defaultValue !== undefined
-    ) {
-      this.setValue(this.options.defaultValue)
+    if (this.state.value === undefined) {
+      if (this.options.defaultValue !== undefined) {
+        this.setValue(this.options.defaultValue)
+      } else if (
+        opts.form.options.defaultValues?.[
+          this.options.name as keyof TFormData
+        ] !== undefined
+      ) {
+        this.setValue(
+          opts.form.options.defaultValues[
+            this.options.name as keyof TFormData
+          ] as TData,
+        )
+      }
     }
 
     // Default Meta
