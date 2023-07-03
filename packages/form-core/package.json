@@ -10,21 +10,34 @@
     "type": "github",
     "url": "https://github.com/sponsors/tannerlinsley"
   },
-  "types": "build/types/index.d.ts",
-  "main": "build/cjs/index.js",
-  "module": "build/esm/index.js",
+  "type": "module",
+  "types": "build/lib/index.d.ts",
+  "main": "build/lib/index.legacy.cjs",
+  "module": "build/lib/index.legacy.js",
+  "exports": {
+    ".": {
+      "types": "./build/lib/index.d.ts",
+      "import": "./build/lib/index.js",
+      "require": "./build/lib/index.cjs",
+      "default": "./build/lib/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
   "sideEffects": false,
   "files": [
-    "build/**",
+    "build/lib/*",
     "src"
   ],
   "scripts": {
-    "clean": "rimraf ./build",
+    "clean": "rimraf ./build && rimraf ./coverage",
     "test:eslint": "eslint --ext .ts,.tsx ./src",
-    "test:types": "tsc",
-    "test:lib": "jest --config ./jest.config.ts",
+    "test:types": "tsc --noEmit",
+    "test:lib": "vitest run --coverage",
     "test:lib:dev": "pnpm run test:lib --watch",
-    "build:types": "tsc --build"
+    "test:build": "publint --strict",
+    "build": "pnpm build:rollup && pnpm build:types",
+    "build:rollup": "rollup --config rollup.config.js",
+    "build:types": "tsc --emitDeclarationOnly"
   },
   "dependencies": {
     "@tanstack/store": "0.0.1-beta.89"

@@ -1,10 +1,31 @@
 {
-  "files": [],
-  "references": [
-    { "path": "packages/form-core" },
-    { "path": "packages/react-form" }
-    // { "path": "packages/react-form-devtools" }
-    // { "path": "packages/solid-form" },
-    // { "path": "packages/vue-form" },
-  ]
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "baseUrl": ".",
+    "checkJs": true,
+    "declaration": true,
+    "declarationMap": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
+    "module": "ES2020",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "target": "ES2020"
+  },
+  "include": [".eslintrc.cjs", "rollup.config.js", "scripts"]
 }

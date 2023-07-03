@@ -1,9 +1,9 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    // "composite": true,
-    // "rootDir": "./src",
-    "outDir": "./build/types"
+    "jsx": "react",
+    "outDir": "./build/lib",
+    "types": ["vitest/globals"]
   },
-  "include": ["./src/**/*"]
+  "include": ["src"]
 }

@@ -2,11 +2,14 @@
 
 /** @type {import('eslint').Linter.Config} */
 const config = {
-  parser: '@typescript-eslint/parser',
+  extends: ['plugin:react/recommended', 'plugin:react-hooks/recommended'],
   parserOptions: {
     tsconfigRootDir: __dirname,
     project: './tsconfig.eslint.json',
-    sourceType: 'module',
+  },
+  rules: {
+    'react/jsx-key': ['error', { checkFragmentShorthand: true }],
+    'react-hooks/exhaustive-deps': 'error',
   },
 }
 
