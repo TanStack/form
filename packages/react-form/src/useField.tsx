@@ -1,5 +1,3 @@
-/* eslint-disable react/no-children-prop */
-
 import * as React from 'react'
 //
 import { useStore } from '@tanstack/react-store'

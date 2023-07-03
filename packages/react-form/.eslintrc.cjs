@@ -10,6 +10,7 @@ const config = {
   rules: {
     'react/jsx-key': ['error', { checkFragmentShorthand: true }],
     'react-hooks/exhaustive-deps': 'error',
+    'react/no-children-prop': 'off',
   },
 }
 
