@@ -2,6 +2,7 @@
 import type { DeepKeys, DeepValue, RequiredByKey, Updater } from './utils'
 import type { FormApi, ValidationError } from './FormApi'
 import { Store } from '@tanstack/store'
+import { setBy } from './utils'
 
 export type ValidationCause = 'change' | 'blur' | 'submit'
 
@@ -58,7 +59,7 @@ export type UserInputProps = {
 
 export type ChangeProps<TData> = {
   value: TData
-  onChange: (updater: Updater<TData>) => void
+  onChange: (value: TData) => void
   onBlur: (event: any) => void
 }
 
@@ -167,11 +168,20 @@ export class FieldApi<TData, TFormData> {
     }
 
     // Default Value
-    if (
-      this.state.value === undefined &&
-      this.options.defaultValue !== undefined
-    ) {
-      this.setValue(this.options.defaultValue)
+    if (this.state.value === undefined) {
+      if (this.options.defaultValue !== undefined) {
+        this.setValue(this.options.defaultValue)
+      } else if (
+        opts.form.options.defaultValues?.[
+          this.options.name as keyof TFormData
+        ] !== undefined
+      ) {
+        this.setValue(
+          opts.form.options.defaultValues[
+            this.options.name as keyof TFormData
+          ] as TData,
+        )
+      }
     }
 
     // Default Meta
@@ -187,7 +197,15 @@ export class FieldApi<TData, TFormData> {
   setValue = (
     updater: Updater<TData>,
     options?: { touch?: boolean; notify?: boolean },
-  ) => this.form.setFieldValue(this.name, updater as any, options)
+  ) => {
+    this.form.setFieldValue(this.name, updater as any, options)
+    this.store.setState((prev) => {
+      return {
+        ...prev,
+        value: updater as any,
+      }
+    })
+  }
 
   getMeta = (): FieldMeta => this.form.getFieldMeta(this.name)
   setMeta = (updater: Updater<FieldMeta>) =>

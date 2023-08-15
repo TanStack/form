@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/react-form",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Powerful, type-safe forms for React.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -10,21 +10,39 @@
     "type": "github",
     "url": "https://github.com/sponsors/tannerlinsley"
   },
-  "types": "build/types/index.d.ts",
-  "main": "build/cjs/index.js",
-  "module": "build/esm/index.js",
+  "type": "module",
+  "types": "build/lib/index.d.ts",
+  "main": "build/lib/index.legacy.cjs",
+  "module": "build/lib/index.legacy.js",
+  "exports": {
+    ".": {
+      "types": "./build/lib/index.d.ts",
+      "import": "./build/lib/index.js",
+      "require": "./build/lib/index.cjs",
+      "default": "./build/lib/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
   "sideEffects": false,
   "scripts": {
-    "clean": "rimraf ./build",
+    "clean": "rimraf ./build && rimraf ./coverage",
     "test:eslint": "eslint --ext .ts,.tsx ./src",
-    "test:types": "tsc",
-    "test:lib": "jest --config ./jest.config.ts",
+    "test:types": "tsc --noEmit",
+    "test:lib": "vitest run --coverage",
     "test:lib:dev": "pnpm run test:lib --watch",
-    "build:types": "tsc --build"
+    "test:build": "publint --strict",
+    "build": "pnpm build:rollup && pnpm build:codemods && pnpm build:types",
+    "build:rollup": "rollup --config rollup.config.js",
+    "build:codemods": "cpy ../codemods/src/**/* ./build/codemods",
+    "build:types": "tsc --emitDeclarationOnly"
   },
   "files": [
-    "build/**",
-    "src"
+    "build/lib/*",
+    "src",
+    "build/codemods",
+    "!build/codemods/jest.config.js",
+    "!build/codemods/**/__testfixtures__",
+    "!build/codemods/**/__tests__"
   ],
   "devDependencies": {
     "@types/jscodeshift": "^0.11.3",

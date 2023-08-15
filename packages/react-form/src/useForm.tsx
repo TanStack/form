@@ -41,6 +41,7 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
     // @ts-ignore
     const api = new FormApi<TData>(opts)
 
+    // eslint-disable-next-line react/display-name
     api.Provider = (props) => (
       <formContext.Provider {...props} value={{ formApi: api }} />
     )
@@ -57,7 +58,7 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
       selector,
     ) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      return useStore(api.store, selector) as any
+      return useStore(api.store as any, selector as any) as any
     }
     api.Subscribe = (
       // @ts-ignore
@@ -66,7 +67,7 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
       return functionalUpdate(
         props.children,
         // eslint-disable-next-line react-hooks/rules-of-hooks
-        useStore(api.store, props.selector),
+        useStore(api.store as any, props.selector as any),
       ) as any
     }
 

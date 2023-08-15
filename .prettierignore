@@ -1,2 +1,6 @@
-/packages/svelte-form/.svelte-kit
-/packages/*/build
+**/.next
+**/.svelte-kit
+**/build
+**/coverage
+**/dist
+**/codemods/**/__testfixtures__

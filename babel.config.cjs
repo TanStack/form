@@ -30,10 +30,15 @@ module.exports = {
         ].replace(/^[^0-9]*/, ''),
       },
     ],
+    ['@babel/plugin-proposal-class-properties', { loose: false }],
   ].filter(Boolean),
   overrides: [
     {
-      exclude: ['./packages/solid-form/**', './packages/svelte-form/**', './packages/vue-form/**'],
+      exclude: [
+        './packages/solid-form/**',
+        './packages/svelte-form/**',
+        './packages/vue-form/**',
+      ],
       presets: ['@babel/react'],
     },
     {

@@ -209,7 +209,7 @@ export class FormApi<TFormData> {
     return Promise.all(fieldValidationPromises)
   }
 
-  validateForm = async () => {}
+  // validateForm = async () => {}
 
   handleSubmit = async (e: FormSubmitEvent) => {
     e.preventDefault()
@@ -248,7 +248,7 @@ export class FormApi<TFormData> {
     }
 
     // Run validation for the form
-    await this.validateForm()
+    // await this.validateForm()
 
     if (!this.state.isValid) {
       done()
