@@ -62,8 +62,8 @@ export type ChangeProps<TData> = {
   onBlur: (event: any) => void
 }
 
-export type InputProps = {
-  value: string
+export type InputProps<T> = {
+  value: T
   onChange: (event: any) => void
   onBlur: (event: any) => void
 }
@@ -81,7 +81,7 @@ export class FieldApi<TData, TFormData> {
   name!: DeepKeys<TFormData>
   store!: Store<FieldState<TData>>
   state!: FieldState<TData>
-  #prevState!: FieldState<TData>
+  prevState!: FieldState<TData>
   options: FieldOptions<TData, TFormData> = {} as any
 
   constructor(opts: FieldApiOptions<TData, TFormData>) {
@@ -113,18 +113,18 @@ export class FieldApi<TData, TFormData> {
             ? state.meta.error
             : undefined
 
-          if (state.value !== this.#prevState.value) {
+          if (state.value !== this.prevState.value) {
             this.validate('change', state.value)
           }
 
-          this.#prevState = state
+          this.prevState = state
           this.state = state
         },
       },
     )
 
     this.state = this.store.state
-    this.#prevState = this.state
+    this.prevState = this.state
     this.update(opts)
   }
 
@@ -375,10 +375,10 @@ export class FieldApi<TData, TFormData> {
 
   getInputProps = <T extends UserInputProps>(
     props: T = {} as T,
-  ): InputProps & Omit<T, keyof InputProps> => {
+  ): InputProps<TData> & Omit<T, keyof InputProps<TData>> => {
     return {
       ...props,
-      value: String(this.state.value),
+      value: this.state.value,
       onChange: (e) => {
         this.setValue(e.target.value)
         props.onChange?.(e.target.value)
