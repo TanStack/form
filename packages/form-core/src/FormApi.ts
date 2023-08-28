@@ -395,7 +395,7 @@ export class FormApi<TFormData> {
     this.setFieldValue(field, (prev: any) => {
       const prev1 = prev[index1]!
       const prev2 = prev[index2]!
-      return setBy(setBy(prev, [index1], prev2), [index2], prev1)
+      return setBy(setBy(prev, `${index1}`, prev2), `${index2}`, prev1)
     })
   }
 }

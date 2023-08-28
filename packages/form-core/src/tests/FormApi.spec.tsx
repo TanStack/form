@@ -189,4 +189,28 @@ describe('form api', () => {
 
     expect(form.getFieldValue('names')).toStrictEqual(['one', 'other', 'three'])
   })
+
+  it("should remove an array field's value", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
+
+    form.removeFieldValue('names', 1)
+
+    expect(form.getFieldValue('names')).toStrictEqual(['one', 'three'])
+  })
+
+  it("should swap an array field's value", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
+
+    form.swapFieldValues('names', 1, 2)
+
+    expect(form.getFieldValue('names')).toStrictEqual(['one', 'three', 'two'])
+  })
 })
