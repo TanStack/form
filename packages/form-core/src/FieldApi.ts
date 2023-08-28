@@ -231,8 +231,12 @@ export class FieldApi<TData, TFormData> {
       ? (typeof this._tdata)[number]
       : never,
   ) => this.form.pushFieldValue(this.name, value as any)
-  insertValue = (index: number, value: typeof this._tdata) =>
-    this.form.insertFieldValue(this.name, index, value as any)
+  insertValue = (
+    index: number,
+    value: typeof this._tdata extends any[]
+      ? (typeof this._tdata)[number]
+      : never,
+  ) => this.form.insertFieldValue(this.name, index, value as any)
   removeValue = (index: number) => this.form.removeFieldValue(this.name, index)
   swapValues = (aIndex: number, bIndex: number) =>
     this.form.swapFieldValues(this.name, aIndex, bIndex)
