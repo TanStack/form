@@ -112,7 +112,6 @@ describe('form api', () => {
     })
   })
 
-
   it('should reset the form state properly', () => {
     const form = new FormApi({
       defaultValues: {
@@ -120,10 +119,10 @@ describe('form api', () => {
       },
     })
 
-    form.pushFieldValue('name', 'other');
-    form.state.submissionAttempts = 300;
+    form.pushFieldValue('name', 'other')
+    form.state.submissionAttempts = 300
 
-    form.reset();
+    form.reset()
 
     expect(form.state).toEqual({
       values: {
@@ -143,5 +142,51 @@ describe('form api', () => {
       submissionAttempts: 0,
       formValidationCount: 0,
     })
+  })
+
+  it("should get a field's value", () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    expect(form.getFieldValue('name')).toEqual('test')
+  })
+
+  it("should set a field's value", () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    form.setFieldValue('name', 'other')
+
+    expect(form.getFieldValue('name')).toEqual('other')
+  })
+
+  it("should push an array field's value", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['test'],
+      },
+    })
+
+    form.pushFieldValue('names', 'other')
+
+    expect(form.getFieldValue('names')).toStrictEqual(['test', 'other'])
+  })
+
+  it("should insert an array field's value", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
+
+    form.insertFieldValue('names', 1, 'other')
+
+    expect(form.getFieldValue('names')).toStrictEqual(['one', 'other', 'three'])
   })
 })

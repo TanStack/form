@@ -344,7 +344,7 @@ export class FormApi<TFormData> {
 
   pushFieldValue = <TField extends DeepKeys<TFormData>>(
     field: TField,
-    value: DeepValue<TFormData, TField>,
+    value: DeepValue<TFormData, TField>[number],
     opts?: { touch?: boolean },
   ) => {
     return this.setFieldValue(
@@ -357,7 +357,7 @@ export class FormApi<TFormData> {
   insertFieldValue = <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,
-    value: DeepValue<TFormData, TField>,
+    value: DeepValue<TFormData, TField>[number],
     opts?: { touch?: boolean },
   ) => {
     this.setFieldValue(
