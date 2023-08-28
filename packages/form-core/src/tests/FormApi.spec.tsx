@@ -111,4 +111,37 @@ describe('form api', () => {
       formValidationCount: 0,
     })
   })
+
+
+  it('should reset the form state properly', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    form.pushFieldValue('name', 'other');
+    form.state.submissionAttempts = 300;
+
+    form.reset();
+
+    expect(form.state).toEqual({
+      values: {
+        name: 'test',
+      },
+      fieldMeta: {},
+      canSubmit: true,
+      isFieldsValid: true,
+      isFieldsValidating: false,
+      isFormValid: true,
+      isFormValidating: false,
+      isSubmitted: false,
+      isSubmitting: false,
+      isTouched: false,
+      isValid: true,
+      isValidating: false,
+      submissionAttempts: 0,
+      formValidationCount: 0,
+    })
+  })
 })

@@ -194,7 +194,13 @@ export class FormApi<TFormData> {
   }
 
   reset = () =>
-    this.store.setState(() => getDefaultFormState(this.options.defaultValues!))
+    this.store.setState(() =>
+      getDefaultFormState({
+        ...this.options?.defaultState,
+        values:
+          this.options?.defaultValues ?? this.options?.defaultState?.values,
+      }),
+    )
 
   validateAllFields = async (cause: ValidationCause) => {
     const fieldValidationPromises: Promise<ValidationError>[] = [] as any
