@@ -176,14 +176,17 @@ export class FormApi<TFormData> {
       }
 
       this.store.setState(() =>
-        getDefaultFormState({
-          ...(shouldUpdateState ? options.defaultState : {}),
-          ...(shouldUpdateValues
-            ? {
-                values: options.defaultValues,
-              }
-            : {}),
-        }),
+        getDefaultFormState(
+          Object.assign(
+            {},
+            shouldUpdateState ? options.defaultState : {},
+            shouldUpdateValues
+              ? {
+                  values: options.defaultValues,
+                }
+              : {},
+          ),
+        ),
       )
     })
 
