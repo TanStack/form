@@ -54,6 +54,7 @@ const config = {
     'import/no-unresolved': ['error', { ignore: ['^@tanstack/'] }],
     'import/no-unused-modules': ['off', { unusedExports: true }],
     'no-redeclare': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
   },
   overrides: [
     {
