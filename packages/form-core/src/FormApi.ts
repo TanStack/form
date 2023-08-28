@@ -164,23 +164,27 @@ export class FormApi<TFormData> {
     if (!options) return
 
     this.store.batch(() => {
-      if (
-        options.defaultState &&
+      const shouldUpdateValues =
+        options.defaultValues &&
+        options.defaultValues !== this.options.defaultValues
+
+      const shouldUpdateState =
         options.defaultState !== this.options.defaultState
-      ) {
-        this.store.setState((prev) => ({
-          ...prev,
-          ...options.defaultState,
-        }))
+
+      if (!shouldUpdateValues || !shouldUpdateValues) {
+        return
       }
 
-      if (options.defaultValues !== this.options.defaultValues) {
-        this.store.setState(() =>
-          getDefaultFormState({
-            values: options.defaultValues,
-          }),
-        )
-      }
+      this.store.setState(() =>
+        getDefaultFormState({
+          ...(shouldUpdateState ? options.defaultState : {}),
+          ...(shouldUpdateValues
+            ? {
+                values: options.defaultValues,
+              }
+            : {}),
+        }),
+      )
     })
 
     this.options = options
