@@ -1,5 +1,5 @@
-import { fireEvent, render } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { fireEvent, render } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import * as React from 'react'
 import { createFormFactory } from '..'
@@ -22,9 +22,11 @@ describe('useForm', () => {
         <form.Provider>
           <form.Field
             name="firstName"
-            defaultValue={""}
+            defaultValue={''}
             children={(field) => {
-              return <input data-testid="fieldinput" {...field.getInputProps()} />
+              return (
+                <input data-testid="fieldinput" {...field.getInputProps()} />
+              )
             }}
           />
         </form.Provider>
@@ -32,10 +34,10 @@ describe('useForm', () => {
     }
 
     const { getByTestId, queryByText } = render(<Comp />)
-    const input = getByTestId("fieldinput");
+    const input = getByTestId('fieldinput')
     expect(queryByText('FirstName')).not.toBeInTheDocument()
-    await user.type(input, "FirstName")
-    expect(input).toHaveValue("FirstName")
+    await user.type(input, 'FirstName')
+    expect(input).toHaveValue('FirstName')
   })
 
   it('should allow default values to be set', async () => {
