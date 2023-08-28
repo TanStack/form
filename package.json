@@ -20,7 +20,7 @@
     "build:all": "nx run-many --exclude=examples/** --target=build",
     "watch": "pnpm run build:all && nx watch --all -- pnpm run build:all",
     "dev": "pnpm run watch",
-    "prettier": "prettier --plugin-search-dir . \"{packages,examples,scripts}/**/*.{md,js,jsx,cjs,ts,tsx,json,vue,svelte}\"",
+    "prettier": "prettier \"{packages,examples,scripts}/**/*.{md,js,jsx,cjs,ts,tsx,json,vue}\"",
     "prettier:write": "pnpm run prettier --write",
     "cipublish": "node scripts/publish.js"
   },
@@ -77,7 +77,6 @@
     "nx": "^16.7.4",
     "nx-cloud": "^16.0.5",
     "prettier": "^3.0.2",
-    "prettier-plugin-svelte": "^3.0.3",
     "publint": "^0.1.15",
     "react": "^18.2.0",
     "react-17": "npm:react@^17.0.2",
