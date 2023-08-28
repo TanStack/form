@@ -164,26 +164,43 @@ export class FormApi<TFormData> {
     if (!options) return
 
     this.store.batch(() => {
-      if (
-        options.defaultState &&
+      const shouldUpdateValues =
+        options.defaultValues &&
+        options.defaultValues !== this.options.defaultValues
+
+      const shouldUpdateState =
         options.defaultState !== this.options.defaultState
-      ) {
-        this.store.setState((prev) => ({
-          ...prev,
-          ...options.defaultState,
-        }))
+
+      if (!shouldUpdateValues || !shouldUpdateValues) {
+        return
       }
 
-      if (options.defaultValues !== this.options.defaultValues) {
-        this.store.setState(() => getDefaultFormState(options.defaultValues!))
-      }
+      this.store.setState(() =>
+        getDefaultFormState(
+          Object.assign(
+            {},
+            shouldUpdateState ? options.defaultState : {},
+            shouldUpdateValues
+              ? {
+                  values: options.defaultValues,
+                }
+              : {},
+          ),
+        ),
+      )
     })
 
     this.options = options
   }
 
   reset = () =>
-    this.store.setState(() => getDefaultFormState(this.options.defaultValues!))
+    this.store.setState(() =>
+      getDefaultFormState({
+        ...this.options?.defaultState,
+        values:
+          this.options?.defaultValues ?? this.options?.defaultState?.values,
+      }),
+    )
 
   validateAllFields = async (cause: ValidationCause) => {
     const fieldValidationPromises: Promise<ValidationError>[] = [] as any
@@ -327,7 +344,7 @@ export class FormApi<TFormData> {
 
   pushFieldValue = <TField extends DeepKeys<TFormData>>(
     field: TField,
-    value: DeepValue<TFormData, TField>,
+    value: DeepValue<TFormData, TField>[number],
     opts?: { touch?: boolean },
   ) => {
     return this.setFieldValue(
@@ -340,7 +357,7 @@ export class FormApi<TFormData> {
   insertFieldValue = <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,
-    value: DeepValue<TFormData, TField>,
+    value: DeepValue<TFormData, TField>[number],
     opts?: { touch?: boolean },
   ) => {
     this.setFieldValue(
@@ -378,7 +395,7 @@ export class FormApi<TFormData> {
     this.setFieldValue(field, (prev: any) => {
       const prev1 = prev[index1]!
       const prev2 = prev[index2]!
-      return setBy(setBy(prev, [index1], prev2), [index2], prev1)
+      return setBy(setBy(prev, `${index1}`, prev2), `${index2}`, prev1)
     })
   }
 }

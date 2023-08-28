@@ -13,6 +13,9 @@ export function functionalUpdate<TInput, TOutput = TInput>(
     : updater
 }
 
+/**
+ * Get a value from an object using a path, including dot notation.
+ */
 export function getBy(obj: any, path: any) {
   const pathArray = makePathArray(path)
   const pathObj = pathArray
@@ -24,6 +27,9 @@ export function getBy(obj: any, path: any) {
   }, obj)
 }
 
+/**
+ * Set a value on an object using a path, including dot notation.
+ */
 export function setBy(obj: any, _path: any, updater: Updater<any>) {
   const path = makePathArray(_path)
 
@@ -75,7 +81,7 @@ const intReplace = `${intPrefix}$1`
 
 function makePathArray(str: string) {
   if (typeof str !== 'string') {
-    throw new Error()
+    throw new Error('Path must be a string.')
   }
 
   return str
