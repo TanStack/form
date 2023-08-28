@@ -200,8 +200,7 @@ export class FormApi<TFormData> {
     this.store.setState(() =>
       getDefaultFormState({
         ...this.options.defaultState,
-        values:
-          this.options.defaultValues ?? this.options.defaultState?.values,
+        values: this.options.defaultValues ?? this.options.defaultState?.values,
       }),
     )
 

@@ -54,7 +54,7 @@ export function useField<TData, TFormData>(
   })
 
   // Keep options up to date as they are rendered
-  fieldApi.update({ ...opts, form: formApi })
+  fieldApi.update({ ...opts, form: formApi } as never)
 
   useStore(
     fieldApi.store as any,
