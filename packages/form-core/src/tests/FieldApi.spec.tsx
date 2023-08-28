@@ -69,4 +69,55 @@ describe('field api', () => {
 
     expect(field.getValue()).toBe('other')
   })
+
+  it('should insert a value into an array value correctly', () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two'],
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'names',
+    })
+
+    field.insertValue(1, 'other')
+
+    expect(field.getValue()).toStrictEqual(['one', 'other'])
+  })
+
+  it('should remove a value from an array value correctly', () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two'],
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'names',
+    })
+
+    field.removeValue(1)
+
+    expect(field.getValue()).toStrictEqual(['one'])
+  })
+
+  it('should swap a value from an array value correctly', () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two'],
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'names',
+    })
+
+    field.swapValues(0, 1)
+
+    expect(field.getValue()).toStrictEqual(['two', 'one'])
+  })
 })
