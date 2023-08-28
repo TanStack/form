@@ -91,10 +91,12 @@ export class FieldApi<TData, TFormData> {
   uid: number
   form: FormApi<TFormData>
   name!: DeepKeys<TFormData>
-  store!: Store<FieldState<TData>>
-  state!: FieldState<TData>
-  prevState!: FieldState<TData>
-  options: FieldOptions<TData, TFormData> = {} as any
+  // This is a hack that allows us to use `GetTData` without calling it everywhere
+  _tdata!: GetTData<typeof this.name, TData, TFormData>
+  store!: Store<FieldState<typeof this._tdata>>
+  state!: FieldState<typeof this._tdata>
+  prevState!: FieldState<typeof this._tdata>
+  options: FieldOptions<typeof this._tdata, TFormData> = {} as any
 
   constructor(opts: FieldApiOptions<TData, TFormData>) {
     this.form = opts.form
@@ -107,7 +109,7 @@ export class FieldApi<TData, TFormData> {
 
     this.name = opts.name as any
 
-    this.store = new Store<FieldState<TData>>(
+    this.store = new Store<FieldState<typeof this._tdata>>(
       {
         value: this.getValue(),
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -137,7 +139,7 @@ export class FieldApi<TData, TFormData> {
 
     this.state = this.store.state
     this.prevState = this.state
-    this.update(opts)
+    this.update(opts as never)
   }
 
   mount = () => {
@@ -159,7 +161,7 @@ export class FieldApi<TData, TFormData> {
       })
     })
 
-    this.options.onMount?.(this)
+    this.options.onMount?.(this as never)
 
     return () => {
       unsubscribe()
@@ -170,9 +172,7 @@ export class FieldApi<TData, TFormData> {
     }
   }
 
-  update = <Data = GetTData<typeof this.name, TData, TFormData>>(
-    opts: FieldApiOptions<Data, TFormData>,
-  ) => {
+  update = (opts: FieldApiOptions<typeof this._tdata, TFormData>) => {
     this.options = {
       asyncDebounceMs: this.form.options.asyncDebounceMs ?? 0,
       onChangeAsyncDebounceMs: this.form.options.onChangeAsyncDebounceMs ?? 0,
@@ -204,11 +204,11 @@ export class FieldApi<TData, TFormData> {
     }
   }
 
-  getValue = (): GetTData<typeof this.name, TData, TFormData> => {
+  getValue = (): typeof this._tdata => {
     return this.form.getFieldValue(this.name)
   }
   setValue = (
-    updater: Updater<GetTData<typeof this.name, TData, TFormData>>,
+    updater: Updater<typeof this._tdata>,
     options?: { touch?: boolean; notify?: boolean },
   ) => {
     this.form.setFieldValue(this.name, updater as any, options)
@@ -226,24 +226,19 @@ export class FieldApi<TData, TFormData> {
 
   getInfo = () => this.form.getFieldInfo(this.name)
 
-  pushValue = <Data = GetTData<typeof this.name, TData, TFormData>>(
-    value: Data extends any[] ? Data[number] : never,
+  pushValue = (
+    value: typeof this._tdata extends any[]
+      ? (typeof this._tdata)[number]
+      : never,
   ) => this.form.pushFieldValue(this.name, value as any)
-  insertValue = (
-    index: number,
-    value: GetTData<typeof this.name, TData, TFormData>,
-  ) => this.form.insertFieldValue(this.name, index, value as any)
+  insertValue = (index: number, value: typeof this._tdata) =>
+    this.form.insertFieldValue(this.name, index, value as any)
   removeValue = (index: number) => this.form.removeFieldValue(this.name, index)
   swapValues = (aIndex: number, bIndex: number) =>
     this.form.swapFieldValues(this.name, aIndex, bIndex)
 
-  getSubField = <
-    Data extends GetTData<typeof this.name, TData, TFormData>,
-    TName extends DeepKeys<Data>,
-  >(
-    name: TName,
-  ) =>
-    new FieldApi<DeepValue<TData, TName>, TFormData>({
+  getSubField = <TName extends DeepKeys<typeof this._tdata>>(name: TName) =>
+    new FieldApi<DeepValue<typeof this._tdata, TName>, TFormData>({
       name: `${this.name}.${name}` as any,
       form: this.form,
     })
@@ -259,7 +254,7 @@ export class FieldApi<TData, TFormData> {
     // track freshness of the validation
     const validationCount = (this.getInfo().validationCount || 0) + 1
     this.getInfo().validationCount = validationCount
-    const error = normalizeError(validate(value, this))
+    const error = normalizeError(validate(value, this as never))
 
     if (this.state.meta.error !== error) {
       this.setMeta((prev) => ({
@@ -342,7 +337,7 @@ export class FieldApi<TData, TFormData> {
     // Only kick off validation if this validation is the latest attempt
     if (checkLatest()) {
       try {
-        const rawError = await validate(value, this)
+        const rawError = await validate(value, this as never)
 
         if (checkLatest()) {
           const error = normalizeError(rawError)
@@ -372,7 +367,7 @@ export class FieldApi<TData, TFormData> {
 
   validate = (
     cause: ValidationCause,
-    value?: GetTData<typeof this.name, TData, TFormData>,
+    value?: typeof this._tdata,
   ): ValidationError | Promise<ValidationError> => {
     // If the field is pristine and validatePristine is false, do not validate
     if (!this.state.meta.isTouched) return
@@ -391,12 +386,10 @@ export class FieldApi<TData, TFormData> {
     return this.validateAsync(value, cause)
   }
 
-  getChangeProps = <
-    T extends UserChangeProps<any>,
-    Data = GetTData<typeof this.name, TData, TFormData>,
-  >(
+  getChangeProps = <T extends UserChangeProps<any>>(
     props: T = {} as T,
-  ): ChangeProps<Data> & Omit<T, keyof ChangeProps<Data>> => {
+  ): ChangeProps<typeof this._tdata> &
+    Omit<T, keyof ChangeProps<typeof this._tdata>> => {
     return {
       ...props,
       value: this.state.value,
@@ -412,15 +405,14 @@ export class FieldApi<TData, TFormData> {
         }
         this.validate('blur')
       },
-    } as ChangeProps<TData> & Omit<T, keyof ChangeProps<TData>> as never
+    } as ChangeProps<typeof this._tdata> &
+      Omit<T, keyof ChangeProps<typeof this._tdata>>
   }
 
-  getInputProps = <
-    T extends UserInputProps,
-    Data = GetTData<typeof this.name, TData, TFormData>,
-  >(
+  getInputProps = <T extends UserInputProps>(
     props: T = {} as T,
-  ): InputProps<Data> & Omit<T, keyof InputProps<Data>> => {
+  ): InputProps<typeof this._tdata> &
+    Omit<T, keyof InputProps<typeof this._tdata>> => {
     return {
       ...props,
       value: this.state.value,
@@ -429,7 +421,8 @@ export class FieldApi<TData, TFormData> {
         props.onChange?.(e.target.value)
       },
       onBlur: this.getChangeProps(props).onBlur,
-    } as InputProps<TData> & Omit<T, keyof InputProps<TData>> as never
+    } as InputProps<typeof this._tdata> &
+      Omit<T, keyof InputProps<typeof this._tdata>>
   }
 }
 
