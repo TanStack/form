@@ -83,7 +83,7 @@ export type FieldState<TData> = {
  * If TData is not known, we use the TFormData type to determine the type of
  * the field value based on the field name.
  */
-type GetTData<Name, TData, TFormData> = TData extends unknown
+type GetTData<Name, TData, TFormData> = unknown extends TData
   ? DeepValue<TFormData, Name>
   : TData
 
@@ -243,7 +243,7 @@ export class FieldApi<TData, TFormData> {
 
   getSubField = <TName extends DeepKeys<typeof this._tdata>>(name: TName) =>
     new FieldApi<DeepValue<typeof this._tdata, TName>, TFormData>({
-      name: `${this.name}.${name}` as any,
+      name: `${this.name}.${name}` as never,
       form: this.form,
     })
 

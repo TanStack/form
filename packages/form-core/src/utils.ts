@@ -165,3 +165,6 @@ type NarrowRaw<A> =
 export type Narrow<A> = Try<A, [], NarrowRaw<A>>
 
 type Try<A1, A2, Catch = never> = A1 extends A2 ? A1 : Catch
+
+// Hack to get TypeScript to show simplified types in error messages
+export type Pretty<T> = { [K in keyof T]: T[K] } & {};
