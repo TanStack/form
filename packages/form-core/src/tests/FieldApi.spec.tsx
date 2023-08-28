@@ -65,9 +65,9 @@ describe('field api', () => {
       name: 'names',
     })
 
-    field.pushValue('two')
+    field.pushValue('other')
 
-    expect(field.getValue()).toBe('other')
+    expect(field.getValue()).toStrictEqual(['one', 'other'])
   })
 
   it('should insert a value into an array value correctly', () => {

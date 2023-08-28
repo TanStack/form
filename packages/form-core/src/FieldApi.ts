@@ -1,8 +1,6 @@
-//
-import type { DeepKeys, DeepValue, RequiredByKey, Updater } from './utils'
+import type { DeepKeys, DeepValue, Updater } from './utils'
 import type { FormApi, ValidationError } from './FormApi'
 import { Store } from '@tanstack/store'
-import { setBy } from './utils'
 
 export type ValidationCause = 'change' | 'blur' | 'submit'
 
@@ -181,6 +179,7 @@ export class FieldApi<TData, TFormData> {
     } as never
 
     // Default Value
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.state.value === undefined) {
       if (this.options.defaultValue !== undefined) {
         this.setValue(this.options.defaultValue as never)
@@ -221,6 +220,7 @@ export class FieldApi<TData, TFormData> {
   }
 
   getMeta = (): FieldMeta => this.form.getFieldMeta(this.name)
+
   setMeta = (updater: Updater<FieldMeta>) =>
     this.form.setFieldMeta(this.name, updater)
 
@@ -231,13 +231,16 @@ export class FieldApi<TData, TFormData> {
       ? (typeof this._tdata)[number]
       : never,
   ) => this.form.pushFieldValue(this.name, value as any)
+
   insertValue = (
     index: number,
     value: typeof this._tdata extends any[]
       ? (typeof this._tdata)[number]
       : never,
   ) => this.form.insertFieldValue(this.name, index, value as any)
+
   removeValue = (index: number) => this.form.removeFieldValue(this.name, index)
+
   swapValues = (aIndex: number, bIndex: number) =>
     this.form.swapFieldValues(this.name, aIndex, bIndex)
 

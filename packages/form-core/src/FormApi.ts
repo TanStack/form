@@ -171,6 +171,7 @@ export class FormApi<TFormData> {
       const shouldUpdateState =
         options.defaultState !== this.options.defaultState
 
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!shouldUpdateValues || !shouldUpdateValues) {
         return
       }
@@ -179,7 +180,9 @@ export class FormApi<TFormData> {
         getDefaultFormState(
           Object.assign(
             {},
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             shouldUpdateState ? options.defaultState : {},
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             shouldUpdateValues
               ? {
                   values: options.defaultValues,
@@ -196,9 +199,9 @@ export class FormApi<TFormData> {
   reset = () =>
     this.store.setState(() =>
       getDefaultFormState({
-        ...this.options?.defaultState,
+        ...this.options.defaultState,
         values:
-          this.options?.defaultValues ?? this.options?.defaultState?.values,
+          this.options.defaultValues ?? this.options.defaultState?.values,
       }),
     )
 
@@ -298,6 +301,7 @@ export class FormApi<TFormData> {
   }
 
   getFieldInfo = <TField extends DeepKeys<TFormData>>(field: TField) => {
+    // eslint-disable-next-line  @typescript-eslint/no-unnecessary-condition
     return (this.fieldInfo[field] ||= {
       instances: {},
     })
