@@ -8,7 +8,7 @@ const config = {
     project: "./tsconfig.json",
   },
   rules: {
-    "react/no-children-prop": "off"
+    "react/no-children-prop": "off",
   },
 };
 
