@@ -125,10 +125,6 @@ export class FieldApi<TData, TFormData> {
             ? state.meta.error
             : undefined
 
-          if (state.value !== this.prevState.value) {
-            this.validate('change', state.value as never)
-          }
-
           this.prevState = state
           this.state = state
         },
@@ -206,17 +202,13 @@ export class FieldApi<TData, TFormData> {
   getValue = (): typeof this._tdata => {
     return this.form.getFieldValue(this.name)
   }
+
   setValue = (
     updater: Updater<typeof this._tdata>,
     options?: { touch?: boolean; notify?: boolean },
   ) => {
-    this.form.setFieldValue(this.name, updater as any, options)
-    this.store.setState((prev) => {
-      return {
-        ...prev,
-        value: updater as any,
-      }
-    })
+    this.form.setFieldValue(this.name, updater as never, options)
+    this.validate('change', this.state.value)
   }
 
   getMeta = (): FieldMeta => this.form.getFieldMeta(this.name)
@@ -250,7 +242,7 @@ export class FieldApi<TData, TFormData> {
       form: this.form,
     })
 
-  validateSync = async (value = this.state.value, cause: ValidationCause) => {
+  validateSync = (value = this.state.value, cause: ValidationCause) => {
     const { onChange, onBlur } = this.options
     const validate =
       cause === 'submit' ? undefined : cause === 'change' ? onChange : onBlur
