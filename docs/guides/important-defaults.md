@@ -3,6 +3,8 @@ id: important-defaults
 title: Important Defaults
 ---
 
+> Some of these docs may be inaccurate due to an API shift in `0.11.0`. If you're interested in helping us fix these issues, please [join our Discord](https://tlinz.com/discord) and reach out in the `#form` channel.
+
 Out of the box, TanStack Form is configured with **aggressive but sane** defaults. **Sometimes these defaults can catch new users off guard or make learning/debugging difficult if they are unknown by the user.** Keep them in mind as you continue to learn and use TanStack Form:
 
 - Core

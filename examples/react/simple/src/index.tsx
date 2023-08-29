@@ -1,27 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { createFormFactory } from "@tanstack/react-form";
+import { useForm } from "@tanstack/react-form";
 import type { FieldApi } from "@tanstack/react-form";
-
-type Person = {
-  firstName: string;
-  lastName: string;
-  hobbies: Hobby[];
-};
-
-type Hobby = {
-  name: string;
-  description: string;
-  yearsOfExperience: number;
-};
-
-const formFactory = createFormFactory<Person>({
-  defaultValues: {
-    firstName: "",
-    lastName: "",
-    hobbies: [],
-  },
-});
 
 function FieldInfo({ field }: { field: FieldApi<any, any> }) {
   return (
@@ -35,18 +15,23 @@ function FieldInfo({ field }: { field: FieldApi<any, any> }) {
 }
 
 export default function App() {
-  const form = formFactory.useForm({
-    onSubmit: async (values, formApi) => {
+  const form = useForm({
+    // Memoize your default values to prevent re-renders
+    defaultValues: React.useMemo(
+      () => ({
+        firstName: "",
+        lastName: "",
+      }),
+      [],
+    ),
+    onSubmit: async (values) => {
       // Do something with form data
       console.log(values);
     },
   });
 
-  const [count, setCount] = React.useState(0);
-
   return (
     <div>
-      <button onClick={() => setCount((prev) => prev + 1)}>{count}</button>
       <h1>Simple Form Example</h1>
       {/* A pre-bound form component */}
       <form.Provider>
@@ -62,6 +47,7 @@ export default function App() {
                   ? "First name must be at least 3 characters"
                   : undefined
               }
+              onChangeAsyncDebounceMs={500}
               onChangeAsync={async (value) => {
                 await new Promise((resolve) => setTimeout(resolve, 1000));
                 return (
@@ -72,121 +58,33 @@ export default function App() {
                 // Avoid hasty abstractions. Render props are great!
                 return (
                   <>
-                    <input {...field.getInputProps()} />
+                    <label htmlFor={field.name}>First Name:</label>
+                    <input name={field.name} {...field.getInputProps()} />
                     <FieldInfo field={field} />
                   </>
                 );
               }}
             />
           </div>
-          {/* <div>
+          <div>
             <form.Field
               name="lastName"
               children={(field) => (
                 <>
-                  <input {...field.getInputProps()} />
+                  <label htmlFor={field.name}>Last Name:</label>
+                  <input name={field.name} {...field.getInputProps()} />
                   <FieldInfo field={field} />
                 </>
               )}
             />
           </div>
-          <div>
-            <form.Field
-              name="hobbies"
-              mode="array"
-              children={(hobbiesField) => (
-                <div>
-                  Hobbies
-                  <div
-                    style={{
-                      paddingLeft: "1rem",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "1rem",
-                    }}
-                  >
-                    {!hobbiesField.state.value.length
-                      ? "No hobbies found."
-                      : hobbiesField.state.value.map((_, i) => (
-                          <div
-                            key={i}
-                            style={{
-                              borderLeft: "2px solid gray",
-                              paddingLeft: ".5rem",
-                            }}
-                          >
-                            <hobbiesField.Field
-                              index={i}
-                              name="name"
-                              children={(field) => {
-                                return (
-                                  <div>
-                                    <label htmlFor={field.name}>Name:</label>
-                                    <input
-                                      name={field.name}
-                                      {...field.getInputProps()}
-                                    />
-                                    <button
-                                      type="button"
-                                      onClick={() =>
-                                        hobbiesField.removeValue(i)
-                                      }
-                                    >
-                                      X
-                                    </button>
-                                    <FieldInfo field={field} />
-                                  </div>
-                                );
-                              }}
-                            />
-                            <hobbiesField.Field
-                              index={i}
-                              name="description"
-                              children={(field) => {
-                                return (
-                                  <div>
-                                    <label htmlFor={field.name}>
-                                      Description:
-                                    </label>
-                                    <input
-                                      name={field.name}
-                                      {...field.getInputProps()}
-                                    />
-                                    <FieldInfo field={field} />
-                                  </div>
-                                );
-                              }}
-                            />
-                          </div>
-                        ))}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      hobbiesField.pushValue({
-                        name: "",
-                        description: "",
-                        yearsOfExperience: 0,
-                      })
-                    }
-                  >
-                    Add hobby
-                  </button>
-                </div>
-              )}
-            />
-          </div> */}
           <form.Subscribe
-            {...{
-              // TS bug - inference isn't working with props, so use object
-              selector: (state) =>
-                [state.canSubmit, state.isSubmitting] as const,
-              children: ([canSubmit, isSubmitting]) => (
-                <button type="submit" disabled={!canSubmit}>
-                  {isSubmitting ? "..." : "Submit"}
-                </button>
-              ),
-            }}
+            selector={(state) => [state.canSubmit, state.isSubmitting]}
+            children={([canSubmit, isSubmitting]) => (
+              <button type="submit" disabled={!canSubmit}>
+                {isSubmitting ? "..." : "Submit"}
+              </button>
+            )}
           />
         </form>
       </form.Provider>
