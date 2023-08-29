@@ -10,8 +10,8 @@ Hooks for fetching, caching and updating asynchronous data in React, Solid, Svel
   <img alt="" src="https://img.shields.io/badge/Discord-TanStack-%235865F2" />
 </a><a href="https://www.npmjs.com/package/@tanstack/form-core" target="\_parent">
   <img alt="" src="https://img.shields.io/npm/dm/@tanstack/form-core.svg" />
-</a><a href="https://bundlephobia.com/package/@tanstack/form@latest" target="\_parent">
-  <img alt="" src="https://badgen.net/bundlephobia/minzip/@tanstack/form" />
+</a><a href="https://bundlephobia.com/package/@tanstack/form-core@latest" target="\_parent">
+  <img alt="" src="https://badgen.net/bundlephobia/minzip/@tanstack/form-core" />
 </a><a href="#badge">
     <img alt="semantic-release" src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg">
   </a><a href="https://github.com/TanStack/form/discussions">
