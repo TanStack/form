@@ -1,11 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import {
-  FieldApi,
-  FormApi,
-  createFormFactory,
-  useField,
-} from "@tanstack/react-form";
+import { createFormFactory } from "@tanstack/react-form";
+import type { FieldApi } from "@tanstack/react-form";
 
 type Person = {
   firstName: string;
