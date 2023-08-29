@@ -5,6 +5,8 @@ title: Basic Concepts and Terminology
 
 # Basic Concepts and Terminology
 
+> Some of these docs may be inaccurate due to an API shift in `0.11.0`. If you're interested in helping us fix these issues, please [join our Discord](https://tlinz.com/discord) and reach out in the `#form` channel.
+
 This page introduces the basic concepts and terminology used in the @tanstack/react-form library. Familiarizing yourself with these concepts will help you better understand and work with the library.
 
 ## Form Factory
