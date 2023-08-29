@@ -140,4 +140,30 @@ describe('field api', () => {
 
     expect(subfield.getValue()).toBe('one')
   })
+
+  it('should run validation onChange', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      onChange: (value) => {
+        if (value === 'other') {
+          return 'Please enter a different value'
+        }
+
+        return
+      },
+    })
+
+    field.mount()
+
+    expect(field.getMeta().error).toBeUndefined()
+    field.setValue('other', { touch: true })
+    expect(field.getMeta().error).toBe('Please enter a different value')
+  })
 })
