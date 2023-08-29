@@ -14,8 +14,20 @@ type ValidateAsyncFn<TData, TFormData> = (
   fieldApi: FieldApi<TData, TFormData>,
 ) => ValidationError | Promise<ValidationError>
 
-export interface FieldOptions<TData, TFormData> {
-  name: unknown extends TFormData ? string : DeepKeys<TFormData>
+export interface FieldOptions<
+  _TData,
+  TFormData,
+  /**
+   * This allows us to restrict the name to only be a valid field name while
+   * also assigning it to a generic
+   */
+  TName = unknown extends TFormData ? string : DeepKeys<TFormData>,
+  /**
+   * If TData is unknown, we can use the TName generic to determine the type
+   */
+  TData = unknown extends _TData ? DeepValue<TFormData, TName> : _TData,
+> {
+  name: TName
   index?: TData extends any[] ? number : never
   defaultValue?: TData
   asyncDebounceMs?: number
@@ -75,7 +87,7 @@ export type FieldState<TData> = {
 }
 
 /**
- * TData may not known at the time of FieldApi construction, so we need to
+ * TData may not be known at the time of FieldApi construction, so we need to
  * use a conditional type to determine if TData is known or not.
  *
  * If TData is not known, we use the TFormData type to determine the type of
@@ -89,7 +101,13 @@ export class FieldApi<TData, TFormData> {
   uid: number
   form: FormApi<TFormData>
   name!: DeepKeys<TFormData>
-  // This is a hack that allows us to use `GetTData` without calling it everywhere
+  /**
+   * This is a hack that allows us to use `GetTData` without calling it everywhere
+   *
+   * Unfortunately this hack appears to be needed alongside the `TName` hack
+   * further up in this file. This properly types all of the internal methods,
+   * while the `TName` hack types the options properly
+   */
   _tdata!: GetTData<typeof this.name, TData, TFormData>
   store!: Store<FieldState<typeof this._tdata>>
   state!: FieldState<typeof this._tdata>
@@ -253,7 +271,7 @@ export class FieldApi<TData, TFormData> {
     // track freshness of the validation
     const validationCount = (this.getInfo().validationCount || 0) + 1
     this.getInfo().validationCount = validationCount
-    const error = normalizeError(validate(value, this as never))
+    const error = normalizeError(validate(value as never, this as never))
 
     if (this.state.meta.error !== error) {
       this.setMeta((prev) => ({
@@ -336,7 +354,7 @@ export class FieldApi<TData, TFormData> {
     // Only kick off validation if this validation is the latest attempt
     if (checkLatest()) {
       try {
-        const rawError = await validate(value, this as never)
+        const rawError = await validate(value as never, this as never)
 
         if (checkLatest()) {
           const error = normalizeError(rawError)
