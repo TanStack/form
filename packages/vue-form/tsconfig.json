@@ -2,7 +2,8 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "types": ["vitest/globals"],
-    "outDir": "./build/lib"
+    "outDir": "./build/lib",
+    "jsx": "preserve"
   },
   "include": ["src"]
 }

@@ -1,11 +1,6 @@
-import type {
-  FormState,
-  FormOptions,
-  FormSubmitEvent,
-} from '@tanstack/form-core'
+import type { FormOptions, FormSubmitEvent } from '@tanstack/form-core'
 import { FormApi } from '@tanstack/form-core'
-import { type UseField, useField } from './useField'
-import Field from './Field.vue'
+import { type UseField, type FieldComponent, Field, useField } from './useField'
 import { provideFormContext } from './formContext'
 
 declare module '@tanstack/form-core' {
@@ -13,7 +8,7 @@ declare module '@tanstack/form-core' {
   interface FormApi<TFormData> {
     Provider: (props: { children: any }) => any
     getFormProps: () => FormProps
-    Field: typeof Field
+    Field: FieldComponent<TFormData, TFormData>
     useField: UseField<TFormData>
   }
 }
@@ -28,10 +23,9 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
     // @ts-ignore
     const api = new FormApi<TData>(opts)
 
-    // eslint-disable-next-line react/display-name
     api.Provider = ({ children }) => {
       provideFormContext({ formApi: api })
-      return children
+      return <>{children}</>
     }
     api.getFormProps = () => {
       return {
