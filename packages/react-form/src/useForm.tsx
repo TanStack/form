@@ -2,7 +2,7 @@ import type { FormState, FormOptions } from '@tanstack/form-core'
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import type { NoInfer } from '@tanstack/react-store'
 import { useStore } from '@tanstack/react-store'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { type UseField, type FieldComponent, Field, useField } from './useField'
 import { formContext } from './formContext'
 
@@ -75,7 +75,10 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
   })
 
   formApi.useStore((state) => state.isSubmitting)
-  formApi.update(opts)
+
+  useEffect(() => {
+    formApi.update(opts)
+  }, [])
 
   return formApi as any
 }
