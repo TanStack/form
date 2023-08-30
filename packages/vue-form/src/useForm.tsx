@@ -2,11 +2,12 @@ import type { FormOptions, FormSubmitEvent } from '@tanstack/form-core'
 import { FormApi } from '@tanstack/form-core'
 import { type UseField, type FieldComponent, Field, useField } from './useField'
 import { provideFormContext } from './formContext'
+import type { SetupContext } from 'vue-demi'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
   interface FormApi<TFormData> {
-    Provider: (props: { children: any }) => any
+    Provider: (_: never, context: SetupContext) => any
     getFormProps: () => FormProps
     Field: FieldComponent<TFormData, TFormData>
     useField: UseField<TFormData>
@@ -23,9 +24,9 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
     // @ts-ignore
     const api = new FormApi<TData>(opts)
 
-    api.Provider = ({ children }) => {
+    api.Provider = (_, context: SetupContext) => {
       provideFormContext({ formApi: api })
-      return <>{children}</>
+      return context.slots.default!()
     }
     api.getFormProps = () => {
       return {

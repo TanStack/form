@@ -6,7 +6,7 @@ import {
   functionalUpdate,
   Narrow,
 } from '@tanstack/form-core'
-import { watchEffect } from 'vue-demi'
+import { SetupContext, watchEffect } from 'vue-demi'
 import { provideFormContext, useFormContext } from './formContext'
 
 declare module '@tanstack/form-core' {
@@ -100,33 +100,31 @@ export type FieldValue<TFormData, TField> = TFormData extends any[]
 // type Test3 = FieldValue<{ foo: { bar: string }[] }, 'foo[2].bar'>
 // //   ^?
 
-export type FieldComponent<TParentData, TFormData> = <TField>({
-  children,
-  ...fieldOptions
-}: {
-  children: (
-    fieldApi: FieldApi<FieldValue<TParentData, TField>, TFormData>,
-  ) => any
-} & Omit<
-  UseFieldOptions<FieldValue<TParentData, TField>, TFormData>,
-  'name' | 'index'
-> &
-  (TParentData extends any[]
-    ? {
-        name?: TField extends undefined ? TField : DeepKeys<TParentData>
-        index: number
-      }
-    : {
-        name: TField extends undefined ? TField : DeepKeys<TParentData>
-        index?: never
-      })) => any
+export type FieldComponent<TParentData, TFormData> = <TField>(
+  fieldOptions: {
+    children: (
+      fieldApi: FieldApi<FieldValue<TParentData, TField>, TFormData>,
+    ) => any
+  } & Omit<
+    UseFieldOptions<FieldValue<TParentData, TField>, TFormData>,
+    'name' | 'index'
+  > &
+    (TParentData extends any[]
+      ? {
+          name?: TField extends undefined ? TField : DeepKeys<TParentData>
+          index: number
+        }
+      : {
+          name: TField extends undefined ? TField : DeepKeys<TParentData>
+          index?: never
+        }),
+  context: SetupContext,
+) => any
 
-export function Field<TData, TFormData>({
-  children,
-  ...fieldOptions
-}: UseFieldOptions<TData, TFormData> & {
-  children: (fieldApi: FieldApi<TData, TFormData>) => any
-}) {
+export function Field<TData, TFormData>(
+  fieldOptions: UseFieldOptions<TData, TFormData>,
+  context: SetupContext,
+) {
   const fieldApi = useField(fieldOptions)
 
   provideFormContext({
@@ -134,5 +132,5 @@ export function Field<TData, TFormData>({
     parentFieldName: fieldApi.name,
   } as never)
 
-  return functionalUpdate(children, fieldApi as any)
+  return context.slots.default!(fieldApi)
 }
