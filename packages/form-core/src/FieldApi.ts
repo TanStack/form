@@ -132,7 +132,7 @@ export class FieldApi<TData, TFormData> {
         meta: this.getMeta() ?? {
           isValidating: false,
           isTouched: false,
-          ...this.options.defaultMeta,
+          ...opts.defaultMeta,
         },
       },
       {
