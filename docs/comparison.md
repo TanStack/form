@@ -15,8 +15,8 @@ Feature/Capability Key:
 | Feature                                           | TanStack Form                                | Formik                         | Redux Form                             | React Hook Form                                  | Final Form                             |
 | ------------------------------------------------- | -------------------------------------------- | ------------------------------ | -------------------------------------- | ------------------------------------------------ | -------------------------------------- |
 | Github Repo / Stars                               | [![][stars-tanstack-form]][gh-tanstack-form] | [![][stars-formik]][gh-formik] | [![][stars-redux-form]][gh-redux-form] | [![][stars-react-hook-form]][gh-react-hook-form] | [![][stars-final-form]][gh-final-form] |
-| Supported Frameworks                              | React                                        |                                |                                        |                                                  |                                        |
-| Bundle Size                                       | [![][bp-tanstack-form]][bpl-tanstack-form]   |                                |                                        |                                                  |                                        |
+| Supported Frameworks                              | React                                        | React                          | React                                  | React                                            | React                                  |
+| Bundle Size                                       | [![][bp-tanstack-form]][bpl-tanstack-form]   | [![][bp-formik]][bpl-formik]   | [![][bp-redux-form]][bpl-redux-form]   | [![][bp-react-hook-form]][bpl-react-hook-form]   | [![][bp-final-form]][bpl-final-form]                                       |
 | First-class TypeScript support                    | ✅                                           | ❓                             | ❓                                     | ❓                                               | ❓                                     |
 | Fully Inferred TypeScript (Including Deep Fields) | ✅                                           | ❓                             | ❓                                     | ❓                                               | ❓                                     |
 | Headless UI components                            | ✅                                           | ❓                             | ❓                                     | ❓                                               | ❓                                     |
@@ -32,14 +32,23 @@ Feature/Capability Key:
 [gh-tanstack-form]: https://github.com/TanStack/form
 [stars-tanstack-form]: https://img.shields.io/github/stars/TanStack/form?label=%F0%9F%8C%9F
 
+[bpl-formik]: https://bundlephobia.com/result?p=formik
+[bp-formik]: https://badgen.net/bundlephobia/minzip/formik?label=💾
 [gh-formik]: https://github.com/jaredpalmer/formik
 [stars-formik]: https://img.shields.io/github/stars/jaredpalmer/formik?label=%F0%9F%8C%9F
 
+
+[bpl-redux-form]: https://bundlephobia.com/result?p=redux-form
+[bp-redux-form]: https://badgen.net/bundlephobia/minzip/redux-form?label=💾
 [gh-redux-form]: https://github.com/redux-form/redux-form
 [stars-redux-form]: https://img.shields.io/github/stars/redux-form/redux-form?label=%F0%9F%8C%9F
 
+[bpl-react-hook-form]: https://bundlephobia.com/result?p=react-hook-form
+[bp-react-hook-form]: https://badgen.net/bundlephobia/minzip/react-hook-form?label=💾
 [gh-react-hook-form]: https://github.com/react-hook-form/react-hook-form
 [stars-react-hook-form]: https://img.shields.io/github/stars/react-hook-form/react-hook-form?label=%F0%9F%8C%9F
 
+[bpl-final-form]: https://bundlephobia.com/result?p=final-form
+[bp-final-form]: https://badgen.net/bundlephobia/minzip/final-form?label=💾
 [gh-final-form]: https://github.com/final-form/final-form
 [stars-final-form]: https://img.shields.io/github/stars/final-form/final-form?label=%F0%9F%8C%9F
