@@ -26,33 +26,57 @@ An object type representing the options for a field in a form.
   ```
   - An optional default value for the field.
 - ```tsx
-  form?: FormApi<TFormData>
-  ```
-  - An optional reference to the form API instance.
-- ```tsx
-  validate?: (value: TData, fieldApi: FieldApi<TData, TFormData>) => ValidationError | Promise<ValidationError>
-  ```
-  - An optional validation function for the field.
-- ```tsx
-  validatePristine?: boolean
-  ```
-  - An optional flag indicating whether to validate the field when it is pristine (untouched).
-- ```tsx
   defaultMeta?: Partial<FieldMeta>
   ```
   - An optional object with default metadata for the field.
+
 - ```tsx
-  validateOn?: ValidationCause
+  onMount?: (formApi: FieldApi<TData, TFormData>) => void
   ```
-  - An optional string indicating when to perform field validation.
+  - An optional function that takes a param of `formApi` which is a generic type of `TData` and `TFormData`
+
 - ```tsx
-  validateAsyncOn?: ValidationCause
+   onChange?: ValidateFn<TData, TFormData>
   ```
-  - An optional string indicating when to perform async field validation.
+  - An optional property that takes a `ValidateFn` which is a generic of `TData` and `TFormData`
+
 - ```tsx
-  validateAsyncDebounceMs?: number
+    onChangeAsync?: ValidateAsyncFn<TData, TFormData>
   ```
-  - If set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds.
+  - An optional property similar to `onChange` but async validation
+
+
+- ```tsx
+     onChangeAsyncDebounceMs?: number
+  ```
+  - An optional number to represent how long the  `onChangeAsync` should wait before running
+  - If set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds
+
+- ```tsx
+    onBlur?: ValidateFn<TData, TFormData>
+  ```
+  - An optional function, when that run when subscribing to blur event of input
+
+- ```tsx
+   onBlurAsync?: ValidateAsyncFn<TData, TFormData>
+  ```
+  - An optional function that takes a `ValidateFn` which is a generic of `TData` and `TFormData` happens async
+
+  ```tsx
+  onBlurAsyncDebounceMs?: number
+  ```
+  - An optional number to represent how long the  `onBlurAsyncDebounceMs` should wait before running
+  -  If set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds
+
+  ```tsx
+  onSubmitAsync?: number
+  ```
+  -  If set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds
+
+
+
+
+
 
 ### `ValidationCause`
 
