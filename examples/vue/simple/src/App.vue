@@ -52,6 +52,15 @@ async function onChangeFirstName(value) {
           </template>
         </form.Field>
       </div>
+      <form.Subscribe
+        :selector="(state) => [state.canSubmit, state.isSubmitting]"
+      >
+        <template v-slot="[canSubmit, isSubmitting]">
+          <button type="submit" :disabled="!canSubmit">
+            {{ isSubmitting ? '...' : 'Submit' }}
+          </button>
+        </template>
+      </form.Subscribe>
     </form>
   </form.Provider>
 </template>
