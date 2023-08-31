@@ -78,7 +78,7 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
 
   useEffect(() => {
     formApi.update(opts)
-  }, [])
+  }, [opts])
 
   return formApi as any
 }
