@@ -135,4 +135,5 @@ export const Field = defineComponent(
 
     return () => context.slots.default!(fieldApi)
   },
+  { name: 'Field' },
 )

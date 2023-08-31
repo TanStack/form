@@ -24,10 +24,13 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
     // @ts-ignore
     const api = new FormApi<TData>(opts)
 
-    api.Provider = defineComponent((_, context) => {
-      provideFormContext({ formApi })
-      return () => context.slots.default!()
-    })
+    api.Provider = defineComponent(
+      (_, context) => {
+        provideFormContext({ formApi })
+        return () => context.slots.default!()
+      },
+      { name: 'Provider' },
+    )
     api.getFormProps = () => {
       return {
         onSubmit: formApi.handleSubmit,
