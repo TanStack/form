@@ -45,6 +45,7 @@
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
+    "@tanstack/store": "^0.0.1-beta.174",
     "vue-demi": "^0.14.6"
   },
   "devDependencies": {

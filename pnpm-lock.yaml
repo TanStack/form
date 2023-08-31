@@ -14,8 +14,8 @@ importers:
   .:
     dependencies:
       '@tanstack/store':
-        specifier: 0.0.1-beta.90
-        version: 0.0.1-beta.90
+        specifier: ^0.0.1-beta.174
+        version: 0.0.1-beta.174
       fs-extra:
         specifier: ^11.1.1
         version: 11.1.1
@@ -281,8 +281,8 @@ importers:
   packages/form-core:
     dependencies:
       '@tanstack/store':
-        specifier: 0.0.1-beta.89
-        version: 0.0.1-beta.89
+        specifier: ^0.0.1-beta.174
+        version: 0.0.1-beta.174
 
   packages/react-form:
     dependencies:
@@ -323,6 +323,9 @@ importers:
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../form-core
+      '@tanstack/store':
+        specifier: ^0.0.1-beta.174
+        version: 0.0.1-beta.174
       vue-demi:
         specifier: ^0.14.6
         version: 0.14.6(@vue/composition-api@1.7.2)(vue@3.3.4)
@@ -2699,18 +2702,13 @@ packages:
       use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
 
+  /@tanstack/store@0.0.1-beta.174:
+    resolution: {integrity: sha512-+dOOct1yJIaF7NBR8JBwKnn2lVujfwohAjP1wRpA3EhXtZCD4jvyNm2hlySXZLyc6ftZytCLMcAhQAlTQcUnew==}
+    engines: {node: '>=12'}
+    dev: false
+
   /@tanstack/store@0.0.1-beta.85:
     resolution: {integrity: sha512-gUn8i4mhS7V5yRTu6NosoKuUBfw4w36JHx0rg2MJ5kAiKukISoTqlzUKKKzmVvVPL6H1xwaDGEf6bmLzLlgZEQ==}
-    engines: {node: '>=12'}
-    dev: false
-
-  /@tanstack/store@0.0.1-beta.89:
-    resolution: {integrity: sha512-YW2aAhsXI4QYLXRnxZzB7MgEah91itQcWAjN3GYg1HKHxPv/11T5bL1CUCSxFLTI0f+45uNRjsmof6eqsN3ECA==}
-    engines: {node: '>=12'}
-    dev: false
-
-  /@tanstack/store@0.0.1-beta.90:
-    resolution: {integrity: sha512-L7ub4yiqdsANkGWOmpdY4kEkFge+v/aNeG3rGVQs68FyHr1Q5kaYKsbf+vzWBeYYc4Fo6uLMfh/uCf3C7eGhRw==}
     engines: {node: '>=12'}
     dev: false
 

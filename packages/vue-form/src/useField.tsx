@@ -3,11 +3,18 @@ import {
   DeepValue,
   FieldApi,
   FieldOptions,
-  functionalUpdate,
   Narrow,
 } from '@tanstack/form-core'
-import { SetupContext, watchEffect, defineComponent, computed } from 'vue-demi'
+import {
+  SetupContext,
+  watchEffect,
+  defineComponent,
+  computed,
+  getCurrentInstance,
+  watch,
+} from 'vue-demi'
 import { provideFormContext, useFormContext } from './formContext'
+import { useStore } from './vue-store'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
@@ -53,14 +60,20 @@ export function useField<TData, TFormData>(
   // Keep options up to date as they are rendered
   fieldApi.value.update({ ...opts, form: formApi } as never)
 
-  // useStore(
-  //   fieldApi.store as any,
-  //   opts.mode === 'array'
-  //     ? (state: any) => {
-  //         return [state.meta, Object.keys(state.value || []).length]
-  //       }
-  //     : undefined,
-  // )
+  const val = useStore(
+    fieldApi.value.store as any,
+    opts.mode === 'array'
+      ? (state: any) => {
+          return [state.meta, Object.keys(state.value || []).length]
+        }
+      : undefined,
+  )
+
+  const instance = getCurrentInstance()
+
+  watch(val, () => {
+    instance?.proxy?.$forceUpdate()
+  })
 
   watchEffect((onCleanup) => {
     const cleanup = fieldApi.value.mount()
