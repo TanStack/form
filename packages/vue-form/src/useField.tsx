@@ -6,7 +6,7 @@ import {
   functionalUpdate,
   Narrow,
 } from '@tanstack/form-core'
-import { SetupContext, watchEffect, defineComponent } from 'vue-demi'
+import { SetupContext, watchEffect, defineComponent, computed } from 'vue-demi'
 import { provideFormContext, useFormContext } from './formContext'
 
 declare module '@tanstack/form-core' {
@@ -34,7 +34,7 @@ export function useField<TData, TFormData>(
   // Get the form API either manually or from context
   const { formApi, parentFieldName } = useFormContext()
 
-  const fieldApi = (() => {
+  const fieldApi = computed(() => {
     const name = (
       typeof opts.index === 'number'
         ? [parentFieldName, opts.index, opts.name]
@@ -48,10 +48,10 @@ export function useField<TData, TFormData>(
     api.Field = Field as any
 
     return api
-  })()
+  })
 
   // Keep options up to date as they are rendered
-  fieldApi.update({ ...opts, form: formApi } as never)
+  fieldApi.value.update({ ...opts, form: formApi } as never)
 
   // useStore(
   //   fieldApi.store as any,
@@ -63,11 +63,11 @@ export function useField<TData, TFormData>(
   // )
 
   watchEffect((onCleanup) => {
-    const cleanup = fieldApi.mount()
+    const cleanup = fieldApi.value.mount()
     onCleanup(() => cleanup())
   })
 
-  return fieldApi
+  return fieldApi.value
 }
 
 // export type FieldValue<TFormData, TField> = TFormData extends any[]
@@ -126,7 +126,7 @@ export const Field = defineComponent(
     fieldOptions: UseFieldOptions<TData, TFormData>,
     context: SetupContext,
   ) => {
-    const fieldApi = useField(fieldOptions)
+    const fieldApi = useField({ ...fieldOptions, ...context.attrs })
 
     provideFormContext({
       formApi: fieldApi.form,
@@ -135,5 +135,5 @@ export const Field = defineComponent(
 
     return () => context.slots.default!(fieldApi)
   },
-  { name: 'Field' },
+  { name: 'Field', inheritAttrs: false },
 )
