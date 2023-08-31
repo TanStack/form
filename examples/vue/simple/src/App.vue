@@ -12,6 +12,11 @@ const form = useForm({
     alert(values)
   },
 })
+
+async function onChangeFirstName(value) {
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+  return value.includes(`error`) && `No 'error' allowed in first name`
+}
 </script>
 
 <template>
@@ -29,14 +34,7 @@ const form = useForm({
                 : undefined
           "
           :onChangeAsyncDebounceMs="500"
-          :onChangeAsync="
-            async (value) => {
-              await new Promise((resolve) => setTimeout(resolve, 1000))
-              return (
-                value.includes(`error`) && `No 'error' allowed in first name`
-              )
-            }
-          "
+          :onChangeAsync="onChangeFirstName"
         >
           <template v-slot="field">
             <label :htmlFor="field.name">First Name:</label>
@@ -48,7 +46,7 @@ const form = useForm({
       <div>
         <form.Field name="lastName">
           <template v-slot="field">
-            <label :htmlFor="field.name">First Name:</label>
+            <label :htmlFor="field.name">Last Name:</label>
             <input :name="field.name" v-bind="field.getInputProps()" />
             <FieldInfo :field="field" />
           </template>
