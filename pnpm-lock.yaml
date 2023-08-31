@@ -229,7 +229,7 @@ importers:
     dependencies:
       '@tanstack/react-form':
         specifier: 0.0.12
-        version: link:../../../packages/react-form
+        version: 0.0.12(react-dom@18.2.0)(react@18.2.0)
       axios:
         specifier: ^0.26.1
         version: 0.26.1
@@ -2416,6 +2416,30 @@ packages:
   /@sinclair/typebox@0.27.8:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
     dev: true
+
+  /@tanstack/form-core@0.0.12:
+    resolution: {integrity: sha512-bkrypO6VT9pf43lfFPDLaLeJxUEI1hnlcMZjRbG2FWNq1jrJV1Ib0e6KUsmWDOaBJM4j4gZrsYUTwjMkgfedHQ==}
+    dependencies:
+      '@tanstack/store': 0.0.1-beta.89
+    dev: false
+
+  /@tanstack/react-form@0.0.12(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-Wx4Gr1Xkhsi3OCv4wqZvdwcW6Lb1kyi+k3tb+YCyGtZNgR3RNY8C+RZgAmLQVULt2EjI/qMKLILFNsGq2EthvQ==}
+    peerDependencies:
+      react: ^17.0.0 || ^18.0.0
+      react-dom: ^17.0.0 || ^18.0.0
+      react-native: '*'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    dependencies:
+      '@tanstack/form-core': 0.0.12
+      '@tanstack/react-store': 0.0.1-beta.85(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
 
   /@tanstack/react-store@0.0.1-beta.85(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-5APLxQOHgws735Va5ndbS6aa9pIILcximTr5dQeEFRzCNqjLyJ6YHGDuqng9zLMLzCyNILmdEtpNW0tp5l/tNw==}
