@@ -76,6 +76,7 @@ export type ChangeProps<TData> = {
 export type InputProps<T> = {
   value: T
   onChange: (event: any) => void
+  onInput: (event: any) => void
   onBlur: (event: any) => void
 }
 
@@ -434,6 +435,10 @@ export class FieldApi<TData, TFormData> {
       ...props,
       value: this.state.value,
       onChange: (e) => {
+        this.setValue(e.target.value)
+        props.onChange?.(e.target.value)
+      },
+      onInput: (e) => {
         this.setValue(e.target.value)
         props.onChange?.(e.target.value)
       },

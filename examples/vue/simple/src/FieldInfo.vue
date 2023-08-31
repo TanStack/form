@@ -2,13 +2,13 @@
 import { FieldApi } from '@tanstack/vue-form'
 
 const props = defineProps<{
-  field: FieldApi<any, any>
+  state: FieldApi<any, any>['state']
 }>()
 </script>
 
 <template>
-  <em v-if="props.field.state.meta.touchedError">{{
-    props.field.state.meta.touchedError
+  <em v-if="props.state.meta.touchedError">{{
+    props.state.meta.touchedError
   }}</em>
-  {{ props.field.state.meta.isValidating ? 'Validating...' : null }}
+  {{ props.state.meta.isValidating ? 'Validating...' : null }}
 </template>

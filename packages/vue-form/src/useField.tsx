@@ -12,6 +12,11 @@ import {
   computed,
   getCurrentInstance,
   watch,
+  ref,
+  toValue,
+  Ref,
+  nextTick,
+  reactive,
 } from 'vue-demi'
 import { provideFormContext, useFormContext } from './formContext'
 import { useStore } from './vue-store'
@@ -20,6 +25,7 @@ declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
   interface FieldApi<TData, TFormData> {
     Field: FieldComponent<TData, TFormData>
+    __internal: number
   }
 }
 
@@ -37,11 +43,14 @@ export type UseField<TFormData> = <TField extends DeepKeys<TFormData>>(
 
 export function useField<TData, TFormData>(
   opts: UseFieldOptions<TData, TFormData>,
-): FieldApi<TData, TFormData> {
+): {
+  api: FieldApi<TData, TFormData>
+  state: Readonly<Ref<FieldApi<TData, TFormData>['state']>>
+} {
   // Get the form API either manually or from context
   const { formApi, parentFieldName } = useFormContext()
 
-  const fieldApi = computed(() => {
+  const fieldApi = (() => {
     const name = (
       typeof opts.index === 'number'
         ? [parentFieldName, opts.index, opts.name]
@@ -53,34 +62,22 @@ export function useField<TData, TFormData>(
     const api = new FieldApi({ ...opts, form: formApi, name: name as any })
 
     api.Field = Field as any
+    api.__internal = 0
 
     return api
-  })
+  })()
 
   // Keep options up to date as they are rendered
-  fieldApi.value.update({ ...opts, form: formApi } as never)
+  fieldApi.update({ ...opts, form: formApi } as never)
 
-  const val = useStore(
-    fieldApi.value.store as any,
-    opts.mode === 'array'
-      ? (state: any) => {
-          return [state.meta, Object.keys(state.value || []).length]
-        }
-      : undefined,
-  )
-
-  const instance = getCurrentInstance()
-
-  watch(val, () => {
-    instance?.proxy?.$forceUpdate()
-  })
+  const state = useStore(fieldApi.store, (state) => state)
 
   watchEffect((onCleanup) => {
-    const cleanup = fieldApi.value.mount()
+    const cleanup = fieldApi.mount()
     onCleanup(() => cleanup())
   })
 
-  return fieldApi.value
+  return { api: fieldApi, state } as never
 }
 
 // export type FieldValue<TFormData, TField> = TFormData extends any[]
@@ -142,11 +139,15 @@ export const Field = defineComponent(
     const fieldApi = useField({ ...fieldOptions, ...context.attrs })
 
     provideFormContext({
-      formApi: fieldApi.form,
-      parentFieldName: fieldApi.name,
+      formApi: fieldApi.api.form,
+      parentFieldName: fieldApi.api.name,
     } as never)
 
-    return () => context.slots.default!(fieldApi)
+    const contents = computed(() =>
+      context.slots.default!(fieldApi.api, fieldApi.state.value),
+    )
+
+    return () => contents.value
   },
   { name: 'Field', inheritAttrs: false },
 )
