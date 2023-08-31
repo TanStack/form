@@ -19,21 +19,31 @@ describe('field api', () => {
     expect(field.getValue()).toBe('test')
   })
 
-  it('should set a value correctly', () => {
-    const form = new FormApi({
-      defaultValues: {
-        name: 'test',
-      },
-    })
-
+  it('should get default meta', () => {
+    const form = new FormApi()
     const field = new FieldApi({
       form,
       name: 'name',
     })
 
-    field.setValue('other')
+    expect(field.getMeta()).toEqual({
+      isTouched: false,
+      isValidating: false,
+    })
+  })
 
-    expect(field.getValue()).toBe('other')
+  it('should allow to set default meta', () => {
+    const form = new FormApi()
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      defaultMeta: { isTouched: true },
+    })
+
+    expect(field.getMeta()).toEqual({
+      isTouched: true,
+      isValidating: false,
+    })
   })
 
   it('should set a value correctly', () => {
