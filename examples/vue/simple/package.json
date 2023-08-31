@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@tanstack/vue-form": "workspace:*",
-    "vue": "^3.2.47"
+    "vue": "^3.3.4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",

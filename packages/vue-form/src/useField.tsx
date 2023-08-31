@@ -6,7 +6,7 @@ import {
   functionalUpdate,
   Narrow,
 } from '@tanstack/form-core'
-import { SetupContext, watchEffect } from 'vue-demi'
+import { SetupContext, watchEffect, defineComponent } from 'vue-demi'
 import { provideFormContext, useFormContext } from './formContext'
 
 declare module '@tanstack/form-core' {
@@ -121,16 +121,18 @@ export type FieldComponent<TParentData, TFormData> = <TField>(
   context: SetupContext,
 ) => any
 
-export function Field<TData, TFormData>(
-  fieldOptions: UseFieldOptions<TData, TFormData>,
-  context: SetupContext,
-) {
-  const fieldApi = useField(fieldOptions)
+export const Field = defineComponent(
+  <TData, TFormData>(
+    fieldOptions: UseFieldOptions<TData, TFormData>,
+    context: SetupContext,
+  ) => {
+    const fieldApi = useField(fieldOptions)
 
-  provideFormContext({
-    formApi: fieldApi.form,
-    parentFieldName: fieldApi.name,
-  } as never)
+    provideFormContext({
+      formApi: fieldApi.form,
+      parentFieldName: fieldApi.name,
+    } as never)
 
-  return context.slots.default!(fieldApi)
-}
+    return () => context.slots.default!(fieldApi)
+  },
+)
