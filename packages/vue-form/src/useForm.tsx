@@ -1,10 +1,14 @@
-import type { FormOptions, FormSubmitEvent } from '@tanstack/form-core'
-import { FormApi, FormState, functionalUpdate } from '@tanstack/form-core'
+import {
+  FormApi,
+  type FormState,
+  type FormOptions,
+  type FormSubmitEvent,
+} from '@tanstack/form-core'
+import { useStore } from '@tanstack/vue-store'
 import { type UseField, type FieldComponent, Field, useField } from './useField'
 import { provideFormContext } from './formContext'
 import { defineComponent } from 'vue-demi'
-import { useStore } from './vue-store'
-import { NoInfer } from './types'
+import type { NoInfer } from './types'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
@@ -51,7 +55,6 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
       // @ts-ignore
       selector,
     ) => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       return useStore(api.store as any, selector as any) as any
     }
     api.Subscribe = defineComponent(

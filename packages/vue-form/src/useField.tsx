@@ -1,25 +1,19 @@
 import {
-  DeepKeys,
-  DeepValue,
+  type DeepKeys,
+  type DeepValue,
   FieldApi,
-  FieldOptions,
-  Narrow,
+  type FieldOptions,
+  type Narrow,
 } from '@tanstack/form-core'
+import { useStore } from '@tanstack/vue-store'
 import {
-  SetupContext,
+  type SetupContext,
   watchEffect,
   defineComponent,
   computed,
-  getCurrentInstance,
-  watch,
-  ref,
-  toValue,
-  Ref,
-  nextTick,
-  reactive,
+  type Ref,
 } from 'vue-demi'
 import { provideFormContext, useFormContext } from './formContext'
-import { useStore } from './vue-store'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
@@ -70,14 +64,14 @@ export function useField<TData, TFormData>(
   // Keep options up to date as they are rendered
   fieldApi.update({ ...opts, form: formApi } as never)
 
-  const state = useStore(fieldApi.store, (state) => state)
+  const fieldState = useStore(fieldApi.store, (state) => state)
 
   watchEffect((onCleanup) => {
     const cleanup = fieldApi.mount()
     onCleanup(() => cleanup())
   })
 
-  return { api: fieldApi, state } as never
+  return { api: fieldApi, state: fieldState } as never
 }
 
 // export type FieldValue<TFormData, TField> = TFormData extends any[]

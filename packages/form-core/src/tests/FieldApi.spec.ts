@@ -19,21 +19,31 @@ describe('field api', () => {
     expect(field.getValue()).toBe('test')
   })
 
-  it('should set a value correctly', () => {
-    const form = new FormApi({
-      defaultValues: {
-        name: 'test',
-      },
-    })
-
+  it('should get default meta', () => {
+    const form = new FormApi()
     const field = new FieldApi({
       form,
       name: 'name',
     })
 
-    field.setValue('other')
+    expect(field.getMeta()).toEqual({
+      isTouched: false,
+      isValidating: false,
+    })
+  })
 
-    expect(field.getValue()).toBe('other')
+  it('should allow to set default meta', () => {
+    const form = new FormApi()
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      defaultMeta: { isTouched: true },
+    })
+
+    expect(field.getMeta()).toEqual({
+      isTouched: true,
+      isValidating: false,
+    })
   })
 
   it('should set a value correctly', () => {
@@ -165,5 +175,28 @@ describe('field api', () => {
     expect(field.getMeta().error).toBeUndefined()
     field.setValue('other', { touch: true })
     expect(field.getMeta().error).toBe('Please enter a different value')
+  })
+
+  it('should not throw errors when no meta info is stored on a field and a form re-renders', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    field.mount()
+
+    expect(() =>
+      form.update({
+        defaultValues: {
+          name: 'other',
+        },
+      }),
+    ).not.toThrow()
   })
 })
