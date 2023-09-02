@@ -176,4 +176,27 @@ describe('field api', () => {
     field.setValue('other', { touch: true })
     expect(field.getMeta().error).toBe('Please enter a different value')
   })
+
+  it('should not throw errors when no meta info is stored on a field and a form re-renders', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    field.mount()
+
+    expect(() =>
+      form.update({
+        defaultValues: {
+          name: 'other',
+        },
+      }),
+    ).not.toThrow()
+  })
 })

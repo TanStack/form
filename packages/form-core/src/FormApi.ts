@@ -290,7 +290,7 @@ export class FormApi<TFormData> {
 
   getFieldMeta = <TField extends DeepKeys<TFormData>>(
     field: TField,
-  ): FieldMeta => {
+  ): FieldMeta | undefined => {
     return this.state.fieldMeta[field]
   }
 
