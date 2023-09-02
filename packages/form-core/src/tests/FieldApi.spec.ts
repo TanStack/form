@@ -257,6 +257,38 @@ describe('field api', () => {
     expect(field.getMeta().error).toBe('Please enter a different value')
   })
 
+  it('should run async validation onChange with asyncDebounceMs', async () => {
+    vi.useFakeTimers()
+    const sleepMock = vi.fn().mockImplementation(sleep)
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      asyncDebounceMs: 1000,
+      onChangeAsync: async (value) => {
+        await sleepMock(1000)
+        if (value === 'other') return 'Please enter a different value'
+        return
+      },
+    })
+
+    field.mount()
+
+    expect(field.getMeta().error).toBeUndefined()
+    field.setValue('other', { touch: true })
+    field.setValue('other')
+    await vi.runAllTimersAsync()
+    // sleepMock will have been called 2 times without asyncDebounceMs
+    expect(sleepMock).toHaveBeenCalledTimes(1)
+    expect(field.getMeta().error).toBe('Please enter a different value')
+  })
+
   it('should run validation onBlur', () => {
     const form = new FormApi({
       defaultValues: {
@@ -337,6 +369,39 @@ describe('field api', () => {
     field.validate('blur')
     await vi.runAllTimersAsync()
     // sleepMock will have been called 2 times without onBlurAsyncDebounceMs
+    expect(sleepMock).toHaveBeenCalledTimes(1)
+    expect(field.getMeta().error).toBe('Please enter a different value')
+  })
+
+  it('should run async validation onBlur with asyncDebounceMs', async () => {
+    vi.useFakeTimers()
+    const sleepMock = vi.fn().mockImplementation(sleep)
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      asyncDebounceMs: 1000,
+      onBlurAsync: async (value) => {
+        await sleepMock(10)
+        if (value === 'other') return 'Please enter a different value'
+        return
+      },
+    })
+
+    field.mount()
+
+    expect(field.getMeta().error).toBeUndefined()
+    field.setValue('other', { touch: true })
+    field.validate('blur')
+    field.validate('blur')
+    await vi.runAllTimersAsync()
+    // sleepMock will have been called 2 times without asyncDebounceMs
     expect(sleepMock).toHaveBeenCalledTimes(1)
     expect(field.getMeta().error).toBe('Please enter a different value')
   })
