@@ -40,6 +40,6 @@
     "build:types": "tsc --emitDeclarationOnly"
   },
   "dependencies": {
-    "@tanstack/store": "0.0.1-beta.89"
+    "@tanstack/store": "0.1.3"
   }
 }
