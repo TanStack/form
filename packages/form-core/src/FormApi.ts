@@ -171,11 +171,6 @@ export class FormApi<TFormData> {
       const shouldUpdateState =
         options.defaultState !== this.options.defaultState
 
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (!shouldUpdateValues || !shouldUpdateValues) {
-        return
-      }
-
       this.store.setState(() =>
         getDefaultFormState(
           Object.assign(
@@ -295,7 +290,7 @@ export class FormApi<TFormData> {
 
   getFieldMeta = <TField extends DeepKeys<TFormData>>(
     field: TField,
-  ): FieldMeta => {
+  ): FieldMeta | undefined => {
     return this.state.fieldMeta[field]
   }
 

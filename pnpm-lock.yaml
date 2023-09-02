@@ -14,8 +14,8 @@ importers:
   .:
     dependencies:
       '@tanstack/store':
-        specifier: 0.0.1-beta.90
-        version: 0.0.1-beta.90
+        specifier: 0.1.3
+        version: 0.1.3
       fs-extra:
         specifier: ^11.1.1
         version: 11.1.1
@@ -229,7 +229,7 @@ importers:
     dependencies:
       '@tanstack/react-form':
         specifier: 0.0.12
-        version: link:../../../packages/react-form
+        version: 0.0.12(react-dom@18.2.0)(react@18.2.0)
       axios:
         specifier: ^0.26.1
         version: 0.26.1
@@ -253,8 +253,8 @@ importers:
   packages/form-core:
     dependencies:
       '@tanstack/store':
-        specifier: 0.0.1-beta.89
-        version: 0.0.1-beta.89
+        specifier: 0.1.3
+        version: 0.1.3
 
   packages/react-form:
     dependencies:
@@ -262,8 +262,11 @@ importers:
         specifier: workspace:*
         version: link:../form-core
       '@tanstack/react-store':
-        specifier: 0.0.1-beta.85
-        version: 0.0.1-beta.85(react-dom@18.2.0)(react@18.2.0)
+        specifier: 0.1.3
+        version: 0.1.3(react-dom@18.2.0)(react@18.2.0)
+      '@tanstack/store':
+        specifier: 0.1.3
+        version: 0.1.3
       react-native:
         specifier: '*'
         version: 0.72.4(@babel/core@7.22.10)(@babel/preset-env@7.21.5)(react@18.2.0)
@@ -2368,7 +2371,7 @@ packages:
       cosmiconfig: 5.2.1
       deepmerge: 4.3.1
       glob: 7.2.3
-      joi: 17.10.0
+      joi: 17.10.1
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -2503,7 +2506,7 @@ packages:
   /@react-native-community/cli-types@11.3.6:
     resolution: {integrity: sha512-6DxjrMKx5x68N/tCJYVYRKAtlRHbtUVBZrnAvkxbRWFD9v4vhNgsPM0RQm8i2vRugeksnao5mbnRGpS6c0awCw==}
     dependencies:
-      joi: 17.10.0
+      joi: 17.10.1
     dev: false
 
   /@react-native-community/cli@11.3.6(@babel/core@7.22.10):
@@ -2702,6 +2705,30 @@ packages:
       '@sinonjs/commons': 3.0.0
     dev: false
 
+  /@tanstack/form-core@0.0.12:
+    resolution: {integrity: sha512-bkrypO6VT9pf43lfFPDLaLeJxUEI1hnlcMZjRbG2FWNq1jrJV1Ib0e6KUsmWDOaBJM4j4gZrsYUTwjMkgfedHQ==}
+    dependencies:
+      '@tanstack/store': 0.0.1-beta.89
+    dev: false
+
+  /@tanstack/react-form@0.0.12(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-Wx4Gr1Xkhsi3OCv4wqZvdwcW6Lb1kyi+k3tb+YCyGtZNgR3RNY8C+RZgAmLQVULt2EjI/qMKLILFNsGq2EthvQ==}
+    peerDependencies:
+      react: ^17.0.0 || ^18.0.0
+      react-dom: ^17.0.0 || ^18.0.0
+      react-native: '*'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    dependencies:
+      '@tanstack/form-core': 0.0.12
+      '@tanstack/react-store': 0.0.1-beta.85(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
   /@tanstack/react-store@0.0.1-beta.85(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-5APLxQOHgws735Va5ndbS6aa9pIILcximTr5dQeEFRzCNqjLyJ6YHGDuqng9zLMLzCyNILmdEtpNW0tp5l/tNw==}
     engines: {node: '>=12'}
@@ -2710,6 +2737,18 @@ packages:
       react-dom: '>=16'
     dependencies:
       '@tanstack/store': 0.0.1-beta.85
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      use-sync-external-store: 1.2.0(react@18.2.0)
+    dev: false
+
+  /@tanstack/react-store@0.1.3(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-nDOgSlarFFbIvVirAi/GcCyqyRMthgpuBhOhN87DkeQEau+ZNGsLKJifzrQYuWB0+4FXmgeoGaY/Dr383MPqZw==}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      '@tanstack/store': 0.1.3
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       use-sync-external-store: 1.2.0(react@18.2.0)
@@ -2725,9 +2764,8 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /@tanstack/store@0.0.1-beta.90:
-    resolution: {integrity: sha512-L7ub4yiqdsANkGWOmpdY4kEkFge+v/aNeG3rGVQs68FyHr1Q5kaYKsbf+vzWBeYYc4Fo6uLMfh/uCf3C7eGhRw==}
-    engines: {node: '>=12'}
+  /@tanstack/store@0.1.3:
+    resolution: {integrity: sha512-GnolmC8Fr4mvsHE1fGQmR3Nm0eBO3KnZjDU0a+P3TeQNM/dDscFGxtA7p31NplQNW3KwBw4t1RVFmz0VeKLxcw==}
     dev: false
 
   /@testing-library/dom@9.3.1:
@@ -6885,8 +6923,8 @@ packages:
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
-  /joi@17.10.0:
-    resolution: {integrity: sha512-hrazgRSlhzacZ69LdcKfhi3Vu13z2yFfoAzmEov3yFIJlatTdVGUW6vle1zjH8qkzdCn/qGw8rapjqsObbYXAg==}
+  /joi@17.10.1:
+    resolution: {integrity: sha512-vIiDxQKmRidUVp8KngT8MZSOcmRVm2zV7jbMjNYWuHcJWI0bUck3nRTGQjhpPlQenIQIBC5Vp9AhcnHbWQqafw==}
     dependencies:
       '@hapi/hoek': 9.3.0
       '@hapi/topo': 5.1.0

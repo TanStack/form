@@ -75,7 +75,10 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
   })
 
   formApi.useStore((state) => state.isSubmitting)
-  formApi.update(opts)
+
+  React.useEffect(() => {
+    formApi.update(opts)
+  }, [formApi, opts])
 
   return formApi as any
 }
