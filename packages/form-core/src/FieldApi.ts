@@ -30,7 +30,6 @@ export interface FieldOptions<
   name: TName
   index?: TData extends any[] ? number : never
   defaultValue?: TData
-  asyncDebounceMs?: number
   asyncAlways?: boolean
   onMount?: (formApi: FieldApi<TData, TFormData>) => void
   onChange?: ValidateFn<TData, TFormData>
@@ -186,7 +185,6 @@ export class FieldApi<TData, TFormData> {
 
   update = (opts: FieldApiOptions<typeof this._tdata, TFormData>) => {
     this.options = {
-      asyncDebounceMs: this.form.options.asyncDebounceMs ?? 0,
       onChangeAsyncDebounceMs: this.form.options.onChangeAsyncDebounceMs ?? 0,
       onBlurAsyncDebounceMs: this.form.options.onBlurAsyncDebounceMs ?? 0,
       ...opts,
@@ -199,12 +197,12 @@ export class FieldApi<TData, TFormData> {
         this.setValue(this.options.defaultValue as never)
       } else if (
         opts.form.options.defaultValues?.[
-          this.options.name as keyof TFormData
+        this.options.name as keyof TFormData
         ] !== undefined
       ) {
         this.setValue(
           opts.form.options.defaultValues[
-            this.options.name as keyof TFormData
+          this.options.name as keyof TFormData
           ] as never,
         )
       }
@@ -313,7 +311,6 @@ export class FieldApi<TData, TFormData> {
       onChangeAsync,
       onBlurAsync,
       onSubmitAsync,
-      asyncDebounceMs,
       onBlurAsyncDebounceMs,
       onChangeAsyncDebounceMs,
     } = this.options
@@ -322,8 +319,8 @@ export class FieldApi<TData, TFormData> {
       cause === 'change'
         ? onChangeAsync
         : cause === 'submit'
-        ? onSubmitAsync
-        : onBlurAsync
+          ? onSubmitAsync
+          : onBlurAsync
 
     if (!validate) return
 
@@ -331,10 +328,8 @@ export class FieldApi<TData, TFormData> {
       cause === 'submit'
         ? 0
         : (cause === 'change'
-            ? onChangeAsyncDebounceMs
-            : onBlurAsyncDebounceMs) ??
-          asyncDebounceMs ??
-          500
+          ? onChangeAsyncDebounceMs
+          : onBlurAsyncDebounceMs) ?? 0
 
     if (this.state.meta.isValidating !== true)
       this.setMeta((prev) => ({ ...prev, isValidating: true }))

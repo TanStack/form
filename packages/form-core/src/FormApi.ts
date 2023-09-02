@@ -17,7 +17,6 @@ export type FormSubmitEvent = Register extends {
 export type FormOptions<TData> = {
   defaultValues?: TData
   defaultState?: Partial<FormState<TData>>
-  asyncDebounceMs?: number
   onMount?: (values: TData, formApi: FormApi<TData>) => ValidationError
   onMountAsync?: (
     values: TData,
@@ -180,8 +179,8 @@ export class FormApi<TFormData> {
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             shouldUpdateValues
               ? {
-                  values: options.defaultValues,
-                }
+                values: options.defaultValues,
+              }
               : {},
           ),
         ),
