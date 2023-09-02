@@ -53,9 +53,9 @@ export function useField<TData, TFormData>(
       .filter((d) => d !== undefined)
       .join('.')
 
-    const api = new FieldApi({ ...opts, form: formApi, name: name as any })
+    const api = new FieldApi({ ...opts, form: formApi, name: name as never })
 
-    api.Field = Field as any
+    api.Field = Field as never
     api.__internal = 0
 
     return api

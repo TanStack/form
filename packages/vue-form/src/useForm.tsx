@@ -49,18 +49,18 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
         disabled: api.state.isSubmitting,
       }
     }
-    api.Field = Field as any
-    api.useField = useField as any
+    api.Field = Field as never
+    api.useField = useField as never
     api.useStore = (
       // @ts-ignore
       selector,
     ) => {
-      return useStore(api.store as any, selector as any) as any
+      return useStore(api.store as never, selector as never) as never
     }
     api.Subscribe = defineComponent(
       (props, context) => {
         const allProps = { ...props, ...context.attrs }
-        const data = useStore(api.store as any, allProps.selector as any)
+        const data = useStore(api.store as never, allProps.selector as never)
         return () => context.slots.default!(data.value)
       },
       {
@@ -75,5 +75,5 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
   // formApi.useStore((state) => state.isSubmitting)
   formApi.update(opts)
 
-  return formApi as any
+  return formApi as never
 }
