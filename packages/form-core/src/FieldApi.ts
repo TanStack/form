@@ -129,7 +129,7 @@ export class FieldApi<TData, TFormData> {
       {
         value: this.getValue(),
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        meta: this.getMeta() ?? {
+        meta: this._getMeta() ?? {
           isValidating: false,
           isTouched: false,
           ...opts.defaultMeta,
@@ -211,8 +211,7 @@ export class FieldApi<TData, TFormData> {
     }
 
     // Default Meta
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (this.getMeta() === undefined) {
+    if (this._getMeta() === undefined) {
       this.setMeta(this.state.meta)
     }
   }
@@ -229,7 +228,14 @@ export class FieldApi<TData, TFormData> {
     this.validate('change', this.state.value)
   }
 
-  getMeta = (): FieldMeta => this.form.getFieldMeta(this.name)
+  _getMeta = () => this.form.getFieldMeta(this.name)
+  getMeta = () =>
+    this._getMeta() ??
+    ({
+      isValidating: false,
+      isTouched: false,
+      ...this.options.defaultMeta,
+    } as FieldMeta)
 
   setMeta = (updater: Updater<FieldMeta>) =>
     this.form.setFieldMeta(this.name, updater)

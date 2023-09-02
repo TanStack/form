@@ -155,8 +155,8 @@ describe('useField', () => {
 
     const { getByTestId, getByText, queryByText } = render(<Comp />)
     const input = getByTestId('fieldinput')
-    await user.type(input, 'other')
     expect(queryByText(error)).not.toBeInTheDocument()
+    await user.type(input, 'other')
     await waitFor(() => getByText(error))
     expect(getByText(error)).toBeInTheDocument()
   })
@@ -178,7 +178,7 @@ describe('useField', () => {
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
-            onChangeAsyncDebounceMs={10}
+            onChangeAsyncDebounceMs={100}
             onChangeAsync={async () => {
               mockFn()
               await sleep(10)
