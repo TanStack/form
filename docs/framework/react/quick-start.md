@@ -27,7 +27,7 @@ export default function App() {
 
   return (
     <div>
-      <form.Form>
+      <form.Provider>
         <div>
           <form.Field
             name="fullName"
@@ -37,7 +37,7 @@ export default function App() {
           />
         </div>
         <button type="submit">Submit</button>
-      </form.Form>
+      </form.Provider>
     </div>
   )
 }
