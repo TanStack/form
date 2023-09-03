@@ -197,12 +197,12 @@ export class FieldApi<TData, TFormData> {
         this.setValue(this.options.defaultValue as never)
       } else if (
         opts.form.options.defaultValues?.[
-        this.options.name as keyof TFormData
+          this.options.name as keyof TFormData
         ] !== undefined
       ) {
         this.setValue(
           opts.form.options.defaultValues[
-          this.options.name as keyof TFormData
+            this.options.name as keyof TFormData
           ] as never,
         )
       }
@@ -320,8 +320,8 @@ export class FieldApi<TData, TFormData> {
       cause === 'change'
         ? onChangeAsync
         : cause === 'submit'
-          ? onSubmitAsync
-          : onBlurAsync
+        ? onSubmitAsync
+        : onBlurAsync
 
     if (!validate) return
 
@@ -329,10 +329,10 @@ export class FieldApi<TData, TFormData> {
       cause === 'submit'
         ? 0
         : (cause === 'change'
-          ? onChangeAsyncDebounceMs
-          : onBlurAsyncDebounceMs) ??
-        asyncDebounceMs ??
-        500
+            ? onChangeAsyncDebounceMs
+            : onBlurAsyncDebounceMs) ??
+          asyncDebounceMs ??
+          0
 
     if (this.state.meta.isValidating !== true)
       this.setMeta((prev) => ({ ...prev, isValidating: true }))
