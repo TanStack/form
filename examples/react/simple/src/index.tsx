@@ -35,7 +35,13 @@ export default function App() {
       <h1>Simple Form Example</h1>
       {/* A pre-bound form component */}
       <form.Provider>
-        <form {...form.getFormProps()}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            void form.handleSubmit();
+          }}
+        >
           <div>
             {/* A type-safe and pre-bound field component*/}
             <form.Field

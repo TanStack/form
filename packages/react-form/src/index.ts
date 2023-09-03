@@ -22,7 +22,6 @@ export type {
 
 export { FormApi, FieldApi, functionalUpdate } from '@tanstack/form-core'
 
-export type { FormProps } from './useForm'
 export { useForm } from './useForm'
 
 export type { UseField, FieldComponent } from './useField'

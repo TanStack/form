@@ -4,16 +4,6 @@ import type { DeepKeys, DeepValue, Updater } from './utils'
 import { functionalUpdate, getBy, setBy } from './utils'
 import type { FieldApi, FieldMeta, ValidationCause } from './FieldApi'
 
-export interface Register {
-  // FormSubmitEvent
-}
-
-export type FormSubmitEvent = Register extends {
-  FormSubmitEvent: infer E
-}
-  ? E
-  : Event
-
 export type FormOptions<TData> = {
   defaultValues?: TData
   defaultState?: Partial<FormState<TData>>
@@ -223,12 +213,7 @@ export class FormApi<TFormData> {
     return Promise.all(fieldValidationPromises)
   }
 
-  // validateForm = async () => {}
-
-  handleSubmit = async (e: FormSubmitEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-
+  handleSubmit = async () => {
     // Check to see that the form and all fields have been touched
     // If they have not, touch them all and run validation
     // Run form validation
@@ -236,7 +221,7 @@ export class FormApi<TFormData> {
 
     this.store.setState((old) => ({
       ...old,
-      // Submittion attempts mark the form as not submitted
+      // Submission attempts mark the form as not submitted
       isSubmitted: false,
       // Count submission attempts
       submissionAttempts: old.submissionAttempts + 1,
