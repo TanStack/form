@@ -1,5 +1,4 @@
 export type {
-  ChangeProps,
   DeepKeys,
   DeepValue,
   FieldApiOptions,
@@ -9,12 +8,9 @@ export type {
   FieldState,
   FormOptions,
   FormState,
-  InputProps,
   RequiredByKey,
   Updater,
   UpdaterFn,
-  UserChangeProps,
-  UserInputProps,
   ValidationCause,
   ValidationError,
   ValidationMeta,

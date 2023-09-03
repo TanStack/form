@@ -1,3 +1,4 @@
+/// <reference lib="dom" />
 import * as React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -26,7 +27,12 @@ describe('useField', () => {
             defaultValue="FirstName"
             children={(field) => {
               return (
-                <input data-testid="fieldinput" {...field.getInputProps()} />
+                <input
+                  data-testid="fieldinput"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
               )
             }}
           />
@@ -61,7 +67,9 @@ describe('useField', () => {
                 <input
                   data-testid="fieldinput"
                   name={field.name}
-                  {...field.getInputProps()}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.setValue(e.target.value)}
                 />
                 <p>{field.getMeta().error}</p>
               </div>
@@ -100,7 +108,9 @@ describe('useField', () => {
                 <input
                   data-testid="fieldinput"
                   name={field.name}
-                  {...field.getInputProps()}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
                 />
                 <p>{field.getMeta().error}</p>
               </div>
@@ -143,7 +153,9 @@ describe('useField', () => {
                 <input
                   data-testid="fieldinput"
                   name={field.name}
-                  {...field.getInputProps()}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
                 />
                 <p>{field.getMeta().error}</p>
               </div>
@@ -189,7 +201,9 @@ describe('useField', () => {
                 <input
                   data-testid="fieldinput"
                   name={field.name}
-                  {...field.getInputProps()}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
                 />
                 <p>{field.getMeta().error}</p>
               </div>
