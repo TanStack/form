@@ -8,7 +8,7 @@ function FieldInfo({ field }: { field: FieldApi<any, any> }) {
     <>
       {field.state.meta.touchedError ? (
         <em>{field.state.meta.touchedError}</em>
-      ) : null}{" "}
+      ) : null}
       {field.state.meta.isValidating ? "Validating..." : null}
     </>
   );
@@ -65,7 +65,12 @@ export default function App() {
                 return (
                   <>
                     <label htmlFor={field.name}>First Name:</label>
-                    <input name={field.name} {...field.getInputProps()} />
+                    <input
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
                     <FieldInfo field={field} />
                   </>
                 );
@@ -78,7 +83,12 @@ export default function App() {
               children={(field) => (
                 <>
                   <label htmlFor={field.name}>Last Name:</label>
-                  <input name={field.name} {...field.getInputProps()} />
+                  <input
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
                   <FieldInfo field={field} />
                 </>
               )}
