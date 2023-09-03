@@ -57,28 +57,6 @@ export type FieldMeta = {
   isValidating: boolean
 }
 
-export type UserChangeProps<TData> = {
-  onChange?: (updater: Updater<TData>) => void
-  onBlur?: (event: any) => void
-}
-
-export type UserInputProps = {
-  onChange?: (event: any) => void
-  onBlur?: (event: any) => void
-}
-
-export type ChangeProps<TData> = {
-  value: TData
-  onChange: (value: TData) => void
-  onBlur: (event: any) => void
-}
-
-export type InputProps<T> = {
-  value: T
-  onChange: (event: any) => void
-  onBlur: (event: any) => void
-}
-
 let uid = 0
 
 export type FieldState<TData> = {
@@ -409,43 +387,17 @@ export class FieldApi<TData, TFormData> {
     return this.validateAsync(value, cause)
   }
 
-  getChangeProps = <T extends UserChangeProps<any>>(
-    props: T = {} as T,
-  ): ChangeProps<typeof this._tdata> &
-    Omit<T, keyof ChangeProps<typeof this._tdata>> => {
-    return {
-      ...props,
-      value: this.state.value,
-      onChange: (value) => {
-        this.setValue(value as never)
-        props.onChange?.(value)
-      },
-      onBlur: (e) => {
-        const prevTouched = this.state.meta.isTouched
-        this.setMeta((prev) => ({ ...prev, isTouched: true }))
-        if (!prevTouched) {
-          this.validate('change')
-        }
-        this.validate('blur')
-      },
-    } as ChangeProps<typeof this._tdata> &
-      Omit<T, keyof ChangeProps<typeof this._tdata>>
+  handleChange = (updater: Updater<typeof this._tdata>) => {
+    this.setValue(updater, { touch: true })
   }
 
-  getInputProps = <T extends UserInputProps>(
-    props: T = {} as T,
-  ): InputProps<typeof this._tdata> &
-    Omit<T, keyof InputProps<typeof this._tdata>> => {
-    return {
-      ...props,
-      value: this.state.value,
-      onChange: (e) => {
-        this.setValue(e.target.value)
-        props.onChange?.(e.target.value)
-      },
-      onBlur: this.getChangeProps(props).onBlur,
-    } as InputProps<typeof this._tdata> &
-      Omit<T, keyof InputProps<typeof this._tdata>>
+  handleBlur = () => {
+    const prevTouched = this.state.meta.isTouched
+    if (!prevTouched) {
+      this.setMeta((prev) => ({ ...prev, isTouched: true }))
+      this.validate('change')
+    }
+    this.validate('blur')
   }
 }
 
