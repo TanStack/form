@@ -6,17 +6,10 @@ import React from 'react'
 import { type UseField, type FieldComponent, Field, useField } from './useField'
 import { formContext } from './formContext'
 
-export type FormSubmitEvent = React.FormEvent<HTMLFormElement>
-
 declare module '@tanstack/form-core' {
-  interface Register {
-    FormSubmitEvent: FormSubmitEvent
-  }
-
   // eslint-disable-next-line no-shadow
   interface FormApi<TFormData> {
     Provider: (props: { children: any }) => any
-    getFormProps: () => FormProps
     Field: FieldComponent<TFormData, TFormData>
     useField: UseField<TFormData>
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
@@ -31,11 +24,6 @@ declare module '@tanstack/form-core' {
   }
 }
 
-export type FormProps = {
-  onSubmit: (e: FormSubmitEvent) => void
-  disabled: boolean
-}
-
 export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
   const [formApi] = React.useState(() => {
     // @ts-ignore
@@ -45,12 +33,6 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
     api.Provider = (props) => (
       <formContext.Provider {...props} value={{ formApi: api }} />
     )
-    api.getFormProps = () => {
-      return {
-        onSubmit: formApi.handleSubmit,
-        disabled: api.state.isSubmitting,
-      }
-    }
     api.Field = Field as any
     api.useField = useField as any
     api.useStore = (

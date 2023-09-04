@@ -24,8 +24,15 @@ const TanStackFormOnChangeBenchmark = () => {
           return (
             <form.Field
               key={i}
-              name={NEVER_TYPE} //look at this
+              name={`num[${i}]` as never}
               onChange={(value) => NEVER_TYPE} //look at this
+              // onChange={(value) =>
+              //   !value
+              //     ? 'A first name is required'
+              //     : value.length < 3
+              //     ? 'First name must be at least 3 characters'
+              //     : undefined
+              // }
               children={(field) => {
                 return (
                   <div>

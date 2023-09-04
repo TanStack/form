@@ -27,17 +27,22 @@ export default function App() {
 
   return (
     <div>
-      <form.Form>
+      <form.Provider>
         <div>
           <form.Field
             name="fullName"
             children={(field) => (
-              <input name={field.name} {...field.getInputProps()} />
+              <input
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
             )}
           />
         </div>
         <button type="submit">Submit</button>
-      </form.Form>
+      </form.Provider>
     </div>
   )
 }

@@ -1,4 +1,5 @@
-import { fireEvent, render } from '@testing-library/react'
+/// <reference lib="dom" />
+import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import * as React from 'react'
@@ -25,7 +26,12 @@ describe('useForm', () => {
             defaultValue={''}
             children={(field) => {
               return (
-                <input data-testid="fieldinput" {...field.getInputProps()} />
+                <input
+                  data-testid="fieldinput"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
               )
             }}
           />
@@ -61,7 +67,7 @@ describe('useForm', () => {
           <form.Field
             name="firstName"
             children={(field) => {
-              return <p>{field.getInputProps().value}</p>
+              return <p>{field.state.value}</p>
             }}
           />
         </form.Provider>

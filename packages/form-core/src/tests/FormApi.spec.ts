@@ -7,7 +7,7 @@ describe('form api', () => {
     const form = new FormApi()
 
     expect(form.state).toEqual({
-      values: undefined,
+      values: {},
       fieldMeta: {},
       canSubmit: true,
       isFieldsValid: true,
@@ -59,7 +59,7 @@ describe('form api', () => {
     })
 
     expect(form.state).toEqual({
-      values: undefined,
+      values: {},
       fieldMeta: {},
       canSubmit: true,
       isFieldsValid: true,
