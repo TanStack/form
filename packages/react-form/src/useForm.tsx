@@ -2,7 +2,7 @@ import type { FormState, FormOptions } from '@tanstack/form-core'
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import type { NoInfer } from '@tanstack/react-store'
 import { useStore } from '@tanstack/react-store'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useMemo, useRef } from 'react'
 import { type UseField, type FieldComponent, Field, useField } from './useField'
 import { formContext } from './formContext'
 
@@ -51,32 +51,28 @@ const stableKeyTypes = [
   | 'function'
 >
 
-function useStableFormOpts<TData>(opts: FormOptions<TData> = {}) {
-  const [options, setOptions] = useState(opts)
+function useStableFormOpts<TData>(newOptions: FormOptions<TData> = {}) {
+  const oldOptions = useRef(newOptions)
 
-  // TODO: Migrate to useMemo
-  useEffect(() => {
-    const newOptions = opts
-    setOptions((oldOptions) => {
-      let rerender = false
-      const changedKeys = {} as Partial<FormOptions<TData>>
-      for (let optKey in newOptions) {
-        const key: keyof typeof newOptions = optKey as never
-        // Functions must be assigned to `options`
-        if (stableKeyTypes.includes(typeof newOptions[key])) continue
-        if (
-          typeof newOptions[key] === 'function' &&
-          oldOptions[key] !== newOptions[key]
-        ) {
-          changedKeys[key] = newOptions[key]
-          rerender = true
-        }
+  const options = useMemo(() => {
+    let rerender = false
+    const changedKeys = {} as Partial<FormOptions<TData>>
+    for (let optKey in newOptions) {
+      const key: keyof typeof newOptions = optKey as never
+      // Functions must be assigned to `options`
+      if (stableKeyTypes.includes(typeof newOptions[key])) continue
+      if (
+        typeof newOptions[key] === 'function' &&
+        oldOptions.current[key] !== newOptions[key]
+      ) {
+        changedKeys[key] = newOptions[key]
+        rerender = true
       }
-      // No change needed, return stable reference
-      if (!rerender) return oldOptions
-      return Object.assign({}, oldOptions, changedKeys)
-    })
-  })
+    }
+    // No change needed, return stable reference
+    if (!rerender) return oldOptions.current
+    return Object.assign({}, oldOptions.current, changedKeys)
+  }, [newOptions])
 
   return options
 }
