@@ -165,8 +165,6 @@ export class FieldApi<TData, TFormData> {
   update = (opts: FieldApiOptions<typeof this._tdata, TFormData>) => {
     this.options = {
       asyncDebounceMs: this.form.options.asyncDebounceMs ?? 0,
-      onChangeAsyncDebounceMs: this.form.options.onChangeAsyncDebounceMs ?? 0,
-      onBlurAsyncDebounceMs: this.form.options.onBlurAsyncDebounceMs ?? 0,
       ...opts,
     } as never
 
@@ -312,7 +310,7 @@ export class FieldApi<TData, TFormData> {
             ? onChangeAsyncDebounceMs
             : onBlurAsyncDebounceMs) ??
           asyncDebounceMs ??
-          500
+          0
 
     if (this.state.meta.isValidating !== true)
       this.setMeta((prev) => ({ ...prev, isValidating: true }))
