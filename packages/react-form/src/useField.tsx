@@ -10,19 +10,13 @@ import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useFormContext, formContext } from './formContext'
 import { useStableFieldOpts } from './utils/useStableOptions'
 import { useIsomorphicLayoutEffect } from './utils/useIsomorphicLayoutEffect'
+import type { UseFieldOptions } from './types'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
   interface FieldApi<TData, TFormData> {
     Field: FieldComponent<TData, TFormData>
   }
-}
-
-export type UseFieldOptions<TData, TFormData> = FieldOptions<
-  TData,
-  TFormData
-> & {
-  mode?: 'value' | 'array'
 }
 
 export type UseField<TFormData> = <TField extends DeepKeys<TFormData>>(

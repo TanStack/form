@@ -1,6 +1,6 @@
-import { FormOptions } from '@tanstack/form-core'
-import { useMemo, useRef } from 'react'
-import { UseFieldOptions } from '../useField'
+import React, { useMemo, useRef } from 'react'
+import type { FormOptions } from '@tanstack/form-core'
+import type { UseFieldOptions } from '../types'
 
 /**
  * This allows us to not force our users to `useMemo` the arguments passed to
@@ -37,7 +37,7 @@ function useStableOpts<PropType extends object>(
   const options = useMemo(() => {
     let rerender = false
     const changedKeys = {} as Partial<PropType>
-    for (let optKey in newOptions) {
+    for (const optKey in newOptions) {
       const key: keyof typeof newOptions = optKey as never
       // Functions must be assigned to `options`
       if (stableKeyTypes.includes(typeof newOptions[key])) continue
