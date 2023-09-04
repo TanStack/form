@@ -1,5 +1,4 @@
-import * as React from 'react'
-//
+import React, { useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import type {
   DeepKeys,
@@ -9,8 +8,8 @@ import type {
 } from '@tanstack/form-core'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useFormContext, formContext } from './formContext'
-import { useStableFieldOpts } from './useStableOptions'
-import { useEffect } from 'react'
+import { useStableFieldOpts } from './utils/useStableOptions'
+import { useIsomorphicLayoutEffect } from './utils/useIsomorphicLayoutEffect'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
@@ -39,7 +38,7 @@ export function useField<TData, TFormData>(
   // Get the form API either manually or from context
   const { formApi, parentFieldName } = useFormContext()
 
-  const [fieldApi] = React.useState<FieldApi<TData, TFormData>>(() => {
+  const [fieldApi] = useState<FieldApi<TData, TFormData>>(() => {
     const name = (
       typeof opts.index === 'number'
         ? [parentFieldName, opts.index, opts.name]
@@ -58,7 +57,7 @@ export function useField<TData, TFormData>(
   const options = useStableFieldOpts(opts)
 
   // Keep options up to date as they are rendered
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     fieldApi.update({ ...options, form: formApi } as never)
   }, [fieldApi, formApi, options])
 
@@ -72,7 +71,7 @@ export function useField<TData, TFormData>(
   )
 
   // Instantiates field meta and removes it when unrendered
-  React.useEffect(() => fieldApi.mount(), [fieldApi])
+  useIsomorphicLayoutEffect(() => fieldApi.mount(), [fieldApi])
 
   return fieldApi
 }

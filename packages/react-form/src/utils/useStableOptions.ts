@@ -1,6 +1,6 @@
 import { FormOptions } from '@tanstack/form-core'
 import { useMemo, useRef } from 'react'
-import { UseFieldOptions } from './useField'
+import { UseFieldOptions } from '../useField'
 
 /**
  * This allows us to not force our users to `useMemo` the arguments passed to

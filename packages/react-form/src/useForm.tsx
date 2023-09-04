@@ -2,10 +2,11 @@ import type { FormState, FormOptions } from '@tanstack/form-core'
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import type { NoInfer } from '@tanstack/react-store'
 import { useStore } from '@tanstack/react-store'
-import React, { useCallback, useMemo, useRef } from 'react'
+import React, { type ReactNode, useCallback, useState } from 'react'
 import { type UseField, type FieldComponent, Field, useField } from './useField'
 import { formContext } from './formContext'
-import { useStableFormOpts } from "./useStableOptions";
+import { useStableFormOpts } from './utils/useStableOptions'
+import { useIsomorphicLayoutEffect } from './utils/useIsomorphicLayoutEffect'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
@@ -18,15 +19,13 @@ declare module '@tanstack/form-core' {
     ) => TSelected
     Subscribe: <TSelected = NoInfer<FormState<TFormData>>>(props: {
       selector?: (state: NoInfer<FormState<TFormData>>) => TSelected
-      children:
-        | ((state: NoInfer<TSelected>) => React.ReactNode)
-        | React.ReactNode
+      children: ((state: NoInfer<TSelected>) => ReactNode) | ReactNode
     }) => any
   }
 }
 
 export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
-  const [formApi] = React.useState(() => {
+  const [formApi] = useState(() => {
     // @ts-ignore
     const api = new FormApi<TData>(opts)
 
@@ -61,7 +60,7 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
 
   const options = useStableFormOpts(opts)
 
-  React.useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     formApi.update(options)
   }, [formApi, options])
 
