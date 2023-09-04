@@ -29,7 +29,7 @@ const stableKeyTypes = [
   | 'function'
 >
 
-function useStableOpts<PropType extends object>(
+export function useStableOpts<PropType extends object>(
   newOptions: Partial<PropType> = {},
 ) {
   const oldOptions = useRef(newOptions)
@@ -54,7 +54,7 @@ function useStableOpts<PropType extends object>(
     return Object.assign({}, oldOptions.current, changedKeys)
   }, [newOptions])
 
-  return options
+  return options as PropType
 }
 
 export function useStableFormOpts<TData>(newOptions: FormOptions<TData> = {}) {
