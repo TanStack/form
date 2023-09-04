@@ -9,7 +9,7 @@ import { useStableOpts } from '../utils/useStableOptions'
 const user = userEvent.setup()
 
 describe('useStableOpts', () => {
-  it('should not re-render numbers', () => {
+  it('should not re-render keys to stabilize', async () => {
     const Child = ({ options }: { options: { a: number } }) => {
       return <div>{options.a}</div>
     }
@@ -19,7 +19,10 @@ describe('useStableOpts', () => {
         a: 1,
       })
 
-      const options = useStableOpts(opts)
+      const options = useStableOpts(opts, {
+        unstableKeys: [],
+        stableKeys: ['a'],
+      } as const)
       return (
         <div>
           <Child options={options} />
@@ -30,11 +33,11 @@ describe('useStableOpts', () => {
 
     const { getByText } = render(<Parent />)
     expect(getByText('1')).toBeInTheDocument()
-    user.click(getByText('Change a'))
+    await user.click(getByText('Change a'))
     expect(getByText('1')).toBeInTheDocument()
   })
 
-  it('should re-render functions', async () => {
+  it('should re-render unstable keys', async () => {
     const Child = ({ options }: { options: { a: () => number } }) => {
       return <div>{options.a()}</div>
     }
@@ -44,7 +47,10 @@ describe('useStableOpts', () => {
         a: () => 1 as number,
       })
 
-      const options = useStableOpts(opts)
+      const options = useStableOpts(opts, {
+        unstableKeys: ['a'],
+        stableKeys: [],
+      } as const)
       return (
         <div>
           <Child options={options} />
@@ -55,7 +61,7 @@ describe('useStableOpts', () => {
 
     const { getByText } = render(<Parent />)
     expect(getByText('1')).toBeInTheDocument()
-    user.click(getByText('Change a'))
+    await user.click(getByText('Change a'))
     await waitFor(() => expect(getByText('2')).toBeInTheDocument())
   })
 })
