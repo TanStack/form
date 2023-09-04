@@ -9,6 +9,8 @@ import type {
 } from '@tanstack/form-core'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useFormContext, formContext } from './formContext'
+import { useStableFieldOpts } from './useStableOptions'
+import { useEffect } from 'react'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
@@ -53,8 +55,12 @@ export function useField<TData, TFormData>(
     return api
   })
 
+  const options = useStableFieldOpts(opts)
+
   // Keep options up to date as they are rendered
-  fieldApi.update({ ...opts, form: formApi } as never)
+  useEffect(() => {
+    fieldApi.update({ ...options, form: formApi } as never)
+  }, [fieldApi, formApi, options])
 
   useStore(
     fieldApi.store as any,
