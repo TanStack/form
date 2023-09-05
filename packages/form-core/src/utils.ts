@@ -101,6 +101,10 @@ function makePathArray(str: string) {
     })
 }
 
+export function isNonEmptyArray(obj: any) {
+  return !(Array.isArray(obj) && obj.length === 0)
+}
+
 export type RequiredByKey<T, K extends keyof T> = Omit<T, K> &
   Required<Pick<T, K>>
 
