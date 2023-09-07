@@ -13,12 +13,9 @@ import { useForm } from '@tanstack/react-form'
 export default function App() {
   const form = useForm({
     // Memoize your default values to prevent re-renders
-    defaultValues: React.useMemo(
-      () => ({
-        fullName: '',
-      }),
-      [],
-    ),
+    defaultValues: {
+      fullName: '',
+    },
     onSubmit: async (values) => {
       // Do something with form data
       console.log(values)
