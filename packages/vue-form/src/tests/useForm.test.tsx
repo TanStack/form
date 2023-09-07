@@ -1,5 +1,5 @@
 /// <reference lib="dom" />
-import { h, defineComponent } from 'vue-demi'
+import { h, defineComponent, ref } from 'vue-demi'
 import { render } from '@testing-library/vue'
 import '@testing-library/jest-dom'
 import {
@@ -11,7 +11,6 @@ import {
 import userEvent from '@testing-library/user-event'
 import * as React from 'react'
 import { waitFor } from '@testing-library/react'
-import { ref } from 'vue'
 
 const user = userEvent.setup()
 
