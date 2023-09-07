@@ -15,24 +15,22 @@ import { ErrorMessage } from '@hookform/error-message'
 const arr = Array.from({ length: 1000 }, (_, i) => i)
 
 const TanStackFormOnChangeBenchmark = () => {
-  let NEVER_TYPE: never
   const form = useForm()
   return (
     <form.Provider>
-      <form {...form.getFormProps()}>
+      <form>
         {arr.map((num, i) => {
           return (
             <form.Field
               key={i}
-              name={`num[${i}]` as never}
-              onChange={(value) => NEVER_TYPE} //look at this
-              // onChange={(value) =>
-              //   !value
-              //     ? 'A first name is required'
-              //     : value.length < 3
-              //     ? 'First name must be at least 3 characters'
-              //     : undefined
-              // }
+              name={`num[${i}]`}
+              onChange={(value) =>
+                !value
+                  ? 'A first name is required'
+                  : value.length < 3
+                  ? 'First name must be at least 3 characters'
+                  : undefined
+              }
               children={(field) => {
                 return (
                   <div>
