@@ -1,9 +1,9 @@
+/// <reference lib="dom" />
 import { h, defineComponent } from 'vue-demi'
 import { render } from '@testing-library/vue'
 import '@testing-library/jest-dom'
-import { createFormFactory, provideFormContext, useForm } from "../index";
+import { createFormFactory, type FieldApi, provideFormContext } from '../index'
 import userEvent from '@testing-library/user-event'
-import * as React from 'react'
 
 const user = userEvent.setup()
 
@@ -21,24 +21,20 @@ describe('useForm', () => {
 
       provideFormContext({ formApi: form })
 
-      return () =>
-        h(
-          form.Field,
-          {
-            name: 'firstName',
-            defaultValue: '',
-          },
-          {
-            default: function (field) {
-              return h('input', {
-                'data-testid': 'fieldinput',
-                value: field.state.value,
-                onBlur: field.handleBlur,
-                onInput: (e) => field.handleChange(e.target.value),
-              })
-            },
-          },
-        )
+      return () => (
+        <form.Field name="firstName" defaultValue="">
+          {(field: FieldApi<string, { firstName: string }>) => (
+            <input
+              data-testid={'fieldinput'}
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onInput={(e) =>
+                field.handleChange((e.target as HTMLInputElement).value)
+              }
+            />
+          )}
+        </form.Field>
+      )
     })
 
     const { getByTestId, queryByText } = render(Comp)
@@ -66,11 +62,11 @@ describe('useForm', () => {
       form.provideFormContext()
 
       return () => (
-        <form.Field
-          name="firstName"
-          defaultValue=""
-          children={(field) => <p>{field.state.value}</p>}
-        />
+        <form.Field name="firstName" defaultValue="">
+          {(field: FieldApi<string, { firstName: string }>) => (
+            <p>{field.state.value}</p>
+          )}
+        </form.Field>
       )
     })
 
