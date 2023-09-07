@@ -1,6 +1,6 @@
-import React, { useCallback } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
-import { useForm, useFormCallback } from "@tanstack/react-form";
+import { useForm } from "@tanstack/react-form";
 import type { FieldApi } from "@tanstack/react-form";
 
 function FieldInfo({ field }: { field: FieldApi<any, any> }) {
@@ -21,10 +21,10 @@ export default function App() {
       firstName: "",
       lastName: "",
     },
-    onSubmit: useFormCallback(async (values) => {
+    onSubmit: async (values) => {
       // Do something with form data
       console.log(values);
-    }, []),
+    },
   });
 
   return (

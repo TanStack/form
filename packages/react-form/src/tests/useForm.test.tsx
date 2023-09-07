@@ -3,7 +3,7 @@ import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import * as React from 'react'
-import { createFormFactory, useForm, useFormCallback } from '..'
+import { createFormFactory, useForm } from '..'
 
 const user = userEvent.setup()
 
@@ -89,9 +89,9 @@ describe('useForm', () => {
         defaultValues: {
           firstName: 'FirstName',
         },
-        onSubmit: useFormCallback((data) => {
+        onSubmit: (data) => {
           setSubmittedData(data)
-        }, []),
+        },
       })
 
       return (

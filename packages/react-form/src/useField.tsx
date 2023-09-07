@@ -8,7 +8,6 @@ import type {
 } from '@tanstack/form-core'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useFormContext, formContext } from './formContext'
-import { useStableFieldOpts } from './utils/useStableOptions'
 import { useIsomorphicLayoutEffect } from './utils/useIsomorphicLayoutEffect'
 import type { UseFieldOptions } from './types'
 
@@ -48,12 +47,13 @@ export function useField<TData, TFormData>(
     return api
   })
 
-  const options = useStableFieldOpts(opts)
-
-  // Keep options up to date as they are rendered
+  /**
+   * fieldApi.update should not have any side effects. Think of it like a `useRef`
+   * that we need to keep updated every render with the most up-to-date information.
+   */
   useIsomorphicLayoutEffect(() => {
-    fieldApi.update({ ...options, form: formApi } as never)
-  }, [fieldApi, formApi, options])
+    fieldApi.update({ ...opts, form: formApi } as never)
+  })
 
   useStore(
     fieldApi.store as any,

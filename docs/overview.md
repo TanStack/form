@@ -28,7 +28,7 @@ In the example below, you can see TanStack Form in action with the React framewo
 ```tsx
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { useForm, useFormCallback } from '@tanstack/react-form'
+import { useForm } from '@tanstack/react-form'
 import type { FieldApi } from '@tanstack/react-form'
 
 function FieldInfo({ field }: { field: FieldApi<any, any> }) {
@@ -48,12 +48,10 @@ export default function App() {
       firstName: '',
       lastName: '',
     },
-    // Memoize your onSubmit to prevent re-renders
-    // Using useFormCallback instead of useCallback to fix TypeScript issues with React
-    onSubmit: useFormCallback(async (values) => {
+    onSubmit: async (values) => {
       // Do something with form data
       console.log(values)
-    }, []),
+    },
   })
 
   return (

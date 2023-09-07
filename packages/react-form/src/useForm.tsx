@@ -2,10 +2,9 @@ import type { FormState, FormOptions } from '@tanstack/form-core'
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import type { NoInfer } from '@tanstack/react-store'
 import { useStore } from '@tanstack/react-store'
-import React, { type ReactNode, useCallback, useState } from 'react'
+import React, { type ReactNode, useState } from 'react'
 import { type UseField, type FieldComponent, Field, useField } from './useField'
 import { formContext } from './formContext'
-import { useStableFormOpts } from './utils/useStableOptions'
 import { useIsomorphicLayoutEffect } from './utils/useIsomorphicLayoutEffect'
 
 declare module '@tanstack/form-core' {
@@ -58,24 +57,13 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
 
   formApi.useStore((state) => state.isSubmitting)
 
-  const options = useStableFormOpts(opts)
-
+  /**
+   * formApi.update should not have any side effects. Think of it like a `useRef`
+   * that we need to keep updated every render with the most up-to-date information.
+   */
   useIsomorphicLayoutEffect(() => {
-    formApi.update(options)
-  }, [formApi, options])
+    formApi.update(opts)
+  })
 
   return formApi as any
 }
-
-/**
- * This is a hack to get around the fact that the type of useCallback does not
- * allow for the props type to be inferred. This is a known issue:
- * @see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/52873#issuecomment-845806435
- */
-export const useFormCallback = useCallback as never as <
-  Props extends Array<any>,
-  Return,
->(
-  fn: (...props: Props) => Return,
-  deps: Array<any>,
-) => typeof fn
