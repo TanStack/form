@@ -135,11 +135,7 @@ export const Field = defineComponent(
       parentFieldName: fieldApi.api.name,
     } as never)
 
-    const contents = computed(() =>
-      context.slots.default!(fieldApi.api, fieldApi.state.value),
-    )
-
-    return () => contents.value
+    return () => context.slots.default!(fieldApi.api, fieldApi.state.value)
   },
   { name: 'Field', inheritAttrs: false },
 )
