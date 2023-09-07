@@ -20,24 +20,20 @@ describe('useForm', () => {
       const form = formFactory.useForm()
       form.provideFormContext()
 
-      const inputSlots = {
-        default: ({ field }: { field: any }) => (
-          <input
-            data-testid="fieldinput"
-            value={field.state.value}
-            onBlur={field.handleBlur}
-            onInput={(e) => field.handleChange(e.target.value)}
-          />
-        ),
-      }
-
-      const slots = {
-        default: () => (
-          <form.Field name="firstName" defaultValue="" v-slots={inputSlots} />
-        ),
-      }
-
-      return () => <form.Provider v-slots={slots} />
+      return () => (
+        <form.Field
+          name="firstName"
+          defaultValue=""
+          children={(field) => (
+            <input
+              data-testid="fieldinput"
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onInput={(e) => field.handleChange(e.target.value)}
+            />
+          )}
+        />
+      )
     })
 
     const { getByTestId, queryByText } = render(Comp)
