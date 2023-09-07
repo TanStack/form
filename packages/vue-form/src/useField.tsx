@@ -19,7 +19,6 @@ declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
   interface FieldApi<TData, TFormData> {
     Field: FieldComponent<TData, TFormData>
-    __internal: number
   }
 }
 
@@ -56,7 +55,6 @@ export function useField<TData, TFormData>(
     const api = new FieldApi({ ...opts, form: formApi, name: name as never })
 
     api.Field = Field as never
-    api.__internal = 0
 
     return api
   })()
