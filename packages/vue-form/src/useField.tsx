@@ -8,10 +8,11 @@ import {
 import { useStore } from '@tanstack/vue-store'
 import {
   type SetupContext,
-  watchEffect,
   defineComponent,
-  computed,
   type Ref,
+  onMounted,
+  onUnmounted,
+  watch,
 } from 'vue-demi'
 import { provideFormContext, useFormContext } from './formContext'
 
@@ -59,15 +60,24 @@ export function useField<TData, TFormData>(
     return api
   })()
 
-  // Keep options up to date as they are rendered
-  fieldApi.update({ ...opts, form: formApi } as never)
-
   const fieldState = useStore(fieldApi.store, (state) => state)
 
-  watchEffect((onCleanup) => {
-    const cleanup = fieldApi.mount()
-    onCleanup(() => cleanup())
+  let cleanup!: () => void
+  onMounted(() => {
+    cleanup = fieldApi.mount()
   })
+
+  onUnmounted(() => {
+    cleanup()
+  })
+
+  watch(
+    () => opts,
+    () => {
+      // Keep options up to date as they are rendered
+      fieldApi.update({ ...opts, form: formApi } as never)
+    },
+  )
 
   return { api: fieldApi, state: fieldState } as never
 }
