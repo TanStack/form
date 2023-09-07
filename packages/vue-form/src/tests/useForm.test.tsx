@@ -16,24 +16,29 @@ describe('useForm', () => {
 
     const formFactory = createFormFactory<Person>()
 
-    const Comp = defineComponent(() => {
-      const form = formFactory.useForm()
-      form.provideFormContext()
+    const Comp = defineComponent({
+      setup() {
+        const form = formFactory.useForm()
+        form.provideFormContext()
 
-      return () => (
-        <form.Field
-          name="firstName"
-          defaultValue=""
-          children={(field) => (
-            <input
-              data-testid="fieldinput"
-              value={field.state.value}
-              onBlur={field.handleBlur}
-              onInput={(e) => field.handleChange(e.target.value)}
-            />
-          )}
-        />
-      )
+        return () => h(
+          form.Field,
+          {
+            name: "firstName",
+            defaultValue: "",
+            scopedSlots: {
+              default: function(props) {
+                return h('input', {
+                  'data-testid': "fieldinput",
+                  value: props.field.state.value,
+                  onBlur: props.field.handleBlur,
+                  onInput: e => props.field.handleChange(e.target.value)
+                })
+              }
+            }
+          }
+        )
+      },
     })
 
     const { getByTestId, queryByText } = render(Comp)
