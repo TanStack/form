@@ -327,6 +327,13 @@ export class FormApi<TFormData> {
     })
   }
 
+  deleteField = <TField extends DeepKeys<TFormData>>(
+    field: TField,
+  ) => {
+    delete this.state.values[field as keyof TFormData]
+    delete this.state.fieldMeta[field]
+  }
+
   pushFieldValue = <TField extends DeepKeys<TFormData>>(
     field: TField,
     value: DeepValue<TFormData, TField>[number],

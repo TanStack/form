@@ -32,6 +32,7 @@ export interface FieldOptions<
   defaultValue?: TData
   asyncDebounceMs?: number
   asyncAlways?: boolean
+  preserveValue?: boolean
   onMount?: (formApi: FieldApi<TData, TFormData>) => void
   onChange?: ValidateFn<TData, TFormData>
   onChangeAsync?: ValidateAsyncFn<TData, TFormData>
@@ -154,9 +155,13 @@ export class FieldApi<TData, TFormData> {
     this.options.onMount?.(this as never)
 
     return () => {
+      const preserveValue = this.options.preserveValue
       unsubscribe()
-      delete info.instances[this.uid]
-      if (!Object.keys(info.instances).length) {
+      if(!preserveValue) {
+        delete info.instances[this.uid]
+      }
+      
+      if (!Object.keys(info.instances).length && !preserveValue) {
         delete this.form.fieldInfo[this.name]
       }
     }
