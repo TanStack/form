@@ -54,7 +54,7 @@
     "@types/testing-library__jest-dom": "^5.14.5",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "@typescript-eslint/parser": "^6.4.1",
-    "@vitejs/plugin-vue": "^4.2.3",
+    "@vitejs/plugin-vue": "^4.3.4",
     "@vitejs/plugin-vue-jsx": "^3.0.2",
     "@vitest/coverage-istanbul": "^0.34.3",
     "axios": "^0.26.1",
@@ -101,7 +101,7 @@
     "type-fest": "^3.11.0",
     "typescript": "^5.2.2",
     "vitest": "^0.34.3",
-    "vue": "^3.2.47"
+    "vue": "^3.3.4"
   },
   "bundlewatch": {
     "files": [
