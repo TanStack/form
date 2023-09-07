@@ -129,7 +129,7 @@ export class FieldApi<TData, TFormData> {
 
     this.state = this.store.state
     this.prevState = this.state
-    this.update(opts as never)
+    this.options = opts as never
   }
 
   mount = () => {
@@ -151,6 +151,7 @@ export class FieldApi<TData, TFormData> {
       })
     })
 
+    this.update(this.options as never)
     this.options.onMount?.(this as never)
 
     return () => {
@@ -163,26 +164,16 @@ export class FieldApi<TData, TFormData> {
   }
 
   update = (opts: FieldApiOptions<typeof this._tdata, TFormData>) => {
-    this.options = {
-      asyncDebounceMs: this.form.options.asyncDebounceMs ?? 0,
-      ...opts,
-    } as never
-
     // Default Value
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.state.value === undefined) {
-      if (this.options.defaultValue !== undefined) {
-        this.setValue(this.options.defaultValue as never)
-      } else if (
-        opts.form.options.defaultValues?.[
-          this.options.name as keyof TFormData
-        ] !== undefined
-      ) {
-        this.setValue(
-          opts.form.options.defaultValues[
-            this.options.name as keyof TFormData
-          ] as never,
-        )
+      const formDefault =
+        opts.form.options.defaultValues?.[opts.name as keyof TFormData]
+
+      if (opts.defaultValue !== undefined) {
+        this.setValue(opts.defaultValue as never)
+      } else if (formDefault !== undefined) {
+        this.setValue(formDefault as never)
       }
     }
 
@@ -190,6 +181,8 @@ export class FieldApi<TData, TFormData> {
     if (this._getMeta() === undefined) {
       this.setMeta(this.state.meta)
     }
+
+    this.options = opts as never
   }
 
   getValue = (): typeof this._tdata => {
