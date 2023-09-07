@@ -10,4 +10,8 @@ export default defineConfig({
     setupFiles: ['test-setup.ts'],
     coverage: { provider: 'istanbul' },
   },
+  esbuild: {
+    jsxFactory: 'h',
+    jsxFragment: 'Fragment',
+  },
 })
