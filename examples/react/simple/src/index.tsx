@@ -17,13 +17,10 @@ function FieldInfo({ field }: { field: FieldApi<any, any> }) {
 export default function App() {
   const form = useForm({
     // Memoize your default values to prevent re-renders
-    defaultValues: React.useMemo(
-      () => ({
-        firstName: "",
-        lastName: "",
-      }),
-      [],
-    ),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+    },
     onSubmit: async (values) => {
       // Do something with form data
       console.log(values);
