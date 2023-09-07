@@ -281,6 +281,5 @@ describe('form api', () => {
     expect(form.getFieldValue('age')).toStrictEqual(4)
     expect(form.getFieldValue('names')).toStrictEqual(undefined)
     expect(form.getFieldMeta('names')).toStrictEqual(undefined)
->>>>>>> 65493ed (feat: add preserve value to field API)
   })
 })
