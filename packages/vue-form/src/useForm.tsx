@@ -2,7 +2,6 @@ import {
   FormApi,
   type FormState,
   type FormOptions,
-  type FormSubmitEvent,
 } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
 import { type UseField, type FieldComponent, Field, useField } from './useField'
@@ -14,7 +13,6 @@ declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
   interface FormApi<TFormData> {
     Provider: (props: Record<string, any> & {}) => any
-    getFormProps: () => FormProps
     Field: FieldComponent<TFormData, TFormData>
     useField: UseField<TFormData>
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
@@ -26,14 +24,8 @@ declare module '@tanstack/form-core' {
   }
 }
 
-export type FormProps = {
-  onSubmit: (e: FormSubmitEvent) => void
-  disabled: boolean
-}
-
 export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
   const formApi = (() => {
-    // @ts-ignore
     const api = new FormApi<TData>(opts)
 
     api.Provider = defineComponent(
@@ -43,16 +35,9 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
       },
       { name: 'Provider' },
     )
-    api.getFormProps = () => {
-      return {
-        onSubmit: formApi.handleSubmit,
-        disabled: api.state.isSubmitting,
-      }
-    }
     api.Field = Field as never
     api.useField = useField as never
     api.useStore = (
-      // @ts-ignore
       selector,
     ) => {
       return useStore(api.store as never, selector as never) as never

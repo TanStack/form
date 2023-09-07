@@ -8,7 +8,7 @@ function FieldInfo({ field }: { field: FieldApi<any, any> }) {
     <>
       {field.state.meta.touchedError ? (
         <em>{field.state.meta.touchedError}</em>
-      ) : null}{" "}
+      ) : null}
       {field.state.meta.isValidating ? "Validating..." : null}
     </>
   );
@@ -17,13 +17,10 @@ function FieldInfo({ field }: { field: FieldApi<any, any> }) {
 export default function App() {
   const form = useForm({
     // Memoize your default values to prevent re-renders
-    defaultValues: React.useMemo(
-      () => ({
-        firstName: "",
-        lastName: "",
-      }),
-      [],
-    ),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+    },
     onSubmit: async (values) => {
       // Do something with form data
       console.log(values);
@@ -35,7 +32,13 @@ export default function App() {
       <h1>Simple Form Example</h1>
       {/* A pre-bound form component */}
       <form.Provider>
-        <form {...form.getFormProps()}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            void form.handleSubmit();
+          }}
+        >
           <div>
             {/* A type-safe and pre-bound field component*/}
             <form.Field
@@ -59,7 +62,12 @@ export default function App() {
                 return (
                   <>
                     <label htmlFor={field.name}>First Name:</label>
-                    <input name={field.name} {...field.getInputProps()} />
+                    <input
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
                     <FieldInfo field={field} />
                   </>
                 );
@@ -72,7 +80,12 @@ export default function App() {
               children={(field) => (
                 <>
                   <label htmlFor={field.name}>Last Name:</label>
-                  <input name={field.name} {...field.getInputProps()} />
+                  <input
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
                   <FieldInfo field={field} />
                 </>
               )}

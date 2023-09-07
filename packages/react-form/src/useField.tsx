@@ -1,5 +1,4 @@
-import * as React from 'react'
-//
+import React, { useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import type {
   DeepKeys,
@@ -9,19 +8,14 @@ import type {
 } from '@tanstack/form-core'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useFormContext, formContext } from './formContext'
+import { useIsomorphicLayoutEffect } from './utils/useIsomorphicLayoutEffect'
+import type { UseFieldOptions } from './types'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
   interface FieldApi<TData, TFormData> {
     Field: FieldComponent<TData, TFormData>
   }
-}
-
-export type UseFieldOptions<TData, TFormData> = FieldOptions<
-  TData,
-  TFormData
-> & {
-  mode?: 'value' | 'array'
 }
 
 export type UseField<TFormData> = <TField extends DeepKeys<TFormData>>(
@@ -37,7 +31,7 @@ export function useField<TData, TFormData>(
   // Get the form API either manually or from context
   const { formApi, parentFieldName } = useFormContext()
 
-  const [fieldApi] = React.useState<FieldApi<TData, TFormData>>(() => {
+  const [fieldApi] = useState<FieldApi<TData, TFormData>>(() => {
     const name = (
       typeof opts.index === 'number'
         ? [parentFieldName, opts.index, opts.name]
@@ -53,8 +47,13 @@ export function useField<TData, TFormData>(
     return api
   })
 
-  // Keep options up to date as they are rendered
-  fieldApi.update({ ...opts, form: formApi } as never)
+  /**
+   * fieldApi.update should not have any side effects. Think of it like a `useRef`
+   * that we need to keep updated every render with the most up-to-date information.
+   */
+  useIsomorphicLayoutEffect(() => {
+    fieldApi.update({ ...opts, form: formApi } as never)
+  })
 
   useStore(
     fieldApi.store as any,
@@ -66,7 +65,7 @@ export function useField<TData, TFormData>(
   )
 
   // Instantiates field meta and removes it when unrendered
-  React.useEffect(() => fieldApi.mount(), [fieldApi])
+  useIsomorphicLayoutEffect(() => fieldApi.mount(), [fieldApi])
 
   return fieldApi
 }

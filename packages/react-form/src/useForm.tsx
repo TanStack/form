@@ -2,21 +2,15 @@ import type { FormState, FormOptions } from '@tanstack/form-core'
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import type { NoInfer } from '@tanstack/react-store'
 import { useStore } from '@tanstack/react-store'
-import React from 'react'
+import React, { type ReactNode, useState } from 'react'
 import { type UseField, type FieldComponent, Field, useField } from './useField'
 import { formContext } from './formContext'
-
-export type FormSubmitEvent = React.FormEvent<HTMLFormElement>
+import { useIsomorphicLayoutEffect } from './utils/useIsomorphicLayoutEffect'
 
 declare module '@tanstack/form-core' {
-  interface Register {
-    FormSubmitEvent: FormSubmitEvent
-  }
-
   // eslint-disable-next-line no-shadow
   interface FormApi<TFormData> {
     Provider: (props: { children: any }) => any
-    getFormProps: () => FormProps
     Field: FieldComponent<TFormData, TFormData>
     useField: UseField<TFormData>
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
@@ -24,20 +18,13 @@ declare module '@tanstack/form-core' {
     ) => TSelected
     Subscribe: <TSelected = NoInfer<FormState<TFormData>>>(props: {
       selector?: (state: NoInfer<FormState<TFormData>>) => TSelected
-      children:
-        | ((state: NoInfer<TSelected>) => React.ReactNode)
-        | React.ReactNode
+      children: ((state: NoInfer<TSelected>) => ReactNode) | ReactNode
     }) => any
   }
 }
 
-export type FormProps = {
-  onSubmit: (e: FormSubmitEvent) => void
-  disabled: boolean
-}
-
 export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
-  const [formApi] = React.useState(() => {
+  const [formApi] = useState(() => {
     // @ts-ignore
     const api = new FormApi<TData>(opts)
 
@@ -45,12 +32,6 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
     api.Provider = (props) => (
       <formContext.Provider {...props} value={{ formApi: api }} />
     )
-    api.getFormProps = () => {
-      return {
-        onSubmit: formApi.handleSubmit,
-        disabled: api.state.isSubmitting,
-      }
-    }
     api.Field = Field as any
     api.useField = useField as any
     api.useStore = (
@@ -76,9 +57,13 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
 
   formApi.useStore((state) => state.isSubmitting)
 
-  React.useEffect(() => {
+  /**
+   * formApi.update should not have any side effects. Think of it like a `useRef`
+   * that we need to keep updated every render with the most up-to-date information.
+   */
+  useIsomorphicLayoutEffect(() => {
     formApi.update(opts)
-  }, [formApi, opts])
+  })
 
   return formApi as any
 }

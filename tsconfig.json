@@ -12,7 +12,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
-    "lib": ["DOM", "DOM.Iterable", "ES2020"],
+    "lib": ["ES2020"],
     "module": "ES2020",
     "moduleResolution": "node",
     "noImplicitAny": true,

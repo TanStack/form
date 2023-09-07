@@ -9,7 +9,7 @@ const form = useForm({
   },
   onSubmit: async (values) => {
     // Do something with form data
-    alert(values)
+    alert(JSON.stringify(values))
   },
 })
 
@@ -21,7 +21,15 @@ async function onChangeFirstName(value) {
 
 <template>
   <form.Provider>
-    <form v-bind="form.getFormProps()">
+    <form
+      @submit="
+        (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          void form.handleSubmit()
+        }
+      "
+    >
       <div>
         <form.Field
           name="firstName"
@@ -38,7 +46,12 @@ async function onChangeFirstName(value) {
         >
           <template v-slot="field, state">
             <label :htmlFor="field.name">First Name:</label>
-            <input :name="field.name" v-bind="field.getInputProps()" />
+            <input
+              :name="field.name"
+              :value="field.state.value"
+              @input="(e) => field.handleChange(e.target.value)"
+              @blur="field.handleBlur"
+            />
             <FieldInfo :state="state" />
           </template>
         </form.Field>
@@ -47,7 +60,12 @@ async function onChangeFirstName(value) {
         <form.Field name="lastName">
           <template v-slot="field, state">
             <label :htmlFor="field.name">Last Name:</label>
-            <input :name="field.name" v-bind="field.getInputProps()" />
+            <input
+              :name="field.name"
+              :value="field.state.value"
+              @input="(e) => field.handleChange(e.target.value)"
+              @blur="field.handleBlur"
+            />
             <FieldInfo :state="state" />
           </template>
         </form.Field>
