@@ -1,7 +1,7 @@
 import { Store } from '@tanstack/store'
 //
 import type { DeepKeys, DeepValue, Updater } from './utils'
-import { functionalUpdate, getBy, setBy } from './utils'
+import { functionalUpdate, getBy, isNonEmptyArray, setBy } from './utils'
 import type { FieldApi, FieldMeta, ValidationCause } from './FieldApi'
 
 export type FormOptions<TData> = {
@@ -37,12 +37,18 @@ export type FieldInfo<TFormData> = {
 export type ValidationMeta = {
   validationCount?: number
   validationAsyncCount?: number
-  validationPromise?: Promise<ValidationError>
-  validationResolve?: (error: ValidationError) => void
-  validationReject?: (error: unknown) => void
+  validationPromise?: Promise<ValidationError[]>
+  validationResolve?: (errors: ValidationError[]) => void
+  validationReject?: (errors: unknown) => void
 }
 
 export type ValidationError = undefined | false | null | string
+
+export type ValidationErrorMapKeys = `on${Capitalize<ValidationCause>}`
+
+export type ValidationErrorMap = {
+  [K in ValidationErrorMapKeys]?: ValidationError
+}
 
 export type FormState<TData> = {
   values: TData
@@ -117,7 +123,9 @@ export class FormApi<TFormData> {
             (field) => field?.isValidating,
           )
 
-          const isFieldsValid = !fieldMetaValues.some((field) => field?.error)
+          const isFieldsValid = !fieldMetaValues.some((field) =>
+            isNonEmptyArray(field?.errors),
+          )
 
           const isTouched = fieldMetaValues.some((field) => field?.isTouched)
 
@@ -192,8 +200,7 @@ export class FormApi<TFormData> {
     )
 
   validateAllFields = async (cause: ValidationCause) => {
-    const fieldValidationPromises: Promise<ValidationError>[] = [] as any
-
+    const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
     this.store.batch(() => {
       void (Object.values(this.fieldInfo) as FieldInfo<any>[]).forEach(
         (field) => {

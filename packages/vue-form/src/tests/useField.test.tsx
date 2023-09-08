@@ -79,7 +79,7 @@ describe('useField', () => {
                   field.setValue((e.target as HTMLInputElement).value)
                 }
               />
-              <p>{field.getMeta().error}</p>
+              <p>{field.getMeta().errors}</p>
             </div>
           )}
         </form.Field>
@@ -122,7 +122,7 @@ describe('useField', () => {
                   field.handleChange((e.target as HTMLInputElement).value)
                 }
               />
-              <p>{field.getMeta().error}</p>
+              <p>{field.getMeta().errors}</p>
             </div>
           )}
         </form.Field>
@@ -170,7 +170,7 @@ describe('useField', () => {
                   field.handleChange((e.target as HTMLInputElement).value)
                 }
               />
-              <p>{field.getMeta().error}</p>
+              <p>{field.getMeta().errors}</p>
             </div>
           )}
         </form.Field>
@@ -222,7 +222,7 @@ describe('useField', () => {
                   field.handleChange((e.target as HTMLInputElement).value)
                 }
               />
-              <p>{field.getMeta().error}</p>
+              <p>{field.getMeta().errors}</p>
             </div>
           )}
         </form.Field>

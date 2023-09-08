@@ -197,7 +197,7 @@ importers:
         specifier: ^2.3.0
         version: 2.3.0
       tsup:
-        specifier: ^7.1.0
+        specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
       type-fest:
         specifier: ^3.11.0

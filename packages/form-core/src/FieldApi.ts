@@ -1,8 +1,8 @@
-import type { DeepKeys, DeepValue, Updater } from './utils'
-import type { FormApi, ValidationError } from './FormApi'
+import { type DeepKeys, type DeepValue, type Updater } from './utils'
+import type { FormApi, ValidationError, ValidationErrorMap } from './FormApi'
 import { Store } from '@tanstack/store'
 
-export type ValidationCause = 'change' | 'blur' | 'submit'
+export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount'
 
 type ValidateFn<TData, TFormData> = (
   value: TData,
@@ -52,8 +52,9 @@ export type FieldApiOptions<TData, TFormData> = FieldOptions<
 
 export type FieldMeta = {
   isTouched: boolean
-  touchedError?: ValidationError
-  error?: ValidationError
+  touchedErrors: ValidationError[]
+  errors: ValidationError[]
+  errorMap: ValidationErrorMap
   isValidating: boolean
 }
 
@@ -110,6 +111,9 @@ export class FieldApi<TData, TFormData> {
         meta: this._getMeta() ?? {
           isValidating: false,
           isTouched: false,
+          touchedErrors: [],
+          errors: [],
+          errorMap: {},
           ...opts.defaultMeta,
         },
       },
@@ -117,9 +121,9 @@ export class FieldApi<TData, TFormData> {
         onUpdate: () => {
           const state = this.store.state
 
-          state.meta.touchedError = state.meta.isTouched
-            ? state.meta.error
-            : undefined
+          state.meta.touchedErrors = state.meta.isTouched
+            ? state.meta.errors
+            : []
 
           this.prevState = state
           this.state = state
@@ -203,6 +207,9 @@ export class FieldApi<TData, TFormData> {
     ({
       isValidating: false,
       isTouched: false,
+      touchedErrors: [],
+      errors: [],
+      errorMap: {},
       ...this.options.defaultMeta,
     } as FieldMeta)
 
@@ -239,7 +246,6 @@ export class FieldApi<TData, TFormData> {
     const { onChange, onBlur } = this.options
     const validate =
       cause === 'submit' ? undefined : cause === 'change' ? onChange : onBlur
-
     if (!validate) return
 
     // Use the validationCount for all field instances to
@@ -247,16 +253,20 @@ export class FieldApi<TData, TFormData> {
     const validationCount = (this.getInfo().validationCount || 0) + 1
     this.getInfo().validationCount = validationCount
     const error = normalizeError(validate(value as never, this as never))
-
-    if (this.state.meta.error !== error) {
+    const errorMapKey = getErrorMapKey(cause)
+    if (error && this.state.meta.errorMap[errorMapKey] !== error) {
       this.setMeta((prev) => ({
         ...prev,
-        error,
+        errors: [...prev.errors, error],
+        errorMap: {
+          ...prev.errorMap,
+          [getErrorMapKey(cause)]: error,
+        },
       }))
     }
 
-    // If a sync error is encountered, cancel any async validation
-    if (this.state.meta.error) {
+    // If a sync error is encountered for the errorMapKey (eg. onChange), cancel any async validation
+    if (this.state.meta.errorMap[errorMapKey]) {
       this.cancelValidateAsync()
     }
   }
@@ -293,9 +303,7 @@ export class FieldApi<TData, TFormData> {
         : cause === 'submit'
         ? onSubmitAsync
         : onBlurAsync
-
-    if (!validate) return
-
+    if (!validate) return []
     const debounceMs =
       cause === 'submit'
         ? 0
@@ -328,21 +336,25 @@ export class FieldApi<TData, TFormData> {
 
     // Only kick off validation if this validation is the latest attempt
     if (checkLatest()) {
+      const prevErrors = this.getMeta().errors
       try {
         const rawError = await validate(value as never, this as never)
-
         if (checkLatest()) {
           const error = normalizeError(rawError)
           this.setMeta((prev) => ({
             ...prev,
             isValidating: false,
-            error,
+            errors: [...prev.errors, error],
+            errorMap: {
+              ...prev.errorMap,
+              [getErrorMapKey(cause)]: error,
+            },
           }))
-          this.getInfo().validationResolve?.(error)
+          this.getInfo().validationResolve?.([...prevErrors, error])
         }
       } catch (error) {
         if (checkLatest()) {
-          this.getInfo().validationReject?.(error)
+          this.getInfo().validationReject?.([...prevErrors, error])
           throw error
         }
       } finally {
@@ -354,26 +366,25 @@ export class FieldApi<TData, TFormData> {
     }
 
     // Always return the latest validation promise to the caller
-    return this.getInfo().validationPromise
+    return this.getInfo().validationPromise ?? []
   }
 
   validate = (
     cause: ValidationCause,
     value?: typeof this._tdata,
-  ): ValidationError | Promise<ValidationError> => {
+  ): ValidationError[] | Promise<ValidationError[]> => {
     // If the field is pristine and validatePristine is false, do not validate
-    if (!this.state.meta.isTouched) return
-
+    if (!this.state.meta.isTouched) return []
     // Attempt to sync validate first
     this.validateSync(value, cause)
 
-    // If there is an error, return it, do not attempt async validation
-    if (this.state.meta.error) {
+    const errorMapKey = getErrorMapKey(cause)
+    // If there is an error mapped to the errorMapKey (eg. onChange, onBlur, onSubmit), return the errors array, do not attempt async validation
+    if (this.getMeta().errorMap[errorMapKey]) {
       if (!this.options.asyncAlways) {
-        return this.state.meta.error
+        return this.state.meta.errors
       }
     }
-
     // No error? Attempt async validation
     return this.validateAsync(value, cause)
   }
@@ -402,4 +413,17 @@ function normalizeError(rawError?: ValidationError) {
   }
 
   return undefined
+}
+
+function getErrorMapKey(cause: ValidationCause) {
+  switch (cause) {
+    case 'submit':
+      return 'onSubmit'
+    case 'change':
+      return 'onChange'
+    case 'blur':
+      return 'onBlur'
+    case 'mount':
+      return 'onMount'
+  }
 }

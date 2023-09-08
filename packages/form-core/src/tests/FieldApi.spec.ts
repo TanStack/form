@@ -30,6 +30,9 @@ describe('field api', () => {
     expect(field.getMeta()).toEqual({
       isTouched: false,
       isValidating: false,
+      touchedErrors: [],
+      errors: [],
+      errorMap: {},
     })
   })
 
@@ -44,6 +47,9 @@ describe('field api', () => {
     expect(field.getMeta()).toEqual({
       isTouched: true,
       isValidating: false,
+      touchedErrors: [],
+      errors: [],
+      errorMap: {},
     })
   })
 
@@ -193,9 +199,12 @@ describe('field api', () => {
 
     field.mount()
 
-    expect(field.getMeta().error).toBeUndefined()
+    expect(field.getMeta().errors.length).toBe(0)
     field.setValue('other', { touch: true })
-    expect(field.getMeta().error).toBe('Please enter a different value')
+    expect(field.getMeta().errors).toContain('Please enter a different value')
+    expect(field.getMeta().errorMap).toMatchObject({
+      onChange: 'Please enter a different value',
+    })
   })
 
   it('should run async validation onChange', async () => {
@@ -219,10 +228,13 @@ describe('field api', () => {
 
     field.mount()
 
-    expect(field.getMeta().error).toBeUndefined()
+    expect(field.getMeta().errors.length).toBe(0)
     field.setValue('other', { touch: true })
     await vi.runAllTimersAsync()
-    expect(field.getMeta().error).toBe('Please enter a different value')
+    expect(field.getMeta().errors).toContain('Please enter a different value')
+    expect(field.getMeta().errorMap).toMatchObject({
+      onChange: 'Please enter a different value',
+    })
   })
 
   it('should run async validation onChange with debounce', async () => {
@@ -248,13 +260,16 @@ describe('field api', () => {
 
     field.mount()
 
-    expect(field.getMeta().error).toBeUndefined()
+    expect(field.getMeta().errors.length).toBe(0)
     field.setValue('other', { touch: true })
     field.setValue('other')
     await vi.runAllTimersAsync()
     // sleepMock will have been called 2 times without onChangeAsyncDebounceMs
     expect(sleepMock).toHaveBeenCalledTimes(1)
-    expect(field.getMeta().error).toBe('Please enter a different value')
+    expect(field.getMeta().errors).toContain('Please enter a different value')
+    expect(field.getMeta().errorMap).toMatchObject({
+      onChange: 'Please enter a different value',
+    })
   })
 
   it('should run async validation onChange with asyncDebounceMs', async () => {
@@ -280,13 +295,16 @@ describe('field api', () => {
 
     field.mount()
 
-    expect(field.getMeta().error).toBeUndefined()
+    expect(field.getMeta().errors.length).toBe(0)
     field.setValue('other', { touch: true })
     field.setValue('other')
     await vi.runAllTimersAsync()
     // sleepMock will have been called 2 times without asyncDebounceMs
     expect(sleepMock).toHaveBeenCalledTimes(1)
-    expect(field.getMeta().error).toBe('Please enter a different value')
+    expect(field.getMeta().errors).toContain('Please enter a different value')
+    expect(field.getMeta().errorMap).toMatchObject({
+      onChange: 'Please enter a different value',
+    })
   })
 
   it('should run validation onBlur', () => {
@@ -309,7 +327,10 @@ describe('field api', () => {
 
     field.setValue('other', { touch: true })
     field.validate('blur')
-    expect(field.getMeta().error).toBe('Please enter a different value')
+    expect(field.getMeta().errors).toContain('Please enter a different value')
+    expect(field.getMeta().errorMap).toMatchObject({
+      onBlur: 'Please enter a different value',
+    })
   })
 
   it('should run async validation onBlur', async () => {
@@ -333,11 +354,14 @@ describe('field api', () => {
 
     field.mount()
 
-    expect(field.getMeta().error).toBeUndefined()
+    expect(field.getMeta().errors.length).toBe(0)
     field.setValue('other', { touch: true })
     field.validate('blur')
     await vi.runAllTimersAsync()
-    expect(field.getMeta().error).toBe('Please enter a different value')
+    expect(field.getMeta().errors).toContain('Please enter a different value')
+    expect(field.getMeta().errorMap).toMatchObject({
+      onBlur: 'Please enter a different value',
+    })
   })
 
   it('should run async validation onBlur with debounce', async () => {
@@ -363,14 +387,17 @@ describe('field api', () => {
 
     field.mount()
 
-    expect(field.getMeta().error).toBeUndefined()
+    expect(field.getMeta().errors.length).toBe(0)
     field.setValue('other', { touch: true })
     field.validate('blur')
     field.validate('blur')
     await vi.runAllTimersAsync()
     // sleepMock will have been called 2 times without onBlurAsyncDebounceMs
     expect(sleepMock).toHaveBeenCalledTimes(1)
-    expect(field.getMeta().error).toBe('Please enter a different value')
+    expect(field.getMeta().errors).toContain('Please enter a different value')
+    expect(field.getMeta().errorMap).toMatchObject({
+      onBlur: 'Please enter a different value',
+    })
   })
 
   it('should run async validation onBlur with asyncDebounceMs', async () => {
@@ -396,14 +423,17 @@ describe('field api', () => {
 
     field.mount()
 
-    expect(field.getMeta().error).toBeUndefined()
+    expect(field.getMeta().errors.length).toBe(0)
     field.setValue('other', { touch: true })
     field.validate('blur')
     field.validate('blur')
     await vi.runAllTimersAsync()
     // sleepMock will have been called 2 times without asyncDebounceMs
     expect(sleepMock).toHaveBeenCalledTimes(1)
-    expect(field.getMeta().error).toBe('Please enter a different value')
+    expect(field.getMeta().errors).toContain('Please enter a different value')
+    expect(field.getMeta().errorMap).toMatchObject({
+      onBlur: 'Please enter a different value',
+    })
   })
 
   it('should run async validation onSubmit', async () => {
@@ -427,11 +457,48 @@ describe('field api', () => {
 
     field.mount()
 
-    expect(field.getMeta().error).toBeUndefined()
+    expect(field.getMeta().errors.length).toBe(0)
     field.setValue('other', { touch: true })
     field.validate('submit')
     await vi.runAllTimersAsync()
-    expect(field.getMeta().error).toBe('Please enter a different value')
+    expect(field.getMeta().errors).toContain('Please enter a different value')
+    expect(field.getMeta().errorMap).toMatchObject({
+      onSubmit: 'Please enter a different value',
+    })
+  })
+
+  it('should contain multiple errors when running validation onBlur and onChange', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'other',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      onBlur: (value) => {
+        if (value === 'other') return 'Please enter a different value'
+        return
+      },
+      onChange: (value) => {
+        if (value === 'other') return 'Please enter a different value'
+        return
+      },
+    })
+
+    field.mount()
+
+    field.setValue('other', { touch: true })
+    field.validate('blur')
+    expect(field.getMeta().errors).toStrictEqual([
+      'Please enter a different value',
+      'Please enter a different value',
+    ])
+    expect(field.getMeta().errorMap).toEqual({
+      onBlur: 'Please enter a different value',
+      onChange: 'Please enter a different value',
+    })
   })
 
   it('should handle default value on field using state.value', async () => {
