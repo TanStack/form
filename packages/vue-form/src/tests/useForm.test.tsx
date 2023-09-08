@@ -97,7 +97,6 @@ describe('useForm', () => {
         <form.Provider>
           <form.Field name="firstName">
             {({ field }: { field: FieldApi<string, { firstName: string }> }) => {
-              console.log('FIELD', field)
               return (
                 <input
                   value={field.state.value}
