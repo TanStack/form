@@ -7,8 +7,8 @@ const props = defineProps<{
 </script>
 
 <template>
-  <em v-if="props.state.meta.touchedErrors">{{
-    props.state.meta.touchedErrors
+  <em v-if="props.state.meta.touchedError">{{
+    props.state.meta.touchedError
   }}</em>
   {{ props.state.meta.isValidating ? 'Validating...' : null }}
 </template>
