@@ -28,10 +28,10 @@ jobs:
           fetch-depth: '0'
       - uses: pnpm/action-setup@v2.2.4
         with:
-          version: 7
+          version: 8
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.14.2
+          node-version: 18.15.0
           registry-url: https://registry.npmjs.org/
           cache: 'pnpm'
       - name: Install dependencies
