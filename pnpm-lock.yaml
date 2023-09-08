@@ -215,8 +215,8 @@ importers:
   examples/react/simple:
     dependencies:
       '@tanstack/react-form':
-        specifier: 0.0.12
-        version: 0.0.12(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^0.2.1
+        version: link:../../../packages/react-form
       axios:
         specifier: ^0.26.1
         version: 0.26.1
@@ -240,7 +240,7 @@ importers:
   examples/vue/simple:
     dependencies:
       '@tanstack/vue-form':
-        specifier: ^0.2.0
+        specifier: ^0.2.2
         version: link:../../../packages/vue-form
       vue:
         specifier: ^3.3.4
@@ -2656,43 +2656,6 @@ packages:
       '@sinonjs/commons': 3.0.0
     dev: false
 
-  /@tanstack/form-core@0.0.12:
-    resolution: {integrity: sha512-bkrypO6VT9pf43lfFPDLaLeJxUEI1hnlcMZjRbG2FWNq1jrJV1Ib0e6KUsmWDOaBJM4j4gZrsYUTwjMkgfedHQ==}
-    dependencies:
-      '@tanstack/store': 0.0.1-beta.89
-    dev: false
-
-  /@tanstack/react-form@0.0.12(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-Wx4Gr1Xkhsi3OCv4wqZvdwcW6Lb1kyi+k3tb+YCyGtZNgR3RNY8C+RZgAmLQVULt2EjI/qMKLILFNsGq2EthvQ==}
-    peerDependencies:
-      react: ^17.0.0 || ^18.0.0
-      react-dom: ^17.0.0 || ^18.0.0
-      react-native: '*'
-    peerDependenciesMeta:
-      react-dom:
-        optional: true
-      react-native:
-        optional: true
-    dependencies:
-      '@tanstack/form-core': 0.0.12
-      '@tanstack/react-store': 0.0.1-beta.85(react-dom@18.2.0)(react@18.2.0)
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-    dev: false
-
-  /@tanstack/react-store@0.0.1-beta.85(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-5APLxQOHgws735Va5ndbS6aa9pIILcximTr5dQeEFRzCNqjLyJ6YHGDuqng9zLMLzCyNILmdEtpNW0tp5l/tNw==}
-    engines: {node: '>=12'}
-    peerDependencies:
-      react: '>=16'
-      react-dom: '>=16'
-    dependencies:
-      '@tanstack/store': 0.0.1-beta.85
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      use-sync-external-store: 1.2.0(react@18.2.0)
-    dev: false
-
   /@tanstack/react-store@0.1.3(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-nDOgSlarFFbIvVirAi/GcCyqyRMthgpuBhOhN87DkeQEau+ZNGsLKJifzrQYuWB0+4FXmgeoGaY/Dr383MPqZw==}
     peerDependencies:
@@ -2703,16 +2666,6 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       use-sync-external-store: 1.2.0(react@18.2.0)
-    dev: false
-
-  /@tanstack/store@0.0.1-beta.85:
-    resolution: {integrity: sha512-gUn8i4mhS7V5yRTu6NosoKuUBfw4w36JHx0rg2MJ5kAiKukISoTqlzUKKKzmVvVPL6H1xwaDGEf6bmLzLlgZEQ==}
-    engines: {node: '>=12'}
-    dev: false
-
-  /@tanstack/store@0.0.1-beta.89:
-    resolution: {integrity: sha512-YW2aAhsXI4QYLXRnxZzB7MgEah91itQcWAjN3GYg1HKHxPv/11T5bL1CUCSxFLTI0f+45uNRjsmof6eqsN3ECA==}
-    engines: {node: '>=12'}
     dev: false
 
   /@tanstack/store@0.1.3:
