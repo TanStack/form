@@ -117,11 +117,7 @@ export type FieldValue<TFormData, TField> = TFormData extends any[]
 // //   ^?
 
 export type FieldComponent<TParentData, TFormData> = <TField>(
-  fieldOptions: {
-    children?: (
-      fieldApi: FieldApi<FieldValue<TParentData, TField>, TFormData>,
-    ) => any
-  } & Omit<
+  fieldOptions: Omit<
     UseFieldOptions<FieldValue<TParentData, TField>, TFormData>,
     'name' | 'index'
   > &
