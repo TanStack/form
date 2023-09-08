@@ -83,7 +83,7 @@ An object type representing the options for a field in a form.
 
 A type representing the cause of a validation event.
 
-- 'change' | 'blur' | 'submit'
+- 'change' | 'blur' | 'submit' | 'mount'
 
 ### `FieldMeta`
 
@@ -94,13 +94,17 @@ An object type representing the metadata of a field in a form.
   ```
   - A flag indicating whether the field has been touched.
 - ```tsx
-  touchedError?: ValidationError
+  touchedErrors: ValidationError[]
   ```
-  - An optional error related to the touched state of the field.
+  - An array of errors related to the touched state of the field.
 - ```tsx
-  error?: ValidationError
+  errors: ValidationError[]
   ```
-  - An optional error related to the field value.
+  - An array of errors related related to the field value.
+- ```tsx
+  errorMap: ValidationErrorMap
+  ```
+  - A map of errors related related to the field value.
 - ```tsx
   isValidating: boolean
   ```
