@@ -1,6 +1,6 @@
 /// <reference lib="dom" />
 import { h, defineComponent, ref } from 'vue-demi'
-import { render } from '@testing-library/vue'
+import { render, waitFor } from '@testing-library/vue'
 import '@testing-library/jest-dom'
 import {
   createFormFactory,
@@ -10,7 +10,6 @@ import {
 } from '../index'
 import userEvent from '@testing-library/user-event'
 import * as React from 'react'
-import { waitFor } from '@testing-library/react'
 
 const user = userEvent.setup()
 

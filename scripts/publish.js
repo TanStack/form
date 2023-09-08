@@ -18,8 +18,9 @@ import { branchConfigs, packages, rootDir } from './config.js'
 const releaseCommitMsg = (version) => `release: v${version}`
 
 async function run() {
-  const branchName =
-    /** @type {string} */ process.env.BRANCH ?? currentGitBranch()
+  const branchName = /** @type {string} */ (
+    process.env.BRANCH ?? currentGitBranch()
+  )
 
   const isMainBranch = branchName === 'main'
   const npmTag = isMainBranch ? 'latest' : branchName
@@ -42,7 +43,7 @@ async function run() {
     .sort(semver.compare)
 
   // Get the latest tag
-  let latestTag = /** @type {string} */ [...tags].pop()
+  let latestTag = /** @type {string} */ ([...tags].pop())
 
   let range = `${latestTag}..HEAD`
   // let range = ``;
@@ -174,6 +175,7 @@ async function run() {
   // If a package has a dependency that has been updated, we need to update the
   // package that depends on it as well.
   // run this multiple times so that dependencies of dependencies are also included
+  // changes to query-core affect query-persist-client-core, which affects react-query-persist-client and then indirectly the sync/async persisters
   for (let runs = 0; runs < 3; runs++) {
     for (const pkg of packages) {
       const packageJson = await readPackageJson(
@@ -223,17 +225,14 @@ async function run() {
     ? `Manual Release: ${process.env.TAG}`
     : await Promise.all(
         Object.entries(
-          commitsSinceLatestTag.reduce(
-            (acc, next) => {
-              const type = next.parsed.type?.toLowerCase() ?? 'other'
+          commitsSinceLatestTag.reduce((acc, next) => {
+            const type = next.parsed.type?.toLowerCase() ?? 'other'
 
-              return {
-                ...acc,
-                [type]: [...(acc[type] || []), next],
-              }
-            },
-            /** @type {Record<string, import('./types.js').Commit[]>} */ {},
-          ),
+            return {
+              ...acc,
+              [type]: [...(acc[type] || []), next],
+            }
+          }, /** @type {Record<string, import('./types.js').Commit[]>} */ ({})),
         )
           .sort(
             getSorterFn([
@@ -287,7 +286,7 @@ async function run() {
                     : `by ${commit.author.name || commit.author.email}`
                 }`
               }),
-            ).then((c) => /** @type {const} */ [type, c])
+            ).then((c) => /** @type {const} */ ([type, c]))
           }),
       ).then((groups) => {
         return groups
@@ -312,7 +311,7 @@ async function run() {
 
   const releaseType = branchConfig.prerelease
     ? 'prerelease'
-    : /** @type {const} */ { 0: 'patch', 1: 'minor', 2: 'major' }[
+    : /** @type {const} */ ({ 0: 'patch', 1: 'minor', 2: 'major' })[
         recommendedReleaseLevel
       ]
 
