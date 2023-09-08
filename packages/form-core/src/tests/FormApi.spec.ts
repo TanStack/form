@@ -213,4 +213,58 @@ describe('form api', () => {
 
     expect(form.getFieldValue('names')).toStrictEqual(['one', 'three', 'two'])
   })
+
+  it('should not wipe values when updating', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    form.setFieldValue('name', 'other')
+
+    expect(form.getFieldValue('name')).toEqual('other')
+
+    form.update()
+
+    expect(form.getFieldValue('name')).toEqual('other')
+  })
+
+  it('should wipe default values when not touched', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    expect(form.getFieldValue('name')).toEqual('test')
+
+    form.update({
+      defaultValues: {
+        name: 'other',
+      },
+    })
+
+    expect(form.getFieldValue('name')).toEqual('other')
+  })
+
+  it('should not wipe default values when touched', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'one',
+      },
+    })
+
+    expect(form.getFieldValue('name')).toEqual('one')
+
+    form.setFieldValue('name', 'two', { touch: true })
+
+    form.update({
+      defaultValues: {
+        name: 'three',
+      },
+    })
+
+    expect(form.getFieldValue('name')).toEqual('two')
+  })
 })

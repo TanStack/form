@@ -93,6 +93,50 @@
           ]
         }
       ]
+    },
+    {
+      "framework": "vue",
+      "menuItems": [
+        {
+          "label": "Getting Started",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "framework/vue/quick-start"
+            }
+          ]
+        },
+        {
+          "label": "API Reference",
+          "children": [
+            {
+              "label": "useForm",
+              "to": "framework/vue/reference/useForm"
+            },
+            {
+              "label": "useField",
+              "to": "framework/vue/reference/useField"
+            },
+            {
+              "label": "Field",
+              "to": "framework/vue/reference/Field"
+            },
+            {
+              "label": "FormApi",
+              "to": "framework/vue/reference/formApi"
+            }
+          ]
+        },
+        {
+          "label": "Examples",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/vue/examples/simple"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

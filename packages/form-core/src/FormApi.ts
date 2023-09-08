@@ -75,21 +75,20 @@ function getDefaultFormState<TData>(
   defaultState: Partial<FormState<TData>>,
 ): FormState<TData> {
   return {
-    values: {} as any,
-    fieldMeta: {} as any,
-    canSubmit: true,
-    isFieldsValid: false,
-    isFieldsValidating: false,
-    isFormValid: false,
-    isFormValidating: false,
-    isSubmitted: false,
-    isSubmitting: false,
-    isTouched: false,
-    isValid: false,
-    isValidating: false,
-    submissionAttempts: 0,
-    formValidationCount: 0,
-    ...defaultState,
+    values: defaultState.values ?? ({} as never),
+    fieldMeta: defaultState.fieldMeta ?? ({} as never),
+    canSubmit: defaultState.canSubmit ?? true,
+    isFieldsValid: defaultState.isFieldsValid ?? false,
+    isFieldsValidating: defaultState.isFieldsValidating ?? false,
+    isFormValid: defaultState.isFormValid ?? false,
+    isFormValidating: defaultState.isFormValidating ?? false,
+    isSubmitted: defaultState.isSubmitted ?? false,
+    isSubmitting: defaultState.isSubmitting ?? false,
+    isTouched: defaultState.isTouched ?? false,
+    isValid: defaultState.isValid ?? false,
+    isValidating: defaultState.isValidating ?? false,
+    submissionAttempts: defaultState.submissionAttempts ?? 0,
+    formValidationCount: defaultState.formValidationCount ?? 0,
   }
 }
 
@@ -164,15 +163,18 @@ export class FormApi<TFormData> {
     this.store.batch(() => {
       const shouldUpdateValues =
         options.defaultValues &&
-        options.defaultValues !== this.options.defaultValues
+        options.defaultValues !== this.options.defaultValues &&
+        !this.state.isTouched
 
       const shouldUpdateState =
-        options.defaultState !== this.options.defaultState
+        options.defaultState !== this.options.defaultState &&
+        !this.state.isTouched
 
       this.store.setState(() =>
         getDefaultFormState(
           Object.assign(
             {},
+            this.state,
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             shouldUpdateState ? options.defaultState : {},
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition

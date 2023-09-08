@@ -18,29 +18,19 @@ export const packages = [
     packageDir: 'packages/react-form',
     entries: ['main', 'module', 'types'],
   },
+  {
+    name: '@tanstack/vue-form',
+    packageDir: 'packages/vue-form',
+    entries: ['main', 'module', 'types'],
+  },
   // {
-  //   name: '@tanstack/react-form-devtools',
-  //   packageDir: 'packages/react-form-devtools',
+  //   name: '@tanstack/solid-store',
+  //   packageDir: 'packages/solid-store',
   //   entries: ['main', 'module', 'types'],
   // },
   // {
-  //   name: '@tanstack/react-form-persist-client',
-  //   packageDir: 'packages/react-form-persist-client',
-  //   entries: ['main', 'module', 'types'],
-  // },
-  // {
-  //   name: '@tanstack/solid-form',
-  //   packageDir: 'packages/solid-form',
-  //   entries: ['main', 'module', 'types'],
-  // },
-  // {
-  //   name: '@tanstack/svelte-form',
-  //   packageDir: 'packages/svelte-form',
-  //   entries: ['main', 'module', 'types'],
-  // },
-  // {
-  //   name: '@tanstack/vue-form',
-  //   packageDir: 'packages/vue-form',
+  //   name: '@tanstack/svelte-store',
+  //   packageDir: 'packages/svelte-store',
   //   entries: ['main', 'module', 'types'],
   // },
 ]

@@ -500,4 +500,21 @@ describe('field api', () => {
       onChange: 'Please enter a different value',
     })
   })
+
+  it('should handle default value on field using state.value', async () => {
+    interface Form {
+      name: string
+    }
+    const form = new FormApi<Form>()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      defaultValue: 'test',
+    })
+
+    field.mount()
+
+    expect(field.state.value).toBe('test')
+  })
 })
