@@ -52,7 +52,7 @@ export function useField<
       name: opts.name,
     } as never)
 
-    api.Field = Field as any
+    api.Field = Field as never
 
     return api
   })
