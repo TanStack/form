@@ -1,6 +1,9 @@
-import { FieldApi, FieldApiOptions, FormApi } from '@tanstack/form-core'
+import {
+  FieldApi,
+  type FieldApiOptions,
+  type FormApi,
+} from '@tanstack/form-core'
 import type {
-  FieldState,
   DeepKeys,
   DeepValue,
   FieldOptions,

@@ -77,8 +77,8 @@ type GetTData<
   TData,
   TFormData,
   Opts extends FieldApiOptions<TData, TFormData>,
-> = Opts extends FieldApiOptions<TData, TFormData, any, infer TData>
-  ? TData
+> = Opts extends FieldApiOptions<TData, TFormData, any, infer RealTData>
+  ? RealTData
   : never
 
 export class FieldApi<

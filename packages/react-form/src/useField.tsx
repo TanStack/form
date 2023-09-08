@@ -7,7 +7,7 @@ import type {
   FieldOptions,
   Narrow,
 } from '@tanstack/form-core'
-import { FieldApi, FormApi, functionalUpdate } from '@tanstack/form-core'
+import { FieldApi, type FormApi, functionalUpdate } from '@tanstack/form-core'
 import { useFormContext, formContext } from './formContext'
 import useIsomorphicLayoutEffect from 'use-isomorphic-layout-effect'
 
