@@ -246,7 +246,7 @@ export class FieldApi<TData, TFormData> {
     const { onChange, onBlur } = this.options
     const validate =
       cause === 'submit' ? undefined : cause === 'change' ? onChange : onBlur
-
+    console.log(cause, validate)
     if (!validate) return
 
     // Use the validationCount for all field instances to
@@ -377,6 +377,7 @@ export class FieldApi<TData, TFormData> {
     // If the field is pristine and validatePristine is false, do not validate
     if (!this.state.meta.isTouched) return []
     // Attempt to sync validate first
+    console.log(cause)
     this.validateSync(value, cause)
 
     const errorMapKey = getErrorMapKey(cause)
@@ -421,7 +422,7 @@ function getErrorMapKey(cause: ValidationCause) {
     case 'submit':
       return 'onSubmit'
     case 'change':
-      return 'onSubmit'
+      return 'onChange'
     case 'blur':
       return 'onBlur'
     case 'mount':
