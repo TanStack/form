@@ -45,7 +45,7 @@ async function onChangeFirstName(value) {
         :onChangeAsyncDebounceMs="500"
         :onChangeAsync="onChangeFirstName"
       >
-        <template v-slot="field, state">
+        <template v-slot="{ field, state }">
           <label :htmlFor="field.name">First Name:</label>
           <input
             :name="field.name"
@@ -59,7 +59,7 @@ async function onChangeFirstName(value) {
     </div>
     <div>
       <form.Field name="lastName">
-        <template v-slot="field, state">
+        <template v-slot="{ field, state }">
           <label :htmlFor="field.name">Last Name:</label>
           <input
             :name="field.name"

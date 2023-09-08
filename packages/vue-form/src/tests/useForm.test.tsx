@@ -29,7 +29,7 @@ describe('useForm', () => {
 
       return () => (
         <form.Field name="firstName" defaultValue="">
-          {(field: FieldApi<string, Person>) => (
+          {({ field }: { field: FieldApi<string, Person> }) => (
             <input
               data-testid={'fieldinput'}
               value={field.state.value}
@@ -69,7 +69,7 @@ describe('useForm', () => {
 
       return () => (
         <form.Field name="firstName" defaultValue="">
-          {(field: FieldApi<string, Person>) => <p>{field.state.value}</p>}
+          {({ field }: { field: FieldApi<string, Person> }) => <p>{field.state.value}</p>}
         </form.Field>
       )
     })
@@ -96,7 +96,8 @@ describe('useForm', () => {
       return () => (
         <form.Provider>
           <form.Field name="firstName">
-            {(field: FieldApi<string, { firstName: string }>) => {
+            {({ field }: { field: FieldApi<string, { firstName: string }> }) => {
+              console.log('FIELD', field)
               return (
                 <input
                   value={field.state.value}
