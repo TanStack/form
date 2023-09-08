@@ -1,23 +1,14 @@
-import { FieldApi } from '@tanstack/form-core';
+import { FieldApi } from '@tanstack/form-core'
 import type {
   FieldState,
   DeepKeys,
   DeepValue,
   FieldOptions,
-  Narrow
-} from '@tanstack/form-core';
+  Narrow,
+} from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
-import {
-  defineComponent,
-  onMounted,
-  onUnmounted,
-  watch
-} from 'vue-demi';
-import type {
-  SlotsType,
-  SetupContext,
-  Ref
-} from 'vue-demi';
+import { defineComponent, onMounted, onUnmounted, watch } from 'vue-demi'
+import type { SlotsType, SetupContext, Ref } from 'vue-demi'
 import { provideFormContext, useFormContext } from './formContext'
 
 declare module '@tanstack/form-core' {
@@ -130,12 +121,15 @@ export type FieldComponent<TParentData, TFormData> = <TField>(
           name: TField extends undefined ? TField : DeepKeys<TParentData>
           index?: never
         }),
-  context: SetupContext<{}, SlotsType<{
-    default: {
-      field: FieldApi<FieldValue<TParentData, TField>, TFormData>
-      state: FieldState<any>
-    }
-  }>>,
+  context: SetupContext<
+    {},
+    SlotsType<{
+      default: {
+        field: FieldApi<FieldValue<TParentData, TField>, TFormData>
+        state: FieldState<any>
+      }
+    }>
+  >,
 ) => any
 
 export const Field = defineComponent(
@@ -150,10 +144,11 @@ export const Field = defineComponent(
       parentFieldName: fieldApi.api.name,
     } as never)
 
-    return () => context.slots.default!({
-      field: fieldApi.api,
-      state: fieldApi.state.value
-    })
+    return () =>
+      context.slots.default!({
+        field: fieldApi.api,
+        state: fieldApi.state.value,
+      })
   },
   { name: 'Field', inheritAttrs: false },
 )

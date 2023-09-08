@@ -2,7 +2,12 @@ import { FormApi, type FormState, type FormOptions } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
 import { type UseField, type FieldComponent, Field, useField } from './useField'
 import { provideFormContext } from './formContext'
-import { type EmitsOptions, type SlotsType, type SetupContext, defineComponent } from 'vue-demi'
+import {
+  type EmitsOptions,
+  type SlotsType,
+  type SetupContext,
+  defineComponent,
+} from 'vue-demi'
 import type { NoInfer } from './types'
 
 declare module '@tanstack/form-core' {
@@ -15,9 +20,15 @@ declare module '@tanstack/form-core' {
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
       selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,
     ) => TSelected
-    Subscribe: <TSelected = NoInfer<FormState<TFormData>>>(props: {
-      selector?: (state: NoInfer<FormState<TFormData>>) => TSelected
-    }, context: SetupContext<EmitsOptions, SlotsType<{ default: NoInfer<FormState<TFormData>> }>>) => any
+    Subscribe: <TSelected = NoInfer<FormState<TFormData>>>(
+      props: {
+        selector?: (state: NoInfer<FormState<TFormData>>) => TSelected
+      },
+      context: SetupContext<
+        EmitsOptions,
+        SlotsType<{ default: NoInfer<FormState<TFormData>> }>
+      >,
+    ) => any
   }
 }
 
