@@ -28,7 +28,7 @@ form.provideFormContext()
   <div>
     <div>
       <form.Field name="fullName">
-        <template v-slot="field">
+        <template v-slot="{ field }">
           <input
             :name="field.name"
             :value="field.state.value"
