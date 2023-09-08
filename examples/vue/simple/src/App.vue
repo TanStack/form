@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useForm } from '@tanstack/vue-form'
 import FieldInfo from './FieldInfo.vue'
-import { provideFormContext } from '@tanstack/vue-form/src'
 
 const form = useForm({
   defaultValues: {

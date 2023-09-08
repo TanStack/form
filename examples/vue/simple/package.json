@@ -8,7 +8,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@tanstack/vue-form": "workspace:*",
+    "@tanstack/vue-form": "0.2.0",
     "vue": "^3.3.4"
   },
   "devDependencies": {

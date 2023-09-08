@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/react-form": "0.0.12",
+    "@tanstack/react-form": "0.2.0",
     "axios": "^0.26.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
