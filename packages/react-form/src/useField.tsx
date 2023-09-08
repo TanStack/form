@@ -8,7 +8,7 @@ import type {
 } from '@tanstack/form-core'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useFormContext, formContext } from './formContext'
-import { useIsomorphicLayoutEffect } from './utils/useIsomorphicLayoutEffect'
+import useIsomorphicLayoutEffect from 'use-isomorphic-layout-effect'
 import type { UseFieldOptions } from './types'
 
 declare module '@tanstack/form-core' {
