@@ -50,7 +50,7 @@ async function onChangeFirstName(value) {
           <input
             :name="field.name"
             :value="field.state.value"
-            @input="(e) => field.handleChange(e.target.value)"
+            @input="(e) => field.handleChange((e.target as HTMLInputElement).value)"
             @blur="field.handleBlur"
           />
           <FieldInfo :state="state" />
@@ -64,7 +64,7 @@ async function onChangeFirstName(value) {
           <input
             :name="field.name"
             :value="field.state.value"
-            @input="(e) => field.handleChange(e.target.value)"
+            @input="(e) => field.handleChange((e.target as HTMLInputElement).value)"
             @blur="field.handleBlur"
           />
           <FieldInfo :state="state" />
