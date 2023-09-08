@@ -41,6 +41,15 @@
     "test:build": "publint --strict",
     "build": "tsup"
   },
+  "nx": {
+    "targets": {
+      "test:build": {
+        "dependsOn": [
+          "build"
+        ]
+      }
+    }
+  },
   "files": [
     "build",
     "src"

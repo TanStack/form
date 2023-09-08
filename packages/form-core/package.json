@@ -29,9 +29,18 @@
   },
   "sideEffects": false,
   "files": [
-    "build/lib/*",
+    "build",
     "src"
   ],
+  "nx": {
+    "targets": {
+      "test:build": {
+        "dependsOn": [
+          "build"
+        ]
+      }
+    }
+  },
   "scripts": {
     "clean": "rimraf ./build && rimraf ./coverage",
     "test:eslint": "eslint --ext .ts,.tsx ./src",
