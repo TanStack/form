@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "types": ["vitest/globals", "vue/jsx"],
+    "outDir": "./build/lib",
+    "jsx": "preserve",
+    "jsxImportSource": "vue"
+  },
+  "include": ["src"]
+}

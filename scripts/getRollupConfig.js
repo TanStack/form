@@ -9,6 +9,9 @@ import commonJS from '@rollup/plugin-commonjs'
 import externals from 'rollup-plugin-node-externals'
 import preserveDirectives from 'rollup-plugin-preserve-directives'
 import { rootDir } from './config.js'
+import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
+import esbuild from 'rollup-plugin-esbuild'
 
 /** @param {'development' | 'production'} type */
 const forceEnvPlugin = (type) =>
@@ -106,7 +109,26 @@ function modernConfig(opts) {
     input: [opts.entryFile],
     output: forceBundle ? bundleOutput : normalOutput,
     plugins: [
+      vue({
+        isProduction: true,
+      }),
+      vueJsx({
+        exclude: [
+          './packages/solid-form/**',
+          './packages/svelte-form/**',
+          './packages/react-form/**',
+        ],
+      }),
       commonJS(),
+      esbuild({
+        exclude: [],
+        loaders: {
+          '.vue': 'ts',
+        },
+        define: {
+          'process.env.NODE_ENV': JSON.stringify('production'),
+        },
+      }),
       babelPlugin('modern'),
       nodeResolve({ extensions: ['.ts', '.tsx'] }),
       forceDevEnv ? forceEnvPlugin('development') : undefined,
@@ -181,7 +203,26 @@ function legacyConfig(opts) {
     input: [opts.entryFile],
     output: forceBundle ? bundleOutput : normalOutput,
     plugins: [
+      vue({
+        isProduction: true,
+      }),
+      vueJsx({
+        exclude: [
+          './packages/solid-form/**',
+          './packages/svelte-form/**',
+          './packages/react-form/**',
+        ],
+      }),
       commonJS(),
+      esbuild({
+        exclude: [],
+        loaders: {
+          '.vue': 'ts',
+        },
+        define: {
+          'process.env.NODE_ENV': JSON.stringify('production'),
+        },
+      }),
       babelPlugin('legacy'),
       nodeResolve({ extensions: ['.ts', '.tsx'] }),
       forceDevEnv ? forceEnvPlugin('development') : undefined,
