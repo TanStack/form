@@ -2,7 +2,7 @@ import type { FormState, FormOptions } from '@tanstack/form-core'
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import type { NoInfer } from '@tanstack/react-store'
 import { useStore } from '@tanstack/react-store'
-import React, { type ReactNode, useState } from 'react'
+import React, { PropsWithChildren, type ReactNode, useState } from 'react'
 import { type UseField, type FieldComponent, Field, useField } from './useField'
 import { formContext } from './formContext'
 import useIsomorphicLayoutEffect from 'use-isomorphic-layout-effect'
@@ -28,8 +28,8 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
     // @ts-ignore
     const api = new FormApi<TData>(opts)
 
-    api.Provider = function Provider() {
-      return <formContext.Provider value={{ formApi: api }} />
+    api.Provider = function Provider(props) {
+      return <formContext.Provider {...props} value={{ formApi: api }} />
     }
     api.Field = Field as any
     api.useField = useField as any
