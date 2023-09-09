@@ -56,8 +56,6 @@
     "@types/testing-library__jest-dom": "^5.14.5",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "@typescript-eslint/parser": "^6.4.1",
-    "@vitejs/plugin-vue": "^4.3.4",
-    "@vitejs/plugin-vue-jsx": "^3.0.2",
     "@vitest/coverage-istanbul": "^0.34.3",
     "axios": "^0.26.1",
     "babel-eslint": "^10.1.0",

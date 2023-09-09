@@ -43,10 +43,19 @@ export interface FieldOptions<
   defaultMeta?: Partial<FieldMeta>
 }
 
-export type FieldApiOptions<TData, TFormData> = FieldOptions<
-  TData,
-  TFormData
-> & {
+export interface FieldApiOptions<
+  _TData,
+  TFormData,
+  /**
+   * This allows us to restrict the name to only be a valid field name while
+   * also assigning it to a generic
+   */
+  TName = unknown extends TFormData ? string : DeepKeys<TFormData>,
+  /**
+   * If TData is unknown, we can use the TName generic to determine the type
+   */
+  TData = unknown extends _TData ? DeepValue<TFormData, TName> : _TData,
+> extends FieldOptions<_TData, TFormData, TName, TData> {
   form: FormApi<TFormData>
 }
 
@@ -65,35 +74,45 @@ export type FieldState<TData> = {
   meta: FieldMeta
 }
 
-/**
- * TData may not be known at the time of FieldApi construction, so we need to
- * use a conditional type to determine if TData is known or not.
- *
- * If TData is not known, we use the TFormData type to determine the type of
- * the field value based on the field name.
- */
-type GetTData<Name, TData, TFormData> = unknown extends TData
-  ? DeepValue<TFormData, Name>
-  : TData
+type GetTData<
+  TData,
+  TFormData,
+  Opts extends FieldApiOptions<TData, TFormData>,
+> = Opts extends FieldApiOptions<
+  infer _TData,
+  infer _TFormData,
+  infer _TName,
+  infer RealTData
+>
+  ? RealTData
+  : never
 
-export class FieldApi<TData, TFormData> {
+export class FieldApi<
+  _TData,
+  TFormData,
+  Opts extends FieldApiOptions<_TData, TFormData> = FieldApiOptions<
+    _TData,
+    TFormData
+  >,
+  TData extends GetTData<_TData, TFormData, Opts> = GetTData<
+    _TData,
+    TFormData,
+    Opts
+  >,
+> {
   uid: number
-  form: FormApi<TFormData>
+  form: Opts['form']
   name!: DeepKeys<TFormData>
-  /**
-   * This is a hack that allows us to use `GetTData` without calling it everywhere
-   *
-   * Unfortunately this hack appears to be needed alongside the `TName` hack
-   * further up in this file. This properly types all of the internal methods,
-   * while the `TName` hack types the options properly
-   */
-  _tdata!: GetTData<typeof this.name, TData, TFormData>
-  store!: Store<FieldState<typeof this._tdata>>
-  state!: FieldState<typeof this._tdata>
-  prevState!: FieldState<typeof this._tdata>
-  options: FieldOptions<typeof this._tdata, TFormData> = {} as any
+  options: Opts = {} as any
+  store!: Store<FieldState<TData>>
+  state!: FieldState<TData>
+  prevState!: FieldState<TData>
 
-  constructor(opts: FieldApiOptions<TData, TFormData>) {
+  constructor(
+    opts: Opts & {
+      form: FormApi<TFormData>
+    },
+  ) {
     this.form = opts.form
     this.uid = uid++
     // Support field prefixing from FieldScope
@@ -104,7 +123,7 @@ export class FieldApi<TData, TFormData> {
 
     this.name = opts.name as any
 
-    this.store = new Store<FieldState<typeof this._tdata>>(
+    this.store = new Store<FieldState<TData>>(
       {
         value: this.getValue(),
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -138,7 +157,7 @@ export class FieldApi<TData, TFormData> {
 
   mount = () => {
     const info = this.getInfo()
-    info.instances[this.uid] = this
+    info.instances[this.uid] = this as never
 
     const unsubscribe = this.form.store.subscribe(() => {
       this.store.batch(() => {
@@ -167,7 +186,7 @@ export class FieldApi<TData, TFormData> {
     }
   }
 
-  update = (opts: FieldApiOptions<typeof this._tdata, TFormData>) => {
+  update = (opts: FieldApiOptions<TData, TFormData>) => {
     // Default Value
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.state.value === undefined) {
@@ -189,12 +208,12 @@ export class FieldApi<TData, TFormData> {
     this.options = opts as never
   }
 
-  getValue = (): typeof this._tdata => {
+  getValue = (): TData => {
     return this.form.getFieldValue(this.name)
   }
 
   setValue = (
-    updater: Updater<typeof this._tdata>,
+    updater: Updater<TData>,
     options?: { touch?: boolean; notify?: boolean },
   ) => {
     this.form.setFieldValue(this.name, updater as never, options)
@@ -218,17 +237,12 @@ export class FieldApi<TData, TFormData> {
 
   getInfo = () => this.form.getFieldInfo(this.name)
 
-  pushValue = (
-    value: typeof this._tdata extends any[]
-      ? (typeof this._tdata)[number]
-      : never,
-  ) => this.form.pushFieldValue(this.name, value as any)
+  pushValue = (value: TData extends any[] ? TData[number] : never) =>
+    this.form.pushFieldValue(this.name, value as any)
 
   insertValue = (
     index: number,
-    value: typeof this._tdata extends any[]
-      ? (typeof this._tdata)[number]
-      : never,
+    value: TData extends any[] ? TData[number] : never,
   ) => this.form.insertFieldValue(this.name, index, value as any)
 
   removeValue = (index: number) => this.form.removeFieldValue(this.name, index)
@@ -236,8 +250,8 @@ export class FieldApi<TData, TFormData> {
   swapValues = (aIndex: number, bIndex: number) =>
     this.form.swapFieldValues(this.name, aIndex, bIndex)
 
-  getSubField = <TName extends DeepKeys<typeof this._tdata>>(name: TName) =>
-    new FieldApi<DeepValue<typeof this._tdata, TName>, TFormData>({
+  getSubField = <TName extends DeepKeys<TData>>(name: TName) =>
+    new FieldApi<DeepValue<TData, TName>, TFormData>({
       name: `${this.name}.${name}` as never,
       form: this.form,
     })
@@ -371,7 +385,7 @@ export class FieldApi<TData, TFormData> {
 
   validate = (
     cause: ValidationCause,
-    value?: typeof this._tdata,
+    value?: TData,
   ): ValidationError[] | Promise<ValidationError[]> => {
     // If the field is pristine and validatePristine is false, do not validate
     if (!this.state.meta.isTouched) return []
@@ -389,7 +403,7 @@ export class FieldApi<TData, TFormData> {
     return this.validateAsync(value, cause)
   }
 
-  handleChange = (updater: Updater<typeof this._tdata>) => {
+  handleChange = (updater: Updater<TData>) => {
     this.setValue(updater, { touch: true })
   }
 

@@ -28,10 +28,9 @@ export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
     // @ts-ignore
     const api = new FormApi<TData>(opts)
 
-    // eslint-disable-next-line react/display-name
-    api.Provider = (props) => (
-      <formContext.Provider {...props} value={{ formApi: api }} />
-    )
+    api.Provider = function Provider(props) {
+      return <formContext.Provider {...props} value={{ formApi: api }} />
+    }
     api.Field = Field as any
     api.useField = useField as any
     api.useStore = (

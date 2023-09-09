@@ -1,3 +1,9 @@
-export type NoInfer<T> = [T][T extends any ? 0 : never]
+import type { FieldOptions, DeepKeys } from '@tanstack/form-core'
 
-export type ReleaseVersion = 2
+export type UseFieldOptions<
+  TData,
+  TFormData,
+  TName = unknown extends TFormData ? string : DeepKeys<TFormData>,
+> = FieldOptions<TData, TFormData, TName> & {
+  mode?: 'value' | 'array'
+}

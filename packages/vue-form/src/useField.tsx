@@ -1,26 +1,20 @@
-import { FieldApi } from '@tanstack/form-core'
-import type {
-  FieldState,
-  DeepKeys,
-  DeepValue,
-  FieldOptions,
-  Narrow,
+import {
+  FieldApi,
+  type FieldApiOptions,
+  type FormApi,
 } from '@tanstack/form-core'
+import type { DeepKeys, DeepValue, Narrow } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
 import { defineComponent, onMounted, onUnmounted, watch } from 'vue-demi'
 import type { SlotsType, SetupContext, Ref } from 'vue-demi'
 import { provideFormContext, useFormContext } from './formContext'
+import type { UseFieldOptions } from './types'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
-  interface FieldApi<TData, TFormData> {
-    Field: FieldComponent<TData, TFormData>
+  interface FieldApi<_TData, TFormData, Opts, TData> {
+    Field: FieldComponent<TFormData, TData>
   }
-}
-
-export interface UseFieldOptions<TData, TFormData>
-  extends FieldOptions<TData, TFormData> {
-  mode?: 'value' | 'array'
 }
 
 export type UseField<TFormData> = <TField extends DeepKeys<TFormData>>(
@@ -30,25 +24,45 @@ export type UseField<TFormData> = <TField extends DeepKeys<TFormData>>(
   >,
 ) => FieldApi<DeepValue<TFormData, TField>, TFormData>
 
-export function useField<TData, TFormData>(
-  opts: UseFieldOptions<TData, TFormData>,
+export function useField<
+  TData,
+  TFormData,
+  TName extends unknown extends TFormData
+    ? string
+    : DeepKeys<TFormData> = unknown extends TFormData
+    ? string
+    : DeepKeys<TFormData>,
+>(
+  opts: UseFieldOptions<TData, TFormData, TName>,
 ): {
-  api: FieldApi<TData, TFormData>
-  state: Readonly<Ref<FieldApi<TData, TFormData>['state']>>
+  api: FieldApi<
+    TData,
+    TFormData,
+    Omit<typeof opts, 'onMount'> & {
+      form: FormApi<TFormData>
+    }
+  >
+  state: Readonly<
+    Ref<
+      FieldApi<
+        TData,
+        TFormData,
+        Omit<typeof opts, 'onMount'> & {
+          form: FormApi<TFormData>
+        }
+      >['state']
+    >
+  >
 } {
   // Get the form API either manually or from context
   const { formApi, parentFieldName } = useFormContext()
 
   const fieldApi = (() => {
-    const name = (
-      typeof opts.index === 'number'
-        ? [parentFieldName, opts.index, opts.name]
-        : [parentFieldName, opts.name]
-    )
-      .filter((d) => d !== undefined)
-      .join('.')
-
-    const api = new FieldApi({ ...opts, form: formApi, name: name as never })
+    const api = new FieldApi({
+      ...opts,
+      form: formApi,
+      name: opts.name,
+    } as never)
 
     api.Field = Field as never
 
@@ -77,56 +91,49 @@ export function useField<TData, TFormData>(
   return { api: fieldApi, state: fieldState } as never
 }
 
-// export type FieldValue<TFormData, TField> = TFormData extends any[]
-//   ? TField extends `[${infer TIndex extends number | 'i'}].${infer TRest}`
-//     ? DeepValue<TFormData[TIndex extends 'i' ? number : TIndex], TRest>
-//     : TField extends `[${infer TIndex extends number | 'i'}]`
-//     ? TFormData[TIndex extends 'i' ? number : TIndex]
-//     : never
-//   : TField extends `${infer TPrefix}[${infer TIndex extends
-//       | number
-//       | 'i'}].${infer TRest}`
-//   ? DeepValue<
-//       DeepValue<TFormData, TPrefix>[TIndex extends 'i' ? number : TIndex],
-//       TRest
-//     >
-//   : TField extends `${infer TPrefix}[${infer TIndex extends number | 'i'}]`
-//   ? DeepValue<TFormData, TPrefix>[TIndex extends 'i' ? number : TIndex]
-//   : DeepValue<TFormData, TField>
-
 export type FieldValue<TFormData, TField> = TFormData extends any[]
   ? unknown extends TField
     ? TFormData[number]
     : DeepValue<TFormData[number], TField>
   : DeepValue<TFormData, TField>
 
-// type Test1 = FieldValue<{ foo: { bar: string }[] }, 'foo'>
-// //   ^?
-// type Test2 = FieldValue<{ foo: { bar: string }[] }, 'foo[i]'>
-// //   ^?
-// type Test3 = FieldValue<{ foo: { bar: string }[] }, 'foo[2].bar'>
-// //   ^?
+type FieldComponentProps<
+  TParentData,
+  TFormData,
+  TField,
+  TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
+> = (TParentData extends any[]
+  ? {
+      name?: TName
+      index: number
+    }
+  : {
+      name: TName
+      index?: never
+    }) &
+  Omit<UseFieldOptions<TField, TFormData, TName>, 'name' | 'index'>
 
-export type FieldComponent<TParentData, TFormData> = <TField>(
-  fieldOptions: Omit<
-    UseFieldOptions<FieldValue<TParentData, TField>, TFormData>,
-    'name' | 'index'
-  > &
-    (TParentData extends any[]
-      ? {
-          name?: TField extends undefined ? TField : DeepKeys<TParentData>
-          index: number
-        }
-      : {
-          name: TField extends undefined ? TField : DeepKeys<TParentData>
-          index?: never
-        }),
+export type FieldComponent<TParentData, TFormData> = <
+  // Type of the field
+  TField,
+  // Name of the field
+  TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
+>(
+  fieldOptions: FieldComponentProps<TParentData, TFormData, TField, TName>,
   context: SetupContext<
     {},
     SlotsType<{
       default: {
-        field: FieldApi<FieldValue<TParentData, TField>, TFormData>
-        state: FieldState<any>
+        field: FieldApi<
+          TField,
+          TFormData,
+          FieldApiOptions<TField, TFormData, TName>
+        >
+        state: FieldApi<
+          TField,
+          TFormData,
+          FieldApiOptions<TField, TFormData, TName>
+        >['state']
       }
     }>
   >,

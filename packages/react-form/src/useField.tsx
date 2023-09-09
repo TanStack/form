@@ -3,17 +3,17 @@ import { useStore } from '@tanstack/react-store'
 import type {
   DeepKeys,
   DeepValue,
-  FieldOptions,
+  FieldApiOptions,
   Narrow,
 } from '@tanstack/form-core'
-import { FieldApi, functionalUpdate } from '@tanstack/form-core'
+import { FieldApi, type FormApi, functionalUpdate } from '@tanstack/form-core'
 import { useFormContext, formContext } from './formContext'
 import useIsomorphicLayoutEffect from 'use-isomorphic-layout-effect'
 import type { UseFieldOptions } from './types'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
-  interface FieldApi<TData, TFormData> {
+  interface FieldApi<_TData, TFormData, Opts, TData> {
     Field: FieldComponent<TData, TFormData>
   }
 }
@@ -25,13 +25,27 @@ export type UseField<TFormData> = <TField extends DeepKeys<TFormData>>(
   >,
 ) => FieldApi<DeepValue<TFormData, TField>, TFormData>
 
-export function useField<TData, TFormData>(
-  opts: UseFieldOptions<TData, TFormData>,
-): FieldApi<TData, TFormData> {
+export function useField<
+  TData,
+  TFormData,
+  TName extends unknown extends TFormData
+    ? string
+    : DeepKeys<TFormData> = unknown extends TFormData
+    ? string
+    : DeepKeys<TFormData>,
+>(
+  opts: UseFieldOptions<TData, TFormData, TName>,
+): FieldApi<
+  TData,
+  TFormData,
+  Omit<typeof opts, 'onMount'> & {
+    form: FormApi<TFormData>
+  }
+> {
   // Get the form API either manually or from context
   const { formApi, parentFieldName } = useFormContext()
 
-  const [fieldApi] = useState<FieldApi<TData, TFormData>>(() => {
+  const [fieldApi] = useState(() => {
     const name = (
       typeof opts.index === 'number'
         ? [parentFieldName, opts.index, opts.name]
@@ -40,9 +54,13 @@ export function useField<TData, TFormData>(
       .filter((d) => d !== undefined)
       .join('.')
 
-    const api = new FieldApi({ ...opts, form: formApi, name: name as any })
+    const api = new FieldApi({
+      ...opts,
+      form: formApi,
+      name: name,
+    } as never)
 
-    api.Field = Field as any
+    api.Field = Field as never
 
     return api
   })
@@ -56,70 +74,52 @@ export function useField<TData, TFormData>(
   })
 
   useStore(
-    fieldApi.store as any,
+    fieldApi.store,
     opts.mode === 'array'
       ? (state: any) => {
           return [state.meta, Object.keys(state.value || []).length]
         }
       : undefined,
   )
-
   // Instantiates field meta and removes it when unrendered
   useIsomorphicLayoutEffect(() => fieldApi.mount(), [fieldApi])
 
-  return fieldApi
+  return fieldApi as never
 }
 
-// export type FieldValue<TFormData, TField> = TFormData extends any[]
-//   ? TField extends `[${infer TIndex extends number | 'i'}].${infer TRest}`
-//     ? DeepValue<TFormData[TIndex extends 'i' ? number : TIndex], TRest>
-//     : TField extends `[${infer TIndex extends number | 'i'}]`
-//     ? TFormData[TIndex extends 'i' ? number : TIndex]
-//     : never
-//   : TField extends `${infer TPrefix}[${infer TIndex extends
-//       | number
-//       | 'i'}].${infer TRest}`
-//   ? DeepValue<
-//       DeepValue<TFormData, TPrefix>[TIndex extends 'i' ? number : TIndex],
-//       TRest
-//     >
-//   : TField extends `${infer TPrefix}[${infer TIndex extends number | 'i'}]`
-//   ? DeepValue<TFormData, TPrefix>[TIndex extends 'i' ? number : TIndex]
-//   : DeepValue<TFormData, TField>
+type FieldComponentProps<
+  TParentData,
+  TFormData,
+  TField,
+  TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
+> = {
+  children: (
+    fieldApi: FieldApi<
+      TField,
+      TFormData,
+      FieldApiOptions<TField, TFormData, TName>
+    >,
+  ) => any
+} & (TParentData extends any[]
+  ? {
+      name?: TName
+      index: number
+    }
+  : {
+      name: TName
+      index?: never
+    }) &
+  Omit<UseFieldOptions<TField, TFormData, TName>, 'name' | 'index'>
 
-export type FieldValue<TFormData, TField> = TFormData extends any[]
-  ? unknown extends TField
-    ? TFormData[number]
-    : DeepValue<TFormData[number], TField>
-  : DeepValue<TFormData, TField>
-
-// type Test1 = FieldValue<{ foo: { bar: string }[] }, 'foo'>
-// //   ^?
-// type Test2 = FieldValue<{ foo: { bar: string }[] }, 'foo[i]'>
-// //   ^?
-// type Test3 = FieldValue<{ foo: { bar: string }[] }, 'foo[2].bar'>
-// //   ^?
-
-export type FieldComponent<TParentData, TFormData> = <TField>({
+export type FieldComponent<TParentData, TFormData> = <
+  // Type of the field
+  TField,
+  // Name of the field
+  TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
+>({
   children,
   ...fieldOptions
-}: {
-  children: (
-    fieldApi: FieldApi<FieldValue<TParentData, TField>, TFormData>,
-  ) => any
-} & Omit<
-  UseFieldOptions<FieldValue<TParentData, TField>, TFormData>,
-  'name' | 'index'
-> &
-  (TParentData extends any[]
-    ? {
-        name?: TField extends undefined ? TField : DeepKeys<TParentData>
-        index: number
-      }
-    : {
-        name: TField extends undefined ? TField : DeepKeys<TParentData>
-        index?: never
-      })) => any
+}: FieldComponentProps<TParentData, TFormData, TField, TName>) => any
 
 export function Field<TData, TFormData>({
   children,

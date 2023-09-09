@@ -1,5 +1,5 @@
 import { FormApi, type FormState, type FormOptions } from '@tanstack/form-core'
-import { useStore } from '@tanstack/vue-store'
+import { type NoInfer, useStore } from '@tanstack/vue-store'
 import { type UseField, type FieldComponent, Field, useField } from './useField'
 import { provideFormContext } from './formContext'
 import {
@@ -8,7 +8,6 @@ import {
   type SetupContext,
   defineComponent,
 } from 'vue-demi'
-import type { NoInfer } from './types'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
