@@ -231,6 +231,9 @@ importers:
       '@tanstack/react-form':
         specifier: workspace:*
         version: link:../../../packages/react-form
+      '@tanstack/vue-form':
+        specifier: workspace:*
+        version: link:../../../packages/vue-form
       axios:
         specifier: ^0.26.1
         version: 0.26.1
@@ -256,6 +259,9 @@ importers:
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../../../packages/form-core
+      '@tanstack/react-form':
+        specifier: workspace:*
+        version: link:../../../packages/react-form
       '@tanstack/vue-form':
         specifier: workspace:*
         version: link:../../../packages/vue-form

@@ -8,13 +8,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/react-form": "0.3.3",
+    "@tanstack/react-form": "0.3.4",
     "axios": "^0.26.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "zod": "^3.21.4",
-    "@tanstack/form-core": "0.3.3",
-    "@tanstack/vue-form": "0.3.3"
+    "@tanstack/form-core": "0.3.4",
+    "@tanstack/vue-form": "0.3.4"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.4",
