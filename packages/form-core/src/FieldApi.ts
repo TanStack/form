@@ -8,7 +8,7 @@ export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount'
 type ValidateFn<
   TData,
   TFormData,
-  ValidatorType extends Validator | undefined = undefined,
+  ValidatorType extends Validator<TData> | undefined = undefined,
 > = ValidatorType extends undefined
   ? (value: TData, fieldApi: FieldApi<TData, TFormData>) => ValidationError
   : ReturnType<Exclude<ValidatorType, undefined>>['validate'] extends (
@@ -35,8 +35,8 @@ export interface FieldOptions<
    * If TData is unknown, we can use the TName generic to determine the type
    */
   TData = unknown extends _TData ? DeepValue<TFormData, TName> : _TData,
-  ValidatorType extends Validator | undefined =
-    | Validator
+  ValidatorType extends Validator<TData> | undefined =
+    | Validator<TData>
     | undefined,
 > {
   name: TName

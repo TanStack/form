@@ -53,7 +53,7 @@ it('should allow a Zod validator to be passed in', () => {
     form,
     name: 'name',
     validator: zodValidator,
-  })
+  } as const)
 })
 
 it('should allow a Zod validator to handle the correct Zod type', () => {
@@ -68,7 +68,7 @@ it('should allow a Zod validator to handle the correct Zod type', () => {
     name: 'name',
     validator: zodValidator,
     onChange: z.string(),
-  })
+  } as const)
 })
 
 it('should allow not a Zod validator with the wrong Zod type', () => {
