@@ -99,7 +99,8 @@
     "type-fest": "^3.11.0",
     "typescript": "^5.2.2",
     "vitest": "^0.34.3",
-    "vue": "^3.3.4"
+    "vue": "^3.3.4",
+    "vue-tsc": "^1.8.10"
   },
   "bundlewatch": {
     "files": [

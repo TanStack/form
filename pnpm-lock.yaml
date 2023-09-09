@@ -228,6 +228,9 @@ importers:
       vue:
         specifier: ^3.3.4
         version: 3.3.4
+      vue-tsc:
+        specifier: ^1.8.10
+        version: 1.8.10(typescript@5.2.2)
 
   examples/react/simple:
     dependencies:

@@ -9,7 +9,7 @@ import type {
 import { FieldApi, type FormApi, functionalUpdate } from '@tanstack/form-core'
 import { useFormContext, formContext } from './formContext'
 import useIsomorphicLayoutEffect from 'use-isomorphic-layout-effect'
-import { UseFieldOptions } from './types'
+import type { UseFieldOptions } from './types'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow

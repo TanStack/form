@@ -3,17 +3,12 @@ import {
   type FieldApiOptions,
   type FormApi,
 } from '@tanstack/form-core'
-import type {
-  DeepKeys,
-  DeepValue,
-  FieldOptions,
-  Narrow,
-} from '@tanstack/form-core'
+import type { DeepKeys, DeepValue, Narrow } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
 import { defineComponent, onMounted, onUnmounted, watch } from 'vue-demi'
 import type { SlotsType, SetupContext, Ref } from 'vue-demi'
 import { provideFormContext, useFormContext } from './formContext'
-import { UseFieldOptions } from './types'
+import type { UseFieldOptions } from './types'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
