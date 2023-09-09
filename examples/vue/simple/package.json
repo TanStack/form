@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@tanstack/form-core": "0.3.2",
-    "@tanstack/react-form": "0.3.2",
     "@tanstack/vue-form": "0.3.2",
     "vue": "^3.3.4"
   },
@@ -19,5 +18,11 @@
     "typescript": "^5.0.4",
     "vite": "^4.4.9",
     "vue-tsc": "^1.8.10"
+  },
+  "nx": {
+    "implicitDependencies": [
+      "@tanstack/form-core",
+      "@tanstack/vue-form"
+    ]
   }
 }
