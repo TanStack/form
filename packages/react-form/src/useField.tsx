@@ -4,22 +4,22 @@ import type {
   DeepKeys,
   DeepValue,
   FieldApiOptions,
-  FieldOptions,
   Narrow,
 } from '@tanstack/form-core'
 import { FieldApi, type FormApi, functionalUpdate } from '@tanstack/form-core'
 import { useFormContext, formContext } from './formContext'
 import useIsomorphicLayoutEffect from 'use-isomorphic-layout-effect'
+import { UseFieldOptions } from './types'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
   interface FieldApi<_TData, TFormData, Opts, TData> {
-    Field: FieldComponent<TFormData>
+    Field: FieldComponent<TData, TFormData>
   }
 }
 
 export type UseField<TFormData> = <TField extends DeepKeys<TFormData>>(
-  opts?: { name: Narrow<TField> } & FieldOptions<
+  opts?: { name: Narrow<TField> } & UseFieldOptions<
     DeepValue<TFormData, TField>,
     TFormData
   >,
@@ -34,7 +34,7 @@ export function useField<
     ? string
     : DeepKeys<TFormData>,
 >(
-  opts: FieldOptions<TData, TFormData, TName>,
+  opts: UseFieldOptions<TData, TFormData, TName>,
 ): FieldApi<
   TData,
   TFormData,
@@ -43,13 +43,21 @@ export function useField<
   }
 > {
   // Get the form API either manually or from context
-  const { formApi } = useFormContext()
+  const { formApi, parentFieldName } = useFormContext()
 
   const [fieldApi] = useState(() => {
+    const name = (
+      typeof opts.index === 'number'
+        ? [parentFieldName, opts.index, opts.name]
+        : [parentFieldName, opts.name]
+    )
+      .filter((d) => d !== undefined)
+      .join('.')
+
     const api = new FieldApi({
       ...opts,
       form: formApi,
-      name: opts.name,
+      name: name,
     } as never)
 
     api.Field = Field as never
@@ -65,41 +73,60 @@ export function useField<
     fieldApi.update({ ...opts, form: formApi } as never)
   })
 
-  useStore(fieldApi.store)
-
+  useStore(
+    fieldApi.store,
+    opts.mode === 'array'
+      ? (state: any) => {
+          return [state.meta, Object.keys(state.value || []).length]
+        }
+      : undefined,
+  )
   // Instantiates field meta and removes it when unrendered
   useIsomorphicLayoutEffect(() => fieldApi.mount(), [fieldApi])
 
   return fieldApi as never
 }
 
-interface FieldComponentProps<
+type FieldComponentProps<
+  TParentData,
   TFormData,
+  TField,
   TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
-> extends Omit<FieldOptions<unknown, TFormData, TName>, 'name'> {
-  name: TName
+> = {
   children: (
     fieldApi: FieldApi<
-      unknown,
+      TField,
       TFormData,
-      FieldApiOptions<unknown, TFormData, TName>
+      FieldApiOptions<TField, TFormData, TName>
     >,
   ) => any
-}
+} & (TParentData extends any[]
+  ? {
+      name?: TName
+      index: number
+    }
+  : {
+      name: TName
+      index?: never
+    }) &
+  Omit<UseFieldOptions<TField, TFormData, TName>, 'name' | 'index'>
 
-export type FieldComponent<TFormData> = <
+export type FieldComponent<TParentData, TFormData> = <
+  // Type of the field
+  TField,
+  // Name of the field
   TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
 >({
   children,
   ...fieldOptions
-}: FieldComponentProps<TFormData, TName>) => any
+}: FieldComponentProps<TParentData, TFormData, TField, TName>) => any
 
 export function Field<TData, TFormData>({
   children,
   ...fieldOptions
 }: {
   children: (fieldApi: FieldApi<TData, TFormData>) => any
-} & FieldOptions<TData, TFormData>) {
+} & UseFieldOptions<TData, TFormData>) {
   const fieldApi = useField(fieldOptions as any)
 
   return (

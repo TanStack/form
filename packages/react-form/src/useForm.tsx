@@ -2,7 +2,7 @@ import type { FormState, FormOptions } from '@tanstack/form-core'
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import type { NoInfer } from '@tanstack/react-store'
 import { useStore } from '@tanstack/react-store'
-import React, { PropsWithChildren, type ReactNode, useState } from 'react'
+import React, { type ReactNode, useState } from 'react'
 import { type UseField, type FieldComponent, Field, useField } from './useField'
 import { formContext } from './formContext'
 import useIsomorphicLayoutEffect from 'use-isomorphic-layout-effect'
@@ -11,7 +11,7 @@ declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
   interface FormApi<TFormData> {
     Provider: (props: { children: any }) => any
-    Field: FieldComponent<TFormData>
+    Field: FieldComponent<TFormData, TFormData>
     useField: UseField<TFormData>
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
       selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,

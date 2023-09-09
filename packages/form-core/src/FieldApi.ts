@@ -28,6 +28,7 @@ export interface FieldOptions<
   TData = unknown extends _TData ? DeepValue<TFormData, TName> : _TData,
 > {
   name: TName
+  index?: TData extends any[] ? number : never
   defaultValue?: TData
   asyncDebounceMs?: number
   asyncAlways?: boolean

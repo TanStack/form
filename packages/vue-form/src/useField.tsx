@@ -13,16 +13,17 @@ import { useStore } from '@tanstack/vue-store'
 import { defineComponent, onMounted, onUnmounted, watch } from 'vue-demi'
 import type { SlotsType, SetupContext, Ref } from 'vue-demi'
 import { provideFormContext, useFormContext } from './formContext'
+import { UseFieldOptions } from './types'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
-  interface FieldApi<TData, TFormData> {
-    Field: FieldComponent<TFormData>
+  interface FieldApi<_TData, TFormData, Opts, TData> {
+    Field: FieldComponent<TFormData, TData>
   }
 }
 
 export type UseField<TFormData> = <TField extends DeepKeys<TFormData>>(
-  opts?: { name: Narrow<TField> } & FieldOptions<
+  opts?: { name: Narrow<TField> } & UseFieldOptions<
     DeepValue<TFormData, TField>,
     TFormData
   >,
@@ -37,7 +38,7 @@ export function useField<
     ? string
     : DeepKeys<TFormData>,
 >(
-  opts: FieldOptions<TData, TFormData, TName>,
+  opts: UseFieldOptions<TData, TFormData, TName>,
 ): {
   api: FieldApi<
     TData,
@@ -101,30 +102,42 @@ export type FieldValue<TFormData, TField> = TFormData extends any[]
     : DeepValue<TFormData[number], TField>
   : DeepValue<TFormData, TField>
 
-interface FieldComponentProps<
+type FieldComponentProps<
+  TParentData,
   TFormData,
+  TField,
   TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
-> extends Omit<FieldOptions<unknown, TFormData, TName>, 'name'> {
-  name: TName
-}
+> = (TParentData extends any[]
+  ? {
+      name?: TName
+      index: number
+    }
+  : {
+      name: TName
+      index?: never
+    }) &
+  Omit<UseFieldOptions<TField, TFormData, TName>, 'name' | 'index'>
 
-export type FieldComponent<TFormData> = <
+export type FieldComponent<TParentData, TFormData> = <
+  // Type of the field
+  TField,
+  // Name of the field
   TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
 >(
-  fieldOptions: FieldComponentProps<TFormData, TName>,
+  fieldOptions: FieldComponentProps<TParentData, TFormData, TField, TName>,
   context: SetupContext<
     {},
     SlotsType<{
       default: {
         field: FieldApi<
-          unknown,
+          TField,
           TFormData,
-          FieldApiOptions<unknown, TFormData, TName>
+          FieldApiOptions<TField, TFormData, TName>
         >
         state: FieldApi<
-          unknown,
+          TField,
           TFormData,
-          FieldApiOptions<unknown, TFormData, TName>
+          FieldApiOptions<TField, TFormData, TName>
         >['state']
       }
     }>
@@ -133,7 +146,7 @@ export type FieldComponent<TFormData> = <
 
 export const Field = defineComponent(
   <TData, TFormData>(
-    fieldOptions: FieldOptions<TData, TFormData>,
+    fieldOptions: UseFieldOptions<TData, TFormData>,
     context: SetupContext,
   ) => {
     const fieldApi = useField({ ...fieldOptions, ...context.attrs })

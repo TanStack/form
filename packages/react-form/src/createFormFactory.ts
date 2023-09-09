@@ -6,7 +6,7 @@ import { useForm } from './useForm'
 export type FormFactory<TFormData> = {
   useForm: (opts?: FormOptions<TFormData>) => FormApi<TFormData>
   useField: UseField<TFormData>
-  Field: FieldComponent<TFormData>
+  Field: FieldComponent<TFormData, TFormData>
 }
 
 export function createFormFactory<TFormData>(
