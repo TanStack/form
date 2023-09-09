@@ -83,5 +83,5 @@ it('should allow not a Zod validator with the wrong Zod type', () => {
     name: 'name',
     validator: zodValidator,
     onChange: z.object({}),
-  })
+  } as const)
 })
