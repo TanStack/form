@@ -22,7 +22,7 @@ jobs:
           node-version: 18.15.0
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm --filter "./packages/**" --filter form --prefer-offline install --no-frozen-lockfile
+        run: pnpm --prefer-offline install --no-frozen-lockfile
       - name: Run Tests
         uses: nick-fields/retry@v2.8.3
         with:
