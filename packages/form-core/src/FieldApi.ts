@@ -1,18 +1,19 @@
 import { type DeepKeys, type DeepValue, type Updater } from './utils'
 import type { FormApi, ValidationError, ValidationErrorMap } from './FormApi'
 import { Store } from '@tanstack/store'
-import { Validator } from './zod-validator'
-import { NoInfer } from 'solid-js'
+import type { Validator } from './zod-validator'
 
 export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount'
 
-type ValidateFn<TData, TFormData, ValidatorType> =
+type ValidateFn<TData, TFormData, ValidatorType> = (
+  value: TData,
+  fieldApi: FieldApi<TData, TFormData, ValidatorType>,
+) => ValidationError
+
+type ValidateOrFn<TData, TFormData, ValidatorType> =
   ValidatorType extends Validator<TData>
     ? Parameters<ReturnType<ValidatorType>['validate']>[1]
-    : (
-        value: TData,
-        fieldApi: FieldApi<TData, TFormData, ValidatorType>,
-      ) => ValidationError
+    : ValidateFn<TData, TFormData, ValidatorType>
 
 type ValidateAsyncFn<TData, TFormData, Validator> = (
   value: TData,
@@ -40,10 +41,10 @@ export interface FieldOptions<
   asyncAlways?: boolean
   validator?: ValidatorType
   onMount?: (fieldApi: FieldApi<TData, TFormData, ValidatorType>) => void
-  onChange?: ValidateFn<TData, TFormData, ValidatorType>
+  onChange?: ValidateOrFn<TData, TFormData, ValidatorType>
   onChangeAsync?: ValidateAsyncFn<TData, TFormData, ValidatorType>
   onChangeAsyncDebounceMs?: number
-  onBlur?: ValidateFn<TData, TFormData, ValidatorType>
+  onBlur?: ValidateOrFn<TData, TFormData, ValidatorType>
   onBlurAsync?: ValidateAsyncFn<TData, TFormData, ValidatorType>
   onBlurAsyncDebounceMs?: number
   onSubmitAsync?: ValidateAsyncFn<TData, TFormData, ValidatorType>
@@ -82,46 +83,36 @@ export type FieldState<TData> = {
   meta: FieldMeta
 }
 
-type GetTData<
-  TData,
-  TFormData,
-  Validator,
-  Opts extends FieldApiOptions<TData, TFormData, Validator>,
-> = Opts extends FieldApiOptions<
+type GetTData<Opts> = Opts extends FieldApiOptions<
   infer _TData,
   infer _TFormData,
+  infer _Validator,
   infer _TName,
   infer RealTData
 >
   ? RealTData
   : never
 
-export class FieldApi<
-  _TData,
-  TFormData,
-  Validator,
-  Opts extends FieldApiOptions<_TData, TFormData, Validator> = FieldApiOptions<
-    _TData,
-    TFormData,
-    Validator
-  >,
-  TData extends GetTData<_TData, TFormData, Validator, Opts> = GetTData<
-    _TData,
-    TFormData,
-    Validator,
-    Opts
-  >,
-> {
+export class FieldApi<TData, TFormData, ValidatorType> {
+  /**
+   * This is a hack that allows us to use `GetTData` without calling it everywhere
+   *
+   * Unfortunately this hack appears to be needed alongside the `TName` hack
+   * further up in this file. This properly types all of the internal methods,
+   * while the `TName` hack types the options properly
+   */
+  _tdata!: GetTData<typeof this.options>
   uid: number
-  form: Opts['form']
+  form: (typeof this.options)['form']
   name!: DeepKeys<TFormData>
-  options: Opts = {} as any
-  store!: Store<FieldState<TData>>
-  state!: FieldState<TData>
-  prevState!: FieldState<TData>
+  store!: Store<FieldState<typeof this._tdata>>
+  state!: FieldState<typeof this._tdata>
+  prevState!: FieldState<typeof this._tdata>
 
-  constructor(opts: FieldApiOptions<_TData, TFormData, Validator>) {
-    this.form = opts.form
+  constructor(
+    public options: FieldApiOptions<TData, TFormData, ValidatorType>,
+  ) {
+    this.form = options.form
     this.uid = uid++
     // Support field prefixing from FieldScope
     // let fieldPrefix = ''
@@ -129,9 +120,9 @@ export class FieldApi<
     //   fieldPrefix = `${this.form.fieldName}.`
     // }
 
-    this.name = opts.name as any
+    this.name = options.name as never
 
-    this.store = new Store<FieldState<TData>>(
+    this.store = new Store<FieldState<typeof this._tdata>>(
       {
         value: this.getValue(),
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -141,7 +132,7 @@ export class FieldApi<
           touchedErrors: [],
           errors: [],
           errorMap: {},
-          ...opts.defaultMeta,
+          ...options.defaultMeta,
         },
       },
       {
@@ -164,7 +155,6 @@ export class FieldApi<
 
     this.state = this.store.state
     this.prevState = this.state
-    this.options = opts as never
   }
 
   mount = () => {
@@ -193,12 +183,14 @@ export class FieldApi<
       unsubscribe()
       delete info.instances[this.uid]
       if (!Object.keys(info.instances).length) {
-        delete this.form.fieldInfo[this.name]
+        delete this.form.fieldInfo[this.name as never]
       }
     }
   }
 
-  update = (opts: FieldApiOptions<TData, TFormData, Validator>) => {
+  update = (
+    opts: FieldApiOptions<typeof this._tdata, TFormData, ValidatorType>,
+  ) => {
     // Default Value
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.state.value === undefined) {
@@ -220,12 +212,12 @@ export class FieldApi<
     this.options = opts as never
   }
 
-  getValue = (): TData => {
+  getValue = (): typeof this._tdata => {
     return this.form.getFieldValue(this.name)
   }
 
   setValue = (
-    updater: Updater<TData>,
+    updater: Updater<typeof this._tdata>,
     options?: { touch?: boolean; notify?: boolean },
   ) => {
     this.form.setFieldValue(this.name, updater as never, options)
@@ -249,12 +241,17 @@ export class FieldApi<
 
   getInfo = () => this.form.getFieldInfo(this.name)
 
-  pushValue = (value: TData extends any[] ? TData[number] : never) =>
-    this.form.pushFieldValue(this.name, value as any)
+  pushValue = (
+    value: typeof this._tdata extends any[]
+      ? (typeof this._tdata)[number]
+      : never,
+  ) => this.form.pushFieldValue(this.name, value as any)
 
   insertValue = (
     index: number,
-    value: TData extends any[] ? TData[number] : never,
+    value: typeof this._tdata extends any[]
+      ? (typeof this._tdata)[number]
+      : never,
   ) => this.form.insertFieldValue(this.name, index, value as any)
 
   removeValue = (index: number) => this.form.removeFieldValue(this.name, index)
@@ -262,23 +259,53 @@ export class FieldApi<
   swapValues = (aIndex: number, bIndex: number) =>
     this.form.swapFieldValues(this.name, aIndex, bIndex)
 
-  getSubField = <TName extends DeepKeys<TData>>(name: TName) =>
-    new FieldApi<DeepValue<TData, TName>, TFormData, Validator>({
+  getSubField = <TName extends DeepKeys<typeof this._tdata>>(name: TName) =>
+    new FieldApi<
+      DeepValue<typeof this._tdata, TName>,
+      TFormData,
+      ValidatorType
+    >({
       name: `${this.name}.${name}` as never,
       form: this.form,
     })
+
+  getValidateTransformer = () => {
+    const isValidator = (
+      item: unknown,
+    ): item is Validator<
+      typeof this._tdata,
+      typeof this.options.onBlur | typeof this.options.onChange
+    > =>
+      !!item && typeof item === 'function' && (item as any).isValidator === true
+
+    return isValidator(this.options.validator) ? this.options.validator() : null
+  }
 
   validateSync = (value = this.state.value, cause: ValidationCause) => {
     const { onChange, onBlur } = this.options
     const validate =
       cause === 'submit' ? undefined : cause === 'change' ? onChange : onBlur
+
+    const validateTransformer = this.getValidateTransformer()
+
     if (!validate) return
 
     // Use the validationCount for all field instances to
     // track freshness of the validation
     const validationCount = (this.getInfo().validationCount || 0) + 1
     this.getInfo().validationCount = validationCount
-    const error = normalizeError(validate(value as never, this as never))
+
+    const doValidate = () => {
+      if (validateTransformer) {
+        return validateTransformer.validate(value, validate)
+      }
+
+      return (
+        validate as ValidateFn<typeof this._tdata, TFormData, ValidatorType>
+      )(value, this as never)
+    }
+
+    const error = normalizeError(doValidate())
     const errorMapKey = getErrorMapKey(cause)
     if (this.state.meta.errorMap[errorMapKey] !== error) {
       this.setMeta((prev) => ({
@@ -395,7 +422,7 @@ export class FieldApi<
 
   validate = (
     cause: ValidationCause,
-    value?: TData,
+    value?: typeof this._tdata,
   ): ValidationError[] | Promise<ValidationError[]> => {
     // If the field is pristine and validatePristine is false, do not validate
     if (!this.state.meta.isTouched) return []
@@ -413,7 +440,7 @@ export class FieldApi<
     return this.validateAsync(value, cause)
   }
 
-  handleChange = (updater: Updater<TData>) => {
+  handleChange = (updater: Updater<typeof this._tdata>) => {
     this.setValue(updater, { touch: true })
   }
 
