@@ -35,6 +35,13 @@
     "implicitDependencies": [
       "@tanstack/form-core",
       "@tanstack/react-form"
-    ]
+    ],
+    "targets": {
+      "test:types": {
+        "dependsOn": [
+          "build"
+        ]
+      }
+    }
   }
 }

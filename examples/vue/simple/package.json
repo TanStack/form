@@ -23,6 +23,13 @@
     "implicitDependencies": [
       "@tanstack/form-core",
       "@tanstack/vue-form"
-    ]
+    ],
+    "targets": {
+      "test:types": {
+        "dependsOn": [
+          "build"
+        ]
+      }
+    }
   }
 }
