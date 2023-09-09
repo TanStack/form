@@ -1,13 +1,8 @@
-// @ts-check
+import path from 'path'
+import { BranchConfig, Package } from './types'
 
-import { resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-
-/**
- * List your npm packages here. The first package will be used as the versioner.
- * @type {import('./types').Package[]}
- */
-export const packages = [
+// TODO: List your npm packages here.
+export const packages: Package[] = [
   {
     name: '@tanstack/form-core',
     packageDir: 'packages/form-core',
@@ -35,24 +30,31 @@ export const packages = [
   // },
 ]
 
-/**
- * Contains config for publishable branches.
- * @type {Record<string, import('./types').BranchConfig>}
- */
-export const branchConfigs = {
+export const latestBranch = 'main'
+
+export const branchConfigs: Record<string, BranchConfig> = {
   main: {
     prerelease: false,
+    ghRelease: true,
   },
   next: {
     prerelease: true,
+    ghRelease: true,
   },
   beta: {
     prerelease: true,
+    ghRelease: true,
   },
   alpha: {
     prerelease: true,
+    ghRelease: true,
   },
 }
 
-const __dirname = fileURLToPath(new URL('.', import.meta.url))
-export const rootDir = resolve(__dirname, '..')
+export const rootDir = path.resolve(__dirname, '..')
+export const examplesDirs = [
+  'examples/react',
+  'examples/vue',
+  // 'examples/solid',
+  // 'examples/svelte',
+]
