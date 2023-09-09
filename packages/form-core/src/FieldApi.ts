@@ -1,13 +1,24 @@
 import { type DeepKeys, type DeepValue, type Updater } from './utils'
 import type { FormApi, ValidationError, ValidationErrorMap } from './FormApi'
 import { Store } from '@tanstack/store'
+import { Validator } from './zod-validator'
 
 export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount'
 
-type ValidateFn<TData, TFormData> = (
-  value: TData,
-  fieldApi: FieldApi<TData, TFormData>,
-) => ValidationError
+type ValidateFn<
+  TData,
+  TFormData,
+  ValidatorType extends Validator<TData> | undefined =
+    | Validator<TData>
+    | undefined,
+> = unknown extends ValidatorType
+  ? (value: TData, fieldApi: FieldApi<TData, TFormData>) => ValidationError
+  : ReturnType<Exclude<ValidatorType, undefined>>['validate'] extends (
+      value: infer _TData,
+      fn: infer ValidateFn,
+    ) => ValidationError
+  ? ValidateFn
+  : never
 
 type ValidateAsyncFn<TData, TFormData> = (
   value: TData,
@@ -26,6 +37,9 @@ export interface FieldOptions<
    * If TData is unknown, we can use the TName generic to determine the type
    */
   TData = unknown extends _TData ? DeepValue<TFormData, TName> : _TData,
+  ValidatorType extends Validator<TData> | undefined =
+    | Validator<TData>
+    | undefined,
 > {
   name: TName
   index?: TData extends any[] ? number : never
@@ -33,14 +47,15 @@ export interface FieldOptions<
   asyncDebounceMs?: number
   asyncAlways?: boolean
   onMount?: (formApi: FieldApi<TData, TFormData>) => void
-  onChange?: ValidateFn<TData, TFormData>
+  onChange?: ValidateFn<TData, TFormData, ValidatorType>
   onChangeAsync?: ValidateAsyncFn<TData, TFormData>
   onChangeAsyncDebounceMs?: number
-  onBlur?: ValidateFn<TData, TFormData>
+  onBlur?: ValidateFn<TData, TFormData, ValidatorType>
   onBlurAsync?: ValidateAsyncFn<TData, TFormData>
   onBlurAsyncDebounceMs?: number
   onSubmitAsync?: ValidateAsyncFn<TData, TFormData>
   defaultMeta?: Partial<FieldMeta>
+  validator?: ValidatorType
 }
 
 export interface FieldApiOptions<
