@@ -15,9 +15,8 @@
     "test:lib:dev": "pnpm --filter \"./packages/**\" run test:lib:dev",
     "test:build": "nx affected --target=test:build",
     "test:types": "nx affected --target=test:types",
-    "build": "nx affected --target=build",
-    "build:all": "nx run-many --exclude=examples/** --target=build",
-    "watch": "pnpm run build:all && nx watch --all -- pnpm run build:all",
+    "build": "nx run-many --exclude=examples/** --target=build",
+    "watch": "pnpm run build && nx watch --all -- pnpm run build",
     "dev": "pnpm run watch",
     "prettier": "prettier \"{packages,examples,scripts}/**/*.{md,js,jsx,cjs,ts,tsx,json,vue}\"",
     "prettier:write": "pnpm run prettier --write",
@@ -112,6 +111,16 @@
   "pnpm": {
     "patchedDependencies": {
       "@types/testing-library__jest-dom@5.14.5": "patches/@types__testing-library__jest-dom@5.14.5.patch"
+    },
+    "overrides": {
+      "@tanstack/form-core": "workspace:*",
+      "@tanstack/react-form": "workspace:*",
+      "@tanstack/vue-form": "workspace:*"
     }
-  }
+  },
+  "workspaces": [
+    "./packages/*",
+    "./examples/react/*",
+    "./examples/vue/*"
+  ]
 }

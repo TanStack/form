@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@tanstack/form-core': workspace:*
+  '@tanstack/react-form': workspace:*
+  '@tanstack/vue-form': workspace:*
+
 patchedDependencies:
   '@types/testing-library__jest-dom@5.14.5':
     hash: d573maxasnl5kxwdyzebcnmhpm
