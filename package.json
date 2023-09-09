@@ -117,10 +117,5 @@
       "@tanstack/react-form": "workspace:*",
       "@tanstack/vue-form": "workspace:*"
     }
-  },
-  "workspaces": [
-    "./packages/*",
-    "./examples/react/*",
-    "./examples/vue/*"
-  ]
+  }
 }
