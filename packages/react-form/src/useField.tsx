@@ -13,7 +13,7 @@ import useIsomorphicLayoutEffect from 'use-isomorphic-layout-effect'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
-  interface FieldApi<TData, TFormData> {
+  interface FieldApi<_TData, TFormData, Opts, TData> {
     Field: FieldComponent<TFormData>
   }
 }

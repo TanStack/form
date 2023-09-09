@@ -77,25 +77,35 @@ type GetTData<
   TData,
   TFormData,
   Opts extends FieldApiOptions<TData, TFormData>,
-> = Opts extends FieldApiOptions<TData, TFormData, any, infer RealTData>
+> = Opts extends FieldApiOptions<
+  infer _TData,
+  infer _TFormData,
+  infer _TName,
+  infer RealTData
+>
   ? RealTData
   : never
 
 export class FieldApi<
-  TData,
+  _TData,
   TFormData,
-  Opts extends FieldApiOptions<TData, TFormData> = FieldApiOptions<
-    TData,
+  Opts extends FieldApiOptions<_TData, TFormData> = FieldApiOptions<
+    _TData,
     TFormData
+  >,
+  TData extends GetTData<_TData, TFormData, Opts> = GetTData<
+    _TData,
+    TFormData,
+    Opts
   >,
 > {
   uid: number
   form: Opts['form']
   name!: DeepKeys<TFormData>
   options: Opts = {} as any
-  store!: Store<FieldState<GetTData<TData, TFormData, Opts>>>
-  state!: FieldState<GetTData<TData, TFormData, Opts>>
-  prevState!: FieldState<GetTData<TData, TFormData, Opts>>
+  store!: Store<FieldState<TData>>
+  state!: FieldState<TData>
+  prevState!: FieldState<TData>
 
   constructor(
     opts: Opts & {
@@ -112,7 +122,7 @@ export class FieldApi<
 
     this.name = opts.name as any
 
-    this.store = new Store<FieldState<GetTData<TData, TFormData, Opts>>>(
+    this.store = new Store<FieldState<TData>>(
       {
         value: this.getValue(),
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -175,9 +185,7 @@ export class FieldApi<
     }
   }
 
-  update = (
-    opts: FieldApiOptions<GetTData<TData, TFormData, Opts>, TFormData>,
-  ) => {
+  update = (opts: FieldApiOptions<TData, TFormData>) => {
     // Default Value
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.state.value === undefined) {
@@ -199,12 +207,12 @@ export class FieldApi<
     this.options = opts as never
   }
 
-  getValue = (): GetTData<TData, TFormData, Opts> => {
+  getValue = (): TData => {
     return this.form.getFieldValue(this.name)
   }
 
   setValue = (
-    updater: Updater<GetTData<TData, TFormData, Opts>>,
+    updater: Updater<TData>,
     options?: { touch?: boolean; notify?: boolean },
   ) => {
     this.form.setFieldValue(this.name, updater as never, options)
@@ -228,17 +236,12 @@ export class FieldApi<
 
   getInfo = () => this.form.getFieldInfo(this.name)
 
-  pushValue = (
-    value: GetTData<TData, TFormData, Opts> extends any[]
-      ? GetTData<TData, TFormData, Opts>[number]
-      : never,
-  ) => this.form.pushFieldValue(this.name, value as any)
+  pushValue = (value: TData extends any[] ? TData[number] : never) =>
+    this.form.pushFieldValue(this.name, value as any)
 
   insertValue = (
     index: number,
-    value: GetTData<TData, TFormData, Opts> extends any[]
-      ? GetTData<TData, TFormData, Opts>[number]
-      : never,
+    value: TData extends any[] ? TData[number] : never,
   ) => this.form.insertFieldValue(this.name, index, value as any)
 
   removeValue = (index: number) => this.form.removeFieldValue(this.name, index)
@@ -246,15 +249,11 @@ export class FieldApi<
   swapValues = (aIndex: number, bIndex: number) =>
     this.form.swapFieldValues(this.name, aIndex, bIndex)
 
-  getSubField = <TName extends DeepKeys<GetTData<TData, TFormData, Opts>>>(
-    name: TName,
-  ) =>
-    new FieldApi<DeepValue<GetTData<TData, TFormData, Opts>, TName>, TFormData>(
-      {
-        name: `${this.name}.${name}` as never,
-        form: this.form,
-      },
-    )
+  getSubField = <TName extends DeepKeys<TData>>(name: TName) =>
+    new FieldApi<DeepValue<TData, TName>, TFormData>({
+      name: `${this.name}.${name}` as never,
+      form: this.form,
+    })
 
   validateSync = (value = this.state.value, cause: ValidationCause) => {
     const { onChange, onBlur } = this.options
@@ -385,7 +384,7 @@ export class FieldApi<
 
   validate = (
     cause: ValidationCause,
-    value?: GetTData<TData, TFormData, Opts>,
+    value?: TData,
   ): ValidationError[] | Promise<ValidationError[]> => {
     // If the field is pristine and validatePristine is false, do not validate
     if (!this.state.meta.isTouched) return []
@@ -403,7 +402,7 @@ export class FieldApi<
     return this.validateAsync(value, cause)
   }
 
-  handleChange = (updater: Updater<GetTData<TData, TFormData, Opts>>) => {
+  handleChange = (updater: Updater<TData>) => {
     this.setValue(updater, { touch: true })
   }
 
