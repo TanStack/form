@@ -433,4 +433,43 @@ describe('field api', () => {
     await vi.runAllTimersAsync()
     expect(field.getMeta().error).toBe('Please enter a different value')
   })
+
+  // test the unmounting of the fieldAPI
+  it('should preserve value on unmount', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      preserveValue: true
+    })
+
+    const unmount = field.mount()
+    unmount()
+    expect(form.getFieldInfo(field.name).instances[field.uid]).toBeDefined()
+    expect(form.getFieldInfo(field.name)).toBeDefined()
+  })
+
+  it('should not preserve field value on ummount', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    const unmount = field.mount()
+    unmount()
+    const info = form.getFieldInfo(field.name)
+    expect(info.instances[field.uid]).toBeUndefined()
+    expect(Object.keys(info.instances).length).toBe(0)
+  })
 })
