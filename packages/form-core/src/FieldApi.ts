@@ -7,13 +7,8 @@ import { NoInfer } from 'solid-js'
 export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount'
 
 type ValidateFn<TData, TFormData, ValidatorType> =
-  ValidatorType extends Validator<unknown>
-    ? ReturnType<Exclude<ValidatorType, undefined>>['validate'] extends (
-        value: infer _TData,
-        fn: infer ValidateFn,
-      ) => ValidationError
-      ? ValidateFn
-      : never
+  ValidatorType extends Validator<TData>
+    ? Parameters<ReturnType<ValidatorType>['validate']>[1]
     : (
         value: TData,
         fieldApi: FieldApi<TData, TFormData, ValidatorType>,
@@ -125,11 +120,7 @@ export class FieldApi<
   state!: FieldState<TData>
   prevState!: FieldState<TData>
 
-  constructor(
-    opts: FieldApiOptions<_TData, TFormData, Validator> & {
-      form: FormApi<TFormData>
-    },
-  ) {
+  constructor(opts: FieldApiOptions<_TData, TFormData, Validator>) {
     this.form = opts.form
     this.uid = uid++
     // Support field prefixing from FieldScope

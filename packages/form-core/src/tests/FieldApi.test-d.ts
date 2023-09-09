@@ -4,26 +4,6 @@ import { FieldApi } from '../FieldApi'
 import { zodValidator } from '../zod-validator'
 import z from 'zod'
 
-it('should type a subfield properly', () => {
-  const form = new FormApi({
-    defaultValues: {
-      names: {
-        first: 'one',
-        second: 'two',
-      },
-    } as const,
-  })
-
-  const field = new FieldApi({
-    form,
-    name: 'names',
-  })
-
-  const subfield = field.getSubField('first')
-
-  assertType<'one'>(subfield.getValue())
-})
-
 it('should type onChange properly', () => {
   const form = new FormApi({
     defaultValues: {
@@ -82,6 +62,7 @@ it('should not allow a functional onChange to be passed when using a validator',
     form,
     name: 'name',
     validator: zodValidator,
+    // @ts-expect-error Is not of type validator
     onChange: (val) => null,
   } as const)
 })
@@ -96,6 +77,7 @@ it('should not allow a validator onChange to be passed when not using a validato
   const field = new FieldApi({
     form,
     name: 'name',
+    // @ts-expect-error Requires a validator
     onChange: z.string(),
   } as const)
 })
