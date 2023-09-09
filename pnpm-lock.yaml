@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@tanstack/form-core': workspace:*
+  '@tanstack/react-form': workspace:*
+  '@tanstack/vue-form': workspace:*
+
 patchedDependencies:
   '@types/testing-library__jest-dom@5.14.5':
     hash: d573maxasnl5kxwdyzebcnmhpm
@@ -227,13 +232,13 @@ importers:
   examples/react/simple:
     dependencies:
       '@tanstack/form-core':
-        specifier: 0.3.1
+        specifier: workspace:*
         version: link:../../../packages/form-core
       '@tanstack/react-form':
-        specifier: 0.3.1
+        specifier: workspace:*
         version: link:../../../packages/react-form
       '@tanstack/vue-form':
-        specifier: 0.3.1
+        specifier: workspace:*
         version: link:../../../packages/vue-form
       axios:
         specifier: ^0.26.1
@@ -258,13 +263,13 @@ importers:
   examples/vue/simple:
     dependencies:
       '@tanstack/form-core':
-        specifier: 0.3.1
+        specifier: workspace:*
         version: link:../../../packages/form-core
       '@tanstack/react-form':
-        specifier: 0.3.1
+        specifier: workspace:*
         version: link:../../../packages/react-form
       '@tanstack/vue-form':
-        specifier: 0.3.1
+        specifier: workspace:*
         version: link:../../../packages/vue-form
       vue:
         specifier: ^3.3.4

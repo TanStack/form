@@ -1,9 +1,7 @@
 {
-  "extends": "../../../tsconfig.json",
   "compilerOptions": {
     "jsx": "react",
     "noEmit": true,
     "lib": ["DOM", "DOM.Iterable", "ES2020"]
-  },
-  "include": ["**/*.ts", "**/*.tsx", ".eslintrc.cjs", "rollup.config.js"]
+  }
 }
