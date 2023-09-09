@@ -6,42 +6,39 @@ import type {
   FieldApiOptions,
   Narrow,
 } from '@tanstack/form-core'
-import { FieldApi, type FormApi, functionalUpdate } from '@tanstack/form-core'
+import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useFormContext, formContext } from './formContext'
 import useIsomorphicLayoutEffect from 'use-isomorphic-layout-effect'
 import type { UseFieldOptions } from './types'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
-  interface FieldApi<_TData, TFormData, Opts, TData> {
+  interface FieldApi<TData, TFormData, ValidatorType> {
     Field: FieldComponent<TData, TFormData>
   }
 }
 
-export type UseField<TFormData> = <TField extends DeepKeys<TFormData>>(
+export type UseField<TFormData> = <
+  TField extends DeepKeys<TFormData>,
+  ValidatorType,
+>(
   opts?: { name: Narrow<TField> } & UseFieldOptions<
     DeepValue<TFormData, TField>,
-    TFormData
+    TFormData,
+    ValidatorType
   >,
-) => FieldApi<DeepValue<TFormData, TField>, TFormData>
+) => FieldApi<DeepValue<TFormData, TField>, TFormData, ValidatorType>
 
 export function useField<
   TData,
   TFormData,
+  ValidatorType,
   TName extends unknown extends TFormData
     ? string
     : DeepKeys<TFormData> = unknown extends TFormData
     ? string
     : DeepKeys<TFormData>,
->(
-  opts: UseFieldOptions<TData, TFormData, TName>,
-): FieldApi<
-  TData,
-  TFormData,
-  Omit<typeof opts, 'onMount'> & {
-    form: FormApi<TFormData>
-  }
-> {
+>(opts: UseFieldOptions<TData, TFormData, ValidatorType, TName>) {
   // Get the form API either manually or from context
   const { formApi, parentFieldName } = useFormContext()
 
@@ -57,8 +54,8 @@ export function useField<
     const api = new FieldApi({
       ...opts,
       form: formApi,
-      name: name,
-    } as never)
+      name: name as TName,
+    })
 
     api.Field = Field as never
 
@@ -76,7 +73,7 @@ export function useField<
   useStore(
     fieldApi.store,
     opts.mode === 'array'
-      ? (state: any) => {
+      ? (state) => {
           return [state.meta, Object.keys(state.value || []).length]
         }
       : undefined,
@@ -84,20 +81,22 @@ export function useField<
   // Instantiates field meta and removes it when unrendered
   useIsomorphicLayoutEffect(() => fieldApi.mount(), [fieldApi])
 
-  return fieldApi as never
+  return fieldApi
 }
 
 type FieldComponentProps<
   TParentData,
   TFormData,
   TField,
+  ValidatorType,
   TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
 > = {
+  validator?: ValidatorType
   children: (
     fieldApi: FieldApi<
       TField,
       TFormData,
-      FieldApiOptions<TField, TFormData, TName>
+      FieldApiOptions<TField, TFormData, ValidatorType, TName>
     >,
   ) => any
 } & (TParentData extends any[]
@@ -109,24 +108,34 @@ type FieldComponentProps<
       name: TName
       index?: never
     }) &
-  Omit<UseFieldOptions<TField, TFormData, TName>, 'name' | 'index'>
+  Omit<
+    UseFieldOptions<TField, TFormData, ValidatorType, TName>,
+    'name' | 'index' | 'validator'
+  >
 
 export type FieldComponent<TParentData, TFormData> = <
   // Type of the field
   TField,
   // Name of the field
   TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
+  ValidatorType,
 >({
   children,
   ...fieldOptions
-}: FieldComponentProps<TParentData, TFormData, TField, TName>) => any
+}: FieldComponentProps<
+  TParentData,
+  TFormData,
+  TField,
+  ValidatorType,
+  TName
+>) => any
 
-export function Field<TData, TFormData>({
+export function Field<TData, TFormData, ValidatorType>({
   children,
   ...fieldOptions
 }: {
-  children: (fieldApi: FieldApi<TData, TFormData>) => any
-} & UseFieldOptions<TData, TFormData>) {
+  children: (fieldApi: FieldApi<TData, TFormData, ValidatorType>) => any
+} & UseFieldOptions<TData, TFormData, ValidatorType>) {
   const fieldApi = useField(fieldOptions as any)
 
   return (
