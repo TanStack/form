@@ -501,6 +501,36 @@ describe('field api', () => {
     })
   })
 
+  it('should reset onChange errors when the issue is resolved', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'other',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      onChange: (value) => {
+        if (value === 'other') return 'Please enter a different value'
+        return
+      },
+    })
+
+    field.mount()
+
+    field.setValue('other', { touch: true })
+    expect(field.getMeta().errors).toStrictEqual([
+      'Please enter a different value',
+    ])
+    expect(field.getMeta().errorMap).toEqual({
+      onChange: 'Please enter a different value',
+    })
+    field.setValue('test', { touch: true })
+    expect(field.getMeta().errors).toStrictEqual([])
+    expect(field.getMeta().errorMap).toEqual({})
+  })
+
   it('should handle default value on field using state.value', async () => {
     interface Form {
       name: string
