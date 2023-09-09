@@ -5,28 +5,23 @@ import { BranchConfig, Package } from './types'
 export const packages: Package[] = [
   {
     name: '@tanstack/form-core',
-    packageDir: 'packages/form-core',
-    entries: ['main', 'module', 'types'],
+    packageDir: 'form-core',
   },
   {
     name: '@tanstack/react-form',
-    packageDir: 'packages/react-form',
-    entries: ['main', 'module', 'types'],
+    packageDir: 'react-form',
   },
   {
     name: '@tanstack/vue-form',
-    packageDir: 'packages/vue-form',
-    entries: ['main', 'module', 'types'],
+    packageDir: 'vue-form',
   },
   // {
   //   name: '@tanstack/solid-store',
-  //   packageDir: 'packages/solid-store',
-  //   entries: ['main', 'module', 'types'],
+  //   packageDir: 'solid-store',
   // },
   // {
   //   name: '@tanstack/svelte-store',
-  //   packageDir: 'packages/svelte-store',
-  //   entries: ['main', 'module', 'types'],
+  //   packageDir: 'svelte-store',
   // },
 ]
 
