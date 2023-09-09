@@ -140,6 +140,10 @@ export class FieldApi<
         onUpdate: () => {
           const state = this.store.state
 
+          state.meta.errors = Object.values(state.meta.errorMap).filter(
+            (val: unknown) => val !== undefined,
+          )
+
           state.meta.touchedErrors = state.meta.isTouched
             ? state.meta.errors
             : []
@@ -268,10 +272,9 @@ export class FieldApi<
     this.getInfo().validationCount = validationCount
     const error = normalizeError(validate(value as never, this as never))
     const errorMapKey = getErrorMapKey(cause)
-    if (error && this.state.meta.errorMap[errorMapKey] !== error) {
+    if (this.state.meta.errorMap[errorMapKey] !== error) {
       this.setMeta((prev) => ({
         ...prev,
-        errors: [...prev.errors, error],
         errorMap: {
           ...prev.errorMap,
           [getErrorMapKey(cause)]: error,
@@ -358,7 +361,6 @@ export class FieldApi<
           this.setMeta((prev) => ({
             ...prev,
             isValidating: false,
-            errors: [...prev.errors, error],
             errorMap: {
               ...prev.errorMap,
               [getErrorMapKey(cause)]: error,
