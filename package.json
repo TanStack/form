@@ -93,7 +93,7 @@
     "solid-js": "^1.6.13",
     "stream-to-array": "^2.3.0",
     "ts-node": "^10.9.1",
-    "tsup": "^7.2.0",
+    "tsup": "7.2.0",
     "type-fest": "^3.11.0",
     "typescript": "^5.2.2",
     "vitest": "^0.34.3",
@@ -108,7 +108,8 @@
   },
   "pnpm": {
     "patchedDependencies": {
-      "@types/testing-library__jest-dom@5.14.5": "patches/@types__testing-library__jest-dom@5.14.5.patch"
+      "@types/testing-library__jest-dom@5.14.5": "patches/@types__testing-library__jest-dom@5.14.5.patch",
+      "tsup@7.2.0": "patches/tsup@7.2.0.patch"
     },
     "overrides": {
       "@tanstack/form-core": "workspace:*",

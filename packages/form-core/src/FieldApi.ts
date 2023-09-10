@@ -323,7 +323,7 @@ export class FieldApi<TData, TFormData, ValidatorType> {
     }
   }
 
-  #leaseValidateAsync = () => {
+  __leaseValidateAsync = () => {
     const count = (this.getInfo().validationAsyncCount || 0) + 1
     this.getInfo().validationAsyncCount = count
     return count
@@ -331,7 +331,7 @@ export class FieldApi<TData, TFormData, ValidatorType> {
 
   cancelValidateAsync = () => {
     // Lease a new validation count to ignore any pending validations
-    this.#leaseValidateAsync()
+    this.__leaseValidateAsync()
     // Cancel any pending validation state
     this.setMeta((prev) => ({
       ...prev,
@@ -370,7 +370,7 @@ export class FieldApi<TData, TFormData, ValidatorType> {
 
     // Use the validationCount for all field instances to
     // track freshness of the validation
-    const validationAsyncCount = this.#leaseValidateAsync()
+    const validationAsyncCount = this.__leaseValidateAsync()
 
     const checkLatest = () =>
       validationAsyncCount === this.getInfo().validationAsyncCount
