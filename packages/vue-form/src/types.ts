@@ -1,10 +1,11 @@
-import type { FieldOptions, DeepKeys } from '@tanstack/form-core'
+import type { FieldOptions, RestrictTName } from '@tanstack/form-core'
 
 export type UseFieldOptions<
-  TData,
+  _TData,
   TFormData,
   ValidatorType,
-  TName = unknown extends TFormData ? string : DeepKeys<TFormData>,
-> = FieldOptions<TData, TFormData, ValidatorType, TName> & {
+  TName extends RestrictTName<TFormData>,
+  TData,
+> = FieldOptions<_TData, TFormData, ValidatorType, TName, TData> & {
   mode?: 'value' | 'array'
 }

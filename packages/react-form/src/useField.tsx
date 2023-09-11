@@ -88,7 +88,6 @@ type FieldComponentProps<
   TName extends RestrictTName<TFormData>,
   TData = unknown extends _TData ? DeepValue<TFormData, TName> : _TData,
 > = {
-  validator?: ValidatorType
   children: (
     fieldApi: FieldApi<_TData, TFormData, ValidatorType, TName, TData>,
   ) => any
@@ -103,24 +102,26 @@ type FieldComponentProps<
     }) &
   Omit<
     UseFieldOptions<_TData, TFormData, ValidatorType, TName, TData>,
-    'name' | 'index' | 'validator'
+    'name' | 'index'
   >
 
 export type FieldComponent<TParentData, TFormData> = <
   // Type of the field
-  TField,
-  // Name of the field
-  TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
+  _TData,
   ValidatorType,
+  // Name of the field
+  TName extends RestrictTName<TFormData>,
+  TData = unknown extends _TData ? DeepValue<TFormData, TName> : _TData,
 >({
   children,
   ...fieldOptions
 }: FieldComponentProps<
   TParentData,
   TFormData,
-  TField,
+  _TData,
   ValidatorType,
-  TName
+  TName,
+  TData
 >) => any
 
 export function Field<
