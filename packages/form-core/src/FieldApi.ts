@@ -5,7 +5,7 @@ import type { Validator } from './zod-validator'
 
 export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount'
 
-type RestrictTName<TFormData> = unknown extends TFormData
+export type RestrictTName<TFormData> = unknown extends TFormData
   ? string
   : DeepKeys<TFormData>
 
