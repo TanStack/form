@@ -16,6 +16,7 @@ it('should type value properly', () => {
     name: 'name',
   })
 
+  assertType<'test'>(field.state.value)
   assertType<'name'>(field.options.name)
   assertType<'test'>(field.getValue())
 })

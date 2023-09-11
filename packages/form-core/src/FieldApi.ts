@@ -5,22 +5,45 @@ import type { Validator } from './zod-validator'
 
 export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount'
 
-type ValidateFn<_TData, TFormData, ValidatorType, TName, TData> = (
+type ValidateFn<
+  _TData,
+  TFormData,
+  ValidatorType,
+  TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
+  TData,
+> = (
   value: TData,
   fieldApi: FieldApi<_TData, TFormData, ValidatorType, TName, TData>,
 ) => ValidationError
 
-type ValidateOrFn<_TData, TFormData, ValidatorType, TName, TData> =
-  ValidatorType extends Validator<TData>
-    ? Parameters<ReturnType<ValidatorType>['validate']>[1]
-    : ValidateFn<_TData, TFormData, ValidatorType, TName, TData>
+type ValidateOrFn<
+  _TData,
+  TFormData,
+  ValidatorType,
+  TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
+  TData,
+> = ValidatorType extends Validator<TData>
+  ? Parameters<ReturnType<ValidatorType>['validate']>[1]
+  : ValidateFn<_TData, TFormData, ValidatorType, TName, TData>
 
-type ValidateAsyncFn<_TData, TFormData, Validator, TName, TData> = (
+type ValidateAsyncFn<
+  _TData,
+  TFormData,
+  Validator,
+  TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
+  TData,
+> = (
   value: TData,
   fieldApi: FieldApi<_TData, TFormData, Validator, TName, TData>,
 ) => ValidationError | Promise<ValidationError>
 
-export interface FieldOptions<_TData, TFormData, ValidatorType, TName, TData> {
+export interface FieldOptions<
+  _TData,
+  TFormData,
+  ValidatorType,
+  TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
+  TData,
+> {
   name: TName
   index?: _TData extends any[] ? number : never
   defaultValue?: _TData
@@ -50,8 +73,13 @@ export interface FieldOptions<_TData, TFormData, ValidatorType, TName, TData> {
   defaultMeta?: Partial<FieldMeta>
 }
 
-export interface FieldApiOptions<_TData, TFormData, ValidatorType, TName, TData>
-  extends FieldOptions<_TData, TFormData, ValidatorType, TName, TData> {
+export interface FieldApiOptions<
+  _TData,
+  TFormData,
+  ValidatorType,
+  TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
+  TData,
+> extends FieldOptions<_TData, TFormData, ValidatorType, TName, TData> {
   form: FormApi<TFormData>
 }
 
@@ -73,12 +101,16 @@ export type FieldState<TData> = {
 export class FieldApi<
   _TData,
   TFormData,
-  ValidatorType,
+  ValidatorType = unknown,
   /**
    * This allows us to restrict the name to only be a valid field name while
    * also assigning it to a generic
    */
-  TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
+  TName extends unknown extends TFormData
+    ? string
+    : DeepKeys<TFormData> = unknown extends TFormData
+    ? string
+    : DeepKeys<TFormData>,
   /**
    * If TData is unknown, we can use the TName generic to determine the type
    */
