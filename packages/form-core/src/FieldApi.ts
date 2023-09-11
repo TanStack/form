@@ -5,11 +5,15 @@ import type { Validator } from './zod-validator'
 
 export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount'
 
+type RestrictTName<TFormData> = unknown extends TFormData
+  ? string
+  : DeepKeys<TFormData>
+
 type ValidateFn<
   _TData,
   TFormData,
   ValidatorType,
-  TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
+  TName extends RestrictTName<TFormData>,
   TData,
 > = (
   value: TData,
@@ -20,7 +24,7 @@ type ValidateOrFn<
   _TData,
   TFormData,
   ValidatorType,
-  TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
+  TName extends RestrictTName<TFormData>,
   TData,
 > = ValidatorType extends Validator<TData>
   ? Parameters<ReturnType<ValidatorType>['validate']>[1]
@@ -30,7 +34,7 @@ type ValidateAsyncFn<
   _TData,
   TFormData,
   Validator,
-  TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
+  TName extends RestrictTName<TFormData>,
   TData,
 > = (
   value: TData,
@@ -41,7 +45,7 @@ export interface FieldOptions<
   _TData,
   TFormData,
   ValidatorType,
-  TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
+  TName extends RestrictTName<TFormData>,
   TData,
 > {
   name: TName
@@ -77,7 +81,7 @@ export interface FieldApiOptions<
   _TData,
   TFormData,
   ValidatorType,
-  TName extends unknown extends TFormData ? string : DeepKeys<TFormData>,
+  TName extends RestrictTName<TFormData>,
   TData,
 > extends FieldOptions<_TData, TFormData, ValidatorType, TName, TData> {
   form: FormApi<TFormData>
@@ -106,11 +110,7 @@ export class FieldApi<
    * This allows us to restrict the name to only be a valid field name while
    * also assigning it to a generic
    */
-  TName extends unknown extends TFormData
-    ? string
-    : DeepKeys<TFormData> = unknown extends TFormData
-    ? string
-    : DeepKeys<TFormData>,
+  TName extends RestrictTName<TFormData> = RestrictTName<TFormData>,
   /**
    * If TData is unknown, we can use the TName generic to determine the type
    */
