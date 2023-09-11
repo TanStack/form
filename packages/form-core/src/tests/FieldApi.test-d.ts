@@ -2,7 +2,7 @@ import { assertType } from 'vitest'
 import { FormApi } from '../FormApi'
 import { FieldApi } from '../FieldApi'
 import { zodValidator } from '../zod-validator'
-import z from 'zod'
+import { z } from 'zod'
 
 it('should type value properly', () => {
   const form = new FormApi({

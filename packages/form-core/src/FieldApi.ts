@@ -33,12 +33,12 @@ type ValidateOrFn<
 type ValidateAsyncFn<
   _TData,
   TFormData,
-  Validator,
+  ValidatorType,
   TName extends RestrictTName<TFormData>,
   TData,
 > = (
   value: TData,
-  fieldApi: FieldApi<_TData, TFormData, Validator, TName, TData>,
+  fieldApi: FieldApi<_TData, TFormData, ValidatorType, TName, TData>,
 ) => ValidationError | Promise<ValidationError>
 
 export interface FieldOptions<
@@ -274,8 +274,8 @@ export class FieldApi<
   swapValues = (aIndex: number, bIndex: number) =>
     this.form.swapFieldValues(this.name, aIndex, bIndex)
 
-  getSubField = <TName extends DeepKeys<TData>>(name: TName) =>
-    new FieldApi<DeepValue<TData, TName>, TFormData, ValidatorType>({
+  getSubField = <SubTName extends DeepKeys<TData>>(name: SubTName) =>
+    new FieldApi<DeepValue<TData, SubTName>, TFormData, ValidatorType>({
       name: `${this.name}.${name}` as never,
       form: this.form,
     })

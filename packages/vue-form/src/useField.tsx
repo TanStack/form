@@ -1,10 +1,5 @@
-import {
-  FieldApi,
-  type FieldApiOptions,
-  type FormApi,
-  RestrictTName,
-} from '@tanstack/form-core'
-import type { DeepKeys, DeepValue, Narrow } from '@tanstack/form-core'
+import { FieldApi, type RestrictTName } from '@tanstack/form-core'
+import type { DeepKeys, DeepValue } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
 import { defineComponent, onMounted, onUnmounted, watch } from 'vue-demi'
 import type { SlotsType, SetupContext, Ref } from 'vue-demi'
