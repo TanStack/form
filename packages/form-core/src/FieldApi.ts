@@ -280,24 +280,10 @@ export class FieldApi<
       form: this.form,
     })
 
-  getValidateTransformer = () => {
-    const isValidator = (
-      item: unknown,
-    ): item is Validator<
-      TData,
-      typeof this.options.onBlur | typeof this.options.onChange
-    > =>
-      !!item && typeof item === 'function' && (item as any).isValidator === true
-
-    return isValidator(this.options.validator) ? this.options.validator() : null
-  }
-
   validateSync = (value = this.state.value, cause: ValidationCause) => {
     const { onChange, onBlur } = this.options
     const validate =
       cause === 'submit' ? undefined : cause === 'change' ? onChange : onBlur
-
-    const validateTransformer = this.getValidateTransformer()
 
     if (!validate) return
 
@@ -307,8 +293,11 @@ export class FieldApi<
     this.getInfo().validationCount = validationCount
 
     const doValidate = () => {
-      if (validateTransformer) {
-        return validateTransformer.validate(value, validate)
+      if (this.options.validator) {
+        return (this.options.validator as Validator<TData>)().validate(
+          value,
+          validate,
+        )
       }
 
       return (
