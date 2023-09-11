@@ -140,7 +140,7 @@ export const Field = defineComponent(
     _TData,
     TFormData,
     ValidatorType,
-    TName extends RestrictTName<TFormData>,
+    TName extends RestrictTName<TFormData> = RestrictTName<TFormData>,
     TData = unknown extends _TData ? DeepValue<TFormData, TName> : _TData,
   >(
     fieldOptions: UseFieldOptions<
