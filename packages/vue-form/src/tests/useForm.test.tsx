@@ -68,7 +68,7 @@ describe('useForm', () => {
       form.provideFormContext()
 
       return () => (
-        <form.Field name="firstName" defaultValue="">
+        <form.Field name="firstName">
           {({ field }: { field: FieldApi<string, Person> }) => (
             <p>{field.state.value}</p>
           )}
@@ -78,6 +78,37 @@ describe('useForm', () => {
 
     const { findByText, queryByText } = render(Comp)
     expect(await findByText('FirstName')).toBeInTheDocument()
+    expect(queryByText('LastName')).not.toBeInTheDocument()
+  })
+
+  it('should use field default value first', async () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+
+    const formFactory = createFormFactory<Person>()
+
+    const Comp = defineComponent(() => {
+      const form = formFactory.useForm({
+        defaultValues: {
+          firstName: 'FirstName',
+          lastName: 'LastName',
+        },
+      })
+      form.provideFormContext()
+
+      return () => (
+        <form.Field name="firstName" defaultValue='otherName'>
+          {({ field }: { field: FieldApi<string, Person> }) => (
+            <p>{field.state.value}</p>
+          )}
+        </form.Field>
+      )
+    })
+
+    const { findByText, queryByText } = render(Comp)
+    expect(await findByText('otherName')).toBeInTheDocument()
     expect(queryByText('LastName')).not.toBeInTheDocument()
   })
 

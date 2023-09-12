@@ -20,6 +20,22 @@ describe('field api', () => {
     expect(field.getValue()).toBe('test')
   })
 
+  it('should use field default value first', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      defaultValue: 'other',
+      name: 'name',
+    })
+
+    expect(field.getValue()).toBe('other')
+  })
+
   it('should get default meta', () => {
     const form = new FormApi()
     const field = new FieldApi({

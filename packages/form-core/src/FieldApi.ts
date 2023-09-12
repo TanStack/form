@@ -123,6 +123,10 @@ export class FieldApi<
 
     this.name = opts.name as any
 
+    if (opts.defaultValue !== undefined) {
+      this.form.setFieldValue(this.name, opts.defaultValue as never)
+    }
+
     this.store = new Store<FieldState<TData>>(
       {
         value: this.getValue(),
