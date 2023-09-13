@@ -14,7 +14,7 @@ declare module '@tanstack/form-core' {
   interface FormApi<TFormData> {
     Provider: (props: Record<string, any> & {}) => any
     provideFormContext: () => void
-    Field: FieldComponent<TFormData, TFormData>
+    Field: FieldComponent<TFormData>
     useField: UseField<TFormData>
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
       selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,

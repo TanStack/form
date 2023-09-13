@@ -11,14 +11,14 @@ Normally, you will not need to create a new `FieldApi` instance directly. Instea
 const fieldApi: FieldApi<TData> = new FieldApi(formOptions: Field Options<TData>)
 ```
 
-### `FieldOptions<TData, TFormData>`
+### `FieldOptions<TData, TParentData>`
 
 An object type representing the options for a field in a form.
 
 - ```tsx
   name
   ```
-  - The field name. If `TFormData` is `unknown`, the type will be `string`. Otherwise, it will be `DeepKeys<TFormData>`.
+  - The field name. If `TParentData` is `unknown`, the type will be `string`. Otherwise, it will be `DeepKeys<TParentData>`.
 - ```tsx
   defaultValue?: TData
   ```
@@ -30,19 +30,19 @@ An object type representing the options for a field in a form.
   - An optional object with default metadata for the field.
 
 - ```tsx
-  onMount?: (formApi: FieldApi<TData, TFormData>) => void
+  onMount?: (formApi: FieldApi<TData, TParentData>) => void
   ```
 
-  - An optional function that takes a param of `formApi` which is a generic type of `TData` and `TFormData`
+  - An optional function that takes a param of `formApi` which is a generic type of `TData` and `TParentData`
 
 - ```tsx
-   onChange?: ValidateFn<TData, TFormData>
+   onChange?: ValidateFn<TData, TParentData>
   ```
 
-  - An optional property that takes a `ValidateFn` which is a generic of `TData` and `TFormData`
+  - An optional property that takes a `ValidateFn` which is a generic of `TData` and `TParentData`
 
 - ```tsx
-    onChangeAsync?: ValidateAsyncFn<TData, TFormData>
+    onChangeAsync?: ValidateAsyncFn<TData, TParentData>
   ```
 
   - An optional property similar to `onChange` but async validation
@@ -55,16 +55,16 @@ An object type representing the options for a field in a form.
   - If set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds
 
 - ```tsx
-    onBlur?: ValidateFn<TData, TFormData>
+    onBlur?: ValidateFn<TData, TParentData>
   ```
 
   - An optional function, when that run when subscribing to blur event of input
 
 - ```tsx
-   onBlurAsync?: ValidateAsyncFn<TData, TFormData>
+   onBlurAsync?: ValidateAsyncFn<TData, TParentData>
   ```
 
-  - An optional function that takes a `ValidateFn` which is a generic of `TData` and `TFormData` happens async
+  - An optional function that takes a `ValidateFn` which is a generic of `TData` and `TParentData` happens async
 
   ```tsx
   onBlurAsyncDebounceMs?: number
@@ -110,13 +110,13 @@ An object type representing the metadata of a field in a form.
   ```
   - A flag indicating whether the field is currently being validated.
 
-### `FieldApiOptions<TData, TFormData>`
+### `FieldApiOptions<TData, TParentData>`
 
 An object type representing the required options for the `FieldApi` class.
 
-- Inherits from `FieldOptions<TData, TFormData>` with the `form` property set as required.
+- Inherits from `FieldOptions<TData, TParentData>` with the `form` property set as required.
 
-### `FieldApi<TData, TFormData>`
+### `FieldApi<TData, TParentData>`
 
 A class representing the API for managing a form field.
 
@@ -127,11 +127,11 @@ A class representing the API for managing a form field.
   ```
   - A unique identifier for the field instance.
 - ```tsx
-  form: FormApi<TFormData>
+  form: FormApi<TParentData>
   ```
   - A reference to the form API instance.
 - ```tsx
-  name: DeepKeys<TFormData>
+  name: DeepKeys<TParentData>
   ```
   - The field name.
 - ```tsx
@@ -143,14 +143,14 @@ A class representing the API for managing a form field.
   ```
   - The current field state.
 - ```tsx
-  options: RequiredByKey<FieldOptions<TData, TFormData>, 'validateOn'>
+  options: RequiredByKey<FieldOptions<TData, TParentData>, 'validateOn'>
   ```
   - The field options with the `validateOn` property set as required.
 
 #### Methods
 
 - ```tsx
-  constructor(opts: FieldApiOptions<TData, TFormData>)
+  constructor(opts: FieldApiOptions<TData, TParentData>)
   ```
   - Initializes a new `FieldApi` instance.
 - ```tsx
@@ -162,7 +162,7 @@ A class representing the API for managing a form field.
   ```
   - Updates the field store with the latest form state.
 - ```tsx
-  update(opts: FieldApiOptions<TData, TFormData>): void
+  update(opts: FieldApiOptions<TData, TParentData>): void
   ```
   - Updates the field instance with new options.
 - ```tsx
@@ -202,7 +202,7 @@ A class representing the API for managing a form field.
   ```
   - Swaps the values at the specified indices.
 - ```tsx
-  getSubField<TName extends DeepKeys<TData>>(name: TName): FieldApi<DeepValue<TData, TName>, TFormData>
+  getSubField<TName extends DeepKeys<TData>>(name: TName): FieldApi<DeepValue<TData, TName>, TParentData>
   ```
   - Gets a subfield instance.
 - ```tsx

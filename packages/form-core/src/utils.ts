@@ -133,16 +133,16 @@ type AllowedIndexes<
   ? AllowedIndexes<Tail, Keys | Tail['length']>
   : Keys
 
-export type DeepKeys<T, TDepth extends any[] = []> = TDepth['length'] extends 10
+export type DeepKeys<T, TDepth extends any[] = []> = TDepth['length'] extends 5
   ? never
   : unknown extends T
-  ? keyof T
+  ? string
   : object extends T
   ? string
   : T extends readonly any[] & IsTuple<T>
   ? AllowedIndexes<T> | DeepKeysPrefix<T, AllowedIndexes<T>, TDepth>
   : T extends any[]
-  ? DeepKeys<T[number]>
+  ? DeepKeys<T[number], [...TDepth, any]>
   : T extends Date
   ? never
   : T extends object

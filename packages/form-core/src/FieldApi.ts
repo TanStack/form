@@ -4,59 +4,67 @@ import { Store } from '@tanstack/store'
 
 export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount'
 
-type ValidateFn<TData, TFormData> = (
+type ValidateFn<TData, TParentData, TName extends DeepKeys<TParentData>> = (
   value: TData,
-  fieldApi: FieldApi<TData, TFormData>,
+  fieldApi: FieldApi<TData, TParentData, TName>,
 ) => ValidationError
 
-type ValidateAsyncFn<TData, TFormData> = (
+type ValidateAsyncFn<
+  TData,
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+> = (
   value: TData,
-  fieldApi: FieldApi<TData, TFormData>,
+  fieldApi: FieldApi<TData, TParentData, TName>,
 ) => ValidationError | Promise<ValidationError>
 
 export interface FieldOptions<
-  _TData,
-  TFormData,
+  TData,
+  TParentData,
   /**
    * This allows us to restrict the name to only be a valid field name while
    * also assigning it to a generic
    */
-  TName = unknown extends TFormData ? string : DeepKeys<TFormData>,
+  TName extends DeepKeys<TParentData>,
   /**
    * If TData is unknown, we can use the TName generic to determine the type
    */
-  TData = unknown extends _TData ? DeepValue<TFormData, TName> : _TData,
+  TResolvedData = unknown extends TData ? DeepValue<TParentData, TName> : TData,
 > {
-  name: TName
-  index?: TData extends any[] ? number : never
-  defaultValue?: TData
+  name: DeepKeys<TParentData>
+  index?: TResolvedData extends any[] ? number : never
+  defaultValue?: TResolvedData
   asyncDebounceMs?: number
   asyncAlways?: boolean
-  onMount?: (formApi: FieldApi<TData, TFormData>) => void
-  onChange?: ValidateFn<TData, TFormData>
-  onChangeAsync?: ValidateAsyncFn<TData, TFormData>
+  onMount?: (formApi: FieldApi<TResolvedData, TParentData, TName>) => void
+  onChange?: ValidateFn<TResolvedData, TParentData, TName>
+  onChangeAsync?: ValidateAsyncFn<TResolvedData, TParentData, TName>
   onChangeAsyncDebounceMs?: number
-  onBlur?: ValidateFn<TData, TFormData>
-  onBlurAsync?: ValidateAsyncFn<TData, TFormData>
+  onBlur?: ValidateFn<TResolvedData, TParentData, TName>
+  onBlurAsync?: ValidateAsyncFn<TResolvedData, TParentData, TName>
   onBlurAsyncDebounceMs?: number
-  onSubmitAsync?: ValidateAsyncFn<TData, TFormData>
+  onSubmitAsync?: ValidateAsyncFn<TResolvedData, TParentData, TName>
   defaultMeta?: Partial<FieldMeta>
 }
 
 export interface FieldApiOptions<
-  _TData,
-  TFormData,
+  TData,
+  TParentData,
   /**
    * This allows us to restrict the name to only be a valid field name while
    * also assigning it to a generic
    */
-  TName = unknown extends TFormData ? string : DeepKeys<TFormData>,
+  TName extends DeepKeys<TParentData>,
   /**
    * If TData is unknown, we can use the TName generic to determine the type
    */
-  TData = unknown extends _TData ? DeepValue<TFormData, TName> : _TData,
-> extends FieldOptions<_TData, TFormData, TName, TData> {
-  form: FormApi<TFormData>
+  TResolvedData extends ResolveData<TData, TParentData, TName> = ResolveData<
+    TData,
+    TParentData,
+    TName
+  >,
+> extends FieldOptions<TData, TParentData, TName, TResolvedData> {
+  form: FormApi<TParentData>
 }
 
 export type FieldMeta = {
@@ -74,43 +82,35 @@ export type FieldState<TData> = {
   meta: FieldMeta
 }
 
-type GetTData<
-  TData,
-  TFormData,
-  Opts extends FieldApiOptions<TData, TFormData>,
-> = Opts extends FieldApiOptions<
-  infer _TData,
-  infer _TFormData,
-  infer _TName,
-  infer RealTData
->
-  ? RealTData
-  : never
+export type ResolveData<TData, TParentData, TName> = unknown extends TData
+  ? DeepValue<TParentData, TName>
+  : TData
+
+export type ResolveName<TParentData> = unknown extends TParentData
+  ? string
+  : DeepKeys<TParentData>
 
 export class FieldApi<
-  _TData,
-  TFormData,
-  Opts extends FieldApiOptions<_TData, TFormData> = FieldApiOptions<
-    _TData,
-    TFormData
-  >,
-  TData extends GetTData<_TData, TFormData, Opts> = GetTData<
-    _TData,
-    TFormData,
-    Opts
+  TData,
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TResolvedData extends ResolveData<TData, TParentData, TName> = ResolveData<
+    TData,
+    TParentData,
+    TName
   >,
 > {
   uid: number
-  form: Opts['form']
-  name!: DeepKeys<TFormData>
-  options: Opts = {} as any
-  store!: Store<FieldState<TData>>
-  state!: FieldState<TData>
-  prevState!: FieldState<TData>
+  form: FieldApiOptions<TData, TParentData, TName, TResolvedData>['form']
+  name!: DeepKeys<TParentData>
+  options: FieldApiOptions<TData, TParentData, TName> = {} as any
+  store!: Store<FieldState<TResolvedData>>
+  state!: FieldState<TResolvedData>
+  prevState!: FieldState<TResolvedData>
 
   constructor(
-    opts: Opts & {
-      form: FormApi<TFormData>
+    opts: FieldApiOptions<TData, TParentData, TName, TResolvedData> & {
+      form: FormApi<TParentData>
     },
   ) {
     this.form = opts.form
@@ -123,7 +123,7 @@ export class FieldApi<
 
     this.name = opts.name as any
 
-    this.store = new Store<FieldState<TData>>(
+    this.store = new Store<FieldState<TResolvedData>>(
       {
         value: this.getValue(),
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -190,12 +190,12 @@ export class FieldApi<
     }
   }
 
-  update = (opts: FieldApiOptions<TData, TFormData>) => {
+  update = (opts: FieldApiOptions<TResolvedData, TParentData, TName>) => {
     // Default Value
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.state.value === undefined) {
       const formDefault =
-        opts.form.options.defaultValues?.[opts.name as keyof TFormData]
+        opts.form.options.defaultValues?.[opts.name as keyof TParentData]
 
       if (opts.defaultValue !== undefined) {
         this.setValue(opts.defaultValue as never)
@@ -212,12 +212,12 @@ export class FieldApi<
     this.options = opts as never
   }
 
-  getValue = (): TData => {
-    return this.form.getFieldValue(this.name)
+  getValue = (): TResolvedData => {
+    return this.form.getFieldValue(this.name) as any
   }
 
   setValue = (
-    updater: Updater<TData>,
+    updater: Updater<TResolvedData>,
     options?: { touch?: boolean; notify?: boolean },
   ) => {
     this.form.setFieldValue(this.name, updater as never, options)
@@ -241,12 +241,13 @@ export class FieldApi<
 
   getInfo = () => this.form.getFieldInfo(this.name)
 
-  pushValue = (value: TData extends any[] ? TData[number] : never) =>
-    this.form.pushFieldValue(this.name, value as any)
+  pushValue = (
+    value: TResolvedData extends any[] ? TResolvedData[number] : never,
+  ) => this.form.pushFieldValue(this.name, value as any)
 
   insertValue = (
     index: number,
-    value: TData extends any[] ? TData[number] : never,
+    value: TResolvedData extends any[] ? TResolvedData[number] : never,
   ) => this.form.insertFieldValue(this.name, index, value as any)
 
   removeValue = (index: number) => this.form.removeFieldValue(this.name, index)
@@ -254,11 +255,21 @@ export class FieldApi<
   swapValues = (aIndex: number, bIndex: number) =>
     this.form.swapFieldValues(this.name, aIndex, bIndex)
 
-  getSubField = <TName extends DeepKeys<TData>>(name: TName) =>
-    new FieldApi<DeepValue<TData, TName>, TFormData>({
+  getSubField = <
+    TSubData,
+    TSubName extends DeepKeys<TResolvedData>,
+    TSubResolvedData extends ResolveData<
+      DeepValue<TResolvedData, TSubName>,
+      TResolvedData,
+      TSubName
+    >,
+  >(
+    name: TSubName,
+  ): FieldApi<TSubData, TResolvedData, TSubName, TSubResolvedData> =>
+    new FieldApi({
       name: `${this.name}.${name}` as never,
       form: this.form,
-    })
+    }) as any
 
   validateSync = (value = this.state.value, cause: ValidationCause) => {
     const { onChange, onBlur } = this.options
@@ -387,7 +398,7 @@ export class FieldApi<
 
   validate = (
     cause: ValidationCause,
-    value?: TData,
+    value?: TResolvedData,
   ): ValidationError[] | Promise<ValidationError[]> => {
     // If the field is pristine and validatePristine is false, do not validate
     if (!this.state.meta.isTouched) return []
@@ -405,7 +416,7 @@ export class FieldApi<
     return this.validateAsync(value, cause)
   }
 
-  handleChange = (updater: Updater<TData>) => {
+  handleChange = (updater: Updater<TResolvedData>) => {
     this.setValue(updater, { touch: true })
   }
 
