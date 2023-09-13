@@ -1,11 +1,6 @@
 import React, { useState } from 'react'
 import { useStore } from '@tanstack/react-store'
-import type {
-  DeepKeys,
-  DeepValue,
-  Narrow,
-  ResolveData,
-} from '@tanstack/form-core'
+import type { DeepKeys, DeepValue, Narrow } from '@tanstack/form-core'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useFormContext, formContext } from './formContext'
 import useIsomorphicLayoutEffect from 'use-isomorphic-layout-effect'
@@ -14,35 +9,21 @@ import type { UseFieldOptions } from './types'
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
   interface FieldApi<
-    TData,
     TParentData,
     TName extends DeepKeys<TParentData>,
-    TResolvedData extends ResolveData<TData, TParentData, TName> = ResolveData<
-      TData,
-      TParentData,
-      TName
-    >,
+    TData = DeepValue<TParentData, TName>,
   > {
     Field: FieldComponent<TData>
   }
 }
 
 export type UseField<TParentData> = <TName extends DeepKeys<TParentData>>(
-  opts?: { name: Narrow<TName> } & UseFieldOptions<
-    DeepValue<TParentData, TName>,
-    TParentData,
-    TName
-  >,
-) => FieldApi<DeepValue<TParentData, TName>, TParentData, TName>
+  opts?: { name: Narrow<TName> } & UseFieldOptions<TParentData, TName>,
+) => FieldApi<TParentData, TName, DeepValue<TParentData, TName>>
 
-export function useField<
-  TData,
-  TParentData,
-  TName extends DeepKeys<TParentData>,
->(
-  opts: UseFieldOptions<TData, TParentData, TName>,
+export function useField<TParentData, TName extends DeepKeys<TParentData>>(
+  opts: UseFieldOptions<TParentData, TName>,
 ): FieldApi<
-  TData,
   TParentData,
   TName
   // Omit<typeof opts, 'onMount'> & {
@@ -95,14 +76,11 @@ export function useField<
 }
 
 type FieldComponentProps<
-  TData,
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TResolvedData extends ResolveData<TData, TParentData, TName>,
+  TData = DeepValue<TParentData, TName>,
 > = {
-  children: (
-    fieldApi: FieldApi<TData, TParentData, TName, TResolvedData>,
-  ) => any
+  children: (fieldApi: FieldApi<TParentData, TName, TData>) => any
 } & (TParentData extends any[]
   ? {
       name?: TName
@@ -112,27 +90,22 @@ type FieldComponentProps<
       name: TName
       index?: never
     }) &
-  Omit<UseFieldOptions<TData, TParentData, TName>, 'name' | 'index'>
+  Omit<UseFieldOptions<TParentData, TName>, 'name' | 'index'>
 
 export type FieldComponent<TParentData> = <
-  TData,
   TName extends DeepKeys<TParentData>,
-  TResolvedData extends ResolveData<TData, TParentData, TName> = ResolveData<
-    TData,
-    TParentData,
-    TName
-  >,
+  TData = DeepValue<TParentData, TName>,
 >({
   children,
   ...fieldOptions
-}: FieldComponentProps<TData, TParentData, TName, TResolvedData>) => any
+}: FieldComponentProps<TParentData, TName, TData>) => any
 
-export function Field<TData, TParentData, TName extends DeepKeys<TParentData>>({
+export function Field<TParentData, TName extends DeepKeys<TParentData>>({
   children,
   ...fieldOptions
 }: {
-  children: (fieldApi: FieldApi<TData, TParentData, TName>) => any
-} & UseFieldOptions<TData, TParentData, TName>) {
+  children: (fieldApi: FieldApi<TParentData, TName>) => any
+} & UseFieldOptions<TParentData, TName>) {
   const fieldApi = useField(fieldOptions as any)
 
   return (
