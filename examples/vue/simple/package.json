@@ -9,10 +9,10 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@tanstack/form-core": "0.3.5",
-    "@tanstack/vue-form": "0.3.5",
+    "@tanstack/form-core": "0.3.6",
+    "@tanstack/vue-form": "0.3.6",
     "vue": "^3.3.4",
-    "@tanstack/react-form": "0.3.5"
+    "@tanstack/react-form": "0.3.6"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.3.4",
