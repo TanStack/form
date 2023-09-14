@@ -31,7 +31,7 @@ export type FormOptions<TData> = {
 }
 
 export type FieldInfo<TFormData> = {
-  instances: Record<string, FieldApi<any, TFormData, any>>
+  instances: Record<string, FieldApi<TFormData, any, any>>
 } & ValidationMeta
 
 export type ValidationMeta = {

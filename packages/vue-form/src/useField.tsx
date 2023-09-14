@@ -1,10 +1,5 @@
 import { FieldApi } from '@tanstack/form-core'
-import type {
-  DeepKeys,
-  DeepValue,
-  Narrow,
-  ResolveData,
-} from '@tanstack/form-core'
+import type { DeepKeys, DeepValue, Narrow } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
 import { defineComponent, onMounted, onUnmounted, watch } from 'vue-demi'
 import type { SlotsType, SetupContext, Ref } from 'vue-demi'
@@ -14,36 +9,30 @@ import type { UseFieldOptions } from './types'
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
   interface FieldApi<
-    TData,
     TParentData,
     TName extends DeepKeys<TParentData>,
-    TResolvedData extends ResolveData<TData, TParentData, TName> = ResolveData<
-      TData,
-      TParentData,
-      TName
-    >,
+    TData = DeepValue<TParentData, TName>,
   > {
-    Field: FieldComponent<TResolvedData>
+    Field: FieldComponent<TData>
   }
 }
 
 export type UseField<TParentData> = <TName extends DeepKeys<TParentData>>(
   opts?: { name: Narrow<TName> } & UseFieldOptions<
-    DeepValue<TParentData, TName>,
     TParentData,
-    TName
+    TName,
+    DeepValue<TParentData, TName>
   >,
-) => FieldApi<DeepValue<TParentData, TName>, TParentData, TName>
+) => FieldApi<TParentData, TName, DeepValue<TParentData, TName>>
 
 export function useField<
-  TData,
   TParentData,
   TName extends DeepKeys<TParentData>,
+  TData = DeepValue<TParentData, TName>,
 >(
-  opts: UseFieldOptions<TData, TParentData, TName>,
+  opts: UseFieldOptions<TParentData, TName>,
 ): {
   api: FieldApi<
-    TData,
     TParentData,
     TName
     // Omit<typeof opts, 'onMount'> & {
@@ -53,9 +42,9 @@ export function useField<
   state: Readonly<
     Ref<
       FieldApi<
-        TData,
         TParentData,
-        TName
+        TName,
+        TData
         // Omit<typeof opts, 'onMount'> & {
         //   form: FormApi<TParentData>
         // }
@@ -107,7 +96,6 @@ export type FieldValue<TParentData, TName> = TParentData extends any[]
   : DeepValue<TParentData, TName>
 
 type FieldComponentProps<
-  TData,
   TParentData,
   TName extends DeepKeys<TParentData>,
 > = (TParentData extends any[]
@@ -119,32 +107,27 @@ type FieldComponentProps<
       name: TName
       index?: never
     }) &
-  Omit<UseFieldOptions<TData, TParentData, TName>, 'name' | 'index'>
+  Omit<UseFieldOptions<TParentData, TName>, 'name' | 'index'>
 
 export type FieldComponent<TParentData> = <
-  TData,
   TName extends DeepKeys<TParentData>,
-  TResolvedData extends ResolveData<TData, TParentData, TName> = ResolveData<
-    TData,
-    TParentData,
-    TName
-  >,
+  TData = DeepValue<TParentData, TName>,
 >(
-  fieldOptions: FieldComponentProps<TData, TParentData, TName>,
+  fieldOptions: FieldComponentProps<TParentData, TName>,
   context: SetupContext<
     {},
     SlotsType<{
       default: {
-        field: FieldApi<TData, TParentData, TName, TResolvedData>
-        state: FieldApi<TData, TParentData, TName, TResolvedData>['state']
+        field: FieldApi<TParentData, TName, TData>
+        state: FieldApi<TParentData, TName, TData>['state']
       }
     }>
   >,
 ) => any
 
 export const Field = defineComponent(
-  <TData, TParentData, TName extends DeepKeys<TParentData>>(
-    fieldOptions: UseFieldOptions<TData, TParentData, TName>,
+  <TParentData, TName extends DeepKeys<TParentData>>(
+    fieldOptions: UseFieldOptions<TParentData, TName>,
     context: SetupContext,
   ) => {
     const fieldApi = useField({ ...fieldOptions, ...context.attrs } as any)
