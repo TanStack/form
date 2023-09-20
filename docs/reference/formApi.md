@@ -20,7 +20,7 @@ An object representing the options for a form.
 - ```tsx
     defaultValues?: TData
   ```
-  - The default values for the form fields.
+  - Set initial values for you form.
 - ```tsx
     defaultState?: Partial<FormState<TData>>
   ```
@@ -29,16 +29,16 @@ An object representing the options for a form.
 - ```tsx
     asyncDebounceMs?: number
   ```
-  -  Optional time in milliseconds
+  -  Optional time in milliseconds if you want to introduce a delay before firing off an async action.
 
 - ```tsx
       onMount?: (values: TData, formApi: FormApi<TData>) => ValidationError
   ```
-  -  Optional function that takes values of `TData` and a formApi that is a generic of `FormApi<TData>` return a `ValidationError`
+  -  Optional function that fires as soon as the component mounts.
 - ```tsx
     onMountAsync?: ( values: TData, formApi: FormApi<TData>) => ValidationError | Promise<ValidationError>
   ```
-  -  Optional async function that takes values of `TData` and a formApi that is a generic of `FormApi<TData>` return a `ValidationError` or a `Promise<ValidationError`
+  -  Optional async function that fires when the component mounts
 - ```tsx
     onMountAsyncDebounceMs?: number
   ```
@@ -47,12 +47,12 @@ An object representing the options for a form.
 - ```tsx
      onChange?: (values: TData, formApi: FormApi<TData>) => ValidationError
   ```
-  -  Optional  function that takes values of `TData` and a formApi that is a generic of `FormApi<TData>` return a `ValidationError`
+  -  Optional function that checks the validity of your data whenever a value changes
 
 - ```tsx
     onChangeAsync?: (values: TData, formApi: FormApi<TData>) => ValidationError | Promise<ValidationError>
   ```
-  -  Optional onChange async function that takes values of `TData` and a formApi that is a generic of `FormApi<TData>` return a `ValidationError` or a `Promise<ValidationError`
+  -  Optional onChange  asynchronous counterpart to onChange. Useful for more complex validation logic that might involve server requests.
 
 - ```tsx
     onChangeAsyncDebounceMs?: number
@@ -62,12 +62,12 @@ An object representing the options for a form.
 - ```tsx
     onBlur?: (values: TData, formApi: FormApi<TData>) => ValidationError
   ```
-  -  Optional  function that takes values of `TData` and a formApi that is a generic of `FormApi<TData>` return a `ValidationError`
+  -  Optional  function that validates the form data when a field loses focus, returns a `ValidationError`
 
 - ```tsx
     onBlurAsync?:  (values: TData,formApi: FormApi<TData>) => ValidationError | Promise<ValidationError>
   ```
-  -  Optional onBlur async function that takes values of `TData` and a formApi that is a generic of `FormApi<TData>` return a `ValidationError`  or a promise of `Promise<ValidationError>`
+  -  Optional onBlur asynchronous validation method for when a field loses focus return a `ValidationError`  or a promise of `Promise<ValidationError>`
 
 - ```tsx
     onBlurAsyncDebounceMs?: number
@@ -77,12 +77,13 @@ An object representing the options for a form.
 - ```tsx
       onSubmit?: (values: TData, formApi: FormApi<TData>) => any | Promise<any>
   ```
-  - A function to be called when the form is submitted and valid takes values of `TData` formApi of `FormApi<TData>` and returns `any` or a promise `Promise<any>`
+  - A function to be called when the form is submitted, what should happen once the user submits a valid form  returns `any` or a promise `Promise<any>`
 
 - ```tsx
     onSubmitInvalid?: (values: TData, formApi: FormApi<TData>) => void
   ```
-  - A function to be called when the form is submitted but invalid.
+  - Specify an action for scenarios where the user tries to submit an invalid form.
+
 
 ### `FormApi<TFormData>`
 
@@ -97,7 +98,7 @@ A class representing the Form API. It handles the logic and interactions with th
 - ```tsx
   store: Store<FormState<TFormData>>
   ```
-  - The internal store for the form state.
+  - An internal mechanism that keeps track of the form's state.
 - ```tsx
   state: FormState<TFormData>
   ```
