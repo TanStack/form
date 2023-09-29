@@ -140,7 +140,6 @@ export class FieldApi<
   mount = () => {
     const info = this.getInfo()
     info.instances[this.uid] = this as never
-
     const unsubscribe = this.form.store.subscribe(() => {
       this.store.batch(() => {
         const nextValue = this.getValue()
