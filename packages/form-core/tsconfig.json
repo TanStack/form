@@ -1,5 +1,6 @@
 {
-  "extends": "../../tsconfig.json",
+  "composite": true,
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./build/lib",
     "types": ["vitest/globals"]

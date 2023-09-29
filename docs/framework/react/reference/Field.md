@@ -3,18 +3,23 @@ id: field
 title: Field
 ---
 
-### `FieldComponent<TFormData>`
+### `FieldComponent<TParentData>`
 
 A type alias representing a field component for a specific form data type.
 
 ```tsx
-export type FieldComponent = <TField extends DeepKeys<TFormData>>({
+export type FieldComponent = <TField extends DeepKeys<TParentData>>({
   children,
   ...fieldOptions
 }: {
-  children: (fieldApi: FieldApi<DeepValue<TFormData, TField>, TFormData>) => any
+  children: (
+    fieldApi: FieldApi<DeepValue<TParentData, TField>, TParentData>,
+  ) => any
   name: TField
-} & Omit<FieldOptions<DeepValue<TFormData, TField>, TFormData>, 'name'>) => any
+} & Omit<
+  FieldOptions<DeepValue<TParentData, TField>, TParentData>,
+  'name'
+>) => any
 ```
 
 A function component that takes field options and a render function as children and returns a React component.
@@ -22,23 +27,23 @@ A function component that takes field options and a render function as children 
 ### `Field`
 
 ```tsx
-export function Field<TData, TFormData>({
+export function Field<TData, TParentData>({
   children,
   ...fieldOptions
-}: { children: (fieldApi: FieldApi<TData, TFormData>) => any } & FieldOptions<
+}: { children: (fieldApi: FieldApi<TData, TParentData>) => any } & FieldOptions<
   TData,
-  TFormData
+  TParentData
 >): any
 ```
 
 A functional React component that renders a form field.
 
 - ```tsx
-  children: (fieldApi: FieldApi<TData, TFormData>) => any
+  children: (fieldApi: FieldApi<TData, TParentData>) => any
   ```
   - A render function that takes a field API instance and returns a React element.
 - ```tsx
-  fieldOptions: FieldOptions<TData, TFormData>
+  fieldOptions: FieldOptions<TData, TParentData>
   ```
   - The field options.
 
@@ -47,14 +52,14 @@ The `Field` component uses the `useField` hook internally to manage the field in
 ### `createFieldComponent`
 
 ```tsx
-export function createFieldComponent<TFormData>(
-  formApi: FormApi<TFormData>,
-): FieldComponent<TFormData>
+export function createFieldComponent<TParentData>(
+  formApi: FormApi<TParentData>,
+): FieldComponent<TParentData>
 ```
 
 A factory function that creates a connected field component for a specific form API instance.
 
 - ```tsx
-  formApi: FormApi<TFormData>
+  formApi: FormApi<TParentData>
   ```
   - The form API instance to connect the field component to.

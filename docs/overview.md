@@ -23,7 +23,7 @@ By providing a complete solution for these challenges, TanStack Form empowers de
 
 In the example below, you can see TanStack Form in action with the React framework adapter:
 
-[Open in CodeSandbox](https://codesandbox.io/s/github/tannerlinsley/react-form/tree/main/examples/react/simple)
+[Open in CodeSandbox](https://codesandbox.io/s/github/tanstack/form/tree/main/examples/react/simple)
 
 ```tsx
 import React from 'react'
@@ -139,4 +139,4 @@ ReactDOM.createRoot(rootElement).render(<App />)
 
 ## You talked me into it, so what now?
 
-- Learn React Form at your own pace with our thorough [Walkthrough Guide](../installation) and [API Reference](../reference/FormApi)
+- Learn TanStack Form at your own pace with our thorough [Walkthrough Guide](../installation) and [API Reference](../reference/FormApi)

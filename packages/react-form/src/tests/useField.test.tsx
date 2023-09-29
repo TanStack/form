@@ -71,7 +71,7 @@ describe('useField', () => {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.setValue(e.target.value)}
                 />
-                <p>{field.getMeta().error}</p>
+                <p>{field.getMeta().errors}</p>
               </div>
             )}
           />
@@ -112,7 +112,7 @@ describe('useField', () => {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-                <p>{field.getMeta().error}</p>
+                <p>{field.getMeta().errorMap?.onChange}</p>
               </div>
             )}
           />
@@ -125,6 +125,56 @@ describe('useField', () => {
     expect(queryByText(error)).not.toBeInTheDocument()
     await user.type(input, 'other')
     expect(getByText(error)).toBeInTheDocument()
+  })
+
+  it('should validate on change and on blur', async () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    const onChangeError = 'Please enter a different value (onChangeError)'
+    const onBlurError = 'Please enter a different value (onBlurError)'
+
+    const formFactory = createFormFactory<Person>()
+
+    function Comp() {
+      const form = formFactory.useForm()
+
+      return (
+        <form.Provider>
+          <form.Field
+            name="firstName"
+            defaultMeta={{ isTouched: true }}
+            onChange={(value) =>
+              value === 'other' ? onChangeError : undefined
+            }
+            onBlur={(value) => (value === 'other' ? onBlurError : undefined)}
+            children={(field) => (
+              <div>
+                <input
+                  data-testid="fieldinput"
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                <p>{field.getMeta().errorMap?.onChange}</p>
+                <p>{field.getMeta().errorMap?.onBlur}</p>
+              </div>
+            )}
+          />
+        </form.Provider>
+      )
+    }
+
+    const { getByTestId, getByText, queryByText } = render(<Comp />)
+    const input = getByTestId('fieldinput')
+    expect(queryByText(onChangeError)).not.toBeInTheDocument()
+    expect(queryByText(onBlurError)).not.toBeInTheDocument()
+    await user.type(input, 'other')
+    expect(getByText(onChangeError)).toBeInTheDocument()
+    await user.click(document.body)
+    expect(queryByText(onBlurError)).toBeInTheDocument()
   })
 
   it('should validate async on change', async () => {
@@ -157,7 +207,7 @@ describe('useField', () => {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-                <p>{field.getMeta().error}</p>
+                <p>{field.getMeta().errorMap?.onChange}</p>
               </div>
             )}
           />
@@ -171,6 +221,63 @@ describe('useField', () => {
     await user.type(input, 'other')
     await waitFor(() => getByText(error))
     expect(getByText(error)).toBeInTheDocument()
+  })
+
+  it('should validate async on change and async on blur', async () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    const onChangeError = 'Please enter a different value (onChangeError)'
+    const onBlurError = 'Please enter a different value (onBlurError)'
+
+    const formFactory = createFormFactory<Person>()
+
+    function Comp() {
+      const form = formFactory.useForm()
+
+      return (
+        <form.Provider>
+          <form.Field
+            name="firstName"
+            defaultMeta={{ isTouched: true }}
+            onChangeAsync={async () => {
+              await sleep(10)
+              return onChangeError
+            }}
+            onBlurAsync={async () => {
+              await sleep(10)
+              return onBlurError
+            }}
+            children={(field) => (
+              <div>
+                <input
+                  data-testid="fieldinput"
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                <p>{field.getMeta().errorMap?.onChange}</p>
+                <p>{field.getMeta().errorMap?.onBlur}</p>
+              </div>
+            )}
+          />
+        </form.Provider>
+      )
+    }
+
+    const { getByTestId, getByText, queryByText } = render(<Comp />)
+    const input = getByTestId('fieldinput')
+
+    expect(queryByText(onChangeError)).not.toBeInTheDocument()
+    expect(queryByText(onBlurError)).not.toBeInTheDocument()
+    await user.type(input, 'other')
+    await waitFor(() => getByText(onChangeError))
+    expect(getByText(onChangeError)).toBeInTheDocument()
+    await user.click(document.body)
+    await waitFor(() => getByText(onBlurError))
+    expect(getByText(onBlurError)).toBeInTheDocument()
   })
 
   it('should validate async on change with debounce', async () => {
@@ -205,7 +312,7 @@ describe('useField', () => {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-                <p>{field.getMeta().error}</p>
+                <p>{field.getMeta().errors}</p>
               </div>
             )}
           />

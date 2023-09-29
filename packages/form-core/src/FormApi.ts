@@ -1,7 +1,7 @@
 import { Store } from '@tanstack/store'
 //
 import type { DeepKeys, DeepValue, Updater } from './utils'
-import { functionalUpdate, getBy, setBy } from './utils'
+import { functionalUpdate, getBy, isNonEmptyArray, setBy } from './utils'
 import type { FieldApi, FieldMeta, ValidationCause } from './FieldApi'
 
 export type FormOptions<TData> = {
@@ -31,18 +31,24 @@ export type FormOptions<TData> = {
 }
 
 export type FieldInfo<TFormData> = {
-  instances: Record<string, FieldApi<any, TFormData>>
+  instances: Record<string, FieldApi<TFormData, any, any>>
 } & ValidationMeta
 
 export type ValidationMeta = {
   validationCount?: number
   validationAsyncCount?: number
-  validationPromise?: Promise<ValidationError>
-  validationResolve?: (error: ValidationError) => void
-  validationReject?: (error: unknown) => void
+  validationPromise?: Promise<ValidationError[]>
+  validationResolve?: (errors: ValidationError[]) => void
+  validationReject?: (errors: unknown) => void
 }
 
 export type ValidationError = undefined | false | null | string
+
+export type ValidationErrorMapKeys = `on${Capitalize<ValidationCause>}`
+
+export type ValidationErrorMap = {
+  [K in ValidationErrorMapKeys]?: ValidationError
+}
 
 export type FormState<TData> = {
   values: TData
@@ -100,7 +106,7 @@ export class FormApi<TFormData> {
   constructor(opts?: FormOptions<TFormData>) {
     this.store = new Store<FormState<TFormData>>(
       getDefaultFormState({
-        ...opts?.defaultState,
+        ...(opts?.defaultState as any),
         values: opts?.defaultValues ?? opts?.defaultState?.values,
         isFormValid: true,
       }),
@@ -117,7 +123,9 @@ export class FormApi<TFormData> {
             (field) => field?.isValidating,
           )
 
-          const isFieldsValid = !fieldMetaValues.some((field) => field?.error)
+          const isFieldsValid = !fieldMetaValues.some((field) =>
+            isNonEmptyArray(field?.errors),
+          )
 
           const isTouched = fieldMetaValues.some((field) => field?.isTouched)
 
@@ -166,7 +174,7 @@ export class FormApi<TFormData> {
         getDefaultFormState(
           Object.assign(
             {},
-            this.state,
+            this.state as any,
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             shouldUpdateState ? options.defaultState : {},
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -186,14 +194,13 @@ export class FormApi<TFormData> {
   reset = () =>
     this.store.setState(() =>
       getDefaultFormState({
-        ...this.options.defaultState,
+        ...(this.options.defaultState as any),
         values: this.options.defaultValues ?? this.options.defaultState?.values,
       }),
     )
 
   validateAllFields = async (cause: ValidationCause) => {
-    const fieldValidationPromises: Promise<ValidationError>[] = [] as any
-
+    const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
     this.store.batch(() => {
       void (Object.values(this.fieldInfo) as FieldInfo<any>[]).forEach(
         (field) => {
@@ -281,7 +288,9 @@ export class FormApi<TFormData> {
     return this.state.fieldMeta[field]
   }
 
-  getFieldInfo = <TField extends DeepKeys<TFormData>>(field: TField) => {
+  getFieldInfo = <TField extends DeepKeys<TFormData>>(
+    field: TField,
+  ): FieldInfo<TFormData> => {
     // eslint-disable-next-line  @typescript-eslint/no-unnecessary-condition
     return (this.fieldInfo[field] ||= {
       instances: {},

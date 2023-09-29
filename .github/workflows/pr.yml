@@ -16,13 +16,13 @@ jobs:
           repository: ${{github.event.pull_request.head.repo.full_name}}
       - uses: pnpm/action-setup@v2.2.4
         with:
-          version: 7
+          version: 8
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.14.2
+          node-version: 18.15.0
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm --filter "./packages/**" --filter form --prefer-offline install --no-frozen-lockfile
+        run: pnpm --prefer-offline install --no-frozen-lockfile
       - name: Run Tests
         uses: nick-fields/retry@v2.8.3
         with:
@@ -48,7 +48,7 @@ jobs:
           node-version: 16.14.2
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm --filter "./packages/**" --filter form --prefer-offline install --no-frozen-lockfile
+        run: pnpm --prefer-offline install --no-frozen-lockfile
       - run: pnpm run test:eslint --base=${{ github.event.pull_request.base.sha }}
   typecheck:
     name: 'Typecheck'
@@ -67,7 +67,7 @@ jobs:
           node-version: 16.14.2
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm --filter "./packages/**" --filter form --prefer-offline install --no-frozen-lockfile
+        run: pnpm --prefer-offline install --no-frozen-lockfile
       - run: pnpm run test:types --base=${{ github.event.pull_request.base.sha }}
   format:
     name: 'Format'
@@ -86,7 +86,7 @@ jobs:
           node-version: 16.14.2
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm --filter "./packages/**" --filter form --prefer-offline install --no-frozen-lockfile
+        run: pnpm --prefer-offline install --no-frozen-lockfile
       - run: pnpm run test:format --base=${{ github.event.pull_request.base.sha }}
   test-build:
     name: 'Test Build'
@@ -105,7 +105,7 @@ jobs:
           node-version: 16.14.2
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm --filter "./packages/**" --filter form --prefer-offline install --no-frozen-lockfile
+        run: pnpm --prefer-offline install --no-frozen-lockfile
       - name: Get appropriate base and head commits for `nx affected` commands
         uses: nrwl/nx-set-shas@v3
         with:

@@ -1,13 +1,13 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
+import * as React from "react";
+import { createRoot } from "react-dom/client";
 import { useForm } from "@tanstack/react-form";
 import type { FieldApi } from "@tanstack/react-form";
 
 function FieldInfo({ field }: { field: FieldApi<any, any> }) {
   return (
     <>
-      {field.state.meta.touchedError ? (
-        <em>{field.state.meta.touchedError}</em>
+      {field.state.meta.touchedErrors ? (
+        <em>{field.state.meta.touchedErrors}</em>
       ) : null}
       {field.state.meta.isValidating ? "Validating..." : null}
     </>
@@ -107,4 +107,4 @@ export default function App() {
 
 const rootElement = document.getElementById("root")!;
 
-ReactDOM.createRoot(rootElement).render(<App />);
+createRoot(rootElement).render(<App />);
