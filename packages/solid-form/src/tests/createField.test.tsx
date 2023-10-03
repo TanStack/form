@@ -177,6 +177,7 @@ describe('createField', () => {
     expect(queryByText(onBlurError)).not.toBeInTheDocument()
     await user.type(input, 'other')
     expect(getByText(onChangeError)).toBeInTheDocument()
+    // @ts-expect-error unsure why the 'vitest/globals' in tsconfig doesnt work here
     await user.click(document.body)
     expect(queryByText(onBlurError)).toBeInTheDocument()
   })
@@ -279,6 +280,7 @@ describe('createField', () => {
     await user.type(input, 'other')
     await waitFor(() => getByText(onChangeError))
     expect(getByText(onChangeError)).toBeInTheDocument()
+    // @ts-expect-error unsure why the 'vitest/globals' in tsconfig doesnt work here
     await user.click(document.body)
     await waitFor(() => getByText(onBlurError))
     expect(getByText(onBlurError)).toBeInTheDocument()

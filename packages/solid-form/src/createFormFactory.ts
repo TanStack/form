@@ -1,7 +1,7 @@
 import type { FormApi, FormOptions } from '@tanstack/form-core'
 
 import {
-  type UseField,
+  type CreateField,
   type FieldComponent,
   Field,
   createField,
@@ -11,7 +11,7 @@ import { mergeProps } from 'solid-js'
 
 export type FormFactory<TFormData> = {
   createForm: (opts?: () => FormOptions<TFormData>) => FormApi<TFormData>
-  createField: UseField<TFormData>
+  createField: CreateField<TFormData>
   Field: FieldComponent<TFormData>
 }
 
@@ -24,6 +24,6 @@ export function createFormFactory<TFormData>(
         mergeProps(defaultOpts?.() ?? {}, opts?.() ?? {}),
       ),
     createField: createField,
-    Field: Field<TFormData>,
+    Field: Field as never,
   }
 }

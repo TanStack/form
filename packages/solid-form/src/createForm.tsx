@@ -8,7 +8,7 @@ import {
   Field,
   createField,
   type FieldComponent,
-  type UseField,
+  type CreateField,
 } from './createField'
 
 type NoInfer<T> = [T][T extends any ? 0 : never]
@@ -18,7 +18,7 @@ declare module '@tanstack/form-core' {
   interface FormApi<TFormData> {
     Provider: (props: { children: any }) => any
     Field: FieldComponent<TFormData>
-    useField: UseField<TFormData>
+    useField: CreateField<TFormData>
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
       selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,
     ) => TSelected
@@ -42,7 +42,7 @@ export function createForm<TData>(
   formApi.Provider = function Provider(props) {
     return <formContext.Provider {...props} value={{ formApi: formApi }} />
   }
-  formApi.Field = Field<TData>
+  formApi.Field = Field as any
   formApi.useField = createField<TData>
   formApi.useStore = (selector) =>
     (selector ? selector(formApiStore) : formApiStore) as any

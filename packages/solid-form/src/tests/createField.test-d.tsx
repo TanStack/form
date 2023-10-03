@@ -34,12 +34,15 @@ it('should type state.value properly', () => {
 
 it('should type onChange properly', () => {
   function Comp() {
-    const form = createForm({
-      defaultValues: {
-        firstName: 'test',
-        age: 84,
-      },
-    } as const)
+    const form = createForm(
+      () =>
+        ({
+          defaultValues: {
+            firstName: 'test',
+            age: 84,
+          },
+        }) as const,
+    )
 
     return (
       <form.Provider>

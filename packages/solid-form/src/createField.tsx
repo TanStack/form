@@ -1,5 +1,6 @@
 import { FieldApi } from '@tanstack/form-core'
 import {
+  createComponent,
   createComputed,
   createEffect,
   createMemo,
@@ -11,7 +12,7 @@ import { formContext, useFormContext } from './formContext'
 
 import type { DeepKeys, DeepValue } from '@tanstack/form-core'
 import type { JSXElement } from 'solid-js'
-import type { UseFieldOptions } from './types'
+import type { CreateFieldOptions } from './types'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
@@ -24,13 +25,24 @@ declare module '@tanstack/form-core' {
   }
 }
 
-export type UseField<TParentData> = typeof createField<TParentData>
+export type CreateField<TParentData> = typeof createField<TParentData>
+
+// ugly way to trick solid into triggering updates for changes on the fieldApi
+function makeFieldReactive<FieldApiT extends FieldApi<any, any>>(
+  fieldApi: FieldApiT,
+): () => FieldApiT {
+  const [flag, setFlag] = createSignal(false)
+  const fieldApiMemo = createMemo(() => [flag(), fieldApi] as const)
+  const unsubscribeStore = fieldApi.store.subscribe(() => setFlag((f) => !f))
+  onCleanup(unsubscribeStore)
+  return () => fieldApiMemo()[1]
+}
 
 export function createField<
   TParentData,
   TName extends DeepKeys<TParentData> = DeepKeys<TParentData>,
 >(
-  opts: () => UseFieldOptions<TParentData, TName>,
+  opts: () => CreateFieldOptions<TParentData, TName>,
 ): () => FieldApi<
   TParentData,
   TName
@@ -53,9 +65,9 @@ export function createField<
   const fieldApi = new FieldApi<TParentData, TName>({
     ...options,
     form: formApi,
-    name: name as TName,
-  })
-  fieldApi.Field = Field<TParentData, TName>
+    name: name,
+  } as never)
+  fieldApi.Field = Field as never
 
   /**
    * fieldApi.update should not have any side effects. Think of it like a `useRef`
@@ -66,18 +78,33 @@ export function createField<
   // Instantiates field meta and removes it when unrendered
   onMount(() => onCleanup(fieldApi.mount()))
 
-  const [flag, setFlag] = createSignal(false)
-  const fieldApiMemo = createMemo(() => [flag(), fieldApi] as const)
-  const unsubscribeStore = fieldApi.store.subscribe(() => setFlag((f) => !f))
-  onCleanup(unsubscribeStore)
-
-  return () => fieldApiMemo()[1]
+  return makeFieldReactive(fieldApi)
 }
 
-export type FieldComponent<
+type FieldComponentProps<
   TParentData,
-  TName extends DeepKeys<TParentData> = DeepKeys<TParentData>,
-> = typeof Field<TParentData, TName>
+  TName extends DeepKeys<TParentData>,
+  TData = DeepValue<TParentData, TName>,
+> = {
+  children: (fieldApi: () => FieldApi<TParentData, TName, TData>) => JSXElement
+} & (TParentData extends any[]
+  ? {
+      name?: TName
+      index: number
+    }
+  : {
+      name: TName
+      index?: never
+    }) &
+  Omit<CreateFieldOptions<TParentData, TName>, 'name' | 'index'>
+
+export type FieldComponent<TParentData> = <
+  TName extends DeepKeys<TParentData>,
+  TData = DeepValue<TParentData, TName>,
+>({
+  children,
+  ...fieldOptions
+}: FieldComponentProps<TParentData, TName, TData>) => any
 
 export function Field<
   TParentData,
@@ -85,11 +112,11 @@ export function Field<
 >(
   props: {
     children: (fieldApi: () => FieldApi<TParentData, TName>) => JSXElement
-  } & UseFieldOptions<TParentData, TName>,
+  } & CreateFieldOptions<TParentData, TName>,
 ) {
   const fieldApi = createField<TParentData, TName>(() => {
     const { children, ...fieldOptions } = props
-    return fieldOptions
+    return fieldOptions as any
   })
 
   return (
@@ -99,7 +126,7 @@ export function Field<
         parentFieldName: String(fieldApi().name),
       }}
     >
-      {props.children(fieldApi)}
+      {createComponent(() => props.children(fieldApi), {})}
     </formContext.Provider>
   )
 }

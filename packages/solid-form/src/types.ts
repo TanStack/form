@@ -1,6 +1,6 @@
 import type { FieldOptions, DeepKeys, DeepValue } from '@tanstack/form-core'
 
-export type UseFieldOptions<
+export type CreateFieldOptions<
   TParentData,
   TName extends DeepKeys<TParentData>,
   TData = DeepValue<TParentData, TName>,
