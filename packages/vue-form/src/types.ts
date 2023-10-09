@@ -1,11 +1,10 @@
-import type { FieldOptions, RestrictTName } from '@tanstack/form-core'
+import type { FieldOptions, DeepKeys, DeepValue } from '@tanstack/form-core'
 
 export type UseFieldOptions<
-  _TData,
-  TFormData,
+  TParentData,
+  TName extends DeepKeys<TParentData>,
   ValidatorType,
-  TName extends RestrictTName<TFormData>,
-  TData,
-> = FieldOptions<_TData, TFormData, ValidatorType, TName, TData> & {
+  TData = DeepValue<TParentData, TName>,
+> = FieldOptions<TParentData, TName, ValidatorType, TData> & {
   mode?: 'value' | 'array'
 }

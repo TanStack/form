@@ -11,7 +11,7 @@ declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
   interface FormApi<TFormData> {
     Provider: (props: { children: any }) => any
-    Field: FieldComponent<TFormData, TFormData>
+    Field: FieldComponent<TFormData>
     useField: UseField<TFormData>
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
       selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,

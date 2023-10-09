@@ -5,86 +5,67 @@ import type { Validator } from './zod-validator'
 
 export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount'
 
-export type RestrictTName<TFormData> = unknown extends TFormData
-  ? string
-  : DeepKeys<TFormData>
-
 type ValidateFn<
-  _TData,
-  TFormData,
+  TParentData,
+  TName extends DeepKeys<TParentData>,
   ValidatorType,
-  TName extends RestrictTName<TFormData>,
   TData,
 > = (
   value: TData,
-  fieldApi: FieldApi<_TData, TFormData, ValidatorType, TName, TData>,
+  fieldApi: FieldApi<TParentData, TName, ValidatorType, TData>,
 ) => ValidationError
 
 type ValidateOrFn<
-  _TData,
-  TFormData,
+  TParentData,
+  TName extends DeepKeys<TParentData>,
   ValidatorType,
-  TName extends RestrictTName<TFormData>,
   TData,
 > = ValidatorType extends Validator<TData>
   ? Parameters<ReturnType<ValidatorType>['validate']>[1]
-  : ValidateFn<_TData, TFormData, ValidatorType, TName, TData>
+  : ValidateFn<TParentData, TName, ValidatorType, TData>
 
 type ValidateAsyncFn<
-  _TData,
-  TFormData,
+  TParentData,
+  TName extends DeepKeys<TParentData>,
   ValidatorType,
-  TName extends RestrictTName<TFormData>,
   TData,
 > = (
   value: TData,
-  fieldApi: FieldApi<_TData, TFormData, ValidatorType, TName, TData>,
+  fieldApi: FieldApi<TParentData, TName, ValidatorType, TData>,
 ) => ValidationError | Promise<ValidationError>
 
 export interface FieldOptions<
-  _TData,
-  TFormData,
+  TParentData,
+  TName extends DeepKeys<TParentData>,
   ValidatorType,
-  TName extends RestrictTName<TFormData>,
-  TData,
+  TData = DeepValue<TParentData, TName>,
 > {
-  name: TName
-  index?: _TData extends any[] ? number : never
-  defaultValue?: _TData
+  name: DeepKeys<TParentData>
+  index?: TData extends any[] ? number : never
+  defaultValue?: TData
   asyncDebounceMs?: number
   asyncAlways?: boolean
   validator?: ValidatorType
-  onMount?: (fieldApi: FieldApi<TData, TFormData, ValidatorType>) => void
-  onChange?: ValidateOrFn<_TData, TFormData, ValidatorType, TName, TData>
-  onChangeAsync?: ValidateAsyncFn<
-    _TData,
-    TFormData,
-    ValidatorType,
-    TName,
-    TData
-  >
+  onMount?: (
+    formApi: FieldApi<TParentData, TName, ValidatorType, TData>,
+  ) => void
+  onChange?: ValidateOrFn<TParentData, TName, ValidatorType, TData>
+  onChangeAsync?: ValidateAsyncFn<TParentData, TName, ValidatorType, TData>
   onChangeAsyncDebounceMs?: number
-  onBlur?: ValidateOrFn<_TData, TFormData, ValidatorType, TName, TData>
-  onBlurAsync?: ValidateAsyncFn<_TData, TFormData, ValidatorType, TName, TData>
+  onBlur?: ValidateOrFn<TParentData, TName, ValidatorType, TData>
+  onBlurAsync?: ValidateAsyncFn<TParentData, TName, ValidatorType, TData>
   onBlurAsyncDebounceMs?: number
-  onSubmitAsync?: ValidateAsyncFn<
-    _TData,
-    TFormData,
-    ValidatorType,
-    TName,
-    TData
-  >
+  onSubmitAsync?: ValidateAsyncFn<TParentData, TName, ValidatorType, TData>
   defaultMeta?: Partial<FieldMeta>
 }
 
 export interface FieldApiOptions<
-  _TData,
-  TFormData,
+  TParentData,
+  TName extends DeepKeys<TParentData>,
   ValidatorType,
-  TName extends RestrictTName<TFormData>,
-  TData,
-> extends FieldOptions<_TData, TFormData, ValidatorType, TName, TData> {
-  form: FormApi<TFormData>
+  TData = DeepValue<TParentData, TName>,
+> extends FieldOptions<TParentData, TName, ValidatorType, TData> {
+  form: FormApi<TParentData>
 }
 
 export type FieldMeta = {
@@ -102,37 +83,26 @@ export type FieldState<TData> = {
   meta: FieldMeta
 }
 
+export type ResolveName<TParentData> = unknown extends TParentData
+  ? string
+  : DeepKeys<TParentData>
+
 export class FieldApi<
-  _TData,
-  TFormData,
-  ValidatorType = unknown,
-  /**
-   * This allows us to restrict the name to only be a valid field name while
-   * also assigning it to a generic
-   */
-  TName extends RestrictTName<TFormData> = RestrictTName<TFormData>,
-  /**
-   * If TData is unknown, we can use the TName generic to determine the type
-   */
-  TData = unknown extends _TData ? DeepValue<TFormData, TName> : _TData,
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  ValidatorType,
+  TData = DeepValue<TParentData, TName>,
 > {
   uid: number
-  form: (typeof this.options)['form']
-  name!: DeepKeys<TFormData>
+  form: FieldApiOptions<TParentData, TName, ValidatorType, TData>['form']
+  name!: DeepKeys<TParentData>
+  options: FieldApiOptions<TParentData, TName, ValidatorType, TData> = {} as any
   store!: Store<FieldState<TData>>
   state!: FieldState<TData>
   prevState!: FieldState<TData>
 
-  constructor(
-    public options: FieldApiOptions<
-      _TData,
-      TFormData,
-      ValidatorType,
-      TName,
-      TData
-    >,
-  ) {
-    this.form = options.form
+  constructor(opts: FieldApiOptions<TParentData, TName, ValidatorType, TData>) {
+    this.form = opts.form
     this.uid = uid++
     // Support field prefixing from FieldScope
     // let fieldPrefix = ''
@@ -140,7 +110,7 @@ export class FieldApi<
     //   fieldPrefix = `${this.form.fieldName}.`
     // }
 
-    this.name = options.name as never
+    this.name = opts.name as never
 
     this.store = new Store<FieldState<TData>>(
       {
@@ -152,7 +122,7 @@ export class FieldApi<
           touchedErrors: [],
           errors: [],
           errorMap: {},
-          ...options.defaultMeta,
+          ...opts.defaultMeta,
         },
       },
       {
@@ -209,13 +179,13 @@ export class FieldApi<
   }
 
   update = (
-    opts: FieldApiOptions<_TData, TFormData, ValidatorType, TName, TData>,
+    opts: FieldApiOptions<TParentData, TName, ValidatorType, TData>,
   ) => {
     // Default Value
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.state.value === undefined) {
       const formDefault =
-        opts.form.options.defaultValues?.[opts.name as keyof TFormData]
+        opts.form.options.defaultValues?.[opts.name as keyof TParentData]
 
       if (opts.defaultValue !== undefined) {
         this.setValue(opts.defaultValue as never)
@@ -233,7 +203,7 @@ export class FieldApi<
   }
 
   getValue = (): TData => {
-    return this.form.getFieldValue(this.name)
+    return this.form.getFieldValue(this.name) as any
   }
 
   setValue = (
@@ -274,11 +244,16 @@ export class FieldApi<
   swapValues = (aIndex: number, bIndex: number) =>
     this.form.swapFieldValues(this.name, aIndex, bIndex)
 
-  getSubField = <SubTName extends DeepKeys<TData>>(name: SubTName) =>
-    new FieldApi<DeepValue<TData, SubTName>, TFormData, ValidatorType>({
+  getSubField = <
+    TSubName extends DeepKeys<TData>,
+    TSubData = DeepValue<TData, TSubName>,
+  >(
+    name: TSubName,
+  ): FieldApi<TData, TSubName, ValidatorType, TSubData> =>
+    new FieldApi({
       name: `${this.name}.${name}` as never,
       form: this.form,
-    })
+    }) as any
 
   validateSync = (value = this.state.value, cause: ValidationCause) => {
     const { onChange, onBlur } = this.options
@@ -300,9 +275,10 @@ export class FieldApi<
         )
       }
 
-      return (
-        validate as ValidateFn<_TData, TFormData, ValidatorType, TName, TData>
-      )(value, this as never)
+      return (validate as ValidateFn<TParentData, TName, ValidatorType, TData>)(
+        value,
+        this as never,
+      )
     }
 
     const error = normalizeError(doValidate())
