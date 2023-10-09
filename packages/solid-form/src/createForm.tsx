@@ -56,12 +56,7 @@ export function createForm<TData>(
    * formApi.update should not have any side effects. Think of it like a `useRef`
    * that we need to keep updated every render with the most up-to-date information.
    */
-  createComputed(
-    on(
-      () => [opts?.(), formApiStore.isSubmitting],
-      () => formApi.update(opts?.()),
-    ),
-  )
+  createComputed(() => formApi.update(opts?.()))
 
   return formApi
 }

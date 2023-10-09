@@ -2,7 +2,6 @@ import { FieldApi } from '@tanstack/form-core'
 import {
   createComponent,
   createComputed,
-  createEffect,
   createMemo,
   createSignal,
   onCleanup,
@@ -72,6 +71,8 @@ export function createField<
   /**
    * fieldApi.update should not have any side effects. Think of it like a `useRef`
    * that we need to keep updated every render with the most up-to-date information.
+   *
+   * createComputed to make sure this effect runs before render effects
    */
   createComputed(() => fieldApi.update({ ...opts(), form: formApi }))
 
@@ -126,6 +127,7 @@ export function Field<
         parentFieldName: String(fieldApi().name),
       }}
     >
+      {/* createComponent to make sure the signals in the children component are not tracked */}
       {createComponent(() => props.children(fieldApi), {})}
     </formContext.Provider>
   )
