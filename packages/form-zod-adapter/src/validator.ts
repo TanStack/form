@@ -1,7 +1,7 @@
-import type { ZodError, ZodType, ZodTypeAny } from 'zod'
+import type { ZodType, ZodTypeAny } from 'zod'
 import type { ValidationError, Validator } from '@tanstack/form-core'
 
-export const zodValidator = (<Fn extends ZodType<any> = ZodType<any>>() => {
+export const zodValidator = (<Fn extends ZodType = ZodType>() => {
   return {
     validate(value: unknown, fn: Fn): ValidationError {
       // Call Zod on the value here and return the error message
