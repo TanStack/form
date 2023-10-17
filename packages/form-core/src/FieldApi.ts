@@ -1,7 +1,7 @@
 import { type DeepKeys, type DeepValue, type Updater } from './utils'
-import type { FormApi, ValidationError, ValidationErrorMap } from './FormApi'
+import type { FormApi, ValidationErrorMap } from './FormApi'
 import { Store } from '@tanstack/store'
-import type { Validator } from './zod-validator'
+import type { Validator, ValidationError } from './types'
 
 export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount'
 
@@ -138,7 +138,15 @@ export class FieldApi<
   state!: FieldState<TData>
   prevState!: FieldState<TData>
 
-  constructor(opts: FieldApiOptions<TParentData, TName, ValidatorType, FormValidator, TData>) {
+  constructor(
+    opts: FieldApiOptions<
+      TParentData,
+      TName,
+      ValidatorType,
+      FormValidator,
+      TData
+    >,
+  ) {
     this.form = opts.form as never
     this.uid = uid++
     // Support field prefixing from FieldScope

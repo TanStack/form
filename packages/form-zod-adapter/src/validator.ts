@@ -1,11 +1,5 @@
 import type { ZodError, ZodType, ZodTypeAny } from 'zod'
-import type { ValidationError } from './FormApi'
-
-// If/when TypeScript supports higher-kinded types, this should not be `unknown` anymore
-export type Validator<Type, Fn = unknown> = () => {
-  validate(value: Type, fn: Fn): ValidationError
-  validateAsync(value: Type, fn: Fn): Promise<ValidationError>
-}
+import type { ValidationError, Validator } from "@tanstack/form-core";
 
 export const zodValidator = (<Fn extends ZodType<any> = ZodType<any>>() => {
   return {

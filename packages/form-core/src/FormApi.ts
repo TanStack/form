@@ -2,7 +2,7 @@ import { Store } from '@tanstack/store'
 import type { DeepKeys, DeepValue, Updater } from './utils'
 import { functionalUpdate, getBy, isNonEmptyArray, setBy } from './utils'
 import type { FieldApi, FieldMeta, ValidationCause } from './FieldApi'
-import type { Validator } from './zod-validator'
+import type { ValidationError, Validator } from './types'
 
 type ValidateFn<TData, ValidatorType> = (
   values: TData,
@@ -53,8 +53,6 @@ export type ValidationMeta = {
   validationResolve?: (errors: ValidationError[]) => void
   validationReject?: (errors: unknown) => void
 }
-
-export type ValidationError = undefined | false | null | string
 
 export type ValidationErrorMapKeys = `on${Capitalize<ValidationCause>}`
 

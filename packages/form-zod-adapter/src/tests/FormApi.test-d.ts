@@ -1,8 +1,6 @@
-import { assertType } from 'vitest'
-import { FormApi } from '../FormApi'
-import { FieldApi } from '../FieldApi'
-import { zodValidator } from '../zod-validator'
 import { z } from 'zod'
+import { zodValidator } from '../validator'
+import { FieldApi, FormApi } from '@tanstack/form-core'
 
 it('should allow a Zod validator to be passed in', () => {
   const form = new FormApi({
