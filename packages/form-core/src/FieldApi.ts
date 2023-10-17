@@ -19,15 +19,19 @@ type ValidateOrFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
   ValidatorType,
+  FormValidator,
   TData,
 > = ValidatorType extends Validator<TData>
   ? Parameters<ReturnType<ValidatorType>['validate']>[1]
+  : FormValidator extends Validator<TData>
+  ? Parameters<ReturnType<FormValidator>['validate']>[1]
   : ValidateFn<TParentData, TName, ValidatorType, TData>
 
 type ValidateAsyncFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
   ValidatorType,
+  FormValidator,
   TData,
 > = (
   value: TData,
@@ -38,9 +42,10 @@ export interface FieldOptions<
   TParentData,
   TName extends DeepKeys<TParentData>,
   ValidatorType,
+  FormValidator,
   TData = DeepValue<TParentData, TName>,
 > {
-  name: DeepKeys<TParentData>
+  name: TName
   index?: TData extends any[] ? number : never
   defaultValue?: TData
   asyncDebounceMs?: number
@@ -49,13 +54,37 @@ export interface FieldOptions<
   onMount?: (
     formApi: FieldApi<TParentData, TName, ValidatorType, TData>,
   ) => void
-  onChange?: ValidateOrFn<TParentData, TName, ValidatorType, TData>
-  onChangeAsync?: ValidateAsyncFn<TParentData, TName, ValidatorType, TData>
+  onChange?: ValidateOrFn<
+    TParentData,
+    TName,
+    ValidatorType,
+    FormValidator,
+    TData
+  >
+  onChangeAsync?: ValidateAsyncFn<
+    TParentData,
+    TName,
+    ValidatorType,
+    FormValidator,
+    TData
+  >
   onChangeAsyncDebounceMs?: number
-  onBlur?: ValidateOrFn<TParentData, TName, ValidatorType, TData>
-  onBlurAsync?: ValidateAsyncFn<TParentData, TName, ValidatorType, TData>
+  onBlur?: ValidateOrFn<TParentData, TName, ValidatorType, FormValidator, TData>
+  onBlurAsync?: ValidateAsyncFn<
+    TParentData,
+    TName,
+    ValidatorType,
+    FormValidator,
+    TData
+  >
   onBlurAsyncDebounceMs?: number
-  onSubmitAsync?: ValidateAsyncFn<TParentData, TName, ValidatorType, TData>
+  onSubmitAsync?: ValidateAsyncFn<
+    TParentData,
+    TName,
+    ValidatorType,
+    FormValidator,
+    TData
+  >
   defaultMeta?: Partial<FieldMeta>
 }
 
@@ -63,9 +92,16 @@ export interface FieldApiOptions<
   TParentData,
   TName extends DeepKeys<TParentData>,
   ValidatorType,
+  FormValidator,
   TData = DeepValue<TParentData, TName>,
-> extends FieldOptions<TParentData, TName, ValidatorType, TData> {
-  form: FormApi<TParentData>
+> extends FieldOptions<
+    TParentData,
+    TName,
+    ValidatorType,
+    FormValidator,
+    TData
+  > {
+  form: FormApi<TParentData, FormValidator>
 }
 
 export type FieldMeta = {
