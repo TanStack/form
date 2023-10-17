@@ -82,7 +82,7 @@ describe('zod field api', () => {
     expect(field.getMeta().errors).toEqual([])
   })
 
-  it('should run an onChange fn with zod validation option enabled', async () => {
+  it('should run an onChangeAsyc fn with zod validation option enabled', async () => {
     const form = new FormApi({
       defaultValues: {
         name: '',
