@@ -30,7 +30,11 @@ describe('useField', () => {
 
       return () => (
         <form.Field name="firstName" defaultValue="FirstName">
-          {({ field }: { field: FieldApi<Person, 'firstName', never, never> }) => (
+          {({
+            field,
+          }: {
+            field: FieldApi<Person, 'firstName', never, never>
+          }) => (
             <input
               data-testid={'fieldinput'}
               value={field.state.value}
@@ -68,7 +72,11 @@ describe('useField', () => {
           name="firstName"
           onChange={(value) => (value === 'other' ? error : undefined)}
         >
-          {({ field }: { field: FieldApi<Person, 'firstName', never, never> }) => (
+          {({
+            field,
+          }: {
+            field: FieldApi<Person, 'firstName', never, never>
+          }) => (
             <div>
               <input
                 data-testid="fieldinput"
@@ -111,7 +119,11 @@ describe('useField', () => {
           name="firstName"
           onChange={(value) => (value === 'other' ? error : undefined)}
         >
-          {({ field }: { field: FieldApi<Person, 'firstName', never, never> }) => (
+          {({
+            field,
+          }: {
+            field: FieldApi<Person, 'firstName', never, never>
+          }) => (
             <div>
               <input
                 data-testid="fieldinput"
@@ -159,7 +171,11 @@ describe('useField', () => {
             return error
           }}
         >
-          {({ field }: { field: FieldApi<Person, 'firstName', never, never> }) => (
+          {({
+            field,
+          }: {
+            field: FieldApi<Person, 'firstName', never, never>
+          }) => (
             <div>
               <input
                 data-testid="fieldinput"
@@ -211,7 +227,11 @@ describe('useField', () => {
             return error
           }}
         >
-          {({ field }: { field: FieldApi<Person, 'firstName', never, never> }) => (
+          {({
+            field,
+          }: {
+            field: FieldApi<Person, 'firstName', never, never>
+          }) => (
             <div>
               <input
                 data-testid="fieldinput"

@@ -68,7 +68,7 @@ describe('zod field api', () => {
       onChangeAsync: z.string().refine(async (val) => val.length > 3, {
         message: 'Testing 123',
       }),
-      onChangeAsyncDebounceMs: 0
+      onChangeAsyncDebounceMs: 0,
     })
 
     field.mount()
@@ -94,7 +94,7 @@ describe('zod field api', () => {
       validator: zodValidator,
       name: 'name',
       onChangeAsync: async (val) => (val === 'a' ? 'Test' : undefined),
-      onChangeAsyncDebounceMs: 0
+      onChangeAsyncDebounceMs: 0,
     })
 
     field.mount()

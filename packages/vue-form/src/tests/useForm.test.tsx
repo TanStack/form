@@ -72,7 +72,7 @@ describe('useForm', () => {
       form.provideFormContext()
 
       return () => (
-        <form.Field name="firstName" defaultValue="">
+        <form.Field name="firstName">
           {({
             field,
           }: {
