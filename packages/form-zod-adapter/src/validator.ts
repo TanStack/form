@@ -1,27 +1,28 @@
 import type { ZodError, ZodType, ZodTypeAny } from 'zod'
-import type { ValidationError, Validator } from "@tanstack/form-core";
+import type { ValidationError, Validator } from '@tanstack/form-core'
 
 export const zodValidator = (<Fn extends ZodType<any> = ZodType<any>>() => {
   return {
     validate(value: unknown, fn: Fn): ValidationError {
       // Call Zod on the value here and return the error message
       try {
-        ;(fn as ZodTypeAny).parse(value)
+        const result = (fn as ZodTypeAny).safeParse(value)
+        if (!result.success) {
+          return result.error.issues.map((issue) => issue.message).join(', ')
+        }
         return
       } catch (_e) {
         const e = _e as ZodError
-        return e.toString()
+        return e.message
       }
     },
     async validateAsync(value: unknown, fn: Fn): Promise<ValidationError> {
       // Call Zod on the value here and return the error message
-      try {
-        await (fn as ZodTypeAny).parseAsync(value)
-        return
-      } catch (_e) {
-        const e = _e as ZodError
-        return e.toString()
+      const result = await (fn as ZodTypeAny).safeParseAsync(value)
+      if (!result.success) {
+        return result.error.issues.map((issue) => issue.message).join(', ')
       }
+      return
     },
   }
 }) satisfies Validator<unknown>

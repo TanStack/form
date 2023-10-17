@@ -190,6 +190,7 @@ export class FieldApi<
 
     this.state = this.store.state
     this.prevState = this.state
+    this.options = opts as never
   }
 
   mount = () => {
