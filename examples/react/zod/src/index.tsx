@@ -1,6 +1,8 @@
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { useForm } from "@tanstack/react-form";
+import { zodValidator } from "@tanstack/zod-form-adapter";
+import { z } from "zod";
 import type { FieldApi } from "@tanstack/react-form";
 
 function FieldInfo({ field }: { field: FieldApi<any, any, unknown, unknown> }) {
@@ -25,6 +27,8 @@ export default function App() {
       // Do something with form data
       console.log(values);
     },
+    // Add a validator to support Zod usage in Form and Field
+    validator: zodValidator,
   });
 
   return (
@@ -43,20 +47,19 @@ export default function App() {
             {/* A type-safe and pre-bound field component*/}
             <form.Field
               name="firstName"
-              onChange={(value) =>
-                !value
-                  ? "A first name is required"
-                  : value.length < 3
-                  ? "First name must be at least 3 characters"
-                  : undefined
-              }
+              onChange={z
+                .string()
+                .min(3, "First name must be at least 3 characters")}
               onChangeAsyncDebounceMs={500}
-              onChangeAsync={async (value) => {
-                await new Promise((resolve) => setTimeout(resolve, 1000));
-                return (
-                  value.includes("error") && 'No "error" allowed in first name'
-                );
-              }}
+              onChangeAsync={z.string().refine(
+                async (value) => {
+                  await new Promise((resolve) => setTimeout(resolve, 1000));
+                  return !value.includes("error");
+                },
+                {
+                  message: "No 'error' allowed in first name",
+                },
+              )}
               children={(field) => {
                 // Avoid hasty abstractions. Render props are great!
                 return (

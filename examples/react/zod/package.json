@@ -12,7 +12,9 @@
     "axios": "^0.26.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "@tanstack/form-core": "0.3.7"
+    "zod": "^3.21.4",
+    "@tanstack/form-core": "0.3.7",
+    "@tanstack/zod-form-adapter": "0.3.7"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.4",
@@ -33,7 +35,8 @@
   "nx": {
     "implicitDependencies": [
       "@tanstack/form-core",
-      "@tanstack/react-form"
+      "@tanstack/react-form",
+      "@tanstack/zod-form-adapter"
     ],
     "targets": {
       "test:types": {

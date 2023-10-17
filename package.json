@@ -114,7 +114,9 @@
     "overrides": {
       "@tanstack/form-core": "workspace:*",
       "@tanstack/react-form": "workspace:*",
-      "@tanstack/vue-form": "workspace:*"
+      "@tanstack/vue-form": "workspace:*",
+      "@tanstack/yup-form-adapter": "workspace:*",
+      "@tanstack/zod-form-adapter": "workspace:*"
     }
   }
 }
