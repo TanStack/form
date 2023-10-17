@@ -32,6 +32,21 @@ it('should allow a Zod validator to handle the correct Zod type', () => {
   } as const)
 })
 
+it('should allow a Zod validator to handle the correct Zod type for an async method', () => {
+  const form = new FormApi({
+    defaultValues: {
+      name: 'test',
+    },
+  })
+
+  const field = new FieldApi({
+    form,
+    name: 'name',
+    validator: zodValidator,
+    onChangeAsync: z.string(),
+  } as const)
+})
+
 it('should allow a functional onChange to be passed when using a validator', () => {
   const form = new FormApi({
     defaultValues: {

@@ -36,3 +36,21 @@ it('should type onChange properly', () => {
     },
   })
 })
+
+it('should type onChangeAsync properly', () => {
+  const form = new FormApi({
+    defaultValues: {
+      name: 'test',
+    },
+  } as const)
+
+  const field = new FieldApi({
+    form,
+    name: 'name',
+    onChangeAsync: async (value) => {
+      assertType<'test'>(value)
+
+      return undefined
+    },
+  })
+})

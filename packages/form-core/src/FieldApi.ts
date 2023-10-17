@@ -35,12 +35,27 @@ type ValidateAsyncFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
   ValidatorType,
-  FormValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (
   value: TData,
   fieldApi: FieldApi<TParentData, TName, ValidatorType, TData>,
 ) => ValidationError | Promise<ValidationError>
+
+type AsyncValidateOrFn<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  ValidatorType,
+  FormValidator,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> = ValidatorType extends Validator<TData>
+  ?
+      | Parameters<ReturnType<ValidatorType>['validate']>[1]
+      | ValidateAsyncFn<TParentData, TName, ValidatorType, TData>
+  : FormValidator extends Validator<TData>
+  ?
+      | Parameters<ReturnType<FormValidator>['validate']>[1]
+      | ValidateAsyncFn<TParentData, TName, ValidatorType, TData>
+  : ValidateAsyncFn<TParentData, TName, ValidatorType, TData>
 
 export interface FieldOptions<
   TParentData,
@@ -65,7 +80,7 @@ export interface FieldOptions<
     FormValidator,
     TData
   >
-  onChangeAsync?: ValidateAsyncFn<
+  onChangeAsync?: AsyncValidateOrFn<
     TParentData,
     TName,
     ValidatorType,
@@ -74,7 +89,7 @@ export interface FieldOptions<
   >
   onChangeAsyncDebounceMs?: number
   onBlur?: ValidateOrFn<TParentData, TName, ValidatorType, FormValidator, TData>
-  onBlurAsync?: ValidateAsyncFn<
+  onBlurAsync?: AsyncValidateOrFn<
     TParentData,
     TName,
     ValidatorType,
@@ -82,7 +97,7 @@ export interface FieldOptions<
     TData
   >
   onBlurAsyncDebounceMs?: number
-  onSubmitAsync?: ValidateAsyncFn<
+  onSubmitAsync?: AsyncValidateOrFn<
     TParentData,
     TName,
     ValidatorType,
