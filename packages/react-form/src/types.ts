@@ -4,7 +4,8 @@ export type UseFieldOptions<
   TParentData,
   TName extends DeepKeys<TParentData>,
   ValidatorType,
-  TData = DeepValue<TParentData, TName>,
-> = FieldOptions<TParentData, TName, ValidatorType, TData> & {
+  FormValidator,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> = FieldOptions<TParentData, TName, ValidatorType, FormValidator, TData> & {
   mode?: 'value' | 'array'
 }
