@@ -99,7 +99,7 @@ describe('useForm', () => {
       form.provideFormContext()
 
       return () => (
-        <form.Field name="firstName" defaultValue='otherName'>
+        <form.Field name="firstName" defaultValue="otherName">
           {({ field }: { field: FieldApi<Person, 'firstName'> }) => (
             <p>{field.state.value}</p>
           )}

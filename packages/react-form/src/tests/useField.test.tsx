@@ -21,8 +21,8 @@ describe('useField', () => {
       const form = formFactory.useForm({
         defaultValues: {
           firstName: 'FirstName',
-          lastName: 'LastName'
-        }
+          lastName: 'LastName',
+        },
       })
 
       return (
@@ -61,15 +61,15 @@ describe('useField', () => {
       const form = formFactory.useForm({
         defaultValues: {
           firstName: 'FirstName',
-          lastName: 'LastName'
-        }
+          lastName: 'LastName',
+        },
       })
 
       return (
         <form.Provider>
           <form.Field
             name="firstName"
-            defaultValue='otherName'
+            defaultValue="otherName"
             children={(field) => {
               return (
                 <input
