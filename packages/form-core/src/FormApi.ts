@@ -2,7 +2,7 @@ import { Store } from '@tanstack/store'
 import type { DeepKeys, DeepValue, Updater } from './utils'
 import { functionalUpdate, getBy, isNonEmptyArray, setBy } from './utils'
 import type { FieldApi, FieldMeta, ValidationCause } from './FieldApi'
-import { Validator } from './zod-validator'
+import type { Validator } from './zod-validator'
 
 type ValidateFn<TData, ValidatorType> = (
   values: TData,
@@ -43,7 +43,7 @@ export type FormOptions<TData, ValidatorType> = {
 }
 
 export type FieldInfo<TFormData, ValidatorType> = {
-  instances: Record<string, FieldApi<TFormData, any, ValidatorType>>
+  instances: Record<string, FieldApi<TFormData, any, unknown, ValidatorType>>
 } & ValidationMeta
 
 export type ValidationMeta = {

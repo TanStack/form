@@ -9,7 +9,7 @@ type ValidateFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
   ValidatorType,
-  TData,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (
   value: TData,
   fieldApi: FieldApi<TParentData, TName, ValidatorType, TData>,
@@ -20,7 +20,7 @@ type ValidateOrFn<
   TName extends DeepKeys<TParentData>,
   ValidatorType,
   FormValidator,
-  TData,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = ValidatorType extends Validator<TData>
   ? Parameters<ReturnType<ValidatorType>['validate']>[1]
   : FormValidator extends Validator<TData>
@@ -32,7 +32,7 @@ type ValidateAsyncFn<
   TName extends DeepKeys<TParentData>,
   ValidatorType,
   FormValidator,
-  TData,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (
   value: TData,
   fieldApi: FieldApi<TParentData, TName, ValidatorType, TData>,
@@ -43,7 +43,7 @@ export interface FieldOptions<
   TName extends DeepKeys<TParentData>,
   ValidatorType,
   FormValidator,
-  TData = DeepValue<TParentData, TName>,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   name: TName
   index?: TData extends any[] ? number : never
@@ -93,7 +93,7 @@ export interface FieldApiOptions<
   TName extends DeepKeys<TParentData>,
   ValidatorType,
   FormValidator,
-  TData = DeepValue<TParentData, TName>,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > extends FieldOptions<
     TParentData,
     TName,
@@ -127,7 +127,8 @@ export class FieldApi<
   TParentData,
   TName extends DeepKeys<TParentData>,
   ValidatorType,
-  TData = DeepValue<TParentData, TName>,
+  FormValidator,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   uid: number
   form: FieldApiOptions<TParentData, TName, ValidatorType, TData>['form']
@@ -137,8 +138,8 @@ export class FieldApi<
   state!: FieldState<TData>
   prevState!: FieldState<TData>
 
-  constructor(opts: FieldApiOptions<TParentData, TName, ValidatorType, TData>) {
-    this.form = opts.form
+  constructor(opts: FieldApiOptions<TParentData, TName, ValidatorType, FormValidator, TData>) {
+    this.form = opts.form as never
     this.uid = uid++
     // Support field prefixing from FieldScope
     // let fieldPrefix = ''
@@ -282,7 +283,7 @@ export class FieldApi<
 
   getSubField = <
     TSubName extends DeepKeys<TData>,
-    TSubData = DeepValue<TData, TSubName>,
+    TSubData extends DeepValue<TData, TSubName> = DeepValue<TData, TSubName>,
   >(
     name: TSubName,
   ): FieldApi<TData, TSubName, ValidatorType, TSubData> =>
