@@ -1,6 +1,7 @@
 import { zodValidator } from '../validator'
 import { z } from 'zod'
 import { FieldApi, FormApi } from '@tanstack/form-core'
+import { assertType } from 'vitest'
 
 it('should allow a Zod validator to be passed in', () => {
   const form = new FormApi({
@@ -31,7 +32,7 @@ it('should allow a Zod validator to handle the correct Zod type', () => {
   } as const)
 })
 
-it('should not allow a functional onChange to be passed when using a validator', () => {
+it('should allow a functional onChange to be passed when using a validator', () => {
   const form = new FormApi({
     defaultValues: {
       name: 'test',
@@ -42,8 +43,10 @@ it('should not allow a functional onChange to be passed when using a validator',
     form,
     name: 'name',
     validator: zodValidator,
-    // @ts-expect-error Is not of type validator
-    onChange: (val) => null,
+    onChange: (val) => {
+      assertType<'test'>(val)
+      return undefined
+    },
   } as const)
 })
 

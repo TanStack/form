@@ -22,9 +22,13 @@ type ValidateOrFn<
   FormValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = ValidatorType extends Validator<TData>
-  ? Parameters<ReturnType<ValidatorType>['validate']>[1]
+  ?
+      | Parameters<ReturnType<ValidatorType>['validate']>[1]
+      | ValidateFn<TParentData, TName, ValidatorType, TData>
   : FormValidator extends Validator<TData>
-  ? Parameters<ReturnType<FormValidator>['validate']>[1]
+  ?
+      | Parameters<ReturnType<FormValidator>['validate']>[1]
+      | ValidateFn<TParentData, TName, ValidatorType, TData>
   : ValidateFn<TParentData, TName, ValidatorType, TData>
 
 type ValidateAsyncFn<
@@ -314,7 +318,7 @@ export class FieldApi<
     this.getInfo().validationCount = validationCount
 
     const doValidate = () => {
-      if (this.options.validator) {
+      if (this.options.validator && typeof validate !== 'function') {
         return (this.options.validator as Validator<TData>)().validate(
           value,
           validate,

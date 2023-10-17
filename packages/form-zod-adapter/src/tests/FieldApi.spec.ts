@@ -19,12 +19,37 @@ describe('zod field api', () => {
       onChange: z.string().min(3, 'You must have a length of at least 3'),
     })
 
-    field.mount();
+    field.mount()
+
+    expect(field.getMeta().errors).toEqual([])
+    field.setValue('a', { touch: true })
+    expect(field.getMeta().errors).toEqual([
+      'You must have a length of at least 3',
+    ])
+    field.setValue('asdf', { touch: true })
+    expect(field.getMeta().errors).toEqual([])
+  })
+
+  it('should run an onChange fn with zod validation option enabled', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      validator: zodValidator,
+      name: 'name',
+      onChange: (val) => (val === 'a' ? 'Test' : undefined),
+    })
+
+    field.mount()
 
     expect(field.getMeta().errors).toEqual([])
     debugger
     field.setValue('a', { touch: true })
-    expect(field.getMeta().errors).toEqual(['You must have a length of at least 3'])
+    expect(field.getMeta().errors).toEqual(['Test'])
     field.setValue('asdf', { touch: true })
     expect(field.getMeta().errors).toEqual([])
   })
