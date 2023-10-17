@@ -100,7 +100,7 @@ describe('useForm', () => {
 
       return () => (
         <form.Field name="firstName" defaultValue='otherName'>
-          {({ field }: { field: FieldApi<string, Person> }) => (
+          {({ field }: { field: FieldApi<Person, 'firstName'> }) => (
             <p>{field.state.value}</p>
           )}
         </form.Field>
