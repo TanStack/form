@@ -1,5 +1,5 @@
 {
-  "name": "@tanstack/form-example-react-zod",
+  "name": "@tanstack/form-example-react-yup",
   "version": "0.0.1",
   "main": "src/index.jsx",
   "scripts": {
@@ -12,9 +12,9 @@
     "axios": "^0.26.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "zod": "^3.21.4",
+    "yup": "^1.3.2",
     "@tanstack/form-core": "0.3.7",
-    "@tanstack/zod-form-adapter": "0.3.7"
+    "@tanstack/yup-form-adapter": "0.3.7"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.4",
@@ -36,7 +36,7 @@
     "implicitDependencies": [
       "@tanstack/form-core",
       "@tanstack/react-form",
-      "@tanstack/zod-form-adapter"
+      "@tanstack/yup-form-adapter"
     ],
     "targets": {
       "test:types": {
