@@ -1,9 +1,9 @@
-import type { FieldOptions, DeepKeys } from '@tanstack/form-core'
+import type { FieldOptions, DeepKeys, DeepValue } from '@tanstack/form-core'
 
 export type UseFieldOptions<
-  TData,
-  TFormData,
-  TName = unknown extends TFormData ? string : DeepKeys<TFormData>,
-> = FieldOptions<TData, TFormData, TName> & {
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData = DeepValue<TParentData, TName>,
+> = FieldOptions<TParentData, TName, TData> & {
   mode?: 'value' | 'array'
 }

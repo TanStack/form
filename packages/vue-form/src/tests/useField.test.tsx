@@ -30,7 +30,7 @@ describe('useField', () => {
 
       return () => (
         <form.Field name="firstName" defaultValue="FirstName">
-          {({ field }: { field: FieldApi<string, Person> }) => (
+          {({ field }: { field: FieldApi<Person, 'firstName'> }) => (
             <input
               data-testid={'fieldinput'}
               value={field.state.value}
@@ -68,7 +68,7 @@ describe('useField', () => {
           name="firstName"
           onChange={(value) => (value === 'other' ? error : undefined)}
         >
-          {({ field }: { field: FieldApi<string, Person> }) => (
+          {({ field }: { field: FieldApi<Person, 'firstName'> }) => (
             <div>
               <input
                 data-testid="fieldinput"
@@ -111,7 +111,7 @@ describe('useField', () => {
           name="firstName"
           onChange={(value) => (value === 'other' ? error : undefined)}
         >
-          {({ field }: { field: FieldApi<string, Person> }) => (
+          {({ field }: { field: FieldApi<Person, 'firstName'> }) => (
             <div>
               <input
                 data-testid="fieldinput"
@@ -159,7 +159,7 @@ describe('useField', () => {
             return error
           }}
         >
-          {({ field }: { field: FieldApi<string, Person> }) => (
+          {({ field }: { field: FieldApi<Person, 'firstName'> }) => (
             <div>
               <input
                 data-testid="fieldinput"
@@ -211,7 +211,7 @@ describe('useField', () => {
             return error
           }}
         >
-          {({ field }: { field: FieldApi<string, Person> }) => (
+          {({ field }: { field: FieldApi<Person, 'firstName'> }) => (
             <div>
               <input
                 data-testid="fieldinput"

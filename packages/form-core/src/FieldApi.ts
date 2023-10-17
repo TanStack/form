@@ -4,59 +4,54 @@ import { Store } from '@tanstack/store'
 
 export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount'
 
-type ValidateFn<TData, TFormData> = (
+type ValidateFn<TParentData, TName extends DeepKeys<TParentData>, TData> = (
   value: TData,
-  fieldApi: FieldApi<TData, TFormData>,
+  fieldApi: FieldApi<TParentData, TName>,
 ) => ValidationError
 
-type ValidateAsyncFn<TData, TFormData> = (
+type ValidateAsyncFn<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData,
+> = (
   value: TData,
-  fieldApi: FieldApi<TData, TFormData>,
+  fieldApi: FieldApi<TParentData, TName>,
 ) => ValidationError | Promise<ValidationError>
 
 export interface FieldOptions<
-  _TData,
-  TFormData,
+  TParentData,
   /**
    * This allows us to restrict the name to only be a valid field name while
    * also assigning it to a generic
    */
-  TName = unknown extends TFormData ? string : DeepKeys<TFormData>,
+  TName extends DeepKeys<TParentData>,
   /**
    * If TData is unknown, we can use the TName generic to determine the type
    */
-  TData = unknown extends _TData ? DeepValue<TFormData, TName> : _TData,
+  TData = DeepValue<TParentData, TName>,
 > {
-  name: TName
+  name: DeepKeys<TParentData>
   index?: TData extends any[] ? number : never
   defaultValue?: TData
   asyncDebounceMs?: number
   asyncAlways?: boolean
-  onMount?: (formApi: FieldApi<TData, TFormData>) => void
-  onChange?: ValidateFn<TData, TFormData>
-  onChangeAsync?: ValidateAsyncFn<TData, TFormData>
+  onMount?: (formApi: FieldApi<TParentData, TName>) => void
+  onChange?: ValidateFn<TParentData, TName, TData>
+  onChangeAsync?: ValidateAsyncFn<TParentData, TName, TData>
   onChangeAsyncDebounceMs?: number
-  onBlur?: ValidateFn<TData, TFormData>
-  onBlurAsync?: ValidateAsyncFn<TData, TFormData>
+  onBlur?: ValidateFn<TParentData, TName, TData>
+  onBlurAsync?: ValidateAsyncFn<TParentData, TName, TData>
   onBlurAsyncDebounceMs?: number
-  onSubmitAsync?: ValidateAsyncFn<TData, TFormData>
+  onSubmitAsync?: ValidateAsyncFn<TParentData, TName, TData>
   defaultMeta?: Partial<FieldMeta>
 }
 
 export interface FieldApiOptions<
-  _TData,
-  TFormData,
-  /**
-   * This allows us to restrict the name to only be a valid field name while
-   * also assigning it to a generic
-   */
-  TName = unknown extends TFormData ? string : DeepKeys<TFormData>,
-  /**
-   * If TData is unknown, we can use the TName generic to determine the type
-   */
-  TData = unknown extends _TData ? DeepValue<TFormData, TName> : _TData,
-> extends FieldOptions<_TData, TFormData, TName, TData> {
-  form: FormApi<TFormData>
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData = DeepValue<TParentData, TName>,
+> extends FieldOptions<TParentData, TName, TData> {
+  form: FormApi<TParentData>
 }
 
 export type FieldMeta = {
@@ -74,43 +69,26 @@ export type FieldState<TData> = {
   meta: FieldMeta
 }
 
-type GetTData<
-  TData,
-  TFormData,
-  Opts extends FieldApiOptions<TData, TFormData>,
-> = Opts extends FieldApiOptions<
-  infer _TData,
-  infer _TFormData,
-  infer _TName,
-  infer RealTData
->
-  ? RealTData
-  : never
+export type ResolveName<TParentData> = unknown extends TParentData
+  ? string
+  : DeepKeys<TParentData>
 
 export class FieldApi<
-  _TData,
-  TFormData,
-  Opts extends FieldApiOptions<_TData, TFormData> = FieldApiOptions<
-    _TData,
-    TFormData
-  >,
-  TData extends GetTData<_TData, TFormData, Opts> = GetTData<
-    _TData,
-    TFormData,
-    Opts
-  >,
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData = DeepValue<TParentData, TName>,
 > {
   uid: number
-  form: Opts['form']
-  name!: DeepKeys<TFormData>
-  options: Opts = {} as any
+  form: FieldApiOptions<TParentData, TName, TData>['form']
+  name!: DeepKeys<TParentData>
+  options: FieldApiOptions<TParentData, TName> = {} as any
   store!: Store<FieldState<TData>>
   state!: FieldState<TData>
   prevState!: FieldState<TData>
 
   constructor(
-    opts: Opts & {
-      form: FormApi<TFormData>
+    opts: FieldApiOptions<TParentData, TName, TData> & {
+      form: FormApi<TParentData>
     },
   ) {
     this.form = opts.form
@@ -194,12 +172,12 @@ export class FieldApi<
     }
   }
 
-  update = (opts: FieldApiOptions<TData, TFormData>) => {
+  update = (opts: FieldApiOptions<TParentData, TName, TData>) => {
     // Default Value
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.state.value === undefined) {
       const formDefault =
-        opts.form.options.defaultValues?.[opts.name as keyof TFormData]
+        opts.form.options.defaultValues?.[opts.name as keyof TParentData]
 
       if (opts.defaultValue !== undefined) {
         this.setValue(opts.defaultValue as never)
@@ -217,7 +195,7 @@ export class FieldApi<
   }
 
   getValue = (): TData => {
-    return this.form.getFieldValue(this.name)
+    return this.form.getFieldValue(this.name) as any
   }
 
   setValue = (
@@ -258,11 +236,16 @@ export class FieldApi<
   swapValues = (aIndex: number, bIndex: number) =>
     this.form.swapFieldValues(this.name, aIndex, bIndex)
 
-  getSubField = <TName extends DeepKeys<TData>>(name: TName) =>
-    new FieldApi<DeepValue<TData, TName>, TFormData>({
+  getSubField = <
+    TSubName extends DeepKeys<TData>,
+    TSubData = DeepValue<TData, TSubName>,
+  >(
+    name: TSubName,
+  ): FieldApi<TData, TSubName, TSubData> =>
+    new FieldApi({
       name: `${this.name}.${name}` as never,
       form: this.form,
-    })
+    }) as any
 
   validateSync = (value = this.state.value, cause: ValidationCause) => {
     const { onChange, onBlur } = this.options
