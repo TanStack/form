@@ -325,6 +325,13 @@ export class FieldApi<
         )
       }
 
+      if (this.form.options.validator && typeof validate !== 'function') {
+        return (this.form.options.validator as Validator<TData>)().validate(
+          value,
+          validate,
+        )
+      }
+
       return (validate as ValidateFn<TParentData, TName, ValidatorType, TData>)(
         value,
         this as never,

@@ -47,7 +47,6 @@ describe('yup field api', () => {
     field.mount()
 
     expect(field.getMeta().errors).toEqual([])
-    debugger
     field.setValue('a', { touch: true })
     expect(field.getMeta().errors).toEqual(['Test'])
     field.setValue('asdf', { touch: true })

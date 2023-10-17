@@ -1,22 +1,22 @@
 import { expect } from 'vitest'
 
 import { FormApi, FieldApi } from '@tanstack/form-core'
-import { zodValidator } from '../validator'
-import { z } from 'zod'
+import { yupValidator } from '../validator'
+import yup from 'yup'
 
-describe('zod field api', () => {
+describe('yup form api', () => {
   it('should run an onChange with z.string validation', () => {
     const form = new FormApi({
       defaultValues: {
         name: '',
       },
+      validator: yupValidator,
     })
 
     const field = new FieldApi({
       form,
-      validator: zodValidator,
       name: 'name',
-      onChange: z.string().min(3, 'You must have a length of at least 3'),
+      onChange: yup.string().min(3, 'You must have a length of at least 3'),
     })
 
     field.mount()
@@ -35,11 +35,11 @@ describe('zod field api', () => {
       defaultValues: {
         name: '',
       },
+      validator: yupValidator,
     })
 
     const field = new FieldApi({
       form,
-      validator: zodValidator,
       name: 'name',
       onChange: (val) => (val === 'a' ? 'Test' : undefined),
     })
