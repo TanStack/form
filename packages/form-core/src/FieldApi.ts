@@ -413,8 +413,9 @@ export class FieldApi<
           asyncDebounceMs ??
           0
 
-    if (this.state.meta.isValidating !== true)
+    if (this.state.meta.isValidating !== true) {
       this.setMeta((prev) => ({ ...prev, isValidating: true }))
+    }
 
     // Use the validationCount for all field instances to
     // track freshness of the validation
@@ -434,11 +435,31 @@ export class FieldApi<
       await new Promise((r) => setTimeout(r, debounceMs))
     }
 
+    const doValidate = () => {
+      if (this.options.validator && typeof validate !== 'function') {
+        return (this.options.validator as Validator<TData>)().validateAsync(
+          value,
+          validate,
+        )
+      }
+
+      if (this.form.options.validator && typeof validate !== 'function') {
+        return (
+          this.form.options.validator as Validator<TData>
+        )().validateAsync(value, validate)
+      }
+
+      return (validate as ValidateFn<TParentData, TName, ValidatorType, TData>)(
+        value,
+        this as never,
+      )
+    }
+
     // Only kick off validation if this validation is the latest attempt
     if (checkLatest()) {
       const prevErrors = this.getMeta().errors
       try {
-        const rawError = await validate(value as never, this as never)
+        const rawError = await doValidate()
         if (checkLatest()) {
           const error = normalizeError(rawError)
           this.setMeta((prev) => ({
@@ -474,12 +495,18 @@ export class FieldApi<
   ): ValidationError[] | Promise<ValidationError[]> => {
     // If the field is pristine and validatePristine is false, do not validate
     if (!this.state.meta.isTouched) return []
+
+    // Store the previous error for the errorMapKey (eg. onChange, onBlur, onSubmit)
+    const errorMapKey = getErrorMapKey(cause)
+    const prevError = this.getMeta().errorMap[errorMapKey]
+
     // Attempt to sync validate first
     this.validateSync(value, cause)
 
-    const errorMapKey = getErrorMapKey(cause)
-    // If there is an error mapped to the errorMapKey (eg. onChange, onBlur, onSubmit), return the errors array, do not attempt async validation
-    if (this.getMeta().errorMap[errorMapKey]) {
+    // If there is a new error mapped to the errorMapKey (eg. onChange, onBlur, onSubmit), return the errors array, do not attempt async validation
+    const newError = this.getMeta().errorMap[errorMapKey]
+
+    if (prevError !== newError) {
       if (!this.options.asyncAlways) {
         return this.state.meta.errors
       }
