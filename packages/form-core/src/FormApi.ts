@@ -134,8 +134,10 @@ export class FormApi<TFormData, ValidatorType> {
             (field) => field?.isValidating,
           )
 
-          const isFieldsValid = !fieldMetaValues.some((field) =>
-            isNonEmptyArray(field?.errors),
+          const isFieldsValid = !fieldMetaValues.some(
+            (field) =>
+              field?.errorMap &&
+              isNonEmptyArray(Object.values(field.errorMap).filter(Boolean)),
           )
 
           const isTouched = fieldMetaValues.some((field) => field?.isTouched)
