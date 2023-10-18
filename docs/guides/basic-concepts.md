@@ -5,9 +5,7 @@ title: Basic Concepts and Terminology
 
 # Basic Concepts and Terminology
 
-> Some of these docs may be inaccurate due to an API shift in `0.11.0`. If you're interested in helping us fix these issues, please [join our Discord](https://tlinz.com/discord) and reach out in the `#form` channel.
-
-This page introduces the basic concepts and terminology used in the @tanstack/react-form library. Familiarizing yourself with these concepts will help you better understand and work with the library.
+This page introduces the basic concepts and terminology used in the `@tanstack/react-form` library. Familiarizing yourself with these concepts will help you better understand and work with the library.
 
 ## Form Factory
 
@@ -86,7 +84,7 @@ Example:
 
 ## Validation
 
-@tanstack/react-form provides both synchronous and asynchronous validation out of the box. Validation functions can be passed to the form.Field component using the validate and validateAsync props.
+`@tanstack/react-form` provides both synchronous and asynchronous validation out of the box. Validation functions can be passed to the form.Field component using the validate and validateAsync props.
 
 Example:
 
@@ -111,9 +109,34 @@ Example:
 />
 ```
 
+## Validation Adapters
+
+In addition to hand-rolled validation options, we also provide adapters like `@tanstack/zod-form-adapter` and `@tanstack/yup-form-adapter` to enable usage with common schema validation tools like [Yup](https://github.com/jquense/yup) and [Zod](https://zod.dev/).
+
+Example:
+
+```tsx
+<form.Field
+  name="firstName"
+  onChange={z
+    .string()
+    .min(3, "First name must be at least 3 characters")}
+  onChangeAsyncDebounceMs={500}
+  onChangeAsync={z.string().refine(
+    async (value) => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return !value.includes("error");
+    },
+    {
+      message: "No 'error' allowed in first name",
+    },
+  )}
+/>
+```
+
 ## Reactivity
 
-@tanstack/react-form offers various ways to subscribe to form and field state changes, such as the form.useStore hook, the form.Subscribe component, and the form.useField hook. These methods allow you to optimize your form's rendering performance by only updating components when necessary.
+`@tanstack/react-form` offers various ways to subscribe to form and field state changes, such as the `form.useStore` hook, the `form.Subscribe` component, and the `form.useField` hook. These methods allow you to optimize your form's rendering performance by only updating components when necessary.
 
 Example:
 
@@ -240,8 +263,5 @@ Example:
 />
 ```
 
-These are the basic concepts and terminology used in the @tanstack/react-form library. Understanding these concepts will help you work more effectively with the library and create complex forms with ease.
+These are the basic concepts and terminology used in the `@tanstack/react-form` library. Understanding these concepts will help you work more effectively with the library and create complex forms with ease.
 
-```
-
-```
