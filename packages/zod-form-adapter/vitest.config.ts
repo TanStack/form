@@ -2,7 +2,7 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
-    name: 'form-core',
+    name: 'zod-form-adapter',
     dir: './src',
     watch: false,
     environment: 'jsdom',

@@ -1,9 +1,5 @@
 lockfileVersion: '6.0'
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
-
 overrides:
   '@tanstack/form-core': workspace:*
   '@tanstack/react-form': workspace:*
@@ -236,6 +232,9 @@ importers:
       '@tanstack/react-form':
         specifier: workspace:*
         version: link:../../../packages/react-form
+      '@tanstack/vue-form':
+        specifier: workspace:*
+        version: link:../../../packages/vue-form
       axios:
         specifier: ^0.26.1
         version: 0.26.1
@@ -261,6 +260,9 @@ importers:
       '@tanstack/react-form':
         specifier: workspace:*
         version: link:../../../packages/react-form
+      '@tanstack/vue-form':
+        specifier: workspace:*
+        version: link:../../../packages/vue-form
       '@tanstack/yup-form-adapter':
         specifier: workspace:*
         version: link:../../../packages/yup-form-adapter
@@ -292,6 +294,9 @@ importers:
       '@tanstack/react-form':
         specifier: workspace:*
         version: link:../../../packages/react-form
+      '@tanstack/vue-form':
+        specifier: workspace:*
+        version: link:../../../packages/vue-form
       '@tanstack/zod-form-adapter':
         specifier: workspace:*
         version: link:../../../packages/zod-form-adapter
@@ -320,6 +325,9 @@ importers:
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../../../packages/form-core
+      '@tanstack/react-form':
+        specifier: workspace:*
+        version: link:../../../packages/react-form
       '@tanstack/vue-form':
         specifier: workspace:*
         version: link:../../../packages/vue-form
@@ -345,6 +353,9 @@ importers:
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../../../packages/form-core
+      '@tanstack/react-form':
+        specifier: workspace:*
+        version: link:../../../packages/react-form
       '@tanstack/vue-form':
         specifier: workspace:*
         version: link:../../../packages/vue-form
@@ -376,6 +387,9 @@ importers:
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../../../packages/form-core
+      '@tanstack/react-form':
+        specifier: workspace:*
+        version: link:../../../packages/react-form
       '@tanstack/vue-form':
         specifier: workspace:*
         version: link:../../../packages/vue-form
@@ -10136,3 +10150,7 @@ packages:
 
   /zod@3.22.4:
     resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false

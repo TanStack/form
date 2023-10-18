@@ -3,8 +3,6 @@ id: basic-concepts
 title: Basic Concepts and Terminology
 ---
 
-# Basic Concepts and Terminology
-
 This page introduces the basic concepts and terminology used in the `@tanstack/react-form` library. Familiarizing yourself with these concepts will help you better understand and work with the library.
 
 ## Form Factory

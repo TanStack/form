@@ -3,8 +3,6 @@ id: form-validation
 title: Form and Field Validation
 ---
 
-# Form and Field Validation
-
 At the core of TanStack Form's functionalities is the concept of validation. We currently support three mechanisms of validation:
 
 - Synchronous functional validation
