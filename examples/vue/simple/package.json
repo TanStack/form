@@ -9,10 +9,12 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@tanstack/form-core": "0.4.0",
-    "@tanstack/vue-form": "0.4.0",
+    "@tanstack/form-core": "0.4.1",
+    "@tanstack/vue-form": "0.4.1",
     "vue": "^3.3.4",
-    "@tanstack/react-form": "0.4.0"
+    "@tanstack/react-form": "0.4.1",
+    "@tanstack/zod-form-adapter": "0.4.1",
+    "@tanstack/yup-form-adapter": "0.4.1"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.3.4",
