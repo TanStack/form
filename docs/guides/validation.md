@@ -209,3 +209,72 @@ This will debounce every async call with a 500ms delay. You can even override th
 
 
 ## Adapter-Based Validation
+
+While functions provide more flexibility and customization over your validation, they can be a bit verbose. To help solve this, there are libraries like [Yup](https://github.com/jquense/yup) and [Zod](https://zod.dev/) that provide schema-based validation to make shorthand and type-strict validation substantially easier.
+
+Luckily, we support both of these libraries through official adapters:
+
+```bash
+$ npm install @tanstack/zod-form-adapter zod
+# or
+$ npm install @tanstack/yup-form-adapter yup
+```
+
+Once done, we can add the adapter to the `validator` property  on the form or field:
+
+```tsx
+import { zodValidator } from "@tanstack/zod-form-adapter";
+import { z } from "zod";
+
+// ...
+
+const form = useForm({
+  // Either add the validator here or on `Field`
+  validator: zodValidator,
+  // ...
+});
+
+<form.Field
+  name="firstName"
+  validator={zodValidator}
+  onChange={z
+    .string()
+    .min(3, "First name must be at least 3 characters")}
+  children={(field) => {
+    return (
+      <>
+         {/* ... */}
+      </>
+    );
+  }}
+/>
+```
+
+These adapters also support async operations using the proper property names:
+
+```tsx
+<form.Field
+  name="firstName"
+  onChange={z
+    .string()
+    .min(3, "First name must be at least 3 characters")}
+  onChangeAsyncDebounceMs={500}
+  onChangeAsync={z.string().refine(
+    async (value) => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return !value.includes("error");
+    },
+    {
+      message: "No 'error' allowed in first name",
+    },
+  )}
+  children={(field) => {
+    return (
+      <>
+         {/* ... */}
+      </>
+    );
+  }}
+/>
+```
+
