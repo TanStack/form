@@ -262,3 +262,11 @@ An object representing the validation metadata for a field.
 ### `ValidationError`
 
 A type representing a validation error. Possible values are `undefined`, `false`, `null`, or a `string` with an error message.
+
+### `ValidationErrorMapKeys`
+A type representing the keys used to map to `ValidationError` in `ValidationErrorMap`. It is defined with `on${Capitalize<ValidationCause>}`
+
+
+### `ValidationErrorMap`
+
+A type that represents a map with the keys as `ValidationErrorMapKeys` and the values as `ValidationError`

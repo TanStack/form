@@ -13,12 +13,9 @@ import { useForm } from '@tanstack/react-form'
 export default function App() {
   const form = useForm({
     // Memoize your default values to prevent re-renders
-    defaultValues: React.useMemo(
-      () => ({
-        fullName: '',
-      }),
-      [],
-    ),
+    defaultValues: {
+      fullName: '',
+    },
     onSubmit: async (values) => {
       // Do something with form data
       console.log(values)
@@ -27,17 +24,30 @@ export default function App() {
 
   return (
     <div>
-      <form.Form>
-        <div>
-          <form.Field
-            name="fullName"
-            children={(field) => (
-              <input name={field.name} {...field.getInputProps()} />
-            )}
-          />
-        </div>
-        <button type="submit">Submit</button>
-      </form.Form>
+      <form.Provider>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            void form.handleSubmit();
+          }}
+        >
+          <div>
+            <form.Field
+              name="fullName"
+              children={(field) => (
+                <input
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              )}
+            />
+          </div>
+          <button type="submit">Submit</button>
+        </form>
+      </form.Provider>
     </div>
   )
 }

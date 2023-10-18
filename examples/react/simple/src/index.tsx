@@ -1,14 +1,14 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
+import * as React from "react";
+import { createRoot } from "react-dom/client";
 import { useForm } from "@tanstack/react-form";
 import type { FieldApi } from "@tanstack/react-form";
 
 function FieldInfo({ field }: { field: FieldApi<any, any> }) {
   return (
     <>
-      {field.state.meta.touchedError ? (
-        <em>{field.state.meta.touchedError}</em>
-      ) : null}{" "}
+      {field.state.meta.touchedErrors ? (
+        <em>{field.state.meta.touchedErrors}</em>
+      ) : null}
       {field.state.meta.isValidating ? "Validating..." : null}
     </>
   );
@@ -17,13 +17,10 @@ function FieldInfo({ field }: { field: FieldApi<any, any> }) {
 export default function App() {
   const form = useForm({
     // Memoize your default values to prevent re-renders
-    defaultValues: React.useMemo(
-      () => ({
-        firstName: "",
-        lastName: "",
-      }),
-      [],
-    ),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+    },
     onSubmit: async (values) => {
       // Do something with form data
       console.log(values);
@@ -35,7 +32,13 @@ export default function App() {
       <h1>Simple Form Example</h1>
       {/* A pre-bound form component */}
       <form.Provider>
-        <form {...form.getFormProps()}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            void form.handleSubmit();
+          }}
+        >
           <div>
             {/* A type-safe and pre-bound field component*/}
             <form.Field
@@ -59,7 +62,12 @@ export default function App() {
                 return (
                   <>
                     <label htmlFor={field.name}>First Name:</label>
-                    <input name={field.name} {...field.getInputProps()} />
+                    <input
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
                     <FieldInfo field={field} />
                   </>
                 );
@@ -72,7 +80,12 @@ export default function App() {
               children={(field) => (
                 <>
                   <label htmlFor={field.name}>Last Name:</label>
-                  <input name={field.name} {...field.getInputProps()} />
+                  <input
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
                   <FieldInfo field={field} />
                 </>
               )}
@@ -94,4 +107,4 @@ export default function App() {
 
 const rootElement = document.getElementById("root")!;
 
-ReactDOM.createRoot(rootElement).render(<App />);
+createRoot(rootElement).render(<App />);

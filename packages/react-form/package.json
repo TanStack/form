@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/react-form",
-  "version": "0.0.13",
+  "version": "0.3.7",
   "description": "Powerful, type-safe forms for React.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -10,19 +10,6 @@
     "type": "github",
     "url": "https://github.com/sponsors/tannerlinsley"
   },
-  "type": "module",
-  "types": "build/lib/index.d.ts",
-  "main": "build/lib/index.legacy.cjs",
-  "module": "build/lib/index.legacy.js",
-  "exports": {
-    ".": {
-      "types": "./build/lib/index.d.ts",
-      "import": "./build/lib/index.js",
-      "require": "./build/lib/index.cjs",
-      "default": "./build/lib/index.cjs"
-    },
-    "./package.json": "./package.json"
-  },
   "sideEffects": false,
   "scripts": {
     "clean": "rimraf ./build && rimraf ./coverage",
@@ -31,19 +18,38 @@
     "test:lib": "vitest run --coverage",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
-    "build": "pnpm build:rollup && pnpm build:codemods && pnpm build:types",
-    "build:rollup": "rollup --config rollup.config.js",
-    "build:codemods": "cpy ../codemods/src/**/* ./build/codemods",
-    "build:types": "tsc --emitDeclarationOnly"
+    "build": "tsup"
   },
   "files": [
-    "build/lib/*",
-    "src",
-    "build/codemods",
-    "!build/codemods/jest.config.js",
-    "!build/codemods/**/__testfixtures__",
-    "!build/codemods/**/__tests__"
+    "build",
+    "src"
   ],
+  "type": "module",
+  "types": "build/legacy/index.d.ts",
+  "main": "build/legacy/index.cjs",
+  "module": "build/legacy/index.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./build/modern/index.d.ts",
+        "default": "./build/modern/index.js"
+      },
+      "require": {
+        "types": "./build/modern/index.d.cts",
+        "default": "./build/modern/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "nx": {
+    "targets": {
+      "test:build": {
+        "dependsOn": [
+          "build"
+        ]
+      }
+    }
+  },
   "devDependencies": {
     "@types/jscodeshift": "^0.11.3",
     "@types/react": "^18.0.14",
@@ -55,7 +61,9 @@
   },
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/react-store": "0.0.1-beta.85"
+    "@tanstack/react-store": "0.1.3",
+    "@tanstack/store": "0.1.3",
+    "use-isomorphic-layout-effect": "^1.1.2"
   },
   "peerDependencies": {
     "react": "^17.0.0 || ^18.0.0",

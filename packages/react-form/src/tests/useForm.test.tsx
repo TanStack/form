@@ -1,8 +1,9 @@
-import { fireEvent, render } from '@testing-library/react'
+/// <reference lib="dom" />
+import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import * as React from 'react'
-import { createFormFactory } from '..'
+import { createFormFactory, useForm } from '..'
 
 const user = userEvent.setup()
 
@@ -25,7 +26,12 @@ describe('useForm', () => {
             defaultValue={''}
             children={(field) => {
               return (
-                <input data-testid="fieldinput" {...field.getInputProps()} />
+                <input
+                  data-testid="fieldinput"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
               )
             }}
           />
@@ -61,7 +67,7 @@ describe('useForm', () => {
           <form.Field
             name="firstName"
             children={(field) => {
-              return <p>{field.getInputProps().value}</p>
+              return <p>{field.state.value}</p>
             }}
           />
         </form.Provider>
@@ -71,5 +77,51 @@ describe('useForm', () => {
     const { findByText, queryByText } = render(<Comp />)
     expect(await findByText('FirstName')).toBeInTheDocument()
     expect(queryByText('LastName')).not.toBeInTheDocument()
+  })
+
+  it('should handle submitting properly', async () => {
+    function Comp() {
+      const [submittedData, setSubmittedData] = React.useState<{
+        firstName: string
+      } | null>(null)
+
+      const form = useForm({
+        defaultValues: {
+          firstName: 'FirstName',
+        },
+        onSubmit: (data) => {
+          setSubmittedData(data)
+        },
+      })
+
+      return (
+        <form.Provider>
+          <form.Field
+            name="firstName"
+            children={(field) => {
+              return (
+                <input
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder={'First name'}
+                />
+              )
+            }}
+          />
+          <button onClick={form.handleSubmit}>Submit</button>
+          {submittedData && <p>Submitted data: {submittedData.firstName}</p>}
+        </form.Provider>
+      )
+    }
+
+    const { findByPlaceholderText, getByText } = render(<Comp />)
+    const input = await findByPlaceholderText('First name')
+    await user.clear(input)
+    await user.type(input, 'OtherName')
+    await user.click(getByText('Submit'))
+    await waitFor(() =>
+      expect(getByText('Submitted data: OtherName')).toBeInTheDocument(),
+    )
   })
 })
