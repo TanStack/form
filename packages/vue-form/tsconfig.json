@@ -1,0 +1,11 @@
+{
+  "composite": true,
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["vitest/globals", "vue/jsx"],
+    "outDir": "./build/lib",
+    "jsx": "preserve",
+    "jsxImportSource": "vue"
+  },
+  "include": ["src"]
+}

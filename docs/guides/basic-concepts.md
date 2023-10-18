@@ -49,7 +49,11 @@ Example:
   name="firstName"
   children={(field) => (
     <>
-      <input {...field.getInputProps()} />
+      <input
+        value={field.state.value}
+        onBlur={field.handleBlur}
+        onChange={(e) => field.handleChange(e.target.value)}
+      />
       <FieldInfo field={field} />
     </>
   )}
@@ -68,12 +72,16 @@ const { value, error, touched, isValidating } = field.state
 
 ## Field API
 
-The Field API is an object passed to the render prop function when creating a field. It provides methods for working with the field's state, such as getInputProps, which returns an object with props needed to bind the field to a form input element.
+The Field API is an object passed to the render prop function when creating a field. It provides methods for working with the field's state.
 
 Example:
 
 ```tsx
-<input {...field.getInputProps()} />
+<input
+  value={field.state.value}
+  onBlur={field.handleBlur}
+  onChange={(e) => field.handleChange(e.target.value)}
+/>
 ```
 
 ## Validation
@@ -92,7 +100,11 @@ Example:
   }}
   children={(field) => (
     <>
-      <input {...field.getInputProps()} />
+      <input
+        value={field.state.value}
+        onBlur={field.handleBlur}
+        onChange={(e) => field.handleChange(e.target.value)}
+      />
       <FieldInfo field={field} />
     </>
   )}
@@ -143,7 +155,12 @@ Example:
                     return (
                       <div>
                         <label htmlFor={field.name}>Name:</label>
-                        <input name={field.name} {...field.getInputProps()} />
+                        <input
+                          name={field.name}
+                          value={field.state.value}
+                          onBlur={field.handleBlur}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                        />
                         <button
                           type="button"
                           onClick={() => hobbiesField.removeValue(i)}
@@ -162,7 +179,12 @@ Example:
                     return (
                       <div>
                         <label htmlFor={field.name}>Description:</label>
-                        <input name={field.name} {...field.getInputProps()} />
+                        <input
+                          name={field.name}
+                          value={field.state.value}
+                          onBlur={field.handleBlur}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                        />
                         <FieldInfo field={field} />
                       </div>
                     )
@@ -202,7 +224,12 @@ Example:
     return (
       <div>
         <label htmlFor={field.name}>Name:</label>
-        <input name={field.name} {...field.getInputProps()} />
+        <input
+          name={field.name}
+          value={field.state.value}
+          onBlur={field.handleBlur}
+          onChange={(e) => field.handleChange(e.target.value)}
+        />
         <button type="button" onClick={() => hobbiesField.removeValue(i)}>
           X
         </button>

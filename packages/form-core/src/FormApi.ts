@@ -1,18 +1,8 @@
 import { Store } from '@tanstack/store'
 //
 import type { DeepKeys, DeepValue, Updater } from './utils'
-import { functionalUpdate, getBy, setBy } from './utils'
+import { functionalUpdate, getBy, isNonEmptyArray, setBy } from './utils'
 import type { FieldApi, FieldMeta, ValidationCause } from './FieldApi'
-
-export interface Register {
-  // FormSubmitEvent
-}
-
-export type FormSubmitEvent = Register extends {
-  FormSubmitEvent: infer E
-}
-  ? E
-  : Event
 
 export type FormOptions<TData> = {
   defaultValues?: TData
@@ -41,18 +31,24 @@ export type FormOptions<TData> = {
 }
 
 export type FieldInfo<TFormData> = {
-  instances: Record<string, FieldApi<any, TFormData>>
+  instances: Record<string, FieldApi<TFormData, any, any>>
 } & ValidationMeta
 
 export type ValidationMeta = {
   validationCount?: number
   validationAsyncCount?: number
-  validationPromise?: Promise<ValidationError>
-  validationResolve?: (error: ValidationError) => void
-  validationReject?: (error: unknown) => void
+  validationPromise?: Promise<ValidationError[]>
+  validationResolve?: (errors: ValidationError[]) => void
+  validationReject?: (errors: unknown) => void
 }
 
 export type ValidationError = undefined | false | null | string
+
+export type ValidationErrorMapKeys = `on${Capitalize<ValidationCause>}`
+
+export type ValidationErrorMap = {
+  [K in ValidationErrorMapKeys]?: ValidationError
+}
 
 export type FormState<TData> = {
   values: TData
@@ -79,21 +75,20 @@ function getDefaultFormState<TData>(
   defaultState: Partial<FormState<TData>>,
 ): FormState<TData> {
   return {
-    values: {} as any,
-    fieldMeta: {} as any,
-    canSubmit: true,
-    isFieldsValid: false,
-    isFieldsValidating: false,
-    isFormValid: false,
-    isFormValidating: false,
-    isSubmitted: false,
-    isSubmitting: false,
-    isTouched: false,
-    isValid: false,
-    isValidating: false,
-    submissionAttempts: 0,
-    formValidationCount: 0,
-    ...defaultState,
+    values: defaultState.values ?? ({} as never),
+    fieldMeta: defaultState.fieldMeta ?? ({} as never),
+    canSubmit: defaultState.canSubmit ?? true,
+    isFieldsValid: defaultState.isFieldsValid ?? false,
+    isFieldsValidating: defaultState.isFieldsValidating ?? false,
+    isFormValid: defaultState.isFormValid ?? false,
+    isFormValidating: defaultState.isFormValidating ?? false,
+    isSubmitted: defaultState.isSubmitted ?? false,
+    isSubmitting: defaultState.isSubmitting ?? false,
+    isTouched: defaultState.isTouched ?? false,
+    isValid: defaultState.isValid ?? false,
+    isValidating: defaultState.isValidating ?? false,
+    submissionAttempts: defaultState.submissionAttempts ?? 0,
+    formValidationCount: defaultState.formValidationCount ?? 0,
   }
 }
 
@@ -111,7 +106,7 @@ export class FormApi<TFormData> {
   constructor(opts?: FormOptions<TFormData>) {
     this.store = new Store<FormState<TFormData>>(
       getDefaultFormState({
-        ...opts?.defaultState,
+        ...(opts?.defaultState as any),
         values: opts?.defaultValues ?? opts?.defaultState?.values,
         isFormValid: true,
       }),
@@ -128,7 +123,9 @@ export class FormApi<TFormData> {
             (field) => field?.isValidating,
           )
 
-          const isFieldsValid = !fieldMetaValues.some((field) => field?.error)
+          const isFieldsValid = !fieldMetaValues.some((field) =>
+            isNonEmptyArray(field?.errors),
+          )
 
           const isTouched = fieldMetaValues.some((field) => field?.isTouched)
 
@@ -166,20 +163,18 @@ export class FormApi<TFormData> {
     this.store.batch(() => {
       const shouldUpdateValues =
         options.defaultValues &&
-        options.defaultValues !== this.options.defaultValues
+        options.defaultValues !== this.options.defaultValues &&
+        !this.state.isTouched
 
       const shouldUpdateState =
-        options.defaultState !== this.options.defaultState
-
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (!shouldUpdateValues || !shouldUpdateValues) {
-        return
-      }
+        options.defaultState !== this.options.defaultState &&
+        !this.state.isTouched
 
       this.store.setState(() =>
         getDefaultFormState(
           Object.assign(
             {},
+            this.state as any,
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             shouldUpdateState ? options.defaultState : {},
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -199,14 +194,13 @@ export class FormApi<TFormData> {
   reset = () =>
     this.store.setState(() =>
       getDefaultFormState({
-        ...this.options.defaultState,
+        ...(this.options.defaultState as any),
         values: this.options.defaultValues ?? this.options.defaultState?.values,
       }),
     )
 
   validateAllFields = async (cause: ValidationCause) => {
-    const fieldValidationPromises: Promise<ValidationError>[] = [] as any
-
+    const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
     this.store.batch(() => {
       void (Object.values(this.fieldInfo) as FieldInfo<any>[]).forEach(
         (field) => {
@@ -228,12 +222,7 @@ export class FormApi<TFormData> {
     return Promise.all(fieldValidationPromises)
   }
 
-  // validateForm = async () => {}
-
-  handleSubmit = async (e: FormSubmitEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-
+  handleSubmit = async () => {
     // Check to see that the form and all fields have been touched
     // If they have not, touch them all and run validation
     // Run form validation
@@ -241,7 +230,7 @@ export class FormApi<TFormData> {
 
     this.store.setState((old) => ({
       ...old,
-      // Submittion attempts mark the form as not submitted
+      // Submission attempts mark the form as not submitted
       isSubmitted: false,
       // Count submission attempts
       submissionAttempts: old.submissionAttempts + 1,
@@ -295,11 +284,13 @@ export class FormApi<TFormData> {
 
   getFieldMeta = <TField extends DeepKeys<TFormData>>(
     field: TField,
-  ): FieldMeta => {
+  ): FieldMeta | undefined => {
     return this.state.fieldMeta[field]
   }
 
-  getFieldInfo = <TField extends DeepKeys<TFormData>>(field: TField) => {
+  getFieldInfo = <TField extends DeepKeys<TFormData>>(
+    field: TField,
+  ): FieldInfo<TFormData> => {
     // eslint-disable-next-line  @typescript-eslint/no-unnecessary-condition
     return (this.fieldInfo[field] ||= {
       instances: {},

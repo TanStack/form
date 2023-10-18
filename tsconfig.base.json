@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "lib": ["ES2022"],
+    "target": "ES2020",
+    "module": "ES2020",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "strictNullChecks": true,
+    "declaration": true,
+    "noImplicitReturns": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "allowUnreachableCode": true,
+    "paths": {
+      "@tanstack/form-core": ["packages/form-core"],
+      "@tanstack/react-form": ["packages/react-form"],
+      "@tanstack/vue-form": ["packages/vue-form"]
+    }
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs",
+      "esModuleInterop": true
+    }
+  }
+}
