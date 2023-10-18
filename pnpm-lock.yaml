@@ -235,6 +235,12 @@ importers:
       '@tanstack/vue-form':
         specifier: workspace:*
         version: link:../../../packages/vue-form
+      '@tanstack/yup-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/yup-form-adapter
+      '@tanstack/zod-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/zod-form-adapter
       axios:
         specifier: ^0.26.1
         version: 0.26.1
@@ -266,6 +272,9 @@ importers:
       '@tanstack/yup-form-adapter':
         specifier: workspace:*
         version: link:../../../packages/yup-form-adapter
+      '@tanstack/zod-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/zod-form-adapter
       axios:
         specifier: ^0.26.1
         version: 0.26.1
@@ -297,6 +306,9 @@ importers:
       '@tanstack/vue-form':
         specifier: workspace:*
         version: link:../../../packages/vue-form
+      '@tanstack/yup-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/yup-form-adapter
       '@tanstack/zod-form-adapter':
         specifier: workspace:*
         version: link:../../../packages/zod-form-adapter
@@ -331,6 +343,12 @@ importers:
       '@tanstack/vue-form':
         specifier: workspace:*
         version: link:../../../packages/vue-form
+      '@tanstack/yup-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/yup-form-adapter
+      '@tanstack/zod-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/zod-form-adapter
       vue:
         specifier: ^3.3.4
         version: 3.3.4
@@ -362,6 +380,9 @@ importers:
       '@tanstack/yup-form-adapter':
         specifier: workspace:*
         version: link:../../../packages/yup-form-adapter
+      '@tanstack/zod-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/zod-form-adapter
       vue:
         specifier: ^3.3.4
         version: 3.3.4
@@ -393,6 +414,9 @@ importers:
       '@tanstack/vue-form':
         specifier: workspace:*
         version: link:../../../packages/vue-form
+      '@tanstack/yup-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/yup-form-adapter
       '@tanstack/zod-form-adapter':
         specifier: workspace:*
         version: link:../../../packages/zod-form-adapter
