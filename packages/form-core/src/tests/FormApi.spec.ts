@@ -1,6 +1,7 @@
 import { expect } from 'vitest'
 
 import { FormApi } from '../FormApi'
+import { FieldApi } from '../FieldApi'
 
 describe('form api', () => {
   it('should get default form state', () => {
@@ -266,5 +267,36 @@ describe('form api', () => {
     })
 
     expect(form.getFieldValue('name')).toEqual('two')
+  })
+
+  it("form's valid state should be work fine", () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      onChange: (v) => (v.length > 0 ? undefined : 'required'),
+    })
+
+    field.mount()
+
+    field.handleChange('one')
+
+    expect(form.state.isFieldsValid).toEqual(true)
+    expect(form.state.canSubmit).toEqual(true)
+
+    field.handleChange('')
+
+    expect(form.state.isFieldsValid).toEqual(false)
+    expect(form.state.canSubmit).toEqual(false)
+
+    field.handleChange('two')
+
+    expect(form.state.isFieldsValid).toEqual(true)
+    expect(form.state.canSubmit).toEqual(true)
   })
 })
