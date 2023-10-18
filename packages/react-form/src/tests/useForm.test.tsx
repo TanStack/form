@@ -14,7 +14,7 @@ describe('useForm', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     function Comp() {
       const form = formFactory.useForm()
@@ -52,7 +52,7 @@ describe('useForm', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     function Comp() {
       const form = formFactory.useForm({

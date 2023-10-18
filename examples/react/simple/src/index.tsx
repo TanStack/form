@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { useForm } from "@tanstack/react-form";
 import type { FieldApi } from "@tanstack/react-form";
 
-function FieldInfo({ field }: { field: FieldApi<any, any> }) {
+function FieldInfo({ field }: { field: FieldApi<any, any, unknown, unknown> }) {
   return (
     <>
       {field.state.meta.touchedErrors ? (

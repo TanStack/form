@@ -13,14 +13,14 @@ Normally, you will not need to create a new `FormApi` instance directly. Instead
 const formApi: FormApi<TData> = new FormApi(formOptions: FormOptions<TData>)
 ```
 
-### `FormOptions<TData>`
+### `FormOptions<TData, ValidatorType>`
 
 An object representing the options for a form.
 
 - ```tsx
     defaultValues?: TData
   ```
-  - Set initial values for you form.
+  - Set initial values for yonu form.
 - ```tsx
     defaultState?: Partial<FormState<TData>>
   ```
@@ -32,7 +32,7 @@ An object representing the options for a form.
   -  Optional time in milliseconds if you want to introduce a delay before firing off an async action.
 
 - ```tsx
-      onMount?: (values: TData, formApi: FormApi<TData>) => ValidationError
+  onMount?: (values: TData, formApi: FormApi<TData>) => ValidationError
   ```
   -  Optional function that fires as soon as the component mounts.
 - ```tsx
@@ -75,7 +75,7 @@ An object representing the options for a form.
   - The default time in milliseconds that if set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds.
 
 - ```tsx
-      onSubmit?: (values: TData, formApi: FormApi<TData>) => any | Promise<any>
+  onSubmit?: (values: TData, formApi: FormApi<TData>) => any | Promise<any>
   ```
   - A function to be called when the form is submitted, what should happen once the user submits a valid form  returns `any` or a promise `Promise<any>`
 
@@ -85,7 +85,7 @@ An object representing the options for a form.
   - Specify an action for scenarios where the user tries to submit an invalid form.
 
 
-### `FormApi<TFormData>`
+### `FormApi<TFormData, ValidatorType>`
 
 A class representing the Form API. It handles the logic and interactions with the form state.
 
@@ -136,9 +136,9 @@ A class representing the Form API. It handles the logic and interactions with th
   - Validates all fields in the form.
 
 - ```tsx
-    handleSubmit(e: FormSubmitEvent)
+    handleSubmit()
   ```
-  - Handles the form submission event, performs validation, and calls the appropriate onSubmit or onInvalidSubmit callbacks.
+  - Handles the form submission, performs validation, and calls the appropriate onSubmit or onInvalidSubmit callbacks.
 - ```tsx
     getFieldValue<TField extends DeepKeys<TFormData>>(field: TField)
   ```

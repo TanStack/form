@@ -119,7 +119,7 @@ describe('form api', () => {
       },
     })
 
-    form.pushFieldValue('name', 'other')
+    form.setFieldValue('name', 'other')
     form.state.submissionAttempts = 300
 
     form.reset()

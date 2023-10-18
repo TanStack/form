@@ -9,9 +9,9 @@ import useIsomorphicLayoutEffect from 'use-isomorphic-layout-effect'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
-  interface FormApi<TFormData> {
+  interface FormApi<TFormData, ValidatorType> {
     Provider: (props: { children: any }) => any
-    Field: FieldComponent<TFormData>
+    Field: FieldComponent<TFormData, ValidatorType>
     useField: UseField<TFormData>
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
       selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,
@@ -23,7 +23,9 @@ declare module '@tanstack/form-core' {
   }
 }
 
-export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
+export function useForm<TData, FormValidator>(
+  opts?: FormOptions<TData, FormValidator>,
+): FormApi<TData, FormValidator> {
   const [formApi] = useState(() => {
     // @ts-ignore
     const api = new FormApi<TData>(opts)

@@ -1,0 +1,14 @@
+diff --git a/dist/rollup.js b/dist/rollup.js
+index 0f6400eedfad49091ca952ee5863bd027e3b8417..f08abd327e031cd8d18729e955b5f3b45f6f3f92 100644
+--- a/dist/rollup.js
++++ b/dist/rollup.js
+@@ -6805,6 +6805,9 @@ export { ${[...exportedNames].join(", ")} };
+             }
+           }
+         }
++        // https://github.com/Swatinem/rollup-plugin-dts/pull/287
++        // `this` is a reserved keyword that retrains meaning in certain Type-only contexts, including classes
++        if (name === "this") return;
+         const { ident, expr } = createReference(id);
+         this.declaration.params.push(expr);
+         this.returnExpr.elements.push(ident);

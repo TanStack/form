@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "noEmit": true,
+    "lib": ["DOM", "DOM.Iterable", "ES2020"]
+  }
+}

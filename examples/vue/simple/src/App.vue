@@ -34,7 +34,7 @@ async function onChangeFirstName(value: string) {
     <div>
       <form.Field
         name="firstName"
-        :onChange="
+        @change="
           (value) =>
             !value
               ? `A first name is required`
