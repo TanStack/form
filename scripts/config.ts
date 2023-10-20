@@ -15,6 +15,14 @@ export const packages: Package[] = [
     name: '@tanstack/vue-form',
     packageDir: 'vue-form',
   },
+  {
+    name: '@tanstack/zod-form-adapter',
+    packageDir: 'zod-form-adapter',
+  },
+  {
+    name: '@tanstack/yup-form-adapter',
+    packageDir: 'yup-form-adapter',
+  },
   // {
   //   name: '@tanstack/solid-store',
   //   packageDir: 'solid-store',

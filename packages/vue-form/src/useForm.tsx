@@ -11,11 +11,11 @@ import {
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
-  interface FormApi<TFormData> {
+  interface FormApi<TFormData, ValidatorType> {
     Provider: (props: Record<string, any> & {}) => any
     provideFormContext: () => void
-    Field: FieldComponent<TFormData>
-    useField: UseField<TFormData>
+    Field: FieldComponent<TFormData, ValidatorType>
+    useField: UseField<TFormData, ValidatorType>
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
       selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,
     ) => TSelected
@@ -31,19 +31,21 @@ declare module '@tanstack/form-core' {
   }
 }
 
-export function useForm<TData>(opts?: FormOptions<TData>): FormApi<TData> {
+export function useForm<TData, FormValidator>(
+  opts?: FormOptions<TData, FormValidator>,
+): FormApi<TData, FormValidator> {
   const formApi = (() => {
-    const api = new FormApi<TData>(opts)
+    const api = new FormApi<TData, FormValidator>(opts)
 
     api.Provider = defineComponent(
       (_, context) => {
-        provideFormContext({ formApi })
+        provideFormContext({ formApi: formApi as never })
         return () => context.slots.default!()
       },
       { name: 'Provider' },
     )
     api.provideFormContext = () => {
-      provideFormContext({ formApi })
+      provideFormContext({ formApi: formApi as never })
     }
     api.Field = Field as never
     api.useField = useField as never

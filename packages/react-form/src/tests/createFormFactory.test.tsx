@@ -11,7 +11,7 @@ describe('createFormFactory', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person>({
+    const formFactory = createFormFactory<Person, unknown>({
       defaultValues: {
         firstName: 'FirstName',
         lastName: 'LastName',

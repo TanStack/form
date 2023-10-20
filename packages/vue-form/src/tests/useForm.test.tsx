@@ -20,7 +20,7 @@ describe('useForm', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm()
@@ -29,7 +29,11 @@ describe('useForm', () => {
 
       return () => (
         <form.Field name="firstName" defaultValue="">
-          {({ field }: { field: FieldApi<Person, 'firstName'> }) => (
+          {({
+            field,
+          }: {
+            field: FieldApi<Person, 'firstName', never, never>
+          }) => (
             <input
               data-testid={'fieldinput'}
               value={field.state.value}
@@ -56,7 +60,7 @@ describe('useForm', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm({
@@ -68,10 +72,12 @@ describe('useForm', () => {
       form.provideFormContext()
 
       return () => (
-        <form.Field name="firstName" defaultValue="">
-          {({ field }: { field: FieldApi<Person, 'firstName'> }) => (
-            <p>{field.state.value}</p>
-          )}
+        <form.Field name="firstName">
+          {({
+            field,
+          }: {
+            field: FieldApi<Person, 'firstName', never, never>
+          }) => <p>{field.state.value}</p>}
         </form.Field>
       )
     })
@@ -101,7 +107,7 @@ describe('useForm', () => {
             {({
               field,
             }: {
-              field: FieldApi<{ firstName: string }, 'firstName'>
+              field: FieldApi<{ firstName: string }, 'firstName', never, never>
             }) => {
               return (
                 <input

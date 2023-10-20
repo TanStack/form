@@ -18,7 +18,9 @@
       "@tanstack/form-core": ["packages/form-core"],
       "@tanstack/react-form": ["packages/react-form"],
       "@tanstack/vue-form": ["packages/vue-form"],
-      "@tanstack/solid-form": ["packages/solid-form"]
+      "@tanstack/solid-form": ["packages/solid-form"],
+      "@tanstack/yup-form-adapter": ["packages/yup-form-adapter"],
+      "@tanstack/zod-form-adapter": ["packages/zod-form-adapter"]
     }
   },
   "ts-node": {

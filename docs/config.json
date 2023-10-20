@@ -30,8 +30,12 @@
       "label": "Guides",
       "children": [
         {
-          "label": "Important Defaults",
-          "to": "guides/important-defaults"
+          "label": "Basic Concepts",
+          "to": "guides/basic-concepts"
+        },
+        {
+          "label": "Form Validation",
+          "to": "guides/validation"
         }
       ]
     },
@@ -89,6 +93,14 @@
             {
               "label": "Simple",
               "to": "framework/react/examples/simple"
+            },
+            {
+              "label": "Yup",
+              "to": "framework/react/examples/yup"
+            },
+            {
+              "label": "Zod",
+              "to": "framework/react/examples/zod"
             }
           ]
         }
@@ -133,6 +145,14 @@
             {
               "label": "Simple",
               "to": "framework/vue/examples/simple"
+            },
+            {
+              "label": "Yup",
+              "to": "framework/vue/examples/yup"
+            },
+            {
+              "label": "Zod",
+              "to": "framework/vue/examples/zod"
             }
           ]
         }
