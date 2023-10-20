@@ -14,7 +14,7 @@ describe('createField', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     function Comp() {
       const form = formFactory.createForm()
@@ -44,6 +44,47 @@ describe('createField', () => {
     expect(input).toHaveValue('FirstName')
   })
 
+  it('should use field default value first', async () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+
+    const formFactory = createFormFactory<Person, unknown>()
+
+    function Comp() {
+      const form = formFactory.createForm(() => ({
+        defaultValues: {
+          firstName: 'FirstName',
+          lastName: 'LastName',
+        },
+      }))
+
+      return (
+        <form.Provider>
+          <form.Field
+            name="firstName"
+            defaultValue="otherName"
+            children={(field) => {
+              return (
+                <input
+                  data-testid="fieldinput"
+                  value={field().state.value}
+                  onBlur={field().handleBlur}
+                  onChange={(e) => field().handleChange(e.target.value)}
+                />
+              )
+            }}
+          />
+        </form.Provider>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    const input = getByTestId('fieldinput')
+    expect(input).toHaveValue('otherName')
+  })
+
   it('should not validate on change if isTouched is false', async () => {
     type Person = {
       firstName: string
@@ -51,7 +92,7 @@ describe('createField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     function Comp() {
       const form = formFactory.createForm()
@@ -91,7 +132,7 @@ describe('createField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     function Comp() {
       const form = formFactory.createForm()
@@ -113,7 +154,7 @@ describe('createField', () => {
                     onBlur={field().handleBlur}
                     onInput={(e) => field().setValue(e.currentTarget.value)}
                   />
-                  <p>{field().getMeta().errors}</p>
+                  <p>{field().getMeta().errorMap.onChange}</p>
                 </div>
               )
             }}
@@ -137,7 +178,7 @@ describe('createField', () => {
     const onChangeError = 'Please enter a different value (onChangeError)'
     const onBlurError = 'Please enter a different value (onBlurError)'
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     function Comp() {
       const form = formFactory.createForm()
@@ -162,8 +203,8 @@ describe('createField', () => {
                   onBlur={field().handleBlur}
                   onInput={(e) => field().handleChange(e.currentTarget.value)}
                 />
-                <p>{field().getMeta().errorMap?.onChange}</p>
-                <p>{field().getMeta().errorMap?.onBlur}</p>
+                <p>{field().getMeta().errorMap.onChange}</p>
+                <p>{field().getMeta().errorMap.onBlur}</p>
               </div>
             )}
           />
@@ -189,7 +230,7 @@ describe('createField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     function Comp() {
       const form = formFactory.createForm()
@@ -212,7 +253,7 @@ describe('createField', () => {
                   onBlur={field().handleBlur}
                   onInput={(e) => field().handleChange(e.currentTarget.value)}
                 />
-                <p>{field().getMeta().errorMap?.onChange}</p>
+                <p>{field().getMeta().errorMap.onChange}</p>
               </div>
             )}
           />
@@ -236,7 +277,7 @@ describe('createField', () => {
     const onChangeError = 'Please enter a different value (onChangeError)'
     const onBlurError = 'Please enter a different value (onBlurError)'
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     function Comp() {
       const form = formFactory.createForm()
@@ -293,7 +334,7 @@ describe('createField', () => {
     }
     const mockFn = vi.fn()
     const error = 'Please enter a different value'
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     function Comp() {
       const form = formFactory.createForm()

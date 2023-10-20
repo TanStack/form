@@ -1,7 +1,6 @@
 import { render, screen, waitFor } from '@solidjs/testing-library'
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
-import { createSignal } from 'solid-js'
 import { createFormFactory, useForm } from '..'
 
 const user = userEvent.setup()
@@ -13,7 +12,7 @@ describe('useForm', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     function Comp() {
       const form = formFactory.createForm()
@@ -48,7 +47,7 @@ describe('useForm', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     function Comp() {
       const form = formFactory.createForm(() => ({
@@ -76,17 +75,14 @@ describe('useForm', () => {
   })
 
   it('should handle submitting properly', async () => {
+    let submittedData = null as { firstName: string } | null
     function Comp() {
-      const [submittedData, setSubmittedData] = createSignal<{
-        firstName: string
-      }>()
-
       const form = useForm(() => ({
         defaultValues: {
           firstName: 'FirstName',
         },
         onSubmit: (data) => {
-          setSubmittedData(data)
+          submittedData = data
         },
       }))
 
@@ -106,7 +102,6 @@ describe('useForm', () => {
             }}
           />
           <button onClick={form.handleSubmit}>Submit</button>
-          {submittedData && <p>Submitted data: {submittedData()?.firstName}</p>}
         </form.Provider>
       )
     }
@@ -116,8 +111,6 @@ describe('useForm', () => {
     await user.clear(input)
     await user.type(input, 'OtherName')
     await user.click(getByText('Submit'))
-    await waitFor(() =>
-      expect(getByText('Submitted data: OtherName')).toBeInTheDocument(),
-    )
+    expect(submittedData?.firstName).toEqual('OtherName')
   })
 })

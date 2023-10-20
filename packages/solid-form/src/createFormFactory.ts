@@ -9,21 +9,23 @@ import {
 import { createForm } from './createForm'
 import { mergeProps } from 'solid-js'
 
-export type FormFactory<TFormData> = {
-  createForm: (opts?: () => FormOptions<TFormData>) => FormApi<TFormData>
+export type FormFactory<TFormData, FormValidator> = {
+  createForm: (
+    opts?: () => FormOptions<TFormData, FormValidator>,
+  ) => FormApi<TFormData, FormValidator>
   createField: CreateField<TFormData>
-  Field: FieldComponent<TFormData>
+  Field: FieldComponent<TFormData, FormValidator>
 }
 
-export function createFormFactory<TFormData>(
-  defaultOpts?: () => FormOptions<TFormData>,
-): FormFactory<TFormData> {
+export function createFormFactory<TFormData, FormValidator>(
+  defaultOpts?: () => FormOptions<TFormData, FormValidator>,
+): FormFactory<TFormData, FormValidator> {
   return {
     createForm: (opts) =>
-      createForm<TFormData>(() =>
+      createForm<TFormData, FormValidator>(() =>
         mergeProps(defaultOpts?.() ?? {}, opts?.() ?? {}),
       ),
-    createField: createField,
+    createField,
     Field: Field as never,
   }
 }

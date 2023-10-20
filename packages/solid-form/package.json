@@ -28,7 +28,6 @@
   "main": "./build/index.cjs",
   "module": "./build/index.js",
   "types": "./build/index.d.ts",
-  "browser": {},
   "exports": {
     "development": {
       "import": {
@@ -59,12 +58,13 @@
     }
   },
   "devDependencies": {
+    "solid-js": "^1.7.8",
     "tsup-preset-solid": "^2.1.0",
-    "vite-plugin-solid": "^2.7.0",
-    "solid-js": "^1.7.8"
+    "vite-plugin-solid": "^2.7.0"
   },
   "dependencies": {
-    "@tanstack/form-core": "workspace:*"
+    "@tanstack/form-core": "workspace:*",
+    "@tanstack/solid-store": "^0.2.1"
   },
   "peerDependencies": {
     "solid-js": "^1.6.0"

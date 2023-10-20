@@ -4,7 +4,7 @@ import type { FormApi } from '@tanstack/form-core'
 type FormContextType =
   | undefined
   | {
-      formApi: FormApi<any>
+      formApi: FormApi<any, any>
       parentFieldName?: string
     }
 

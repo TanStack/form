@@ -9,7 +9,7 @@ import {
 } from 'solid-js'
 import { formContext, useFormContext } from './formContext'
 
-import type { DeepKeys, DeepValue } from '@tanstack/form-core'
+import type { DeepKeys, DeepValue, Narrow } from '@tanstack/form-core'
 import type { JSXElement } from 'solid-js'
 import type { CreateFieldOptions } from './types'
 
@@ -18,16 +18,35 @@ declare module '@tanstack/form-core' {
   interface FieldApi<
     TParentData,
     TName extends DeepKeys<TParentData>,
-    TData = DeepValue<TParentData, TName>,
+    ValidatorType,
+    FormValidator,
+    TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   > {
-    Field: FieldComponent<TParentData>
+    Field: FieldComponent<TData, FormValidator>
   }
 }
 
-export type CreateField<TParentData> = typeof createField<TParentData>
+export type CreateField<TParentData> = <
+  TName extends DeepKeys<TParentData>,
+  ValidatorType,
+  FormValidator,
+>(
+  opts: () => { name: Narrow<TName> } & CreateFieldOptions<
+    TParentData,
+    TName,
+    ValidatorType,
+    FormValidator
+  >,
+) => () => FieldApi<
+  TParentData,
+  TName,
+  ValidatorType,
+  FormValidator,
+  DeepValue<TParentData, TName>
+>
 
 // ugly way to trick solid into triggering updates for changes on the fieldApi
-function makeFieldReactive<FieldApiT extends FieldApi<any, any>>(
+function makeFieldReactive<FieldApiT extends FieldApi<any, any, any, any>>(
   fieldApi: FieldApiT,
 ): () => FieldApiT {
   const [flag, setFlag] = createSignal(false)
@@ -39,12 +58,21 @@ function makeFieldReactive<FieldApiT extends FieldApi<any, any>>(
 
 export function createField<
   TParentData,
-  TName extends DeepKeys<TParentData> = DeepKeys<TParentData>,
+  TName extends DeepKeys<TParentData>,
+  ValidatorType,
+  FormValidator,
 >(
-  opts: () => CreateFieldOptions<TParentData, TName>,
+  opts: () => CreateFieldOptions<
+    TParentData,
+    TName,
+    ValidatorType,
+    FormValidator
+  >,
 ): () => FieldApi<
   TParentData,
-  TName
+  TName,
+  ValidatorType,
+  FormValidator
   // Omit<typeof opts, 'onMount'> & {
   //   form: FormApi<TParentData>
   // }
@@ -61,11 +89,11 @@ export function createField<
     .filter((d) => d !== undefined)
     .join('.')
 
-  const fieldApi = new FieldApi<TParentData, TName>({
+  const fieldApi = new FieldApi({
     ...options,
     form: formApi,
-    name: name,
-  } as never)
+    name: name as typeof options.name,
+  })
   fieldApi.Field = Field as never
 
   /**
@@ -85,9 +113,19 @@ export function createField<
 type FieldComponentProps<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TData = DeepValue<TParentData, TName>,
+  ValidatorType,
+  FormValidator,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = {
-  children: (fieldApi: () => FieldApi<TParentData, TName, TData>) => JSXElement
+  children: (
+    fieldApi: () => FieldApi<
+      TParentData,
+      TName,
+      ValidatorType,
+      FormValidator,
+      TData
+    >,
+  ) => JSXElement
 } & (TParentData extends any[]
   ? {
       name?: TName
@@ -97,27 +135,51 @@ type FieldComponentProps<
       name: TName
       index?: never
     }) &
-  Omit<CreateFieldOptions<TParentData, TName>, 'name' | 'index'>
+  Omit<
+    CreateFieldOptions<TParentData, TName, ValidatorType, FormValidator>,
+    'name' | 'index'
+  >
 
-export type FieldComponent<TParentData> = <
+export type FieldComponent<TParentData, FormValidator> = <
   TName extends DeepKeys<TParentData>,
-  TData = DeepValue<TParentData, TName>,
+  ValidatorType,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 >({
   children,
   ...fieldOptions
-}: FieldComponentProps<TParentData, TName, TData>) => any
+}: FieldComponentProps<
+  TParentData,
+  TName,
+  ValidatorType,
+  FormValidator,
+  TData
+>) => JSXElement
 
 export function Field<
   TParentData,
-  TName extends DeepKeys<TParentData> = DeepKeys<TParentData>,
+  TName extends DeepKeys<TParentData>,
+  ValidatorType,
+  FormValidator,
 >(
   props: {
-    children: (fieldApi: () => FieldApi<TParentData, TName>) => JSXElement
-  } & CreateFieldOptions<TParentData, TName>,
+    children: (
+      fieldApi: () => FieldApi<
+        TParentData,
+        TName,
+        ValidatorType,
+        FormValidator
+      >,
+    ) => JSXElement
+  } & CreateFieldOptions<TParentData, TName, ValidatorType, FormValidator>,
 ) {
-  const fieldApi = createField<TParentData, TName>(() => {
+  const fieldApi = createField<
+    TParentData,
+    TName,
+    ValidatorType,
+    FormValidator
+  >(() => {
     const { children, ...fieldOptions } = props
-    return fieldOptions as any
+    return fieldOptions
   })
 
   return (

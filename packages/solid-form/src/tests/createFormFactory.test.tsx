@@ -1,5 +1,5 @@
+import { render } from '@solidjs/testing-library'
 import '@testing-library/jest-dom'
-import { render, screen, waitFor } from '@solidjs/testing-library'
 import { createFormFactory } from '..'
 
 describe('createFormFactory', () => {
@@ -9,7 +9,7 @@ describe('createFormFactory', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person>(() => ({
+    const formFactory = createFormFactory<Person, unknown>(() => ({
       defaultValues: {
         firstName: 'FirstName',
         lastName: 'LastName',
