@@ -21,7 +21,7 @@ describe('useField', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm()
@@ -30,7 +30,11 @@ describe('useField', () => {
 
       return () => (
         <form.Field name="firstName" defaultValue="FirstName">
-          {({ field }: { field: FieldApi<Person, 'firstName'> }) => (
+          {({
+            field,
+          }: {
+            field: FieldApi<Person, 'firstName', never, never>
+          }) => (
             <input
               data-testid={'fieldinput'}
               value={field.state.value}
@@ -56,7 +60,7 @@ describe('useField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm()
@@ -68,7 +72,11 @@ describe('useField', () => {
           name="firstName"
           onChange={(value) => (value === 'other' ? error : undefined)}
         >
-          {({ field }: { field: FieldApi<Person, 'firstName'> }) => (
+          {({
+            field,
+          }: {
+            field: FieldApi<Person, 'firstName', never, never>
+          }) => (
             <div>
               <input
                 data-testid="fieldinput"
@@ -99,7 +107,7 @@ describe('useField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm()
@@ -111,7 +119,11 @@ describe('useField', () => {
           name="firstName"
           onChange={(value) => (value === 'other' ? error : undefined)}
         >
-          {({ field }: { field: FieldApi<Person, 'firstName'> }) => (
+          {({
+            field,
+          }: {
+            field: FieldApi<Person, 'firstName', never, never>
+          }) => (
             <div>
               <input
                 data-testid="fieldinput"
@@ -143,7 +155,7 @@ describe('useField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm()
@@ -159,7 +171,11 @@ describe('useField', () => {
             return error
           }}
         >
-          {({ field }: { field: FieldApi<Person, 'firstName'> }) => (
+          {({
+            field,
+          }: {
+            field: FieldApi<Person, 'firstName', never, never>
+          }) => (
             <div>
               <input
                 data-testid="fieldinput"
@@ -193,7 +209,7 @@ describe('useField', () => {
 
     const mockFn = vi.fn()
     const error = 'Please enter a different value'
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm()
@@ -211,7 +227,11 @@ describe('useField', () => {
             return error
           }}
         >
-          {({ field }: { field: FieldApi<Person, 'firstName'> }) => (
+          {({
+            field,
+          }: {
+            field: FieldApi<Person, 'firstName', never, never>
+          }) => (
             <div>
               <input
                 data-testid="fieldinput"

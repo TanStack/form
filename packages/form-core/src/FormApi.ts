@@ -1,37 +1,49 @@
 import { Store } from '@tanstack/store'
-//
 import type { DeepKeys, DeepValue, Updater } from './utils'
 import { functionalUpdate, getBy, isNonEmptyArray, setBy } from './utils'
 import type { FieldApi, FieldMeta, ValidationCause } from './FieldApi'
+import type { ValidationError, Validator } from './types'
 
-export type FormOptions<TData> = {
+type ValidateFn<TData, ValidatorType> = (
+  values: TData,
+  formApi: FormApi<TData, ValidatorType>,
+) => ValidationError
+
+type ValidateOrFn<TData, ValidatorType> = ValidatorType extends Validator<TData>
+  ? Parameters<ReturnType<ValidatorType>['validate']>[1]
+  : ValidateFn<TData, ValidatorType>
+
+type ValidateAsyncFn<TData, ValidatorType> = (
+  value: TData,
+  fieldApi: FormApi<TData, ValidatorType>,
+) => ValidationError | Promise<ValidationError>
+
+export type FormOptions<TData, ValidatorType> = {
   defaultValues?: TData
   defaultState?: Partial<FormState<TData>>
   asyncDebounceMs?: number
-  onMount?: (values: TData, formApi: FormApi<TData>) => ValidationError
-  onMountAsync?: (
-    values: TData,
-    formApi: FormApi<TData>,
-  ) => ValidationError | Promise<ValidationError>
+  validator?: ValidatorType
+  onMount?: ValidateOrFn<TData, ValidatorType>
+  onMountAsync?: ValidateAsyncFn<TData, ValidatorType>
   onMountAsyncDebounceMs?: number
-  onChange?: (values: TData, formApi: FormApi<TData>) => ValidationError
-  onChangeAsync?: (
-    values: TData,
-    formApi: FormApi<TData>,
-  ) => ValidationError | Promise<ValidationError>
+  onChange?: ValidateOrFn<TData, ValidatorType>
+  onChangeAsync?: ValidateAsyncFn<TData, ValidatorType>
   onChangeAsyncDebounceMs?: number
-  onBlur?: (values: TData, formApi: FormApi<TData>) => ValidationError
-  onBlurAsync?: (
-    values: TData,
-    formApi: FormApi<TData>,
-  ) => ValidationError | Promise<ValidationError>
+  onBlur?: ValidateOrFn<TData, ValidatorType>
+  onBlurAsync?: ValidateAsyncFn<TData, ValidatorType>
   onBlurAsyncDebounceMs?: number
-  onSubmit?: (values: TData, formApi: FormApi<TData>) => any | Promise<any>
-  onSubmitInvalid?: (values: TData, formApi: FormApi<TData>) => void
+  onSubmit?: (
+    values: TData,
+    formApi: FormApi<TData, ValidatorType>,
+  ) => any | Promise<any>
+  onSubmitInvalid?: (
+    values: TData,
+    formApi: FormApi<TData, ValidatorType>,
+  ) => void
 }
 
-export type FieldInfo<TFormData> = {
-  instances: Record<string, FieldApi<TFormData, any, any>>
+export type FieldInfo<TFormData, ValidatorType> = {
+  instances: Record<string, FieldApi<TFormData, any, unknown, ValidatorType>>
 } & ValidationMeta
 
 export type ValidationMeta = {
@@ -41,8 +53,6 @@ export type ValidationMeta = {
   validationResolve?: (errors: ValidationError[]) => void
   validationReject?: (errors: unknown) => void
 }
-
-export type ValidationError = undefined | false | null | string
 
 export type ValidationErrorMapKeys = `on${Capitalize<ValidationCause>}`
 
@@ -92,18 +102,19 @@ function getDefaultFormState<TData>(
   }
 }
 
-export class FormApi<TFormData> {
+export class FormApi<TFormData, ValidatorType> {
   // // This carries the context for nested fields
-  options: FormOptions<TFormData> = {}
+  options: FormOptions<TFormData, ValidatorType> = {}
   store!: Store<FormState<TFormData>>
   // Do not use __state directly, as it is not reactive.
   // Please use form.useStore() utility to subscribe to state
   state!: FormState<TFormData>
-  fieldInfo: Record<DeepKeys<TFormData>, FieldInfo<TFormData>> = {} as any
+  fieldInfo: Record<DeepKeys<TFormData>, FieldInfo<TFormData, ValidatorType>> =
+    {} as any
   fieldName?: string
   validationMeta: ValidationMeta = {}
 
-  constructor(opts?: FormOptions<TFormData>) {
+  constructor(opts?: FormOptions<TFormData, ValidatorType>) {
     this.store = new Store<FormState<TFormData>>(
       getDefaultFormState({
         ...(opts?.defaultState as any),
@@ -123,8 +134,10 @@ export class FormApi<TFormData> {
             (field) => field?.isValidating,
           )
 
-          const isFieldsValid = !fieldMetaValues.some((field) =>
-            isNonEmptyArray(field?.errors),
+          const isFieldsValid = !fieldMetaValues.some(
+            (field) =>
+              field?.errorMap &&
+              isNonEmptyArray(Object.values(field.errorMap).filter(Boolean)),
           )
 
           const isTouched = fieldMetaValues.some((field) => field?.isTouched)
@@ -157,7 +170,7 @@ export class FormApi<TFormData> {
     this.update(opts || {})
   }
 
-  update = (options?: FormOptions<TFormData>) => {
+  update = (options?: FormOptions<TFormData, ValidatorType>) => {
     if (!options) return
 
     this.store.batch(() => {
@@ -202,21 +215,21 @@ export class FormApi<TFormData> {
   validateAllFields = async (cause: ValidationCause) => {
     const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
     this.store.batch(() => {
-      void (Object.values(this.fieldInfo) as FieldInfo<any>[]).forEach(
-        (field) => {
-          Object.values(field.instances).forEach((instance) => {
-            // If any fields are not touched
-            if (!instance.state.meta.isTouched) {
-              // Mark them as touched
-              instance.setMeta((prev) => ({ ...prev, isTouched: true }))
-              // Validate the field
-              fieldValidationPromises.push(
-                Promise.resolve().then(() => instance.validate(cause)),
-              )
-            }
-          })
-        },
-      )
+      void (
+        Object.values(this.fieldInfo) as FieldInfo<any, ValidatorType>[]
+      ).forEach((field) => {
+        Object.values(field.instances).forEach((instance) => {
+          // If any fields are not touched
+          if (!instance.state.meta.isTouched) {
+            // Mark them as touched
+            instance.setMeta((prev) => ({ ...prev, isTouched: true }))
+            // Validate the field
+            fieldValidationPromises.push(
+              Promise.resolve().then(() => instance.validate(cause)),
+            )
+          }
+        })
+      })
     })
 
     return Promise.all(fieldValidationPromises)
@@ -290,7 +303,7 @@ export class FormApi<TFormData> {
 
   getFieldInfo = <TField extends DeepKeys<TFormData>>(
     field: TField,
-  ): FieldInfo<TFormData> => {
+  ): FieldInfo<TFormData, ValidatorType> => {
     // eslint-disable-next-line  @typescript-eslint/no-unnecessary-condition
     return (this.fieldInfo[field] ||= {
       instances: {},
@@ -345,7 +358,9 @@ export class FormApi<TFormData> {
 
   pushFieldValue = <TField extends DeepKeys<TFormData>>(
     field: TField,
-    value: DeepValue<TFormData, TField>[number],
+    value: DeepValue<TFormData, TField> extends any[]
+      ? DeepValue<TFormData, TField>[number]
+      : never,
     opts?: { touch?: boolean },
   ) => {
     return this.setFieldValue(
@@ -358,7 +373,9 @@ export class FormApi<TFormData> {
   insertFieldValue = <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,
-    value: DeepValue<TFormData, TField>[number],
+    value: DeepValue<TFormData, TField> extends any[]
+      ? DeepValue<TFormData, TField>[number]
+      : never,
     opts?: { touch?: boolean },
   ) => {
     this.setFieldValue(

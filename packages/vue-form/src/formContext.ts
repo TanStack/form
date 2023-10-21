@@ -2,7 +2,7 @@ import type { FormApi } from '@tanstack/form-core'
 import { inject, provide } from 'vue-demi'
 
 export type FormContext = {
-  formApi: FormApi<any>
+  formApi: FormApi<any, unknown>
   parentFieldName?: string
 } | null
 

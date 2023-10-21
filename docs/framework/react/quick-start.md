@@ -25,20 +25,28 @@ export default function App() {
   return (
     <div>
       <form.Provider>
-        <div>
-          <form.Field
-            name="fullName"
-            children={(field) => (
-              <input
-                name={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-            )}
-          />
-        </div>
-        <button type="submit">Submit</button>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            void form.handleSubmit();
+          }}
+        >
+          <div>
+            <form.Field
+              name="fullName"
+              children={(field) => (
+                <input
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              )}
+            />
+          </div>
+          <button type="submit">Submit</button>
+        </form>
       </form.Provider>
     </div>
   )

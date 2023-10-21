@@ -11,23 +11,43 @@ Normally, you will not need to create a new `FieldApi` instance directly. Instea
 const fieldApi: FieldApi<TData> = new FieldApi(formOptions: Field Options<TData>)
 ```
 
-### `FieldOptions<TData, TParentData>`
+### `FieldOptions<TParentData, TName, ValidatorType, FormValidator, TData>`
 
 An object type representing the options for a field in a form.
 
 - ```tsx
-  name
+  name: TName
   ```
-  - The field name. If `TParentData` is `unknown`, the type will be `string`. Otherwise, it will be `DeepKeys<TParentData>`.
+  - The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
+
 - ```tsx
   defaultValue?: TData
   ```
   - An optional default value for the field.
+
 - ```tsx
   defaultMeta?: Partial<FieldMeta>
   ```
 
   - An optional object with default metadata for the field.
+
+- ```tsx
+  asyncDebounceMs?: number
+  ```
+
+  - The default time to debounce async validation if there is not a more specific debounce time passed.
+
+- ```tsx
+  asyncAlways?: boolean
+  ```
+
+  - If `true`, always run async validation, even if there are errors emitted during synchronous validation.
+
+- ```typescript
+  validator?: ValidatorType
+  ```
+
+  - A validator provided by an extension, like `yupValidator` from `@tanstack/yup-form-adapter`
 
 - ```tsx
   onMount?: (formApi: FieldApi<TData, TParentData>) => void
@@ -36,35 +56,35 @@ An object type representing the options for a field in a form.
   - An optional function that takes a param of `formApi` which is a generic type of `TData` and `TParentData`
 
 - ```tsx
-   onChange?: ValidateFn<TData, TParentData>
+  onChange?: ValidateFn<TData, TParentData>
   ```
 
-  - An optional property that takes a `ValidateFn` which is a generic of `TData` and `TParentData`
+  - An optional property that takes a `ValidateFn` which is a generic of `TData` and `TParentData`. If `validator` is passed, this may also accept a property from the respective validator (IE: `z.string().min(1)` if `zodAdapter` is passed)
 
 - ```tsx
-    onChangeAsync?: ValidateAsyncFn<TData, TParentData>
+  onChangeAsync?: ValidateAsyncFn<TData, TParentData>
   ```
 
-  - An optional property similar to `onChange` but async validation
+  - An optional property similar to `onChange` but async validation. If `validator` is passed, this may also accept a property from the respective validator (IE: `z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })` if `zodAdapter` is passed)
 
 - ```tsx
-     onChangeAsyncDebounceMs?: number
+  onChangeAsyncDebounceMs?: number
   ```
 
   - An optional number to represent how long the `onChangeAsync` should wait before running
   - If set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds
 
 - ```tsx
-    onBlur?: ValidateFn<TData, TParentData>
+  onBlur?: ValidateFn<TData, TParentData>
   ```
 
-  - An optional function, when that run when subscribing to blur event of input
+  - An optional function, when that run when subscribing to blur event of input. If `validator` is passed, this may also accept a property from the respective validator (IE: `z.string().min(1)` if `zodAdapter` is passed)
 
 - ```tsx
-   onBlurAsync?: ValidateAsyncFn<TData, TParentData>
+  onBlurAsync?: ValidateAsyncFn<TData, TParentData>
   ```
 
-  - An optional function that takes a `ValidateFn` which is a generic of `TData` and `TParentData` happens async
+  - An optional function that takes a `ValidateFn` which is a generic of `TData` and `TParentData` happens async. If `validator` is passed, this may also accept a property from the respective validator (IE: `z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })` if `zodAdapter` is passed)
 
   ```tsx
   onBlurAsyncDebounceMs?: number
@@ -77,13 +97,15 @@ An object type representing the options for a field in a form.
   onSubmitAsync?: number
   ```
 
-  - If set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds
+  - If set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds. If `validator` is passed, this may also accept a property from the respective validator (IE: `z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })` if `zodAdapter` is passed)
 
 ### `ValidationCause`
 
 A type representing the cause of a validation event.
 
-- 'change' | 'blur' | 'submit' | 'mount'
+- ```tsx
+  'change' | 'blur' | 'submit' | 'mount'
+  ```
 
 ### `FieldMeta`
 
@@ -127,7 +149,7 @@ A class representing the API for managing a form field.
   ```
   - A unique identifier for the field instance.
 - ```tsx
-  form: FormApi<TParentData>
+  form: FormApi<TParentData, TData>
   ```
   - A reference to the form API instance.
 - ```tsx
@@ -153,66 +175,77 @@ A class representing the API for managing a form field.
   constructor(opts: FieldApiOptions<TData, TParentData>)
   ```
   - Initializes a new `FieldApi` instance.
+  
 - ```tsx
   mount(): () => void
   ```
   - Mounts the field instance to the form.
-- ```tsx
-  updateStore(): void
-  ```
-  - Updates the field store with the latest form state.
+  
 - ```tsx
   update(opts: FieldApiOptions<TData, TParentData>): void
   ```
   - Updates the field instance with new options.
+  
 - ```tsx
   getValue(): TData
   ```
   - Gets the current field value.
+  
 - ```tsx
   setValue(updater: Updater<TData>, options?: { touch?: boolean; notify?: boolean }): void
   ```
-  - Sets the field value.
+  - Sets the field value and run the `change` validator.
+  
 - ```tsx
   getMeta(): FieldMeta
   ```
   - Gets the current field metadata.
+  
 - ```tsx
   setMeta(updater: Updater<FieldMeta>): void
   ```
   - Sets the field metadata.
+  
 - ```tsx
   getInfo(): any
   ```
   - Gets the field information object.
+  
 - ```tsx
   pushValue(value: TData): void
   ```
   - Pushes a new value to the field.
+  
 - ```tsx
   insertValue(index: number, value: TData): void
   ```
   - Inserts a value at the specified index.
+  
 - ```tsx
   removeValue(index: number): void
   ```
   - Removes a value at the specified index.
+  
 - ```tsx
   swapValues(aIndex: number, bIndex: number): void
   ```
   - Swaps the values at the specified indices.
+  
 - ```tsx
-  getSubField<TName extends DeepKeys<TData>>(name: TName): FieldApi<DeepValue<TData, TName>, TParentData>
+  getSubField<TSubName, TSubData>(name: TName): FieldApi<TData, TSubName, ValidatorType, TSubData>
   ```
   - Gets a subfield instance.
+  
 - ```tsx
   validate(): Promise<any>
   ```
   - Validates the field value.
+  
 - ```tsx
   handleBlur(): void;
   ```
   - Handles the blur event.
+  
 - ```tsx
   handleChange(value: TData): void
   ```
@@ -231,62 +264,3 @@ An object type representing the state of a field.
   ```
   - The current metadata of the field.
 
-### `UserChangeProps<TData>`
-
-An object type representing the change and blur event handlers for a field.
-
-- ```tsx
-  onChange?: (value: TData) => void
-  ```
-  - An optional function to further handle the change event.
-- ```tsx
-  onBlur?: (event: any) => void
-  ```
-  - An optional function to further handle the blur event.
-
-### `UserInputProps`
-
-An object type representing the input event handlers for a field.
-
-- ```tsx
-  onChange?: (event: any) => void
-  ```
-  - An optional function to further handle the change event.
-- ```tsx
-  onBlur?: (event: any) => void
-  ```
-  - An optional function to further handle the blur event.
-
-### `ChangeProps<TData>`
-
-An object type representing the change and blur event handlers for a field.
-
-- ```tsx
-  value: TData
-  ```
-  - The current value of the field.
-- ```tsx
-  onChange: (value: TData) => void
-  ```
-  - A function to handle the change event.
-- ```tsx
-  onBlur: (event: any) => void
-  ```
-  - A function to handle the blur event.
-
-### `InputProps`
-
-An object type representing the input event handlers for a field.
-
-- ```tsx
-  value: string
-  ```
-  - The current value of the field, coerced to a string.
-- ```tsx
-  onChange: (event: any) => void
-  ```
-  - A function to handle the change event.
-- ```tsx
-  onBlur: (event: any) => void
-  ```
-  - A function to handle the blur event.

@@ -15,16 +15,20 @@ describe('useField', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     function Comp() {
-      const form = formFactory.useForm()
+      const form = formFactory.useForm({
+        defaultValues: {
+          firstName: 'FirstName',
+          lastName: 'LastName',
+        },
+      })
 
       return (
         <form.Provider>
           <form.Field
             name="firstName"
-            defaultValue="FirstName"
             children={(field) => {
               return (
                 <input
@@ -45,6 +49,47 @@ describe('useField', () => {
     expect(input).toHaveValue('FirstName')
   })
 
+  it('should use field default value first', async () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+
+    const formFactory = createFormFactory<Person, unknown>()
+
+    function Comp() {
+      const form = formFactory.useForm({
+        defaultValues: {
+          firstName: 'FirstName',
+          lastName: 'LastName',
+        },
+      })
+
+      return (
+        <form.Provider>
+          <form.Field
+            name="firstName"
+            defaultValue="otherName"
+            children={(field) => {
+              return (
+                <input
+                  data-testid="fieldinput"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              )
+            }}
+          />
+        </form.Provider>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    const input = getByTestId('fieldinput')
+    expect(input).toHaveValue('otherName')
+  })
+
   it('should not validate on change if isTouched is false', async () => {
     type Person = {
       firstName: string
@@ -52,7 +97,7 @@ describe('useField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     function Comp() {
       const form = formFactory.useForm()
@@ -92,7 +137,7 @@ describe('useField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     function Comp() {
       const form = formFactory.useForm()
@@ -135,7 +180,7 @@ describe('useField', () => {
     const onChangeError = 'Please enter a different value (onChangeError)'
     const onBlurError = 'Please enter a different value (onBlurError)'
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     function Comp() {
       const form = formFactory.useForm()
@@ -184,7 +229,7 @@ describe('useField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     function Comp() {
       const form = formFactory.useForm()
@@ -231,7 +276,7 @@ describe('useField', () => {
     const onChangeError = 'Please enter a different value (onChangeError)'
     const onBlurError = 'Please enter a different value (onBlurError)'
 
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     function Comp() {
       const form = formFactory.useForm()
@@ -287,7 +332,7 @@ describe('useField', () => {
     }
     const mockFn = vi.fn()
     const error = 'Please enter a different value'
-    const formFactory = createFormFactory<Person>()
+    const formFactory = createFormFactory<Person, unknown>()
 
     function Comp() {
       const form = formFactory.useForm()
