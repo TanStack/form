@@ -23,6 +23,10 @@ export type FormOptions<TData, ValidatorType> = {
   defaultState?: Partial<FormState<TData>>
   asyncDebounceMs?: number
   validator?: ValidatorType
+  validateFn?: (
+    values: TData,
+    formApi: FormApi<TData, ValidatorType>,
+  ) => Promise<ValidationError[] | void> | ValidationError[] | void
   onMount?: ValidateOrFn<TData, ValidatorType>
   onMountAsync?: ValidateAsyncFn<TData, ValidatorType>
   onMountAsyncDebounceMs?: number
@@ -49,8 +53,8 @@ export type FieldInfo<TFormData, ValidatorType> = {
 export type ValidationMeta = {
   validationCount?: number
   validationAsyncCount?: number
-  validationPromise?: Promise<ValidationError[]>
-  validationResolve?: (errors: ValidationError[]) => void
+  validationPromise?: Promise<ValidationError[] | undefined>
+  validationResolve?: (errors: ValidationError[] | undefined) => void
   validationReject?: (errors: unknown) => void
 }
 
@@ -235,6 +239,62 @@ export class FormApi<TFormData, ValidatorType> {
     return Promise.all(fieldValidationPromises)
   }
 
+  validateForm = async () => {
+    const { validateFn } = this.options
+
+    if (!validateFn) {
+      return
+    }
+
+    // Use the formValidationCount for all field instances to
+    // track freshness of the validation
+    this.store.setState((prev) => ({
+      ...prev,
+      isValidating: true,
+      formValidationCount: prev.formValidationCount + 1,
+    }))
+
+    const formValidationCount = this.state.formValidationCount
+
+    const checkLatest = () =>
+      formValidationCount === this.state.formValidationCount
+
+    if (!this.validationMeta.validationPromise) {
+      this.validationMeta.validationPromise = new Promise((resolve, reject) => {
+        this.validationMeta.validationResolve = resolve
+        this.validationMeta.validationReject = reject
+      })
+    }
+
+    const doValidation = async () => {
+      try {
+        const error = await validateFn(this.state.values, this)
+        console.log('Error: ', error)
+        if (checkLatest()) {
+          this.store.setState((prev) => ({
+            ...prev,
+            isValidating: false,
+            formError: error ? 'Invalid Form Values' : false,
+          }))
+
+          this.validationMeta.validationResolve?.(
+            error as ValidationError[] | undefined,
+          )
+        }
+      } catch (err) {
+        if (checkLatest()) {
+          this.validationMeta.validationReject?.(err)
+        }
+      } finally {
+        delete this.validationMeta.validationPromise
+      }
+    }
+
+    doValidation()
+
+    return this.validationMeta.validationPromise
+  }
+
   handleSubmit = async () => {
     // Check to see that the form and all fields have been touched
     // If they have not, touch them all and run validation
@@ -269,7 +329,7 @@ export class FormApi<TFormData, ValidatorType> {
     }
 
     // Run validation for the form
-    // await this.validateForm()
+    await this.validateForm()
 
     if (!this.state.isValid) {
       done()
@@ -339,6 +399,8 @@ export class FormApi<TFormData, ValidatorType> {
           isTouched: true,
         }))
       }
+
+      this.validateForm()
 
       this.store.setState((prev) => {
         return {

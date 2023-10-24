@@ -490,7 +490,7 @@ export class FieldApi<
     }
 
     // Always return the latest validation promise to the caller
-    return this.getInfo().validationPromise ?? []
+    return (await this.getInfo().validationPromise) ?? []
   }
 
   validate = (
