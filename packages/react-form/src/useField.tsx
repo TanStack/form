@@ -3,8 +3,8 @@ import { useStore } from '@tanstack/react-store'
 import type { DeepKeys, DeepValue, Narrow } from '@tanstack/form-core'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useFormContext, formContext } from './formContext'
-import useIsomorphicLayoutEffect from 'use-isomorphic-layout-effect'
 import type { UseFieldOptions } from './types'
+import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
@@ -50,9 +50,9 @@ export function useField<
   TName,
   ValidatorType,
   FormValidator
-  // Omit<typeof opts, 'onMount'> & {
-  //   form: FormApi<TParentData>
-  // }
+// Omit<typeof opts, 'onMount'> & {
+//   form: FormApi<TParentData>
+// }
 > {
   // Get the form API either manually or from context
   const { formApi, parentFieldName } = useFormContext()
@@ -90,8 +90,8 @@ export function useField<
     fieldApi.store,
     opts.mode === 'array'
       ? (state) => {
-          return [state.meta, Object.keys(state.value).length]
-        }
+        return [state.meta, Object.keys(state.value).length]
+      }
       : undefined,
   )
   // Instantiates field meta and removes it when unrendered
@@ -112,13 +112,13 @@ type FieldComponentProps<
   ) => any
 } & (TParentData extends any[]
   ? {
-      name?: TName
-      index: number
-    }
+    name?: TName
+    index: number
+  }
   : {
-      name: TName
-      index?: never
-    }) &
+    name: TName
+    index?: never
+  }) &
   Omit<
     UseFieldOptions<TParentData, TName, ValidatorType, FormValidator>,
     'name' | 'index'
