@@ -11,7 +11,7 @@ At the core of TanStack Form's functionalities is the concept of validation. Tan
 
 ## When is validation performed?
 
-It's up to you! The `<Field />` component accepts some callbacks as props such as `onChange`, `onBlur`, `onSubmitAsync` (more on async validation below). Those callbacks are passed the current value of the field, as well as the fieldAPI object, so that you can perform the validation. If you find a validation error, simply return the error message as string and it will be available in `field.state.meta.errors`.
+It's up to you! The `<Field />` component accepts some callbacks as props such as `onChange` or `onBlur`. Those callbacks are passed the current value of the field, as well as the fieldAPI object, so that you can perform the validation. If you find a validation error, simply return the error message as string and it will be available in `field.state.meta.errors`.
 
 Here is an example:
 
@@ -150,7 +150,7 @@ Or use the `errorMap` property to access the specific error you're looking for:
 
 ## Validation at field level vs at form level
 
-As shown above, each `<Field>` accepts its own validation rules via the `onChange`, `onBlur` etc... callbacks. It is also possible to define validation rules at the form level (as opposed to field by field) by passing similar callback to the `useForm()` hook.
+As shown above, each `<Field>` accepts its own validation rules via the `onChange`, `onBlur` etc... callbacks. It is also possible to define validation rules at the form level (as opposed to field by field) by passing similar callbacks to the `useForm()` hook.
 
 <!-- TODO: add more details when those callbacks are fixed -->
 
@@ -384,6 +384,8 @@ These adapters also support async operations using the proper property names:
 
 ## Preventing invalid forms from being submitted
 
+The `onChange`, `onBlur` etc... callbacks are also run when the form is submitted and submission is be blocked if the form is invalid.
+
 The form state object has a `canSubmit` flag that is false when any field is invalid and the form has been touched (`canSubmit` is true until the form has been touched, even if some fields are "technically" invalid based on their `onChange`/`onBlur` props).
 
 You can subscribe to it via `form.Subscribe` and use the value in order to, for example, disable the submit button when the form is invalid (in practice, disabled buttons are not accessible, use `aria-disabled` instead).
@@ -404,117 +406,4 @@ return (
     )}
   />
 );
-```
-
-Form submissions will be blocked if the form is invalid.
-
-BUT untouched forms are considered valid by default, so they **can** be submitted, even if they have `onChange`/`onBlur` validation rules that are not satisfied.
-
-For example, the form below **will** be submitted if the user clicks the submit button right away, before making any change:
-
-```tsx
-export default function App() {
-  const form = useForm({
-    // Memoize your default values to prevent re-renders
-    defaultValues: {
-      name: "",
-    },
-    onSubmit: async (values) => {
-      // Do something with form data
-      console.log(values);
-    },
-  });
-
-  return (
-    <form.Provider>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          void form.handleSubmit();
-        }}
-      >
-        <div>
-          <form.Field
-            name="name"
-            onChange={(value) =>
-              !value
-                ? "A first name is required"
-                : value.length < 3
-                  ? "First name must be at least 3 characters"
-                  : undefined
-            }
-
-          >
-            {(field) => {
-              return (
-                <>
-                  <label htmlFor={field.name}>First Name:</label>
-                  <input
-                    name={field.name}
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                  />
-                  <FieldInfo field={field} />
-                </>
-              );
-            }}
-          </form.Field>
-        </div>
-
-        <button type="submit">Submit</button>
-      </form>
-    </form.Provider>
-  );
-}
-```
-
-In order to block the form submission, the field must implement the `onSubmitAsync` callback and run the validation inside it.
-
-<!-- TODO: this doesn't work currently -->
-
-```tsx
-  const validateName = (value: string) => !value
-    ? "A first name is required"
-    : value.length < 3
-      ? "First name must be at least 3 characters"
-      : undefined;
-
-  return (
-    <form.Provider>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          void form.handleSubmit();
-        }}
-      >
-        <div>
-          {/* A type-safe and pre-bound field component*/}
-          <form.Field
-            name="name"
-            onChange={validateName}
-            onSubmitAsync={validateName}
-
-          >
-            {(field) => {
-              return (
-                <>
-                  <label htmlFor={field.name}>First Name:</label>
-                  <input
-                    name={field.name}
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                  />
-                  <FieldInfo field={field} />
-                </>
-              );
-            }}
-          </form.Field>
-        </div>
-
-        <button type="submit">Submit</button>
-      </form>
-    </form.Provider>
-  );
 ```
