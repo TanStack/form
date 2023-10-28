@@ -384,7 +384,7 @@ These adapters also support async operations using the proper property names:
 
 ## Preventing invalid forms from being submitted
 
-The `onChange`, `onBlur` etc... callbacks are also run when the form is submitted and submission is be blocked if the form is invalid.
+The `onChange`, `onBlur` etc... callbacks are also run when the form is submitted and the submission is blocked if the form is invalid.
 
 The form state object has a `canSubmit` flag that is false when any field is invalid and the form has been touched (`canSubmit` is true until the form has been touched, even if some fields are "technically" invalid based on their `onChange`/`onBlur` props).
 
