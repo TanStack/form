@@ -16,29 +16,22 @@ It's up to you! The `<Field />` component accepts some callbacks as props such a
 Here is an example:
 
 ```tsx
- <form.Field
-  name="firstName"
-  onChange={(value) => {
-    return !value
-      ? "A first name is required"
-      : value.length < 3
-        ? "First name must be at least 3 characters"
-        : undefined;
-  }}
+<form.Field
+  name="age"
+  onChange={val => val < 13 ? "You must be 13 to make an account" : undefined}
 >
-  {(field) => {
-    return (
-      <>
-        <label htmlFor={field.name}>First Name:</label>
-        <input
-          name={field.name}
-          value={field.state.value}
-          onChange={(e) => field.handleChange(e.target.value)}
-        />
-        {field.state.meta.errors ? <em role="alert">{field.state.meta.errors.join(', ')}</em> : null}
-      </>
-    );
-  }}
+  {field => (
+    <>
+      <label htmlFor={field.name}>First Name:</label>
+      <input
+        name={field.name}
+        value={field.state.value}
+        type="number"
+        onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+      />
+      {field.state.meta.errors ? <em role="alert">{field.state.meta.errors.join(', ')}</em> : null}
+    </>
+  )}
 </form.Field>
 ```
 
@@ -46,32 +39,24 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
 
 ```tsx
 <form.Field
-  name="firstName"
-  // Implement onBlur instead of onChange here
-  onBlur={(value) => {
-    return !value
-      ? "A first name is required"
-      : value.length < 3
-        ? "First name must be at least 3 characters"
-        : undefined;
-  }}
+  name="age"
+  onBlur={val => val < 13 ? "You must be 13 to make an account" : undefined}
 >
-  {(field) => {
-    return (
-      <>
-        <label htmlFor={field.name}>First Name:</label>
-        <input
-          name={field.name}
-          value={field.state.value}
-          // Listen to the onBlur event on the field
-          onBlur={field.handleBlur}
-          // We always need to implement onChange, so that TanStack Form receives the changes
-          onChange={(e) => field.handleChange(e.target.value)}
-        />
-        {field.state.meta.errors ? <em role="alert">{field.state.meta.errors.join(', ')}</em> : null}
-      </>
-    );
-  }}
+  {field => (
+    <>
+      <label htmlFor={field.name}>First Name:</label>
+      <input
+        name={field.name}
+        value={field.state.value}
+        type="number"
+        // Listen to the onBlur event on the field
+        onBlur={field.handleBlur}
+        // We always need to implement onChange, so that TanStack Form receives the changes
+        onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+      />
+      {field.state.meta.errors ? <em role="alert">{field.state.meta.errors.join(', ')}</em> : null}
+    </>
+  )}
 </form.Field>
 ```
 
@@ -79,31 +64,25 @@ So you can control when the validation is done by implementing the desired callb
 
 ```tsx
 <form.Field
-  name="firstName"
-  // Both onBlur and onChange are implemented here
-  onBlur={(value) => {
-    return !value
-      ? "A first name is required"
-      : value.length < 3
-        ? "First name must be at least 3 characters"
-        : undefined;
-  }}
-  onChange={(value) => value === 'error' && 'No error please!'}
+  name="age"
+  onChange={val => val < 13 ? "You must be 13 to make an account" : undefined}
+  onBlur={(val) => (val < 0 ? "Invalid value" : undefined)}
 >
-  {(field) => {
-    return (
-      <>
-        <label htmlFor={field.name}>First Name:</label>
-        <input
-          name={field.name}
-          value={field.state.value}
-          onChange={(e) => field.handleChange(e.target.value)}
-          onBlur={field.handleBlur}
-        />
-        {field.state.meta.errors ? <em role="alert">{field.state.meta.errors.join(', ')}</em> : null}
-      </>
-    );
-  }}
+  {field => (
+    <>
+      <label htmlFor={field.name}>First Name:</label>
+      <input
+        name={field.name}
+        value={field.state.value}
+        type="number"
+        // Listen to the onBlur event on the field
+        onBlur={field.handleBlur}
+        // We always need to implement onChange, so that TanStack Form receives the changes
+        onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+      />
+      {field.state.meta.errors ? <em role="alert">{field.state.meta.errors.join(', ')}</em> : null}
+    </>
+  )}
 </form.Field>
 ```
 
@@ -117,7 +96,8 @@ Once you have your validation in place, you can map the errors from an array to 
 <form.Field
   name="age"
   onChange={val => val < 13 ? "You must be 13 to make an account" : undefined}
-  children={(field) => {
+>
+  {(field) => {
     return (
       <>
         {/* ... */}
@@ -127,7 +107,7 @@ Once you have your validation in place, you can map the errors from an array to 
       </>
     );
   }}
-/>
+</form.Field>
 ```
 
 Or use the `errorMap` property to access the specific error you're looking for:
@@ -163,60 +143,58 @@ To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods 
 
 ```tsx
 <form.Field
-  name="firstName"
+  name="age"
   onChangeAsync={async (value) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     return (
-      value.includes("error") && 'No "error" allowed in first name'
+      value < 13 ? "You must be 13 to make an account" : undefined
     );
   }}
-  children={(field) => {
-    return (
-      <>
-        <label htmlFor={field.name}>First Name:</label>
-        <input
-          name={field.name}
-          value={field.state.value}
-          onBlur={field.handleBlur}
-          onChange={(e) => field.handleChange(e.target.value)}
-        />
-        <FieldInfo field={field} />
-      </>
-    );
-  }}
-/>
+>
+  {field => (
+    <>
+      <label htmlFor={field.name}>First Name:</label>
+      <input
+        name={field.name}
+        value={field.state.value}
+        type="number"
+        onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+      />
+      {field.state.meta.errors ? <em role="alert">{field.state.meta.errors.join(', ')}</em> : null}
+    </>
+  )}
+</form.Field>
 ```
 
 Synchronous and Asynchronous validations can coexist. For example it is possible to define both `onBlur` and `onBlurAsync` on the same field:
 
-
-``` tsx
+```tsx
 <form.Field
-  name="firstName"
-  onBlur={(value) =>
-    !value
-      ? "A first name is required"
-      : value.length < 3
-      ? "First name must be at least 3 characters"
-      : undefined
-  }
+  name="age"
+  onBlur={(value) => value < 13 ? "You must be at least 13" : undefined}
   onBlurAsync={async (value) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const currentAge = await fetchCurrentAgeOnProfile();
     return (
-      value.includes("error") && 'No "error" allowed in first name'
+      value < currentAge ? "You can only increase the age" : undefined
     );
   }}
 >
-  {(field) => (
-      <>
-		{/* ... */}
-      </>
+  {field => (
+    <>
+      <label htmlFor={field.name}>First Name:</label>
+      <input
+        name={field.name}
+        value={field.state.value}
+        type="number"
+        onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+      />
+      {field.state.meta.errors ? <em role="alert">{field.state.meta.errors.join(', ')}</em> : null}
+    </>
   )}
 </form.Field>
 ```
 
 The synchronous validation method (`onBlur`) is run first and the asynchronous method (`onBlurAsync`) is only run if the synchronous one (`onBlur`) succeeds. To change this behaviour, set the `asyncAlways` option to `true`, and the async method will be run regardless of the result of the sync method.
-
 
 
 ### Built-in Debouncing
@@ -227,7 +205,7 @@ Instead, we enable an easy method for debouncing your `async` calls by adding a 
 
 ```tsx
 <form.Field
-  name="firstName"
+  name="age"
   asyncDebounceMs={500}
   onChangeAsync={async (value) => {
     // ...
@@ -246,7 +224,7 @@ This will debounce every async call with a 500ms delay. You can even override th
 
 ```tsx
 <form.Field
-  name="firstName"
+  name="age"
   asyncDebounceMs={500}
   onChangeAsyncDebounceMs={1500}
   onChangeAsync={async (value) => {
@@ -266,50 +244,6 @@ This will debounce every async call with a 500ms delay. You can even override th
 ```
 
 > This will run `onChangeAsync` every 1500ms while `onBlurAsync` will run every 500ms.
-
-## Validating fields that depend on each other
-
-Sometimes when validating a field value, we need to access the value of another field. For example a "repeat password" field that needs to be identical to a "password" field. On top of receiving the field value, each validation callback receives the `fieldAPI` object which has access to the `formAPI` object, which contains all the fields values.
-
-Here is an example
-```tsx
-<form.Field
-  name="password"
-  children={(field) => (
-    <>
-      <label htmlFor={field.name}>Password:</label>
-      <input
-        name={field.name}
-        value={field.state.value}
-        type="password"
-        onChange={(e) => field.handleChange(e.target.value)}
-      />
-      <FieldInfo field={field} />
-    </>
-  )}
-/>
-<form.Field
-  name="repeat_password"
-  onChange={(value, fieldAPI) => {
-    if (value !== fieldAPI.form.store.state.values.password) {
-      return "Passwords do not match";
-    }
-
-  }}
-  children={(field) => (
-    <>
-      <label htmlFor={field.name}>Repeat password:</label>
-      <input
-        name={field.name}
-        value={field.state.value}
-        type="password"
-        onChange={(e) => field.handleChange(e.target.value)}
-      />
-      <FieldInfo field={field} />
-    </>
-  )}
-/>
-```
 
 
 ## Adapter-Based Validation (Zod, Yup)
@@ -339,11 +273,11 @@ const form = useForm({
 });
 
 <form.Field
-  name="firstName"
+  name="age"
   validator={zodValidator}
   onChange={z
-    .string()
-    .min(3, "First name must be at least 3 characters")}
+    .number()
+    .gte(13, "You must be 13 to make an account")}
   children={(field) => {
     return (
       <>
@@ -358,18 +292,20 @@ These adapters also support async operations using the proper property names:
 
 ```tsx
 <form.Field
-  name="firstName"
+  name="age"
   onChange={z
-    .string()
-    .min(3, "First name must be at least 3 characters")}
+    .number()
+    .gte(13, "You must be 13 to make an account")}
   onChangeAsyncDebounceMs={500}
-  onChangeAsync={z.string().refine(
+  onChangeAsync={z.number().refine(
     async (value) => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      return !value.includes("error");
+      const currentAge = await fetchCurrentAgeOnProfile();
+      return (
+        value >= currentAge
+      );
     },
     {
-      message: "No 'error' allowed in first name",
+      message: "You can only increase the age",
     },
   )}
   children={(field) => {
