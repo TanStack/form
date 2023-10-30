@@ -22,7 +22,7 @@ Here is an example:
 >
   {field => (
     <>
-      <label htmlFor={field.name}>First Name:</label>
+      <label htmlFor={field.name}>Age:</label>
       <input
         name={field.name}
         value={field.state.value}
@@ -44,7 +44,7 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
 >
   {field => (
     <>
-      <label htmlFor={field.name}>First Name:</label>
+      <label htmlFor={field.name}>Age:</label>
       <input
         name={field.name}
         value={field.state.value}
@@ -70,7 +70,7 @@ So you can control when the validation is done by implementing the desired callb
 >
   {field => (
     <>
-      <label htmlFor={field.name}>First Name:</label>
+      <label htmlFor={field.name}>Age:</label>
       <input
         name={field.name}
         value={field.state.value}
@@ -153,7 +153,7 @@ To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods 
 >
   {field => (
     <>
-      <label htmlFor={field.name}>First Name:</label>
+      <label htmlFor={field.name}>Age:</label>
       <input
         name={field.name}
         value={field.state.value}
@@ -181,7 +181,7 @@ Synchronous and Asynchronous validations can coexist. For example it is possible
 >
   {field => (
     <>
-      <label htmlFor={field.name}>First Name:</label>
+      <label htmlFor={field.name}>Age:</label>
       <input
         name={field.name}
         value={field.state.value}
