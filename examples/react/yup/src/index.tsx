@@ -18,7 +18,6 @@ function FieldInfo({ field }: { field: FieldApi<any, any, unknown, unknown> }) {
 
 export default function App() {
   const form = useForm({
-    // Memoize your default values to prevent re-renders
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -33,8 +32,7 @@ export default function App() {
 
   return (
     <div>
-      <h1>Simple Form Example</h1>
-      {/* A pre-bound form component */}
+      <h1>Yup Form Example</h1>
       <form.Provider>
         <form
           onSubmit={(e) => {
@@ -44,7 +42,7 @@ export default function App() {
           }}
         >
           <div>
-            {/* A type-safe and pre-bound field component*/}
+            {/* A type-safe field component*/}
             <form.Field
               name="firstName"
               onChange={yup
