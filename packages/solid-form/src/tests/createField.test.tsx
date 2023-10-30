@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import { createFormFactory } from '..'
 import { sleep } from './utils'
-import { createEffect } from 'solid-js'
 
 const user = userEvent.setup()
 
@@ -144,7 +143,6 @@ describe('createField', () => {
             defaultMeta={{ isTouched: true }}
             onChange={(value) => (value.includes('other') ? error : undefined)}
             children={(field) => {
-              createEffect(() => console.log('hi', field().getMeta().errors))
               return (
                 <div>
                   <input
