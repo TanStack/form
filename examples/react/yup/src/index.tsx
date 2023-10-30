@@ -18,7 +18,6 @@ function FieldInfo({ field }: { field: FieldApi<any, any, unknown, unknown> }) {
 
 export default function App() {
   const form = useForm({
-    // Memoize your default values to prevent re-renders
     defaultValues: {
       firstName: "",
       lastName: "",
