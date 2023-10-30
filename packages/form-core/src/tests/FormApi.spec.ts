@@ -5,301 +5,301 @@ import { FieldApi } from '../FieldApi'
 import { sleep } from './utils'
 
 describe('form api', () => {
-  // it('should get default form state', () => {
-  //   const form = new FormApi()
+  it('should get default form state', () => {
+    const form = new FormApi()
 
-  //   expect(form.state).toEqual({
-  //     values: {},
-  //     fieldMeta: {},
-  //     canSubmit: true,
-  //     isFieldsValid: true,
-  //     isFieldsValidating: false,
-  //     isFormValid: true,
-  //     isFormValidating: false,
-  //     isSubmitted: false,
-  //     isSubmitting: false,
-  //     isTouched: false,
-  //     isValid: true,
-  //     isValidating: false,
-  //     submissionAttempts: 0,
-  //     formValidationCount: 0,
-  //   })
-  // })
+    expect(form.state).toEqual({
+      values: {},
+      fieldMeta: {},
+      canSubmit: true,
+      isFieldsValid: true,
+      isFieldsValidating: false,
+      isFormValid: true,
+      isFormValidating: false,
+      isSubmitted: false,
+      isSubmitting: false,
+      isTouched: false,
+      isValid: true,
+      isValidating: false,
+      submissionAttempts: 0,
+      formValidationCount: 0,
+    })
+  })
 
-  // it('should get default form state when default values are passed', () => {
-  //   const form = new FormApi({
-  //     defaultValues: {
-  //       name: 'test',
-  //     },
-  //   })
+  it('should get default form state when default values are passed', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
 
-  //   expect(form.state).toEqual({
-  //     values: {
-  //       name: 'test',
-  //     },
-  //     fieldMeta: {},
-  //     canSubmit: true,
-  //     isFieldsValid: true,
-  //     isFieldsValidating: false,
-  //     isFormValid: true,
-  //     isFormValidating: false,
-  //     isSubmitted: false,
-  //     isSubmitting: false,
-  //     isTouched: false,
-  //     isValid: true,
-  //     isValidating: false,
-  //     submissionAttempts: 0,
-  //     formValidationCount: 0,
-  //   })
-  // })
+    expect(form.state).toEqual({
+      values: {
+        name: 'test',
+      },
+      fieldMeta: {},
+      canSubmit: true,
+      isFieldsValid: true,
+      isFieldsValidating: false,
+      isFormValid: true,
+      isFormValidating: false,
+      isSubmitted: false,
+      isSubmitting: false,
+      isTouched: false,
+      isValid: true,
+      isValidating: false,
+      submissionAttempts: 0,
+      formValidationCount: 0,
+    })
+  })
 
-  // it('should get default form state when default state is passed', () => {
-  //   const form = new FormApi({
-  //     defaultState: {
-  //       submissionAttempts: 30,
-  //     },
-  //   })
+  it('should get default form state when default state is passed', () => {
+    const form = new FormApi({
+      defaultState: {
+        submissionAttempts: 30,
+      },
+    })
 
-  //   expect(form.state).toEqual({
-  //     values: {},
-  //     fieldMeta: {},
-  //     canSubmit: true,
-  //     isFieldsValid: true,
-  //     isFieldsValidating: false,
-  //     isFormValid: true,
-  //     isFormValidating: false,
-  //     isSubmitted: false,
-  //     isSubmitting: false,
-  //     isTouched: false,
-  //     isValid: true,
-  //     isValidating: false,
-  //     submissionAttempts: 30,
-  //     formValidationCount: 0,
-  //   })
-  // })
+    expect(form.state).toEqual({
+      values: {},
+      fieldMeta: {},
+      canSubmit: true,
+      isFieldsValid: true,
+      isFieldsValidating: false,
+      isFormValid: true,
+      isFormValidating: false,
+      isSubmitted: false,
+      isSubmitting: false,
+      isTouched: false,
+      isValid: true,
+      isValidating: false,
+      submissionAttempts: 30,
+      formValidationCount: 0,
+    })
+  })
 
-  // it('should handle updating form state', () => {
-  //   const form = new FormApi({
-  //     defaultValues: {
-  //       name: 'test',
-  //     },
-  //   })
+  it('should handle updating form state', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
 
-  //   form.update({
-  //     defaultValues: {
-  //       name: 'other',
-  //     },
-  //     defaultState: {
-  //       submissionAttempts: 300,
-  //     },
-  //   })
+    form.update({
+      defaultValues: {
+        name: 'other',
+      },
+      defaultState: {
+        submissionAttempts: 300,
+      },
+    })
 
-  //   expect(form.state).toEqual({
-  //     values: {
-  //       name: 'other',
-  //     },
-  //     fieldMeta: {},
-  //     canSubmit: true,
-  //     isFieldsValid: true,
-  //     isFieldsValidating: false,
-  //     isFormValid: true,
-  //     isFormValidating: false,
-  //     isSubmitted: false,
-  //     isSubmitting: false,
-  //     isTouched: false,
-  //     isValid: true,
-  //     isValidating: false,
-  //     submissionAttempts: 300,
-  //     formValidationCount: 0,
-  //   })
-  // })
+    expect(form.state).toEqual({
+      values: {
+        name: 'other',
+      },
+      fieldMeta: {},
+      canSubmit: true,
+      isFieldsValid: true,
+      isFieldsValidating: false,
+      isFormValid: true,
+      isFormValidating: false,
+      isSubmitted: false,
+      isSubmitting: false,
+      isTouched: false,
+      isValid: true,
+      isValidating: false,
+      submissionAttempts: 300,
+      formValidationCount: 0,
+    })
+  })
 
-  // it('should reset the form state properly', () => {
-  //   const form = new FormApi({
-  //     defaultValues: {
-  //       name: 'test',
-  //     },
-  //   })
+  it('should reset the form state properly', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
 
-  //   form.setFieldValue('name', 'other')
-  //   form.state.submissionAttempts = 300
+    form.setFieldValue('name', 'other')
+    form.state.submissionAttempts = 300
 
-  //   form.reset()
+    form.reset()
 
-  //   expect(form.state).toEqual({
-  //     values: {
-  //       name: 'test',
-  //     },
-  //     fieldMeta: {},
-  //     canSubmit: true,
-  //     isFieldsValid: true,
-  //     isFieldsValidating: false,
-  //     isFormValid: true,
-  //     isFormValidating: false,
-  //     isSubmitted: false,
-  //     isSubmitting: false,
-  //     isTouched: false,
-  //     isValid: true,
-  //     isValidating: false,
-  //     submissionAttempts: 0,
-  //     formValidationCount: 0,
-  //   })
-  // })
+    expect(form.state).toEqual({
+      values: {
+        name: 'test',
+      },
+      fieldMeta: {},
+      canSubmit: true,
+      isFieldsValid: true,
+      isFieldsValidating: false,
+      isFormValid: true,
+      isFormValidating: false,
+      isSubmitted: false,
+      isSubmitting: false,
+      isTouched: false,
+      isValid: true,
+      isValidating: false,
+      submissionAttempts: 0,
+      formValidationCount: 0,
+    })
+  })
 
-  // it("should get a field's value", () => {
-  //   const form = new FormApi({
-  //     defaultValues: {
-  //       name: 'test',
-  //     },
-  //   })
+  it("should get a field's value", () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
 
-  //   expect(form.getFieldValue('name')).toEqual('test')
-  // })
+    expect(form.getFieldValue('name')).toEqual('test')
+  })
 
-  // it("should set a field's value", () => {
-  //   const form = new FormApi({
-  //     defaultValues: {
-  //       name: 'test',
-  //     },
-  //   })
+  it("should set a field's value", () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
 
-  //   form.setFieldValue('name', 'other')
+    form.setFieldValue('name', 'other')
 
-  //   expect(form.getFieldValue('name')).toEqual('other')
-  // })
+    expect(form.getFieldValue('name')).toEqual('other')
+  })
 
-  // it("should push an array field's value", () => {
-  //   const form = new FormApi({
-  //     defaultValues: {
-  //       names: ['test'],
-  //     },
-  //   })
+  it("should push an array field's value", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['test'],
+      },
+    })
 
-  //   form.pushFieldValue('names', 'other')
+    form.pushFieldValue('names', 'other')
 
-  //   expect(form.getFieldValue('names')).toStrictEqual(['test', 'other'])
-  // })
+    expect(form.getFieldValue('names')).toStrictEqual(['test', 'other'])
+  })
 
-  // it("should insert an array field's value", () => {
-  //   const form = new FormApi({
-  //     defaultValues: {
-  //       names: ['one', 'two', 'three'],
-  //     },
-  //   })
+  it("should insert an array field's value", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
 
-  //   form.insertFieldValue('names', 1, 'other')
+    form.insertFieldValue('names', 1, 'other')
 
-  //   expect(form.getFieldValue('names')).toStrictEqual(['one', 'other', 'three'])
-  // })
+    expect(form.getFieldValue('names')).toStrictEqual(['one', 'other', 'three'])
+  })
 
-  // it("should remove an array field's value", () => {
-  //   const form = new FormApi({
-  //     defaultValues: {
-  //       names: ['one', 'two', 'three'],
-  //     },
-  //   })
+  it("should remove an array field's value", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
 
-  //   form.removeFieldValue('names', 1)
+    form.removeFieldValue('names', 1)
 
-  //   expect(form.getFieldValue('names')).toStrictEqual(['one', 'three'])
-  // })
+    expect(form.getFieldValue('names')).toStrictEqual(['one', 'three'])
+  })
 
-  // it("should swap an array field's value", () => {
-  //   const form = new FormApi({
-  //     defaultValues: {
-  //       names: ['one', 'two', 'three'],
-  //     },
-  //   })
+  it("should swap an array field's value", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
 
-  //   form.swapFieldValues('names', 1, 2)
+    form.swapFieldValues('names', 1, 2)
 
-  //   expect(form.getFieldValue('names')).toStrictEqual(['one', 'three', 'two'])
-  // })
+    expect(form.getFieldValue('names')).toStrictEqual(['one', 'three', 'two'])
+  })
 
-  // it('should not wipe values when updating', () => {
-  //   const form = new FormApi({
-  //     defaultValues: {
-  //       name: 'test',
-  //     },
-  //   })
+  it('should not wipe values when updating', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
 
-  //   form.setFieldValue('name', 'other')
+    form.setFieldValue('name', 'other')
 
-  //   expect(form.getFieldValue('name')).toEqual('other')
+    expect(form.getFieldValue('name')).toEqual('other')
 
-  //   form.update()
+    form.update()
 
-  //   expect(form.getFieldValue('name')).toEqual('other')
-  // })
+    expect(form.getFieldValue('name')).toEqual('other')
+  })
 
-  // it('should wipe default values when not touched', () => {
-  //   const form = new FormApi({
-  //     defaultValues: {
-  //       name: 'test',
-  //     },
-  //   })
+  it('should wipe default values when not touched', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
 
-  //   expect(form.getFieldValue('name')).toEqual('test')
+    expect(form.getFieldValue('name')).toEqual('test')
 
-  //   form.update({
-  //     defaultValues: {
-  //       name: 'other',
-  //     },
-  //   })
+    form.update({
+      defaultValues: {
+        name: 'other',
+      },
+    })
 
-  //   expect(form.getFieldValue('name')).toEqual('other')
-  // })
+    expect(form.getFieldValue('name')).toEqual('other')
+  })
 
-  // it('should not wipe default values when touched', () => {
-  //   const form = new FormApi({
-  //     defaultValues: {
-  //       name: 'one',
-  //     },
-  //   })
+  it('should not wipe default values when touched', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'one',
+      },
+    })
 
-  //   expect(form.getFieldValue('name')).toEqual('one')
+    expect(form.getFieldValue('name')).toEqual('one')
 
-  //   form.setFieldValue('name', 'two', { touch: true })
+    form.setFieldValue('name', 'two', { touch: true })
 
-  //   form.update({
-  //     defaultValues: {
-  //       name: 'three',
-  //     },
-  //   })
+    form.update({
+      defaultValues: {
+        name: 'three',
+      },
+    })
 
-  //   expect(form.getFieldValue('name')).toEqual('two')
-  // })
+    expect(form.getFieldValue('name')).toEqual('two')
+  })
 
-  // it("form's valid state should be work fine", () => {
-  //   const form = new FormApi({
-  //     defaultValues: {
-  //       name: '',
-  //     },
-  //   })
+  it("form's valid state should be work fine", () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
 
-  //   const field = new FieldApi({
-  //     form,
-  //     name: 'name',
-  //     onChange: (v) => (v.length > 0 ? undefined : 'required'),
-  //   })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      onChange: (v) => (v.length > 0 ? undefined : 'required'),
+    })
 
-  //   field.mount()
+    field.mount()
 
-  //   field.handleChange('one')
+    field.handleChange('one')
 
-  //   expect(form.state.isFieldsValid).toEqual(true)
-  //   expect(form.state.canSubmit).toEqual(true)
+    expect(form.state.isFieldsValid).toEqual(true)
+    expect(form.state.canSubmit).toEqual(true)
 
-  //   field.handleChange('')
+    field.handleChange('')
 
-  //   expect(form.state.isFieldsValid).toEqual(false)
-  //   expect(form.state.canSubmit).toEqual(false)
+    expect(form.state.isFieldsValid).toEqual(false)
+    expect(form.state.canSubmit).toEqual(false)
 
-  //   field.handleChange('two')
+    field.handleChange('two')
 
-  //   expect(form.state.isFieldsValid).toEqual(true)
-  //   expect(form.state.canSubmit).toEqual(true)
-  // })
+    expect(form.state.isFieldsValid).toEqual(true)
+    expect(form.state.canSubmit).toEqual(true)
+  })
 
   it('form validation should update states', async () => {
     const form = new FormApi({
