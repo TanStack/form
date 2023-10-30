@@ -12,7 +12,6 @@ import { useForm } from '@tanstack/react-form'
 
 export default function App() {
   const form = useForm({
-    // Memoize your default values to prevent re-renders
     defaultValues: {
       fullName: '',
     },

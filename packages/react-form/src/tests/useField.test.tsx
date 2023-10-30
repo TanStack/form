@@ -3,7 +3,7 @@ import * as React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
-import { createFormFactory } from '..'
+import { type FormApi, createFormFactory } from '..'
 import { sleep } from './utils'
 
 const user = userEvent.setup()
@@ -372,5 +372,81 @@ describe('useField', () => {
     expect(mockFn).toHaveBeenCalledTimes(0)
     await waitFor(() => getByText(error))
     expect(getByText(error)).toBeInTheDocument()
+  })
+
+  it('should preserve value when preserve value property is true', async () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    const formFactory = createFormFactory<Person, unknown>()
+    let form: FormApi<Person, unknown> | null = null
+    function Comp() {
+      form = formFactory.useForm()
+      return (
+        <form.Provider>
+          <form.Field
+            name="firstName"
+            defaultValue="hello"
+            preserveValue={true}
+            children={(field) => {
+              return (
+                <input
+                  data-testid="fieldinput"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              )
+            }}
+          />
+        </form.Provider>
+      )
+    }
+
+    const { getByTestId, unmount, rerender } = render(<Comp />)
+    const input = getByTestId('fieldinput')
+    expect(input).toHaveValue('hello')
+    await user.type(input, 'world')
+    unmount()
+    expect(form!.fieldInfo['firstName']).toBeDefined()
+  })
+
+  it('should not preserve value when preserve value property is false', async () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    const formFactory = createFormFactory<Person, unknown>()
+    let form: FormApi<Person, unknown> | null = null
+    function Comp() {
+      form = formFactory.useForm()
+      return (
+        <form.Provider>
+          <form.Field
+            name="firstName"
+            defaultValue="hello"
+            preserveValue={false}
+            children={(field) => {
+              return (
+                <input
+                  data-testid="fieldinput"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              )
+            }}
+          />
+        </form.Provider>
+      )
+    }
+
+    const { getByTestId, unmount } = render(<Comp />)
+    const input = getByTestId('fieldinput')
+    expect(input).toHaveValue('hello')
+    unmount()
+    const info = form!.fieldInfo
+    expect(Object.keys(info)).toHaveLength(0)
   })
 })

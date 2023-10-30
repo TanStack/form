@@ -157,6 +157,58 @@
           ]
         }
       ]
+    },
+    {
+      "framework": "solid",
+      "menuItems": [
+        {
+          "label": "Getting Started",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "framework/solid/quick-start"
+            }
+          ]
+        },
+        {
+          "label": "API Reference",
+          "children": [
+            {
+              "label": "useForm",
+              "to": "framework/solid/reference/createForm"
+            },
+            {
+              "label": "useField",
+              "to": "framework/solid/reference/createField"
+            },
+            {
+              "label": "Field",
+              "to": "framework/solid/reference/Field"
+            },
+            {
+              "label": "FormApi",
+              "to": "framework/solid/reference/formApi"
+            }
+          ]
+        },
+        {
+          "label": "Examples",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/solid/examples/simple"
+            },
+            {
+              "label": "Yup",
+              "to": "framework/solid/examples/yup"
+            },
+            {
+              "label": "Zod",
+              "to": "framework/solid/examples/zod"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

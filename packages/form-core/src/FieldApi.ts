@@ -69,6 +69,7 @@ export interface FieldOptions<
   defaultValue?: TData
   asyncDebounceMs?: number
   asyncAlways?: boolean
+  preserveValue?: boolean
   validator?: ValidatorType
   onMount?: (
     formApi: FieldApi<TParentData, TName, ValidatorType, TData>,
@@ -219,7 +220,6 @@ export class FieldApi<
   mount = () => {
     const info = this.getInfo()
     info.instances[this.uid] = this as never
-
     const unsubscribe = this.form.store.subscribe(() => {
       this.store.batch(() => {
         const nextValue = this.getValue()
@@ -239,10 +239,14 @@ export class FieldApi<
     this.options.onMount?.(this as never)
 
     return () => {
+      const preserveValue = this.options.preserveValue
       unsubscribe()
-      delete info.instances[this.uid]
-      if (!Object.keys(info.instances).length) {
-        delete this.form.fieldInfo[this.name as never]
+      if (!preserveValue) {
+        delete info.instances[this.uid]
+      }
+
+      if (!Object.keys(info.instances).length && !preserveValue) {
+        delete this.form.fieldInfo[this.name]
       }
     }
   }

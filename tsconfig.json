@@ -3,7 +3,8 @@
   "references": [
     { "path": "packages/form-core" },
     { "path": "packages/react-form" },
-    { "path": "packages/vue-form" }
+    { "path": "packages/vue-form" },
+    { "path": "packages/solid-form" }
   ]
   // "include": ["examples/*"]
   // "exclude": ["node_modules"]
