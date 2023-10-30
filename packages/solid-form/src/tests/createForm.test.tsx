@@ -1,11 +1,11 @@
 import { render, screen, waitFor } from '@solidjs/testing-library'
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
-import { createFormFactory, useForm } from '..'
+import { createFormFactory, createForm } from '..'
 
 const user = userEvent.setup()
 
-describe('useForm', () => {
+describe('createForm', () => {
   it('preserves field state', async () => {
     type Person = {
       firstName: string
@@ -77,7 +77,7 @@ describe('useForm', () => {
   it('should handle submitting properly', async () => {
     let submittedData = null as { firstName: string } | null
     function Comp() {
-      const form = useForm(() => ({
+      const form = createForm(() => ({
         defaultValues: {
           firstName: 'FirstName',
         },

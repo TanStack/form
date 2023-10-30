@@ -18,10 +18,10 @@ export type {
 
 export { FormApi, FieldApi, functionalUpdate } from '@tanstack/form-core'
 
-export { createForm as useForm } from './createForm'
+export { createForm } from './createForm'
 
-export type { CreateField as UseField, FieldComponent } from './createField'
-export { createField as useField, Field } from './createField'
+export type { CreateField, FieldComponent } from './createField'
+export { createField, Field } from './createField'
 
 export type { FormFactory } from './createFormFactory'
 export { createFormFactory } from './createFormFactory'
