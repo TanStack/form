@@ -23,7 +23,7 @@ declare module '@tanstack/form-core' {
     ) => () => TSelected
     Subscribe: <TSelected = NoInfer<FormState<TFormData>>>(props: {
       selector?: (state: NoInfer<FormState<TFormData>>) => TSelected
-      children: ((state: NoInfer<TSelected>) => JSXElement) | JSXElement
+      children: ((state: () => NoInfer<TSelected>) => JSXElement) | JSXElement
     }) => any
   }
 }
