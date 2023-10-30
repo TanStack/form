@@ -5,7 +5,7 @@ import { useStore } from '@tanstack/react-store'
 import React, { type ReactNode, useState } from 'react'
 import { type UseField, type FieldComponent, Field, useField } from './useField'
 import { formContext } from './formContext'
-import useIsomorphicLayoutEffect from 'use-isomorphic-layout-effect'
+import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow

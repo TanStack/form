@@ -236,6 +236,9 @@ importers:
       '@tanstack/react-form':
         specifier: workspace:*
         version: link:../../../packages/react-form
+      '@tanstack/solid-form':
+        specifier: workspace:*
+        version: link:../../../packages/solid-form
       '@tanstack/vue-form':
         specifier: workspace:*
         version: link:../../../packages/vue-form
@@ -270,6 +273,9 @@ importers:
       '@tanstack/react-form':
         specifier: workspace:*
         version: link:../../../packages/react-form
+      '@tanstack/solid-form':
+        specifier: workspace:*
+        version: link:../../../packages/solid-form
       '@tanstack/vue-form':
         specifier: workspace:*
         version: link:../../../packages/vue-form
@@ -307,6 +313,9 @@ importers:
       '@tanstack/react-form':
         specifier: workspace:*
         version: link:../../../packages/react-form
+      '@tanstack/solid-form':
+        specifier: workspace:*
+        version: link:../../../packages/solid-form
       '@tanstack/vue-form':
         specifier: workspace:*
         version: link:../../../packages/vue-form
@@ -443,6 +452,9 @@ importers:
       '@tanstack/react-form':
         specifier: workspace:*
         version: link:../../../packages/react-form
+      '@tanstack/solid-form':
+        specifier: workspace:*
+        version: link:../../../packages/solid-form
       '@tanstack/vue-form':
         specifier: workspace:*
         version: link:../../../packages/vue-form
@@ -477,6 +489,9 @@ importers:
       '@tanstack/react-form':
         specifier: workspace:*
         version: link:../../../packages/react-form
+      '@tanstack/solid-form':
+        specifier: workspace:*
+        version: link:../../../packages/solid-form
       '@tanstack/vue-form':
         specifier: workspace:*
         version: link:../../../packages/vue-form
@@ -514,6 +529,9 @@ importers:
       '@tanstack/react-form':
         specifier: workspace:*
         version: link:../../../packages/react-form
+      '@tanstack/solid-form':
+        specifier: workspace:*
+        version: link:../../../packages/solid-form
       '@tanstack/vue-form':
         specifier: workspace:*
         version: link:../../../packages/vue-form
@@ -563,9 +581,6 @@ importers:
       react-native:
         specifier: '*'
         version: 0.0.0-116359998(@babel/core@7.22.10)(react@18.2.0)
-      use-isomorphic-layout-effect:
-        specifier: ^1.1.2
-        version: 1.1.2(@types/react@18.0.15)(react@18.2.0)
     devDependencies:
       '@types/jscodeshift':
         specifier: ^0.11.3
@@ -3170,6 +3185,7 @@ packages:
 
   /@types/prop-types@15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
+    dev: true
 
   /@types/react-dom@18.0.6:
     resolution: {integrity: sha512-/5OFZgfIPSwy+YuIBP/FgJnQnsxhZhjjrnxudMddeblOouIodEQ75X14Rr4wGSG/bknL+Omy9iWlLo1u/9GzAA==}
@@ -3183,6 +3199,7 @@ packages:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
       csstype: 3.1.0
+    dev: true
 
   /@types/resolve@1.20.2:
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
@@ -3190,6 +3207,7 @@ packages:
 
   /@types/scheduler@0.16.2:
     resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}
+    dev: true
 
   /@types/semver@7.3.13:
     resolution: {integrity: sha512-21cFJr9z3g5dW8B0CVI9g2O9beqaThGQ6ZFBqHfwhzLDKUxaqTIy3vnfah/UPkfOiF2pLq+tGz+W8RyCskuslw==}
@@ -4946,6 +4964,7 @@ packages:
 
   /csstype@3.1.0:
     resolution: {integrity: sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA==}
+    dev: true
 
   /csstype@3.1.2:
     resolution: {integrity: sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==}
@@ -10748,19 +10767,6 @@ packages:
       querystringify: 2.2.0
       requires-port: 1.0.0
     dev: true
-
-  /use-isomorphic-layout-effect@1.1.2(@types/react@18.0.15)(react@18.2.0):
-    resolution: {integrity: sha512-49L8yCO3iGT/ZF9QttjwLF/ZD9Iwto5LnH5LmEdk/6cFmXddqi2ulF0edxTwjj+7mqvpVVGQWvbXZdn32wRSHA==}
-    peerDependencies:
-      '@types/react': '*'
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-    dependencies:
-      '@types/react': 18.0.15
-      react: 18.2.0
-    dev: false
 
   /use-subscription@1.8.0(react@18.2.0):
     resolution: {integrity: sha512-LISuG0/TmmoDoCRmV5XAqYkd3UCBNM0ML3gGBndze65WITcsExCD3DTvXXTLyNcOC0heFQZzluW88bN/oC1DQQ==}
