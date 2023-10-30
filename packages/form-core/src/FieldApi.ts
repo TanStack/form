@@ -242,10 +242,10 @@ export class FieldApi<
     return () => {
       const preserveValue = this.options.preserveValue
       unsubscribe()
-      if(!preserveValue) {
+      if (!preserveValue) {
         delete info.instances[this.uid]
       }
-      
+
       if (!Object.keys(info.instances).length && !preserveValue) {
         delete this.form.fieldInfo[this.name]
       }

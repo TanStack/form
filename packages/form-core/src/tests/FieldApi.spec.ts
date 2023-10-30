@@ -575,7 +575,7 @@ describe('field api', () => {
     const field = new FieldApi({
       form,
       name: 'name',
-      preserveValue: true
+      preserveValue: true,
     })
 
     const unmount = field.mount()

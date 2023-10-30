@@ -349,9 +349,7 @@ export class FormApi<TFormData, ValidatorType> {
     })
   }
 
-  deleteField = <TField extends DeepKeys<TFormData>>(
-    field: TField,
-  ) => {
+  deleteField = <TField extends DeepKeys<TFormData>>(field: TField) => {
     delete this.state.values[field as keyof TFormData]
     delete this.state.fieldMeta[field]
   }

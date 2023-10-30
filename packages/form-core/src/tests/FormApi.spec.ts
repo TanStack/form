@@ -269,11 +269,11 @@ describe('form api', () => {
     expect(form.getFieldValue('name')).toEqual('two')
   })
 
-  it("should delete field from the form", () => {
+  it('should delete field from the form', () => {
     const form = new FormApi({
       defaultValues: {
         names: 'kittu',
-        age: 4
+        age: 4,
       },
     })
 
@@ -283,7 +283,7 @@ describe('form api', () => {
     expect(form.getFieldValue('names')).toStrictEqual(undefined)
     expect(form.getFieldMeta('names')).toStrictEqual(undefined)
   })
-  
+
   it("form's valid state should be work fine", () => {
     const form = new FormApi({
       defaultValues: {

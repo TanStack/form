@@ -3,7 +3,7 @@ import * as React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
-import { FormApi, createFormFactory } from '..'
+import { type FormApi, createFormFactory } from '..'
 import { sleep } from './utils'
 
 const user = userEvent.setup()
@@ -379,8 +379,8 @@ describe('useField', () => {
       firstName: string
       lastName: string
     }
-    const formFactory = createFormFactory<Person>()
-    let form = null
+    const formFactory = createFormFactory<Person, unknown>()
+    let form: FormApi<Person, unknown> | null = null
     function Comp() {
       form = formFactory.useForm()
       return (
@@ -409,7 +409,7 @@ describe('useField', () => {
     expect(input).toHaveValue('hello')
     await user.type(input, 'world')
     unmount()
-    expect((form! as FormApi<Person>).fieldInfo['firstName']).toBeDefined()
+    expect(form!.fieldInfo['firstName']).toBeDefined()
   })
 
   it('should not preserve value when preserve value property is false', async () => {
@@ -417,8 +417,8 @@ describe('useField', () => {
       firstName: string
       lastName: string
     }
-    const formFactory = createFormFactory<Person>()
-    let form = null
+    const formFactory = createFormFactory<Person, unknown>()
+    let form: FormApi<Person, unknown> | null = null
     function Comp() {
       form = formFactory.useForm()
       return (
@@ -446,7 +446,7 @@ describe('useField', () => {
     const input = getByTestId('fieldinput')
     expect(input).toHaveValue('hello')
     unmount()
-    const info = (form! as FormApi<Person>).fieldInfo
+    const info = form!.fieldInfo
     expect(Object.keys(info)).toHaveLength(0)
   })
 })
