@@ -50,9 +50,9 @@ export function useField<
   TName,
   ValidatorType,
   FormValidator
-// Omit<typeof opts, 'onMount'> & {
-//   form: FormApi<TParentData>
-// }
+  // Omit<typeof opts, 'onMount'> & {
+  //   form: FormApi<TParentData>
+  // }
 > {
   // Get the form API either manually or from context
   const { formApi, parentFieldName } = useFormContext()
@@ -90,8 +90,8 @@ export function useField<
     fieldApi.store,
     opts.mode === 'array'
       ? (state) => {
-        return [state.meta, Object.keys(state.value).length]
-      }
+          return [state.meta, Object.keys(state.value).length]
+        }
       : undefined,
   )
   // Instantiates field meta and removes it when unrendered
@@ -112,13 +112,13 @@ type FieldComponentProps<
   ) => any
 } & (TParentData extends any[]
   ? {
-    name?: TName
-    index: number
-  }
+      name?: TName
+      index: number
+    }
   : {
-    name: TName
-    index?: never
-  }) &
+      name: TName
+      index?: never
+    }) &
   Omit<
     UseFieldOptions<TParentData, TName, ValidatorType, FormValidator>,
     'name' | 'index'
