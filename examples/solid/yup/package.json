@@ -1,5 +1,5 @@
 {
-  "name": "@tanstack/form-example-solid-simple",
+  "name": "@tanstack/form-example-solid-yup",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,10 +11,11 @@
   "dependencies": {
     "@tanstack/form-core": "0.4.1",
     "@tanstack/solid-form": "0.4.1",
+    "@tanstack/yup-form-adapter": "0.4.1",
     "solid-js": "^1.7.8",
+    "yup": "^1.3.2",
     "@tanstack/react-form": "0.4.1",
-    "@tanstack/zod-form-adapter": "0.4.1",
-    "@tanstack/yup-form-adapter": "0.4.1"
+    "@tanstack/zod-form-adapter": "0.4.1"
   },
   "devDependencies": {
     "typescript": "^5.0.2",
@@ -24,7 +25,8 @@
   "nx": {
     "implicitDependencies": [
       "@tanstack/form-core",
-      "@tanstack/solid-form"
+      "@tanstack/solid-form",
+      "@tanstack/yup-form-adapter"
     ],
     "targets": {
       "test:types": {

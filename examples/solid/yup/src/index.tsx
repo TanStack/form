@@ -2,6 +2,8 @@
 import { render } from 'solid-js/web'
 
 import { createForm, type FieldApi } from '@tanstack/solid-form'
+import { yupValidator } from '@tanstack/yup-form-adapter'
+import * as yup from 'yup'
 
 interface FieldInfoProps {
   field: FieldApi<any, any, unknown, unknown>
@@ -28,6 +30,8 @@ function App() {
       // Do something with form data
       console.log(values)
     },
+    // Add a validator to support Yup usage in Form and Field
+    validator: yupValidator,
   }))
 
   return (
@@ -46,20 +50,20 @@ function App() {
             {/* A type-safe and pre-bound field component*/}
             <form.Field
               name="firstName"
-              onChange={(value) =>
-                !value
-                  ? 'A first name is required'
-                  : value.length < 3
-                  ? 'First name must be at least 3 characters'
-                  : undefined
-              }
+              onChange={yup
+                .string()
+                .min(3, 'First name must be at least 3 characters')}
               onChangeAsyncDebounceMs={500}
-              onChangeAsync={async (value) => {
-                await new Promise((resolve) => setTimeout(resolve, 1000))
-                return (
-                  value.includes('error') && 'No "error" allowed in first name'
-                )
-              }}
+              onChangeAsync={yup
+                .string()
+                .test(
+                  'no error',
+                  "No 'error' allowed in first name",
+                  async (value) => {
+                    await new Promise((resolve) => setTimeout(resolve, 1000))
+                    return !value?.includes('error')
+                  },
+                )}
               children={(field) => {
                 // Avoid hasty abstractions. Render props are great!
                 return (
