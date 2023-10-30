@@ -2,8 +2,8 @@
 import { render } from 'solid-js/web'
 
 import { createForm, type FieldApi } from '@tanstack/solid-form'
-import { yupValidator } from '@tanstack/yup-form-adapter'
-import * as yup from 'yup'
+import { zodValidator } from '@tanstack/zod-form-adapter'
+import { z } from 'zod'
 
 interface FieldInfoProps {
   field: FieldApi<any, any, unknown, unknown>
@@ -30,13 +30,13 @@ function App() {
       // Do something with form data
       console.log(values)
     },
-    // Add a validator to support Yup usage in Form and Field
-    validator: yupValidator,
+    // Add a validator to support Zod usage in Form and Field
+    validator: zodValidator,
   }))
 
   return (
     <div>
-      <h1>Yup Form Example</h1>
+      <h1>Zod Form Example</h1>
       {/* A pre-bound form component */}
       <form.Provider>
         <form
@@ -50,20 +50,19 @@ function App() {
             {/* A type-safe and pre-bound field component*/}
             <form.Field
               name="firstName"
-              onChange={yup
+              onChange={z
                 .string()
                 .min(3, 'First name must be at least 3 characters')}
               onChangeAsyncDebounceMs={500}
-              onChangeAsync={yup
-                .string()
-                .test(
-                  'no error',
-                  "No 'error' allowed in first name",
-                  async (value) => {
-                    await new Promise((resolve) => setTimeout(resolve, 1000))
-                    return !value?.includes('error')
-                  },
-                )}
+              onChangeAsync={z.string().refine(
+                async (value) => {
+                  await new Promise((resolve) => setTimeout(resolve, 1000))
+                  return !value.includes('error')
+                },
+                {
+                  message: "No 'error' allowed in first name",
+                },
+              )}
               children={(field) => {
                 // Avoid hasty abstractions. Render props are great!
                 return (
