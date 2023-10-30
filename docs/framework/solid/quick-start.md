@@ -6,12 +6,10 @@ title: Quick Start
 The bare minimum to get started with TanStack Form is to create a form and add a field. Keep in mind that this example does not include any validation or error handling... yet.
 
 ```tsx
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { useForm } from '@tanstack/react-form'
+import { createForm } from '@tanstack/solid-form'
 
-export default function App() {
-  const form = useForm({
+function App() {
+  const form = createForm(() => ({
     defaultValues: {
       fullName: '',
     },
@@ -19,16 +17,17 @@ export default function App() {
       // Do something with form data
       console.log(values)
     },
-  })
+  }))
 
   return (
     <div>
+      <h1>Simple Form Example</h1>
       <form.Provider>
         <form
           onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            void form.handleSubmit();
+            e.preventDefault()
+            e.stopPropagation()
+            void form.handleSubmit()
           }}
         >
           <div>
@@ -36,10 +35,10 @@ export default function App() {
               name="fullName"
               children={(field) => (
                 <input
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
+                  name={field().name}
+                  value={field().state.value}
+                  onBlur={field().handleBlur}
+                  onInput={(e) => field().handleChange(e.target.value)}
                 />
               )}
             />
@@ -50,9 +49,6 @@ export default function App() {
     </div>
   )
 }
-
-const rootElement = document.getElementById('root')!
-ReactDOM.createRoot(rootElement).render(<App />)
 ```
 
 From here, you'll be ready to explore all of the other features of TanStack Form!

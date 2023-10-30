@@ -57,7 +57,6 @@ export default function App() {
   return (
     <div>
       <h1>Simple Form Example</h1>
-      {/* A pre-bound form component */}
       <form.Provider>
         <form
           onSubmit={(e) => {
@@ -67,7 +66,7 @@ export default function App() {
           }}
         >
           <div>
-            {/* A type-safe and pre-bound field component*/}
+            {/* A type-safe field component*/}
             <form.Field
               name="firstName"
               onChange={(value) =>
