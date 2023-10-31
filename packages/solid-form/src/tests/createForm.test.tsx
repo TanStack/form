@@ -116,10 +116,9 @@ describe('createForm', () => {
   })
 
   it('should run on form mount', async () => {
+    const [formMounted, setFormMounted] = createSignal(false)
+    const [mountForm, setMountForm] = createSignal(false)
     function Comp() {
-      const [formMounted, setFormMounted] = createSignal(false)
-      const [mountForm, setMountForm] = createSignal(false)
-
       const form = createForm(() => ({
         defaultValues: {
           firstName: 'FirstName',
@@ -138,14 +137,14 @@ describe('createForm', () => {
           }
         >
           <form.Provider>
-            <h1>{formMounted() ? 'Form mounted' : 'Not mounted'}</h1>
+            <h1>Form mounted</h1>
           </form.Provider>
         </Show>
       )
     }
 
-    const { getByText, findByText } = render(() => <Comp />)
+    const { getByText } = render(() => <Comp />)
     await user.click(getByText('Mount form'))
-    expect(await findByText('Form mounted')).toBeInTheDocument()
+    expect(formMounted()).toBe(true)
   })
 })
