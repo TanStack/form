@@ -1,7 +1,7 @@
-import { type DeepKeys, type DeepValue, type Updater } from './utils'
-import type { FormApi, ValidationErrorMap } from './FormApi'
 import { Store } from '@tanstack/store'
-import type { Validator, ValidationError } from './types'
+import type { FormApi, ValidationErrorMap } from './FormApi'
+import type { ValidationError, Validator } from './types'
+import type { DeepKeys, DeepValue, Updater } from './utils'
 
 export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount'
 
@@ -503,6 +503,10 @@ export class FieldApi<
   ): ValidationError[] | Promise<ValidationError[]> => {
     // If the field is pristine and validatePristine is false, do not validate
     if (!this.state.meta.isTouched) return []
+
+    try {
+      this.form.validate(cause)
+    } catch (_) {}
 
     // Store the previous error for the errorMapKey (eg. onChange, onBlur, onSubmit)
     const errorMapKey = getErrorMapKey(cause)
