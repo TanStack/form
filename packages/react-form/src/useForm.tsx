@@ -31,6 +31,7 @@ export function useForm<TData, FormValidator>(
     const api = new FormApi<TData>(opts)
 
     api.Provider = function Provider(props) {
+      useIsomorphicLayoutEffect(formApi.mount, [])
       return <formContext.Provider {...props} value={{ formApi: api }} />
     }
     api.Field = Field as any

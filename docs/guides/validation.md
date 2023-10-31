@@ -3,43 +3,92 @@ id: form-validation
 title: Form and Field Validation
 ---
 
-At the core of TanStack Form's functionalities is the concept of validation. We currently support three mechanisms of validation:
+At the core of TanStack Form's functionalities is the concept of validation. TanStack Form makes validation highly customizable:
+- You can control when to perform the validation (on change, on input, on blur, on submit...)
+- Validation rules can be defined at the field level or at the form level
+- Validation can be synchronous or asynchronous (for example as a result of an API call)
 
-- Synchronous functional validation
-- Asynchronous functional validation
-- Adapter-based validation
 
-Let's take a look at each and see how they're built.
+## When is validation performed?
 
-## Synchronous Functional Validation
+It's up to you! The `<Field />` component accepts some callbacks as props such as `onChange` or `onBlur`. Those callbacks are passed the current value of the field, as well as the fieldAPI object, so that you can perform the validation. If you find a validation error, simply return the error message as string and it will be available in `field.state.meta.errors`.
 
-With Form, you can pass a function to a field and, if it returns a string, said string will be used as the error:
+Here is an example:
 
 ```tsx
 <form.Field
   name="age"
   onChange={val => val < 13 ? "You must be 13 to make an account" : undefined}
-  children={(field) => {
-    return (
-      <>
-        <label htmlFor={field.name}>First Name:</label>
-        <input
-          name={field.name}
-          value={field.state.value}
-          onBlur={field.handleBlur}
-          type="number"
-          onChange={(e) => field.handleChange(e.target.valueAsNumber)}
-        />
-        {field.state.meta.touchedErrors ? (
-          <em>{field.state.meta.touchedErrors}</em>
-        ) : null}
-      </>
-    );
-  }}
-/>
+>
+  {field => (
+    <>
+      <label htmlFor={field.name}>Age:</label>
+      <input
+        name={field.name}
+        value={field.state.value}
+        type="number"
+        onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+      />
+      {field.state.meta.errors ? <em role="alert">{field.state.meta.errors.join(', ')}</em> : null}
+    </>
+  )}
+</form.Field>
 ```
 
-### Displaying Errors
+In the example above, the validation is done at each keystroke (`onChange`). If, instead, we wanted the validation to be done when the field is blurred, we would change the code above like so:
+
+```tsx
+<form.Field
+  name="age"
+  onBlur={val => val < 13 ? "You must be 13 to make an account" : undefined}
+>
+  {field => (
+    <>
+      <label htmlFor={field.name}>Age:</label>
+      <input
+        name={field.name}
+        value={field.state.value}
+        type="number"
+        // Listen to the onBlur event on the field
+        onBlur={field.handleBlur}
+        // We always need to implement onChange, so that TanStack Form receives the changes
+        onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+      />
+      {field.state.meta.errors ? <em role="alert">{field.state.meta.errors.join(', ')}</em> : null}
+    </>
+  )}
+</form.Field>
+```
+
+So you can control when the validation is done by implementing the desired callback. You can even perform different pieces of validation at different times:
+
+```tsx
+<form.Field
+  name="age"
+  onChange={val => val < 13 ? "You must be 13 to make an account" : undefined}
+  onBlur={(val) => (val < 0 ? "Invalid value" : undefined)}
+>
+  {field => (
+    <>
+      <label htmlFor={field.name}>Age:</label>
+      <input
+        name={field.name}
+        value={field.state.value}
+        type="number"
+        // Listen to the onBlur event on the field
+        onBlur={field.handleBlur}
+        // We always need to implement onChange, so that TanStack Form receives the changes
+        onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+      />
+      {field.state.meta.errors ? <em role="alert">{field.state.meta.errors.join(', ')}</em> : null}
+    </>
+  )}
+</form.Field>
+```
+
+In the example above, we are validating different things on the same field at different times (at each keystroke and when blurring the field). Since `field.state.meta.errors` is an array, all the relevant errors at a given time are displayed. You can also use `field.state.meta.errorMap` to get errors based on *when* the validation was done (onChange, onBlur etc...). More info about displaying errors below.
+
+## Displaying Errors
 
 Once you have your validation in place, you can map the errors from an array to be displayed in your UI:
 
@@ -47,7 +96,8 @@ Once you have your validation in place, you can map the errors from an array to 
 <form.Field
   name="age"
   onChange={val => val < 13 ? "You must be 13 to make an account" : undefined}
-  children={(field) => {
+>
+  {(field) => {
     return (
       <>
         {/* ... */}
@@ -57,7 +107,7 @@ Once you have your validation in place, you can map the errors from an array to 
       </>
     );
   }}
-/>
+</form.Field>
 ```
 
 Or use the `errorMap` property to access the specific error you're looking for:
@@ -66,36 +116,24 @@ Or use the `errorMap` property to access the specific error you're looking for:
 <form.Field
   name="age"
   onChange={val => val < 13 ? "You must be 13 to make an account" : undefined}
-  children={(field) => {
-    return (
+>
+  {(field) => (
       <>
         {/* ... */}
         {field.state.meta.errorMap['onChange'] ? (
           <em>{field.state.meta.errorMap['onChange']}</em>
         ) : null}
       </>
-    );
-  }}
-/>
+    )}
+</form.Field>
 ```
 
-### Using Alternative Validation Steps
+## Validation at field level vs at form level
 
-One of the great benefits of using TanStack Form is that you're not locked into a specific method of validation. For example, if you want to validate a specific field on blur rather than on text change, you can change `onChange` to `onBlur`:
+As shown above, each `<Field>` accepts its own validation rules via the `onChange`, `onBlur` etc... callbacks. It is also possible to define validation rules at the form level (as opposed to field by field) by passing similar callbacks to the `useForm()` hook.
 
-```tsx
-<form.Field
-  name="age"
-  onBlur={val => val < 13 ? "You must be 13 to make an account" : undefined}
-  children={(field) => {
-    return (
-      <>
-        {/* ... */}
-      </>
-    );
-  }}
-/>
-```
+<!-- TODO: add more details when those callbacks are fixed -->
+
 
 ## Asynchronous Functional Validation
 
@@ -105,57 +143,59 @@ To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods 
 
 ```tsx
 <form.Field
-  name="firstName"
+  name="age"
   onChangeAsync={async (value) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     return (
-      value.includes("error") && 'No "error" allowed in first name'
+      value < 13 ? "You must be 13 to make an account" : undefined
     );
   }}
-  children={(field) => {
-    return (
-      <>
-        <label htmlFor={field.name}>First Name:</label>
-        <input
-          name={field.name}
-          value={field.state.value}
-          onBlur={field.handleBlur}
-          onChange={(e) => field.handleChange(e.target.value)}
-        />
-        <FieldInfo field={field} />
-      </>
-    );
-  }}
-/>
+>
+  {field => (
+    <>
+      <label htmlFor={field.name}>Age:</label>
+      <input
+        name={field.name}
+        value={field.state.value}
+        type="number"
+        onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+      />
+      {field.state.meta.errors ? <em role="alert">{field.state.meta.errors.join(', ')}</em> : null}
+    </>
+  )}
+</form.Field>
 ```
 
-This can be combined with the respective synchronous properties as well:
+Synchronous and Asynchronous validations can coexist. For example it is possible to define both `onBlur` and `onBlurAsync` on the same field:
 
-``` tsx
+```tsx
 <form.Field
-  name="firstName"
-  onChange={(value) =>
-    !value
-      ? "A first name is required"
-      : value.length < 3
-      ? "First name must be at least 3 characters"
-      : undefined
-  }
-  onChangeAsync={async (value) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  name="age"
+  onBlur={(value) => value < 13 ? "You must be at least 13" : undefined}
+  onBlurAsync={async (value) => {
+    const currentAge = await fetchCurrentAgeOnProfile();
     return (
-      value.includes("error") && 'No "error" allowed in first name'
+      value < currentAge ? "You can only increase the age" : undefined
     );
   }}
-  children={(field) => {
-    return (
-      <>
-		{/* ... */}
-      </>
-    );
-  }}
-/>
+>
+  {field => (
+    <>
+      <label htmlFor={field.name}>Age:</label>
+      <input
+        name={field.name}
+        value={field.state.value}
+        type="number"
+        onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+      />
+      {field.state.meta.errors ? <em role="alert">{field.state.meta.errors.join(', ')}</em> : null}
+    </>
+  )}
+</form.Field>
 ```
+
+The synchronous validation method (`onBlur`) is run first and the asynchronous method (`onBlurAsync`) is only run if the synchronous one (`onBlur`) succeeds. To change this behaviour, set the `asyncAlways` option to `true`, and the async method will be run regardless of the result of the sync method.
+
 
 ### Built-in Debouncing
 
@@ -165,7 +205,7 @@ Instead, we enable an easy method for debouncing your `async` calls by adding a 
 
 ```tsx
 <form.Field
-  name="firstName"
+  name="age"
   asyncDebounceMs={500}
   onChangeAsync={async (value) => {
     // ...
@@ -184,7 +224,7 @@ This will debounce every async call with a 500ms delay. You can even override th
 
 ```tsx
 <form.Field
-  name="firstName"
+  name="age"
   asyncDebounceMs={500}
   onChangeAsyncDebounceMs={1500}
   onChangeAsync={async (value) => {
@@ -206,7 +246,7 @@ This will debounce every async call with a 500ms delay. You can even override th
 > This will run `onChangeAsync` every 1500ms while `onBlurAsync` will run every 500ms.
 
 
-## Adapter-Based Validation
+## Adapter-Based Validation (Zod, Yup)
 
 While functions provide more flexibility and customization over your validation, they can be a bit verbose. To help solve this, there are libraries like [Yup](https://github.com/jquense/yup) and [Zod](https://zod.dev/) that provide schema-based validation to make shorthand and type-strict validation substantially easier.
 
@@ -233,11 +273,11 @@ const form = useForm({
 });
 
 <form.Field
-  name="firstName"
+  name="age"
   validator={zodValidator}
   onChange={z
-    .string()
-    .min(3, "First name must be at least 3 characters")}
+    .number()
+    .gte(13, "You must be 13 to make an account")}
   children={(field) => {
     return (
       <>
@@ -252,18 +292,20 @@ These adapters also support async operations using the proper property names:
 
 ```tsx
 <form.Field
-  name="firstName"
+  name="age"
   onChange={z
-    .string()
-    .min(3, "First name must be at least 3 characters")}
+    .number()
+    .gte(13, "You must be 13 to make an account")}
   onChangeAsyncDebounceMs={500}
-  onChangeAsync={z.string().refine(
+  onChangeAsync={z.number().refine(
     async (value) => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      return !value.includes("error");
+      const currentAge = await fetchCurrentAgeOnProfile();
+      return (
+        value >= currentAge
+      );
     },
     {
-      message: "No 'error' allowed in first name",
+      message: "You can only increase the age",
     },
   )}
   children={(field) => {
@@ -276,3 +318,28 @@ These adapters also support async operations using the proper property names:
 />
 ```
 
+## Preventing invalid forms from being submitted
+
+The `onChange`, `onBlur` etc... callbacks are also run when the form is submitted and the submission is blocked if the form is invalid.
+
+The form state object has a `canSubmit` flag that is false when any field is invalid and the form has been touched (`canSubmit` is true until the form has been touched, even if some fields are "technically" invalid based on their `onChange`/`onBlur` props).
+
+You can subscribe to it via `form.Subscribe` and use the value in order to, for example, disable the submit button when the form is invalid (in practice, disabled buttons are not accessible, use `aria-disabled` instead).
+
+```tsx
+const form = useForm(/* ... */);
+
+return (
+  /* ... */
+
+  // Dynamic submit button
+  <form.Subscribe
+    selector={(state) => [state.canSubmit, state.isSubmitting]}
+    children={([canSubmit, isSubmitting]) => (
+      <button type="submit" disabled={!canSubmit}>
+        {isSubmitting ? "..." : "Submit"}
+      </button>
+    )}
+  />
+);
+```

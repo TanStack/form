@@ -25,8 +25,6 @@ export type FormOptions<TData, ValidatorType> = {
   asyncDebounceMs?: number
   validator?: ValidatorType
   onMount?: ValidateOrFn<TData, ValidatorType>
-  onMountAsync?: ValidateAsyncFn<TData, ValidatorType>
-  onMountAsyncDebounceMs?: number
   onChange?: ValidateOrFn<TData, ValidatorType>
   onChangeAsync?: ValidateAsyncFn<TData, ValidatorType>
   onChangeAsyncDebounceMs?: number
@@ -175,6 +173,18 @@ export class FormApi<TFormData, ValidatorType> {
     this.state = this.store.state
 
     this.update(opts || {})
+  }
+
+  mount = () => {
+    if (typeof this.options.onMount === 'function') {
+      return this.options.onMount(this.state.values, this)
+    }
+    if (this.options.validator) {
+      return (this.options.validator as Validator<TFormData>)().validate(
+        this.state.values,
+        this.options.onMount,
+      )
+    }
   }
 
   update = (options?: FormOptions<TFormData, ValidatorType>) => {
