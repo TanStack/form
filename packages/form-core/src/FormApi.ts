@@ -299,7 +299,7 @@ export class FormApi<TFormData, ValidatorType> {
   cancelValidateAsync = () => {
     // Lease a new validation count to ignore any pending validations
     this.__leaseValidateAsync()
-    //??=0) Cancel any pending validation state
+    // Cancel any pending validation state
     this.store.setState((prev) => ({
       ...prev,
       isFormValidating: false,
@@ -309,7 +309,6 @@ export class FormApi<TFormData, ValidatorType> {
   validateAsync = async (
     cause: ValidationCause,
   ): Promise<ValidationError[]> => {
-    console.log('validateAsync')
     const {
       onChangeAsync,
       onBlurAsync,
@@ -332,7 +331,6 @@ export class FormApi<TFormData, ValidatorType> {
       0
 
     if (!this.state.isFormValidating) {
-      console.log('isFormValidating true')
       this.store.setState((prev) => ({ ...prev, isFormValidating: true }))
     }
 
@@ -341,7 +339,7 @@ export class FormApi<TFormData, ValidatorType> {
     const validationAsyncCount = this.__leaseValidateAsync()
 
     const checkLatest = () =>
-      validationAsyncCount === this.state.formValidationCount
+      validationAsyncCount === this.validationMeta.validationAsyncCount
 
     if (!this.validationMeta.validationPromise) {
       this.validationMeta.validationPromise = new Promise((resolve, reject) => {
