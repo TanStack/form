@@ -23,13 +23,13 @@ export const packages: Package[] = [
     name: '@tanstack/yup-form-adapter',
     packageDir: 'yup-form-adapter',
   },
+  {
+    name: '@tanstack/solid-form',
+    packageDir: 'solid-form',
+  },
   // {
-  //   name: '@tanstack/solid-store',
-  //   packageDir: 'solid-store',
-  // },
-  // {
-  //   name: '@tanstack/svelte-store',
-  //   packageDir: 'svelte-store',
+  //   name: '@tanstack/svelte-form',
+  //   packageDir: 'svelte-form',
   // },
 ]
 

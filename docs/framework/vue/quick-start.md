@@ -11,7 +11,6 @@ The bare minimum to get started with TanStack Form is to create a form and add a
 import { useForm } from '@tanstack/vue-form'
 
 const form = useForm({
-  // Memoize your default values to prevent re-renders
   defaultValues: {
     fullName: '',
   },

@@ -3,8 +3,8 @@ import { useStore } from '@tanstack/react-store'
 import type { DeepKeys, DeepValue, Narrow } from '@tanstack/form-core'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useFormContext, formContext } from './formContext'
-import useIsomorphicLayoutEffect from 'use-isomorphic-layout-effect'
 import type { UseFieldOptions } from './types'
+import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
