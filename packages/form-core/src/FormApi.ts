@@ -251,6 +251,7 @@ export class FormApi<TFormData, ValidatorType> {
     this.store.setState((prev) => ({
       ...prev,
       isValidating: true,
+      isFormValidating: true,
       formValidationCount: prev.formValidationCount + 1,
     }))
 
@@ -274,6 +275,7 @@ export class FormApi<TFormData, ValidatorType> {
           this.store.setState((prev) => ({
             ...prev,
             isValidating: false,
+            isFormValidating: false,
             formError: error ? 'Invalid Form Values' : false,
           }))
 
@@ -400,14 +402,14 @@ export class FormApi<TFormData, ValidatorType> {
         }))
       }
 
-      this.validateForm()
-
       this.store.setState((prev) => {
         return {
           ...prev,
           values: setBy(prev.values, field, updater),
         }
       })
+
+      this.validateForm()
     })
   }
 

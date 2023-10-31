@@ -344,7 +344,9 @@ describe('form api', () => {
     expect(form.state.canSubmit).toBe(false)
 
     field.handleChange('ayo')
-    await sleep(11)
+    await sleep(1)
+    expect(form.state.isFormValidating).toBe(true)
+    await sleep(9)
 
     expect(form.state.isFormValidating).toBe(false)
     expect(form.state.isFormValid).toBe(true)
