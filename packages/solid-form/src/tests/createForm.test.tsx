@@ -2,6 +2,7 @@ import { render, screen, waitFor } from '@solidjs/testing-library'
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { createFormFactory, createForm } from '..'
+import { Show, createSignal } from 'solid-js'
 
 const user = userEvent.setup()
 
@@ -112,5 +113,39 @@ describe('createForm', () => {
     await user.type(input, 'OtherName')
     await user.click(getByText('Submit'))
     expect(submittedData?.firstName).toEqual('OtherName')
+  })
+
+  it('should run on form mount', async () => {
+    function Comp() {
+      const [formMounted, setFormMounted] = createSignal(false)
+      const [mountForm, setMountForm] = createSignal(false)
+
+      const form = createForm(() => ({
+        defaultValues: {
+          firstName: 'FirstName',
+        },
+        onMount: () => {
+          setFormMounted(true)
+          return undefined
+        },
+      }))
+
+      return (
+        <Show
+          when={mountForm()}
+          fallback={
+            <button onClick={() => setMountForm(true)}>Mount form</button>
+          }
+        >
+          <form.Provider>
+            <h1>{formMounted() ? 'Form mounted' : 'Not mounted'}</h1>
+          </form.Provider>
+        </Show>
+      )
+    }
+
+    const { getByText, findByText } = render(() => <Comp />)
+    await user.click(getByText('Mount form'))
+    expect(await findByText('Form mounted')).toBeInTheDocument()
   })
 })

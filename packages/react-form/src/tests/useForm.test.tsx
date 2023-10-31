@@ -124,4 +124,37 @@ describe('useForm', () => {
       expect(getByText('Submitted data: OtherName')).toBeInTheDocument(),
     )
   })
+
+  it('should run on form mount', async () => {
+    function Comp() {
+      const [formMounted, setFormMounted] = React.useState(false)
+      const [mountForm, setMountForm] = React.useState(false)
+
+      const form = useForm({
+        defaultValues: {
+          firstName: 'FirstName',
+        },
+        onMount: () => {
+          setFormMounted(true)
+          return undefined
+        },
+      })
+
+      return (
+        <>
+          {mountForm ? (
+            <form.Provider>
+              <h1>{formMounted ? 'Form mounted' : 'Not mounted'}</h1>
+            </form.Provider>
+          ) : (
+            <button onClick={() => setMountForm(true)}>Mount form</button>
+          )}
+        </>
+      )
+    }
+
+    const { getByText } = render(<Comp />)
+    await user.click(getByText('Mount form'))
+    await waitFor(() => expect(getByText('Form mounted')).toBeInTheDocument())
+  })
 })
