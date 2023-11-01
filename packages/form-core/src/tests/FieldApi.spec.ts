@@ -1,9 +1,8 @@
 import { expect } from 'vitest'
 
-import { FormApi, FormOptions } from '../FormApi'
+import { FormApi } from '../FormApi'
 import { FieldApi } from '../FieldApi'
 import { sleep } from './utils'
-import { DeepKeys } from '../utils'
 
 describe('field api', () => {
   it('should have an initial value', () => {
