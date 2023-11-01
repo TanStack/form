@@ -6,7 +6,7 @@ import { FieldApi } from '../FieldApi'
 describe('form api', () => {
   it('should get default form state', () => {
     const form = new FormApi()
-
+    form.mount()
     expect(form.state).toEqual({
       values: {},
       fieldMeta: {},
@@ -31,7 +31,7 @@ describe('form api', () => {
         name: 'test',
       },
     })
-
+    form.mount()
     expect(form.state).toEqual({
       values: {
         name: 'test',
@@ -58,7 +58,7 @@ describe('form api', () => {
         submissionAttempts: 30,
       },
     })
-
+    form.mount()
     expect(form.state).toEqual({
       values: {},
       fieldMeta: {},
@@ -83,7 +83,7 @@ describe('form api', () => {
         name: 'test',
       },
     })
-
+    form.mount()
     form.update({
       defaultValues: {
         name: 'other',
@@ -119,7 +119,7 @@ describe('form api', () => {
         name: 'test',
       },
     })
-
+    form.mount()
     form.setFieldValue('name', 'other')
     form.state.submissionAttempts = 300
 
@@ -151,7 +151,7 @@ describe('form api', () => {
         name: 'test',
       },
     })
-
+    form.mount()
     expect(form.getFieldValue('name')).toEqual('test')
   })
 
@@ -161,7 +161,7 @@ describe('form api', () => {
         name: 'test',
       },
     })
-
+    form.mount()
     form.setFieldValue('name', 'other')
 
     expect(form.getFieldValue('name')).toEqual('other')
@@ -173,7 +173,7 @@ describe('form api', () => {
         names: ['test'],
       },
     })
-
+    form.mount()
     form.pushFieldValue('names', 'other')
 
     expect(form.getFieldValue('names')).toStrictEqual(['test', 'other'])
@@ -185,7 +185,7 @@ describe('form api', () => {
         names: ['one', 'two', 'three'],
       },
     })
-
+    form.mount()
     form.insertFieldValue('names', 1, 'other')
 
     expect(form.getFieldValue('names')).toStrictEqual(['one', 'other', 'three'])
@@ -197,7 +197,7 @@ describe('form api', () => {
         names: ['one', 'two', 'three'],
       },
     })
-
+    form.mount()
     form.removeFieldValue('names', 1)
 
     expect(form.getFieldValue('names')).toStrictEqual(['one', 'three'])
@@ -209,7 +209,7 @@ describe('form api', () => {
         names: ['one', 'two', 'three'],
       },
     })
-
+    form.mount()
     form.swapFieldValues('names', 1, 2)
 
     expect(form.getFieldValue('names')).toStrictEqual(['one', 'three', 'two'])
@@ -221,7 +221,7 @@ describe('form api', () => {
         name: 'test',
       },
     })
-
+    form.mount()
     form.setFieldValue('name', 'other')
 
     expect(form.getFieldValue('name')).toEqual('other')
@@ -237,7 +237,7 @@ describe('form api', () => {
         name: 'test',
       },
     })
-
+    form.mount()
     expect(form.getFieldValue('name')).toEqual('test')
 
     form.update({
@@ -255,7 +255,7 @@ describe('form api', () => {
         name: 'one',
       },
     })
-
+    form.mount()
     expect(form.getFieldValue('name')).toEqual('one')
 
     form.setFieldValue('name', 'two', { touch: true })
@@ -296,6 +296,8 @@ describe('form api', () => {
       name: 'name',
       onChange: (v) => (v.length > 0 ? undefined : 'required'),
     })
+
+    form.mount()
 
     field.mount()
 
