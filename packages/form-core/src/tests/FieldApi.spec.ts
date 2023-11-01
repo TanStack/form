@@ -1,8 +1,9 @@
 import { expect } from 'vitest'
 
-import { FormApi } from '../FormApi'
+import {FormApi, FormOptions} from '../FormApi'
 import { FieldApi } from '../FieldApi'
 import { sleep } from './utils'
+import {DeepKeys} from "../utils";
 
 describe('field api', () => {
   it('should have an initial value', () => {
@@ -601,5 +602,80 @@ describe('field api', () => {
     const info = form.getFieldInfo(field.name)
     expect(info.instances[field.uid]).toBeUndefined()
     expect(Object.keys(info.instances).length).toBe(0)
+  })
+
+  it('should handle array values', async () => {
+    interface Form {
+      names: string[]
+    }
+    const form = new FormApi<Form, unknown>()
+
+    const field = new FieldApi({
+      form,
+      name: 'names',
+      defaultValue: [],
+    })
+
+    field.mount()
+
+    expect(field.state.value).toEqual([])
+  })
+
+  it('should handle fields inside an array', async () => {
+
+    interface Employee {
+      firstName: string;
+    }
+    interface Form {
+      employees: Partial<Employee>[]
+    }
+
+    const form = new FormApi<Form, unknown>();
+
+    const field = new FieldApi({
+      form,
+      name: 'employees',
+      defaultValue: []
+    })
+
+    field.mount()
+
+    const fieldInArray = new FieldApi({
+      form,
+      name: `employees.${0}.firstName`,
+      defaultValue: 'Christian'
+    })
+    fieldInArray.mount();
+    expect(field.state.value.length).toBe(1);
+    expect(fieldInArray.getValue()).toBe('Christian');
+  })
+
+  it('should handle array mutations', async () => {
+
+    interface Employee {
+      firstName: string;
+    }
+    interface Form {
+      employees: Partial<Employee>[]
+    }
+
+    const form = new FormApi<Form, unknown>();
+
+    const field = new FieldApi({
+      form,
+      name: 'employees',
+      defaultValue: [] as Employee[]
+    })
+
+    field.mount()
+    field.pushValue({firstName: 'Christian'})
+
+    const fieldInArray = new FieldApi({
+      form,
+      name: `employees.${0}.firstName`,
+    })
+    fieldInArray.mount();
+    expect(field.state.value.length).toBe(1)
+    expect(fieldInArray.getValue()).toBe('Christian')
   })
 })
