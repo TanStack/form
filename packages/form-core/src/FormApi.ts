@@ -176,14 +176,23 @@ export class FormApi<TFormData, ValidatorType> {
   }
 
   mount = () => {
-    if (typeof this.options.onMount === 'function') {
-      return this.options.onMount(this.state.values, this)
+    const doValidate = () => {
+      if (typeof this.options.onMount === 'function') {
+        return this.options.onMount(this.state.values, this)
+      }
+      if (this.options.validator) {
+        return (this.options.validator as Validator<TFormData>)().validate(
+          this.state.values,
+          this.options.onMount,
+        )
+      }
     }
-    if (this.options.validator) {
-      return (this.options.validator as Validator<TFormData>)().validate(
-        this.state.values,
-        this.options.onMount,
-      )
+    const error = doValidate()
+    if (error) {
+      this.store.setState((prev) => ({
+        ...prev,
+        errorMap: { ...prev.errorMap, onMount: error },
+      }))
     }
   }
 
