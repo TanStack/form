@@ -132,7 +132,7 @@ Or use the `errorMap` property to access the specific error you're looking for:
 
 As shown above, each `<Field>` accepts its own validation rules via the `onChange`, `onBlur` etc... callbacks. It is also possible to define validation rules at the form level (as opposed to field by field) by passing similar callbacks to the `useForm()` hook.
 
-<!-- TODO: add more details when those callbacks are fixed -->
+{/* TODO: add more details when those callbacks are fixed */}
 
 
 ## Asynchronous Functional Validation
