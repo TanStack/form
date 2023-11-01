@@ -623,6 +623,16 @@ importers:
         specifier: ^2.7.0
         version: 2.7.0(solid-js@1.7.12)(vite@4.4.9)
 
+  packages/valibot-form-adapter:
+    dependencies:
+      '@tanstack/form-core':
+        specifier: workspace:*
+        version: link:../form-core
+    devDependencies:
+      valibot:
+        specifier: ^0.20.0
+        version: 0.20.0
+
   packages/vue-form:
     dependencies:
       '@tanstack/form-core':
@@ -10810,6 +10820,10 @@ packages:
 
   /v8-compile-cache@2.3.0:
     resolution: {integrity: sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==}
+    dev: true
+
+  /valibot@0.20.0:
+    resolution: {integrity: sha512-a2Vy4oPIHvrwfPZF0Cl83yBn17Zgekp6IQ0PzdUFTPWtlwWFCJNHtOm/nypzv5o/6llKBsIEErswWHbvjNGzNw==}
     dev: true
 
   /validate-html-nesting@1.2.2:
