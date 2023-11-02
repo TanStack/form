@@ -243,6 +243,7 @@ export class FieldApi<
       unsubscribe()
       if (!preserveValue) {
         delete info.instances[this.uid]
+        this.form.deleteField(this.name)
       }
 
       if (!Object.keys(info.instances).length && !preserveValue) {
