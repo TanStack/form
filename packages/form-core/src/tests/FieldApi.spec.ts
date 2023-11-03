@@ -606,6 +606,4 @@ describe('field api', () => {
     expect(form.state.values.name).toBeUndefined()
     expect(form.state.fieldMeta.name).toBeUndefined()
   })
-
-
 })
