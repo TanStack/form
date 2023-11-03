@@ -601,5 +601,9 @@ describe('field api', () => {
     const info = form.getFieldInfo(field.name)
     expect(info.instances[field.uid]).toBeUndefined()
     expect(Object.keys(info.instances).length).toBe(0)
+
+    // Field should have been removed from the form as well
+    expect(form.state.values.name).toBeUndefined()
+    expect(form.state.fieldMeta.name).toBeUndefined()
   })
 })
