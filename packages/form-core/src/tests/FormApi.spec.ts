@@ -314,4 +314,35 @@ describe('form api', () => {
     expect(form.state.isFieldsValid).toEqual(true)
     expect(form.state.canSubmit).toEqual(true)
   })
+
+  it('should validate fields on formSubmit', async ()=>{
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+        lastName: '',
+      },
+
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      onChange: (v) => (v.length > 0 ? undefined : 'first name is required'),
+    })
+
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+      onChange: (v) => (v.length > 0 ? undefined : 'last name is required'),
+    })
+
+    field.mount()
+    lastNameField.mount()
+
+    await form.handleSubmit()
+    expect(form.state.isFieldsValid).toEqual(false)
+    expect(form.state.canSubmit).toEqual(false)
+    expect(form.state.fieldMeta['name'].errors).toEqual(['first name is required'])
+    expect(form.state.fieldMeta['lastName'].errors).toEqual(['last name is required'])
+  })
 })

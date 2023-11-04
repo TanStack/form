@@ -331,10 +331,9 @@ export class FieldApi<
   validateSync = (value = this.state.value, cause: ValidationCause) => {
     const { onChange, onBlur } = this.options
     const validate =
-      cause === 'submit' ? undefined : cause === 'change' ? onChange : onBlur
-
-    if (!validate) return
-
+    cause === 'submit' ? onChange ? onChange: onBlur : cause === 'change' ? onChange : onBlur
+    
+    if(!validate) return
     // Use the validationCount for all field instances to
     // track freshness of the validation
     const validationCount = (this.getInfo().validationCount || 0) + 1
