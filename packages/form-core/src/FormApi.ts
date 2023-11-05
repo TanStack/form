@@ -360,11 +360,12 @@ export class FormApi<TFormData, ValidatorType> {
   }
 
   deleteField = <TField extends DeepKeys<TFormData>>(field: TField) => {
-    const newState = { ...this.state }
-    delete newState.values[field as keyof TFormData]
-    delete newState.fieldMeta[field]
-
-    this.store.setState((_) => newState)
+    this.store.setState((prev) => {
+      const newState = { ...prev }
+      delete newState.values[field as keyof TFormData]
+      delete newState.fieldMeta[field]
+      return newState
+    })
   }
 
   pushFieldValue = <TField extends DeepKeys<TFormData>>(
