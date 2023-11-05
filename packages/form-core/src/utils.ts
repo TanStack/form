@@ -105,7 +105,7 @@ export function deleteBy(obj: any, _path: any) {
       }
     }
 
-    throw new Error('Uh oh!')
+    throw new Error('It seems we have created an infinite loop in deleteBy. ')
   }
 
   return doDelete(obj)
