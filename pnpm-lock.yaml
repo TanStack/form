@@ -554,6 +554,49 @@ importers:
         specifier: ^1.8.10
         version: 1.8.10(typescript@5.2.2)
 
+  examples/vue/valibot:
+    dependencies:
+      '@tanstack/form-core':
+        specifier: workspace:*
+        version: link:../../../packages/form-core
+      '@tanstack/react-form':
+        specifier: workspace:*
+        version: link:../../../packages/react-form
+      '@tanstack/solid-form':
+        specifier: workspace:*
+        version: link:../../../packages/solid-form
+      '@tanstack/valibot-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/valibot-form-adapter
+      '@tanstack/vue-form':
+        specifier: workspace:*
+        version: link:../../../packages/vue-form
+      '@tanstack/yup-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/yup-form-adapter
+      '@tanstack/zod-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/zod-form-adapter
+      valibot:
+        specifier: ^0.20.1
+        version: 0.20.1
+      vue:
+        specifier: ^3.3.4
+        version: 3.3.4
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^4.3.4
+        version: 4.3.4(vite@4.4.9)(vue@3.3.4)
+      typescript:
+        specifier: ^5.0.4
+        version: 5.2.2
+      vite:
+        specifier: ^4.4.9
+        version: 4.4.9(@types/node@17.0.45)
+      vue-tsc:
+        specifier: ^1.8.10
+        version: 1.8.10(typescript@5.2.2)
+
   examples/vue/yup:
     dependencies:
       '@tanstack/form-core':
