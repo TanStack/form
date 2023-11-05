@@ -1,5 +1,5 @@
 {
-  "name": "@tanstack/form-example-react-yup",
+  "name": "@tanstack/form-example-react-valibot",
   "version": "0.0.1",
   "main": "src/index.jsx",
   "scripts": {
@@ -8,15 +8,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/react-form": "0.8.1",
+    "@tanstack/react-form": "0.7.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "yup": "^1.3.2",
-    "@tanstack/form-core": "0.8.1",
-    "@tanstack/yup-form-adapter": "0.8.1",
-    "@tanstack/vue-form": "0.8.1",
-    "@tanstack/zod-form-adapter": "0.8.1",
-    "@tanstack/solid-form": "0.8.1"
+    "valibot": "^0.20.1",
+    "@tanstack/valibot-form-adapter": "0.7.2",
+    "@tanstack/form-core": "0.7.2",
+    "@tanstack/zod-form-adapter": "0.7.2",
+    "@tanstack/vue-form": "0.7.2",
+    "@tanstack/yup-form-adapter": "0.7.2",
+    "@tanstack/solid-form": "0.7.2"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.4",
@@ -38,7 +39,7 @@
     "implicitDependencies": [
       "@tanstack/form-core",
       "@tanstack/react-form",
-      "@tanstack/yup-form-adapter"
+      "@tanstack/zod-form-adapter"
     ],
     "targets": {
       "test:types": {

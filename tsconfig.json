@@ -4,7 +4,10 @@
     { "path": "packages/form-core" },
     { "path": "packages/react-form" },
     { "path": "packages/vue-form" },
-    { "path": "packages/solid-form" }
+    { "path": "packages/solid-form" },
+    { "path": "packages/yup-form-adapter" },
+    { "path": "packages/zod-form-adapter" },
+    { "path": "packages/valibot-form-adapter" }
   ]
   // "include": ["examples/*"]
   // "exclude": ["node_modules"]

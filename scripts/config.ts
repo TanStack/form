@@ -24,6 +24,10 @@ export const packages: Package[] = [
     packageDir: 'yup-form-adapter',
   },
   {
+    name: '@tanstack/valibot-form-adapter',
+    packageDir: 'valibot-form-adapter',
+  },
+  {
     name: '@tanstack/solid-form',
     packageDir: 'solid-form',
   },
@@ -58,6 +62,6 @@ export const rootDir = path.resolve(__dirname, '..')
 export const examplesDirs = [
   'examples/react',
   'examples/vue',
-  // 'examples/solid',
+  'examples/solid',
   // 'examples/svelte',
 ]
