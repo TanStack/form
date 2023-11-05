@@ -71,7 +71,7 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
 }
 
 /**
- * Set a value on an object using a path, including dot notation.
+ * Delete a field on an object using a path, including dot notation.
  */
 export function deleteBy(obj: any, _path: any) {
   const path = makePathArray(_path)
