@@ -4,7 +4,6 @@ import {
   deleteBy,
   functionalUpdate,
   getBy,
-  getObjectPath,
   isNonEmptyArray,
   setBy,
 } from './utils'
@@ -562,7 +561,7 @@ export class FormApi<TFormData, ValidatorType> {
       const newState = { ...prev }
       newState.values = deleteBy(newState.values, field)
       delete newState.fieldMeta[field]
-      
+
       return newState
     })
   }
