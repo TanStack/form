@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@tanstack/react-form": "0.7.2",
-    "axios": "^0.26.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "@tanstack/form-core": "0.7.2",
