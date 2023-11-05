@@ -32,7 +32,7 @@ export default function App() {
 
   return (
     <div>
-      <h1>Zod Form Example</h1>
+      <h1>Valibot Form Example</h1>
       <form.Provider>
         <form
           onSubmit={(e) => {
@@ -53,8 +53,16 @@ export default function App() {
                 async (value) => {
                   await new Promise((resolve) => setTimeout(resolve, 1000));
                   return (
-                    !value.includes("error")
-                      ? { issues: ["No 'error' allowed in first name"] }
+                    value.includes("error")
+                      ? {
+                          issues: [
+                            {
+                              input: value,
+                              validation: "firstName",
+                              message: "No 'error' allowed in first name",
+                            },
+                          ],
+                        }
                       : { output: value }
                   ) as PipeResult<string>;
                 },

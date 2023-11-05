@@ -23,8 +23,16 @@ const onChangeFirstName = stringAsync([
   async (value) => {
     await new Promise((resolve) => setTimeout(resolve, 1000))
     return (
-      !value.includes('error')
-        ? { issues: ["No 'error' allowed in first name"] }
+      value.includes('error')
+        ? {
+            issues: [
+              {
+                input: value,
+                validation: 'firstName',
+                message: "No 'error' allowed in first name",
+              },
+            ],
+          }
         : { output: value }
     ) as PipeResult<string>
   },
