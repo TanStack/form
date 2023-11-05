@@ -21,4 +21,6 @@ In addition, we support both Zod and Yup as validators through official validato
 $ npm i @tanstack/zod-form-adapter zod
 # or
 $ npm i @tanstack/yup-form-adapter yup
+# or
+$ npm i @tanstack/valibot-form-adapter valibot
 ```

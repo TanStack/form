@@ -101,6 +101,10 @@
             {
               "label": "Zod",
               "to": "framework/react/examples/zod"
+            },
+            {
+              "label": "Valibot",
+              "to": "framework/react/examples/valibot"
             }
           ]
         }
@@ -153,6 +157,10 @@
             {
               "label": "Zod",
               "to": "framework/vue/examples/zod"
+            },
+            {
+              "label": "Valibot",
+              "to": "framework/vue/examples/valibot"
             }
           ]
         }
@@ -205,6 +213,10 @@
             {
               "label": "Zod",
               "to": "framework/solid/examples/zod"
+            },
+            {
+              "label": "Valibot",
+              "to": "framework/solid/examples/valibot"
             }
           ]
         }
