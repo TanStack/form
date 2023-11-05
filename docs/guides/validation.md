@@ -246,9 +246,9 @@ This will debounce every async call with a 500ms delay. You can even override th
 > This will run `onChangeAsync` every 1500ms while `onBlurAsync` will run every 500ms.
 
 
-## Adapter-Based Validation (Zod, Yup)
+## Adapter-Based Validation (Zod, Yup, Valibot)
 
-While functions provide more flexibility and customization over your validation, they can be a bit verbose. To help solve this, there are libraries like [Yup](https://github.com/jquense/yup) and [Zod](https://zod.dev/) that provide schema-based validation to make shorthand and type-strict validation substantially easier.
+While functions provide more flexibility and customization over your validation, they can be a bit verbose. To help solve this, there are libraries like [Valibot](https://valibot.dev/), [Yup](https://github.com/jquense/yup), and [Zod](https://zod.dev/) that provide schema-based validation to make shorthand and type-strict validation substantially easier.
 
 Luckily, we support both of these libraries through official adapters:
 
@@ -256,6 +256,8 @@ Luckily, we support both of these libraries through official adapters:
 $ npm install @tanstack/zod-form-adapter zod
 # or
 $ npm install @tanstack/yup-form-adapter yup
+# or
+$ npm install @tanstack/valibot-form-adapter valibot
 ```
 
 Once done, we can add the adapter to the `validator` property  on the form or field:
