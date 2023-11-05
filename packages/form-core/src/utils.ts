@@ -51,19 +51,15 @@ export function setBy(obj: any, _path: string, updater: Updater<any>) {
       }
     }
 
-
-      if (Array.isArray(parent) && key !== undefined) {
-        const prefix = parent.slice(0, key)
-        return [
-          ...(prefix.length ? prefix : new Array(key)),
-          doSet(parent[key]),
-          ...parent.slice(key + 1),
-        ]
-      }
-      return [...new Array(key), doSet()]
-
-
-
+    if (Array.isArray(parent) && key !== undefined) {
+      const prefix = parent.slice(0, key)
+      return [
+        ...(prefix.length ? prefix : new Array(key)),
+        doSet(parent[key]),
+        ...parent.slice(key + 1),
+      ]
+    }
+    return [...new Array(key), doSet()]
   }
 
   return doSet(obj)
@@ -120,8 +116,6 @@ const intPrefix = '__int__'
 const intReplace = `${intPrefix}$1`
 
 function makePathArray(str: string) {
-
-
   return str
     .replace('[', '.')
     .replace(']', '')

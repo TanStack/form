@@ -5,16 +5,23 @@ export function sleep(timeout: number): Promise<void> {
 }
 
 interface Kid {
-  name: string;
+  name: string
   age: number
 }
 export interface Person {
   name: string
   kids: Kid[]
-  mother: {name: string}
+  mother: { name: string }
 }
 export function makeComplexFormStructure(): Person {
-  return {name: 'Marc', kids: [{name: 'Stephen', age: 10}, {name: 'Taylor', age: 15}], mother: {
-    name: 'Lisa'
-    }};
+  return {
+    name: 'Marc',
+    kids: [
+      { name: 'Stephen', age: 10 },
+      { name: 'Taylor', age: 15 },
+    ],
+    mother: {
+      name: 'Lisa',
+    },
+  }
 }
