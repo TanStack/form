@@ -20,7 +20,8 @@
       "@tanstack/vue-form": ["packages/vue-form"],
       "@tanstack/solid-form": ["packages/solid-form"],
       "@tanstack/yup-form-adapter": ["packages/yup-form-adapter"],
-      "@tanstack/zod-form-adapter": ["packages/zod-form-adapter"]
+      "@tanstack/zod-form-adapter": ["packages/zod-form-adapter"],
+      "@tanstack/valibot-form-adapter": ["packages/valibot-form-adapter"]
     }
   },
   "ts-node": {
