@@ -184,16 +184,21 @@ export class FormApi<TFormData, ValidatorType> {
 
   mount = () => {
     const doValidate = () => {
-      if (typeof this.options.onMount === 'function') {
-        return this.options.onMount(this.state.values, this)
-      }
-      if (this.options.validator) {
+      if (
+        this.options.validator &&
+        typeof this.options.onMount !== 'function'
+      ) {
         return (this.options.validator as Validator<TFormData>)().validate(
           this.state.values,
           this.options.onMount,
         )
       }
+      return (this.options.onMount as ValidateFn<TFormData, ValidatorType>)(
+        this.state.values,
+        this,
+      )
     }
+    if (!this.options.onMount) return
     const error = doValidate()
     if (error) {
       this.store.setState((prev) => ({
@@ -276,17 +281,16 @@ export class FormApi<TFormData, ValidatorType> {
 
     const errorMapKey = getErrorMapKey(cause)
     const doValidate = () => {
-      if (typeof validate === 'function') {
-        return validate(this.state.values, this) as ValidationError
-      }
       if (this.options.validator && typeof validate !== 'function') {
         return (this.options.validator as Validator<TFormData>)().validate(
           this.state.values,
           validate,
         )
       }
-      throw new Error(
-        `Form validation for ${errorMapKey} failed. ${errorMapKey} should either be a function, or \`validator\` should be correct.`,
+
+      return (validate as ValidateFn<TFormData, ValidatorType>)(
+        this.state.values,
+        this,
       )
     }
 
@@ -556,11 +560,9 @@ export class FormApi<TFormData, ValidatorType> {
   deleteField = <TField extends DeepKeys<TFormData>>(field: TField) => {
     this.store.setState((prev) => {
       const newState = { ...prev }
-
       newState.values = deleteBy(newState.values, field)
-
       delete newState.fieldMeta[field]
-      console.log(newState)
+      
       return newState
     })
   }
