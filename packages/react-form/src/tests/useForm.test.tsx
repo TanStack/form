@@ -157,4 +157,49 @@ describe('useForm', () => {
     await user.click(getByText('Mount form'))
     await waitFor(() => expect(getByText('Form mounted')).toBeInTheDocument())
   })
+
+  it('should validate async on change for the form', async () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    const error = 'Please enter a different value'
+
+    const formFactory = createFormFactory<Person, unknown>()
+
+    function Comp() {
+      const form = formFactory.useForm({
+        onChange() {
+          return error
+        },
+      })
+
+      return (
+        <form.Provider>
+          <form.Field
+            name="firstName"
+            children={(field) => (
+              <input
+                data-testid="fieldinput"
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            )}
+          />
+          <form.Subscribe selector={(state) => state.errorMap}>
+            {(errorMap) => <p>{errorMap.onChange}</p>}
+          </form.Subscribe>
+        </form.Provider>
+      )
+    }
+
+    const { getByTestId, getByText, queryByText } = render(<Comp />)
+    const input = getByTestId('fieldinput')
+    expect(queryByText(error)).not.toBeInTheDocument()
+    await user.type(input, 'other')
+    await waitFor(() => getByText(error))
+    expect(getByText(error)).toBeInTheDocument()
+  })
 })

@@ -21,6 +21,7 @@ type ValidateAsyncFn<TData, ValidatorType> = (
 export type FormOptions<TData, ValidatorType> = {
   defaultValues?: TData
   defaultState?: Partial<FormState<TData>>
+  asyncAlways?: boolean
   asyncDebounceMs?: number
   validator?: ValidatorType
   onMount?: ValidateOrFn<TData, ValidatorType>
@@ -47,8 +48,8 @@ export type FieldInfo<TFormData, ValidatorType> = {
 export type ValidationMeta = {
   validationCount?: number
   validationAsyncCount?: number
-  validationPromise?: Promise<ValidationError[]>
-  validationResolve?: (errors: ValidationError[]) => void
+  validationPromise?: Promise<ValidationError[] | undefined>
+  validationResolve?: (errors: ValidationError[] | undefined) => void
   validationReject?: (errors: unknown) => void
 }
 
@@ -64,7 +65,8 @@ export type FormState<TData> = {
   isFormValidating: boolean
   formValidationCount: number
   isFormValid: boolean
-  formError?: ValidationError
+  errors: ValidationError[]
+  errorMap: ValidationErrorMap
   // Fields
   fieldMeta: Record<DeepKeys<TData>, FieldMeta>
   isFieldsValidating: boolean
@@ -84,6 +86,8 @@ function getDefaultFormState<TData>(
 ): FormState<TData> {
   return {
     values: defaultState.values ?? ({} as never),
+    errors: defaultState.errors ?? [],
+    errorMap: defaultState.errorMap ?? {},
     fieldMeta: defaultState.fieldMeta ?? ({} as never),
     canSubmit: defaultState.canSubmit ?? true,
     isFieldsValid: defaultState.isFieldsValid ?? false,
@@ -141,7 +145,10 @@ export class FormApi<TFormData, ValidatorType> {
           const isTouched = fieldMetaValues.some((field) => field?.isTouched)
 
           const isValidating = isFieldsValidating || state.isFormValidating
-          const isFormValid = !state.formError
+          state.errors = Object.values(state.errorMap).filter(
+            (val: unknown) => val !== undefined,
+          )
+          const isFormValid = state.errors.length === 0
           const isValid = isFieldsValid && isFormValid
           const canSubmit =
             (state.submissionAttempts === 0 && !isTouched) ||
@@ -169,14 +176,23 @@ export class FormApi<TFormData, ValidatorType> {
   }
 
   mount = () => {
-    if (typeof this.options.onMount === 'function') {
-      return this.options.onMount(this.state.values, this)
+    const doValidate = () => {
+      if (typeof this.options.onMount === 'function') {
+        return this.options.onMount(this.state.values, this)
+      }
+      if (this.options.validator) {
+        return (this.options.validator as Validator<TFormData>)().validate(
+          this.state.values,
+          this.options.onMount,
+        )
+      }
     }
-    if (this.options.validator) {
-      return (this.options.validator as Validator<TFormData>)().validate(
-        this.state.values,
-        this.options.onMount,
-      )
+    const error = doValidate()
+    if (error) {
+      this.store.setState((prev) => ({
+        ...prev,
+        errorMap: { ...prev.errorMap, onMount: error },
+      }))
     }
   }
 
@@ -245,6 +261,177 @@ export class FormApi<TFormData, ValidatorType> {
     return Promise.all(fieldValidationPromises)
   }
 
+  validateSync = (cause: ValidationCause): void => {
+    const { onChange, onBlur } = this.options
+    const validate =
+      cause === 'change' ? onChange : cause === 'blur' ? onBlur : undefined
+    if (!validate) return
+
+    const errorMapKey = getErrorMapKey(cause)
+    const doValidate = () => {
+      if (typeof validate === 'function') {
+        return validate(this.state.values, this) as ValidationError
+      }
+      if (this.options.validator && typeof validate !== 'function') {
+        return (this.options.validator as Validator<TFormData>)().validate(
+          this.state.values,
+          validate,
+        )
+      }
+      throw new Error(
+        `Form validation for ${errorMapKey} failed. ${errorMapKey} should either be a function, or \`validator\` should be correct.`,
+      )
+    }
+
+    const error = normalizeError(doValidate())
+    if (this.state.errorMap[errorMapKey] !== error) {
+      this.store.setState((prev) => ({
+        ...prev,
+        errorMap: {
+          ...prev.errorMap,
+          [errorMapKey]: error,
+        },
+      }))
+    }
+
+    if (this.state.errorMap[errorMapKey]) {
+      this.cancelValidateAsync()
+    }
+  }
+
+  __leaseValidateAsync = () => {
+    const count = (this.validationMeta.validationAsyncCount || 0) + 1
+    this.validationMeta.validationAsyncCount = count
+    return count
+  }
+
+  cancelValidateAsync = () => {
+    // Lease a new validation count to ignore any pending validations
+    this.__leaseValidateAsync()
+    // Cancel any pending validation state
+    this.store.setState((prev) => ({
+      ...prev,
+      isFormValidating: false,
+    }))
+  }
+
+  validateAsync = async (
+    cause: ValidationCause,
+  ): Promise<ValidationError[]> => {
+    const {
+      onChangeAsync,
+      onBlurAsync,
+      asyncDebounceMs,
+      onBlurAsyncDebounceMs,
+      onChangeAsyncDebounceMs,
+    } = this.options
+
+    const validate =
+      cause === 'change'
+        ? onChangeAsync
+        : cause === 'blur'
+        ? onBlurAsync
+        : undefined
+
+    if (!validate) return []
+    const debounceMs =
+      (cause === 'change' ? onChangeAsyncDebounceMs : onBlurAsyncDebounceMs) ??
+      asyncDebounceMs ??
+      0
+
+    if (!this.state.isFormValidating) {
+      this.store.setState((prev) => ({ ...prev, isFormValidating: true }))
+    }
+
+    // Use the validationCount for all field instances to
+    // track freshness of the validation
+    const validationAsyncCount = this.__leaseValidateAsync()
+
+    const checkLatest = () =>
+      validationAsyncCount === this.validationMeta.validationAsyncCount
+
+    if (!this.validationMeta.validationPromise) {
+      this.validationMeta.validationPromise = new Promise((resolve, reject) => {
+        this.validationMeta.validationResolve = resolve
+        this.validationMeta.validationReject = reject
+      })
+    }
+
+    if (debounceMs > 0) {
+      await new Promise((r) => setTimeout(r, debounceMs))
+    }
+
+    const doValidate = () => {
+      if (typeof validate === 'function') {
+        return validate(this.state.values, this) as ValidationError
+      }
+      if (this.options.validator && typeof validate !== 'function') {
+        return (this.options.validator as Validator<TFormData>)().validateAsync(
+          this.state.values,
+          validate,
+        )
+      }
+      const errorMapKey = getErrorMapKey(cause)
+      throw new Error(
+        `Form validation for ${errorMapKey}Async failed. ${errorMapKey}Async should either be a function, or \`validator\` should be correct.`,
+      )
+    }
+
+    // Only kick off validation if this validation is the latest attempt
+    if (checkLatest()) {
+      const prevErrors = this.state.errors
+      try {
+        const rawError = await doValidate()
+        if (checkLatest()) {
+          const error = normalizeError(rawError)
+          this.store.setState((prev) => ({
+            ...prev,
+            isFormValidating: false,
+            errorMap: {
+              ...prev.errorMap,
+              [getErrorMapKey(cause)]: error,
+            },
+          }))
+          this.validationMeta.validationResolve?.([...prevErrors, error])
+        }
+      } catch (error) {
+        if (checkLatest()) {
+          this.validationMeta.validationReject?.([...prevErrors, error])
+          throw error
+        }
+      } finally {
+        if (checkLatest()) {
+          this.store.setState((prev) => ({ ...prev, isFormValidating: false }))
+          delete this.validationMeta.validationPromise
+        }
+      }
+    }
+    // Always return the latest validation promise to the caller
+    return (await this.validationMeta.validationPromise) ?? []
+  }
+
+  validate = (
+    cause: ValidationCause,
+  ): ValidationError[] | Promise<ValidationError[]> => {
+    // Store the previous error for the errorMapKey (eg. onChange, onBlur, onSubmit)
+    const errorMapKey = getErrorMapKey(cause)
+    const prevError = this.state.errorMap[errorMapKey]
+
+    // Attempt to sync validate first
+    this.validateSync(cause)
+
+    const newError = this.state.errorMap[errorMapKey]
+    if (
+      prevError !== newError &&
+      !this.options.asyncAlways &&
+      !(newError === undefined && prevError !== undefined)
+    )
+      return this.state.errors
+
+    // No error? Attempt async validation
+    return this.validateAsync(cause)
+  }
+
   handleSubmit = async () => {
     // Check to see that the form and all fields have been touched
     // If they have not, touch them all and run validation
@@ -279,7 +466,7 @@ export class FormApi<TFormData, ValidatorType> {
     }
 
     // Run validation for the form
-    // await this.validateForm()
+    await this.validate('submit')
 
     if (!this.state.isValid) {
       done()
@@ -360,12 +547,14 @@ export class FormApi<TFormData, ValidatorType> {
   }
 
   deleteField = <TField extends DeepKeys<TFormData>>(field: TField) => {
+
     this.store.setState((prev) => {
       const newState = { ...prev }
       delete newState.values[field as keyof TFormData]
       delete newState.fieldMeta[field]
       return newState
     })
+
   }
 
   pushFieldValue = <TField extends DeepKeys<TFormData>>(
@@ -427,5 +616,30 @@ export class FormApi<TFormData, ValidatorType> {
       const prev2 = prev[index2]!
       return setBy(setBy(prev, `${index1}`, prev2), `${index2}`, prev1)
     })
+  }
+}
+
+function normalizeError(rawError?: ValidationError) {
+  if (rawError) {
+    if (typeof rawError !== 'string') {
+      return 'Invalid Form Values'
+    }
+
+    return rawError
+  }
+
+  return undefined
+}
+
+function getErrorMapKey(cause: ValidationCause) {
+  switch (cause) {
+    case 'submit':
+      return 'onSubmit'
+    case 'change':
+      return 'onChange'
+    case 'blur':
+      return 'onBlur'
+    case 'mount':
+      return 'onMount'
   }
 }
