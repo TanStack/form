@@ -604,6 +604,8 @@ describe('field api', () => {
     subscription()
     expect(info.instances[field.uid]).toBeUndefined()
     expect(Object.keys(info.instances).length).toBe(0)
+
+    // Check that form store has been updated
     expect(callback).toHaveBeenCalledOnce()
 
     // Field should have been removed from the form as well
