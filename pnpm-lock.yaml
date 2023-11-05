@@ -412,6 +412,43 @@ importers:
         specifier: ^2.7.0
         version: 2.7.0(solid-js@1.7.8)(vite@4.4.9)
 
+  examples/solid/valibot:
+    dependencies:
+      '@tanstack/form-core':
+        specifier: workspace:*
+        version: link:../../../packages/form-core
+      '@tanstack/react-form':
+        specifier: workspace:*
+        version: link:../../../packages/react-form
+      '@tanstack/solid-form':
+        specifier: workspace:*
+        version: link:../../../packages/solid-form
+      '@tanstack/valibot-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/valibot-form-adapter
+      '@tanstack/yup-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/yup-form-adapter
+      '@tanstack/zod-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/zod-form-adapter
+      solid-js:
+        specifier: ^1.7.8
+        version: 1.7.12
+      valibot:
+        specifier: ^0.20.1
+        version: 0.20.1
+    devDependencies:
+      typescript:
+        specifier: ^5.0.2
+        version: 5.2.2
+      vite:
+        specifier: ^4.4.5
+        version: 4.4.9(@types/node@17.0.45)
+      vite-plugin-solid:
+        specifier: ^2.7.0
+        version: 2.7.0(solid-js@1.7.12)(vite@4.4.9)
+
   examples/solid/yup:
     dependencies:
       '@tanstack/form-core':

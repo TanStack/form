@@ -1,5 +1,5 @@
 {
-  "name": "@tanstack/form-example-react-zod",
+  "name": "@tanstack/form-example-react-valibot",
   "version": "0.0.1",
   "main": "src/index.jsx",
   "scripts": {

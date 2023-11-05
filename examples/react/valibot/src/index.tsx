@@ -26,7 +26,7 @@ export default function App() {
       // Do something with form data
       console.log(values);
     },
-    // Add a validator to support Zod usage in Form and Field
+    // Add a validator to support Valibot usage in Form and Field
     validator: valibotValidator,
   });
 
