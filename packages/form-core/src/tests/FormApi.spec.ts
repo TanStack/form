@@ -2,6 +2,7 @@ import { expect } from 'vitest'
 
 import { FormApi } from '../FormApi'
 import { FieldApi } from '../FieldApi'
+import { sleep } from './utils'
 
 describe('form api', () => {
   it('should get default form state', () => {
@@ -16,6 +17,8 @@ describe('form api', () => {
       isFormValid: true,
       isFormValidating: false,
       isSubmitted: false,
+      errors: [],
+      errorMap: {},
       isSubmitting: false,
       isTouched: false,
       isValid: true,
@@ -39,6 +42,8 @@ describe('form api', () => {
       fieldMeta: {},
       canSubmit: true,
       isFieldsValid: true,
+      errors: [],
+      errorMap: {},
       isFieldsValidating: false,
       isFormValid: true,
       isFormValidating: false,
@@ -62,6 +67,8 @@ describe('form api', () => {
     expect(form.state).toEqual({
       values: {},
       fieldMeta: {},
+      errors: [],
+      errorMap: {},
       canSubmit: true,
       isFieldsValid: true,
       isFieldsValidating: false,
@@ -97,6 +104,8 @@ describe('form api', () => {
       values: {
         name: 'other',
       },
+      errors: [],
+      errorMap: {},
       fieldMeta: {},
       canSubmit: true,
       isFieldsValid: true,
@@ -129,6 +138,8 @@ describe('form api', () => {
       values: {
         name: 'test',
       },
+      errors: [],
+      errorMap: {},
       fieldMeta: {},
       canSubmit: true,
       isFieldsValid: true,
@@ -315,5 +326,346 @@ describe('form api', () => {
 
     expect(form.state.isFieldsValid).toEqual(true)
     expect(form.state.canSubmit).toEqual(true)
+  })
+
+  it('should run validation onChange', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      onChange: (value) => {
+        if (value.name === 'other') return 'Please enter a different value'
+        return
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+    form.mount()
+    field.mount()
+
+    expect(form.state.errors.length).toBe(0)
+    field.setValue('other', { touch: true })
+    expect(form.state.errors).toContain('Please enter a different value')
+    expect(form.state.errorMap).toMatchObject({
+      onChange: 'Please enter a different value',
+    })
+  })
+
+  it('should run async validation onChange', async () => {
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      onChangeAsync: async (value) => {
+        await sleep(1000)
+        if (value.name === 'other') return 'Please enter a different value'
+        return
+      },
+    })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+    form.mount()
+
+    field.mount()
+
+    expect(form.state.errors.length).toBe(0)
+    field.setValue('other', { touch: true })
+    await vi.runAllTimersAsync()
+    expect(form.state.errors).toContain('Please enter a different value')
+    expect(form.state.errorMap).toMatchObject({
+      onChange: 'Please enter a different value',
+    })
+  })
+
+  it('should run async validation onChange with debounce', async () => {
+    vi.useFakeTimers()
+    const sleepMock = vi.fn().mockImplementation(sleep)
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      onChangeAsyncDebounceMs: 1000,
+      onChangeAsync: async (value) => {
+        await sleepMock(1000)
+        if (value.name === 'other') return 'Please enter a different value'
+        return
+      },
+    })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+    form.mount()
+
+    field.mount()
+
+    expect(form.state.errors.length).toBe(0)
+    field.setValue('other', { touch: true })
+    field.setValue('other')
+    await vi.runAllTimersAsync()
+    // sleepMock will have been called 2 times without onChangeAsyncDebounceMs
+    expect(sleepMock).toHaveBeenCalledTimes(1)
+    expect(form.state.errors).toContain('Please enter a different value')
+    expect(form.state.errorMap).toMatchObject({
+      onChange: 'Please enter a different value',
+    })
+  })
+
+  it('should run async validation onChange with asyncDebounceMs', async () => {
+    vi.useFakeTimers()
+    const sleepMock = vi.fn().mockImplementation(sleep)
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      asyncDebounceMs: 1000,
+      onChangeAsync: async (value) => {
+        await sleepMock(1000)
+        if (value.name === 'other') return 'Please enter a different value'
+        return
+      },
+    })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    form.mount()
+    field.mount()
+
+    expect(form.state.errors.length).toBe(0)
+    field.setValue('other', { touch: true })
+    field.setValue('other')
+    await vi.runAllTimersAsync()
+    // sleepMock will have been called 2 times without asyncDebounceMs
+    expect(sleepMock).toHaveBeenCalledTimes(1)
+    expect(form.state.errors).toContain('Please enter a different value')
+    expect(form.state.errorMap).toMatchObject({
+      onChange: 'Please enter a different value',
+    })
+  })
+
+  it('should run validation onBlur', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'other',
+      },
+      onBlur: (value) => {
+        if (value.name === 'other') return 'Please enter a different value'
+        return
+      },
+    })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    form.mount()
+    field.mount()
+
+    field.setValue('other', { touch: true })
+    field.validate('blur')
+    expect(form.state.errors).toContain('Please enter a different value')
+    expect(form.state.errorMap).toMatchObject({
+      onBlur: 'Please enter a different value',
+    })
+  })
+
+  it('should run async validation onBlur', async () => {
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      onBlurAsync: async (value) => {
+        await sleep(1000)
+        if (value.name === 'other') return 'Please enter a different value'
+        return
+      },
+    })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    form.mount()
+    field.mount()
+
+    expect(form.state.errors.length).toBe(0)
+    field.setValue('other', { touch: true })
+    field.validate('blur')
+    await vi.runAllTimersAsync()
+    expect(form.state.errors).toContain('Please enter a different value')
+    expect(form.state.errorMap).toMatchObject({
+      onBlur: 'Please enter a different value',
+    })
+  })
+
+  it('should run async validation onBlur with debounce', async () => {
+    vi.useFakeTimers()
+    const sleepMock = vi.fn().mockImplementation(sleep)
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      onBlurAsyncDebounceMs: 1000,
+      onBlurAsync: async (value) => {
+        await sleepMock(10)
+        if (value.name === 'other') return 'Please enter a different value'
+        return
+      },
+    })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    form.mount()
+    field.mount()
+
+    expect(form.state.errors.length).toBe(0)
+    field.setValue('other', { touch: true })
+    field.validate('blur')
+    field.validate('blur')
+    await vi.runAllTimersAsync()
+    // sleepMock will have been called 2 times without onBlurAsyncDebounceMs
+    expect(sleepMock).toHaveBeenCalledTimes(1)
+    expect(form.state.errors).toContain('Please enter a different value')
+    expect(form.state.errorMap).toMatchObject({
+      onBlur: 'Please enter a different value',
+    })
+  })
+
+  it('should run async validation onBlur with asyncDebounceMs', async () => {
+    vi.useFakeTimers()
+    const sleepMock = vi.fn().mockImplementation(sleep)
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      asyncDebounceMs: 1000,
+      onBlurAsync: async (value) => {
+        await sleepMock(10)
+        if (value.name === 'other') return 'Please enter a different value'
+        return
+      },
+    })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    form.mount()
+    field.mount()
+
+    expect(form.state.errors.length).toBe(0)
+    field.setValue('other', { touch: true })
+    field.validate('blur')
+    field.validate('blur')
+    await vi.runAllTimersAsync()
+    // sleepMock will have been called 2 times without asyncDebounceMs
+    expect(sleepMock).toHaveBeenCalledTimes(1)
+    expect(form.state.errors).toContain('Please enter a different value')
+    expect(form.state.errorMap).toMatchObject({
+      onBlur: 'Please enter a different value',
+    })
+  })
+
+  it('should contain multiple errors when running validation onBlur and onChange', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'other',
+      },
+      onBlur: (value) => {
+        if (value.name === 'other') return 'Please enter a different value'
+        return
+      },
+      onChange: (value) => {
+        if (value.name === 'other') return 'Please enter a different value'
+        return
+      },
+    })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    form.mount()
+    field.mount()
+
+    field.setValue('other', { touch: true })
+    field.validate('blur')
+    expect(form.state.errors).toStrictEqual([
+      'Please enter a different value',
+      'Please enter a different value',
+    ])
+    expect(form.state.errorMap).toEqual({
+      onBlur: 'Please enter a different value',
+      onChange: 'Please enter a different value',
+    })
+  })
+
+  it('should reset onChange errors when the issue is resolved', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'other',
+      },
+      onChange: (value) => {
+        if (value.name === 'other') return 'Please enter a different value'
+        return
+      },
+    })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    form.mount()
+    field.mount()
+
+    field.setValue('other', { touch: true })
+    expect(form.state.errors).toStrictEqual(['Please enter a different value'])
+    expect(form.state.errorMap).toEqual({
+      onChange: 'Please enter a different value',
+    })
+    field.setValue('test', { touch: true })
+    expect(form.state.errors).toStrictEqual([])
+    expect(form.state.errorMap).toEqual({})
+  })
+
+  it('should return error onMount', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'other',
+      },
+      onMount: (value) => {
+        if (value.name === 'other') return 'Please enter a different value'
+        return
+      },
+    })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    form.mount()
+    field.mount()
+
+    expect(form.state.errors).toStrictEqual(['Please enter a different value'])
+    expect(form.state.errorMap).toEqual({
+      onMount: 'Please enter a different value',
+    })
   })
 })
