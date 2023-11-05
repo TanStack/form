@@ -142,28 +142,6 @@ function makePathArray(str: string) {
     })
 }
 
-/**
- * Turn a dot notation path into an object path
- * @param path
- */
-export function getObjectPath(path: string): string {
-  const parts = path.split('.')
-  const index = parts.findIndex((item) => !Number.isNaN(Number(item)))
-  if (index === -1 || parts.length === 0) {
-    return path
-  }
-
-  let newPath = parts[0]!
-  for (let i = 1; i < parts.length; i++) {
-    if (i === index) {
-      newPath += `[${parts[i]}]`
-    } else {
-      newPath += `.${parts[i]}`
-    }
-  }
-  return newPath
-}
-
 export function isNonEmptyArray(obj: any) {
   return !(Array.isArray(obj) && obj.length === 0)
 }
