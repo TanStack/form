@@ -611,5 +611,7 @@ describe('field api', () => {
     // Field should have been removed from the form as well
     expect(form.state.values.name).toBeUndefined()
     expect(form.state.fieldMeta.name).toBeUndefined()
+    expect(form.store.state.values.name).toBeUndefined()
+    expect(form.store.state.fieldMeta.name).toBeUndefined()
   })
 })
