@@ -1,6 +1,13 @@
 import { Store } from '@tanstack/store'
 import type { DeepKeys, DeepValue, Updater } from './utils'
-import { functionalUpdate, getBy, isNonEmptyArray, setBy } from './utils'
+import {
+  deleteBy,
+  functionalUpdate,
+  getBy,
+  getObjectPath,
+  isNonEmptyArray,
+  setBy,
+} from './utils'
 import type { FieldApi, FieldMeta, ValidationCause } from './FieldApi'
 import type { ValidationError, Validator } from './types'
 
@@ -547,14 +554,15 @@ export class FormApi<TFormData, ValidatorType> {
   }
 
   deleteField = <TField extends DeepKeys<TFormData>>(field: TField) => {
-
     this.store.setState((prev) => {
       const newState = { ...prev }
-      delete newState.values[field as keyof TFormData]
+
+      newState.values = deleteBy(newState.values, field)
+
       delete newState.fieldMeta[field]
+      console.log(newState)
       return newState
     })
-
   }
 
   pushFieldValue = <TField extends DeepKeys<TFormData>>(

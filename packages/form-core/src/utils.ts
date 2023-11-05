@@ -70,6 +70,47 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
   return doSet(obj)
 }
 
+/**
+ * Set a value on an object using a path, including dot notation.
+ */
+export function deleteBy(obj: any, _path: any) {
+  const path = makePathArray(_path)
+
+  function doDelete(parent: any): any {
+    if (path.length === 1) {
+      const finalPath = path[0]!
+      const { [finalPath]: remove, ...rest } = parent
+      return rest
+    }
+
+    const key = path.shift()
+
+    if (typeof key === 'string') {
+      if (typeof parent === 'object') {
+        return {
+          ...parent,
+          [key]: doDelete(parent[key]),
+        }
+      }
+    }
+
+    if (typeof key === 'number') {
+      if (Array.isArray(parent)) {
+        const prefix = parent.slice(0, key)
+        return [
+          ...(prefix.length ? prefix : new Array(key)),
+          doDelete(parent[key]),
+          ...parent.slice(key + 1),
+        ]
+      }
+    }
+
+    throw new Error('Uh oh!')
+  }
+
+  return doDelete(obj)
+}
+
 const reFindNumbers0 = /^(\d*)$/gm
 const reFindNumbers1 = /\.(\d*)\./gm
 const reFindNumbers2 = /^(\d*)\./gm
@@ -99,6 +140,28 @@ function makePathArray(str: string) {
       }
       return d
     })
+}
+
+/**
+ * Turn a dot notation path into an object path
+ * @param path
+ */
+export function getObjectPath(path: string): string {
+  const parts = path.split('.')
+  const index = parts.findIndex((item) => !Number.isNaN(Number(item)))
+  if (index === -1 || parts.length === 0) {
+    return path
+  }
+
+  let newPath = parts[0]!
+  for (let i = 1; i < parts.length; i++) {
+    if (i === index) {
+      newPath += `[${parts[i]}]`
+    } else {
+      newPath += `.${parts[i]}`
+    }
+  }
+  return newPath
 }
 
 export function isNonEmptyArray(obj: any) {
