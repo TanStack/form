@@ -362,12 +362,25 @@ export class FieldApi<
 
     const error = normalizeError(doValidate())
     const errorMapKey = getErrorMapKey(cause)
+        
     if (this.state.meta.errorMap[errorMapKey] !== error) {
       this.setMeta((prev) => ({
         ...prev,
         errorMap: {
           ...prev.errorMap,
           [getErrorMapKey(cause)]: error,
+        },
+      }))
+    }
+    /* when we have an error for onSubmit in the state , we want   
+    to clear the error as soon as the user enters a valid value in the field 
+    */
+    if(this.state.meta.errorMap['onSubmit'] && cause!=='submit' && !error){
+      this.setMeta((prev) => ({
+        ...prev,
+        errorMap: {
+          ...prev.errorMap,
+          [getErrorMapKey('submit')]: undefined,
         },
       }))
     }
@@ -502,7 +515,6 @@ export class FieldApi<
   ): ValidationError[] | Promise<ValidationError[]> => {
     // If the field is pristine and validatePristine is false, do not validate
     if (!this.state.meta.isTouched) return []
-
     // Store the previous error for the errorMapKey (eg. onChange, onBlur, onSubmit)
     const errorMapKey = getErrorMapKey(cause)
     const prevError = this.getMeta().errorMap[errorMapKey]
