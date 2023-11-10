@@ -3,7 +3,7 @@ import { render } from 'solid-js/web'
 
 import { createForm, type FieldApi } from '@tanstack/solid-form'
 import { valibotValidator } from '@tanstack/valibot-form-adapter'
-import { string, minLength, stringAsync, PipeResult } from 'valibot'
+import { customAsync, minLength, string, stringAsync } from 'valibot'
 
 interface FieldInfoProps {
   field: FieldApi<any, any, unknown, unknown>
@@ -54,22 +54,10 @@ function App() {
               ])}
               onChangeAsyncDebounceMs={500}
               onChangeAsync={stringAsync([
-                async (value) => {
+                customAsync(async (value) => {
                   await new Promise((resolve) => setTimeout(resolve, 1000))
-                  return (
-                    value.includes('error')
-                      ? {
-                          issues: [
-                            {
-                              input: value,
-                              validation: 'firstName',
-                              message: "No 'error' allowed in first name",
-                            },
-                          ],
-                        }
-                      : { output: value }
-                  ) as PipeResult<string>
-                },
+                  return value.includes('error')
+                }, "No 'error' allowed in first name"),
               ])}
               children={(field) => {
                 // Avoid hasty abstractions. Render props are great!
