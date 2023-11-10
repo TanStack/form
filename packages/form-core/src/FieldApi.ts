@@ -363,7 +363,6 @@ export class FieldApi<
 
     const error = normalizeError(doValidate())
     const errorMapKey = getErrorMapKey(cause)
-        
     if (this.state.meta.errorMap[errorMapKey] !== error) {
       this.setMeta((prev) => ({
         ...prev,
