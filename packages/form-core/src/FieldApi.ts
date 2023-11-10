@@ -332,9 +332,15 @@ export class FieldApi<
   validateSync = (value = this.state.value, cause: ValidationCause) => {
     const { onChange, onBlur } = this.options
     const validate =
-    cause === 'submit' ? onChange ? onChange: onBlur : cause === 'change' ? onChange : onBlur
-    
-    if(!validate) return
+      cause === 'submit'
+        ? onChange
+          ? onChange
+          : onBlur
+        : cause === 'change'
+        ? onChange
+        : onBlur
+
+    if (!validate) return
     // Use the validationCount for all field instances to
     // track freshness of the validation
     const validationCount = (this.getInfo().validationCount || 0) + 1
@@ -375,7 +381,7 @@ export class FieldApi<
     /* when we have an error for onSubmit in the state , we want   
     to clear the error as soon as the user enters a valid value in the field 
     */
-    if(this.state.meta.errorMap['onSubmit'] && cause!=='submit' && !error){
+    if (this.state.meta.errorMap['onSubmit'] && cause !== 'submit' && !error) {
       this.setMeta((prev) => ({
         ...prev,
         errorMap: {

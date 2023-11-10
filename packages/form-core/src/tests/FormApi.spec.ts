@@ -669,13 +669,12 @@ describe('form api', () => {
     })
   })
 
-  it('should validate fields on Submit', async ()=>{
+  it('should validate fields on Submit', async () => {
     const form = new FormApi({
       defaultValues: {
         firstName: '',
         lastName: '',
       },
-
     })
 
     const field = new FieldApi({
@@ -696,16 +695,19 @@ describe('form api', () => {
     await form.handleSubmit()
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
-    expect(form.state.fieldMeta['firstName'].errors).toEqual(['first name is required'])
-    expect(form.state.fieldMeta['lastName'].errors).toEqual(['last name is required'])
+    expect(form.state.fieldMeta['firstName'].errors).toEqual([
+      'first name is required',
+    ])
+    expect(form.state.fieldMeta['lastName'].errors).toEqual([
+      'last name is required',
+    ])
   })
 
-  it('should clear onSubmit error when a valid value is entered ', async ()=>{
+  it('should clear onSubmit error when a valid value is entered ', async () => {
     const form = new FormApi({
       defaultValues: {
         firstName: '',
       },
-
     })
 
     const field = new FieldApi({
@@ -714,16 +716,19 @@ describe('form api', () => {
       onChange: (v) => (v.length > 0 ? undefined : 'first name is required'),
     })
 
-
     field.mount()
 
     await form.handleSubmit()
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
-    expect(form.state.fieldMeta['firstName'].errorMap['onSubmit']).toEqual('first name is required')
+    expect(form.state.fieldMeta['firstName'].errorMap['onSubmit']).toEqual(
+      'first name is required',
+    )
     field.handleChange('test')
     expect(form.state.isFieldsValid).toEqual(true)
     expect(form.state.canSubmit).toEqual(true)
-    expect(form.state.fieldMeta['firstName'].errorMap['onSubmit']).toBeUndefined()
+    expect(
+      form.state.fieldMeta['firstName'].errorMap['onSubmit'],
+    ).toBeUndefined()
   })
 })
