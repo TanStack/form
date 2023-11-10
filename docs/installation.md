@@ -15,7 +15,7 @@ $ yarn add @tanstack/solid-form
 
 > Depending on your environment, you might need to add polyfills. If you want to support older browsers, you need to transpile the library from `node_modules` yourselves.
 
-In addition, we support both Zod and Yup as validators through official validator packages:
+In addition, we support Zod, Yup, and Valibot as validators through official validator packages:
 
 ```bash
 $ npm i @tanstack/zod-form-adapter zod

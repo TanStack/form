@@ -250,7 +250,7 @@ This will debounce every async call with a 500ms delay. You can even override th
 
 While functions provide more flexibility and customization over your validation, they can be a bit verbose. To help solve this, there are libraries like [Valibot](https://valibot.dev/), [Yup](https://github.com/jquense/yup), and [Zod](https://zod.dev/) that provide schema-based validation to make shorthand and type-strict validation substantially easier.
 
-Luckily, we support both of these libraries through official adapters:
+Luckily, we support all of these libraries through official adapters:
 
 ```bash
 $ npm install @tanstack/zod-form-adapter zod
