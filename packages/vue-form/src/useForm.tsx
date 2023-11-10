@@ -7,6 +7,7 @@ import {
   type SlotsType,
   type SetupContext,
   defineComponent,
+  onMounted,
 } from 'vue-demi'
 
 declare module '@tanstack/form-core' {
@@ -39,12 +40,14 @@ export function useForm<TData, FormValidator>(
 
     api.Provider = defineComponent(
       (_, context) => {
+        onMounted(api.mount)
         provideFormContext({ formApi: formApi as never })
         return () => context.slots.default!()
       },
       { name: 'Provider' },
     )
     api.provideFormContext = () => {
+      onMounted(api.mount)
       provideFormContext({ formApi: formApi as never })
     }
     api.Field = Field as never

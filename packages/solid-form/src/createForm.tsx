@@ -1,6 +1,6 @@
 import type { FormOptions, FormState } from '@tanstack/form-core'
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
-import { createComputed, type JSXElement } from 'solid-js'
+import { createComputed, onMount, type JSXElement } from 'solid-js'
 import { useStore } from '@tanstack/solid-store'
 import {
   Field,
@@ -35,6 +35,7 @@ export function createForm<TData, FormValidator>(
   const formApi = new FormApi<TData, FormValidator>(options)
 
   formApi.Provider = function Provider(props) {
+    onMount(formApi.mount)
     return <formContext.Provider {...props} value={{ formApi: formApi }} />
   }
   formApi.Field = Field as any

@@ -1,4 +1,4 @@
-import { expect } from 'vitest'
+import { expect, vitest } from 'vitest'
 
 import { FormApi } from '../FormApi'
 import { FieldApi } from '../FieldApi'
@@ -597,9 +597,21 @@ describe('field api', () => {
     })
 
     const unmount = field.mount()
+    const callback = vitest.fn()
+    const subscription = form.store.subscribe(callback)
     unmount()
     const info = form.getFieldInfo(field.name)
+    subscription()
     expect(info.instances[field.uid]).toBeUndefined()
     expect(Object.keys(info.instances).length).toBe(0)
+
+    // Check that form store has been updated
+    expect(callback).toHaveBeenCalledOnce()
+
+    // Field should have been removed from the form as well
+    expect(form.state.values.name).toBeUndefined()
+    expect(form.state.fieldMeta.name).toBeUndefined()
+    expect(form.store.state.values.name).toBeUndefined()
+    expect(form.store.state.fieldMeta.name).toBeUndefined()
   })
 })
