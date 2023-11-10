@@ -2,7 +2,7 @@ import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { useForm } from "@tanstack/react-form";
 import { valibotValidator } from "@tanstack/valibot-form-adapter";
-import { string, minLength, stringAsync, PipeResult } from "valibot";
+import { customAsync, minLength, string, stringAsync } from "valibot";
 import type { FieldApi } from "@tanstack/react-form";
 
 function FieldInfo({ field }: { field: FieldApi<any, any, unknown, unknown> }) {
@@ -50,22 +50,10 @@ export default function App() {
               ])}
               onChangeAsyncDebounceMs={500}
               onChangeAsync={stringAsync([
-                async (value) => {
+                customAsync(async (value) => {
                   await new Promise((resolve) => setTimeout(resolve, 1000));
-                  return (
-                    value.includes("error")
-                      ? {
-                          issues: [
-                            {
-                              input: value,
-                              validation: "firstName",
-                              message: "No 'error' allowed in first name",
-                            },
-                          ],
-                        }
-                      : { output: value }
-                  ) as PipeResult<string>;
-                },
+                  return value.includes("error");
+                }, "No 'error' allowed in first name"),
               ])}
               children={(field) => {
                 // Avoid hasty abstractions. Render props are great!
