@@ -170,7 +170,7 @@ describe('useForm', () => {
 
     function Comp() {
       const form = formFactory.useForm({
-            onChange() {
+        onChange() {
           return error
         },
       })
@@ -197,12 +197,12 @@ describe('useForm', () => {
 
     const { getByTestId, getByText, queryByText } = render(<Comp />)
     const input = getByTestId('fieldinput')
-            expect(queryByText(error)).not.toBeInTheDocument()
+    expect(queryByText(error)).not.toBeInTheDocument()
     await user.type(input, 'other')
     await waitFor(() => getByText(error))
     expect(getByText(error)).toBeInTheDocument()
   })
-    it('should not validate on change if isTouched is false', async () => {
+  it('should not validate on change if isTouched is false', async () => {
     type Person = {
       firstName: string
       lastName: string
