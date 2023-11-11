@@ -1,0 +1,41 @@
+{
+  "name": "@tanstack/form-example-solid-valibot",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "test:types": "tsc --noEmit",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tanstack/form-core": "0.9.0",
+    "@tanstack/solid-form": "0.9.0",
+    "@tanstack/valibot-form-adapter": "0.9.0",
+    "solid-js": "^1.7.8",
+    "valibot": "^0.20.1",
+    "@tanstack/zod-form-adapter": "0.9.0",
+    "@tanstack/react-form": "0.9.0",
+    "@tanstack/yup-form-adapter": "0.9.0",
+    "@tanstack/vue-form": "0.9.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5",
+    "vite-plugin-solid": "^2.7.0"
+  },
+  "nx": {
+    "implicitDependencies": [
+      "@tanstack/form-core",
+      "@tanstack/solid-form",
+      "@tanstack/zod-form-adapter"
+    ],
+    "targets": {
+      "test:types": {
+        "dependsOn": [
+          "build"
+        ]
+      }
+    }
+  }
+}

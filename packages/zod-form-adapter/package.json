@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/zod-form-adapter",
-  "version": "0.7.0",
+  "version": "0.9.0",
   "description": "The Zod adapter for TanStack Form.",
   "author": "tannerlinsley",
   "license": "MIT",

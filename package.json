@@ -118,7 +118,8 @@
       "@tanstack/vue-form": "workspace:*",
       "@tanstack/solid-form": "workspace:*",
       "@tanstack/yup-form-adapter": "workspace:*",
-      "@tanstack/zod-form-adapter": "workspace:*"
+      "@tanstack/zod-form-adapter": "workspace:*",
+      "@tanstack/valibot-form-adapter": "workspace:*"
     }
   }
 }

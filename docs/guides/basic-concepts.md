@@ -109,7 +109,7 @@ Example:
 
 ## Validation Adapters
 
-In addition to hand-rolled validation options, we also provide adapters like `@tanstack/zod-form-adapter` and `@tanstack/yup-form-adapter` to enable usage with common schema validation tools like [Yup](https://github.com/jquense/yup) and [Zod](https://zod.dev/).
+In addition to hand-rolled validation options, we also provide adapters like `@tanstack/zod-form-adapter`, `@tanstack/yup-form-adapter`, and `@tanstack/valibot-form-adapter` to enable usage with common schema validation tools like [Zod](https://zod.dev/), [Yup](https://github.com/jquense/yup), and [Valibot](https://valibot.dev/).
 
 Example:
 
