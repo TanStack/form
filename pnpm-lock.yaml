@@ -244,6 +244,9 @@ importers:
       '@tanstack/solid-form':
         specifier: workspace:*
         version: link:../../../packages/solid-form
+      '@tanstack/valibot-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/valibot-form-adapter
       '@tanstack/vue-form':
         specifier: workspace:*
         version: link:../../../packages/vue-form
@@ -318,6 +321,9 @@ importers:
       '@tanstack/solid-form':
         specifier: workspace:*
         version: link:../../../packages/solid-form
+      '@tanstack/valibot-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/valibot-form-adapter
       '@tanstack/vue-form':
         specifier: workspace:*
         version: link:../../../packages/vue-form
@@ -355,6 +361,9 @@ importers:
       '@tanstack/solid-form':
         specifier: workspace:*
         version: link:../../../packages/solid-form
+      '@tanstack/valibot-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/valibot-form-adapter
       '@tanstack/vue-form':
         specifier: workspace:*
         version: link:../../../packages/vue-form
@@ -392,6 +401,12 @@ importers:
       '@tanstack/solid-form':
         specifier: workspace:*
         version: link:../../../packages/solid-form
+      '@tanstack/valibot-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/valibot-form-adapter
+      '@tanstack/vue-form':
+        specifier: workspace:*
+        version: link:../../../packages/vue-form
       '@tanstack/yup-form-adapter':
         specifier: workspace:*
         version: link:../../../packages/yup-form-adapter
@@ -426,6 +441,9 @@ importers:
       '@tanstack/valibot-form-adapter':
         specifier: workspace:*
         version: link:../../../packages/valibot-form-adapter
+      '@tanstack/vue-form':
+        specifier: workspace:*
+        version: link:../../../packages/vue-form
       '@tanstack/yup-form-adapter':
         specifier: workspace:*
         version: link:../../../packages/yup-form-adapter
@@ -460,6 +478,12 @@ importers:
       '@tanstack/solid-form':
         specifier: workspace:*
         version: link:../../../packages/solid-form
+      '@tanstack/valibot-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/valibot-form-adapter
+      '@tanstack/vue-form':
+        specifier: workspace:*
+        version: link:../../../packages/vue-form
       '@tanstack/yup-form-adapter':
         specifier: workspace:*
         version: link:../../../packages/yup-form-adapter
@@ -494,6 +518,12 @@ importers:
       '@tanstack/solid-form':
         specifier: workspace:*
         version: link:../../../packages/solid-form
+      '@tanstack/valibot-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/valibot-form-adapter
+      '@tanstack/vue-form':
+        specifier: workspace:*
+        version: link:../../../packages/vue-form
       '@tanstack/yup-form-adapter':
         specifier: workspace:*
         version: link:../../../packages/yup-form-adapter
@@ -528,6 +558,9 @@ importers:
       '@tanstack/solid-form':
         specifier: workspace:*
         version: link:../../../packages/solid-form
+      '@tanstack/valibot-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/valibot-form-adapter
       '@tanstack/vue-form':
         specifier: workspace:*
         version: link:../../../packages/vue-form
@@ -608,6 +641,9 @@ importers:
       '@tanstack/solid-form':
         specifier: workspace:*
         version: link:../../../packages/solid-form
+      '@tanstack/valibot-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/valibot-form-adapter
       '@tanstack/vue-form':
         specifier: workspace:*
         version: link:../../../packages/vue-form
@@ -648,6 +684,9 @@ importers:
       '@tanstack/solid-form':
         specifier: workspace:*
         version: link:../../../packages/solid-form
+      '@tanstack/valibot-form-adapter':
+        specifier: workspace:*
+        version: link:../../../packages/valibot-form-adapter
       '@tanstack/vue-form':
         specifier: workspace:*
         version: link:../../../packages/vue-form

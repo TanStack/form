@@ -20,7 +20,7 @@ An object representing the options for a form.
 - ```tsx
     defaultValues?: TData
   ```
-  - Set initial values for yonu form.
+  - Set initial values for your form.
 - ```tsx
     defaultState?: Partial<FormState<TData>>
   ```
