@@ -4,20 +4,25 @@ import userEvent from '@testing-library/user-event'
 import { render, waitFor } from '@testing-library/vue'
 import { h, defineComponent, ref } from 'vue-demi'
 import * as React from 'react'
-import { createFormFactory, provideFormContext, useForm } from '..'
+import {
+  ValidationError,
+  createFormFactory,
+  provideFormContext,
+  useForm,
+} from '..'
 import { sleep } from './utils'
 
 import type { FieldApi, ValidationErrorMap } from '..'
 
 const user = userEvent.setup()
 
+type Person = {
+  firstName: string
+  lastName: string
+}
+
 describe('useForm', () => {
   it('preserved field state', async () => {
-    type Person = {
-      firstName: string
-      lastName: string
-    }
-
     const formFactory = createFormFactory<Person, unknown>()
 
     const Comp = defineComponent(() => {
@@ -45,7 +50,7 @@ describe('useForm', () => {
       )
     })
 
-    const { getByTestId, queryByText } = render(Comp)
+    const { getByTestId, queryByText } = render(<Comp />)
     const input = getByTestId('fieldinput')
     expect(queryByText('FirstName')).not.toBeInTheDocument()
     await user.type(input, 'FirstName')
@@ -53,11 +58,6 @@ describe('useForm', () => {
   })
 
   it('should allow default values to be set', async () => {
-    type Person = {
-      firstName: string
-      lastName: string
-    }
-
     const formFactory = createFormFactory<Person, unknown>()
 
     const Comp = defineComponent(() => {
@@ -80,7 +80,7 @@ describe('useForm', () => {
       )
     })
 
-    const { findByText, queryByText } = render(Comp)
+    const { findByText, queryByText } = render(<Comp />)
     expect(await findByText('FirstName')).toBeInTheDocument()
     expect(queryByText('LastName')).not.toBeInTheDocument()
   })
@@ -105,7 +105,7 @@ describe('useForm', () => {
             {({
               field,
             }: {
-              field: FieldApi<{ firstName: string }, 'firstName', never, never>
+              field: FieldApi<Person, 'firstName', never, never>
             }) => {
               return (
                 <input
@@ -127,7 +127,7 @@ describe('useForm', () => {
       )
     })
 
-    const { findByPlaceholderText, getByText } = render(Comp)
+    const { findByPlaceholderText, getByText } = render(<Comp />)
     const input = await findByPlaceholderText('First name')
     await user.clear(input)
     await user.type(input, 'OtherName')
@@ -163,21 +163,17 @@ describe('useForm', () => {
         )
     })
 
-    const { getByText, findByText } = render(Comp)
+    const { getByText, findByText } = render(<Comp />)
     await user.click(getByText('Mount form'))
     expect(await findByText('Form mounted')).toBeInTheDocument()
   })
 
   it('should validate async on change for the form', async () => {
-    type Person = {
-      firstName: string
-      lastName: string
-    }
     const error = 'Please enter a different value'
 
     const formFactory = createFormFactory<Person, unknown>()
 
-    function Comp() {
+    const Comp = defineComponent(() => {
       const form = formFactory.useForm({
         onChange() {
           return error
@@ -189,7 +185,7 @@ describe('useForm', () => {
             {({
               field,
             }: {
-              field: FieldApi<{ firstName: string }, 'firstName', never, never>
+              field: FieldApi<Person, 'firstName', never, never>
             }) => (
               <input
                 data-testid="fieldinput"
@@ -207,9 +203,9 @@ describe('useForm', () => {
           </form.Subscribe>
         </form.Provider>
       )
-    }
+    })
 
-    const { getByTestId, getByText, queryByText } = render(Comp)
+    const { getByTestId, getByText, queryByText } = render(<Comp />)
     const input = getByTestId('fieldinput')
     expect(queryByText(error)).not.toBeInTheDocument()
     await user.type(input, 'other')
@@ -217,15 +213,11 @@ describe('useForm', () => {
     expect(getByText(error)).toBeInTheDocument()
   })
   it('should not validate on change if isTouched is false', async () => {
-    type Person = {
-      firstName: string
-      lastName: string
-    }
     const error = 'Please enter a different value'
 
     const formFactory = createFormFactory<Person, unknown>()
 
-    function Comp() {
+    const Comp = defineComponent(() => {
       const form = formFactory.useForm({
         onChange: (value) => (value.firstName === 'other' ? error : undefined),
       })
@@ -237,7 +229,7 @@ describe('useForm', () => {
             {({
               field,
             }: {
-              field: FieldApi<{ firstName: string }, 'firstName', never, never>
+              field: FieldApi<Person, 'firstName', never, never>
             }) => (
               <div>
                 <input
@@ -255,24 +247,20 @@ describe('useForm', () => {
           <p>{errors}</p>
         </form.Provider>
       )
-    }
+    })
 
-    const { getByTestId, queryByText } = render(Comp)
+    const { getByTestId, queryByText } = render(<Comp />)
     const input = getByTestId('fieldinput')
     await user.type(input, 'other')
     expect(queryByText(error)).not.toBeInTheDocument()
   })
 
   it('should validate on change if isTouched is true', async () => {
-    type Person = {
-      firstName: string
-      lastName: string
-    }
     const error = 'Please enter a different value'
 
     const formFactory = createFormFactory<Person, unknown>()
 
-    function Comp() {
+    const Comp = defineComponent(() => {
       const form = formFactory.useForm({
         onChange: (value) => (value.firstName === 'other' ? error : undefined),
       })
@@ -283,7 +271,7 @@ describe('useForm', () => {
             {({
               field,
             }: {
-              field: FieldApi<{ firstName: string }, 'firstName', never, never>
+              field: FieldApi<Person, 'firstName', never, never>
             }) => (
               <div>
                 <input
@@ -301,9 +289,9 @@ describe('useForm', () => {
           </form.Field>
         </form.Provider>
       )
-    }
+    })
 
-    const { getByTestId, getByText, queryByText } = render(Comp)
+    const { getByTestId, getByText, queryByText } = render(<Comp />)
     const input = getByTestId('fieldinput')
     expect(queryByText(error)).not.toBeInTheDocument()
     await user.type(input, 'other')
@@ -314,7 +302,7 @@ describe('useForm', () => {
     const onChangeError = 'Please enter a different value (onChangeError)'
     const onBlurError = 'Please enter a different value (onBlurError)'
 
-    function Comp() {
+    const Comp = defineComponent(() => {
       const form = useForm({
         defaultValues: {
           firstName: '',
@@ -336,7 +324,7 @@ describe('useForm', () => {
             {({
               field,
             }: {
-              field: FieldApi<{ firstName: string }, 'firstName', never, never>
+              field: FieldApi<Person, 'firstName', never, never>
             }) => (
               <div>
                 <input
@@ -355,8 +343,8 @@ describe('useForm', () => {
           </form.Field>
         </form.Provider>
       )
-    }
-    const { getByTestId, getByText, queryByText } = render(Comp)
+    })
+    const { getByTestId, getByText, queryByText } = render(<Comp />)
     const input = getByTestId('fieldinput')
     expect(queryByText(onChangeError)).not.toBeInTheDocument()
     expect(queryByText(onBlurError)).not.toBeInTheDocument()
@@ -367,15 +355,11 @@ describe('useForm', () => {
   })
 
   it('should validate async on change', async () => {
-    type Person = {
-      firstName: string
-      lastName: string
-    }
     const error = 'Please enter a different value'
 
     const formFactory = createFormFactory<Person, unknown>()
 
-    function Comp() {
+    const Comp = defineComponent(() => {
       const form = formFactory.useForm({
         onChangeAsync: async () => {
           await sleep(10)
@@ -389,7 +373,7 @@ describe('useForm', () => {
             {({
               field,
             }: {
-              field: FieldApi<{ firstName: string }, 'firstName', never, never>
+              field: FieldApi<Person, 'firstName', never, never>
             }) => (
               <div>
                 <input
@@ -407,9 +391,9 @@ describe('useForm', () => {
           </form.Field>
         </form.Provider>
       )
-    }
+    })
 
-    const { getByTestId, getByText, queryByText } = render(Comp)
+    const { getByTestId, getByText, queryByText } = render(<Comp />)
     const input = getByTestId('fieldinput')
     expect(queryByText(error)).not.toBeInTheDocument()
     await user.type(input, 'other')
@@ -418,16 +402,12 @@ describe('useForm', () => {
   })
 
   it('should validate async on change and async on blur', async () => {
-    type Person = {
-      firstName: string
-      lastName: string
-    }
     const onChangeError = 'Please enter a different value (onChangeError)'
     const onBlurError = 'Please enter a different value (onBlurError)'
 
     const formFactory = createFormFactory<Person, unknown>()
 
-    function Comp() {
+    const Comp = defineComponent(() => {
       const form = formFactory.useForm({
         onChangeAsync: async () => {
           await sleep(10)
@@ -446,7 +426,7 @@ describe('useForm', () => {
             {({
               field,
             }: {
-              field: FieldApi<{ firstName: string }, 'firstName', never, never>
+              field: FieldApi<Person, 'firstName', never, never>
             }) => (
               <div>
                 <input
@@ -465,9 +445,9 @@ describe('useForm', () => {
           </form.Field>
         </form.Provider>
       )
-    }
+    })
 
-    const { getByTestId, getByText, queryByText } = render(Comp)
+    const { getByTestId, getByText, queryByText } = render(<Comp />)
     const input = getByTestId('fieldinput')
 
     expect(queryByText(onChangeError)).not.toBeInTheDocument()
@@ -481,15 +461,11 @@ describe('useForm', () => {
   })
 
   it('should validate async on change with debounce', async () => {
-    type Person = {
-      firstName: string
-      lastName: string
-    }
     const mockFn = vi.fn()
     const error = 'Please enter a different value'
     const formFactory = createFormFactory<Person, unknown>()
 
-    function Comp() {
+    const Comp = defineComponent(() => {
       const form = formFactory.useForm({
         onChangeAsyncDebounceMs: 100,
         onChangeAsync: async () => {
@@ -506,7 +482,7 @@ describe('useForm', () => {
             {({
               field,
             }: {
-              field: FieldApi<{ firstName: string }, 'firstName', never, never>
+              field: FieldApi<Person, 'firstName', never, never>
             }) => (
               <div>
                 <input
@@ -524,9 +500,9 @@ describe('useForm', () => {
           </form.Field>
         </form.Provider>
       )
-    }
+    })
 
-    const { getByTestId, getByText } = render(Comp)
+    const { getByTestId, getByText } = render(<Comp />)
     const input = getByTestId('fieldinput')
     await user.type(input, 'other')
     // mockFn will have been called 5 times without onChangeAsyncDebounceMs
