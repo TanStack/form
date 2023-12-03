@@ -2,7 +2,7 @@
 import { useForm } from '@tanstack/vue-form'
 import FieldInfo from './FieldInfo.vue'
 import { valibotValidator } from '@tanstack/valibot-form-adapter'
-import { string, minLength, stringAsync, PipeResult } from 'valibot'
+import { customAsync, minLength, string, stringAsync } from 'valibot'
 
 const form = useForm({
   defaultValues: {
@@ -20,22 +20,10 @@ const form = useForm({
 form.provideFormContext()
 
 const onChangeFirstName = stringAsync([
-  async (value) => {
+  customAsync(async (value) => {
     await new Promise((resolve) => setTimeout(resolve, 1000))
-    return (
-      value.includes('error')
-        ? {
-            issues: [
-              {
-                input: value,
-                validation: 'firstName',
-                message: "No 'error' allowed in first name",
-              },
-            ],
-          }
-        : { output: value }
-    ) as PipeResult<string>
-  },
+    return !value.includes('error')
+  }, "No 'error' allowed in first name"),
 ])
 </script>
 
