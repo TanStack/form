@@ -256,14 +256,14 @@ export class FormApi<TFormData, ValidatorType> {
         Object.values(this.fieldInfo) as FieldInfo<any, ValidatorType>[]
       ).forEach((field) => {
         Object.values(field.instances).forEach((instance) => {
+          // Validate the field
+          fieldValidationPromises.push(
+            Promise.resolve().then(() => instance.validate(cause)),
+          )
           // If any fields are not touched
           if (!instance.state.meta.isTouched) {
             // Mark them as touched
             instance.setMeta((prev) => ({ ...prev, isTouched: true }))
-            // Validate the field
-            fieldValidationPromises.push(
-              Promise.resolve().then(() => instance.validate(cause)),
-            )
           }
         })
       })
