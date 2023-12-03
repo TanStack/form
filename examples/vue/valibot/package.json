@@ -9,15 +9,15 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@tanstack/form-core": "0.10.2",
-    "@tanstack/vue-form": "0.10.2",
-    "@tanstack/valibot-form-adapter": "0.10.2",
+    "@tanstack/form-core": "0.10.3",
+    "@tanstack/vue-form": "0.10.3",
+    "@tanstack/valibot-form-adapter": "0.10.3",
     "vue": "^3.3.4",
     "valibot": "^0.20.1",
-    "@tanstack/zod-form-adapter": "0.10.2",
-    "@tanstack/react-form": "0.10.2",
-    "@tanstack/yup-form-adapter": "0.10.2",
-    "@tanstack/solid-form": "0.10.2"
+    "@tanstack/zod-form-adapter": "0.10.3",
+    "@tanstack/react-form": "0.10.3",
+    "@tanstack/yup-form-adapter": "0.10.3",
+    "@tanstack/solid-form": "0.10.3"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.3.4",
