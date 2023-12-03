@@ -99,7 +99,7 @@ describe('useForm', () => {
       form.provideFormContext()
 
       return () => (
-        <form.Provider>
+        <div>
           <form.Field name="firstName">
             {({
               field,
@@ -110,7 +110,7 @@ describe('useForm', () => {
                 <input
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) =>
+                  onInput={(e) =>
                     field.handleChange((e.target as HTMLInputElement).value)
                   }
                   placeholder={'First name'}
@@ -122,7 +122,7 @@ describe('useForm', () => {
           {submittedData.value && (
             <p>Submitted data: {submittedData.value.firstName}</p>
           )}
-        </form.Provider>
+        </div>
       )
     })
 
@@ -150,13 +150,14 @@ describe('useForm', () => {
           return undefined
         },
       })
+
       form.provideFormContext()
 
       return () =>
         mountForm.value ? (
-          <form.Provider>
+          <div>
             <h1>{formMounted.value ? 'Form mounted' : 'Not mounted'}</h1>
-          </form.Provider>
+          </div>
         ) : (
           <button onClick={() => (mountForm.value = true)}>Mount form</button>
         )
@@ -178,8 +179,11 @@ describe('useForm', () => {
           return error
         },
       })
+
+      form.provideFormContext()
+
       return () => (
-        <form.Provider>
+        <div>
           <form.Field name="firstName">
             {({
               field,
@@ -191,7 +195,7 @@ describe('useForm', () => {
                 name={field.name}
                 value={field.state.value}
                 onBlur={field.handleBlur}
-                onChange={(e) =>
+                onInput={(e) =>
                   field.handleChange((e.target as HTMLInputElement).value)
                 }
               />
@@ -200,7 +204,7 @@ describe('useForm', () => {
           <form.Subscribe selector={(state) => state.errorMap}>
             {(errorMap: ValidationErrorMap) => <p>{errorMap.onChange}</p>}
           </form.Subscribe>
-        </form.Provider>
+        </div>
       )
     })
 
@@ -222,8 +226,11 @@ describe('useForm', () => {
       })
 
       const errors = form.useStore((s) => s.errors)
+
+      form.provideFormContext()
+
       return () => (
-        <form.Provider>
+        <div>
           <form.Field name="firstName">
             {({
               field,
@@ -236,7 +243,7 @@ describe('useForm', () => {
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) =>
+                  onInput={(e) =>
                     field.setValue((e.target as HTMLInputElement).value)
                   }
                 />
@@ -244,7 +251,7 @@ describe('useForm', () => {
             )}
           </form.Field>
           <p>{errors}</p>
-        </form.Provider>
+        </div>
       )
     })
 
@@ -263,9 +270,13 @@ describe('useForm', () => {
       const form = formFactory.useForm({
         onChange: (value) => (value.firstName === 'other' ? error : undefined),
       })
+
       const errors = form.useStore((s) => s.errorMap)
+
+      form.provideFormContext()
+
       return () => (
-        <form.Provider>
+        <div>
           <form.Field name="firstName" defaultMeta={{ isTouched: true }}>
             {({
               field,
@@ -278,7 +289,7 @@ describe('useForm', () => {
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) =>
+                  onInput={(e) =>
                     field.handleChange((e.target as HTMLInputElement).value)
                   }
                 />
@@ -286,7 +297,7 @@ describe('useForm', () => {
               </div>
             )}
           </form.Field>
-        </form.Provider>
+        </div>
       )
     })
 
@@ -317,8 +328,11 @@ describe('useForm', () => {
       })
 
       const errors = form.useStore((s) => s.errorMap)
+
+      form.provideFormContext()
+
       return () => (
-        <form.Provider>
+        <div>
           <form.Field name="firstName" defaultMeta={{ isTouched: true }}>
             {({
               field,
@@ -331,7 +345,7 @@ describe('useForm', () => {
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) =>
+                  onInput={(e) =>
                     field.handleChange((e.target as HTMLInputElement).value)
                   }
                 />
@@ -340,7 +354,7 @@ describe('useForm', () => {
               </div>
             )}
           </form.Field>
-        </form.Provider>
+        </div>
       )
     })
     const { getByTestId, getByText, queryByText } = render(<Comp />)
@@ -365,9 +379,13 @@ describe('useForm', () => {
           return error
         },
       })
+
       const errors = form.useStore((s) => s.errorMap)
+
+      form.provideFormContext()
+
       return () => (
-        <form.Provider>
+        <div>
           <form.Field name="firstName" defaultMeta={{ isTouched: true }}>
             {({
               field,
@@ -380,7 +398,7 @@ describe('useForm', () => {
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) =>
+                  onInput={(e) =>
                     field.handleChange((e.target as HTMLInputElement).value)
                   }
                 />
@@ -388,7 +406,7 @@ describe('useForm', () => {
               </div>
             )}
           </form.Field>
-        </form.Provider>
+        </div>
       )
     })
 
@@ -419,8 +437,10 @@ describe('useForm', () => {
       })
       const errors = form.useStore((s) => s.errorMap)
 
+      form.provideFormContext()
+
       return () => (
-        <form.Provider>
+        <div>
           <form.Field name="firstName" defaultMeta={{ isTouched: true }}>
             {({
               field,
@@ -433,7 +453,7 @@ describe('useForm', () => {
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) =>
+                  onInput={(e) =>
                     field.handleChange((e.target as HTMLInputElement).value)
                   }
                 />
@@ -442,7 +462,7 @@ describe('useForm', () => {
               </div>
             )}
           </form.Field>
-        </form.Provider>
+        </div>
       )
     })
 
@@ -475,8 +495,10 @@ describe('useForm', () => {
       })
       const errors = form.useStore((s) => s.errors)
 
+      form.provideFormContext()
+
       return () => (
-        <form.Provider>
+        <div>
           <form.Field name="firstName" defaultMeta={{ isTouched: true }}>
             {({
               field,
@@ -489,7 +511,7 @@ describe('useForm', () => {
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) =>
+                  onInput={(e) =>
                     field.handleChange((e.target as HTMLInputElement).value)
                   }
                 />
@@ -497,7 +519,7 @@ describe('useForm', () => {
               </div>
             )}
           </form.Field>
-        </form.Provider>
+        </div>
       )
     })
 
