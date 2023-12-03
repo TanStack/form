@@ -17,7 +17,9 @@ describe('zod field api', () => {
       form,
       validator: zodValidator,
       name: 'name',
-      onChange: z.string().min(3, 'You must have a length of at least 3'),
+      validators: {
+        onChange: z.string().min(3, 'You must have a length of at least 3'),
+      },
     })
 
     field.mount()
@@ -42,7 +44,9 @@ describe('zod field api', () => {
       form,
       validator: zodValidator,
       name: 'name',
-      onChange: (val) => (val === 'a' ? 'Test' : undefined),
+      validators: {
+        onChange: (val) => (val === 'a' ? 'Test' : undefined),
+      },
     })
 
     field.mount()
@@ -65,10 +69,12 @@ describe('zod field api', () => {
       form,
       validator: zodValidator,
       name: 'name',
-      onChangeAsync: z.string().refine(async (val) => val.length > 3, {
-        message: 'Testing 123',
-      }),
-      onChangeAsyncDebounceMs: 0,
+      validators: {
+        onChangeAsync: z.string().refine(async (val) => val.length > 3, {
+          message: 'Testing 123',
+        }),
+        onChangeAsyncDebounceMs: 0,
+      },
     })
 
     field.mount()
@@ -93,8 +99,10 @@ describe('zod field api', () => {
       form,
       validator: zodValidator,
       name: 'name',
-      onChangeAsync: async (val) => (val === 'a' ? 'Test' : undefined),
-      onChangeAsyncDebounceMs: 0,
+      validators: {
+        onChangeAsync: async (val) => (val === 'a' ? 'Test' : undefined),
+        onChangeAsyncDebounceMs: 0,
+      },
     })
 
     field.mount()

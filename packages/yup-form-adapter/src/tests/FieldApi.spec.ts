@@ -17,7 +17,9 @@ describe('yup field api', () => {
       form,
       validator: yupValidator,
       name: 'name',
-      onChange: yup.string().min(3, 'You must have a length of at least 3'),
+      validators: {
+        onChange: yup.string().min(3, 'You must have a length of at least 3'),
+      },
     })
 
     field.mount()
@@ -42,7 +44,9 @@ describe('yup field api', () => {
       form,
       validator: yupValidator,
       name: 'name',
-      onChange: (val) => (val === 'a' ? 'Test' : undefined),
+      validators: {
+        onChange: (val) => (val === 'a' ? 'Test' : undefined),
+      },
     })
 
     field.mount()
@@ -65,12 +69,14 @@ describe('yup field api', () => {
       form,
       validator: yupValidator,
       name: 'name',
-      onChangeAsync: yup
-        .string()
-        .test('Testing 123', 'Testing 123', async (val) =>
-          typeof val === 'string' ? val.length > 3 : false,
-        ),
-      onChangeAsyncDebounceMs: 0,
+      validators: {
+        onChangeAsync: yup
+          .string()
+          .test('Testing 123', 'Testing 123', async (val) =>
+            typeof val === 'string' ? val.length > 3 : false,
+          ),
+        onChangeAsyncDebounceMs: 0,
+      },
     })
 
     field.mount()
@@ -95,8 +101,10 @@ describe('yup field api', () => {
       form,
       validator: yupValidator,
       name: 'name',
-      onChangeAsync: async (val) => (val === 'a' ? 'Test' : undefined),
-      onChangeAsyncDebounceMs: 0,
+      validators: {
+        onChangeAsync: async (val) => (val === 'a' ? 'Test' : undefined),
+        onChangeAsyncDebounceMs: 0,
+      }
     })
 
     field.mount()

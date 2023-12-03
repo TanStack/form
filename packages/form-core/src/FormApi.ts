@@ -24,12 +24,7 @@ type ValidateAsyncFn<TData, ValidatorType> = (
   fieldApi: FormApi<TData, ValidatorType>,
 ) => ValidationError | Promise<ValidationError>
 
-export type FormOptions<TData, ValidatorType> = {
-  defaultValues?: TData
-  defaultState?: Partial<FormState<TData>>
-  asyncAlways?: boolean
-  asyncDebounceMs?: number
-  validator?: ValidatorType
+export interface FormValidators<TData, ValidatorType> {
   onMount?: ValidateOrFn<TData, ValidatorType>
   onChange?: ValidateOrFn<TData, ValidatorType>
   onChangeAsync?: ValidateAsyncFn<TData, ValidatorType>
@@ -37,6 +32,15 @@ export type FormOptions<TData, ValidatorType> = {
   onBlur?: ValidateOrFn<TData, ValidatorType>
   onBlurAsync?: ValidateAsyncFn<TData, ValidatorType>
   onBlurAsyncDebounceMs?: number
+}
+
+export type FormOptions<TData, ValidatorType> = {
+  defaultValues?: TData
+  defaultState?: Partial<FormState<TData>>
+  asyncAlways?: boolean
+  asyncDebounceMs?: number
+  validator?: ValidatorType
+  validators?: FormValidators<TData, ValidatorType>
   onSubmit?: (
     values: TData,
     formApi: FormApi<TData, ValidatorType>,
@@ -185,19 +189,18 @@ export class FormApi<TFormData, ValidatorType> {
     const doValidate = () => {
       if (
         this.options.validator &&
-        typeof this.options.onMount !== 'function'
+        typeof this.options.validators?.onMount !== 'function'
       ) {
         return (this.options.validator as Validator<TFormData>)().validate(
           this.state.values,
-          this.options.onMount,
+          this.options.validators?.onMount,
         )
       }
-      return (this.options.onMount as ValidateFn<TFormData, ValidatorType>)(
-        this.state.values,
-        this,
-      )
+      return (
+        this.options.validators?.onMount as ValidateFn<TFormData, ValidatorType>
+      )(this.state.values, this)
     }
-    if (!this.options.onMount) return
+    if (!this.options.validators?.onMount) return
     const error = doValidate()
     if (error) {
       this.store.setState((prev) => ({
@@ -273,7 +276,7 @@ export class FormApi<TFormData, ValidatorType> {
   }
 
   validateSync = (cause: ValidationCause): void => {
-    const { onChange, onBlur } = this.options
+    const { onChange, onBlur } = this.options.validators || {}
     const validate =
       cause === 'change' ? onChange : cause === 'blur' ? onBlur : undefined
     if (!validate) return
@@ -328,13 +331,13 @@ export class FormApi<TFormData, ValidatorType> {
   validateAsync = async (
     cause: ValidationCause,
   ): Promise<ValidationError[]> => {
+    const { asyncDebounceMs } = this.options
     const {
       onChangeAsync,
       onBlurAsync,
-      asyncDebounceMs,
       onBlurAsyncDebounceMs,
       onChangeAsyncDebounceMs,
-    } = this.options
+    } = this.options.validators || {}
 
     const validate =
       cause === 'change'

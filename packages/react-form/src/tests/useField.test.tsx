@@ -106,7 +106,9 @@ describe('useField', () => {
         <form.Provider>
           <form.Field
             name="firstName"
-            onChange={(value) => (value === 'other' ? error : undefined)}
+            validators={{
+              onChange: (value) => (value === 'other' ? error : undefined),
+            }}
             children={(field) => (
               <div>
                 <input
@@ -147,7 +149,9 @@ describe('useField', () => {
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
-            onChange={(value) => (value === 'other' ? error : undefined)}
+            validators={{
+              onChange: (value) => (value === 'other' ? error : undefined),
+            }}
             children={(field) => (
               <div>
                 <input
@@ -190,10 +194,11 @@ describe('useField', () => {
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
-            onChange={(value) =>
-              value === 'other' ? onChangeError : undefined
-            }
-            onBlur={(value) => (value === 'other' ? onBlurError : undefined)}
+            validators={{
+              onChange: (value) =>
+                value === 'other' ? onChangeError : undefined,
+              onBlur: (value) => (value === 'other' ? onBlurError : undefined),
+            }}
             children={(field) => (
               <div>
                 <input
@@ -239,9 +244,11 @@ describe('useField', () => {
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
-            onChangeAsync={async () => {
-              await sleep(10)
-              return error
+            validators={{
+              onChangeAsync: async () => {
+                await sleep(10)
+                return error
+              },
             }}
             children={(field) => (
               <div>
@@ -286,13 +293,15 @@ describe('useField', () => {
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
-            onChangeAsync={async () => {
-              await sleep(10)
-              return onChangeError
-            }}
-            onBlurAsync={async () => {
-              await sleep(10)
-              return onBlurError
+            validators={{
+              onChangeAsync: async () => {
+                await sleep(10)
+                return onChangeError
+              },
+              onBlurAsync: async () => {
+                await sleep(10)
+                return onBlurError
+              },
             }}
             children={(field) => (
               <div>
@@ -342,11 +351,13 @@ describe('useField', () => {
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
-            onChangeAsyncDebounceMs={100}
-            onChangeAsync={async () => {
-              mockFn()
-              await sleep(10)
-              return error
+            validators={{
+              onChangeAsyncDebounceMs: 100,
+              onChangeAsync: async () => {
+                mockFn()
+                await sleep(10)
+                return error
+              },
             }}
             children={(field) => (
               <div>

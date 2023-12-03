@@ -48,17 +48,21 @@ it('should type onChange properly', () => {
       <form.Provider>
         <form.Field
           name="firstName"
-          onChange={(val) => {
-            assertType<'test'>(val)
-            return null
+          validators={{
+            onChange: (val) => {
+              assertType<'test'>(val)
+              return null
+            },
           }}
           children={(field) => null}
         />
         <form.Field
           name="age"
-          onChange={(val) => {
-            assertType<84>(val)
-            return null
+          validators={{
+            onChange: (val) => {
+              assertType<84>(val)
+              return null
+            },
           }}
           children={(field) => null}
         />

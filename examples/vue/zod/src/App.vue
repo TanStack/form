@@ -43,11 +43,13 @@ const onChangeFirstName = z.string().refine(
     <div>
       <form.Field
         name="firstName"
-        :onChange="
-          z.string().min(3, 'First name must be at least 3 characters')
-        "
-        :onChangeAsyncDebounceMs="500"
-        :onChangeAsync="onChangeFirstName"
+        :validators="{
+          onChange: z
+            .string()
+            .min(3, 'First name must be at least 3 characters'),
+          onChangeAsyncDebounceMs: 500,
+          onChangeAsync: onChangeFirstName,
+        }"
       >
         <template v-slot="{ field, state }">
           <label :htmlFor="field.name">First Name:</label>

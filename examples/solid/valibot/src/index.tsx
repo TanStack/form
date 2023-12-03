@@ -49,16 +49,18 @@ function App() {
             {/* A type-safe field component*/}
             <form.Field
               name="firstName"
-              onChange={string([
-                minLength(3, 'First name must be at least 3 characters'),
-              ])}
-              onChangeAsyncDebounceMs={500}
-              onChangeAsync={stringAsync([
-                customAsync(async (value) => {
-                  await new Promise((resolve) => setTimeout(resolve, 1000))
-                  return !value.includes('error')
-                }, "No 'error' allowed in first name"),
-              ])}
+              validators={{
+                onChange: string([
+                  minLength(3, 'First name must be at least 3 characters'),
+                ]),
+                onChangeAsyncDebounceMs: 500,
+                onChangeAsync: stringAsync([
+                  customAsync(async (value) => {
+                    await new Promise((resolve) => setTimeout(resolve, 1000))
+                    return !value.includes('error')
+                  }, "No 'error' allowed in first name"),
+                ]),
+              }}
               children={(field) => {
                 // Avoid hasty abstractions. Render props are great!
                 return (

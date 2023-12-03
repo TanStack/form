@@ -29,10 +29,12 @@ it('should type onChange properly', () => {
   const field = new FieldApi({
     form,
     name: 'name',
-    onChange: (value) => {
-      assertType<'test'>(value)
+    validators: {
+      onChange: (value) => {
+        assertType<'test'>(value)
 
-      return undefined
+        return undefined
+      },
     },
   })
 })
@@ -47,10 +49,12 @@ it('should type onChangeAsync properly', () => {
   const field = new FieldApi({
     form,
     name: 'name',
-    onChangeAsync: async (value) => {
-      assertType<'test'>(value)
+    validators: {
+      onChangeAsync: async (value) => {
+        assertType<'test'>(value)
 
-      return undefined
+        return undefined
+      },
     },
   })
 })

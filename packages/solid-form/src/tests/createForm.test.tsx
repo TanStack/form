@@ -125,9 +125,11 @@ describe('createForm', () => {
         defaultValues: {
           firstName: 'FirstName',
         },
-        onMount: () => {
-          setFormMounted(true)
-          return undefined
+        validators: {
+          onMount: () => {
+            setFormMounted(true)
+            return undefined
+          },
         },
       }))
 
@@ -161,8 +163,10 @@ describe('createForm', () => {
 
     function Comp() {
       const form = formFactory.createForm(() => ({
-        onChange: (value) =>
-          value.firstName.includes('other') ? error : undefined,
+        validators: {
+          onChange: (value) =>
+            value.firstName.includes('other') ? error : undefined,
+        },
       }))
 
       return (
@@ -203,8 +207,10 @@ describe('createForm', () => {
 
     function Comp() {
       const form = formFactory.createForm(() => ({
-        onChange: (value) =>
-          value.firstName.includes('other') ? error : undefined,
+        validators: {
+          onChange: (value) =>
+            value.firstName.includes('other') ? error : undefined,
+        },
       }))
 
       const [errors, setErrors] = createSignal<ValidationErrorMap>()
@@ -253,10 +259,12 @@ describe('createForm', () => {
 
     function Comp() {
       const form = formFactory.createForm(() => ({
-        onChange: (value) =>
-          value.firstName.includes('other') ? onChangeError : undefined,
-        onBlur: (value) =>
-          value.firstName.includes('other') ? onBlurError : undefined,
+        validators: {
+          onChange: (value) =>
+            value.firstName.includes('other') ? onChangeError : undefined,
+          onBlur: (value) =>
+            value.firstName.includes('other') ? onBlurError : undefined,
+        },
       }))
 
       const [errors, setErrors] = createSignal<ValidationErrorMap>()
@@ -307,9 +315,11 @@ describe('createForm', () => {
 
     function Comp() {
       const form = formFactory.createForm(() => ({
-        onChangeAsync: async () => {
-          await sleep(10)
-          return error
+        validators: {
+          onChangeAsync: async () => {
+            await sleep(10)
+            return error
+          },
         },
       }))
 
@@ -358,13 +368,15 @@ describe('createForm', () => {
 
     function Comp() {
       const form = formFactory.createForm(() => ({
-        async onChangeAsync() {
-          await sleep(10)
-          return onChangeError
-        },
-        async onBlurAsync() {
-          await sleep(10)
-          return onBlurError
+        validators: {
+          async onChangeAsync() {
+            await sleep(10)
+            return onChangeError
+          },
+          async onBlurAsync() {
+            await sleep(10)
+            return onBlurError
+          },
         },
       }))
 
@@ -419,11 +431,13 @@ describe('createForm', () => {
 
     function Comp() {
       const form = formFactory.createForm(() => ({
-        onChangeAsyncDebounceMs: 100,
-        onChangeAsync: async () => {
-          mockFn()
-          await sleep(10)
-          return error
+        validators: {
+          onChangeAsyncDebounceMs: 100,
+          onChangeAsync: async () => {
+            mockFn()
+            await sleep(10)
+            return error
+          },
         },
       }))
 

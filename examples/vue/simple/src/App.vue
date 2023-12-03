@@ -34,16 +34,16 @@ async function onChangeFirstName(value: string) {
     <div>
       <form.Field
         name="firstName"
-        @change="
-          (value) =>
+        :validators="{
+          onChange: (value) =>
             !value
               ? `A first name is required`
               : value.length < 3
               ? `First name must be at least 3 characters`
-              : undefined
-        "
-        :onChangeAsyncDebounceMs="500"
-        :onChangeAsync="onChangeFirstName"
+              : undefined,
+          onChangeAsyncDebounceMs: 500,
+          onChangeAsync: onChangeFirstName,
+        }"
       >
         <template v-slot="{ field, state }">
           <label :htmlFor="field.name">First Name:</label>

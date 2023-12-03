@@ -145,9 +145,11 @@ describe('useForm', () => {
         defaultValues: {
           firstName: 'FirstName',
         },
-        onMount: () => {
-          formMounted.value = true
-          return undefined
+        validators: {
+          onMount: () => {
+            formMounted.value = true
+            return undefined
+          },
         },
       })
 
@@ -175,8 +177,10 @@ describe('useForm', () => {
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm({
-        onChange() {
-          return error
+        validators: {
+          onChange() {
+            return error
+          },
         },
       })
 
@@ -222,7 +226,10 @@ describe('useForm', () => {
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm({
-        onChange: (value) => (value.firstName === 'other' ? error : undefined),
+        validators: {
+          onChange: (value) =>
+            value.firstName === 'other' ? error : undefined,
+        },
       })
 
       const errors = form.useStore((s) => s.errors)
@@ -268,7 +275,10 @@ describe('useForm', () => {
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm({
-        onChange: (value) => (value.firstName === 'other' ? error : undefined),
+        validators: {
+          onChange: (value) =>
+            value.firstName === 'other' ? error : undefined,
+        },
       })
 
       const errors = form.useStore((s) => s.errorMap)
@@ -317,13 +327,15 @@ describe('useForm', () => {
         defaultValues: {
           firstName: '',
         },
-        onChange: (vals) => {
-          if (vals.firstName === 'other') return onChangeError
-          return undefined
-        },
-        onBlur: (vals) => {
-          if (vals.firstName === 'other') return onBlurError
-          return undefined
+        validators: {
+          onChange: (vals) => {
+            if (vals.firstName === 'other') return onChangeError
+            return undefined
+          },
+          onBlur: (vals) => {
+            if (vals.firstName === 'other') return onBlurError
+            return undefined
+          },
         },
       })
 
@@ -374,9 +386,11 @@ describe('useForm', () => {
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm({
-        onChangeAsync: async () => {
-          await sleep(10)
-          return error
+        validators: {
+          onChangeAsync: async () => {
+            await sleep(10)
+            return error
+          },
         },
       })
 
@@ -426,13 +440,15 @@ describe('useForm', () => {
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm({
-        onChangeAsync: async () => {
-          await sleep(10)
-          return onChangeError
-        },
-        onBlurAsync: async () => {
-          await sleep(10)
-          return onBlurError
+        validators: {
+          onChangeAsync: async () => {
+            await sleep(10)
+            return onChangeError
+          },
+          onBlurAsync: async () => {
+            await sleep(10)
+            return onBlurError
+          },
         },
       })
       const errors = form.useStore((s) => s.errorMap)
@@ -486,11 +502,13 @@ describe('useForm', () => {
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm({
-        onChangeAsyncDebounceMs: 100,
-        onChangeAsync: async () => {
-          mockFn()
-          await sleep(10)
-          return error
+        validators: {
+          onChangeAsyncDebounceMs: 100,
+          onChangeAsync: async () => {
+            mockFn()
+            await sleep(10)
+            return error
+          },
         },
       })
       const errors = form.useStore((s) => s.errors)

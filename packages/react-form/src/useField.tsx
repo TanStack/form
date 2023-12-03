@@ -70,7 +70,7 @@ export function useField<
       ...opts,
       form: formApi,
       // TODO: Fix typings to include `index` and `parentFieldName`, if present
-      name: name as typeof opts.name,
+      name: name as typeof opts.name as never,
     })
 
     api.Field = Field as never
@@ -97,7 +97,7 @@ export function useField<
   // Instantiates field meta and removes it when unrendered
   useIsomorphicLayoutEffect(() => fieldApi.mount(), [fieldApi])
 
-  return fieldApi
+  return fieldApi as never
 }
 
 type FieldComponentProps<
