@@ -732,7 +732,7 @@ describe('form api', () => {
     ])
   })
 
-  it('should clear onSubmit error when a valid value is entered ', async () => {
+  it('should clear onSubmit error when a valid value is entered', async () => {
     const form = new FormApi({
       defaultValues: {
         firstName: '',

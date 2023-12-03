@@ -614,4 +614,23 @@ describe('field api', () => {
     expect(form.store.state.values.name).toBeUndefined()
     expect(form.store.state.fieldMeta.name).toBeUndefined()
   })
+
+  it('should show onSubmit errors', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      onSubmit: (v) => (v.length > 0 ? undefined : 'first name is required'),
+    })
+
+    field.mount()
+
+    await form.handleSubmit()
+    expect(field.getMeta().errors).toStrictEqual(['first name is required'])
+  })
 })
