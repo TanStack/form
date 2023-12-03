@@ -1,3 +1,5 @@
+import type { Validator } from './types'
+
 export type UpdaterFn<TInput, TOutput = TInput> = (input: TInput) => TOutput
 
 export type Updater<TInput, TOutput = TInput> =
@@ -139,6 +141,31 @@ function makePathArray(str: string) {
 
 export function isNonEmptyArray(obj: any) {
   return !(Array.isArray(obj) && obj.length === 0)
+}
+
+export function runValidatorOrAdapter<
+  TData,
+  SuppliedThis,
+  M extends 'validate' | 'validateAsync',
+>(props: {
+  validateFn: unknown
+  // Order matters, first is run first
+  adapters: Array<Validator<any> | undefined>
+  value: TData
+  methodName: M
+  suppliedThis: SuppliedThis
+}): ReturnType<ReturnType<Validator<TData>>[M]> {
+  for (const adapter of props.adapters) {
+    if (adapter && typeof props.validateFn !== 'function') {
+      return (adapter as Validator<TData>)()[props.methodName](
+        props.value,
+        props.validateFn,
+      ) as never
+    }
+  }
+
+  const validateFn: (...vals: any[]) => any = props.validateFn as never
+  return validateFn(props.value, props.suppliedThis) as never
 }
 
 export type RequiredByKey<T, K extends keyof T> = Omit<T, K> &

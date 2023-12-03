@@ -104,7 +104,7 @@ describe('yup field api', () => {
       validators: {
         onChangeAsync: async (val) => (val === 'a' ? 'Test' : undefined),
         onChangeAsyncDebounceMs: 0,
-      }
+      },
     })
 
     field.mount()
