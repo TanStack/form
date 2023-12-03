@@ -226,6 +226,63 @@ describe('form api', () => {
     expect(form.getFieldValue('names')).toStrictEqual(['one', 'three', 'two'])
   })
 
+  it('should handle fields inside an array', async () => {
+    interface Employee {
+      firstName: string
+    }
+    interface Form {
+      employees: Partial<Employee>[]
+    }
+
+    const form = new FormApi<Form, unknown>()
+
+    const field = new FieldApi({
+      form,
+      name: 'employees',
+      defaultValue: [],
+    })
+
+    field.mount()
+
+    const fieldInArray = new FieldApi({
+      form,
+      name: `employees.${0}.firstName`,
+      defaultValue: 'Darcy',
+    })
+    fieldInArray.mount()
+    expect(field.state.value.length).toBe(1)
+    expect(fieldInArray.getValue()).toBe('Darcy')
+  })
+
+  it('should handle deleting fields in an array', async () => {
+    interface Employee {
+      firstName: string
+    }
+    interface Form {
+      employees: Partial<Employee>[]
+    }
+
+    const form = new FormApi<Form, unknown>()
+
+    const field = new FieldApi({
+      form,
+      name: 'employees',
+      defaultValue: [],
+    })
+
+    field.mount()
+
+    const fieldInArray = new FieldApi({
+      form,
+      name: `employees.${0}.firstName`,
+      defaultValue: 'Darcy',
+    })
+    fieldInArray.mount()
+    form.deleteField(`employees.${0}.firstName`)
+    expect(field.state.value.length).toBe(1)
+    expect(Object.keys(field.state.value[0]!).length).toBe(0)
+  })
+
   it('should not wipe values when updating', () => {
     const form = new FormApi({
       defaultValues: {
@@ -500,7 +557,6 @@ describe('form api', () => {
 
     form.mount()
     field.mount()
-
     expect(form.state.errors.length).toBe(0)
     field.setValue('other', { touch: true })
     field.validate('blur')
