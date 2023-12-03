@@ -293,7 +293,7 @@ describe('useForm', () => {
                     field.handleChange((e.target as HTMLInputElement).value)
                   }
                 />
-                <p>{errors.onChange}</p>
+                <p>{errors.value.onChange}</p>
               </div>
             )}
           </form.Field>
@@ -349,8 +349,8 @@ describe('useForm', () => {
                     field.handleChange((e.target as HTMLInputElement).value)
                   }
                 />
-                <p>{errors.onChange}</p>
-                <p>{errors.onBlur}</p>
+                <p>{errors.value.onChange}</p>
+                <p>{errors.value.onBlur}</p>
               </div>
             )}
           </form.Field>
@@ -402,7 +402,7 @@ describe('useForm', () => {
                     field.handleChange((e.target as HTMLInputElement).value)
                   }
                 />
-                <p>{errors.onChange}</p>
+                <p>{errors.value.onChange}</p>
               </div>
             )}
           </form.Field>
@@ -457,8 +457,8 @@ describe('useForm', () => {
                     field.handleChange((e.target as HTMLInputElement).value)
                   }
                 />
-                <p>{errors.onChange}</p>
-                <p>{errors.onBlur}</p>
+                <p>{errors.value.onChange}</p>
+                <p>{errors.value.onBlur}</p>
               </div>
             )}
           </form.Field>
@@ -515,7 +515,7 @@ describe('useForm', () => {
                     field.handleChange((e.target as HTMLInputElement).value)
                   }
                 />
-                <p>{errors}</p>
+                <p>{errors.value}</p>
               </div>
             )}
           </form.Field>
