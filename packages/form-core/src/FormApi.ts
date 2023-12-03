@@ -6,9 +6,15 @@ import {
   getBy,
   isNonEmptyArray,
   setBy,
+  runValidatorOrAdapter,
 } from './utils'
-import type { FieldApi, FieldMeta, ValidationCause } from './FieldApi'
-import type { ValidationError, Validator } from './types'
+import type { FieldApi, FieldMeta } from './FieldApi'
+import type {
+  ValidationError,
+  ValidationErrorMap,
+  Validator,
+  ValidationCause,
+} from './types'
 
 type ValidateFn<TData, ValidatorType> = (
   values: TData,
@@ -61,12 +67,6 @@ export type ValidationMeta = {
   validationPromise?: Promise<ValidationError[] | undefined>
   validationResolve?: (errors: ValidationError[] | undefined) => void
   validationReject?: (errors: unknown) => void
-}
-
-export type ValidationErrorMapKeys = `on${Capitalize<ValidationCause>}`
-
-export type ValidationErrorMap = {
-  [K in ValidationErrorMapKeys]?: ValidationError
 }
 
 export type FormState<TData> = {
@@ -185,23 +185,24 @@ export class FormApi<TFormData, ValidatorType> {
     this.update(opts || {})
   }
 
+  _runValidator<T, M extends 'validate' | 'validateAsync'>(
+    validate: T,
+    value: TFormData,
+    methodName: M,
+  ) {
+    return runValidatorOrAdapter({
+      validateFn: validate,
+      value: value,
+      methodName: methodName,
+      suppliedThis: this,
+      adapters: [this.options.validatorAdapter as never],
+    })
+  }
+
   mount = () => {
-    const doValidate = () => {
-      if (
-        this.options.validatorAdapter &&
-        typeof this.options.validators?.onMount !== 'function'
-      ) {
-        return (this.options.validatorAdapter as Validator<TFormData>)().validate(
-          this.state.values,
-          this.options.validators?.onMount,
-        )
-      }
-      return (
-        this.options.validators?.onMount as ValidateFn<TFormData, ValidatorType>
-      )(this.state.values, this)
-    }
-    if (!this.options.validators?.onMount) return
-    const error = doValidate()
+    const { onMount } = this.options.validators || {}
+    if (!onMount) return
+    const error = this._runValidator(onMount, this.state.values, 'validate')
     if (error) {
       this.store.setState((prev) => ({
         ...prev,
@@ -282,21 +283,10 @@ export class FormApi<TFormData, ValidatorType> {
     if (!validate) return
 
     const errorMapKey = getErrorMapKey(cause)
-    const doValidate = () => {
-      if (this.options.validatorAdapter && typeof validate !== 'function') {
-        return (this.options.validatorAdapter as Validator<TFormData>)().validate(
-          this.state.values,
-          validate,
-        )
-      }
 
-      return (validate as ValidateFn<TFormData, ValidatorType>)(
-        this.state.values,
-        this,
-      )
-    }
-
-    const error = normalizeError(doValidate())
+    const error = normalizeError(
+      this._runValidator(validate, this.state.values, 'validate'),
+    )
     if (this.state.errorMap[errorMapKey] !== error) {
       this.store.setState((prev) => ({
         ...prev,
@@ -374,27 +364,15 @@ export class FormApi<TFormData, ValidatorType> {
       await new Promise((r) => setTimeout(r, debounceMs))
     }
 
-    const doValidate = () => {
-      if (typeof validate === 'function') {
-        return validate(this.state.values, this) as ValidationError
-      }
-      if (this.options.validatorAdapter && typeof validate !== 'function') {
-        return (this.options.validatorAdapter as Validator<TFormData>)().validateAsync(
-          this.state.values,
-          validate,
-        )
-      }
-      const errorMapKey = getErrorMapKey(cause)
-      throw new Error(
-        `Form validation for ${errorMapKey}Async failed. ${errorMapKey}Async should either be a function, or \`validator\` should be correct.`,
-      )
-    }
-
     // Only kick off validation if this validation is the latest attempt
     if (checkLatest()) {
       const prevErrors = this.state.errors
       try {
-        const rawError = await doValidate()
+        const rawError = await this._runValidator(
+          validate,
+          this.state.values,
+          'validateAsync',
+        )
         if (checkLatest()) {
           const error = normalizeError(rawError)
           this.store.setState((prev) => ({

@@ -1,9 +1,13 @@
 import { Store } from '@tanstack/store'
-import type { FormApi, ValidationErrorMap } from './FormApi'
-import type { ValidationError, Validator } from './types'
+import type { FormApi } from './FormApi'
+import type {
+  ValidationCause,
+  ValidationError,
+  ValidationErrorMap,
+  Validator,
+} from './types'
 import type { DeepKeys, DeepValue, Updater } from './utils'
-
-export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount'
+import { runValidatorOrAdapter } from './utils'
 
 type ValidateFn<
   TParentData,
@@ -361,26 +365,19 @@ export class FieldApi<
 
   _runValidator<T, M extends 'validate' | 'validateAsync'>(
     validate: T,
-    value: typeof this.state.value,
+    value: TData,
     methodName: M,
-  ): ReturnType<ReturnType<Validator<TData>>[M]> {
-    if (this.options.validatorAdapter && typeof validate !== 'function') {
-      return (this.options.validatorAdapter as Validator<TData>)()[methodName](
-        value,
-        validate,
-      ) as never
-    }
-
-    if (this.form.options.validatorAdapter && typeof validate !== 'function') {
-      return (this.form.options.validatorAdapter as Validator<TData>)()[
-        methodName
-      ](value, validate) as never
-    }
-
-    return (validate as ValidateFn<TParentData, TName, ValidatorType, TData>)(
-      value,
-      this as never,
-    ) as never
+  ) {
+    return runValidatorOrAdapter({
+      validateFn: validate,
+      value: value,
+      methodName: methodName,
+      suppliedThis: this,
+      adapters: [
+        this.form.options.validatorAdapter,
+        this.options.validatorAdapter as never,
+      ],
+    })
   }
 
   validateSync = (value = this.state.value, cause: ValidationCause) => {
