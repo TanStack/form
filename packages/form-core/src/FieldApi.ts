@@ -378,7 +378,7 @@ export class FieldApi<
     }
 
     // Needs type cast as eslint errantly believes this is always falsy
-    let hasError = false as boolean
+    let hasErrored = false as boolean
 
     this.form.store.batch(() => {
       for (const validateObj of validates) {
@@ -393,7 +393,9 @@ export class FieldApi<
               [getErrorMapKey(validateObj.cause)]: error,
             },
           }))
-          hasError = true
+        }
+        if (error) {
+          hasErrored = true
         }
       }
     })
@@ -406,7 +408,7 @@ export class FieldApi<
     if (
       this.state.meta.errorMap[submitErrKey] &&
       cause !== 'submit' &&
-      !hasError
+      !hasErrored
     ) {
       this.setMeta((prev) => ({
         ...prev,
@@ -418,9 +420,11 @@ export class FieldApi<
     }
 
     // If a sync error is encountered for the errorMapKey (eg. onChange), cancel any async validation
-    if (hasError) {
+    if (hasErrored) {
       this.cancelValidateAsync()
     }
+
+    return { hasErrored }
   }
 
   __leaseValidateAsync = () => {
@@ -552,17 +556,10 @@ export class FieldApi<
       this.form.validate(cause)
     } catch (_) {}
 
-    // Store the previous error for the errorMapKey (eg. onChange, onBlur, onSubmit)
-    const errorMapKey = getErrorMapKey(cause)
-    const prevError = this.getMeta().errorMap[errorMapKey]
-
     // Attempt to sync validate first
-    this.validateSync(value, cause)
+    const { hasErrored } = this.validateSync(value, cause)
 
-    // If there is a new error mapped to the errorMapKey (eg. onChange, onBlur, onSubmit), return the errors array, do not attempt async validation
-    const newError = this.getMeta().errorMap[errorMapKey]
-
-    if (prevError !== newError) {
+    if (hasErrored) {
       if (!this.options.asyncAlways) {
         return this.state.meta.errors
       }
