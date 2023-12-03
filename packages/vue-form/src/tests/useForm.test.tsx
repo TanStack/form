@@ -515,7 +515,7 @@ describe('useForm', () => {
                     field.handleChange((e.target as HTMLInputElement).value)
                   }
                 />
-                <p>{errors.value}</p>
+                <p>{errors.value.join(',')}</p>
               </div>
             )}
           </form.Field>
