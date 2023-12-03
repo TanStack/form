@@ -207,9 +207,11 @@ describe('field api', () => {
     const field = new FieldApi({
       form,
       name: 'name',
-      onChange: (value) => {
-        if (value === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onChange: (value) => {
+          if (value === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
 
@@ -235,10 +237,12 @@ describe('field api', () => {
     const field = new FieldApi({
       form,
       name: 'name',
-      onChangeAsync: async (value) => {
-        await sleep(1000)
-        if (value === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onChangeAsync: async (value) => {
+          await sleep(1000)
+          if (value === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
 
@@ -266,11 +270,13 @@ describe('field api', () => {
     const field = new FieldApi({
       form,
       name: 'name',
-      onChangeAsyncDebounceMs: 1000,
-      onChangeAsync: async (value) => {
-        await sleepMock(1000)
-        if (value === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onChangeAsyncDebounceMs: 1000,
+        onChangeAsync: async (value) => {
+          await sleepMock(1000)
+          if (value === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
 
@@ -302,10 +308,12 @@ describe('field api', () => {
       form,
       name: 'name',
       asyncDebounceMs: 1000,
-      onChangeAsync: async (value) => {
-        await sleepMock(1000)
-        if (value === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onChangeAsync: async (value) => {
+          await sleepMock(1000)
+          if (value === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
 
@@ -333,9 +341,11 @@ describe('field api', () => {
     const field = new FieldApi({
       form,
       name: 'name',
-      onBlur: (value) => {
-        if (value === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onBlur: (value) => {
+          if (value === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
 
@@ -361,10 +371,12 @@ describe('field api', () => {
     const field = new FieldApi({
       form,
       name: 'name',
-      onBlurAsync: async (value) => {
-        await sleep(1000)
-        if (value === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onBlurAsync: async (value) => {
+          await sleep(1000)
+          if (value === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
 
@@ -393,11 +405,13 @@ describe('field api', () => {
     const field = new FieldApi({
       form,
       name: 'name',
-      onBlurAsyncDebounceMs: 1000,
-      onBlurAsync: async (value) => {
-        await sleepMock(10)
-        if (value === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onBlurAsyncDebounceMs: 1000,
+        onBlurAsync: async (value) => {
+          await sleepMock(10)
+          if (value === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
 
@@ -430,10 +444,12 @@ describe('field api', () => {
       form,
       name: 'name',
       asyncDebounceMs: 1000,
-      onBlurAsync: async (value) => {
-        await sleepMock(10)
-        if (value === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onBlurAsync: async (value) => {
+          await sleepMock(10)
+          if (value === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
 
@@ -464,10 +480,12 @@ describe('field api', () => {
     const field = new FieldApi({
       form,
       name: 'name',
-      onSubmitAsync: async (value) => {
-        await sleep(1000)
-        if (value === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onSubmitAsync: async (value) => {
+          await sleep(1000)
+          if (value === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
 
@@ -493,13 +511,15 @@ describe('field api', () => {
     const field = new FieldApi({
       form,
       name: 'name',
-      onBlur: (value) => {
-        if (value === 'other') return 'Please enter a different value'
-        return
-      },
-      onChange: (value) => {
-        if (value === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onBlur: (value) => {
+          if (value === 'other') return 'Please enter a different value'
+          return
+        },
+        onChange: (value) => {
+          if (value === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
 
@@ -527,9 +547,11 @@ describe('field api', () => {
     const field = new FieldApi({
       form,
       name: 'name',
-      onChange: (value) => {
-        if (value === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onChange: (value) => {
+          if (value === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
 
@@ -625,7 +647,9 @@ describe('field api', () => {
     const field = new FieldApi({
       form,
       name: 'firstName',
-      onSubmit: (v) => (v.length > 0 ? undefined : 'first name is required'),
+      validators: {
+        onSubmit: (v) => (v.length > 0 ? undefined : 'first name is required'),
+      },
     })
 
     field.mount()

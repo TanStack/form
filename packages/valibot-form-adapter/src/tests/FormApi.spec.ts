@@ -16,7 +16,11 @@ describe('valibot form api', () => {
     const field = new FieldApi({
       form,
       name: 'name',
-      onChange: string([minLength(3, 'You must have a length of at least 3')]),
+      validators: {
+        onChange: string([
+          minLength(3, 'You must have a length of at least 3'),
+        ]),
+      },
     })
 
     field.mount()
@@ -41,7 +45,9 @@ describe('valibot form api', () => {
     const field = new FieldApi({
       form,
       name: 'name',
-      onChange: (val) => (val === 'a' ? 'Test' : undefined),
+      validators: {
+        onChange: (val) => (val === 'a' ? 'Test' : undefined),
+      },
     })
 
     field.mount()

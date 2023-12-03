@@ -64,7 +64,9 @@ describe('useField', () => {
       return () => (
         <form.Field
           name="firstName"
-          onChange={(value) => (value === 'other' ? error : undefined)}
+          validators={{
+            onChange: (value) => (value === 'other' ? error : undefined),
+          }}
         >
           {({
             field,
@@ -111,7 +113,9 @@ describe('useField', () => {
       return () => (
         <form.Field
           name="firstName"
-          onChange={(value) => (value === 'other' ? error : undefined)}
+          validators={{
+            onChange: (value) => (value === 'other' ? error : undefined),
+          }}
         >
           {({
             field,
@@ -160,9 +164,11 @@ describe('useField', () => {
         <form.Field
           name="firstName"
           defaultMeta={{ isTouched: true }}
-          onChangeAsync={async () => {
-            await sleep(10)
-            return error
+          validators={{
+            onChangeAsync: async () => {
+              await sleep(10)
+              return error
+            },
           }}
         >
           {({
@@ -214,11 +220,13 @@ describe('useField', () => {
         <form.Field
           name="firstName"
           defaultMeta={{ isTouched: true }}
-          onChangeAsyncDebounceMs={100}
-          onChangeAsync={async () => {
-            mockFn()
-            await sleep(10)
-            return error
+          validators={{
+            onChangeAsyncDebounceMs: 100,
+            onChangeAsync: async () => {
+              mockFn()
+              await sleep(10)
+              return error
+            },
           }}
         >
           {({

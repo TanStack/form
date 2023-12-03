@@ -57,20 +57,13 @@ type AsyncValidateOrFn<
       | ValidateAsyncFn<TParentData, TName, ValidatorType, TData>
   : ValidateAsyncFn<TParentData, TName, ValidatorType, TData>
 
-export interface FieldOptions<
+export interface FieldValidators<
   TParentData,
   TName extends DeepKeys<TParentData>,
   ValidatorType,
   FormValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
-  name: TName
-  index?: TData extends any[] ? number : never
-  defaultValue?: TData
-  asyncDebounceMs?: number
-  asyncAlways?: boolean
-  preserveValue?: boolean
-  validator?: ValidatorType
   onMount?: (
     formApi: FieldApi<TParentData, TName, ValidatorType, TData>,
   ) => void
@@ -106,6 +99,29 @@ export interface FieldOptions<
     TData
   >
   onSubmitAsync?: AsyncValidateOrFn<
+    TParentData,
+    TName,
+    ValidatorType,
+    FormValidator,
+    TData
+  >
+}
+
+export interface FieldOptions<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  ValidatorType,
+  FormValidator,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> {
+  name: TName
+  index?: TData extends any[] ? number : never
+  defaultValue?: TData
+  asyncDebounceMs?: number
+  asyncAlways?: boolean
+  preserveValue?: boolean
+  validator?: ValidatorType
+  validators?: FieldValidators<
     TParentData,
     TName,
     ValidatorType,
@@ -243,7 +259,7 @@ export class FieldApi<
     })
 
     this.update(this.options as never)
-    this.options.onMount?.(this as never)
+    this.options.validators?.onMount?.(this as never)
 
     return () => {
       const preserveValue = this.options.preserveValue
@@ -337,7 +353,7 @@ export class FieldApi<
     }) as any
 
   validateSync = (value = this.state.value, cause: ValidationCause) => {
-    const { onChange, onBlur, onSubmit } = this.options
+    const { onChange, onBlur, onSubmit } = this.options.validators || {}
 
     const validates =
       // https://github.com/TanStack/form/issues/490
@@ -444,14 +460,14 @@ export class FieldApi<
   }
 
   validateAsync = async (value = this.state.value, cause: ValidationCause) => {
+    const { asyncDebounceMs } = this.options
     const {
       onChangeAsync,
       onBlurAsync,
       onSubmitAsync,
-      asyncDebounceMs,
       onBlurAsyncDebounceMs,
       onChangeAsyncDebounceMs,
-    } = this.options
+    } = this.options.validators || {}
 
     const validate =
       cause === 'change'

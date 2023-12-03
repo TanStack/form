@@ -362,7 +362,9 @@ describe('form api', () => {
     const field = new FieldApi({
       form,
       name: 'name',
-      onChange: (v) => (v.length > 0 ? undefined : 'required'),
+      validators: {
+        onChange: (v) => (v.length > 0 ? undefined : 'required'),
+      },
     })
 
     form.mount()
@@ -390,9 +392,11 @@ describe('form api', () => {
       defaultValues: {
         name: 'test',
       },
-      onChange: (value) => {
-        if (value.name === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onChange: (value) => {
+          if (value.name === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
 
@@ -418,10 +422,12 @@ describe('form api', () => {
       defaultValues: {
         name: 'test',
       },
-      onChangeAsync: async (value) => {
-        await sleep(1000)
-        if (value.name === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onChangeAsync: async (value) => {
+          await sleep(1000)
+          if (value.name === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
     const field = new FieldApi({
@@ -449,11 +455,13 @@ describe('form api', () => {
       defaultValues: {
         name: 'test',
       },
-      onChangeAsyncDebounceMs: 1000,
-      onChangeAsync: async (value) => {
-        await sleepMock(1000)
-        if (value.name === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onChangeAsyncDebounceMs: 1000,
+        onChangeAsync: async (value) => {
+          await sleepMock(1000)
+          if (value.name === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
     const field = new FieldApi({
@@ -485,10 +493,12 @@ describe('form api', () => {
         name: 'test',
       },
       asyncDebounceMs: 1000,
-      onChangeAsync: async (value) => {
-        await sleepMock(1000)
-        if (value.name === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onChangeAsync: async (value) => {
+          await sleepMock(1000)
+          if (value.name === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
     const field = new FieldApi({
@@ -516,9 +526,11 @@ describe('form api', () => {
       defaultValues: {
         name: 'other',
       },
-      onBlur: (value) => {
-        if (value.name === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onBlur: (value) => {
+          if (value.name === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
     const field = new FieldApi({
@@ -544,10 +556,12 @@ describe('form api', () => {
       defaultValues: {
         name: 'test',
       },
-      onBlurAsync: async (value) => {
-        await sleep(1000)
-        if (value.name === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onBlurAsync: async (value) => {
+          await sleep(1000)
+          if (value.name === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
     const field = new FieldApi({
@@ -575,11 +589,13 @@ describe('form api', () => {
       defaultValues: {
         name: 'test',
       },
-      onBlurAsyncDebounceMs: 1000,
-      onBlurAsync: async (value) => {
-        await sleepMock(10)
-        if (value.name === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onBlurAsyncDebounceMs: 1000,
+        onBlurAsync: async (value) => {
+          await sleepMock(10)
+          if (value.name === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
     const field = new FieldApi({
@@ -612,10 +628,12 @@ describe('form api', () => {
         name: 'test',
       },
       asyncDebounceMs: 1000,
-      onBlurAsync: async (value) => {
-        await sleepMock(10)
-        if (value.name === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onBlurAsync: async (value) => {
+          await sleepMock(10)
+          if (value.name === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
     const field = new FieldApi({
@@ -644,13 +662,15 @@ describe('form api', () => {
       defaultValues: {
         name: 'other',
       },
-      onBlur: (value) => {
-        if (value.name === 'other') return 'Please enter a different value'
-        return
-      },
-      onChange: (value) => {
-        if (value.name === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onBlur: (value) => {
+          if (value.name === 'other') return 'Please enter a different value'
+          return
+        },
+        onChange: (value) => {
+          if (value.name === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
     const field = new FieldApi({
@@ -678,9 +698,11 @@ describe('form api', () => {
       defaultValues: {
         name: 'other',
       },
-      onChange: (value) => {
-        if (value.name === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onChange: (value) => {
+          if (value.name === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
     const field = new FieldApi({
@@ -706,9 +728,11 @@ describe('form api', () => {
       defaultValues: {
         name: 'other',
       },
-      onMount: (value) => {
-        if (value.name === 'other') return 'Please enter a different value'
-        return
+      validators: {
+        onMount: (value) => {
+          if (value.name === 'other') return 'Please enter a different value'
+          return
+        },
       },
     })
     const field = new FieldApi({
@@ -736,13 +760,17 @@ describe('form api', () => {
     const field = new FieldApi({
       form,
       name: 'firstName',
-      onChange: (v) => (v.length > 0 ? undefined : 'first name is required'),
+      validators: {
+        onChange: (v) => (v.length > 0 ? undefined : 'first name is required'),
+      },
     })
 
     const lastNameField = new FieldApi({
       form,
       name: 'lastName',
-      onChange: (v) => (v.length > 0 ? undefined : 'last name is required'),
+      validators: {
+        onChange: (v) => (v.length > 0 ? undefined : 'last name is required'),
+      },
     })
 
     field.mount()
@@ -770,11 +798,13 @@ describe('form api', () => {
     const field = new FieldApi({
       form,
       name: 'firstName',
-      onChange: (v) => (v.length > 0 ? undefined : 'first name is required'),
-      onBlur: (v) =>
-        v.length > 3
-          ? undefined
-          : 'first name must be longer than 3 characters',
+      validators: {
+        onChange: (v) => (v.length > 0 ? undefined : 'first name is required'),
+        onBlur: (v) =>
+          v.length > 3
+            ? undefined
+            : 'first name must be longer than 3 characters',
+      },
     })
 
     field.mount()
@@ -798,7 +828,9 @@ describe('form api', () => {
     const field = new FieldApi({
       form,
       name: 'firstName',
-      onSubmit: (v) => (v.length > 0 ? undefined : 'first name is required'),
+      validators: {
+        onSubmit: (v) => (v.length > 0 ? undefined : 'first name is required'),
+      },
     })
 
     field.mount()
@@ -828,7 +860,9 @@ describe('form api', () => {
     const field = new FieldApi({
       form,
       name: 'firstName',
-      onChange: (v) => (v.length > 0 ? undefined : 'first name is required'),
+      validators: {
+        onChange: (v) => (v.length > 0 ? undefined : 'first name is required'),
+      },
     })
 
     field.mount()

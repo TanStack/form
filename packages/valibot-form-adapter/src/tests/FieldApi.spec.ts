@@ -17,7 +17,11 @@ describe('valibot field api', () => {
       form,
       validator: valibotValidator,
       name: 'name',
-      onChange: string([minLength(3, 'You must have a length of at least 3')]),
+      validators: {
+        onChange: string([
+          minLength(3, 'You must have a length of at least 3'),
+        ]),
+      },
     })
 
     field.mount()
@@ -42,7 +46,9 @@ describe('valibot field api', () => {
       form,
       validator: valibotValidator,
       name: 'name',
-      onChange: (val) => (val === 'a' ? 'Test' : undefined),
+      validators: {
+        onChange: (val) => (val === 'a' ? 'Test' : undefined),
+      },
     })
 
     field.mount()
@@ -65,10 +71,12 @@ describe('valibot field api', () => {
       form,
       validator: valibotValidator,
       name: 'name',
-      onChangeAsync: stringAsync([
-        customAsync(async (val) => val.length > 3, 'Testing 123'),
-      ]),
-      onChangeAsyncDebounceMs: 0,
+      validators: {
+        onChangeAsync: stringAsync([
+          customAsync(async (val) => val.length > 3, 'Testing 123'),
+        ]),
+        onChangeAsyncDebounceMs: 0,
+      },
     })
 
     field.mount()
@@ -93,8 +101,10 @@ describe('valibot field api', () => {
       form,
       validator: valibotValidator,
       name: 'name',
-      onChangeAsync: async (val) => (val === 'a' ? 'Test' : undefined),
-      onChangeAsyncDebounceMs: 0,
+      validators: {
+        onChangeAsync: async (val) => (val === 'a' ? 'Test' : undefined),
+        onChangeAsyncDebounceMs: 0,
+      },
     })
 
     field.mount()

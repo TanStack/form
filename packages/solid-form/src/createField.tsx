@@ -92,7 +92,7 @@ export function createField<
   const fieldApi = new FieldApi({
     ...options,
     form: formApi,
-    name: name as typeof options.name,
+    name: name as typeof options.name as never,
   })
   fieldApi.Field = Field as never
 
@@ -102,12 +102,12 @@ export function createField<
    *
    * createComputed to make sure this effect runs before render effects
    */
-  createComputed(() => fieldApi.update({ ...opts(), form: formApi }))
+  createComputed(() => fieldApi.update({ ...opts(), form: formApi } as never))
 
   // Instantiates field meta and removes it when unrendered
   onMount(() => onCleanup(fieldApi.mount()))
 
-  return makeFieldReactive(fieldApi)
+  return makeFieldReactive(fieldApi) as never
 }
 
 type FieldComponentProps<
