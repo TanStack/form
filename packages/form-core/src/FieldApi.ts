@@ -331,22 +331,24 @@ export class FieldApi<
 
   validateSync = (value = this.state.value, cause: ValidationCause) => {
     const { onChange, onBlur } = this.options
-    const validate =
-      cause === 'submit'
-        ? onChange
-          ? onChange
-          : onBlur
-        : cause === 'change'
-        ? onChange
-        : onBlur
 
-    if (!validate) return
+    const validates =
+      // https://github.com/TanStack/form/issues/490
+      cause === 'submit'
+        ? ([
+            { cause: 'change', validate: onChange },
+            { cause: 'blur', validate: onBlur },
+          ] as const)
+        : cause === 'change'
+        ? ([{ cause: 'change', validate: onChange }] as const)
+        : ([{ cause: 'blur', validate: onBlur }] as const)
+
     // Use the validationCount for all field instances to
     // track freshness of the validation
     const validationCount = (this.getInfo().validationCount || 0) + 1
     this.getInfo().validationCount = validationCount
 
-    const doValidate = () => {
+    const doValidate = (validate: (typeof validates)[number]['validate']) => {
       if (this.options.validator && typeof validate !== 'function') {
         return (this.options.validator as Validator<TData>)().validate(
           value,
@@ -367,21 +369,35 @@ export class FieldApi<
       )
     }
 
-    const error = normalizeError(doValidate())
-    const errorMapKey = getErrorMapKey(cause)
-    if (this.state.meta.errorMap[errorMapKey] !== error) {
-      this.setMeta((prev) => ({
-        ...prev,
-        errorMap: {
-          ...prev.errorMap,
-          [getErrorMapKey(cause)]: error,
-        },
-      }))
-    }
-    /* when we have an error for onSubmit in the state , we want   
-    to clear the error as soon as the user enters a valid value in the field 
-    */
-    if (this.state.meta.errorMap['onSubmit'] && cause !== 'submit' && !error) {
+    let hasError = false
+
+    this.form.store.batch(() => {
+      for (const validateObj of validates) {
+        if (!validateObj.validate) continue
+        const error = normalizeError(doValidate(validateObj.validate))
+        const errorMapKey = getErrorMapKey(validateObj.cause)
+        if (this.state.meta.errorMap[errorMapKey] !== error) {
+          this.setMeta((prev) => ({
+            ...prev,
+            errorMap: {
+              ...prev.errorMap,
+              [getErrorMapKey(validateObj.cause)]: error,
+            },
+          }))
+          hasError = true
+        }
+      }
+    })
+
+    /**
+     *  when we have an error for onSubmit in the state, we want
+     *  to clear the error as soon as the user enters a valid value in the field
+     */
+    if (
+      this.state.meta.errorMap['onSubmit'] &&
+      cause !== 'submit' &&
+      !hasError
+    ) {
       this.setMeta((prev) => ({
         ...prev,
         errorMap: {
@@ -392,7 +408,7 @@ export class FieldApi<
     }
 
     // If a sync error is encountered for the errorMapKey (eg. onChange), cancel any async validation
-    if (this.state.meta.errorMap[errorMapKey]) {
+    if (hasError) {
       this.cancelValidateAsync()
     }
   }
