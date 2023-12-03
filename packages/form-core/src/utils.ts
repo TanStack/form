@@ -16,9 +16,8 @@ export function functionalUpdate<TInput, TOutput = TInput>(
 /**
  * Get a value from an object using a path, including dot notation.
  */
-export function getBy(obj: any, path: any) {
-  const pathArray = makePathArray(path)
-  const pathObj = pathArray
+export function getBy(obj: any, path: string) {
+  const pathObj = makePathArray(path)
   return pathObj.reduce((current: any, pathPart: any) => {
     if (typeof current !== 'undefined') {
       return current[pathPart]
@@ -30,7 +29,7 @@ export function getBy(obj: any, path: any) {
 /**
  * Set a value on an object using a path, including dot notation.
  */
-export function setBy(obj: any, _path: any, updater: Updater<any>) {
+export function setBy(obj: any, _path: string, updater: Updater<any>) {
   const path = makePathArray(_path)
 
   function doSet(parent?: any): any {
@@ -52,19 +51,15 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
       }
     }
 
-    if (typeof key === 'number') {
-      if (Array.isArray(parent)) {
-        const prefix = parent.slice(0, key)
-        return [
-          ...(prefix.length ? prefix : new Array(key)),
-          doSet(parent[key]),
-          ...parent.slice(key + 1),
-        ]
-      }
-      return [...new Array(key), doSet()]
+    if (Array.isArray(parent) && key !== undefined) {
+      const prefix = parent.slice(0, key)
+      return [
+        ...(prefix.length ? prefix : new Array(key)),
+        doSet(parent[key]),
+        ...parent.slice(key + 1),
+      ]
     }
-
-    throw new Error('Uh oh!')
+    return [...new Array(key), doSet()]
   }
 
   return doSet(obj)
@@ -73,7 +68,7 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
 /**
  * Delete a field on an object using a path, including dot notation.
  */
-export function deleteBy(obj: any, _path: any) {
+export function deleteBy(obj: any, _path: string) {
   const path = makePathArray(_path)
 
   function doDelete(parent: any): any {
@@ -121,10 +116,6 @@ const intPrefix = '__int__'
 const intReplace = `${intPrefix}$1`
 
 function makePathArray(str: string) {
-  if (typeof str !== 'string') {
-    throw new Error('Path must be a string.')
-  }
-
   return str
     .replace('[', '.')
     .replace(']', '')
