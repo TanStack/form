@@ -98,6 +98,13 @@ export interface FieldOptions<
     TData
   >
   onBlurAsyncDebounceMs?: number
+  onSubmit?: ValidateOrFn<
+    TParentData,
+    TName,
+    ValidatorType,
+    FormValidator,
+    TData
+  >
   onSubmitAsync?: AsyncValidateOrFn<
     TParentData,
     TName,
@@ -330,7 +337,7 @@ export class FieldApi<
     }) as any
 
   validateSync = (value = this.state.value, cause: ValidationCause) => {
-    const { onChange, onBlur } = this.options
+    const { onChange, onBlur, onSubmit } = this.options
 
     const validates =
       // https://github.com/TanStack/form/issues/490
@@ -338,6 +345,7 @@ export class FieldApi<
         ? ([
             { cause: 'change', validate: onChange },
             { cause: 'blur', validate: onBlur },
+            { cause: 'submit', validate: onSubmit },
           ] as const)
         : cause === 'change'
         ? ([{ cause: 'change', validate: onChange }] as const)
@@ -369,7 +377,8 @@ export class FieldApi<
       )
     }
 
-    let hasError = false
+    // Needs type cast as eslint errantly believes this is always falsy
+    let hasError = false as boolean
 
     this.form.store.batch(() => {
       for (const validateObj of validates) {
@@ -393,8 +402,9 @@ export class FieldApi<
      *  when we have an error for onSubmit in the state, we want
      *  to clear the error as soon as the user enters a valid value in the field
      */
+    const submitErrKey = getErrorMapKey('submit')
     if (
-      this.state.meta.errorMap['onSubmit'] &&
+      this.state.meta.errorMap[submitErrKey] &&
       cause !== 'submit' &&
       !hasError
     ) {
@@ -402,7 +412,7 @@ export class FieldApi<
         ...prev,
         errorMap: {
           ...prev.errorMap,
-          [getErrorMapKey('submit')]: undefined,
+          [submitErrKey]: undefined,
         },
       }))
     }

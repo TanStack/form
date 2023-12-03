@@ -669,7 +669,7 @@ describe('form api', () => {
     })
   })
 
-  it('should validate fields on Submit', async () => {
+  it('should validate fields during submit', async () => {
     const form = new FormApi({
       defaultValues: {
         firstName: '',
@@ -703,6 +703,35 @@ describe('form api', () => {
     ])
   })
 
+  it('should run all types of validation on fields during submit', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      onChange: (v) => (v.length > 0 ? undefined : 'first name is required'),
+      onBlur: (v) =>
+        v.length > 3
+          ? undefined
+          : 'first name must be longer than 3 characters',
+    })
+
+    field.mount()
+
+    await form.handleSubmit()
+    expect(form.state.isFieldsValid).toEqual(false)
+    expect(form.state.canSubmit).toEqual(false)
+    expect(form.state.fieldMeta['firstName'].errors).toEqual([
+      'first name is required',
+      'first name must be longer than 3 characters',
+    ])
+  })
+
   it('should clear onSubmit error when a valid value is entered ', async () => {
     const form = new FormApi({
       defaultValues: {
@@ -713,7 +742,8 @@ describe('form api', () => {
     const field = new FieldApi({
       form,
       name: 'firstName',
-      onChange: (v) => (v.length > 0 ? undefined : 'first name is required'),
+      onSubmit: (v) =>
+        v.length > 0 ? undefined : 'first name is required',
     })
 
     field.mount()
