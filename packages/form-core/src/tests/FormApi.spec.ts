@@ -742,8 +742,7 @@ describe('form api', () => {
     const field = new FieldApi({
       form,
       name: 'firstName',
-      onSubmit: (v) =>
-        v.length > 0 ? undefined : 'first name is required',
+      onSubmit: (v) => (v.length > 0 ? undefined : 'first name is required'),
     })
 
     field.mount()
