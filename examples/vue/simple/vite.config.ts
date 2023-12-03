@@ -5,6 +5,6 @@ import createVuePlugin from '@vitejs/plugin-vue'
 export default defineConfig({
   plugins: [createVuePlugin()],
   optimizeDeps: {
-    exclude: ['@tanstack/vue-form', 'vue-demi'],
+    exclude: ['@tanstack/vue-form'],
   },
 })

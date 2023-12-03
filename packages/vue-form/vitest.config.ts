@@ -7,7 +7,7 @@ export default defineConfig({
     watch: false,
     environment: 'jsdom',
     globals: true,
-    setupFiles: ['test-setup.ts'],
+    setupFiles: [],
     coverage: { provider: 'istanbul' },
   },
   esbuild: {

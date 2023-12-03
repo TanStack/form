@@ -202,6 +202,7 @@ describe('useForm', () => {
     await waitFor(() => getByText(error))
     expect(getByText(error)).toBeInTheDocument()
   })
+
   it('should not validate on change if isTouched is false', async () => {
     type Person = {
       firstName: string

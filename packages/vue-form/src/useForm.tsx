@@ -8,7 +8,7 @@ import {
   type SetupContext,
   defineComponent,
   onMounted,
-} from 'vue-demi'
+} from 'vue'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow

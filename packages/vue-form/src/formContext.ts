@@ -1,5 +1,5 @@
 import type { FormApi } from '@tanstack/form-core'
-import { inject, provide } from 'vue-demi'
+import { inject, provide } from 'vue'
 
 export type FormContext = {
   formApi: FormApi<any, unknown>

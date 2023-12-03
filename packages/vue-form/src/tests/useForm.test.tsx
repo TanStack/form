@@ -2,8 +2,7 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { render, waitFor } from '@testing-library/vue'
-import { h, defineComponent, ref } from 'vue-demi'
-import * as React from 'react'
+import { h, defineComponent, ref } from 'vue'
 import {
   ValidationError,
   createFormFactory,
