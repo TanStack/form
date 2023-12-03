@@ -14,7 +14,7 @@ const form = useForm({
     alert(JSON.stringify(values))
   },
   // Add a validator to support Yup usage in Form and Field
-  validator: yupValidator,
+  validatorAdapter: yupValidator,
 })
 
 form.provideFormContext()

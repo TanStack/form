@@ -27,7 +27,7 @@ export default function App() {
       console.log(values);
     },
     // Add a validator to support Yup usage in Form and Field
-    validator: yupValidator,
+    validatorAdapter: yupValidator,
   });
 
   return (

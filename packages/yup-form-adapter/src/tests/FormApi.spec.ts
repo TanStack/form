@@ -10,7 +10,7 @@ describe('yup form api', () => {
       defaultValues: {
         name: '',
       },
-      validator: yupValidator,
+      validatorAdapter: yupValidator,
     })
 
     const field = new FieldApi({
@@ -37,7 +37,7 @@ describe('yup form api', () => {
       defaultValues: {
         name: '',
       },
-      validator: yupValidator,
+      validatorAdapter: yupValidator,
     })
 
     const field = new FieldApi({

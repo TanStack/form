@@ -15,7 +15,7 @@ describe('valibot field api', () => {
 
     const field = new FieldApi({
       form,
-      validator: valibotValidator,
+      validatorAdapter: valibotValidator,
       name: 'name',
       validators: {
         onChange: string([
@@ -44,7 +44,7 @@ describe('valibot field api', () => {
 
     const field = new FieldApi({
       form,
-      validator: valibotValidator,
+      validatorAdapter: valibotValidator,
       name: 'name',
       validators: {
         onChange: (val) => (val === 'a' ? 'Test' : undefined),
@@ -69,7 +69,7 @@ describe('valibot field api', () => {
 
     const field = new FieldApi({
       form,
-      validator: valibotValidator,
+      validatorAdapter: valibotValidator,
       name: 'name',
       validators: {
         onChangeAsync: stringAsync([
@@ -99,7 +99,7 @@ describe('valibot field api', () => {
 
     const field = new FieldApi({
       form,
-      validator: valibotValidator,
+      validatorAdapter: valibotValidator,
       name: 'name',
       validators: {
         onChangeAsync: async (val) => (val === 'a' ? 'Test' : undefined),

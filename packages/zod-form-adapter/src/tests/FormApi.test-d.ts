@@ -8,7 +8,7 @@ it('should allow a Zod validator to be passed in', () => {
     defaultValues: {
       name: 'test',
     },
-    validator: zodValidator,
+    validatorAdapter: zodValidator,
   } as const)
 })
 
@@ -17,7 +17,7 @@ it('should allow a Zod validator to handle the correct Zod type', () => {
     defaultValues: {
       name: 'test',
     },
-    validator: zodValidator,
+    validatorAdapter: zodValidator,
   })
 
   const field = new FieldApi({
@@ -34,7 +34,7 @@ it('should allow a Zod validator to handle the correct Zod type on async methods
     defaultValues: {
       name: 'test',
     },
-    validator: zodValidator,
+    validatorAdapter: zodValidator,
   })
 
   const field = new FieldApi({
@@ -51,7 +51,7 @@ it('should allow a functional onChange to be passed when using a validator', () 
     defaultValues: {
       name: 'test',
     },
-    validator: zodValidator,
+    validatorAdapter: zodValidator,
   })
 
   const field = new FieldApi({
@@ -92,7 +92,7 @@ it.skip('should allow not a Zod validator with the wrong Zod type', () => {
   const field = new FieldApi({
     form,
     name: 'name',
-    validator: zodValidator,
+    validatorAdapter: zodValidator,
     validators: {
       onChange: z.object({}),
     },

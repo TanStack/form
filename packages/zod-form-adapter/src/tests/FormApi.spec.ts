@@ -10,7 +10,7 @@ describe('zod form api', () => {
       defaultValues: {
         name: '',
       },
-      validator: zodValidator,
+      validatorAdapter: zodValidator,
     })
 
     const field = new FieldApi({
@@ -37,7 +37,7 @@ describe('zod form api', () => {
       defaultValues: {
         name: '',
       },
-      validator: zodValidator,
+      validatorAdapter: zodValidator,
     })
 
     const field = new FieldApi({

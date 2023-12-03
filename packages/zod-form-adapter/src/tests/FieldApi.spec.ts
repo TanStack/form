@@ -15,7 +15,7 @@ describe('zod field api', () => {
 
     const field = new FieldApi({
       form,
-      validator: zodValidator,
+      validatorAdapter: zodValidator,
       name: 'name',
       validators: {
         onChange: z.string().min(3, 'You must have a length of at least 3'),
@@ -42,7 +42,7 @@ describe('zod field api', () => {
 
     const field = new FieldApi({
       form,
-      validator: zodValidator,
+      validatorAdapter: zodValidator,
       name: 'name',
       validators: {
         onChange: (val) => (val === 'a' ? 'Test' : undefined),
@@ -67,7 +67,7 @@ describe('zod field api', () => {
 
     const field = new FieldApi({
       form,
-      validator: zodValidator,
+      validatorAdapter: zodValidator,
       name: 'name',
       validators: {
         onChangeAsync: z.string().refine(async (val) => val.length > 3, {
@@ -97,7 +97,7 @@ describe('zod field api', () => {
 
     const field = new FieldApi({
       form,
-      validator: zodValidator,
+      validatorAdapter: zodValidator,
       name: 'name',
       validators: {
         onChangeAsync: async (val) => (val === 'a' ? 'Test' : undefined),
