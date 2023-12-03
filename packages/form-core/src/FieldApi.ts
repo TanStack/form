@@ -120,7 +120,7 @@ export interface FieldOptions<
   asyncDebounceMs?: number
   asyncAlways?: boolean
   preserveValue?: boolean
-  validator?: ValidatorType
+  validatorAdapter?: ValidatorType
   validators?: FieldValidators<
     TParentData,
     TName,
@@ -373,15 +373,15 @@ export class FieldApi<
     this.getInfo().validationCount = validationCount
 
     const doValidate = (validate: (typeof validates)[number]['validate']) => {
-      if (this.options.validator && typeof validate !== 'function') {
-        return (this.options.validator as Validator<TData>)().validate(
+      if (this.options.validatorAdapter && typeof validate !== 'function') {
+        return (this.options.validatorAdapter as Validator<TData>)().validate(
           value,
           validate,
         )
       }
 
-      if (this.form.options.validator && typeof validate !== 'function') {
-        return (this.form.options.validator as Validator<TData>)().validate(
+      if (this.form.options.validatorAdapter && typeof validate !== 'function') {
+        return (this.form.options.validatorAdapter as Validator<TData>)().validate(
           value,
           validate,
         )
@@ -508,16 +508,16 @@ export class FieldApi<
     }
 
     const doValidate = () => {
-      if (this.options.validator && typeof validate !== 'function') {
-        return (this.options.validator as Validator<TData>)().validateAsync(
+      if (this.options.validatorAdapter && typeof validate !== 'function') {
+        return (this.options.validatorAdapter as Validator<TData>)().validateAsync(
           value,
           validate,
         )
       }
 
-      if (this.form.options.validator && typeof validate !== 'function') {
+      if (this.form.options.validatorAdapter && typeof validate !== 'function') {
         return (
-          this.form.options.validator as Validator<TData>
+          this.form.options.validatorAdapter as Validator<TData>
         )().validateAsync(value, validate)
       }
 

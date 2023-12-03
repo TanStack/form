@@ -27,7 +27,7 @@ export default function App() {
       console.log(values);
     },
     // Add a validator to support Zod usage in Form and Field
-    validator: zodValidator,
+    validatorAdapter: zodValidator,
   });
 
   return (

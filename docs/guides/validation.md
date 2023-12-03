@@ -270,7 +270,7 @@ import { z } from "zod";
 
 const form = useForm({
   // Either add the validator here or on `Field`
-  validator: zodValidator,
+  validatorAdapter: zodValidator,
   // ...
 });
 

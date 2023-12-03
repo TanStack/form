@@ -13,7 +13,7 @@ it('should allow a Valibot validator to be passed in', () => {
   const field = new FieldApi({
     form,
     name: 'name',
-    validator: valibotValidator,
+    validatorAdapter: valibotValidator,
   } as const)
 })
 
@@ -27,7 +27,7 @@ it('should allow a Valibot validator to handle the correct Valibot type', () => 
   const field = new FieldApi({
     form,
     name: 'name',
-    validator: valibotValidator,
+    validatorAdapter: valibotValidator,
     validators: {
       onChange: string(),
     },
@@ -44,7 +44,7 @@ it('should allow a Valibot validator to handle the correct Valibot type for an a
   const field = new FieldApi({
     form,
     name: 'name',
-    validator: valibotValidator,
+    validatorAdapter: valibotValidator,
     validators: {
       onChangeAsync: string(),
     },
@@ -61,7 +61,7 @@ it('should allow a functional onChange to be passed when using a validator', () 
   const field = new FieldApi({
     form,
     name: 'name',
-    validator: valibotValidator,
+    validatorAdapter: valibotValidator,
     validators: {
       onChange: (val) => {
         assertType<'test'>(val)
@@ -97,7 +97,7 @@ it.skip('should allow not a Valibot validator with the wrong Valibot type', () =
   const field = new FieldApi({
     form,
     name: 'name',
-    validator: valibotValidator,
+    validatorAdapter: valibotValidator,
     validators: {
       onChange: object({}),
     },

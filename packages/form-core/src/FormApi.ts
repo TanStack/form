@@ -39,7 +39,7 @@ export type FormOptions<TData, ValidatorType> = {
   defaultState?: Partial<FormState<TData>>
   asyncAlways?: boolean
   asyncDebounceMs?: number
-  validator?: ValidatorType
+  validatorAdapter?: ValidatorType
   validators?: FormValidators<TData, ValidatorType>
   onSubmit?: (
     values: TData,
@@ -188,10 +188,10 @@ export class FormApi<TFormData, ValidatorType> {
   mount = () => {
     const doValidate = () => {
       if (
-        this.options.validator &&
+        this.options.validatorAdapter &&
         typeof this.options.validators?.onMount !== 'function'
       ) {
-        return (this.options.validator as Validator<TFormData>)().validate(
+        return (this.options.validatorAdapter as Validator<TFormData>)().validate(
           this.state.values,
           this.options.validators?.onMount,
         )
@@ -283,8 +283,8 @@ export class FormApi<TFormData, ValidatorType> {
 
     const errorMapKey = getErrorMapKey(cause)
     const doValidate = () => {
-      if (this.options.validator && typeof validate !== 'function') {
-        return (this.options.validator as Validator<TFormData>)().validate(
+      if (this.options.validatorAdapter && typeof validate !== 'function') {
+        return (this.options.validatorAdapter as Validator<TFormData>)().validate(
           this.state.values,
           validate,
         )
@@ -378,8 +378,8 @@ export class FormApi<TFormData, ValidatorType> {
       if (typeof validate === 'function') {
         return validate(this.state.values, this) as ValidationError
       }
-      if (this.options.validator && typeof validate !== 'function') {
-        return (this.options.validator as Validator<TFormData>)().validateAsync(
+      if (this.options.validatorAdapter && typeof validate !== 'function') {
+        return (this.options.validatorAdapter as Validator<TFormData>)().validateAsync(
           this.state.values,
           validate,
         )

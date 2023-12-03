@@ -14,7 +14,7 @@ const form = useForm({
     alert(JSON.stringify(values))
   },
   // Add a validator to support Valibot usage in Form and Field
-  validator: valibotValidator,
+  validatorAdapter: valibotValidator,
 })
 
 form.provideFormContext()

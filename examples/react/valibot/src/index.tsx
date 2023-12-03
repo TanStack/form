@@ -27,7 +27,7 @@ export default function App() {
       console.log(values);
     },
     // Add a validator to support Valibot usage in Form and Field
-    validator: valibotValidator,
+    validatorAdapter: valibotValidator,
   });
 
   return (
