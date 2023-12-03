@@ -557,7 +557,6 @@ describe('form api', () => {
 
     form.mount()
     field.mount()
-
     expect(form.state.errors.length).toBe(0)
     field.setValue('other', { touch: true })
     field.validate('blur')

@@ -16,7 +16,7 @@ export function functionalUpdate<TInput, TOutput = TInput>(
 /**
  * Get a value from an object using a path, including dot notation.
  */
-export function getBy(obj: any, path: string) {
+export function getBy(obj: any, path: any) {
   const pathObj = makePathArray(path)
   return pathObj.reduce((current: any, pathPart: any) => {
     if (typeof current !== 'undefined') {
@@ -29,7 +29,7 @@ export function getBy(obj: any, path: string) {
 /**
  * Set a value on an object using a path, including dot notation.
  */
-export function setBy(obj: any, _path: string, updater: Updater<any>) {
+export function setBy(obj: any, _path: any, updater: Updater<any>) {
   const path = makePathArray(_path)
 
   function doSet(parent?: any): any {
@@ -68,7 +68,7 @@ export function setBy(obj: any, _path: string, updater: Updater<any>) {
 /**
  * Delete a field on an object using a path, including dot notation.
  */
-export function deleteBy(obj: any, _path: string) {
+export function deleteBy(obj: any, _path: any) {
   const path = makePathArray(_path)
 
   function doDelete(parent: any): any {
@@ -116,6 +116,10 @@ const intPrefix = '__int__'
 const intReplace = `${intPrefix}$1`
 
 function makePathArray(str: string) {
+  if (typeof str !== 'string') {
+    throw new Error('Path must be a string.')
+  }
+
   return str
     .replace('[', '.')
     .replace(']', '')

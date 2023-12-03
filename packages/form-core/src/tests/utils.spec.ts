@@ -1,9 +1,18 @@
 import { describe, expect, it } from 'vitest'
-import { makeComplexFormStructure } from './utils'
 import { deleteBy, getBy, setBy } from '../utils'
 
 describe('getBy', () => {
-  const structure = makeComplexFormStructure()
+  const structure = {
+    name: 'Marc',
+    kids: [
+      { name: 'Stephen', age: 10 },
+      { name: 'Taylor', age: 15 },
+    ],
+    mother: {
+      name: 'Lisa',
+    },
+  }
+
   it('should get subfields by path', () => {
     expect(getBy(structure, 'name')).toBe(structure.name)
     expect(getBy(structure, 'mother.name')).toBe(structure.mother.name)
@@ -16,7 +25,17 @@ describe('getBy', () => {
 })
 
 describe('setBy', () => {
-  const structure = makeComplexFormStructure()
+  const structure = {
+    name: 'Marc',
+    kids: [
+      { name: 'Stephen', age: 10 },
+      { name: 'Taylor', age: 15 },
+    ],
+    mother: {
+      name: 'Lisa',
+    },
+  }
+
   it('should set subfields by path', () => {
     expect(setBy(structure, 'name', 'Lisa').name).toBe('Lisa')
     expect(setBy(structure, 'mother.name', 'Tina').mother.name).toBe('Tina')
@@ -31,7 +50,17 @@ describe('setBy', () => {
 })
 
 describe('deleteBy', () => {
-  const structure = makeComplexFormStructure()
+  const structure = {
+    name: 'Marc',
+    kids: [
+      { name: 'Stephen', age: 10 },
+      { name: 'Taylor', age: 15 },
+    ],
+    mother: {
+      name: 'Lisa',
+    },
+  }
+
   it('should delete subfields by path', () => {
     expect(deleteBy(structure, 'name').name).not.toBeDefined()
     expect(deleteBy(structure, 'mother.name').mother.name).not.toBeDefined()
