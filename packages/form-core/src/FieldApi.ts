@@ -109,6 +109,7 @@ export interface FieldValidators<
     FormValidator,
     TData
   >
+  onSubmitAsyncDebounceMs?: number
 }
 
 export interface FieldOptions<
@@ -478,6 +479,7 @@ export class FieldApi<
       onSubmitAsync,
       onBlurAsyncDebounceMs,
       onChangeAsyncDebounceMs,
+      onSubmitAsyncDebounceMs,
     } = this.options.validators || {}
 
     const validate =
@@ -487,14 +489,12 @@ export class FieldApi<
         ? onSubmitAsync
         : onBlurAsync
     if (!validate) return []
-    const debounceMs =
-      cause === 'submit'
-        ? 0
-        : (cause === 'change'
-            ? onChangeAsyncDebounceMs
-            : onBlurAsyncDebounceMs) ??
-          asyncDebounceMs ??
-          0
+
+    let debounceMs = asyncDebounceMs ?? 0
+
+    if (cause === 'submit') debounceMs = onSubmitAsyncDebounceMs ?? debounceMs
+    if (cause === 'change') debounceMs = onChangeAsyncDebounceMs ?? debounceMs
+    if (cause === 'blur') debounceMs = onBlurAsyncDebounceMs ?? debounceMs
 
     if (this.state.meta.isValidating !== true) {
       this.setMeta((prev) => ({ ...prev, isValidating: true }))
