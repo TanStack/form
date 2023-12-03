@@ -52,7 +52,7 @@ export default function App() {
               onChangeAsync={stringAsync([
                 customAsync(async (value) => {
                   await new Promise((resolve) => setTimeout(resolve, 1000));
-                  return value.includes("error");
+                  return !value.includes("error");
                 }, "No 'error' allowed in first name"),
               ])}
               children={(field) => {

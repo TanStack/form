@@ -20,7 +20,7 @@ An object representing the options for a form.
 - ```tsx
     defaultValues?: TData
   ```
-  - Set initial values for yonu form.
+  - Set initial values for your form.
 - ```tsx
     defaultState?: Partial<FormState<TData>>
   ```
@@ -98,7 +98,7 @@ A class representing the Form API. It handles the logic and interactions with th
 - ```tsx
   store: Store<FormState<TFormData>>
   ```
-  - An internal mechanism that keeps track of the form's state.
+  - A [TanStack Store instance](https://tanstack.com/store/latest/docs/reference/Store) that keeps track of the form's state.
 - ```tsx
   state: FormState<TFormData>
   ```
