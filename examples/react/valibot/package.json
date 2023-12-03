@@ -8,16 +8,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/react-form": "0.10.1",
+    "@tanstack/react-form": "0.10.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "valibot": "^0.20.1",
-    "@tanstack/valibot-form-adapter": "0.10.1",
-    "@tanstack/form-core": "0.10.1",
-    "@tanstack/zod-form-adapter": "0.10.1",
-    "@tanstack/vue-form": "0.10.1",
-    "@tanstack/yup-form-adapter": "0.10.1",
-    "@tanstack/solid-form": "0.10.1"
+    "@tanstack/valibot-form-adapter": "0.10.2",
+    "@tanstack/form-core": "0.10.2",
+    "@tanstack/zod-form-adapter": "0.10.2",
+    "@tanstack/vue-form": "0.10.2",
+    "@tanstack/yup-form-adapter": "0.10.2",
+    "@tanstack/solid-form": "0.10.2"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.4",
