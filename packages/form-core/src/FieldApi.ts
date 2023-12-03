@@ -64,9 +64,13 @@ export interface FieldValidators<
   FormValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
-  onMount?: (
-    formApi: FieldApi<TParentData, TName, ValidatorType, TData>,
-  ) => void
+  onMount?: ValidateOrFn<
+    TParentData,
+    TName,
+    ValidatorType,
+    FormValidator,
+    TData
+  >
   onChange?: ValidateOrFn<
     TParentData,
     TName,
@@ -259,7 +263,9 @@ export class FieldApi<
     })
 
     this.update(this.options as never)
-    this.options.validators?.onMount?.(this as never)
+    const { onMount } = this.options.validators || {}
+
+    onMount && this._runValidator(onMount, this.state.value, 'validate')
 
     return () => {
       const preserveValue = this.options.preserveValue
@@ -352,6 +358,30 @@ export class FieldApi<
       form: this.form,
     }) as any
 
+  _runValidator<T, M extends 'validate' | 'validateAsync'>(
+    validate: T,
+    value: typeof this.state.value,
+    methodName: M,
+  ): ReturnType<ReturnType<Validator<TData>>[M]> {
+    if (this.options.validatorAdapter && typeof validate !== 'function') {
+      return (this.options.validatorAdapter as Validator<TData>)()[methodName](
+        value,
+        validate,
+      ) as never
+    }
+
+    if (this.form.options.validatorAdapter && typeof validate !== 'function') {
+      return (this.form.options.validatorAdapter as Validator<TData>)()[
+        methodName
+      ](value, validate) as never
+    }
+
+    return (validate as ValidateFn<TParentData, TName, ValidatorType, TData>)(
+      value,
+      this as never,
+    ) as never
+  }
+
   validateSync = (value = this.state.value, cause: ValidationCause) => {
     const { onChange, onBlur, onSubmit } = this.options.validators || {}
 
@@ -372,34 +402,15 @@ export class FieldApi<
     const validationCount = (this.getInfo().validationCount || 0) + 1
     this.getInfo().validationCount = validationCount
 
-    const doValidate = (validate: (typeof validates)[number]['validate']) => {
-      if (this.options.validatorAdapter && typeof validate !== 'function') {
-        return (this.options.validatorAdapter as Validator<TData>)().validate(
-          value,
-          validate,
-        )
-      }
-
-      if (this.form.options.validatorAdapter && typeof validate !== 'function') {
-        return (this.form.options.validatorAdapter as Validator<TData>)().validate(
-          value,
-          validate,
-        )
-      }
-
-      return (validate as ValidateFn<TParentData, TName, ValidatorType, TData>)(
-        value,
-        this as never,
-      )
-    }
-
     // Needs type cast as eslint errantly believes this is always falsy
     let hasErrored = false as boolean
 
     this.form.store.batch(() => {
       for (const validateObj of validates) {
         if (!validateObj.validate) continue
-        const error = normalizeError(doValidate(validateObj.validate))
+        const error = normalizeError(
+          this._runValidator(validateObj.validate, value, 'validate'),
+        )
         const errorMapKey = getErrorMapKey(validateObj.cause)
         if (this.state.meta.errorMap[errorMapKey] !== error) {
           this.setMeta((prev) => ({
@@ -507,31 +518,15 @@ export class FieldApi<
       await new Promise((r) => setTimeout(r, debounceMs))
     }
 
-    const doValidate = () => {
-      if (this.options.validatorAdapter && typeof validate !== 'function') {
-        return (this.options.validatorAdapter as Validator<TData>)().validateAsync(
-          value,
-          validate,
-        )
-      }
-
-      if (this.form.options.validatorAdapter && typeof validate !== 'function') {
-        return (
-          this.form.options.validatorAdapter as Validator<TData>
-        )().validateAsync(value, validate)
-      }
-
-      return (validate as ValidateFn<TParentData, TName, ValidatorType, TData>)(
-        value,
-        this as never,
-      )
-    }
-
     // Only kick off validation if this validation is the latest attempt
     if (checkLatest()) {
       const prevErrors = this.getMeta().errors
       try {
-        const rawError = await doValidate()
+        const rawError = await this._runValidator(
+          validate,
+          value,
+          'validateAsync',
+        )
         if (checkLatest()) {
           const error = normalizeError(rawError)
           this.setMeta((prev) => ({
