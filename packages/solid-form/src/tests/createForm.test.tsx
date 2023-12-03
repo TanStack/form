@@ -1,8 +1,10 @@
 import { render, screen, waitFor } from '@solidjs/testing-library'
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
-import { createFormFactory, createForm } from '..'
-import { Show, createSignal } from 'solid-js'
+import { Show, createSignal, onCleanup } from 'solid-js'
+import { createForm, createFormFactory } from '..'
+import { sleep } from './utils'
+import type { ValidationErrorMap } from '@tanstack/form-core'
 
 const user = userEvent.setup()
 
@@ -146,5 +148,320 @@ describe('createForm', () => {
     const { getByText } = render(() => <Comp />)
     await user.click(getByText('Mount form'))
     expect(formMounted()).toBe(true)
+  })
+
+  it('should not validate on change if isTouched is false', async () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    const error = 'Please enter a different value'
+
+    const formFactory = createFormFactory<Person, unknown>()
+
+    function Comp() {
+      const form = formFactory.createForm(() => ({
+        onChange: (value) =>
+          value.firstName.includes('other') ? error : undefined,
+      }))
+
+      return (
+        <form.Provider>
+          <form.Field
+            name="firstName"
+            children={(field) => (
+              <div>
+                <input
+                  data-testid="fieldinput"
+                  name={field().name}
+                  value={field().state.value}
+                  onBlur={field().handleBlur}
+                  onInput={(e) => field().setValue(e.currentTarget.value)}
+                />
+                <p>{form.useStore((s) => s.errors)}</p>
+              </div>
+            )}
+          />
+        </form.Provider>
+      )
+    }
+
+    const { getByTestId, queryByText } = render(() => <Comp />)
+    const input = getByTestId('fieldinput')
+    await user.type(input, 'other')
+    expect(queryByText(error)).not.toBeInTheDocument()
+  })
+
+  it('should validate on change if isTouched is true', async () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    const error = 'Please enter a different value'
+
+    const formFactory = createFormFactory<Person, unknown>()
+
+    function Comp() {
+      const form = formFactory.createForm(() => ({
+        onChange: (value) =>
+          value.firstName.includes('other') ? error : undefined,
+      }))
+
+      const [errors, setErrors] = createSignal<ValidationErrorMap>()
+      onCleanup(form.store.subscribe(() => setErrors(form.state.errorMap)))
+
+      return (
+        <form.Provider>
+          <form.Field
+            name="firstName"
+            defaultMeta={{ isTouched: true }}
+            children={(field) => {
+              return (
+                <div>
+                  <input
+                    data-testid="fieldinput"
+                    name={field().name}
+                    value={field().state.value}
+                    onBlur={field().handleBlur}
+                    onInput={(e) => field().setValue(e.currentTarget.value)}
+                  />
+                  <p>{errors()?.onChange}</p>
+                </div>
+              )
+            }}
+          />
+        </form.Provider>
+      )
+    }
+
+    const { getByTestId, getByText, queryByText } = render(() => <Comp />)
+    const input = getByTestId('fieldinput')
+    expect(queryByText(error)).not.toBeInTheDocument()
+    await user.type(input, 'other')
+    expect(getByText(error)).toBeInTheDocument()
+  })
+
+  it('should validate on change and on blur', async () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    const onChangeError = 'Please enter a different value (onChangeError)'
+    const onBlurError = 'Please enter a different value (onBlurError)'
+
+    const formFactory = createFormFactory<Person, unknown>()
+
+    function Comp() {
+      const form = formFactory.createForm(() => ({
+        onChange: (value) =>
+          value.firstName.includes('other') ? onChangeError : undefined,
+        onBlur: (value) =>
+          value.firstName.includes('other') ? onBlurError : undefined,
+      }))
+
+      const [errors, setErrors] = createSignal<ValidationErrorMap>()
+      onCleanup(form.store.subscribe(() => setErrors(form.state.errorMap)))
+
+      return (
+        <form.Provider>
+          <form.Field
+            name="firstName"
+            defaultMeta={{ isTouched: true }}
+            children={(field) => (
+              <div>
+                <input
+                  data-testid="fieldinput"
+                  name={field().name}
+                  value={field().state.value}
+                  onBlur={field().handleBlur}
+                  onInput={(e) => field().handleChange(e.currentTarget.value)}
+                />
+                <p>{errors()?.onChange}</p>
+                <p>{errors()?.onBlur}</p>
+              </div>
+            )}
+          />
+        </form.Provider>
+      )
+    }
+
+    const { getByTestId, getByText, queryByText } = render(() => <Comp />)
+    const input = getByTestId('fieldinput')
+    expect(queryByText(onChangeError)).not.toBeInTheDocument()
+    expect(queryByText(onBlurError)).not.toBeInTheDocument()
+    await user.type(input, 'other')
+    expect(getByText(onChangeError)).toBeInTheDocument()
+    // @ts-expect-error unsure why the 'vitest/globals' in tsconfig doesnt work here
+    await user.click(document.body)
+    expect(queryByText(onBlurError)).toBeInTheDocument()
+  })
+
+  it('should validate async on change', async () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    const error = 'Please enter a different value'
+
+    const formFactory = createFormFactory<Person, unknown>()
+
+    function Comp() {
+      const form = formFactory.createForm(() => ({
+        onChangeAsync: async () => {
+          await sleep(10)
+          return error
+        },
+      }))
+
+      const [errors, setErrors] = createSignal<ValidationErrorMap>()
+      onCleanup(form.store.subscribe(() => setErrors(form.state.errorMap)))
+
+      return (
+        <form.Provider>
+          <form.Field
+            name="firstName"
+            defaultMeta={{ isTouched: true }}
+            children={(field) => (
+              <div>
+                <input
+                  data-testid="fieldinput"
+                  name={field().name}
+                  value={field().state.value}
+                  onBlur={field().handleBlur}
+                  onInput={(e) => field().handleChange(e.currentTarget.value)}
+                />
+                <p>{errors()?.onChange}</p>
+              </div>
+            )}
+          />
+        </form.Provider>
+      )
+    }
+
+    const { getByTestId, getByText, queryByText } = render(() => <Comp />)
+    const input = getByTestId('fieldinput')
+    expect(queryByText(error)).not.toBeInTheDocument()
+    await user.type(input, 'other')
+    await waitFor(() => getByText(error))
+    expect(getByText(error)).toBeInTheDocument()
+  })
+
+  it('should validate async on change and async on blur', async () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    const onChangeError = 'Please enter a different value (onChangeError)'
+    const onBlurError = 'Please enter a different value (onBlurError)'
+
+    const formFactory = createFormFactory<Person, unknown>()
+
+    function Comp() {
+      const form = formFactory.createForm(() => ({
+        async onChangeAsync() {
+          await sleep(10)
+          return onChangeError
+        },
+        async onBlurAsync() {
+          await sleep(10)
+          return onBlurError
+        },
+      }))
+
+      const [errors, setErrors] = createSignal<ValidationErrorMap>()
+      onCleanup(form.store.subscribe(() => setErrors(form.state.errorMap)))
+
+      return (
+        <form.Provider>
+          <form.Field
+            name="firstName"
+            defaultMeta={{ isTouched: true }}
+            children={(field) => (
+              <div>
+                <input
+                  data-testid="fieldinput"
+                  name={field().name}
+                  value={field().state.value}
+                  onBlur={field().handleBlur}
+                  onInput={(e) => field().handleChange(e.currentTarget.value)}
+                />
+                <p>{errors()?.onChange}</p>
+                <p>{errors()?.onBlur}</p>
+              </div>
+            )}
+          />
+        </form.Provider>
+      )
+    }
+
+    const { getByTestId, getByText, queryByText } = render(() => <Comp />)
+    const input = getByTestId('fieldinput')
+
+    expect(queryByText(onChangeError)).not.toBeInTheDocument()
+    expect(queryByText(onBlurError)).not.toBeInTheDocument()
+    await user.type(input, 'other')
+    await waitFor(() => getByText(onChangeError))
+    expect(getByText(onChangeError)).toBeInTheDocument()
+    // @ts-expect-error unsure why the 'vitest/globals' in tsconfig doesnt work here
+    await user.click(document.body)
+    await waitFor(() => getByText(onBlurError))
+    expect(getByText(onBlurError)).toBeInTheDocument()
+  })
+
+  it('should validate async on change with debounce', async () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    const mockFn = vi.fn()
+    const error = 'Please enter a different value'
+    const formFactory = createFormFactory<Person, unknown>()
+
+    function Comp() {
+      const form = formFactory.createForm(() => ({
+        onChangeAsyncDebounceMs: 100,
+        onChangeAsync: async () => {
+          mockFn()
+          await sleep(10)
+          return error
+        },
+      }))
+
+      const [errors, setErrors] = createSignal<string>()
+      onCleanup(
+        form.store.subscribe(() =>
+          setErrors(form.state.errorMap.onChange || ''),
+        ),
+      )
+
+      return (
+        <form.Provider>
+          <form.Field
+            name="firstName"
+            defaultMeta={{ isTouched: true }}
+            children={(field) => (
+              <div>
+                <input
+                  data-testid="fieldinput"
+                  name={field().name}
+                  value={field().state.value}
+                  onBlur={field().handleBlur}
+                  onInput={(e) => field().handleChange(e.currentTarget.value)}
+                />
+                <p>{errors()}</p>
+              </div>
+            )}
+          />
+        </form.Provider>
+      )
+    }
+
+    const { getByTestId, getByText } = render(() => <Comp />)
+    const input = getByTestId('fieldinput')
+    await user.type(input, 'other')
+    // mockFn will have been called 5 times without onChangeAsyncDebounceMs
+    expect(mockFn).toHaveBeenCalledTimes(0)
+    await waitFor(() => getByText(error))
+    expect(getByText(error)).toBeInTheDocument()
   })
 })

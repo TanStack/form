@@ -6,9 +6,10 @@ import {
   type EmitsOptions,
   type SlotsType,
   type SetupContext,
+  type Ref,
   defineComponent,
   onMounted,
-} from 'vue-demi'
+} from 'vue'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
@@ -19,7 +20,7 @@ declare module '@tanstack/form-core' {
     useField: UseField<TFormData, ValidatorType>
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
       selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,
-    ) => TSelected
+    ) => Readonly<Ref<TSelected>>
     Subscribe: <TSelected = NoInfer<FormState<TFormData>>>(
       props: {
         selector?: (state: NoInfer<FormState<TFormData>>) => TSelected
