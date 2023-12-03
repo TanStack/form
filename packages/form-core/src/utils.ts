@@ -17,8 +17,7 @@ export function functionalUpdate<TInput, TOutput = TInput>(
  * Get a value from an object using a path, including dot notation.
  */
 export function getBy(obj: any, path: any) {
-  const pathArray = makePathArray(path)
-  const pathObj = pathArray
+  const pathObj = makePathArray(path)
   return pathObj.reduce((current: any, pathPart: any) => {
     if (typeof current !== 'undefined') {
       return current[pathPart]
@@ -52,22 +51,59 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
       }
     }
 
+    if (Array.isArray(parent) && key !== undefined) {
+      const prefix = parent.slice(0, key)
+      return [
+        ...(prefix.length ? prefix : new Array(key)),
+        doSet(parent[key]),
+        ...parent.slice(key + 1),
+      ]
+    }
+    return [...new Array(key), doSet()]
+  }
+
+  return doSet(obj)
+}
+
+/**
+ * Delete a field on an object using a path, including dot notation.
+ */
+export function deleteBy(obj: any, _path: any) {
+  const path = makePathArray(_path)
+
+  function doDelete(parent: any): any {
+    if (path.length === 1) {
+      const finalPath = path[0]!
+      const { [finalPath]: remove, ...rest } = parent
+      return rest
+    }
+
+    const key = path.shift()
+
+    if (typeof key === 'string') {
+      if (typeof parent === 'object') {
+        return {
+          ...parent,
+          [key]: doDelete(parent[key]),
+        }
+      }
+    }
+
     if (typeof key === 'number') {
       if (Array.isArray(parent)) {
         const prefix = parent.slice(0, key)
         return [
           ...(prefix.length ? prefix : new Array(key)),
-          doSet(parent[key]),
+          doDelete(parent[key]),
           ...parent.slice(key + 1),
         ]
       }
-      return [...new Array(key), doSet()]
     }
 
-    throw new Error('Uh oh!')
+    throw new Error('It seems we have created an infinite loop in deleteBy. ')
   }
 
-  return doSet(obj)
+  return doDelete(obj)
 }
 
 const reFindNumbers0 = /^(\d*)$/gm

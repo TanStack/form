@@ -226,6 +226,63 @@ describe('form api', () => {
     expect(form.getFieldValue('names')).toStrictEqual(['one', 'three', 'two'])
   })
 
+  it('should handle fields inside an array', async () => {
+    interface Employee {
+      firstName: string
+    }
+    interface Form {
+      employees: Partial<Employee>[]
+    }
+
+    const form = new FormApi<Form, unknown>()
+
+    const field = new FieldApi({
+      form,
+      name: 'employees',
+      defaultValue: [],
+    })
+
+    field.mount()
+
+    const fieldInArray = new FieldApi({
+      form,
+      name: `employees.${0}.firstName`,
+      defaultValue: 'Darcy',
+    })
+    fieldInArray.mount()
+    expect(field.state.value.length).toBe(1)
+    expect(fieldInArray.getValue()).toBe('Darcy')
+  })
+
+  it('should handle deleting fields in an array', async () => {
+    interface Employee {
+      firstName: string
+    }
+    interface Form {
+      employees: Partial<Employee>[]
+    }
+
+    const form = new FormApi<Form, unknown>()
+
+    const field = new FieldApi({
+      form,
+      name: 'employees',
+      defaultValue: [],
+    })
+
+    field.mount()
+
+    const fieldInArray = new FieldApi({
+      form,
+      name: `employees.${0}.firstName`,
+      defaultValue: 'Darcy',
+    })
+    fieldInArray.mount()
+    form.deleteField(`employees.${0}.firstName`)
+    expect(field.state.value.length).toBe(1)
+    expect(Object.keys(field.state.value[0]!).length).toBe(0)
+  })
+
   it('should not wipe values when updating', () => {
     const form = new FormApi({
       defaultValues: {
@@ -500,7 +557,6 @@ describe('form api', () => {
 
     form.mount()
     field.mount()
-
     expect(form.state.errors.length).toBe(0)
     field.setValue('other', { touch: true })
     field.validate('blur')
@@ -667,5 +723,97 @@ describe('form api', () => {
     expect(form.state.errorMap).toEqual({
       onMount: 'Please enter a different value',
     })
+  })
+
+  it('should validate fields during submit', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      onChange: (v) => (v.length > 0 ? undefined : 'first name is required'),
+    })
+
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+      onChange: (v) => (v.length > 0 ? undefined : 'last name is required'),
+    })
+
+    field.mount()
+    lastNameField.mount()
+
+    await form.handleSubmit()
+    expect(form.state.isFieldsValid).toEqual(false)
+    expect(form.state.canSubmit).toEqual(false)
+    expect(form.state.fieldMeta['firstName'].errors).toEqual([
+      'first name is required',
+    ])
+    expect(form.state.fieldMeta['lastName'].errors).toEqual([
+      'last name is required',
+    ])
+  })
+
+  it('should run all types of validation on fields during submit', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      onChange: (v) => (v.length > 0 ? undefined : 'first name is required'),
+      onBlur: (v) =>
+        v.length > 3
+          ? undefined
+          : 'first name must be longer than 3 characters',
+    })
+
+    field.mount()
+
+    await form.handleSubmit()
+    expect(form.state.isFieldsValid).toEqual(false)
+    expect(form.state.canSubmit).toEqual(false)
+    expect(form.state.fieldMeta['firstName'].errors).toEqual([
+      'first name is required',
+      'first name must be longer than 3 characters',
+    ])
+  })
+
+  it('should clear onSubmit error when a valid value is entered', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      onSubmit: (v) => (v.length > 0 ? undefined : 'first name is required'),
+    })
+
+    field.mount()
+
+    await form.handleSubmit()
+    expect(form.state.isFieldsValid).toEqual(false)
+    expect(form.state.canSubmit).toEqual(false)
+    expect(form.state.fieldMeta['firstName'].errorMap['onSubmit']).toEqual(
+      'first name is required',
+    )
+    field.handleChange('test')
+    expect(form.state.isFieldsValid).toEqual(true)
+    expect(form.state.canSubmit).toEqual(true)
+    expect(
+      form.state.fieldMeta['firstName'].errorMap['onSubmit'],
+    ).toBeUndefined()
   })
 })

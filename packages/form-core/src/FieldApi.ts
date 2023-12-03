@@ -98,6 +98,13 @@ export interface FieldOptions<
     TData
   >
   onBlurAsyncDebounceMs?: number
+  onSubmit?: ValidateOrFn<
+    TParentData,
+    TName,
+    ValidatorType,
+    FormValidator,
+    TData
+  >
   onSubmitAsync?: AsyncValidateOrFn<
     TParentData,
     TName,
@@ -330,18 +337,26 @@ export class FieldApi<
     }) as any
 
   validateSync = (value = this.state.value, cause: ValidationCause) => {
-    const { onChange, onBlur } = this.options
-    const validate =
-      cause === 'submit' ? undefined : cause === 'change' ? onChange : onBlur
+    const { onChange, onBlur, onSubmit } = this.options
 
-    if (!validate) return
+    const validates =
+      // https://github.com/TanStack/form/issues/490
+      cause === 'submit'
+        ? ([
+            { cause: 'change', validate: onChange },
+            { cause: 'blur', validate: onBlur },
+            { cause: 'submit', validate: onSubmit },
+          ] as const)
+        : cause === 'change'
+        ? ([{ cause: 'change', validate: onChange }] as const)
+        : ([{ cause: 'blur', validate: onBlur }] as const)
 
     // Use the validationCount for all field instances to
     // track freshness of the validation
     const validationCount = (this.getInfo().validationCount || 0) + 1
     this.getInfo().validationCount = validationCount
 
-    const doValidate = () => {
+    const doValidate = (validate: (typeof validates)[number]['validate']) => {
       if (this.options.validator && typeof validate !== 'function') {
         return (this.options.validator as Validator<TData>)().validate(
           value,
@@ -362,20 +377,48 @@ export class FieldApi<
       )
     }
 
-    const error = normalizeError(doValidate())
-    const errorMapKey = getErrorMapKey(cause)
-    if (this.state.meta.errorMap[errorMapKey] !== error) {
+    // Needs type cast as eslint errantly believes this is always falsy
+    let hasError = false as boolean
+
+    this.form.store.batch(() => {
+      for (const validateObj of validates) {
+        if (!validateObj.validate) continue
+        const error = normalizeError(doValidate(validateObj.validate))
+        const errorMapKey = getErrorMapKey(validateObj.cause)
+        if (this.state.meta.errorMap[errorMapKey] !== error) {
+          this.setMeta((prev) => ({
+            ...prev,
+            errorMap: {
+              ...prev.errorMap,
+              [getErrorMapKey(validateObj.cause)]: error,
+            },
+          }))
+          hasError = true
+        }
+      }
+    })
+
+    /**
+     *  when we have an error for onSubmit in the state, we want
+     *  to clear the error as soon as the user enters a valid value in the field
+     */
+    const submitErrKey = getErrorMapKey('submit')
+    if (
+      this.state.meta.errorMap[submitErrKey] &&
+      cause !== 'submit' &&
+      !hasError
+    ) {
       this.setMeta((prev) => ({
         ...prev,
         errorMap: {
           ...prev.errorMap,
-          [getErrorMapKey(cause)]: error,
+          [submitErrKey]: undefined,
         },
       }))
     }
 
     // If a sync error is encountered for the errorMapKey (eg. onChange), cancel any async validation
-    if (this.state.meta.errorMap[errorMapKey]) {
+    if (hasError) {
       this.cancelValidateAsync()
     }
   }
