@@ -38,6 +38,9 @@ export interface FormValidators<TData, ValidatorType> {
   onBlur?: ValidateOrFn<TData, ValidatorType>
   onBlurAsync?: ValidateAsyncFn<TData, ValidatorType>
   onBlurAsyncDebounceMs?: number
+  onSubmit?: ValidateOrFn<TData, ValidatorType>
+  onSubmitAsync?: ValidateAsyncFn<TData, ValidatorType>
+  onSubmitAsyncDebounceMs?: number
 }
 
 export type FormOptions<TData, ValidatorType> = {
@@ -276,30 +279,75 @@ export class FormApi<TFormData, ValidatorType> {
     return Promise.all(fieldValidationPromises)
   }
 
-  validateSync = (cause: ValidationCause): void => {
-    const { onChange, onBlur } = this.options.validators || {}
-    const validate =
-      cause === 'change' ? onChange : cause === 'blur' ? onBlur : undefined
-    if (!validate) return
+  // TODO: This code is copied from FieldApi, we should refactor to share
+  validateSync = (cause: ValidationCause) => {
+    const { onChange, onBlur, onSubmit } = this.options.validators || {}
 
-    const errorMapKey = getErrorMapKey(cause)
+    const validates =
+      // https://github.com/TanStack/form/issues/490
+      cause === 'submit'
+        ? ([
+            { cause: 'change', validate: onChange },
+            { cause: 'blur', validate: onBlur },
+            { cause: 'submit', validate: onSubmit },
+          ] as const)
+        : cause === 'change'
+        ? ([{ cause: 'change', validate: onChange }] as const)
+        : ([{ cause: 'blur', validate: onBlur }] as const)
 
-    const error = normalizeError(
-      this._runValidator(validate, this.state.values, 'validate'),
-    )
-    if (this.state.errorMap[errorMapKey] !== error) {
+    let hasErrored = false as boolean
+
+    this.store.batch(() => {
+      for (const validateObj of validates) {
+        if (!validateObj.validate) continue
+
+        const error = normalizeError(
+          this._runValidator(
+            validateObj.validate,
+            this.state.values,
+            'validate',
+          ),
+        )
+        const errorMapKey = getErrorMapKey(validateObj.cause)
+        if (this.state.errorMap[errorMapKey] !== error) {
+          this.store.setState((prev) => ({
+            ...prev,
+            errorMap: {
+              ...prev.errorMap,
+              [errorMapKey]: error,
+            },
+          }))
+        }
+        if (error) {
+          hasErrored = true
+        }
+      }
+    })
+
+    /**
+     *  when we have an error for onSubmit in the state, we want
+     *  to clear the error as soon as the user enters a valid value in the field
+     */
+    const submitErrKey = getErrorMapKey('submit')
+    if (
+      this.state.errorMap[submitErrKey] &&
+      cause !== 'submit' &&
+      !hasErrored
+    ) {
       this.store.setState((prev) => ({
         ...prev,
         errorMap: {
           ...prev.errorMap,
-          [errorMapKey]: error,
+          [submitErrKey]: undefined,
         },
       }))
     }
 
-    if (this.state.errorMap[errorMapKey]) {
+    if (hasErrored) {
       this.cancelValidateAsync()
     }
+
+    return { hasErrored }
   }
 
   __leaseValidateAsync = () => {
@@ -409,15 +457,11 @@ export class FormApi<TFormData, ValidatorType> {
     const prevError = this.state.errorMap[errorMapKey]
 
     // Attempt to sync validate first
-    this.validateSync(cause)
+    const { hasErrored } = this.validateSync(cause)
 
-    const newError = this.state.errorMap[errorMapKey]
-    if (
-      prevError !== newError &&
-      !this.options.asyncAlways &&
-      !(newError === undefined && prevError !== undefined)
-    )
+    if (hasErrored && !this.options.asyncAlways) {
       return this.state.errors
+    }
 
     // No error? Attempt async validation
     return this.validateAsync(cause)

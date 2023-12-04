@@ -567,10 +567,8 @@ export class FieldApi<
     // Attempt to sync validate first
     const { hasErrored } = this.validateSync(value, cause)
 
-    if (hasErrored) {
-      if (!this.options.asyncAlways) {
-        return this.state.meta.errors
-      }
+    if (hasErrored && !this.options.asyncAlways) {
+      return this.state.meta.errors
     }
     // No error? Attempt async validation
     return this.validateAsync(value, cause)
