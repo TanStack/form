@@ -270,7 +270,15 @@ export class FieldApi<
     this.update(this.options as never)
     const { onMount } = this.options.validators || {}
 
-    onMount && this._runValidator(onMount, this.state.value, 'validate')
+    if (onMount) {
+      const error = this._runValidator(onMount, this.state.value, 'validate')
+      if (error) {
+        this.setMeta((prev) => ({
+          ...prev,
+          errorMap: { ...prev.errorMap, onMount: error },
+        }))
+      }
+    }
 
     return () => {
       const preserveValue = this.options.preserveValue

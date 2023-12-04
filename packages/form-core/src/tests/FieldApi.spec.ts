@@ -657,4 +657,25 @@ describe('field api', () => {
     await form.handleSubmit()
     expect(field.getMeta().errors).toStrictEqual(['first name is required'])
   })
+
+  it('should show onMount errors', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onMount: (v) => (v.length > 0 ? undefined : 'first name is required'),
+      },
+    })
+
+    form.mount()
+    field.mount()
+
+    expect(field.getMeta().errors).toStrictEqual(['first name is required'])
+  })
 })
