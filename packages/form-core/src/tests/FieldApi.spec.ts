@@ -208,7 +208,7 @@ describe('field api', () => {
       form,
       name: 'name',
       validators: {
-        onChange: (value) => {
+        onChange: ({ value }) => {
           if (value === 'other') return 'Please enter a different value'
           return
         },
@@ -238,7 +238,7 @@ describe('field api', () => {
       form,
       name: 'name',
       validators: {
-        onChangeAsync: async (value) => {
+        onChangeAsync: async ({ value }) => {
           await sleep(1000)
           if (value === 'other') return 'Please enter a different value'
           return
@@ -272,7 +272,7 @@ describe('field api', () => {
       name: 'name',
       validators: {
         onChangeAsyncDebounceMs: 1000,
-        onChangeAsync: async (value) => {
+        onChangeAsync: async ({ value }) => {
           await sleepMock(1000)
           if (value === 'other') return 'Please enter a different value'
           return
@@ -309,7 +309,7 @@ describe('field api', () => {
       name: 'name',
       asyncDebounceMs: 1000,
       validators: {
-        onChangeAsync: async (value) => {
+        onChangeAsync: async ({ value }) => {
           await sleepMock(1000)
           if (value === 'other') return 'Please enter a different value'
           return
@@ -342,7 +342,7 @@ describe('field api', () => {
       form,
       name: 'name',
       validators: {
-        onBlur: (value) => {
+        onBlur: ({ value }) => {
           if (value === 'other') return 'Please enter a different value'
           return
         },
@@ -372,7 +372,7 @@ describe('field api', () => {
       form,
       name: 'name',
       validators: {
-        onBlurAsync: async (value) => {
+        onBlurAsync: async ({ value }) => {
           await sleep(1000)
           if (value === 'other') return 'Please enter a different value'
           return
@@ -407,7 +407,7 @@ describe('field api', () => {
       name: 'name',
       validators: {
         onBlurAsyncDebounceMs: 1000,
-        onBlurAsync: async (value) => {
+        onBlurAsync: async ({ value }) => {
           await sleepMock(10)
           if (value === 'other') return 'Please enter a different value'
           return
@@ -445,7 +445,7 @@ describe('field api', () => {
       name: 'name',
       asyncDebounceMs: 1000,
       validators: {
-        onBlurAsync: async (value) => {
+        onBlurAsync: async ({ value }) => {
           await sleepMock(10)
           if (value === 'other') return 'Please enter a different value'
           return
@@ -481,7 +481,7 @@ describe('field api', () => {
       form,
       name: 'name',
       validators: {
-        onSubmitAsync: async (value) => {
+        onSubmitAsync: async ({ value }) => {
           await sleep(1000)
           if (value === 'other') return 'Please enter a different value'
           return
@@ -512,11 +512,11 @@ describe('field api', () => {
       form,
       name: 'name',
       validators: {
-        onBlur: (value) => {
+        onBlur: ({ value }) => {
           if (value === 'other') return 'Please enter a different value'
           return
         },
-        onChange: (value) => {
+        onChange: ({ value }) => {
           if (value === 'other') return 'Please enter a different value'
           return
         },
@@ -548,7 +548,7 @@ describe('field api', () => {
       form,
       name: 'name',
       validators: {
-        onChange: (value) => {
+        onChange: ({ value }) => {
           if (value === 'other') return 'Please enter a different value'
           return
         },
@@ -648,7 +648,8 @@ describe('field api', () => {
       form,
       name: 'firstName',
       validators: {
-        onSubmit: (v) => (v.length > 0 ? undefined : 'first name is required'),
+        onSubmit: ({ value }) =>
+          value.length > 0 ? undefined : 'first name is required',
       },
     })
 
@@ -669,7 +670,8 @@ describe('field api', () => {
       form,
       name: 'firstName',
       validators: {
-        onMount: (v) => (v.length > 0 ? undefined : 'first name is required'),
+        onMount: ({ value }) =>
+          value.length > 0 ? undefined : 'first name is required',
       },
     })
 

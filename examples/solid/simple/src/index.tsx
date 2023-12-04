@@ -46,14 +46,14 @@ function App() {
             <form.Field
               name="firstName"
               validators={{
-                onChange: (value) =>
+                onChange: ({ value }) =>
                   !value
                     ? 'A first name is required'
                     : value.length < 3
                     ? 'First name must be at least 3 characters'
                     : undefined,
                 onChangeAsyncDebounceMs: 500,
-                onChangeAsync: async (value) => {
+                onChangeAsync: async ({ value }) => {
                   await new Promise((resolve) => setTimeout(resolve, 1000))
                   return (
                     value.includes('error') &&

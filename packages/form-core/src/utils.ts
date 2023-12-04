@@ -145,7 +145,6 @@ export function isNonEmptyArray(obj: any) {
 
 export function runValidatorOrAdapter<
   TData,
-  SuppliedThis,
   M extends 'validate' | 'validateAsync',
 >(props: {
   validateFn: unknown
@@ -153,7 +152,6 @@ export function runValidatorOrAdapter<
   adapters: Array<Validator<any> | undefined>
   value: TData
   methodName: M
-  suppliedThis: SuppliedThis
 }): ReturnType<ReturnType<Validator<TData>>[M]> {
   for (const adapter of props.adapters) {
     if (adapter && typeof props.validateFn !== 'function') {
@@ -165,7 +163,7 @@ export function runValidatorOrAdapter<
   }
 
   const validateFn: (...vals: any[]) => any = props.validateFn as never
-  return validateFn(props.value, props.suppliedThis) as never
+  return validateFn(props.value) as never
 }
 
 export type RequiredByKey<T, K extends keyof T> = Omit<T, K> &

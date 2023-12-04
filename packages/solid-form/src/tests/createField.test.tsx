@@ -101,7 +101,7 @@ describe('createField', () => {
           <form.Field
             name="firstName"
             validators={{
-              onChange: (value) =>
+              onChange: ({ value }) =>
                 value.includes('other') ? error : undefined,
             }}
             children={(field) => (
@@ -145,7 +145,7 @@ describe('createField', () => {
             name="firstName"
             defaultMeta={{ isTouched: true }}
             validators={{
-              onChange: (value) =>
+              onChange: ({ value }) =>
                 value.includes('other') ? error : undefined,
             }}
             children={(field) => {
@@ -193,9 +193,9 @@ describe('createField', () => {
             name="firstName"
             defaultMeta={{ isTouched: true }}
             validators={{
-              onChange: (value) =>
+              onChange: ({ value }) =>
                 value.includes('other') ? onChangeError : undefined,
-              onBlur: (value) =>
+              onBlur: ({ value }) =>
                 value.includes('other') ? onBlurError : undefined,
             }}
             children={(field) => (

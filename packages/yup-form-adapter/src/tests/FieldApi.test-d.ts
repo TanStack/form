@@ -46,8 +46,8 @@ it('should allow a functional onChange to be passed when using a validator', () 
     name: 'name',
     validatorAdapter: yupValidator,
     validators: {
-      onChange: (val) => {
-        assertType<'test'>(val)
+      onChange: ({ value }) => {
+        assertType<'test'>(value)
         return undefined
       },
     },

@@ -30,7 +30,7 @@ it('should type onChange properly', () => {
     form,
     name: 'name',
     validators: {
-      onChange: (value) => {
+      onChange: ({ value }) => {
         assertType<'test'>(value)
 
         return undefined
@@ -50,7 +50,7 @@ it('should type onChangeAsync properly', () => {
     form,
     name: 'name',
     validators: {
-      onChangeAsync: async (value) => {
+      onChangeAsync: async ({ value }) => {
         assertType<'test'>(value)
 
         return undefined

@@ -41,8 +41,8 @@ it('should allow a functional onChange to be passed when using a validator', () 
     form,
     name: 'name',
     validators: {
-      onChange: (val) => {
-        assertType<'test'>(val)
+      onChange: ({ value }) => {
+        assertType<'test'>(value)
         return undefined
       },
     },
