@@ -15,6 +15,7 @@ import type {
   Validator,
   ValidationCause,
 } from './types'
+import { ValidationErrorMapKeys } from './types'
 
 type ValidateFn<TData, ValidatorType> = (
   values: TData,
@@ -60,26 +61,24 @@ export type FormOptions<TData, ValidatorType> = {
   ) => void
 }
 
+type ValidationMeta = {
+  lastRan: number
+  lastAbortController: AbortController
+}
+
 export type FieldInfo<TFormData, ValidatorType> = {
   instances: Record<string, FieldApi<TFormData, any, unknown, ValidatorType>>
-} & ValidationMeta
-
-export type ValidationMeta = {
-  validationCount?: number
-  validationAsyncCount?: number
-  validationPromise?: Promise<ValidationError[] | undefined>
-  validationResolve?: (errors: ValidationError[] | undefined) => void
-  validationReject?: (errors: unknown) => void
+  validationMetaMap: Record<ValidationErrorMapKeys, ValidationMeta | undefined>
 }
 
 export type FormState<TData> = {
   values: TData
   // Form Validation
   isFormValidating: boolean
-  formValidationCount: number
   isFormValid: boolean
   errors: ValidationError[]
   errorMap: ValidationErrorMap
+  validationMetaMap: Record<ValidationErrorMapKeys, ValidationMeta | undefined>
   // Fields
   fieldMeta: Record<DeepKeys<TData>, FieldMeta>
   isFieldsValidating: boolean
@@ -113,7 +112,12 @@ function getDefaultFormState<TData>(
     isValid: defaultState.isValid ?? false,
     isValidating: defaultState.isValidating ?? false,
     submissionAttempts: defaultState.submissionAttempts ?? 0,
-    formValidationCount: defaultState.formValidationCount ?? 0,
+    validationMetaMap: defaultState.validationMetaMap ?? {
+      onChange: undefined,
+      onBlur: undefined,
+      onSubmit: undefined,
+      onMount: undefined,
+    },
   }
 }
 
@@ -127,7 +131,6 @@ export class FormApi<TFormData, ValidatorType> {
   fieldInfo: Record<DeepKeys<TFormData>, FieldInfo<TFormData, ValidatorType>> =
     {} as any
   fieldName?: string
-  validationMeta: ValidationMeta = {}
 
   constructor(opts?: FormOptions<TFormData, ValidatorType>) {
     this.store = new Store<FormState<TFormData>>(
@@ -189,15 +192,16 @@ export class FormApi<TFormData, ValidatorType> {
   }
 
   _runValidator<T, M extends 'validate' | 'validateAsync'>(
-    validate: T,
+    validateFn: T,
     value: TFormData,
     methodName: M,
+    suppliedThis?: unknown,
   ) {
     return runValidatorOrAdapter({
-      validateFn: validate,
-      value: value,
-      methodName: methodName,
-      suppliedThis: this,
+      validateFn,
+      value,
+      methodName,
+      suppliedThis,
       adapters: [this.options.validatorAdapter as never],
     })
   }
@@ -343,27 +347,7 @@ export class FormApi<TFormData, ValidatorType> {
       }))
     }
 
-    if (hasErrored) {
-      this.cancelValidateAsync()
-    }
-
     return { hasErrored }
-  }
-
-  __leaseValidateAsync = () => {
-    const count = (this.validationMeta.validationAsyncCount || 0) + 1
-    this.validationMeta.validationAsyncCount = count
-    return count
-  }
-
-  cancelValidateAsync = () => {
-    // Lease a new validation count to ignore any pending validations
-    this.__leaseValidateAsync()
-    // Cancel any pending validation state
-    this.store.setState((prev) => ({
-      ...prev,
-      isFormValidating: false,
-    }))
   }
 
   validateAsync = async (
@@ -373,89 +357,123 @@ export class FormApi<TFormData, ValidatorType> {
     const {
       onChangeAsync,
       onBlurAsync,
+      onSubmitAsync,
       onBlurAsyncDebounceMs,
       onChangeAsyncDebounceMs,
+      onSubmitAsyncDebounceMs,
     } = this.options.validators || {}
 
-    const validate =
-      cause === 'change'
-        ? onChangeAsync
-        : cause === 'blur'
-        ? onBlurAsync
-        : undefined
+    const defaultDebounceMs = asyncDebounceMs ?? 0
 
-    if (!validate) return []
-    const debounceMs =
-      (cause === 'change' ? onChangeAsyncDebounceMs : onBlurAsyncDebounceMs) ??
-      asyncDebounceMs ??
-      0
+    const validates =
+      // https://github.com/TanStack/form/issues/490
+      cause === 'submit'
+        ? ([
+            {
+              cause: 'change',
+              validate: onChangeAsync,
+              debounceMs: onChangeAsyncDebounceMs ?? defaultDebounceMs,
+            },
+            {
+              cause: 'blur',
+              validate: onBlurAsync,
+              debounceMs: onBlurAsyncDebounceMs ?? defaultDebounceMs,
+            },
+            {
+              cause: 'submit',
+              validate: onSubmitAsync,
+              debounceMs: onSubmitAsyncDebounceMs ?? defaultDebounceMs,
+            },
+          ] as const)
+        : cause === 'change'
+        ? ([
+            {
+              cause: 'change',
+              validate: onChangeAsync,
+              debounceMs: onChangeAsyncDebounceMs ?? defaultDebounceMs,
+            },
+          ] as const)
+        : ([
+            {
+              cause: 'blur',
+              validate: onBlurAsync,
+              debounceMs: onBlurAsyncDebounceMs ?? defaultDebounceMs,
+            },
+          ] as const)
 
     if (!this.state.isFormValidating) {
       this.store.setState((prev) => ({ ...prev, isFormValidating: true }))
     }
 
-    // Use the validationCount for all field instances to
-    // track freshness of the validation
-    const validationAsyncCount = this.__leaseValidateAsync()
+    /**
+     * We have to use a for loop and generate our promises this way, otherwise it won't be sync
+     * when there are no validators needed to be run
+     */
+    let promises: Promise<ValidationError | undefined>[] = []
 
-    const checkLatest = () =>
-      validationAsyncCount === this.validationMeta.validationAsyncCount
+    for (let validateObj of validates) {
+      if (!validateObj.validate) continue
+      const key = getErrorMapKey(validateObj.cause)
+      const fieldOnChangeMeta = this.state.validationMetaMap[key]
 
-    if (!this.validationMeta.validationPromise) {
-      this.validationMeta.validationPromise = new Promise((resolve, reject) => {
-        this.validationMeta.validationResolve = resolve
-        this.validationMeta.validationReject = reject
-      })
-    }
+      const now = Date.now()
+      const lastRunDiff = now - (fieldOnChangeMeta?.lastRan ?? 0)
 
-    if (debounceMs > 0) {
-      await new Promise((r) => setTimeout(r, debounceMs))
-    }
+      if (fieldOnChangeMeta?.lastRan && lastRunDiff < validateObj.debounceMs) {
+        continue
+      }
+      fieldOnChangeMeta?.lastAbortController?.abort()
+      const controller = new AbortController()
 
-    // Only kick off validation if this validation is the latest attempt
-    if (checkLatest()) {
-      const prevErrors = this.state.errors
-      try {
-        const rawError = await this._runValidator(
-          validate,
-          this.state.values,
-          'validateAsync',
-        )
-        if (checkLatest()) {
+      this.state.validationMetaMap[key] = {
+        ...fieldOnChangeMeta,
+        lastRan: now,
+        lastAbortController: controller,
+      }
+
+      promises.push(
+        new Promise<ValidationError | undefined>(async (resolve) => {
+          let rawError!: ValidationError | undefined
+          try {
+            rawError = await this._runValidator(
+              validateObj.validate,
+              this.state.values,
+              'validateAsync',
+              { fieldApi: this, signal: controller.signal },
+            )
+          } catch (e: unknown) {
+            rawError = e as ValidationError
+          }
           const error = normalizeError(rawError)
           this.store.setState((prev) => ({
             ...prev,
-            isFormValidating: false,
             errorMap: {
               ...prev.errorMap,
               [getErrorMapKey(cause)]: error,
             },
           }))
-          this.validationMeta.validationResolve?.([...prevErrors, error])
-        }
-      } catch (error) {
-        if (checkLatest()) {
-          this.validationMeta.validationReject?.([...prevErrors, error])
-          throw error
-        }
-      } finally {
-        if (checkLatest()) {
-          this.store.setState((prev) => ({ ...prev, isFormValidating: false }))
-          delete this.validationMeta.validationPromise
-        }
-      }
+
+          resolve(error)
+        }),
+      )
     }
-    // Always return the latest validation promise to the caller
-    return (await this.validationMeta.validationPromise) ?? []
+
+    let results: ValidationError[] = []
+    if (promises.length) {
+      results = await Promise.all(promises)
+    }
+
+    this.store.setState((prev) => ({
+      ...prev,
+      isFormValidating: false,
+    }))
+
+    return results.filter(Boolean)
   }
 
   validate = (
     cause: ValidationCause,
   ): ValidationError[] | Promise<ValidationError[]> => {
-    // Store the previous error for the errorMapKey (eg. onChange, onBlur, onSubmit)
-    const errorMapKey = getErrorMapKey(cause)
-    const prevError = this.state.errorMap[errorMapKey]
-
     // Attempt to sync validate first
     const { hasErrored } = this.validateSync(cause)
 
@@ -539,6 +557,12 @@ export class FormApi<TFormData, ValidatorType> {
     // eslint-disable-next-line  @typescript-eslint/no-unnecessary-condition
     return (this.fieldInfo[field] ||= {
       instances: {},
+      validationMetaMap: {
+        onChange: undefined,
+        onBlur: undefined,
+        onSubmit: undefined,
+        onMount: undefined,
+      },
     })
   }
 

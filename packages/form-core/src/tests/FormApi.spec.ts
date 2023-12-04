@@ -24,7 +24,12 @@ describe('form api', () => {
       isValid: true,
       isValidating: false,
       submissionAttempts: 0,
-      formValidationCount: 0,
+      validationMetaMap: {
+        onChange: undefined,
+        onBlur: undefined,
+        onSubmit: undefined,
+        onMount: undefined,
+      },
     })
   })
 
@@ -53,7 +58,12 @@ describe('form api', () => {
       isValid: true,
       isValidating: false,
       submissionAttempts: 0,
-      formValidationCount: 0,
+      validationMetaMap: {
+        onChange: undefined,
+        onBlur: undefined,
+        onSubmit: undefined,
+        onMount: undefined,
+      },
     })
   })
 
@@ -80,7 +90,12 @@ describe('form api', () => {
       isValid: true,
       isValidating: false,
       submissionAttempts: 30,
-      formValidationCount: 0,
+      validationMetaMap: {
+        onChange: undefined,
+        onBlur: undefined,
+        onSubmit: undefined,
+        onMount: undefined,
+      },
     })
   })
 
@@ -118,7 +133,12 @@ describe('form api', () => {
       isValid: true,
       isValidating: false,
       submissionAttempts: 300,
-      formValidationCount: 0,
+      validationMetaMap: {
+        onChange: undefined,
+        onBlur: undefined,
+        onSubmit: undefined,
+        onMount: undefined,
+      },
     })
   })
 
@@ -152,7 +172,12 @@ describe('form api', () => {
       isValid: true,
       isValidating: false,
       submissionAttempts: 0,
-      formValidationCount: 0,
+      validationMetaMap: {
+        onChange: undefined,
+        onBlur: undefined,
+        onSubmit: undefined,
+        onMount: undefined,
+      },
     })
   })
 
