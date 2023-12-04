@@ -14,10 +14,10 @@ type ValidateFn<
   TName extends DeepKeys<TParentData>,
   ValidatorType,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-> = (
-  value: TData,
-  fieldApi: FieldApi<TParentData, TName, ValidatorType, TData>,
-) => ValidationError
+> = (props: {
+  value: TData
+  fieldApi: FieldApi<TParentData, TName, ValidatorType, TData>
+}) => ValidationError
 
 type ValidateOrFn<
   TParentData,
@@ -40,13 +40,11 @@ type ValidateAsyncFn<
   TName extends DeepKeys<TParentData>,
   ValidatorType,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-> = (
-  value: TData,
-  options: {
-    fieldApi: FieldApi<TParentData, TName, ValidatorType, TData>
-    signal: AbortSignal
-  },
-) => ValidationError | Promise<ValidationError>
+> = (options: {
+  value: TData
+  fieldApi: FieldApi<TParentData, TName, ValidatorType, TData>
+  signal: AbortSignal
+}) => ValidationError | Promise<ValidationError>
 
 type AsyncValidateOrFn<
   TParentData,
@@ -274,7 +272,15 @@ export class FieldApi<
     const { onMount } = this.options.validators || {}
 
     if (onMount) {
-      const error = this._runValidator(onMount, this.state.value, 'validate')
+      const error = runValidatorOrAdapter({
+        validateFn: onMount,
+        value: {
+          value: this.state.value,
+          fieldApi: this,
+        },
+        methodName: 'validate',
+        adapters: [this.options.validatorAdapter as never],
+      })
       if (error) {
         this.setMeta((prev) => ({
           ...prev,
@@ -374,24 +380,6 @@ export class FieldApi<
       form: this.form,
     }) as any
 
-  _runValidator<T, M extends 'validate' | 'validateAsync'>(
-    validateFn: T,
-    value: TData,
-    methodName: M,
-    suppliedThis: unknown = this,
-  ) {
-    return runValidatorOrAdapter({
-      validateFn,
-      value,
-      methodName,
-      suppliedThis,
-      adapters: [
-        this.form.options.validatorAdapter,
-        this.options.validatorAdapter as never,
-      ],
-    })
-  }
-
   validateSync = (value = this.state.value, cause: ValidationCause) => {
     const { onChange, onBlur, onSubmit } = this.options.validators || {}
 
@@ -414,7 +402,15 @@ export class FieldApi<
       for (const validateObj of validates) {
         if (!validateObj.validate) continue
         const error = normalizeError(
-          this._runValidator(validateObj.validate, value, 'validate'),
+          runValidatorOrAdapter({
+            validateFn: validateObj.validate,
+            value: { value, fieldApi: this },
+            methodName: 'validate',
+            adapters: [
+              this.form.options.validatorAdapter,
+              this.options.validatorAdapter as never,
+            ],
+          }),
         )
         const errorMapKey = getErrorMapKey(validateObj.cause)
         if (this.state.meta.errorMap[errorMapKey] !== error) {
@@ -511,9 +507,9 @@ export class FieldApi<
      * We have to use a for loop and generate our promises this way, otherwise it won't be sync
      * when there are no validators needed to be run
      */
-    let promises: Promise<ValidationError | undefined>[] = []
+    const promises: Promise<ValidationError | undefined>[] = []
 
-    for (let validateObj of validates) {
+    for (const validateObj of validates) {
       if (!validateObj.validate) continue
       const key = getErrorMapKey(validateObj.cause)
       const fieldOnChangeMeta = this.getInfo().validationMetaMap[key]
@@ -524,7 +520,9 @@ export class FieldApi<
       if (fieldOnChangeMeta?.lastRan && lastRunDiff < validateObj.debounceMs) {
         continue
       }
-      fieldOnChangeMeta?.lastAbortController?.abort()
+      fieldOnChangeMeta?.lastAbortController.abort()
+      // Sorry Safari 12
+      // eslint-disable-next-line compat/compat
       const controller = new AbortController()
 
       this.getInfo().validationMetaMap[key] = {
@@ -537,12 +535,15 @@ export class FieldApi<
         new Promise<ValidationError | undefined>(async (resolve) => {
           let rawError!: ValidationError | undefined
           try {
-            rawError = await this._runValidator(
-              validateObj.validate,
-              value,
-              'validateAsync',
-              { fieldApi: this, signal: controller.signal },
-            )
+            rawError = await runValidatorOrAdapter({
+              validateFn: validateObj.validate,
+              value: { value, fieldApi: this, signal: controller.signal },
+              methodName: 'validateAsync',
+              adapters: [
+                this.form.options.validatorAdapter,
+                this.options.validatorAdapter as never,
+              ],
+            })
           } catch (e: unknown) {
             rawError = e as ValidationError
           }

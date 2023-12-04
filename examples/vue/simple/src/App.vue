@@ -15,7 +15,7 @@ const form = useForm({
 
 form.provideFormContext()
 
-async function onChangeFirstName(value: string) {
+async function onChangeFirstName({ value }: { value: string }) {
   await new Promise((resolve) => setTimeout(resolve, 1000))
   return value.includes(`error`) && `No 'error' allowed in first name`
 }
@@ -35,7 +35,7 @@ async function onChangeFirstName(value: string) {
       <form.Field
         name="firstName"
         :validators="{
-          onChange: (value) =>
+          onChange: ({ value }) =>
             !value
               ? `A first name is required`
               : value.length < 3

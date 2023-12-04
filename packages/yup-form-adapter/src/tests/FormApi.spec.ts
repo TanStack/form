@@ -44,7 +44,7 @@ describe('yup form api', () => {
       form,
       name: 'name',
       validators: {
-        onChange: (val) => (val === 'a' ? 'Test' : undefined),
+        onChange: ({ value }) => (value === 'a' ? 'Test' : undefined),
       },
     })
 

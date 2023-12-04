@@ -44,8 +44,8 @@ it('should type onChange properly', () => {
         <form.Field
           name="firstName"
           validators={{
-            onChange: (val) => {
-              assertType<'test'>(val)
+            onChange: ({ value }) => {
+              assertType<'test'>(value)
               return null
             },
           }}
@@ -54,8 +54,8 @@ it('should type onChange properly', () => {
         <form.Field
           name="age"
           validators={{
-            onChange: (val) => {
-              assertType<84>(val)
+            onChange: ({ value }) => {
+              assertType<84>(value)
               return null
             },
           }}

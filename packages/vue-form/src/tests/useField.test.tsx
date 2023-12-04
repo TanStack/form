@@ -65,7 +65,7 @@ describe('useField', () => {
         <form.Field
           name="firstName"
           validators={{
-            onChange: (value) => (value === 'other' ? error : undefined),
+            onChange: ({ value }) => (value === 'other' ? error : undefined),
           }}
         >
           {({
@@ -114,7 +114,7 @@ describe('useField', () => {
         <form.Field
           name="firstName"
           validators={{
-            onChange: (value) => (value === 'other' ? error : undefined),
+            onChange: ({ value }) => (value === 'other' ? error : undefined),
           }}
         >
           {({

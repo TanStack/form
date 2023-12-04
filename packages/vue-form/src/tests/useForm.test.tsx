@@ -227,7 +227,7 @@ describe('useForm', () => {
     const Comp = defineComponent(() => {
       const form = formFactory.useForm({
         validators: {
-          onChange: (value) =>
+          onChange: ({ value }) =>
             value.firstName === 'other' ? error : undefined,
         },
       })
@@ -276,7 +276,7 @@ describe('useForm', () => {
     const Comp = defineComponent(() => {
       const form = formFactory.useForm({
         validators: {
-          onChange: (value) =>
+          onChange: ({ value }) =>
             value.firstName === 'other' ? error : undefined,
         },
       })
@@ -328,12 +328,12 @@ describe('useForm', () => {
           firstName: '',
         },
         validators: {
-          onChange: (vals) => {
-            if (vals.firstName === 'other') return onChangeError
+          onChange: ({ value }) => {
+            if (value.firstName === 'other') return onChangeError
             return undefined
           },
-          onBlur: (vals) => {
-            if (vals.firstName === 'other') return onBlurError
+          onBlur: ({ value }) => {
+            if (value.firstName === 'other') return onBlurError
             return undefined
           },
         },

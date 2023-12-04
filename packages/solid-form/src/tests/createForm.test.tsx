@@ -164,7 +164,7 @@ describe('createForm', () => {
     function Comp() {
       const form = formFactory.createForm(() => ({
         validators: {
-          onChange: (value) =>
+          onChange: ({ value }) =>
             value.firstName.includes('other') ? error : undefined,
         },
       }))
@@ -208,7 +208,7 @@ describe('createForm', () => {
     function Comp() {
       const form = formFactory.createForm(() => ({
         validators: {
-          onChange: (value) =>
+          onChange: ({ value }) =>
             value.firstName.includes('other') ? error : undefined,
         },
       }))
@@ -260,9 +260,9 @@ describe('createForm', () => {
     function Comp() {
       const form = formFactory.createForm(() => ({
         validators: {
-          onChange: (value) =>
+          onChange: ({ value }) =>
             value.firstName.includes('other') ? onChangeError : undefined,
-          onBlur: (value) =>
+          onBlur: ({ value }) =>
             value.firstName.includes('other') ? onBlurError : undefined,
         },
       }))

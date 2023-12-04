@@ -107,7 +107,7 @@ describe('useField', () => {
           <form.Field
             name="firstName"
             validators={{
-              onChange: (value) => (value === 'other' ? error : undefined),
+              onChange: ({ value }) => (value === 'other' ? error : undefined),
             }}
             children={(field) => (
               <div>
@@ -150,7 +150,7 @@ describe('useField', () => {
             name="firstName"
             defaultMeta={{ isTouched: true }}
             validators={{
-              onChange: (value) => (value === 'other' ? error : undefined),
+              onChange: ({ value }) => (value === 'other' ? error : undefined),
             }}
             children={(field) => (
               <div>
@@ -195,9 +195,10 @@ describe('useField', () => {
             name="firstName"
             defaultMeta={{ isTouched: true }}
             validators={{
-              onChange: (value) =>
+              onChange: ({ value }) =>
                 value === 'other' ? onChangeError : undefined,
-              onBlur: (value) => (value === 'other' ? onBlurError : undefined),
+              onBlur: ({ value }) =>
+                value === 'other' ? onBlurError : undefined,
             }}
             children={(field) => (
               <div>
