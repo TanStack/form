@@ -873,4 +873,48 @@ describe('form api', () => {
     await form.validateAllFields('change')
     expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
   })
+
+  it('should show onSubmit errors', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onSubmit: (v) =>
+          v.firstName.length > 0 ? undefined : 'first name is required',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+
+    field.mount()
+
+    await form.handleSubmit()
+    expect(form.state.errors).toStrictEqual(['first name is required'])
+  })
+
+  it('should run onChange validation during submit', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onChange: (v) =>
+          v.firstName.length > 0 ? undefined : 'first name is required',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+
+    field.mount()
+
+    await form.handleSubmit()
+    expect(form.state.errors).toStrictEqual(['first name is required'])
+  })
 })
