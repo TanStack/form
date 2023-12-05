@@ -20,9 +20,9 @@ export default function App() {
       firstName: "",
       lastName: "",
     },
-    onSubmit: async (values) => {
+    onSubmit: async ({ value }) => {
       // Do something with form data
-      console.log(values);
+      console.log(value);
     },
   });
 

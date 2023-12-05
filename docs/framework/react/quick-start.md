@@ -15,7 +15,7 @@ export default function App() {
     defaultValues: {
       fullName: '',
     },
-    onSubmit: async (values) => {
+    onSubmit: async ({ values }) => {
       // Do something with form data
       console.log(values)
     },

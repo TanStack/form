@@ -92,8 +92,8 @@ describe('useForm', () => {
         defaultValues: {
           firstName: 'FirstName',
         },
-        onSubmit: (data) => {
-          submittedData.value = data
+        onSubmit: ({ value }) => {
+          submittedData.value = value
         },
       })
       form.provideFormContext()
