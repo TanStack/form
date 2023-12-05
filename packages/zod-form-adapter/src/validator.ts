@@ -3,7 +3,7 @@ import type { ValidationError, Validator } from '@tanstack/form-core'
 
 export const zodValidator = (<Fn extends ZodType = ZodType>() => {
   return {
-    validate(value: unknown, fn: Fn): ValidationError {
+    validate({ value }: { value: unknown }, fn: Fn): ValidationError {
       // Call Zod on the value here and return the error message
       const result = (fn as ZodTypeAny).safeParse(value)
       if (!result.success) {
@@ -11,7 +11,10 @@ export const zodValidator = (<Fn extends ZodType = ZodType>() => {
       }
       return
     },
-    async validateAsync(value: unknown, fn: Fn): Promise<ValidationError> {
+    async validateAsync(
+      { value }: { value: unknown },
+      fn: Fn,
+    ): Promise<ValidationError> {
       // Call Zod on the value here and return the error message
       const result = await (fn as ZodTypeAny).safeParseAsync(value)
       if (!result.success) {

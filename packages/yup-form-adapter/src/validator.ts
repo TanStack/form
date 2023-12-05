@@ -3,7 +3,7 @@ import type { ValidationError, Validator } from '@tanstack/form-core'
 
 export const yupValidator = (<Fn extends AnySchema = AnySchema>() => {
   return {
-    validate(value: unknown, fn: Fn): ValidationError {
+    validate({ value }: { value: unknown }, fn: Fn): ValidationError {
       try {
         fn.validateSync(value)
         return
@@ -12,7 +12,10 @@ export const yupValidator = (<Fn extends AnySchema = AnySchema>() => {
         return e.errors.join(', ')
       }
     },
-    async validateAsync(value: unknown, fn: Fn): Promise<ValidationError> {
+    async validateAsync(
+      { value }: { value: unknown },
+      fn: Fn,
+    ): Promise<ValidationError> {
       try {
         await fn.validate(value)
         return
