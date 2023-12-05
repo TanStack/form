@@ -150,7 +150,7 @@ export function runValidatorOrAdapter<
   validateFn: unknown
   // Order matters, first is run first
   adapters: Array<Validator<any> | undefined>
-  value: TData
+  value: any
   methodName: M
 }): ReturnType<ReturnType<Validator<TData>>[M]> {
   for (const adapter of props.adapters) {
