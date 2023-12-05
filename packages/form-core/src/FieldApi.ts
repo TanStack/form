@@ -284,7 +284,7 @@ export class FieldApi<
       if (error) {
         this.setMeta((prev) => ({
           ...prev,
-          errorMap: { ...prev.errorMap, onMount: error },
+          errorMap: { ...prev?.errorMap, onMount: error },
         }))
       }
     }
@@ -514,20 +514,12 @@ export class FieldApi<
       const key = getErrorMapKey(validateObj.cause)
       const fieldOnChangeMeta = this.getInfo().validationMetaMap[key]
 
-      const now = Date.now()
-      const lastRunDiff = now - (fieldOnChangeMeta?.lastRan ?? 0)
-
-      if (fieldOnChangeMeta?.lastRan && lastRunDiff < validateObj.debounceMs) {
-        continue
-      }
       fieldOnChangeMeta?.lastAbortController.abort()
       // Sorry Safari 12
       // eslint-disable-next-line compat/compat
       const controller = new AbortController()
 
       this.getInfo().validationMetaMap[key] = {
-        ...fieldOnChangeMeta,
-        lastRan: now,
         lastAbortController: controller,
       }
 
@@ -535,26 +527,35 @@ export class FieldApi<
         new Promise<ValidationError | undefined>(async (resolve) => {
           let rawError!: ValidationError | undefined
           try {
-            rawError = await runValidatorOrAdapter({
-              validateFn: validateObj.validate,
-              value: { value, fieldApi: this, signal: controller.signal },
-              methodName: 'validateAsync',
-              adapters: [
-                this.form.options.validatorAdapter,
-                this.options.validatorAdapter as never,
-              ],
+            rawError = await new Promise((resolve, reject) => {
+              setTimeout(() => {
+                if (controller.signal.aborted) return resolve(undefined)
+                runValidatorOrAdapter({
+                  validateFn: validateObj.validate,
+                  value: { value, fieldApi: this, signal: controller.signal },
+                  methodName: 'validateAsync',
+                  adapters: [
+                    this.form.options.validatorAdapter,
+                    this.options.validatorAdapter as never,
+                  ],
+                })
+                  .then(resolve)
+                  .catch(reject)
+              }, onChangeAsyncDebounceMs)
             })
           } catch (e: unknown) {
             rawError = e as ValidationError
           }
           const error = normalizeError(rawError)
-          this.setMeta((prev) => ({
-            ...prev,
-            errorMap: {
-              ...prev.errorMap,
-              [getErrorMapKey(cause)]: error,
-            },
-          }))
+          this.setMeta((prev) => {
+            return {
+              ...prev,
+              errorMap: {
+                ...prev?.errorMap,
+                [getErrorMapKey(cause)]: error,
+              },
+            }
+          })
 
           resolve(error)
         }),
