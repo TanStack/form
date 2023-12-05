@@ -9,58 +9,78 @@ import type {
 import type { DeepKeys, DeepValue, Updater } from './utils'
 import { runValidatorOrAdapter } from './utils'
 
-type ValidateFn<
+export type FieldValidateFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
   ValidatorType,
+  FormValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (props: {
   value: TData
-  fieldApi: FieldApi<TParentData, TName, ValidatorType, TData>
+  fieldApi: FieldApi<TParentData, TName, ValidatorType, FormValidator, TData>
 }) => ValidationError
 
-type ValidateOrFn<
+export type FieldValidateOrFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
   ValidatorType,
   FormValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-> = ValidatorType extends Validator<TData>
+> = ValidatorType extends Validator<TData, infer TFN>
   ?
-      | Parameters<ReturnType<ValidatorType>['validate']>[1]
-      | ValidateFn<TParentData, TName, ValidatorType, TData>
-  : FormValidator extends Validator<TData>
+      | TFN
+      | FieldValidateFn<TParentData, TName, ValidatorType, FormValidator, TData>
+  : FormValidator extends Validator<TData, infer FFN>
   ?
-      | Parameters<ReturnType<FormValidator>['validate']>[1]
-      | ValidateFn<TParentData, TName, ValidatorType, TData>
-  : ValidateFn<TParentData, TName, ValidatorType, TData>
+      | FFN
+      | FieldValidateFn<TParentData, TName, ValidatorType, FormValidator, TData>
+  : FieldValidateFn<TParentData, TName, ValidatorType, FormValidator, TData>
 
-type ValidateAsyncFn<
+export type FieldValidateAsyncFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
   ValidatorType,
+  FormValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (options: {
   value: TData
-  fieldApi: FieldApi<TParentData, TName, ValidatorType, TData>
+  fieldApi: FieldApi<TParentData, TName, ValidatorType, FormValidator, TData>
   signal: AbortSignal
 }) => ValidationError | Promise<ValidationError>
 
-type AsyncValidateOrFn<
+export type FieldAsyncValidateOrFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
   ValidatorType,
   FormValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-> = ValidatorType extends Validator<TData>
+> = ValidatorType extends Validator<TData, infer TFN>
   ?
-      | Parameters<ReturnType<ValidatorType>['validate']>[1]
-      | ValidateAsyncFn<TParentData, TName, ValidatorType, TData>
-  : FormValidator extends Validator<TData>
+      | TFN
+      | FieldValidateAsyncFn<
+          TParentData,
+          TName,
+          ValidatorType,
+          FormValidator,
+          TData
+        >
+  : FormValidator extends Validator<TData, infer FFN>
   ?
-      | Parameters<ReturnType<FormValidator>['validate']>[1]
-      | ValidateAsyncFn<TParentData, TName, ValidatorType, TData>
-  : ValidateAsyncFn<TParentData, TName, ValidatorType, TData>
+      | FFN
+      | FieldValidateAsyncFn<
+          TParentData,
+          TName,
+          ValidatorType,
+          FormValidator,
+          TData
+        >
+  : FieldValidateAsyncFn<
+      TParentData,
+      TName,
+      ValidatorType,
+      FormValidator,
+      TData
+    >
 
 export interface FieldValidators<
   TParentData,
@@ -69,21 +89,21 @@ export interface FieldValidators<
   FormValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
-  onMount?: ValidateOrFn<
+  onMount?: FieldValidateOrFn<
     TParentData,
     TName,
     ValidatorType,
     FormValidator,
     TData
   >
-  onChange?: ValidateOrFn<
+  onChange?: FieldValidateOrFn<
     TParentData,
     TName,
     ValidatorType,
     FormValidator,
     TData
   >
-  onChangeAsync?: AsyncValidateOrFn<
+  onChangeAsync?: FieldAsyncValidateOrFn<
     TParentData,
     TName,
     ValidatorType,
@@ -91,8 +111,14 @@ export interface FieldValidators<
     TData
   >
   onChangeAsyncDebounceMs?: number
-  onBlur?: ValidateOrFn<TParentData, TName, ValidatorType, FormValidator, TData>
-  onBlurAsync?: AsyncValidateOrFn<
+  onBlur?: FieldValidateOrFn<
+    TParentData,
+    TName,
+    ValidatorType,
+    FormValidator,
+    TData
+  >
+  onBlurAsync?: FieldAsyncValidateOrFn<
     TParentData,
     TName,
     ValidatorType,
@@ -100,14 +126,14 @@ export interface FieldValidators<
     TData
   >
   onBlurAsyncDebounceMs?: number
-  onSubmit?: ValidateOrFn<
+  onSubmit?: FieldValidateOrFn<
     TParentData,
     TName,
     ValidatorType,
     FormValidator,
     TData
   >
-  onSubmitAsync?: AsyncValidateOrFn<
+  onSubmitAsync?: FieldAsyncValidateOrFn<
     TParentData,
     TName,
     ValidatorType,
@@ -184,9 +210,21 @@ export class FieldApi<
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   uid: number
-  form: FieldApiOptions<TParentData, TName, ValidatorType, TData>['form']
+  form: FieldApiOptions<
+    TParentData,
+    TName,
+    ValidatorType,
+    FormValidator,
+    TData
+  >['form']
   name!: DeepKeys<TParentData>
-  options: FieldApiOptions<TParentData, TName, ValidatorType, TData> = {} as any
+  options: FieldApiOptions<
+    TParentData,
+    TName,
+    ValidatorType,
+    FormValidator,
+    TData
+  > = {} as any
   store!: Store<FieldState<TData>>
   state!: FieldState<TData>
   prevState!: FieldState<TData>
@@ -304,7 +342,13 @@ export class FieldApi<
   }
 
   update = (
-    opts: FieldApiOptions<TParentData, TName, ValidatorType, TData>,
+    opts: FieldApiOptions<
+      TParentData,
+      TName,
+      ValidatorType,
+      FormValidator,
+      TData
+    >,
   ) => {
     // Default Value
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -407,7 +451,7 @@ export class FieldApi<
             value: { value, fieldApi: this },
             methodName: 'validate',
             adapters: [
-              this.form.options.validatorAdapter,
+              this.form.options.validatorAdapter as never,
               this.options.validatorAdapter as never,
             ],
           }),
@@ -527,20 +571,20 @@ export class FieldApi<
         new Promise<ValidationError | undefined>(async (resolve) => {
           let rawError!: ValidationError | undefined
           try {
-            rawError = await new Promise((resolve, reject) => {
+            rawError = await new Promise((rawResolve, rawReject) => {
               setTimeout(() => {
-                if (controller.signal.aborted) return resolve(undefined)
+                if (controller.signal.aborted) return rawResolve(undefined)
                 runValidatorOrAdapter({
                   validateFn: validateObj.validate,
                   value: { value, fieldApi: this, signal: controller.signal },
                   methodName: 'validateAsync',
                   adapters: [
-                    this.form.options.validatorAdapter,
+                    this.form.options.validatorAdapter as never,
                     this.options.validatorAdapter as never,
                   ],
                 })
-                  .then(resolve)
-                  .catch(reject)
+                  .then(rawResolve)
+                  .catch(rawReject)
               }, onChangeAsyncDebounceMs)
             })
           } catch (e: unknown) {

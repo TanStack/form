@@ -17,38 +17,37 @@ import type {
 } from './types'
 import type { ValidationErrorMapKeys } from './types'
 
-type ValidateFn<TData, ValidatorType> = (props: {
+export type FormValidateFn<TData, ValidatorType> = (props: {
   value: TData
   formApi: FormApi<TData, ValidatorType>
 }) => ValidationError
 
-type ValidateOrFn<TData, ValidatorType> = ValidatorType extends Validator<TData>
-  ? Parameters<ReturnType<ValidatorType>['validate']>[1]
-  : ValidateFn<TData, ValidatorType>
+export type FormValidateOrFn<TData, ValidatorType> =
+  ValidatorType extends Validator<TData, infer TFN>
+    ? TFN
+    : FormValidateFn<TData, ValidatorType>
 
-type ValidateAsyncFn<TData, ValidatorType> = (props: {
+export type FormValidateAsyncFn<TData, ValidatorType> = (props: {
   value: TData
   formApi: FormApi<TData, ValidatorType>
   signal: AbortSignal
 }) => ValidationError | Promise<ValidationError>
 
-type AsyncValidateOrFn<TData, ValidatorType> =
-  ValidatorType extends Validator<TData>
-    ?
-        | Parameters<ReturnType<ValidatorType>['validate']>[1]
-        | ValidateAsyncFn<TData, ValidatorType>
-    : ValidateAsyncFn<TData, ValidatorType>
+export type FormAsyncValidateOrFn<TData, ValidatorType> =
+  ValidatorType extends Validator<TData, infer FFN>
+    ? FFN | FormValidateAsyncFn<TData, ValidatorType>
+    : FormValidateAsyncFn<TData, ValidatorType>
 
 export interface FormValidators<TData, ValidatorType> {
-  onMount?: ValidateOrFn<TData, ValidatorType>
-  onChange?: ValidateOrFn<TData, ValidatorType>
-  onChangeAsync?: AsyncValidateOrFn<TData, ValidatorType>
+  onMount?: FormValidateOrFn<TData, ValidatorType>
+  onChange?: FormValidateOrFn<TData, ValidatorType>
+  onChangeAsync?: FormAsyncValidateOrFn<TData, ValidatorType>
   onChangeAsyncDebounceMs?: number
-  onBlur?: ValidateOrFn<TData, ValidatorType>
-  onBlurAsync?: AsyncValidateOrFn<TData, ValidatorType>
+  onBlur?: FormValidateOrFn<TData, ValidatorType>
+  onBlurAsync?: FormAsyncValidateOrFn<TData, ValidatorType>
   onBlurAsyncDebounceMs?: number
-  onSubmit?: ValidateOrFn<TData, ValidatorType>
-  onSubmitAsync?: AsyncValidateOrFn<TData, ValidatorType>
+  onSubmit?: FormValidateOrFn<TData, ValidatorType>
+  onSubmitAsync?: FormAsyncValidateOrFn<TData, ValidatorType>
   onSubmitAsyncDebounceMs?: number
 }
 
