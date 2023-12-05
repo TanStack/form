@@ -7,9 +7,9 @@ const form = useForm({
     firstName: '',
     lastName: '',
   },
-  onSubmit: async (values) => {
+  onSubmit: async ({ value }) => {
     // Do something with form data
-    alert(JSON.stringify(values))
+    alert(JSON.stringify(value))
   },
 })
 

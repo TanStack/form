@@ -90,8 +90,8 @@ describe('useForm', () => {
         defaultValues: {
           firstName: 'FirstName',
         },
-        onSubmit: (data) => {
-          setSubmittedData(data)
+        onSubmit: ({ value }) => {
+          setSubmittedData(value)
         },
       })
 

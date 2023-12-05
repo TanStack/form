@@ -59,14 +59,14 @@ export type FormOptions<TData, ValidatorType> = {
   asyncDebounceMs?: number
   validatorAdapter?: ValidatorType
   validators?: FormValidators<TData, ValidatorType>
-  onSubmit?: (
-    values: TData,
-    formApi: FormApi<TData, ValidatorType>,
-  ) => any | Promise<any>
-  onSubmitInvalid?: (
-    values: TData,
-    formApi: FormApi<TData, ValidatorType>,
-  ) => void
+  onSubmit?: (props: {
+    value: TData
+    formApi: FormApi<TData, ValidatorType>
+  }) => any | Promise<any>
+  onSubmitInvalid?: (props: {
+    value: TData
+    formApi: FormApi<TData, ValidatorType>
+  }) => void
 }
 
 export type ValidationMeta = {
@@ -525,7 +525,10 @@ export class FormApi<TFormData, ValidatorType> {
     // Fields are invalid, do not submit
     if (!this.state.isFieldsValid) {
       done()
-      this.options.onSubmitInvalid?.(this.state.values, this)
+      this.options.onSubmitInvalid?.({
+        value: this.state.values,
+        formApi: this,
+      })
       return
     }
 
@@ -534,13 +537,16 @@ export class FormApi<TFormData, ValidatorType> {
 
     if (!this.state.isValid) {
       done()
-      this.options.onSubmitInvalid?.(this.state.values, this)
+      this.options.onSubmitInvalid?.({
+        value: this.state.values,
+        formApi: this,
+      })
       return
     }
 
     try {
       // Run the submit code
-      await this.options.onSubmit?.(this.state.values, this)
+      await this.options.onSubmit?.({ value: this.state.values, formApi: this })
 
       this.store.batch(() => {
         this.store.setState((prev) => ({ ...prev, isSubmitted: true }))

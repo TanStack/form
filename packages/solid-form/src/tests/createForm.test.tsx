@@ -84,8 +84,8 @@ describe('createForm', () => {
         defaultValues: {
           firstName: 'FirstName',
         },
-        onSubmit: (data) => {
-          submittedData = data
+        onSubmit: ({ value }) => {
+          submittedData = value
         },
       }))
 

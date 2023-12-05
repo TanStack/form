@@ -593,7 +593,6 @@ export class FieldApi<
   }
 
   handleChange = (updater: Updater<TData>) => {
-    debugger
     this.setValue(updater, { touch: true })
   }
 

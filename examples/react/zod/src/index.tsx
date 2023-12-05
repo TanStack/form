@@ -22,9 +22,9 @@ export default function App() {
       firstName: "",
       lastName: "",
     },
-    onSubmit: async (values) => {
+    onSubmit: async ({ value }) => {
       // Do something with form data
-      console.log(values);
+      console.log(value);
     },
     // Add a validator to support Zod usage in Form and Field
     validatorAdapter: zodValidator,
