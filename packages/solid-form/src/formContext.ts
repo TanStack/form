@@ -1,10 +1,10 @@
 import { createContext, useContext } from 'solid-js'
-import type { FormApi } from '@tanstack/form-core'
+import type { FormApi, Validator } from '@tanstack/form-core'
 
 type FormContextType =
   | undefined
   | {
-      formApi: FormApi<any, any>
+      formApi: FormApi<any, Validator<any, unknown> | undefined>
       parentFieldName?: string
     }
 

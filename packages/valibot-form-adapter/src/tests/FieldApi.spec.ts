@@ -102,7 +102,8 @@ describe('valibot field api', () => {
       validatorAdapter: valibotValidator,
       name: 'name',
       validators: {
-        onChangeAsync: async ({ value }) => (value === 'a' ? 'Test' : undefined),
+        onChangeAsync: async ({ value }) =>
+          value === 'a' ? 'Test' : undefined,
         onChangeAsyncDebounceMs: 0,
       },
     })

@@ -1,4 +1,4 @@
-import type { FormApi, FormOptions } from '@tanstack/form-core'
+import type { FormApi, FormOptions, Validator } from '@tanstack/form-core'
 
 import {
   type CreateField,
@@ -9,20 +9,26 @@ import {
 import { createForm } from './createForm'
 import { mergeProps } from 'solid-js'
 
-export type FormFactory<TFormData, FormValidator> = {
+export type FormFactory<
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+> = {
   createForm: (
-    opts?: () => FormOptions<TFormData, FormValidator>,
-  ) => FormApi<TFormData, FormValidator>
+    opts?: () => FormOptions<TFormData, TFormValidator>,
+  ) => FormApi<TFormData, TFormValidator>
   createField: CreateField<TFormData>
-  Field: FieldComponent<TFormData, FormValidator>
+  Field: FieldComponent<TFormData, TFormValidator>
 }
 
-export function createFormFactory<TFormData, FormValidator>(
-  defaultOpts?: () => FormOptions<TFormData, FormValidator>,
-): FormFactory<TFormData, FormValidator> {
+export function createFormFactory<
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+>(
+  defaultOpts?: () => FormOptions<TFormData, TFormValidator>,
+): FormFactory<TFormData, TFormValidator> {
   return {
     createForm: (opts) =>
-      createForm<TFormData, FormValidator>(() =>
+      createForm<TFormData, TFormValidator>(() =>
         mergeProps(defaultOpts?.() ?? {}, opts?.() ?? {}),
       ),
     createField,

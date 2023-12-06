@@ -1,4 +1,4 @@
-import { FieldApi } from '@tanstack/form-core'
+import { FieldApi, type Validator } from '@tanstack/form-core'
 import type { DeepKeys, DeepValue, Narrow } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
 import { defineComponent, onMounted, onUnmounted, watch } from 'vue'
@@ -11,53 +11,68 @@ declare module '@tanstack/form-core' {
   interface FieldApi<
     TParentData,
     TName extends DeepKeys<TParentData>,
-    ValidatorType,
-    FormValidator,
+    TFieldValidator extends
+      | Validator<DeepValue<TParentData, TName>, unknown>
+      | undefined = undefined,
+    TFormValidator extends
+      | Validator<TParentData, unknown>
+      | undefined = undefined,
     TData = DeepValue<TParentData, TName>,
   > {
-    Field: FieldComponent<TData, FormValidator>
+    Field: FieldComponent<TData, TFormValidator>
   }
 }
 
-export type UseField<TParentData, FormValidator> = <
+export type UseField<
+  TParentData,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+> = <
   TName extends DeepKeys<TParentData>,
-  ValidatorType,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
 >(
   opts?: { name: Narrow<TName> } & UseFieldOptions<
     TParentData,
     TName,
-    ValidatorType,
-    FormValidator,
+    TFieldValidator,
+    TFormValidator,
     DeepValue<TParentData, TName>
   >,
 ) => FieldApi<
   TParentData,
   TName,
-  ValidatorType,
-  FormValidator,
+  TFieldValidator,
+  TFormValidator,
   DeepValue<TParentData, TName>
 >
 
 export function useField<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  ValidatorType,
-  FormValidator,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 >(
   opts: UseFieldOptions<
     TParentData,
     TName,
-    ValidatorType,
-    FormValidator,
+    TFieldValidator,
+    TFormValidator,
     TData
   >,
 ): {
   api: FieldApi<
     TParentData,
     TName,
-    ValidatorType,
-    FormValidator,
+    TFieldValidator,
+    TFormValidator,
     TData
     // Omit<typeof opts, 'onMount'> & {
     //   form: FormApi<TParentData>
@@ -68,12 +83,9 @@ export function useField<
       FieldApi<
         TParentData,
         TName,
-        ValidatorType,
-        FormValidator,
+        TFieldValidator,
+        TFormValidator,
         TData
-        // Omit<typeof opts, 'onMount'> & {
-        //   form: FormApi<TParentData>
-        // }
       >['state']
     >
   >
@@ -124,8 +136,12 @@ export type FieldValue<TParentData, TName> = TParentData extends any[]
 type FieldComponentProps<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  ValidatorType,
-  FormValidator,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
 > = (TParentData extends any[]
   ? {
       name?: TName
@@ -136,31 +152,44 @@ type FieldComponentProps<
       index?: never
     }) &
   Omit<
-    UseFieldOptions<TParentData, TName, ValidatorType, FormValidator>,
+    UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>,
     'name' | 'index'
   >
 
-export type FieldComponent<TParentData, FormValidator> = <
+export type FieldComponent<
+  TParentData,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+> = <
   TName extends DeepKeys<TParentData>,
-  ValidatorType,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 >(
   fieldOptions: FieldComponentProps<
     TParentData,
     TName,
-    ValidatorType,
-    FormValidator
+    TFieldValidator,
+    TFormValidator
   >,
   context: SetupContext<
     {},
     SlotsType<{
       default: {
-        field: FieldApi<TParentData, TName, ValidatorType, FormValidator, TData>
+        field: FieldApi<
+          TParentData,
+          TName,
+          TFieldValidator,
+          TFormValidator,
+          TData
+        >
         state: FieldApi<
           TParentData,
           TName,
-          ValidatorType,
-          FormValidator,
+          TFieldValidator,
+          TFormValidator,
           TData
         >['state']
       }
@@ -172,14 +201,18 @@ export const Field = defineComponent(
   <
     TParentData,
     TName extends DeepKeys<TParentData>,
-    ValidatorType,
-    FormValidator,
+    TFieldValidator extends
+      | Validator<DeepValue<TParentData, TName>, unknown>
+      | undefined = undefined,
+    TFormValidator extends
+      | Validator<TParentData, unknown>
+      | undefined = undefined,
   >(
     fieldOptions: UseFieldOptions<
       TParentData,
       TName,
-      ValidatorType,
-      FormValidator
+      TFieldValidator,
+      TFormValidator
     >,
     context: SetupContext,
   ) => {

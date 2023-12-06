@@ -12,132 +12,164 @@ import { runValidatorOrAdapter } from './utils'
 export type FieldValidateFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  ValidatorType,
-  FormValidator,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (props: {
   value: TData
-  fieldApi: FieldApi<TParentData, TName, ValidatorType, FormValidator, TData>
+  fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
 }) => ValidationError
 
 export type FieldValidateOrFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  ValidatorType,
-  FormValidator,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-> = ValidatorType extends Validator<TData, infer TFN>
+> = TFieldValidator extends Validator<TData, infer TFN>
   ?
       | TFN
-      | FieldValidateFn<TParentData, TName, ValidatorType, FormValidator, TData>
-  : FormValidator extends Validator<TData, infer FFN>
+      | FieldValidateFn<
+          TParentData,
+          TName,
+          TFieldValidator,
+          TFormValidator,
+          TData
+        >
+  : TFormValidator extends Validator<TParentData, infer FFN>
   ?
       | FFN
-      | FieldValidateFn<TParentData, TName, ValidatorType, FormValidator, TData>
-  : FieldValidateFn<TParentData, TName, ValidatorType, FormValidator, TData>
+      | FieldValidateFn<
+          TParentData,
+          TName,
+          TFieldValidator,
+          TFormValidator,
+          TData
+        >
+  : FieldValidateFn<TParentData, TName, TFieldValidator, TFormValidator, TData>
 
 export type FieldValidateAsyncFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  ValidatorType,
-  FormValidator,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (options: {
   value: TData
-  fieldApi: FieldApi<TParentData, TName, ValidatorType, FormValidator, TData>
+  fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
   signal: AbortSignal
 }) => ValidationError | Promise<ValidationError>
 
 export type FieldAsyncValidateOrFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  ValidatorType,
-  FormValidator,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-> = ValidatorType extends Validator<TData, infer TFN>
+> = TFieldValidator extends Validator<TData, infer TFN>
   ?
       | TFN
       | FieldValidateAsyncFn<
           TParentData,
           TName,
-          ValidatorType,
-          FormValidator,
+          TFieldValidator,
+          TFormValidator,
           TData
         >
-  : FormValidator extends Validator<TData, infer FFN>
+  : TFormValidator extends Validator<TParentData, infer FFN>
   ?
       | FFN
       | FieldValidateAsyncFn<
           TParentData,
           TName,
-          ValidatorType,
-          FormValidator,
+          TFieldValidator,
+          TFormValidator,
           TData
         >
   : FieldValidateAsyncFn<
       TParentData,
       TName,
-      ValidatorType,
-      FormValidator,
+      TFieldValidator,
+      TFormValidator,
       TData
     >
 
 export interface FieldValidators<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  ValidatorType,
-  FormValidator,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   onMount?: FieldValidateOrFn<
     TParentData,
     TName,
-    ValidatorType,
-    FormValidator,
+    TFieldValidator,
+    TFormValidator,
     TData
   >
   onChange?: FieldValidateOrFn<
     TParentData,
     TName,
-    ValidatorType,
-    FormValidator,
+    TFieldValidator,
+    TFormValidator,
     TData
   >
   onChangeAsync?: FieldAsyncValidateOrFn<
     TParentData,
     TName,
-    ValidatorType,
-    FormValidator,
+    TFieldValidator,
+    TFormValidator,
     TData
   >
   onChangeAsyncDebounceMs?: number
   onBlur?: FieldValidateOrFn<
     TParentData,
     TName,
-    ValidatorType,
-    FormValidator,
+    TFieldValidator,
+    TFormValidator,
     TData
   >
   onBlurAsync?: FieldAsyncValidateOrFn<
     TParentData,
     TName,
-    ValidatorType,
-    FormValidator,
+    TFieldValidator,
+    TFormValidator,
     TData
   >
   onBlurAsyncDebounceMs?: number
   onSubmit?: FieldValidateOrFn<
     TParentData,
     TName,
-    ValidatorType,
-    FormValidator,
+    TFieldValidator,
+    TFormValidator,
     TData
   >
   onSubmitAsync?: FieldAsyncValidateOrFn<
     TParentData,
     TName,
-    ValidatorType,
-    FormValidator,
+    TFieldValidator,
+    TFormValidator,
     TData
   >
   onSubmitAsyncDebounceMs?: number
@@ -146,8 +178,12 @@ export interface FieldValidators<
 export interface FieldOptions<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  ValidatorType,
-  FormValidator,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   name: TName
@@ -156,12 +192,12 @@ export interface FieldOptions<
   asyncDebounceMs?: number
   asyncAlways?: boolean
   preserveValue?: boolean
-  validatorAdapter?: ValidatorType
+  validatorAdapter?: TFieldValidator
   validators?: FieldValidators<
     TParentData,
     TName,
-    ValidatorType,
-    FormValidator,
+    TFieldValidator,
+    TFormValidator,
     TData
   >
   defaultMeta?: Partial<FieldMeta>
@@ -170,17 +206,21 @@ export interface FieldOptions<
 export interface FieldApiOptions<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  ValidatorType,
-  FormValidator,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > extends FieldOptions<
     TParentData,
     TName,
-    ValidatorType,
-    FormValidator,
+    TFieldValidator,
+    TFormValidator,
     TData
   > {
-  form: FormApi<TParentData, FormValidator>
+  form: FormApi<TParentData, TFormValidator>
 }
 
 export type FieldMeta = {
@@ -205,24 +245,28 @@ export type ResolveName<TParentData> = unknown extends TParentData
 export class FieldApi<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  ValidatorType,
-  FormValidator,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   uid: number
   form: FieldApiOptions<
     TParentData,
     TName,
-    ValidatorType,
-    FormValidator,
+    TFieldValidator,
+    TFormValidator,
     TData
   >['form']
   name!: DeepKeys<TParentData>
   options: FieldApiOptions<
     TParentData,
     TName,
-    ValidatorType,
-    FormValidator,
+    TFieldValidator,
+    TFormValidator,
     TData
   > = {} as any
   store!: Store<FieldState<TData>>
@@ -233,8 +277,8 @@ export class FieldApi<
     opts: FieldApiOptions<
       TParentData,
       TName,
-      ValidatorType,
-      FormValidator,
+      TFieldValidator,
+      TFormValidator,
       TData
     >,
   ) {
@@ -322,6 +366,7 @@ export class FieldApi<
       if (error) {
         this.setMeta((prev) => ({
           ...prev,
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           errorMap: { ...prev?.errorMap, onMount: error },
         }))
       }
@@ -345,8 +390,8 @@ export class FieldApi<
     opts: FieldApiOptions<
       TParentData,
       TName,
-      ValidatorType,
-      FormValidator,
+      TFieldValidator,
+      TFormValidator,
       TData
     >,
   ) => {
@@ -418,7 +463,7 @@ export class FieldApi<
     TSubData extends DeepValue<TData, TSubName> = DeepValue<TData, TSubName>,
   >(
     name: TSubName,
-  ): FieldApi<TData, TSubName, ValidatorType, TSubData> =>
+  ): FieldApi<TData, TSubName, TFieldValidator, TSubData> =>
     new FieldApi({
       name: `${this.name}.${name}` as never,
       form: this.form,
@@ -595,6 +640,7 @@ export class FieldApi<
             return {
               ...prev,
               errorMap: {
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 ...prev?.errorMap,
                 [getErrorMapKey(cause)]: error,
               },

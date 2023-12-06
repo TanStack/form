@@ -1,9 +1,9 @@
 import type { ValidationError as YupError, AnySchema } from 'yup'
 import type { ValidationError, Validator } from '@tanstack/form-core'
 
-export const yupValidator = (<Fn extends AnySchema = AnySchema>() => {
+export const yupValidator = (() => {
   return {
-    validate({ value }: { value: unknown }, fn: Fn): ValidationError {
+    validate({ value }: { value: unknown }, fn: AnySchema): ValidationError {
       try {
         fn.validateSync(value)
         return
@@ -14,7 +14,7 @@ export const yupValidator = (<Fn extends AnySchema = AnySchema>() => {
     },
     async validateAsync(
       { value }: { value: unknown },
-      fn: Fn,
+      fn: AnySchema,
     ): Promise<ValidationError> {
       try {
         await fn.validate(value)

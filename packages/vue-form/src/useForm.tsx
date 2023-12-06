@@ -1,4 +1,9 @@
-import { FormApi, type FormState, type FormOptions } from '@tanstack/form-core'
+import {
+  FormApi,
+  type FormState,
+  type FormOptions,
+  type Validator,
+} from '@tanstack/form-core'
 import { type NoInfer, useStore } from '@tanstack/vue-store'
 import { type UseField, type FieldComponent, Field, useField } from './useField'
 import { provideFormContext } from './formContext'
@@ -13,11 +18,11 @@ import {
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
-  interface FormApi<TFormData, ValidatorType> {
+  interface FormApi<TFormData, TFormValidator> {
     Provider: (props: Record<string, any> & {}) => any
     provideFormContext: () => void
-    Field: FieldComponent<TFormData, ValidatorType>
-    useField: UseField<TFormData, ValidatorType>
+    Field: FieldComponent<TFormData, TFormValidator>
+    useField: UseField<TFormData, TFormValidator>
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
       selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,
     ) => Readonly<Ref<TSelected>>
@@ -33,11 +38,14 @@ declare module '@tanstack/form-core' {
   }
 }
 
-export function useForm<TData, FormValidator>(
-  opts?: FormOptions<TData, FormValidator>,
-): FormApi<TData, FormValidator> {
+export function useForm<
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+>(
+  opts?: FormOptions<TFormData, TFormValidator>,
+): FormApi<TFormData, TFormValidator> {
   const formApi = (() => {
-    const api = new FormApi<TData, FormValidator>(opts)
+    const api = new FormApi<TFormData, TFormValidator>(opts)
 
     api.Provider = defineComponent(
       (_, context) => {

@@ -9,7 +9,7 @@ describe('createFormFactory', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person, unknown>(() => ({
+    const formFactory = createFormFactory<Person>(() => ({
       defaultValues: {
         firstName: 'FirstName',
         lastName: 'LastName',

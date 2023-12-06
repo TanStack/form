@@ -1,14 +1,20 @@
-import type { FormApi } from '@tanstack/form-core'
+import type { FormApi, Validator } from '@tanstack/form-core'
 import { inject, provide } from 'vue'
 
-export type FormContext = {
-  formApi: FormApi<any, unknown>
+export type FormContext<
+  TFormData = any,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+> = {
+  formApi: FormApi<TFormData, TFormValidator>
   parentFieldName?: string
 } | null
 
 export const formContext = Symbol('FormContext')
 
-export function provideFormContext(val: FormContext) {
+export function provideFormContext<
+  TFormData = any,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+>(val: FormContext<TFormData, TFormValidator>) {
   provide(formContext, val)
 }
 

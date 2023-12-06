@@ -259,7 +259,7 @@ describe('form api', () => {
       employees: Partial<Employee>[]
     }
 
-    const form = new FormApi<Form, unknown>()
+    const form = new FormApi<Form>()
 
     const field = new FieldApi({
       form,
@@ -287,7 +287,7 @@ describe('form api', () => {
       employees: Partial<Employee>[]
     }
 
-    const form = new FormApi<Form, unknown>()
+    const form = new FormApi<Form>()
 
     const field = new FieldApi({
       form,

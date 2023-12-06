@@ -100,7 +100,8 @@ describe('zod field api', () => {
       validatorAdapter: zodValidator,
       name: 'name',
       validators: {
-        onChangeAsync: async ({ value }) => (value === 'a' ? 'Test' : undefined),
+        onChangeAsync: async ({ value }) =>
+          value === 'a' ? 'Test' : undefined,
         onChangeAsyncDebounceMs: 0,
       },
     })
