@@ -39,7 +39,7 @@ it('should allow a functional onChange to be passed when using a validator', () 
     defaultValues: {
       name: 'test',
     },
-  })
+  } as const)
 
   const field = new FieldApi({
     form,
@@ -51,7 +51,7 @@ it('should allow a functional onChange to be passed when using a validator', () 
         return undefined
       },
     },
-  } as const)
+  })
 })
 
 it('should not allow a validator onChange to be passed when not using a validator', () => {
@@ -59,14 +59,14 @@ it('should not allow a validator onChange to be passed when not using a validato
     defaultValues: {
       name: 'test',
     },
-  })
+  } as const)
 
   const field = new FieldApi({
     form,
     name: 'name',
     // @ts-expect-error Requires a validator
     onChange: z.string(),
-  } as const)
+  })
 })
 
 // This is not possible without higher-kinded types AFAIK
@@ -75,7 +75,7 @@ it.skip('should allow not a Zod validator with the wrong Zod type', () => {
     defaultValues: {
       name: 'test',
     },
-  })
+  } as const)
 
   const field = new FieldApi({
     form,
@@ -84,5 +84,5 @@ it.skip('should allow not a Zod validator with the wrong Zod type', () => {
     validators: {
       onChange: yup.object({}),
     },
-  } as const)
+  })
 })

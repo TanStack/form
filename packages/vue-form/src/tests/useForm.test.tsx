@@ -22,7 +22,7 @@ type Person = {
 
 describe('useForm', () => {
   it('preserved field state', async () => {
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm()
@@ -57,7 +57,7 @@ describe('useForm', () => {
   })
 
   it('should allow default values to be set', async () => {
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm({
@@ -173,7 +173,7 @@ describe('useForm', () => {
   it('should validate async on change for the form', async () => {
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm({
@@ -222,7 +222,7 @@ describe('useForm', () => {
   it('should not validate on change if isTouched is false', async () => {
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm({
@@ -271,7 +271,7 @@ describe('useForm', () => {
   it('should validate on change if isTouched is true', async () => {
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm({
@@ -382,7 +382,7 @@ describe('useForm', () => {
   it('should validate async on change', async () => {
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm({
@@ -436,7 +436,7 @@ describe('useForm', () => {
     const onChangeError = 'Please enter a different value (onChangeError)'
     const onBlurError = 'Please enter a different value (onBlurError)'
 
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm({
@@ -498,7 +498,7 @@ describe('useForm', () => {
   it('should validate async on change with debounce', async () => {
     const mockFn = vi.fn()
     const error = 'Please enter a different value'
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm({

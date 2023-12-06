@@ -18,7 +18,7 @@ it('should allow a Valibot validator to handle the correct Valibot type', () => 
       name: 'test',
     },
     validatorAdapter: valibotValidator,
-  })
+  } as const)
 
   const field = new FieldApi({
     form,
@@ -26,7 +26,7 @@ it('should allow a Valibot validator to handle the correct Valibot type', () => 
     validators: {
       onChange: string(),
     },
-  } as const)
+  })
 })
 
 it('should allow a Valibot validator to handle the correct Valibot type on async methods', () => {
@@ -35,7 +35,7 @@ it('should allow a Valibot validator to handle the correct Valibot type on async
       name: 'test',
     },
     validatorAdapter: valibotValidator,
-  })
+  } as const)
 
   const field = new FieldApi({
     form,
@@ -43,7 +43,7 @@ it('should allow a Valibot validator to handle the correct Valibot type on async
     validators: {
       onChangeAsync: string(),
     },
-  } as const)
+  })
 })
 
 it('should allow a functional onChange to be passed when using a validator', () => {
@@ -52,7 +52,7 @@ it('should allow a functional onChange to be passed when using a validator', () 
       name: 'test',
     },
     validatorAdapter: valibotValidator,
-  })
+  } as const)
 
   const field = new FieldApi({
     form,
@@ -63,7 +63,7 @@ it('should allow a functional onChange to be passed when using a validator', () 
         return undefined
       },
     },
-  } as const)
+  })
 })
 
 it('should not allow a validator onChange to be passed when not using a validator', () => {
@@ -71,14 +71,14 @@ it('should not allow a validator onChange to be passed when not using a validato
     defaultValues: {
       name: 'test',
     },
-  })
+  } as const)
 
   const field = new FieldApi({
     form,
     name: 'name',
     // @ts-expect-error Requires a validator
     onChange: string(),
-  } as const)
+  })
 })
 
 // This is not possible without higher-kinded types AFAIK
@@ -87,7 +87,7 @@ it.skip('should allow not a Valibot validator with the wrong Valibot type', () =
     defaultValues: {
       name: 'test',
     },
-  })
+  } as const)
 
   const field = new FieldApi({
     form,
@@ -96,5 +96,5 @@ it.skip('should allow not a Valibot validator with the wrong Valibot type', () =
     validators: {
       onChange: object({}),
     },
-  } as const)
+  })
 })

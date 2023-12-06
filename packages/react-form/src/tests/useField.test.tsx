@@ -15,7 +15,7 @@ describe('useField', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     function Comp() {
       const form = formFactory.useForm({
@@ -55,7 +55,7 @@ describe('useField', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     function Comp() {
       const form = formFactory.useForm({
@@ -97,7 +97,7 @@ describe('useField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     function Comp() {
       const form = formFactory.useForm()
@@ -139,7 +139,7 @@ describe('useField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     function Comp() {
       const form = formFactory.useForm()
@@ -184,7 +184,7 @@ describe('useField', () => {
     const onChangeError = 'Please enter a different value (onChangeError)'
     const onBlurError = 'Please enter a different value (onBlurError)'
 
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     function Comp() {
       const form = formFactory.useForm()
@@ -235,7 +235,7 @@ describe('useField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     function Comp() {
       const form = formFactory.useForm()
@@ -284,7 +284,7 @@ describe('useField', () => {
     const onChangeError = 'Please enter a different value (onChangeError)'
     const onBlurError = 'Please enter a different value (onBlurError)'
 
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     function Comp() {
       const form = formFactory.useForm()
@@ -342,7 +342,7 @@ describe('useField', () => {
     }
     const mockFn = vi.fn()
     const error = 'Please enter a different value'
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     function Comp() {
       const form = formFactory.useForm()
@@ -391,8 +391,8 @@ describe('useField', () => {
       firstName: string
       lastName: string
     }
-    const formFactory = createFormFactory<Person, unknown>()
-    let form: FormApi<Person, unknown> | null = null
+    const formFactory = createFormFactory<Person>()
+    let form: FormApi<Person> | null = null
     function Comp() {
       form = formFactory.useForm()
       return (
@@ -429,8 +429,8 @@ describe('useField', () => {
       firstName: string
       lastName: string
     }
-    const formFactory = createFormFactory<Person, unknown>()
-    let form: FormApi<Person, unknown> | null = null
+    const formFactory = createFormFactory<Person>()
+    let form: FormApi<Person> | null = null
     function Comp() {
       form = formFactory.useForm()
       return (

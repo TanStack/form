@@ -1,4 +1,4 @@
-import type { FormOptions, FormState } from '@tanstack/form-core'
+import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import { createComputed, onMount, type JSXElement } from 'solid-js'
 import { useStore } from '@tanstack/solid-store'
@@ -14,9 +14,9 @@ type NoInfer<T> = [T][T extends any ? 0 : never]
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
-  interface FormApi<TFormData, ValidatorType> {
+  interface FormApi<TFormData, TFormValidator> {
     Provider: (props: { children: any }) => any
-    Field: FieldComponent<TFormData, ValidatorType>
+    Field: FieldComponent<TFormData, TFormValidator>
     createField: CreateField<TFormData>
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
       selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,
@@ -28,18 +28,25 @@ declare module '@tanstack/form-core' {
   }
 }
 
-export function createForm<TData, FormValidator>(
-  opts?: () => FormOptions<TData, FormValidator>,
-): FormApi<TData, FormValidator> {
+export function createForm<
+  TParentData,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+>(
+  opts?: () => FormOptions<TParentData, TFormValidator>,
+): FormApi<TParentData, TFormValidator> {
   const options = opts?.()
-  const formApi = new FormApi<TData, FormValidator>(options)
+  const formApi = new FormApi<TParentData, TFormValidator>(options)
 
   formApi.Provider = function Provider(props) {
     onMount(formApi.mount)
-    return <formContext.Provider {...props} value={{ formApi: formApi }} />
+    return (
+      <formContext.Provider {...props} value={{ formApi: formApi as never }} />
+    )
   }
   formApi.Field = Field as any
-  formApi.createField = createField as CreateField<TData>
+  formApi.createField = createField as CreateField<TParentData>
   formApi.useStore = (selector) => useStore(formApi.store, selector)
   formApi.Subscribe = (props) =>
     functionalUpdate(props.children, useStore(formApi.store, props.selector))

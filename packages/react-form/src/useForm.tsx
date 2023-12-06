@@ -1,4 +1,4 @@
-import type { FormState, FormOptions } from '@tanstack/form-core'
+import type { FormState, FormOptions, Validator } from '@tanstack/form-core'
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import type { NoInfer } from '@tanstack/react-store'
 import { useStore } from '@tanstack/react-store'
@@ -9,9 +9,9 @@ import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
-  interface FormApi<TFormData, ValidatorType> {
+  interface FormApi<TFormData, TFormValidator> {
     Provider: (props: { children: any }) => any
-    Field: FieldComponent<TFormData, ValidatorType>
+    Field: FieldComponent<TFormData, TFormValidator>
     useField: UseField<TFormData>
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
       selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,
@@ -23,16 +23,21 @@ declare module '@tanstack/form-core' {
   }
 }
 
-export function useForm<TData, FormValidator>(
-  opts?: FormOptions<TData, FormValidator>,
-): FormApi<TData, FormValidator> {
+export function useForm<
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+>(
+  opts?: FormOptions<TFormData, TFormValidator>,
+): FormApi<TFormData, TFormValidator> {
   const [formApi] = useState(() => {
     // @ts-ignore
-    const api = new FormApi<TData>(opts)
+    const api = new FormApi<TFormData, TFormValidator>(opts)
 
     api.Provider = function Provider(props) {
       useIsomorphicLayoutEffect(api.mount, [])
-      return <formContext.Provider {...props} value={{ formApi: api }} />
+      return (
+        <formContext.Provider {...props} value={{ formApi: api as never }} />
+      )
     }
     api.Field = Field as any
     api.useField = useField as any

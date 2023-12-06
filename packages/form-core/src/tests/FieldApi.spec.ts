@@ -573,7 +573,7 @@ describe('field api', () => {
     interface Form {
       name: string
     }
-    const form = new FormApi<Form, unknown>()
+    const form = new FormApi<Form>()
 
     const field = new FieldApi({
       form,

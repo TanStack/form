@@ -15,7 +15,7 @@ describe('useField', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm()
@@ -54,7 +54,7 @@ describe('useField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm()
@@ -103,7 +103,7 @@ describe('useField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm()
@@ -153,7 +153,7 @@ describe('useField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm()
@@ -209,7 +209,7 @@ describe('useField', () => {
 
     const mockFn = vi.fn()
     const error = 'Please enter a different value'
-    const formFactory = createFormFactory<Person, unknown>()
+    const formFactory = createFormFactory<Person>()
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm()

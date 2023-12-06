@@ -1,4 +1,4 @@
-import { FieldApi } from '@tanstack/form-core'
+import { FieldApi, type Validator } from '@tanstack/form-core'
 import {
   createComponent,
   createComputed,
@@ -18,30 +18,38 @@ declare module '@tanstack/form-core' {
   interface FieldApi<
     TParentData,
     TName extends DeepKeys<TParentData>,
-    ValidatorType,
-    FormValidator,
+    TFieldValidator extends
+      | Validator<DeepValue<TParentData, TName>, unknown>
+      | undefined = undefined,
+    TFormValidator extends
+      | Validator<TParentData, unknown>
+      | undefined = undefined,
     TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   > {
-    Field: FieldComponent<TData, FormValidator>
+    Field: FieldComponent<TData, TFormValidator>
   }
 }
 
 export type CreateField<TParentData> = <
   TName extends DeepKeys<TParentData>,
-  ValidatorType,
-  FormValidator,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
 >(
   opts: () => { name: Narrow<TName> } & CreateFieldOptions<
     TParentData,
     TName,
-    ValidatorType,
-    FormValidator
+    TFieldValidator,
+    TFormValidator
   >,
 ) => () => FieldApi<
   TParentData,
   TName,
-  ValidatorType,
-  FormValidator,
+  TFieldValidator,
+  TFormValidator,
   DeepValue<TParentData, TName>
 >
 
@@ -59,24 +67,20 @@ function makeFieldReactive<FieldApiT extends FieldApi<any, any, any, any>>(
 export function createField<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  ValidatorType,
-  FormValidator,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
 >(
   opts: () => CreateFieldOptions<
     TParentData,
     TName,
-    ValidatorType,
-    FormValidator
+    TFieldValidator,
+    TFormValidator
   >,
-): () => FieldApi<
-  TParentData,
-  TName,
-  ValidatorType,
-  FormValidator
-  // Omit<typeof opts, 'onMount'> & {
-  //   form: FormApi<TParentData>
-  // }
-> {
+): () => FieldApi<TParentData, TName, TFieldValidator, TFormValidator> {
   // Get the form API either manually or from context
   const { formApi, parentFieldName } = useFormContext()
 
@@ -113,16 +117,20 @@ export function createField<
 type FieldComponentProps<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  ValidatorType,
-  FormValidator,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = {
   children: (
     fieldApi: () => FieldApi<
       TParentData,
       TName,
-      ValidatorType,
-      FormValidator,
+      TFieldValidator,
+      TFormValidator,
       TData
     >,
   ) => JSXElement
@@ -136,13 +144,20 @@ type FieldComponentProps<
       index?: never
     }) &
   Omit<
-    CreateFieldOptions<TParentData, TName, ValidatorType, FormValidator>,
+    CreateFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>,
     'name' | 'index'
   >
 
-export type FieldComponent<TParentData, FormValidator> = <
+export type FieldComponent<
+  TParentData,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+> = <
   TName extends DeepKeys<TParentData>,
-  ValidatorType,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 >({
   children,
@@ -150,33 +165,37 @@ export type FieldComponent<TParentData, FormValidator> = <
 }: FieldComponentProps<
   TParentData,
   TName,
-  ValidatorType,
-  FormValidator,
+  TFieldValidator,
+  TFormValidator,
   TData
 >) => JSXElement
 
 export function Field<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  ValidatorType,
-  FormValidator,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
 >(
   props: {
     children: (
       fieldApi: () => FieldApi<
         TParentData,
         TName,
-        ValidatorType,
-        FormValidator
+        TFieldValidator,
+        TFormValidator
       >,
     ) => JSXElement
-  } & CreateFieldOptions<TParentData, TName, ValidatorType, FormValidator>,
+  } & CreateFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>,
 ) {
   const fieldApi = createField<
     TParentData,
     TName,
-    ValidatorType,
-    FormValidator
+    TFieldValidator,
+    TFormValidator
   >(() => {
     const { children, ...fieldOptions } = props
     return fieldOptions
@@ -185,7 +204,7 @@ export function Field<
   return (
     <formContext.Provider
       value={{
-        formApi: fieldApi().form,
+        formApi: fieldApi().form as never,
         parentFieldName: String(fieldApi().name),
       }}
     >

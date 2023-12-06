@@ -14,57 +14,73 @@ import type {
   ValidationErrorMap,
   Validator,
   ValidationCause,
+  ValidationErrorMapKeys,
 } from './types'
-import type { ValidationErrorMapKeys } from './types'
 
-export type FormValidateFn<TData, ValidatorType> = (props: {
-  value: TData
-  formApi: FormApi<TData, ValidatorType>
+export type FormValidateFn<
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+> = (props: {
+  value: TFormData
+  formApi: FormApi<TFormData, TFormValidator>
 }) => ValidationError
 
-export type FormValidateOrFn<TData, ValidatorType> =
-  ValidatorType extends Validator<TData, infer TFN>
-    ? TFN
-    : FormValidateFn<TData, ValidatorType>
+export type FormValidateOrFn<
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+> = TFormValidator extends Validator<TFormData, infer TFN>
+  ? TFN
+  : FormValidateFn<TFormData, TFormValidator>
 
-export type FormValidateAsyncFn<TData, ValidatorType> = (props: {
-  value: TData
-  formApi: FormApi<TData, ValidatorType>
+export type FormValidateAsyncFn<
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+> = (props: {
+  value: TFormData
+  formApi: FormApi<TFormData, TFormValidator>
   signal: AbortSignal
 }) => ValidationError | Promise<ValidationError>
 
-export type FormAsyncValidateOrFn<TData, ValidatorType> =
-  ValidatorType extends Validator<TData, infer FFN>
-    ? FFN | FormValidateAsyncFn<TData, ValidatorType>
-    : FormValidateAsyncFn<TData, ValidatorType>
+export type FormAsyncValidateOrFn<
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+> = TFormValidator extends Validator<TFormData, infer FFN>
+  ? FFN | FormValidateAsyncFn<TFormData, TFormValidator>
+  : FormValidateAsyncFn<TFormData, TFormValidator>
 
-export interface FormValidators<TData, ValidatorType> {
-  onMount?: FormValidateOrFn<TData, ValidatorType>
-  onChange?: FormValidateOrFn<TData, ValidatorType>
-  onChangeAsync?: FormAsyncValidateOrFn<TData, ValidatorType>
+export interface FormValidators<
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+> {
+  onMount?: FormValidateOrFn<TFormData, TFormValidator>
+  onChange?: FormValidateOrFn<TFormData, TFormValidator>
+  onChangeAsync?: FormAsyncValidateOrFn<TFormData, TFormValidator>
   onChangeAsyncDebounceMs?: number
-  onBlur?: FormValidateOrFn<TData, ValidatorType>
-  onBlurAsync?: FormAsyncValidateOrFn<TData, ValidatorType>
+  onBlur?: FormValidateOrFn<TFormData, TFormValidator>
+  onBlurAsync?: FormAsyncValidateOrFn<TFormData, TFormValidator>
   onBlurAsyncDebounceMs?: number
-  onSubmit?: FormValidateOrFn<TData, ValidatorType>
-  onSubmitAsync?: FormAsyncValidateOrFn<TData, ValidatorType>
+  onSubmit?: FormValidateOrFn<TFormData, TFormValidator>
+  onSubmitAsync?: FormAsyncValidateOrFn<TFormData, TFormValidator>
   onSubmitAsyncDebounceMs?: number
 }
 
-export type FormOptions<TData, ValidatorType> = {
-  defaultValues?: TData
-  defaultState?: Partial<FormState<TData>>
+export type FormOptions<
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+> = {
+  defaultValues?: TFormData
+  defaultState?: Partial<FormState<TFormData>>
   asyncAlways?: boolean
   asyncDebounceMs?: number
-  validatorAdapter?: ValidatorType
-  validators?: FormValidators<TData, ValidatorType>
+  validatorAdapter?: TFormValidator
+  validators?: FormValidators<TFormData, TFormValidator>
   onSubmit?: (props: {
-    value: TData
-    formApi: FormApi<TData, ValidatorType>
+    value: TFormData
+    formApi: FormApi<TFormData, TFormValidator>
   }) => any | Promise<any>
   onSubmitInvalid?: (props: {
-    value: TData
-    formApi: FormApi<TData, ValidatorType>
+    value: TFormData
+    formApi: FormApi<TFormData, TFormValidator>
   }) => void
 }
 
@@ -72,13 +88,24 @@ export type ValidationMeta = {
   lastAbortController: AbortController
 }
 
-export type FieldInfo<TFormData, ValidatorType> = {
-  instances: Record<string, FieldApi<TFormData, any, unknown, ValidatorType>>
+export type FieldInfo<
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+> = {
+  instances: Record<
+    string,
+    FieldApi<
+      TFormData,
+      any,
+      Validator<unknown, unknown> | undefined,
+      TFormValidator
+    >
+  >
   validationMetaMap: Record<ValidationErrorMapKeys, ValidationMeta | undefined>
 }
 
-export type FormState<TData> = {
-  values: TData
+export type FormState<TFormData> = {
+  values: TFormData
   // Form Validation
   isFormValidating: boolean
   isFormValid: boolean
@@ -86,7 +113,7 @@ export type FormState<TData> = {
   errorMap: ValidationErrorMap
   validationMetaMap: Record<ValidationErrorMapKeys, ValidationMeta | undefined>
   // Fields
-  fieldMeta: Record<DeepKeys<TData>, FieldMeta>
+  fieldMeta: Record<DeepKeys<TFormData>, FieldMeta>
   isFieldsValidating: boolean
   isFieldsValid: boolean
   isSubmitting: boolean
@@ -99,9 +126,9 @@ export type FormState<TData> = {
   submissionAttempts: number
 }
 
-function getDefaultFormState<TData>(
-  defaultState: Partial<FormState<TData>>,
-): FormState<TData> {
+function getDefaultFormState<TFormData>(
+  defaultState: Partial<FormState<TFormData>>,
+): FormState<TFormData> {
   return {
     values: defaultState.values ?? ({} as never),
     errors: defaultState.errors ?? [],
@@ -127,18 +154,21 @@ function getDefaultFormState<TData>(
   }
 }
 
-export class FormApi<TFormData, ValidatorType> {
+export class FormApi<
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+> {
   // // This carries the context for nested fields
-  options: FormOptions<TFormData, ValidatorType> = {}
+  options: FormOptions<TFormData, TFormValidator> = {}
   store!: Store<FormState<TFormData>>
   // Do not use __state directly, as it is not reactive.
   // Please use form.useStore() utility to subscribe to state
   state!: FormState<TFormData>
-  fieldInfo: Record<DeepKeys<TFormData>, FieldInfo<TFormData, ValidatorType>> =
+  fieldInfo: Record<DeepKeys<TFormData>, FieldInfo<TFormData, TFormValidator>> =
     {} as any
   fieldName?: string
 
-  constructor(opts?: FormOptions<TFormData, ValidatorType>) {
+  constructor(opts?: FormOptions<TFormData, TFormValidator>) {
     this.store = new Store<FormState<TFormData>>(
       getDefaultFormState({
         ...(opts?.defaultState as any),
@@ -217,7 +247,7 @@ export class FormApi<TFormData, ValidatorType> {
     }
   }
 
-  update = (options?: FormOptions<TFormData, ValidatorType>) => {
+  update = (options?: FormOptions<TFormData, TFormValidator>) => {
     if (!options) return
 
     this.store.batch(() => {
@@ -263,7 +293,7 @@ export class FormApi<TFormData, ValidatorType> {
     const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
     this.store.batch(() => {
       void (
-        Object.values(this.fieldInfo) as FieldInfo<any, ValidatorType>[]
+        Object.values(this.fieldInfo) as FieldInfo<any, TFormValidator>[]
       ).forEach((field) => {
         Object.values(field.instances).forEach((instance) => {
           // Validate the field
@@ -432,9 +462,9 @@ export class FormApi<TFormData, ValidatorType> {
         new Promise<ValidationError | undefined>(async (resolve) => {
           let rawError!: ValidationError | undefined
           try {
-            rawError = await new Promise((resolve, reject) => {
+            rawError = await new Promise((rawResolve, rawReject) => {
               setTimeout(() => {
-                if (controller.signal.aborted) return resolve(undefined)
+                if (controller.signal.aborted) return rawResolve(undefined)
                 runValidatorOrAdapter({
                   validateFn: validateObj.validate,
                   value: {
@@ -445,8 +475,8 @@ export class FormApi<TFormData, ValidatorType> {
                   methodName: 'validateAsync',
                   adapters: [this.options.validatorAdapter as never],
                 })
-                  .then(resolve)
-                  .catch(reject)
+                  .then(rawResolve)
+                  .catch(rawReject)
               }, onChangeAsyncDebounceMs)
             })
           } catch (e: unknown) {
@@ -567,7 +597,7 @@ export class FormApi<TFormData, ValidatorType> {
 
   getFieldInfo = <TField extends DeepKeys<TFormData>>(
     field: TField,
-  ): FieldInfo<TFormData, ValidatorType> => {
+  ): FieldInfo<TFormData, TFormValidator> => {
     // eslint-disable-next-line  @typescript-eslint/no-unnecessary-condition
     return (this.fieldInfo[field] ||= {
       instances: {},

@@ -102,7 +102,8 @@ describe('yup field api', () => {
       validatorAdapter: yupValidator,
       name: 'name',
       validators: {
-        onChangeAsync: async ({ value }) => (value === 'a' ? 'Test' : undefined),
+        onChangeAsync: async ({ value }) =>
+          value === 'a' ? 'Test' : undefined,
         onChangeAsyncDebounceMs: 0,
       },
     })

@@ -1,24 +1,19 @@
 import { safeParse, safeParseAsync } from 'valibot'
 import type { BaseSchema, BaseSchemaAsync } from 'valibot'
-import type { ValidationError, Validator } from '@tanstack/form-core'
+import type { Validator } from '@tanstack/form-core'
 
-export const valibotValidator = (<
-  Fn extends BaseSchema | BaseSchemaAsync = BaseSchema | BaseSchemaAsync,
->() => {
+export const valibotValidator = (() => {
   return {
-    validate({ value }: { value: unknown }, fn: Fn): ValidationError {
+    validate({ value }, fn) {
       if (fn.async) return
       const result = safeParse(fn, value)
       if (result.success) return
       return result.issues.map((i) => i.message).join(', ')
     },
-    async validateAsync(
-      { value }: { value: unknown },
-      fn: Fn,
-    ): Promise<ValidationError> {
+    async validateAsync({ value }, fn) {
       const result = await safeParseAsync(fn, value)
       if (result.success) return
       return result.issues.map((i) => i.message).join(', ')
     },
   }
-}) satisfies Validator<unknown>
+}) as Validator<unknown, BaseSchema | BaseSchemaAsync>
