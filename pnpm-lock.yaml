@@ -83,8 +83,8 @@ importers:
         specifier: ^2.3.1
         version: 2.3.2
       '@types/node':
-        specifier: ^17.0.25
-        version: 17.0.45
+        specifier: ^18.15.3
+        version: 18.19.2
       '@types/react':
         specifier: ^18.0.14
         version: 18.0.15
@@ -216,7 +216,7 @@ importers:
         version: 2.3.0
       ts-node:
         specifier: ^10.9.1
-        version: 10.9.1(@types/node@17.0.45)(typescript@5.2.2)
+        version: 10.9.1(@types/node@18.19.2)(typescript@5.2.2)
       tsup:
         specifier: 7.2.0
         version: 7.2.0(patch_hash=gwbgl3s5ycyzg75lofcbklamcy)(ts-node@10.9.1)(typescript@5.2.2)
@@ -268,7 +268,7 @@ importers:
         version: 4.0.4(vite@4.4.9)
       vite:
         specifier: ^4.4.9
-        version: 4.4.9(@types/node@17.0.45)
+        version: 4.4.9(@types/node@18.19.2)
 
   examples/react/valibot:
     dependencies:
@@ -308,7 +308,7 @@ importers:
         version: 4.0.4(vite@4.4.9)
       vite:
         specifier: ^4.4.9
-        version: 4.4.9(@types/node@17.0.45)
+        version: 4.4.9(@types/node@18.19.2)
 
   examples/react/yup:
     dependencies:
@@ -348,7 +348,7 @@ importers:
         version: 4.0.4(vite@4.4.9)
       vite:
         specifier: ^4.4.9
-        version: 4.4.9(@types/node@17.0.45)
+        version: 4.4.9(@types/node@18.19.2)
 
   examples/react/zod:
     dependencies:
@@ -388,7 +388,7 @@ importers:
         version: 4.0.4(vite@4.4.9)
       vite:
         specifier: ^4.4.9
-        version: 4.4.9(@types/node@17.0.45)
+        version: 4.4.9(@types/node@18.19.2)
 
   examples/solid/simple:
     dependencies:
@@ -422,7 +422,7 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^4.4.5
-        version: 4.4.9(@types/node@17.0.45)
+        version: 4.4.9(@types/node@18.19.2)
       vite-plugin-solid:
         specifier: ^2.7.0
         version: 2.7.0(solid-js@1.7.8)(vite@4.4.9)
@@ -462,7 +462,7 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^4.4.5
-        version: 4.4.9(@types/node@17.0.45)
+        version: 4.4.9(@types/node@18.19.2)
       vite-plugin-solid:
         specifier: ^2.7.0
         version: 2.7.0(solid-js@1.7.12)(vite@4.4.9)
@@ -502,7 +502,7 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^4.4.5
-        version: 4.4.9(@types/node@17.0.45)
+        version: 4.4.9(@types/node@18.19.2)
       vite-plugin-solid:
         specifier: ^2.7.0
         version: 2.7.0(solid-js@1.7.8)(vite@4.4.9)
@@ -542,7 +542,7 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^4.4.5
-        version: 4.4.9(@types/node@17.0.45)
+        version: 4.4.9(@types/node@18.19.2)
       vite-plugin-solid:
         specifier: ^2.7.0
         version: 2.7.0(solid-js@1.7.8)(vite@4.4.9)
@@ -582,7 +582,7 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^4.4.9
-        version: 4.4.9(@types/node@17.0.45)
+        version: 4.4.9(@types/node@18.19.2)
       vue-tsc:
         specifier: ^1.8.10
         version: 1.8.10(typescript@5.2.2)
@@ -625,7 +625,7 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^4.4.9
-        version: 4.4.9(@types/node@17.0.45)
+        version: 4.4.9(@types/node@18.19.2)
       vue-tsc:
         specifier: ^1.8.10
         version: 1.8.10(typescript@5.2.2)
@@ -668,7 +668,7 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^4.4.9
-        version: 4.4.9(@types/node@17.0.45)
+        version: 4.4.9(@types/node@18.19.2)
       vue-tsc:
         specifier: ^1.8.10
         version: 1.8.10(typescript@5.2.2)
@@ -711,7 +711,7 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^4.4.9
-        version: 4.4.9(@types/node@17.0.45)
+        version: 4.4.9(@types/node@18.19.2)
       vue-tsc:
         specifier: ^1.8.10
         version: 1.8.10(typescript@5.2.2)
@@ -2519,7 +2519,7 @@ packages:
     dependencies:
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 17.0.45
+      '@types/node': 18.19.2
       jest-mock: 29.7.0
     dev: false
 
@@ -2529,7 +2529,7 @@ packages:
     dependencies:
       '@jest/types': 29.6.3
       '@sinonjs/fake-timers': 10.3.0
-      '@types/node': 17.0.45
+      '@types/node': 18.19.2
       jest-message-util: 29.7.0
       jest-mock: 29.7.0
       jest-util: 29.7.0
@@ -2570,7 +2570,7 @@ packages:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.4
       '@types/istanbul-reports': 3.0.1
-      '@types/node': 17.0.45
+      '@types/node': 18.19.2
       '@types/yargs': 15.0.15
       chalk: 4.1.2
 
@@ -2580,7 +2580,7 @@ packages:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.4
       '@types/istanbul-reports': 3.0.1
-      '@types/node': 17.0.45
+      '@types/node': 18.19.2
       '@types/yargs': 16.0.5
       chalk: 4.1.2
 
@@ -2591,7 +2591,7 @@ packages:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.4
       '@types/istanbul-reports': 3.0.1
-      '@types/node': 17.0.45
+      '@types/node': 18.19.2
       '@types/yargs': 17.0.29
       chalk: 4.1.2
     dev: false
@@ -3360,7 +3360,7 @@ packages:
   /@types/graceful-fs@4.1.6:
     resolution: {integrity: sha512-Sig0SNORX9fdW+bQuTEovKj3uHcUL6LQKbCrrqb1X7J6/ReAbhCXRAhc+SMejhLELFj2QcyuxmUooZ4bt5ReSw==}
     dependencies:
-      '@types/node': 17.0.45
+      '@types/node': 18.19.2
     dev: true
 
   /@types/istanbul-lib-coverage@2.0.4:
@@ -3401,7 +3401,7 @@ packages:
   /@types/jsonfile@6.1.1:
     resolution: {integrity: sha512-GSgiRCVeapDN+3pqA35IkQwasaCh/0YFH5dEF6S88iDvEn901DjOeH3/QPY+XYP1DFzDZPvIvfeEgk+7br5png==}
     dependencies:
-      '@types/node': 17.0.45
+      '@types/node': 18.19.2
     dev: true
 
   /@types/luxon@2.3.2:
@@ -3412,8 +3412,10 @@ packages:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
     dev: true
 
-  /@types/node@17.0.45:
-    resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
+  /@types/node@18.19.2:
+    resolution: {integrity: sha512-6wzfBdbWpe8QykUkXBjtmO3zITA0A3FIjoy+in0Y2K4KrCiRhNYJIdwAPDffZ3G6GnaKaSLSEa9ZuORLfEoiwg==}
+    dependencies:
+      undici-types: 5.26.5
 
   /@types/normalize-package-data@2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
@@ -3460,7 +3462,7 @@ packages:
   /@types/stream-to-array@2.3.1:
     resolution: {integrity: sha512-OqV/DIumEm5pT+m4LYGpDFRRLZ0VJRvrz58C8q8rjLGVgP5gRHxThG8eLZfhmK3GVAq9iq3eSvZ0vkZJ5ZH/Pg==}
     dependencies:
-      '@types/node': 17.0.45
+      '@types/node': 18.19.2
     dev: true
 
   /@types/testing-library__jest-dom@5.14.5(patch_hash=d573maxasnl5kxwdyzebcnmhpm):
@@ -3634,7 +3636,7 @@ packages:
       '@babel/plugin-transform-react-jsx-self': 7.22.5(@babel/core@7.22.10)
       '@babel/plugin-transform-react-jsx-source': 7.22.5(@babel/core@7.22.10)
       react-refresh: 0.14.0
-      vite: 4.4.9(@types/node@17.0.45)
+      vite: 4.4.9(@types/node@18.19.2)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -3646,7 +3648,7 @@ packages:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.4.9(@types/node@17.0.45)
+      vite: 4.4.9(@types/node@18.19.2)
       vue: 3.3.4
     dev: true
 
@@ -6936,7 +6938,7 @@ packages:
       '@jest/environment': 29.7.0
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 17.0.45
+      '@types/node': 18.19.2
       jest-mock: 29.7.0
       jest-util: 29.7.0
     dev: false
@@ -6957,7 +6959,7 @@ packages:
     dependencies:
       '@jest/types': 27.5.1
       '@types/graceful-fs': 4.1.6
-      '@types/node': 17.0.45
+      '@types/node': 18.19.2
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -6991,7 +6993,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 17.0.45
+      '@types/node': 18.19.2
       jest-util: 29.7.0
     dev: false
 
@@ -7003,7 +7005,7 @@ packages:
     resolution: {integrity: sha512-jZCyo6iIxO1aqUxpuBlwTDMkzOAJS4a3eYz3YzgxxVQFwLeSA7Jfq5cbqCY+JLvTDrWirgusI/0KwxKMgrdf7w==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
-      '@types/node': 17.0.45
+      '@types/node': 18.19.2
       graceful-fs: 4.2.11
     dev: true
 
@@ -7012,7 +7014,7 @@ packages:
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
       '@jest/types': 27.5.1
-      '@types/node': 17.0.45
+      '@types/node': 18.19.2
       chalk: 4.1.2
       ci-info: 3.8.0
       graceful-fs: 4.2.11
@@ -7023,7 +7025,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 17.0.45
+      '@types/node': 18.19.2
       chalk: 4.1.2
       ci-info: 3.8.0
       graceful-fs: 4.2.11
@@ -7046,7 +7048,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 17.0.45
+      '@types/node': 18.19.2
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -8588,7 +8590,7 @@ packages:
         optional: true
     dependencies:
       lilconfig: 2.1.0
-      ts-node: 10.9.1(@types/node@17.0.45)(typescript@5.2.2)
+      ts-node: 10.9.1(@types/node@18.19.2)(typescript@5.2.2)
       yaml: 2.3.1
     dev: true
 
@@ -9923,7 +9925,7 @@ packages:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
     dev: true
 
-  /ts-node@10.9.1(@types/node@17.0.45)(typescript@5.2.2):
+  /ts-node@10.9.1(@types/node@18.19.2)(typescript@5.2.2):
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
     peerDependencies:
@@ -9942,7 +9944,7 @@ packages:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
-      '@types/node': 17.0.45
+      '@types/node': 18.19.2
       acorn: 8.10.0
       acorn-walk: 8.2.0
       arg: 4.1.3
@@ -10143,6 +10145,9 @@ packages:
       which-boxed-primitive: 1.0.2
     dev: true
 
+  /undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
+
   /unicode-canonical-property-names-ecmascript@2.0.0:
     resolution: {integrity: sha512-yY5PpDlfVIU5+y/BSCxAJRBIS1Zc2dDG3Ujq+sR0U+JjUevW2JhocOF+soROYDSaAezOzOKuyyixhD6mBknSmQ==}
     engines: {node: '>=4'}
@@ -10264,7 +10269,7 @@ packages:
     engines: {node: '>= 0.8'}
     dev: false
 
-  /vite-node@0.34.3(@types/node@17.0.45):
+  /vite-node@0.34.3(@types/node@18.19.2):
     resolution: {integrity: sha512-+0TzJf1g0tYXj6tR2vEyiA42OPq68QkRZCu/ERSo2PtsDJfBpDyEfuKbRvLmZqi/CgC7SCBtyC+WjTGNMRIaig==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
@@ -10274,7 +10279,7 @@ packages:
       mlly: 1.4.1
       pathe: 1.1.1
       picocolors: 1.0.0
-      vite: 4.4.9(@types/node@17.0.45)
+      vite: 4.4.9(@types/node@18.19.2)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -10299,7 +10304,7 @@ packages:
       merge-anything: 5.1.7
       solid-js: 1.7.12
       solid-refresh: 0.5.3(solid-js@1.7.12)
-      vite: 4.4.9(@types/node@17.0.45)
+      vite: 4.4.9(@types/node@18.19.2)
       vitefu: 0.2.4(vite@4.4.9)
     transitivePeerDependencies:
       - supports-color
@@ -10318,13 +10323,13 @@ packages:
       merge-anything: 5.1.7
       solid-js: 1.7.8
       solid-refresh: 0.5.3(solid-js@1.7.8)
-      vite: 4.4.9(@types/node@17.0.45)
+      vite: 4.4.9(@types/node@18.19.2)
       vitefu: 0.2.4(vite@4.4.9)
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /vite@4.4.9(@types/node@17.0.45):
+  /vite@4.4.9(@types/node@18.19.2):
     resolution: {integrity: sha512-2mbUn2LlUmNASWwSCNSJ/EG2HuSRTnVNaydp6vMCm5VIqJsjMfbIWtbH2kDuwUVW5mMUKKZvGPX/rqeqVvv1XA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -10352,7 +10357,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 17.0.45
+      '@types/node': 18.19.2
       esbuild: 0.18.20
       postcss: 8.4.28
       rollup: 3.28.1
@@ -10368,7 +10373,7 @@ packages:
       vite:
         optional: true
     dependencies:
-      vite: 4.4.9(@types/node@17.0.45)
+      vite: 4.4.9(@types/node@18.19.2)
     dev: true
 
   /vitest@0.34.3(jsdom@22.0.0):
@@ -10404,7 +10409,7 @@ packages:
     dependencies:
       '@types/chai': 4.3.5
       '@types/chai-subset': 1.3.3
-      '@types/node': 17.0.45
+      '@types/node': 18.19.2
       '@vitest/expect': 0.34.3
       '@vitest/runner': 0.34.3
       '@vitest/snapshot': 0.34.3
@@ -10424,8 +10429,8 @@ packages:
       strip-literal: 1.3.0
       tinybench: 2.5.0
       tinypool: 0.7.0
-      vite: 4.4.9(@types/node@17.0.45)
-      vite-node: 0.34.3(@types/node@17.0.45)
+      vite: 4.4.9(@types/node@18.19.2)
+      vite-node: 0.34.3(@types/node@18.19.2)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less
