@@ -19,7 +19,7 @@ declare module '@tanstack/form-core' {
       | undefined = undefined,
     TData = DeepValue<TParentData, TName>,
   > {
-    Field: FieldComponent<TData, TFormValidator>
+    Field: FieldComponent<TParentData, TFormValidator>
   }
 }
 

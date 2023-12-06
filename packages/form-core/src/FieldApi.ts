@@ -463,7 +463,13 @@ export class FieldApi<
     TSubData extends DeepValue<TData, TSubName> = DeepValue<TData, TSubName>,
   >(
     name: TSubName,
-  ): FieldApi<TData, TSubName, TFieldValidator, TSubData> =>
+  ): FieldApi<
+    TData,
+    TSubName,
+    Validator<TSubData, unknown> | undefined,
+    Validator<TData, unknown> | undefined,
+    TSubData
+  > =>
     new FieldApi({
       name: `${this.name}.${name}` as never,
       form: this.form,
