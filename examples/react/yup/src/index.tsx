@@ -5,7 +5,7 @@ import { yupValidator } from "@tanstack/yup-form-adapter";
 import * as yup from "yup";
 import type { FieldApi } from "@tanstack/react-form";
 
-function FieldInfo({ field }: { field: FieldApi<any, any, unknown, unknown> }) {
+function FieldInfo({ field }: { field: FieldApi<any, any> }) {
   return (
     <>
       {field.state.meta.touchedErrors ? (

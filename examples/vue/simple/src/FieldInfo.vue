@@ -2,7 +2,7 @@
 import { FieldApi } from '@tanstack/vue-form'
 
 const props = defineProps<{
-  state: FieldApi<any, any, unknown, unknown>['state']
+  state: FieldApi<any, any>['state']
 }>()
 </script>
 

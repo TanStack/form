@@ -6,7 +6,7 @@ import { yupValidator } from '@tanstack/yup-form-adapter'
 import * as yup from 'yup'
 
 interface FieldInfoProps {
-  field: FieldApi<any, any, unknown, unknown>
+  field: FieldApi<any, any>
 }
 
 function FieldInfo(props: FieldInfoProps) {
