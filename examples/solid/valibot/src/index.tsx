@@ -6,7 +6,7 @@ import { valibotValidator } from '@tanstack/valibot-form-adapter'
 import { customAsync, minLength, string, stringAsync } from 'valibot'
 
 interface FieldInfoProps {
-  field: FieldApi<any, any, unknown, unknown>
+  field: FieldApi<any, any>
 }
 
 function FieldInfo(props: FieldInfoProps) {
