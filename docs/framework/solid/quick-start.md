@@ -13,9 +13,9 @@ function App() {
     defaultValues: {
       fullName: '',
     },
-    onSubmit: async (values) => {
+    onSubmit: async ({ value }) => {
       // Do something with form data
-      console.log(values)
+      console.log(value)
     },
   }))
 

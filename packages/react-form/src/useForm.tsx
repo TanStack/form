@@ -2,7 +2,7 @@ import type { FormState, FormOptions, Validator } from '@tanstack/form-core'
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import type { NoInfer } from '@tanstack/react-store'
 import { useStore } from '@tanstack/react-store'
-import React, { type ReactNode, useState } from 'react'
+import React, { type PropsWithChildren, type ReactNode, useState } from 'react'
 import { type UseField, type FieldComponent, Field, useField } from './useField'
 import { formContext } from './formContext'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
@@ -10,7 +10,7 @@ import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
   interface FormApi<TFormData, TFormValidator> {
-    Provider: (props: { children: any }) => any
+    Provider: (props: PropsWithChildren) => JSX.Element
     Field: FieldComponent<TFormData, TFormValidator>
     useField: UseField<TFormData>
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
@@ -19,7 +19,7 @@ declare module '@tanstack/form-core' {
     Subscribe: <TSelected = NoInfer<FormState<TFormData>>>(props: {
       selector?: (state: NoInfer<FormState<TFormData>>) => TSelected
       children: ((state: NoInfer<TSelected>) => ReactNode) | ReactNode
-    }) => any
+    }) => JSX.Element
   }
 }
 
