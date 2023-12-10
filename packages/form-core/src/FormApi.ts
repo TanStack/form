@@ -159,15 +159,14 @@ export class FormApi<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > {
-  // // This carries the context for nested fields
   options: FormOptions<TFormData, TFormValidator> = {}
   store!: Store<FormState<TFormData>>
   // Do not use __state directly, as it is not reactive.
   // Please use form.useStore() utility to subscribe to state
   state!: FormState<TFormData>
+  // // This carries the context for nested fields
   fieldInfo: Record<DeepKeys<TFormData>, FieldInfo<TFormData, TFormValidator>> =
     {} as any
-  fieldName?: string
 
   constructor(opts?: FormOptions<TFormData, TFormValidator>) {
     this.store = new Store<FormState<TFormData>>(
@@ -327,7 +326,8 @@ export class FormApi<
       })
     })
 
-    return Promise.all(fieldValidationPromises)
+    const fieldErrorMapMap = await Promise.all(fieldValidationPromises)
+    return fieldErrorMapMap.flat()
   }
 
   // TODO: This code is copied from FieldApi, we should refactor to share

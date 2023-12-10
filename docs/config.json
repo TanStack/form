@@ -49,6 +49,10 @@
         {
           "label": "FieldApi",
           "to": "reference/fieldApi"
+        },
+        {
+          "label": "Types",
+          "to": "reference/types"
         }
       ]
     }
