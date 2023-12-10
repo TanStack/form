@@ -11,7 +11,7 @@ Normally, you will not need to create a new `FieldApi` instance directly. Instea
 const fieldApi: FieldApi<TData> = new FieldApi(formOptions: Field Options<TData>)
 ```
 
-### `FieldOptions<TParentData, TName, ValidatorType, FormValidator, TData>`
+### `FieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>`
 
 An object type representing the options for a field in a form.
 
@@ -44,10 +44,24 @@ An object type representing the options for a field in a form.
   - If `true`, always run async validation, even if there are errors emitted during synchronous validation.
 
 - ```typescript
-  validator?: ValidatorType
+  validatorAdapter?: ValidatorType
   ```
 
   - A validator provided by an extension, like `yupValidator` from `@tanstack/yup-form-adapter`
+
+
+- ```tsx
+  validators?: FieldValidators<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData
+  >
+  ```
+  - A list of validators to pass to the field
+
+### `FieldValidators<TParentData, TName, TFieldValidator, TFormValidator, TData>`
 
 - ```tsx
   onMount?: (formApi: FieldApi<TData, TParentData>) => void
@@ -93,19 +107,28 @@ An object type representing the options for a field in a form.
   - An optional number to represent how long the `onBlurAsyncDebounceMs` should wait before running
   - If set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds
 
-  ```tsx
-  onSubmitAsync?: number
-  ```
-
-  - If set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds. If `validator` is passed, this may also accept a property from the respective validator (IE: `z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })` if `zodAdapter` is passed)
-
-### `ValidationCause`
-
-A type representing the cause of a validation event.
 
 - ```tsx
-  'change' | 'blur' | 'submit' | 'mount'
+  onSubmit?: ValidateFn<TData, TParentData>
   ```
+
+  - An optional function, when that run when subscribing to submit event of input. If `validator` is passed, this may also accept a property from the respective validator (IE: `z.string().min(1)` if `zodAdapter` is passed)
+
+- ```tsx
+  onSubmitAsync?: ValidateAsyncFn<TData, TParentData>
+  ```
+
+  - An optional function that takes a `ValidateFn` which is a generic of `TData` and `TParentData` happens async. If `validator` is passed, this may also accept a property from the respective validator (IE: `z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })` if `zodAdapter` is passed)
+
+  ```tsx
+  onSubmitAsyncDebounceMs?: number
+  ```
+
+  - An optional number to represent how long the `onSubmitAsyncDebounceMs` should wait before running
+  - If set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds
+
+
+
 
 ### `FieldMeta`
 
@@ -138,7 +161,7 @@ An object type representing the required options for the `FieldApi` class.
 
 - Inherits from `FieldOptions<TData, TParentData>` with the `form` property set as required.
 
-### `FieldApi<TData, TParentData>`
+### `FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>`
 
 A class representing the API for managing a form field.
 
