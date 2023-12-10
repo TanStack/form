@@ -145,29 +145,6 @@ export function isNonEmptyArray(obj: any) {
   return !(Array.isArray(obj) && obj.length === 0)
 }
 
-export function runValidatorOrAdapter<
-  TData,
-  M extends 'validate' | 'validateAsync',
->(props: {
-  validateFn: unknown
-  // Order matters, first is run first
-  adapters: Array<Validator<any> | undefined>
-  value: any
-  methodName: M
-}): ReturnType<ReturnType<Validator<TData>>[M]> {
-  for (const adapter of props.adapters) {
-    if (adapter && typeof props.validateFn !== 'function') {
-      return (adapter as Validator<TData>)()[props.methodName](
-        props.value,
-        props.validateFn,
-      ) as never
-    }
-  }
-
-  const validateFn: (...vals: any[]) => any = props.validateFn as never
-  return validateFn(props.value) as never
-}
-
 interface AsyncValidatorArrayPartialOptions<T> {
   validators?: T
   asyncDebounceMs?: number
