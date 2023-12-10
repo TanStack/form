@@ -6,7 +6,13 @@ import type {
   ValidationErrorMap,
   Validator,
 } from './types'
-import type { DeepKeys, DeepValue, Updater } from './utils'
+import {
+  DeepKeys,
+  DeepValue,
+  getAsyncValidatorArray,
+  getSyncValidatorArray,
+  Updater,
+} from './utils'
 import { runValidatorOrAdapter } from './utils'
 
 export type FieldValidateFn<
@@ -476,19 +482,7 @@ export class FieldApi<
     }) as any
 
   validateSync = (value = this.state.value, cause: ValidationCause) => {
-    const { onChange, onBlur, onSubmit } = this.options.validators || {}
-
-    const validates =
-      // https://github.com/TanStack/form/issues/490
-      cause === 'submit'
-        ? ([
-            { cause: 'change', validate: onChange },
-            { cause: 'blur', validate: onBlur },
-            { cause: 'submit', validate: onSubmit },
-          ] as const)
-        : cause === 'change'
-        ? ([{ cause: 'change', validate: onChange }] as const)
-        : ([{ cause: 'blur', validate: onBlur }] as const)
+    const validates = getSyncValidatorArray(cause, this.options)
 
     // Needs type cast as eslint errantly believes this is always falsy
     let hasErrored = false as boolean
@@ -546,53 +540,7 @@ export class FieldApi<
   }
 
   validateAsync = async (value = this.state.value, cause: ValidationCause) => {
-    const { asyncDebounceMs } = this.options
-    const {
-      onChangeAsync,
-      onBlurAsync,
-      onSubmitAsync,
-      onBlurAsyncDebounceMs,
-      onChangeAsyncDebounceMs,
-      onSubmitAsyncDebounceMs,
-    } = this.options.validators || {}
-
-    const defaultDebounceMs = asyncDebounceMs ?? 0
-
-    const validates =
-      // https://github.com/TanStack/form/issues/490
-      cause === 'submit'
-        ? ([
-            {
-              cause: 'change',
-              validate: onChangeAsync,
-              debounceMs: onChangeAsyncDebounceMs ?? defaultDebounceMs,
-            },
-            {
-              cause: 'blur',
-              validate: onBlurAsync,
-              debounceMs: onBlurAsyncDebounceMs ?? defaultDebounceMs,
-            },
-            {
-              cause: 'submit',
-              validate: onSubmitAsync,
-              debounceMs: onSubmitAsyncDebounceMs ?? defaultDebounceMs,
-            },
-          ] as const)
-        : cause === 'change'
-        ? ([
-            {
-              cause: 'change',
-              validate: onChangeAsync,
-              debounceMs: onChangeAsyncDebounceMs ?? defaultDebounceMs,
-            },
-          ] as const)
-        : ([
-            {
-              cause: 'blur',
-              validate: onBlurAsync,
-              debounceMs: onBlurAsyncDebounceMs ?? defaultDebounceMs,
-            },
-          ] as const)
+    const validates = getAsyncValidatorArray(cause, this.options)
 
     if (!this.state.meta.isValidating) {
       this.setMeta((prev) => ({ ...prev, isValidating: true }))
@@ -636,7 +584,7 @@ export class FieldApi<
                 })
                   .then(rawResolve)
                   .catch(rawReject)
-              }, onChangeAsyncDebounceMs)
+              }, validateObj.debounceMs)
             })
           } catch (e: unknown) {
             rawError = e as ValidationError
