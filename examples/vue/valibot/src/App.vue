@@ -38,6 +38,9 @@ const onChangeFirstName = stringAsync([
     "
   >
     <div>
+      <!-- Ignore errors in form.Field temporary due to a bug in Vue:-->
+      <!-- https://github.com/vuejs/language-tools/issues/3782 -->
+      <!-- @vue-ignore -->
       <form.Field
         name="firstName"
         :validators="{
