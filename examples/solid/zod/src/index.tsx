@@ -6,7 +6,7 @@ import { zodValidator } from '@tanstack/zod-form-adapter'
 import { z } from 'zod'
 
 interface FieldInfoProps {
-  field: FieldApi<any, any>
+  field: FieldApi<any, any, any, any>
 }
 
 function FieldInfo(props: FieldInfoProps) {
