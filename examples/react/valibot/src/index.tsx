@@ -5,7 +5,7 @@ import { valibotValidator } from "@tanstack/valibot-form-adapter";
 import { customAsync, minLength, string, stringAsync } from "valibot";
 import type { FieldApi } from "@tanstack/react-form";
 
-function FieldInfo({ field }: { field: FieldApi<any, any> }) {
+function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
   return (
     <>
       {field.state.meta.touchedErrors ? (

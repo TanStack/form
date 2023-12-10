@@ -4,7 +4,7 @@ import { render } from 'solid-js/web'
 import { createForm, type FieldApi } from '@tanstack/solid-form'
 
 interface FieldInfoProps {
-  field: FieldApi<any, any>
+  field: FieldApi<any, any, any, any>
 }
 
 function FieldInfo(props: FieldInfoProps) {
