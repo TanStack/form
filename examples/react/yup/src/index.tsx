@@ -57,7 +57,7 @@ export default function App() {
                     "No 'error' allowed in first name",
                     async (value) => {
                       await new Promise((resolve) => setTimeout(resolve, 1000));
-                      return !value.includes("error");
+                      return !value?.includes("error");
                     },
                   ),
               }}

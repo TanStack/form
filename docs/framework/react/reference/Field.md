@@ -3,22 +3,31 @@ id: field
 title: Field
 ---
 
-### `FieldComponent<TParentData>`
+### `FieldComponent<TParentData, TFormValidator>`
 
 A type alias representing a field component for a specific form data type.
 
 ```tsx
-export type FieldComponent = <TField extends DeepKeys<TParentData>>({
+export type FieldComponent<
+  TParentData,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+> = <
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+>({
   children,
   ...fieldOptions
-}: {
-  children: (
-    fieldApi: FieldApi<DeepValue<TParentData, TField>, TParentData>,
-  ) => any
-  name: TField
-} & Omit<
-  FieldOptions<DeepValue<TParentData, TField>, TParentData>,
-  'name'
+}: FieldComponentProps<
+  TParentData,
+  TName,
+  TFieldValidator,
+  TFormValidator,
+  TData
 >) => any
 ```
 
@@ -27,39 +36,35 @@ A function component that takes field options and a render function as children 
 ### `Field`
 
 ```tsx
-export function Field<TData, TParentData>({
+export function Field<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+>({
   children,
   ...fieldOptions
-}: { children: (fieldApi: FieldApi<TData, TParentData>) => any } & FieldOptions<
-  TData,
-  TParentData
->): any
+}: {
+  children: (
+    fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator>,
+  ) => any
+} & UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>): JSX.Element
 ```
 
 A functional React component that renders a form field.
 
 - ```tsx
-  children: (fieldApi: FieldApi<TData, TParentData>) => any
+  children: (fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator>) => any
   ```
   - A render function that takes a field API instance and returns a React element.
 - ```tsx
-  fieldOptions: FieldOptions<TData, TParentData>
+  fieldOptions: UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>
   ```
   - The field options.
 
 The `Field` component uses the `useField` hook internally to manage the field instance.
 
-### `createFieldComponent`
-
-```tsx
-export function createFieldComponent<TParentData>(
-  formApi: FormApi<TParentData>,
-): FieldComponent<TParentData>
-```
-
-A factory function that creates a connected field component for a specific form API instance.
-
-- ```tsx
-  formApi: FormApi<TParentData>
-  ```
-  - The form API instance to connect the field component to.
