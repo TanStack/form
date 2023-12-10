@@ -142,7 +142,44 @@ Or use the `errorMap` property to access the specific error you're looking for:
 
 As shown above, each `<Field>` accepts its own validation rules via the `onChange`, `onBlur` etc... callbacks. It is also possible to define validation rules at the form level (as opposed to field by field) by passing similar callbacks to the `useForm()` hook.
 
-{/* TODO: add more details when those callbacks are fixed */}
+Example:
+
+```tsx
+export default function App() {
+  const form = useForm({
+    defaultValues: {
+      age: 0,
+    },
+    onSubmit: async ({ value }) => {
+      console.log(value);
+    },
+    validators: {
+      // Add validators to the form the same way you would add them to a field
+      onChange({ value }) {
+        if (value.age < 13) {
+          return "Must be 13 or older to sign";
+        }
+      },
+    },
+  });
+
+  // Subscribe to the form's error map so that updates to it will render
+  // alternately, you can use `form.Subscribe`
+  const formErrorMap = form.useStore((state) => state.errorMap);
+
+  return (
+    <div>
+      {/* ... */}
+      {formErrorMap.onChange ? (
+        <div>
+          <em>There was an error on the form: {formErrorMap.onChange}</em>
+        </div>
+      ) : null}
+      {/* ... */}
+  	</div>
+  );
+}
+```
 
 
 ## Asynchronous Functional Validation
