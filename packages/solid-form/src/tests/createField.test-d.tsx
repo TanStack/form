@@ -1,3 +1,4 @@
+/// <reference lib="dom" />
 import { assertType } from 'vitest'
 import { createForm } from '../createForm'
 
@@ -19,12 +20,14 @@ it('should type state.value properly', () => {
           name="firstName"
           children={(field) => {
             assertType<'test'>(field().state.value)
+            return null
           }}
         />
         <form.Field
           name="age"
           children={(field) => {
             assertType<84>(field().state.value)
+            return null
           }}
         />
       </form.Provider>

@@ -682,6 +682,7 @@ describe('field api', () => {
   })
 
   it('should cancel previous functions from an async validator with an abort signal', async () => {
+    vi.useRealTimers()
     const form = new FormApi({
       defaultValues: {
         firstName: '',
@@ -689,7 +690,7 @@ describe('field api', () => {
     })
 
     let resolve!: () => void
-    let promise = new Promise((r) => {
+    const promise = new Promise((r) => {
       resolve = r as never
     })
 

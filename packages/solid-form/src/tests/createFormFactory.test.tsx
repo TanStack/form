@@ -1,3 +1,4 @@
+/// <reference lib="dom" />
 import { render } from '@solidjs/testing-library'
 import '@testing-library/jest-dom'
 import { createFormFactory } from '..'

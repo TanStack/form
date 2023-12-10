@@ -6,13 +6,8 @@ import type {
   ValidationErrorMap,
   Validator,
 } from './types'
-import {
-  DeepKeys,
-  DeepValue,
-  getAsyncValidatorArray,
-  getSyncValidatorArray,
-  Updater,
-} from './utils'
+import type { DeepKeys, DeepValue, Updater } from './utils'
+import { getAsyncValidatorArray, getSyncValidatorArray } from './utils'
 
 export type FieldValidateFn<
   TParentData,
