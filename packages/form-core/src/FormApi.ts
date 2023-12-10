@@ -1,12 +1,8 @@
 import { Store } from '@tanstack/store'
+import type { DeepKeys, DeepValue, Updater } from './utils'
 import {
-  DeepKeys,
-  DeepValue,
   getAsyncValidatorArray,
   getSyncValidatorArray,
-  Updater,
-} from './utils'
-import {
   deleteBy,
   functionalUpdate,
   getBy,

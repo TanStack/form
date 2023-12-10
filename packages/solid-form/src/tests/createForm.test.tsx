@@ -1,3 +1,4 @@
+/// <reference lib="dom" />
 import { render, screen, waitFor } from '@solidjs/testing-library'
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
@@ -169,6 +170,8 @@ describe('createForm', () => {
         },
       }))
 
+      const errors = form.useStore((s) => s.errors)
+
       return (
         <form.Provider>
           <form.Field
@@ -182,7 +185,7 @@ describe('createForm', () => {
                   onBlur={field().handleBlur}
                   onInput={(e) => field().setValue(e.currentTarget.value)}
                 />
-                <p>{form.useStore((s) => s.errors)}</p>
+                <p>{errors().join(',')}</p>
               </div>
             )}
           />
@@ -299,7 +302,6 @@ describe('createForm', () => {
     expect(queryByText(onBlurError)).not.toBeInTheDocument()
     await user.type(input, 'other')
     expect(getByText(onChangeError)).toBeInTheDocument()
-    // @ts-expect-error unsure why the 'vitest/globals' in tsconfig doesnt work here
     await user.click(document.body)
     expect(queryByText(onBlurError)).toBeInTheDocument()
   })
@@ -414,7 +416,6 @@ describe('createForm', () => {
     await user.type(input, 'other')
     await waitFor(() => getByText(onChangeError))
     expect(getByText(onChangeError)).toBeInTheDocument()
-    // @ts-expect-error unsure why the 'vitest/globals' in tsconfig doesnt work here
     await user.click(document.body)
     await waitFor(() => getByText(onBlurError))
     expect(getByText(onBlurError)).toBeInTheDocument()

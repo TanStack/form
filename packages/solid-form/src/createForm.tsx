@@ -15,7 +15,7 @@ type NoInfer<T> = [T][T extends any ? 0 : never]
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
   interface FormApi<TFormData, TFormValidator> {
-    Provider: (props: { children: any }) => any
+    Provider: (props: { children: any }) => JSXElement
     Field: FieldComponent<TFormData, TFormValidator>
     createField: CreateField<TFormData>
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
@@ -24,7 +24,7 @@ declare module '@tanstack/form-core' {
     Subscribe: <TSelected = NoInfer<FormState<TFormData>>>(props: {
       selector?: (state: NoInfer<FormState<TFormData>>) => TSelected
       children: ((state: () => NoInfer<TSelected>) => JSXElement) | JSXElement
-    }) => any
+    }) => JSXElement
   }
 }
 

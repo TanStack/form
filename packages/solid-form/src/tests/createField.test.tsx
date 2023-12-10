@@ -1,3 +1,4 @@
+/// <reference lib="dom" />
 import { render, waitFor } from '@solidjs/testing-library'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
@@ -79,7 +80,7 @@ describe('createField', () => {
       )
     }
 
-    const { getByTestId } = render(<Comp />)
+    const { getByTestId } = render(() => <Comp />)
     const input = getByTestId('fieldinput')
     expect(input).toHaveValue('otherName')
   })
@@ -222,7 +223,6 @@ describe('createField', () => {
     expect(queryByText(onBlurError)).not.toBeInTheDocument()
     await user.type(input, 'other')
     expect(getByText(onChangeError)).toBeInTheDocument()
-    // @ts-expect-error unsure why the 'vitest/globals' in tsconfig doesnt work here
     await user.click(document.body)
     expect(queryByText(onBlurError)).toBeInTheDocument()
   })
@@ -329,7 +329,6 @@ describe('createField', () => {
     await user.type(input, 'other')
     await waitFor(() => getByText(onChangeError))
     expect(getByText(onChangeError)).toBeInTheDocument()
-    // @ts-expect-error unsure why the 'vitest/globals' in tsconfig doesnt work here
     await user.click(document.body)
     await waitFor(() => getByText(onBlurError))
     expect(getByText(onBlurError)).toBeInTheDocument()
