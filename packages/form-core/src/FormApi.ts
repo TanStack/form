@@ -1,5 +1,11 @@
 import { Store } from '@tanstack/store'
-import type { DeepKeys, DeepValue, Updater } from './utils'
+import {
+  DeepKeys,
+  DeepValue,
+  getAsyncValidatorArray,
+  getSyncValidatorArray,
+  Updater,
+} from './utils'
 import {
   deleteBy,
   functionalUpdate,
@@ -314,20 +320,7 @@ export class FormApi<
 
   // TODO: This code is copied from FieldApi, we should refactor to share
   validateSync = (cause: ValidationCause) => {
-    const { onChange, onBlur, onSubmit } = this.options.validators || {}
-
-    const validates =
-      // https://github.com/TanStack/form/issues/490
-      cause === 'submit'
-        ? ([
-            { cause: 'change', validate: onChange },
-            { cause: 'blur', validate: onBlur },
-            { cause: 'submit', validate: onSubmit },
-          ] as const)
-        : cause === 'change'
-        ? ([{ cause: 'change', validate: onChange }] as const)
-        : ([{ cause: 'blur', validate: onBlur }] as const)
-
+    const validates = getSyncValidatorArray(cause, this.options)
     let hasErrored = false as boolean
 
     this.store.batch(() => {
@@ -386,53 +379,7 @@ export class FormApi<
   validateAsync = async (
     cause: ValidationCause,
   ): Promise<ValidationError[]> => {
-    const { asyncDebounceMs } = this.options
-    const {
-      onChangeAsync,
-      onBlurAsync,
-      onSubmitAsync,
-      onBlurAsyncDebounceMs,
-      onChangeAsyncDebounceMs,
-      onSubmitAsyncDebounceMs,
-    } = this.options.validators || {}
-
-    const defaultDebounceMs = asyncDebounceMs ?? 0
-
-    const validates =
-      // https://github.com/TanStack/form/issues/490
-      cause === 'submit'
-        ? ([
-            {
-              cause: 'change',
-              validate: onChangeAsync,
-              debounceMs: onChangeAsyncDebounceMs ?? defaultDebounceMs,
-            },
-            {
-              cause: 'blur',
-              validate: onBlurAsync,
-              debounceMs: onBlurAsyncDebounceMs ?? defaultDebounceMs,
-            },
-            {
-              cause: 'submit',
-              validate: onSubmitAsync,
-              debounceMs: onSubmitAsyncDebounceMs ?? defaultDebounceMs,
-            },
-          ] as const)
-        : cause === 'change'
-        ? ([
-            {
-              cause: 'change',
-              validate: onChangeAsync,
-              debounceMs: onChangeAsyncDebounceMs ?? defaultDebounceMs,
-            },
-          ] as const)
-        : ([
-            {
-              cause: 'blur',
-              validate: onBlurAsync,
-              debounceMs: onBlurAsyncDebounceMs ?? defaultDebounceMs,
-            },
-          ] as const)
+    const validates = getAsyncValidatorArray(cause, this.options)
 
     if (!this.state.isFormValidating) {
       this.store.setState((prev) => ({ ...prev, isFormValidating: true }))
@@ -477,7 +424,7 @@ export class FormApi<
                 })
                   .then(rawResolve)
                   .catch(rawReject)
-              }, onChangeAsyncDebounceMs)
+              }, validateObj.debounceMs)
             })
           } catch (e: unknown) {
             rawError = e as ValidationError

@@ -1,4 +1,6 @@
-import type { Validator } from './types'
+import type { ValidationCause, Validator } from './types'
+import type { FormValidators } from './FormApi'
+import type { FieldValidators } from './FieldApi'
 
 export type UpdaterFn<TInput, TOutput = TInput> = (input: TInput) => TOutput
 
@@ -164,6 +166,108 @@ export function runValidatorOrAdapter<
 
   const validateFn: (...vals: any[]) => any = props.validateFn as never
   return validateFn(props.value) as never
+}
+
+interface AsyncValidatorArrayPartialOptions<T> {
+  validators?: T
+  asyncDebounceMs?: number
+}
+
+interface AsyncValidator<T> {
+  cause: ValidationCause
+  validate: T
+  debounceMs: number
+}
+
+export function getAsyncValidatorArray<T>(
+  cause: ValidationCause,
+  options: AsyncValidatorArrayPartialOptions<T>,
+): T extends FieldValidators<any, any>
+  ? Array<
+      AsyncValidator<T['onChangeAsync'] | T['onBlurAsync'] | T['onSubmitAsync']>
+    >
+  : T extends FormValidators<any, any>
+  ? Array<
+      AsyncValidator<T['onChangeAsync'] | T['onBlurAsync'] | T['onSubmitAsync']>
+    >
+  : never {
+  const { asyncDebounceMs } = options
+  const {
+    onChangeAsync,
+    onBlurAsync,
+    onSubmitAsync,
+    onBlurAsyncDebounceMs,
+    onChangeAsyncDebounceMs,
+    onSubmitAsyncDebounceMs,
+  } = (options.validators || {}) as
+    | FieldValidators<any, any>
+    | FormValidators<any, any>
+
+  const defaultDebounceMs = asyncDebounceMs ?? 0
+
+  const changeValidator = {
+    cause: 'change',
+    validate: onChangeAsync,
+    debounceMs: onChangeAsyncDebounceMs ?? defaultDebounceMs,
+  } as const
+
+  const blurValidator = {
+    cause: 'blur',
+    validate: onBlurAsync,
+    debounceMs: onBlurAsyncDebounceMs ?? defaultDebounceMs,
+  } as const
+
+  const submitValidator = {
+    cause: 'submit',
+    validate: onSubmitAsync,
+    debounceMs: onSubmitAsyncDebounceMs ?? defaultDebounceMs,
+  } as const
+
+  switch (cause) {
+    case 'submit':
+      return [changeValidator, blurValidator, submitValidator] as never
+    case 'blur':
+      return [blurValidator] as never
+    case 'change':
+    default:
+      return [changeValidator] as never
+  }
+}
+
+interface SyncValidatorArrayPartialOptions<T> {
+  validators?: T
+}
+
+interface SyncValidator<T> {
+  cause: ValidationCause
+  validate: T
+}
+
+export function getSyncValidatorArray<T>(
+  cause: ValidationCause,
+  options: SyncValidatorArrayPartialOptions<T>,
+): T extends FieldValidators<any, any>
+  ? Array<SyncValidator<T['onChange'] | T['onBlur'] | T['onSubmit']>>
+  : T extends FormValidators<any, any>
+  ? Array<SyncValidator<T['onChange'] | T['onBlur'] | T['onSubmit']>>
+  : never {
+  const { onChange, onBlur, onSubmit } = (options.validators || {}) as
+    | FieldValidators<any, any>
+    | FormValidators<any, any>
+
+  const changeValidator = { cause: 'change', validate: onChange } as const
+  const blurValidator = { cause: 'blur', validate: onBlur } as const
+  const submitValidator = { cause: 'submit', validate: onSubmit } as const
+
+  switch (cause) {
+    case 'submit':
+      return [changeValidator, blurValidator, submitValidator] as never
+    case 'blur':
+      return [blurValidator] as never
+    case 'change':
+    default:
+      return [changeValidator] as never
+  }
 }
 
 export type RequiredByKey<T, K extends keyof T> = Omit<T, K> &
