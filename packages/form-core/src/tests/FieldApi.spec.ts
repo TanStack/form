@@ -680,4 +680,43 @@ describe('field api', () => {
 
     expect(field.getMeta().errors).toStrictEqual(['first name is required'])
   })
+
+  it('should cancel previous functions from an async validator with an abort signal', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+    })
+
+    let resolve!: () => void
+    let promise = new Promise((r) => {
+      resolve = r as never
+    })
+
+    const fn = vi.fn()
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onChangeAsyncDebounceMs: 0,
+        onChangeAsync: async ({ signal }) => {
+          await promise
+          if (signal.aborted) return
+          fn()
+          return undefined
+        },
+      },
+    })
+
+    field.mount()
+
+    field.setValue('one', { touch: true })
+    // Allow for a micro-tick to allow the promise to resolve
+    await sleep(1)
+    field.setValue('two', { touch: true })
+    resolve()
+    await sleep(1)
+    expect(fn).toHaveBeenCalledTimes(1)
+  })
 })
