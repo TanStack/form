@@ -13,7 +13,6 @@ import {
   getSyncValidatorArray,
   Updater,
 } from './utils'
-import { runValidatorOrAdapter } from './utils'
 
 export type FieldValidateFn<
   TParentData,
@@ -338,6 +337,29 @@ export class FieldApi<
     this.options = opts as never
   }
 
+  runValidator<
+    TValue extends { value: TData; fieldApi: FieldApi<any, any, any, any> },
+    TType extends 'validate' | 'validateAsync',
+  >(props: {
+    validate: TType extends 'validate'
+      ? FieldValidateOrFn<any, any, any, any>
+      : FieldAsyncValidateOrFn<any, any, any, any>
+    value: TValue
+    type: TType
+  }): ReturnType<ReturnType<Validator<any>>[TType]> {
+    const adapters = [
+      this.form.options.validatorAdapter,
+      this.options.validatorAdapter,
+    ] as const
+    for (const adapter of adapters) {
+      if (adapter && typeof props.validate !== 'function') {
+        return adapter()[props.type](props.value, props.validate) as never
+      }
+    }
+
+    return (props.validate as FieldValidateFn<any, any>)(props.value) as never
+  }
+
   mount = () => {
     const info = this.getInfo()
     info.instances[this.uid] = this as never
@@ -360,14 +382,13 @@ export class FieldApi<
     const { onMount } = this.options.validators || {}
 
     if (onMount) {
-      const error = runValidatorOrAdapter({
-        validateFn: onMount,
+      const error = this.runValidator({
+        validate: onMount,
         value: {
           value: this.state.value,
           fieldApi: this,
         },
-        methodName: 'validate',
-        adapters: [this.options.validatorAdapter as never],
+        type: 'validate',
       })
       if (error) {
         this.setMeta((prev) => ({
@@ -491,14 +512,10 @@ export class FieldApi<
       for (const validateObj of validates) {
         if (!validateObj.validate) continue
         const error = normalizeError(
-          runValidatorOrAdapter({
-            validateFn: validateObj.validate,
+          this.runValidator({
+            validate: validateObj.validate,
             value: { value, fieldApi: this },
-            methodName: 'validate',
-            adapters: [
-              this.form.options.validatorAdapter as never,
-              this.options.validatorAdapter as never,
-            ],
+            type: 'validate',
           }),
         )
         const errorMapKey = getErrorMapKey(validateObj.cause)
@@ -555,9 +572,9 @@ export class FieldApi<
     for (const validateObj of validates) {
       if (!validateObj.validate) continue
       const key = getErrorMapKey(validateObj.cause)
-      const fieldOnChangeMeta = this.getInfo().validationMetaMap[key]
+      const fieldValidatorMeta = this.getInfo().validationMetaMap[key]
 
-      fieldOnChangeMeta?.lastAbortController.abort()
+      fieldValidatorMeta?.lastAbortController.abort()
       // Sorry Safari 12
       // eslint-disable-next-line compat/compat
       const controller = new AbortController()
@@ -573,14 +590,10 @@ export class FieldApi<
             rawError = await new Promise((rawResolve, rawReject) => {
               setTimeout(() => {
                 if (controller.signal.aborted) return rawResolve(undefined)
-                runValidatorOrAdapter({
-                  validateFn: validateObj.validate,
+                this.runValidator({
+                  validate: validateObj.validate,
                   value: { value, fieldApi: this, signal: controller.signal },
-                  methodName: 'validateAsync',
-                  adapters: [
-                    this.form.options.validatorAdapter as never,
-                    this.options.validatorAdapter as never,
-                  ],
+                  type: 'validateAsync',
                 })
                   .then(rawResolve)
                   .catch(rawReject)
