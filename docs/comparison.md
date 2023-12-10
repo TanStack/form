@@ -25,7 +25,7 @@ Feature/Capability Key:
 | Nested object/array fields                        | ✅                                           | ❓                             | ❓                                     | ❓                                               | ❓                                     |
 | Async validation                                  | ✅                                           | ❓                             | ❓                                     | ❓                                               | ❓                                     |
 | Built-in async validation debounce                | ✅                                           | ❓                             | ❓                                     | ❓                                               | ❓                                     |
-| Schema-based Validation                           | 🔶                                           | ❓                             | ❓                                     | ❓                                               | ❓                                     |
+| Schema-based Validation                           | ✅                                          | ❓                             | ❓                                     | ❓                                               | ❓                                     |
 
 [bpl-tanstack-form]: https://bundlephobia.com/result?p=@tanstack/react-form
 [bp-tanstack-form]: https://badgen.net/bundlephobia/minzip/@tanstack/react-form?label=💾

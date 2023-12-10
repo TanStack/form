@@ -18,7 +18,9 @@ Here is an example:
 ```tsx
 <form.Field
   name="age"
-  onChange={val => val < 13 ? "You must be 13 to make an account" : undefined}
+  validators={{
+  	onChange: val => val < 13 ? "You must be 13 to make an account" : undefined
+  }}
 >
   {field => (
     <>
@@ -40,7 +42,9 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
 ```tsx
 <form.Field
   name="age"
-  onBlur={val => val < 13 ? "You must be 13 to make an account" : undefined}
+  validators={{
+  	onBlur: val => val < 13 ? "You must be 13 to make an account" : undefined
+  }}
 >
   {field => (
     <>
@@ -65,8 +69,10 @@ So you can control when the validation is done by implementing the desired callb
 ```tsx
 <form.Field
   name="age"
-  onChange={val => val < 13 ? "You must be 13 to make an account" : undefined}
-  onBlur={(val) => (val < 0 ? "Invalid value" : undefined)}
+  validators={{
+  	onChange: val => val < 13 ? "You must be 13 to make an account" : undefined,
+ 	onBlur: (val) => (val < 0 ? "Invalid value" : undefined)
+  }}
 >
   {field => (
     <>
@@ -95,7 +101,9 @@ Once you have your validation in place, you can map the errors from an array to 
 ```tsx
 <form.Field
   name="age"
-  onChange={val => val < 13 ? "You must be 13 to make an account" : undefined}
+  validators={{
+  	onChange: val => val < 13 ? "You must be 13 to make an account" : undefined
+  }}
 >
   {(field) => {
     return (
@@ -115,7 +123,9 @@ Or use the `errorMap` property to access the specific error you're looking for:
 ```tsx
 <form.Field
   name="age"
-  onChange={val => val < 13 ? "You must be 13 to make an account" : undefined}
+  validators={{
+  	onChange: val => val < 13 ? "You must be 13 to make an account" : undefined
+  }}
 >
   {(field) => (
       <>
@@ -144,11 +154,13 @@ To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods 
 ```tsx
 <form.Field
   name="age"
-  onChangeAsync={async (value) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return (
-      value < 13 ? "You must be 13 to make an account" : undefined
-    );
+  validators={{
+  	onChangeAsync: async (value) => {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        return (
+          value < 13 ? "You must be 13 to make an account" : undefined
+        );
+    }
   }}
 >
   {field => (
@@ -171,12 +183,14 @@ Synchronous and Asynchronous validations can coexist. For example it is possible
 ```tsx
 <form.Field
   name="age"
-  onBlur={(value) => value < 13 ? "You must be at least 13" : undefined}
-  onBlurAsync={async (value) => {
-    const currentAge = await fetchCurrentAgeOnProfile();
-    return (
-      value < currentAge ? "You can only increase the age" : undefined
-    );
+  validators={{
+	  onBlur: (value) => value < 13 ? "You must be at least 13" : undefined,
+	  onBlurAsync: async (value) => {
+        const currentAge = await fetchCurrentAgeOnProfile();
+        return (
+          value < currentAge ? "You can only increase the age" : undefined
+        );
+      }
   }}
 >
   {field => (
@@ -207,8 +221,10 @@ Instead, we enable an easy method for debouncing your `async` calls by adding a 
 <form.Field
   name="age"
   asyncDebounceMs={500}
-  onChangeAsync={async (value) => {
-    // ...
+  validators={{
+      onChangeAsync={async (value) => {
+        // ...
+      }
   }}
   children={(field) => {
     return (
@@ -226,12 +242,14 @@ This will debounce every async call with a 500ms delay. You can even override th
 <form.Field
   name="age"
   asyncDebounceMs={500}
-  onChangeAsyncDebounceMs={1500}
-  onChangeAsync={async (value) => {
-    // ...
-  }}
-  onBlurAsync={async (value) => {
-    // ...
+  validators={{
+      onChangeAsyncDebounceMs: 1500,
+      onChangeAsync: async (value) => {
+        // ...
+      },
+      onBlurAsync: async (value) => {
+        // ...
+      }
   }}
   children={(field) => {
     return (
@@ -276,10 +294,10 @@ const form = useForm({
 
 <form.Field
   name="age"
-  validator={zodValidator}
-  onChange={z
-    .number()
-    .gte(13, "You must be 13 to make an account")}
+  validatorAdapter={zodValidator}
+  validators={{
+    onChange: z.number().gte(13, "You must be 13 to make an account")
+  }}
   children={(field) => {
     return (
       <>
@@ -295,21 +313,23 @@ These adapters also support async operations using the proper property names:
 ```tsx
 <form.Field
   name="age"
-  onChange={z
-    .number()
-    .gte(13, "You must be 13 to make an account")}
-  onChangeAsyncDebounceMs={500}
-  onChangeAsync={z.number().refine(
-    async (value) => {
-      const currentAge = await fetchCurrentAgeOnProfile();
-      return (
-        value >= currentAge
-      );
-    },
-    {
-      message: "You can only increase the age",
-    },
-  )}
+  validators={{
+      onChange: z
+        .number()
+        .gte(13, "You must be 13 to make an account"),
+      onChangeAsyncDebounceMs: 500,
+      onChangeAsync: z.number().refine(
+        async (value) => {
+          const currentAge = await fetchCurrentAgeOnProfile();
+          return (
+            value >= currentAge
+          );
+        },
+        {
+          message: "You can only increase the age",
+        },
+      )
+  }}
   children={(field) => {
     return (
       <>
