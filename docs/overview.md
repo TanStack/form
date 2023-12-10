@@ -26,33 +26,33 @@ In the example below, you can see TanStack Form in action with the React framewo
 [Open in CodeSandbox](https://codesandbox.io/s/github/tanstack/form/tree/main/examples/react/simple)
 
 ```tsx
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { useForm } from '@tanstack/react-form'
-import type { FieldApi } from '@tanstack/react-form'
+import * as React from "react";
+import { createRoot } from "react-dom/client";
+import { useForm } from "@tanstack/react-form";
+import type { FieldApi } from "@tanstack/react-form";
 
-function FieldInfo({ field }: { field: FieldApi<any, any> }) {
+function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
   return (
     <>
-      {field.state.meta.touchedError ? (
-        <em>{field.state.meta.touchedError}</em>
+      {field.state.meta.touchedErrors ? (
+        <em>{field.state.meta.touchedErrors}</em>
       ) : null}
-      {field.state.meta.isValidating ? 'Validating...' : null}
+      {field.state.meta.isValidating ? "Validating..." : null}
     </>
-  )
+  );
 }
 
 export default function App() {
   const form = useForm({
     defaultValues: {
-      firstName: '',
-      lastName: '',
+      firstName: "",
+      lastName: "",
     },
-    onSubmit: async (values) => {
+    onSubmit: async ({ value }) => {
       // Do something with form data
-      console.log(values)
+      console.log(value);
     },
-  })
+  });
 
   return (
     <div>
@@ -60,28 +60,30 @@ export default function App() {
       <form.Provider>
         <form
           onSubmit={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            void form.handleSubmit()
+            e.preventDefault();
+            e.stopPropagation();
+            void form.handleSubmit();
           }}
         >
           <div>
             {/* A type-safe field component*/}
             <form.Field
               name="firstName"
-              onChange={(value) =>
-                !value
-                  ? 'A first name is required'
-                  : value.length < 3
-                  ? 'First name must be at least 3 characters'
-                  : undefined
-              }
-              onChangeAsyncDebounceMs={500}
-              onChangeAsync={async (value) => {
-                await new Promise((resolve) => setTimeout(resolve, 1000))
-                return (
-                  value.includes('error') && 'No "error" allowed in first name'
-                )
+              validators={{
+                onChange: ({ value }) =>
+                  !value
+                    ? "A first name is required"
+                    : value.length < 3
+                    ? "First name must be at least 3 characters"
+                    : undefined,
+                onChangeAsyncDebounceMs: 500,
+                onChangeAsync: async ({ value }) => {
+                  await new Promise((resolve) => setTimeout(resolve, 1000));
+                  return (
+                    value.includes("error") &&
+                    'No "error" allowed in first name'
+                  );
+                },
               }}
               children={(field) => {
                 // Avoid hasty abstractions. Render props are great!
@@ -96,7 +98,7 @@ export default function App() {
                     />
                     <FieldInfo field={field} />
                   </>
-                )
+                );
               }}
             />
           </div>
@@ -121,19 +123,19 @@ export default function App() {
             selector={(state) => [state.canSubmit, state.isSubmitting]}
             children={([canSubmit, isSubmitting]) => (
               <button type="submit" disabled={!canSubmit}>
-                {isSubmitting ? '...' : 'Submit'}
+                {isSubmitting ? "..." : "Submit"}
               </button>
             )}
           />
         </form>
       </form.Provider>
     </div>
-  )
+  );
 }
 
-const rootElement = document.getElementById('root')!
+const rootElement = document.getElementById("root")!;
 
-ReactDOM.createRoot(rootElement).render(<App />)
+createRoot(rootElement).render(<App />);
 ```
 
 ## You talked me into it, so what now?

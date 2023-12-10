@@ -27,9 +27,9 @@ A Form Instance is an object that represents an individual form and provides met
 
 ```tsx
 const form = formFactory.useForm({
-  onSubmit: async (values) => {
+  onSubmit: async ({ value }) => {
     // Do something with form data
-    console.log(values)
+    console.log(value)
   },
 })
 ```
@@ -58,7 +58,7 @@ Example:
 
 ## Field State
 
-Each field has its own state, which includes its current value, validation status, error messages, and other metadata. You can access a field's state using the field.state property.
+Each field has its own state, which includes its current value, validation status, error messages, and other metadata. You can access a field's state using the `field.state` property.
 
 Example:
 
@@ -82,17 +82,27 @@ Example:
 
 ## Validation
 
-`@tanstack/react-form` provides both synchronous and asynchronous validation out of the box. Validation functions can be passed to the form.Field component using the validate and validateAsync props.
+`@tanstack/react-form` provides both synchronous and asynchronous validation out of the box. Validation functions can be passed to the `form.Field` component using the `validators` prop.
 
 Example:
 
 ```tsx
 <form.Field
   name="firstName"
-  validate={(value) => !value && 'A first name is required'}
-  validateAsync={async (value) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    return value.includes('error') && 'No "error" allowed in first name'
+   validators={{
+    onChange: ({ value }) =>
+      !value
+        ? "A first name is required"
+        : value.length < 3
+        ? "First name must be at least 3 characters"
+        : undefined,
+    onChangeAsync: async ({ value }) => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return (
+        value.includes("error") &&
+        'No "error" allowed in first name'
+      );
+    },
   }}
   children={(field) => (
     <>
@@ -114,21 +124,29 @@ In addition to hand-rolled validation options, we also provide adapters like `@t
 Example:
 
 ```tsx
+import { zodValidator } from "@tanstack/zod-form-adapter";
+import { z } from "zod";
+
+// ...
+
 <form.Field
   name="firstName"
-  onChange={z
-    .string()
-    .min(3, "First name must be at least 3 characters")}
-  onChangeAsyncDebounceMs={500}
-  onChangeAsync={z.string().refine(
-    async (value) => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      return !value.includes("error");
-    },
-    {
-      message: "No 'error' allowed in first name",
-    },
-  )}
+  validatorAdapter={zodValidator}
+  validators={{
+    onChange: z
+      .string()
+      .min(3, "First name must be at least 3 characters"),
+    onChangeAsyncDebounceMs: 500,
+    onChangeAsync: z.string().refine(
+      async (value) => {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        return !value.includes("error");
+      },
+      {
+        message: "No 'error' allowed in first name",
+      },
+    ),
+  }}
 />
 ```
 
@@ -151,7 +169,7 @@ Example:
 
 ## Array Fields
 
-Array fields allow you to manage a list of values within a form, such as a list of hobbies. You can create an array field using the form.Field component with the mode="array" prop. The component accepts a children prop, which is a render prop function that takes an arrayField object as its argument.
+Array fields allow you to manage a list of values within a form, such as a list of hobbies. You can create an array field using the `form.Field` component with the `mode="array"` prop. The component accepts a children prop, which is a render prop function that takes an `arrayField` object as its argument.
 
 When working with array fields, you can use the fields `pushValue`, `removeValue`, and `swapValues` methods to add, remove, and swap values in the array.
 
