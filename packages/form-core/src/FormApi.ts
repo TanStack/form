@@ -180,6 +180,8 @@ export class FormApi<
   fieldInfo: Record<DeepKeys<TFormData>, FieldInfo<TFormData, TFormValidator>> =
     {} as any
 
+  prevTransformArray: unknown[] = []
+
   constructor(opts?: FormOptions<TFormData, TFormValidator>) {
     this.store = new Store<FormState<TFormData>>(
       getDefaultFormState({
@@ -228,9 +230,21 @@ export class FormApi<
             isTouched,
           }
 
-          this.store.state = state
           this.state = state
-          this.options.transform?.fn(this)
+          this.store.state = this.state
+
+          // Only run transform if state has shallowly changed - IE how React.useEffect works
+          const transformArray = this.options.transform?.deps ?? []
+          const shouldTransform =
+            transformArray.length !== this.prevTransformArray.length ||
+            transformArray.some((val, i) => val !== this.prevTransformArray[i])
+
+          if (shouldTransform) {
+            // This mutates the state
+            this.options.transform?.fn(this)
+            this.store.state = this.state
+            this.prevTransformArray = transformArray
+          }
         },
       },
     )
@@ -280,6 +294,9 @@ export class FormApi<
   update = (options?: FormOptions<TFormData, TFormValidator>) => {
     if (!options) return
 
+    // Options need to be updated first so that when the store is updated, the state is correct for the derived state
+    this.options = options
+
     this.store.batch(() => {
       const shouldUpdateValues =
         options.defaultValues &&
@@ -307,8 +324,6 @@ export class FormApi<
         ),
       )
     })
-
-    this.options = options
   }
 
   reset = () =>

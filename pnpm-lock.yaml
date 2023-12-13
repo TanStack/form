@@ -762,8 +762,8 @@ importers:
         specifier: workspace:*
         version: link:../form-core
       '@tanstack/react-store':
-        specifier: 0.1.3
-        version: 0.1.3(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^0.2.1
+        version: 0.2.1(react-dom@18.2.0)(react@18.2.0)
       '@tanstack/store':
         specifier: 0.1.3
         version: 0.1.3
@@ -3293,8 +3293,8 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@tanstack/react-store@0.1.3(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-nDOgSlarFFbIvVirAi/GcCyqyRMthgpuBhOhN87DkeQEau+ZNGsLKJifzrQYuWB0+4FXmgeoGaY/Dr383MPqZw==}
+  /@tanstack/react-store@0.2.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-tEbMCQjbeVw9KOP/202LfqZMSNAVi6zYkkp1kBom8nFuMx/965Hzes3+6G6b/comCwVxoJU8Gg9IrcF8yRPthw==}
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'

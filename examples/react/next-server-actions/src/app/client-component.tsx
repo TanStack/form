@@ -11,16 +11,20 @@ export const ClientComp = () => {
 
   const form = formFactory.useForm({
     transform: useTransform(
-      (baseForm: FormApi) => mergeForm(baseForm, state),
+      (baseForm: FormApi<any, any>) => mergeForm(baseForm, state),
       [state],
     ),
   })
 
-  const errorMap = form.useStore((state) => state.errorMap)
+  const formErrors = form.useStore((state) => state.errors)
 
   return (
     <form.Provider>
       <form action={action as never}>
+        {formErrors.map((error) => (
+          <p key={error as string}>{error}</p>
+        ))}
+
         <form.Field
           name="age"
           validators={{
@@ -42,7 +46,6 @@ export const ClientComp = () => {
                 {form.state.meta.errors.map((error) => (
                   <p key={error as string}>{error}</p>
                 ))}
-                {errorMap && <p>{JSON.stringify(errorMap)}</p>}
               </div>
             )
           }}

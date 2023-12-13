@@ -8,10 +8,7 @@ export function mutateMergeDeep(target: object, source: object): object {
   for (let key of keySet) {
     const targetKey = key as never as keyof typeof target
     const sourceKey = key as never as keyof typeof source
-    if (
-      Array.isArray(target[targetKey]) &&
-      Array.isArray(source[sourceKey])
-    ) {
+    if (Array.isArray(target[targetKey]) && Array.isArray(source[sourceKey])) {
       target[targetKey] = [
         ...(target[targetKey] as []),
         ...(source[sourceKey] as []),
