@@ -5,7 +5,7 @@ export function mutateMergeDeep(target: object, source: object): object {
   const targetKeys = Object.keys(target)
   const sourceKeys = Object.keys(source)
   const keySet = new Set([...targetKeys, ...sourceKeys])
-  for (let key of keySet) {
+  for (const key of keySet) {
     const targetKey = key as never as keyof typeof target
     const sourceKey = key as never as keyof typeof source
     if (Array.isArray(target[targetKey]) && Array.isArray(source[sourceKey])) {
@@ -20,6 +20,7 @@ export function mutateMergeDeep(target: object, source: object): object {
       mutateMergeDeep(target[targetKey] as {}, source[sourceKey] as {})
     } else {
       // Prevent assigning undefined to target, only if undefined is not explicitly set on source
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!(sourceKey in source) && source[sourceKey] === undefined) {
         continue
       }

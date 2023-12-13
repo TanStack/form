@@ -1,4 +1,4 @@
-import { FormApi, type Validator } from '@tanstack/form-core'
+import type { FormApi, Validator } from '@tanstack/form-core'
 
 export function useTransform<
   TFormData,

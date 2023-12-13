@@ -51,15 +51,10 @@ export const getValidateFormData =
 
     const runValidator = (propsValue: { value: TFormData }) => {
       if (validatorAdapter && typeof onServerValidate !== 'function') {
-        return validatorAdapter().validate(
-          propsValue,
-          onServerValidate,
-        ) as never
+        return validatorAdapter().validate(propsValue, onServerValidate)
       }
 
-      return (onServerValidate as OnServerValidateFn<TFormData>)(
-        propsValue,
-      ) as never
+      return (onServerValidate as OnServerValidateFn<TFormData>)(propsValue)
     }
 
     const data = decode(formData, info) as never as TFormData

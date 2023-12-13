@@ -16,7 +16,12 @@ export type {
   ValidationMeta,
 } from '@tanstack/form-core'
 
-export { FormApi, FieldApi, functionalUpdate, mergeForm } from '@tanstack/form-core'
+export {
+  FormApi,
+  FieldApi,
+  functionalUpdate,
+  mergeForm,
+} from '@tanstack/form-core'
 
 export { useForm } from './useForm'
 

@@ -22,7 +22,7 @@ export const useIsomorphicEffectOnce = (effect: EffectCallback) => {
     }
 
     // this forces one render after the effect is run
-    setVal((val) => val + 1)
+    setVal((v) => v + 1)
 
     return () => {
       // if the comp didn't render since the useEffect was called,
