@@ -235,6 +235,9 @@ importers:
 
   examples/react/next-server-actions:
     dependencies:
+      '@tanstack/react-form':
+        specifier: workspace:*
+        version: link:../../../packages/react-form
       next:
         specifier: 14.0.1
         version: 14.0.1(@babel/core@7.22.10)(react-dom@18.2.0)(react@18.2.0)

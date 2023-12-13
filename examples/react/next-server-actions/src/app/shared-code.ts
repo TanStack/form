@@ -1,8 +1,3 @@
-import * as React from 'react'
+import { createFormFactory } from '@tanstack/react-form'
 
-export const data = {
-  useForm: <T>(val: T) => {
-    return Object(React).useState(val)
-  },
-  name: 'server',
-}
+export const data = createFormFactory()

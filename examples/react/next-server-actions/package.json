@@ -11,7 +11,8 @@
   "dependencies": {
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.0.1"
+    "next": "14.0.1",
+    "@tanstack/react-form": "^0.11.0"
   },
   "devDependencies": {
     "typescript": "^5",

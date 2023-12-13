@@ -12,6 +12,7 @@ export type FormFactory<
   ) => FormApi<TFormData, TFormValidator>
   useField: UseField<TFormData>
   Field: FieldComponent<TFormData, TFormValidator>
+  testMsg: string
 }
 
 export function createFormFactory<
@@ -27,5 +28,6 @@ export function createFormFactory<
     },
     useField: useField as any,
     Field: Field as any,
+    testMsg: 'Hello, world!',
   }
 }

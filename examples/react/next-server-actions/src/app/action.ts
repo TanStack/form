@@ -3,5 +3,5 @@
 import {data} from "./shared-code";
 
 export default async function someAction() {
-  return "Hello " + data.name;
+  return "Hello " + data.testMsg;
 }
