@@ -13,7 +13,7 @@ export type FormFactory<
   ) => FormApi<TFormData, TFormValidator>
   useField: UseField<TFormData>
   Field: FieldComponent<TFormData, TFormValidator>
-  validateFormData: Partial<FormApi<TFormData, TFormValidator>['state']>
+  validateFormData: ValidateFormData<TFormData, TFormValidator>
   initialFormState: Partial<FormApi<TFormData, TFormValidator>['state']>
 }
 

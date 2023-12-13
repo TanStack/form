@@ -32,18 +32,18 @@ declare module '@tanstack/form-core' {
 export type ValidateFormData<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-> = (formData: FormData, info?: Parameters<typeof decode>[1]) => ValidationError
+> = (
+  formData: FormData,
+  info?: Parameters<typeof decode>[1],
+) => Promise<Partial<FormApi<TFormData, TFormValidator>['state']>>
 
-export const getValidateFormData =
-  <
-    TFormData,
-    TFormValidator extends
-      | Validator<TFormData, unknown>
-      | undefined = undefined,
-  >(
-    defaultOpts?: FormOptions<TFormData, TFormValidator>,
-  ) =>
-  async (
+export const getValidateFormData = <
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+>(
+  defaultOpts?: FormOptions<TFormData, TFormValidator>,
+) =>
+  (async (
     formData: FormData,
     info?: Parameters<typeof decode>[1],
   ): Promise<Partial<FormApi<TFormData, TFormValidator>['state']>> => {
@@ -67,4 +67,4 @@ export const getValidateFormData =
       },
       errors: onServerError ? [onServerError] : [],
     }
-  }
+  }) as ValidateFormData<TFormData, TFormValidator>
