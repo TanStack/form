@@ -767,6 +767,9 @@ importers:
       '@tanstack/store':
         specifier: 0.1.3
         version: 0.1.3
+      decode-formdata:
+        specifier: ^0.4.0
+        version: 0.4.0
       react-native:
         specifier: '*'
         version: 0.72.6(@babel/core@7.22.10)(@babel/preset-env@7.21.5)(react@18.2.0)
@@ -5348,6 +5351,10 @@ packages:
   /decimal.js@10.4.3:
     resolution: {integrity: sha512-VBBaLc1MgL5XpzgIP7ny5Z6Nx3UrRkIViUkPUdtl9aya5amy3De1gsUUSB1g3+3sExYNjCAsAznmukyxCb1GRA==}
     dev: true
+
+  /decode-formdata@0.4.0:
+    resolution: {integrity: sha512-/OMUlsRLrSgHPOWCwembsFFTT4DY7Ts9GGlwK8v9yeLOyYZSPKIfn/1oOuV9UmpQ9CZi5JeyT8edunRoBOOl5g==}
+    dev: false
 
   /deep-eql@4.1.3:
     resolution: {integrity: sha512-WaEtAOpRA1MQ0eohqZjpGD8zdI0Ovsm8mmFhaDN8dvDZzyoUMcYDnf5Y6iu7HTXxf8JDS23qWa4a+hKCDyOPzw==}

@@ -1,7 +1,7 @@
-"use server"
+'use server'
 
-import {data} from "./shared-code";
+import { formFactory } from './shared-code'
 
-export default async function someAction() {
-  return "Hello " + data.testMsg;
+export default async function someAction(prev: unknown, formData: FormData) {
+  return await formFactory.validateFormData(formData)
 }

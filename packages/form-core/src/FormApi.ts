@@ -65,10 +65,10 @@ export interface FormValidators<
   onSubmitAsyncDebounceMs?: number
 }
 
-export type FormOptions<
+export interface FormOptions<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-> = {
+> {
   defaultValues?: TFormData
   defaultState?: Partial<FormState<TFormData>>
   asyncAlways?: boolean
