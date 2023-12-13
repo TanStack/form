@@ -4,7 +4,7 @@
 import { useFormState } from 'react-dom'
 import someAction from './action'
 import { formFactory } from './shared-code'
-import { useTransform, mergeForm, FormApi } from '@tanstack/react-form'
+import { useTransform, mergeForm, type FormApi } from '@tanstack/react-form'
 
 export const ClientComp = () => {
   const [state, action] = useFormState(someAction, formFactory.initialFormState)
@@ -16,7 +16,7 @@ export const ClientComp = () => {
     ),
   })
 
-  const formErrors = form.useStore((state) => state.errors)
+  const formErrors = form.useStore((formState) => formState.errors)
 
   return (
     <form.Provider>
@@ -34,16 +34,16 @@ export const ClientComp = () => {
                 : undefined,
           }}
         >
-          {(form) => {
+          {(field) => {
             return (
               <div>
                 <input
                   name="age"
                   type="number"
-                  value={form.state.value}
-                  onChange={(e) => form.handleChange(e.target.valueAsNumber)}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.valueAsNumber)}
                 />
-                {form.state.meta.errors.map((error) => (
+                {field.state.meta.errors.map((error) => (
                   <p key={error as string}>{error}</p>
                 ))}
               </div>
@@ -51,13 +51,17 @@ export const ClientComp = () => {
           }}
         </form.Field>
         <form.Subscribe
-          selector={(state) => [state.canSubmit, state.isSubmitting]}
-          children={([canSubmit, isSubmitting]) => (
+          selector={(formState) => [
+            formState.canSubmit,
+            formState.isSubmitting,
+          ]}
+        >
+          {([canSubmit, isSubmitting]) => (
             <button type="submit" disabled={!canSubmit}>
               {isSubmitting ? '...' : 'Submit'}
             </button>
           )}
-        />
+        </form.Subscribe>
       </form>
     </form.Provider>
   )

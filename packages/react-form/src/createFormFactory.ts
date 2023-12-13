@@ -2,7 +2,7 @@ import type { FormApi, FormOptions, Validator } from '@tanstack/form-core'
 
 import { type UseField, type FieldComponent, Field, useField } from './useField'
 import { useForm } from './useForm'
-import { ValidateFormData, getValidateFormData } from './validateFormData'
+import { type ValidateFormData, getValidateFormData } from './validateFormData'
 
 export type FormFactory<
   TFormData,
