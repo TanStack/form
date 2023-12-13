@@ -65,6 +65,16 @@ export interface FormValidators<
   onSubmitAsyncDebounceMs?: number
 }
 
+export interface FormTransform<
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+> {
+  fn: (
+    formBase: FormApi<TFormData, TFormValidator>,
+  ) => FormApi<TFormData, TFormValidator>
+  deps: unknown[]
+}
+
 export interface FormOptions<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
@@ -83,6 +93,7 @@ export interface FormOptions<
     value: TFormData
     formApi: FormApi<TFormData, TFormValidator>
   }) => void
+  transform?: FormTransform<TFormData, TFormValidator>
 }
 
 export type ValidationMeta = {
@@ -151,6 +162,7 @@ function getDefaultFormState<TFormData>(
       onBlur: undefined,
       onSubmit: undefined,
       onMount: undefined,
+      onServer: undefined,
     },
   }
 }
@@ -218,6 +230,7 @@ export class FormApi<
 
           this.store.state = state
           this.state = state
+          this.options.transform?.fn(this)
         },
       },
     )
@@ -307,6 +320,7 @@ export class FormApi<
     )
 
   validateAllFields = async (cause: ValidationCause) => {
+    if (cause === 'server') return
     const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
     this.store.batch(() => {
       void (
@@ -332,6 +346,7 @@ export class FormApi<
 
   // TODO: This code is copied from FieldApi, we should refactor to share
   validateSync = (cause: ValidationCause) => {
+    if (cause === 'server') return { hasErrored: false }
     const validates = getSyncValidatorArray(cause, this.options)
     let hasErrored = false as boolean
 
@@ -390,6 +405,7 @@ export class FormApi<
   validateAsync = async (
     cause: ValidationCause,
   ): Promise<ValidationError[]> => {
+    if (cause === 'server') return []
     const validates = getAsyncValidatorArray(cause, this.options)
 
     if (!this.state.isFormValidating) {
@@ -469,6 +485,7 @@ export class FormApi<
   validate = (
     cause: ValidationCause,
   ): ValidationError[] | Promise<ValidationError[]> => {
+    if (cause === 'server') return []
     // Attempt to sync validate first
     const { hasErrored } = this.validateSync(cause)
 
@@ -563,6 +580,7 @@ export class FormApi<
         onBlur: undefined,
         onSubmit: undefined,
         onMount: undefined,
+        onServer: undefined,
       },
     })
   }
@@ -694,11 +712,14 @@ function getErrorMapKey(cause: ValidationCause) {
   switch (cause) {
     case 'submit':
       return 'onSubmit'
-    case 'change':
-      return 'onChange'
     case 'blur':
       return 'onBlur'
     case 'mount':
       return 'onMount'
+    case 'server':
+      return 'onServer'
+    case 'change':
+    default:
+      return 'onChange'
   }
 }

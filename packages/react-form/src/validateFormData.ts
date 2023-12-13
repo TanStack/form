@@ -1,5 +1,10 @@
 import { decode } from 'decode-formdata'
-import { FormOptions, ValidationError, Validator } from '@tanstack/form-core'
+import type {
+  FormApi,
+  FormOptions,
+  ValidationError,
+  Validator,
+} from '@tanstack/form-core'
 
 type OnServerValidateFn<TFormData> = (props: {
   value: TFormData
@@ -38,7 +43,10 @@ export const getValidateFormData =
   >(
     defaultOpts?: FormOptions<TFormData, TFormValidator>,
   ) =>
-  async (formData: FormData, info?: Parameters<typeof decode>[1]) => {
+  async (
+    formData: FormData,
+    info?: Parameters<typeof decode>[1],
+  ): Promise<Partial<FormApi<TFormData, TFormValidator>['state']>> => {
     const { validatorAdapter, onServerValidate } = defaultOpts || {}
 
     const runValidator = (propsValue: { value: TFormData }) => {
@@ -56,5 +64,12 @@ export const getValidateFormData =
 
     const data = decode(formData, info) as never as TFormData
 
-    return runValidator({ value: data })
+    const onServerError = runValidator({ value: data })
+
+    return {
+      errorMap: {
+        onServer: onServerError,
+      },
+      errors: onServerError ? [onServerError] : [],
+    }
   }

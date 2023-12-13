@@ -25,3 +25,4 @@ export { useField, Field } from './useField'
 
 export type { FormFactory } from './createFormFactory'
 export { createFormFactory } from './createFormFactory'
+export { useTransform } from './useTransform'

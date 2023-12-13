@@ -498,6 +498,7 @@ export class FieldApi<
     }) as any
 
   validateSync = (value = this.state.value, cause: ValidationCause) => {
+    if (cause === 'server') return { hasErrored: false }
     const validates = getSyncValidatorArray(cause, this.options)
 
     // Needs type cast as eslint errantly believes this is always falsy
@@ -552,6 +553,7 @@ export class FieldApi<
   }
 
   validateAsync = async (value = this.state.value, cause: ValidationCause) => {
+    if (cause === 'server') return []
     const validates = getAsyncValidatorArray(cause, this.options)
 
     if (!this.state.meta.isValidating) {
@@ -628,6 +630,7 @@ export class FieldApi<
     cause: ValidationCause,
     value?: TData,
   ): ValidationError[] | Promise<ValidationError[]> => {
+    if (cause === 'server') return []
     // If the field is pristine and validatePristine is false, do not validate
     if (!this.state.meta.isTouched) return []
 
@@ -675,11 +678,14 @@ function getErrorMapKey(cause: ValidationCause) {
   switch (cause) {
     case 'submit':
       return 'onSubmit'
-    case 'change':
-      return 'onChange'
     case 'blur':
       return 'onBlur'
     case 'mount':
       return 'onMount'
+    case 'server':
+      return 'onServer'
+    case 'change':
+    default:
+      return 'onChange'
   }
 }
