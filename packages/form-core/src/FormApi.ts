@@ -294,17 +294,19 @@ export class FormApi<
   update = (options?: FormOptions<TFormData, TFormValidator>) => {
     if (!options) return
 
+    const oldOptions = this.options
+
     // Options need to be updated first so that when the store is updated, the state is correct for the derived state
     this.options = options
 
     this.store.batch(() => {
       const shouldUpdateValues =
         options.defaultValues &&
-        options.defaultValues !== this.options.defaultValues &&
+        options.defaultValues !== oldOptions.defaultValues &&
         !this.state.isTouched
 
       const shouldUpdateState =
-        options.defaultState !== this.options.defaultState &&
+        options.defaultState !== oldOptions.defaultState &&
         !this.state.isTouched
 
       this.store.setState(() =>
