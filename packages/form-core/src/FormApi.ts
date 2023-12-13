@@ -335,7 +335,6 @@ export class FormApi<
     )
 
   validateAllFields = async (cause: ValidationCause) => {
-    if (cause === 'server') return
     const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
     this.store.batch(() => {
       void (
@@ -361,7 +360,6 @@ export class FormApi<
 
   // TODO: This code is copied from FieldApi, we should refactor to share
   validateSync = (cause: ValidationCause) => {
-    if (cause === 'server') return { hasErrored: false }
     const validates = getSyncValidatorArray(cause, this.options)
     let hasErrored = false as boolean
 
@@ -420,7 +418,6 @@ export class FormApi<
   validateAsync = async (
     cause: ValidationCause,
   ): Promise<ValidationError[]> => {
-    if (cause === 'server') return []
     const validates = getAsyncValidatorArray(cause, this.options)
 
     if (!this.state.isFormValidating) {
@@ -452,19 +449,23 @@ export class FormApi<
           let rawError!: ValidationError | undefined
           try {
             rawError = await new Promise((rawResolve, rawReject) => {
-              setTimeout(() => {
+              setTimeout(async () => {
                 if (controller.signal.aborted) return rawResolve(undefined)
-                this.runValidator({
-                  validate: validateObj.validate!,
-                  value: {
-                    value: this.state.values,
-                    formApi: this,
-                    signal: controller.signal,
-                  },
-                  type: 'validateAsync',
-                })
-                  .then(rawResolve)
-                  .catch(rawReject)
+                try {
+                  rawResolve(
+                    await this.runValidator({
+                      validate: validateObj.validate!,
+                      value: {
+                        value: this.state.values,
+                        formApi: this,
+                        signal: controller.signal,
+                      },
+                      type: 'validateAsync',
+                    }),
+                  )
+                } catch (e) {
+                  rawReject(e)
+                }
               }, validateObj.debounceMs)
             })
           } catch (e: unknown) {
@@ -500,7 +501,6 @@ export class FormApi<
   validate = (
     cause: ValidationCause,
   ): ValidationError[] | Promise<ValidationError[]> => {
-    if (cause === 'server') return []
     // Attempt to sync validate first
     const { hasErrored } = this.validateSync(cause)
 

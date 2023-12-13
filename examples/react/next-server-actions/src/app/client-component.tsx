@@ -20,7 +20,7 @@ export const ClientComp = () => {
 
   return (
     <form.Provider>
-      <form action={action as never}>
+      <form action={action as never} onSubmit={() => form.handleSubmit()}>
         {formErrors.map((error) => (
           <p key={error as string}>{error}</p>
         ))}
@@ -50,8 +50,14 @@ export const ClientComp = () => {
             )
           }}
         </form.Field>
-
-        <button type={'submit'}>Update data</button>
+        <form.Subscribe
+          selector={(state) => [state.canSubmit, state.isSubmitting]}
+          children={([canSubmit, isSubmitting]) => (
+            <button type="submit" disabled={!canSubmit}>
+              {isSubmitting ? '...' : 'Submit'}
+            </button>
+          )}
+        />
       </form>
     </form.Provider>
   )

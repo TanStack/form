@@ -498,7 +498,6 @@ export class FieldApi<
     }) as any
 
   validateSync = (value = this.state.value, cause: ValidationCause) => {
-    if (cause === 'server') return { hasErrored: false }
     const validates = getSyncValidatorArray(cause, this.options)
 
     // Needs type cast as eslint errantly believes this is always falsy
@@ -553,7 +552,6 @@ export class FieldApi<
   }
 
   validateAsync = async (value = this.state.value, cause: ValidationCause) => {
-    if (cause === 'server') return []
     const validates = getAsyncValidatorArray(cause, this.options)
 
     if (!this.state.meta.isValidating) {
@@ -585,15 +583,23 @@ export class FieldApi<
           let rawError!: ValidationError | undefined
           try {
             rawError = await new Promise((rawResolve, rawReject) => {
-              setTimeout(() => {
+              setTimeout(async () => {
                 if (controller.signal.aborted) return rawResolve(undefined)
-                this.runValidator({
-                  validate: validateObj.validate,
-                  value: { value, fieldApi: this, signal: controller.signal },
-                  type: 'validateAsync',
-                })
-                  .then(rawResolve)
-                  .catch(rawReject)
+                try {
+                  rawResolve(
+                    await this.runValidator({
+                      validate: validateObj.validate,
+                      value: {
+                        value,
+                        fieldApi: this,
+                        signal: controller.signal,
+                      },
+                      type: 'validateAsync',
+                    }),
+                  )
+                } catch (e) {
+                  rawReject(e)
+                }
               }, validateObj.debounceMs)
             })
           } catch (e: unknown) {
@@ -630,7 +636,6 @@ export class FieldApi<
     cause: ValidationCause,
     value?: TData,
   ): ValidationError[] | Promise<ValidationError[]> => {
-    if (cause === 'server') return []
     // If the field is pristine and validatePristine is false, do not validate
     if (!this.state.meta.isTouched) return []
 

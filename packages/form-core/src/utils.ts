@@ -203,6 +203,8 @@ export function getAsyncValidatorArray<T>(
   switch (cause) {
     case 'submit':
       return [changeValidator, blurValidator, submitValidator] as never
+    case 'server':
+      return [] as never
     case 'blur':
       return [blurValidator] as never
     case 'change':
@@ -236,14 +238,27 @@ export function getSyncValidatorArray<T>(
   const blurValidator = { cause: 'blur', validate: onBlur } as const
   const submitValidator = { cause: 'submit', validate: onSubmit } as const
 
+  // Allows us to clear onServer errors
+  const serverValidator = {
+    cause: 'server',
+    validate: () => undefined,
+  } as const
+
   switch (cause) {
     case 'submit':
-      return [changeValidator, blurValidator, submitValidator] as never
+      return [
+        changeValidator,
+        blurValidator,
+        submitValidator,
+        serverValidator,
+      ] as never
+    case 'server':
+      return [serverValidator] as never
     case 'blur':
-      return [blurValidator] as never
+      return [blurValidator, serverValidator] as never
     case 'change':
     default:
-      return [changeValidator] as never
+      return [changeValidator, serverValidator] as never
   }
 }
 
