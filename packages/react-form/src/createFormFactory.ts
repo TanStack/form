@@ -13,7 +13,8 @@ export type FormFactory<
   ) => FormApi<TFormData, TFormValidator>
   useField: UseField<TFormData>
   Field: FieldComponent<TFormData, TFormValidator>
-  validateFormData: ValidateFormData<TFormData, TFormValidator>
+  validateFormData: Partial<FormApi<TFormData, TFormValidator>['state']>
+  initialFormState: Partial<FormApi<TFormData, TFormValidator>['state']>
 }
 
 export function createFormFactory<
@@ -30,5 +31,11 @@ export function createFormFactory<
     useField: useField as any,
     Field: Field as any,
     validateFormData: getValidateFormData(defaultOpts) as never,
+    initialFormState: {
+      errorMap: {
+        onServer: undefined,
+      },
+      errors: [],
+    },
   }
 }
