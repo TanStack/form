@@ -226,9 +226,6 @@ importers:
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
-      typescript41:
-        specifier: npm:typescript@4.1
-        version: /typescript@4.1.6
       typescript48:
         specifier: npm:typescript@4.8
         version: /typescript@4.8.4
@@ -10129,12 +10126,6 @@ packages:
     resolution: {integrity: sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==}
     dependencies:
       is-typedarray: 1.0.0
-    dev: true
-
-  /typescript@4.1.6:
-    resolution: {integrity: sha512-pxnwLxeb/Z5SP80JDRzVjh58KsM6jZHRAOtTpS7sXLS4ogXNKC9ANxHHZqLLeVHZN35jCtI4JdmLLbLiC1kBow==}
-    engines: {node: '>=4.2.0'}
-    hasBin: true
     dev: true
 
   /typescript@4.8.4:
