@@ -44,7 +44,12 @@
   "scripts": {
     "clean": "rimraf ./build && rimraf ./coverage",
     "test:eslint": "eslint --ext .ts,.tsx ./src",
-    "test:types": "tsc --noEmit && vitest typecheck",
+    "test:types:versions48": "../../node_modules/typescript48/bin/tsc --noEmit",
+    "test:types:versions49": "../../node_modules/typescript49/bin/tsc --noEmit",
+    "test:types:versions50": "../../node_modules/typescript50/bin/tsc --noEmit",
+    "test:types:versions51": "../../node_modules/typescript51/bin/tsc --noEmit",
+    "test:types:versions52": "tsc --noEmit",
+    "test:types": "pnpm run \"/^test:types:versions.*/\" && vitest typecheck",
     "test:lib": "vitest run --coverage",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
