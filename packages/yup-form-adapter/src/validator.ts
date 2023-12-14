@@ -1,7 +1,7 @@
 import type { ValidationError as YupError, AnySchema } from 'yup'
 import type { ValidationError, Validator } from '@tanstack/form-core'
 
-export const yupValidator = (() => {
+export const yupValidator = () => {
   return {
     validate({ value }: { value: unknown }, fn: AnySchema): ValidationError {
       try {
@@ -25,4 +25,4 @@ export const yupValidator = (() => {
       }
     },
   }
-}) satisfies Validator<unknown>
+}

@@ -178,6 +178,7 @@ describe('useForm', () => {
           },
         },
       })
+      const onChangeError = form.useStore((s) => s.errorMap.onChange)
       return (
         <form.Provider>
           <form.Field
@@ -192,9 +193,7 @@ describe('useForm', () => {
               />
             )}
           />
-          <form.Subscribe selector={(state) => state.errorMap}>
-            {(errorMap) => <p>{errorMap.onChange}</p>}
-          </form.Subscribe>
+          <p>{onChangeError}</p>
         </form.Provider>
       )
     }

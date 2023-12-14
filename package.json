@@ -97,6 +97,10 @@
     "tsup": "7.2.0",
     "type-fest": "^3.11.0",
     "typescript": "^5.2.2",
+    "typescript48": "npm:typescript@4.8",
+    "typescript49": "npm:typescript@4.9",
+    "typescript50": "npm:typescript@5.0",
+    "typescript51": "npm:typescript@5.1",
     "vitest": "^0.34.3",
     "vue": "^3.3.4"
   },
