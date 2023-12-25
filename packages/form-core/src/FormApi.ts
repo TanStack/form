@@ -69,6 +69,7 @@ export type FormOptions<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > = {
+  persistKey?: string
   defaultValues?: TFormData
   defaultState?: Partial<FormState<TFormData>>
   asyncAlways?: boolean
@@ -334,7 +335,7 @@ export class FormApi<
   // TODO: This code is copied from FieldApi, we should refactor to share
   validateSync = (cause: ValidationCause) => {
     const validates = getSyncValidatorArray(cause, this.options)
-    let hasErrored = false
+    let hasErrored = false as boolean
 
     this.store.batch(() => {
       for (const validateObj of validates) {

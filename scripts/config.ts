@@ -8,6 +8,10 @@ export const packages: Package[] = [
     packageDir: 'form-core',
   },
   {
+    name: '@tanstack/form-persist-core',
+    packageDir: 'form-persist-core',
+  },
+  {
     name: '@tanstack/react-form',
     packageDir: 'react-form',
   },

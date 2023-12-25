@@ -41,12 +41,9 @@ export function useForm<
     }
     api.Field = Field as any
     api.useField = useField as any
-    api.useStore = (
-      // @ts-ignore
-      selector,
-    ) => {
+    api.useStore = (selector) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      return useStore(api.store as any, selector as any) as any
+      return useStore(api.store, selector)
     }
     api.Subscribe = (
       // @ts-ignore
