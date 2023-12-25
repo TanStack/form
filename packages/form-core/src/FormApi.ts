@@ -179,10 +179,9 @@ export class FormApi<
         onUpdate: () => {
           let { state } = this.store
           // Computed state
-          const fieldMetaValues = Object.values(state.fieldMeta) as (
-            | FieldMeta
-            | undefined
-          )[]
+          const fieldMetaValues = Object.values<FieldMeta | undefined>(
+            state.fieldMeta,
+          )
 
           const isFieldsValidating = fieldMetaValues.some(
             (field) => field?.isValidating,
@@ -307,23 +306,25 @@ export class FormApi<
     )
 
   validateAllFields = async (cause: ValidationCause) => {
-    const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
+    const fieldValidationPromises: Promise<ValidationError[]>[] = []
     this.store.batch(() => {
-      void (
-        Object.values(this.fieldInfo) as FieldInfo<any, TFormValidator>[]
-      ).forEach((field) => {
-        Object.values(field.instances).forEach((instance) => {
+      const fieldInfoValues = Object.values<FieldInfo<any, TFormValidator>>(
+        this.fieldInfo,
+      )
+      for (const field of fieldInfoValues) {
+        const fieldInstances = Object.values(field.instances)
+        for (const instance of fieldInstances) {
           // Validate the field
           fieldValidationPromises.push(
-            Promise.resolve().then(() => instance.validate(cause)),
+            Promise.resolve(instance.validate(cause)),
           )
           // If any fields are not touched
           if (!instance.state.meta.isTouched) {
             // Mark them as touched
             instance.setMeta((prev) => ({ ...prev, isTouched: true }))
           }
-        })
-      })
+        }
+      }
     })
 
     const fieldErrorMapMap = await Promise.all(fieldValidationPromises)
@@ -333,7 +334,7 @@ export class FormApi<
   // TODO: This code is copied from FieldApi, we should refactor to share
   validateSync = (cause: ValidationCause) => {
     const validates = getSyncValidatorArray(cause, this.options)
-    let hasErrored = false as boolean
+    let hasErrored = false
 
     this.store.batch(() => {
       for (const validateObj of validates) {
@@ -453,10 +454,7 @@ export class FormApi<
       )
     }
 
-    let results: ValidationError[] = []
-    if (promises.length) {
-      results = await Promise.all(promises)
-    }
+    const results = promises.length > 0 ? await Promise.all(promises) : []
 
     this.store.setState((prev) => ({
       ...prev,
