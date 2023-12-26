@@ -734,6 +734,12 @@ importers:
         specifier: 0.1.3
         version: 0.1.3
 
+  packages/form-persist-core:
+    dependencies:
+      '@tanstack/form-core':
+        specifier: workspace:*
+        version: link:../form-core
+
   packages/react-form:
     dependencies:
       '@tanstack/form-core':

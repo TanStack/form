@@ -1,10 +1,10 @@
-import type { FormState, FormOptions, Validator } from '@tanstack/form-core'
+import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import type { NoInfer } from '@tanstack/react-store'
 import { useStore } from '@tanstack/react-store'
-import React, { type PropsWithChildren, type ReactNode, useState } from 'react'
-import { type UseField, type FieldComponent, Field, useField } from './useField'
+import React, { useState, type PropsWithChildren, type ReactNode } from 'react'
 import { formContext } from './formContext'
+import { Field, useField, type FieldComponent, type UseField } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 
 declare module '@tanstack/form-core' {
@@ -30,7 +30,6 @@ export function useForm<
   opts?: FormOptions<TFormData, TFormValidator>,
 ): FormApi<TFormData, TFormValidator> {
   const [formApi] = useState(() => {
-    // @ts-ignore
     const api = new FormApi<TFormData, TFormValidator>(opts)
 
     api.Provider = function Provider(props) {
@@ -45,14 +44,11 @@ export function useForm<
       // eslint-disable-next-line react-hooks/rules-of-hooks
       return useStore(api.store, selector)
     }
-    api.Subscribe = (
-      // @ts-ignore
-      props,
-    ) => {
+    api.Subscribe = (props) => {
       return functionalUpdate(
         props.children,
         // eslint-disable-next-line react-hooks/rules-of-hooks
-        useStore(api.store as any, props.selector as any),
+        useStore(api.store, props.selector),
       ) as any
     }
 

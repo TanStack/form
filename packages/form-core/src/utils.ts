@@ -2,6 +2,8 @@ import type { ValidationCause, Validator } from './types'
 import type { FormValidators } from './FormApi'
 import type { FieldValidators } from './FieldApi'
 
+export type MaybePromise<T> = T | Promise<T>
+
 export type UpdaterFn<TInput, TOutput = TInput> = (input: TInput) => TOutput
 
 export type Updater<TInput, TOutput = TInput> =

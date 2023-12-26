@@ -1,5 +1,5 @@
 import { Store } from '@tanstack/store'
-import type { DeepKeys, DeepValue, Updater } from './utils'
+import type { DeepKeys, DeepValue, MaybePromise, Updater } from './utils'
 import {
   getAsyncValidatorArray,
   getSyncValidatorArray,
@@ -65,11 +65,10 @@ export interface FormValidators<
   onSubmitAsyncDebounceMs?: number
 }
 
-export type FormOptions<
+export interface FormOptions<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-> = {
-  persistKey?: string
+> {
   defaultValues?: TFormData
   defaultState?: Partial<FormState<TFormData>>
   asyncAlways?: boolean
@@ -84,6 +83,13 @@ export type FormOptions<
     value: TFormData
     formApi: FormApi<TFormData, TFormValidator>
   }) => void
+  persister?: Persister<TFormData>
+}
+
+export type Persister<TFormData> = {
+  persistForm(formState: FormState<TFormData>): MaybePromise<void>
+  restoreForm(): MaybePromise<FormState<TFormData> | null>
+  deleteForm(): MaybePromise<void>
 }
 
 export type ValidationMeta = {
@@ -218,13 +224,22 @@ export class FormApi<
 
           this.store.state = state
           this.state = state
+          opts?.persister?.persistForm(state)
         },
       },
     )
+    this.restore()
 
     this.state = this.store.state
 
     this.update(opts || {})
+  }
+
+  restore = async () => {
+    if (!this.options.persister) return
+    const restoredState = await this.options.persister.restoreForm()
+    if (!restoredState) return
+    this.store.setState(() => restoredState)
   }
 
   runValidator<
@@ -298,13 +313,15 @@ export class FormApi<
     this.options = options
   }
 
-  reset = () =>
+  reset = () => {
+    this.options.persister?.deleteForm()
     this.store.setState(() =>
       getDefaultFormState({
         ...(this.options.defaultState as any),
         values: this.options.defaultValues ?? this.options.defaultState?.values,
       }),
     )
+  }
 
   validateAllFields = async (cause: ValidationCause) => {
     const fieldValidationPromises: Promise<ValidationError[]>[] = []
