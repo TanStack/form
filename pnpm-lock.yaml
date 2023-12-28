@@ -8,9 +8,6 @@ patchedDependencies:
   '@types/testing-library__jest-dom@5.14.5':
     hash: d573maxasnl5kxwdyzebcnmhpm
     path: patches/@types__testing-library__jest-dom@5.14.5.patch
-  tsup@7.2.0:
-    hash: gwbgl3s5ycyzg75lofcbklamcy
-    path: patches/tsup@7.2.0.patch
 
 importers:
 
@@ -177,7 +174,7 @@ importers:
         version: 10.9.1(@types/node@18.19.2)(typescript@5.2.2)
       tsup:
         specifier: 7.2.0
-        version: 7.2.0(patch_hash=gwbgl3s5ycyzg75lofcbklamcy)(ts-node@10.9.1)(typescript@5.2.2)
+        version: 7.2.0(ts-node@10.9.1)(typescript@5.2.2)
       type-fest:
         specifier: ^3.11.0
         version: 3.11.0
@@ -9417,14 +9414,14 @@ packages:
       tsup: ^7.0.0
     dependencies:
       esbuild-plugin-solid: 0.5.0(esbuild@0.18.20)(solid-js@1.7.12)
-      tsup: 7.2.0(patch_hash=gwbgl3s5ycyzg75lofcbklamcy)(ts-node@10.9.1)(typescript@5.2.2)
+      tsup: 7.2.0(ts-node@10.9.1)(typescript@5.2.2)
     transitivePeerDependencies:
       - esbuild
       - solid-js
       - supports-color
     dev: true
 
-  /tsup@7.2.0(patch_hash=gwbgl3s5ycyzg75lofcbklamcy)(ts-node@10.9.1)(typescript@5.2.2):
+  /tsup@7.2.0(ts-node@10.9.1)(typescript@5.2.2):
     resolution: {integrity: sha512-vDHlczXbgUvY3rWvqFEbSqmC1L7woozbzngMqTtL2PGBODTtWlRwGDDawhvWzr5c1QjKe4OAKqJGfE1xeXUvtQ==}
     engines: {node: '>=16.14'}
     hasBin: true
@@ -9459,7 +9456,6 @@ packages:
       - supports-color
       - ts-node
     dev: true
-    patched: true
 
   /type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
