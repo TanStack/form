@@ -19,7 +19,7 @@ jobs:
           version: 8
       - uses: actions/setup-node@v3
         with:
-          node-version: 18.15.0
+          node-version: 18.19.0
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --prefer-offline install --no-frozen-lockfile
