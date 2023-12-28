@@ -38,6 +38,7 @@
     "@testing-library/user-event": "^14.4.3",
     "@testing-library/vue": "^7.0.0",
     "@types/current-git-branch": "^1.1.4",
+    "@types/eslint": "^8.56.0",
     "@types/jest": "^26.0.4",
     "@types/jsonfile": "^6.1.1",
     "@types/luxon": "^2.3.1",

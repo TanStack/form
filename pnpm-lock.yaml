@@ -37,6 +37,9 @@ importers:
       '@types/current-git-branch':
         specifier: ^1.1.4
         version: 1.1.4
+      '@types/eslint':
+        specifier: ^8.56.0
+        version: 8.56.0
       '@types/jest':
         specifier: ^26.0.4
         version: 26.0.24
@@ -3296,6 +3299,17 @@ packages:
 
   /@types/current-git-branch@1.1.4:
     resolution: {integrity: sha512-laBj/aFKSEVEqyyOsogGCWoCFnfAQs5uDlSe9FWRsgUwrmhwe8R4fGbjb7q392cVX5BI9PqQw1ZRkTn4gmvDPw==}
+    dev: true
+
+  /@types/eslint@8.56.0:
+    resolution: {integrity: sha512-FlsN0p4FhuYRjIxpbdXovvHQhtlG05O1GG/RNWvdAxTboR438IOTwmrY/vLA+Xfgg06BTkP045M3vpFwTMv1dg==}
+    dependencies:
+      '@types/estree': 1.0.5
+      '@types/json-schema': 7.0.12
+    dev: true
+
+  /@types/estree@1.0.5:
+    resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
     dev: true
 
   /@types/istanbul-lib-coverage@2.0.4:
