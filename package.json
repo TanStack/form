@@ -15,7 +15,8 @@
     "test:lib:dev": "pnpm --filter \"./packages/**\" run test:lib:dev",
     "test:build": "nx affected --target=test:build",
     "test:types": "nx affected --target=test:types",
-    "build": "nx run-many --exclude=examples/** --target=build",
+    "buildNx": "nx run-many --target=build --projects=@tanstack/*",
+    "build": "rollup --config rollup.config.js",
     "watch": "pnpm run build && nx watch --all -- pnpm run build",
     "dev": "pnpm run watch",
     "prettier": "prettier \"{packages,examples,scripts}/**/*.{md,js,jsx,cjs,ts,tsx,json,vue}\"",
@@ -35,10 +36,6 @@
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.21.5",
     "@commitlint/parse": "^17.6.5",
-    "@rollup/plugin-babel": "^6.0.3",
-    "@rollup/plugin-commonjs": "^25.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.2",
-    "@rollup/plugin-replace": "^5.0.2",
     "@solidjs/testing-library": "^0.8.4",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
@@ -94,10 +91,21 @@
     "solid-js": "^1.6.13",
     "stream-to-array": "^2.3.0",
     "ts-node": "^10.9.1",
-    "tsup": "7.2.0",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-replace": "^5.0.5",
+    "rollup": "^4.6.1",
+    "rollup-plugin-dts": "^6.1.0",
+    "rollup-plugin-size": "^0.2.2",
+    "rollup-plugin-svelte": "^7.1.6",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-visualizer": "^5.9.3",
     "type-fest": "^3.11.0",
     "typescript": "^5.2.2",
     "vitest": "^0.34.3",
+    "@types/fs-extra": "^11.0.4",
+    "fs-extra": "^11.2.0",
     "vue": "^3.3.4"
   },
   "bundlewatch": {
@@ -109,8 +117,7 @@
   },
   "pnpm": {
     "patchedDependencies": {
-      "@types/testing-library__jest-dom@5.14.5": "patches/@types__testing-library__jest-dom@5.14.5.patch",
-      "tsup@7.2.0": "patches/tsup@7.2.0.patch"
+      "@types/testing-library__jest-dom@5.14.5": "patches/@types__testing-library__jest-dom@5.14.5.patch"
     },
     "overrides": {
       "@tanstack/form-core": "workspace:*",
