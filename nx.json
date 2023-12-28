@@ -29,7 +29,6 @@
     "sharedGlobals": [
       "{workspaceRoot}/.browserslistrc",
       "{workspaceRoot}/.eslintrc.cjs",
-      "{workspaceRoot}/babel.config.cjs",
       "{workspaceRoot}/package.json",
       "{workspaceRoot}/scripts/getRollupConfig.js",
       "{workspaceRoot}/tsconfig.json"
