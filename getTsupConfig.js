@@ -31,7 +31,21 @@ export function legacyConfig(opts) {
     format: ['cjs', 'esm'],
     target: ['es2020', 'node16'],
     outDir: 'build/legacy',
-    dts: true,
+    external: [/@tanstack/],
+    dts: {
+      resolve: true,
+      compilerOptions: {
+        paths: {
+          '@tanstack/form-core': ['@tanstack/form-core'],
+          '@tanstack/react-form': ['@tanstack/react-form'],
+          '@tanstack/vue-form': ['@tanstack/vue-form'],
+          '@tanstack/solid-form': ['@tanstack/solid-form'],
+          '@tanstack/yup-form-adapter': ['@tanstack/yup-form-adapter'],
+          '@tanstack/zod-form-adapter': ['@tanstack/zod-form-adapter'],
+          '@tanstack/valibot-form-adapter': ['@tanstack/valibot-form-adapter'],
+        },
+      },
+    },
     sourcemap: true,
     clean: true,
     esbuildPlugins: [esbuildPluginFilePathExtensions({ esmExtension: 'js' })],
