@@ -29,9 +29,8 @@
     "sharedGlobals": [
       "{workspaceRoot}/.browserslistrc",
       "{workspaceRoot}/.eslintrc.cjs",
-      "{workspaceRoot}/babel.config.cjs",
       "{workspaceRoot}/package.json",
-      "{workspaceRoot}/scripts/getRollupConfig.js",
+      "{workspaceRoot}/getTsupConfig.js",
       "{workspaceRoot}/tsconfig.json"
     ],
     "default": [
@@ -43,8 +42,7 @@
       "default",
       "{projectRoot}/build",
       "{projectRoot}/dist",
-      "!{projectRoot}/.eslintrc.cjs",
-      "!{projectRoot}/tsconfig.eslint.json"
+      "!{projectRoot}/.eslintrc.cjs"
     ]
   },
   "targetDefaults": {

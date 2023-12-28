@@ -1,14 +1,24 @@
 {
-  "files": [],
-  "references": [
-    { "path": "packages/form-core" },
-    { "path": "packages/react-form" },
-    { "path": "packages/vue-form" },
-    { "path": "packages/solid-form" },
-    { "path": "packages/yup-form-adapter" },
-    { "path": "packages/zod-form-adapter" },
-    { "path": "packages/valibot-form-adapter" }
-  ]
-  // "include": ["examples/*"]
-  // "exclude": ["node_modules"]
+  "compilerOptions": {
+    "lib": ["ES2022"],
+    "target": "ES2020",
+    "module": "ES2020",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "strictNullChecks": true,
+    "declaration": true,
+    "noImplicitReturns": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "allowUnreachableCode": true
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs",
+      "esModuleInterop": true
+    }
+  }
 }

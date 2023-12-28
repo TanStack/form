@@ -46,15 +46,6 @@
     },
     "./package.json": "./package.json"
   },
-  "nx": {
-    "targets": {
-      "test:build": {
-        "dependsOn": [
-          "build"
-        ]
-      }
-    }
-  },
   "devDependencies": {
     "@types/jscodeshift": "^0.11.3",
     "@types/react": "^18.0.14",
