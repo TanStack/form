@@ -1,6 +1,6 @@
 {
   "composite": true,
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "jsx": "react",
     "outDir": "./build/lib",
