@@ -48,7 +48,7 @@
     "test:lib": "vitest run --coverage",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
-    "build": "rollup --config rollup.config.js --bundleConfigAsCjs"
+    "build": "tsup"
   },
   "dependencies": {
     "@tanstack/form-core": "workspace:*"
