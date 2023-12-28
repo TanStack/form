@@ -4,15 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@tanstack/form-core': workspace:*
-  '@tanstack/react-form': workspace:*
-  '@tanstack/vue-form': workspace:*
-  '@tanstack/solid-form': workspace:*
-  '@tanstack/yup-form-adapter': workspace:*
-  '@tanstack/zod-form-adapter': workspace:*
-  '@tanstack/valibot-form-adapter': workspace:*
-
 patchedDependencies:
   '@types/testing-library__jest-dom@5.14.5':
     hash: d573maxasnl5kxwdyzebcnmhpm
@@ -248,25 +239,25 @@ importers:
   examples/react/simple:
     dependencies:
       '@tanstack/form-core':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/form-core
       '@tanstack/react-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/react-form
       '@tanstack/solid-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/solid-form
       '@tanstack/valibot-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/valibot-form-adapter
       '@tanstack/vue-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/vue-form
       '@tanstack/yup-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/yup-form-adapter
       '@tanstack/zod-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/zod-form-adapter
       react:
         specifier: ^18.0.0
@@ -285,25 +276,25 @@ importers:
   examples/react/valibot:
     dependencies:
       '@tanstack/form-core':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/form-core
       '@tanstack/react-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/react-form
       '@tanstack/solid-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/solid-form
       '@tanstack/valibot-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/valibot-form-adapter
       '@tanstack/vue-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/vue-form
       '@tanstack/yup-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/yup-form-adapter
       '@tanstack/zod-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/zod-form-adapter
       react:
         specifier: ^18.0.0
@@ -325,25 +316,25 @@ importers:
   examples/react/yup:
     dependencies:
       '@tanstack/form-core':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/form-core
       '@tanstack/react-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/react-form
       '@tanstack/solid-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/solid-form
       '@tanstack/valibot-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/valibot-form-adapter
       '@tanstack/vue-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/vue-form
       '@tanstack/yup-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/yup-form-adapter
       '@tanstack/zod-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/zod-form-adapter
       react:
         specifier: ^18.0.0
@@ -365,25 +356,25 @@ importers:
   examples/react/zod:
     dependencies:
       '@tanstack/form-core':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/form-core
       '@tanstack/react-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/react-form
       '@tanstack/solid-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/solid-form
       '@tanstack/valibot-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/valibot-form-adapter
       '@tanstack/vue-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/vue-form
       '@tanstack/yup-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/yup-form-adapter
       '@tanstack/zod-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/zod-form-adapter
       react:
         specifier: ^18.0.0
@@ -405,25 +396,25 @@ importers:
   examples/solid/simple:
     dependencies:
       '@tanstack/form-core':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/form-core
       '@tanstack/react-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/react-form
       '@tanstack/solid-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/solid-form
       '@tanstack/valibot-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/valibot-form-adapter
       '@tanstack/vue-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/vue-form
       '@tanstack/yup-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/yup-form-adapter
       '@tanstack/zod-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/zod-form-adapter
       solid-js:
         specifier: ^1.7.8
@@ -442,25 +433,25 @@ importers:
   examples/solid/valibot:
     dependencies:
       '@tanstack/form-core':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/form-core
       '@tanstack/react-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/react-form
       '@tanstack/solid-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/solid-form
       '@tanstack/valibot-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/valibot-form-adapter
       '@tanstack/vue-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/vue-form
       '@tanstack/yup-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/yup-form-adapter
       '@tanstack/zod-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/zod-form-adapter
       solid-js:
         specifier: ^1.7.8
@@ -482,25 +473,25 @@ importers:
   examples/solid/yup:
     dependencies:
       '@tanstack/form-core':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/form-core
       '@tanstack/react-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/react-form
       '@tanstack/solid-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/solid-form
       '@tanstack/valibot-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/valibot-form-adapter
       '@tanstack/vue-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/vue-form
       '@tanstack/yup-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/yup-form-adapter
       '@tanstack/zod-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/zod-form-adapter
       solid-js:
         specifier: ^1.7.8
@@ -522,25 +513,25 @@ importers:
   examples/solid/zod:
     dependencies:
       '@tanstack/form-core':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/form-core
       '@tanstack/react-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/react-form
       '@tanstack/solid-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/solid-form
       '@tanstack/valibot-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/valibot-form-adapter
       '@tanstack/vue-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/vue-form
       '@tanstack/yup-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/yup-form-adapter
       '@tanstack/zod-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/zod-form-adapter
       solid-js:
         specifier: ^1.7.8
@@ -562,25 +553,25 @@ importers:
   examples/vue/simple:
     dependencies:
       '@tanstack/form-core':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/form-core
       '@tanstack/react-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/react-form
       '@tanstack/solid-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/solid-form
       '@tanstack/valibot-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/valibot-form-adapter
       '@tanstack/vue-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/vue-form
       '@tanstack/yup-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/yup-form-adapter
       '@tanstack/zod-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/zod-form-adapter
       vue:
         specifier: ^3.3.4
@@ -602,25 +593,25 @@ importers:
   examples/vue/valibot:
     dependencies:
       '@tanstack/form-core':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/form-core
       '@tanstack/react-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/react-form
       '@tanstack/solid-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/solid-form
       '@tanstack/valibot-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/valibot-form-adapter
       '@tanstack/vue-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/vue-form
       '@tanstack/yup-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/yup-form-adapter
       '@tanstack/zod-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/zod-form-adapter
       valibot:
         specifier: ^0.20.1
@@ -645,25 +636,25 @@ importers:
   examples/vue/yup:
     dependencies:
       '@tanstack/form-core':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/form-core
       '@tanstack/react-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/react-form
       '@tanstack/solid-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/solid-form
       '@tanstack/valibot-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/valibot-form-adapter
       '@tanstack/vue-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/vue-form
       '@tanstack/yup-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/yup-form-adapter
       '@tanstack/zod-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/zod-form-adapter
       vue:
         specifier: ^3.3.4
@@ -688,25 +679,25 @@ importers:
   examples/vue/zod:
     dependencies:
       '@tanstack/form-core':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/form-core
       '@tanstack/react-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/react-form
       '@tanstack/solid-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/solid-form
       '@tanstack/valibot-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/valibot-form-adapter
       '@tanstack/vue-form':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/vue-form
       '@tanstack/yup-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/yup-form-adapter
       '@tanstack/zod-form-adapter':
-        specifier: workspace:*
+        specifier: 0.11.0
         version: link:../../../packages/zod-form-adapter
       vue:
         specifier: ^3.3.4

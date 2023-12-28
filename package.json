@@ -2,7 +2,7 @@
   "name": "form",
   "private": true,
   "repository": "https://github.com/tanstack/form.git",
-  "packageManager": "pnpm@8.5.1",
+  "packageManager": "pnpm@8.12.1",
   "scripts": {
     "clean": "pnpm --filter \"./packages/**\" run clean",
     "preinstall": "node -e \"if(process.env.CI == 'true') {console.log('Skipping preinstall...'); process.exit(1)}\" || npx -y only-allow pnpm",
@@ -115,15 +115,6 @@
     "patchedDependencies": {
       "@types/testing-library__jest-dom@5.14.5": "patches/@types__testing-library__jest-dom@5.14.5.patch",
       "tsup@7.2.0": "patches/tsup@7.2.0.patch"
-    },
-    "overrides": {
-      "@tanstack/form-core": "workspace:*",
-      "@tanstack/react-form": "workspace:*",
-      "@tanstack/vue-form": "workspace:*",
-      "@tanstack/solid-form": "workspace:*",
-      "@tanstack/yup-form-adapter": "workspace:*",
-      "@tanstack/zod-form-adapter": "workspace:*",
-      "@tanstack/valibot-form-adapter": "workspace:*"
     }
   }
 }
