@@ -2,9 +2,15 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "types": ["vitest/globals", "vue/jsx"],
-    "outDir": "./build/lib",
+    "noEmit": true,
     "jsx": "preserve",
     "jsxImportSource": "vue"
   },
-  "include": ["src"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    ".eslintrc.cjs",
+    "test-setup.ts",
+    "tsup.config.js"
+  ]
 }

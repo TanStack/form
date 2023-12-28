@@ -43,7 +43,7 @@
       "{projectRoot}/build",
       "{projectRoot}/dist",
       "!{projectRoot}/.eslintrc.cjs",
-      "!{projectRoot}/tsconfig.eslint.json"
+      "!{projectRoot}/tsconfig.json"
     ]
   },
   "targetDefaults": {
