@@ -30,7 +30,7 @@
       "{workspaceRoot}/.browserslistrc",
       "{workspaceRoot}/.eslintrc.cjs",
       "{workspaceRoot}/package.json",
-      "{workspaceRoot}/scripts/getRollupConfig.js",
+      "{workspaceRoot}/getTsupConfig.js",
       "{workspaceRoot}/tsconfig.json"
     ],
     "default": [
@@ -42,8 +42,7 @@
       "default",
       "{projectRoot}/build",
       "{projectRoot}/dist",
-      "!{projectRoot}/.eslintrc.cjs",
-      "!{projectRoot}/tsconfig.json"
+      "!{projectRoot}/.eslintrc.cjs"
     ]
   },
   "targetDefaults": {
