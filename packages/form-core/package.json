@@ -44,7 +44,7 @@
     "test:lib": "vitest run --coverage",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
-    "build": "tsup"
+    "build": "vite build"
   },
   "dependencies": {
     "@tanstack/store": "0.1.3"
