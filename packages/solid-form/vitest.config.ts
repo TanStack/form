@@ -10,6 +10,12 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     coverage: { provider: 'istanbul' },
+    server: {
+      deps: {
+        // https://github.com/solidjs/solid-testing-library#known-issues
+        inline: [/solid-js/],
+      },
+    },
   },
   plugins: [solid()],
 })

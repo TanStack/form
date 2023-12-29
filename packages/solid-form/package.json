@@ -53,18 +53,9 @@
       "default": "./build/index.cjs"
     }
   },
-  "nx": {
-    "targets": {
-      "test:build": {
-        "dependsOn": [
-          "build"
-        ]
-      }
-    }
-  },
   "devDependencies": {
     "solid-js": "^1.7.8",
-    "tsup-preset-solid": "^2.1.0",
+    "tsup-preset-solid": "^2.2.0",
     "vite-plugin-solid": "^2.7.0"
   },
   "dependencies": {
