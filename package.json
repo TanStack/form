@@ -83,7 +83,6 @@
     "solid-js": "^1.6.13",
     "stream-to-array": "^2.3.0",
     "ts-node": "^10.9.1",
-    "tsup": "8.0.1",
     "type-fest": "^3.11.0",
     "typescript": "^5.2.2",
     "typescript48": "npm:typescript@4.8",

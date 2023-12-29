@@ -45,3 +45,4 @@ dist
 .idea
 
 nx-cloud.env
+.nx
