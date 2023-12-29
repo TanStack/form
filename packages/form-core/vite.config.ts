@@ -1,8 +1,10 @@
 import { defineConfig, mergeConfig } from 'vitest/config'
-import { defaultViteConfig } from '../../getViteConfig'
+import { getDefaultViteConfig } from '../../getViteConfig'
+
+console.log(__dirname)
 
 export default mergeConfig(
-  defaultViteConfig,
+  getDefaultViteConfig({ dirname: __dirname, entryPath: 'src/index.ts' }),
   defineConfig({
     test: {
       name: 'form-core',

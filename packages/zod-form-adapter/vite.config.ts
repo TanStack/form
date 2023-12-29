@@ -1,8 +1,8 @@
 import { defineConfig, mergeConfig } from 'vitest/config'
-import { defaultViteConfig } from '../../getViteConfig'
+import { getDefaultViteConfig } from '../../getViteConfig'
 
 export default mergeConfig(
-  defaultViteConfig,
+  getDefaultViteConfig({ dirname: __dirname, entryPath: 'src/index.ts' }),
   defineConfig({
     test: {
       name: 'zod-form-adapter',
