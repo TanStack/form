@@ -88,7 +88,7 @@ export interface FormOptions<
 
 export type Persister<TFormData> = {
   persistForm(formState: FormState<TFormData>): MaybePromise<void>
-  restoreForm(): MaybePromise<FormState<TFormData> | null>
+  restoreForm(): MaybePromise<FormState<TFormData> | undefined>
   deleteForm(): MaybePromise<void>
 }
 
@@ -176,6 +176,7 @@ export class FormApi<
     {} as any
 
   constructor(opts?: FormOptions<TFormData, TFormValidator>) {
+    let firstUpdateCycleOccurred = false
     this.store = new Store<FormState<TFormData>>(
       getDefaultFormState({
         ...(opts?.defaultState as any),
@@ -224,22 +225,31 @@ export class FormApi<
 
           this.store.state = state
           this.state = state
-          opts?.persister?.persistForm(state)
+          if (firstUpdateCycleOccurred) {
+            if (opts?.persister) {
+              opts.persister.persistForm(state)
+            } else if (this.options.persister) {
+              this.options.persister.persistForm(state)
+            }
+          }
+          firstUpdateCycleOccurred = true
         },
       },
     )
-    this.restore()
 
     this.state = this.store.state
-
     this.update(opts || {})
+    this.restore(opts)
   }
 
-  restore = async () => {
-    if (!this.options.persister) return
-    const restoredState = await this.options.persister.restoreForm()
+  restore = async (opts?: FormOptions<TFormData, TFormValidator>) => {
+    if (!opts?.persister) return
+    const restoredState = await opts.persister.restoreForm()
     if (!restoredState) return
-    this.store.setState(() => restoredState)
+    this.state = restoredState
+    this.store.batch(() => {
+      this.store.setState(() => restoredState)
+    })
   }
 
   runValidator<

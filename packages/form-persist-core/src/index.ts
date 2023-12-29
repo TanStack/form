@@ -43,9 +43,9 @@ type AddKeyStringArgument<T extends Record<string, (...args: any[]) => any>> = {
 const makeKey = (prefix: string = 'tanstack-form', persistKey: string) =>
   `${prefix}-${persistKey}`
 
-export function createPersister(
+export function createPersister<TFormData>(
   options: StoragePersisterOptions,
-): AddKeyStringArgument<Persister<unknown>> {
+): AddKeyStringArgument<Persister<TFormData>> {
   return {
     async persistForm(persistKey, formState) {
       await options.storage?.setItem(
@@ -60,7 +60,10 @@ export function createPersister(
       const deserialized =
         (await options.storage?.getItem(makeKey(options.prefix, persistKey))) ??
         'null'
-      return JSON.parse(deserialized)
+      const state = JSON.parse(deserialized)
+      if (!state || state.buster !== (options.buster ?? ''))
+        return this.deleteForm(persistKey)
+      return state.state
     },
     deleteForm(persistKey) {
       return options.storage?.removeItem(makeKey(options.prefix, persistKey))
