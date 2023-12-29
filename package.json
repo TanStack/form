@@ -90,6 +90,9 @@
     "typescript49": "npm:typescript@4.9",
     "typescript50": "npm:typescript@5.0",
     "typescript51": "npm:typescript@5.1",
+    "vite": "4.4.9",
+    "vite-plugin-dts": "^3.7.0",
+    "vite-plugin-externalize-deps": "^0.8.0",
     "vitest": "^0.34.3",
     "vue": "^3.3.4"
   },
