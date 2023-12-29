@@ -30,7 +30,7 @@
       "{workspaceRoot}/.browserslistrc",
       "{workspaceRoot}/.eslintrc.cjs",
       "{workspaceRoot}/package.json",
-      "{workspaceRoot}/getViteConfig.js",
+      "{workspaceRoot}/getViteConfig.ts",
       "{workspaceRoot}/tsconfig.json"
     ],
     "default": [
