@@ -11,6 +11,6 @@
     "src/**/*.tsx",
     ".eslintrc.cjs",
     "test-setup.ts",
-    "tsup.config.js"
+    "vite.config.ts"
   ]
 }
