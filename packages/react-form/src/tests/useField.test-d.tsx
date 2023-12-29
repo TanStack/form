@@ -49,7 +49,7 @@ it('should type onChange properly', () => {
               return null
             },
           }}
-          children={(field) => null}
+          children={() => null}
         />
         <form.Field
           name="age"
@@ -59,7 +59,7 @@ it('should type onChange properly', () => {
               return null
             },
           }}
-          children={(field) => null}
+          children={() => null}
         />
       </form.Provider>
     )

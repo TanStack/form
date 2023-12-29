@@ -2,7 +2,7 @@
   "name": "form",
   "private": true,
   "repository": "https://github.com/tanstack/form.git",
-  "packageManager": "pnpm@8.5.1",
+  "packageManager": "pnpm@8.12.1",
   "scripts": {
     "clean": "pnpm --filter \"./packages/**\" run clean",
     "preinstall": "node -e \"if(process.env.CI == 'true') {console.log('Skipping preinstall...'); process.exit(1)}\" || npx -y only-allow pnpm",
@@ -30,15 +30,7 @@
   },
   "namespace": "@tanstack",
   "devDependencies": {
-    "@babel/core": "^7.21.8",
-    "@babel/preset-env": "^7.21.5",
-    "@babel/preset-react": "^7.18.6",
-    "@babel/preset-typescript": "^7.21.5",
     "@commitlint/parse": "^17.6.5",
-    "@rollup/plugin-babel": "^6.0.3",
-    "@rollup/plugin-commonjs": "^25.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.2",
-    "@rollup/plugin-replace": "^5.0.2",
     "@solidjs/testing-library": "^0.8.4",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
@@ -46,6 +38,7 @@
     "@testing-library/user-event": "^14.4.3",
     "@testing-library/vue": "^7.0.0",
     "@types/current-git-branch": "^1.1.4",
+    "@types/eslint": "^8.56.0",
     "@types/jest": "^26.0.4",
     "@types/jsonfile": "^6.1.1",
     "@types/luxon": "^2.3.1",
@@ -59,15 +52,11 @@
     "@typescript-eslint/parser": "^6.4.1",
     "@vitest/coverage-istanbul": "^0.34.3",
     "axios": "^0.26.1",
-    "babel-eslint": "^10.1.0",
-    "babel-jest": "^27.5.1",
-    "babel-preset-solid": "^1.5.4",
     "bundlewatch": "^0.3.2",
     "chalk": "^4.1.2",
     "concurrently": "^8.2.1",
     "cpy-cli": "^5.0.0",
     "current-git-branch": "^1.1.0",
-    "esbuild": "^0.18.13",
     "esbuild-plugin-file-path-extensions": "^1.0.0",
     "eslint": "^8.48.0",
     "eslint-config-prettier": "^9.0.0",
@@ -94,9 +83,13 @@
     "solid-js": "^1.6.13",
     "stream-to-array": "^2.3.0",
     "ts-node": "^10.9.1",
-    "tsup": "7.2.0",
+    "tsup": "8.0.1",
     "type-fest": "^3.11.0",
     "typescript": "^5.2.2",
+    "typescript48": "npm:typescript@4.8",
+    "typescript49": "npm:typescript@4.9",
+    "typescript50": "npm:typescript@5.0",
+    "typescript51": "npm:typescript@5.1",
     "vitest": "^0.34.3",
     "vue": "^3.3.4"
   },
@@ -109,17 +102,7 @@
   },
   "pnpm": {
     "patchedDependencies": {
-      "@types/testing-library__jest-dom@5.14.5": "patches/@types__testing-library__jest-dom@5.14.5.patch",
-      "tsup@7.2.0": "patches/tsup@7.2.0.patch"
-    },
-    "overrides": {
-      "@tanstack/form-core": "workspace:*",
-      "@tanstack/react-form": "workspace:*",
-      "@tanstack/vue-form": "workspace:*",
-      "@tanstack/solid-form": "workspace:*",
-      "@tanstack/yup-form-adapter": "workspace:*",
-      "@tanstack/zod-form-adapter": "workspace:*",
-      "@tanstack/valibot-form-adapter": "workspace:*"
+      "@types/testing-library__jest-dom@5.14.5": "patches/@types__testing-library__jest-dom@5.14.5.patch"
     }
   }
 }

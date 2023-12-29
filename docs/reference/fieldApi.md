@@ -8,7 +8,7 @@ title: Field API
 Normally, you will not need to create a new `FieldApi` instance directly. Instead, you will use a framework hook/function like `useField` or `createField` to create a new instance for you that utilizes your frameworks reactivity model. However, if you need to create a new instance manually, you can do so by calling the `new FieldApi` constructor.
 
 ```tsx
-const fieldApi: FieldApi<TData> = new FieldApi(formOptions: Field Options<TData>)
+const fieldApi: FieldApi<TData> = new FieldApi(formOptions: FieldOptions<TData>)
 ```
 
 ### `FieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>`
@@ -18,11 +18,13 @@ An object type representing the options for a field in a form.
 - ```tsx
   name: TName
   ```
+
   - The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
 
 - ```tsx
   defaultValue?: TData
   ```
+
   - An optional default value for the field.
 
 - ```tsx
@@ -48,7 +50,6 @@ An object type representing the options for a field in a form.
   ```
 
   - A validator provided by an extension, like `yupValidator` from `@tanstack/yup-form-adapter`
-
 
 - ```tsx
   validators?: FieldValidators<
@@ -107,7 +108,6 @@ An object type representing the options for a field in a form.
   - An optional number to represent how long the `onBlurAsyncDebounceMs` should wait before running
   - If set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds
 
-
 - ```tsx
   onSubmit?: ValidateFn<TData, TParentData>
   ```
@@ -126,9 +126,6 @@ An object type representing the options for a field in a form.
 
   - An optional number to represent how long the `onSubmitAsyncDebounceMs` should wait before running
   - If set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds
-
-
-
 
 ### `FieldMeta`
 
@@ -197,78 +194,93 @@ A class representing the API for managing a form field.
 - ```tsx
   constructor(opts: FieldApiOptions<TData, TParentData>)
   ```
+
   - Initializes a new `FieldApi` instance.
-  
+
 - ```tsx
   mount(): () => void
   ```
+
   - Mounts the field instance to the form.
-  
+
 - ```tsx
   update(opts: FieldApiOptions<TData, TParentData>): void
   ```
+
   - Updates the field instance with new options.
-  
+
 - ```tsx
   getValue(): TData
   ```
+
   - Gets the current field value.
-  
+
 - ```tsx
   setValue(updater: Updater<TData>, options?: { touch?: boolean; notify?: boolean }): void
   ```
+
   - Sets the field value and run the `change` validator.
-  
+
 - ```tsx
   getMeta(): FieldMeta
   ```
+
   - Gets the current field metadata.
-  
+
 - ```tsx
   setMeta(updater: Updater<FieldMeta>): void
   ```
+
   - Sets the field metadata.
-  
+
 - ```tsx
   getInfo(): any
   ```
+
   - Gets the field information object.
-  
+
 - ```tsx
   pushValue(value: TData): void
   ```
+
   - Pushes a new value to the field.
-  
+
 - ```tsx
   insertValue(index: number, value: TData): void
   ```
+
   - Inserts a value at the specified index.
-  
+
 - ```tsx
   removeValue(index: number): void
   ```
+
   - Removes a value at the specified index.
-  
+
 - ```tsx
   swapValues(aIndex: number, bIndex: number): void
   ```
+
   - Swaps the values at the specified indices.
-  
+
 - ```tsx
   getSubField<TSubName, TSubData>(name: TName): FieldApi<TData, TSubName, ValidatorType, TSubData>
   ```
+
   - Gets a subfield instance.
-  
+
 - ```tsx
   validate(): Promise<any>
   ```
+
   - Validates the field value.
-  
+
 - ```tsx
   handleBlur(): void;
   ```
+
   - Handles the blur event.
-  
+
 - ```tsx
   handleChange(value: TData): void
   ```
@@ -286,4 +298,3 @@ An object type representing the state of a field.
   meta: FieldMeta
   ```
   - The current metadata of the field.
-
