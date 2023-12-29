@@ -23,35 +23,28 @@
     "test:lib": "vitest run --coverage",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
-    "build": "tsup"
+    "build": "vite build"
   },
   "files": [
-    "build",
+    "dist",
     "src"
   ],
   "type": "module",
-  "main": "./build/index.cjs",
-  "module": "./build/index.js",
-  "types": "./build/index.d.ts",
+  "types": "dist/mjs/index.d.mts",
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/mjs/index.mjs",
   "exports": {
-    "development": {
+    ".": {
       "import": {
-        "types": "./build/index.d.ts",
-        "default": "./build/dev.js"
+        "types": "./dist/mjs/index.d.mts",
+        "default": "./dist/mjs/index.mjs"
       },
       "require": {
-        "types": "./build/index.d.cts",
-        "default": "./build/dev.cjs"
+        "types": "./dist/cjs/index.d.cts",
+        "default": "./dist/cjs/index.cjs"
       }
     },
-    "import": {
-      "types": "./build/index.d.ts",
-      "default": "./build/index.js"
-    },
-    "require": {
-      "types": "./build/index.d.cts",
-      "default": "./build/index.cjs"
-    }
+    "./package.json": "./package.json"
   },
   "devDependencies": {
     "solid-js": "^1.7.8",
