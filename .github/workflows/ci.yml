@@ -1,7 +1,5 @@
 name: ci
-concurrency:
-  group: publish-${{ github.github.base_ref }}
-  cancel-in-progress: true
+
 on:
   workflow_dispatch:
     inputs:
@@ -9,21 +7,24 @@ on:
         description: override release tag
         required: false
   push:
-    branches:
-      - 'main'
-      - 'alpha'
-      - 'beta'
+    branches: ['main', 'alpha', 'beta']
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
 env:
   NX_DAEMON: false
   NX_VERBOSE_LOGGING: true
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+
 jobs:
   test-and-publish:
     if: github.repository == 'TanStack/form' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/alpha' || github.ref == 'refs/heads/beta')
     name: 'Test & Publish'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: '0'
       - name: Setup pnpm
