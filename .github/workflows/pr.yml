@@ -14,12 +14,14 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
           repository: ${{github.event.pull_request.head.repo.full_name}}
-      - uses: pnpm/action-setup@v2.2.4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
         with:
           version: 8
-      - uses: actions/setup-node@v3
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.15.0
+          node-version-file: .nvmrc
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --prefer-offline install --no-frozen-lockfile
@@ -40,12 +42,14 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
           repository: ${{github.event.pull_request.head.repo.full_name}}
-      - uses: pnpm/action-setup@v2.2.4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
         with:
-          version: 7
-      - uses: actions/setup-node@v3
+          version: 8
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.14.2
+          node-version-file: .nvmrc
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --prefer-offline install --no-frozen-lockfile
@@ -59,12 +63,14 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
           repository: ${{github.event.pull_request.head.repo.full_name}}
-      - uses: pnpm/action-setup@v2.2.4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
         with:
-          version: 7
-      - uses: actions/setup-node@v3
+          version: 8
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.14.2
+          node-version-file: .nvmrc
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --prefer-offline install --no-frozen-lockfile
@@ -78,12 +84,14 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
           repository: ${{github.event.pull_request.head.repo.full_name}}
-      - uses: pnpm/action-setup@v2.2.4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
         with:
-          version: 7
-      - uses: actions/setup-node@v3
+          version: 8
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.14.2
+          node-version-file: .nvmrc
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --prefer-offline install --no-frozen-lockfile
@@ -97,12 +105,14 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
           repository: ${{github.event.pull_request.head.repo.full_name}}
-      - uses: pnpm/action-setup@v2.2.4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
         with:
-          version: 7
-      - uses: actions/setup-node@v3
+          version: 8
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.14.2
+          node-version-file: .nvmrc
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --prefer-offline install --no-frozen-lockfile
