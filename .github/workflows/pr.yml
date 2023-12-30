@@ -40,7 +40,7 @@ jobs:
       - name: Run Tests
         uses: nick-fields/retry@v2.8.3
         with:
-          command: pnpm test:lib --base=${{ github.event.pull_request.base.sha }}
+          command: pnpm test:lib -- --base=${{ github.event.pull_request.base.sha }}
           timeout_minutes: 5
           max_attempts: 3
       - name: Upload coverage to Codecov
@@ -65,7 +65,7 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --prefer-offline install --no-frozen-lockfile
-      - run: pnpm run test:eslint --base=${{ github.event.pull_request.base.sha }}
+      - run: pnpm run test:eslint -- --base=${{ github.event.pull_request.base.sha }}
   typecheck:
     name: 'Typecheck'
     runs-on: ubuntu-latest
@@ -86,7 +86,7 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --prefer-offline install --no-frozen-lockfile
-      - run: pnpm run test:types --base=${{ github.event.pull_request.base.sha }}
+      - run: pnpm run test:types -- --base=${{ github.event.pull_request.base.sha }}
   format:
     name: 'Format'
     runs-on: ubuntu-latest
@@ -107,7 +107,7 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --prefer-offline install --no-frozen-lockfile
-      - run: pnpm run test:format --base=${{ github.event.pull_request.base.sha }}
+      - run: pnpm run test:format
   test-build:
     name: 'Test Build'
     runs-on: ubuntu-latest
