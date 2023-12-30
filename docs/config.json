@@ -30,8 +30,12 @@
       "label": "Guides",
       "children": [
         {
-          "label": "Important Defaults",
-          "to": "guides/important-defaults"
+          "label": "Basic Concepts",
+          "to": "guides/basic-concepts"
+        },
+        {
+          "label": "Form Validation",
+          "to": "guides/validation"
         }
       ]
     },
@@ -45,6 +49,10 @@
         {
           "label": "FieldApi",
           "to": "reference/fieldApi"
+        },
+        {
+          "label": "Types",
+          "to": "reference/types"
         }
       ]
     }
@@ -89,6 +97,130 @@
             {
               "label": "Simple",
               "to": "framework/react/examples/simple"
+            },
+            {
+              "label": "Yup",
+              "to": "framework/react/examples/yup"
+            },
+            {
+              "label": "Zod",
+              "to": "framework/react/examples/zod"
+            },
+            {
+              "label": "Valibot",
+              "to": "framework/react/examples/valibot"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "framework": "vue",
+      "menuItems": [
+        {
+          "label": "Getting Started",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "framework/vue/quick-start"
+            }
+          ]
+        },
+        {
+          "label": "API Reference",
+          "children": [
+            {
+              "label": "useForm",
+              "to": "framework/vue/reference/useForm"
+            },
+            {
+              "label": "useField",
+              "to": "framework/vue/reference/useField"
+            },
+            {
+              "label": "Field",
+              "to": "framework/vue/reference/Field"
+            },
+            {
+              "label": "FormApi",
+              "to": "framework/vue/reference/formApi"
+            }
+          ]
+        },
+        {
+          "label": "Examples",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/vue/examples/simple"
+            },
+            {
+              "label": "Yup",
+              "to": "framework/vue/examples/yup"
+            },
+            {
+              "label": "Zod",
+              "to": "framework/vue/examples/zod"
+            },
+            {
+              "label": "Valibot",
+              "to": "framework/vue/examples/valibot"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "framework": "solid",
+      "menuItems": [
+        {
+          "label": "Getting Started",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "framework/solid/quick-start"
+            }
+          ]
+        },
+        {
+          "label": "API Reference",
+          "children": [
+            {
+              "label": "useForm",
+              "to": "framework/solid/reference/createForm"
+            },
+            {
+              "label": "useField",
+              "to": "framework/solid/reference/createField"
+            },
+            {
+              "label": "Field",
+              "to": "framework/solid/reference/Field"
+            },
+            {
+              "label": "FormApi",
+              "to": "framework/solid/reference/formApi"
+            }
+          ]
+        },
+        {
+          "label": "Examples",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/solid/examples/simple"
+            },
+            {
+              "label": "Yup",
+              "to": "framework/solid/examples/yup"
+            },
+            {
+              "label": "Zod",
+              "to": "framework/solid/examples/zod"
+            },
+            {
+              "label": "Valibot",
+              "to": "framework/solid/examples/valibot"
             }
           ]
         }

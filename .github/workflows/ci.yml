@@ -28,20 +28,14 @@ jobs:
           fetch-depth: '0'
       - uses: pnpm/action-setup@v2.2.4
         with:
-          version: 7
+          version: 8
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.14.2
+          node-version: 18.15.0
           registry-url: https://registry.npmjs.org/
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
-      - name: Run Tests
-        uses: nick-fields/retry@v2.8.3
-        with:
-          command: pnpm run test:ci --base=${{ github.event.before }}
-          timeout_minutes: 10
-          max_attempts: 3
       - name: Publish
         run: |
           git config --global user.name 'Tanner Linsley'
@@ -54,5 +48,3 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           TAG: ${{ inputs.tag }}
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3

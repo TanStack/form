@@ -1,3 +1,7 @@
+import type { ValidationCause, Validator } from './types'
+import type { FormValidators } from './FormApi'
+import type { FieldValidators } from './FieldApi'
+
 export type UpdaterFn<TInput, TOutput = TInput> = (input: TInput) => TOutput
 
 export type Updater<TInput, TOutput = TInput> =
@@ -17,8 +21,7 @@ export function functionalUpdate<TInput, TOutput = TInput>(
  * Get a value from an object using a path, including dot notation.
  */
 export function getBy(obj: any, path: any) {
-  const pathArray = makePathArray(path)
-  const pathObj = pathArray
+  const pathObj = makePathArray(path)
   return pathObj.reduce((current: any, pathPart: any) => {
     if (typeof current !== 'undefined') {
       return current[pathPart]
@@ -52,22 +55,59 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
       }
     }
 
+    if (Array.isArray(parent) && key !== undefined) {
+      const prefix = parent.slice(0, key)
+      return [
+        ...(prefix.length ? prefix : new Array(key)),
+        doSet(parent[key]),
+        ...parent.slice(key + 1),
+      ]
+    }
+    return [...new Array(key), doSet()]
+  }
+
+  return doSet(obj)
+}
+
+/**
+ * Delete a field on an object using a path, including dot notation.
+ */
+export function deleteBy(obj: any, _path: any) {
+  const path = makePathArray(_path)
+
+  function doDelete(parent: any): any {
+    if (path.length === 1) {
+      const finalPath = path[0]!
+      const { [finalPath]: remove, ...rest } = parent
+      return rest
+    }
+
+    const key = path.shift()
+
+    if (typeof key === 'string') {
+      if (typeof parent === 'object') {
+        return {
+          ...parent,
+          [key]: doDelete(parent[key]),
+        }
+      }
+    }
+
     if (typeof key === 'number') {
       if (Array.isArray(parent)) {
         const prefix = parent.slice(0, key)
         return [
           ...(prefix.length ? prefix : new Array(key)),
-          doSet(parent[key]),
+          doDelete(parent[key]),
           ...parent.slice(key + 1),
         ]
       }
-      return [...new Array(key), doSet()]
     }
 
-    throw new Error('Uh oh!')
+    throw new Error('It seems we have created an infinite loop in deleteBy. ')
   }
 
-  return doSet(obj)
+  return doDelete(obj)
 }
 
 const reFindNumbers0 = /^(\d*)$/gm
@@ -101,6 +141,112 @@ function makePathArray(str: string) {
     })
 }
 
+export function isNonEmptyArray(obj: any) {
+  return !(Array.isArray(obj) && obj.length === 0)
+}
+
+interface AsyncValidatorArrayPartialOptions<T> {
+  validators?: T
+  asyncDebounceMs?: number
+}
+
+interface AsyncValidator<T> {
+  cause: ValidationCause
+  validate: T
+  debounceMs: number
+}
+
+export function getAsyncValidatorArray<T>(
+  cause: ValidationCause,
+  options: AsyncValidatorArrayPartialOptions<T>,
+): T extends FieldValidators<any, any>
+  ? Array<
+      AsyncValidator<T['onChangeAsync'] | T['onBlurAsync'] | T['onSubmitAsync']>
+    >
+  : T extends FormValidators<any, any>
+  ? Array<
+      AsyncValidator<T['onChangeAsync'] | T['onBlurAsync'] | T['onSubmitAsync']>
+    >
+  : never {
+  const { asyncDebounceMs } = options
+  const {
+    onChangeAsync,
+    onBlurAsync,
+    onSubmitAsync,
+    onBlurAsyncDebounceMs,
+    onChangeAsyncDebounceMs,
+    onSubmitAsyncDebounceMs,
+  } = (options.validators || {}) as
+    | FieldValidators<any, any>
+    | FormValidators<any, any>
+
+  const defaultDebounceMs = asyncDebounceMs ?? 0
+
+  const changeValidator = {
+    cause: 'change',
+    validate: onChangeAsync,
+    debounceMs: onChangeAsyncDebounceMs ?? defaultDebounceMs,
+  } as const
+
+  const blurValidator = {
+    cause: 'blur',
+    validate: onBlurAsync,
+    debounceMs: onBlurAsyncDebounceMs ?? defaultDebounceMs,
+  } as const
+
+  const submitValidator = {
+    cause: 'submit',
+    validate: onSubmitAsync,
+    debounceMs: onSubmitAsyncDebounceMs ?? defaultDebounceMs,
+  } as const
+
+  switch (cause) {
+    case 'submit':
+      return [changeValidator, blurValidator, submitValidator] as never
+    case 'blur':
+      return [blurValidator] as never
+    case 'change':
+    default:
+      return [changeValidator] as never
+  }
+}
+
+interface SyncValidatorArrayPartialOptions<T> {
+  validators?: T
+}
+
+interface SyncValidator<T> {
+  cause: ValidationCause
+  validate: T
+}
+
+export function getSyncValidatorArray<T>(
+  cause: ValidationCause,
+  options: SyncValidatorArrayPartialOptions<T>,
+): T extends FieldValidators<any, any>
+  ? Array<SyncValidator<T['onChange'] | T['onBlur'] | T['onSubmit']>>
+  : T extends FormValidators<any, any>
+  ? Array<SyncValidator<T['onChange'] | T['onBlur'] | T['onSubmit']>>
+  : never {
+  const { onChange, onBlur, onSubmit } = (options.validators || {}) as
+    | FieldValidators<any, any>
+    | FormValidators<any, any>
+
+  const changeValidator = { cause: 'change', validate: onChange } as const
+  const blurValidator = { cause: 'blur', validate: onBlur } as const
+  const submitValidator = { cause: 'submit', validate: onSubmit } as const
+
+  switch (cause) {
+    case 'submit':
+      return [changeValidator, blurValidator, submitValidator] as never
+    case 'blur':
+      return [blurValidator] as never
+    case 'change':
+    default:
+      return [changeValidator] as never
+  }
+}
+
 export type RequiredByKey<T, K extends keyof T> = Omit<T, K> &
   Required<Pick<T, K>>
 
@@ -129,22 +275,28 @@ type AllowedIndexes<
   ? AllowedIndexes<Tail, Keys | Tail['length']>
   : Keys
 
-export type DeepKeys<T> = unknown extends T
-  ? keyof T
+export type DeepKeys<T, TDepth extends any[] = []> = TDepth['length'] extends 5
+  ? never
+  : unknown extends T
+  ? string
   : object extends T
   ? string
   : T extends readonly any[] & IsTuple<T>
-  ? AllowedIndexes<T> | DeepKeysPrefix<T, AllowedIndexes<T>>
+  ? AllowedIndexes<T> | DeepKeysPrefix<T, AllowedIndexes<T>, TDepth>
   : T extends any[]
-  ? DeepKeys<T[number]>
+  ? DeepKeys<T[number], [...TDepth, any]>
   : T extends Date
   ? never
   : T extends object
-  ? (keyof T & string) | DeepKeysPrefix<T, keyof T>
+  ? (keyof T & string) | DeepKeysPrefix<T, keyof T, TDepth>
   : never
 
-type DeepKeysPrefix<T, TPrefix> = TPrefix extends keyof T & (number | string)
-  ? `${TPrefix}.${DeepKeys<T[TPrefix]> & string}`
+type DeepKeysPrefix<
+  T,
+  TPrefix,
+  TDepth extends any[],
+> = TPrefix extends keyof T & (number | string)
+  ? `${TPrefix}.${DeepKeys<T[TPrefix], [...TDepth, any]> & string}`
   : never
 
 export type DeepValue<T, TProp> = T extends Record<string | number, any>

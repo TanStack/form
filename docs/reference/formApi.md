@@ -5,94 +5,128 @@ title: Form API
 
 ### Creating a new FormApi Instance
 
-> Some of these docs may be inaccurate due to an API shift in `0.11.0`. If you're interested in helping us fix these issues, please [join our Discord](https://tlinz.com/discord) and reach out in the `#form` channel.
-
 Normally, you will not need to create a new `FormApi` instance directly. Instead, you will use a framework hook/function like `useForm` or `createForm` to create a new instance for you that utilizes your frameworks reactivity model. However, if you need to create a new instance manually, you can do so by calling the `new FormApi` constructor.
 
 ```tsx
 const formApi: FormApi<TData> = new FormApi(formOptions: FormOptions<TData>)
 ```
 
-### `FormOptions<TData>`
+### `FormOptions<TFormData, TFormValidator>`
 
 An object representing the options for a form.
 
 - ```tsx
-    defaultValues?: TData
+  asyncDebounceMs?: number
   ```
-  - The default values for the form fields.
+  -  Optional time in milliseconds if you want to introduce a delay before firing off an async action.
+
 - ```tsx
-    defaultState?: Partial<FormState<TData>>
+  asyncAlways?: boolean
+  ```
+  -  If true, always run async validation, even when sync validation has produced an error. Defaults to `undefined`.
+
+- ```tsx
+  defaultValues?: TData
+  ```
+  - Set initial values for your form.
+  
+- ```tsx
+  defaultState?: Partial<FormState<TData>>
   ```
   - The default state for the form.
+
 - ```tsx
-    onSubmit?: (values: TData, formApi: FormApi<TData>) => Promise<any>
+  onSubmit?: (values: TData, formApi: FormApi<TData>) => any | Promise<any>
   ```
-  - A function to be called when the form is submitted and valid.
+  - A function to be called when the form is submitted, what should happen once the user submits a valid form  returns `any` or a promise `Promise<any>`
+
 - ```tsx
-    onInvalidSubmit?: (values: TData, formApi: FormApi<TData>) => void
+  onSubmitInvalid?: (values: TData, formApi: FormApi<TData>) => void
   ```
-  - A function to be called when the form is submitted but invalid.
+  - Specify an action for scenarios where the user tries to submit an invalid form.
+
 - ```tsx
-    validate?: (values: TData, formApi: FormApi<TData>) => Promise<any>
+  validatorAdapter?: TFormValidator
   ```
-  - A function for custom validation logic for the form.
+  - A validator adapter to support usage of extra validation types (IE: Zod, Yup, or Valibot usage)
+
 - ```tsx
-    defaultValidatePristine?: boolean
+  validators?: FormValidators<TFormData, TFormValidator>
   ```
-  - A boolean flag to enable or disable validation for pristine fields.
+  - A list of validators to pass to the form
+
+### `FormValidators<TFormData, TFormValidator>`
+
 - ```tsx
-    defaultValidateOn?: ValidationCause
+  onMount?: (values: TData, formApi: FormApi<TData>) => ValidationError
   ```
-  - The default minimum cause for a field to be synchronously validated
+  -  Optional function that fires as soon as the component mounts.
+  
 - ```tsx
-    defaultValidateAsyncOn?: ValidationCause
+     onChange?: (values: TData, formApi: FormApi<TData>) => ValidationError
   ```
-  - The default minimum cause for a field to be asynchronously validated
+  -  Optional function that checks the validity of your data whenever a value changes
+
 - ```tsx
-    defaultValidateAsyncDebounceMs?: number
+    onChangeAsync?: (values: TData, formApi: FormApi<TData>) => ValidationError | Promise<ValidationError>
+  ```
+  -  Optional onChange  asynchronous counterpart to onChange. Useful for more complex validation logic that might involve server requests.
+
+- ```tsx
+    onChangeAsyncDebounceMs?: number
   ```
   - The default time in milliseconds that if set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds.
 
-### `FormApi<TFormData>`
+- ```tsx
+    onBlur?: (values: TData, formApi: FormApi<TData>) => ValidationError
+  ```
+  -  Optional  function that validates the form data when a field loses focus, returns a `ValidationError`
+
+- ```tsx
+    onBlurAsync?:  (values: TData,formApi: FormApi<TData>) => ValidationError | Promise<ValidationError>
+  ```
+  -  Optional onBlur asynchronous validation method for when a field loses focus return a `ValidationError`  or a promise of `Promise<ValidationError>`
+
+- ```tsx
+    onBlurAsyncDebounceMs?: number
+  ```
+  - The default time in milliseconds that if set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds.
+
+### `FormApi<TFormData, TFormValidator>`
 
 A class representing the Form API. It handles the logic and interactions with the form state.
 
 #### Properties
 
 - ```tsx
-  options: FormOptions<TFormData>
+  options: FormOptions<TFormData> = {}
   ```
   - The options for the form.
+  
 - ```tsx
   store: Store<FormState<TFormData>>
   ```
-  - The internal store for the form state.
+  - A [TanStack Store instance](https://tanstack.com/store/latest/docs/reference/Store) that keeps track of the form's state.
+  
 - ```tsx
   state: FormState<TFormData>
   ```
   - The current state of the form.
+  
 - ```tsx
-  fieldInfo: Record<DeepKeys<TFormData>, FieldInfo<TFormData>>
+  fieldInfo: Record<DeepKeys<TFormData>, FieldInfo<TFormData, TFormValidator>> =
+      {} as any
   ```
   - A record of field information for each field in the form.
-- ```tsx
-    fieldName?: string
-  ```
-  - An optional string representing the name of the field.
-- ```tsx
-  validationMeta: ValidationMeta
-  ```
-  - The validation metadata for the form.
 
 #### Methods
 
 - ```tsx
-    constructor(opts?: FormOptions<TFormData>)
+    constructor(opts?: FormOptions<TFormData, TFormValidator>)
   ```
   - Constructs a new `FormApi` instance with the given form options.
 - ```tsx
-    update(options: FormOptions<TFormData>)
+    update(options: FormOptions<TFormData, TFormValidator>)
   ```
   - Updates the form options and form state.
 - ```tsx
@@ -100,17 +134,14 @@ A class representing the Form API. It handles the logic and interactions with th
   ```
   - Resets the form state to the default values.
 - ```tsx
-  validateAllFields()
+  validateAllFields(cause: ValidationCause): Promise<ValidationError[]>
   ```
-  - Validates all fields in the form.
+  - Validates all fields in the form using the correct handlers for a given validation type.
+
 - ```tsx
-  validateForm()
+    handleSubmit()
   ```
-  - Validates the form itself.
-- ```tsx
-    handleSubmit(e: FormEvent & { __handled?: boolean })
-  ```
-  - Handles the form submission event, performs validation, and calls the appropriate onSubmit or onInvalidSubmit callbacks.
+  - Handles the form submission, performs validation, and calls the appropriate `onSubmit` or `onInvalidSubmit` callbacks.
 - ```tsx
     getFieldValue<TField extends DeepKeys<TFormData>>(field: TField)
   ```
@@ -156,109 +187,110 @@ An object representing the current state of the form.
   values: TData
   ```
   - The current values of the form fields.
+
+- ```tsx
+  errors: ValidationError[]
+  ```
+  - The error array for the form itself.
+
+- ```tsx
+  errorMap: ValidationErrorMap
+  ```
+  - The error map for the form itself.
+  
 - ```tsx
   isFormValidating: boolean
   ```
   - A boolean indicating if the form is currently validating.
-- ```tsx
-  formValidationCount: number
-  ```
-  - A counter for tracking the number of validations performed on the form.
+  
 - ```tsx
   isFormValid: boolean
   ```
   - A boolean indicating if the form is valid.
-- ```tsx
-    formError?: ValidationError
-  ```
-  - A possible validation error for the form.
+  
 - ```tsx
   fieldMeta: Record<DeepKeys<TData>, FieldMeta>
   ```
   - A record of field metadata for each field in the form.
+  
 - ```tsx
   isFieldsValidating: boolean
   ```
   - A boolean indicating if any of the form fields are currently validating.
+  
 - ```tsx
   isFieldsValid: boolean
   ```
   - A boolean indicating if all the form fields are valid.
+  
 - ```tsx
   isSubmitting: boolean
   ```
   - A boolean indicating if the form is currently submitting.
+  
 - ```tsx
   isTouched: boolean
   ```
   - A boolean indicating if any of the form fields have been touched.
+  
 - ```tsx
   isSubmitted: boolean
   ```
   - A boolean indicating if the form has been submitted.
+  
 - ```tsx
   isValidating: boolean
   ```
   - A boolean indicating if the form or any of its fields are currently validating.
+  
 - ```tsx
   isValid: boolean
   ```
   - A boolean indicating if the form and all its fields are valid.
+  
 - ```tsx
   canSubmit: boolean
   ```
   - A boolean indicating if the form can be submitted based on its current state.
+  
 - ```tsx
   submissionAttempts: number
   ```
   - A counter for tracking the number of submission attempts.
+
+- ```tsx
+  validationMetaMap: Record<ValidationErrorMapKeys, ValidationMeta | undefined>
+  ```
+  - An internal mechanism used for keeping track of validation logic in a form.
 
 ### `FieldInfo<TFormData>`
 
 An object representing the field information for a specific field within the form.
 
 - ```tsx
-  instances: Record<string, FieldApi<any, TFormData>>
+  instances: Record<
+    string,
+    FieldApi<
+      TFormData,
+      any,
+      Validator<unknown, unknown> | undefined,
+      TFormValidator
+    >
+  >
   ```
   - A record of field instances with unique identifiers as keys.
+
 - ```tsx
-    validationCount?: number
+  validationMetaMap: Record<ValidationErrorMapKeys, ValidationMeta | undefined>
   ```
-  - A counter for tracking the number of validations performed on the field.
-- ```tsx
-    validationPromise?: Promise<ValidationError>
-  ```
-  - A promise representing the current validation state of the field.
-- ```tsx
-    validationResolve?: (error: ValidationError) => void
-  ```
-  - A function to resolve the validation promise with a possible validation error.
-- ```tsx
-    validationReject?: (error: unknown) => void
-  ```
-  - A function to reject the validation promise with an error.
+  - A record of field validation internal handling.
+  - Check below for `ValidationMeta`
 
 ### `ValidationMeta`
 
-An object representing the validation metadata for a field.
+An object representing the validation metadata for a field. Not intended for public usage.
 
 - ```tsx
-    validationCount?: number
+    lastAbortController: AbortController
   ```
-  - A counter for tracking the number of validations performed on the field.
-- ```tsx
-    validationPromise?: Promise<ValidationError>
-  ```
-  - A promise representing the current validation state of the field.
-- ```tsx
-    validationResolve?: (error: ValidationError) => void
-  ```
-  - A function to resolve the validation promise with a possible validation error.
-- ```tsx
-    validationReject?: (error: unknown) => void
-  ```
-  - A function to reject the validation promise with an error.
-
-### `ValidationError`
-
-A type representing a validation error. Possible values are `undefined`, `false`, `null`, or a `string` with an error message.
+  - An abort controller stored in memory to cancel previous async validation attempts.

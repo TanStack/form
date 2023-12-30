@@ -1,82 +1,234 @@
-import type { DeepKeys, DeepValue, Updater } from './utils'
-import type { FormApi, ValidationError } from './FormApi'
 import { Store } from '@tanstack/store'
+import type { FormApi } from './FormApi'
+import type {
+  ValidationCause,
+  ValidationError,
+  ValidationErrorMap,
+  Validator,
+} from './types'
+import type { DeepKeys, DeepValue, Updater } from './utils'
+import { getAsyncValidatorArray, getSyncValidatorArray } from './utils'
 
-export type ValidationCause = 'change' | 'blur' | 'submit'
+export type FieldValidateFn<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> = (props: {
+  value: TData
+  fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
+}) => ValidationError
 
-type ValidateFn<TData, TFormData> = (
-  value: TData,
-  fieldApi: FieldApi<TData, TFormData>,
-) => ValidationError
+export type FieldValidateOrFn<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> = TFieldValidator extends Validator<TData, infer TFN>
+  ?
+      | TFN
+      | FieldValidateFn<
+          TParentData,
+          TName,
+          TFieldValidator,
+          TFormValidator,
+          TData
+        >
+  : TFormValidator extends Validator<TParentData, infer FFN>
+  ?
+      | FFN
+      | FieldValidateFn<
+          TParentData,
+          TName,
+          TFieldValidator,
+          TFormValidator,
+          TData
+        >
+  : FieldValidateFn<TParentData, TName, TFieldValidator, TFormValidator, TData>
 
-type ValidateAsyncFn<TData, TFormData> = (
-  value: TData,
-  fieldApi: FieldApi<TData, TFormData>,
-) => ValidationError | Promise<ValidationError>
+export type FieldValidateAsyncFn<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> = (options: {
+  value: TData
+  fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  signal: AbortSignal
+}) => ValidationError | Promise<ValidationError>
+
+export type FieldAsyncValidateOrFn<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> = TFieldValidator extends Validator<TData, infer TFN>
+  ?
+      | TFN
+      | FieldValidateAsyncFn<
+          TParentData,
+          TName,
+          TFieldValidator,
+          TFormValidator,
+          TData
+        >
+  : TFormValidator extends Validator<TParentData, infer FFN>
+  ?
+      | FFN
+      | FieldValidateAsyncFn<
+          TParentData,
+          TName,
+          TFieldValidator,
+          TFormValidator,
+          TData
+        >
+  : FieldValidateAsyncFn<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData
+    >
+
+export interface FieldValidators<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> {
+  onMount?: FieldValidateOrFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
+  onChange?: FieldValidateOrFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
+  onChangeAsync?: FieldAsyncValidateOrFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
+  onChangeAsyncDebounceMs?: number
+  onBlur?: FieldValidateOrFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
+  onBlurAsync?: FieldAsyncValidateOrFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
+  onBlurAsyncDebounceMs?: number
+  onSubmit?: FieldValidateOrFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
+  onSubmitAsync?: FieldAsyncValidateOrFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
+  onSubmitAsyncDebounceMs?: number
+}
 
 export interface FieldOptions<
-  _TData,
-  TFormData,
-  /**
-   * This allows us to restrict the name to only be a valid field name while
-   * also assigning it to a generic
-   */
-  TName = unknown extends TFormData ? string : DeepKeys<TFormData>,
-  /**
-   * If TData is unknown, we can use the TName generic to determine the type
-   */
-  TData = unknown extends _TData ? DeepValue<TFormData, TName> : _TData,
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   name: TName
   index?: TData extends any[] ? number : never
   defaultValue?: TData
   asyncDebounceMs?: number
   asyncAlways?: boolean
-  onMount?: (formApi: FieldApi<TData, TFormData>) => void
-  onChange?: ValidateFn<TData, TFormData>
-  onChangeAsync?: ValidateAsyncFn<TData, TFormData>
-  onChangeAsyncDebounceMs?: number
-  onBlur?: ValidateFn<TData, TFormData>
-  onBlurAsync?: ValidateAsyncFn<TData, TFormData>
-  onBlurAsyncDebounceMs?: number
-  onSubmitAsync?: ValidateAsyncFn<TData, TFormData>
+  preserveValue?: boolean
+  validatorAdapter?: TFieldValidator
+  validators?: FieldValidators<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
   defaultMeta?: Partial<FieldMeta>
 }
 
-export type FieldApiOptions<TData, TFormData> = FieldOptions<
-  TData,
-  TFormData
-> & {
-  form: FormApi<TFormData>
+export interface FieldApiOptions<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> extends FieldOptions<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  > {
+  form: FormApi<TParentData, TFormValidator>
 }
 
 export type FieldMeta = {
   isTouched: boolean
-  touchedError?: ValidationError
-  error?: ValidationError
+  touchedErrors: ValidationError[]
+  errors: ValidationError[]
+  errorMap: ValidationErrorMap
   isValidating: boolean
-}
-
-export type UserChangeProps<TData> = {
-  onChange?: (updater: Updater<TData>) => void
-  onBlur?: (event: any) => void
-}
-
-export type UserInputProps = {
-  onChange?: (event: any) => void
-  onBlur?: (event: any) => void
-}
-
-export type ChangeProps<TData> = {
-  value: TData
-  onChange: (value: TData) => void
-  onBlur: (event: any) => void
-}
-
-export type InputProps<T> = {
-  value: T
-  onChange: (event: any) => void
-  onBlur: (event: any) => void
 }
 
 let uid = 0
@@ -86,36 +238,51 @@ export type FieldState<TData> = {
   meta: FieldMeta
 }
 
-/**
- * TData may not be known at the time of FieldApi construction, so we need to
- * use a conditional type to determine if TData is known or not.
- *
- * If TData is not known, we use the TFormData type to determine the type of
- * the field value based on the field name.
- */
-type GetTData<Name, TData, TFormData> = unknown extends TData
-  ? DeepValue<TFormData, Name>
-  : TData
+export type ResolveName<TParentData> = unknown extends TParentData
+  ? string
+  : DeepKeys<TParentData>
 
-export class FieldApi<TData, TFormData> {
+export class FieldApi<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> {
   uid: number
-  form: FormApi<TFormData>
-  name!: DeepKeys<TFormData>
-  /**
-   * This is a hack that allows us to use `GetTData` without calling it everywhere
-   *
-   * Unfortunately this hack appears to be needed alongside the `TName` hack
-   * further up in this file. This properly types all of the internal methods,
-   * while the `TName` hack types the options properly
-   */
-  _tdata!: GetTData<typeof this.name, TData, TFormData>
-  store!: Store<FieldState<typeof this._tdata>>
-  state!: FieldState<typeof this._tdata>
-  prevState!: FieldState<typeof this._tdata>
-  options: FieldOptions<typeof this._tdata, TFormData> = {} as any
+  form: FieldApiOptions<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >['form']
+  name!: DeepKeys<TParentData>
+  options: FieldApiOptions<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  > = {} as any
+  store!: Store<FieldState<TData>>
+  state!: FieldState<TData>
+  prevState!: FieldState<TData>
 
-  constructor(opts: FieldApiOptions<TData, TFormData>) {
-    this.form = opts.form
+  constructor(
+    opts: FieldApiOptions<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData
+    >,
+  ) {
+    this.form = opts.form as never
     this.uid = uid++
     // Support field prefixing from FieldScope
     // let fieldPrefix = ''
@@ -123,25 +290,36 @@ export class FieldApi<TData, TFormData> {
     //   fieldPrefix = `${this.form.fieldName}.`
     // }
 
-    this.name = opts.name as any
+    this.name = opts.name as never
 
-    this.store = new Store<FieldState<typeof this._tdata>>(
+    if (opts.defaultValue !== undefined) {
+      this.form.setFieldValue(this.name, opts.defaultValue as never)
+    }
+
+    this.store = new Store<FieldState<TData>>(
       {
         value: this.getValue(),
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        meta: this.getMeta() ?? {
+        meta: this._getMeta() ?? {
           isValidating: false,
           isTouched: false,
-          ...this.options.defaultMeta,
+          touchedErrors: [],
+          errors: [],
+          errorMap: {},
+          ...opts.defaultMeta,
         },
       },
       {
         onUpdate: () => {
           const state = this.store.state
 
-          state.meta.touchedError = state.meta.isTouched
-            ? state.meta.error
-            : undefined
+          state.meta.errors = Object.values(state.meta.errorMap).filter(
+            (val: unknown) => val !== undefined,
+          )
+
+          state.meta.touchedErrors = state.meta.isTouched
+            ? state.meta.errors
+            : []
 
           this.prevState = state
           this.state = state
@@ -151,13 +329,35 @@ export class FieldApi<TData, TFormData> {
 
     this.state = this.store.state
     this.prevState = this.state
-    this.update(opts as never)
+    this.options = opts as never
+  }
+
+  runValidator<
+    TValue extends { value: TData; fieldApi: FieldApi<any, any, any, any> },
+    TType extends 'validate' | 'validateAsync',
+  >(props: {
+    validate: TType extends 'validate'
+      ? FieldValidateOrFn<any, any, any, any>
+      : FieldAsyncValidateOrFn<any, any, any, any>
+    value: TValue
+    type: TType
+  }): ReturnType<ReturnType<Validator<any>>[TType]> {
+    const adapters = [
+      this.form.options.validatorAdapter,
+      this.options.validatorAdapter,
+    ] as const
+    for (const adapter of adapters) {
+      if (adapter && typeof props.validate !== 'function') {
+        return adapter()[props.type](props.value, props.validate) as never
+      }
+    }
+
+    return (props.validate as FieldValidateFn<any, any>)(props.value) as never
   }
 
   mount = () => {
     const info = this.getInfo()
-    info.instances[this.uid] = this
-
+    info.instances[this.uid] = this as never
     const unsubscribe = this.form.store.subscribe(() => {
       this.store.batch(() => {
         const nextValue = this.getValue()
@@ -173,80 +373,106 @@ export class FieldApi<TData, TFormData> {
       })
     })
 
-    this.options.onMount?.(this as never)
+    this.update(this.options as never)
+    const { onMount } = this.options.validators || {}
+
+    if (onMount) {
+      const error = this.runValidator({
+        validate: onMount,
+        value: {
+          value: this.state.value,
+          fieldApi: this,
+        },
+        type: 'validate',
+      })
+      if (error) {
+        this.setMeta((prev) => ({
+          ...prev,
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          errorMap: { ...prev?.errorMap, onMount: error },
+        }))
+      }
+    }
 
     return () => {
+      const preserveValue = this.options.preserveValue
       unsubscribe()
-      delete info.instances[this.uid]
-      if (!Object.keys(info.instances).length) {
+      if (!preserveValue) {
+        delete info.instances[this.uid]
+        this.form.deleteField(this.name)
+      }
+
+      if (!Object.keys(info.instances).length && !preserveValue) {
         delete this.form.fieldInfo[this.name]
       }
     }
   }
 
-  update = (opts: FieldApiOptions<typeof this._tdata, TFormData>) => {
-    this.options = {
-      asyncDebounceMs: this.form.options.asyncDebounceMs ?? 0,
-      onChangeAsyncDebounceMs: this.form.options.onChangeAsyncDebounceMs ?? 0,
-      onBlurAsyncDebounceMs: this.form.options.onBlurAsyncDebounceMs ?? 0,
-      ...opts,
-    } as never
-
+  update = (
+    opts: FieldApiOptions<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData
+    >,
+  ) => {
     // Default Value
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.state.value === undefined) {
-      if (this.options.defaultValue !== undefined) {
-        this.setValue(this.options.defaultValue as never)
-      } else if (
-        opts.form.options.defaultValues?.[
-          this.options.name as keyof TFormData
-        ] !== undefined
-      ) {
-        this.setValue(
-          opts.form.options.defaultValues[
-            this.options.name as keyof TFormData
-          ] as never,
-        )
+      const formDefault =
+        opts.form.options.defaultValues?.[opts.name as keyof TParentData]
+
+      if (opts.defaultValue !== undefined) {
+        this.setValue(opts.defaultValue as never)
+      } else if (formDefault !== undefined) {
+        this.setValue(formDefault as never)
       }
     }
 
     // Default Meta
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (this.getMeta() === undefined) {
+    if (this._getMeta() === undefined) {
       this.setMeta(this.state.meta)
     }
+
+    this.options = opts as never
   }
 
-  getValue = (): typeof this._tdata => {
-    return this.form.getFieldValue(this.name)
+  getValue = (): TData => {
+    return this.form.getFieldValue(this.name) as any
   }
 
   setValue = (
-    updater: Updater<typeof this._tdata>,
+    updater: Updater<TData>,
     options?: { touch?: boolean; notify?: boolean },
   ) => {
     this.form.setFieldValue(this.name, updater as never, options)
     this.validate('change', this.state.value)
   }
 
-  getMeta = (): FieldMeta => this.form.getFieldMeta(this.name)
+  _getMeta = () => this.form.getFieldMeta(this.name)
+  getMeta = () =>
+    this._getMeta() ??
+    ({
+      isValidating: false,
+      isTouched: false,
+      touchedErrors: [],
+      errors: [],
+      errorMap: {},
+      ...this.options.defaultMeta,
+    } as FieldMeta)
 
   setMeta = (updater: Updater<FieldMeta>) =>
     this.form.setFieldMeta(this.name, updater)
 
   getInfo = () => this.form.getFieldInfo(this.name)
 
-  pushValue = (
-    value: typeof this._tdata extends any[]
-      ? (typeof this._tdata)[number]
-      : never,
-  ) => this.form.pushFieldValue(this.name, value as any)
+  pushValue = (value: TData extends any[] ? TData[number] : never) =>
+    this.form.pushFieldValue(this.name, value as any)
 
   insertValue = (
     index: number,
-    value: typeof this._tdata extends any[]
-      ? (typeof this._tdata)[number]
-      : never,
+    value: TData extends any[] ? TData[number] : never,
   ) => this.form.insertFieldValue(this.name, index, value as any)
 
   removeValue = (index: number) => this.form.removeFieldValue(this.name, index)
@@ -254,192 +480,182 @@ export class FieldApi<TData, TFormData> {
   swapValues = (aIndex: number, bIndex: number) =>
     this.form.swapFieldValues(this.name, aIndex, bIndex)
 
-  getSubField = <TName extends DeepKeys<typeof this._tdata>>(name: TName) =>
-    new FieldApi<DeepValue<typeof this._tdata, TName>, TFormData>({
+  getSubField = <
+    TSubName extends DeepKeys<TData>,
+    TSubData extends DeepValue<TData, TSubName> = DeepValue<TData, TSubName>,
+  >(
+    name: TSubName,
+  ): FieldApi<
+    TData,
+    TSubName,
+    Validator<TSubData, unknown> | undefined,
+    Validator<TData, unknown> | undefined,
+    TSubData
+  > =>
+    new FieldApi({
       name: `${this.name}.${name}` as never,
       form: this.form,
-    })
+    }) as any
 
   validateSync = (value = this.state.value, cause: ValidationCause) => {
-    const { onChange, onBlur } = this.options
-    const validate =
-      cause === 'submit' ? undefined : cause === 'change' ? onChange : onBlur
+    const validates = getSyncValidatorArray(cause, this.options)
 
-    if (!validate) return
+    // Needs type cast as eslint errantly believes this is always falsy
+    let hasErrored = false as boolean
 
-    // Use the validationCount for all field instances to
-    // track freshness of the validation
-    const validationCount = (this.getInfo().validationCount || 0) + 1
-    this.getInfo().validationCount = validationCount
-    const error = normalizeError(validate(value as never, this as never))
+    this.form.store.batch(() => {
+      for (const validateObj of validates) {
+        if (!validateObj.validate) continue
+        const error = normalizeError(
+          this.runValidator({
+            validate: validateObj.validate,
+            value: { value, fieldApi: this },
+            type: 'validate',
+          }),
+        )
+        const errorMapKey = getErrorMapKey(validateObj.cause)
+        if (this.state.meta.errorMap[errorMapKey] !== error) {
+          this.setMeta((prev) => ({
+            ...prev,
+            errorMap: {
+              ...prev.errorMap,
+              [getErrorMapKey(validateObj.cause)]: error,
+            },
+          }))
+        }
+        if (error) {
+          hasErrored = true
+        }
+      }
+    })
 
-    if (this.state.meta.error !== error) {
+    /**
+     *  when we have an error for onSubmit in the state, we want
+     *  to clear the error as soon as the user enters a valid value in the field
+     */
+    const submitErrKey = getErrorMapKey('submit')
+    if (
+      this.state.meta.errorMap[submitErrKey] &&
+      cause !== 'submit' &&
+      !hasErrored
+    ) {
       this.setMeta((prev) => ({
         ...prev,
-        error,
+        errorMap: {
+          ...prev.errorMap,
+          [submitErrKey]: undefined,
+        },
       }))
     }
 
-    // If a sync error is encountered, cancel any async validation
-    if (this.state.meta.error) {
-      this.cancelValidateAsync()
-    }
-  }
-
-  #leaseValidateAsync = () => {
-    const count = (this.getInfo().validationAsyncCount || 0) + 1
-    this.getInfo().validationAsyncCount = count
-    return count
-  }
-
-  cancelValidateAsync = () => {
-    // Lease a new validation count to ignore any pending validations
-    this.#leaseValidateAsync()
-    // Cancel any pending validation state
-    this.setMeta((prev) => ({
-      ...prev,
-      isValidating: false,
-    }))
+    return { hasErrored }
   }
 
   validateAsync = async (value = this.state.value, cause: ValidationCause) => {
-    const {
-      onChangeAsync,
-      onBlurAsync,
-      onSubmitAsync,
-      asyncDebounceMs,
-      onBlurAsyncDebounceMs,
-      onChangeAsyncDebounceMs,
-    } = this.options
+    const validates = getAsyncValidatorArray(cause, this.options)
 
-    const validate =
-      cause === 'change'
-        ? onChangeAsync
-        : cause === 'submit'
-        ? onSubmitAsync
-        : onBlurAsync
-
-    if (!validate) return
-
-    const debounceMs =
-      cause === 'submit'
-        ? 0
-        : (cause === 'change'
-            ? onChangeAsyncDebounceMs
-            : onBlurAsyncDebounceMs) ??
-          asyncDebounceMs ??
-          500
-
-    if (this.state.meta.isValidating !== true)
+    if (!this.state.meta.isValidating) {
       this.setMeta((prev) => ({ ...prev, isValidating: true }))
-
-    // Use the validationCount for all field instances to
-    // track freshness of the validation
-    const validationAsyncCount = this.#leaseValidateAsync()
-
-    const checkLatest = () =>
-      validationAsyncCount === this.getInfo().validationAsyncCount
-
-    if (!this.getInfo().validationPromise) {
-      this.getInfo().validationPromise = new Promise((resolve, reject) => {
-        this.getInfo().validationResolve = resolve
-        this.getInfo().validationReject = reject
-      })
     }
 
-    if (debounceMs > 0) {
-      await new Promise((r) => setTimeout(r, debounceMs))
-    }
+    /**
+     * We have to use a for loop and generate our promises this way, otherwise it won't be sync
+     * when there are no validators needed to be run
+     */
+    const promises: Promise<ValidationError | undefined>[] = []
 
-    // Only kick off validation if this validation is the latest attempt
-    if (checkLatest()) {
-      try {
-        const rawError = await validate(value as never, this as never)
+    for (const validateObj of validates) {
+      if (!validateObj.validate) continue
+      const key = getErrorMapKey(validateObj.cause)
+      const fieldValidatorMeta = this.getInfo().validationMetaMap[key]
 
-        if (checkLatest()) {
-          const error = normalizeError(rawError)
-          this.setMeta((prev) => ({
-            ...prev,
-            isValidating: false,
-            error,
-          }))
-          this.getInfo().validationResolve?.(error)
-        }
-      } catch (error) {
-        if (checkLatest()) {
-          this.getInfo().validationReject?.(error)
-          throw error
-        }
-      } finally {
-        if (checkLatest()) {
-          this.setMeta((prev) => ({ ...prev, isValidating: false }))
-          delete this.getInfo().validationPromise
-        }
+      fieldValidatorMeta?.lastAbortController.abort()
+      // Sorry Safari 12
+      // eslint-disable-next-line compat/compat
+      const controller = new AbortController()
+
+      this.getInfo().validationMetaMap[key] = {
+        lastAbortController: controller,
       }
+
+      promises.push(
+        new Promise<ValidationError | undefined>(async (resolve) => {
+          let rawError!: ValidationError | undefined
+          try {
+            rawError = await new Promise((rawResolve, rawReject) => {
+              setTimeout(() => {
+                if (controller.signal.aborted) return rawResolve(undefined)
+                this.runValidator({
+                  validate: validateObj.validate,
+                  value: { value, fieldApi: this, signal: controller.signal },
+                  type: 'validateAsync',
+                })
+                  .then(rawResolve)
+                  .catch(rawReject)
+              }, validateObj.debounceMs)
+            })
+          } catch (e: unknown) {
+            rawError = e as ValidationError
+          }
+          const error = normalizeError(rawError)
+          this.setMeta((prev) => {
+            return {
+              ...prev,
+              errorMap: {
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                ...prev?.errorMap,
+                [getErrorMapKey(cause)]: error,
+              },
+            }
+          })
+
+          resolve(error)
+        }),
+      )
     }
 
-    // Always return the latest validation promise to the caller
-    return this.getInfo().validationPromise
+    let results: ValidationError[] = []
+    if (promises.length) {
+      results = await Promise.all(promises)
+    }
+
+    this.setMeta((prev) => ({ ...prev, isValidating: false }))
+
+    return results.filter(Boolean)
   }
 
   validate = (
     cause: ValidationCause,
-    value?: typeof this._tdata,
-  ): ValidationError | Promise<ValidationError> => {
+    value?: TData,
+  ): ValidationError[] | Promise<ValidationError[]> => {
     // If the field is pristine and validatePristine is false, do not validate
-    if (!this.state.meta.isTouched) return
+    if (!this.state.meta.isTouched) return []
+
+    try {
+      this.form.validate(cause)
+    } catch (_) {}
 
     // Attempt to sync validate first
-    this.validateSync(value, cause)
+    const { hasErrored } = this.validateSync(value, cause)
 
-    // If there is an error, return it, do not attempt async validation
-    if (this.state.meta.error) {
-      if (!this.options.asyncAlways) {
-        return this.state.meta.error
-      }
+    if (hasErrored && !this.options.asyncAlways) {
+      return this.state.meta.errors
     }
-
     // No error? Attempt async validation
     return this.validateAsync(value, cause)
   }
 
-  getChangeProps = <T extends UserChangeProps<any>>(
-    props: T = {} as T,
-  ): ChangeProps<typeof this._tdata> &
-    Omit<T, keyof ChangeProps<typeof this._tdata>> => {
-    return {
-      ...props,
-      value: this.state.value,
-      onChange: (value) => {
-        this.setValue(value as never)
-        props.onChange?.(value)
-      },
-      onBlur: (e) => {
-        const prevTouched = this.state.meta.isTouched
-        this.setMeta((prev) => ({ ...prev, isTouched: true }))
-        if (!prevTouched) {
-          this.validate('change')
-        }
-        this.validate('blur')
-      },
-    } as ChangeProps<typeof this._tdata> &
-      Omit<T, keyof ChangeProps<typeof this._tdata>>
+  handleChange = (updater: Updater<TData>) => {
+    this.setValue(updater, { touch: true })
   }
 
-  getInputProps = <T extends UserInputProps>(
-    props: T = {} as T,
-  ): InputProps<typeof this._tdata> &
-    Omit<T, keyof InputProps<typeof this._tdata>> => {
-    return {
-      ...props,
-      value: this.state.value,
-      onChange: (e) => {
-        this.setValue(e.target.value)
-        props.onChange?.(e.target.value)
-      },
-      onBlur: this.getChangeProps(props).onBlur,
-    } as InputProps<typeof this._tdata> &
-      Omit<T, keyof InputProps<typeof this._tdata>>
+  handleBlur = () => {
+    const prevTouched = this.state.meta.isTouched
+    if (!prevTouched) {
+      this.setMeta((prev) => ({ ...prev, isTouched: true }))
+      this.validate('change')
+    }
+    this.validate('blur')
   }
 }
 
@@ -453,4 +669,17 @@ function normalizeError(rawError?: ValidationError) {
   }
 
   return undefined
+}
+
+function getErrorMapKey(cause: ValidationCause) {
+  switch (cause) {
+    case 'submit':
+      return 'onSubmit'
+    case 'change':
+      return 'onChange'
+    case 'blur':
+      return 'onBlur'
+    case 'mount':
+      return 'onMount'
+  }
 }

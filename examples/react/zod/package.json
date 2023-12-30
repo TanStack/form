@@ -1,0 +1,34 @@
+{
+  "name": "@tanstack/form-example-react-zod",
+  "version": "0.0.1",
+  "main": "src/index.jsx",
+  "scripts": {
+    "dev": "vite --port=3001",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tanstack/react-form": "0.11.0",
+    "@tanstack/zod-form-adapter": "0.11.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.0.4",
+    "vite": "^4.4.9"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

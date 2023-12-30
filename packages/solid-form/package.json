@@ -1,0 +1,68 @@
+{
+  "name": "@tanstack/solid-form",
+  "version": "0.11.0",
+  "description": "Powerful, type-safe forms for Solid.",
+  "author": "tannerlinsley",
+  "license": "MIT",
+  "repository": "tanstack/form",
+  "homepage": "https://tanstack.com/form",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/tannerlinsley"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "clean": "rimraf ./build && rimraf ./coverage",
+    "test:eslint": "eslint --ext .ts,.tsx ./src",
+    "test:types:versions48": "../../node_modules/typescript48/bin/tsc --noEmit",
+    "test:types:versions49": "../../node_modules/typescript49/bin/tsc --noEmit",
+    "test:types:versions50": "../../node_modules/typescript50/bin/tsc --noEmit",
+    "test:types:versions51": "../../node_modules/typescript51/bin/tsc --noEmit",
+    "test:types:versions52": "tsc --noEmit",
+    "test:types": "pnpm run \"/^test:types:versions.*/\"",
+    "test:lib": "vitest run --coverage",
+    "test:lib:dev": "pnpm run test:lib --watch",
+    "test:build": "publint --strict",
+    "build": "tsup"
+  },
+  "files": [
+    "build",
+    "src"
+  ],
+  "type": "module",
+  "main": "./build/index.cjs",
+  "module": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    "development": {
+      "import": {
+        "types": "./build/index.d.ts",
+        "default": "./build/dev.js"
+      },
+      "require": {
+        "types": "./build/index.d.cts",
+        "default": "./build/dev.cjs"
+      }
+    },
+    "import": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
+    "require": {
+      "types": "./build/index.d.cts",
+      "default": "./build/index.cjs"
+    }
+  },
+  "devDependencies": {
+    "solid-js": "^1.7.8",
+    "tsup-preset-solid": "^2.2.0",
+    "vite-plugin-solid": "^2.7.0"
+  },
+  "dependencies": {
+    "@tanstack/form-core": "workspace:*",
+    "@tanstack/solid-store": "^0.2.1"
+  },
+  "peerDependencies": {
+    "solid-js": "^1.6.0"
+  }
+}

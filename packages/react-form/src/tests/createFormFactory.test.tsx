@@ -1,3 +1,4 @@
+/// <reference lib="dom" />
 import { render } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import * as React from 'react'
@@ -25,7 +26,7 @@ describe('createFormFactory', () => {
           <form.Field
             name="firstName"
             children={(field) => {
-              return <p>{field.getInputProps().value}</p>
+              return <p>{field.state.value}</p>
             }}
           />
         </form.Provider>

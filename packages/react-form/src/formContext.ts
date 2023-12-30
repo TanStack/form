@@ -1,8 +1,8 @@
-import type { FormApi } from '@tanstack/form-core'
+import type { FormApi, Validator } from '@tanstack/form-core'
 import * as React from 'react'
 
 export const formContext = React.createContext<{
-  formApi: FormApi<any>
+  formApi: FormApi<any, Validator<any, unknown> | undefined>
   parentFieldName?: string
 } | null>(null!)
 

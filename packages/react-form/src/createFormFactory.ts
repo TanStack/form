@@ -1,19 +1,29 @@
-import type { FormApi, FormOptions } from '@tanstack/form-core'
+import type { FormApi, FormOptions, Validator } from '@tanstack/form-core'
+
 import { type UseField, type FieldComponent, Field, useField } from './useField'
 import { useForm } from './useForm'
 
-export type FormFactory<TFormData> = {
-  useForm: (opts?: FormOptions<TFormData>) => FormApi<TFormData>
+export type FormFactory<
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+> = {
+  useForm: (
+    opts?: FormOptions<TFormData, TFormValidator>,
+  ) => FormApi<TFormData, TFormValidator>
   useField: UseField<TFormData>
-  Field: FieldComponent<TFormData, TFormData>
+  Field: FieldComponent<TFormData, TFormValidator>
 }
 
-export function createFormFactory<TFormData>(
-  defaultOpts?: FormOptions<TFormData>,
-): FormFactory<TFormData> {
+export function createFormFactory<
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+>(
+  defaultOpts?: FormOptions<TFormData, TFormValidator>,
+): FormFactory<TFormData, TFormValidator> {
   return {
     useForm: (opts) => {
-      return useForm<TFormData>({ ...defaultOpts, ...opts } as any) as any
+      const formOptions = Object.assign({}, defaultOpts, opts)
+      return useForm<TFormData, TFormValidator>(formOptions)
     },
     useField: useField as any,
     Field: Field as any,

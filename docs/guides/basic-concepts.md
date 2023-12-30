@@ -3,11 +3,7 @@ id: basic-concepts
 title: Basic Concepts and Terminology
 ---
 
-# Basic Concepts and Terminology
-
-> Some of these docs may be inaccurate due to an API shift in `0.11.0`. If you're interested in helping us fix these issues, please [join our Discord](https://tlinz.com/discord) and reach out in the `#form` channel.
-
-This page introduces the basic concepts and terminology used in the @tanstack/react-form library. Familiarizing yourself with these concepts will help you better understand and work with the library.
+This page introduces the basic concepts and terminology used in the `@tanstack/react-form` library. Familiarizing yourself with these concepts will help you better understand and work with the library.
 
 ## Form Factory
 
@@ -31,9 +27,9 @@ A Form Instance is an object that represents an individual form and provides met
 
 ```tsx
 const form = formFactory.useForm({
-  onSubmit: async (values) => {
+  onSubmit: async ({ value }) => {
     // Do something with form data
-    console.log(values)
+    console.log(value)
   },
 })
 ```
@@ -49,7 +45,11 @@ Example:
   name="firstName"
   children={(field) => (
     <>
-      <input {...field.getInputProps()} />
+      <input
+        value={field.state.value}
+        onBlur={field.handleBlur}
+        onChange={(e) => field.handleChange(e.target.value)}
+      />
       <FieldInfo field={field} />
     </>
   )}
@@ -58,7 +58,7 @@ Example:
 
 ## Field State
 
-Each field has its own state, which includes its current value, validation status, error messages, and other metadata. You can access a field's state using the field.state property.
+Each field has its own state, which includes its current value, validation status, error messages, and other metadata. You can access a field's state using the `field.state` property.
 
 Example:
 
@@ -68,40 +68,91 @@ const { value, error, touched, isValidating } = field.state
 
 ## Field API
 
-The Field API is an object passed to the render prop function when creating a field. It provides methods for working with the field's state, such as getInputProps, which returns an object with props needed to bind the field to a form input element.
+The Field API is an object passed to the render prop function when creating a field. It provides methods for working with the field's state.
 
 Example:
 
 ```tsx
-<input {...field.getInputProps()} />
+<input
+  value={field.state.value}
+  onBlur={field.handleBlur}
+  onChange={(e) => field.handleChange(e.target.value)}
+/>
 ```
 
 ## Validation
 
-@tanstack/react-form provides both synchronous and asynchronous validation out of the box. Validation functions can be passed to the form.Field component using the validate and validateAsync props.
+`@tanstack/react-form` provides both synchronous and asynchronous validation out of the box. Validation functions can be passed to the `form.Field` component using the `validators` prop.
 
 Example:
 
 ```tsx
 <form.Field
   name="firstName"
-  validate={(value) => !value && 'A first name is required'}
-  validateAsync={async (value) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    return value.includes('error') && 'No "error" allowed in first name'
+   validators={{
+    onChange: ({ value }) =>
+      !value
+        ? "A first name is required"
+        : value.length < 3
+        ? "First name must be at least 3 characters"
+        : undefined,
+    onChangeAsync: async ({ value }) => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return (
+        value.includes("error") &&
+        'No "error" allowed in first name'
+      );
+    },
   }}
   children={(field) => (
     <>
-      <input {...field.getInputProps()} />
+      <input
+        value={field.state.value}
+        onBlur={field.handleBlur}
+        onChange={(e) => field.handleChange(e.target.value)}
+      />
       <FieldInfo field={field} />
     </>
   )}
 />
 ```
 
+## Validation Adapters
+
+In addition to hand-rolled validation options, we also provide adapters like `@tanstack/zod-form-adapter`, `@tanstack/yup-form-adapter`, and `@tanstack/valibot-form-adapter` to enable usage with common schema validation tools like [Zod](https://zod.dev/), [Yup](https://github.com/jquense/yup), and [Valibot](https://valibot.dev/).
+
+Example:
+
+```tsx
+import { zodValidator } from "@tanstack/zod-form-adapter";
+import { z } from "zod";
+
+// ...
+
+<form.Field
+  name="firstName"
+  validatorAdapter={zodValidator}
+  validators={{
+    onChange: z
+      .string()
+      .min(3, "First name must be at least 3 characters"),
+    onChangeAsyncDebounceMs: 500,
+    onChangeAsync: z.string().refine(
+      async (value) => {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        return !value.includes("error");
+      },
+      {
+        message: "No 'error' allowed in first name",
+      },
+    ),
+  }}
+/>
+```
+
 ## Reactivity
 
-@tanstack/react-form offers various ways to subscribe to form and field state changes, such as the form.useStore hook, the form.Subscribe component, and the form.useField hook. These methods allow you to optimize your form's rendering performance by only updating components when necessary.
+`@tanstack/react-form` offers various ways to subscribe to form and field state changes, such as the `form.useStore` hook, the `form.Subscribe` component, and the `form.useField` hook. These methods allow you to optimize your form's rendering performance by only updating components when necessary.
 
 Example:
 
@@ -118,7 +169,7 @@ Example:
 
 ## Array Fields
 
-Array fields allow you to manage a list of values within a form, such as a list of hobbies. You can create an array field using the form.Field component with the mode="array" prop. The component accepts a children prop, which is a render prop function that takes an arrayField object as its argument.
+Array fields allow you to manage a list of values within a form, such as a list of hobbies. You can create an array field using the `form.Field` component with the `mode="array"` prop. The component accepts a children prop, which is a render prop function that takes an `arrayField` object as its argument.
 
 When working with array fields, you can use the fields `pushValue`, `removeValue`, and `swapValues` methods to add, remove, and swap values in the array.
 
@@ -143,7 +194,12 @@ Example:
                     return (
                       <div>
                         <label htmlFor={field.name}>Name:</label>
-                        <input name={field.name} {...field.getInputProps()} />
+                        <input
+                          name={field.name}
+                          value={field.state.value}
+                          onBlur={field.handleBlur}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                        />
                         <button
                           type="button"
                           onClick={() => hobbiesField.removeValue(i)}
@@ -162,7 +218,12 @@ Example:
                     return (
                       <div>
                         <label htmlFor={field.name}>Description:</label>
-                        <input name={field.name} {...field.getInputProps()} />
+                        <input
+                          name={field.name}
+                          value={field.state.value}
+                          onBlur={field.handleBlur}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                        />
                         <FieldInfo field={field} />
                       </div>
                     )
@@ -202,7 +263,12 @@ Example:
     return (
       <div>
         <label htmlFor={field.name}>Name:</label>
-        <input name={field.name} {...field.getInputProps()} />
+        <input
+          name={field.name}
+          value={field.state.value}
+          onBlur={field.handleBlur}
+          onChange={(e) => field.handleChange(e.target.value)}
+        />
         <button type="button" onClick={() => hobbiesField.removeValue(i)}>
           X
         </button>
@@ -213,8 +279,5 @@ Example:
 />
 ```
 
-These are the basic concepts and terminology used in the @tanstack/react-form library. Understanding these concepts will help you work more effectively with the library and create complex forms with ease.
+These are the basic concepts and terminology used in the `@tanstack/react-form` library. Understanding these concepts will help you work more effectively with the library and create complex forms with ease.
 
-```
-
-```
