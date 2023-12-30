@@ -126,7 +126,3 @@ The process for integrating Material-UI components is similar. Here's an example
 
 - The integration approach is the same as with Mantine.
 - The primary difference lies in the specific Material-UI component properties and styling options.
-
-# Sandbox example with `Material` and `Mantine`
-
-[UI Library intergration](https://codesandbox.io/p/devbox/demo-form-query-x7w2gz)
