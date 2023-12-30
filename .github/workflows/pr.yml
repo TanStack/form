@@ -1,25 +1,39 @@
 name: pr
-on: [pull_request]
+
+on:
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - 'media/**'
+      - '**/*.md'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
 env:
   NX_DAEMON: false
   NX_VERBOSE_LOGGING: true
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+
 jobs:
   test:
     name: 'Test'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
           repository: ${{github.event.pull_request.head.repo.full_name}}
-      - uses: pnpm/action-setup@v2.2.4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
         with:
           version: 8
-      - uses: actions/setup-node@v3
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.15.0
+          node-version-file: .nvmrc
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --prefer-offline install --no-frozen-lockfile
@@ -35,17 +49,19 @@ jobs:
     name: 'Lint'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
           repository: ${{github.event.pull_request.head.repo.full_name}}
-      - uses: pnpm/action-setup@v2.2.4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
         with:
-          version: 7
-      - uses: actions/setup-node@v3
+          version: 8
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.14.2
+          node-version-file: .nvmrc
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --prefer-offline install --no-frozen-lockfile
@@ -54,17 +70,19 @@ jobs:
     name: 'Typecheck'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
           repository: ${{github.event.pull_request.head.repo.full_name}}
-      - uses: pnpm/action-setup@v2.2.4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
         with:
-          version: 7
-      - uses: actions/setup-node@v3
+          version: 8
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.14.2
+          node-version-file: .nvmrc
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --prefer-offline install --no-frozen-lockfile
@@ -73,17 +91,19 @@ jobs:
     name: 'Format'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
           repository: ${{github.event.pull_request.head.repo.full_name}}
-      - uses: pnpm/action-setup@v2.2.4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
         with:
-          version: 7
-      - uses: actions/setup-node@v3
+          version: 8
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.14.2
+          node-version-file: .nvmrc
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --prefer-offline install --no-frozen-lockfile
@@ -92,17 +112,19 @@ jobs:
     name: 'Test Build'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
           repository: ${{github.event.pull_request.head.repo.full_name}}
-      - uses: pnpm/action-setup@v2.2.4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
         with:
-          version: 7
-      - uses: actions/setup-node@v3
+          version: 8
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.14.2
+          node-version-file: .nvmrc
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --prefer-offline install --no-frozen-lockfile
