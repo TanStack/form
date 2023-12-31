@@ -38,7 +38,7 @@ export const packages = [
   },
   // {
   //   name: '@tanstack/svelte-form',
-  //   packageDir: 'svelte-form',
+  //   packageDir: 'packages/svelte-form',
   // },
 ]
 

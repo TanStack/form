@@ -570,8 +570,6 @@ export class FieldApi<
       const fieldValidatorMeta = this.getInfo().validationMetaMap[key]
 
       fieldValidatorMeta?.lastAbortController.abort()
-      // Sorry Safari 12
-      // eslint-disable-next-line compat/compat
       const controller = new AbortController()
 
       this.getInfo().validationMetaMap[key] = {

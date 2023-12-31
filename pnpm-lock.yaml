@@ -109,9 +109,6 @@ importers:
       eslint-import-resolver-typescript:
         specifier: ^3.6.0
         version: 3.6.0(@typescript-eslint/parser@6.4.1)(eslint-plugin-import@2.28.1)(eslint@8.48.0)
-      eslint-plugin-compat:
-        specifier: ^4.1.4
-        version: 4.1.4(eslint@8.48.0)
       eslint-plugin-import:
         specifier: ^2.28.1
         version: 2.28.1(@typescript-eslint/parser@6.4.1)(eslint-import-resolver-typescript@3.6.0)(eslint@8.48.0)
@@ -2551,10 +2548,6 @@ packages:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  /@mdn/browser-compat-data@5.3.9:
-    resolution: {integrity: sha512-J7lLtHMEizYbI5T0Xlqpg1JXCz9JegZBeb7y3v/Nm8ScRw8TL9v3n+I3g1TFm+bLrRtwA33FKwX5znDwz+WzAQ==}
-    dev: true
-
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -3202,10 +3195,6 @@ packages:
   /@tootallnate/once@2.0.0:
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
     engines: {node: '>= 10'}
-    dev: true
-
-  /@tsconfig/node14@1.0.3:
-    resolution: {integrity: sha512-ysT8mhdixWK6Hw3i1V2AeRqZ5WfXg1G43mqoYlM2nc6388Fq5jcXyr5mRsqViLx/GJYdoL0bfXD8nmF+Zn/Iow==}
     dev: true
 
   /@types/aria-query@5.0.1:
@@ -4029,12 +4018,6 @@ packages:
     resolution: {integrity: sha512-jgsaNduz+ndvGyFt3uSuWqvy4lCnIJiovtouQN5JZHOKCS2QuhEdbcQHFhVksz2N2U9hXJo8odG7ETyWlEeuDw==}
     dev: true
 
-  /ast-metadata-inferer@0.8.0:
-    resolution: {integrity: sha512-jOMKcHht9LxYIEQu+RVd22vtgrPaVCtDRQ/16IGmurdzxvYbDd5ynxjnyrzLnieG96eTcAyaoj/wN/4/1FyyeA==}
-    dependencies:
-      '@mdn/browser-compat-data': 5.3.9
-    dev: true
-
   /ast-types@0.14.2:
     resolution: {integrity: sha512-O0yuUDnZeQDL+ncNGlJ78BiO4jnYI3bvMsD5prT0/nsgijG/LpNBIr63gTjVTNsiGkgQhiyCShTgxt8oXOrklA==}
     engines: {node: '>=4'}
@@ -4435,10 +4418,6 @@ packages:
   /camelcase@7.0.1:
     resolution: {integrity: sha512-xlx1yCK2Oc1APsPXDL2LdlNP6+uu8OCDdhOBSVT279M/S+y75O30C2VuD8T2ogdePBBl7PfPF4504tnLgX3zfw==}
     engines: {node: '>=14.16'}
-    dev: true
-
-  /caniuse-lite@1.0.30001520:
-    resolution: {integrity: sha512-tahF5O9EiiTzwTUqAeFjIZbn4Dnqxzz7ktrgGlMYNLH43Ul26IgTMH/zvL3DG0lZxBYnlT04axvInszUsZULdA==}
     dev: true
 
   /caniuse-lite@1.0.30001546:
@@ -5424,23 +5403,6 @@ packages:
       eslint-import-resolver-typescript: 3.6.0(@typescript-eslint/parser@6.4.1)(eslint-plugin-import@2.28.1)(eslint@8.48.0)
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /eslint-plugin-compat@4.1.4(eslint@8.48.0):
-    resolution: {integrity: sha512-RxySWBmzfIROLFKgeJBJue2BU/6vM2KJWXWAUq+oW4QtrsZXRxbjgxmO1OfF3sHcRuuIenTS/wgo3GyUWZF24w==}
-    engines: {node: '>=14.x'}
-    peerDependencies:
-      eslint: ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
-    dependencies:
-      '@mdn/browser-compat-data': 5.3.9
-      '@tsconfig/node14': 1.0.3
-      ast-metadata-inferer: 0.8.0
-      browserslist: 4.21.10
-      caniuse-lite: 1.0.30001520
-      eslint: 8.48.0
-      find-up: 5.0.0
-      lodash.memoize: 4.1.2
-      semver: 7.3.8
     dev: true
 
   /eslint-plugin-import@2.28.1(@typescript-eslint/parser@6.4.1)(eslint-import-resolver-typescript@3.6.0)(eslint@8.48.0):
@@ -7047,10 +7009,6 @@ packages:
   /lodash.debounce@4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
     dev: false
-
-  /lodash.memoize@4.1.2:
-    resolution: {integrity: sha512-t7j+NzmgnQzTAYXcsHYLgimltOV1MXHtlOWf6GjL9Kj8GK5FInw5JotxvbOs+IvV1/Dzo04/fCGfLVs7aXb4Ag==}
-    dev: true
 
   /lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
