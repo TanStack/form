@@ -50,8 +50,8 @@ function App() {
                   !value
                     ? 'A first name is required'
                     : value.length < 3
-                    ? 'First name must be at least 3 characters'
-                    : undefined,
+                      ? 'First name must be at least 3 characters'
+                      : undefined,
                 onChangeAsyncDebounceMs: 500,
                 onChangeAsync: async ({ value }) => {
                   await new Promise((resolve) => setTimeout(resolve, 1000))

@@ -45,16 +45,22 @@ export type FieldValidateOrFn<
           TData
         >
   : TFormValidator extends Validator<TParentData, infer FFN>
-  ?
-      | FFN
-      | FieldValidateFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
-  : FieldValidateFn<TParentData, TName, TFieldValidator, TFormValidator, TData>
+    ?
+        | FFN
+        | FieldValidateFn<
+            TParentData,
+            TName,
+            TFieldValidator,
+            TFormValidator,
+            TData
+          >
+    : FieldValidateFn<
+        TParentData,
+        TName,
+        TFieldValidator,
+        TFormValidator,
+        TData
+      >
 
 export type FieldValidateAsyncFn<
   TParentData,
@@ -93,22 +99,22 @@ export type FieldAsyncValidateOrFn<
           TData
         >
   : TFormValidator extends Validator<TParentData, infer FFN>
-  ?
-      | FFN
-      | FieldValidateAsyncFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
-  : FieldValidateAsyncFn<
-      TParentData,
-      TName,
-      TFieldValidator,
-      TFormValidator,
-      TData
-    >
+    ?
+        | FFN
+        | FieldValidateAsyncFn<
+            TParentData,
+            TName,
+            TFieldValidator,
+            TFormValidator,
+            TData
+          >
+    : FieldValidateAsyncFn<
+        TParentData,
+        TName,
+        TFieldValidator,
+        TFormValidator,
+        TData
+      >
 
 export interface FieldValidators<
   TParentData,
