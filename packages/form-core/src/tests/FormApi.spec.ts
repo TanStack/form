@@ -138,6 +138,7 @@ describe('form api', () => {
         onBlur: undefined,
         onSubmit: undefined,
         onMount: undefined,
+        onServer: undefined,
       },
     })
   })
