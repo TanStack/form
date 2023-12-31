@@ -18,8 +18,9 @@ import { branchConfigs, packages, rootDir } from './config.mjs'
 const releaseCommitMsg = (version) => `release: v${version}`
 
 async function run() {
-  const branchName =
-    /** @type {string} */ process.env.BRANCH ?? currentGitBranch()
+  const branchName = /** @type {string} */ (
+    process.env.BRANCH ?? currentGitBranch()
+  )
   /** @type {import('./types.js').BranchConfig | undefined} */
   const branchConfig = branchConfigs[branchName]
 
@@ -49,7 +50,7 @@ async function run() {
     .sort(semver.compare)
 
   // Get the latest tag
-  let latestTag = /** @type {string} */ [...tags].pop()
+  let latestTag = /** @type {string} */ ([...tags].pop())
 
   let range = `${latestTag}..HEAD`
   // let range = ``;
@@ -231,17 +232,14 @@ async function run() {
     ? `Manual Release: ${process.env.TAG}`
     : await Promise.all(
         Object.entries(
-          commitsSinceLatestTag.reduce(
-            (acc, next) => {
-              const type = next.parsed.type?.toLowerCase() ?? 'other'
+          commitsSinceLatestTag.reduce((acc, next) => {
+            const type = next.parsed.type?.toLowerCase() ?? 'other'
 
-              return {
-                ...acc,
-                [type]: [...(acc[type] || []), next],
-              }
-            },
-            /** @type {Record<string, import('./types.js').Commit[]>} */ {},
-          ),
+            return {
+              ...acc,
+              [type]: [...(acc[type] || []), next],
+            }
+          }, /** @type {Record<string, import('./types.js').Commit[]>} */ ({})),
         )
           .sort(
             getSorterFn([
@@ -295,7 +293,7 @@ async function run() {
                     : `by ${commit.author.name || commit.author.email}`
                 }`
               }),
-            ).then((c) => /** @type {const} */ [type, c])
+            ).then((c) => /** @type {const} */ ([type, c]))
           }),
       ).then((groups) => {
         return groups
@@ -317,7 +315,7 @@ async function run() {
 
   const releaseType = branchConfig.prerelease
     ? 'prerelease'
-    : /** @type {const} */ { 0: 'patch', 1: 'minor', 2: 'major' }[
+    : /** @type {const} */ ({ 0: 'patch', 1: 'minor', 2: 'major' })[
         recommendedReleaseLevel
       ]
 
