@@ -13,7 +13,7 @@ importers:
         version: 18.4.3
       '@solidjs/testing-library':
         specifier: ^0.8.5
-        version: 0.8.5(@solidjs/router@0.8.3)(solid-js@1.6.13)
+        version: 0.8.5(@solidjs/router@0.8.3)(solid-js@1.7.12)
       '@testing-library/jest-dom':
         specifier: ^6.1.5
         version: 6.1.6(@types/jest@26.0.24)(vitest@0.34.3)
@@ -141,8 +141,8 @@ importers:
         specifier: ^7.5.4
         version: 7.5.4
       solid-js:
-        specifier: ^1.6.13
-        version: 1.6.13
+        specifier: ^1.7.8
+        version: 1.7.12
       stream-to-array:
         specifier: ^2.3.0
         version: 2.3.0
@@ -183,7 +183,7 @@ importers:
   examples/react/next-server-actions:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/react-form
       next:
         specifier: 14.0.4
@@ -217,7 +217,7 @@ importers:
   examples/react/simple:
     dependencies:
       '@tanstack/react-form':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/react-form
       react:
         specifier: ^18.0.0
@@ -236,10 +236,10 @@ importers:
   examples/react/valibot:
     dependencies:
       '@tanstack/react-form':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/react-form
       '@tanstack/valibot-form-adapter':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/valibot-form-adapter
       react:
         specifier: ^18.0.0
@@ -261,10 +261,10 @@ importers:
   examples/react/yup:
     dependencies:
       '@tanstack/react-form':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/react-form
       '@tanstack/yup-form-adapter':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/yup-form-adapter
       react:
         specifier: ^18.0.0
@@ -286,10 +286,10 @@ importers:
   examples/react/zod:
     dependencies:
       '@tanstack/react-form':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/react-form
       '@tanstack/zod-form-adapter':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/zod-form-adapter
       react:
         specifier: ^18.0.0
@@ -311,7 +311,7 @@ importers:
   examples/solid/simple:
     dependencies:
       '@tanstack/solid-form':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/solid-form
       solid-js:
         specifier: ^1.7.8
@@ -330,10 +330,10 @@ importers:
   examples/solid/valibot:
     dependencies:
       '@tanstack/solid-form':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/solid-form
       '@tanstack/valibot-form-adapter':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/valibot-form-adapter
       solid-js:
         specifier: ^1.7.8
@@ -355,10 +355,10 @@ importers:
   examples/solid/yup:
     dependencies:
       '@tanstack/solid-form':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/solid-form
       '@tanstack/yup-form-adapter':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/yup-form-adapter
       solid-js:
         specifier: ^1.7.8
@@ -380,10 +380,10 @@ importers:
   examples/solid/zod:
     dependencies:
       '@tanstack/solid-form':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/solid-form
       '@tanstack/zod-form-adapter':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/zod-form-adapter
       solid-js:
         specifier: ^1.7.8
@@ -405,7 +405,7 @@ importers:
   examples/vue/simple:
     dependencies:
       '@tanstack/vue-form':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/vue-form
       vue:
         specifier: ^3.3.4
@@ -427,10 +427,10 @@ importers:
   examples/vue/valibot:
     dependencies:
       '@tanstack/valibot-form-adapter':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/valibot-form-adapter
       '@tanstack/vue-form':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/vue-form
       valibot:
         specifier: ^0.20.1
@@ -455,10 +455,10 @@ importers:
   examples/vue/yup:
     dependencies:
       '@tanstack/vue-form':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/vue-form
       '@tanstack/yup-form-adapter':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/yup-form-adapter
       vue:
         specifier: ^3.3.4
@@ -483,10 +483,10 @@ importers:
   examples/vue/zod:
     dependencies:
       '@tanstack/vue-form':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/vue-form
       '@tanstack/zod-form-adapter':
-        specifier: 0.11.0
+        specifier: <1.0.0
         version: link:../../../packages/zod-form-adapter
       vue:
         specifier: ^3.3.4
@@ -3288,24 +3288,24 @@ packages:
       '@sinonjs/commons': 3.0.0
     dev: false
 
-  /@solidjs/router@0.8.3(solid-js@1.6.13):
+  /@solidjs/router@0.8.3(solid-js@1.7.12):
     resolution: {integrity: sha512-oJuqQo10rVTiQYhe1qXIG1NyZIZ2YOwHnlLc8Xx+g/iJhFCJo1saLOIrD/Dkh2fpIaIny5ZMkz1cYYqoTYGJbg==}
     peerDependencies:
       solid-js: ^1.5.3
     dependencies:
-      solid-js: 1.6.13
+      solid-js: 1.7.12
     dev: true
 
-  /@solidjs/testing-library@0.8.5(@solidjs/router@0.8.3)(solid-js@1.6.13):
+  /@solidjs/testing-library@0.8.5(@solidjs/router@0.8.3)(solid-js@1.7.12):
     resolution: {integrity: sha512-L9TowCoqdRQGB8ikODh9uHXrYTjCUZseVUG0tIVa836//qeSqXP4m0BKG66v9Zp1y1wRxok5qUW97GwrtEBMcw==}
     engines: {node: '>= 14'}
     peerDependencies:
       '@solidjs/router': '>=0.6.0'
       solid-js: '>=1.0.0'
     dependencies:
-      '@solidjs/router': 0.8.3(solid-js@1.6.13)
+      '@solidjs/router': 0.8.3(solid-js@1.7.12)
       '@testing-library/dom': 9.3.1
-      solid-js: 1.6.13
+      solid-js: 1.7.12
     dev: true
 
   /@swc/helpers@0.5.2:
@@ -5037,10 +5037,6 @@ packages:
     engines: {node: '>=14'}
     dependencies:
       rrweb-cssom: 0.6.0
-    dev: true
-
-  /csstype@3.1.0:
-    resolution: {integrity: sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA==}
     dev: true
 
   /csstype@3.1.2:
@@ -9458,12 +9454,6 @@ packages:
       astral-regex: 1.0.0
       is-fullwidth-code-point: 2.0.0
     dev: false
-
-  /solid-js@1.6.13:
-    resolution: {integrity: sha512-/zcyeect3QnmcD58754IpOU/SzX3s9N19RlRVoKRz3tNpzvel7QKO4FX/PpIFQH6n/pxWq6rSh6b9fwe20XUvw==}
-    dependencies:
-      csstype: 3.1.0
-    dev: true
 
   /solid-js@1.7.12:
     resolution: {integrity: sha512-QoyoOUKu14iLoGxjxWFIU8+/1kLT4edQ7mZESFPonsEXZ//VJtPKD8Ud1aTKzotj+MNWmSs9YzK6TdY+fO9Eww==}
