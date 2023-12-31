@@ -45,16 +45,22 @@ export type FieldValidateOrFn<
           TData
         >
   : TFormValidator extends Validator<TParentData, infer FFN>
-  ?
-      | FFN
-      | FieldValidateFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
-  : FieldValidateFn<TParentData, TName, TFieldValidator, TFormValidator, TData>
+    ?
+        | FFN
+        | FieldValidateFn<
+            TParentData,
+            TName,
+            TFieldValidator,
+            TFormValidator,
+            TData
+          >
+    : FieldValidateFn<
+        TParentData,
+        TName,
+        TFieldValidator,
+        TFormValidator,
+        TData
+      >
 
 export type FieldValidateAsyncFn<
   TParentData,
@@ -93,22 +99,22 @@ export type FieldAsyncValidateOrFn<
           TData
         >
   : TFormValidator extends Validator<TParentData, infer FFN>
-  ?
-      | FFN
-      | FieldValidateAsyncFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
-  : FieldValidateAsyncFn<
-      TParentData,
-      TName,
-      TFieldValidator,
-      TFormValidator,
-      TData
-    >
+    ?
+        | FFN
+        | FieldValidateAsyncFn<
+            TParentData,
+            TName,
+            TFieldValidator,
+            TFormValidator,
+            TData
+          >
+    : FieldValidateAsyncFn<
+        TParentData,
+        TName,
+        TFieldValidator,
+        TFormValidator,
+        TData
+      >
 
 export interface FieldValidators<
   TParentData,
@@ -570,8 +576,6 @@ export class FieldApi<
       const fieldValidatorMeta = this.getInfo().validationMetaMap[key]
 
       fieldValidatorMeta?.lastAbortController.abort()
-      // Sorry Safari 12
-      // eslint-disable-next-line compat/compat
       const controller = new AbortController()
 
       this.getInfo().validationMetaMap[key] = {

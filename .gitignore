@@ -46,3 +46,6 @@ dist
 
 nx-cloud.env
 .nx
+
+.nx/cache
+.tsup

@@ -26,15 +26,75 @@ If you have been assigned to fix an issue or develop a new feature, please follo
 - Git stage your required changes and commit (see below commit guidelines).
 - Submit PR for review.
 
+### Editing the docs locally and previewing the changes
+
+The documentations for all the TanStack projects are hosted on [tanstack.com](https://tanstack.com), which is a Remix application (https://github.com/TanStack/tanstack.com). You need to run this app locally to preview your changes in the `TanStack/form` docs.
+
+> [!NOTE]
+> The Remix app fetches the doc pages from GitHub in production, and searches for them at `../form/docs` in development. Your local clone of `TanStack/form` needs to be in the same directory as the local clone of `TansStack/tanstack.com`.
+
+You can follow these steps to set up the docs for local development:
+
+1. Make a new directory called `tanstack`.
+
+```sh
+mkdir tanstack
+```
+
+2. Enter that directory and clone the [`TanStack/form`](https://github.com/TanStack/form) and [`TanStack/tanstack.com`](https://github.com/TanStack/tanstack.com) repos.
+
+```sh
+cd tanstack
+git clone git@github.com:TanStack/form.git
+# We probably don't need all the branches and commit history
+# from the `tanstack.com` repo, so let's just create a shallow
+# clone of the latest version of the `main` branch.
+# Read more about shallow clones here:
+# https://github.blog/2020-12-21-get-up-to-speed-with-partial-clone-and-shallow-clone/#user-content-shallow-clones
+git clone git@github.com:TanStack/tanstack.com.git --depth=1 --single-branch --branch=main
+```
+
+> [!NOTE]
+> Your `tanstack` directory should look like this:
+>
+> ```
+> tanstack/
+>    |
+>    +-- form/ (<-- this directory cannot be called anything else!)
+>    |
+>    +-- tanstack.com/
+> ```
+
+3. Enter the `tanstack/tanstack.com` directory, install the dependencies and run the app in dev mode:
+
+```sh
+cd tanstack.com
+pnpm i
+# The app will run on https://localhost:3000 by default
+pnpm dev
+```
+
+4. Now you can visit http://localhost:3000/form/latest/docs/overview in the browser and see the changes you make in `tanstack/form/docs` there.
+
+> [!WARNING]
+> You will need to update the `docs/config.json` file (in `TanStack/form`) if you add a new documentation page!
+
+You can see the whole process in the screen capture below:
+
+https://github.com/fulopkovacs/form/assets/43729152/9d35a3c3-8153-4e74-9cb2-af275f7a269b
+
 ### Running examples
+
 - Make sure you've installed the dependencies by running `$ pnpm install` in the repo's root directory.
 - If you want to run the example against your local changes, run `pnpm run watch` in the repo's root directory. Otherwise, it will be run against the latest TanStack Form release.
 - Run `pnpm run dev` in the selected examples' directory.
 
 #### Note on `examples/react-native`
+
 React Native example requires Expo to work. Please follow the instructions from example's README.md file to learn more.
 
 #### Note on standalone execution
+
 If you want to run an example without installing dependencies for the whole repo, just follow instructions from the example's README.md file. It will be then run against the latest TanStack Form release.
 
 ## Online one-click setup
