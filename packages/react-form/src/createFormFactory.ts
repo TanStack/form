@@ -2,6 +2,7 @@ import type { FormApi, FormOptions, Validator } from '@tanstack/form-core'
 
 import { type UseField, type FieldComponent, Field, useField } from './useField'
 import { useForm } from './useForm'
+import { type ValidateFormData, getValidateFormData } from './validateFormData'
 
 export type FormFactory<
   TFormData,
@@ -12,6 +13,8 @@ export type FormFactory<
   ) => FormApi<TFormData, TFormValidator>
   useField: UseField<TFormData>
   Field: FieldComponent<TFormData, TFormValidator>
+  validateFormData: ValidateFormData<TFormData, TFormValidator>
+  initialFormState: Partial<FormApi<TFormData, TFormValidator>['state']>
 }
 
 export function createFormFactory<
@@ -27,5 +30,12 @@ export function createFormFactory<
     },
     useField: useField as any,
     Field: Field as any,
+    validateFormData: getValidateFormData(defaultOpts) as never,
+    initialFormState: {
+      errorMap: {
+        onServer: undefined,
+      },
+      errors: [],
+    },
   }
 }
