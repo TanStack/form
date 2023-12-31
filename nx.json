@@ -3,28 +3,14 @@
   "affected": {
     "defaultBase": "main"
   },
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx-cloud",
-      "options": {
-        "cacheableOperations": [
-          "test:lib",
-          "test:eslint",
-          "test:types",
-          "test:build",
-          "build"
-        ],
-        "parallel": 5,
-        "accessToken": "OTI3Y2U3NGQtYzQ3ZC00ZmE3LWJjZWQtYTYxOTEyNmNiN2IyfHJlYWQtb25seQ=="
-      }
-    }
-  },
   "defaultBase": "main",
   "pluginsConfig": {
     "@nrwl/js": {
       "analyzeSourceFiles": false
     }
   },
+  "nxCloudAccessToken": "OTI3Y2U3NGQtYzQ3ZC00ZmE3LWJjZWQtYTYxOTEyNmNiN2IyfHJlYWQtb25seQ==",
+  "parallel": 5,
   "namedInputs": {
     "sharedGlobals": [
       "{workspaceRoot}/.browserslistrc",
@@ -49,24 +35,29 @@
     "test:lib": {
       "dependsOn": ["^build"],
       "inputs": ["default", "^public"],
-      "outputs": ["{projectRoot}/coverage"]
+      "outputs": ["{projectRoot}/coverage"],
+      "cache": true
     },
     "test:eslint": {
       "dependsOn": ["^build"],
-      "inputs": ["default", "^public"]
+      "inputs": ["default", "^public"],
+      "cache": true
     },
     "test:types": {
       "dependsOn": ["^build"],
-      "inputs": ["default", "^public"]
+      "inputs": ["default", "^public"],
+      "cache": true
     },
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["default", "^public"],
-      "outputs": ["{projectRoot}/build", "{projectRoot}/dist"]
+      "outputs": ["{projectRoot}/build", "{projectRoot}/dist"],
+      "cache": true
     },
     "test:build": {
       "dependsOn": ["build"],
-      "inputs": ["^public"]
+      "inputs": ["^public"],
+      "cache": true
     }
   }
 }

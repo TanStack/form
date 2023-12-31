@@ -14,14 +14,12 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NX_DAEMON: false
-  NX_VERBOSE_LOGGING: true
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
 
 jobs:
   test-and-publish:
-    if: github.repository == 'TanStack/form' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/alpha' || github.ref == 'refs/heads/beta')
-    name: 'Test & Publish'
+    name: Test & Publish
+    if: github.repository == 'TanStack/form'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
