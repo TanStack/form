@@ -21,7 +21,7 @@
     "build:all": "nx run-many --target=build --exclude=examples/**",
     "watch": "pnpm run build:all && nx watch --all -- pnpm run build:all",
     "dev": "pnpm run watch",
-    "prettier": "prettier \"{packages,examples,scripts}/**/*.{md,js,jsx,cjs,ts,tsx,json,vue}\"",
+    "prettier": "prettier --ignore-unknown '**/*'",
     "prettier:write": "pnpm run prettier --write",
     "cipublish": "node scripts/publish.js",
     "cipublishforce": "CI=true pnpm cipublish"
@@ -74,7 +74,7 @@
     "jsonfile": "^6.1.0",
     "luxon": "^3.3.0",
     "nx": "17.2.8",
-    "prettier": "^3.0.2",
+    "prettier": "^4.0.0-alpha.8",
     "publint": "^0.1.15",
     "react": "^18.2.0",
     "react-17": "npm:react@^17.0.2",

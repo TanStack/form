@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     "lib": ["ES2022"],
     "target": "ES2020",
@@ -15,10 +16,5 @@
     "baseUrl": ".",
     "allowUnreachableCode": true
   },
-  "ts-node": {
-    "compilerOptions": {
-      "module": "commonjs",
-      "esModuleInterop": true
-    }
-  }
+  "include": ["prettier.config.js", "scripts"]
 }
