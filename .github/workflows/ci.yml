@@ -35,7 +35,9 @@ jobs:
           node-version-file: .nvmrc
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --frozen-lockfile --prefer-offline
+      - name: Run Tests
+        run: pnpm run test:ci
       - name: Publish
         run: |
           git config --global user.name 'Tanner Linsley'
