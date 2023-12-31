@@ -49,3 +49,5 @@ nx-cloud.env
 
 .nx/cache
 .tsup
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
