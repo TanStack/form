@@ -13,10 +13,10 @@
   "parallel": 5,
   "namedInputs": {
     "sharedGlobals": [
-      "{workspaceRoot}/.browserslistrc",
       "{workspaceRoot}/.eslintrc.cjs",
+      "{workspaceRoot}/.nvmrc",
       "{workspaceRoot}/package.json",
-      "{workspaceRoot}/getTsupConfig.js",
+      "{workspaceRoot}/scripts/getTsupConfig.js",
       "{workspaceRoot}/tsconfig.json"
     ],
     "default": [
