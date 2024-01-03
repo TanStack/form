@@ -1,19 +1,23 @@
 import { defineConfig, mergeConfig } from 'vitest/config'
-import { getDefaultViteConfig } from '../../getViteConfig'
+import { tanstackBuildConfig } from '@tanstack/config/build'
 
-console.log(__dirname)
+const config = defineConfig({
+  test: {
+    name: 'form-core',
+    dir: './src',
+    watch: false,
+    environment: 'jsdom',
+    globals: true,
+    coverage: { enabled: true, provider: 'istanbul', include: ['src/**/*'] },
+    typecheck: { enabled: true },
+  },
+})
 
 export default mergeConfig(
-  getDefaultViteConfig({ dirname: __dirname, entryPath: 'src/index.ts' }),
-  defineConfig({
-    test: {
-      name: 'form-core',
-      dir: './src',
-      watch: false,
-      environment: 'jsdom',
-      globals: true,
-      coverage: { enabled: true, provider: 'istanbul', include: ['src/**/*'] },
-      typecheck: { enabled: true },
-    },
+  config,
+  tanstackBuildConfig({
+    entry: './src/index.ts',
+    srcDir: './src',
+    exclude: ['./src/tests'],
   }),
 )

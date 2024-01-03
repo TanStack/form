@@ -14,10 +14,10 @@
   "scripts": {
     "clean": "rimraf ./dist && rimraf ./coverage",
     "test:eslint": "eslint --ext .ts,.tsx ./src",
-    "test:types:versions49": "../../node_modules/typescript49/bin/tsc --noEmit",
-    "test:types:versions50": "../../node_modules/typescript50/bin/tsc --noEmit",
-    "test:types:versions51": "../../node_modules/typescript51/bin/tsc --noEmit",
-    "test:types:versions52": "tsc --noEmit",
+    "test:types:versions49": "../../node_modules/typescript49/bin/tsc --project tsconfig.legacy.json",
+    "test:types:versions50": "../../node_modules/typescript50/bin/tsc",
+    "test:types:versions51": "../../node_modules/typescript51/bin/tsc",
+    "test:types:versions52": "tsc",
     "test:types": "pnpm run \"/^test:types:versions.*/\"",
     "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
@@ -29,14 +29,14 @@
     "src"
   ],
   "type": "module",
-  "types": "dist/mjs/index.d.mts",
+  "types": "dist/esm/index.d.ts",
   "main": "dist/cjs/index.cjs",
-  "module": "dist/mjs/index.mjs",
+  "module": "dist/esm/index.js",
   "exports": {
     ".": {
       "import": {
-        "types": "./dist/mjs/index.d.mts",
-        "default": "./dist/mjs/index.mjs"
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
       },
       "require": {
         "types": "./dist/cjs/index.d.cts",
@@ -50,6 +50,7 @@
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.0.5",
     "@types/use-sync-external-store": "^0.0.3",
+    "@vitejs/plugin-react": "^4.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-error-boundary": "^3.1.4"

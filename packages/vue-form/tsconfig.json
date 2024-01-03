@@ -1,10 +1,10 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "types": ["vitest/globals", "vue/jsx"],
-    "noEmit": true,
     "jsx": "preserve",
-    "jsxImportSource": "vue"
+    "jsxImportSource": "vue",
+    "moduleResolution": "Bundler",
+    "types": ["vitest/globals", "vue/jsx"]
   },
   "include": [
     "src/**/*.ts",

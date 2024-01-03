@@ -35,6 +35,7 @@
   "devDependencies": {
     "@commitlint/parse": "^18.4.3",
     "@solidjs/testing-library": "^0.8.5",
+    "@tanstack/config": "^0.1.1",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
     "@testing-library/react-hooks": "^8.0.1",
@@ -57,7 +58,6 @@
     "axios": "^1.6.2",
     "chalk": "^5.3.0",
     "current-git-branch": "^1.1.0",
-    "esbuild-plugin-file-path-extensions": "^2.0.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",
@@ -79,15 +79,12 @@
     "semver": "^7.5.4",
     "solid-js": "^1.7.8",
     "stream-to-array": "^2.3.0",
-    "tsup": "^8.0.1",
     "type-fest": "^4.8.3",
     "typescript": "^5.2.2",
     "typescript49": "npm:typescript@4.9",
     "typescript50": "npm:typescript@5.0",
     "typescript51": "npm:typescript@5.1",
     "vite": "^5.0.10",
-    "vite-plugin-dts": "^3.7.0",
-    "vite-plugin-externalize-deps": "^0.8.0",
     "vitest": "^1.1.0",
     "vue": "^3.3.4"
   }

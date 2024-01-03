@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "test:types": "tsc --noEmit",
+    "test:types": "tsc",
     "preview": "vite preview"
   },
   "dependencies": {
