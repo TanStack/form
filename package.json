@@ -53,7 +53,7 @@
     "@types/stream-to-array": "^2.3.3",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "@typescript-eslint/parser": "^6.4.1",
-    "@vitest/coverage-istanbul": "^0.34.3",
+    "@vitest/coverage-istanbul": "^1.1.0",
     "axios": "^1.6.2",
     "chalk": "^5.3.0",
     "current-git-branch": "^1.1.0",
@@ -77,7 +77,7 @@
     "react-dom-17": "npm:react-dom@^17.0.2",
     "rimraf": "^5.0.5",
     "semver": "^7.5.4",
-    "solid-js": "^1.6.13",
+    "solid-js": "^1.7.8",
     "stream-to-array": "^2.3.0",
     "tsup": "^8.0.1",
     "type-fest": "^4.8.3",
@@ -85,17 +85,10 @@
     "typescript49": "npm:typescript@4.9",
     "typescript50": "npm:typescript@5.0",
     "typescript51": "npm:typescript@5.1",
-    "vite": "^4.4.9",
+    "vite": "^5.0.10",
     "vite-plugin-dts": "^3.7.0",
     "vite-plugin-externalize-deps": "^0.8.0",
-    "vitest": "^0.34.3",
+    "vitest": "^1.1.0",
     "vue": "^3.3.4"
-  },
-  "bundlewatch": {
-    "files": [
-      {
-        "path": "packages/*/build/umd/*.production.js"
-      }
-    ]
   }
 }
