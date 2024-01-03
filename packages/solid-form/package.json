@@ -29,14 +29,14 @@
     "src"
   ],
   "type": "module",
-  "types": "dist/mjs/index.d.mts",
+  "types": "dist/esm/index.d.ts",
   "main": "dist/cjs/index.cjs",
-  "module": "dist/mjs/index.mjs",
+  "module": "dist/esm/index.js",
   "exports": {
     ".": {
       "import": {
-        "types": "./dist/mjs/index.d.mts",
-        "default": "./dist/mjs/index.mjs"
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
       },
       "require": {
         "types": "./dist/cjs/index.d.cts",
