@@ -3,7 +3,7 @@
   "compilerOptions": {
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "moduleResolution": "Node",
+    "moduleResolution": "Node"
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["src/tests/**"]
