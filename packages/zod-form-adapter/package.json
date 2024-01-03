@@ -40,7 +40,7 @@
     "test:types:versions51": "../../node_modules/typescript51/bin/tsc --noEmit",
     "test:types:versions52": "tsc",
     "test:types": "pnpm run \"/^test:types:versions.*/\"",
-    "test:lib": "vitest run --coverage",
+    "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
     "build": "vite build"

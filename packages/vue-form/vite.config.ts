@@ -11,7 +11,8 @@ export default mergeConfig(
       environment: 'jsdom',
       globals: true,
       setupFiles: [],
-      coverage: { provider: 'istanbul' },
+      coverage: { enabled: true, provider: 'istanbul', include: ['src/**/*'] },
+      typecheck: { enabled: true },
     },
     esbuild: {
       jsxFactory: 'h',

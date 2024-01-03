@@ -10,7 +10,8 @@ export default mergeConfig(
       watch: false,
       environment: 'jsdom',
       globals: true,
-      coverage: { provider: 'istanbul' },
+      coverage: { enabled: true, provider: 'istanbul', include: ['src/**/*'] },
+      typecheck: { enabled: true },
     },
   }),
 )

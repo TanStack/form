@@ -13,7 +13,8 @@ export default mergeConfig(
       setupFiles: [],
       environment: 'jsdom',
       globals: true,
-      coverage: { provider: 'istanbul' },
+      coverage: { enabled: true, provider: 'istanbul', include: ['src/**/*'] },
+      typecheck: { enabled: true },
       server: {
         deps: {
           // https://github.com/solidjs/solid-testing-library#known-issues
