@@ -16,7 +16,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.0.4",
+    "@vitejs/plugin-react": "^4.2.1",
     "vite": "^5.0.10"
   },
   "browserslist": {
