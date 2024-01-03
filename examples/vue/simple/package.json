@@ -5,7 +5,7 @@
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build -m development",
-    "test:types": "vue-tsc --noEmit",
+    "test:types": "vue-tsc",
     "serve": "vite preview"
   },
   "dependencies": {
