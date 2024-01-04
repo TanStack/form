@@ -8,9 +8,6 @@ importers:
 
   .:
     devDependencies:
-      '@commitlint/parse':
-        specifier: ^18.4.3
-        version: 18.4.3
       '@solidjs/testing-library':
         specifier: ^0.8.5
         version: 0.8.5(@solidjs/router@0.8.3)(solid-js@1.7.12)
@@ -32,24 +29,12 @@ importers:
       '@testing-library/vue':
         specifier: ^7.0.0
         version: 7.0.0(@vue/compiler-sfc@3.3.4)(vue@3.3.4)
-      '@types/current-git-branch':
-        specifier: ^1.1.6
-        version: 1.1.6
       '@types/eslint':
         specifier: ^8.56.0
         version: 8.56.0
-      '@types/git-log-parser':
-        specifier: ^1.2.3
-        version: 1.2.3
       '@types/jest':
         specifier: ^26.0.4
         version: 26.0.24
-      '@types/jsonfile':
-        specifier: ^6.1.4
-        version: 6.1.4
-      '@types/luxon':
-        specifier: ^2.3.1
-        version: 2.3.2
       '@types/node':
         specifier: ^18.19.3
         version: 18.19.4
@@ -59,12 +44,6 @@ importers:
       '@types/react-dom':
         specifier: ^18.0.5
         version: 18.0.6
-      '@types/semver':
-        specifier: ^7.5.6
-        version: 7.5.6
-      '@types/stream-to-array':
-        specifier: ^2.3.3
-        version: 2.3.3
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.4.1
         version: 6.4.1(@typescript-eslint/parser@6.4.1)(eslint@8.56.0)(typescript@5.2.2)
@@ -74,15 +53,6 @@ importers:
       '@vitest/coverage-istanbul':
         specifier: ^1.1.0
         version: 1.1.1(vitest@1.1.0)
-      axios:
-        specifier: ^1.6.2
-        version: 1.6.3
-      chalk:
-        specifier: ^5.3.0
-        version: 5.3.0
-      current-git-branch:
-        specifier: ^1.1.0
-        version: 1.1.0
       eslint:
         specifier: ^8.56.0
         version: 8.56.0
@@ -101,18 +71,9 @@ importers:
       eslint-plugin-react-hooks:
         specifier: ^4.6.0
         version: 4.6.0(eslint@8.56.0)
-      git-log-parser:
-        specifier: ^1.2.0
-        version: 1.2.0
       jsdom:
         specifier: ^23.0.1
         version: 23.0.1
-      jsonfile:
-        specifier: ^6.1.0
-        version: 6.1.0
-      luxon:
-        specifier: ^3.4.4
-        version: 3.4.4
       nx:
         specifier: ^17.2.8
         version: 17.2.8
@@ -137,15 +98,9 @@ importers:
       rimraf:
         specifier: ^5.0.5
         version: 5.0.5
-      semver:
-        specifier: ^7.5.4
-        version: 7.5.4
       solid-js:
         specifier: ^1.7.8
         version: 1.7.12
-      stream-to-array:
-        specifier: ^2.3.0
-        version: 2.3.0
       type-fest:
         specifier: ^4.8.3
         version: 4.9.0
@@ -4208,10 +4163,6 @@ packages:
       '@babel/types': 7.22.15
     dev: true
 
-  /@types/current-git-branch@1.1.6:
-    resolution: {integrity: sha512-zXG02ZIQ98r/+ARpow/yx54GYie7yeDKPJUJq5eFe6FwiYjR3TK5To08zuZgcF90QjG0Z5sdD5hxHBVB93b5Kg==}
-    dev: true
-
   /@types/eslint@8.56.0:
     resolution: {integrity: sha512-FlsN0p4FhuYRjIxpbdXovvHQhtlG05O1GG/RNWvdAxTboR438IOTwmrY/vLA+Xfgg06BTkP045M3vpFwTMv1dg==}
     dependencies:
@@ -4221,12 +4172,6 @@ packages:
 
   /@types/estree@1.0.5:
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
-    dev: true
-
-  /@types/git-log-parser@1.2.3:
-    resolution: {integrity: sha512-T+qpPYiSfsDhldenqLNL17bNluhAJr+3zgXeuGHys1XYeKja/sr33TRNXhfoQDLL3DbWxXLe5F/Uj2ViLjp5Lw==}
-    dependencies:
-      '@types/node': 18.19.4
     dev: true
 
   /@types/istanbul-lib-coverage@2.0.4:
@@ -4262,16 +4207,6 @@ packages:
 
   /@types/json5@0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
-    dev: true
-
-  /@types/jsonfile@6.1.4:
-    resolution: {integrity: sha512-D5qGUYwjvnNNextdU59/+fI+spnwtTFmyQP0h+PfIOSkNfpU6AOICUOkm4i0OnSk+NyjdPJrxCDro0sJsWlRpQ==}
-    dependencies:
-      '@types/node': 18.19.4
-    dev: true
-
-  /@types/luxon@2.3.2:
-    resolution: {integrity: sha512-WOehptuhKIXukSUUkRgGbj2c997Uv/iUgYgII8U7XLJqq9W2oF0kQ6frEznRQbdurioz+L/cdaIm4GutTQfgmA==}
     dev: true
 
   /@types/minimist@1.2.2:
@@ -4333,12 +4268,6 @@ packages:
   /@types/stack-utils@2.0.2:
     resolution: {integrity: sha512-g7CK9nHdwjK2n0ymT2CW698FuWJRIx+RP6embAzZ2Qi8/ilIrA1Imt2LVSeHUzKvpoi7BhmmQcXz95eS0f2JXw==}
     dev: false
-
-  /@types/stream-to-array@2.3.3:
-    resolution: {integrity: sha512-fWXKc6enNlT2l0nXZcxHNQvNSg9IIBgHQR1bHfAVjcJD+zlx9F0o6W+qGWerB1eGBszV4+dsge3id4PEp6SptA==}
-    dependencies:
-      '@types/node': 18.19.4
-    dev: true
 
   /@types/use-sync-external-store@0.0.3:
     resolution: {integrity: sha512-EwmlvuaxPNej9+T4v5AuBPJa2x2UOJVdjCtDHgcDqitUeOtjnJKJ+apYjVcAoBEMjKW1VVFGZLUb5+qqa09XFA==}
