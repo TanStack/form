@@ -14,7 +14,9 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "baseUrl": ".",
-    "allowUnreachableCode": true
+    "allowUnreachableCode": true,
+    "allowJs": true,
+    "checkJs": true
   },
-  "include": ["prettier.config.js", "scripts"]
+  "include": [".eslintrc.cjs", "prettier.config.js"]
 }
