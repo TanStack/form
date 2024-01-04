@@ -238,7 +238,9 @@ export class FormApi<
 
           this.state = state
           this.store.state = this.state
-
+          if (opts?.persister) {
+            opts.persister.persistForm(state)
+          }
           // Only run transform if state has shallowly changed - IE how React.useEffect works
           const transformArray = this.options.transform?.deps ?? []
           const shouldTransform =

@@ -46,6 +46,9 @@ const makeKey = (prefix: string = 'tanstack-form', persistKey: string) =>
 export function createPersister<TFormData>(
   options: StoragePersisterOptions,
 ): AddKeyStringArgument<Persister<TFormData>> {
+  const deleteForm = (persistKey: string) => {
+    return options.storage?.removeItem(makeKey(options.prefix, persistKey))
+  }
   return {
     async persistForm(persistKey, formState) {
       await options.storage?.setItem(
@@ -62,11 +65,9 @@ export function createPersister<TFormData>(
         'null'
       const state = JSON.parse(deserialized)
       if (!state || state.buster !== (options.buster ?? ''))
-        return this.deleteForm(persistKey)
+        return deleteForm(persistKey)
       return state.state
     },
-    deleteForm(persistKey) {
-      return options.storage?.removeItem(makeKey(options.prefix, persistKey))
-    },
+    deleteForm,
   }
 }

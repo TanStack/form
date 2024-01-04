@@ -16,7 +16,6 @@ const getPersister = <TFormData>(
         return persistMap.get(key)
       },
       setItem(key, val) {
-        console.log('setting: ', key, val)
         return persistMap.set(key, val)
       },
       removeItem(key) {
@@ -84,7 +83,6 @@ describe('persister', () => {
     await sleep(10)
     formApi = getFormApi()
     await sleep(10)
-    console.log('old', oldState), console.log('new', formApi.state)
     expect(formApi.state).toEqual(oldState)
   })
 })
