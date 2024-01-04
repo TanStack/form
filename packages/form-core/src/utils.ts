@@ -131,6 +131,7 @@ const rePropName = RegExp(
   // Or match "" as the space between consecutive dots or empty brackets.
   '(?=(?:\\.|\\[\\])(?:\\.|\\[\\]|$))'
   , 'g')
+const reFindNumber = /^\d+$/
 
 function makePathArray(str: string) {
   if (typeof str !== 'string') {
@@ -150,7 +151,7 @@ function makePathArray(str: string) {
       key = expression.trim()
     }
     // key difference from lodash string to path algoritm
-    if ((/^\d+$/).test(key)) {
+    if (reFindNumber.test(key)) {
       key = parseInt(key, 10);
     }
     result.push(key)
