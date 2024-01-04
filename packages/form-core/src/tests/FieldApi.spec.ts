@@ -651,11 +651,14 @@ describe('field api', () => {
         onSubmit: ({ value }) =>
           value.length > 0 ? undefined : 'first name is required',
       },
+      defaultMeta: { isTouched: true },
     })
 
+    form.mount()
     field.mount()
 
     await form.handleSubmit()
+
     expect(field.getMeta().errors).toStrictEqual(['first name is required'])
   })
 

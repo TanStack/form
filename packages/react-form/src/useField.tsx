@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'rehackt'
 import { useStore } from '@tanstack/react-store'
 import type {
   DeepKeys,
@@ -10,6 +10,7 @@ import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useFormContext, formContext } from './formContext'
 import type { UseFieldOptions } from './types'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
+import { useIsomorphicEffectOnce } from './useIsomorphicEffectOnce'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
@@ -103,8 +104,19 @@ export function useField<
         }
       : undefined,
   )
-  // Instantiates field meta and removes it when unrendered
-  useIsomorphicLayoutEffect(() => fieldApi.mount(), [fieldApi])
+  const unmountFn = useRef<(() => void) | null>(null)
+
+  useIsomorphicEffectOnce(() => {
+    return () => {
+      unmountFn.current?.()
+    }
+  })
+
+  // We have to mount it right as soon as it renders, otherwise we get:
+  // https://github.com/TanStack/form/issues/523
+  if (!unmountFn.current) {
+    unmountFn.current = fieldApi.mount()
+  }
 
   return fieldApi as never
 }

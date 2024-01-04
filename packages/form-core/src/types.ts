@@ -6,7 +6,8 @@ export type Validator<Type, Fn = unknown> = () => {
   validateAsync(options: { value: Type }, fn: Fn): Promise<ValidationError>
 }
 
-export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount'
+// "server" is only intended for SSR/SSG validation and should not execute anything
+export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount' | 'server'
 
 export type ValidationErrorMapKeys = `on${Capitalize<ValidationCause>}`
 

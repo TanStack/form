@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/zod-form-adapter",
-  "version": "0.11.0",
+  "version": "0.13.0",
   "description": "The Zod adapter for TanStack Form.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -11,40 +11,39 @@
     "url": "https://github.com/sponsors/tannerlinsley"
   },
   "type": "module",
-  "types": "build/legacy/index.d.ts",
-  "main": "build/legacy/index.cjs",
-  "module": "build/legacy/index.js",
+  "types": "dist/esm/index.d.ts",
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/esm/index.js",
   "exports": {
     ".": {
       "import": {
-        "types": "./build/modern/index.d.ts",
-        "default": "./build/modern/index.js"
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
       },
       "require": {
-        "types": "./build/modern/index.d.cts",
-        "default": "./build/modern/index.cjs"
+        "types": "./dist/cjs/index.d.cts",
+        "default": "./dist/cjs/index.cjs"
       }
     },
     "./package.json": "./package.json"
   },
   "sideEffects": false,
   "files": [
-    "build",
+    "dist",
     "src"
   ],
   "scripts": {
-    "clean": "rimraf ./build && rimraf ./coverage",
+    "clean": "rimraf ./dist && rimraf ./coverage",
     "test:eslint": "eslint --ext .ts,.tsx ./src",
-    "test:types:versions48": "../../node_modules/typescript48/bin/tsc --noEmit",
-    "test:types:versions49": "../../node_modules/typescript49/bin/tsc --noEmit",
-    "test:types:versions50": "../../node_modules/typescript50/bin/tsc --noEmit",
-    "test:types:versions51": "../../node_modules/typescript51/bin/tsc --noEmit",
+    "test:types:versions49": "../../node_modules/typescript49/bin/tsc --project tsconfig.legacy.json",
+    "test:types:versions50": "../../node_modules/typescript50/bin/tsc",
+    "test:types:versions51": "../../node_modules/typescript51/bin/tsc",
     "test:types:versions52": "tsc",
     "test:types": "pnpm run \"/^test:types:versions.*/\"",
-    "test:lib": "vitest run --coverage",
+    "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
-    "build": "tsup"
+    "build": "vite build"
   },
   "dependencies": {
     "@tanstack/form-core": "workspace:*"

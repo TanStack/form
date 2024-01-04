@@ -1,8 +1,7 @@
 {
-  "composite": true,
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./build/lib",
+    "moduleResolution": "Bundler",
     "types": ["vitest/globals"]
   },
   "include": ["src"]

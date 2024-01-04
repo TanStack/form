@@ -138,6 +138,7 @@ describe('form api', () => {
         onBlur: undefined,
         onSubmit: undefined,
         onMount: undefined,
+        onServer: undefined,
       },
     })
   })
@@ -789,6 +790,7 @@ describe('form api', () => {
         onChange: ({ value }) =>
           value.length > 0 ? undefined : 'first name is required',
       },
+      defaultMeta: { isTouched: true },
     })
 
     const lastNameField = new FieldApi({
@@ -798,8 +800,10 @@ describe('form api', () => {
         onChange: ({ value }) =>
           value.length > 0 ? undefined : 'last name is required',
       },
+      defaultMeta: { isTouched: true },
     })
 
+    form.mount()
     field.mount()
     lastNameField.mount()
 
@@ -833,8 +837,10 @@ describe('form api', () => {
             ? undefined
             : 'first name must be longer than 3 characters',
       },
+      defaultMeta: { isTouched: true },
     })
 
+    form.mount()
     field.mount()
 
     await form.handleSubmit()
@@ -860,8 +866,9 @@ describe('form api', () => {
         onSubmit: ({ value }) =>
           value.length > 0 ? undefined : 'first name is required',
       },
+      defaultMeta: { isTouched: true },
     })
-
+    form.mount()
     field.mount()
 
     await form.handleSubmit()
@@ -893,6 +900,7 @@ describe('form api', () => {
         onChange: ({ value }) =>
           value.length > 0 ? undefined : 'first name is required',
       },
+      defaultMeta: { isTouched: true },
     })
 
     field.mount()
