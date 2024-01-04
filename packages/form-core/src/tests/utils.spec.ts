@@ -11,11 +11,17 @@ describe('getBy', () => {
     mother: {
       name: 'Lisa',
     },
+    'key.with.dot': 'value',
+    'key.with.dot.2': {
+      'key.with.dot.3': 'value2'
+    },
   }
 
   it('should get subfields by path', () => {
     expect(getBy(structure, 'name')).toBe(structure.name)
     expect(getBy(structure, 'mother.name')).toBe(structure.mother.name)
+    expect(getBy(structure, "['key.with.dot']")).toBe(structure['key.with.dot'])
+    expect(getBy(structure, "['key.with.dot.2']['key.with.dot.3']")).toBe(structure['key.with.dot.2']['key.with.dot.3'])
   })
 
   it('should get array subfields by path', () => {

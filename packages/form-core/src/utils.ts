@@ -114,35 +114,49 @@ export function deleteBy(obj: any, _path: any) {
   return doDelete(obj)
 }
 
-const reFindNumbers0 = /^(\d*)$/gm
-const reFindNumbers1 = /\.(\d*)\./gm
-const reFindNumbers2 = /^(\d*)\./gm
-const reFindNumbers3 = /\.(\d*$)/gm
-const reFindMultiplePeriods = /\.{2,}/gm
-
-const intPrefix = '__int__'
-const intReplace = `${intPrefix}$1`
+// This utilty is from stringToPath in lodash with minor modifications to extract numbers.
+// https://github.com/lodash/lodash/blob/aa18212085c52fc106d075319637b8729e0f179f/src/.internal/stringToPath.ts
+const charCodeOfDot = '.'.charCodeAt(0)
+const reEscapeChar = /\\(\\)?/g
+const rePropName = RegExp(
+  // Match anything that isn't a dot or bracket.
+  '[^.[\\]]+' + '|' +
+  // Or match property names within brackets.
+  '\\[(?:' +
+    // Match a non-string expression.
+    '([^"\'][^[]*)' + '|' +
+    // Or match strings (supports escaping characters).
+    '(["\'])((?:(?!\\2)[^\\\\]|\\\\.)*?)\\2' +
+  ')\\]'+ '|' +
+  // Or match "" as the space between consecutive dots or empty brackets.
+  '(?=(?:\\.|\\[\\])(?:\\.|\\[\\]|$))'
+  , 'g')
 
 function makePathArray(str: string) {
   if (typeof str !== 'string') {
     throw new Error('Path must be a string.')
   }
 
-  return str
-    .replace('[', '.')
-    .replace(']', '')
-    .replace(reFindNumbers0, intReplace)
-    .replace(reFindNumbers1, `.${intReplace}.`)
-    .replace(reFindNumbers2, `${intReplace}.`)
-    .replace(reFindNumbers3, `.${intReplace}`)
-    .replace(reFindMultiplePeriods, '.')
-    .split('.')
-    .map((d) => {
-      if (d.indexOf(intPrefix) === 0) {
-        return parseInt(d.substring(intPrefix.length), 10)
-      }
-      return d
-    })
+  const result: (string | number)[] = []
+  if (str.charCodeAt(0) === charCodeOfDot) {
+    result.push('')
+  }
+  str.replace(rePropName, (match: string, expression: string, quote: string, subString: string) => {
+    let key: string | number = match
+    if (quote) {
+      key = subString.replace(reEscapeChar, '$1')
+    }
+    else if (expression) {
+      key = expression.trim()
+    }
+    // key difference from lodash string to path algoritm
+    if ((/^\d+$/).test(key)) {
+      key = parseInt(key, 10);
+    }
+    result.push(key)
+    return '';
+  })
+  return result
 }
 
 export function isNonEmptyArray(obj: any) {
