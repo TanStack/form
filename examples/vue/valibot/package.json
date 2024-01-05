@@ -15,7 +15,7 @@
     "valibot": "^0.20.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.5.0",
+    "@vitejs/plugin-vue": "^5.0.2",
     "typescript": "^5.0.4",
     "vite": "^5.0.10",
     "vue-tsc": "^1.8.10"
