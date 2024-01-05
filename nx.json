@@ -16,7 +16,6 @@
       "{workspaceRoot}/.eslintrc.cjs",
       "{workspaceRoot}/.nvmrc",
       "{workspaceRoot}/package.json",
-      "{workspaceRoot}/getViteConfig.ts",
       "{workspaceRoot}/tsconfig.json"
     ],
     "default": [
