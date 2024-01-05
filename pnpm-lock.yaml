@@ -12,8 +12,8 @@ importers:
         specifier: ^0.8.5
         version: 0.8.5(@solidjs/router@0.8.3)(solid-js@1.7.12)
       '@tanstack/config':
-        specifier: ^0.1.6
-        version: 0.1.6(@types/node@18.19.4)(esbuild@0.19.11)(typescript@5.2.2)(vite@5.0.10)
+        specifier: ^0.1.7
+        version: 0.1.7(@types/node@18.19.4)(esbuild@0.19.11)(typescript@5.2.2)(vite@5.0.10)
       '@testing-library/jest-dom':
         specifier: ^6.1.5
         version: 6.1.6(@types/jest@26.0.24)(vitest@1.1.0)
@@ -3920,8 +3920,8 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@tanstack/config@0.1.6(@types/node@18.19.4)(esbuild@0.19.11)(typescript@5.2.2)(vite@5.0.10):
-    resolution: {integrity: sha512-QNyg/wawvs/idXFdECbHfyDC3TZ8nznrM/Zz75J41+YU1TUcBy7QZvjVw2NT97SPsKvnoXxWJjg/YPzxn9p1ZQ==}
+  /@tanstack/config@0.1.7(@types/node@18.19.4)(esbuild@0.19.11)(typescript@5.2.2)(vite@5.0.10):
+    resolution: {integrity: sha512-+IbRTGbIEuWSNbouink96KL9aEGwhNzzy7DXtYg6CgCU5fpiGCIuNm7pGddEloTW1hHv+vvlqhlfx63F6ueWuA==}
     engines: {node: '>=18'}
     hasBin: true
     dependencies:
@@ -9021,7 +9021,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       hosted-git-info: 4.1.0
-      is-core-module: 2.13.0
+      is-core-module: 2.13.1
       semver: 7.5.4
       validate-npm-package-license: 3.0.4
     dev: true
@@ -9031,7 +9031,7 @@ packages:
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
       hosted-git-info: 6.1.1
-      is-core-module: 2.13.0
+      is-core-module: 2.13.1
       semver: 7.5.4
       validate-npm-package-license: 3.0.4
     dev: true
@@ -9439,7 +9439,7 @@ packages:
     resolution: {integrity: sha512-ayCKvm/phCGxOkYRSCM82iDwct8/EonSEgCSxWxD7ve6jHggsFl4fZVQBPRNgQoKiuV/odhFrGzQXZwbifC8Rg==}
     engines: {node: '>=8'}
     dependencies:
-      '@babel/code-frame': 7.22.13
+      '@babel/code-frame': 7.23.5
       error-ex: 1.3.2
       json-parse-even-better-errors: 2.3.1
       lines-and-columns: 1.2.4
