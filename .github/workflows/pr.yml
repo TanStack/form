@@ -17,10 +17,11 @@ env:
 
 jobs:
   test:
-    name: 'Test'
+    name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Setup pnpm
@@ -31,10 +32,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: 'pnpm'
+          cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
-      - name: Get appropriate base and head commits for `nx affected` commands
+      - name: Get base and head commits for `nx affected`
         uses: nrwl/nx-set-shas@v3
         with:
           main-branch-name: 'main'
@@ -42,3 +43,5 @@ jobs:
         run: pnpm run test:pr
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
+        with:
+          directory: packages
