@@ -66,6 +66,16 @@ export function createPersister<TFormData>(
       const state = JSON.parse(deserialized)
       if (!state || state.buster !== (options.buster ?? ''))
         return deleteForm(persistKey)
+      state.state.isRestored = true
+      state.state.isRestoring = false
+      // ensures that this object is not empty
+      state.state.validationMetaMap = {
+        onChange: state.state.validationMetaMap.onChange,
+        onBlur: state.state.validationMetaMap.onBlur,
+        onSubmit: state.state.validationMetaMap.onSubmit,
+        onMount: state.state.validationMetaMap.onMount,
+        onServer: state.state.validationMetaMap.onServer,
+      }
       return state.state
     },
     deleteForm,

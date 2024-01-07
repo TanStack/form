@@ -143,6 +143,9 @@ export type FormState<TFormData> = {
   isValid: boolean
   canSubmit: boolean
   submissionAttempts: number
+  // Form Persistence
+  isRestored: boolean
+  isRestoring: boolean
 }
 
 function getDefaultFormState<TFormData>(
@@ -171,6 +174,8 @@ function getDefaultFormState<TFormData>(
       onMount: undefined,
       onServer: undefined,
     },
+    isRestored: false,
+    isRestoring: false,
   }
 }
 
@@ -188,6 +193,7 @@ export class FormApi<
     {} as any
 
   prevTransformArray: unknown[] = []
+  restorePromise: Promise<void> = Promise.resolve()
 
   constructor(opts?: FormOptions<TFormData, TFormValidator>) {
     this.store = new Store<FormState<TFormData>>(
@@ -238,9 +244,7 @@ export class FormApi<
 
           this.state = state
           this.store.state = this.state
-          if (opts?.persister) {
-            opts.persister.persistForm(state)
-          }
+
           // Only run transform if state has shallowly changed - IE how React.useEffect works
           const transformArray = this.options.transform?.deps ?? []
           const shouldTransform =
@@ -253,23 +257,44 @@ export class FormApi<
             this.store.state = this.state
             this.prevTransformArray = transformArray
           }
+
+          if (opts?.persister && !this.state.isRestoring) {
+            opts.persister.persistForm(this.state)
+          }
         },
       },
     )
 
     this.state = this.store.state
-    this.update(opts || {})
-    this.restore(opts)
+    this.update(opts)
   }
 
   restore = async (opts?: FormOptions<TFormData, TFormValidator>) => {
     if (!opts?.persister) return
+    let restorePromiseResolve: () => void
+    this.restorePromise = new Promise<void>(
+      (res) => (restorePromiseResolve = res),
+    )
+    this.store.setState((oldState) => ({
+      ...oldState,
+      isRestored: false,
+      isRestoring: true,
+    }))
     const restoredState = await opts.persister.restoreForm()
-    if (!restoredState) return
+    if (!restoredState) {
+      return this.store.setState((oldState) => ({
+        ...oldState,
+        isRestored: true,
+        isRestoring: false,
+      }))
+    }
     this.state = restoredState
-    this.store.batch(() => {
-      this.store.setState(() => restoredState)
-    })
+    this.store.batch(() =>
+      this.store.setState(() => {
+        restorePromiseResolve()
+        return restoredState
+      }),
+    )
   }
 
   runValidator<
@@ -317,15 +342,19 @@ export class FormApi<
     // Options need to be updated first so that when the store is updated, the state is correct for the derived state
     this.options = options
 
+    this.restore(options)
+
     this.store.batch(() => {
       const shouldUpdateValues =
         options.defaultValues &&
         options.defaultValues !== oldOptions.defaultValues &&
-        !this.state.isTouched
+        !this.state.isTouched &&
+        !this.state.isRestoring
 
       const shouldUpdateState =
         options.defaultState !== oldOptions.defaultState &&
-        !this.state.isTouched
+        !this.state.isTouched &&
+        !this.state.isRestoring
 
       this.store.setState(() =>
         getDefaultFormState(

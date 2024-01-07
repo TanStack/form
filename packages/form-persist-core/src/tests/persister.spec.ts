@@ -16,6 +16,7 @@ const getPersister = <TFormData>(
         return persistMap.get(key)
       },
       setItem(key, val) {
+        // console.log('setting', key, JSON.parse(val).state.values)
         return persistMap.set(key, val)
       },
       removeItem(key) {
@@ -46,7 +47,7 @@ describe('persister', () => {
     const formApi = new FormApi({ defaultValues: { hi: 'there' } })
     await persister.persistForm(id, formApi.state)
     const persistedForm = await persister.restoreForm(id)
-    expect(persistedForm).toEqual(formApi.state)
+    expect(persistedForm).toEqual({ ...formApi.state, isRestored: true })
   })
 
   it('should persist with new persister', async () => {
@@ -56,7 +57,7 @@ describe('persister', () => {
     await persister.persistForm(id, formApi.state)
     persister = getPersister(id, { buster: 'hi' })
     const persistedForm = await persister.restoreForm(id)
-    expect(persistedForm).toEqual(formApi.state)
+    expect(persistedForm).toEqual({ ...formApi.state, isRestored: true })
   })
 
   it('should delete when busted', async () => {
@@ -82,7 +83,11 @@ describe('persister', () => {
     formApi.setFieldValue('hi', 'bye')
     await sleep(10)
     formApi = getFormApi()
-    await sleep(10)
-    expect(formApi.state).toEqual(oldState)
+    await formApi.restorePromise
+    expect(formApi.state).toEqual({
+      ...oldState,
+      values: { hi: 'bye' },
+      isRestored: true,
+    })
   })
 })
