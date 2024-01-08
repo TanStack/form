@@ -39,7 +39,7 @@ export interface StoragePersisterOptions {
 const makeKey = (prefix: string = 'tanstack-form', persistKey: string) =>
   `${prefix}-${persistKey}`
 
-class PersisterAPI<TFormData> {
+export class PersisterAPI<TFormData> {
   options: StoragePersisterOptions
   constructor(opts: StoragePersisterOptions) {
     this.options = opts
@@ -87,6 +87,14 @@ class PersisterAPI<TFormData> {
   }
 }
 
-export function createPersister<TFormData>(options: StoragePersisterOptions) {
-  return new PersisterAPI<TFormData>(options)
+export function createFormPersister<TFormData>(
+  persisterAPI: PersisterAPI<TFormData>,
+  formKey: string,
+): Persister<TFormData> {
+  return {
+    deleteForm: () => persisterAPI.deleteForm(formKey),
+    restoreForm: () => persisterAPI.restoreForm(formKey),
+    persistForm: (state: FormState<TFormData>) =>
+      persisterAPI.persistForm(formKey, state),
+  }
 }

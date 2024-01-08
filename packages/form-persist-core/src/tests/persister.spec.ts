@@ -1,5 +1,5 @@
 import { FormApi } from '@tanstack/form-core'
-import { createPersister } from '..'
+import { PersisterAPI, createFormPersister } from '..'
 import type { StoragePersisterOptions } from '..'
 import { sleep } from './utils'
 
@@ -10,7 +10,7 @@ const getPersister = <TFormData>(
 ) => {
   const persistMap = mapHolder[idKey] || new Map<string, string>()
   mapHolder[idKey] = persistMap
-  return createPersister<TFormData>({
+  return new PersisterAPI<TFormData>({
     storage: {
       getItem(key) {
         return persistMap.get(key)
@@ -29,11 +29,7 @@ const getPersister = <TFormData>(
 
 const getFormApiPersister = <TFormData>(id: string, formKey: string) => {
   const persister = getPersister<TFormData>(id)
-  return {
-    persistForm: persister.persistForm.bind(null, formKey),
-    deleteForm: persister.deleteForm.bind(null, formKey),
-    restoreForm: persister.restoreForm.bind(null, formKey),
-  }
+  return createFormPersister(persister, formKey)
 }
 
 let id_ = 0
