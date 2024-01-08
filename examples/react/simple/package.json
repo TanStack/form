@@ -6,16 +6,16 @@
     "dev": "vite --port=3001",
     "build": "vite build",
     "preview": "vite preview",
-    "test:types": "tsc --noEmit"
+    "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-form": "0.11.0",
+    "@tanstack/react-form": "<1.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.0.4",
-    "vite": "^4.4.9"
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.0.10"
   },
   "browserslist": {
     "production": [

@@ -65,10 +65,20 @@ export interface FormValidators<
   onSubmitAsyncDebounceMs?: number
 }
 
-export type FormOptions<
+export interface FormTransform<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-> = {
+> {
+  fn: (
+    formBase: FormApi<TFormData, TFormValidator>,
+  ) => FormApi<TFormData, TFormValidator>
+  deps: unknown[]
+}
+
+export interface FormOptions<
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+> {
   defaultValues?: TFormData
   defaultState?: Partial<FormState<TFormData>>
   asyncAlways?: boolean
@@ -83,6 +93,7 @@ export type FormOptions<
     value: TFormData
     formApi: FormApi<TFormData, TFormValidator>
   }) => void
+  transform?: FormTransform<TFormData, TFormValidator>
 }
 
 export type ValidationMeta = {
@@ -151,6 +162,7 @@ function getDefaultFormState<TFormData>(
       onBlur: undefined,
       onSubmit: undefined,
       onMount: undefined,
+      onServer: undefined,
     },
   }
 }
@@ -167,6 +179,8 @@ export class FormApi<
   // // This carries the context for nested fields
   fieldInfo: Record<DeepKeys<TFormData>, FieldInfo<TFormData, TFormValidator>> =
     {} as any
+
+  prevTransformArray: unknown[] = []
 
   constructor(opts?: FormOptions<TFormData, TFormValidator>) {
     this.store = new Store<FormState<TFormData>>(
@@ -216,8 +230,21 @@ export class FormApi<
             isTouched,
           }
 
-          this.store.state = state
           this.state = state
+          this.store.state = this.state
+
+          // Only run transform if state has shallowly changed - IE how React.useEffect works
+          const transformArray = this.options.transform?.deps ?? []
+          const shouldTransform =
+            transformArray.length !== this.prevTransformArray.length ||
+            transformArray.some((val, i) => val !== this.prevTransformArray[i])
+
+          if (shouldTransform) {
+            // This mutates the state
+            this.options.transform?.fn(this)
+            this.store.state = this.state
+            this.prevTransformArray = transformArray
+          }
         },
       },
     )
@@ -267,14 +294,19 @@ export class FormApi<
   update = (options?: FormOptions<TFormData, TFormValidator>) => {
     if (!options) return
 
+    const oldOptions = this.options
+
+    // Options need to be updated first so that when the store is updated, the state is correct for the derived state
+    this.options = options
+
     this.store.batch(() => {
       const shouldUpdateValues =
         options.defaultValues &&
-        options.defaultValues !== this.options.defaultValues &&
+        options.defaultValues !== oldOptions.defaultValues &&
         !this.state.isTouched
 
       const shouldUpdateState =
-        options.defaultState !== this.options.defaultState &&
+        options.defaultState !== oldOptions.defaultState &&
         !this.state.isTouched
 
       this.store.setState(() =>
@@ -294,8 +326,6 @@ export class FormApi<
         ),
       )
     })
-
-    this.options = options
   }
 
   reset = () =>
@@ -408,8 +438,6 @@ export class FormApi<
       const fieldValidatorMeta = this.state.validationMetaMap[key]
 
       fieldValidatorMeta?.lastAbortController.abort()
-      // Sorry Safari 12
-      // eslint-disable-next-line compat/compat
       const controller = new AbortController()
 
       this.state.validationMetaMap[key] = {
@@ -421,19 +449,23 @@ export class FormApi<
           let rawError!: ValidationError | undefined
           try {
             rawError = await new Promise((rawResolve, rawReject) => {
-              setTimeout(() => {
+              setTimeout(async () => {
                 if (controller.signal.aborted) return rawResolve(undefined)
-                this.runValidator({
-                  validate: validateObj.validate!,
-                  value: {
-                    value: this.state.values,
-                    formApi: this,
-                    signal: controller.signal,
-                  },
-                  type: 'validateAsync',
-                })
-                  .then(rawResolve)
-                  .catch(rawReject)
+                try {
+                  rawResolve(
+                    await this.runValidator({
+                      validate: validateObj.validate!,
+                      value: {
+                        value: this.state.values,
+                        formApi: this,
+                        signal: controller.signal,
+                      },
+                      type: 'validateAsync',
+                    }),
+                  )
+                } catch (e) {
+                  rawReject(e)
+                }
               }, validateObj.debounceMs)
             })
           } catch (e: unknown) {
@@ -563,6 +595,7 @@ export class FormApi<
         onBlur: undefined,
         onSubmit: undefined,
         onMount: undefined,
+        onServer: undefined,
       },
     })
   }
@@ -694,11 +727,14 @@ function getErrorMapKey(cause: ValidationCause) {
   switch (cause) {
     case 'submit':
       return 'onSubmit'
-    case 'change':
-      return 'onChange'
     case 'blur':
       return 'onBlur'
     case 'mount':
       return 'onMount'
+    case 'server':
+      return 'onServer'
+    case 'change':
+    default:
+      return 'onChange'
   }
 }

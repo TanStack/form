@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/solid-form",
-  "version": "0.11.0",
+  "version": "0.13.1",
   "description": "Powerful, type-safe forms for Solid.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -12,51 +12,42 @@
   },
   "sideEffects": false,
   "scripts": {
-    "clean": "rimraf ./build && rimraf ./coverage",
+    "clean": "rimraf ./dist && rimraf ./coverage",
     "test:eslint": "eslint --ext .ts,.tsx ./src",
-    "test:types:versions48": "../../node_modules/typescript48/bin/tsc --noEmit",
-    "test:types:versions49": "../../node_modules/typescript49/bin/tsc --noEmit",
-    "test:types:versions50": "../../node_modules/typescript50/bin/tsc --noEmit",
-    "test:types:versions51": "../../node_modules/typescript51/bin/tsc --noEmit",
-    "test:types:versions52": "tsc --noEmit",
+    "test:types:versions49": "../../node_modules/typescript49/bin/tsc --project tsconfig.legacy.json",
+    "test:types:versions50": "../../node_modules/typescript50/bin/tsc",
+    "test:types:versions51": "../../node_modules/typescript51/bin/tsc",
+    "test:types:versions52": "tsc",
     "test:types": "pnpm run \"/^test:types:versions.*/\"",
-    "test:lib": "vitest run --coverage",
+    "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
-    "build": "tsup"
+    "build": "vite build"
   },
   "files": [
-    "build",
+    "dist",
     "src"
   ],
   "type": "module",
-  "main": "./build/index.cjs",
-  "module": "./build/index.js",
-  "types": "./build/index.d.ts",
+  "types": "dist/esm/index.d.ts",
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/esm/index.js",
   "exports": {
-    "development": {
+    ".": {
       "import": {
-        "types": "./build/index.d.ts",
-        "default": "./build/dev.js"
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
       },
       "require": {
-        "types": "./build/index.d.cts",
-        "default": "./build/dev.cjs"
+        "types": "./dist/cjs/index.d.cts",
+        "default": "./dist/cjs/index.cjs"
       }
     },
-    "import": {
-      "types": "./build/index.d.ts",
-      "default": "./build/index.js"
-    },
-    "require": {
-      "types": "./build/index.d.cts",
-      "default": "./build/index.cjs"
-    }
+    "./package.json": "./package.json"
   },
   "devDependencies": {
     "solid-js": "^1.7.8",
-    "tsup-preset-solid": "^2.2.0",
-    "vite-plugin-solid": "^2.7.0"
+    "vite-plugin-solid": "^2.8.0"
   },
   "dependencies": {
     "@tanstack/form-core": "workspace:*",

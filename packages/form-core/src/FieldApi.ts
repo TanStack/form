@@ -45,16 +45,22 @@ export type FieldValidateOrFn<
           TData
         >
   : TFormValidator extends Validator<TParentData, infer FFN>
-  ?
-      | FFN
-      | FieldValidateFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
-  : FieldValidateFn<TParentData, TName, TFieldValidator, TFormValidator, TData>
+    ?
+        | FFN
+        | FieldValidateFn<
+            TParentData,
+            TName,
+            TFieldValidator,
+            TFormValidator,
+            TData
+          >
+    : FieldValidateFn<
+        TParentData,
+        TName,
+        TFieldValidator,
+        TFormValidator,
+        TData
+      >
 
 export type FieldValidateAsyncFn<
   TParentData,
@@ -93,22 +99,22 @@ export type FieldAsyncValidateOrFn<
           TData
         >
   : TFormValidator extends Validator<TParentData, infer FFN>
-  ?
-      | FFN
-      | FieldValidateAsyncFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
-  : FieldValidateAsyncFn<
-      TParentData,
-      TName,
-      TFieldValidator,
-      TFormValidator,
-      TData
-    >
+    ?
+        | FFN
+        | FieldValidateAsyncFn<
+            TParentData,
+            TName,
+            TFieldValidator,
+            TFormValidator,
+            TData
+          >
+    : FieldValidateAsyncFn<
+        TParentData,
+        TName,
+        TFieldValidator,
+        TFormValidator,
+        TData
+      >
 
 export interface FieldValidators<
   TParentData,
@@ -570,8 +576,6 @@ export class FieldApi<
       const fieldValidatorMeta = this.getInfo().validationMetaMap[key]
 
       fieldValidatorMeta?.lastAbortController.abort()
-      // Sorry Safari 12
-      // eslint-disable-next-line compat/compat
       const controller = new AbortController()
 
       this.getInfo().validationMetaMap[key] = {
@@ -583,15 +587,23 @@ export class FieldApi<
           let rawError!: ValidationError | undefined
           try {
             rawError = await new Promise((rawResolve, rawReject) => {
-              setTimeout(() => {
+              setTimeout(async () => {
                 if (controller.signal.aborted) return rawResolve(undefined)
-                this.runValidator({
-                  validate: validateObj.validate,
-                  value: { value, fieldApi: this, signal: controller.signal },
-                  type: 'validateAsync',
-                })
-                  .then(rawResolve)
-                  .catch(rawReject)
+                try {
+                  rawResolve(
+                    await this.runValidator({
+                      validate: validateObj.validate,
+                      value: {
+                        value,
+                        fieldApi: this,
+                        signal: controller.signal,
+                      },
+                      type: 'validateAsync',
+                    }),
+                  )
+                } catch (e) {
+                  rawReject(e)
+                }
               }, validateObj.debounceMs)
             })
           } catch (e: unknown) {
@@ -675,11 +687,14 @@ function getErrorMapKey(cause: ValidationCause) {
   switch (cause) {
     case 'submit':
       return 'onSubmit'
-    case 'change':
-      return 'onChange'
     case 'blur':
       return 'onBlur'
     case 'mount':
       return 'onMount'
+    case 'server':
+      return 'onServer'
+    case 'change':
+    default:
+      return 'onChange'
   }
 }

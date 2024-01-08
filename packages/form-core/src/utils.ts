@@ -164,10 +164,12 @@ export function getAsyncValidatorArray<T>(
       AsyncValidator<T['onChangeAsync'] | T['onBlurAsync'] | T['onSubmitAsync']>
     >
   : T extends FormValidators<any, any>
-  ? Array<
-      AsyncValidator<T['onChangeAsync'] | T['onBlurAsync'] | T['onSubmitAsync']>
-    >
-  : never {
+    ? Array<
+        AsyncValidator<
+          T['onChangeAsync'] | T['onBlurAsync'] | T['onSubmitAsync']
+        >
+      >
+    : never {
   const { asyncDebounceMs } = options
   const {
     onChangeAsync,
@@ -203,6 +205,8 @@ export function getAsyncValidatorArray<T>(
   switch (cause) {
     case 'submit':
       return [changeValidator, blurValidator, submitValidator] as never
+    case 'server':
+      return [] as never
     case 'blur':
       return [blurValidator] as never
     case 'change':
@@ -226,8 +230,8 @@ export function getSyncValidatorArray<T>(
 ): T extends FieldValidators<any, any>
   ? Array<SyncValidator<T['onChange'] | T['onBlur'] | T['onSubmit']>>
   : T extends FormValidators<any, any>
-  ? Array<SyncValidator<T['onChange'] | T['onBlur'] | T['onSubmit']>>
-  : never {
+    ? Array<SyncValidator<T['onChange'] | T['onBlur'] | T['onSubmit']>>
+    : never {
   const { onChange, onBlur, onSubmit } = (options.validators || {}) as
     | FieldValidators<any, any>
     | FormValidators<any, any>
@@ -236,14 +240,27 @@ export function getSyncValidatorArray<T>(
   const blurValidator = { cause: 'blur', validate: onBlur } as const
   const submitValidator = { cause: 'submit', validate: onSubmit } as const
 
+  // Allows us to clear onServer errors
+  const serverValidator = {
+    cause: 'server',
+    validate: () => undefined,
+  } as const
+
   switch (cause) {
     case 'submit':
-      return [changeValidator, blurValidator, submitValidator] as never
+      return [
+        changeValidator,
+        blurValidator,
+        submitValidator,
+        serverValidator,
+      ] as never
+    case 'server':
+      return [serverValidator] as never
     case 'blur':
-      return [blurValidator] as never
+      return [blurValidator, serverValidator] as never
     case 'change':
     default:
-      return [changeValidator] as never
+      return [changeValidator, serverValidator] as never
   }
 }
 
@@ -272,24 +289,24 @@ type AllowedIndexes<
 > = Tuple extends readonly []
   ? Keys
   : Tuple extends readonly [infer _, ...infer Tail]
-  ? AllowedIndexes<Tail, Keys | Tail['length']>
-  : Keys
+    ? AllowedIndexes<Tail, Keys | Tail['length']>
+    : Keys
 
 export type DeepKeys<T, TDepth extends any[] = []> = TDepth['length'] extends 5
   ? never
   : unknown extends T
-  ? string
-  : object extends T
-  ? string
-  : T extends readonly any[] & IsTuple<T>
-  ? AllowedIndexes<T> | DeepKeysPrefix<T, AllowedIndexes<T>, TDepth>
-  : T extends any[]
-  ? DeepKeys<T[number], [...TDepth, any]>
-  : T extends Date
-  ? never
-  : T extends object
-  ? (keyof T & string) | DeepKeysPrefix<T, keyof T, TDepth>
-  : never
+    ? string
+    : object extends T
+      ? string
+      : T extends readonly any[] & IsTuple<T>
+        ? AllowedIndexes<T> | DeepKeysPrefix<T, AllowedIndexes<T>, TDepth>
+        : T extends any[]
+          ? DeepKeys<T[number], [...TDepth, any]>
+          : T extends Date
+            ? never
+            : T extends object
+              ? (keyof T & string) | DeepKeysPrefix<T, keyof T, TDepth>
+              : never
 
 type DeepKeysPrefix<
   T,

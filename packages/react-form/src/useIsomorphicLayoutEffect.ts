@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'rehackt'
 
 export const useIsomorphicLayoutEffect =
   // @ts-ignore

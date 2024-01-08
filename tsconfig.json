@@ -1,24 +1,26 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "lib": ["ES2022"],
-    "target": "ES2020",
-    "module": "ES2020",
-    "moduleResolution": "node",
+    "allowJs": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "strictNullChecks": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "checkJs": true,
     "declaration": true,
-    "noImplicitReturns": true,
     "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "module": "ES2022",
+    "noEmit": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": false, // TODO enable
+    "noUnusedParameters": true,
+    "resolveJsonModule": true,
     "skipLibCheck": true,
-    "baseUrl": ".",
-    "allowUnreachableCode": true
+    "strict": true,
+    "target": "ES2020"
   },
-  "ts-node": {
-    "compilerOptions": {
-      "module": "commonjs",
-      "esModuleInterop": true
-    }
-  }
+  "include": [".eslintrc.cjs", "prettier.config.js"]
 }

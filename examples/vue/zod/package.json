@@ -5,19 +5,19 @@
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build -m development",
-    "test:types": "vue-tsc --noEmit",
+    "test:types": "vue-tsc",
     "serve": "vite preview"
   },
   "dependencies": {
-    "@tanstack/vue-form": "0.11.0",
-    "@tanstack/zod-form-adapter": "0.11.0",
+    "@tanstack/vue-form": "<1.0.0",
+    "@tanstack/zod-form-adapter": "<1.0.0",
     "vue": "^3.3.4",
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.3.4",
+    "@vitejs/plugin-vue": "^5.0.2",
     "typescript": "^5.0.4",
-    "vite": "^4.4.9",
+    "vite": "^5.0.10",
     "vue-tsc": "^1.8.10"
   }
 }
