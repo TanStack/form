@@ -195,6 +195,7 @@ Example:
                       <div>
                         <label htmlFor={field.name}>Name:</label>
                         <input
+                          id={field.name}
                           name={field.name}
                           value={field.state.value}
                           onBlur={field.handleBlur}
@@ -219,6 +220,7 @@ Example:
                       <div>
                         <label htmlFor={field.name}>Description:</label>
                         <input
+                          id={field.name}
                           name={field.name}
                           value={field.state.value}
                           onBlur={field.handleBlur}
@@ -264,6 +266,7 @@ Example:
       <div>
         <label htmlFor={field.name}>Name:</label>
         <input
+          id={field.name}
           name={field.name}
           value={field.state.value}
           onBlur={field.handleBlur}
