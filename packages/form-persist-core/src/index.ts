@@ -1,18 +1,21 @@
-import type { Persister } from '@tanstack/form-core'
+import type { FormState, Persister } from '@tanstack/form-core'
 
-export type MaybePromise<T> = T | Promise<T>
-
-export interface AsyncStorage {
-  getItem: (key: string) => MaybePromise<string | undefined | null>
-  setItem: (key: string, value: string) => MaybePromise<unknown>
-  removeItem: (key: string) => MaybePromise<void>
+export type SyncFormStorage = {
+  getItem: (key: string) => string | undefined | null
+  setItem: (key: string, value: string) => unknown
+  removeItem: (key: string) => void
+}
+export type AsyncFormStorage = {
+  [Method in keyof SyncFormStorage]: (
+    ...args: Parameters<SyncFormStorage[Method]>
+  ) => Promise<ReturnType<SyncFormStorage[Method]>>
 }
 
 export interface StoragePersisterOptions {
   /** The storage client used for setting and retrieving items from cache.
    * For SSR pass in `undefined`.
    */
-  storage: AsyncStorage | undefined | null
+  storage: AsyncFormStorage | SyncFormStorage | undefined | null
   /**
    * A unique string that can be used to forcefully invalidate existing caches,
    * if they do not share the same buster string
@@ -63,12 +66,17 @@ export function createPersister<TFormData>(
       const deserialized =
         (await options.storage?.getItem(makeKey(options.prefix, persistKey))) ??
         'null'
-      const state = JSON.parse(deserialized)
-      if (!state || state.buster !== (options.buster ?? ''))
-        return deleteForm(persistKey)
+      const state = JSON.parse(deserialized) as {
+        buster: string
+        state: FormState<TFormData>
+      } | null
+      if (!state || state.buster !== (options.buster ?? '')) {
+        deleteForm(persistKey)
+        return
+      }
       state.state.isRestored = true
       state.state.isRestoring = false
-      // ensures that this object is not empty
+      // ensures that this object is not empty (JSON.parse('{hi: undefined}') => {})
       state.state.validationMetaMap = {
         onChange: state.state.validationMetaMap.onChange,
         onBlur: state.state.validationMetaMap.onBlur,
