@@ -94,6 +94,7 @@ export interface FormOptions<
     formApi: FormApi<TFormData, TFormValidator>
   }) => void
   transform?: FormTransform<TFormData, TFormValidator>
+  // checkout @tanstack/form-persistence-core
   persister?: Persister<TFormData>
 }
 
