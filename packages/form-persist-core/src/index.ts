@@ -36,56 +36,57 @@ export interface StoragePersisterOptions {
   prefix?: string
 }
 
-type AddKeyStringArgument<T extends Record<string, (...args: any[]) => any>> = {
-  [Key in keyof T]: (
-    keyString: string,
-    ...args: Parameters<T[Key]>
-  ) => ReturnType<T[Key]>
-}
-
 const makeKey = (prefix: string = 'tanstack-form', persistKey: string) =>
   `${prefix}-${persistKey}`
 
-export function createPersister<TFormData>(
-  options: StoragePersisterOptions,
-): AddKeyStringArgument<Persister<TFormData>> {
-  const deleteForm = (persistKey: string) => {
-    return options.storage?.removeItem(makeKey(options.prefix, persistKey))
+class PersisterAPI<TFormData> {
+  options: StoragePersisterOptions
+  constructor(opts: StoragePersisterOptions) {
+    this.options = opts
   }
-  return {
-    async persistForm(persistKey, formState) {
-      await options.storage?.setItem(
-        makeKey(options.prefix, persistKey),
-        JSON.stringify({
-          buster: options.buster ?? '',
-          state: formState,
-        }),
-      )
-    },
-    async restoreForm(persistKey) {
-      const deserialized =
-        (await options.storage?.getItem(makeKey(options.prefix, persistKey))) ??
-        'null'
-      const state = JSON.parse(deserialized) as {
-        buster: string
-        state: FormState<TFormData>
-      } | null
-      if (!state || state.buster !== (options.buster ?? '')) {
-        deleteForm(persistKey)
-        return
-      }
-      state.state.isRestored = true
-      state.state.isRestoring = false
-      // ensures that this object is not empty (JSON.parse('{hi: undefined}') => {})
-      state.state.validationMetaMap = {
-        onChange: state.state.validationMetaMap.onChange,
-        onBlur: state.state.validationMetaMap.onBlur,
-        onSubmit: state.state.validationMetaMap.onSubmit,
-        onMount: state.state.validationMetaMap.onMount,
-        onServer: state.state.validationMetaMap.onServer,
-      }
-      return state.state
-    },
-    deleteForm,
+
+  persistForm = async (persistKey: string, formState: FormState<TFormData>) => {
+    await this.options.storage?.setItem(
+      makeKey(this.options.prefix, persistKey),
+      JSON.stringify({
+        buster: this.options.buster ?? '',
+        state: formState,
+      }),
+    )
   }
+  restoreForm = async (persistKey: string) => {
+    const deserialized =
+      (await this.options.storage?.getItem(
+        makeKey(this.options.prefix, persistKey),
+      )) ?? 'null'
+    const state = JSON.parse(deserialized) as {
+      buster: string
+      state: FormState<TFormData>
+    } | null
+    if (!state || state.buster !== (this.options.buster ?? '')) {
+      this.deleteForm(persistKey)
+      return
+    }
+    state.state.isRestored = true
+    state.state.isRestoring = false
+    // ensures that this object is not empty (JSON.parse('{hi: undefined}') => {})
+    state.state.validationMetaMap = {
+      onChange: state.state.validationMetaMap.onChange,
+      onBlur: state.state.validationMetaMap.onBlur,
+      onSubmit: state.state.validationMetaMap.onSubmit,
+      onMount: state.state.validationMetaMap.onMount,
+      onServer: state.state.validationMetaMap.onServer,
+    }
+    return state.state
+  }
+
+  deleteForm = (persistKey: string) => {
+    return this.options.storage?.removeItem(
+      makeKey(this.options.prefix, persistKey),
+    )
+  }
+}
+
+export function createPersister<TFormData>(options: StoragePersisterOptions) {
+  return new PersisterAPI<TFormData>(options)
 }
