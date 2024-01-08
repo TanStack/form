@@ -1,23 +1,23 @@
-import * as React from "react";
-import { createRoot } from "react-dom/client";
-import { createTheme } from "@mui/material/styles";
-import { red } from "@mui/material/colors";
-import { ThemeProvider } from "@emotion/react";
-import { CssBaseline } from "@mui/material";
-import MainComponent from "./MainComponent";
+import * as React from 'react'
+import { createRoot } from 'react-dom/client'
+import { createTheme } from '@mui/material/styles'
+import { red } from '@mui/material/colors'
+import { ThemeProvider } from '@emotion/react'
+import { CssBaseline } from '@mui/material'
+import MainComponent from './MainComponent'
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#556cd6",
+      main: '#556cd6',
     },
     secondary: {
-      main: "#19857b",
+      main: '#19857b',
     },
     error: {
       main: red.A400,
     },
   },
-});
+})
 
 export default function App() {
   return (
@@ -25,9 +25,9 @@ export default function App() {
       <CssBaseline />
       <MainComponent />
     </ThemeProvider>
-  );
+  )
 }
 
-const rootElement = document.getElementById("root")!;
+const rootElement = document.getElementById('root')!
 
-createRoot(rootElement).render(<App />);
+createRoot(rootElement).render(<App />)

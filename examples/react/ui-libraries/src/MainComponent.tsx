@@ -1,36 +1,36 @@
-import "@mantine/core/styles.css";
+import '@mantine/core/styles.css'
 
-import { MantineProvider, TextInput, Checkbox } from "@mantine/core";
-import { useForm } from "@tanstack/react-form";
-import TextField from "@mui/material/TextField";
-import { Checkbox as MuiCheckbox } from "@mui/material";
+import { MantineProvider, TextInput, Checkbox } from '@mantine/core'
+import { useForm } from '@tanstack/react-form'
+import TextField from '@mui/material/TextField'
+import { Checkbox as MuiCheckbox } from '@mui/material'
 
 export default function MainComponent() {
   const { Provider, Field, Subscribe, handleSubmit, state, useStore } = useForm(
     {
       defaultValues: {
-        firstName: "",
-        lastName: "",
+        firstName: '',
+        lastName: '',
         isChecked: false,
         isMuiCheckBox: false,
       },
       onSubmit: async ({ value }) => {
         // Do something with form data
-        console.log(value);
+        console.log(value)
       },
     },
-  );
+  )
   console.log({
     values: useStore((state) => state.values),
-  });
+  })
   return (
     <MantineProvider>
       <Provider>
         <form
           onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            void handleSubmit();
+            e.preventDefault()
+            e.stopPropagation()
+            void handleSubmit()
           }}
         >
           <Field
@@ -43,7 +43,7 @@ export default function MainComponent() {
                   onBlur={handleBlur}
                   placeholder="Enter your name"
                 />
-              );
+              )
             }}
           />
           <Field
@@ -59,7 +59,7 @@ export default function MainComponent() {
                   onBlur={handleBlur}
                   placeholder="Enter your last name"
                 />
-              );
+              )
             }}
           />
           <Field
@@ -71,7 +71,7 @@ export default function MainComponent() {
                   onBlur={handleBlur}
                   checked={state.value}
                 />
-              );
+              )
             }}
           />
           <Field
@@ -83,14 +83,14 @@ export default function MainComponent() {
                   onBlur={handleBlur}
                   checked={state.value}
                 />
-              );
+              )
             }}
           />
           <Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}
             children={([canSubmit, isSubmitting]) => (
               <button type="submit" disabled={!canSubmit}>
-                {isSubmitting ? "..." : "Submit"}
+                {isSubmitting ? '...' : 'Submit'}
               </button>
             )}
           />
@@ -100,5 +100,5 @@ export default function MainComponent() {
         <pre>{JSON.stringify(state.values, null, 2)}</pre>
       </div>
     </MantineProvider>
-  );
+  )
 }
