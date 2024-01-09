@@ -21,7 +21,7 @@
     "build:all": "nx run-many --target=build --exclude=examples/**",
     "watch": "pnpm run build:all && nx watch --all -- pnpm run build:all",
     "dev": "pnpm run watch",
-    "prettier": "prettier --ignore-unknown '**/*'",
+    "prettier": "prettier --ignore-unknown .",
     "prettier:write": "pnpm run prettier --write",
     "cipublish": "node scripts/publish.js",
     "cipublishforce": "CI=true pnpm cipublish"
