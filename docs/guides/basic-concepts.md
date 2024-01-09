@@ -89,19 +89,16 @@ Example:
 ```tsx
 <form.Field
   name="firstName"
-   validators={{
+  validators={{
     onChange: ({ value }) =>
       !value
-        ? "A first name is required"
+        ? 'A first name is required'
         : value.length < 3
-        ? "First name must be at least 3 characters"
-        : undefined,
+          ? 'First name must be at least 3 characters'
+          : undefined,
     onChangeAsync: async ({ value }) => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      return (
-        value.includes("error") &&
-        'No "error" allowed in first name'
-      );
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      return value.includes('error') && 'No "error" allowed in first name'
     },
   }}
   children={(field) => (
@@ -124,23 +121,20 @@ In addition to hand-rolled validation options, we also provide adapters like `@t
 Example:
 
 ```tsx
-import { zodValidator } from "@tanstack/zod-form-adapter";
-import { z } from "zod";
+import { zodValidator } from '@tanstack/zod-form-adapter'
+import { z } from 'zod'
 
 // ...
-
-<form.Field
+;<form.Field
   name="firstName"
   validatorAdapter={zodValidator}
   validators={{
-    onChange: z
-      .string()
-      .min(3, "First name must be at least 3 characters"),
+    onChange: z.string().min(3, 'First name must be at least 3 characters'),
     onChangeAsyncDebounceMs: 500,
     onChangeAsync: z.string().refine(
       async (value) => {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        return !value.includes("error");
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        return !value.includes('error')
       },
       {
         message: "No 'error' allowed in first name",
@@ -195,6 +189,7 @@ Example:
                       <div>
                         <label htmlFor={field.name}>Name:</label>
                         <input
+                          id={field.name}
                           name={field.name}
                           value={field.state.value}
                           onBlur={field.handleBlur}
@@ -219,6 +214,7 @@ Example:
                       <div>
                         <label htmlFor={field.name}>Description:</label>
                         <input
+                          id={field.name}
                           name={field.name}
                           value={field.state.value}
                           onBlur={field.handleBlur}
@@ -264,6 +260,7 @@ Example:
       <div>
         <label htmlFor={field.name}>Name:</label>
         <input
+          id={field.name}
           name={field.name}
           value={field.state.value}
           onBlur={field.handleBlur}
@@ -280,4 +277,3 @@ Example:
 ```
 
 These are the basic concepts and terminology used in the `@tanstack/react-form` library. Understanding these concepts will help you work more effectively with the library and create complex forms with ease.
-
