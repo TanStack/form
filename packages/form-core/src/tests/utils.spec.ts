@@ -70,4 +70,11 @@ describe('deleteBy', () => {
     expect(deleteBy(structure, 'kids.0.name').kids[0].name).not.toBeDefined()
     expect(deleteBy(structure, 'kids.0.age').kids[0].age).not.toBeDefined()
   })
+
+  it('should delete non-existent paths like a noop', () => {
+    expect(deleteBy(structure, 'nonexistent')).toEqual(structure)
+    expect(deleteBy(structure, 'nonexistent.nonexistent')).toEqual(structure)
+    expect(deleteBy(structure, 'kids.3.name')).toEqual(structure)
+    expect(deleteBy(structure, 'nonexistent.3.nonexistent')).toEqual(structure)
+  })
 })

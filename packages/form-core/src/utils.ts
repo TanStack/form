@@ -78,6 +78,7 @@ export function deleteBy(obj: any, _path: any) {
   const path = makePathArray(_path)
 
   function doDelete(parent: any): any {
+    if (!parent) return;
     if (path.length === 1) {
       const finalPath = path[0]!
       const { [finalPath]: remove, ...rest } = parent
@@ -97,6 +98,9 @@ export function deleteBy(obj: any, _path: any) {
 
     if (typeof key === 'number') {
       if (Array.isArray(parent)) {
+        if (key >= parent.length) {
+          return parent
+        }
         const prefix = parent.slice(0, key)
         return [
           ...(prefix.length ? prefix : new Array(key)),
