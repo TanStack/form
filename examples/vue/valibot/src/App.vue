@@ -54,6 +54,7 @@ const onChangeFirstName = stringAsync([
         <template v-slot="{ field, state }">
           <label :htmlFor="field.name">First Name:</label>
           <input
+            :id="field.name"
             :name="field.name"
             :value="field.state.value"
             @input="
@@ -70,6 +71,7 @@ const onChangeFirstName = stringAsync([
         <template v-slot="{ field, state }">
           <label :htmlFor="field.name">Last Name:</label>
           <input
+            :id="field.name"
             :name="field.name"
             :value="field.state.value"
             @input="
