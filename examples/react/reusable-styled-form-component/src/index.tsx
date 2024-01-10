@@ -7,7 +7,7 @@ export default function App() {
   return (
     <div className="items-center justify-center flex h-full w-full">
       <Form
-        className="space-y-8 w-56"
+        className="space-y-8 w-72"
         formOptions={{
           defaultValues: {
             username: '',
@@ -28,15 +28,32 @@ export default function App() {
               .string()
               .min(9, "Password can't be less than 9 characters")
               .max(20, "Password can't be more than 20 characters")
-              .refine((value) => /[A-Z]/.test(value), {
-                message: 'Password must include a capital letter',
-              })
-              .refine((value) => /\d/.test(value), {
-                message: 'Password must include a number',
-              }),
+              .refine(
+                (value) => /[A-Z]/.test(value),
+                'Password must include a capital letter',
+              )
+              .refine(
+                (value) => /\d/.test(value),
+                'Password must include a number',
+              ),
           }}
           children={(field) => {
-            return <Form.Field.Text field={field} label="Password" />
+            return (
+              <Form.Field.Text field={field} label="Password">
+                <Form.Field.Error />
+              </Form.Field.Text>
+            )
+          }}
+        />
+
+        <Form.Field
+          name="showPassword"
+          children={(field) => {
+            return (
+              <Form.Field.Checkbox field={field} label="Show Password">
+                <Form.Field.Error />
+              </Form.Field.Checkbox>
+            )
           }}
         />
       </Form>
