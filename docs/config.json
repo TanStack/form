@@ -76,6 +76,10 @@
             {
               "label": "UI Libraries",
               "to": "framework/react/guides/ui-libraries"
+            },
+            {
+              "label": "Next JS",
+              "to": "framework/react/guides/next-js"
             }
           ]
         },
