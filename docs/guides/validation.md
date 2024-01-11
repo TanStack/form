@@ -4,10 +4,10 @@ title: Form and Field Validation
 ---
 
 At the core of TanStack Form's functionalities is the concept of validation. TanStack Form makes validation highly customizable:
+
 - You can control when to perform the validation (on change, on input, on blur, on submit...)
 - Validation rules can be defined at the field level or at the form level
 - Validation can be synchronous or asynchronous (for example as a result of an API call)
-
 
 ## When is validation performed?
 
@@ -19,19 +19,23 @@ Here is an example:
 <form.Field
   name="age"
   validators={{
-  	onChange: val => val < 13 ? "You must be 13 to make an account" : undefined
+    onChange: (val) =>
+      val < 13 ? 'You must be 13 to make an account' : undefined,
   }}
 >
-  {field => (
+  {(field) => (
     <>
       <label htmlFor={field.name}>Age:</label>
       <input
+        id={field.name}
         name={field.name}
         value={field.state.value}
         type="number"
         onChange={(e) => field.handleChange(e.target.valueAsNumber)}
       />
-      {field.state.meta.errors ? <em role="alert">{field.state.meta.errors.join(', ')}</em> : null}
+      {field.state.meta.errors ? (
+        <em role="alert">{field.state.meta.errors.join(', ')}</em>
+      ) : null}
     </>
   )}
 </form.Field>
@@ -43,13 +47,15 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
 <form.Field
   name="age"
   validators={{
-  	onBlur: val => val < 13 ? "You must be 13 to make an account" : undefined
+    onBlur: (val) =>
+      val < 13 ? 'You must be 13 to make an account' : undefined,
   }}
 >
-  {field => (
+  {(field) => (
     <>
       <label htmlFor={field.name}>Age:</label>
       <input
+        id={field.name}
         name={field.name}
         value={field.state.value}
         type="number"
@@ -58,7 +64,9 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
         // We always need to implement onChange, so that TanStack Form receives the changes
         onChange={(e) => field.handleChange(e.target.valueAsNumber)}
       />
-      {field.state.meta.errors ? <em role="alert">{field.state.meta.errors.join(', ')}</em> : null}
+      {field.state.meta.errors ? (
+        <em role="alert">{field.state.meta.errors.join(', ')}</em>
+      ) : null}
     </>
   )}
 </form.Field>
@@ -70,14 +78,16 @@ So you can control when the validation is done by implementing the desired callb
 <form.Field
   name="age"
   validators={{
-  	onChange: val => val < 13 ? "You must be 13 to make an account" : undefined,
- 	onBlur: (val) => (val < 0 ? "Invalid value" : undefined)
+    onChange: (val) =>
+      val < 13 ? 'You must be 13 to make an account' : undefined,
+    onBlur: (val) => (val < 0 ? 'Invalid value' : undefined),
   }}
 >
-  {field => (
+  {(field) => (
     <>
       <label htmlFor={field.name}>Age:</label>
       <input
+        id={field.name}
         name={field.name}
         value={field.state.value}
         type="number"
@@ -86,13 +96,15 @@ So you can control when the validation is done by implementing the desired callb
         // We always need to implement onChange, so that TanStack Form receives the changes
         onChange={(e) => field.handleChange(e.target.valueAsNumber)}
       />
-      {field.state.meta.errors ? <em role="alert">{field.state.meta.errors.join(', ')}</em> : null}
+      {field.state.meta.errors ? (
+        <em role="alert">{field.state.meta.errors.join(', ')}</em>
+      ) : null}
     </>
   )}
 </form.Field>
 ```
 
-In the example above, we are validating different things on the same field at different times (at each keystroke and when blurring the field). Since `field.state.meta.errors` is an array, all the relevant errors at a given time are displayed. You can also use `field.state.meta.errorMap` to get errors based on *when* the validation was done (onChange, onBlur etc...). More info about displaying errors below.
+In the example above, we are validating different things on the same field at different times (at each keystroke and when blurring the field). Since `field.state.meta.errors` is an array, all the relevant errors at a given time are displayed. You can also use `field.state.meta.errorMap` to get errors based on _when_ the validation was done (onChange, onBlur etc...). More info about displaying errors below.
 
 ## Displaying Errors
 
@@ -102,18 +114,17 @@ Once you have your validation in place, you can map the errors from an array to 
 <form.Field
   name="age"
   validators={{
-  	onChange: val => val < 13 ? "You must be 13 to make an account" : undefined
+    onChange: (val) =>
+      val < 13 ? 'You must be 13 to make an account' : undefined,
   }}
 >
   {(field) => {
     return (
       <>
         {/* ... */}
-        {field.state.meta.errors ? (
-          <em>{field.state.meta.errors}</em>
-        ) : null}
+        {field.state.meta.errors ? <em>{field.state.meta.errors}</em> : null}
       </>
-    );
+    )
   }}
 </form.Field>
 ```
@@ -124,17 +135,18 @@ Or use the `errorMap` property to access the specific error you're looking for:
 <form.Field
   name="age"
   validators={{
-  	onChange: val => val < 13 ? "You must be 13 to make an account" : undefined
+    onChange: (val) =>
+      val < 13 ? 'You must be 13 to make an account' : undefined,
   }}
 >
   {(field) => (
-      <>
-        {/* ... */}
-        {field.state.meta.errorMap['onChange'] ? (
-          <em>{field.state.meta.errorMap['onChange']}</em>
-        ) : null}
-      </>
-    )}
+    <>
+      {/* ... */}
+      {field.state.meta.errorMap['onChange'] ? (
+        <em>{field.state.meta.errorMap['onChange']}</em>
+      ) : null}
+    </>
+  )}
 </form.Field>
 ```
 
@@ -151,21 +163,21 @@ export default function App() {
       age: 0,
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
+      console.log(value)
     },
     validators: {
       // Add validators to the form the same way you would add them to a field
       onChange({ value }) {
         if (value.age < 13) {
-          return "Must be 13 or older to sign";
+          return 'Must be 13 or older to sign'
         }
       },
     },
-  });
+  })
 
   // Subscribe to the form's error map so that updates to it will render
   // alternately, you can use `form.Subscribe`
-  const formErrorMap = form.useStore((state) => state.errorMap);
+  const formErrorMap = form.useStore((state) => state.errorMap)
 
   return (
     <div>
@@ -176,11 +188,10 @@ export default function App() {
         </div>
       ) : null}
       {/* ... */}
-  	</div>
-  );
+    </div>
+  )
 }
 ```
-
 
 ## Asynchronous Functional Validation
 
@@ -192,24 +203,25 @@ To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods 
 <form.Field
   name="age"
   validators={{
-  	onChangeAsync: async (value) => {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        return (
-          value < 13 ? "You must be 13 to make an account" : undefined
-        );
-    }
+    onChangeAsync: async (value) => {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      return value < 13 ? 'You must be 13 to make an account' : undefined
+    },
   }}
 >
-  {field => (
+  {(field) => (
     <>
       <label htmlFor={field.name}>Age:</label>
       <input
+        id={field.name}
         name={field.name}
         value={field.state.value}
         type="number"
         onChange={(e) => field.handleChange(e.target.valueAsNumber)}
       />
-      {field.state.meta.errors ? <em role="alert">{field.state.meta.errors.join(', ')}</em> : null}
+      {field.state.meta.errors ? (
+        <em role="alert">{field.state.meta.errors.join(', ')}</em>
+      ) : null}
     </>
   )}
 </form.Field>
@@ -221,32 +233,32 @@ Synchronous and Asynchronous validations can coexist. For example it is possible
 <form.Field
   name="age"
   validators={{
-	  onBlur: (value) => value < 13 ? "You must be at least 13" : undefined,
-	  onBlurAsync: async (value) => {
-        const currentAge = await fetchCurrentAgeOnProfile();
-        return (
-          value < currentAge ? "You can only increase the age" : undefined
-        );
-      }
+    onBlur: (value) => (value < 13 ? 'You must be at least 13' : undefined),
+    onBlurAsync: async (value) => {
+      const currentAge = await fetchCurrentAgeOnProfile()
+      return value < currentAge ? 'You can only increase the age' : undefined
+    },
   }}
 >
-  {field => (
+  {(field) => (
     <>
       <label htmlFor={field.name}>Age:</label>
       <input
+        id={field.name}
         name={field.name}
         value={field.state.value}
         type="number"
         onChange={(e) => field.handleChange(e.target.valueAsNumber)}
       />
-      {field.state.meta.errors ? <em role="alert">{field.state.meta.errors.join(', ')}</em> : null}
+      {field.state.meta.errors ? (
+        <em role="alert">{field.state.meta.errors.join(', ')}</em>
+      ) : null}
     </>
   )}
 </form.Field>
 ```
 
 The synchronous validation method (`onBlur`) is run first and the asynchronous method (`onBlurAsync`) is only run if the synchronous one (`onBlur`) succeeds. To change this behaviour, set the `asyncAlways` option to `true`, and the async method will be run regardless of the result of the sync method.
-
 
 ### Built-in Debouncing
 
@@ -280,26 +292,21 @@ This will debounce every async call with a 500ms delay. You can even override th
   name="age"
   asyncDebounceMs={500}
   validators={{
-      onChangeAsyncDebounceMs: 1500,
-      onChangeAsync: async (value) => {
-        // ...
-      },
-      onBlurAsync: async (value) => {
-        // ...
-      }
+    onChangeAsyncDebounceMs: 1500,
+    onChangeAsync: async (value) => {
+      // ...
+    },
+    onBlurAsync: async (value) => {
+      // ...
+    },
   }}
   children={(field) => {
-    return (
-      <>
-		{/* ... */}
-      </>
-    );
+    return <>{/* ... */}</>
   }}
 />
 ```
 
 > This will run `onChangeAsync` every 1500ms while `onBlurAsync` will run every 500ms.
-
 
 ## Adapter-Based Validation (Zod, Yup, Valibot)
 
@@ -315,11 +322,11 @@ $ npm install @tanstack/yup-form-adapter yup
 $ npm install @tanstack/valibot-form-adapter valibot
 ```
 
-Once done, we can add the adapter to the `validator` property  on the form or field:
+Once done, we can add the adapter to the `validator` property on the form or field:
 
 ```tsx
-import { zodValidator } from "@tanstack/zod-form-adapter";
-import { z } from "zod";
+import { zodValidator } from '@tanstack/zod-form-adapter'
+import { z } from 'zod'
 
 // ...
 
@@ -327,20 +334,16 @@ const form = useForm({
   // Either add the validator here or on `Field`
   validatorAdapter: zodValidator,
   // ...
-});
+})
 
-<form.Field
+;<form.Field
   name="age"
   validatorAdapter={zodValidator}
   validators={{
-    onChange: z.number().gte(13, "You must be 13 to make an account")
+    onChange: z.number().gte(13, 'You must be 13 to make an account'),
   }}
   children={(field) => {
-    return (
-      <>
-         {/* ... */}
-      </>
-    );
+    return <>{/* ... */}</>
   }}
 />
 ```
@@ -351,28 +354,20 @@ These adapters also support async operations using the proper property names:
 <form.Field
   name="age"
   validators={{
-      onChange: z
-        .number()
-        .gte(13, "You must be 13 to make an account"),
-      onChangeAsyncDebounceMs: 500,
-      onChangeAsync: z.number().refine(
-        async (value) => {
-          const currentAge = await fetchCurrentAgeOnProfile();
-          return (
-            value >= currentAge
-          );
-        },
-        {
-          message: "You can only increase the age",
-        },
-      )
+    onChange: z.number().gte(13, 'You must be 13 to make an account'),
+    onChangeAsyncDebounceMs: 500,
+    onChangeAsync: z.number().refine(
+      async (value) => {
+        const currentAge = await fetchCurrentAgeOnProfile()
+        return value >= currentAge
+      },
+      {
+        message: 'You can only increase the age',
+      },
+    ),
   }}
   children={(field) => {
-    return (
-      <>
-         {/* ... */}
-      </>
-    );
+    return <>{/* ... */}</>
   }}
 />
 ```
@@ -386,7 +381,7 @@ The form state object has a `canSubmit` flag that is false when any field is inv
 You can subscribe to it via `form.Subscribe` and use the value in order to, for example, disable the submit button when the form is invalid (in practice, disabled buttons are not accessible, use `aria-disabled` instead).
 
 ```tsx
-const form = useForm(/* ... */);
+const form = useForm(/* ... */)
 
 return (
   /* ... */
@@ -396,9 +391,9 @@ return (
     selector={(state) => [state.canSubmit, state.isSubmitting]}
     children={([canSubmit, isSubmitting]) => (
       <button type="submit" disabled={!canSubmit}>
-        {isSubmitting ? "..." : "Submit"}
+        {isSubmitting ? '...' : 'Submit'}
       </button>
     )}
   />
-);
+)
 ```
