@@ -125,7 +125,7 @@ import { zodValidator } from '@tanstack/zod-form-adapter'
 import { z } from 'zod'
 
 // ...
-;<form.Field
+<form.Field
   name="firstName"
   validatorAdapter={zodValidator}
   validators={{
