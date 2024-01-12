@@ -78,8 +78,8 @@
               "to": "framework/react/guides/ui-libraries"
             },
             {
-              "label": "Next JS",
-              "to": "framework/react/guides/next-js"
+              "label": "SSR/Next.js",
+              "to": "framework/react/guides/ssr"
             }
           ]
         },

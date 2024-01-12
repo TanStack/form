@@ -1,7 +1,11 @@
 ---
-id: next-js
-title: Next JS Usage
+id: ssr
+title: Next.js Usage
 ---
+
+Before reading this guide, it's suggested you understand how React Server Components and React Server Actions work. [Check out this blog series for more information](https://unicorn-utterances.com/collections/react-beyond-the-render)
+
+
 
 # Using TanStack Form in a Next.js App Router
 
@@ -112,7 +116,7 @@ const ClientComp = () => {
 ```
 - Understanding `useFormState` Hook: This hook is pivotal in managing the state and actions of our form. Here, we provide it with an action `someAction` and an initial state derived from `formFactory.initialFormState`. This setup enables the component to  handle form submissions and state changes.
 
-- lets understand what is happening here, we need to use the `useFormState` hooks which give us the current state and the action. The way the hooks work is we have to give it an `action` in our case would be `someAction` and a initialState which for use would be `formFactory.initialFormState`
+- Lets understand what is happening here, we need to use the `useFormState` hooks which give us the current state and the action. The way the hooks work is we have to give it an `action` in our case would be `someAction` and a initialState which for use would be `formFactory.initialFormState`
 
 - Benefits of `formFactory`: Much like the useForm hook, formFactory streamlines the process of form management. It provides us with necessary functionalities such as:
   - `useStore`: Observes and reflects the current state of the form on the client side.
@@ -121,7 +125,7 @@ const ClientComp = () => {
   - `handleSubmit`: Orchestrates the submission logic of the form.
   - `Field`: Manages individual form fields, adopting the `renderProps` pattern for greater flexibility.
 
-- the `formFactory.useForm` takes a few properties that we can pass to it as an object the one we are using here is transform and we are using another hook that `@tanstack/react-form` provides which is the `useTransform` and you can see we are passing a callback and we call `mergeForm` which is a function that comes from `@tanstack/react-form` and to this we need to pass the dependecies array in our case would be the `[state]`
+- The `formFactory.useForm` takes a few properties that we can pass to it as an object the one we are using here is transform and we are using another hook that `@tanstack/react-form` provides which is the `useTransform` and you can see we are passing a callback and we call `mergeForm` which is a function that comes from `@tanstack/react-form` and to this we need to pass the dependecies array in our case would be the `[state]`
 
 - Accessing Form Errors: Through `useStore`, we can access and display formErrors, enhancing user feedback and experience.
 
