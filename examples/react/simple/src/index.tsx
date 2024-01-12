@@ -63,6 +63,7 @@ export default function App() {
                   <>
                     <label htmlFor={field.name}>First Name:</label>
                     <input
+                      id={field.name}
                       name={field.name}
                       value={field.state.value}
                       onBlur={field.handleBlur}
@@ -81,6 +82,7 @@ export default function App() {
                 <>
                   <label htmlFor={field.name}>Last Name:</label>
                   <input
+                    id={field.name}
                     name={field.name}
                     value={field.state.value}
                     onBlur={field.handleBlur}
