@@ -80,6 +80,11 @@
             {
               "label": "React Native",
               "to": "framework/react/guides/react-native"
+            },
+            {
+              "label": "SSR/Next.js",
+              "to": "framework/react/guides/ssr"
+
             }
           ]
         },
