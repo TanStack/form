@@ -84,7 +84,6 @@
             {
               "label": "SSR/Next.js",
               "to": "framework/react/guides/ssr"
-
             }
           ]
         },
