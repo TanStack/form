@@ -1,14 +1,16 @@
-import { nothing, ReactiveController, ReactiveControllerHost } from "lit";
-import { directive, ElementPart, PartInfo, PartType } from "lit/directive.js";
-import {
+import type { ReactiveController, ReactiveControllerHost } from "lit";
+import { nothing } from "lit";
+import type { ElementPart, PartInfo} from "lit/directive.js";
+import { directive, PartType } from "lit/directive.js";
+import type {
   DeepKeys,
-  FieldApi,
   FieldOptions,
-  FormApi,
   FormOptions,
-  FormState,
   Validator,
-  DeepValue,
+  DeepValue} from "@tanstack/form-core";
+import {
+  FieldApi,
+  FormApi
 } from "@tanstack/form-core";
 import { AsyncDirective } from "lit/async-directive.js";
 
@@ -50,7 +52,7 @@ export class TanstackFormController<
   #subscription?: () => void;
 
   api: FormApi<FormValues, FormValidator>;
-  state?: FormState<FormValues>;
+
 
   constructor(
     host: ReactiveControllerHost,
@@ -62,10 +64,8 @@ export class TanstackFormController<
   }
 
   hostConnected() {
-    this.state = this.api.store.state;
     this.#subscription = this.api.store.subscribe(() => {
       this.#host.requestUpdate();
-      this.state = this.api.store.state;
     });
   }
 

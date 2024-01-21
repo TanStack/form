@@ -1,7 +1,6 @@
 import type { FormOptions, FieldState, FieldApi } from "../index.js";
 import { html, LitElement } from "lit";
 import {bind, TanstackFormController} from "../index.js";
-import { customElement } from "lit/decorators.js";
 
 interface Employee {
   firstName: string;
@@ -18,7 +17,7 @@ const formConfig: FormOptions<Employee, undefined> = {
   defaultValues: sampleData,
 };
 
-@customElement("test-form")
+
 export class TestForm extends LitElement {
   form = new TanstackFormController(this, formConfig);
 
@@ -35,12 +34,12 @@ export class TestForm extends LitElement {
         ${this.form.field(
       {
         name: `firstName`,
-        validator: {
+        validators: {
           onChange: (state: FieldState<string>) =>
             state.value.length < 3 ? "Not long enough" : undefined,
         },
       },
-      (field: FieldApi<Employee>) => {
+      (field: FieldApi<Employee, 'firstName'>) => {
         return html` <div>
               <label>First Name</label>
               <input
@@ -56,11 +55,11 @@ export class TestForm extends LitElement {
       {
         name: `lastName`,
         validators: {
-          onChange: (name: string) =>
-            name.length < 3 ? "Not long enough" : undefined,
+          onChange: (state: FieldState<string>) =>
+            state.value.length < 3 ? "Not long enough" : undefined,
         },
       },
-      (field: FieldApi<Employee>) => {
+      (field: FieldApi<Employee, 'lastName'>) => {
         return html` <div>
               <label>Last Name</label>
               <input
@@ -72,7 +71,7 @@ export class TestForm extends LitElement {
             </div>`;
       },
     )}
-        ${this.form.field({ name: `color` }, (field: FieldApi<Employee>) => {
+        ${this.form.field({ name: `color` }, (field: FieldApi<Employee, 'color'>) => {
       return html` <div>
             <label>Favorite Color</label>
             <select ${bind(field)}>
@@ -82,7 +81,7 @@ export class TestForm extends LitElement {
             </select>
           </div>`;
     })}
-        ${this.form.field({ name: `employed` }, (field: FieldApi<Employee>) => {
+        ${this.form.field({ name: `employed` }, (field: FieldApi<Employee, 'employed'>) => {
       return html`
             <div>
               <label>Employed?</label>
@@ -99,11 +98,11 @@ export class TestForm extends LitElement {
           {
             name: `jobTitle`,
             validators: {
-              onChange: (val: string) =>
-                val.length === 0 ? "Needs to have a job here" : null,
+              onChange: (val: FieldState<string>) =>
+                val.value.length === 0 ? "Needs to have a job here" : null,
             },
           },
-          (subField: FieldApi<Employee>) => {
+          (subField: FieldApi<Employee, 'jobTitle'>) => {
             return html` <div>
                       <label>Job Title</label>
                       <input
@@ -143,3 +142,4 @@ export class TestForm extends LitElement {
     `;
   }
 }
+

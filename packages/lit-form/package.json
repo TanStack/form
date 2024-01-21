@@ -15,7 +15,7 @@
     "clean": "rimraf ./build && rimraf ./coverage",
     "test:eslint": "eslint --ext .ts,.tsx ./src",
     "test:types": "tsc --noEmit",
-    "test:lib": "wdio run ./wdio.conf.ts",
+    "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
     "build": "tsup"

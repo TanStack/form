@@ -1,13 +1,19 @@
-import type { TestForm } from "./simple";
-import { sampleData } from "./simple";
+/// <reference lib="dom" />
+import '@testing-library/jest-dom';
+import  { TestForm, sampleData } from "./simple";
 
 
-import { expect, $ } from "@wdio/globals";
+import userEvent from '@testing-library/user-event'
+
+
+
+window.customElements.define('test-form', TestForm);
 describe("Lit Tests", () => {
   let element: TestForm;
-  beforeEach(() => {
+  beforeEach(async () => {
     element = document.createElement("test-form") as TestForm;
     document.body.appendChild(element);
+    await element.updateComplete;
   });
 
   afterEach(() => {
@@ -15,46 +21,49 @@ describe("Lit Tests", () => {
   });
 
   it("should have initial values", async () => {
-    expect(await $("test-form").shadow$("#firstName")).toHaveText(
+    expect(await element.shadowRoot!.querySelector<HTMLInputElement>("#firstName")).toHaveValue(
       sampleData.firstName,
     );
-    expect(await $("test-form").shadow$("#lastName")).toHaveText("");
+    expect(await element.shadowRoot!.querySelector<HTMLInputElement>("#lastName")).toHaveValue("");
     const form = element.form!;
-    expect(form.state?.values.firstName).toHaveText(sampleData.firstName);
+    expect(form.api.getFieldValue("firstName")).toBe(sampleData.firstName);
     expect(form.api.getFieldMeta("firstName")?.isTouched).toBeFalsy();
-    expect(form.state?.values.lastName).toHaveText(sampleData.firstName);
+    expect(form.api.getFieldValue("lastName")).toBe("");
     expect(form.api.getFieldMeta("lastName")?.isTouched).toBeFalsy();
   });
   it("should mirror user input", async () => {
-    const lastName = await $("test-form").shadow$("#lastName");
+    const lastName = await element.shadowRoot!.querySelector<HTMLInputElement>("#lastName")!;
     const lastNameValue = "Jobs";
-    await lastName.addValue(lastNameValue);
+    await userEvent.type(lastName, lastNameValue);
+
     const form = element.form!;
-    expect(form.state?.values?.lastName).toHaveText(lastNameValue);
+    expect(form.api.getFieldValue("lastName")).toBe(lastNameValue);
     expect(form.api.getFieldMeta("lastName")?.isTouched).toBeTruthy();
   });
   it("Reset form to initial value", async () => {
-    const firstName = await $("test-form").shadow$("#firstName");
-    const lastNameValue = "Jobs";
-    await firstName.addValue("-Joseph");
-    expect(firstName).toHaveText("Christian-Joseph");
+    const firstName = await element.shadowRoot!.querySelector<HTMLInputElement>("#firstName")!;
+    await userEvent.type(firstName, "-Joseph")
+
+    expect(firstName).toHaveValue("Christian-Joseph");
 
     const form = element.form;
-    await $("test-form").shadow$("#reset").click();
-    expect(form.state?.values.firstName).toHaveText(sampleData.firstName);
+    await element.shadowRoot!.querySelector<HTMLButtonElement>("#reset")?.click();
+    expect(form.api.getFieldValue("firstName")).toBe(sampleData.firstName);
   });
 
   it("should display validation", async () => {
-    const lastName = await $("test-form").shadow$("#lastName");
+    const lastName = await element.shadowRoot!.querySelector<HTMLInputElement>("#lastName")!;
     const lastNameValue = "Jo";
-    await lastName.addValue(lastNameValue);
-    expect(await lastName.getAttribute("error-text")).toHaveText(
-      "Not long enough",
-    );
-    await lastName.addValue(lastNameValue);
+    await userEvent.type(lastName,lastNameValue);
+    expect(lastName).toHaveValue("Jo")
     const form = element.form;
+    expect(form.api.getFieldMeta("lastName")?.errors[0]).toBe('Not long enough');
+
+    await userEvent.type(lastName,lastNameValue);
+
     expect(await lastName.getAttribute("error-text")).toBeFalsy();
-    expect(form.state?.values.lastName).toHaveText("JoJo");
+    expect(form.api.getFieldValue("lastName")).toBe("JoJo");
     expect(form.api.getFieldMeta("lastName")?.isTouched).toBeTruthy();
+    expect(form.api.getFieldMeta("lastName")?.errors.length).toBeFalsy();
   });
 });
