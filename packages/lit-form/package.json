@@ -1,0 +1,70 @@
+{
+  "name": "@tanstack/lit-form",
+  "version": "0.9.0",
+  "description": "Powerful, type-safe forms for Lit.",
+  "author": "tannerlinsley",
+  "license": "MIT",
+  "repository": "tanstack/form",
+  "homepage": "https://tanstack.com/form",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/tannerlinsley"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "clean": "rimraf ./build && rimraf ./coverage",
+    "test:eslint": "eslint --ext .ts,.tsx ./src",
+    "test:types": "tsc --noEmit",
+    "test:lib": "wdio run ./wdio.conf.ts",
+    "test:lib:dev": "pnpm run test:lib --watch",
+    "test:build": "publint --strict",
+    "build": "tsup"
+  },
+  "files": [
+    "build",
+    "src"
+  ],
+  "type": "module",
+  "types": "build/legacy/index.d.ts",
+  "main": "build/legacy/index.cjs",
+  "module": "build/legacy/index.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./build/modern/index.d.ts",
+        "default": "./build/modern/index.js"
+      },
+      "require": {
+        "types": "./build/modern/index.d.cts",
+        "default": "./build/modern/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "nx": {
+    "targets": {
+      "test:build": {
+        "dependsOn": [
+          "build"
+        ]
+      }
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.0",
+    "@wdio/browser-runner": "^8.28.7",
+    "@wdio/cli": "^8.28.6",
+    "@wdio/globals": "^8.28.8",
+    "@wdio/mocha-framework": "^8.28.8",
+    "@wdio/spec-reporter": "^8.28.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3",
+    "wdio-wait-for": "^3.0.10"
+  },
+  "dependencies": {
+    "@tanstack/form-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "lit": "^3.1.1"
+  }
+}
