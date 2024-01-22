@@ -86,6 +86,44 @@ describe('field api', () => {
     expect(field.getValue()).toBe('other')
   })
 
+  it('should set a nested value correctly', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: {
+          nested: 'test'
+        },
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name.nested',
+    })
+
+    field.setValue('other')
+
+    expect(field.getValue()).toBe('other')
+    expect(form.state.values.name.nested).toBe('other')
+  })
+
+  it('should set a value with dot correctly', () => {
+    const form = new FormApi({
+      defaultValues: {
+        'name.withdot': 'test',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name.withdot',
+    })
+
+    field.setValue('other')
+
+    expect(field.getValue()).toBe('other')
+    expect(form.state.values['name.withdot']).toBe('other')
+  })
+
   it('should push an array value correctly', () => {
     const form = new FormApi({
       defaultValues: {

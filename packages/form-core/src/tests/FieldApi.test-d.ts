@@ -19,6 +19,42 @@ it('should type value properly', () => {
   assertType<'test'>(field.getValue())
 })
 
+it('should type nested value properly', () => {
+  const form = new FormApi({
+    defaultValues: {
+      name: {
+        nested: 'test',
+      },
+    },
+  } as const)
+
+  const field = new FieldApi({
+    form,
+    name: 'name.nested',
+  })
+
+  assertType<'test'>(field.state.value)
+  assertType<'name.nested'>(field.options.name)
+  assertType<'test'>(field.getValue())
+})
+
+it('should type properties with dot properly', () => {
+  const form = new FormApi({
+    defaultValues: {
+      'name.withdot': 'test',
+    },
+  } as const)
+
+  const field = new FieldApi({
+    form,
+    name: 'name.withdot',
+  })
+
+  assertType<'test'>(field.state.value)
+  assertType<'name.withdot'>(field.options.name)
+  assertType<'test'>(field.getValue())
+})
+
 it('should type onChange properly', () => {
   const form = new FormApi({
     defaultValues: {
