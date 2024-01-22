@@ -51,15 +51,7 @@
     }
   },
   "devDependencies": {
-    "@types/node": "^20.9.0",
-    "@wdio/browser-runner": "^8.28.7",
-    "@wdio/cli": "^8.28.6",
-    "@wdio/globals": "^8.28.8",
-    "@wdio/mocha-framework": "^8.28.8",
-    "@wdio/spec-reporter": "^8.28.6",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.3.3",
-    "wdio-wait-for": "^3.0.10"
+    "@types/node": "^20.9.0"
   },
   "dependencies": {
     "@tanstack/form-core": "workspace:*"
