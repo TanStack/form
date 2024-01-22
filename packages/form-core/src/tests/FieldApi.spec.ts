@@ -115,13 +115,16 @@ describe('field api', () => {
 
     const field = new FieldApi({
       form,
-      name: 'name.withdot',
+      name: '["name.withdot"]',
     })
 
     field.setValue('other')
 
     expect(field.getValue()).toBe('other')
     expect(form.state.values['name.withdot']).toBe('other')
+    expect(form.state.values).toMatchObject({
+      'name.withdot': 'other',
+    })
   })
 
   it('should push an array value correctly', () => {
