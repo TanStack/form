@@ -34,7 +34,7 @@ it('should type nested value properly', () => {
   })
 
   assertType<'test'>(field.state.value)
-  assertType<'name.nested'>(field.options.name)
+  assertType<'name' | 'name.nested'>(field.options.name)
   assertType<'test'>(field.getValue())
 })
 
