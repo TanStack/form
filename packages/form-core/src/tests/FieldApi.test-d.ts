@@ -47,11 +47,11 @@ it('should type properties with dot properly', () => {
 
   const field = new FieldApi({
     form,
-    name: 'name.withdot',
+    name: '["name.withdot"]',
   })
 
   assertType<'test'>(field.state.value)
-  assertType<'name.withdot'>(field.options.name)
+  assertType<'["name.withdot"]' | "['name.withdot']">(field.options.name)
   assertType<'test'>(field.getValue())
 })
 

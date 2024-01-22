@@ -324,7 +324,7 @@ export type DeepKeys<T, TDepth extends any[] = []> = TDepth['length'] extends 5
           : T extends Date
             ? never
             : T extends object
-              ? (keyof T & string) | DeepKeysPrefix<T, keyof T, TDepth>
+              ? EscapedKey<(keyof T & string)> | DeepKeysPrefix<T, keyof T, TDepth>
               : never
 
 type DeepKeysPrefix<
@@ -340,6 +340,8 @@ export type DeepValue<T, TProp> = T extends Record<string | number, any>
     ? DeepValue<T[TBranch], TDeepProp>
     : T[TProp & string]
   : never
+
+type EscapedKey<T extends string> = T extends `${string}.${string}` ? `["${T}"]` | `['${T}']` : T
 
 type Narrowable = string | number | bigint | boolean
 
