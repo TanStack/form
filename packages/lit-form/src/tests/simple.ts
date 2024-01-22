@@ -1,4 +1,4 @@
-import type { FormOptions, FieldState, FieldApi } from "../index.js";
+import type { FormOptions, FieldApi } from "../index.js";
 import { html, LitElement } from "lit";
 import {bind, TanstackFormController} from "../index.js";
 
@@ -35,8 +35,9 @@ export class TestForm extends LitElement {
       {
         name: `firstName`,
         validators: {
-          onChange: (state: FieldState<string>) =>
-            state.value.length < 3 ? "Not long enough" : undefined,
+          onChange: ({value
+      }) =>
+            value.length < 3 ? "Not long enough" : undefined,
         },
       },
       (field: FieldApi<Employee, 'firstName'>) => {
@@ -55,8 +56,9 @@ export class TestForm extends LitElement {
       {
         name: `lastName`,
         validators: {
-          onChange: (state: FieldState<string>) =>
-            state.value.length < 3 ? "Not long enough" : undefined,
+          onChange: ({value
+      }) =>
+            value.length < 3 ? "Not long enough" : undefined,
         },
       },
       (field: FieldApi<Employee, 'lastName'>) => {
@@ -98,8 +100,9 @@ export class TestForm extends LitElement {
           {
             name: `jobTitle`,
             validators: {
-              onChange: (val: FieldState<string>) =>
-                val.value.length === 0 ? "Needs to have a job here" : null,
+              onChange: ({value
+          }) =>
+                value.length === 0 ? "Needs to have a job here" : null,
             },
           },
           (subField: FieldApi<Employee, 'jobTitle'>) => {
@@ -138,7 +141,7 @@ export class TestForm extends LitElement {
           </button>
         </div>
       </form>
-      <pre>${JSON.stringify(this.form.state, null, 2)}</pre>
+      <pre>${JSON.stringify(this.form.api.state, null, 2)}</pre>
     `;
   }
 }
