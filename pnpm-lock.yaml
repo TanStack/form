@@ -114,6 +114,19 @@ importers:
         specifier: ^3.3.4
         version: 3.3.4
 
+  examples/lit/simple:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: <1.0.0
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.1.1
+        version: 3.1.1
+    devDependencies:
+      vite:
+        specifier: ^5.0.10
+        version: 5.0.12(@types/node@18.19.4)
+
   examples/react/next-server-actions:
     dependencies:
       '@tanstack/react-form':
