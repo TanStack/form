@@ -31,10 +31,10 @@ it('should type nested value properly', () => {
   const field = new FieldApi({
     form,
     name: 'name.nested',
-  })
+  } as const)
 
   assertType<'test'>(field.state.value)
-  assertType<'name' | 'name.nested'>(field.options.name)
+  assertType<'name.nested'>(field.options.name)
   assertType<'test'>(field.getValue())
 })
 
