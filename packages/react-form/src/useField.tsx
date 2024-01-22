@@ -76,6 +76,28 @@ export function useField<
       .filter((d) => d !== undefined)
       .join('.')
 
+    // NOTE: I know, it's a type error, but this is not the final code
+    const previousInstance:
+      | FieldApi<
+          TParentData,
+          TName,
+          TFieldValidator,
+          TFormValidator,
+          DeepValue<TParentData, TName>
+        >
+      | undefined = Object.values(formApi.getFieldInfo(name).instances)[0]
+
+    if (previousInstance) {
+      /* NOTE: In <StrictMode>, an instance of `FieldApi` is already created
+      the first time this hook ran, but it will not get cleaned up on its own,
+      when the component unmounts, because of the  useIsomorphicEffectOnce() hook,
+      which doesn't execute the cleanup function on "dummy React cycles".
+
+      This code change seems to solve https://github.com/TanStack/form/issues/571
+      */
+      return previousInstance
+    }
+
     const api = new FieldApi({
       ...opts,
       form: formApi as never,
