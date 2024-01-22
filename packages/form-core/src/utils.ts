@@ -120,17 +120,21 @@ const charCodeOfDot = '.'.charCodeAt(0)
 const reEscapeChar = /\\(\\)?/g
 const rePropName = RegExp(
   // Match anything that isn't a dot or bracket.
-  '[^.[\\]]+' + '|' +
-  // Or match property names within brackets.
-  '\\[(?:' +
+  '[^.[\\]]+' +
+    '|' +
+    // Or match property names within brackets.
+    '\\[(?:' +
     // Match a non-string expression.
-    '([^"\'][^[]*)' + '|' +
+    '([^"\'][^[]*)' +
+    '|' +
     // Or match strings (supports escaping characters).
     '(["\'])((?:(?!\\2)[^\\\\]|\\\\.)*?)\\2' +
-  ')\\]'+ '|' +
-  // Or match "" as the space between consecutive dots or empty brackets.
-  '(?=(?:\\.|\\[\\])(?:\\.|\\[\\]|$))'
-  , 'g')
+    ')\\]' +
+    '|' +
+    // Or match "" as the space between consecutive dots or empty brackets.
+    '(?=(?:\\.|\\[\\])(?:\\.|\\[\\]|$))',
+  'g',
+)
 const reFindNumber = /^\d+$/
 
 function makePathArray(str: string) {
@@ -142,21 +146,23 @@ function makePathArray(str: string) {
   if (str.charCodeAt(0) === charCodeOfDot) {
     result.push('')
   }
-  str.replace(rePropName, (match: string, expression: string, quote: string, subString: string) => {
-    let key: string | number = match
-    if (quote) {
-      key = subString.replace(reEscapeChar, '$1')
-    }
-    else if (expression) {
-      key = expression.trim()
-    }
-    // key difference from lodash string to path algoritm
-    if (reFindNumber.test(key)) {
-      key = parseInt(key, 10);
-    }
-    result.push(key)
-    return '';
-  })
+  str.replace(
+    rePropName,
+    (match: string, expression: string, quote: string, subString: string) => {
+      let key: string | number = match
+      if (quote) {
+        key = subString.replace(reEscapeChar, '$1')
+      } else if (expression) {
+        key = expression.trim()
+      }
+      // key difference from lodash string to path algoritm
+      if (reFindNumber.test(key)) {
+        key = parseInt(key, 10)
+      }
+      result.push(key)
+      return ''
+    },
+  )
   return result
 }
 
@@ -324,7 +330,9 @@ export type DeepKeys<T, TDepth extends any[] = []> = TDepth['length'] extends 5
           : T extends Date
             ? never
             : T extends object
-              ? EscapedKey<(keyof T & string)> | DeepKeysPrefix<T, keyof T, TDepth>
+              ?
+                  | EscapedKey<keyof T & string>
+                  | DeepKeysPrefix<T, keyof T, TDepth>
               : never
 
 type DeepKeysPrefix<
@@ -338,16 +346,18 @@ type DeepKeysPrefix<
 export type DeepValue<T, TProp> = TProp extends ''
   ? T
   : T extends Record<string | number, any>
-    ? TProp extends (`["${infer TBranch}"].${infer TDeepProp}`)
+    ? TProp extends `["${infer TBranch}"].${infer TDeepProp}`
       ? DeepValue<T[TBranch], TDeepProp>
-      : TProp extends (`["${infer TBranch}"]${infer TDeepProp}`)
+      : TProp extends `["${infer TBranch}"]${infer TDeepProp}`
         ? DeepValue<T[TBranch], TDeepProp>
         : TProp extends `${infer TBranch}.${infer TDeepProp}`
           ? DeepValue<T[TBranch], TDeepProp>
           : T[TProp & string]
     : never
 
-type EscapedKey<T extends string> = T extends `${string}.${string}` ? `["${T}"]` | `['${T}']` : T
+type EscapedKey<T extends string> = T extends `${string}.${string}`
+  ? `["${T}"]` | `['${T}']`
+  : T
 
 type Narrowable = string | number | bigint | boolean
 

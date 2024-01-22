@@ -78,7 +78,7 @@ it('should type onChange properly', () => {
 it('should type onChangeAsync properly', () => {
   const form = new FormApi({
     defaultValues: {
-      'name': 'test',
+      name: 'test',
     },
   } as const)
 

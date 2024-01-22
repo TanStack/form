@@ -90,7 +90,7 @@ describe('field api', () => {
     const form = new FormApi({
       defaultValues: {
         name: {
-          nested: 'test'
+          nested: 'test',
         },
       },
     })
