@@ -1,4 +1,4 @@
-import { css } from 'lit';
+import { css } from 'lit'
 
 export const styles = css`
   form {
@@ -63,4 +63,4 @@ export const styles = css`
     display: block;
     margin: 0 auto;
   }
-`;
+`

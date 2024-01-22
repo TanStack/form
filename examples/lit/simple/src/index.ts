@@ -1,45 +1,43 @@
-import { html, LitElement } from "lit";
-import { customElement } from "lit/decorators.js";
+import { html, LitElement } from 'lit'
+import { customElement } from 'lit/decorators.js'
 
-import { styles } from "./styles.js";
-import type { FormOptions } from "@tanstack/lit-form";
-import { TanstackFormController, bind } from "@tanstack/lit-form";
+import { styles } from './styles.js'
+import type { FormOptions } from '@tanstack/lit-form'
+import { TanstackFormController, bind } from '@tanstack/lit-form'
 
-import { repeat } from "lit/directives/repeat.js";
+import { repeat } from 'lit/directives/repeat.js'
 
 interface Employee {
-  firstName: string;
-  lastName: string;
-  employed: boolean;
-  jobTitle: string;
+  firstName: string
+  lastName: string
+  employed: boolean
+  jobTitle: string
 }
 
 interface Data {
-  employees: Partial<Employee>[];
+  employees: Partial<Employee>[]
 }
 
-const formConfig: FormOptions<Data> = {
+const formConfig: FormOptions<Data> = {}
 
-};
-
-@customElement("tanstack-form-demo")
+@customElement('tanstack-form-demo')
 export class TanstackFormDemo extends LitElement {
-  static styles = styles;
+  static styles = styles
 
-  #form = new TanstackFormController(this, formConfig);
+  #form = new TanstackFormController(this, formConfig)
 
   render() {
     return html`
       <form
         id="form"
         @submit=${(e: Event) => {
-          e.preventDefault();
+          e.preventDefault()
         }}
       >
         <h1>Tanstack Form - Lit Demo</h1>
         ${this.#form.field(
           {
-            name: "employees",
+            name: 'employees',
             defaultValue: [],
           },
           (employeesField) => {
@@ -52,10 +50,10 @@ export class TanstackFormDemo extends LitElement {
                       {
                         name: `employees.${index}.firstName`,
                         validators: {
-                          onChange: ({value}: {value: string}) => {
+                          onChange: ({ value }: { value: string }) => {
                             return value && value.length < 3
-                              ? "Not long enough"
-                              : undefined;
+                              ? 'Not long enough'
+                              : undefined
                           },
                         },
                       },
@@ -67,7 +65,7 @@ export class TanstackFormDemo extends LitElement {
                             placeholder="First Name"
                             ${bind(field)}
                           />
-                        </div>`;
+                        </div>`
                       },
                     )}
                     ${this.#form.field(
@@ -80,7 +78,7 @@ export class TanstackFormDemo extends LitElement {
                             placeholder="Last Name"
                             ${bind(lastNameField)}
                           />
-                        </div>`;
+                        </div>`
                       },
                     )}
                     ${this.#form.field(
@@ -91,7 +89,9 @@ export class TanstackFormDemo extends LitElement {
                             <input
                               type="checkbox"
                               @input="${() =>
-                                employedField.handleChange(!employedField.getValue())}"
+                                employedField.handleChange(
+                                  !employedField.getValue(),
+                                )}"
                               .checked="${employedField.getValue()}"
                               @blur="${() => employedField.handleBlur()}"
                             />
@@ -101,10 +101,14 @@ export class TanstackFormDemo extends LitElement {
                                 {
                                   name: `employees.${index}.jobTitle`,
                                   validators: {
-                                    onChange: ({value}: {value: string}) => {
+                                    onChange: ({
+                                      value,
+                                    }: {
+                                      value: string
+                                    }) => {
                                       return value.length === 0
-                                        ? "Needs to have a job here"
-                                        : null;
+                                        ? 'Needs to have a job here'
+                                        : null
                                     },
                                   },
                                 },
@@ -116,13 +120,13 @@ export class TanstackFormDemo extends LitElement {
                                       placeholder="Job Title"
                                       ${bind(jobTitleField)}
                                     />
-                                  </div>`;
+                                  </div>`
                                 },
                               )
-                            : ""} `;
+                            : ''} `
                       },
                     )}
-                  `;
+                  `
                 },
               )}
 
@@ -131,27 +135,27 @@ export class TanstackFormDemo extends LitElement {
                   type="button"
                   @click=${() => {
                     employeesField.pushValue({
-                      firstName: "",
-                      lastName: "",
+                      firstName: '',
+                      lastName: '',
                       employed: false,
-                    });
+                    })
                   }}
                 >
                   Add employee
                 </button>
-              </div> `;
+              </div> `
           },
         )}
 
         <div>
           <button type="submit" ?disabled=${this.#form.api.state.isSubmitting}>
-            ${this.#form.api.state.isSubmitting ? html` Submitting` : "Submit"}
+            ${this.#form.api.state.isSubmitting ? html` Submitting` : 'Submit'}
           </button>
           <button
             type="button"
             id="reset"
             @click=${() => {
-              this.#form.api.reset();
+              this.#form.api.reset()
             }}
           >
             Reset
@@ -159,6 +163,6 @@ export class TanstackFormDemo extends LitElement {
         </div>
       </form>
       <pre>${JSON.stringify(this.#form.api.state, null, 2)}</pre>
-    `;
+    `
   }
 }
