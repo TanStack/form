@@ -100,7 +100,7 @@ export function useField<
     fieldApi.store,
     opts.mode === 'array'
       ? (state) => {
-          return [state.meta, Object.keys(state.value).length]
+          return [state.meta, Object.keys(state.value as any[]).length]
         }
       : undefined,
   )
