@@ -8,6 +8,5 @@
     "moduleResolution": "bundler",
     "types": ["vitest/globals"]
   },
-  "include": ["src"],
-
+  "include": ["src"]
 }

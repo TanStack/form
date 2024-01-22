@@ -1,18 +1,16 @@
-import type { ReactiveController, ReactiveControllerHost } from "lit";
-import { nothing } from "lit";
-import type { ElementPart, PartInfo} from "lit/directive.js";
-import { directive, PartType } from "lit/directive.js";
+import type { ReactiveController, ReactiveControllerHost } from 'lit'
+import { nothing } from 'lit'
+import type { ElementPart, PartInfo } from 'lit/directive.js'
+import { directive, PartType } from 'lit/directive.js'
 import type {
   DeepKeys,
   FieldOptions,
   FormOptions,
   Validator,
-  DeepValue} from "@tanstack/form-core";
-import {
-  FieldApi,
-  FormApi
-} from "@tanstack/form-core";
-import { AsyncDirective } from "lit/async-directive.js";
+  DeepValue,
+} from '@tanstack/form-core'
+import { FieldApi, FormApi } from '@tanstack/form-core'
+import { AsyncDirective } from 'lit/async-directive.js'
 
 type renderCallback<
   FormValues,
@@ -23,7 +21,7 @@ type renderCallback<
   FormValidator extends Validator<FormValues> | undefined,
 > = (
   fieldOptions: FieldApi<FormValues, Name, FieldValidator, FormValidator>,
-) => unknown;
+) => unknown
 type fieldDirectiveType<
   FormValues,
   Name extends DeepKeys<FormValues>,
@@ -37,40 +35,39 @@ type fieldDirectiveType<
   render: renderCallback<FormValues, Name, FieldValidator, FormValidator>,
 ) => {
   values: {
-    form: FormApi<FormValues, FormValidator>;
-    options: FieldOptions<FormValues, Name, FieldValidator, FormValidator>;
-    render: renderCallback<FormValues, Name, FieldValidator, FormValidator>;
-  };
-};
+    form: FormApi<FormValues, FormValidator>
+    options: FieldOptions<FormValues, Name, FieldValidator, FormValidator>
+    render: renderCallback<FormValues, Name, FieldValidator, FormValidator>
+  }
+}
 
 export class TanstackFormController<
   FormValues,
   FormValidator extends Validator<FormValues> | undefined = undefined,
 > implements ReactiveController
 {
-  #host: ReactiveControllerHost;
-  #subscription?: () => void;
+  #host: ReactiveControllerHost
+  #subscription?: () => void
 
-  api: FormApi<FormValues, FormValidator>;
-
+  api: FormApi<FormValues, FormValidator>
 
   constructor(
     host: ReactiveControllerHost,
     config?: FormOptions<FormValues, FormValidator>,
   ) {
-    (this.#host = host).addController(this);
+    ;(this.#host = host).addController(this)
 
-    this.api = new FormApi<FormValues, FormValidator>(config);
+    this.api = new FormApi<FormValues, FormValidator>(config)
   }
 
   hostConnected() {
     this.#subscription = this.api.store.subscribe(() => {
-      this.#host.requestUpdate();
-    });
+      this.#host.requestUpdate()
+    })
   }
 
   hostDisconnected() {
-    this.#subscription?.();
+    this.#subscription?.()
   }
 
   field<
@@ -89,7 +86,7 @@ export class TanstackFormController<
         FieldValidator,
         FormValidator
       >
-    )(this.api, fieldConfig, render);
+    )(this.api, fieldConfig, render)
   }
 }
 
@@ -101,48 +98,48 @@ class FieldDirective<
     | undefined = undefined,
   FormValidator extends Validator<FormValues> | undefined = undefined,
 > extends AsyncDirective {
-  #registered = false;
-  #field?: FieldApi<FormValues, Name, FieldValidator, FormValidator>;
-  #unmount?: () => void;
+  #registered = false
+  #field?: FieldApi<FormValues, Name, FieldValidator, FormValidator>
+  #unmount?: () => void
 
   constructor(partInfo: PartInfo) {
-    super(partInfo);
+    super(partInfo)
     if (partInfo.type !== PartType.CHILD) {
       throw new Error(
-        "The `field` directive must be used in the `child` attribute",
-      );
+        'The `field` directive must be used in the `child` attribute',
+      )
     }
   }
 
   update(
     _: ElementPart,
-    [form, fieldConfig, _render]: Parameters<this["render"]>,
+    [form, fieldConfig, _render]: Parameters<this['render']>,
   ) {
     if (!this.#registered) {
       if (!this.#field) {
-        const options = { ...fieldConfig, form };
+        const options = { ...fieldConfig, form }
 
-        this.#field = new FieldApi(options);
-        this.#unmount = this.#field.mount();
+        this.#field = new FieldApi(options)
+        this.#unmount = this.#field.mount()
       }
 
-      this.#registered = true;
+      this.#registered = true
     }
 
-    return this.render(form, fieldConfig, _render);
+    return this.render(form, fieldConfig, _render)
   }
 
   protected disconnected() {
-    super.disconnected();
-    console.log(this.#field?.options.preserveValue);
-    console.log(this.#unmount);
-    this.#unmount?.();
+    super.disconnected()
+    console.log(this.#field?.options.preserveValue)
+    console.log(this.#unmount)
+    this.#unmount?.()
   }
 
   protected reconnected() {
-    super.reconnected();
+    super.reconnected()
     if (this.#field) {
-      this.#unmount = this.#field.mount();
+      this.#unmount = this.#field.mount()
     }
   }
 
@@ -157,10 +154,10 @@ class FieldDirective<
     >,
   ) {
     if (this.#field) {
-      return _renderCallback(this.#field);
+      return _renderCallback(this.#field)
     }
-    return nothing;
+    return nothing
   }
 }
 
-const fieldDirective = directive(FieldDirective);
+const fieldDirective = directive(FieldDirective)

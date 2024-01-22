@@ -1,9 +1,6 @@
 import { defineConfig, mergeConfig } from 'vitest/config'
 
-
-
 export default defineConfig({
-
   test: {
     name: 'lit-form',
     dir: './src',
@@ -14,5 +11,3 @@ export default defineConfig({
     typecheck: { enabled: true },
   },
 })
-
-
