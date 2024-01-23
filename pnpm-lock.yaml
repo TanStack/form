@@ -127,6 +127,22 @@ importers:
         specifier: ^5.0.10
         version: 5.0.12(@types/node@18.19.4)
 
+  examples/lit/ui-libraries:
+    dependencies:
+      '@material/web':
+        specifier: ^1.0.0
+        version: 1.1.1
+      '@tanstack/lit-form':
+        specifier: <1.0.0
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.1.1
+        version: 3.1.1
+    devDependencies:
+      vite:
+        specifier: ^5.0.10
+        version: 5.0.12(@types/node@18.19.4)
+
   examples/react/next-server-actions:
     dependencies:
       '@tanstack/react-form':
@@ -2786,6 +2802,13 @@ packages:
       react: ^18.2.0
     dependencies:
       react: 18.2.0
+    dev: false
+
+  /@material/web@1.1.1:
+    resolution: {integrity: sha512-K7N9yQrQmB42rwvtbVlwK8SGT99oUcqTdHZkxan4v9klcIUYB5BdqlT8CSKYhKFMU6zITHP628E2u+qpYhLYsw==}
+    dependencies:
+      lit: 3.1.1
+      tslib: 2.6.2
     dev: false
 
   /@microsoft/api-extractor-model@7.28.3(@types/node@18.19.4):
