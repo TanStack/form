@@ -45,15 +45,10 @@ export default function App() {
             )
           }}
         />
-
         <Form.Field
           name="showPassword"
           children={(field) => {
-            return (
-              <Form.Field.Checkbox field={field} label="Show Password">
-                <Form.Field.Error />
-              </Form.Field.Checkbox>
-            )
+            return <Form.Field.Checkbox field={field} label="Show Password" />
           }}
         />
       </Form>

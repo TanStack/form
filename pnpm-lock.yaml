@@ -154,7 +154,7 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1(react@18.2.0)
       '@tanstack/react-form':
-        specifier: <1.0.0
+        specifier: workspace:^
         version: link:../../../packages/react-form
       '@tanstack/zod-form-adapter':
         specifier: workspace:^

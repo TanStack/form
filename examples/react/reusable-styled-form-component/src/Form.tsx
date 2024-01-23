@@ -1,10 +1,11 @@
 import * as React from 'react'
-import { type FormApi, type FormOptions, useForm } from '@tanstack/react-form'
+import { useForm } from '@tanstack/react-form'
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import { zodValidator } from '@tanstack/zod-form-adapter'
 import { cx } from './utils'
 import { Input } from './Input'
 import { Label } from './Label'
+import { Select } from './Select'
 
 type FormProps = any
 
@@ -12,11 +13,11 @@ type FormFieldProps = any
 
 type FormFieldTextProps = any
 
-type FormFieldErrorProps = any
-
 type FormFieldCheckboxProps = any
 
 type FormFieldSelectProps = any
+
+type FormFieldErrorProps = any
 
 type FormComponentProps = React.ForwardRefExoticComponent<FormProps> & {
   Field: FormFieldProps & {
@@ -27,44 +28,42 @@ type FormComponentProps = React.ForwardRefExoticComponent<FormProps> & {
   }
 }
 
-type FormContextProps = FormApi<Record<string, unknown>, typeof zodValidator>
-
-const FormContext = React.createContext<FormContextProps>(
-  {} as FormContextProps,
-)
+const FieldContext = React.createContext<FormFieldProps>({} as FormFieldProps)
 
 const Form = React.forwardRef<HTMLFormElement, FormProps>(
-  ({ className, formOptions, ...props }, ref) => {
-    const HeadlessForm = useForm({
+  ({ className, children, formOptions, ...props }, ref) => {
+    const { Provider, Field, handleSubmit } = useForm({
       validatorAdapter: zodValidator,
       ...formOptions,
     })
 
     return (
-      <FormContext.Provider value={HeadlessForm}>
-        <HeadlessForm.Provider>
-          <form
-            className={className}
-            onSubmit={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              void HeadlessForm.handleSubmit()
-            }}
-            ref={ref}
-            {...props}
-          />
-        </HeadlessForm.Provider>
-      </FormContext.Provider>
+      <Provider>
+        <form
+          className={className}
+          onSubmit={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            handleSubmit()
+          }}
+          ref={ref}
+          {...props}
+        >
+          <FieldContext.Provider value={Field}>
+            {children}
+          </FieldContext.Provider>
+        </form>
+      </Provider>
     )
   },
 ) as FormComponentProps
 
 Form.displayName = 'Form'
 
-Form.Field = ({ ...props }: FormFieldProps) => {
-  const HeadlessForm = React.useContext(FormContext)
-  return <HeadlessForm.Field {...props} />
-}
+Form.Field = React.forwardRef<FormFieldProps>(({ ...props }, ref) => {
+  const Field = React.useContext(FieldContext)
+  return <Field ref={ref} {...props} />
+})
 
 Form.Field.displayName = 'Form.Field'
 
@@ -117,6 +116,67 @@ Form.Field.Text = React.forwardRef<HTMLInputElement, FormFieldTextProps>(
 
 Form.Field.Text.displayName = 'Form.Field.Text'
 
+Form.Field.Checkbox = React.forwardRef<
+  HTMLInputElement,
+  FormFieldCheckboxProps
+>(({ className, children, field, label, ...props }, ref) => {
+  const childWithField = React.Children.map(children, (child) =>
+    React.isValidElement(child) ? React.cloneElement(child, { field }) : child,
+  )
+  return (
+    <div className="flex relative items-center gap-2">
+      <Input
+        className={className}
+        type="checkbox"
+        id={field.name}
+        name={field.name}
+        placeholder={label}
+        checked={field.state.value}
+        onBlur={field.handleBlur}
+        onChange={(e) => field.handleChange(e.target.checked)}
+        ref={ref}
+        {...props}
+      />
+      <Label className="cursor-pointer" htmlFor={field.name}>
+        {label}
+      </Label>
+      {childWithField}
+    </div>
+  )
+})
+
+Form.Field.Checkbox.displayName = 'Form.Field.Checkbox'
+
+Form.Field.Select = React.forwardRef<HTMLSelectElement, FormFieldSelectProps>(
+  ({ className, children, field, label, ...props }, ref) => {
+    const childWithField = React.Children.map(children, (child) =>
+      React.isValidElement(child)
+        ? React.cloneElement(child, { field })
+        : child,
+    )
+    return (
+      <div className="flex relative">
+        <Label className="cursor-pointer" htmlFor={field.name}>
+          {label}
+        </Label>
+        <Select
+          className={className}
+          id={field.name}
+          name={field.name}
+          value={field.state.value}
+          onBlur={field.handleBlur}
+          onChange={(e) => field.handleChange(e.target.value)}
+          ref={ref}
+          {...props}
+        />
+        {childWithField}
+      </div>
+    )
+  },
+)
+
+Form.Field.Select.displayName = 'Form.Field.Select'
+
 Form.Field.Error = React.forwardRef<HTMLSpanElement, FormFieldErrorProps>(
   ({ className, field, ...props }, ref) => {
     return (
@@ -147,33 +207,13 @@ Form.Field.Error = React.forwardRef<HTMLSpanElement, FormFieldErrorProps>(
 
 Form.Field.Error.displayName = 'Form.Field.Error'
 
-Form.Field.Checkbox = React.forwardRef<
-  HTMLInputElement,
-  FormFieldCheckboxProps
->(({ className, children, field, label, ...props }, ref) => {
-  const childWithField = React.Children.map(children, (child) =>
-    React.isValidElement(child) ? React.cloneElement(child, { field }) : child,
-  )
-  return (
-    <div className="flex relative items-center gap-2">
-      <Input
-        className={className}
-        type="checkbox"
-        id={field.name}
-        name={field.name}
-        placeholder={label}
-        value={field.state.checked}
-        onBlur={field.handleBlur}
-        onChange={(e) => field.handleChange(e.target.checked)}
-        ref={ref}
-        {...props}
-      />
-      <Label className="cursor-pointer" htmlFor={field.name}>
-        {label}
-      </Label>
-      {childWithField}
-    </div>
-  )
-})
-
-export { Form, type FormProps, type FormFieldProps }
+export {
+  Form,
+  type FormProps,
+  type FormFieldProps,
+  type FormFieldTextProps,
+  type FormFieldErrorProps,
+  type FormFieldCheckboxProps,
+  type FormFieldSelectProps,
+  type FormComponentProps,
+}
