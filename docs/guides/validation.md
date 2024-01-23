@@ -19,8 +19,8 @@ Here is an example:
 <form.Field
   name="age"
   validators={{
-    onChange: (val) =>
-      val < 13 ? 'You must be 13 to make an account' : undefined,
+    onChange: ({value}) =>
+      value < 13 ? 'You must be 13 to make an account' : undefined,
   }}
 >
   {(field) => (
@@ -47,8 +47,8 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
 <form.Field
   name="age"
   validators={{
-    onBlur: (val) =>
-      val < 13 ? 'You must be 13 to make an account' : undefined,
+    onBlur: ({value}) =>
+      value < 13 ? 'You must be 13 to make an account' : undefined,
   }}
 >
   {(field) => (
@@ -78,9 +78,9 @@ So you can control when the validation is done by implementing the desired callb
 <form.Field
   name="age"
   validators={{
-    onChange: (val) =>
-      val < 13 ? 'You must be 13 to make an account' : undefined,
-    onBlur: (val) => (val < 0 ? 'Invalid value' : undefined),
+    onChange: ({value}) =>
+      value < 13 ? 'You must be 13 to make an account' : undefined,
+    onBlur: ({value}) => (value < 0 ? 'Invalid value' : undefined),
   }}
 >
   {(field) => (
@@ -114,8 +114,8 @@ Once you have your validation in place, you can map the errors from an array to 
 <form.Field
   name="age"
   validators={{
-    onChange: (val) =>
-      val < 13 ? 'You must be 13 to make an account' : undefined,
+    onChange: ({value}) =>
+      value < 13 ? 'You must be 13 to make an account' : undefined,
   }}
 >
   {(field) => {
@@ -135,8 +135,8 @@ Or use the `errorMap` property to access the specific error you're looking for:
 <form.Field
   name="age"
   validators={{
-    onChange: (val) =>
-      val < 13 ? 'You must be 13 to make an account' : undefined,
+    onChange: ({value}) =>
+      value < 13 ? 'You must be 13 to make an account' : undefined,
   }}
 >
   {(field) => (
@@ -203,7 +203,7 @@ To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods 
 <form.Field
   name="age"
   validators={{
-    onChangeAsync: async (value) => {
+    onChangeAsync: async ({value}) => {
       await new Promise((resolve) => setTimeout(resolve, 1000))
       return value < 13 ? 'You must be 13 to make an account' : undefined
     },
@@ -233,8 +233,8 @@ Synchronous and Asynchronous validations can coexist. For example it is possible
 <form.Field
   name="age"
   validators={{
-    onBlur: (value) => (value < 13 ? 'You must be at least 13' : undefined),
-    onBlurAsync: async (value) => {
+    onBlur: ({value}) => (value < 13 ? 'You must be at least 13' : undefined),
+    onBlurAsync: async ({value}) => {
       const currentAge = await fetchCurrentAgeOnProfile()
       return value < currentAge ? 'You can only increase the age' : undefined
     },
@@ -271,7 +271,7 @@ Instead, we enable an easy method for debouncing your `async` calls by adding a 
   name="age"
   asyncDebounceMs={500}
   validators={{
-      onChangeAsync={async (value) => {
+      onChangeAsync={async ({value}) => {
         // ...
       }
   }}
@@ -293,10 +293,10 @@ This will debounce every async call with a 500ms delay. You can even override th
   asyncDebounceMs={500}
   validators={{
     onChangeAsyncDebounceMs: 1500,
-    onChangeAsync: async (value) => {
+    onChangeAsync: async ({value}) => {
       // ...
     },
-    onBlurAsync: async (value) => {
+    onBlurAsync: async ({value}) => {
       // ...
     },
   }}
