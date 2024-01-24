@@ -5,7 +5,7 @@ import { cx } from './utils'
 type SelectProps = React.SelectHTMLAttributes<HTMLSelectElement> & {
   className?: string
   displayValue?: boolean
-  value: string
+  value?: string
 }
 
 type SelectOptionGroupProps = React.OptgroupHTMLAttributes<HTMLOptGroupElement>
@@ -27,7 +27,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
       <SelectContext.Provider value={displayValue ? value : ''}>
         <select
           className={cx(
-            'h-10 w-full cursor-pointer rounded-md border border-secondary-200 bg-background fill-accent stroke-accent px-3 py-2 text-sm transition-border focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 dark:border-secondary-700 focus-visible:dark:border-primary',
+            'h-10 w-full cursor-pointer rounded-md border border-gray-300 bg-white dark:bg-black px-3 py-2 text-sm transition-border focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:border-blue-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 focus-visible:dark:border-blue-500',
             className,
           )}
           ref={ref}

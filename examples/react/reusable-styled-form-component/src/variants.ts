@@ -1,7 +1,7 @@
 import { type VariantProps, cva } from './utils'
 
 const inputVariants = cva({
-  base: 'peer select-none appearance-none border outline-none border-gray-300 transition-colors focus-visible:border-blue-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 focus-visible:dark:border-blue-500',
+  base: 'peer select-none appearance-none border focus:ring-0 focus:ring-offset-0 border-gray-300 transition-colors focus-visible:border-blue-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 focus-visible:dark:border-blue-500',
   variants: {
     type: {
       text: 'flex h-10 w-full rounded-md bg-white dark:bg-black px-3 py-2 text-sm placeholder:text-gray-500',
