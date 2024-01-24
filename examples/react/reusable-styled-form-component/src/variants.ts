@@ -7,6 +7,7 @@ const inputVariants = cva({
       text: 'flex h-10 w-full rounded-md bg-white dark:bg-black px-3 py-2 text-sm placeholder:text-gray-500',
       password:
         'flex h-10 w-full rounded-md bg-white dark:bg-black px-3 py-2 text-sm placeholder:text-gray-500',
+      tel: 'flex h-10 w-full rounded-md bg-white dark:bg-black px-3 py-2 text-sm placeholder:text-gray-500',
       checkbox:
         'h-4 w-4 cursor-pointer rounded-sm bg-white dark:bg-black transition-colors checked:border-blue-500 checked:bg-blue-500 checked:hover:bg-blue-500 checked:focus:bg-blue-500 checked:dark:border-blue-500',
       number:

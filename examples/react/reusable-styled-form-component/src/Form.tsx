@@ -19,24 +19,31 @@ type FormFieldSelectProps = any
 
 type FormFieldErrorProps = any
 
+type FormSubscribeProps = any
+
+type FormSubscribeButtonProps = any
+
 type FormComponentProps = React.ForwardRefExoticComponent<FormProps> & {
   Field: FormFieldProps & {
-    Error: React.ForwardRefExoticComponent<FormFieldErrorProps>
-    Text: React.ForwardRefExoticComponent<FormFieldTextProps>
-    Checkbox: React.ForwardRefExoticComponent<FormFieldCheckboxProps>
-    Select: React.ForwardRefExoticComponent<FormFieldSelectProps>
+    Error: React.FC<FormFieldErrorProps>
+    Text: React.FC<FormFieldTextProps>
+    Checkbox: React.FC<FormFieldCheckboxProps>
+    Select: React.FC<FormFieldSelectProps>
+  }
+  Subscribe: FormSubscribeProps & {
+    Button: React.FC<FormSubscribeButtonProps>
   }
 }
 
-const FieldContext = React.createContext<FormFieldProps>({} as FormFieldProps)
+const FormContext = React.createContext<any>({})
 
 const Form = React.forwardRef<HTMLFormElement, FormProps>(
   ({ className, children, formOptions, ...props }, ref) => {
-    const { Provider, Field, handleSubmit } = useForm({
-      validatorAdapter: zodValidator,
-      ...formOptions,
-    })
-
+    const { Provider, Field, handleSubmit, useStore, Subscribe, state } =
+      useForm({
+        validatorAdapter: zodValidator,
+        ...formOptions,
+      })
     return (
       <Provider>
         <form
@@ -49,9 +56,9 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
           ref={ref}
           {...props}
         >
-          <FieldContext.Provider value={Field}>
-            {children}
-          </FieldContext.Provider>
+          <FormContext.Provider value={{ Field, Subscribe }}>
+            {typeof children === 'function' ? children(useStore) : children}
+          </FormContext.Provider>
         </form>
       </Provider>
     )
@@ -61,7 +68,7 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
 Form.displayName = 'Form'
 
 Form.Field = React.forwardRef<FormFieldProps>(({ ...props }, ref) => {
-  const Field = React.useContext(FieldContext)
+  const { Field } = React.useContext(FormContext)
   return <Field ref={ref} {...props} />
 })
 
@@ -196,6 +203,13 @@ Form.Field.Error = React.forwardRef<HTMLSpanElement, FormFieldErrorProps>(
 )
 
 Form.Field.Error.displayName = 'Form.Field.Error'
+
+Form.Subscribe = React.forwardRef<FormFieldProps>(({ ...props }, ref) => {
+  const { Subscribe } = React.useContext(FormContext)
+  return <Subscribe ref={ref} {...props} />
+})
+
+Form.Subscribe.displayName = 'Form.Subscribe'
 
 export {
   Form,
