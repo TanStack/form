@@ -6,6 +6,7 @@ import { cx } from './utils'
 import { Input } from './Input'
 import { Label } from './Label'
 import { Select } from './Select'
+import { Button } from './Button'
 
 type FormProps = any
 
@@ -39,7 +40,7 @@ const FormContext = React.createContext<any>({})
 
 const Form = React.forwardRef<HTMLFormElement, FormProps>(
   ({ className, children, formOptions, ...props }, ref) => {
-    const { Provider, Field, handleSubmit, useStore, Subscribe, state } =
+    const { Provider, Field, handleSubmit, useStore, Subscribe, reset } =
       useForm({
         validatorAdapter: zodValidator,
         ...formOptions,
@@ -57,7 +58,9 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
           {...props}
         >
           <FormContext.Provider value={{ Field, Subscribe }}>
-            {typeof children === 'function' ? children(useStore) : children}
+            {typeof children === 'function'
+              ? children(useStore, reset)
+              : children}
           </FormContext.Provider>
         </form>
       </Provider>
@@ -210,6 +213,23 @@ Form.Subscribe = React.forwardRef<FormFieldProps>(({ ...props }, ref) => {
 })
 
 Form.Subscribe.displayName = 'Form.Subscribe'
+
+Form.Subscribe.Button = React.forwardRef<
+  HTMLButtonElement,
+  FormSubscribeButtonProps
+>(({ className, state, ...props }, ref) => {
+  return (
+    <Button
+      className={className}
+      variant="primary"
+      size="md"
+      type="submit"
+      disabled={!state.canSubmit}
+      ref={ref}
+      {...props}
+    />
+  )
+})
 
 export {
   Form,

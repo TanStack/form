@@ -19,7 +19,7 @@ export default function App() {
           },
         }}
       >
-        {(useStore) => (
+        {(useStore, reset) => (
           <>
             <Form.Field
               name="username"
@@ -44,16 +44,13 @@ export default function App() {
                       field={field}
                       displayValue
                     >
-                      <Select.OptionGroup label="Country code">
-                        <Select.Option value="+1">
-                          +1 United States
-                        </Select.Option>
-                        <Select.Option value="+44">
-                          +44 United Kingdom
-                        </Select.Option>
-                        <Select.Option value="+49">+49 Germany</Select.Option>
-                        <Select.Option value="+47">+47 Norway</Select.Option>
-                      </Select.OptionGroup>
+                      <Select.OptionGroup label="Country code" />
+                      <Select.Option value="+1">+1 United States</Select.Option>
+                      <Select.Option value="+44">
+                        +44 United Kingdom
+                      </Select.Option>
+                      <Select.Option value="+49">+49 Germany</Select.Option>
+                      <Select.Option value="+47">+47 Norway</Select.Option>
                     </Form.Field.Select>
                   )
                 }}
@@ -128,8 +125,29 @@ export default function App() {
                 )
               }}
             />
-
-            <button>submit</button>
+            <div className="flex justify-between items-center">
+              <Form.Subscribe selector={(state) => state}>
+                {(state) => (
+                  <Form.Subscribe.Button
+                    className="text-blue-500 dark:text-blue-500"
+                    state={state}
+                    disabled={state.submissionAttempts === 0}
+                    onClick={() => reset()}
+                    variant="ghost"
+                    size="xs"
+                  >
+                    Reset
+                  </Form.Subscribe.Button>
+                )}
+              </Form.Subscribe>
+              <Form.Subscribe selector={(state) => state}>
+                {(state) => (
+                  <Form.Subscribe.Button state={state}>
+                    Submit
+                  </Form.Subscribe.Button>
+                )}
+              </Form.Subscribe>
+            </div>
           </>
         )}
       </Form>
