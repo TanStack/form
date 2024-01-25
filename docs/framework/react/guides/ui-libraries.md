@@ -5,15 +5,15 @@ title: UI Libraries
 
 # Usage of TanStack Form with UI Libraries
 
-TanStack Form is a headless library, offering you complete flexibility to style it as you see fit. It's compatible with a wide range of UI libraries, including `Tailwind`, `Material-UI`, `Mantine`, or even plain CSS.
+TanStack Form is a headless library, offering you complete flexibility to style it as you see fit. It's compatible with a wide range of UI libraries, including `Tailwind`, `Material UI`, `Mantine`, or even plain CSS.
 
-This guide focuses on `Material-UI` and `Mantine`, but the concepts are applicable to any UI library of your choice.
+This guide focuses on `Material UI` and `Mantine`, but the concepts are applicable to any UI library of your choice.
 
 ## Prerequisites
 
 Before integrating TanStack Form with a UI library, ensure the necessary dependencies are installed in your project:
 
-- For `Material-UI`, follow the installation instructions on their [official site](https://mui.com/material-ui/getting-started/).
+- For `Material UI`, follow the installation instructions on their [official site](https://mui.com/material-ui/getting-started/).
 - For `Mantine`, refer to their [documentation](https://mantine.dev/).
 
 Note: While you can mix and match libraries, it's generally advisable to stick with one to maintain consistency and minimize bloat.
@@ -87,9 +87,9 @@ export default function App() {
 - By following these steps, you can seamlessly integrate Mantine components with TanStack Form.
 - This methodology is equally applicable to other components, such as `Checkbox`, ensuring consistent integration across different UI elements.
 
-## Usage with `Material-UI`
+## Usage with Material UI
 
-The process for integrating Material-UI components is similar. Here's an example using TextField and Checkbox from Material-UI:
+The process for integrating Material UI components is similar. Here's an example using TextField and Checkbox from Material UI:
 
 ```tsx
         <Field
@@ -125,4 +125,4 @@ The process for integrating Material-UI components is similar. Here's an example
 ```
 
 - The integration approach is the same as with Mantine.
-- The primary difference lies in the specific Material-UI component properties and styling options.
+- The primary difference lies in the specific Material UI component properties and styling options.
