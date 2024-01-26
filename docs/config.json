@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/TanStack/tanstack.com/main/tanstack-docs-config.schema.json",
   "docSearch": {
     "appId": "",
     "apiKey": "",
@@ -71,6 +72,24 @@
           ]
         },
         {
+          "label": "Guides",
+          "children": [
+            {
+              "label": "UI Libraries",
+              "to": "framework/react/guides/ui-libraries"
+            },
+            {
+              "label": "React Native",
+              "to": "framework/react/guides/react-native"
+            },
+            {
+              "label": "SSR/Next.js",
+              "to": "framework/react/guides/ssr"
+
+            }
+          ]
+        },
+        {
           "label": "API Reference",
           "children": [
             {
@@ -109,6 +128,10 @@
             {
               "label": "Valibot",
               "to": "framework/react/examples/valibot"
+            },
+            {
+              "label": "UI Libraries",
+              "to": "framework/react/examples/ui-libraries"
             }
           ]
         }

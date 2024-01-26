@@ -70,6 +70,7 @@ function App() {
                   <>
                     <label for={field().name}>First Name:</label>
                     <input
+                      id={field().name}
                       name={field().name}
                       value={field().state.value}
                       onBlur={field().handleBlur}
@@ -88,6 +89,7 @@ function App() {
                 <>
                   <label for={field().name}>Last Name:</label>
                   <input
+                    id={field().name}
                     name={field().name}
                     value={field().state.value}
                     onBlur={field().handleBlur}
