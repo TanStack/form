@@ -61,7 +61,7 @@ importers:
         version: 3.6.1(@typescript-eslint/parser@6.4.1)(eslint-plugin-import@2.29.1)(eslint@8.56.0)
       eslint-plugin-import:
         specifier: ^2.29.1
-        version: 2.29.1(@typescript-eslint/parser@6.4.1)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
+        version: 2.29.1(@typescript-eslint/parser@6.4.1)(eslint-import-resolver-typescript@3.6.0)(eslint@8.56.0)
       eslint-plugin-react:
         specifier: ^7.33.2
         version: 7.33.2(eslint@8.56.0)
@@ -161,13 +161,16 @@ importers:
         version: link:../../../packages/zod-form-adapter
       cva:
         specifier: 1.0.0-beta.1
-        version: 1.0.0-beta.1(typescript@5.2.2)
+        version: 1.0.0-beta.1
       react:
         specifier: ^18.0.0
         version: 18.2.0
       react-dom:
         specifier: ^18.0.0
         version: 18.2.0(react@18.2.0)
+      react-phone-number-input:
+        specifier: ^3.3.8
+        version: 3.3.9(react-dom@18.2.0)(react@18.2.0)
       zod:
         specifier: ^3.21.4
         version: 3.22.4
@@ -192,7 +195,7 @@ importers:
         version: 3.4.1
       vite:
         specifier: ^5.0.10
-        version: 5.0.10(@types/node@18.19.4)
+        version: 5.0.10
 
   examples/react/simple:
     dependencies:
@@ -4490,7 +4493,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.23.3(@babel/core@7.23.7)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.0
-      vite: 5.0.10(@types/node@18.19.4)
+      vite: 5.0.10
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -5533,6 +5536,10 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
+  /classnames@2.5.1:
+    resolution: {integrity: sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==}
+    dev: false
+
   /cli-cursor@3.1.0:
     resolution: {integrity: sha512-I/zHAwsKf9FqGoXM4WWRACob9+SNukZTd94DWF57E4toouRulbCxcUh6RKUEOQlYTHJnzkPMySvPNaaSLNfLZw==}
     engines: {node: '>=8'}
@@ -5765,6 +5772,10 @@ packages:
       yaml: 1.10.2
     dev: false
 
+  /country-flag-icons@1.5.9:
+    resolution: {integrity: sha512-9jrjv2w7kRbqNtdtMdK2j3gmDIZzd5l9L2pZiQjF9J0mUcB+NKIGDNADTDHBEp8EQtjOkCOcciJGGSOpERdXPQ==}
+    dev: false
+
   /cross-spawn@5.1.0:
     resolution: {integrity: sha512-pTgQJ5KC0d2hcY8eyL1IzlBPYjTkyH72XRZPnLyKus2mBfNjQs3klqbJU2VILqZryAZUt9JOb3h/mWMy23/f5A==}
     dependencies:
@@ -5808,7 +5819,7 @@ packages:
       is-git-repository: 1.1.1
     dev: true
 
-  /cva@1.0.0-beta.1(typescript@5.2.2):
+  /cva@1.0.0-beta.1:
     resolution: {integrity: sha512-gznFqTgERU9q4wg7jfgqtt34+RUt9S5t0xDAAEuDwQEAXEgjdDkKXpLLNjwSxsB4Ln/sqWJEH7yhE8Ny0mxd0w==}
     peerDependencies:
       typescript: '>= 4.5.5 < 6'
@@ -5817,7 +5828,6 @@ packages:
         optional: true
     dependencies:
       clsx: 2.0.0
-      typescript: 5.2.2
     dev: false
 
   /damerau-levenshtein@1.0.8:
@@ -6368,7 +6378,7 @@ packages:
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.0(@typescript-eslint/parser@6.4.1)(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.56.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.4.1)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.4.1)(eslint-import-resolver-typescript@3.6.0)(eslint@8.56.0)
       eslint-plugin-jsx-a11y: 6.8.0(eslint@8.56.0)
       eslint-plugin-react: 7.33.2(eslint@8.56.0)
       eslint-plugin-react-hooks: 4.6.0(eslint@8.56.0)
@@ -6408,7 +6418,7 @@ packages:
       enhanced-resolve: 5.15.0
       eslint: 8.56.0
       eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.4.1)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.0)(eslint@8.56.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.4.1)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.4.1)(eslint-import-resolver-typescript@3.6.0)(eslint@8.56.0)
       fast-glob: 3.3.1
       get-tsconfig: 4.7.0
       is-core-module: 2.13.1
@@ -6431,7 +6441,7 @@ packages:
       enhanced-resolve: 5.15.0
       eslint: 8.56.0
       eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.4.1)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.4.1)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.4.1)(eslint-import-resolver-typescript@3.6.0)(eslint@8.56.0)
       fast-glob: 3.3.1
       get-tsconfig: 4.7.0
       is-core-module: 2.13.1
@@ -6503,7 +6513,7 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.4.1)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0):
+  /eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.4.1)(eslint-import-resolver-typescript@3.6.0)(eslint@8.56.0):
     resolution: {integrity: sha512-BbPC0cuExzhiMo4Ff1BTVwHpjjv28C5R+btTOGaCRC7UEz801up0JadwkeSk5Ued6TG34uaczuVuH6qyy5YUxw==}
     engines: {node: '>=4'}
     peerDependencies:
@@ -7521,6 +7531,12 @@ packages:
     resolution: {integrity: sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==}
     dev: true
 
+  /input-format@0.3.9:
+    resolution: {integrity: sha512-99Gew2huiuYpNsyZoucauy5OT3oXEoWUeINGES4SlU74eFxbtYqNO+yEP6uKFhfB0UKTvq4gOC+6/3Oskru+IQ==}
+    dependencies:
+      prop-types: 15.8.1
+    dev: false
+
   /internal-slot@1.0.5:
     resolution: {integrity: sha512-Y+R5hJrzs52QCG2laLn4udYVnxsfny9CpOhNhUvk/SSSVyF6T27FzRbF0sroPidSu3X8oEAkOn2K804mjpt6UQ==}
     engines: {node: '>= 0.4'}
@@ -8290,6 +8306,10 @@ packages:
       prelude-ls: 1.2.1
       type-check: 0.4.0
     dev: true
+
+  /libphonenumber-js@1.10.54:
+    resolution: {integrity: sha512-P+38dUgJsmh0gzoRDoM4F5jLbyfztkU6PY6eSK6S5HwTi/LPvnwXqVCQZlAy1FxZ5c48q25QhxGQ0pq+WQcSlQ==}
+    dev: false
 
   /liftoff@4.0.0:
     resolution: {integrity: sha512-rMGwYF8q7g2XhG2ulBmmJgWv25qBsqRbDn5gH0+wnuyeFt7QBJlHJmtg5qEdn4pN6WVAUMgXnIxytMFRX9c1aA==}
@@ -9998,6 +10018,21 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
+  /react-phone-number-input@3.3.9(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-TKK8VoFWR9RfPi90j/3Rr6j/S9V8/eovqUgNNNSyD0+WtaeLTlJVWb8DD7P57eZqkLv303sL8JMiZoExwKICxw==}
+    peerDependencies:
+      react: '>=16.8'
+      react-dom: '>=16.8'
+    dependencies:
+      classnames: 2.5.1
+      country-flag-icons: 1.5.9
+      input-format: 0.3.9
+      libphonenumber-js: 1.10.54
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
   /react-refresh@0.14.0:
     resolution: {integrity: sha512-wViHqhAd8OHeLS/IRMJjTSDHF3U9eWi62F/MledQGPdJGDhodXJ9PBLNGr6WWL7qlH12Mt3TyTpbS+hGXMjCzQ==}
     engines: {node: '>=0.10.0'}
@@ -11418,6 +11453,7 @@ packages:
     resolution: {integrity: sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==}
     engines: {node: '>=14.17'}
     hasBin: true
+    dev: true
 
   /typescript@5.3.3:
     resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}
@@ -11737,6 +11773,41 @@ packages:
       vitefu: 0.2.5(vite@5.0.10)
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /vite@5.0.10:
+    resolution: {integrity: sha512-2P8J7WWgmc355HUMlFrwofacvr98DAjoE52BfdbwQtyLH06XKwaL/FMnmKM2crF0iX4MpmMKoDlNCB1ok7zHCw==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^18.0.0 || >=20.0.0
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      esbuild: 0.19.11
+      postcss: 8.4.32
+      rollup: 4.9.2
+    optionalDependencies:
+      fsevents: 2.3.3
     dev: true
 
   /vite@5.0.10(@types/node@18.19.4):

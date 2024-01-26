@@ -22,18 +22,20 @@ type FormFieldErrorProps = any
 
 type FormSubscribeProps = any
 
-type FormSubscribeButtonProps = any
+type FormSubmitButtonProps = any
+
+type FormResetButtonProps = any
 
 type FormComponentProps = React.ForwardRefExoticComponent<FormProps> & {
+  Subscribe: FormSubscribeProps
   Field: FormFieldProps & {
     Error: React.FC<FormFieldErrorProps>
     Text: React.FC<FormFieldTextProps>
     Checkbox: React.FC<FormFieldCheckboxProps>
     Select: React.FC<FormFieldSelectProps>
   }
-  Subscribe: FormSubscribeProps & {
-    Button: React.FC<FormSubscribeButtonProps>
-  }
+  SubmitButton: React.FC<FormSubmitButtonProps>
+  ResetButton: React.FC<FormResetButtonProps>
 }
 
 const FormContext = React.createContext<any>({})
@@ -57,10 +59,8 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
           ref={ref}
           {...props}
         >
-          <FormContext.Provider value={{ Field, Subscribe }}>
-            {typeof children === 'function'
-              ? children(useStore, reset)
-              : children}
+          <FormContext.Provider value={{ Field, Subscribe, reset }}>
+            {typeof children === 'function' ? children(useStore) : children}
           </FormContext.Provider>
         </form>
       </Provider>
@@ -70,6 +70,13 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
 
 Form.displayName = 'Form'
 
+Form.Subscribe = React.forwardRef<FormFieldProps>(({ ...props }, ref) => {
+  const { Subscribe } = React.useContext(FormContext)
+  return <Subscribe ref={ref} {...props} />
+})
+
+Form.Subscribe.displayName = 'Form.Subscribe'
+
 Form.Field = React.forwardRef<FormFieldProps>(({ ...props }, ref) => {
   const { Field } = React.useContext(FormContext)
   return <Field ref={ref} {...props} />
@@ -78,7 +85,7 @@ Form.Field = React.forwardRef<FormFieldProps>(({ ...props }, ref) => {
 Form.Field.displayName = 'Form.Field'
 
 Form.Field.Text = React.forwardRef<HTMLInputElement, FormFieldTextProps>(
-  ({ className, children, field, label, ...props }, ref) => {
+  ({ className, hasErrorField, field, label, ...props }, ref) => {
     return (
       <div className="flex relative">
         <Input
@@ -95,7 +102,7 @@ Form.Field.Text = React.forwardRef<HTMLInputElement, FormFieldTextProps>(
           onBlur={field.handleBlur}
           onChange={(e) => field.handleChange(e.target.value)}
           aria-describedby={
-            field.state.meta.errors.length !== 0 && children
+            hasErrorField && field.state.meta.errors.length !== 0
               ? `${field.name}-error`
               : ''
           }
@@ -152,7 +159,7 @@ Form.Field.Checkbox = React.forwardRef<
 Form.Field.Checkbox.displayName = 'Form.Field.Checkbox'
 
 Form.Field.Select = React.forwardRef<HTMLSelectElement, FormFieldSelectProps>(
-  ({ className, field, label, ...props }, ref) => {
+  ({ className, hasErrorField, field, label, ...props }, ref) => {
     return (
       <div className="flex flex-col relative gap-2">
         {label && (
@@ -167,6 +174,11 @@ Form.Field.Select = React.forwardRef<HTMLSelectElement, FormFieldSelectProps>(
           value={field.state.value}
           onBlur={field.handleBlur}
           onChange={(e) => field.handleChange(e.target.value)}
+          aria-describedby={
+            hasErrorField && field.state.meta.errors.length !== 0
+              ? `${field.name}-error`
+              : ''
+          }
           ref={ref}
           {...props}
         />
@@ -207,29 +219,50 @@ Form.Field.Error = React.forwardRef<HTMLSpanElement, FormFieldErrorProps>(
 
 Form.Field.Error.displayName = 'Form.Field.Error'
 
-Form.Subscribe = React.forwardRef<FormFieldProps>(({ ...props }, ref) => {
-  const { Subscribe } = React.useContext(FormContext)
-  return <Subscribe ref={ref} {...props} />
-})
+Form.SubmitButton = React.forwardRef<HTMLButtonElement, FormSubmitButtonProps>(
+  ({ className, ...props }, ref) => {
+    return (
+      <Form.Subscribe selector={(state) => state.canSubmit}>
+        {(canSubmit) => (
+          <Button
+            className={className}
+            variant="primary"
+            size="md"
+            type="submit"
+            disabled={!canSubmit}
+            ref={ref}
+            {...props}
+          />
+        )}
+      </Form.Subscribe>
+    )
+  },
+)
 
-Form.Subscribe.displayName = 'Form.Subscribe'
+Form.SubmitButton.displayName = 'Form.SubmitButton'
 
-Form.Subscribe.Button = React.forwardRef<
-  HTMLButtonElement,
-  FormSubscribeButtonProps
->(({ className, state, ...props }, ref) => {
-  return (
-    <Button
-      className={className}
-      variant="primary"
-      size="md"
-      type="submit"
-      disabled={!state.canSubmit}
-      ref={ref}
-      {...props}
-    />
-  )
-})
+Form.ResetButton = React.forwardRef<HTMLButtonElement, FormResetButtonProps>(
+  ({ className, ...props }, ref) => {
+    const { reset } = React.useContext(FormContext)
+    return (
+      <Form.Subscribe selector={(state) => state.submissionAttempts}>
+        {(submissionAttempts) => (
+          <Button
+            className={cx('text-blue-500 dark:text-blue-500', className)}
+            disabled={submissionAttempts === 0}
+            onClick={() => reset()}
+            variant="ghost"
+            size="xs"
+            ref={ref}
+            {...props}
+          />
+        )}
+      </Form.Subscribe>
+    )
+  },
+)
+
+Form.ResetButton.displayName = 'Form.ResetButton'
 
 export {
   Form,

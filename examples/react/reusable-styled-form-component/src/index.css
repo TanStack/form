@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px theme('colors.yellow.500') inset !important;
+    box-shadow: 0 0 0 30px theme('colors.yellow.500') inset !important;
+    transition: background-color 500ms ease-in-out 0s;
+  }
+}
