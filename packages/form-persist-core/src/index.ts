@@ -116,14 +116,34 @@ export class PersisterAPI<TFormData, TStorageValue = string> {
   }
 }
 
+type CreateFormPersisterOptions<TFormData> = {
+  omitFields: (keyof TFormData)[] | ((fieldName: keyof TFormData) => boolean)
+}
+
 export function createFormPersister<TFormData, TStorageValue = string>(
   persisterAPI: PersisterAPI<TFormData, TStorageValue>,
   formKey: string,
+  opts?: CreateFormPersisterOptions<TFormData>,
 ): Persister<TFormData> {
   return {
     deleteForm: () => persisterAPI.deleteForm(formKey),
     restoreForm: () => persisterAPI.restoreForm(formKey),
-    persistForm: (state: FormState<TFormData>) =>
-      persisterAPI.persistForm(formKey, state),
+    persistForm: (state: FormState<TFormData>) => {
+      // this makes ts happy when we modify the state
+      const modifiedState: Omit<typeof state, 'fieldMeta' | 'values'> & {
+        fieldMeta: any
+        values: any
+      } = structuredClone(state) // deep cloning to make sure we dont modify state that is referenced inside the form
+      if (typeof opts?.omitFields === 'function') {
+        for (const key of Object.keys(modifiedState.values))
+          if (opts.omitFields(key as keyof TFormData)) {
+            delete modifiedState.fieldMeta[key]
+            delete modifiedState.values[key]
+          }
+      } else if (typeof opts?.omitFields === 'object') {
+        for (const key of opts.omitFields) delete modifiedState.fieldMeta[key]
+      }
+      return persisterAPI.persistForm(formKey, modifiedState)
+    },
   }
 }
