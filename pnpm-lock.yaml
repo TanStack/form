@@ -12,8 +12,8 @@ importers:
         specifier: ^0.8.5
         version: 0.8.5(@solidjs/router@0.8.3)(solid-js@1.7.12)
       '@tanstack/config':
-        specifier: ^0.3.0
-        version: 0.3.0(@types/node@18.19.4)(esbuild@0.19.11)(rollup@4.9.2)(typescript@5.2.2)(vite@5.0.10)
+        specifier: ^0.3.1
+        version: 0.3.1(@types/node@18.19.4)(esbuild@0.19.11)(rollup@4.9.2)(typescript@5.2.2)(vite@5.0.10)
       '@testing-library/jest-dom':
         specifier: ^6.1.5
         version: 6.1.6(@types/jest@26.0.24)(vitest@1.1.0)
@@ -3771,8 +3771,8 @@ packages:
     resolution: {integrity: sha512-myfUej5naTBWnqOCc/MdVOLVjXUXtIA+NpDrDBKJtLLg2shUjBu3cZmB/85RyitKc55+lUUyl7oRfLOvkr2hsw==}
     dev: true
 
-  /@tanstack/config@0.3.0(@types/node@18.19.4)(esbuild@0.19.11)(rollup@4.9.2)(typescript@5.2.2)(vite@5.0.10):
-    resolution: {integrity: sha512-sK7i64YqRsGVA3+NASJk0U9HaRfljXEVCIHTv6Bm2yuB0k/nnF0UEkGK+k8SNOgNmYR1DHo5tllc/PVgEtnP0A==}
+  /@tanstack/config@0.3.1(@types/node@18.19.4)(esbuild@0.19.11)(rollup@4.9.2)(typescript@5.2.2)(vite@5.0.10):
+    resolution: {integrity: sha512-u/wSZ19LTdMnSyC5o1lzUq3PHVZTAruNbqf4I1yFKyJX17a7WCW04Nn2BknYZCUlPZE4gieqEurXzIl3ALgawg==}
     engines: {node: '>=18'}
     hasBin: true
     dependencies:
