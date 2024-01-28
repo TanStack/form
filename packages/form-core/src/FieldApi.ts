@@ -6,7 +6,8 @@ import type {
   ValidationErrorMap,
   Validator,
 } from './types'
-import type { DeepKeys, DeepValue, Updater } from './utils'
+import type {  Updater } from './utils'
+import type { DeepKeys, DeepValue } from './util-types'
 import { getAsyncValidatorArray, getSyncValidatorArray } from './utils'
 
 export type FieldValidateFn<

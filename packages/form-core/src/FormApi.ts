@@ -1,5 +1,6 @@
 import { Store } from '@tanstack/store'
-import type { DeepKeys, DeepValue, Updater } from './utils'
+import type { Updater } from './utils'
+import type { DeepKeys, DeepValue } from './util-types'
 import {
   getAsyncValidatorArray,
   getSyncValidatorArray,
