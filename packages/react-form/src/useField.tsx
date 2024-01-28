@@ -7,7 +7,6 @@ import type {
   Validator,
 } from '@tanstack/form-core'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
-import { useFormContext, formContext } from './formContext'
 import type { UseFieldOptions } from './types'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import { useIsomorphicEffectOnce } from './useIsomorphicEffectOnce'
@@ -29,20 +28,20 @@ declare module '@tanstack/form-core' {
   }
 }
 
-export type UseField<TParentData> = <
+export type UseField<
+  TParentData,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+> = <
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
     | Validator<DeepValue<TParentData, TName>, unknown>
     | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
 >(
-  opts?: { name: Narrow<TName> } & UseFieldOptions<
-    TParentData,
-    TName,
-    TFieldValidator,
-    TFormValidator
+  opts: Omit<
+    UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>,
+    'form'
   >,
 ) => FieldApi<
   TParentData,
@@ -64,23 +63,11 @@ export function useField<
 >(
   opts: UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>,
 ): FieldApi<TParentData, TName, TFieldValidator, TFormValidator> {
-  // Get the form API either manually or from context
-  const { formApi, parentFieldName } = useFormContext()
-
   const [fieldApi] = useState(() => {
-    const name = (
-      typeof opts.index === 'number'
-        ? [parentFieldName, opts.index, opts.name]
-        : [parentFieldName, opts.name]
-    )
-      .filter((d) => d !== undefined)
-      .join('.')
-
     const api = new FieldApi({
       ...opts,
-      form: formApi as never,
-      // TODO: Fix typings to include `index` and `parentFieldName`, if present
-      name: name as typeof opts.name as never,
+      form: opts.form,
+      name: opts.name,
     })
 
     api.Field = Field as never
@@ -93,7 +80,7 @@ export function useField<
    * that we need to keep updated every render with the most up-to-date information.
    */
   useIsomorphicLayoutEffect(() => {
-    fieldApi.update({ ...opts, form: formApi } as never)
+    fieldApi.update(opts)
   })
 
   useStore(
@@ -141,19 +128,7 @@ type FieldComponentProps<
       TData
     >,
   ) => any
-} & (TParentData extends any[]
-  ? {
-      name?: TName
-      index: number
-    }
-  : {
-      name: TName
-      index?: never
-    }) &
-  Omit<
-    UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>,
-    'name' | 'index'
-  >
+} & UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>
 
 export type FieldComponent<
   TParentData,
@@ -169,12 +144,15 @@ export type FieldComponent<
 >({
   children,
   ...fieldOptions
-}: FieldComponentProps<
-  TParentData,
-  TName,
-  TFieldValidator,
-  TFormValidator,
-  TData
+}: Omit<
+  FieldComponentProps<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >,
+  'form'
 >) => any
 
 export function Field<
@@ -196,13 +174,5 @@ export function Field<
 } & UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>) {
   const fieldApi = useField(fieldOptions as any)
 
-  return (
-    <formContext.Provider
-      value={{
-        formApi: fieldApi.form as never,
-        parentFieldName: fieldApi.name,
-      }}
-      children={functionalUpdate(children, fieldApi as any)}
-    />
-  )
+  return <>{functionalUpdate(children, fieldApi as any)}</>
 }

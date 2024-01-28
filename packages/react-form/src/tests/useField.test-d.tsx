@@ -12,7 +12,7 @@ it('should type state.value properly', () => {
     } as const)
 
     return (
-      <form.Provider>
+      <>
         <form.Field
           name="firstName"
           children={(field) => {
@@ -25,7 +25,7 @@ it('should type state.value properly', () => {
             assertType<84>(field.state.value)
           }}
         />
-      </form.Provider>
+      </>
     )
   }
 })
@@ -40,7 +40,7 @@ it('should type onChange properly', () => {
     } as const)
 
     return (
-      <form.Provider>
+      <>
         <form.Field
           name="firstName"
           validators={{
@@ -61,7 +61,7 @@ it('should type onChange properly', () => {
           }}
           children={() => null}
         />
-      </form.Provider>
+      </>
     )
   }
 })

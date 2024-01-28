@@ -21,7 +21,7 @@ describe('useForm', () => {
       const form = formFactory.useForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultValue={''}
@@ -36,7 +36,7 @@ describe('useForm', () => {
               )
             }}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -64,14 +64,14 @@ describe('useForm', () => {
       })
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             children={(field) => {
               return <p>{field.state.value}</p>
             }}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -96,7 +96,7 @@ describe('useForm', () => {
       })
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             children={(field) => {
@@ -112,7 +112,7 @@ describe('useForm', () => {
           />
           <button onClick={form.handleSubmit}>Submit</button>
           {submittedData && <p>Submitted data: {submittedData.firstName}</p>}
-        </form.Provider>
+        </>
       )
     }
 
@@ -146,9 +146,9 @@ describe('useForm', () => {
       return (
         <>
           {mountForm ? (
-            <form.Provider>
+            <>
               <h1>{formMounted ? 'Form mounted' : 'Not mounted'}</h1>
-            </form.Provider>
+            </>
           ) : (
             <button onClick={() => setMountForm(true)}>Mount form</button>
           )}
@@ -180,7 +180,7 @@ describe('useForm', () => {
       })
       const onChangeError = form.useStore((s) => s.errorMap.onChange)
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             children={(field) => (
@@ -194,7 +194,7 @@ describe('useForm', () => {
             )}
           />
           <p>{onChangeError}</p>
-        </form.Provider>
+        </>
       )
     }
 
@@ -225,7 +225,7 @@ describe('useForm', () => {
 
       const errors = form.useStore((s) => s.errors)
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             children={(field) => (
@@ -241,7 +241,7 @@ describe('useForm', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -269,7 +269,7 @@ describe('useForm', () => {
       })
       const errors = form.useStore((s) => s.errorMap)
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -286,7 +286,7 @@ describe('useForm', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -320,7 +320,7 @@ describe('useForm', () => {
 
       const errors = form.useStore((s) => s.errorMap)
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -338,7 +338,7 @@ describe('useForm', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
     const { getByTestId, getByText, queryByText } = render(<Comp />)
@@ -371,7 +371,7 @@ describe('useForm', () => {
       })
       const errors = form.useStore((s) => s.errorMap)
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -388,7 +388,7 @@ describe('useForm', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -426,7 +426,7 @@ describe('useForm', () => {
       const errors = form.useStore((s) => s.errorMap)
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -444,7 +444,7 @@ describe('useForm', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -484,7 +484,7 @@ describe('useForm', () => {
       const errors = form.useStore((s) => s.errors)
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -501,7 +501,7 @@ describe('useForm', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 

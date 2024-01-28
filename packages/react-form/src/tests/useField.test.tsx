@@ -26,7 +26,7 @@ describe('useField', () => {
       })
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             children={(field) => {
@@ -40,7 +40,7 @@ describe('useField', () => {
               )
             }}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -66,7 +66,7 @@ describe('useField', () => {
       })
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultValue="otherName"
@@ -81,7 +81,7 @@ describe('useField', () => {
               )
             }}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -103,7 +103,7 @@ describe('useField', () => {
       const form = formFactory.useForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             validators={{
@@ -122,7 +122,7 @@ describe('useField', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -145,7 +145,7 @@ describe('useField', () => {
       const form = formFactory.useForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -165,7 +165,7 @@ describe('useField', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -190,7 +190,7 @@ describe('useField', () => {
       const form = formFactory.useForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -214,7 +214,7 @@ describe('useField', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -241,7 +241,7 @@ describe('useField', () => {
       const form = formFactory.useForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -264,7 +264,7 @@ describe('useField', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -290,7 +290,7 @@ describe('useField', () => {
       const form = formFactory.useForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -318,7 +318,7 @@ describe('useField', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -348,7 +348,7 @@ describe('useField', () => {
       const form = formFactory.useForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -373,7 +373,7 @@ describe('useField', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -396,7 +396,7 @@ describe('useField', () => {
     function Comp() {
       form = formFactory.useForm()
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultValue="hello"
@@ -412,7 +412,7 @@ describe('useField', () => {
               )
             }}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -434,7 +434,7 @@ describe('useField', () => {
     function Comp() {
       form = formFactory.useForm()
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultValue="hello"
@@ -450,7 +450,7 @@ describe('useField', () => {
               )
             }}
           />
-        </form.Provider>
+        </>
       )
     }
 
