@@ -12,7 +12,7 @@ assertType<"topUsers" | "topUsers[0]" | "topUsers[0].name" | "topUsers[0].id" | 
  * Properly recognizes that a normal number index won't cut it and should be `[number]` prefixed instead
  */
 type ArraySupport = DeepKeys<{ users: User[] }>;
-assertType<"users" | "users[number].name" | "users[number].id" | "users[number].age">(
+assertType<"users" | `users[${number}].name` | `users[${number}].id` | `users[${number}].age`>(
     0 as never as ArraySupport
 )
 
@@ -57,8 +57,8 @@ assertType<string>(
 )
 
 type NestedKeysExample = DeepValue<
-  { meta: { mainUser: User } },
-  "meta.mainUser.age"
+    { meta: { mainUser: User } },
+    "meta.mainUser.age"
 >;
 assertType<number>(
     0 as never as NestedKeysExample
@@ -70,35 +70,35 @@ assertType<number>(
 )
 
 type NestedLooseArrayExample = DeepValue<
-  { users: User[] },
-  "users[number].age"
+    { users: User[] },
+    "users[number].age"
 >;
 assertType<number>(
     0 as never as NestedLooseArrayExample
 )
 
 type NestedTupleExample = DeepValue<
-  { topUsers: [User, 0, User] },
-  "topUsers[0].age"
+    { topUsers: [User, 0, User] },
+    "topUsers[0].age"
 >;
 assertType<number>(
     0 as never as NestedTupleExample
 )
 
 type NestedTupleItemExample = DeepValue<
-  { topUsers: [User, 0, User] },
-  "topUsers[1]"
+    { topUsers: [User, 0, User] },
+    "topUsers[1]"
 >;
 assertType<0>(
     0 as never as NestedTupleItemExample
 )
 
-type ArrayExample = DeepValue<[1,2,3], "[1]">
+type ArrayExample = DeepValue<[1, 2, 3], "[1]">
 assertType<2>(
     0 as never as ArrayExample
 )
 
-type NonNestedObjExample = DeepValue<{a: 1}, "a">
+type NonNestedObjExample = DeepValue<{ a: 1 }, "a">
 assertType<1>(
     0 as never as NonNestedObjExample
 )
@@ -107,5 +107,4 @@ interface User {
     name: string;
     id: string;
     age: number;
-  }
-    
+}

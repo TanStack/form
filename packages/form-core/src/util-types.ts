@@ -43,7 +43,7 @@ type AllowedIndexes<
   : Keys;
 
 type PrefixArrayAccessor<T extends any[], TDepth extends any[]> = {
-  [K in keyof T]: `[number]${DeepKeys<T[K], TDepth>}`;
+  [K in keyof T]: `[${number}]${DeepKeys<T[K], TDepth>}`;
 }[number];
 
 type PrefixTupleAccessor<
@@ -88,9 +88,7 @@ export type DeepValue<TValue, TAccessor> = TValue extends Record<
   any
 >
   ? TAccessor extends `${infer TBefore}[${infer TBrackets}].${infer TAfter}`
-    ? TBrackets extends "number"
-      ? DeepValue<TValue[TBefore]["0"], TAfter>
-      : DeepValue<TValue[TBefore][TBrackets], TAfter>
+    ? DeepValue<TValue[TBefore][TBrackets], TAfter>
     : TAccessor extends `[${infer TBrackets}]`
     ? DeepValue<TValue, TBrackets>
     : TAccessor extends `${infer TBefore}[${infer TBrackets}]`
