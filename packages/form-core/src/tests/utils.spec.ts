@@ -19,8 +19,8 @@ describe('getBy', () => {
   })
 
   it('should get array subfields by path', () => {
-    expect(getBy(structure, 'kids.0.name')).toBe(structure.kids[0]!.name)
-    expect(getBy(structure, 'kids.0.age')).toBe(structure.kids[0]!.age)
+    expect(getBy(structure, 'kids[0].name')).toBe(structure.kids[0]!.name)
+    expect(getBy(structure, 'kids[0].age')).toBe(structure.kids[0]!.age)
   })
 })
 
@@ -42,10 +42,10 @@ describe('setBy', () => {
   })
 
   it('should set array subfields by path', () => {
-    expect(setBy(structure, 'kids.0.name', 'Taylor').kids[0].name).toBe(
+    expect(setBy(structure, 'kids[0].name', 'Taylor').kids[0].name).toBe(
       'Taylor',
     )
-    expect(setBy(structure, 'kids.0.age', 20).kids[0].age).toBe(20)
+    expect(setBy(structure, 'kids[0].age', 20).kids[0].age).toBe(20)
   })
 })
 
@@ -67,14 +67,14 @@ describe('deleteBy', () => {
   })
 
   it('should delete array subfields by path', () => {
-    expect(deleteBy(structure, 'kids.0.name').kids[0].name).not.toBeDefined()
-    expect(deleteBy(structure, 'kids.0.age').kids[0].age).not.toBeDefined()
+    expect(deleteBy(structure, 'kids[0].name').kids[0].name).not.toBeDefined()
+    expect(deleteBy(structure, 'kids[0].age').kids[0].age).not.toBeDefined()
   })
 
   it('should delete non-existent paths like a noop', () => {
     expect(deleteBy(structure, 'nonexistent')).toEqual(structure)
     expect(deleteBy(structure, 'nonexistent.nonexistent')).toEqual(structure)
-    expect(deleteBy(structure, 'kids.3.name')).toEqual(structure)
-    expect(deleteBy(structure, 'nonexistent.3.nonexistent')).toEqual(structure)
+    expect(deleteBy(structure, 'kids[3].name')).toEqual(structure)
+    expect(deleteBy(structure, 'nonexistent[3].nonexistent')).toEqual(structure)
   })
 })
