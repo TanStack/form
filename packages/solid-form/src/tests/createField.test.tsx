@@ -20,7 +20,7 @@ describe('createField', () => {
       const form = formFactory.createForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultValue="FirstName"
@@ -35,7 +35,7 @@ describe('createField', () => {
               )
             }}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -61,7 +61,7 @@ describe('createField', () => {
       }))
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultValue="otherName"
@@ -76,7 +76,7 @@ describe('createField', () => {
               )
             }}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -98,7 +98,7 @@ describe('createField', () => {
       const form = formFactory.createForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             validators={{
@@ -118,7 +118,7 @@ describe('createField', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -141,7 +141,7 @@ describe('createField', () => {
       const form = formFactory.createForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -164,7 +164,7 @@ describe('createField', () => {
               )
             }}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -189,7 +189,7 @@ describe('createField', () => {
       const form = formFactory.createForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -213,7 +213,7 @@ describe('createField', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -240,7 +240,7 @@ describe('createField', () => {
       const form = formFactory.createForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -263,7 +263,7 @@ describe('createField', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -289,7 +289,7 @@ describe('createField', () => {
       const form = formFactory.createForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -317,7 +317,7 @@ describe('createField', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -347,7 +347,7 @@ describe('createField', () => {
       const form = formFactory.createForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -372,7 +372,7 @@ describe('createField', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 

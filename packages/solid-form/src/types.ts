@@ -1,5 +1,5 @@
 import type {
-  FieldOptions,
+  FieldApiOptions,
   DeepKeys,
   DeepValue,
   Validator,
@@ -15,6 +15,12 @@ export type CreateFieldOptions<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-> = FieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData> & {
+> = FieldApiOptions<
+  TParentData,
+  TName,
+  TFieldValidator,
+  TFormValidator,
+  TData
+> & {
   mode?: 'value' | 'array'
 }

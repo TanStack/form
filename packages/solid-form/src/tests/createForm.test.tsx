@@ -21,7 +21,7 @@ describe('createForm', () => {
     function Comp() {
       const form = formFactory.createForm()
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultValue={''}
@@ -34,7 +34,7 @@ describe('createForm', () => {
               />
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -62,14 +62,14 @@ describe('createForm', () => {
       }))
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             children={(field) => {
               return <p>{field().state.value}</p>
             }}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -91,7 +91,7 @@ describe('createForm', () => {
       }))
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             children={(field) => {
@@ -106,7 +106,7 @@ describe('createForm', () => {
             }}
           />
           <button onClick={form.handleSubmit}>Submit</button>
-        </form.Provider>
+        </>
       )
     }
 
@@ -141,9 +141,9 @@ describe('createForm', () => {
             <button onClick={() => setMountForm(true)}>Mount form</button>
           }
         >
-          <form.Provider>
+          <>
             <h1>Form mounted</h1>
-          </form.Provider>
+          </>
         </Show>
       )
     }
@@ -173,7 +173,7 @@ describe('createForm', () => {
       const errors = form.useStore((s) => s.errors)
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             children={(field) => (
@@ -189,7 +189,7 @@ describe('createForm', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -220,7 +220,7 @@ describe('createForm', () => {
       onCleanup(form.store.subscribe(() => setErrors(form.state.errorMap)))
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -239,7 +239,7 @@ describe('createForm', () => {
               )
             }}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -274,7 +274,7 @@ describe('createForm', () => {
       onCleanup(form.store.subscribe(() => setErrors(form.state.errorMap)))
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -292,7 +292,7 @@ describe('createForm', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -329,7 +329,7 @@ describe('createForm', () => {
       onCleanup(form.store.subscribe(() => setErrors(form.state.errorMap)))
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -346,7 +346,7 @@ describe('createForm', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -386,7 +386,7 @@ describe('createForm', () => {
       onCleanup(form.store.subscribe(() => setErrors(form.state.errorMap)))
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -404,7 +404,7 @@ describe('createForm', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -450,7 +450,7 @@ describe('createForm', () => {
       )
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -467,7 +467,7 @@ describe('createForm', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 

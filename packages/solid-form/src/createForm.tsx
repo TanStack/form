@@ -8,16 +8,14 @@ import {
   type CreateField,
   type FieldComponent,
 } from './createField'
-import { formContext } from './formContext'
 
 type NoInfer<T> = [T][T extends any ? 0 : never]
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
   interface FormApi<TFormData, TFormValidator> {
-    Provider: (props: { children: any }) => JSXElement
     Field: FieldComponent<TFormData, TFormValidator>
-    createField: CreateField<TFormData>
+    createField: CreateField<TFormData, TFormValidator>
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
       selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,
     ) => () => TSelected
@@ -39,17 +37,16 @@ export function createForm<
   const options = opts?.()
   const formApi = new FormApi<TParentData, TFormValidator>(options)
 
-  formApi.Provider = function Provider(props) {
-    onMount(formApi.mount)
-    return (
-      <formContext.Provider {...props} value={{ formApi: formApi as never }} />
-    )
-  }
-  formApi.Field = Field as any
-  formApi.createField = createField as CreateField<TParentData>
+  formApi.Field = (props) => <Field {...props} form={formApi} />
+  formApi.createField = (props) =>
+    createField(() => {
+      return { ...props(), form: formApi }
+    })
   formApi.useStore = (selector) => useStore(formApi.store, selector)
   formApi.Subscribe = (props) =>
     functionalUpdate(props.children, useStore(formApi.store, props.selector))
+
+  onMount(formApi.mount)
 
   /**
    * formApi.update should not have any side effects. Think of it like a `useRef`

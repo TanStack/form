@@ -15,7 +15,7 @@ it('should type state.value properly', () => {
     )
 
     return (
-      <form.Provider>
+      <>
         <form.Field
           name="firstName"
           children={(field) => {
@@ -30,7 +30,7 @@ it('should type state.value properly', () => {
             return null
           }}
         />
-      </form.Provider>
+      </>
     )
   }
 })
@@ -48,7 +48,7 @@ it('should type onChange properly', () => {
     )
 
     return (
-      <form.Provider>
+      <>
         <form.Field
           name="firstName"
           validators={{
@@ -69,7 +69,7 @@ it('should type onChange properly', () => {
           }}
           children={() => null}
         />
-      </form.Provider>
+      </>
     )
   }
 })
