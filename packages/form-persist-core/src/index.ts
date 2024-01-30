@@ -1,21 +1,30 @@
-import type { FormState, Persister } from '@tanstack/form-core'
+import type { FormState, MaybePromise, Persister } from '@tanstack/form-core'
 
-export type SyncFormStorage = {
-  getItem: (key: string) => string | undefined | null
-  setItem: (key: string, value: string) => unknown
+export type SyncFormStorage<TStorageValue = string> = {
+  getItem: (key: string) => TStorageValue | undefined | null
+  setItem: (key: string, value: TStorageValue) => unknown
   removeItem: (key: string) => void
 }
-export type AsyncFormStorage = {
-  [Method in keyof SyncFormStorage]: (
-    ...args: Parameters<SyncFormStorage[Method]>
-  ) => Promise<ReturnType<SyncFormStorage[Method]>>
+export type AsyncFormStorage<TStorageValue = string> = {
+  [Method in keyof SyncFormStorage<TStorageValue>]: (
+    ...args: Parameters<SyncFormStorage<TStorageValue>[Method]>
+  ) => Promise<ReturnType<SyncFormStorage<TStorageValue>[Method]>>
 }
 
-export interface StoragePersisterOptions {
+type PersistedFormState = {
+  buster: string
+  state: FormState<any>
+}
+
+export interface StoragePersisterOptions<TStorageValue = string> {
   /** The storage client used for setting and retrieving items from cache.
    * For SSR pass in `undefined`.
    */
-  storage: AsyncFormStorage | SyncFormStorage | undefined | null
+  storage:
+    | AsyncFormStorage<TStorageValue>
+    | SyncFormStorage<TStorageValue>
+    | undefined
+    | null
   /**
    * A unique string that can be used to forcefully invalidate existing caches,
    * if they do not share the same buster string
@@ -34,32 +43,52 @@ export interface StoragePersisterOptions {
    * @default 'tanstack-form'
    */
   prefix?: string
+  /**
+   * How to serialize the data to storage.
+   * @default `JSON.stringify`
+   */
+  serializer?: (
+    persistedForm: PersistedFormState,
+  ) => MaybePromise<TStorageValue>
+  /**
+   * How to deserialize the data from storage.
+   * @default `JSON.parse`
+   */
+  deserializer?: (
+    cachedValue: TStorageValue,
+  ) => MaybePromise<PersistedFormState>
 }
 
 const makeKey = (prefix: string = 'tanstack-form', persistKey: string) =>
   `${prefix}-${persistKey}`
 
-export class PersisterAPI<TFormData> {
-  options: StoragePersisterOptions
-  constructor(opts: StoragePersisterOptions) {
+export class PersisterAPI<TFormData, TStorageValue = string> {
+  options: StoragePersisterOptions<TStorageValue>
+  constructor(opts: StoragePersisterOptions<TStorageValue>) {
     this.options = opts
   }
 
   persistForm = async (persistKey: string, formState: FormState<TFormData>) => {
+    const serialized = await (this.options.serializer ?? JSON.stringify)({
+      buster: this.options.buster ?? '',
+      state: formState,
+    })
     await this.options.storage?.setItem(
       makeKey(this.options.prefix, persistKey),
-      JSON.stringify({
-        buster: this.options.buster ?? '',
-        state: formState,
-      }),
+      serialized as TStorageValue,
     )
   }
   restoreForm = async (persistKey: string) => {
-    const deserialized =
+    const persistedValue =
       (await this.options.storage?.getItem(
         makeKey(this.options.prefix, persistKey),
       )) ?? 'null'
-    const state = JSON.parse(deserialized) as {
+    const state = (
+      this.options.deserializer ??
+      (JSON.parse as Required<
+        StoragePersisterOptions<TStorageValue>
+      >['deserializer'])
+    )(persistedValue as TStorageValue) as {
       buster: string
       state: FormState<TFormData>
     } | null
@@ -87,14 +116,34 @@ export class PersisterAPI<TFormData> {
   }
 }
 
-export function createFormPersister<TFormData>(
-  persisterAPI: PersisterAPI<TFormData>,
+type CreateFormPersisterOptions<TFormData> = {
+  omitFields: (keyof TFormData)[] | ((fieldName: keyof TFormData) => boolean)
+}
+
+export function createFormPersister<TFormData, TStorageValue = string>(
+  persisterAPI: PersisterAPI<TFormData, TStorageValue>,
   formKey: string,
+  opts?: CreateFormPersisterOptions<TFormData>,
 ): Persister<TFormData> {
   return {
     deleteForm: () => persisterAPI.deleteForm(formKey),
     restoreForm: () => persisterAPI.restoreForm(formKey),
-    persistForm: (state: FormState<TFormData>) =>
-      persisterAPI.persistForm(formKey, state),
+    persistForm: (state: FormState<TFormData>) => {
+      // this makes ts happy when we modify the state
+      const modifiedState: Omit<typeof state, 'fieldMeta' | 'values'> & {
+        fieldMeta: any
+        values: any
+      } = structuredClone(state) // deep cloning to make sure we dont modify state that is referenced inside the form
+      if (typeof opts?.omitFields === 'function') {
+        for (const key of Object.keys(modifiedState.values))
+          if (opts.omitFields(key as keyof TFormData)) {
+            delete modifiedState.fieldMeta[key]
+            delete modifiedState.values[key]
+          }
+      } else if (typeof opts?.omitFields === 'object') {
+        for (const key of opts.omitFields) delete modifiedState.fieldMeta[key]
+      }
+      return persisterAPI.persistForm(formKey, modifiedState)
+    },
   }
 }

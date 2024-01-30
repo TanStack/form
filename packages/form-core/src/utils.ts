@@ -78,7 +78,7 @@ export function deleteBy(obj: any, _path: any) {
   const path = makePathArray(_path)
 
   function doDelete(parent: any): any {
-    if (!parent) return;
+    if (!parent) return
     if (path.length === 1) {
       const finalPath = path[0]!
       const { [finalPath]: remove, ...rest } = parent
