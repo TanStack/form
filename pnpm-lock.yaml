@@ -521,8 +521,8 @@ importers:
   packages/form-core:
     dependencies:
       '@tanstack/store':
-        specifier: 0.1.3
-        version: 0.1.3
+        specifier: ^0.3.1
+        version: 0.3.1
 
   packages/react-form:
     dependencies:
@@ -530,8 +530,8 @@ importers:
         specifier: workspace:*
         version: link:../form-core
       '@tanstack/react-store':
-        specifier: ^0.2.1
-        version: 0.2.1(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^0.3.1
+        version: 0.3.1(react-dom@18.2.0)(react@18.2.0)
       decode-formdata:
         specifier: ^0.4.0
         version: 0.4.0
@@ -567,8 +567,8 @@ importers:
         specifier: workspace:*
         version: link:../form-core
       '@tanstack/solid-store':
-        specifier: ^0.2.1
-        version: 0.2.1(solid-js@1.7.12)
+        specifier: ^0.3.1
+        version: 0.3.1(solid-js@1.7.12)
     devDependencies:
       solid-js:
         specifier: ^1.7.8
@@ -593,8 +593,8 @@ importers:
         specifier: workspace:*
         version: link:../form-core
       '@tanstack/vue-store':
-        specifier: 0.1.3
-        version: 0.1.3(vue@3.3.4)
+        specifier: ^0.3.1
+        version: 0.3.1(vue@3.3.4)
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.0.2
@@ -3802,33 +3802,33 @@ packages:
       - vite
     dev: true
 
-  /@tanstack/react-store@0.2.1(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-tEbMCQjbeVw9KOP/202LfqZMSNAVi6zYkkp1kBom8nFuMx/965Hzes3+6G6b/comCwVxoJU8Gg9IrcF8yRPthw==}
+  /@tanstack/react-store@0.3.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-PfV271d345It6FdcX4c9gd+llKGddtvau8iJnybTAWmYVyDeFWfIIkiAJ5iNITJmI02AzqgtcV3QLNBBlpBUjA==}
     peerDependencies:
-      react: '>=16'
-      react-dom: '>=16'
+      react: ^17.0.0 || ^18.0.0
+      react-dom: ^17.0.0 || ^18.0.0
     dependencies:
-      '@tanstack/store': 0.1.3
+      '@tanstack/store': 0.3.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
 
-  /@tanstack/solid-store@0.2.1(solid-js@1.7.12):
-    resolution: {integrity: sha512-lyRpOaubr7OY09tlpLGoMi7/dpNal51wbG72X7RIECu1Ocbo7dVyX/JSqqbu2mdO1pg/r0GCjjOQBwd5NWi7PQ==}
+  /@tanstack/solid-store@0.3.1(solid-js@1.7.12):
+    resolution: {integrity: sha512-MBsV3kTHW0v+fHsSUfxpVUh2FVX/qmc6hTq8HdwOkleBcpVRiF8RX0gyCcE5+cE03LncKoIEw9hO80dOBEZbFw==}
     peerDependencies:
       solid-js: ^1.6.0
     dependencies:
-      '@tanstack/store': 0.1.3
+      '@tanstack/store': 0.3.1
       solid-js: 1.7.12
     dev: false
 
-  /@tanstack/store@0.1.3:
-    resolution: {integrity: sha512-GnolmC8Fr4mvsHE1fGQmR3Nm0eBO3KnZjDU0a+P3TeQNM/dDscFGxtA7p31NplQNW3KwBw4t1RVFmz0VeKLxcw==}
+  /@tanstack/store@0.3.1:
+    resolution: {integrity: sha512-A49KN8SpLMWaNmZGPa9K982RQ81W+m7W6iStcQVeKeVS70JZRqkF0fDwKByREPq6qz9/kS0aQFOPQ0W6wIeU5g==}
     dev: false
 
-  /@tanstack/vue-store@0.1.3(vue@3.3.4):
-    resolution: {integrity: sha512-vLG2t0N0nagS2YrCDtTGJiftBDWadX0M7vSkIjfl+I1SaeKDvhg+HbRxt7Vwc5iLcwHljHAIlf7Ak5o4q0Brhg==}
+  /@tanstack/vue-store@0.3.1(vue@3.3.4):
+    resolution: {integrity: sha512-7XhuxAO6z4FWz8QnluTd4njy4yh6yHVD+dVMV60kDNck+ZfnU8VrENMGaA5edIq5zX3ooAUcOtOXh7KgQv1P1A==}
     peerDependencies:
       '@vue/composition-api': ^1.2.1
       vue: ^2.5.0 || ^3.0.0
@@ -3836,7 +3836,7 @@ packages:
       '@vue/composition-api':
         optional: true
     dependencies:
-      '@tanstack/store': 0.1.3
+      '@tanstack/store': 0.3.1
       vue: 3.3.4
       vue-demi: 0.14.6(vue@3.3.4)
     dev: false
