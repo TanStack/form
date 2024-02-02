@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/solid-store": "^0.2.1"
+    "@tanstack/solid-store": "^0.3.1"
   },
   "peerDependencies": {
     "solid-js": "^1.6.0"
