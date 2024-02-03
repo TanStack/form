@@ -3,8 +3,9 @@ import * as React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
-import { type FormApi, createFormFactory } from '..'
+import { createFormFactory } from '..'
 import { sleep } from './utils'
+import type { FormApi } from '..'
 
 const user = userEvent.setup()
 

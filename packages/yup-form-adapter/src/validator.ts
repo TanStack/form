@@ -1,4 +1,4 @@
-import type { ValidationError as YupError, AnySchema } from 'yup'
+import type { AnySchema, ValidationError as YupError } from 'yup'
 import type { ValidationError, Validator } from '@tanstack/form-core'
 
 export const yupValidator = () => {

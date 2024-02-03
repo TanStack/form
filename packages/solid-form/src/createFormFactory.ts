@@ -1,8 +1,8 @@
 import { mergeProps } from 'solid-js'
 import {
   type CreateField,
-  type FieldComponent,
   Field,
+  type FieldComponent,
   createField,
 } from './createField'
 import { createForm } from './createForm'

@@ -1,6 +1,6 @@
 import { expect } from 'vitest'
 
-import { FormApi, FieldApi } from '@tanstack/form-core'
+import { FieldApi, FormApi } from '@tanstack/form-core'
 import { z } from 'zod'
 import { zodValidator } from '../validator'
 

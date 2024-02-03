@@ -2,7 +2,7 @@
 'use client'
 
 import { useFormState } from 'react-dom'
-import { useTransform, mergeForm } from '@tanstack/react-form'
+import { mergeForm, useTransform } from '@tanstack/react-form'
 import someAction from './action'
 import { formFactory } from './shared-code'
 import type { FormApi } from '@tanstack/react-form'

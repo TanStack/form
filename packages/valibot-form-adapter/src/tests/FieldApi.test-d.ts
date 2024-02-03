@@ -1,4 +1,4 @@
-import { string, object } from 'valibot'
+import { object, string } from 'valibot'
 import { FieldApi, FormApi } from '@tanstack/form-core'
 import { assertType } from 'vitest'
 import { valibotValidator } from '../validator'

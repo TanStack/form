@@ -8,7 +8,7 @@ import type {
   Narrow,
   Validator,
 } from '@tanstack/form-core'
-import type { SlotsType, SetupContext, Ref } from 'vue'
+import type { Ref, SetupContext, SlotsType } from 'vue'
 import type { UseFieldOptions } from './types'
 
 declare module '@tanstack/form-core' {

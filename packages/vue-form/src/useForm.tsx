@@ -3,10 +3,10 @@ import { useStore } from '@tanstack/vue-store'
 import { defineComponent, onMounted } from 'vue'
 import { Field, useField } from './useField'
 import { provideFormContext } from './formContext'
-import type { FormState, FormOptions, Validator } from '@tanstack/form-core'
+import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
 import type { NoInfer } from '@tanstack/vue-store'
-import type { EmitsOptions, SlotsType, SetupContext, Ref } from 'vue'
-import type { UseField, FieldComponent } from './useField'
+import type { EmitsOptions, Ref, SetupContext, SlotsType } from 'vue'
+import type { FieldComponent, UseField } from './useField'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow

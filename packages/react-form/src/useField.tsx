@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'rehackt'
 import { useStore } from '@tanstack/react-store'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
-import { useFormContext, formContext } from './formContext'
+import { formContext, useFormContext } from './formContext'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import { useIsomorphicEffectOnce } from './useIsomorphicEffectOnce'
 import type { UseFieldOptions } from './types'

@@ -1,6 +1,6 @@
 import { expect } from 'vitest'
 
-import { FormApi, FieldApi } from '@tanstack/form-core'
+import { FieldApi, FormApi } from '@tanstack/form-core'
 import { customAsync, minLength, string, stringAsync } from 'valibot'
 import { valibotValidator } from '../validator'
 import { sleep } from './utils'

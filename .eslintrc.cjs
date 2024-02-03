@@ -78,6 +78,7 @@ const config = {
     'no-empty': 'off',
     'no-redeclare': 'off',
     'no-undef': 'off',
+    'sort-imports': ['error', { ignoreDeclarationSort: true }],
   },
   overrides: [
     {
