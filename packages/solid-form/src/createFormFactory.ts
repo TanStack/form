@@ -8,7 +8,6 @@ import {
 import { createForm } from './createForm'
 import type { FormApi, FormOptions, Validator } from '@tanstack/form-core'
 
-
 export type FormFactory<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
