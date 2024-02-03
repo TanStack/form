@@ -1,9 +1,14 @@
-import { FieldApi, type Validator } from '@tanstack/form-core'
-import type { DeepKeys, DeepValue, Narrow } from '@tanstack/form-core'
+import { FieldApi } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
 import { defineComponent, onMounted, onUnmounted, watch } from 'vue'
-import type { SlotsType, SetupContext, Ref } from 'vue'
 import { provideFormContext, useFormContext } from './formContext'
+import type {
+  DeepKeys,
+  DeepValue,
+  Narrow,
+  Validator,
+} from '@tanstack/form-core'
+import type { SlotsType, SetupContext, Ref } from 'vue'
 import type { UseFieldOptions } from './types'
 
 declare module '@tanstack/form-core' {

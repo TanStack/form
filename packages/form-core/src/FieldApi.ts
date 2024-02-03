@@ -305,7 +305,6 @@ export class FieldApi<
     this.store = new Store<FieldState<TData>>(
       {
         value: this.getValue(),
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         meta: this._getMeta() ?? {
           isValidating: false,
           isTouched: false,
@@ -424,7 +423,6 @@ export class FieldApi<
     >,
   ) => {
     // Default Value
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.state.value === undefined) {
       const formDefault =
         opts.form.options.defaultValues?.[opts.name as keyof TParentData]

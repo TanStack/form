@@ -314,9 +314,7 @@ export class FormApi<
           Object.assign(
             {},
             this.state as any,
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             shouldUpdateState ? options.defaultState : {},
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             shouldUpdateValues
               ? {
                   values: options.defaultValues,
