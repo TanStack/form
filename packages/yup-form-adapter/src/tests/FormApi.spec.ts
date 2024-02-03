@@ -1,8 +1,8 @@
 import { expect } from 'vitest'
 
-import { FormApi, FieldApi } from '@tanstack/form-core'
-import { yupValidator } from '../validator'
+import { FieldApi, FormApi } from '@tanstack/form-core'
 import yup from 'yup'
+import { yupValidator } from '../validator'
 
 describe('yup form api', () => {
   it('should run an onChange with z.string validation', () => {

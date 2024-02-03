@@ -1,21 +1,21 @@
 import { Store } from '@tanstack/store'
-import type { DeepKeys, DeepValue, Updater } from './utils'
 import {
-  getAsyncValidatorArray,
-  getSyncValidatorArray,
   deleteBy,
   functionalUpdate,
+  getAsyncValidatorArray,
   getBy,
+  getSyncValidatorArray,
   isNonEmptyArray,
   setBy,
 } from './utils'
+import type { DeepKeys, DeepValue, Updater } from './utils'
 import type { FieldApi, FieldMeta } from './FieldApi'
 import type {
+  ValidationCause,
   ValidationError,
   ValidationErrorMap,
-  Validator,
-  ValidationCause,
   ValidationErrorMapKeys,
+  Validator,
 } from './types'
 
 export type FormValidateFn<

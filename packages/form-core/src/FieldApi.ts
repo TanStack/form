@@ -1,4 +1,5 @@
 import { Store } from '@tanstack/store'
+import { getAsyncValidatorArray, getSyncValidatorArray } from './utils'
 import type { FormApi } from './FormApi'
 import type {
   ValidationCause,
@@ -7,7 +8,6 @@ import type {
   Validator,
 } from './types'
 import type { DeepKeys, DeepValue, Updater } from './utils'
-import { getAsyncValidatorArray, getSyncValidatorArray } from './utils'
 
 export type FieldValidateFn<
   TParentData,
