@@ -1,8 +1,9 @@
-import type { FormApi, FormOptions, Validator } from '@tanstack/form-core'
-
-import { type UseField, type FieldComponent, Field, useField } from './useField'
+import { Field, useField } from './useField'
 import { useForm } from './useForm'
-import { type ValidateFormData, getValidateFormData } from './validateFormData'
+import { getValidateFormData } from './validateFormData'
+import type { ValidateFormData } from './validateFormData'
+import type { UseField, FieldComponent } from './useField'
+import type { FormApi, FormOptions, Validator } from '@tanstack/form-core'
 
 export type FormFactory<
   TFormData,

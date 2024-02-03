@@ -1,20 +1,12 @@
-import {
-  FormApi,
-  type FormState,
-  type FormOptions,
-  type Validator,
-} from '@tanstack/form-core'
-import { type NoInfer, useStore } from '@tanstack/vue-store'
-import { type UseField, type FieldComponent, Field, useField } from './useField'
+import { FormApi } from '@tanstack/form-core'
+import { useStore } from '@tanstack/vue-store'
+import { defineComponent, onMounted } from 'vue'
+import { Field, useField } from './useField'
 import { provideFormContext } from './formContext'
-import {
-  type EmitsOptions,
-  type SlotsType,
-  type SetupContext,
-  type Ref,
-  defineComponent,
-  onMounted,
-} from 'vue'
+import type { FormState, FormOptions, Validator } from '@tanstack/form-core'
+import type { NoInfer } from '@tanstack/vue-store'
+import type { EmitsOptions, SlotsType, SetupContext, Ref } from 'vue'
+import type { UseField, FieldComponent } from './useField'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow

@@ -1,5 +1,4 @@
 import { Store } from '@tanstack/store'
-import type { DeepKeys, DeepValue, Updater } from './utils'
 import {
   getAsyncValidatorArray,
   getSyncValidatorArray,
@@ -9,6 +8,7 @@ import {
   isNonEmptyArray,
   setBy,
 } from './utils'
+import type { DeepKeys, DeepValue, Updater } from './utils'
 import type { FieldApi, FieldMeta } from './FieldApi'
 import type {
   ValidationError,

@@ -2,8 +2,8 @@
 import { h, defineComponent } from 'vue'
 import { render, waitFor } from '@testing-library/vue'
 import '@testing-library/jest-dom'
-import { createFormFactory, type FieldApi, provideFormContext } from '../index'
 import userEvent from '@testing-library/user-event'
+import { createFormFactory, type FieldApi, provideFormContext } from '../index'
 import { sleep } from './utils'
 
 const user = userEvent.setup()

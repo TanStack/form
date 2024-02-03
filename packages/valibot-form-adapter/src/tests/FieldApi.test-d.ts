@@ -1,7 +1,7 @@
-import { valibotValidator } from '../validator'
 import { string, object } from 'valibot'
 import { FieldApi, FormApi } from '@tanstack/form-core'
 import { assertType } from 'vitest'
+import { valibotValidator } from '../validator'
 
 it('should allow a Valibot validator to be passed in', () => {
   const form = new FormApi({
