@@ -1,7 +1,7 @@
 import type {
-  FieldOptions,
   DeepKeys,
   DeepValue,
+  FieldOptions,
   Validator,
 } from '@tanstack/form-core'
 

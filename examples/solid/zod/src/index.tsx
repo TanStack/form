@@ -1,9 +1,10 @@
 /* @refresh reload */
 import { render } from 'solid-js/web'
 
-import { createForm, type FieldApi } from '@tanstack/solid-form'
+import { createForm } from '@tanstack/solid-form'
 import { zodValidator } from '@tanstack/zod-form-adapter'
 import { z } from 'zod'
+import type { FieldApi } from '@tanstack/solid-form'
 
 interface FieldInfoProps {
   field: FieldApi<any, any, any, any>

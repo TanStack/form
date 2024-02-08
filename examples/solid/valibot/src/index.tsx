@@ -1,9 +1,10 @@
 /* @refresh reload */
 import { render } from 'solid-js/web'
 
-import { createForm, type FieldApi } from '@tanstack/solid-form'
+import { createForm } from '@tanstack/solid-form'
 import { valibotValidator } from '@tanstack/valibot-form-adapter'
 import { customAsync, minLength, string, stringAsync } from 'valibot'
+import type { FieldApi } from '@tanstack/solid-form'
 
 interface FieldInfoProps {
   field: FieldApi<any, any, any, any>

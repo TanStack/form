@@ -1,21 +1,21 @@
 import { Store } from '@tanstack/store'
-import type { DeepKeys, DeepValue, MaybePromise, Updater } from './utils'
 import {
-  getAsyncValidatorArray,
-  getSyncValidatorArray,
   deleteBy,
   functionalUpdate,
+  getAsyncValidatorArray,
   getBy,
+  getSyncValidatorArray,
   isNonEmptyArray,
   setBy,
 } from './utils'
+import type { DeepKeys, DeepValue, MaybePromise, Updater } from './utils'
 import type { FieldApi, FieldMeta } from './FieldApi'
 import type {
+  ValidationCause,
   ValidationError,
   ValidationErrorMap,
-  Validator,
-  ValidationCause,
   ValidationErrorMapKeys,
+  Validator,
 } from './types'
 
 export type FormValidateFn<
@@ -362,9 +362,7 @@ export class FormApi<
           Object.assign(
             {},
             this.state as any,
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             shouldUpdateState ? options.defaultState : {},
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             shouldUpdateValues
               ? {
                   values: options.defaultValues,
