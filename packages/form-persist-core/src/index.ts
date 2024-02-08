@@ -141,7 +141,10 @@ export function createFormPersister<TFormData, TStorageValue = string>(
             delete modifiedState.values[key]
           }
       } else if (typeof opts?.omitFields === 'object') {
-        for (const key of opts.omitFields) delete modifiedState.fieldMeta[key]
+        for (const key of opts.omitFields) {
+          delete modifiedState.fieldMeta[key]
+          delete modifiedState.values[key]
+        }
       }
       return persisterAPI.persistForm(formKey, modifiedState)
     },
