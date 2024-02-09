@@ -1,10 +1,10 @@
 import { PersisterAPI, createFormPersister } from '@tanstack/form-persist-core'
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 import type { CreateFormPersisterOptions } from '@tanstack/form-persist-core'
 
 export { PersisterAPI }
 
-const persisterApiContext = createContext<PersisterAPI>(null!)
+const persisterApiContext = createContext<PersisterAPI | null>(null)
 
 export const FormPersisterProvider = persisterApiContext.Provider
 
