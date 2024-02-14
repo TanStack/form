@@ -101,5 +101,5 @@ If you want to make it work for custom
 elements you can provide a function as an optional argument, which tells the directive how to wire up to your custom elements.
 This function has the following signature: `<T extends HTMLElement, Value = any>(
 element: T,
-): ControlValueAccessor<T, Value> | undefined`. `ControlValueAccessor` is a provided interface that describes how Tanstack Form
+): ControlValueAccessor<T, Value> | undefined`. `ControlValueAccessor` is a provided interface that describes how TanStack Form
 should interact with a given element. You can find an example of this in the `ui-libraries`-example.
