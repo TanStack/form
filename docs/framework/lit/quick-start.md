@@ -25,7 +25,7 @@ const formConfig: FormOptions<Data> = {}
 #form = new TanstackFormController(this, formConfig)
 ```
 
-In this example `this`references to the instance of your `LitElement` in which you want to use Tanstack Form.
+In this example `this` references the instance of your `LitElement` in which you want to use TanStack Form.
 
 To wire a form element in your template up with Tanstack Form simply use the `field` method of `TanstackFormController`:
 ```ts
