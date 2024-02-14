@@ -131,8 +131,6 @@ class FieldDirective<
 
   protected disconnected() {
     super.disconnected()
-    console.log(this.#field?.options.preserveValue)
-    console.log(this.#unmount)
     this.#unmount?.()
   }
 
