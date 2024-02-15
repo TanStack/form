@@ -27,6 +27,7 @@ export { useForm } from './useForm'
 
 export type { UseField, FieldComponent } from './useField'
 export { useField, Field } from './useField'
+export { useFormContext } from './formContext'
 
 export type { FormFactory } from './createFormFactory'
 export { createFormFactory } from './createFormFactory'
