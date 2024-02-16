@@ -39,13 +39,12 @@ stats.html
 
 *.log
 .DS_Store
-node_modules
 .cache
+.pnpm-store
 dist
 .idea
 
 nx-cloud.env
-.nx
 
 .nx/cache
 .tsup
