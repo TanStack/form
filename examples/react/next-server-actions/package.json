@@ -9,17 +9,17 @@
     "test:eslint": "next lint"
   },
   "dependencies": {
-    "react": "^18",
-    "react-dom": "^18",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "next": "14.0.4",
     "@tanstack/react-form": "^0.13.5"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "typescript": "^5.2.2",
     "@types/node": "^20",
-    "@types/react": "18.2.35",
-    "@types/react-dom": "^18.2.14",
-    "eslint": "^8",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.19",
+    "eslint": "^8.56.0",
     "eslint-config-next": "14.0.4"
   }
 }
