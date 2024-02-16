@@ -45,7 +45,6 @@ dist
 .idea
 
 nx-cloud.env
-.nx
 
 .nx/cache
 .tsup
