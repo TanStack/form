@@ -15,7 +15,7 @@
     "valibot": "^0.20.1"
   },
   "devDependencies": {
-    "typescript": "^5.2.2",
+    "typescript": "5.2.2",
     "vite": "^5.0.10",
     "vite-plugin-solid": "^2.8.0"
   }
