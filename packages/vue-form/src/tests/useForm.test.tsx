@@ -8,10 +8,10 @@ import {
   createFormFactory,
   provideFormContext,
   useForm,
-} from '..'
+} from '../index'
 import { sleep } from './utils'
 
-import type { FieldApi, ValidationErrorMap } from '..'
+import type { FieldApi, ValidationErrorMap } from '../index'
 
 const user = userEvent.setup()
 

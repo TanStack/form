@@ -52,6 +52,18 @@
       "dependsOn": ["build"],
       "inputs": ["^public"],
       "cache": true
+    },
+    "test:knip": {
+      "cache": true,
+      "inputs": ["{workspaceRoot}/**/*"]
+    },
+    "test:format": {
+      "cache": true,
+      "inputs": ["{workspaceRoot}/**/*"]
+    },
+    "test:sherif": {
+      "cache": true,
+      "inputs": ["{workspaceRoot}/**/*"]
     }
   }
 }
