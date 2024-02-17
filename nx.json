@@ -56,6 +56,10 @@
     "test:format": {
       "cache": true,
       "inputs": ["{workspaceRoot}/**/*"]
+    },
+    "test:sherif": {
+      "cache": true,
+      "inputs": ["{workspaceRoot}/**/*"]
     }
   }
 }

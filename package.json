@@ -8,10 +8,11 @@
     "clean": "pnpm --filter \"./packages/**\" run clean",
     "preinstall": "node -e \"if(process.env.CI == 'true') {console.log('Skipping preinstall...'); process.exit(1)}\" || npx -y only-allow pnpm",
     "test": "pnpm run test:ci",
-    "test:pr": "nx affected --targets=test:format,test:eslint,test:lib,test:types,test:build,build",
-    "test:ci": "nx run-many --targets=test:format,test:eslint,test:lib,test:types,test:build,build",
+    "test:pr": "nx affected --targets=test:format,test:sherif,test:eslint,test:lib,test:types,test:build,build",
+    "test:ci": "nx run-many --targets=test:format,test:sherif,test:eslint,test:lib,test:types,test:build,build",
     "test:eslint": "nx affected --target=test:eslint",
     "test:format": "pnpm run prettier --check",
+    "test:sherif": "sherif",
     "test:lib": "nx affected --target=test:lib --exclude=examples/**",
     "test:lib:dev": "pnpm run test:lib && nx watch --all -- pnpm run test:lib",
     "test:build": "nx affected --target=test:build --exclude=examples/**",
@@ -27,7 +28,8 @@
   },
   "nx": {
     "includedScripts": [
-      "test:format"
+      "test:format",
+      "test:sherif"
     ]
   },
   "namespace": "@tanstack",
@@ -42,7 +44,7 @@
     "@types/jest": "^26.0.4",
     "@types/node": "^18.19.3",
     "@types/react": "^18.2.45",
-    "@types/react-dom": "^18.0.5",
+    "@types/react-dom": "^18.2.19",
     "@typescript-eslint/eslint-plugin": "^6.20.0",
     "@typescript-eslint/parser": "^6.20.0",
     "@vitest/coverage-istanbul": "^1.2.2",
@@ -59,8 +61,9 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rimraf": "^5.0.5",
+    "sherif": "^0.7.0",
     "solid-js": "^1.7.8",
-    "typescript": "^5.2.2",
+    "typescript": "5.2.2",
     "typescript49": "npm:typescript@4.9",
     "typescript50": "npm:typescript@5.0",
     "typescript51": "npm:typescript@5.1",
