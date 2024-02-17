@@ -231,6 +231,7 @@ export interface FieldApiOptions<
 
 export type FieldMeta = {
   isTouched: boolean
+  isDirty: boolean
   touchedErrors: ValidationError[]
   errors: ValidationError[]
   errorMap: ValidationErrorMap
@@ -308,6 +309,7 @@ export class FieldApi<
         meta: this._getMeta() ?? {
           isValidating: false,
           isTouched: false,
+          isDirty: false,
           touchedErrors: [],
           errors: [],
           errorMap: {},
@@ -325,6 +327,46 @@ export class FieldApi<
           state.meta.touchedErrors = state.meta.isTouched
             ? state.meta.errors
             : []
+
+          const defaultValues = this.form.options.defaultValues
+          // TODO: check if fields have fields?
+          if (defaultValues && this.options.name in defaultValues) {
+            if (this.options.mode === 'array')
+              console.log({
+                defaultValues: defaultValues[this.options.name],
+                value: this.state.value,
+              })
+            if (
+              this.options.mode === 'array' &&
+              Array.isArray(defaultValues[this.options.name])
+            ) {
+              // Iterate through all the subfields
+              /*
+              Check these 2 things:
+              1. If the length of the default values matches the length of the new values
+              2. If all the default values are equal to the new values
+            */
+              if (
+                state.value.length !== defaultValues[this.options.name].length
+              ) {
+                state.meta.isDirty = true
+              } else {
+                // check for equality
+              }
+            } else {
+              state.meta.isDirty =
+                state.value !== defaultValues[this.options.name]
+            }
+          } else {
+            state.meta.isDirty = !!state.value
+          }
+          /* console.log({
+            value: state.value,
+            mode: this.options.mode,
+            name: this.options.name,
+            defaultValues,
+            'defaultvalues[name]': defaultValues[this.options.name],
+          }) */
 
           this.prevState = state
           this.state = state

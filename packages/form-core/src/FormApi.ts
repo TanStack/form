@@ -134,6 +134,7 @@ export type FormState<TFormData> = {
   isSubmitted: boolean
   isValidating: boolean
   isValid: boolean
+  isDirty: boolean
   canSubmit: boolean
   submissionAttempts: number
 }
@@ -156,6 +157,7 @@ function getDefaultFormState<TFormData>(
     isTouched: defaultState.isTouched ?? false,
     isValid: defaultState.isValid ?? false,
     isValidating: defaultState.isValidating ?? false,
+    isDirty: defaultState.isDirty ?? false,
     submissionAttempts: defaultState.submissionAttempts ?? 0,
     validationMetaMap: defaultState.validationMetaMap ?? {
       onChange: undefined,
@@ -209,6 +211,7 @@ export class FormApi<
           )
 
           const isTouched = fieldMetaValues.some((field) => field?.isTouched)
+          const isDirty = fieldMetaValues.some((field) => field?.isDirty)
 
           const isValidating = isFieldsValidating || state.isFormValidating
           state.errors = Object.values(state.errorMap).filter(
@@ -228,6 +231,7 @@ export class FormApi<
             isValid,
             canSubmit,
             isTouched,
+            isDirty,
           }
 
           this.state = state
