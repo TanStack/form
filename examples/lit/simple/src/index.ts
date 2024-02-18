@@ -12,6 +12,7 @@ interface Employee {
   lastName: string
   employed: boolean
   jobTitle: string
+  about: string;
 }
 
 interface Data {
@@ -78,6 +79,18 @@ export class TanstackFormDemo extends LitElement {
                             placeholder="Last Name"
                             ${bind(lastNameField)}
                           />
+                        </div>`
+                      },
+                    )}
+                    ${this.#form.field(
+                      { name: `employees.${index}.about` },
+                      (aboutField) => {
+                        return html` <div>
+                          <label>About</label>
+                          <textarea
+                            style="width: 100%"
+                            ${bind(aboutField)}
+                          ></textarea>
                         </div>`
                       },
                     )}

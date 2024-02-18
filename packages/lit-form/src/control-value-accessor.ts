@@ -42,8 +42,9 @@ const textFieldValueAccessor: ControlValueAccessor<HTMLInputElement, string> = {
     if (messages === undefined || messages.length === 0) {
       element.setCustomValidity('')
       element.reportValidity()
+      return
     }
-    const message = getFirstErrorMessage(messages!)
+    const message = getFirstErrorMessage(messages)
     if (message) {
       element.setCustomValidity(message)
       element.reportValidity()
@@ -61,10 +62,36 @@ const selectValueAccessor: ControlValueAccessor<HTMLSelectElement, string> = {
   getValue(element: HTMLSelectElement): string {
     return element.value
   },
-  setCustomValidity(element: HTMLSelectElement, messages: string[]) {
-    if (messages.length === 0) {
+  setCustomValidity(element: HTMLSelectElement, messages?: string[]) {
+    if (messages === undefined || messages.length === 0) {
       element.setCustomValidity('')
       element.reportValidity()
+      return
+    }
+    const message = getFirstErrorMessage(messages)
+    if (message) {
+      element.setCustomValidity(message)
+      element.reportValidity()
+    }
+  },
+  eventName: 'input',
+}
+
+const textAreaValueAccessor: ControlValueAccessor<HTMLTextAreaElement, string> = {
+  conforms(element: HTMLElement): boolean {
+    return element.tagName.toLowerCase().includes('textarea')
+  },
+  setValue(element: HTMLTextAreaElement, value: string) {
+    element.value = value
+  },
+  getValue(element: HTMLTextAreaElement): string {
+    return element.value
+  },
+  setCustomValidity(element: HTMLTextAreaElement, messages?: string[]) {
+    if (messages === undefined || messages.length === 0) {
+      element.setCustomValidity('')
+      element.reportValidity()
+      return
     }
     const message = getFirstErrorMessage(messages)
     if (message) {
@@ -82,6 +109,8 @@ export function getNativeAccessor<T extends HTMLElement, Value = any>(
     return selectValueAccessor as any
   } else if (checkboxValueAccessor.conforms(element)) {
     return checkboxValueAccessor as any
+  } else if (textAreaValueAccessor.conforms(element)) {
+    return textAreaValueAccessor as any
   } else if (textFieldValueAccessor.conforms(element)) {
     return textFieldValueAccessor as any
   }
