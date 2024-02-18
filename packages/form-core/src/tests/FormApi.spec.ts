@@ -21,6 +21,7 @@ describe('form api', () => {
       errorMap: {},
       isSubmitting: false,
       isTouched: false,
+      isDirty: false,
       isValid: true,
       isValidating: false,
       submissionAttempts: 0,
@@ -55,6 +56,7 @@ describe('form api', () => {
       isSubmitted: false,
       isSubmitting: false,
       isTouched: false,
+      isDirty: false,
       isValid: true,
       isValidating: false,
       submissionAttempts: 0,
@@ -87,6 +89,7 @@ describe('form api', () => {
       isSubmitted: false,
       isSubmitting: false,
       isTouched: false,
+      isDirty: false,
       isValid: true,
       isValidating: false,
       submissionAttempts: 30,
@@ -130,6 +133,7 @@ describe('form api', () => {
       isSubmitted: false,
       isSubmitting: false,
       isTouched: false,
+      isDirty: false,
       isValid: true,
       isValidating: false,
       submissionAttempts: 300,
@@ -170,6 +174,7 @@ describe('form api', () => {
       isSubmitted: false,
       isSubmitting: false,
       isTouched: false,
+      isDirty: false,
       isValid: true,
       isValidating: false,
       submissionAttempts: 0,
@@ -947,5 +952,24 @@ describe('form api', () => {
 
     await form.handleSubmit()
     expect(form.state.errors).toStrictEqual(['first name is required'])
+  })
+
+  it('should mark the form dirty if the current values do not match the default values', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+
+    field.mount()
+
+    form.setFieldValue('firstName', 'a new value', { touch: true })
+
+    expect(form.state.isDirty).toBe(true)
   })
 })

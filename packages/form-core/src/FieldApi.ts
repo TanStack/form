@@ -1,5 +1,5 @@
 import { Store } from '@tanstack/store'
-import { getAsyncValidatorArray, getSyncValidatorArray } from './utils'
+import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
 import type { FormApi } from './FormApi'
 import type {
   ValidationCause,
@@ -328,45 +328,12 @@ export class FieldApi<
             ? state.meta.errors
             : []
 
-          const defaultValues = this.form.options.defaultValues
-          // TODO: check if fields have fields?
-          if (defaultValues && this.options.name in defaultValues) {
-            if (this.options.mode === 'array')
-              console.log({
-                defaultValues: defaultValues[this.options.name],
-                value: this.state.value,
-              })
-            if (
-              this.options.mode === 'array' &&
-              Array.isArray(defaultValues[this.options.name])
-            ) {
-              // Iterate through all the subfields
-              /*
-              Check these 2 things:
-              1. If the length of the default values matches the length of the new values
-              2. If all the default values are equal to the new values
-            */
-              if (
-                state.value.length !== defaultValues[this.options.name].length
-              ) {
-                state.meta.isDirty = true
-              } else {
-                // check for equality
-              }
-            } else {
-              state.meta.isDirty =
-                state.value !== defaultValues[this.options.name]
-            }
-          } else {
-            state.meta.isDirty = !!state.value
-          }
-          /* console.log({
-            value: state.value,
-            mode: this.options.mode,
-            name: this.options.name,
-            defaultValues,
-            'defaultvalues[name]': defaultValues[this.options.name],
-          }) */
+          const fieldDefaultValue = getBy(
+            this.form.options.defaultValues,
+            this.name,
+          )
+
+          this.state.meta.isDirty = !deepEqual(fieldDefaultValue, state.value)
 
           this.prevState = state
           this.state = state
@@ -737,4 +704,47 @@ function getErrorMapKey(cause: ValidationCause) {
     default:
       return 'onChange'
   }
+}
+
+export function deepEqual<T>(objA: T, objB: T): boolean {
+  if (Object.is(objA, objB)) {
+    return true
+  }
+
+  if (
+    typeof objA !== 'object' ||
+    objA === null ||
+    typeof objB !== 'object' ||
+    objB === null
+  ) {
+    return false
+  }
+
+  const keysA = Object.keys(objA)
+  const keysB = Object.keys(objB)
+
+  if (keysA.length !== keysB.length) {
+    return false
+  }
+
+  for (const key of keysA as Array<keyof T>) {
+    if (!keysB.includes(key as string)) {
+      return false
+    }
+
+    if (
+      typeof objA[key] === 'object' &&
+      objA[key] !== null &&
+      typeof objB[key] === 'object' &&
+      objB[key] !== null
+    ) {
+      if (!deepEqual(objA[key], objB[key])) {
+        return false
+      }
+    } else if (!Object.is(objA[key], objB[key])) {
+      return false
+    }
+  }
+
+  return true
 }

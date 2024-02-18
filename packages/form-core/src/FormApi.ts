@@ -8,8 +8,8 @@ import {
   isNonEmptyArray,
   setBy,
 } from './utils'
+import { type FieldApi, type FieldMeta, deepEqual } from './FieldApi'
 import type { DeepKeys, DeepValue, Updater } from './utils'
-import type { FieldApi, FieldMeta } from './FieldApi'
 import type {
   ValidationCause,
   ValidationError,
@@ -625,19 +625,23 @@ export class FormApi<
     const touch = opts?.touch
 
     this.store.batch(() => {
-      if (touch) {
-        this.setFieldMeta(field, (prev) => ({
-          ...prev,
-          isTouched: true,
-        }))
-      }
-
       this.store.setState((prev) => {
         return {
           ...prev,
           values: setBy(prev.values, field, updater),
         }
       })
+
+      if (touch) {
+        const currentValue = this.getFieldValue(field)
+        const fieldDefaultValue = getBy(this.options.defaultValues, field)
+
+        this.setFieldMeta(field, (prev) => ({
+          ...prev,
+          isTouched: true,
+          isDirty: !deepEqual(fieldDefaultValue, currentValue),
+        }))
+      }
     })
   }
 

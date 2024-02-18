@@ -86,6 +86,24 @@ describe('field api', () => {
     expect(field.getValue()).toBe('other')
   })
 
+  it('should mark the field dirty if the current value does not match the default value (primitive values)', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    field.mount()
+    field.setValue('other')
+
+    expect(field.getMeta().isDirty).toBe(true)
+  })
+
   it('should push an array value correctly', () => {
     const form = new FormApi({
       defaultValues: {
@@ -154,6 +172,24 @@ describe('field api', () => {
     expect(field.getValue()).toStrictEqual(['two', 'one'])
   })
 
+  it('should mark the field dirty if the current values do not match the default values (arrays)', () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two'],
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'names',
+    })
+
+    field.mount()
+    field.setValue(['one', 'two', 'three'])
+
+    expect(field.getMeta().isDirty).toBe(true)
+  })
+
   it('should get a subfield properly', () => {
     const form = new FormApi({
       defaultValues: {
@@ -172,6 +208,27 @@ describe('field api', () => {
     const subfield = field.getSubField('first')
 
     expect(subfield.getValue()).toBe('one')
+  })
+
+  it('should mark the field dirty if the current subfield values do not match the default ones ', () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: {
+          first: 'one',
+          second: 'two',
+        },
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'names',
+    })
+
+    field.mount()
+    field.setValue({ first: 'three', second: 'three' })
+
+    expect(field.getMeta().isDirty).toBe(true)
   })
 
   it('should not throw errors when no meta info is stored on a field and a form re-renders', async () => {
