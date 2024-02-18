@@ -25,7 +25,7 @@ const formConfig: FormOptions<Data> = {}
 #form = new TanstackFormController(this, formConfig)
 ```
 
-In this example `this`references to the instance of your `LitElement` in which you want to use Tanstack Form.
+In this example `this` references the instance of your `LitElement` in which you want to use TanStack Form.
 
 To wire a form element in your template up with Tanstack Form simply use the `field` method of `TanstackFormController`:
 ```ts
@@ -101,5 +101,5 @@ If you want to make it work for custom
 elements you can provide a function as an optional argument, which tells the directive how to wire up to your custom elements.
 This function has the following signature: `<T extends HTMLElement, Value = any>(
 element: T,
-): ControlValueAccessor<T, Value> | undefined`. `ControlValueAccessor` is a provided interface that describes how Tanstack Form
+): ControlValueAccessor<T, Value> | undefined`. `ControlValueAccessor` is a provided interface that describes how TanStack Form
 should interact with a given element. You can find an example of this in the `ui-libraries`-example.
