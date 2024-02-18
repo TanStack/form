@@ -136,6 +136,10 @@ An object type representing the metadata of a field in a form.
   ```
   - A flag indicating whether the field has been touched.
 - ```tsx
+  isDirty: boolean
+  ```
+  - A flag indicating whether the field has a different value from the default one.
+- ```tsx
   touchedErrors: ValidationError[]
   ```
   - An array of errors related to the touched state of the field.

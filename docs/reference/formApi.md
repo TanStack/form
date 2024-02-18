@@ -232,7 +232,11 @@ An object representing the current state of the form.
   isTouched: boolean
   ```
   - A boolean indicating if any of the form fields have been touched.
-  
+- ```tsx
+  isDirty: boolean
+  ```
+  - A boolean indicating if any of the form fields have a value different from the default one.
+
 - ```tsx
   isSubmitted: boolean
   ```
