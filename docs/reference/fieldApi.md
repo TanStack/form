@@ -264,12 +264,6 @@ A class representing the API for managing a form field.
   - Swaps the values at the specified indices.
 
 - ```tsx
-  getSubField<TSubName, TSubData>(name: TName): FieldApi<TData, TSubName, ValidatorType, TSubData>
-  ```
-
-  - Gets a subfield instance.
-
-- ```tsx
   validate(): Promise<any>
   ```
 
