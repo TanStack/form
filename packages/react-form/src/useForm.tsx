@@ -11,6 +11,7 @@ import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type { NoInfer } from '@tanstack/react-store'
 import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
 import type { FieldComponent, UseField } from './useField'
+import { useIsomorphicEffectOnce } from './useIsomorphicEffectOnce'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
@@ -38,7 +39,7 @@ export function useForm<
     const api = new FormApi<TFormData, TFormValidator>(opts)
 
     api.Provider = function Provider(props) {
-      useIsomorphicLayoutEffect(api.mount, [])
+      useIsomorphicEffectOnce(api.mount)
       return (
         <formContext.Provider {...props} value={{ formApi: api as never }} />
       )

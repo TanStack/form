@@ -67,6 +67,8 @@ export function useField<
   // Get the form API either manually or from context
   const { formApi, parentFieldName } = useFormContext()
 
+  const unmountFn = useRef<(() => void) | null>(null)
+
   const [fieldApi] = useState(() => {
     const name = (
       typeof opts.index === 'number'
@@ -86,11 +88,13 @@ export function useField<
         >
       | undefined
 
+    /*
+     * <StrictMode> executes functional useStates twice, so we need to return the previous instance
+     * @see https://react.dev/reference/react/useState#my-initializer-or-updater-function-runs-twice
+     */
     if (previousInstance) {
-      /*
-       * <StrictMode> executes functional useStates twice, so we need to return the previous instance
-       * @see https://react.dev/reference/react/useState#my-initializer-or-updater-function-runs-twice
-       */
+      // `mount` will return the previous unmount function if the instance is already mounted
+      unmountFn.current = previousInstance.mount()
       return previousInstance
     }
 
@@ -103,7 +107,15 @@ export function useField<
 
     api.Field = Field as never
 
+    unmountFn.current = api.mount()
+
     return api
+  })
+
+  useIsomorphicEffectOnce(() => {
+    return () => {
+      unmountFn.current?.()
+    }
   })
 
   /**
@@ -122,19 +134,6 @@ export function useField<
         }
       : undefined,
   )
-  const unmountFn = useRef<(() => void) | null>(null)
-
-  useIsomorphicEffectOnce(() => {
-    return () => {
-      unmountFn.current?.()
-    }
-  })
-
-  // We have to mount it right as soon as it renders, otherwise we get:
-  // https://github.com/TanStack/form/issues/523
-  if (!unmountFn.current) {
-    unmountFn.current = fieldApi.mount()
-  }
 
   return fieldApi as never
 }

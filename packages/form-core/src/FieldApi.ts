@@ -354,9 +354,9 @@ export class FieldApi<
 
   mount = () => {
     const info = this.getInfo()
-    // Clear out the old instance
+    // Eagerly opt out of mount if we are already mounted
     if (info.instance?._unmount) {
-      info.instance._unmount()
+      return info.instance._unmount
     }
     info.instance = this as never
     const unsubscribe = this.form.store.subscribe(() => {
@@ -401,6 +401,7 @@ export class FieldApi<
       if (!preserveValue) {
         this.form.deleteField(this.name)
       }
+      this._unmount = null
     }
     return this._unmount
   }
