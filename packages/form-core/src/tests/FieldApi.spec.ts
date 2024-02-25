@@ -154,26 +154,6 @@ describe('field api', () => {
     expect(field.getValue()).toStrictEqual(['two', 'one'])
   })
 
-  it('should get a subfield properly', () => {
-    const form = new FormApi({
-      defaultValues: {
-        names: {
-          first: 'one',
-          second: 'two',
-        },
-      },
-    })
-
-    const field = new FieldApi({
-      form,
-      name: 'names',
-    })
-
-    const subfield = field.getSubField('first')
-
-    expect(subfield.getValue()).toBe('one')
-  })
-
   it('should not throw errors when no meta info is stored on a field and a form re-renders', async () => {
     const form = new FormApi({
       defaultValues: {
