@@ -35,7 +35,6 @@ export function useForm<
   opts?: FormOptions<TFormData, TFormValidator>,
 ): FormApi<TFormData, TFormValidator> {
   const [formApi] = useState(() => {
-    // @ts-ignore
     const api = new FormApi<TFormData, TFormValidator>(opts)
 
     api.Provider = function Provider(props) {

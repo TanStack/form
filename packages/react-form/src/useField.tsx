@@ -76,6 +76,24 @@ export function useField<
       .filter((d) => d !== undefined)
       .join('.')
 
+    const previousInstance = formApi.getFieldInfo(name).instance as never as
+      | FieldApi<
+          TParentData,
+          TName,
+          TFieldValidator,
+          TFormValidator,
+          DeepValue<TParentData, TName>
+        >
+      | undefined
+
+    if (previousInstance) {
+      /*
+       * <StrictMode> executes functional useStates twice, so we need to return the previous instance
+       * @see https://react.dev/reference/react/useState#my-initializer-or-updater-function-runs-twice
+       */
+      return previousInstance
+    }
+
     const api = new FieldApi({
       ...opts,
       form: formApi as never,
