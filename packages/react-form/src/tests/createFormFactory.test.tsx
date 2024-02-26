@@ -19,7 +19,9 @@ describe('createFormFactory', () => {
     })
 
     function Comp() {
-      const form = formFactory.useForm({})
+      const form = formFactory.useForm({
+        name: 'example-form',
+      })
 
       return (
         <form.Provider>

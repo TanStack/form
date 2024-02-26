@@ -11,6 +11,7 @@ export const ClientComp = () => {
   const [state, action] = useFormState(someAction, formFactory.initialFormState)
 
   const form = formFactory.useForm({
+    name: 'client-form',
     transform: useTransform(
       (baseForm: FormApi<any, any>) => mergeForm(baseForm, state),
       [state],

@@ -1,5 +1,5 @@
 import { Field, useField } from './useField'
-import { useForm } from './useForm'
+import { type UseFormProps, useForm } from './useForm'
 import { getValidateFormData } from './validateFormData'
 import type { ValidateFormData } from './validateFormData'
 import type { FieldComponent, UseField } from './useField'
@@ -10,7 +10,7 @@ export type FormFactory<
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > = {
   useForm: (
-    opts?: FormOptions<TFormData, TFormValidator>,
+    opts: FormOptions<TFormData, TFormValidator> & UseFormProps,
   ) => FormApi<TFormData, TFormValidator>
   useField: UseField<TFormData>
   Field: FieldComponent<TFormData, TFormValidator>

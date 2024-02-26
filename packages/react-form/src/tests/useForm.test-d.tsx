@@ -5,6 +5,7 @@ import { useForm } from '../useForm'
 it('should type onSubmit properly', () => {
   function Comp() {
     const form = useForm({
+      name: 'example-form',
       defaultValues: {
         firstName: 'test',
         age: 84,
@@ -20,6 +21,7 @@ it('should type onSubmit properly', () => {
 it('should type a validator properly', () => {
   function Comp() {
     const form = useForm({
+      name: "example-form",
       defaultValues: {
         firstName: 'test',
         age: 84,
