@@ -1,4 +1,4 @@
-import { useRef, useState } from 'rehackt'
+import { useReducer, useRef } from 'rehackt'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type { EffectCallback } from 'rehackt'
 
@@ -9,7 +9,7 @@ export const useIsomorphicEffectOnce = (effect: EffectCallback) => {
   const destroyFunc = useRef<void | (() => void)>()
   const effectCalled = useRef(false)
   const renderAfterCalled = useRef(false)
-  const [val, setVal] = useState(0)
+  const [_, rerender] = useReducer(() => ({}), {})
 
   if (effectCalled.current) {
     renderAfterCalled.current = true
@@ -23,7 +23,7 @@ export const useIsomorphicEffectOnce = (effect: EffectCallback) => {
     }
 
     // this forces one render after the effect is run
-    setVal((v) => v + 1)
+    rerender()
 
     return () => {
       // if the comp didn't render since the useEffect was called,
