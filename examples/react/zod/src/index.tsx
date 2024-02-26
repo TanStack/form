@@ -18,7 +18,6 @@ function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
 
 export default function App() {
   const form = useForm({
-    name: 'example-form',
     defaultValues: {
       firstName: '',
       lastName: '',

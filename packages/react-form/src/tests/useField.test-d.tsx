@@ -5,7 +5,6 @@ import { useForm } from '../useForm'
 it('should type state.value properly', () => {
   function Comp() {
     const form = useForm({
-      name: 'example-form',
       defaultValues: {
         firstName: 'test',
         age: 84,
@@ -34,7 +33,6 @@ it('should type state.value properly', () => {
 it('should type onChange properly', () => {
   function Comp() {
     const form = useForm({
-      name: 'example-form',
       defaultValues: {
         firstName: 'test',
         age: 84,

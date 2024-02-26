@@ -8,7 +8,6 @@ import { Checkbox as MuiCheckbox } from '@mui/material'
 export default function MainComponent() {
   const { Provider, Field, Subscribe, handleSubmit, state, useStore } = useForm(
     {
-      name: 'example-form',
       defaultValues: {
         firstName: '',
         lastName: '',

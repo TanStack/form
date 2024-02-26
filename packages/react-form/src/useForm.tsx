@@ -8,11 +8,10 @@ import React, {
 import { Field, useField } from './useField'
 import { formContext } from './formContext'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
-import { useIsomorphicEffectOnce } from './useIsomorphicEffectOnce'
-import { useStateOnce } from './useStateOnce'
 import type { NoInfer } from '@tanstack/react-store'
 import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
 import type { FieldComponent, UseField } from './useField'
+import { useIsomorphicEffectOnce } from './useIsomorphicEffectOnce'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
@@ -30,22 +29,13 @@ declare module '@tanstack/form-core' {
   }
 }
 
-export interface UseFormProps {
-  name: string
-}
-
 export function useForm<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 >(
-  opts: FormOptions<TFormData, TFormValidator> & UseFormProps,
+  opts?: FormOptions<TFormData, TFormValidator>,
 ): FormApi<TFormData, TFormValidator> {
-  if (!opts.name) {
-    console.warn(
-      'useForm requires a `name` option, otherwise it will unintentionally merge state with other forms',
-    )
-  }
-  const [formApi] = useStateOnce(opts.name, () => {
+  const [formApi] = useState(() => {
     const api = new FormApi<TFormData, TFormValidator>(opts)
 
     api.Provider = function Provider(props) {

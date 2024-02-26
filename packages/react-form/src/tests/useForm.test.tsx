@@ -18,7 +18,7 @@ describe('useForm', () => {
     const formFactory = createFormFactory<Person>()
 
     function Comp() {
-      const form = formFactory.useForm({ name: 'example-form' })
+      const form = formFactory.useForm()
 
       return (
         <form.Provider>
@@ -57,7 +57,6 @@ describe('useForm', () => {
 
     function Comp() {
       const form = formFactory.useForm({
-        name: 'example-form',
         defaultValues: {
           firstName: 'FirstName',
           lastName: 'LastName',
@@ -88,7 +87,6 @@ describe('useForm', () => {
       } | null>(null)
 
       const form = useForm({
-        name: 'example-form',
         defaultValues: {
           firstName: 'FirstName',
         },
@@ -134,7 +132,6 @@ describe('useForm', () => {
       const [mountForm, setMountForm] = React.useState(false)
 
       const form = useForm({
-        name: 'example-form',
         defaultValues: {
           firstName: 'FirstName',
         },
@@ -175,7 +172,6 @@ describe('useForm', () => {
 
     function Comp() {
       const form = formFactory.useForm({
-        name: 'example-form',
         validators: {
           onChange() {
             return error
@@ -221,7 +217,6 @@ describe('useForm', () => {
 
     function Comp() {
       const form = formFactory.useForm({
-        name: 'example-form',
         validators: {
           onChange: ({ value }) =>
             value.firstName === 'other' ? error : undefined,
@@ -267,7 +262,6 @@ describe('useForm', () => {
 
     function Comp() {
       const form = formFactory.useForm({
-        name: 'example-form',
         validators: {
           onChange: ({ value }) =>
             value.firstName === 'other' ? error : undefined,
@@ -309,7 +303,6 @@ describe('useForm', () => {
 
     function Comp() {
       const form = useForm({
-        name: 'example-form',
         defaultValues: {
           firstName: '',
         },
@@ -369,7 +362,6 @@ describe('useForm', () => {
 
     function Comp() {
       const form = formFactory.useForm({
-        name: 'example-form',
         validators: {
           onChangeAsync: async () => {
             await sleep(10)
@@ -420,7 +412,6 @@ describe('useForm', () => {
 
     function Comp() {
       const form = formFactory.useForm({
-        name: 'example-form',
         validators: {
           onChangeAsync: async () => {
             await sleep(10)
@@ -481,7 +472,6 @@ describe('useForm', () => {
 
     function Comp() {
       const form = formFactory.useForm({
-        name: 'example-form',
         validators: {
           onChangeAsyncDebounceMs: 100,
           onChangeAsync: async () => {
