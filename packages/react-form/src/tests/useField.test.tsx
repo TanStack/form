@@ -101,7 +101,12 @@ describe('useField', () => {
     const formFactory = createFormFactory<Person>()
 
     function Comp() {
-      const form = formFactory.useForm()
+      const form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+      })
 
       return (
         <form.Provider>
@@ -143,7 +148,12 @@ describe('useField', () => {
     const formFactory = createFormFactory<Person>()
 
     function Comp() {
-      const form = formFactory.useForm()
+      const form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+      })
 
       return (
         <form.Provider>
@@ -188,7 +198,12 @@ describe('useField', () => {
     const formFactory = createFormFactory<Person>()
 
     function Comp() {
-      const form = formFactory.useForm()
+      const form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+      })
 
       return (
         <form.Provider>
@@ -239,7 +254,12 @@ describe('useField', () => {
     const formFactory = createFormFactory<Person>()
 
     function Comp() {
-      const form = formFactory.useForm()
+      const form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+      })
 
       return (
         <form.Provider>
@@ -288,7 +308,12 @@ describe('useField', () => {
     const formFactory = createFormFactory<Person>()
 
     function Comp() {
-      const form = formFactory.useForm()
+      const form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+      })
 
       return (
         <form.Provider>
@@ -346,7 +371,12 @@ describe('useField', () => {
     const formFactory = createFormFactory<Person>()
 
     function Comp() {
-      const form = formFactory.useForm()
+      const form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+      })
 
       return (
         <form.Provider>
@@ -395,7 +425,12 @@ describe('useField', () => {
     const formFactory = createFormFactory<Person>()
     let form: FormApi<Person> | null = null
     function Comp() {
-      form = formFactory.useForm()
+      form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+      })
       return (
         <form.Provider>
           <form.Field
@@ -433,7 +468,12 @@ describe('useField', () => {
     const formFactory = createFormFactory<Person>()
     let form: FormApi<Person> | null = null
     function Comp() {
-      form = formFactory.useForm()
+      form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+      })
       return (
         <form.Provider>
           <form.Field

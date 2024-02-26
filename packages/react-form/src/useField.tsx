@@ -1,9 +1,8 @@
-import React, { useRef, useState } from 'rehackt'
+import React, { useState } from 'rehackt'
 import { useStore } from '@tanstack/react-store'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { formContext, useFormContext } from './formContext'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
-import { useIsomorphicEffectOnce } from './useIsomorphicEffectOnce'
 import type { UseFieldOptions } from './types'
 import type {
   DeepKeys,
@@ -67,8 +66,6 @@ export function useField<
   // Get the form API either manually or from context
   const { formApi, parentFieldName } = useFormContext()
 
-  const unmountFn = useRef<(() => void) | null>(null)
-
   const [fieldApi] = useState(() => {
     const name = (
       typeof opts.index === 'number'
@@ -77,26 +74,6 @@ export function useField<
     )
       .filter((d) => d !== undefined)
       .join('.')
-
-    const previousInstance = formApi.getFieldInfo(name).instance as never as
-      | FieldApi<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          DeepValue<TParentData, TName>
-        >
-      | undefined
-
-    /*
-     * <StrictMode> executes functional useStates twice, so we need to return the previous instance
-     * @see https://react.dev/reference/react/useState#my-initializer-or-updater-function-runs-twice
-     */
-    if (previousInstance) {
-      // `mount` will return the previous unmount function if the instance is already mounted
-      unmountFn.current = previousInstance.mount()
-      return previousInstance
-    }
 
     const api = new FieldApi({
       ...opts,
@@ -107,16 +84,10 @@ export function useField<
 
     api.Field = Field as never
 
-    unmountFn.current = api.mount()
-
     return api
   })
 
-  useIsomorphicEffectOnce(() => {
-    return () => {
-      unmountFn.current?.()
-    }
-  })
+  useIsomorphicLayoutEffect(fieldApi.mount, [fieldApi])
 
   /**
    * fieldApi.update should not have any side effects. Think of it like a `useRef`

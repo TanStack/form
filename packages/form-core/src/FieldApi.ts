@@ -350,14 +350,8 @@ export class FieldApi<
     return (props.validate as FieldValidateFn<any, any>)(props.value) as never
   }
 
-  _unmount: (() => void) | null = null
-
   mount = () => {
     const info = this.getInfo()
-    // Eagerly opt out of mount if we are already mounted
-    if (info.instance?._unmount) {
-      return info.instance._unmount
-    }
     info.instance = this as never
     const unsubscribe = this.form.store.subscribe(() => {
       this.store.batch(() => {
@@ -395,15 +389,13 @@ export class FieldApi<
       }
     }
 
-    this._unmount = () => {
+    return () => {
       const preserveValue = this.options.preserveValue
       unsubscribe()
       if (!preserveValue) {
         this.form.deleteField(this.name)
       }
-      this._unmount = null
     }
-    return this._unmount
   }
 
   update = (
