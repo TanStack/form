@@ -1,4 +1,4 @@
-import type { ValidationCause, Validator } from './types'
+import type { ValidationCause } from './types'
 import type { FormValidators } from './FormApi'
 import type { FieldValidators } from './FieldApi'
 

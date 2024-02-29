@@ -9,14 +9,14 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@tanstack/vue-form": "<1.0.0",
-    "@tanstack/valibot-form-adapter": "<1.0.0",
+    "@tanstack/vue-form": "^0.13.6",
+    "@tanstack/valibot-form-adapter": "^0.13.6",
     "vue": "^3.3.4",
     "valibot": "^0.20.1"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.2",
-    "typescript": "^5.0.4",
+    "typescript": "5.2.2",
     "vite": "^5.0.10",
     "vue-tsc": "^1.8.10"
   }

@@ -1,13 +1,12 @@
-import type { FormApi, FormOptions, Validator } from '@tanstack/form-core'
-
+import { mergeProps } from 'solid-js'
 import {
   type CreateField,
-  type FieldComponent,
   Field,
+  type FieldComponent,
   createField,
 } from './createField'
 import { createForm } from './createForm'
-import { mergeProps } from 'solid-js'
+import type { FormApi, FormOptions, Validator } from '@tanstack/form-core'
 
 export type FormFactory<
   TFormData,

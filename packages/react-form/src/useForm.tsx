@@ -1,14 +1,14 @@
-import type { FormState, FormOptions, Validator } from '@tanstack/form-core'
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
-import type { NoInfer } from '@tanstack/react-store'
 import { useStore } from '@tanstack/react-store'
 import React, {
   type PropsWithChildren,
   type ReactNode,
   useState,
 } from 'rehackt'
-import { type UseField, type FieldComponent, Field, useField } from './useField'
+import { Field, type FieldComponent, type UseField, useField } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
+import type { NoInfer } from '@tanstack/react-store'
+import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
@@ -34,7 +34,10 @@ export function useForm<
   const [formApi] = useState(() => {
     // @ts-ignore
     const api = new FormApi<TFormData, TFormValidator>(opts)
-    api.Field = (props) => <Field {...props} form={api} />
+    api.Field = function APIField(props) {
+      return <Field {...props} form={api} />
+    }
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     api.useField = (props) => useField({ ...props, form: api })
     api.useStore = (
       // @ts-ignore

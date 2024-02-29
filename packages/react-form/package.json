@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/react-form",
-  "version": "0.13.4",
+  "version": "0.13.6",
   "description": "Powerful, type-safe forms for React.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -47,29 +47,18 @@
   },
   "devDependencies": {
     "@types/react": "^18.2.45",
-    "@types/react-dom": "^18.0.5",
-    "@types/use-sync-external-store": "^0.0.3",
+    "@types/react-dom": "^18.2.19",
     "@vitejs/plugin-react": "^4.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/react-store": "^0.2.1",
+    "@tanstack/react-store": "^0.3.1",
     "decode-formdata": "^0.4.0",
     "rehackt": "^0.0.3"
   },
   "peerDependencies": {
-    "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0",
-    "react-native": "*"
-  },
-  "peerDependenciesMeta": {
-    "react-dom": {
-      "optional": true
-    },
-    "react-native": {
-      "optional": true
-    }
+    "react": "^17.0.0 || ^18.0.0"
   }
 }

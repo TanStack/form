@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import * as React from 'react'
-import { createFormFactory, useForm } from '..'
+import { createFormFactory, useForm } from '../index'
 import { sleep } from './utils'
 
 const user = userEvent.setup()

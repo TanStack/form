@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@solidjs/testing-library'
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { Show, createSignal, onCleanup } from 'solid-js'
-import { createForm, createFormFactory } from '..'
+import { createForm, createFormFactory } from '../index'
 import { sleep } from './utils'
 import type { ValidationErrorMap } from '@tanstack/form-core'
 

@@ -5,7 +5,7 @@ import { useForm } from '@tanstack/react-form'
 export default function App() {
   const form = useForm({
     defaultValues: {
-      people: [] as Array<{age: number, name: string}>
+      people: [] as Array<{ age: number; name: string }>,
     },
     onSubmit: async ({ value }) => {
       // Do something with form data
@@ -25,17 +25,37 @@ export default function App() {
       >
         <form.Field name="people">
           {(field) => {
-            return <div>
-              {field.state.value.map((_, i) => {
-                return <form.Field name={`people[${i}].name`}>
-                  {subField => {
-                    return (
-                      <div><label><div>Name for person {i}</div><input value={subField.state.value} onChange={e => subField.handleChange(e.target.value)} /></label></div>
-                    )}}
-                </form.Field>
-              })}
-              <button onClick={() => field.pushValue({name: "", age: 0})} type="button">Add person</button>
-            </div>
+            return (
+              <div>
+                {field.state.value.map((_, i) => {
+                  return (
+                    <form.Field name={`people[${i}].name`}>
+                      {(subField) => {
+                        return (
+                          <div>
+                            <label>
+                              <div>Name for person {i}</div>
+                              <input
+                                value={subField.state.value}
+                                onChange={(e) =>
+                                  subField.handleChange(e.target.value)
+                                }
+                              />
+                            </label>
+                          </div>
+                        )
+                      }}
+                    </form.Field>
+                  )
+                })}
+                <button
+                  onClick={() => field.pushValue({ name: '', age: 0 })}
+                  type="button"
+                >
+                  Add person
+                </button>
+              </div>
+            )
           }}
         </form.Field>
         <form.Subscribe
