@@ -34,8 +34,10 @@ import type { FieldApi } from '@tanstack/react-form'
 function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
   return (
     <>
-      {field.state.meta.touchedErrors ? (
-        <em>{field.state.meta.touchedErrors}</em>
+      {field.state.meta.touchedErrors.length ? (
+        field.state.meta.touchedErrors.filter(Boolean).map(el => (
+            <em key={el?.toString()}>{el}</em>
+        )
       ) : null}
       {field.state.meta.isValidating ? 'Validating...' : null}
     </>
