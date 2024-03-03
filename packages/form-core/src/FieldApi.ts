@@ -232,6 +232,8 @@ export interface FieldApiOptions<
 
 export type FieldMeta = {
   isTouched: boolean
+  isPristine: boolean
+  isDirty: boolean
   touchedErrors: ValidationError[]
   errors: ValidationError[]
   errorMap: ValidationErrorMap
@@ -300,6 +302,8 @@ export class FieldApi<
         meta: this._getMeta() ?? {
           isValidating: false,
           isTouched: false,
+          isDirty: false,
+          isPristine: true,
           touchedErrors: [],
           errors: [],
           errorMap: {},
@@ -448,6 +452,8 @@ export class FieldApi<
     ({
       isValidating: false,
       isTouched: false,
+      isDirty: false,
+      isPristine: true,
       touchedErrors: [],
       errors: [],
       errorMap: {},
