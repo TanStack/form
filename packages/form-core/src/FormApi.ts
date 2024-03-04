@@ -338,9 +338,10 @@ export class FormApi<
         Object.values(this.fieldInfo) as FieldInfo<any, TFormValidator>[]
       ).forEach((field) => {
         if (!field.instance) return
+        const fieldInstance = field.instance
         // Validate the field
         fieldValidationPromises.push(
-          Promise.resolve().then(() => field.instance!.validate(cause)),
+          Promise.resolve().then(() => fieldInstance.validate(cause)),
         )
         // If any fields are not touched
         if (!field.instance.state.meta.isTouched) {
