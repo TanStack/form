@@ -602,7 +602,7 @@ describe('field api', () => {
 
     const unmount = field.mount()
     unmount()
-    expect(form.getFieldInfo(field.name).instances[field.uid]).toBeDefined()
+    expect(form.getFieldInfo(field.name).instance).toBeDefined()
     expect(form.getFieldInfo(field.name)).toBeDefined()
   })
 
@@ -624,8 +624,8 @@ describe('field api', () => {
     unmount()
     const info = form.getFieldInfo(field.name)
     subscription()
-    expect(info.instances[field.uid]).toBeUndefined()
-    expect(Object.keys(info.instances).length).toBe(0)
+    expect(info.instance).toBeNull()
+    expect(Object.keys(info.instance ?? {}).length).toBe(0)
 
     // Check that form store has been updated
     expect(callback).toHaveBeenCalledOnce()
