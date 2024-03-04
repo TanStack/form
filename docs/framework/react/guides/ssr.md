@@ -76,7 +76,7 @@ export default async function someAction(prev: unknown, formData: FormData) {
   return await formFactory.validateFormData(formData);
 }
 ```
-- The action we've discussed is straightforward yet essential. It activates exclusively on the server side when we submit our form. In the example given, the action employs `formFactory.validateFormData(formData)`. This function takes care of validating the data received from the client during form submission. It's ab efficient way to ensure data compliance with our predefined server rules.
+- The action we've discussed is straightforward yet essential. It activates exclusively on the server side when we submit our form. In the example given, the action employs `formFactory.validateFormData(formData)`. This function takes care of validating the data received from the client during form submission. It's an efficient way to ensure data compliance with our predefined server rules.
 
 - Now, let's shift our focus to the client component:
   - For those who might be exploring this for the first time, `useFormState` is a relatively new hook in React. You can find more details in React's documentation on [useFormState](https://react.dev/reference/react-dom/hooks/useFormState). This hook represents a significant advancement as it allows us to dynamically update the state based on the outcomes of a form action. It's an effective way to manage form states, especially in response to server-side interactions.

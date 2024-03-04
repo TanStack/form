@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/react-form",
-  "version": "0.13.6",
+  "version": "0.13.7",
   "description": "Powerful, type-safe forms for React.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -15,7 +15,7 @@
     "clean": "rimraf ./dist && rimraf ./coverage",
     "test:eslint": "eslint --ext .ts,.tsx ./src",
     "test:types:versions49": "node ../../node_modules/typescript49/lib/tsc.js --project tsconfig.legacy.json",
-    "test:types:versions50": "node ../../node_modules/typescript50/lib/tsc.js",
+    "test:types:versions50": "node ../../node_modules/typescript50/lib/tsc.js --project tsconfig.50.json",
     "test:types:versions51": "node ../../node_modules/typescript51/lib/tsc.js",
     "test:types:versions52": "tsc",
     "test:types": "pnpm run \"/^test:types:versions.*/\"",
