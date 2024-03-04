@@ -469,23 +469,6 @@ export class FieldApi<
   swapValues = (aIndex: number, bIndex: number) =>
     this.form.swapFieldValues(this.name, aIndex, bIndex)
 
-  getSubField = <
-    TSubName extends DeepKeys<TData>,
-    TSubData extends DeepValue<TData, TSubName> = DeepValue<TData, TSubName>,
-  >(
-    name: TSubName,
-  ): FieldApi<
-    TData,
-    TSubName,
-    Validator<TSubData, unknown> | undefined,
-    Validator<TData, unknown> | undefined,
-    TSubData
-  > =>
-    new FieldApi({
-      name: `${this.name}.${name}` as never,
-      form: this.form,
-    }) as any
-
   validateSync = (value = this.state.value, cause: ValidationCause) => {
     const validates = getSyncValidatorArray(cause, this.options)
 
