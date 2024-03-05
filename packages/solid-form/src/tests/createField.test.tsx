@@ -2,9 +2,9 @@
 import { render, waitFor } from '@solidjs/testing-library'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
+import { Index, Show } from 'solid-js'
 import { createForm, createFormFactory } from '../index'
 import { sleep } from './utils'
-import { Index, Show } from 'solid-js'
 
 const user = userEvent.setup()
 
