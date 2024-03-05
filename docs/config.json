@@ -75,6 +75,10 @@
           "label": "Guides",
           "children": [
             {
+              "label": "Arrays",
+              "to": "framework/react/guides/arrays"
+            },
+            {
               "label": "UI Libraries",
               "to": "framework/react/guides/ui-libraries"
             },

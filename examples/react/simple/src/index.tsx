@@ -1,15 +1,28 @@
 import * as React from 'react'
 import { createRoot } from 'react-dom/client'
 import { useForm } from '@tanstack/react-form'
+import type { FieldApi } from '@tanstack/react-form'
+
+function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
+  return (
+    <>
+      {field.state.meta.touchedErrors ? (
+        <em>{field.state.meta.touchedErrors}</em>
+      ) : null}
+      {field.state.meta.isValidating ? 'Validating...' : null}
+    </>
+  )
+}
 
 export default function App() {
   const form = useForm({
     defaultValues: {
-      people: [] as Array<{ age: number; name: string }>,
+      firstName: '',
+      lastName: '',
     },
     onSubmit: async ({ value }) => {
       // Do something with form data
-      alert(JSON.stringify(value, null, 2))
+      console.log(value)
     },
   })
 
@@ -23,41 +36,61 @@ export default function App() {
           void form.handleSubmit()
         }}
       >
-        <form.Field name="people">
-          {(field) => {
-            return (
-              <div>
-                {field.state.value.map((_, i) => {
-                  return (
-                    <form.Field name={`people[${i}].name`}>
-                      {(subField) => {
-                        return (
-                          <div>
-                            <label>
-                              <div>Name for person {i}</div>
-                              <input
-                                value={subField.state.value}
-                                onChange={(e) =>
-                                  subField.handleChange(e.target.value)
-                                }
-                              />
-                            </label>
-                          </div>
-                        )
-                      }}
-                    </form.Field>
-                  )
-                })}
-                <button
-                  onClick={() => field.pushValue({ name: '', age: 0 })}
-                  type="button"
-                >
-                  Add person
-                </button>
-              </div>
-            )
-          }}
-        </form.Field>
+        <div>
+          {/* A type-safe field component*/}
+          <form.Field
+            name="firstName"
+            validators={{
+              onChange: ({ value }) =>
+                !value
+                  ? 'A first name is required'
+                  : value.length < 3
+                    ? 'First name must be at least 3 characters'
+                    : undefined,
+              onChangeAsyncDebounceMs: 500,
+              onChangeAsync: async ({ value }) => {
+                await new Promise((resolve) => setTimeout(resolve, 1000))
+                return (
+                  value.includes('error') && 'No "error" allowed in first name'
+                )
+              },
+            }}
+            children={(field) => {
+              // Avoid hasty abstractions. Render props are great!
+              return (
+                <>
+                  <label htmlFor={field.name}>First Name:</label>
+                  <input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                  <FieldInfo field={field} />
+                </>
+              )
+            }}
+          />
+        </div>
+        <div>
+          <form.Field
+            name="lastName"
+            children={(field) => (
+              <>
+                <label htmlFor={field.name}>Last Name:</label>
+                <input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                <FieldInfo field={field} />
+              </>
+            )}
+          />
+        </div>
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
           children={([canSubmit, isSubmitting]) => (
