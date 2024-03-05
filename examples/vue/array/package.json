@@ -1,5 +1,5 @@
 {
-  "name": "@tanstack/form-example-vue-simple",
+  "name": "@tanstack/form-example-vue-array",
   "private": true,
   "scripts": {
     "dev": "vite",

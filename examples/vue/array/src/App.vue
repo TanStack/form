@@ -21,14 +21,14 @@ const form = useForm({
   >
     <div>
       <form.Field name="people">
-        <template v-slot="{ field, state }">
+        <template v-slot="{ field }">
           <div>
             <form.Field
               v-for="(_, i) of field.state.value"
               :key="i"
-              :name="`people[${i}].name`"
+              :name="`people[${i as never as number}].name`"
             >
-              <template v-slot="{ field: subField, state }">
+              <template v-slot="{ field: subField }">
                 <div>
                   <label>
                     <div>Name for person {{ i }}</div>
