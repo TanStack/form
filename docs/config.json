@@ -161,6 +161,15 @@
           ]
         },
         {
+          "label": "Guides",
+          "children": [
+            {
+              "label": "Arrays",
+              "to": "framework/react/guides/arrays"
+            }
+          ]
+        },
+        {
           "label": "API Reference",
           "children": [
             {
