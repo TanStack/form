@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import { createForm, createFormFactory } from '../index'
 import { sleep } from './utils'
-import { For, Show } from 'solid-js'
+import { Index, Show } from 'solid-js'
 
 const user = userEvent.setup()
 
@@ -386,11 +386,6 @@ describe('createField', () => {
     expect(getByText(error)).toBeInTheDocument()
   })
 
-  /**
-   * This test fails as it seems that `form.Field` is unmounting after each update to the array
-   *
-   * This is unintentional behavior and should be considered a bug
-   */
   it('should handle arrays with subvalues', async () => {
     const fn = vi.fn()
 
@@ -415,18 +410,18 @@ describe('createField', () => {
               {(field) => (
                 <div>
                   <Show when={field().state.value.length > 0}>
-                    <For each={field().state.value}>
+                    {/* Do not change this to For or the test will fail */}
+                    <Index each={field().state.value}>
                       {(_, i) => {
                         return (
-                          <form.Field name={`people[${i()}].name`}>
+                          <form.Field name={`people[${i}].name`}>
                             {(subField) => (
                               <div>
                                 <label>
-                                  <div>Name for person {i()}</div>
+                                  <div>Name for person {i}</div>
                                   <input
                                     value={subField().state.value}
                                     onInput={(e) => {
-                                      debugger
                                       subField().handleChange(
                                         e.currentTarget.value,
                                       )
@@ -438,7 +433,7 @@ describe('createField', () => {
                           </form.Field>
                         )
                       }}
-                    </For>
+                    </Index>
                   </Show>
 
                   <button
@@ -456,8 +451,9 @@ describe('createField', () => {
       )
     }
 
-    const { getByText, debug, findByLabelText, queryByText, findByText } =
-      render(() => <Comp />)
+    const { getByText, findByLabelText, queryByText, findByText } = render(
+      () => <Comp />,
+    )
 
     expect(queryByText('Name for person 0')).not.toBeInTheDocument()
     await user.click(getByText('Add person'))
@@ -465,8 +461,6 @@ describe('createField', () => {
     expect(input).toBeInTheDocument()
     await user.type(input, 'John')
     await user.click(await findByText('Submit'))
-    // TODO: Remove this when this test is fixed
-    console.log(JSON.stringify(fn.mock.calls[0]))
     expect(fn).toHaveBeenCalledWith({
       people: [{ name: 'John', age: 0 }],
     })
