@@ -456,6 +456,28 @@ importers:
         specifier: ^2.8.0
         version: 2.8.0(solid-js@1.7.12)(vite@5.0.12)
 
+  examples/vue/array:
+    dependencies:
+      '@tanstack/vue-form':
+        specifier: ^0.13.7
+        version: link:../../../packages/vue-form
+      vue:
+        specifier: ^3.3.4
+        version: 3.3.4
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^5.0.2
+        version: 5.0.2(vite@5.0.12)(vue@3.3.4)
+      typescript:
+        specifier: 5.2.2
+        version: 5.2.2
+      vite:
+        specifier: ^5.0.10
+        version: 5.0.12(@types/node@18.19.4)
+      vue-tsc:
+        specifier: ^1.8.10
+        version: 1.8.27(typescript@5.2.2)
+
   examples/vue/simple:
     dependencies:
       '@tanstack/vue-form':

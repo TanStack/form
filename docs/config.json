@@ -189,6 +189,10 @@
               "to": "framework/vue/examples/simple"
             },
             {
+              "label": "Arrays",
+              "to": "framework/vue/examples/array"
+            },
+            {
               "label": "Yup",
               "to": "framework/vue/examples/yup"
             },
