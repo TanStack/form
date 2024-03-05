@@ -154,26 +154,6 @@ describe('field api', () => {
     expect(field.getValue()).toStrictEqual(['two', 'one'])
   })
 
-  it('should get a subfield properly', () => {
-    const form = new FormApi({
-      defaultValues: {
-        names: {
-          first: 'one',
-          second: 'two',
-        },
-      },
-    })
-
-    const field = new FieldApi({
-      form,
-      name: 'names',
-    })
-
-    const subfield = field.getSubField('first')
-
-    expect(subfield.getValue()).toBe('one')
-  })
-
   it('should not throw errors when no meta info is stored on a field and a form re-renders', async () => {
     const form = new FormApi({
       defaultValues: {
@@ -602,7 +582,7 @@ describe('field api', () => {
 
     const unmount = field.mount()
     unmount()
-    expect(form.getFieldInfo(field.name).instances[field.uid]).toBeDefined()
+    expect(form.getFieldInfo(field.name).instance).toBeDefined()
     expect(form.getFieldInfo(field.name)).toBeDefined()
   })
 
@@ -624,8 +604,8 @@ describe('field api', () => {
     unmount()
     const info = form.getFieldInfo(field.name)
     subscription()
-    expect(info.instances[field.uid]).toBeUndefined()
-    expect(Object.keys(info.instances).length).toBe(0)
+    expect(info.instance).toBeNull()
+    expect(Object.keys(info.instance ?? {}).length).toBe(0)
 
     // Check that form store has been updated
     expect(callback).toHaveBeenCalledOnce()

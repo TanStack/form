@@ -3,9 +3,9 @@ import * as React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
-import { createFormFactory } from '../index'
+import { createFormFactory, useForm } from '../index'
 import { sleep } from './utils'
-import type { FormApi } from '../index'
+import type { FieldApi, FormApi } from '../index'
 
 const user = userEvent.setup()
 
@@ -101,7 +101,12 @@ describe('useField', () => {
     const formFactory = createFormFactory<Person>()
 
     function Comp() {
-      const form = formFactory.useForm()
+      const form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+      })
 
       return (
         <>
@@ -143,7 +148,12 @@ describe('useField', () => {
     const formFactory = createFormFactory<Person>()
 
     function Comp() {
-      const form = formFactory.useForm()
+      const form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+      })
 
       return (
         <>
@@ -188,7 +198,12 @@ describe('useField', () => {
     const formFactory = createFormFactory<Person>()
 
     function Comp() {
-      const form = formFactory.useForm()
+      const form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+      })
 
       return (
         <>
@@ -239,7 +254,12 @@ describe('useField', () => {
     const formFactory = createFormFactory<Person>()
 
     function Comp() {
-      const form = formFactory.useForm()
+      const form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+      })
 
       return (
         <>
@@ -288,7 +308,12 @@ describe('useField', () => {
     const formFactory = createFormFactory<Person>()
 
     function Comp() {
-      const form = formFactory.useForm()
+      const form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+      })
 
       return (
         <>
@@ -346,7 +371,12 @@ describe('useField', () => {
     const formFactory = createFormFactory<Person>()
 
     function Comp() {
-      const form = formFactory.useForm()
+      const form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+      })
 
       return (
         <>
@@ -395,7 +425,12 @@ describe('useField', () => {
     const formFactory = createFormFactory<Person>()
     let form: FormApi<Person> | null = null
     function Comp() {
-      form = formFactory.useForm()
+      form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+      })
       return (
         <>
           <form.Field
@@ -433,7 +468,12 @@ describe('useField', () => {
     const formFactory = createFormFactory<Person>()
     let form: FormApi<Person> | null = null
     function Comp() {
-      form = formFactory.useForm()
+      form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+      })
       return (
         <>
           <form.Field
@@ -461,5 +501,116 @@ describe('useField', () => {
     unmount()
     const info = form!.fieldInfo
     expect(Object.keys(info)).toHaveLength(0)
+  })
+
+  it('should handle strict mode properly with conditional fields', async () => {
+    function FieldInfo({ field }: { field: FieldApi<any, any> }) {
+      return (
+        <>
+          {field.state.meta.touchedErrors ? (
+            <em>{field.state.meta.touchedErrors}</em>
+          ) : null}
+          {field.state.meta.isValidating ? 'Validating...' : null}
+        </>
+      )
+    }
+
+    function Comp() {
+      const [showField, setShowField] = React.useState(true)
+
+      const form = useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        onSubmit: async () => {},
+      })
+
+      return (
+        <div>
+          <form.Provider>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                void form.handleSubmit()
+              }}
+            >
+              <div>
+                {/* A type-safe field component*/}
+                {showField ? (
+                  <form.Field
+                    name="firstName"
+                    validators={{
+                      onChange: ({ value }) =>
+                        !value ? 'A first name is required' : undefined,
+                    }}
+                    children={(field) => {
+                      // Avoid hasty abstractions. Render props are great!
+                      return (
+                        <>
+                          <label htmlFor={field.name}>First Name:</label>
+                          <input
+                            name={field.name}
+                            value={field.state.value}
+                            onBlur={field.handleBlur}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                          />
+                          <FieldInfo field={field} />
+                        </>
+                      )
+                    }}
+                  />
+                ) : null}
+              </div>
+              <div>
+                <form.Field
+                  name="lastName"
+                  children={(field) => (
+                    <>
+                      <label htmlFor={field.name}>Last Name:</label>
+                      <input
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                      />
+                      <FieldInfo field={field} />
+                    </>
+                  )}
+                />
+              </div>
+              <form.Subscribe
+                selector={(state) => [state.canSubmit, state.isSubmitting]}
+                children={([canSubmit, isSubmitting]) => (
+                  <button type="submit" disabled={!canSubmit}>
+                    {isSubmitting ? '...' : 'Submit'}
+                  </button>
+                )}
+              />
+              <button
+                type="button"
+                onClick={() => setShowField((prev) => !prev)}
+              >
+                {showField ? 'Hide field' : 'Show field'}
+              </button>
+            </form>
+          </form.Provider>
+        </div>
+      )
+    }
+
+    const { getByText, findByText, queryByText } = render(
+      <React.StrictMode>
+        <Comp />
+      </React.StrictMode>,
+    )
+
+    await user.click(getByText('Submit'))
+    expect(await findByText('A first name is required')).toBeInTheDocument()
+    await user.click(getByText('Hide field'))
+    await user.click(getByText('Submit'))
+    expect(queryByText('A first name is required')).not.toBeInTheDocument()
   })
 })

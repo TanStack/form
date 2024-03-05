@@ -105,15 +105,12 @@ export type FieldInfo<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > = {
-  instances: Record<
-    string,
-    FieldApi<
-      TFormData,
-      any,
-      Validator<unknown, unknown> | undefined,
-      TFormValidator
-    >
-  >
+  instance: FieldApi<
+    TFormData,
+    any,
+    Validator<unknown, unknown> | undefined,
+    TFormValidator
+  > | null
   validationMetaMap: Record<ValidationErrorMapKeys, ValidationMeta | undefined>
 }
 
@@ -343,17 +340,17 @@ export class FormApi<
       void (
         Object.values(this.fieldInfo) as FieldInfo<any, TFormValidator>[]
       ).forEach((field) => {
-        Object.values(field.instances).forEach((instance) => {
-          // Validate the field
-          fieldValidationPromises.push(
-            Promise.resolve().then(() => instance.validate(cause)),
-          )
-          // If any fields are not touched
-          if (!instance.state.meta.isTouched) {
-            // Mark them as touched
-            instance.setMeta((prev) => ({ ...prev, isTouched: true }))
-          }
-        })
+        if (!field.instance) return
+        const fieldInstance = field.instance
+        // Validate the field
+        fieldValidationPromises.push(
+          Promise.resolve().then(() => fieldInstance.validate(cause)),
+        )
+        // If any fields are not touched
+        if (!field.instance.state.meta.isTouched) {
+          // Mark them as touched
+          field.instance.setMeta((prev) => ({ ...prev, isTouched: true }))
+        }
       })
     })
 
@@ -590,7 +587,7 @@ export class FormApi<
   ): FieldInfo<TFormData, TFormValidator> => {
     // eslint-disable-next-line  @typescript-eslint/no-unnecessary-condition
     return (this.fieldInfo[field] ||= {
-      instances: {},
+      instance: null,
       validationMetaMap: {
         onChange: undefined,
         onBlur: undefined,
@@ -648,6 +645,7 @@ export class FormApi<
 
       return newState
     })
+    delete this.fieldInfo[field]
   }
 
   pushFieldValue = <TField extends DeepKeys<TFormData>>(

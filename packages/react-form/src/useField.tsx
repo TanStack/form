@@ -1,8 +1,7 @@
-import React, { useRef, useState } from 'rehackt'
+import React, { useState } from 'rehackt'
 import { useStore } from '@tanstack/react-store'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
-import { useIsomorphicEffectOnce } from './useIsomorphicEffectOnce'
 import type { UseFieldOptions } from './types'
 import type {
   DeepKeys,
@@ -75,6 +74,8 @@ export function useField<
     return api
   })
 
+  useIsomorphicLayoutEffect(fieldApi.mount, [fieldApi])
+
   /**
    * fieldApi.update should not have any side effects. Think of it like a `useRef`
    * that we need to keep updated every render with the most up-to-date information.
@@ -91,19 +92,6 @@ export function useField<
         }
       : undefined,
   )
-  const unmountFn = useRef<(() => void) | null>(null)
-
-  useIsomorphicEffectOnce(() => {
-    return () => {
-      unmountFn.current?.()
-    }
-  })
-
-  // We have to mount it right as soon as it renders, otherwise we get:
-  // https://github.com/TanStack/form/issues/523
-  if (!unmountFn.current) {
-    unmountFn.current = fieldApi.mount()
-  }
 
   return fieldApi as never
 }
