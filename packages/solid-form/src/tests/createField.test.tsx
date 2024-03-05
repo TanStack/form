@@ -2,8 +2,9 @@
 import { render, waitFor } from '@solidjs/testing-library'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
-import { createFormFactory } from '../index'
+import { createForm, createFormFactory } from '../index'
 import { sleep } from './utils'
+import { For, Show } from 'solid-js'
 
 const user = userEvent.setup()
 
@@ -383,5 +384,91 @@ describe('createField', () => {
     expect(mockFn).toHaveBeenCalledTimes(0)
     await waitFor(() => getByText(error))
     expect(getByText(error)).toBeInTheDocument()
+  })
+
+  /**
+   * This test fails as it seems that `form.Field` is unmounting after each update to the array
+   *
+   * This is unintentional behavior and should be considered a bug
+   */
+  it('should handle arrays with subvalues', async () => {
+    const fn = vi.fn()
+
+    function Comp() {
+      const form = createForm(() => ({
+        defaultValues: {
+          people: [] as Array<{ age: number; name: string }>,
+        },
+        onSubmit: ({ value }) => fn(value),
+      }))
+
+      return (
+        <div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              void form.handleSubmit()
+            }}
+          >
+            <form.Field name="people">
+              {(field) => (
+                <div>
+                  <Show when={field().state.value.length > 0}>
+                    <For each={field().state.value}>
+                      {(_, i) => {
+                        return (
+                          <form.Field name={`people[${i()}].name`}>
+                            {(subField) => (
+                              <div>
+                                <label>
+                                  <div>Name for person {i()}</div>
+                                  <input
+                                    value={subField().state.value}
+                                    onInput={(e) => {
+                                      debugger
+                                      subField().handleChange(
+                                        e.currentTarget.value,
+                                      )
+                                    }}
+                                  />
+                                </label>
+                              </div>
+                            )}
+                          </form.Field>
+                        )
+                      }}
+                    </For>
+                  </Show>
+
+                  <button
+                    onClick={() => field().pushValue({ name: '', age: 0 })}
+                    type="button"
+                  >
+                    Add person
+                  </button>
+                </div>
+              )}
+            </form.Field>
+            <button type="submit">Submit</button>
+          </form>
+        </div>
+      )
+    }
+
+    const { getByText, debug, findByLabelText, queryByText, findByText } =
+      render(() => <Comp />)
+
+    expect(queryByText('Name for person 0')).not.toBeInTheDocument()
+    await user.click(getByText('Add person'))
+    const input = await findByLabelText('Name for person 0')
+    expect(input).toBeInTheDocument()
+    await user.type(input, 'John')
+    await user.click(await findByText('Submit'))
+    // TODO: Remove this when this test is fixed
+    console.log(JSON.stringify(fn.mock.calls[0]))
+    expect(fn).toHaveBeenCalledWith({
+      people: [{ name: 'John', age: 0 }],
+    })
   })
 })
