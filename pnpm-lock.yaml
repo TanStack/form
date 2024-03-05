@@ -120,6 +120,25 @@ importers:
         specifier: ^3.3.4
         version: 3.3.4
 
+  examples/react/array:
+    dependencies:
+      '@tanstack/react-form':
+        specifier: ^0.13.7
+        version: link:../../../packages/react-form
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      '@vitejs/plugin-react':
+        specifier: ^4.2.1
+        version: 4.2.1(vite@5.0.12)
+      vite:
+        specifier: ^5.0.10
+        version: 5.0.12(@types/node@18.19.4)
+
   examples/react/next-server-actions:
     dependencies:
       '@tanstack/react-form':
@@ -3726,6 +3745,7 @@ packages:
   /clone@1.0.4:
     resolution: {integrity: sha512-JQHZ2QMW6l3aH/j6xCqQThY/9OH4D/9ls34cgkUBiEeocRTU04tHfKPBsUK1PqZCUQM7GiA0IIXJSuXHI64Kbg==}
     engines: {node: '>=0.8'}
+    requiresBuild: true
     dev: true
 
   /clsx@2.0.0:
@@ -4015,6 +4035,7 @@ packages:
 
   /defaults@1.0.4:
     resolution: {integrity: sha512-eFuaLoy/Rxalv2kr+lqMlUnrDWV+3j4pljOIJgLIhI058IQfWJ7vXhyEIHu+HtC738klGALYxOKDO0bQP3tg8A==}
+    requiresBuild: true
     dependencies:
       clone: 1.0.4
     dev: true
