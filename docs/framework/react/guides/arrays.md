@@ -18,7 +18,7 @@ function App() {
   })
 
   return (
-    <form.Field name="people">
+    <form.Field name="people" mode="array">
       {(field) => (
         <div>
           {field.state.value.map((_, i) => {
