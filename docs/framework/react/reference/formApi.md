@@ -8,10 +8,6 @@ title: Form API
 When using `@tanstack/react-form`, the [core form API](../../reference/formApi) is extended at type level with additional methods for React-specific functionality:
 
 - ```tsx
-  Provider: (props: PropsWithChildren) => JSX.Element
-  ```
-  - React provider use to wrap your components. Reference React's [ContextProvider]("https://react.dev/reference/react/createContext#provider")
-- ```tsx
   Field: FieldComponent<TFormData, TFormValidator>
   ```
   - A React component to render form fields. With this, you can render and manage individual form fields.

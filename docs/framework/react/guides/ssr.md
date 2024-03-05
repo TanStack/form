@@ -98,7 +98,7 @@ const ClientComp = () => {
     formFactory.initialFormState
   );
 
-   const { useStore, Provider, Subscribe, handleSubmit, Field } =
+   const { useStore, Subscribe, handleSubmit, Field } =
     formFactory.useForm({
       transform: useTransform(
         (baseForm: FormApi<any, any>) => mergeForm(baseForm, state),
@@ -120,7 +120,6 @@ const ClientComp = () => {
 
 - Benefits of `formFactory`: Much like the useForm hook, formFactory streamlines the process of form management. It provides us with necessary functionalities such as:
   - `useStore`: Observes and reflects the current state of the form on the client side.
-  - `Provider`: Acts as a context provider for the form, ensuring state and actions are accessible throughout the component.
   - `Subscribe`: Enables the component to listen to form-specific events, like `canSubmit` and `isSubmitting`.
   - `handleSubmit`: Orchestrates the submission logic of the form.
   - `Field`: Manages individual form fields, adopting the `renderProps` pattern for greater flexibility.
@@ -136,7 +135,6 @@ const ClientComp = () => {
  ...
 
   return (
-    <Provider>
       <form action={action as never} onSubmit={() => handleSubmit()}>
         {formErrors.map((error) => (
           <p key={error as string}>{error}</p>
@@ -181,11 +179,10 @@ const ClientComp = () => {
           )}
         </Subscribe>
       </form>
-    </Provider>
   );
 };
 ```
 
-- In our UI, implementing the form is straightforward. We encapsulate our form within a `Provider`. A notable aspect here is the integration of our server action within the `form`. For the form's `action`, we utilize the `action` obtained from `useFormState`. This setup triggers the server action upon form submission. If everything processes successfully, the action will complete without issues. Otherwise, we'll encounter an error like "Server validation: You must be at least 12 to sign up."
+- In our UI, implementing the form is straightforward. A notable aspect here is the integration of our server action within the `form`. For the form's `action`, we utilize the `action` obtained from `useFormState`. This setup triggers the server action upon form submission. If everything processes successfully, the action will complete without issues. Otherwise, we'll encounter an error like "Server validation: You must be at least 12 to sign up."
 
 - You might now be wondering about client-side validation. How do we implement it? 🤔 The answer lies in the `handleSubmit` function. By assigning `handleSubmit` to the form's `onSubmit` event, we can handle client-side validation in the normal client side manner.
