@@ -3,7 +3,7 @@ import { defineComponent, h } from 'vue'
 import { render, waitFor } from '@testing-library/vue'
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
-import { createFormFactory, provideFormContext } from '../index'
+import { createFormFactory } from '../index'
 import { sleep } from './utils'
 import type { FieldApi } from '../index'
 
@@ -20,8 +20,6 @@ describe('useField', () => {
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm()
-
-      provideFormContext({ formApi: form })
 
       return () => (
         <form.Field name="firstName" defaultValue="FirstName">
@@ -59,8 +57,6 @@ describe('useField', () => {
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm()
-
-      provideFormContext({ formApi: form })
 
       return () => (
         <form.Field
@@ -109,8 +105,6 @@ describe('useField', () => {
     const Comp = defineComponent(() => {
       const form = formFactory.useForm()
 
-      provideFormContext({ formApi: form })
-
       return () => (
         <form.Field
           name="firstName"
@@ -158,8 +152,6 @@ describe('useField', () => {
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm()
-
-      provideFormContext({ formApi: form })
 
       return () => (
         <form.Field
@@ -214,8 +206,6 @@ describe('useField', () => {
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm()
-
-      provideFormContext({ formApi: form })
 
       return () => (
         <form.Field

@@ -1,7 +1,6 @@
 import { FieldApi } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
 import { defineComponent, onMounted, onUnmounted, watch } from 'vue'
-import { provideFormContext, useFormContext } from './formContext'
 import type {
   DeepKeys,
   DeepValue,
@@ -38,21 +37,26 @@ export type UseField<
   TFieldValidator extends
     | Validator<DeepValue<TParentData, TName>, unknown>
     | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 >(
-  opts?: { name: Narrow<TName> } & UseFieldOptions<
-    TParentData,
-    TName,
-    TFieldValidator,
-    TFormValidator,
-    DeepValue<TParentData, TName>
+  opts: Omit<
+    UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>,
+    'form'
   >,
-) => FieldApi<
-  TParentData,
-  TName,
-  TFieldValidator,
-  TFormValidator,
-  DeepValue<TParentData, TName>
->
+) => {
+  api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  state: Readonly<
+    Ref<
+      FieldApi<
+        TParentData,
+        TName,
+        TFieldValidator,
+        TFormValidator,
+        TData
+      >['state']
+    >
+  >
+}
 
 export function useField<
   TParentData,
@@ -73,16 +77,7 @@ export function useField<
     TData
   >,
 ): {
-  api: FieldApi<
-    TParentData,
-    TName,
-    TFieldValidator,
-    TFormValidator,
-    TData
-    // Omit<typeof opts, 'onMount'> & {
-    //   form: FormApi<TParentData>
-    // }
-  >
+  api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
   state: Readonly<
     Ref<
       FieldApi<
@@ -95,13 +90,10 @@ export function useField<
     >
   >
 } {
-  // Get the form API either manually or from context
-  const { formApi, parentFieldName } = useFormContext()
-
   const fieldApi = (() => {
     const api = new FieldApi({
       ...opts,
-      form: formApi,
+      form: opts.form,
       name: opts.name,
     } as never)
 
@@ -125,18 +117,12 @@ export function useField<
     () => opts,
     () => {
       // Keep options up to date as they are rendered
-      fieldApi.update({ ...opts, form: formApi } as never)
+      fieldApi.update({ ...opts, form: opts.form } as never)
     },
   )
 
   return { api: fieldApi, state: fieldState } as never
 }
-
-export type FieldValue<TParentData, TName> = TParentData extends any[]
-  ? unknown extends TName
-    ? TParentData[number]
-    : DeepValue<TParentData[number], TName>
-  : DeepValue<TParentData, TName>
 
 type FieldComponentProps<
   TParentData,
@@ -147,19 +133,7 @@ type FieldComponentProps<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
-> = (TParentData extends any[]
-  ? {
-      name?: TName
-      index: number
-    }
-  : {
-      name: TName
-      index?: never
-    }) &
-  Omit<
-    UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>,
-    'name' | 'index'
-  >
+> = UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>
 
 export type FieldComponent<
   TParentData,
@@ -173,11 +147,9 @@ export type FieldComponent<
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 >(
-  fieldOptions: FieldComponentProps<
-    TParentData,
-    TName,
-    TFieldValidator,
-    TFormValidator
+  fieldOptions: Omit<
+    FieldComponentProps<TParentData, TName, TFieldValidator, TFormValidator>,
+    'form'
   >,
   context: SetupContext<
     {},
@@ -222,11 +194,6 @@ export const Field = defineComponent(
     context: SetupContext,
   ) => {
     const fieldApi = useField({ ...fieldOptions, ...context.attrs } as any)
-
-    provideFormContext({
-      formApi: fieldApi.api.form,
-      parentFieldName: fieldApi.api.name,
-    } as never)
 
     return () =>
       context.slots.default!({

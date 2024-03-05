@@ -17,8 +17,6 @@ const form = useForm({
   validatorAdapter: zodValidator,
 })
 
-form.provideFormContext()
-
 const onChangeFirstName = z.string().refine(
   async (value) => {
     await new Promise((resolve) => setTimeout(resolve, 1000))

@@ -3,12 +3,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { render, waitFor } from '@testing-library/vue'
 import { defineComponent, h, ref } from 'vue'
-import {
-  ValidationError,
-  createFormFactory,
-  provideFormContext,
-  useForm,
-} from '../index'
+import { createFormFactory, useForm } from '../index'
 import { sleep } from './utils'
 
 import type { FieldApi, ValidationErrorMap } from '../index'
@@ -26,8 +21,6 @@ describe('useForm', () => {
 
     const Comp = defineComponent(() => {
       const form = formFactory.useForm()
-
-      provideFormContext({ formApi: form })
 
       return () => (
         <form.Field name="firstName" defaultValue="">
@@ -66,7 +59,6 @@ describe('useForm', () => {
           lastName: 'LastName',
         },
       })
-      form.provideFormContext()
 
       return () => (
         <form.Field name="firstName">
@@ -96,7 +88,6 @@ describe('useForm', () => {
           submittedData.value = value
         },
       })
-      form.provideFormContext()
 
       return () => (
         <div>
@@ -153,8 +144,6 @@ describe('useForm', () => {
         },
       })
 
-      form.provideFormContext()
-
       return () =>
         mountForm.value ? (
           <div>
@@ -183,8 +172,6 @@ describe('useForm', () => {
           },
         },
       })
-
-      form.provideFormContext()
 
       return () => (
         <div>
@@ -234,8 +221,6 @@ describe('useForm', () => {
 
       const errors = form.useStore((s) => s.errors)
 
-      form.provideFormContext()
-
       return () => (
         <div>
           <form.Field name="firstName">
@@ -282,8 +267,6 @@ describe('useForm', () => {
       })
 
       const errors = form.useStore((s) => s.errorMap)
-
-      form.provideFormContext()
 
       return () => (
         <div>
@@ -341,8 +324,6 @@ describe('useForm', () => {
 
       const errors = form.useStore((s) => s.errorMap)
 
-      form.provideFormContext()
-
       return () => (
         <div>
           <form.Field name="firstName" defaultMeta={{ isTouched: true }}>
@@ -395,8 +376,6 @@ describe('useForm', () => {
       })
 
       const errors = form.useStore((s) => s.errorMap)
-
-      form.provideFormContext()
 
       return () => (
         <div>
@@ -452,8 +431,6 @@ describe('useForm', () => {
         },
       })
       const errors = form.useStore((s) => s.errorMap)
-
-      form.provideFormContext()
 
       return () => (
         <div>
@@ -512,8 +489,6 @@ describe('useForm', () => {
         },
       })
       const errors = form.useStore((s) => s.errors)
-
-      form.provideFormContext()
 
       return () => (
         <div>

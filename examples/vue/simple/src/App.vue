@@ -13,8 +13,6 @@ const form = useForm({
   },
 })
 
-form.provideFormContext()
-
 async function onChangeFirstName({ value }: { value: string }) {
   await new Promise((resolve) => setTimeout(resolve, 1000))
   return value.includes(`error`) && `No 'error' allowed in first name`
