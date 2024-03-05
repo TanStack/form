@@ -3,7 +3,7 @@ import { defineComponent, h } from 'vue'
 import { render, waitFor } from '@testing-library/vue'
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
-import { createFormFactory } from '../index'
+import { createFormFactory, useForm } from '../index'
 import { sleep } from './utils'
 import type { FieldApi } from '../index'
 
@@ -249,5 +249,89 @@ describe('useField', () => {
     expect(mockFn).toHaveBeenCalledTimes(0)
     await waitFor(() => getByText(error))
     expect(getByText(error)).toBeInTheDocument()
+  })
+
+  it('should handle arrays with subvalues', async () => {
+    const fn = vi.fn()
+
+    type CompVal = { people: Array<{ age: number; name: string }> }
+
+    const Comp = defineComponent(() => {
+      const form = useForm({
+        defaultValues: {
+          people: [],
+        } as CompVal,
+        onSubmit: ({ value }) => fn(value),
+      })
+
+      return () => (
+        <div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              void form.handleSubmit()
+            }}
+          >
+            <form.Field name="people">
+              {({
+                field,
+              }: {
+                field: FieldApi<CompVal, 'people', never, never>
+              }) => (
+                <div>
+                  {field.state.value.map((_, i) => {
+                    return (
+                      <form.Field key={i} name={`people[${i}].name`}>
+                        {({
+                          field: subField,
+                        }: {
+                          field: FieldApi<
+                            CompVal,
+                            `people[${number}].name`,
+                            never,
+                            never
+                          >
+                        }) => (
+                          <div>
+                            <label>
+                              <div>Name for person {i}</div>
+                              <input
+                                value={subField.state.value}
+                                onChange={(e) =>
+                                  subField.handleChange(
+                                    (e.target as HTMLInputElement).value,
+                                  )
+                                }
+                              />
+                            </label>
+                          </div>
+                        )}
+                      </form.Field>
+                    )
+                  })}
+                  <button
+                    onClick={() => field.pushValue({ name: '', age: 0 })}
+                    type="button"
+                  >
+                    Add person
+                  </button>
+                </div>
+              )}
+            </form.Field>
+            <button type="submit">Submit</button>
+          </form>
+        </div>
+      )
+    })
+
+    const { queryByText, getByText, findByLabelText, findByText } = render(Comp)
+    expect(queryByText('Name for person 0')).not.toBeInTheDocument()
+    await user.click(getByText('Add person'))
+    const input = await findByLabelText('Name for person 0')
+    expect(input).toBeInTheDocument()
+    await user.type(input, 'John')
+    await user.click(await findByText('Submit'))
+    expect(fn).toHaveBeenCalledWith({ people: [{ name: 'John', age: 0 }] })
   })
 })
