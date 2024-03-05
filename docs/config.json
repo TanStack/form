@@ -125,6 +125,10 @@
               "to": "framework/react/examples/simple"
             },
             {
+              "label": "Arrays",
+              "to": "framework/react/examples/array"
+            },
+            {
               "label": "Yup",
               "to": "framework/react/examples/yup"
             },
@@ -213,6 +217,15 @@
           ]
         },
         {
+          "label": "Guides",
+          "children": [
+            {
+              "label": "Arrays",
+              "to": "framework/react/guides/arrays"
+            }
+          ]
+        },
+        {
           "label": "API Reference",
           "children": [
             {
@@ -239,6 +252,10 @@
             {
               "label": "Simple",
               "to": "framework/solid/examples/simple"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/solid/examples/array"
             },
             {
               "label": "Yup",

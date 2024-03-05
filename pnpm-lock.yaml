@@ -343,6 +343,25 @@ importers:
         specifier: ^5.0.10
         version: 5.0.12(@types/node@18.19.4)
 
+  examples/solid/array:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^0.13.7
+        version: link:../../../packages/solid-form
+      solid-js:
+        specifier: ^1.7.8
+        version: 1.7.12
+    devDependencies:
+      typescript:
+        specifier: 5.2.2
+        version: 5.2.2
+      vite:
+        specifier: ^5.0.10
+        version: 5.0.12(@types/node@18.19.4)
+      vite-plugin-solid:
+        specifier: ^2.8.0
+        version: 2.8.0(solid-js@1.7.12)(vite@5.0.12)
+
   examples/solid/simple:
     dependencies:
       '@tanstack/solid-form':
