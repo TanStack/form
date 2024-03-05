@@ -529,74 +529,69 @@ describe('useField', () => {
 
       return (
         <div>
-          <form.Provider>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                void form.handleSubmit()
-              }}
-            >
-              <div>
-                {/* A type-safe field component*/}
-                {showField ? (
-                  <form.Field
-                    name="firstName"
-                    validators={{
-                      onChange: ({ value }) =>
-                        !value ? 'A first name is required' : undefined,
-                    }}
-                    children={(field) => {
-                      // Avoid hasty abstractions. Render props are great!
-                      return (
-                        <>
-                          <label htmlFor={field.name}>First Name:</label>
-                          <input
-                            name={field.name}
-                            value={field.state.value}
-                            onBlur={field.handleBlur}
-                            onChange={(e) => field.handleChange(e.target.value)}
-                          />
-                          <FieldInfo field={field} />
-                        </>
-                      )
-                    }}
-                  />
-                ) : null}
-              </div>
-              <div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              void form.handleSubmit()
+            }}
+          >
+            <div>
+              {/* A type-safe field component*/}
+              {showField ? (
                 <form.Field
-                  name="lastName"
-                  children={(field) => (
-                    <>
-                      <label htmlFor={field.name}>Last Name:</label>
-                      <input
-                        name={field.name}
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                      />
-                      <FieldInfo field={field} />
-                    </>
-                  )}
+                  name="firstName"
+                  validators={{
+                    onChange: ({ value }) =>
+                      !value ? 'A first name is required' : undefined,
+                  }}
+                  children={(field) => {
+                    // Avoid hasty abstractions. Render props are great!
+                    return (
+                      <>
+                        <label htmlFor={field.name}>First Name:</label>
+                        <input
+                          name={field.name}
+                          value={field.state.value}
+                          onBlur={field.handleBlur}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                        />
+                        <FieldInfo field={field} />
+                      </>
+                    )
+                  }}
                 />
-              </div>
-              <form.Subscribe
-                selector={(state) => [state.canSubmit, state.isSubmitting]}
-                children={([canSubmit, isSubmitting]) => (
-                  <button type="submit" disabled={!canSubmit}>
-                    {isSubmitting ? '...' : 'Submit'}
-                  </button>
+              ) : null}
+            </div>
+            <div>
+              <form.Field
+                name="lastName"
+                children={(field) => (
+                  <>
+                    <label htmlFor={field.name}>Last Name:</label>
+                    <input
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                    <FieldInfo field={field} />
+                  </>
                 )}
               />
-              <button
-                type="button"
-                onClick={() => setShowField((prev) => !prev)}
-              >
-                {showField ? 'Hide field' : 'Show field'}
-              </button>
-            </form>
-          </form.Provider>
+            </div>
+            <form.Subscribe
+              selector={(state) => [state.canSubmit, state.isSubmitting]}
+              children={([canSubmit, isSubmitting]) => (
+                <button type="submit" disabled={!canSubmit}>
+                  {isSubmitting ? '...' : 'Submit'}
+                </button>
+              )}
+            />
+            <button type="button" onClick={() => setShowField((prev) => !prev)}>
+              {showField ? 'Hide field' : 'Show field'}
+            </button>
+          </form>
         </div>
       )
     }

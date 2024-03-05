@@ -38,7 +38,12 @@ export function useForm<
 
     api.Field = defineComponent(
       (props, context) => {
-        return () => h(Field as never, { ...props, ...context.attrs, form: api }, context.slots)
+        return () =>
+          h(
+            Field as never,
+            { ...props, ...context.attrs, form: api },
+            context.slots,
+          )
       },
       {
         name: 'APIField',
