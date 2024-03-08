@@ -4,7 +4,10 @@
     "jsx": "preserve",
     "jsxImportSource": "vue",
     "moduleResolution": "Node",
-    "types": ["vue/jsx"]
+    "types": ["vue/jsx"],
+    "paths": {
+      "@tanstack/form-core": ["../form-core/src"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["src/tests/**"]
