@@ -9,7 +9,7 @@ const config = defineConfig({
     dir: './src',
     watch: false,
     environment: 'jsdom',
-    globals: true,
+    setupFiles: ['test-setup.ts'],
     coverage: { enabled: true, provider: 'istanbul', include: ['src/**/*'] },
     typecheck: { enabled: true },
   },
