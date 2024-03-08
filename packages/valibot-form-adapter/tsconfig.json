@@ -2,7 +2,6 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "moduleResolution": "Bundler",
-    "types": ["vitest/globals"],
     "paths": {
       "@tanstack/form-core": ["../form-core/src"]
     }

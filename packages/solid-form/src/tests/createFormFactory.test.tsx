@@ -1,6 +1,5 @@
-/// <reference lib="dom" />
+import { describe, expect, it } from 'vitest'
 import { render } from '@solidjs/testing-library'
-import '@testing-library/jest-dom'
 import { createFormFactory } from '../index'
 
 describe('createFormFactory', () => {

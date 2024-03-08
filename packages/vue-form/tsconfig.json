@@ -4,7 +4,7 @@
     "jsx": "preserve",
     "jsxImportSource": "vue",
     "moduleResolution": "Bundler",
-    "types": ["vitest/globals", "vue/jsx"],
+    "types": ["vue/jsx"],
     "paths": {
       "@tanstack/form-core": ["../form-core/src"]
     }

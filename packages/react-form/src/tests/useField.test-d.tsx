@@ -1,5 +1,5 @@
-import { assertType } from 'vitest'
 import * as React from 'react'
+import { assertType, it } from 'vitest'
 import { useForm } from '../useForm'
 
 it('should type state.value properly', () => {

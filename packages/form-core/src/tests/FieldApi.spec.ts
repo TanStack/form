@@ -1,4 +1,4 @@
-import { expect, vitest } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { FormApi } from '../FormApi'
 import { FieldApi } from '../FieldApi'
@@ -599,7 +599,7 @@ describe('field api', () => {
     })
 
     const unmount = field.mount()
-    const callback = vitest.fn()
+    const callback = vi.fn()
     const subscription = form.store.subscribe(callback)
     unmount()
     const info = form.getFieldInfo(field.name)
