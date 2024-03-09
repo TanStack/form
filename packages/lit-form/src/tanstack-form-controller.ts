@@ -41,7 +41,7 @@ type fieldDirectiveType<
   }
 }
 
-export class TanstackFormController<
+export class TanStackFormController<
   FormValues,
   FormValidator extends Validator<FormValues> | undefined = undefined,
 > implements ReactiveController

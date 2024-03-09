@@ -7,10 +7,9 @@ import '@material/web/select/select-option.js'
 import '@material/web/button/filled-button.js'
 import '@material/web/button/outlined-button.js'
 
-import { TanstackFormController } from '@tanstack/lit-form'
+import { TanStackFormController } from '@tanstack/lit-form'
 import { repeat } from 'lit/directives/repeat.js'
 import { styles } from './styles.js'
-import { bind } from './custom-bind'
 import type { FormOptions } from '@tanstack/lit-form'
 
 interface Employee {
@@ -27,10 +26,10 @@ interface Data {
 const formConfig: FormOptions<Data> = {}
 
 @customElement('tanstack-form-demo')
-export class TanstackFormDemo extends LitElement {
+export class TanStackFormDemo extends LitElement {
   static styles = styles
 
-  #form = new TanstackFormController(this, formConfig)
+  #form = new TanStackFormController(this, formConfig)
 
   render() {
     return html`
@@ -40,7 +39,7 @@ export class TanstackFormDemo extends LitElement {
           e.preventDefault()
         }}
       >
-        <h1>Tanstack Form - Lit Demo</h1>
+        <h1>TanStack Form - Lit Demo</h1>
         ${this.#form.field(
           {
             name: 'employees',
@@ -48,13 +47,13 @@ export class TanstackFormDemo extends LitElement {
           },
           (employeesField) => {
             return html`${repeat(
-                employeesField.getValue(),
+                employeesField.state.value,
                 (_, index) => index,
                 (_, index) => {
                   return html`
                     ${this.#form.field(
                       {
-                        name: `employees.${index}.firstName`,
+                        name: `employees[${index}].firstName`,
                         validators: {
                           onChange: ({ value }: { value: string }) => {
                             return value && value.length < 3
@@ -69,26 +68,36 @@ export class TanstackFormDemo extends LitElement {
                           <md-filled-text-field
                             type="text"
                             placeholder="First Name"
-                            ${bind(field)}
+                            .value="${field.state.value}"
+                            @blur="${() => field.handleBlur()}"
+                            @input="${(e: Event) => {
+                              const target = e.target as HTMLInputElement
+                              field.handleChange(target.value)
+                            }}"
                           ></md-filled-text-field>
                         </div>`
                       },
                     )}
                     ${this.#form.field(
-                      { name: `employees.${index}.lastName` },
+                      { name: `employees[${index}].lastName` },
                       (lastNameField) => {
                         return html` <div>
                           <label>Last Name</label>
                           <md-filled-text-field
                             type="text"
                             placeholder="Last Name"
-                            ${bind(lastNameField)}
+                            .value="${lastNameField.state.value}"
+                            @blur="${() => lastNameField.handleBlur()}"
+                            @input="${(e: Event) => {
+                              const target = e.target as HTMLInputElement
+                              lastNameField.handleChange(target.value)
+                            }}"
                           ></md-filled-text-field>
                         </div>`
                       },
                     )}
                     ${this.#form.field(
-                      { name: `employees.${index}.employed` },
+                      { name: `employees[${index}].employed` },
                       (employedField) => {
                         return html`<div>
                             <label>Employed?</label>
@@ -96,16 +105,16 @@ export class TanstackFormDemo extends LitElement {
                               type="checkbox"
                               @input="${() =>
                                 employedField.handleChange(
-                                  !employedField.getValue(),
+                                  !employedField.state.value,
                                 )}"
-                              .checked="${employedField.getValue()}"
+                              .checked="${employedField.state.value}"
                               @blur="${() => employedField.handleBlur()}"
                             ></md-checkbox>
                           </div>
-                          ${employedField.getValue()
+                          ${employedField.state.value
                             ? this.#form.field(
                                 {
-                                  name: `employees.${index}.jobTitle`,
+                                  name: `employees[${index}].jobTitle`,
                                   validators: {
                                     onChange: ({
                                       value,
@@ -124,7 +133,14 @@ export class TanstackFormDemo extends LitElement {
                                     <md-filled-text-field
                                       type="text"
                                       placeholder="Job Title"
-                                      ${bind(jobTitleField)}
+                                      .value="${jobTitleField.state.value}"
+                                      @blur="${() =>
+                                        jobTitleField.handleBlur()}"
+                                      @input="${(e: Event) => {
+                                        const target =
+                                          e.target as HTMLInputElement
+                                        jobTitleField.handleChange(target.value)
+                                      }}"
                                     ></md-filled-text-field>
                                   </div>`
                                 },

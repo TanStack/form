@@ -1,5 +1,5 @@
 import { LitElement, html } from 'lit'
-import { TanstackFormController, bind } from '../index.js'
+import { TanStackFormController } from '../index.js'
 import type { FieldApi, FormOptions } from '../index.js'
 
 interface Employee {
@@ -22,7 +22,7 @@ const formConfig: FormOptions<Employee, undefined> = {
 }
 
 export class TestForm extends LitElement {
-  form = new TanstackFormController(this, formConfig)
+  form = new TanStackFormController(this, formConfig)
 
   render() {
     return html`
@@ -32,7 +32,7 @@ export class TestForm extends LitElement {
           e.preventDefault()
         }}
       >
-        <h1>Tanstack Form - Lit Demo</h1>
+        <h1>TanStack Form - Lit Demo</h1>
 
         ${this.form.field(
           {
@@ -49,7 +49,12 @@ export class TestForm extends LitElement {
                 id="firstName"
                 type="text"
                 placeholder="First Name"
-                ${bind(field)}
+                .value="${field.state.value}"
+                @blur="${() => field.handleBlur()}"
+                @input="${(e: Event) => {
+                  const target = e.target as HTMLInputElement
+                  field.handleChange(target.value)
+                }}"
               />
             </div>`
           },
@@ -69,7 +74,12 @@ export class TestForm extends LitElement {
                 id="lastName"
                 type="text"
                 placeholder="Last Name"
-                ${bind(field)}
+                .value="${field.state.value}"
+                @blur="${() => field.handleBlur()}"
+                @input="${(e: Event) => {
+                  const target = e.target as HTMLInputElement
+                  field.handleChange(target.value)
+                }}"
               />
             </div>`
           },
@@ -79,7 +89,16 @@ export class TestForm extends LitElement {
           (field: FieldApi<Employee, 'color'>) => {
             return html` <div>
               <label>Favorite Color</label>
-              <select ${bind(field)}>
+              <select
+                .value="${field.state.value}"
+                @blur="${() => field.handleBlur()}"
+                @input="${(e: Event) => {
+                  const target = e.target as HTMLInputElement
+                  field.handleChange(
+                    target.value as '#FF0000' | '#00FF00' | '#0000FF',
+                  )
+                }}"
+              >
                 <option value="#FF0000">Red</option>
                 <option value="#00FF00">Green</option>
                 <option value="#0000FF">Blue</option>
@@ -119,7 +138,12 @@ export class TestForm extends LitElement {
                           type="text"
                           id="jobTitle"
                           placeholder="Job Title"
-                          ${bind(subField)}
+                          .value="${subField.state.value}"
+                          @blur="${() => subField.handleBlur()}"
+                          @input="${(e: Event) => {
+                            const target = e.target as HTMLInputElement
+                            subField.handleChange(target.value)
+                          }}"
                         />
                       </div>`
                     },
@@ -129,9 +153,6 @@ export class TestForm extends LitElement {
           },
         )}
       </form>
-
-
-
         <div>
           <button
             type="submit"
