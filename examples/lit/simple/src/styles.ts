@@ -23,7 +23,7 @@ export const styles = css`
     max-width: 500px;
   }
 
-  div {
+  .container {
     margin: 10px;
     display: flex;
     flex-flow: row nowrap;

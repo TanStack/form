@@ -1,4 +1,4 @@
-import { LitElement, html } from 'lit'
+import { LitElement, html, nothing } from 'lit'
 import { customElement } from 'lit/decorators.js'
 
 import { TanStackFormController } from '@tanstack/lit-form'
@@ -59,24 +59,37 @@ export class TanStackFormDemo extends LitElement {
                       },
                       (field) => {
                         return html` <div>
-                          <label>First Name</label>
-                          <input
-                            type="text"
-                            placeholder="First Name"
-                            .value="${field.state.value}"
-                            @blur="${() => field.handleBlur()}"
-                            @input="${(e: Event) => {
-                              const target = e.target as HTMLInputElement
-                              field.handleChange(target.value)
-                            }}"
-                          />
+                          <div class="container">
+                            <label>First Name</label>
+                            <input
+                              type="text"
+                              placeholder="First Name"
+                              .value="${field.state.value}"
+                              @blur="${() => field.handleBlur()}"
+                              @input="${(e: Event) => {
+                                const target = e.target as HTMLInputElement
+                                field.handleChange(target.value)
+                              }}"
+                            />
+                          </div>
+                          ${field.state.meta.touchedErrors.length
+                            ? html`${repeat(
+                                field.state.meta.touchedErrors,
+                                (__, idx) => idx,
+                                (error) => {
+                                  return html`<div class="container">
+                                    ${error}
+                                  </div>`
+                                },
+                              )}`
+                            : nothing}
                         </div>`
                       },
                     )}
                     ${this.#form.field(
                       { name: `employees[${index}].lastName` },
                       (lastNameField) => {
-                        return html` <div>
+                        return html` <div class="container">
                           <label>Last Name</label>
                           <input
                             type="text"
@@ -94,7 +107,7 @@ export class TanStackFormDemo extends LitElement {
                     ${this.#form.field(
                       { name: `employees[${index}].about` },
                       (aboutField) => {
-                        return html` <div>
+                        return html` <div class="container">
                           <label>About</label>
                           <textarea
                             style="width: 100%"
@@ -111,7 +124,7 @@ export class TanStackFormDemo extends LitElement {
                     ${this.#form.field(
                       { name: `employees[${index}].employed` },
                       (employedField) => {
-                        return html`<div>
+                        return html`<div class="container">
                             <label>Employed?</label>
                             <input
                               type="checkbox"
@@ -141,19 +154,36 @@ export class TanStackFormDemo extends LitElement {
                                 },
                                 (jobTitleField) => {
                                   return html` <div>
-                                    <label>Job Title</label>
-                                    <input
-                                      type="text"
-                                      placeholder="Job Title"
-                                      .value="${jobTitleField.state.value}"
-                                      @blur="${() =>
-                                        jobTitleField.handleBlur()}"
-                                      @input="${(e: Event) => {
-                                        const target =
-                                          e.target as HTMLInputElement
-                                        jobTitleField.handleChange(target.value)
-                                      }}"
-                                    />
+                                    <div class="container">
+                                      <label>Job Title</label>
+                                      <input
+                                        type="text"
+                                        placeholder="Job Title"
+                                        .value="${jobTitleField.state.value}"
+                                        @blur="${() =>
+                                          jobTitleField.handleBlur()}"
+                                        @input="${(e: Event) => {
+                                          const target =
+                                            e.target as HTMLInputElement
+                                          jobTitleField.handleChange(
+                                            target.value,
+                                          )
+                                        }}"
+                                      />
+                                    </div>
+                                    ${jobTitleField.state.meta.touchedErrors
+                                      .length
+                                      ? html`${repeat(
+                                          jobTitleField.state.meta
+                                            .touchedErrors,
+                                          (__, idx) => idx,
+                                          (error) => {
+                                            return html`<div class="container">
+                                              ${error}
+                                            </div>`
+                                          },
+                                        )}`
+                                      : nothing}
                                   </div>`
                                 },
                               )
@@ -164,7 +194,7 @@ export class TanStackFormDemo extends LitElement {
                 },
               )}
 
-              <div>
+              <div class="container">
                 <button
                   type="button"
                   @click=${() => {
@@ -181,7 +211,7 @@ export class TanStackFormDemo extends LitElement {
           },
         )}
 
-        <div>
+        <div class="container">
           <button type="submit" ?disabled=${this.#form.api.state.isSubmitting}>
             ${this.#form.api.state.isSubmitting ? html` Submitting` : 'Submit'}
           </button>
