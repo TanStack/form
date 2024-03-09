@@ -1,5 +1,4 @@
 export * from '@tanstack/form-core'
 export * from './createFormFactory'
-export * from './formContext'
 export * from './useField'
 export * from './useForm'

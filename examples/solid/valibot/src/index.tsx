@@ -38,54 +38,34 @@ function App() {
   return (
     <div>
       <h1>Valibot Form Example</h1>
-      <form.Provider>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            void form.handleSubmit()
-          }}
-        >
-          <div>
-            {/* A type-safe field component*/}
-            <form.Field
-              name="firstName"
-              validators={{
-                onChange: string([
-                  minLength(3, 'First name must be at least 3 characters'),
-                ]),
-                onChangeAsyncDebounceMs: 500,
-                onChangeAsync: stringAsync([
-                  customAsync(async (value) => {
-                    await new Promise((resolve) => setTimeout(resolve, 1000))
-                    return !value.includes('error')
-                  }, "No 'error' allowed in first name"),
-                ]),
-              }}
-              children={(field) => {
-                // Avoid hasty abstractions. Render props are great!
-                return (
-                  <>
-                    <label for={field().name}>First Name:</label>
-                    <input
-                      id={field().name}
-                      name={field().name}
-                      value={field().state.value}
-                      onBlur={field().handleBlur}
-                      onInput={(e) => field().handleChange(e.target.value)}
-                    />
-                    <FieldInfo field={field()} />
-                  </>
-                )
-              }}
-            />
-          </div>
-          <div>
-            <form.Field
-              name="lastName"
-              children={(field) => (
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          void form.handleSubmit()
+        }}
+      >
+        <div>
+          {/* A type-safe field component*/}
+          <form.Field
+            name="firstName"
+            validators={{
+              onChange: string([
+                minLength(3, 'First name must be at least 3 characters'),
+              ]),
+              onChangeAsyncDebounceMs: 500,
+              onChangeAsync: stringAsync([
+                customAsync(async (value) => {
+                  await new Promise((resolve) => setTimeout(resolve, 1000))
+                  return !value.includes('error')
+                }, "No 'error' allowed in first name"),
+              ]),
+            }}
+            children={(field) => {
+              // Avoid hasty abstractions. Render props are great!
+              return (
                 <>
-                  <label for={field().name}>Last Name:</label>
+                  <label for={field().name}>First Name:</label>
                   <input
                     id={field().name}
                     name={field().name}
@@ -95,24 +75,42 @@ function App() {
                   />
                   <FieldInfo field={field()} />
                 </>
-              )}
-            />
-          </div>
-          <form.Subscribe
-            selector={(state) => ({
-              canSubmit: state.canSubmit,
-              isSubmitting: state.isSubmitting,
-            })}
-            children={(state) => {
-              return (
-                <button type="submit" disabled={!state().canSubmit}>
-                  {state().isSubmitting ? '...' : 'Submit'}
-                </button>
               )
             }}
           />
-        </form>
-      </form.Provider>
+        </div>
+        <div>
+          <form.Field
+            name="lastName"
+            children={(field) => (
+              <>
+                <label for={field().name}>Last Name:</label>
+                <input
+                  id={field().name}
+                  name={field().name}
+                  value={field().state.value}
+                  onBlur={field().handleBlur}
+                  onInput={(e) => field().handleChange(e.target.value)}
+                />
+                <FieldInfo field={field()} />
+              </>
+            )}
+          />
+        </div>
+        <form.Subscribe
+          selector={(state) => ({
+            canSubmit: state.canSubmit,
+            isSubmitting: state.isSubmitting,
+          })}
+          children={(state) => {
+            return (
+              <button type="submit" disabled={!state().canSubmit}>
+                {state().isSubmitting ? '...' : 'Submit'}
+              </button>
+            )
+          }}
+        />
+      </form>
     </div>
   )
 }

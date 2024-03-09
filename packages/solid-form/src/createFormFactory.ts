@@ -15,8 +15,8 @@ export type FormFactory<
   createForm: (
     opts?: () => FormOptions<TFormData, TFormValidator>,
   ) => FormApi<TFormData, TFormValidator>
-  createField: CreateField<TFormData>
-  Field: FieldComponent<TFormData, TFormValidator>
+  createField: typeof createField
+  Field: typeof Field
 }
 
 export function createFormFactory<
@@ -31,6 +31,6 @@ export function createFormFactory<
         mergeProps(defaultOpts?.() ?? {}, opts?.() ?? {}),
       ),
     createField,
-    Field: Field as never,
+    Field: Field,
   }
 }

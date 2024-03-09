@@ -22,7 +22,6 @@ function App() {
   return (
     <div>
       <h1>Simple Form Example</h1>
-      <form.Provider>
         <form
           onSubmit={(e) => {
             e.preventDefault()
@@ -45,7 +44,6 @@ function App() {
           </div>
           <button type="submit">Submit</button>
         </form>
-      </form.Provider>
     </div>
   )
 }

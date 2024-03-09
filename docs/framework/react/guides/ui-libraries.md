@@ -27,7 +27,7 @@ import { TextInput, Checkbox } from '@mantine/core'
 import { useForm } from '@tanstack/react-form'
 
 export default function App() {
-  const { Provider, Field, handleSubmit, state } = useForm({
+  const { Field, handleSubmit, state } = useForm({
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -41,7 +41,6 @@ export default function App() {
 
   return (
     <>
-      <Provider>
         <form
           onSubmit={(e) => {
             e.preventDefault()
@@ -70,7 +69,6 @@ export default function App() {
             )}
           />
         </form>
-      </Provider>
       <div>
         <pre>{JSON.stringify(state.values, null, 2)}</pre>
       </div>
@@ -80,7 +78,7 @@ export default function App() {
 ```
 
 - Initially, we utilize the `useForm` hook from TanStack and destructure the necessary properties. This step is optional; alternatively, you could use `const form = useForm()` if preferred. TypeScript's type inference ensures a smooth experience regardless of the approach.
-- Next, we encapsulate our form elements within the `Provider` component, a critical step for enabling form functionalities. The `Field` component, derived from `useForm`, accepts several properties, such as `validators`. For this demonstration, we focus on two primary properties: `name` and `children`.
+- The `Field` component, derived from `useForm`, accepts several properties, such as `validators`. For this demonstration, we focus on two primary properties: `name` and `children`.
   - The `name` property identifies each `Field`, for instance, `firstName` in our example.
   - The `children` property leverages the concept of render props, allowing us to integrate components without unnecessary abstractions.
 - TanStack's design relies heavily on render props, providing access to `children` within the `Field` component. This approach is entirely type-safe. When integrating with Mantine components, such as `TextInput`, we selectively destructure properties like `state.value`, `handleChange`, and `handleBlur`. This selective approach is due to the slight differences in types between `TextInput` and the `field` we get in the children.

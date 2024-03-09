@@ -21,14 +21,14 @@ describe('createFormFactory', () => {
       const form = formFactory.useForm({})
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             children={(field) => {
               return <p>{field.state.value}</p>
             }}
           />
-        </form.Provider>
+        </>
       )
     }
 
