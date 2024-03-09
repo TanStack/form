@@ -285,6 +285,33 @@
           ]
         }
       ]
+    },
+    {
+      "framework": "lit",
+      "menuItems": [
+        {
+          "label": "Getting Started",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "framework/lit/quick-start"
+            }
+          ]
+        },
+        {
+          "label": "Examples",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/lit/examples/simple"
+            },
+            {
+              "label": "UI Libraries",
+              "to": "framework/lit/examples/ui-libraries"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
