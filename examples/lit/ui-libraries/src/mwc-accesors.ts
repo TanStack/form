@@ -1,5 +1,5 @@
-import { ControlValueAccessor } from '@tanstack/lit-form'
-import {
+import type { ControlValueAccessor } from '@tanstack/lit-form'
+import type {
   MdCheckbox,
   MdFilledSelect,
   MdFilledTextField,

@@ -1,10 +1,11 @@
-import type { ElementPart, PartInfo } from 'lit/directive.js'
 import { PartType, directive } from 'lit/directive.js'
-import type { FieldApi, ControlValueAccessor } from './index'
 
-import { getNativeAccessor } from './control-value-accessor.js'
 import { noChange, nothing } from 'lit'
 import { AsyncDirective } from 'lit/async-directive.js'
+import { getNativeAccessor } from './control-value-accessor.js'
+import type { ControlValueAccessor, FieldApi } from './index'
+import type { ElementPart, PartInfo } from 'lit/directive.js'
+
 class BindDirective extends AsyncDirective {
   #registered = false
 

@@ -1,8 +1,7 @@
-import { expect } from 'vitest'
-
-import { FormApi, FieldApi } from '@tanstack/form-core'
-import { valibotValidator } from '../validator'
+import { describe, expect, it } from 'vitest'
+import { FieldApi, FormApi } from '@tanstack/form-core'
 import { customAsync, minLength, string, stringAsync } from 'valibot'
+import { valibotValidator } from '../validator'
 import { sleep } from './utils'
 
 describe('valibot field api', () => {

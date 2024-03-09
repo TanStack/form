@@ -1,4 +1,4 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '@material/web/textfield/filled-text-field.js'
 import '@material/web/checkbox/checkbox.js'
@@ -7,11 +7,11 @@ import '@material/web/select/select-option.js'
 import '@material/web/button/filled-button.js'
 import '@material/web/button/outlined-button.js'
 
-import { styles } from './styles.js'
-import type { FormOptions } from '@tanstack/lit-form'
 import { TanstackFormController } from '@tanstack/lit-form'
-import { bind } from './custom-bind'
 import { repeat } from 'lit/directives/repeat.js'
+import { styles } from './styles.js'
+import { bind } from './custom-bind'
+import type { FormOptions } from '@tanstack/lit-form'
 
 interface Employee {
   firstName: string

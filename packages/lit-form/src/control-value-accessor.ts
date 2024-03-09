@@ -77,30 +77,31 @@ const selectValueAccessor: ControlValueAccessor<HTMLSelectElement, string> = {
   eventName: 'input',
 }
 
-const textAreaValueAccessor: ControlValueAccessor<HTMLTextAreaElement, string> = {
-  conforms(element: HTMLElement): boolean {
-    return element.tagName.toLowerCase().includes('textarea')
-  },
-  setValue(element: HTMLTextAreaElement, value: string) {
-    element.value = value
-  },
-  getValue(element: HTMLTextAreaElement): string {
-    return element.value
-  },
-  setCustomValidity(element: HTMLTextAreaElement, messages?: string[]) {
-    if (messages === undefined || messages.length === 0) {
-      element.setCustomValidity('')
-      element.reportValidity()
-      return
-    }
-    const message = getFirstErrorMessage(messages)
-    if (message) {
-      element.setCustomValidity(message)
-      element.reportValidity()
-    }
-  },
-  eventName: 'input',
-}
+const textAreaValueAccessor: ControlValueAccessor<HTMLTextAreaElement, string> =
+  {
+    conforms(element: HTMLElement): boolean {
+      return element.tagName.toLowerCase().includes('textarea')
+    },
+    setValue(element: HTMLTextAreaElement, value: string) {
+      element.value = value
+    },
+    getValue(element: HTMLTextAreaElement): string {
+      return element.value
+    },
+    setCustomValidity(element: HTMLTextAreaElement, messages?: string[]) {
+      if (messages === undefined || messages.length === 0) {
+        element.setCustomValidity('')
+        element.reportValidity()
+        return
+      }
+      const message = getFirstErrorMessage(messages)
+      if (message) {
+        element.setCustomValidity(message)
+        element.reportValidity()
+      }
+    },
+    eventName: 'input',
+  }
 
 export function getNativeAccessor<T extends HTMLElement, Value = any>(
   element: T,

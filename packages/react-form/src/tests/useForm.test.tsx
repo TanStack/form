@@ -1,9 +1,8 @@
-/// <reference lib="dom" />
-import '@testing-library/jest-dom'
+import * as React from 'react'
+import { describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import * as React from 'react'
-import { createFormFactory, useForm } from '..'
+import { createFormFactory, useForm } from '../index'
 import { sleep } from './utils'
 
 const user = userEvent.setup()
@@ -172,6 +171,10 @@ describe('useForm', () => {
 
     function Comp() {
       const form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
         validators: {
           onChange() {
             return error
@@ -217,6 +220,10 @@ describe('useForm', () => {
 
     function Comp() {
       const form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
         validators: {
           onChange: ({ value }) =>
             value.firstName === 'other' ? error : undefined,
@@ -262,6 +269,10 @@ describe('useForm', () => {
 
     function Comp() {
       const form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
         validators: {
           onChange: ({ value }) =>
             value.firstName === 'other' ? error : undefined,
@@ -362,6 +373,10 @@ describe('useForm', () => {
 
     function Comp() {
       const form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
         validators: {
           onChangeAsync: async () => {
             await sleep(10)
@@ -412,6 +427,10 @@ describe('useForm', () => {
 
     function Comp() {
       const form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
         validators: {
           onChangeAsync: async () => {
             await sleep(10)
@@ -472,6 +491,10 @@ describe('useForm', () => {
 
     function Comp() {
       const form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
         validators: {
           onChangeAsyncDebounceMs: 100,
           onChangeAsync: async () => {

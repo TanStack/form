@@ -1,16 +1,16 @@
-import type { ReactiveController, ReactiveControllerHost } from 'lit'
 import { nothing } from 'lit'
-import type { ElementPart, PartInfo } from 'lit/directive.js'
-import { directive, PartType } from 'lit/directive.js'
+import { PartType, directive } from 'lit/directive.js'
+import { FieldApi, FormApi } from '@tanstack/form-core'
+import { AsyncDirective } from 'lit/async-directive.js'
 import type {
   DeepKeys,
+  DeepValue,
   FieldOptions,
   FormOptions,
   Validator,
-  DeepValue,
 } from '@tanstack/form-core'
-import { FieldApi, FormApi } from '@tanstack/form-core'
-import { AsyncDirective } from 'lit/async-directive.js'
+import type { ElementPart, PartInfo } from 'lit/directive.js'
+import type { ReactiveController, ReactiveControllerHost } from 'lit'
 
 type renderCallback<
   FormValues,

@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/TanStack/tanstack.com/main/tanstack-docs-config.schema.json",
   "docSearch": {
     "appId": "",
     "apiKey": "",
@@ -84,7 +85,10 @@
             {
               "label": "SSR/Next.js",
               "to": "framework/react/guides/ssr"
-
+            },
+            {
+              "label": "Debugging",
+              "to": "framework/react/guides/debugging"
             }
           ]
         },

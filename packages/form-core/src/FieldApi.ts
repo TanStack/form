@@ -1,4 +1,5 @@
 import { Store } from '@tanstack/store'
+import { getAsyncValidatorArray, getSyncValidatorArray } from './utils'
 import type { FormApi } from './FormApi'
 import type {
   ValidationCause,
@@ -7,7 +8,6 @@ import type {
   Validator,
 } from './types'
 import type { DeepKeys, DeepValue, Updater } from './utils'
-import { getAsyncValidatorArray, getSyncValidatorArray } from './utils'
 
 export type FieldValidateFn<
   TParentData,
@@ -237,8 +237,6 @@ export type FieldMeta = {
   isValidating: boolean
 }
 
-let uid = 0
-
 export type FieldState<TData> = {
   value: TData
   meta: FieldMeta
@@ -259,7 +257,6 @@ export class FieldApi<
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
-  uid: number
   form: FieldApiOptions<
     TParentData,
     TName,
@@ -289,13 +286,6 @@ export class FieldApi<
     >,
   ) {
     this.form = opts.form as never
-    this.uid = uid++
-    // Support field prefixing from FieldScope
-    // let fieldPrefix = ''
-    // if (this.form.fieldName) {
-    //   fieldPrefix = `${this.form.fieldName}.`
-    // }
-
     this.name = opts.name as never
 
     if (opts.defaultValue !== undefined) {
@@ -305,7 +295,6 @@ export class FieldApi<
     this.store = new Store<FieldState<TData>>(
       {
         value: this.getValue(),
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         meta: this._getMeta() ?? {
           isValidating: false,
           isTouched: false,
@@ -363,7 +352,7 @@ export class FieldApi<
 
   mount = () => {
     const info = this.getInfo()
-    info.instances[this.uid] = this as never
+    info.instance = this as never
     const unsubscribe = this.form.store.subscribe(() => {
       this.store.batch(() => {
         const nextValue = this.getValue()
@@ -404,12 +393,7 @@ export class FieldApi<
       const preserveValue = this.options.preserveValue
       unsubscribe()
       if (!preserveValue) {
-        delete info.instances[this.uid]
         this.form.deleteField(this.name)
-      }
-
-      if (!Object.keys(info.instances).length && !preserveValue) {
-        delete this.form.fieldInfo[this.name]
       }
     }
   }
@@ -424,7 +408,6 @@ export class FieldApi<
     >,
   ) => {
     // Default Value
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.state.value === undefined) {
       const formDefault =
         opts.form.options.defaultValues?.[opts.name as keyof TParentData]
@@ -485,23 +468,6 @@ export class FieldApi<
 
   swapValues = (aIndex: number, bIndex: number) =>
     this.form.swapFieldValues(this.name, aIndex, bIndex)
-
-  getSubField = <
-    TSubName extends DeepKeys<TData>,
-    TSubData extends DeepValue<TData, TSubName> = DeepValue<TData, TSubName>,
-  >(
-    name: TSubName,
-  ): FieldApi<
-    TData,
-    TSubName,
-    Validator<TSubData, unknown> | undefined,
-    Validator<TData, unknown> | undefined,
-    TSubData
-  > =>
-    new FieldApi({
-      name: `${this.name}.${name}` as never,
-      form: this.form,
-    }) as any
 
   validateSync = (value = this.state.value, cause: ValidationCause) => {
     const validates = getSyncValidatorArray(cause, this.options)

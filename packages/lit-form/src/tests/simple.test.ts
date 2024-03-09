@@ -1,8 +1,7 @@
 /// <reference lib="dom" />
 import '@testing-library/jest-dom'
-import { TestForm, sampleData } from './simple'
-
 import userEvent from '@testing-library/user-event'
+import { TestForm, sampleData } from './simple'
 
 window.customElements.define('test-form', TestForm)
 describe('Lit Tests', () => {

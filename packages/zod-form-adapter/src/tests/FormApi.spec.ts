@@ -1,8 +1,8 @@
-import { expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
-import { FormApi, FieldApi } from '@tanstack/form-core'
-import { zodValidator } from '../validator'
+import { FieldApi, FormApi } from '@tanstack/form-core'
 import { z } from 'zod'
+import { zodValidator } from '../validator'
 
 describe('zod form api', () => {
   it('should run an onChange with z.string validation', () => {

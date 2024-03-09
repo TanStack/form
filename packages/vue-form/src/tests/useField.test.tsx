@@ -1,10 +1,10 @@
-/// <reference lib="dom" />
-import { h, defineComponent } from 'vue'
+import { describe, expect, it, vi } from 'vitest'
+import { defineComponent, h } from 'vue'
 import { render, waitFor } from '@testing-library/vue'
-import '@testing-library/jest-dom'
-import { createFormFactory, type FieldApi, provideFormContext } from '../index'
-import userEvent from '@testing-library/user-event'
+import { userEvent } from '@testing-library/user-event'
+import { createFormFactory, provideFormContext } from '../index'
 import { sleep } from './utils'
+import type { FieldApi } from '../index'
 
 const user = userEvent.setup()
 

@@ -1,14 +1,15 @@
-import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
-import { createComputed, onMount, type JSXElement } from 'solid-js'
+import { createComputed, onMount } from 'solid-js'
 import { useStore } from '@tanstack/solid-store'
 import {
-  Field,
-  createField,
   type CreateField,
+  Field,
   type FieldComponent,
+  createField,
 } from './createField'
 import { formContext } from './formContext'
+import type { JSXElement } from 'solid-js'
+import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
 
 type NoInfer<T> = [T][T extends any ? 0 : never]
 

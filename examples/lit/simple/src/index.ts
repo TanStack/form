@@ -1,18 +1,17 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 
+import { TanstackFormController, bind } from '@tanstack/lit-form'
+import { repeat } from 'lit/directives/repeat.js'
 import { styles } from './styles.js'
 import type { FormOptions } from '@tanstack/lit-form'
-import { TanstackFormController, bind } from '@tanstack/lit-form'
-
-import { repeat } from 'lit/directives/repeat.js'
 
 interface Employee {
   firstName: string
   lastName: string
   employed: boolean
   jobTitle: string
-  about: string;
+  about: string
 }
 
 interface Data {

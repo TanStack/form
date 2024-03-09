@@ -1,4 +1,4 @@
-import { expect, vitest } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { FormApi } from '../FormApi'
 import { FieldApi } from '../FieldApi'
@@ -152,26 +152,6 @@ describe('field api', () => {
     field.swapValues(0, 1)
 
     expect(field.getValue()).toStrictEqual(['two', 'one'])
-  })
-
-  it('should get a subfield properly', () => {
-    const form = new FormApi({
-      defaultValues: {
-        names: {
-          first: 'one',
-          second: 'two',
-        },
-      },
-    })
-
-    const field = new FieldApi({
-      form,
-      name: 'names',
-    })
-
-    const subfield = field.getSubField('first')
-
-    expect(subfield.getValue()).toBe('one')
   })
 
   it('should not throw errors when no meta info is stored on a field and a form re-renders', async () => {
@@ -602,7 +582,7 @@ describe('field api', () => {
 
     const unmount = field.mount()
     unmount()
-    expect(form.getFieldInfo(field.name).instances[field.uid]).toBeDefined()
+    expect(form.getFieldInfo(field.name).instance).toBeDefined()
     expect(form.getFieldInfo(field.name)).toBeDefined()
   })
 
@@ -619,13 +599,13 @@ describe('field api', () => {
     })
 
     const unmount = field.mount()
-    const callback = vitest.fn()
+    const callback = vi.fn()
     const subscription = form.store.subscribe(callback)
     unmount()
     const info = form.getFieldInfo(field.name)
     subscription()
-    expect(info.instances[field.uid]).toBeUndefined()
-    expect(Object.keys(info.instances).length).toBe(0)
+    expect(info.instance).toBeNull()
+    expect(Object.keys(info.instance ?? {}).length).toBe(0)
 
     // Check that form store has been updated
     expect(callback).toHaveBeenCalledOnce()
