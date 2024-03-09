@@ -1,4 +1,4 @@
-import { describe } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import { mutateMergeDeep } from '../mergeForm'
 
 describe('mutateMergeDeep', () => {

@@ -1,3 +1,4 @@
+import { assertType } from 'vitest'
 import type { DeepKeys, DeepValue } from '../util-types'
 
 /**

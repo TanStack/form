@@ -1,7 +1,7 @@
-/// <reference lib="dom" />
+import { describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@solidjs/testing-library'
 import userEvent from '@testing-library/user-event'
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom/vitest'
 import { Index, Show } from 'solid-js'
 import { createForm, createFormFactory } from '../index'
 import { sleep } from './utils'

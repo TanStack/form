@@ -1,8 +1,7 @@
-/// <reference lib="dom" />
 import * as React from 'react'
+import { describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import '@testing-library/jest-dom'
 import { createFormFactory, useForm } from '../index'
 import { sleep } from './utils'
 import type { FieldApi, FormApi } from '../index'

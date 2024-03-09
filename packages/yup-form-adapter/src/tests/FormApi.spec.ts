@@ -1,4 +1,4 @@
-import { expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 import { FieldApi, FormApi } from '@tanstack/form-core'
 import yup from 'yup'

@@ -1,5 +1,4 @@
-/// <reference lib="dom" />
-import { assertType } from 'vitest'
+import { assertType, it } from 'vitest'
 import { createForm } from '../createForm'
 
 it('should type state.value properly', () => {

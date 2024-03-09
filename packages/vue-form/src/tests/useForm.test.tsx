@@ -1,5 +1,4 @@
-/// <reference lib="dom" />
-import '@testing-library/jest-dom'
+import { describe, expect, it, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
 import { render, waitFor } from '@testing-library/vue'
 import { defineComponent, h, ref } from 'vue'

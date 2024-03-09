@@ -1,7 +1,7 @@
-/// <reference lib="dom" />
+import { describe, expect, it, vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 import { render, waitFor } from '@testing-library/vue'
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom/vitest'
 import userEvent from '@testing-library/user-event'
 import { createFormFactory, useForm } from '../index'
 import { sleep } from './utils'
