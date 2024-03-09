@@ -356,7 +356,7 @@ importers:
         specifier: ^5.0.10
         version: 5.0.12(@types/node@18.19.4)
       vite-plugin-solid:
-        specifier: ^2.8.0
+        specifier: ^2.10.1
         version: 2.10.1(@testing-library/jest-dom@6.4.2)(solid-js@1.7.12)(vite@5.0.12)
 
   examples/solid/simple:
@@ -463,7 +463,7 @@ importers:
         version: 3.3.4
     devDependencies:
       '@vitejs/plugin-vue':
-        specifier: ^5.0.2
+        specifier: ^5.0.4
         version: 5.0.4(vite@5.0.12)(vue@3.3.4)
       typescript:
         specifier: 5.2.2
