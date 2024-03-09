@@ -10,26 +10,23 @@ import '@material/web/button/outlined-button.js'
 import { TanStackFormController } from '@tanstack/lit-form'
 import { repeat } from 'lit/directives/repeat.js'
 import { styles } from './styles.js'
-import type { FormOptions } from '@tanstack/lit-form'
 
 interface Employee {
   firstName: string
   lastName: string
   employed: boolean
-  jobTitle: string
+  jobTitle?: string
 }
-
-interface Data {
-  employees: Partial<Employee>[]
-}
-
-const formConfig: FormOptions<Data> = {}
 
 @customElement('tanstack-form-demo')
 export class TanStackFormDemo extends LitElement {
   static styles = styles
 
-  #form = new TanStackFormController(this, formConfig)
+  #form = new TanStackFormController(this, {
+    defaultValues: {
+      employees: [] as Employee[],
+    },
+  })
 
   render() {
     return html`
@@ -75,7 +72,9 @@ export class TanStackFormDemo extends LitElement {
                               field.handleChange(target.value)
                             }}"
                             .error="${!!field.state.meta.touchedErrors.length}"
-                            .errorText="${field.state.meta.touchedErrors.join(', ')}"
+                            .errorText="${field.state.meta.touchedErrors.join(
+                              ', ',
+                            )}"
                           ></md-filled-text-field>
                         </div>`
                       },
@@ -94,7 +93,8 @@ export class TanStackFormDemo extends LitElement {
                               const target = e.target as HTMLInputElement
                               lastNameField.handleChange(target.value)
                             }}"
-                            .error="${!!lastNameField.state.meta.touchedErrors.length}"
+                            .error="${!!lastNameField.state.meta.touchedErrors
+                              .length}"
                             .errorText="${lastNameField.state.meta.touchedErrors.join(
                               ', ',
                             )}"
@@ -121,6 +121,7 @@ export class TanStackFormDemo extends LitElement {
                             ? this.#form.field(
                                 {
                                   name: `employees[${index}].jobTitle`,
+                                  defaultValue: '',
                                   validators: {
                                     onChange: ({
                                       value,

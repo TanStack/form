@@ -4,27 +4,24 @@ import { customElement } from 'lit/decorators.js'
 import { TanStackFormController } from '@tanstack/lit-form'
 import { repeat } from 'lit/directives/repeat.js'
 import { styles } from './styles.js'
-import type { FormOptions } from '@tanstack/lit-form'
 
 interface Employee {
   firstName: string
   lastName: string
   employed: boolean
-  jobTitle: string
-  about: string
+  jobTitle?: string
+  about?: string
 }
-
-interface Data {
-  employees: Partial<Employee>[]
-}
-
-const formConfig: FormOptions<Data> = {}
 
 @customElement('tanstack-form-demo')
 export class TanStackFormDemo extends LitElement {
   static styles = styles
 
-  #form = new TanStackFormController(this, formConfig)
+  #form = new TanStackFormController(this, {
+    defaultValues: {
+      employees: [] as Employee[],
+    },
+  })
 
   render() {
     return html`
@@ -105,7 +102,7 @@ export class TanStackFormDemo extends LitElement {
                       },
                     )}
                     ${this.#form.field(
-                      { name: `employees[${index}].about` },
+                      { name: `employees[${index}].about`, defaultValue: '' },
                       (aboutField) => {
                         return html` <div class="container">
                           <label>About</label>
@@ -140,6 +137,7 @@ export class TanStackFormDemo extends LitElement {
                             ? this.#form.field(
                                 {
                                   name: `employees[${index}].jobTitle`,
+                                  defaultValue: '',
                                   validators: {
                                     onChange: ({
                                       value,
