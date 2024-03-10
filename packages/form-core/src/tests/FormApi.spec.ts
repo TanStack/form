@@ -214,6 +214,40 @@ describe('form api', () => {
     expect(form.getFieldValue('name')).toEqual('other')
   })
 
+  it("should be dirty after a field's value has been set", () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+    form.mount()
+
+    form.setFieldValue('name', 'other', { touch: true })
+
+    expect(form.state.isDirty).toBe(true)
+    expect(form.state.isPristine).toBe(false)
+  })
+
+  it('should be clean again after being reset from a dirty state', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+    form.mount()
+
+    form.setFieldMeta('name', (meta) => ({
+      ...meta,
+      isDirty: true,
+      isPristine: false,
+    }))
+
+    form.reset()
+
+    expect(form.state.isDirty).toBe(false)
+    expect(form.state.isPristine).toBe(true)
+  })
+
   it("should push an array field's value", () => {
     const form = new FormApi({
       defaultValues: {
