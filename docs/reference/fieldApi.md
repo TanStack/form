@@ -134,11 +134,11 @@ An object type representing the metadata of a field in a form.
 - ```tsx
   isPristine: boolean
   ```
-  - A flag that is `true` if the field's value have not been updated. Opposite of `isDirty`.
+  - A flag that is `true` if the field's value have not been modified by the user. Opposite of `isDirty`.
 - ```tsx
   isDirty: boolean
   ```
-  - A flag that is `true` if the field's value have been updated. Opposite of `isPristine`.
+  - A flag that is `true` if the field's value have been modified by the user. Opposite of `isPristine`.
 - ```tsx
   isTouched: boolean
   ```

@@ -66,7 +66,7 @@ Example:
 const { value, error, touched, isValidating } = field.state
 ```
 
-There are three field states can be very useful to see how the user interacts with a field. A field is _"touched"_ when the user clicks/tabs into it, _"pristine"_ until the user have not changed the value of it, and _"dirty"_ if they have. You can check these states via the `isTouched`, `isPristine` and `isDirty` flags, as seen below.
+There are three field states can be very useful to see how the user interacts with a field. A field is _"touched"_ when the user clicks/tabs into it, _"pristine"_ until the user changes value of it, and _"dirty"_ after they did. You can check these states via the `isTouched`, `isPristine` and `isDirty` flags, as seen below.
 
 ```tsx
 const { isTouched, isPristine, isDirty } = field.state.meta
