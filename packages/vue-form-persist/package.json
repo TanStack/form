@@ -1,7 +1,7 @@
 {
-  "name": "@tanstack/vue-form",
+  "name": "@tanstack/vue-form-persist",
   "version": "0.13.7",
-  "description": "Powerful, type-safe forms for Vue.",
+  "description": "Persistence for TanStack Vue Form.",
   "author": "tannerlinsley",
   "license": "MIT",
   "repository": "tanstack/form",

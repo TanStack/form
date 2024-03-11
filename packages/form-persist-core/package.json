@@ -1,7 +1,7 @@
 {
   "name": "@tanstack/form-persist-core",
   "version": "0.11.0",
-  "description": "Persistence for Tanstack Form.",
+  "description": "Persistence for TanStack Form.",
   "author": "tannerlinsley",
   "license": "MIT",
   "repository": "tanstack/form",

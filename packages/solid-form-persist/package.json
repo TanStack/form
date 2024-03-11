@@ -1,7 +1,7 @@
 {
   "name": "@tanstack/solid-form-persist",
   "version": "0.13.7",
-  "description": "Persistence for Tanstack Solid Form.",
+  "description": "Persistence for TanStack Solid Form.",
   "author": "tannerlinsley",
   "license": "MIT",
   "repository": "tanstack/form",

@@ -1,7 +1,7 @@
 {
   "name": "@tanstack/react-form-persist",
   "version": "0.13.5",
-  "description": "Persistence for Tanstack React Form.",
+  "description": "Persistence for TanStack React Form.",
   "author": "tannerlinsley",
   "license": "MIT",
   "repository": "tanstack/form",
