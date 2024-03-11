@@ -29,7 +29,7 @@ An object representing the options for a form.
   defaultValues?: TData
   ```
   - Set initial values for your form.
-  
+
 - ```tsx
   defaultState?: Partial<FormState<TData>>
   ```
@@ -61,7 +61,7 @@ An object representing the options for a form.
   onMount?: (values: TData, formApi: FormApi<TData>) => ValidationError
   ```
   -  Optional function that fires as soon as the component mounts.
-  
+
 - ```tsx
      onChange?: (values: TData, formApi: FormApi<TData>) => ValidationError
   ```
@@ -102,17 +102,17 @@ A class representing the Form API. It handles the logic and interactions with th
   options: FormOptions<TFormData> = {}
   ```
   - The options for the form.
-  
+
 - ```tsx
   store: Store<FormState<TFormData>>
   ```
   - A [TanStack Store instance](https://tanstack.com/store/latest/docs/reference/Store) that keeps track of the form's state.
-  
+
 - ```tsx
   state: FormState<TFormData>
   ```
   - The current state of the form.
-  
+
 - ```tsx
   fieldInfo: Record<DeepKeys<TFormData>, FieldInfo<TFormData, TFormValidator>> =
       {} as any
@@ -197,62 +197,62 @@ An object representing the current state of the form.
   errorMap: ValidationErrorMap
   ```
   - The error map for the form itself.
-  
+
 - ```tsx
   isFormValidating: boolean
   ```
   - A boolean indicating if the form is currently validating.
-  
+
 - ```tsx
   isFormValid: boolean
   ```
   - A boolean indicating if the form is valid.
-  
+
 - ```tsx
   fieldMeta: Record<DeepKeys<TData>, FieldMeta>
   ```
   - A record of field metadata for each field in the form.
-  
+
 - ```tsx
   isFieldsValidating: boolean
   ```
   - A boolean indicating if any of the form fields are currently validating.
-  
+
 - ```tsx
   isFieldsValid: boolean
   ```
   - A boolean indicating if all the form fields are valid.
-  
+
 - ```tsx
   isSubmitting: boolean
   ```
   - A boolean indicating if the form is currently submitting.
-  
+
 - ```tsx
   isTouched: boolean
   ```
   - A boolean indicating if any of the form fields have been touched.
-  
+
 - ```tsx
   isSubmitted: boolean
   ```
   - A boolean indicating if the form has been submitted.
-  
+
 - ```tsx
   isValidating: boolean
   ```
   - A boolean indicating if the form or any of its fields are currently validating.
-  
+
 - ```tsx
   isValid: boolean
   ```
   - A boolean indicating if the form and all its fields are valid.
-  
+
 - ```tsx
   canSubmit: boolean
   ```
   - A boolean indicating if the form can be submitted based on its current state.
-  
+
 - ```tsx
   submissionAttempts: number
   ```
@@ -268,17 +268,14 @@ An object representing the current state of the form.
 An object representing the field information for a specific field within the form.
 
 - ```tsx
-  instances: Record<
-    string,
-    FieldApi<
+  instance: FieldApi<
       TFormData,
       any,
       Validator<unknown, unknown> | undefined,
       TFormValidator
-    >
-  >
+    > | null
   ```
-  - A record of field instances with unique identifiers as keys.
+  - An instance of the `FieldAPI`.
 
 - ```tsx
   validationMetaMap: Record<ValidationErrorMapKeys, ValidationMeta | undefined>

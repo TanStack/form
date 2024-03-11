@@ -32,3 +32,4 @@ When using `@tanstack/react-form`, the [core form API](../../reference/formApi) 
   }) => JSX.Element
   ```
   - A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
+      > Note that TypeScript `5.0.4` and older versions will incorrectly complain if the `selector` method doesn't return the form's full state (`state`). This is caused by a [bug in TypeScript](https://github.com/TanStack/form/pull/606#discussion_r1506715714), and you can safely ignore it with `//@ts-expect-error` directive.

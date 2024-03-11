@@ -85,7 +85,10 @@
             {
               "label": "SSR/Next.js",
               "to": "framework/react/guides/ssr"
-
+            },
+            {
+              "label": "Debugging",
+              "to": "framework/react/guides/debugging"
             }
           ]
         },

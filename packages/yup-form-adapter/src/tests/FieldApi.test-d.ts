@@ -1,6 +1,6 @@
 import yup from 'yup'
 import { FieldApi, FormApi } from '@tanstack/form-core'
-import { assertType } from 'vitest'
+import { assertType, it } from 'vitest'
 import { yupValidator } from '../validator'
 
 it('should allow a Zod validator to be passed in', () => {

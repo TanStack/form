@@ -1,8 +1,7 @@
-/// <reference lib="dom" />
-import { render } from '@testing-library/react'
-import '@testing-library/jest-dom'
 import * as React from 'react'
-import { createFormFactory } from '..'
+import { describe, expect, it } from 'vitest'
+import { render } from '@testing-library/react'
+import { createFormFactory } from '../index'
 
 describe('createFormFactory', () => {
   it('should allow default values to be set', async () => {

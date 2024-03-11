@@ -3,7 +3,15 @@
   "compilerOptions": {
     "jsx": "react",
     "moduleResolution": "Bundler",
-    "types": ["vitest/globals"]
+    "paths": {
+      "@tanstack/form-core": ["../form-core/src"]
+    }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", ".eslintrc.cjs", "vite.config.ts"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    ".eslintrc.cjs",
+    "test-setup.ts",
+    "vite.config.ts"
+  ]
 }

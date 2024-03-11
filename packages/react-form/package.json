@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/react-form",
-  "version": "0.13.5",
+  "version": "0.13.7",
   "description": "Powerful, type-safe forms for React.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -15,7 +15,7 @@
     "clean": "rimraf ./dist && rimraf ./coverage",
     "test:eslint": "eslint --ext .ts,.tsx ./src",
     "test:types:versions49": "node ../../node_modules/typescript49/lib/tsc.js --project tsconfig.legacy.json",
-    "test:types:versions50": "node ../../node_modules/typescript50/lib/tsc.js",
+    "test:types:versions50": "node ../../node_modules/typescript50/lib/tsc.js --project tsconfig.50.json",
     "test:types:versions51": "node ../../node_modules/typescript51/lib/tsc.js",
     "test:types:versions52": "tsc",
     "test:types": "pnpm run \"/^test:types:versions.*/\"",
@@ -47,8 +47,7 @@
   },
   "devDependencies": {
     "@types/react": "^18.2.45",
-    "@types/react-dom": "^18.0.5",
-    "@types/use-sync-external-store": "^0.0.3",
+    "@types/react-dom": "^18.2.19",
     "@vitejs/plugin-react": "^4.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
@@ -60,16 +59,6 @@
     "rehackt": "^0.0.3"
   },
   "peerDependencies": {
-    "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0",
-    "react-native": "*"
-  },
-  "peerDependenciesMeta": {
-    "react-dom": {
-      "optional": true
-    },
-    "react-native": {
-      "optional": true
-    }
+    "react": "^17.0.0 || ^18.0.0"
   }
 }
