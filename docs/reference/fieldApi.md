@@ -132,6 +132,14 @@ An object type representing the options for a field in a form.
 An object type representing the metadata of a field in a form.
 
 - ```tsx
+  isPristine: boolean
+  ```
+  - A flag that is `true` if the field's value have not been updated. Opposite of `isDirty`.
+- ```tsx
+  isDirty: boolean
+  ```
+  - A flag that is `true` if the field's value have been updated. Opposite of `isPristine`.
+- ```tsx
   isTouched: boolean
   ```
   - A flag indicating whether the field has been touched.

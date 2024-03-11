@@ -234,6 +234,16 @@ An object representing the current state of the form.
   - A boolean indicating if any of the form fields have been touched.
 
 - ```tsx
+  isPristine: boolean
+  ```
+  - A boolean indicating none of the form's fields' values have been updated. `True` if there are no fields with updated values.
+
+- ```tsx
+  isDirty: boolean
+  ```
+  - A boolean indicating if any of the form's fields' values have been updated. `True` if there is at least one field with an updated value.
+
+- ```tsx
   isSubmitted: boolean
   ```
   - A boolean indicating if the form has been submitted.
