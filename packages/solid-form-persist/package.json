@@ -1,0 +1,56 @@
+{
+  "name": "@tanstack/solid-form-persist",
+  "version": "0.13.7",
+  "description": "Persistence for Tanstack Solid Form.",
+  "author": "tannerlinsley",
+  "license": "MIT",
+  "repository": "tanstack/form",
+  "homepage": "https://tanstack.com/form",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/tannerlinsley"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "clean": "rimraf ./dist && rimraf ./coverage",
+    "test:eslint": "eslint --ext .ts,.tsx ./src",
+    "test:types:versions49": "node ../../node_modules/typescript49/lib/tsc.js --project tsconfig.legacy.json",
+    "test:types:versions50": "node ../../node_modules/typescript50/lib/tsc.js",
+    "test:types:versions51": "node ../../node_modules/typescript51/lib/tsc.js",
+    "test:types:versions52": "tsc",
+    "test:types": "pnpm run \"/^test:types:versions.*/\"",
+    "test:lib": "vitest",
+    "test:lib:dev": "pnpm run test:lib --watch",
+    "test:build": "publint --strict",
+    "build": "vite build"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "type": "module",
+  "types": "dist/esm/index.d.ts",
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.cts",
+        "default": "./dist/cjs/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "devDependencies": {
+    "solid-js": "^1.7.8",
+    "vite-plugin-solid": "^2.10.1"
+  },
+  "peerDependencies": {
+    "@tanstack/solid-form": "workspace:*",
+    "solid-js": "^1.6.0"
+  }
+}
