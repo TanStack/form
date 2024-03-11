@@ -211,10 +211,9 @@ export class FormApi<
           )
 
           const isTouched = fieldMetaValues.some((field) => field?.isTouched)
-          const isPristine = !fieldMetaValues.some(
-            (field) => field?.isPristine === false,
-          )
+
           const isDirty = fieldMetaValues.some((field) => field?.isDirty)
+          const isPristine = !isDirty
 
           const isValidating = isFieldsValidating || state.isFormValidating
           state.errors = Object.values(state.errorMap).filter(
