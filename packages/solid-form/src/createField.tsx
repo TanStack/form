@@ -1,4 +1,4 @@
-import { FieldApi, type Validator } from '@tanstack/form-core'
+import { FieldApi } from '@tanstack/form-core'
 import {
   createComponent,
   createComputed,
@@ -9,7 +9,12 @@ import {
 } from 'solid-js'
 import { formContext, useFormContext } from './formContext'
 
-import type { DeepKeys, DeepValue, Narrow } from '@tanstack/form-core'
+import type {
+  DeepKeys,
+  DeepValue,
+  Narrow,
+  Validator,
+} from '@tanstack/form-core'
 import type { JSXElement } from 'solid-js'
 import type { CreateFieldOptions } from './types'
 

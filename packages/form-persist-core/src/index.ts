@@ -62,13 +62,13 @@ export interface StoragePersisterOptions<TStorageValue = string> {
 const makeKey = (prefix: string = 'tanstack-form', persistKey: string) =>
   `${prefix}-${persistKey}`
 
-export class PersisterAPI<TFormData, TStorageValue = string> {
+export class PersisterAPI<TStorageValue = string> {
   options: StoragePersisterOptions<TStorageValue>
   constructor(opts: StoragePersisterOptions<TStorageValue>) {
     this.options = opts
   }
 
-  persistForm = async (persistKey: string, formState: FormState<TFormData>) => {
+  persistForm = async (persistKey: string, formState: FormState<unknown>) => {
     const serialized = await (this.options.serializer ?? JSON.stringify)({
       buster: this.options.buster ?? '',
       state: formState,
@@ -90,7 +90,7 @@ export class PersisterAPI<TFormData, TStorageValue = string> {
       >['deserializer'])
     )(persistedValue as TStorageValue) as {
       buster: string
-      state: FormState<TFormData>
+      state: FormState<unknown>
     } | null
     if (!state || state.buster !== (this.options.buster ?? '')) {
       this.deleteForm(persistKey)
@@ -116,18 +116,19 @@ export class PersisterAPI<TFormData, TStorageValue = string> {
   }
 }
 
-type CreateFormPersisterOptions<TFormData> = {
-  omitFields: (keyof TFormData)[] | ((fieldName: keyof TFormData) => boolean)
+export type CreateFormPersisterOptions<TFormData> = {
+  omitFields?: (keyof TFormData)[] | ((fieldName: keyof TFormData) => boolean)
 }
 
 export function createFormPersister<TFormData, TStorageValue = string>(
-  persisterAPI: PersisterAPI<TFormData, TStorageValue>,
+  persisterAPI: PersisterAPI<TStorageValue>,
   formKey: string,
   opts?: CreateFormPersisterOptions<TFormData>,
 ): Persister<TFormData> {
   return {
     deleteForm: () => persisterAPI.deleteForm(formKey),
-    restoreForm: () => persisterAPI.restoreForm(formKey),
+    restoreForm: () =>
+      persisterAPI.restoreForm(formKey) as Promise<FormState<TFormData>>,
     persistForm: (state: FormState<TFormData>) => {
       // this makes ts happy when we modify the state
       const modifiedState: Omit<typeof state, 'fieldMeta' | 'values'> & {
@@ -141,7 +142,10 @@ export function createFormPersister<TFormData, TStorageValue = string>(
             delete modifiedState.values[key]
           }
       } else if (typeof opts?.omitFields === 'object') {
-        for (const key of opts.omitFields) delete modifiedState.fieldMeta[key]
+        for (const key of opts.omitFields) {
+          delete modifiedState.fieldMeta[key]
+          delete modifiedState.values[key]
+        }
       }
       return persisterAPI.persistForm(formKey, modifiedState)
     },

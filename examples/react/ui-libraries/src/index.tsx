@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { createRoot } from 'react-dom/client'
 import { createTheme } from '@mui/material/styles'
 import { red } from '@mui/material/colors'

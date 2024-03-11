@@ -1,5 +1,6 @@
-import { useRef, useState, type EffectCallback } from 'rehackt'
+import { useRef, useState } from 'rehackt'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
+import type { EffectCallback } from 'rehackt'
 
 /**
  * This hook handles StrictMode and prod mode

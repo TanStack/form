@@ -1,15 +1,13 @@
-import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
-import type { NoInfer } from '@tanstack/react-store'
 import { useStore } from '@tanstack/react-store'
-import React, {
-  useState,
-  type PropsWithChildren,
-  type ReactNode,
-} from 'rehackt'
+import React, { useState } from 'rehackt'
 import { formContext } from './formContext'
-import { Field, useField, type FieldComponent, type UseField } from './useField'
+import { Field, useField } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
+import type { NoInfer } from '@tanstack/react-store'
+import type { PropsWithChildren, ReactNode } from 'rehackt'
+import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
+import type { FieldComponent, UseField } from './useField'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
