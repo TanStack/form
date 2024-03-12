@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig.json",
-  "compilerOptions": { 
+  "compilerOptions": {
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
     "moduleResolution": "Bundler",

@@ -32,7 +32,7 @@ describe('useForm', () => {
       const form = useForm<Person>({
         persister: useFormPersister({ formKey: 'Person' }),
       })
-
+      form.options.persister!
       return (
         <form.Provider>
           <form.Field
