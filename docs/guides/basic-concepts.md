@@ -181,9 +181,8 @@ Example:
           ? 'No hobbies found.'
           : hobbiesField.state.value.map((_, i) => (
               <div key={i}>
-                <hobbiesField.Field
-                  index={i}
-                  name="name"
+                <form.Field
+                  name={`hobbies[${i}].name`}
                   children={(field) => {
                     return (
                       <div>
@@ -206,9 +205,8 @@ Example:
                     )
                   }}
                 />
-                <hobbiesField.Field
-                  index={i}
-                  name="description"
+                <form.Field
+                  name={`hobbies[${i}].description`}
                   children={(field) => {
                     return (
                       <div>
@@ -252,9 +250,8 @@ Rendering fields that are items of a nested array require only a small change to
 Example:
 
 ```tsx
-<hobbiesField.Field
-  index={i}
-  name="name"
+<form.Field
+  name={`hobbies[${i}].name`}
   children={(field) => {
     return (
       <div>

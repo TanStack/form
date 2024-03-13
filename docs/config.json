@@ -73,6 +73,10 @@
           "label": "react",
           "children": [
             {
+              "label": "Arrays",
+              "to": "framework/react/guides/arrays"
+            },
+            {
               "label": "UI Libraries",
               "to": "framework/react/guides/ui-libraries"
             },
@@ -87,6 +91,24 @@
             {
               "label": "Debugging",
               "to": "framework/react/guides/debugging"
+            }
+          ]
+        },
+        {
+          "label": "vue",
+          "children": [
+            {
+              "label": "Arrays",
+              "to": "framework/vue/guides/arrays"
+            }
+          ]
+        },
+        {
+          "label": "solid",
+          "children": [
+            {
+              "label": "Arrays",
+              "to": "framework/solid/guides/arrays"
             }
           ]
         }
@@ -186,6 +208,10 @@
               "to": "framework/react/examples/simple"
             },
             {
+              "label": "Arrays",
+              "to": "framework/react/examples/array"
+            },
+            {
               "label": "Yup",
               "to": "framework/react/examples/yup"
             },
@@ -211,6 +237,10 @@
               "to": "framework/vue/examples/simple"
             },
             {
+              "label": "Arrays",
+              "to": "framework/vue/examples/array"
+            },
+            {
               "label": "Yup",
               "to": "framework/vue/examples/yup"
             },
@@ -230,6 +260,10 @@
             {
               "label": "Simple",
               "to": "framework/solid/examples/simple"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/solid/examples/array"
             },
             {
               "label": "Yup",

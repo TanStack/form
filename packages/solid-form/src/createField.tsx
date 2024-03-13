@@ -7,7 +7,6 @@ import {
   onCleanup,
   onMount,
 } from 'solid-js'
-import { formContext, useFormContext } from './formContext'
 
 import type {
   DeepKeys,
@@ -35,20 +34,20 @@ declare module '@tanstack/form-core' {
   }
 }
 
-export type CreateField<TParentData> = <
+export type CreateField<
+  TParentData,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+> = <
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
     | Validator<DeepValue<TParentData, TName>, unknown>
     | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
 >(
-  opts: () => { name: Narrow<TName> } & CreateFieldOptions<
-    TParentData,
-    TName,
-    TFieldValidator,
-    TFormValidator
+  opts: () => { name: Narrow<TName> } & Omit<
+    CreateFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>,
+    'form'
   >,
 ) => () => FieldApi<
   TParentData,
@@ -86,23 +85,9 @@ export function createField<
     TFormValidator
   >,
 ): () => FieldApi<TParentData, TName, TFieldValidator, TFormValidator> {
-  // Get the form API either manually or from context
-  const { formApi, parentFieldName } = useFormContext()
-
   const options = opts()
-  const name = (
-    typeof options.index === 'number'
-      ? [parentFieldName, options.index, options.name]
-      : [parentFieldName, options.name]
-  )
-    .filter((d) => d !== undefined)
-    .join('.')
 
-  const fieldApi = new FieldApi({
-    ...options,
-    form: formApi,
-    name: name as typeof options.name as never,
-  })
+  const fieldApi = new FieldApi(options)
   fieldApi.Field = Field as never
 
   /**
@@ -111,7 +96,7 @@ export function createField<
    *
    * createComputed to make sure this effect runs before render effects
    */
-  createComputed(() => fieldApi.update({ ...opts(), form: formApi } as never))
+  createComputed(() => fieldApi.update(opts()))
 
   // Instantiates field meta and removes it when unrendered
   onMount(() => onCleanup(fieldApi.mount()))
@@ -139,19 +124,10 @@ type FieldComponentProps<
       TData
     >,
   ) => JSXElement
-} & (TParentData extends any[]
-  ? {
-      name?: TName
-      index: number
-    }
-  : {
-      name: TName
-      index?: never
-    }) &
-  Omit<
-    CreateFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>,
-    'name' | 'index'
-  >
+} & Omit<
+  CreateFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>,
+  'form'
+>
 
 export type FieldComponent<
   TParentData,
@@ -167,12 +143,15 @@ export type FieldComponent<
 >({
   children,
   ...fieldOptions
-}: FieldComponentProps<
-  TParentData,
-  TName,
-  TFieldValidator,
-  TFormValidator,
-  TData
+}: Omit<
+  FieldComponentProps<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >,
+  'form'
 >) => JSXElement
 
 export function Field<
@@ -206,15 +185,5 @@ export function Field<
     return fieldOptions
   })
 
-  return (
-    <formContext.Provider
-      value={{
-        formApi: fieldApi().form as never,
-        parentFieldName: String(fieldApi().name),
-      }}
-    >
-      {/* createComponent to make sure the signals in the children component are not tracked */}
-      {createComponent(() => props.children(fieldApi), {})}
-    </formContext.Provider>
-  )
+  return <>{createComponent(() => props.children(fieldApi), {})}</>
 }

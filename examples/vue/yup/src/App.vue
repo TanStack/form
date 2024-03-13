@@ -17,8 +17,6 @@ const form = useForm({
   validatorAdapter: yupValidator,
 })
 
-form.provideFormContext()
-
 const onChangeFirstName = yup
   .string()
   .test('no-error', "No 'error' allowed in first name", async (value) => {

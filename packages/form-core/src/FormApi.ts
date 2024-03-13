@@ -8,7 +8,8 @@ import {
   isNonEmptyArray,
   setBy,
 } from './utils'
-import type { DeepKeys, DeepValue, Updater } from './utils'
+import type { Updater } from './utils'
+import type { DeepKeys, DeepValue } from './util-types'
 import type { FieldApi, FieldMeta } from './FieldApi'
 import type {
   ValidationCause,
@@ -311,7 +312,9 @@ export class FormApi<
           Object.assign(
             {},
             this.state as any,
+
             shouldUpdateState ? options.defaultState : {},
+
             shouldUpdateValues
               ? {
                   values: options.defaultValues,

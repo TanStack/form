@@ -117,6 +117,25 @@ importers:
         specifier: ^3.3.4
         version: 3.3.4
 
+  examples/react/array:
+    dependencies:
+      '@tanstack/react-form':
+        specifier: ^0.13.7
+        version: link:../../../packages/react-form
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      '@vitejs/plugin-react':
+        specifier: ^4.2.1
+        version: 4.2.1(vite@5.0.12)
+      vite:
+        specifier: ^5.0.10
+        version: 5.0.12(@types/node@18.19.4)
+
   examples/react/next-server-actions:
     dependencies:
       '@tanstack/react-form':
@@ -321,6 +340,25 @@ importers:
         specifier: ^5.0.10
         version: 5.0.12(@types/node@18.19.4)
 
+  examples/solid/array:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^0.13.7
+        version: link:../../../packages/solid-form
+      solid-js:
+        specifier: ^1.7.8
+        version: 1.7.12
+    devDependencies:
+      typescript:
+        specifier: 5.2.2
+        version: 5.2.2
+      vite:
+        specifier: ^5.0.10
+        version: 5.0.12(@types/node@18.19.4)
+      vite-plugin-solid:
+        specifier: ^2.10.1
+        version: 2.10.1(@testing-library/jest-dom@6.4.2)(solid-js@1.7.12)(vite@5.0.12)
+
   examples/solid/simple:
     dependencies:
       '@tanstack/solid-form':
@@ -414,6 +452,28 @@ importers:
       vite-plugin-solid:
         specifier: ^2.10.1
         version: 2.10.1(@testing-library/jest-dom@6.4.2)(solid-js@1.7.12)(vite@5.0.12)
+
+  examples/vue/array:
+    dependencies:
+      '@tanstack/vue-form':
+        specifier: ^0.13.7
+        version: link:../../../packages/vue-form
+      vue:
+        specifier: ^3.3.4
+        version: 3.3.4
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^5.0.4
+        version: 5.0.4(vite@5.0.12)(vue@3.3.4)
+      typescript:
+        specifier: 5.2.2
+        version: 5.2.2
+      vite:
+        specifier: ^5.0.10
+        version: 5.0.12(@types/node@18.19.4)
+      vue-tsc:
+        specifier: ^1.8.10
+        version: 1.8.27(typescript@5.2.2)
 
   examples/vue/simple:
     dependencies:

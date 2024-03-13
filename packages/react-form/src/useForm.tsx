@@ -5,19 +5,16 @@ import React, {
   type ReactNode,
   useState,
 } from 'rehackt'
-import { Field, useField } from './useField'
-import { formContext } from './formContext'
+import { Field, type FieldComponent, type UseField, useField } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type { NoInfer } from '@tanstack/react-store'
 import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
-import type { FieldComponent, UseField } from './useField'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
   interface FormApi<TFormData, TFormValidator> {
-    Provider: (props: PropsWithChildren) => JSX.Element
     Field: FieldComponent<TFormData, TFormValidator>
-    useField: UseField<TFormData>
+    useField: UseField<TFormData, TFormValidator>
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
       selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,
     ) => TSelected
@@ -47,15 +44,11 @@ export function useForm<
 ): FormApi<TFormData, TFormValidator> {
   const [formApi] = useState(() => {
     const api = new FormApi<TFormData, TFormValidator>(opts)
-
-    api.Provider = function Provider(props) {
-      useIsomorphicLayoutEffect(api.mount, [])
-      return (
-        <formContext.Provider {...props} value={{ formApi: api as never }} />
-      )
+    api.Field = function APIField(props) {
+      return <Field {...props} form={api} />
     }
-    api.Field = Field as any
-    api.useField = useField as any
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    api.useField = (props) => useField({ ...props, form: api })
     api.useStore = (
       // @ts-ignore
       selector,
@@ -76,6 +69,8 @@ export function useForm<
 
     return api
   })
+
+  useIsomorphicLayoutEffect(formApi.mount, [])
 
   formApi.useStore((state) => state.isSubmitting)
 

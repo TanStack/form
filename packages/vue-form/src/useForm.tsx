@@ -1,8 +1,7 @@
 import { FormApi } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent, h, onMounted } from 'vue'
 import { Field, useField } from './useField'
-import { provideFormContext } from './formContext'
 import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
 import type { NoInfer } from '@tanstack/vue-store'
 import type { EmitsOptions, Ref, SetupContext, SlotsType } from 'vue'
@@ -11,8 +10,6 @@ import type { FieldComponent, UseField } from './useField'
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
   interface FormApi<TFormData, TFormValidator> {
-    Provider: (props: Record<string, any> & {}) => any
-    provideFormContext: () => void
     Field: FieldComponent<TFormData, TFormValidator>
     useField: UseField<TFormData, TFormValidator>
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
@@ -39,20 +36,21 @@ export function useForm<
   const formApi = (() => {
     const api = new FormApi<TFormData, TFormValidator>(opts)
 
-    api.Provider = defineComponent(
-      (_, context) => {
-        onMounted(api.mount)
-        provideFormContext({ formApi: formApi as never })
-        return () => context.slots.default!()
+    api.Field = defineComponent(
+      (props, context) => {
+        return () =>
+          h(
+            Field as never,
+            { ...props, ...context.attrs, form: api },
+            context.slots,
+          )
       },
-      { name: 'Provider' },
+      {
+        name: 'APIField',
+        inheritAttrs: false,
+      },
     )
-    api.provideFormContext = () => {
-      onMounted(api.mount)
-      provideFormContext({ formApi: formApi as never })
-    }
-    api.Field = Field as never
-    api.useField = useField as never
+    api.useField = (props) => useField({ ...props, form: api })
     api.useStore = (selector) => {
       return useStore(api.store as never, selector as never) as never
     }
@@ -71,6 +69,8 @@ export function useForm<
 
     return api
   })()
+
+  onMounted(formApi.mount)
 
   // formApi.useStore((state) => state.isSubmitting)
   formApi.update(opts)
