@@ -5,7 +5,7 @@
     "apiKey": "",
     "indexName": "tanstack-form"
   },
-  "menu": [
+  "sections": [
     {
       "label": "Getting Started",
       "children": [
@@ -25,6 +25,44 @@
           "label": "TypeScript",
           "to": "typescript"
         }
+      ],
+      "frameworks": [
+        {
+          "label": "react",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "framework/react/quick-start"
+            }
+          ]
+        },
+        {
+          "label": "vue",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "framework/vue/quick-start"
+            }
+          ]
+        },
+        {
+          "label": "solid",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "framework/solid/quick-start"
+            }
+          ]
+        },
+        {
+          "label": "lit",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "framework/lit/quick-start"
+            }
+          ]
+        }
       ]
     },
     {
@@ -38,41 +76,10 @@
           "label": "Form Validation",
           "to": "guides/validation"
         }
-      ]
-    },
-    {
-      "label": "API Reference",
-      "children": [
+      ],
+      "frameworks": [
         {
-          "label": "FormApi",
-          "to": "reference/formApi"
-        },
-        {
-          "label": "FieldApi",
-          "to": "reference/fieldApi"
-        },
-        {
-          "label": "Types",
-          "to": "reference/types"
-        }
-      ]
-    }
-  ],
-  "frameworkMenus": [
-    {
-      "framework": "react",
-      "menuItems": [
-        {
-          "label": "Getting Started",
-          "children": [
-            {
-              "label": "Quick Start",
-              "to": "framework/react/quick-start"
-            }
-          ]
-        },
-        {
-          "label": "Guides",
+          "label": "react",
           "children": [
             {
               "label": "Arrays",
@@ -97,7 +104,44 @@
           ]
         },
         {
-          "label": "API Reference",
+          "label": "vue",
+          "children": [
+            {
+              "label": "Arrays",
+              "to": "framework/vue/guides/arrays"
+            }
+          ]
+        },
+        {
+          "label": "solid",
+          "children": [
+            {
+              "label": "Arrays",
+              "to": "framework/solid/guides/arrays"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "API Reference",
+      "children": [
+        {
+          "label": "FormApi",
+          "to": "reference/formApi"
+        },
+        {
+          "label": "FieldApi",
+          "to": "reference/fieldApi"
+        },
+        {
+          "label": "Types",
+          "to": "reference/types"
+        }
+      ],
+      "frameworks": [
+        {
+          "label": "react",
           "children": [
             {
               "label": "useForm",
@@ -118,7 +162,55 @@
           ]
         },
         {
-          "label": "Examples",
+          "label": "vue",
+          "children": [
+            {
+              "label": "useForm",
+              "to": "framework/vue/reference/useForm"
+            },
+            {
+              "label": "useField",
+              "to": "framework/vue/reference/useField"
+            },
+            {
+              "label": "Field",
+              "to": "framework/vue/reference/Field"
+            },
+            {
+              "label": "FormApi",
+              "to": "framework/vue/reference/formApi"
+            }
+          ]
+        },
+        {
+          "label": "solid",
+          "children": [
+            {
+              "label": "useForm",
+              "to": "framework/solid/reference/createForm"
+            },
+            {
+              "label": "useField",
+              "to": "framework/solid/reference/createField"
+            },
+            {
+              "label": "Field",
+              "to": "framework/solid/reference/Field"
+            },
+            {
+              "label": "FormApi",
+              "to": "framework/solid/reference/formApi"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Examples",
+      "children": [],
+      "frameworks": [
+        {
+          "label": "react",
           "children": [
             {
               "label": "Simple",
@@ -145,53 +237,9 @@
               "to": "framework/react/examples/ui-libraries"
             }
           ]
-        }
-      ]
-    },
-    {
-      "framework": "vue",
-      "menuItems": [
-        {
-          "label": "Getting Started",
-          "children": [
-            {
-              "label": "Quick Start",
-              "to": "framework/vue/quick-start"
-            }
-          ]
         },
         {
-          "label": "Guides",
-          "children": [
-            {
-              "label": "Arrays",
-              "to": "framework/react/guides/arrays"
-            }
-          ]
-        },
-        {
-          "label": "API Reference",
-          "children": [
-            {
-              "label": "useForm",
-              "to": "framework/vue/reference/useForm"
-            },
-            {
-              "label": "useField",
-              "to": "framework/vue/reference/useField"
-            },
-            {
-              "label": "Field",
-              "to": "framework/vue/reference/Field"
-            },
-            {
-              "label": "FormApi",
-              "to": "framework/vue/reference/formApi"
-            }
-          ]
-        },
-        {
-          "label": "Examples",
+          "label": "vue",
           "children": [
             {
               "label": "Simple",
@@ -214,53 +262,9 @@
               "to": "framework/vue/examples/valibot"
             }
           ]
-        }
-      ]
-    },
-    {
-      "framework": "solid",
-      "menuItems": [
-        {
-          "label": "Getting Started",
-          "children": [
-            {
-              "label": "Quick Start",
-              "to": "framework/solid/quick-start"
-            }
-          ]
         },
         {
-          "label": "Guides",
-          "children": [
-            {
-              "label": "Arrays",
-              "to": "framework/react/guides/arrays"
-            }
-          ]
-        },
-        {
-          "label": "API Reference",
-          "children": [
-            {
-              "label": "useForm",
-              "to": "framework/solid/reference/createForm"
-            },
-            {
-              "label": "useField",
-              "to": "framework/solid/reference/createField"
-            },
-            {
-              "label": "Field",
-              "to": "framework/solid/reference/Field"
-            },
-            {
-              "label": "FormApi",
-              "to": "framework/solid/reference/formApi"
-            }
-          ]
-        },
-        {
-          "label": "Examples",
+          "label": "solid",
           "children": [
             {
               "label": "Simple",
@@ -283,23 +287,9 @@
               "to": "framework/solid/examples/valibot"
             }
           ]
-        }
-      ]
-    },
-    {
-      "framework": "lit",
-      "menuItems": [
-        {
-          "label": "Getting Started",
-          "children": [
-            {
-              "label": "Quick Start",
-              "to": "framework/lit/quick-start"
-            }
-          ]
         },
         {
-          "label": "Examples",
+          "label": "lit",
           "children": [
             {
               "label": "Simple",
