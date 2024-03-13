@@ -53,6 +53,15 @@
               "to": "framework/solid/quick-start"
             }
           ]
+        },
+        {
+          "label": "lit",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "framework/lit/quick-start"
+            }
+          ]
         }
       ]
     },
@@ -276,6 +285,19 @@
             {
               "label": "Valibot",
               "to": "framework/solid/examples/valibot"
+            }
+          ]
+        },
+        {
+          "label": "lit",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/lit/examples/simple"
+            },
+            {
+              "label": "UI Libraries",
+              "to": "framework/lit/examples/ui-libraries"
             }
           ]
         }

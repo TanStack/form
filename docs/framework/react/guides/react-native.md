@@ -3,7 +3,7 @@ id: react-native
 title: Usage with React Native
 ---
 
-Tanstack Form is headless and it should support React Native out-of-the-box without needing any additional configuration.
+TanStack Form is headless and it should support React Native out-of-the-box without needing any additional configuration.
 
 Here is an example:
 
