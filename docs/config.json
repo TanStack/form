@@ -165,7 +165,7 @@
           "children": [
             {
               "label": "Arrays",
-              "to": "framework/react/guides/arrays"
+              "to": "framework/vue/guides/arrays"
             }
           ]
         },
@@ -234,7 +234,7 @@
           "children": [
             {
               "label": "Arrays",
-              "to": "framework/react/guides/arrays"
+              "to": "framework/solid/guides/arrays"
             }
           ]
         },
