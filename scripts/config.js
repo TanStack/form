@@ -37,6 +37,10 @@ export const packages = [
     packageDir: 'packages/solid-form',
   },
   {
+    name: '@tanstack/lit-form',
+    packageDir: 'packages/lit-form',
+  },
+  {
     name: '@tanstack/form-persist-core',
     packageDir: 'packages/form-persist-core',
   },
@@ -52,6 +56,10 @@ export const packages = [
     name: '@tanstack/vue-form-persist',
     packageDir: 'packages/vue-form-persist',
   },
+  // {
+  //   name: '@tanstack/svelte-form',
+  //   packageDir: 'packages/svelte-form',
+  // },
 ]
 
 /**

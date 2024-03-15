@@ -98,7 +98,7 @@ body:
   - type: dropdown
     id: adapter
     attributes:
-      label: Tanstack Form adapter
+      label: TanStack Form adapter
       description: |
         Please let us know which adapter of TanStack Form you were using when the issue occurred.
       options:

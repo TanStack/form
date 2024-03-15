@@ -3,11 +3,11 @@ id: quick-start
 title: Quick Start
 ---
 
-> There is a bug in Vue's TypeScript support that's impacting our types that you'll likely run into: 
+> There is a bug in Vue's TypeScript support that's impacting our types that you'll likely run into:
 >
 > https://github.com/vuejs/language-tools/issues/3782
 >
-> Please give it a thumbs up, but _do not reply with comments such as "+1" or "When will this be fixed?", as such comments are unhelpful and rude_. 
+> Please give it a thumbs up, but _do not reply with comments such as "+1" or "When will this be fixed?", as such comments are unhelpful and rude_.
 
 The bare minimum to get started with TanStack Form is to create a form and add a field. Keep in mind that this example does not include any validation or error handling... yet.
 
@@ -25,8 +25,6 @@ const form = useForm({
     console.log(value)
   },
 })
-
-form.provideFormContext()
 </script>
 
 <template>

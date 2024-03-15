@@ -1,4 +1,4 @@
-import type { ValidationCause, Validator } from './types'
+import type { ValidationCause } from './types'
 import type { FormValidators } from './FormApi'
 import type { FieldValidators } from './FieldApi'
 
@@ -269,75 +269,3 @@ export function getSyncValidatorArray<T>(
       return [changeValidator, serverValidator] as never
   }
 }
-
-export type RequiredByKey<T, K extends keyof T> = Omit<T, K> &
-  Required<Pick<T, K>>
-
-type ComputeRange<
-  N extends number,
-  Result extends Array<unknown> = [],
-> = Result['length'] extends N
-  ? Result
-  : ComputeRange<N, [...Result, Result['length']]>
-type Index40 = ComputeRange<40>[number]
-
-// Is this type a tuple?
-type IsTuple<T> = T extends readonly any[] & { length: infer Length }
-  ? Length extends Index40
-    ? T
-    : never
-  : never
-
-// If this type is a tuple, what indices are allowed?
-type AllowedIndexes<
-  Tuple extends ReadonlyArray<any>,
-  Keys extends number = never,
-> = Tuple extends readonly []
-  ? Keys
-  : Tuple extends readonly [infer _, ...infer Tail]
-    ? AllowedIndexes<Tail, Keys | Tail['length']>
-    : Keys
-
-export type DeepKeys<T, TDepth extends any[] = []> = TDepth['length'] extends 5
-  ? never
-  : unknown extends T
-    ? string
-    : T extends readonly any[] & IsTuple<T>
-      ? AllowedIndexes<T> | DeepKeysPrefix<T, AllowedIndexes<T>, TDepth>
-      : T extends any[]
-        ? DeepKeysPrefix<T, number, TDepth>
-        : T extends Date
-          ? never
-          : T extends object
-            ? (keyof T & string) | DeepKeysPrefix<T, keyof T, TDepth>
-            : never
-
-type DeepKeysPrefix<
-  T,
-  TPrefix,
-  TDepth extends any[],
-> = TPrefix extends keyof T & (number | string)
-  ? `${TPrefix}.${DeepKeys<T[TPrefix], [...TDepth, any]> & string}`
-  : never
-
-export type DeepValue<T, TProp> = T extends Record<string | number, any>
-  ? TProp extends `${infer TBranch}.${infer TDeepProp}`
-    ? DeepValue<T[TBranch], TDeepProp>
-    : T[TProp & string]
-  : never
-
-type Narrowable = string | number | bigint | boolean
-
-type NarrowRaw<A> =
-  | (A extends [] ? [] : never)
-  | (A extends Narrowable ? A : never)
-  | {
-      [K in keyof A]: A[K] extends Function ? A[K] : NarrowRaw<A[K]>
-    }
-
-export type Narrow<A> = Try<A, [], NarrowRaw<A>>
-
-type Try<A1, A2, Catch = never> = A1 extends A2 ? A1 : Catch
-
-// Hack to get TypeScript to show simplified types in error messages
-export type Pretty<T> = { [K in keyof T]: T[K] } & {}

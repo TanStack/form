@@ -1,7 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@solidjs/testing-library'
 import userEvent from '@testing-library/user-event'
-import { createFormFactory } from '../index'
+import '@testing-library/jest-dom/vitest'
+import { Index, Show } from 'solid-js'
+import { createForm, createFormFactory } from '../index'
 import { sleep } from './utils'
 
 const user = userEvent.setup()
@@ -19,7 +21,7 @@ describe('createField', () => {
       const form = formFactory.createForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultValue="FirstName"
@@ -34,7 +36,7 @@ describe('createField', () => {
               )
             }}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -60,7 +62,7 @@ describe('createField', () => {
       }))
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultValue="otherName"
@@ -75,7 +77,7 @@ describe('createField', () => {
               )
             }}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -97,7 +99,7 @@ describe('createField', () => {
       const form = formFactory.createForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             validators={{
@@ -117,7 +119,7 @@ describe('createField', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -140,7 +142,7 @@ describe('createField', () => {
       const form = formFactory.createForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -163,7 +165,7 @@ describe('createField', () => {
               )
             }}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -188,7 +190,7 @@ describe('createField', () => {
       const form = formFactory.createForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -212,7 +214,7 @@ describe('createField', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -239,7 +241,7 @@ describe('createField', () => {
       const form = formFactory.createForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -262,7 +264,7 @@ describe('createField', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -288,7 +290,7 @@ describe('createField', () => {
       const form = formFactory.createForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -316,7 +318,7 @@ describe('createField', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -346,7 +348,7 @@ describe('createField', () => {
       const form = formFactory.createForm()
 
       return (
-        <form.Provider>
+        <>
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
@@ -371,7 +373,7 @@ describe('createField', () => {
               </div>
             )}
           />
-        </form.Provider>
+        </>
       )
     }
 
@@ -382,5 +384,85 @@ describe('createField', () => {
     expect(mockFn).toHaveBeenCalledTimes(0)
     await waitFor(() => getByText(error))
     expect(getByText(error)).toBeInTheDocument()
+  })
+
+  it('should handle arrays with subvalues', async () => {
+    const fn = vi.fn()
+
+    function Comp() {
+      const form = createForm(() => ({
+        defaultValues: {
+          people: [] as Array<{ age: number; name: string }>,
+        },
+        onSubmit: ({ value }) => fn(value),
+      }))
+
+      return (
+        <div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              void form.handleSubmit()
+            }}
+          >
+            <form.Field name="people">
+              {(field) => (
+                <div>
+                  <Show when={field().state.value.length > 0}>
+                    {/* Do not change this to For or the test will fail */}
+                    <Index each={field().state.value}>
+                      {(_, i) => {
+                        return (
+                          <form.Field name={`people[${i}].name`}>
+                            {(subField) => (
+                              <div>
+                                <label>
+                                  <div>Name for person {i}</div>
+                                  <input
+                                    value={subField().state.value}
+                                    onInput={(e) => {
+                                      subField().handleChange(
+                                        e.currentTarget.value,
+                                      )
+                                    }}
+                                  />
+                                </label>
+                              </div>
+                            )}
+                          </form.Field>
+                        )
+                      }}
+                    </Index>
+                  </Show>
+
+                  <button
+                    onClick={() => field().pushValue({ name: '', age: 0 })}
+                    type="button"
+                  >
+                    Add person
+                  </button>
+                </div>
+              )}
+            </form.Field>
+            <button type="submit">Submit</button>
+          </form>
+        </div>
+      )
+    }
+
+    const { getByText, findByLabelText, queryByText, findByText } = render(
+      () => <Comp />,
+    )
+
+    expect(queryByText('Name for person 0')).not.toBeInTheDocument()
+    await user.click(getByText('Add person'))
+    const input = await findByLabelText('Name for person 0')
+    expect(input).toBeInTheDocument()
+    await user.type(input, 'John')
+    await user.click(await findByText('Submit'))
+    expect(fn).toHaveBeenCalledWith({
+      people: [{ name: 'John', age: 0 }],
+    })
   })
 })

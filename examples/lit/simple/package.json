@@ -1,0 +1,30 @@
+{
+  "name": "@tanstack/form-example-lit-simple",
+  "version": "0.0.1",
+  "main": "src/index.jsx",
+  "scripts": {
+    "dev": "vite --port=3001",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:types": "tsc"
+  },
+  "dependencies": {
+    "@tanstack/lit-form": "^0.15.0",
+    "lit": "^3.1.1"
+  },
+  "devDependencies": {
+    "vite": "^5.0.10"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

@@ -23,7 +23,6 @@ export default function App() {
 
   return (
     <div>
-      <form.Provider>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -46,7 +45,6 @@ export default function App() {
           </div>
           <button type="submit">Submit</button>
         </form>
-      </form.Provider>
     </div>
   )
 }

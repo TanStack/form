@@ -5,7 +5,7 @@
     "apiKey": "",
     "indexName": "tanstack-form"
   },
-  "menu": [
+  "sections": [
     {
       "label": "Getting Started",
       "children": [
@@ -25,6 +25,44 @@
           "label": "TypeScript",
           "to": "typescript"
         }
+      ],
+      "frameworks": [
+        {
+          "label": "react",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "framework/react/quick-start"
+            }
+          ]
+        },
+        {
+          "label": "vue",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "framework/vue/quick-start"
+            }
+          ]
+        },
+        {
+          "label": "solid",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "framework/solid/quick-start"
+            }
+          ]
+        },
+        {
+          "label": "lit",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "framework/lit/quick-start"
+            }
+          ]
+        }
       ]
     },
     {
@@ -38,42 +76,15 @@
           "label": "Form Validation",
           "to": "guides/validation"
         }
-      ]
-    },
-    {
-      "label": "API Reference",
-      "children": [
+      ],
+      "frameworks": [
         {
-          "label": "FormApi",
-          "to": "reference/formApi"
-        },
-        {
-          "label": "FieldApi",
-          "to": "reference/fieldApi"
-        },
-        {
-          "label": "Types",
-          "to": "reference/types"
-        }
-      ]
-    }
-  ],
-  "frameworkMenus": [
-    {
-      "framework": "react",
-      "menuItems": [
-        {
-          "label": "Getting Started",
+          "label": "react",
           "children": [
             {
-              "label": "Quick Start",
-              "to": "framework/react/quick-start"
-            }
-          ]
-        },
-        {
-          "label": "Guides",
-          "children": [
+              "label": "Arrays",
+              "to": "framework/react/guides/arrays"
+            },
             {
               "label": "UI Libraries",
               "to": "framework/react/guides/ui-libraries"
@@ -93,7 +104,44 @@
           ]
         },
         {
-          "label": "API Reference",
+          "label": "vue",
+          "children": [
+            {
+              "label": "Arrays",
+              "to": "framework/vue/guides/arrays"
+            }
+          ]
+        },
+        {
+          "label": "solid",
+          "children": [
+            {
+              "label": "Arrays",
+              "to": "framework/solid/guides/arrays"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "API Reference",
+      "children": [
+        {
+          "label": "FormApi",
+          "to": "reference/formApi"
+        },
+        {
+          "label": "FieldApi",
+          "to": "reference/fieldApi"
+        },
+        {
+          "label": "Types",
+          "to": "reference/types"
+        }
+      ],
+      "frameworks": [
+        {
+          "label": "react",
           "children": [
             {
               "label": "useForm",
@@ -114,46 +162,7 @@
           ]
         },
         {
-          "label": "Examples",
-          "children": [
-            {
-              "label": "Simple",
-              "to": "framework/react/examples/simple"
-            },
-            {
-              "label": "Yup",
-              "to": "framework/react/examples/yup"
-            },
-            {
-              "label": "Zod",
-              "to": "framework/react/examples/zod"
-            },
-            {
-              "label": "Valibot",
-              "to": "framework/react/examples/valibot"
-            },
-            {
-              "label": "UI Libraries",
-              "to": "framework/react/examples/ui-libraries"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "framework": "vue",
-      "menuItems": [
-        {
-          "label": "Getting Started",
-          "children": [
-            {
-              "label": "Quick Start",
-              "to": "framework/vue/quick-start"
-            }
-          ]
-        },
-        {
-          "label": "API Reference",
+          "label": "vue",
           "children": [
             {
               "label": "useForm",
@@ -174,42 +183,7 @@
           ]
         },
         {
-          "label": "Examples",
-          "children": [
-            {
-              "label": "Simple",
-              "to": "framework/vue/examples/simple"
-            },
-            {
-              "label": "Yup",
-              "to": "framework/vue/examples/yup"
-            },
-            {
-              "label": "Zod",
-              "to": "framework/vue/examples/zod"
-            },
-            {
-              "label": "Valibot",
-              "to": "framework/vue/examples/valibot"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "framework": "solid",
-      "menuItems": [
-        {
-          "label": "Getting Started",
-          "children": [
-            {
-              "label": "Quick Start",
-              "to": "framework/solid/quick-start"
-            }
-          ]
-        },
-        {
-          "label": "API Reference",
+          "label": "solid",
           "children": [
             {
               "label": "useForm",
@@ -228,13 +202,77 @@
               "to": "framework/solid/reference/formApi"
             }
           ]
+        }
+      ]
+    },
+    {
+      "label": "Examples",
+      "children": [],
+      "frameworks": [
+        {
+          "label": "react",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/react/examples/simple"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/react/examples/array"
+            },
+            {
+              "label": "Yup",
+              "to": "framework/react/examples/yup"
+            },
+            {
+              "label": "Zod",
+              "to": "framework/react/examples/zod"
+            },
+            {
+              "label": "Valibot",
+              "to": "framework/react/examples/valibot"
+            },
+            {
+              "label": "UI Libraries",
+              "to": "framework/react/examples/ui-libraries"
+            }
+          ]
         },
         {
-          "label": "Examples",
+          "label": "vue",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/vue/examples/simple"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/vue/examples/array"
+            },
+            {
+              "label": "Yup",
+              "to": "framework/vue/examples/yup"
+            },
+            {
+              "label": "Zod",
+              "to": "framework/vue/examples/zod"
+            },
+            {
+              "label": "Valibot",
+              "to": "framework/vue/examples/valibot"
+            }
+          ]
+        },
+        {
+          "label": "solid",
           "children": [
             {
               "label": "Simple",
               "to": "framework/solid/examples/simple"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/solid/examples/array"
             },
             {
               "label": "Yup",
@@ -247,6 +285,19 @@
             {
               "label": "Valibot",
               "to": "framework/solid/examples/valibot"
+            }
+          ]
+        },
+        {
+          "label": "lit",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/lit/examples/simple"
+            },
+            {
+              "label": "UI Libraries",
+              "to": "framework/lit/examples/ui-libraries"
             }
           ]
         }

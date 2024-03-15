@@ -1,0 +1,12 @@
+{
+  "composite": true,
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["DOM"],
+    "outDir": "./build/lib",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["vitest/globals"]
+  },
+  "include": ["src"]
+}

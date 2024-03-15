@@ -285,7 +285,7 @@ describe('form api', () => {
 
     const fieldInArray = new FieldApi({
       form,
-      name: `employees.${0}.firstName`,
+      name: `employees[0].firstName`,
       defaultValue: 'Darcy',
     })
     fieldInArray.mount()
@@ -313,11 +313,11 @@ describe('form api', () => {
 
     const fieldInArray = new FieldApi({
       form,
-      name: `employees.${0}.firstName`,
+      name: `employees[0].firstName`,
       defaultValue: 'Darcy',
     })
     fieldInArray.mount()
-    form.deleteField(`employees.${0}.firstName`)
+    form.deleteField(`employees[0].firstName`)
     expect(field.state.value.length).toBe(1)
     expect(Object.keys(field.state.value[0]!).length).toBe(0)
   })

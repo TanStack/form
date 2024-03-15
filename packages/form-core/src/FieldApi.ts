@@ -7,7 +7,8 @@ import type {
   ValidationErrorMap,
   Validator,
 } from './types'
-import type { DeepKeys, DeepValue, Updater } from './utils'
+import type { Updater } from './utils'
+import type { DeepKeys, DeepValue } from './util-types'
 
 export type FieldValidateFn<
   TParentData,
@@ -295,6 +296,7 @@ export class FieldApi<
     this.store = new Store<FieldState<TData>>(
       {
         value: this.getValue(),
+
         meta: this._getMeta() ?? {
           isValidating: false,
           isTouched: false,
@@ -408,6 +410,7 @@ export class FieldApi<
     >,
   ) => {
     // Default Value
+
     if (this.state.value === undefined) {
       const formDefault =
         opts.form.options.defaultValues?.[opts.name as keyof TParentData]

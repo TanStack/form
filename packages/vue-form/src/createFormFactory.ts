@@ -10,8 +10,8 @@ export type FormFactory<
   useForm: (
     opts?: FormOptions<TFormData, TFormValidator>,
   ) => FormApi<TFormData, TFormValidator>
-  useField: UseField<TFormData, TFormValidator>
-  Field: FieldComponent<TFormData, TFormValidator>
+  useField: typeof useField
+  Field: typeof Field
 }
 
 export function createFormFactory<
@@ -25,7 +25,7 @@ export function createFormFactory<
       const formOptions = Object.assign({}, defaultOpts, opts)
       return useForm<TFormData, TFormValidator>(formOptions)
     },
-    useField: useField as any,
-    Field: Field as any,
+    useField: useField,
+    Field: Field,
   }
 }
