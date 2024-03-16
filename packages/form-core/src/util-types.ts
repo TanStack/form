@@ -85,14 +85,6 @@ type PrefixFromDepth<
   TDepth extends any[],
 > = TDepth['length'] extends 0 ? T : `.${T}`
 
-type UnwrapNumber<T> = T extends `${infer Num}`
-  ? Num extends number
-    ? Num
-    : never
-  : T extends number
-    ? T
-    : never
-
 export type DeepValue<
   TValue,
   TAccessor,
@@ -104,7 +96,9 @@ export type DeepValue<
       ? DeepValue<DeepValue<TValue, TBrackets>, TAfter, [...TDepth, any]>
       : TAccessor extends `[${infer TBrackets}]`
         ? DeepValue<TValue, TBrackets, [...TDepth, any]>
-        : TValue[UnwrapNumber<TAccessor>]
+        : TAccessor extends keyof TValue
+          ? TValue[TAccessor]
+          : TValue[TAccessor & number]
     : TValue extends Record<string | number, any>
       ? TAccessor extends `${infer TBefore}[${infer TEverythingElse}`
         ? DeepValue<
