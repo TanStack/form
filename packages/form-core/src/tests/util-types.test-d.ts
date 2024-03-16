@@ -122,3 +122,19 @@ interface User {
   id: string
   age: number
 }
+
+type FormDefinition = {
+  nested: {
+    people: {
+      name: string
+      age: number
+    }[]
+  }
+}
+
+type FormDefinitionValue = DeepValue<
+  FormDefinition,
+  `nested.people[${number}].name`
+>
+
+assertType<string>(0 as never as FormDefinitionValue)
