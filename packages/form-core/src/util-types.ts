@@ -86,14 +86,18 @@ type PrefixFromDepth<
 export type DeepValue<TValue, TAccessor> = TValue extends ReadonlyArray<
   infer TElement
 >
-  ? TAccessor extends `[${infer TBrackets}].${infer TAfter}`
-    ? TBrackets extends keyof TValue
-      ? DeepValue<TValue[TBrackets], TAfter>
-      : never
-    : TAccessor extends `[${infer TMaybeNumber}]`
-      ? TMaybeNumber extends number
-        ? TElement
+  ? TAccessor extends `[${infer TBrackets}]`
+    ? TBrackets extends `${number}`
+      ? TElement
+      : TBrackets extends keyof TValue
+        ? TValue[TBrackets]
         : never
+    : TAccessor extends `[${infer TBrackets}].${infer TAfter}`
+      ? TBrackets extends `${number}`
+        ? DeepValue<TElement, TAfter>
+        : TBrackets extends keyof TValue
+          ? DeepValue<TValue[TBrackets], TAfter>
+          : never
       : never
   : TValue extends Record<string | number, any>
     ? TAccessor extends `${infer TBefore}[${infer TBrackets}].${infer TAfter}`
