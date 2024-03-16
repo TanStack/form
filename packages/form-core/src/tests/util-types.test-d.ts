@@ -99,6 +99,12 @@ type DeeplyNestedTupleBroadExample = DeepValue<
 >
 assertType<number>(0 as never as DeeplyNestedTupleBroadExample)
 
+type SimpleArrayExample = DeepValue<User[], `[${number}]`>
+assertType<User>(0 as never as SimpleArrayExample)
+
+type SimpleNestedArrayExample = DeepValue<User[], `[${number}].age`>
+assertType<number>(0 as never as SimpleNestedArrayExample)
+
 type NestedTupleItemExample = DeepValue<
   { topUsers: [User, 0, User] },
   'topUsers[1]'

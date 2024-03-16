@@ -96,4 +96,16 @@ export type DeepValue<TValue, TAccessor> = TValue extends Record<
         : TAccessor extends `${infer TBefore}.${infer TAfter}`
           ? DeepValue<TValue[TBefore], TAfter>
           : TValue[TAccessor & string]
-  : never
+  : TValue extends ReadonlyArray<infer TElement>
+    ? TAccessor extends `[${infer TBrackets}].${infer TAfter}`
+      ? TBrackets extends number
+        ? DeepValue<TElement, TAfter>
+        : TBrackets extends keyof TValue
+          ? DeepValue<TValue[TBrackets], TAfter>
+          : never
+      : TAccessor extends `[${infer TMaybeNumber}]`
+        ? TMaybeNumber extends number
+          ? TElement
+          : never
+        : never
+    : never
