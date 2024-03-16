@@ -87,13 +87,13 @@ export type DeepValue<TValue, TAccessor> = TValue extends ReadonlyArray<
   infer TElement
 >
   ? TAccessor extends `[${infer TBrackets}]`
-    ? TBrackets extends `${number}`
+    ? `${number}` extends TBrackets
       ? TElement
       : TBrackets extends keyof TValue
         ? TValue[TBrackets]
         : never
     : TAccessor extends `[${infer TBrackets}].${infer TAfter}`
-      ? TBrackets extends `${number}`
+      ? `${number}` extends TBrackets
         ? DeepValue<TElement, TAfter>
         : TBrackets extends keyof TValue
           ? DeepValue<TValue[TBrackets], TAfter>
