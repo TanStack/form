@@ -118,3 +118,32 @@ it('should type onChangeAsync properly', () => {
     },
   })
 })
+
+it('should type an array sub-field properly', () => {
+  type Person = {
+    name: string
+    age: number
+  }
+
+  const form = new FormApi({
+    defaultValues: {
+      nested: {
+        people: [] as Person[],
+      },
+    },
+  } as const)
+
+  const field = new FieldApi({
+    form,
+    name: `nested.people[${1}].name`,
+    validators: {
+      onChangeAsync: async ({ value }) => {
+        assertType<string>(value)
+
+        return undefined
+      },
+    },
+  })
+
+  assertType<string>(field.state.value)
+})
