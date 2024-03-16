@@ -83,29 +83,26 @@ type PrefixFromDepth<
   TDepth extends any[],
 > = TDepth['length'] extends 0 ? T : `.${T}`
 
-export type DeepValue<TValue, TAccessor> = TValue extends Record<
-  string | number,
-  any
+export type DeepValue<TValue, TAccessor> = TValue extends ReadonlyArray<
+  infer TElement
 >
-  ? TAccessor extends `${infer TBefore}[${infer TBrackets}].${infer TAfter}`
-    ? DeepValue<TValue[TBefore][TBrackets], TAfter>
-    : TAccessor extends `[${infer TBrackets}]`
-      ? DeepValue<TValue, TBrackets>
-      : TAccessor extends `${infer TBefore}[${infer TBrackets}]`
-        ? DeepValue<TValue[TBefore], TBrackets>
-        : TAccessor extends `${infer TBefore}.${infer TAfter}`
-          ? DeepValue<TValue[TBefore], TAfter>
-          : TValue[TAccessor & string]
-  : TValue extends ReadonlyArray<infer TElement>
-    ? TAccessor extends `[${infer TBrackets}].${infer TAfter}`
-      ? TBrackets extends number
-        ? DeepValue<TElement, TAfter>
-        : TBrackets extends keyof TValue
-          ? DeepValue<TValue[TBrackets], TAfter>
-          : never
-      : TAccessor extends `[${infer TMaybeNumber}]`
-        ? TMaybeNumber extends number
-          ? TElement
-          : never
+  ? TAccessor extends `[${infer TBrackets}].${infer TAfter}`
+    ? TBrackets extends keyof TValue
+      ? DeepValue<TValue[TBrackets], TAfter>
+      : never
+    : TAccessor extends `[${infer TMaybeNumber}]`
+      ? TMaybeNumber extends number
+        ? TElement
         : never
+      : never
+  : TValue extends Record<string | number, any>
+    ? TAccessor extends `${infer TBefore}[${infer TBrackets}].${infer TAfter}`
+      ? DeepValue<TValue[TBefore][TBrackets], TAfter>
+      : TAccessor extends `[${infer TBrackets}]`
+        ? DeepValue<TValue, TBrackets>
+        : TAccessor extends `${infer TBefore}[${infer TBrackets}]`
+          ? DeepValue<TValue[TBefore], TBrackets>
+          : TAccessor extends `${infer TBefore}.${infer TAfter}`
+            ? DeepValue<TValue[TBefore], TAfter>
+            : TValue[TAccessor & string]
     : never
