@@ -345,7 +345,7 @@ export class FieldApi<
     ] as const
     for (const adapter of adapters) {
       if (adapter && typeof props.validate !== 'function') {
-        return adapter()[props.type](props.value, props.validate) as never
+        return adapter()[props.type](props.value as never, props.validate) as never
       }
     }
 
