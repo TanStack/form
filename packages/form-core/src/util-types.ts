@@ -89,11 +89,15 @@ export type DeepValue<
   TValue,
   TAccessor,
   TDepth extends any[] = [],
-> = TDepth['length'] extends 10
+> = TDepth['length'] extends 3
   ? never
   : TValue extends ReadonlyArray<any>
     ? TAccessor extends `[${infer TBrackets}].${infer TAfter}`
-      ? DeepValue<DeepValue<TValue, TBrackets>, TAfter, [...TDepth, any]>
+      ? DeepValue<
+          DeepValue<TValue, TBrackets, [...TDepth, any]>,
+          TAfter,
+          [...TDepth, any]
+        >
       : TAccessor extends `[${infer TBrackets}]`
         ? DeepValue<TValue, TBrackets, [...TDepth, any]>
         : TAccessor extends keyof TValue
