@@ -8,7 +8,7 @@ import type {
   Validator,
 } from './types'
 import type { Updater } from './utils'
-import type { DeepKeys, DeepValue } from './util-types'
+import type { DeepKeys, DeepValue, NoInfer } from './util-types'
 
 export type FieldValidateFn<
   TParentData,
@@ -194,8 +194,7 @@ export interface FieldOptions<
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   name: TName
-  index?: TData extends any[] ? number : never
-  defaultValue?: TData
+  defaultValue?: NoInfer<TData>
   asyncDebounceMs?: number
   asyncAlways?: boolean
   preserveValue?: boolean
@@ -345,7 +344,10 @@ export class FieldApi<
     ] as const
     for (const adapter of adapters) {
       if (adapter && typeof props.validate !== 'function') {
-        return adapter()[props.type](props.value as never, props.validate) as never
+        return adapter()[props.type](
+          props.value as never,
+          props.validate,
+        ) as never
       }
     }
 
@@ -431,7 +433,7 @@ export class FieldApi<
   }
 
   getValue = (): TData => {
-    return this.form.getFieldValue(this.name) as any
+    return this.form.getFieldValue(this.name) as TData
   }
 
   setValue = (

@@ -17,7 +17,7 @@ const config = defineConfig({
     jsxFactory: 'h',
     jsxFragment: 'Fragment',
   },
-})
+} as never)
 
 export default mergeConfig(
   config,
