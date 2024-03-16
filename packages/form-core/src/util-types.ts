@@ -85,30 +85,34 @@ type PrefixFromDepth<
   TDepth extends any[],
 > = TDepth['length'] extends 0 ? T : `.${T}`
 
-export type DeepValue<TValue, TAccessor> = TValue extends ReadonlyArray<
-  infer TElement
->
-  ? TAccessor extends `[${infer TBrackets}]`
-    ? `${number}` extends TBrackets
-      ? TElement
-      : TBrackets extends keyof TValue
-        ? TValue[TBrackets]
-        : never
-    : TAccessor extends `[${infer TBrackets}].${infer TAfter}`
+export type DeepValue<
+  TValue,
+  TAccessor,
+  TDepth extends any[] = [],
+> = TDepth['length'] extends 10
+  ? never
+  : TValue extends ReadonlyArray<infer TElement>
+    ? TAccessor extends `[${infer TBrackets}].${infer TAfter}`
       ? `${number}` extends TBrackets
-        ? DeepValue<TElement, TAfter>
+        ? DeepValue<TElement, TAfter, [...TDepth, any]>
         : TBrackets extends keyof TValue
-          ? DeepValue<TValue[TBrackets], TAfter>
+          ? DeepValue<DeepValue<TValue, TBrackets, [...TDepth, any]>, TAfter, [...TDepth, any]>
           : never
       : never
-  : TValue extends Record<string | number, any>
-    ? TAccessor extends `${infer TBefore}[${infer TBrackets}].${infer TAfter}`
-      ? DeepValue<TValue[TBefore][TBrackets], TAfter>
-      : TAccessor extends `[${infer TBrackets}]`
-        ? DeepValue<TValue, TBrackets>
-        : TAccessor extends `${infer TBefore}[${infer TBrackets}]`
-          ? DeepValue<TValue[TBefore], TBrackets>
+    : TValue extends Record<string | number, any>
+      ? TAccessor extends `${infer TBefore}[${infer TEverythingElse}`
+        ? DeepValue<
+            DeepValue<TValue, TBefore, [...TDepth, any]>,
+            `[${TEverythingElse}`,
+            [...TDepth, any]
+          >
+        : TAccessor extends `[${infer TBrackets}]`
+          ? DeepValue<TValue, TBrackets, [...TDepth, any]>
           : TAccessor extends `${infer TBefore}.${infer TAfter}`
-            ? DeepValue<TValue[TBefore], TAfter>
+            ? DeepValue<
+                DeepValue<TValue, TBefore, [...TDepth, any]>,
+                TAfter,
+                [...TDepth, any]
+              >
             : TValue[TAccessor & string]
-    : never
+      : never
