@@ -13,7 +13,7 @@ const config = defineConfig({
     coverage: { enabled: true, provider: 'istanbul', include: ['src/**/*'] },
     typecheck: { enabled: true },
   },
-} as never)
+})
 
 export default mergeConfig(
   config,
