@@ -322,6 +322,8 @@ export class FieldApi<
             ? state.meta.errors
             : []
 
+          state.meta.isPristine = !state.meta.isDirty
+
           this.prevState = state
           this.state = state
         },

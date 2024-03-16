@@ -634,7 +634,6 @@ export class FormApi<
         this.setFieldMeta(field, (prev) => ({
           ...prev,
           isTouched: true,
-          isPristine: false,
           isDirty: true,
         }))
       }
