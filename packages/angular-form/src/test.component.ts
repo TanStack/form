@@ -4,11 +4,11 @@ import { Component, Directive, Input } from '@angular/core'
   selector: '[tanstackField]',
   standalone: true,
 })
-class TanStackField {
+export class TanStackField {
   @Input() tanstackField: any;
 }
 
-function injectForm(opts?: any) {
+export function injectForm(opts?: any) {
   return {} as any
 }
 
