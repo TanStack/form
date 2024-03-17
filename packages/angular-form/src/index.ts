@@ -1,2 +1,3 @@
 export type { FieldApi, FormOptions, FieldState } from '@tanstack/form-core'
-export { TanStackField, injectForm } from './test.component'
+export { injectForm } from './inject-form'
+export { TanStackField } from './tanstack-field.directive'

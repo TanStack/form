@@ -1,8 +1,5 @@
 import { Component } from '@angular/core'
-import {
-  injectForm,
-  TanStackField,
-} from '@tanstack/angular-form'
+import { injectForm, TanStackField } from '@tanstack/angular-form'
 
 @Component({
   selector: 'app-root',
@@ -11,12 +8,15 @@ import {
   template: `
     <p>Testing</p>
     <form (submit)="handleSubmit($event)">
-      <ng-template *tanstackField="form" name="firstName" let-field>
+      <ng-template
+        [tanstackField]="form"
+        [fieldOpts]="{ name: 'firstName' }"
+        let-field
+      >
         <label>
           <div>First name:</div>
           <input
-            [name]="field.name"
-            [value]="field.value"
+            [value]="field.state.value"
             (blur)="field.handleBlur()"
             (input)="field.handleChange($any($event).target.value)"
           />
