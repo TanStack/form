@@ -6,15 +6,42 @@ import {
   TemplateRef,
   ViewContainerRef,
 } from '@angular/core'
-import { FieldApi, FieldOptions, FormApi } from '@tanstack/form-core'
+import {
+  type DeepKeys,
+  type DeepValue,
+  FieldApi,
+  FieldOptions,
+  FormApi,
+  type Validator,
+} from '@tanstack/form-core'
 
 @Directive({
   selector: '[tanstackField]',
   standalone: true,
 })
-export class TanStackField implements OnInit {
-  @Input({ required: true }) tanstackField!: FormApi<any, any>
-  @Input({ required: true }) fieldOpts!: FieldOptions<any, any>
+export class TanStackField<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> implements OnInit
+{
+  @Input({ required: true }) tanstackField!: FormApi<
+    TParentData,
+    TFormValidator
+  >
+  @Input({ required: true }) fieldOpts!: FieldOptions<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
 
   template = inject(TemplateRef)
   viewContainer = inject(ViewContainerRef)
