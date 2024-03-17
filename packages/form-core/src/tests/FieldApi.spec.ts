@@ -704,4 +704,85 @@ describe('field api', () => {
     await sleep(1)
     expect(fn).toHaveBeenCalledTimes(1)
   })
+
+  it('should run onChange on a linked field', () => {
+    const form = new FormApi({
+      defaultValues: {
+        password: '',
+        confirm_password: '',
+      },
+    })
+
+    const passField = new FieldApi({
+      form,
+      name: 'password',
+    })
+
+    const passconfirmField = new FieldApi({
+      form,
+      name: 'confirm_password',
+      validators: {
+        onChangeListenTo: ['password'],
+        onChange: ({ value, fieldApi }) => {
+          if (value !== fieldApi.form.getFieldValue('password')) {
+            return 'Passwords do not match'
+          }
+          return undefined
+        },
+      },
+    })
+
+    passField.mount()
+    passconfirmField.mount()
+
+    passField.setValue('one', { touch: true })
+    expect(passconfirmField.state.meta.errors).toStrictEqual(['Passwords do not match'])
+    passconfirmField.setValue('one', { touch: true })
+    expect(passconfirmField.state.meta.errors).toStrictEqual([])
+    passField.setValue('two', { touch: true })
+    expect(passconfirmField.state.meta.errors).toStrictEqual(['Passwords do not match'])
+  })
+
+  it('should run onBlur on a linked field', () => {
+    const form = new FormApi({
+      defaultValues: {
+        password: '',
+        confirm_password: '',
+      },
+    })
+
+    const passField = new FieldApi({
+      form,
+      name: 'password',
+    })
+
+    const passconfirmField = new FieldApi({
+      form,
+      name: 'confirm_password',
+      validators: {
+        onBlurListenTo: ['password'],
+        onBlur: ({ value, fieldApi }) => {
+          if (value !== fieldApi.form.getFieldValue('password')) {
+            return 'Passwords do not match'
+          }
+          return undefined
+        },
+      },
+    })
+
+    passField.mount()
+    passconfirmField.mount()
+
+    passField.setValue('one', { touch: true })
+    expect(passconfirmField.state.meta.errors).toStrictEqual([])
+    passField.handleBlur();
+    expect(passconfirmField.state.meta.errors).toStrictEqual(['Passwords do not match'])
+    passconfirmField.setValue('one', { touch: true })
+    expect(passconfirmField.state.meta.errors).toStrictEqual(['Passwords do not match'])
+    passField.handleBlur();
+    expect(passconfirmField.state.meta.errors).toStrictEqual([])
+    passField.setValue('two', { touch: true })
+    passField.handleBlur();
+    expect(passconfirmField.state.meta.errors).toStrictEqual(['Passwords do not match'])
+  })
 })
