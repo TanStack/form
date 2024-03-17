@@ -1,11 +1,11 @@
 import { Component } from '@angular/core'
 import { injectForm, TanStackField } from '@tanstack/angular-form'
-import { JsonPipe, NgFor } from '@angular/common'
+import { NgFor } from '@angular/common'
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [TanStackField, NgFor, JsonPipe],
+  imports: [TanStackField, NgFor],
   template: `
     <p>Testing</p>
     <form (submit)="handleSubmit($event)">
@@ -17,23 +17,23 @@ import { JsonPipe, NgFor } from '@angular/common'
       >
         <label>
           <div>First name:</div>
-          <p>{{ field | json }}</p>
           <input
             [value]="field.state.value"
             (blur)="field.handleBlur()"
             (input)="field.handleChange($any($event).target.value)"
           />
-          <div *ngFor="let error of field.state.meta.errors">{{ error }}</div>
         </label>
+        <div *ngFor="let error of field.state.meta.errors" style="color: red">
+          {{ error }}
+        </div>
       </ng-template>
       <button>Submit</button>
     </form>
   `,
 })
 export class AppComponent {
-  required = (props: any) => {
-    console.log(props)
-    return !props.value ? 'Required' : undefined
+  required = ({ value }: { value: string }) => {
+    return !value ? 'Required' : undefined
   }
   form = injectForm({
     defaultValues: {

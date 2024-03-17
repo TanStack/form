@@ -1,7 +1,9 @@
 import {
   Directive,
   inject,
-  Input, OnChanges,
+  Input,
+  OnChanges,
+  OnDestroy,
   OnInit,
   TemplateRef,
   ViewContainerRef,
@@ -36,6 +38,7 @@ export class TanStackField<
   implements
     OnInit,
     OnChanges,
+    OnDestroy,
     FieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>
 {
   @Input({ required: true }) name!: TName
@@ -60,7 +63,7 @@ export class TanStackField<
   template = inject(TemplateRef)
   viewContainer = inject(ViewContainerRef)
 
-  api!: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  api?: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
 
   private getOptions() {
     return {
@@ -76,16 +79,24 @@ export class TanStackField<
     }
   }
 
+  unmount?: () => void
+
   ngOnInit() {
     this.api = new FieldApi(this.getOptions())
+
+    this.unmount = this.api.mount()
 
     this.viewContainer.createEmbeddedView(this.template, {
       $implicit: this.api,
     })
   }
 
+  ngOnDestroy() {
+    this.unmount?.()
+  }
+
   ngOnChanges() {
-    if (!this.api) return;
+    if (!this.api) return
     this.api.update(this.getOptions())
   }
 }
