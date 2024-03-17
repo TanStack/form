@@ -1,24 +1,24 @@
 import { Store } from '@tanstack/store'
 import { getAsyncValidatorArray, getSyncValidatorArray } from './utils'
-import type { FormApi } from './FormApi'
+import type { FieldInfo, FormApi } from './FormApi'
 import type {
   ValidationCause,
   ValidationError,
   ValidationErrorMap,
   Validator,
 } from './types'
-import type { Updater } from './utils'
+import type { SyncValidator, Updater } from './utils'
 import type { DeepKeys, DeepValue, NoInfer } from './util-types'
 
 export type FieldValidateFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
+  | Validator<DeepValue<TParentData, TName>, unknown>
+  | undefined = undefined,
   TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  | Validator<TParentData, unknown>
+  | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (props: {
   value: TData
@@ -29,49 +29,49 @@ export type FieldValidateOrFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
+  | Validator<DeepValue<TParentData, TName>, unknown>
+  | undefined = undefined,
   TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  | Validator<TParentData, unknown>
+  | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = TFieldValidator extends Validator<TData, infer TFN>
   ?
-      | TFN
-      | FieldValidateFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
+  | TFN
+  | FieldValidateFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
   : TFormValidator extends Validator<TParentData, infer FFN>
-    ?
-        | FFN
-        | FieldValidateFn<
-            TParentData,
-            TName,
-            TFieldValidator,
-            TFormValidator,
-            TData
-          >
-    : FieldValidateFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData
-      >
+  ?
+  | FFN
+  | FieldValidateFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
+  : FieldValidateFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
 
 export type FieldValidateAsyncFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
+  | Validator<DeepValue<TParentData, TName>, unknown>
+  | undefined = undefined,
   TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  | Validator<TParentData, unknown>
+  | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (options: {
   value: TData
@@ -83,49 +83,49 @@ export type FieldAsyncValidateOrFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
+  | Validator<DeepValue<TParentData, TName>, unknown>
+  | undefined = undefined,
   TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  | Validator<TParentData, unknown>
+  | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = TFieldValidator extends Validator<TData, infer TFN>
   ?
-      | TFN
-      | FieldValidateAsyncFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
+  | TFN
+  | FieldValidateAsyncFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
   : TFormValidator extends Validator<TParentData, infer FFN>
-    ?
-        | FFN
-        | FieldValidateAsyncFn<
-            TParentData,
-            TName,
-            TFieldValidator,
-            TFormValidator,
-            TData
-          >
-    : FieldValidateAsyncFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData
-      >
+  ?
+  | FFN
+  | FieldValidateAsyncFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
+  : FieldValidateAsyncFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
 
 export interface FieldValidators<
   TParentData,
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
+  | Validator<DeepValue<TParentData, TName>, unknown>
+  | undefined = undefined,
   TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  | Validator<TParentData, unknown>
+  | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   onMount?: FieldValidateOrFn<
@@ -150,6 +150,7 @@ export interface FieldValidators<
     TData
   >
   onChangeAsyncDebounceMs?: number
+  onChangeListenTo?: DeepKeys<TParentData>[]
   onBlur?: FieldValidateOrFn<
     TParentData,
     TName,
@@ -165,6 +166,7 @@ export interface FieldValidators<
     TData
   >
   onBlurAsyncDebounceMs?: number
+  onBlurListenTo?: DeepKeys<TParentData>[]
   onSubmit?: FieldValidateOrFn<
     TParentData,
     TName,
@@ -186,11 +188,11 @@ export interface FieldOptions<
   TParentData,
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
+  | Validator<DeepValue<TParentData, TName>, unknown>
+  | undefined = undefined,
   TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  | Validator<TParentData, unknown>
+  | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   name: TName
@@ -213,19 +215,19 @@ export interface FieldApiOptions<
   TParentData,
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
+  | Validator<DeepValue<TParentData, TName>, unknown>
+  | undefined = undefined,
   TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  | Validator<TParentData, unknown>
+  | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > extends FieldOptions<
-    TParentData,
-    TName,
-    TFieldValidator,
-    TFormValidator,
-    TData
-  > {
+  TParentData,
+  TName,
+  TFieldValidator,
+  TFormValidator,
+  TData
+> {
   form: FormApi<TParentData, TFormValidator>
 }
 
@@ -252,11 +254,11 @@ export class FieldApi<
   TParentData,
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
+  | Validator<DeepValue<TParentData, TName>, unknown>
+  | undefined = undefined,
   TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  | Validator<TParentData, unknown>
+  | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   form: FieldApiOptions<
@@ -339,8 +341,8 @@ export class FieldApi<
     TType extends 'validate' | 'validateAsync',
   >(props: {
     validate: TType extends 'validate'
-      ? FieldValidateOrFn<any, any, any, any>
-      : FieldAsyncValidateOrFn<any, any, any, any>
+    ? FieldValidateOrFn<any, any, any, any>
+    : FieldAsyncValidateOrFn<any, any, any, any>
     value: TValue
     type: TType
   }): ReturnType<ReturnType<Validator<any>>[TType]> {
@@ -482,8 +484,35 @@ export class FieldApi<
   swapValues = (aIndex: number, bIndex: number) =>
     this.form.swapFieldValues(this.name, aIndex, bIndex)
 
+  getLinkedFields = (cause: ValidationCause) => {
+    const fields = Object.values(this.form.fieldInfo) as FieldInfo<any, TFormValidator>[]
+
+    let linkedFields: FieldApi<any, any, any, any>[] = []
+    for (let field of fields) {
+      if (!field.instance) continue;
+      const { onChangeListenTo, onBlurListenTo } = field.instance.options.validators || {}
+      if (cause === 'change' && onChangeListenTo?.includes(this.name as string)) {
+        linkedFields.push(field.instance)
+      }
+      if (cause === 'blur' && onBlurListenTo?.includes(this.name as string)) {
+        linkedFields.push(field.instance)
+      }
+    }
+
+    return linkedFields
+  }
+
   validateSync = (value = this.state.value, cause: ValidationCause) => {
-    const validates = getSyncValidatorArray(cause, this.options)
+    let validates = getSyncValidatorArray(cause, this.options)
+
+    const linkedFields = this.getLinkedFields(cause)
+    const linkedFieldValidates = linkedFields.reduce((acc, field) => {
+      const fieldValidates = getSyncValidatorArray(cause, field.options)
+      fieldValidates.forEach((validate) => {
+        (validate as any).field = field
+      })
+      return acc.concat(fieldValidates as never)
+    }, [] as Array<SyncValidator<any> & {field: FieldApi<any, any, any, any>}>)
 
     // Needs type cast as eslint errantly believes this is always falsy
     let hasErrored = false as boolean
@@ -505,6 +534,29 @@ export class FieldApi<
             errorMap: {
               ...prev.errorMap,
               [getErrorMapKey(validateObj.cause)]: error,
+            },
+          }))
+        }
+        if (error) {
+          hasErrored = true
+        }
+      }
+      for (const fieldValitateObj of linkedFieldValidates) {
+        if (!fieldValitateObj.validate) continue
+        const error = normalizeError(
+          fieldValitateObj.field.runValidator({
+            validate: fieldValitateObj.validate,
+            value: { value: fieldValitateObj.field.getValue(), fieldApi: fieldValitateObj.field },
+            type: 'validate',
+          }),
+        )
+        const errorMapKey = getErrorMapKey(fieldValitateObj.cause)
+        if (fieldValitateObj.field.state.meta.errorMap[errorMapKey] !== error) {
+          fieldValitateObj.field.setMeta((prev) => ({
+            ...prev,
+            errorMap: {
+              ...prev.errorMap,
+              [getErrorMapKey(fieldValitateObj.cause)]: error,
             },
           }))
         }
@@ -624,7 +676,7 @@ export class FieldApi<
 
     try {
       this.form.validate(cause)
-    } catch (_) {}
+    } catch (_) { }
 
     // Attempt to sync validate first
     const { hasErrored } = this.validateSync(value, cause)

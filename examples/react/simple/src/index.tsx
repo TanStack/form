@@ -17,8 +17,8 @@ function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
 export default function App() {
   const form = useForm({
     defaultValues: {
-      firstName: '',
-      lastName: '',
+      password: '',
+      password_confirm: '',
     },
     onSubmit: async ({ value }) => {
       // Do something with form data
@@ -37,23 +37,30 @@ export default function App() {
         }}
       >
         <div>
-          {/* A type-safe field component*/}
           <form.Field
-            name="firstName"
+            name="password"
+            children={(field) => (
+              <>
+                <label htmlFor={field.name}>Last Name:</label>
+                <input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                <FieldInfo field={field} />
+              </>
+            )}
+          />
+        </div>
+        <div>
+          <form.Field
+            name="password_confirm"
             validators={{
-              onChange: ({ value }) =>
-                !value
-                  ? 'A first name is required'
-                  : value.length < 3
-                    ? 'First name must be at least 3 characters'
-                    : undefined,
-              onChangeAsyncDebounceMs: 500,
-              onChangeAsync: async ({ value }) => {
-                await new Promise((resolve) => setTimeout(resolve, 1000))
-                return (
-                  value.includes('error') && 'No "error" allowed in first name'
-                )
-              },
+              onChangeListenTo: ['password'],
+              onChange: ({ value, fieldApi }) =>
+                fieldApi.form.getFieldValue('password') === value ? undefined : 'Passwords do not match'
             }}
             children={(field) => {
               // Avoid hasty abstractions. Render props are great!
@@ -72,26 +79,7 @@ export default function App() {
               )
             }}
           />
-        </div>
-        <div>
-          <form.Field
-            name="lastName"
-            children={(field) => (
-              <>
-                <label htmlFor={field.name}>Last Name:</label>
-                <input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-                <FieldInfo field={field} />
-              </>
-            )}
-          />
-        </div>
-        <form.Subscribe
+        </div>        <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
           children={([canSubmit, isSubmitting]) => (
             <button type="submit" disabled={!canSubmit}>
