@@ -736,11 +736,15 @@ describe('field api', () => {
     passconfirmField.mount()
 
     passField.setValue('one', { touch: true })
-    expect(passconfirmField.state.meta.errors).toStrictEqual(['Passwords do not match'])
+    expect(passconfirmField.state.meta.errors).toStrictEqual([
+      'Passwords do not match',
+    ])
     passconfirmField.setValue('one', { touch: true })
     expect(passconfirmField.state.meta.errors).toStrictEqual([])
     passField.setValue('two', { touch: true })
-    expect(passconfirmField.state.meta.errors).toStrictEqual(['Passwords do not match'])
+    expect(passconfirmField.state.meta.errors).toStrictEqual([
+      'Passwords do not match',
+    ])
   })
 
   it('should run onBlur on a linked field', () => {
@@ -775,14 +779,20 @@ describe('field api', () => {
 
     passField.setValue('one', { touch: true })
     expect(passconfirmField.state.meta.errors).toStrictEqual([])
-    passField.handleBlur();
-    expect(passconfirmField.state.meta.errors).toStrictEqual(['Passwords do not match'])
+    passField.handleBlur()
+    expect(passconfirmField.state.meta.errors).toStrictEqual([
+      'Passwords do not match',
+    ])
     passconfirmField.setValue('one', { touch: true })
-    expect(passconfirmField.state.meta.errors).toStrictEqual(['Passwords do not match'])
-    passField.handleBlur();
+    expect(passconfirmField.state.meta.errors).toStrictEqual([
+      'Passwords do not match',
+    ])
+    passField.handleBlur()
     expect(passconfirmField.state.meta.errors).toStrictEqual([])
     passField.setValue('two', { touch: true })
-    passField.handleBlur();
-    expect(passconfirmField.state.meta.errors).toStrictEqual(['Passwords do not match'])
+    passField.handleBlur()
+    expect(passconfirmField.state.meta.errors).toStrictEqual([
+      'Passwords do not match',
+    ])
   })
 })
