@@ -528,19 +528,20 @@ export class FieldApi<
     let hasErrored = false as boolean
 
     this.form.store.batch(() => {
-      // TODO: Dedupe this logic to reduce bundle size
-      for (const validateObj of validates) {
-        if (!validateObj.validate) continue
+      const validateFieldFn = (
+        field: FieldApi<any, any, any, any>,
+        validateObj: SyncValidator<any>,
+      ) => {
         const error = normalizeError(
-          this.runValidator({
+          field.runValidator({
             validate: validateObj.validate,
-            value: { value, fieldApi: this },
+            value: { value: field.getValue(), fieldApi: field },
             type: 'validate',
           }),
         )
         const errorMapKey = getErrorMapKey(validateObj.cause)
-        if (this.state.meta.errorMap[errorMapKey] !== error) {
-          this.setMeta((prev) => ({
+        if (field.state.meta.errorMap[errorMapKey] !== error) {
+          field.setMeta((prev) => ({
             ...prev,
             errorMap: {
               ...prev.errorMap,
@@ -552,31 +553,14 @@ export class FieldApi<
           hasErrored = true
         }
       }
+
+      for (const validateObj of validates) {
+        if (!validateObj.validate) continue
+        validateFieldFn(this, validateObj)
+      }
       for (const fieldValitateObj of linkedFieldValidates) {
         if (!fieldValitateObj.validate) continue
-        const error = normalizeError(
-          fieldValitateObj.field.runValidator({
-            validate: fieldValitateObj.validate,
-            value: {
-              value: fieldValitateObj.field.getValue(),
-              fieldApi: fieldValitateObj.field,
-            },
-            type: 'validate',
-          }),
-        )
-        const errorMapKey = getErrorMapKey(fieldValitateObj.cause)
-        if (fieldValitateObj.field.state.meta.errorMap[errorMapKey] !== error) {
-          fieldValitateObj.field.setMeta((prev) => ({
-            ...prev,
-            errorMap: {
-              ...prev.errorMap,
-              [getErrorMapKey(fieldValitateObj.cause)]: error,
-            },
-          }))
-        }
-        if (error) {
-          hasErrored = true
-        }
+        validateFieldFn(fieldValitateObj.field, fieldValitateObj)
       }
     })
 
