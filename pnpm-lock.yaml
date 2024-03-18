@@ -164,16 +164,16 @@ importers:
     devDependencies:
       '@angular-devkit/build-angular':
         specifier: ^17.0.1
-        version: 17.3.0(@angular/compiler-cli@17.3.0)(@types/node@20.10.6)(ng-packagr@17.3.0)(typescript@5.2.2)
+        version: 17.3.0(@angular/compiler-cli@17.3.0)(@types/node@20.10.6)(ng-packagr@17.3.0)(typescript@5.4.2)
       '@angular/cli':
         specifier: ^17.0.1
         version: 17.3.0
       '@angular/compiler-cli':
         specifier: ^17.0.0
-        version: 17.3.0(@angular/compiler@17.3.0)(typescript@5.2.2)
+        version: 17.3.0(@angular/compiler@17.3.0)(typescript@5.4.2)
       typescript:
-        specifier: ~5.2.2
-        version: 5.2.2
+        specifier: 5.4.2
+        version: 5.4.2
 
   examples/lit/simple:
     dependencies:
@@ -677,44 +677,41 @@ importers:
         specifier: workspace:*
         version: link:../form-core
       tslib:
-        specifier: ^2.6.2
+        specifier: ^2.3.0
         version: 2.6.2
     devDependencies:
       '@analogjs/vite-plugin-angular':
         specifier: ^1.0.0
         version: 1.0.0(@angular-devkit/build-angular@17.3.0)
-      '@angular/animations':
-        specifier: ^17.3.0
-        version: 17.3.0(@angular/core@17.3.0)
       '@angular/common':
-        specifier: ^17.3.0
+        specifier: ^17.0.0
         version: 17.3.0(@angular/core@17.3.0)(rxjs@7.8.1)
       '@angular/compiler':
-        specifier: ^17.3.0
+        specifier: ^17.0.0
         version: 17.3.0(@angular/core@17.3.0)
       '@angular/compiler-cli':
-        specifier: ^17.3.0
-        version: 17.3.0(@angular/compiler@17.3.0)(typescript@5.2.2)
+        specifier: ^17.0.0
+        version: 17.3.0(@angular/compiler@17.3.0)(typescript@5.4.2)
       '@angular/core':
-        specifier: ^17.3.0
+        specifier: ^17.0.0
         version: 17.3.0(rxjs@7.8.1)(zone.js@0.14.4)
       '@angular/platform-browser':
-        specifier: ^17.3.0
+        specifier: ^17.0.0
         version: 17.3.0(@angular/animations@17.3.0)(@angular/common@17.3.0)(@angular/core@17.3.0)
       '@angular/platform-browser-dynamic':
-        specifier: ^17.3.0
+        specifier: ^17.0.0
         version: 17.3.0(@angular/common@17.3.0)(@angular/compiler@17.3.0)(@angular/core@17.3.0)(@angular/platform-browser@17.3.0)
       '@testing-library/angular':
         specifier: ^15.2.0
         version: 15.2.0(@angular/common@17.3.0)(@angular/core@17.3.0)(@angular/platform-browser@17.3.0)(@angular/router@17.3.0)
       ng-packagr:
         specifier: ^17.3.0
-        version: 17.3.0(@angular/compiler-cli@17.3.0)(tslib@2.6.2)(typescript@5.2.2)
+        version: 17.3.0(@angular/compiler-cli@17.3.0)(tslib@2.6.2)(typescript@5.4.2)
       typescript:
-        specifier: 5.2.2
-        version: 5.2.2
+        specifier: 5.4.2
+        version: 5.4.2
       zone.js:
-        specifier: ^0.14.4
+        specifier: ~0.14.2
         version: 0.14.4
 
   packages/form-core:
@@ -860,7 +857,7 @@ packages:
     peerDependencies:
       '@angular-devkit/build-angular': ^15.0.0 || >=16.0.0
     dependencies:
-      '@angular-devkit/build-angular': 17.3.0(@angular/compiler-cli@17.3.0)(@types/node@20.10.6)(ng-packagr@17.3.0)(typescript@5.2.2)
+      '@angular-devkit/build-angular': 17.3.0(@angular/compiler-cli@17.3.0)(@types/node@20.10.6)(ng-packagr@17.3.0)(typescript@5.4.2)
       ts-morph: 21.0.1
     dev: true
 
@@ -874,7 +871,7 @@ packages:
       - chokidar
     dev: true
 
-  /@angular-devkit/build-angular@17.3.0(@angular/compiler-cli@17.3.0)(@types/node@20.10.6)(ng-packagr@17.3.0)(typescript@5.2.2):
+  /@angular-devkit/build-angular@17.3.0(@angular/compiler-cli@17.3.0)(@types/node@20.10.6)(ng-packagr@17.3.0)(typescript@5.4.2):
     resolution: {integrity: sha512-mC70mZK/liITM4VlGL6hmYPkVsZwAb+X3TxwodBl/g8p/sYijDhK/4QJHzmcHTxLYQQS6nS5CUcr9ARQFkGN2w==}
     engines: {node: ^18.13.0 || >=20.9.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
     peerDependencies:
@@ -919,7 +916,7 @@ packages:
       '@angular-devkit/architect': 0.1703.0
       '@angular-devkit/build-webpack': 0.1703.0(webpack-dev-server@4.15.1)(webpack@5.90.3)
       '@angular-devkit/core': 17.3.0
-      '@angular/compiler-cli': 17.3.0(@angular/compiler@17.3.0)(typescript@5.2.2)
+      '@angular/compiler-cli': 17.3.0(@angular/compiler@17.3.0)(typescript@5.4.2)
       '@babel/core': 7.24.0
       '@babel/generator': 7.23.6
       '@babel/helper-annotate-as-pure': 7.22.5
@@ -930,7 +927,7 @@ packages:
       '@babel/preset-env': 7.24.0(@babel/core@7.24.0)
       '@babel/runtime': 7.24.0
       '@discoveryjs/json-ext': 0.5.7
-      '@ngtools/webpack': 17.3.0(@angular/compiler-cli@17.3.0)(typescript@5.2.2)(webpack@5.90.3)
+      '@ngtools/webpack': 17.3.0(@angular/compiler-cli@17.3.0)(typescript@5.4.2)(webpack@5.90.3)
       '@vitejs/plugin-basic-ssl': 1.1.0(vite@5.1.5)
       ansi-colors: 4.1.3
       autoprefixer: 10.4.18(postcss@8.4.35)
@@ -954,14 +951,14 @@ packages:
       magic-string: 0.30.8
       mini-css-extract-plugin: 2.8.1(webpack@5.90.3)
       mrmime: 2.0.0
-      ng-packagr: 17.3.0(@angular/compiler-cli@17.3.0)(tslib@2.6.2)(typescript@5.2.2)
+      ng-packagr: 17.3.0(@angular/compiler-cli@17.3.0)(tslib@2.6.2)(typescript@5.4.2)
       open: 8.4.2
       ora: 5.4.1
       parse5-html-rewriting-stream: 7.0.0
       picomatch: 4.0.1
       piscina: 4.4.0
       postcss: 8.4.35
-      postcss-loader: 8.1.1(postcss@8.4.35)(typescript@5.2.2)(webpack@5.90.3)
+      postcss-loader: 8.1.1(postcss@8.4.35)(typescript@5.4.2)(webpack@5.90.3)
       resolve-url-loader: 5.0.0
       rxjs: 7.8.1
       sass: 1.71.1
@@ -972,7 +969,7 @@ packages:
       terser: 5.29.1
       tree-kill: 1.2.2
       tslib: 2.6.2
-      typescript: 5.2.2
+      typescript: 5.4.2
       undici: 6.7.1
       vite: 5.1.5(@types/node@20.10.6)(less@4.2.0)(sass@1.71.1)(terser@5.29.1)
       watchpack: 2.4.0
@@ -1097,7 +1094,7 @@ packages:
       rxjs: 7.8.1
       tslib: 2.6.2
 
-  /@angular/compiler-cli@17.3.0(@angular/compiler@17.3.0)(typescript@5.2.2):
+  /@angular/compiler-cli@17.3.0(@angular/compiler@17.3.0)(typescript@5.4.2):
     resolution: {integrity: sha512-ewo+pb0QUC69Ey15z4vPteoBeO81HitqplysOoeXbyVBjMnKmZl3343wx7ukgcI97lmj4d38d1r4AnIoO5n/Vw==}
     engines: {node: ^18.13.0 || >=20.9.0}
     hasBin: true
@@ -1113,7 +1110,7 @@ packages:
       reflect-metadata: 0.2.1
       semver: 7.6.0
       tslib: 2.6.2
-      typescript: 5.2.2
+      typescript: 5.4.2
       yargs: 17.7.2
     transitivePeerDependencies:
       - supports-color
@@ -3874,7 +3871,7 @@ packages:
     dev: false
     optional: true
 
-  /@ngtools/webpack@17.3.0(@angular/compiler-cli@17.3.0)(typescript@5.2.2)(webpack@5.90.3):
+  /@ngtools/webpack@17.3.0(@angular/compiler-cli@17.3.0)(typescript@5.4.2)(webpack@5.90.3):
     resolution: {integrity: sha512-wNTCDPPEtjP4mxYerLVLCMwOCTEOD2HqZMVXD8pJbarrGPMuoyglUZuqNSIS5KVqR+fFez6JEUnMvC3QSqf58w==}
     engines: {node: ^18.13.0 || >=20.9.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
     peerDependencies:
@@ -3882,8 +3879,8 @@ packages:
       typescript: '>=5.2 <5.5'
       webpack: ^5.54.0
     dependencies:
-      '@angular/compiler-cli': 17.3.0(@angular/compiler@17.3.0)(typescript@5.2.2)
-      typescript: 5.2.2
+      '@angular/compiler-cli': 17.3.0(@angular/compiler@17.3.0)(typescript@5.4.2)
+      typescript: 5.4.2
       webpack: 5.90.3(esbuild@0.20.2)
     dev: true
 
@@ -6848,7 +6845,7 @@ packages:
       yaml: 1.10.2
     dev: false
 
-  /cosmiconfig@9.0.0(typescript@5.2.2):
+  /cosmiconfig@9.0.0(typescript@5.4.2):
     resolution: {integrity: sha512-itvL5h8RETACmOTFc4UfIyB2RfEHi71Ax6E/PivVxq9NseKbOWpeyHEOIbmAw1rs8Ak0VursQNww7lf7YtUwzg==}
     engines: {node: '>=14'}
     peerDependencies:
@@ -6861,7 +6858,7 @@ packages:
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
-      typescript: 5.2.2
+      typescript: 5.4.2
     dev: true
 
   /critters@0.0.22:
@@ -10504,7 +10501,7 @@ packages:
       - babel-plugin-macros
     dev: false
 
-  /ng-packagr@17.3.0(@angular/compiler-cli@17.3.0)(tslib@2.6.2)(typescript@5.2.2):
+  /ng-packagr@17.3.0(@angular/compiler-cli@17.3.0)(tslib@2.6.2)(typescript@5.4.2):
     resolution: {integrity: sha512-kMSqxeDgv88SWCoapWNRRN1UdBgwu9/Pw/j7u2WFGmzrIWUFivNWBBSSL94kMxr2La+Z9wMwiL8EwKNvmCpg2A==}
     engines: {node: ^18.13.0 || >=20.9.0}
     hasBin: true
@@ -10517,7 +10514,7 @@ packages:
       tailwindcss:
         optional: true
     dependencies:
-      '@angular/compiler-cli': 17.3.0(@angular/compiler@17.3.0)(typescript@5.2.2)
+      '@angular/compiler-cli': 17.3.0(@angular/compiler@17.3.0)(typescript@5.4.2)
       '@rollup/plugin-json': 6.1.0(rollup@4.9.2)
       '@rollup/plugin-node-resolve': 15.2.3(rollup@4.9.2)
       '@rollup/wasm-node': 4.13.0
@@ -10541,7 +10538,7 @@ packages:
       rxjs: 7.8.1
       sass: 1.72.0
       tslib: 2.6.2
-      typescript: 5.2.2
+      typescript: 5.4.2
     optionalDependencies:
       esbuild: 0.20.2
       rollup: 4.9.2
@@ -11373,7 +11370,7 @@ packages:
       postcss: 8.4.32
     dev: false
 
-  /postcss-loader@8.1.1(postcss@8.4.35)(typescript@5.2.2)(webpack@5.90.3):
+  /postcss-loader@8.1.1(postcss@8.4.35)(typescript@5.4.2)(webpack@5.90.3):
     resolution: {integrity: sha512-0IeqyAsG6tYiDRCYKQJLAmgQr47DX6N7sFSWvQxt6AcupX8DIdmykuk/o/tx0Lze3ErGHJEp5OSRxrelC6+NdQ==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
@@ -11386,7 +11383,7 @@ packages:
       webpack:
         optional: true
     dependencies:
-      cosmiconfig: 9.0.0(typescript@5.2.2)
+      cosmiconfig: 9.0.0(typescript@5.4.2)
       jiti: 1.21.0
       postcss: 8.4.35
       semver: 7.6.0

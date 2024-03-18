@@ -36,22 +36,21 @@
   },
   "devDependencies": {
     "@analogjs/vite-plugin-angular": "^1.0.0",
-    "@angular/animations": "^17.3.0",
-    "@angular/common": "^17.3.0",
-    "@angular/compiler": "^17.3.0",
-    "@angular/compiler-cli": "^17.3.0",
-    "@angular/core": "^17.3.0",
-    "@angular/platform-browser": "^17.3.0",
-    "@angular/platform-browser-dynamic": "^17.3.0",
+    "@angular/common": "^17.0.0",
+    "@angular/compiler": "^17.0.0",
+    "@angular/compiler-cli": "^17.0.0",
+    "@angular/core": "^17.0.0",
+    "@angular/platform-browser": "^17.0.0",
+    "@angular/platform-browser-dynamic": "^17.0.0",
     "@testing-library/angular": "^15.2.0",
     "ng-packagr": "^17.3.0",
-    "typescript": "5.2.2",
-    "zone.js": "^0.14.4"
+    "typescript": "5.4.2",
+    "zone.js": "~0.14.2"
   },
   "dependencies": {
     "@tanstack/angular-store": "^0.4.0",
     "@tanstack/form-core": "workspace:*",
-    "tslib": "^2.6.2"
+    "tslib": "^2.3.0"
   },
   "peerDependencies": {
     "@angular/common": ">=16.0.0",
