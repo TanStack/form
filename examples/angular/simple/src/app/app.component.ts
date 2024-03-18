@@ -1,11 +1,14 @@
 import { Component } from '@angular/core'
-import { injectForm, TanStackField } from '@tanstack/angular-form'
-import { NgFor } from '@angular/common'
+import {
+  FieldValidateFn,
+  injectForm,
+  TanStackField,
+} from '@tanstack/angular-form'
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [TanStackField, NgFor],
+  imports: [TanStackField],
   template: `
     <p>Testing</p>
     <form (submit)="handleSubmit($event)">
@@ -23,16 +26,18 @@ import { NgFor } from '@angular/common'
             (input)="field.handleChange($any($event).target.value)"
           />
         </label>
-        <div *ngFor="let error of field.state.meta.errors" style="color: red">
-          {{ error }}
-        </div>
+        @for (error of field.state.meta.errors; track $index) {
+          <div style="color: red">
+            {{ error }}
+          </div>
+        }
       </ng-template>
       <button>Submit</button>
     </form>
   `,
 })
 export class AppComponent {
-  required = ({ value }: { value: string }) => {
+  required: FieldValidateFn<any, string> = ({ value }) => {
     return !value ? 'Required' : undefined
   }
   form = injectForm({

@@ -79,15 +79,15 @@ export class TanStackField<
       TTName
     >,
   >(
-    dir: TanStackField<
+    _dir: TanStackField<
       TTParentData,
       TTName,
       TTFieldValidator,
       TTFormValidator,
       TTData
     >,
-    ctx: unknown,
-  ): ctx is {
+    _ctx: unknown,
+  ): _ctx is {
     $implicit: FieldApi<
       TTParentData,
       TTName,
