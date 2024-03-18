@@ -1,12 +1,12 @@
 import {
   Directive,
-  inject,
   Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
+  type OnChanges,
+  type OnDestroy,
+  type OnInit,
   TemplateRef,
   ViewContainerRef,
+  inject,
 } from '@angular/core'
 import {
   type DeepKeys,

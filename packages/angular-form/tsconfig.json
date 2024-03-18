@@ -5,15 +5,11 @@
     "declarationMap": true,
     "useDefineForClassFields": false,
     "target": "es2022",
-    "forceConsistentCasingInFileNames": true,
+
     "strict": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "importHelpers": true,
+    "moduleResolution": "node",
     "module": "ES2022",
     "types": ["vitest/globals"],
     "paths": {
@@ -21,7 +17,6 @@
     }
   },
   "angularCompilerOptions": {
-    "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
