@@ -65,6 +65,40 @@ export class TanStackField<
 
   api?: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
 
+  static ngTemplateContextGuard<
+    TTParentData,
+    TTName extends DeepKeys<TTParentData>,
+    TTFieldValidator extends
+      | Validator<DeepValue<TTParentData, TTName>, unknown>
+      | undefined = undefined,
+    TTFormValidator extends
+      | Validator<TTParentData, unknown>
+      | undefined = undefined,
+    TTData extends DeepValue<TTParentData, TTName> = DeepValue<
+      TTParentData,
+      TTName
+    >,
+  >(
+    dir: TanStackField<
+      TTParentData,
+      TTName,
+      TTFieldValidator,
+      TTFormValidator,
+      TTData
+    >,
+    ctx: unknown,
+  ): ctx is {
+    $implicit: FieldApi<
+      TTParentData,
+      TTName,
+      TTFieldValidator,
+      TTFormValidator,
+      TTData
+    >
+  } {
+    return true
+  }
+
   private getOptions() {
     return {
       defaultValue: this.defaultValue,
