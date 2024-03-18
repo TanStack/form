@@ -7,7 +7,7 @@ import type {
   ValidationErrorMap,
   Validator,
 } from './types'
-import type { SyncValidator, Updater } from './utils'
+import type { AsyncValidator, SyncValidator, Updater } from './utils'
 import type { DeepKeys, DeepValue, NoInfer } from './util-types'
 
 export type FieldValidateFn<
@@ -528,6 +528,7 @@ export class FieldApi<
     let hasErrored = false as boolean
 
     this.form.store.batch(() => {
+      // TODO: Dedupe this logic to reduce bundle size
       for (const validateObj of validates) {
         if (!validateObj.validate) continue
         const error = normalizeError(
@@ -604,16 +605,36 @@ export class FieldApi<
   validateAsync = async (value = this.state.value, cause: ValidationCause) => {
     const validates = getAsyncValidatorArray(cause, this.options)
 
+    const linkedFields = this.getLinkedFields(cause)
+    const linkedFieldValidates = linkedFields.reduce(
+      (acc, field) => {
+        const fieldValidates = getAsyncValidatorArray(cause, field.options)
+        fieldValidates.forEach((validate) => {
+          ;(validate as any).field = field
+        })
+        return acc.concat(fieldValidates as never)
+      },
+      [] as Array<
+        AsyncValidator<any> & { field: FieldApi<any, any, any, any> }
+      >,
+    )
+
     if (!this.state.meta.isValidating) {
       this.setMeta((prev) => ({ ...prev, isValidating: true }))
+    }
+
+    for (const linkedField of linkedFields) {
+      linkedField.setMeta((prev) => ({ ...prev, isValidating: true }))
     }
 
     /**
      * We have to use a for loop and generate our promises this way, otherwise it won't be sync
      * when there are no validators needed to be run
      */
-    const promises: Promise<ValidationError | undefined>[] = []
+    const validatesPromises: Promise<ValidationError | undefined>[] = []
+    const linkedPromises: Promise<ValidationError | undefined>[] = []
 
+    // TODO: Dedupe this logic to reduce bundle size
     for (const validateObj of validates) {
       if (!validateObj.validate) continue
       const key = getErrorMapKey(validateObj.cause)
@@ -626,7 +647,7 @@ export class FieldApi<
         lastAbortController: controller,
       }
 
-      promises.push(
+      validatesPromises.push(
         new Promise<ValidationError | undefined>(async (resolve) => {
           let rawError!: ValidationError | undefined
           try {
@@ -669,13 +690,74 @@ export class FieldApi<
         }),
       )
     }
+    for (const fieldValitateObj of linkedFieldValidates) {
+      if (!fieldValitateObj.validate) continue
+      const key = getErrorMapKey(fieldValitateObj.cause)
+      const fieldValidatorMeta =
+        fieldValitateObj.field.getInfo().validationMetaMap[key]
+
+      fieldValidatorMeta?.lastAbortController.abort()
+      const controller = new AbortController()
+
+      fieldValitateObj.field.getInfo().validationMetaMap[key] = {
+        lastAbortController: controller,
+      }
+
+      validatesPromises.push(
+        new Promise<ValidationError | undefined>(async (resolve) => {
+          let rawError!: ValidationError | undefined
+          try {
+            rawError = await new Promise((rawResolve, rawReject) => {
+              setTimeout(async () => {
+                if (controller.signal.aborted) return rawResolve(undefined)
+                try {
+                  rawResolve(
+                    await fieldValitateObj.field.runValidator({
+                      validate: fieldValitateObj.validate,
+                      value: {
+                        value: fieldValitateObj.field.getValue(),
+                        fieldApi: fieldValitateObj.field,
+                        signal: controller.signal,
+                      },
+                      type: 'validateAsync',
+                    }),
+                  )
+                } catch (e) {
+                  rawReject(e)
+                }
+              }, fieldValitateObj.debounceMs)
+            })
+          } catch (e: unknown) {
+            rawError = e as ValidationError
+          }
+          const error = normalizeError(rawError)
+          fieldValitateObj.field.setMeta((prev) => {
+            return {
+              ...prev,
+              errorMap: {
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                ...prev?.errorMap,
+                [getErrorMapKey(cause)]: error,
+              },
+            }
+          })
+
+          resolve(error)
+        }),
+      )
+    }
 
     let results: ValidationError[] = []
-    if (promises.length) {
-      results = await Promise.all(promises)
+    if (validatesPromises.length || linkedPromises.length) {
+      results = await Promise.all(validatesPromises)
+      await Promise.all(linkedPromises)
     }
 
     this.setMeta((prev) => ({ ...prev, isValidating: false }))
+
+    for (const linkedField of linkedFields) {
+      linkedField.setMeta((prev) => ({ ...prev, isValidating: false }))
+    }
 
     return results.filter(Boolean)
   }
