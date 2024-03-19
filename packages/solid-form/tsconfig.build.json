@@ -10,8 +10,5 @@
     "outDir": "dist/source",
     "noEmit": false
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
 }
