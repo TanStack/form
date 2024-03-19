@@ -40,10 +40,6 @@ export const packages = [
     name: '@tanstack/lit-form',
     packageDir: 'packages/lit-form',
   },
-  // {
-  //   name: '@tanstack/svelte-form',
-  //   packageDir: 'packages/svelte-form',
-  // },
 ]
 
 /**
