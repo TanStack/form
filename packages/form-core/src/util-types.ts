@@ -85,40 +85,56 @@ type PrefixFromDepth<
   TDepth extends any[],
 > = TDepth['length'] extends 0 ? T : `.${T}`
 
+/**
+   Infer the type of a deeply nested property within an object or an array.
+   See the tests in `util-types.test-d.ts` for usage.
+*/
 export type DeepValue<
+  // The object or array in which we have the property whose type we're trying to infer
   TValue,
+  // A string representing the path of the property we're trying to access
   TAccessor,
+  // (Optional) An array representing the current depth of recursion
   TDepth extends any[] = [],
-> = TDepth['length'] extends 3
-  ? never
-  : TValue extends ReadonlyArray<any>
-    ? TAccessor extends `[${infer TBrackets}].${infer TAfter}`
-      ? DeepValue<
-          DeepValue<TValue, TBrackets, [...TDepth, any]>,
-          TAfter,
-          [...TDepth, any]
-        >
-      : TAccessor extends `[${infer TBrackets}]`
-        ? DeepValue<TValue, TBrackets, [...TDepth, any]>
-        : TAccessor extends keyof TValue
-          ? TValue[TAccessor]
-          : TValue[TAccessor & number]
-    : TValue extends Record<string | number, any>
-      ? TAccessor extends `${infer TBefore}[${infer TEverythingElse}`
-        ? DeepValue<
-            DeepValue<TValue, TBefore, [...TDepth, any]>,
-            `[${TEverythingElse}`,
+> =
+  // Limit the depth of recursion to 3 levels
+  TDepth['length'] extends 3
+    ? never
+    : // Check if we're looking for the property in an array
+      TValue extends ReadonlyArray<any>
+      ? TAccessor extends `[${infer TBrackets}].${infer TAfter}`
+        ? /*
+          Extract the first element from the accessor path (`TBrackets`)
+          and recursively call `DeepValue` with it
+          */
+          DeepValue<
+            DeepValue<TValue, TBrackets, [...TDepth, any]>,
+            TAfter,
             [...TDepth, any]
           >
         : TAccessor extends `[${infer TBrackets}]`
           ? DeepValue<TValue, TBrackets, [...TDepth, any]>
-          : TAccessor extends `${infer TBefore}.${infer TAfter}`
-            ? DeepValue<
-                DeepValue<TValue, TBefore, [...TDepth, any]>,
-                TAfter,
-                [...TDepth, any]
-              >
-            : TAccessor extends string
-              ? TValue[TAccessor]
-              : never
-      : never
+          : TAccessor extends keyof TValue
+            ? TValue[TAccessor]
+            : TValue[TAccessor & number]
+      : // Check if we're looking for the property in an object
+        TValue extends Record<string | number, any>
+        ? TAccessor extends `${infer TBefore}[${infer TEverythingElse}`
+          ? DeepValue<
+              DeepValue<TValue, TBefore, [...TDepth, any]>,
+              `[${TEverythingElse}`,
+              [...TDepth, any]
+            >
+          : TAccessor extends `[${infer TBrackets}]`
+            ? DeepValue<TValue, TBrackets, [...TDepth, any]>
+            : TAccessor extends `${infer TBefore}.${infer TAfter}`
+              ? DeepValue<
+                  DeepValue<TValue, TBefore, [...TDepth, any]>,
+                  TAfter,
+                  [...TDepth, any]
+                >
+              : TAccessor extends string
+                ? TValue[TAccessor]
+                : never
+        : // Do not allow `TValue` to be anything else
+          never
