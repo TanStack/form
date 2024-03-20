@@ -26,7 +26,7 @@ import {
 })
 export class TanStackField<
     TParentData,
-    TName extends DeepKeys<TParentData>,
+    const TName extends DeepKeys<TParentData>,
     TFieldValidator extends
       | Validator<DeepValue<TParentData, TName>, unknown>
       | undefined = undefined,
