@@ -16,7 +16,7 @@ import {
   type FieldOptions,
   type FieldValidators,
   FormApi,
-  type NoInfer,
+  type NoInfer as NoInferHack,
   type Validator,
 } from '@tanstack/form-core'
 
@@ -42,7 +42,10 @@ export class TanStackField<
     FieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>
 {
   @Input({ required: true }) name!: TName
-  @Input() defaultValue?: NoInfer<TData>
+  // Setting as NoInferHack as it's the same internal type cast as TanStack Form Core
+  // This can be removed when TanStack Form Core is moved to TS min of 5.4
+  // and the NoInfer internal util type is rm-rf'd
+  @Input() defaultValue?: NoInferHack<TData>
   @Input() asyncDebounceMs?: number
   @Input() asyncAlways?: boolean
   @Input() preserveValue?: boolean
@@ -51,12 +54,8 @@ export class TanStackField<
     TParentData,
     TFormValidator
   >
-  @Input() validators?: FieldValidators<
-    TParentData,
-    TName,
-    TFieldValidator,
-    TFormValidator,
-    TData
+  @Input() validators?: NoInfer<
+    FieldValidators<TParentData, TName, TFieldValidator, TFormValidator, TData>
   >
   @Input() defaultMeta?: Partial<FieldMeta>
 
