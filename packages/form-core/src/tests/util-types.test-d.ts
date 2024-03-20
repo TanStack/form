@@ -125,10 +125,7 @@ interface User {
 
 type FormDefinition = {
   nested: {
-    people: {
-      name: string
-      age: number
-    }[]
+    people: User[]
   }
 }
 
