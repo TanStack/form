@@ -66,6 +66,19 @@ Example:
 const { value, error, touched, isValidating } = field.state
 ```
 
+There are three field states can be very useful to see how the user interacts with a field. A field is _"touched"_ when the user clicks/tabs into it, _"pristine"_ until the user changes value in it, and _"dirty"_ after the value has been changed. You can check these states via the `isTouched`, `isPristine` and `isDirty` flags, as seen below.
+
+```tsx
+const { isTouched, isPristine, isDirty } = field.state.meta
+```
+
+![Field states](https://raw.githubusercontent.com/TanStack/form/f7afd70b502e17f4d7e83d1577823e3732ce2d43/docs/assets/field-states.png)
+
+> **Important note for users coming from `React Hook Form`**: the `isDirty` flag in `TanStack/form` is different from the flag with the same name in RHF.
+> In RHF, `isDirty = true`, when the form's values are different from the original values. If the user changes the values in a form, and then changes them again to end up with values that match the form's default values, `isDirty` will be `true` in RHF, but `false` in `TanStack/form`.
+> The default values are exposed both on the form's and the field's level in `TanStack/form` (`form.options.defaultValues`, `field.options.defaultValue`), so you can write your own `isDefaultValue()` helper if you need to emulate RHF's behavior.`
+
+
 ## Field API
 
 The Field API is an object passed to the render prop function when creating a field. It provides methods for working with the field's state.

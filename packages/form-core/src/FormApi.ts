@@ -137,6 +137,8 @@ export type FormState<TFormData> = {
   isSubmitting: boolean
   // General
   isTouched: boolean
+  isDirty: boolean
+  isPristine: boolean
   isSubmitted: boolean
   isValidating: boolean
   isValid: boolean
@@ -163,6 +165,8 @@ function getDefaultFormState<TFormData>(
     isSubmitted: defaultState.isSubmitted ?? false,
     isSubmitting: defaultState.isSubmitting ?? false,
     isTouched: defaultState.isTouched ?? false,
+    isPristine: defaultState.isPristine ?? true,
+    isDirty: defaultState.isDirty ?? false,
     isValid: defaultState.isValid ?? false,
     isValidating: defaultState.isValidating ?? false,
     submissionAttempts: defaultState.submissionAttempts ?? 0,
@@ -221,6 +225,9 @@ export class FormApi<
 
           const isTouched = fieldMetaValues.some((field) => field?.isTouched)
 
+          const isDirty = fieldMetaValues.some((field) => field?.isDirty)
+          const isPristine = !isDirty
+
           const isValidating = isFieldsValidating || state.isFormValidating
           state.errors = Object.values(state.errorMap).filter(
             (val: unknown) => val !== undefined,
@@ -239,6 +246,8 @@ export class FormApi<
             isValid,
             canSubmit,
             isTouched,
+            isPristine,
+            isDirty,
           }
 
           this.state = state
@@ -673,6 +682,7 @@ export class FormApi<
         this.setFieldMeta(field, (prev) => ({
           ...prev,
           isTouched: true,
+          isDirty: true,
         }))
       }
 

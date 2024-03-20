@@ -22,8 +22,10 @@ describe('form api', () => {
       isRestored: false,
       isRestoring: false,
       isSubmitting: false,
-      isTouched: false,
-      isValid: false,
+      isTouched: false, 
+      isPristine: true,
+      isDirty: false,
+      isValid: true, 
       isValidating: false,
       submissionAttempts: 0,
       validationMetaMap: {
@@ -58,6 +60,8 @@ describe('form api', () => {
       isSubmitted: false,
       isSubmitting: false,
       isTouched: false,
+      isPristine: true,
+      isDirty: false,
       isValid: true,
       isValidating: false,
       isRestored: false,
@@ -94,6 +98,8 @@ describe('form api', () => {
       isSubmitted: false,
       isSubmitting: false,
       isTouched: false,
+      isPristine: true,
+      isDirty: false,
       isValid: true,
       isValidating: false,
       submissionAttempts: 30,
@@ -138,6 +144,8 @@ describe('form api', () => {
       isSubmitted: false,
       isSubmitting: false,
       isTouched: false,
+      isPristine: true,
+      isDirty: false,
       isValid: true,
       isRestored: false,
       isRestoring: false,
@@ -180,6 +188,8 @@ describe('form api', () => {
       isSubmitted: false,
       isSubmitting: false,
       isTouched: false,
+      isPristine: true,
+      isDirty: false,
       isValid: true,
       isValidating: false,
       isRestored: false,
@@ -215,6 +225,40 @@ describe('form api', () => {
     form.setFieldValue('name', 'other')
 
     expect(form.getFieldValue('name')).toEqual('other')
+  })
+
+  it("should be dirty after a field's value has been set", () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+    form.mount()
+
+    form.setFieldValue('name', 'other', { touch: true })
+
+    expect(form.state.isDirty).toBe(true)
+    expect(form.state.isPristine).toBe(false)
+  })
+
+  it('should be clean again after being reset from a dirty state', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+    form.mount()
+
+    form.setFieldMeta('name', (meta) => ({
+      ...meta,
+      isDirty: true,
+      isPristine: false,
+    }))
+
+    form.reset()
+
+    expect(form.state.isDirty).toBe(false)
+    expect(form.state.isPristine).toBe(true)
   })
 
   it("should push an array field's value", () => {
