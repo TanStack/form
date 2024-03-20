@@ -78,7 +78,9 @@ export type DeepKeys<T, TDepth extends any[] = []> = TDepth['length'] extends 5
             ? never
             : T extends object
               ? PrefixObjectAccessor<T, TDepth>
-              : never
+              : T extends string | number | boolean | bigint
+                ? ''
+                : never
 
 type PrefixFromDepth<
   T extends string | number,

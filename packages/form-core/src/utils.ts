@@ -79,6 +79,9 @@ export function deleteBy(obj: any, _path: any) {
     if (!parent) return
     if (path.length === 1) {
       const finalPath = path[0]!
+      if (Array.isArray(parent) && typeof finalPath === 'number') {
+        return parent.filter((_, i) => i !== finalPath)
+      }
       const { [finalPath]: remove, ...rest } = parent
       return rest
     }
