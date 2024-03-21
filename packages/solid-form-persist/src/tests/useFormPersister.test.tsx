@@ -32,22 +32,20 @@ describe('useForm', () => {
       }))
 
       return (
-        <form.Provider>
-          <form.Field
-            name="firstName"
-            defaultValue={''}
-            children={(field) => {
-              return (
-                <input
-                  data-testid="fieldinput"
-                  value={field().state.value}
-                  onBlur={field().handleBlur}
-                  onChange={(e) => field().handleChange(e.target.value)}
-                />
-              )
-            }}
-          />
-        </form.Provider>
+        <form.Field
+          name="firstName"
+          defaultValue={''}
+          children={(field) => {
+            return (
+              <input
+                data-testid="fieldinput"
+                value={field().state.value}
+                onBlur={field().handleBlur}
+                onChange={(e) => field().handleChange(e.target.value)}
+              />
+            )
+          }}
+        />
       )
     }
 

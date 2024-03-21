@@ -22,10 +22,10 @@ describe('form api', () => {
       isRestored: false,
       isRestoring: false,
       isSubmitting: false,
-      isTouched: false, 
+      isTouched: false,
       isPristine: true,
       isDirty: false,
-      isValid: true, 
+      isValid: true,
       isValidating: false,
       submissionAttempts: 0,
       validationMetaMap: {

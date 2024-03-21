@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import * as React from 'react'
 import { useForm } from '@tanstack/react-form'
 
-import { FormPersisterProvider, PersisterAPI, useFormPersister } from '..'
+import { FormPersisterProvider, PersisterAPI, useFormPersister } from '../index'
 import type { SyncFormStorage } from '@tanstack/form-persist-core'
 
 const storageMap = new Map<string, any>()
@@ -34,22 +34,20 @@ describe('useForm', () => {
       })
       form.options.persister!
       return (
-        <form.Provider>
-          <form.Field
-            name="firstName"
-            defaultValue={''}
-            children={(field) => {
-              return (
-                <input
-                  data-testid="fieldinput"
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              )
-            }}
-          />
-        </form.Provider>
+        <form.Field
+          name="firstName"
+          defaultValue={''}
+          children={(field) => {
+            return (
+              <input
+                data-testid="fieldinput"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            )
+          }}
+        />
       )
     }
 

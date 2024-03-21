@@ -1,8 +1,8 @@
 import { FormApi } from '@tanstack/form-core'
-import { PersisterAPI, createFormPersister } from '..'
+import { PersisterAPI, createFormPersister } from '../index'
 import { sleep } from './utils'
 
-import type { StoragePersisterOptions } from '..'
+import type { StoragePersisterOptions } from '../index'
 
 const mapHolder: Record<string, Map<string, string>> = {}
 const getPersister = (
