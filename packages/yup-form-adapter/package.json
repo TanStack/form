@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/yup-form-adapter",
-  "version": "0.14.0",
+  "version": "0.16.0",
   "description": "The Yup adapter for TanStack Form.",
   "author": "tannerlinsley",
   "license": "MIT",
