@@ -152,12 +152,18 @@ importers:
       '@tanstack/angular-form':
         specifier: ^0.15.0
         version: link:../../../packages/angular-form
+      '@tanstack/zod-form-adapter':
+        specifier: ^0.16.0
+        version: link:../../../packages/zod-form-adapter
       rxjs:
         specifier: ~7.8.0
         version: 7.8.1
       tslib:
         specifier: ^2.3.0
         version: 2.6.2
+      zod:
+        specifier: ^3.22.4
+        version: 3.22.4
       zone.js:
         specifier: ~0.14.2
         version: 0.14.4

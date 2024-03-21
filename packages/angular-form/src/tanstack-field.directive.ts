@@ -23,6 +23,7 @@ import {
 @Directive({
   selector: '[tanstackField]',
   standalone: true,
+  exportAs: 'field',
 })
 export class TanStackField<
     TParentData,
@@ -59,44 +60,9 @@ export class TanStackField<
   >
   @Input() defaultMeta?: Partial<FieldMeta>
 
-  template = inject(TemplateRef)
   viewContainer = inject(ViewContainerRef)
 
-  api?: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
-
-  static ngTemplateContextGuard<
-    TTParentData,
-    TTName extends DeepKeys<TTParentData>,
-    TTFieldValidator extends
-      | Validator<DeepValue<TTParentData, TTName>, unknown>
-      | undefined = undefined,
-    TTFormValidator extends
-      | Validator<TTParentData, unknown>
-      | undefined = undefined,
-    TTData extends DeepValue<TTParentData, TTName> = DeepValue<
-      TTParentData,
-      TTName
-    >,
-  >(
-    _dir: TanStackField<
-      TTParentData,
-      TTName,
-      TTFieldValidator,
-      TTFormValidator,
-      TTData
-    >,
-    _ctx: unknown,
-  ): _ctx is {
-    $implicit: FieldApi<
-      TTParentData,
-      TTName,
-      TTFieldValidator,
-      TTFormValidator,
-      TTData
-    >
-  } {
-    return true
-  }
+  api!: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
 
   private getOptions() {
     return {
@@ -118,10 +84,6 @@ export class TanStackField<
     this.api = new FieldApi(this.getOptions())
 
     this.unmount = this.api.mount()
-
-    this.viewContainer.createEmbeddedView(this.template, {
-      $implicit: this.api,
-    })
   }
 
   ngOnDestroy() {

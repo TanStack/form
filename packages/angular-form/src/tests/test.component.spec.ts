@@ -14,14 +14,14 @@ describe('TanStackFieldDirective', () => {
       selector: 'test-component',
       standalone: true,
       template: `
-        <ng-template [tanstackField]="form" name="firstName" let-field>
+        <ng-container [tanstackField]="form" name="firstName" #f="field">
           <input
             data-testid="fieldinput"
-            [value]="field.state.value"
-            (blur)="field.handleBlur()"
-            (input)="field.handleChange($any($event).target.value)"
+            [value]="f.api.state.value"
+            (blur)="f.api.handleBlur()"
+            (input)="f.api.handleChange($any($event).target.value)"
           />
-        </ng-template>
+        </ng-container>
       `,
       imports: [TanStackField],
     })
@@ -50,19 +50,19 @@ describe('TanStackFieldDirective', () => {
       selector: 'test-component',
       standalone: true,
       template: `
-        <ng-template
+        <ng-container
           [tanstackField]="form"
           name="firstName"
           defaultValue="otherName"
-          let-field
+          #f="field"
         >
           <input
             data-testid="fieldinput"
-            [value]="field.state.value"
-            (blur)="field.handleBlur()"
-            (input)="field.handleChange($any($event).target.value)"
+            [value]="f.api.state.value"
+            (blur)="f.api.handleBlur()"
+            (input)="f.api.handleChange($any($event).target.value)"
           />
-        </ng-template>
+        </ng-container>
       `,
       imports: [TanStackField],
     })
@@ -92,22 +92,22 @@ describe('TanStackFieldDirective', () => {
       selector: 'test-component',
       standalone: true,
       template: `
-        <ng-template
+        <ng-container
           [tanstackField]="form"
           name="firstName"
           [validators]="{ onChange: otherValidator }"
-          let-field
+          #f="field"
         >
           <input
             data-testid="fieldinput"
-            [value]="field.state.value"
-            (blur)="field.handleBlur()"
-            (input)="field.setValue($any($event).target.value)"
+            [value]="f.api.state.value"
+            (blur)="f.api.handleBlur()"
+            (input)="f.api.setValue($any($event).target.value)"
           />
-          @for (error of field.getMeta().errors; track error) {
+          @for (error of f.api.getMeta().errors; track error) {
             <p>{{ error }}</p>
           }
-        </ng-template>
+        </ng-container>
       `,
       imports: [TanStackField],
     })
@@ -140,21 +140,21 @@ describe('TanStackFieldDirective', () => {
       selector: 'test-component',
       standalone: true,
       template: `
-        <ng-template
+        <ng-container
           [tanstackField]="form"
           name="firstName"
           [defaultMeta]="{ isTouched: true }"
           [validators]="{ onChange: otherValidator }"
-          let-field
+          #f="field"
         >
           <input
             data-testid="fieldinput"
-            [value]="field.state.value"
-            (blur)="field.handleBlur()"
-            (input)="field.handleChange($any($event).target.value)"
+            [value]="f.api.state.value"
+            (blur)="f.api.handleBlur()"
+            (input)="f.api.handleChange($any($event).target.value)"
           />
-          <p>{{ field.getMeta().errorMap?.onChange }}</p>
-        </ng-template>
+          <p>{{ f.api.getMeta().errorMap?.onChange }}</p>
+        </ng-container>
       `,
       imports: [TanStackField],
     })

@@ -12,26 +12,26 @@ import {
   template: `
     <p>Testing</p>
     <form (submit)="handleSubmit($event)">
-      <ng-template
+      <ng-container
         [tanstackField]="form"
         name="firstName"
         [validators]="{ onChange: required }"
-        let-field
+        #f="field"
       >
         <label>
           <div>First name:</div>
           <input
-            [value]="field.state.value"
-            (blur)="field.handleBlur()"
-            (input)="field.handleChange($any($event).target.value)"
+            [value]="f.api.state.value"
+            (blur)="f.api.handleBlur()"
+            (input)="f.api.handleChange($any($event).target.value)"
           />
         </label>
-        @for (error of field.state.meta.errors; track $index) {
+        @for (error of f.api.state.meta.errors; track $index) {
           <div style="color: red">
             {{ error }}
           </div>
         }
-      </ng-template>
+      </ng-container>
       <button>Submit</button>
     </form>
   `,
