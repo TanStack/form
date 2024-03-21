@@ -8,7 +8,7 @@ import {
   isNonEmptyArray,
   setBy,
 } from './utils'
-import type { Updater } from './utils'
+import type { MaybePromise, Updater } from './utils'
 import type { DeepKeys, DeepValue } from './util-types'
 import type { FieldApi, FieldMeta } from './FieldApi'
 import type {
@@ -95,6 +95,14 @@ export interface FormOptions<
     formApi: FormApi<TFormData, TFormValidator>
   }) => void
   transform?: FormTransform<TFormData, TFormValidator>
+  // checkout @tanstack/form-persistence-core
+  persister?: Persister<TFormData>
+}
+
+export type Persister<TFormData> = {
+  persistForm(formState: FormState<TFormData>): MaybePromise<void>
+  restoreForm(): MaybePromise<FormState<TFormData> | undefined>
+  deleteForm(): MaybePromise<void>
 }
 
 export type ValidationMeta = {
@@ -136,6 +144,9 @@ export type FormState<TFormData> = {
   isValid: boolean
   canSubmit: boolean
   submissionAttempts: number
+  // Form Persistence
+  isRestored: boolean
+  isRestoring: boolean
 }
 
 function getDefaultFormState<TFormData>(
@@ -166,6 +177,8 @@ function getDefaultFormState<TFormData>(
       onMount: undefined,
       onServer: undefined,
     },
+    isRestored: false,
+    isRestoring: false,
   }
 }
 
@@ -183,6 +196,7 @@ export class FormApi<
     {} as any
 
   prevTransformArray: unknown[] = []
+  restorePromise: Promise<void> = Promise.resolve()
 
   constructor(opts?: FormOptions<TFormData, TFormValidator>) {
     this.store = new Store<FormState<TFormData>>(
@@ -195,10 +209,9 @@ export class FormApi<
         onUpdate: () => {
           let { state } = this.store
           // Computed state
-          const fieldMetaValues = Object.values(state.fieldMeta) as (
-            | FieldMeta
-            | undefined
-          )[]
+          const fieldMetaValues = Object.values<FieldMeta | undefined>(
+            state.fieldMeta,
+          )
 
           const isFieldsValidating = fieldMetaValues.some(
             (field) => field?.isValidating,
@@ -252,13 +265,44 @@ export class FormApi<
             this.store.state = this.state
             this.prevTransformArray = transformArray
           }
+
+          if (opts?.persister && !this.state.isRestoring) {
+            opts.persister.persistForm(this.state)
+          }
         },
       },
     )
 
     this.state = this.store.state
+    this.update(opts)
+  }
 
-    this.update(opts || {})
+  restore = async (opts?: FormOptions<TFormData, TFormValidator>) => {
+    if (!opts?.persister) return
+    let restorePromiseResolve: () => void
+    this.restorePromise = new Promise<void>(
+      (res) => (restorePromiseResolve = res),
+    )
+    this.store.setState((oldState) => ({
+      ...oldState,
+      isRestored: false,
+      isRestoring: true,
+    }))
+    const restoredState = await opts.persister.restoreForm()
+    if (!restoredState) {
+      return this.store.setState((oldState) => ({
+        ...oldState,
+        isRestored: true,
+        isRestoring: false,
+      }))
+    }
+    this.state = restoredState
+    this.store.batch(() =>
+      this.store.setState(() => {
+        restorePromiseResolve()
+        return restoredState
+      }),
+    )
   }
 
   runValidator<
@@ -306,15 +350,19 @@ export class FormApi<
     // Options need to be updated first so that when the store is updated, the state is correct for the derived state
     this.options = options
 
+    this.restore(options)
+
     this.store.batch(() => {
       const shouldUpdateValues =
         options.defaultValues &&
         options.defaultValues !== oldOptions.defaultValues &&
-        !this.state.isTouched
+        !this.state.isTouched &&
+        !this.state.isRestoring
 
       const shouldUpdateState =
         options.defaultState !== oldOptions.defaultState &&
-        !this.state.isTouched
+        !this.state.isTouched &&
+        !this.state.isRestoring
 
       this.store.setState(() =>
         getDefaultFormState(
@@ -335,32 +383,35 @@ export class FormApi<
     })
   }
 
-  reset = () =>
+  reset = () => {
+    this.options.persister?.deleteForm()
     this.store.setState(() =>
       getDefaultFormState({
         ...(this.options.defaultState as any),
         values: this.options.defaultValues ?? this.options.defaultState?.values,
       }),
     )
+  }
 
   validateAllFields = async (cause: ValidationCause) => {
-    const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
+    const fieldValidationPromises: Promise<ValidationError[]>[] = []
     this.store.batch(() => {
-      void (
-        Object.values(this.fieldInfo) as FieldInfo<any, TFormValidator>[]
-      ).forEach((field) => {
-        if (!field.instance) return
-        const fieldInstance = field.instance
+      const fieldInfoValues = Object.values<FieldInfo<any, TFormValidator>>(
+        this.fieldInfo,
+      )
+      for (const field of fieldInfoValues) {
+        if (!field.instance) continue
+        const instance = field.instance
         // Validate the field
         fieldValidationPromises.push(
-          Promise.resolve().then(() => fieldInstance.validate(cause)),
+          Promise.resolve().then(() => instance.validate(cause)),
         )
         // If any fields are not touched
-        if (!field.instance.state.meta.isTouched) {
+        if (!instance.state.meta.isTouched) {
           // Mark them as touched
-          field.instance.setMeta((prev) => ({ ...prev, isTouched: true }))
+          instance.setMeta((prev) => ({ ...prev, isTouched: true }))
         }
-      })
+      }
     })
 
     const fieldErrorMapMap = await Promise.all(fieldValidationPromises)
@@ -492,10 +543,7 @@ export class FormApi<
       )
     }
 
-    let results: ValidationError[] = []
-    if (promises.length) {
-      results = await Promise.all(promises)
-    }
+    const results = promises.length > 0 ? await Promise.all(promises) : []
 
     this.store.setState((prev) => ({
       ...prev,

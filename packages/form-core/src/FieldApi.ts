@@ -482,7 +482,6 @@ export class FieldApi<
 
   validateSync = (value = this.state.value, cause: ValidationCause) => {
     const validates = getSyncValidatorArray(cause, this.options)
-
     // Needs type cast as eslint errantly believes this is always falsy
     let hasErrored = false as boolean
 

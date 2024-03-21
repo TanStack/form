@@ -1,13 +1,10 @@
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
-import React, {
-  type PropsWithChildren,
-  type ReactNode,
-  useState,
-} from 'rehackt'
+import React, { useState } from 'rehackt'
 import { Field, type FieldComponent, type UseField, useField } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type { NoInfer } from '@tanstack/react-store'
+import type { ReactNode } from 'rehackt'
 import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
 
 declare module '@tanstack/form-core' {
@@ -54,16 +51,13 @@ export function useForm<
       selector,
     ) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      return useStore(api.store as any, selector as any) as any
+      return useStore(api.store, selector)
     }
-    api.Subscribe = (
-      // @ts-ignore
-      props,
-    ) => {
+    api.Subscribe = (props) => {
       return functionalUpdate(
         props.children,
         // eslint-disable-next-line react-hooks/rules-of-hooks
-        useStore(api.store as any, props.selector as any),
+        useStore(api.store, props.selector),
       ) as any
     }
 

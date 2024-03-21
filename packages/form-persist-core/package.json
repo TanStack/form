@@ -1,0 +1,60 @@
+{
+  "name": "@tanstack/form-persist-core",
+  "version": "0.11.0",
+  "description": "Persistence for TanStack Form.",
+  "author": "tannerlinsley",
+  "license": "MIT",
+  "repository": "tanstack/form",
+  "homepage": "https://tanstack.com/form",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/tannerlinsley"
+  },
+  "type": "module",
+  "types": "dist/esm/index.d.ts",
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.cts",
+        "default": "./dist/cjs/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "src"
+  ],
+  "nx": {
+    "targets": {
+      "test:build": {
+        "dependsOn": [
+          "build"
+        ]
+      }
+    }
+  },
+  "scripts": {
+    "clean": "rimraf ./build && rimraf ./coverage",
+    "test:eslint": "eslint --ext .ts,.tsx ./src",
+    "test:types:versions49": "../../node_modules/typescript49/bin/tsc --project tsconfig.legacy.json --noEmit",
+    "test:types:versions50": "../../node_modules/typescript50/bin/tsc --noEmit",
+    "test:types:versions51": "../../node_modules/typescript51/bin/tsc --noEmit",
+    "test:types:versions52": "tsc --noEmit",
+    "test:types": "pnpm run \"/^test:types:versions.*/\"",
+    "test:lib": "vitest run --coverage",
+    "test:lib:dev": "pnpm run test:lib --watch",
+    "test:build": "publint --strict",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@tanstack/form-core": "workspace:*"
+  }
+}

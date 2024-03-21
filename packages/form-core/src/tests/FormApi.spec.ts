@@ -12,24 +12,27 @@ describe('form api', () => {
       values: {},
       fieldMeta: {},
       canSubmit: true,
-      isFieldsValid: true,
+      isFieldsValid: false,
       isFieldsValidating: false,
       isFormValid: true,
       isFormValidating: false,
       isSubmitted: false,
       errors: [],
       errorMap: {},
+      isRestored: false,
+      isRestoring: false,
       isSubmitting: false,
       isTouched: false,
       isPristine: true,
       isDirty: false,
-      isValid: true,
+      isValid: false,
       isValidating: false,
       submissionAttempts: 0,
       validationMetaMap: {
         onChange: undefined,
         onBlur: undefined,
         onSubmit: undefined,
+        onServer: undefined,
         onMount: undefined,
       },
     })
@@ -61,6 +64,8 @@ describe('form api', () => {
       isDirty: false,
       isValid: true,
       isValidating: false,
+      isRestored: false,
+      isRestoring: false,
       submissionAttempts: 0,
       validationMetaMap: {
         onChange: undefined,
@@ -87,6 +92,8 @@ describe('form api', () => {
       isFieldsValid: true,
       isFieldsValidating: false,
       isFormValid: true,
+      isRestored: false,
+      isRestoring: false,
       isFormValidating: false,
       isSubmitted: false,
       isSubmitting: false,
@@ -101,6 +108,7 @@ describe('form api', () => {
         onBlur: undefined,
         onSubmit: undefined,
         onMount: undefined,
+        onServer: undefined,
       },
     })
   })
@@ -139,6 +147,8 @@ describe('form api', () => {
       isPristine: true,
       isDirty: false,
       isValid: true,
+      isRestored: false,
+      isRestoring: false,
       isValidating: false,
       submissionAttempts: 300,
       validationMetaMap: {
@@ -182,10 +192,13 @@ describe('form api', () => {
       isDirty: false,
       isValid: true,
       isValidating: false,
+      isRestored: false,
+      isRestoring: false,
       submissionAttempts: 0,
       validationMetaMap: {
         onChange: undefined,
         onBlur: undefined,
+        onServer: undefined,
         onSubmit: undefined,
         onMount: undefined,
       },
@@ -834,6 +847,7 @@ describe('form api', () => {
         onChange: ({ value }) =>
           value.length > 0 ? undefined : 'first name is required',
       },
+      defaultMeta: { isTouched: true },
     })
 
     const lastNameField = new FieldApi({
@@ -843,8 +857,10 @@ describe('form api', () => {
         onChange: ({ value }) =>
           value.length > 0 ? undefined : 'last name is required',
       },
+      defaultMeta: { isTouched: true },
     })
 
+    form.mount()
     field.mount()
     lastNameField.mount()
 
@@ -878,8 +894,10 @@ describe('form api', () => {
             ? undefined
             : 'first name must be longer than 3 characters',
       },
+      defaultMeta: { isTouched: true },
     })
 
+    form.mount()
     field.mount()
 
     await form.handleSubmit()
@@ -905,8 +923,9 @@ describe('form api', () => {
         onSubmit: ({ value }) =>
           value.length > 0 ? undefined : 'first name is required',
       },
+      defaultMeta: { isTouched: true },
     })
-
+    form.mount()
     field.mount()
 
     await form.handleSubmit()
@@ -938,6 +957,7 @@ describe('form api', () => {
         onChange: ({ value }) =>
           value.length > 0 ? undefined : 'first name is required',
       },
+      defaultMeta: { isTouched: true },
     })
 
     field.mount()

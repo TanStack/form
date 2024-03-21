@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+    "moduleResolution": "Bundler",
+    "types": ["vue/jsx"],
+    "paths": {
+      "@tanstack/vue-form": ["../vue-form/src"],
+      "@tanstack/form-persist-core": ["../form-persist-core/src"]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    ".eslintrc.cjs",
+    "test-setup.ts",
+    "vite.config.ts"
+  ]
+}
