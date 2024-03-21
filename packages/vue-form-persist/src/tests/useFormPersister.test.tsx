@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 import { cleanup, render, waitFor } from '@testing-library/vue'
 import { userEvent } from '@testing-library/user-event'
-import { useForm } from '@tanstack/vue-form'
+import { provideFormContext, useForm } from '@tanstack/vue-form'
 
 import { PersisterAPI, provideFormPersisterContext, useFormPersister } from '..'
 import type { FieldApi } from '@tanstack/vue-form'
@@ -34,6 +34,8 @@ describe('useForm', () => {
       const form = useForm<Person>({
         persister: useFormPersister({ formKey: 'Person' }),
       })
+
+      provideFormContext({ formApi: form })
 
       return () => (
         <form.Field name="firstName" defaultValue={''}>
