@@ -4,9 +4,6 @@ import {
   type OnChanges,
   type OnDestroy,
   type OnInit,
-  TemplateRef,
-  ViewContainerRef,
-  inject,
 } from '@angular/core'
 import {
   type DeepKeys,
@@ -60,8 +57,6 @@ export class TanStackField<
   >
   @Input() defaultMeta?: Partial<FieldMeta>
 
-  viewContainer = inject(ViewContainerRef)
-
   api!: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
 
   private getOptions() {
@@ -91,7 +86,8 @@ export class TanStackField<
   }
 
   ngOnChanges() {
-    if (!this.api) return
-    this.api.update(this.getOptions())
+    const api = this.api as typeof this.api | undefined
+    if (!api) return
+    api.update(this.getOptions())
   }
 }
