@@ -25,7 +25,7 @@ describe('form api', () => {
       isTouched: false,
       isPristine: true,
       isDirty: false,
-      isValid: true,
+      isValid: false,
       isValidating: false,
       submissionAttempts: 0,
       validationMetaMap: {
