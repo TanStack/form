@@ -39,7 +39,7 @@ export const packages = [
   {
     name: '@tanstack/lit-form',
     packageDir: 'packages/lit-form',
-  }, 
+  },
   {
     name: '@tanstack/form-persist-core',
     packageDir: 'packages/form-persist-core',
@@ -59,7 +59,7 @@ export const packages = [
   // {
   //   name: '@tanstack/svelte-form',
   //   packageDir: 'packages/svelte-form',
-  // }, 
+  // },
 ]
 
 /**
