@@ -150,11 +150,8 @@ importers:
         specifier: ^17.3.0
         version: 17.3.0(@angular/common@17.3.0)(@angular/core@17.3.0)(@angular/platform-browser@17.3.0)(rxjs@7.8.1)
       '@tanstack/angular-form':
-        specifier: ^0.15.0
+        specifier: ^0.16.1
         version: link:../../../packages/angular-form
-      '@tanstack/zod-form-adapter':
-        specifier: ^0.16.0
-        version: link:../../../packages/zod-form-adapter
       rxjs:
         specifier: ~7.8.0
         version: 7.8.1
