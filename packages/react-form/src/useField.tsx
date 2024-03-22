@@ -37,18 +37,13 @@ export type UseField<
   TFieldValidator extends
     | Validator<DeepValue<TParentData, TName>, unknown>
     | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 >(
   opts: Omit<
-    UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>,
+    UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>,
     'form'
   >,
-) => FieldApi<
-  TParentData,
-  TName,
-  TFieldValidator,
-  TFormValidator,
-  DeepValue<TParentData, TName>
->
+) => FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
 
 export function useField<
   TParentData,
@@ -59,9 +54,16 @@ export function useField<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 >(
-  opts: UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>,
-): FieldApi<TParentData, TName, TFieldValidator, TFormValidator> {
+  opts: UseFieldOptions<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >,
+): FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData> {
   const [fieldApi] = useState(() => {
     const api = new FieldApi({
       ...opts,
@@ -88,7 +90,7 @@ export function useField<
     fieldApi.store,
     opts.mode === 'array'
       ? (state) => {
-          return [state.meta, Object.keys(state.value).length]
+          return [state.meta, Object.keys(state.value as never).length]
         }
       : undefined,
   )
@@ -116,7 +118,7 @@ type FieldComponentProps<
       TData
     >,
   ) => any
-} & UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>
+} & UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>
 
 export type FieldComponent<
   TParentData,
@@ -152,14 +154,27 @@ export function Field<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 >({
   children,
   ...fieldOptions
 }: {
   children: (
-    fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator>,
+    fieldApi: FieldApi<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData
+    >,
   ) => any
-} & UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>) {
+} & UseFieldOptions<
+  TParentData,
+  TName,
+  TFieldValidator,
+  TFormValidator,
+  TData
+>) {
   const fieldApi = useField(fieldOptions as any)
 
   return <>{functionalUpdate(children, fieldApi as any)}</>

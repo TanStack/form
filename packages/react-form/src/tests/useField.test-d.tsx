@@ -65,3 +65,44 @@ it('should type onChange properly', () => {
     )
   }
 })
+
+it('should type array subfields', () => {
+  type FormDefinition = {
+    nested: {
+      people: {
+        name: string
+        age: number
+      }[]
+    }
+  }
+
+  function App() {
+    const form = useForm({
+      defaultValues: {
+        nested: {
+          people: [],
+        },
+      } as FormDefinition,
+      onSubmit({ value }) {
+        alert(JSON.stringify(value))
+      },
+    })
+
+    return (
+      <form.Field name="nested.people" mode="array">
+        {(field) =>
+          field.state.value.map((_, i) => (
+            <form.Field key={i} name={`nested.people[${i}].name`}>
+              {(subField) => (
+                <input
+                  value={subField.state.value}
+                  onChange={(e) => subField.handleChange(e.target.value)}
+                />
+              )}
+            </form.Field>
+          ))
+        }
+      </form.Field>
+    )
+  }
+})

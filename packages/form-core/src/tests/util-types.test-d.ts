@@ -87,6 +87,24 @@ type NestedTupleExample = DeepValue<
 >
 assertType<number>(0 as never as NestedTupleExample)
 
+type NestedTupleBroadExample = DeepValue<
+  { topUsers: User[] },
+  `topUsers[${number}].age`
+>
+assertType<number>(0 as never as NestedTupleBroadExample)
+
+type DeeplyNestedTupleBroadExample = DeepValue<
+  { nested: { topUsers: User[] } },
+  `nested.topUsers[${number}].age`
+>
+assertType<number>(0 as never as DeeplyNestedTupleBroadExample)
+
+type SimpleArrayExample = DeepValue<User[], `[${number}]`>
+assertType<User>(0 as never as SimpleArrayExample)
+
+type SimpleNestedArrayExample = DeepValue<User[], `[${number}].age`>
+assertType<number>(0 as never as SimpleNestedArrayExample)
+
 type NestedTupleItemExample = DeepValue<
   { topUsers: [User, 0, User] },
   'topUsers[1]'
@@ -104,3 +122,16 @@ interface User {
   id: string
   age: number
 }
+
+type FormDefinition = {
+  nested: {
+    people: User[]
+  }
+}
+
+type FormDefinitionValue = DeepValue<
+  FormDefinition,
+  `nested.people[${number}].name`
+>
+
+assertType<string>(0 as never as FormDefinitionValue)
