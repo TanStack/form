@@ -88,7 +88,7 @@ There are three field states can be very useful to see how the user interacts wi
 const { isTouched, isPristine, isDirty } = field.state.meta
 ```
 
-![Field states](https://raw.githubusercontent.com/TanStack/form/f7afd70b502e17f4d7e83d1577823e3732ce2d43/docs/assets/field-states.png)
+![Field states](https://raw.githubusercontent.com/TanStack/form/main/docs/assets/field-states.png)
 
 > **Important note for users coming from `React Hook Form`**: the `isDirty` flag in `TanStack/form` is different from the flag with the same name in RHF.
 > In RHF, `isDirty = true`, when the form's values are different from the original values. If the user changes the values in a form, and then changes them again to end up with values that match the form's default values, `isDirty` will be `true` in RHF, but `false` in `TanStack/form`.

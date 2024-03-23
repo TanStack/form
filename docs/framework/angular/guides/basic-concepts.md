@@ -50,7 +50,7 @@ There are three field states can be very useful to see how the user interacts wi
 const { isTouched, isPristine, isDirty } = field.state.meta
 ```
 
-![Field states](https://raw.githubusercontent.com/TanStack/form/f7afd70b502e17f4d7e83d1577823e3732ce2d43/docs/assets/field-states.png)
+![Field states](https://raw.githubusercontent.com/TanStack/form/main/docs/assets/field-states.png)
 
 ## Field API
 
