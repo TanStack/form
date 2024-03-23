@@ -264,6 +264,31 @@
           ]
         },
         {
+          "label": "angular",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/angular/examples/simple"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/angular/examples/array"
+            },
+            {
+              "label": "Yup",
+              "to": "framework/angular/examples/yup"
+            },
+            {
+              "label": "Zod",
+              "to": "framework/angular/examples/zod"
+            },
+            {
+              "label": "Valibot",
+              "to": "framework/angular/examples/valibot"
+            }
+          ]
+        },
+        {
           "label": "solid",
           "children": [
             {
