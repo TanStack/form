@@ -212,7 +212,7 @@ Example:
             <div>
               <ng-container
                 [tanstackField]="form"
-                [name]="'hobbies[' + $index + '].name'"
+                [name]="getHobbyName($index)"
                 #hobbyName="field"
               >
                 <div>
@@ -236,7 +236,7 @@ Example:
               </ng-container>
               <ng-container
                 [tanstackField]="form"
-                [name]="'hobbies[' + $index + '].description'"
+                [name]="getHobbyDesc($index)"
                 #hobbyDesc="field"
               >
                 <div>
@@ -268,6 +268,9 @@ export class AppComponent {
     description: '',
     yearsOfExperience: 0,
   }
+
+  getHobbyName = (idx: number) => `hobbies[${idx}].name` as const;
+  getHobbyDesc = (idx: number) => `hobbies[${idx}].description` as const;
 
   form = injectForm({
     defaultValues: {
