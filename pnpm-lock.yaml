@@ -123,6 +123,58 @@ importers:
         specifier: ^3.3.4
         version: 3.3.4
 
+  examples/angular/array:
+    dependencies:
+      '@angular/animations':
+        specifier: ^17.3.0
+        version: 17.3.0(@angular/core@17.3.0)
+      '@angular/common':
+        specifier: ^17.3.0
+        version: 17.3.0(@angular/core@17.3.0)(rxjs@7.8.1)
+      '@angular/compiler':
+        specifier: ^17.3.0
+        version: 17.3.0(@angular/core@17.3.0)
+      '@angular/core':
+        specifier: ^17.3.0
+        version: 17.3.0(rxjs@7.8.1)(zone.js@0.14.4)
+      '@angular/forms':
+        specifier: ^17.3.0
+        version: 17.3.0(@angular/common@17.3.0)(@angular/core@17.3.0)(@angular/platform-browser@17.3.0)(rxjs@7.8.1)
+      '@angular/platform-browser':
+        specifier: ^17.3.0
+        version: 17.3.0(@angular/animations@17.3.0)(@angular/common@17.3.0)(@angular/core@17.3.0)
+      '@angular/platform-browser-dynamic':
+        specifier: ^17.3.0
+        version: 17.3.0(@angular/common@17.3.0)(@angular/compiler@17.3.0)(@angular/core@17.3.0)(@angular/platform-browser@17.3.0)
+      '@angular/router':
+        specifier: ^17.3.0
+        version: 17.3.0(@angular/common@17.3.0)(@angular/core@17.3.0)(@angular/platform-browser@17.3.0)(rxjs@7.8.1)
+      '@tanstack/angular-form':
+        specifier: ^0.16.1
+        version: link:../../../packages/angular-form
+      rxjs:
+        specifier: ~7.8.0
+        version: 7.8.1
+      tslib:
+        specifier: ^2.3.0
+        version: 2.6.2
+      zone.js:
+        specifier: ~0.14.2
+        version: 0.14.4
+    devDependencies:
+      '@angular-devkit/build-angular':
+        specifier: ^17.3.0
+        version: 17.3.0(@angular/compiler-cli@17.3.0)(@types/node@20.10.6)(ng-packagr@17.3.0)(typescript@5.4.2)
+      '@angular/cli':
+        specifier: ^17.3.0
+        version: 17.3.0
+      '@angular/compiler-cli':
+        specifier: ^17.3.0
+        version: 17.3.0(@angular/compiler@17.3.0)(typescript@5.4.2)
+      typescript:
+        specifier: 5.4.2
+        version: 5.4.2
+
   examples/angular/simple:
     dependencies:
       '@angular/animations':

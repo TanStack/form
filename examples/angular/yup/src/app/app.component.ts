@@ -8,7 +8,6 @@ import * as yup from 'yup'
   standalone: true,
   imports: [TanStackField],
   template: `
-    <p>Testing</p>
     <form (submit)="handleSubmit($event)">
       <div>
         <ng-container
