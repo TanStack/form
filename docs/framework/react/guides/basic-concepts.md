@@ -23,13 +23,29 @@ const formFactory = createFormFactory<Person>({
 
 ## Form Instance
 
-A Form Instance is an object that represents an individual form and provides methods and properties for working with the form. You create a form instance using the useForm hook provided by the form factory. The hook accepts an object with an onSubmit function, which is called when the form is submitted.
+A Form Instance is an object that represents an individual form and provides methods and properties for working with the form. You create a form instance using the `useForm` hook provided by the form factory. The hook accepts an object with an `onSubmit` function, which is called when the form is submitted.
 
 ```tsx
 const form = formFactory.useForm({
   onSubmit: async ({ value }) => {
     // Do something with form data
     console.log(value)
+  },
+})
+```
+
+You may also create a form instance without going through the `formFactory` by using the standalone `useForm` API:
+
+```tsx
+const form = useForm<Person>({
+  onSubmit: async ({ value }) => {
+    // Do something with form data
+    console.log(value)
+  },
+  defaultValues: {
+    firstName: '',
+    lastName: '',
+    hobbies: [],
   },
 })
 ```
