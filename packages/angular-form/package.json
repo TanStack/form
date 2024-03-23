@@ -1,0 +1,71 @@
+{
+  "name": "@tanstack/angular-form",
+  "version": "0.16.2",
+  "description": "Powerful, type-safe forms for Angular.",
+  "author": "tannerlinsley",
+  "license": "MIT",
+  "repository": "tanstack/form",
+  "homepage": "https://tanstack.com/form",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/tannerlinsley"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "ng-packagr -p ng-package.json -c tsconfig.build.json && rimraf ./build/package.json",
+    "clean": "rimraf ./build && rimraf ./coverage",
+    "test:eslint": "eslint --ext .ts,.tsx ./src",
+    "test:types": "tsc --noEmit",
+    "test:lib": "vitest",
+    "test:lib:dev": "pnpm run test:lib --watch",
+    "test:build": "publint --strict"
+  },
+  "files": [
+    "build",
+    "src"
+  ],
+  "type": "module",
+  "nx": {
+    "targets": {
+      "test:build": {
+        "dependsOn": [
+          "build"
+        ]
+      }
+    }
+  },
+  "devDependencies": {
+    "@analogjs/vite-plugin-angular": "^1.0.0",
+    "@angular/common": "^17.3.0",
+    "@angular/compiler": "^17.3.0",
+    "@angular/compiler-cli": "^17.3.0",
+    "@angular/core": "^17.3.0",
+    "@angular/platform-browser": "^17.3.0",
+    "@angular/platform-browser-dynamic": "^17.3.0",
+    "@testing-library/angular": "^15.2.0",
+    "ng-packagr": "^17.3.0",
+    "typescript": "5.4.2",
+    "zone.js": "~0.14.2"
+  },
+  "dependencies": {
+    "@tanstack/angular-store": "^0.4.0",
+    "@tanstack/form-core": "workspace:*",
+    "tslib": "^2.3.0"
+  },
+  "peerDependencies": {
+    "@angular/core": ">=17.3.0"
+  },
+  "module": "build/fesm2022/tanstack-angular-form.mjs",
+  "types": "build/index.d.ts",
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./build/index.d.ts",
+      "esm2022": "./build/esm2022/tanstack-angular-form.mjs",
+      "esm": "./build/esm2022/tanstack-angular-form.mjs",
+      "default": "./build/fesm2022/tanstack-angular-form.mjs"
+    }
+  }
+}

@@ -46,6 +46,15 @@
           ]
         },
         {
+          "label": "angular",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "framework/angular/quick-start"
+            }
+          ]
+        },
+        {
           "label": "solid",
           "children": [
             {
@@ -109,6 +118,15 @@
             {
               "label": "Arrays",
               "to": "framework/vue/guides/arrays"
+            }
+          ]
+        },
+        {
+          "label": "angular",
+          "children": [
+            {
+              "label": "Arrays",
+              "to": "framework/angular/guides/arrays"
             }
           ]
         },
@@ -260,6 +278,31 @@
             {
               "label": "Valibot",
               "to": "framework/vue/examples/valibot"
+            }
+          ]
+        },
+        {
+          "label": "angular",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/angular/examples/simple"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/angular/examples/array"
+            },
+            {
+              "label": "Yup",
+              "to": "framework/angular/examples/yup"
+            },
+            {
+              "label": "Zod",
+              "to": "framework/angular/examples/zod"
+            },
+            {
+              "label": "Valibot",
+              "to": "framework/angular/examples/valibot"
             }
           ]
         },
