@@ -53,8 +53,7 @@
     "tslib": "^2.3.0"
   },
   "peerDependencies": {
-    "@angular/core": ">=16 < 18",
-    "@angular/common": ">=16 < 18"
+    "@angular/core": ">=17.3.0"
   },
   "module": "build/fesm2022/tanstack-angular-form.mjs",
   "types": "build/index.d.ts",
