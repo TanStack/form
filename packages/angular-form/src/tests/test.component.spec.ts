@@ -4,10 +4,8 @@ import { describe, expect, it } from 'vitest'
 import { userEvent } from '@testing-library/user-event'
 import { injectForm } from '../inject-form'
 import { TanStackField } from '../tanstack-field.directive'
-import type { FieldValidateAsyncFn, FieldValidateFn } from '@tanstack/form-core'
-import { waitFor } from '@testing-library/react'
-import * as React from 'react'
 import { sleep } from './utils'
+import type { FieldValidateAsyncFn, FieldValidateFn } from '@tanstack/form-core'
 
 const user = userEvent.setup()
 
