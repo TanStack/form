@@ -23,13 +23,29 @@ const formFactory = createFormFactory<Person>({
 
 ## Form Instance
 
-A Form Instance is an object that represents an individual form and provides methods and properties for working with the form. You create a form instance using the useForm hook provided by the form factory. The hook accepts an object with an onSubmit function, which is called when the form is submitted.
+A Form Instance is an object that represents an individual form and provides methods and properties for working with the form. You create a form instance using the `useForm` hook provided by the form factory. The hook accepts an object with an `onSubmit` function, which is called when the form is submitted.
 
 ```tsx
 const form = formFactory.useForm({
   onSubmit: async ({ value }) => {
     // Do something with form data
     console.log(value)
+  },
+})
+```
+
+You may also create a form instance without going through the `formFactory` by using the standalone `useForm` API:
+
+```tsx
+const form = useForm<Person>({
+  onSubmit: async ({ value }) => {
+    // Do something with form data
+    console.log(value)
+  },
+  defaultValues: {
+    firstName: '',
+    lastName: '',
+    hobbies: [],
   },
 })
 ```
@@ -72,7 +88,7 @@ There are three field states can be very useful to see how the user interacts wi
 const { isTouched, isPristine, isDirty } = field.state.meta
 ```
 
-![Field states](https://raw.githubusercontent.com/TanStack/form/f7afd70b502e17f4d7e83d1577823e3732ce2d43/docs/assets/field-states.png)
+![Field states](https://raw.githubusercontent.com/TanStack/form/main/docs/assets/field-states.png)
 
 > **Important note for users coming from `React Hook Form`**: the `isDirty` flag in `TanStack/form` is different from the flag with the same name in RHF.
 > In RHF, `isDirty = true`, when the form's values are different from the original values. If the user changes the values in a form, and then changes them again to end up with values that match the form's default values, `isDirty` will be `true` in RHF, but `false` in `TanStack/form`.
@@ -176,7 +192,7 @@ Example:
 
 ## Array Fields
 
-Array fields allow you to manage a list of values within a form, such as a list of hobbies. You can create an array field using the `form.Field` component with the `mode="array"` prop. The component accepts a children prop, which is a render prop function that takes an `arrayField` object as its argument.
+Array fields allow you to manage a list of values within a form, such as a list of hobbies. You can create an array field using the `form.Field` component with the `mode="array"` prop.
 
 When working with array fields, you can use the fields `pushValue`, `removeValue`, and `swapValues` methods to add, remove, and swap values in the array.
 
@@ -253,36 +269,6 @@ Example:
       </button>
     </div>
   )}
-/>
-```
-
-## Array-Nested Fields
-
-Rendering fields that are items of a nested array require only a small change to the `form.Field` component props.
-
-Example:
-
-```tsx
-<form.Field
-  name={`hobbies[${i}].name`}
-  children={(field) => {
-    return (
-      <div>
-        <label htmlFor={field.name}>Name:</label>
-        <input
-          id={field.name}
-          name={field.name}
-          value={field.state.value}
-          onBlur={field.handleBlur}
-          onChange={(e) => field.handleChange(e.target.value)}
-        />
-        <button type="button" onClick={() => hobbiesField.removeValue(i)}>
-          X
-        </button>
-        <FieldInfo field={field} />
-      </div>
-    )
-  }}
 />
 ```
 
