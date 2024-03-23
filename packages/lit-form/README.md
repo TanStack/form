@@ -1,19 +1,19 @@
 <img src="https://static.scarf.sh/a.png?x-pxid=be2d8a11-9712-4c1d-9963-580b2d4fb133" />
 
-![TanStack Form Header](https://github.com/TanStack/form/raw/beta/media/repo-header.png)
+![TanStack Form Header](https://github.com/TanStack/form/raw/main/media/repo-header.png)
 
-Signals for managing form state in Solid
+Controllers for managing form state in Lit
 
 <a href="https://twitter.com/intent/tweet?button_hashtag=TanStack" target="\_parent">
   <img alt="#TanStack" src="https://img.shields.io/twitter/url?color=%2308a0e9&label=%23TanStack&style=social&url=https%3A%2F%2Ftwitter.com%2Fintent%2Ftweet%3Fbutton_hashtag%3DTanStack">
 </a><a href="https://discord.com/invite/WrRKjPJ" target="\_parent">
   <img alt="" src="https://img.shields.io/badge/Discord-TanStack-%235865F2" />
-</a><a href="https://github.com/TanStack/form/actions?query=workflow%3A%22solid-form+tests%22">
-<img src="https://github.com/TanStack/form/workflows/solid-form%20tests/badge.svg" />
+</a><a href="https://github.com/TanStack/form/actions?query=workflow%3A%22lit-form+tests%22">
+<img src="https://github.com/TanStack/form/workflows/lit-form%20tests/badge.svg" />
 </a><a href="https://www.npmjs.com/package/@tanstack/form-core" target="\_parent">
   <img alt="" src="https://img.shields.io/npm/dm/@tanstack/form-core.svg" />
-</a><a href="https://bundlephobia.com/package/@tanstack/solid-form@latest" target="\_parent">
-  <img alt="" src="https://badgen.net/bundlephobia/minzip/@tanstack/solid-form" />
+</a><a href="https://bundlephobia.com/package/@tanstack/lit-form@latest" target="\_parent">
+  <img alt="" src="https://badgen.net/bundlephobia/minzip/@tanstack/lit-form" />
 </a><a href="#badge">
     <img alt="semantic-release" src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg">
   </a><a href="https://github.com/TanStack/form/discussions">
