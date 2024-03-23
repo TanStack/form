@@ -80,16 +80,16 @@
         {
           "label": "Basic Concepts",
           "to": "guides/basic-concepts"
-        },
-        {
-          "label": "Form Validation",
-          "to": "guides/validation"
         }
       ],
       "frameworks": [
         {
           "label": "react",
           "children": [
+            {
+              "label": "Form Validation",
+              "to": "framework/react/guides/validation"
+            },
             {
               "label": "Arrays",
               "to": "framework/react/guides/arrays"
