@@ -1,7 +1,7 @@
 import { Component } from '@angular/core'
 import { TanStackField, injectForm, injectStore } from '@tanstack/angular-form'
-import { zodValidator } from '@tanstack/zod-form-adapter'
-import { z } from 'zod'
+import { yupValidator } from '@tanstack/yup-form-adapter'
+import * as yup from 'yup'
 
 @Component({
   selector: 'app-root',
@@ -15,7 +15,7 @@ import { z } from 'zod'
           [tanstackField]="form"
           name="firstName"
           [validators]="{
-            onChange: z
+            onChange: yup
               .string()
               .min(3, 'First name must be at least 3 characters'),
             onChangeAsyncDebounceMs: 500,
@@ -60,15 +60,12 @@ import { z } from 'zod'
   `,
 })
 export class AppComponent {
-  firstNameAsyncValidator = z.string().refine(
-    async (value) => {
+  firstNameAsyncValidator = yup
+    .string()
+    .test('no-error', "No 'error' allowed in first name", async (value) => {
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      return !value.includes('error')
-    },
-    {
-      message: "No 'error' allowed in first name",
-    },
-  )
+      return !value?.includes('error')
+    })
 
   form = injectForm({
     defaultValues: {
@@ -80,10 +77,10 @@ export class AppComponent {
       console.log(value)
     },
     // Add a validator to support Zod usage in Form and Field
-    validatorAdapter: zodValidator,
+    validatorAdapter: yupValidator,
   })
 
-  z = z
+  yup = yup
 
   canSubmit = injectStore(this.form, (state) => state.canSubmit)
   isSubmitting = injectStore(this.form, (state) => state.isSubmitting)
