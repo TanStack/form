@@ -125,6 +125,10 @@
           "label": "angular",
           "children": [
             {
+              "label": "Form Validation",
+              "to": "framework/angular/guides/validation"
+            },
+            {
               "label": "Arrays",
               "to": "framework/angular/guides/arrays"
             }
