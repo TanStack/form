@@ -272,34 +272,4 @@ Example:
 />
 ```
 
-## Array-Nested Fields
-
-Rendering fields that are items of a nested array require only a small change to the `form.Field` component props.
-
-Example:
-
-```tsx
-<form.Field
-  name={`hobbies[${i}].name`}
-  children={(field) => {
-    return (
-      <div>
-        <label htmlFor={field.name}>Name:</label>
-        <input
-          id={field.name}
-          name={field.name}
-          value={field.state.value}
-          onBlur={field.handleBlur}
-          onChange={(e) => field.handleChange(e.target.value)}
-        />
-        <button type="button" onClick={() => hobbiesField.removeValue(i)}>
-          X
-        </button>
-        <FieldInfo field={field} />
-      </div>
-    )
-  }}
-/>
-```
-
 These are the basic concepts and terminology used in the `@tanstack/react-form` library. Understanding these concepts will help you work more effectively with the library and create complex forms with ease.
