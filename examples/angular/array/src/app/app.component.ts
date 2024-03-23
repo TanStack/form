@@ -13,7 +13,7 @@ import { TanStackField, injectForm, injectStore } from '@tanstack/angular-form'
             @for (_ of people.api.state.value; track $index) {
               <ng-container
                 [tanstackField]="form"
-                [name]="'people[' + $index + '].name'"
+                [name]="getPeopleName($index)"
                 #person="field"
               >
                 <div>
@@ -52,6 +52,8 @@ export class AppComponent {
       alert(JSON.stringify(value))
     },
   })
+
+  getPeopleName = (idx: number) => `people[${idx}].name` as const
 
   canSubmit = injectStore(this.form, (state) => state.canSubmit)
   isSubmitting = injectStore(this.form, (state) => state.isSubmitting)
