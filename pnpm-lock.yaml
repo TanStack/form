@@ -150,7 +150,7 @@ importers:
         specifier: ^17.3.0
         version: 17.3.0(@angular/common@17.3.0)(@angular/core@17.3.0)(@angular/platform-browser@17.3.0)(rxjs@7.8.1)
       '@tanstack/angular-form':
-        specifier: ^0.16.2
+        specifier: ^0.17.0
         version: link:../../../packages/angular-form
       rxjs:
         specifier: ~7.8.0
@@ -202,7 +202,7 @@ importers:
         specifier: ^17.3.0
         version: 17.3.0(@angular/common@17.3.0)(@angular/core@17.3.0)(@angular/platform-browser@17.3.0)(rxjs@7.8.1)
       '@tanstack/angular-form':
-        specifier: ^0.16.2
+        specifier: ^0.17.0
         version: link:../../../packages/angular-form
       rxjs:
         specifier: ~7.8.0
@@ -254,7 +254,7 @@ importers:
         specifier: ^17.3.0
         version: 17.3.0(@angular/common@17.3.0)(@angular/core@17.3.0)(@angular/platform-browser@17.3.0)(rxjs@7.8.1)
       '@tanstack/angular-form':
-        specifier: ^0.16.2
+        specifier: ^0.17.0
         version: link:../../../packages/angular-form
       '@tanstack/valibot-form-adapter':
         specifier: ^0.16.2
@@ -312,7 +312,7 @@ importers:
         specifier: ^17.3.0
         version: 17.3.0(@angular/common@17.3.0)(@angular/core@17.3.0)(@angular/platform-browser@17.3.0)(rxjs@7.8.1)
       '@tanstack/angular-form':
-        specifier: ^0.16.2
+        specifier: ^0.17.0
         version: link:../../../packages/angular-form
       '@tanstack/yup-form-adapter':
         specifier: ^0.16.2
@@ -370,7 +370,7 @@ importers:
         specifier: ^17.3.0
         version: 17.3.0(@angular/common@17.3.0)(@angular/core@17.3.0)(@angular/platform-browser@17.3.0)(rxjs@7.8.1)
       '@tanstack/angular-form':
-        specifier: ^0.16.2
+        specifier: ^0.17.0
         version: link:../../../packages/angular-form
       '@tanstack/zod-form-adapter':
         specifier: ^0.16.2
@@ -9839,8 +9839,6 @@ packages:
       webpack: '*'
     peerDependenciesMeta:
       webpack:
-        optional: true
-      webpack-sources:
         optional: true
     dependencies:
       webpack: 5.90.3(esbuild@0.20.2)
