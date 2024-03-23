@@ -192,7 +192,7 @@ Example:
 
 ## Array Fields
 
-Array fields allow you to manage a list of values within a form, such as a list of hobbies. You can create an array field using the `form.Field` component with the `mode="array"` prop. The component accepts a children prop, which is a render prop function that takes an `arrayField` object as its argument.
+Array fields allow you to manage a list of values within a form, such as a list of hobbies. You can create an array field using the `form.Field` component with the `mode="array"` prop.
 
 When working with array fields, you can use the fields `pushValue`, `removeValue`, and `swapValues` methods to add, remove, and swap values in the array.
 
