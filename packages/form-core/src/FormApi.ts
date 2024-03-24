@@ -718,6 +718,17 @@ export class FormApi<
       return setBy(setBy(prev, `${index1}`, prev2), `${index2}`, prev1)
     })
   }
+
+  moveFieldValues = <TField extends DeepKeys<TFormData>>(
+    field: TField,
+    index1: number,
+    index2: number,
+  ) => {
+    this.setFieldValue(field, (prev: any) => {
+      prev.splice(index2, 0, prev.splice(index1, 1)[0])
+      return prev
+    })
+  }
 }
 
 function normalizeError(rawError?: ValidationError) {

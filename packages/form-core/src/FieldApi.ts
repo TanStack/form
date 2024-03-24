@@ -482,6 +482,9 @@ export class FieldApi<
   swapValues = (aIndex: number, bIndex: number) =>
     this.form.swapFieldValues(this.name, aIndex, bIndex)
 
+  moveValue = (aIndex: number, bIndex: number) =>
+    this.form.moveFieldValues(this.name, aIndex, bIndex)
+
   validateSync = (value = this.state.value, cause: ValidationCause) => {
     const validates = getSyncValidatorArray(cause, this.options)
 
