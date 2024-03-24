@@ -4,6 +4,8 @@ import {
   type OnChanges,
   type OnDestroy,
   type OnInit,
+  booleanAttribute,
+  numberAttribute,
 } from '@angular/core'
 import {
   type DeepKeys,
@@ -44,9 +46,9 @@ export class TanStackField<
   // This can be removed when TanStack Form Core is moved to TS min of 5.4
   // and the NoInfer internal util type is rm-rf'd
   @Input() defaultValue?: NoInferHack<TData>
-  @Input() asyncDebounceMs?: number
-  @Input() asyncAlways?: boolean
-  @Input() preserveValue?: boolean
+  @Input({ transform: numberAttribute }) asyncDebounceMs?: number
+  @Input({ transform: booleanAttribute }) asyncAlways?: boolean
+  @Input({ transform: booleanAttribute }) preserveValue?: boolean
   @Input() validatorAdapter?: TFieldValidator
   @Input({ required: true }) tanstackField!: FormApi<
     TParentData,
