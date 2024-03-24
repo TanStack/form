@@ -91,7 +91,7 @@ const { isTouched, isPristine, isDirty } = field.state.meta
 ![Field states](https://raw.githubusercontent.com/TanStack/form/main/docs/assets/field-states.png)
 
 > **Important note for users coming from `React Hook Form`**: the `isDirty` flag in `TanStack/form` is different from the flag with the same name in RHF.
-> In RHF, `isDirty = true`, when the form's values are different from the original values. If the user changes the values in a form, and then changes them again to end up with values that match the form's default values, `isDirty` will be `true` in RHF, but `false` in `TanStack/form`.
+> In RHF, `isDirty = true`, when the form's values are different from the original values. If the user changes the values in a form, and then changes them again to end up with values that match the form's default values, `isDirty` will be `false` in RHF, but `true` in `TanStack/form`.
 > The default values are exposed both on the form's and the field's level in `TanStack/form` (`form.options.defaultValues`, `field.options.defaultValue`), so you can write your own `isDefaultValue()` helper if you need to emulate RHF's behavior.`
 
 
