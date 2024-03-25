@@ -158,6 +158,23 @@ describe('field api', () => {
     expect(field.getValue()).toStrictEqual(['two', 'one'])
   })
 
+  it('should move a value from an array value correctly', () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three', 'four'],
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'names',
+    })
+
+    field.moveValue(2, 0)
+
+    expect(field.getValue()).toStrictEqual(['three', 'one', 'two', 'four'])
+  })
+
   it('should not throw errors when no meta info is stored on a field and a form re-renders', async () => {
     const form = new FormApi({
       defaultValues: {
