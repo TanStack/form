@@ -536,4 +536,62 @@ describe('useForm', () => {
     await waitFor(() => getByText(error))
     expect(getByText(error)).toBeInTheDocument()
   })
+
+  it('should validate async on submit without debounce', async () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    const mockFn = vi.fn()
+    const error = 'Please enter a different value'
+    const formFactory = createFormFactory<Person>()
+
+    function Comp() {
+      const form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+        validators: {
+          onChangeAsyncDebounceMs: 1000000,
+          onChangeAsync: async () => {
+            mockFn()
+            await sleep(10)
+            return error
+          },
+        },
+      })
+      const errors = form.useStore((s) => s.errors)
+
+      return (
+        <>
+          <form.Field
+            name="firstName"
+            defaultMeta={{ isTouched: true }}
+            children={(field) => (
+              <div>
+                <input
+                  data-testid="fieldinput"
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                <p>{errors}</p>
+              </div>
+            )}
+          />
+          <button onClick={form.handleSubmit}>Submit</button>
+
+        </>
+      )
+    }
+
+    const { getByRole, getByText } = render(<Comp />)
+    await user.click(getByRole('button', { name: 'Submit'}))
+
+    expect(mockFn).toHaveBeenCalledTimes(1)
+    await waitFor(() => getByText(error))
+    expect(getByText(error)).toBeInTheDocument()
+  })
 })
