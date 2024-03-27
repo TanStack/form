@@ -1527,7 +1527,8 @@ describe('form api', () => {
       { nameInfo: { first: 'firstName' } },
     ])
   })
-  it('should add  a new value to the formApi errorMap', () => {
+
+  it('should add a new value to the formApi errorMap', () => {
     interface Form {
       name: string
     }
@@ -1537,6 +1538,7 @@ describe('form api', () => {
     })
     expect(form.state.errorMap.onChange).toEqual("name can't be Josh")
   })
+
   it('should preserve other values in the formApi errorMap when adding other values', () => {
     interface Form {
       name: string
@@ -1552,6 +1554,7 @@ describe('form api', () => {
     expect(form.state.errorMap.onChange).toEqual("name can't be Josh")
     expect(form.state.errorMap.onBlur).toEqual('name must begin with uppercase')
   })
+
   it('should replace errorMap value if it exists in the FormApi object', () => {
     interface Form {
       name: string
@@ -1565,5 +1568,489 @@ describe('form api', () => {
       onChange: 'other validation error',
     })
     expect(form.state.errorMap.onChange).toEqual('other validation error')
+  })
+
+  it("should set errors for the fields from the form's onSubmit validator", async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onSubmit: ({ value }) => {
+          if (value.firstName.length === 0) {
+            return {
+              form: 'something went wrong',
+              fields: {
+                firstName: 'first name is required',
+              },
+            }
+          }
+
+          return null
+        },
+      },
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onSubmit: ({ value }) => {
+          if (value === 'nothing') return 'value cannot be "nothing"'
+          return null
+        },
+      },
+    })
+
+    firstNameField.mount()
+
+    // Check if the error is returned from the form's onSubmit validator
+    await form.handleSubmit()
+    expect(form.state.isFieldsValid).toEqual(false)
+    expect(form.state.canSubmit).toEqual(false)
+    expect(firstNameField.getMeta().errorMap).toMatchObject({
+      onSubmit: 'first name is required',
+    })
+    expect(form.state.errorMap).toMatchObject({
+      onSubmit: 'something went wrong',
+    })
+
+    // Check if the error is gone after the value is changed
+    firstNameField.setValue('nothing')
+    // Handling the blur is needed, because the `blur` error on the field
+    // is not cleared up before `handleSubmit` is called, so the field
+    // is considered to be invalid.
+    firstNameField.handleBlur()
+    await form.handleSubmit()
+
+    expect(firstNameField.getMeta().errors).toStrictEqual([
+      'value cannot be "nothing"',
+    ])
+
+    // Check if the error from the field's validator is shown
+    firstNameField.setValue('something else')
+    await form.handleSubmit()
+    expect(firstNameField.getMeta().errors).toStrictEqual([])
+    expect(form.state.errors).toStrictEqual([])
+  })
+
+  it("should set errors for the fields from the form's onChange validator", async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: 'something',
+      },
+      validators: {
+        onChange: ({ value }) => {
+          if (value.firstName.length === 0) {
+            return {
+              fields: {
+                firstName: 'first name is required',
+              },
+            }
+          }
+
+          return null
+        },
+      },
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onChange: ({ value }) => {
+          if (value === 'nothing') return 'value cannot be "nothing"'
+
+          return null
+        },
+      },
+    })
+
+    firstNameField.mount()
+
+    // Check if we get an error from the form's `onChange` validator
+    firstNameField.setValue('')
+
+    expect(form.state.isFieldsValid).toEqual(false)
+    expect(form.state.canSubmit).toEqual(false)
+    expect(firstNameField.state.meta.errorMap.onChange).toBe(
+      'first name is required',
+    )
+
+    // Check if we can make the error go away by changing the value
+    firstNameField.setValue('one')
+    expect(firstNameField.state.meta.errorMap.onChange).toBe(undefined)
+
+    // Check if we get an error from the field's `onChange` validator
+    firstNameField.setValue('nothing')
+
+    expect(form.state.isFieldsValid).toEqual(false)
+    expect(form.state.canSubmit).toEqual(false)
+    expect(firstNameField.getMeta().errorMap.onChange).toBe(
+      'value cannot be "nothing"',
+    )
+
+    // Check if we can make the error go away by changing the value
+    firstNameField.setValue('one')
+    expect(firstNameField.getMeta().errorMap.onChange).toBe(undefined)
+  })
+
+  it("should remove the onSubmit errors set from the form's validators after the field has been touched", async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onSubmit: ({ value }) => {
+          if (value.firstName.length === 0) {
+            return {
+              form: 'something went wrong',
+              fields: {
+                firstName: 'first name is required',
+              },
+            }
+          }
+
+          return null
+        },
+      },
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+
+    firstNameField.mount()
+
+    await form.handleSubmit()
+
+    expect(firstNameField.state.meta.errorMap.onSubmit).toEqual(
+      'first name is required',
+    )
+
+    firstNameField.setValue('this is a first name')
+
+    expect(firstNameField.state.meta.errorMap['onSubmit']).toBe(undefined)
+  })
+
+  it("should set errors for the fields from the form's onSubmitAsync validator", async () => {
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+      validators: {
+        onSubmitAsync: async ({ value }) => {
+          await sleep(1000)
+          if (value.name === '')
+            return {
+              form: 'something went wrong',
+              fields: {
+                name: 'first name is required',
+              },
+            }
+          return null
+        },
+      },
+    })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onSubmitAsync: async ({ value }) => {
+          await sleep(1000)
+          if (value === 'nothing') return 'value cannot be "nothing"'
+          return null
+        },
+      },
+    })
+
+    form.mount()
+    field.mount()
+
+    expect(form.state.errors.length).toBe(0)
+
+    // Check if the error is returned from the form's onSubmit validator
+    form.handleSubmit()
+    await vi.runAllTimersAsync()
+    expect(form.state.errorMap).toMatchObject({
+      onSubmit: 'something went wrong',
+    })
+    expect(field.state.meta.errorMap).toMatchObject({
+      onSubmit: 'first name is required',
+    })
+
+    // Check if the error goes away when the value is changed
+    field.setValue('other')
+    field.handleBlur()
+    form.handleSubmit()
+    await vi.runAllTimersAsync()
+    expect(form.state.errors).toStrictEqual([])
+    expect(field.state.value).toBe('other')
+    expect(field.state.meta.errors).toStrictEqual([])
+
+    // Check if the field validator gives an error
+    field.setValue('nothing')
+    form.handleSubmit()
+    await vi.runAllTimersAsync()
+    expect(field.state.meta.errorMap.onSubmit).toBe('value cannot be "nothing"')
+  })
+
+  it("should set errors for the fields from the form's onSubmit validator for array fields", async () => {
+    const form = new FormApi({
+      defaultValues: {
+        people: ['person-1'],
+      },
+      validators: {
+        onSubmit: ({ value }) => {
+          if (value.people.includes('person-2')) {
+            return {
+              fields: {
+                people: 'person-2 is banned from registering',
+              },
+            }
+          }
+
+          return null
+        },
+      },
+    })
+
+    const peopleField = new FieldApi({
+      form,
+      name: 'people',
+    })
+
+    peopleField.setValue((value) => [...value, 'person-2'])
+    peopleField.mount()
+
+    await form.handleSubmit()
+    expect(form.state.isFieldsValid).toEqual(false)
+    expect(form.state.canSubmit).toEqual(false)
+    expect(form.state.isValid).toEqual(false)
+    expect(peopleField.state.meta.errorMap.onSubmit).toBe(
+      'person-2 is banned from registering',
+    )
+  })
+
+  it("should set errors for the fields from the form's onSubmitAsync validator for array fields", async () => {
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        people: ['person-1'],
+      },
+      validators: {
+        onSubmitAsync: async ({ value }) => {
+          await sleep(1000)
+          if (value.people.includes('person-2')) {
+            return {
+              fields: {
+                people: 'person-2 is banned from registering',
+              },
+            }
+          }
+
+          return null
+        },
+      },
+    })
+
+    const peopleField = new FieldApi({
+      form,
+      name: 'people',
+    })
+
+    form.mount()
+    peopleField.setValue((value) => [...value, 'person-2'])
+    peopleField.mount()
+    expect(form.state.errors.length).toBe(0)
+
+    form.handleSubmit()
+    await vi.runAllTimersAsync()
+    expect(form.state.isFieldsValid).toEqual(false)
+    expect(form.state.canSubmit).toEqual(false)
+    expect(form.state.isValid).toEqual(false)
+    expect(peopleField.state.meta.errorMap.onSubmit).toEqual(
+      'person-2 is banned from registering',
+    )
+  })
+
+  it("should be able to set errors on nested field inside of an array from the form's validators", async () => {
+    interface Employee {
+      firstName: string
+    }
+    interface Form {
+      employees: Partial<Employee>[]
+    }
+
+    const form = new FormApi<Form>({
+      validators: {
+        onSubmit: ({ value }) => {
+          const fieldWithErrorIndex = value.employees.findIndex(
+            (v) => v.firstName === 'person-2',
+          )
+
+          if (fieldWithErrorIndex !== -1) {
+            return {
+              fields: {
+                [`employees[${fieldWithErrorIndex}].firstName`]:
+                  'person-2 is banned from registering',
+              },
+            }
+          }
+          return null
+        },
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'employees',
+      defaultValue: [],
+    })
+
+    field.mount()
+
+    const fieldInArray = new FieldApi({
+      form,
+      name: `employees[0].firstName`,
+      defaultValue: 'person-2',
+    })
+
+    fieldInArray.mount()
+    await form.handleSubmit()
+
+    expect(form.state.isFieldsValid).toEqual(false)
+    expect(form.state.canSubmit).toEqual(false)
+    expect(fieldInArray.state.meta.errorMap).toMatchObject({
+      onSubmit: 'person-2 is banned from registering',
+    })
+
+    fieldInArray.setValue('Somebody else')
+
+    await form.handleSubmit()
+    expect(form.state.isFieldsValid).toEqual(true)
+    expect(form.state.canSubmit).toEqual(true)
+    expect(fieldInArray.state.meta.errors).toStrictEqual([])
+
+    await form.handleSubmit()
+  })
+
+  it("should set errors on a linked field from the form's onChange validator", async () => {
+    const form = new FormApi({
+      defaultValues: {
+        password: '',
+        confirm_password: '',
+      },
+      validators: {
+        onChange: ({ value }) => {
+          if (value.confirm_password !== value.password) {
+            return {
+              fields: {
+                confirm_password: 'passwords do not match',
+              },
+            }
+          }
+          return null
+        },
+      },
+    })
+
+    const passField = new FieldApi({
+      form,
+      name: 'password',
+    })
+
+    const passconfirmField = new FieldApi({
+      form,
+      name: 'confirm_password',
+      validators: {
+        onChangeListenTo: ['password'],
+      },
+    })
+
+    passField.mount()
+    passconfirmField.mount()
+
+    passField.setValue('one')
+
+    expect(form.state.isFieldsValid).toEqual(false)
+    expect(form.state.canSubmit).toEqual(false)
+    expect(passconfirmField.state.meta.errorMap.onChange).toBe(
+      'passwords do not match',
+    )
+
+    passconfirmField.setValue('one')
+    expect(form.state.isFieldsValid).toEqual(true)
+    expect(form.state.canSubmit).toEqual(true)
+    expect(passconfirmField.state.meta.errors).toStrictEqual([])
+  })
+
+  it("should set errors on a linked field from the form's onChangeAsync validator", async () => {
+    vi.useRealTimers()
+    let resolve!: () => void
+    const promise = new Promise((r) => {
+      resolve = r as never
+    })
+    const fn = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        password: '',
+        confirm_password: '',
+      },
+      validators: {
+        onChangeAsync: async ({ value }) => {
+          await promise
+          fn()
+          if (value.confirm_password !== value.password) {
+            return {
+              fields: {
+                confirm_password: 'passwords do not match',
+              },
+            }
+          }
+          return null
+        },
+      },
+    })
+
+    const passField = new FieldApi({
+      form,
+      name: 'password',
+    })
+
+    const passconfirmField = new FieldApi({
+      form,
+      name: 'confirm_password',
+      validators: {
+        onChangeListenTo: ['password'],
+      },
+    })
+
+    passField.mount()
+    passconfirmField.mount()
+
+    passField.setValue('one')
+    resolve()
+    // Allow for some micro-ticks to allow the promise to resolve
+    await sleep(4)
+
+    expect(form.state.isFieldsValid).toEqual(false)
+    expect(form.state.canSubmit).toEqual(false)
+    expect(passconfirmField.state.meta.errorMap.onChange).toMatch(
+      'passwords do not match',
+    )
+
+    passconfirmField.setValue('one')
+    resolve()
+    // Allow for some micro-ticks to allow the promise to resolve
+    await sleep(4)
+    expect(form.state.isFieldsValid).toBe(true)
+    expect(form.state.canSubmit).toBe(true)
+    expect(passconfirmField.state.meta.errors).toStrictEqual([])
   })
 })

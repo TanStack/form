@@ -194,6 +194,76 @@ export default function App() {
 }
 ```
 
+### Setting field-level errors from the form's validators
+
+You can set errors on the fields from the form's validators. One common use case for this is validating all the fields on submit by calling a single API endpoint in the form's `onSubmitAsync` validator.
+
+```tsx
+export default function App() {
+  const form = useForm({
+    defaultValues: {
+      age: 0,
+    },
+    validators: {
+      onSubmitAsync: async ({ value }) => {
+        console.log({ value })
+        // Verify the age on the server
+        const isOlderThan13 = await verifyAgeOnServer(value.age)
+        if (!isOlderThan13) {
+          return {
+            form: 'Invalid data', // The `form` key is optional
+            fields: {
+              age: 'Must be 13 or older to sign',
+            },
+          }
+        }
+
+        return null
+      },
+    },
+  })
+
+  return (
+    <div>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          void form.handleSubmit()
+        }}
+      >
+        <form.Field name="age">
+          {(field) => (
+            <>
+              <label htmlFor={field.name}>Age:</label>
+              <input
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                type="number"
+                onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+              />
+              {field.state.meta.errors ? (
+                <em role="alert">{field.state.meta.errors.join(', ')}</em>
+              ) : null}
+            </>
+          )}
+        </form.Field>
+        {form.state.errorMap.onSubmit ? (
+          <div>
+            <em>
+              There was an error on the form: {form.state.errorMap.onSubmit}
+            </em>
+          </div>
+        ) : null}
+        {/*...*/}
+      </form>
+    </div>
+  )
+}
+
+```
+
 ## Asynchronous Functional Validation
 
 While we suspect most validations will be synchronous, there are many instances where a network call or some other async operation would be useful to validate against.

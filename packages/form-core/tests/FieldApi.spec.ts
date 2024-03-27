@@ -527,6 +527,8 @@ describe('field api', () => {
     expect(field.getMeta().errorMap).toMatchObject({
       onChange: 'Please enter a different value',
     })
+    field.setValue('nothing')
+    expect(field.getMeta().errors.length).toBe(0)
   })
 
   it('should run async validation onChange', async () => {
@@ -1109,7 +1111,8 @@ describe('field api', () => {
     await sleep(1)
     field.setValue('two')
     resolve()
-    await sleep(1)
+    // Allow for some micro-ticks to allow the promise to resolve
+    await sleep(3)
     expect(fn).toHaveBeenCalledTimes(1)
   })
 
@@ -1246,8 +1249,8 @@ describe('field api', () => {
 
     passField.setValue('one')
     resolve()
-    // Allow for a micro-tick to allow the promise to resolve
-    await sleep(1)
+    // Allow for some micro-ticks to allow the promise to resolve
+    await sleep(3)
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
     ])
@@ -1264,8 +1267,8 @@ describe('field api', () => {
     })
     passField.setValue('two')
     resolve()
-    // Allow for a micro-tick to allow the promise to resolve
-    await sleep(1)
+    // Allow for some micro-ticks to allow the promise to resolve
+    await sleep(3)
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
     ])
