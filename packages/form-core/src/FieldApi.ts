@@ -509,6 +509,9 @@ export class FieldApi<
     return linkedFields
   }
 
+  moveValue = (aIndex: number, bIndex: number) =>
+    this.form.moveFieldValues(this.name, aIndex, bIndex)
+
   validateSync = (cause: ValidationCause) => {
     const validates = getSyncValidatorArray(cause, this.options)
 

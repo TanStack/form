@@ -47,9 +47,9 @@ This will generate the mapped JSX every time you run `pushValue` on `field`:
 Finally, you can use a subfield like so:
 
 ```html
-<ng-container
+ <ng-container
   [tanstackField]="form"
-  [name]="'people[' + $index + '].name'"
+  [name]="getPeopleName($index)"
   #person="field"
 >
   <div>
@@ -66,6 +66,29 @@ Finally, you can use a subfield like so:
 </ng-container>
 ```
 
+Where `getPeopleName` is a method on the class like so
+
+```typescript
+export class AppComponent {
+  getPeopleName = (idx: number) => `people[${idx}].name` as const;
+
+  // ...
+}
+```
+
+> While it's unfortunate that you need to use a function to get the field name, it's a requirement for how our strict TypeScript types work.
+>
+> See, if we did the following:
+> ```html
+> <ng-container [tanstackField]="form" [name]="'people[' + $index + '].name'"></ng-container>
+> ```
+>
+> We'd be running into a TypeScript issue where `"one" + "two"` is `string` rather than the required `"onetwo"` type
+>
+> Moreover, while Angular supports template literals in the template, they may not contain dynamic interpolation within them, such as our `$index` argument.
+
+> It's possible that we've missed something! If you can think of a better fix for this problem, [drop us a line on our GitHub discussions](https://github.com/TanStack/form/discussions).
+
 ## Full Example
 
 ```typescript
@@ -81,7 +104,7 @@ Finally, you can use a subfield like so:
             @for (_ of people.api.state.value; track $index) {
               <ng-container
                 [tanstackField]="form"
-                [name]="'people[' + $index + '].name'"
+                [name]="getPeopleName($index)"
                 #person="field"
               >
                 <div>
@@ -120,6 +143,9 @@ export class AppComponent {
       alert(JSON.stringify(value))
     },
   })
+
+
+  getPeopleName = (idx: number) => `people[${idx}].name` as const;
 
   canSubmit = injectStore(this.form, (state) => state.canSubmit)
   isSubmitting = injectStore(this.form, (state) => state.isSubmitting)
