@@ -126,14 +126,14 @@ const reFindMultiplePeriods = /\.{2,}/gm
 const intPrefix = '__int__'
 const intReplace = `${intPrefix}$1`
 
-function makePathArray(str: string) {
+export function makePathArray(str: string) {
   if (typeof str !== 'string') {
     throw new Error('Path must be a string.')
   }
 
   return str
-    .replace('[', '.')
-    .replace(']', '')
+    .replaceAll('[', '.')
+    .replaceAll(']', '')
     .replace(reFindNumbers0, intReplace)
     .replace(reFindNumbers1, `.${intReplace}.`)
     .replace(reFindNumbers2, `${intReplace}.`)
