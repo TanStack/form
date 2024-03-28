@@ -10,8 +10,8 @@
   },
   "private": true,
   "dependencies": {
-    "@tanstack/angular-form": "^0.18.1",
-    "@tanstack/valibot-form-adapter": "^0.18.1",
+    "@tanstack/angular-form": "^0.19.0",
+    "@tanstack/valibot-form-adapter": "^0.19.0",
     "@angular/animations": "^17.3.0",
     "@angular/common": "^17.3.0",
     "@angular/compiler": "^17.3.0",

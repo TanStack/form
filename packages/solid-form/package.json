@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/solid-form",
-  "version": "0.18.1",
+  "version": "0.19.0",
   "description": "Powerful, type-safe forms for Solid.",
   "author": "tannerlinsley",
   "license": "MIT",
