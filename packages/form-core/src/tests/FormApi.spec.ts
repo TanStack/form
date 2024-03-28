@@ -992,4 +992,51 @@ describe('form api', () => {
     await form.handleSubmit()
     expect(form.state.errors).toStrictEqual(['first name is required'])
   })
+
+  it("should set errors for the fields from the form's onSubmit vaidator", async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      },
+      validators: {
+        onSubmit: ({ value }) => {
+          const firstNameMissingError =
+            value.firstName.length > 0 ? undefined : 'First name is required'
+          const lastNameMissingError =
+            value.lastName.length > 0 ? undefined : 'Last name is required'
+
+          return {
+            fields: {
+              firstName: firstNameMissingError,
+              lastName: lastNameMissingError,
+            },
+          }
+        },
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+    })
+
+    field.mount()
+    lastNameField.mount()
+
+    await form.handleSubmit()
+    expect(form.state.isFieldsValid).toEqual(false)
+    expect(form.state.canSubmit).toEqual(false)
+    expect(form.state.fieldMeta['firstName'].errors).toEqual([
+      'first name is required',
+    ])
+    expect(form.state.fieldMeta['lastName'].errors).toEqual([
+      'last name is required',
+    ])
+  })
 })
