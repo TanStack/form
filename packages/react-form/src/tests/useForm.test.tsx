@@ -559,6 +559,12 @@ describe('useForm', () => {
             await sleep(10)
             return error
           },
+          onBlurAsyncDebounceMs: 1000000,
+          onBlurAsync: async () => {
+            mockFn()
+            await sleep(10)
+            return error
+          },
         },
       })
       const errors = form.useStore((s) => s.errors)
