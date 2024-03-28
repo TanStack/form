@@ -802,4 +802,76 @@ describe('useField', () => {
     await user.click(await findByText('Submit'))
     expect(fn).toHaveBeenCalledWith({ people: [{ name: 'John', age: 0 }] })
   })
+
+  it('should handle sync linked fields', async () => {
+    const fn = vi.fn()
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          password: '',
+          confirm_password: '',
+        },
+        onSubmit: ({ value }) => fn(value),
+      })
+
+      return (
+        <div>
+          <form.Field name="password">
+            {(field) => {
+              return (
+                <div>
+                  <label>
+                    <div>Password</div>
+                    <input
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                  </label>
+                </div>
+              )
+            }}
+          </form.Field>
+          <form.Field
+            name="confirm_password"
+            validators={{
+              onChangeListenTo: ['password'],
+              onChange: ({ value, fieldApi }) => {
+                if (value !== fieldApi.form.getFieldValue('password')) {
+                  return 'Passwords do not match'
+                }
+                return undefined
+              },
+            }}
+          >
+            {(field) => {
+              return (
+                <div>
+                  <label>
+                    <div>Confirm Password</div>
+                    <input
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                  </label>
+                  {field.state.meta.errors.map((err) => {
+                    return <div key={err?.toString()}>{err}</div>
+                  })}
+                </div>
+              )
+            }}
+          </form.Field>
+        </div>
+      )
+    }
+
+    const { findByLabelText, queryByText, findByText } = render(<Comp />)
+
+    const passwordInput = await findByLabelText('Password')
+    const confirmPasswordInput = await findByLabelText('Confirm Password')
+    await user.type(passwordInput, 'password')
+    await user.type(confirmPasswordInput, 'password')
+    expect(queryByText('Passwords do not match')).not.toBeInTheDocument()
+    await user.type(confirmPasswordInput, '1')
+    expect(await findByText('Passwords do not match')).toBeInTheDocument()
+  })
 })

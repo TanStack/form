@@ -95,6 +95,10 @@
               "to": "framework/react/guides/arrays"
             },
             {
+              "label": "Linked Fields",
+              "to": "framework/react/guides/linked-fields"
+            },
+            {
               "label": "UI Libraries",
               "to": "framework/react/guides/ui-libraries"
             },

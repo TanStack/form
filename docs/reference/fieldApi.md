@@ -90,6 +90,12 @@ An object type representing the options for a field in a form.
   - If set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds
 
 - ```tsx
+  onChangeListenTo?: DeepKeys<TParentData>[]
+  ```
+
+  - An optional list of field names that should trigger **this** field's `onChange` and `onChangeAsync` events when **its** value changes
+
+- ```tsx
   onBlur?: ValidateFn<TData, TParentData>
   ```
 
@@ -107,6 +113,12 @@ An object type representing the options for a field in a form.
 
   - An optional number to represent how long the `onBlurAsyncDebounceMs` should wait before running
   - If set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds
+
+- ```tsx
+  onBlurListenTo?: DeepKeys<TParentData>[]
+  ```
+
+  - An optional list of field names that should trigger **this** field's `onBlur` and `onBlurAsync` events when **its** field blurs
 
 - ```tsx
   onSubmit?: ValidateFn<TData, TParentData>

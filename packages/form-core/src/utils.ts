@@ -157,7 +157,7 @@ interface AsyncValidatorArrayPartialOptions<T> {
   asyncDebounceMs?: number
 }
 
-interface AsyncValidator<T> {
+export interface AsyncValidator<T> {
   cause: ValidationCause
   validate: T
   debounceMs: number
@@ -226,7 +226,7 @@ interface SyncValidatorArrayPartialOptions<T> {
   validators?: T
 }
 
-interface SyncValidator<T> {
+export interface SyncValidator<T> {
   cause: ValidationCause
   validate: T
 }
