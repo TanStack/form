@@ -197,10 +197,22 @@ export function getAsyncValidatorArray<T>(
     debounceMs: onChangeAsyncDebounceMs ?? defaultDebounceMs,
   } as const
 
+  const changeValidatorForSubmit = {
+    cause: 'change',
+    validate: onChangeAsync,
+    debounceMs: 0,
+  } as const
+
   const blurValidator = {
     cause: 'blur',
     validate: onBlurAsync,
     debounceMs: onBlurAsyncDebounceMs ?? defaultDebounceMs,
+  } as const
+
+  const blurValidatorForSubmit = {
+    cause: 'blur',
+    validate: onBlurAsync,
+    debounceMs: 0,
   } as const
 
   const submitValidator = {
@@ -211,7 +223,7 @@ export function getAsyncValidatorArray<T>(
 
   switch (cause) {
     case 'submit':
-      return [changeValidator, blurValidator, submitValidator] as never
+      return [changeValidatorForSubmit, blurValidatorForSubmit, submitValidator] as never
     case 'server':
       return [] as never
     case 'blur':
