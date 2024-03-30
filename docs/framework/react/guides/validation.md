@@ -338,7 +338,7 @@ const form = useForm({
   // ...
 })
 
-;<form.Field
+<form.Field
   name="age"
   validatorAdapter={zodValidator}
   validators={{
