@@ -5,7 +5,7 @@ title: Form API
 
 ### `FormApi<TFormData, TFormValidator>`
 
-When using `@tanstack/react-form`, the [core form API](../../reference/formApi) is extended at type level with additional methods for React-specific functionality:
+When using `@tanstack/react-form`, the [core form API](../../../../reference/formApi) is extended at type level with additional methods for React-specific functionality:
 
 - ```tsx
   Field: FieldComponent<TFormData, TFormValidator>

@@ -188,6 +188,10 @@
             {
               "label": "FormApi",
               "to": "framework/react/reference/formApi"
+            },
+            {
+              "label": "FieldApi",
+              "to": "framework/react/reference/fieldApi"
             }
           ]
         },
