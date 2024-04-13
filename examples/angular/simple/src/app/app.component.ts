@@ -55,6 +55,7 @@ import type {
       <button type="submit" [disabled]="!canSubmit()">
         {{ isSubmitting() ? '...' : 'Submit' }}
       </button>
+      <button type="reset" (click)="form.reset()">Reset</button>
     </form>
   `,
 })

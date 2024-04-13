@@ -1,7 +1,7 @@
+import type { FieldApi } from '@tanstack/react-form'
+import { useForm } from '@tanstack/react-form'
 import * as React from 'react'
 import { createRoot } from 'react-dom/client'
-import { useForm } from '@tanstack/react-form'
-import type { FieldApi } from '@tanstack/react-form'
 
 function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
   return (
@@ -94,9 +94,14 @@ export default function App() {
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
           children={([canSubmit, isSubmitting]) => (
-            <button type="submit" disabled={!canSubmit}>
-              {isSubmitting ? '...' : 'Submit'}
-            </button>
+            <>
+              <button type="submit" disabled={!canSubmit}>
+                {isSubmitting ? '...' : 'Submit'}
+              </button>
+              <button type="reset" onClick={() => form.reset()}>
+                Reset
+              </button>
+            </>
           )}
         />
       </form>

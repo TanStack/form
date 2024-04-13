@@ -335,13 +335,17 @@ export class FormApi<
     })
   }
 
-  reset = () =>
+  reset = () => {
+    const { fieldMeta: currentFieldMeta } = this.state
+    const fieldMeta = this.resetFieldMeta(currentFieldMeta)
     this.store.setState(() =>
       getDefaultFormState({
         ...(this.options.defaultState as any),
         values: this.options.defaultValues ?? this.options.defaultState?.values,
+        fieldMeta,
       }),
     )
+  }
 
   validateAllFields = async (cause: ValidationCause) => {
     const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
@@ -620,6 +624,27 @@ export class FormApi<
         },
       }
     })
+  }
+
+  resetFieldMeta = <TField extends DeepKeys<TFormData>>(
+    fieldMeta: Record<TField, FieldMeta>,
+  ): Record<TField, FieldMeta> => {
+    return Object.keys(fieldMeta).reduce(
+      (acc: Record<TField, FieldMeta>, key) => {
+        const fieldKey = key as TField
+        acc[fieldKey] = {
+          isValidating: false,
+          isTouched: false,
+          isDirty: false,
+          isPristine: true,
+          touchedErrors: [],
+          errors: [],
+          errorMap: {},
+        }
+        return acc
+      },
+      {} as Record<TField, FieldMeta>,
+    )
   }
 
   setFieldValue = <TField extends DeepKeys<TFormData>>(
