@@ -153,7 +153,7 @@ export class AppComponent {
   handleSubmit(event: SubmitEvent) {
     event.preventDefault()
     event.stopPropagation()
-    void this.form.handleSubmit()
+    this.form.handleSubmit()
   }
 }
 ```

@@ -402,7 +402,7 @@ describe('createField', () => {
             onSubmit={(e) => {
               e.preventDefault()
               e.stopPropagation()
-              void form.handleSubmit()
+              form.handleSubmit()
             }}
           >
             <form.Field name="people">
@@ -496,7 +496,7 @@ describe('createField', () => {
             onSubmit={(e) => {
               e.preventDefault()
               e.stopPropagation()
-              void form.handleSubmit()
+              form.handleSubmit()
             }}
           >
             <form.Field name="people">

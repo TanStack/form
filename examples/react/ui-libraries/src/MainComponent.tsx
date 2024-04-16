@@ -27,7 +27,7 @@ export default function MainComponent() {
         onSubmit={(e) => {
           e.preventDefault()
           e.stopPropagation()
-          void handleSubmit()
+          handleSubmit()
         }}
       >
         <Field
