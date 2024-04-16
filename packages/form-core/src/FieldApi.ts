@@ -1,14 +1,14 @@
 import { Store } from '@tanstack/store'
 import { getAsyncValidatorArray, getSyncValidatorArray } from './utils'
-import type { FormApi } from './FormApi'
+import type { FieldInfo, FormApi } from './FormApi'
 import type {
   ValidationCause,
   ValidationError,
   ValidationErrorMap,
   Validator,
 } from './types'
-import type { Updater } from './utils'
-import type { DeepKeys, DeepValue } from './util-types'
+import type { AsyncValidator, SyncValidator, Updater } from './utils'
+import type { DeepKeys, DeepValue, NoInfer } from './util-types'
 
 export type FieldValidateFn<
   TParentData,
@@ -150,6 +150,7 @@ export interface FieldValidators<
     TData
   >
   onChangeAsyncDebounceMs?: number
+  onChangeListenTo?: DeepKeys<TParentData>[]
   onBlur?: FieldValidateOrFn<
     TParentData,
     TName,
@@ -165,6 +166,7 @@ export interface FieldValidators<
     TData
   >
   onBlurAsyncDebounceMs?: number
+  onBlurListenTo?: DeepKeys<TParentData>[]
   onSubmit?: FieldValidateOrFn<
     TParentData,
     TName,
@@ -194,8 +196,7 @@ export interface FieldOptions<
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   name: TName
-  index?: TData extends any[] ? number : never
-  defaultValue?: TData
+  defaultValue?: NoInfer<TData>
   asyncDebounceMs?: number
   asyncAlways?: boolean
   preserveValue?: boolean
@@ -351,7 +352,10 @@ export class FieldApi<
     ] as const
     for (const adapter of adapters) {
       if (adapter && typeof props.validate !== 'function') {
-        return adapter()[props.type](props.value, props.validate) as never
+        return adapter()[props.type](
+          props.value as never,
+          props.validate,
+        ) as never
       }
     }
 
@@ -437,7 +441,7 @@ export class FieldApi<
   }
 
   getValue = (): TData => {
-    return this.form.getFieldValue(this.name) as any
+    return this.form.getFieldValue(this.name) as TData
   }
 
   setValue = (
@@ -445,7 +449,7 @@ export class FieldApi<
     options?: { touch?: boolean; notify?: boolean },
   ) => {
     this.form.setFieldValue(this.name, updater as never, options)
-    this.validate('change', this.state.value)
+    this.validate('change')
   }
 
   _getMeta = () => this.form.getFieldMeta(this.name)
@@ -480,25 +484,67 @@ export class FieldApi<
   swapValues = (aIndex: number, bIndex: number) =>
     this.form.swapFieldValues(this.name, aIndex, bIndex)
 
-  validateSync = (value = this.state.value, cause: ValidationCause) => {
+  getLinkedFields = (cause: ValidationCause) => {
+    const fields = Object.values(this.form.fieldInfo) as FieldInfo<
+      any,
+      TFormValidator
+    >[]
+
+    const linkedFields: FieldApi<any, any, any, any>[] = []
+    for (const field of fields) {
+      if (!field.instance) continue
+      const { onChangeListenTo, onBlurListenTo } =
+        field.instance.options.validators || {}
+      if (
+        cause === 'change' &&
+        onChangeListenTo?.includes(this.name as string)
+      ) {
+        linkedFields.push(field.instance)
+      }
+      if (cause === 'blur' && onBlurListenTo?.includes(this.name as string)) {
+        linkedFields.push(field.instance)
+      }
+    }
+
+    return linkedFields
+  }
+
+  moveValue = (aIndex: number, bIndex: number) =>
+    this.form.moveFieldValues(this.name, aIndex, bIndex)
+
+  validateSync = (cause: ValidationCause) => {
     const validates = getSyncValidatorArray(cause, this.options)
+
+    const linkedFields = this.getLinkedFields(cause)
+    const linkedFieldValidates = linkedFields.reduce(
+      (acc, field) => {
+        const fieldValidates = getSyncValidatorArray(cause, field.options)
+        fieldValidates.forEach((validate) => {
+          ;(validate as any).field = field
+        })
+        return acc.concat(fieldValidates as never)
+      },
+      [] as Array<SyncValidator<any> & { field: FieldApi<any, any, any, any> }>,
+    )
 
     // Needs type cast as eslint errantly believes this is always falsy
     let hasErrored = false as boolean
 
     this.form.store.batch(() => {
-      for (const validateObj of validates) {
-        if (!validateObj.validate) continue
+      const validateFieldFn = (
+        field: FieldApi<any, any, any, any>,
+        validateObj: SyncValidator<any>,
+      ) => {
         const error = normalizeError(
-          this.runValidator({
+          field.runValidator({
             validate: validateObj.validate,
-            value: { value, fieldApi: this },
+            value: { value: field.getValue(), fieldApi: field },
             type: 'validate',
           }),
         )
         const errorMapKey = getErrorMapKey(validateObj.cause)
-        if (this.state.meta.errorMap[errorMapKey] !== error) {
-          this.setMeta((prev) => ({
+        if (field.state.meta.errorMap[errorMapKey] !== error) {
+          field.setMeta((prev) => ({
             ...prev,
             errorMap: {
               ...prev.errorMap,
@@ -509,6 +555,15 @@ export class FieldApi<
         if (error) {
           hasErrored = true
         }
+      }
+
+      for (const validateObj of validates) {
+        if (!validateObj.validate) continue
+        validateFieldFn(this, validateObj)
+      }
+      for (const fieldValitateObj of linkedFieldValidates) {
+        if (!fieldValitateObj.validate) continue
+        validateFieldFn(fieldValitateObj.field, fieldValitateObj)
       }
     })
 
@@ -534,23 +589,45 @@ export class FieldApi<
     return { hasErrored }
   }
 
-  validateAsync = async (value = this.state.value, cause: ValidationCause) => {
+  validateAsync = async (cause: ValidationCause) => {
     const validates = getAsyncValidatorArray(cause, this.options)
+
+    const linkedFields = this.getLinkedFields(cause)
+    const linkedFieldValidates = linkedFields.reduce(
+      (acc, field) => {
+        const fieldValidates = getAsyncValidatorArray(cause, field.options)
+        fieldValidates.forEach((validate) => {
+          ;(validate as any).field = field
+        })
+        return acc.concat(fieldValidates as never)
+      },
+      [] as Array<
+        AsyncValidator<any> & { field: FieldApi<any, any, any, any> }
+      >,
+    )
 
     if (!this.state.meta.isValidating) {
       this.setMeta((prev) => ({ ...prev, isValidating: true }))
+    }
+
+    for (const linkedField of linkedFields) {
+      linkedField.setMeta((prev) => ({ ...prev, isValidating: true }))
     }
 
     /**
      * We have to use a for loop and generate our promises this way, otherwise it won't be sync
      * when there are no validators needed to be run
      */
-    const promises: Promise<ValidationError | undefined>[] = []
+    const validatesPromises: Promise<ValidationError | undefined>[] = []
+    const linkedPromises: Promise<ValidationError | undefined>[] = []
 
-    for (const validateObj of validates) {
-      if (!validateObj.validate) continue
+    const validateFieldAsyncFn = (
+      field: FieldApi<any, any, any, any>,
+      validateObj: AsyncValidator<any>,
+      promises: Promise<ValidationError | undefined>[],
+    ) => {
       const key = getErrorMapKey(validateObj.cause)
-      const fieldValidatorMeta = this.getInfo().validationMetaMap[key]
+      const fieldValidatorMeta = field.getInfo().validationMetaMap[key]
 
       fieldValidatorMeta?.lastAbortController.abort()
       const controller = new AbortController()
@@ -571,8 +648,8 @@ export class FieldApi<
                     await this.runValidator({
                       validate: validateObj.validate,
                       value: {
-                        value,
-                        fieldApi: this,
+                        value: field.getValue(),
+                        fieldApi: field,
                         signal: controller.signal,
                       },
                       type: 'validateAsync',
@@ -587,7 +664,7 @@ export class FieldApi<
             rawError = e as ValidationError
           }
           const error = normalizeError(rawError)
-          this.setMeta((prev) => {
+          field.setMeta((prev) => {
             return {
               ...prev,
               errorMap: {
@@ -603,19 +680,37 @@ export class FieldApi<
       )
     }
 
+    // TODO: Dedupe this logic to reduce bundle size
+    for (const validateObj of validates) {
+      if (!validateObj.validate) continue
+      validateFieldAsyncFn(this, validateObj, validatesPromises)
+    }
+    for (const fieldValitateObj of linkedFieldValidates) {
+      if (!fieldValitateObj.validate) continue
+      validateFieldAsyncFn(
+        fieldValitateObj.field,
+        fieldValitateObj,
+        linkedPromises,
+      )
+    }
+
     let results: ValidationError[] = []
-    if (promises.length) {
-      results = await Promise.all(promises)
+    if (validatesPromises.length || linkedPromises.length) {
+      results = await Promise.all(validatesPromises)
+      await Promise.all(linkedPromises)
     }
 
     this.setMeta((prev) => ({ ...prev, isValidating: false }))
+
+    for (const linkedField of linkedFields) {
+      linkedField.setMeta((prev) => ({ ...prev, isValidating: false }))
+    }
 
     return results.filter(Boolean)
   }
 
   validate = (
     cause: ValidationCause,
-    value?: TData,
   ): ValidationError[] | Promise<ValidationError[]> => {
     // If the field is pristine and validatePristine is false, do not validate
     if (!this.state.meta.isTouched) return []
@@ -625,13 +720,13 @@ export class FieldApi<
     } catch (_) {}
 
     // Attempt to sync validate first
-    const { hasErrored } = this.validateSync(value, cause)
+    const { hasErrored } = this.validateSync(cause)
 
     if (hasErrored && !this.options.asyncAlways) {
       return this.state.meta.errors
     }
     // No error? Attempt async validation
-    return this.validateAsync(value, cause)
+    return this.validateAsync(cause)
   }
 
   handleChange = (updater: Updater<TData>) => {

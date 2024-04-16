@@ -10,7 +10,11 @@ $ npm i @tanstack/react-form
 # or
 $ pnpm add @tanstack/vue-form
 # or
+$ yarn add @tanstack/angular-form
+# or
 $ yarn add @tanstack/solid-form
+# or
+$ pnpm add @tanstack/lit-form
 ```
 
 > Depending on your environment, you might need to add polyfills. If you want to support older browsers, you need to transpile the library from `node_modules` yourselves.

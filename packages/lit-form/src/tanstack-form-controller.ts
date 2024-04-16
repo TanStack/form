@@ -13,51 +13,90 @@ import type { ElementPart, PartInfo } from 'lit/directive.js'
 import type { ReactiveController, ReactiveControllerHost } from 'lit'
 
 type renderCallback<
-  FormValues,
-  Name extends DeepKeys<FormValues>,
-  FieldValidator extends
-    | Validator<DeepValue<FormValues, Name>, unknown>
-    | undefined,
-  FormValidator extends Validator<FormValues> | undefined,
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (
-  fieldOptions: FieldApi<FormValues, Name, FieldValidator, FormValidator>,
+  fieldOptions: FieldApi<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >,
 ) => unknown
+
 type fieldDirectiveType<
-  FormValues,
-  Name extends DeepKeys<FormValues>,
-  FieldValidator extends
-    | Validator<DeepValue<FormValues, Name>, unknown>
-    | undefined,
-  FormValidator extends Validator<FormValues> | undefined,
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (
-  form: FormApi<FormValues, FormValidator>,
-  options: FieldOptions<FormValues, Name, FieldValidator, FormValidator>,
-  render: renderCallback<FormValues, Name, FieldValidator, FormValidator>,
+  form: FormApi<TParentData, TFormValidator>,
+  options: FieldOptions<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >,
+  render: renderCallback<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >,
 ) => {
   values: {
-    form: FormApi<FormValues, FormValidator>
-    options: FieldOptions<FormValues, Name, FieldValidator, FormValidator>
-    render: renderCallback<FormValues, Name, FieldValidator, FormValidator>
+    form: FormApi<TParentData, TFormValidator>
+    options: FieldOptions<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData
+    >
+    render: renderCallback<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData
+    >
   }
 }
 
 export class TanStackFormController<
-  FormValues,
-  FormValidator extends Validator<FormValues> | undefined = undefined,
+  TParentData,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
 > implements ReactiveController
 {
   #host: ReactiveControllerHost
   #subscription?: () => void
 
-  api: FormApi<FormValues, FormValidator>
+  api: FormApi<TParentData, TFormValidator>
 
   constructor(
     host: ReactiveControllerHost,
-    config?: FormOptions<FormValues, FormValidator>,
+    config?: FormOptions<TParentData, TFormValidator>,
   ) {
     ;(this.#host = host).addController(this)
 
-    this.api = new FormApi<FormValues, FormValidator>(config)
+    this.api = new FormApi<TParentData, TFormValidator>(config)
   }
 
   hostConnected() {
@@ -71,35 +110,52 @@ export class TanStackFormController<
   }
 
   field<
-    Name extends DeepKeys<FormValues>,
-    FieldValidator extends
-      | Validator<DeepValue<FormValues, Name>, unknown>
-      | undefined,
+    TName extends DeepKeys<TParentData>,
+    TFieldValidator extends
+      | Validator<DeepValue<TParentData, TName>, unknown>
+      | undefined = undefined,
+    TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   >(
-    fieldConfig: FieldOptions<FormValues, Name, FieldValidator, FormValidator>,
-    render: renderCallback<FormValues, Name, FieldValidator, FormValidator>,
+    fieldConfig: FieldOptions<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData
+    >,
+    render: renderCallback<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData
+    >,
   ) {
     return (
       fieldDirective as unknown as fieldDirectiveType<
-        FormValues,
-        Name,
-        FieldValidator,
-        FormValidator
+        TParentData,
+        TName,
+        TFieldValidator,
+        TFormValidator,
+        TData
       >
     )(this.api, fieldConfig, render)
   }
 }
 
 class FieldDirective<
-  FormValues,
-  Name extends DeepKeys<FormValues>,
-  FieldValidator extends
-    | Validator<DeepValue<FormValues, Name>, unknown>
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
     | undefined = undefined,
-  FormValidator extends Validator<FormValues> | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > extends AsyncDirective {
   #registered = false
-  #field?: FieldApi<FormValues, Name, FieldValidator, FormValidator>
+  #field?: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
   #unmount?: () => void
 
   constructor(partInfo: PartInfo) {
@@ -142,13 +198,20 @@ class FieldDirective<
   }
 
   render(
-    _form: FormApi<FormValues, FormValidator>,
-    _fieldConfig: FieldOptions<FormValues, Name, FieldValidator, FormValidator>,
+    _form: FormApi<TParentData, TFormValidator>,
+    _fieldConfig: FieldOptions<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData
+    >,
     _renderCallback: renderCallback<
-      FormValues,
-      Name,
-      FieldValidator,
-      FormValidator
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData
     >,
   ) {
     if (this.#field) {

@@ -46,6 +46,15 @@
           ]
         },
         {
+          "label": "angular",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "framework/angular/quick-start"
+            }
+          ]
+        },
+        {
           "label": "solid",
           "children": [
             {
@@ -68,22 +77,26 @@
     {
       "label": "Guides",
       "children": [
-        {
-          "label": "Basic Concepts",
-          "to": "guides/basic-concepts"
-        },
-        {
-          "label": "Form Validation",
-          "to": "guides/validation"
-        }
       ],
       "frameworks": [
         {
           "label": "react",
           "children": [
             {
+              "label": "Basic Concepts",
+              "to": "framework/react/guides/basic-concepts"
+            },
+            {
+              "label": "Form Validation",
+              "to": "framework/react/guides/validation"
+            },
+            {
               "label": "Arrays",
               "to": "framework/react/guides/arrays"
+            },
+            {
+              "label": "Linked Fields",
+              "to": "framework/react/guides/linked-fields"
             },
             {
               "label": "UI Libraries",
@@ -109,6 +122,23 @@
             {
               "label": "Arrays",
               "to": "framework/vue/guides/arrays"
+            }
+          ]
+        },
+        {
+          "label": "angular",
+          "children": [
+            {
+              "label": "Basic Concepts",
+              "to": "framework/angular/guides/basic-concepts"
+            },
+            {
+              "label": "Form Validation",
+              "to": "framework/angular/guides/validation"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/angular/guides/arrays"
             }
           ]
         },
@@ -158,6 +188,10 @@
             {
               "label": "FormApi",
               "to": "framework/react/reference/formApi"
+            },
+            {
+              "label": "FieldApi",
+              "to": "framework/react/reference/fieldApi"
             }
           ]
         },
@@ -260,6 +294,31 @@
             {
               "label": "Valibot",
               "to": "framework/vue/examples/valibot"
+            }
+          ]
+        },
+        {
+          "label": "angular",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/angular/examples/simple"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/angular/examples/array"
+            },
+            {
+              "label": "Yup",
+              "to": "framework/angular/examples/yup"
+            },
+            {
+              "label": "Zod",
+              "to": "framework/angular/examples/zod"
+            },
+            {
+              "label": "Valibot",
+              "to": "framework/angular/examples/valibot"
             }
           ]
         },

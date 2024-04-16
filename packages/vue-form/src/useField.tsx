@@ -40,7 +40,7 @@ export type UseField<
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 >(
   opts: Omit<
-    UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>,
+    UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>,
     'form'
   >,
 ) => {
@@ -133,7 +133,8 @@ type FieldComponentProps<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
-> = UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator>
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> = UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>
 
 export type FieldComponent<
   TParentData,
@@ -148,7 +149,13 @@ export type FieldComponent<
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 >(
   fieldOptions: Omit<
-    FieldComponentProps<TParentData, TName, TFieldValidator, TFormValidator>,
+    FieldComponentProps<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData
+    >,
     'form'
   >,
   context: SetupContext<
@@ -184,12 +191,14 @@ export const Field = defineComponent(
     TFormValidator extends
       | Validator<TParentData, unknown>
       | undefined = undefined,
+    TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   >(
     fieldOptions: UseFieldOptions<
       TParentData,
       TName,
       TFieldValidator,
-      TFormValidator
+      TFormValidator,
+      TData
     >,
     context: SetupContext,
   ) => {

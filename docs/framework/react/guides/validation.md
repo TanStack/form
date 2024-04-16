@@ -7,7 +7,7 @@ At the core of TanStack Form's functionalities is the concept of validation. Tan
 
 - You can control when to perform the validation (on change, on input, on blur, on submit...)
 - Validation rules can be defined at the field level or at the form level
-- Validation can be synchronous or asynchronous (for example as a result of an API call)
+- Validation can be synchronous or asynchronous (for example, as a result of an API call)
 
 ## When is validation performed?
 
@@ -171,6 +171,7 @@ export default function App() {
         if (value.age < 13) {
           return 'Must be 13 or older to sign'
         }
+        return undefined
       },
     },
   })
@@ -195,7 +196,7 @@ export default function App() {
 
 ## Asynchronous Functional Validation
 
-While we suspect most validations will be synchronous, there's many instances where a network call or some other async operation would be useful to validate against.
+While we suspect most validations will be synchronous, there are many instances where a network call or some other async operation would be useful to validate against.
 
 To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods that can be used to validate against:
 
@@ -227,7 +228,7 @@ To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods 
 </form.Field>
 ```
 
-Synchronous and Asynchronous validations can coexist. For example it is possible to define both `onBlur` and `onBlurAsync` on the same field:
+Synchronous and Asynchronous validations can coexist. For example, it is possible to define both `onBlur` and `onBlurAsync` on the same field:
 
 ```tsx
 <form.Field
@@ -248,6 +249,7 @@ Synchronous and Asynchronous validations can coexist. For example it is possible
         name={field.name}
         value={field.state.value}
         type="number"
+        onBlur={field.handleBlur}
         onChange={(e) => field.handleChange(e.target.valueAsNumber)}
       />
       {field.state.meta.errors ? (
@@ -271,7 +273,7 @@ Instead, we enable an easy method for debouncing your `async` calls by adding a 
   name="age"
   asyncDebounceMs={500}
   validators={{
-      onChangeAsync={async ({value}) => {
+      onChangeAsync: async ({value}) => {
         // ...
       }
   }}
@@ -336,7 +338,7 @@ const form = useForm({
   // ...
 })
 
-;<form.Field
+<form.Field
   name="age"
   validatorAdapter={zodValidator}
   validators={{

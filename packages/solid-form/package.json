@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/solid-form",
-  "version": "0.16.0",
+  "version": "0.19.0",
   "description": "Powerful, type-safe forms for Solid.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -17,7 +17,9 @@
     "test:types:versions49": "node ../../node_modules/typescript49/lib/tsc.js --project tsconfig.legacy.json",
     "test:types:versions50": "node ../../node_modules/typescript50/lib/tsc.js",
     "test:types:versions51": "node ../../node_modules/typescript51/lib/tsc.js",
-    "test:types:versions52": "tsc",
+    "test:types:versions52": "node ../../node_modules/typescript52/lib/tsc.js",
+    "test:types:versions53": "node ../../node_modules/typescript53/lib/tsc.js",
+    "test:types:versions54": "tsc",
     "test:types": "pnpm run \"/^test:types:versions.*/\"",
     "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
