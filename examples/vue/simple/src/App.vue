@@ -25,7 +25,7 @@ async function onChangeFirstName({ value }: { value: string }) {
       (e) => {
         e.preventDefault()
         e.stopPropagation()
-        void form.handleSubmit()
+        form.handleSubmit()
       }
     "
   >

@@ -55,6 +55,7 @@ import type {
       <button type="submit" [disabled]="!canSubmit()">
         {{ isSubmitting() ? '...' : 'Submit' }}
       </button>
+      <button type="reset" (click)="form.reset()">Reset</button>
     </form>
   `,
 })
@@ -91,6 +92,6 @@ export class AppComponent {
   handleSubmit(event: SubmitEvent) {
     event.preventDefault()
     event.stopPropagation()
-    void this.form.handleSubmit()
+    this.form.handleSubmit()
   }
 }
