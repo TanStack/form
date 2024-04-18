@@ -135,3 +135,17 @@ type FormDefinitionValue = DeepValue<
 >
 
 assertType<string>(0 as never as FormDefinitionValue)
+
+type DoubleDeepArray = DeepValue<
+  {
+    people: {
+      parents: {
+        name: string
+        age: number
+      }[]
+    }[]
+  },
+  `people[${0}].parents[${0}].name`
+>
+
+assertType<string>(0 as never as DoubleDeepArray)
