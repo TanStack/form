@@ -9,7 +9,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@tanstack/vue-form": "^0.19.1",
+    "@tanstack/vue-form": "^0.19.2",
     "vue": "^3.3.4"
   },
   "devDependencies": {
