@@ -22,10 +22,12 @@ Feature/Capability Key:
 | Headless UI components                            | ✅                                            | ❓                             | ❓                                     | ✅                                               | ❓                                     |
 | Framework agnostic                                | ✅                                            | ❓                             | ❓                                     | 🛑                                               | ❓                                     |
 | Granular reactivity                               | ✅                                            | ❓                             | ❓                                     | ❓                                               | ❓                                     |
-| Nested object/array fields                        | ✅                                            | ✅                             | ❓                                     | ✅                                               | ❓                                     |
+| Nested object/array fields                        | ✅                                            | ✅                             | ❓                                     | ✅*(1)                                           | ❓                                     |
 | Async validation                                  | ✅                                            | ✅                             | ❓                                     | ✅                                               | ❓                                     |
 | Built-in async validation debounce                | ✅                                            | ❓                             | ❓                                     | ❓                                               | ❓                                     |
 | Schema-based Validation                           | ✅                                            | ✅                             | ❓                                     | ✅                                               | ❓                                     |
+
+*(1) For nested arrays, react-hook-form requires you [to cast the field array by its name](https://react-hook-form.com/docs/usefieldarray) if you're using TypeScript
 
 [bpl-tanstack-form]: https://bundlephobia.com/result?p=@tanstack/react-form
 [bp-tanstack-form]: https://badgen.net/bundlephobia/minzip/@tanstack/react-form?label=💾
