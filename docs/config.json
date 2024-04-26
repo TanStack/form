@@ -91,6 +91,10 @@
               "to": "framework/react/guides/validation"
             },
             {
+              "label": "Async Initial Values",
+              "to": "framework/react/guides/async-initial-values"
+            },
+            {
               "label": "Arrays",
               "to": "framework/react/guides/arrays"
             },
@@ -253,6 +257,10 @@
             {
               "label": "Arrays",
               "to": "framework/react/examples/array"
+            },
+            {
+              "label": "TanStack Query Integration",
+              "to": "framework/react/examples/query-integration"
             },
             {
               "label": "Yup",

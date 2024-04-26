@@ -489,6 +489,34 @@ importers:
         specifier: 5.4.2
         version: 5.4.2
 
+  examples/react/query-integration:
+    dependencies:
+      '@tanstack/react-form':
+        specifier: ^0.19.4
+        version: link:../../../packages/react-form
+      '@tanstack/react-query':
+        specifier: ^5.32.0
+        version: 5.32.0(react@18.2.0)
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      '@types/react':
+        specifier: ^18.2.45
+        version: 18.2.79
+      '@types/react-dom':
+        specifier: ^18.2.19
+        version: 18.2.25
+      '@vitejs/plugin-react':
+        specifier: ^4.2.1
+        version: 4.2.1(vite@5.1.5)
+      vite:
+        specifier: ^5.0.10
+        version: 5.1.5(@types/node@20.10.6)(less@4.2.0)(sass@1.71.1)(terser@5.29.1)
+
   examples/react/simple:
     dependencies:
       '@tanstack/react-form':
@@ -4885,6 +4913,19 @@ packages:
       - typescript
       - vite
     dev: true
+
+  /@tanstack/query-core@5.32.0:
+    resolution: {integrity: sha512-Z3flEgCat55DRXU5UMwYU1U+DgFZKA3iufyOKs+II7iRAo0uXkeU7PH5e6sOH1CGEag0IpKmZxlUFpCg6roSKw==}
+    dev: false
+
+  /@tanstack/react-query@5.32.0(react@18.2.0):
+    resolution: {integrity: sha512-+E3UudQtarnx9A6xhpgMZapyF+aJfNBGFMgI459FnduEZqT/9KhOWnMOneZahLRt52yzskSA0AuOyLkXHK0yBA==}
+    peerDependencies:
+      react: ^18.0.0
+    dependencies:
+      '@tanstack/query-core': 5.32.0
+      react: 18.2.0
+    dev: false
 
   /@tanstack/react-store@0.3.1(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-PfV271d345It6FdcX4c9gd+llKGddtvau8iJnybTAWmYVyDeFWfIIkiAJ5iNITJmI02AzqgtcV3QLNBBlpBUjA==}
@@ -9865,6 +9906,8 @@ packages:
       webpack: '*'
     peerDependenciesMeta:
       webpack:
+        optional: true
+      webpack-sources:
         optional: true
     dependencies:
       webpack: 5.90.3(esbuild@0.20.2)
