@@ -63,7 +63,6 @@ export interface FormValidators<
   onBlurAsyncDebounceMs?: number
   onSubmit?: FormValidateOrFn<TFormData, TFormValidator>
   onSubmitAsync?: FormAsyncValidateOrFn<TFormData, TFormValidator>
-  onSubmitAsyncDebounceMs?: number
 }
 
 export interface FormTransform<
