@@ -184,7 +184,6 @@ export function getAsyncValidatorArray<T>(
     onSubmitAsync,
     onBlurAsyncDebounceMs,
     onChangeAsyncDebounceMs,
-    onSubmitAsyncDebounceMs,
   } = (options.validators || {}) as
     | FieldValidators<any, any>
     | FormValidators<any, any>
@@ -206,19 +205,30 @@ export function getAsyncValidatorArray<T>(
   const submitValidator = {
     cause: 'submit',
     validate: onSubmitAsync,
-    debounceMs: onSubmitAsyncDebounceMs ?? defaultDebounceMs,
+    debounceMs: 0,
   } as const
+
+  const noopValidator = (
+    validator:
+      | typeof changeValidator
+      | typeof blurValidator
+      | typeof submitValidator,
+  ) => ({ ...validator, debounceMs: 0 }) as const
 
   switch (cause) {
     case 'submit':
-      return [changeValidator, blurValidator, submitValidator] as never
-    case 'server':
-      return [] as never
+      return [
+        noopValidator(changeValidator),
+        noopValidator(blurValidator),
+        submitValidator,
+      ] as never
     case 'blur':
       return [blurValidator] as never
     case 'change':
-    default:
       return [changeValidator] as never
+    case 'server':
+    default:
+      return [] as never
   }
 }
 

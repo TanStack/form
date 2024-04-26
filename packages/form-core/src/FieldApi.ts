@@ -181,7 +181,6 @@ export interface FieldValidators<
     TFormValidator,
     TData
   >
-  onSubmitAsyncDebounceMs?: number
 }
 
 export interface FieldOptions<
