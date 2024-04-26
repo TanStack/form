@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/solid-form": "^0.19.2",
-    "@tanstack/zod-form-adapter": "^0.19.2",
+    "@tanstack/solid-form": "^0.19.3",
+    "@tanstack/zod-form-adapter": "^0.19.3",
     "solid-js": "^1.7.8",
     "zod": "^3.22.4"
   },
