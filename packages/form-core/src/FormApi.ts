@@ -707,9 +707,11 @@ export class FormApi<
     this.setFieldValue(
       field,
       (prev) => {
-        return (prev as DeepValue<TFormData, TField>[]).map((d, i) =>
-          i === index ? value : d,
-        ) as any
+        return [
+          ...(prev as DeepValue<TFormData, TField>[]).slice(0, index),
+          value,
+          ...(prev as DeepValue<TFormData, TField>[]).slice(index),
+        ] as any
       },
       opts,
     )

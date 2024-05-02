@@ -121,7 +121,7 @@ describe('field api', () => {
 
     field.insertValue(1, 'other')
 
-    expect(field.getValue()).toStrictEqual(['one', 'other'])
+    expect(field.getValue()).toStrictEqual(['one', 'other', 'two'])
   })
 
   it('should remove a value from an array value correctly', () => {

@@ -324,6 +324,23 @@ describe('form api', () => {
     expect(form.getFieldValue('names')).toStrictEqual(['test', 'other'])
   })
 
+  it("should insert an array field's value as first element", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
+    form.mount()
+    form.insertFieldValue('names', 0, 'other')
+
+    expect(form.getFieldValue('names')).toStrictEqual([
+      'other',
+      'one',
+      'two',
+      'three',
+    ])
+  })
+
   it("should insert an array field's value", () => {
     const form = new FormApi({
       defaultValues: {
@@ -333,7 +350,29 @@ describe('form api', () => {
     form.mount()
     form.insertFieldValue('names', 1, 'other')
 
-    expect(form.getFieldValue('names')).toStrictEqual(['one', 'other', 'three'])
+    expect(form.getFieldValue('names')).toStrictEqual([
+      'one',
+      'other',
+      'two',
+      'three',
+    ])
+  })
+
+  it("should insert an array field's value at the end if the index is higher than the length", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
+    form.mount()
+    form.insertFieldValue('names', 10, 'other')
+
+    expect(form.getFieldValue('names')).toStrictEqual([
+      'one',
+      'two',
+      'three',
+      'other',
+    ])
   })
 
   it("should remove an array field's value", () => {
