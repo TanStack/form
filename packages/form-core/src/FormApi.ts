@@ -717,6 +717,25 @@ export class FormApi<
     )
   }
 
+  replaceFieldValue = <TField extends DeepKeys<TFormData>>(
+    field: TField,
+    index: number,
+    value: DeepValue<TFormData, TField> extends any[]
+      ? DeepValue<TFormData, TField>[number]
+      : never,
+    opts?: { touch?: boolean },
+  ) => {
+    this.setFieldValue(
+      field,
+      (prev) => {
+        return (prev as DeepValue<TFormData, TField>[]).map((d, i) =>
+          i === index ? value : d,
+        ) as any
+      },
+      opts,
+    )
+  }
+
   removeFieldValue = <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,

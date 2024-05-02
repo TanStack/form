@@ -375,6 +375,30 @@ describe('form api', () => {
     ])
   })
 
+  it("should replace an array field's value", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
+    form.mount()
+    form.replaceFieldValue('names', 1, 'other')
+
+    expect(form.getFieldValue('names')).toStrictEqual(['one', 'other', 'three'])
+  })
+
+  it("should do nothing when replacing an array field's value with an index that doesn't exist", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
+    form.mount()
+    form.replaceFieldValue('names', 10, 'other')
+
+    expect(form.getFieldValue('names')).toStrictEqual(['one', 'two', 'three'])
+  })
+
   it("should remove an array field's value", () => {
     const form = new FormApi({
       defaultValues: {

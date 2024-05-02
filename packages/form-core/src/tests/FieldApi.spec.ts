@@ -124,6 +124,40 @@ describe('field api', () => {
     expect(field.getValue()).toStrictEqual(['one', 'other', 'two'])
   })
 
+  it('should replace a value into an array correctly', () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'names',
+    })
+
+    field.replaceValue(1, 'other')
+
+    expect(field.getValue()).toStrictEqual(['one', 'other', 'three'])
+  })
+
+  it('should do nothing when replacing a value into an array at an index that does not exist', () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'names',
+    })
+
+    field.replaceValue(10, 'other')
+
+    expect(field.getValue()).toStrictEqual(['one', 'two', 'three'])
+  })
+
   it('should remove a value from an array value correctly', () => {
     const form = new FormApi({
       defaultValues: {

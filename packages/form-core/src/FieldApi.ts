@@ -477,6 +477,11 @@ export class FieldApi<
     value: TData extends any[] ? TData[number] : never,
   ) => this.form.insertFieldValue(this.name, index, value as any)
 
+  replaceValue = (
+    index: number,
+    value: TData extends any[] ? TData[number] : never,
+  ) => this.form.replaceFieldValue(this.name, index, value as any)
+
   removeValue = (index: number) => this.form.removeFieldValue(this.name, index)
 
   swapValues = (aIndex: number, bIndex: number) =>
