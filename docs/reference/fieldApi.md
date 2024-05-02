@@ -268,6 +268,11 @@ A class representing the API for managing a form field.
   - Inserts a value at the specified index, shifting the subsequent values to the right.
 
 - ```tsx
+  replaceValue(index: number, value: TData): void
+  ```
+  - Replaces a value at the specified index.
+
+- ```tsx
   removeValue(index: number): void
   ```
 
