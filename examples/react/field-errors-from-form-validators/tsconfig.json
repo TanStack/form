@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "noEmit": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "lib": ["DOM", "DOM.Iterable", "ES2020"]
+  }
+}

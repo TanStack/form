@@ -455,6 +455,25 @@ importers:
         specifier: ^5.0.10
         version: 5.1.5(@types/node@20.10.6)(less@4.2.0)(sass@1.71.1)(terser@5.29.1)
 
+  examples/react/field-errors-from-form-validators:
+    dependencies:
+      '@tanstack/react-form':
+        specifier: ^0.19.4
+        version: link:../../../packages/react-form
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      '@vitejs/plugin-react':
+        specifier: ^4.2.1
+        version: 4.2.1(vite@5.1.5)
+      vite:
+        specifier: ^5.0.10
+        version: 5.1.5(@types/node@20.10.6)(less@4.2.0)(sass@1.71.1)(terser@5.29.1)
+
   examples/react/next-server-actions:
     dependencies:
       '@tanstack/react-form':
@@ -9906,8 +9925,6 @@ packages:
       webpack: '*'
     peerDependenciesMeta:
       webpack:
-        optional: true
-      webpack-sources:
         optional: true
     dependencies:
       webpack: 5.90.3(esbuild@0.20.2)

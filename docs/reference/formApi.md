@@ -57,18 +57,34 @@ An object representing the options for a form.
 
 ### `FormValidators<TFormData, TFormValidator>`
 
+> `FormValidationError<TFormData>` is either a `ValidationError` or an object with the following keys:
+> - `form` (optional): A form error
+> - `fields`: Field-level errors that should be set in the form validator
+>
+> Here's an example:
+>
+> ```tsx
+> {
+>   form: 'This form contains an error',
+>   fields: {
+>     age: "Must be 13 or older to register"
+>   }
+> }
+> ```
+
+
 - ```tsx
-  onMount?: (values: TData, formApi: FormApi<TData>) => ValidationError
+  onMount?: (values: TData, formApi: FormApi<TData>) => FormValidationError<TFormData>
   ```
   -  Optional function that fires as soon as the component mounts.
 
 - ```tsx
-     onChange?: (values: TData, formApi: FormApi<TData>) => ValidationError
+     onChange?: (values: TData, formApi: FormApi<TData>) => FormValidationError<TFormData>
   ```
   -  Optional function that checks the validity of your data whenever a value changes
 
 - ```tsx
-    onChangeAsync?: (values: TData, formApi: FormApi<TData>) => ValidationError | Promise<ValidationError>
+    onChangeAsync?: (values: TData, formApi: FormApi<TData>) => FormValidationError<TFormData> | Promise<FormValidationError<TFormData>>
   ```
   -  Optional onChange  asynchronous counterpart to onChange. Useful for more complex validation logic that might involve server requests.
 
@@ -78,14 +94,14 @@ An object representing the options for a form.
   - The default time in milliseconds that if set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds.
 
 - ```tsx
-    onBlur?: (values: TData, formApi: FormApi<TData>) => ValidationError
+    onBlur?: (values: TData, formApi: FormApi<TData>) => FormValidationError<TFormData>
   ```
-  -  Optional  function that validates the form data when a field loses focus, returns a `ValidationError`
+  -  Optional  function that validates the form data when a field loses focus, returns a `FormValidationError<TFormData>`
 
 - ```tsx
-    onBlurAsync?:  (values: TData,formApi: FormApi<TData>) => ValidationError | Promise<ValidationError>
+    onBlurAsync?:  (values: TData,formApi: FormApi<TData>) => FormValidationError<TFormData> | Promise<FormValidationError<TFormData>>
   ```
-  -  Optional onBlur asynchronous validation method for when a field loses focus return a `ValidationError`  or a promise of `Promise<ValidationError>`
+  -  Optional onBlur asynchronous validation method for when a field loses focus return a `FormValidationError<TFormData>`  or a promise of `Promise<FormValidationError<TFormData>>`
 
 - ```tsx
     onBlurAsyncDebounceMs?: number
