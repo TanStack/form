@@ -6,7 +6,8 @@
     "dev": "vite --port=3001",
     "build": "vite build",
     "preview": "vite preview",
-    "test:types": "tsc"
+    "test:types": "tsc",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@tanstack/react-form": "^0.19.4",
@@ -14,6 +15,8 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.44.0",
+    "@types/node": "^20.9.0",
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.19",
     "@vitejs/plugin-react": "^4.2.1",
