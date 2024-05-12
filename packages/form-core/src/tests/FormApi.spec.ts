@@ -1107,6 +1107,32 @@ describe('form api', () => {
     expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
   })
 
+  it("should validate a single field consistently", async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onChange: ({ value }) =>
+          value.length > 0 ? undefined : 'first name is required',
+      },
+    })
+
+    field.mount()
+    form.mount()
+
+    await form.validateField("firstName", 'change')
+    expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
+    await form.validateField("firstName", 'change')
+    expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
+  })
+
   it('should show onSubmit errors', async () => {
     const form = new FormApi({
       defaultValues: {
