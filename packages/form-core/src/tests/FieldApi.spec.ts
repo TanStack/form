@@ -135,8 +135,6 @@ describe('field api', () => {
 
     field.pushValue('other')
 
-    await new Promise(r => setTimeout(r, 0))
-
     expect(field.getMeta().errors).toStrictEqual([
       'At least 3 names are required',
     ])
