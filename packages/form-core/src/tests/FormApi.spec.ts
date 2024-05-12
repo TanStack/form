@@ -337,7 +337,7 @@ describe('form api', () => {
     form.mount()
     form.pushFieldValue('names', 'other')
 
-    expect(form.state.errors).toStrictEqual(["At least 3 names are required"])
+    expect(form.state.errors).toStrictEqual(['At least 3 names are required'])
   })
 
   it("should insert an array field's value", () => {
@@ -355,7 +355,7 @@ describe('form api', () => {
   it("should run onChange validation when inserting an array field's value", () => {
     const form = new FormApi({
       defaultValues: {
-        names: ["test"],
+        names: ['test'],
       },
       validators: {
         onChange: ({ value }) =>
@@ -365,7 +365,7 @@ describe('form api', () => {
     form.mount()
     form.insertFieldValue('names', 1, 'other')
 
-    expect(form.state.errors).toStrictEqual(["At least 3 names are required"])
+    expect(form.state.errors).toStrictEqual(['At least 3 names are required'])
   })
 
   it("should remove an array field's value", () => {
@@ -383,7 +383,7 @@ describe('form api', () => {
   it("should run onChange validation when removing an array field's value", () => {
     const form = new FormApi({
       defaultValues: {
-        names: ["test"],
+        names: ['test'],
       },
       validators: {
         onChange: ({ value }) =>
@@ -393,7 +393,7 @@ describe('form api', () => {
     form.mount()
     form.removeFieldValue('names', 0)
 
-    expect(form.state.errors).toStrictEqual(["At least 1 name is required"])
+    expect(form.state.errors).toStrictEqual(['At least 1 name is required'])
   })
 
   it("should swap an array field's value", () => {
@@ -411,7 +411,7 @@ describe('form api', () => {
   it("should run onChange validation when swapping an array field's value", () => {
     const form = new FormApi({
       defaultValues: {
-        names: ["test", "test2"],
+        names: ['test', 'test2'],
       },
       validators: {
         onChange: ({ value }) =>
@@ -422,7 +422,7 @@ describe('form api', () => {
     expect(form.state.errors).toStrictEqual([])
     form.swapFieldValues('names', 1, 2)
 
-    expect(form.state.errors).toStrictEqual(["At least 3 names are required"])
+    expect(form.state.errors).toStrictEqual(['At least 3 names are required'])
   })
 
   it("should move an array field's value", () => {
@@ -440,7 +440,7 @@ describe('form api', () => {
   it("should run onChange validation when moving an array field's value", () => {
     const form = new FormApi({
       defaultValues: {
-        names: ["test", "test2"],
+        names: ['test', 'test2'],
       },
       validators: {
         onChange: ({ value }) =>
@@ -451,7 +451,7 @@ describe('form api', () => {
     expect(form.state.errors).toStrictEqual([])
     form.moveFieldValues('names', 0, 1)
 
-    expect(form.state.errors).toStrictEqual(["At least 3 names are required"])
+    expect(form.state.errors).toStrictEqual(['At least 3 names are required'])
   })
 
   it('should handle fields inside an array', async () => {
