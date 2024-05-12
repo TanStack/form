@@ -137,6 +137,10 @@ A class representing the Form API. It handles the logic and interactions with th
   validateAllFields(cause: ValidationCause): Promise<ValidationError[]>
   ```
   - Validates all fields in the form using the correct handlers for a given validation type.
+- ```tsx
+  validateField<TField extends DeepKeys<TFormData>>(field: TField, cause: ValidationCause): ValidationError[] | Promise<ValidationError[]>
+  ```
+  - Validates a specified field in the form using the correct handlers for a given validation type.
 
 - ```tsx
     handleSubmit()
