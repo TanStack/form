@@ -175,9 +175,13 @@ A class representing the Form API. It handles the logic and interactions with th
   ```
   - Removes a value from an array field at the specified index.
 - ```tsx
-    swapFieldValues<TField extends DeepKeys<TFormData>>(field: TField, index1: number, index2: number)
+    swapFieldValues<TField extends DeepKeys<TFormData>>(field: TField, index1: number, index2: number, opts?: { touch?: boolean })
   ```
   - Swaps the values at the specified indices within an array field.
+- ```tsx
+    moveFieldValues<TField extends DeepKeys<TFormData>>(field: TField, index1: number, index2: number, opts?: { touch?: boolean })
+  ```
+  - Moves the value at the first specified index to the second specified index within an array field.
 
 ### `FormState<TData>`
 
