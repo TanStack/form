@@ -370,6 +370,23 @@ export class FormApi<
     return fieldErrorMapMap.flat()
   }
 
+  validateField = <TField extends DeepKeys<TFormData>>(
+    field: TField,
+    cause: ValidationCause,
+  ) => {
+    // eslint-disable-next-line  @typescript-eslint/no-unnecessary-condition
+    const fieldInstance = this.fieldInfo[field]?.instance
+    if (!fieldInstance) return []
+
+    // If the field is not touched (same logic as in validateAllFields)
+    if (!fieldInstance.state.meta.isTouched) {
+      // Mark it as touched
+      fieldInstance.setMeta((prev) => ({ ...prev, isTouched: true }))
+    }
+
+    return fieldInstance.validate(cause)
+  }
+
   // TODO: This code is copied from FieldApi, we should refactor to share
   validateSync = (cause: ValidationCause) => {
     const validates = getSyncValidatorArray(cause, this.options)
@@ -695,6 +712,7 @@ export class FormApi<
       opts,
     )
     this.validate('change')
+    this.validateField(field, 'change')
   }
 
   insertFieldValue = <TField extends DeepKeys<TFormData>>(
@@ -715,6 +733,7 @@ export class FormApi<
       opts,
     )
     this.validate('change')
+    this.validateField(field, 'change')
   }
 
   removeFieldValue = <TField extends DeepKeys<TFormData>>(
@@ -732,6 +751,7 @@ export class FormApi<
       opts,
     )
     this.validate('change')
+    this.validateField(field, 'change')
   }
 
   swapFieldValues = <TField extends DeepKeys<TFormData>>(
@@ -745,6 +765,7 @@ export class FormApi<
       return setBy(setBy(prev, `${index1}`, prev2), `${index2}`, prev1)
     })
     this.validate('change')
+    this.validateField(field, 'change')
   }
 
   moveFieldValues = <TField extends DeepKeys<TFormData>>(
@@ -757,6 +778,7 @@ export class FormApi<
       return prev
     })
     this.validate('change')
+    this.validateField(field, 'change')
   }
 }
 
