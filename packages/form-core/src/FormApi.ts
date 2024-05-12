@@ -689,11 +689,12 @@ export class FormApi<
       : never,
     opts?: { touch?: boolean },
   ) => {
-    return this.setFieldValue(
+    this.setFieldValue(
       field,
       (prev) => [...(Array.isArray(prev) ? prev : []), value] as any,
       opts,
     )
+    this.validate('change')
   }
 
   insertFieldValue = <TField extends DeepKeys<TFormData>>(
@@ -713,6 +714,7 @@ export class FormApi<
       },
       opts,
     )
+    this.validate('change')
   }
 
   removeFieldValue = <TField extends DeepKeys<TFormData>>(
@@ -729,6 +731,7 @@ export class FormApi<
       },
       opts,
     )
+    this.validate('change')
   }
 
   swapFieldValues = <TField extends DeepKeys<TFormData>>(
@@ -741,6 +744,7 @@ export class FormApi<
       const prev2 = prev[index2]!
       return setBy(setBy(prev, `${index1}`, prev2), `${index2}`, prev1)
     })
+    this.validate('change')
   }
 
   moveFieldValues = <TField extends DeepKeys<TFormData>>(
@@ -752,6 +756,7 @@ export class FormApi<
       prev.splice(index2, 0, prev.splice(index1, 1)[0])
       return prev
     })
+    this.validate('change')
   }
 }
 
