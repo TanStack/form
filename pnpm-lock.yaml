@@ -151,7 +151,7 @@ importers:
         version: 17.3.0(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(@angular/platform-browser@17.3.0(@angular/animations@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4)))(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4)))(rxjs@7.8.1)
       '@tanstack/angular-form':
         specifier: ^0.19.4
-        version: 0.19.4(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))
+        version: link:../../../packages/angular-form
       rxjs:
         specifier: ~7.8.0
         version: 7.8.1
@@ -203,7 +203,7 @@ importers:
         version: 17.3.0(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(@angular/platform-browser@17.3.0(@angular/animations@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4)))(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4)))(rxjs@7.8.1)
       '@tanstack/angular-form':
         specifier: ^0.19.4
-        version: 0.19.4(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))
+        version: link:../../../packages/angular-form
       rxjs:
         specifier: ~7.8.0
         version: 7.8.1
@@ -255,10 +255,10 @@ importers:
         version: 17.3.0(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(@angular/platform-browser@17.3.0(@angular/animations@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4)))(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4)))(rxjs@7.8.1)
       '@tanstack/angular-form':
         specifier: ^0.19.4
-        version: 0.19.4(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))
+        version: link:../../../packages/angular-form
       '@tanstack/valibot-form-adapter':
         specifier: ^0.19.4
-        version: 0.19.4(valibot@0.20.1)
+        version: link:../../../packages/valibot-form-adapter
       rxjs:
         specifier: ~7.8.0
         version: 7.8.1
@@ -313,10 +313,10 @@ importers:
         version: 17.3.0(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(@angular/platform-browser@17.3.0(@angular/animations@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4)))(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4)))(rxjs@7.8.1)
       '@tanstack/angular-form':
         specifier: ^0.19.4
-        version: 0.19.4(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))
+        version: link:../../../packages/angular-form
       '@tanstack/yup-form-adapter':
         specifier: ^0.19.4
-        version: 0.19.4(yup@1.3.2)
+        version: link:../../../packages/yup-form-adapter
       rxjs:
         specifier: ~7.8.0
         version: 7.8.1
@@ -371,10 +371,10 @@ importers:
         version: 17.3.0(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(@angular/platform-browser@17.3.0(@angular/animations@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4)))(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4)))(rxjs@7.8.1)
       '@tanstack/angular-form':
         specifier: ^0.19.4
-        version: 0.19.4(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))
+        version: link:../../../packages/angular-form
       '@tanstack/zod-form-adapter':
         specifier: ^0.19.4
-        version: 0.19.4(zod@3.22.4)
+        version: link:../../../packages/zod-form-adapter
       rxjs:
         specifier: ~7.8.0
         version: 7.8.1
@@ -405,7 +405,7 @@ importers:
     dependencies:
       '@tanstack/lit-form':
         specifier: ^0.19.4
-        version: 0.19.4(lit@3.1.2)
+        version: link:../../../packages/lit-form
       lit:
         specifier: ^3.1.1
         version: 3.1.2
@@ -421,7 +421,7 @@ importers:
         version: 1.3.0
       '@tanstack/lit-form':
         specifier: ^0.19.4
-        version: 0.19.4(lit@3.1.2)
+        version: link:../../../packages/lit-form
       lit:
         specifier: ^3.1.1
         version: 3.1.2
@@ -434,7 +434,7 @@ importers:
     dependencies:
       '@tanstack/react-form':
         specifier: ^0.19.4
-        version: 0.19.4(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: link:../../../packages/react-form
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -459,7 +459,7 @@ importers:
     dependencies:
       '@tanstack/react-form':
         specifier: ^0.19.4
-        version: 0.19.4(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: link:../../../packages/react-form
       next:
         specifier: 14.0.4
         version: 14.0.4(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.72.0)
@@ -493,7 +493,7 @@ importers:
     dependencies:
       '@tanstack/react-form':
         specifier: ^0.19.4
-        version: 0.19.4(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: link:../../../packages/react-form
       '@tanstack/react-query':
         specifier: ^5.32.0
         version: 5.32.0(react@18.2.0)
@@ -521,7 +521,7 @@ importers:
     dependencies:
       '@tanstack/react-form':
         specifier: ^0.19.4
-        version: 0.19.4(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: link:../../../packages/react-form
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -561,7 +561,7 @@ importers:
         version: 5.15.2(@emotion/react@11.11.3(@types/react@18.2.79)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.79)(react@18.2.0))(@types/react@18.2.79)(react@18.2.0))(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@tanstack/react-form':
         specifier: ^0.19.4
-        version: 0.19.4(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: link:../../../packages/react-form
       '@yme/lay-postcss':
         specifier: 0.1.0
         version: 0.1.0(postcss@8.4.32)
@@ -622,10 +622,10 @@ importers:
     dependencies:
       '@tanstack/react-form':
         specifier: ^0.19.4
-        version: 0.19.4(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: link:../../../packages/react-form
       '@tanstack/valibot-form-adapter':
         specifier: ^0.19.4
-        version: 0.19.4(valibot@0.20.1)
+        version: link:../../../packages/valibot-form-adapter
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -653,10 +653,10 @@ importers:
     dependencies:
       '@tanstack/react-form':
         specifier: ^0.19.4
-        version: 0.19.4(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: link:../../../packages/react-form
       '@tanstack/yup-form-adapter':
         specifier: ^0.19.4
-        version: 0.19.4(yup@1.3.2)
+        version: link:../../../packages/yup-form-adapter
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -684,10 +684,10 @@ importers:
     dependencies:
       '@tanstack/react-form':
         specifier: ^0.19.4
-        version: 0.19.4(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: link:../../../packages/react-form
       '@tanstack/zod-form-adapter':
         specifier: ^0.19.4
-        version: 0.19.4(zod@3.22.4)
+        version: link:../../../packages/zod-form-adapter
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -715,7 +715,7 @@ importers:
     dependencies:
       '@tanstack/solid-form':
         specifier: ^0.19.4
-        version: 0.19.4(solid-js@1.7.12)
+        version: link:../../../packages/solid-form
       solid-js:
         specifier: ^1.7.8
         version: 1.7.12
@@ -734,7 +734,7 @@ importers:
     dependencies:
       '@tanstack/solid-form':
         specifier: ^0.19.4
-        version: 0.19.4(solid-js@1.7.12)
+        version: link:../../../packages/solid-form
       solid-js:
         specifier: ^1.7.8
         version: 1.7.12
@@ -753,10 +753,10 @@ importers:
     dependencies:
       '@tanstack/solid-form':
         specifier: ^0.19.4
-        version: 0.19.4(solid-js@1.7.12)
+        version: link:../../../packages/solid-form
       '@tanstack/valibot-form-adapter':
         specifier: ^0.19.4
-        version: 0.19.4(valibot@0.20.1)
+        version: link:../../../packages/valibot-form-adapter
       solid-js:
         specifier: ^1.7.8
         version: 1.7.12
@@ -778,10 +778,10 @@ importers:
     dependencies:
       '@tanstack/solid-form':
         specifier: ^0.19.4
-        version: 0.19.4(solid-js@1.7.12)
+        version: link:../../../packages/solid-form
       '@tanstack/yup-form-adapter':
         specifier: ^0.19.4
-        version: 0.19.4(yup@1.3.2)
+        version: link:../../../packages/yup-form-adapter
       solid-js:
         specifier: ^1.7.8
         version: 1.7.12
@@ -803,10 +803,10 @@ importers:
     dependencies:
       '@tanstack/solid-form':
         specifier: ^0.19.4
-        version: 0.19.4(solid-js@1.7.12)
+        version: link:../../../packages/solid-form
       '@tanstack/zod-form-adapter':
         specifier: ^0.19.4
-        version: 0.19.4(zod@3.22.4)
+        version: link:../../../packages/zod-form-adapter
       solid-js:
         specifier: ^1.7.8
         version: 1.7.12
@@ -828,7 +828,7 @@ importers:
     dependencies:
       '@tanstack/vue-form':
         specifier: ^0.19.4
-        version: 0.19.4(vue@3.3.4)
+        version: link:../../../packages/vue-form
       vue:
         specifier: ^3.3.4
         version: 3.3.4
@@ -850,7 +850,7 @@ importers:
     dependencies:
       '@tanstack/vue-form':
         specifier: ^0.19.4
-        version: 0.19.4(vue@3.3.4)
+        version: link:../../../packages/vue-form
       vue:
         specifier: ^3.3.4
         version: 3.3.4
@@ -872,10 +872,10 @@ importers:
     dependencies:
       '@tanstack/valibot-form-adapter':
         specifier: ^0.19.4
-        version: 0.19.4(valibot@0.20.1)
+        version: link:../../../packages/valibot-form-adapter
       '@tanstack/vue-form':
         specifier: ^0.19.4
-        version: 0.19.4(vue@3.3.4)
+        version: link:../../../packages/vue-form
       valibot:
         specifier: ^0.20.1
         version: 0.20.1
@@ -900,10 +900,10 @@ importers:
     dependencies:
       '@tanstack/vue-form':
         specifier: ^0.19.4
-        version: 0.19.4(vue@3.3.4)
+        version: link:../../../packages/vue-form
       '@tanstack/yup-form-adapter':
         specifier: ^0.19.4
-        version: 0.19.4(yup@1.3.2)
+        version: link:../../../packages/yup-form-adapter
       vue:
         specifier: ^3.3.4
         version: 3.3.4
@@ -928,10 +928,10 @@ importers:
     dependencies:
       '@tanstack/vue-form':
         specifier: ^0.19.4
-        version: 0.19.4(vue@3.3.4)
+        version: link:../../../packages/vue-form
       '@tanstack/zod-form-adapter':
         specifier: ^0.19.4
-        version: 0.19.4(zod@3.22.4)
+        version: link:../../../packages/zod-form-adapter
       vue:
         specifier: ^3.3.4
         version: 3.3.4
@@ -3180,11 +3180,6 @@ packages:
   '@swc/types@0.1.5':
     resolution: {integrity: sha512-myfUej5naTBWnqOCc/MdVOLVjXUXtIA+NpDrDBKJtLLg2shUjBu3cZmB/85RyitKc55+lUUyl7oRfLOvkr2hsw==}
 
-  '@tanstack/angular-form@0.19.4':
-    resolution: {integrity: sha512-RbcouxJIgvRpy8AseXeTdRBE2CP1fHmfHTwLcjWEUjHFSI/Y6L36NAp2zqJ2MIWo25jYMY9VhazTwr3KW1p8KA==}
-    peerDependencies:
-      '@angular/core': '>=17.3.0'
-
   '@tanstack/angular-store@0.4.0':
     resolution: {integrity: sha512-C0Xj1di6qzq4EF8H1W6zrpfX9d37mpZzVXwlZkHG8M9p7A9rw/1PS6RdI2hy7zBRNNxFqVVB5ez+uVq2lVE8ew==}
     peerDependencies:
@@ -3196,21 +3191,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@tanstack/form-core@0.19.4':
-    resolution: {integrity: sha512-xmmKrffth17qHBC0yb22zF2AYVQALFMYFTko7xpVJrK2B+BFKyDYwSrZlnK260nr31loTNejZOzD6ofpGTLSGA==}
-
-  '@tanstack/lit-form@0.19.4':
-    resolution: {integrity: sha512-keZXXyo2toiYiwHZe3GbL6ryRf6Phfuu7A0McN9ePU1QEgdytuwVTqEBE82/PzIg1nbnJoPItGv2hveyFzzLRQ==}
-    peerDependencies:
-      lit: ^3.1.1
-
   '@tanstack/query-core@5.32.0':
     resolution: {integrity: sha512-Z3flEgCat55DRXU5UMwYU1U+DgFZKA3iufyOKs+II7iRAo0uXkeU7PH5e6sOH1CGEag0IpKmZxlUFpCg6roSKw==}
-
-  '@tanstack/react-form@0.19.4':
-    resolution: {integrity: sha512-WlGnRCvJmhwM0/qXaUIkD9nI9ilg1MIN3JX5HuNW1nl2AsqHzVRCFU9r/icrsrfFpc5NJ0OSF8lFi2GqAHVS1Q==}
-    peerDependencies:
-      react: ^17.0.0 || ^18.0.0
 
   '@tanstack/react-query@5.32.0':
     resolution: {integrity: sha512-+E3UudQtarnx9A6xhpgMZapyF+aJfNBGFMgI459FnduEZqT/9KhOWnMOneZahLRt52yzskSA0AuOyLkXHK0yBA==}
@@ -3223,11 +3205,6 @@ packages:
       react: ^17.0.0 || ^18.0.0
       react-dom: ^17.0.0 || ^18.0.0
 
-  '@tanstack/solid-form@0.19.4':
-    resolution: {integrity: sha512-SSd8Zqj9erspMVL4GSFsigkJNh8lJ+nGXlsnb6zfiuZpQd3IaovbGcTCtFCE59xRUh1qFbl/nO79y4lQgAU3qA==}
-    peerDependencies:
-      solid-js: ^1.6.0
-
   '@tanstack/solid-store@0.3.1':
     resolution: {integrity: sha512-MBsV3kTHW0v+fHsSUfxpVUh2FVX/qmc6hTq8HdwOkleBcpVRiF8RX0gyCcE5+cE03LncKoIEw9hO80dOBEZbFw==}
     peerDependencies:
@@ -3235,16 +3212,6 @@ packages:
 
   '@tanstack/store@0.3.1':
     resolution: {integrity: sha512-A49KN8SpLMWaNmZGPa9K982RQ81W+m7W6iStcQVeKeVS70JZRqkF0fDwKByREPq6qz9/kS0aQFOPQ0W6wIeU5g==}
-
-  '@tanstack/valibot-form-adapter@0.19.4':
-    resolution: {integrity: sha512-FnaVrPIjIexQ6RvQHzyS32ZAo3ziSqyzKDIzj3MdfhpLeHr4QtY5fiKdTNPQfxeyNknuQYfKN4CJMI0ILqzpww==}
-    peerDependencies:
-      valibot: ^0.x
-
-  '@tanstack/vue-form@0.19.4':
-    resolution: {integrity: sha512-fLbs6BsRRgGj19ph9xzNjC3474Z81208QEvFg0bJ11TyF13U5WA/xUlF5TdSBKoiHu8PnE1P8uLHSda5eeOt0g==}
-    peerDependencies:
-      vue: ^3.3.0
 
   '@tanstack/vue-store@0.3.1':
     resolution: {integrity: sha512-7XhuxAO6z4FWz8QnluTd4njy4yh6yHVD+dVMV60kDNck+ZfnU8VrENMGaA5edIq5zX3ooAUcOtOXh7KgQv1P1A==}
@@ -3254,16 +3221,6 @@ packages:
     peerDependenciesMeta:
       '@vue/composition-api':
         optional: true
-
-  '@tanstack/yup-form-adapter@0.19.4':
-    resolution: {integrity: sha512-dxQRQlqJEwM4zgJvvHx0tsbYReDfHgBsAStP0Ev1DrkjY2ODh8ZVWZMZksnetyZvwXzDtS5qxnpFYSK+3I90zg==}
-    peerDependencies:
-      yup: ^1.x
-
-  '@tanstack/zod-form-adapter@0.19.4':
-    resolution: {integrity: sha512-+kaLOibPBA5d8PUtUdo+0f9sLFrRpLvl6JMjtZa9ylfcBFN56PsKnS7SKQuwUdTnW1YqfQj6xs93IT9eJxHvHQ==}
-    peerDependencies:
-      zod: ^3.x
 
   '@testing-library/angular@15.2.0':
     resolution: {integrity: sha512-FqLMyS8FYYR/6FOSZrmUW7NCFIYSYZyg2MFd8S5PZcUNdfoPRaNY6nEmeuyoiQn6IveKUKCH3vTfOIeI16nxHg==}
@@ -10667,15 +10624,6 @@ snapshots:
 
   '@swc/types@0.1.5': {}
 
-  '@tanstack/angular-form@0.19.4(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))':
-    dependencies:
-      '@angular/core': 17.3.0(rxjs@7.8.1)(zone.js@0.14.4)
-      '@tanstack/angular-store': 0.4.0(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))
-      '@tanstack/form-core': 0.19.4
-      tslib: 2.6.2
-    transitivePeerDependencies:
-      - '@angular/common'
-
   '@tanstack/angular-store@0.4.0(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))':
     dependencies:
       '@angular/common': 17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1)
@@ -10710,27 +10658,7 @@ snapshots:
       - typescript
       - vite
 
-  '@tanstack/form-core@0.19.4':
-    dependencies:
-      '@tanstack/store': 0.3.1
-
-  '@tanstack/lit-form@0.19.4(lit@3.1.2)':
-    dependencies:
-      '@tanstack/form-core': 0.19.4
-      lit: 3.1.2
-
   '@tanstack/query-core@5.32.0': {}
-
-  '@tanstack/react-form@0.19.4(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
-    dependencies:
-      '@tanstack/form-core': 0.19.4
-      '@tanstack/react-store': 0.3.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      decode-formdata: 0.4.0
-      react: 18.2.0
-      rehackt: 0.0.3(@types/react@18.2.79)(react@18.2.0)
-    transitivePeerDependencies:
-      - '@types/react'
-      - react-dom
 
   '@tanstack/react-query@5.32.0(react@18.2.0)':
     dependencies:
@@ -10744,12 +10672,6 @@ snapshots:
       react-dom: 18.2.0(react@18.2.0)
       use-sync-external-store: 1.2.0(react@18.2.0)
 
-  '@tanstack/solid-form@0.19.4(solid-js@1.7.12)':
-    dependencies:
-      '@tanstack/form-core': 0.19.4
-      '@tanstack/solid-store': 0.3.1(solid-js@1.7.12)
-      solid-js: 1.7.12
-
   '@tanstack/solid-store@0.3.1(solid-js@1.7.12)':
     dependencies:
       '@tanstack/store': 0.3.1
@@ -10757,34 +10679,11 @@ snapshots:
 
   '@tanstack/store@0.3.1': {}
 
-  '@tanstack/valibot-form-adapter@0.19.4(valibot@0.20.1)':
-    dependencies:
-      '@tanstack/form-core': 0.19.4
-      valibot: 0.20.1
-
-  '@tanstack/vue-form@0.19.4(vue@3.3.4)':
-    dependencies:
-      '@tanstack/form-core': 0.19.4
-      '@tanstack/vue-store': 0.3.1(vue@3.3.4)
-      vue: 3.3.4
-    transitivePeerDependencies:
-      - '@vue/composition-api'
-
   '@tanstack/vue-store@0.3.1(vue@3.3.4)':
     dependencies:
       '@tanstack/store': 0.3.1
       vue: 3.3.4
       vue-demi: 0.14.6(vue@3.3.4)
-
-  '@tanstack/yup-form-adapter@0.19.4(yup@1.3.2)':
-    dependencies:
-      '@tanstack/form-core': 0.19.4
-      yup: 1.3.2
-
-  '@tanstack/zod-form-adapter@0.19.4(zod@3.22.4)':
-    dependencies:
-      '@tanstack/form-core': 0.19.4
-      zod: 3.22.4
 
   '@testing-library/angular@15.2.0(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(@angular/platform-browser@17.3.0(@angular/animations@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4)))(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4)))(@angular/router@17.3.0(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(@angular/platform-browser@17.3.0(@angular/animations@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4)))(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4)))(rxjs@7.8.1))':
     dependencies:
