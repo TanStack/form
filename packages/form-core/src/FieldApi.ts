@@ -1,5 +1,5 @@
 import { Store } from '@tanstack/store'
-import { getAsyncValidatorArray, getSyncValidatorArray } from './utils'
+import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
 import type { FieldInfo, FormApi } from './FormApi'
 import type {
   ValidationCause,
@@ -181,7 +181,6 @@ export interface FieldValidators<
     TFormValidator,
     TData
   >
-  onSubmitAsyncDebounceMs?: number
 }
 
 export interface FieldOptions<
@@ -422,8 +421,7 @@ export class FieldApi<
     // Default Value
 
     if (this.state.value === undefined) {
-      const formDefault =
-        opts.form.options.defaultValues?.[opts.name as keyof TParentData]
+      const formDefault = getBy(opts.form.options.defaultValues, opts.name)
 
       if (opts.defaultValue !== undefined) {
         this.setValue(opts.defaultValue as never)

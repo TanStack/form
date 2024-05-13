@@ -31,7 +31,7 @@ const onChangeFirstName = yup
       (e) => {
         e.preventDefault()
         e.stopPropagation()
-        void form.handleSubmit()
+        form.handleSubmit()
       }
     "
   >

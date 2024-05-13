@@ -1,7 +1,12 @@
-import type { FieldApi } from '@tanstack/react-form'
-import { useForm } from '@tanstack/react-form'
 import * as React from 'react'
 import { createRoot } from 'react-dom/client'
+import { useForm } from '@tanstack/react-form'
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from '@tanstack/react-query'
+import type { FieldApi } from '@tanstack/react-form'
 
 function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
   return (
@@ -15,16 +20,26 @@ function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
 }
 
 export default function App() {
+  const { data, isLoading } = useQuery({
+    queryKey: ['data'],
+    queryFn: async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      return { firstName: 'FirstName', lastName: 'LastName' }
+    },
+  })
+
   const form = useForm({
     defaultValues: {
-      firstName: '',
-      lastName: '',
+      firstName: data?.firstName ?? '',
+      lastName: data?.lastName ?? '',
     },
     onSubmit: async ({ value }) => {
       // Do something with form data
       console.log(value)
     },
   })
+
+  if (isLoading) return <p>Loading..</p>
 
   return (
     <div>
@@ -111,4 +126,10 @@ export default function App() {
 
 const rootElement = document.getElementById('root')!
 
-createRoot(rootElement).render(<App />)
+const queryClient = new QueryClient()
+
+createRoot(rootElement).render(
+  <QueryClientProvider client={queryClient}>
+    <App />
+  </QueryClientProvider>,
+)

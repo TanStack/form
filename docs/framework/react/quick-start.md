@@ -27,7 +27,7 @@ export default function App() {
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            void form.handleSubmit();
+            form.handleSubmit();
           }}
         >
           <div>

@@ -532,7 +532,7 @@ describe('useField', () => {
             onSubmit={(e) => {
               e.preventDefault()
               e.stopPropagation()
-              void form.handleSubmit()
+              form.handleSubmit()
             }}
           >
             <div>
@@ -624,7 +624,7 @@ describe('useField', () => {
             onSubmit={(e) => {
               e.preventDefault()
               e.stopPropagation()
-              void form.handleSubmit()
+              form.handleSubmit()
             }}
           >
             <form.Field name="people">
@@ -720,7 +720,7 @@ describe('useField', () => {
             onSubmit={(e) => {
               e.preventDefault()
               e.stopPropagation()
-              void form.handleSubmit()
+              form.handleSubmit()
             }}
           >
             <form.Field name="people">
@@ -873,5 +873,88 @@ describe('useField', () => {
     expect(queryByText('Passwords do not match')).not.toBeInTheDocument()
     await user.type(confirmPasswordInput, '1')
     expect(await findByText('Passwords do not match')).toBeInTheDocument()
+  })
+
+  it('should handle deeply nested values in StrictMode', async () => {
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          name: { first: 'Test', last: 'User' },
+        },
+      })
+
+      return (
+        <form.Field
+          name="name.last"
+          children={(field) => <p>{field.state.value ?? ''}</p>}
+        />
+      )
+    }
+
+    const { queryByText, findByText } = render(
+      <React.StrictMode>
+        <Comp />
+      </React.StrictMode>,
+    )
+
+    expect(queryByText('Test')).not.toBeInTheDocument()
+    expect(await findByText('User')).toBeInTheDocument()
+  })
+
+  it('should validate async on submit without debounce', async () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    const mockFn = vi.fn()
+    const error = 'Please enter a different value'
+    const formFactory = createFormFactory<Person>()
+
+    function Comp() {
+      const form = formFactory.useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+        validators: {
+          onChangeAsyncDebounceMs: 1000000,
+          onChangeAsync: async () => {
+            mockFn()
+            await sleep(10)
+            return error
+          },
+        },
+      })
+      const errors = form.useStore((s) => s.errors)
+
+      return (
+        <>
+          <form.Field
+            name="firstName"
+            defaultMeta={{ isTouched: true }}
+            children={(field) => (
+              <div>
+                <input
+                  data-testid="fieldinput"
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                <p>{errors}</p>
+              </div>
+            )}
+          />
+          <button onClick={form.handleSubmit}>Submit</button>
+        </>
+      )
+    }
+
+    const { getByRole, getByText } = render(<Comp />)
+    await user.click(getByRole('button', { name: 'Submit' }))
+
+    expect(mockFn).toHaveBeenCalledTimes(1)
+    await waitFor(() => getByText(error))
+    expect(getByText(error)).toBeInTheDocument()
   })
 })
