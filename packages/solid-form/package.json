@@ -36,7 +36,7 @@
   "module": "dist/esm/index.js",
   "exports": {
     ".": {
-      "solid": "./dist/source/solid-form/src/index.js",
+      "solid": "./dist/source/index.js",
       "import": {
         "types": "./dist/esm/index.d.ts",
         "default": "./dist/esm/index.js"

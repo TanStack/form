@@ -5,10 +5,13 @@
     "jsxImportSource": "solid-js",
     "moduleResolution": "Bundler",
     "paths": {
-      "@tanstack/form-core": ["../form-core/src"]
+      "@tanstack/form-core": ["../../form-core/src"]
     },
     "outDir": "dist/source",
-    "noEmit": false
+    "noEmit": false,
+    "declaration": false,
+    "rootDir": "src"
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["src/tests/**"]
 }
