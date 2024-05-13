@@ -9,8 +9,8 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@tanstack/vue-form": "^0.19.4",
-    "@tanstack/zod-form-adapter": "^0.19.4",
+    "@tanstack/vue-form": "^0.19.5",
+    "@tanstack/zod-form-adapter": "^0.19.5",
     "vue": "^3.3.4",
     "zod": "^3.22.4"
   },
