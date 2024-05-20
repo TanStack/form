@@ -923,6 +923,45 @@ describe('form api', () => {
     ])
   })
 
+  it('should validate optional object fields during submit', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        person: null,
+      } as { person: { firstName: string; lastName: string } | null },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'person.firstName',
+      validators: {
+        onChange: ({ value }) =>
+          value && value.length > 0 ? undefined : 'first name is required',
+      },
+    })
+
+    const lastNameField = new FieldApi({
+      form,
+      name: 'person.lastName',
+      validators: {
+        onChange: ({ value }) =>
+          value && value.length > 0 ? undefined : 'last name is required',
+      },
+    })
+
+    field.mount()
+    lastNameField.mount()
+
+    await form.handleSubmit()
+    expect(form.state.isFieldsValid).toEqual(false)
+    expect(form.state.canSubmit).toEqual(false)
+    expect(form.state.fieldMeta['person.firstName'].errors).toEqual([
+      'first name is required',
+    ])
+    expect(form.state.fieldMeta['person.lastName'].errors).toEqual([
+      'last name is required',
+    ])
+  })
+
   it('should run all types of validation on fields during submit', async () => {
     const form = new FormApi({
       defaultValues: {
