@@ -107,7 +107,7 @@ describe('field api', () => {
     expect(field.getValue()).toStrictEqual(['one', 'other'])
   })
 
-  it.only('should run onChange validation when pushing an array fields value', async () => {
+  it('should run onChange validation when pushing an array fields value', async () => {
     const form = new FormApi({
       defaultValues: {
         names: ['test'],
@@ -120,7 +120,6 @@ describe('field api', () => {
       name: 'names',
       validators: {
         onChange: ({ value }) => {
-          console.log('value', value)
           if (value.length < 3) {
             return 'At least 3 names are required'
           }
