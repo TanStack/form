@@ -23,6 +23,7 @@ export function functionalUpdate<TInput, TOutput = TInput>(
 export function getBy(obj: any, path: any) {
   const pathObj = makePathArray(path)
   return pathObj.reduce((current: any, pathPart: any) => {
+    if (current === null) return null
     if (typeof current !== 'undefined') {
       return current[pathPart]
     }
