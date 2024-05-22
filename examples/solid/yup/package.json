@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/solid-form": "^0.19.5",
-    "@tanstack/yup-form-adapter": "^0.19.5",
+    "@tanstack/solid-form": "^0.20.0",
+    "@tanstack/yup-form-adapter": "^0.20.0",
     "solid-js": "^1.7.8",
     "yup": "^1.3.2"
   },
