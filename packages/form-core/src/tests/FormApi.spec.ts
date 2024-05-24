@@ -1095,4 +1095,60 @@ describe('form api', () => {
     await form.handleSubmit()
     expect(form.state.errors).toStrictEqual(['first name is required'])
   })
+
+  it('should update a nullable object', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        person: null,
+      } as { person: { firstName: string } | null },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'person.firstName',
+    })
+
+    field.mount()
+
+    field.setValue('firstName')
+    expect(form.state.values.person?.firstName).toStrictEqual('firstName')
+  })
+
+  it('should update a deep nullable object', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        person: null,
+      } as { person: { nameInfo: { first: string } | null } | null },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'person.nameInfo.first',
+    })
+
+    field.mount()
+
+    field.setValue('firstName')
+    expect(form.state.values.person?.nameInfo?.first).toStrictEqual('firstName')
+  })
+
+  it('should update a nullable array', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        persons: null,
+      } as { persons: Array<{ nameInfo: { first: string } }> | null },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'persons',
+    })
+
+    field.mount()
+
+    field.pushValue({ nameInfo: { first: 'firstName' } })
+    expect(form.state.values.persons).toStrictEqual([
+      { nameInfo: { first: 'firstName' } },
+    ])
+  })
 })

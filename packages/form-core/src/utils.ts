@@ -46,6 +46,9 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
 
     if (typeof key === 'string') {
       if (typeof parent === 'object') {
+        if (parent === null) {
+          parent = {}
+        }
         return {
           ...parent,
           [key]: doSet(parent[key]),
