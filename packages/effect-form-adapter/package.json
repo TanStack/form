@@ -1,0 +1,61 @@
+{
+  "name": "@tanstack/effect-form-adapter",
+  "version": "0.20.0",
+  "description": "The Effect adapter for TanStack Form.",
+  "author": "tannerlinsley",
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./dist/esm/index.js",
+        "types": "./dist/esm/index.d.ts"
+      },
+      "require": {
+        "default": "./dist/cjs/index.cjs",
+        "types": "./dist/cjs/index.d.cts"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/tannerlinsley"
+  },
+  "homepage": "https://tanstack.com/form",
+  "license": "MIT",
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/esm/index.js",
+  "peerDependencies": {
+    "@effect/schema": "^0.67.13",
+    "effect": "^3.2.5"
+  },
+  "repository": "tanstack/form",
+  "scripts": {
+    "build": "vite build",
+    "clean": "rimraf ./dist && rimraf ./coverage",
+    "test:build": "publint --strict",
+    "test:eslint": "eslint --ext .ts,.tsx ./src",
+    "test:lib": "vitest",
+    "test:lib:dev": "pnpm run test:lib --watch",
+    "test:types": "pnpm run \"/^test:types:versions.*/\"",
+    "test:types:versions49": "node ../../node_modules/typescript49/lib/tsc.js --project tsconfig.legacy.json",
+    "test:types:versions50": "node ../../node_modules/typescript50/lib/tsc.js",
+    "test:types:versions51": "node ../../node_modules/typescript51/lib/tsc.js",
+    "test:types:versions52": "node ../../node_modules/typescript52/lib/tsc.js",
+    "test:types:versions53": "node ../../node_modules/typescript53/lib/tsc.js",
+    "test:types:versions54": "tsc"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "types": "dist/esm/index.d.ts",
+  "dependencies": {
+    "@tanstack/form-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@effect/schema": "^0.67.13",
+    "effect": "^3.2.5"
+  }
+}
