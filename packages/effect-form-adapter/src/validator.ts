@@ -7,7 +7,7 @@ import * as Layer from 'effect/Layer'
 import * as ManagedRuntime from 'effect/ManagedRuntime'
 import type { ValidationError, Validator } from '@tanstack/form-core'
 
-export const createValidator = <R>(layer: Layer.Layer<R, never>) => {
+export const createValidator = <R>(layer: Layer.Layer<R>) => {
   const runtime = ManagedRuntime.make(layer)
 
   const validator: Validator<unknown, Schema.Schema<any, any, R>> = () => ({

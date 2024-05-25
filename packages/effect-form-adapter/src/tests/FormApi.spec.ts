@@ -1,16 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
 import { FieldApi, FormApi } from '@tanstack/form-core'
-import * as Schema from '@effect/schema/Schema'
 import { effectValidator } from '../validator'
+import { schema } from './utils'
 
 describe('Form api', () => {
   it('should run an onChange with Schema.minLength validation', () => {
-    const schema = Schema.String.pipe(
-      Schema.minLength(3, {
-        message: () => 'You must have a length of at least 3',
-      }),
-    )
     const form = new FormApi({
       defaultValues: {
         name: '',
