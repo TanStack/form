@@ -13,15 +13,16 @@ export const createValidator = <R>(layer: Layer.Layer<R>) => {
   const validator: Validator<unknown, Schema.Schema<any, any, R>> = () => ({
     validate(
       { value }: { value: unknown },
-      schema: Schema.Schema<any, any>,
+      schema: Schema.Schema<any, any, R>,
     ): ValidationError {
-      const result = Schema.decodeUnknownEither(schema)(value)
-      if (Either.isLeft(result)) {
-        return ArrayFormatter.formatErrorSync(result.left)
-          .map((e) => e.message)
-          .join(', ') // must be joined into 1 string
-      }
-      return
+      const exit = runtime.runSyncExit(
+        Schema.decodeUnknown(schema)(value).pipe(
+          Effect.flip,
+          Effect.flatMap(ArrayFormatter.formatError),
+          Effect.map((es) => es.map((e) => e.message).join(', ')),
+        ),
+      )
+      return Exit.getOrElse(exit, () => undefined)
     },
     async validateAsync(
       { value }: { value: unknown },

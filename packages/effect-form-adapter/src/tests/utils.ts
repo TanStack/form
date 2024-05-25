@@ -1,8 +1,9 @@
-import { Context, Effect, Layer } from 'effect'
+import { Context, Effect, Layer, Option } from 'effect'
 import { Schema } from '@effect/schema'
+import * as ParseResult from '@effect/schema/ParseResult'
 
 export class Ctx extends Context.Tag('Ctx')<Ctx, string>() {}
-export const ctx = Layer.succeed(Ctx, Ctx.of('ctx-123'))
+export const ctxLayer = Layer.succeed(Ctx, Ctx.of('ctx-123'))
 
 export const schema = Schema.String.pipe(
   Schema.minLength(3, {
@@ -10,14 +11,37 @@ export const schema = Schema.String.pipe(
   }),
 )
 
-export const schemaWithContext = Schema.transformOrFail(schema, schema, {
-  decode: () => Effect.flatMap(Ctx, (c) => Effect.succeed(c)),
-  encode: (value) => Effect.succeed(value),
+const delay = Effect.delay('10 millis')
+export const asyncSchema = Schema.transformOrFail(
+  Schema.String,
+  Schema.String,
+  {
+    decode: (value, _, ast) =>
+      delay(
+        value.length >= 3
+          ? Effect.succeed(value)
+          : Effect.fail(new ParseResult.Type(ast, value, 'inner msg')),
+      ),
+    encode: (value) => Effect.succeed(value).pipe(delay),
+  },
+).annotations({
+  message: () => delay(Effect.succeed('async schema error')),
 })
 
-export const asyncSchema = Schema.transformOrFail(schema, schema, {
-  decode: (value) => Effect.succeed(value).pipe(Effect.delay('10 millis')),
-  encode: (value) => Effect.succeed(value).pipe(Effect.delay('10 millis')),
+export const schemaWithContext = Schema.transformOrFail(
+  Schema.String,
+  Schema.String,
+  {
+    decode: (_, value, ast) =>
+      Effect.fail(new ParseResult.Type(ast, value, '')),
+    encode: (value) => Effect.succeed(value),
+  },
+).annotations({
+  message: () =>
+    Effect.map(
+      Effect.serviceOption(Ctx),
+      Option.getOrElse(() => 'no context'),
+    ),
 })
 
 export function sleep(timeout: number): Promise<void> {
