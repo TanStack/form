@@ -268,7 +268,7 @@ A class representing the API for managing a form field.
   - Inserts a value at the specified index.
 
 - ```tsx
-  removeValue(index: number): void
+  removeValue(index: number): Promise<void>
   ```
 
   - Removes a value at the specified index.
