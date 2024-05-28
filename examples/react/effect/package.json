@@ -1,0 +1,37 @@
+{
+  "name": "@tanstack/form-example-react-effect",
+  "version": "0.0.1",
+  "browserslist": {
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ],
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ]
+  },
+  "main": "src/index.jsx",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite --port=3001",
+    "preview": "vite preview",
+    "test:types": "tsc"
+  },
+  "dependencies": {
+    "@effect/schema": "^0.67.13",
+    "@tanstack/effect-form-adapter": "workspace:^",
+    "@tanstack/react-form": "^0.20.0",
+    "effect": "^3.2.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.19",
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.0.10"
+  }
+}
