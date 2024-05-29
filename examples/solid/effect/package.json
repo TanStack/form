@@ -1,0 +1,23 @@
+{
+  "name": "@tanstack/form-example-solid-effect",
+  "private": true,
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite",
+    "preview": "vite preview",
+    "test:types": "tsc"
+  },
+  "type": "module",
+  "dependencies": {
+    "@effect/schema": "^0.67.14",
+    "@tanstack/effect-form-adapter": "workspace:^",
+    "@tanstack/solid-form": "^0.20.2",
+    "effect": "^3.2.5",
+    "solid-js": "^1.7.8"
+  },
+  "devDependencies": {
+    "typescript": "5.4.2",
+    "vite": "^5.0.10",
+    "vite-plugin-solid": "^2.10.1"
+  }
+}
