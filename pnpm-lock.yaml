@@ -464,7 +464,7 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/effect-form-adapter
       '@tanstack/react-form':
-        specifier: ^0.20.0
+        specifier: workspace:^0.20.2
         version: link:../../../packages/react-form
       effect:
         specifier: ^3.2.5

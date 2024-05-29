@@ -10,6 +10,15 @@ import type {
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
 import type { DeepKeys, DeepValue, NoInfer } from './util-types'
 
+function is_constructor(f: any) {
+  try {
+    Reflect.construct(String, [], f);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
 export type FieldValidateFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
@@ -350,7 +359,7 @@ export class FieldApi<
       this.options.validatorAdapter,
     ] as const
     for (const adapter of adapters) {
-      if (adapter && typeof props.validate !== 'function') {
+      if (adapter && is_constructor(props.validate)) {
         return adapter()[props.type](
           props.value as never,
           props.validate,

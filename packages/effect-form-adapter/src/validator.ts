@@ -1,7 +1,6 @@
 import * as Schema from '@effect/schema/Schema'
 import * as ArrayFormatter from '@effect/schema/ArrayFormatter'
 import * as Effect from 'effect/Effect'
-import * as Either from 'effect/Either'
 import * as Exit from 'effect/Exit'
 import * as Layer from 'effect/Layer'
 import * as ManagedRuntime from 'effect/ManagedRuntime'
