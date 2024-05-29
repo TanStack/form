@@ -1,0 +1,24 @@
+{
+  "name": "@tanstack/form-example-vue-effect",
+  "private": true,
+  "scripts": {
+    "build": "vite build",
+    "build:dev": "vite build -m development",
+    "dev": "vite",
+    "serve": "vite preview",
+    "test:types": "vue-tsc"
+  },
+  "dependencies": {
+    "@effect/schema": "^0.67.14",
+    "@tanstack/effect-form-adapter": "workspace:^",
+    "@tanstack/vue-form": "^0.20.2",
+    "effect": "^3.2.5",
+    "vue": "^3.3.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.4",
+    "typescript": "5.4.2",
+    "vite": "^5.0.10",
+    "vue-tsc": "^2.0.6"
+  }
+}
