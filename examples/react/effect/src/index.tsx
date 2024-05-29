@@ -6,7 +6,7 @@ import { Schema } from '@effect/schema'
 import type { FieldApi } from '@tanstack/react-form'
 
 const Person = Schema.Struct({
-  firstName: Schema.String,
+  firstName: Schema.String.pipe(Schema.minLength(3)),
   lastName: Schema.String
 })
 
@@ -23,10 +23,10 @@ function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
 
 export default function App() {
   const form = useForm({
-    defaultValues: Person.make({
+    defaultValues: {
       firstName: '',
       lastName: ''
-    }),
+    },
     onSubmit: async ({ value }) => {
       // Do something with form data
       console.log(value)

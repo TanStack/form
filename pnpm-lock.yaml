@@ -458,8 +458,8 @@ importers:
   examples/react/effect:
     dependencies:
       '@effect/schema':
-        specifier: ^0.67.13
-        version: 0.67.13(effect@3.2.5)
+        specifier: ^0.67.14
+        version: 0.67.14(effect@3.2.5)
       '@tanstack/effect-form-adapter':
         specifier: workspace:^
         version: link:../../../packages/effect-form-adapter
@@ -866,6 +866,34 @@ importers:
       vue:
         specifier: ^3.3.4
         version: 3.3.4
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^5.0.4
+        version: 5.0.4(vite@5.0.10)(vue@3.3.4)
+      typescript:
+        specifier: 5.4.2
+        version: 5.4.2
+      vite:
+        specifier: ^5.0.10
+        version: 5.0.10(@types/node@20.9.0)
+      vue-tsc:
+        specifier: ^2.0.6
+        version: 2.0.6(typescript@5.4.2)
+
+  examples/vue/effect:
+    dependencies:
+      '@tanstack/vue-form':
+        specifier: ^0.20.2
+        version: link:../../../packages/vue-form
+      '@tanstack/zod-form-adapter':
+        specifier: ^0.20.2
+        version: link:../../../packages/zod-form-adapter
+      vue:
+        specifier: ^3.3.4
+        version: 3.3.4
+      zod:
+        specifier: ^3.22.4
+        version: 3.22.4
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.0.4
@@ -3047,15 +3075,6 @@ packages:
     engines: {node: '>=10.0.0'}
     dev: true
 
-  /@effect/schema@0.67.13(effect@3.2.5):
-    resolution: {integrity: sha512-MVd/50CKM18vpOA1dF9fMUdwP0HKH3hISFzS0LB7gsBZ+381V1PmxIJia/1VLmh4S6RKf4pFaQz27VtRUbh1Zg==}
-    peerDependencies:
-      effect: ^3.2.5
-    dependencies:
-      effect: 3.2.5
-      fast-check: 3.19.0
-    dev: false
-
   /@effect/schema@0.67.14(effect@3.2.5):
     resolution: {integrity: sha512-JN3UUErMgzGV9UNI/B6gRVzJ4dyZZuy7dN1D0skm9L/0J+LP9c74ucJ8XQt8nTUmmBWSl9EnNF+BYugem3Ehug==}
     peerDependencies:
@@ -3063,7 +3082,6 @@ packages:
     dependencies:
       effect: 3.2.5
       fast-check: 3.19.0
-    dev: true
 
   /@emotion/babel-plugin@11.11.0:
     resolution: {integrity: sha512-m4HEDZleaaCH+XgDDsPF15Ht6wTLsgDTeR3WYj9Q/k76JtWhrJjcP4+/XlG8LGT/Rol9qUfOIztXeA84ATpqPQ==}
@@ -4637,7 +4655,7 @@ packages:
       proc-log: 4.2.0
       promise-inflight: 1.0.1
       promise-retry: 2.0.1
-      semver: 7.6.0
+      semver: 7.6.2
       which: 4.0.0
     transitivePeerDependencies:
       - bluebird
@@ -4697,7 +4715,7 @@ packages:
       json-parse-even-better-errors: 3.0.2
       normalize-package-data: 6.0.1
       proc-log: 4.2.0
-      semver: 7.6.0
+      semver: 7.6.2
     transitivePeerDependencies:
       - bluebird
     dev: true
@@ -11328,7 +11346,7 @@ packages:
       make-fetch-happen: 13.0.1
       nopt: 7.2.1
       proc-log: 3.0.0
-      semver: 7.6.0
+      semver: 7.6.2
       tar: 6.2.1
       which: 4.0.0
     transitivePeerDependencies:
@@ -11356,7 +11374,7 @@ packages:
     dependencies:
       hosted-git-info: 7.0.2
       is-core-module: 2.13.1
-      semver: 7.6.0
+      semver: 7.6.2
       validate-npm-package-license: 3.0.4
     dev: true
 
@@ -11388,7 +11406,7 @@ packages:
     resolution: {integrity: sha512-W29RiK/xtpCGqn6f3ixfRYGk+zRyr+Ew9F2E20BfXxT5/euLdA/Nm7fO7OeTGuAmTs30cpgInyJ0cYe708YTZw==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
-      semver: 7.6.0
+      semver: 7.6.2
     dev: true
 
   /npm-normalize-package-bin@2.0.0:
