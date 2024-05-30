@@ -75,6 +75,14 @@ type NestedKeysExample = DeepValue<
 >
 assertType<number>(0 as never as NestedKeysExample)
 
+type NestedNullableKeys = DeepValue<
+  {
+    meta: { mainUser: 'hello' } | null
+  },
+  'meta.mainUser'
+>
+assertType<'hello' | null>(0 as never as NestedNullableKeys)
+
 type NestedArrayExample = DeepValue<{ users: User[] }, 'users[0].age'>
 assertType<number>(0 as never as NestedArrayExample)
 

@@ -175,11 +175,13 @@ import { z } from 'zod'
 
 ## Reactivity
 
-`@tanstack/react-form` offers various ways to subscribe to form and field state changes, such as the `form.useStore` hook, the `form.Subscribe` component, and the `form.useField` hook. These methods allow you to optimize your form's rendering performance by only updating components when necessary.
+`@tanstack/react-form` offers various ways to subscribe to form and field state changes, most notably the `form.useStore` hook and the `form.Subscribe` component. These methods allow you to optimize your form's rendering performance by only updating components when necessary.
 
 Example:
 
 ```tsx
+const firstName = form.useStore((state) => state.values.firstName)
+//...
 <form.Subscribe
   selector={(state) => [state.canSubmit, state.isSubmitting]}
   children={([canSubmit, isSubmitting]) => (
@@ -189,6 +191,8 @@ Example:
   )}
 />
 ```
+
+Note: The usage of the `form.useField` hook to achieve reactivity is discouraged since it is designed to be used thoughtfully within the `form.Field` component. You might want to use `form.useStore` instead.
 
 ## Array Fields
 

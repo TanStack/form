@@ -715,11 +715,17 @@ export class FormApi<
     )
   }
 
-  removeFieldValue = <TField extends DeepKeys<TFormData>>(
+  removeFieldValue = async <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,
     opts?: { touch?: boolean },
   ) => {
+    const fieldValue = this.getFieldValue(field)
+
+    const lastIndex = Array.isArray(fieldValue)
+      ? Math.max(fieldValue.length - 1, 0)
+      : null
+
     this.setFieldValue(
       field,
       (prev) => {
@@ -729,6 +735,18 @@ export class FormApi<
       },
       opts,
     )
+
+    if (lastIndex !== null) {
+      const start = `${field}[${lastIndex}]`
+      const fieldsToDelete = Object.keys(this.fieldInfo).filter((f) =>
+        f.startsWith(start),
+      )
+
+      // Cleanup the last fields
+      fieldsToDelete.forEach((f) => this.deleteField(f as TField))
+    }
+
+    await this.validateAllFields('change')
   }
 
   swapFieldValues = <TField extends DeepKeys<TFormData>>(
