@@ -1080,6 +1080,66 @@ describe('field api', () => {
     expect(field.getMeta().errors).toStrictEqual(['first name is required'])
   })
 
+  it('should disable submit with onMount errors', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onMount: ({ value }) =>
+          value.length > 0 ? undefined : 'first name is required',
+      },
+    })
+
+    form.mount()
+    field.mount()
+
+    expect(form.state.canSubmit).toBe(false)
+  })
+
+  it('should remove onMount errors on a field when its value changes', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      },
+    })
+
+    const firstName = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onMount: ({ value }) =>
+          value.length > 0 ? undefined : 'first name is required',
+      },
+    })
+
+    const lastName = new FieldApi({
+      form,
+      name: 'lastName',
+      validators: {
+        onMount: ({ value }) =>
+          value.length > 0 ? undefined : 'last name is required',
+      },
+    })
+
+    form.mount()
+    firstName.mount()
+    lastName.mount()
+
+    expect(firstName.getMeta().errors).toStrictEqual(['first name is required'])
+    expect(lastName.getMeta().errors).toStrictEqual(['last name is required'])
+
+    firstName.setValue('firstName', { touch: true })
+    expect(firstName.getMeta().errors).toStrictEqual([])
+    expect(lastName.getMeta().errors).toStrictEqual(['last name is required'])
+  })
+
   it('should cancel previous functions from an async validator with an abort signal', async () => {
     vi.useFakeTimers()
 

@@ -412,8 +412,20 @@ export class FormApi<
           const isTouched = fieldMetaValues.some((field) => field?.isTouched)
           const isBlurred = fieldMetaValues.some((field) => field?.isBlurred)
 
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          if (isTouched && state?.errorMap?.onMount) {
+            state.errorMap.onMount = undefined
+          }
+
           const isDirty = fieldMetaValues.some((field) => field?.isDirty)
           const isPristine = !isDirty
+
+          const hasOnMountError = Boolean(
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            state.errorMap?.onMount ||
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+              fieldMetaValues.some((f) => f?.errorMap?.onMount),
+          )
 
           const isValidating = isFieldsValidating || state.isFormValidating
           state.errors = Object.values(state.errorMap).reduce((prev, curr) => {
@@ -431,7 +443,9 @@ export class FormApi<
           const isFormValid = state.errors.length === 0
           const isValid = isFieldsValid && isFormValid
           const canSubmit =
-            (state.submissionAttempts === 0 && !isTouched) ||
+            (state.submissionAttempts === 0 &&
+              !isTouched &&
+              !hasOnMountError) ||
             (!isValidating && !state.isSubmitting && isValid)
 
           state = {
@@ -1068,6 +1082,11 @@ export class FormApi<
           isTouched: true,
           isBlurred: true,
           isDirty: true,
+          errorMap: {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            ...prev?.errorMap,
+            onMount: undefined,
+          },
         }))
       }
 
