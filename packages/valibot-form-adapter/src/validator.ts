@@ -8,12 +8,12 @@ export const valibotValidator = (() => {
       if (fn.async) return
       const result = safeParse(fn, value)
       if (result.success) return
-      return result.issues.map((i) => i.message).join(', ')
+      return result.issues[0].message
     },
     async validateAsync({ value }, fn) {
       const result = await safeParseAsync(fn, value)
       if (result.success) return
-      return result.issues.map((i) => i.message).join(', ')
+      return result.issues[0].message
     },
   }
 }) as Validator<unknown, BaseSchema | BaseSchemaAsync>
