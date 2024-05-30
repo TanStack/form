@@ -1,3 +1,10 @@
+// Hack changing Typescript's default get behavior in order to work with unions
+type Get<T, K extends string> = T extends { [Key in K]: infer V }
+  ? V
+  : T extends { [Key in K]?: infer W }
+    ? W | undefined
+    : never
+
 type Nullable<T> = T | null
 type IsNullable<T> = [null] extends [T] ? true : false
 
@@ -127,8 +134,8 @@ export type DeepValue<
               ? DeepValue<DeepValue<TValue, TBefore>, TAfter>
               : TAccessor extends string
                 ? TNullable extends true
-                  ? Nullable<TValue[TAccessor]>
-                  : TValue[TAccessor]
+                  ? Nullable<Get<TValue, TAccessor>>
+                  : Get<TValue, TAccessor>
                 : never
         : // Do not allow `TValue` to be anything else
           never

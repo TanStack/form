@@ -83,11 +83,53 @@ type NestedNullableKeys = DeepValue<
 >
 assertType<'hello' | null>(0 as never as NestedNullableKeys)
 
+type NestedUndefinedKeys = DeepValue<
+  {
+    meta: { mainUser: 'hello' } | undefined
+  },
+  'meta.mainUser'
+>
+assertType<'hello'>(0 as never as NestedUndefinedKeys)
+
+type NestedObjectUnionCase = {
+  normal:
+    | { a: User }
+    | { a: string }
+    | { b: string }
+    | { c: { user: User } | { user: number } }
+}
+type NestedObjectUnionA = DeepValue<NestedObjectUnionCase, 'normal.a.age'>
+assertType<number>(0 as never as NestedObjectUnionA)
+type NestedObjectUnionB = DeepValue<NestedObjectUnionCase, 'normal.b'>
+assertType<string>(0 as never as NestedObjectUnionB)
+type NestedObjectUnionC = DeepValue<NestedObjectUnionCase, 'normal.c.user.id'>
+assertType<string>(0 as never as NestedObjectUnionC)
+
+type NestedNullableObjectUnionCase = {
+  nullable: { a?: number; b?: { c: boolean } | null }
+}
+type NestedNullableObjectUnionA = DeepValue<
+  NestedNullableObjectUnionCase,
+  'nullable.a'
+>
+assertType<number | undefined>(0 as never as NestedNullableObjectUnionA)
+type NestedNullableObjectUnionB = DeepValue<
+  NestedNullableObjectUnionCase,
+  'nullable.b.c'
+>
+assertType<boolean | null>(0 as never as NestedNullableObjectUnionB)
+
 type NestedArrayExample = DeepValue<{ users: User[] }, 'users[0].age'>
 assertType<number>(0 as never as NestedArrayExample)
 
 type NestedLooseArrayExample = DeepValue<{ users: User[] }, 'users[number].age'>
 assertType<number>(0 as never as NestedLooseArrayExample)
+
+type NestedArrayUnionExample = DeepValue<
+  { users: string | User[] },
+  'users[0].age'
+>
+assertType<number>(0 as never as NestedArrayUnionExample)
 
 type NestedTupleExample = DeepValue<
   { topUsers: [User, 0, User] },

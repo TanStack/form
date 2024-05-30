@@ -1096,6 +1096,30 @@ describe('form api', () => {
     expect(form.state.errors).toStrictEqual(['first name is required'])
   })
 
+  it('should read and update union objects', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        person: { firstName: 'firstName' },
+      } as { person: { firstName: string } | { age: number } },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'person.firstName',
+    })
+    field.mount()
+    expect(field.getValue()).toStrictEqual('firstName')
+
+    form.setFieldValue('person', { age: 0 })
+
+    const field2 = new FieldApi({
+      form,
+      name: 'person.age',
+    })
+    field2.mount()
+    expect(field2.getValue()).toStrictEqual(0)
+  })
+
   it('should update a nullable object', async () => {
     const form = new FormApi({
       defaultValues: {
