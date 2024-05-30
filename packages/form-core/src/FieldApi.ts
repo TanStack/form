@@ -480,7 +480,7 @@ export class FieldApi<
     opts?: { touch?: boolean },
   ) => this.form.insertFieldValue(this.name, index, value as any, opts)
 
-  removeValue = (index: number, opts?: { touch?: boolean }) =>
+  removeValue = (index: number, opts?: { touch: boolean }) =>
     this.form.removeFieldValue(this.name, index, opts)
 
   swapValues = (aIndex: number, bIndex: number, opts?: { touch?: boolean }) =>

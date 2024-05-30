@@ -25,7 +25,7 @@ _Remix Support Coming soon_
 
 
 
-# App Router intergration
+# App Router integration
 
 - To use TanStack Form, the component containing the form should be a client component. This requires adding the `"use client"` directive. Wrap this client component within a server component like so:
 

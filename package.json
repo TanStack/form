@@ -2,7 +2,7 @@
   "name": "form",
   "private": true,
   "repository": "https://github.com/tanstack/form.git",
-  "packageManager": "pnpm@8.12.1",
+  "packageManager": "pnpm@9.0.6",
   "type": "module",
   "scripts": {
     "clean": "pnpm --filter \"./packages/**\" run clean",
@@ -37,7 +37,7 @@
   "namespace": "@tanstack",
   "devDependencies": {
     "@solidjs/testing-library": "^0.8.6",
-    "@tanstack/config": "^0.6.0",
+    "@tanstack/config": "^0.7.4",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
     "@testing-library/user-event": "^14.5.2",
