@@ -768,7 +768,8 @@ export class FormApi<
     }
 
     this.validate('change')
-    this.validateField(field, 'change')
+    // Here all fields have to be validated, since the indexes in the meta map have changed
+    await this.validateAllFields('change')
   }
 
   swapFieldValues = <TField extends DeepKeys<TFormData>>(

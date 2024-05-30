@@ -205,7 +205,7 @@ describe('field api', () => {
     expect(field.getValue()).toStrictEqual(['one'])
   })
 
-  it('should run onChange validation when removing an array fields value', () => {
+  it('should run onChange validation when removing an array fields value', async () => {
     const form = new FormApi({
       defaultValues: {
         names: ['test'],
@@ -230,7 +230,7 @@ describe('field api', () => {
     })
     field.mount()
 
-    field.removeValue(0)
+    await field.removeValue(0)
 
     expect(field.getMeta().errors).toStrictEqual([
       'At least 3 names are required',
