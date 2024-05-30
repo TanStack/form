@@ -237,6 +237,117 @@ describe('field api', () => {
     ])
   })
 
+  it('should remove a subfield from an array field correctly', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        people: [] as Array<{ name: string }>,
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'people',
+    })
+
+    const subFieldValidators = {
+      onChange: ({ value }: { value: string }) =>
+        value.length === 0 ? 'Required' : null,
+    }
+
+    const subField1 = new FieldApi({
+      form: field.form,
+      name: 'people[0].name',
+      defaultValue: '',
+      validators: subFieldValidators,
+    })
+
+    const subField2 = new FieldApi({
+      form: field.form,
+      name: 'people[1].name',
+      defaultValue: 'hello',
+      validators: subFieldValidators,
+    })
+
+    const subField3 = new FieldApi({
+      form: field.form,
+      name: 'people[2].name',
+      defaultValue: '',
+      validators: subFieldValidators,
+    })
+
+    const subField4 = new FieldApi({
+      form: field.form,
+      name: 'people[3].name',
+      defaultValue: 'world',
+      validators: subFieldValidators,
+    })
+
+    ;[form, field, subField1, subField2, subField3, subField4].forEach((f) =>
+      f.mount(),
+    )
+
+    await form.handleSubmit()
+
+    expect(subField1.state.meta.errorMap.onChange).toStrictEqual('Required')
+    expect(subField2.state.meta.errorMap.onChange).toStrictEqual(undefined)
+    expect(subField3.state.meta.errorMap.onChange).toStrictEqual('Required')
+    expect(subField4.state.meta.errorMap.onChange).toStrictEqual(undefined)
+
+    await field.removeValue(0 /* subField1 */, { touch: true })
+
+    expect(subField1.state.value).toBe('hello')
+    expect(subField1.state.meta.errorMap.onChange).toStrictEqual(undefined)
+    expect(subField2.state.value).toBe('')
+    expect(subField2.state.meta.errorMap.onChange).toStrictEqual('Required')
+    expect(subField3.state.value).toBe('world')
+    expect(subField3.state.meta.errorMap.onChange).toStrictEqual(undefined)
+    expect(form.getFieldInfo('people[0].name').instance?.state.value).toBe(
+      'hello',
+    )
+    expect(form.getFieldInfo('people[1].name').instance?.state.value).toBe('')
+    expect(form.getFieldInfo('people[2].name').instance?.state.value).toBe(
+      'world',
+    )
+  })
+
+  it('should remove remove the last subfield from an array field correctly', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        people: [] as Array<{ name: string }>,
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'people',
+    })
+
+    const subFieldValidators = {
+      onChange: ({ value }: { value: string }) =>
+        value.length === 0 ? 'Required' : null,
+    }
+
+    const subField1 = new FieldApi({
+      form: field.form,
+      name: 'people[0].name',
+      defaultValue: '',
+      validators: subFieldValidators,
+    })
+
+    ;[form, field, subField1].forEach((f) => f.mount())
+
+    await form.handleSubmit()
+
+    expect(subField1.state.meta.errorMap.onChange).toStrictEqual('Required')
+
+    await field.removeValue(0 /* subField1 */, { touch: true })
+
+    expect(subField1.state.value).toBe(undefined)
+    expect(subField1.state.meta.errorMap.onChange).toStrictEqual(undefined)
+
+    expect(form.state.canSubmit).toBe(true)
+  })
+
   it('should swap a value from an array value correctly', () => {
     const form = new FormApi({
       defaultValues: {

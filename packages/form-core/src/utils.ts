@@ -23,6 +23,7 @@ export function functionalUpdate<TInput, TOutput = TInput>(
 export function getBy(obj: any, path: any) {
   const pathObj = makePathArray(path)
   return pathObj.reduce((current: any, pathPart: any) => {
+    if (current === null) return null
     if (typeof current !== 'undefined') {
       return current[pathPart]
     }
@@ -45,6 +46,9 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
 
     if (typeof key === 'string') {
       if (typeof parent === 'object') {
+        if (parent === null) {
+          parent = {}
+        }
         return {
           ...parent,
           [key]: doSet(parent[key]),
