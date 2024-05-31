@@ -188,6 +188,33 @@ describe('field api', () => {
     ])
   })
 
+  it("should not run onChange validation when inserting an array fields value if the field isn't touched", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['test'],
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'names',
+      validators: {
+        onChange: ({ value }) => {
+          if (value.length < 3) {
+            return 'At least 3 names are required'
+          }
+          return
+        },
+      },
+    })
+    field.mount()
+
+    field.insertValue(1, 'other')
+
+    expect(field.getMeta().errors).toStrictEqual([])
+  })
+
   it('should remove a value from an array value correctly', () => {
     const form = new FormApi({
       defaultValues: {

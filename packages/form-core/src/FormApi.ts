@@ -378,12 +378,6 @@ export class FormApi<
     const fieldInstance = this.fieldInfo[field]?.instance
     if (!fieldInstance) return []
 
-    // If the field is not touched (same logic as in validateAllFields)
-    if (!fieldInstance.state.meta.isTouched) {
-      // Mark it as touched
-      fieldInstance.setMeta((prev) => ({ ...prev, isTouched: true }))
-    }
-
     return fieldInstance.validate(cause)
   }
 
