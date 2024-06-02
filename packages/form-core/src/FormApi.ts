@@ -370,6 +370,42 @@ export class FormApi<
     return fieldErrorMapMap.flat()
   }
 
+  validateArrayFieldsStartingFrom = async <TField extends DeepKeys<TFormData>>(
+    field: TField,
+    index: number,
+    cause: ValidationCause,
+  ) => {
+    const currentValue = this.getFieldValue(field)
+
+    const lastIndex = Array.isArray(currentValue)
+      ? Math.max(currentValue.length - 1, 0)
+      : null
+
+    // We have to validate all fields that have shifted (at least the current field)
+    const fieldKeysToValidate = [`${field}[${index}]`]
+    for (let i = index + 1; i <= (lastIndex ?? 0); i++) {
+      fieldKeysToValidate.push(`${field}[${i}]`)
+    }
+
+    // We also have to include all fields that are nested in the shifted fields
+    const fieldsToValidate = Object.keys(this.fieldInfo).filter((fieldKey) =>
+      fieldKeysToValidate.some((key) => fieldKey.startsWith(key)),
+    ) as DeepKeys<TFormData>[]
+
+    // Validate the fields
+    const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
+    this.store.batch(() => {
+      fieldsToValidate.forEach((nestedField) => {
+        fieldValidationPromises.push(
+          Promise.resolve().then(() => this.validateField(nestedField, cause)),
+        )
+      })
+    })
+
+    const fieldErrorMapMap = await Promise.all(fieldValidationPromises)
+    return fieldErrorMapMap.flat()
+  }
+
   validateField = <TField extends DeepKeys<TFormData>>(
     field: TField,
     cause: ValidationCause,
