@@ -747,11 +747,10 @@ export class FormApi<
       (prev) => [...(Array.isArray(prev) ? prev : []), value] as any,
       opts,
     )
-    this.validate('change')
     this.validateField(field, 'change')
   }
 
-  insertFieldValue = <TField extends DeepKeys<TFormData>>(
+  insertFieldValue = async <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,
     value: DeepValue<TFormData, TField> extends any[]
@@ -768,8 +767,10 @@ export class FormApi<
       },
       opts,
     )
-    this.validate('change')
-    this.validateField(field, 'change')
+
+    // Validate the whole array + all fields that have shifted
+    await this.validateField(field, 'change')
+    await this.validateArrayFieldsStartingFrom(field, index, 'change')
   }
 
   removeFieldValue = async <TField extends DeepKeys<TFormData>>(
@@ -803,9 +804,9 @@ export class FormApi<
       fieldsToDelete.forEach((f) => this.deleteField(f as TField))
     }
 
-    this.validate('change')
-    // Here all fields have to be validated, since the indexes in the meta map have changed
-    await this.validateAllFields('change')
+    // Validate the whole array + all fields that have shifted
+    await this.validateField(field, 'change')
+    await this.validateArrayFieldsStartingFrom(field, index, 'change')
   }
 
   swapFieldValues = <TField extends DeepKeys<TFormData>>(
@@ -818,8 +819,12 @@ export class FormApi<
       const prev2 = prev[index2]!
       return setBy(setBy(prev, `${index1}`, prev2), `${index2}`, prev1)
     })
-    this.validate('change')
+
+    // Validate the whole array
     this.validateField(field, 'change')
+    // Validate the swapped fields
+    this.validateField(`${field}[${index1}]` as DeepKeys<TFormData>, 'change')
+    this.validateField(`${field}[${index2}]` as DeepKeys<TFormData>, 'change')
   }
 
   moveFieldValues = <TField extends DeepKeys<TFormData>>(
@@ -831,8 +836,12 @@ export class FormApi<
       prev.splice(index2, 0, prev.splice(index1, 1)[0])
       return prev
     })
-    this.validate('change')
+
+    // Validate the whole array
     this.validateField(field, 'change')
+    // Validate the moved fields
+    this.validateField(`${field}[${index1}]` as DeepKeys<TFormData>, 'change')
+    this.validateField(`${field}[${index2}]` as DeepKeys<TFormData>, 'change')
   }
 }
 
