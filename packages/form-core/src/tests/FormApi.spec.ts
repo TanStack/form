@@ -324,6 +324,25 @@ describe('form api', () => {
     expect(form.getFieldValue('names')).toStrictEqual(['test', 'other'])
   })
 
+  it("should run onChange validation when pushing an array field's value", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['test'],
+      },
+      validators: {
+        onChange: ({ value }) =>
+          value.names.length > 3 ? undefined : 'At least 3 names are required',
+      },
+    })
+    form.mount()
+    // Since validation runs through the field, a field must be mounted for that array
+    new FieldApi({ form, name: 'names' }).mount()
+
+    form.pushFieldValue('names', 'other')
+
+    expect(form.state.errors).toStrictEqual(['At least 3 names are required'])
+  })
+
   it("should insert an array field's value", () => {
     const form = new FormApi({
       defaultValues: {
@@ -334,6 +353,56 @@ describe('form api', () => {
     form.insertFieldValue('names', 1, 'other')
 
     expect(form.getFieldValue('names')).toStrictEqual(['one', 'other', 'three'])
+  })
+
+  it("should run onChange validation when inserting an array field's value", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['test'],
+      },
+      validators: {
+        onChange: ({ value }) =>
+          value.names.length > 3 ? undefined : 'At least 3 names are required',
+      },
+    })
+    form.mount()
+    // Since validation runs through the field, a field must be mounted for that array
+    new FieldApi({ form, name: 'names' }).mount()
+
+    form.insertFieldValue('names', 1, 'other')
+
+    expect(form.state.errors).toStrictEqual(['At least 3 names are required'])
+  })
+
+  it("should validate all shifted fields when inserting an array field's value", async () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: [{ first: 'test' }, { first: 'test2' }],
+      },
+      validators: {
+        onChange: ({ value }) =>
+          value.names.length > 3 ? undefined : 'At least 3 names are required',
+      },
+    })
+    form.mount()
+    // Since validation runs through the field, a field must be mounted for that array
+    new FieldApi({ form, name: 'names' }).mount()
+
+    const field1 = new FieldApi({
+      form,
+      name: 'names[0].first',
+      defaultValue: 'test',
+      validators: {
+        onChange: ({ value }) => value !== 'test' && 'Invalid value',
+      },
+    })
+    field1.mount()
+
+    expect(field1.state.meta.errors).toStrictEqual([])
+
+    await form.insertFieldValue('names', 0, { first: 'other' })
+
+    expect(field1.state.meta.errors).toStrictEqual(['Invalid value'])
   })
 
   it("should remove an array field's value", () => {
@@ -348,6 +417,79 @@ describe('form api', () => {
     expect(form.getFieldValue('names')).toStrictEqual(['one', 'three'])
   })
 
+  it("should run onChange validation when removing an array field's value", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['test'],
+      },
+      validators: {
+        onChange: ({ value }) =>
+          value.names.length > 1 ? undefined : 'At least 1 name is required',
+      },
+    })
+    form.mount()
+    // Since validation runs through the field, a field must be mounted for that array
+    new FieldApi({ form, name: 'names' }).mount()
+
+    form.removeFieldValue('names', 0)
+
+    expect(form.state.errors).toStrictEqual(['At least 1 name is required'])
+  })
+
+  it("should validate following fields when removing an array field's value", async () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['test', 'test2', 'test3'],
+      },
+      validators: {
+        onChange: ({ value }) =>
+          value.names.length > 1 ? undefined : 'At least 1 name is required',
+      },
+    })
+    form.mount()
+    // Since validation runs through the field, a field must be mounted for that array
+    new FieldApi({ form, name: 'names' }).mount()
+
+    const field1 = new FieldApi({
+      form,
+      name: 'names[0]',
+      defaultValue: 'test',
+      validators: {
+        onChange: ({ value }) => value !== 'test' && 'Invalid value',
+      },
+    })
+    field1.mount()
+    const field2 = new FieldApi({
+      form,
+      name: 'names[1]',
+      defaultValue: 'test2',
+      validators: {
+        onChange: ({ value }) => value !== 'test2' && 'Invalid value',
+      },
+    })
+    field2.mount()
+    const field3 = new FieldApi({
+      form,
+      name: 'names[2]',
+      defaultValue: 'test3',
+      validators: {
+        onChange: ({ value }) => value !== 'test3' && 'Invalid value',
+      },
+    })
+    field3.mount()
+
+    expect(field1.state.meta.errors).toStrictEqual([])
+    expect(field2.state.meta.errors).toStrictEqual([])
+    expect(field3.state.meta.errors).toStrictEqual([])
+
+    await form.removeFieldValue('names', 1)
+
+    expect(field1.state.meta.errors).toStrictEqual([])
+    expect(field2.state.meta.errors).toStrictEqual(['Invalid value'])
+    // This field does not exist anymore. Therefore, its validation should also not run
+    expect(field3.state.meta.errors).toStrictEqual([])
+  })
+
   it("should swap an array field's value", () => {
     const form = new FormApi({
       defaultValues: {
@@ -355,9 +497,144 @@ describe('form api', () => {
       },
     })
     form.mount()
+    // Since validation runs through the field, a field must be mounted for that array
+    new FieldApi({ form, name: 'names' }).mount()
+
     form.swapFieldValues('names', 1, 2)
 
     expect(form.getFieldValue('names')).toStrictEqual(['one', 'three', 'two'])
+  })
+
+  it("should run onChange validation when swapping an array field's value", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['test', 'test2'],
+      },
+      validators: {
+        onChange: ({ value }) =>
+          value.names.length > 3 ? undefined : 'At least 3 names are required',
+      },
+    })
+    form.mount()
+    // Since validation runs through the field, a field must be mounted for that array
+    new FieldApi({ form, name: 'names' }).mount()
+    expect(form.state.errors).toStrictEqual([])
+
+    form.swapFieldValues('names', 1, 2)
+
+    expect(form.state.errors).toStrictEqual(['At least 3 names are required'])
+  })
+
+  it('should run validation on swapped fields', () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['test', 'test2'],
+      },
+      validators: {
+        onChange: ({ value }) =>
+          value.names.length > 3 ? undefined : 'At least 3 names are required',
+      },
+    })
+    form.mount()
+    // Since validation runs through the field, a field must be mounted for that array
+    new FieldApi({ form, name: 'names' }).mount()
+
+    const field1 = new FieldApi({
+      form,
+      name: 'names[0]',
+      defaultValue: 'test',
+      validators: {
+        onChange: ({ value }) => value !== 'test' && 'Invalid value',
+      },
+    })
+    field1.mount()
+
+    const field2 = new FieldApi({
+      form,
+      name: 'names[1]',
+      defaultValue: 'test2',
+    })
+    field2.mount()
+
+    expect(field1.state.meta.errors).toStrictEqual([])
+    expect(field2.state.meta.errors).toStrictEqual([])
+
+    form.swapFieldValues('names', 0, 1)
+
+    expect(field1.state.meta.errors).toStrictEqual(['Invalid value'])
+    expect(field2.state.meta.errors).toStrictEqual([])
+  })
+
+  it("should move an array field's value", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
+    form.mount()
+    form.moveFieldValues('names', 1, 2)
+
+    expect(form.getFieldValue('names')).toStrictEqual(['one', 'three', 'two'])
+  })
+
+  it("should run onChange validation when moving an array field's value", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['test', 'test2'],
+      },
+      validators: {
+        onChange: ({ value }) =>
+          value.names.length > 3 ? undefined : 'At least 3 names are required',
+      },
+    })
+    form.mount()
+    // Since validation runs through the field, a field must be mounted for that array
+    new FieldApi({ form, name: 'names' }).mount()
+
+    expect(form.state.errors).toStrictEqual([])
+    form.moveFieldValues('names', 0, 1)
+
+    expect(form.state.errors).toStrictEqual(['At least 3 names are required'])
+  })
+
+  it('should run validation on moved fields', () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['test', 'test2'],
+      },
+      validators: {
+        onChange: ({ value }) =>
+          value.names.length > 3 ? undefined : 'At least 3 names are required',
+      },
+    })
+    form.mount()
+    // Since validation runs through the field, a field must be mounted for that array
+    new FieldApi({ form, name: 'names' }).mount()
+
+    const field1 = new FieldApi({
+      form,
+      name: 'names[0]',
+      defaultValue: 'test',
+      validators: {
+        onChange: ({ value }) => value !== 'test' && 'Invalid value',
+      },
+    })
+    field1.mount()
+
+    const field2 = new FieldApi({
+      form,
+      name: 'names[1]',
+      defaultValue: 'test2',
+    })
+    field2.mount()
+
+    expect(field1.state.meta.errors).toStrictEqual([])
+    expect(field2.state.meta.errors).toStrictEqual([])
+
+    form.swapFieldValues('names', 0, 1)
+
+    expect(field1.state.meta.errors).toStrictEqual(['Invalid value'])
+    expect(field2.state.meta.errors).toStrictEqual([])
   })
 
   it('should handle fields inside an array', async () => {
@@ -1049,6 +1326,35 @@ describe('form api', () => {
     await form.validateAllFields('change')
     expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
     await form.validateAllFields('change')
+    expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
+  })
+
+  it('should validate a single field consistently if touched', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onChange: ({ value }) =>
+          value.length > 0 ? undefined : 'first name is required',
+      },
+      defaultMeta: {
+        isTouched: true,
+      },
+    })
+
+    field.mount()
+    form.mount()
+
+    await form.validateField('firstName', 'change')
+    expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
+    await form.validateField('firstName', 'change')
     expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
   })
 
