@@ -1,5 +1,5 @@
 import { safeParse, safeParseAsync } from 'valibot'
-import type { BaseSchema, BaseSchemaAsync } from 'valibot'
+import type { GenericSchema, GenericSchemaAsync } from 'valibot'
 import type { Validator } from '@tanstack/form-core'
 
 export const valibotValidator = (() => {
@@ -16,4 +16,4 @@ export const valibotValidator = (() => {
       return result.issues.map((i) => i.message).join(', ')
     },
   }
-}) as Validator<unknown, BaseSchema | BaseSchemaAsync>
+}) as Validator<unknown, GenericSchema | GenericSchemaAsync>

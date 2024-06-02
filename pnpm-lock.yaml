@@ -1077,8 +1077,8 @@ importers:
         version: link:../form-core
     devDependencies:
       valibot:
-        specifier: ^0.20.1
-        version: 0.20.1
+        specifier: 0.31.0-rc.8
+        version: 0.31.0-rc.8
 
   packages/vue-form:
     dependencies:
@@ -7983,6 +7983,9 @@ packages:
 
   valibot@0.20.1:
     resolution: {integrity: sha512-7lToTLG5wtK76u32gq8dUK0bAw7bknTGbeNSKRJunAC2soGVnNrKngg+38Jjt6FOwH+MshUONHoFz+LgmjeYKQ==}
+
+  valibot@0.31.0-rc.8:
+    resolution: {integrity: sha512-ik5TPVXRi6U6fGyfpiTQS2cMaPgttuOx5gfd0PPcsAZ+ebhMNO6YaoIIasXfa7/IQMYL7VQFPwkHLHh/JpKUQA==}
 
   validate-html-nesting@1.2.2:
     resolution: {integrity: sha512-hGdgQozCsQJMyfK5urgFcWEqsSSrK63Awe0t/IMR0bZ0QMtnuaiHzThW81guu3qx9abLi99NEuiaN6P9gVYsNg==}
@@ -16133,6 +16136,8 @@ snapshots:
   v8flags@4.0.1: {}
 
   valibot@0.20.1: {}
+
+  valibot@0.31.0-rc.8: {}
 
   validate-html-nesting@1.2.2: {}
 

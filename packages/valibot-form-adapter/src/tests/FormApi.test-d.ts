@@ -1,5 +1,5 @@
 import { assertType, it } from 'vitest'
-import { object, string } from 'valibot'
+import * as v from 'valibot'
 import { FieldApi, FormApi } from '@tanstack/form-core'
 import { valibotValidator } from '../validator'
 
@@ -24,7 +24,7 @@ it('should allow a Valibot validator to handle the correct Valibot type', () => 
     form,
     name: 'name',
     validators: {
-      onChange: string(),
+      onChange: v.string(),
     },
   })
 })
@@ -41,7 +41,7 @@ it('should allow a Valibot validator to handle the correct Valibot type on async
     form,
     name: 'name',
     validators: {
-      onChangeAsync: string(),
+      onChangeAsync: v.string(),
     },
   })
 })
@@ -94,7 +94,7 @@ it.skip('should allow not a Valibot validator with the wrong Valibot type', () =
     name: 'name',
     validatorAdapter: valibotValidator,
     validators: {
-      onChange: object({}),
+      onChange: v.object({}),
     },
   })
 })
