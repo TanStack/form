@@ -9,10 +9,10 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@tanstack/vue-form": "^0.20.2",
     "@tanstack/valibot-form-adapter": "^0.20.2",
-    "vue": "^3.3.4",
-    "valibot": "^0.20.1"
+    "@tanstack/vue-form": "^0.20.2",
+    "valibot": "0.31.0-rc.8",
+    "vue": "^3.3.4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
