@@ -477,9 +477,8 @@ export class FieldApi<
     value: TData extends any[] ? TData[number] : never,
   ) => this.form.insertFieldValue(this.name, index, value as any)
 
-  removeValue = async (index: number, opts?: { touch: boolean }) => {
-    await this.form.removeFieldValue(this.name, index, opts)
-  }
+  removeValue = (index: number, opts?: { touch: boolean }) =>
+    this.form.removeFieldValue(this.name, index, opts)
 
   swapValues = (aIndex: number, bIndex: number) =>
     this.form.swapFieldValues(this.name, aIndex, bIndex)
