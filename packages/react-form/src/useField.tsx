@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'rehackt'
+import React, { type FunctionComponent, useState } from 'rehackt'
 import { useStore } from '@tanstack/react-store'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
