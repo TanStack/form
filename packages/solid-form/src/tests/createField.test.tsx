@@ -3,7 +3,7 @@ import { render, waitFor } from '@solidjs/testing-library'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom/vitest'
 import { Index, Show, createEffect } from 'solid-js'
-import { createForm, createFormFactory } from '../index'
+import { createForm } from '../index'
 import { sleep } from './utils'
 
 const user = userEvent.setup()
@@ -15,10 +15,8 @@ describe('createField', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.createForm()
+      const form = createForm<Person>()
 
       return (
         <>
@@ -51,10 +49,8 @@ describe('createField', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.createForm(() => ({
+      const form = createForm<Person>(() => ({
         defaultValues: {
           firstName: 'FirstName',
           lastName: 'LastName',
@@ -93,10 +89,8 @@ describe('createField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.createForm()
+      const form = createForm<Person>()
 
       return (
         <>
@@ -136,10 +130,8 @@ describe('createField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.createForm()
+      const form = createForm<Person>()
 
       return (
         <>
@@ -184,10 +176,8 @@ describe('createField', () => {
     const onChangeError = 'Please enter a different value (onChangeError)'
     const onBlurError = 'Please enter a different value (onBlurError)'
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.createForm()
+      const form = createForm<Person>()
 
       return (
         <>
@@ -235,10 +225,8 @@ describe('createField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.createForm()
+      const form = createForm<Person>()
 
       return (
         <>
@@ -284,10 +272,8 @@ describe('createField', () => {
     const onChangeError = 'Please enter a different value (onChangeError)'
     const onBlurError = 'Please enter a different value (onBlurError)'
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.createForm()
+      const form = createForm<Person>()
 
       return (
         <>
@@ -342,10 +328,9 @@ describe('createField', () => {
     }
     const mockFn = vi.fn()
     const error = 'Please enter a different value'
-    const formFactory = createFormFactory<Person>()
 
     function Comp() {
-      const form = formFactory.createForm()
+      const form = createForm<Person>()
 
       return (
         <>

@@ -21,6 +21,7 @@ export {
   FieldApi,
   functionalUpdate,
   mergeForm,
+  formOptions,
 } from '@tanstack/form-core'
 
 export { useForm } from './useForm'
@@ -28,6 +29,5 @@ export { useForm } from './useForm'
 export type { UseField, FieldComponent } from './useField'
 export { useField, Field } from './useField'
 
-export { formOptions } from './formOptions'
 export { createServerValidate, initialFormState } from './createServerValidate'
 export { useTransform } from './useTransform'
