@@ -11,7 +11,7 @@ export const schema = Schema.String.pipe(
   }),
 )
 
-const delay = Effect.delay('10 millis')
+const delay = Effect.delay('2 millis')
 export const asyncSchema = Schema.transformOrFail(
   Schema.String,
   Schema.String,
