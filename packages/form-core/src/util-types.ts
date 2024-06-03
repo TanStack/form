@@ -1,3 +1,6 @@
+type Nullable<T> = T | null
+type IsNullable<T> = [null] extends [T] ? true : false
+
 export type RequiredByKey<T, K extends keyof T> = Omit<T, K> &
   Required<Pick<T, K>>
 
@@ -96,6 +99,7 @@ export type DeepValue<
   TValue,
   // A string representing the path of the property we're trying to access
   TAccessor,
+  TNullable extends boolean = IsNullable<TValue>,
 > =
   // If TValue is any it will recurse forever, this terminates the recursion
   unknown extends TValue
@@ -122,7 +126,9 @@ export type DeepValue<
             : TAccessor extends `${infer TBefore}.${infer TAfter}`
               ? DeepValue<DeepValue<TValue, TBefore>, TAfter>
               : TAccessor extends string
-                ? TValue[TAccessor]
+                ? TNullable extends true
+                  ? Nullable<TValue[TAccessor]>
+                  : TValue[TAccessor]
                 : never
         : // Do not allow `TValue` to be anything else
           never

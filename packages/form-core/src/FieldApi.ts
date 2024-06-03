@@ -482,7 +482,8 @@ export class FieldApi<
     value: TData extends any[] ? TData[number] : never,
   ) => this.form.replaceFieldValue(this.name, index, value as any)
 
-  removeValue = (index: number) => this.form.removeFieldValue(this.name, index)
+  removeValue = (index: number, opts?: { touch: boolean }) =>
+    this.form.removeFieldValue(this.name, index, opts)
 
   swapValues = (aIndex: number, bIndex: number) =>
     this.form.swapFieldValues(this.name, aIndex, bIndex)

@@ -370,6 +370,59 @@ export class FormApi<
     return fieldErrorMapMap.flat()
   }
 
+  validateArrayFieldsStartingFrom = async <TField extends DeepKeys<TFormData>>(
+    field: TField,
+    index: number,
+    cause: ValidationCause,
+  ) => {
+    const currentValue = this.getFieldValue(field)
+
+    const lastIndex = Array.isArray(currentValue)
+      ? Math.max(currentValue.length - 1, 0)
+      : null
+
+    // We have to validate all fields that have shifted (at least the current field)
+    const fieldKeysToValidate = [`${field}[${index}]`]
+    for (let i = index + 1; i <= (lastIndex ?? 0); i++) {
+      fieldKeysToValidate.push(`${field}[${i}]`)
+    }
+
+    // We also have to include all fields that are nested in the shifted fields
+    const fieldsToValidate = Object.keys(this.fieldInfo).filter((fieldKey) =>
+      fieldKeysToValidate.some((key) => fieldKey.startsWith(key)),
+    ) as DeepKeys<TFormData>[]
+
+    // Validate the fields
+    const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
+    this.store.batch(() => {
+      fieldsToValidate.forEach((nestedField) => {
+        fieldValidationPromises.push(
+          Promise.resolve().then(() => this.validateField(nestedField, cause)),
+        )
+      })
+    })
+
+    const fieldErrorMapMap = await Promise.all(fieldValidationPromises)
+    return fieldErrorMapMap.flat()
+  }
+
+  validateField = <TField extends DeepKeys<TFormData>>(
+    field: TField,
+    cause: ValidationCause,
+  ) => {
+    // eslint-disable-next-line  @typescript-eslint/no-unnecessary-condition
+    const fieldInstance = this.fieldInfo[field]?.instance
+    if (!fieldInstance) return []
+
+    // If the field is not touched (same logic as in validateAllFields)
+    if (!fieldInstance.state.meta.isTouched) {
+      // Mark it as touched
+      fieldInstance.setMeta((prev) => ({ ...prev, isTouched: true }))
+    }
+
+    return fieldInstance.validate(cause)
+  }
+
   // TODO: This code is copied from FieldApi, we should refactor to share
   validateSync = (cause: ValidationCause) => {
     const validates = getSyncValidatorArray(cause, this.options)
@@ -689,14 +742,15 @@ export class FormApi<
       : never,
     opts?: { touch?: boolean },
   ) => {
-    return this.setFieldValue(
+    this.setFieldValue(
       field,
       (prev) => [...(Array.isArray(prev) ? prev : []), value] as any,
       opts,
     )
+    this.validateField(field, 'change')
   }
 
-  insertFieldValue = <TField extends DeepKeys<TFormData>>(
+  insertFieldValue = async <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,
     value: DeepValue<TFormData, TField> extends any[]
@@ -715,9 +769,12 @@ export class FormApi<
       },
       opts,
     )
+
+    // Validate the whole array + all fields that have shifted
+    await this.validateField(field, 'change')
   }
 
-  replaceFieldValue = <TField extends DeepKeys<TFormData>>(
+  replaceFieldValue = async <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,
     value: DeepValue<TFormData, TField> extends any[]
@@ -734,13 +791,23 @@ export class FormApi<
       },
       opts,
     )
+
+    // Validate the whole array + all fields that have shifted
+    await this.validateField(field, 'change')
+    await this.validateArrayFieldsStartingFrom(field, index, 'change')
   }
 
-  removeFieldValue = <TField extends DeepKeys<TFormData>>(
+  removeFieldValue = async <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,
     opts?: { touch?: boolean },
   ) => {
+    const fieldValue = this.getFieldValue(field)
+
+    const lastIndex = Array.isArray(fieldValue)
+      ? Math.max(fieldValue.length - 1, 0)
+      : null
+
     this.setFieldValue(
       field,
       (prev) => {
@@ -750,6 +817,20 @@ export class FormApi<
       },
       opts,
     )
+
+    if (lastIndex !== null) {
+      const start = `${field}[${lastIndex}]`
+      const fieldsToDelete = Object.keys(this.fieldInfo).filter((f) =>
+        f.startsWith(start),
+      )
+
+      // Cleanup the last fields
+      fieldsToDelete.forEach((f) => this.deleteField(f as TField))
+    }
+
+    // Validate the whole array + all fields that have shifted
+    await this.validateField(field, 'change')
+    await this.validateArrayFieldsStartingFrom(field, index, 'change')
   }
 
   swapFieldValues = <TField extends DeepKeys<TFormData>>(
@@ -762,6 +843,12 @@ export class FormApi<
       const prev2 = prev[index2]!
       return setBy(setBy(prev, `${index1}`, prev2), `${index2}`, prev1)
     })
+
+    // Validate the whole array
+    this.validateField(field, 'change')
+    // Validate the swapped fields
+    this.validateField(`${field}[${index1}]` as DeepKeys<TFormData>, 'change')
+    this.validateField(`${field}[${index2}]` as DeepKeys<TFormData>, 'change')
   }
 
   moveFieldValues = <TField extends DeepKeys<TFormData>>(
@@ -773,6 +860,12 @@ export class FormApi<
       prev.splice(index2, 0, prev.splice(index1, 1)[0])
       return prev
     })
+
+    // Validate the whole array
+    this.validateField(field, 'change')
+    // Validate the moved fields
+    this.validateField(`${field}[${index1}]` as DeepKeys<TFormData>, 'change')
+    this.validateField(`${field}[${index2}]` as DeepKeys<TFormData>, 'change')
   }
 }
 
