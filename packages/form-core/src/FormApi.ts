@@ -761,6 +761,30 @@ export class FormApi<
     this.setFieldValue(
       field,
       (prev) => {
+        return [
+          ...(prev as DeepValue<TFormData, TField>[]).slice(0, index),
+          value,
+          ...(prev as DeepValue<TFormData, TField>[]).slice(index),
+        ] as any
+      },
+      opts,
+    )
+
+    // Validate the whole array + all fields that have shifted
+    await this.validateField(field, 'change')
+  }
+
+  replaceFieldValue = async <TField extends DeepKeys<TFormData>>(
+    field: TField,
+    index: number,
+    value: DeepValue<TFormData, TField> extends any[]
+      ? DeepValue<TFormData, TField>[number]
+      : never,
+    opts?: { touch?: boolean },
+  ) => {
+    this.setFieldValue(
+      field,
+      (prev) => {
         return (prev as DeepValue<TFormData, TField>[]).map((d, i) =>
           i === index ? value : d,
         ) as any

@@ -177,7 +177,11 @@ A class representing the Form API. It handles the logic and interactions with th
 - ```tsx
     insertFieldValue<TField extends DeepKeys<TFormData>>(field: TField, index: number, value: DeepValue<TFormData, TField>, opts?: { touch?: boolean })
   ```
-  - Inserts a value into an array field at the specified index.
+  - Inserts a value into an array field at the specified index, shifting the subsequent values to the right.
+- ```tsx
+    replaceFieldValue<TField extends DeepKeys<TFormData>>(field: TField, index: number, value: DeepValue<TFormData, TField>, opts?: { touch?: boolean })
+  ```
+  - Replaces a value into an array field at the specified index.
 - ```tsx
     removeFieldValue<TField extends DeepKeys<TFormData>>(field: TField, index: number, opts?: { touch?: boolean })
   ```

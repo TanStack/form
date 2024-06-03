@@ -324,6 +324,23 @@ describe('form api', () => {
     expect(form.getFieldValue('names')).toStrictEqual(['test', 'other'])
   })
 
+  it("should insert an array field's value as first element", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
+    form.mount()
+    form.insertFieldValue('names', 0, 'other')
+
+    expect(form.getFieldValue('names')).toStrictEqual([
+      'other',
+      'one',
+      'two',
+      'three',
+    ])
+  })
+
   it("should run onChange validation when pushing an array field's value", () => {
     const form = new FormApi({
       defaultValues: {
@@ -352,7 +369,53 @@ describe('form api', () => {
     form.mount()
     form.insertFieldValue('names', 1, 'other')
 
+    expect(form.getFieldValue('names')).toStrictEqual([
+      'one',
+      'other',
+      'two',
+      'three',
+    ])
+  })
+
+  it("should insert an array field's value at the end if the index is higher than the length", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
+    form.mount()
+    form.insertFieldValue('names', 10, 'other')
+
+    expect(form.getFieldValue('names')).toStrictEqual([
+      'one',
+      'two',
+      'three',
+      'other',
+    ])
+  })
+
+  it("should replace an array field's value", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
+    form.mount()
+    form.replaceFieldValue('names', 1, 'other')
+
     expect(form.getFieldValue('names')).toStrictEqual(['one', 'other', 'three'])
+  })
+
+  it("should do nothing when replacing an array field's value with an index that doesn't exist", () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
+    form.mount()
+    form.replaceFieldValue('names', 10, 'other')
+
+    expect(form.getFieldValue('names')).toStrictEqual(['one', 'two', 'three'])
   })
 
   it("should run onChange validation when inserting an array field's value", () => {
@@ -400,7 +463,7 @@ describe('form api', () => {
 
     expect(field1.state.meta.errors).toStrictEqual([])
 
-    await form.insertFieldValue('names', 0, { first: 'other' })
+    await form.replaceFieldValue('names', 0, { first: 'other' })
 
     expect(field1.state.meta.errors).toStrictEqual(['Invalid value'])
   })
