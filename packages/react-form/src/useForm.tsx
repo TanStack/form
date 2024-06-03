@@ -1,6 +1,6 @@
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
-import React, { useState } from 'rehackt'
+import React, { useState } from 'react'
 import { Field, type FieldComponent, type UseField, useField } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type { NoInfer } from '@tanstack/react-store'
