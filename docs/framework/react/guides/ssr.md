@@ -3,6 +3,8 @@ id: ssr
 title: Next.js Usage
 ---
 
+> ❗❗ This feature is highly experimental and is subject to change. Currently, this example [leaks backend code the frontend thought `onServerValidate`](https://github.com/TanStack/form/issues/710). We're are working on changes to the API, and will update this guide when a solution is available.
+
 Before reading this guide, it's suggested you understand how React Server Components and React Server Actions work. [Check out this blog series for more information](https://unicorn-utterances.com/collections/react-beyond-the-render)
 
 
