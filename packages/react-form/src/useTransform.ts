@@ -5,7 +5,7 @@ export function useTransform<
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 >(
   fn: (
-    formBase: FormApi<TFormData, TFormValidator>,
+    formBase: FormApi<any, any>,
   ) => FormApi<TFormData, TFormValidator>,
   deps: unknown[],
 ) {
