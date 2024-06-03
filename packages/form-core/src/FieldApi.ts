@@ -480,6 +480,12 @@ export class FieldApi<
     opts?: { touch?: boolean },
   ) => this.form.insertFieldValue(this.name, index, value as any, opts)
 
+  replaceValue = (
+    index: number,
+    value: TData extends any[] ? TData[number] : never,
+    opts?: { touch?: boolean },
+  ) => this.form.replaceFieldValue(this.name, index, value as any, opts)
+
   removeValue = (index: number, opts?: { touch: boolean }) =>
     this.form.removeFieldValue(this.name, index, opts)
 
