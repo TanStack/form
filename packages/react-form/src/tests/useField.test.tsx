@@ -2,7 +2,7 @@ import * as React from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { createFormFactory, useForm } from '../index'
+import { useForm } from '../index'
 import { sleep } from './utils'
 import type { FieldApi, FormApi } from '../index'
 
@@ -15,14 +15,12 @@ describe('useField', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.useForm({
+      const form = useForm({
         defaultValues: {
           firstName: 'FirstName',
           lastName: 'LastName',
-        },
+        } as Person,
       })
 
       return (
@@ -55,14 +53,12 @@ describe('useField', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.useForm({
+      const form = useForm({
         defaultValues: {
           firstName: 'FirstName',
           lastName: 'LastName',
-        },
+        } as Person,
       })
 
       return (
@@ -97,14 +93,12 @@ describe('useField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.useForm({
+      const form = useForm({
         defaultValues: {
           firstName: '',
           lastName: '',
-        },
+        } as Person,
       })
 
       return (
@@ -144,14 +138,12 @@ describe('useField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.useForm({
+      const form = useForm({
         defaultValues: {
           firstName: '',
           lastName: '',
-        },
+        } as Person,
       })
 
       return (
@@ -194,14 +186,12 @@ describe('useField', () => {
     const onChangeError = 'Please enter a different value (onChangeError)'
     const onBlurError = 'Please enter a different value (onBlurError)'
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.useForm({
+      const form = useForm({
         defaultValues: {
           firstName: '',
           lastName: '',
-        },
+        } as Person,
       })
 
       return (
@@ -250,14 +240,12 @@ describe('useField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.useForm({
+      const form = useForm({
         defaultValues: {
           firstName: '',
           lastName: '',
-        },
+        } as Person,
       })
 
       return (
@@ -304,14 +292,12 @@ describe('useField', () => {
     const onChangeError = 'Please enter a different value (onChangeError)'
     const onBlurError = 'Please enter a different value (onBlurError)'
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.useForm({
+      const form = useForm({
         defaultValues: {
           firstName: '',
           lastName: '',
-        },
+        } as Person,
       })
 
       return (
@@ -367,14 +353,13 @@ describe('useField', () => {
     }
     const mockFn = vi.fn()
     const error = 'Please enter a different value'
-    const formFactory = createFormFactory<Person>()
 
     function Comp() {
-      const form = formFactory.useForm({
+      const form = useForm({
         defaultValues: {
           firstName: '',
           lastName: '',
-        },
+        } as Person,
       })
 
       return (
@@ -421,14 +406,13 @@ describe('useField', () => {
       firstName: string
       lastName: string
     }
-    const formFactory = createFormFactory<Person>()
     let form: FormApi<Person> | null = null
     function Comp() {
-      form = formFactory.useForm({
+      form = useForm({
         defaultValues: {
           firstName: '',
           lastName: '',
-        },
+        } as Person,
       })
       return (
         <>
@@ -464,14 +448,13 @@ describe('useField', () => {
       firstName: string
       lastName: string
     }
-    const formFactory = createFormFactory<Person>()
     let form: FormApi<Person> | null = null
     function Comp() {
-      form = formFactory.useForm({
+      form = useForm({
         defaultValues: {
           firstName: '',
           lastName: '',
-        },
+        } as Person,
       })
       return (
         <>
@@ -908,14 +891,13 @@ describe('useField', () => {
     }
     const mockFn = vi.fn()
     const error = 'Please enter a different value'
-    const formFactory = createFormFactory<Person>()
 
     function Comp() {
-      const form = formFactory.useForm({
+      const form = useForm({
         defaultValues: {
           firstName: '',
           lastName: '',
-        },
+        } as Person,
         validators: {
           onChangeAsyncDebounceMs: 1000000,
           onChangeAsync: async () => {

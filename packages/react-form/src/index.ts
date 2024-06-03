@@ -28,6 +28,6 @@ export { useForm } from './useForm'
 export type { UseField, FieldComponent } from './useField'
 export { useField, Field } from './useField'
 
-export type { FormFactory } from './createFormFactory'
-export { createFormFactory } from './createFormFactory'
+export { formOptions } from './formOptions'
+export { createServerValidate, initialFormState } from './createServerValidate'
 export { useTransform } from './useTransform'

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { createFormFactory, useForm } from '../index'
+import { useForm } from '../index'
 import { sleep } from './utils'
 
 const user = userEvent.setup()
@@ -14,10 +14,8 @@ describe('useForm', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.useForm()
+      const form = useForm<Person>()
 
       return (
         <>
@@ -52,14 +50,12 @@ describe('useForm', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.useForm({
+      const form = useForm({
         defaultValues: {
           firstName: 'FirstName',
           lastName: 'LastName',
-        },
+        } as Person,
       })
 
       return (
@@ -167,14 +163,12 @@ describe('useForm', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.useForm({
+      const form = useForm({
         defaultValues: {
           firstName: '',
           lastName: '',
-        },
+        } as Person,
         validators: {
           onChange() {
             return error
@@ -216,14 +210,12 @@ describe('useForm', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.useForm({
+      const form = useForm({
         defaultValues: {
           firstName: '',
           lastName: '',
-        },
+        } as Person,
         validators: {
           onChange: ({ value }) =>
             value.firstName === 'other' ? error : undefined,
@@ -265,14 +257,12 @@ describe('useForm', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.useForm({
+      const form = useForm({
         defaultValues: {
           firstName: '',
           lastName: '',
-        },
+        } as Person,
         validators: {
           onChange: ({ value }) =>
             value.firstName === 'other' ? error : undefined,
@@ -369,14 +359,12 @@ describe('useForm', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.useForm({
+      const form = useForm({
         defaultValues: {
           firstName: '',
           lastName: '',
-        },
+        } as Person,
         validators: {
           onChangeAsync: async () => {
             await sleep(10)
@@ -423,14 +411,12 @@ describe('useForm', () => {
     const onChangeError = 'Please enter a different value (onChangeError)'
     const onBlurError = 'Please enter a different value (onBlurError)'
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.useForm({
+      const form = useForm({
         defaultValues: {
           firstName: '',
           lastName: '',
-        },
+        } as Person,
         validators: {
           onChangeAsync: async () => {
             await sleep(10)
@@ -487,14 +473,13 @@ describe('useForm', () => {
     }
     const mockFn = vi.fn()
     const error = 'Please enter a different value'
-    const formFactory = createFormFactory<Person>()
 
     function Comp() {
-      const form = formFactory.useForm({
+      const form = useForm({
         defaultValues: {
           firstName: '',
           lastName: '',
-        },
+        } as Person,
         validators: {
           onChangeAsyncDebounceMs: 100,
           onChangeAsync: async () => {

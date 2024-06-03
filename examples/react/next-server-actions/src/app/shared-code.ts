@@ -1,13 +1,10 @@
-import { createFormFactory } from '@tanstack/react-form'
+import { formOptions } from '@tanstack/react-form'
+import { zodValidator } from '@tanstack/zod-form-adapter'
 
-export const formFactory = createFormFactory({
+export const formOpts = formOptions({
   defaultValues: {
     firstName: '',
     age: 0,
   },
-  onServerValidate({ value }) {
-    if (value.age < 12) {
-      return 'Server validation: You must be at least 12 to sign up'
-    }
-  },
+  validatorAdapter: zodValidator
 })

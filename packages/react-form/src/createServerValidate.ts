@@ -37,7 +37,7 @@ export type ValidateFormData<
   info?: Parameters<typeof decode>[1],
 ) => Promise<Partial<FormApi<TFormData, TFormValidator>['state']>>
 
-export const getValidateFormData = <
+export const createServerValidate = <
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 >(
@@ -68,3 +68,10 @@ export const getValidateFormData = <
       errors: onServerError ? [onServerError] : [],
     }
   }) as ValidateFormData<TFormData, TFormValidator>
+
+export const initialFormState = {
+  errorMap: {
+    onServer: undefined,
+  },
+  errors: [],
+}
