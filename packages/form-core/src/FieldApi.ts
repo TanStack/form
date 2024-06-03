@@ -10,6 +10,9 @@ import type {
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
 import type { DeepKeys, DeepValue, NoInfer } from './util-types'
 
+/**
+ * @private
+ */
 export type FieldValidateFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
@@ -25,6 +28,9 @@ export type FieldValidateFn<
   fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
 }) => ValidationError
 
+/**
+ * @private
+ */
 export type FieldValidateOrFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
@@ -63,6 +69,9 @@ export type FieldValidateOrFn<
         TData
       >
 
+/**
+ * @private
+ */
 export type FieldValidateAsyncFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
@@ -79,6 +88,9 @@ export type FieldValidateAsyncFn<
   signal: AbortSignal
 }) => ValidationError | Promise<ValidationError>
 
+/**
+ * @private
+ */
 export type FieldAsyncValidateOrFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
@@ -210,6 +222,9 @@ export interface FieldOptions<
   defaultMeta?: Partial<FieldMeta>
 }
 
+/**
+ * @private
+ */
 export interface FieldApiOptions<
   TParentData,
   TName extends DeepKeys<TParentData>,
@@ -245,6 +260,9 @@ export type FieldState<TData> = {
   meta: FieldMeta
 }
 
+/**
+ * @private
+ */
 export type ResolveName<TParentData> = unknown extends TParentData
   ? string
   : DeepKeys<TParentData>
@@ -268,6 +286,9 @@ export class FieldApi<
     TData
   >['form']
   name!: DeepKeys<TParentData>
+  /**
+   * @private
+   */
   options: FieldApiOptions<
     TParentData,
     TName,
@@ -275,8 +296,14 @@ export class FieldApi<
     TFormValidator,
     TData
   > = {} as any
+  /**
+   * @private
+   */
   store!: Store<FieldState<TData>>
   state!: FieldState<TData>
+  /**
+   * @private
+   */
   prevState!: FieldState<TData>
 
   constructor(
@@ -335,6 +362,9 @@ export class FieldApi<
     this.options = opts as never
   }
 
+  /**
+   * @private
+   */
   runValidator<
     TValue extends { value: TData; fieldApi: FieldApi<any, any, any, any> },
     TType extends 'validate' | 'validateAsync',
@@ -438,6 +468,9 @@ export class FieldApi<
     this.options = opts as never
   }
 
+  /**
+   * @private
+   */
   getValue = (): TData => {
     return this.form.getFieldValue(this.name) as TData
   }
@@ -450,7 +483,14 @@ export class FieldApi<
     this.validate('change')
   }
 
+  /**
+   * @private
+   */
   _getMeta = () => this.form.getFieldMeta(this.name)
+
+  /**
+   * @private
+   */
   getMeta = () =>
     this._getMeta() ??
     ({
@@ -467,6 +507,9 @@ export class FieldApi<
   setMeta = (updater: Updater<FieldMeta>) =>
     this.form.setFieldMeta(this.name, updater)
 
+  /**
+   * @private
+   */
   getInfo = () => this.form.getFieldInfo(this.name)
 
   pushValue = (
@@ -495,6 +538,9 @@ export class FieldApi<
   moveValue = (aIndex: number, bIndex: number, opts?: { touch?: boolean }) =>
     this.form.moveFieldValues(this.name, aIndex, bIndex, opts)
 
+  /**
+   * @private
+   */
   getLinkedFields = (cause: ValidationCause) => {
     const fields = Object.values(this.form.fieldInfo) as FieldInfo<
       any,
@@ -520,6 +566,9 @@ export class FieldApi<
     return linkedFields
   }
 
+  /**
+   * @private
+   */
   validateSync = (cause: ValidationCause) => {
     const validates = getSyncValidatorArray(cause, this.options)
 
@@ -597,6 +646,9 @@ export class FieldApi<
     return { hasErrored }
   }
 
+  /**
+   * @private
+   */
   validateAsync = async (cause: ValidationCause) => {
     const validates = getAsyncValidatorArray(cause, this.options)
 
@@ -717,6 +769,9 @@ export class FieldApi<
     return results.filter(Boolean)
   }
 
+  /**
+   * @private
+   */
   validate = (
     cause: ValidationCause,
   ): ValidationError[] | Promise<ValidationError[]> => {

@@ -19,6 +19,9 @@ import type {
   Validator,
 } from './types'
 
+/**
+ * @private
+ */
 export type FormValidateFn<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
@@ -27,6 +30,9 @@ export type FormValidateFn<
   formApi: FormApi<TFormData, TFormValidator>
 }) => ValidationError
 
+/**
+ * @private
+ */
 export type FormValidateOrFn<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
@@ -34,6 +40,9 @@ export type FormValidateOrFn<
   ? TFN
   : FormValidateFn<TFormData, TFormValidator>
 
+/**
+ * @private
+ */
 export type FormValidateAsyncFn<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
@@ -43,6 +52,9 @@ export type FormValidateAsyncFn<
   signal: AbortSignal
 }) => ValidationError | Promise<ValidationError>
 
+/**
+ * @private
+ */
 export type FormAsyncValidateOrFn<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
@@ -65,6 +77,9 @@ export interface FormValidators<
   onSubmitAsync?: FormAsyncValidateOrFn<TFormData, TFormValidator>
 }
 
+/**
+ * @private
+ */
 export interface FormTransform<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
@@ -96,6 +111,9 @@ export interface FormOptions<
   transform?: FormTransform<TFormData, TFormValidator>
 }
 
+/**
+ * @private
+ */
 export type ValidationMeta = {
   lastAbortController: AbortController
 }
@@ -172,12 +190,23 @@ export class FormApi<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > {
+  /**
+   * @private
+   */
   options: FormOptions<TFormData, TFormValidator> = {}
+  /**
+   * @private
+   */
   store!: Store<FormState<TFormData>>
-  // Do not use __state directly, as it is not reactive.
-  // Please use form.useStore() utility to subscribe to state
+  /**
+   * Do not use `state` directly, as it is not reactive.
+   * Please use form.useStore() utility to subscribe to state
+   */
   state!: FormState<TFormData>
-  // // This carries the context for nested fields
+  /**
+   * This carries the context for nested fields
+   * @private
+   */
   fieldInfo: Record<DeepKeys<TFormData>, FieldInfo<TFormData, TFormValidator>> =
     {} as any
 
@@ -260,6 +289,9 @@ export class FormApi<
     this.update(opts || {})
   }
 
+  /**
+   * @private
+   */
   runValidator<
     TValue extends { value: TFormData; formApi: FormApi<any, any> },
     TType extends 'validate' | 'validateAsync',
@@ -346,6 +378,9 @@ export class FormApi<
     )
   }
 
+  /**
+   * @private
+   */
   validateAllFields = async (cause: ValidationCause) => {
     const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
     this.store.batch(() => {
@@ -370,6 +405,9 @@ export class FormApi<
     return fieldErrorMapMap.flat()
   }
 
+  /**
+   * @private
+   */
   validateArrayFieldsStartingFrom = async <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,
@@ -406,6 +444,9 @@ export class FormApi<
     return fieldErrorMapMap.flat()
   }
 
+  /**
+   * @private
+   */
   validateField = <TField extends DeepKeys<TFormData>>(
     field: TField,
     cause: ValidationCause,
@@ -423,7 +464,10 @@ export class FormApi<
     return fieldInstance.validate(cause)
   }
 
-  // TODO: This code is copied from FieldApi, we should refactor to share
+  /**
+   * TODO: This code is copied from FieldApi, we should refactor to share
+   * @private
+   */
   validateSync = (cause: ValidationCause) => {
     const validates = getSyncValidatorArray(cause, this.options)
     let hasErrored = false as boolean
@@ -480,6 +524,9 @@ export class FormApi<
     return { hasErrored }
   }
 
+  /**
+   * @private
+   */
   validateAsync = async (
     cause: ValidationCause,
   ): Promise<ValidationError[]> => {
@@ -561,6 +608,9 @@ export class FormApi<
     return results.filter(Boolean)
   }
 
+  /**
+   * @private
+   */
   validate = (
     cause: ValidationCause,
   ): ValidationError[] | Promise<ValidationError[]> => {
@@ -575,12 +625,11 @@ export class FormApi<
     return this.validateAsync(cause)
   }
 
+  /**
+   * Check to see that the form and all fields have been touched
+   * If they have not, touch them all and run validation
+   */
   handleSubmit = async () => {
-    // Check to see that the form and all fields have been touched
-    // If they have not, touch them all and run validation
-    // Run form validation
-    // Submit the form
-
     this.store.setState((old) => ({
       ...old,
       // Submission attempts mark the form as not submitted

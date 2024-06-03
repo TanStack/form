@@ -8,6 +8,9 @@ export type Updater<TInput, TOutput = TInput> =
   | TOutput
   | UpdaterFn<TInput, TOutput>
 
+/**
+ * @private
+ */
 export function functionalUpdate<TInput, TOutput = TInput>(
   updater: Updater<TInput, TOutput>,
   input: TInput,
@@ -19,6 +22,7 @@ export function functionalUpdate<TInput, TOutput = TInput>(
 
 /**
  * Get a value from an object using a path, including dot notation.
+ * @private
  */
 export function getBy(obj: any, path: any) {
   const pathObj = makePathArray(path)
@@ -33,6 +37,7 @@ export function getBy(obj: any, path: any) {
 
 /**
  * Set a value on an object using a path, including dot notation.
+ * @private
  */
 export function setBy(obj: any, _path: any, updater: Updater<any>) {
   const path = makePathArray(_path)
@@ -75,6 +80,7 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
 
 /**
  * Delete a field on an object using a path, including dot notation.
+ * @private
  */
 export function deleteBy(obj: any, _path: any) {
   const path = makePathArray(_path)
@@ -130,6 +136,9 @@ const reFindMultiplePeriods = /\.{2,}/gm
 const intPrefix = '__int__'
 const intReplace = `${intPrefix}$1`
 
+/**
+ * @private
+ */
 export function makePathArray(str: string) {
   if (typeof str !== 'string') {
     throw new Error('Path must be a string.')
@@ -152,6 +161,9 @@ export function makePathArray(str: string) {
     })
 }
 
+/**
+ * @private
+ */
 export function isNonEmptyArray(obj: any) {
   return !(Array.isArray(obj) && obj.length === 0)
 }
@@ -161,12 +173,18 @@ interface AsyncValidatorArrayPartialOptions<T> {
   asyncDebounceMs?: number
 }
 
+/**
+ * @private
+ */
 export interface AsyncValidator<T> {
   cause: ValidationCause
   validate: T
   debounceMs: number
 }
 
+/**
+ * @private
+ */
 export function getAsyncValidatorArray<T>(
   cause: ValidationCause,
   options: AsyncValidatorArrayPartialOptions<T>,
@@ -240,11 +258,17 @@ interface SyncValidatorArrayPartialOptions<T> {
   validators?: T
 }
 
+/**
+ * @private
+ */
 export interface SyncValidator<T> {
   cause: ValidationCause
   validate: T
 }
 
+/**
+ * @private
+ */
 export function getSyncValidatorArray<T>(
   cause: ValidationCause,
   options: SyncValidatorArrayPartialOptions<T>,
