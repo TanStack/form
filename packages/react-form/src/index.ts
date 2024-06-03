@@ -1,28 +1,4 @@
-export type {
-  DeepKeys,
-  DeepValue,
-  FieldApiOptions,
-  FieldInfo,
-  FieldMeta,
-  FieldOptions,
-  FieldState,
-  FormOptions,
-  FormState,
-  RequiredByKey,
-  Updater,
-  UpdaterFn,
-  ValidationCause,
-  ValidationError,
-  ValidationMeta,
-} from '@tanstack/form-core'
-
-export {
-  FormApi,
-  FieldApi,
-  functionalUpdate,
-  mergeForm,
-  formOptions,
-} from '@tanstack/form-core'
+export * from '@tanstack/form-core'
 
 export { useForm } from './useForm'
 

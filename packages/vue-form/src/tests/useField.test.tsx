@@ -3,7 +3,7 @@ import { defineComponent, h } from 'vue'
 import { render, waitFor } from '@testing-library/vue'
 import '@testing-library/jest-dom/vitest'
 import userEvent from '@testing-library/user-event'
-import { createFormFactory, useForm } from '../index'
+import { useForm } from '../index'
 import { sleep } from './utils'
 import type { FieldApi } from '../index'
 
@@ -16,10 +16,8 @@ describe('useField', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person>()
-
     const Comp = defineComponent(() => {
-      const form = formFactory.useForm()
+      const form = useForm<Person>()
 
       return () => (
         <form.Field name="firstName" defaultValue="FirstName">
@@ -53,10 +51,8 @@ describe('useField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
-
     const Comp = defineComponent(() => {
-      const form = formFactory.useForm()
+      const form = useForm<Person>()
 
       return () => (
         <form.Field
@@ -100,10 +96,8 @@ describe('useField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
-
     const Comp = defineComponent(() => {
-      const form = formFactory.useForm()
+      const form = useForm<Person>()
 
       return () => (
         <form.Field
@@ -148,10 +142,8 @@ describe('useField', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
-
     const Comp = defineComponent(() => {
-      const form = formFactory.useForm()
+      const form = useForm<Person>()
 
       return () => (
         <form.Field
@@ -202,10 +194,9 @@ describe('useField', () => {
 
     const mockFn = vi.fn()
     const error = 'Please enter a different value'
-    const formFactory = createFormFactory<Person>()
 
     const Comp = defineComponent(() => {
-      const form = formFactory.useForm()
+      const form = useForm<Person>()
 
       return () => (
         <form.Field
