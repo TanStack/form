@@ -3,9 +3,13 @@ import * as ArrayFormatter from '@effect/schema/ArrayFormatter'
 import * as Effect from 'effect/Effect'
 import * as Exit from 'effect/Exit'
 import * as Layer from 'effect/Layer'
+import * as Runtime from 'effect/Runtime'
 import * as ManagedRuntime from 'effect/ManagedRuntime'
 import type { ValidationError, Validator } from '@tanstack/form-core'
 
+/**
+ * Creates a validator from a `Layer`
+ */
 export const createValidator = <R>(layer: Layer.Layer<R>) => {
   const runtime = ManagedRuntime.make(layer)
 
@@ -14,32 +18,32 @@ export const createValidator = <R>(layer: Layer.Layer<R>) => {
       { value }: { value: unknown },
       schema: Schema.Schema<any, any, R>,
     ): ValidationError {
-      const exit = runtime.runSyncExit(
+      return runtime.runSyncExit(
         Schema.decodeUnknown(schema)(value).pipe(
           Effect.flip,
           Effect.flatMap(ArrayFormatter.formatError),
           Effect.map((es) => es.map((e) => e.message).join(', ')),
         ),
-      )
-      return Exit.getOrElse(exit, () => undefined)
+      ).pipe(Exit.getOrElse(() => undefined))
     },
     async validateAsync(
       { value }: { value: unknown },
       schema: Schema.Schema<any, any, R>,
     ): Promise<ValidationError> {
-      const exit = await Schema.decodeUnknown(schema)(value).pipe(
+      return Schema.decodeUnknown(schema)(value).pipe(
         Effect.flatMap(() => Effect.void),
         Effect.flip,
         Effect.flatMap(ArrayFormatter.formatError),
         Effect.map((es) => es.map((e) => e.message).join(', ')), // must be joined into 1 string
         runtime.runPromiseExit,
-      )
-
-      return Exit.getOrElse(exit, () => undefined)
+      ).then(Exit.getOrElse(() => undefined))
     },
   })
 
   return validator
 }
 
+/**
+ * Default validator w/o context.
+ */
 export const effectValidator = createValidator(Layer.empty)
