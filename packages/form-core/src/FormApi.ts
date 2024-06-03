@@ -837,12 +837,17 @@ export class FormApi<
     field: TField,
     index1: number,
     index2: number,
+    opts?: { touch?: boolean },
   ) => {
-    this.setFieldValue(field, (prev: any) => {
-      const prev1 = prev[index1]!
-      const prev2 = prev[index2]!
-      return setBy(setBy(prev, `${index1}`, prev2), `${index2}`, prev1)
-    })
+    this.setFieldValue(
+      field,
+      (prev: any) => {
+        const prev1 = prev[index1]!
+        const prev2 = prev[index2]!
+        return setBy(setBy(prev, `${index1}`, prev2), `${index2}`, prev1)
+      },
+      opts,
+    )
 
     // Validate the whole array
     this.validateField(field, 'change')
@@ -855,11 +860,16 @@ export class FormApi<
     field: TField,
     index1: number,
     index2: number,
+    opts?: { touch?: boolean },
   ) => {
-    this.setFieldValue(field, (prev: any) => {
-      prev.splice(index2, 0, prev.splice(index1, 1)[0])
-      return prev
-    })
+    this.setFieldValue(
+      field,
+      (prev: any) => {
+        prev.splice(index2, 0, prev.splice(index1, 1)[0])
+        return prev
+      },
+      opts,
+    )
 
     // Validate the whole array
     this.validateField(field, 'change')
