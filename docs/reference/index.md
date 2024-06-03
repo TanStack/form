@@ -34,7 +34,7 @@ new FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>(opts): 
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:309](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L309)
+[packages/form-core/src/FieldApi.ts:309](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L309)
 
 #### Properties
 
@@ -46,7 +46,7 @@ form: FormApi<TParentData, TFormValidator>;
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:281](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L281)
+[packages/form-core/src/FieldApi.ts:281](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L281)
 
 ##### name
 
@@ -56,7 +56,7 @@ name: unknown extends TParentData ? string : object extends TParentData ? string
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:288](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L288)
+[packages/form-core/src/FieldApi.ts:288](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L288)
 
 ##### state
 
@@ -66,7 +66,7 @@ state: FieldState<TData>;
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:303](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L303)
+[packages/form-core/src/FieldApi.ts:303](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L303)
 
 #### Methods
 
@@ -82,7 +82,7 @@ handleBlur(): void
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:799](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L799)
+[packages/form-core/src/FieldApi.ts:799](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L799)
 
 ##### handleChange()
 
@@ -100,7 +100,7 @@ handleChange(updater): void
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:795](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L795)
+[packages/form-core/src/FieldApi.ts:795](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L795)
 
 ##### insertValue()
 
@@ -127,7 +127,7 @@ opts?): Promise<void>
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:520](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L520)
+[packages/form-core/src/FieldApi.ts:520](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L520)
 
 ##### mount()
 
@@ -145,7 +145,7 @@ mount(): () => void
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:394](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L394)
+[packages/form-core/src/FieldApi.ts:394](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L394)
 
 ##### moveValue()
 
@@ -172,7 +172,7 @@ moveValue(
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:538](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L538)
+[packages/form-core/src/FieldApi.ts:538](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L538)
 
 ##### pushValue()
 
@@ -194,7 +194,7 @@ pushValue(value, opts?): void
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:515](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L515)
+[packages/form-core/src/FieldApi.ts:515](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L515)
 
 ##### removeValue()
 
@@ -216,7 +216,7 @@ removeValue(index, opts?): Promise<void>
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:532](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L532)
+[packages/form-core/src/FieldApi.ts:532](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L532)
 
 ##### replaceValue()
 
@@ -243,7 +243,7 @@ opts?): Promise<void>
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:526](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L526)
+[packages/form-core/src/FieldApi.ts:526](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L526)
 
 ##### setMeta()
 
@@ -261,7 +261,7 @@ setMeta(updater): void
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:507](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L507)
+[packages/form-core/src/FieldApi.ts:507](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L507)
 
 ##### setValue()
 
@@ -285,7 +285,7 @@ setValue(updater, options?): void
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:478](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L478)
+[packages/form-core/src/FieldApi.ts:478](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L478)
 
 ##### swapValues()
 
@@ -312,7 +312,7 @@ swapValues(
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:535](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L535)
+[packages/form-core/src/FieldApi.ts:535](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L535)
 
 ##### update()
 
@@ -330,11 +330,17 @@ update(opts): void
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:442](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L442)
+[packages/form-core/src/FieldApi.ts:442](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L442)
 
 ***
 
 ### FormApi\<TFormData, TFormValidator\>
+
+A class representing the Form API. It handles the logic and interactions with the form state.
+
+Normally, you will not need to create a new `FormApi` instance directly. Instead, you will use a framework
+hook/function like `useForm` or `createForm` to create a new instance for you that uses your framework's reactivity model.
+However, if you need to create a new instance manually, you can do so by calling the `new FormApi` constructor.
 
 #### Type parameters
 
@@ -350,6 +356,8 @@ update(opts): void
 new FormApi<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormValidator>
 ```
 
+Constructs a new `FormApi` instance with the given form options.
+
 ###### Parameters
 
 • **opts?**: [`FormOptions`](index.md#formoptionstformdatatformvalidator)\<`TFormData`, `TFormValidator`\>
@@ -360,19 +368,33 @@ new FormApi<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormValidator
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:215](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L215)
+[packages/form-core/src/FormApi.ts:344](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L344)
 
 #### Properties
 
-##### prevTransformArray
+##### fieldInfo
 
 ```ts
-prevTransformArray: unknown[] = [];
+fieldInfo: Record<unknown extends TFormData ? string : object extends TFormData ? string : TFormData extends readonly any[] & IsTuple<TFormData> ? PrefixTupleAccessor<TFormData<TFormData>, AllowedIndexes<TFormData<TFormData>, never>, []> : TFormData extends any[] ? PrefixArrayAccessor<TFormData<TFormData>, [any]> : TFormData extends Date ? never : TFormData extends object ? PrefixObjectAccessor<TFormData<TFormData>, []> : TFormData extends string | number | bigint | boolean ? "" : never, FieldInfo<TFormData, TFormValidator>>;
 ```
+
+A record of field information for each field in the form.
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:213](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L213)
+[packages/form-core/src/FormApi.ts:333](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L333)
+
+##### options
+
+```ts
+options: FormOptions<TFormData, TFormValidator> = {};
+```
+
+The options for the form.
+
+###### Source
+
+[packages/form-core/src/FormApi.ts:317](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L317)
 
 ##### state
 
@@ -380,12 +402,27 @@ prevTransformArray: unknown[] = [];
 state: FormState<TFormData>;
 ```
 
+The current state of the form.
+
+**Note:**
 Do not use `state` directly, as it is not reactive.
 Please use form.useStore() utility to subscribe to state
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:205](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L205)
+[packages/form-core/src/FormApi.ts:329](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L329)
+
+##### store
+
+```ts
+store: Store<FormState<TFormData>, (cb) => FormState<TFormData>>;
+```
+
+A [TanStack Store instance](https://tanstack.com/store/latest/docs/reference/Store) that keeps track of the form's state.
+
+###### Source
+
+[packages/form-core/src/FormApi.ts:321](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L321)
 
 #### Methods
 
@@ -409,13 +446,15 @@ deleteField<TField>(field): void
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:776](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L776)
+[packages/form-core/src/FormApi.ts:925](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L925)
 
 ##### getFieldInfo()
 
 ```ts
 getFieldInfo<TField>(field): FieldInfo<TFormData, TFormValidator>
 ```
+
+Gets the field info of the specified field.
 
 ###### Type parameters
 
@@ -431,13 +470,15 @@ getFieldInfo<TField>(field): FieldInfo<TFormData, TFormValidator>
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:699](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L699)
+[packages/form-core/src/FormApi.ts:842](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L842)
 
 ##### getFieldMeta()
 
 ```ts
 getFieldMeta<TField>(field): undefined | FieldMeta
 ```
+
+Gets the metadata of the specified field.
 
 ###### Type parameters
 
@@ -453,13 +494,15 @@ getFieldMeta<TField>(field): undefined | FieldMeta
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:693](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L693)
+[packages/form-core/src/FormApi.ts:833](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L833)
 
 ##### getFieldValue()
 
 ```ts
 getFieldValue<TField>(field): DeepValue<TFormData, TField, IsNullable<TFormData>>
 ```
+
+Gets the value of the specified field.
 
 ###### Type parameters
 
@@ -475,7 +518,7 @@ getFieldValue<TField>(field): DeepValue<TFormData, TField, IsNullable<TFormData>
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:689](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L689)
+[packages/form-core/src/FormApi.ts:826](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L826)
 
 ##### handleSubmit()
 
@@ -483,8 +526,7 @@ getFieldValue<TField>(field): DeepValue<TFormData, TField, IsNullable<TFormData>
 handleSubmit(): Promise<void>
 ```
 
-Check to see that the form and all fields have been touched
-If they have not, touch them all and run validation
+Handles the form submission, performs validation, and calls the appropriate onSubmit or onInvalidSubmit callbacks.
 
 ###### Returns
 
@@ -492,7 +534,7 @@ If they have not, touch them all and run validation
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:632](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L632)
+[packages/form-core/src/FormApi.ts:766](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L766)
 
 ##### insertFieldValue()
 
@@ -503,6 +545,8 @@ insertFieldValue<TField>(
    value, 
 opts?): Promise<void>
 ```
+
+Inserts a value into an array field at the specified index, shifting the subsequent values to the right.
 
 ###### Type parameters
 
@@ -526,7 +570,7 @@ opts?): Promise<void>
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:802](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L802)
+[packages/form-core/src/FormApi.ts:957](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L957)
 
 ##### mount()
 
@@ -540,7 +584,7 @@ mount(): void
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:313](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L313)
+[packages/form-core/src/FormApi.ts:442](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L442)
 
 ##### moveFieldValues()
 
@@ -551,6 +595,8 @@ moveFieldValues<TField>(
    index2, 
    opts?): void
 ```
+
+Moves the value at the first specified index to the second specified index within an array field.
 
 ###### Type parameters
 
@@ -574,7 +620,7 @@ moveFieldValues<TField>(
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:908](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L908)
+[packages/form-core/src/FormApi.ts:1075](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L1075)
 
 ##### pushFieldValue()
 
@@ -584,6 +630,8 @@ pushFieldValue<TField>(
    value, 
    opts?): void
 ```
+
+Pushes a value into an array field.
 
 ###### Type parameters
 
@@ -605,7 +653,7 @@ pushFieldValue<TField>(
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:787](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L787)
+[packages/form-core/src/FormApi.ts:939](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L939)
 
 ##### removeFieldValue()
 
@@ -615,6 +663,8 @@ removeFieldValue<TField>(
    index, 
 opts?): Promise<void>
 ```
+
+Removes a value from an array field at the specified index.
 
 ###### Type parameters
 
@@ -636,7 +686,7 @@ opts?): Promise<void>
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:849](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L849)
+[packages/form-core/src/FormApi.ts:1010](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L1010)
 
 ##### replaceFieldValue()
 
@@ -648,6 +698,8 @@ replaceFieldValue<TField>(
 opts?): Promise<void>
 ```
 
+Replaces a value into an array field at the specified index.
+
 ###### Type parameters
 
 • **TField** *extends* `string` \| `number`
@@ -670,7 +722,7 @@ opts?): Promise<void>
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:826](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L826)
+[packages/form-core/src/FormApi.ts:984](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L984)
 
 ##### reset()
 
@@ -678,13 +730,15 @@ opts?): Promise<void>
 reset(): void
 ```
 
+Resets the form state to the default values.
+
 ###### Returns
 
 `void`
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:369](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L369)
+[packages/form-core/src/FormApi.ts:504](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L504)
 
 ##### resetFieldMeta()
 
@@ -706,13 +760,15 @@ resetFieldMeta<TField>(fieldMeta): Record<TField, FieldMeta>
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:730](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L730)
+[packages/form-core/src/FormApi.ts:876](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L876)
 
 ##### setFieldMeta()
 
 ```ts
 setFieldMeta<TField>(field, updater): void
 ```
+
+Updates the metadata of the specified field.
 
 ###### Type parameters
 
@@ -730,7 +786,7 @@ setFieldMeta<TField>(field, updater): void
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:715](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L715)
+[packages/form-core/src/FormApi.ts:861](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L861)
 
 ##### setFieldValue()
 
@@ -740,6 +796,8 @@ setFieldValue<TField>(
    updater, 
    opts?): void
 ```
+
+Sets the value of the specified field and optionally updates the touched state.
 
 ###### Type parameters
 
@@ -761,7 +819,7 @@ setFieldValue<TField>(
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:751](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L751)
+[packages/form-core/src/FormApi.ts:900](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L900)
 
 ##### swapFieldValues()
 
@@ -772,6 +830,8 @@ swapFieldValues<TField>(
    index2, 
    opts?): void
 ```
+
+Swaps the values at the specified indices within an array field.
 
 ###### Type parameters
 
@@ -795,13 +855,15 @@ swapFieldValues<TField>(
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:885](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L885)
+[packages/form-core/src/FormApi.ts:1049](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L1049)
 
 ##### update()
 
 ```ts
 update(options?): void
 ```
+
+Updates the form options and form state.
 
 ###### Parameters
 
@@ -813,7 +875,84 @@ update(options?): void
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:332](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L332)
+[packages/form-core/src/FormApi.ts:464](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L464)
+
+##### validateAllFields()
+
+```ts
+validateAllFields(cause): Promise<ValidationError[]>
+```
+
+Validates all fields in the form using the correct handlers for a given validation type.
+
+###### Parameters
+
+• **cause**: `ValidationCause`
+
+###### Returns
+
+`Promise`\<[`ValidationError`](index.md#validationerror)[]\>
+
+###### Source
+
+[packages/form-core/src/FormApi.ts:519](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L519)
+
+##### validateArrayFieldsStartingFrom()
+
+```ts
+validateArrayFieldsStartingFrom<TField>(
+   field, 
+   index, 
+cause): Promise<ValidationError[]>
+```
+
+Validates the children of a specified array in the form starting from a given index until the end using the correct handlers for a given validation type.
+
+###### Type parameters
+
+• **TField** *extends* `string` \| `number`
+
+###### Parameters
+
+• **field**: `TField`
+
+• **index**: `number`
+
+• **cause**: `ValidationCause`
+
+###### Returns
+
+`Promise`\<[`ValidationError`](index.md#validationerror)[]\>
+
+###### Source
+
+[packages/form-core/src/FormApi.ts:546](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L546)
+
+##### validateField()
+
+```ts
+validateField<TField>(field, cause): ValidationError[] | Promise<ValidationError[]>
+```
+
+Validates a specified field in the form using the correct handlers for a given validation type.
+
+###### Type parameters
+
+• **TField** *extends* `string` \| `number`
+
+###### Parameters
+
+• **field**: `TField`
+
+• **cause**: `ValidationCause`
+
+###### Returns
+
+[`ValidationError`](index.md#validationerror)[] \| `Promise`\<[`ValidationError`](index.md#validationerror)[]\>
+
+###### Source
+
+[packages/form-core/src/FormApi.ts:585](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L585)
 
 ## Interfaces
 
@@ -841,7 +980,7 @@ optional asyncAlways: boolean;
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:212](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L212)
+[packages/form-core/src/FieldApi.ts:212](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L212)
 
 ##### asyncDebounceMs?
 
@@ -851,7 +990,7 @@ optional asyncDebounceMs: number;
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:211](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L211)
+[packages/form-core/src/FieldApi.ts:211](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L211)
 
 ##### defaultMeta?
 
@@ -861,7 +1000,7 @@ optional defaultMeta: Partial<FieldMeta>;
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:222](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L222)
+[packages/form-core/src/FieldApi.ts:222](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L222)
 
 ##### defaultValue?
 
@@ -871,7 +1010,7 @@ optional defaultValue: NoInfer<TData>;
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:210](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L210)
+[packages/form-core/src/FieldApi.ts:210](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L210)
 
 ##### name
 
@@ -881,7 +1020,7 @@ name: TName;
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:209](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L209)
+[packages/form-core/src/FieldApi.ts:209](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L209)
 
 ##### preserveValue?
 
@@ -891,7 +1030,7 @@ optional preserveValue: boolean;
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:213](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L213)
+[packages/form-core/src/FieldApi.ts:213](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L213)
 
 ##### validatorAdapter?
 
@@ -901,7 +1040,7 @@ optional validatorAdapter: TFieldValidator;
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:214](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L214)
+[packages/form-core/src/FieldApi.ts:214](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L214)
 
 ##### validators?
 
@@ -911,7 +1050,7 @@ optional validators: FieldValidators<TParentData, TName, TFieldValidator, TFormV
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:215](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L215)
+[packages/form-core/src/FieldApi.ts:215](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L215)
 
 ***
 
@@ -939,7 +1078,7 @@ optional onBlur: FieldValidateOrFn<TParentData, TName, TFieldValidator, TFormVal
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:166](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L166)
+[packages/form-core/src/FieldApi.ts:166](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L166)
 
 ##### onBlurAsync?
 
@@ -949,7 +1088,7 @@ optional onBlurAsync: FieldAsyncValidateOrFn<TParentData, TName, TFieldValidator
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:173](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L173)
+[packages/form-core/src/FieldApi.ts:173](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L173)
 
 ##### onBlurAsyncDebounceMs?
 
@@ -959,7 +1098,7 @@ optional onBlurAsyncDebounceMs: number;
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:180](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L180)
+[packages/form-core/src/FieldApi.ts:180](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L180)
 
 ##### onBlurListenTo?
 
@@ -969,7 +1108,7 @@ optional onBlurListenTo: unknown extends TParentData ? string : object extends T
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:181](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L181)
+[packages/form-core/src/FieldApi.ts:181](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L181)
 
 ##### onChange?
 
@@ -979,7 +1118,7 @@ optional onChange: FieldValidateOrFn<TParentData, TName, TFieldValidator, TFormV
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:150](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L150)
+[packages/form-core/src/FieldApi.ts:150](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L150)
 
 ##### onChangeAsync?
 
@@ -989,7 +1128,7 @@ optional onChangeAsync: FieldAsyncValidateOrFn<TParentData, TName, TFieldValidat
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:157](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L157)
+[packages/form-core/src/FieldApi.ts:157](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L157)
 
 ##### onChangeAsyncDebounceMs?
 
@@ -999,7 +1138,7 @@ optional onChangeAsyncDebounceMs: number;
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:164](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L164)
+[packages/form-core/src/FieldApi.ts:164](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L164)
 
 ##### onChangeListenTo?
 
@@ -1009,7 +1148,7 @@ optional onChangeListenTo: unknown extends TParentData ? string : object extends
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:165](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L165)
+[packages/form-core/src/FieldApi.ts:165](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L165)
 
 ##### onMount?
 
@@ -1019,7 +1158,7 @@ optional onMount: FieldValidateOrFn<TParentData, TName, TFieldValidator, TFormVa
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:143](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L143)
+[packages/form-core/src/FieldApi.ts:143](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L143)
 
 ##### onSubmit?
 
@@ -1029,7 +1168,7 @@ optional onSubmit: FieldValidateOrFn<TParentData, TName, TFieldValidator, TFormV
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:182](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L182)
+[packages/form-core/src/FieldApi.ts:182](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L182)
 
 ##### onSubmitAsync?
 
@@ -1039,11 +1178,13 @@ optional onSubmitAsync: FieldAsyncValidateOrFn<TParentData, TName, TFieldValidat
 
 ###### Source
 
-[packages/form-core/src/FieldApi.ts:189](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L189)
+[packages/form-core/src/FieldApi.ts:189](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L189)
 
 ***
 
 ### FormOptions\<TFormData, TFormValidator\>
+
+An object representing the options for a form.
 
 #### Type parameters
 
@@ -1059,9 +1200,11 @@ optional onSubmitAsync: FieldAsyncValidateOrFn<TParentData, TName, TFieldValidat
 optional asyncAlways: boolean;
 ```
 
+If true, always run async validation, even when sync validation has produced an error. Defaults to undefined.
+
 ###### Source
 
-[packages/form-core/src/FormApi.ts:99](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L99)
+[packages/form-core/src/FormApi.ts:132](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L132)
 
 ##### asyncDebounceMs?
 
@@ -1069,9 +1212,11 @@ optional asyncAlways: boolean;
 optional asyncDebounceMs: number;
 ```
 
+Optional time in milliseconds if you want to introduce a delay before firing off an async action.
+
 ###### Source
 
-[packages/form-core/src/FormApi.ts:100](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L100)
+[packages/form-core/src/FormApi.ts:136](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L136)
 
 ##### defaultState?
 
@@ -1079,9 +1224,11 @@ optional asyncDebounceMs: number;
 optional defaultState: Partial<FormState<TFormData>>;
 ```
 
+The default state for the form.
+
 ###### Source
 
-[packages/form-core/src/FormApi.ts:98](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L98)
+[packages/form-core/src/FormApi.ts:128](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L128)
 
 ##### defaultValues?
 
@@ -1089,15 +1236,19 @@ optional defaultState: Partial<FormState<TFormData>>;
 optional defaultValues: TFormData;
 ```
 
+Set initial values for your form.
+
 ###### Source
 
-[packages/form-core/src/FormApi.ts:97](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L97)
+[packages/form-core/src/FormApi.ts:124](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L124)
 
 ##### onSubmit()?
 
 ```ts
 optional onSubmit: (props) => any;
 ```
+
+A function to be called when the form is submitted, what should happen once the user submits a valid form returns `any` or a promise `Promise<any>`
 
 ###### Parameters
 
@@ -1113,13 +1264,15 @@ optional onSubmit: (props) => any;
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:103](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L103)
+[packages/form-core/src/FormApi.ts:148](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L148)
 
 ##### onSubmitInvalid()?
 
 ```ts
 optional onSubmitInvalid: (props) => void;
 ```
+
+Specify an action for scenarios where the user tries to submit an invalid form.
 
 ###### Parameters
 
@@ -1135,7 +1288,7 @@ optional onSubmitInvalid: (props) => void;
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:107](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L107)
+[packages/form-core/src/FormApi.ts:155](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L155)
 
 ##### transform?
 
@@ -1145,7 +1298,7 @@ optional transform: FormTransform<TFormData, TFormValidator>;
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:111](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L111)
+[packages/form-core/src/FormApi.ts:159](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L159)
 
 ##### validatorAdapter?
 
@@ -1153,9 +1306,11 @@ optional transform: FormTransform<TFormData, TFormValidator>;
 optional validatorAdapter: TFormValidator;
 ```
 
+A validator adapter to support usage of extra validation types (IE: Zod, Yup, or Valibot usage)
+
 ###### Source
 
-[packages/form-core/src/FormApi.ts:101](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L101)
+[packages/form-core/src/FormApi.ts:140](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L140)
 
 ##### validators?
 
@@ -1163,9 +1318,11 @@ optional validatorAdapter: TFormValidator;
 optional validators: FormValidators<TFormData, TFormValidator>;
 ```
 
+A list of validators to pass to the form
+
 ###### Source
 
-[packages/form-core/src/FormApi.ts:102](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L102)
+[packages/form-core/src/FormApi.ts:144](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L144)
 
 ***
 
@@ -1185,9 +1342,11 @@ optional validators: FormValidators<TFormData, TFormValidator>;
 optional onBlur: FormValidateOrFn<TFormData, TFormValidator>;
 ```
 
+Optional function that validates the form data when a field loses focus, returns a ValidationError
+
 ###### Source
 
-[packages/form-core/src/FormApi.ts:73](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L73)
+[packages/form-core/src/FormApi.ts:88](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L88)
 
 ##### onBlurAsync?
 
@@ -1195,9 +1354,11 @@ optional onBlur: FormValidateOrFn<TFormData, TFormValidator>;
 optional onBlurAsync: FormAsyncValidateOrFn<TFormData, TFormValidator>;
 ```
 
+Optional onBlur asynchronous validation method for when a field loses focus return a `ValidationError` or a promise of `Promise<ValidationError>`
+
 ###### Source
 
-[packages/form-core/src/FormApi.ts:74](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L74)
+[packages/form-core/src/FormApi.ts:92](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L92)
 
 ##### onBlurAsyncDebounceMs?
 
@@ -1205,9 +1366,11 @@ optional onBlurAsync: FormAsyncValidateOrFn<TFormData, TFormValidator>;
 optional onBlurAsyncDebounceMs: number;
 ```
 
+The default time in milliseconds that if set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds.
+
 ###### Source
 
-[packages/form-core/src/FormApi.ts:75](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L75)
+[packages/form-core/src/FormApi.ts:96](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L96)
 
 ##### onChange?
 
@@ -1215,9 +1378,11 @@ optional onBlurAsyncDebounceMs: number;
 optional onChange: FormValidateOrFn<TFormData, TFormValidator>;
 ```
 
+Optional function that checks the validity of your data whenever a value changes
+
 ###### Source
 
-[packages/form-core/src/FormApi.ts:70](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L70)
+[packages/form-core/src/FormApi.ts:76](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L76)
 
 ##### onChangeAsync?
 
@@ -1225,9 +1390,11 @@ optional onChange: FormValidateOrFn<TFormData, TFormValidator>;
 optional onChangeAsync: FormAsyncValidateOrFn<TFormData, TFormValidator>;
 ```
 
+Optional onChange asynchronous counterpart to onChange. Useful for more complex validation logic that might involve server requests.
+
 ###### Source
 
-[packages/form-core/src/FormApi.ts:71](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L71)
+[packages/form-core/src/FormApi.ts:80](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L80)
 
 ##### onChangeAsyncDebounceMs?
 
@@ -1235,9 +1402,11 @@ optional onChangeAsync: FormAsyncValidateOrFn<TFormData, TFormValidator>;
 optional onChangeAsyncDebounceMs: number;
 ```
 
+The default time in milliseconds that if set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds.
+
 ###### Source
 
-[packages/form-core/src/FormApi.ts:72](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L72)
+[packages/form-core/src/FormApi.ts:84](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L84)
 
 ##### onMount?
 
@@ -1245,9 +1414,11 @@ optional onChangeAsyncDebounceMs: number;
 optional onMount: FormValidateOrFn<TFormData, TFormValidator>;
 ```
 
+Optional function that fires as soon as the component mounts.
+
 ###### Source
 
-[packages/form-core/src/FormApi.ts:69](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L69)
+[packages/form-core/src/FormApi.ts:72](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L72)
 
 ##### onSubmit?
 
@@ -1257,7 +1428,7 @@ optional onSubmit: FormValidateOrFn<TFormData, TFormValidator>;
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:76](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L76)
+[packages/form-core/src/FormApi.ts:97](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L97)
 
 ##### onSubmitAsync?
 
@@ -1267,7 +1438,7 @@ optional onSubmitAsync: FormAsyncValidateOrFn<TFormData, TFormValidator>;
 
 ###### Source
 
-[packages/form-core/src/FormApi.ts:77](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L77)
+[packages/form-core/src/FormApi.ts:98](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L98)
 
 ## Type Aliases
 
@@ -1287,7 +1458,7 @@ The keys of an object or array, deeply nested.
 
 #### Source
 
-[packages/form-core/src/util-types.ts:85](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/util-types.ts#L85)
+[packages/form-core/src/util-types.ts:85](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/util-types.ts#L85)
 
 ***
 
@@ -1309,7 +1480,7 @@ Infer the type of a deeply nested property within an object or an array.
 
 #### Source
 
-[packages/form-core/src/util-types.ts:111](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/util-types.ts#L111)
+[packages/form-core/src/util-types.ts:111](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/util-types.ts#L111)
 
 ***
 
@@ -1318,6 +1489,8 @@ Infer the type of a deeply nested property within an object or an array.
 ```ts
 type FieldInfo<TFormData, TFormValidator>: object;
 ```
+
+An object representing the field information for a specific field within the form.
 
 #### Type parameters
 
@@ -1333,15 +1506,19 @@ type FieldInfo<TFormData, TFormValidator>: object;
 instance: FieldApi<TFormData, any, Validator<unknown, unknown> | undefined, TFormValidator> | null;
 ```
 
+An instance of the FieldAPI.
+
 ##### validationMetaMap
 
 ```ts
 validationMetaMap: Record<ValidationErrorMapKeys, ValidationMeta | undefined>;
 ```
 
+A record of field validation internal handling.
+
 #### Source
 
-[packages/form-core/src/FormApi.ts:121](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L121)
+[packages/form-core/src/FormApi.ts:175](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L175)
 
 ***
 
@@ -1397,7 +1574,7 @@ touchedErrors: ValidationError[];
 
 #### Source
 
-[packages/form-core/src/FieldApi.ts:248](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L248)
+[packages/form-core/src/FieldApi.ts:248](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L248)
 
 ***
 
@@ -1427,7 +1604,7 @@ value: TData;
 
 #### Source
 
-[packages/form-core/src/FieldApi.ts:258](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FieldApi.ts#L258)
+[packages/form-core/src/FieldApi.ts:258](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FieldApi.ts#L258)
 
 ***
 
@@ -1436,6 +1613,8 @@ value: TData;
 ```ts
 type FormState<TFormData>: object;
 ```
+
+An object representing the current state of the form.
 
 #### Type parameters
 
@@ -1449,11 +1628,15 @@ type FormState<TFormData>: object;
 canSubmit: boolean;
 ```
 
+A boolean indicating if the form can be submitted based on its current state.
+
 ##### errorMap
 
 ```ts
 errorMap: ValidationErrorMap;
 ```
+
+The error map for the form itself.
 
 ##### errors
 
@@ -1461,11 +1644,15 @@ errorMap: ValidationErrorMap;
 errors: ValidationError[];
 ```
 
+The error array for the form itself.
+
 ##### fieldMeta
 
 ```ts
 fieldMeta: Record<DeepKeys<TFormData>, FieldMeta>;
 ```
+
+A record of field metadata for each field in the form.
 
 ##### isDirty
 
@@ -1473,11 +1660,15 @@ fieldMeta: Record<DeepKeys<TFormData>, FieldMeta>;
 isDirty: boolean;
 ```
 
+A boolean indicating if any of the form's fields' values have been modified by the user. `True` if the user have modified at least one of the fields. Opposite of `isPristine`.
+
 ##### isFieldsValid
 
 ```ts
 isFieldsValid: boolean;
 ```
+
+A boolean indicating if all the form fields are valid.
 
 ##### isFieldsValidating
 
@@ -1485,11 +1676,15 @@ isFieldsValid: boolean;
 isFieldsValidating: boolean;
 ```
 
+A boolean indicating if any of the form fields are currently validating.
+
 ##### isFormValid
 
 ```ts
 isFormValid: boolean;
 ```
+
+A boolean indicating if the form is valid.
 
 ##### isFormValidating
 
@@ -1497,11 +1692,15 @@ isFormValid: boolean;
 isFormValidating: boolean;
 ```
 
+A boolean indicating if the form is currently validating.
+
 ##### isPristine
 
 ```ts
 isPristine: boolean;
 ```
+
+A boolean indicating if none of the form's fields' values have been modified by the user. `True` if the user have not modified any of the fields. Opposite of `isDirty`.
 
 ##### isSubmitted
 
@@ -1509,11 +1708,15 @@ isPristine: boolean;
 isSubmitted: boolean;
 ```
 
+A boolean indicating if the form has been submitted.
+
 ##### isSubmitting
 
 ```ts
 isSubmitting: boolean;
 ```
+
+A boolean indicating if the form is currently submitting.
 
 ##### isTouched
 
@@ -1521,11 +1724,15 @@ isSubmitting: boolean;
 isTouched: boolean;
 ```
 
+A boolean indicating if any of the form fields have been touched.
+
 ##### isValid
 
 ```ts
 isValid: boolean;
 ```
+
+A boolean indicating if the form and all its fields are valid.
 
 ##### isValidating
 
@@ -1533,11 +1740,15 @@ isValid: boolean;
 isValidating: boolean;
 ```
 
+A boolean indicating if the form or any of its fields are currently validating.
+
 ##### submissionAttempts
 
 ```ts
 submissionAttempts: number;
 ```
+
+A counter for tracking the number of submission attempts.
 
 ##### validationMetaMap
 
@@ -1545,15 +1756,19 @@ submissionAttempts: number;
 validationMetaMap: Record<ValidationErrorMapKeys, ValidationMeta | undefined>;
 ```
 
+An internal mechanism used for keeping track of validation logic in a form.
+
 ##### values
 
 ```ts
 values: TFormData;
 ```
 
+The current values of the form fields.
+
 #### Source
 
-[packages/form-core/src/FormApi.ts:134](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/FormApi.ts#L134)
+[packages/form-core/src/FormApi.ts:197](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L197)
 
 ***
 
@@ -1571,7 +1786,7 @@ type Updater<TInput, TOutput>: TOutput | UpdaterFn<TInput, TOutput>;
 
 #### Source
 
-[packages/form-core/src/utils.ts:7](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/utils.ts#L7)
+[packages/form-core/src/utils.ts:7](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/utils.ts#L7)
 
 ***
 
@@ -1597,7 +1812,7 @@ type UpdaterFn<TInput, TOutput>: (input) => TOutput;
 
 #### Source
 
-[packages/form-core/src/utils.ts:5](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/utils.ts#L5)
+[packages/form-core/src/utils.ts:5](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/utils.ts#L5)
 
 ***
 
@@ -1609,7 +1824,31 @@ type ValidationError: undefined | false | null | string;
 
 #### Source
 
-[packages/form-core/src/types.ts:1](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/types.ts#L1)
+[packages/form-core/src/types.ts:1](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/types.ts#L1)
+
+***
+
+### ValidationMeta
+
+```ts
+type ValidationMeta: object;
+```
+
+An object representing the validation metadata for a field. Not intended for public usage.
+
+#### Type declaration
+
+##### lastAbortController
+
+```ts
+lastAbortController: AbortController;
+```
+
+An abort controller stored in memory to cancel previous async validation attempts.
+
+#### Source
+
+[packages/form-core/src/FormApi.ts:165](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/FormApi.ts#L165)
 
 ## Functions
 
@@ -1637,4 +1876,4 @@ function mergeForm<TFormData, TFormValidator>(baseForm, state): FormApi<TFormDat
 
 #### Source
 
-[packages/form-core/src/mergeForm.ts:36](https://github.com/TanStack/form/blob/4879e324ec0c87c978d4276d590c680f4c8470f1/packages/form-core/src/mergeForm.ts#L36)
+[packages/form-core/src/mergeForm.ts:36](https://github.com/TanStack/form/blob/84c127adebc0df723ee9902b7dc11bed09857506/packages/form-core/src/mergeForm.ts#L36)
