@@ -55,7 +55,7 @@
     "@tanstack/form-core": "workspace:*"
   },
   "devDependencies": {
-    "@effect/schema": "^0.67.14",
-    "effect": "^3.2.5"
+    "@effect/schema": "^0.67.18",
+    "effect": "^3.2.8"
   }
 }

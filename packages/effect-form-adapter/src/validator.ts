@@ -6,6 +6,12 @@ import * as Layer from 'effect/Layer'
 import * as ManagedRuntime from 'effect/ManagedRuntime'
 import type { ValidationError, Validator } from '@tanstack/form-core'
 import { ParseOptions } from '@effect/schema/AST'
+import * as Predicate from 'effect/Predicate'
+
+const isPropertySignature = <S extends Schema.Schema<any, any, any>>(u: unknown): u is Schema.propertySignature<S> =>
+  Predicate.hasProperty(u, Schema.PropertySignatureTypeId)
+
+type EffectValidator<R> = Schema.Schema<any, any, R> | Schema.propertySignature<Schema.Schema<any, any, R>>;
 
 /**
  * Creates a validator from a `Layer`
@@ -13,13 +19,14 @@ import { ParseOptions } from '@effect/schema/AST'
 export const createValidator = <R>(layer: Layer.Layer<R>, parseOptions?: ParseOptions) => {
   const runtime = ManagedRuntime.make(layer)
 
-  const validator: Validator<unknown, Schema.Schema<any, any, R>> = () => ({
+  const validator: Validator<unknown, EffectValidator<R>> = () => ({
     validate(
       { value }: { value: unknown },
-      schema: Schema.Schema<any, any, R>,
+      schema: EffectValidator<R>
     ): ValidationError {
+      const schema_ = isPropertySignature(schema) ? schema.from : schema
       return runtime.runSyncExit(
-        Schema.decodeUnknown(schema, parseOptions)(value).pipe(
+        Schema.decodeUnknown(schema_, parseOptions)(value).pipe(
           Effect.flip,
           Effect.flatMap(ArrayFormatter.formatError),
           Effect.map((es) => es.map((e) => e.message).join(', ')),
@@ -28,9 +35,11 @@ export const createValidator = <R>(layer: Layer.Layer<R>, parseOptions?: ParseOp
     },
     async validateAsync(
       { value }: { value: unknown },
-      schema: Schema.Schema<any, any, R>,
+      schema: EffectValidator<R>
     ): Promise<ValidationError> {
-      return Schema.decodeUnknown(schema, parseOptions)(value).pipe(
+      const schema_ = isPropertySignature(schema) ? schema.from : schema
+
+      return Schema.decodeUnknown(schema_, parseOptions)(value).pipe(
         Effect.flatMap(() => Effect.void),
         Effect.flip,
         Effect.flatMap(ArrayFormatter.formatError),

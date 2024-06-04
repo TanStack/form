@@ -9,7 +9,7 @@ export const schema = Schema.String.pipe(
   Schema.minLength(3, {
     message: () => 'You must have a length of at least 3',
   }),
-)
+).pipe(Schema.propertySignature)
 
 const delay = Effect.delay('2 millis')
 export const asyncSchema = Schema.transformOrFail(
