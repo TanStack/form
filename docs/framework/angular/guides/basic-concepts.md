@@ -116,7 +116,7 @@ export class AppComponent {
 
 ## Validation Adapters
 
-In addition to hand-rolled validation options, we also provide adapters like `@tanstack/zod-form-adapter`, `@tanstack/yup-form-adapter`, and `@tanstack/valibot-form-adapter` to enable usage with common schema validation tools like [Zod](https://zod.dev/), [Yup](https://github.com/jquense/yup), and [Valibot](https://valibot.dev/).
+In addition to hand-rolled validation options, we also provide adapters like `@tanstack/zod-form-adapter`, `@tanstack/yup-form-adapter`, `@tanstack/valibot-form-adapter`, and `@tanstack/effect-form-adapter` to enable usage with common schema validation tools like [Zod](https://zod.dev/), [Yup](https://github.com/jquense/yup), [Valibot](https://valibot.dev/), and [Effect Schema](https://effect.website).
 
 Example:
 
