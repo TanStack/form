@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { FieldApi, FormApi } from '@tanstack/form-core'
-import { createValidator, effectValidator } from '../validator'
+import { createValidatorLayer, effectValidator } from '../validator'
 import {
   asyncSchema,
   ctxLayer,
@@ -92,7 +92,7 @@ describe('field api', () => {
   })
 
   it('Effect error message w/ context', async () => {
-    const customValidator = createValidator(ctxLayer)
+    const customValidator = createValidatorLayer(ctxLayer)
 
     const form = new FormApi({
       defaultValues: {
