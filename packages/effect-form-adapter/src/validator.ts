@@ -4,12 +4,12 @@ import { flow } from "effect/Function"
 import * as ArrayFormatter from '@effect/schema/ArrayFormatter'
 import * as Effect from 'effect/Effect'
 import * as Exit from 'effect/Exit'
-import * as Layer from 'effect/Layer'
 import * as Runtime from 'effect/Runtime'
 import * as ManagedRuntime from 'effect/ManagedRuntime'
-import type { ValidationError, Validator } from '@tanstack/form-core'
-import { ParseOptions } from '@effect/schema/AST'
 import * as Predicate from 'effect/Predicate'
+import type { ParseOptions } from '@effect/schema/AST'
+import type * as Layer from 'effect/Layer'
+import type { ValidationError, Validator } from '@tanstack/form-core'
 
 const isPropertySignature = <S extends Schema.Schema<any, any, any>>(u: unknown): u is Schema.propertySignature<S> =>
   Predicate.hasProperty(u, Schema.PropertySignatureTypeId)
@@ -31,22 +31,22 @@ const validate = <R>(validator: EffectValidator<R>, parseOptions?: ParseOptions)
  */
 export const createValidatorRuntime = <R>(runtime: Runtime.Runtime<R>, parseOptions?: ParseOptions) => {
 
-  const validator: Validator<unknown, EffectValidator<R>> = () => ({
-    validate(
-      { value }: { value: unknown },
-      schema: EffectValidator<R>
-    ): ValidationError {
-      return Runtime.runSync(runtime)(validate(schema, parseOptions)(value))
-    },
-    async validateAsync(
-      { value }: { value: unknown },
-      schema: EffectValidator<R>
-    ): Promise<ValidationError> {
-      return Runtime.runPromise(runtime)(validate(schema, parseOptions)(value))
-    },
-  })
+const validator: Validator<unknown, EffectValidator<R>> = () => ({
+  validate(
+    { value }: { value: unknown },
+    schema: EffectValidator<R>
+  ): ValidationError {
+    return Runtime.runSync(runtime)(validate(schema, parseOptions)(value))
+  },
+  async validateAsync(
+    { value }: { value: unknown },
+    schema: EffectValidator<R>
+  ): Promise<ValidationError> {
+    return Runtime.runPromise(runtime)(validate(schema, parseOptions)(value))
+  },
+})
 
-  return validator;
+return validator;
 }
 
 /**
