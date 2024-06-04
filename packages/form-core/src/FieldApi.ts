@@ -10,6 +10,16 @@ import type {
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
 import type { DeepKeys, DeepValue, NoInfer } from './util-types'
 
+function isValidator(f: any) {
+  // Effect Schemas are classes so they must be handled differently. 
+  // Schema classes have an ast property so we can test for that.
+  if(typeof f === 'function' && f.ast) {
+    return true;
+  }
+
+  return typeof f !== 'function';
+}
+
 export type FieldValidateFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
@@ -350,7 +360,7 @@ export class FieldApi<
       this.options.validatorAdapter,
     ] as const
     for (const adapter of adapters) {
-      if (adapter && typeof props.validate !== 'function') {
+      if (adapter && isValidator(props.validate)) {
         return adapter()[props.type](
           props.value as never,
           props.validate,

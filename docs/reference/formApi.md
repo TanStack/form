@@ -48,7 +48,7 @@ An object representing the options for a form.
 - ```tsx
   validatorAdapter?: TFormValidator
   ```
-  - A validator adapter to support usage of extra validation types (IE: Zod, Yup, or Valibot usage)
+  - A validator adapter to support usage of extra validation types (IE: Zod, Yup, Valibot or Effect usage)
 
 - ```tsx
   validators?: FormValidators<TFormData, TFormValidator>

@@ -312,7 +312,7 @@ This will debounce every async call with a 500ms delay. You can even override th
 
 ## Adapter-Based Validation (Zod, Yup, Valibot)
 
-While functions provide more flexibility and customization over your validation, they can be a bit verbose. To help solve this, there are libraries like [Valibot](https://valibot.dev/), [Yup](https://github.com/jquense/yup), and [Zod](https://zod.dev/) that provide schema-based validation to make shorthand and type-strict validation substantially easier.
+While functions provide more flexibility and customization over your validation, they can be a bit verbose. To help solve this, there are libraries like [Valibot](https://valibot.dev/), [Yup](https://github.com/jquense/yup), [Zod](https://zod.dev/), and [Effect Schema](https://effect.website) that provide schema-based validation to make shorthand and type-strict validation substantially easier.
 
 Luckily, we support all of these libraries through official adapters:
 
@@ -322,6 +322,8 @@ $ npm install @tanstack/zod-form-adapter zod
 $ npm install @tanstack/yup-form-adapter yup
 # or
 $ npm install @tanstack/valibot-form-adapter valibot
+# or
+$ npm install @tanstack/effect-form-adapter effect @effect/schema
 ```
 
 Once done, we can add the adapter to the `validator` property on the form or field:

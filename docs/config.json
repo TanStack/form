@@ -275,6 +275,10 @@
               "to": "framework/react/examples/valibot"
             },
             {
+              "label": "Effect",
+              "to": "framework/react/examples/effect"
+            },
+            {
               "label": "UI Libraries",
               "to": "framework/react/examples/ui-libraries"
             }
@@ -302,6 +306,10 @@
             {
               "label": "Valibot",
               "to": "framework/vue/examples/valibot"
+            },
+            {
+              "label": "Effect",
+              "to": "framework/vue/examples/effect"
             }
           ]
         },
@@ -327,6 +335,10 @@
             {
               "label": "Valibot",
               "to": "framework/angular/examples/valibot"
+            },
+            {
+              "label": "Effect",
+              "to": "framework/angular/examples/effect"
             }
           ]
         },
@@ -352,6 +364,10 @@
             {
               "label": "Valibot",
               "to": "framework/solid/examples/valibot"
+            },
+            {
+              "label": "Effect",
+              "to": "framework/solid/examples/effect"
             }
           ]
         },
