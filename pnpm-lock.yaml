@@ -175,6 +175,67 @@ importers:
         specifier: 5.4.2
         version: 5.4.2
 
+  examples/angular/effect:
+    dependencies:
+      '@angular/animations':
+        specifier: ^17.3.0
+        version: 17.3.0(@angular/core@17.3.0)
+      '@angular/common':
+        specifier: ^17.3.0
+        version: 17.3.0(@angular/core@17.3.0)(rxjs@7.8.1)
+      '@angular/compiler':
+        specifier: ^17.3.0
+        version: 17.3.0(@angular/core@17.3.0)
+      '@angular/core':
+        specifier: ^17.3.0
+        version: 17.3.0(rxjs@7.8.1)(zone.js@0.14.2)
+      '@angular/forms':
+        specifier: ^17.3.0
+        version: 17.3.0(@angular/common@17.3.0)(@angular/core@17.3.0)(@angular/platform-browser@17.3.0)(rxjs@7.8.1)
+      '@angular/platform-browser':
+        specifier: ^17.3.0
+        version: 17.3.0(@angular/animations@17.3.0)(@angular/common@17.3.0)(@angular/core@17.3.0)
+      '@angular/platform-browser-dynamic':
+        specifier: ^17.3.0
+        version: 17.3.0(@angular/common@17.3.0)(@angular/compiler@17.3.0)(@angular/core@17.3.0)(@angular/platform-browser@17.3.0)
+      '@angular/router':
+        specifier: ^17.3.0
+        version: 17.3.0(@angular/common@17.3.0)(@angular/core@17.3.0)(@angular/platform-browser@17.3.0)(rxjs@7.8.1)
+      '@effect/schema':
+        specifier: ^0.67.18
+        version: 0.67.18(effect@3.2.8)
+      '@tanstack/angular-form':
+        specifier: ^0.20.3
+        version: link:../../../packages/angular-form
+      '@tanstack/effect-form-adapter':
+        specifier: workspace:^
+        version: link:../../../packages/effect-form-adapter
+      effect:
+        specifier: ^3.2.8
+        version: 3.2.8
+      rxjs:
+        specifier: ~7.8.0
+        version: 7.8.1
+      tslib:
+        specifier: ^2.3.0
+        version: 2.6.2
+      zone.js:
+        specifier: ~0.14.2
+        version: 0.14.2
+    devDependencies:
+      '@angular-devkit/build-angular':
+        specifier: ^17.3.0
+        version: 17.3.0(@angular/compiler-cli@17.3.0)(@types/node@20.9.0)(typescript@5.4.2)
+      '@angular/cli':
+        specifier: ^17.3.0
+        version: 17.3.0
+      '@angular/compiler-cli':
+        specifier: ^17.3.0
+        version: 17.3.0(@angular/compiler@17.3.0)(typescript@5.4.2)
+      typescript:
+        specifier: 5.4.2
+        version: 5.4.2
+
   examples/angular/simple:
     dependencies:
       '@angular/animations':
@@ -1565,8 +1626,8 @@ packages:
     peerDependencies:
       '@angular/core': 17.3.0
     dependencies:
-      '@angular/core': 17.3.0(rxjs@7.8.0)(zone.js@0.14.2)
-      tslib: 2.3.0
+      '@angular/core': 17.3.0(rxjs@7.8.1)(zone.js@0.14.2)
+      tslib: 2.6.2
 
   /@angular/cli@17.3.0:
     resolution: {integrity: sha512-xwxlimNP4MECkdzjc0+m7lGxighcH0ncAfEo9yUo+r+4EFalB/Q7DAQPIU1xkbBk8iJwcFhGFAnS1IeLur15kQ==}
@@ -1606,7 +1667,8 @@ packages:
     dependencies:
       '@angular/core': 17.3.0(rxjs@7.8.0)(zone.js@0.14.2)
       rxjs: 7.8.0
-      tslib: 2.3.0
+      tslib: 2.6.2
+    dev: false
 
   /@angular/common@17.3.0(@angular/core@17.3.0)(rxjs@7.8.1):
     resolution: {integrity: sha512-JnS6jbLl2RxsvGFUOBGeoyviNLEjZKRhn3uK4Ein3DENPv0BeSFMjif9Dp4ReUCnqoD4QQVG0X/r1GFaqHn2pw==}
@@ -1617,7 +1679,7 @@ packages:
     dependencies:
       '@angular/core': 17.3.0(rxjs@7.8.1)(zone.js@0.14.2)
       rxjs: 7.8.1
-      tslib: 2.3.0
+      tslib: 2.6.2
 
   /@angular/compiler-cli@17.3.0(@angular/compiler@17.3.0)(typescript@5.4.2):
     resolution: {integrity: sha512-ewo+pb0QUC69Ey15z4vPteoBeO81HitqplysOoeXbyVBjMnKmZl3343wx7ukgcI97lmj4d38d1r4AnIoO5n/Vw==}
@@ -1634,7 +1696,7 @@ packages:
       convert-source-map: 1.9.0
       reflect-metadata: 0.2.2
       semver: 7.6.2
-      tslib: 2.3.0
+      tslib: 2.6.2
       typescript: 5.4.2
       yargs: 17.7.2
     transitivePeerDependencies:
@@ -1650,8 +1712,8 @@ packages:
       '@angular/core':
         optional: true
     dependencies:
-      '@angular/core': 17.3.0(rxjs@7.8.0)(zone.js@0.14.2)
-      tslib: 2.3.0
+      '@angular/core': 17.3.0(rxjs@7.8.1)(zone.js@0.14.2)
+      tslib: 2.6.2
 
   /@angular/core@17.3.0(rxjs@7.8.0)(zone.js@0.14.2):
     resolution: {integrity: sha512-umwsNFl/wEMTCUVvNl5iieEgHA+ESxSMcjedZGFWNGnpUxKTgYFYNG41/1wNZfPrS0+uRPHuYU9IHD+NR2s/Rw==}
@@ -1661,8 +1723,9 @@ packages:
       zone.js: ~0.14.0
     dependencies:
       rxjs: 7.8.0
-      tslib: 2.3.0
+      tslib: 2.6.2
       zone.js: 0.14.2
+    dev: false
 
   /@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.2):
     resolution: {integrity: sha512-umwsNFl/wEMTCUVvNl5iieEgHA+ESxSMcjedZGFWNGnpUxKTgYFYNG41/1wNZfPrS0+uRPHuYU9IHD+NR2s/Rw==}
@@ -1672,7 +1735,7 @@ packages:
       zone.js: ~0.14.0
     dependencies:
       rxjs: 7.8.1
-      tslib: 2.3.0
+      tslib: 2.6.2
       zone.js: 0.14.2
 
   /@angular/forms@17.3.0(@angular/common@17.3.0)(@angular/core@17.3.0)(@angular/platform-browser@17.3.0)(rxjs@7.8.0):
@@ -1691,6 +1754,22 @@ packages:
       tslib: 2.3.0
     dev: false
 
+  /@angular/forms@17.3.0(@angular/common@17.3.0)(@angular/core@17.3.0)(@angular/platform-browser@17.3.0)(rxjs@7.8.1):
+    resolution: {integrity: sha512-TnLOake1fQCmmGEOZbTjP2gbKerZ/bfEMuiFfoe7R2rUvKl4xHGAHp99bqf7bUyAbB8ZgmPZc9/VHrrts8UNyA==}
+    engines: {node: ^18.13.0 || >=20.9.0}
+    peerDependencies:
+      '@angular/common': 17.3.0
+      '@angular/core': 17.3.0
+      '@angular/platform-browser': 17.3.0
+      rxjs: ^6.5.3 || ^7.4.0
+    dependencies:
+      '@angular/common': 17.3.0(@angular/core@17.3.0)(rxjs@7.8.1)
+      '@angular/core': 17.3.0(rxjs@7.8.1)(zone.js@0.14.2)
+      '@angular/platform-browser': 17.3.0(@angular/animations@17.3.0)(@angular/common@17.3.0)(@angular/core@17.3.0)
+      rxjs: 7.8.1
+      tslib: 2.6.2
+    dev: false
+
   /@angular/platform-browser-dynamic@17.3.0(@angular/common@17.3.0)(@angular/compiler@17.3.0)(@angular/core@17.3.0)(@angular/platform-browser@17.3.0):
     resolution: {integrity: sha512-oX5AG0aSjmB89SyJZGyabr6uwfWd7yJM+krcrzHxFbVhvDCwdi9G+B0ADmaUn1shaXDseOFiLpo3R/oagd2fTA==}
     engines: {node: ^18.13.0 || >=20.9.0}
@@ -1700,11 +1779,11 @@ packages:
       '@angular/core': 17.3.0
       '@angular/platform-browser': 17.3.0
     dependencies:
-      '@angular/common': 17.3.0(@angular/core@17.3.0)(rxjs@7.8.0)
+      '@angular/common': 17.3.0(@angular/core@17.3.0)(rxjs@7.8.1)
       '@angular/compiler': 17.3.0(@angular/core@17.3.0)
-      '@angular/core': 17.3.0(rxjs@7.8.0)(zone.js@0.14.2)
+      '@angular/core': 17.3.0(rxjs@7.8.1)(zone.js@0.14.2)
       '@angular/platform-browser': 17.3.0(@angular/animations@17.3.0)(@angular/common@17.3.0)(@angular/core@17.3.0)
-      tslib: 2.3.0
+      tslib: 2.6.2
 
   /@angular/platform-browser@17.3.0(@angular/animations@17.3.0)(@angular/common@17.3.0)(@angular/core@17.3.0):
     resolution: {integrity: sha512-sIquvbq04KMOdpk1VdVFt7kVhOk/Rk+hI3M4raarMK5EbZ16nLYzpqjc2OZetUpKy6LB/FemClgNUShj9NlrqA==}
@@ -1718,9 +1797,9 @@ packages:
         optional: true
     dependencies:
       '@angular/animations': 17.3.0(@angular/core@17.3.0)
-      '@angular/common': 17.3.0(@angular/core@17.3.0)(rxjs@7.8.0)
-      '@angular/core': 17.3.0(rxjs@7.8.0)(zone.js@0.14.2)
-      tslib: 2.3.0
+      '@angular/common': 17.3.0(@angular/core@17.3.0)(rxjs@7.8.1)
+      '@angular/core': 17.3.0(rxjs@7.8.1)(zone.js@0.14.2)
+      tslib: 2.6.2
 
   /@angular/platform-browser@17.3.0(@angular/common@17.3.0)(@angular/core@17.3.0):
     resolution: {integrity: sha512-sIquvbq04KMOdpk1VdVFt7kVhOk/Rk+hI3M4raarMK5EbZ16nLYzpqjc2OZetUpKy6LB/FemClgNUShj9NlrqA==}
@@ -1765,10 +1844,9 @@ packages:
     dependencies:
       '@angular/common': 17.3.0(@angular/core@17.3.0)(rxjs@7.8.1)
       '@angular/core': 17.3.0(rxjs@7.8.1)(zone.js@0.14.2)
-      '@angular/platform-browser': 17.3.0(@angular/common@17.3.0)(@angular/core@17.3.0)
+      '@angular/platform-browser': 17.3.0(@angular/animations@17.3.0)(@angular/common@17.3.0)(@angular/core@17.3.0)
       rxjs: 7.8.1
-      tslib: 2.3.0
-    dev: true
+      tslib: 2.6.2
 
   /@babel/code-frame@7.24.6:
     resolution: {integrity: sha512-ZJhac6FkEd1yhG2AHOmfcXG4ceoLltoCVJjN5XsWN9BifBQr+cHJbWi0h68HZuSORq+3WtJ2z0hwF2NG1b5kcA==}
@@ -1810,7 +1888,7 @@ packages:
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@babel/code-frame': 7.24.6
-      '@babel/generator': 7.23.6
+      '@babel/generator': 7.24.6
       '@babel/helper-compilation-targets': 7.24.6
       '@babel/helper-module-transforms': 7.24.6(@babel/core@7.24.0)
       '@babel/helpers': 7.24.6
@@ -7626,7 +7704,7 @@ packages:
       dom-serializer: 2.0.0
       domhandler: 5.0.3
       htmlparser2: 8.0.2
-      postcss: 8.4.32
+      postcss: 8.4.35
       postcss-media-query-parser: 0.2.3
     dev: true
 
@@ -7671,7 +7749,7 @@ packages:
       postcss-modules-scope: 3.2.0(postcss@8.4.35)
       postcss-modules-values: 4.0.0(postcss@8.4.35)
       postcss-value-parser: 4.2.0
-      semver: 7.6.0
+      semver: 7.6.2
       webpack: 5.90.3(esbuild@0.21.3)
     dev: true
 
@@ -9361,6 +9439,7 @@ packages:
 
   /glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
+    deprecated: Glob versions prior to v9 are no longer supported
     dependencies:
       fs.realpath: 1.0.0
       inflight: 1.0.6
@@ -10603,7 +10682,7 @@ packages:
     dependencies:
       copy-anything: 2.0.6
       parse-node-version: 1.0.1
-      tslib: 2.3.0
+      tslib: 2.6.2
     optionalDependencies:
       errno: 0.1.8
       graceful-fs: 4.2.11
@@ -11456,7 +11535,7 @@ packages:
     dependencies:
       hosted-git-info: 7.0.2
       proc-log: 3.0.0
-      semver: 7.6.0
+      semver: 7.6.2
       validate-npm-package-name: 5.0.1
     dev: true
 
@@ -11485,7 +11564,7 @@ packages:
       npm-install-checks: 6.3.0
       npm-normalize-package-bin: 3.0.1
       npm-package-arg: 11.0.1
-      semver: 7.6.0
+      semver: 7.6.2
     dev: true
 
   /npm-registry-fetch@16.2.1:
@@ -12151,7 +12230,7 @@ packages:
       cosmiconfig: 9.0.0(typescript@5.4.2)
       jiti: 1.21.0
       postcss: 8.4.35
-      semver: 7.6.0
+      semver: 7.6.2
       webpack: 5.90.3(esbuild@0.21.3)
     transitivePeerDependencies:
       - typescript
@@ -12663,7 +12742,7 @@ packages:
   /regenerator-transform@0.15.2:
     resolution: {integrity: sha512-hfMp2BoF0qOk3uc5V20ALGDS2ddjQaLrdl7xrGXvAIow7qeWRM2VA2HuCHkUKk9slq3VwEwLNK3DFBqDfPGYtg==}
     dependencies:
-      '@babel/runtime': 7.24.0
+      '@babel/runtime': 7.24.6
     dev: true
 
   /regex-parser@2.3.0:
@@ -12764,7 +12843,7 @@ packages:
       adjust-sourcemap-loader: 4.0.0
       convert-source-map: 1.9.0
       loader-utils: 2.0.4
-      postcss: 8.4.32
+      postcss: 8.4.35
       source-map: 0.6.1
     dev: true
 
@@ -12820,6 +12899,7 @@ packages:
 
   /rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
     dependencies:
       glob: 7.2.3
@@ -12887,11 +12967,12 @@ packages:
     resolution: {integrity: sha512-F2+gxDshqmIub1KdvZkaEfGDwLNpPvk9Fs6LD/MyQxNgMds/WH9OdDDXOmxUZpME+iSK3rQCctkL0DYyytUqMg==}
     dependencies:
       tslib: 2.3.0
+    dev: false
 
   /rxjs@7.8.1:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
     dependencies:
-      tslib: 2.3.0
+      tslib: 2.6.2
 
   /sade@1.8.1:
     resolution: {integrity: sha512-xal3CZX1Xlo/k4ApwCFrHVACi9fBqJ7V+mwhBsuf/1IOKbBy098Fex+Wa/5QMubw09pSZ/u8EY8PWgevJsXp1A==}
@@ -15329,4 +15410,4 @@ packages:
   /zone.js@0.14.2:
     resolution: {integrity: sha512-X4U7J1isDhoOmHmFWiLhloWc2lzMkdnumtfQ1LXzf/IOZp5NQYuMUTaviVzG/q1ugMBIXzin2AqeVJUoSEkNyQ==}
     dependencies:
-      tslib: 2.3.0
+      tslib: 2.6.2

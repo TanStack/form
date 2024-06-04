@@ -1,5 +1,4 @@
 import * as Schema from '@effect/schema/Schema'
-import * as ParseResult from '@effect/schema/ParseResult'
 import { flow } from "effect/Function"
 import * as ArrayFormatter from '@effect/schema/ArrayFormatter'
 import * as Effect from 'effect/Effect'
