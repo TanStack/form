@@ -1,7 +1,7 @@
 import { Component } from '@angular/core'
 import { TanStackField, injectForm, injectStore } from '@tanstack/angular-form'
 import { valibotValidator } from '@tanstack/valibot-form-adapter'
-import { customAsync, minLength, string, stringAsync } from 'valibot'
+import * as v from 'valibot'
 
 @Component({
   selector: 'app-root',
@@ -57,16 +57,18 @@ import { customAsync, minLength, string, stringAsync } from 'valibot'
   `,
 })
 export class AppComponent {
-  firstNameValidator = string([
-    minLength(3, 'First name must be at least 3 characters'),
-  ])
+  firstNameValidator = v.pipe(
+    v.string(),
+    v.minLength(3, 'You must have a length of at least 3'),
+  )
 
-  firstNameAsyncValidator = stringAsync([
-    customAsync(async (value) => {
+  firstNameAsyncValidator = v.pipeAsync(
+    v.string(),
+    v.checkAsync(async (value) => {
       await new Promise((resolve) => setTimeout(resolve, 1000))
       return !value.includes('error')
     }, "No 'error' allowed in first name"),
-  ])
+  )
 
   form = injectForm({
     defaultValues: {

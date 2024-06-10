@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { FieldApi, FormApi } from '@tanstack/form-core'
-import { customAsync, minLength, string, stringAsync } from 'valibot'
+import * as v from 'valibot'
 import { valibotValidator } from '../validator'
 import { sleep } from './utils'
 
@@ -17,9 +17,10 @@ describe('valibot field api', () => {
       validatorAdapter: valibotValidator,
       name: 'name',
       validators: {
-        onChange: string([
-          minLength(3, 'You must have a length of at least 3'),
-        ]),
+        onChange: v.pipe(
+          v.string(),
+          v.minLength(3, 'You must have a length of at least 3'),
+        ),
       },
     })
 
@@ -71,9 +72,10 @@ describe('valibot field api', () => {
       validatorAdapter: valibotValidator,
       name: 'name',
       validators: {
-        onChangeAsync: stringAsync([
-          customAsync(async (val) => val.length > 3, 'Testing 123'),
-        ]),
+        onChangeAsync: v.pipeAsync(
+          v.string(),
+          v.checkAsync(async (val) => val.length > 3, 'Testing 123'),
+        ),
         onChangeAsyncDebounceMs: 0,
       },
     })

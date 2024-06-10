@@ -2,7 +2,7 @@
 import { useForm } from '@tanstack/vue-form'
 import FieldInfo from './FieldInfo.vue'
 import { valibotValidator } from '@tanstack/valibot-form-adapter'
-import { customAsync, minLength, string, stringAsync } from 'valibot'
+import * as v from 'valibot'
 
 const form = useForm({
   defaultValues: {
@@ -17,12 +17,13 @@ const form = useForm({
   validatorAdapter: valibotValidator,
 })
 
-const onChangeFirstName = stringAsync([
-  customAsync(async (value) => {
+const onChangeFirstName = v.pipeAsync(
+  v.string(),
+  v.checkAsync(async (value) => {
     await new Promise((resolve) => setTimeout(resolve, 1000))
     return !value.includes('error')
   }, "No 'error' allowed in first name"),
-])
+)
 </script>
 
 <template>
@@ -42,9 +43,10 @@ const onChangeFirstName = stringAsync([
       <form.Field
         name="firstName"
         :validators="{
-          onChange: string([
-            minLength(3, 'First name must be at least 3 characters'),
-          ]),
+          onChange: v.pipe(
+            v.string(),
+            v.minLength(3, 'You must have a length of at least 3'),
+          ),
           onChangeAsyncDebounceMs: 500,
           onChangeAsync: onChangeFirstName,
         }"
