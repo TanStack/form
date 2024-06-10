@@ -35,7 +35,6 @@
   "scripts": {
     "clean": "rimraf ./dist && rimraf ./coverage",
     "test:eslint": "eslint --ext .ts,.tsx ./src",
-    "test:types:versions49": "node ../../node_modules/typescript49/lib/tsc.js --project tsconfig.legacy.json",
     "test:types:versions50": "node ../../node_modules/typescript50/lib/tsc.js",
     "test:types:versions51": "node ../../node_modules/typescript51/lib/tsc.js",
     "test:types:versions52": "node ../../node_modules/typescript52/lib/tsc.js",
