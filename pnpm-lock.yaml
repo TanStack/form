@@ -266,8 +266,8 @@ importers:
         specifier: ^2.3.0
         version: 2.6.2
       valibot:
-        specifier: 0.31.0-rc.8
-        version: 0.31.0-rc.8
+        specifier: ^0.31.1
+        version: 0.31.1
       zone.js:
         specifier: ~0.14.2
         version: 0.14.4
@@ -633,8 +633,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       valibot:
-        specifier: 0.31.0-rc.8
-        version: 0.31.0-rc.8
+        specifier: ^0.31.1
+        version: 0.31.1
     devDependencies:
       '@types/react':
         specifier: ^18.2.45
@@ -761,8 +761,8 @@ importers:
         specifier: ^1.7.8
         version: 1.7.12
       valibot:
-        specifier: 0.31.0-rc.8
-        version: 0.31.0-rc.8
+        specifier: ^0.31.1
+        version: 0.31.1
     devDependencies:
       typescript:
         specifier: 5.4.2
@@ -877,8 +877,8 @@ importers:
         specifier: ^0.20.3
         version: link:../../../packages/vue-form
       valibot:
-        specifier: 0.31.0-rc.8
-        version: 0.31.0-rc.8
+        specifier: ^0.31.1
+        version: 0.31.1
       vue:
         specifier: ^3.3.4
         version: 3.3.4
@@ -1077,8 +1077,8 @@ importers:
         version: link:../form-core
     devDependencies:
       valibot:
-        specifier: 0.31.0-rc.8
-        version: 0.31.0-rc.8
+        specifier: ^0.31.1
+        version: 0.31.1
 
   packages/vue-form:
     dependencies:
@@ -7981,8 +7981,8 @@ packages:
     resolution: {integrity: sha512-fcRLaS4H/hrZk9hYwbdRM35D0U8IYMfEClhXxCivOojl+yTRAZH3Zy2sSy6qVCiGbV9YAtPssP6jaChqC9vPCg==}
     engines: {node: '>= 10.13.0'}
 
-  valibot@0.31.0-rc.8:
-    resolution: {integrity: sha512-ik5TPVXRi6U6fGyfpiTQS2cMaPgttuOx5gfd0PPcsAZ+ebhMNO6YaoIIasXfa7/IQMYL7VQFPwkHLHh/JpKUQA==}
+  valibot@0.31.1:
+    resolution: {integrity: sha512-2YYIhPrnVSz/gfT2/iXVTrSj92HwchCt9Cga/6hX4B26iCz9zkIsGTS0HjDYTZfTi1Un0X6aRvhBi1cfqs/i0Q==}
 
   validate-html-nesting@1.2.2:
     resolution: {integrity: sha512-hGdgQozCsQJMyfK5urgFcWEqsSSrK63Awe0t/IMR0bZ0QMtnuaiHzThW81guu3qx9abLi99NEuiaN6P9gVYsNg==}
@@ -16132,7 +16132,7 @@ snapshots:
 
   v8flags@4.0.1: {}
 
-  valibot@0.31.0-rc.8: {}
+  valibot@0.31.1: {}
 
   validate-html-nesting@1.2.2: {}
 

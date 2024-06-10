@@ -54,6 +54,6 @@
     "valibot": ">=0.31.0 <1"
   },
   "devDependencies": {
-    "valibot": "0.31.0-rc.8"
+    "valibot": "^0.31.1"
   }
 }

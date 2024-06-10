@@ -13,7 +13,7 @@
     "@tanstack/valibot-form-adapter": "^0.20.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "valibot": "0.31.0-rc.8"
+    "valibot": "^0.31.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.45",

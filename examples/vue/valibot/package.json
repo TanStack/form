@@ -11,7 +11,7 @@
   "dependencies": {
     "@tanstack/valibot-form-adapter": "^0.20.3",
     "@tanstack/vue-form": "^0.20.3",
-    "valibot": "0.31.0-rc.8",
+    "valibot": "^0.31.1",
     "vue": "^3.3.4"
   },
   "devDependencies": {
