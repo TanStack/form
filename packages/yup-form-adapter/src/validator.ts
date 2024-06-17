@@ -1,5 +1,5 @@
 import type { AnySchema, ValidationError as YupError } from 'yup'
-import type { ValidationError, Validator } from '@tanstack/form-core'
+import type { ValidationError } from '@tanstack/form-core'
 
 type Params = {
   transformErrors?: (errors: string[]) => ValidationError
