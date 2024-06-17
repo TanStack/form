@@ -32,7 +32,7 @@ function App() {
       console.log(value)
     },
     // Add a validator to support Valibot usage in Form and Field
-    validatorAdapter: valibotValidator,
+    validatorAdapter: valibotValidator(),
   }))
 
   return (
