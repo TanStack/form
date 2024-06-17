@@ -14,7 +14,7 @@ describe('yup field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: yupValidator,
+      validatorAdapter: yupValidator(),
       name: 'name',
       validators: {
         onChange: yup.string().min(3, 'You must have a length of at least 3'),
@@ -41,7 +41,7 @@ describe('yup field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: yupValidator,
+      validatorAdapter: yupValidator(),
       name: 'name',
       validators: {
         onChange: ({ value }) => (value === 'a' ? 'Test' : undefined),
@@ -66,7 +66,7 @@ describe('yup field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: yupValidator,
+      validatorAdapter: yupValidator(),
       name: 'name',
       validators: {
         onChangeAsync: yup
@@ -98,7 +98,7 @@ describe('yup field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: yupValidator,
+      validatorAdapter: yupValidator(),
       name: 'name',
       validators: {
         onChangeAsync: async ({ value }) =>

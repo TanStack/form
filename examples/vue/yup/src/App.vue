@@ -14,7 +14,7 @@ const form = useForm({
     alert(JSON.stringify(value))
   },
   // Add a validator to support Yup usage in Form and Field
-  validatorAdapter: yupValidator,
+  validatorAdapter: yupValidator(),
 })
 
 const onChangeFirstName = yup
