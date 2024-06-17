@@ -5,7 +5,7 @@ import type { Validator } from '@tanstack/form-core'
 type Params = {
   transformErrors?: (
     errors: [BaseIssue<unknown>, ...BaseIssue<unknown>[]],
-  ) => BaseIssue<unknown>
+  ) => string
 }
 
 export const valibotValidator = (params: Params = {}) =>
