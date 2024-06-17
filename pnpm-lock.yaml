@@ -495,8 +495,8 @@ importers:
         specifier: ^0.21.0
         version: link:../../../packages/react-form
       '@tanstack/react-query':
-        specifier: ^5.32.0
-        version: 5.32.0(react@18.2.0)
+        specifier: ^5.45.1
+        version: 5.45.1(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -955,8 +955,8 @@ importers:
   packages/angular-form:
     dependencies:
       '@tanstack/angular-store':
-        specifier: ^0.4.0
-        version: 0.4.0(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))
+        specifier: ^0.4.1
+        version: 0.4.1(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../form-core
@@ -1001,8 +1001,8 @@ importers:
   packages/form-core:
     dependencies:
       '@tanstack/store':
-        specifier: ^0.3.1
-        version: 0.3.1
+        specifier: ^0.4.1
+        version: 0.4.1
 
   packages/lit-form:
     dependencies:
@@ -1023,8 +1023,8 @@ importers:
         specifier: workspace:*
         version: link:../form-core
       '@tanstack/react-store':
-        specifier: ^0.3.1
-        version: 0.3.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: ^0.4.1
+        version: 0.4.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       decode-formdata:
         specifier: ^0.4.0
         version: 0.4.0
@@ -1057,8 +1057,8 @@ importers:
         specifier: workspace:*
         version: link:../form-core
       '@tanstack/solid-store':
-        specifier: ^0.3.1
-        version: 0.3.1(solid-js@1.7.12)
+        specifier: ^0.4.1
+        version: 0.4.1(solid-js@1.7.12)
     devDependencies:
       solid-js:
         specifier: ^1.7.8
@@ -1086,8 +1086,8 @@ importers:
         specifier: workspace:*
         version: link:../form-core
       '@tanstack/vue-store':
-        specifier: ^0.3.1
-        version: 0.3.1(vue@3.3.4)
+        specifier: ^0.4.1
+        version: 0.4.1(vue@3.3.4)
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.0.4
@@ -3266,8 +3266,8 @@ packages:
   '@swc/types@0.1.5':
     resolution: {integrity: sha512-myfUej5naTBWnqOCc/MdVOLVjXUXtIA+NpDrDBKJtLLg2shUjBu3cZmB/85RyitKc55+lUUyl7oRfLOvkr2hsw==}
 
-  '@tanstack/angular-store@0.4.0':
-    resolution: {integrity: sha512-C0Xj1di6qzq4EF8H1W6zrpfX9d37mpZzVXwlZkHG8M9p7A9rw/1PS6RdI2hy7zBRNNxFqVVB5ez+uVq2lVE8ew==}
+  '@tanstack/angular-store@0.4.1':
+    resolution: {integrity: sha512-ZEO/ir0hBnF5AspVHVKOGp0x0WrNXfCUQd8wTamx1KUdXDKQ6qIIrAMLW7d7djN/Z/h55o3Ayj+OTHr46TvyUQ==}
     peerDependencies:
       '@angular/common': '>=16 < 18'
       '@angular/core': '>=16 < 18'
@@ -3277,30 +3277,30 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@tanstack/query-core@5.32.0':
-    resolution: {integrity: sha512-Z3flEgCat55DRXU5UMwYU1U+DgFZKA3iufyOKs+II7iRAo0uXkeU7PH5e6sOH1CGEag0IpKmZxlUFpCg6roSKw==}
+  '@tanstack/query-core@5.45.0':
+    resolution: {integrity: sha512-RVfIZQmFUTdjhSAAblvueimfngYyfN6HlwaJUPK71PKd7yi43Vs1S/rdimmZedPWX/WGppcq/U1HOj7O7FwYxw==}
 
-  '@tanstack/react-query@5.32.0':
-    resolution: {integrity: sha512-+E3UudQtarnx9A6xhpgMZapyF+aJfNBGFMgI459FnduEZqT/9KhOWnMOneZahLRt52yzskSA0AuOyLkXHK0yBA==}
+  '@tanstack/react-query@5.45.1':
+    resolution: {integrity: sha512-mYYfJujKg2kxmkRRjA6nn4YKG3ITsKuH22f1kteJ5IuVQqgKUgbaSQfYwVP0gBS05mhwxO03HVpD0t7BMN7WOA==}
     peerDependencies:
       react: ^18.0.0
 
-  '@tanstack/react-store@0.3.1':
-    resolution: {integrity: sha512-PfV271d345It6FdcX4c9gd+llKGddtvau8iJnybTAWmYVyDeFWfIIkiAJ5iNITJmI02AzqgtcV3QLNBBlpBUjA==}
+  '@tanstack/react-store@0.4.1':
+    resolution: {integrity: sha512-cyriofh2I6dPOPJf2W0K+ON5q08ezevLTUhC1txiUnrJ9XFFFPr0X8CmGnXzucI2c0t0V6wYZc0GCz4zOAeptg==}
     peerDependencies:
       react: ^17.0.0 || ^18.0.0
       react-dom: ^17.0.0 || ^18.0.0
 
-  '@tanstack/solid-store@0.3.1':
-    resolution: {integrity: sha512-MBsV3kTHW0v+fHsSUfxpVUh2FVX/qmc6hTq8HdwOkleBcpVRiF8RX0gyCcE5+cE03LncKoIEw9hO80dOBEZbFw==}
+  '@tanstack/solid-store@0.4.1':
+    resolution: {integrity: sha512-pxnABnOz6y+GrxFDMjPoNq8yqjuwBJVEcl4LPkS0FLFz3y3XzoBzUb3cd9zWQAebpIKJtUqfDOqWakkYlgiOsA==}
     peerDependencies:
       solid-js: ^1.6.0
 
-  '@tanstack/store@0.3.1':
-    resolution: {integrity: sha512-A49KN8SpLMWaNmZGPa9K982RQ81W+m7W6iStcQVeKeVS70JZRqkF0fDwKByREPq6qz9/kS0aQFOPQ0W6wIeU5g==}
+  '@tanstack/store@0.4.1':
+    resolution: {integrity: sha512-NvW3MomYSTzQK61AWdtWNIhWgszXFZDRgCNlvSDw/DBaoLqJIlZ0/gKLsditA8un/BGU1NR06+j0a/UNLgXA+Q==}
 
-  '@tanstack/vue-store@0.3.1':
-    resolution: {integrity: sha512-7XhuxAO6z4FWz8QnluTd4njy4yh6yHVD+dVMV60kDNck+ZfnU8VrENMGaA5edIq5zX3ooAUcOtOXh7KgQv1P1A==}
+  '@tanstack/vue-store@0.4.1':
+    resolution: {integrity: sha512-/a0N8VgYvV7Vmpn6cDR8sWjDZEulOlULtaFtzGHpMP0rz+toX6dpMbQctOvz6Hw3RNY3HoTzmkGHUgyuZNJqMw==}
     peerDependencies:
       '@vue/composition-api': ^1.2.1
       vue: ^2.5.0 || ^3.0.0
@@ -10750,11 +10750,11 @@ snapshots:
 
   '@swc/types@0.1.5': {}
 
-  '@tanstack/angular-store@0.4.0(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))':
+  '@tanstack/angular-store@0.4.1(@angular/common@17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))':
     dependencies:
       '@angular/common': 17.3.0(@angular/core@17.3.0(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1)
       '@angular/core': 17.3.0(rxjs@7.8.1)(zone.js@0.14.4)
-      '@tanstack/store': 0.3.1
+      '@tanstack/store': 0.4.1
 
   '@tanstack/config@0.7.11(@types/node@20.10.6)(esbuild@0.21.5)(rollup@4.17.1)(typescript@5.4.2)(vite@5.3.1(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
     dependencies:
@@ -10782,30 +10782,30 @@ snapshots:
       - typescript
       - vite
 
-  '@tanstack/query-core@5.32.0': {}
+  '@tanstack/query-core@5.45.0': {}
 
-  '@tanstack/react-query@5.32.0(react@18.2.0)':
+  '@tanstack/react-query@5.45.1(react@18.2.0)':
     dependencies:
-      '@tanstack/query-core': 5.32.0
+      '@tanstack/query-core': 5.45.0
       react: 18.2.0
 
-  '@tanstack/react-store@0.3.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@tanstack/react-store@0.4.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
-      '@tanstack/store': 0.3.1
+      '@tanstack/store': 0.4.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       use-sync-external-store: 1.2.0(react@18.2.0)
 
-  '@tanstack/solid-store@0.3.1(solid-js@1.7.12)':
+  '@tanstack/solid-store@0.4.1(solid-js@1.7.12)':
     dependencies:
-      '@tanstack/store': 0.3.1
+      '@tanstack/store': 0.4.1
       solid-js: 1.7.12
 
-  '@tanstack/store@0.3.1': {}
+  '@tanstack/store@0.4.1': {}
 
-  '@tanstack/vue-store@0.3.1(vue@3.3.4)':
+  '@tanstack/vue-store@0.4.1(vue@3.3.4)':
     dependencies:
-      '@tanstack/store': 0.3.1
+      '@tanstack/store': 0.4.1
       vue: 3.3.4
       vue-demi: 0.14.6(vue@3.3.4)
 
