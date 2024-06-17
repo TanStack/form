@@ -9,7 +9,7 @@ describe('valibot form api', () => {
       defaultValues: {
         name: '',
       },
-      validatorAdapter: valibotValidator,
+      validatorAdapter: valibotValidator(),
     })
 
     const field = new FieldApi({
@@ -39,7 +39,7 @@ describe('valibot form api', () => {
       defaultValues: {
         name: '',
       },
-      validatorAdapter: valibotValidator,
+      validatorAdapter: valibotValidator(),
     })
 
     const field = new FieldApi({
