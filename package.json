@@ -2,7 +2,7 @@
   "name": "form",
   "private": true,
   "repository": "https://github.com/tanstack/form.git",
-  "packageManager": "pnpm@9.0.6",
+  "packageManager": "pnpm@9.4.0",
   "type": "module",
   "scripts": {
     "clean": "pnpm --filter \"./packages/**\" run clean",
