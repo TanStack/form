@@ -24,26 +24,24 @@
     "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
-    "build": "vite build && tsc -p tsconfig.build.json"
+    "build": "tsc -p tsconfig.build.json"
   },
   "files": [
     "dist",
     "src"
   ],
   "type": "module",
-  "types": "dist/esm/index.d.ts",
-  "main": "dist/cjs/index.cjs",
-  "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
   "exports": {
     ".": {
-      "solid": "./dist/source/index.js",
-      "import": {
-        "types": "./dist/esm/index.d.ts",
-        "default": "./dist/esm/index.js"
+      "solid": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
       },
-      "require": {
-        "types": "./dist/cjs/index.d.cts",
-        "default": "./dist/cjs/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
       }
     },
     "./package.json": "./package.json"

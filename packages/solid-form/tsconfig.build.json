@@ -7,10 +7,11 @@
     "paths": {
       "@tanstack/form-core": ["../../form-core/src"]
     },
-    "outDir": "dist/source",
+    "outDir": "dist",
     "noEmit": false,
-    "declaration": false,
-    "rootDir": "src"
+    "declaration": true,
+    "rootDir": "src",
+    "sourceMap": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["src/tests/**"]
