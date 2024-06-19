@@ -27,7 +27,7 @@ export default function App() {
       console.log(value)
     },
     // Add a validator to support Yup usage in Form and Field
-    validatorAdapter: yupValidator,
+    validatorAdapter: yupValidator(),
   })
 
   return (

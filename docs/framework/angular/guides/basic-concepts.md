@@ -132,7 +132,7 @@ import { z } from 'zod'
     <ng-container
       [tanstackField]="form"
       name="firstName"
-      [validatorAdapter]="zodValidator"
+      [validatorAdapter]="zodValidator()"
       [validators]="{
         onChange: z.string().min(3, 'First name must be at least 3 characters'),
         onChangeAsyncDebounceMs: 500,

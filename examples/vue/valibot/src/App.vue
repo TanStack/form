@@ -14,7 +14,7 @@ const form = useForm({
     alert(JSON.stringify(value))
   },
   // Add a validator to support Valibot usage in Form and Field
-  validatorAdapter: valibotValidator,
+  validatorAdapter: valibotValidator(),
 })
 
 const onChangeFirstName = v.pipeAsync(

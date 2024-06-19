@@ -15,7 +15,7 @@ describe('zod field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: zodValidator,
+      validatorAdapter: zodValidator(),
       name: 'name',
       validators: {
         onChange: z.string().min(3, 'You must have a length of at least 3'),
@@ -42,7 +42,7 @@ describe('zod field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: zodValidator,
+      validatorAdapter: zodValidator(),
       name: 'name',
       validators: {
         onChange: ({ value }) => (value === 'a' ? 'Test' : undefined),
@@ -67,7 +67,7 @@ describe('zod field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: zodValidator,
+      validatorAdapter: zodValidator(),
       name: 'name',
       validators: {
         onChangeAsync: z.string().refine(async (val) => val.length > 3, {
@@ -97,7 +97,7 @@ describe('zod field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: zodValidator,
+      validatorAdapter: zodValidator(),
       name: 'name',
       validators: {
         onChangeAsync: async ({ value }) =>
@@ -115,5 +115,37 @@ describe('zod field api', () => {
     field.setValue('asdf', { touch: true })
     await sleep(10)
     expect(field.getMeta().errors).toEqual([])
+  })
+
+  it('should transform errors to display only the first error message', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      validatorAdapter: zodValidator({
+        transformErrors: (errors) => errors[0]?.message,
+      }),
+      name: 'name',
+      validators: {
+        onChange: z
+          .string()
+          .min(3, 'You must have a length of at least 3')
+          .uuid('UUID'),
+      },
+    })
+
+    field.mount()
+
+    expect(field.getMeta().errors).toEqual([])
+    field.setValue('aa', { touch: true })
+    expect(field.getMeta().errors).toEqual([
+      'You must have a length of at least 3',
+    ])
+    field.setValue('aaa', { touch: true })
+    expect(field.getMeta().errors).toEqual(['UUID'])
   })
 })

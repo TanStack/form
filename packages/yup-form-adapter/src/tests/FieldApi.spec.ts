@@ -14,7 +14,7 @@ describe('yup field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: yupValidator,
+      validatorAdapter: yupValidator(),
       name: 'name',
       validators: {
         onChange: yup.string().min(3, 'You must have a length of at least 3'),
@@ -41,7 +41,7 @@ describe('yup field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: yupValidator,
+      validatorAdapter: yupValidator(),
       name: 'name',
       validators: {
         onChange: ({ value }) => (value === 'a' ? 'Test' : undefined),
@@ -66,7 +66,7 @@ describe('yup field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: yupValidator,
+      validatorAdapter: yupValidator(),
       name: 'name',
       validators: {
         onChangeAsync: yup
@@ -98,7 +98,7 @@ describe('yup field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: yupValidator,
+      validatorAdapter: yupValidator(),
       name: 'name',
       validators: {
         onChangeAsync: async ({ value }) =>
@@ -116,5 +116,37 @@ describe('yup field api', () => {
     field.setValue('asdf', { touch: true })
     await sleep(10)
     expect(field.getMeta().errors).toEqual([])
+  })
+
+  it('should transform errors to display only the first error message', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      validatorAdapter: yupValidator({
+        transformErrors: (errors) => errors[0],
+      }),
+      name: 'name',
+      validators: {
+        onChange: yup
+          .string()
+          .min(3, 'You must have a length of at least 3')
+          .uuid('UUID'),
+      },
+    })
+
+    field.mount()
+
+    expect(field.getMeta().errors).toEqual([])
+    field.setValue('aa', { touch: true })
+    expect(field.getMeta().errors).toEqual([
+      'You must have a length of at least 3',
+    ])
+    field.setValue('aaa', { touch: true })
+    expect(field.getMeta().errors).toEqual(['UUID'])
   })
 })
