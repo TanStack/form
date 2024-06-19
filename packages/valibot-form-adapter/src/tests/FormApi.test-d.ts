@@ -1,5 +1,5 @@
 import { assertType, it } from 'vitest'
-import { object, string } from 'valibot'
+import * as v from 'valibot'
 import { FieldApi, FormApi } from '@tanstack/form-core'
 import { valibotValidator } from '../validator'
 
@@ -8,7 +8,7 @@ it('should allow a Valibot validator to be passed in', () => {
     defaultValues: {
       name: 'test',
     },
-    validatorAdapter: valibotValidator,
+    validatorAdapter: valibotValidator(),
   } as const)
 })
 
@@ -17,14 +17,14 @@ it('should allow a Valibot validator to handle the correct Valibot type', () => 
     defaultValues: {
       name: 'test',
     },
-    validatorAdapter: valibotValidator,
+    validatorAdapter: valibotValidator(),
   } as const)
 
   const field = new FieldApi({
     form,
     name: 'name',
     validators: {
-      onChange: string(),
+      onChange: v.string(),
     },
   })
 })
@@ -34,14 +34,14 @@ it('should allow a Valibot validator to handle the correct Valibot type on async
     defaultValues: {
       name: 'test',
     },
-    validatorAdapter: valibotValidator,
+    validatorAdapter: valibotValidator(),
   } as const)
 
   const field = new FieldApi({
     form,
     name: 'name',
     validators: {
-      onChangeAsync: string(),
+      onChangeAsync: v.string(),
     },
   })
 })
@@ -51,7 +51,7 @@ it('should allow a functional onChange to be passed when using a validator', () 
     defaultValues: {
       name: 'test',
     },
-    validatorAdapter: valibotValidator,
+    validatorAdapter: valibotValidator(),
   } as const)
 
   const field = new FieldApi({
@@ -92,9 +92,9 @@ it.skip('should allow not a Valibot validator with the wrong Valibot type', () =
   const field = new FieldApi({
     form,
     name: 'name',
-    validatorAdapter: valibotValidator,
+    validatorAdapter: valibotValidator(),
     validators: {
-      onChange: object({}),
+      onChange: v.object({}),
     },
   })
 })

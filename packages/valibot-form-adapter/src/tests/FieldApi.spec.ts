@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { FieldApi, FormApi } from '@tanstack/form-core'
-import { customAsync, minLength, string, stringAsync } from 'valibot'
+import * as v from 'valibot'
 import { valibotValidator } from '../validator'
 import { sleep } from './utils'
 
@@ -14,12 +14,13 @@ describe('valibot field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: valibotValidator,
+      validatorAdapter: valibotValidator(),
       name: 'name',
       validators: {
-        onChange: string([
-          minLength(3, 'You must have a length of at least 3'),
-        ]),
+        onChange: v.pipe(
+          v.string(),
+          v.minLength(3, 'You must have a length of at least 3'),
+        ),
       },
     })
 
@@ -43,7 +44,7 @@ describe('valibot field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: valibotValidator,
+      validatorAdapter: valibotValidator(),
       name: 'name',
       validators: {
         onChange: ({ value }) => (value === 'a' ? 'Test' : undefined),
@@ -68,12 +69,13 @@ describe('valibot field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: valibotValidator,
+      validatorAdapter: valibotValidator(),
       name: 'name',
       validators: {
-        onChangeAsync: stringAsync([
-          customAsync(async (val) => val.length > 3, 'Testing 123'),
-        ]),
+        onChangeAsync: v.pipeAsync(
+          v.string(),
+          v.checkAsync(async (val) => val.length > 3, 'Testing 123'),
+        ),
         onChangeAsyncDebounceMs: 0,
       },
     })
@@ -98,7 +100,7 @@ describe('valibot field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: valibotValidator,
+      validatorAdapter: valibotValidator(),
       name: 'name',
       validators: {
         onChangeAsync: async ({ value }) =>
@@ -116,5 +118,38 @@ describe('valibot field api', () => {
     field.setValue('asdf', { touch: true })
     await sleep(10)
     expect(field.getMeta().errors).toEqual([])
+  })
+
+  it('should transform errors to display only the first error message', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      validatorAdapter: valibotValidator({
+        transformErrors: (errors) => errors[0]?.message,
+      }),
+      name: 'name',
+      validators: {
+        onChange: v.pipe(
+          v.string(),
+          v.minLength(3, 'You must have a length of at least 3'),
+          v.uuid('UUID'),
+        ),
+      },
+    })
+
+    field.mount()
+
+    expect(field.getMeta().errors).toEqual([])
+    field.setValue('aa', { touch: true })
+    expect(field.getMeta().errors).toEqual([
+      'You must have a length of at least 3',
+    ])
+    field.setValue('aaa', { touch: true })
+    expect(field.getMeta().errors).toEqual(['UUID'])
   })
 })

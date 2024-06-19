@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "moduleResolution": "Bundler",
+    "skipLibCheck": true,
     "paths": {
       "@tanstack/form-core": ["../form-core/src"]
     }

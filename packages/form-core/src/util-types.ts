@@ -60,7 +60,7 @@ type PrefixTupleAccessor<
 }[TIndex]
 
 type PrefixObjectAccessor<T extends object, TDepth extends any[]> = {
-  [K in keyof T]: K extends string | number
+  [K in keyof T]-?: K extends string | number
     ?
         | PrefixFromDepth<K, TDepth>
         | `${PrefixFromDepth<K, TDepth>}${DeepKeys<T[K], [TDepth]>}`
@@ -71,19 +71,17 @@ export type DeepKeys<T, TDepth extends any[] = []> = TDepth['length'] extends 5
   ? never
   : unknown extends T
     ? PrefixFromDepth<string, TDepth>
-    : object extends T
-      ? PrefixFromDepth<string, TDepth>
-      : T extends readonly any[] & IsTuple<T>
-        ? PrefixTupleAccessor<T, AllowedIndexes<T>, TDepth>
-        : T extends any[]
-          ? PrefixArrayAccessor<T, [...TDepth, any]>
-          : T extends Date
-            ? never
-            : T extends object
-              ? PrefixObjectAccessor<T, TDepth>
-              : T extends string | number | boolean | bigint
-                ? ''
-                : never
+    : T extends readonly any[] & IsTuple<T>
+      ? PrefixTupleAccessor<T, AllowedIndexes<T>, TDepth>
+      : T extends any[]
+        ? PrefixArrayAccessor<T, [...TDepth, any]>
+        : T extends Date
+          ? never
+          : T extends object
+            ? PrefixObjectAccessor<T, TDepth>
+            : T extends string | number | boolean | bigint
+              ? ''
+              : never
 
 type PrefixFromDepth<
   T extends string | number,
