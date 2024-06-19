@@ -124,6 +124,10 @@
           "label": "vue",
           "children": [
             {
+              "label": "Basic Concepts",
+              "to": "framework/vue/guides/basic-concepts"
+            },
+            {
               "label": "Arrays",
               "to": "framework/vue/guides/arrays"
             }

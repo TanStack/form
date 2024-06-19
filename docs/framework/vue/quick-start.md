@@ -29,19 +29,21 @@ const form = useForm({
 
 <template>
   <div>
-    <div>
-      <form.Field name="fullName">
-        <template v-slot="{ field }">
-          <input
-            :name="field.name"
-            :value="field.state.value"
-            :onBlur="field.handleBlur"
-            :onChange="(e) => field.handleChange(e.target.value)"
-          />
-        </template>
-      </form.Field>
-    </div>
-    <button type="submit">Submit</button>
+    <form @submit.prevent.stop="form.handleSubmit">
+      <div>
+        <form.Field name="fullName">
+          <template v-slot="{ field }">
+            <input
+              :name="field.name"
+              :value="field.state.value"
+              @blur="field.handleBlur"
+              @input="(e) => field.handleChange(e.target.value)"
+            />
+          </template>
+        </form.Field>
+      </div>
+      <button type="submit">Submit</button>
+    </form>
   </div>
 </template>
 ```
