@@ -130,7 +130,7 @@ describe('valibot field api', () => {
     const field = new FieldApi({
       form,
       validatorAdapter: valibotValidator({
-        transformErrors: (errors) => errors[0].message,
+        transformErrors: (errors) => errors[0]?.message,
       }),
       name: 'name',
       validators: {
