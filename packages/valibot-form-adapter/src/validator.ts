@@ -3,9 +3,7 @@ import type { BaseIssue, BaseSchema, BaseSchemaAsync } from 'valibot'
 import type { Validator } from '@tanstack/form-core'
 
 type Params = {
-  transformErrors?: (
-    errors: BaseIssue<unknown>[],
-  ) => ValidationError
+  transformErrors?: (errors: BaseIssue<unknown>[]) => ValidationError
 }
 
 export const valibotValidator = (params: Params = {}) =>
