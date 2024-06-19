@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/solid-form",
-  "version": "0.20.0",
+  "version": "0.22.0",
   "description": "Powerful, type-safe forms for Solid.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -55,7 +55,7 @@
   },
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/solid-store": "^0.3.1"
+    "@tanstack/solid-store": "^0.4.1"
   },
   "peerDependencies": {
     "solid-js": "^1.6.0"

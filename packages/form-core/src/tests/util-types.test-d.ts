@@ -42,6 +42,18 @@ assertType<
 >(0 as never as NestedSupport)
 
 /**
+ * Properly handles deep partial object nesting like so:
+ */
+type NestedPartialSupport = DeepKeys<{ meta?: { mainUser?: User } }>
+assertType<
+  | 'meta'
+  | 'meta.mainUser'
+  | 'meta.mainUser.name'
+  | 'meta.mainUser.id'
+  | 'meta.mainUser.age'
+>(0 as never as NestedPartialSupport)
+
+/**
  * Properly handles `object` edgecase nesting like so:
  */
 type ObjectNestedEdgecase = DeepKeys<{ meta: { mainUser: object } }>

@@ -3,7 +3,7 @@ import { render } from 'solid-js/web'
 
 import { createForm } from '@tanstack/solid-form'
 import { valibotValidator } from '@tanstack/valibot-form-adapter'
-import { customAsync, minLength, string, stringAsync } from 'valibot'
+import * as v from 'valibot'
 import type { FieldApi } from '@tanstack/solid-form'
 
 interface FieldInfoProps {
@@ -32,7 +32,7 @@ function App() {
       console.log(value)
     },
     // Add a validator to support Valibot usage in Form and Field
-    validatorAdapter: valibotValidator,
+    validatorAdapter: valibotValidator(),
   }))
 
   return (
@@ -50,16 +50,18 @@ function App() {
           <form.Field
             name="firstName"
             validators={{
-              onChange: string([
-                minLength(3, 'First name must be at least 3 characters'),
-              ]),
+              onChange: v.pipe(
+                v.string(),
+                v.minLength(3, 'You must have a length of at least 3'),
+              ),
               onChangeAsyncDebounceMs: 500,
-              onChangeAsync: stringAsync([
-                customAsync(async (value) => {
+              onChangeAsync: v.pipeAsync(
+                v.string(),
+                v.checkAsync(async (value) => {
                   await new Promise((resolve) => setTimeout(resolve, 1000))
                   return !value.includes('error')
                 }, "No 'error' allowed in first name"),
-              ]),
+              ),
             }}
             children={(field) => {
               // Avoid hasty abstractions. Render props are great!

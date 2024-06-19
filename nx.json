@@ -1,10 +1,8 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "affected": {
-    "defaultBase": "main"
-  },
   "defaultBase": "main",
-  "nxCloudAccessToken": "OTI3Y2U3NGQtYzQ3ZC00ZmE3LWJjZWQtYTYxOTEyNmNiN2IyfHJlYWQtb25seQ==",
+  "neverConnectToCloud": true,
+  "useInferencePlugins": false,
   "parallel": 5,
   "namedInputs": {
     "sharedGlobals": [

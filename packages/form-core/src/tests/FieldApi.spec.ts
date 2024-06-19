@@ -107,6 +107,35 @@ describe('field api', () => {
     expect(field.getValue()).toStrictEqual(['one', 'other'])
   })
 
+  it('should run onChange validation when pushing an array fields value', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['test'],
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'names',
+      validators: {
+        onChange: ({ value }) => {
+          if (value.length < 3) {
+            return 'At least 3 names are required'
+          }
+          return
+        },
+      },
+    })
+    field.mount()
+
+    field.pushValue('other')
+
+    expect(field.getMeta().errors).toStrictEqual([
+      'At least 3 names are required',
+    ])
+  })
+
   it('should insert a value into an array value correctly', () => {
     const form = new FormApi({
       defaultValues: {
@@ -121,7 +150,73 @@ describe('field api', () => {
 
     field.insertValue(1, 'other')
 
-    expect(field.getValue()).toStrictEqual(['one', 'other'])
+    expect(field.getValue()).toStrictEqual(['one', 'other', 'two'])
+  })
+
+  it('should replace a value into an array correctly', () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'names',
+    })
+
+    field.replaceValue(1, 'other')
+
+    expect(field.getValue()).toStrictEqual(['one', 'other', 'three'])
+  })
+
+  it('should do nothing when replacing a value into an array at an index that does not exist', () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'names',
+    })
+
+    field.replaceValue(10, 'other')
+
+    expect(field.getValue()).toStrictEqual(['one', 'two', 'three'])
+  })
+
+  it('should run onChange validation when inserting an array fields value', () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['test'],
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'names',
+      validators: {
+        onChange: ({ value }) => {
+          if (value.length < 3) {
+            return 'At least 3 names are required'
+          }
+          return
+        },
+      },
+      defaultMeta: {
+        isTouched: true,
+      },
+    })
+    field.mount()
+
+    field.insertValue(1, 'other')
+
+    expect(field.getMeta().errors).toStrictEqual([
+      'At least 3 names are required',
+    ])
   })
 
   it('should remove a value from an array value correctly', () => {
@@ -141,6 +236,149 @@ describe('field api', () => {
     expect(field.getValue()).toStrictEqual(['one'])
   })
 
+  it('should run onChange validation when removing an array fields value', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['test'],
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'names',
+      validators: {
+        onChange: ({ value }) => {
+          if (value.length < 3) {
+            return 'At least 3 names are required'
+          }
+          return
+        },
+      },
+      defaultMeta: {
+        isTouched: true,
+      },
+    })
+    field.mount()
+
+    await field.removeValue(0)
+
+    expect(field.getMeta().errors).toStrictEqual([
+      'At least 3 names are required',
+    ])
+  })
+
+  it('should remove a subfield from an array field correctly', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        people: [] as Array<{ name: string }>,
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'people',
+    })
+
+    const subFieldValidators = {
+      onChange: ({ value }: { value: string }) =>
+        value.length === 0 ? 'Required' : null,
+    }
+
+    const subField1 = new FieldApi({
+      form: field.form,
+      name: 'people[0].name',
+      defaultValue: '',
+      validators: subFieldValidators,
+    })
+
+    const subField2 = new FieldApi({
+      form: field.form,
+      name: 'people[1].name',
+      defaultValue: 'hello',
+      validators: subFieldValidators,
+    })
+
+    const subField3 = new FieldApi({
+      form: field.form,
+      name: 'people[2].name',
+      defaultValue: '',
+      validators: subFieldValidators,
+    })
+
+    const subField4 = new FieldApi({
+      form: field.form,
+      name: 'people[3].name',
+      defaultValue: 'world',
+      validators: subFieldValidators,
+    })
+
+    ;[form, field, subField1, subField2, subField3, subField4].forEach((f) =>
+      f.mount(),
+    )
+
+    await form.handleSubmit()
+
+    expect(subField1.state.meta.errorMap.onChange).toStrictEqual('Required')
+    expect(subField2.state.meta.errorMap.onChange).toStrictEqual(undefined)
+    expect(subField3.state.meta.errorMap.onChange).toStrictEqual('Required')
+    expect(subField4.state.meta.errorMap.onChange).toStrictEqual(undefined)
+
+    await field.removeValue(0 /* subField1 */, { touch: true })
+
+    expect(subField1.state.value).toBe('hello')
+    expect(subField1.state.meta.errorMap.onChange).toStrictEqual(undefined)
+    expect(subField2.state.value).toBe('')
+    expect(subField2.state.meta.errorMap.onChange).toStrictEqual('Required')
+    expect(subField3.state.value).toBe('world')
+    expect(subField3.state.meta.errorMap.onChange).toStrictEqual(undefined)
+    expect(form.getFieldInfo('people[0].name').instance?.state.value).toBe(
+      'hello',
+    )
+    expect(form.getFieldInfo('people[1].name').instance?.state.value).toBe('')
+    expect(form.getFieldInfo('people[2].name').instance?.state.value).toBe(
+      'world',
+    )
+  })
+
+  it('should remove remove the last subfield from an array field correctly', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        people: [] as Array<{ name: string }>,
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'people',
+    })
+
+    const subFieldValidators = {
+      onChange: ({ value }: { value: string }) =>
+        value.length === 0 ? 'Required' : null,
+    }
+
+    const subField1 = new FieldApi({
+      form: field.form,
+      name: 'people[0].name',
+      defaultValue: '',
+      validators: subFieldValidators,
+    })
+
+    ;[form, field, subField1].forEach((f) => f.mount())
+
+    await form.handleSubmit()
+
+    expect(subField1.state.meta.errorMap.onChange).toStrictEqual('Required')
+
+    await field.removeValue(0 /* subField1 */, { touch: true })
+
+    expect(subField1.state.value).toBe(undefined)
+    expect(subField1.state.meta.errorMap.onChange).toStrictEqual(undefined)
+
+    expect(form.state.canSubmit).toBe(true)
+  })
+
   it('should swap a value from an array value correctly', () => {
     const form = new FormApi({
       defaultValues: {
@@ -158,6 +396,38 @@ describe('field api', () => {
     expect(field.getValue()).toStrictEqual(['two', 'one'])
   })
 
+  it('should run onChange validation when swapping an array fields value', () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['test', 'test2'],
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'names',
+      validators: {
+        onChange: ({ value }) => {
+          if (value.length < 3) {
+            return 'At least 3 names are required'
+          }
+          return
+        },
+      },
+      defaultMeta: {
+        isTouched: true,
+      },
+    })
+    field.mount()
+
+    field.swapValues(0, 1)
+
+    expect(field.getMeta().errors).toStrictEqual([
+      'At least 3 names are required',
+    ])
+  })
+
   it('should move a value from an array value correctly', () => {
     const form = new FormApi({
       defaultValues: {
@@ -173,6 +443,38 @@ describe('field api', () => {
     field.moveValue(2, 0)
 
     expect(field.getValue()).toStrictEqual(['three', 'one', 'two', 'four'])
+  })
+
+  it('should run onChange validation when moving an array fields value', () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['test', 'test2'],
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'names',
+      validators: {
+        onChange: ({ value }) => {
+          if (value.length < 3) {
+            return 'At least 3 names are required'
+          }
+          return
+        },
+      },
+      defaultMeta: {
+        isTouched: true,
+      },
+    })
+    field.mount()
+
+    field.moveValue(0, 1)
+
+    expect(field.getMeta().errors).toStrictEqual([
+      'At least 3 names are required',
+    ])
   })
 
   it('should not throw errors when no meta info is stored on a field and a form re-renders', async () => {

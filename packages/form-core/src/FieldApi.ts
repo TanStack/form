@@ -469,18 +469,31 @@ export class FieldApi<
 
   getInfo = () => this.form.getFieldInfo(this.name)
 
-  pushValue = (value: TData extends any[] ? TData[number] : never) =>
-    this.form.pushFieldValue(this.name, value as any)
+  pushValue = (
+    value: TData extends any[] ? TData[number] : never,
+    opts?: { touch?: boolean },
+  ) => this.form.pushFieldValue(this.name, value as any, opts)
 
   insertValue = (
     index: number,
     value: TData extends any[] ? TData[number] : never,
-  ) => this.form.insertFieldValue(this.name, index, value as any)
+    opts?: { touch?: boolean },
+  ) => this.form.insertFieldValue(this.name, index, value as any, opts)
 
-  removeValue = (index: number) => this.form.removeFieldValue(this.name, index)
+  replaceValue = (
+    index: number,
+    value: TData extends any[] ? TData[number] : never,
+    opts?: { touch?: boolean },
+  ) => this.form.replaceFieldValue(this.name, index, value as any, opts)
 
-  swapValues = (aIndex: number, bIndex: number) =>
-    this.form.swapFieldValues(this.name, aIndex, bIndex)
+  removeValue = (index: number, opts?: { touch: boolean }) =>
+    this.form.removeFieldValue(this.name, index, opts)
+
+  swapValues = (aIndex: number, bIndex: number, opts?: { touch?: boolean }) =>
+    this.form.swapFieldValues(this.name, aIndex, bIndex, opts)
+
+  moveValue = (aIndex: number, bIndex: number, opts?: { touch?: boolean }) =>
+    this.form.moveFieldValues(this.name, aIndex, bIndex, opts)
 
   getLinkedFields = (cause: ValidationCause) => {
     const fields = Object.values(this.form.fieldInfo) as FieldInfo<
@@ -506,9 +519,6 @@ export class FieldApi<
 
     return linkedFields
   }
-
-  moveValue = (aIndex: number, bIndex: number) =>
-    this.form.moveFieldValues(this.name, aIndex, bIndex)
 
   validateSync = (cause: ValidationCause) => {
     const validates = getSyncValidatorArray(cause, this.options)

@@ -256,28 +256,38 @@ A class representing the API for managing a form field.
   - Gets the field information object.
 
 - ```tsx
-  pushValue(value: TData): void
+  pushValue(value: TData, opts?: { touch?: boolean }): void
   ```
 
   - Pushes a new value to the field.
 
 - ```tsx
-  insertValue(index: number, value: TData): void
+  insertValue(index: number, value: TData, opts?: { touch?: boolean }): void
   ```
 
-  - Inserts a value at the specified index.
+  - Inserts a value at the specified index, shifting the subsequent values to the right.
 
 - ```tsx
-  removeValue(index: number): void
+  replaceValue(index: number, value: TData): void
+  ```
+  - Replaces a value at the specified index.
+
+- ```tsx
+  removeValue(index: number, opts?: { touch?: boolean }): Promise<void>
   ```
 
   - Removes a value at the specified index.
 
 - ```tsx
-  swapValues(aIndex: number, bIndex: number): void
+  swapValues(aIndex: number, bIndex: number, opts?: { touch?: boolean }): void
   ```
 
   - Swaps the values at the specified indices.
+- ```tsx
+    moveValue(aIndex: number, bIndex: number, opts?: { touch?: boolean })
+  ```
+
+  - Moves the value at the first specified index to the second specified index.
 
 - ```tsx
   validate(): Promise<any>

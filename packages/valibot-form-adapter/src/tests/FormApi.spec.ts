@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { FieldApi, FormApi } from '@tanstack/form-core'
-import { minLength, string } from 'valibot'
+import * as v from 'valibot'
 import { valibotValidator } from '../validator'
 
 describe('valibot form api', () => {
@@ -9,16 +9,17 @@ describe('valibot form api', () => {
       defaultValues: {
         name: '',
       },
-      validatorAdapter: valibotValidator,
+      validatorAdapter: valibotValidator(),
     })
 
     const field = new FieldApi({
       form,
       name: 'name',
       validators: {
-        onChange: string([
-          minLength(3, 'You must have a length of at least 3'),
-        ]),
+        onChange: v.pipe(
+          v.string(),
+          v.minLength(3, 'You must have a length of at least 3'),
+        ),
       },
     })
 
@@ -38,7 +39,7 @@ describe('valibot form api', () => {
       defaultValues: {
         name: '',
       },
-      validatorAdapter: valibotValidator,
+      validatorAdapter: valibotValidator(),
     })
 
     const field = new FieldApi({

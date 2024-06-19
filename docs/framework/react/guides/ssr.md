@@ -3,9 +3,9 @@ id: ssr
 title: Next.js Usage
 ---
 
+> ⚠ This feature is highly experimental and is subject to change. Currently, this example [leaks backend code the frontend through `onServerValidate`](https://github.com/TanStack/form/issues/710). We are working on changes to the API, and will update this guide and provide migration steps when a solution is available. ⚠
+
 Before reading this guide, it's suggested you understand how React Server Components and React Server Actions work. [Check out this blog series for more information](https://unicorn-utterances.com/collections/react-beyond-the-render)
-
-
 
 # Using TanStack Form in a Next.js App Router
 
@@ -25,7 +25,7 @@ _Remix Support Coming soon_
 
 
 
-# App Router intergration
+# App Router integration
 
 - To use TanStack Form, the component containing the form should be a client component. This requires adding the `"use client"` directive. Wrap this client component within a server component like so:
 

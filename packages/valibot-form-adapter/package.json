@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/valibot-form-adapter",
-  "version": "0.20.0",
+  "version": "0.22.0",
   "description": "The Valibot adapter for TanStack Form.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -35,7 +35,6 @@
   "scripts": {
     "clean": "rimraf ./dist && rimraf ./coverage",
     "test:eslint": "eslint --ext .ts,.tsx ./src",
-    "test:types:versions49": "node ../../node_modules/typescript49/lib/tsc.js --project tsconfig.legacy.json",
     "test:types:versions50": "node ../../node_modules/typescript50/lib/tsc.js",
     "test:types:versions51": "node ../../node_modules/typescript51/lib/tsc.js",
     "test:types:versions52": "node ../../node_modules/typescript52/lib/tsc.js",
@@ -51,9 +50,9 @@
     "@tanstack/form-core": "workspace:*"
   },
   "peerDependencies": {
-    "valibot": "^0.x"
+    "valibot": ">=0.31.0 <1"
   },
   "devDependencies": {
-    "valibot": "^0.20.1"
+    "valibot": "^0.31.1"
   }
 }
