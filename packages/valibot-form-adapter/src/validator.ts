@@ -1,6 +1,6 @@
 import { safeParse, safeParseAsync } from 'valibot'
 import type { BaseIssue, BaseSchema, BaseSchemaAsync } from 'valibot'
-import type { Validator } from '@tanstack/form-core'
+import type { Validator, ValidationError } from '@tanstack/form-core'
 
 type Params = {
   transformErrors?: (errors: BaseIssue<unknown>[]) => ValidationError
