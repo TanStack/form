@@ -1,9 +1,9 @@
 import * as path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promises } from 'node:fs'
-const { rm, mkdir } = promises
 import * as TypeDoc from 'typedoc'
 
+const { rm, mkdir } = promises
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 /**
@@ -41,12 +41,29 @@ const packages = [
     outputDir: path.resolve(__dirname, '../docs/framework/angular/reference'),
     exclude: ['packages/form-core/**/*'],
   },
+  {
+    name: 'lit-form',
+    entryPoint: path.resolve(
+      __dirname,
+      '../packages/lit-form/src/index.ts',
+    ),
+    tsconfig: path.resolve(__dirname, '../packages/lit-form/tsconfig.json'),
+    outputDir: path.resolve(__dirname, '../docs/framework/lit/reference'),
+    exclude: ['packages/form-core/**/*'],
+  },
 ]
 
 async function main() {
   for (const pkg of packages) {
     // Clean and recreate the output directories
-    await rm(pkg.outputDir, { recursive: true })
+    try {
+      await rm(pkg.outputDir, { recursive: true })
+    } catch (error) {
+      // @ts-ignore
+      if (error.code !== 'ENOENT') {
+        throw error
+      }
+    }
     await mkdir(pkg.outputDir, { recursive: true })
 
     const app = await TypeDoc.Application.bootstrapWithPlugins({

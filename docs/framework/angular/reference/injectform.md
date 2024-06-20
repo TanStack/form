@@ -20,4 +20,4 @@ function injectForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormV
 
 ## Source
 
-[inject-form.ts:4](https://github.com/TanStack/form/blob/5aaf73c63cd794485f5bed1e917a8daa05a297dc/packages/angular-form/src/inject-form.ts#L4)
+[inject-form.ts:4](https://github.com/TanStack/form/blob/15a69d908f9285338889d60e93b689d265e4136c/packages/angular-form/src/inject-form.ts#L4)
