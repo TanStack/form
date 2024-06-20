@@ -5,14 +5,14 @@ title: Basic Concepts and Terminology
 
 This page introduces the basic concepts and terminology used in the `@tanstack/react-form` library. Familiarizing yourself with these concepts will help you better understand and work with the library.
 
-## Form Factory
+## Form Options
 
-The Form Factory is responsible for creating form instances with a shared configuration. It is created using the `createFormFactory` function, which accepts a configuration object with default values for the form fields. This shared configuration allows you to create multiple form instances with consistent behavior.
+You can create options for your form so that it can be shared between multiple forms by using the `formOptions` function.
 
 Example:
 
 ```tsx
-const formFactory = createFormFactory<Person>({
+const formOpts = formOptions<Person>({
   defaultValues: {
     firstName: '',
     lastName: '',
@@ -23,10 +23,11 @@ const formFactory = createFormFactory<Person>({
 
 ## Form Instance
 
-A Form Instance is an object that represents an individual form and provides methods and properties for working with the form. You create a form instance using the `useForm` hook provided by the form factory. The hook accepts an object with an `onSubmit` function, which is called when the form is submitted.
+A Form Instance is an object that represents an individual form and provides methods and properties for working with the form. You create a form instance using the `useForm` hook provided by the form options. The hook accepts an object with an `onSubmit` function, which is called when the form is submitted.
 
 ```tsx
-const form = formFactory.useForm({
+const form = useForm({
+  ...formOpts,
   onSubmit: async ({ value }) => {
     // Do something with form data
     console.log(value)
@@ -34,7 +35,7 @@ const form = formFactory.useForm({
 })
 ```
 
-You may also create a form instance without going through the `formFactory` by using the standalone `useForm` API:
+You may also create a form instance without using `formOptions` by using the standalone `useForm` API:
 
 ```tsx
 const form = useForm<Person>({
@@ -156,7 +157,7 @@ import { z } from 'zod'
 // ...
 <form.Field
   name="firstName"
-  validatorAdapter={zodValidator}
+  validatorAdapter={zodValidator()}
   validators={{
     onChange: z.string().min(3, 'First name must be at least 3 characters'),
     onChangeAsyncDebounceMs: 500,

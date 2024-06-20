@@ -1,20 +1,21 @@
-/// <reference types="../../node_modules/@types/react-dom/experimental" />
 'use client'
 
-import { useFormState } from 'react-dom'
-import { mergeForm, useTransform } from '@tanstack/react-form'
+import { useActionState } from 'react'
+import {
+  initialFormState,
+  mergeForm,
+  useForm,
+  useTransform,
+} from '@tanstack/react-form'
 import someAction from './action'
-import { formFactory } from './shared-code'
-import type { FormApi } from '@tanstack/react-form'
+import { formOpts } from './shared-code'
 
 export const ClientComp = () => {
-  const [state, action] = useFormState(someAction, formFactory.initialFormState)
+  const [state, action] = useActionState(someAction, initialFormState)
 
-  const form = formFactory.useForm({
-    transform: useTransform(
-      (baseForm: FormApi<any, any>) => mergeForm(baseForm, state),
-      [state],
-    ),
+  const form = useForm({
+    ...formOpts,
+    transform: useTransform((baseForm) => mergeForm(baseForm, state), [state]),
   })
 
   const formErrors = form.useStore((formState) => formState.errors)

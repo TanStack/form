@@ -422,7 +422,7 @@ import { z } from 'zod'
 export class AppComponent {
   form = injectForm({
     // Either add the validator here or on `Field`
-    validatorAdapter: zodValidator,
+    validatorAdapter: zodValidator(),
     // ...
   })
 

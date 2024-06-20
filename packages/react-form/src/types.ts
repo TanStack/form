@@ -4,7 +4,7 @@ import type {
   FieldApiOptions,
   Validator,
 } from '@tanstack/form-core'
-import type { FunctionComponent } from 'rehackt'
+import type { FunctionComponent } from 'react'
 
 export type UseFieldOptions<
   TParentData,
