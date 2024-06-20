@@ -20,7 +20,7 @@ If true, always run async validation, even when sync validation has produced an 
 
 #### Source
 
-[packages/form-core/src/FormApi.ts:132](https://github.com/TanStack/form/blob/19d935c69213e853289898ebd84f9d212a145038/packages/form-core/src/FormApi.ts#L132)
+[packages/form-core/src/FormApi.ts:132](https://github.com/TanStack/form/blob/5aaf73c63cd794485f5bed1e917a8daa05a297dc/packages/form-core/src/FormApi.ts#L132)
 
 ***
 
@@ -34,7 +34,7 @@ Optional time in milliseconds if you want to introduce a delay before firing off
 
 #### Source
 
-[packages/form-core/src/FormApi.ts:136](https://github.com/TanStack/form/blob/19d935c69213e853289898ebd84f9d212a145038/packages/form-core/src/FormApi.ts#L136)
+[packages/form-core/src/FormApi.ts:136](https://github.com/TanStack/form/blob/5aaf73c63cd794485f5bed1e917a8daa05a297dc/packages/form-core/src/FormApi.ts#L136)
 
 ***
 
@@ -48,7 +48,7 @@ The default state for the form.
 
 #### Source
 
-[packages/form-core/src/FormApi.ts:128](https://github.com/TanStack/form/blob/19d935c69213e853289898ebd84f9d212a145038/packages/form-core/src/FormApi.ts#L128)
+[packages/form-core/src/FormApi.ts:128](https://github.com/TanStack/form/blob/5aaf73c63cd794485f5bed1e917a8daa05a297dc/packages/form-core/src/FormApi.ts#L128)
 
 ***
 
@@ -62,7 +62,7 @@ Set initial values for your form.
 
 #### Source
 
-[packages/form-core/src/FormApi.ts:124](https://github.com/TanStack/form/blob/19d935c69213e853289898ebd84f9d212a145038/packages/form-core/src/FormApi.ts#L124)
+[packages/form-core/src/FormApi.ts:124](https://github.com/TanStack/form/blob/5aaf73c63cd794485f5bed1e917a8daa05a297dc/packages/form-core/src/FormApi.ts#L124)
 
 ***
 
@@ -88,7 +88,7 @@ A function to be called when the form is submitted, what should happen once the 
 
 #### Source
 
-[packages/form-core/src/FormApi.ts:148](https://github.com/TanStack/form/blob/19d935c69213e853289898ebd84f9d212a145038/packages/form-core/src/FormApi.ts#L148)
+[packages/form-core/src/FormApi.ts:148](https://github.com/TanStack/form/blob/5aaf73c63cd794485f5bed1e917a8daa05a297dc/packages/form-core/src/FormApi.ts#L148)
 
 ***
 
@@ -114,7 +114,7 @@ Specify an action for scenarios where the user tries to submit an invalid form.
 
 #### Source
 
-[packages/form-core/src/FormApi.ts:155](https://github.com/TanStack/form/blob/19d935c69213e853289898ebd84f9d212a145038/packages/form-core/src/FormApi.ts#L155)
+[packages/form-core/src/FormApi.ts:155](https://github.com/TanStack/form/blob/5aaf73c63cd794485f5bed1e917a8daa05a297dc/packages/form-core/src/FormApi.ts#L155)
 
 ***
 
@@ -126,7 +126,7 @@ optional transform: FormTransform<TFormData, TFormValidator>;
 
 #### Source
 
-[packages/form-core/src/FormApi.ts:159](https://github.com/TanStack/form/blob/19d935c69213e853289898ebd84f9d212a145038/packages/form-core/src/FormApi.ts#L159)
+[packages/form-core/src/FormApi.ts:159](https://github.com/TanStack/form/blob/5aaf73c63cd794485f5bed1e917a8daa05a297dc/packages/form-core/src/FormApi.ts#L159)
 
 ***
 
@@ -140,7 +140,7 @@ A validator adapter to support usage of extra validation types (IE: Zod, Yup, or
 
 #### Source
 
-[packages/form-core/src/FormApi.ts:140](https://github.com/TanStack/form/blob/19d935c69213e853289898ebd84f9d212a145038/packages/form-core/src/FormApi.ts#L140)
+[packages/form-core/src/FormApi.ts:140](https://github.com/TanStack/form/blob/5aaf73c63cd794485f5bed1e917a8daa05a297dc/packages/form-core/src/FormApi.ts#L140)
 
 ***
 
@@ -154,4 +154,4 @@ A list of validators to pass to the form
 
 #### Source
 
-[packages/form-core/src/FormApi.ts:144](https://github.com/TanStack/form/blob/19d935c69213e853289898ebd84f9d212a145038/packages/form-core/src/FormApi.ts#L144)
+[packages/form-core/src/FormApi.ts:144](https://github.com/TanStack/form/blob/5aaf73c63cd794485f5bed1e917a8daa05a297dc/packages/form-core/src/FormApi.ts#L144)

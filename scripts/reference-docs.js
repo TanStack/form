@@ -1,10 +1,14 @@
-import * as path from 'path'
-import { fileURLToPath } from 'url'
+import * as path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { promises } from 'node:fs'
+const { rm, mkdir } = promises
 import * as TypeDoc from 'typedoc'
-import 'typedoc-plugin-markdown'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+/**
+ * @type {Partial<import("typedoc").TypeDocOptions & import("typedoc-plugin-markdown").PluginOptions>}
+ */
 const options = {
   plugin: [
     'typedoc-plugin-markdown',
@@ -27,14 +31,29 @@ const packages = [
     tsconfig: path.resolve(__dirname, '../packages/form-core/tsconfig.json'),
     outputDir: path.resolve(__dirname, '../docs/reference'),
   },
+  {
+    name: 'angular-form',
+    entryPoint: path.resolve(
+      __dirname,
+      '../packages/angular-form/src/index.ts',
+    ),
+    tsconfig: path.resolve(__dirname, '../packages/angular-form/tsconfig.json'),
+    outputDir: path.resolve(__dirname, '../docs/framework/angular/reference'),
+    exclude: ['packages/form-core/**/*'],
+  },
 ]
 
 async function main() {
   for (const pkg of packages) {
+    // Clean and recreate the output directories
+    await rm(pkg.outputDir, { recursive: true })
+    await mkdir(pkg.outputDir, { recursive: true })
+
     const app = await TypeDoc.Application.bootstrapWithPlugins({
       ...options,
       entryPoints: [pkg.entryPoint],
       tsconfig: pkg.tsconfig,
+      exclude: pkg.exclude,
     })
 
     const project = await app.convert()

@@ -24,7 +24,7 @@
     "dev": "pnpm run watch",
     "prettier": "prettier --ignore-unknown .",
     "prettier:write": "pnpm run prettier --write",
-    "docs:reference": "rimraf docs/reference && node scripts/reference-docs.js",
+    "docs:reference": "node scripts/reference-docs.js",
     "cipublish": "node scripts/publish.js",
     "cipublishforce": "CI=true pnpm cipublish"
   },
@@ -63,7 +63,6 @@
     "publint": "^0.2.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "rimraf": "^5.0.5",
     "sherif": "^0.7.0",
     "solid-js": "^1.7.8",
     "typedoc": "^0.25.13",
