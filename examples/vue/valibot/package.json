@@ -10,8 +10,8 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@tanstack/valibot-form-adapter": "^0.23.1",
-    "@tanstack/vue-form": "^0.23.1",
+    "@tanstack/valibot-form-adapter": "^0.23.2",
+    "@tanstack/vue-form": "^0.23.2",
     "valibot": "^0.31.1",
     "vue": "^3.3.4"
   },
