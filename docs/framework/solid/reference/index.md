@@ -2,11 +2,11 @@
 
 ## Type Aliases
 
-- [CreateField](Type.CreateField.md)
-- [FieldComponent](Type.FieldComponent.md)
+- [CreateField](createfield.md)
+- [FieldComponent](fieldcomponent.md)
 
 ## Functions
 
-- [Field](Function.Field.md)
-- [createField](Function.createField.md)
-- [createForm](Function.createForm.md)
+- [Field](field.md)
+- [createField](createfield.md)
+- [createForm](createform.md)

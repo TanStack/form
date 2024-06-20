@@ -2,17 +2,17 @@
 
 ## Type Aliases
 
-- [FieldComponent](Type.FieldComponent.md)
-- [UseField](Type.UseField.md)
+- [FieldComponent](fieldcomponent.md)
+- [UseField](usefield.md)
 
 ## Variables
 
-- [initialFormState](Variable.initialFormState.md)
+- [initialFormState](initialformstate.md)
 
 ## Functions
 
-- [Field](Function.Field.md)
-- [createServerValidate](Function.createServerValidate.md)
-- [useField](Function.useField.md)
-- [useForm](Function.useForm.md)
-- [useTransform](Function.useTransform.md)
+- [Field](field.md)
+- [createServerValidate](createservervalidate.md)
+- [useField](usefield.md)
+- [useForm](useform.md)
+- [useTransform](usetransform.md)

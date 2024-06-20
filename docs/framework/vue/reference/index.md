@@ -2,11 +2,11 @@
 
 ## Type Aliases
 
-- [FieldComponent](Type.FieldComponent.md)
-- [UseField](Type.UseField.md)
+- [FieldComponent](fieldcomponent.md)
+- [UseField](usefield.md)
 
 ## Functions
 
-- [Field](Function.Field.md)
-- [useField](Function.useField.md)
-- [useForm](Function.useForm.md)
+- [Field](field.md)
+- [useField](usefield.md)
+- [useForm](useform.md)

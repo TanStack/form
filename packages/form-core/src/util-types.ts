@@ -105,7 +105,7 @@ type PrefixFromDepth<
 
 /**
  * Infer the type of a deeply nested property within an object or an array.
-*/
+ */
 export type DeepValue<
   // The object or array in which we have the property whose type we're trying to infer
   TValue,

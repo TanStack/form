@@ -1,24 +1,24 @@
-import { MarkdownPageEvent } from 'typedoc-plugin-markdown'
-import path from 'node:path'
+import { MarkdownRendererEvent } from 'typedoc-plugin-markdown'
 
 /**
  * @param {import("typedoc-plugin-markdown").MarkdownApplication} app
  */
 export function load(app) {
   app.renderer.on(
-    MarkdownPageEvent.BEGIN,
+    MarkdownRendererEvent.BEGIN,
     /**
-     * @param {import("typedoc-plugin-markdown").MarkdownPageEvent} page
-     */
-    (page) => {
-      const dirname = path.dirname(page.filename)
-      const basename = path.basename(page.filename)
-      const name = basename.split('.')
-      if (name[0] !== 'index') {
-        name.splice(0, 1)
-      }
-      const newBasename = name.join('.').toLowerCase();
-      page.filename = path.join(dirname, newBasename)
+     * @param {import("typedoc-plugin-markdown").MarkdownRendererEvent} renderer
+     */ (renderer) => {
+      renderer.urls = renderer.urls?.map((urlMapping) => {
+        const name = urlMapping.url.split('.')
+        if (name[0] !== 'index') {
+          name.splice(0, 1)
+        }
+        const newBasename = name.join('.').toLowerCase()
+        urlMapping.url = newBasename
+        urlMapping.model.url = newBasename
+        return urlMapping
+      })
     },
   )
 }

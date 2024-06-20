@@ -2,4 +2,4 @@
 
 ## Classes
 
-- [TanStackFormController](Class.TanStackFormController.md)
+- [TanStackFormController](tanstackformcontroller.md)

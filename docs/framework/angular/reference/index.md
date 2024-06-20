@@ -2,9 +2,9 @@
 
 ## Classes
 
-- [TanStackField](Class.TanStackField.md)
+- [TanStackField](tanstackfield.md)
 
 ## Functions
 
-- [injectForm](Function.injectForm.md)
-- [injectStore](Function.injectStore.md)
+- [injectForm](injectform.md)
+- [injectStore](injectstore.md)

@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": ["src/tests/**/*"],
+  "compilerOptions": {
+    "paths": {
+      "@tanstack/form-core": ["../form-core/src"]
+    }
+  }
+}

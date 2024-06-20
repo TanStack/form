@@ -12,14 +12,14 @@ function mergeForm<TFormData, TFormValidator>(baseForm, state): FormApi<NoInfer<
 
 ## Parameters
 
-• **baseForm**: [`FormApi`](Class.FormApi.md)\<`NoInfer`\<`TFormData`\>, `NoInfer`\<`TFormValidator`\>\>
+• **baseForm**: [`FormApi`](formapi.md)\<`NoInfer`\<`TFormData`\>, `NoInfer`\<`TFormValidator`\>\>
 
-• **state**: `Partial`\<[`FormState`](Type.FormState.md)\<`TFormData`\>\>
+• **state**: `Partial`\<[`FormState`](formstate.md)\<`TFormData`\>\>
 
 ## Returns
 
-[`FormApi`](Class.FormApi.md)\<`NoInfer`\<`TFormData`\>, `NoInfer`\<`TFormValidator`\>\>
+[`FormApi`](formapi.md)\<`NoInfer`\<`TFormData`\>, `NoInfer`\<`TFormValidator`\>\>
 
 ## Source
 
-[packages/form-core/src/mergeForm.ts:37](https://github.com/TanStack/form/blob/5b8b6371e1e490da7dcf3c588d18227efdee3cd9/packages/form-core/src/mergeForm.ts#L37)
+[packages/form-core/src/mergeForm.ts:37](https://github.com/TanStack/form/blob/5c94fa159313e0b0411d49fbdc3b117336185e63/packages/form-core/src/mergeForm.ts#L37)

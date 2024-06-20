@@ -20,4 +20,4 @@ function createServerValidate<TFormData, TFormValidator>(defaultOpts?): Validate
 
 ## Source
 
-[createServerValidate.ts:40](https://github.com/TanStack/form/blob/5b8b6371e1e490da7dcf3c588d18227efdee3cd9/packages/react-form/src/createServerValidate.ts#L40)
+[createServerValidate.ts:40](https://github.com/TanStack/form/blob/5c94fa159313e0b0411d49fbdc3b117336185e63/packages/react-form/src/createServerValidate.ts#L40)

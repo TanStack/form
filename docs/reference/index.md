@@ -2,31 +2,31 @@
 
 ## Classes
 
-- [FieldApi](Class.FieldApi.md)
-- [FormApi](Class.FormApi.md)
+- [FieldApi](fieldapi.md)
+- [FormApi](formapi.md)
 
 ## Interfaces
 
-- [FieldApiOptions](Interface.FieldApiOptions.md)
-- [FieldOptions](Interface.FieldOptions.md)
-- [FieldValidators](Interface.FieldValidators.md)
-- [FormOptions](Interface.FormOptions.md)
-- [FormValidators](Interface.FormValidators.md)
+- [FieldApiOptions](fieldapioptions.md)
+- [FieldOptions](fieldoptions.md)
+- [FieldValidators](fieldvalidators.md)
+- [FormOptions](formoptions.md)
+- [FormValidators](formvalidators.md)
 
 ## Type Aliases
 
-- [DeepKeys](Type.DeepKeys.md)
-- [DeepValue](Type.DeepValue.md)
-- [FieldInfo](Type.FieldInfo.md)
-- [FieldMeta](Type.FieldMeta.md)
-- [FieldState](Type.FieldState.md)
-- [FormState](Type.FormState.md)
-- [Updater](Type.Updater.md)
-- [UpdaterFn](Type.UpdaterFn.md)
-- [ValidationError](Type.ValidationError.md)
-- [ValidationMeta](Type.ValidationMeta.md)
+- [DeepKeys](deepkeys.md)
+- [DeepValue](deepvalue.md)
+- [FieldInfo](fieldinfo.md)
+- [FieldMeta](fieldmeta.md)
+- [FieldState](fieldstate.md)
+- [FormState](formstate.md)
+- [Updater](updater.md)
+- [UpdaterFn](updaterfn.md)
+- [ValidationError](validationerror.md)
+- [ValidationMeta](validationmeta.md)
 
 ## Functions
 
-- [formOptions](Function.formOptions.md)
-- [mergeForm](Function.mergeForm.md)
+- [formOptions](formoptions.md)
+- [mergeForm](mergeform.md)

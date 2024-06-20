@@ -26,11 +26,11 @@ new TanStackFormController<TParentData, TFormValidator>(host, config?): TanStack
 
 #### Returns
 
-[`TanStackFormController`](Class.TanStackFormController.md)\<`TParentData`, `TFormValidator`\>
+[`TanStackFormController`](tanstackformcontroller.md)\<`TParentData`, `TFormValidator`\>
 
 #### Source
 
-[tanstack-form-controller.ts:93](https://github.com/TanStack/form/blob/5b8b6371e1e490da7dcf3c588d18227efdee3cd9/packages/lit-form/src/tanstack-form-controller.ts#L93)
+[tanstack-form-controller.ts:93](https://github.com/TanStack/form/blob/5c94fa159313e0b0411d49fbdc3b117336185e63/packages/lit-form/src/tanstack-form-controller.ts#L93)
 
 ## Properties
 
@@ -42,7 +42,7 @@ api: FormApi<TParentData, TFormValidator>;
 
 #### Source
 
-[tanstack-form-controller.ts:91](https://github.com/TanStack/form/blob/5b8b6371e1e490da7dcf3c588d18227efdee3cd9/packages/lit-form/src/tanstack-form-controller.ts#L91)
+[tanstack-form-controller.ts:91](https://github.com/TanStack/form/blob/5c94fa159313e0b0411d49fbdc3b117336185e63/packages/lit-form/src/tanstack-form-controller.ts#L91)
 
 ## Methods
 
@@ -96,7 +96,7 @@ render: renderCallback<TParentData, TName, TFieldValidator, TFormValidator, TDat
 
 #### Source
 
-[tanstack-form-controller.ts:112](https://github.com/TanStack/form/blob/5b8b6371e1e490da7dcf3c588d18227efdee3cd9/packages/lit-form/src/tanstack-form-controller.ts#L112)
+[tanstack-form-controller.ts:112](https://github.com/TanStack/form/blob/5c94fa159313e0b0411d49fbdc3b117336185e63/packages/lit-form/src/tanstack-form-controller.ts#L112)
 
 ***
 
@@ -116,7 +116,7 @@ hostConnected(): void
 
 #### Source
 
-[tanstack-form-controller.ts:102](https://github.com/TanStack/form/blob/5b8b6371e1e490da7dcf3c588d18227efdee3cd9/packages/lit-form/src/tanstack-form-controller.ts#L102)
+[tanstack-form-controller.ts:102](https://github.com/TanStack/form/blob/5c94fa159313e0b0411d49fbdc3b117336185e63/packages/lit-form/src/tanstack-form-controller.ts#L102)
 
 ***
 
@@ -136,4 +136,4 @@ hostDisconnected(): void
 
 #### Source
 
-[tanstack-form-controller.ts:108](https://github.com/TanStack/form/blob/5b8b6371e1e490da7dcf3c588d18227efdee3cd9/packages/lit-form/src/tanstack-form-controller.ts#L108)
+[tanstack-form-controller.ts:108](https://github.com/TanStack/form/blob/5c94fa159313e0b0411d49fbdc3b117336185e63/packages/lit-form/src/tanstack-form-controller.ts#L108)
