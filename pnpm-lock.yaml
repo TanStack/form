@@ -714,7 +714,7 @@ importers:
   examples/solid/array:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^0.22.0
+        specifier: ^0.22.1
         version: link:../../../packages/solid-form
       solid-js:
         specifier: ^1.7.8
@@ -733,7 +733,7 @@ importers:
   examples/solid/simple:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^0.22.0
+        specifier: ^0.22.1
         version: link:../../../packages/solid-form
       solid-js:
         specifier: ^1.7.8
@@ -752,7 +752,7 @@ importers:
   examples/solid/valibot:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^0.22.0
+        specifier: ^0.22.1
         version: link:../../../packages/solid-form
       '@tanstack/valibot-form-adapter':
         specifier: ^0.22.0
@@ -777,7 +777,7 @@ importers:
   examples/solid/yup:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^0.22.0
+        specifier: ^0.22.1
         version: link:../../../packages/solid-form
       '@tanstack/yup-form-adapter':
         specifier: ^0.22.0
@@ -802,7 +802,7 @@ importers:
   examples/solid/zod:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^0.22.0
+        specifier: ^0.22.1
         version: link:../../../packages/solid-form
       '@tanstack/zod-form-adapter':
         specifier: ^0.22.0
