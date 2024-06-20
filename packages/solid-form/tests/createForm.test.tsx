@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor } from '@solidjs/testing-library'
-import userEvent from '@testing-library/user-event'
+import { userEvent } from '@testing-library/user-event'
 import { Show, createSignal, onCleanup } from 'solid-js'
-import { createForm } from '../index'
+import { createForm } from '../src/index'
 import { sleep } from './utils'
 import type { ValidationErrorMap } from '@tanstack/form-core'
 
