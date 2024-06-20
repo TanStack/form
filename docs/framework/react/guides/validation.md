@@ -334,13 +334,13 @@ import { z } from 'zod'
 
 const form = useForm({
   // Either add the validator here or on `Field`
-  validatorAdapter: zodValidator,
+  validatorAdapter: zodValidator(),
   // ...
 })
 
 <form.Field
   name="age"
-  validatorAdapter={zodValidator}
+  validatorAdapter={zodValidator()}
   validators={{
     onChange: z.number().gte(13, 'You must be 13 to make an account'),
   }}

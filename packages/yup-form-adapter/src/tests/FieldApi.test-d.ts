@@ -13,7 +13,7 @@ it('should allow a Zod validator to be passed in', () => {
   const field = new FieldApi({
     form,
     name: 'name',
-    validatorAdapter: yupValidator,
+    validatorAdapter: yupValidator(),
   } as const)
 })
 
@@ -27,7 +27,7 @@ it('should allow a Zod validator to handle the correct Zod type', () => {
   const field = new FieldApi({
     form,
     name: 'name',
-    validatorAdapter: yupValidator,
+    validatorAdapter: yupValidator(),
     validators: {
       onChange: yup.string(),
     },
@@ -44,7 +44,7 @@ it('should allow a functional onChange to be passed when using a validator', () 
   const field = new FieldApi({
     form,
     name: 'name',
-    validatorAdapter: yupValidator,
+    validatorAdapter: yupValidator(),
     validators: {
       onChange: ({ value }) => {
         assertType<'test'>(value)
@@ -80,7 +80,7 @@ it.skip('should allow not a Zod validator with the wrong Zod type', () => {
   const field = new FieldApi({
     form,
     name: 'name',
-    validatorAdapter: yupValidator,
+    validatorAdapter: yupValidator(),
     validators: {
       onChange: yup.object({}),
     },

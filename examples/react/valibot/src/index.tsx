@@ -2,7 +2,7 @@ import * as React from 'react'
 import { createRoot } from 'react-dom/client'
 import { useForm } from '@tanstack/react-form'
 import { valibotValidator } from '@tanstack/valibot-form-adapter'
-import { customAsync, minLength, string, stringAsync } from 'valibot'
+import * as v from 'valibot'
 import type { FieldApi } from '@tanstack/react-form'
 
 function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
@@ -27,7 +27,7 @@ export default function App() {
       console.log(value)
     },
     // Add a validator to support Valibot usage in Form and Field
-    validatorAdapter: valibotValidator,
+    validatorAdapter: valibotValidator(),
   })
 
   return (
@@ -45,16 +45,18 @@ export default function App() {
           <form.Field
             name="firstName"
             validators={{
-              onChange: string([
-                minLength(3, 'First name must be at least 3 characters'),
-              ]),
+              onChange: v.pipe(
+                v.string(),
+                v.minLength(3, 'You must have a length of at least 3'),
+              ),
               onChangeAsyncDebounceMs: 500,
-              onChangeAsync: stringAsync([
-                customAsync(async (value) => {
+              onChangeAsync: v.pipeAsync(
+                v.string(),
+                v.checkAsync(async (value) => {
                   await new Promise((resolve) => setTimeout(resolve, 1000))
                   return !value.includes('error')
                 }, "No 'error' allowed in first name"),
-              ]),
+              ),
             }}
             children={(field) => {
               // Avoid hasty abstractions. Render props are great!

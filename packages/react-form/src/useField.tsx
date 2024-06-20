@@ -1,14 +1,9 @@
-import React, { useState } from 'rehackt'
+import React, { type FunctionComponent, useState } from 'rehackt'
 import { useStore } from '@tanstack/react-store'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
-import type { UseFieldOptions } from './types'
-import type {
-  DeepKeys,
-  DeepValue,
-  Narrow,
-  Validator,
-} from '@tanstack/form-core'
+import type { NodeType, UseFieldOptions } from './types'
+import type { DeepKeys, DeepValue, Validator } from '@tanstack/form-core'
 
 declare module '@tanstack/form-core' {
   // eslint-disable-next-line no-shadow
@@ -117,7 +112,7 @@ type FieldComponentProps<
       TFormValidator,
       TData
     >,
-  ) => any
+  ) => NodeType
 } & UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>
 
 export type FieldComponent<
@@ -143,9 +138,9 @@ export type FieldComponent<
     TData
   >,
   'form'
->) => any
+>) => NodeType
 
-export function Field<
+export const Field = (<
   TParentData,
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
@@ -158,24 +153,14 @@ export function Field<
 >({
   children,
   ...fieldOptions
-}: {
-  children: (
-    fieldApi: FieldApi<
-      TParentData,
-      TName,
-      TFieldValidator,
-      TFormValidator,
-      TData
-    >,
-  ) => any
-} & UseFieldOptions<
+}: FieldComponentProps<
   TParentData,
   TName,
   TFieldValidator,
   TFormValidator,
   TData
->) {
+>): NodeType => {
   const fieldApi = useField(fieldOptions as any)
 
-  return <>{functionalUpdate(children, fieldApi as any)}</>
-}
+  return (<>{functionalUpdate(children, fieldApi as any)}</>) as never
+}) satisfies FunctionComponent<FieldComponentProps<any, any, any, any, any>>
