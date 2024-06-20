@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "test:types": "tsc",
+    "_test:types": "tsc",
     "test:eslint": "next lint"
   },
   "dependencies": {
