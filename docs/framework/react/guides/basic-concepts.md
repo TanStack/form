@@ -23,7 +23,7 @@ const formOpts = formOptions<Person>({
 
 ## Form Instance
 
-A Form Instance is an object that represents an individual form and provides methods and properties for working with the form. You create a form instance using the `useForm` hook provided by the form factory. The hook accepts an object with an `onSubmit` function, which is called when the form is submitted.
+A Form Instance is an object that represents an individual form and provides methods and properties for working with the form. You create a form instance using the `useForm` hook provided by the form options. The hook accepts an object with an `onSubmit` function, which is called when the form is submitted.
 
 ```tsx
 const form = useForm({
