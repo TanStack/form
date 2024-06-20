@@ -26,4 +26,4 @@ errors: never[] = [];
 
 ## Source
 
-[createServerValidate.ts:72](https://github.com/TanStack/form/blob/2fcee08730ef56cadb9b5937d06198bcc1fedcd7/packages/react-form/src/createServerValidate.ts#L72)
+[createServerValidate.ts:72](https://github.com/TanStack/form/blob/5b8b6371e1e490da7dcf3c588d18227efdee3cd9/packages/react-form/src/createServerValidate.ts#L72)

@@ -66,4 +66,4 @@ An array of errors related to the touched state of the field.
 
 ## Source
 
-[packages/form-core/src/FieldApi.ts:331](https://github.com/TanStack/form/blob/2fcee08730ef56cadb9b5937d06198bcc1fedcd7/packages/form-core/src/FieldApi.ts#L331)
+[packages/form-core/src/FieldApi.ts:331](https://github.com/TanStack/form/blob/5b8b6371e1e490da7dcf3c588d18227efdee3cd9/packages/form-core/src/FieldApi.ts#L331)

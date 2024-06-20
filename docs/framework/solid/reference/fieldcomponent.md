@@ -4,10 +4,8 @@
 type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData>({
   children,
   ...fieldOptions
-}) => NodeType;
+}) => JSXElement;
 ```
-
-A type alias representing a field component for a specific form data type.
 
 ## Type parameters
 
@@ -32,8 +30,8 @@ A type alias representing a field component for a specific form data type.
 
 ## Returns
 
-`NodeType`
+`JSXElement`
 
 ## Source
 
-[useField.tsx:141](https://github.com/TanStack/form/blob/5b8b6371e1e490da7dcf3c588d18227efdee3cd9/packages/react-form/src/useField.tsx#L141)
+[createField.tsx:141](https://github.com/TanStack/form/blob/5b8b6371e1e490da7dcf3c588d18227efdee3cd9/packages/solid-form/src/createField.tsx#L141)

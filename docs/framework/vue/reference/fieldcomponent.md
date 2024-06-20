@@ -1,13 +1,8 @@
 # Type alias: FieldComponent()\<TParentData, TFormValidator\>
 
 ```ts
-type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData>({
-  children,
-  ...fieldOptions
-}) => NodeType;
+type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData>(fieldOptions, context) => any;
 ```
-
-A type alias representing a field component for a specific form data type.
 
 ## Type parameters
 
@@ -25,15 +20,14 @@ A type alias representing a field component for a specific form data type.
 
 ## Parameters
 
-• **\{
-  children,
-  ...fieldOptions
-\}**: `Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
+• **fieldOptions**: `Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
+
+• **context**: `SetupContext`\<`object`, `SlotsType`\<`object`\>\>
 
 ## Returns
 
-`NodeType`
+`any`
 
 ## Source
 
-[useField.tsx:141](https://github.com/TanStack/form/blob/5b8b6371e1e490da7dcf3c588d18227efdee3cd9/packages/react-form/src/useField.tsx#L141)
+[packages/vue-form/src/useField.tsx:139](https://github.com/TanStack/form/blob/5b8b6371e1e490da7dcf3c588d18227efdee3cd9/packages/vue-form/src/useField.tsx#L139)

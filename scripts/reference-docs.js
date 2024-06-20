@@ -61,6 +61,26 @@ const packages = [
     outputDir: path.resolve(__dirname, '../docs/framework/react/reference'),
     exclude: ['packages/form-core/**/*'],
   },
+  {
+    name: 'solid-form',
+    entryPoint: path.resolve(
+      __dirname,
+      '../packages/solid-form/src/index.ts',
+    ),
+    tsconfig: path.resolve(__dirname, '../packages/solid-form/tsconfig.json'),
+    outputDir: path.resolve(__dirname, '../docs/framework/solid/reference'),
+    exclude: ['packages/form-core/**/*'],
+  },
+  {
+    name: 'vue-form',
+    entryPoint: path.resolve(
+      __dirname,
+      '../packages/vue-form/src/index.ts',
+    ),
+    tsconfig: path.resolve(__dirname, '../packages/vue-form/tsconfig.json'),
+    outputDir: path.resolve(__dirname, '../docs/framework/vue/reference'),
+    exclude: ['packages/form-core/**/*'],
+  },
 ]
 
 async function main() {
