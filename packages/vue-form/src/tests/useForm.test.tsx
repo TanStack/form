@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
 import { render, waitFor } from '@testing-library/vue'
 import { defineComponent, h, ref } from 'vue'
-import { createFormFactory, useForm } from '../index'
+import { useForm } from '../index'
 import { sleep } from './utils'
 
 import type { FieldApi, ValidationErrorMap } from '../index'
@@ -16,10 +16,8 @@ type Person = {
 
 describe('useForm', () => {
   it('preserved field state', async () => {
-    const formFactory = createFormFactory<Person>()
-
     const Comp = defineComponent(() => {
-      const form = formFactory.useForm()
+      const form = useForm<Person>()
 
       return () => (
         <form.Field name="firstName" defaultValue="">
@@ -49,14 +47,12 @@ describe('useForm', () => {
   })
 
   it('should allow default values to be set', async () => {
-    const formFactory = createFormFactory<Person>()
-
     const Comp = defineComponent(() => {
-      const form = formFactory.useForm({
+      const form = useForm({
         defaultValues: {
           firstName: 'FirstName',
           lastName: 'LastName',
-        },
+        } as Person,
       })
 
       return () => (
@@ -161,10 +157,8 @@ describe('useForm', () => {
   it('should validate async on change for the form', async () => {
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
-
     const Comp = defineComponent(() => {
-      const form = formFactory.useForm({
+      const form = useForm<Person>({
         validators: {
           onChange() {
             return error
@@ -208,10 +202,8 @@ describe('useForm', () => {
   it('should not validate on change if isTouched is false', async () => {
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
-
     const Comp = defineComponent(() => {
-      const form = formFactory.useForm({
+      const form = useForm<Person>({
         validators: {
           onChange: ({ value }) =>
             value.firstName === 'other' ? error : undefined,
@@ -255,10 +247,8 @@ describe('useForm', () => {
   it('should validate on change if isTouched is true', async () => {
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
-
     const Comp = defineComponent(() => {
-      const form = formFactory.useForm({
+      const form = useForm<Person>({
         validators: {
           onChange: ({ value }) =>
             value.firstName === 'other' ? error : undefined,
@@ -362,10 +352,8 @@ describe('useForm', () => {
   it('should validate async on change', async () => {
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
-
     const Comp = defineComponent(() => {
-      const form = formFactory.useForm({
+      const form = useForm<Person>({
         validators: {
           onChangeAsync: async () => {
             await sleep(10)
@@ -414,10 +402,8 @@ describe('useForm', () => {
     const onChangeError = 'Please enter a different value (onChangeError)'
     const onBlurError = 'Please enter a different value (onBlurError)'
 
-    const formFactory = createFormFactory<Person>()
-
     const Comp = defineComponent(() => {
-      const form = formFactory.useForm({
+      const form = useForm<Person>({
         validators: {
           onChangeAsync: async () => {
             await sleep(10)
@@ -474,10 +460,9 @@ describe('useForm', () => {
   it('should validate async on change with debounce', async () => {
     const mockFn = vi.fn()
     const error = 'Please enter a different value'
-    const formFactory = createFormFactory<Person>()
 
     const Comp = defineComponent(() => {
-      const form = formFactory.useForm({
+      const form = useForm<Person>({
         validators: {
           onChangeAsyncDebounceMs: 100,
           onChangeAsync: async () => {

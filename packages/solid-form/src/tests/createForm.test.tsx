@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor } from '@solidjs/testing-library'
 import userEvent from '@testing-library/user-event'
 import { Show, createSignal, onCleanup } from 'solid-js'
-import { createForm, createFormFactory } from '../index'
+import { createForm } from '../index'
 import { sleep } from './utils'
 import type { ValidationErrorMap } from '@tanstack/form-core'
 
@@ -15,10 +15,8 @@ describe('createForm', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.createForm()
+      const form = createForm<Person>()
       return (
         <>
           <form.Field
@@ -50,14 +48,12 @@ describe('createForm', () => {
       lastName: string
     }
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.createForm(() => ({
+      const form = createForm(() => ({
         defaultValues: {
           firstName: 'FirstName',
           lastName: 'LastName',
-        },
+        } as Person,
       }))
 
       return (
@@ -159,10 +155,8 @@ describe('createForm', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.createForm(() => ({
+      const form = createForm<Person>(() => ({
         validators: {
           onChange: ({ value }) =>
             value.firstName.includes('other') ? error : undefined,
@@ -205,10 +199,8 @@ describe('createForm', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.createForm(() => ({
+      const form = createForm<Person>(() => ({
         validators: {
           onChange: ({ value }) =>
             value.firstName.includes('other') ? error : undefined,
@@ -257,10 +249,8 @@ describe('createForm', () => {
     const onChangeError = 'Please enter a different value (onChangeError)'
     const onBlurError = 'Please enter a different value (onBlurError)'
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.createForm(() => ({
+      const form = createForm<Person>(() => ({
         validators: {
           onChange: ({ value }) =>
             value.firstName.includes('other') ? onChangeError : undefined,
@@ -312,10 +302,8 @@ describe('createForm', () => {
     }
     const error = 'Please enter a different value'
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.createForm(() => ({
+      const form = createForm<Person>(() => ({
         validators: {
           onChangeAsync: async () => {
             await sleep(10)
@@ -365,10 +353,8 @@ describe('createForm', () => {
     const onChangeError = 'Please enter a different value (onChangeError)'
     const onBlurError = 'Please enter a different value (onBlurError)'
 
-    const formFactory = createFormFactory<Person>()
-
     function Comp() {
-      const form = formFactory.createForm(() => ({
+      const form = createForm<Person>(() => ({
         validators: {
           async onChangeAsync() {
             await sleep(10)
@@ -427,10 +413,9 @@ describe('createForm', () => {
     }
     const mockFn = vi.fn()
     const error = 'Please enter a different value'
-    const formFactory = createFormFactory<Person>()
 
     function Comp() {
-      const form = formFactory.createForm(() => ({
+      const form = createForm<Person>(() => ({
         validators: {
           onChangeAsyncDebounceMs: 100,
           onChangeAsync: async () => {

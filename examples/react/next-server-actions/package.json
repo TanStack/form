@@ -9,17 +9,21 @@
     "test:eslint": "next lint"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "next": "14.0.4",
-    "@tanstack/react-form": "^0.22.0"
+    "@tanstack/react-form": "^0.22.0",
+    "next": "15.0.0-rc.0",
+    "react": "19.0.0-rc-6d3110b4d9-20240531",
+    "react-dom": "19.0.0-rc-6d3110b4d9-20240531"
   },
   "devDependencies": {
-    "typescript": "5.4.2",
     "@types/node": "^20.9.0",
-    "@types/react": "^18.2.45",
-    "@types/react-dom": "^18.2.19",
+    "@types/react": "npm:types-react@rc",
+    "@types/react-dom": "npm:types-react-dom@rc",
     "eslint": "^8.56.0",
-    "eslint-config-next": "14.0.4"
+    "eslint-config-next": "15.0.0-rc.0",
+    "typescript": "5.4.2"
+  },
+  "overrides": {
+    "@types/react": "npm:types-react@rc",
+    "@types/react-dom": "npm:types-react-dom@rc"
   }
 }
