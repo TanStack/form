@@ -275,6 +275,10 @@
               "to": "framework/react/examples/valibot"
             },
             {
+              "label": "Next Server Actions",
+              "to": "framework/react/examples/next-server-actions"
+            },
+            {
               "label": "UI Libraries",
               "to": "framework/react/examples/ui-libraries"
             }
