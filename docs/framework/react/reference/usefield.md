@@ -1,8 +1,10 @@
 # Function: useField()
 
 ```ts
-function useField<TParentData, TName, TFieldValidator, TFormValidator, TData>(opts): object
+function useField<TParentData, TName, TFieldValidator, TFormValidator, TData>(opts): FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
 ```
+
+A hook for managing a field in a form.
 
 ## Type parameters
 
@@ -20,22 +22,14 @@ function useField<TParentData, TName, TFieldValidator, TFormValidator, TData>(op
 
 • **opts**: `UseFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
 
+An object with field options.
+
 ## Returns
 
-`object`
+`FieldApi`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
 
-### api
-
-```ts
-api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>;
-```
-
-### state
-
-```ts
-state: Readonly<Ref<FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>["state"]>>;
-```
+The `FieldApi` instance for the specified field.
 
 ## Source
 
-[packages/vue-form/src/useField.tsx:61](https://github.com/TanStack/form/blob/5c94fa159313e0b0411d49fbdc3b117336185e63/packages/vue-form/src/useField.tsx#L61)
+[useField.tsx:60](https://github.com/TanStack/form/blob/5c94fa159313e0b0411d49fbdc3b117336185e63/packages/react-form/src/useField.tsx#L60)

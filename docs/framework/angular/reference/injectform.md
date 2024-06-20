@@ -1,7 +1,7 @@
-# Function: useForm()
+# Function: injectForm()
 
 ```ts
-function useForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormValidator>
+function injectForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormValidator>
 ```
 
 ## Type parameters
@@ -20,4 +20,4 @@ function useForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormVali
 
 ## Source
 
-[packages/vue-form/src/useForm.tsx:30](https://github.com/TanStack/form/blob/5c94fa159313e0b0411d49fbdc3b117336185e63/packages/vue-form/src/useForm.tsx#L30)
+[inject-form.ts:4](https://github.com/TanStack/form/blob/5c94fa159313e0b0411d49fbdc3b117336185e63/packages/angular-form/src/inject-form.ts#L4)

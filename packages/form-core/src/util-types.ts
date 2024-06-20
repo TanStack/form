@@ -1,6 +1,9 @@
 type Nullable<T> = T | null
 type IsNullable<T> = [null] extends [T] ? true : false
 
+/**
+ * @private
+ */
 export type RequiredByKey<T, K extends keyof T> = Omit<T, K> &
   Required<Pick<T, K>>
 
@@ -13,13 +16,22 @@ type NarrowRaw<A> =
       [K in keyof A]: A[K] extends Function ? A[K] : NarrowRaw<A[K]>
     }
 
+/**
+ * @private
+ */
 export type NoInfer<T> = [T][T extends any ? 0 : never]
 
+/**
+ * @private
+ */
 export type Narrow<A> = Try<A, [], NarrowRaw<A>>
 
 type Try<A1, A2, Catch = never> = A1 extends A2 ? A1 : Catch
 
-// Hack to get TypeScript to show simplified types in error messages
+/**
+ * Hack to get TypeScript to show simplified types in error messages
+ * @private
+ */
 export type Pretty<T> = { [K in keyof T]: T[K] } & {}
 
 type ComputeRange<
@@ -67,6 +79,9 @@ type PrefixObjectAccessor<T extends object, TDepth extends any[]> = {
     : never
 }[keyof T]
 
+/**
+ * The keys of an object or array, deeply nested.
+ */
 export type DeepKeys<T, TDepth extends any[] = []> = TDepth['length'] extends 5
   ? never
   : unknown extends T
@@ -89,9 +104,8 @@ type PrefixFromDepth<
 > = TDepth['length'] extends 0 ? T : `.${T}`
 
 /**
-   Infer the type of a deeply nested property within an object or an array.
-   See the tests in `util-types.test-d.ts` for usage.
-*/
+ * Infer the type of a deeply nested property within an object or an array.
+ */
 export type DeepValue<
   // The object or array in which we have the property whose type we're trying to infer
   TValue,

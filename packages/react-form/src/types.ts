@@ -6,6 +6,9 @@ import type {
 } from '@tanstack/form-core'
 import type { FunctionComponent } from 'react'
 
+/**
+ * The field options.
+ */
 export type UseFieldOptions<
   TParentData,
   TName extends DeepKeys<TParentData>,

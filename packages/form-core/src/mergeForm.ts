@@ -2,6 +2,9 @@ import type { FormApi } from './FormApi'
 import type { Validator } from './types'
 import type { NoInfer } from './util-types'
 
+/**
+ * @private
+ */
 export function mutateMergeDeep(target: object, source: object): object {
   const targetKeys = Object.keys(target)
   const sourceKeys = Object.keys(source)
