@@ -4,7 +4,11 @@
   "description": "Powerful, type-safe, framework agnostic forms.",
   "author": "tannerlinsley",
   "license": "MIT",
-  "repository": "tanstack/form",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TanStack/form.git",
+    "directory": "packages/form-core"
+  },
   "homepage": "https://tanstack.com/form",
   "funding": {
     "type": "github",
@@ -48,6 +52,6 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@tanstack/store": "^0.4.1"
+    "@tanstack/store": "^0.5.0"
   }
 }
