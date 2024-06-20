@@ -1,7 +1,7 @@
 {
   "name": "@tanstack/form-example-lit-ui-libraries",
-  "version": "0.0.1",
-  "main": "src/index.jsx",
+  "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite --port=3001",
     "build": "vite build",

@@ -1,6 +1,7 @@
 {
   "name": "@tanstack/form-example-angular-zod",
-  "version": "0.0.0",
+  "private": true,
+  "type": "module",
   "scripts": {
     "ng": "ng",
     "start": "ng cache clean && ng serve",
@@ -8,7 +9,6 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
-  "private": true,
   "dependencies": {
     "@tanstack/angular-form": "^0.23.1",
     "@tanstack/zod-form-adapter": "^0.23.1",
