@@ -1,6 +1,7 @@
 /// <reference lib="dom" />
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import '@testing-library/jest-dom'
-import userEvent from '@testing-library/user-event'
+import { userEvent } from '@testing-library/user-event'
 import { TestForm, sampleData } from './simple'
 
 window.customElements.define('test-form', TestForm)

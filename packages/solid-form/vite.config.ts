@@ -1,12 +1,12 @@
-import { defineConfig, mergeConfig } from 'vitest/config'
-import { tanstackBuildConfig } from '@tanstack/config/build'
+import { defineConfig } from 'vitest/config'
 import solid from 'vite-plugin-solid'
+import packageJson from './package.json'
 
-const config = defineConfig({
+export default defineConfig({
   plugins: [solid()],
   test: {
-    name: 'solid-form',
-    dir: './src',
+    name: packageJson.name,
+    dir: './tests',
     watch: false,
     environment: 'jsdom',
     setupFiles: ['test-setup.ts'],
@@ -14,12 +14,3 @@ const config = defineConfig({
     typecheck: { enabled: true },
   },
 })
-
-export default mergeConfig(
-  config,
-  tanstackBuildConfig({
-    entry: './src/index.ts',
-    srcDir: './src',
-    exclude: ['./src/tests'],
-  }),
-)

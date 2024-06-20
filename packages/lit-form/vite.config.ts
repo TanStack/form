@@ -1,10 +1,10 @@
-import { defineConfig, mergeConfig } from 'vitest/config'
-import { tanstackBuildConfig } from '@tanstack/config/build'
+import { defineConfig } from 'vitest/config'
+import packageJson from './package.json'
 
-const config = defineConfig({
+export default defineConfig({
   test: {
-    name: 'lit-form',
-    dir: './src',
+    name: packageJson.name,
+    dir: './tests',
     watch: false,
     environment: 'jsdom',
     globals: true,
@@ -12,11 +12,3 @@ const config = defineConfig({
     typecheck: { enabled: true },
   },
 })
-export default mergeConfig(
-  config,
-  tanstackBuildConfig({
-    entry: './src/index.ts',
-    srcDir: './src',
-    exclude: ['./src/tests'],
-  }),
-)

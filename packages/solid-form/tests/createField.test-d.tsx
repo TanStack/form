@@ -1,5 +1,5 @@
 import { assertType, it } from 'vitest'
-import { createForm } from '../createForm'
+import { createForm } from '../src/createForm'
 
 it('should type state.value properly', () => {
   function Comp() {

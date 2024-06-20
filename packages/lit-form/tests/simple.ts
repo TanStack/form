@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit'
-import { TanStackFormController } from '../index.js'
-import type { FieldApi, FormOptions } from '../index.js'
+import { TanStackFormController } from '../src/index.js'
+import type { FieldApi, FormOptions } from '../src/index.js'
 
 interface Employee {
   firstName: string
