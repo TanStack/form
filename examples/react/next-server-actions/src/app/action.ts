@@ -1,6 +1,6 @@
 'use server'
 
-import { createServerValidate } from '@tanstack/react-form'
+import { createServerValidate } from '@tanstack/react-form/nextjs'
 import { formOpts } from './shared-code'
 
 const serverValidate = createServerValidate({

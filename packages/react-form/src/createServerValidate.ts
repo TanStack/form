@@ -29,7 +29,7 @@ declare module '@tanstack/form-core' {
   }
 }
 
-export type ValidateFormData<
+type ValidateFormData<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > = (

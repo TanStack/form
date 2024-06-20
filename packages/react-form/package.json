@@ -43,6 +43,16 @@
         "default": "./dist/cjs/index.cjs"
       }
     },
+    "./nextjs": {
+      "import": {
+        "types": "./dist/esm/nextjs-index.d.ts",
+        "default": "./dist/esm/nextjs-index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/nextjs-index.d.cts",
+        "default": "./dist/cjs/nextjs-index.cjs"
+      }
+    },
     "./package.json": "./package.json"
   },
   "devDependencies": {
