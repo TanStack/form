@@ -1,6 +1,7 @@
 {
   "name": "@tanstack/form-example-vue-zod",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -9,8 +10,8 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@tanstack/vue-form": "^0.23.0",
-    "@tanstack/zod-form-adapter": "^0.23.0",
+    "@tanstack/vue-form": "^0.23.1",
+    "@tanstack/zod-form-adapter": "^0.23.1",
     "vue": "^3.3.4",
     "zod": "^3.22.4"
   },

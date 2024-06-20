@@ -7,6 +7,6 @@
     "@tanstack/form-core",
     "@tanstack/angular-store"
   ],
-  "dest": "build",
+  "dest": "dist",
   "deleteDestPath": false
 }

@@ -1,7 +1,7 @@
 {
   "name": "@tanstack/form-example-react-zod",
-  "version": "0.0.1",
-  "main": "src/index.jsx",
+  "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite --port=3001",
     "build": "vite build",
@@ -9,8 +9,8 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-form": "^0.23.0",
-    "@tanstack/zod-form-adapter": "^0.23.0",
+    "@tanstack/react-form": "^0.23.1",
+    "@tanstack/zod-form-adapter": "^0.23.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "zod": "^3.22.4"

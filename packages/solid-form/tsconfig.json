@@ -9,8 +9,8 @@
     }
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
+    "src",
+    "tests",
     ".eslintrc.cjs",
     "test-setup.ts",
     "vite.config.ts"

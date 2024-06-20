@@ -1,10 +1,14 @@
 {
   "name": "@tanstack/yup-form-adapter",
-  "version": "0.23.0",
+  "version": "0.23.1",
   "description": "The Yup adapter for TanStack Form.",
   "author": "tannerlinsley",
   "license": "MIT",
-  "repository": "tanstack/form",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TanStack/form.git",
+    "directory": "packages/yup-form-adapter"
+  },
   "homepage": "https://tanstack.com/form",
   "funding": {
     "type": "github",

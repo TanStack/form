@@ -1,6 +1,7 @@
 {
   "name": "@tanstack/form-example-vue-valibot",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -9,8 +10,8 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@tanstack/valibot-form-adapter": "^0.23.0",
-    "@tanstack/vue-form": "^0.23.0",
+    "@tanstack/valibot-form-adapter": "^0.23.1",
+    "@tanstack/vue-form": "^0.23.1",
     "valibot": "^0.31.1",
     "vue": "^3.3.4"
   },
