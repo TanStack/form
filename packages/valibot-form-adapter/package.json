@@ -4,7 +4,11 @@
   "description": "The Valibot adapter for TanStack Form.",
   "author": "tannerlinsley",
   "license": "MIT",
-  "repository": "tanstack/form",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TanStack/form.git",
+    "directory": "packages/valibot-form-adapter"
+  },
   "homepage": "https://tanstack.com/form",
   "funding": {
     "type": "github",

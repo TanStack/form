@@ -4,7 +4,11 @@
   "description": "Powerful, type-safe forms for Vue.",
   "author": "tannerlinsley",
   "license": "MIT",
-  "repository": "tanstack/form",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TanStack/form.git",
+    "directory": "packages/vue-form"
+  },
   "homepage": "https://tanstack.com/form",
   "funding": {
     "type": "github",
@@ -50,7 +54,7 @@
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/vue-store": "^0.4.1"
+    "@tanstack/vue-store": "^0.5.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",

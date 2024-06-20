@@ -4,7 +4,11 @@
   "description": "Powerful, type-safe forms for Solid.",
   "author": "tannerlinsley",
   "license": "MIT",
-  "repository": "tanstack/form",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TanStack/form.git",
+    "directory": "packages/solid-form"
+  },
   "homepage": "https://tanstack.com/form",
   "funding": {
     "type": "github",
@@ -54,7 +58,7 @@
   },
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/solid-store": "^0.4.1"
+    "@tanstack/solid-store": "^0.5.0"
   },
   "peerDependencies": {
     "solid-js": "^1.6.0"
