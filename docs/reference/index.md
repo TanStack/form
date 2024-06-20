@@ -28,4 +28,5 @@
 
 ## Functions
 
+- [formOptions](Function.formOptions.md)
 - [mergeForm](Function.mergeForm.md)

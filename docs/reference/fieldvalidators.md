@@ -31,7 +31,7 @@ If `validatorAdapter` is passed, this may also accept a property from the respec
 
 #### Source
 
-[packages/form-core/src/FieldApi.ts:195](https://github.com/TanStack/form/blob/15a69d908f9285338889d60e93b689d265e4136c/packages/form-core/src/FieldApi.ts#L195)
+[packages/form-core/src/FieldApi.ts:195](https://github.com/TanStack/form/blob/2fcee08730ef56cadb9b5937d06198bcc1fedcd7/packages/form-core/src/FieldApi.ts#L195)
 
 ***
 
@@ -52,7 +52,7 @@ is passed, this may also accept a property from the respective adapter
 
 #### Source
 
-[packages/form-core/src/FieldApi.ts:208](https://github.com/TanStack/form/blob/15a69d908f9285338889d60e93b689d265e4136c/packages/form-core/src/FieldApi.ts#L208)
+[packages/form-core/src/FieldApi.ts:208](https://github.com/TanStack/form/blob/2fcee08730ef56cadb9b5937d06198bcc1fedcd7/packages/form-core/src/FieldApi.ts#L208)
 
 ***
 
@@ -68,21 +68,21 @@ If set to a number larger than 0, will debounce the async validation event by th
 
 #### Source
 
-[packages/form-core/src/FieldApi.ts:221](https://github.com/TanStack/form/blob/15a69d908f9285338889d60e93b689d265e4136c/packages/form-core/src/FieldApi.ts#L221)
+[packages/form-core/src/FieldApi.ts:221](https://github.com/TanStack/form/blob/2fcee08730ef56cadb9b5937d06198bcc1fedcd7/packages/form-core/src/FieldApi.ts#L221)
 
 ***
 
 ### onBlurListenTo?
 
 ```ts
-optional onBlurListenTo: unknown extends TParentData ? string : object extends TParentData ? string : TParentData extends readonly any[] & IsTuple<TParentData> ? PrefixTupleAccessor<TParentData<TParentData>, AllowedIndexes<TParentData<TParentData>, never>, []> : TParentData extends any[] ? PrefixArrayAccessor<TParentData<TParentData>, [any]> : TParentData extends Date ? never : TParentData extends object ? PrefixObjectAccessor<TParentData<TParentData>, []> : TParentData extends string | number | bigint | boolean ? "" : never[];
+optional onBlurListenTo: unknown extends TParentData ? string : TParentData extends readonly any[] & IsTuple<TParentData> ? PrefixTupleAccessor<TParentData<TParentData>, AllowedIndexes<TParentData<TParentData>, never>, []> : TParentData extends any[] ? PrefixArrayAccessor<TParentData<TParentData>, [any]> : TParentData extends Date ? never : TParentData extends object ? PrefixObjectAccessor<TParentData<TParentData>, []> : TParentData extends string | number | bigint | boolean ? "" : never[];
 ```
 
 An optional list of field names that should trigger this field's `onBlur` and `onBlurAsync` events when its value changes
 
 #### Source
 
-[packages/form-core/src/FieldApi.ts:225](https://github.com/TanStack/form/blob/15a69d908f9285338889d60e93b689d265e4136c/packages/form-core/src/FieldApi.ts#L225)
+[packages/form-core/src/FieldApi.ts:225](https://github.com/TanStack/form/blob/2fcee08730ef56cadb9b5937d06198bcc1fedcd7/packages/form-core/src/FieldApi.ts#L225)
 
 ***
 
@@ -103,7 +103,7 @@ If `validatorAdapter` is passed, this may also accept a property from the respec
 
 #### Source
 
-[packages/form-core/src/FieldApi.ts:159](https://github.com/TanStack/form/blob/15a69d908f9285338889d60e93b689d265e4136c/packages/form-core/src/FieldApi.ts#L159)
+[packages/form-core/src/FieldApi.ts:159](https://github.com/TanStack/form/blob/2fcee08730ef56cadb9b5937d06198bcc1fedcd7/packages/form-core/src/FieldApi.ts#L159)
 
 ***
 
@@ -124,7 +124,7 @@ is passed, this may also accept a property from the respective adapter
 
 #### Source
 
-[packages/form-core/src/FieldApi.ts:172](https://github.com/TanStack/form/blob/15a69d908f9285338889d60e93b689d265e4136c/packages/form-core/src/FieldApi.ts#L172)
+[packages/form-core/src/FieldApi.ts:172](https://github.com/TanStack/form/blob/2fcee08730ef56cadb9b5937d06198bcc1fedcd7/packages/form-core/src/FieldApi.ts#L172)
 
 ***
 
@@ -140,21 +140,21 @@ If set to a number larger than 0, will debounce the async validation event by th
 
 #### Source
 
-[packages/form-core/src/FieldApi.ts:184](https://github.com/TanStack/form/blob/15a69d908f9285338889d60e93b689d265e4136c/packages/form-core/src/FieldApi.ts#L184)
+[packages/form-core/src/FieldApi.ts:184](https://github.com/TanStack/form/blob/2fcee08730ef56cadb9b5937d06198bcc1fedcd7/packages/form-core/src/FieldApi.ts#L184)
 
 ***
 
 ### onChangeListenTo?
 
 ```ts
-optional onChangeListenTo: unknown extends TParentData ? string : object extends TParentData ? string : TParentData extends readonly any[] & IsTuple<TParentData> ? PrefixTupleAccessor<TParentData<TParentData>, AllowedIndexes<TParentData<TParentData>, never>, []> : TParentData extends any[] ? PrefixArrayAccessor<TParentData<TParentData>, [any]> : TParentData extends Date ? never : TParentData extends object ? PrefixObjectAccessor<TParentData<TParentData>, []> : TParentData extends string | number | bigint | boolean ? "" : never[];
+optional onChangeListenTo: unknown extends TParentData ? string : TParentData extends readonly any[] & IsTuple<TParentData> ? PrefixTupleAccessor<TParentData<TParentData>, AllowedIndexes<TParentData<TParentData>, never>, []> : TParentData extends any[] ? PrefixArrayAccessor<TParentData<TParentData>, [any]> : TParentData extends Date ? never : TParentData extends object ? PrefixObjectAccessor<TParentData<TParentData>, []> : TParentData extends string | number | bigint | boolean ? "" : never[];
 ```
 
 An optional list of field names that should trigger this field's `onChange` and `onChangeAsync` events when its value changes
 
 #### Source
 
-[packages/form-core/src/FieldApi.ts:188](https://github.com/TanStack/form/blob/15a69d908f9285338889d60e93b689d265e4136c/packages/form-core/src/FieldApi.ts#L188)
+[packages/form-core/src/FieldApi.ts:188](https://github.com/TanStack/form/blob/2fcee08730ef56cadb9b5937d06198bcc1fedcd7/packages/form-core/src/FieldApi.ts#L188)
 
 ***
 
@@ -168,7 +168,7 @@ An optional function that takes a param of `formApi` which is a generic type of 
 
 #### Source
 
-[packages/form-core/src/FieldApi.ts:146](https://github.com/TanStack/form/blob/15a69d908f9285338889d60e93b689d265e4136c/packages/form-core/src/FieldApi.ts#L146)
+[packages/form-core/src/FieldApi.ts:146](https://github.com/TanStack/form/blob/2fcee08730ef56cadb9b5937d06198bcc1fedcd7/packages/form-core/src/FieldApi.ts#L146)
 
 ***
 
@@ -189,7 +189,7 @@ If `validatorAdapter` is passed, this may also accept a property from the respec
 
 #### Source
 
-[packages/form-core/src/FieldApi.ts:232](https://github.com/TanStack/form/blob/15a69d908f9285338889d60e93b689d265e4136c/packages/form-core/src/FieldApi.ts#L232)
+[packages/form-core/src/FieldApi.ts:232](https://github.com/TanStack/form/blob/2fcee08730ef56cadb9b5937d06198bcc1fedcd7/packages/form-core/src/FieldApi.ts#L232)
 
 ***
 
@@ -210,4 +210,4 @@ is passed, this may also accept a property from the respective adapter
 
 #### Source
 
-[packages/form-core/src/FieldApi.ts:245](https://github.com/TanStack/form/blob/15a69d908f9285338889d60e93b689d265e4136c/packages/form-core/src/FieldApi.ts#L245)
+[packages/form-core/src/FieldApi.ts:245](https://github.com/TanStack/form/blob/2fcee08730ef56cadb9b5937d06198bcc1fedcd7/packages/form-core/src/FieldApi.ts#L245)

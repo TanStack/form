@@ -1,7 +1,7 @@
 # Function: mergeForm()
 
 ```ts
-function mergeForm<TFormData, TFormValidator>(baseForm, state): FormApi<TFormData, TFormValidator>
+function mergeForm<TFormData, TFormValidator>(baseForm, state): FormApi<NoInfer<TFormData>, NoInfer<TFormValidator>>
 ```
 
 ## Type parameters
@@ -12,14 +12,14 @@ function mergeForm<TFormData, TFormValidator>(baseForm, state): FormApi<TFormDat
 
 ## Parameters
 
-• **baseForm**: [`FormApi`](Class.FormApi.md)\<`TFormData`, `TFormValidator`\>
+• **baseForm**: [`FormApi`](Class.FormApi.md)\<`NoInfer`\<`TFormData`\>, `NoInfer`\<`TFormValidator`\>\>
 
 • **state**: `Partial`\<[`FormState`](Type.FormState.md)\<`TFormData`\>\>
 
 ## Returns
 
-[`FormApi`](Class.FormApi.md)\<`TFormData`, `TFormValidator`\>
+[`FormApi`](Class.FormApi.md)\<`NoInfer`\<`TFormData`\>, `NoInfer`\<`TFormValidator`\>\>
 
 ## Source
 
-[packages/form-core/src/mergeForm.ts:36](https://github.com/TanStack/form/blob/15a69d908f9285338889d60e93b689d265e4136c/packages/form-core/src/mergeForm.ts#L36)
+[packages/form-core/src/mergeForm.ts:37](https://github.com/TanStack/form/blob/2fcee08730ef56cadb9b5937d06198bcc1fedcd7/packages/form-core/src/mergeForm.ts#L37)

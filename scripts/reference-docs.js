@@ -51,6 +51,16 @@ const packages = [
     outputDir: path.resolve(__dirname, '../docs/framework/lit/reference'),
     exclude: ['packages/form-core/**/*'],
   },
+  {
+    name: 'react-form',
+    entryPoint: path.resolve(
+      __dirname,
+      '../packages/react-form/src/index.ts',
+    ),
+    tsconfig: path.resolve(__dirname, '../packages/react-form/tsconfig.json'),
+    outputDir: path.resolve(__dirname, '../docs/framework/react/reference'),
+    exclude: ['packages/form-core/**/*'],
+  },
 ]
 
 async function main() {

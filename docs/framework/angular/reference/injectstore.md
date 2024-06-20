@@ -24,4 +24,4 @@ function injectStore<TFormData, TFormValidator, TSelected>(form, selector?): Sig
 
 ## Source
 
-[inject-store.ts:4](https://github.com/TanStack/form/blob/15a69d908f9285338889d60e93b689d265e4136c/packages/angular-form/src/inject-store.ts#L4)
+[inject-store.ts:4](https://github.com/TanStack/form/blob/2fcee08730ef56cadb9b5937d06198bcc1fedcd7/packages/angular-form/src/inject-store.ts#L4)
