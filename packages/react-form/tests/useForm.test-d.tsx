@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { assertType, it } from 'vitest'
-import { useForm } from '../useForm'
+import { useForm } from '../src/index'
 
 it('should type onSubmit properly', () => {
   function Comp() {
