@@ -20,6 +20,5 @@ export default mergeConfig(
   tanstackBuildConfig({
     entry: ['./src/index.ts', './src/nextjs-index.ts'],
     srcDir: './src',
-    exclude: ['./src/tests'],
   }),
 )

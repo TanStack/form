@@ -1,5 +1,5 @@
 import { assertType } from 'vitest'
-import type { DeepKeys, DeepValue } from '../util-types'
+import type { DeepKeys, DeepValue } from '../src/index'
 
 /**
  * Properly recognizes that `0` is not an object and should not have subkeys

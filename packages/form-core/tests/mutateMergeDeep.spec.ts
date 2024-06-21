@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { mutateMergeDeep } from '../mergeForm'
+import { mutateMergeDeep } from '../src/index'
 
 describe('mutateMergeDeep', () => {
   test('Should merge two objects by mutating', () => {

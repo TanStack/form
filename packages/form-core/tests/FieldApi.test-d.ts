@@ -1,6 +1,5 @@
 import { assertType, it } from 'vitest'
-import { FormApi } from '../FormApi'
-import { FieldApi } from '../FieldApi'
+import { FieldApi, FormApi } from '../src/index'
 
 it('should type value properly', () => {
   const form = new FormApi({

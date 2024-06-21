@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { deleteBy, getBy, makePathArray, setBy } from '../utils'
+import { deleteBy, getBy, makePathArray, setBy } from '../src/index'
 
 describe('getBy', () => {
   const structure = {

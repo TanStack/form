@@ -1,7 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-
-import { FormApi } from '../FormApi'
-import { FieldApi } from '../FieldApi'
+import { FieldApi, FormApi } from '../src/index'
 import { sleep } from './utils'
 
 describe('form api', () => {
