@@ -8,11 +8,5 @@
       "@tanstack/form-core": ["../form-core/src"]
     }
   },
-  "include": [
-    "src",
-    "tests",
-    ".eslintrc.cjs",
-    "test-setup.ts",
-    "vite.config.ts"
-  ]
+  "include": ["src", "tests", ".eslintrc.cjs", "vite.config.ts"]
 }
