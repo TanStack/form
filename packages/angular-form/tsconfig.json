@@ -15,10 +15,5 @@
       "@tanstack/form-core": ["../form-core/src"]
     }
   },
-  "angularCompilerOptions": {
-    "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true,
-    "strictTemplates": true
-  },
-  "include": ["src/**/*.ts", ".eslintrc.cjs", "vite.config.ts"]
+  "include": ["src", "tests", ".eslintrc.cjs", "vite.config.ts"]
 }

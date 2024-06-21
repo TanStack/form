@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@solidjs/testing-library'
 import { userEvent } from '@testing-library/user-event'
-import '@testing-library/jest-dom/vitest'
 import { Index, Show } from 'solid-js'
 import { createForm } from '../src/index'
 import { sleep } from './utils'

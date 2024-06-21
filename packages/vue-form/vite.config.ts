@@ -6,10 +6,10 @@ const config = defineConfig({
   plugins: [vue()],
   test: {
     name: 'vue-query',
-    dir: './src',
+    dir: './tests',
     watch: false,
     environment: 'jsdom',
-    setupFiles: ['test-setup.ts'],
+    setupFiles: ['./tests/test-setup.ts'],
     coverage: { enabled: true, provider: 'istanbul', include: ['src/**/*'] },
     typecheck: { enabled: true },
   },
@@ -24,6 +24,5 @@ export default mergeConfig(
   tanstackBuildConfig({
     entry: './src/index.ts',
     srcDir: './src',
-    exclude: ['./src/tests'],
   }),
 )

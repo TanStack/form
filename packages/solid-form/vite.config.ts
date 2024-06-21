@@ -9,7 +9,7 @@ export default defineConfig({
     dir: './tests',
     watch: false,
     environment: 'jsdom',
-    setupFiles: ['test-setup.ts'],
+    setupFiles: ['./tests/test-setup.ts'],
     coverage: { enabled: true, provider: 'istanbul', include: ['src/**/*'] },
     typecheck: { enabled: true },
   },

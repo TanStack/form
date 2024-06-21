@@ -6,10 +6,10 @@ const config = defineConfig({
   plugins: [react()],
   test: {
     name: 'react-form',
-    dir: './src',
+    dir: './tests',
     watch: false,
     environment: 'jsdom',
-    setupFiles: ['test-setup.ts'],
+    setupFiles: ['./tests/test-setup.ts'],
     coverage: { enabled: true, provider: 'istanbul', include: ['src/**/*'] },
     typecheck: { enabled: true },
   },
@@ -20,6 +20,5 @@ export default mergeConfig(
   tanstackBuildConfig({
     entry: ['./src/index.ts', './src/nextjs-index.ts'],
     srcDir: './src',
-    exclude: ['./src/tests'],
   }),
 )
