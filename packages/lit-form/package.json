@@ -46,15 +46,6 @@
     },
     "./package.json": "./package.json"
   },
-  "nx": {
-    "targets": {
-      "test:build": {
-        "dependsOn": [
-          "build"
-        ]
-      }
-    }
-  },
   "devDependencies": {
     "@types/node": "^20.9.0"
   },

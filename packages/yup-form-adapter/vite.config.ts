@@ -4,7 +4,7 @@ import { tanstackBuildConfig } from '@tanstack/config/build'
 const config = defineConfig({
   test: {
     name: 'yup-form-adapter',
-    dir: './src',
+    dir: './tests',
     watch: false,
     environment: 'jsdom',
     coverage: { enabled: true, provider: 'istanbul', include: ['src/**/*'] },
@@ -17,6 +17,5 @@ export default mergeConfig(
   tanstackBuildConfig({
     entry: './src/index.ts',
     srcDir: './src',
-    exclude: ['./src/tests'],
   }),
 )

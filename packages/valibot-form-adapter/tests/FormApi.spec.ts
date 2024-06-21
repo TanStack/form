@@ -1,23 +1,25 @@
 import { describe, expect, it } from 'vitest'
-
 import { FieldApi, FormApi } from '@tanstack/form-core'
-import { z } from 'zod'
-import { zodValidator } from '../validator'
+import * as v from 'valibot'
+import { valibotValidator } from '../src/index'
 
-describe('zod form api', () => {
-  it('should run an onChange with z.string validation', () => {
+describe('valibot form api', () => {
+  it('should run an onChange with string validation', () => {
     const form = new FormApi({
       defaultValues: {
         name: '',
       },
-      validatorAdapter: zodValidator(),
+      validatorAdapter: valibotValidator(),
     })
 
     const field = new FieldApi({
       form,
       name: 'name',
       validators: {
-        onChange: z.string().min(3, 'You must have a length of at least 3'),
+        onChange: v.pipe(
+          v.string(),
+          v.minLength(3, 'You must have a length of at least 3'),
+        ),
       },
     })
 
@@ -32,12 +34,12 @@ describe('zod form api', () => {
     expect(field.getMeta().errors).toEqual([])
   })
 
-  it('should run an onChange fn with zod validation option enabled', () => {
+  it('should run an onChange fn with valibot validation option enabled', () => {
     const form = new FormApi({
       defaultValues: {
         name: '',
       },
-      validatorAdapter: zodValidator(),
+      validatorAdapter: valibotValidator(),
     })
 
     const field = new FieldApi({

@@ -1,12 +1,11 @@
 import { describe, expect, it } from 'vitest'
-
 import { FieldApi, FormApi } from '@tanstack/form-core'
-import { z } from 'zod'
-import { zodValidator } from '../validator'
+import * as v from 'valibot'
+import { valibotValidator } from '../src/index'
 import { sleep } from './utils'
 
-describe('zod field api', () => {
-  it('should run an onChange with z.string validation', () => {
+describe('valibot field api', () => {
+  it('should run an onChange with string validation', () => {
     const form = new FormApi({
       defaultValues: {
         name: '',
@@ -15,10 +14,13 @@ describe('zod field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: zodValidator(),
+      validatorAdapter: valibotValidator(),
       name: 'name',
       validators: {
-        onChange: z.string().min(3, 'You must have a length of at least 3'),
+        onChange: v.pipe(
+          v.string(),
+          v.minLength(3, 'You must have a length of at least 3'),
+        ),
       },
     })
 
@@ -33,7 +35,7 @@ describe('zod field api', () => {
     expect(field.getMeta().errors).toEqual([])
   })
 
-  it('should run an onChange fn with zod validation option enabled', () => {
+  it('should run an onChange fn with valibot validation option enabled', () => {
     const form = new FormApi({
       defaultValues: {
         name: '',
@@ -42,7 +44,7 @@ describe('zod field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: zodValidator(),
+      validatorAdapter: valibotValidator(),
       name: 'name',
       validators: {
         onChange: ({ value }) => (value === 'a' ? 'Test' : undefined),
@@ -58,7 +60,7 @@ describe('zod field api', () => {
     expect(field.getMeta().errors).toEqual([])
   })
 
-  it('should run an onChangeAsync with z.string validation', async () => {
+  it('should run an onChangeAsync with string validation', async () => {
     const form = new FormApi({
       defaultValues: {
         name: '',
@@ -67,12 +69,13 @@ describe('zod field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: zodValidator(),
+      validatorAdapter: valibotValidator(),
       name: 'name',
       validators: {
-        onChangeAsync: z.string().refine(async (val) => val.length > 3, {
-          message: 'Testing 123',
-        }),
+        onChangeAsync: v.pipeAsync(
+          v.string(),
+          v.checkAsync(async (val) => val.length > 3, 'Testing 123'),
+        ),
         onChangeAsyncDebounceMs: 0,
       },
     })
@@ -88,7 +91,7 @@ describe('zod field api', () => {
     expect(field.getMeta().errors).toEqual([])
   })
 
-  it('should run an onChangeAsyc fn with zod validation option enabled', async () => {
+  it('should run an onChangeAsyc fn with valibot validation option enabled', async () => {
     const form = new FormApi({
       defaultValues: {
         name: '',
@@ -97,7 +100,7 @@ describe('zod field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: zodValidator(),
+      validatorAdapter: valibotValidator(),
       name: 'name',
       validators: {
         onChangeAsync: async ({ value }) =>
@@ -126,15 +129,16 @@ describe('zod field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: zodValidator({
+      validatorAdapter: valibotValidator({
         transformErrors: (errors) => errors[0]?.message,
       }),
       name: 'name',
       validators: {
-        onChange: z
-          .string()
-          .min(3, 'You must have a length of at least 3')
-          .uuid('UUID'),
+        onChange: v.pipe(
+          v.string(),
+          v.minLength(3, 'You must have a length of at least 3'),
+          v.uuid('UUID'),
+        ),
       },
     })
 

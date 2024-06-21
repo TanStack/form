@@ -1,9 +1,9 @@
-import { assertType, it } from 'vitest'
-import * as v from 'valibot'
+import { z } from 'zod'
 import { FieldApi, FormApi } from '@tanstack/form-core'
-import { valibotValidator } from '../validator'
+import { assertType, it } from 'vitest'
+import { zodValidator } from '../src/index'
 
-it('should allow a Valibot validator to be passed in', () => {
+it('should allow a Zod validator to be passed in', () => {
   const form = new FormApi({
     defaultValues: {
       name: 'test',
@@ -13,42 +13,42 @@ it('should allow a Valibot validator to be passed in', () => {
   const field = new FieldApi({
     form,
     name: 'name',
-    validatorAdapter: valibotValidator(),
-  } as const)
+    validatorAdapter: zodValidator(),
+  })
 })
 
-it('should allow a Valibot validator to handle the correct Valibot type', () => {
+it('should allow a Zod validator to handle the correct Zod type', () => {
   const form = new FormApi({
     defaultValues: {
       name: 'test',
     },
-  })
+  } as const)
 
   const field = new FieldApi({
     form,
     name: 'name',
-    validatorAdapter: valibotValidator(),
+    validatorAdapter: zodValidator(),
     validators: {
-      onChange: v.string(),
+      onChange: z.string(),
     },
-  } as const)
+  })
 })
 
-it('should allow a Valibot validator to handle the correct Valibot type for an async method', () => {
+it('should allow a Zod validator to handle the correct Zod type for an async method', () => {
   const form = new FormApi({
     defaultValues: {
       name: 'test',
     },
-  })
+  } as const)
 
   const field = new FieldApi({
     form,
     name: 'name',
-    validatorAdapter: valibotValidator(),
+    validatorAdapter: zodValidator(),
     validators: {
-      onChangeAsync: v.string(),
+      onChangeAsync: z.string(),
     },
-  } as const)
+  })
 })
 
 it('should allow a functional onChange to be passed when using a validator', () => {
@@ -61,7 +61,7 @@ it('should allow a functional onChange to be passed when using a validator', () 
   const field = new FieldApi({
     form,
     name: 'name',
-    validatorAdapter: valibotValidator(),
+    validatorAdapter: zodValidator(),
     validators: {
       onChange: ({ value }) => {
         assertType<'test'>(value)
@@ -76,30 +76,30 @@ it('should not allow a validator onChange to be passed when not using a validato
     defaultValues: {
       name: 'test',
     },
-  })
+  } as const)
 
   const field = new FieldApi({
     form,
     name: 'name',
     // @ts-expect-error Requires a validator
-    onChange: string(),
-  } as const)
+    onChange: z.string(),
+  })
 })
 
 // This is not possible without higher-kinded types AFAIK
-it.skip('should allow not a Valibot validator with the wrong Valibot type', () => {
+it.skip('should allow not a Zod validator with the wrong Zod type', () => {
   const form = new FormApi({
     defaultValues: {
       name: 'test',
     },
-  })
+  } as const)
 
   const field = new FieldApi({
     form,
     name: 'name',
-    validatorAdapter: valibotValidator(),
+    validatorAdapter: zodValidator(),
     validators: {
-      onChange: v.object({}),
+      onChange: z.object({}),
     },
-  } as const)
+  })
 })

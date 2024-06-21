@@ -1,19 +1,14 @@
-import yup from 'yup'
+import { z } from 'zod'
 import { FieldApi, FormApi } from '@tanstack/form-core'
 import { assertType, it } from 'vitest'
-import { yupValidator } from '../validator'
+import { zodValidator } from '../src/index'
 
 it('should allow a Zod validator to be passed in', () => {
   const form = new FormApi({
     defaultValues: {
       name: 'test',
     },
-  } as const)
-
-  const field = new FieldApi({
-    form,
-    name: 'name',
-    validatorAdapter: yupValidator(),
+    validatorAdapter: zodValidator(),
   } as const)
 })
 
@@ -22,16 +17,33 @@ it('should allow a Zod validator to handle the correct Zod type', () => {
     defaultValues: {
       name: 'test',
     },
-  })
+    validatorAdapter: zodValidator(),
+  } as const)
 
   const field = new FieldApi({
     form,
     name: 'name',
-    validatorAdapter: yupValidator(),
     validators: {
-      onChange: yup.string(),
+      onChange: z.string(),
     },
+  })
+})
+
+it('should allow a Zod validator to handle the correct Zod type on async methods', () => {
+  const form = new FormApi({
+    defaultValues: {
+      name: 'test',
+    },
+    validatorAdapter: zodValidator(),
   } as const)
+
+  const field = new FieldApi({
+    form,
+    name: 'name',
+    validators: {
+      onChangeAsync: z.string(),
+    },
+  })
 })
 
 it('should allow a functional onChange to be passed when using a validator', () => {
@@ -39,12 +51,12 @@ it('should allow a functional onChange to be passed when using a validator', () 
     defaultValues: {
       name: 'test',
     },
+    validatorAdapter: zodValidator(),
   } as const)
 
   const field = new FieldApi({
     form,
     name: 'name',
-    validatorAdapter: yupValidator(),
     validators: {
       onChange: ({ value }) => {
         assertType<'test'>(value)
@@ -80,9 +92,9 @@ it.skip('should allow not a Zod validator with the wrong Zod type', () => {
   const field = new FieldApi({
     form,
     name: 'name',
-    validatorAdapter: yupValidator(),
+    validatorAdapter: zodValidator(),
     validators: {
-      onChange: yup.object({}),
+      onChange: z.object({}),
     },
   })
 })

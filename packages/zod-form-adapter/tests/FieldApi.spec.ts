@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest'
+
 import { FieldApi, FormApi } from '@tanstack/form-core'
-import yup from 'yup'
-import { yupValidator } from '../validator'
+import { z } from 'zod'
+import { zodValidator } from '../src/index'
 import { sleep } from './utils'
 
-describe('yup field api', () => {
-  it('should run an onChange with yup.string validation', () => {
+describe('zod field api', () => {
+  it('should run an onChange with z.string validation', () => {
     const form = new FormApi({
       defaultValues: {
         name: '',
@@ -14,10 +15,10 @@ describe('yup field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: yupValidator(),
+      validatorAdapter: zodValidator(),
       name: 'name',
       validators: {
-        onChange: yup.string().min(3, 'You must have a length of at least 3'),
+        onChange: z.string().min(3, 'You must have a length of at least 3'),
       },
     })
 
@@ -32,7 +33,7 @@ describe('yup field api', () => {
     expect(field.getMeta().errors).toEqual([])
   })
 
-  it('should run an onChange fn with yup validation option enabled', () => {
+  it('should run an onChange fn with zod validation option enabled', () => {
     const form = new FormApi({
       defaultValues: {
         name: '',
@@ -41,7 +42,7 @@ describe('yup field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: yupValidator(),
+      validatorAdapter: zodValidator(),
       name: 'name',
       validators: {
         onChange: ({ value }) => (value === 'a' ? 'Test' : undefined),
@@ -66,14 +67,12 @@ describe('yup field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: yupValidator(),
+      validatorAdapter: zodValidator(),
       name: 'name',
       validators: {
-        onChangeAsync: yup
-          .string()
-          .test('Testing 123', 'Testing 123', async (val) =>
-            typeof val === 'string' ? val.length > 3 : false,
-          ),
+        onChangeAsync: z.string().refine(async (val) => val.length > 3, {
+          message: 'Testing 123',
+        }),
         onChangeAsyncDebounceMs: 0,
       },
     })
@@ -98,7 +97,7 @@ describe('yup field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: yupValidator(),
+      validatorAdapter: zodValidator(),
       name: 'name',
       validators: {
         onChangeAsync: async ({ value }) =>
@@ -127,12 +126,12 @@ describe('yup field api', () => {
 
     const field = new FieldApi({
       form,
-      validatorAdapter: yupValidator({
-        transformErrors: (errors) => errors[0],
+      validatorAdapter: zodValidator({
+        transformErrors: (errors) => errors[0]?.message,
       }),
       name: 'name',
       validators: {
-        onChange: yup
+        onChange: z
           .string()
           .min(3, 'You must have a length of at least 3')
           .uuid('UUID'),
