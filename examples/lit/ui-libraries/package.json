@@ -14,7 +14,7 @@
     "@material/web": "^1.0.0"
   },
   "devDependencies": {
-    "vite": "^5.0.10"
+    "vite": "^5.1.4"
   },
   "browserslist": {
     "production": [

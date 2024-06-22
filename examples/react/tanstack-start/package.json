@@ -1,0 +1,35 @@
+{
+  "name": "@tanstack/form-example-react-tanstack-start",
+  "private": true,
+  "sideEffects": false,
+  "packageManager": "pnpm@8.10.2",
+  "type": "module",
+  "scripts": {
+    "dev": "vinxi dev",
+    "build": "vinxi build",
+    "start": "vinxi start"
+  },
+  "dependencies": {
+    "@tanstack/form-core": "^0.23.2",
+    "@tanstack/react-form": "^0.23.2",
+    "@tanstack/react-router": "^1.40.0",
+    "@tanstack/router-devtools": "^1.40.0",
+    "@tanstack/router-vite-plugin": "^1.39.13",
+    "@tanstack/start": "^1.40.1",
+    "@vitejs/plugin-react": "^4",
+    "dotenv": "^16.4.5",
+    "isbot": "^3.7.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "vinxi": "^0.3.11"
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "typescript": "5.4.2",
+    "vite": "^5.1.4",
+    "vite-tsconfig-paths": "^4.3.2"
+  }
+}
