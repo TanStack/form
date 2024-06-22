@@ -956,7 +956,12 @@ export class FormApi<
       : never,
     opts?: { touch?: boolean },
   ) => {
-    this._tempDefaultValue = { value, field } as never
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    const fieldVal = (this.getFieldValue(field) as unknown[]) ?? []
+    this._tempDefaultValue = {
+      value,
+      field: `${field}[${fieldVal.length}]`,
+    } as never
     this.setFieldValue(
       field,
       (prev) => [...(Array.isArray(prev) ? prev : []), value] as any,
@@ -976,7 +981,7 @@ export class FormApi<
       : never,
     opts?: { touch?: boolean },
   ) => {
-    this._tempDefaultValue = { value, field } as never
+    this._tempDefaultValue = { value, field: `${field}[${index}]` } as never
     this.setFieldValue(
       field,
       (prev) => {
@@ -1004,7 +1009,7 @@ export class FormApi<
       : never,
     opts?: { touch?: boolean },
   ) => {
-    this._tempDefaultValue = { value, field } as never
+    this._tempDefaultValue = { value, field: `${field}[${index}]` } as never
     this.setFieldValue(
       field,
       (prev) => {
