@@ -445,6 +445,16 @@ export class FieldApi<
     this.form = opts.form as never
     this.name = opts.name as never
 
+    opts.defaultValue = opts.defaultValue ?? this.form._tempDefaultValue as never
+
+    if (this.form._tempDefaultValue !== undefined) {
+      // Cleanup the temp value after this "tick"
+      // (Everything occurs sync otherwise)
+      setTimeout(() => {
+        this.form._tempDefaultValue = undefined
+      }, 0)
+    }
+
     if (opts.defaultValue !== undefined) {
       this.form.setFieldValue(this.name, opts.defaultValue as never)
     }
@@ -597,6 +607,8 @@ export class FieldApi<
     if (this._getMeta() === undefined) {
       this.setMeta(this.state.meta)
     }
+
+    opts.defaultValue = opts.defaultValue ?? this.form._tempDefaultValue as never
 
     this.options = opts as never
   }

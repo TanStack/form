@@ -339,6 +339,14 @@ export class FormApi<
   prevTransformArray: unknown[] = []
 
   /**
+   * @private
+   * Used to handle the edgecase of `pushFieldValue` not adding a `defaultValue` to the child `FieldAPI`s that are
+   * subsequently generated from the `pushFieldValue` (and friends)
+   * @see https://github.com/TanStack/form/issues/704#issuecomment-2184080607
+   */
+  _tempDefaultValue: unknown = undefined
+
+  /**
    * Constructs a new `FormApi` instance with the given form options.
    */
   constructor(opts?: FormOptions<TFormData, TFormValidator>) {
@@ -943,6 +951,7 @@ export class FormApi<
       : never,
     opts?: { touch?: boolean },
   ) => {
+    this._tempDefaultValue = value
     this.setFieldValue(
       field,
       (prev) => [...(Array.isArray(prev) ? prev : []), value] as any,
@@ -962,6 +971,7 @@ export class FormApi<
       : never,
     opts?: { touch?: boolean },
   ) => {
+    this._tempDefaultValue = value
     this.setFieldValue(
       field,
       (prev) => {
@@ -989,6 +999,7 @@ export class FormApi<
       : never,
     opts?: { touch?: boolean },
   ) => {
+    this._tempDefaultValue = value
     this.setFieldValue(
       field,
       (prev) => {
