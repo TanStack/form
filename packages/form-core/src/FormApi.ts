@@ -344,7 +344,12 @@ export class FormApi<
    * subsequently generated from the `pushFieldValue` (and friends)
    * @see https://github.com/TanStack/form/issues/704#issuecomment-2184080607
    */
-  _tempDefaultValue: unknown = undefined
+  _tempDefaultValue:
+    | undefined
+    | {
+        field: string
+        value: unknown
+      } = undefined
 
   /**
    * Constructs a new `FormApi` instance with the given form options.
@@ -951,7 +956,7 @@ export class FormApi<
       : never,
     opts?: { touch?: boolean },
   ) => {
-    this._tempDefaultValue = value
+    this._tempDefaultValue = { value, field } as never
     this.setFieldValue(
       field,
       (prev) => [...(Array.isArray(prev) ? prev : []), value] as any,
@@ -971,7 +976,7 @@ export class FormApi<
       : never,
     opts?: { touch?: boolean },
   ) => {
-    this._tempDefaultValue = value
+    this._tempDefaultValue = { value, field } as never
     this.setFieldValue(
       field,
       (prev) => {
@@ -999,7 +1004,7 @@ export class FormApi<
       : never,
     opts?: { touch?: boolean },
   ) => {
-    this._tempDefaultValue = value
+    this._tempDefaultValue = { value, field } as never
     this.setFieldValue(
       field,
       (prev) => {
