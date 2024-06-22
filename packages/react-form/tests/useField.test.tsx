@@ -5,6 +5,7 @@ import { userEvent } from '@testing-library/user-event'
 import { useForm } from '../src/index'
 import { sleep } from './utils'
 import type { FieldApi, FormApi } from '../src/index'
+import { StrictMode } from 'react'
 
 const user = userEvent.setup()
 
@@ -938,5 +939,125 @@ describe('useField', () => {
     expect(mockFn).toHaveBeenCalledTimes(1)
     await waitFor(() => getByText(error))
     expect(getByText(error)).toBeInTheDocument()
+  })
+
+  it('should validate allow pushvalue to implicitly set a default value', async () => {
+    type Person = {
+      people: string[]
+    }
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          people: [],
+        } as Person,
+      })
+
+      return (
+        <form.Field name="people" mode="array">
+          {(field) => {
+            return (
+              <div>
+                <pre>{JSON.stringify(field.state.value)}</pre>
+                {field.state.value.map((_, i) => {
+                  return (
+                    <form.Field key={i} name={`people[${i}]`}>
+                      {(subField) => {
+                        return (
+                          <div>
+                            <label>
+                              <div>Name for person {i}</div>
+                              <input
+                                name={subField.name}
+                                value={subField.state.value}
+                                onChange={(e) =>
+                                  subField.handleChange(e.target.value)
+                                }
+                              />
+                            </label>
+                          </div>
+                        )
+                      }}
+                    </form.Field>
+                  )
+                })}
+                <button onClick={() => field.pushValue('')} type="button">
+                  Add person
+                </button>
+              </div>
+            )
+          }}
+        </form.Field>
+      )
+    }
+
+    const { getByText, queryByText } = render(
+      <StrictMode>
+        <Comp />
+      </StrictMode>,
+    )
+    expect(getByText('[]')).toBeInTheDocument()
+    await user.click(getByText('Add person'))
+    expect(getByText(`[""]`)).toBeInTheDocument()
+  })
+
+  it('should validate allow pushvalue to implicitly set a pushed default value', async () => {
+    type Person = {
+      people: string[]
+    }
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          people: [],
+        } as Person,
+      })
+
+      return (
+        <form.Field name="people" mode="array">
+          {(field) => {
+            return (
+              <div>
+                <pre>{JSON.stringify(field.state.value)}</pre>
+                {field.state.value.map((_, i) => {
+                  return (
+                    <form.Field key={i} name={`people[${i}]`}>
+                      {(subField) => {
+                        return (
+                          <div>
+                            <label>
+                              <div>Name for person {i}</div>
+                              <input
+                                name={subField.name}
+                                value={subField.state.value}
+                                onChange={(e) =>
+                                  subField.handleChange(e.target.value)
+                                }
+                              />
+                            </label>
+                          </div>
+                        )
+                      }}
+                    </form.Field>
+                  )
+                })}
+                <button onClick={() => field.pushValue('Test')} type="button">
+                  Add person
+                </button>
+              </div>
+            )
+          }}
+        </form.Field>
+      )
+    }
+
+    const { getByText, queryByText } = render(
+      <StrictMode>
+        <Comp />
+      </StrictMode>,
+    )
+    expect(getByText('[]')).toBeInTheDocument()
+    await user.click(getByText('Add person'))
+    expect(getByText(`["Test"]`)).toBeInTheDocument()
   })
 })
