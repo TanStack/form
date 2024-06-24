@@ -6,13 +6,13 @@ const config = {
   reportUnusedDisableDirectives: true,
   ignorePatterns: ['**/build', '**/coverage', '**/dist'],
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint', 'import'],
+  plugins: ['@typescript-eslint', 'import-x'],
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/stylistic',
-    'plugin:import/recommended',
-    'plugin:import/typescript',
+    'plugin:import-x/recommended',
+    'plugin:import-x/typescript',
     'prettier',
   ],
   env: {
@@ -26,11 +26,8 @@ const config = {
     ecmaVersion: 2020,
   },
   settings: {
-    'import/parsers': {
+    'import-x/parsers': {
       '@typescript-eslint/parser': ['.ts', '.tsx'],
-    },
-    'import/resolver': {
-      typescript: true,
     },
     react: {
       version: 'detect',
@@ -56,16 +53,16 @@ const config = {
       'error',
       { ignoreParameters: true },
     ],
-    'import/default': 'off',
-    'import/export': 'off',
-    'import/namespace': 'off',
-    'import/newline-after-import': 'error',
-    'import/no-cycle': 'error',
-    'import/no-duplicates': 'off',
-    'import/no-named-as-default-member': 'off',
-    'import/no-unresolved': ['error', { ignore: ['^@tanstack/'] }],
-    'import/no-unused-modules': ['off', { unusedExports: true }],
-    'import/order': [
+    'import-x/default': 'off',
+    'import-x/export': 'off',
+    'import-x/namespace': 'off',
+    'import-x/newline-after-import': 'error',
+    'import-x/no-cycle': 'error',
+    'import-x/no-duplicates': 'off',
+    'import-x/no-named-as-default-member': 'off',
+    'import-x/no-unresolved': 'off',
+    'import-x/no-unused-modules': ['off', { unusedExports: true }],
+    'import-x/order': [
       'error',
       {
         groups: [
