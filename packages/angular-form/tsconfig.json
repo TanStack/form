@@ -1,16 +1,10 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "declaration": true,
-    "declarationMap": true,
-    "useDefineForClassFields": false,
-    "target": "es2022",
-
-    "strict": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
-    "module": "ES2022",
+    "moduleResolution": "Bundler",
+    "useDefineForClassFields": false,
     "paths": {
       "@tanstack/form-core": ["../form-core/src"]
     }
