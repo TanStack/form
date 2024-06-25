@@ -3,7 +3,6 @@
   "compilerOptions": {
     "jsx": "preserve",
     "jsxImportSource": "vue",
-    "moduleResolution": "Node",
     "types": ["vue/jsx"],
     "paths": {
       "@tanstack/form-core": ["../form-core/src"]
