@@ -22,7 +22,7 @@
     "@angular/router": "^17.3.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "valibot": "^0.31.1",
+    "valibot": "^0.35.0",
     "zone.js": "~0.14.2"
   },
   "devDependencies": {
