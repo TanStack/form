@@ -281,7 +281,6 @@ export interface FieldOptions<
    * If `true`, always run async validation, even if there are errors emitted during synchronous validation.
    */
   asyncAlways?: boolean
-  preserveValue?: boolean
   /**
    * A validator provided by an extension, like `yupValidator` from `@tanstack/yup-form-adapter`
    */
@@ -445,14 +444,6 @@ export class FieldApi<
     this.form = opts.form as never
     this.name = opts.name as never
 
-    if (
-      opts.defaultValue === undefined &&
-      this.form._tempDefaultValue !== undefined &&
-      this.form._tempDefaultValue.field === this.name
-    ) {
-      opts.defaultValue = this.form._tempDefaultValue.value as never
-    }
-
     if (opts.defaultValue !== undefined) {
       this.form.setFieldValue(this.name, opts.defaultValue as never)
     }
@@ -488,17 +479,6 @@ export class FieldApi<
 
           this.prevState = state
           this.state = state
-
-          // Cleanup the temp value after this "tick"
-          // (Everything occurs sync otherwise)
-          setTimeout(() => {
-            if (
-              this.form._tempDefaultValue !== undefined &&
-              this.form._tempDefaultValue.field === this.name
-            ) {
-              this.form._tempDefaultValue = undefined
-            }
-          }, 0)
         },
       },
     )
@@ -580,11 +560,7 @@ export class FieldApi<
     }
 
     return () => {
-      const preserveValue = this.options.preserveValue
       unsubscribe()
-      if (!preserveValue) {
-        this.form.deleteField(this.name)
-      }
     }
   }
 
@@ -615,14 +591,6 @@ export class FieldApi<
     // Default Meta
     if (this._getMeta() === undefined) {
       this.setMeta(this.state.meta)
-    }
-
-    if (
-      opts.defaultValue === undefined &&
-      this.form._tempDefaultValue !== undefined &&
-      this.form._tempDefaultValue.field === this.name
-    ) {
-      opts.defaultValue = this.form._tempDefaultValue.value as never
     }
 
     this.options = opts as never

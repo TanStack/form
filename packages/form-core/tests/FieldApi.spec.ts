@@ -898,44 +898,12 @@ describe('field api', () => {
     const field = new FieldApi({
       form,
       name: 'name',
-      preserveValue: true,
     })
 
     const unmount = field.mount()
     unmount()
     expect(form.getFieldInfo(field.name).instance).toBeDefined()
     expect(form.getFieldInfo(field.name)).toBeDefined()
-  })
-
-  it('should not preserve field value on ummount', () => {
-    const form = new FormApi({
-      defaultValues: {
-        name: 'test',
-      },
-    })
-
-    const field = new FieldApi({
-      form,
-      name: 'name',
-    })
-
-    const unmount = field.mount()
-    const callback = vi.fn()
-    const subscription = form.store.subscribe(callback)
-    unmount()
-    const info = form.getFieldInfo(field.name)
-    subscription()
-    expect(info.instance).toBeNull()
-    expect(Object.keys(info.instance ?? {}).length).toBe(0)
-
-    // Check that form store has been updated
-    expect(callback).toHaveBeenCalledOnce()
-
-    // Field should have been removed from the form as well
-    expect(form.state.values.name).toBeUndefined()
-    expect(form.state.fieldMeta.name).toBeUndefined()
-    expect(form.store.state.values.name).toBeUndefined()
-    expect(form.store.state.fieldMeta.name).toBeUndefined()
   })
 
   it('should show onSubmit errors', async () => {

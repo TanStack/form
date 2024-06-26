@@ -48,7 +48,6 @@ export class TanStackField<
   @Input() defaultValue?: NoInferHack<TData>
   @Input({ transform: numberAttribute }) asyncDebounceMs?: number
   @Input({ transform: booleanAttribute }) asyncAlways?: boolean
-  @Input({ transform: booleanAttribute }) preserveValue?: boolean
   @Input() validatorAdapter?: TFieldValidator
   @Input({ required: true }) tanstackField!: FormApi<
     TParentData,
@@ -66,7 +65,6 @@ export class TanStackField<
       defaultValue: this.defaultValue,
       asyncDebounceMs: this.asyncDebounceMs,
       asyncAlways: this.asyncAlways,
-      preserveValue: this.preserveValue,
       validatorAdapter: this.validatorAdapter,
       validators: this.validators,
       defaultMeta: this.defaultMeta,
