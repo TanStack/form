@@ -54,9 +54,9 @@
     "@tanstack/form-core": "workspace:*"
   },
   "peerDependencies": {
-    "valibot": ">=0.31.0 <1"
+    "valibot": ">=0.33.0 <1"
   },
   "devDependencies": {
-    "valibot": "^0.31.1"
+    "valibot": "^0.35.0"
   }
 }
