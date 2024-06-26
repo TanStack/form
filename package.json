@@ -66,7 +66,6 @@
     "typedoc": "^0.25.13",
     "typedoc-plugin-markdown": "^4.0.3",
     "typescript": "5.4.2",
-    "typescript-eslint": "^8.0.0-alpha.32",
     "typescript49": "npm:typescript@4.9",
     "typescript50": "npm:typescript@5.0",
     "typescript51": "npm:typescript@5.1",

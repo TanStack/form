@@ -86,9 +86,6 @@ importers:
       typescript:
         specifier: 5.4.2
         version: 5.4.2
-      typescript-eslint:
-        specifier: ^8.0.0-alpha.32
-        version: 8.0.0-alpha.33(eslint@9.5.0)(typescript@5.4.2)
       typescript49:
         specifier: npm:typescript@4.9
         version: typescript@4.9.5
