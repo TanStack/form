@@ -1,12 +1,7 @@
 {
-  "composite": true,
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "lib": ["DOM"],
-    "outDir": "./build/lib",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "types": ["vitest/globals"]
+    "moduleResolution": "Bundler"
   },
-  "include": ["src"]
+  "include": ["src", "tests", "eslint.config.js", "vite.config.ts"]
 }

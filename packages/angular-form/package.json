@@ -1,10 +1,14 @@
 {
   "name": "@tanstack/angular-form",
-  "version": "0.22.0",
+  "version": "0.23.3",
   "description": "Powerful, type-safe forms for Angular.",
   "author": "tannerlinsley",
   "license": "MIT",
-  "repository": "tanstack/form",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TanStack/form.git",
+    "directory": "packages/angular-form"
+  },
   "homepage": "https://tanstack.com/form",
   "funding": {
     "type": "github",
@@ -12,27 +16,37 @@
   },
   "sideEffects": false,
   "scripts": {
-    "build": "ng-packagr -p ng-package.json -c tsconfig.build.json && rimraf ./build/package.json",
-    "clean": "rimraf ./build && rimraf ./coverage",
-    "test:eslint": "eslint --ext .ts,.tsx ./src",
-    "test:types": "tsc --noEmit",
+    "clean": "rimraf ./dist && rimraf ./coverage",
+    "test:eslint": "eslint ./src",
+    "test:types": "pnpm run \"/^test:types:ts[0-9]{2}$/\"",
+    "test:types:ts54": "tsc",
     "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
-    "test:build": "publint --strict"
+    "test:build": "publint --strict",
+    "build": "ng-packagr -p ng-package.json -c tsconfig.build.json && rimraf ./dist/package.json"
   },
   "files": [
-    "build",
+    "dist",
     "src"
   ],
   "type": "module",
-  "nx": {
-    "targets": {
-      "test:build": {
-        "dependsOn": [
-          "build"
-        ]
-      }
+  "types": "dist/index.d.ts",
+  "module": "dist/fesm2022/tanstack-angular-form.mjs",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "esm2022": "./dist/esm2022/tanstack-angular-form.mjs",
+      "esm": "./dist/esm2022/tanstack-angular-form.mjs",
+      "default": "./dist/fesm2022/tanstack-angular-form.mjs"
+    },
+    "./package.json": {
+      "default": "./package.json"
     }
+  },
+  "dependencies": {
+    "@tanstack/angular-store": "^0.5.1",
+    "@tanstack/form-core": "workspace:*",
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
     "@analogjs/vite-plugin-angular": "^1.0.0",
@@ -47,25 +61,7 @@
     "typescript": "5.4.2",
     "zone.js": "~0.14.2"
   },
-  "dependencies": {
-    "@tanstack/angular-store": "^0.4.1",
-    "@tanstack/form-core": "workspace:*",
-    "tslib": "^2.3.0"
-  },
   "peerDependencies": {
     "@angular/core": ">=17.3.0"
-  },
-  "module": "build/fesm2022/tanstack-angular-form.mjs",
-  "types": "build/index.d.ts",
-  "exports": {
-    "./package.json": {
-      "default": "./package.json"
-    },
-    ".": {
-      "types": "./build/index.d.ts",
-      "esm2022": "./build/esm2022/tanstack-angular-form.mjs",
-      "esm": "./build/esm2022/tanstack-angular-form.mjs",
-      "default": "./build/fesm2022/tanstack-angular-form.mjs"
-    }
   }
 }

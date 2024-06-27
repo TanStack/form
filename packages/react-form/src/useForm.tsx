@@ -1,6 +1,6 @@
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
-import React, { useState } from 'rehackt'
+import React, { useState } from 'react'
 import { Field, type FieldComponent, type UseField, useField } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type { NoInfer } from '@tanstack/react-store'
@@ -8,13 +8,28 @@ import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
 import type { NodeType } from './types'
 
 declare module '@tanstack/form-core' {
+  /**
+   * When using `@tanstack/react-form`, the core form API is extended at type level with additional methods for React-specific functionality:
+   */
   // eslint-disable-next-line no-shadow
   interface FormApi<TFormData, TFormValidator> {
+    /**
+     * A React component to render form fields. With this, you can render and manage individual form fields.
+     */
     Field: FieldComponent<TFormData, TFormValidator>
+    /**
+     * A custom React hook that provides functionalities related to individual form fields. It gives you access to field values, errors, and allows you to set or update field values.
+     */
     useField: UseField<TFormData, TFormValidator>
+    /**
+     * A `useStore` hook that connects to the internal store of the form. It can be used to access the form's current state or any other related state information. You can optionally pass in a selector function to cherry-pick specific parts of the state
+     */
     useStore: <TSelected = NoInfer<FormState<TFormData>>>(
       selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,
     ) => TSelected
+    /**
+     * A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
+     */
     Subscribe: <TSelected = NoInfer<FormState<TFormData>>>(props: {
       /**
       TypeScript versions <=5.0.4 have a bug that prevents
@@ -33,6 +48,11 @@ declare module '@tanstack/form-core' {
   }
 }
 
+/**
+ * A custom React Hook that returns an instance of the `FormApi` class.
+ *
+ * This API encapsulates all the necessary functionalities related to the form. It allows you to manage form state, handle submissions, and interact with form fields
+ */
 export function useForm<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,

@@ -4,15 +4,14 @@
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
     "moduleResolution": "Bundler",
-    "paths": {
-      "@tanstack/form-core": ["../../form-core/src"]
-    },
+    "rootDir": "src",
     "outDir": "dist",
     "noEmit": false,
     "declaration": true,
-    "rootDir": "src",
-    "sourceMap": true
+    "sourceMap": true,
+    "paths": {
+      "@tanstack/form-core": ["../../form-core/src"]
+    }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["src/tests/**"]
+  "include": ["src"]
 }

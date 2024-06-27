@@ -1,11 +1,9 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "moduleResolution": "Node",
     "paths": {
       "@tanstack/form-core": ["../form-core/src"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["src/tests/**"]
+  "include": ["src"]
 }

@@ -19,6 +19,9 @@ import type {
   Validator,
 } from './types'
 
+/**
+ * @private
+ */
 export type FormValidateFn<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
@@ -27,6 +30,9 @@ export type FormValidateFn<
   formApi: FormApi<TFormData, TFormValidator>
 }) => ValidationError
 
+/**
+ * @private
+ */
 export type FormValidateOrFn<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
@@ -34,6 +40,9 @@ export type FormValidateOrFn<
   ? TFN
   : FormValidateFn<TFormData, TFormValidator>
 
+/**
+ * @private
+ */
 export type FormValidateAsyncFn<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
@@ -43,6 +52,9 @@ export type FormValidateAsyncFn<
   signal: AbortSignal
 }) => ValidationError | Promise<ValidationError>
 
+/**
+ * @private
+ */
 export type FormAsyncValidateOrFn<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
@@ -54,17 +66,41 @@ export interface FormValidators<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > {
+  /**
+   * Optional function that fires as soon as the component mounts.
+   */
   onMount?: FormValidateOrFn<TFormData, TFormValidator>
+  /**
+   * Optional function that checks the validity of your data whenever a value changes
+   */
   onChange?: FormValidateOrFn<TFormData, TFormValidator>
+  /**
+   * Optional onChange asynchronous counterpart to onChange. Useful for more complex validation logic that might involve server requests.
+   */
   onChangeAsync?: FormAsyncValidateOrFn<TFormData, TFormValidator>
+  /**
+   * The default time in milliseconds that if set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds.
+   */
   onChangeAsyncDebounceMs?: number
+  /**
+   * Optional function that validates the form data when a field loses focus, returns a ValidationError
+   */
   onBlur?: FormValidateOrFn<TFormData, TFormValidator>
+  /**
+   * Optional onBlur asynchronous validation method for when a field loses focus return a `ValidationError` or a promise of `Promise<ValidationError>`
+   */
   onBlurAsync?: FormAsyncValidateOrFn<TFormData, TFormValidator>
+  /**
+   * The default time in milliseconds that if set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds.
+   */
   onBlurAsyncDebounceMs?: number
   onSubmit?: FormValidateOrFn<TFormData, TFormValidator>
   onSubmitAsync?: FormAsyncValidateOrFn<TFormData, TFormValidator>
 }
 
+/**
+ * @private
+ */
 export interface FormTransform<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
@@ -75,20 +111,47 @@ export interface FormTransform<
   deps: unknown[]
 }
 
+/**
+ * An object representing the options for a form.
+ */
 export interface FormOptions<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > {
+  /**
+   * Set initial values for your form.
+   */
   defaultValues?: TFormData
+  /**
+   * The default state for the form.
+   */
   defaultState?: Partial<FormState<TFormData>>
+  /**
+   * If true, always run async validation, even when sync validation has produced an error. Defaults to undefined.
+   */
   asyncAlways?: boolean
+  /**
+   * Optional time in milliseconds if you want to introduce a delay before firing off an async action.
+   */
   asyncDebounceMs?: number
+  /**
+   * A validator adapter to support usage of extra validation types (IE: Zod, Yup, or Valibot usage)
+   */
   validatorAdapter?: TFormValidator
+  /**
+   * A list of validators to pass to the form
+   */
   validators?: FormValidators<TFormData, TFormValidator>
+  /**
+   * A function to be called when the form is submitted, what should happen once the user submits a valid form returns `any` or a promise `Promise<any>`
+   */
   onSubmit?: (props: {
     value: TFormData
     formApi: FormApi<TFormData, TFormValidator>
   }) => any | Promise<any>
+  /**
+   * Specify an action for scenarios where the user tries to submit an invalid form.
+   */
   onSubmitInvalid?: (props: {
     value: TFormData
     formApi: FormApi<TFormData, TFormValidator>
@@ -96,44 +159,113 @@ export interface FormOptions<
   transform?: FormTransform<TFormData, TFormValidator>
 }
 
+/**
+ * An object representing the validation metadata for a field. Not intended for public usage.
+ */
 export type ValidationMeta = {
+  /**
+   * An abort controller stored in memory to cancel previous async validation attempts.
+   */
   lastAbortController: AbortController
 }
 
+/**
+ * An object representing the field information for a specific field within the form.
+ */
 export type FieldInfo<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > = {
+  /**
+   * An instance of the FieldAPI.
+   */
   instance: FieldApi<
     TFormData,
     any,
     Validator<unknown, unknown> | undefined,
     TFormValidator
   > | null
+  /**
+   * A record of field validation internal handling.
+   */
   validationMetaMap: Record<ValidationErrorMapKeys, ValidationMeta | undefined>
 }
 
+/**
+ * An object representing the current state of the form.
+ */
 export type FormState<TFormData> = {
+  /**
+   * The current values of the form fields.
+   */
   values: TFormData
-  // Form Validation
+  /**
+   * A boolean indicating if the form is currently validating.
+   */
   isFormValidating: boolean
+  /**
+   * A boolean indicating if the form is valid.
+   */
   isFormValid: boolean
+  /**
+   * The error array for the form itself.
+   */
   errors: ValidationError[]
+  /**
+   * The error map for the form itself.
+   */
   errorMap: ValidationErrorMap
+  /**
+   * An internal mechanism used for keeping track of validation logic in a form.
+   */
   validationMetaMap: Record<ValidationErrorMapKeys, ValidationMeta | undefined>
-  // Fields
+  /**
+   * A record of field metadata for each field in the form.
+   */
   fieldMeta: Record<DeepKeys<TFormData>, FieldMeta>
+  /**
+   * A boolean indicating if any of the form fields are currently validating.
+   */
   isFieldsValidating: boolean
+  /**
+   * A boolean indicating if all the form fields are valid.
+   */
   isFieldsValid: boolean
+  /**
+   * A boolean indicating if the form is currently submitting.
+   */
   isSubmitting: boolean
-  // General
+  /**
+   * A boolean indicating if any of the form fields have been touched.
+   */
   isTouched: boolean
+  /**
+   * A boolean indicating if any of the form's fields' values have been modified by the user. `True` if the user have modified at least one of the fields. Opposite of `isPristine`.
+   */
   isDirty: boolean
+  /**
+   * A boolean indicating if none of the form's fields' values have been modified by the user. `True` if the user have not modified any of the fields. Opposite of `isDirty`.
+   */
   isPristine: boolean
+  /**
+   * A boolean indicating if the form has been submitted.
+   */
   isSubmitted: boolean
+  /**
+   * A boolean indicating if the form or any of its fields are currently validating.
+   */
   isValidating: boolean
+  /**
+   * A boolean indicating if the form and all its fields are valid.
+   */
   isValid: boolean
+  /**
+   * A boolean indicating if the form can be submitted based on its current state.
+   */
   canSubmit: boolean
+  /**
+   * A counter for tracking the number of submission attempts.
+   */
   submissionAttempts: number
 }
 
@@ -168,21 +300,47 @@ function getDefaultFormState<TFormData>(
   }
 }
 
+/**
+ * A class representing the Form API. It handles the logic and interactions with the form state.
+ *
+ * Normally, you will not need to create a new `FormApi` instance directly. Instead, you will use a framework
+ * hook/function like `useForm` or `createForm` to create a new instance for you that uses your framework's reactivity model.
+ * However, if you need to create a new instance manually, you can do so by calling the `new FormApi` constructor.
+ */
 export class FormApi<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > {
+  /**
+   * The options for the form.
+   */
   options: FormOptions<TFormData, TFormValidator> = {}
+  /**
+   * A [TanStack Store instance](https://tanstack.com/store/latest/docs/reference/Store) that keeps track of the form's state.
+   */
   store!: Store<FormState<TFormData>>
-  // Do not use __state directly, as it is not reactive.
-  // Please use form.useStore() utility to subscribe to state
+  /**
+   * The current state of the form.
+   *
+   * **Note:**
+   * Do not use `state` directly, as it is not reactive.
+   * Please use form.useStore() utility to subscribe to state
+   */
   state!: FormState<TFormData>
-  // // This carries the context for nested fields
+  /**
+   * A record of field information for each field in the form.
+   */
   fieldInfo: Record<DeepKeys<TFormData>, FieldInfo<TFormData, TFormValidator>> =
     {} as any
 
+  /**
+   * @private
+   */
   prevTransformArray: unknown[] = []
 
+  /**
+   * Constructs a new `FormApi` instance with the given form options.
+   */
   constructor(opts?: FormOptions<TFormData, TFormValidator>) {
     this.store = new Store<FormState<TFormData>>(
       getDefaultFormState({
@@ -260,6 +418,9 @@ export class FormApi<
     this.update(opts || {})
   }
 
+  /**
+   * @private
+   */
   runValidator<
     TValue extends { value: TFormData; formApi: FormApi<any, any> },
     TType extends 'validate' | 'validateAsync',
@@ -297,6 +458,9 @@ export class FormApi<
     }
   }
 
+  /**
+   * Updates the form options and form state.
+   */
   update = (options?: FormOptions<TFormData, TFormValidator>) => {
     if (!options) return
 
@@ -334,6 +498,9 @@ export class FormApi<
     })
   }
 
+  /**
+   * Resets the form state to the default values.
+   */
   reset = () => {
     const { fieldMeta: currentFieldMeta } = this.state
     const fieldMeta = this.resetFieldMeta(currentFieldMeta)
@@ -346,6 +513,9 @@ export class FormApi<
     )
   }
 
+  /**
+   * Validates all fields in the form using the correct handlers for a given validation type.
+   */
   validateAllFields = async (cause: ValidationCause) => {
     const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
     this.store.batch(() => {
@@ -370,6 +540,9 @@ export class FormApi<
     return fieldErrorMapMap.flat()
   }
 
+  /**
+   * Validates the children of a specified array in the form starting from a given index until the end using the correct handlers for a given validation type.
+   */
   validateArrayFieldsStartingFrom = async <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,
@@ -406,6 +579,9 @@ export class FormApi<
     return fieldErrorMapMap.flat()
   }
 
+  /**
+   * Validates a specified field in the form using the correct handlers for a given validation type.
+   */
   validateField = <TField extends DeepKeys<TFormData>>(
     field: TField,
     cause: ValidationCause,
@@ -423,7 +599,10 @@ export class FormApi<
     return fieldInstance.validate(cause)
   }
 
-  // TODO: This code is copied from FieldApi, we should refactor to share
+  /**
+   * TODO: This code is copied from FieldApi, we should refactor to share
+   * @private
+   */
   validateSync = (cause: ValidationCause) => {
     const validates = getSyncValidatorArray(cause, this.options)
     let hasErrored = false as boolean
@@ -480,6 +659,9 @@ export class FormApi<
     return { hasErrored }
   }
 
+  /**
+   * @private
+   */
   validateAsync = async (
     cause: ValidationCause,
   ): Promise<ValidationError[]> => {
@@ -561,6 +743,9 @@ export class FormApi<
     return results.filter(Boolean)
   }
 
+  /**
+   * @private
+   */
   validate = (
     cause: ValidationCause,
   ): ValidationError[] | Promise<ValidationError[]> => {
@@ -575,12 +760,10 @@ export class FormApi<
     return this.validateAsync(cause)
   }
 
+  /**
+   * Handles the form submission, performs validation, and calls the appropriate onSubmit or onInvalidSubmit callbacks.
+   */
   handleSubmit = async () => {
-    // Check to see that the form and all fields have been touched
-    // If they have not, touch them all and run validation
-    // Run form validation
-    // Submit the form
-
     this.store.setState((old) => ({
       ...old,
       // Submission attempts mark the form as not submitted
@@ -637,16 +820,25 @@ export class FormApi<
     }
   }
 
+  /**
+   * Gets the value of the specified field.
+   */
   getFieldValue = <TField extends DeepKeys<TFormData>>(
     field: TField,
   ): DeepValue<TFormData, TField> => getBy(this.state.values, field)
 
+  /**
+   * Gets the metadata of the specified field.
+   */
   getFieldMeta = <TField extends DeepKeys<TFormData>>(
     field: TField,
   ): FieldMeta | undefined => {
     return this.state.fieldMeta[field]
   }
 
+  /**
+   * Gets the field info of the specified field.
+   */
   getFieldInfo = <TField extends DeepKeys<TFormData>>(
     field: TField,
   ): FieldInfo<TFormData, TFormValidator> => {
@@ -663,6 +855,9 @@ export class FormApi<
     })
   }
 
+  /**
+   * Updates the metadata of the specified field.
+   */
   setFieldMeta = <TField extends DeepKeys<TFormData>>(
     field: TField,
     updater: Updater<FieldMeta>,
@@ -699,6 +894,9 @@ export class FormApi<
     )
   }
 
+  /**
+   * Sets the value of the specified field and optionally updates the touched state.
+   */
   setFieldValue = <TField extends DeepKeys<TFormData>>(
     field: TField,
     updater: Updater<DeepValue<TFormData, TField>>,
@@ -735,6 +933,9 @@ export class FormApi<
     delete this.fieldInfo[field]
   }
 
+  /**
+   * Pushes a value into an array field.
+   */
   pushFieldValue = <TField extends DeepKeys<TFormData>>(
     field: TField,
     value: DeepValue<TFormData, TField> extends any[]
@@ -750,6 +951,9 @@ export class FormApi<
     this.validateField(field, 'change')
   }
 
+  /**
+   * Inserts a value into an array field at the specified index, shifting the subsequent values to the right.
+   */
   insertFieldValue = async <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,
@@ -774,6 +978,9 @@ export class FormApi<
     await this.validateField(field, 'change')
   }
 
+  /**
+   * Replaces a value into an array field at the specified index.
+   */
   replaceFieldValue = async <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,
@@ -797,6 +1004,9 @@ export class FormApi<
     await this.validateArrayFieldsStartingFrom(field, index, 'change')
   }
 
+  /**
+   * Removes a value from an array field at the specified index.
+   */
   removeFieldValue = async <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,
@@ -833,6 +1043,9 @@ export class FormApi<
     await this.validateArrayFieldsStartingFrom(field, index, 'change')
   }
 
+  /**
+   * Swaps the values at the specified indices within an array field.
+   */
   swapFieldValues = <TField extends DeepKeys<TFormData>>(
     field: TField,
     index1: number,
@@ -856,6 +1069,9 @@ export class FormApi<
     this.validateField(`${field}[${index2}]` as DeepKeys<TFormData>, 'change')
   }
 
+  /**
+   * Moves the value at the first specified index to the second specified index within an array field.
+   */
   moveFieldValues = <TField extends DeepKeys<TFormData>>(
     field: TField,
     index1: number,
