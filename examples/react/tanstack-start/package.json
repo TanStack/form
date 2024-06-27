@@ -2,7 +2,6 @@
   "name": "@tanstack/form-example-react-tanstack-start",
   "private": true,
   "sideEffects": false,
-  "packageManager": "pnpm@8.10.2",
   "type": "module",
   "scripts": {
     "dev": "vinxi dev",
@@ -12,10 +11,9 @@
   "dependencies": {
     "@tanstack/form-core": "^0.23.2",
     "@tanstack/react-form": "^0.23.2",
-    "@tanstack/react-router": "^1.40.0",
-    "@tanstack/router-devtools": "^1.40.0",
-    "@tanstack/router-vite-plugin": "^1.39.13",
-    "@tanstack/start": "^1.40.1",
+    "@tanstack/react-router": "^1.42.0",
+    "@tanstack/router-vite-plugin": "^1.41.0",
+    "@tanstack/start": "^1.42.0",
     "@vitejs/plugin-react": "^4",
     "dotenv": "^16.4.5",
     "isbot": "^3.7.0",

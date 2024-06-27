@@ -9,7 +9,7 @@ import { getFormData } from '@tanstack/react-form/start'
 
 export const Route = createFileRoute('/')({
   component: Home,
-  loader: async (data) => ({
+  loader: async () => ({
     state: await getFormData()
   })
 })

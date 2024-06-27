@@ -9,4 +9,7 @@ export default defineConfig({
       }),
     ],
   },
-})
+  react: {
+    exclude: [/packages/],
+  }
+} as Partial<Parameters<typeof defineConfig>[0]> as never)
