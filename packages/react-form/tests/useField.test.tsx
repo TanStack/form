@@ -422,7 +422,7 @@ describe('useField', () => {
           firstName: '',
           lastName: '',
         },
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        // eslint-disable-next-line ts/no-empty-function
         onSubmit: async () => {},
       })
 

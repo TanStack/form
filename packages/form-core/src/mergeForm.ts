@@ -24,7 +24,7 @@ export function mutateMergeDeep(target: object, source: object): object {
       mutateMergeDeep(target[targetKey] as {}, source[sourceKey] as {})
     } else {
       // Prevent assigning undefined to target, only if undefined is not explicitly set on source
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      // eslint-disable-next-line ts/no-unnecessary-condition
       if (!(sourceKey in source) && source[sourceKey] === undefined) {
         continue
       }
