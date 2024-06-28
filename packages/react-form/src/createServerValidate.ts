@@ -17,16 +17,11 @@ type OnServerValidateOrFn<
   ? FFN | OnServerValidateFn<TFormData>
   : OnServerValidateFn<TFormData>
 
-declare module '@tanstack/form-core' {
-  // eslint-disable-next-line no-shadow
-  interface FormOptions<
-    TFormData,
-    TFormValidator extends
-      | Validator<TFormData, unknown>
-      | undefined = undefined,
-  > {
-    onServerValidate?: OnServerValidateOrFn<TFormData, TFormValidator>
-  }
+interface ServerFormOptions<
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+> extends FormOptions<TFormData, TFormValidator> {
+  onServerValidate?: OnServerValidateOrFn<TFormData, TFormValidator>
 }
 
 type ValidateFormData<
@@ -41,13 +36,13 @@ export const createServerValidate = <
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 >(
-  defaultOpts?: FormOptions<TFormData, TFormValidator>,
+  defaultOpts: ServerFormOptions<TFormData, TFormValidator>,
 ) =>
   (async (
     formData: FormData,
     info?: Parameters<typeof decode>[1],
   ): Promise<Partial<FormApi<TFormData, TFormValidator>['state']>> => {
-    const { validatorAdapter, onServerValidate } = defaultOpts || {}
+    const { validatorAdapter, onServerValidate } = defaultOpts
 
     const runValidator = (propsValue: { value: TFormData }) => {
       if (validatorAdapter && typeof onServerValidate !== 'function') {

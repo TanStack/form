@@ -7,36 +7,36 @@ import type { NoInfer } from '@tanstack/vue-store'
 import type { EmitsOptions, Ref, SetupContext, SlotsType } from 'vue'
 import type { FieldComponent, UseField } from './useField'
 
-declare module '@tanstack/form-core' {
-  // eslint-disable-next-line no-shadow
-  interface FormApi<TFormData, TFormValidator> {
-    Field: FieldComponent<TFormData, TFormValidator>
-    useField: UseField<TFormData, TFormValidator>
-    useStore: <TSelected = NoInfer<FormState<TFormData>>>(
-      selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,
-    ) => Readonly<Ref<TSelected>>
-    Subscribe: <TSelected = NoInfer<FormState<TFormData>>>(
-      props: {
-        selector?: (state: NoInfer<FormState<TFormData>>) => TSelected
-      },
-      context: SetupContext<
-        EmitsOptions,
-        SlotsType<{ default: NoInfer<FormState<TFormData>> }>
-      >,
-    ) => any
-  }
+interface VueFormApi<
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+> {
+  Field: FieldComponent<TFormData, TFormValidator>
+  useField: UseField<TFormData, TFormValidator>
+  useStore: <TSelected = NoInfer<FormState<TFormData>>>(
+    selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,
+  ) => Readonly<Ref<TSelected>>
+  Subscribe: <TSelected = NoInfer<FormState<TFormData>>>(
+    props: {
+      selector?: (state: NoInfer<FormState<TFormData>>) => TSelected
+    },
+    context: SetupContext<
+      EmitsOptions,
+      SlotsType<{ default: NoInfer<FormState<TFormData>> }>
+    >,
+  ) => any
 }
 
 export function useForm<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
->(
-  opts?: FormOptions<TFormData, TFormValidator>,
-): FormApi<TFormData, TFormValidator> {
+>(opts?: FormOptions<TFormData, TFormValidator>) {
   const formApi = (() => {
     const api = new FormApi<TFormData, TFormValidator>(opts)
 
-    api.Field = defineComponent(
+    const extendedApi: typeof api & VueFormApi<TFormData, TFormValidator> =
+      api as never
+    extendedApi.Field = defineComponent(
       (props, context) => {
         return () =>
           h(
@@ -50,11 +50,14 @@ export function useForm<
         inheritAttrs: false,
       },
     )
-    api.useField = (props) => useField({ ...props, form: api })
-    api.useStore = (selector) => {
+    extendedApi.useField = (props) => {
+      const field = useField({ ...props, form: api })
+      return field
+    }
+    extendedApi.useStore = (selector) => {
       return useStore(api.store as never, selector as never) as never
     }
-    api.Subscribe = defineComponent(
+    extendedApi.Subscribe = defineComponent(
       (props, context) => {
         const allProps = { ...props, ...context.attrs }
         const selector = allProps.selector ?? ((state) => state)
@@ -67,7 +70,7 @@ export function useForm<
       },
     )
 
-    return api
+    return extendedApi
   })()
 
   onMounted(formApi.mount)
@@ -75,5 +78,5 @@ export function useForm<
   // formApi.useStore((state) => state.isSubmitting)
   formApi.update(opts)
 
-  return formApi as never
+  return formApi
 }
