@@ -563,8 +563,8 @@ importers:
         specifier: ^1.41.0
         version: 1.41.0(vite@5.2.10(@types/node@20.14.8)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
       '@tanstack/start':
-        specifier: ^1.42.0
-        version: 1.42.0(@opentelemetry/api@1.9.0)(@types/node@20.14.8)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1)(typescript@5.4.2)(vite@5.2.10(@types/node@20.14.8)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+        specifier: ^1.42.1
+        version: 1.42.1(@opentelemetry/api@1.9.0)(@types/node@20.14.8)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1)(typescript@5.4.2)(vite@5.2.10(@types/node@20.14.8)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
       '@vitejs/plugin-react':
         specifier: ^4
         version: 4.3.1(vite@5.2.10(@types/node@20.14.8)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
@@ -1094,8 +1094,8 @@ importers:
         version: 0.7.5
     devDependencies:
       '@tanstack/start':
-        specifier: ^1.42.0
-        version: 1.42.0(@opentelemetry/api@1.9.0)(@types/node@20.14.8)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1)(typescript@5.4.2)(vite@5.2.10(@types/node@20.14.8)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+        specifier: ^1.42.1
+        version: 1.42.1(@opentelemetry/api@1.9.0)(@types/node@20.14.8)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1)(typescript@5.4.2)(vite@5.2.10(@types/node@20.14.8)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
       '@types/react':
         specifier: ^18.3.3
         version: 18.3.3
@@ -3858,8 +3858,8 @@ packages:
     resolution: {integrity: sha512-BHzVcZZkG8xkbxGhe1ah4TOE8MN/d/CVeEdWimnEAFu525feBBdJ36eH3QLYZwevvjRXRF7cvegxbDyQoWGzDA==}
     engines: {node: '>=12'}
 
-  '@tanstack/start@1.42.0':
-    resolution: {integrity: sha512-qLx11+DRJYpUBsqPsCV/faa+l2HJznmPg9iaCI5xnI4286yrrXWKN3WHsf59iGblUwSp758wJ6oZNgpUHuyRjw==}
+  '@tanstack/start@1.42.1':
+    resolution: {integrity: sha512-VamtSjq5Gjz9Ytau8P95yEmdrdq4101nvsuQ8CwbAx/6zrOTlU0/ql8wCsNO/EA7DTUpWs3CTQu+jrjYZeu1NA==}
     engines: {node: '>=12'}
     peerDependencies:
       react: '>=18.0.0 || >=19.0.0'
@@ -12756,7 +12756,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@tanstack/start@1.42.0(@opentelemetry/api@1.9.0)(@types/node@20.14.8)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1)(typescript@5.4.2)(vite@5.2.10(@types/node@20.14.8)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
+  '@tanstack/start@1.42.1(@opentelemetry/api@1.9.0)(@types/node@20.14.8)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1)(typescript@5.4.2)(vite@5.2.10(@types/node@20.14.8)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
     dependencies:
       '@tanstack/react-cross-context': 1.41.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tanstack/react-router': 1.42.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
