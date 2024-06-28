@@ -1467,7 +1467,7 @@ describe('form api', () => {
     const form = new FormApi({
       defaultValues: {
         person: { firstName: 'firstName' },
-      } as { person: { firstName: string } | { age: number } },
+      } as { person?: { firstName: string } | { age: number } | null },
     })
 
     const field = new FieldApi({

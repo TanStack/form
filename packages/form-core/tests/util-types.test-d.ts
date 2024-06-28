@@ -87,21 +87,51 @@ type NestedKeysExample = DeepValue<
 >
 assertType<number>(0 as never as NestedKeysExample)
 
-type NestedNullableKeys = DeepValue<
-  {
-    meta: { mainUser: 'hello' } | null
-  },
-  'meta.mainUser'
->
-assertType<'hello' | null>(0 as never as NestedNullableKeys)
+type NestedNullableObjectCase = {
+  null: { mainUser: 'name' } | null
+  undefined: { mainUser: 'name' } | undefined
+  optional?: { mainUser: 'name' }
+  mixed: { mainUser: 'name' } | null | undefined
+}
 
-type NestedUndefinedKeys = DeepValue<
-  {
-    meta: { mainUser: 'hello' } | undefined
-  },
-  'meta.mainUser'
+type NestedNullableObjectCaseNull = DeepValue<
+  NestedNullableObjectCase,
+  'null.mainUser'
 >
-assertType<'hello'>(0 as never as NestedUndefinedKeys)
+assertType<'name' | null>(0 as never as NestedNullableObjectCaseNull)
+type NestedNullableObjectCaseUndefined = DeepValue<
+  NestedNullableObjectCase,
+  'undefined.mainUser'
+>
+assertType<'name' | undefined>(0 as never as NestedNullableObjectCaseUndefined)
+type NestedNullableObjectCaseOptional = DeepValue<
+  NestedNullableObjectCase,
+  'undefined.mainUser'
+>
+assertType<'name' | undefined>(0 as never as NestedNullableObjectCaseOptional)
+type NestedNullableObjectCaseMixed = DeepValue<
+  NestedNullableObjectCase,
+  'mixed.mainUser'
+>
+assertType<'name' | null | undefined>(
+  0 as never as NestedNullableObjectCaseMixed,
+)
+
+type DoubleNestedNullableObjectCase = {
+  mixed?: { mainUser: { name: 'name' } } | null | undefined
+}
+type DoubleNestedNullableObjectA = DeepValue<
+  DoubleNestedNullableObjectCase,
+  'mixed.mainUser'
+>
+assertType<{ name: 'name' } | null | undefined>(
+  0 as never as DoubleNestedNullableObjectA,
+)
+type DoubleNestedNullableObjectB = DeepValue<
+  DoubleNestedNullableObjectCase,
+  'mixed.mainUser.name'
+>
+assertType<'name' | null | undefined>(0 as never as DoubleNestedNullableObjectB)
 
 type NestedObjectUnionCase = {
   normal:
@@ -118,7 +148,9 @@ type NestedObjectUnionC = DeepValue<NestedObjectUnionCase, 'normal.c.user.id'>
 assertType<string>(0 as never as NestedObjectUnionC)
 
 type NestedNullableObjectUnionCase = {
-  nullable: { a?: number; b?: { c: boolean } | null }
+  nullable:
+    | { a?: number; b?: { c: boolean } | null }
+    | { b?: { c: string; e: number } }
 }
 type NestedNullableObjectUnionA = DeepValue<
   NestedNullableObjectUnionCase,
@@ -129,7 +161,14 @@ type NestedNullableObjectUnionB = DeepValue<
   NestedNullableObjectUnionCase,
   'nullable.b.c'
 >
-assertType<boolean | null>(0 as never as NestedNullableObjectUnionB)
+assertType<string | boolean | null | undefined>(
+  0 as never as NestedNullableObjectUnionB,
+)
+type NestedNullableObjectUnionC = DeepValue<
+  NestedNullableObjectUnionCase,
+  'nullable.b.e'
+>
+assertType<number | null | undefined>(0 as never as NestedNullableObjectUnionC)
 
 type NestedArrayExample = DeepValue<{ users: User[] }, 'users[0].age'>
 assertType<number>(0 as never as NestedArrayExample)
