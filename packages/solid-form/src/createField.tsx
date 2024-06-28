@@ -17,21 +17,13 @@ import type {
 import type { JSXElement } from 'solid-js'
 import type { CreateFieldOptions } from './types'
 
-declare module '@tanstack/form-core' {
-  // eslint-disable-next-line no-shadow
-  interface FieldApi<
-    TParentData,
-    TName extends DeepKeys<TParentData>,
-    TFieldValidator extends
-      | Validator<DeepValue<TParentData, TName>, unknown>
-      | undefined = undefined,
-    TFormValidator extends
-      | Validator<TParentData, unknown>
-      | undefined = undefined,
-    TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  > {
-    Field: FieldComponent<TParentData, TFormValidator>
-  }
+interface SolidFieldApi<
+  TParentData,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+> {
+  Field: FieldComponent<TParentData, TFormValidator>
 }
 
 export type CreateField<
@@ -56,12 +48,35 @@ export type CreateField<
     >,
     'form'
   >,
-) => () => FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
+) => () => FieldApi<
+  TParentData,
+  TName,
+  TFieldValidator,
+  TFormValidator,
+  TData
+> &
+  SolidFieldApi<TParentData, TFormValidator>
 
 // ugly way to trick solid into triggering updates for changes on the fieldApi
-function makeFieldReactive<FieldApiT extends FieldApi<any, any, any, any>>(
-  fieldApi: FieldApiT,
-): () => FieldApiT {
+function makeFieldReactive<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  FieldApiT extends FieldApi<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  > = FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData> &
+    SolidFieldApi<TParentData, TFormValidator>,
+>(fieldApi: FieldApiT): () => FieldApiT {
   const [flag, setFlag] = createSignal(false)
   const fieldApiMemo = createMemo(() => [flag(), fieldApi] as const)
   const unsubscribeStore = fieldApi.store.subscribe(() => setFlag((f) => !f))
@@ -87,11 +102,15 @@ export function createField<
     TFormValidator,
     TData
   >,
-): () => FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData> {
+) {
   const options = opts()
 
-  const fieldApi = new FieldApi(options)
-  fieldApi.Field = Field as never
+  const api = new FieldApi(options)
+
+  const extendedApi: typeof api & SolidFieldApi<TParentData, TFormValidator> =
+    api as never
+
+  extendedApi.Field = Field as never
 
   /**
    * fieldApi.update should not have any side effects. Think of it like a `useRef`
@@ -99,12 +118,12 @@ export function createField<
    *
    * createComputed to make sure this effect runs before render effects
    */
-  createComputed(() => fieldApi.update(opts()))
+  createComputed(() => api.update(opts()))
 
   // Instantiates field meta and removes it when unrendered
-  onMount(() => onCleanup(fieldApi.mount()))
+  onMount(() => onCleanup(api.mount()))
 
-  return makeFieldReactive(fieldApi) as never
+  return makeFieldReactive(extendedApi as never)
 }
 
 type FieldComponentProps<
