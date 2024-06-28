@@ -66,17 +66,11 @@ export function useForm<
     }
     // eslint-disable-next-line react-hooks/rules-of-hooks
     api.useField = (props) => useField({ ...props, form: api })
-    api.useStore = (
-      // @ts-ignore
-      selector,
-    ) => {
+    api.useStore = (selector) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       return useStore(api.store as any, selector as any) as any
     }
-    api.Subscribe = (
-      // @ts-ignore
-      props,
-    ) => {
+    api.Subscribe = (props) => {
       return functionalUpdate(
         props.children,
         // eslint-disable-next-line react-hooks/rules-of-hooks

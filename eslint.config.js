@@ -1,21 +1,22 @@
 // @ts-check
 
-// @ts-expect-error
-import { rootConfig } from '@tanstack/config/eslint'
+// @ts-ignore Needed due to moduleResolution Node vs Bundler
+import { tanstackConfig } from '@tanstack/config/eslint'
 
 export default [
-  ...rootConfig,
+  ...tanstackConfig,
   {
-    name: 'tanstack/temp',
+    name: 'tanstack/local',
     rules: {
-      '@typescript-eslint/array-type': 'off',
-      '@typescript-eslint/method-signature-style': 'off',
-      '@typescript-eslint/naming-convention': 'off',
-      '@typescript-eslint/no-empty-object-type': 'off',
-      '@typescript-eslint/no-unnecessary-type-assertion': 'off',
-      '@typescript-eslint/no-unsafe-function-type': 'off',
-      '@typescript-eslint/no-unused-expressions': 'off',
-      '@typescript-eslint/prefer-for-of': 'off',
+      'ts/array-type': 'off',
+      'ts/ban-types': 'off',
+      'ts/method-signature-style': 'off',
+      'ts/naming-convention': 'off',
+      'ts/no-unnecessary-type-assertion': 'off',
+      'ts/prefer-for-of': 'off',
+      'ts/require-await': 'off',
+      'no-async-promise-executor': 'off',
+      'no-empty': 'off',
     },
   },
 ]
