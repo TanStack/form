@@ -5,6 +5,7 @@ import { userEvent } from '@testing-library/user-event'
 import { useForm } from '../src/index'
 import { sleep } from './utils'
 import type { FieldApi, FormApi } from '../src/index'
+import { StrictMode } from 'react'
 
 const user = userEvent.setup()
 
@@ -401,90 +402,6 @@ describe('useField', () => {
     expect(getByText(error)).toBeInTheDocument()
   })
 
-  it('should preserve value when preserve value property is true', async () => {
-    type Person = {
-      firstName: string
-      lastName: string
-    }
-    let form: FormApi<Person> | null = null
-    function Comp() {
-      form = useForm({
-        defaultValues: {
-          firstName: '',
-          lastName: '',
-        } as Person,
-      })
-      return (
-        <>
-          <form.Field
-            name="firstName"
-            defaultValue="hello"
-            preserveValue={true}
-            children={(field) => {
-              return (
-                <input
-                  data-testid="fieldinput"
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              )
-            }}
-          />
-        </>
-      )
-    }
-
-    const { getByTestId, unmount, rerender } = render(<Comp />)
-    const input = getByTestId('fieldinput')
-    expect(input).toHaveValue('hello')
-    await user.type(input, 'world')
-    unmount()
-    expect(form!.fieldInfo['firstName']).toBeDefined()
-  })
-
-  it('should not preserve value when preserve value property is false', async () => {
-    type Person = {
-      firstName: string
-      lastName: string
-    }
-    let form: FormApi<Person> | null = null
-    function Comp() {
-      form = useForm({
-        defaultValues: {
-          firstName: '',
-          lastName: '',
-        } as Person,
-      })
-      return (
-        <>
-          <form.Field
-            name="firstName"
-            defaultValue="hello"
-            preserveValue={false}
-            children={(field) => {
-              return (
-                <input
-                  data-testid="fieldinput"
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              )
-            }}
-          />
-        </>
-      )
-    }
-
-    const { getByTestId, unmount } = render(<Comp />)
-    const input = getByTestId('fieldinput')
-    expect(input).toHaveValue('hello')
-    unmount()
-    const info = form!.fieldInfo
-    expect(Object.keys(info)).toHaveLength(0)
-  })
-
   it('should handle strict mode properly with conditional fields', async () => {
     function FieldInfo({ field }: { field: FieldApi<any, any> }) {
       return (
@@ -505,7 +422,7 @@ describe('useField', () => {
           firstName: '',
           lastName: '',
         },
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        // eslint-disable-next-line ts/no-empty-function
         onSubmit: async () => {},
       })
 
@@ -938,5 +855,125 @@ describe('useField', () => {
     expect(mockFn).toHaveBeenCalledTimes(1)
     await waitFor(() => getByText(error))
     expect(getByText(error)).toBeInTheDocument()
+  })
+
+  it('should validate allow pushvalue to implicitly set a default value', async () => {
+    type Person = {
+      people: string[]
+    }
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          people: [],
+        } as Person,
+      })
+
+      return (
+        <form.Field name="people" mode="array">
+          {(field) => {
+            return (
+              <div>
+                <pre>{JSON.stringify(field.state.value)}</pre>
+                {field.state.value.map((_, i) => {
+                  return (
+                    <form.Field key={i} name={`people[${i}]`}>
+                      {(subField) => {
+                        return (
+                          <div>
+                            <label>
+                              <div>Name for person {i}</div>
+                              <input
+                                name={subField.name}
+                                value={subField.state.value}
+                                onChange={(e) =>
+                                  subField.handleChange(e.target.value)
+                                }
+                              />
+                            </label>
+                          </div>
+                        )
+                      }}
+                    </form.Field>
+                  )
+                })}
+                <button onClick={() => field.pushValue('')} type="button">
+                  Add person
+                </button>
+              </div>
+            )
+          }}
+        </form.Field>
+      )
+    }
+
+    const { getByText, queryByText } = render(
+      <StrictMode>
+        <Comp />
+      </StrictMode>,
+    )
+    expect(getByText('[]')).toBeInTheDocument()
+    await user.click(getByText('Add person'))
+    expect(getByText(`[""]`)).toBeInTheDocument()
+  })
+
+  it('should validate allow pushvalue to implicitly set a pushed default value', async () => {
+    type Person = {
+      people: string[]
+    }
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          people: [],
+        } as Person,
+      })
+
+      return (
+        <form.Field name="people" mode="array">
+          {(field) => {
+            return (
+              <div>
+                <pre>{JSON.stringify(field.state.value)}</pre>
+                {field.state.value.map((_, i) => {
+                  return (
+                    <form.Field key={i} name={`people[${i}]`}>
+                      {(subField) => {
+                        return (
+                          <div>
+                            <label>
+                              <div>Name for person {i}</div>
+                              <input
+                                name={subField.name}
+                                value={subField.state.value}
+                                onChange={(e) =>
+                                  subField.handleChange(e.target.value)
+                                }
+                              />
+                            </label>
+                          </div>
+                        )
+                      }}
+                    </form.Field>
+                  )
+                })}
+                <button onClick={() => field.pushValue('Test')} type="button">
+                  Add person
+                </button>
+              </div>
+            )
+          }}
+        </form.Field>
+      )
+    }
+
+    const { getByText, queryByText } = render(
+      <StrictMode>
+        <Comp />
+      </StrictMode>,
+    )
+    expect(getByText('[]')).toBeInTheDocument()
+    await user.click(getByText('Add person'))
+    expect(getByText(`["Test"]`)).toBeInTheDocument()
   })
 })

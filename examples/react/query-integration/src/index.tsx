@@ -129,7 +129,9 @@ const rootElement = document.getElementById('root')!
 const queryClient = new QueryClient()
 
 createRoot(rootElement).render(
-  <QueryClientProvider client={queryClient}>
-    <App />
-  </QueryClientProvider>,
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
+  </React.StrictMode>,
 )

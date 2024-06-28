@@ -281,7 +281,6 @@ export interface FieldOptions<
    * If `true`, always run async validation, even if there are errors emitted during synchronous validation.
    */
   asyncAlways?: boolean
-  preserveValue?: boolean
   /**
    * A validator provided by an extension, like `yupValidator` from `@tanstack/yup-form-adapter`
    */
@@ -554,18 +553,14 @@ export class FieldApi<
       if (error) {
         this.setMeta((prev) => ({
           ...prev,
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          // eslint-disable-next-line ts/no-unnecessary-condition
           errorMap: { ...prev?.errorMap, onMount: error },
         }))
       }
     }
 
     return () => {
-      const preserveValue = this.options.preserveValue
       unsubscribe()
-      if (!preserveValue) {
-        this.form.deleteField(this.name)
-      }
     }
   }
 
@@ -885,7 +880,7 @@ export class FieldApi<
             return {
               ...prev,
               errorMap: {
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                // eslint-disable-next-line ts/no-unnecessary-condition
                 ...prev?.errorMap,
                 [getErrorMapKey(cause)]: error,
               },
