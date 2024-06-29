@@ -2,10 +2,10 @@ import * as React from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
+import { StrictMode } from 'react'
 import { useForm } from '../src/index'
 import { sleep } from './utils'
 import type { FieldApi, FormApi } from '../src/index'
-import { StrictMode } from 'react'
 
 const user = userEvent.setup()
 
@@ -48,7 +48,7 @@ describe('useField', () => {
     expect(input).toHaveValue('FirstName')
   })
 
-  it('should use field default value first', async () => {
+  it('should use field default value first', () => {
     type Person = {
       firstName: string
       lastName: string
@@ -164,7 +164,7 @@ describe('useField', () => {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-                <p>{field.getMeta().errorMap?.onChange}</p>
+                <p>{field.getMeta().errorMap.onChange}</p>
               </div>
             )}
           />
@@ -215,8 +215,8 @@ describe('useField', () => {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-                <p>{field.getMeta().errorMap?.onChange}</p>
-                <p>{field.getMeta().errorMap?.onBlur}</p>
+                <p>{field.getMeta().errorMap.onChange}</p>
+                <p>{field.getMeta().errorMap.onBlur}</p>
               </div>
             )}
           />
@@ -269,7 +269,7 @@ describe('useField', () => {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-                <p>{field.getMeta().errorMap?.onChange}</p>
+                <p>{field.getMeta().errorMap.onChange}</p>
               </div>
             )}
           />
@@ -325,8 +325,8 @@ describe('useField', () => {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-                <p>{field.getMeta().errorMap?.onChange}</p>
-                <p>{field.getMeta().errorMap?.onBlur}</p>
+                <p>{field.getMeta().errorMap.onChange}</p>
+                <p>{field.getMeta().errorMap.onBlur}</p>
               </div>
             )}
           />
@@ -406,7 +406,7 @@ describe('useField', () => {
     function FieldInfo({ field }: { field: FieldApi<any, any> }) {
       return (
         <>
-          {field.state.meta.touchedErrors ? (
+          {field.state.meta.touchedErrors.length ? (
             <em>{field.state.meta.touchedErrors}</em>
           ) : null}
           {field.state.meta.isValidating ? 'Validating...' : null}
@@ -786,7 +786,7 @@ describe('useField', () => {
       return (
         <form.Field
           name="name.last"
-          children={(field) => <p>{field.state.value ?? ''}</p>}
+          children={(field) => <p>{field.state.value}</p>}
         />
       )
     }
@@ -859,7 +859,7 @@ describe('useField', () => {
 
   it('should validate allow pushvalue to implicitly set a default value', async () => {
     type Person = {
-      people: string[]
+      people: Array<string>
     }
 
     function Comp() {
@@ -919,7 +919,7 @@ describe('useField', () => {
 
   it('should validate allow pushvalue to implicitly set a pushed default value', async () => {
     type Person = {
-      people: string[]
+      people: Array<string>
     }
 
     function Comp() {

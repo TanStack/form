@@ -298,8 +298,8 @@ describe('createField', () => {
                   onBlur={field().handleBlur}
                   onInput={(e) => field().handleChange(e.currentTarget.value)}
                 />
-                <p>{field().getMeta().errorMap?.onChange}</p>
-                <p>{field().getMeta().errorMap?.onBlur}</p>
+                <p>{field().getMeta().errorMap.onChange}</p>
+                <p>{field().getMeta().errorMap.onBlur}</p>
               </div>
             )}
           />
