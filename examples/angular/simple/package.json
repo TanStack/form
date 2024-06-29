@@ -10,7 +10,7 @@
     "test": "ng test"
   },
   "dependencies": {
-    "@tanstack/angular-form": "^0.24.2",
+    "@tanstack/angular-form": "^0.24.3",
     "@angular/animations": "^17.3.0",
     "@angular/common": "^17.3.0",
     "@angular/compiler": "^17.3.0",
