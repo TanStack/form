@@ -13,7 +13,6 @@ export default [
       'ts/method-signature-style': 'off',
       'ts/naming-convention': 'off',
       'ts/no-unnecessary-type-assertion': 'off',
-      'ts/require-await': 'off',
       'no-async-promise-executor': 'off',
     },
   },
