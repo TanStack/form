@@ -44,7 +44,10 @@ Next, we can create [a React Server Action](https://unicorn-utterances.com/posts
 'use server'
 
 // Notice the import path is different from the client
-import { createServerValidate } from '@tanstack/react-form/nextjs'
+import {
+  ServerValidateError,
+  createServerValidate,
+} from '@tanstack/react-form/nextjs'
 import { formOpts } from './shared-code'
 
 // Create the server action that will infer the types of the form from `formOpts`
@@ -58,7 +61,18 @@ const serverValidate = createServerValidate({
 })
 
 export default async function someAction(prev: unknown, formData: FormData) {
-  return await serverValidate(formData)
+  try {
+    await serverValidate(formData)
+  } catch (e) {
+    if (e instanceof ServerValidateError) {
+      return e.formState
+    }
+
+    // Some other error occurred while validating your form
+    throw e
+  }
+
+  // Your form has successfully validated!
 }
 ```
 
@@ -84,7 +98,7 @@ export const ClientComp = () => {
 
   const form = useForm({
     ...formOpts,
-    transform: useTransform((baseForm) => mergeForm(baseForm, state), [state]),
+    transform: useTransform((baseForm) => mergeForm(baseForm, state!), [state]),
   })
 
   const formErrors = form.useStore((formState) => formState.errors)
