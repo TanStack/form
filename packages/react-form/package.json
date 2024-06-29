@@ -51,30 +51,48 @@
     },
     "./nextjs": {
       "import": {
-        "types": "./dist/esm/nextjs-index.d.ts",
-        "default": "./dist/esm/nextjs-index.js"
+        "types": "./dist/esm/nextjs/index.d.ts",
+        "default": "./dist/esm/nextjs/index.js"
       },
       "require": {
-        "types": "./dist/cjs/nextjs-index.d.cts",
-        "default": "./dist/cjs/nextjs-index.cjs"
+        "types": "./dist/cjs/nextjs/index.d.cts",
+        "default": "./dist/cjs/nextjs/index.cjs"
+      }
+    },
+    "./start": {
+      "import": {
+        "types": "./dist/esm/start/index.d.ts",
+        "default": "./dist/esm/start/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/start/index.d.cts",
+        "default": "./dist/cjs/start/index.cjs"
       }
     },
     "./package.json": "./package.json"
   },
   "devDependencies": {
+    "@tanstack/start": "^1.42.1",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "vite": "^5.0.10"
+    "vite": "^5.1.4"
   },
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
     "@tanstack/react-store": "^0.5.0",
-    "decode-formdata": "^0.7.5"
+    "decode-formdata": "^0.7.5",
+    "@remix-run/node": "^2.9.2"
   },
   "peerDependencies": {
-    "react": "^17.0.0 || ^18.0.0"
+    "@tanstack/start": "^1.40.1",
+    "react": "^17.0.0 || ^18.0.0 || ^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@tanstack/start": {
+      "optional": true
+    }
   }
 }

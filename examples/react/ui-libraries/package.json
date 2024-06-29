@@ -33,7 +33,7 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
     "typescript": "5.4.2",
-    "vite": "^5.0.10"
+    "vite": "^5.1.4"
   },
   "browserslist": {
     "production": [

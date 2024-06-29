@@ -1,23 +1,26 @@
-'use client'
-
-import { useActionState } from 'react'
+import { createFileRoute } from '@tanstack/react-router'
 import { mergeForm, useForm, useTransform } from '@tanstack/react-form'
-import { initialFormState } from '@tanstack/react-form/nextjs'
-import someAction from './action'
-import { formOpts } from './shared-code'
+import { getFormData } from '@tanstack/react-form/start'
+import { formOpts, handleForm } from '~/utils/form'
 
-export const ClientComp = () => {
-  const [state, action] = useActionState(someAction, initialFormState)
+export const Route = createFileRoute('/')({
+  component: Home,
+  loader: async () => ({
+    state: await getFormData(),
+  }),
+})
 
+function Home() {
+  const { state } = Route.useLoaderData()
   const form = useForm({
     ...formOpts,
-    transform: useTransform((baseForm) => mergeForm(baseForm, state!), [state]),
+    transform: useTransform((baseForm) => mergeForm(baseForm, state), [state]),
   })
 
   const formErrors = form.useStore((formState) => formState.errors)
 
   return (
-    <form action={action as never} onSubmit={() => form.handleSubmit()}>
+    <form action={handleForm.url} method="post" encType={'multipart/form-data'}>
       {formErrors.map((error) => (
         <p key={error as string}>{error}</p>
       ))}
