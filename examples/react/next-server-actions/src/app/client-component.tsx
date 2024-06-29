@@ -1,12 +1,8 @@
 'use client'
 
 import { useActionState } from 'react'
-import {
-  initialFormState,
-  mergeForm,
-  useForm,
-  useTransform,
-} from '@tanstack/react-form'
+import { mergeForm, useForm, useTransform } from '@tanstack/react-form'
+import { initialFormState } from '@tanstack/react-form/nextjs'
 import someAction from './action'
 import { formOpts } from './shared-code'
 
@@ -15,7 +11,7 @@ export const ClientComp = () => {
 
   const form = useForm({
     ...formOpts,
-    transform: useTransform((baseForm) => mergeForm(baseForm, state), [state]),
+    transform: useTransform((baseForm) => mergeForm(baseForm, state!), [state]),
   })
 
   const formErrors = form.useStore((formState) => formState.errors)

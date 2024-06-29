@@ -1,4 +1,5 @@
 {
-  "$schema": "https://unpkg.com/knip@4/schema.json",
-  "ignoreWorkspaces": ["examples/**"]
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "ignoreWorkspaces": ["examples/**"],
+  "ignoreDependencies": ["@tanstack/start"]
 }

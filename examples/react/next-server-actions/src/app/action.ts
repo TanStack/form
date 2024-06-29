@@ -1,6 +1,9 @@
 'use server'
 
-import { createServerValidate } from '@tanstack/react-form/nextjs'
+import {
+  ServerValidateError,
+  createServerValidate,
+} from '@tanstack/react-form/nextjs'
 import { formOpts } from './shared-code'
 
 const serverValidate = createServerValidate({
@@ -13,5 +16,16 @@ const serverValidate = createServerValidate({
 })
 
 export default async function someAction(prev: unknown, formData: FormData) {
-  return await serverValidate(formData)
+  try {
+    await serverValidate(formData)
+  } catch (e) {
+    if (e instanceof ServerValidateError) {
+      return e.formState
+    }
+
+    // Some other error occurred while validating your form
+    throw e
+  }
+
+  // Your form has successfully validated!
 }
