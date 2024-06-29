@@ -1,6 +1,6 @@
 import { createServerFn } from '@tanstack/start'
 import { _tanstackInternalsCookie } from './utils'
-import type { FormApi } from '@tanstack/form-core'
+import type { ServerFormState } from './types'
 
 export const initialFormState = {
   errorMap: {
@@ -9,10 +9,12 @@ export const initialFormState = {
   errors: [],
 }
 
-export const getFormData = createServerFn("GET", async (_, ctx) => {
-  const data = await _tanstackInternalsCookie.parse(ctx.request.headers.get("Cookie")) as undefined | FormApi<any, any>['state'];
+export const getFormData = createServerFn('GET', async (_, ctx) => {
+  const data = (await _tanstackInternalsCookie.parse(
+    ctx.request.headers.get('Cookie'),
+  )) as undefined | ServerFormState<any>
   // Delete the cookie before it hits the client again¸
-  ctx.request.headers.delete("Cookie");
-  if (!data) return initialFormState;
-  return data;
+  ctx.request.headers.delete('Cookie')
+  if (!data) return initialFormState
+  return data
 })

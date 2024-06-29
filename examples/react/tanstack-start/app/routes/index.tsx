@@ -1,17 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { formOpts, handleForm } from '~/utils/form'
-import {
-  mergeForm,
-  useForm,
-  useTransform,
-} from '@tanstack/react-form'
+import { mergeForm, useForm, useTransform } from '@tanstack/react-form'
 import { getFormData } from '@tanstack/react-form/start'
+import { formOpts, handleForm } from '~/utils/form'
 
 export const Route = createFileRoute('/')({
   component: Home,
   loader: async () => ({
-    state: await getFormData()
-  })
+    state: await getFormData(),
+  }),
 })
 
 function Home() {
@@ -24,7 +20,7 @@ function Home() {
   const formErrors = form.useStore((formState) => formState.errors)
 
   return (
-    <form action={handleForm.url} method="post" encType={"multipart/form-data"}>
+    <form action={handleForm.url} method="post" encType={'multipart/form-data'}>
       {formErrors.map((error) => (
         <p key={error as string}>{error}</p>
       ))}
