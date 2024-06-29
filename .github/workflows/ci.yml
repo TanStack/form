@@ -25,7 +25,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: '0'
+          fetch-depth: 0
+      - name: Start Nx Agents
+        run: npx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
       - name: Setup Node
@@ -33,8 +35,6 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: pnpm
-      - name: Start Nx Agents
-        run: npx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
       - name: Run Tests
