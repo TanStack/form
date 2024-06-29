@@ -61,7 +61,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "rimraf": "^5.0.5",
-    "sherif": "^0.8.4",
+    "sherif": "^0.9.0",
     "solid-js": "^1.7.8",
     "typedoc": "^0.25.13",
     "typedoc-plugin-markdown": "^4.0.3",
