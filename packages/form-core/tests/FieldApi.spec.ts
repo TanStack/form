@@ -932,6 +932,78 @@ describe('field api', () => {
     })
   })
 
+  it('should run listener on handleChange', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    let triggered!: string
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onHandleChange: ({ value }) => {
+          triggered = value
+        },
+      },
+    })
+
+    field.mount()
+
+    field.handleChange('other')
+    expect(triggered).toStrictEqual('other')
+  })
+
+  it('should run listener onChange', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    let triggered!: string
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onChange: ({ value }) => {
+          triggered = value
+        },
+      },
+    })
+
+    field.mount()
+
+    field.setValue('other', { touch: true })
+    expect(triggered).toStrictEqual('other')
+  })
+
+  it('should run listener onBlur', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    let triggered!: string
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onBlur: ({ value }) => {
+          triggered = value
+        },
+      },
+    })
+
+    field.mount()
+
+    field.handleBlur()
+    expect(triggered).toStrictEqual('test')
+  })
+
   it('should contain multiple errors when running validation onBlur and onChange', () => {
     const form = new FormApi({
       defaultValues: {
