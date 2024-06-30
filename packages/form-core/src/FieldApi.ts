@@ -129,6 +129,24 @@ export type FieldAsyncValidateOrFn<
         TData
       >
 
+/**
+ * @private
+ */
+export type FieldListenerFn<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> = (props: {
+  value: TData
+  fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
+}) => void
+
 export interface FieldValidators<
   TParentData,
   TName extends DeepKeys<TParentData>,
@@ -251,6 +269,40 @@ export interface FieldValidators<
   >
 }
 
+export interface FieldListeners<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> {
+  onChange?: FieldListenerFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
+  onHandleChange?: FieldListenerFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
+  onBlur?: FieldListenerFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
+}
+
 /**
  * An object type representing the options for a field in a form.
  */
@@ -299,6 +351,16 @@ export interface FieldOptions<
    * An optional object with default metadata for the field.
    */
   defaultMeta?: Partial<FieldMeta>
+  /**
+   * A list of listeners which attach to the corresponding events
+   */
+  listeners?: FieldListeners<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
 }
 
 /**
@@ -479,6 +541,11 @@ export class FieldApi<
 
           this.prevState = state
           this.state = state
+
+          this.options.listeners?.onChange?.({
+            value: state.value,
+            fieldApi: this,
+          })
         },
       },
     )
@@ -949,6 +1016,11 @@ export class FieldApi<
    */
   handleChange = (updater: Updater<TData>) => {
     this.setValue(updater, { touch: true })
+
+    this.options.listeners?.onHandleChange?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
   }
 
   /**
@@ -961,6 +1033,11 @@ export class FieldApi<
       this.validate('change')
     }
     this.validate('blur')
+
+    this.options.listeners?.onBlur?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
   }
 }
 
