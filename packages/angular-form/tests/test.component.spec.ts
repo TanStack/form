@@ -305,7 +305,7 @@ describe('TanStackFieldDirective', () => {
           [defaultMeta]="{ isTouched: true }"
           [validators]="{
             onChangeAsync: onChangeAsync,
-            onBlurAsync: onBlurAsync
+            onBlurAsync: onBlurAsync,
           }"
           #f="field"
         >
