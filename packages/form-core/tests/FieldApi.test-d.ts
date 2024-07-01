@@ -109,7 +109,7 @@ it('should type onChangeAsync properly', () => {
     form,
     name: 'name',
     validators: {
-      onChangeAsync: async ({ value }) => {
+      onChangeAsync: ({ value }) => {
         assertType<'test'>(value)
 
         return undefined
@@ -136,7 +136,7 @@ it('should type an array sub-field properly', () => {
     form,
     name: `nested.people[${1}].name`,
     validators: {
-      onChangeAsync: async ({ value }) => {
+      onChangeAsync: ({ value }) => {
         assertType<string>(value)
 
         return undefined

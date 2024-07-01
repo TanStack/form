@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
 import { FieldApi, FormApi } from '@tanstack/form-core'
+import { describe, expect, it } from 'vitest'
 import yup from 'yup'
 import { yupValidator } from '../src/index'
 import { sleep } from './utils'
@@ -71,7 +71,7 @@ describe('yup field api', () => {
       validators: {
         onChangeAsync: yup
           .string()
-          .test('Testing 123', 'Testing 123', async (val) =>
+          .test('Testing 123', 'Testing 123', (val) =>
             typeof val === 'string' ? val.length > 3 : false,
           ),
         onChangeAsyncDebounceMs: 0,
@@ -101,8 +101,7 @@ describe('yup field api', () => {
       validatorAdapter: yupValidator(),
       name: 'name',
       validators: {
-        onChangeAsync: async ({ value }) =>
-          value === 'a' ? 'Test' : undefined,
+        onChangeAsync: ({ value }) => (value === 'a' ? 'Test' : undefined),
         onChangeAsyncDebounceMs: 0,
       },
     })

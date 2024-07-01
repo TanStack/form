@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { FormApi, formOptions } from '../src/index'
 
 describe('formOptions', () => {
-  it('should allow default values to be set', async () => {
+  it('should allow default values to be set', () => {
     type Person = {
       firstName: string
       lastName: string
