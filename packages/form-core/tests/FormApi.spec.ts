@@ -190,6 +190,70 @@ describe('form api', () => {
     })
   })
 
+  it('should reset with provided custom default values', () => {
+    const defaultValues = {
+      name: 'test',
+      surname: 'test2',
+      age: 30,
+    }
+    const form = new FormApi({
+      defaultValues: defaultValues,
+    })
+
+    form.mount()
+    form.setFieldValue('name', 'other')
+
+    expect(form.state.values).toEqual({
+      name: 'other',
+      surname: 'test2',
+      age: 30,
+    })
+
+    form.reset()
+
+    expect(form.state.values).toEqual(defaultValues)
+
+    form.setFieldValue('name', 'other2')
+    form.setFieldValue('age', 33)
+
+    const resetValues = {
+      name: 'reset name',
+      age: 40,
+      surname: 'reset surname',
+    }
+    form.reset(resetValues)
+
+    expect(form.state).toEqual({
+      values: {
+        name: 'reset name',
+        age: 40,
+        surname: 'reset surname',
+      },
+      errors: [],
+      errorMap: {},
+      fieldMeta: {},
+      canSubmit: true,
+      isFieldsValid: true,
+      isFieldsValidating: false,
+      isFormValid: true,
+      isFormValidating: false,
+      isSubmitted: false,
+      isSubmitting: false,
+      isTouched: false,
+      isPristine: true,
+      isDirty: false,
+      isValid: true,
+      isValidating: false,
+      submissionAttempts: 0,
+      validationMetaMap: {
+        onChange: undefined,
+        onBlur: undefined,
+        onSubmit: undefined,
+        onMount: undefined,
+      },
+    })
+  })
+
   it('should not wipe validators when resetting', () => {
     const form = new FormApi({
       defaultValues: {

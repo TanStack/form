@@ -499,15 +499,18 @@ export class FormApi<
   }
 
   /**
-   * Resets the form state to the default values.
+   * Resets the form state to the default values or provided values.
    */
-  reset = () => {
+  reset = (values?: TFormData) => {
     const { fieldMeta: currentFieldMeta } = this.state
     const fieldMeta = this.resetFieldMeta(currentFieldMeta)
     this.store.setState(() =>
       getDefaultFormState({
         ...(this.options.defaultState as any),
-        values: this.options.defaultValues ?? this.options.defaultState?.values,
+        values:
+          values ??
+          this.options.defaultValues ??
+          this.options.defaultState?.values,
         fieldMeta,
       }),
     )
