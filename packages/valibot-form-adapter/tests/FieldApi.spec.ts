@@ -74,7 +74,10 @@ describe('valibot field api', () => {
       validators: {
         onChangeAsync: v.pipeAsync(
           v.string(),
-          v.checkAsync(async (val) => val.length > 3, 'Testing 123'),
+          v.checkAsync(async (val) => {
+            await sleep(1)
+            return val.length > 3
+          }, 'Testing 123'),
         ),
         onChangeAsyncDebounceMs: 0,
       },
@@ -103,8 +106,10 @@ describe('valibot field api', () => {
       validatorAdapter: valibotValidator(),
       name: 'name',
       validators: {
-        onChangeAsync: async ({ value }) =>
-          value === 'a' ? 'Test' : undefined,
+        onChangeAsync: async ({ value }) => {
+          await sleep(1)
+          return value === 'a' ? 'Test' : undefined
+        },
         onChangeAsyncDebounceMs: 0,
       },
     })

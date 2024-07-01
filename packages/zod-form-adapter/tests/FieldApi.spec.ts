@@ -70,9 +70,15 @@ describe('zod field api', () => {
       validatorAdapter: zodValidator(),
       name: 'name',
       validators: {
-        onChangeAsync: z.string().refine(async (val) => val.length > 3, {
-          message: 'Testing 123',
-        }),
+        onChangeAsync: z.string().refine(
+          async (val) => {
+            await sleep(1)
+            return val.length > 3
+          },
+          {
+            message: 'Testing 123',
+          },
+        ),
         onChangeAsyncDebounceMs: 0,
       },
     })
@@ -100,8 +106,10 @@ describe('zod field api', () => {
       validatorAdapter: zodValidator(),
       name: 'name',
       validators: {
-        onChangeAsync: async ({ value }) =>
-          value === 'a' ? 'Test' : undefined,
+        onChangeAsync: async ({ value }) => {
+          await sleep(1)
+          return value === 'a' ? 'Test' : undefined
+        },
         onChangeAsyncDebounceMs: 0,
       },
     })

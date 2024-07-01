@@ -71,9 +71,10 @@ describe('yup field api', () => {
       validators: {
         onChangeAsync: yup
           .string()
-          .test('Testing 123', 'Testing 123', async (val) =>
-            typeof val === 'string' ? val.length > 3 : false,
-          ),
+          .test('Testing 123', 'Testing 123', async (val) => {
+            await sleep(1)
+            return typeof val === 'string' ? val.length > 3 : false
+          }),
         onChangeAsyncDebounceMs: 0,
       },
     })
@@ -101,8 +102,10 @@ describe('yup field api', () => {
       validatorAdapter: yupValidator(),
       name: 'name',
       validators: {
-        onChangeAsync: async ({ value }) =>
-          value === 'a' ? 'Test' : undefined,
+        onChangeAsync: async ({ value }) => {
+          await sleep(1)
+          return value === 'a' ? 'Test' : undefined
+        },
         onChangeAsyncDebounceMs: 0,
       },
     })
