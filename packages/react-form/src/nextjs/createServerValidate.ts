@@ -27,7 +27,7 @@ export const createServerValidate =
   >(
     defaultOpts: CreateServerValidateOptions<TFormData, TFormValidator>,
   ) =>
-  async (formData: FormData, info?: Parameters<typeof decode>[1]) => {
+  (formData: FormData, info?: Parameters<typeof decode>[1]) => {
     const { validatorAdapter, onServerValidate } = defaultOpts
 
     const runValidator = (propsValue: { value: TFormData }) => {

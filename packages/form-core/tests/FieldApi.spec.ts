@@ -105,7 +105,7 @@ describe('field api', () => {
     expect(field.getValue()).toStrictEqual(['one', 'other'])
   })
 
-  it('should run onChange validation when pushing an array fields value', async () => {
+  it('should run onChange validation when pushing an array fields value', () => {
     const form = new FormApi({
       defaultValues: {
         names: ['test'],
@@ -475,7 +475,7 @@ describe('field api', () => {
     ])
   })
 
-  it('should not throw errors when no meta info is stored on a field and a form re-renders', async () => {
+  it('should not throw errors when no meta info is stored on a field and a form re-renders', () => {
     const form = new FormApi({
       defaultValues: {
         name: 'test',
@@ -642,7 +642,7 @@ describe('field api', () => {
       return
     })
 
-    const mockOnChangeAsync = vi.fn().mockImplementation(async ({ value }) => {
+    const mockOnChangeAsync = vi.fn().mockImplementation(({ value }) => {
       return value.includes('error') && 'No "error" allowed in first name'
     })
 
@@ -986,7 +986,7 @@ describe('field api', () => {
     expect(field.getMeta().errorMap).toEqual({})
   })
 
-  it('should handle default value on field using state.value', async () => {
+  it('should handle default value on field using state.value', () => {
     interface Form {
       name: string
     }
@@ -1044,7 +1044,7 @@ describe('field api', () => {
     expect(field.getMeta().errors).toStrictEqual(['first name is required'])
   })
 
-  it('should show onMount errors', async () => {
+  it('should show onMount errors', () => {
     const form = new FormApi({
       defaultValues: {
         firstName: '',

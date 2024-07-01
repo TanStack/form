@@ -698,7 +698,7 @@ describe('form api', () => {
     expect(field2.state.meta.errors).toStrictEqual([])
   })
 
-  it('should handle fields inside an array', async () => {
+  it('should handle fields inside an array', () => {
     interface Employee {
       firstName: string
     }
@@ -726,7 +726,7 @@ describe('form api', () => {
     expect(fieldInArray.getValue()).toBe('Darcy')
   })
 
-  it('should handle deleting fields in an array', async () => {
+  it('should handle deleting fields in an array', () => {
     interface Employee {
       firstName: string
     }
@@ -1463,7 +1463,7 @@ describe('form api', () => {
     expect(form.state.errors).toStrictEqual(['first name is required'])
   })
 
-  it('should update a nullable object', async () => {
+  it('should update a nullable object', () => {
     const form = new FormApi({
       defaultValues: {
         person: null,
@@ -1481,7 +1481,7 @@ describe('form api', () => {
     expect(form.state.values.person?.firstName).toStrictEqual('firstName')
   })
 
-  it('should update a deep nullable object', async () => {
+  it('should update a deep nullable object', () => {
     const form = new FormApi({
       defaultValues: {
         person: null,
@@ -1499,7 +1499,7 @@ describe('form api', () => {
     expect(form.state.values.person?.nameInfo?.first).toStrictEqual('firstName')
   })
 
-  it('should update a nullable array', async () => {
+  it('should update a nullable array', () => {
     const form = new FormApi({
       defaultValues: {
         persons: null,
