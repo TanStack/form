@@ -632,6 +632,122 @@ describe('field api', () => {
     })
   })
 
+  it('should abort enqueued debounced async validation if sync validation fails in the meantime', async () => {
+    vi.useFakeTimers()
+
+    const mockOnChange = vi.fn().mockImplementation(({ value }) => {
+      if (value.length < 3) {
+        return 'First name must be at least 3 characters'
+      }
+      return
+    })
+
+    const mockOnChangeAsync = vi.fn().mockImplementation(async ({ value }) => {
+      return value.includes('error') && 'No "error" allowed in first name'
+    })
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChange: mockOnChange,
+        onChangeAsyncDebounceMs: 500,
+        onChangeAsync: mockOnChangeAsync,
+      },
+    })
+
+    field.mount()
+
+    field.setValue('123', { touch: true })
+    expect(mockOnChange).toHaveBeenCalledTimes(1)
+    expect(mockOnChangeAsync).toHaveBeenCalledTimes(0)
+    expect(field.getMeta().errors).toStrictEqual([])
+
+    // Change value while debounced async validation is enqueued
+    field.setValue('12', { touch: true })
+    expect(mockOnChange).toHaveBeenCalledTimes(2)
+    expect(mockOnChangeAsync).toHaveBeenCalledTimes(0)
+
+    await vi.runAllTimersAsync()
+
+    // Async validation never got called because sync validation failed in the meantime and aborted the async
+    expect(mockOnChangeAsync).toHaveBeenCalledTimes(0)
+    expect(field.getMeta().errors).toStrictEqual([
+      'First name must be at least 3 characters',
+    ])
+  })
+
+  it("should not remove sync validation errors when async validation doesn't return an error", async () => {
+    vi.useFakeTimers()
+
+    const mockOnChange = vi.fn().mockImplementation(({ value }) => {
+      if (value.length < 3) {
+        return 'First name must be at least 3 characters'
+      }
+      return
+    })
+
+    const mockOnChangeAsync = vi.fn().mockImplementation(async ({ value }) => {
+      await sleep(1000)
+      return value.includes('error') && 'No "error" allowed in first name'
+    })
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChange: mockOnChange,
+        onChangeAsyncDebounceMs: 500,
+        onChangeAsync: mockOnChangeAsync,
+      },
+    })
+
+    field.mount()
+
+    // Input a valid value, triggers both validations after debounce + sleep
+    field.setValue('1234', { touch: true })
+    expect(mockOnChange).toHaveBeenCalledTimes(1)
+    expect(mockOnChangeAsync).toHaveBeenCalledTimes(0)
+    await vi.runAllTimersAsync()
+    expect(mockOnChangeAsync).toHaveBeenCalledTimes(1)
+    expect(field.getMeta().errors).toStrictEqual([])
+
+    // Input again a valid value
+    field.setValue('123', { touch: true })
+    expect(mockOnChange).toHaveBeenCalledTimes(2)
+    expect(mockOnChangeAsync).toHaveBeenCalledTimes(1)
+    expect(field.getMeta().errors).toStrictEqual([])
+
+    // Wait the debounce time, async validation is called
+    await vi.advanceTimersByTimeAsync(500)
+    expect(mockOnChangeAsync).toHaveBeenCalledTimes(2)
+
+    // Input an invalid value before async validation resolves
+    field.setValue('12', { touch: true })
+    expect(mockOnChange).toHaveBeenCalledTimes(3)
+    expect(field.getMeta().errors).toStrictEqual([
+      'First name must be at least 3 characters',
+    ])
+
+    // Wait for async validation to resolve
+    await vi.runAllTimersAsync()
+    expect(field.getMeta().errors).toStrictEqual([
+      'First name must be at least 3 characters',
+    ])
+  })
+
   it('should run validation onBlur', () => {
     const form = new FormApi({
       defaultValues: {

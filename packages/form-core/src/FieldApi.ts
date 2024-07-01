@@ -875,6 +875,7 @@ export class FieldApi<
           } catch (e: unknown) {
             rawError = e as ValidationError
           }
+          if (controller.signal.aborted) return resolve(undefined)
           const error = normalizeError(rawError)
           field.setMeta((prev) => {
             return {
@@ -938,6 +939,9 @@ export class FieldApi<
     const { hasErrored } = this.validateSync(cause)
 
     if (hasErrored && !this.options.asyncAlways) {
+      this.getInfo().validationMetaMap[
+        getErrorMapKey(cause)
+      ]?.lastAbortController.abort()
       return this.state.meta.errors
     }
     // No error? Attempt async validation
