@@ -83,13 +83,9 @@ Finally, we'll use `someAction` in our client-side form component.
 'use client'
 
 import { useActionState } from 'react'
+import { initialFormState } from '@tanstack/react-form/nextjs'
 // Notice the import is from `react-form`, not `react-form/nextjs`
-import {
-  initialFormState,
-  mergeForm,
-  useForm,
-  useTransform,
-} from '@tanstack/react-form'
+import { mergeForm, useForm, useTransform } from '@tanstack/react-form'
 import someAction from './action'
 import { formOpts } from './shared-code'
 
