@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { FieldApi, FormApi } from '@tanstack/form-core'
 import { z } from 'zod'
@@ -59,6 +59,7 @@ describe('zod field api', () => {
   })
 
   it('should run an onChangeAsync with z.string validation', async () => {
+    vi.useFakeTimers()
     const form = new FormApi({
       defaultValues: {
         name: '',
@@ -87,14 +88,15 @@ describe('zod field api', () => {
 
     expect(field.getMeta().errors).toEqual([])
     field.setValue('a', { touch: true })
-    await sleep(10)
+    await vi.advanceTimersByTimeAsync(10)
     expect(field.getMeta().errors).toEqual(['Testing 123'])
     field.setValue('asdf', { touch: true })
-    await sleep(10)
+    await vi.advanceTimersByTimeAsync(10)
     expect(field.getMeta().errors).toEqual([])
   })
 
   it('should run an onChangeAsyc fn with zod validation option enabled', async () => {
+    vi.useFakeTimers()
     const form = new FormApi({
       defaultValues: {
         name: '',
@@ -118,10 +120,10 @@ describe('zod field api', () => {
 
     expect(field.getMeta().errors).toEqual([])
     field.setValue('a', { touch: true })
-    await sleep(10)
+    await vi.advanceTimersByTimeAsync(10)
     expect(field.getMeta().errors).toEqual(['Test'])
     field.setValue('asdf', { touch: true })
-    await sleep(10)
+    await vi.advanceTimersByTimeAsync(10)
     expect(field.getMeta().errors).toEqual([])
   })
 
