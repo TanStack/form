@@ -24,7 +24,7 @@ Here is an example:
             onChange: ({ value }) => value < 13 ? 'You must be 13 to make an account' : undefined,
         }">
         <template v-slot="{ field }">
-            <label for="field.name">Age:</label>
+            <label :for="field.name">Age:</label>
             <input 
                 :id="field.name" 
                 :name="field.name" 
@@ -42,7 +42,6 @@ Here is an example:
 
 In the example above, the validation is done at each keystroke (`onChange`). If, instead, we wanted the validation to be done when the field is blurred, we would change the code above like so:
 
-
 ``` vue
 <template>
     <!-- ... -->
@@ -52,7 +51,7 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
             onBlur: ({ value }) => value < 13 ? 'You must be 13 to make an account' : undefined,
         }">
         <template v-slot="{ field }">
-            <label for="field.name">Age:</label>
+            <label :for="field.name">Age:</label>
              <!-- We always need to implement onChange, so that TanStack Form receives the changes -->
              <!-- Listen to the onBlur event on the field -->
             <input 
@@ -83,7 +82,7 @@ So you can control when the validation is done by implementing the desired callb
             onBlur: ({ value }) => (value < 0 ? 'Invalid value' : undefined),
         }">
         <template v-slot="{ field }">
-            <label for="field.name">Age:</label>
+            <label :for="field.name">Age:</label>
              <!-- We always need to implement onChange, so that TanStack Form receives the changes -->
              <!-- Listen to the onBlur event on the field -->
             <input 
@@ -150,7 +149,7 @@ As shown above, each `<Field>` accepts its own validation rules via the `onChang
 
 Example:
 
-```vue 
+```vue
 <script setup lang="ts">
 import { useForm } from '@tanstack/vue-form'
 
@@ -212,7 +211,7 @@ const onChangeAge = async ({ value }) => {
             onChangeAsync: onChangeAge,
         }">
         <template v-slot="{ field }">
-            <label for="field.name">Age:</label>
+            <label :for="field.name">Age:</label>
             <input 
                 :id="field.name" 
                 :name="field.name" 
@@ -249,9 +248,10 @@ const onBlurAgeAsync = async ({ value }) => {
         :validators="{
             onBlur: onBlurAge,
             onBlurAsync: onBlurAgeAsync,
-        }">
+        }"
+    >
         <template v-slot="{ field }">
-            <label for="field.name">Age:</label>
+            <label :for="field.name">Age:</label>
             <input 
                 :id="field.name" 
                 :name="field.name" 
@@ -345,7 +345,7 @@ import { z } from 'zod'
 // ...
 
 const form = useForm({
-    // Add a validator to support Zod usage in Form and Field
+    // Either add the validator here or on `Field`
     validatorAdapter: zodValidator(),  
     // ...
 })
@@ -355,7 +355,7 @@ const form = useForm({
 <!-- ... -->
     <form.Field 
         name="age" 
-        :validator-adapter="zodValidator" 
+        :validator-adapter="zodValidator()" 
         :validators="{
             onChange: z.number().gte(13, 'You must be 13 to make an account')
         }"
@@ -407,8 +407,6 @@ You can subscribe to it via `form.Subscribe` and use the value in order to, for 
 
 ```vue
 <script setup lang="ts">
-// ...
-
 const form = useForm(/* ... */)
 </script>
 

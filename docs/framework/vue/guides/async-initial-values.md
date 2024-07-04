@@ -8,6 +8,7 @@ Let's say that you want to fetch some data from an API and use it as the initial
 While this problem sounds simple on the surface, there are hidden complexities you might not have thought of thus far.
 
 For example, you might want to show a loading spinner while the data is being fetched, or you might want to handle errors gracefully.
+
 Likewise, you could also find yourself looking for a way to cache the data so that you don't have to fetch it every time the form is rendered.
 
 While we could implement many of these features from scratch, it would end up looking a lot like another project we maintain: [TanStack Query](https://tanstack.com/query).
@@ -16,7 +17,7 @@ As such, this guide shows you how you can mix-n-match TanStack Form with TanStac
 
 ## Basic Usage
 
-```vue 
+```vue
 <script setup lang="ts">
 import { useForm } from '@tanstack/vue-form';
 import { useQuery } from '@tanstack/vue-query';

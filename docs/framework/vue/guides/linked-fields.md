@@ -58,7 +58,7 @@ const form = useForm({
                     }"
                 >
                     <template v-slot="{ field }">
-                        <div for="field.name">Confirm Password:</div>
+                        <div>Confirm Password:</div>
                         <input 
                             :value="field.state.value"
                             @input="(e) => field.handleChange((e.target as HTMLInputElement).value)" 

@@ -5,14 +5,14 @@ title: Basic Concepts and Terminology
 
 This page introduces the basic concepts and terminology used in the `@tanstack/vue-form` library. Familiarizing yourself with these concepts will help you better understand and work with the library.
 
-## Form Factory
+## Form Options
 
-The Form Factory is responsible for creating form instances with a shared configuration. It is created using the `createFormFactory` function, which accepts a configuration object with default values for the form fields. This shared configuration allows you to create multiple form instances with consistent behavior.
+You can create options for your form so that it can be shared between multiple forms by using the `formOptions` function.
 
 Example:
 
-```js
-const formFactory = createFormFactory<Person>({
+```ts
+const formOpts = formOptions<Person>({
   defaultValues: {
     firstName: '',
     lastName: '',
@@ -23,10 +23,11 @@ const formFactory = createFormFactory<Person>({
 
 ## Form Instance
 
-A Form Instance is an object that represents an individual form and provides methods and properties for working with the form. You create a form instance using the `useForm` method provided by the form factory. The method accepts an object with an `onSubmit` function, which is called when the form is submitted.
+A Form Instance is an object that represents an individual form and provides methods and properties for working with the form. You create a form instance using the `useForm` function. The function accepts an object with an `onSubmit` function, which is called when the form is submitted.
 
 ```js
-const form = formFactory.useForm({
+const form = useForm({
+  ...formOpts,
   onSubmit: async ({ value }) => {
     // Do something with form data
     console.log(value)
@@ -34,9 +35,9 @@ const form = formFactory.useForm({
 })
 ```
 
-You may also create a form instance without going through the `formFactory` by using the standalone `useForm` API:
+You may also create a form instance without using `formOptions` by using the standalone `useForm` API:
 
-```js
+```ts
 const form = useForm<Person>({
   onSubmit: async ({ value }) => {
     // Do something with form data
@@ -52,7 +53,7 @@ const form = useForm<Person>({
 
 ## Field
 
-A Field represents a single form input element, such as a text input or a checkbox. Fields are created using the form.Field component provided by the form instance. The component accepts a name prop, which should match a key in the form's default values. It also accepts a `v-slot` directive, which is a scoped slot that provides a field object as its argument.
+A Field represents a single form input element, such as a text input or a checkbox. Fields are created using the form.Field component provided by the form instance. The component accepts a name prop, which should match a key in the form's default values. It also accepts a scoped slot defined by the `v-slot` directive which takes a `field` object as its argument.
 
 Example:
 
@@ -93,20 +94,18 @@ const { isTouched, isPristine, isDirty } = field.state.meta
 
 ## Field API
 
-The Field API is an object provided by the v-slot directive when creating a field. It provides methods for working with the field's state.
+The Field API is an object provided by a scoped slot using the `v-slot` directive. This slot receives an argument named `field` that provides methods and properties for working with the field's state.
 
 Example:
 
 ```vue
-<template>
-    <!-- ... -->
+<template v-slot="{ field }">
     <input
         :name="field.name"
         :value="field.state.value"
         @blur="field.handleBlur"
         @input="(e) => field.handleChange(e.target.value)"
     />
-    <!-- ... -->
 </template>
 ```
 
@@ -136,7 +135,6 @@ Example:
     >
         <template v-slot="{ field }">
             <input
-                :name="field.name"
                 :value="field.state.value"
                 @input="(e) => field.handleChange(e.target.value)"
                 @blur="field.handleBlur"
@@ -159,7 +157,6 @@ Example:
 import { useForm } from '@tanstack/vue-form'
 import { zodValidator } from '@tanstack/zod-form-adapter'
 import { z } from 'zod'
-// ...
 
 const form = useForm({
   // ...
@@ -202,7 +199,7 @@ const onChangeFirstName = z.string().refine(
           <FieldInfo :state="state" />
         </template>
     </form.Field>
-    <!-- ... -->
+<!-- ... -->
 </template>
 ```
 
