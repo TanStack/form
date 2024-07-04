@@ -4,6 +4,8 @@ import { red } from '@mui/material/colors'
 import { ThemeProvider } from '@emotion/react'
 import { CssBaseline } from '@mui/material'
 import MainComponent from './MainComponent'
+import React from 'react'
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -29,4 +31,8 @@ export default function App() {
 
 const rootElement = document.getElementById('root')!
 
-createRoot(rootElement).render(<App />)
+createRoot(rootElement).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)

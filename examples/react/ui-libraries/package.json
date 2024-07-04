@@ -1,7 +1,7 @@
 {
   "name": "@tanstack/form-example-react-ui-libraries",
-  "version": "0.0.1",
-  "main": "src/index.jsx",
+  "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite --port=3001",
     "build": "vite build",
@@ -14,27 +14,26 @@
     "@mantine/core": "7.3.2",
     "@mantine/hooks": "7.3.2",
     "@mui/material": "5.15.2",
-    "@tanstack/react-form": "^0.21.0",
+    "@tanstack/react-form": "^0.25.2",
     "@yme/lay-postcss": "0.1.0",
     "postcss": "8.4.32",
     "postcss-preset-mantine": "1.12.2",
     "postcss-simple-vars": "7.0.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@types/react": "^18.2.45",
-    "@types/react-dom": "^18.2.19",
-    "@typescript-eslint/eslint-plugin": "^6.15.0",
-    "@typescript-eslint/parser": "^6.15.0",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.13.1",
+    "@typescript-eslint/parser": "^7.13.1",
+    "@vitejs/plugin-react": "^4.3.0",
     "@vitejs/plugin-react-swc": "^3.6.0",
-    "eslint": "^8.56.0",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.5",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.7",
     "typescript": "5.4.2",
-    "vite": "^5.0.10"
+    "vite": "^5.1.4"
   },
   "browserslist": {
     "production": [

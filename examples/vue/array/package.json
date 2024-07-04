@@ -1,6 +1,7 @@
 {
   "name": "@tanstack/form-example-vue-array",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -9,13 +10,13 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@tanstack/vue-form": "^0.21.0",
+    "@tanstack/vue-form": "^0.25.2",
     "vue": "^3.3.4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
     "typescript": "5.4.2",
-    "vite": "^5.0.10",
+    "vite": "^5.1.4",
     "vue-tsc": "^2.0.6"
   }
 }

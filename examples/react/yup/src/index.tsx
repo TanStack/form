@@ -27,7 +27,7 @@ export default function App() {
       console.log(value)
     },
     // Add a validator to support Yup usage in Form and Field
-    validatorAdapter: yupValidator,
+    validatorAdapter: yupValidator(),
   })
 
   return (
@@ -111,4 +111,8 @@ export default function App() {
 
 const rootElement = document.getElementById('root')!
 
-createRoot(rootElement).render(<App />)
+createRoot(rootElement).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)

@@ -3,186 +3,154 @@ id: ssr
 title: Next.js Usage
 ---
 
-> ⚠ This feature is highly experimental and is subject to change. Currently, this example [leaks backend code the frontend through `onServerValidate`](https://github.com/TanStack/form/issues/710). We are working on changes to the API, and will update this guide and provide migration steps when a solution is available. ⚠
-
 Before reading this guide, it's suggested you understand how React Server Components and React Server Actions work. [Check out this blog series for more information](https://unicorn-utterances.com/collections/react-beyond-the-render)
 
 # Using TanStack Form in a Next.js App Router
 
-TanStack Form is compatible with React out of the box, supporting `SSR` and being framework-agnostic. However, specific configurations are necessary according to your chosen framework.
-
+TanStack Form is compatible with React out of the box, supporting `SSR` and being framework-agnostic. However, specific configurations are necessary, according to your chosen framework.
 
 This guide focuses on integrating TanStack Form with `Next.js`, particularly using the `App Router` and `Server Actions`.
 
-
-_Remix Support Coming soon_
+_We need help adding Remix support! [Come help us research and implement it here.](https://github.com/TanStack/form/issues/759)_
 
 ## Prerequisites
 
 - Start a new `Next.js` project, following the steps in the [Next.js Documentation](https://nextjs.org/docs/getting-started/installation). Ensure you select `yes` for `Would you like to use App Router?` during the setup to access all new features provided by Next.js.
-- Install `@tanstack/react-form` and any validator of your choice.
-
-
-
+- Install `@tanstack/react-form`
+- Install any [form validator](/form/latest/docs/framework/react/guides/validation#adapter-based-validation-zod-yup-valibot) of your choice. [Optional]
 
 # App Router integration
 
-- To use TanStack Form, the component containing the form should be a client component. This requires adding the `"use client"` directive. Wrap this client component within a server component like so:
+Let's start by creating a `formOption` that we'll use to share the form's shape across the client and server.
 
-```tsx
-export default function Home() {
-  return (
-    <>
-      <ClientComp />
-    </>
-  )
-}
-```
-- The form and its logic reside inside  `ClientComp`
+```typescript
+// shared-code.ts
+// Notice the import path is different from the client
+import { formOptions } from '@tanstack/react-form/nextjs'
 
-
-- in order to keep our code separated lets create a file called `shared-code` which would create an instances of the form we are later going to use
-
-```tsx
-import { createFormFactory } from '@tanstack/react-form'
-
-export const formFactory = createFormFactory({
+// You can pass other form options here, like `validatorAdapter`
+export const formOpts = formOptions({
   defaultValues: {
     firstName: '',
     age: 0,
   },
-  onServerValidate({ value }) {
+})
+```
+
+Next, we can create [a React Server Action](https://unicorn-utterances.com/posts/what-are-react-server-components) that will handle the form submission on the server.
+
+```typescript
+// action.ts
+'use server'
+
+// Notice the import path is different from the client
+import {
+  ServerValidateError,
+  createServerValidate,
+} from '@tanstack/react-form/nextjs'
+import { formOpts } from './shared-code'
+
+// Create the server action that will infer the types of the form from `formOpts`
+const serverValidate = createServerValidate({
+  ...formOpts,
+  onServerValidate: ({ value }) => {
     if (value.age < 12) {
       return 'Server validation: You must be at least 12 to sign up'
     }
   },
 })
-```
-
-- As you might already know, there are different approaches to using `form` in your application. One popular method is the `useForm` hook provided by `@tanstack/react-form`. Alternatively, `createFormFactory` is also available, offering a more structured way and reusable.
-
-- Much like the `useForm` hook, `createFormFactory` allows you to pass `defaultValues` and other configuration options. A key feature here is the ability to include a property called `onServerValidate`. This special validation, in contrast to client-side validations, is executed exclusively on the server when a `server action` is triggered.
-
-- For instance, a validation rule we might implement is: "You must be at least 12 years old to sign up." This rule is enforced on the server-side and the corresponding message is sent back to the client. We'll explore more on this shortly.
-
-- Before we delve into using our `formFactory`, let's set up a file named `server-action.ts`. In this file, we'll encapsulate the logic necessary for leveraging Next.js server actions.
-
-
-```tsx
-"use server";
-import { formFactory } from "./shared-code";
 
 export default async function someAction(prev: unknown, formData: FormData) {
-  return await formFactory.validateFormData(formData);
+  try {
+    await serverValidate(formData)
+  } catch (e) {
+    if (e instanceof ServerValidateError) {
+      return e.formState
+    }
+
+    // Some other error occurred while validating your form
+    throw e
+  }
+
+  // Your form has successfully validated!
 }
 ```
-- The action we've discussed is straightforward yet essential. It activates exclusively on the server side when we submit our form. In the example given, the action employs `formFactory.validateFormData(formData)`. This function takes care of validating the data received from the client during form submission. It's an efficient way to ensure data compliance with our predefined server rules.
 
-- Now, let's shift our focus to the client component:
-  - For those who might be exploring this for the first time, `useFormState` is a relatively new hook in React. You can find more details in React's documentation on [useFormState](https://react.dev/reference/react-dom/hooks/useFormState). This hook represents a significant advancement as it allows us to dynamically update the state based on the outcomes of a form action. It's an effective way to manage form states, especially in response to server-side interactions.
+Finally, we'll use `someAction` in our client-side form component.
 
 ```tsx
-import {
-  FormApi,
-  mergeForm,
-  useTransform,
-} from "@tanstack/react-form";
+// client-component.tsx
+'use client'
 
-import { formFactory } from "./shared-code";
-import someAction from "./server-action";
+import { useActionState } from 'react'
+import { initialFormState } from '@tanstack/react-form/nextjs'
+// Notice the import is from `react-form`, not `react-form/nextjs`
+import { mergeForm, useForm, useTransform } from '@tanstack/react-form'
+import someAction from './action'
+import { formOpts } from './shared-code'
 
+export const ClientComp = () => {
+  const [state, action] = useActionState(someAction, initialFormState)
 
-const ClientComp = () => {
- const [state, action] = useFormState(
-    someAction,
-    formFactory.initialFormState
-  );
+  const form = useForm({
+    ...formOpts,
+    transform: useTransform((baseForm) => mergeForm(baseForm, state!), [state]),
+  })
 
-   const { useStore, Subscribe, handleSubmit, Field } =
-    formFactory.useForm({
-      transform: useTransform(
-        (baseForm: FormApi<any, any>) => mergeForm(baseForm, state),
-        [state]
-      ),
-    });
-
-    const formErrors = useStore((formState) => formState.errors);
-
-   return (
-    .....
-   )
-}
-
-```
-- Understanding `useFormState` Hook: This hook is pivotal in managing the state and actions of our form. Here, we provide it with an action `someAction` and an initial state derived from `formFactory.initialFormState`. This setup enables the component to  handle form submissions and state changes.
-
-- Lets understand what is happening here, we need to use the `useFormState` hooks which give us the current state and the action. The way the hooks work is we have to give it an `action` in our case would be `someAction` and a initialState which for use would be `formFactory.initialFormState`
-
-- Benefits of `formFactory`: Much like the useForm hook, formFactory streamlines the process of form management. It provides us with necessary functionalities such as:
-  - `useStore`: Observes and reflects the current state of the form on the client side.
-  - `Subscribe`: Enables the component to listen to form-specific events, like `canSubmit` and `isSubmitting`.
-  - `handleSubmit`: Orchestrates the submission logic of the form.
-  - `Field`: Manages individual form fields, adopting the `renderProps` pattern for greater flexibility.
-
-- The `formFactory.useForm` takes a few properties that we can pass to it as an object the one we are using here is transform and we are using another hook that `@tanstack/react-form` provides which is the `useTransform` and you can see we are passing a callback and we call `mergeForm` which is a function that comes from `@tanstack/react-form` and to this we need to pass the dependecies array in our case would be the `[state]`
-
-- Accessing Form Errors: Through `useStore`, we can access and display formErrors, enhancing user feedback and experience.
-
-- Finishing up the  `UI`
-
-```tsx
-const ClientComp = () => {
- ...
+  const formErrors = form.useStore((formState) => formState.errors)
 
   return (
-      <form action={action as never} onSubmit={() => handleSubmit()}>
-        {formErrors.map((error) => (
-          <p key={error as string}>{error}</p>
-        ))}
+    <form action={action as never} onSubmit={() => form.handleSubmit()}>
+      {formErrors.map((error) => (
+        <p key={error as string}>{error}</p>
+      ))}
 
-        <Field
-          name="age"
-          validators={{
-            onChange: ({ value }) =>
-              value < 8
-                ? "Client validation: You must be at least 8"
-                : undefined,
-          }}
-        >
-          {(field) => {
-            return (
-              <div>
-                <input
-                  className="text-black"
-                  name="age"
-                  type="number"
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.valueAsNumber)}
-                />
-                {field.state.meta.errors.map((error) => (
-                  <p key={error as string}>{error}</p>
-                ))}
-              </div>
-            );
-          }}
-        </Field>
-        <Subscribe
-          selector={(formState) => [
-            formState.canSubmit,
-            formState.isSubmitting,
-          ]}
-        >
-          {([canSubmit, isSubmitting]) => (
-            <button type="submit" disabled={!canSubmit}>
-              {isSubmitting ? "..." : "Submit"}
-            </button>
-          )}
-        </Subscribe>
-      </form>
-  );
-};
+      <form.Field
+        name="age"
+        validators={{
+          onChange: ({ value }) =>
+            value < 8 ? 'Client validation: You must be at least 8' : undefined,
+        }}
+      >
+        {(field) => {
+          return (
+            <div>
+              <input
+                name="age"
+                type="number"
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+              />
+              {field.state.meta.errors.map((error) => (
+                <p key={error as string}>{error}</p>
+              ))}
+            </div>
+          )
+        }}
+      </form.Field>
+      <form.Subscribe
+        selector={(formState) => [formState.canSubmit, formState.isSubmitting]}
+      >
+        {([canSubmit, isSubmitting]) => (
+          <button type="submit" disabled={!canSubmit}>
+            {isSubmitting ? '...' : 'Submit'}
+          </button>
+        )}
+      </form.Subscribe>
+    </form>
+  )
+}
 ```
 
-- In our UI, implementing the form is straightforward. A notable aspect here is the integration of our server action within the `form`. For the form's `action`, we utilize the `action` obtained from `useFormState`. This setup triggers the server action upon form submission. If everything processes successfully, the action will complete without issues. Otherwise, we'll encounter an error like "Server validation: You must be at least 12 to sign up."
+Here, we're using [React's `useActionState` hook](https://unicorn-utterances.com/posts/what-is-use-action-state-and-form-status) and TanStack Form's `useTransform` hook to merge state returned from the server action with the form state.
 
-- You might now be wondering about client-side validation. How do we implement it? 🤔 The answer lies in the `handleSubmit` function. By assigning `handleSubmit` to the form's `onSubmit` event, we can handle client-side validation in the normal client side manner.
+> If you get the following error in your Next.js application:
+>
+> ```typescript
+> x You're importing a component that needs `useState`. This React hook only works in a client component. To fix, mark the file (or its parent) with the `"use client"` directive.
+> ```
+>
+> This is because you're not importing server-side code from `@tanstack/react-form/nextjs`. Ensure you're importing the correct module based on the environment.
+>
+>
+> [This is a limitation of Next.js](https://github.com/phryneas/rehackt). Other meta-frameworks will likely not have this same problem.

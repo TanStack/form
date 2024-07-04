@@ -1,6 +1,7 @@
 {
   "name": "@tanstack/form-example-angular-valibot",
-  "version": "0.0.0",
+  "private": true,
+  "type": "module",
   "scripts": {
     "ng": "ng",
     "start": "ng cache clean && ng serve",
@@ -8,10 +9,9 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
-  "private": true,
   "dependencies": {
-    "@tanstack/angular-form": "^0.21.0",
-    "@tanstack/valibot-form-adapter": "^0.21.0",
+    "@tanstack/angular-form": "^0.25.2",
+    "@tanstack/valibot-form-adapter": "^0.25.2",
     "@angular/animations": "^17.3.0",
     "@angular/common": "^17.3.0",
     "@angular/compiler": "^17.3.0",
@@ -22,7 +22,7 @@
     "@angular/router": "^17.3.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "valibot": "^0.31.1",
+    "valibot": "^0.35.0",
     "zone.js": "~0.14.2"
   },
   "devDependencies": {

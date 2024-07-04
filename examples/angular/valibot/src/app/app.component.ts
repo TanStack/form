@@ -80,7 +80,7 @@ export class AppComponent {
       console.log(value)
     },
     // Add a validator to support Zod usage in Form and Field
-    validatorAdapter: valibotValidator,
+    validatorAdapter: valibotValidator(),
   })
 
   canSubmit = injectStore(this.form, (state) => state.canSubmit)

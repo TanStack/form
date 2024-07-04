@@ -27,7 +27,7 @@ export default function App() {
       console.log(value)
     },
     // Add a validator to support Valibot usage in Form and Field
-    validatorAdapter: valibotValidator,
+    validatorAdapter: valibotValidator(),
   })
 
   return (
@@ -109,4 +109,8 @@ export default function App() {
 
 const rootElement = document.getElementById('root')!
 
-createRoot(rootElement).render(<App />)
+createRoot(rootElement).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)

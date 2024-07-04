@@ -27,7 +27,7 @@ export default function App() {
       console.log(value)
     },
     // Add a validator to support Zod usage in Form and Field
-    validatorAdapter: zodValidator,
+    validatorAdapter: zodValidator(),
   })
 
   return (
@@ -110,4 +110,8 @@ export default function App() {
 
 const rootElement = document.getElementById('root')!
 
-createRoot(rootElement).render(<App />)
+createRoot(rootElement).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)

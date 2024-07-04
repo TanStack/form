@@ -1,6 +1,7 @@
 {
   "name": "@tanstack/form-example-angular-simple",
-  "version": "0.0.0",
+  "private": true,
+  "type": "module",
   "scripts": {
     "ng": "ng",
     "start": "ng cache clean && ng serve",
@@ -8,9 +9,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
-  "private": true,
   "dependencies": {
-    "@tanstack/angular-form": "^0.21.0",
+    "@tanstack/angular-form": "^0.25.2",
     "@angular/animations": "^17.3.0",
     "@angular/common": "^17.3.0",
     "@angular/compiler": "^17.3.0",
