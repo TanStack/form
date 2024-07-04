@@ -29,7 +29,13 @@ const form = useForm({
 
 <template>
   <div>
-    <form @submit.prevent.stop="form.handleSubmit">
+    <form @submit="
+      (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        form.handleSubmit()
+      }
+    ">
       <div>
         <form.Field name="fullName">
           <template v-slot="{ field }">
