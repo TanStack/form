@@ -14,7 +14,6 @@
     "type": "github",
     "url": "https://github.com/sponsors/tannerlinsley"
   },
-  "sideEffects": false,
   "scripts": {
     "clean": "rimraf ./dist && rimraf ./coverage",
     "test:eslint": "eslint ./src ./tests",
@@ -30,10 +29,6 @@
     "test:build": "publint --strict",
     "build": "vite build"
   },
-  "files": [
-    "dist",
-    "src"
-  ],
   "type": "module",
   "types": "dist/esm/index.d.ts",
   "main": "dist/cjs/index.cjs",
@@ -71,6 +66,17 @@
     },
     "./package.json": "./package.json"
   },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "src"
+  ],
+  "dependencies": {
+    "@tanstack/form-core": "workspace:*",
+    "@tanstack/react-store": "^0.5.0",
+    "decode-formdata": "^0.7.5",
+    "@remix-run/node": "^2.9.2"
+  },
   "devDependencies": {
     "@tanstack/start": "^1.42.1",
     "@types/react": "^18.3.3",
@@ -79,12 +85,6 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "vite": "^5.1.4"
-  },
-  "dependencies": {
-    "@tanstack/form-core": "workspace:*",
-    "@tanstack/react-store": "^0.5.0",
-    "decode-formdata": "^0.7.5",
-    "@remix-run/node": "^2.9.2"
   },
   "peerDependencies": {
     "@tanstack/start": "^1.40.1",

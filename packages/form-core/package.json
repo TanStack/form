@@ -14,6 +14,21 @@
     "type": "github",
     "url": "https://github.com/sponsors/tannerlinsley"
   },
+  "scripts": {
+    "clean": "rimraf ./dist && rimraf ./coverage",
+    "test:eslint": "eslint ./src ./tests",
+    "test:types": "pnpm run \"/^test:types:ts[0-9]{2}$/\"",
+    "test:types:ts49": "node ../../node_modules/typescript49/lib/tsc.js -p tsconfig.legacy.json",
+    "test:types:ts50": "node ../../node_modules/typescript50/lib/tsc.js",
+    "test:types:ts51": "node ../../node_modules/typescript51/lib/tsc.js",
+    "test:types:ts52": "node ../../node_modules/typescript52/lib/tsc.js",
+    "test:types:ts53": "node ../../node_modules/typescript53/lib/tsc.js",
+    "test:types:ts54": "tsc",
+    "test:lib": "vitest",
+    "test:lib:dev": "pnpm run test:lib --watch",
+    "test:build": "publint --strict",
+    "build": "vite build"
+  },
   "type": "module",
   "types": "dist/esm/index.d.ts",
   "main": "dist/cjs/index.cjs",
@@ -36,21 +51,6 @@
     "dist",
     "src"
   ],
-  "scripts": {
-    "clean": "rimraf ./dist && rimraf ./coverage",
-    "test:eslint": "eslint ./src ./tests",
-    "test:types": "pnpm run \"/^test:types:ts[0-9]{2}$/\"",
-    "test:types:ts49": "node ../../node_modules/typescript49/lib/tsc.js -p tsconfig.legacy.json",
-    "test:types:ts50": "node ../../node_modules/typescript50/lib/tsc.js",
-    "test:types:ts51": "node ../../node_modules/typescript51/lib/tsc.js",
-    "test:types:ts52": "node ../../node_modules/typescript52/lib/tsc.js",
-    "test:types:ts53": "node ../../node_modules/typescript53/lib/tsc.js",
-    "test:types:ts54": "tsc",
-    "test:lib": "vitest",
-    "test:lib:dev": "pnpm run test:lib --watch",
-    "test:build": "publint --strict",
-    "build": "vite build"
-  },
   "dependencies": {
     "@tanstack/store": "^0.5.0"
   }
