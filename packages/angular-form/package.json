@@ -14,7 +14,6 @@
     "type": "github",
     "url": "https://github.com/sponsors/tannerlinsley"
   },
-  "sideEffects": false,
   "scripts": {
     "clean": "rimraf ./dist && rimraf ./coverage",
     "test:eslint": "eslint ./src ./tests",
@@ -25,10 +24,6 @@
     "test:build": "publint --strict",
     "build": "ng-packagr -p ng-package.json -c tsconfig.build.json && rimraf ./dist/package.json"
   },
-  "files": [
-    "dist",
-    "src"
-  ],
   "type": "module",
   "types": "dist/index.d.ts",
   "module": "dist/fesm2022/tanstack-angular-form.mjs",
@@ -43,6 +38,11 @@
       "default": "./package.json"
     }
   },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "src"
+  ],
   "dependencies": {
     "@tanstack/angular-store": "^0.5.1",
     "@tanstack/form-core": "workspace:*",

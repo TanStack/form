@@ -1039,11 +1039,7 @@ importers:
         version: link:../form-core
       lit:
         specifier: ^3.1.1
-        version: 3.1.4
-    devDependencies:
-      '@types/node':
-        specifier: ^20.9.0
-        version: 20.14.2
+        version: 3.1.2
 
   packages/react-form:
     dependencies:
