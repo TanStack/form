@@ -13,8 +13,9 @@ interface FieldInfoProps {
 function FieldInfo(props: FieldInfoProps) {
   return (
     <>
-      {props.field.state.meta.isTouched ? (
-        <em>{props.field.state.meta.errors}</em>
+      {props.field.state.meta.isTouched &&
+      props.field.state.meta.errors.length ? (
+        <em>{props.field.state.meta.errors.join(',')}</em>
       ) : null}
       {props.field.state.meta.isValidating ? 'Validating...' : null}
     </>
