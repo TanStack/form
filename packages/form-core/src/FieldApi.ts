@@ -598,6 +598,7 @@ export class FieldApi<
 
   /**
    * Gets the current field value.
+   * @deprecated Use `field.state.value` instead.
    */
   getValue = (): TData => {
     return this.form.getFieldValue(this.name) as TData
