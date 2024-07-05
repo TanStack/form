@@ -226,7 +226,6 @@ describe('form api', () => {
           isTouched: false,
           isDirty: false,
           isPristine: true,
-          touchedErrors: [],
           errors: [],
           errorMap: {},
         },

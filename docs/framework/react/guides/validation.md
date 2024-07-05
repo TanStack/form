@@ -122,7 +122,7 @@ Once you have your validation in place, you can map the errors from an array to 
     return (
       <>
         {/* ... */}
-        {field.state.meta.errors ? <em>{field.state.meta.errors}</em> : null}
+        {field.state.meta.errors.length ? <em>{field.state.meta.errors.join(",")}</em> : null}
       </>
     )
   }}

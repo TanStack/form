@@ -341,10 +341,6 @@ export type FieldMeta = {
    */
   isDirty: boolean
   /**
-   * An array of errors related to the touched state of the field.
-   */
-  touchedErrors: ValidationError[]
-  /**
    * An array of errors related to the field value.
    */
   errors: ValidationError[]
@@ -457,7 +453,6 @@ export class FieldApi<
           isTouched: false,
           isDirty: false,
           isPristine: true,
-          touchedErrors: [],
           errors: [],
           errorMap: {},
           ...opts.defaultMeta,
@@ -470,10 +465,6 @@ export class FieldApi<
           state.meta.errors = Object.values(state.meta.errorMap).filter(
             (val: unknown) => val !== undefined,
           )
-
-          state.meta.touchedErrors = state.meta.isTouched
-            ? state.meta.errors
-            : []
 
           state.meta.isPristine = !state.meta.isDirty
 
@@ -630,7 +621,6 @@ export class FieldApi<
       isTouched: false,
       isDirty: false,
       isPristine: true,
-      touchedErrors: [],
       errors: [],
       errorMap: {},
       ...this.options.defaultMeta,

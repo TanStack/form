@@ -406,8 +406,8 @@ describe('useField', () => {
     function FieldInfo({ field }: { field: FieldApi<any, any> }) {
       return (
         <>
-          {field.state.meta.touchedErrors.length ? (
-            <em>{field.state.meta.touchedErrors}</em>
+          {field.state.meta.isTouched && field.state.meta.errors.length ? (
+            <em>{field.state.meta.errors.join(',')}</em>
           ) : null}
           {field.state.meta.isValidating ? 'Validating...' : null}
         </>

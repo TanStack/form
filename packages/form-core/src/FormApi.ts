@@ -884,7 +884,6 @@ export class FormApi<
           isTouched: false,
           isDirty: false,
           isPristine: true,
-          touchedErrors: [],
           errors: [],
           errorMap: {},
         }

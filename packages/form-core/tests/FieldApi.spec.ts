@@ -46,7 +46,6 @@ describe('field api', () => {
       isValidating: false,
       isPristine: true,
       isDirty: false,
-      touchedErrors: [],
       errors: [],
       errorMap: {},
     })
@@ -65,7 +64,6 @@ describe('field api', () => {
       isValidating: false,
       isDirty: true,
       isPristine: false,
-      touchedErrors: [],
       errors: [],
       errorMap: {},
     })
