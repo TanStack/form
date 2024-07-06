@@ -156,7 +156,9 @@ describe('form api', () => {
       },
     })
     form.mount()
-    form.setFieldValue('name', 'other')
+    form.setFieldValue('name', 'other', {
+      dontUpdateMeta: true,
+    })
     form.state.submissionAttempts = 300
 
     form.reset()
@@ -283,7 +285,7 @@ describe('form api', () => {
     })
     form.mount()
 
-    form.setFieldValue('name', 'other', { touch: true })
+    form.setFieldValue('name', 'other')
 
     expect(form.state.isDirty).toBe(true)
     expect(form.state.isPristine).toBe(false)
@@ -797,7 +799,7 @@ describe('form api', () => {
     form.mount()
     expect(form.getFieldValue('name')).toEqual('one')
 
-    form.setFieldValue('name', 'two', { touch: true })
+    form.setFieldValue('name', 'two')
 
     form.update({
       defaultValues: {
@@ -879,7 +881,7 @@ describe('form api', () => {
     field.mount()
 
     expect(form.state.errors.length).toBe(0)
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     expect(form.state.errors).toContain('Please enter a different value')
     expect(form.state.errorMap).toMatchObject({
       onChange: 'Please enter a different value',
@@ -910,7 +912,7 @@ describe('form api', () => {
     field.mount()
 
     expect(form.state.errors.length).toBe(0)
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     await vi.runAllTimersAsync()
     expect(form.state.errors).toContain('Please enter a different value')
     expect(form.state.errorMap).toMatchObject({
@@ -944,8 +946,10 @@ describe('form api', () => {
     field.mount()
 
     expect(form.state.errors.length).toBe(0)
-    field.setValue('other', { touch: true })
     field.setValue('other')
+    field.setValue('other', {
+      dontUpdateMeta: true,
+    })
     await vi.runAllTimersAsync()
     // sleepMock will have been called 2 times without onChangeAsyncDebounceMs
     expect(sleepMock).toHaveBeenCalledTimes(1)
@@ -981,8 +985,10 @@ describe('form api', () => {
     field.mount()
 
     expect(form.state.errors.length).toBe(0)
-    field.setValue('other', { touch: true })
     field.setValue('other')
+    field.setValue('other', {
+      dontUpdateMeta: true,
+    })
     await vi.runAllTimersAsync()
     // sleepMock will have been called 2 times without asyncDebounceMs
     expect(sleepMock).toHaveBeenCalledTimes(1)
@@ -1012,7 +1018,7 @@ describe('form api', () => {
     form.mount()
     field.mount()
 
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     field.validate('blur')
     expect(form.state.errors).toContain('Please enter a different value')
     expect(form.state.errorMap).toMatchObject({
@@ -1043,7 +1049,7 @@ describe('form api', () => {
     form.mount()
     field.mount()
     expect(form.state.errors.length).toBe(0)
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     field.validate('blur')
     await vi.runAllTimersAsync()
     expect(form.state.errors).toContain('Please enter a different value')
@@ -1078,7 +1084,7 @@ describe('form api', () => {
     field.mount()
 
     expect(form.state.errors.length).toBe(0)
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     field.validate('blur')
     field.validate('blur')
     await vi.runAllTimersAsync()
@@ -1116,7 +1122,7 @@ describe('form api', () => {
     field.mount()
 
     expect(form.state.errors.length).toBe(0)
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     field.validate('blur')
     field.validate('blur')
     await vi.runAllTimersAsync()
@@ -1152,7 +1158,7 @@ describe('form api', () => {
     form.mount()
     field.mount()
 
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     field.validate('blur')
     expect(form.state.errors).toStrictEqual([
       'Please enter a different value',
@@ -1184,12 +1190,12 @@ describe('form api', () => {
     form.mount()
     field.mount()
 
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     expect(form.state.errors).toStrictEqual(['Please enter a different value'])
     expect(form.state.errorMap).toEqual({
       onChange: 'Please enter a different value',
     })
-    field.setValue('test', { touch: true })
+    field.setValue('test')
     expect(form.state.errors).toStrictEqual([])
     expect(form.state.errorMap).toEqual({})
   })
@@ -1476,7 +1482,9 @@ describe('form api', () => {
 
     field.mount()
 
-    field.setValue('firstName')
+    field.setValue('firstName', {
+      dontUpdateMeta: true,
+    })
     expect(form.state.values.person?.firstName).toStrictEqual('firstName')
   })
 
@@ -1494,7 +1502,9 @@ describe('form api', () => {
 
     field.mount()
 
-    field.setValue('firstName')
+    field.setValue('firstName', {
+      dontUpdateMeta: true,
+    })
     expect(form.state.values.person?.nameInfo?.first).toStrictEqual('firstName')
   })
 

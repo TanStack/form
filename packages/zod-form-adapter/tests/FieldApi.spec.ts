@@ -25,11 +25,11 @@ describe('zod field api', () => {
     field.mount()
 
     expect(field.getMeta().errors).toEqual([])
-    field.setValue('a', { touch: true })
+    field.setValue('a')
     expect(field.getMeta().errors).toEqual([
       'You must have a length of at least 3',
     ])
-    field.setValue('asdf', { touch: true })
+    field.setValue('asdf')
     expect(field.getMeta().errors).toEqual([])
   })
 
@@ -52,9 +52,9 @@ describe('zod field api', () => {
     field.mount()
 
     expect(field.getMeta().errors).toEqual([])
-    field.setValue('a', { touch: true })
+    field.setValue('a')
     expect(field.getMeta().errors).toEqual(['Test'])
-    field.setValue('asdf', { touch: true })
+    field.setValue('asdf')
     expect(field.getMeta().errors).toEqual([])
   })
 
@@ -87,10 +87,10 @@ describe('zod field api', () => {
     field.mount()
 
     expect(field.getMeta().errors).toEqual([])
-    field.setValue('a', { touch: true })
+    field.setValue('a')
     await vi.advanceTimersByTimeAsync(10)
     expect(field.getMeta().errors).toEqual(['Testing 123'])
-    field.setValue('asdf', { touch: true })
+    field.setValue('asdf')
     await vi.advanceTimersByTimeAsync(10)
     expect(field.getMeta().errors).toEqual([])
   })
@@ -119,10 +119,10 @@ describe('zod field api', () => {
     field.mount()
 
     expect(field.getMeta().errors).toEqual([])
-    field.setValue('a', { touch: true })
+    field.setValue('a')
     await vi.advanceTimersByTimeAsync(10)
     expect(field.getMeta().errors).toEqual(['Test'])
-    field.setValue('asdf', { touch: true })
+    field.setValue('asdf')
     await vi.advanceTimersByTimeAsync(10)
     expect(field.getMeta().errors).toEqual([])
   })
@@ -151,11 +151,11 @@ describe('zod field api', () => {
     field.mount()
 
     expect(field.getMeta().errors).toEqual([])
-    field.setValue('aa', { touch: true })
+    field.setValue('aa')
     expect(field.getMeta().errors).toEqual([
       'You must have a length of at least 3',
     ])
-    field.setValue('aaa', { touch: true })
+    field.setValue('aaa')
     expect(field.getMeta().errors).toEqual(['UUID'])
   })
 })

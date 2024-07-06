@@ -72,7 +72,9 @@ describe('useField', () => {
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onInput={(e) =>
-                  field.setValue((e.target as HTMLInputElement).value)
+                  field.setValue((e.target as HTMLInputElement).value, {
+                    dontUpdateMeta: true,
+                  })
                 }
               />
               <p>{field.getMeta().errors}</p>

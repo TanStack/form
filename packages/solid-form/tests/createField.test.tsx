@@ -106,7 +106,11 @@ describe('createField', () => {
                   name={field().name}
                   value={field().state.value}
                   onBlur={field().handleBlur}
-                  onInput={(e) => field().setValue(e.currentTarget.value)}
+                  onInput={(e) =>
+                    field().setValue(e.currentTarget.value, {
+                      dontUpdateMeta: true,
+                    })
+                  }
                 />
                 <p>{field().getMeta().errors}</p>
               </div>
@@ -149,7 +153,11 @@ describe('createField', () => {
                     name={field().name}
                     value={field().state.value}
                     onBlur={field().handleBlur}
-                    onInput={(e) => field().setValue(e.currentTarget.value)}
+                    onInput={(e) =>
+                      field().setValue(e.currentTarget.value, {
+                        dontUpdateMeta: true,
+                      })
+                    }
                   />
                   <p>{field().getMeta().errorMap.onChange}</p>
                 </div>

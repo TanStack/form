@@ -1,12 +1,13 @@
 import { Store } from '@tanstack/store'
 import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
-import type { FieldInfo, FormApi } from './FormApi'
 import type {
+  UpdateMetaOptions,
   ValidationCause,
   ValidationError,
   ValidationErrorMap,
   Validator,
 } from './types'
+import type { FieldInfo, FormApi } from './FormApi'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
 import type { DeepKeys, DeepValue, NoInfer } from './util-types'
 
@@ -441,7 +442,9 @@ export class FieldApi<
     this.name = opts.name as never
 
     if (opts.defaultValue !== undefined) {
-      this.form.setFieldValue(this.name, opts.defaultValue as never)
+      this.form.setFieldValue(this.name, opts.defaultValue as never, {
+        dontUpdateMeta: true,
+      })
     }
 
     this.store = new Store<FieldState<TData>>(
@@ -573,9 +576,13 @@ export class FieldApi<
       const formDefault = getBy(opts.form.options.defaultValues, opts.name)
 
       if (opts.defaultValue !== undefined) {
-        this.setValue(opts.defaultValue as never)
+        this.setValue(opts.defaultValue as never, {
+          dontUpdateMeta: true,
+        })
       } else if (formDefault !== undefined) {
-        this.setValue(formDefault as never)
+        this.setValue(formDefault as never, {
+          dontUpdateMeta: true,
+        })
       }
     }
 
@@ -598,10 +605,7 @@ export class FieldApi<
   /**
    * Sets the field value and run the `change` validator.
    */
-  setValue = (
-    updater: Updater<TData>,
-    options?: { touch?: boolean; notify?: boolean },
-  ) => {
+  setValue = (updater: Updater<TData>, options?: UpdateMetaOptions) => {
     this.form.setFieldValue(this.name, updater as never, options)
     this.validate('change')
   }
@@ -642,7 +646,7 @@ export class FieldApi<
    */
   pushValue = (
     value: TData extends any[] ? TData[number] : never,
-    opts?: { touch?: boolean },
+    opts?: UpdateMetaOptions,
   ) => this.form.pushFieldValue(this.name, value as any, opts)
 
   /**
@@ -651,7 +655,7 @@ export class FieldApi<
   insertValue = (
     index: number,
     value: TData extends any[] ? TData[number] : never,
-    opts?: { touch?: boolean },
+    opts?: UpdateMetaOptions,
   ) => this.form.insertFieldValue(this.name, index, value as any, opts)
 
   /**
@@ -660,25 +664,25 @@ export class FieldApi<
   replaceValue = (
     index: number,
     value: TData extends any[] ? TData[number] : never,
-    opts?: { touch?: boolean },
+    opts?: UpdateMetaOptions,
   ) => this.form.replaceFieldValue(this.name, index, value as any, opts)
 
   /**
    * Removes a value at the specified index.
    */
-  removeValue = (index: number, opts?: { touch: boolean }) =>
+  removeValue = (index: number, opts?: UpdateMetaOptions) =>
     this.form.removeFieldValue(this.name, index, opts)
 
   /**
    * Swaps the values at the specified indices.
    */
-  swapValues = (aIndex: number, bIndex: number, opts?: { touch?: boolean }) =>
+  swapValues = (aIndex: number, bIndex: number, opts?: UpdateMetaOptions) =>
     this.form.swapFieldValues(this.name, aIndex, bIndex, opts)
 
   /**
    * Moves the value at the first specified index to the second specified index.
    */
-  moveValue = (aIndex: number, bIndex: number, opts?: { touch?: boolean }) =>
+  moveValue = (aIndex: number, bIndex: number, opts?: UpdateMetaOptions) =>
     this.form.moveFieldValues(this.name, aIndex, bIndex, opts)
 
   /**
@@ -943,7 +947,7 @@ export class FieldApi<
    * Handles the change event.
    */
   handleChange = (updater: Updater<TData>) => {
-    this.setValue(updater, { touch: true })
+    this.setValue(updater)
   }
 
   /**

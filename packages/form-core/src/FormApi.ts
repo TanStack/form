@@ -11,7 +11,8 @@ import {
 import type { Updater } from './utils'
 import type { DeepKeys, DeepValue } from './util-types'
 import type { FieldApi, FieldMeta } from './FieldApi'
-import type {
+import {
+  UpdateMetaOptions,
   ValidationCause,
   ValidationError,
   ValidationErrorMap,
@@ -899,12 +900,12 @@ export class FormApi<
   setFieldValue = <TField extends DeepKeys<TFormData>>(
     field: TField,
     updater: Updater<DeepValue<TFormData, TField>>,
-    opts?: { touch?: boolean },
+    opts?: UpdateMetaOptions,
   ) => {
-    const touch = opts?.touch
+    const dontUpdateMeta = opts?.dontUpdateMeta ?? false
 
     this.store.batch(() => {
-      if (touch) {
+      if (!dontUpdateMeta) {
         this.setFieldMeta(field, (prev) => ({
           ...prev,
           isTouched: true,
@@ -940,7 +941,7 @@ export class FormApi<
     value: DeepValue<TFormData, TField> extends any[]
       ? DeepValue<TFormData, TField>[number]
       : never,
-    opts?: { touch?: boolean },
+    opts?: UpdateMetaOptions,
   ) => {
     this.setFieldValue(
       field,
@@ -959,7 +960,7 @@ export class FormApi<
     value: DeepValue<TFormData, TField> extends any[]
       ? DeepValue<TFormData, TField>[number]
       : never,
-    opts?: { touch?: boolean },
+    opts?: UpdateMetaOptions,
   ) => {
     this.setFieldValue(
       field,
@@ -986,7 +987,7 @@ export class FormApi<
     value: DeepValue<TFormData, TField> extends any[]
       ? DeepValue<TFormData, TField>[number]
       : never,
-    opts?: { touch?: boolean },
+    opts?: UpdateMetaOptions,
   ) => {
     this.setFieldValue(
       field,
@@ -1009,7 +1010,7 @@ export class FormApi<
   removeFieldValue = async <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,
-    opts?: { touch?: boolean },
+    opts?: UpdateMetaOptions,
   ) => {
     const fieldValue = this.getFieldValue(field)
 
@@ -1049,7 +1050,7 @@ export class FormApi<
     field: TField,
     index1: number,
     index2: number,
-    opts?: { touch?: boolean },
+    opts?: UpdateMetaOptions,
   ) => {
     this.setFieldValue(
       field,
@@ -1075,7 +1076,7 @@ export class FormApi<
     field: TField,
     index1: number,
     index2: number,
-    opts?: { touch?: boolean },
+    opts?: UpdateMetaOptions,
   ) => {
     this.setFieldValue(
       field,

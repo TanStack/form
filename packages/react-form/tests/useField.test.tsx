@@ -116,7 +116,11 @@ describe('useField', () => {
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) => field.setValue(e.target.value)}
+                  onChange={(e) =>
+                    field.setValue(e.target.value, {
+                      dontUpdateMeta: true,
+                    })
+                  }
                 />
                 <p>{field.getMeta().errors}</p>
               </div>
