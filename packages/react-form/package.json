@@ -72,10 +72,10 @@
     "src"
   ],
   "dependencies": {
+    "@remix-run/node": "^2.9.2",
     "@tanstack/form-core": "workspace:*",
     "@tanstack/react-store": "^0.5.0",
-    "decode-formdata": "^0.7.5",
-    "@remix-run/node": "^2.9.2"
+    "decode-formdata": "^0.7.5"
   },
   "devDependencies": {
     "@tanstack/start": "^1.42.1",
