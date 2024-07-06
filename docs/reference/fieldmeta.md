@@ -56,14 +56,6 @@ isValidating: boolean;
 
 A flag indicating whether the field is currently being validated.
 
-### touchedErrors
-
-```ts
-touchedErrors: ValidationError[];
-```
-
-An array of errors related to the touched state of the field.
-
 ## Source
 
-[packages/form-core/src/FieldApi.ts:331](https://github.com/TanStack/form/blob/5c94fa159313e0b0411d49fbdc3b117336185e63/packages/form-core/src/FieldApi.ts#L331)
+[packages/form-core/src/FieldApi.ts:330](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/form-core/src/FieldApi.ts#L330)

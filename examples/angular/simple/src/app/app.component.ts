@@ -30,10 +30,12 @@ import type {
             (blur)="firstName.api.handleBlur()"
             (input)="firstName.api.handleChange($any($event).target.value)"
           />
-          @for (error of firstName.api.state.meta.touchedErrors; track $index) {
-            <div style="color: red">
-              {{ error }}
-            </div>
+          @if (firstName.api.state.meta.isTouched) {
+            @for (error of firstName.api.state.meta.errors; track $index) {
+              <div style="color: red">
+                {{ error }}
+              </div>
+            }
           }
           @if (firstName.api.state.meta.isValidating) {
             <p>Validating...</p>

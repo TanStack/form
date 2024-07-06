@@ -69,9 +69,10 @@ export class TanStackFormDemo extends LitElement {
                               }}"
                             />
                           </div>
-                          ${field.state.meta.touchedErrors.length
+                          ${field.state.meta.isTouched &&
+                          field.state.meta.errors.length
                             ? html`${repeat(
-                                field.state.meta.touchedErrors,
+                                field.state.meta.errors,
                                 (__, idx) => idx,
                                 (error) => {
                                   return html`<div class="container">
@@ -169,11 +170,10 @@ export class TanStackFormDemo extends LitElement {
                                         }}"
                                       />
                                     </div>
-                                    ${jobTitleField.state.meta.touchedErrors
-                                      .length
+                                    ${jobTitleField.state.meta.isTouched &&
+                                    jobTitleField.state.meta.errors.length
                                       ? html`${repeat(
-                                          jobTitleField.state.meta
-                                            .touchedErrors,
+                                          jobTitleField.state.meta.errors,
                                           (__, idx) => idx,
                                           (error) => {
                                             return html`<div class="container">

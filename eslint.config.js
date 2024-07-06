@@ -14,6 +14,8 @@ export default [
       'ts/naming-convention': 'off',
       'ts/no-unnecessary-type-assertion': 'off',
       'no-async-promise-executor': 'off',
+      'ts/require-await': 'off',
+      'no-empty': 'off',
     },
   },
 ]

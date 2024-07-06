@@ -71,10 +71,11 @@ export class TanStackFormDemo extends LitElement {
                               const target = e.target as HTMLInputElement
                               field.handleChange(target.value)
                             }}"
-                            .error="${!!field.state.meta.touchedErrors.length}"
-                            .errorText="${field.state.meta.touchedErrors.join(
-                              ', ',
+                            .error="${!!(
+                              field.state.meta.isTouched &&
+                              field.state.meta.errors.length
                             )}"
+                            .errorText="${field.state.meta.errors.join(', ')}"
                           ></md-filled-text-field>
                         </div>`
                       },
@@ -93,9 +94,11 @@ export class TanStackFormDemo extends LitElement {
                               const target = e.target as HTMLInputElement
                               lastNameField.handleChange(target.value)
                             }}"
-                            .error="${!!lastNameField.state.meta.touchedErrors
-                              .length}"
-                            .errorText="${lastNameField.state.meta.touchedErrors.join(
+                            .error="${!!(
+                              lastNameField.state.meta.isTouched &&
+                              lastNameField.state.meta.errors.length
+                            )}"
+                            .errorText="${lastNameField.state.meta.errors.join(
                               ', ',
                             )}"
                           ></md-filled-text-field>
@@ -150,7 +153,7 @@ export class TanStackFormDemo extends LitElement {
                                       }}"
                                       .error="${!!jobTitleField.state.meta
                                         .errors.length}"
-                                      .errorText="${jobTitleField.state.meta.touchedErrors.join(
+                                      .errorText="${jobTitleField.state.meta.errors.join(
                                         ', ',
                                       )}"
                                     ></md-filled-text-field>

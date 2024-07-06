@@ -26,11 +26,11 @@ describe('valibot form api', () => {
     field.mount()
 
     expect(field.getMeta().errors).toEqual([])
-    field.setValue('a', { touch: true })
+    field.setValue('a')
     expect(field.getMeta().errors).toEqual([
       'You must have a length of at least 3',
     ])
-    field.setValue('asdf', { touch: true })
+    field.setValue('asdf')
     expect(field.getMeta().errors).toEqual([])
   })
 
@@ -53,9 +53,9 @@ describe('valibot form api', () => {
     field.mount()
 
     expect(field.getMeta().errors).toEqual([])
-    field.setValue('a', { touch: true })
+    field.setValue('a')
     expect(field.getMeta().errors).toEqual(['Test'])
-    field.setValue('asdf', { touch: true })
+    field.setValue('asdf')
     expect(field.getMeta().errors).toEqual([])
   })
 })
