@@ -111,7 +111,7 @@
               "to": "framework/react/guides/react-native"
             },
             {
-              "label": "SSR/Next.js",
+              "label": "SSR/TanStack Start/Next.js",
               "to": "framework/react/guides/ssr"
             },
             {
@@ -282,6 +282,10 @@
             {
               "label": "Valibot",
               "to": "framework/react/examples/valibot"
+            },
+            {
+              "label": "TanStack Start",
+              "to": "framework/react/examples/tanstack-start"
             },
             {
               "label": "Next Server Actions",

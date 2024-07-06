@@ -1,6 +1,6 @@
 <img src="https://static.scarf.sh/a.png?x-pxid=be2d8a11-9712-4c1d-9963-580b2d4fb133" />
 
-![TanStack Form Header](https://github.com/TanStack/form/raw/beta/media/repo-header.png)
+![TanStack Form Header](https://github.com/TanStack/form/raw/main/media/repo-header.png)
 
 Signals for managing form state in Solid
 
