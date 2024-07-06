@@ -11,7 +11,7 @@ import {
 import type { Updater } from './utils'
 import type { DeepKeys, DeepValue } from './util-types'
 import type { FieldApi, FieldMeta } from './FieldApi'
-import {
+import type {
   UpdateMetaOptions,
   ValidationCause,
   ValidationError,
