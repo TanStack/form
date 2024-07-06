@@ -1037,6 +1037,7 @@ importers:
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../form-core
+    devDependencies:
       lit:
         specifier: ^3.1.1
         version: 3.1.2
