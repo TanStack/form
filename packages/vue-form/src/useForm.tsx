@@ -7,6 +7,21 @@ import type { NoInfer } from '@tanstack/vue-store'
 import type { EmitsOptions, Ref, SetupContext, SlotsType } from 'vue'
 import type { FieldComponent, UseField } from './useField'
 
+const SubscribeFn = <TFormData,>() =>
+  defineComponent(
+    <TSelected = NoInfer<FormState<TFormData>>,>(
+      _props: {
+        selector?: (state: NoInfer<FormState<TFormData>>) => TSelected
+      },
+      _ctx: SetupContext<
+        EmitsOptions,
+        SlotsType<{ default: NoInfer<FormState<TFormData>> }>
+      >,
+    ) =>
+      () =>
+        null,
+  )
+
 interface VueFormApi<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
@@ -16,15 +31,7 @@ interface VueFormApi<
   useStore: <TSelected = NoInfer<FormState<TFormData>>>(
     selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,
   ) => Readonly<Ref<TSelected>>
-  Subscribe: <TSelected = NoInfer<FormState<TFormData>>>(
-    props: {
-      selector?: (state: NoInfer<FormState<TFormData>>) => TSelected
-    },
-    context: SetupContext<
-      EmitsOptions,
-      SlotsType<{ default: NoInfer<FormState<TFormData>> }>
-    >,
-  ) => any
+  Subscribe: ReturnType<typeof SubscribeFn<TFormData>>
 }
 
 export function useForm<

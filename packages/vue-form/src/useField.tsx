@@ -5,62 +5,65 @@ import type { DeepKeys, DeepValue, Validator } from '@tanstack/form-core'
 import type { EmitsOptions, Ref, SetupContext, SlotsType } from 'vue'
 import type { UseFieldOptions } from './types'
 
-type FieldComponentProps<
+const DefineFieldFn = <
   TParentData,
-  TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
-  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-> = UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>
+>() =>
+  defineComponent(
+    <
+      TName extends DeepKeys<TParentData>,
+      TFieldValidator extends
+        | Validator<DeepValue<TParentData, TName>, unknown>
+        | undefined = undefined,
+      TData extends DeepValue<TParentData, TName> = DeepValue<
+        TParentData,
+        TName
+      >,
+    >(
+      _props: Omit<
+        FieldComponentProps<
+          TParentData,
+          TName,
+          TFieldValidator,
+          TFormValidator,
+          TData
+        >,
+        'form'
+      >,
+      _ctx: SetupContext<
+        EmitsOptions,
+        SlotsType<{
+          default: {
+            field: FieldApi<
+              TParentData,
+              TName,
+              TFieldValidator,
+              TFormValidator,
+              TData
+            >
+            state: FieldApi<
+              TParentData,
+              TName,
+              TFieldValidator,
+              TFormValidator,
+              TData
+            >['state']
+          }
+        }>
+      >,
+    ) =>
+      () =>
+        null,
+  )
 
 export type FieldComponent<
   TParentData,
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
-> = <
-  TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
->(
-  _props: Omit<
-    FieldComponentProps<
-      TParentData,
-      TName,
-      TFieldValidator,
-      TFormValidator,
-      TData
-    >,
-    'form'
-  >,
-  _ctx: SetupContext<
-    EmitsOptions,
-    SlotsType<{
-      default: {
-        field: FieldApi<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
-        state: FieldApi<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >['state']
-      }
-    }>
-  >,
-) => any
+> = ReturnType<typeof DefineFieldFn<TParentData, TFormValidator>>
 
 interface VueFieldApi<
   TParentData,
@@ -158,6 +161,18 @@ export function useField<
 
   return { api: fieldApi, state: fieldState } as const
 }
+
+export type FieldComponentProps<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> = UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>
 
 export const Field = defineComponent(
   <
