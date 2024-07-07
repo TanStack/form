@@ -1,59 +1,16 @@
+import type { FieldApi } from '@tanstack/react-form'
+import { useForm } from '@tanstack/react-form'
 import * as React from 'react'
 import { createRoot } from 'react-dom/client'
-import { useForm } from '@tanstack/react-form'
-import type {
-  DeepKeys,
-  DeepValue,
-  FieldOptions,
-  ReactFormApi,
-} from '@tanstack/react-form'
 
-// Our types (to move into `core`)
-type SelfKeys<T> = {
-  [K in keyof T]: K
-}[keyof T]
-
-// Utility type to narrow allowed TName values to only specific types
-// IE: DeepKeyValueName<{ foo: string; bar: number }, string> = 'foo'
-type DeepKeyValueName<TFormData, TField> = SelfKeys<{
-  [K in DeepKeys<TFormData> as DeepValue<TFormData, K> extends TField
-    ? K
-    : never]: K
-}>
-
-// The rest of the app
-interface TextInputFieldProps<
-  TFormData extends unknown,
-  TName extends DeepKeyValueName<TFormData, string>,
-> extends FieldOptions<TFormData, TName> {
-  form: ReactFormApi<TFormData, any>
-  // Your custom props
-  size?: 'small' | 'large'
-}
-
-function TextInputField<
-  TFormData extends unknown,
-  TName extends DeepKeyValueName<TFormData, string>,
->({ form, name, size, ...fieldProps }: TextInputFieldProps<TFormData, TName>) {
+function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
   return (
-    <form.Field<TName, any, string>
-      {...fieldProps}
-      name={name}
-      children={(field) => {
-        return (
-          <>
-            <label htmlFor={field.name}>First Name:</label>
-            <input
-              id={field.name}
-              name={field.name}
-              value={field.state.value}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
-            />
-          </>
-        )
-      }}
-    />
+    <>
+      {field.state.meta.isTouched && field.state.meta.errors.length ? (
+        <em>{field.state.meta.errors.join(',')}</em>
+      ) : null}
+      {field.state.meta.isValidating ? 'Validating...' : null}
+    </>
   )
 }
 
@@ -61,8 +18,7 @@ export default function App() {
   const form = useForm({
     defaultValues: {
       firstName: '',
-      age: 0,
-      foo: [] as Array<{ bar: string; baz: number }>,
+      lastName: '',
     },
     onSubmit: async ({ value }) => {
       // Do something with form data
@@ -72,7 +28,7 @@ export default function App() {
 
   return (
     <div>
-      <h1>Wrapped Fields Form Example</h1>
+      <h1>Simple Form Example</h1>
       <form
         onSubmit={(e) => {
           e.preventDefault()
@@ -81,23 +37,59 @@ export default function App() {
         }}
       >
         <div>
-          {/* A type-safe, wrapped field component*/}
-          <TextInputField
-            form={form}
+          {/* A type-safe field component*/}
+          <form.Field
             name="firstName"
             validators={{
-              onChange: ({ value }) => {
-                if (value.length < 3) {
-                  return 'Name must be at least 3 characters long'
-                }
-                return undefined
+              onChange: ({ value }) =>
+                !value
+                  ? 'A first name is required'
+                  : value.length < 3
+                    ? 'First name must be at least 3 characters'
+                    : undefined,
+              onChangeAsyncDebounceMs: 500,
+              onChangeAsync: async ({ value }) => {
+                await new Promise((resolve) => setTimeout(resolve, 1000))
+                return (
+                  value.includes('error') && 'No "error" allowed in first name'
+                )
               },
+            }}
+            children={(field) => {
+              // Avoid hasty abstractions. Render props are great!
+              return (
+                <>
+                  <label htmlFor={field.name}>First Name:</label>
+                  <input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                  <FieldInfo field={field} />
+                </>
+              )
             }}
           />
         </div>
         <div>
-          {/* Correctly throws a warning when the wrong data type is passed */}
-          <TextInputField form={form} name="age" />
+          <form.Field
+            name="lastName"
+            children={(field) => (
+              <>
+                <label htmlFor={field.name}>Last Name:</label>
+                <input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                <FieldInfo field={field} />
+              </>
+            )}
+          />
         </div>
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
