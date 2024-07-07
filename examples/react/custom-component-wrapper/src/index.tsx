@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { useForm } from '@tanstack/react-form'
 import type {
   DeepKeyValueName,
+  DeepValue,
   FieldOptions,
   ReactFormApi,
 } from '@tanstack/react-form'
@@ -13,7 +14,13 @@ import type {
 interface TextInputFieldProps<
   TFormData extends unknown,
   TName extends DeepKeyValueName<TFormData, string>,
-> extends FieldOptions<TFormData, TName> {
+> extends FieldOptions<
+    TFormData,
+    TName,
+    undefined,
+    undefined,
+    DeepValue<TFormData, TName> & string
+  > {
   form: ReactFormApi<TFormData, any>
   // Your custom props
   size?: 'small' | 'large'
@@ -24,9 +31,7 @@ function TextInputField<
   TName extends DeepKeyValueName<TFormData, string>,
 >({ form, name, size, ...fieldProps }: TextInputFieldProps<TFormData, TName>) {
   return (
-    // Manually type-cast form.Field to work around this issue:
-    // https://twitter.com/crutchcorn/status/1809827621485900049
-    <form.Field<TName, any, any>
+    <form.Field
       {...fieldProps}
       name={name}
       children={(field) => {
