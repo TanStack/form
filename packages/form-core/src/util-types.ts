@@ -111,7 +111,6 @@ export type DeepValue<
   TValue,
   // A string representing the path of the property we're trying to access
   TAccessor,
-  TNullable extends boolean = IsNullable<TValue>,
 > =
   // If TValue is any it will recurse forever, this terminates the recursion
   unknown extends TValue
@@ -138,7 +137,7 @@ export type DeepValue<
             : TAccessor extends `${infer TBefore}.${infer TAfter}`
               ? DeepValue<DeepValue<TValue, TBefore>, TAfter>
               : TAccessor extends string
-                ? TNullable extends true
+                ? IsNullable<TValue> extends true
                   ? Nullable<TValue[TAccessor]>
                   : TValue[TAccessor]
                 : never

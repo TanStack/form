@@ -1,7 +1,12 @@
 import * as React from 'react'
 import { createRoot } from 'react-dom/client'
 import { useForm } from '@tanstack/react-form'
-import type { DeepKeys, DeepValue, ReactFormApi } from '@tanstack/react-form'
+import type {
+  DeepKeys,
+  DeepValue,
+  FieldOptions,
+  ReactFormApi,
+} from '@tanstack/react-form'
 
 // Our types (to move into `core`)
 type SelfKeys<T> = {
@@ -16,27 +21,23 @@ type DeepKeyValueName<TFormData, TField> = SelfKeys<{
     : never]: K
 }>
 
-export type Pretty<T> = {
-  [K in keyof T]: T[K]
-} & {}
-
 // The rest of the app
-type InputFieldProps<
-  TFormData extends object,
+interface TextInputFieldProps<
+  TFormData extends unknown,
   TName extends DeepKeyValueName<TFormData, string>,
-> = {
+> extends FieldOptions<TFormData, TName> {
   form: ReactFormApi<TFormData, any>
-  name: TName
   // Your custom props
   size?: 'small' | 'large'
 }
 
 function TextInputField<
-  TFormData extends object,
+  TFormData extends unknown,
   TName extends DeepKeyValueName<TFormData, string>,
->({ form, name }: InputFieldProps<TFormData, TName>) {
+>({ form, name, size, ...fieldProps }: TextInputFieldProps<TFormData, TName>) {
   return (
-    <form.Field
+    <form.Field<TName, any, string>
+      {...fieldProps}
       name={name}
       children={(field) => {
         return (
@@ -61,7 +62,6 @@ export default function App() {
     defaultValues: {
       firstName: '',
       age: 0,
-      0: '',
       foo: [] as Array<{ bar: string; baz: number }>,
     },
     onSubmit: async ({ value }) => {
@@ -82,7 +82,18 @@ export default function App() {
       >
         <div>
           {/* A type-safe, wrapped field component*/}
-          <TextInputField form={form} name="firstName" />
+          <TextInputField
+            form={form}
+            name="firstName"
+            validators={{
+              onChange: ({ value }) => {
+                if (value.length < 3) {
+                  return 'Name must be at least 3 characters long'
+                }
+                return undefined
+              },
+            }}
+          />
         </div>
         <div>
           {/* Correctly throws a warning when the wrong data type is passed */}
