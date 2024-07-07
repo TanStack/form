@@ -29,8 +29,8 @@ A Form Instance is an object that represents an individual form and provides met
 const form = createForm(() => ({
   ...formOpts,
   onSubmit: async ({ value }) => {
-   // Do something with form data
-   console.log(value);
+    // Do something with form data
+    console.log(value);
   },
 }))
 ```
@@ -40,8 +40,8 @@ You may also create a form instance without using `formOptions` by using the sta
 ```tsx
 const form = createForm<Person>(() => ({
   onSubmit: async ({ value }) => {
-   // Do something with form data
-   console.log(value);
+    // Do something with form data
+    console.log(value);
   },
   defaultValues: {
     firstName: '',
@@ -59,15 +59,15 @@ Example:
 
 ```tsx
 <form.Field
- name="firstName"
- children={(field) => (
-  <input
-   name={field().name}
-   value={field().state.value}
-   onBlur={field().handleBlur}
-   onInput={(e) => field().handleChange(e.target.value)}
-  />
- )}
+  name="firstName"
+  children={(field) => (
+    <input
+      name={field().name}
+      value={field().state.value}
+      onBlur={field().handleBlur}
+      onInput={(e) => field().handleChange(e.target.value)}
+    />
+  )}
 />
 ```
 
@@ -112,32 +112,30 @@ Example:
 
 ```tsx
 <form.Field
- name="firstName"
- validators={{
-  onChange: ({ value }) =>
-   !value
-    ? 'A first name is required'
-    : value.length < 3
-    ? 'First name must be at least 3 characters'
-    : undefined,
-  onChangeAsync: async ({ value }) => {
-   await new Promise((resolve) => setTimeout(resolve, 1000));
-   return (
-    value.includes('error') && 'No "error" allowed in first name'
-   );
-  },
- }}
- children={(field) => (
-  <>
-   <input
-    name={field().name}
-    value={field().state.value}
-    onBlur={field().handleBlur}
-    onInput={(e) => field().handleChange(e.target.value)}
-   />
-   <p>{field().state.meta.errors[0]}</p>
-  </>
- )}
+  name="firstName"
+  validators={{
+    onChange: ({ value }) =>
+      !value
+        ? 'A first name is required'
+        : value.length < 3
+        ? 'First name must be at least 3 characters'
+        : undefined,
+    onChangeAsync: async ({ value }) => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return value.includes('error') && 'No "error" allowed in first name';
+    },
+  }}
+  children={(field) => (
+    <>
+      <input
+        name={field().name}
+        value={field().state.value}
+        onBlur={field().handleBlur}
+        onInput={(e) => field().handleChange(e.target.value)}
+      />
+      <p>{field().state.meta.errors[0]}</p>
+    </>
+  )}
 />
 ```
 
@@ -153,32 +151,32 @@ import { z } from 'zod'
 
 // ...
 <form.Field
- name="firstName"
- validatorAdapter={zodValidator()}
- validators={{
-  onChange: z.string().min(3, 'First name must be at least 3 characters'),
-  onChangeAsyncDebounceMs: 500,
-  onChangeAsync: z.string().refine(
-   async (value) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return !value.includes('error');
-   },
-   {
-    message: 'No "error" allowed in first name',
-   }
-  ),
- }}
- children={(field) => (
-  <>
-   <input
-    name={field().name}
-    value={field().state.value}
-    onBlur={field().handleBlur}
-    onInput={(e) => field().handleChange(e.target.value)}
-   />
-   <p>{field().state.meta.errors[0]}</p>
-  </>
- )}
+  name="firstName"
+  validatorAdapter={zodValidator()}
+  validators={{
+    onChange: z.string().min(3, 'First name must be at least 3 characters'),
+    onChangeAsyncDebounceMs: 500,
+    onChangeAsync: z.string().refine(
+      async (value) => {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        return !value.includes('error');
+      },
+      {
+        message: 'No "error" allowed in first name',
+      }
+    ),
+  }}
+  children={(field) => (
+    <>
+      <input
+        name={field().name}
+        value={field().state.value}
+        onBlur={field().handleBlur}
+        onInput={(e) => field().handleChange(e.target.value)}
+      />
+      <p>{field().state.meta.errors[0]}</p>
+    </>
+  )}
 />
 ```
 
@@ -192,15 +190,15 @@ Example:
 const firstName = form.useStore((state) => state.values.firstName)
 //...
 <form.Subscribe
- selector={(state) => ({
-  canSubmit: state.canSubmit,
-  isSubmitting: state.isSubmitting,
- })}
- children={(state) => (
-  <button type="submit" disabled={!state().canSubmit}>
-   {state().isSubmitting ? '...' : 'Submit'}
-  </button>
- )}
+  selector={(state) => ({
+    canSubmit: state.canSubmit,
+    isSubmitting: state.isSubmitting,
+  })}
+  children={(state) => (
+    <button type="submit" disabled={!state().canSubmit}>
+      {state().isSubmitting ? '...' : 'Submit'}
+    </button>
+  )}
 />
 ```
 
@@ -214,92 +212,76 @@ Example:
 
 ```tsx
 <form.Field
- name="hobbies"
- mode="array"
- children={(hobbiesField) => (
-  <div>
-   Hobbies
-   <div>
-    <Show
-     when={hobbiesField().state.value.length > 0}
-     fallback={'No hobbies found.'}
-    >
-     <Index each={hobbiesField().state.value}>
-      {(_, i) => (
-       <div>
-        <form.Field
-         name={`hobbies[${i}].name`}
-         children={(field) => (
-          <div>
-           <label for={field().name}>
-            Name:
-           </label>
-           <input
-            id={field().name}
-            name={field().name}
-            value={field().state.value}
-            onBlur={field().handleBlur}
-            onChange={(e) =>
-             field().handleChange(
-              e.target.value
-             )
-            }
-           />
-           <button
-            type="button"
-            onClick={() =>
-             hobbiesField().removeValue(
-              i
-             )
-            }
-           >
-            X
-           </button>
-          </div>
-         )}
-        />
-        <form.Field
-         name={`hobbies[${i}].description`}
-         children={(field) => {
-          return (
-           <div>
-            <label for={field().name}>
-             Description:
-            </label>
-            <input
-             id={field().name}
-             name={field().name}
-             value={field().state.value}
-             onBlur={field().handleBlur}
-             onChange={(e) =>
-              field().handleChange(
-               e.target.value
-              )
-             }
-            />
-           </div>
-          );
-         }}
-        />
-       </div>
-      )}
-     </Index>
-    </Show>
-   </div>
-   <button
-    type="button"
-    onClick={() =>
-     hobbiesField().pushValue({
-      name: '',
-      description: '',
-      yearsOfExperience: 0,
-     })
-    }
-   >
-    Add hobby
-   </button>
-  </div>
- )}
+  name="hobbies"
+  mode="array"
+  children={(hobbiesField) => (
+    <div>
+      Hobbies
+      <div>
+        <Show
+          when={hobbiesField().state.value.length > 0}
+          fallback={'No hobbies found.'}
+        >
+          <Index each={hobbiesField().state.value}>
+            {(_, i) => (
+              <div>
+                <form.Field
+                  name={`hobbies[${i}].name`}
+                  children={(field) => (
+                    <div>
+                      <label for={field().name}>Name:</label>
+                      <input
+                        id={field().name}
+                        name={field().name}
+                        value={field().state.value}
+                        onBlur={field().handleBlur}
+                        onChange={(e) => field().handleChange(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => hobbiesField().removeValue(i)}
+                      >
+                        X
+                      </button>
+                    </div>
+                  )}
+                />
+                <form.Field
+                  name={`hobbies[${i}].description`}
+                  children={(field) => {
+                    return (
+                      <div>
+                        <label for={field().name}>Description:</label>
+                        <input
+                          id={field().name}
+                          name={field().name}
+                          value={field().state.value}
+                          onBlur={field().handleBlur}
+                          onChange={(e) => field().handleChange(e.target.value)}
+                        />
+                      </div>
+                    );
+                  }}
+                />
+              </div>
+            )}
+          </Index>
+        </Show>
+      </div>
+      <button
+        type="button"
+        onClick={() =>
+          hobbiesField().pushValue({
+            name: '',
+            description: '',
+            yearsOfExperience: 0,
+          })
+        }
+      >
+        Add hobby
+      </button>
+    </div>
+  )}
 />
 ```
 
