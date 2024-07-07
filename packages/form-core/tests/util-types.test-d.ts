@@ -1,5 +1,5 @@
 import { assertType } from 'vitest'
-import type { DeepKeys, DeepValue } from '../src/index'
+import { DeepKeys, DeepKeyValueName, DeepValue } from '../src/index'
 
 /**
  * Properly recognizes that `0` is not an object and should not have subkeys
@@ -169,3 +169,30 @@ type DoubleDeepArray = DeepValue<
 >
 
 assertType<string>(0 as never as DoubleDeepArray)
+
+type FooBarOther = {
+  foo: string
+  bar: string
+  other: number
+}
+
+type StringFromFooBar = DeepKeyValueName<FooBarOther, string>
+
+assertType<'foo' | 'bar'>(0 as never as StringFromFooBar)
+
+type DeepFooBarOther = {
+  foo: string
+  bar: string
+  other: number
+  one: {
+    foo: string
+    bar: string
+    other: number
+  }
+}
+
+type StringFromDeepFooBar = DeepKeyValueName<DeepFooBarOther, string>
+
+assertType<'foo' | 'bar' | 'one.foo' | 'one.bar'>(
+  0 as never as StringFromDeepFooBar,
+)

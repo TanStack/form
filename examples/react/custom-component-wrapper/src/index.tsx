@@ -2,26 +2,14 @@ import * as React from 'react'
 import { createRoot } from 'react-dom/client'
 import { useForm } from '@tanstack/react-form'
 import type {
-  DeepKeys,
-  DeepValue,
+  DeepKeyValueName,
   FieldOptions,
   ReactFormApi,
 } from '@tanstack/react-form'
 
-// Our types (to move into `core`)
-type SelfKeys<T> = {
-  [K in keyof T]: K
-}[keyof T]
-
-// Utility type to narrow allowed TName values to only specific types
-// IE: DeepKeyValueName<{ foo: string; bar: number }, string> = 'foo'
-type DeepKeyValueName<TFormData, TField> = SelfKeys<{
-  [K in DeepKeys<TFormData> as DeepValue<TFormData, K> extends TField
-    ? K
-    : never]: K
-}>
-
-// The rest of the app
+/**
+ * Export this to your design system or a dedicated component location
+ */
 interface TextInputFieldProps<
   TFormData extends unknown,
   TName extends DeepKeyValueName<TFormData, string>,
@@ -36,6 +24,8 @@ function TextInputField<
   TName extends DeepKeyValueName<TFormData, string>,
 >({ form, name, size, ...fieldProps }: TextInputFieldProps<TFormData, TName>) {
   return (
+    // Manually type-cast form.Field to work around this issue:
+    // https://twitter.com/crutchcorn/status/1809827621485900049
     <form.Field<TName, any, any>
       {...fieldProps}
       name={name}
@@ -57,12 +47,14 @@ function TextInputField<
   )
 }
 
+/**
+ * Then use it in your application
+ */
 export default function App() {
   const form = useForm({
     defaultValues: {
       firstName: '',
       age: 0,
-      foo: [] as Array<{ bar: string; baz: number }>,
     },
     onSubmit: async ({ value }) => {
       // Do something with form data

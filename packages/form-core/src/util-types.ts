@@ -143,3 +143,15 @@ export type DeepValue<
                 : never
         : // Do not allow `TValue` to be anything else
           never
+
+type SelfKeys<T> = {
+  [K in keyof T]: K
+}[keyof T]
+
+// Utility type to narrow allowed TName values to only specific types
+// IE: DeepKeyValueName<{ foo: string; bar: number }, string> = 'foo'
+export type DeepKeyValueName<TFormData, TField> = SelfKeys<{
+  [K in DeepKeys<TFormData> as DeepValue<TFormData, K> extends TField
+    ? K
+    : never]: K
+}>

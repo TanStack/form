@@ -1,5 +1,5 @@
 {
-  "name": "@tanstack/form-example-react-simple",
+  "name": "@tanstack/form-example-react-custom-component-wrapper",
   "private": true,
   "type": "module",
   "scripts": {

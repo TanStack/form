@@ -443,6 +443,31 @@ importers:
         specifier: ^5.1.4
         version: 5.2.10(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.32))(terser@5.29.1)
 
+  examples/react/custom-component-wrapper:
+    dependencies:
+      '@tanstack/react-form':
+        specifier: ^0.25.3
+        version: link:../../../packages/react-form
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+    devDependencies:
+      '@types/react':
+        specifier: ^18.3.3
+        version: 18.3.3
+      '@types/react-dom':
+        specifier: ^18.3.0
+        version: 18.3.0
+      '@vitejs/plugin-react':
+        specifier: ^4.3.0
+        version: 4.3.1(vite@5.2.10(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.32))(terser@5.29.1))
+      vite:
+        specifier: ^5.1.4
+        version: 5.2.10(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.32))(terser@5.29.1)
+
   examples/react/next-server-actions:
     dependencies:
       '@tanstack/react-form':
