@@ -963,6 +963,19 @@ export class FieldApi<
     }
     this.validate('blur')
   }
+
+  /**
+   * Updates the field's errorMap  
+   */
+  setErrorMap(errorMap: ValidationErrorMap) {
+    this.setMeta((prev) => ({
+      ...prev,
+      errorMap: {
+        ...prev.errorMap,
+        ...errorMap,
+      },
+    }))
+  }
 }
 
 function normalizeError(rawError?: ValidationError) {
