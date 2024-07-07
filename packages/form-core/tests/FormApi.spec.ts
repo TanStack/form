@@ -1527,4 +1527,43 @@ describe('form api', () => {
       { nameInfo: { first: 'firstName' } },
     ])
   })
+  it('should add  a new value to the formApi errorMap', () => {
+    interface Form {
+      name: string
+    }
+    const form = new FormApi<Form>()
+    form.setErrorMap({
+      onChange: "name can't be Josh",
+    })
+    expect(form.state.errorMap.onChange).toEqual("name can't be Josh")
+  })
+  it('should preserve other values in the formApi errorMap when adding other values', () => {
+    interface Form {
+      name: string
+    }
+    const form = new FormApi<Form>()
+    form.setErrorMap({
+      onChange: "name can't be Josh",
+    })
+    expect(form.state.errorMap.onChange).toEqual("name can't be Josh")
+    form.setErrorMap({
+      onBlur: 'name must begin with uppercase',
+    })
+    expect(form.state.errorMap.onChange).toEqual("name can't be Josh")
+    expect(form.state.errorMap.onBlur).toEqual('name must begin with uppercase')
+  })
+  it('should replace errorMap value if it exists in the FormApi object', () => {
+    interface Form {
+      name: string
+    }
+    const form = new FormApi<Form>()
+    form.setErrorMap({
+      onChange: "name can't be Josh",
+    })
+    expect(form.state.errorMap.onChange).toEqual("name can't be Josh")
+    form.setErrorMap({
+      onChange: 'other validation error',
+    })
+    expect(form.state.errorMap.onChange).toEqual('other validation error')
+  })
 })
