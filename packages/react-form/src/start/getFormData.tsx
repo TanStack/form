@@ -1,6 +1,8 @@
-import { createServerFn } from '@tanstack/start'
+import { type FetchFn } from '@tanstack/start'
 import { _tanstackInternalsCookie } from './utils'
 import type { ServerFormState } from './types'
+
+type FetchFnCtx = Parameters<FetchFn<never, never>>[1]
 
 export const initialFormState = {
   errorMap: {
@@ -9,7 +11,7 @@ export const initialFormState = {
   errors: [],
 }
 
-export const getFormData = createServerFn('GET', async (_, ctx) => {
+export const getFormData = async (ctx: FetchFnCtx) => {
   const data = (await _tanstackInternalsCookie.parse(
     ctx.request.headers.get('Cookie'),
   )) as undefined | ServerFormState<any>
@@ -17,4 +19,4 @@ export const getFormData = createServerFn('GET', async (_, ctx) => {
   ctx.request.headers.delete('Cookie')
   if (!data) return initialFormState
   return data
-})
+}
