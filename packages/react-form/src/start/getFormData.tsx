@@ -1,8 +1,6 @@
-import { type FetchFn } from '@tanstack/start'
 import { _tanstackInternalsCookie } from './utils'
+import type { FetchFnCtx } from '@tanstack/start'
 import type { ServerFormState } from './types'
-
-type FetchFnCtx = Parameters<FetchFn<never, never>>[1]
 
 export const initialFormState = {
   errorMap: {

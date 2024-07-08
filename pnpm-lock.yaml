@@ -533,14 +533,11 @@ importers:
         specifier: ^0.26.0
         version: link:../../../packages/react-form
       '@tanstack/react-router':
-        specifier: ^1.42.0
-        version: 1.43.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@tanstack/router-vite-plugin':
-        specifier: ^1.41.0
-        version: 1.43.1(vite@5.2.10(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+        specifier: ^1.43.13
+        version: 1.43.13(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tanstack/start':
-        specifier: ^1.42.1
-        version: 1.43.2(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1)(typescript@5.4.2)(vite@5.2.10(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+        specifier: ^1.43.13
+        version: 1.43.13(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1)(typescript@5.4.2)(vite@5.2.10(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -548,7 +545,7 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
       vinxi:
-        specifier: ^0.3.11
+        specifier: ^0.3.12
         version: 0.3.12(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1)
     devDependencies:
       '@types/node':
@@ -1058,8 +1055,8 @@ importers:
         version: 0.7.5
     devDependencies:
       '@tanstack/start':
-        specifier: ^1.42.1
-        version: 1.43.2(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1)(typescript@5.4.2)(vite@5.2.10(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+        specifier: ^1.43.13
+        version: 1.43.13(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1)(typescript@5.4.2)(vite@5.2.10(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
       '@types/react':
         specifier: ^18.3.3
         version: 18.3.3
@@ -3862,15 +3859,15 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@tanstack/history@1.41.0':
-    resolution: {integrity: sha512-euTyZoHidW1+NeAW9V7SSPNjD6c54TBqKBO8HypA880HWlTXLW6V8rcBnfi1LY1W706dGCvDmZDTg6fsl/jJUw==}
+  '@tanstack/history@1.43.13':
+    resolution: {integrity: sha512-cCts1G+Lt2w/2BWZgw49lCyLMqVnz2z8MKWsHSF/V0UKIBU+6e1rmZNaML7KqOh4MvZCHekIDQVx1/xCG4SgvQ==}
     engines: {node: '>=12'}
 
   '@tanstack/query-core@5.45.0':
     resolution: {integrity: sha512-RVfIZQmFUTdjhSAAblvueimfngYyfN6HlwaJUPK71PKd7yi43Vs1S/rdimmZedPWX/WGppcq/U1HOj7O7FwYxw==}
 
-  '@tanstack/react-cross-context@1.41.0':
-    resolution: {integrity: sha512-UM8oK4K+Hql18XJ4OLDZGp8MAZWAIqpE9LW0NnIIy1o2Euwuuxvam0aZhUcchYTVMrysRMgwx7uAmspQ2nuY4w==}
+  '@tanstack/react-cross-context@1.43.13':
+    resolution: {integrity: sha512-cZiSDMo79MoS0eZH4iWGT2bpOdqAAWxuZKoFjsMvqKtc0OSJcghPK3IHPprTrlSz3XSYS4SrG2ijMoo9gtF20w==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
@@ -3880,8 +3877,8 @@ packages:
     peerDependencies:
       react: ^18.0.0
 
-  '@tanstack/react-router@1.43.2':
-    resolution: {integrity: sha512-ukONkd+ZLrXDB0uDwo1AVhVs9pekk/aXevu7QM9gfoOft6m/4VV7+5AUKxZ7N3vyHER+0mpLabk/JM6LXgv1tw==}
+  '@tanstack/react-router@1.43.13':
+    resolution: {integrity: sha512-HMTH5pwD/BzBDj3cjl9rQmrK7y8bE1Sjdfe3jaMPDJwk5g831Rt2lMVqwZ+e1Nqm36UxB/vIeojoONILQHLTww==}
     engines: {node: '>=12'}
     peerDependencies:
       react: '>=18'
@@ -3899,37 +3896,36 @@ packages:
       react: ^17.0.0 || ^18.0.0
       react-dom: ^17.0.0 || ^18.0.0
 
-  '@tanstack/router-generator@1.43.1':
-    resolution: {integrity: sha512-9dK/vVGO6SupMed1EAHwsIY0sHEu1EBsVYa208/V+zonJLOTNTthuDAYUxjmLTLm18FeqsujKoDl0hFX4rsREw==}
+  '@tanstack/router-generator@1.43.13':
+    resolution: {integrity: sha512-uWs32cgtREaqqjD6sBCZnuX3HmTMSyU+xhHAsT8Fa3mLCyXj4ABJ8uzItPQYLyoZtJ8M1eV7XDe48vDbjus+AA==}
     engines: {node: '>=12'}
 
-  '@tanstack/router-plugin@1.43.1':
-    resolution: {integrity: sha512-tqUC0zhng6r9H/RxiPuBVaDbDEB3XA07nG7cnin3Uw1VnmbRfA7Nl0lAOxlGbw8VO0eXGFBdF+GwVw1in7Wzjw==}
+  '@tanstack/router-plugin@1.43.13':
+    resolution: {integrity: sha512-v8QD5Ns14bS2Lw6hf6bxRnPqAYHxaQ+3LMKxZqhWfA3S+enQGkyi6lt9Aicr6DX2i0g7yyjUeXA5ro7ekIOdpw==}
     engines: {node: '>=12'}
     peerDependencies:
       '@rsbuild/core': '>=0.7.9'
       vite: '>=5.0.13'
+      webpack: '>=5.92.0'
     peerDependenciesMeta:
       '@rsbuild/core':
         optional: true
       vite:
         optional: true
-
-  '@tanstack/router-vite-plugin@1.43.1':
-    resolution: {integrity: sha512-yEQV2KQJVolqzWYUpma4uYnOK0hYhXY8GVCWD5UFf3QtDMU2KbsXnBrToZQ1c/m9XrgyD3bWfvVvk/UwT8FVYQ==}
-    engines: {node: '>=12'}
+      webpack:
+        optional: true
 
   '@tanstack/solid-store@0.5.0':
     resolution: {integrity: sha512-1H2uBPDbBBnLKnb5/8XORU3bQCHM915bguHJl01AQKhzCNHMMK6QnnSP4ZxIJDXoGNL8qEagYw3yCnvuZspPpw==}
     peerDependencies:
       solid-js: ^1.6.0
 
-  '@tanstack/start-vite-plugin@1.43.1':
-    resolution: {integrity: sha512-xEXTUxYD6Bm5sntl7ZOfttXqJwnRB4eb+T52Fr6bwxFfzyF89s9eNE7Ts7ls9fTZvviRCO3iZd0Q9VCYBiwqyg==}
+  '@tanstack/start-vite-plugin@1.43.13':
+    resolution: {integrity: sha512-Zx28BAedphh9ktCcJJSYKEScrHx6wGgEL6bc6HqG0RX3iCP2hamzs8LNGbiKush5fMoDMIHrOc0Uz32ELVM7dw==}
     engines: {node: '>=12'}
 
-  '@tanstack/start@1.43.2':
-    resolution: {integrity: sha512-fkI/jsuvkP4oU5BdwplecNb0+9HvTPNMGb3B/W7K3Hu415G3jzIc1EPr+PLVZCtmD/ANb1xFEu9cQddtUTQDPw==}
+  '@tanstack/start@1.43.13':
+    resolution: {integrity: sha512-cJ1mgg5ezWdZ+r4KNepls+yXsKnpHAC6LkYg4HPVOz8QPwbQ3gawiaYXquPict8toWa8POiEJijnvUzbar+dcg==}
     engines: {node: '>=12'}
     peerDependencies:
       react: '>=18.0.0 || >=19.0.0'
@@ -4771,8 +4767,8 @@ packages:
   b4a@1.6.6:
     resolution: {integrity: sha512-5Tk1HLk6b6ctmjIkAcU/Ujv/1WqiDl0F0JdRCR80VsOcUlHcu7pWeWRlOqQLHfDEsVx9YH/aif5AG4ehoCtTmg==}
 
-  babel-dead-code-elimination@1.0.5:
-    resolution: {integrity: sha512-YU83EN8SngaePQAJ+Y1AUIRFOr+2o/L5ez6JQzcCd9r19GtYqa9vm4se33t4wVcSbOqATUfdOJilp403DT61ow==}
+  babel-dead-code-elimination@1.0.6:
+    resolution: {integrity: sha512-JxFi9qyRJpN0LjEbbjbN8g0ux71Qppn9R8Qe3k6QzHg2CaKsbUQtbn307LQGiDLGjV6JCtEFqfxzVig9MyDCHQ==}
 
   babel-loader@9.1.3:
     resolution: {integrity: sha512-xG3ST4DglodGf8qSwv0MdeWLhrDsw/32QMdTO5T1ZIp9gQur0HkCyFs7Awskr10JKXFXwpAhiCuYX5oGXnRGbw==}
@@ -9158,6 +9154,10 @@ packages:
     resolution: {integrity: sha512-KuPqnjU4HBcrSwmQatfdc5hU4xzaQrhoKqCKylwmLnbBvqj5udXL8cHrkOuYDoI4ESCwJIiAIKMujroIUKLgow==}
     engines: {node: '>=14.0.0'}
 
+  unplugin@1.11.0:
+    resolution: {integrity: sha512-3r7VWZ/webh0SGgJScpWl2/MRCZK5d3ZYFcNaeci/GQ7Teop7zf0Nl2pUuz7G21BwPd9pcUPOC5KmJ2L3WgC5g==}
+    engines: {node: '>=14.0.0'}
+
   unstorage@1.10.2:
     resolution: {integrity: sha512-cULBcwDqrS8UhlIysUJs2Dk0Mmt8h7B0E6mtR+relW9nZvsf/u4SkAYyNliPiPW7XtFNb5u3IUMkxGxFTTRTgQ==}
     peerDependencies:
@@ -12712,11 +12712,11 @@ snapshots:
       - typescript
       - vite
 
-  '@tanstack/history@1.41.0': {}
+  '@tanstack/history@1.43.13': {}
 
   '@tanstack/query-core@5.45.0': {}
 
-  '@tanstack/react-cross-context@1.41.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@tanstack/react-cross-context@1.43.13(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -12726,9 +12726,9 @@ snapshots:
       '@tanstack/query-core': 5.45.0
       react: 18.3.1
 
-  '@tanstack/react-router@1.43.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@tanstack/react-router@1.43.13(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@tanstack/history': 1.41.0
+      '@tanstack/history': 1.43.13
       '@tanstack/react-store': 0.2.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -12749,12 +12749,12 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       use-sync-external-store: 1.2.0(react@18.3.1)
 
-  '@tanstack/router-generator@1.43.1':
+  '@tanstack/router-generator@1.43.13':
     dependencies:
       prettier: 3.3.2
       zod: 3.22.4
 
-  '@tanstack/router-plugin@1.43.1(vite@5.2.10(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
+  '@tanstack/router-plugin@1.43.13(vite@5.2.10(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
     dependencies:
       '@babel/core': 7.24.7
       '@babel/generator': 7.24.7
@@ -12764,36 +12764,30 @@ snapshots:
       '@babel/template': 7.24.7
       '@babel/traverse': 7.24.7
       '@babel/types': 7.24.7
-      '@tanstack/router-generator': 1.43.1
+      '@tanstack/router-generator': 1.43.13
       '@types/babel__core': 7.20.5
       '@types/babel__generator': 7.6.8
       '@types/babel__template': 7.4.4
       '@types/babel__traverse': 7.20.6
-      babel-dead-code-elimination: 1.0.5
-      unplugin: 1.10.2
+      babel-dead-code-elimination: 1.0.6
+      chokidar: 3.6.0
+      unplugin: 1.11.0
       zod: 3.22.4
     optionalDependencies:
       vite: 5.2.10(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.32))(terser@5.29.1)
     transitivePeerDependencies:
       - supports-color
 
-  '@tanstack/router-vite-plugin@1.43.1(vite@5.2.10(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
-    dependencies:
-      '@tanstack/router-plugin': 1.43.1(vite@5.2.10(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
-    transitivePeerDependencies:
-      - '@rsbuild/core'
-      - supports-color
-      - vite
-
   '@tanstack/solid-store@0.5.0(solid-js@1.7.12)':
     dependencies:
       '@tanstack/store': 0.5.0
       solid-js: 1.7.12
 
-  '@tanstack/start-vite-plugin@1.43.1':
+  '@tanstack/start-vite-plugin@1.43.13':
     dependencies:
       '@babel/core': 7.24.7
       '@babel/generator': 7.24.7
+      '@babel/parser': 7.24.7
       '@babel/plugin-syntax-jsx': 7.24.7(@babel/core@7.24.7)
       '@babel/plugin-syntax-typescript': 7.24.7(@babel/core@7.24.7)
       '@babel/template': 7.24.7
@@ -12806,18 +12800,18 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@tanstack/start@1.43.2(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1)(typescript@5.4.2)(vite@5.2.10(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
+  '@tanstack/start@1.43.13(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1)(typescript@5.4.2)(vite@5.2.10(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
     dependencies:
-      '@tanstack/react-cross-context': 1.41.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@tanstack/react-router': 1.43.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@tanstack/router-generator': 1.43.1
-      '@tanstack/router-plugin': 1.43.1(vite@5.2.10(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
-      '@tanstack/start-vite-plugin': 1.43.1
+      '@tanstack/react-cross-context': 1.43.13(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@tanstack/react-router': 1.43.13(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@tanstack/router-generator': 1.43.13
+      '@tanstack/router-plugin': 1.43.13(vite@5.2.10(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+      '@tanstack/start-vite-plugin': 1.43.13
       '@types/jsesc': 3.0.3
       '@vinxi/react': 0.2.2
       '@vinxi/react-server-dom': 0.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vite@5.2.10(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
-      '@vinxi/server-components': 0.3.3(vinxi@0.3.11(@types/node@20.10.6)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
-      '@vinxi/server-functions': 0.3.3(vinxi@0.3.11(@types/node@20.10.6)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+      '@vinxi/server-components': 0.3.3(vinxi@0.3.11(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+      '@vinxi/server-functions': 0.3.3(vinxi@0.3.11(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
       import-meta-resolve: 4.0.0
       isbot: 5.1.11
       jsesc: 3.0.2
@@ -12860,6 +12854,7 @@ snapshots:
       - typescript
       - uWebSockets.js
       - vite
+      - webpack
       - xml2js
 
   '@tanstack/store@0.1.3': {}
@@ -13305,9 +13300,9 @@ snapshots:
       consola: 3.2.3
       defu: 6.1.4
       get-port-please: 3.1.2
-      h3: 1.11.1
+      h3: 1.12.0
       http-shutdown: 1.2.2
-      jiti: 1.21.0
+      jiti: 1.21.6
       mlly: 1.7.1
       node-forge: 1.3.1
       pathe: 1.1.2
@@ -13318,7 +13313,7 @@ snapshots:
     transitivePeerDependencies:
       - uWebSockets.js
 
-  '@vinxi/plugin-directives@0.3.1(vinxi@0.3.11(@types/node@20.10.6)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
+  '@vinxi/plugin-directives@0.3.1(vinxi@0.3.11(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
     dependencies:
       '@babel/parser': 7.24.7
       acorn: 8.12.0
@@ -13340,9 +13335,9 @@ snapshots:
 
   '@vinxi/react@0.2.2': {}
 
-  '@vinxi/server-components@0.3.3(vinxi@0.3.11(@types/node@20.10.6)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
+  '@vinxi/server-components@0.3.3(vinxi@0.3.11(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
     dependencies:
-      '@vinxi/plugin-directives': 0.3.1(vinxi@0.3.11(@types/node@20.10.6)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+      '@vinxi/plugin-directives': 0.3.1(vinxi@0.3.11(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
       acorn: 8.12.0
       acorn-loose: 8.4.0
       acorn-typescript: 1.4.13(acorn@8.12.0)
@@ -13351,9 +13346,9 @@ snapshots:
       recast: 0.23.9
       vinxi: 0.3.11(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1)
 
-  '@vinxi/server-functions@0.3.3(vinxi@0.3.11(@types/node@20.10.6)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
+  '@vinxi/server-functions@0.3.3(vinxi@0.3.11(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
     dependencies:
-      '@vinxi/plugin-directives': 0.3.1(vinxi@0.3.11(@types/node@20.10.6)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+      '@vinxi/plugin-directives': 0.3.1(vinxi@0.3.11(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
       acorn: 8.12.0
       acorn-loose: 8.4.0
       acorn-typescript: 1.4.13(acorn@8.12.0)
@@ -13921,7 +13916,7 @@ snapshots:
 
   b4a@1.6.6: {}
 
-  babel-dead-code-elimination@1.0.5:
+  babel-dead-code-elimination@1.0.6:
     dependencies:
       '@babel/core': 7.24.7
       '@babel/parser': 7.24.7
@@ -18744,8 +18739,8 @@ snapshots:
     dependencies:
       acorn: 8.12.0
       estree-walker: 3.0.3
-      magic-string: 0.30.8
-      unplugin: 1.10.2
+      magic-string: 0.30.10
+      unplugin: 1.11.0
 
   undici-types@5.26.5: {}
 
@@ -18763,7 +18758,7 @@ snapshots:
       defu: 6.1.4
       mime: 3.0.0
       node-fetch-native: 1.6.4
-      pathe: 1.1.1
+      pathe: 1.1.2
 
   unescape-js@1.1.4:
     dependencies:
@@ -18823,12 +18818,19 @@ snapshots:
       webpack-sources: 3.2.3
       webpack-virtual-modules: 0.6.2
 
+  unplugin@1.11.0:
+    dependencies:
+      acorn: 8.12.0
+      chokidar: 3.6.0
+      webpack-sources: 3.2.3
+      webpack-virtual-modules: 0.6.2
+
   unstorage@1.10.2(ioredis@5.4.1):
     dependencies:
       anymatch: 3.1.3
       chokidar: 3.6.0
       destr: 2.0.3
-      h3: 1.11.1
+      h3: 1.12.0
       listhen: 1.7.2
       lru-cache: 10.2.0
       mri: 1.2.0
@@ -18948,7 +18950,7 @@ snapshots:
   vinxi@0.3.11(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1):
     dependencies:
       '@babel/core': 7.24.7
-      '@babel/plugin-syntax-jsx': 7.23.3(@babel/core@7.24.7)
+      '@babel/plugin-syntax-jsx': 7.24.7(@babel/core@7.24.7)
       '@babel/plugin-syntax-typescript': 7.24.7(@babel/core@7.24.7)
       '@types/micromatch': 4.0.9
       '@vinxi/listhen': 1.5.6
@@ -18970,12 +18972,12 @@ snapshots:
       nitropack: 2.9.7(@opentelemetry/api@1.9.0)(encoding@0.1.13)
       node-fetch-native: 1.6.4
       path-to-regexp: 6.2.2
-      pathe: 1.1.1
+      pathe: 1.1.2
       radix3: 1.1.2
       resolve: 1.22.8
       serve-placeholder: 2.0.2
       serve-static: 1.15.0
-      ufo: 1.3.0
+      ufo: 1.5.3
       unctx: 2.3.1
       unenv: 1.9.0
       unstorage: 1.10.2(ioredis@5.4.1)
@@ -19016,7 +19018,7 @@ snapshots:
   vinxi@0.3.12(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1):
     dependencies:
       '@babel/core': 7.24.7
-      '@babel/plugin-syntax-jsx': 7.23.3(@babel/core@7.24.7)
+      '@babel/plugin-syntax-jsx': 7.24.7(@babel/core@7.24.7)
       '@babel/plugin-syntax-typescript': 7.24.7(@babel/core@7.24.7)
       '@types/micromatch': 4.0.9
       '@vinxi/listhen': 1.5.6
@@ -19038,12 +19040,12 @@ snapshots:
       nitropack: 2.9.7(@opentelemetry/api@1.9.0)(encoding@0.1.13)
       node-fetch-native: 1.6.4
       path-to-regexp: 6.2.2
-      pathe: 1.1.1
+      pathe: 1.1.2
       radix3: 1.1.2
       resolve: 1.22.8
       serve-placeholder: 2.0.2
       serve-static: 1.15.0
-      ufo: 1.3.0
+      ufo: 1.5.3
       unctx: 2.3.1
       unenv: 1.9.0
       unstorage: 1.10.2(ioredis@5.4.1)
