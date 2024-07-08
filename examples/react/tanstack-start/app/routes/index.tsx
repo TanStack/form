@@ -1,12 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { mergeForm, useForm, useTransform } from '@tanstack/react-form'
-import { getFormData } from '@tanstack/react-form/start'
-import { formOpts, handleForm } from '~/utils/form'
+import { formOpts, getFormDataFromServer, handleForm } from '~/utils/form'
 
 export const Route = createFileRoute('/')({
   component: Home,
   loader: async () => ({
-    state: await getFormData(),
+    state: await getFormDataFromServer(),
   }),
 })
 
