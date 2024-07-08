@@ -76,8 +76,7 @@
     },
     {
       "label": "Guides",
-      "children": [
-      ],
+      "children": [],
       "frameworks": [
         {
           "label": "react",
@@ -166,8 +165,24 @@
           "label": "solid",
           "children": [
             {
+              "label": "Basic Concepts",
+              "to": "framework/solid/guides/basic-concepts"
+            },
+            {
+              "label": "Form Validation",
+              "to": "framework/solid/guides/validation"
+            },
+            {
+              "label": "Async Initial Values",
+              "to": "framework/solid/guides/async-initial-values"
+            },
+            {
               "label": "Arrays",
               "to": "framework/solid/guides/arrays"
+            },
+            {
+              "label": "Linked Fields",
+              "to": "framework/solid/guides/linked-fields"
             }
           ]
         }
@@ -176,78 +191,168 @@
     {
       "label": "API Reference",
       "children": [
-        {"label": "JavaScript Reference", "to": "reference/index"},
-        {"label": "Classes / FieldApi", "to": "reference/fieldapi"},
-        {"label": "Classes / FormApi", "to": "reference/formapi"},
-        {"label": "Functions / formOptions", "to": "reference/formoptions"},
-        {"label": "Functions / mergeForm", "to": "reference/mergeform"},
-        {"label": "Interfaces / FieldApiOptions", "to": "reference/fieldapioptions"},
-        {"label": "Interfaces / FieldOptions", "to": "reference/fieldoptions"},
-        {"label": "Interfaces / FieldValidators", "to": "reference/fieldvalidators"},
-        {"label": "Interfaces / FormOptions", "to": "reference/formoptions"},
-        {"label": "Interfaces / FormValidators", "to": "reference/formvalidators"},
-        {"label": "Types / DeepKeys", "to": "reference/deepkeys"},
-        {"label": "Types / DeepValue", "to": "reference/deepvalue"},
-        {"label": "Types / FieldInfo", "to": "reference/fieldinfo"},
-        {"label": "Types / FieldMeta", "to": "reference/fieldmeta"},
-        {"label": "Types / FieldState", "to": "reference/fieldstate"},
-        {"label": "Types / FormState", "to": "reference/formstate"},
-        {"label": "Types / Updater", "to": "reference/updater"},
-        {"label": "Types / UpdaterFn", "to": "reference/updaterfn"},
-        {"label": "Types / ValidationError", "to": "reference/validationerror"},
-        {"label": "Types / ValidationMeta", "to": "reference/validationmeta"}
+        { "label": "JavaScript Reference", "to": "reference/index" },
+        { "label": "Classes / FieldApi", "to": "reference/fieldapi" },
+        { "label": "Classes / FormApi", "to": "reference/formapi" },
+        { "label": "Functions / formOptions", "to": "reference/formoptions" },
+        { "label": "Functions / mergeForm", "to": "reference/mergeform" },
+        {
+          "label": "Interfaces / FieldApiOptions",
+          "to": "reference/fieldapioptions"
+        },
+        {
+          "label": "Interfaces / FieldOptions",
+          "to": "reference/fieldoptions"
+        },
+        {
+          "label": "Interfaces / FieldValidators",
+          "to": "reference/fieldvalidators"
+        },
+        { "label": "Interfaces / FormOptions", "to": "reference/formoptions" },
+        {
+          "label": "Interfaces / FormValidators",
+          "to": "reference/formvalidators"
+        },
+        { "label": "Types / DeepKeys", "to": "reference/deepkeys" },
+        { "label": "Types / DeepValue", "to": "reference/deepvalue" },
+        { "label": "Types / FieldInfo", "to": "reference/fieldinfo" },
+        { "label": "Types / FieldMeta", "to": "reference/fieldmeta" },
+        { "label": "Types / FieldState", "to": "reference/fieldstate" },
+        { "label": "Types / FormState", "to": "reference/formstate" },
+        { "label": "Types / Updater", "to": "reference/updater" },
+        { "label": "Types / UpdaterFn", "to": "reference/updaterfn" },
+        {
+          "label": "Types / ValidationError",
+          "to": "reference/validationerror"
+        },
+        { "label": "Types / ValidationMeta", "to": "reference/validationmeta" }
       ],
       "frameworks": [
         {
           "label": "react",
           "children": [
-            {"label": "React Reference", "to": "framework/react/reference/index"},
-            {"label": "Functions / createServerValidate", "to": "framework/react/reference/createservervalidate"},
-            {"label": "Functions / Field", "to": "framework/react/reference/field"},
-            {"label": "Functions / useField", "to": "framework/react/reference/usefield"},
-            {"label": "Functions / useForm", "to": "framework/react/reference/useform"},
-            {"label": "Functions / useTransform", "to": "framework/react/reference/usetransform"},
-            {"label": "Types / FieldComponent", "to": "framework/react/reference/fieldcomponent"},
-            {"label": "Types / UseField", "to": "framework/react/reference/usefield"},
-            {"label": "Variables / initialFormState", "to": "framework/react/reference/initialformstate"}
+            {
+              "label": "React Reference",
+              "to": "framework/react/reference/index"
+            },
+            {
+              "label": "Functions / createServerValidate",
+              "to": "framework/react/reference/createservervalidate"
+            },
+            {
+              "label": "Functions / Field",
+              "to": "framework/react/reference/field"
+            },
+            {
+              "label": "Functions / useField",
+              "to": "framework/react/reference/usefield"
+            },
+            {
+              "label": "Functions / useForm",
+              "to": "framework/react/reference/useform"
+            },
+            {
+              "label": "Functions / useTransform",
+              "to": "framework/react/reference/usetransform"
+            },
+            {
+              "label": "Types / FieldComponent",
+              "to": "framework/react/reference/fieldcomponent"
+            },
+            {
+              "label": "Types / UseField",
+              "to": "framework/react/reference/usefield"
+            },
+            {
+              "label": "Variables / initialFormState",
+              "to": "framework/react/reference/initialformstate"
+            }
           ]
         },
         {
           "label": "vue",
           "children": [
-            {"label": "Vue Reference", "to": "framework/vue/reference/index"},
-            {"label": "Functions / Field", "to": "framework/vue/reference/field"},
-            {"label": "Functions / useField", "to": "framework/vue/reference/usefield"},
-            {"label": "Functions / useForm", "to": "framework/vue/reference/useform"},
-            {"label": "Types / FieldComponent", "to": "framework/vue/reference/fieldcomponent"},
-            {"label": "Types / UseField", "to": "framework/vue/reference/usefield"}
+            { "label": "Vue Reference", "to": "framework/vue/reference/index" },
+            {
+              "label": "Functions / Field",
+              "to": "framework/vue/reference/field"
+            },
+            {
+              "label": "Functions / useField",
+              "to": "framework/vue/reference/usefield"
+            },
+            {
+              "label": "Functions / useForm",
+              "to": "framework/vue/reference/useform"
+            },
+            {
+              "label": "Types / FieldComponent",
+              "to": "framework/vue/reference/fieldcomponent"
+            },
+            {
+              "label": "Types / UseField",
+              "to": "framework/vue/reference/usefield"
+            }
           ]
         },
         {
           "label": "solid",
           "children": [
-            {"label": "Solid Reference", "to": "framework/solid/reference/index"},
-            {"label": "Functions / createField", "to": "framework/solid/reference/createfield"},
-            {"label": "Functions / createForm", "to": "framework/solid/reference/createform"},
-            {"label": "Functions / Field", "to": "framework/solid/reference/field"},
-            {"label": "Types / CreateField", "to": "framework/solid/reference/createfield"},
-            {"label": "Types / FieldComponent", "to": "framework/solid/reference/fieldcomponent"}
+            {
+              "label": "Solid Reference",
+              "to": "framework/solid/reference/index"
+            },
+            {
+              "label": "Functions / createField",
+              "to": "framework/solid/reference/createfield"
+            },
+            {
+              "label": "Functions / createForm",
+              "to": "framework/solid/reference/createform"
+            },
+            {
+              "label": "Functions / Field",
+              "to": "framework/solid/reference/field"
+            },
+            {
+              "label": "Types / CreateField",
+              "to": "framework/solid/reference/createfield"
+            },
+            {
+              "label": "Types / FieldComponent",
+              "to": "framework/solid/reference/fieldcomponent"
+            }
           ]
         },
         {
           "label": "lit",
           "children": [
-            {"label": "Lit Reference", "to": "framework/lit/reference/index"},
-            {"label": "Classes / TanStackFormController", "to": "framework/lit/reference/tanstackformcontroller"}
+            { "label": "Lit Reference", "to": "framework/lit/reference/index" },
+            {
+              "label": "Classes / TanStackFormController",
+              "to": "framework/lit/reference/tanstackformcontroller"
+            }
           ]
         },
         {
           "label": "angular",
           "children": [
-            {"label": "Angular Reference", "to": "framework/angular/reference/index"},
-            {"label": "Classes / TanStackField", "to": "framework/angular/reference/tanstackfield"},
-            {"label": "Functions / injectForm", "to": "framework/angular/reference/injectform"},
-            {"label": "Functions / injectStore", "to": "framework/angular/reference/injectstore"}
+            {
+              "label": "Angular Reference",
+              "to": "framework/angular/reference/index"
+            },
+            {
+              "label": "Classes / TanStackField",
+              "to": "framework/angular/reference/tanstackfield"
+            },
+            {
+              "label": "Functions / injectForm",
+              "to": "framework/angular/reference/injectform"
+            },
+            {
+              "label": "Functions / injectStore",
+              "to": "framework/angular/reference/injectstore"
+            }
           ]
         }
       ]
