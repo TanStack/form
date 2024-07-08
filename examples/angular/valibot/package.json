@@ -10,8 +10,6 @@
     "test": "ng test"
   },
   "dependencies": {
-    "@tanstack/angular-form": "^0.25.2",
-    "@tanstack/valibot-form-adapter": "^0.25.2",
     "@angular/animations": "^17.3.0",
     "@angular/common": "^17.3.0",
     "@angular/compiler": "^17.3.0",
@@ -20,6 +18,8 @@
     "@angular/platform-browser": "^17.3.0",
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
+    "@tanstack/angular-form": "^0.25.3",
+    "@tanstack/valibot-form-adapter": "^0.25.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "valibot": "^0.35.0",

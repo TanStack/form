@@ -46,7 +46,6 @@ describe('field api', () => {
       isValidating: false,
       isPristine: true,
       isDirty: false,
-      touchedErrors: [],
       errors: [],
       errorMap: {},
     })
@@ -65,7 +64,6 @@ describe('field api', () => {
       isValidating: false,
       isDirty: true,
       isPristine: false,
-      touchedErrors: [],
       errors: [],
       errorMap: {},
     })
@@ -83,7 +81,9 @@ describe('field api', () => {
       name: 'name',
     })
 
-    field.setValue('other')
+    field.setValue('other', {
+      dontUpdateMeta: true,
+    })
 
     expect(field.getValue()).toBe('other')
   })
@@ -311,9 +311,12 @@ describe('field api', () => {
       validators: subFieldValidators,
     })
 
-    ;[form, field, subField1, subField2, subField3, subField4].forEach((f) =>
-      f.mount(),
-    )
+    form.mount()
+    field.mount()
+    subField1.mount()
+    subField2.mount()
+    subField3.mount()
+    subField4.mount()
 
     await form.handleSubmit()
 
@@ -322,7 +325,7 @@ describe('field api', () => {
     expect(subField3.state.meta.errorMap.onChange).toStrictEqual('Required')
     expect(subField4.state.meta.errorMap.onChange).toStrictEqual(undefined)
 
-    await field.removeValue(0 /* subField1 */, { touch: true })
+    await field.removeValue(0 /* subField1 */)
 
     expect(subField1.state.value).toBe('hello')
     expect(subField1.state.meta.errorMap.onChange).toStrictEqual(undefined)
@@ -369,7 +372,7 @@ describe('field api', () => {
 
     expect(subField1.state.meta.errorMap.onChange).toStrictEqual('Required')
 
-    await field.removeValue(0 /* subField1 */, { touch: true })
+    await field.removeValue(0 /* subField1 */)
 
     expect(subField1.state.value).toBe(undefined)
     expect(subField1.state.meta.errorMap.onChange).toStrictEqual(undefined)
@@ -519,7 +522,7 @@ describe('field api', () => {
     field.mount()
 
     expect(field.getMeta().errors.length).toBe(0)
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     expect(field.getMeta().errors).toContain('Please enter a different value')
     expect(field.getMeta().errorMap).toMatchObject({
       onChange: 'Please enter a different value',
@@ -550,7 +553,7 @@ describe('field api', () => {
     field.mount()
 
     expect(field.getMeta().errors.length).toBe(0)
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     await vi.runAllTimersAsync()
     expect(field.getMeta().errors).toContain('Please enter a different value')
     expect(field.getMeta().errorMap).toMatchObject({
@@ -584,8 +587,10 @@ describe('field api', () => {
     field.mount()
 
     expect(field.getMeta().errors.length).toBe(0)
-    field.setValue('other', { touch: true })
     field.setValue('other')
+    field.setValue('other', {
+      dontUpdateMeta: true,
+    })
     await vi.runAllTimersAsync()
     // sleepMock will have been called 2 times without onChangeAsyncDebounceMs
     expect(sleepMock).toHaveBeenCalledTimes(1)
@@ -621,8 +626,10 @@ describe('field api', () => {
     field.mount()
 
     expect(field.getMeta().errors.length).toBe(0)
-    field.setValue('other', { touch: true })
     field.setValue('other')
+    field.setValue('other', {
+      dontUpdateMeta: true,
+    })
     await vi.runAllTimersAsync()
     // sleepMock will have been called 2 times without asyncDebounceMs
     expect(sleepMock).toHaveBeenCalledTimes(1)
@@ -664,13 +671,13 @@ describe('field api', () => {
 
     field.mount()
 
-    field.setValue('123', { touch: true })
+    field.setValue('123')
     expect(mockOnChange).toHaveBeenCalledTimes(1)
     expect(mockOnChangeAsync).toHaveBeenCalledTimes(0)
     expect(field.getMeta().errors).toStrictEqual([])
 
     // Change value while debounced async validation is enqueued
-    field.setValue('12', { touch: true })
+    field.setValue('12')
     expect(mockOnChange).toHaveBeenCalledTimes(2)
     expect(mockOnChangeAsync).toHaveBeenCalledTimes(0)
 
@@ -717,7 +724,7 @@ describe('field api', () => {
     field.mount()
 
     // Input a valid value, triggers both validations after debounce + sleep
-    field.setValue('1234', { touch: true })
+    field.setValue('1234')
     expect(mockOnChange).toHaveBeenCalledTimes(1)
     expect(mockOnChangeAsync).toHaveBeenCalledTimes(0)
     await vi.runAllTimersAsync()
@@ -725,7 +732,7 @@ describe('field api', () => {
     expect(field.getMeta().errors).toStrictEqual([])
 
     // Input again a valid value
-    field.setValue('123', { touch: true })
+    field.setValue('123')
     expect(mockOnChange).toHaveBeenCalledTimes(2)
     expect(mockOnChangeAsync).toHaveBeenCalledTimes(1)
     expect(field.getMeta().errors).toStrictEqual([])
@@ -735,7 +742,7 @@ describe('field api', () => {
     expect(mockOnChangeAsync).toHaveBeenCalledTimes(2)
 
     // Input an invalid value before async validation resolves
-    field.setValue('12', { touch: true })
+    field.setValue('12')
     expect(mockOnChange).toHaveBeenCalledTimes(3)
     expect(field.getMeta().errors).toStrictEqual([
       'First name must be at least 3 characters',
@@ -768,7 +775,7 @@ describe('field api', () => {
 
     field.mount()
 
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     field.validate('blur')
     expect(field.getMeta().errors).toContain('Please enter a different value')
     expect(field.getMeta().errorMap).toMatchObject({
@@ -800,7 +807,7 @@ describe('field api', () => {
     field.mount()
 
     expect(field.getMeta().errors.length).toBe(0)
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     field.validate('blur')
     await vi.runAllTimersAsync()
     expect(field.getMeta().errors).toContain('Please enter a different value')
@@ -835,7 +842,7 @@ describe('field api', () => {
     field.mount()
 
     expect(field.getMeta().errors.length).toBe(0)
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     field.validate('blur')
     field.validate('blur')
     await vi.runAllTimersAsync()
@@ -873,7 +880,7 @@ describe('field api', () => {
     field.mount()
 
     expect(field.getMeta().errors.length).toBe(0)
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     field.validate('blur')
     field.validate('blur')
     await vi.runAllTimersAsync()
@@ -909,7 +916,7 @@ describe('field api', () => {
     field.mount()
 
     expect(field.getMeta().errors.length).toBe(0)
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     field.validate('submit')
     await vi.runAllTimersAsync()
     expect(field.getMeta().errors).toContain('Please enter a different value')
@@ -942,7 +949,7 @@ describe('field api', () => {
 
     field.mount()
 
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     field.validate('blur')
     expect(field.getMeta().errors).toStrictEqual([
       'Please enter a different value',
@@ -974,14 +981,14 @@ describe('field api', () => {
 
     field.mount()
 
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     expect(field.getMeta().errors).toStrictEqual([
       'Please enter a different value',
     ])
     expect(field.getMeta().errorMap).toEqual({
       onChange: 'Please enter a different value',
     })
-    field.setValue('test', { touch: true })
+    field.setValue('test')
     expect(field.getMeta().errors).toStrictEqual([])
     expect(field.getMeta().errorMap).toEqual({})
   })
@@ -1097,10 +1104,10 @@ describe('field api', () => {
 
     field.mount()
 
-    field.setValue('one', { touch: true })
+    field.setValue('one')
     // Allow for a micro-tick to allow the promise to resolve
     await sleep(1)
-    field.setValue('two', { touch: true })
+    field.setValue('two')
     resolve()
     await sleep(1)
     expect(fn).toHaveBeenCalledTimes(1)
@@ -1136,13 +1143,13 @@ describe('field api', () => {
     passField.mount()
     passconfirmField.mount()
 
-    passField.setValue('one', { touch: true })
+    passField.setValue('one')
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
     ])
-    passconfirmField.setValue('one', { touch: true })
+    passconfirmField.setValue('one')
     expect(passconfirmField.state.meta.errors).toStrictEqual([])
-    passField.setValue('two', { touch: true })
+    passField.setValue('two')
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
     ])
@@ -1178,19 +1185,19 @@ describe('field api', () => {
     passField.mount()
     passconfirmField.mount()
 
-    passField.setValue('one', { touch: true })
+    passField.setValue('one')
     expect(passconfirmField.state.meta.errors).toStrictEqual([])
     passField.handleBlur()
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
     ])
-    passconfirmField.setValue('one', { touch: true })
+    passconfirmField.setValue('one')
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
     ])
     passField.handleBlur()
     expect(passconfirmField.state.meta.errors).toStrictEqual([])
-    passField.setValue('two', { touch: true })
+    passField.setValue('two')
     passField.handleBlur()
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
@@ -1237,7 +1244,7 @@ describe('field api', () => {
     passField.mount()
     passconfirmField.mount()
 
-    passField.setValue('one', { touch: true })
+    passField.setValue('one')
     resolve()
     // Allow for a micro-tick to allow the promise to resolve
     await sleep(1)
@@ -1247,7 +1254,7 @@ describe('field api', () => {
     promise = new Promise((r) => {
       resolve = r as never
     })
-    passconfirmField.setValue('one', { touch: true })
+    passconfirmField.setValue('one')
     resolve()
     // Allow for a micro-tick to allow the promise to resolve
     await sleep(1)
@@ -1255,7 +1262,7 @@ describe('field api', () => {
     promise = new Promise((r) => {
       resolve = r as never
     })
-    passField.setValue('two', { touch: true })
+    passField.setValue('two')
     resolve()
     // Allow for a micro-tick to allow the promise to resolve
     await sleep(1)

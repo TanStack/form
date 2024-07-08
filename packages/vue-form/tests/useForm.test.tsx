@@ -227,7 +227,9 @@ describe('useForm', () => {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onInput={(e) =>
-                    field.setValue((e.target as HTMLInputElement).value)
+                    field.setValue((e.target as HTMLInputElement).value, {
+                      dontUpdateMeta: true,
+                    })
                   }
                 />
               </div>

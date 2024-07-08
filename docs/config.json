@@ -111,7 +111,7 @@
               "to": "framework/react/guides/react-native"
             },
             {
-              "label": "SSR/Next.js",
+              "label": "SSR/TanStack Start/Next.js",
               "to": "framework/react/guides/ssr"
             },
             {
@@ -124,8 +124,24 @@
           "label": "vue",
           "children": [
             {
+              "label": "Basic Concepts",
+              "to": "framework/vue/guides/basic-concepts"
+            },
+            {
+              "label": "Form Validation",
+              "to": "framework/vue/guides/validation"
+            },
+            {
+              "label": "Async Initial Values",
+              "to": "framework/vue/guides/async-initial-values"
+            },
+            {
               "label": "Arrays",
               "to": "framework/vue/guides/arrays"
+            },
+            {
+              "label": "Linked Fields",
+              "to": "framework/vue/guides/linked-fields"
             }
           ]
         },
@@ -266,6 +282,10 @@
             {
               "label": "Valibot",
               "to": "framework/react/examples/valibot"
+            },
+            {
+              "label": "TanStack Start",
+              "to": "framework/react/examples/tanstack-start"
             },
             {
               "label": "Next Server Actions",

@@ -116,7 +116,11 @@ describe('useField', () => {
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) => field.setValue(e.target.value)}
+                  onChange={(e) =>
+                    field.setValue(e.target.value, {
+                      dontUpdateMeta: true,
+                    })
+                  }
                 />
                 <p>{field.getMeta().errors}</p>
               </div>
@@ -406,8 +410,8 @@ describe('useField', () => {
     function FieldInfo({ field }: { field: FieldApi<any, any> }) {
       return (
         <>
-          {field.state.meta.touchedErrors.length ? (
-            <em>{field.state.meta.touchedErrors}</em>
+          {field.state.meta.isTouched && field.state.meta.errors.length ? (
+            <em>{field.state.meta.errors.join(',')}</em>
           ) : null}
           {field.state.meta.isValidating ? 'Validating...' : null}
         </>

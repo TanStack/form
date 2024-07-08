@@ -176,7 +176,11 @@ describe('createForm', () => {
                   name={field().name}
                   value={field().state.value}
                   onBlur={field().handleBlur}
-                  onInput={(e) => field().setValue(e.currentTarget.value)}
+                  onInput={(e) =>
+                    field().setValue(e.currentTarget.value, {
+                      dontUpdateMeta: true,
+                    })
+                  }
                 />
                 <p>{errors().join(',')}</p>
               </div>
@@ -223,7 +227,11 @@ describe('createForm', () => {
                     name={field().name}
                     value={field().state.value}
                     onBlur={field().handleBlur}
-                    onInput={(e) => field().setValue(e.currentTarget.value)}
+                    onInput={(e) =>
+                      field().setValue(e.currentTarget.value, {
+                        dontUpdateMeta: true,
+                      })
+                    }
                   />
                   <p>{errors()?.onChange}</p>
                 </div>

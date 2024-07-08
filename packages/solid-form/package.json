@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/solid-form",
-  "version": "0.25.2",
+  "version": "0.25.3",
   "description": "Powerful, type-safe forms for Solid.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -14,7 +14,6 @@
     "type": "github",
     "url": "https://github.com/sponsors/tannerlinsley"
   },
-  "sideEffects": false,
   "scripts": {
     "clean": "rimraf ./dist && rimraf ./coverage",
     "test:eslint": "eslint ./src ./tests",
@@ -30,10 +29,6 @@
     "test:build": "publint --strict",
     "build": "tsc -p tsconfig.build.json"
   },
-  "files": [
-    "dist",
-    "src"
-  ],
   "type": "module",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
@@ -51,14 +46,19 @@
     },
     "./package.json": "./package.json"
   },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "src"
+  ],
+  "dependencies": {
+    "@tanstack/form-core": "workspace:*",
+    "@tanstack/solid-store": "^0.5.0"
+  },
   "devDependencies": {
     "solid-js": "^1.7.8",
     "vite": "^5.1.4",
     "vite-plugin-solid": "^2.10.1"
-  },
-  "dependencies": {
-    "@tanstack/form-core": "workspace:*",
-    "@tanstack/solid-store": "^0.5.0"
   },
   "peerDependencies": {
     "solid-js": "^1.6.0"

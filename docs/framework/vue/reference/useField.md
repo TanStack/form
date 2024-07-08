@@ -27,15 +27,15 @@ function useField<TParentData, TName, TFieldValidator, TFormValidator, TData>(op
 ### api
 
 ```ts
-api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>;
+readonly api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData> & VueFieldApi<TParentData, TFormValidator> = fieldApi;
 ```
 
 ### state
 
 ```ts
-state: Readonly<Ref<FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>["state"]>>;
+readonly state: Readonly<Ref<FieldState<TData>>> = fieldState;
 ```
 
 ## Source
 
-[packages/vue-form/src/useField.tsx:61](https://github.com/TanStack/form/blob/5c94fa159313e0b0411d49fbdc3b117336185e63/packages/vue-form/src/useField.tsx#L61)
+[packages/vue-form/src/useField.tsx:49](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/vue-form/src/useField.tsx#L49)

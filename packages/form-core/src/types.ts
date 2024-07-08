@@ -26,3 +26,13 @@ export type ValidationErrorMapKeys = `on${Capitalize<ValidationCause>}`
 export type ValidationErrorMap = {
   [K in ValidationErrorMapKeys]?: ValidationError
 }
+
+/**
+ * @private
+ */
+export interface UpdateMetaOptions {
+  /**
+   * @default false
+   */
+  dontUpdateMeta?: boolean
+}
