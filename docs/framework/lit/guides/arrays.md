@@ -1,0 +1,4 @@
+---
+id: arrays
+title: Arrays
+---
