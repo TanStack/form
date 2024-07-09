@@ -12,13 +12,13 @@
   "dependencies": {
     "@tanstack/vue-form": "^0.25.3",
     "@tanstack/zod-form-adapter": "^0.25.3",
-    "vue": "^3.3.4",
-    "zod": "^3.22.4"
+    "vue": "^3.4.31",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.4",
+    "@vitejs/plugin-vue": "^5.0.5",
     "typescript": "5.4.2",
-    "vite": "^5.1.4",
-    "vue-tsc": "^2.0.6"
+    "vite": "^5.3.3",
+    "vue-tsc": "^2.0.26"
   }
 }
