@@ -12,8 +12,8 @@ importers:
         specifier: ^1.5.23
         version: 1.5.23(eslint@8.57.0)(typescript@5.4.2)
       '@solidjs/testing-library':
-        specifier: ^0.8.6
-        version: 0.8.6(@solidjs/router@0.13.0(solid-js@1.8.18))(solid-js@1.8.18)
+        specifier: ^0.8.8
+        version: 0.8.8(@solidjs/router@0.13.0(solid-js@1.8.18))(solid-js@1.8.18)
       '@tanstack/config':
         specifier: ^0.9.2
         version: 0.9.2(@types/node@20.10.6)(esbuild@0.21.5)(eslint@8.57.0)(rollup@4.18.0)(typescript@5.4.2)(vite@5.3.3(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
@@ -25,7 +25,7 @@ importers:
         version: 14.3.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@testing-library/user-event':
         specifier: ^14.5.2
-        version: 14.5.2(@testing-library/dom@9.3.4)
+        version: 14.5.2(@testing-library/dom@10.3.1)
       '@testing-library/vue':
         specifier: ^8.1.0
         version: 8.1.0(@vue/compiler-sfc@3.3.4)(@vue/server-renderer@3.3.4(vue@3.3.4))(vue@3.3.4)
@@ -3796,12 +3796,15 @@ packages:
     peerDependencies:
       solid-js: ^1.8.6
 
-  '@solidjs/testing-library@0.8.6':
-    resolution: {integrity: sha512-MnDGfUw38SjE+lmCDZ44HeZq5WbDU7s/BTa7uvqv55GKatddoWiJmHanUAbuEtmwMdEv+fFQQzftkqrFXEn1BQ==}
+  '@solidjs/testing-library@0.8.8':
+    resolution: {integrity: sha512-47J9Aw+iG45Fs5Kxu/IJmkaaucpF7qhDazW+iXeNssAYI0FH+4MeM/SfYRhPbIMH/hBpMh/XjbK1Wpyu9PcSwg==}
     engines: {node: '>= 14'}
     peerDependencies:
       '@solidjs/router': '>=0.9.0'
       solid-js: '>=1.0.0'
+    peerDependenciesMeta:
+      '@solidjs/router':
+        optional: true
 
   '@swc/core-darwin-arm64@1.6.13':
     resolution: {integrity: sha512-SOF4buAis72K22BGJ3N8y88mLNfxLNprTuJUpzikyMGrvkuBFNcxYtMhmomO0XHsgLDzOJ+hWzcgjRNzjMsUcQ==}
@@ -3986,6 +3989,10 @@ packages:
       '@angular/core': '>= 17.0.0'
       '@angular/platform-browser': '>= 17.0.0'
       '@angular/router': '>= 17.0.0'
+
+  '@testing-library/dom@10.3.1':
+    resolution: {integrity: sha512-q/WL+vlXMpC0uXDyfsMtc1rmotzLV8Y0gq6q1gfrrDjQeHoeLrqHbxdPvPNAh1i+xuJl7+BezywcXArz7vLqKQ==}
+    engines: {node: '>=18'}
 
   '@testing-library/dom@9.3.4':
     resolution: {integrity: sha512-FlS4ZWlp97iiNWig0Muq8p+3rVDjRiYE+YKGbAqXOu9nwJFFOdL00kFpz42M+4huzYi86vAK1sOOfyOG45muIQ==}
@@ -12390,12 +12397,14 @@ snapshots:
   '@solidjs/router@0.13.0(solid-js@1.8.18)':
     dependencies:
       solid-js: 1.8.18
+    optional: true
 
-  '@solidjs/testing-library@0.8.6(@solidjs/router@0.13.0(solid-js@1.8.18))(solid-js@1.8.18)':
+  '@solidjs/testing-library@0.8.8(@solidjs/router@0.13.0(solid-js@1.8.18))(solid-js@1.8.18)':
     dependencies:
-      '@solidjs/router': 0.13.0(solid-js@1.8.18)
-      '@testing-library/dom': 9.3.4
+      '@testing-library/dom': 10.3.1
       solid-js: 1.8.18
+    optionalDependencies:
+      '@solidjs/router': 0.13.0(solid-js@1.8.18)
 
   '@swc/core-darwin-arm64@1.6.13':
     optional: true
@@ -12656,6 +12665,17 @@ snapshots:
       '@testing-library/dom': 9.3.4
       tslib: 2.6.3
 
+  '@testing-library/dom@10.3.1':
+    dependencies:
+      '@babel/code-frame': 7.24.7
+      '@babel/runtime': 7.24.0
+      '@types/aria-query': 5.0.1
+      aria-query: 5.3.0
+      chalk: 4.1.2
+      dom-accessibility-api: 0.5.16
+      lz-string: 1.5.0
+      pretty-format: 27.5.1
+
   '@testing-library/dom@9.3.4':
     dependencies:
       '@babel/code-frame': 7.24.7
@@ -12688,9 +12708,9 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@testing-library/user-event@14.5.2(@testing-library/dom@9.3.4)':
+  '@testing-library/user-event@14.5.2(@testing-library/dom@10.3.1)':
     dependencies:
-      '@testing-library/dom': 9.3.4
+      '@testing-library/dom': 10.3.1
 
   '@testing-library/vue@8.1.0(@vue/compiler-sfc@3.3.4)(@vue/server-renderer@3.3.4(vue@3.3.4))(vue@3.3.4)':
     dependencies:
