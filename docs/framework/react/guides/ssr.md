@@ -82,19 +82,28 @@ export const handleForm = createServerFn(
 )
 ```
 
-Finally, we'll use `getFormData` in our loader to get the state from our server into our client and `handleForm` in our client-side form component.
+Then we need to establish a way to grab the form data from `serverValidate`'s `response` using another server action:
+
+```typescript
+// app/routes/index.tsx, but can be extracted to any other path
+import { getFormData } from '@tanstack/react-form/start'
+
+export const getFormDataFromServer = createServerFn('GET', async (_, ctx) => {
+  return getFormData(ctx)
+})
+```
+
+Finally, we'll use `getFormDataFromServer` in our loader to get the state from our server into our client and `handleForm` in our client-side form component.
 
 ```tsx
 // app/routes/index.tsx
 import { createFileRoute } from '@tanstack/react-router'
 import { mergeForm, useForm, useTransform } from '@tanstack/react-form'
-import { getFormData } from '@tanstack/react-form/start'
-import { formOpts, handleForm } from '~/utils/form'
 
 export const Route = createFileRoute('/')({
   component: Home,
   loader: async () => ({
-    state: await getFormData(),
+    state: await getFormDataFromServer(),
   }),
 })
 
