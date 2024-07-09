@@ -44,7 +44,7 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/angular-store": "^0.5.1",
+    "@tanstack/angular-store": "^0.5.4",
     "@tanstack/form-core": "workspace:*",
     "tslib": "^2.6.3"
   },

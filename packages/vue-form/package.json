@@ -54,7 +54,7 @@
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/vue-store": "^0.5.0"
+    "@tanstack/vue-store": "^0.5.4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.5",

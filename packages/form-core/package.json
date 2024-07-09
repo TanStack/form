@@ -52,6 +52,6 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/store": "^0.5.0"
+    "@tanstack/store": "^0.5.4"
   }
 }
