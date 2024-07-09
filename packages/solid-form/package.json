@@ -53,7 +53,7 @@
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/solid-store": "^0.5.0"
+    "@tanstack/solid-store": "^0.5.4"
   },
   "devDependencies": {
     "solid-js": "^1.8.18",
