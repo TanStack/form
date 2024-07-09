@@ -421,7 +421,7 @@ importers:
   examples/react/array:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^0.26.0
+        specifier: ^0.26.1
         version: link:../../../packages/react-form
       react:
         specifier: ^18.3.1
@@ -446,7 +446,7 @@ importers:
   examples/react/next-server-actions:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^0.26.0
+        specifier: ^0.26.1
         version: link:../../../packages/react-form
       next:
         specifier: 15.0.0-rc.0
@@ -474,7 +474,7 @@ importers:
   examples/react/query-integration:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^0.26.0
+        specifier: ^0.26.1
         version: link:../../../packages/react-form
       '@tanstack/react-query':
         specifier: ^5.32.0
@@ -502,7 +502,7 @@ importers:
   examples/react/simple:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^0.26.0
+        specifier: ^0.26.1
         version: link:../../../packages/react-form
       react:
         specifier: ^18.3.1
@@ -530,7 +530,7 @@ importers:
         specifier: ^0.25.3
         version: link:../../../packages/form-core
       '@tanstack/react-form':
-        specifier: ^0.26.0
+        specifier: ^0.26.1
         version: link:../../../packages/react-form
       '@tanstack/react-router':
         specifier: ^1.43.13
@@ -588,7 +588,7 @@ importers:
         specifier: 5.15.2
         version: 5.15.2(@emotion/react@11.11.3(@types/react@18.3.3)(react@18.3.1))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.3.3)(react@18.3.1))(@types/react@18.3.3)(react@18.3.1))(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tanstack/react-form':
-        specifier: ^0.26.0
+        specifier: ^0.26.1
         version: link:../../../packages/react-form
       '@yme/lay-postcss':
         specifier: 0.1.0
@@ -646,7 +646,7 @@ importers:
   examples/react/valibot:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^0.26.0
+        specifier: ^0.26.1
         version: link:../../../packages/react-form
       '@tanstack/valibot-form-adapter':
         specifier: ^0.25.3
@@ -677,7 +677,7 @@ importers:
   examples/react/yup:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^0.26.0
+        specifier: ^0.26.1
         version: link:../../../packages/react-form
       '@tanstack/yup-form-adapter':
         specifier: ^0.25.3
@@ -708,7 +708,7 @@ importers:
   examples/react/zod:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^0.26.0
+        specifier: ^0.26.1
         version: link:../../../packages/react-form
       '@tanstack/zod-form-adapter':
         specifier: ^0.25.3
@@ -12810,8 +12810,8 @@ snapshots:
       '@types/jsesc': 3.0.3
       '@vinxi/react': 0.2.2
       '@vinxi/react-server-dom': 0.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vite@5.2.10(@types/node@20.10.6)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
-      '@vinxi/server-components': 0.3.3(vinxi@0.3.11(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
-      '@vinxi/server-functions': 0.3.3(vinxi@0.3.11(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+      '@vinxi/server-components': 0.3.3(vinxi@0.3.11(@types/node@20.10.6)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+      '@vinxi/server-functions': 0.3.3(vinxi@0.3.11(@types/node@20.10.6)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
       import-meta-resolve: 4.0.0
       isbot: 5.1.11
       jsesc: 3.0.2
@@ -13313,7 +13313,7 @@ snapshots:
     transitivePeerDependencies:
       - uWebSockets.js
 
-  '@vinxi/plugin-directives@0.3.1(vinxi@0.3.11(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
+  '@vinxi/plugin-directives@0.3.1(vinxi@0.3.11(@types/node@20.10.6)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
     dependencies:
       '@babel/parser': 7.24.7
       acorn: 8.12.0
@@ -13335,9 +13335,9 @@ snapshots:
 
   '@vinxi/react@0.2.2': {}
 
-  '@vinxi/server-components@0.3.3(vinxi@0.3.11(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
+  '@vinxi/server-components@0.3.3(vinxi@0.3.11(@types/node@20.10.6)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
     dependencies:
-      '@vinxi/plugin-directives': 0.3.1(vinxi@0.3.11(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+      '@vinxi/plugin-directives': 0.3.1(vinxi@0.3.11(@types/node@20.10.6)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
       acorn: 8.12.0
       acorn-loose: 8.4.0
       acorn-typescript: 1.4.13(acorn@8.12.0)
@@ -13346,9 +13346,9 @@ snapshots:
       recast: 0.23.9
       vinxi: 0.3.11(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1)
 
-  '@vinxi/server-functions@0.3.3(vinxi@0.3.11(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
+  '@vinxi/server-functions@0.3.3(vinxi@0.3.11(@types/node@20.10.6)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
     dependencies:
-      '@vinxi/plugin-directives': 0.3.1(vinxi@0.3.11(@opentelemetry/api@1.9.0)(@types/node@20.10.6)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+      '@vinxi/plugin-directives': 0.3.1(vinxi@0.3.11(@types/node@20.10.6)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
       acorn: 8.12.0
       acorn-loose: 8.4.0
       acorn-typescript: 1.4.13(acorn@8.12.0)
