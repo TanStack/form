@@ -5,7 +5,7 @@
     "jsxImportSource": "solid-js",
     "moduleResolution": "Bundler",
     "rootDir": "src",
-    "outDir": "dist",
+    "outDir": "dist/source",
     "noEmit": false,
     "declaration": true,
     "sourceMap": true,
