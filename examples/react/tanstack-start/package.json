@@ -11,14 +11,14 @@
   "dependencies": {
     "@tanstack/form-core": "^0.26.3",
     "@tanstack/react-form": "^0.26.3",
-    "@tanstack/react-router": "^1.43.14",
-    "@tanstack/start": "^1.43.14",
+    "@tanstack/react-router": "^1.44.0",
+    "@tanstack/start": "^1.44.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "vinxi": "^0.3.12"
   },
   "devDependencies": {
-    "@types/node": "^20.9.0",
+    "@types/node": "^20.14.10",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",

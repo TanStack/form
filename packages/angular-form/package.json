@@ -59,7 +59,7 @@
     "@testing-library/angular": "^17.0.0",
     "ng-packagr": "^17.3.0",
     "typescript": "5.4.2",
-    "zone.js": "~0.14.2"
+    "zone.js": "^0.14.7"
   },
   "peerDependencies": {
     "@angular/core": ">=17.3.0"
