@@ -20,10 +20,10 @@
     "@angular/router": "^17.3.11",
     "@tanstack/angular-form": "^0.26.3",
     "@tanstack/valibot-form-adapter": "^0.26.3",
-    "rxjs": "~7.8.1",
+    "rxjs": "^7.8.1",
     "tslib": "^2.6.3",
     "valibot": "^0.35.0",
-    "zone.js": "~0.14.2"
+    "zone.js": "^0.14.7"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.3.8",
