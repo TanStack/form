@@ -9,8 +9,8 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-form": "^0.26.3",
-    "@tanstack/yup-form-adapter": "^0.26.3",
+    "@tanstack/react-form": "^0.26.4",
+    "@tanstack/yup-form-adapter": "^0.26.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "yup": "^1.4.0"
