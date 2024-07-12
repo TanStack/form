@@ -878,7 +878,7 @@ export class FieldApi<
               errorMap: {
                 // eslint-disable-next-line ts/no-unnecessary-condition
                 ...prev?.errorMap,
-                [getErrorMapKey(cause)]: error,
+                [getErrorMapKey(validateObj.cause)]: error,
               },
             }
           })
