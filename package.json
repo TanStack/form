@@ -29,7 +29,8 @@
     "prettier:write": "pnpm run prettier --write",
     "docs:reference": "node scripts/reference-docs.js",
     "cipublish": "node scripts/publish.js",
-    "cipublishforce": "pnpm cipublish"
+    "cipublishforce": "CI=true pnpm cipublish",
+    "invalidate": "test"
   },
   "nx": {
     "includedScripts": [
