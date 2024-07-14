@@ -11,9 +11,9 @@
   "dependencies": {
     "@emotion/react": "11.11.4",
     "@emotion/styled": "11.11.5",
-    "@mantine/core": "7.11.1",
-    "@mantine/hooks": "7.11.1",
-    "@mui/material": "5.16.0",
+    "@mantine/core": "7.11.2",
+    "@mantine/hooks": "7.11.2",
+    "@mui/material": "5.16.1",
     "@tanstack/react-form": "^0.26.4",
     "@yme/lay-postcss": "0.1.0",
     "postcss": "8.4.39",
