@@ -30,7 +30,7 @@
     "docs:reference": "node scripts/reference-docs.js",
     "cipublish": "node scripts/publish.js",
     "cipublishforce": "CI=true pnpm cipublish",
-    "invalidate": "test again"
+    "invalidate": "cipublish"
   },
   "nx": {
     "includedScripts": [
