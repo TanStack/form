@@ -27,7 +27,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Start Nx Agents
-        run: npx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
+        run: npx nx-cloud start-ci-run --distribute-on="manual"
       - name: Setup Tools
         uses: tanstack/config/.github/setup@main
       - name: Get base and head commits for `nx affected`
@@ -35,7 +35,7 @@ jobs:
         with:
           main-branch-name: main
       - name: Run Checks
-        run: pnpm run test:pr --parallel=3
+        run: pnpm run test:pr --skip-nx-cache
       - name: Stop Nx Agents
         if: ${{ always() }}
         run: npx nx-cloud stop-all-agents
@@ -59,3 +59,19 @@ jobs:
         run: pnpm run build:all
       - name: Publish Previews
         run: pnpx pkg-pr-new publish --pnpm --compact './packages/*' --template './examples/*/*'
+  agents:
+    name: Agents
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        agent: [1, 2, 3, 4, 5]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Tools
+        uses: tanstack/config/.github/setup@main
+      - name: Start Nx Agent ${{ matrix.agent }}
+        run: npx nx-cloud start-agent
