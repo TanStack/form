@@ -545,8 +545,8 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
       vinxi:
-        specifier: ^0.3.12
-        version: 0.3.12(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1)
+        specifier: ^0.3.14
+        version: 0.3.14(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1)
     devDependencies:
       '@types/node':
         specifier: ^20.14.10
@@ -980,8 +980,8 @@ importers:
   packages/angular-form:
     dependencies:
       '@tanstack/angular-store':
-        specifier: ^0.5.4
-        version: 0.5.4(@angular/common@17.3.11(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(rxjs@7.8.1))(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))
+        specifier: ^0.5.5
+        version: 0.5.5(@angular/common@17.3.11(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(rxjs@7.8.1))(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../form-core
@@ -1026,8 +1026,8 @@ importers:
   packages/form-core:
     dependencies:
       '@tanstack/store':
-        specifier: ^0.5.4
-        version: 0.5.4
+        specifier: ^0.5.5
+        version: 0.5.5
 
   packages/lit-form:
     dependencies:
@@ -1048,8 +1048,8 @@ importers:
         specifier: workspace:*
         version: link:../form-core
       '@tanstack/react-store':
-        specifier: ^0.5.4
-        version: 0.5.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.5.5
+        version: 0.5.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       decode-formdata:
         specifier: ^0.7.5
         version: 0.7.5
@@ -1082,8 +1082,8 @@ importers:
         specifier: workspace:*
         version: link:../form-core
       '@tanstack/solid-store':
-        specifier: ^0.5.4
-        version: 0.5.4(solid-js@1.8.18)
+        specifier: ^0.5.5
+        version: 0.5.5(solid-js@1.8.18)
     devDependencies:
       solid-js:
         specifier: ^1.8.18
@@ -1111,8 +1111,8 @@ importers:
         specifier: workspace:*
         version: link:../form-core
       '@tanstack/vue-store':
-        specifier: ^0.5.4
-        version: 0.5.4(vue@3.3.4)
+        specifier: ^0.5.5
+        version: 0.5.5(vue@3.3.4)
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.0.5
@@ -3752,8 +3752,8 @@ packages:
   '@swc/types@0.1.9':
     resolution: {integrity: sha512-qKnCno++jzcJ4lM4NTfYifm1EFSCeIfKiAHAfkENZAV5Kl9PjJIyd2yeeVv6c/2CckuLyv2NmRC5pv6pm2WQBg==}
 
-  '@tanstack/angular-store@0.5.4':
-    resolution: {integrity: sha512-1kDvM7t8cpH3jo/l6crThGWvW8i8380BTcNJ3kxMQsyrpJbgghO6HajDuX2e3F+2FU1dYp6iTlghw0fty7Lhqw==}
+  '@tanstack/angular-store@0.5.5':
+    resolution: {integrity: sha512-JQLlu08qVydE854QZ7RzNbhVp6HGjScAI8vQBq1afCFyqW/+8CDiiIjofBS4N5+HidikQoum3+LhPeRdWBoVFQ==}
     peerDependencies:
       '@angular/common': '>=16 < 18'
       '@angular/core': '>=16 < 18'
@@ -3794,6 +3794,12 @@ packages:
       react: ^17.0.0 || ^18.0.0
       react-dom: ^17.0.0 || ^18.0.0
 
+  '@tanstack/react-store@0.5.5':
+    resolution: {integrity: sha512-1orYXGatBqXCYKuroFwV8Ll/6aDa5E3pU6RR4h7RvRk7TmxF1+zLCsWALZaeijXkySNMGmvawSbUXRypivg2XA==}
+    peerDependencies:
+      react: ^17.0.0 || ^18.0.0
+      react-dom: ^17.0.0 || ^18.0.0
+
   '@tanstack/router-generator@1.44.3':
     resolution: {integrity: sha512-HREwp8dpArD6OXROWOvsNPo1dlK/SNLDvCypj3VIBewH+JNWEjnv42m0lpddIbVjrm/kiHiVJVIRi4rnlrXnjQ==}
     engines: {node: '>=12'}
@@ -3813,8 +3819,8 @@ packages:
       webpack:
         optional: true
 
-  '@tanstack/solid-store@0.5.4':
-    resolution: {integrity: sha512-PZi289dFudlI5N5eAXR+uHgY8jdu2rppfKuk44AEOt3qNdmrGpVPpmqrO2NR+9UDu/zq6Q8Q3GeTjQPhZ06vlQ==}
+  '@tanstack/solid-store@0.5.5':
+    resolution: {integrity: sha512-31UD/UQ7uNG/HRJ5KV12QsAoehmx8LB3oGITaJ2LjeMBY95DLB5elRqWTGj6EwwLKLOWFEGQIz6ksEYM9OIwMw==}
     peerDependencies:
       solid-js: ^1.6.0
 
@@ -3832,8 +3838,11 @@ packages:
   '@tanstack/store@0.5.4':
     resolution: {integrity: sha512-EG/aGAK/yUJz0JxPaY9wOr1Sjz9Uc//BX7uY9SAo5M0GkCEz7DOSxixBq2afn/reLMGqTIGYq7TkMGgyNQgdcA==}
 
-  '@tanstack/vue-store@0.5.4':
-    resolution: {integrity: sha512-njHeF19elrLOINwctWO8Q9nwlLr4cQz0K/zE/Yst5Zy72leiR6ZoSjltZw1sBw+8JQYpr4/KWvQS/hQf26ceSA==}
+  '@tanstack/store@0.5.5':
+    resolution: {integrity: sha512-EOSrgdDAJExbvRZEQ/Xhh9iZchXpMN+ga1Bnk8Nmygzs8TfiE6hbzThF+Pr2G19uHL6+DTDTHhJ8VQiOd7l4tA==}
+
+  '@tanstack/vue-store@0.5.5':
+    resolution: {integrity: sha512-j+CDrxVhtQQNOjWzLmCqJeDwmmTAQGvEaNbLr1uPJ9rxJITodJtFNdBFj7l+Nd5o34v2ayEv64Ugh6+1BtuGNg==}
     peerDependencies:
       '@vue/composition-api': ^1.2.1
       vue: ^2.5.0 || ^3.0.0
@@ -8953,6 +8962,11 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
+  use-sync-external-store@1.2.2:
+    resolution: {integrity: sha512-PElTlVMwpblvbNqQ82d2n6RjStvdSoNe9FG28kNfz3WiXilJm4DdNkEzRhCZuIDwY8U08WVihhGR5iRqAwfDiw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
@@ -8997,6 +9011,10 @@ packages:
 
   vinxi@0.3.12:
     resolution: {integrity: sha512-YU/Scild/Rdy6qwgdILYRlO99Wp8ti2CmlMlYioEg7lRtxAST5iCFjviDya+BYQDgc3Pugh4KzOypVwjZknF2A==}
+    hasBin: true
+
+  vinxi@0.3.14:
+    resolution: {integrity: sha512-z92mH3xmnnsodTAURFnfEg4FnCo95JnjjY08nyjl3Z69xVRtQ5V6ckfV9bMp/5G6yT52wnmoLXAfPRPF6vfG+A==}
     hasBin: true
 
   vite-node@1.6.0:
@@ -9138,8 +9156,8 @@ packages:
   vue-component-type-helpers@1.8.4:
     resolution: {integrity: sha512-6bnLkn8O0JJyiFSIF0EfCogzeqNXpnjJ0vW/SZzNHfe6sPx30lTtTXlE5TFs2qhJlAtDFybStVNpL73cPe3OMQ==}
 
-  vue-demi@0.14.6:
-    resolution: {integrity: sha512-8QA7wrYSHKaYgUxDA5ZC24w+eHm3sYCbp0EzcDwKqN3p6HqtTCGR/GVsPyZW92unff4UlcSh++lmqDWN3ZIq4w==}
+  vue-demi@0.14.8:
+    resolution: {integrity: sha512-Uuqnk9YE9SsWeReYqK2alDI5YzciATE0r2SkA6iMAtuXvNTMNACJLJEXNXaEy94ECuBe4Sk6RzRU80kjdbIo1Q==}
     engines: {node: '>=12'}
     hasBin: true
     peerDependencies:
@@ -12222,11 +12240,11 @@ snapshots:
     dependencies:
       '@swc/counter': 0.1.3
 
-  '@tanstack/angular-store@0.5.4(@angular/common@17.3.11(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(rxjs@7.8.1))(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))':
+  '@tanstack/angular-store@0.5.5(@angular/common@17.3.11(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(rxjs@7.8.1))(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))':
     dependencies:
       '@angular/common': 17.3.11(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(rxjs@7.8.1)
       '@angular/core': 17.3.11(rxjs@7.8.1)(zone.js@0.14.7)
-      '@tanstack/store': 0.5.4
+      '@tanstack/store': 0.5.5
       tslib: 2.6.3
 
   '@tanstack/config@0.9.6(@types/node@20.14.10)(esbuild@0.21.5)(eslint@8.57.0)(rollup@4.18.0)(typescript@5.4.2)(vite@5.3.3(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
@@ -12290,6 +12308,13 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       use-sync-external-store: 1.2.0(react@18.3.1)
 
+  '@tanstack/react-store@0.5.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@tanstack/store': 0.5.5
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      use-sync-external-store: 1.2.2(react@18.3.1)
+
   '@tanstack/router-generator@1.44.3':
     dependencies:
       prettier: 3.3.2
@@ -12319,9 +12344,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@tanstack/solid-store@0.5.4(solid-js@1.8.18)':
+  '@tanstack/solid-store@0.5.5(solid-js@1.8.18)':
     dependencies:
-      '@tanstack/store': 0.5.4
+      '@tanstack/store': 0.5.5
       solid-js: 1.8.18
 
   '@tanstack/start-vite-plugin@1.45.0':
@@ -12351,8 +12376,8 @@ snapshots:
       '@types/jsesc': 3.0.3
       '@vinxi/react': 0.2.3
       '@vinxi/react-server-dom': 0.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vite@5.3.3(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
-      '@vinxi/server-components': 0.3.3(vinxi@0.3.12(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
-      '@vinxi/server-functions': 0.3.3(vinxi@0.3.12(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+      '@vinxi/server-components': 0.3.3(vinxi@0.3.12(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+      '@vinxi/server-functions': 0.3.3(vinxi@0.3.12(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
       import-meta-resolve: 4.1.0
       isbot: 5.1.12
       jsesc: 3.0.2
@@ -12400,11 +12425,13 @@ snapshots:
 
   '@tanstack/store@0.5.4': {}
 
-  '@tanstack/vue-store@0.5.4(vue@3.3.4)':
+  '@tanstack/store@0.5.5': {}
+
+  '@tanstack/vue-store@0.5.5(vue@3.3.4)':
     dependencies:
-      '@tanstack/store': 0.5.4
+      '@tanstack/store': 0.5.5
       vue: 3.3.4
-      vue-demi: 0.14.6(vue@3.3.4)
+      vue-demi: 0.14.8(vue@3.3.4)
 
   '@testing-library/angular@17.0.0(@angular/common@17.3.11(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(rxjs@7.8.1))(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(@angular/platform-browser@17.3.11(@angular/animations@17.3.11(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7)))(@angular/common@17.3.11(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(rxjs@7.8.1))(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7)))(@angular/router@17.3.11(@angular/common@17.3.11(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(rxjs@7.8.1))(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(@angular/platform-browser@17.3.11(@angular/animations@17.3.11(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7)))(@angular/common@17.3.11(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(rxjs@7.8.1))(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7)))(rxjs@7.8.1))(@testing-library/dom@10.3.1)':
     dependencies:
@@ -12771,7 +12798,7 @@ snapshots:
     transitivePeerDependencies:
       - uWebSockets.js
 
-  '@vinxi/plugin-directives@0.3.1(vinxi@0.3.12(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
+  '@vinxi/plugin-directives@0.3.1(vinxi@0.3.12(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
     dependencies:
       '@babel/parser': 7.24.8
       acorn: 8.12.0
@@ -12793,9 +12820,9 @@ snapshots:
 
   '@vinxi/react@0.2.3': {}
 
-  '@vinxi/server-components@0.3.3(vinxi@0.3.12(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
+  '@vinxi/server-components@0.3.3(vinxi@0.3.12(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
     dependencies:
-      '@vinxi/plugin-directives': 0.3.1(vinxi@0.3.12(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+      '@vinxi/plugin-directives': 0.3.1(vinxi@0.3.12(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
       acorn: 8.12.0
       acorn-loose: 8.4.0
       acorn-typescript: 1.4.13(acorn@8.12.0)
@@ -12804,9 +12831,9 @@ snapshots:
       recast: 0.23.9
       vinxi: 0.3.12(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1)
 
-  '@vinxi/server-functions@0.3.3(vinxi@0.3.12(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
+  '@vinxi/server-functions@0.3.3(vinxi@0.3.12(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
     dependencies:
-      '@vinxi/plugin-directives': 0.3.1(vinxi@0.3.12(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+      '@vinxi/plugin-directives': 0.3.1(vinxi@0.3.12(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
       acorn: 8.12.0
       acorn-loose: 8.4.0
       acorn-typescript: 1.4.13(acorn@8.12.0)
@@ -18208,6 +18235,10 @@ snapshots:
     dependencies:
       react: 18.3.1
 
+  use-sync-external-store@1.2.2(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+
   util-deprecate@1.0.2: {}
 
   util@0.12.5:
@@ -18244,6 +18275,74 @@ snapshots:
   vary@1.1.2: {}
 
   vinxi@0.3.12(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1):
+    dependencies:
+      '@babel/core': 7.24.8
+      '@babel/plugin-syntax-jsx': 7.24.7(@babel/core@7.24.8)
+      '@babel/plugin-syntax-typescript': 7.24.7(@babel/core@7.24.8)
+      '@types/micromatch': 4.0.9
+      '@vinxi/listhen': 1.5.6
+      boxen: 7.1.1
+      chokidar: 3.6.0
+      citty: 0.1.6
+      consola: 3.2.3
+      crossws: 0.2.4
+      dax-sh: 0.39.2
+      defu: 6.1.4
+      es-module-lexer: 1.4.1
+      esbuild: 0.20.2
+      fast-glob: 3.3.2
+      get-port-please: 3.1.2
+      h3: 1.11.1
+      hookable: 5.5.3
+      http-proxy: 1.18.1
+      micromatch: 4.0.5
+      nitropack: 2.9.7(@opentelemetry/api@1.9.0)(encoding@0.1.13)
+      node-fetch-native: 1.6.4
+      path-to-regexp: 6.2.2
+      pathe: 1.1.2
+      radix3: 1.1.2
+      resolve: 1.22.8
+      serve-placeholder: 2.0.2
+      serve-static: 1.15.0
+      ufo: 1.5.3
+      unctx: 2.3.1
+      unenv: 1.9.0
+      unstorage: 1.10.2(ioredis@5.4.1)
+      vite: 5.3.3(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.39))(terser@5.29.1)
+      zod: 3.23.8
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@libsql/client'
+      - '@netlify/blobs'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@types/node'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - better-sqlite3
+      - debug
+      - drizzle-orm
+      - encoding
+      - idb-keyval
+      - ioredis
+      - less
+      - lightningcss
+      - magicast
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+      - uWebSockets.js
+      - xml2js
+
+  vinxi@0.3.14(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1):
     dependencies:
       '@babel/core': 7.24.8
       '@babel/plugin-syntax-jsx': 7.24.7(@babel/core@7.24.8)
@@ -18460,7 +18559,7 @@ snapshots:
 
   vue-component-type-helpers@1.8.4: {}
 
-  vue-demi@0.14.6(vue@3.3.4):
+  vue-demi@0.14.8(vue@3.3.4):
     dependencies:
       vue: 3.3.4
 
