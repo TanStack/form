@@ -13,13 +13,20 @@ type Ctx = Parameters<FetchFn<FormData, unknown>>[1]
 
 type OnServerValidateFn<TFormData> = (props: {
   value: TFormData
-}) => ValidationError
+}) => ValidationError | Promise<ValidationError>
+
+type OnServerValidateOrFn<
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+> = TFormValidator extends Validator<TFormData, infer FFN>
+  ? FFN | OnServerValidateFn<TFormData>
+  : OnServerValidateFn<TFormData>
 
 interface CreateServerValidateOptions<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > extends FormOptions<TFormData, TFormValidator> {
-  onServerValidate: OnServerValidateFn<TFormData>
+  onServerValidate: OnServerValidateOrFn<TFormData, TFormValidator>
 }
 
 export const createServerValidate =
@@ -36,10 +43,7 @@ export const createServerValidate =
 
     const runValidator = async (propsValue: { value: TFormData }) => {
       if (validatorAdapter && typeof onServerValidate !== 'function') {
-        return await validatorAdapter().validateAsync(
-          propsValue,
-          onServerValidate,
-        )
+        return validatorAdapter().validateAsync(propsValue, onServerValidate)
       }
 
       return (onServerValidate as OnServerValidateFn<TFormData>)(propsValue)
