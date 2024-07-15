@@ -57,8 +57,8 @@ importers:
         specifier: ^19.4.3
         version: 19.4.3(@swc/core@1.6.13)
       prettier:
-        specifier: ^4.0.0-alpha.8
-        version: 4.0.0-alpha.8
+        specifier: ^4.0.0-alpha.9
+        version: 4.0.0-alpha.9
       publint:
         specifier: ^0.2.8
         version: 0.2.8
@@ -3362,8 +3362,8 @@ packages:
   '@popperjs/core@2.11.8':
     resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
 
-  '@prettier/cli@0.3.0':
-    resolution: {integrity: sha512-8qq527QT5n8paE9eoHeulmGw7a3MroVk5+8ITf+xoWJn1gcVaZiOP6vb9OlwZv49hhdRZ1WX+0MyisSSXL/4fA==}
+  '@prettier/cli@0.5.0':
+    resolution: {integrity: sha512-njAi1OdUyTX5eeTz8908eF6jqIRp8eagIqnneLCeRcf5g1QK8kpIAv+UuUL5vVSYIlxls/3BicHqK19mvqoGSQ==}
     hasBin: true
     peerDependencies:
       prettier: ^3.1.0 || ^4.0.0
@@ -3788,12 +3788,6 @@ packages:
       react: '>=18'
       react-dom: '>=18'
 
-  '@tanstack/react-store@0.5.4':
-    resolution: {integrity: sha512-N4fhM+2knUN7t7kIa7lP4Df9vN/DxD8qfmsFgGKis0J/OoeQaEdG6fINjrMME2hOXszObZLXIxBcOvIIcOhGMw==}
-    peerDependencies:
-      react: ^17.0.0 || ^18.0.0
-      react-dom: ^17.0.0 || ^18.0.0
-
   '@tanstack/react-store@0.5.5':
     resolution: {integrity: sha512-1orYXGatBqXCYKuroFwV8Ll/6aDa5E3pU6RR4h7RvRk7TmxF1+zLCsWALZaeijXkySNMGmvawSbUXRypivg2XA==}
     peerDependencies:
@@ -3834,9 +3828,6 @@ packages:
     peerDependencies:
       react: '>=18.0.0 || >=19.0.0'
       react-dom: '>=18.0.0 || >=19.0.0'
-
-  '@tanstack/store@0.5.4':
-    resolution: {integrity: sha512-EG/aGAK/yUJz0JxPaY9wOr1Sjz9Uc//BX7uY9SAo5M0GkCEz7DOSxixBq2afn/reLMGqTIGYq7TkMGgyNQgdcA==}
 
   '@tanstack/store@0.5.5':
     resolution: {integrity: sha512-EOSrgdDAJExbvRZEQ/Xhh9iZchXpMN+ga1Bnk8Nmygzs8TfiE6hbzThF+Pr2G19uHL6+DTDTHhJ8VQiOd7l4tA==}
@@ -4581,8 +4572,8 @@ packages:
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
-  atomically@2.0.2:
-    resolution: {integrity: sha512-Xfmb4q5QV7uqTlVdMSTtO5eF4DCHfNOdaPyKlbFShkzeNP+3lj3yjjcbdjSmEY4+pDBKJ9g26aP+ImTe88UHoQ==}
+  atomically@2.0.3:
+    resolution: {integrity: sha512-kU6FmrwZ3Lx7/7y3hPS5QnbJfaohcIul5fGqf7ok+4KklIEk9tJ0C2IQPdacSbVUWv6zVHXEBWoWd6NrVMT7Cw==}
 
   autoprefixer@10.4.18:
     resolution: {integrity: sha512-1DKbDfsr6KUElM6wg+0zRNkB/Q7WcKYAaK+pzXn+Xqmszm/5Xa9coeNdtP88Vi+dPzZnMjhge8GIV49ZQkDa+g==}
@@ -5643,8 +5634,8 @@ packages:
     resolution: {integrity: sha512-oX2ruAFQwf/Orj8m737Y5adxDQO0LAB7/S5MnxCdTNDd4p6BsyIVsv9JQsATbTSq8KHRpLwIHbVlUNatxd+1Ow==}
     engines: {node: '>=8.6.0'}
 
-  fast-ignore@1.1.1:
-    resolution: {integrity: sha512-Gnvido88waUVtlDv/6VBeXv0TAlQK5lheknMwzHx9948B7uOFjyyLXsYBXixDScEXJB5fMjy4G1OOTH59VKvUA==}
+  fast-ignore@1.1.3:
+    resolution: {integrity: sha512-xTo4UbrOKfEQgOFlPaqFScodTV/Wf3KATEqCZZSMh6OP4bcez0lTsqww3n3/Fve1q9u0jmfDP0q0nOhH4POZEg==}
 
   fast-json-stable-stringify@2.1.0:
     resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
@@ -5689,8 +5680,11 @@ packages:
   find-root@1.1.0:
     resolution: {integrity: sha512-NKfW6bec6GfKc0SGx1e07QZY9PE99u0Bft/0rzSD5k3sO/vwkVUpDUKVm5Gpp5Ue3YfShPFTX2070tDs5kB9Ng==}
 
-  find-up-json@2.0.2:
-    resolution: {integrity: sha512-UpHMIdzLzZNHZ0vXVv3kHr2vq2MWA+hA8zlzlPH5XMGyYisIr/7/dNm5AjWR3ae6Onie9a1zgtExOqix+8ESQw==}
+  find-up-json@2.0.4:
+    resolution: {integrity: sha512-ABaCm3V1H5UYRHtClHvFFyxPIAC/bxd43tKwmcSco8/EuM5O7zDL2R7ORaA+rEltwgxoNOIK8LQFwQUfA/2GIw==}
+
+  find-up-path@1.0.0:
+    resolution: {integrity: sha512-cjXDXnYfEezIqqbzctBNNqUax/rRCyNo/VTCFId3Hp9FyVL4uk0PvWrs7Xibtl2E4P5HnWnlxxJsbHqK6DsDPw==}
 
   find-up@4.1.0:
     resolution: {integrity: sha512-PpOwAdQ/YlXQ2vj8a3h8IipDuYRi3wceVQQGYWxNINccq40Anw7BlsEXCMbt1Zt+OLA6Fq9suIpIWD0OsnISlw==}
@@ -5801,6 +5795,9 @@ packages:
 
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
+
+  function-once@3.0.0:
+    resolution: {integrity: sha512-WEhgu9PE55sHFf+SBg3lI8+CWpsqReLcsp3g12XhwSJJgnodpSpHk6StvpeVcKuHAFCAdttLrslJRFDSdLDf4g==}
 
   functions-have-names@1.2.3:
     resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==}
@@ -6715,6 +6712,9 @@ packages:
     resolution: {integrity: sha512-8XPvpAA8uyhfteu8pIvQxpJZ7SYYdpUivZpGy6sFsBuKRY/7rQGavedeB8aK+Zkyq6upMFVL/9AW6vOYzfRyLg==}
     engines: {node: '>=10'}
 
+  lomemo@1.0.0:
+    resolution: {integrity: sha512-lffld7Byac80Q3M0QEWI1bcnhg0utsi42WeWIEisDPIvBOj6cO9WDc5hFxCdL9mu/2VvtCtcRZVwA/orlgnuFQ==}
+
   long@5.2.3:
     resolution: {integrity: sha512-lcHwpNoggQTObv5apGNCTdJrO69eHOZMi4BNC+rTLER8iHAqGrUVeLh/irVIM7zTw2bOXA8T6uNPeujwOLg/2Q==}
 
@@ -7456,8 +7456,8 @@ packages:
     resolution: {integrity: sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==}
     engines: {node: '>=6'}
 
-  pioppo@1.1.0:
-    resolution: {integrity: sha512-8gZ58S4GBMkCGAEwBi98YgNFfXwcNql2sCXstolxnGUrsBnHA/BrKjsN4EbfCsKjQ4uERrEDfeh444ymGwNMdA==}
+  pioppo@1.1.1:
+    resolution: {integrity: sha512-hXs+FLopEofz7hOoCzcDDPk+zRl3x0t7cACyw6dRQ6K8WeGjNqUaXzjCA6US1rm4U0pnlYyTjtcGaOzaKkx12g==}
 
   piscina@4.4.0:
     resolution: {integrity: sha512-+AQduEJefrOApE4bV7KRmp3N2JnnyErlVqq4P/jmko4FPz9Z877BCccl/iB3FdrWSUkvbGV9Kan/KllJgat3Vg==}
@@ -7574,8 +7574,8 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
-  prettier@4.0.0-alpha.8:
-    resolution: {integrity: sha512-7FFBkQb0Eg0wJRYzA7ucc31nqTjWgoSpmS0ey9OATHU6WiV0z53Uzo5hA3tZs/pbhhIG7YvOIBNmkRQ7Dr/k5A==}
+  prettier@4.0.0-alpha.9:
+    resolution: {integrity: sha512-OopDtEffXUOhUTw8Do8tFZW7XlU3oKddNAyY3Pz+3muiZTZgv3ByDbQtI+lYJUkvH8axdNUKXmeCUwZGxe+dXg==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -7614,8 +7614,17 @@ packages:
       bluebird:
         optional: true
 
+  promise-make-counter@1.0.1:
+    resolution: {integrity: sha512-R1JGFIgSJDpNV/JXxytAx6K79noEpcBiZXWDa3ic9WEMpBZbUdVVQjlA266SCicJ9CGqd70iGbbzbjRKbGU1Jg==}
+
   promise-make-naked@2.1.1:
     resolution: {integrity: sha512-BLvgZSNRkQNM5RGL4Cz8wK76WSb+t3VeMJL+/kxRBHI5+nliqZezranGGtiu/ePeFo5+CaLRvvGMzXrBuu2tAA==}
+
+  promise-make-naked@3.0.0:
+    resolution: {integrity: sha512-h71wwAMB2udFnlPmcxQMqKl6CckNLVKdk/ROtFivE6/VmW+rQKV0DWlGJ6VphRIoq22Tkonvdi3F+jlm5XDlow==}
+
+  promise-resolve-timeout@2.0.0:
+    resolution: {integrity: sha512-UsWSYaktV5pCGBu74RX+gFm8+jAT26t2pj/RI7P8kzLzuHp17oiav3VfCtQkyx5fRg0l9rCsJVvASQD8FV1/ww==}
 
   promise-retry@2.0.1:
     resolution: {integrity: sha512-y+WKFlBR8BGXnsNlIHFGPZmyDf3DFMoLhaflAnyZgV6rG6xu+JwesTo2Q9R6XwYmtmwAFCkAk3e35jEdoeh/3g==}
@@ -8347,6 +8356,9 @@ packages:
     resolution: {integrity: sha512-aqD2Q0144Z+/RqG52NeHEkZauTAUWJO8c6yTftGJKO3Tja5tUgIfmIl6kExvhtxSDP7fXB6DvzkfMpCd/F3G+Q==}
     engines: {node: '>=0.6.19'}
 
+  string-escape-regex@1.0.0:
+    resolution: {integrity: sha512-41Uu0J545cU6Fe1str6GZKI8hf38nsJPfjkePF4npjhACIHSrrVFKMPYSe8hT0FAxIuss36wGuEM5syChVs/pQ==}
+
   string-ts@2.2.0:
     resolution: {integrity: sha512-VTP0LLZo4Jp9Gz5IiDVMS9WyLx/3IeYh0PXUn0NdPqusUFNgkHPWiEdbB9TU2Iv3myUskraD5WtYEdHUrQEIlQ==}
 
@@ -8557,11 +8569,11 @@ packages:
   tiny-parse-argv@2.4.0:
     resolution: {integrity: sha512-WTEsnmeHNr99hLQIDA+gnsS+fDsCDITlqgI+zEhx9M6ErPt0heoNZ1PGvql6wcf95sIx40J0MLYXaPveGwtpoA==}
 
-  tiny-readdir-glob@1.2.1:
-    resolution: {integrity: sha512-KOjDu6u9iDSDr8+dUrkiDGohND70RMd9Iu6ZPu+HFZZktXQ9h+wbMWcrpCwcmo1QkE5+4ujuU8sXb8HgD3+IKA==}
+  tiny-readdir-glob@1.22.24:
+    resolution: {integrity: sha512-HPDNMin7GoyPMesJNkAeT0ERU51ZWFby2RXEE2MHeVeO4c0i07679cuEMKzhKNBlBrBKoVjOmaie5y+FnRwL8g==}
 
-  tiny-readdir@2.4.0:
-    resolution: {integrity: sha512-LS7NQKLyLy/EepnIbOWDdkR4k8KPwPYkYCMZzQOttE5PhmXBbKqGdRk6ndIsTpB54hL208gREAtMftlb+aELrw==}
+  tiny-readdir@2.7.3:
+    resolution: {integrity: sha512-ae1CPk7/MRhdaSIfjytuCoCjcykCNfSH36MsD2Qq8A27apaVUV0nthOcCEjiBTTloBObq2ffvm0BycUayMWh3A==}
 
   tiny-spinner@2.0.3:
     resolution: {integrity: sha512-zuhtClm08obM7aCzgRAbAmOpYm0ekAh/OTLZEJ/8SuVD+cxUdlqGGN5PRnc2Ate8xmbG3+ldPBnlwmHgJrftpg==}
@@ -8957,11 +8969,6 @@ packages:
       '@types/react':
         optional: true
 
-  use-sync-external-store@1.2.0:
-    resolution: {integrity: sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-
   use-sync-external-store@1.2.2:
     resolution: {integrity: sha512-PElTlVMwpblvbNqQ82d2n6RjStvdSoNe9FG28kNfz3WiXilJm4DdNkEzRhCZuIDwY8U08WVihhGR5iRqAwfDiw==}
     peerDependencies:
@@ -9340,8 +9347,8 @@ packages:
   wildcard@2.0.1:
     resolution: {integrity: sha512-CC1bOL87PIWSBhDcTrdeLo6eGT7mCFtrg0uIJtqJUFyK+eJnzl8A1niH56uu7KMa5XFrtiV+AQuHO3n7DsHnLQ==}
 
-  worktank@2.6.0:
-    resolution: {integrity: sha512-bHqVyWbviQlUV7+wbd1yoZhjPXXk7ENVCNrlBARfVAg69AfOtnEMLc0hWo9ihaqmlO8WggdYGy/K+avWFSgBBQ==}
+  worktank@2.7.3:
+    resolution: {integrity: sha512-M0fesnpttBPdvNYBdzRvLDsacN0na9RYWFxwmM/x1+/6mufjduv9/9vBObK8EXDqxRMX/SOYJabpo0UCYYBUdQ==}
 
   wrap-ansi@6.2.0:
     resolution: {integrity: sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==}
@@ -9418,8 +9425,23 @@ packages:
     engines: {node: '>=8.0.0'}
     hasBin: true
 
+  zeptomatch-escape@1.0.0:
+    resolution: {integrity: sha512-S77F6/wOoqSab7LpM6rARN3iGCqpL00VY1nB88OKKmomvZVI4gc0VriF+6z/xA1oMWDsy3rDwwA/50T2jpaM4g==}
+
+  zeptomatch-explode@1.0.0:
+    resolution: {integrity: sha512-2UDdxJqvrMixdwfYFA9cDGKetkVph8PPa1ooyUvmEoJJMs6w+0ijk1oA82Ff3wNs6yHeb849TjPvyrx9tgkZZg==}
+
+  zeptomatch-is-static@1.0.0:
+    resolution: {integrity: sha512-QMFCeFADOkC8B3c1IAZCV6p34swn2UsgoGb1fP0F0G77YKb4oYEK/VL+e9mc0BLtme48V+YqDHJdwaHGFwoSXQ==}
+
+  zeptomatch-unescape@1.0.0:
+    resolution: {integrity: sha512-YlbkzmjjWF092pbP2q9uf/ql34Np7HpfyBW7wibVCgRPyi8MF1EOAoSej1621r/lvzpmGF9BUJ6KIrNGiYE+jA==}
+
   zeptomatch@1.2.2:
     resolution: {integrity: sha512-0ETdzEO0hdYmT8aXHHf5aMjpX+FHFE61sG4qKFAoJD2Umt3TWdCmH7ADxn2oUiWTlqBGC+SGr8sYMfr+37J8pQ==}
+
+  zeptomatch@2.0.0:
+    resolution: {integrity: sha512-xjsIq0tpg7dNtJcbl0tNf4d4It4UK1ujSYJZXvGygse3GNgX44v/b2FRbM8sCGZS2qh4o983u8+1CBNNF+106g==}
 
   zip-stream@6.0.1:
     resolution: {integrity: sha512-zK7YHHz4ZXpW89AHXUPbQVGKI7uvkd3hzusTdotCg1UxyaVtg0zFJSTfW/Dq5f7OBBVnq6cZIaC8Ti4hb6dtCA==}
@@ -11868,27 +11890,32 @@ snapshots:
 
   '@popperjs/core@2.11.8': {}
 
-  '@prettier/cli@0.3.0(prettier@4.0.0-alpha.8)':
+  '@prettier/cli@0.5.0(prettier@4.0.0-alpha.9)':
     dependencies:
       '@iarna/toml': 2.2.5
-      atomically: 2.0.2
-      fast-ignore: 1.1.1
-      find-up-json: 2.0.2
+      atomically: 2.0.3
+      fast-ignore: 1.1.3
+      find-up-json: 2.0.4
+      function-once: 3.0.0
       import-meta-resolve: 4.1.0
       is-binary-path: 2.1.0
       js-yaml: 4.1.0
       json-sorted-stringify: 1.0.0
       json5: 2.2.3
       kasi: 1.1.0
-      pioppo: 1.1.0
-      prettier: 4.0.0-alpha.8
+      lomemo: 1.0.0
+      pioppo: 1.1.1
+      prettier: 4.0.0-alpha.9
+      promise-resolve-timeout: 2.0.0
       specialist: 1.4.0
       tiny-editorconfig: 1.0.0
       tiny-jsonc: 1.0.1
-      tiny-readdir-glob: 1.2.1
+      tiny-readdir-glob: 1.22.24
       tiny-spinner: 2.0.3
-      worktank: 2.6.0
-      zeptomatch: 1.2.2
+      worktank: 2.7.3
+      zeptomatch: 2.0.0
+      zeptomatch-escape: 1.0.0
+      zeptomatch-is-static: 1.0.0
 
   '@protobufjs/aspromise@1.1.2': {}
 
@@ -12295,18 +12322,11 @@ snapshots:
   '@tanstack/react-router@1.45.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@tanstack/history': 1.44.2
-      '@tanstack/react-store': 0.5.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@tanstack/react-store': 0.5.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       tiny-invariant: 1.3.3
       tiny-warning: 1.0.3
-
-  '@tanstack/react-store@0.5.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@tanstack/store': 0.5.4
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      use-sync-external-store: 1.2.0(react@18.3.1)
 
   '@tanstack/react-store@0.5.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -12376,8 +12396,8 @@ snapshots:
       '@types/jsesc': 3.0.3
       '@vinxi/react': 0.2.3
       '@vinxi/react-server-dom': 0.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vite@5.3.3(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
-      '@vinxi/server-components': 0.3.3(vinxi@0.3.12(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
-      '@vinxi/server-functions': 0.3.3(vinxi@0.3.12(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+      '@vinxi/server-components': 0.3.3(vinxi@0.3.12(@types/node@20.14.10)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+      '@vinxi/server-functions': 0.3.3(vinxi@0.3.12(@types/node@20.14.10)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
       import-meta-resolve: 4.1.0
       isbot: 5.1.12
       jsesc: 3.0.2
@@ -12422,8 +12442,6 @@ snapshots:
       - vite
       - webpack
       - xml2js
-
-  '@tanstack/store@0.5.4': {}
 
   '@tanstack/store@0.5.5': {}
 
@@ -12798,7 +12816,7 @@ snapshots:
     transitivePeerDependencies:
       - uWebSockets.js
 
-  '@vinxi/plugin-directives@0.3.1(vinxi@0.3.12(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
+  '@vinxi/plugin-directives@0.3.1(vinxi@0.3.12(@types/node@20.14.10)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
     dependencies:
       '@babel/parser': 7.24.8
       acorn: 8.12.0
@@ -12820,9 +12838,9 @@ snapshots:
 
   '@vinxi/react@0.2.3': {}
 
-  '@vinxi/server-components@0.3.3(vinxi@0.3.12(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
+  '@vinxi/server-components@0.3.3(vinxi@0.3.12(@types/node@20.14.10)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
     dependencies:
-      '@vinxi/plugin-directives': 0.3.1(vinxi@0.3.12(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+      '@vinxi/plugin-directives': 0.3.1(vinxi@0.3.12(@types/node@20.14.10)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
       acorn: 8.12.0
       acorn-loose: 8.4.0
       acorn-typescript: 1.4.13(acorn@8.12.0)
@@ -12831,9 +12849,9 @@ snapshots:
       recast: 0.23.9
       vinxi: 0.3.12(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1)
 
-  '@vinxi/server-functions@0.3.3(vinxi@0.3.12(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
+  '@vinxi/server-functions@0.3.3(vinxi@0.3.12(@types/node@20.14.10)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))':
     dependencies:
-      '@vinxi/plugin-directives': 0.3.1(vinxi@0.3.12(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
+      '@vinxi/plugin-directives': 0.3.1(vinxi@0.3.12(@types/node@20.14.10)(ioredis@5.4.1)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1)(terser@5.29.1))
       acorn: 8.12.0
       acorn-loose: 8.4.0
       acorn-typescript: 1.4.13(acorn@8.12.0)
@@ -13356,7 +13374,7 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  atomically@2.0.2:
+  atomically@2.0.3:
     dependencies:
       stubborn-fs: 1.2.5
       when-exit: 2.1.2
@@ -14674,9 +14692,10 @@ snapshots:
       merge2: 1.4.1
       micromatch: 4.0.5
 
-  fast-ignore@1.1.1:
+  fast-ignore@1.1.3:
     dependencies:
       grammex: 3.1.2
+      string-escape-regex: 1.0.0
 
   fast-json-stable-stringify@2.1.0: {}
 
@@ -14729,7 +14748,11 @@ snapshots:
 
   find-root@1.1.0: {}
 
-  find-up-json@2.0.2: {}
+  find-up-json@2.0.4:
+    dependencies:
+      find-up-path: 1.0.0
+
+  find-up-path@1.0.0: {}
 
   find-up@4.1.0:
     dependencies:
@@ -14837,6 +14860,8 @@ snapshots:
 
   function-bind@1.1.2: {}
 
+  function-once@3.0.0: {}
+
   functions-have-names@1.2.3: {}
 
   gauge@3.0.2:
@@ -14857,7 +14882,7 @@ snapshots:
 
   get-current-package@1.0.0:
     dependencies:
-      find-up-json: 2.0.2
+      find-up-json: 2.0.4
 
   get-func-name@2.0.2: {}
 
@@ -15826,6 +15851,8 @@ snapshots:
       chalk: 4.1.2
       is-unicode-supported: 0.1.0
 
+  lomemo@1.0.0: {}
+
   long@5.2.3: {}
 
   loose-envify@1.4.0:
@@ -16727,7 +16754,7 @@ snapshots:
   pify@4.0.1:
     optional: true
 
-  pioppo@1.1.0:
+  pioppo@1.1.1:
     dependencies:
       dettle: 1.0.1
       when-exit: 2.1.2
@@ -16843,9 +16870,9 @@ snapshots:
 
   prettier@3.3.2: {}
 
-  prettier@4.0.0-alpha.8:
+  prettier@4.0.0-alpha.9:
     dependencies:
-      '@prettier/cli': 0.3.0(prettier@4.0.0-alpha.8)
+      '@prettier/cli': 0.5.0(prettier@4.0.0-alpha.9)
 
   pretty-bytes@6.1.1: {}
 
@@ -16873,7 +16900,15 @@ snapshots:
 
   promise-inflight@1.0.1: {}
 
+  promise-make-counter@1.0.1:
+    dependencies:
+      promise-make-naked: 3.0.0
+
   promise-make-naked@2.1.1: {}
+
+  promise-make-naked@3.0.0: {}
+
+  promise-resolve-timeout@2.0.0: {}
 
   promise-retry@2.0.1:
     dependencies:
@@ -17694,6 +17729,8 @@ snapshots:
 
   string-argv@0.3.2: {}
 
+  string-escape-regex@1.0.0: {}
+
   string-ts@2.2.0: {}
 
   string-width@4.2.3:
@@ -17890,14 +17927,17 @@ snapshots:
 
   tiny-parse-argv@2.4.0: {}
 
-  tiny-readdir-glob@1.2.1:
+  tiny-readdir-glob@1.22.24:
     dependencies:
-      tiny-readdir: 2.4.0
+      tiny-readdir: 2.7.3
       zeptomatch: 1.2.2
+      zeptomatch-explode: 1.0.0
+      zeptomatch-is-static: 1.0.0
+      zeptomatch-unescape: 1.0.0
 
-  tiny-readdir@2.4.0:
+  tiny-readdir@2.7.3:
     dependencies:
-      promise-make-naked: 2.1.1
+      promise-make-counter: 1.0.1
 
   tiny-spinner@2.0.3:
     dependencies:
@@ -18230,10 +18270,6 @@ snapshots:
       tslib: 2.6.3
     optionalDependencies:
       '@types/react': 18.3.3
-
-  use-sync-external-store@1.2.0(react@18.3.1):
-    dependencies:
-      react: 18.3.1
 
   use-sync-external-store@1.2.2(react@18.3.1):
     dependencies:
@@ -18802,7 +18838,7 @@ snapshots:
 
   wildcard@2.0.1: {}
 
-  worktank@2.6.0:
+  worktank@2.7.3:
     dependencies:
       promise-make-naked: 2.1.1
       webworker-shim: 1.1.0
@@ -18874,7 +18910,19 @@ snapshots:
     optionalDependencies:
       commander: 9.5.0
 
+  zeptomatch-escape@1.0.0: {}
+
+  zeptomatch-explode@1.0.0: {}
+
+  zeptomatch-is-static@1.0.0: {}
+
+  zeptomatch-unescape@1.0.0: {}
+
   zeptomatch@1.2.2:
+    dependencies:
+      grammex: 3.1.2
+
+  zeptomatch@2.0.0:
     dependencies:
       grammex: 3.1.2
 
