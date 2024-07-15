@@ -254,8 +254,8 @@ importers:
         specifier: ^2.6.3
         version: 2.6.3
       valibot:
-        specifier: ^0.35.0
-        version: 0.35.0
+        specifier: ^0.36.0
+        version: 0.36.0
       zone.js:
         specifier: ^0.14.7
         version: 0.14.7
@@ -658,8 +658,8 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
       valibot:
-        specifier: ^0.35.0
-        version: 0.35.0
+        specifier: ^0.36.0
+        version: 0.36.0
     devDependencies:
       '@types/react':
         specifier: ^18.3.3
@@ -786,8 +786,8 @@ importers:
         specifier: ^1.8.18
         version: 1.8.18
       valibot:
-        specifier: ^0.35.0
-        version: 0.35.0
+        specifier: ^0.36.0
+        version: 0.36.0
     devDependencies:
       typescript:
         specifier: 5.4.2
@@ -902,8 +902,8 @@ importers:
         specifier: ^0.26.4
         version: link:../../../packages/vue-form
       valibot:
-        specifier: ^0.35.0
-        version: 0.35.0
+        specifier: ^0.36.0
+        version: 0.36.0
       vue:
         specifier: ^3.3.4
         version: 3.3.4
@@ -1102,8 +1102,8 @@ importers:
         version: link:../form-core
     devDependencies:
       valibot:
-        specifier: ^0.35.0
-        version: 0.35.0
+        specifier: ^0.36.0
+        version: 0.36.0
 
   packages/vue-form:
     dependencies:
@@ -8970,9 +8970,6 @@ packages:
   v8flags@4.0.1:
     resolution: {integrity: sha512-fcRLaS4H/hrZk9hYwbdRM35D0U8IYMfEClhXxCivOojl+yTRAZH3Zy2sSy6qVCiGbV9YAtPssP6jaChqC9vPCg==}
     engines: {node: '>= 10.13.0'}
-
-  valibot@0.35.0:
-    resolution: {integrity: sha512-+i2aCRkReTrd5KBN/dW2BrPOvFnU5LXTV2xjZnjnqUIO8YUx6P2+MgRrkwF2FhkexgyKq/NIZdPdknhHf5A/Ww==}
 
   valibot@0.36.0:
     resolution: {integrity: sha512-CjF1XN4sUce8sBK9TixrDqFM7RwNkuXdJu174/AwmQUB62QbCQADg5lLe8ldBalFgtj1uKj+pKwDJiNo4Mn+eQ==}
@@ -18227,8 +18224,6 @@ snapshots:
   uuid@8.3.2: {}
 
   v8flags@4.0.1: {}
-
-  valibot@0.35.0: {}
 
   valibot@0.36.0: {}
 
