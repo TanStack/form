@@ -1,3 +1,8 @@
+---
+id: useTransform
+title: useTransform
+---
+
 # Function: useTransform()
 
 ```ts
@@ -42,4 +47,4 @@ fn: (formBase) => FormApi<TFormData, TFormValidator>;
 
 ## Defined in
 
-[useTransform.ts:3](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/react-form/src/useTransform.ts#L3)
+[useTransform.ts:3](https://github.com/TanStack/form/blob/a7956e9367e8bea8c62bd25c618aa3ad9194b14d/packages/react-form/src/useTransform.ts#L3)

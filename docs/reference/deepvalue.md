@@ -1,3 +1,8 @@
+---
+id: DeepValue
+title: DeepValue
+---
+
 # Type Alias: DeepValue\<TValue, TAccessor, TNullable\>
 
 ```ts
@@ -16,4 +21,4 @@ Infer the type of a deeply nested property within an object or an array.
 
 ## Defined in
 
-[packages/form-core/src/util-types.ts:109](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/form-core/src/util-types.ts#L109)
+[packages/form-core/src/util-types.ts:109](https://github.com/TanStack/form/blob/a7956e9367e8bea8c62bd25c618aa3ad9194b14d/packages/form-core/src/util-types.ts#L109)

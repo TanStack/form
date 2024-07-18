@@ -1,3 +1,8 @@
+---
+id: FieldComponent
+title: FieldComponent
+---
+
 # Type Alias: FieldComponent()\<TParentData, TFormValidator\>
 
 ```ts
@@ -36,4 +41,4 @@ A type alias representing a field component for a specific form data type.
 
 ## Defined in
 
-[useField.tsx:133](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/react-form/src/useField.tsx#L133)
+[useField.tsx:133](https://github.com/TanStack/form/blob/a7956e9367e8bea8c62bd25c618aa3ad9194b14d/packages/react-form/src/useField.tsx#L133)

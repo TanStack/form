@@ -1,3 +1,8 @@
+---
+id: FieldComponent
+title: FieldComponent
+---
+
 # Type Alias: FieldComponent()\<TParentData, TFormValidator\>
 
 ```ts
@@ -30,4 +35,4 @@ type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData
 
 ## Defined in
 
-[packages/vue-form/src/useField.tsx:117](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/vue-form/src/useField.tsx#L117)
+[packages/vue-form/src/useField.tsx:117](https://github.com/TanStack/form/blob/a7956e9367e8bea8c62bd25c618aa3ad9194b14d/packages/vue-form/src/useField.tsx#L117)

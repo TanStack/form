@@ -1,3 +1,8 @@
+---
+id: TanStackFormController
+title: TanStackFormController
+---
+
 # Class: TanStackFormController\<TParentData, TFormValidator\>
 
 ## Type Parameters
@@ -30,7 +35,7 @@ new TanStackFormController<TParentData, TFormValidator>(host, config?): TanStack
 
 #### Defined in
 
-[tanstack-form-controller.ts:93](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/lit-form/src/tanstack-form-controller.ts#L93)
+[tanstack-form-controller.ts:93](https://github.com/TanStack/form/blob/a7956e9367e8bea8c62bd25c618aa3ad9194b14d/packages/lit-form/src/tanstack-form-controller.ts#L93)
 
 ## Properties
 
@@ -42,7 +47,7 @@ api: FormApi<TParentData, TFormValidator>;
 
 #### Defined in
 
-[tanstack-form-controller.ts:91](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/lit-form/src/tanstack-form-controller.ts#L91)
+[tanstack-form-controller.ts:91](https://github.com/TanStack/form/blob/a7956e9367e8bea8c62bd25c618aa3ad9194b14d/packages/lit-form/src/tanstack-form-controller.ts#L91)
 
 ## Methods
 
@@ -96,7 +101,7 @@ render: renderCallback<TParentData, TName, TFieldValidator, TFormValidator, TDat
 
 #### Defined in
 
-[tanstack-form-controller.ts:112](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/lit-form/src/tanstack-form-controller.ts#L112)
+[tanstack-form-controller.ts:112](https://github.com/TanStack/form/blob/a7956e9367e8bea8c62bd25c618aa3ad9194b14d/packages/lit-form/src/tanstack-form-controller.ts#L112)
 
 ***
 
@@ -120,7 +125,7 @@ which is only called when the component is connected to the document.
 
 #### Defined in
 
-[tanstack-form-controller.ts:102](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/lit-form/src/tanstack-form-controller.ts#L102)
+[tanstack-form-controller.ts:102](https://github.com/TanStack/form/blob/a7956e9367e8bea8c62bd25c618aa3ad9194b14d/packages/lit-form/src/tanstack-form-controller.ts#L102)
 
 ***
 
@@ -145,4 +150,4 @@ document.
 
 #### Defined in
 
-[tanstack-form-controller.ts:108](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/lit-form/src/tanstack-form-controller.ts#L108)
+[tanstack-form-controller.ts:108](https://github.com/TanStack/form/blob/a7956e9367e8bea8c62bd25c618aa3ad9194b14d/packages/lit-form/src/tanstack-form-controller.ts#L108)

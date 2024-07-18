@@ -1,3 +1,8 @@
+---
+id: FieldComponent
+title: FieldComponent
+---
+
 # Type Alias: FieldComponent()\<TParentData, TFormValidator\>
 
 ```ts
@@ -34,4 +39,4 @@ type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData
 
 ## Defined in
 
-[createField.tsx:160](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/solid-form/src/createField.tsx#L160)
+[createField.tsx:160](https://github.com/TanStack/form/blob/a7956e9367e8bea8c62bd25c618aa3ad9194b14d/packages/solid-form/src/createField.tsx#L160)
