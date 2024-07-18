@@ -4,7 +4,7 @@
 function useField<TParentData, TName, TFieldValidator, TFormValidator, TData>(opts): object
 ```
 
-## Type parameters
+## Type Parameters
 
 • **TParentData**
 
@@ -36,6 +36,6 @@ readonly api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TDat
 readonly state: Readonly<Ref<FieldState<TData>>> = fieldState;
 ```
 
-## Source
+## Defined in
 
-[packages/vue-form/src/useField.tsx:49](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/vue-form/src/useField.tsx#L49)
+[packages/vue-form/src/useField.tsx:49](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/vue-form/src/useField.tsx#L49)

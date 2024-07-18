@@ -4,7 +4,7 @@
 function Field<TParentData, TName, TFieldValidator, TFormValidator, TData>(props): Element
 ```
 
-## Type parameters
+## Type Parameters
 
 • **TParentData**
 
@@ -24,6 +24,6 @@ function Field<TParentData, TName, TFieldValidator, TFormValidator, TData>(props
 
 `Element`
 
-## Source
+## Defined in
 
-[createField.tsx:185](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/solid-form/src/createField.tsx#L185)
+[createField.tsx:185](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/solid-form/src/createField.tsx#L185)

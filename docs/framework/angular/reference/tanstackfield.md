@@ -1,6 +1,6 @@
 # Class: TanStackField\<TParentData, TName, TFieldValidator, TFormValidator, TData\>
 
-## Type parameters
+## Type Parameters
 
 • **TParentData**
 
@@ -39,9 +39,9 @@ new TanStackField<TParentData, TName, TFieldValidator, TFormValidator, TData>():
 api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>;
 ```
 
-#### Source
+#### Defined in
 
-[tanstack-field.directive.ts:61](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/angular-form/src/tanstack-field.directive.ts#L61)
+[tanstack-field.directive.ts:61](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/angular-form/src/tanstack-field.directive.ts#L61)
 
 ***
 
@@ -51,13 +51,15 @@ api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>;
 optional asyncAlways: boolean;
 ```
 
+If `true`, always run async validation, even if there are errors emitted during synchronous validation.
+
 #### Implementation of
 
 `FieldOptions.asyncAlways`
 
-#### Source
+#### Defined in
 
-[tanstack-field.directive.ts:50](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/angular-form/src/tanstack-field.directive.ts#L50)
+[tanstack-field.directive.ts:50](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/angular-form/src/tanstack-field.directive.ts#L50)
 
 ***
 
@@ -67,13 +69,15 @@ optional asyncAlways: boolean;
 optional asyncDebounceMs: number;
 ```
 
+The default time to debounce async validation if there is not a more specific debounce time passed.
+
 #### Implementation of
 
 `FieldOptions.asyncDebounceMs`
 
-#### Source
+#### Defined in
 
-[tanstack-field.directive.ts:49](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/angular-form/src/tanstack-field.directive.ts#L49)
+[tanstack-field.directive.ts:49](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/angular-form/src/tanstack-field.directive.ts#L49)
 
 ***
 
@@ -83,13 +87,15 @@ optional asyncDebounceMs: number;
 optional defaultMeta: Partial<FieldMeta>;
 ```
 
+An optional object with default metadata for the field.
+
 #### Implementation of
 
 `FieldOptions.defaultMeta`
 
-#### Source
+#### Defined in
 
-[tanstack-field.directive.ts:59](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/angular-form/src/tanstack-field.directive.ts#L59)
+[tanstack-field.directive.ts:59](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/angular-form/src/tanstack-field.directive.ts#L59)
 
 ***
 
@@ -99,13 +105,15 @@ optional defaultMeta: Partial<FieldMeta>;
 optional defaultValue: NoInfer<TData>;
 ```
 
+An optional default value for the field.
+
 #### Implementation of
 
 `FieldOptions.defaultValue`
 
-#### Source
+#### Defined in
 
-[tanstack-field.directive.ts:48](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/angular-form/src/tanstack-field.directive.ts#L48)
+[tanstack-field.directive.ts:48](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/angular-form/src/tanstack-field.directive.ts#L48)
 
 ***
 
@@ -115,13 +123,15 @@ optional defaultValue: NoInfer<TData>;
 name: TName;
 ```
 
+The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
+
 #### Implementation of
 
 `FieldOptions.name`
 
-#### Source
+#### Defined in
 
-[tanstack-field.directive.ts:44](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/angular-form/src/tanstack-field.directive.ts#L44)
+[tanstack-field.directive.ts:44](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/angular-form/src/tanstack-field.directive.ts#L44)
 
 ***
 
@@ -131,9 +141,9 @@ name: TName;
 tanstackField: FormApi<TParentData, TFormValidator>;
 ```
 
-#### Source
+#### Defined in
 
-[tanstack-field.directive.ts:52](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/angular-form/src/tanstack-field.directive.ts#L52)
+[tanstack-field.directive.ts:52](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/angular-form/src/tanstack-field.directive.ts#L52)
 
 ***
 
@@ -147,9 +157,9 @@ optional unmount: () => void;
 
 `void`
 
-#### Source
+#### Defined in
 
-[tanstack-field.directive.ts:76](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/angular-form/src/tanstack-field.directive.ts#L76)
+[tanstack-field.directive.ts:76](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/angular-form/src/tanstack-field.directive.ts#L76)
 
 ***
 
@@ -159,13 +169,15 @@ optional unmount: () => void;
 optional validatorAdapter: TFieldValidator;
 ```
 
+A validator provided by an extension, like `yupValidator` from `@tanstack/yup-form-adapter`
+
 #### Implementation of
 
 `FieldOptions.validatorAdapter`
 
-#### Source
+#### Defined in
 
-[tanstack-field.directive.ts:51](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/angular-form/src/tanstack-field.directive.ts#L51)
+[tanstack-field.directive.ts:51](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/angular-form/src/tanstack-field.directive.ts#L51)
 
 ***
 
@@ -175,13 +187,15 @@ optional validatorAdapter: TFieldValidator;
 optional validators: NoInfer<FieldValidators<TParentData, TName, TFieldValidator, TFormValidator, TData>>;
 ```
 
+A list of validators to pass to the field
+
 #### Implementation of
 
 `FieldOptions.validators`
 
-#### Source
+#### Defined in
 
-[tanstack-field.directive.ts:56](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/angular-form/src/tanstack-field.directive.ts#L56)
+[tanstack-field.directive.ts:56](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/angular-form/src/tanstack-field.directive.ts#L56)
 
 ## Methods
 
@@ -191,6 +205,11 @@ optional validators: NoInfer<FieldValidators<TParentData, TName, TFieldValidator
 ngOnChanges(): void
 ```
 
+A callback method that is invoked immediately after the
+default change detector has checked data-bound properties
+if at least one has changed, and before the view and content
+children are checked.
+
 #### Returns
 
 `void`
@@ -199,9 +218,9 @@ ngOnChanges(): void
 
 `OnChanges.ngOnChanges`
 
-#### Source
+#### Defined in
 
-[tanstack-field.directive.ts:88](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/angular-form/src/tanstack-field.directive.ts#L88)
+[tanstack-field.directive.ts:88](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/angular-form/src/tanstack-field.directive.ts#L88)
 
 ***
 
@@ -211,6 +230,9 @@ ngOnChanges(): void
 ngOnDestroy(): void
 ```
 
+A callback method that performs custom clean-up, invoked immediately
+before a directive, pipe, or service instance is destroyed.
+
 #### Returns
 
 `void`
@@ -219,9 +241,9 @@ ngOnDestroy(): void
 
 `OnDestroy.ngOnDestroy`
 
-#### Source
+#### Defined in
 
-[tanstack-field.directive.ts:84](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/angular-form/src/tanstack-field.directive.ts#L84)
+[tanstack-field.directive.ts:84](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/angular-form/src/tanstack-field.directive.ts#L84)
 
 ***
 
@@ -231,6 +253,12 @@ ngOnDestroy(): void
 ngOnInit(): void
 ```
 
+A callback method that is invoked immediately after the
+default change detector has checked the directive's
+data-bound properties for the first time,
+and before any of the view or content children have been checked.
+It is invoked only once when the directive is instantiated.
+
 #### Returns
 
 `void`
@@ -239,6 +267,6 @@ ngOnInit(): void
 
 `OnInit.ngOnInit`
 
-#### Source
+#### Defined in
 
-[tanstack-field.directive.ts:78](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/angular-form/src/tanstack-field.directive.ts#L78)
+[tanstack-field.directive.ts:78](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/angular-form/src/tanstack-field.directive.ts#L78)

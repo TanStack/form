@@ -1,14 +1,9 @@
-import * as path from 'node:path'
+import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { promises } from 'node:fs'
+import { mkdir, rm } from 'node:fs/promises'
 import * as TypeDoc from 'typedoc'
 
-// Prevent Knip from removing the import
-import { load } from './typedoc-remove-prefix.mjs'
-;(() => load)()
-
-const { rm, mkdir } = promises
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
 /**
  * @type {Partial<import("typedoc").TypeDocOptions & import("typedoc-plugin-markdown").PluginOptions>}
@@ -16,7 +11,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const options = {
   plugin: [
     'typedoc-plugin-markdown',
-    path.resolve(__dirname, './typedoc-remove-prefix.mjs'),
+    resolve(__dirname, './typedoc-remove-prefix.js'),
   ],
   hideGenerator: true,
   readme: 'none',
@@ -28,67 +23,47 @@ const options = {
   excludePrivate: true,
 }
 
+/** @type {Array<{name: string, entryPoints: Array<string>, tsconfig: string, outputDir: string, exclude?: Array<string>}>} */
 const packages = [
   {
     name: 'form-core',
-    entryPoint: path.resolve(__dirname, '../packages/form-core/src/index.ts'),
-    tsconfig: path.resolve(
-      __dirname,
-      '../packages/form-core/tsconfig.docs.json',
-    ),
-    outputDir: path.resolve(__dirname, '../docs/reference'),
+    entryPoints: [resolve(__dirname, '../packages/form-core/src/index.ts')],
+    tsconfig: resolve(__dirname, '../packages/form-core/tsconfig.docs.json'),
+    outputDir: resolve(__dirname, '../docs/reference'),
   },
   {
     name: 'angular-form',
-    entryPoint: path.resolve(
-      __dirname,
-      '../packages/angular-form/src/index.ts',
-    ),
-    tsconfig: path.resolve(
-      __dirname,
-      '../packages/angular-form/tsconfig.docs.json',
-    ),
-    outputDir: path.resolve(__dirname, '../docs/framework/angular/reference'),
+    entryPoints: [resolve(__dirname, '../packages/angular-form/src/index.ts')],
+    tsconfig: resolve(__dirname, '../packages/angular-form/tsconfig.docs.json'),
+    outputDir: resolve(__dirname, '../docs/framework/angular/reference'),
     exclude: ['packages/form-core/**/*'],
   },
   {
     name: 'lit-form',
-    entryPoint: path.resolve(__dirname, '../packages/lit-form/src/index.ts'),
-    tsconfig: path.resolve(
-      __dirname,
-      '../packages/lit-form/tsconfig.docs.json',
-    ),
-    outputDir: path.resolve(__dirname, '../docs/framework/lit/reference'),
+    entryPoints: [resolve(__dirname, '../packages/lit-form/src/index.ts')],
+    tsconfig: resolve(__dirname, '../packages/lit-form/tsconfig.docs.json'),
+    outputDir: resolve(__dirname, '../docs/framework/lit/reference'),
     exclude: ['packages/form-core/**/*'],
   },
   {
     name: 'react-form',
-    entryPoint: path.resolve(__dirname, '../packages/react-form/src/index.ts'),
-    tsconfig: path.resolve(
-      __dirname,
-      '../packages/react-form/tsconfig.docs.json',
-    ),
-    outputDir: path.resolve(__dirname, '../docs/framework/react/reference'),
+    entryPoints: [resolve(__dirname, '../packages/react-form/src/index.ts')],
+    tsconfig: resolve(__dirname, '../packages/react-form/tsconfig.docs.json'),
+    outputDir: resolve(__dirname, '../docs/framework/react/reference'),
     exclude: ['packages/form-core/**/*'],
   },
   {
     name: 'solid-form',
-    entryPoint: path.resolve(__dirname, '../packages/solid-form/src/index.ts'),
-    tsconfig: path.resolve(
-      __dirname,
-      '../packages/solid-form/tsconfig.docs.json',
-    ),
-    outputDir: path.resolve(__dirname, '../docs/framework/solid/reference'),
+    entryPoints: [resolve(__dirname, '../packages/solid-form/src/index.tsx')],
+    tsconfig: resolve(__dirname, '../packages/solid-form/tsconfig.docs.json'),
+    outputDir: resolve(__dirname, '../docs/framework/solid/reference'),
     exclude: ['packages/form-core/**/*'],
   },
   {
     name: 'vue-form',
-    entryPoint: path.resolve(__dirname, '../packages/vue-form/src/index.ts'),
-    tsconfig: path.resolve(
-      __dirname,
-      '../packages/vue-form/tsconfig.docs.json',
-    ),
-    outputDir: path.resolve(__dirname, '../docs/framework/vue/reference'),
+    entryPoints: [resolve(__dirname, '../packages/vue-form/src/index.ts')],
+    tsconfig: resolve(__dirname, '../packages/vue-form/tsconfig.docs.json'),
+    outputDir: resolve(__dirname, '../docs/framework/vue/reference'),
     exclude: ['packages/form-core/**/*'],
   },
 ]
@@ -99,7 +74,7 @@ async function main() {
     try {
       await rm(pkg.outputDir, { recursive: true })
     } catch (error) {
-      // @ts-ignore
+      // @ts-expect-error
       if (error.code !== 'ENOENT') {
         throw error
       }
@@ -108,7 +83,7 @@ async function main() {
 
     const app = await TypeDoc.Application.bootstrapWithPlugins({
       ...options,
-      entryPoints: [pkg.entryPoint],
+      entryPoints: pkg.entryPoints,
       tsconfig: pkg.tsconfig,
       exclude: pkg.exclude,
     })

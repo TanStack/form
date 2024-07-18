@@ -6,7 +6,7 @@ function useField<TParentData, TName, TFieldValidator, TFormValidator, TData>(op
 
 A hook for managing a field in a form.
 
-## Type parameters
+## Type Parameters
 
 • **TParentData**
 
@@ -30,6 +30,6 @@ An object with field options.
 
 The `FieldApi` instance for the specified field.
 
-## Source
+## Defined in
 
-[useField.tsx:49](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/react-form/src/useField.tsx#L49)
+[useField.tsx:49](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/react-form/src/useField.tsx#L49)
