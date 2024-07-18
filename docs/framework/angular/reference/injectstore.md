@@ -1,3 +1,8 @@
+---
+id: injectStore
+title: injectStore
+---
+
 # Function: injectStore()
 
 ```ts
@@ -24,4 +29,4 @@ function injectStore<TFormData, TFormValidator, TSelected>(form, selector?): Sig
 
 ## Defined in
 
-[inject-store.ts:4](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/angular-form/src/inject-store.ts#L4)
+[inject-store.ts:4](https://github.com/TanStack/form/blob/a7956e9367e8bea8c62bd25c618aa3ad9194b14d/packages/angular-form/src/inject-store.ts#L4)

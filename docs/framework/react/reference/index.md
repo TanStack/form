@@ -1,3 +1,8 @@
+---
+id: "@tanstack/react-form"
+title: "@tanstack/react-form"
+---
+
 # @tanstack/react-form
 
 ## Type Aliases
