@@ -5,7 +5,7 @@ title: Quick Start
 
 The bare minimum to get started with TanStack Form is to create a form and add a field. Keep in mind that this example does not include any validation or error handling... yet.
 
-```typescript
+```angular-ts
 import { Component } from '@angular/core'
 import { bootstrapApplication } from '@angular/platform-browser'
 import { TanStackField, injectForm } from '@tanstack/angular-form'
