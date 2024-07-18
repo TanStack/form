@@ -1,4 +1,4 @@
-# Type alias: FormState\<TFormData\>
+# Type Alias: FormState\<TFormData\>
 
 ```ts
 type FormState<TFormData>: object;
@@ -6,7 +6,7 @@ type FormState<TFormData>: object;
 
 An object representing the current state of the form.
 
-## Type parameters
+## Type Parameters
 
 • **TFormData**
 
@@ -156,6 +156,6 @@ values: TFormData;
 
 The current values of the form fields.
 
-## Source
+## Defined in
 
-[packages/form-core/src/FormApi.ts:197](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/form-core/src/FormApi.ts#L197)
+[packages/form-core/src/FormApi.ts:198](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/form-core/src/FormApi.ts#L198)

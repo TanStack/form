@@ -8,7 +8,7 @@ A function component that takes field options and a render function as children 
 
 The `Field` component uses the `useField` hook internally to manage the field instance.
 
-## Type parameters
+## Type Parameters
 
 • **TParentData**
 
@@ -28,6 +28,6 @@ The `Field` component uses the `useField` hook internally to manage the field in
 
 `ReactNode`
 
-## Source
+## Defined in
 
-[useField.tsx:163](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/react-form/src/useField.tsx#L163)
+[useField.tsx:163](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/react-form/src/useField.tsx#L163)

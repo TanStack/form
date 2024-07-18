@@ -1,6 +1,6 @@
 # Class: TanStackFormController\<TParentData, TFormValidator\>
 
-## Type parameters
+## Type Parameters
 
 • **TParentData**
 
@@ -28,9 +28,9 @@ new TanStackFormController<TParentData, TFormValidator>(host, config?): TanStack
 
 [`TanStackFormController`](tanstackformcontroller.md)\<`TParentData`, `TFormValidator`\>
 
-#### Source
+#### Defined in
 
-[tanstack-form-controller.ts:93](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/lit-form/src/tanstack-form-controller.ts#L93)
+[tanstack-form-controller.ts:93](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/lit-form/src/tanstack-form-controller.ts#L93)
 
 ## Properties
 
@@ -40,9 +40,9 @@ new TanStackFormController<TParentData, TFormValidator>(host, config?): TanStack
 api: FormApi<TParentData, TFormValidator>;
 ```
 
-#### Source
+#### Defined in
 
-[tanstack-form-controller.ts:91](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/lit-form/src/tanstack-form-controller.ts#L91)
+[tanstack-form-controller.ts:91](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/lit-form/src/tanstack-form-controller.ts#L91)
 
 ## Methods
 
@@ -52,7 +52,7 @@ api: FormApi<TParentData, TFormValidator>;
 field<TName, TFieldValidator, TData>(fieldConfig, render): object
 ```
 
-#### Type parameters
+#### Type Parameters
 
 • **TName** *extends* `string` \| `number`
 
@@ -94,9 +94,9 @@ options: FieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData
 render: renderCallback<TParentData, TName, TFieldValidator, TFormValidator, TData>;
 ```
 
-#### Source
+#### Defined in
 
-[tanstack-form-controller.ts:112](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/lit-form/src/tanstack-form-controller.ts#L112)
+[tanstack-form-controller.ts:112](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/lit-form/src/tanstack-form-controller.ts#L112)
 
 ***
 
@@ -106,6 +106,10 @@ render: renderCallback<TParentData, TName, TFieldValidator, TFormValidator, TDat
 hostConnected(): void
 ```
 
+Called when the host is connected to the component tree. For custom
+element hosts, this corresponds to the `connectedCallback()` lifecycle,
+which is only called when the component is connected to the document.
+
 #### Returns
 
 `void`
@@ -114,9 +118,9 @@ hostConnected(): void
 
 `ReactiveController.hostConnected`
 
-#### Source
+#### Defined in
 
-[tanstack-form-controller.ts:102](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/lit-form/src/tanstack-form-controller.ts#L102)
+[tanstack-form-controller.ts:102](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/lit-form/src/tanstack-form-controller.ts#L102)
 
 ***
 
@@ -126,6 +130,11 @@ hostConnected(): void
 hostDisconnected(): void
 ```
 
+Called when the host is disconnected from the component tree. For custom
+element hosts, this corresponds to the `disconnectedCallback()` lifecycle,
+which is called the host or an ancestor component is disconnected from the
+document.
+
 #### Returns
 
 `void`
@@ -134,6 +143,6 @@ hostDisconnected(): void
 
 `ReactiveController.hostDisconnected`
 
-#### Source
+#### Defined in
 
-[tanstack-form-controller.ts:108](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/lit-form/src/tanstack-form-controller.ts#L108)
+[tanstack-form-controller.ts:108](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/lit-form/src/tanstack-form-controller.ts#L108)

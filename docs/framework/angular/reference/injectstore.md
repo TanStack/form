@@ -4,7 +4,7 @@
 function injectStore<TFormData, TFormValidator, TSelected>(form, selector?): Signal<TSelected>
 ```
 
-## Type parameters
+## Type Parameters
 
 • **TFormData**
 
@@ -22,6 +22,6 @@ function injectStore<TFormData, TFormValidator, TSelected>(form, selector?): Sig
 
 `Signal`\<`TSelected`\>
 
-## Source
+## Defined in
 
-[inject-store.ts:4](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/angular-form/src/inject-store.ts#L4)
+[inject-store.ts:4](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/angular-form/src/inject-store.ts#L4)

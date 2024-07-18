@@ -6,7 +6,7 @@ An object type representing the options for a field in a form.
 
 - [`FieldApiOptions`](fieldapioptions.md)
 
-## Type parameters
+## Type Parameters
 
 • **TParentData**
 
@@ -28,9 +28,9 @@ optional asyncAlways: boolean;
 
 If `true`, always run async validation, even if there are errors emitted during synchronous validation.
 
-#### Source
+#### Defined in
 
-[packages/form-core/src/FieldApi.ts:283](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/form-core/src/FieldApi.ts#L283)
+[packages/form-core/src/FieldApi.ts:284](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/form-core/src/FieldApi.ts#L284)
 
 ***
 
@@ -42,9 +42,9 @@ optional asyncDebounceMs: number;
 
 The default time to debounce async validation if there is not a more specific debounce time passed.
 
-#### Source
+#### Defined in
 
-[packages/form-core/src/FieldApi.ts:279](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/form-core/src/FieldApi.ts#L279)
+[packages/form-core/src/FieldApi.ts:280](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/form-core/src/FieldApi.ts#L280)
 
 ***
 
@@ -56,9 +56,9 @@ optional defaultMeta: Partial<FieldMeta>;
 
 An optional object with default metadata for the field.
 
-#### Source
+#### Defined in
 
-[packages/form-core/src/FieldApi.ts:301](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/form-core/src/FieldApi.ts#L301)
+[packages/form-core/src/FieldApi.ts:302](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/form-core/src/FieldApi.ts#L302)
 
 ***
 
@@ -70,9 +70,9 @@ optional defaultValue: NoInfer<TData>;
 
 An optional default value for the field.
 
-#### Source
+#### Defined in
 
-[packages/form-core/src/FieldApi.ts:275](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/form-core/src/FieldApi.ts#L275)
+[packages/form-core/src/FieldApi.ts:276](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/form-core/src/FieldApi.ts#L276)
 
 ***
 
@@ -84,9 +84,9 @@ name: TName;
 
 The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
 
-#### Source
+#### Defined in
 
-[packages/form-core/src/FieldApi.ts:271](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/form-core/src/FieldApi.ts#L271)
+[packages/form-core/src/FieldApi.ts:272](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/form-core/src/FieldApi.ts#L272)
 
 ***
 
@@ -98,9 +98,9 @@ optional validatorAdapter: TFieldValidator;
 
 A validator provided by an extension, like `yupValidator` from `@tanstack/yup-form-adapter`
 
-#### Source
+#### Defined in
 
-[packages/form-core/src/FieldApi.ts:287](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/form-core/src/FieldApi.ts#L287)
+[packages/form-core/src/FieldApi.ts:288](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/form-core/src/FieldApi.ts#L288)
 
 ***
 
@@ -112,6 +112,6 @@ optional validators: FieldValidators<TParentData, TName, TFieldValidator, TFormV
 
 A list of validators to pass to the field
 
-#### Source
+#### Defined in
 
-[packages/form-core/src/FieldApi.ts:291](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/form-core/src/FieldApi.ts#L291)
+[packages/form-core/src/FieldApi.ts:292](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/form-core/src/FieldApi.ts#L292)

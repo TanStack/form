@@ -1,5 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "ignoreWorkspaces": ["examples/**"],
-  "ignoreDependencies": ["@tanstack/start"]
+  "ignoreDependencies": ["@tanstack/start"],
+  "ignore": ["scripts/typedoc-remove-prefix.js"]
 }

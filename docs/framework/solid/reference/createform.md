@@ -4,7 +4,7 @@
 function createForm<TParentData, TFormValidator>(opts?): FormApi<TParentData, TFormValidator> & SolidFormApi<TParentData, TFormValidator>
 ```
 
-## Type parameters
+## Type Parameters
 
 • **TParentData**
 
@@ -18,6 +18,6 @@ function createForm<TParentData, TFormValidator>(opts?): FormApi<TParentData, TF
 
 `FormApi`\<`TParentData`, `TFormValidator`\> & `SolidFormApi`\<`TParentData`, `TFormValidator`\>
 
-## Source
+## Defined in
 
-[createForm.tsx:29](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/solid-form/src/createForm.tsx#L29)
+[createForm.tsx:29](https://github.com/TanStack/form/blob/2bebfd5214c4cdfbf6feacb7b1e25a6825957062/packages/solid-form/src/createForm.tsx#L29)
