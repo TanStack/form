@@ -10,7 +10,7 @@ import type { NodeType } from './types'
 /**
  * Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`
  */
-interface ReactFormApi<
+export interface ReactFormApi<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > {
