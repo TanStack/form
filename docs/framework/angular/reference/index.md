@@ -7,9 +7,9 @@ title: "@tanstack/angular-form"
 
 ## Classes
 
-- [TanStackField](tanstackfield.md)
+- [TanStackField](TanStackField.md)
 
 ## Functions
 
-- [injectForm](injectform.md)
-- [injectStore](injectstore.md)
+- [injectForm](injectForm.md)
+- [injectStore](injectStore.md)
