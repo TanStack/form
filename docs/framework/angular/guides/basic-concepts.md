@@ -58,7 +58,7 @@ The Field API is an object accessed in the `tanstackField.api` property when cre
 
 Example:
 
-```html
+```angular-html
 <input
   [value]="fieldName.api.state.value"
   (blur)="fieldName.api.handleBlur()"
@@ -72,7 +72,7 @@ Example:
 
 Example:
 
-```typescript
+```angular-ts
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -120,7 +120,7 @@ In addition to hand-rolled validation options, we also provide adapters like `@t
 
 Example:
 
-```typescript
+```angular-ts
 import { zodValidator } from '@tanstack/zod-form-adapter'
 import { z } from 'zod'
 
@@ -195,7 +195,7 @@ When working with array fields, you can use the fields `pushValue`, `removeValue
 
 Example:
 
-```typescript
+```angular-ts
 @Component({
   selector: 'app-root',
   standalone: true,
