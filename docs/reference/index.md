@@ -7,31 +7,31 @@ title: "@tanstack/form-core"
 
 ## Classes
 
-- [FieldApi](fieldapi.md)
-- [FormApi](formapi.md)
+- [FieldApi](FieldApi.md)
+- [FormApi](FormApi.md)
 
 ## Interfaces
 
-- [FieldApiOptions](fieldapioptions.md)
-- [FieldOptions](fieldoptions.md)
-- [FieldValidators](fieldvalidators.md)
-- [FormOptions](formoptions.md)
-- [FormValidators](formvalidators.md)
+- [FieldApiOptions](FieldApiOptions.md)
+- [FieldOptions](FieldOptions.md)
+- [FieldValidators](FieldValidators.md)
+- [FormOptions](FormOptions.md)
+- [FormValidators](FormValidators.md)
 
 ## Type Aliases
 
-- [DeepKeys](deepkeys.md)
-- [DeepValue](deepvalue.md)
-- [FieldInfo](fieldinfo.md)
-- [FieldMeta](fieldmeta.md)
-- [FieldState](fieldstate.md)
-- [FormState](formstate.md)
-- [Updater](updater.md)
-- [UpdaterFn](updaterfn.md)
-- [ValidationError](validationerror.md)
-- [ValidationMeta](validationmeta.md)
+- [DeepKeys](DeepKeys.md)
+- [DeepValue](DeepValue.md)
+- [FieldInfo](FieldInfo.md)
+- [FieldMeta](FieldMeta.md)
+- [FieldState](FieldState.md)
+- [FormState](FormState.md)
+- [Updater](Updater.md)
+- [UpdaterFn](UpdaterFn.md)
+- [ValidationError](ValidationError.md)
+- [ValidationMeta](ValidationMeta.md)
 
 ## Functions
 
-- [formOptions](formoptions.md)
-- [mergeForm](mergeform.md)
+- [formOptions](formOptions.md)
+- [mergeForm](mergeForm.md)
