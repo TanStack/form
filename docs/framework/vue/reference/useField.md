@@ -1,10 +1,15 @@
+---
+id: useField
+title: useField
+---
+
 # Function: useField()
 
 ```ts
 function useField<TParentData, TName, TFieldValidator, TFormValidator, TData>(opts): object
 ```
 
-## Type parameters
+## Type Parameters
 
 • **TParentData**
 
@@ -36,6 +41,6 @@ readonly api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TDat
 readonly state: Readonly<Ref<FieldState<TData>>> = fieldState;
 ```
 
-## Source
+## Defined in
 
-[packages/vue-form/src/useField.tsx:49](https://github.com/TanStack/form/blob/ada0211684adc85c41587b076e1217390ff5344e/packages/vue-form/src/useField.tsx#L49)
+[packages/vue-form/src/useField.tsx:49](https://github.com/TanStack/form/blob/a6313b7699753752ae30ff16c169e0b08c2369e8/packages/vue-form/src/useField.tsx#L49)

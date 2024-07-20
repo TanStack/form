@@ -9,11 +9,11 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-form": "^0.26.1",
-    "@tanstack/valibot-form-adapter": "^0.25.3",
+    "@tanstack/react-form": "^0.26.4",
+    "@tanstack/valibot-form-adapter": "^0.26.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "valibot": "^0.35.0"
+    "valibot": "^0.36.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

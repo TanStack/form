@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/solid-form",
-  "version": "0.26.2",
+  "version": "0.26.4",
   "description": "Powerful, type-safe forms for Solid.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -27,21 +27,25 @@
     "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
-    "build": "tsc -p tsconfig.build.json"
+    "build": "vite build && tsc -p tsconfig.build.json"
   },
   "type": "module",
-  "types": "dist/index.d.ts",
-  "main": "dist/index.jsx",
-  "module": "dist/index.jsx",
+  "types": "dist/esm/index.d.ts",
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/esm/index.js",
   "exports": {
     ".": {
       "solid": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.jsx"
+        "types": "./dist/source/index.d.ts",
+        "default": "./dist/source/index.jsx"
       },
       "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.jsx"
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.cts",
+        "default": "./dist/cjs/index.cjs"
       }
     },
     "./package.json": "./package.json"
@@ -53,7 +57,7 @@
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/solid-store": "^0.5.4"
+    "@tanstack/solid-store": "^0.5.5"
   },
   "devDependencies": {
     "solid-js": "^1.8.18",

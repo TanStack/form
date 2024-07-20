@@ -1,12 +1,17 @@
+---
+id: "@tanstack/vue-form"
+title: "@tanstack/vue-form"
+---
+
 # @tanstack/vue-form
 
 ## Type Aliases
 
-- [FieldComponent](fieldcomponent.md)
-- [UseField](usefield.md)
+- [FieldComponent](FieldComponent.md)
+- [UseField](UseField.md)
 
 ## Functions
 
-- [Field](field.md)
-- [useField](usefield.md)
-- [useForm](useform.md)
+- [Field](Field.md)
+- [useField](useField.md)
+- [useForm](useForm.md)

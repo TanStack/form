@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/angular-form",
-  "version": "0.25.3",
+  "version": "0.26.4",
   "description": "Powerful, type-safe forms for Angular.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -44,7 +44,7 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/angular-store": "^0.5.4",
+    "@tanstack/angular-store": "^0.5.5",
     "@tanstack/form-core": "workspace:*",
     "tslib": "^2.6.3"
   },
@@ -59,7 +59,7 @@
     "@testing-library/angular": "^17.0.0",
     "ng-packagr": "^17.3.0",
     "typescript": "5.4.2",
-    "zone.js": "~0.14.2"
+    "zone.js": "^0.14.7"
   },
   "peerDependencies": {
     "@angular/core": ">=17.3.0"

@@ -22,7 +22,11 @@
   ],
   "ignoreDeps": [
     "@types/node",
+    "@types/react",
+    "@types/react-dom",
     "node",
+    "react",
+    "react-dom",
     "typescript",
     "typescript49",
     "typescript50",
