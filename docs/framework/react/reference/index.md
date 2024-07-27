@@ -7,12 +7,12 @@ title: "@tanstack/react-form"
 
 ## Type Aliases
 
-- [FieldComponent](FieldComponent.md)
-- [UseField](UseField.md)
+- [FieldComponent](type-aliases/fieldcomponent.md)
+- [UseField](type-aliases/usefield.md)
 
 ## Functions
 
-- [Field](Field.md)
-- [useField](useField.md)
-- [useForm](useForm.md)
-- [useTransform](useTransform.md)
+- [Field](functions/field.md)
+- [useField](functions/usefield.md)
+- [useForm](functions/useform.md)
+- [useTransform](functions/usetransform.md)

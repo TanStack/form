@@ -7,31 +7,31 @@ title: "@tanstack/form-core"
 
 ## Classes
 
-- [FieldApi](FieldApi.md)
-- [FormApi](FormApi.md)
+- [FieldApi](classes/fieldapi.md)
+- [FormApi](classes/formapi.md)
 
 ## Interfaces
 
-- [FieldApiOptions](FieldApiOptions.md)
-- [FieldOptions](FieldOptions.md)
-- [FieldValidators](FieldValidators.md)
-- [FormOptions](FormOptions.md)
-- [FormValidators](FormValidators.md)
+- [FieldApiOptions](interfaces/fieldapioptions.md)
+- [FieldOptions](interfaces/fieldoptions.md)
+- [FieldValidators](interfaces/fieldvalidators.md)
+- [FormOptions](interfaces/formoptions.md)
+- [FormValidators](interfaces/formvalidators.md)
 
 ## Type Aliases
 
-- [DeepKeys](DeepKeys.md)
-- [DeepValue](DeepValue.md)
-- [FieldInfo](FieldInfo.md)
-- [FieldMeta](FieldMeta.md)
-- [FieldState](FieldState.md)
-- [FormState](FormState.md)
-- [Updater](Updater.md)
-- [UpdaterFn](UpdaterFn.md)
-- [ValidationError](ValidationError.md)
-- [ValidationMeta](ValidationMeta.md)
+- [DeepKeys](type-aliases/deepkeys.md)
+- [DeepValue](type-aliases/deepvalue.md)
+- [FieldInfo](type-aliases/fieldinfo.md)
+- [FieldMeta](type-aliases/fieldmeta.md)
+- [FieldState](type-aliases/fieldstate.md)
+- [FormState](type-aliases/formstate.md)
+- [Updater](type-aliases/updater.md)
+- [UpdaterFn](type-aliases/updaterfn.md)
+- [ValidationError](type-aliases/validationerror.md)
+- [ValidationMeta](type-aliases/validationmeta.md)
 
 ## Functions
 
-- [formOptions](formOptions.md)
-- [mergeForm](mergeForm.md)
+- [formOptions](functions/formoptions.md)
+- [mergeForm](functions/mergeform.md)
