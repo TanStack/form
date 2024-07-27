@@ -547,7 +547,7 @@ export class FieldApi<
       if (error) {
         this.setMeta((prev) => ({
           ...prev,
-          // eslint-disable-next-line ts/no-unnecessary-condition
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           errorMap: { ...prev?.errorMap, onMount: error },
         }))
       }
@@ -876,7 +876,7 @@ export class FieldApi<
             return {
               ...prev,
               errorMap: {
-                // eslint-disable-next-line ts/no-unnecessary-condition
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 ...prev?.errorMap,
                 [getErrorMapKey(cause)]: error,
               },

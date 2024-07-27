@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/yup-form-adapter",
-  "version": "0.25.3",
+  "version": "0.26.4",
   "description": "The Yup adapter for TanStack Form.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -55,7 +55,7 @@
     "@tanstack/form-core": "workspace:*"
   },
   "devDependencies": {
-    "yup": "^1.3.2"
+    "yup": "^1.4.0"
   },
   "peerDependencies": {
     "yup": "^1.x"

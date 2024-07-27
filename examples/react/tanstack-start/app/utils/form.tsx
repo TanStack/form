@@ -3,6 +3,7 @@ import { formOptions } from '@tanstack/react-form'
 import {
   ServerValidateError,
   createServerValidate,
+  getFormData,
 } from '@tanstack/react-form/start'
 
 export const formOpts = formOptions({
@@ -43,3 +44,7 @@ export const handleForm = createServerFn(
     })
   },
 )
+
+export const getFormDataFromServer = createServerFn('GET', async (_, ctx) => {
+  return getFormData(ctx)
+})

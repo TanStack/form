@@ -10,15 +10,15 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@tanstack/valibot-form-adapter": "^0.25.3",
-    "@tanstack/vue-form": "^0.25.3",
-    "valibot": "^0.35.0",
+    "@tanstack/valibot-form-adapter": "^0.26.4",
+    "@tanstack/vue-form": "^0.26.4",
+    "valibot": "^0.36.0",
     "vue": "^3.3.4"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.4",
+    "@vitejs/plugin-vue": "^5.0.5",
     "typescript": "5.4.2",
-    "vite": "^5.1.4",
-    "vue-tsc": "^2.0.6"
+    "vite": "^5.3.3",
+    "vue-tsc": "^2.0.26"
   }
 }
