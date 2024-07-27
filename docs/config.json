@@ -192,40 +192,40 @@
       "label": "API Reference",
       "children": [
         { "label": "JavaScript Reference", "to": "reference/index" },
-        { "label": "Classes / FieldApi", "to": "reference/FieldApi" },
-        { "label": "Classes / FormApi", "to": "reference/FormApi" },
-        { "label": "Functions / formOptions", "to": "reference/formOptions" },
-        { "label": "Functions / mergeForm", "to": "reference/mergeForm" },
+        { "label": "Classes / FieldApi", "to": "reference/classes/fieldapi" },
+        { "label": "Classes / FormApi", "to": "reference/classes/formapi" },
+        { "label": "Functions / formOptions", "to": "reference/functions/formoptions" },
+        { "label": "Functions / mergeForm", "to": "reference/functions/mergeform" },
         {
           "label": "Interfaces / FieldApiOptions",
-          "to": "reference/FieldApiOptions"
+          "to": "reference/interfaces/fieldapioptions"
         },
         {
           "label": "Interfaces / FieldOptions",
-          "to": "reference/FieldOptions"
+          "to": "reference/interfaces/fieldoptions"
         },
         {
           "label": "Interfaces / FieldValidators",
-          "to": "reference/FieldValidators"
+          "to": "reference/interfaces/fieldvalidators"
         },
-        { "label": "Interfaces / FormOptions", "to": "reference/FormOptions" },
+        { "label": "Interfaces / FormOptions", "to": "reference/interfaces/formoptions" },
         {
           "label": "Interfaces / FormValidators",
-          "to": "reference/FormValidators"
+          "to": "reference/interfaces/formvalidators"
         },
-        { "label": "Types / DeepKeys", "to": "reference/DeepKeys" },
-        { "label": "Types / DeepValue", "to": "reference/DeepValue" },
-        { "label": "Types / FieldInfo", "to": "reference/FieldInfo" },
-        { "label": "Types / FieldMeta", "to": "reference/FieldMeta" },
-        { "label": "Types / FieldState", "to": "reference/FieldState" },
-        { "label": "Types / FormState", "to": "reference/FormState" },
-        { "label": "Types / Updater", "to": "reference/Updater" },
-        { "label": "Types / UpdaterFn", "to": "reference/UpdaterFn" },
+        { "label": "Types / DeepKeys", "to": "reference/type-aliases/deepkeys" },
+        { "label": "Types / DeepValue", "to": "reference/type-aliases/deepvalue" },
+        { "label": "Types / FieldInfo", "to": "reference/type-aliases/fieldinfo" },
+        { "label": "Types / FieldMeta", "to": "reference/type-aliases/fieldmeta" },
+        { "label": "Types / FieldState", "to": "reference/type-aliases/fieldstate" },
+        { "label": "Types / FormState", "to": "reference/type-aliases/formstate" },
+        { "label": "Types / Updater", "to": "reference/type-aliases/updater" },
+        { "label": "Types / UpdaterFn", "to": "reference/type-aliases/updaterfn" },
         {
           "label": "Types / ValidationError",
-          "to": "reference/ValidationError"
+          "to": "reference/type-aliases/validationerror"
         },
-        { "label": "Types / ValidationMeta", "to": "reference/ValidationMeta" }
+        { "label": "Types / ValidationMeta", "to": "reference/type-aliases/validationmeta" }
       ],
       "frameworks": [
         {
@@ -237,35 +237,31 @@
             },
             {
               "label": "Functions / createServerValidate",
-              "to": "framework/react/reference/createServerValidate"
+              "to": "framework/react/reference/functions/createservervalidate"
             },
             {
               "label": "Functions / Field",
-              "to": "framework/react/reference/Field"
+              "to": "framework/react/reference/functions/field"
             },
             {
               "label": "Functions / useField",
-              "to": "framework/react/reference/useField"
+              "to": "framework/react/reference/functions/usefield"
             },
             {
               "label": "Functions / useForm",
-              "to": "framework/react/reference/useForm"
+              "to": "framework/react/reference/functions/useform"
             },
             {
               "label": "Functions / useTransform",
-              "to": "framework/react/reference/useTransform"
+              "to": "framework/react/reference/functions/usetransform"
             },
             {
               "label": "Types / FieldComponent",
-              "to": "framework/react/reference/FieldComponent"
+              "to": "framework/react/reference/type-aliases/fieldcomponent"
             },
             {
               "label": "Types / UseField",
-              "to": "framework/react/reference/UseField"
-            },
-            {
-              "label": "Variables / initialFormState",
-              "to": "framework/react/reference/initialFormState"
+              "to": "framework/react/reference/type-aliases/usefield"
             }
           ]
         },
@@ -275,23 +271,23 @@
             { "label": "Vue Reference", "to": "framework/vue/reference/index" },
             {
               "label": "Functions / Field",
-              "to": "framework/vue/reference/Field"
+              "to": "framework/vue/reference/functions/field"
             },
             {
               "label": "Functions / useField",
-              "to": "framework/vue/reference/useField"
+              "to": "framework/vue/reference/functions/usefield"
             },
             {
               "label": "Functions / useForm",
-              "to": "framework/vue/reference/useForm"
+              "to": "framework/vue/reference/functions/useform"
             },
             {
               "label": "Types / FieldComponent",
-              "to": "framework/vue/reference/FieldComponent"
+              "to": "framework/vue/reference/type-aliases/fieldcomponent"
             },
             {
               "label": "Types / UseField",
-              "to": "framework/vue/reference/UseField"
+              "to": "framework/vue/reference/type-aliases/usefield"
             }
           ]
         },
@@ -304,23 +300,23 @@
             },
             {
               "label": "Functions / createField",
-              "to": "framework/solid/reference/createField"
+              "to": "framework/solid/reference/functions/createfield"
             },
             {
               "label": "Functions / createForm",
-              "to": "framework/solid/reference/createForm"
+              "to": "framework/solid/reference/functions/createform"
             },
             {
               "label": "Functions / Field",
-              "to": "framework/solid/reference/Field"
+              "to": "framework/solid/reference/functions/field"
             },
             {
               "label": "Types / CreateField",
-              "to": "framework/solid/reference/CreateField"
+              "to": "framework/solid/reference/type-aliases/createfield"
             },
             {
               "label": "Types / FieldComponent",
-              "to": "framework/solid/reference/FieldComponent"
+              "to": "framework/solid/reference/type-aliases/fieldcomponent"
             }
           ]
         },
@@ -330,7 +326,7 @@
             { "label": "Lit Reference", "to": "framework/lit/reference/index" },
             {
               "label": "Classes / TanStackFormController",
-              "to": "framework/lit/reference/TanStackFormController"
+              "to": "framework/lit/reference/classes/tanstackformcontroller"
             }
           ]
         },
@@ -343,15 +339,15 @@
             },
             {
               "label": "Classes / TanStackField",
-              "to": "framework/angular/reference/TanStackField"
+              "to": "framework/angular/reference/classes/tanstackfield"
             },
             {
               "label": "Functions / injectForm",
-              "to": "framework/angular/reference/injectForm"
+              "to": "framework/angular/reference/functions/injectform"
             },
             {
               "label": "Functions / injectStore",
-              "to": "framework/angular/reference/injectStore"
+              "to": "framework/angular/reference/functions/injectstore"
             }
           ]
         }
