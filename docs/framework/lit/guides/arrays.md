@@ -172,4 +172,10 @@ export class TestForm extends LitElement {
       </form>
     `;
   }
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "test-form": TestForm;
+  }
+}
 ```
