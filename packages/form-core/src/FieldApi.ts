@@ -42,19 +42,10 @@ export type FieldValidateOrFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-> = TFieldValidator extends Validator<TData, infer TFN>
-  ?
-      | TFN
-      | FieldValidateFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
-  : TFormValidator extends Validator<TParentData, infer FFN>
+> =
+  TFieldValidator extends Validator<TData, infer TFN>
     ?
-        | FFN
+        | TFN
         | FieldValidateFn<
             TParentData,
             TName,
@@ -62,13 +53,23 @@ export type FieldValidateOrFn<
             TFormValidator,
             TData
           >
-    : FieldValidateFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData
-      >
+    : TFormValidator extends Validator<TParentData, infer FFN>
+      ?
+          | FFN
+          | FieldValidateFn<
+              TParentData,
+              TName,
+              TFieldValidator,
+              TFormValidator,
+              TData
+            >
+      : FieldValidateFn<
+          TParentData,
+          TName,
+          TFieldValidator,
+          TFormValidator,
+          TData
+        >
 
 /**
  * @private
@@ -102,19 +103,10 @@ export type FieldAsyncValidateOrFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-> = TFieldValidator extends Validator<TData, infer TFN>
-  ?
-      | TFN
-      | FieldValidateAsyncFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
-  : TFormValidator extends Validator<TParentData, infer FFN>
+> =
+  TFieldValidator extends Validator<TData, infer TFN>
     ?
-        | FFN
+        | TFN
         | FieldValidateAsyncFn<
             TParentData,
             TName,
@@ -122,13 +114,23 @@ export type FieldAsyncValidateOrFn<
             TFormValidator,
             TData
           >
-    : FieldValidateAsyncFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData
-      >
+    : TFormValidator extends Validator<TParentData, infer FFN>
+      ?
+          | FFN
+          | FieldValidateAsyncFn<
+              TParentData,
+              TName,
+              TFieldValidator,
+              TFormValidator,
+              TData
+            >
+      : FieldValidateAsyncFn<
+          TParentData,
+          TName,
+          TFieldValidator,
+          TFormValidator,
+          TData
+        >
 
 export interface FieldValidators<
   TParentData,
@@ -547,7 +549,7 @@ export class FieldApi<
       if (error) {
         this.setMeta((prev) => ({
           ...prev,
-          // eslint-disable-next-line ts/no-unnecessary-condition
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           errorMap: { ...prev?.errorMap, onMount: error },
         }))
       }
@@ -876,7 +878,7 @@ export class FieldApi<
             return {
               ...prev,
               errorMap: {
-                // eslint-disable-next-line ts/no-unnecessary-condition
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 ...prev?.errorMap,
                 [getErrorMapKey(cause)]: error,
               },

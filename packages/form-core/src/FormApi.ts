@@ -37,9 +37,10 @@ export type FormValidateFn<
 export type FormValidateOrFn<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-> = TFormValidator extends Validator<TFormData, infer TFN>
-  ? TFN
-  : FormValidateFn<TFormData, TFormValidator>
+> =
+  TFormValidator extends Validator<TFormData, infer TFN>
+    ? TFN
+    : FormValidateFn<TFormData, TFormValidator>
 
 /**
  * @private
@@ -59,9 +60,10 @@ export type FormValidateAsyncFn<
 export type FormAsyncValidateOrFn<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-> = TFormValidator extends Validator<TFormData, infer FFN>
-  ? FFN | FormValidateAsyncFn<TFormData, TFormValidator>
-  : FormValidateAsyncFn<TFormData, TFormValidator>
+> =
+  TFormValidator extends Validator<TFormData, infer FFN>
+    ? FFN | FormValidateAsyncFn<TFormData, TFormValidator>
+    : FormValidateAsyncFn<TFormData, TFormValidator>
 
 export interface FormValidators<
   TFormData,
@@ -587,7 +589,7 @@ export class FormApi<
     field: TField,
     cause: ValidationCause,
   ) => {
-    // eslint-disable-next-line ts/no-unnecessary-condition
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const fieldInstance = this.fieldInfo[field]?.instance
     if (!fieldInstance) return []
 
@@ -843,7 +845,7 @@ export class FormApi<
   getFieldInfo = <TField extends DeepKeys<TFormData>>(
     field: TField,
   ): FieldInfo<TFormData, TFormValidator> => {
-    // eslint-disable-next-line ts/no-unnecessary-condition
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     return (this.fieldInfo[field] ||= {
       instance: null,
       validationMetaMap: {
