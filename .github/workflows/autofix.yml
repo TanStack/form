@@ -20,10 +20,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Tools
-        uses: tanstack/config/.github/setup@629cd3152485cbe985f5a7e66d370c858132c517
+        uses: tanstack/config/.github/setup@1ce18c19ec31f6191db71f4b768b6b9ec3575a0e
       - name: Fix formatting
         run: pnpm prettier:write
       - name: Apply fixes
-        uses: autofix-ci/action@dd55f44df8f7cdb7a6bf74c78677eb8acd40cd0a
+        uses: autofix-ci/action@ff86a557419858bb967097bfc916833f5647fa8c
         with:
           commit-message: 'ci: apply automated fixes'

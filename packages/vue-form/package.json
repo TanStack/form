@@ -57,8 +57,8 @@
     "@tanstack/vue-store": "^0.5.5"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.5",
-    "vite": "^5.3.3",
+    "@vitejs/plugin-vue": "^5.1.1",
+    "vite": "^5.3.5",
     "vue": "^3.3.4"
   },
   "peerDependencies": {
