@@ -72,13 +72,13 @@
     "src"
   ],
   "dependencies": {
-    "@remix-run/node": "^2.10.3",
+    "@remix-run/node": "^2.11.0",
     "@tanstack/form-core": "workspace:*",
     "@tanstack/react-store": "^0.5.5",
     "decode-formdata": "^0.7.5"
   },
   "devDependencies": {
-    "@tanstack/start": "^1.45.11",
+    "@tanstack/start": "^1.46.4",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
