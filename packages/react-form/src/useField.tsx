@@ -5,18 +5,6 @@ import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type { NodeType, UseFieldOptions } from './types'
 import type { DeepKeys, DeepValue, Validator } from '@tanstack/form-core'
 
-interface ReactFieldApi<
-  TParentData,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
-> {
-  /**
-   * A pre-bound and type-safe sub-field component using this field as a root.
-   */
-  Field: FieldComponent<TParentData, TFormValidator>
-}
-
 /**
  * A type representing a hook for using a field in a form with the given form data type.
  *
@@ -66,18 +54,11 @@ export function useField<
   >,
 ) {
   const [fieldApi] = useState(() => {
-    const api = new FieldApi({
+    return new FieldApi({
       ...opts,
       form: opts.form,
       name: opts.name,
     })
-
-    const extendedApi: typeof api & ReactFieldApi<TParentData, TFormValidator> =
-      api as never
-
-    extendedApi.Field = Field as never
-
-    return extendedApi
   })
 
   useIsomorphicLayoutEffect(fieldApi.mount, [fieldApi])

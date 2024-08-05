@@ -111,7 +111,6 @@ export type DeepValue<
   TValue,
   // A string representing the path of the property we're trying to access
   TAccessor,
-  TNullable extends boolean = IsNullable<TValue>,
 > =
   // If TValue is any it will recurse forever, this terminates the recursion
   unknown extends TValue
@@ -138,9 +137,21 @@ export type DeepValue<
             : TAccessor extends `${infer TBefore}.${infer TAfter}`
               ? DeepValue<DeepValue<TValue, TBefore>, TAfter>
               : TAccessor extends string
-                ? TNullable extends true
+                ? IsNullable<TValue> extends true
                   ? Nullable<TValue[TAccessor]>
                   : TValue[TAccessor]
                 : never
         : // Do not allow `TValue` to be anything else
           never
+
+type SelfKeys<T> = {
+  [K in keyof T]: K
+}[keyof T]
+
+// Utility type to narrow allowed TName values to only specific types
+// IE: DeepKeyValueName<{ foo: string; bar: number }, string> = 'foo'
+export type DeepKeyValueName<TFormData, TField> = SelfKeys<{
+  [K in DeepKeys<TFormData> as DeepValue<TFormData, K> extends TField
+    ? K
+    : never]: K
+}>
