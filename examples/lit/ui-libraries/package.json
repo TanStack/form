@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@material/web": "^1.5.1",
-    "@tanstack/lit-form": "^0.27.0",
+    "@tanstack/lit-form": "^0.28.0",
     "lit": "^3.1.4"
   },
   "devDependencies": {
