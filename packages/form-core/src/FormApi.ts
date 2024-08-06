@@ -1095,6 +1095,18 @@ export class FormApi<
     this.validateField(`${field}[${index1}]` as DeepKeys<TFormData>, 'change')
     this.validateField(`${field}[${index2}]` as DeepKeys<TFormData>, 'change')
   }
+  /**
+   * Updates the form's errorMap
+   */
+  setErrorMap(errorMap: ValidationErrorMap) {
+    this.store.setState((prev) => ({
+      ...prev,
+      errorMap: {
+        ...prev.errorMap,
+        ...errorMap,
+      },
+    }))
+  }
 }
 
 function normalizeError(rawError?: ValidationError) {
