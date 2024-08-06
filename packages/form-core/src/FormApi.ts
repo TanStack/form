@@ -1096,7 +1096,7 @@ export class FormApi<
     this.validateField(`${field}[${index2}]` as DeepKeys<TFormData>, 'change')
   }
   /**
-   * Updates the form's errorMap  
+   * Updates the form's errorMap
    */
   setErrorMap(errorMap: ValidationErrorMap) {
     this.store.setState((prev) => ({
