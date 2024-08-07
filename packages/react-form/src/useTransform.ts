@@ -1,4 +1,4 @@
-import type { FormApi, Validator } from '@tanstack/form-core'
+import type { FormApi, FormTransform, Validator } from '@tanstack/form-core'
 
 export function useTransform<
   TFormData,
@@ -6,7 +6,7 @@ export function useTransform<
 >(
   fn: (formBase: FormApi<any, any>) => FormApi<TFormData, TFormValidator>,
   deps: unknown[],
-) {
+): FormTransform<TFormData, TFormValidator> {
   return {
     fn,
     deps,
