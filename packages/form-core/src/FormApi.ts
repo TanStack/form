@@ -831,7 +831,7 @@ export class FormApi<
 
     try {
       // Apply transformOnSubmit function
-      this.applyFieldsTransformation();
+      this.applyFieldsTransformation()
 
       // Run the submit code
       await this.options.onSubmit?.({ value: this.state.values, formApi: this })

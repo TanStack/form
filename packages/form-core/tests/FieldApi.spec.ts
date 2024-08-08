@@ -1340,13 +1340,13 @@ describe('field api', () => {
     const field = new FieldApi({
       form,
       name: 'id',
-      transformOnSubmit: (v) => parseInt(v)
+      transformOnSubmit: (v) => parseInt(v),
     })
 
-    field.mount();    
+    field.mount()
 
-    expect(field.getValue()).toBe("1")
-    await form.handleSubmit();
+    expect(field.getValue()).toBe('1')
+    await form.handleSubmit()
     expect(field.getValue()).toBe(1)
   })
 })

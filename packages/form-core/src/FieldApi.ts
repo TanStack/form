@@ -303,7 +303,7 @@ export interface FieldOptions<
    */
   defaultMeta?: Partial<FieldMeta>
 
-  transformOnSubmit?: (value: TData) => unknown;
+  transformOnSubmit?: (value: TData) => unknown
 }
 
 /**
