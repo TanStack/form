@@ -1329,4 +1329,24 @@ describe('field api', () => {
       'other validation error',
     )
   })
+
+  it('should apply field transformation on submit', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        id: '1',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'id',
+      transformOnSubmit: (v) => parseInt(v)
+    })
+
+    field.mount();    
+
+    expect(field.getValue()).toBe("1")
+    await form.handleSubmit();
+    expect(field.getValue()).toBe(1)
+  })
 })
