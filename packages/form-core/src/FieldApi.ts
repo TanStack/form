@@ -302,6 +302,8 @@ export interface FieldOptions<
    * An optional object with default metadata for the field.
    */
   defaultMeta?: Partial<FieldMeta>
+
+  transformOnSubmit?: (value: TData) => unknown;
 }
 
 /**
