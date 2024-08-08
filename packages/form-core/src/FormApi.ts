@@ -516,6 +516,26 @@ export class FormApi<
     )
   }
 
+  applyFieldsTransformation = () => {
+    this.store.batch(() => {
+      void (
+        Object.values(this.fieldInfo) as FieldInfo<any, TFormValidator>[]
+      ).forEach((field) => {
+        if (!field.instance) return
+        const fieldInstance = field.instance
+
+        // Apply transformation
+        const transformOnSubmit = fieldInstance.options.transformOnSubmit
+        if (!transformOnSubmit) return
+
+        const transformedValue = transformOnSubmit(field.instance.getValue())
+        if (!transformedValue) return
+
+        fieldInstance.setValue(transformedValue)
+      })
+    })
+  }
+
   /**
    * Validates all fields in the form using the correct handlers for a given validation type.
    */
@@ -810,6 +830,9 @@ export class FormApi<
     }
 
     try {
+      // Apply transformOnSubmit function
+      this.applyFieldsTransformation();
+
       // Run the submit code
       await this.options.onSubmit?.({ value: this.state.values, formApi: this })
 
