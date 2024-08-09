@@ -11,7 +11,7 @@ import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
 
 type NoInfer<T> = [T][T extends any ? 0 : never]
 
-interface SolidFormApi<
+export interface SolidFormApi<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > {
