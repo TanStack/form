@@ -37,4 +37,4 @@ A function that takes an optional object with a `name` property and field option
 
 ## Defined in
 
-[useField.tsx:25](https://github.com/TanStack/form/blob/bde3b1cb3de955b47034f0bfaa43dec13c67999a/packages/react-form/src/useField.tsx#L25)
+[useField.tsx:25](https://github.com/TanStack/form/blob/782e82ea1fb36627b62d0f588484b4a9c3249fed/packages/react-form/src/useField.tsx#L25)

@@ -25,8 +25,8 @@ This API encapsulates all the necessary functionalities related to the form. It 
 
 ## Returns
 
-`FormApi`\<`TFormData`, `TFormValidator`\> & `ReactFormApi`\<`TFormData`, `TFormValidator`\>
+`FormApi`\<`TFormData`, `TFormValidator`\> & [`ReactFormApi`](../interfaces/reactformapi.md)\<`TFormData`, `TFormValidator`\>
 
 ## Defined in
 
-[useForm.tsx:56](https://github.com/TanStack/form/blob/bde3b1cb3de955b47034f0bfaa43dec13c67999a/packages/react-form/src/useForm.tsx#L56)
+[useForm.tsx:56](https://github.com/TanStack/form/blob/782e82ea1fb36627b62d0f588484b4a9c3249fed/packages/react-form/src/useForm.tsx#L56)
