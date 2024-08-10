@@ -5,6 +5,10 @@ title: "@tanstack/react-form"
 
 # @tanstack/react-form
 
+## Interfaces
+
+- [ReactFormApi](interfaces/reactformapi.md)
+
 ## Type Aliases
 
 - [FieldComponent](type-aliases/fieldcomponent.md)
