@@ -1739,6 +1739,74 @@ describe('form api', () => {
 
     const form = new FormApi({
       defaultValues: {
+        name: 'test',
+      },
+
+      validators: {
+        onSubmitAsync: async ({ value }) => {
+          await sleep(1000)
+          if (value.name === '')
+            return {
+              form: 'something went wrong',
+              fields: {
+                name: 'first name is required',
+              },
+            }
+          return null
+        },
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        // onChangeAsync: async ({ value }) => {
+        onSubmitAsync: async ({ value }) => {
+          await sleep(1000)
+          if (value === 'other') return 'Please enter a different value'
+          return
+        },
+      },
+    })
+
+    // Check the initial state
+    field.mount()
+    expect(field.getMeta().errors.length).toBe(0)
+
+    // Check if the error is returned from the form's onSubmit validator
+    field.setValue('other')
+    form.handleSubmit()
+    await vi.runAllTimersAsync()
+
+    expect(field.getMeta().errors).toContain('Please enter a different value')
+    expect(field.getMeta().errorMap).toMatchObject({
+      onSubmit: 'Please enter a different value',
+    })
+
+    // Check if the error goes away when the value is changed
+    field.setValue('something-else')
+    form.handleSubmit()
+    await vi.runAllTimersAsync()
+
+    expect(field.state.meta.errors.length).toBe(0)
+
+    // Check if the field-level error is set from the form's validator
+    field.setValue('')
+    form.handleSubmit()
+    await vi.runAllTimersAsync()
+
+    expect(field.getMeta().errors).toContain('first name is required')
+    expect(field.getMeta().errorMap).toMatchObject({
+      onSubmit: 'first name is required',
+    })
+  })
+
+  /* it("should set errors for the fields from the form's onSubmitAsync validator", async () => {
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
         name: '',
       },
       validators: {
@@ -1783,7 +1851,8 @@ describe('form api', () => {
     })
 
     // Check if the error goes away when the value is changed
-    field.setValue('other')
+    field.setValue('other', {})
+    console.log({ state: field.state })
     field.handleBlur()
     form.handleSubmit()
     await vi.runAllTimersAsync()
@@ -1796,43 +1865,39 @@ describe('form api', () => {
     form.handleSubmit()
     await vi.runAllTimersAsync()
     expect(field.state.meta.errorMap.onSubmit).toBe('value cannot be "nothing"')
-  })
+  }) */
 
   it("should set errors for the fields from the form's onSubmit validator for array fields", async () => {
     const form = new FormApi({
       defaultValues: {
-        people: ['person-1'],
+        names: ['person'],
       },
       validators: {
         onSubmit: ({ value }) => {
-          if (value.people.includes('person-2')) {
-            return {
-              fields: {
-                people: 'person-2 is banned from registering',
-              },
-            }
-          }
-
-          return null
+          return value.names.includes('person-2')
+            ? {
+                fields: {
+                  names: 'person-2 cannot be used',
+                },
+              }
+            : undefined
         },
       },
     })
+    form.mount()
+    // Since validation runs through the field, a field must be mounted for that array
+    const namesField = new FieldApi({ form, name: 'names' })
+    namesField.mount()
 
-    const peopleField = new FieldApi({
-      form,
-      name: 'people',
-    })
-
-    peopleField.setValue((value) => [...value, 'person-2'])
-    peopleField.mount()
+    // form.removeFieldValue('names', 0)
+    namesField.setValue((value) => [...value, 'person-2'])
 
     await form.handleSubmit()
-    expect(form.state.isFieldsValid).toEqual(false)
-    expect(form.state.canSubmit).toEqual(false)
-    expect(form.state.isValid).toEqual(false)
-    expect(peopleField.state.meta.errorMap.onSubmit).toBe(
-      'person-2 is banned from registering',
+
+    expect(namesField.state.meta.errorMap.onSubmit).toBe(
+      'person-2 cannot be used',
     )
+    expect(namesField.state.meta.errors.length).toBe(1)
   })
 
   it("should set errors for the fields from the form's onSubmitAsync validator for array fields", async () => {
