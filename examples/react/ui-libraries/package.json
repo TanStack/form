@@ -11,12 +11,12 @@
   "dependencies": {
     "@emotion/react": "11.13.0",
     "@emotion/styled": "11.13.0",
-    "@mantine/core": "7.11.2",
-    "@mantine/hooks": "7.11.2",
-    "@mui/material": "5.16.6",
+    "@mantine/core": "7.12.0",
+    "@mantine/hooks": "7.12.0",
+    "@mui/material": "5.16.7",
     "@tanstack/react-form": "^0.29.0",
     "@yme/lay-postcss": "0.1.0",
-    "postcss": "8.4.40",
+    "postcss": "8.4.41",
     "postcss-preset-mantine": "1.17.0",
     "postcss-simple-vars": "7.0.1",
     "react": "^18.3.1",
@@ -33,7 +33,7 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.9",
     "typescript": "5.4.2",
-    "vite": "^5.3.5"
+    "vite": "^5.4.0"
   },
   "browserslist": {
     "production": [

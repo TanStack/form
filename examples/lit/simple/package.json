@@ -10,10 +10,10 @@
   },
   "dependencies": {
     "@tanstack/lit-form": "^0.28.0",
-    "lit": "^3.1.4"
+    "lit": "^3.2.0"
   },
   "devDependencies": {
-    "vite": "^5.3.5"
+    "vite": "^5.4.0"
   },
   "browserslist": {
     "production": [
