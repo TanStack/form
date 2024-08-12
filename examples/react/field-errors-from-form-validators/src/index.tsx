@@ -1,18 +1,6 @@
 import * as React from 'react'
 import { createRoot } from 'react-dom/client'
 import { useForm } from '@tanstack/react-form'
-import type { FieldApi } from '@tanstack/react-form'
-
-function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
-  return (
-    <>
-      {field.state.meta.touchedErrors ? (
-        <em>{field.state.meta.touchedErrors}</em>
-      ) : null}
-      {field.state.meta.isValidating ? 'Validating...' : null}
-    </>
-  )
-}
 
 async function verifyAgeOnServer(age: number) {
   return age >= 13
@@ -63,7 +51,7 @@ export default function App() {
                 type="number"
                 onChange={(e) => field.handleChange(e.target.valueAsNumber)}
               />
-              {field.state.meta.errors ? (
+              {field.state.meta.errors.length > 0 ? (
                 <em role="alert">{field.state.meta.errors.join(', ')}</em>
               ) : null}
             </>
