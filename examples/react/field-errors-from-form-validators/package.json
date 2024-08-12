@@ -1,6 +1,7 @@
 {
   "name": "@tanstack/field-errors-from-form-validators",
-  "version": "0.0.1",
+  "private": true,
+  "type": "module",
   "main": "src/index.jsx",
   "scripts": {
     "dev": "vite --port=3001",
@@ -9,13 +10,13 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-form": "^0.19.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "@tanstack/react-form": "^0.29.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.2.1",
-    "vite": "^5.0.10"
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.0"
   },
   "browserslist": {
     "production": [
