@@ -561,8 +561,8 @@ importers:
         specifier: ^5.4.0
         version: 5.4.0(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1)
       vite-tsconfig-paths:
-        specifier: ^4.3.2
-        version: 4.3.2(typescript@5.4.2)(vite@5.4.0(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
+        specifier: ^5.0.1
+        version: 5.0.1(typescript@5.4.2)(vite@5.4.0(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
 
   examples/react/ui-libraries:
     dependencies:
