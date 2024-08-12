@@ -10,11 +10,11 @@
   },
   "dependencies": {
     "@tanstack/solid-form": "^0.28.0",
-    "solid-js": "^1.8.19"
+    "solid-js": "^1.8.20"
   },
   "devDependencies": {
     "typescript": "5.4.2",
-    "vite": "^5.3.5",
+    "vite": "^5.4.0",
     "vite-plugin-solid": "^2.10.2"
   }
 }

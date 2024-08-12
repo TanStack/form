@@ -50,7 +50,7 @@
     "@tanstack/form-core": "workspace:*"
   },
   "devDependencies": {
-    "lit": "^3.1.4"
+    "lit": "^3.2.0"
   },
   "peerDependencies": {
     "lit": "^3.0.0"
