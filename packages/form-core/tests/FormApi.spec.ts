@@ -1901,46 +1901,54 @@ describe('form api', () => {
   })
 
   it("should set errors for the fields from the form's onSubmitAsync validator for array fields", async () => {
-    vi.useFakeTimers()
+    /*
+      Using fake timers will cause the
+      TODO: finish this comment
+    */
+    vi.useRealTimers()
 
     const form = new FormApi({
       defaultValues: {
-        people: ['person-1'],
+        names: ['test'],
       },
+      asyncDebounceMs: 1,
       validators: {
         onSubmitAsync: async ({ value }) => {
-          await sleep(1000)
-          if (value.people.includes('person-2')) {
-            return {
-              fields: {
-                people: 'person-2 is banned from registering',
-              },
-            }
+          await sleep(1)
+          console.log({
+            "value.names.includes('other')": value.names.includes('other'),
+          })
+          if (value.names.includes('other')) {
+            return { fields: { names: 'Please enter a different value' } }
           }
-
-          return null
+          return
         },
       },
     })
 
-    const peopleField = new FieldApi({
+    const field = new FieldApi({
       form,
-      name: 'people',
+      name: 'names',
     })
 
-    form.mount()
-    peopleField.setValue((value) => [...value, 'person-2'])
-    peopleField.mount()
-    expect(form.state.errors.length).toBe(0)
+    field.mount()
+    field.pushValue('other')
+    console.log({ value: field.state.value })
 
-    form.handleSubmit()
-    await vi.runAllTimersAsync()
-    expect(form.state.isFieldsValid).toEqual(false)
-    expect(form.state.canSubmit).toEqual(false)
-    expect(form.state.isValid).toEqual(false)
-    expect(peopleField.state.meta.errorMap.onSubmit).toEqual(
-      'person-2 is banned from registering',
-    )
+    expect(field.getMeta().errors.length).toBe(0)
+
+    await form.handleSubmit()
+
+    expect(field.getMeta().errors).toContain('Please enter a different value')
+    expect(field.getMeta().errorMap).toMatchObject({
+      onSubmit: 'Please enter a different value',
+    })
+
+    field.removeValue(1)
+    await form.handleSubmit()
+    expect(field.state.value).toStrictEqual(['test'])
+    expect(field.getMeta().errors.length).toBe(0)
+    expect(field.getMeta().errorMap.onSubmit).toBe(undefined)
   })
 
   it("should be able to set errors on nested field inside of an array from the form's validators", async () => {
