@@ -1,13 +1,19 @@
-import { safeParse, safeParseAsync } from 'valibot'
-import type { BaseIssue, BaseSchema, BaseSchemaAsync } from 'valibot'
-import type { ValidationError, Validator } from '@tanstack/form-core'
+import {
+  type GenericIssue,
+  type GenericSchema,
+  type GenericSchemaAsync,
+  safeParse,
+  safeParseAsync,
+} from 'valibot'
+import type { Validator, ValidatorAdapterParams } from '@tanstack/form-core'
 
-type Params = {
-  transformErrors?: (errors: BaseIssue<unknown>[]) => ValidationError
-}
+type Params = ValidatorAdapterParams<GenericIssue>
 
-export const valibotValidator = (params: Params = {}) =>
-  (() => {
+export const valibotValidator =
+  (
+    params: Params = {},
+  ): Validator<unknown, GenericSchema | GenericSchemaAsync> =>
+  () => {
     return {
       validate({ value }, fn) {
         if (fn.async) return
@@ -27,8 +33,4 @@ export const valibotValidator = (params: Params = {}) =>
         return result.issues.map((i) => i.message).join(', ')
       },
     }
-  }) as Validator<
-    unknown,
-    | BaseSchema<unknown, unknown, BaseIssue<unknown>>
-    | BaseSchemaAsync<unknown, unknown, BaseIssue<unknown>>
-  >
+  }

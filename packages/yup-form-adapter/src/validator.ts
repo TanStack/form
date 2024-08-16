@@ -1,15 +1,13 @@
+import type { Validator, ValidatorAdapterParams } from '@tanstack/form-core'
 import type { AnySchema, ValidationError as YupError } from 'yup'
-import type { ValidationError } from '@tanstack/form-core'
 
-type Params = {
-  transformErrors?: (errors: string[]) => ValidationError
-}
+type Params = ValidatorAdapterParams<string>
 
 export const yupValidator =
-  (params: Params = {}) =>
+  (params: Params = {}): Validator<unknown, AnySchema> =>
   () => {
     return {
-      validate({ value }: { value: unknown }, fn: AnySchema): ValidationError {
+      validate({ value }, fn) {
         try {
           fn.validateSync(value)
           return
@@ -21,10 +19,7 @@ export const yupValidator =
           return e.errors.join(', ')
         }
       },
-      async validateAsync(
-        { value }: { value: unknown },
-        fn: AnySchema,
-      ): Promise<ValidationError> {
+      async validateAsync({ value }, fn) {
         try {
           await fn.validate(value)
           return
