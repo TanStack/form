@@ -953,7 +953,6 @@ describe('field api', () => {
     field.validate('blur')
     expect(field.getMeta().errors).toStrictEqual([
       'Please enter a different value',
-      'Please enter a different value',
     ])
     expect(field.getMeta().errorMap).toEqual({
       onBlur: 'Please enter a different value',
