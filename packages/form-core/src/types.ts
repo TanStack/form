@@ -10,7 +10,7 @@ export type Validator<Type, Fn = unknown> = () => {
 }
 
 /**
- * Paramters in common for all validator adapters, making it easier to swap adapter
+ * Parameters in common for all validator adapters, making it easier to swap adapter
  * @private
  */
 export type ValidatorAdapterParams<TError = unknown> = {
