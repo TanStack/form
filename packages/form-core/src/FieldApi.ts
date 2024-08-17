@@ -467,13 +467,9 @@ export class FieldApi<
         onUpdate: () => {
           const state = this.store.state
 
-          state.meta.errors = [
-            ...new Set(
-              Object.values(state.meta.errorMap).filter(
-                (val: unknown) => val !== undefined,
-              ),
-            ),
-          ]
+          state.meta.errors = Object.values(state.meta.errorMap).filter(
+            (val: unknown) => val !== undefined,
+          )
 
           state.meta.isPristine = !state.meta.isDirty
 
