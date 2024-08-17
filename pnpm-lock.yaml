@@ -412,6 +412,40 @@ importers:
         specifier: ^5.4.0
         version: 5.4.0(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1)
 
+  examples/react/arktype:
+    dependencies:
+      '@tanstack/arktype-form-adapter':
+        specifier: ^0.28.0
+        version: link:../../../packages/arktype-form-adapter
+      '@tanstack/react-form':
+        specifier: ^0.29.1
+        version: link:../../../packages/react-form
+      arktype:
+        specifier: 2.0.0-beta.5
+        version: 2.0.0-beta.5
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+      valibot:
+        specifier: ^0.37.0
+        version: 0.37.0(typescript@5.4.2)
+    devDependencies:
+      '@types/react':
+        specifier: ^18.3.3
+        version: 18.3.3
+      '@types/react-dom':
+        specifier: ^18.3.0
+        version: 18.3.0
+      '@vitejs/plugin-react':
+        specifier: ^4.3.1
+        version: 4.3.1(vite@5.4.0(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
+      vite:
+        specifier: ^5.4.0
+        version: 5.4.0(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1)
+
   examples/react/array:
     dependencies:
       '@tanstack/react-form':
@@ -9436,7 +9470,7 @@ snapshots:
       '@babel/preset-env': 7.24.0(@babel/core@7.24.0)
       '@babel/runtime': 7.24.0
       '@discoveryjs/json-ext': 0.5.7
-      '@ngtools/webpack': 17.3.8(@angular/compiler-cli@17.3.12(@angular/compiler@17.3.12(@angular/core@17.3.12(rxjs@7.8.1)(zone.js@0.14.10)))(typescript@5.4.2))(typescript@5.4.2)(webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5))
+      '@ngtools/webpack': 17.3.8(@angular/compiler-cli@17.3.12(@angular/compiler@17.3.12(@angular/core@17.3.12(rxjs@7.8.1)(zone.js@0.14.10)))(typescript@5.4.2))(typescript@5.4.2)(webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1))
       '@vitejs/plugin-basic-ssl': 1.1.0(vite@5.1.7(@types/node@20.14.10)(less@4.2.0)(sass@1.71.1)(sugarss@4.0.1(postcss@8.4.35))(terser@5.29.1))
       ansi-colors: 4.1.3
       autoprefixer: 10.4.18(postcss@8.4.35)
@@ -9525,7 +9559,7 @@ snapshots:
       '@babel/preset-env': 7.24.0(@babel/core@7.24.0)
       '@babel/runtime': 7.24.0
       '@discoveryjs/json-ext': 0.5.7
-      '@ngtools/webpack': 17.3.8(@angular/compiler-cli@17.3.12(@angular/compiler@17.3.12(@angular/core@17.3.12(rxjs@7.8.1)(zone.js@0.14.10)))(typescript@5.4.2))(typescript@5.4.2)(webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5))
+      '@ngtools/webpack': 17.3.8(@angular/compiler-cli@17.3.12(@angular/compiler@17.3.12(@angular/core@17.3.12(rxjs@7.8.1)(zone.js@0.14.10)))(typescript@5.4.2))(typescript@5.4.2)(webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1))
       '@vitejs/plugin-basic-ssl': 1.1.0(vite@5.1.7(@types/node@20.14.10)(less@4.2.0)(sass@1.71.1)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
       ansi-colors: 4.1.3
       autoprefixer: 10.4.18(postcss@8.4.35)
@@ -9570,7 +9604,7 @@ snapshots:
       undici: 6.11.1
       vite: 5.1.7(@types/node@20.14.10)(less@4.2.0)(sass@1.71.1)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1)
       watchpack: 2.4.0
-      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5)
+      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)
       webpack-dev-middleware: 6.1.2(webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1))
       webpack-dev-server: 4.15.1(webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1))
       webpack-merge: 5.10.0
@@ -9601,7 +9635,7 @@ snapshots:
     dependencies:
       '@angular-devkit/architect': 0.1703.8(chokidar@3.6.0)
       rxjs: 7.8.1
-      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5)
+      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)
       webpack-dev-server: 4.15.1(webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1))
     transitivePeerDependencies:
       - chokidar
@@ -11486,6 +11520,12 @@ snapshots:
   '@next/swc-win32-x64-msvc@15.0.0-rc.0':
     optional: true
 
+  '@ngtools/webpack@17.3.8(@angular/compiler-cli@17.3.12(@angular/compiler@17.3.12(@angular/core@17.3.12(rxjs@7.8.1)(zone.js@0.14.10)))(typescript@5.4.2))(typescript@5.4.2)(webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1))':
+    dependencies:
+      '@angular/compiler-cli': 17.3.12(@angular/compiler@17.3.12(@angular/core@17.3.12(rxjs@7.8.1)(zone.js@0.14.10)))(typescript@5.4.2)
+      typescript: 5.4.2
+      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)
+
   '@ngtools/webpack@17.3.8(@angular/compiler-cli@17.3.12(@angular/compiler@17.3.12(@angular/core@17.3.12(rxjs@7.8.1)(zone.js@0.14.10)))(typescript@5.4.2))(typescript@5.4.2)(webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5))':
     dependencies:
       '@angular/compiler-cli': 17.3.12(@angular/compiler@17.3.12(@angular/core@17.3.12(rxjs@7.8.1)(zone.js@0.14.10)))(typescript@5.4.2)
@@ -12330,8 +12370,8 @@ snapshots:
       '@types/jsesc': 3.0.3
       '@vinxi/react': 0.2.3
       '@vinxi/react-server-dom': 0.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vite@5.4.0(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
-      '@vinxi/server-components': 0.4.1(vinxi@0.4.1(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
-      '@vinxi/server-functions': 0.4.1(vinxi@0.4.1(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
+      '@vinxi/server-components': 0.4.1(vinxi@0.4.1(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(magicast@0.3.4)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
+      '@vinxi/server-functions': 0.4.1(vinxi@0.4.1(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(magicast@0.3.4)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
       import-meta-resolve: 4.1.0
       isbot: 5.1.14
       jsesc: 3.0.2
@@ -12809,7 +12849,7 @@ snapshots:
     transitivePeerDependencies:
       - uWebSockets.js
 
-  '@vinxi/plugin-directives@0.4.1(vinxi@0.4.1(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))':
+  '@vinxi/plugin-directives@0.4.1(vinxi@0.4.1(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(magicast@0.3.4)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))':
     dependencies:
       '@babel/parser': 7.25.3
       acorn: 8.12.1
@@ -12831,9 +12871,9 @@ snapshots:
 
   '@vinxi/react@0.2.3': {}
 
-  '@vinxi/server-components@0.4.1(vinxi@0.4.1(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))':
+  '@vinxi/server-components@0.4.1(vinxi@0.4.1(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(magicast@0.3.4)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))':
     dependencies:
-      '@vinxi/plugin-directives': 0.4.1(vinxi@0.4.1(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
+      '@vinxi/plugin-directives': 0.4.1(vinxi@0.4.1(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(magicast@0.3.4)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
       acorn: 8.12.1
       acorn-loose: 8.4.0
       acorn-typescript: 1.4.13(acorn@8.12.1)
@@ -12842,9 +12882,9 @@ snapshots:
       recast: 0.23.9
       vinxi: 0.4.1(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(magicast@0.3.4)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1)
 
-  '@vinxi/server-functions@0.4.1(vinxi@0.4.1(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))':
+  '@vinxi/server-functions@0.4.1(vinxi@0.4.1(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(magicast@0.3.4)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))':
     dependencies:
-      '@vinxi/plugin-directives': 0.4.1(vinxi@0.4.1(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
+      '@vinxi/plugin-directives': 0.4.1(vinxi@0.4.1(@opentelemetry/api@1.9.0)(@types/node@20.14.10)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(magicast@0.3.4)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
       acorn: 8.12.1
       acorn-loose: 8.4.0
       acorn-typescript: 1.4.13(acorn@8.12.1)
@@ -13416,7 +13456,7 @@ snapshots:
       '@babel/core': 7.24.0
       find-cache-dir: 4.0.0
       schema-utils: 4.2.0
-      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5)
+      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)
 
   babel-plugin-add-module-exports@0.2.1: {}
 
@@ -13868,7 +13908,7 @@ snapshots:
       normalize-path: 3.0.0
       schema-utils: 4.2.0
       serialize-javascript: 6.0.2
-      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5)
+      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)
 
   core-js-compat@3.37.1:
     dependencies:
@@ -13937,7 +13977,7 @@ snapshots:
       postcss-value-parser: 4.2.0
       semver: 7.6.3
     optionalDependencies:
-      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5)
+      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)
 
   css-select@5.1.0:
     dependencies:
@@ -15712,7 +15752,7 @@ snapshots:
     dependencies:
       klona: 2.0.6
       less: 4.2.0
-      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5)
+      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)
 
   less@4.2.0:
     dependencies:
@@ -15737,7 +15777,7 @@ snapshots:
     dependencies:
       webpack-sources: 3.2.3
     optionalDependencies:
-      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5)
+      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)
 
   liftoff@5.0.0:
     dependencies:
@@ -15996,7 +16036,7 @@ snapshots:
     dependencies:
       schema-utils: 4.2.0
       tapable: 2.2.1
-      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5)
+      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)
 
   minimalistic-assert@1.0.1: {}
 
@@ -16785,7 +16825,7 @@ snapshots:
       postcss: 8.4.35
       semver: 7.6.3
     optionalDependencies:
-      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5)
+      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)
     transitivePeerDependencies:
       - typescript
 
@@ -17298,7 +17338,7 @@ snapshots:
       neo-async: 2.6.2
     optionalDependencies:
       sass: 1.71.1
-      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5)
+      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)
 
   sass@1.71.1:
     dependencies:
@@ -17609,7 +17649,7 @@ snapshots:
     dependencies:
       iconv-lite: 0.6.3
       source-map-js: 1.2.0
-      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5)
+      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)
 
   source-map-support@0.5.21:
     dependencies:
@@ -17824,7 +17864,19 @@ snapshots:
       mkdirp: 1.0.4
       yallist: 4.0.0
 
-  terser-webpack-plugin@5.3.10(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5)(webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5)):
+  terser-webpack-plugin@5.3.10(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)(webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)):
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.25
+      jest-worker: 27.5.1
+      schema-utils: 3.3.0
+      serialize-javascript: 6.0.2
+      terser: 5.29.1
+      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)
+    optionalDependencies:
+      '@swc/core': 1.6.13(@swc/helpers@0.5.11)
+      esbuild: 0.20.1
+
+  terser-webpack-plugin@5.3.10(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5)(webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       jest-worker: 27.5.1
@@ -18517,7 +18569,7 @@ snapshots:
       mime-types: 2.1.35
       range-parser: 1.2.1
       schema-utils: 4.2.0
-      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5)
+      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)
 
   webpack-dev-middleware@6.1.2(webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)):
     dependencies:
@@ -18527,7 +18579,7 @@ snapshots:
       range-parser: 1.2.1
       schema-utils: 4.2.0
     optionalDependencies:
-      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5)
+      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)
 
   webpack-dev-server@4.15.1(webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)):
     dependencies:
@@ -18562,7 +18614,7 @@ snapshots:
       webpack-dev-middleware: 5.3.3(webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1))
       ws: 8.18.0
     optionalDependencies:
-      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5)
+      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -18580,9 +18632,40 @@ snapshots:
   webpack-subresource-integrity@5.1.0(webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)):
     dependencies:
       typed-assert: 1.0.9
-      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5)
+      webpack: 5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)
 
   webpack-virtual-modules@0.6.2: {}
+
+  webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1):
+    dependencies:
+      '@types/eslint-scope': 3.7.7
+      '@types/estree': 1.0.5
+      '@webassemblyjs/ast': 1.12.1
+      '@webassemblyjs/wasm-edit': 1.12.1
+      '@webassemblyjs/wasm-parser': 1.12.1
+      acorn: 8.12.1
+      acorn-import-assertions: 1.9.0(acorn@8.12.1)
+      browserslist: 4.23.2
+      chrome-trace-event: 1.0.3
+      enhanced-resolve: 5.17.1
+      es-module-lexer: 1.4.1
+      eslint-scope: 5.1.1
+      events: 3.3.0
+      glob-to-regexp: 0.4.1
+      graceful-fs: 4.2.11
+      json-parse-even-better-errors: 2.3.1
+      loader-runner: 4.3.0
+      mime-types: 2.1.35
+      neo-async: 2.6.2
+      schema-utils: 3.3.0
+      tapable: 2.2.1
+      terser-webpack-plugin: 5.3.10(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1)(webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1))
+      watchpack: 2.4.0
+      webpack-sources: 3.2.3
+    transitivePeerDependencies:
+      - '@swc/core'
+      - esbuild
+      - uglify-js
 
   webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5):
     dependencies:
@@ -18607,7 +18690,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 3.3.0
       tapable: 2.2.1
-      terser-webpack-plugin: 5.3.10(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5)(webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5))
+      terser-webpack-plugin: 5.3.10(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.21.5)(webpack@5.90.3(@swc/core@1.6.13(@swc/helpers@0.5.11))(esbuild@0.20.1))
       watchpack: 2.4.0
       webpack-sources: 3.2.3
     transitivePeerDependencies:

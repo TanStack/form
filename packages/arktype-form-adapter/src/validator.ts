@@ -11,8 +11,11 @@ export const arktypeValidator =
   (() => {
     return {
       validate({ value }, fn) {
+		console.log(fn, "XD")
         // Call Arktype on the value here and return the error message
         const result = fn(value)
+
+		console.log(result)
 
         if (result instanceof type.errors) {
           if (params.transformErrors) {
@@ -28,6 +31,8 @@ export const arktypeValidator =
         { value }: { value: unknown },
         fn: Type<any>,
       ): Promise<ValidationError> {
+		console.log(fn, "XD")
+
         // Call Arktype on the value here and return the error message
         const result = fn(value)
 
