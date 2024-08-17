@@ -169,6 +169,7 @@ export interface FormOptions<
    * While `false`:
    *  - An `onMount` error will never be cleared.
    *  - An `onBlur` error will only be cleared on the next `onBlur` event.
+   *  - An `onChange` error will only be cleared on the next `onChange` event.
    *
    * @default false
    */
