@@ -719,12 +719,6 @@ export class FieldApi<
    * @private
    */
   validateSync = (cause: ValidationCause) => {
-    if (this.form.options.automaticallyResetValidators === true)
-      this.setMeta((prev) => ({
-        ...prev,
-        errorMap: {},
-      }))
-
     const validates = getSyncValidatorArray(cause, this.options)
 
     const linkedFields = this.getLinkedFields(cause)
@@ -937,6 +931,13 @@ export class FieldApi<
     try {
       this.form.validate(cause)
     } catch (_) {}
+
+    // Clear previous validation errors
+    if (this.form.options.automaticallyResetValidators === true)
+      this.setMeta((prev) => ({
+        ...prev,
+        errorMap: {},
+      }))
 
     // Attempt to sync validate first
     const { hasErrored } = this.validateSync(cause)
