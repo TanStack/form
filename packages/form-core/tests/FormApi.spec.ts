@@ -1160,10 +1160,7 @@ describe('form api', () => {
 
     field.setValue('other')
     field.validate('blur')
-    expect(form.state.errors).toStrictEqual([
-      'Please enter a different value',
-      'Please enter a different value',
-    ])
+    expect(form.state.errors).toStrictEqual(['Please enter a different value'])
     expect(form.state.errorMap).toEqual({
       onBlur: 'Please enter a different value',
       onChange: 'Please enter a different value',
