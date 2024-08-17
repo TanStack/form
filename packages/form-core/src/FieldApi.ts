@@ -719,6 +719,12 @@ export class FieldApi<
    * @private
    */
   validateSync = (cause: ValidationCause) => {
+    if (this.form.options.automaticallyResetValidators === true)
+      this.setMeta((prev) => ({
+        ...prev,
+        errorMap: {},
+      }));
+
     const validates = getSyncValidatorArray(cause, this.options)
 
     const linkedFields = this.getLinkedFields(cause)
