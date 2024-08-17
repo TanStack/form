@@ -796,8 +796,6 @@ export class FieldApi<
       }))
     }
 
-    console.log(this.getMeta().errorMap) // TODO
-
     return { hasErrored }
   }
 
