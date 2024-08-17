@@ -172,7 +172,7 @@ export interface FormOptions<
    *
    * @default false
    */
-  automaticallyResetValidators?: boolean;
+  automaticallyResetValidators?: boolean
 }
 
 /**

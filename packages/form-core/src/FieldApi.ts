@@ -723,7 +723,7 @@ export class FieldApi<
       this.setMeta((prev) => ({
         ...prev,
         errorMap: {},
-      }));
+      }))
 
     const validates = getSyncValidatorArray(cause, this.options)
 
