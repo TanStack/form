@@ -376,9 +376,13 @@ export class FormApi<
           const isPristine = !isDirty
 
           const isValidating = isFieldsValidating || state.isFormValidating
-          state.errors = Object.values(state.errorMap).filter(
-            (val: unknown) => val !== undefined,
-          )
+          state.errors = [
+            ...new Set(
+              Object.values(state.errorMap).filter(
+                (val: unknown) => val !== undefined,
+              ),
+            ),
+          ]
           const isFormValid = state.errors.length === 0
           const isValid = isFieldsValid && isFormValid
           const canSubmit =
