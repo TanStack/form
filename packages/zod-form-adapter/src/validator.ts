@@ -1,46 +1,27 @@
-import type { ValidationError } from '@tanstack/form-core'
-import type { SafeParseError, ZodIssue, ZodType, ZodTypeAny } from 'zod'
+import type { Validator, ValidatorAdapterParams } from '@tanstack/form-core'
+import type { ZodIssue, ZodType } from 'zod'
 
-type Params = {
-  transformErrors?: (errors: ZodIssue[]) => ValidationError
-}
+type Params = ValidatorAdapterParams<ZodIssue>
 
 export const zodValidator =
-  (params: Params = {}) =>
+  (params: Params = {}): Validator<unknown, ZodType> =>
   () => {
     return {
-      validate({ value }: { value: unknown }, fn: ZodType): ValidationError {
-        // Call Zod on the value here and return the error message
-        const result = (fn as ZodTypeAny).safeParse(value)
-        if (!result.success) {
-          if (params.transformErrors) {
-            return params.transformErrors(
-              (result as SafeParseError<any>).error.issues,
-            )
-          }
-          return (result as SafeParseError<any>).error.issues
-            .map((issue) => issue.message)
-            .join(', ')
+      validate({ value }, fn) {
+        const result = fn.safeParse(value)
+        if (result.success) return
+        if (params.transformErrors) {
+          return params.transformErrors(result.error.issues)
         }
-        return
+        return result.error.issues.map((issue) => issue.message).join(', ')
       },
-      async validateAsync(
-        { value }: { value: unknown },
-        fn: ZodType,
-      ): Promise<ValidationError> {
-        // Call Zod on the value here and return the error message
-        const result = await (fn as ZodTypeAny).safeParseAsync(value)
-        if (!result.success) {
-          if (params.transformErrors) {
-            return params.transformErrors(
-              (result as SafeParseError<any>).error.issues,
-            )
-          }
-          return (result as SafeParseError<any>).error.issues
-            .map((issue) => issue.message)
-            .join(', ')
+      async validateAsync({ value }, fn) {
+        const result = await fn.safeParseAsync(value)
+        if (result.success) return
+        if (params.transformErrors) {
+          return params.transformErrors(result.error.issues)
         }
-        return
+        return result.error.issues.map((issue) => issue.message).join(', ')
       },
     }
   }

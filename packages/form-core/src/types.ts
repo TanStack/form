@@ -10,6 +10,14 @@ export type Validator<Type, Fn = unknown> = () => {
 }
 
 /**
+ * Parameters in common for all validator adapters, making it easier to swap adapter
+ * @private
+ */
+export type ValidatorAdapterParams<TError = unknown> = {
+  transformErrors?: (errors: TError[]) => ValidationError
+}
+
+/**
  * "server" is only intended for SSR/SSG validation and should not execute anything
  * @private
  */
