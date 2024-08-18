@@ -157,7 +157,7 @@ export interface FieldValidators<
    * An optional property that takes a `ValidateFn` which is a generic of `TData` and `TParentData`.
    * If `validatorAdapter` is passed, this may also accept a property from the respective adapter
    *
-   * @example `z.string().min(1)` if `zodAdapter` is passed
+   * @example z.string().min(1) // if `zodAdapter` is passed
    */
   onChange?: FieldValidateOrFn<
     TParentData,
@@ -170,7 +170,7 @@ export interface FieldValidators<
    * An optional property similar to `onChange` but async validation. If `validatorAdapter`
    * is passed, this may also accept a property from the respective adapter
    *
-   * @example `z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })` if `zodAdapter` is passed
+   * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // if `zodAdapter` is passed
    */
   onChangeAsync?: FieldAsyncValidateOrFn<
     TParentData,
@@ -190,10 +190,10 @@ export interface FieldValidators<
    */
   onChangeListenTo?: DeepKeys<TParentData>[]
   /**
-   * An optional function, that when run when subscribing to blur event of input.
+   * An optional function, that runs on the blur event of input.
    * If `validatorAdapter` is passed, this may also accept a property from the respective adapter
    *
-   * @example `z.string().min(1)` if `zodAdapter` is passed
+   * @example z.string().min(1) // if `zodAdapter` is passed
    */
   onBlur?: FieldValidateOrFn<
     TParentData,
@@ -206,7 +206,7 @@ export interface FieldValidators<
    * An optional property similar to `onBlur` but async validation. If `validatorAdapter`
    * is passed, this may also accept a property from the respective adapter
    *
-   * @example `z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })` if `zodAdapter` is passed
+   * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // if `zodAdapter` is passed
    */
   onBlurAsync?: FieldAsyncValidateOrFn<
     TParentData,
@@ -227,10 +227,10 @@ export interface FieldValidators<
    */
   onBlurListenTo?: DeepKeys<TParentData>[]
   /**
-   * An optional function, that when run when subscribing to submit event of input.
+   * An optional function, that runs on the submit event of form.
    * If `validatorAdapter` is passed, this may also accept a property from the respective adapter
    *
-   * @example `z.string().min(1)` if `zodAdapter` is passed
+   * @example z.string().min(1) // if `zodAdapter` is passed
    */
   onSubmit?: FieldValidateOrFn<
     TParentData,
@@ -243,7 +243,7 @@ export interface FieldValidators<
    * An optional property similar to `onSubmit` but async validation. If `validatorAdapter`
    * is passed, this may also accept a property from the respective adapter
    *
-   * @example `z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })` if `zodAdapter` is passed
+   * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // if `zodAdapter` is passed
    */
   onSubmitAsync?: FieldAsyncValidateOrFn<
     TParentData,
