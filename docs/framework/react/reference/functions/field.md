@@ -35,4 +35,4 @@ The `Field` component uses the `useField` hook internally to manage the field in
 
 ## Defined in
 
-[useField.tsx:163](https://github.com/TanStack/form/blob/782e82ea1fb36627b62d0f588484b4a9c3249fed/packages/react-form/src/useField.tsx#L163)
+[useField.tsx:163](https://github.com/TanStack/form/blob/03de1e83ad6580cff66ab58566f3003d93d4e34d/packages/react-form/src/useField.tsx#L163)
