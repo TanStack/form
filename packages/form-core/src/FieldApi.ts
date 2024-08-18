@@ -952,7 +952,7 @@ export class FieldApi<
   validate = (
     cause: ValidationCause,
   ): ValidationError[] | Promise<ValidationError[]> => {
-    // If the field is pristine and validatePristine is false, do not validate
+    // If the field is pristine, do not validate
     if (!this.state.meta.isTouched) return []
 
     let validationErrorFromForm: ValidationErrorMap = {}

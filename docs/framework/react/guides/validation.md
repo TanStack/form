@@ -206,7 +206,6 @@ export default function App() {
     },
     validators: {
       onSubmitAsync: async ({ value }) => {
-        console.log({ value })
         // Verify the age on the server
         const isOlderThan13 = await verifyAgeOnServer(value.age)
         if (!isOlderThan13) {
