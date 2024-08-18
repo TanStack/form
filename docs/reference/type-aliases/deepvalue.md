@@ -21,4 +21,4 @@ Infer the type of a deeply nested property within an object or an array.
 
 ## Defined in
 
-[packages/form-core/src/util-types.ts:109](https://github.com/TanStack/form/blob/782e82ea1fb36627b62d0f588484b4a9c3249fed/packages/form-core/src/util-types.ts#L109)
+[packages/form-core/src/util-types.ts:109](https://github.com/TanStack/form/blob/03de1e83ad6580cff66ab58566f3003d93d4e34d/packages/form-core/src/util-types.ts#L109)

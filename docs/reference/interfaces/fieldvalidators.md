@@ -25,18 +25,18 @@ title: FieldValidators
 optional onBlur: FieldValidateOrFn<TParentData, TName, TFieldValidator, TFormValidator, TData>;
 ```
 
-An optional function, that when run when subscribing to blur event of input.
+An optional function, that runs on the blur event of input.
 If `validatorAdapter` is passed, this may also accept a property from the respective adapter
 
 #### Example
 
 ```ts
-`z.string().min(1)` if `zodAdapter` is passed
+z.string().min(1) // if `zodAdapter` is passed
 ```
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:198](https://github.com/TanStack/form/blob/782e82ea1fb36627b62d0f588484b4a9c3249fed/packages/form-core/src/FieldApi.ts#L198)
+[packages/form-core/src/FieldApi.ts:198](https://github.com/TanStack/form/blob/03de1e83ad6580cff66ab58566f3003d93d4e34d/packages/form-core/src/FieldApi.ts#L198)
 
 ***
 
@@ -52,12 +52,12 @@ is passed, this may also accept a property from the respective adapter
 #### Example
 
 ```ts
-`z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })` if `zodAdapter` is passed
+z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // if `zodAdapter` is passed
 ```
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:211](https://github.com/TanStack/form/blob/782e82ea1fb36627b62d0f588484b4a9c3249fed/packages/form-core/src/FieldApi.ts#L211)
+[packages/form-core/src/FieldApi.ts:211](https://github.com/TanStack/form/blob/03de1e83ad6580cff66ab58566f3003d93d4e34d/packages/form-core/src/FieldApi.ts#L211)
 
 ***
 
@@ -73,7 +73,7 @@ If set to a number larger than 0, will debounce the async validation event by th
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:224](https://github.com/TanStack/form/blob/782e82ea1fb36627b62d0f588484b4a9c3249fed/packages/form-core/src/FieldApi.ts#L224)
+[packages/form-core/src/FieldApi.ts:224](https://github.com/TanStack/form/blob/03de1e83ad6580cff66ab58566f3003d93d4e34d/packages/form-core/src/FieldApi.ts#L224)
 
 ***
 
@@ -87,7 +87,7 @@ An optional list of field names that should trigger this field's `onBlur` and `o
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:228](https://github.com/TanStack/form/blob/782e82ea1fb36627b62d0f588484b4a9c3249fed/packages/form-core/src/FieldApi.ts#L228)
+[packages/form-core/src/FieldApi.ts:228](https://github.com/TanStack/form/blob/03de1e83ad6580cff66ab58566f3003d93d4e34d/packages/form-core/src/FieldApi.ts#L228)
 
 ***
 
@@ -103,12 +103,12 @@ If `validatorAdapter` is passed, this may also accept a property from the respec
 #### Example
 
 ```ts
-`z.string().min(1)` if `zodAdapter` is passed
+z.string().min(1) // if `zodAdapter` is passed
 ```
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:162](https://github.com/TanStack/form/blob/782e82ea1fb36627b62d0f588484b4a9c3249fed/packages/form-core/src/FieldApi.ts#L162)
+[packages/form-core/src/FieldApi.ts:162](https://github.com/TanStack/form/blob/03de1e83ad6580cff66ab58566f3003d93d4e34d/packages/form-core/src/FieldApi.ts#L162)
 
 ***
 
@@ -124,12 +124,12 @@ is passed, this may also accept a property from the respective adapter
 #### Example
 
 ```ts
-`z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })` if `zodAdapter` is passed
+z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // if `zodAdapter` is passed
 ```
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:175](https://github.com/TanStack/form/blob/782e82ea1fb36627b62d0f588484b4a9c3249fed/packages/form-core/src/FieldApi.ts#L175)
+[packages/form-core/src/FieldApi.ts:175](https://github.com/TanStack/form/blob/03de1e83ad6580cff66ab58566f3003d93d4e34d/packages/form-core/src/FieldApi.ts#L175)
 
 ***
 
@@ -145,7 +145,7 @@ If set to a number larger than 0, will debounce the async validation event by th
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:187](https://github.com/TanStack/form/blob/782e82ea1fb36627b62d0f588484b4a9c3249fed/packages/form-core/src/FieldApi.ts#L187)
+[packages/form-core/src/FieldApi.ts:187](https://github.com/TanStack/form/blob/03de1e83ad6580cff66ab58566f3003d93d4e34d/packages/form-core/src/FieldApi.ts#L187)
 
 ***
 
@@ -159,7 +159,7 @@ An optional list of field names that should trigger this field's `onChange` and 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:191](https://github.com/TanStack/form/blob/782e82ea1fb36627b62d0f588484b4a9c3249fed/packages/form-core/src/FieldApi.ts#L191)
+[packages/form-core/src/FieldApi.ts:191](https://github.com/TanStack/form/blob/03de1e83ad6580cff66ab58566f3003d93d4e34d/packages/form-core/src/FieldApi.ts#L191)
 
 ***
 
@@ -173,7 +173,7 @@ An optional function that takes a param of `formApi` which is a generic type of 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:149](https://github.com/TanStack/form/blob/782e82ea1fb36627b62d0f588484b4a9c3249fed/packages/form-core/src/FieldApi.ts#L149)
+[packages/form-core/src/FieldApi.ts:149](https://github.com/TanStack/form/blob/03de1e83ad6580cff66ab58566f3003d93d4e34d/packages/form-core/src/FieldApi.ts#L149)
 
 ***
 
@@ -183,18 +183,18 @@ An optional function that takes a param of `formApi` which is a generic type of 
 optional onSubmit: FieldValidateOrFn<TParentData, TName, TFieldValidator, TFormValidator, TData>;
 ```
 
-An optional function, that when run when subscribing to submit event of input.
+An optional function, that runs on the submit event of form.
 If `validatorAdapter` is passed, this may also accept a property from the respective adapter
 
 #### Example
 
 ```ts
-`z.string().min(1)` if `zodAdapter` is passed
+z.string().min(1) // if `zodAdapter` is passed
 ```
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:235](https://github.com/TanStack/form/blob/782e82ea1fb36627b62d0f588484b4a9c3249fed/packages/form-core/src/FieldApi.ts#L235)
+[packages/form-core/src/FieldApi.ts:235](https://github.com/TanStack/form/blob/03de1e83ad6580cff66ab58566f3003d93d4e34d/packages/form-core/src/FieldApi.ts#L235)
 
 ***
 
@@ -210,9 +210,9 @@ is passed, this may also accept a property from the respective adapter
 #### Example
 
 ```ts
-`z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })` if `zodAdapter` is passed
+z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // if `zodAdapter` is passed
 ```
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:248](https://github.com/TanStack/form/blob/782e82ea1fb36627b62d0f588484b4a9c3249fed/packages/form-core/src/FieldApi.ts#L248)
+[packages/form-core/src/FieldApi.ts:248](https://github.com/TanStack/form/blob/03de1e83ad6580cff66ab58566f3003d93d4e34d/packages/form-core/src/FieldApi.ts#L248)
