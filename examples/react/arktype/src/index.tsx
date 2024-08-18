@@ -16,7 +16,6 @@ function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
   )
 }
 
-
 export default function App() {
   const form = useForm({
     defaultValues: {
@@ -46,7 +45,7 @@ export default function App() {
           <form.Field
             name="firstName"
             validators={{
-              onChange: type('string > 2'),
+              onChange: { type: type('string > 2') },
               // onChangeAsyncDebounceMs: 500,
               // onChangeAsync: v.pipeAsync(
               //   v.string(),

@@ -13,7 +13,7 @@ export const arktypeValidator =
       validate({ value }, fn) {
 		console.log(fn, "XD")
         // Call Arktype on the value here and return the error message
-        const result = fn(value)
+        const result = fn.type(value)
 
 		console.log(result)
 
@@ -28,13 +28,13 @@ export const arktypeValidator =
         return
       },
       async validateAsync(
-        { value }: { value: unknown },
-        fn: Type<any>,
+        { value },
+        fn,
       ): Promise<ValidationError> {
 		console.log(fn, "XD")
 
         // Call Arktype on the value here and return the error message
-        const result = fn(value)
+        const result = fn.type(value)
 
         if (result instanceof type.errors) {
           if (params.transformErrors) {
@@ -49,6 +49,5 @@ export const arktypeValidator =
     }
   }) as Validator<
   unknown,
-  | Type
-  | Type
+  {type: Type}
 >
