@@ -18,7 +18,7 @@ describe('arktype field api', () => {
       validatorAdapter: arktypeValidator(),
       name: 'name',
       validators: {
-        onChange: type("string > 3"),
+        onChange: type('string > 3'),
       },
     })
 

@@ -24,7 +24,7 @@ it('should allow a Zod validator to handle the correct Zod type', () => {
     form,
     name: 'name',
     validators: {
-      onChange: type("string"),
+      onChange: type('string'),
     },
   })
 })
@@ -41,7 +41,7 @@ it('should allow a Zod validator to handle the correct Zod type on async methods
     form,
     name: 'name',
     validators: {
-      onChangeAsync: type("string"),
+      onChangeAsync: type('string'),
     },
   })
 })
@@ -77,7 +77,7 @@ it('should not allow a validator onChange to be passed when not using a validato
     form,
     name: 'name',
     // @ts-expect-error Requires a validator
-    onChange: type("string"),
+    onChange: type('string'),
   })
 })
 
@@ -94,7 +94,7 @@ it.skip('should allow not a Zod validator with the wrong Zod type', () => {
     name: 'name',
     validatorAdapter: arktypeValidator(),
     validators: {
-      onChange: type("object"),
+      onChange: type('object'),
     },
   })
 })

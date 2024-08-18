@@ -6,16 +6,15 @@ type Params = {
   transformErrors?: (errors: ArkErrors) => ValidationError
 }
 
-export const arktypeValidator =
-  (params: Params = {}) =>
+export const arktypeValidator = (params: Params = {}) =>
   (() => {
     return {
       validate({ value }, fn) {
-		console.log(fn, "XD")
+        console.log(fn, 'XD')
         // Call Arktype on the value here and return the error message
         const result = fn.type(value)
 
-		console.log(result)
+        console.log(result)
 
         if (result instanceof type.errors) {
           if (params.transformErrors) {
@@ -27,11 +26,8 @@ export const arktypeValidator =
 
         return
       },
-      async validateAsync(
-        { value },
-        fn,
-      ): Promise<ValidationError> {
-		console.log(fn, "XD")
+      async validateAsync({ value }, fn): Promise<ValidationError> {
+        console.log(fn, 'XD')
 
         // Call Arktype on the value here and return the error message
         const result = fn.type(value)
@@ -47,7 +43,4 @@ export const arktypeValidator =
         return
       },
     }
-  }) as Validator<
-  unknown,
-  {type: Type}
->
+  }) as Validator<unknown, { type: Type }>

@@ -17,7 +17,7 @@ describe('zod form api', () => {
       form,
       name: 'name',
       validators: {
-        onChange: type("string > 2"),
+        onChange: type('string > 2'),
       },
     })
 
