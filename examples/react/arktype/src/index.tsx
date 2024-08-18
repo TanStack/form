@@ -1,8 +1,7 @@
 import * as React from 'react'
 import { createRoot } from 'react-dom/client'
 import { useForm } from '@tanstack/react-form'
-import { arktypeValidator } from '@tanstack/arktype-form-adapter'
-import { type } from 'arktype'
+import { arktype, arktypeValidator } from '@tanstack/arktype-form-adapter'
 import type { FieldApi } from '@tanstack/react-form'
 
 function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
@@ -45,15 +44,7 @@ export default function App() {
           <form.Field
             name="firstName"
             validators={{
-              onChange: { type: type('string > 2') },
-              // onChangeAsyncDebounceMs: 500,
-              // onChangeAsync: v.pipeAsync(
-              //   v.string(),
-              //   v.checkAsync(async (value) => {
-              //     await new Promise((resolve) => setTimeout(resolve, 1000))
-              //     return !value.includes('error')
-              //   }, "No 'error' allowed in first name"),
-              // ),
+              onChange: arktype('string > 2'),
             }}
             children={(field) => {
               // Avoid hasty abstractions. Render props are great!
