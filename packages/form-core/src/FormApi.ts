@@ -12,6 +12,7 @@ import type { Updater } from './utils'
 import type { DeepKeys, DeepValue } from './util-types'
 import type { FieldApi, FieldMeta } from './FieldApi'
 import type {
+  FormValidationError,
   UpdateMetaOptions,
   ValidationCause,
   ValidationError,
@@ -19,16 +20,6 @@ import type {
   ValidationErrorMapKeys,
   Validator,
 } from './types'
-
-/**
- * @private
- */
-type FormValidationError<TFormData> =
-  | ValidationError
-  | {
-      form?: ValidationError
-      fields: Partial<Record<DeepKeys<TFormData>, ValidationError>>
-    }
 
 export type FieldsErrorMapFromValidator<TFormData> = Partial<
   Record<DeepKeys<TFormData>, ValidationErrorMap>
