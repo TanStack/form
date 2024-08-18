@@ -1,0 +1,37 @@
+{
+  "name": "@tanstack/form-example-react-arktype",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port=3001",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:types": "tsc"
+  },
+  "dependencies": {
+    "@tanstack/arktype-form-adapter": "^0.28.0",
+    "@tanstack/react-form": "^0.29.1",
+    "arktype": "2.0.0-beta.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "valibot": "^0.37.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
