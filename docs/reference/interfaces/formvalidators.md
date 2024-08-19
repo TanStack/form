@@ -19,7 +19,7 @@ title: FormValidators
 optional onBlur: FormValidateOrFn<TFormData, TFormValidator>;
 ```
 
-Optional function that validates the form data when a field loses focus, returns a [`FormValidationError<TFormData>`](../type-aliases/formvalidationerror.md).
+Optional function that validates the form data when a field loses focus, returns a ValidationError
 
 #### Defined in
 
@@ -33,7 +33,7 @@ Optional function that validates the form data when a field loses focus, returns
 optional onBlurAsync: FormAsyncValidateOrFn<TFormData, TFormValidator>;
 ```
 
-Optional onBlur asynchronous validation method for when a field loses focus, returns a [`FormValidationError<TFormData>`](../type-aliases/formvalidationerror.md) or a promise of `Promise<[FormValidationError<TFormData>](../type-aliases/formvalidationerror.md)>`.
+Optional onBlur asynchronous validation method for when a field loses focus return a `ValidationError` or a promise of `Promise<ValidationError>`
 
 #### Defined in
 

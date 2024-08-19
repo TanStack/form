@@ -39,6 +39,16 @@ export type ValidationErrorMap = {
 
 /**
  * @private
+ *
+ * @example
+ * ```tsx
+ * {
+ *   form: 'This form contains an error',
+ *   fields: {
+ *     age: "Must be 13 or older to register"
+ *   }
+ * }
+ * ````
  */
 export type FormValidationError<TFormData> =
   | ValidationError

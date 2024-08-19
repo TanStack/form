@@ -103,11 +103,11 @@ export interface FormValidators<
    */
   onChangeAsyncDebounceMs?: number
   /**
-   * Optional function that validates the form data when a field loses focus, returns a ValidationError
+   * Optional function that validates the form data when a field loses focus, returns a `FormValidationError`
    */
   onBlur?: FormValidateOrFn<TFormData, TFormValidator>
   /**
-   * Optional onBlur asynchronous validation method for when a field loses focus return a `ValidationError` or a promise of `Promise<ValidationError>`
+   * Optional onBlur asynchronous validation method for when a field loses focus returns a ` FormValidationError` or a promise of `Promise<FormValidationError>`
    */
   onBlurAsync?: FormAsyncValidateOrFn<TFormData, TFormValidator>
   /**
