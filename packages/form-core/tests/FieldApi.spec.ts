@@ -642,8 +642,7 @@ describe('field api', () => {
   })
 
   it('should abort enqueued debounced async validation if sync validation fails in the meantime', async () => {
-    // TODO: write an explanation about why we can't use `vi.useFakeTimers()` here
-    vi.useRealTimers()
+    vi.useFakeTimers()
 
     const mockOnChange = vi.fn().mockImplementation(({ value }) => {
       if (value.length < 3) {
@@ -1075,7 +1074,8 @@ describe('field api', () => {
   })
 
   it('should cancel previous functions from an async validator with an abort signal', async () => {
-    vi.useRealTimers()
+    vi.useFakeTimers()
+
     const form = new FormApi({
       defaultValues: {
         firstName: '',
@@ -1106,12 +1106,10 @@ describe('field api', () => {
     field.mount()
 
     field.setValue('one')
-    // Allow for a micro-tick to allow the promise to resolve
-    await sleep(1)
+    await vi.runAllTimersAsync()
     field.setValue('two')
     resolve()
-    // Allow for some micro-ticks to allow the promise to resolve
-    await sleep(3)
+    await vi.runAllTimersAsync()
     expect(fn).toHaveBeenCalledTimes(1)
   })
 
@@ -1207,7 +1205,7 @@ describe('field api', () => {
   })
 
   it('should run onChangeAsync on a linked field', async () => {
-    vi.useRealTimers()
+    vi.useFakeTimers()
     let resolve!: () => void
     let promise = new Promise((r) => {
       resolve = r as never
@@ -1248,8 +1246,7 @@ describe('field api', () => {
 
     passField.setValue('one')
     resolve()
-    // Allow for some micro-ticks to allow the promise to resolve
-    await sleep(3)
+    await vi.runAllTimersAsync()
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
     ])
@@ -1258,16 +1255,14 @@ describe('field api', () => {
     })
     passconfirmField.setValue('one')
     resolve()
-    // Allow for a micro-tick to allow the promise to resolve
-    await sleep(1)
+    await vi.runAllTimersAsync()
     expect(passconfirmField.state.meta.errors).toStrictEqual([])
     promise = new Promise((r) => {
       resolve = r as never
     })
     passField.setValue('two')
     resolve()
-    // Allow for some micro-ticks to allow the promise to resolve
-    await sleep(3)
+    await vi.runAllTimersAsync()
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
     ])
