@@ -1768,11 +1768,7 @@ describe('form api', () => {
   })
 
   it("should set errors for the fields from the form's onSubmitAsync validator for array fields", async () => {
-    /*
-      Using fake timers will cause the
-      TODO: finish this comment
-    */
-    vi.useRealTimers()
+    vi.useFakeTimers()
 
     const form = new FormApi({
       defaultValues: {
@@ -1782,9 +1778,6 @@ describe('form api', () => {
       validators: {
         onSubmitAsync: async ({ value }) => {
           await sleep(1)
-          console.log({
-            "value.names.includes('other')": value.names.includes('other'),
-          })
           if (value.names.includes('other')) {
             return { fields: { names: 'Please enter a different value' } }
           }
@@ -1804,7 +1797,8 @@ describe('form api', () => {
 
     expect(field.getMeta().errors.length).toBe(0)
 
-    await form.handleSubmit()
+    form.handleSubmit()
+    await vi.runAllTimersAsync()
 
     expect(field.getMeta().errors).toContain('Please enter a different value')
     expect(field.getMeta().errorMap).toMatchObject({
@@ -1812,7 +1806,9 @@ describe('form api', () => {
     })
 
     field.removeValue(1)
-    await form.handleSubmit()
+    form.handleSubmit()
+    await vi.runAllTimersAsync()
+
     expect(field.state.value).toStrictEqual(['test'])
     expect(field.getMeta().errors.length).toBe(0)
     expect(field.getMeta().errorMap.onSubmit).toBe(undefined)
@@ -1930,12 +1926,7 @@ describe('form api', () => {
   })
 
   it("should set errors on a linked field from the form's onChangeAsync validator", async () => {
-    vi.useRealTimers()
-    let resolve!: () => void
-    const promise = new Promise((r) => {
-      resolve = r as never
-    })
-    const fn = vi.fn()
+    vi.useFakeTimers()
 
     const form = new FormApi({
       defaultValues: {
@@ -1944,8 +1935,6 @@ describe('form api', () => {
       },
       validators: {
         onChangeAsync: async ({ value }) => {
-          await promise
-          fn()
           if (value.confirm_password !== value.password) {
             return {
               fields: {
@@ -1975,9 +1964,8 @@ describe('form api', () => {
     passconfirmField.mount()
 
     passField.setValue('one')
-    resolve()
-    // Allow for some micro-ticks to allow the promise to resolve
-    await sleep(4)
+
+    await vi.runAllTimersAsync()
 
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
@@ -1986,9 +1974,9 @@ describe('form api', () => {
     )
 
     passconfirmField.setValue('one')
-    resolve()
-    // Allow for some micro-ticks to allow the promise to resolve
-    await sleep(4)
+
+    await vi.runAllTimersAsync()
+
     expect(form.state.isFieldsValid).toBe(true)
     expect(form.state.canSubmit).toBe(true)
     expect(passconfirmField.state.meta.errors).toStrictEqual([])
