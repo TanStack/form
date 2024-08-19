@@ -1209,7 +1209,7 @@ export class FormApi<
 
 function normalizeError<TFormData>(rawError?: FormValidationError<TFormData>): {
   formError: ValidationError
-  fieldErrors?: Partial<Partial<Record<DeepKeys<TFormData>, ValidationError>>>
+  fieldErrors?: Partial<Record<DeepKeys<TFormData>, ValidationError>>
 } {
   if (rawError) {
     if (typeof rawError === 'object') {

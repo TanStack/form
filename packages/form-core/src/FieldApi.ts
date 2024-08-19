@@ -748,11 +748,11 @@ export class FieldApi<
 
         const error =
           /*
-          If `validateObj.validate` is `undefined`, the field does not have a
-          validator for this event, but there still could be an error that
-          needs to be cleaned up related to the current event left by the
-          form's validator.
-          /*/
+            If `validateObj.validate` is `undefined`, then the field doesn't have
+            a validator for this event, but there still could be an error that
+            needs to be cleaned up related to the current event left by the
+            form's validator.
+          */
           validateObj.validate
             ? normalizeError(
                 field.runValidator({
