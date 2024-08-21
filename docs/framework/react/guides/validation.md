@@ -248,13 +248,16 @@ export default function App() {
             </>
           )}
         </form.Field>
-        {form.state.errorMap.onSubmit ? (
-          <div>
-            <em>
-              There was an error on the form: {form.state.errorMap.onSubmit}
-            </em>
-          </div>
-        ) : null}
+        <form.Subscribe
+          selector={(state) => [state.errorMap]}
+          children={([errorMap]) =>
+            errorMap.onSubmit ? (
+              <div>
+                <em>There was an error on the form: {errorMap.onSubmit}</em>
+              </div>
+            ) : null
+          }
+        />
         {/*...*/}
       </form>
     </div>
