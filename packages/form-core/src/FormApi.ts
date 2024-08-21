@@ -453,6 +453,10 @@ export type BaseFormState<
    */
   submissionAttempts: number
   /**
+   * A boolean indicating if the last submission was successful.
+   */
+  isSubmitSuccessful: boolean
+  /**
    * @private, used to force a re-evaluation of the form state when options change
    */
   _force_re_eval?: boolean
@@ -616,6 +620,7 @@ function getDefaultFormState<
     isSubmitting: defaultState.isSubmitting ?? false,
     isValidating: defaultState.isValidating ?? false,
     submissionAttempts: defaultState.submissionAttempts ?? 0,
+    isSubmitSuccessful: defaultState.isSubmitSuccessful ?? false,
     validationMetaMap: defaultState.validationMetaMap ?? {
       onChange: undefined,
       onBlur: undefined,
@@ -1580,6 +1585,7 @@ export class FormApi<
       isSubmitted: false,
       // Count submission attempts
       submissionAttempts: old.submissionAttempts + 1,
+      isSubmitSuccessful: false, // Reset isSubmitSuccessful at the start of submission
     }))
 
     // Don't let invalid forms submit
@@ -1634,10 +1640,18 @@ export class FormApi<
       } as any)
 
       batch(() => {
-        this.baseStore.setState((prev) => ({ ...prev, isSubmitted: true }))
+        this.baseStore.setState((prev) => ({
+          ...prev,
+          isSubmitted: true,
+          isSubmitSuccessful: true, // Set isSubmitSuccessful to true on successful submission
+        }))
         done()
       })
     } catch (err) {
+      this.baseStore.setState((prev) => ({
+        ...prev,
+        isSubmitSuccessful: false, // Ensure isSubmitSuccessful is false if an error occurs
+      }))
       done()
       throw err
     }
