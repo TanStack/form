@@ -3,7 +3,7 @@ import * as React from 'react'
 import { createRoot } from 'react-dom/client'
 
 async function verifyAgeOnServer(age: number) {
-  return age >= 13
+  return age <= 13
 }
 
 async function checkIfUsernameIsTaken(name: string) {
@@ -21,20 +21,18 @@ export default function App() {
       onSubmitAsync: async ({ value }) => {
         console.log({ value })
         // Verify the age on the server
-        const isNotOlderThan13 = !(await verifyAgeOnServer(value.age))
+        const isTooYoung = !(await verifyAgeOnServer(value.age))
 
         // Verify the availability of the username on the server
         const isUsernameTaken = await checkIfUsernameIsTaken(value.username)
 
-        if (isNotOlderThan13 || isUsernameTaken) {
+        if (isTooYoung || isUsernameTaken) {
           return {
             // The `form` key is optional
             form: 'Invalid data',
             fields: {
               ...(isUsernameTaken ? { username: 'Username is taken' } : {}),
-              ...(isNotOlderThan13
-                ? { age: 'Must be 13 or older to sign' }
-                : {}),
+              ...(isTooYoung ? { age: 'Must be 13 or older to sign' } : {}),
             },
           }
         }
@@ -98,14 +96,16 @@ export default function App() {
             </div>
           )}
         />
-
-        {form.state.errorMap.onSubmit ? (
-          <div>
-            <em>
-              There was an error on the form: {form.state.errorMap.onSubmit}
-            </em>
-          </div>
-        ) : null}
+        <form.Subscribe
+          selector={(state) => [state.errorMap]}
+          children={([errorMap]) =>
+            errorMap.onSubmit ? (
+              <div>
+                <em>There was an error on the form: {errorMap.onSubmit}</em>
+              </div>
+            ) : null
+          }
+        />
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
           children={([canSubmit, isSubmitting]) => (
