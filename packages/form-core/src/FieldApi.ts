@@ -42,19 +42,10 @@ export type FieldValidateOrFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-> = TFieldValidator extends Validator<TData, infer TFN>
-  ?
-      | TFN
-      | FieldValidateFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
-  : TFormValidator extends Validator<TParentData, infer FFN>
+> =
+  TFieldValidator extends Validator<TData, infer TFN>
     ?
-        | FFN
+        | TFN
         | FieldValidateFn<
             TParentData,
             TName,
@@ -62,13 +53,23 @@ export type FieldValidateOrFn<
             TFormValidator,
             TData
           >
-    : FieldValidateFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData
-      >
+    : TFormValidator extends Validator<TParentData, infer FFN>
+      ?
+          | FFN
+          | FieldValidateFn<
+              TParentData,
+              TName,
+              TFieldValidator,
+              TFormValidator,
+              TData
+            >
+      : FieldValidateFn<
+          TParentData,
+          TName,
+          TFieldValidator,
+          TFormValidator,
+          TData
+        >
 
 /**
  * @private
@@ -102,19 +103,10 @@ export type FieldAsyncValidateOrFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-> = TFieldValidator extends Validator<TData, infer TFN>
-  ?
-      | TFN
-      | FieldValidateAsyncFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
-  : TFormValidator extends Validator<TParentData, infer FFN>
+> =
+  TFieldValidator extends Validator<TData, infer TFN>
     ?
-        | FFN
+        | TFN
         | FieldValidateAsyncFn<
             TParentData,
             TName,
@@ -122,13 +114,23 @@ export type FieldAsyncValidateOrFn<
             TFormValidator,
             TData
           >
-    : FieldValidateAsyncFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData
-      >
+    : TFormValidator extends Validator<TParentData, infer FFN>
+      ?
+          | FFN
+          | FieldValidateAsyncFn<
+              TParentData,
+              TName,
+              TFieldValidator,
+              TFormValidator,
+              TData
+            >
+      : FieldValidateAsyncFn<
+          TParentData,
+          TName,
+          TFieldValidator,
+          TFormValidator,
+          TData
+        >
 
 export interface FieldValidators<
   TParentData,
@@ -155,7 +157,7 @@ export interface FieldValidators<
    * An optional property that takes a `ValidateFn` which is a generic of `TData` and `TParentData`.
    * If `validatorAdapter` is passed, this may also accept a property from the respective adapter
    *
-   * @example `z.string().min(1)` if `zodAdapter` is passed
+   * @example z.string().min(1) // if `zodAdapter` is passed
    */
   onChange?: FieldValidateOrFn<
     TParentData,
@@ -168,7 +170,7 @@ export interface FieldValidators<
    * An optional property similar to `onChange` but async validation. If `validatorAdapter`
    * is passed, this may also accept a property from the respective adapter
    *
-   * @example `z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })` if `zodAdapter` is passed
+   * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // if `zodAdapter` is passed
    */
   onChangeAsync?: FieldAsyncValidateOrFn<
     TParentData,
@@ -188,10 +190,10 @@ export interface FieldValidators<
    */
   onChangeListenTo?: DeepKeys<TParentData>[]
   /**
-   * An optional function, that when run when subscribing to blur event of input.
+   * An optional function, that runs on the blur event of input.
    * If `validatorAdapter` is passed, this may also accept a property from the respective adapter
    *
-   * @example `z.string().min(1)` if `zodAdapter` is passed
+   * @example z.string().min(1) // if `zodAdapter` is passed
    */
   onBlur?: FieldValidateOrFn<
     TParentData,
@@ -204,7 +206,7 @@ export interface FieldValidators<
    * An optional property similar to `onBlur` but async validation. If `validatorAdapter`
    * is passed, this may also accept a property from the respective adapter
    *
-   * @example `z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })` if `zodAdapter` is passed
+   * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // if `zodAdapter` is passed
    */
   onBlurAsync?: FieldAsyncValidateOrFn<
     TParentData,
@@ -225,10 +227,10 @@ export interface FieldValidators<
    */
   onBlurListenTo?: DeepKeys<TParentData>[]
   /**
-   * An optional function, that when run when subscribing to submit event of input.
+   * An optional function, that runs on the submit event of form.
    * If `validatorAdapter` is passed, this may also accept a property from the respective adapter
    *
-   * @example `z.string().min(1)` if `zodAdapter` is passed
+   * @example z.string().min(1) // if `zodAdapter` is passed
    */
   onSubmit?: FieldValidateOrFn<
     TParentData,
@@ -241,7 +243,7 @@ export interface FieldValidators<
    * An optional property similar to `onSubmit` but async validation. If `validatorAdapter`
    * is passed, this may also accept a property from the respective adapter
    *
-   * @example `z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })` if `zodAdapter` is passed
+   * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // if `zodAdapter` is passed
    */
   onSubmitAsync?: FieldAsyncValidateOrFn<
     TParentData,
@@ -547,7 +549,7 @@ export class FieldApi<
       if (error) {
         this.setMeta((prev) => ({
           ...prev,
-          // eslint-disable-next-line ts/no-unnecessary-condition
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           errorMap: { ...prev?.errorMap, onMount: error },
         }))
       }
@@ -876,7 +878,7 @@ export class FieldApi<
             return {
               ...prev,
               errorMap: {
-                // eslint-disable-next-line ts/no-unnecessary-condition
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 ...prev?.errorMap,
                 [getErrorMapKey(cause)]: error,
               },
@@ -960,6 +962,19 @@ export class FieldApi<
       this.validate('change')
     }
     this.validate('blur')
+  }
+
+  /**
+   * Updates the field's errorMap
+   */
+  setErrorMap(errorMap: ValidationErrorMap) {
+    this.setMeta((prev) => ({
+      ...prev,
+      errorMap: {
+        ...prev.errorMap,
+        ...errorMap,
+      },
+    }))
   }
 }
 

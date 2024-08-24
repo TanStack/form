@@ -5,11 +5,11 @@ title: Arrays
 
 TanStack Form supports arrays as values in a form, including sub-object values inside of an array.
 
-# Basic Usage
+## Basic Usage
 
 To use an array, you can use `field.api.state.value` on an array value:
 
-```typescript
+```angular-ts
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -38,7 +38,7 @@ export class AppComponent {
 
 This will generate the mapped JSX every time you run `pushValue` on `field`:
 
-```html
+```angular-html
 <button (click)="people.api.pushValue(defaultPerson)" type="button">
   Add person
 </button>
@@ -46,7 +46,7 @@ This will generate the mapped JSX every time you run `pushValue` on `field`:
 
 Finally, you can use a subfield like so:
 
-```html
+```angular-html
  <ng-container
   [tanstackField]="form"
   [name]="getPeopleName($index)"
@@ -79,7 +79,7 @@ export class AppComponent {
 > While it's unfortunate that you need to use a function to get the field name, it's a requirement for how our strict TypeScript types work.
 >
 > See, if we did the following:
-> ```html
+> ```angular-html
 > <ng-container [tanstackField]="form" [name]="'people[' + $index + '].name'"></ng-container>
 > ```
 >
@@ -91,7 +91,7 @@ export class AppComponent {
 
 ## Full Example
 
-```typescript
+```angular-ts
 @Component({
   selector: 'app-root',
   standalone: true,

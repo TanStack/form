@@ -1270,4 +1270,63 @@ describe('field api', () => {
       'Passwords do not match',
     ])
   })
+
+  it('should add  a new value to the fieldApi errorMap', () => {
+    interface Form {
+      name: string
+    }
+    const form = new FormApi<Form>()
+    const nameField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    nameField.mount()
+    nameField.setErrorMap({
+      onChange: "name can't be Josh",
+    })
+    expect(nameField.getMeta().errorMap.onChange).toEqual("name can't be Josh")
+  })
+  it('should preserve other values in the fieldApi errorMap when adding other values', () => {
+    interface Form {
+      name: string
+    }
+    const form = new FormApi<Form>()
+    const nameField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    nameField.mount()
+    nameField.setErrorMap({
+      onChange: "name can't be Josh",
+    })
+    expect(nameField.getMeta().errorMap.onChange).toEqual("name can't be Josh")
+    nameField.setErrorMap({
+      onBlur: 'name must begin with uppercase',
+    })
+    expect(nameField.getMeta().errorMap.onChange).toEqual("name can't be Josh")
+    expect(nameField.getMeta().errorMap.onBlur).toEqual(
+      'name must begin with uppercase',
+    )
+  })
+  it('should replace errorMap value if it exists in the fieldApi object', () => {
+    interface Form {
+      name: string
+    }
+    const form = new FormApi<Form>()
+    const nameField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    nameField.mount()
+    nameField.setErrorMap({
+      onChange: "name can't be Josh",
+    })
+    expect(nameField.getMeta().errorMap.onChange).toEqual("name can't be Josh")
+    nameField.setErrorMap({
+      onChange: 'other validation error',
+    })
+    expect(nameField.getMeta().errorMap.onChange).toEqual(
+      'other validation error',
+    )
+  })
 })

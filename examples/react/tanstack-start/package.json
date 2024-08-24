@@ -9,13 +9,13 @@
     "start": "vinxi start"
   },
   "dependencies": {
-    "@tanstack/form-core": "^0.26.4",
-    "@tanstack/react-form": "^0.26.4",
-    "@tanstack/react-router": "^1.45.0",
-    "@tanstack/start": "^1.45.0",
+    "@tanstack/form-core": "^0.29.2",
+    "@tanstack/react-form": "^0.29.2",
+    "@tanstack/react-router": "^1.48.1",
+    "@tanstack/start": "^1.48.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "vinxi": "^0.3.14"
+    "vinxi": "^0.4.1"
   },
   "devDependencies": {
     "@types/node": "^20.14.10",
@@ -23,7 +23,7 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "typescript": "5.4.2",
-    "vite": "^5.3.3",
-    "vite-tsconfig-paths": "^4.3.2"
+    "vite": "^5.4.1",
+    "vite-tsconfig-paths": "^5.0.1"
   }
 }

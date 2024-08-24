@@ -18,7 +18,7 @@ import type {
           [validators]="{
             onChange: firstNameValidator,
             onChangeAsyncDebounceMs: 500,
-            onChangeAsync: firstNameAsyncValidator
+            onChangeAsync: firstNameAsyncValidator,
           }"
           #firstName="field"
         >

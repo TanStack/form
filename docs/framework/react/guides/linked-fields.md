@@ -1,4 +1,7 @@
-# Link Two Form Fields Together
+---
+id: linked-fields
+title: Link Two Form Fields Together
+---
 
 You may find yourself needing to link two fields together; when one is validated as another field's value has changed.
 One such usage is when you have both a `password` and `confirm_password` field,
