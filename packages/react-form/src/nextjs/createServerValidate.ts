@@ -14,9 +14,10 @@ type OnServerValidateFn<TFormData> = (props: {
 type OnServerValidateOrFn<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-> = TFormValidator extends Validator<TFormData, infer FFN>
-  ? FFN | OnServerValidateFn<TFormData>
-  : OnServerValidateFn<TFormData>
+> =
+  TFormValidator extends Validator<TFormData, infer FFN>
+    ? FFN | OnServerValidateFn<TFormData>
+    : OnServerValidateFn<TFormData>
 
 interface CreateServerValidateOptions<
   TFormData,
