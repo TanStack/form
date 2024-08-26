@@ -13,13 +13,13 @@
     "@tanstack/valibot-form-adapter": "^0.29.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "valibot": "^0.37.0"
+    "valibot": "^0.39.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
-    "vite": "^5.4.1"
+    "vite": "^5.4.2"
   },
   "browserslist": {
     "production": [

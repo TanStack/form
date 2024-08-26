@@ -21,9 +21,9 @@
     "@tanstack/angular-form": "^0.29.2",
     "@tanstack/zod-form-adapter": "^0.29.2",
     "rxjs": "^7.8.1",
-    "tslib": "^2.6.3",
+    "tslib": "^2.7.0",
     "zod": "^3.23.8",
-    "zone.js": "^0.14.10"
+    "zone.js": "^0.15.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.3.8",
