@@ -270,6 +270,10 @@ export type FormState<TFormData> = {
    * A counter for tracking the number of submission attempts.
    */
   submissionAttempts: number
+  /**
+   * A boolean indicating if the last submission was successful.
+   */
+  isSubmitSuccessful: boolean
 }
 
 function getDefaultFormState<TFormData>(
@@ -293,6 +297,7 @@ function getDefaultFormState<TFormData>(
     isValid: defaultState.isValid ?? false,
     isValidating: defaultState.isValidating ?? false,
     submissionAttempts: defaultState.submissionAttempts ?? 0,
+    isSubmitSuccessful: defaultState.isSubmitSuccessful ?? false,
     validationMetaMap: defaultState.validationMetaMap ?? {
       onChange: undefined,
       onBlur: undefined,
@@ -773,6 +778,7 @@ export class FormApi<
       isSubmitted: false,
       // Count submission attempts
       submissionAttempts: old.submissionAttempts + 1,
+      isSubmitSuccessful: false, // Reset isSubmitSuccessful at the start of submission
     }))
 
     // Don't let invalid forms submit
@@ -814,10 +820,18 @@ export class FormApi<
       await this.options.onSubmit?.({ value: this.state.values, formApi: this })
 
       this.store.batch(() => {
-        this.store.setState((prev) => ({ ...prev, isSubmitted: true }))
+        this.store.setState((prev) => ({
+          ...prev,
+          isSubmitted: true,
+          isSubmitSuccessful: true, // Set isSubmitSuccessful to true on successful submission
+        }))
         done()
       })
     } catch (err) {
+      this.store.setState((prev) => ({
+        ...prev,
+        isSubmitSuccessful: false, // Ensure isSubmitSuccessful is false if an error occurs
+      }))
       done()
       throw err
     }
