@@ -1133,6 +1133,9 @@ importers:
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../form-core
+      '@tanstack/react-form':
+        specifier: workspace:*
+        version: link:../react-form
     devDependencies:
       zod:
         specifier: ^3.23.8
