@@ -9,12 +9,12 @@
     "test:types": "tsc --noEmit"
   },
   "dependencies": {
-    "@emotion/react": "11.13.0",
+    "@emotion/react": "11.13.3",
     "@emotion/styled": "11.13.0",
     "@mantine/core": "7.12.1",
     "@mantine/hooks": "7.12.1",
     "@mui/material": "5.16.7",
-    "@tanstack/react-form": "^0.29.2",
+    "@tanstack/react-form": "^0.30.0",
     "@yme/lay-postcss": "0.1.0",
     "postcss": "8.4.41",
     "postcss-preset-mantine": "1.17.0",
@@ -31,9 +31,9 @@
     "@vitejs/plugin-react-swc": "^3.7.0",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.2",
-    "eslint-plugin-react-refresh": "^0.4.9",
+    "eslint-plugin-react-refresh": "^0.4.11",
     "typescript": "5.4.2",
-    "vite": "^5.4.1"
+    "vite": "^5.4.2"
   },
   "browserslist": {
     "production": [

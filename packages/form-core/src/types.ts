@@ -1,3 +1,5 @@
+import { type DeepKeys } from './util-types'
+
 export type ValidationError = undefined | false | null | string
 
 /**
@@ -34,6 +36,26 @@ export type ValidationErrorMapKeys = `on${Capitalize<ValidationCause>}`
 export type ValidationErrorMap = {
   [K in ValidationErrorMapKeys]?: ValidationError
 }
+
+/**
+ * @private
+ *
+ * @example
+ * ```tsx
+ * {
+ *   form: 'This form contains an error',
+ *   fields: {
+ *     age: "Must be 13 or older to register"
+ *   }
+ * }
+ * ````
+ */
+export type FormValidationError<TFormData> =
+  | ValidationError
+  | {
+      form?: ValidationError
+      fields: Partial<Record<DeepKeys<TFormData>, ValidationError>>
+    }
 
 /**
  * @private

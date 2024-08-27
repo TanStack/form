@@ -1,5 +1,6 @@
 import { Store } from '@tanstack/store'
 import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
+import type { FieldInfo, FieldsErrorMapFromValidator, FormApi } from './FormApi'
 import type {
   UpdateMetaOptions,
   ValidationCause,
@@ -7,7 +8,6 @@ import type {
   ValidationErrorMap,
   Validator,
 } from './types'
-import type { FieldInfo, FormApi } from './FormApi'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
 import type { DeepKeys, DeepValue, NoInfer } from './util-types'
 
@@ -718,7 +718,10 @@ export class FieldApi<
   /**
    * @private
    */
-  validateSync = (cause: ValidationCause) => {
+  validateSync = (
+    cause: ValidationCause,
+    errorFromForm: ValidationErrorMap,
+  ) => {
     const validates = getSyncValidatorArray(cause, this.options)
 
     const linkedFields = this.getLinkedFields(cause)
@@ -741,30 +744,42 @@ export class FieldApi<
         field: FieldApi<any, any, any, any>,
         validateObj: SyncValidator<any>,
       ) => {
-        const error = normalizeError(
-          field.runValidator({
-            validate: validateObj.validate,
-            value: { value: field.getValue(), fieldApi: field },
-            type: 'validate',
-          }),
-        )
         const errorMapKey = getErrorMapKey(validateObj.cause)
+
+        const error =
+          /*
+            If `validateObj.validate` is `undefined`, then the field doesn't have
+            a validator for this event, but there still could be an error that
+            needs to be cleaned up related to the current event left by the
+            form's validator.
+          */
+          validateObj.validate
+            ? normalizeError(
+                field.runValidator({
+                  validate: validateObj.validate,
+                  value: { value: field.getValue(), fieldApi: field },
+                  type: 'validate',
+                }),
+              )
+            : errorFromForm[errorMapKey]
+
         if (field.state.meta.errorMap[errorMapKey] !== error) {
           field.setMeta((prev) => ({
             ...prev,
             errorMap: {
               ...prev.errorMap,
-              [getErrorMapKey(validateObj.cause)]: error,
+              [getErrorMapKey(validateObj.cause)]:
+                // Prefer the error message from the field validators if they exist
+                error ? error : errorFromForm[errorMapKey],
             },
           }))
         }
-        if (error) {
+        if (error || errorFromForm[errorMapKey]) {
           hasErrored = true
         }
       }
 
       for (const validateObj of validates) {
-        if (!validateObj.validate) continue
         validateFieldFn(this, validateObj)
       }
       for (const fieldValitateObj of linkedFieldValidates) {
@@ -778,6 +793,7 @@ export class FieldApi<
      *  to clear the error as soon as the user enters a valid value in the field
      */
     const submitErrKey = getErrorMapKey('submit')
+
     if (
       this.state.meta.errorMap[submitErrKey] &&
       cause !== 'submit' &&
@@ -798,8 +814,16 @@ export class FieldApi<
   /**
    * @private
    */
-  validateAsync = async (cause: ValidationCause) => {
+  validateAsync = async (
+    cause: ValidationCause,
+    formValidationResultPromise: Promise<
+      FieldsErrorMapFromValidator<TParentData>
+    >,
+  ) => {
     const validates = getAsyncValidatorArray(cause, this.options)
+
+    // Get the field-specific error messages that are coming from the form's validator
+    const asyncFormValidationResults = await formValidationResultPromise
 
     const linkedFields = this.getLinkedFields(cause)
     const linkedFieldValidates = linkedFields.reduce(
@@ -835,13 +859,13 @@ export class FieldApi<
       validateObj: AsyncValidator<any>,
       promises: Promise<ValidationError | undefined>[],
     ) => {
-      const key = getErrorMapKey(validateObj.cause)
-      const fieldValidatorMeta = field.getInfo().validationMetaMap[key]
+      const errorMapKey = getErrorMapKey(validateObj.cause)
+      const fieldValidatorMeta = field.getInfo().validationMetaMap[errorMapKey]
 
       fieldValidatorMeta?.lastAbortController.abort()
       const controller = new AbortController()
 
-      this.getInfo().validationMetaMap[key] = {
+      this.getInfo().validationMetaMap[errorMapKey] = {
         lastAbortController: controller,
       }
 
@@ -874,18 +898,21 @@ export class FieldApi<
           }
           if (controller.signal.aborted) return resolve(undefined)
           const error = normalizeError(rawError)
+          const fieldErrorFromForm =
+            asyncFormValidationResults[this.name]?.[errorMapKey]
+          const fieldError = error || fieldErrorFromForm
           field.setMeta((prev) => {
             return {
               ...prev,
               errorMap: {
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 ...prev?.errorMap,
-                [getErrorMapKey(cause)]: error,
+                [errorMapKey]: fieldError,
               },
             }
           })
 
-          resolve(error)
+          resolve(fieldError)
         }),
       )
     }
@@ -925,15 +952,28 @@ export class FieldApi<
   validate = (
     cause: ValidationCause,
   ): ValidationError[] | Promise<ValidationError[]> => {
-    // If the field is pristine and validatePristine is false, do not validate
+    // If the field is pristine, do not validate
     if (!this.state.meta.isTouched) return []
 
+    let validationErrorFromForm: ValidationErrorMap = {}
+    let formValidationResultPromise: Promise<
+      FieldsErrorMapFromValidator<TParentData>
+    > = Promise.resolve({})
+
     try {
-      this.form.validate(cause)
+      const formValidationResult = this.form.validate(cause)
+      if (formValidationResult instanceof Promise) {
+        formValidationResultPromise = formValidationResult
+      } else {
+        const fieldErrorFromForm = formValidationResult[this.name]
+        if (fieldErrorFromForm) {
+          validationErrorFromForm = fieldErrorFromForm
+        }
+      }
     } catch (_) {}
 
     // Attempt to sync validate first
-    const { hasErrored } = this.validateSync(cause)
+    const { hasErrored } = this.validateSync(cause, validationErrorFromForm)
 
     if (hasErrored && !this.options.asyncAlways) {
       this.getInfo().validationMetaMap[
@@ -942,7 +982,7 @@ export class FieldApi<
       return this.state.meta.errors
     }
     // No error? Attempt async validation
-    return this.validateAsync(cause)
+    return this.validateAsync(cause, formValidationResultPromise)
   }
 
   /**

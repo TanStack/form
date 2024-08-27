@@ -9,14 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/solid-form": "^0.29.2",
-    "@tanstack/valibot-form-adapter": "^0.29.2",
+    "@tanstack/solid-form": "^0.30.0",
+    "@tanstack/valibot-form-adapter": "^0.30.0",
     "solid-js": "^1.8.21",
-    "valibot": "^0.37.0"
+    "valibot": "^0.39.0"
   },
   "devDependencies": {
     "typescript": "5.4.2",
-    "vite": "^5.4.1",
+    "vite": "^5.4.2",
     "vite-plugin-solid": "^2.10.2"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@tanstack/form-example-react-yup",
+  "name": "@tanstack/field-errors-from-form-validators",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,10 +10,8 @@
   },
   "dependencies": {
     "@tanstack/react-form": "^0.30.0",
-    "@tanstack/yup-form-adapter": "^0.30.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "yup": "^1.4.0"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
