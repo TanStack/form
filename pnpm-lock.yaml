@@ -457,10 +457,10 @@ importers:
         version: 18.3.0
       '@vitejs/plugin-react':
         specifier: ^4.3.1
-        version: 4.3.1(vite@5.4.1(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
+        version: 4.3.1(vite@5.4.2(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
       vite:
         specifier: ^5.4.1
-        version: 5.4.1(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1)
+        version: 5.4.2(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1)
 
   examples/react/next-server-actions:
     dependencies:
