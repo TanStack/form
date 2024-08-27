@@ -40,7 +40,9 @@ export default function App() {
             form: 'Invalid data',
             fields: {
               ...(!isRightAge ? { age: 'Must be 13 or older to sign' } : {}),
-              ...(!isUsernameAvailable ? { username: 'Username is taken' } : {}),
+              ...(!isUsernameAvailable
+                ? { username: 'Username is taken' }
+                : {}),
             },
           }
         }
