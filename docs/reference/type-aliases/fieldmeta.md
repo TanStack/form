@@ -63,4 +63,4 @@ A flag indicating whether the field is currently being validated.
 
 ## Defined in
 
-[packages/form-core/src/FieldApi.ts:333](https://github.com/TanStack/form/blob/03de1e83ad6580cff66ab58566f3003d93d4e34d/packages/form-core/src/FieldApi.ts#L333)
+[packages/form-core/src/FieldApi.ts:333](https://github.com/TanStack/form/blob/eae56e9e6061dd35d01d0534f88a027f3f957e7f/packages/form-core/src/FieldApi.ts#L333)

@@ -29,4 +29,4 @@ This API encapsulates all the necessary functionalities related to the form. It 
 
 ## Defined in
 
-[useForm.tsx:56](https://github.com/TanStack/form/blob/03de1e83ad6580cff66ab58566f3003d93d4e34d/packages/react-form/src/useForm.tsx#L56)
+[useForm.tsx:56](https://github.com/TanStack/form/blob/eae56e9e6061dd35d01d0534f88a027f3f957e7f/packages/react-form/src/useForm.tsx#L56)

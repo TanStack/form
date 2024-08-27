@@ -25,4 +25,4 @@ function useForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormVali
 
 ## Defined in
 
-[packages/vue-form/src/useForm.tsx:30](https://github.com/TanStack/form/blob/03de1e83ad6580cff66ab58566f3003d93d4e34d/packages/vue-form/src/useForm.tsx#L30)
+[packages/vue-form/src/useForm.tsx:30](https://github.com/TanStack/form/blob/eae56e9e6061dd35d01d0534f88a027f3f957e7f/packages/vue-form/src/useForm.tsx#L30)
