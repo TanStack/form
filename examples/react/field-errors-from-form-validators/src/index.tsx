@@ -2,13 +2,21 @@ import { useForm } from '@tanstack/react-form'
 import * as React from 'react'
 import { createRoot } from 'react-dom/client'
 
+async function sleep(ms: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}
+
 async function verifyAgeOnServer(age: number) {
+  await sleep(Math.floor(Math.random() * 1000))
   return age <= 13
 }
 
 async function checkIfUsernameIsTaken(name: string) {
+  await sleep(Math.floor(Math.random() * 500))
   const usernames = ['user-1', 'user-2', 'user-3']
-  return usernames.includes(name)
+  return !usernames.includes(name)
 }
 
 export default function App() {
@@ -19,20 +27,20 @@ export default function App() {
     },
     validators: {
       onSubmitAsync: async ({ value }) => {
-        console.log({ value })
-        // Verify the age on the server
-        const isTooYoung = !(await verifyAgeOnServer(value.age))
+        const [isRightAge, isUsernameAvailable] = await Promise.all([
+          // Verify the age on the server
+          verifyAgeOnServer(value.age),
+          // Verify the availability of the username on the server
+          checkIfUsernameIsTaken(value.username),
+        ])
 
-        // Verify the availability of the username on the server
-        const isUsernameTaken = await checkIfUsernameIsTaken(value.username)
-
-        if (isTooYoung || isUsernameTaken) {
+        if (!isRightAge || !isUsernameAvailable) {
           return {
             // The `form` key is optional
             form: 'Invalid data',
             fields: {
-              ...(isUsernameTaken ? { username: 'Username is taken' } : {}),
-              ...(isTooYoung ? { age: 'Must be 13 or older to sign' } : {}),
+              ...(!isRightAge ? { age: 'Must be 13 or older to sign' } : {}),
+              ...(!isUsernameAvailable ? { username: 'Username is taken' } : {}),
             },
           }
         }
