@@ -75,16 +75,16 @@
     "@remix-run/node": "^2.11.2",
     "@tanstack/form-core": "workspace:*",
     "@tanstack/react-store": "^0.5.5",
-    "decode-formdata": "^0.7.5"
+    "decode-formdata": "^0.8.0"
   },
   "devDependencies": {
-    "@tanstack/start": "^1.48.3",
+    "@tanstack/start": "^1.50.1",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "vite": "^5.4.1"
+    "vite": "^5.4.2"
   },
   "peerDependencies": {
     "@tanstack/start": "^1.43.13",
