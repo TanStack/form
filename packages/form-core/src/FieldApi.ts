@@ -2,6 +2,7 @@ import { Store } from '@tanstack/store'
 import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
 import type { FieldInfo, FieldsErrorMapFromValidator, FormApi } from './FormApi'
 import type {
+  APITypes,
   UpdateMetaOptions,
   ValidationCause,
   ValidationError,
@@ -488,7 +489,11 @@ export class FieldApi<
    * @private
    */
   runValidator<
-    TValue extends { value: TData; fieldApi: FieldApi<any, any, any, any> },
+    TValue extends {
+      value: TData
+      fieldApi: FieldApi<any, any, any, any>
+      api: APITypes
+    },
     TType extends 'validate' | 'validateAsync',
   >(props: {
     validate: TType extends 'validate'
@@ -543,6 +548,7 @@ export class FieldApi<
         value: {
           value: this.state.value,
           fieldApi: this,
+          api: 'field',
         },
         type: 'validate',
       })
@@ -757,7 +763,11 @@ export class FieldApi<
             ? normalizeError(
                 field.runValidator({
                   validate: validateObj.validate,
-                  value: { value: field.getValue(), fieldApi: field },
+                  value: {
+                    value: field.getValue(),
+                    api: 'field',
+                    fieldApi: field,
+                  },
                   type: 'validate',
                 }),
               )
@@ -884,6 +894,7 @@ export class FieldApi<
                         value: field.getValue(),
                         fieldApi: field,
                         signal: controller.signal,
+                        api: 'field',
                       },
                       type: 'validateAsync',
                     }),
