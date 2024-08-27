@@ -11,4 +11,4 @@ type ValidationError: undefined | false | null | string;
 
 ## Defined in
 
-[packages/form-core/src/types.ts:3](https://github.com/TanStack/form/blob/096bbc41b8af89898a5cd7700fd416a5eaa03028/packages/form-core/src/types.ts#L3)
+[packages/form-core/src/types.ts:3](https://github.com/TanStack/form/blob/ab5a89b11f2af9f11c720387ff2da9e9d2b82764/packages/form-core/src/types.ts#L3)
