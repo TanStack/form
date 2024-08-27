@@ -55,7 +55,8 @@
     "@tanstack/form-core": "workspace:*"
   },
   "devDependencies": {
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "@tanstack/react-form": "workspace:*"
   },
   "peerDependencies": {
     "yup": "^1.x"
