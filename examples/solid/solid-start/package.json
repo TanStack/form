@@ -1,0 +1,22 @@
+{
+  "name": "example-basic",
+  "type": "module",
+  "scripts": {
+    "dev": "vinxi dev",
+    "build": "vinxi build",
+    "start": "vinxi start",
+    "version": "vinxi version"
+  },
+  "dependencies": {
+    "@remix-run/node": "^2.10.2",
+    "@solidjs/meta": "^0.29.4",
+    "@solidjs/router": "^0.14.1",
+    "@solidjs/start": "^1.0.2",
+    "@tanstack/solid-form": "^0.26.2",
+    "solid-js": "^1.8.17",
+    "vinxi": "^0.3.12"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

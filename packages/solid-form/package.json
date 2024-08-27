@@ -58,9 +58,18 @@
   "devDependencies": {
     "solid-js": "^1.8.18",
     "vite": "^5.3.3",
-    "vite-plugin-solid": "^2.10.2"
+    "vite-plugin-solid": "^2.10.2",
+    "@solidjs/router": "^0.14.1",
+    "decode-formdata": "^0.7.5",
+    "@remix-run/node": "^2.10.2"
   },
   "peerDependencies": {
-    "solid-js": "^1.6.0"
+    "solid-js": "^1.6.0",
+    "@solidjs/router": "^0.14.1"
+  },
+  "peerDependenciesMeta": {
+    "@solidjs/router": {
+      "optional": true
+    }
   }
 }
