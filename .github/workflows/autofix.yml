@@ -14,6 +14,7 @@ permissions:
 
 jobs:
   autofix:
+    if: ${{ !contains(github.event.head_commit.message, 'apply automated fixes')}}
     name: autofix
     runs-on: ubuntu-latest
     steps:
