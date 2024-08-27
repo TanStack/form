@@ -9,10 +9,17 @@ export function prefixSchemaToErorrs(zodErrors: ZodIssue[]) {
   for (const zodError of zodErrors) {
     schema = setBy(schema, zodError.path, () => zodError.message)
   }
-  return { fields: schema } as never
+  return schema
 }
 
-export const mapIssues = (issues: ZodIssue[]) =>
+export function defaultFormTransformer(zodErrors: ZodIssue[]) {
+  return {
+    form: mapIssuesToSingleString(zodErrors),
+    fields: prefixSchemaToErorrs(zodErrors),
+  }
+}
+
+export const mapIssuesToSingleString = (issues: ZodIssue[]) =>
   issues.map((issue) => issue.message).join(', ')
 
 export const zodValidator =
@@ -22,8 +29,8 @@ export const zodValidator =
       validate({ value, api }, fn) {
         const transformErrors =
           (params.transformErrors ?? api === 'form')
-            ? prefixSchemaToErorrs
-            : mapIssues
+            ? defaultFormTransformer
+            : mapIssuesToSingleString
         const result = fn.safeParse(value)
         if (result.success) return
         return transformErrors(result.error.issues)
@@ -31,8 +38,8 @@ export const zodValidator =
       async validateAsync({ value, api }, fn) {
         const transformErrors =
           (params.transformErrors ?? api === 'form')
-            ? prefixSchemaToErorrs
-            : mapIssues
+            ? defaultFormTransformer
+            : mapIssuesToSingleString
 
         const result = await fn.safeParseAsync(value)
         if (result.success) return

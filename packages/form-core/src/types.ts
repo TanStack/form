@@ -9,11 +9,14 @@ export type APITypes = 'form' | 'field'
  * @private
  */
 export type Validator<Type, Fn = unknown> = () => {
-  validate(options: { value: Type; api: APITypes }, fn: Fn): ValidationError
+  validate(
+    options: { value: Type; api: APITypes },
+    fn: Fn,
+  ): ValidationError | FormValidationError<Type>
   validateAsync(
     options: { value: Type; api: APITypes },
     fn: Fn,
-  ): Promise<ValidationError>
+  ): Promise<ValidationError | FormValidationError<Type>>
 }
 
 /**
