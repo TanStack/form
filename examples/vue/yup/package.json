@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@tanstack/vue-form": "^0.30.0",
-    "@tanstack/yup-form-adapter": "^0.30.0",
+    "@tanstack/yup-form-adapter": "^0.31.0",
     "vue": "^3.3.4",
     "yup": "^1.4.0"
   },
