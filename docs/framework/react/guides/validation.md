@@ -263,8 +263,39 @@ export default function App() {
     </div>
   )
 }
-
 ```
+
+> Something worth mentioning is that if you have a form validation function that returns an error, that error may be overwritten by the field-specific validation.
+>
+> This means that:
+>
+> ```jsx
+>  const form = useForm({
+>     defaultValues: {
+>       age: 0,
+>     },
+>     validators: {
+>       onChange: ({ value }) => {
+>         return {
+>           fields: {
+>             age: value.age < 12 ? 'Too young!' : undefined,
+>           },
+>         }
+>       },
+>     },
+> })
+>
+> // ...
+>
+> return <form.Field
+>   name="age"
+>   validators={{
+>     onChange: ({ value }) => value % 2 === 0 ? 'Must be odd!' : undefined,
+>   }}
+> />
+> ```
+>
+> Will only show `'Must be odd!` even if the 'Too young!' error is returned by the form-level validation.
 
 ## Asynchronous Functional Validation
 
