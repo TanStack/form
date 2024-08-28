@@ -14,6 +14,7 @@ permissions:
 
 jobs:
   autofix:
+    if: ${{ !contains(github.event.head_commit.message, 'apply automated fixes')}}
     name: autofix
     runs-on: ubuntu-latest
     steps:
@@ -23,6 +24,10 @@ jobs:
         uses: tanstack/config/.github/setup@main
       - name: Fix formatting
         run: pnpm prettier:write
+      - name: Generate Docs
+        if: ${{ github.event_name == 'push' }}
+        run: pnpm docs:generate
+
       - name: Apply fixes
         uses: autofix-ci/action@ff86a557419858bb967097bfc916833f5647fa8c
         with:
