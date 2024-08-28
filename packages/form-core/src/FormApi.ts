@@ -12,14 +12,14 @@ import type { Updater } from './utils'
 import type { DeepKeys, DeepValue } from './util-types'
 import type { FieldApi, FieldMeta } from './FieldApi'
 import type {
-  APITypes,
   FormValidationError,
-  ServerValidationErrorMap,
+  FormValidationErrorMap,
   UpdateMetaOptions,
   ValidationCause,
   ValidationError,
   ValidationErrorMap,
   ValidationErrorMapKeys,
+  ValidationSource,
   Validator,
 } from './types'
 
@@ -236,7 +236,7 @@ export type FormState<TFormData> = {
   /**
    * The error map for the form itself.
    */
-  errorMap: ServerValidationErrorMap
+  errorMap: FormValidationErrorMap
   /**
    * An internal mechanism used for keeping track of validation logic in a form.
    */
@@ -462,7 +462,7 @@ export class FormApi<
     TValue extends {
       value: TFormData
       formApi: FormApi<any, any>
-      api: APITypes
+      validationSource: ValidationSource
     },
     TType extends 'validate' | 'validateAsync',
   >(props: {
@@ -488,7 +488,7 @@ export class FormApi<
       value: {
         value: this.state.values,
         formApi: this,
-        api: 'form',
+        validationSource: 'form',
       },
       type: 'validate',
     })
@@ -665,7 +665,7 @@ export class FormApi<
           value: {
             value: this.state.values,
             formApi: this,
-            api: 'form',
+            validationSource: 'form',
           },
           type: 'validate',
         })
@@ -786,7 +786,7 @@ export class FormApi<
                       value: {
                         value: this.state.values,
                         formApi: this,
-                        api: 'form',
+                        validationSource: 'form',
                         signal: controller.signal,
                       },
                       type: 'validateAsync',

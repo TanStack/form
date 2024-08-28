@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor } from '@solidjs/testing-library'
 import { userEvent } from '@testing-library/user-event'
 import { Show, createSignal, onCleanup } from 'solid-js'
-import { type ServerValidationErrorMap, createForm } from '../src/index'
+import { type FormValidationErrorMap, createForm } from '../src/index'
 import { sleep } from './utils'
 
 const user = userEvent.setup()
@@ -210,7 +210,7 @@ describe('createForm', () => {
         },
       }))
 
-      const [errors, setErrors] = createSignal<ServerValidationErrorMap>()
+      const [errors, setErrors] = createSignal<FormValidationErrorMap>()
       onCleanup(form.store.subscribe(() => setErrors(form.state.errorMap)))
 
       return (
@@ -266,7 +266,7 @@ describe('createForm', () => {
         },
       }))
 
-      const [errors, setErrors] = createSignal<ServerValidationErrorMap>()
+      const [errors, setErrors] = createSignal<FormValidationErrorMap>()
       onCleanup(form.store.subscribe(() => setErrors(form.state.errorMap)))
 
       return (
@@ -319,7 +319,7 @@ describe('createForm', () => {
         },
       }))
 
-      const [errors, setErrors] = createSignal<ServerValidationErrorMap>()
+      const [errors, setErrors] = createSignal<FormValidationErrorMap>()
       onCleanup(form.store.subscribe(() => setErrors(form.state.errorMap)))
 
       return (
@@ -374,7 +374,7 @@ describe('createForm', () => {
         },
       }))
 
-      const [errors, setErrors] = createSignal<ServerValidationErrorMap>()
+      const [errors, setErrors] = createSignal<FormValidationErrorMap>()
       onCleanup(form.store.subscribe(() => setErrors(form.state.errorMap)))
 
       return (

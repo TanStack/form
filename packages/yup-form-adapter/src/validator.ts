@@ -35,7 +35,7 @@ export const yupValidator =
   (params: Params = {}): Validator<unknown, AnySchema> =>
   () => {
     return {
-      validate({ value, api }, fn) {
+      validate({ value, validationSource }, fn) {
         try {
           fn.validateSync(value, { abortEarly: false })
           return
@@ -43,14 +43,14 @@ export const yupValidator =
           const e = _e as YupError
           const transformErrors = params.transformErrors
             ? executeParamsTransformErrors(params.transformErrors)
-            : api === 'form'
+            : validationSource === 'form'
               ? defaultFormTransformer
               : mapIssuesToSingleString
 
           return transformErrors(e)
         }
       },
-      async validateAsync({ value, api }, fn) {
+      async validateAsync({ value, validationSource }, fn) {
         try {
           await fn.validate(value)
           return
@@ -58,7 +58,7 @@ export const yupValidator =
           const e = _e as YupError
           const transformErrors = params.transformErrors
             ? executeParamsTransformErrors(params.transformErrors)
-            : api === 'form'
+            : validationSource === 'form'
               ? defaultFormTransformer
               : mapIssuesToSingleString
 
