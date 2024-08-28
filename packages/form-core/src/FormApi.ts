@@ -1,4 +1,5 @@
 import { Store } from '@tanstack/store'
+import { ServerValidationErrorMap } from './types'
 import {
   deleteBy,
   functionalUpdate,
@@ -235,7 +236,7 @@ export type FormState<TFormData> = {
   /**
    * The error map for the form itself.
    */
-  errorMap: ValidationErrorMap
+  errorMap: ServerValidationErrorMap
   /**
    * An internal mechanism used for keeping track of validation logic in a form.
    */
@@ -321,6 +322,12 @@ function getDefaultFormState<TFormData>(
   }
 }
 
+const isFormValidationError = (
+  error: unknown,
+): error is FormValidationError<unknown> => {
+  return typeof error === 'object'
+}
+
 /**
  * A class representing the Form API. It handles the logic and interactions with the form state.
  *
@@ -394,9 +401,18 @@ export class FormApi<
           const isPristine = !isDirty
 
           const isValidating = isFieldsValidating || state.isFormValidating
-          state.errors = Object.values(state.errorMap).filter(
-            (val: unknown) => val !== undefined,
-          )
+          state.errors = Object.values(state.errorMap).reduce((prev, curr) => {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            if (curr === undefined) return prev
+            if (typeof curr === 'string') {
+              prev.push(curr)
+              return prev
+            } else if (curr && isFormValidationError(curr)) {
+              prev.push(curr.form)
+              return prev
+            }
+            return prev
+          }, [] as ValidationError[])
           const isFormValid = state.errors.length === 0
           const isValid = isFieldsValid && isFormValid
           const canSubmit =
@@ -755,7 +771,10 @@ export class FormApi<
 
       promises.push(
         new Promise<ValidationPromiseResult<TFormData>>(async (resolve) => {
-          let rawError!: ValidationError | undefined
+          let rawError!:
+            | ValidationError
+            | FormValidationError<unknown>
+            | undefined
           try {
             rawError = await new Promise((rawResolve, rawReject) => {
               setTimeout(async () => {
@@ -1215,7 +1234,7 @@ export class FormApi<
   }
 }
 
-function normalizeError<TFormData>(rawError?: FormValidationError<TFormData>): {
+function normalizeError<TFormData>(rawError?: FormValidationError<unknown>): {
   formError: ValidationError
   fieldErrors?: Partial<Record<DeepKeys<TFormData>, ValidationError>>
 } {
@@ -1223,7 +1242,7 @@ function normalizeError<TFormData>(rawError?: FormValidationError<TFormData>): {
     if (typeof rawError === 'object') {
       const formError = normalizeError(rawError.form).formError
       const fieldErrors = rawError.fields
-      return { formError, fieldErrors }
+      return { formError, fieldErrors } as never
     }
 
     if (typeof rawError !== 'string') {

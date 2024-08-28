@@ -12,11 +12,11 @@ export type Validator<Type, Fn = unknown> = () => {
   validate(
     options: { value: Type; api: APITypes },
     fn: Fn,
-  ): ValidationError | FormValidationError<Type>
+  ): ValidationError | FormValidationError<unknown>
   validateAsync(
     options: { value: Type; api: APITypes },
     fn: Fn,
-  ): Promise<ValidationError | FormValidationError<Type>>
+  ): Promise<ValidationError | FormValidationError<unknown>>
 }
 
 /**
@@ -43,6 +43,13 @@ export type ValidationErrorMapKeys = `on${Capitalize<ValidationCause>}`
  */
 export type ValidationErrorMap = {
   [K in ValidationErrorMapKeys]?: ValidationError
+}
+
+/**
+ * @private
+ */
+export type ServerValidationErrorMap = {
+  [K in ValidationErrorMapKeys]?: ValidationError | FormValidationError<unknown>
 }
 
 /**
