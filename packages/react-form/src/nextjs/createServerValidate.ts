@@ -45,7 +45,10 @@ export const createServerValidate =
   async (formData: FormData, info?: Parameters<typeof decode>[1]) => {
     const { validatorAdapter, onServerValidate } = defaultOpts
 
-    const runValidator = async (propsValue: { value: TFormData; api: 'form' }) => {
+    const runValidator = async (propsValue: {
+      value: TFormData
+      api: 'form'
+    }) => {
       if (validatorAdapter && typeof onServerValidate !== 'function') {
         return validatorAdapter().validateAsync(propsValue, onServerValidate)
       }
