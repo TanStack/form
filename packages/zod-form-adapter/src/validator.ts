@@ -29,7 +29,9 @@ export const zodValidator =
       validate({ value, validationSource }, fn) {
         const transformErrors =
           params.transformErrors ??
-          (validationSource === 'form' ? defaultFormTransformer : mapIssuesToSingleString)
+          (validationSource === 'form'
+            ? defaultFormTransformer
+            : mapIssuesToSingleString)
         const result = fn.safeParse(value)
         if (result.success) return
         return transformErrors(result.error.issues)
@@ -37,7 +39,9 @@ export const zodValidator =
       async validateAsync({ value, validationSource }, fn) {
         const transformErrors =
           params.transformErrors ??
-          (validationSource === 'form' ? defaultFormTransformer : mapIssuesToSingleString)
+          (validationSource === 'form'
+            ? defaultFormTransformer
+            : mapIssuesToSingleString)
 
         const result = await fn.safeParseAsync(value)
         if (result.success) return

@@ -64,7 +64,10 @@ export const createServerValidate =
 
     const data = decode(formData, info) as never as TFormData
 
-    const onServerError = await runValidator({ value: data, validationSource: 'form' })
+    const onServerError = await runValidator({
+      value: data,
+      validationSource: 'form',
+    })
 
     if (!onServerError) return
 
