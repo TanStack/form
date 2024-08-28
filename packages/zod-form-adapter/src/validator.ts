@@ -4,7 +4,7 @@ import type { ZodIssue, ZodType } from 'zod'
 
 type Params = ValidatorAdapterParams<ZodIssue>
 
-export function prefixSchemaToErorrs(zodErrors: ZodIssue[]) {
+export function prefixSchemaToErrors(zodErrors: ZodIssue[]) {
   let schema = {} as object
   for (const zodError of zodErrors) {
     schema = setBy(schema, zodError.path, () => zodError.message)
@@ -15,7 +15,7 @@ export function prefixSchemaToErorrs(zodErrors: ZodIssue[]) {
 export function defaultFormTransformer(zodErrors: ZodIssue[]) {
   return {
     form: mapIssuesToSingleString(zodErrors),
-    fields: prefixSchemaToErorrs(zodErrors),
+    fields: prefixSchemaToErrors(zodErrors),
   }
 }
 

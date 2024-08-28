@@ -1,34 +1,68 @@
-import type { Validator, ValidatorAdapterParams } from '@tanstack/form-core'
+import {
+  type Validator,
+  type ValidatorAdapterParams,
+  setBy,
+} from '@tanstack/form-core'
 import type { AnySchema, ValidationError as YupError } from 'yup'
 
 type Params = ValidatorAdapterParams<string>
+
+export function prefixSchemaToErrors(error: YupError) {
+  let schema = {} as object
+  for (const yupError of error.inner) {
+    schema = setBy(schema, yupError.path, () => yupError.message)
+  }
+  return schema
+}
+
+export function defaultFormTransformer(error: YupError) {
+  return {
+    form: mapIssuesToSingleString(error),
+    fields: prefixSchemaToErrors(error),
+  }
+}
+
+export const mapIssuesToSingleString = (error: YupError) =>
+  error.errors.join(', ')
+
+const executeParamsTransformErrors =
+  (transformErrors: NonNullable<Params['transformErrors']>) =>
+  (e: YupError) => {
+    return transformErrors(e.errors)
+  }
 
 export const yupValidator =
   (params: Params = {}): Validator<unknown, AnySchema> =>
   () => {
     return {
-      validate({ value }, fn) {
+      validate({ value, api }, fn) {
         try {
-          fn.validateSync(value)
+          fn.validateSync(value, { abortEarly: false })
           return
         } catch (_e) {
           const e = _e as YupError
-          if (params.transformErrors) {
-            return params.transformErrors(e.errors)
-          }
-          return e.errors.join(', ')
+          const transformErrors = params.transformErrors
+            ? executeParamsTransformErrors(params.transformErrors)
+            : api === 'form'
+              ? defaultFormTransformer
+              : mapIssuesToSingleString
+
+          return transformErrors(e)
         }
       },
-      async validateAsync({ value }, fn) {
+      async validateAsync({ value, api }, fn) {
         try {
           await fn.validate(value)
           return
         } catch (_e) {
           const e = _e as YupError
-          if (params.transformErrors) {
-            return params.transformErrors(e.errors)
-          }
-          return e.errors.join(', ')
+          const transformErrors = params.transformErrors
+            ? executeParamsTransformErrors(params.transformErrors)
+            : api === 'form'
+              ? defaultFormTransformer
+              : mapIssuesToSingleString
+
+          return transformErrors(e)
         }
       },
     }
