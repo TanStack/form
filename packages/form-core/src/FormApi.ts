@@ -1,5 +1,4 @@
 import { Store } from '@tanstack/store'
-import { ServerValidationErrorMap } from './types'
 import {
   deleteBy,
   functionalUpdate,
@@ -15,6 +14,7 @@ import type { FieldApi, FieldMeta } from './FieldApi'
 import type {
   APITypes,
   FormValidationError,
+  ServerValidationErrorMap,
   UpdateMetaOptions,
   ValidationCause,
   ValidationError,

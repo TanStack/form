@@ -1,9 +1,9 @@
 import { Store } from '@tanstack/store'
-import { FormValidationError } from './types'
 import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
 import type { FieldInfo, FieldsErrorMapFromValidator, FormApi } from './FormApi'
 import type {
   APITypes,
+  FormValidationError,
   UpdateMetaOptions,
   ValidationCause,
   ValidationError,
@@ -503,11 +503,7 @@ export class FieldApi<
     value: TValue
     type: TType
     // When `api` is 'field', the return type cannot be `FormValidationError`
-  }): ReturnType<ReturnType<Validator<any>>[TType]> extends infer TR
-    ? TR extends Promise<infer T>
-      ? Promise<Exclude<T, FormValidationError<unknown>>>
-      : Exclude<TR, FormValidationError<unknown>>
-    : never {
+  }): TType extends 'validate' ? ValidationError : Promise<ValidationError> {
     const adapters = [
       this.form.options.validatorAdapter,
       this.options.validatorAdapter,

@@ -26,14 +26,8 @@ export default function App() {
       // Do something with form data
       console.log(value)
     },
-    validators: {
-      onChange: z.object({
-        firstName: z.string().min(2),
-        lastName: z.string().max(4),
-      }),
-    },
     // Add a validator to support Zod usage in Form and Field
-    validatorAdapter: zodValidator({}),
+    validatorAdapter: zodValidator(),
   })
 
   return (
@@ -50,6 +44,21 @@ export default function App() {
           {/* A type-safe field component*/}
           <form.Field
             name="firstName"
+            validators={{
+              onChange: z
+                .string()
+                .min(3, 'First name must be at least 3 characters'),
+              onChangeAsyncDebounceMs: 500,
+              onChangeAsync: z.string().refine(
+                async (value) => {
+                  await new Promise((resolve) => setTimeout(resolve, 1000))
+                  return !value.includes('error')
+                },
+                {
+                  message: "No 'error' allowed in first name",
+                },
+              ),
+            }}
             children={(field) => {
               // Avoid hasty abstractions. Render props are great!
               return (

@@ -111,7 +111,7 @@ export default function App() {
           children={([errorMap]) =>
             errorMap.onSubmit ? (
               <div>
-                <em>There was an error on the form: {errorMap.onSubmit}</em>
+                <em>There was an error on the form: {errorMap.onSubmit?.toString()}</em>
               </div>
             ) : null
           }
