@@ -15,8 +15,8 @@ importers:
         specifier: ^0.8.9
         version: 0.8.9(@solidjs/router@0.13.0(solid-js@1.8.21))(solid-js@1.8.21)
       '@tanstack/config':
-        specifier: ^0.11.2
-        version: 0.11.2(@types/node@20.14.10)(esbuild@0.21.5)(eslint@8.57.0)(rollup@4.21.0)(typescript@5.4.2)(vite@5.4.2(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
+        specifier: ^0.12.0
+        version: 0.12.0(@types/node@20.14.10)(esbuild@0.21.5)(eslint@8.57.0)(rollup@4.21.0)(typescript@5.4.2)(vite@5.4.2(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
       '@testing-library/jest-dom':
         specifier: ^6.5.0
         version: 6.5.0
@@ -3694,8 +3694,8 @@ packages:
       '@solidjs/router':
         optional: true
 
-  '@stylistic/eslint-plugin-js@2.6.2':
-    resolution: {integrity: sha512-wCr/kVctAPayMU3pcOI1MKR7MoKIh6VKZU89lPklAqtJoxT+Em6RueiiARbpznUYG5eg3LymiU+aMD+aIZXdqA==}
+  '@stylistic/eslint-plugin-js@2.6.4':
+    resolution: {integrity: sha512-kx1hS3xTvzxZLdr/DCU/dLBE++vcP97sHeEFX2QXhk1Ipa4K1rzPOLw1HCbf4mU3s+7kHP5eYpDe+QteEOFLug==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: '>=8.40.0'
@@ -3784,8 +3784,8 @@ packages:
       '@angular/common': '>=16 < 18'
       '@angular/core': '>=16 < 18'
 
-  '@tanstack/config@0.11.2':
-    resolution: {integrity: sha512-BlVPJ0SMtqPyLzq5e/OHPYLGMJTKJezfTWSRJ9VROyqUjtZPlLWC/l7diB1RdI4UT4zXoRd/KqWdvYIt+2EWZg==}
+  '@tanstack/config@0.12.0':
+    resolution: {integrity: sha512-hzvdYmMJlLZMcaVSAgkmH149Nc/UxzDFEOlBNUOR2mFMP6Siw6QhfhgvhHwiTtluWsnsrEGzN7zVc+Rxf4p2Jg==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -8711,14 +8711,14 @@ packages:
     peerDependencies:
       typedoc-plugin-markdown: '>=4.0.0'
 
-  typedoc-plugin-markdown@4.2.3:
-    resolution: {integrity: sha512-esucQj79SFYOv0f5XVha7QWdLUH5C5HRlDf7Z8CXzHedmVPn7jox6Gt7FdoBXN8AFxyHpa3Lbuxu65Dobwt+4Q==}
+  typedoc-plugin-markdown@4.2.6:
+    resolution: {integrity: sha512-k33o2lZSGpL3GjH28eW+RsujzCYFP0L5GNqpK+wa4CBcMOxpj8WV7SydNRLS6eSa2UvaPvNVJTaAZ6Tm+8GXoA==}
     engines: {node: '>= 18'}
     peerDependencies:
       typedoc: 0.26.x
 
-  typedoc@0.26.5:
-    resolution: {integrity: sha512-Vn9YKdjKtDZqSk+by7beZ+xzkkr8T8CYoiasqyt4TTRFy5+UHzL/mF/o4wGBjRF+rlWQHDb0t6xCpA3JNL5phg==}
+  typedoc@0.26.6:
+    resolution: {integrity: sha512-SfEU3SH3wHNaxhFPjaZE2kNl/NFtLNW5c1oHsg7mti7GjmUj1Roq6osBQeMd+F4kL0BoRBBr8gQAuqBlfFu8LA==}
     engines: {node: '>= 18'}
     hasBin: true
     peerDependencies:
@@ -9021,8 +9021,8 @@ packages:
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
 
-  vite-plugin-dts@4.0.2:
-    resolution: {integrity: sha512-Ni3EPG8yeLc5ivEzT4szreJ0rXpEQgvdYq3PaZ7OMoHc8uET4/HRUfzVPejJaUAojbxsKgaZbp6Zgm41sxb86Q==}
+  vite-plugin-dts@4.0.3:
+    resolution: {integrity: sha512-+xnTsaONwU2kV6zhRjtbRJSGN41uFR/whqmcb4k4fftLFDJElxthp0PP5Fq8gMeM9ytWMt1yk5gGgekLREWYQQ==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       typescript: '*'
@@ -12153,7 +12153,7 @@ snapshots:
     optionalDependencies:
       '@solidjs/router': 0.13.0(solid-js@1.8.21)
 
-  '@stylistic/eslint-plugin-js@2.6.2(eslint@8.57.0)':
+  '@stylistic/eslint-plugin-js@2.6.4(eslint@8.57.0)':
     dependencies:
       '@types/eslint': 9.6.0
       acorn: 8.12.1
@@ -12225,11 +12225,11 @@ snapshots:
       '@tanstack/store': 0.5.5
       tslib: 2.7.0
 
-  '@tanstack/config@0.11.2(@types/node@20.14.10)(esbuild@0.21.5)(eslint@8.57.0)(rollup@4.21.0)(typescript@5.4.2)(vite@5.4.2(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))':
+  '@tanstack/config@0.12.0(@types/node@20.14.10)(esbuild@0.21.5)(eslint@8.57.0)(rollup@4.21.0)(typescript@5.4.2)(vite@5.4.2(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))':
     dependencies:
       '@commitlint/parse': 19.0.3
       '@eslint/js': 8.57.0
-      '@stylistic/eslint-plugin-js': 2.6.2(eslint@8.57.0)
+      '@stylistic/eslint-plugin-js': 2.6.4(eslint@8.57.0)
       commander: 12.1.0
       current-git-branch: 1.1.0
       esbuild-register: 3.6.0(esbuild@0.21.5)
@@ -12243,12 +12243,12 @@ snapshots:
       rollup-plugin-preserve-directives: 0.4.0(rollup@4.21.0)
       semver: 7.6.3
       simple-git: 3.25.0
-      typedoc: 0.26.5(typescript@5.4.2)
-      typedoc-plugin-frontmatter: 1.0.0(typedoc-plugin-markdown@4.2.3(typedoc@0.26.5(typescript@5.4.2)))
-      typedoc-plugin-markdown: 4.2.3(typedoc@0.26.5(typescript@5.4.2))
+      typedoc: 0.26.6(typescript@5.4.2)
+      typedoc-plugin-frontmatter: 1.0.0(typedoc-plugin-markdown@4.2.6(typedoc@0.26.6(typescript@5.4.2)))
+      typedoc-plugin-markdown: 4.2.6(typedoc@0.26.6(typescript@5.4.2))
       typescript-eslint: 7.18.0(eslint@8.57.0)(typescript@5.4.2)
       v8flags: 4.0.1
-      vite-plugin-dts: 4.0.2(@types/node@20.14.10)(rollup@4.21.0)(typescript@5.4.2)(vite@5.4.2(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
+      vite-plugin-dts: 4.0.3(@types/node@20.14.10)(rollup@4.21.0)(typescript@5.4.2)(vite@5.4.2(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
       vite-plugin-externalize-deps: 0.8.0(vite@5.4.2(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
       vite-tsconfig-paths: 5.0.1(typescript@5.4.2)(vite@5.4.2(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1))
     transitivePeerDependencies:
@@ -18012,16 +18012,16 @@ snapshots:
 
   typed-assert@1.0.9: {}
 
-  typedoc-plugin-frontmatter@1.0.0(typedoc-plugin-markdown@4.2.3(typedoc@0.26.5(typescript@5.4.2))):
+  typedoc-plugin-frontmatter@1.0.0(typedoc-plugin-markdown@4.2.6(typedoc@0.26.6(typescript@5.4.2))):
     dependencies:
-      typedoc-plugin-markdown: 4.2.3(typedoc@0.26.5(typescript@5.4.2))
+      typedoc-plugin-markdown: 4.2.6(typedoc@0.26.6(typescript@5.4.2))
       yaml: 2.4.5
 
-  typedoc-plugin-markdown@4.2.3(typedoc@0.26.5(typescript@5.4.2)):
+  typedoc-plugin-markdown@4.2.6(typedoc@0.26.6(typescript@5.4.2)):
     dependencies:
-      typedoc: 0.26.5(typescript@5.4.2)
+      typedoc: 0.26.6(typescript@5.4.2)
 
-  typedoc@0.26.5(typescript@5.4.2):
+  typedoc@0.26.6(typescript@5.4.2):
     dependencies:
       lunr: 2.3.9
       markdown-it: 14.1.0
@@ -18355,7 +18355,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-dts@4.0.2(@types/node@20.14.10)(rollup@4.21.0)(typescript@5.4.2)(vite@5.4.2(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1)):
+  vite-plugin-dts@4.0.3(@types/node@20.14.10)(rollup@4.21.0)(typescript@5.4.2)(vite@5.4.2(@types/node@20.14.10)(less@4.2.0)(sass@1.72.0)(sugarss@4.0.1(postcss@8.4.41))(terser@5.29.1)):
     dependencies:
       '@microsoft/api-extractor': 7.47.4(@types/node@20.14.10)
       '@rollup/pluginutils': 5.1.0(rollup@4.21.0)
