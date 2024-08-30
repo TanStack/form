@@ -1,4 +1,4 @@
-import { type DeepKeys } from './util-types'
+import type { DeepKeys } from './util-types'
 
 export type ValidationError = undefined | false | null | string
 

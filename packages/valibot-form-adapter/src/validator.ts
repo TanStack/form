@@ -1,10 +1,5 @@
-import {
-  type GenericIssue,
-  type GenericSchema,
-  type GenericSchemaAsync,
-  safeParse,
-  safeParseAsync,
-} from 'valibot'
+import { safeParse, safeParseAsync } from 'valibot'
+import type { GenericIssue, GenericSchema, GenericSchemaAsync } from 'valibot'
 import type { Validator, ValidatorAdapterParams } from '@tanstack/form-core'
 
 type Params = ValidatorAdapterParams<GenericIssue>
