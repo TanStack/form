@@ -1,22 +1,19 @@
 import {
   Directive,
   Input,
-  type OnChanges,
-  type OnDestroy,
-  type OnInit,
   booleanAttribute,
   numberAttribute,
 } from '@angular/core'
-import {
-  type DeepKeys,
-  type DeepValue,
-  FieldApi,
-  type FieldMeta,
-  type FieldOptions,
-  type FieldValidators,
-  FormApi,
-  type NoInfer as NoInferHack,
-  type Validator,
+import { FieldApi, FormApi } from '@tanstack/form-core'
+import type { OnChanges, OnDestroy, OnInit } from '@angular/core'
+import type {
+  DeepKeys,
+  DeepValue,
+  FieldMeta,
+  FieldOptions,
+  FieldValidators,
+  NoInfer as NoInferHack,
+  Validator,
 } from '@tanstack/form-core'
 
 @Directive({

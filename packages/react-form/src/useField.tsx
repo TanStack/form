@@ -1,7 +1,8 @@
-import React, { type FunctionComponent, useState } from 'react'
+import React, { useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
+import type { FunctionComponent } from 'react'
 import type { NodeType, UseFieldOptions } from './types'
 import type { DeepKeys, DeepValue, Validator } from '@tanstack/form-core'
 
