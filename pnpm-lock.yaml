@@ -399,8 +399,8 @@ importers:
   examples/lit/ui-libraries:
     dependencies:
       '@material/web':
-        specifier: ^1.5.1
-        version: 1.5.1
+        specifier: ^2.1.0
+        version: 2.1.0
       '@tanstack/lit-form':
         specifier: ^0.30.0
         version: link:../../../packages/lit-form
@@ -2878,8 +2878,8 @@ packages:
     resolution: {integrity: sha512-Yhlar6v9WQgUp/He7BdgzOz8lqMQ8sU+jkCq7Wx8Myc5YFJLbEe7lgui/V7G1qB1DJykHSGwreceSaD60Y0PUQ==}
     hasBin: true
 
-  '@material/web@1.5.1':
-    resolution: {integrity: sha512-S9iQV1Biq6JhNpAkqXcsFdVrLW0BC1Tez8C36MEQ/VuhT3YLQySbJkUiG+1U+J1jUqlsG8fT5XsEFbhomCY39w==}
+  '@material/web@2.1.0':
+    resolution: {integrity: sha512-xzRB6GSspfhscWJvu7Ct8T+2Ybiasnk8OCe3PlWDE/LDEPZFyJJE7K0D6cANscJKQ/GIGIeLVkq5FEQRi+KUew==}
 
   '@microsoft/api-extractor-model@7.29.4':
     resolution: {integrity: sha512-LHOMxmT8/tU1IiiiHOdHFF83Qsi+V8d0kLfscG4EvQE9cafiR8blOYr8SfkQKWB1wgEilQgXJX3MIA4vetDLZw==}
@@ -11257,7 +11257,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@material/web@1.5.1':
+  '@material/web@2.1.0':
     dependencies:
       lit: 3.2.0
       tslib: 2.7.0
