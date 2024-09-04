@@ -55,8 +55,8 @@
     "@tanstack/form-core": "workspace:*"
   },
   "devDependencies": {
-    "zod": "^3.23.8",
-    "@tanstack/react-form": "workspace:*"
+    "@tanstack/react-form": "workspace:*",
+    "zod": "^3.23.8"
   },
   "peerDependencies": {
     "zod": "^3.x"
