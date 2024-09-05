@@ -29,6 +29,14 @@ errors: ValidationError[];
 
 An array of errors related to the field value.
 
+### isBlurred
+
+```ts
+isBlurred: boolean;
+```
+
+A flag indicating whether the field has been blurred.
+
 ### isDirty
 
 ```ts

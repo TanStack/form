@@ -49,6 +49,14 @@ fieldMeta: Record<DeepKeys<TFormData>, FieldMeta>;
 
 A record of field metadata for each field in the form.
 
+### isBlurred
+
+```ts
+isBlurred: boolean;
+```
+
+A boolean indicating if any of the form fields have been blurred.
+
 ### isDirty
 
 ```ts
