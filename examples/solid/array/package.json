@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/solid-form": "^0.30.0",
+    "@tanstack/solid-form": "^0.32.0",
     "solid-js": "^1.8.22"
   },
   "devDependencies": {
