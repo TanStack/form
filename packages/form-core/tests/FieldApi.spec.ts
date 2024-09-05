@@ -43,6 +43,7 @@ describe('field api', () => {
 
     expect(field.getMeta()).toEqual({
       isTouched: false,
+      isBlurred: false,
       isValidating: false,
       isPristine: true,
       isDirty: false,
@@ -56,11 +57,17 @@ describe('field api', () => {
     const field = new FieldApi({
       form,
       name: 'name',
-      defaultMeta: { isTouched: true, isDirty: true, isPristine: false },
+      defaultMeta: {
+        isTouched: true,
+        isDirty: true,
+        isPristine: false,
+        isBlurred: true,
+      },
     })
 
     expect(field.getMeta()).toEqual({
       isTouched: true,
+      isBlurred: true,
       isValidating: false,
       isDirty: true,
       isPristine: false,
