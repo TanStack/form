@@ -2385,3 +2385,33 @@ describe('form api', () => {
     )
   })
 })
+
+it('should not change the onBlur state of the fields when the form is submitted', async () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+    },
+  })
+
+  const firstNameField = new FieldApi({
+    form,
+    name: 'firstName',
+  })
+  firstNameField.mount()
+
+  const lastNameField = new FieldApi({
+    form,
+    name: 'lastName',
+  })
+  lastNameField.mount()
+
+  firstNameField.handleBlur()
+
+  expect(firstNameField.state.meta.isBlurred).toBe(true)
+
+  await form.handleSubmit()
+
+  expect(firstNameField.state.meta.isBlurred).toBe(true)
+  expect(lastNameField.state.meta.isBlurred).toBe(false)
+})
