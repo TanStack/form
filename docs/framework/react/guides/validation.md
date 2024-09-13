@@ -477,6 +477,42 @@ These adapters also support async operations using the proper property names:
 />
 ```
 
+### Form Level Adapter Validation
+
+You can also use the adapter at the form level:
+
+```tsx
+import { zodValidator } from '@tanstack/zod-form-adapter'
+import { z } from 'zod'
+
+// ...
+
+const form = useForm({
+  validatorAdapter: zodValidator(),
+  validators: {
+    onChange: z.object({
+      age: z.number().gte(13, 'You must be 13 to make an account'),
+    }),
+  },
+})
+```
+
+If you use the adapter at the form level, it will pass the validation to the fields of the same name.
+
+This means that:
+
+```tsx
+
+<form.Field
+  name="age"
+  children={(field) => {
+    return <>{/* ... */}</>
+  }}
+/>
+```
+
+Will still display the error message from the form-level validation.
+
 ## Preventing invalid forms from being submitted
 
 The `onChange`, `onBlur` etc... callbacks are also run when the form is submitted and the submission is blocked if the form is invalid.
