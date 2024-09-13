@@ -25,4 +25,4 @@ function createForm<TParentData, TFormValidator>(opts?): FormApi<TParentData, TF
 
 ## Defined in
 
-[createForm.tsx:29](https://github.com/TanStack/form/blob/ab5a89b11f2af9f11c720387ff2da9e9d2b82764/packages/solid-form/src/createForm.tsx#L29)
+[createForm.tsx:26](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L26)

@@ -262,6 +262,10 @@ export type FormState<TFormData> = {
    */
   isTouched: boolean
   /**
+   * A boolean indicating if any of the form fields have been blurred.
+   */
+  isBlurred: boolean
+  /**
    * A boolean indicating if any of the form's fields' values have been modified by the user. `True` if the user have modified at least one of the fields. Opposite of `isPristine`.
    */
   isDirty: boolean
@@ -307,6 +311,7 @@ function getDefaultFormState<TFormData>(
     isSubmitted: defaultState.isSubmitted ?? false,
     isSubmitting: defaultState.isSubmitting ?? false,
     isTouched: defaultState.isTouched ?? false,
+    isBlurred: defaultState.isBlurred ?? false,
     isPristine: defaultState.isPristine ?? true,
     isDirty: defaultState.isDirty ?? false,
     isValid: defaultState.isValid ?? false,
@@ -396,6 +401,7 @@ export class FormApi<
           )
 
           const isTouched = fieldMetaValues.some((field) => field?.isTouched)
+          const isBlurred = fieldMetaValues.some((field) => field?.isBlurred)
 
           const isDirty = fieldMetaValues.some((field) => field?.isDirty)
           const isPristine = !isDirty
@@ -427,6 +433,7 @@ export class FormApi<
             isValid,
             canSubmit,
             isTouched,
+            isBlurred,
             isPristine,
             isDirty,
           }
@@ -575,6 +582,12 @@ export class FormApi<
           // Mark them as touched
           field.instance.setMeta((prev) => ({ ...prev, isTouched: true }))
         }
+
+        // If any fields are not blurred
+        if (!field.instance.state.meta.isBlurred) {
+          // Mark them as blurred
+          field.instance.setMeta((prev) => ({ ...prev, isBlurred: true }))
+        }
       })
     })
 
@@ -636,6 +649,12 @@ export class FormApi<
     if (!fieldInstance.state.meta.isTouched) {
       // Mark it as touched
       fieldInstance.setMeta((prev) => ({ ...prev, isTouched: true }))
+    }
+
+    // If the field is not blurred (same logic as in validateAllFields)
+    if (!fieldInstance.state.meta.isBlurred) {
+      // Mark it as blurred
+      fieldInstance.setMeta((prev) => ({ ...prev, isBlurred: true }))
     }
 
     return fieldInstance.validate(cause)
@@ -1010,6 +1029,7 @@ export class FormApi<
         acc[fieldKey] = {
           isValidating: false,
           isTouched: false,
+          isBlurred: false,
           isDirty: false,
           isPristine: true,
           errors: [],
@@ -1036,6 +1056,7 @@ export class FormApi<
         this.setFieldMeta(field, (prev) => ({
           ...prev,
           isTouched: true,
+          isBlurred: true,
           isDirty: true,
         }))
       }

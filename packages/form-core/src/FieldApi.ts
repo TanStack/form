@@ -337,6 +337,10 @@ export type FieldMeta = {
    */
   isTouched: boolean
   /**
+   * A flag indicating whether the field has been blurred.
+   */
+  isBlurred: boolean
+  /**
    * A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
    */
   isPristine: boolean
@@ -457,6 +461,7 @@ export class FieldApi<
         meta: this._getMeta() ?? {
           isValidating: false,
           isTouched: false,
+          isBlurred: false,
           isDirty: false,
           isPristine: true,
           errors: [],
@@ -632,6 +637,7 @@ export class FieldApi<
     ({
       isValidating: false,
       isTouched: false,
+      isBlurred: false,
       isDirty: false,
       isPristine: true,
       errors: [],
@@ -1012,6 +1018,9 @@ export class FieldApi<
     if (!prevTouched) {
       this.setMeta((prev) => ({ ...prev, isTouched: true }))
       this.validate('change')
+    }
+    if (!this.state.meta.isBlurred) {
+      this.setMeta((prev) => ({ ...prev, isBlurred: true }))
     }
     this.validate('blur')
   }
