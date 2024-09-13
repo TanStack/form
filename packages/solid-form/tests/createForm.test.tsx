@@ -2,8 +2,9 @@ import { describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor } from '@solidjs/testing-library'
 import { userEvent } from '@testing-library/user-event'
 import { Show, createSignal, onCleanup } from 'solid-js'
-import { type FormValidationErrorMap, createForm } from '../src/index'
+import { createForm } from '../src/index'
 import { sleep } from './utils'
+import type { FormValidationErrorMap } from '../src/index'
 
 const user = userEvent.setup()
 

@@ -1,8 +1,5 @@
-import {
-  type Validator,
-  type ValidatorAdapterParams,
-  setBy,
-} from '@tanstack/form-core'
+import { setBy } from '@tanstack/form-core'
+import type { Validator, ValidatorAdapterParams } from '@tanstack/form-core'
 import type { AnySchema, ValidationError as YupError } from 'yup'
 
 type Params = ValidatorAdapterParams<string>
