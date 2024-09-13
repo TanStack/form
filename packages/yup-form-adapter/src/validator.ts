@@ -52,7 +52,7 @@ export const yupValidator =
       },
       async validateAsync({ value, validationSource }, fn) {
         try {
-          await fn.validate(value)
+          await fn.validate(value, { abortEarly: false })
           return
         } catch (_e) {
           const e = _e as YupError

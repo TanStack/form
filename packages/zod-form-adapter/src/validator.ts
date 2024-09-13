@@ -27,24 +27,26 @@ export const zodValidator =
   () => {
     return {
       validate({ value, validationSource }, fn) {
-        const transformErrors =
-          params.transformErrors ??
-          (validationSource === 'form'
-            ? defaultFormTransformer
-            : mapIssuesToSingleString)
         const result = fn.safeParse(value)
         if (result.success) return
-        return transformErrors(result.error.issues)
-      },
-      async validateAsync({ value, validationSource }, fn) {
         const transformErrors =
           params.transformErrors ??
           (validationSource === 'form'
             ? defaultFormTransformer
             : mapIssuesToSingleString)
 
+        return transformErrors(result.error.issues)
+      },
+      async validateAsync({ value, validationSource }, fn) {
         const result = await fn.safeParseAsync(value)
         if (result.success) return
+
+        const transformErrors =
+          params.transformErrors ??
+          (validationSource === 'form'
+            ? defaultFormTransformer
+            : mapIssuesToSingleString)
+
         return transformErrors(result.error.issues)
       },
     }
