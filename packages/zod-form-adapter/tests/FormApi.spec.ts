@@ -106,6 +106,9 @@ describe('zod form api', () => {
     const form = new FormApi({
       defaultValues: {
         name: '',
+        foo: {
+          bar: '',
+        },
       },
       validatorAdapter: zodValidator({
         transformErrors: (errors) => errors[0]?.message,
@@ -116,25 +119,37 @@ describe('zod form api', () => {
             .string()
             .min(3, 'You must have a length of at least 3')
             .endsWith('a', 'You must end with an "a"'),
+          foo: z.object({
+            bar: z.string().min(4, 'You must have a length of at least 4'),
+          }),
         }),
       },
     })
 
-    const field = new FieldApi({
+    const nameField = new FieldApi({
       form,
       name: 'name',
     })
 
-    field.mount()
+    const fooBarField = new FieldApi({
+      form,
+      name: 'foo.bar',
+    })
 
-    expect(field.getMeta().errors).toEqual([])
-    field.setValue('q')
-    expect(field.getMeta().errors).toEqual([
+    nameField.mount()
+    fooBarField.mount()
+
+    expect(nameField.getMeta().errors).toEqual([])
+    nameField.setValue('q')
+    expect(nameField.getMeta().errors).toEqual([
       'You must have a length of at least 3',
     ])
-    field.setValue('qwer')
-    expect(field.getMeta().errors).toEqual(['You must end with an "a"'])
-    field.setValue('qwera')
-    expect(field.getMeta().errors).toEqual([])
+    expect(fooBarField.getMeta().errors).toEqual([
+      'You must have a length of at least 4',
+    ])
+    nameField.setValue('qwer')
+    expect(nameField.getMeta().errors).toEqual(['You must end with an "a"'])
+    nameField.setValue('qwera')
+    expect(nameField.getMeta().errors).toEqual([])
   })
 })

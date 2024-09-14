@@ -13,18 +13,18 @@ export function prefixSchemaToErrors(
   zodErrors: ZodIssue[],
   transformErrors: TransformFn,
 ) {
-  let schema = {} as Record<string, ZodIssue[]>
+  const schema = new Map<string, ZodIssue[]>()
+
   for (const zodError of zodErrors) {
-    schema = setBy(schema, zodError.path, (errors: ZodIssue[] | undefined) =>
-      (errors ?? []).concat(zodError),
-    )
+    const path = zodError.path.join('.')
+    schema.set(path, (schema.get(path) ?? []).concat(zodError))
   }
 
   const transformedSchema = {} as Record<string, ValidationError>
 
-  for (const key in schema) {
-    transformedSchema[key] = transformErrors(schema[key] ?? [])
-  }
+  schema.forEach((value, key) => {
+    transformedSchema[key] = transformErrors(value)
+  })
 
   return transformedSchema
 }
