@@ -16,7 +16,12 @@ export function prefixSchemaToErrors(
   const schema = new Map<string, ZodIssue[]>()
 
   for (const zodError of zodErrors) {
-    const path = zodError.path.join('.')
+    const path = zodError.path
+      .map((segment) =>
+        typeof segment === 'number' ? `[${segment}]` : segment,
+      )
+      .join('.')
+      .replace(/\.\[/g, '[')
     schema.set(path, (schema.get(path) ?? []).concat(zodError))
   }
 

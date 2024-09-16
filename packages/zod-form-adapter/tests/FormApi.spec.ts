@@ -152,4 +152,36 @@ describe('zod form api', () => {
     nameField.setValue('qwera')
     expect(nameField.getMeta().errors).toEqual([])
   })
+
+  it('should set field errors with the form validator for arrays', () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: [''],
+      },
+      validatorAdapter: zodValidator(),
+      validators: {
+        onChange: z.object({
+          names: z.array(
+            z.string().min(3, 'You must have a length of at least 3'),
+          ),
+        }),
+      },
+    })
+
+    const name0Field = new FieldApi({
+      form,
+      name: 'names[0]',
+    })
+
+    name0Field.mount()
+
+    expect(name0Field.getMeta().errors).toEqual([])
+    name0Field.setValue('q')
+
+    expect(name0Field.getMeta().errors).toEqual([
+      'You must have a length of at least 3',
+    ])
+    name0Field.setValue('qwer')
+    expect(name0Field.getMeta().errors).toEqual([])
+  })
 })
