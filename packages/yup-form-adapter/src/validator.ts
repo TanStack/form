@@ -1,36 +1,55 @@
 import { setBy } from '@tanstack/form-core'
-import type { Validator, ValidatorAdapterParams } from '@tanstack/form-core'
+import type {
+  ValidationError,
+  Validator,
+  ValidatorAdapterParams,
+} from '@tanstack/form-core'
 import type { AnySchema, ValidationError as YupError } from 'yup'
 
-type Params = ValidatorAdapterParams<string>
+type Params = ValidatorAdapterParams<YupError>
+type TransformFn = NonNullable<Params['transformErrors']>
 
-export function prefixSchemaToErrors(error: YupError) {
-  let schema = {} as object
-  for (const yupError of error.inner) {
-    schema = setBy(schema, yupError.path, () => yupError.message)
+export function prefixSchemaToErrors(
+  yupErrors: YupError[],
+  transformErrors: TransformFn,
+) {
+  const schema = new Map<string, YupError[]>()
+
+  for (const yupError of yupErrors) {
+    if (!yupError.path) continue
+
+    const path = yupError.path
+    schema.set(path, (schema.get(path) ?? []).concat(yupError))
   }
-  return schema
+
+  const transformedSchema = {} as Record<string, ValidationError>
+
+  schema.forEach((value, key) => {
+    transformedSchema[key] = transformErrors(value)
+  })
+
+  return transformedSchema
 }
 
-export function defaultFormTransformer(error: YupError) {
-  return {
-    form: mapIssuesToSingleString(error),
-    fields: prefixSchemaToErrors(error),
-  }
+export function defaultFormTransformer(transformErrors: TransformFn) {
+  return (zodErrors: YupError[]) => ({
+    form: transformErrors(zodErrors),
+    fields: prefixSchemaToErrors(zodErrors, transformErrors),
+  })
 }
-
-export const mapIssuesToSingleString = (error: YupError) =>
-  error.errors.join(', ')
-
-const executeParamsTransformErrors =
-  (transformErrors: NonNullable<Params['transformErrors']>) =>
-  (e: YupError) => {
-    return transformErrors(e.errors)
-  }
 
 export const yupValidator =
   (params: Params = {}): Validator<unknown, AnySchema> =>
   () => {
+    const transformFieldErrors =
+      params.transformErrors ??
+      ((errors: YupError[]) => errors.map((error) => error.message).join(', '))
+
+    const getTransformStrategy = (validationSource: 'form' | 'field') =>
+      validationSource === 'form'
+        ? defaultFormTransformer(transformFieldErrors)
+        : transformFieldErrors
+
     return {
       validate({ value, validationSource }, fn) {
         try {
@@ -38,13 +57,10 @@ export const yupValidator =
           return
         } catch (_e) {
           const e = _e as YupError
-          const transformErrors = params.transformErrors
-            ? executeParamsTransformErrors(params.transformErrors)
-            : validationSource === 'form'
-              ? defaultFormTransformer
-              : mapIssuesToSingleString
 
-          return transformErrors(e)
+          const transformer = getTransformStrategy(validationSource)
+
+          return transformer(e.inner)
         }
       },
       async validateAsync({ value, validationSource }, fn) {
@@ -53,13 +69,10 @@ export const yupValidator =
           return
         } catch (_e) {
           const e = _e as YupError
-          const transformErrors = params.transformErrors
-            ? executeParamsTransformErrors(params.transformErrors)
-            : validationSource === 'form'
-              ? defaultFormTransformer
-              : mapIssuesToSingleString
 
-          return transformErrors(e)
+          const transformer = getTransformStrategy(validationSource)
+
+          return transformer(e.inner)
         }
       },
     }
