@@ -12,11 +12,11 @@
     "@tanstack/solid-form": "^0.32.0",
     "@tanstack/valibot-form-adapter": "^0.32.0",
     "solid-js": "^1.8.22",
-    "valibot": "^0.41.0"
+    "valibot": "^0.42.0"
   },
   "devDependencies": {
     "typescript": "5.4.2",
-    "vite": "^5.4.3",
+    "vite": "^5.4.5",
     "vite-plugin-solid": "^2.10.2"
   }
 }
