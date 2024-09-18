@@ -910,7 +910,7 @@ export class FormApi<
   /**
    * Handles the form submission, performs validation, and calls the appropriate onSubmit or onInvalidSubmit callbacks.
    */
-  handleSubmit = async () => {
+  handleSubmit = async (): Promise<any> => {
     this.store.setState((old) => ({
       ...old,
       // Submission attempts mark the form as not submitted
@@ -955,12 +955,16 @@ export class FormApi<
 
     try {
       // Run the submit code
-      await this.options.onSubmit?.({ value: this.state.values, formApi: this })
+      const result = await this.options.onSubmit?.({
+        value: this.state.values,
+        formApi: this,
+      })
 
       this.store.batch(() => {
         this.store.setState((prev) => ({ ...prev, isSubmitted: true }))
         done()
       })
+      return result
     } catch (err) {
       done()
       throw err
