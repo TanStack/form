@@ -190,7 +190,7 @@ describe('useForm', () => {
               />
             )}
           />
-          <p>{onChangeError}</p>
+          <p>{onChangeError?.toString()}</p>
         </>
       )
     }
@@ -287,7 +287,7 @@ describe('useForm', () => {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-                <p>{errors.onChange}</p>
+                <p>{errors.onChange?.toString()}</p>
               </div>
             )}
           />
@@ -338,8 +338,8 @@ describe('useForm', () => {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-                <p>{errors.onChange}</p>
-                <p>{errors.onBlur}</p>
+                <p>{errors.onChange?.toString()}</p>
+                <p>{errors.onBlur?.toString()}</p>
               </div>
             )}
           />
@@ -402,8 +402,8 @@ describe('useForm', () => {
               </div>
             )}
           />
-          <p data-testid={'form-onchange'}>{errors.onChange}</p>
-          <p data-testid={'form-onblur'}>{errors.onBlur}</p>
+          <p data-testid={'form-onchange'}>{errors.onChange?.toString()}</p>
+          <p data-testid={'form-onblur'}>{errors.onBlur?.toString()}</p>
         </>
       )
     }
@@ -462,7 +462,7 @@ describe('useForm', () => {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-                <p>{errors.onChange}</p>
+                <p>{errors.onChange?.toString()}</p>
               </div>
             )}
           />
@@ -523,7 +523,7 @@ describe('useForm', () => {
               </div>
             )}
           />
-          <p data-testid="form-error">{errors.onChange}</p>
+          <p data-testid="form-error">{errors.onChange?.toString()}</p>
         </>
       )
     }
@@ -588,8 +588,8 @@ describe('useForm', () => {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-                <p>{errors.onChange}</p>
-                <p>{errors.onBlur}</p>
+                <p>{errors.onChange?.toString()}</p>
+                <p>{errors.onBlur?.toString()}</p>
               </div>
             )}
           />
@@ -708,7 +708,7 @@ describe('useForm', () => {
               </>
             )}
           />
-          <p data-testid="form-error">{onChangeError}</p>
+          <p data-testid="form-error">{onChangeError?.toString()}</p>
         </>
       )
     }

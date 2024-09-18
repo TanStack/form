@@ -49,15 +49,15 @@ describe('valibot createServerValidate api', () => {
   it('should run v.string async validation', async () => {
     const serverValidate = createServerValidate({
       validatorAdapter: valibotValidator(),
-      onServerValidate: v.pipeAsync(
-        v.object({
-          name: v.string(),
-        }),
-        v.checkAsync(async (val) => {
-          await sleep(1)
-          return val.name.length > 3
-        }, 'Testing 123'),
-      ),
+      onServerValidate: v.objectAsync({
+        name: v.pipeAsync(
+          v.string(),
+          v.checkAsync(async (name) => {
+            await sleep(1)
+            return name.length > 3
+          }, 'Testing 123'),
+        ),
+      }),
     })
 
     const formData1 = new FormData()

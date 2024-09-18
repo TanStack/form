@@ -6,6 +6,7 @@ import type {
   ValidationCause,
   ValidationError,
   ValidationErrorMap,
+  ValidationSource,
   Validator,
 } from './types'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
@@ -493,7 +494,11 @@ export class FieldApi<
    * @private
    */
   runValidator<
-    TValue extends { value: TData; fieldApi: FieldApi<any, any, any, any> },
+    TValue extends {
+      value: TData
+      fieldApi: FieldApi<any, any, any, any>
+      validationSource: ValidationSource
+    },
     TType extends 'validate' | 'validateAsync',
   >(props: {
     validate: TType extends 'validate'
@@ -501,7 +506,8 @@ export class FieldApi<
       : FieldAsyncValidateOrFn<any, any, any, any>
     value: TValue
     type: TType
-  }): ReturnType<ReturnType<Validator<any>>[TType]> {
+    // When `api` is 'field', the return type cannot be `FormValidationError`
+  }): TType extends 'validate' ? ValidationError : Promise<ValidationError> {
     const adapters = [
       this.form.options.validatorAdapter,
       this.options.validatorAdapter,
@@ -548,6 +554,7 @@ export class FieldApi<
         value: {
           value: this.state.value,
           fieldApi: this,
+          validationSource: 'field',
         },
         type: 'validate',
       })
@@ -763,7 +770,11 @@ export class FieldApi<
             ? normalizeError(
                 field.runValidator({
                   validate: validateObj.validate,
-                  value: { value: field.getValue(), fieldApi: field },
+                  value: {
+                    value: field.getValue(),
+                    validationSource: 'field',
+                    fieldApi: field,
+                  },
                   type: 'validate',
                 }),
               )
@@ -890,6 +901,7 @@ export class FieldApi<
                         value: field.getValue(),
                         fieldApi: field,
                         signal: controller.signal,
+                        validationSource: 'field',
                       },
                       type: 'validateAsync',
                     }),
