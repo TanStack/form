@@ -1983,4 +1983,56 @@ describe('form api', () => {
     expect(form.state.canSubmit).toBe(true)
     expect(passconfirmField.state.meta.errors.length).toBe(0)
   })
+
+  it('handleSubmit should return the return value of onSubmit when valid', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      onSubmit: async ({value, formApi}) => {
+        // simulate a validation error on the server-side
+        if (value.firstName === 'maya') {
+          formApi.setFieldMeta('firstName', (meta) => ({...meta, errorMap: {...meta.errorMap, onServer: 'name is already taken'}}))
+          return
+        }
+        // if successful, return a value received from the server
+        return 23
+      }
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onChange: ({ value }) =>
+          value.length > 0 ? undefined : 'first name is required',
+      },
+    })
+
+    field.mount()
+
+    const formInvalidResult = await form.handleSubmit()
+    expect(formInvalidResult).toEqual(undefined)
+    expect(form.state.isFieldsValid).toEqual(false)
+    expect(form.state.canSubmit).toEqual(false)
+    expect(form.state.fieldMeta['firstName'].errors).toEqual([
+      'first name is required',
+    ])
+
+    field.setValue('peter')
+    const submitSucceedResult = await form.handleSubmit()
+    expect(submitSucceedResult).toEqual(23)
+    expect(form.state.isFieldsValid).toEqual(true)
+    expect(form.state.canSubmit).toEqual(true)
+
+    field.setValue('maya')
+    const submitFailureResult = await form.handleSubmit()
+    expect(submitFailureResult).toEqual(undefined)
+    expect(form.state.isFieldsValid).toEqual(false)
+    expect(form.state.canSubmit).toEqual(false)
+    expect(form.state.fieldMeta['firstName'].errors).toEqual([
+      'name is already taken',
+    ])
+
+  })
 })
