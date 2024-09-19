@@ -28,7 +28,7 @@ A boolean indicating if the form can be submitted based on its current state.
 ### errorMap
 
 ```ts
-errorMap: ValidationErrorMap;
+errorMap: FormValidationErrorMap;
 ```
 
 The error map for the form itself.
@@ -171,4 +171,4 @@ The current values of the form fields.
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:217](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L217)
+[packages/form-core/src/FormApi.ts:219](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L219)

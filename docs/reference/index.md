@@ -33,6 +33,7 @@ title: "@tanstack/form-core"
 - [UpdaterFn](type-aliases/updaterfn.md)
 - [ValidationError](type-aliases/validationerror.md)
 - [ValidationMeta](type-aliases/validationmeta.md)
+- [ValidationSource](type-aliases/validationsource.md)
 
 ## Functions
 
