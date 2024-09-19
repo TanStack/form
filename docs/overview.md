@@ -144,4 +144,4 @@ createRoot(rootElement).render(<App />)
 
 ## You talked me into it, so what now?
 
-- Learn TanStack Form at your own pace with our thorough [Walkthrough Guide](../installation) and [API Reference](reference/classes/formapi.md)
+- Learn TanStack Form at your own pace with our thorough [Walkthrough Guide](../installation) and [API Reference](../reference/classes/formapi)
