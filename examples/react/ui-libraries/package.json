@@ -14,7 +14,7 @@
     "@mantine/core": "7.12.2",
     "@mantine/hooks": "7.12.2",
     "@mui/material": "5.16.7",
-    "@tanstack/react-form": "^0.32.0",
+    "@tanstack/react-form": "^0.33.0",
     "@yme/lay-postcss": "0.1.0",
     "postcss": "8.4.47",
     "postcss-preset-mantine": "1.17.0",
