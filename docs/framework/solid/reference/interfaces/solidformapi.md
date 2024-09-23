@@ -13,6 +13,18 @@ title: SolidFormApi
 
 ## Properties
 
+### createField
+
+```ts
+createField: CreateField<TFormData, TFormValidator>;
+```
+
+#### Defined in
+
+[createForm.tsx:16](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L16)
+
+***
+
 ### Field
 
 ```ts
@@ -50,18 +62,6 @@ Subscribe: <TSelected>(props) => Element;
 #### Defined in
 
 [createForm.tsx:20](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L20)
-
-***
-
-### createField
-
-```ts
-createField: CreateField<TFormData, TFormValidator>;
-```
-
-#### Defined in
-
-[createForm.tsx:16](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L16)
 
 ***
 
