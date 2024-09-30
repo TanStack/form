@@ -17,8 +17,8 @@
   "devDependencies": {
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.1",
-    "vite": "^5.4.7"
+    "@vitejs/plugin-react": "^4.3.2",
+    "vite": "^5.4.8"
   },
   "browserslist": {
     "production": [

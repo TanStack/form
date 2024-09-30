@@ -60,8 +60,8 @@
     "@tanstack/solid-store": "^0.5.5"
   },
   "devDependencies": {
-    "solid-js": "^1.8.22",
-    "vite": "^5.4.7",
+    "solid-js": "^1.9.1",
+    "vite": "^5.4.8",
     "vite-plugin-solid": "^2.10.2"
   },
   "peerDependencies": {
