@@ -1344,6 +1344,46 @@ describe('form api', () => {
     ])
   })
 
+  it('should run all types of async validation on fields during submit', async () => {
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onChangeAsync: async ({ value }) => {
+          await sleep(1000)
+          return value.length > 0 ? undefined : 'first name is required'
+        },
+        onBlurAsync: async ({ value }) => {
+          await sleep(1000)
+          return value.length > 3
+            ? undefined
+            : 'first name must be longer than 3 characters'
+        },
+      },
+    })
+
+    field.mount()
+
+    form.handleSubmit()
+    expect(form.state.isFieldsValid).toEqual(true)
+    await vi.runAllTimersAsync()
+    expect(form.state.isFieldsValid).toEqual(false)
+    expect(form.state.canSubmit).toEqual(false)
+    expect(form.state.fieldMeta['firstName'].errorMap).toEqual({
+      onChange: 'first name is required',
+      onBlur: 'first name must be longer than 3 characters',
+    })
+  })
+
   it('should clear onSubmit error when a valid value is entered', async () => {
     const form = new FormApi({
       defaultValues: {
