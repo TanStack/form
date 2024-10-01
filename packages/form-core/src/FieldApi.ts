@@ -1,13 +1,14 @@
 import { Store } from '@tanstack/store'
 import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
+import type { FieldInfo, FieldsErrorMapFromValidator, FormApi } from './FormApi'
 import type {
   UpdateMetaOptions,
   ValidationCause,
   ValidationError,
   ValidationErrorMap,
+  ValidationSource,
   Validator,
 } from './types'
-import type { FieldInfo, FormApi } from './FormApi'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
 import type { DeepKeys, DeepValue, NoInfer } from './util-types'
 
@@ -42,19 +43,10 @@ export type FieldValidateOrFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-> = TFieldValidator extends Validator<TData, infer TFN>
-  ?
-      | TFN
-      | FieldValidateFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
-  : TFormValidator extends Validator<TParentData, infer FFN>
+> =
+  TFieldValidator extends Validator<TData, infer TFN>
     ?
-        | FFN
+        | TFN
         | FieldValidateFn<
             TParentData,
             TName,
@@ -62,13 +54,23 @@ export type FieldValidateOrFn<
             TFormValidator,
             TData
           >
-    : FieldValidateFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData
-      >
+    : TFormValidator extends Validator<TParentData, infer FFN>
+      ?
+          | FFN
+          | FieldValidateFn<
+              TParentData,
+              TName,
+              TFieldValidator,
+              TFormValidator,
+              TData
+            >
+      : FieldValidateFn<
+          TParentData,
+          TName,
+          TFieldValidator,
+          TFormValidator,
+          TData
+        >
 
 /**
  * @private
@@ -102,19 +104,10 @@ export type FieldAsyncValidateOrFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-> = TFieldValidator extends Validator<TData, infer TFN>
-  ?
-      | TFN
-      | FieldValidateAsyncFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
-  : TFormValidator extends Validator<TParentData, infer FFN>
+> =
+  TFieldValidator extends Validator<TData, infer TFN>
     ?
-        | FFN
+        | TFN
         | FieldValidateAsyncFn<
             TParentData,
             TName,
@@ -122,13 +115,23 @@ export type FieldAsyncValidateOrFn<
             TFormValidator,
             TData
           >
-    : FieldValidateAsyncFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData
-      >
+    : TFormValidator extends Validator<TParentData, infer FFN>
+      ?
+          | FFN
+          | FieldValidateAsyncFn<
+              TParentData,
+              TName,
+              TFieldValidator,
+              TFormValidator,
+              TData
+            >
+      : FieldValidateAsyncFn<
+          TParentData,
+          TName,
+          TFieldValidator,
+          TFormValidator,
+          TData
+        >
 
 export interface FieldValidators<
   TParentData,
@@ -155,7 +158,7 @@ export interface FieldValidators<
    * An optional property that takes a `ValidateFn` which is a generic of `TData` and `TParentData`.
    * If `validatorAdapter` is passed, this may also accept a property from the respective adapter
    *
-   * @example `z.string().min(1)` if `zodAdapter` is passed
+   * @example z.string().min(1) // if `zodAdapter` is passed
    */
   onChange?: FieldValidateOrFn<
     TParentData,
@@ -168,7 +171,7 @@ export interface FieldValidators<
    * An optional property similar to `onChange` but async validation. If `validatorAdapter`
    * is passed, this may also accept a property from the respective adapter
    *
-   * @example `z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })` if `zodAdapter` is passed
+   * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // if `zodAdapter` is passed
    */
   onChangeAsync?: FieldAsyncValidateOrFn<
     TParentData,
@@ -188,10 +191,10 @@ export interface FieldValidators<
    */
   onChangeListenTo?: DeepKeys<TParentData>[]
   /**
-   * An optional function, that when run when subscribing to blur event of input.
+   * An optional function, that runs on the blur event of input.
    * If `validatorAdapter` is passed, this may also accept a property from the respective adapter
    *
-   * @example `z.string().min(1)` if `zodAdapter` is passed
+   * @example z.string().min(1) // if `zodAdapter` is passed
    */
   onBlur?: FieldValidateOrFn<
     TParentData,
@@ -204,7 +207,7 @@ export interface FieldValidators<
    * An optional property similar to `onBlur` but async validation. If `validatorAdapter`
    * is passed, this may also accept a property from the respective adapter
    *
-   * @example `z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })` if `zodAdapter` is passed
+   * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // if `zodAdapter` is passed
    */
   onBlurAsync?: FieldAsyncValidateOrFn<
     TParentData,
@@ -225,10 +228,10 @@ export interface FieldValidators<
    */
   onBlurListenTo?: DeepKeys<TParentData>[]
   /**
-   * An optional function, that when run when subscribing to submit event of input.
+   * An optional function, that runs on the submit event of form.
    * If `validatorAdapter` is passed, this may also accept a property from the respective adapter
    *
-   * @example `z.string().min(1)` if `zodAdapter` is passed
+   * @example z.string().min(1) // if `zodAdapter` is passed
    */
   onSubmit?: FieldValidateOrFn<
     TParentData,
@@ -241,7 +244,7 @@ export interface FieldValidators<
    * An optional property similar to `onSubmit` but async validation. If `validatorAdapter`
    * is passed, this may also accept a property from the respective adapter
    *
-   * @example `z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })` if `zodAdapter` is passed
+   * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // if `zodAdapter` is passed
    */
   onSubmitAsync?: FieldAsyncValidateOrFn<
     TParentData,
@@ -333,6 +336,10 @@ export type FieldMeta = {
    * A flag indicating whether the field has been touched.
    */
   isTouched: boolean
+  /**
+   * A flag indicating whether the field has been blurred.
+   */
+  isBlurred: boolean
   /**
    * A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
    */
@@ -454,6 +461,7 @@ export class FieldApi<
         meta: this._getMeta() ?? {
           isValidating: false,
           isTouched: false,
+          isBlurred: false,
           isDirty: false,
           isPristine: true,
           errors: [],
@@ -486,7 +494,11 @@ export class FieldApi<
    * @private
    */
   runValidator<
-    TValue extends { value: TData; fieldApi: FieldApi<any, any, any, any> },
+    TValue extends {
+      value: TData
+      fieldApi: FieldApi<any, any, any, any>
+      validationSource: ValidationSource
+    },
     TType extends 'validate' | 'validateAsync',
   >(props: {
     validate: TType extends 'validate'
@@ -494,7 +506,8 @@ export class FieldApi<
       : FieldAsyncValidateOrFn<any, any, any, any>
     value: TValue
     type: TType
-  }): ReturnType<ReturnType<Validator<any>>[TType]> {
+    // When `api` is 'field', the return type cannot be `FormValidationError`
+  }): TType extends 'validate' ? ValidationError : Promise<ValidationError> {
     const adapters = [
       this.form.options.validatorAdapter,
       this.options.validatorAdapter,
@@ -541,13 +554,14 @@ export class FieldApi<
         value: {
           value: this.state.value,
           fieldApi: this,
+          validationSource: 'field',
         },
         type: 'validate',
       })
       if (error) {
         this.setMeta((prev) => ({
           ...prev,
-          // eslint-disable-next-line ts/no-unnecessary-condition
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           errorMap: { ...prev?.errorMap, onMount: error },
         }))
       }
@@ -623,6 +637,7 @@ export class FieldApi<
     ({
       isValidating: false,
       isTouched: false,
+      isBlurred: false,
       isDirty: false,
       isPristine: true,
       errors: [],
@@ -716,7 +731,10 @@ export class FieldApi<
   /**
    * @private
    */
-  validateSync = (cause: ValidationCause) => {
+  validateSync = (
+    cause: ValidationCause,
+    errorFromForm: ValidationErrorMap,
+  ) => {
     const validates = getSyncValidatorArray(cause, this.options)
 
     const linkedFields = this.getLinkedFields(cause)
@@ -739,30 +757,46 @@ export class FieldApi<
         field: FieldApi<any, any, any, any>,
         validateObj: SyncValidator<any>,
       ) => {
-        const error = normalizeError(
-          field.runValidator({
-            validate: validateObj.validate,
-            value: { value: field.getValue(), fieldApi: field },
-            type: 'validate',
-          }),
-        )
         const errorMapKey = getErrorMapKey(validateObj.cause)
+
+        const error =
+          /*
+            If `validateObj.validate` is `undefined`, then the field doesn't have
+            a validator for this event, but there still could be an error that
+            needs to be cleaned up related to the current event left by the
+            form's validator.
+          */
+          validateObj.validate
+            ? normalizeError(
+                field.runValidator({
+                  validate: validateObj.validate,
+                  value: {
+                    value: field.getValue(),
+                    validationSource: 'field',
+                    fieldApi: field,
+                  },
+                  type: 'validate',
+                }),
+              )
+            : errorFromForm[errorMapKey]
+
         if (field.state.meta.errorMap[errorMapKey] !== error) {
           field.setMeta((prev) => ({
             ...prev,
             errorMap: {
               ...prev.errorMap,
-              [getErrorMapKey(validateObj.cause)]: error,
+              [getErrorMapKey(validateObj.cause)]:
+                // Prefer the error message from the field validators if they exist
+                error ? error : errorFromForm[errorMapKey],
             },
           }))
         }
-        if (error) {
+        if (error || errorFromForm[errorMapKey]) {
           hasErrored = true
         }
       }
 
       for (const validateObj of validates) {
-        if (!validateObj.validate) continue
         validateFieldFn(this, validateObj)
       }
       for (const fieldValitateObj of linkedFieldValidates) {
@@ -776,6 +810,7 @@ export class FieldApi<
      *  to clear the error as soon as the user enters a valid value in the field
      */
     const submitErrKey = getErrorMapKey('submit')
+
     if (
       this.state.meta.errorMap[submitErrKey] &&
       cause !== 'submit' &&
@@ -796,8 +831,16 @@ export class FieldApi<
   /**
    * @private
    */
-  validateAsync = async (cause: ValidationCause) => {
+  validateAsync = async (
+    cause: ValidationCause,
+    formValidationResultPromise: Promise<
+      FieldsErrorMapFromValidator<TParentData>
+    >,
+  ) => {
     const validates = getAsyncValidatorArray(cause, this.options)
+
+    // Get the field-specific error messages that are coming from the form's validator
+    const asyncFormValidationResults = await formValidationResultPromise
 
     const linkedFields = this.getLinkedFields(cause)
     const linkedFieldValidates = linkedFields.reduce(
@@ -833,13 +876,13 @@ export class FieldApi<
       validateObj: AsyncValidator<any>,
       promises: Promise<ValidationError | undefined>[],
     ) => {
-      const key = getErrorMapKey(validateObj.cause)
-      const fieldValidatorMeta = field.getInfo().validationMetaMap[key]
+      const errorMapKey = getErrorMapKey(validateObj.cause)
+      const fieldValidatorMeta = field.getInfo().validationMetaMap[errorMapKey]
 
       fieldValidatorMeta?.lastAbortController.abort()
       const controller = new AbortController()
 
-      this.getInfo().validationMetaMap[key] = {
+      this.getInfo().validationMetaMap[errorMapKey] = {
         lastAbortController: controller,
       }
 
@@ -858,6 +901,7 @@ export class FieldApi<
                         value: field.getValue(),
                         fieldApi: field,
                         signal: controller.signal,
+                        validationSource: 'field',
                       },
                       type: 'validateAsync',
                     }),
@@ -872,18 +916,21 @@ export class FieldApi<
           }
           if (controller.signal.aborted) return resolve(undefined)
           const error = normalizeError(rawError)
+          const fieldErrorFromForm =
+            asyncFormValidationResults[this.name]?.[errorMapKey]
+          const fieldError = error || fieldErrorFromForm
           field.setMeta((prev) => {
             return {
               ...prev,
               errorMap: {
-                // eslint-disable-next-line ts/no-unnecessary-condition
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 ...prev?.errorMap,
-                [getErrorMapKey(validateObj.cause)]: error,
+                [errorMapKey]: fieldError,
               },
             }
           })
 
-          resolve(error)
+          resolve(fieldError)
         }),
       )
     }
@@ -923,15 +970,28 @@ export class FieldApi<
   validate = (
     cause: ValidationCause,
   ): ValidationError[] | Promise<ValidationError[]> => {
-    // If the field is pristine and validatePristine is false, do not validate
+    // If the field is pristine, do not validate
     if (!this.state.meta.isTouched) return []
 
+    let validationErrorFromForm: ValidationErrorMap = {}
+    let formValidationResultPromise: Promise<
+      FieldsErrorMapFromValidator<TParentData>
+    > = Promise.resolve({})
+
     try {
-      this.form.validate(cause)
+      const formValidationResult = this.form.validate(cause)
+      if (formValidationResult instanceof Promise) {
+        formValidationResultPromise = formValidationResult
+      } else {
+        const fieldErrorFromForm = formValidationResult[this.name]
+        if (fieldErrorFromForm) {
+          validationErrorFromForm = fieldErrorFromForm
+        }
+      }
     } catch (_) {}
 
     // Attempt to sync validate first
-    const { hasErrored } = this.validateSync(cause)
+    const { hasErrored } = this.validateSync(cause, validationErrorFromForm)
 
     if (hasErrored && !this.options.asyncAlways) {
       this.getInfo().validationMetaMap[
@@ -940,7 +1000,7 @@ export class FieldApi<
       return this.state.meta.errors
     }
     // No error? Attempt async validation
-    return this.validateAsync(cause)
+    return this.validateAsync(cause, formValidationResultPromise)
   }
 
   /**
@@ -959,7 +1019,23 @@ export class FieldApi<
       this.setMeta((prev) => ({ ...prev, isTouched: true }))
       this.validate('change')
     }
+    if (!this.state.meta.isBlurred) {
+      this.setMeta((prev) => ({ ...prev, isBlurred: true }))
+    }
     this.validate('blur')
+  }
+
+  /**
+   * Updates the field's errorMap
+   */
+  setErrorMap(errorMap: ValidationErrorMap) {
+    this.setMeta((prev) => ({
+      ...prev,
+      errorMap: {
+        ...prev.errorMap,
+        ...errorMap,
+      },
+    }))
   }
 }
 

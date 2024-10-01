@@ -1,34 +1,91 @@
-import { safeParse, safeParseAsync } from 'valibot'
-import type { BaseIssue, BaseSchema, BaseSchemaAsync } from 'valibot'
-import type { ValidationError, Validator } from '@tanstack/form-core'
+import { getDotPath, safeParse, safeParseAsync } from 'valibot'
+import { setBy } from '@tanstack/form-core'
+import type {
+  ValidationError,
+  Validator,
+  ValidatorAdapterParams,
+} from '@tanstack/form-core'
+import type {
+  BaseIssue,
+  GenericIssue,
+  GenericSchema,
+  GenericSchemaAsync,
+  ValiError,
+} from 'valibot'
 
-type Params = {
-  transformErrors?: (errors: BaseIssue<unknown>[]) => ValidationError
+type Params = ValidatorAdapterParams<GenericIssue>
+type TransformFn = NonNullable<Params['transformErrors']>
+
+export function prefixSchemaToErrors(
+  valiErrors: GenericIssue[],
+  transformErrors: TransformFn,
+) {
+  const schema = new Map<string, GenericIssue[]>()
+
+  for (const valiError of valiErrors) {
+    if (!valiError.path) continue
+
+    const path = valiError.path
+      .map(({ key: segment }) =>
+        typeof segment === 'number' ? `[${segment}]` : segment,
+      )
+      .join('.')
+      .replace(/\.\[/g, '[')
+    schema.set(path, (schema.get(path) ?? []).concat(valiError))
+  }
+
+  const transformedSchema = {} as Record<string, ValidationError>
+
+  schema.forEach((value, key) => {
+    transformedSchema[key] = transformErrors(value)
+  })
+
+  return transformedSchema
 }
 
-export const valibotValidator = (params: Params = {}) =>
-  (() => {
+export function defaultFormTransformer(transformErrors: TransformFn) {
+  return (zodErrors: GenericIssue[]) => ({
+    form: transformErrors(zodErrors),
+    fields: prefixSchemaToErrors(zodErrors, transformErrors),
+  })
+}
+
+export const valibotValidator =
+  (
+    params: Params = {},
+  ): Validator<unknown, GenericSchema | GenericSchemaAsync> =>
+  () => {
+    const transformFieldErrors =
+      params.transformErrors ??
+      ((issues: GenericIssue[]) =>
+        issues.map((issue) => issue.message).join(', '))
+
+    const getTransformStrategy = (validationSource: 'form' | 'field') =>
+      validationSource === 'form'
+        ? defaultFormTransformer(transformFieldErrors)
+        : transformFieldErrors
+
     return {
-      validate({ value }, fn) {
+      validate({ value, validationSource }, fn) {
         if (fn.async) return
-        const result = safeParse(fn, value)
+        const result = safeParse(fn, value, {
+          abortPipeEarly: false,
+        })
         if (result.success) return
-        if (params.transformErrors) {
-          return params.transformErrors(result.issues)
-        }
-        return result.issues.map((i) => i.message).join(', ')
+
+        const transformer = getTransformStrategy(validationSource)
+
+        return transformer(result.issues)
       },
-      async validateAsync({ value }, fn) {
-        const result = await safeParseAsync(fn, value)
+      async validateAsync({ value, validationSource }, fn) {
+        const result = await safeParseAsync(fn, value, {
+          abortPipeEarly: false,
+        })
         if (result.success) return
-        if (params.transformErrors) {
-          return params.transformErrors(result.issues)
-        }
-        return result.issues.map((i) => i.message).join(', ')
+
+        const transformer = getTransformStrategy(validationSource)
+
+        return transformer(result.issues)
       },
     }
-  }) as Validator<
-    unknown,
-    | BaseSchema<unknown, unknown, BaseIssue<unknown>>
-    | BaseSchemaAsync<unknown, unknown, BaseIssue<unknown>>
-  >
+  }

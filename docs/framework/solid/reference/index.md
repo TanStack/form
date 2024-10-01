@@ -5,13 +5,17 @@ title: "@tanstack/solid-form"
 
 # @tanstack/solid-form
 
+## Interfaces
+
+- [SolidFormApi](interfaces/solidformapi.md)
+
 ## Type Aliases
 
-- [CreateField](CreateField.md)
-- [FieldComponent](FieldComponent.md)
+- [CreateField](type-aliases/createfield.md)
+- [FieldComponent](type-aliases/fieldcomponent.md)
 
 ## Functions
 
-- [Field](Field.md)
-- [createField](createField.md)
-- [createForm](createForm.md)
+- [createField](functions/createfield.md)
+- [createForm](functions/createform.md)
+- [Field](functions/field.md)

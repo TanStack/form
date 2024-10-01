@@ -9,15 +9,15 @@
     "test:types": "tsc --noEmit"
   },
   "dependencies": {
-    "@emotion/react": "11.11.4",
-    "@emotion/styled": "11.11.5",
-    "@mantine/core": "7.11.2",
-    "@mantine/hooks": "7.11.2",
-    "@mui/material": "5.16.1",
-    "@tanstack/react-form": "^0.26.4",
+    "@emotion/react": "11.13.3",
+    "@emotion/styled": "11.13.0",
+    "@mantine/core": "7.13.0",
+    "@mantine/hooks": "7.13.0",
+    "@mui/material": "5.16.7",
+    "@tanstack/react-form": "^0.33.0",
     "@yme/lay-postcss": "0.1.0",
-    "postcss": "8.4.39",
-    "postcss-preset-mantine": "1.15.0",
+    "postcss": "8.4.47",
+    "postcss-preset-mantine": "1.17.0",
     "postcss-simple-vars": "7.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
@@ -25,15 +25,10 @@
   "devDependencies": {
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@typescript-eslint/eslint-plugin": "^7.16.0",
-    "@typescript-eslint/parser": "^7.16.0",
-    "@vitejs/plugin-react": "^4.3.1",
-    "@vitejs/plugin-react-swc": "^3.7.0",
-    "eslint": "^8.57.0",
-    "eslint-plugin-react-hooks": "^4.6.2",
-    "eslint-plugin-react-refresh": "^0.4.8",
+    "@vitejs/plugin-react": "^4.3.2",
+    "@vitejs/plugin-react-swc": "^3.7.1",
     "typescript": "5.4.2",
-    "vite": "^5.3.3"
+    "vite": "^5.4.8"
   },
   "browserslist": {
     "production": [

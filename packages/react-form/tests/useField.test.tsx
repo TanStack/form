@@ -426,7 +426,6 @@ describe('useField', () => {
           firstName: '',
           lastName: '',
         },
-        // eslint-disable-next-line ts/no-empty-function
         onSubmit: async () => {},
       })
 

@@ -18,7 +18,7 @@ import { z } from 'zod'
               .string()
               .min(3, 'First name must be at least 3 characters'),
             onChangeAsyncDebounceMs: 500,
-            onChangeAsync: firstNameAsyncValidator
+            onChangeAsync: firstNameAsyncValidator,
           }"
           #firstName="field"
         >

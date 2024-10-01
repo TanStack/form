@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/zod-form-adapter",
-  "version": "0.26.4",
+  "version": "0.33.0",
   "description": "The Zod adapter for TanStack Form.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -55,6 +55,7 @@
     "@tanstack/form-core": "workspace:*"
   },
   "devDependencies": {
+    "@tanstack/react-form": "workspace:*",
     "zod": "^3.23.8"
   },
   "peerDependencies": {
