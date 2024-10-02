@@ -119,7 +119,15 @@ A boolean indicating if the form has been submitted.
 isSubmitting: boolean;
 ```
 
-A boolean indicating if the form is currently submitting.
+A boolean indicating if the form is currently in the process of being submitted after `handleSubmit` is called.
+
+Goes back to `false` when submission completes for one of the following reasons:
+- the validation step returned errors.
+- the `onSubmit` function has completed.
+
+Note: if you're running async operations in your `onSubmit` function make sure to await them to ensure `isSubmitting` is set to `false` only when the async operation completes.
+
+This is useful for displaying loading indicators or disabling form inputs during submission.
 
 ### isTouched
 
