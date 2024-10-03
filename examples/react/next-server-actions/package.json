@@ -9,9 +9,9 @@
   },
   "dependencies": {
     "@tanstack/react-form": "^0.33.0",
-    "next": "15.0.0-rc.0",
-    "react": "19.0.0-rc-6d3110b4d9-20240531",
-    "react-dom": "19.0.0-rc-6d3110b4d9-20240531"
+    "next": "15.0.0-canary.160",
+    "react": "19.0.0-rc-5dcb0097-20240918",
+    "react-dom": "19.0.0-rc-5dcb0097-20240918"
   },
   "devDependencies": {
     "@types/node": "^20.14.10",

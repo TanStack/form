@@ -1,20 +1,23 @@
-'use client'
+"use client";
 
-import { useActionState } from 'react'
-import { mergeForm, useForm, useTransform } from '@tanstack/react-form'
-import { initialFormState } from '@tanstack/react-form/nextjs'
-import someAction from './action'
-import { formOpts } from './shared-code'
+import { useActionState } from "react";
+import { mergeForm, useForm, useTransform } from "@tanstack/react-form";
+import { initialFormState } from "@tanstack/react-form/nextjs";
+import someAction from "./action";
+import { formOpts } from "./shared-code";
 
 export const ClientComp = () => {
-  const [state, action] = useActionState(someAction, initialFormState)
+  const [state, action] = useActionState(someAction, initialFormState);
 
   const form = useForm({
     ...formOpts,
-    transform: useTransform((baseForm) => mergeForm(baseForm, state!), [state]),
-  })
+    transform: useTransform(
+      (baseForm) => mergeForm(baseForm, state ?? {}),
+      [state]
+    ),
+  });
 
-  const formErrors = form.useStore((formState) => formState.errors)
+  const formErrors = form.useStore((formState) => formState.errors);
 
   return (
     <form action={action as never} onSubmit={() => form.handleSubmit()}>
@@ -26,7 +29,7 @@ export const ClientComp = () => {
         name="age"
         validators={{
           onChange: ({ value }) =>
-            value < 8 ? 'Client validation: You must be at least 8' : undefined,
+            value < 8 ? "Client validation: You must be at least 8" : undefined,
         }}
       >
         {(field) => {
@@ -42,7 +45,7 @@ export const ClientComp = () => {
                 <p key={error as string}>{error}</p>
               ))}
             </div>
-          )
+          );
         }}
       </form.Field>
       <form.Subscribe
@@ -50,10 +53,10 @@ export const ClientComp = () => {
       >
         {([canSubmit, isSubmitting]) => (
           <button type="submit" disabled={!canSubmit}>
-            {isSubmitting ? '...' : 'Submit'}
+            {isSubmitting ? "..." : "Submit"}
           </button>
         )}
       </form.Subscribe>
     </form>
-  )
-}
+  );
+};
