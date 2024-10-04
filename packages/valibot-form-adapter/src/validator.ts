@@ -1,17 +1,10 @@
-import { getDotPath, safeParse, safeParseAsync } from 'valibot'
-import { setBy } from '@tanstack/form-core'
+import { safeParse, safeParseAsync } from 'valibot'
 import type {
   ValidationError,
   Validator,
   ValidatorAdapterParams,
 } from '@tanstack/form-core'
-import type {
-  BaseIssue,
-  GenericIssue,
-  GenericSchema,
-  GenericSchemaAsync,
-  ValiError,
-} from 'valibot'
+import type { GenericIssue, GenericSchema, GenericSchemaAsync } from 'valibot'
 
 type Params = ValidatorAdapterParams<GenericIssue>
 type TransformFn = NonNullable<Params['transformErrors']>
@@ -68,9 +61,7 @@ export const valibotValidator =
     return {
       validate({ value, validationSource }, fn) {
         if (fn.async) return
-        const result = safeParse(fn, value, {
-          abortPipeEarly: false,
-        })
+        const result = safeParse(fn, value)
         if (result.success) return
 
         const transformer = getTransformStrategy(validationSource)
@@ -78,9 +69,7 @@ export const valibotValidator =
         return transformer(result.issues)
       },
       async validateAsync({ value, validationSource }, fn) {
-        const result = await safeParseAsync(fn, value, {
-          abortPipeEarly: false,
-        })
+        const result = await safeParseAsync(fn, value)
         if (result.success) return
 
         const transformer = getTransformStrategy(validationSource)
