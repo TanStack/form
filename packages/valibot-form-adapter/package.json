@@ -55,9 +55,9 @@
   },
   "devDependencies": {
     "@tanstack/react-form": "workspace:*",
-    "valibot": "^0.42.1"
+    "valibot": "1.0.0-beta.0"
   },
   "peerDependencies": {
-    "valibot": ">=0.33.0 <1"
+    "valibot": "^1.0.0"
   }
 }
