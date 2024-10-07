@@ -5,7 +5,7 @@ import type { DeepKeys, DeepValue, Validator } from '@tanstack/form-core'
 import type { Ref, SetupContext, SlotsType } from 'vue'
 import type { UseFieldOptions } from './types'
 
-interface VueFieldApi<
+export interface VueFieldApi<
   TParentData,
   TFormValidator extends
     | Validator<TParentData, unknown>
