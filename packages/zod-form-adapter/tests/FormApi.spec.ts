@@ -17,17 +17,32 @@ describe('zod form api', () => {
       form,
       name: 'name',
       validators: {
-        onChange: z.string().min(3, 'You must have a length of at least 3'),
+        onChange: z
+          .string()
+          .min(3, 'You must have a length of at least 3')
+          .regex(/^[a-z]+$/i, 'You must have only letters'),
       },
     })
 
     field.mount()
 
+    // valid by default
     expect(field.getMeta().errors).toEqual([])
+
+    // too short
     field.setValue('a')
     expect(field.getMeta().errors).toEqual([
       'You must have a length of at least 3',
     ])
+
+    // too short and invalid character
+    field.setValue('a#')
+    expect(field.getMeta().errors).toEqual([
+      'You must have a length of at least 3',
+      'You must have only letters',
+    ])
+
+    // valid
     field.setValue('asdf')
     expect(field.getMeta().errors).toEqual([])
   })
