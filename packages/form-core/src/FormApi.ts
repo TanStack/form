@@ -430,9 +430,7 @@ export class FormApi<
           }, [] as ValidationError[])
           const isFormValid = state.errors.length === 0
           const isValid = isFieldsValid && isFormValid
-          const canSubmit =
-            (state.submissionAttempts === 0 && !isTouched) ||
-            (!isValidating && !state.isSubmitting && isValid)
+          const canSubmit = !isValidating && !state.isSubmitting && isValid
 
           state = {
             ...state,
