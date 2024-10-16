@@ -21,7 +21,7 @@ function useForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormVali
 
 ## Returns
 
-`FormApi`\<`TFormData`, `TFormValidator`\> & `VueFormApi`\<`TFormData`, `TFormValidator`\>
+`FormApi`\<`TFormData`, `TFormValidator`\> & [`VueFormApi`](../interfaces/vueformapi.md)\<`TFormData`, `TFormValidator`\>
 
 ## Defined in
 
