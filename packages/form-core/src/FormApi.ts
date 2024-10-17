@@ -593,7 +593,7 @@ export class FormApi<
         }
 
         // If any fields are not blurred
-        if (!field.instance.state.meta.isBlurred) {
+        if (!field.instance.state.meta.isBlurred && cause === 'submit') {
           // Mark them as blurred
           field.instance.setMeta((prev) => ({ ...prev, isBlurred: true }))
         }
@@ -658,12 +658,6 @@ export class FormApi<
     if (!fieldInstance.state.meta.isTouched) {
       // Mark it as touched
       fieldInstance.setMeta((prev) => ({ ...prev, isTouched: true }))
-    }
-
-    // If the field is not blurred (same logic as in validateAllFields)
-    if (!fieldInstance.state.meta.isBlurred) {
-      // Mark it as blurred
-      fieldInstance.setMeta((prev) => ({ ...prev, isBlurred: true }))
     }
 
     return fieldInstance.validate(cause)

@@ -2024,3 +2024,24 @@ describe('form api', () => {
     expect(passconfirmField.state.meta.errors.length).toBe(0)
   })
 })
+
+it('should update the onBlur state of the fields when the form is submitted', async () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+    },
+  })
+
+  const field = new FieldApi({
+    form,
+    name: 'firstName',
+  })
+
+  field.mount()
+
+  expect(field.state.meta.isBlurred).toBe(false)
+
+  await form.handleSubmit()
+
+  expect(field.state.meta.isBlurred).toBe(true)
+})
