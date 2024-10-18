@@ -17,8 +17,10 @@ function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
 }
 
 const userSchema = z.object({
-  firstName: z.string(),
-  lastName: z.string(),
+  firstName: z.string().refine((val) => val !== 'John', {
+    message: '[Form] First name cannot be John',
+  }),
+  lastName: z.string().min(3, '[Form] Last name must be at least 3 characters'),
 })
 
 type User = z.infer<typeof userSchema>
@@ -57,7 +59,7 @@ export default function App() {
             validators={{
               onChange: z
                 .string()
-                .min(3, 'First name must be at least 3 characters'),
+                .min(3, '[Field] First name must be at least 3 characters'),
               onChangeAsyncDebounceMs: 500,
               onChangeAsync: z.string().refine(
                 async (value) => {
@@ -65,7 +67,7 @@ export default function App() {
                   return !value.includes('error')
                 },
                 {
-                  message: "No 'error' allowed in first name",
+                  message: "[Field] No 'error' allowed in first name",
                 },
               ),
             }}
