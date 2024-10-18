@@ -16,19 +16,19 @@ function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
   )
 }
 
-const formSchema = z.object({
+const userSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
 })
 
-type Form = z.infer<typeof formSchema>
+type User = z.infer<typeof userSchema>
 
 export default function App() {
   const form = useForm({
     defaultValues: {
       firstName: '',
       lastName: '',
-    } as Form,
+    } as User,
     onSubmit: async ({ value }) => {
       // Do something with form data
       console.log(value)
@@ -36,8 +36,8 @@ export default function App() {
     // Add a validator to support Zod usage in Form and Field
     validatorAdapter: zodValidator(),
     validators: {
-      onChange: formSchema,
-    },
+      onChange: userSchema
+    }
   })
 
   return (
