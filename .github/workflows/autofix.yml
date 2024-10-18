@@ -14,20 +14,18 @@ permissions:
 
 jobs:
   autofix:
-    if: ${{ !contains(github.event.head_commit.message, 'apply automated fixes')}}
     name: autofix
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.1
       - name: Setup Tools
         uses: tanstack/config/.github/setup@main
       - name: Fix formatting
         run: pnpm prettier:write
       - name: Generate Docs
-        if: ${{ github.event_name == 'push' }}
         run: pnpm docs:generate
       - name: Apply fixes
         uses: autofix-ci/action@ff86a557419858bb967097bfc916833f5647fa8c
         with:
-          commit-message: 'ci: apply automated fixes and doc generation\n\n[skip ci]'
+          commit-message: 'ci: apply automated fixes and generate docs'
