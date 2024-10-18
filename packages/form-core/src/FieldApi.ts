@@ -990,6 +990,13 @@ export class FieldApi<
       }
     } catch (_) {}
 
+    // Clear previous validation errors
+    if (this.form.options.automaticallyResetValidators === true)
+      this.setMeta((prev) => ({
+        ...prev,
+        errorMap: {},
+      }))
+
     // Attempt to sync validate first
     const { hasErrored } = this.validateSync(cause, validationErrorFromForm)
 
