@@ -487,12 +487,14 @@ import { z } from 'zod'
 
 // ...
 
+const formSchema = z.object({
+  age: z.number().gte(13, 'You must be 13 to make an account'),
+})
+
 const form = useForm({
   validatorAdapter: zodValidator(),
   validators: {
-    onChange: z.object({
-      age: z.number().gte(13, 'You must be 13 to make an account'),
-    }),
+    onChange: formSchema
   },
 })
 ```
