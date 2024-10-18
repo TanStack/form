@@ -36,8 +36,8 @@ export default function App() {
     // Add a validator to support Zod usage in Form and Field
     validatorAdapter: zodValidator(),
     validators: {
-      onChange: userSchema
-    }
+      onChange: userSchema,
+    },
   })
 
   return (
