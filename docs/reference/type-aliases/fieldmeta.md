@@ -29,6 +29,14 @@ errors: ValidationError[];
 
 An array of errors related to the field value.
 
+### isBlurred
+
+```ts
+isBlurred: boolean;
+```
+
+A flag indicating whether the field has been blurred.
+
 ### isDirty
 
 ```ts
@@ -63,4 +71,4 @@ A flag indicating whether the field is currently being validated.
 
 ## Defined in
 
-[packages/form-core/src/FieldApi.ts:331](https://github.com/TanStack/form/blob/bde3b1cb3de955b47034f0bfaa43dec13c67999a/packages/form-core/src/FieldApi.ts#L331)
+[packages/form-core/src/FieldApi.ts:334](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L334)

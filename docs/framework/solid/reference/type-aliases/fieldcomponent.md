@@ -39,4 +39,4 @@ type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData
 
 ## Defined in
 
-[createField.tsx:160](https://github.com/TanStack/form/blob/bde3b1cb3de955b47034f0bfaa43dec13c67999a/packages/solid-form/src/createField.tsx#L160)
+[createField.tsx:160](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L160)

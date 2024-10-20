@@ -25,4 +25,4 @@ function formOptions<TFormData, TFormValidator>(defaultOpts?): undefined | FormO
 
 ## Defined in
 
-[packages/form-core/src/formOptions.ts:4](https://github.com/TanStack/form/blob/bde3b1cb3de955b47034f0bfaa43dec13c67999a/packages/form-core/src/formOptions.ts#L4)
+[packages/form-core/src/formOptions.ts:4](https://github.com/TanStack/form/blob/main/packages/form-core/src/formOptions.ts#L4)

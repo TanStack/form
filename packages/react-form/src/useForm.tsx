@@ -1,8 +1,9 @@
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
 import React, { useState } from 'react'
-import { Field, type FieldComponent, type UseField, useField } from './useField'
+import { Field, useField } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
+import type { FieldComponent, UseField } from './useField'
 import type { NoInfer } from '@tanstack/react-store'
 import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
 import type { NodeType } from './types'
@@ -10,7 +11,7 @@ import type { NodeType } from './types'
 /**
  * Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`
  */
-interface ReactFormApi<
+export interface ReactFormApi<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > {
