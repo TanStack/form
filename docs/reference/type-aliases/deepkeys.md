@@ -19,4 +19,4 @@ The keys of an object or array, deeply nested.
 
 ## Defined in
 
-[packages/form-core/src/util-types.ts:85](https://github.com/TanStack/form/blob/bde3b1cb3de955b47034f0bfaa43dec13c67999a/packages/form-core/src/util-types.ts#L85)
+[packages/form-core/src/util-types.ts:85](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L85)

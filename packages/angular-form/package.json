@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/angular-form",
-  "version": "0.26.4",
+  "version": "0.34.0",
   "description": "Powerful, type-safe forms for Angular.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -46,20 +46,20 @@
   "dependencies": {
     "@tanstack/angular-store": "^0.5.5",
     "@tanstack/form-core": "workspace:*",
-    "tslib": "^2.6.3"
+    "tslib": "^2.7.0"
   },
   "devDependencies": {
-    "@analogjs/vite-plugin-angular": "^1.6.4",
+    "@analogjs/vite-plugin-angular": "^1.8.2",
     "@angular/common": "^17.3.12",
     "@angular/compiler": "^17.3.12",
     "@angular/compiler-cli": "^17.3.12",
     "@angular/core": "^17.3.12",
     "@angular/platform-browser": "^17.3.12",
     "@angular/platform-browser-dynamic": "^17.3.12",
-    "@testing-library/angular": "^17.1.0",
+    "@testing-library/angular": "^17.3.1",
     "ng-packagr": "^17.3.0",
     "typescript": "5.4.2",
-    "zone.js": "^0.14.8"
+    "zone.js": "^0.15.0"
   },
   "peerDependencies": {
     "@angular/core": ">=17.3.0"

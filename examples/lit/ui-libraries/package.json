@@ -9,12 +9,12 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@material/web": "^1.5.1",
-    "@tanstack/lit-form": "^0.26.4",
-    "lit": "^3.1.4"
+    "@material/web": "^2.2.0",
+    "@tanstack/lit-form": "^0.34.0",
+    "lit": "^3.2.1"
   },
   "devDependencies": {
-    "vite": "^5.3.5"
+    "vite": "^5.4.8"
   },
   "browserslist": {
     "production": [

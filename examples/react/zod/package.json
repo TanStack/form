@@ -9,8 +9,8 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-form": "^0.26.4",
-    "@tanstack/zod-form-adapter": "^0.26.4",
+    "@tanstack/react-form": "^0.34.0",
+    "@tanstack/zod-form-adapter": "^0.34.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "zod": "^3.23.8"
@@ -18,8 +18,8 @@
   "devDependencies": {
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.1",
-    "vite": "^5.3.5"
+    "@vitejs/plugin-react": "^4.3.2",
+    "vite": "^5.4.8"
   },
   "browserslist": {
     "production": [

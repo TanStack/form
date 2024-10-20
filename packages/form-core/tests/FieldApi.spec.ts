@@ -43,6 +43,7 @@ describe('field api', () => {
 
     expect(field.getMeta()).toEqual({
       isTouched: false,
+      isBlurred: false,
       isValidating: false,
       isPristine: true,
       isDirty: false,
@@ -56,11 +57,17 @@ describe('field api', () => {
     const field = new FieldApi({
       form,
       name: 'name',
-      defaultMeta: { isTouched: true, isDirty: true, isPristine: false },
+      defaultMeta: {
+        isTouched: true,
+        isDirty: true,
+        isPristine: false,
+        isBlurred: true,
+      },
     })
 
     expect(field.getMeta()).toEqual({
       isTouched: true,
+      isBlurred: true,
       isValidating: false,
       isDirty: true,
       isPristine: false,
@@ -527,6 +534,8 @@ describe('field api', () => {
     expect(field.getMeta().errorMap).toMatchObject({
       onChange: 'Please enter a different value',
     })
+    field.setValue('nothing')
+    expect(field.getMeta().errors.length).toBe(0)
   })
 
   it('should run async validation onChange', async () => {
@@ -680,8 +689,6 @@ describe('field api', () => {
     field.setValue('12')
     expect(mockOnChange).toHaveBeenCalledTimes(2)
     expect(mockOnChangeAsync).toHaveBeenCalledTimes(0)
-
-    await vi.runAllTimersAsync()
 
     // Async validation never got called because sync validation failed in the meantime and aborted the async
     expect(mockOnChangeAsync).toHaveBeenCalledTimes(0)
@@ -1074,7 +1081,8 @@ describe('field api', () => {
   })
 
   it('should cancel previous functions from an async validator with an abort signal', async () => {
-    vi.useRealTimers()
+    vi.useFakeTimers()
+
     const form = new FormApi({
       defaultValues: {
         firstName: '',
@@ -1105,11 +1113,10 @@ describe('field api', () => {
     field.mount()
 
     field.setValue('one')
-    // Allow for a micro-tick to allow the promise to resolve
-    await sleep(1)
+    await vi.runAllTimersAsync()
     field.setValue('two')
     resolve()
-    await sleep(1)
+    await vi.runAllTimersAsync()
     expect(fn).toHaveBeenCalledTimes(1)
   })
 
@@ -1205,7 +1212,7 @@ describe('field api', () => {
   })
 
   it('should run onChangeAsync on a linked field', async () => {
-    vi.useRealTimers()
+    vi.useFakeTimers()
     let resolve!: () => void
     let promise = new Promise((r) => {
       resolve = r as never
@@ -1246,8 +1253,7 @@ describe('field api', () => {
 
     passField.setValue('one')
     resolve()
-    // Allow for a micro-tick to allow the promise to resolve
-    await sleep(1)
+    await vi.runAllTimersAsync()
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
     ])
@@ -1256,18 +1262,75 @@ describe('field api', () => {
     })
     passconfirmField.setValue('one')
     resolve()
-    // Allow for a micro-tick to allow the promise to resolve
-    await sleep(1)
+    await vi.runAllTimersAsync()
     expect(passconfirmField.state.meta.errors).toStrictEqual([])
     promise = new Promise((r) => {
       resolve = r as never
     })
     passField.setValue('two')
     resolve()
-    // Allow for a micro-tick to allow the promise to resolve
-    await sleep(1)
+    await vi.runAllTimersAsync()
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
     ])
+  })
+
+  it('should add  a new value to the fieldApi errorMap', () => {
+    interface Form {
+      name: string
+    }
+    const form = new FormApi<Form>()
+    const nameField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    nameField.mount()
+    nameField.setErrorMap({
+      onChange: "name can't be Josh",
+    })
+    expect(nameField.getMeta().errorMap.onChange).toEqual("name can't be Josh")
+  })
+  it('should preserve other values in the fieldApi errorMap when adding other values', () => {
+    interface Form {
+      name: string
+    }
+    const form = new FormApi<Form>()
+    const nameField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    nameField.mount()
+    nameField.setErrorMap({
+      onChange: "name can't be Josh",
+    })
+    expect(nameField.getMeta().errorMap.onChange).toEqual("name can't be Josh")
+    nameField.setErrorMap({
+      onBlur: 'name must begin with uppercase',
+    })
+    expect(nameField.getMeta().errorMap.onChange).toEqual("name can't be Josh")
+    expect(nameField.getMeta().errorMap.onBlur).toEqual(
+      'name must begin with uppercase',
+    )
+  })
+  it('should replace errorMap value if it exists in the fieldApi object', () => {
+    interface Form {
+      name: string
+    }
+    const form = new FormApi<Form>()
+    const nameField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    nameField.mount()
+    nameField.setErrorMap({
+      onChange: "name can't be Josh",
+    })
+    expect(nameField.getMeta().errorMap.onChange).toEqual("name can't be Josh")
+    nameField.setErrorMap({
+      onChange: 'other validation error',
+    })
+    expect(nameField.getMeta().errorMap.onChange).toEqual(
+      'other validation error',
+    )
   })
 })

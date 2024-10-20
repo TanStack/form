@@ -133,7 +133,7 @@ describe('yup field api', () => {
     const field = new FieldApi({
       form,
       validatorAdapter: yupValidator({
-        transformErrors: (errors) => errors[0],
+        transformErrors: (errors) => errors[0]?.message,
       }),
       name: 'name',
       validators: {
@@ -152,6 +152,41 @@ describe('yup field api', () => {
       'You must have a length of at least 3',
     ])
     field.setValue('aaa')
+    expect(field.getMeta().errors).toEqual(['UUID'])
+  })
+
+  it('should transform errors to display only the first error message with an async validator', async () => {
+    vi.useFakeTimers()
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      validatorAdapter: yupValidator({
+        transformErrors: (errors) => errors[0]?.message,
+      }),
+      name: 'name',
+      validators: {
+        onChangeAsync: yup
+          .string()
+          .min(3, 'You must have a length of at least 3')
+          .uuid('UUID'),
+      },
+    })
+
+    field.mount()
+
+    expect(field.getMeta().errors).toEqual([])
+    field.setValue('aa')
+    await vi.advanceTimersByTimeAsync(10)
+    expect(field.getMeta().errors).toEqual([
+      'You must have a length of at least 3',
+    ])
+    field.setValue('aaa')
+    await vi.advanceTimersByTimeAsync(10)
     expect(field.getMeta().errors).toEqual(['UUID'])
   })
 })

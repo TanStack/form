@@ -31,4 +31,4 @@ function Field<TParentData, TName, TFieldValidator, TFormValidator, TData>(props
 
 ## Defined in
 
-[packages/vue-form/src/useField.tsx:162](https://github.com/TanStack/form/blob/bde3b1cb3de955b47034f0bfaa43dec13c67999a/packages/vue-form/src/useField.tsx#L162)
+[packages/vue-form/src/useField.tsx:162](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L162)

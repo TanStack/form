@@ -7,7 +7,7 @@ import type { NoInfer } from '@tanstack/vue-store'
 import type { EmitsOptions, Ref, SetupContext, SlotsType } from 'vue'
 import type { FieldComponent, UseField } from './useField'
 
-interface VueFormApi<
+export interface VueFormApi<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > {
