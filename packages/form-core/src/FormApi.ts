@@ -179,6 +179,20 @@ export interface FormOptions<
     formApi: FormApi<TFormData, TFormValidator>
   }) => void
   transform?: FormTransform<TFormData, TFormValidator>
+  /**
+   * When true, all previous validation errors will be cleared when running validation.
+   *
+   * While `true`:
+   *  - `onMount` and `onBlur` errors will be cleared when `onChange` triggers validation.
+   *
+   * While `false`:
+   *  - An `onMount` error will never be cleared.
+   *  - An `onBlur` error will only be cleared on the next `onBlur` event.
+   *  - An `onChange` error will only be cleared on the next `onChange` event.
+   *
+   * @default false
+   */
+  automaticallyResetValidators?: boolean
 }
 
 /**
