@@ -18,6 +18,7 @@ describe('form api', () => {
       errors: [],
       errorMap: {},
       isSubmitting: false,
+      isSubmitSuccessful: false,
       isTouched: false,
       isBlurred: false,
       isPristine: true,
@@ -55,6 +56,7 @@ describe('form api', () => {
       isFormValidating: false,
       isSubmitted: false,
       isSubmitting: false,
+      isSubmitSuccessful: false,
       isTouched: false,
       isBlurred: false,
       isPristine: true,
@@ -90,6 +92,7 @@ describe('form api', () => {
       isFormValidating: false,
       isSubmitted: false,
       isSubmitting: false,
+      isSubmitSuccessful: false,
       isTouched: false,
       isBlurred: false,
       isPristine: true,
@@ -136,6 +139,7 @@ describe('form api', () => {
       isFormValidating: false,
       isSubmitted: false,
       isSubmitting: false,
+      isSubmitSuccessful: false,
       isTouched: false,
       isBlurred: false,
       isPristine: true,
@@ -181,6 +185,7 @@ describe('form api', () => {
       isFormValidating: false,
       isSubmitted: false,
       isSubmitting: false,
+      isSubmitSuccessful: false,
       isTouched: false,
       isBlurred: false,
       isPristine: true,
@@ -245,6 +250,7 @@ describe('form api', () => {
       isFormValidating: false,
       isSubmitted: false,
       isSubmitting: false,
+      isSubmitSuccessful: false,
       isTouched: false,
       isBlurred: false,
       isPristine: true,
@@ -2022,5 +2028,31 @@ describe('form api', () => {
     expect(form.state.isFieldsValid).toBe(true)
     expect(form.state.canSubmit).toBe(true)
     expect(passconfirmField.state.meta.errors.length).toBe(0)
+  })
+
+  it('should update isSubmitSuccessful correctly during form submission', async () => {
+    const onSubmit = vi.fn().mockResolvedValue(undefined)
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      onSubmit,
+    })
+
+    form.mount()
+
+    expect(form.state.isSubmitSuccessful).toBe(false)
+
+    await form.handleSubmit()
+
+    expect(form.state.isSubmitSuccessful).toBe(true)
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+
+    // Simulate a failed submission
+    onSubmit.mockRejectedValueOnce(new Error('Submission failed'))
+
+    await expect(form.handleSubmit()).rejects.toThrow('Submission failed')
+
+    expect(form.state.isSubmitSuccessful).toBe(false)
   })
 })
