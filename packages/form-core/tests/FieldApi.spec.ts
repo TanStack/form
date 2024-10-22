@@ -95,6 +95,28 @@ describe('field api', () => {
     expect(field.getValue()).toBe('other')
   })
 
+  it('should set isBlurred correctly', () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['test'],
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'names',
+    })
+    field.mount()
+
+    expect(field.getMeta().isBlurred).toBe(false)
+
+    field.pushValue('other')
+    field.validate('blur')
+
+    expect(field.getMeta().isBlurred).toBe(true)
+  })
+
   it('should push an array value correctly', () => {
     const form = new FormApi({
       defaultValues: {
