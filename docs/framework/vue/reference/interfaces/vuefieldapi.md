@@ -21,4 +21,4 @@ Field: FieldComponent<TParentData, TFormValidator>;
 
 #### Defined in
 
-[packages/vue-form/src/useField.tsx:14](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L14)
+[useField.tsx:14](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L14)

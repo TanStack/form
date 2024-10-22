@@ -38,9 +38,9 @@ readonly api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TDat
 ### state
 
 ```ts
-readonly state: Readonly<Ref<FieldState<TData>>> = fieldState;
+readonly state: Readonly<Ref<FieldState<TData>, FieldState<TData>>> = fieldState;
 ```
 
 ## Defined in
 
-[packages/vue-form/src/useField.tsx:49](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L49)
+[useField.tsx:49](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L49)

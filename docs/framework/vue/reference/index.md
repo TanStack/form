@@ -15,8 +15,11 @@ title: "@tanstack/vue-form"
 - [FieldComponent](type-aliases/fieldcomponent.md)
 - [UseField](type-aliases/usefield.md)
 
+## Variables
+
+- [Field](variables/field.md)
+
 ## Functions
 
-- [Field](functions/field.md)
 - [useField](functions/usefield.md)
 - [useForm](functions/useform.md)
