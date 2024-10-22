@@ -584,6 +584,7 @@ export class FormApi<
         const fieldInstance = field.instance
         // Validate the field
         fieldValidationPromises.push(
+          // Remember, `validate` is either a sync operation or a promise
           Promise.resolve().then(() => fieldInstance.validate(cause)),
         )
         // If any fields are not touched

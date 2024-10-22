@@ -432,7 +432,7 @@ export class FieldApi<
    * @private
    */
   prevState!: FieldState<TData>
-  timeoutId: ReturnType<typeof setTimeout> | null
+  timeoutIds: Record<ValidationCause, ReturnType<typeof setTimeout> | null>
 
   /**
    * Initializes a new `FieldApi` instance.
@@ -448,7 +448,7 @@ export class FieldApi<
   ) {
     this.form = opts.form as never
     this.name = opts.name as never
-    this.timeoutId = null
+    this.timeoutIds = {} as Record<ValidationCause, never>
     if (opts.defaultValue !== undefined) {
       this.form.setFieldValue(this.name, opts.defaultValue as never, {
         dontUpdateMeta: true,
@@ -892,11 +892,11 @@ export class FieldApi<
           let rawError!: ValidationError | undefined
           try {
             rawError = await new Promise((rawResolve, rawReject) => {
-              if (this.timeoutId) {
-                clearTimeout(this.timeoutId)
+              if (this.timeoutIds[validateObj.cause]) {
+                clearTimeout(this.timeoutIds[validateObj.cause]!)
               }
 
-              this.timeoutId = setTimeout(async () => {
+              this.timeoutIds[validateObj.cause] = setTimeout(async () => {
                 if (controller.signal.aborted) return rawResolve(undefined)
                 try {
                   rawResolve(

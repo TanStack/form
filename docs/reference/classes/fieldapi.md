@@ -119,10 +119,10 @@ The field state store.
 
 ***
 
-### timeoutId
+### timeoutIds
 
 ```ts
-timeoutId: null | Timeout;
+timeoutIds: Record<ValidationCause, null | Timeout>;
 ```
 
 #### Defined in
