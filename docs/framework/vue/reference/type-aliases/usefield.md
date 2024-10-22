@@ -45,4 +45,4 @@ state: Readonly<Ref<FieldApi<TParentData, TName, TFieldValidator, TFormValidator
 
 ## Defined in
 
-[packages/vue-form/src/useField.tsx:17](https://github.com/TanStack/form/blob/03de1e83ad6580cff66ab58566f3003d93d4e34d/packages/vue-form/src/useField.tsx#L17)
+[useField.tsx:17](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L17)

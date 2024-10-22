@@ -133,7 +133,7 @@ describe('yup field api', () => {
     const field = new FieldApi({
       form,
       validatorAdapter: yupValidator({
-        transformErrors: (errors) => errors[0],
+        transformErrors: (errors) => errors[0]?.message,
       }),
       name: 'name',
       validators: {
@@ -166,7 +166,7 @@ describe('yup field api', () => {
     const field = new FieldApi({
       form,
       validatorAdapter: yupValidator({
-        transformErrors: (errors) => errors[0],
+        transformErrors: (errors) => errors[0]?.message,
       }),
       name: 'name',
       validators: {

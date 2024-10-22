@@ -37,4 +37,4 @@ The `FieldApi` instance for the specified field.
 
 ## Defined in
 
-[useField.tsx:49](https://github.com/TanStack/form/blob/03de1e83ad6580cff66ab58566f3003d93d4e34d/packages/react-form/src/useField.tsx#L49)
+[useField.tsx:50](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L50)
