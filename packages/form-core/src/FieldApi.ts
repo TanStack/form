@@ -6,6 +6,7 @@ import type {
   ValidationCause,
   ValidationError,
   ValidationErrorMap,
+  ValidationSource,
   Validator,
 } from './types'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
@@ -431,6 +432,7 @@ export class FieldApi<
    * @private
    */
   prevState!: FieldState<TData>
+  timeoutId: ReturnType<typeof setTimeout> | null
 
   /**
    * Initializes a new `FieldApi` instance.
@@ -446,7 +448,7 @@ export class FieldApi<
   ) {
     this.form = opts.form as never
     this.name = opts.name as never
-
+    this.timeoutId = null
     if (opts.defaultValue !== undefined) {
       this.form.setFieldValue(this.name, opts.defaultValue as never, {
         dontUpdateMeta: true,
@@ -493,7 +495,11 @@ export class FieldApi<
    * @private
    */
   runValidator<
-    TValue extends { value: TData; fieldApi: FieldApi<any, any, any, any> },
+    TValue extends {
+      value: TData
+      fieldApi: FieldApi<any, any, any, any>
+      validationSource: ValidationSource
+    },
     TType extends 'validate' | 'validateAsync',
   >(props: {
     validate: TType extends 'validate'
@@ -501,7 +507,8 @@ export class FieldApi<
       : FieldAsyncValidateOrFn<any, any, any, any>
     value: TValue
     type: TType
-  }): ReturnType<ReturnType<Validator<any>>[TType]> {
+    // When `api` is 'field', the return type cannot be `FormValidationError`
+  }): TType extends 'validate' ? ValidationError : Promise<ValidationError> {
     const adapters = [
       this.form.options.validatorAdapter,
       this.options.validatorAdapter,
@@ -548,6 +555,7 @@ export class FieldApi<
         value: {
           value: this.state.value,
           fieldApi: this,
+          validationSource: 'field',
         },
         type: 'validate',
       })
@@ -763,7 +771,11 @@ export class FieldApi<
             ? normalizeError(
                 field.runValidator({
                   validate: validateObj.validate,
-                  value: { value: field.getValue(), fieldApi: field },
+                  value: {
+                    value: field.getValue(),
+                    validationSource: 'field',
+                    fieldApi: field,
+                  },
                   type: 'validate',
                 }),
               )
@@ -880,7 +892,11 @@ export class FieldApi<
           let rawError!: ValidationError | undefined
           try {
             rawError = await new Promise((rawResolve, rawReject) => {
-              setTimeout(async () => {
+              if (this.timeoutId) {
+                clearTimeout(this.timeoutId)
+              }
+
+              this.timeoutId = setTimeout(async () => {
                 if (controller.signal.aborted) return rawResolve(undefined)
                 try {
                   rawResolve(
@@ -890,6 +906,7 @@ export class FieldApi<
                         value: field.getValue(),
                         fieldApi: field,
                         signal: controller.signal,
+                        validationSource: 'field',
                       },
                       type: 'validateAsync',
                     }),

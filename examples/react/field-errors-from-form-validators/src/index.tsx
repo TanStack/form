@@ -10,7 +10,7 @@ async function sleep(ms: number) {
 
 async function verifyAgeOnServer(age: number) {
   await sleep(Math.floor(Math.random() * 1000))
-  return age <= 13
+  return age >= 13
 }
 
 async function checkIfUsernameIsTaken(name: string) {
@@ -111,7 +111,10 @@ export default function App() {
           children={([errorMap]) =>
             errorMap.onSubmit ? (
               <div>
-                <em>There was an error on the form: {errorMap.onSubmit}</em>
+                <em>
+                  There was an error on the form:{' '}
+                  {errorMap.onSubmit?.toString()}
+                </em>
               </div>
             ) : null
           }

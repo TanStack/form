@@ -17,7 +17,7 @@ Here is an example:
   {field => (
     <>
       <Text>Age:</Text>
-      <TextInput value={field.state.value} onChangeText={handleChange} />
+      <TextInput value={field.state.value} onChangeText={field.handleChange} />
       {
         field.state.meta.errors
           ? <Text>{field.state.meta.errors.join(', ')}</Text>

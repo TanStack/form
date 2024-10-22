@@ -18,20 +18,20 @@ Here is an example:
 ```vue
 <template>
     <!-- ... -->
-    <form.Field 
-        name="age" 
+    <form.Field
+        name="age"
         :validators="{
             onChange: ({ value }) => value < 13 ? 'You must be 13 to make an account' : undefined,
         }">
         <template v-slot="{ field }">
             <label :for="field.name">Age:</label>
-            <input 
-                :id="field.name" 
-                :name="field.name" 
-                :value="field.state.value" 
-                type="number" 
+            <input
+                :id="field.name"
+                :name="field.name"
+                :value="field.state.value"
+                type="number"
                 @input="(e) => field.handleChange((e.target as HTMLInputElement).valueAsNumber)
-                " 
+                "
             />
             <em role="alert" v-if="field.state.meta.errors">{{ field.state.meta.errors.join(', ') }}</em>
         </template>
@@ -45,8 +45,8 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
 ``` vue
 <template>
     <!-- ... -->
-    <form.Field 
-        name="age" 
+    <form.Field
+        name="age"
         :validators="{
             onBlur: ({ value }) => value < 13 ? 'You must be 13 to make an account' : undefined,
         }">
@@ -54,14 +54,14 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
             <label :for="field.name">Age:</label>
              <!-- We always need to implement onChange, so that TanStack Form receives the changes -->
              <!-- Listen to the onBlur event on the field -->
-            <input 
-                :id="field.name" 
-                :name="field.name" 
-                :value="field.state.value" 
-                type="number" 
+            <input
+                :id="field.name"
+                :name="field.name"
+                :value="field.state.value"
+                type="number"
                 @blur="field.handleBlur"
                 @input="(e) => field.handleChange((e.target as HTMLInputElement).valueAsNumber)
-                " 
+                "
             />
             <em role="alert" v-if="field.state.meta.errors">{{ field.state.meta.errors.join(', ') }}</em>
         </template>
@@ -75,8 +75,8 @@ So you can control when the validation is done by implementing the desired callb
 ```vue
 <template>
     <!-- ... -->
-    <form.Field 
-        name="age" 
+    <form.Field
+        name="age"
         :validators="{
             onChange: ({ value }) => value < 13 ? 'You must be 13 to make an account' : undefined,
             onBlur: ({ value }) => (value < 0 ? 'Invalid value' : undefined),
@@ -85,14 +85,14 @@ So you can control when the validation is done by implementing the desired callb
             <label :for="field.name">Age:</label>
              <!-- We always need to implement onChange, so that TanStack Form receives the changes -->
              <!-- Listen to the onBlur event on the field -->
-            <input 
-                :id="field.name" 
-                :name="field.name" 
-                :value="field.state.value" 
-                type="number" 
+            <input
+                :id="field.name"
+                :name="field.name"
+                :value="field.state.value"
+                type="number"
                 @blur="field.handleBlur"
                 @input="(e) => field.handleChange((e.target as HTMLInputElement).valueAsNumber)
-                " 
+                "
             />
             <em role="alert" v-if="field.state.meta.errors">{{ field.state.meta.errors.join(', ') }}</em>
         </template>
@@ -110,8 +110,8 @@ Once you have your validation in place, you can map the errors from an array to 
 ```vue
 <template>
     <!-- ... -->
-    <form.Field 
-        name="age" 
+    <form.Field
+        name="age"
         :validators="{
             onChange: ({ value }) => value < 13 ? 'You must be 13 to make an account' : undefined,
         }">
@@ -129,8 +129,8 @@ Or use the `errorMap` property to access the specific error you're looking for:
 ```vue
 <template>
     <!-- ... -->
-    <form.Field 
-        name="age" 
+    <form.Field
+        name="age"
         :validators="{
             onChange: ({ value }) => value < 13 ? 'You must be 13 to make an account' : undefined,
         }">
@@ -205,20 +205,20 @@ const onChangeAge = async ({ value }) => {
 
 <template>
     <!-- ... -->
-    <form.Field 
-        name="age" 
+    <form.Field
+        name="age"
         :validators="{
             onChangeAsync: onChangeAge,
         }">
         <template v-slot="{ field }">
             <label :for="field.name">Age:</label>
-            <input 
-                :id="field.name" 
-                :name="field.name" 
-                :value="field.state.value" 
-                type="number" 
+            <input
+                :id="field.name"
+                :name="field.name"
+                :value="field.state.value"
+                type="number"
                 @input="(e) => field.handleChange((e.target as HTMLInputElement).valueAsNumber)
-                " 
+                "
             />
             <em role="alert" v-if="field.state.meta.errors">{{ field.state.meta.errors.join(', ') }}</em>
         </template>
@@ -243,8 +243,8 @@ const onBlurAgeAsync = async ({ value }) => {
 
 <template>
     <!-- ... -->
-    <form.Field 
-        name="age" 
+    <form.Field
+        name="age"
         :validators="{
             onBlur: onBlurAge,
             onBlurAsync: onBlurAgeAsync,
@@ -252,14 +252,14 @@ const onBlurAgeAsync = async ({ value }) => {
     >
         <template v-slot="{ field }">
             <label :for="field.name">Age:</label>
-            <input 
-                :id="field.name" 
-                :name="field.name" 
-                :value="field.state.value" 
-                type="number" 
+            <input
+                :id="field.name"
+                :name="field.name"
+                :value="field.state.value"
+                type="number"
                 @blur="field.handleBlur"
                 @input="(e) => field.handleChange((e.target as HTMLInputElement).valueAsNumber)
-                " 
+                "
             />
             <em role="alert" v-if="field.state.meta.errors">{{ field.state.meta.errors.join(', ') }}</em>
         </template>
@@ -279,8 +279,8 @@ Instead, we enable an easy method for debouncing your `async` calls by adding a 
 ```vue
 <template>
 <!-- ... -->
-    <form.Field 
-        name="age" 
+    <form.Field
+        name="age"
         :async-debounce-ms="500"
         :validators="{
             onChangeAsync: async ({value}) => {
@@ -300,8 +300,8 @@ This will debounce every async call with a 500ms delay. You can even override th
 ```vue
 <template>
 <!-- ... -->
-    <form.Field 
-        name="age" 
+    <form.Field
+        name="age"
         :async-debounce-ms="500"
         :validators="{
             onChangeAsyncDebounceMs: 1500,
@@ -346,16 +346,16 @@ import { z } from 'zod'
 
 const form = useForm({
     // Either add the validator here or on `Field`
-    validatorAdapter: zodValidator(),  
+    validatorAdapter: zodValidator(),
     // ...
 })
 </script>
 
 <template>
 <!-- ... -->
-    <form.Field 
-        name="age" 
-        :validator-adapter="zodValidator()" 
+    <form.Field
+        name="age"
+        :validator-adapter="zodValidator()"
         :validators="{
             onChange: z.number().gte(13, 'You must be 13 to make an account')
         }"
@@ -373,8 +373,8 @@ These adapters also support async operations using the proper property names:
 ```vue
 <template>
 <!-- ... -->
-    <form.Field 
-        name="age" 
+    <form.Field
+        name="age"
         :validators="{
             onChange: z.number().gte(13, 'You must be 13 to make an account'),
             onChangeAsyncDebounceMs: 500,
@@ -396,6 +396,45 @@ These adapters also support async operations using the proper property names:
 <!-- ... -->
 </template>
 ```
+
+### Form Level Adapter Validation
+
+You can also use the adapter at the form level:
+
+```typescript
+import { zodValidator } from '@tanstack/zod-form-adapter'
+import { z } from 'zod'
+
+// ...
+
+const form = useForm({
+  validatorAdapter: zodValidator(),
+  validators: {
+    onChange: z.object({
+      age: z.number().gte(13, 'You must be 13 to make an account'),
+    }),
+  },
+})
+```
+
+If you use the adapter at the form level, it will pass the validation to the fields of the same name.
+
+This means that:
+
+```vue
+<template>
+    <!-- ... -->
+    <form.Field
+        name="age"
+    >
+        <template v-slot="{ field }">
+            <!-- ... -->
+        </template>
+    </form.Field>
+</template>
+```
+
+Will still display the error message from the form-level validation.
 
 ## Preventing invalid forms from being submitted
 

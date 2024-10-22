@@ -16,6 +16,6 @@ title: "@tanstack/solid-form"
 
 ## Functions
 
-- [Field](functions/field.md)
 - [createField](functions/createfield.md)
 - [createForm](functions/createform.md)
+- [Field](functions/field.md)

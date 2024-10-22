@@ -139,7 +139,11 @@ const intReplace = `${intPrefix}$1`
 /**
  * @private
  */
-export function makePathArray(str: string) {
+export function makePathArray(str: string | Array<string | number>) {
+  if (Array.isArray(str)) {
+    return [...str]
+  }
+
   if (typeof str !== 'string') {
     throw new Error('Path must be a string.')
   }

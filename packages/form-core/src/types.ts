@@ -2,13 +2,21 @@ import type { DeepKeys } from './util-types'
 
 export type ValidationError = undefined | false | null | string
 
+export type ValidationSource = 'form' | 'field'
+
 /**
  * If/when TypeScript supports higher-kinded types, this should not be `unknown` anymore
  * @private
  */
 export type Validator<Type, Fn = unknown> = () => {
-  validate(options: { value: Type }, fn: Fn): ValidationError
-  validateAsync(options: { value: Type }, fn: Fn): Promise<ValidationError>
+  validate(
+    options: { value: Type; validationSource: ValidationSource },
+    fn: Fn,
+  ): ValidationError | FormValidationError<unknown>
+  validateAsync(
+    options: { value: Type; validationSource: ValidationSource },
+    fn: Fn,
+  ): Promise<ValidationError | FormValidationError<unknown>>
 }
 
 /**
@@ -35,6 +43,13 @@ export type ValidationErrorMapKeys = `on${Capitalize<ValidationCause>}`
  */
 export type ValidationErrorMap = {
   [K in ValidationErrorMapKeys]?: ValidationError
+}
+
+/**
+ * @private
+ */
+export type FormValidationErrorMap = {
+  [K in ValidationErrorMapKeys]?: ValidationError | FormValidationError<unknown>
 }
 
 /**

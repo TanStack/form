@@ -4,7 +4,7 @@
     "jsx": "preserve",
     "jsxImportSource": "vue",
     "moduleResolution": "Bundler",
-    "types": ["vue/jsx"],
+    "types": ["vue/jsx", "@testing-library/jest-dom"],
     "paths": {
       "@tanstack/form-core": ["../form-core/src"]
     }

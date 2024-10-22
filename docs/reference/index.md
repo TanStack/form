@@ -24,8 +24,8 @@ title: "@tanstack/form-core"
 - [DeepValue](type-aliases/deepvalue.md)
 - [FieldInfo](type-aliases/fieldinfo.md)
 - [FieldMeta](type-aliases/fieldmeta.md)
-- [FieldState](type-aliases/fieldstate.md)
 - [FieldsErrorMapFromValidator](type-aliases/fieldserrormapfromvalidator.md)
+- [FieldState](type-aliases/fieldstate.md)
 - [FormState](type-aliases/formstate.md)
 - [FormValidateFn](type-aliases/formvalidatefn.md)
 - [FormValidator](type-aliases/formvalidator.md)
@@ -33,6 +33,7 @@ title: "@tanstack/form-core"
 - [UpdaterFn](type-aliases/updaterfn.md)
 - [ValidationError](type-aliases/validationerror.md)
 - [ValidationMeta](type-aliases/validationmeta.md)
+- [ValidationSource](type-aliases/validationsource.md)
 
 ## Functions
 

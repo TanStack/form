@@ -13,11 +13,13 @@ import type { DeepKeys, DeepValue } from './util-types'
 import type { FieldApi, FieldMeta } from './FieldApi'
 import type {
   FormValidationError,
+  FormValidationErrorMap,
   UpdateMetaOptions,
   ValidationCause,
   ValidationError,
   ValidationErrorMap,
   ValidationErrorMapKeys,
+  ValidationSource,
   Validator,
 } from './types'
 
@@ -234,7 +236,7 @@ export type FormState<TFormData> = {
   /**
    * The error map for the form itself.
    */
-  errorMap: ValidationErrorMap
+  errorMap: FormValidationErrorMap
   /**
    * An internal mechanism used for keeping track of validation logic in a form.
    */
@@ -252,7 +254,16 @@ export type FormState<TFormData> = {
    */
   isFieldsValid: boolean
   /**
-   * A boolean indicating if the form is currently submitting.
+   * A boolean indicating if the form is currently in the process of being submitted after `handleSubmit` is called.
+   *
+   * Goes back to `false` when submission completes for one of the following reasons:
+   * - the validation step returned errors.
+   * - the `onSubmit` function has completed.
+   *
+   * Note: if you're running async operations in your `onSubmit` function make sure to await them to ensure `isSubmitting` is set to `false` only when the async operation completes.
+   *
+   * This is useful for displaying loading indicators or disabling form inputs during submission.
+   *
    */
   isSubmitting: boolean
   /**
@@ -323,6 +334,12 @@ function getDefaultFormState<TFormData>(
       onServer: undefined,
     },
   }
+}
+
+const isFormValidationError = (
+  error: unknown,
+): error is FormValidationError<unknown> => {
+  return typeof error === 'object'
 }
 
 /**
@@ -399,9 +416,18 @@ export class FormApi<
           const isPristine = !isDirty
 
           const isValidating = isFieldsValidating || state.isFormValidating
-          state.errors = Object.values(state.errorMap).filter(
-            (val: unknown) => val !== undefined,
-          )
+          state.errors = Object.values(state.errorMap).reduce((prev, curr) => {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            if (curr === undefined) return prev
+            if (typeof curr === 'string') {
+              prev.push(curr)
+              return prev
+            } else if (curr && isFormValidationError(curr)) {
+              prev.push(curr.form)
+              return prev
+            }
+            return prev
+          }, [] as ValidationError[])
           const isFormValid = state.errors.length === 0
           const isValid = isFieldsValid && isFormValid
           const canSubmit =
@@ -449,7 +475,11 @@ export class FormApi<
    * @private
    */
   runValidator<
-    TValue extends { value: TFormData; formApi: FormApi<any, any> },
+    TValue extends {
+      value: TFormData
+      formApi: FormApi<any, any>
+      validationSource: ValidationSource
+    },
     TType extends 'validate' | 'validateAsync',
   >(props: {
     validate: TType extends 'validate'
@@ -474,6 +504,7 @@ export class FormApi<
       value: {
         value: this.state.values,
         formApi: this,
+        validationSource: 'form',
       },
       type: 'validate',
     })
@@ -656,6 +687,7 @@ export class FormApi<
           value: {
             value: this.state.values,
             formApi: this,
+            validationSource: 'form',
           },
           type: 'validate',
         })
@@ -761,7 +793,10 @@ export class FormApi<
 
       promises.push(
         new Promise<ValidationPromiseResult<TFormData>>(async (resolve) => {
-          let rawError!: ValidationError | undefined
+          let rawError!:
+            | ValidationError
+            | FormValidationError<unknown>
+            | undefined
           try {
             rawError = await new Promise((rawResolve, rawReject) => {
               setTimeout(async () => {
@@ -773,6 +808,7 @@ export class FormApi<
                       value: {
                         value: this.state.values,
                         formApi: this,
+                        validationSource: 'form',
                         signal: controller.signal,
                       },
                       type: 'validateAsync',
@@ -1222,7 +1258,7 @@ export class FormApi<
   }
 }
 
-function normalizeError<TFormData>(rawError?: FormValidationError<TFormData>): {
+function normalizeError<TFormData>(rawError?: FormValidationError<unknown>): {
   formError: ValidationError
   fieldErrors?: Partial<Record<DeepKeys<TFormData>, ValidationError>>
 } {
@@ -1230,7 +1266,7 @@ function normalizeError<TFormData>(rawError?: FormValidationError<TFormData>): {
     if (typeof rawError === 'object') {
       const formError = normalizeError(rawError.form).formError
       const fieldErrors = rawError.fields
-      return { formError, fieldErrors }
+      return { formError, fieldErrors } as never
     }
 
     if (typeof rawError !== 'string') {
