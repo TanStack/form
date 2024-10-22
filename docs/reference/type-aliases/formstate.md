@@ -105,6 +105,14 @@ isPristine: boolean;
 
 A boolean indicating if none of the form's fields' values have been modified by the user. `True` if the user have not modified any of the fields. Opposite of `isDirty`.
 
+### isSubmitSuccessful
+
+```ts
+isSubmitSuccessful: boolean;
+```
+
+A boolean indicating if the last submission was successful.
+
 ### isSubmitted
 
 ```ts
