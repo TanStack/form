@@ -58,7 +58,7 @@
     "@angular/platform-browser-dynamic": "^17.3.12",
     "@testing-library/angular": "^17.3.1",
     "ng-packagr": "^17.3.0",
-    "typescript": "5.4.2",
+    "typescript": "5.4.5",
     "zone.js": "^0.15.0"
   },
   "peerDependencies": {

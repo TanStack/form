@@ -17,7 +17,7 @@
     "@types/node": "^20.14.10",
     "@types/react": "npm:types-react@rc",
     "@types/react-dom": "npm:types-react-dom@rc",
-    "typescript": "5.4.2"
+    "typescript": "5.4.5"
   },
   "overrides": {
     "@types/react": "npm:types-react@rc",

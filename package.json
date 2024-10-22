@@ -61,7 +61,7 @@
     "rimraf": "^5.0.10",
     "sherif": "^1.0.1",
     "solid-js": "^1.9.2",
-    "typescript": "5.4.2",
+    "typescript": "5.4.5",
     "typescript49": "npm:typescript@4.9",
     "typescript50": "npm:typescript@5.0",
     "typescript51": "npm:typescript@5.1",
