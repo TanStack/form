@@ -21,7 +21,7 @@ Field: FieldComponent<TFormData, TFormValidator>;
 
 #### Defined in
 
-[packages/vue-form/src/useForm.tsx:14](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L14)
+[useForm.tsx:14](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L14)
 
 ***
 
@@ -49,7 +49,7 @@ Subscribe: <TSelected>(props, context) => any;
 
 #### Defined in
 
-[packages/vue-form/src/useForm.tsx:19](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L19)
+[useForm.tsx:19](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L19)
 
 ***
 
@@ -61,14 +61,14 @@ useField: UseField<TFormData, TFormValidator>;
 
 #### Defined in
 
-[packages/vue-form/src/useForm.tsx:15](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L15)
+[useForm.tsx:15](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L15)
 
 ***
 
 ### useStore()
 
 ```ts
-useStore: <TSelected>(selector?) => Readonly<Ref<TSelected>>;
+useStore: <TSelected>(selector?) => Readonly<Ref<TSelected, TSelected>>;
 ```
 
 #### Type Parameters
@@ -81,8 +81,8 @@ useStore: <TSelected>(selector?) => Readonly<Ref<TSelected>>;
 
 #### Returns
 
-`Readonly`\<`Ref`\<`TSelected`\>\>
+`Readonly`\<`Ref`\<`TSelected`, `TSelected`\>\>
 
 #### Defined in
 
-[packages/vue-form/src/useForm.tsx:16](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L16)
+[useForm.tsx:16](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L16)

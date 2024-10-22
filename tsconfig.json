@@ -21,7 +21,8 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "ES2020"
+    "target": "ES2020",
+    "types": ["@testing-library/jest-dom"]
   },
   "include": ["eslint.config.js", "prettier.config.js"]
 }

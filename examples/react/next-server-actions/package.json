@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@tanstack/react-form": "^0.34.0",
-    "next": "15.0.0-rc.0",
+    "next": "15.0.0",
     "react": "19.0.0-rc-5dcb0097-20240918",
     "react-dom": "19.0.0-rc-5dcb0097-20240918"
   },
@@ -17,7 +17,7 @@
     "@types/node": "^20.14.10",
     "@types/react": "npm:types-react@rc",
     "@types/react-dom": "npm:types-react-dom@rc",
-    "typescript": "5.4.2"
+    "typescript": "5.4.5"
   },
   "overrides": {
     "@types/react": "npm:types-react@rc",
