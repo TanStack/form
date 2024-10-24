@@ -485,6 +485,29 @@ describe('field api', () => {
     ])
   })
 
+  it('should add a field when the key is numeric but the parent is not an array', () => {
+    const form = new FormApi({
+      defaultValues: {
+        items: {} as Record<number, { quantity: number }>,
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'items.2.quantity',
+    })
+
+    field.setValue(10)
+
+    expect(form.state.values).toStrictEqual({
+      items: {
+        2: {
+          quantity: 10,
+        },
+      },
+    })
+  })
+
   it('should not throw errors when no meta info is stored on a field and a form re-renders', async () => {
     const form = new FormApi({
       defaultValues: {
