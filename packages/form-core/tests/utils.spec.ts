@@ -65,6 +65,29 @@ describe('setBy', () => {
       setBy(structure, 'kids[0].hobbies[1]', 'gaming').kids[0].hobbies[1],
     ).toBe('gaming')
   })
+
+  it("should create an object if it doesn't exist", () => {
+    expect(setBy(structure, 'father.name', 'John').father.name).toBe('John')
+  })
+
+  it('should create an array if it doesnt exist', () => {
+    expect(setBy(structure, 'kids[2].name', 'John').kids[2].name).toBe('John')
+  })
+
+  it('should set a value in an object if the key is a number but the parent is an object', () => {
+    const newStructure = setBy(structure, '5.name', 'John')
+    expect(newStructure['5'].name).toBe('John')
+    expect(newStructure).toStrictEqual({ ...structure, 5: { name: 'John' } })
+  })
+
+  it('should set a value in an array if the key is a number and the parent is an array', () => {
+    const newStructure = setBy(structure, 'kids.2.name', 'John')
+    expect(newStructure.kids[2].name).toBe('John')
+    expect(newStructure).toStrictEqual({
+      ...structure,
+      kids: [...structure.kids, { name: 'John' }],
+    })
+  })
 })
 
 describe('deleteBy', () => {
