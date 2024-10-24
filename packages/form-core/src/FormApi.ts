@@ -1066,7 +1066,6 @@ export class FormApi<
         this.setFieldMeta(field, (prev) => ({
           ...prev,
           isTouched: true,
-          isBlurred: true,
           isDirty: true,
         }))
       }
