@@ -13,10 +13,8 @@ export function mutateMergeDeep(target: object, source: object): object {
     const targetKey = key as never as keyof typeof target
     const sourceKey = key as never as keyof typeof source
     if (Array.isArray(target[targetKey]) && Array.isArray(source[sourceKey])) {
-      target[targetKey] = [
-        ...(target[targetKey] as []),
-        ...(source[sourceKey] as []),
-      ] as never
+      target[targetKey] = ((source[sourceKey] as [] | undefined) ??
+        (target[targetKey] as [] | undefined)) as never
     } else if (
       typeof target[targetKey] === 'object' &&
       typeof source[sourceKey] === 'object'
