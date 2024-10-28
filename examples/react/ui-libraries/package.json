@@ -11,8 +11,8 @@
   "dependencies": {
     "@emotion/react": "11.13.3",
     "@emotion/styled": "11.13.0",
-    "@mantine/core": "7.13.3",
-    "@mantine/hooks": "7.13.3",
+    "@mantine/core": "7.13.4",
+    "@mantine/hooks": "7.13.4",
     "@mui/material": "5.16.7",
     "@tanstack/react-form": "^0.34.1",
     "@yme/lay-postcss": "0.1.0",
@@ -28,7 +28,7 @@
     "@vitejs/plugin-react": "^4.3.3",
     "@vitejs/plugin-react-swc": "^3.7.1",
     "typescript": "5.4.5",
-    "vite": "^5.4.9"
+    "vite": "^5.4.10"
   },
   "browserslist": {
     "production": [

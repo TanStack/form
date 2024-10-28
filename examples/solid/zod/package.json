@@ -11,12 +11,12 @@
   "dependencies": {
     "@tanstack/solid-form": "^0.34.1",
     "@tanstack/zod-form-adapter": "^0.34.1",
-    "solid-js": "^1.9.2",
+    "solid-js": "^1.9.3",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "typescript": "5.4.5",
-    "vite": "^5.4.9",
+    "vite": "^5.4.10",
     "vite-plugin-solid": "^2.10.2"
   }
 }
