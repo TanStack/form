@@ -27,4 +27,4 @@ function mergeForm<TFormData, TFormValidator>(baseForm, state): FormApi<NoInfer<
 
 ## Defined in
 
-[packages/form-core/src/mergeForm.ts:35](https://github.com/TanStack/form/blob/main/packages/form-core/src/mergeForm.ts#L35)
+[packages/form-core/src/mergeForm.ts:36](https://github.com/TanStack/form/blob/main/packages/form-core/src/mergeForm.ts#L36)
