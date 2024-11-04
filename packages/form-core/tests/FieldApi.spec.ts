@@ -1135,7 +1135,7 @@ describe('field api', () => {
     expect(firstName.getMeta().errors).toStrictEqual(['first name is required'])
     expect(lastName.getMeta().errors).toStrictEqual(['last name is required'])
 
-    firstName.setValue('firstName', { touch: true })
+    firstName.setValue('firstName')
     expect(firstName.getMeta().errors).toStrictEqual([])
     expect(lastName.getMeta().errors).toStrictEqual(['last name is required'])
   })

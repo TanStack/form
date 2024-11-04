@@ -1258,7 +1258,7 @@ describe('form api', () => {
       onMount: 'Please enter a different value',
     })
 
-    form.setFieldValue('name', 'test', { touch: true })
+    form.setFieldValue('name', 'test')
     expect(form.state.errors).toStrictEqual([])
   })
 
