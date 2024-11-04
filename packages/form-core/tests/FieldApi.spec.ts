@@ -1116,6 +1116,8 @@ describe('field api', () => {
       validators: {
         onMount: ({ value }) =>
           value.length > 0 ? undefined : 'first name is required',
+        onChange: ({ value }) =>
+          value.length > 3 ? undefined : 'first name must be at least 4 chars',
       },
     })
 
@@ -1125,6 +1127,8 @@ describe('field api', () => {
       validators: {
         onMount: ({ value }) =>
           value.length > 0 ? undefined : 'last name is required',
+        onChange: ({ value }) =>
+          value.length > 3 ? undefined : 'last name must be at least 4 chars',
       },
     })
 
@@ -1132,12 +1136,31 @@ describe('field api', () => {
     firstName.mount()
     lastName.mount()
 
+    expect(firstName.getMeta().errorMap.onMount).toStrictEqual(
+      'first name is required',
+    )
     expect(firstName.getMeta().errors).toStrictEqual(['first name is required'])
     expect(lastName.getMeta().errors).toStrictEqual(['last name is required'])
+    expect(lastName.getMeta().errorMap.onMount).toStrictEqual(
+      'last name is required',
+    )
 
     firstName.setValue('firstName')
     expect(firstName.getMeta().errors).toStrictEqual([])
+    expect(firstName.getMeta().errorMap.onMount).toStrictEqual(undefined)
     expect(lastName.getMeta().errors).toStrictEqual(['last name is required'])
+    expect(lastName.getMeta().errorMap.onMount).toStrictEqual(
+      'last name is required',
+    )
+
+    firstName.setValue('f')
+    expect(firstName.getMeta().errors).toStrictEqual([
+      'first name must be at least 4 chars',
+    ])
+    expect(firstName.getMeta().errorMap.onMount).toStrictEqual(undefined)
+    expect(firstName.getMeta().errorMap.onChange).toStrictEqual(
+      'first name must be at least 4 chars',
+    )
   })
 
   it('should cancel previous functions from an async validator with an abort signal', async () => {
