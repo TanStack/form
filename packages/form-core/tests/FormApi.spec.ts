@@ -1233,6 +1233,35 @@ describe('form api', () => {
     })
   })
 
+  it('should remove onMount error when the form is touched', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'other',
+      },
+      validators: {
+        onMount: ({ value }) => {
+          if (value.name === 'other') return 'Please enter a different value'
+          return
+        },
+      },
+    })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    form.mount()
+    field.mount()
+
+    expect(form.state.errors).toStrictEqual(['Please enter a different value'])
+    expect(form.state.errorMap).toEqual({
+      onMount: 'Please enter a different value',
+    })
+
+    form.setFieldValue('name', 'test')
+    expect(form.state.errors).toStrictEqual([])
+  })
+
   it('should validate fields during submit', async () => {
     const form = new FormApi({
       defaultValues: {
