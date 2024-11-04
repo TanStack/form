@@ -46,10 +46,10 @@
   "dependencies": {
     "@tanstack/angular-store": "^0.5.6",
     "@tanstack/form-core": "workspace:*",
-    "tslib": "^2.8.0"
+    "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "@analogjs/vite-plugin-angular": "^1.9.0",
+    "@analogjs/vite-plugin-angular": "^1.9.1",
     "@angular/common": "^17.3.12",
     "@angular/compiler": "^17.3.12",
     "@angular/compiler-cli": "^17.3.12",
