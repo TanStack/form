@@ -248,8 +248,8 @@ importers:
         specifier: ^2.8.1
         version: 2.8.1
       valibot:
-        specifier: 1.0.0-beta.3
-        version: 1.0.0-beta.3(typescript@5.4.5)
+        specifier: ^1.0.0-beta.5
+        version: 1.0.0-beta.5(typescript@5.4.5)
       zone.js:
         specifier: ^0.15.0
         version: 0.15.0
@@ -662,8 +662,8 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
       valibot:
-        specifier: 1.0.0-beta.3
-        version: 1.0.0-beta.3(typescript@5.4.5)
+        specifier: ^1.0.0-beta.5
+        version: 1.0.0-beta.5(typescript@5.4.5)
     devDependencies:
       '@types/react':
         specifier: ^18.3.3
@@ -790,8 +790,8 @@ importers:
         specifier: ^1.9.3
         version: 1.9.3
       valibot:
-        specifier: 1.0.0-beta.3
-        version: 1.0.0-beta.3(typescript@5.4.5)
+        specifier: ^1.0.0-beta.5
+        version: 1.0.0-beta.5(typescript@5.4.5)
     devDependencies:
       typescript:
         specifier: 5.4.5
@@ -1109,8 +1109,8 @@ importers:
         specifier: workspace:*
         version: link:../react-form
       valibot:
-        specifier: 1.0.0-beta.3
-        version: 1.0.0-beta.3(typescript@5.4.5)
+        specifier: ^1.0.0-beta.5
+        version: 1.0.0-beta.5(typescript@5.4.5)
 
   packages/vue-form:
     dependencies:
@@ -9004,6 +9004,14 @@ packages:
 
   valibot@1.0.0-beta.3:
     resolution: {integrity: sha512-PRknKVj2249cF8Pxqil1dahkVHgyaPDq++Y8sA96R5lx4nYnVazs11kefOsRVD3PSygYJG5q2MEdEm7kuSWa+g==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
+  valibot@1.0.0-beta.5:
+    resolution: {integrity: sha512-YrU03cSLH8+UIMMAOnYCpD9+c6k/VDlxu13aVDokt/YwtROICC6kkbQeRbamcEuh/+CbFa4pbqOptiNNbHFSog==}
     peerDependencies:
       typescript: '>=5'
     peerDependenciesMeta:
@@ -18172,6 +18180,10 @@ snapshots:
   v8flags@4.0.1: {}
 
   valibot@1.0.0-beta.3(typescript@5.4.5):
+    optionalDependencies:
+      typescript: 5.4.5
+
+  valibot@1.0.0-beta.5(typescript@5.4.5):
     optionalDependencies:
       typescript: 5.4.5
 
