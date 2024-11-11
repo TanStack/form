@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@tanstack/react-form": "^0.34.4",
-    "next": "15.0.2",
+    "next": "15.0.3",
     "react": "19.0.0-rc-5dcb0097-20240918",
     "react-dom": "19.0.0-rc-5dcb0097-20240918"
   },
