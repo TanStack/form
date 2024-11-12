@@ -269,6 +269,21 @@ describe('form api', () => {
     expect(form.state.values).toEqual({ name: 'other' })
   })
 
+  it('should reset without setting the new default values that are restored after an empty reset if opts.keepDefaultValues is true', () => {
+    const form = new FormApi({ defaultValues: { name: 'initial' } })
+    form.mount()
+
+    const field = new FieldApi({ form, name: 'name' })
+    field.mount()
+
+    form.reset({ name: 'other' }, { keepDefaultValues: true })
+    expect(form.state.values).toEqual({ name: 'other' })
+
+    field.handleChange('')
+    form.reset()
+    expect(form.state.values).toEqual({ name: 'initial' })
+  })
+
   it('should not wipe validators when resetting', () => {
     const form = new FormApi({
       defaultValues: {
