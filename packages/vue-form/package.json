@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/vue-form",
-  "version": "0.34.4",
+  "version": "0.35.0",
   "description": "Powerful, type-safe forms for Vue.",
   "author": "tannerlinsley",
   "license": "MIT",
