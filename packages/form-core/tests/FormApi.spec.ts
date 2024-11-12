@@ -238,7 +238,26 @@ describe('form api', () => {
       },
       errors: [],
       errorMap: {},
-      fieldMeta: {},
+      fieldMeta: {
+        name: {
+          isValidating: false,
+          isTouched: false,
+          isBlurred: false,
+          isDirty: false,
+          isPristine: true,
+          errors: [],
+          errorMap: {},
+        },
+        age: {
+          isValidating: false,
+          isTouched: false,
+          isBlurred: false,
+          isDirty: false,
+          isPristine: true,
+          errors: [],
+          errorMap: {},
+        },
+      },
       canSubmit: true,
       isFieldsValid: true,
       isFieldsValidating: false,
@@ -250,6 +269,7 @@ describe('form api', () => {
       isPristine: true,
       isDirty: false,
       isValid: true,
+      isBlurred: false,
       isValidating: false,
       submissionAttempts: 0,
       validationMetaMap: {
@@ -257,6 +277,7 @@ describe('form api', () => {
         onBlur: undefined,
         onSubmit: undefined,
         onMount: undefined,
+        onServer: undefined,
       },
     })
   })
