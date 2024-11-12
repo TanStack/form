@@ -197,6 +197,121 @@ describe('form api', () => {
     })
   })
 
+  it('should reset with provided custom default values', () => {
+    const defaultValues = {
+      name: 'test',
+      surname: 'test2',
+      age: 30,
+    }
+    const form = new FormApi({
+      defaultValues: defaultValues,
+    })
+
+    form.mount()
+    form.setFieldValue('name', 'other')
+
+    expect(form.state.values).toEqual({
+      name: 'other',
+      surname: 'test2',
+      age: 30,
+    })
+
+    form.reset()
+
+    expect(form.state.values).toEqual(defaultValues)
+
+    form.setFieldValue('name', 'other2')
+    form.setFieldValue('age', 33)
+
+    const resetValues = {
+      name: 'reset name',
+      age: 40,
+      surname: 'reset surname',
+    }
+    form.reset(resetValues)
+
+    expect(form.state).toEqual({
+      values: {
+        name: 'reset name',
+        age: 40,
+        surname: 'reset surname',
+      },
+      errors: [],
+      errorMap: {},
+      fieldMeta: {
+        name: {
+          isValidating: false,
+          isTouched: false,
+          isBlurred: false,
+          isDirty: false,
+          isPristine: true,
+          errors: [],
+          errorMap: {},
+        },
+        age: {
+          isValidating: false,
+          isTouched: false,
+          isBlurred: false,
+          isDirty: false,
+          isPristine: true,
+          errors: [],
+          errorMap: {},
+        },
+      },
+      canSubmit: true,
+      isFieldsValid: true,
+      isFieldsValidating: false,
+      isFormValid: true,
+      isFormValidating: false,
+      isSubmitted: false,
+      isSubmitting: false,
+      isTouched: false,
+      isPristine: true,
+      isDirty: false,
+      isValid: true,
+      isBlurred: false,
+      isValidating: false,
+      submissionAttempts: 0,
+      validationMetaMap: {
+        onChange: undefined,
+        onBlur: undefined,
+        onSubmit: undefined,
+        onMount: undefined,
+        onServer: undefined,
+      },
+    })
+  })
+
+  it('should reset and set the new default values that are restored after an empty reset', () => {
+    const form = new FormApi({ defaultValues: { name: 'initial' } })
+    form.mount()
+
+    const field = new FieldApi({ form, name: 'name' })
+    field.mount()
+
+    form.reset({ name: 'other' })
+    expect(form.state.values).toEqual({ name: 'other' })
+
+    field.handleChange('')
+    form.reset()
+    expect(form.state.values).toEqual({ name: 'other' })
+  })
+
+  it('should reset without setting the new default values that are restored after an empty reset if opts.keepDefaultValues is true', () => {
+    const form = new FormApi({ defaultValues: { name: 'initial' } })
+    form.mount()
+
+    const field = new FieldApi({ form, name: 'name' })
+    field.mount()
+
+    form.reset({ name: 'other' }, { keepDefaultValues: true })
+    expect(form.state.values).toEqual({ name: 'other' })
+
+    field.handleChange('')
+    form.reset()
+    expect(form.state.values).toEqual({ name: 'initial' })
+  })
+
   it('should not wipe validators when resetting', () => {
     const form = new FormApi({
       defaultValues: {
