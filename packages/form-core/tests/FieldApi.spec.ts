@@ -43,10 +43,10 @@ describe('field api', () => {
 
     expect(field.getMeta()).toEqual({
       isTouched: false,
+      isBlurred: false,
       isValidating: false,
       isPristine: true,
       isDirty: false,
-      touchedErrors: [],
       errors: [],
       errorMap: {},
     })
@@ -57,15 +57,20 @@ describe('field api', () => {
     const field = new FieldApi({
       form,
       name: 'name',
-      defaultMeta: { isTouched: true, isDirty: true, isPristine: false },
+      defaultMeta: {
+        isTouched: true,
+        isDirty: true,
+        isPristine: false,
+        isBlurred: true,
+      },
     })
 
     expect(field.getMeta()).toEqual({
       isTouched: true,
+      isBlurred: true,
       isValidating: false,
       isDirty: true,
       isPristine: false,
-      touchedErrors: [],
       errors: [],
       errorMap: {},
     })
@@ -83,7 +88,9 @@ describe('field api', () => {
       name: 'name',
     })
 
-    field.setValue('other')
+    field.setValue('other', {
+      dontUpdateMeta: true,
+    })
 
     expect(field.getValue()).toBe('other')
   })
@@ -311,9 +318,12 @@ describe('field api', () => {
       validators: subFieldValidators,
     })
 
-    ;[form, field, subField1, subField2, subField3, subField4].forEach((f) =>
-      f.mount(),
-    )
+    form.mount()
+    field.mount()
+    subField1.mount()
+    subField2.mount()
+    subField3.mount()
+    subField4.mount()
 
     await form.handleSubmit()
 
@@ -322,7 +332,7 @@ describe('field api', () => {
     expect(subField3.state.meta.errorMap.onChange).toStrictEqual('Required')
     expect(subField4.state.meta.errorMap.onChange).toStrictEqual(undefined)
 
-    await field.removeValue(0 /* subField1 */, { touch: true })
+    await field.removeValue(0 /* subField1 */)
 
     expect(subField1.state.value).toBe('hello')
     expect(subField1.state.meta.errorMap.onChange).toStrictEqual(undefined)
@@ -369,7 +379,7 @@ describe('field api', () => {
 
     expect(subField1.state.meta.errorMap.onChange).toStrictEqual('Required')
 
-    await field.removeValue(0 /* subField1 */, { touch: true })
+    await field.removeValue(0 /* subField1 */)
 
     expect(subField1.state.value).toBe(undefined)
     expect(subField1.state.meta.errorMap.onChange).toStrictEqual(undefined)
@@ -519,11 +529,13 @@ describe('field api', () => {
     field.mount()
 
     expect(field.getMeta().errors.length).toBe(0)
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     expect(field.getMeta().errors).toContain('Please enter a different value')
     expect(field.getMeta().errorMap).toMatchObject({
       onChange: 'Please enter a different value',
     })
+    field.setValue('nothing')
+    expect(field.getMeta().errors.length).toBe(0)
   })
 
   it('should run async validation onChange', async () => {
@@ -550,7 +562,7 @@ describe('field api', () => {
     field.mount()
 
     expect(field.getMeta().errors.length).toBe(0)
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     await vi.runAllTimersAsync()
     expect(field.getMeta().errors).toContain('Please enter a different value')
     expect(field.getMeta().errorMap).toMatchObject({
@@ -584,8 +596,10 @@ describe('field api', () => {
     field.mount()
 
     expect(field.getMeta().errors.length).toBe(0)
-    field.setValue('other', { touch: true })
     field.setValue('other')
+    field.setValue('other', {
+      dontUpdateMeta: true,
+    })
     await vi.runAllTimersAsync()
     // sleepMock will have been called 2 times without onChangeAsyncDebounceMs
     expect(sleepMock).toHaveBeenCalledTimes(1)
@@ -621,8 +635,10 @@ describe('field api', () => {
     field.mount()
 
     expect(field.getMeta().errors.length).toBe(0)
-    field.setValue('other', { touch: true })
     field.setValue('other')
+    field.setValue('other', {
+      dontUpdateMeta: true,
+    })
     await vi.runAllTimersAsync()
     // sleepMock will have been called 2 times without asyncDebounceMs
     expect(sleepMock).toHaveBeenCalledTimes(1)
@@ -630,6 +646,120 @@ describe('field api', () => {
     expect(field.getMeta().errorMap).toMatchObject({
       onChange: 'Please enter a different value',
     })
+  })
+
+  it('should abort enqueued debounced async validation if sync validation fails in the meantime', async () => {
+    vi.useFakeTimers()
+
+    const mockOnChange = vi.fn().mockImplementation(({ value }) => {
+      if (value.length < 3) {
+        return 'First name must be at least 3 characters'
+      }
+      return
+    })
+
+    const mockOnChangeAsync = vi.fn().mockImplementation(async ({ value }) => {
+      return value.includes('error') && 'No "error" allowed in first name'
+    })
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChange: mockOnChange,
+        onChangeAsyncDebounceMs: 500,
+        onChangeAsync: mockOnChangeAsync,
+      },
+    })
+
+    field.mount()
+
+    field.setValue('123')
+    expect(mockOnChange).toHaveBeenCalledTimes(1)
+    expect(mockOnChangeAsync).toHaveBeenCalledTimes(0)
+    expect(field.getMeta().errors).toStrictEqual([])
+
+    // Change value while debounced async validation is enqueued
+    field.setValue('12')
+    expect(mockOnChange).toHaveBeenCalledTimes(2)
+    expect(mockOnChangeAsync).toHaveBeenCalledTimes(0)
+
+    // Async validation never got called because sync validation failed in the meantime and aborted the async
+    expect(mockOnChangeAsync).toHaveBeenCalledTimes(0)
+    expect(field.getMeta().errors).toStrictEqual([
+      'First name must be at least 3 characters',
+    ])
+  })
+
+  it("should not remove sync validation errors when async validation doesn't return an error", async () => {
+    vi.useFakeTimers()
+
+    const mockOnChange = vi.fn().mockImplementation(({ value }) => {
+      if (value.length < 3) {
+        return 'First name must be at least 3 characters'
+      }
+      return
+    })
+
+    const mockOnChangeAsync = vi.fn().mockImplementation(async ({ value }) => {
+      await sleep(1000)
+      return value.includes('error') && 'No "error" allowed in first name'
+    })
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChange: mockOnChange,
+        onChangeAsyncDebounceMs: 500,
+        onChangeAsync: mockOnChangeAsync,
+      },
+    })
+
+    field.mount()
+
+    // Input a valid value, triggers both validations after debounce + sleep
+    field.setValue('1234')
+    expect(mockOnChange).toHaveBeenCalledTimes(1)
+    expect(mockOnChangeAsync).toHaveBeenCalledTimes(0)
+    await vi.runAllTimersAsync()
+    expect(mockOnChangeAsync).toHaveBeenCalledTimes(1)
+    expect(field.getMeta().errors).toStrictEqual([])
+
+    // Input again a valid value
+    field.setValue('123')
+    expect(mockOnChange).toHaveBeenCalledTimes(2)
+    expect(mockOnChangeAsync).toHaveBeenCalledTimes(1)
+    expect(field.getMeta().errors).toStrictEqual([])
+
+    // Wait the debounce time, async validation is called
+    await vi.advanceTimersByTimeAsync(500)
+    expect(mockOnChangeAsync).toHaveBeenCalledTimes(2)
+
+    // Input an invalid value before async validation resolves
+    field.setValue('12')
+    expect(mockOnChange).toHaveBeenCalledTimes(3)
+    expect(field.getMeta().errors).toStrictEqual([
+      'First name must be at least 3 characters',
+    ])
+
+    // Wait for async validation to resolve
+    await vi.runAllTimersAsync()
+    expect(field.getMeta().errors).toStrictEqual([
+      'First name must be at least 3 characters',
+    ])
   })
 
   it('should run validation onBlur', () => {
@@ -652,7 +782,7 @@ describe('field api', () => {
 
     field.mount()
 
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     field.validate('blur')
     expect(field.getMeta().errors).toContain('Please enter a different value')
     expect(field.getMeta().errorMap).toMatchObject({
@@ -684,7 +814,7 @@ describe('field api', () => {
     field.mount()
 
     expect(field.getMeta().errors.length).toBe(0)
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     field.validate('blur')
     await vi.runAllTimersAsync()
     expect(field.getMeta().errors).toContain('Please enter a different value')
@@ -719,7 +849,7 @@ describe('field api', () => {
     field.mount()
 
     expect(field.getMeta().errors.length).toBe(0)
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     field.validate('blur')
     field.validate('blur')
     await vi.runAllTimersAsync()
@@ -757,7 +887,7 @@ describe('field api', () => {
     field.mount()
 
     expect(field.getMeta().errors.length).toBe(0)
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     field.validate('blur')
     field.validate('blur')
     await vi.runAllTimersAsync()
@@ -793,7 +923,7 @@ describe('field api', () => {
     field.mount()
 
     expect(field.getMeta().errors.length).toBe(0)
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     field.validate('submit')
     await vi.runAllTimersAsync()
     expect(field.getMeta().errors).toContain('Please enter a different value')
@@ -826,7 +956,7 @@ describe('field api', () => {
 
     field.mount()
 
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     field.validate('blur')
     expect(field.getMeta().errors).toStrictEqual([
       'Please enter a different value',
@@ -858,14 +988,14 @@ describe('field api', () => {
 
     field.mount()
 
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     expect(field.getMeta().errors).toStrictEqual([
       'Please enter a different value',
     ])
     expect(field.getMeta().errorMap).toEqual({
       onChange: 'Please enter a different value',
     })
-    field.setValue('test', { touch: true })
+    field.setValue('test')
     expect(field.getMeta().errors).toStrictEqual([])
     expect(field.getMeta().errorMap).toEqual({})
   })
@@ -950,8 +1080,92 @@ describe('field api', () => {
     expect(field.getMeta().errors).toStrictEqual(['first name is required'])
   })
 
+  it('should disable submit with onMount errors', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onMount: ({ value }) =>
+          value.length > 0 ? undefined : 'first name is required',
+      },
+    })
+
+    form.mount()
+    field.mount()
+
+    expect(form.state.canSubmit).toBe(false)
+  })
+
+  it('should remove onMount errors on a field when its value changes', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      },
+    })
+
+    const firstName = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onMount: ({ value }) =>
+          value.length > 0 ? undefined : 'first name is required',
+        onChange: ({ value }) =>
+          value.length > 3 ? undefined : 'first name must be at least 4 chars',
+      },
+    })
+
+    const lastName = new FieldApi({
+      form,
+      name: 'lastName',
+      validators: {
+        onMount: ({ value }) =>
+          value.length > 0 ? undefined : 'last name is required',
+        onChange: ({ value }) =>
+          value.length > 3 ? undefined : 'last name must be at least 4 chars',
+      },
+    })
+
+    form.mount()
+    firstName.mount()
+    lastName.mount()
+
+    expect(firstName.getMeta().errorMap.onMount).toStrictEqual(
+      'first name is required',
+    )
+    expect(firstName.getMeta().errors).toStrictEqual(['first name is required'])
+    expect(lastName.getMeta().errors).toStrictEqual(['last name is required'])
+    expect(lastName.getMeta().errorMap.onMount).toStrictEqual(
+      'last name is required',
+    )
+
+    firstName.setValue('firstName')
+    expect(firstName.getMeta().errors).toStrictEqual([])
+    expect(firstName.getMeta().errorMap.onMount).toStrictEqual(undefined)
+    expect(lastName.getMeta().errors).toStrictEqual(['last name is required'])
+    expect(lastName.getMeta().errorMap.onMount).toStrictEqual(
+      'last name is required',
+    )
+
+    firstName.setValue('f')
+    expect(firstName.getMeta().errors).toStrictEqual([
+      'first name must be at least 4 chars',
+    ])
+    expect(firstName.getMeta().errorMap.onMount).toStrictEqual(undefined)
+    expect(firstName.getMeta().errorMap.onChange).toStrictEqual(
+      'first name must be at least 4 chars',
+    )
+  })
+
   it('should cancel previous functions from an async validator with an abort signal', async () => {
-    vi.useRealTimers()
+    vi.useFakeTimers()
+
     const form = new FormApi({
       defaultValues: {
         firstName: '',
@@ -981,12 +1195,11 @@ describe('field api', () => {
 
     field.mount()
 
-    field.setValue('one', { touch: true })
-    // Allow for a micro-tick to allow the promise to resolve
-    await sleep(1)
-    field.setValue('two', { touch: true })
+    field.setValue('one')
+    await vi.runAllTimersAsync()
+    field.setValue('two')
     resolve()
-    await sleep(1)
+    await vi.runAllTimersAsync()
     expect(fn).toHaveBeenCalledTimes(1)
   })
 
@@ -1020,13 +1233,13 @@ describe('field api', () => {
     passField.mount()
     passconfirmField.mount()
 
-    passField.setValue('one', { touch: true })
+    passField.setValue('one')
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
     ])
-    passconfirmField.setValue('one', { touch: true })
+    passconfirmField.setValue('one')
     expect(passconfirmField.state.meta.errors).toStrictEqual([])
-    passField.setValue('two', { touch: true })
+    passField.setValue('two')
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
     ])
@@ -1062,19 +1275,19 @@ describe('field api', () => {
     passField.mount()
     passconfirmField.mount()
 
-    passField.setValue('one', { touch: true })
+    passField.setValue('one')
     expect(passconfirmField.state.meta.errors).toStrictEqual([])
     passField.handleBlur()
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
     ])
-    passconfirmField.setValue('one', { touch: true })
+    passconfirmField.setValue('one')
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
     ])
     passField.handleBlur()
     expect(passconfirmField.state.meta.errors).toStrictEqual([])
-    passField.setValue('two', { touch: true })
+    passField.setValue('two')
     passField.handleBlur()
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
@@ -1082,7 +1295,7 @@ describe('field api', () => {
   })
 
   it('should run onChangeAsync on a linked field', async () => {
-    vi.useRealTimers()
+    vi.useFakeTimers()
     let resolve!: () => void
     let promise = new Promise((r) => {
       resolve = r as never
@@ -1121,30 +1334,86 @@ describe('field api', () => {
     passField.mount()
     passconfirmField.mount()
 
-    passField.setValue('one', { touch: true })
+    passField.setValue('one')
     resolve()
-    // Allow for a micro-tick to allow the promise to resolve
-    await sleep(1)
+    await vi.runAllTimersAsync()
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
     ])
     promise = new Promise((r) => {
       resolve = r as never
     })
-    passconfirmField.setValue('one', { touch: true })
+    passconfirmField.setValue('one')
     resolve()
-    // Allow for a micro-tick to allow the promise to resolve
-    await sleep(1)
+    await vi.runAllTimersAsync()
     expect(passconfirmField.state.meta.errors).toStrictEqual([])
     promise = new Promise((r) => {
       resolve = r as never
     })
-    passField.setValue('two', { touch: true })
+    passField.setValue('two')
     resolve()
-    // Allow for a micro-tick to allow the promise to resolve
-    await sleep(1)
+    await vi.runAllTimersAsync()
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
     ])
+  })
+
+  it('should add  a new value to the fieldApi errorMap', () => {
+    interface Form {
+      name: string
+    }
+    const form = new FormApi<Form>()
+    const nameField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    nameField.mount()
+    nameField.setErrorMap({
+      onChange: "name can't be Josh",
+    })
+    expect(nameField.getMeta().errorMap.onChange).toEqual("name can't be Josh")
+  })
+  it('should preserve other values in the fieldApi errorMap when adding other values', () => {
+    interface Form {
+      name: string
+    }
+    const form = new FormApi<Form>()
+    const nameField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    nameField.mount()
+    nameField.setErrorMap({
+      onChange: "name can't be Josh",
+    })
+    expect(nameField.getMeta().errorMap.onChange).toEqual("name can't be Josh")
+    nameField.setErrorMap({
+      onBlur: 'name must begin with uppercase',
+    })
+    expect(nameField.getMeta().errorMap.onChange).toEqual("name can't be Josh")
+    expect(nameField.getMeta().errorMap.onBlur).toEqual(
+      'name must begin with uppercase',
+    )
+  })
+  it('should replace errorMap value if it exists in the fieldApi object', () => {
+    interface Form {
+      name: string
+    }
+    const form = new FormApi<Form>()
+    const nameField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    nameField.mount()
+    nameField.setErrorMap({
+      onChange: "name can't be Josh",
+    })
+    expect(nameField.getMeta().errorMap.onChange).toEqual("name can't be Josh")
+    nameField.setErrorMap({
+      onChange: 'other validation error',
+    })
+    expect(nameField.getMeta().errorMap.onChange).toEqual(
+      'other validation error',
+    )
   })
 })

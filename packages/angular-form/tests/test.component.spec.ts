@@ -102,7 +102,11 @@ describe('TanStackFieldDirective', () => {
             data-testid="fieldinput"
             [value]="f.api.state.value"
             (blur)="f.api.handleBlur()"
-            (input)="f.api.setValue($any($event).target.value)"
+            (input)="
+              f.api.setValue($any($event).target.value, {
+                dontUpdateMeta: true,
+              })
+            "
           />
           @for (error of f.api.getMeta().errors; track error) {
             <p>{{ error }}</p>
@@ -202,7 +206,11 @@ describe('TanStackFieldDirective', () => {
             [value]="f.api.state.value"
             [name]="f.api.name"
             (blur)="f.api.handleBlur()"
-            (input)="f.api.setValue($any($event).target.value)"
+            (input)="
+              f.api.setValue($any($event).target.value, {
+                dontUpdateMeta: true,
+              })
+            "
           />
           <p>{{ f.api.getMeta().errorMap?.onChange }}</p>
           <p>{{ f.api.getMeta().errorMap?.onBlur }}</p>
@@ -305,7 +313,7 @@ describe('TanStackFieldDirective', () => {
           [defaultMeta]="{ isTouched: true }"
           [validators]="{
             onChangeAsync: onChangeAsync,
-            onBlurAsync: onBlurAsync
+            onBlurAsync: onBlurAsync,
           }"
           #f="field"
         >

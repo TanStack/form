@@ -122,7 +122,7 @@ Once you have your validation in place, you can map the errors from an array to 
     return (
       <>
         {/* ... */}
-        {field.state.meta.errors ? <em>{field.state.meta.errors}</em> : null}
+        {field.state.meta.errors.length ? <em>{field.state.meta.errors.join(",")}</em> : null}
       </>
     )
   }}
@@ -193,6 +193,109 @@ export default function App() {
   )
 }
 ```
+
+### Setting field-level errors from the form's validators
+
+You can set errors on the fields from the form's validators. One common use case for this is validating all the fields on submit by calling a single API endpoint in the form's `onSubmitAsync` validator.
+
+```tsx
+export default function App() {
+  const form = useForm({
+    defaultValues: {
+      age: 0,
+    },
+    validators: {
+      onSubmitAsync: async ({ value }) => {
+        // Verify the age on the server
+        const isOlderThan13 = await verifyAgeOnServer(value.age)
+        if (!isOlderThan13) {
+          return {
+            form: 'Invalid data', // The `form` key is optional
+            fields: {
+              age: 'Must be 13 or older to sign',
+            },
+          }
+        }
+
+        return null
+      },
+    },
+  })
+
+  return (
+    <div>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          void form.handleSubmit()
+        }}
+      >
+        <form.Field name="age">
+          {(field) => (
+            <>
+              <label htmlFor={field.name}>Age:</label>
+              <input
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                type="number"
+                onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+              />
+              {field.state.meta.errors ? (
+                <em role="alert">{field.state.meta.errors.join(', ')}</em>
+              ) : null}
+            </>
+          )}
+        </form.Field>
+        <form.Subscribe
+          selector={(state) => [state.errorMap]}
+          children={([errorMap]) =>
+            errorMap.onSubmit ? (
+              <div>
+                <em>There was an error on the form: {errorMap.onSubmit}</em>
+              </div>
+            ) : null
+          }
+        />
+        {/*...*/}
+      </form>
+    </div>
+  )
+}
+```
+
+> Something worth mentioning is that if you have a form validation function that returns an error, that error may be overwritten by the field-specific validation.
+>
+> This means that:
+>
+> ```jsx
+>  const form = useForm({
+>     defaultValues: {
+>       age: 0,
+>     },
+>     validators: {
+>       onChange: ({ value }) => {
+>         return {
+>           fields: {
+>             age: value.age < 12 ? 'Too young!' : undefined,
+>           },
+>         }
+>       },
+>     },
+> })
+>
+> // ...
+>
+> return <form.Field
+>   name="age"
+>   validators={{
+>     onChange: ({ value }) => value % 2 === 0 ? 'Must be odd!' : undefined,
+>   }}
+> />
+> ```
+>
+> Will only show `'Must be odd!` even if the 'Too young!' error is returned by the form-level validation.
 
 ## Asynchronous Functional Validation
 
@@ -373,6 +476,44 @@ These adapters also support async operations using the proper property names:
   }}
 />
 ```
+
+### Form Level Adapter Validation
+
+You can also use the adapter at the form level:
+
+```tsx
+import { zodValidator } from '@tanstack/zod-form-adapter'
+import { z } from 'zod'
+
+// ...
+
+const formSchema = z.object({
+  age: z.number().gte(13, 'You must be 13 to make an account'),
+})
+
+const form = useForm({
+  validatorAdapter: zodValidator(),
+  validators: {
+    onChange: formSchema
+  },
+})
+```
+
+If you use the adapter at the form level, it will pass the validation to the fields of the same name.
+
+This means that:
+
+```tsx
+
+<form.Field
+  name="age"
+  children={(field) => {
+    return <>{/* ... */}</>
+  }}
+/>
+```
+
+Will still display the error message from the form-level validation.
 
 ## Preventing invalid forms from being submitted
 

@@ -1,11 +1,12 @@
 import { defineConfig, mergeConfig } from 'vitest/config'
 import { tanstackViteConfig } from '@tanstack/config/vite'
 import react from '@vitejs/plugin-react'
+import packageJson from './package.json'
 
 const config = defineConfig({
   plugins: [react()],
   test: {
-    name: 'react-form',
+    name: packageJson.name,
     dir: './tests',
     watch: false,
     environment: 'jsdom',
@@ -18,7 +19,7 @@ const config = defineConfig({
 export default mergeConfig(
   config,
   tanstackViteConfig({
-    entry: ['./src/index.ts', './src/nextjs-index.ts'],
+    entry: ['./src/index.ts', './src/nextjs/index.ts', './src/start/index.ts'],
     srcDir: './src',
   }),
 )

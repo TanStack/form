@@ -6,15 +6,14 @@ import { tanstackConfig } from '@tanstack/config/eslint'
 export default [
   ...tanstackConfig,
   {
-    name: 'tanstack/local',
+    name: 'tanstack/temp',
     rules: {
-      'ts/array-type': 'off',
-      'ts/ban-types': 'off',
-      'ts/method-signature-style': 'off',
-      'ts/naming-convention': 'off',
-      'ts/no-unnecessary-type-assertion': 'off',
-      'ts/prefer-for-of': 'off',
-      'ts/require-await': 'off',
+      '@typescript-eslint/array-type': 'off',
+      '@typescript-eslint/method-signature-style': 'off',
+      '@typescript-eslint/naming-convention': 'off',
+      '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+      '@typescript-eslint/no-unsafe-function-type': 'off',
+      '@typescript-eslint/require-await': 'off',
       'no-async-promise-executor': 'off',
       'no-empty': 'off',
     },

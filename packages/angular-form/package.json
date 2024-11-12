@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/angular-form",
-  "version": "0.24.2",
+  "version": "0.34.4",
   "description": "Powerful, type-safe forms for Angular.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -14,10 +14,9 @@
     "type": "github",
     "url": "https://github.com/sponsors/tannerlinsley"
   },
-  "sideEffects": false,
   "scripts": {
     "clean": "rimraf ./dist && rimraf ./coverage",
-    "test:eslint": "eslint ./src",
+    "test:eslint": "eslint ./src ./tests",
     "test:types": "pnpm run \"/^test:types:ts[0-9]{2}$/\"",
     "test:types:ts54": "tsc",
     "test:lib": "vitest",
@@ -25,10 +24,6 @@
     "test:build": "publint --strict",
     "build": "ng-packagr -p ng-package.json -c tsconfig.build.json && rimraf ./dist/package.json"
   },
-  "files": [
-    "dist",
-    "src"
-  ],
   "type": "module",
   "types": "dist/index.d.ts",
   "module": "dist/fesm2022/tanstack-angular-form.mjs",
@@ -43,23 +38,28 @@
       "default": "./package.json"
     }
   },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "src"
+  ],
   "dependencies": {
-    "@tanstack/angular-store": "^0.5.1",
+    "@tanstack/angular-store": "^0.5.6",
     "@tanstack/form-core": "workspace:*",
-    "tslib": "^2.3.0"
+    "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "@analogjs/vite-plugin-angular": "^1.0.0",
-    "@angular/common": "^17.3.0",
-    "@angular/compiler": "^17.3.0",
-    "@angular/compiler-cli": "^17.3.0",
-    "@angular/core": "^17.3.0",
-    "@angular/platform-browser": "^17.3.0",
-    "@angular/platform-browser-dynamic": "^17.3.0",
-    "@testing-library/angular": "^15.2.0",
+    "@analogjs/vite-plugin-angular": "^1.9.2",
+    "@angular/common": "^17.3.12",
+    "@angular/compiler": "^17.3.12",
+    "@angular/compiler-cli": "^17.3.12",
+    "@angular/core": "^17.3.12",
+    "@angular/platform-browser": "^17.3.12",
+    "@angular/platform-browser-dynamic": "^17.3.12",
+    "@testing-library/angular": "^17.3.2",
     "ng-packagr": "^17.3.0",
-    "typescript": "5.4.2",
-    "zone.js": "~0.14.2"
+    "typescript": "5.4.5",
+    "zone.js": "^0.15.0"
   },
   "peerDependencies": {
     "@angular/core": ">=17.3.0"

@@ -113,14 +113,14 @@ export class TestForm extends LitElement {
               <div>
                 <label>Employed?</label>
                 <input
-                  @input="${() => field.handleChange(!field.getValue())}"
-                  .checked="${field.getValue()}"
+                  @input="${() => field.handleChange(!field.state.value)}"
+                  .checked="${field.state.value}"
                   @blur="${() => field.handleBlur()}"
                   id="employed"
                   .type=${'checkbox'}
                 />
               </div>
-              ${field.getValue()
+              ${field.state.value
                 ? this.form.field(
                     {
                       name: `jobTitle`,

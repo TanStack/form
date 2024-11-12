@@ -5,7 +5,7 @@ title: Arrays
 
 TanStack Form supports arrays as values in a form, including sub-object values inside of an array.
 
-# Basic Usage
+## Basic Usage
 
 To use an array, you can use `field.state.value` on an array value:
 

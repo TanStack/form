@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { FieldApi, FormApi } from '@tanstack/form-core'
 import yup from 'yup'
 import { yupValidator } from '../src/index'
@@ -24,11 +24,11 @@ describe('yup field api', () => {
     field.mount()
 
     expect(field.getMeta().errors).toEqual([])
-    field.setValue('a', { touch: true })
+    field.setValue('a')
     expect(field.getMeta().errors).toEqual([
       'You must have a length of at least 3',
     ])
-    field.setValue('asdf', { touch: true })
+    field.setValue('asdf')
     expect(field.getMeta().errors).toEqual([])
   })
 
@@ -51,13 +51,14 @@ describe('yup field api', () => {
     field.mount()
 
     expect(field.getMeta().errors).toEqual([])
-    field.setValue('a', { touch: true })
+    field.setValue('a')
     expect(field.getMeta().errors).toEqual(['Test'])
-    field.setValue('asdf', { touch: true })
+    field.setValue('asdf')
     expect(field.getMeta().errors).toEqual([])
   })
 
   it('should run an onChangeAsync with z.string validation', async () => {
+    vi.useFakeTimers()
     const form = new FormApi({
       defaultValues: {
         name: '',
@@ -71,9 +72,10 @@ describe('yup field api', () => {
       validators: {
         onChangeAsync: yup
           .string()
-          .test('Testing 123', 'Testing 123', async (val) =>
-            typeof val === 'string' ? val.length > 3 : false,
-          ),
+          .test('Testing 123', 'Testing 123', async (val) => {
+            await sleep(1)
+            return typeof val === 'string' ? val.length > 3 : false
+          }),
         onChangeAsyncDebounceMs: 0,
       },
     })
@@ -81,15 +83,16 @@ describe('yup field api', () => {
     field.mount()
 
     expect(field.getMeta().errors).toEqual([])
-    field.setValue('a', { touch: true })
-    await sleep(10)
+    field.setValue('a')
+    await vi.advanceTimersByTimeAsync(10)
     expect(field.getMeta().errors).toEqual(['Testing 123'])
-    field.setValue('asdf', { touch: true })
-    await sleep(10)
+    field.setValue('asdf')
+    await vi.advanceTimersByTimeAsync(10)
     expect(field.getMeta().errors).toEqual([])
   })
 
   it('should run an onChangeAsyc fn with zod validation option enabled', async () => {
+    vi.useFakeTimers()
     const form = new FormApi({
       defaultValues: {
         name: '',
@@ -101,8 +104,10 @@ describe('yup field api', () => {
       validatorAdapter: yupValidator(),
       name: 'name',
       validators: {
-        onChangeAsync: async ({ value }) =>
-          value === 'a' ? 'Test' : undefined,
+        onChangeAsync: async ({ value }) => {
+          await sleep(1)
+          return value === 'a' ? 'Test' : undefined
+        },
         onChangeAsyncDebounceMs: 0,
       },
     })
@@ -110,11 +115,11 @@ describe('yup field api', () => {
     field.mount()
 
     expect(field.getMeta().errors).toEqual([])
-    field.setValue('a', { touch: true })
-    await sleep(10)
+    field.setValue('a')
+    await vi.advanceTimersByTimeAsync(10)
     expect(field.getMeta().errors).toEqual(['Test'])
-    field.setValue('asdf', { touch: true })
-    await sleep(10)
+    field.setValue('asdf')
+    await vi.advanceTimersByTimeAsync(10)
     expect(field.getMeta().errors).toEqual([])
   })
 
@@ -128,7 +133,7 @@ describe('yup field api', () => {
     const field = new FieldApi({
       form,
       validatorAdapter: yupValidator({
-        transformErrors: (errors) => errors[0],
+        transformErrors: (errors) => errors[0]?.message,
       }),
       name: 'name',
       validators: {
@@ -142,11 +147,46 @@ describe('yup field api', () => {
     field.mount()
 
     expect(field.getMeta().errors).toEqual([])
-    field.setValue('aa', { touch: true })
+    field.setValue('aa')
     expect(field.getMeta().errors).toEqual([
       'You must have a length of at least 3',
     ])
-    field.setValue('aaa', { touch: true })
+    field.setValue('aaa')
+    expect(field.getMeta().errors).toEqual(['UUID'])
+  })
+
+  it('should transform errors to display only the first error message with an async validator', async () => {
+    vi.useFakeTimers()
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      validatorAdapter: yupValidator({
+        transformErrors: (errors) => errors[0]?.message,
+      }),
+      name: 'name',
+      validators: {
+        onChangeAsync: yup
+          .string()
+          .min(3, 'You must have a length of at least 3')
+          .uuid('UUID'),
+      },
+    })
+
+    field.mount()
+
+    expect(field.getMeta().errors).toEqual([])
+    field.setValue('aa')
+    await vi.advanceTimersByTimeAsync(10)
+    expect(field.getMeta().errors).toEqual([
+      'You must have a length of at least 3',
+    ])
+    field.setValue('aaa')
+    await vi.advanceTimersByTimeAsync(10)
     expect(field.getMeta().errors).toEqual(['UUID'])
   })
 })

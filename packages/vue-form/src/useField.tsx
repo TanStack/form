@@ -1,30 +1,17 @@
 import { FieldApi } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
 import { defineComponent, onMounted, onUnmounted, watch } from 'vue'
-import type {
-  DeepKeys,
-  DeepValue,
-  Narrow,
-  Validator,
-} from '@tanstack/form-core'
+import type { DeepKeys, DeepValue, Validator } from '@tanstack/form-core'
 import type { Ref, SetupContext, SlotsType } from 'vue'
 import type { UseFieldOptions } from './types'
 
-declare module '@tanstack/form-core' {
-  // eslint-disable-next-line no-shadow
-  interface FieldApi<
-    TParentData,
-    TName extends DeepKeys<TParentData>,
-    TFieldValidator extends
-      | Validator<DeepValue<TParentData, TName>, unknown>
-      | undefined = undefined,
-    TFormValidator extends
-      | Validator<TParentData, unknown>
-      | undefined = undefined,
-    TData = DeepValue<TParentData, TName>,
-  > {
-    Field: FieldComponent<TParentData, TFormValidator>
-  }
+export interface VueFieldApi<
+  TParentData,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+> {
+  Field: FieldComponent<TParentData, TFormValidator>
 }
 
 export type UseField<
@@ -44,7 +31,8 @@ export type UseField<
     'form'
   >,
 ) => {
-  api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData> &
+    VueFieldApi<TParentData, TFormValidator>
   state: Readonly<
     Ref<
       FieldApi<
@@ -76,30 +64,20 @@ export function useField<
     TFormValidator,
     TData
   >,
-): {
-  api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
-  state: Readonly<
-    Ref<
-      FieldApi<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData
-      >['state']
-    >
-  >
-} {
+) {
   const fieldApi = (() => {
     const api = new FieldApi({
       ...opts,
       form: opts.form,
       name: opts.name,
-    } as never)
+    })
 
-    api.Field = Field as never
+    const extendedApi: typeof api & VueFieldApi<TParentData, TFormValidator> =
+      api as never
 
-    return api
+    extendedApi.Field = Field as never
+
+    return extendedApi
   })()
 
   const fieldState = useStore(fieldApi.store, (state) => state)
@@ -121,7 +99,7 @@ export function useField<
     },
   )
 
-  return { api: fieldApi, state: fieldState } as never
+  return { api: fieldApi, state: fieldState } as const
 }
 
 type FieldComponentProps<
@@ -202,7 +180,7 @@ export const Field = defineComponent(
     >,
     context: SetupContext,
   ) => {
-    const fieldApi = useField({ ...fieldOptions, ...context.attrs } as any)
+    const fieldApi = useField({ ...fieldOptions, ...context.attrs })
 
     return () =>
       context.slots.default!({

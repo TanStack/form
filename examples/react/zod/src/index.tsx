@@ -8,26 +8,38 @@ import type { FieldApi } from '@tanstack/react-form'
 function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
   return (
     <>
-      {field.state.meta.touchedErrors ? (
-        <em>{field.state.meta.touchedErrors}</em>
+      {field.state.meta.isTouched && field.state.meta.errors.length ? (
+        <em>{field.state.meta.errors.join(',')}</em>
       ) : null}
       {field.state.meta.isValidating ? 'Validating...' : null}
     </>
   )
 }
 
+const userSchema = z.object({
+  firstName: z.string().refine((val) => val !== 'John', {
+    message: '[Form] First name cannot be John',
+  }),
+  lastName: z.string().min(3, '[Form] Last name must be at least 3 characters'),
+})
+
+type User = z.infer<typeof userSchema>
+
 export default function App() {
   const form = useForm({
     defaultValues: {
       firstName: '',
       lastName: '',
-    },
+    } as User,
     onSubmit: async ({ value }) => {
       // Do something with form data
       console.log(value)
     },
     // Add a validator to support Zod usage in Form and Field
     validatorAdapter: zodValidator(),
+    validators: {
+      onChange: userSchema,
+    },
   })
 
   return (
@@ -47,7 +59,7 @@ export default function App() {
             validators={{
               onChange: z
                 .string()
-                .min(3, 'First name must be at least 3 characters'),
+                .min(3, '[Field] First name must be at least 3 characters'),
               onChangeAsyncDebounceMs: 500,
               onChangeAsync: z.string().refine(
                 async (value) => {
@@ -55,7 +67,7 @@ export default function App() {
                   return !value.includes('error')
                 },
                 {
-                  message: "No 'error' allowed in first name",
+                  message: "[Field] No 'error' allowed in first name",
                 },
               ),
             }}

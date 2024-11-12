@@ -1,31 +1,21 @@
-import React, { type FunctionComponent, useState } from 'react'
+import React, { useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
+import type { FunctionComponent } from 'react'
 import type { NodeType, UseFieldOptions } from './types'
 import type { DeepKeys, DeepValue, Validator } from '@tanstack/form-core'
 
-declare module '@tanstack/form-core' {
+interface ReactFieldApi<
+  TParentData,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+> {
   /**
-   * When using `@tanstack/react-form`, the core field API is extended at type level with additional methods for React-specific functionality:
+   * A pre-bound and type-safe sub-field component using this field as a root.
    */
-  // eslint-disable-next-line no-shadow
-  interface FieldApi<
-    TParentData,
-    TName extends DeepKeys<TParentData>,
-    TFieldValidator extends
-      | Validator<DeepValue<TParentData, TName>, unknown>
-      | undefined = undefined,
-    TFormValidator extends
-      | Validator<TParentData, unknown>
-      | undefined = undefined,
-    TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  > {
-    /**
-     * A pre-bound and type-safe sub-field component using this field as a root.
-     */
-    Field: FieldComponent<TParentData, TFormValidator>
-  }
+  Field: FieldComponent<TParentData, TFormValidator>
 }
 
 /**
@@ -75,7 +65,7 @@ export function useField<
     TFormValidator,
     TData
   >,
-): FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData> {
+) {
   const [fieldApi] = useState(() => {
     const api = new FieldApi({
       ...opts,
@@ -83,9 +73,12 @@ export function useField<
       name: opts.name,
     })
 
-    api.Field = Field as never
+    const extendedApi: typeof api & ReactFieldApi<TParentData, TFormValidator> =
+      api as never
 
-    return api
+    extendedApi.Field = Field as never
+
+    return extendedApi
   })
 
   useIsomorphicLayoutEffect(fieldApi.mount, [fieldApi])
@@ -107,7 +100,7 @@ export function useField<
       : undefined,
   )
 
-  return fieldApi as never
+  return fieldApi
 }
 
 /**

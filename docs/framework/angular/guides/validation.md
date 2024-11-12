@@ -15,7 +15,7 @@ It's up to you! The `[tanstackField]` directive accepts some callbacks as props 
 
 Here is an example:
 
-```typescript
+```angular-ts
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -53,7 +53,7 @@ export class AppComponent {
 
 In the example above, the validation is done at each keystroke (`onChange`). If, instead, we wanted the validation to be done when the field is blurred, we would change the code above like so:
 
-```typescript
+```angular-ts
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -94,7 +94,7 @@ export class AppComponent {
 
 So you can control when the validation is done by implementing the desired callback. You can even perform different pieces of validation at different times:
 
-```typescript
+```angular-ts
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -144,7 +144,7 @@ In the example above, we are validating different things on the same field at di
 
 Once you have your validation in place, you can map the errors from an array to be displayed in your UI:
 
-```typescript
+```angular-ts
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -175,7 +175,7 @@ export class AppComponent {
 
 Or use the `errorMap` property to access the specific error you're looking for:
 
-```typescript
+```angular-ts
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -210,7 +210,7 @@ As shown above, each `[tanstackField]` accepts its own validation rules via the 
 
 Example:
 
-```typescript
+```angular-ts
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -261,7 +261,7 @@ While we suspect most validations will be synchronous, there are many instances 
 
 To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods that can be used to validate against:
 
-```typescript
+```angular-ts
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -301,7 +301,7 @@ export class AppComponent {
 
 Synchronous and Asynchronous validations can coexist. For example, it is possible to define both `onBlur` and `onBlurAsync` on the same field:
 
-```typescript
+```angular-ts
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -351,7 +351,7 @@ While async calls are the way to go when validating against the database, runnin
 
 Instead, we enable an easy method for debouncing your `async` calls by adding a single property:
 
-```html
+```angular-html
 <ng-container
   [tanstackField]="form"
   name="age"
@@ -365,7 +365,7 @@ Instead, we enable an easy method for debouncing your `async` calls by adding a 
 
 This will debounce every async call with a 500ms delay. You can even override this property on a per-validation property:
 
-```html
+```angular-html
 <ng-container
   [tanstackField]="form"
   name="age"
@@ -398,7 +398,7 @@ $ npm install @tanstack/valibot-form-adapter valibot
 
 Once done, we can add the adapter to the `validator` property on the form or field:
 
-```typescript
+```angular-ts
 import { zodValidator } from '@tanstack/zod-form-adapter'
 import { z } from 'zod'
 
@@ -434,7 +434,7 @@ export class AppComponent {
 
 These adapters also support async operations using the proper property names:
 
-```typescript
+```angular-ts
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -469,6 +469,38 @@ export class AppComponent {
 }
 ```
 
+### Form Level Adapter Validation
+
+You can also use the adapter at the form level:
+
+```typescript
+import { zodValidator } from '@tanstack/zod-form-adapter'
+import { z } from 'zod'
+
+// ...
+
+const form = injectForm({
+  validatorAdapter: zodValidator(),
+  validators: {
+    onChange: z.object({
+      age: z.number().gte(13, 'You must be 13 to make an account'),
+    }),
+  },
+})
+```
+
+If you use the adapter at the form level, it will pass the validation to the fields of the same name.
+
+This means that:
+
+```html
+<ng-container [tanstackField]="form" name="age" #age="field">
+  <!-- ... -->
+</ng-container>
+```
+
+Will still display the error message from the form-level validation.
+
 ## Preventing invalid forms from being submitted
 
 The `onChange`, `onBlur` etc... callbacks are also run when the form is submitted and the submission is blocked if the form is invalid.
@@ -477,7 +509,7 @@ The form state object has a `canSubmit` flag that is false when any field is inv
 
 You can subscribe to it via `injectStore` and use the value in order to, for example, disable the submit button when the form is invalid (in practice, disabled buttons are not accessible, use `aria-disabled` instead).
 
-```typescript
+```angular-ts
 @Component({
   selector: 'app-root',
   standalone: true,

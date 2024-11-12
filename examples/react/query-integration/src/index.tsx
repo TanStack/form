@@ -4,6 +4,7 @@ import { useForm } from '@tanstack/react-form'
 import {
   QueryClient,
   QueryClientProvider,
+  useMutation,
   useQuery,
 } from '@tanstack/react-query'
 import type { FieldApi } from '@tanstack/react-form'
@@ -11,8 +12,8 @@ import type { FieldApi } from '@tanstack/react-form'
 function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
   return (
     <>
-      {field.state.meta.touchedErrors ? (
-        <em>{field.state.meta.touchedErrors}</em>
+      {field.state.meta.isTouched && field.state.meta.errors.length ? (
+        <em>{field.state.meta.errors.join(',')}</em>
       ) : null}
       {field.state.meta.isValidating ? 'Validating...' : null}
     </>
@@ -28,6 +29,14 @@ export default function App() {
     },
   })
 
+  const saveUserMutation = useMutation({
+    mutationFn: async (value: { firstName: string; lastName: string }) => {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      console.log(value)
+      return value
+    },
+  })
+
   const form = useForm({
     defaultValues: {
       firstName: data?.firstName ?? '',
@@ -35,7 +44,7 @@ export default function App() {
     },
     onSubmit: async ({ value }) => {
       // Do something with form data
-      console.log(value)
+      await saveUserMutation.mutateAsync(value)
     },
   })
 
