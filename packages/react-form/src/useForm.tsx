@@ -64,7 +64,7 @@ export type ReactFormExtendedApi<
  */
 export function useForm<
   TFormData,
-  TFormValidator extends never | undefined = undefined,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 >(opts?: FormOptions<TFormData, TFormValidator>) {
   const [formApi] = useState(() => {
     const api = new FormApi<TFormData, TFormValidator>(opts)
