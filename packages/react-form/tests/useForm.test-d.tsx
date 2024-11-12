@@ -1,6 +1,6 @@
-import * as React from 'react'
 import { assertType, it } from 'vitest'
 import { useForm } from '../src/index'
+import type { ReactFormExtendedApi } from '../src/useForm'
 
 it('should type onSubmit properly', () => {
   function Comp() {
@@ -32,5 +32,22 @@ it('should type a validator properly', () => {
         },
       },
     })
+  }
+})
+
+it('should not have recursion problems and type register properly', () => {
+  const register = <Data,>(f: ReactFormExtendedApi<Data>) => f
+
+  function Comp() {
+    const form = useForm({
+      defaultValues: {
+        name: '',
+        title: '',
+      },
+    })
+
+    const x = register(form)
+
+    return null
   }
 })
