@@ -11,7 +11,10 @@ export const ClientComp = () => {
 
   const form = useForm({
     ...formOpts,
-    transform: useTransform((baseForm) => mergeForm(baseForm, state!), [state]),
+    transform: useTransform(
+      (baseForm) => mergeForm(baseForm, state ?? {}),
+      [state],
+    ),
   })
 
   const formErrors = form.useStore((formState) => formState.errors)

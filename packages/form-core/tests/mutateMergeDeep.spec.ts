@@ -16,11 +16,32 @@ describe('mutateMergeDeep', () => {
     expect(a).toStrictEqual({ a: undefined })
   })
 
-  test('Should merge two object by merging arrays', () => {
-    const a = { a: [1] }
-    const b = { a: [2] }
-    mutateMergeDeep(a, b)
-    expect(a).toStrictEqual({ a: [1, 2] })
+  test('Should merge two object by overriding arrays', () => {
+    const target = { a: [1] }
+    const source = { a: [2] }
+    mutateMergeDeep(target, source)
+    expect(target).toStrictEqual({ a: [2] })
+  })
+
+  test('Should merge add array element when it does not exist in target', () => {
+    const target = { a: [] }
+    const source = { a: [2] }
+    mutateMergeDeep(target, source)
+    expect(target).toStrictEqual({ a: [2] })
+  })
+
+  test('Should override the target array if source is undefined', () => {
+    const target = { a: [2] }
+    const source = { a: undefined }
+    mutateMergeDeep(target, source)
+    expect(target).toStrictEqual({ a: undefined })
+  })
+
+  test('Should merge update array element when it does not exist in source', () => {
+    const target = { a: [2] }
+    const source = { a: [] }
+    mutateMergeDeep(target, source)
+    expect(target).toStrictEqual({ a: [] })
   })
 
   test('Should merge two deeply nested objects', () => {

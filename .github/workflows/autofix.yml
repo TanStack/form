@@ -18,12 +18,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
       - name: Setup Tools
         uses: tanstack/config/.github/setup@main
       - name: Fix formatting
         run: pnpm prettier:write
+      - name: Generate Docs
+        run: pnpm docs:generate
       - name: Apply fixes
         uses: autofix-ci/action@ff86a557419858bb967097bfc916833f5647fa8c
         with:
-          commit-message: 'ci: apply automated fixes'
+          commit-message: 'ci: apply automated fixes and generate docs'

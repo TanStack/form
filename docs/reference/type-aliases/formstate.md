@@ -28,7 +28,7 @@ A boolean indicating if the form can be submitted based on its current state.
 ### errorMap
 
 ```ts
-errorMap: ValidationErrorMap;
+errorMap: FormValidationErrorMap;
 ```
 
 The error map for the form itself.
@@ -48,6 +48,14 @@ fieldMeta: Record<DeepKeys<TFormData>, FieldMeta>;
 ```
 
 A record of field metadata for each field in the form.
+
+### isBlurred
+
+```ts
+isBlurred: boolean;
+```
+
+A boolean indicating if any of the form fields have been blurred.
 
 ### isDirty
 
@@ -111,7 +119,15 @@ A boolean indicating if the form has been submitted.
 isSubmitting: boolean;
 ```
 
-A boolean indicating if the form is currently submitting.
+A boolean indicating if the form is currently in the process of being submitted after `handleSubmit` is called.
+
+Goes back to `false` when submission completes for one of the following reasons:
+- the validation step returned errors.
+- the `onSubmit` function has completed.
+
+Note: if you're running async operations in your `onSubmit` function make sure to await them to ensure `isSubmitting` is set to `false` only when the async operation completes.
+
+This is useful for displaying loading indicators or disabling form inputs during submission.
 
 ### isTouched
 
@@ -163,4 +179,4 @@ The current values of the form fields.
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:200](https://github.com/TanStack/form/blob/03de1e83ad6580cff66ab58566f3003d93d4e34d/packages/form-core/src/FormApi.ts#L200)
+[packages/form-core/src/FormApi.ts:219](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L219)

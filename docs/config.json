@@ -191,11 +191,26 @@
     {
       "label": "API Reference",
       "children": [
-        { "label": "JavaScript Reference", "to": "reference/index" },
-        { "label": "Classes / FieldApi", "to": "reference/classes/fieldapi" },
-        { "label": "Classes / FormApi", "to": "reference/classes/formapi" },
-        { "label": "Functions / formOptions", "to": "reference/functions/formoptions" },
-        { "label": "Functions / mergeForm", "to": "reference/functions/mergeform" },
+        {
+          "label": "JavaScript Reference",
+          "to": "reference/index"
+        },
+        {
+          "label": "Classes / FieldApi",
+          "to": "reference/classes/fieldapi"
+        },
+        {
+          "label": "Classes / FormApi",
+          "to": "reference/classes/formapi"
+        },
+        {
+          "label": "Functions / formOptions",
+          "to": "reference/functions/formoptions"
+        },
+        {
+          "label": "Functions / mergeForm",
+          "to": "reference/functions/mergeform"
+        },
         {
           "label": "Interfaces / FieldApiOptions",
           "to": "reference/interfaces/fieldapioptions"
@@ -208,24 +223,54 @@
           "label": "Interfaces / FieldValidators",
           "to": "reference/interfaces/fieldvalidators"
         },
-        { "label": "Interfaces / FormOptions", "to": "reference/interfaces/formoptions" },
+        {
+          "label": "Interfaces / FormOptions",
+          "to": "reference/interfaces/formoptions"
+        },
         {
           "label": "Interfaces / FormValidators",
           "to": "reference/interfaces/formvalidators"
         },
-        { "label": "Types / DeepKeys", "to": "reference/type-aliases/deepkeys" },
-        { "label": "Types / DeepValue", "to": "reference/type-aliases/deepvalue" },
-        { "label": "Types / FieldInfo", "to": "reference/type-aliases/fieldinfo" },
-        { "label": "Types / FieldMeta", "to": "reference/type-aliases/fieldmeta" },
-        { "label": "Types / FieldState", "to": "reference/type-aliases/fieldstate" },
-        { "label": "Types / FormState", "to": "reference/type-aliases/formstate" },
-        { "label": "Types / Updater", "to": "reference/type-aliases/updater" },
-        { "label": "Types / UpdaterFn", "to": "reference/type-aliases/updaterfn" },
+        {
+          "label": "Types / DeepKeys",
+          "to": "reference/type-aliases/deepkeys"
+        },
+        {
+          "label": "Types / DeepValue",
+          "to": "reference/type-aliases/deepvalue"
+        },
+        {
+          "label": "Types / FieldInfo",
+          "to": "reference/type-aliases/fieldinfo"
+        },
+        {
+          "label": "Types / FieldMeta",
+          "to": "reference/type-aliases/fieldmeta"
+        },
+        {
+          "label": "Types / FieldState",
+          "to": "reference/type-aliases/fieldstate"
+        },
+        {
+          "label": "Types / FormState",
+          "to": "reference/type-aliases/formstate"
+        },
+        {
+          "label": "Types / Updater",
+          "to": "reference/type-aliases/updater"
+        },
+        {
+          "label": "Types / UpdaterFn",
+          "to": "reference/type-aliases/updaterfn"
+        },
         {
           "label": "Types / ValidationError",
           "to": "reference/type-aliases/validationerror"
         },
-        { "label": "Types / ValidationMeta", "to": "reference/type-aliases/validationmeta" }
+        {
+          "label": "Types / ValidationMeta",
+          "to": "reference/type-aliases/validationmeta"
+        }
       ],
       "frameworks": [
         {
@@ -268,7 +313,10 @@
         {
           "label": "vue",
           "children": [
-            { "label": "Vue Reference", "to": "framework/vue/reference/index" },
+            {
+              "label": "Vue Reference",
+              "to": "framework/vue/reference/index"
+            },
             {
               "label": "Functions / Field",
               "to": "framework/vue/reference/functions/field"
@@ -323,7 +371,10 @@
         {
           "label": "lit",
           "children": [
-            { "label": "Lit Reference", "to": "framework/lit/reference/index" },
+            {
+              "label": "Lit Reference",
+              "to": "framework/lit/reference/index"
+            },
             {
               "label": "Classes / TanStackFormController",
               "to": "framework/lit/reference/classes/tanstackformcontroller"
@@ -395,6 +446,10 @@
             {
               "label": "UI Libraries",
               "to": "framework/react/examples/ui-libraries"
+            },
+            {
+              "label": "Field Errors From Form Validators",
+              "to": "framework/react/examples/field-errors-from-form-validators"
             }
           ]
         },

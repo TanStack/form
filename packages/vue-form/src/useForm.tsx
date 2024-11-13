@@ -7,7 +7,7 @@ import type { NoInfer } from '@tanstack/vue-store'
 import type { EmitsOptions, Ref, SetupContext, SlotsType } from 'vue'
 import type { FieldComponent, UseField } from './useField'
 
-interface VueFormApi<
+export interface VueFormApi<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > {
@@ -49,7 +49,7 @@ export function useForm<
         name: 'APIField',
         inheritAttrs: false,
       },
-    )
+    ) as never
     extendedApi.useField = (props) => {
       const field = useField({ ...props, form: api })
       return field
@@ -60,7 +60,7 @@ export function useForm<
     extendedApi.Subscribe = defineComponent(
       (props, context) => {
         const allProps = { ...props, ...context.attrs }
-        const selector = allProps.selector ?? ((state) => state)
+        const selector = allProps.selector ?? ((state: never) => state)
         const data = useStore(api.store as never, selector as never)
         return () => context.slots.default!(data.value)
       },
@@ -68,7 +68,7 @@ export function useForm<
         name: 'Subscribe',
         inheritAttrs: false,
       },
-    )
+    ) as never
 
     return extendedApi
   })()
