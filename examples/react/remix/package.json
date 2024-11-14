@@ -1,7 +1,6 @@
 {
   "name": "@tanstack/form-example-remix",
   "private": true,
-  "sideEffects": false,
   "type": "module",
   "scripts": {
     "build": "remix vite:build",
@@ -9,21 +8,21 @@
     "_test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-form": "^0.29.2",
-    "@remix-run/node": "^2.11.2",
-    "@remix-run/react": "^2.11.2",
-    "@remix-run/serve": "^2.11.2",
+    "@remix-run/node": "^2.14.0",
+    "@remix-run/react": "^2.14.0",
+    "@remix-run/serve": "^2.14.0",
+    "@tanstack/react-form": "^0.35.0",
     "isbot": "^4.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.11.2",
-    "@types/react": "^18.2.20",
-    "@types/react-dom": "^18.2.7",
-    "typescript": "^5.1.6",
-    "vite": "^5.1.0",
-    "vite-tsconfig-paths": "^4.2.1"
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "typescript": "5.4.5",
+    "vite": "^5.4.10",
+    "vite-tsconfig-paths": "^5.1.2"
   },
   "engines": {
     "node": ">=20.0.0"
