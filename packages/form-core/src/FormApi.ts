@@ -8,8 +8,8 @@ import {
   isNonEmptyArray,
   setBy,
 } from './utils'
-import type { Updater } from './utils'
-import type { DeepKeys, DeepValue } from './util-types'
+import { standardValidator } from './validator'
+import type { StandardSchema } from './validator'
 import type { FieldApi, FieldMeta } from './FieldApi'
 import type {
   FormValidationError,
@@ -22,6 +22,8 @@ import type {
   ValidationSource,
   Validator,
 } from './types'
+import type { DeepKeys, DeepValue } from './util-types'
+import type { Updater } from './utils'
 
 export type FieldsErrorMapFromValidator<TFormData> = Partial<
   Record<DeepKeys<TFormData>, ValidationErrorMap>
@@ -496,15 +498,28 @@ export class FormApi<
     },
     TType extends 'validate' | 'validateAsync',
   >(props: {
-    validate: TType extends 'validate'
-      ? FormValidateOrFn<TFormData, TFormValidator>
-      : FormAsyncValidateOrFn<TFormData, TFormValidator>
+    validate:
+      | (TType extends 'validate'
+          ? FormValidateOrFn<TFormData, TFormValidator>
+          : FormAsyncValidateOrFn<TFormData, TFormValidator>)
+      | StandardSchema<any, any>
     value: TValue
     type: TType
   }): ReturnType<ReturnType<Validator<any>>[TType]> {
     const adapter = this.options.validatorAdapter
     if (adapter && typeof props.validate !== 'function') {
       return adapter()[props.type](props.value, props.validate) as never
+    }
+
+    if (
+      props.validate &&
+      typeof props.validate === 'object' &&
+      '~standard' in props.validate
+    ) {
+      return standardValidator()()[props.type](
+        props.value,
+        props.validate,
+      ) as never
     }
 
     return (props.validate as FormValidateFn<any, any>)(props.value) as never
