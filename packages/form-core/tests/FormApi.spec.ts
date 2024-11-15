@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+import * as v from 'valibot'
 import { FieldApi, FormApi } from '../src/index'
 import { sleep } from './utils'
 
@@ -1615,6 +1616,34 @@ describe('form api', () => {
     expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
   })
 
+  it('should support StandardSchema validation with valibot', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      },
+      validators: {
+        onChange: v.object({
+          firstName: v.pipe(
+            v.string(),
+            v.minLength(3, 'First name is too short'),
+          ),
+          lastName: v.string(),
+        }),
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+
+    field.mount()
+
+    field.setValue('')
+    expect(form.state.errors).toStrictEqual(['First name is too short'])
+  })
+
   it('should show onSubmit errors', async () => {
     const form = new FormApi({
       defaultValues: {
@@ -2012,7 +2041,7 @@ describe('form api', () => {
       validators: {
         onSubmit: ({ value }) => {
           const fieldWithErrorIndex = value.employees.findIndex(
-            (v) => v.firstName === 'person-2',
+            (val) => val.firstName === 'person-2',
           )
 
           if (fieldWithErrorIndex !== -1) {

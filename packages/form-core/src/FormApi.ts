@@ -44,9 +44,10 @@ export type FormValidateOrFn<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > =
-  TFormValidator extends Validator<TFormData, infer TFN>
-    ? TFN
-    : FormValidateFn<TFormData, TFormValidator>
+  | (TFormValidator extends Validator<TFormData, infer TFN>
+      ? TFN
+      : FormValidateFn<TFormData, TFormValidator>)
+  | StandardSchema<any, any>
 
 /**
  * @private
