@@ -17,6 +17,7 @@ describe('standard schema validator', () => {
             firstName: v.pipe(
               v.string(),
               v.minLength(3, 'First name is too short'),
+              v.endsWith('a', 'You must end with an "a"'),
             ),
             lastName: v.string(),
           }),
@@ -31,10 +32,12 @@ describe('standard schema validator', () => {
       field.mount()
 
       field.setValue('')
-      expect(form.state.errors).toStrictEqual(['First name is too short'])
+      expect(form.state.errors).toStrictEqual([
+        'First name is too short, You must end with an "a"',
+      ])
     })
 
-    it('should support StandardSchema sync validation with valibot', async () => {
+    it('should support standard schema sync validation with valibot and reads adapter params', async () => {
       const form = new FormApi({
         defaultValues: {
           firstName: '',
@@ -45,11 +48,14 @@ describe('standard schema validator', () => {
             firstName: v.pipe(
               v.string(),
               v.minLength(3, 'First name is too short'),
+              v.endsWith('a', 'You must end with an "a"'),
             ),
             lastName: v.string(),
           }),
         },
-        validatorAdapter: standardSchemaValidator(),
+        validatorAdapter: standardSchemaValidator({
+          transformErrors: (issues) => issues.map((issue) => issue.message)[0],
+        }),
       })
 
       const field = new FieldApi({
@@ -97,7 +103,7 @@ describe('standard schema validator', () => {
       expect(form.state.errors).toStrictEqual(['First name is too short'])
     })
 
-    it('should support StandardSchema async validation with valibot', async () => {
+    it('should support standard schema async validation with valibot', async () => {
       vi.useFakeTimers()
 
       const form = new FormApi({
@@ -132,13 +138,13 @@ describe('standard schema validator', () => {
       expect(form.state.errors).toStrictEqual(['First name is too short'])
     })
 
-    it('should support StandardSchema sync validation with arktype', async () => {
+    it('should support standard schema sync validation with arktype', async () => {
       const form = new FormApi({
         defaultValues: {
           email: '',
         },
         validators: {
-          onChange: type({ email: 'string.email' }),
+          onChange: type({ email: 'string.email' as 'string' }),
         },
         validatorAdapter: standardSchemaValidator(),
       })
@@ -158,8 +164,31 @@ describe('standard schema validator', () => {
   })
 
   describe('field', () => {
+    it('should detect a standard schema validator even without a validator adapter', async () => {
+      const form = new FormApi({
+        defaultValues: {
+          email: '',
+        },
+      })
+
+      const field = new FieldApi({
+        form,
+        name: 'email',
+        validators: {
+          onChange: type('string.email' as 'string'),
+        },
+      })
+
+      field.mount()
+
+      field.setValue('test')
+      expect(field.getMeta().errors).toStrictEqual([
+        'must be an email address (was "test")',
+      ])
+    })
+
     // FIXME: Valibot currently broken
-    it.skip('should support StandardSchema sync validation with valibot', async () => {
+    it.skip('should support standard schema sync validation with valibot', async () => {
       const form = new FormApi({
         defaultValues: {
           firstName: '',
@@ -186,7 +215,7 @@ describe('standard schema validator', () => {
     })
 
     // FIXME: Valibot currently broken
-    it.skip('should support StandardSchema async validation with valibot', async () => {
+    it.skip('should support standard schema async validation with valibot', async () => {
       vi.useFakeTimers()
 
       const form = new FormApi({
@@ -218,7 +247,7 @@ describe('standard schema validator', () => {
       expect(field.getMeta().errors).toStrictEqual(['First name is too short'])
     })
 
-    it('should support StandardSchema sync validation with arktype', async () => {
+    it('should support standard schema sync validation with arktype', async () => {
       const form = new FormApi({
         defaultValues: {
           email: '',
@@ -229,7 +258,7 @@ describe('standard schema validator', () => {
         form,
         name: 'email',
         validators: {
-          onChange: type('string.email'),
+          onChange: type('string.email' as 'string'),
         },
         validatorAdapter: standardSchemaValidator(),
       })

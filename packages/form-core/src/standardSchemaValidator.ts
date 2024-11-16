@@ -87,4 +87,4 @@ export const standardSchemaValidator =
 export const isStandardSchemaValidator = (
   validator: unknown,
 ): validator is v1.StandardSchema =>
-  !!validator && typeof validator === 'object' && '~standard' in validator
+  !!validator && '~standard' in (validator as object)
