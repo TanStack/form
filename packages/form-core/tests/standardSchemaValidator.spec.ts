@@ -6,6 +6,34 @@ import { sleep } from './utils'
 
 describe('standard schema validator', () => {
   describe('form', () => {
+    it('should detect a sync standard schema validator even without a validator adapter', async () => {
+      const form = new FormApi({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+        validators: {
+          onChange: v.object({
+            firstName: v.pipe(
+              v.string(),
+              v.minLength(3, 'First name is too short'),
+            ),
+            lastName: v.string(),
+          }),
+        },
+      })
+
+      const field = new FieldApi({
+        form,
+        name: 'firstName',
+      })
+
+      field.mount()
+
+      field.setValue('')
+      expect(form.state.errors).toStrictEqual(['First name is too short'])
+    })
+
     it('should support StandardSchema sync validation with valibot', async () => {
       const form = new FormApi({
         defaultValues: {
@@ -32,6 +60,40 @@ describe('standard schema validator', () => {
       field.mount()
 
       field.setValue('')
+      expect(form.state.errors).toStrictEqual(['First name is too short'])
+    })
+
+    it('should detect an async standard schema validator even without a validator adapter', async () => {
+      vi.useFakeTimers()
+
+      const form = new FormApi({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+        validators: {
+          onChangeAsync: v.objectAsync({
+            firstName: v.pipeAsync(
+              v.string(),
+              v.checkAsync(async (val) => {
+                await sleep(1)
+                return val.length > 3
+              }, 'First name is too short'),
+            ),
+            lastName: v.string(),
+          }),
+        },
+      })
+
+      const field = new FieldApi({
+        form,
+        name: 'firstName',
+      })
+
+      field.mount()
+
+      field.setValue('')
+      await vi.runAllTimersAsync()
       expect(form.state.errors).toStrictEqual(['First name is too short'])
     })
 
