@@ -543,6 +543,37 @@ importers:
         specifier: ^5.4.10
         version: 5.4.10(@types/node@20.17.5)(less@4.2.0)(sass@1.80.5)(sugarss@4.0.1(postcss@8.4.48))(terser@5.36.0)
 
+  examples/react/standard-schema:
+    dependencies:
+      '@tanstack/react-form':
+        specifier: ^0.35.0
+        version: link:../../../packages/react-form
+      arktype:
+        specifier: 2.0.0-rc.23
+        version: 2.0.0-rc.23
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+      valibot:
+        specifier: ^1.0.0-beta.5
+        version: 1.0.0-beta.5(typescript@5.4.5)
+    devDependencies:
+      '@types/react':
+        specifier: ^18.3.3
+        version: 18.3.12
+      '@types/react-dom':
+        specifier: ^18.3.0
+        version: 18.3.1
+      '@vitejs/plugin-react':
+        specifier: ^4.3.3
+        version: 4.3.3(vite@5.4.10(@types/node@20.17.5)(less@4.2.0)(sass@1.80.5)(sugarss@4.0.1(postcss@8.4.48))(terser@5.36.0))
+      vite:
+        specifier: ^5.4.10
+        version: 5.4.10(@types/node@20.17.5)(less@4.2.0)(sass@1.80.5)(sugarss@4.0.1(postcss@8.4.48))(terser@5.36.0)
+
   examples/react/tanstack-start:
     dependencies:
       '@tanstack/form-core':
