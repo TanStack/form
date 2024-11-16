@@ -1036,6 +1036,9 @@ importers:
       '@standard-schema/spec':
         specifier: 1.0.0-beta.3
         version: 1.0.0-beta.3
+      arktype:
+        specifier: 2.0.0-rc.23
+        version: 2.0.0-rc.23
       valibot:
         specifier: ^1.0.0-beta.5
         version: 1.0.0-beta.5(typescript@5.4.5)
@@ -1328,6 +1331,12 @@ packages:
       '@angular/core': 17.3.12
       '@angular/platform-browser': 17.3.12
       rxjs: ^6.5.3 || ^7.4.0
+
+  '@ark/schema@0.23.0':
+    resolution: {integrity: sha512-406Zx0te3ICd7PkGise4XIxOfmjFzK64tEuiN5rmJDg14AqhySXygMk8QcHqHORDJ7VXhel7J41iduw8eyiFPg==}
+
+  '@ark/util@0.23.0':
+    resolution: {integrity: sha512-2mb24N2leQENRh+zPqnlRJzFFf8Xr7BT+/4MJN46/G8C45davpqFfcqvOw0ZlXrjQpBi8H+ZqDQsi95lN/9oVg==}
 
   '@babel/code-frame@7.26.2':
     resolution: {integrity: sha512-RJlIHRueQgwWitWgF8OdFYGZX328Ax5BCemNGlqHfplnRT9ESi8JkFlvaVYbS+UubVY6dpv87Fs2u5M29iNFVQ==}
@@ -4665,6 +4674,9 @@ packages:
   aria-query@5.3.2:
     resolution: {integrity: sha512-COROpnaoap1E2F000S62r6A60uHZnmlvomhfyT2DlTcrY1OrBKn2UhH7qn5wTC9zMvD0AY7csdPSNwKP+7WiQw==}
     engines: {node: '>= 0.4'}
+
+  arktype@2.0.0-rc.23:
+    resolution: {integrity: sha512-P0e40t3J4rc3xRHzPjzyOK1CgdgKswQJOFBgFLuehSiGcjAuRx6p/9lDVPzXZ62m7q5yRUqFiX8ovN5FjWQjMQ==}
 
   array-buffer-byte-length@1.0.1:
     resolution: {integrity: sha512-ahC5W1xgou+KTXix4sAO8Ki12Q+jf4i0+tmk3sC+zgcynshkHxzpXdImBehiUYKKKDwvfFiJl1tZt6ewscS1Mg==}
@@ -9825,6 +9837,12 @@ snapshots:
       rxjs: 7.8.1
       tslib: 2.8.1
 
+  '@ark/schema@0.23.0':
+    dependencies:
+      '@ark/util': 0.23.0
+
+  '@ark/util@0.23.0': {}
+
   '@babel/code-frame@7.26.2':
     dependencies:
       '@babel/helper-validator-identifier': 7.25.9
@@ -13408,6 +13426,11 @@ snapshots:
       dequal: 2.0.3
 
   aria-query@5.3.2: {}
+
+  arktype@2.0.0-rc.23:
+    dependencies:
+      '@ark/schema': 0.23.0
+      '@ark/util': 0.23.0
 
   array-buffer-byte-length@1.0.1:
     dependencies:

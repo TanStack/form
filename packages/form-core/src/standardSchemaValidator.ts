@@ -15,14 +15,14 @@ function prefixSchemaToErrors(
   const schema = new Map<string, v1.StandardIssue[]>()
 
   for (const issue of issues) {
-    const path = issue.path
-      ?.map((segment) =>
+    const path = [...(issue.path ?? [])]
+      .map((segment) =>
         typeof segment === 'number' ? `[${segment}]` : segment,
       )
       .join('.')
       .replace(/\.\[/g, '[')
 
-    if (path === undefined) {
+    if (path === '') {
       continue
     }
 

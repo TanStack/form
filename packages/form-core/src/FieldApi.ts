@@ -514,7 +514,10 @@ export class FieldApi<
       this.options.validatorAdapter,
     ] as const
     for (const adapter of adapters) {
-      if (adapter && typeof props.validate !== 'function') {
+      if (
+        adapter &&
+        (typeof props.validate !== 'function' || '~standard' in props.validate)
+      ) {
         return adapter()[props.type](
           props.value as never,
           props.validate,

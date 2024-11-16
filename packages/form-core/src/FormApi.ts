@@ -503,7 +503,10 @@ export class FormApi<
     type: TType
   }): ReturnType<ReturnType<Validator<any>>[TType]> {
     const adapter = this.options.validatorAdapter
-    if (adapter && typeof props.validate !== 'function') {
+    if (
+      adapter &&
+      (typeof props.validate !== 'function' || '~standard' in props.validate)
+    ) {
       return adapter()[props.type](props.value, props.validate) as never
     }
 
