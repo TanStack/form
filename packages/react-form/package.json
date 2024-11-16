@@ -54,6 +54,16 @@
         "default": "./dist/cjs/nextjs/index.cjs"
       }
     },
+    "./remix": {
+      "import": {
+        "types": "./dist/esm/remix/index.d.ts",
+        "default": "./dist/esm/remix/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/remix/index.d.cts",
+        "default": "./dist/cjs/remix/index.cjs"
+      }
+    },
     "./start": {
       "import": {
         "types": "./dist/esm/start/index.d.ts",
