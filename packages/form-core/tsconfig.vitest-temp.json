@@ -10,11 +10,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ES2022"
-    ],
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "module": "ES2022",
     "moduleResolution": "Bundler",
     "noEmit": true,
@@ -26,17 +22,10 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "ES2020",
-    "types": [
-      "@testing-library/jest-dom"
-    ],
+    "types": ["@testing-library/jest-dom"],
     "emitDeclarationOnly": false,
     "incremental": true,
     "tsBuildInfoFile": "/Users/leonardo/PersProgetti/TanStack/form/node_modules/.pnpm/vitest@2.1.4_@types+node@20.17.5_jsdom@25.0.1_less@4.2.0_sass@1.80.5_sugarss@4.0.1_terser@5.36.0/node_modules/vitest/dist/chunks/tsconfig.tmp.tsbuildinfo"
   },
-  "include": [
-    "src",
-    "tests",
-    "eslint.config.js",
-    "vite.config.ts"
-  ]
+  "include": ["src", "tests", "eslint.config.js", "vite.config.ts"]
 }
