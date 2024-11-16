@@ -165,6 +165,54 @@ describe('standard schema validator', () => {
         'email must be an email address (was "test")',
       ])
     })
+
+    it("should set field errors with the form validator's onChange", () => {
+      const form = new FormApi({
+        defaultValues: {
+          name: '',
+          surname: '',
+        },
+        validators: {
+          onChange: v.object({
+            name: v.pipe(
+              v.string(),
+              v.minLength(3, 'You must have a length of at least 3'),
+              v.endsWith('a', 'You must end with an "a"'),
+            ),
+            surname: v.pipe(
+              v.string(),
+              v.minLength(3, 'You must have a length of at least 3'),
+            ),
+          }),
+        },
+      })
+
+      const nameField = new FieldApi({
+        form,
+        name: 'name',
+      })
+
+      const surnameField = new FieldApi({
+        form,
+        name: 'surname',
+      })
+
+      nameField.mount()
+      surnameField.mount()
+
+      expect(nameField.getMeta().errors).toEqual([])
+      nameField.setValue('q')
+      expect(nameField.getMeta().errors).toEqual([
+        'You must have a length of at least 3, You must end with an "a"',
+      ])
+      expect(surnameField.getMeta().errors).toEqual([
+        'You must have a length of at least 3',
+      ])
+      nameField.setValue('qwer')
+      expect(nameField.getMeta().errors).toEqual(['You must end with an "a"'])
+      nameField.setValue('qwera')
+      expect(nameField.getMeta().errors).toEqual([])
+    })
   })
 
   describe('field', () => {

@@ -16,15 +16,15 @@ function prefixSchemaToErrors(
 
   for (const issue of issues) {
     const path = [...(issue.path ?? [])]
-      .map((segment) =>
-        typeof segment === 'number' ? `[${segment}]` : segment,
-      )
+      .map((segment) => {
+        const normalizedSegment =
+          typeof segment === 'object' ? segment.key : segment
+        return typeof normalizedSegment === 'number'
+          ? `[${normalizedSegment}]`
+          : normalizedSegment
+      })
       .join('.')
       .replace(/\.\[/g, '[')
-
-    if (path === '') {
-      continue
-    }
 
     schema.set(path, (schema.get(path) ?? []).concat(issue))
   }
