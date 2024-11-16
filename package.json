@@ -53,7 +53,7 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc-fb9a90fa48-20240614",
     "jsdom": "^25.0.1",
     "knip": "^5.36.5",
-    "nx": "^19.8.10",
+    "nx": "^20.1.2",
     "prettier": "^3.3.3",
     "publint": "^0.2.12",
     "react": "^18.3.1",
