@@ -448,6 +448,10 @@
               "to": "framework/react/examples/next-server-actions"
             },
             {
+              "label": "Remix",
+              "to": "framework/react/examples/remix"
+            },
+            {
               "label": "UI Libraries",
               "to": "framework/react/examples/ui-libraries"
             },
