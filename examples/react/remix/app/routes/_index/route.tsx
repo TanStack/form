@@ -40,6 +40,7 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   // Your form has successfully validated!
+  return null
 }
 
 export default function Index() {
@@ -48,7 +49,7 @@ export default function Index() {
   const form = useForm({
     ...formOpts,
     transform: useTransform(
-      (baseForm) => mergeForm(baseForm, actionData ?? initialFormState),
+      (baseForm) => mergeForm(baseForm, actionData ?? {}),
       [actionData],
     ),
   })
