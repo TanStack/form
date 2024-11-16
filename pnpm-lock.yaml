@@ -415,7 +415,7 @@ importers:
   examples/react/array:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^0.35.0
+        specifier: ^0.36.0
         version: link:../../../packages/react-form
       react:
         specifier: ^18.3.1
@@ -440,7 +440,7 @@ importers:
   examples/react/field-errors-from-form-validators:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^0.35.0
+        specifier: ^0.36.0
         version: link:../../../packages/react-form
       react:
         specifier: ^18.3.1
@@ -465,7 +465,7 @@ importers:
   examples/react/next-server-actions:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^0.35.0
+        specifier: ^0.36.0
         version: link:../../../packages/react-form
       next:
         specifier: 15.0.3
@@ -493,7 +493,7 @@ importers:
   examples/react/query-integration:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^0.35.0
+        specifier: ^0.36.0
         version: link:../../../packages/react-form
       '@tanstack/react-query':
         specifier: ^5.59.20
@@ -530,7 +530,7 @@ importers:
         specifier: ^2.14.0
         version: 2.14.0(typescript@5.4.5)
       '@tanstack/react-form':
-        specifier: ^0.35.0
+        specifier: ^0.36.0
         version: link:../../../packages/react-form
       isbot:
         specifier: ^4.1.0
@@ -564,7 +564,7 @@ importers:
   examples/react/simple:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^0.35.0
+        specifier: ^0.36.0
         version: link:../../../packages/react-form
       react:
         specifier: ^18.3.1
@@ -592,7 +592,7 @@ importers:
         specifier: ^0.35.0
         version: link:../../../packages/form-core
       '@tanstack/react-form':
-        specifier: ^0.35.0
+        specifier: ^0.36.0
         version: link:../../../packages/react-form
       '@tanstack/react-router':
         specifier: ^1.81.1
@@ -650,7 +650,7 @@ importers:
         specifier: 5.16.7
         version: 5.16.7(@emotion/react@11.13.3(@types/react@18.3.12)(react@18.3.1))(@emotion/styled@11.13.0(@emotion/react@11.13.3(@types/react@18.3.12)(react@18.3.1))(@types/react@18.3.12)(react@18.3.1))(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tanstack/react-form':
-        specifier: ^0.35.0
+        specifier: ^0.36.0
         version: link:../../../packages/react-form
       '@yme/lay-postcss':
         specifier: 0.1.0
@@ -693,7 +693,7 @@ importers:
   examples/react/valibot:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^0.35.0
+        specifier: ^0.36.0
         version: link:../../../packages/react-form
       '@tanstack/valibot-form-adapter':
         specifier: ^0.35.0
@@ -724,7 +724,7 @@ importers:
   examples/react/yup:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^0.35.0
+        specifier: ^0.36.0
         version: link:../../../packages/react-form
       '@tanstack/yup-form-adapter':
         specifier: ^0.35.0
@@ -755,7 +755,7 @@ importers:
   examples/react/zod:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^0.35.0
+        specifier: ^0.36.0
         version: link:../../../packages/react-form
       '@tanstack/zod-form-adapter':
         specifier: ^0.35.0
