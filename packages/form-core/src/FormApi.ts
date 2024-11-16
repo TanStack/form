@@ -8,8 +8,6 @@ import {
   isNonEmptyArray,
   setBy,
 } from './utils'
-import { standardValidator } from './validator'
-import type { StandardSchema } from './validator'
 import type { FieldApi, FieldMeta } from './FieldApi'
 import type {
   FormValidationError,
@@ -44,10 +42,9 @@ export type FormValidateOrFn<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > =
-  | (TFormValidator extends Validator<TFormData, infer TFN>
-      ? TFN
-      : FormValidateFn<TFormData, TFormValidator>)
-  | StandardSchema<any, any>
+  TFormValidator extends Validator<TFormData, infer TFN>
+    ? TFN
+    : FormValidateFn<TFormData, TFormValidator>
 
 /**
  * @private
@@ -83,10 +80,9 @@ export type FormAsyncValidateOrFn<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > =
-  | (TFormValidator extends Validator<TFormData, infer FFN>
-      ? FFN | FormValidateAsyncFn<TFormData, TFormValidator>
-      : FormValidateAsyncFn<TFormData, TFormValidator>)
-  | StandardSchema<any, any>
+  TFormValidator extends Validator<TFormData, infer FFN>
+    ? FFN
+    : FormValidateAsyncFn<TFormData, TFormValidator>
 
 export interface FormValidators<
   TFormData,
@@ -500,28 +496,15 @@ export class FormApi<
     },
     TType extends 'validate' | 'validateAsync',
   >(props: {
-    validate:
-      | (TType extends 'validate'
-          ? FormValidateOrFn<TFormData, TFormValidator>
-          : FormAsyncValidateOrFn<TFormData, TFormValidator>)
-      | StandardSchema<any, any>
+    validate: TType extends 'validate'
+      ? FormValidateOrFn<TFormData, TFormValidator>
+      : FormAsyncValidateOrFn<TFormData, TFormValidator>
     value: TValue
     type: TType
   }): ReturnType<ReturnType<Validator<any>>[TType]> {
     const adapter = this.options.validatorAdapter
     if (adapter && typeof props.validate !== 'function') {
       return adapter()[props.type](props.value, props.validate) as never
-    }
-
-    if (
-      props.validate &&
-      typeof props.validate === 'object' &&
-      '~standard' in props.validate
-    ) {
-      return standardValidator()()[props.type](
-        props.value,
-        props.validate,
-      ) as never
     }
 
     return (props.validate as FormValidateFn<any, any>)(props.value) as never

@@ -53,5 +53,9 @@
   ],
   "dependencies": {
     "@tanstack/store": "^0.5.5"
+  },
+  "devDependencies": {
+    "@standard-schema/spec": "1.0.0-beta.3",
+    "valibot": "^1.0.0-beta.5"
   }
 }

@@ -67,7 +67,6 @@
     "typescript51": "npm:typescript@5.1",
     "typescript52": "npm:typescript@5.2",
     "typescript53": "npm:typescript@5.3",
-    "valibot": "^1.0.0-beta.5",
     "vite": "^5.4.10",
     "vitest": "^2.1.4",
     "vue": "^3.3.4"

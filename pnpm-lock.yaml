@@ -95,9 +95,6 @@ importers:
       typescript53:
         specifier: npm:typescript@5.3
         version: typescript@5.3.3
-      valibot:
-        specifier: ^1.0.0-beta.5
-        version: 1.0.0-beta.5(typescript@5.4.5)
       vite:
         specifier: ^5.4.10
         version: 5.4.10(@types/node@20.17.5)(less@4.2.0)(sass@1.80.5)(sugarss@4.0.1(postcss@8.4.48))(terser@5.36.0)
@@ -1035,6 +1032,13 @@ importers:
       '@tanstack/store':
         specifier: ^0.5.5
         version: 0.5.5
+    devDependencies:
+      '@standard-schema/spec':
+        specifier: 1.0.0-beta.3
+        version: 1.0.0-beta.3
+      valibot:
+        specifier: ^1.0.0-beta.5
+        version: 1.0.0-beta.5(typescript@5.4.5)
 
   packages/lit-form:
     dependencies:
@@ -3783,6 +3787,9 @@ packages:
     peerDependenciesMeta:
       '@solidjs/router':
         optional: true
+
+  '@standard-schema/spec@1.0.0-beta.3':
+    resolution: {integrity: sha512-0ifF3BjA1E8SY9C+nUew8RefNOIq0cDlYALPty4rhUm8Rrl6tCM8hBT4bhGhx7I7iXD0uAgt50lgo8dD73ACMw==}
 
   '@stylistic/eslint-plugin-js@2.10.1':
     resolution: {integrity: sha512-IikL/RKy9Sk2UMDUUpqrEcwDeYzUEt6SaL2/UVCFuVQxKACHSgStT0NxXkxZmBOUforaU52FPf2Su07FYH5s5g==}
@@ -12210,6 +12217,8 @@ snapshots:
     dependencies:
       '@testing-library/dom': 10.4.0
       solid-js: 1.9.3
+
+  '@standard-schema/spec@1.0.0-beta.3': {}
 
   '@stylistic/eslint-plugin-js@2.10.1(eslint@9.14.0(jiti@2.4.0))':
     dependencies:
