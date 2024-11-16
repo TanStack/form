@@ -103,6 +103,10 @@ describe('standard schema validator', () => {
       expect(form.state.errors).toStrictEqual(['First name is too short'])
     })
 
+    // TODO: Waiting for https://github.com/colinhacks/zod/pull/3850
+    it.todo('should support standard schema sync validation with zod')
+    it.todo('should support standard schema async validation with zod')
+
     it('should support standard schema async validation with valibot', async () => {
       vi.useFakeTimers()
 
