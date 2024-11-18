@@ -239,8 +239,7 @@ describe('standard schema validator', () => {
       ])
     })
 
-    // FIXME: Valibot currently broken
-    it.skip('should support standard schema sync validation with valibot', async () => {
+    it('should support standard schema sync validation with valibot', async () => {
       const form = new FormApi({
         defaultValues: {
           firstName: '',
@@ -266,8 +265,7 @@ describe('standard schema validator', () => {
       expect(field.getMeta().errors).toStrictEqual(['First name is too short'])
     })
 
-    // FIXME: Valibot currently broken
-    it.skip('should support standard schema async validation with valibot', async () => {
+    it('should support standard schema async validation with valibot', async () => {
       vi.useFakeTimers()
 
       const form = new FormApi({
