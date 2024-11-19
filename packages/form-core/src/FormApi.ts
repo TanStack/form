@@ -48,7 +48,7 @@ export type FormValidateOrFn<
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > =
   TFormValidator extends Validator<TFormData, infer TFN>
-    ? TFN
+    ? TFN | FormValidateFn<TFormData, TFormValidator>
     :
         | FormValidateFn<TFormData, TFormValidator>
         | v1.StandardSchema<TFormData, unknown>
@@ -88,7 +88,7 @@ export type FormAsyncValidateOrFn<
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > =
   TFormValidator extends Validator<TFormData, infer FFN>
-    ? FFN
+    ? FFN | FormValidateAsyncFn<TFormData, TFormValidator>
     :
         | FormValidateAsyncFn<TFormData, TFormValidator>
         | v1.StandardSchema<TFormData, unknown>
