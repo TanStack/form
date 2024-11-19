@@ -601,7 +601,7 @@ export class FormApi<
   }
 
   /**
-   * Validates all fields in the form using the correct handlers for a given validation type.
+   * Validates form and all fields in using the correct handlers for a given validation cause.
    */
   validateAllFields = async (cause: ValidationCause) => {
     const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
@@ -967,22 +967,10 @@ export class FormApi<
       this.store.setState((prev) => ({ ...prev, isSubmitting: false }))
     }
 
-    // Validate all fields
+    // Validate form and all fields
     await this.validateAllFields('submit')
 
     // Fields are invalid, do not submit
-    if (!this.state.isFieldsValid) {
-      done()
-      this.options.onSubmitInvalid?.({
-        value: this.state.values,
-        formApi: this,
-      })
-      return
-    }
-
-    // Run validation for the form
-    await this.validate('submit')
-
     if (!this.state.isValid) {
       done()
       this.options.onSubmitInvalid?.({
