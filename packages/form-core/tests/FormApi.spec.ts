@@ -1868,6 +1868,123 @@ describe('form api', () => {
     expect(form.state.errors).toStrictEqual([])
   })
 
+  it('should run validators in order form sync -> field sync -> form async -> field async', async () => {
+    const order: string[] = []
+    const formAsyncChange = vi.fn().mockImplementation(async () => {
+      order.push('formAsyncChange')
+      await sleep(1000)
+    })
+    const formSyncChange = vi.fn().mockImplementation(() => {
+      order.push('formSyncChange')
+    })
+    const fieldAsyncChange = vi.fn().mockImplementation(async () => {
+      order.push('fieldAsyncChange')
+      await sleep(1000)
+    })
+    const fieldSyncChange = vi.fn().mockImplementation(() => {
+      order.push('fieldSyncChange')
+    })
+
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onChange: formSyncChange,
+        onChangeAsync: formAsyncChange,
+      },
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onChange: fieldSyncChange,
+        onChangeAsync: fieldAsyncChange,
+      },
+    })
+
+    form.mount()
+    firstNameField.mount()
+
+    firstNameField.handleChange('something')
+    await vi.runAllTimersAsync()
+
+    expect(order).toStrictEqual([
+      'formSyncChange',
+      'fieldSyncChange',
+      'formAsyncChange',
+      'fieldAsyncChange',
+    ])
+  })
+
+  it('should not run form async validator if field sync has errored', async () => {
+    const formAsyncChange = vi.fn()
+    const formSyncChange = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onChange: formSyncChange,
+        onChangeAsync: formAsyncChange,
+      },
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onChange: ({ value }) => (value.length > 0 ? undefined : 'field error'),
+      },
+    })
+
+    form.mount()
+    firstNameField.mount()
+
+    firstNameField.handleChange('')
+    await vi.runAllTimersAsync()
+
+    expect(formSyncChange).toHaveBeenCalled()
+    expect(firstNameField.state.meta.errorMap.onChange).toBe('field error')
+    expect(formAsyncChange).not.toHaveBeenCalled()
+  })
+
+  it('runs form async validator if field sync has errored and asyncAlways is true', async () => {
+    const formAsyncChange = vi.fn()
+    const formSyncChange = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onChange: formSyncChange,
+        onChangeAsync: formAsyncChange,
+      },
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+      asyncAlways: true,
+      validators: {
+        onChange: ({ value }) => (value.length > 0 ? undefined : 'field error'),
+      },
+    })
+
+    form.mount()
+    firstNameField.mount()
+
+    firstNameField.handleChange('')
+    await vi.runAllTimersAsync()
+
+    expect(formSyncChange).toHaveBeenCalled()
+    expect(firstNameField.state.meta.errorMap.onChange).toBe('field error')
+    expect(formAsyncChange).toHaveBeenCalled()
+  })
+
   it("should set errors for the fields from the form's onChange validator", async () => {
     const form = new FormApi({
       defaultValues: {
