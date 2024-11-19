@@ -589,7 +589,7 @@ importers:
   examples/react/standard-schema:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^0.36.0
+        specifier: ^0.36.2
         version: link:../../../packages/react-form
       arktype:
         specifier: 2.0.0-rc.23
