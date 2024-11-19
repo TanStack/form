@@ -992,25 +992,12 @@ export class FieldApi<
     // If the field is pristine, do not validate
     if (!this.state.meta.isTouched) return []
 
-    let validationErrorFromForm: ValidationErrorMap = {}
-    let formValidationResultPromise: Promise<
-      FieldsErrorMapFromValidator<TParentData>
-    > = Promise.resolve({})
-
-    try {
-      const formValidationResult = this.form.validate(cause)
-      if (formValidationResult instanceof Promise) {
-        formValidationResultPromise = formValidationResult
-      } else {
-        const fieldErrorFromForm = formValidationResult[this.name]
-        if (fieldErrorFromForm) {
-          validationErrorFromForm = fieldErrorFromForm
-        }
-      }
-    } catch (_) {}
-
     // Attempt to sync validate first
-    const { hasErrored } = this.validateSync(cause, validationErrorFromForm)
+    const { fieldsErrorMap } = this.form.validateSync(cause)
+    const { hasErrored } = this.validateSync(
+      cause,
+      fieldsErrorMap[this.name] ?? {},
+    )
 
     if (hasErrored && !this.options.asyncAlways) {
       this.getInfo().validationMetaMap[
@@ -1018,7 +1005,9 @@ export class FieldApi<
       ]?.lastAbortController.abort()
       return this.state.meta.errors
     }
+
     // No error? Attempt async validation
+    const formValidationResultPromise = this.form.validateAsync(cause)
     return this.validateAsync(cause, formValidationResultPromise)
   }
 

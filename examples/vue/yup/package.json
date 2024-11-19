@@ -10,8 +10,8 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@tanstack/vue-form": "^0.35.0",
-    "@tanstack/yup-form-adapter": "^0.35.0",
+    "@tanstack/vue-form": "^0.36.2",
+    "@tanstack/yup-form-adapter": "^0.36.2",
     "vue": "^3.3.4",
     "yup": "^1.4.0"
   },

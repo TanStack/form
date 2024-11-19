@@ -203,7 +203,7 @@ Handles the blur event.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:1035](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1035)
+[packages/form-core/src/FieldApi.ts:1024](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1024)
 
 ***
 
@@ -225,7 +225,7 @@ Handles the change event.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:1028](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1028)
+[packages/form-core/src/FieldApi.ts:1017](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1017)
 
 ***
 
@@ -404,7 +404,7 @@ Updates the field's errorMap
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:1050](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1050)
+[packages/form-core/src/FieldApi.ts:1039](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1039)
 
 ***
 
