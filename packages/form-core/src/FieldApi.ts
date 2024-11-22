@@ -551,11 +551,6 @@ export class FieldApi<
 
           this.prevState = state
           this.state = state
-
-          this.options.listeners?.onChange?.({
-            value: state.value,
-            fieldApi: this,
-          })
         },
       },
     )
@@ -701,6 +696,12 @@ export class FieldApi<
    */
   setValue = (updater: Updater<TData>, options?: UpdateMetaOptions) => {
     this.form.setFieldValue(this.name, updater as never, options)
+
+    this.options.listeners?.onChange?.({
+      value: updater as never,
+      fieldApi: this,
+    })
+
     this.validate('change')
   }
 

@@ -956,6 +956,29 @@ describe('field api', () => {
     expect(triggered).toStrictEqual('other')
   })
 
+  it('should not run the listener onChange on mount', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    let triggered!: string
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onChange: ({ value }) => {
+          triggered = value
+        },
+      },
+    })
+
+    field.mount()
+
+    expect(triggered).toStrictEqual(undefined)
+  })
+
   it('should run listener onBlur', () => {
     const form = new FormApi({
       defaultValues: {
