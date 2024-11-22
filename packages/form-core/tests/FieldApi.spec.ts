@@ -932,30 +932,6 @@ describe('field api', () => {
     })
   })
 
-  it('should run listener on handleChange', () => {
-    const form = new FormApi({
-      defaultValues: {
-        name: 'test',
-      },
-    })
-
-    let triggered!: string
-    const field = new FieldApi({
-      form,
-      name: 'name',
-      listeners: {
-        onHandleChange: ({ value }) => {
-          triggered = value
-        },
-      },
-    })
-
-    field.mount()
-
-    field.handleChange('other')
-    expect(triggered).toStrictEqual('other')
-  })
-
   it('should run listener onChange', () => {
     const form = new FormApi({
       defaultValues: {
@@ -976,7 +952,7 @@ describe('field api', () => {
 
     field.mount()
 
-    field.setValue('other', { touch: true })
+    field.setValue('other')
     expect(triggered).toStrictEqual('other')
   })
 
@@ -1001,6 +977,29 @@ describe('field api', () => {
     field.mount()
 
     field.handleBlur()
+    expect(triggered).toStrictEqual('test')
+  })
+
+  it('should run listener onMount', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    let triggered!: string
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onMount: ({ value }) => {
+          triggered = value
+        },
+      },
+    })
+
+    field.mount()
+
     expect(triggered).toStrictEqual('test')
   })
 

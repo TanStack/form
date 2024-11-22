@@ -291,14 +291,14 @@ export interface FieldListeners<
     TFormValidator,
     TData
   >
-  onHandleChange?: FieldListenerFn<
+  onBlur?: FieldListenerFn<
     TParentData,
     TName,
     TFieldValidator,
     TFormValidator,
     TData
   >
-  onBlur?: FieldListenerFn<
+  onMount?: FieldListenerFn<
     TParentData,
     TName,
     TFieldValidator,
@@ -634,6 +634,11 @@ export class FieldApi<
         }))
       }
     }
+
+    this.options.listeners?.onMount?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
 
     return () => {
       unsubscribe()
@@ -1069,11 +1074,6 @@ export class FieldApi<
    */
   handleChange = (updater: Updater<TData>) => {
     this.setValue(updater)
-
-    this.options.listeners?.onHandleChange?.({
-      value: this.state.value,
-      fieldApi: this,
-    })
   }
 
   /**
