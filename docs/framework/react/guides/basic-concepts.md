@@ -195,6 +195,23 @@ const firstName = form.useStore((state) => state.values.firstName)
 
 Note: The usage of the `form.useField` hook to achieve reactivity is discouraged since it is designed to be used thoughtfully within the `form.Field` component. You might want to use `form.useStore` instead.
 
+## Listeners
+
+`@tanstack/react-form` allows you to react to specific triggers and "listen" to them to dispatch side effects.
+
+Example:
+
+```tsx
+<form.Field
+  name="country"
+  listener={{
+    onChange: ({ value }) => {
+      form.reset({county: ''})
+    },
+  }}
+/>
+```
+
 ## Array Fields
 
 Array fields allow you to manage a list of values within a form, such as a list of hobbies. You can create an array field using the `form.Field` component with the `mode="array"` prop.
