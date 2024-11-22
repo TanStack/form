@@ -305,6 +305,13 @@ export interface FieldListeners<
     TFormValidator,
     TData
   >
+  onSubmit?: FieldListenerFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
 }
 
 /**
