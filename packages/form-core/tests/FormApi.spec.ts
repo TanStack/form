@@ -1718,7 +1718,6 @@ describe('form api', () => {
       listeners: {
         onSubmit: ({ value }) => {
           triggered = value
-          console.log(value)
         },
       },
     })

@@ -8,12 +8,12 @@ For situations where you want to "affect" or "react" to triggers, there's the li
 Imagine the following user flow:
 
 - User selects a country from a drop-down.
-- User then selects a county from another drop-down.
+- User then selects a province from another drop-down.
 - User changes the selected country to a different one.
 
-In this example, when the user changes the country, the selected county needs to be reset as it's no longer valid. With the listener API, we can subscribe to the onChange event and dispatch a reset to the field "county" when the listener is fired.
+In this example, when the user changes the country, the selected province needs to be reset as it's no longer valid. With the listener API, we can subscribe to the onChange event and dispatch a reset to the field "province" when the listener is fired.
 
-Other events that can be "listened" to are:
+Events that can be "listened" to are:
 
 - onChange
 - onBlur
@@ -25,7 +25,7 @@ function App() {
   const form = useForm({
     defaultValues: {
       country: '',
-      county: '',
+      province: '',
     },
     // ...
   })
@@ -41,7 +41,7 @@ function App() {
               onChange={(e) => field.handleChange(e.target.value)}
               listener={{
                 onChange: ({ value }) => {
-                  form.reset({county: ''})
+                  form.reset({province: ''})
                 }
               }}
             />
@@ -49,10 +49,10 @@ function App() {
         )}
       </form.Field>
 
-      <form.Field name="county">
+      <form.Field name="province">
         {(field) => (
           <label>
-            <div>County</div>
+            <div>Province</div>
             <input
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}

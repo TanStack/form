@@ -698,7 +698,7 @@ export class FieldApi<
     this.form.setFieldValue(this.name, updater as never, options)
 
     this.options.listeners?.onChange?.({
-      value: updater as never,
+      value: this.state.value,
       fieldApi: this,
     })
 

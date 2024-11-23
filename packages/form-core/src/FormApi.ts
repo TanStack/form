@@ -982,7 +982,7 @@ export class FormApi<
 
     this.store.batch(() => {
       void (
-        Object.values(this.fieldInfo) as FieldInfo<any, TFormValidator>[]
+        Object.values(this.fieldInfo) as FieldInfo<TFormData, TFormValidator>[]
       ).forEach((field) => {
         field.instance?.options.listeners?.onSubmit?.({
           value: field.instance.state.value,
