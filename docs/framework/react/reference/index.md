@@ -12,6 +12,7 @@ title: "@tanstack/react-form"
 ## Type Aliases
 
 - [FieldComponent](type-aliases/fieldcomponent.md)
+- [ReactFormExtendedApi](type-aliases/reactformextendedapi.md)
 - [UseField](type-aliases/usefield.md)
 
 ## Functions

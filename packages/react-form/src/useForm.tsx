@@ -50,6 +50,14 @@ export interface ReactFormApi<
 }
 
 /**
+ * An extended version of the `FormApi` class that includes React-specific functionalities from `ReactFormApi`
+ */
+export type ReactFormExtendedApi<
+  TFormData,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+> = FormApi<TFormData, TFormValidator> & ReactFormApi<TFormData, TFormValidator>
+
+/**
  * A custom React Hook that returns an extended instance of the `FormApi` class.
  *
  * This API encapsulates all the necessary functionalities related to the form. It allows you to manage form state, handle submissions, and interact with form fields
@@ -61,23 +69,23 @@ export function useForm<
   const [formApi] = useState(() => {
     const api = new FormApi<TFormData, TFormValidator>(opts)
 
-    const extendedApi: typeof api & ReactFormApi<TFormData, TFormValidator> =
+    const extendedApi: ReactFormExtendedApi<TFormData, TFormValidator> =
       api as never
     extendedApi.Field = function APIField(props) {
-      return (<Field {...props} form={api} />) as never
+      return <Field {...props} form={api} />
     }
     // eslint-disable-next-line react-hooks/rules-of-hooks
     extendedApi.useField = (props) => useField({ ...props, form: api })
     extendedApi.useStore = (selector) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      return useStore(api.store as any, selector as any) as any
+      return useStore(api.store, selector)
     }
     extendedApi.Subscribe = (props) => {
       return functionalUpdate(
         props.children,
         // eslint-disable-next-line react-hooks/rules-of-hooks
-        useStore(api.store as any, props.selector as any),
-      ) as any
+        useStore(api.store, props.selector),
+      )
     }
 
     return extendedApi
