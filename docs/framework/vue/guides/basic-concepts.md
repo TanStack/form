@@ -228,6 +228,34 @@ const firstName = form.useStore((state) => state.values.firstName)
 </template>
 ```
 
+## Listeners
+
+`@tanstack/vue-form` allows you to react to specific triggers and "listen" to them to dispatch side effects.
+
+Example:
+
+```vue
+<template>
+    <form.Field
+      name="country"
+      :listener="{
+          onChange: ({ value }) => {
+            form.reset({ province: "" })
+          },
+      }"
+    >
+      <template v-slot="{ field }">
+        <input
+          :value="field.state.value"
+          @input="(e) => field.handleChange(e.target.value)"
+        />
+      </template>
+    </form.Field>
+</template>
+```
+
+More information can be found at [Listeners](./listeners.md)
+
 Note: The usage of the `form.useField` method to achieve reactivity is discouraged since it is designed to be used thoughtfully within the `form.Field` component. You might want to use `form.useStore` instead.
 
 ## Array Fields
