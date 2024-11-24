@@ -187,6 +187,32 @@ class AppComponent {
 }
 ```
 
+## Listeners
+
+`@tanstack/angular-form` allows you to react to specific triggers and "listen" to them to dispatch side effects.
+
+Example:
+
+```angular-ts
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [TanStackField],
+  template: `
+    <ng-container
+      [tanstackField]="form"
+      name="country"
+      [listener]="{
+        onChange: () => form.reset({ province: '' })
+      }"
+      #country="field"
+    ></ng-container>
+  `,
+})
+```
+
+More information can be found at [Listeners](./listeners.md)
+
 ## Array Fields
 
 Array fields allow you to manage a list of values within a form, such as a list of hobbies. You can create an array field using the `tanstackField` directive.
