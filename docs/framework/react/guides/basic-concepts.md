@@ -206,7 +206,7 @@ Example:
   name="country"
   listener={{
     onChange: ({ value }) => {
-      form.reset({county: ''})
+      form.reset({ province: '' })
     },
   }}
 />

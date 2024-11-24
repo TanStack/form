@@ -41,7 +41,7 @@ function App() {
               onChange={(e) => field.handleChange(e.target.value)}
               listener={{
                 onChange: ({ value }) => {
-                  form.reset({province: ''})
+                  form.reset({ province: '' })
                 }
               }}
             />
