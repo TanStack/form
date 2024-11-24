@@ -29,4 +29,4 @@ type FormValidateFn<TFormData, TFormValidator>: (props) => FormValidationError<T
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:30](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L30)
+[packages/form-core/src/FormApi.ts:35](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L35)

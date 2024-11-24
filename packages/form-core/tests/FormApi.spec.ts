@@ -2174,7 +2174,7 @@ describe('form api', () => {
       validators: {
         onSubmit: ({ value }) => {
           const fieldWithErrorIndex = value.employees.findIndex(
-            (v) => v.firstName === 'person-2',
+            (val) => val.firstName === 'person-2',
           )
 
           if (fieldWithErrorIndex !== -1) {
