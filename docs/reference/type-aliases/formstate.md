@@ -6,7 +6,7 @@ title: FormState
 # Type Alias: FormState\<TFormData\>
 
 ```ts
-type FormState<TFormData>: BaseFormState<TFormData> & DerivedFormState;
+type FormState<TFormData>: BaseFormState<TFormData> & DerivedFormState<TFormData>;
 ```
 
 ## Type Parameters
@@ -15,4 +15,4 @@ type FormState<TFormData>: BaseFormState<TFormData> & DerivedFormState;
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:310](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L310)
+[packages/form-core/src/FormApi.ts:314](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L314)

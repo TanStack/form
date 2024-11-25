@@ -25,13 +25,13 @@ errorMap: FormValidationErrorMap;
 
 The error map for the form itself.
 
-### fieldMeta
+### fieldMetaBase
 
 ```ts
-fieldMeta: Record<DeepKeys<TFormData>, FieldMeta>;
+fieldMetaBase: Record<DeepKeys<TFormData>, FieldMetaBase>;
 ```
 
-A record of field metadata for each field in the form.
+A record of field metadata for each field in the form, not including the derived properties, like `errors` and such
 
 ### isSubmitted
 

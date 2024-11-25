@@ -3,11 +3,15 @@ id: DerivedFormState
 title: DerivedFormState
 ---
 
-# Type Alias: DerivedFormState
+# Type Alias: DerivedFormState\<TFormData\>
 
 ```ts
-type DerivedFormState: object;
+type DerivedFormState<TFormData>: object;
 ```
+
+## Type Parameters
+
+• **TFormData**
 
 ## Type declaration
 
@@ -26,6 +30,14 @@ errors: ValidationError[];
 ```
 
 The error array for the form itself.
+
+### fieldMeta
+
+```ts
+fieldMeta: Record<DeepKeys<TFormData>, FieldMeta>;
+```
+
+A record of field metadata for each field in the form, not including the derived properties, like `errors` and such
 
 ### isBlurred
 

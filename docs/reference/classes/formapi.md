@@ -37,7 +37,7 @@ Constructs a new `FormApi` instance with the given form options.
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:374](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L374)
+[packages/form-core/src/FormApi.ts:379](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L379)
 
 ## Properties
 
@@ -49,7 +49,7 @@ baseStore: Store<BaseFormState<TFormData>, (cb) => BaseFormState<TFormData>>;
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:354](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L354)
+[packages/form-core/src/FormApi.ts:359](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L359)
 
 ***
 
@@ -63,7 +63,7 @@ A record of field information for each field in the form.
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:359](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L359)
+[packages/form-core/src/FormApi.ts:364](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L364)
 
 ***
 
@@ -77,7 +77,7 @@ The options for the form.
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:353](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L353)
+[packages/form-core/src/FormApi.ts:358](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L358)
 
 ***
 
@@ -89,7 +89,7 @@ store: Derived<FormState<TFormData>>;
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:355](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L355)
+[packages/form-core/src/FormApi.ts:360](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L360)
 
 ## Accessors
 
@@ -107,7 +107,7 @@ get state(): FormState<TFormData>
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:362](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L362)
+[packages/form-core/src/FormApi.ts:367](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L367)
 
 ## Methods
 
@@ -131,7 +131,7 @@ deleteField<TField>(field): void
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:1079](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1079)
+[packages/form-core/src/FormApi.ts:1107](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1107)
 
 ***
 
@@ -157,7 +157,7 @@ Gets the field info of the specified field.
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:990](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L990)
+[packages/form-core/src/FormApi.ts:1015](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1015)
 
 ***
 
@@ -183,7 +183,7 @@ Gets the metadata of the specified field.
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:981](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L981)
+[packages/form-core/src/FormApi.ts:1006](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1006)
 
 ***
 
@@ -209,7 +209,7 @@ Gets the value of the specified field.
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:974](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L974)
+[packages/form-core/src/FormApi.ts:999](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L999)
 
 ***
 
@@ -227,7 +227,7 @@ Handles the form submission, performs validation, and calls the appropriate onSu
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:926](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L926)
+[packages/form-core/src/FormApi.ts:951](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L951)
 
 ***
 
@@ -263,7 +263,7 @@ Inserts a value into an array field at the specified index, shifting the subsequ
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:1111](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1111)
+[packages/form-core/src/FormApi.ts:1139](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1139)
 
 ***
 
@@ -283,7 +283,7 @@ mount(): () => void
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:484](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L484)
+[packages/form-core/src/FormApi.ts:509](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L509)
 
 ***
 
@@ -319,7 +319,7 @@ Moves the value at the first specified index to the second specified index withi
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:1229](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1229)
+[packages/form-core/src/FormApi.ts:1257](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1257)
 
 ***
 
@@ -352,7 +352,7 @@ Pushes a value into an array field.
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:1093](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1093)
+[packages/form-core/src/FormApi.ts:1121](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1121)
 
 ***
 
@@ -385,7 +385,7 @@ Removes a value from an array field at the specified index.
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:1164](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1164)
+[packages/form-core/src/FormApi.ts:1192](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1192)
 
 ***
 
@@ -421,7 +421,7 @@ Replaces a value into an array field at the specified index.
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:1138](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1138)
+[packages/form-core/src/FormApi.ts:1166](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1166)
 
 ***
 
@@ -452,7 +452,7 @@ Optional options to control the reset behavior.
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:554](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L554)
+[packages/form-core/src/FormApi.ts:579](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L579)
 
 ***
 
@@ -476,7 +476,7 @@ resetFieldMeta<TField>(fieldMeta): Record<TField, FieldMeta>
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:1024](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1024)
+[packages/form-core/src/FormApi.ts:1052](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1052)
 
 ***
 
@@ -498,7 +498,7 @@ Updates the form's errorMap
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:1253](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1253)
+[packages/form-core/src/FormApi.ts:1281](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1281)
 
 ***
 
@@ -526,7 +526,7 @@ Updates the metadata of the specified field.
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:1009](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1009)
+[packages/form-core/src/FormApi.ts:1034](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1034)
 
 ***
 
@@ -559,7 +559,7 @@ Sets the value of the specified field and optionally updates the touched state.
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:1048](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1048)
+[packages/form-core/src/FormApi.ts:1076](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1076)
 
 ***
 
@@ -595,7 +595,7 @@ Swaps the values at the specified indices within an array field.
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:1203](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1203)
+[packages/form-core/src/FormApi.ts:1231](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1231)
 
 ***
 
@@ -617,7 +617,7 @@ Updates the form options and form state.
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:510](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L510)
+[packages/form-core/src/FormApi.ts:535](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L535)
 
 ***
 
@@ -639,7 +639,7 @@ Validates form and all fields in using the correct handlers for a given validati
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:580](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L580)
+[packages/form-core/src/FormApi.ts:605](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L605)
 
 ***
 
@@ -672,7 +672,7 @@ Validates the children of a specified array in the form starting from a given in
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:614](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L614)
+[packages/form-core/src/FormApi.ts:639](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L639)
 
 ***
 
@@ -700,4 +700,4 @@ Validates a specified field in the form using the correct handlers for a given v
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:653](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L653)
+[packages/form-core/src/FormApi.ts:678](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L678)

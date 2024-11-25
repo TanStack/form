@@ -26,6 +26,8 @@ title: "@tanstack/form-core"
 - [DerivedFormState](type-aliases/derivedformstate.md)
 - [FieldInfo](type-aliases/fieldinfo.md)
 - [FieldMeta](type-aliases/fieldmeta.md)
+- [FieldMetaBase](type-aliases/fieldmetabase.md)
+- [FieldMetaDerived](type-aliases/fieldmetaderived.md)
 - [FieldsErrorMapFromValidator](type-aliases/fieldserrormapfromvalidator.md)
 - [FieldState](type-aliases/fieldstate.md)
 - [FormState](type-aliases/formstate.md)
