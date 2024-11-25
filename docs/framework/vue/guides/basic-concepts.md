@@ -238,10 +238,11 @@ Example:
 <template>
     <form.Field
       name="country"
-      :listener="{
-          onChange: ({ value }) => {
-            form.reset({ province: "" })
-          },
+      :listeners="{
+        onChange: ({ value }) => {
+          console.log(`Country changed to: ${value}, resetting province`)
+          form.setFieldValue('province', '')
+        } 
       }"
     >
       <template v-slot="{ field }">
