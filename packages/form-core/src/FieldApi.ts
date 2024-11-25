@@ -1,4 +1,4 @@
-import { Store } from '@tanstack/store'
+import { Derived, Store } from '@tanstack/store'
 import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
 import type { FieldInfo, FieldsErrorMapFromValidator, FormApi } from './FormApi'
 import type {
@@ -423,15 +423,13 @@ export class FieldApi<
   /**
    * The field state store.
    */
-  store!: Store<FieldState<TData>>
+  store!: Derived<FieldState<TData>>
   /**
    * The current field state.
    */
-  state!: FieldState<TData>
-  /**
-   * @private
-   */
-  prevState!: FieldState<TData>
+  get state() {
+    return this.store.state
+  }
   timeoutIds: Record<ValidationCause, ReturnType<typeof setTimeout> | null>
 
   /**
@@ -455,11 +453,11 @@ export class FieldApi<
       })
     }
 
-    this.store = new Store<FieldState<TData>>(
-      {
-        value: this.getValue(),
-
-        meta: this._getMeta() ?? {
+    this.store = new Derived({
+      deps: [this.form.store],
+      fn: () => {
+        const value = this.form.getFieldValue(this.name)
+        const meta = this.form.getFieldMeta(this.name) ?? {
           isValidating: false,
           isTouched: false,
           isBlurred: false,
@@ -468,26 +466,25 @@ export class FieldApi<
           errors: [],
           errorMap: {},
           ...opts.defaultMeta,
-        },
+        }
+
+        const metaErrors = Object.values(meta.errorMap).filter(
+          (val: unknown) => val !== undefined,
+        )
+
+        const isPristine = !meta.isDirty
+
+        return {
+          value,
+          meta: {
+            ...meta,
+            errors: metaErrors,
+            isPristine,
+          },
+        } as FieldState<TData>
       },
-      {
-        onUpdate: () => {
-          const state = this.store.state
+    })
 
-          state.meta.errors = Object.values(state.meta.errorMap).filter(
-            (val: unknown) => val !== undefined,
-          )
-
-          state.meta.isPristine = !state.meta.isDirty
-
-          this.prevState = state
-          this.state = state
-        },
-      },
-    )
-
-    this.state = this.store.state
-    this.prevState = this.state
     this.options = opts as never
   }
 
@@ -531,20 +528,6 @@ export class FieldApi<
   mount = () => {
     const info = this.getInfo()
     info.instance = this as never
-    const unsubscribe = this.form.store.subscribe(() => {
-      this.store.batch(() => {
-        const nextValue = this.getValue()
-        const nextMeta = this.getMeta()
-
-        if (nextValue !== this.state.value) {
-          this.store.setState((prev) => ({ ...prev, value: nextValue }))
-        }
-
-        if (nextMeta !== this.state.meta) {
-          this.store.setState((prev) => ({ ...prev, meta: nextMeta }))
-        }
-      })
-    })
 
     this.update(this.options as never)
     const { onMount } = this.options.validators || {}
@@ -569,7 +552,7 @@ export class FieldApi<
     }
 
     return () => {
-      unsubscribe()
+      this.store.cleanup()
     }
   }
 
@@ -602,7 +585,7 @@ export class FieldApi<
     }
 
     // Default Meta
-    if (this._getMeta() === undefined) {
+    if (this.form.getFieldMeta(this.name) === undefined) {
       this.setMeta(this.state.meta)
     }
 
@@ -625,26 +608,7 @@ export class FieldApi<
     this.validate('change')
   }
 
-  /**
-   * @private
-   */
-  _getMeta = () => this.form.getFieldMeta(this.name)
-
-  /**
-   * Gets the current field metadata.
-   */
-  getMeta = () =>
-    this._getMeta() ??
-    ({
-      isValidating: false,
-      isTouched: false,
-      isBlurred: false,
-      isDirty: false,
-      isPristine: true,
-      errors: [],
-      errorMap: {},
-      ...this.options.defaultMeta,
-    } as FieldMeta)
+  getMeta = () => this.store.state.meta
 
   /**
    * Sets the field metadata.
@@ -772,7 +736,7 @@ export class FieldApi<
                 field.runValidator({
                   validate: validateObj.validate,
                   value: {
-                    value: field.getValue(),
+                    value: field.store.state.value,
                     validationSource: 'field',
                     fieldApi: field,
                   },
@@ -903,7 +867,7 @@ export class FieldApi<
                     await this.runValidator({
                       validate: validateObj.validate,
                       value: {
-                        value: field.getValue(),
+                        value: field.store.state.value,
                         fieldApi: field,
                         signal: controller.signal,
                         validationSource: 'field',
