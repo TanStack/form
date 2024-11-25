@@ -437,6 +437,37 @@ importers:
         specifier: ^5.4.10
         version: 5.4.10(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)
 
+  examples/react/compiler:
+    dependencies:
+      '@tanstack/react-form':
+        specifier: ^0.38.0
+        version: link:../../../packages/react-form
+      react:
+        specifier: ^19.0.0-rc.1
+        version: 19.0.0-rc-5dcb0097-20240918
+      react-dom:
+        specifier: ^19.0.0-rc.1
+        version: 19.0.0-rc-5dcb0097-20240918(react@19.0.0-rc-5dcb0097-20240918)
+    devDependencies:
+      '@types/react':
+        specifier: npm:types-react@rc
+        version: types-react@19.0.0-rc.1
+      '@types/react-dom':
+        specifier: npm:types-react-dom@rc
+        version: types-react-dom@19.0.0-rc.1
+      '@vitejs/plugin-react':
+        specifier: ^4.3.3
+        version: 4.3.3(vite@5.4.11(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0))
+      babel-plugin-react-compiler:
+        specifier: ^19.0.0-beta-0dec889-20241115
+        version: 19.0.0-beta-df7b47d-20241124
+      eslint-plugin-react-compiler:
+        specifier: ^19.0.0-beta-0dec889-20241115
+        version: 19.0.0-beta-df7b47d-20241124(eslint@9.14.0(jiti@2.4.0))
+      vite:
+        specifier: ^5.4.10
+        version: 5.4.11(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)
+
   examples/react/field-errors-from-form-validators:
     dependencies:
       '@tanstack/react-form':
@@ -1113,6 +1144,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.3.3
         version: 4.3.3(vite@5.4.10(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0))
+      eslint-plugin-react-compiler:
+        specifier: ^19.0.0-beta-0dec889-20241115
+        version: 19.0.0-beta-df7b47d-20241124(eslint@9.14.0(jiti@2.4.0))
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -5274,6 +5308,9 @@ packages:
     peerDependencies:
       '@babel/core': ^7.4.0 || ^8.0.0-0 <8.0.0
 
+  babel-plugin-react-compiler@19.0.0-beta-df7b47d-20241124:
+    resolution: {integrity: sha512-93iSASR20HNsotcOTQ+KPL0zpgfRFVWL86AtXpmHp995HuMVnC9femd8Winr3GxkPEh8lEOyaw3nqY4q2HUm5w==}
+
   babel-preset-solid@1.9.3:
     resolution: {integrity: sha512-jvlx5wDp8s+bEF9sGFw/84SInXOA51ttkUEroQziKMbxplXThVKt83qB6bDTa1HuLNatdU9FHpFOiQWs1tLQIg==}
     peerDependencies:
@@ -6181,6 +6218,12 @@ packages:
     peerDependencies:
       eslint: '>=8.23.0'
 
+  eslint-plugin-react-compiler@19.0.0-beta-df7b47d-20241124:
+    resolution: {integrity: sha512-82PfnllC8jP/68KdLAbpWuYTcfmtGLzkqy2IW85WopKMTr+4rdQpp+lfliQ/QE79wWrv/dRoADrk3Pdhq25nTw==}
+    engines: {node: ^14.17.0 || ^16.0.0 || >= 18.0.0}
+    peerDependencies:
+      eslint: '>=7'
+
   eslint-plugin-react-debug@1.16.1:
     resolution: {integrity: sha512-AijumibZ+3hBYCGBEeD3GQse5TPnq9z6bX0qfsFwCwWjkW+siL2EEGvaxT7UZp2mcFMvoRJT3E4Jsemn6g0AGw==}
     engines: {bun: '>=1.0.15', node: '>=18.18.0'}
@@ -6747,6 +6790,12 @@ packages:
   he@1.2.0:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
+
+  hermes-estree@0.25.1:
+    resolution: {integrity: sha512-0wUoCcLp+5Ev5pDW2OriHC2MJCbwLwuRx+gAqMTOkGKJJiBCLjtrvy4PWUGn6MIVefecRpzoOZ/UV6iGdOr+Cw==}
+
+  hermes-parser@0.25.1:
+    resolution: {integrity: sha512-6pEjquH3rqaI6cYAXYPcz9MS4rY6R4ngRgrgfDshRptUZIc3lw0MCIJIGDj9++mfySOuPTHB4nrSW99BCvOPIA==}
 
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
@@ -14418,7 +14467,7 @@ snapshots:
       lodash: 4.17.21
       mlly: 1.7.2
       outdent: 0.8.0
-      vite: 5.4.10(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.48))(terser@5.36.0)
+      vite: 5.4.11(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.48))(terser@5.36.0)
       vite-node: 1.6.0(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.48))(terser@5.36.0)
     transitivePeerDependencies:
       - '@types/node'
@@ -14551,6 +14600,17 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@vitejs/plugin-react@4.3.3(vite@5.4.11(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0))':
+    dependencies:
+      '@babel/core': 7.26.0
+      '@babel/plugin-transform-react-jsx-self': 7.25.9(@babel/core@7.26.0)
+      '@babel/plugin-transform-react-jsx-source': 7.25.9(@babel/core@7.26.0)
+      '@types/babel__core': 7.20.5
+      react-refresh: 0.14.2
+      vite: 5.4.11(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)
+    transitivePeerDependencies:
+      - supports-color
+
   '@vitejs/plugin-vue@5.1.5(vite@5.4.10(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0))(vue@3.5.12(typescript@5.6.3))':
     dependencies:
       vite: 5.4.10(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)
@@ -14584,13 +14644,13 @@ snapshots:
       chai: 5.1.2
       tinyrainbow: 1.2.0
 
-  '@vitest/mocker@2.1.4(vite@5.4.10(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0))':
+  '@vitest/mocker@2.1.4(vite@5.4.11(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0))':
     dependencies:
       '@vitest/spy': 2.1.4
       estree-walker: 3.0.3
       magic-string: 0.30.12
     optionalDependencies:
-      vite: 5.4.10(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)
+      vite: 5.4.11(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)
 
   '@vitest/pretty-format@2.1.4':
     dependencies:
@@ -15125,6 +15185,10 @@ snapshots:
       '@babel/helper-define-polyfill-provider': 0.6.3(@babel/core@7.26.0)
     transitivePeerDependencies:
       - supports-color
+
+  babel-plugin-react-compiler@19.0.0-beta-df7b47d-20241124:
+    dependencies:
+      '@babel/types': 7.26.0
 
   babel-preset-solid@1.9.3(@babel/core@7.26.0):
     dependencies:
@@ -16177,6 +16241,18 @@ snapshots:
       minimatch: 9.0.5
       semver: 7.6.3
 
+  eslint-plugin-react-compiler@19.0.0-beta-df7b47d-20241124(eslint@9.14.0(jiti@2.4.0)):
+    dependencies:
+      '@babel/core': 7.26.0
+      '@babel/parser': 7.26.2
+      '@babel/plugin-transform-private-methods': 7.25.9(@babel/core@7.26.0)
+      eslint: 9.14.0(jiti@2.4.0)
+      hermes-parser: 0.25.1
+      zod: 3.23.8
+      zod-validation-error: 3.4.0(zod@3.23.8)
+    transitivePeerDependencies:
+      - supports-color
+
   eslint-plugin-react-debug@1.16.1(eslint@9.14.0(jiti@2.4.0))(typescript@5.6.3):
     dependencies:
       '@eslint-react/ast': 1.16.1(eslint@9.14.0(jiti@2.4.0))(typescript@5.6.3)
@@ -16950,6 +17026,12 @@ snapshots:
       '@types/hast': 3.0.4
 
   he@1.2.0: {}
+
+  hermes-estree@0.25.1: {}
+
+  hermes-parser@0.25.1:
+    dependencies:
+      hermes-estree: 0.25.1
 
   hoist-non-react-statics@3.3.2:
     dependencies:
@@ -20896,7 +20978,7 @@ snapshots:
       unctx: 2.3.1(webpack-sources@3.2.3)
       unenv: 1.10.0
       unstorage: 1.13.0(ioredis@5.4.1)
-      vite: 5.4.10(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)
+      vite: 5.4.11(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)
       zod: 3.23.8
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -20937,7 +21019,7 @@ snapshots:
       debug: 4.3.7
       pathe: 1.1.2
       picocolors: 1.1.1
-      vite: 5.4.10(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.48))(terser@5.36.0)
+      vite: 5.4.11(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.48))(terser@5.36.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -20954,7 +21036,7 @@ snapshots:
       cac: 6.7.14
       debug: 4.3.7
       pathe: 1.1.2
-      vite: 5.4.10(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)
+      vite: 5.4.11(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -21053,6 +21135,19 @@ snapshots:
       sugarss: 4.0.1(postcss@8.4.49)
       terser: 5.36.0
 
+  vite@5.4.11(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.48))(terser@5.36.0):
+    dependencies:
+      esbuild: 0.21.5
+      postcss: 8.4.48
+      rollup: 4.26.0
+    optionalDependencies:
+      '@types/node': 20.17.5
+      fsevents: 2.3.3
+      less: 4.2.0
+      sass: 1.80.7
+      sugarss: 4.0.1(postcss@8.4.48)
+      terser: 5.36.0
+
   vite@5.4.11(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0):
     dependencies:
       esbuild: 0.21.5
@@ -21073,7 +21168,7 @@ snapshots:
   vitest@2.1.4(@types/node@20.17.5)(jsdom@25.0.1)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0):
     dependencies:
       '@vitest/expect': 2.1.4
-      '@vitest/mocker': 2.1.4(vite@5.4.10(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0))
+      '@vitest/mocker': 2.1.4(vite@5.4.11(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0))
       '@vitest/pretty-format': 2.1.4
       '@vitest/runner': 2.1.4
       '@vitest/snapshot': 2.1.4
@@ -21089,7 +21184,7 @@ snapshots:
       tinyexec: 0.3.1
       tinypool: 1.0.1
       tinyrainbow: 1.2.0
-      vite: 5.4.10(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)
+      vite: 5.4.11(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)
       vite-node: 2.1.4(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
