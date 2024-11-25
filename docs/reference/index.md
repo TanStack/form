@@ -13,6 +13,7 @@ title: "@tanstack/form-core"
 ## Interfaces
 
 - [FieldApiOptions](interfaces/fieldapioptions.md)
+- [FieldListeners](interfaces/fieldlisteners.md)
 - [FieldOptions](interfaces/fieldoptions.md)
 - [FieldValidators](interfaces/fieldvalidators.md)
 - [FormOptions](interfaces/formoptions.md)

@@ -102,6 +102,10 @@
               "to": "framework/react/guides/linked-fields"
             },
             {
+              "label": "Listeners",
+              "to": "framework/react/guides/listeners"
+            },
+            {
               "label": "UI Libraries",
               "to": "framework/react/guides/ui-libraries"
             },

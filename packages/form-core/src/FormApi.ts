@@ -980,6 +980,17 @@ export class FormApi<
       return
     }
 
+    this.store.batch(() => {
+      void (
+        Object.values(this.fieldInfo) as FieldInfo<TFormData, TFormValidator>[]
+      ).forEach((field) => {
+        field.instance?.options.listeners?.onSubmit?.({
+          value: field.instance.state.value,
+          fieldApi: field.instance,
+        })
+      })
+    })
+
     try {
       // Run the submit code
       await this.options.onSubmit?.({ value: this.state.values, formApi: this })

@@ -133,6 +133,24 @@ export type FieldAsyncValidateOrFn<
           TData
         >
 
+/**
+ * @private
+ */
+export type FieldListenerFn<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> = (props: {
+  value: TData
+  fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
+}) => void
+
 export interface FieldValidators<
   TParentData,
   TName extends DeepKeys<TParentData>,
@@ -255,6 +273,47 @@ export interface FieldValidators<
   >
 }
 
+export interface FieldListeners<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> {
+  onChange?: FieldListenerFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
+  onBlur?: FieldListenerFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
+  onMount?: FieldListenerFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
+  onSubmit?: FieldListenerFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
+}
+
 /**
  * An object type representing the options for a field in a form.
  */
@@ -303,6 +362,16 @@ export interface FieldOptions<
    * An optional object with default metadata for the field.
    */
   defaultMeta?: Partial<FieldMeta>
+  /**
+   * A list of listeners which attach to the corresponding events
+   */
+  listeners?: FieldListeners<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
 }
 
 /**
@@ -568,6 +637,11 @@ export class FieldApi<
       }
     }
 
+    this.options.listeners?.onMount?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
+
     return () => {
       unsubscribe()
     }
@@ -622,6 +696,12 @@ export class FieldApi<
    */
   setValue = (updater: Updater<TData>, options?: UpdateMetaOptions) => {
     this.form.setFieldValue(this.name, updater as never, options)
+
+    this.options.listeners?.onChange?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
+
     this.validate('change')
   }
 
@@ -1017,6 +1097,11 @@ export class FieldApi<
       this.setMeta((prev) => ({ ...prev, isBlurred: true }))
     }
     this.validate('blur')
+
+    this.options.listeners?.onBlur?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
   }
 
   /**
