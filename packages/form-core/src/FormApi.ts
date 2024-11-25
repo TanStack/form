@@ -1,4 +1,4 @@
-import { Store } from '@tanstack/store'
+import { Derived, Store } from '@tanstack/store'
 import {
   deleteBy,
   functionalUpdate,
@@ -216,23 +216,11 @@ export type FieldInfo<
 /**
  * An object representing the current state of the form.
  */
-export type FormState<TFormData> = {
+export type BaseFormState<TFormData> = {
   /**
    * The current values of the form fields.
    */
   values: TFormData
-  /**
-   * A boolean indicating if the form is currently validating.
-   */
-  isFormValidating: boolean
-  /**
-   * A boolean indicating if the form is valid.
-   */
-  isFormValid: boolean
-  /**
-   * The error array for the form itself.
-   */
-  errors: ValidationError[]
   /**
    * The error map for the form itself.
    */
@@ -246,14 +234,6 @@ export type FormState<TFormData> = {
    */
   fieldMeta: Record<DeepKeys<TFormData>, FieldMeta>
   /**
-   * A boolean indicating if any of the form fields are currently validating.
-   */
-  isFieldsValidating: boolean
-  /**
-   * A boolean indicating if all the form fields are valid.
-   */
-  isFieldsValid: boolean
-  /**
    * A boolean indicating if the form is currently in the process of being submitted after `handleSubmit` is called.
    *
    * Goes back to `false` when submission completes for one of the following reasons:
@@ -266,6 +246,41 @@ export type FormState<TFormData> = {
    *
    */
   isSubmitting: boolean
+  /**
+   * A boolean indicating if the form has been submitted.
+   */
+  isSubmitted: boolean
+  /**
+   * A boolean indicating if the form or any of its fields are currently validating.
+   */
+  isValidating: boolean
+  /**
+   * A counter for tracking the number of submission attempts.
+   */
+  submissionAttempts: number
+}
+
+export type DerivedFormState = {
+  /**
+   * A boolean indicating if the form is currently validating.
+   */
+  isFormValidating: boolean
+  /**
+   * A boolean indicating if the form is valid.
+   */
+  isFormValid: boolean
+  /**
+   * The error array for the form itself.
+   */
+  errors: ValidationError[]
+  /**
+   * A boolean indicating if any of the form fields are currently validating.
+   */
+  isFieldsValidating: boolean
+  /**
+   * A boolean indicating if all the form fields are valid.
+   */
+  isFieldsValid: boolean
   /**
    * A boolean indicating if any of the form fields have been touched.
    */
@@ -283,14 +298,6 @@ export type FormState<TFormData> = {
    */
   isPristine: boolean
   /**
-   * A boolean indicating if the form has been submitted.
-   */
-  isSubmitted: boolean
-  /**
-   * A boolean indicating if the form or any of its fields are currently validating.
-   */
-  isValidating: boolean
-  /**
    * A boolean indicating if the form and all its fields are valid.
    */
   isValid: boolean
@@ -298,32 +305,19 @@ export type FormState<TFormData> = {
    * A boolean indicating if the form can be submitted based on its current state.
    */
   canSubmit: boolean
-  /**
-   * A counter for tracking the number of submission attempts.
-   */
-  submissionAttempts: number
 }
+
+export type FormState<TFormData> = BaseFormState<TFormData> & DerivedFormState
 
 function getDefaultFormState<TFormData>(
   defaultState: Partial<FormState<TFormData>>,
-): FormState<TFormData> {
+): BaseFormState<TFormData> {
   return {
     values: defaultState.values ?? ({} as never),
-    errors: defaultState.errors ?? [],
     errorMap: defaultState.errorMap ?? {},
     fieldMeta: defaultState.fieldMeta ?? ({} as never),
-    canSubmit: defaultState.canSubmit ?? true,
-    isFieldsValid: defaultState.isFieldsValid ?? false,
-    isFieldsValidating: defaultState.isFieldsValidating ?? false,
-    isFormValid: defaultState.isFormValid ?? false,
-    isFormValidating: defaultState.isFormValidating ?? false,
     isSubmitted: defaultState.isSubmitted ?? false,
     isSubmitting: defaultState.isSubmitting ?? false,
-    isTouched: defaultState.isTouched ?? false,
-    isBlurred: defaultState.isBlurred ?? false,
-    isPristine: defaultState.isPristine ?? true,
-    isDirty: defaultState.isDirty ?? false,
-    isValid: defaultState.isValid ?? false,
     isValidating: defaultState.isValidating ?? false,
     submissionAttempts: defaultState.submissionAttempts ?? 0,
     validationMetaMap: defaultState.validationMetaMap ?? {
@@ -357,23 +351,17 @@ export class FormApi<
    * The options for the form.
    */
   options: FormOptions<TFormData, TFormValidator> = {}
-  /**
-   * A [TanStack Store instance](https://tanstack.com/store/latest/docs/reference/Store) that keeps track of the form's state.
-   */
-  store!: Store<FormState<TFormData>>
-  /**
-   * The current state of the form.
-   *
-   * **Note:**
-   * Do not use `state` directly, as it is not reactive.
-   * Please use form.useStore() utility to subscribe to state
-   */
-  state!: FormState<TFormData>
+  baseStore!: Store<BaseFormState<TFormData>>
+  store!: Derived<FormState<TFormData>>
   /**
    * A record of field information for each field in the form.
    */
   fieldInfo: Record<DeepKeys<TFormData>, FieldInfo<TFormData, TFormValidator>> =
     {} as any
+
+  get state() {
+    return this.store.state
+  }
 
   /**
    * @private
@@ -384,103 +372,86 @@ export class FormApi<
    * Constructs a new `FormApi` instance with the given form options.
    */
   constructor(opts?: FormOptions<TFormData, TFormValidator>) {
-    this.store = new Store<FormState<TFormData>>(
+    this.baseStore = new Store(
       getDefaultFormState({
         ...(opts?.defaultState as any),
         values: opts?.defaultValues ?? opts?.defaultState?.values,
         isFormValid: true,
       }),
-      {
-        onUpdate: () => {
-          let { state } = this.store
-          // Computed state
-          const fieldMetaValues = Object.values(state.fieldMeta) as (
-            | FieldMeta
-            | undefined
-          )[]
-
-          const isFieldsValidating = fieldMetaValues.some(
-            (field) => field?.isValidating,
-          )
-
-          const isFieldsValid = !fieldMetaValues.some(
-            (field) =>
-              field?.errorMap &&
-              isNonEmptyArray(Object.values(field.errorMap).filter(Boolean)),
-          )
-
-          const isTouched = fieldMetaValues.some((field) => field?.isTouched)
-          const isBlurred = fieldMetaValues.some((field) => field?.isBlurred)
-
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          if (isTouched && state?.errorMap?.onMount) {
-            state.errorMap.onMount = undefined
-          }
-
-          const isDirty = fieldMetaValues.some((field) => field?.isDirty)
-          const isPristine = !isDirty
-
-          const hasOnMountError = Boolean(
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            state.errorMap?.onMount ||
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              fieldMetaValues.some((f) => f?.errorMap?.onMount),
-          )
-
-          const isValidating = isFieldsValidating || state.isFormValidating
-          state.errors = Object.values(state.errorMap).reduce((prev, curr) => {
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            if (curr === undefined) return prev
-            if (typeof curr === 'string') {
-              prev.push(curr)
-              return prev
-            } else if (curr && isFormValidationError(curr)) {
-              prev.push(curr.form)
-              return prev
-            }
-            return prev
-          }, [] as ValidationError[])
-          const isFormValid = state.errors.length === 0
-          const isValid = isFieldsValid && isFormValid
-          const canSubmit =
-            (state.submissionAttempts === 0 &&
-              !isTouched &&
-              !hasOnMountError) ||
-            (!isValidating && !state.isSubmitting && isValid)
-
-          state = {
-            ...state,
-            isFieldsValidating,
-            isFieldsValid,
-            isFormValid,
-            isValid,
-            canSubmit,
-            isTouched,
-            isBlurred,
-            isPristine,
-            isDirty,
-          }
-
-          this.state = state
-          this.store.state = this.state
-
-          // Only run transform if state has shallowly changed - IE how React.useEffect works
-          const transformArray = this.options.transform?.deps ?? []
-          const shouldTransform =
-            transformArray.length !== this.prevTransformArray.length ||
-            transformArray.some((val, i) => val !== this.prevTransformArray[i])
-
-          if (shouldTransform) {
-            // This mutates the state
-            this.options.transform?.fn(this)
-            this.store.state = this.state
-            this.prevTransformArray = transformArray
-          }
-        },
-      },
     )
 
-    this.state = this.store.state
+    this.store = new Derived<FormState<TFormData>>({
+      deps: [this.baseStore],
+      fn: () => {
+        const { state } = this.baseStore
+        // Computed state
+        const fieldMetaValues = Object.values(state.fieldMeta) as (
+          | FieldMeta
+          | undefined
+        )[]
+
+        const isFieldsValidating = fieldMetaValues.some(
+          (field) => field?.isValidating,
+        )
+
+        const isFieldsValid = !fieldMetaValues.some(
+          (field) =>
+            field?.errorMap &&
+            isNonEmptyArray(Object.values(field.errorMap).filter(Boolean)),
+        )
+
+        const isTouched = fieldMetaValues.some((field) => field?.isTouched)
+        const isBlurred = fieldMetaValues.some((field) => field?.isBlurred)
+
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (isTouched && state?.errorMap?.onMount) {
+          state.errorMap.onMount = undefined
+        }
+
+        const isDirty = fieldMetaValues.some((field) => field?.isDirty)
+        const isPristine = !isDirty
+
+        const hasOnMountError = Boolean(
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          state.errorMap?.onMount ||
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            fieldMetaValues.some((f) => f?.errorMap?.onMount),
+        )
+
+        const isValidating = !!isFieldsValidating
+        const errors = Object.values(state.errorMap).reduce((prev, curr) => {
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          if (curr === undefined) return prev
+          if (typeof curr === 'string') {
+            prev.push(curr)
+            return prev
+          } else if (curr && isFormValidationError(curr)) {
+            prev.push(curr.form)
+            return prev
+          }
+          return prev
+        }, [] as ValidationError[])
+        const isFormValid = errors.length === 0
+        const isValid = isFieldsValid && isFormValid
+        const canSubmit =
+          (state.submissionAttempts === 0 && !isTouched && !hasOnMountError) ||
+          (!isValidating && !state.isSubmitting && isValid)
+
+        return {
+          ...state,
+          errors,
+          isFieldsValidating,
+          isFieldsValid,
+          isFormValid,
+          isValid,
+          canSubmit,
+          isTouched,
+          isBlurred,
+          isPristine,
+          isDirty,
+        } as FormState<TFormData>
+      },
+    })
 
     this.update(opts || {})
   }
@@ -523,7 +494,7 @@ export class FormApi<
       type: 'validate',
     })
     if (error) {
-      this.store.setState((prev) => ({
+      this.baseStore.setState((prev) => ({
         ...prev,
         errorMap: { ...prev.errorMap, onMount: error },
       }))
@@ -541,7 +512,7 @@ export class FormApi<
     // Options need to be updated first so that when the store is updated, the state is correct for the derived state
     this.options = options
 
-    this.store.batch(() => {
+    this.baseStore.batch(() => {
       const shouldUpdateValues =
         options.defaultValues &&
         options.defaultValues !== oldOptions.defaultValues &&
@@ -551,7 +522,7 @@ export class FormApi<
         options.defaultState !== oldOptions.defaultState &&
         !this.state.isTouched
 
-      this.store.setState(() =>
+      this.baseStore.setState(() =>
         getDefaultFormState(
           Object.assign(
             {},
@@ -588,7 +559,7 @@ export class FormApi<
       }
     }
 
-    this.store.setState(() =>
+    this.baseStore.setState(() =>
       getDefaultFormState({
         ...(this.options.defaultState as any),
         values:
@@ -605,7 +576,7 @@ export class FormApi<
    */
   validateAllFields = async (cause: ValidationCause) => {
     const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
-    this.store.batch(() => {
+    this.baseStore.batch(() => {
       void (
         Object.values(this.fieldInfo) as FieldInfo<any, TFormValidator>[]
       ).forEach((field) => {
@@ -661,7 +632,7 @@ export class FormApi<
 
     // Validate the fields
     const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
-    this.store.batch(() => {
+    this.baseStore.batch(() => {
       fieldsToValidate.forEach((nestedField) => {
         fieldValidationPromises.push(
           Promise.resolve().then(() => this.validateField(nestedField, cause)),
@@ -714,7 +685,7 @@ export class FormApi<
 
     const fieldsErrorMap: FieldsErrorMapFromValidator<TFormData> = {}
 
-    this.store.batch(() => {
+    this.baseStore.batch(() => {
       for (const validateObj of validates) {
         if (!validateObj.validate) continue
 
@@ -756,7 +727,7 @@ export class FormApi<
         }
 
         if (this.state.errorMap[errorMapKey] !== formError) {
-          this.store.setState((prev) => ({
+          this.baseStore.setState((prev) => ({
             ...prev,
             errorMap: {
               ...prev.errorMap,
@@ -781,7 +752,7 @@ export class FormApi<
       cause !== 'submit' &&
       !hasErrored
     ) {
-      this.store.setState((prev) => ({
+      this.baseStore.setState((prev) => ({
         ...prev,
         errorMap: {
           ...prev.errorMap,
@@ -802,7 +773,7 @@ export class FormApi<
     const validates = getAsyncValidatorArray(cause, this.options)
 
     if (!this.state.isFormValidating) {
-      this.store.setState((prev) => ({ ...prev, isFormValidating: true }))
+      this.baseStore.setState((prev) => ({ ...prev, isFormValidating: true }))
     }
 
     /**
@@ -882,7 +853,7 @@ export class FormApi<
               }
             }
           }
-          this.store.setState((prev) => ({
+          this.baseStore.setState((prev) => ({
             ...prev,
             errorMap: {
               ...prev.errorMap,
@@ -919,7 +890,7 @@ export class FormApi<
       }
     }
 
-    this.store.setState((prev) => ({
+    this.baseStore.setState((prev) => ({
       ...prev,
       isFormValidating: false,
     }))
@@ -950,7 +921,7 @@ export class FormApi<
    * Handles the form submission, performs validation, and calls the appropriate onSubmit or onInvalidSubmit callbacks.
    */
   handleSubmit = async () => {
-    this.store.setState((old) => ({
+    this.baseStore.setState((old) => ({
       ...old,
       // Submission attempts mark the form as not submitted
       isSubmitted: false,
@@ -961,10 +932,10 @@ export class FormApi<
     // Don't let invalid forms submit
     if (!this.state.canSubmit) return
 
-    this.store.setState((d) => ({ ...d, isSubmitting: true }))
+    this.baseStore.setState((d) => ({ ...d, isSubmitting: true }))
 
     const done = () => {
-      this.store.setState((prev) => ({ ...prev, isSubmitting: false }))
+      this.baseStore.setState((prev) => ({ ...prev, isSubmitting: false }))
     }
 
     // Validate form and all fields
@@ -984,8 +955,8 @@ export class FormApi<
       // Run the submit code
       await this.options.onSubmit?.({ value: this.state.values, formApi: this })
 
-      this.store.batch(() => {
-        this.store.setState((prev) => ({ ...prev, isSubmitted: true }))
+      this.baseStore.batch(() => {
+        this.baseStore.setState((prev) => ({ ...prev, isSubmitted: true }))
         done()
       })
     } catch (err) {
@@ -1036,7 +1007,7 @@ export class FormApi<
     field: TField,
     updater: Updater<FieldMeta>,
   ) => {
-    this.store.setState((prev) => {
+    this.baseStore.setState((prev) => {
       return {
         ...prev,
         fieldMeta: {
@@ -1078,7 +1049,7 @@ export class FormApi<
   ) => {
     const dontUpdateMeta = opts?.dontUpdateMeta ?? false
 
-    this.store.batch(() => {
+    this.baseStore.batch(() => {
       if (!dontUpdateMeta) {
         this.setFieldMeta(field, (prev) => ({
           ...prev,
@@ -1093,7 +1064,7 @@ export class FormApi<
         }))
       }
 
-      this.store.setState((prev) => {
+      this.baseStore.setState((prev) => {
         return {
           ...prev,
           values: setBy(prev.values, field, updater),
@@ -1103,7 +1074,7 @@ export class FormApi<
   }
 
   deleteField = <TField extends DeepKeys<TFormData>>(field: TField) => {
-    this.store.setState((prev) => {
+    this.baseStore.setState((prev) => {
       const newState = { ...prev }
       newState.values = deleteBy(newState.values, field)
       delete newState.fieldMeta[field]
@@ -1277,7 +1248,7 @@ export class FormApi<
    * Updates the form's errorMap
    */
   setErrorMap(errorMap: ValidationErrorMap) {
-    this.store.setState((prev) => ({
+    this.baseStore.setState((prev) => ({
       ...prev,
       errorMap: {
         ...prev.errorMap,

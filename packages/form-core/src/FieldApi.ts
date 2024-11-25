@@ -717,7 +717,7 @@ export class FieldApi<
     // Needs type cast as eslint errantly believes this is always falsy
     let hasErrored = false as boolean
 
-    this.form.store.batch(() => {
+    this.form.baseStore.batch(() => {
       const validateFieldFn = (
         field: FieldApi<any, any, any, any>,
         validateObj: SyncValidator<any>,
