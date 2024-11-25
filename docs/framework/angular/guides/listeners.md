@@ -29,8 +29,8 @@ Events that can be "listened" to are:
     <ng-container
       [tanstackField]="form"
       name="country"
-      [listener]="{
-        onChange: () => form.reset({ province: '' })
+      [listeners]="{
+        onChange: onCountryChange
       }"
       #country="field"
     ></ng-container>
@@ -50,5 +50,12 @@ export class AppComponent {
       province: '',
     },
   })
+
+  onCountryChange: FieldListenerFn<any, any, any, any, string> = ({
+    value,
+  }) => {
+    console.log(`Country changed to: ${value}, resetting province`)
+    this.form.setFieldValue('province', value)
+  }
 }
 ```

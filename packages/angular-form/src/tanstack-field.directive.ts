@@ -9,6 +9,7 @@ import type { OnChanges, OnDestroy, OnInit } from '@angular/core'
 import type {
   DeepKeys,
   DeepValue,
+  FieldListeners,
   FieldMeta,
   FieldOptions,
   FieldValidators,
@@ -53,6 +54,9 @@ export class TanStackField<
   @Input() validators?: NoInfer<
     FieldValidators<TParentData, TName, TFieldValidator, TFormValidator, TData>
   >
+  @Input() listeners?: NoInfer<
+    FieldListeners<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  >
   @Input() defaultMeta?: Partial<FieldMeta>
 
   api!: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
@@ -64,6 +68,7 @@ export class TanStackField<
       asyncAlways: this.asyncAlways,
       validatorAdapter: this.validatorAdapter,
       validators: this.validators,
+      listeners: this.listeners,
       defaultMeta: this.defaultMeta,
       name: this.name,
       form: this.tanstackField,

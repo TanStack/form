@@ -202,13 +202,22 @@ Example:
     <ng-container
       [tanstackField]="form"
       name="country"
-      [listener]="{
-        onChange: () => form.reset({ province: '' })
+      [listeners]="{
+        onChange: onCountryChange
       }"
       #country="field"
     ></ng-container>
   `,
 })
+
+...
+
+onCountryChange: FieldListenerFn<any, any, any, any, string> = ({
+    value,
+  }) => {
+    console.log(`Country changed to: ${value}, resetting province`)
+    this.form.setFieldValue('province', value)
+  }
 ```
 
 More information can be found at [Listeners](./listeners.md)
