@@ -10,7 +10,7 @@ import {
 } from './utils'
 import type { Updater } from './utils'
 import type { DeepKeys, DeepValue } from './util-types'
-import type { FieldApi, FieldMeta } from './FieldApi'
+import type { FieldApi, FieldMeta, FieldMetaBase } from './FieldApi'
 import type {
   FormValidationError,
   FormValidationErrorMap,
@@ -230,9 +230,9 @@ export type BaseFormState<TFormData> = {
    */
   validationMetaMap: Record<ValidationErrorMapKeys, ValidationMeta | undefined>
   /**
-   * A record of field metadata for each field in the form.
+   * A record of field metadata for each field in the form, not including the derived properties, like `errors` and such
    */
-  fieldMeta: Record<DeepKeys<TFormData>, FieldMeta>
+  fieldMetaBase: Record<DeepKeys<TFormData>, FieldMetaBase>
   /**
    * A boolean indicating if the form is currently in the process of being submitted after `handleSubmit` is called.
    *
@@ -260,7 +260,7 @@ export type BaseFormState<TFormData> = {
   submissionAttempts: number
 }
 
-export type DerivedFormState = {
+export type DerivedFormState<TFormData> = {
   /**
    * A boolean indicating if the form is currently validating.
    */
@@ -305,9 +305,14 @@ export type DerivedFormState = {
    * A boolean indicating if the form can be submitted based on its current state.
    */
   canSubmit: boolean
+  /**
+   * A record of field metadata for each field in the form, not including the derived properties, like `errors` and such
+   */
+  fieldMeta: Record<DeepKeys<TFormData>, FieldMeta>
 }
 
-export type FormState<TFormData> = BaseFormState<TFormData> & DerivedFormState
+export type FormState<TFormData> = BaseFormState<TFormData> &
+  DerivedFormState<TFormData>
 
 function getDefaultFormState<TFormData>(
   defaultState: Partial<FormState<TFormData>>,
@@ -315,7 +320,7 @@ function getDefaultFormState<TFormData>(
   return {
     values: defaultState.values ?? ({} as never),
     errorMap: defaultState.errorMap ?? {},
-    fieldMeta: defaultState.fieldMeta ?? ({} as never),
+    fieldMetaBase: defaultState.fieldMetaBase ?? ({} as never),
     isSubmitted: defaultState.isSubmitted ?? false,
     isSubmitting: defaultState.isSubmitting ?? false,
     isValidating: defaultState.isValidating ?? false,
@@ -385,10 +390,29 @@ export class FormApi<
       fn: () => {
         const { state } = this.baseStore
         // Computed state
-        const fieldMetaValues = Object.values(state.fieldMeta) as (
+        const fieldMetaValues = Object.values(state.fieldMetaBase) as (
           | FieldMeta
           | undefined
         )[]
+
+        const fieldMeta = {} as FormState<TFormData>['fieldMeta']
+        for (const key of Object.keys(state.fieldMetaBase) as Array<
+          keyof typeof state.fieldMetaBase
+        >) {
+          const baseVal = state.fieldMetaBase[key as never] as FieldMetaBase
+
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          const fieldErrors = Object.values(baseVal.errorMap ?? {}).filter(
+            (val: unknown) => val !== undefined,
+          )
+          const isFieldPristine = !baseVal.isDirty
+
+          fieldMeta[key] = {
+            ...baseVal,
+            errors: fieldErrors,
+            isPristine: isFieldPristine,
+          } as FieldMeta
+        }
 
         const isFieldsValidating = fieldMetaValues.some(
           (field) => field?.isValidating,
@@ -439,6 +463,7 @@ export class FormApi<
 
         return {
           ...state,
+          fieldMeta,
           errors,
           isFieldsValidating,
           isFieldsValid,
@@ -1013,9 +1038,12 @@ export class FormApi<
     this.baseStore.setState((prev) => {
       return {
         ...prev,
-        fieldMeta: {
-          ...prev.fieldMeta,
-          [field]: functionalUpdate(updater, prev.fieldMeta[field]),
+        fieldMetaBase: {
+          ...prev.fieldMetaBase,
+          [field]: functionalUpdate(
+            updater,
+            prev.fieldMetaBase[field] as never,
+          ),
         },
       }
     })
@@ -1080,7 +1108,7 @@ export class FormApi<
     this.baseStore.setState((prev) => {
       const newState = { ...prev }
       newState.values = deleteBy(newState.values, field)
-      delete newState.fieldMeta[field]
+      delete newState.fieldMetaBase[field]
 
       return newState
     })

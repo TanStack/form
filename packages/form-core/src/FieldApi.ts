@@ -328,10 +328,7 @@ export interface FieldApiOptions<
   form: FormApi<TParentData, TFormValidator>
 }
 
-/**
- * An object type representing the metadata of a field in a form.
- */
-export type FieldMeta = {
+export type FieldMetaBase = {
   /**
    * A flag indicating whether the field has been touched.
    */
@@ -341,17 +338,9 @@ export type FieldMeta = {
    */
   isBlurred: boolean
   /**
-   * A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
-   */
-  isPristine: boolean
-  /**
    * A flag that is `true` if the field's value has been modified by the user. Opposite of `isPristine`.
    */
   isDirty: boolean
-  /**
-   * An array of errors related to the field value.
-   */
-  errors: ValidationError[]
   /**
    * A map of errors related to the field value.
    */
@@ -361,6 +350,22 @@ export type FieldMeta = {
    */
   isValidating: boolean
 }
+
+export type FieldMetaDerived = {
+  /**
+   * An array of errors related to the field value.
+   */
+  errors: ValidationError[]
+  /**
+   * A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
+   */
+  isPristine: boolean
+}
+
+/**
+ * An object type representing the metadata of a field in a form.
+ */
+export type FieldMeta = FieldMetaBase & FieldMetaDerived
 
 /**
  * An object type representing the state of a field.
@@ -468,19 +473,9 @@ export class FieldApi<
           ...opts.defaultMeta,
         }
 
-        const metaErrors = Object.values(meta.errorMap).filter(
-          (val: unknown) => val !== undefined,
-        )
-
-        const isPristine = !meta.isDirty
-
         return {
           value,
-          meta: {
-            ...meta,
-            errors: metaErrors,
-            isPristine,
-          },
+          meta,
         } as FieldState<TData>
       },
     })
