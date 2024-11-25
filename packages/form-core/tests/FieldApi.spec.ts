@@ -10,10 +10,14 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'name',
     })
+
+    field.mount()
 
     expect(field.getValue()).toBe('test')
   })
@@ -24,6 +28,7 @@ describe('field api', () => {
         name: 'test',
       },
     })
+    form.mount()
 
     const field = new FieldApi({
       form,
@@ -31,15 +36,22 @@ describe('field api', () => {
       name: 'name',
     })
 
+    field.mount()
+
     expect(field.getValue()).toBe('other')
   })
 
   it('should get default meta', () => {
     const form = new FormApi()
+
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'name',
     })
+
+    field.mount()
 
     expect(field.getMeta()).toEqual({
       isTouched: false,
@@ -54,6 +66,9 @@ describe('field api', () => {
 
   it('should allow to set default meta', () => {
     const form = new FormApi()
+
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'name',
@@ -64,6 +79,8 @@ describe('field api', () => {
         isBlurred: true,
       },
     })
+
+    field.mount()
 
     expect(field.getMeta()).toEqual({
       isTouched: true,
@@ -83,10 +100,14 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'name',
     })
+
+    field.mount()
 
     field.setValue('other', {
       dontUpdateMeta: true,
@@ -102,10 +123,14 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'names',
     })
+
+    field.mount()
 
     field.pushValue('other')
 
@@ -118,6 +143,7 @@ describe('field api', () => {
         names: ['test'],
       },
     })
+
     form.mount()
 
     const field = new FieldApi({
@@ -132,6 +158,7 @@ describe('field api', () => {
         },
       },
     })
+
     field.mount()
 
     field.pushValue('other')
@@ -148,10 +175,14 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'names',
     })
+
+    field.mount()
 
     field.insertValue(1, 'other')
 
@@ -165,10 +196,14 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'names',
     })
+
+    field.mount()
 
     field.replaceValue(1, 'other')
 
@@ -182,10 +217,14 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'names',
     })
+
+    field.mount()
 
     field.replaceValue(10, 'other')
 
@@ -231,10 +270,14 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'names',
     })
+
+    field.mount()
 
     field.removeValue(1)
 
@@ -373,7 +416,9 @@ describe('field api', () => {
       validators: subFieldValidators,
     })
 
-    ;[form, field, subField1].forEach((f) => f.mount())
+    form.mount()
+    field.mount()
+    subField1.mount()
 
     await form.handleSubmit()
 
@@ -394,10 +439,14 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'names',
     })
+
+    field.mount()
 
     field.swapValues(0, 1)
 
@@ -443,10 +492,14 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'names',
     })
+
+    field.mount()
 
     field.moveValue(2, 0)
 
@@ -492,6 +545,8 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'name',
@@ -514,6 +569,8 @@ describe('field api', () => {
         name: 'test',
       },
     })
+
+    form.mount()
 
     const field = new FieldApi({
       form,
@@ -547,6 +604,8 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'name',
@@ -579,6 +638,8 @@ describe('field api', () => {
         name: 'test',
       },
     })
+
+    form.mount()
 
     const field = new FieldApi({
       form,
@@ -618,6 +679,8 @@ describe('field api', () => {
         name: 'test',
       },
     })
+
+    form.mount()
 
     const field = new FieldApi({
       form,
@@ -668,6 +731,8 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'name',
@@ -717,6 +782,8 @@ describe('field api', () => {
         name: 'test',
       },
     })
+
+    form.mount()
 
     const field = new FieldApi({
       form,
@@ -769,6 +836,8 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'name',
@@ -798,6 +867,8 @@ describe('field api', () => {
         name: 'test',
       },
     })
+
+    form.mount()
 
     const field = new FieldApi({
       form,
@@ -832,6 +903,8 @@ describe('field api', () => {
         name: 'test',
       },
     })
+
+    form.mount()
 
     const field = new FieldApi({
       form,
@@ -871,6 +944,8 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'name',
@@ -908,6 +983,8 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'name',
@@ -938,6 +1015,8 @@ describe('field api', () => {
         name: 'other',
       },
     })
+
+    form.mount()
 
     const field = new FieldApi({
       form,
@@ -975,6 +1054,8 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'name',
@@ -1006,6 +1087,8 @@ describe('field api', () => {
     }
     const form = new FormApi<Form>()
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'name',
@@ -1025,6 +1108,8 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'name',
@@ -1042,6 +1127,8 @@ describe('field api', () => {
         firstName: '',
       },
     })
+
+    form.mount()
 
     const field = new FieldApi({
       form,
@@ -1172,6 +1259,8 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     let resolve!: () => void
     const promise = new Promise((r) => {
       resolve = r as never
@@ -1210,6 +1299,8 @@ describe('field api', () => {
         confirm_password: '',
       },
     })
+
+    form.mount()
 
     const passField = new FieldApi({
       form,
@@ -1252,6 +1343,8 @@ describe('field api', () => {
         confirm_password: '',
       },
     })
+
+    form.mount()
 
     const passField = new FieldApi({
       form,
@@ -1310,6 +1403,8 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     const passField = new FieldApi({
       form,
       name: 'password',
@@ -1363,6 +1458,7 @@ describe('field api', () => {
       name: string
     }
     const form = new FormApi<Form>()
+    form.mount()
     const nameField = new FieldApi({
       form,
       name: 'name',
@@ -1378,6 +1474,7 @@ describe('field api', () => {
       name: string
     }
     const form = new FormApi<Form>()
+    form.mount()
     const nameField = new FieldApi({
       form,
       name: 'name',
@@ -1400,6 +1497,7 @@ describe('field api', () => {
       name: string
     }
     const form = new FormApi<Form>()
+    form.mount()
     const nameField = new FieldApi({
       form,
       name: 'name',

@@ -526,6 +526,8 @@ export class FieldApi<
    * Mounts the field instance to the form.
    */
   mount = () => {
+    const cleanup = this.store.mount()
+
     const info = this.getInfo()
     info.instance = this as never
 
@@ -551,9 +553,7 @@ export class FieldApi<
       }
     }
 
-    return () => {
-      this.store.cleanup()
-    }
+    return cleanup
   }
 
   /**

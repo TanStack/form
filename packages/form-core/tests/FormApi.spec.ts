@@ -474,7 +474,8 @@ describe('form api', () => {
     })
     form.mount()
     // Since validation runs through the field, a field must be mounted for that array
-    new FieldApi({ form, name: 'names' }).mount()
+    const field = new FieldApi({ form, name: 'names' })
+    field.mount()
 
     form.pushFieldValue('names', 'other')
 
@@ -831,6 +832,8 @@ describe('form api', () => {
 
     const form = new FormApi<Form>()
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'employees',
@@ -858,7 +861,7 @@ describe('form api', () => {
     }
 
     const form = new FormApi<Form>()
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'employees',
@@ -939,7 +942,7 @@ describe('form api', () => {
         age: 4,
       },
     })
-
+    form.mount()
     form.deleteField('names')
 
     expect(form.getFieldValue('age')).toStrictEqual(4)
@@ -1377,13 +1380,14 @@ describe('form api', () => {
     expect(form.state.errors).toStrictEqual([])
   })
 
-  it.skip('should validate fields during submit', async () => {
+  it('should validate fields during submit', async () => {
     const form = new FormApi({
       defaultValues: {
         firstName: '',
         lastName: '',
       },
     })
+    form.mount()
 
     const field = new FieldApi({
       form,
@@ -1417,13 +1421,13 @@ describe('form api', () => {
     ])
   })
 
-  it.skip('should validate optional object fields during submit', async () => {
+  it('should validate optional object fields during submit', async () => {
     const form = new FormApi({
       defaultValues: {
         person: null,
       } as { person: { firstName: string; lastName: string } | null },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'person.firstName',
@@ -1456,14 +1460,14 @@ describe('form api', () => {
     ])
   })
 
-  it.skip('should run all types of validation on fields during submit', async () => {
+  it('should run all types of validation on fields during submit', async () => {
     const form = new FormApi({
       defaultValues: {
         firstName: '',
         lastName: '',
       },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'firstName',
@@ -1507,7 +1511,7 @@ describe('form api', () => {
         onSubmitAsync: formSubmit,
       },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'firstName',
@@ -1542,7 +1546,7 @@ describe('form api', () => {
         lastName: '',
       },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'firstName',
@@ -1579,7 +1583,7 @@ describe('form api', () => {
         firstName: '',
       },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'firstName',
@@ -1622,8 +1626,8 @@ describe('form api', () => {
       },
     })
 
-    field.mount()
     form.mount()
+    field.mount()
 
     await form.validateAllFields('change')
     expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
@@ -1651,8 +1655,8 @@ describe('form api', () => {
       },
     })
 
-    field.mount()
     form.mount()
+    field.mount()
 
     await form.validateField('firstName', 'change')
     expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
@@ -1692,7 +1696,7 @@ describe('form api', () => {
           value.firstName.length > 0 ? undefined : 'first name is required',
       },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'firstName',
@@ -1710,7 +1714,7 @@ describe('form api', () => {
         person: null,
       } as { person: { firstName: string } | null },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'person.firstName',
@@ -1730,7 +1734,7 @@ describe('form api', () => {
         person: null,
       } as { person: { nameInfo: { first: string } | null } | null },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'person.nameInfo.first',
@@ -1750,7 +1754,7 @@ describe('form api', () => {
         persons: null,
       } as { persons: Array<{ nameInfo: { first: string } }> | null },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'persons',
@@ -1769,6 +1773,7 @@ describe('form api', () => {
       name: string
     }
     const form = new FormApi<Form>()
+    form.mount()
     form.setErrorMap({
       onChange: "name can't be Josh",
     })
@@ -1780,6 +1785,7 @@ describe('form api', () => {
       name: string
     }
     const form = new FormApi<Form>()
+    form.mount()
     form.setErrorMap({
       onChange: "name can't be Josh",
     })
@@ -1796,6 +1802,7 @@ describe('form api', () => {
       name: string
     }
     const form = new FormApi<Form>()
+    form.mount()
     form.setErrorMap({
       onChange: "name can't be Josh",
     })
@@ -1826,6 +1833,8 @@ describe('form api', () => {
         },
       },
     })
+
+    form.mount()
 
     const firstNameField = new FieldApi({
       form,
@@ -2004,7 +2013,7 @@ describe('form api', () => {
         },
       },
     })
-
+    form.mount()
     const firstNameField = new FieldApi({
       form,
       name: 'firstName',
@@ -2066,7 +2075,7 @@ describe('form api', () => {
         },
       },
     })
-
+    form.mount()
     const firstNameField = new FieldApi({
       form,
       name: 'firstName',
@@ -2135,7 +2144,7 @@ describe('form api', () => {
         },
       },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'names',
@@ -2189,7 +2198,7 @@ describe('form api', () => {
         },
       },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'employees',
@@ -2242,7 +2251,7 @@ describe('form api', () => {
         },
       },
     })
-
+    form.mount()
     const passField = new FieldApi({
       form,
       name: 'password',
@@ -2294,7 +2303,7 @@ describe('form api', () => {
         },
       },
     })
-
+    form.mount()
     const passField = new FieldApi({
       form,
       name: 'password',

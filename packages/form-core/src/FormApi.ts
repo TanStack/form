@@ -482,8 +482,9 @@ export class FormApi<
   }
 
   mount = () => {
+    const cleanup = this.store.mount()
     const { onMount } = this.options.validators || {}
-    if (!onMount) return
+    if (!onMount) return cleanup
     const error = this.runValidator({
       validate: onMount,
       value: {
@@ -499,6 +500,8 @@ export class FormApi<
         errorMap: { ...prev.errorMap, onMount: error },
       }))
     }
+
+    return cleanup
   }
 
   /**

@@ -52,6 +52,6 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/store": "https://pkg.pr.new/@tanstack/store@40"
+    "@tanstack/store": "https://pkg.pr.new/@tanstack/store@cc48436"
   }
 }
