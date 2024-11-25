@@ -55,7 +55,7 @@ export class AppComponent {
     value,
   }) => {
     console.log(`Country changed to: ${value}, resetting province`)
-    this.form.setFieldValue('province', value)
+    this.form.setFieldValue('province', '')
   }
 }
 ```

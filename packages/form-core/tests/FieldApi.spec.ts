@@ -979,6 +979,59 @@ describe('field api', () => {
     expect(triggered).toStrictEqual(undefined)
   })
 
+  it('should change the form state when running listener onChange', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'foo',
+        greet: 'bar',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onChange: ({ value }) => {
+          form.setFieldValue('greet', `hello ${value}`)
+        },
+      },
+    })
+
+    field.mount()
+
+    field.setValue('baz')
+    expect(form.getFieldValue('name')).toStrictEqual('baz')
+    expect(form.getFieldValue('greet')).toStrictEqual('hello baz')
+  })
+
+  it('should reset the form on a listener', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'foo',
+        greet: 'bar',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onChange: () => {
+          form.reset({
+            ...form.state.values,
+            greet: '',
+          })
+        },
+      },
+    })
+
+    field.mount()
+
+    field.setValue('other')
+    expect(form.getFieldValue('name')).toStrictEqual('other')
+    expect(form.getFieldValue('greet')).toStrictEqual('')
+  })
+
   it('should run listener onBlur', () => {
     const form = new FormApi({
       defaultValues: {

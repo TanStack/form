@@ -204,10 +204,11 @@ Example:
 ```tsx
 <form.Field
   name="country"
-  listener={{
+  listeners={{
     onChange: ({ value }) => {
-      form.reset({ province: '' })
-    },
+      console.log(`Country changed to: ${value}, resetting province`)
+      form.setFieldValue('province', '')
+    }
   }}
 />
 ```

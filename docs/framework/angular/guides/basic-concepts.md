@@ -216,7 +216,7 @@ onCountryChange: FieldListenerFn<any, any, any, any, string> = ({
     value,
   }) => {
     console.log(`Country changed to: ${value}, resetting province`)
-    this.form.setFieldValue('province', value)
+    this.form.setFieldValue('province', '')
   }
 ```
 
