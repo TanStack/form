@@ -1,5 +1,5 @@
 // @ts-check
-import reactCompiler from 'eslint-plugin-react-compiler'
+const reactCompiler = require('eslint-plugin-react-compiler')
 
 /** @type {import('eslint').Linter.Config} */
 const config = {
