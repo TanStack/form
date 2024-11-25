@@ -380,28 +380,6 @@ export class FormApi<
       }),
     )
 
-    this.errorsStore = new Derived({
-      deps: [this.baseStore],
-      fn: () => {
-        const { state } = this.baseStore
-
-        const errors = Object.values(state.errorMap).reduce((prev, curr) => {
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          if (curr === undefined) return prev
-          if (typeof curr === 'string') {
-            prev.push(curr)
-            return prev
-          } else if (curr && isFormValidationError(curr)) {
-            prev.push(curr.form)
-            return prev
-          }
-          return prev
-        }, [] as ValidationError[])
-
-        return errors
-      },
-    })
-
     this.store = new Derived<FormState<TFormData>>({
       deps: [this.baseStore],
       fn: () => {
@@ -441,6 +419,18 @@ export class FormApi<
         )
 
         const isValidating = !!isFieldsValidating
+        const errors = Object.values(state.errorMap).reduce((prev, curr) => {
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          if (curr === undefined) return prev
+          if (typeof curr === 'string') {
+            prev.push(curr)
+            return prev
+          } else if (curr && isFormValidationError(curr)) {
+            prev.push(curr.form)
+            return prev
+          }
+          return prev
+        }, [] as ValidationError[])
         const isFormValid = errors.length === 0
         const isValid = isFieldsValid && isFormValid
         const canSubmit =
