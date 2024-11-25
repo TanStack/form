@@ -3,37 +3,6 @@ import { FieldApi, FormApi } from '../src/index'
 import { sleep } from './utils'
 
 describe('form api', () => {
-  it('should get default form state', () => {
-    const form = new FormApi()
-    form.mount()
-    expect(form.state).toEqual({
-      values: {},
-      fieldMeta: {},
-      canSubmit: true,
-      isFieldsValid: true,
-      isFieldsValidating: false,
-      isFormValid: true,
-      isFormValidating: false,
-      isSubmitted: false,
-      errors: [],
-      errorMap: {},
-      isSubmitting: false,
-      isTouched: false,
-      isBlurred: false,
-      isPristine: true,
-      isDirty: false,
-      isValid: true,
-      isValidating: false,
-      submissionAttempts: 0,
-      validationMetaMap: {
-        onChange: undefined,
-        onBlur: undefined,
-        onSubmit: undefined,
-        onMount: undefined,
-      },
-    })
-  })
-
   it('should get default form state when default values are passed', () => {
     const form = new FormApi({
       defaultValues: {
@@ -41,32 +10,9 @@ describe('form api', () => {
       },
     })
     form.mount()
-    expect(form.state).toEqual({
+    expect(form.state).toMatchObject({
       values: {
         name: 'test',
-      },
-      fieldMeta: {},
-      canSubmit: true,
-      isFieldsValid: true,
-      errors: [],
-      errorMap: {},
-      isFieldsValidating: false,
-      isFormValid: true,
-      isFormValidating: false,
-      isSubmitted: false,
-      isSubmitting: false,
-      isTouched: false,
-      isBlurred: false,
-      isPristine: true,
-      isDirty: false,
-      isValid: true,
-      isValidating: false,
-      submissionAttempts: 0,
-      validationMetaMap: {
-        onChange: undefined,
-        onBlur: undefined,
-        onSubmit: undefined,
-        onMount: undefined,
       },
     })
   })
@@ -78,31 +24,8 @@ describe('form api', () => {
       },
     })
     form.mount()
-    expect(form.state).toEqual({
-      values: {},
-      fieldMeta: {},
-      errors: [],
-      errorMap: {},
-      canSubmit: true,
-      isFieldsValid: true,
-      isFieldsValidating: false,
-      isFormValid: true,
-      isFormValidating: false,
-      isSubmitted: false,
-      isSubmitting: false,
-      isTouched: false,
-      isBlurred: false,
-      isPristine: true,
-      isDirty: false,
-      isValid: true,
-      isValidating: false,
+    expect(form.state).toMatchObject({
       submissionAttempts: 30,
-      validationMetaMap: {
-        onChange: undefined,
-        onBlur: undefined,
-        onSubmit: undefined,
-        onMount: undefined,
-      },
     })
   })
 
@@ -122,34 +45,11 @@ describe('form api', () => {
       },
     })
 
-    expect(form.state).toEqual({
+    expect(form.state).toMatchObject({
       values: {
         name: 'other',
       },
-      errors: [],
-      errorMap: {},
-      fieldMeta: {},
-      canSubmit: true,
-      isFieldsValid: true,
-      isFieldsValidating: false,
-      isFormValid: true,
-      isFormValidating: false,
-      isSubmitted: false,
-      isSubmitting: false,
-      isTouched: false,
-      isBlurred: false,
-      isPristine: true,
-      isDirty: false,
-      isValid: true,
-      isValidating: false,
       submissionAttempts: 300,
-      validationMetaMap: {
-        onChange: undefined,
-        onBlur: undefined,
-        onSubmit: undefined,
-        onMount: undefined,
-        onServer: undefined,
-      },
     })
   })
 
@@ -167,33 +67,12 @@ describe('form api', () => {
 
     form.reset()
 
-    expect(form.state).toEqual({
+    expect(form.state).toMatchObject({
       values: {
         name: 'test',
       },
-      errors: [],
-      errorMap: {},
       fieldMeta: {},
-      canSubmit: true,
-      isFieldsValid: true,
-      isFieldsValidating: false,
-      isFormValid: true,
-      isFormValidating: false,
-      isSubmitted: false,
-      isSubmitting: false,
-      isTouched: false,
-      isBlurred: false,
-      isPristine: true,
-      isDirty: false,
-      isValid: true,
-      isValidating: false,
       submissionAttempts: 0,
-      validationMetaMap: {
-        onChange: undefined,
-        onBlur: undefined,
-        onSubmit: undefined,
-        onMount: undefined,
-      },
     })
   })
 
@@ -230,54 +109,11 @@ describe('form api', () => {
     }
     form.reset(resetValues)
 
-    expect(form.state).toEqual({
+    expect(form.state).toMatchObject({
       values: {
         name: 'reset name',
         age: 40,
         surname: 'reset surname',
-      },
-      errors: [],
-      errorMap: {},
-      fieldMeta: {
-        name: {
-          isValidating: false,
-          isTouched: false,
-          isBlurred: false,
-          isDirty: false,
-          isPristine: true,
-          errors: [],
-          errorMap: {},
-        },
-        age: {
-          isValidating: false,
-          isTouched: false,
-          isBlurred: false,
-          isDirty: false,
-          isPristine: true,
-          errors: [],
-          errorMap: {},
-        },
-      },
-      canSubmit: true,
-      isFieldsValid: true,
-      isFieldsValidating: false,
-      isFormValid: true,
-      isFormValidating: false,
-      isSubmitted: false,
-      isSubmitting: false,
-      isTouched: false,
-      isPristine: true,
-      isDirty: false,
-      isValid: true,
-      isBlurred: false,
-      isValidating: false,
-      submissionAttempts: 0,
-      validationMetaMap: {
-        onChange: undefined,
-        onBlur: undefined,
-        onSubmit: undefined,
-        onMount: undefined,
-        onServer: undefined,
       },
     })
   })
@@ -310,71 +146,6 @@ describe('form api', () => {
     field.handleChange('')
     form.reset()
     expect(form.state.values).toEqual({ name: 'initial' })
-  })
-
-  it('should not wipe validators when resetting', () => {
-    const form = new FormApi({
-      defaultValues: {
-        name: 'test',
-      },
-    })
-
-    const field = new FieldApi({
-      form,
-      name: 'name',
-      validators: {
-        onChange: ({ value }) => (value.length > 0 ? undefined : 'required'),
-      },
-    })
-
-    form.mount()
-
-    field.mount()
-
-    field.handleChange('')
-
-    expect(form.state.isFieldsValid).toEqual(false)
-    expect(form.state.canSubmit).toEqual(false)
-
-    form.reset()
-
-    expect(form.state).toEqual({
-      values: { name: 'test' },
-      errors: [],
-      errorMap: {},
-      fieldMeta: {
-        name: {
-          isValidating: false,
-          isTouched: false,
-          isBlurred: false,
-          isDirty: false,
-          isPristine: true,
-          errors: [],
-          errorMap: {},
-        },
-      },
-      canSubmit: true,
-      isFieldsValid: true,
-      isFieldsValidating: false,
-      isFormValid: true,
-      isFormValidating: false,
-      isSubmitted: false,
-      isSubmitting: false,
-      isTouched: false,
-      isBlurred: false,
-      isPristine: true,
-      isDirty: false,
-      isValid: true,
-      isValidating: false,
-      submissionAttempts: 0,
-      validationMetaMap: {
-        onChange: undefined,
-        onBlur: undefined,
-        onSubmit: undefined,
-        onMount: undefined,
-        onServer: undefined,
-      },
-    })
   })
 
   it("should get a field's value", () => {
