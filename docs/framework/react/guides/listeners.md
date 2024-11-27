@@ -32,19 +32,21 @@ function App() {
 
   return (
     <div>
-      <form.Field name="country">
+      <form.Field
+        name="country"
+        listeners={{
+          onChange: ({ value }) => {
+            console.log(`Country changed to: ${value}, resetting province`);
+            form.setFieldValue("province", "");
+          },
+        }}
+      >
         {(field) => (
           <label>
             <div>Country</div>
             <input
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
-              listeners={{
-                onChange: ({ value }) => {
-                  console.log(`Country changed to: ${value}, resetting province`)
-                  form.setFieldValue('province', '')
-                }
-              }}
             />
           </label>
         )}
