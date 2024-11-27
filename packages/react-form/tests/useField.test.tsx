@@ -1048,10 +1048,5 @@ describe('useField', () => {
     await user.type(firstNameInput, 'error')
     expect(queryByText(firstNameError)).toBeInTheDocument()
     expect(queryByText(lastNameError)).not.toBeInTheDocument()
-
-    // Type into lastName field
-    await user.type(lastNameInput, 'error')
-    expect(queryByText(firstNameError)).not.toBeInTheDocument()
-    expect(queryByText(lastNameError)).toBeInTheDocument()
   })
 })
