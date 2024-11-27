@@ -981,75 +981,77 @@ describe('useField', () => {
   })
 
   it('should fire only the onChange validator of the field being typed into', async () => {
-  type Person = {
-    firstName: string
-    lastName: string
-  }
-  const firstNameError = 'FirstName error'
-  const lastNameError = 'LastName error'
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    const firstNameError = 'FirstName error'
+    const lastNameError = 'LastName error'
 
-  function Comp() {
-    const form = useForm({
-      defaultValues: {
-        firstName: '',
-        lastName: '',
-      } as Person,
-    })
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        } as Person,
+      })
 
-    return (
-      <>
-        <form.Field
-          name="firstName"
-          validators={{
-            onChange: ({ value }) => (value === 'error' ? firstNameError : undefined),
-          }}
-          children={(field) => (
-            <div>
-              <input
-                data-testid="firstName"
-                name={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-              <p>{field.getMeta().errors}</p>
-            </div>
-          )}
-        />
-        <form.Field
-          name="lastName"
-          validators={{
-            onChange: ({ value }) => (value === 'error' ? lastNameError : undefined),
-          }}
-          children={(field) => (
-            <div>
-              <input
-                data-testid="lastName"
-                name={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-              <p>{field.getMeta().errors}</p>
-            </div>
-          )}
-        />
-      </>
-    )
-  }
+      return (
+        <>
+          <form.Field
+            name="firstName"
+            validators={{
+              onChange: ({ value }) =>
+                value === 'error' ? firstNameError : undefined,
+            }}
+            children={(field) => (
+              <div>
+                <input
+                  data-testid="firstName"
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                <p>{field.getMeta().errors}</p>
+              </div>
+            )}
+          />
+          <form.Field
+            name="lastName"
+            validators={{
+              onChange: ({ value }) =>
+                value === 'error' ? lastNameError : undefined,
+            }}
+            children={(field) => (
+              <div>
+                <input
+                  data-testid="lastName"
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                <p>{field.getMeta().errors}</p>
+              </div>
+            )}
+          />
+        </>
+      )
+    }
 
-  const { getByTestId, queryByText } = render(<Comp />)
-  const firstNameInput = getByTestId('firstName')
-  const lastNameInput = getByTestId('lastName')
+    const { getByTestId, queryByText } = render(<Comp />)
+    const firstNameInput = getByTestId('firstName')
+    const lastNameInput = getByTestId('lastName')
 
-  // Type into firstName field
-  await user.type(firstNameInput, 'error')
-  expect(queryByText(firstNameError)).toBeInTheDocument()
-  expect(queryByText(lastNameError)).not.toBeInTheDocument()
+    // Type into firstName field
+    await user.type(firstNameInput, 'error')
+    expect(queryByText(firstNameError)).toBeInTheDocument()
+    expect(queryByText(lastNameError)).not.toBeInTheDocument()
 
-  // Type into lastName field
-  await user.type(lastNameInput, 'error')
-  expect(queryByText(firstNameError)).not.toBeInTheDocument()
-  expect(queryByText(lastNameError)).toBeInTheDocument()
-})
+    // Type into lastName field
+    await user.type(lastNameInput, 'error')
+    expect(queryByText(firstNameError)).not.toBeInTheDocument()
+    expect(queryByText(lastNameError)).toBeInTheDocument()
+  })
 })
