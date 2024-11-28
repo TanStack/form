@@ -11,8 +11,8 @@
   "dependencies": {
     "@tanstack/form-core": "^0.37.1",
     "@tanstack/react-form": "^0.37.1",
-    "@tanstack/react-router": "^1.81.1",
-    "@tanstack/start": "^1.81.1",
+    "@tanstack/react-router": "^1.84.2",
+    "@tanstack/start": "^1.84.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "vinxi": "^0.4.3"
@@ -21,9 +21,9 @@
     "@types/node": "^20.14.10",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.3",
+    "@vitejs/plugin-react": "^4.3.4",
     "typescript": "5.4.5",
-    "vite": "^5.4.10",
-    "vite-tsconfig-paths": "^5.1.2"
+    "vite": "^5.4.11",
+    "vite-tsconfig-paths": "^5.1.3"
   }
 }
