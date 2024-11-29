@@ -979,7 +979,7 @@ export class FormApi<
       return
     }
 
-    this.store.batch(() => {
+    this.baseStore.batch(() => {
       void (
         Object.values(this.fieldInfo) as FieldInfo<TFormData, TFormValidator>[]
       ).forEach((field) => {
