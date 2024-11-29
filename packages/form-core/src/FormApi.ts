@@ -1,4 +1,4 @@
-import { Derived, Store } from '@tanstack/store'
+import { Derived, Store, batch } from '@tanstack/store'
 import {
   deleteBy,
   functionalUpdate,
@@ -588,7 +588,7 @@ export class FormApi<
     // Options need to be updated first so that when the store is updated, the state is correct for the derived state
     this.options = options
 
-    this.baseStore.batch(() => {
+    batch(() => {
       const shouldUpdateValues =
         options.defaultValues &&
         options.defaultValues !== oldOptions.defaultValues &&
@@ -652,7 +652,7 @@ export class FormApi<
    */
   validateAllFields = async (cause: ValidationCause) => {
     const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
-    this.baseStore.batch(() => {
+    batch(() => {
       void (
         Object.values(this.fieldInfo) as FieldInfo<any, TFormValidator>[]
       ).forEach((field) => {
@@ -708,7 +708,7 @@ export class FormApi<
 
     // Validate the fields
     const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
-    this.baseStore.batch(() => {
+    batch(() => {
       fieldsToValidate.forEach((nestedField) => {
         fieldValidationPromises.push(
           Promise.resolve().then(() => this.validateField(nestedField, cause)),
@@ -761,7 +761,7 @@ export class FormApi<
 
     const fieldsErrorMap: FieldsErrorMapFromValidator<TFormData> = {}
 
-    this.baseStore.batch(() => {
+    batch(() => {
       for (const validateObj of validates) {
         if (!validateObj.validate) continue
 
@@ -1027,7 +1027,7 @@ export class FormApi<
       return
     }
 
-    this.baseStore.batch(() => {
+    batch(() => {
       void (
         Object.values(this.fieldInfo) as FieldInfo<TFormData, TFormValidator>[]
       ).forEach((field) => {
@@ -1042,7 +1042,7 @@ export class FormApi<
       // Run the submit code
       await this.options.onSubmit?.({ value: this.state.values, formApi: this })
 
-      this.baseStore.batch(() => {
+      batch(() => {
         this.baseStore.setState((prev) => ({ ...prev, isSubmitted: true }))
         done()
       })
@@ -1139,7 +1139,7 @@ export class FormApi<
   ) => {
     const dontUpdateMeta = opts?.dontUpdateMeta ?? false
 
-    this.baseStore.batch(() => {
+    batch(() => {
       if (!dontUpdateMeta) {
         this.setFieldMeta(field, (prev) => ({
           ...prev,

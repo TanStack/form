@@ -1,4 +1,4 @@
-import { Derived, Store } from '@tanstack/store'
+import { Derived, batch } from '@tanstack/store'
 import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
 import type { FieldInfo, FieldsErrorMapFromValidator, FormApi } from './FormApi'
 import type {
@@ -792,7 +792,7 @@ export class FieldApi<
     // Needs type cast as eslint errantly believes this is always falsy
     let hasErrored = false as boolean
 
-    this.form.baseStore.batch(() => {
+    batch(() => {
       const validateFieldFn = (
         field: FieldApi<any, any, any, any>,
         validateObj: SyncValidator<any>,
