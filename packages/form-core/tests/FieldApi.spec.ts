@@ -1692,4 +1692,26 @@ describe('field api', () => {
       'other validation error',
     )
   })
+
+  it('should have derived state on first render given defaultMeta', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+    form.mount()
+
+    const nameField = new FieldApi({
+      form,
+      name: 'name',
+      defaultMeta: {
+        errorMap: {
+          onChange: 'THERE IS AN ERROR',
+        },
+      },
+    })
+
+    nameField.mount()
+    expect(nameField.getMeta().errors).toEqual(['THERE IS AN ERROR'])
+  })
 })
