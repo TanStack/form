@@ -357,6 +357,7 @@ export class FormApi<
    */
   options: FormOptions<TFormData, TFormValidator> = {}
   baseStore!: Store<BaseFormState<TFormData>>
+  fieldMetaDerived!: Derived<Record<DeepKeys<TFormData>, FieldMeta>>
   store!: Derived<FormState<TFormData>>
   /**
    * A record of field information for each field in the form.
@@ -385,8 +386,52 @@ export class FormApi<
       }),
     )
 
-    this.store = new Derived<FormState<TFormData>>({
+    this.fieldMetaDerived = new Derived({
       deps: [this.baseStore],
+      fn: ({ prevDepVals, currDepVals, prevVal: _prevVal }) => {
+        const prevVal = _prevVal as
+          | Record<DeepKeys<TFormData>, FieldMeta>
+          | undefined
+        const prevBaseStore = prevDepVals?.[0]
+        const currBaseStore = currDepVals[0]
+
+        const fieldMeta = {} as FormState<TFormData>['fieldMeta']
+        for (const key of Object.keys(currBaseStore.fieldMetaBase) as Array<
+          keyof typeof currBaseStore.fieldMetaBase
+        >) {
+          const currBaseVal = currBaseStore.fieldMetaBase[
+            key as never
+          ] as FieldMetaBase
+
+          const prevBaseVal = prevBaseStore?.fieldMetaBase[key as never] as
+            | FieldMetaBase
+            | undefined
+
+          let fieldErrors =
+            prevVal?.[key as never as keyof typeof prevVal]?.errors
+          if (!prevBaseVal || currBaseVal.errorMap !== prevBaseVal.errorMap) {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            fieldErrors = Object.values(currBaseVal.errorMap ?? {}).filter(
+              (val: unknown) => val !== undefined,
+            )
+          }
+
+          // As a primitive, we don't need to aggressively persist the same referencial value for performance reasons
+          const isFieldPristine = !currBaseVal.isDirty
+
+          fieldMeta[key] = {
+            ...currBaseVal,
+            errors: fieldErrors,
+            isPristine: isFieldPristine,
+          } as FieldMeta
+        }
+
+        return fieldMeta
+      },
+    })
+
+    this.store = new Derived<FormState<TFormData>>({
+      deps: [this.baseStore, this.fieldMetaDerived],
       fn: () => {
         const { state } = this.baseStore
         // Computed state
@@ -394,25 +439,6 @@ export class FormApi<
           | FieldMeta
           | undefined
         )[]
-
-        const fieldMeta = {} as FormState<TFormData>['fieldMeta']
-        for (const key of Object.keys(state.fieldMetaBase) as Array<
-          keyof typeof state.fieldMetaBase
-        >) {
-          const baseVal = state.fieldMetaBase[key as never] as FieldMetaBase
-
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          const fieldErrors = Object.values(baseVal.errorMap ?? {}).filter(
-            (val: unknown) => val !== undefined,
-          )
-          const isFieldPristine = !baseVal.isDirty
-
-          fieldMeta[key] = {
-            ...baseVal,
-            errors: fieldErrors,
-            isPristine: isFieldPristine,
-          } as FieldMeta
-        }
 
         const isFieldsValidating = fieldMetaValues.some(
           (field) => field?.isValidating,
@@ -463,7 +489,7 @@ export class FormApi<
 
         return {
           ...state,
-          fieldMeta,
+          fieldMeta: this.fieldMetaDerived.state,
           errors,
           isFieldsValidating,
           isFieldsValid,
@@ -507,7 +533,12 @@ export class FormApi<
   }
 
   mount = () => {
-    const cleanup = this.store.mount()
+    const cleanupFieldMetaDerived = this.fieldMetaDerived.mount()
+    const cleanupStoreDerived = this.store.mount()
+    const cleanup = () => {
+      cleanupFieldMetaDerived()
+      cleanupStoreDerived()
+    }
     const { onMount } = this.options.validators || {}
     if (!onMount) return cleanup
     const error = this.runValidator({

@@ -1113,8 +1113,8 @@ importers:
   packages/form-core:
     dependencies:
       '@tanstack/store':
-        specifier: ^0.5.5
-        version: 0.5.5
+        specifier: https://pkg.pr.new/@tanstack/store@d751b2d
+        version: https://pkg.pr.new/@tanstack/store@d751b2d
 
   packages/lit-form:
     dependencies:
@@ -4467,6 +4467,10 @@ packages:
 
   '@tanstack/store@0.5.5':
     resolution: {integrity: sha512-EOSrgdDAJExbvRZEQ/Xhh9iZchXpMN+ga1Bnk8Nmygzs8TfiE6hbzThF+Pr2G19uHL6+DTDTHhJ8VQiOd7l4tA==}
+
+  '@tanstack/store@https://pkg.pr.new/@tanstack/store@d751b2d':
+    resolution: {tarball: https://pkg.pr.new/@tanstack/store@d751b2d}
+    version: 0.6.0
 
   '@tanstack/virtual-file-routes@1.64.0':
     resolution: {integrity: sha512-soW+gE9QTmMaqXM17r7y1p8NiQVIIECjdTaYla8BKL5Flj030m3KuxEQoiG1XgjtA0O7ayznFz2YvPcXIy3qDg==}
@@ -14000,6 +14004,8 @@ snapshots:
       - xml2js
 
   '@tanstack/store@0.5.5': {}
+
+  '@tanstack/store@https://pkg.pr.new/@tanstack/store@d751b2d': {}
 
   '@tanstack/virtual-file-routes@1.64.0': {}
 
