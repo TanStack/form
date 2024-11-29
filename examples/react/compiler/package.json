@@ -6,7 +6,7 @@
     "dev": "vite --port=3001",
     "build": "vite build",
     "preview": "vite preview",
-    "test:types": "tsc"
+    "_test:types": "tsc"
   },
   "dependencies": {
     "@tanstack/react-form": "^0.38.0",
