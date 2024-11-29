@@ -49,18 +49,6 @@ A `Subscribe` function that allows you to listen and react to changes in the for
 
 • **props.selector?**
 
-TypeScript versions <=5.0.4 have a bug that prevents
-the type of the `TSelected` generic from being inferred
-from the return type of this method.
-
-In these versions, `TSelected` will fall back to the default
-type (or `unknown` if that's not defined).
-
-**See**
-
- - [This discussion on GitHub for the details](https://github.com/TanStack/form/pull/606/files#r1506715714)
- - [The bug report in `microsoft/TypeScript`](https://github.com/microsoft/TypeScript/issues/52786)
-
 #### Returns
 
 `ReactNode`

@@ -9,7 +9,7 @@ title: FieldComponent
 type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData>({
   children,
   ...fieldOptions
-}) => NodeType;
+}) => ReactNode;
 ```
 
 A type alias representing a field component for a specific form data type.
@@ -37,7 +37,7 @@ A type alias representing a field component for a specific form data type.
 
 ## Returns
 
-`NodeType`
+`ReactNode`
 
 ## Defined in
 
