@@ -609,7 +609,7 @@ export class FormApi<
    */
   reset = (values?: TFormData, opts?: { keepDefaultValues?: boolean }) => {
     const { fieldMeta: currentFieldMeta } = this.state
-    const fieldMeta = this.resetFieldMeta(currentFieldMeta)
+    const fieldMetaBase = this.resetFieldMeta(currentFieldMeta)
 
     if (values && !opts?.keepDefaultValues) {
       this.options = {
@@ -625,7 +625,7 @@ export class FormApi<
           values ??
           this.options.defaultValues ??
           this.options.defaultState?.values,
-        fieldMeta,
+        fieldMetaBase,
       }),
     )
   }

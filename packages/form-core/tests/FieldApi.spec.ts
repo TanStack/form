@@ -545,6 +545,8 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'items.2.quantity',
@@ -1039,6 +1041,8 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     let triggered!: string
     const field = new FieldApi({
       form,
@@ -1087,6 +1091,8 @@ describe('field api', () => {
       },
     })
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'name',
@@ -1111,6 +1117,8 @@ describe('field api', () => {
         greet: 'bar',
       },
     })
+
+    form.mount()
 
     const field = new FieldApi({
       form,
