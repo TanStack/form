@@ -409,6 +409,21 @@
       ]
     },
     {
+      "label": "Community Resources",
+      "children": [],
+      "frameworks": [
+        {
+          "label": "react",
+          "children": [
+            {
+              "label": "Balastrong's Tutorials",
+              "to": "framework/react/community/balastrongs-tutorials"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "label": "Examples",
       "children": [],
       "frameworks": [
