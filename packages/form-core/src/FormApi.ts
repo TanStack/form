@@ -430,12 +430,15 @@ export class FormApi<
       },
     })
 
-    this.store = new Derived<FormState<TFormData>>({
+    this.store = new Derived({
       deps: [this.baseStore, this.fieldMetaDerived],
-      fn: () => {
-        const { state } = this.baseStore
+      fn: ({ prevDepVals, currDepVals, prevVal: _prevVal }) => {
+        const prevVal = _prevVal as FormState<TFormData> | undefined
+        const prevBaseStore = prevDepVals?.[0]
+        const currBaseStore = currDepVals[0]
+
         // Computed state
-        const fieldMetaValues = Object.values(state.fieldMetaBase) as (
+        const fieldMetaValues = Object.values(currBaseStore.fieldMetaBase) as (
           | FieldMeta
           | undefined
         )[]
@@ -454,8 +457,8 @@ export class FormApi<
         const isBlurred = fieldMetaValues.some((field) => field?.isBlurred)
 
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (isTouched && state?.errorMap?.onMount) {
-          state.errorMap.onMount = undefined
+        if (isTouched && currBaseStore?.errorMap?.onMount) {
+          currBaseStore.errorMap.onMount = undefined
         }
 
         const isDirty = fieldMetaValues.some((field) => field?.isDirty)
@@ -463,32 +466,46 @@ export class FormApi<
 
         const hasOnMountError = Boolean(
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          state.errorMap?.onMount ||
+          currBaseStore.errorMap?.onMount ||
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             fieldMetaValues.some((f) => f?.errorMap?.onMount),
         )
 
         const isValidating = !!isFieldsValidating
-        const errors = Object.values(state.errorMap).reduce((prev, curr) => {
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          if (curr === undefined) return prev
-          if (typeof curr === 'string') {
-            prev.push(curr)
-            return prev
-          } else if (curr && isFormValidationError(curr)) {
-            prev.push(curr.form)
-            return prev
-          }
-          return prev
-        }, [] as ValidationError[])
+
+        // As `errors` is not a primitive, we need to aggressively persist the same referencial value for performance reasons
+        let errors = prevVal?.errors ?? []
+        if (
+          !prevBaseStore ||
+          currBaseStore.errorMap !== prevBaseStore.errorMap
+        ) {
+          errors = Object.values(currBaseStore.errorMap).reduce(
+            (prev, curr) => {
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+              if (curr === undefined) return prev
+              if (typeof curr === 'string') {
+                prev.push(curr)
+                return prev
+              } else if (curr && isFormValidationError(curr)) {
+                prev.push(curr.form)
+                return prev
+              }
+              return prev
+            },
+            [] as ValidationError[],
+          )
+        }
+
         const isFormValid = errors.length === 0
         const isValid = isFieldsValid && isFormValid
         const canSubmit =
-          (state.submissionAttempts === 0 && !isTouched && !hasOnMountError) ||
-          (!isValidating && !state.isSubmitting && isValid)
+          (currBaseStore.submissionAttempts === 0 &&
+            !isTouched &&
+            !hasOnMountError) ||
+          (!isValidating && !currBaseStore.isSubmitting && isValid)
 
         return {
-          ...state,
+          ...currBaseStore,
           fieldMeta: this.fieldMetaDerived.state,
           errors,
           isFieldsValidating,
