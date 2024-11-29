@@ -7,6 +7,7 @@ import {
   formOptions,
   initialFormState,
 } from '@tanstack/react-form/remix'
+import { useStore } from '@tanstack/react-store'
 
 import type { ActionFunctionArgs } from '@remix-run/node'
 
@@ -53,7 +54,7 @@ export default function Index() {
       [actionData],
     ),
   })
-  const formErrors = form.useStore((formState) => formState.errors)
+  const formErrors = useStore(form.store, (formState) => formState.errors)
 
   return (
     <Form method="post" onSubmit={() => form.handleSubmit()}>

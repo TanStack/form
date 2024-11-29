@@ -366,7 +366,7 @@ export class FormApi<
    *
    * **Note:**
    * Do not use `state` directly, as it is not reactive.
-   * Please use form.useStore() utility to subscribe to state
+   * Please use useStore(form.store) utility to subscribe to state
    */
   state!: FormState<TFormData>
   /**
