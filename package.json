@@ -61,13 +61,13 @@
     "rimraf": "^6.0.1",
     "sherif": "^1.0.1",
     "solid-js": "^1.9.3",
-    "typescript": "5.4.5",
-    "typescript49": "npm:typescript@4.9",
-    "typescript50": "npm:typescript@5.0",
+    "typescript": "5.6.3",
     "typescript51": "npm:typescript@5.1",
     "typescript52": "npm:typescript@5.2",
     "typescript53": "npm:typescript@5.3",
-    "vite": "^5.4.10",
+    "typescript54": "npm:typescript@5.4",
+    "typescript55": "npm:typescript@5.5",
+    "vite": "^5.4.11",
     "vitest": "^2.1.4",
     "vue": "^3.3.4"
   }

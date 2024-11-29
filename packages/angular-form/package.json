@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/angular-form",
-  "version": "0.36.2",
+  "version": "0.39.0",
   "description": "Powerful, type-safe forms for Angular.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -30,8 +30,6 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "esm2022": "./dist/esm2022/tanstack-angular-form.mjs",
-      "esm": "./dist/esm2022/tanstack-angular-form.mjs",
       "default": "./dist/fesm2022/tanstack-angular-form.mjs"
     },
     "./package.json": {
@@ -49,19 +47,19 @@
     "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "@analogjs/vite-plugin-angular": "^1.9.2",
-    "@angular/common": "^17.3.12",
-    "@angular/compiler": "^17.3.12",
-    "@angular/compiler-cli": "^17.3.12",
-    "@angular/core": "^17.3.12",
-    "@angular/platform-browser": "^17.3.12",
-    "@angular/platform-browser-dynamic": "^17.3.12",
+    "@analogjs/vite-plugin-angular": "^1.9.4",
+    "@angular/common": "^19.0.0",
+    "@angular/compiler": "^19.0.0",
+    "@angular/compiler-cli": "^19.0.0",
+    "@angular/core": "^19.0.0",
+    "@angular/platform-browser": "^19.0.0",
+    "@angular/platform-browser-dynamic": "^19.0.0",
     "@testing-library/angular": "^17.3.2",
-    "ng-packagr": "^17.3.0",
-    "typescript": "5.4.5",
+    "ng-packagr": "^19.0.1",
+    "typescript": "5.6.3",
     "zone.js": "^0.15.0"
   },
   "peerDependencies": {
-    "@angular/core": ">=17.3.0"
+    "@angular/core": ">=19.0.0"
   }
 }

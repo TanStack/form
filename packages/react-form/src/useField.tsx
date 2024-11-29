@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
-import type { FunctionComponent } from 'react'
-import type { NodeType, UseFieldOptions } from './types'
+import type { FunctionComponent, ReactNode } from 'react'
+import type { UseFieldOptions } from './types'
 import type { DeepKeys, DeepValue, Validator } from '@tanstack/form-core'
 
 interface ReactFieldApi<
@@ -125,7 +125,7 @@ type FieldComponentProps<
       TFormValidator,
       TData
     >,
-  ) => NodeType
+  ) => ReactNode
 } & UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>
 
 /**
@@ -154,7 +154,7 @@ export type FieldComponent<
     TData
   >,
   'form'
->) => NodeType
+>) => ReactNode
 
 /**
  * A function component that takes field options and a render function as children and returns a React component.
@@ -180,8 +180,18 @@ export const Field = (<
   TFieldValidator,
   TFormValidator,
   TData
->): NodeType => {
+>): ReactNode => {
   const fieldApi = useField(fieldOptions as any)
 
-  return (<>{functionalUpdate(children, fieldApi as any)}</>) as never
+  const jsxToDisplay = useMemo(
+    () => functionalUpdate(children, fieldApi as any),
+    /**
+     * The reason this exists is to fix an issue with the React Compiler.
+     * Namely, functionalUpdate is memoized where it checks for `fieldApi`, which is a static type.
+     * This means that when `state.value` changes, it does not trigger a re-render. The useMemo explicitly fixes this problem
+     */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [children, fieldApi, fieldApi.state.value, fieldApi.state.meta],
+  )
+  return (<>{jsxToDisplay}</>) as never
 }) satisfies FunctionComponent<FieldComponentProps<any, any, any, any, any>>

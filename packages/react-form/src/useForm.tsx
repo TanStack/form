@@ -1,12 +1,12 @@
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
 import React, { useState } from 'react'
-import { Field, useField } from './useField'
+import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
+import type { PropsWithChildren, ReactNode } from 'react'
 import type { FieldComponent, UseField } from './useField'
 import type { NoInfer } from '@tanstack/react-store'
 import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
-import type { NodeType } from './types'
 
 /**
  * Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`
@@ -33,20 +33,9 @@ export interface ReactFormApi<
    * A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
    */
   Subscribe: <TSelected = NoInfer<FormState<TFormData>>>(props: {
-    /**
-      TypeScript versions <=5.0.4 have a bug that prevents
-      the type of the `TSelected` generic from being inferred
-      from the return type of this method.
-
-      In these versions, `TSelected` will fall back to the default
-      type (or `unknown` if that's not defined).
-
-      @see {@link https://github.com/TanStack/form/pull/606/files#r1506715714 | This discussion on GitHub for the details}
-      @see {@link https://github.com/microsoft/TypeScript/issues/52786 | The bug report in `microsoft/TypeScript`}
-      */
     selector?: (state: NoInfer<FormState<TFormData>>) => TSelected
-    children: ((state: NoInfer<TSelected>) => NodeType) | NodeType
-  }) => NodeType
+    children: ((state: NoInfer<TSelected>) => ReactNode) | ReactNode
+  }) => ReactNode
 }
 
 /**
@@ -56,6 +45,19 @@ export type ReactFormExtendedApi<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > = FormApi<TFormData, TFormValidator> & ReactFormApi<TFormData, TFormValidator>
+
+function LocalSubscribe({
+  form,
+  selector,
+  children,
+}: PropsWithChildren<{
+  form: FormApi<any, any>
+  selector: (state: FormState<any>) => FormState<any>
+}>) {
+  const data = useStore(form.store, selector)
+
+  return functionalUpdate(children, data)
+}
 
 /**
  * A custom React Hook that returns an extended instance of the `FormApi` class.
@@ -74,17 +76,13 @@ export function useForm<
     extendedApi.Field = function APIField(props) {
       return <Field {...props} form={api} />
     }
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    extendedApi.useField = (props) => useField({ ...props, form: api })
-    extendedApi.useStore = (selector) => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      return useStore(api.store, selector)
-    }
-    extendedApi.Subscribe = (props) => {
-      return functionalUpdate(
-        props.children,
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        useStore(api.store, props.selector),
+    extendedApi.Subscribe = (props: any) => {
+      return (
+        <LocalSubscribe
+          form={api}
+          selector={props.selector}
+          children={props.children}
+        />
       )
     }
 
@@ -93,7 +91,7 @@ export function useForm<
 
   useIsomorphicLayoutEffect(formApi.mount, [])
 
-  formApi.useStore((state) => state.isSubmitting)
+  useStore(formApi.store, (state) => state.isSubmitting)
 
   /**
    * formApi.update should not have any side effects. Think of it like a `useRef`
