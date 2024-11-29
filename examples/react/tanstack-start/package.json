@@ -9,8 +9,8 @@
     "start": "vinxi start"
   },
   "dependencies": {
-    "@tanstack/form-core": "^0.38.0",
-    "@tanstack/react-form": "^0.38.0",
+    "@tanstack/form-core": "^0.39.0",
+    "@tanstack/react-form": "^0.39.0",
     "@tanstack/react-router": "^1.81.1",
     "@tanstack/react-store": "^0.5.6",
     "@tanstack/start": "^1.81.1",
