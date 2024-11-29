@@ -79,7 +79,7 @@ The current state of the form.
 
 **Note:**
 Do not use `state` directly, as it is not reactive.
-Please use form.useStore() utility to subscribe to state
+Please use useStore(form.store) utility to subscribe to state
 
 #### Defined in
 
