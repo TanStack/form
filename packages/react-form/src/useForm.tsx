@@ -1,9 +1,9 @@
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
 import React, { useState } from 'react'
-import { Field, useField } from './useField'
+import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
-import type { ReactNode } from 'react'
+import type { PropsWithChildren, ReactNode } from 'react'
 import type { FieldComponent, UseField } from './useField'
 import type { NoInfer } from '@tanstack/react-store'
 import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
@@ -46,6 +46,19 @@ export type ReactFormExtendedApi<
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > = FormApi<TFormData, TFormValidator> & ReactFormApi<TFormData, TFormValidator>
 
+function LocalSubscribe({
+  form,
+  selector,
+  children,
+}: PropsWithChildren<{
+  form: FormApi<any, any>
+  selector: (state: FormState<any>) => FormState<any>
+}>) {
+  const data = useStore(form.store, selector)
+
+  return functionalUpdate(children, data)
+}
+
 /**
  * A custom React Hook that returns an extended instance of the `FormApi` class.
  *
@@ -63,17 +76,13 @@ export function useForm<
     extendedApi.Field = function APIField(props) {
       return <Field {...props} form={api} />
     }
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    extendedApi.useField = (props) => useField({ ...props, form: api })
-    extendedApi.useStore = (selector) => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      return useStore(api.store, selector)
-    }
-    extendedApi.Subscribe = (props) => {
-      return functionalUpdate(
-        props.children,
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        useStore(api.store, props.selector),
+    extendedApi.Subscribe = (props: any) => {
+      return (
+        <LocalSubscribe
+          form={api}
+          selector={props.selector}
+          children={props.children}
+        />
       )
     }
 
@@ -82,7 +91,7 @@ export function useForm<
 
   useIsomorphicLayoutEffect(formApi.mount, [])
 
-  formApi.useStore((state) => state.isSubmitting)
+  useStore(formApi.store, (state) => state.isSubmitting)
 
   /**
    * formApi.update should not have any side effects. Think of it like a `useRef`

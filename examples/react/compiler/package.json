@@ -1,23 +1,29 @@
 {
-  "name": "@tanstack/form-example-react-array",
+  "name": "@tanstack/form-example-react-compiler",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite --port=3001",
     "build": "vite build",
     "preview": "vite preview",
-    "test:types": "tsc"
+    "_test:types": "tsc"
   },
   "dependencies": {
     "@tanstack/react-form": "^0.38.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react": "^19.0.0-rc.1",
+    "react-dom": "^19.0.0-rc.1"
   },
   "devDependencies": {
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
+    "@types/react": "npm:types-react@rc",
+    "@types/react-dom": "npm:types-react-dom@rc",
     "@vitejs/plugin-react": "^4.3.3",
+    "babel-plugin-react-compiler": "^19.0.0-beta-0dec889-20241115",
+    "eslint-plugin-react-compiler": "^19.0.0-beta-0dec889-20241115",
     "vite": "^5.4.11"
+  },
+  "overrides": {
+    "@types/react": "npm:types-react@rc",
+    "@types/react-dom": "npm:types-react-dom@rc"
   },
   "browserslist": {
     "production": [
