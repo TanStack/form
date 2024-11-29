@@ -19,4 +19,4 @@ An extended version of the `FormApi` class that includes React-specific function
 
 ## Defined in
 
-[useForm.tsx:55](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L55)
+[useForm.tsx:44](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L44)
