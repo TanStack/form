@@ -28,11 +28,3 @@ export type UseFieldOptions<
 > & {
   mode?: 'value' | 'array'
 }
-
-/**
- * The return type of React.ReactNode appears to change between React 4.9 and 5.0
- *
- * This means that if we replace this type with React.ReactNode, there will be
- * random typings the fail between React 4.9 and 5.0. This is a hack that resolves this issue.
- */
-export type NodeType = ReturnType<FunctionComponent>

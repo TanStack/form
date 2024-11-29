@@ -3,10 +3,10 @@ import { useStore } from '@tanstack/react-store'
 import React, { useState } from 'react'
 import { Field, useField } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
+import type { ReactNode } from 'react'
 import type { FieldComponent, UseField } from './useField'
 import type { NoInfer } from '@tanstack/react-store'
 import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
-import type { NodeType } from './types'
 
 /**
  * Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`
@@ -33,20 +33,9 @@ export interface ReactFormApi<
    * A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
    */
   Subscribe: <TSelected = NoInfer<FormState<TFormData>>>(props: {
-    /**
-      TypeScript versions <=5.0.4 have a bug that prevents
-      the type of the `TSelected` generic from being inferred
-      from the return type of this method.
-
-      In these versions, `TSelected` will fall back to the default
-      type (or `unknown` if that's not defined).
-
-      @see {@link https://github.com/TanStack/form/pull/606/files#r1506715714 | This discussion on GitHub for the details}
-      @see {@link https://github.com/microsoft/TypeScript/issues/52786 | The bug report in `microsoft/TypeScript`}
-      */
     selector?: (state: NoInfer<FormState<TFormData>>) => TSelected
-    children: ((state: NoInfer<TSelected>) => NodeType) | NodeType
-  }) => NodeType
+    children: ((state: NoInfer<TSelected>) => ReactNode) | ReactNode
+  }) => ReactNode
 }
 
 /**
