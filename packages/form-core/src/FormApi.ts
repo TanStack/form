@@ -456,10 +456,9 @@ export class FormApi<
         const isTouched = fieldMetaValues.some((field) => field?.isTouched)
         const isBlurred = fieldMetaValues.some((field) => field?.isBlurred)
 
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (isTouched && currBaseStore?.errorMap?.onMount) {
-          currBaseStore.errorMap.onMount = undefined
-        }
+        const shouldInvalidateOnMount =
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          isTouched && currBaseStore?.errorMap?.onMount
 
         const isDirty = fieldMetaValues.some((field) => field?.isDirty)
         const isPristine = !isDirty
@@ -504,8 +503,17 @@ export class FormApi<
             !hasOnMountError) ||
           (!isValidating && !currBaseStore.isSubmitting && isValid)
 
+        let errorMap = currBaseStore.errorMap
+        if (shouldInvalidateOnMount) {
+          errors = errors.filter(
+            (err) => err !== currBaseStore.errorMap.onMount,
+          )
+          errorMap = Object.assign(errorMap, { onMount: undefined })
+        }
+
         return {
           ...currBaseStore,
+          errorMap,
           fieldMeta: this.fieldMetaDerived.state,
           errors,
           isFieldsValidating,
