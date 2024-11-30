@@ -84,7 +84,7 @@
   "dependencies": {
     "@remix-run/node": "^2.14.0",
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/react-store": "^0.5.6",
+    "@tanstack/react-store": "https://pkg.pr.new/@tanstack/react-store@f8c01f6",
     "decode-formdata": "^0.8.0"
   },
   "devDependencies": {
