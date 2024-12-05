@@ -453,6 +453,38 @@ const form = useForm({
 />
 ```
 
+Should you want to separate the validators from the body of the component you can do so as follows.
+
+```tsx
+const userSchema = z.object({
+  age: z.number().gte(13, 'You must be 13 to make an account'),
+})
+
+type User = z.infer<typeof userSchema>
+
+function App() {
+  const form = useForm({
+    defaultValues: {
+      age: 0,
+    },
+    validators: {
+      onChange: userSchema,
+    },
+  })
+
+  return (
+    <div>
+      <form.Field
+        name="age"
+        children={(field) => {
+          return <>{/* ... */}</>
+        }}
+      />
+    </div>
+  )
+}
+```
+
 These adapters also support async operations using the proper property names:
 
 ```tsx
