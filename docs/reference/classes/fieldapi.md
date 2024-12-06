@@ -37,7 +37,9 @@ Initializes a new `FieldApi` instance.
 
 #### Parameters
 
-• **opts**: [`FieldApiOptions`](../interfaces/fieldapioptions.md)\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
+##### opts
+
+[`FieldApiOptions`](../interfaces/fieldapioptions.md)\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
 
 #### Returns
 
@@ -217,7 +219,9 @@ Handles the change event.
 
 #### Parameters
 
-• **updater**: [`Updater`](../type-aliases/updater.md)\<`TData`\>
+##### updater
+
+[`Updater`](../type-aliases/updater.md)\<`TData`\>
 
 #### Returns
 
@@ -242,11 +246,17 @@ Inserts a value at the specified index, shifting the subsequent values to the ri
 
 #### Parameters
 
-• **index**: `number`
+##### index
 
-• **value**: `TData` *extends* `any`[] ? `TData`\<`TData`\>\[`number`\] : `never`
+`number`
 
-• **opts?**: `UpdateMetaOptions`
+##### value
+
+`TData` *extends* `any`[] ? `TData`\<`TData`\>\[`number`\] : `never`
+
+##### opts?
+
+`UpdateMetaOptions`
 
 #### Returns
 
@@ -293,11 +303,17 @@ Moves the value at the first specified index to the second specified index.
 
 #### Parameters
 
-• **aIndex**: `number`
+##### aIndex
 
-• **bIndex**: `number`
+`number`
 
-• **opts?**: `UpdateMetaOptions`
+##### bIndex
+
+`number`
+
+##### opts?
+
+`UpdateMetaOptions`
 
 #### Returns
 
@@ -319,9 +335,13 @@ Pushes a new value to the field.
 
 #### Parameters
 
-• **value**: `TData` *extends* `any`[] ? `TData`\<`TData`\>\[`number`\] : `never`
+##### value
 
-• **opts?**: `UpdateMetaOptions`
+`TData` *extends* `any`[] ? `TData`\<`TData`\>\[`number`\] : `never`
+
+##### opts?
+
+`UpdateMetaOptions`
 
 #### Returns
 
@@ -343,9 +363,13 @@ Removes a value at the specified index.
 
 #### Parameters
 
-• **index**: `number`
+##### index
 
-• **opts?**: `UpdateMetaOptions`
+`number`
+
+##### opts?
+
+`UpdateMetaOptions`
 
 #### Returns
 
@@ -370,11 +394,17 @@ Replaces a value at the specified index.
 
 #### Parameters
 
-• **index**: `number`
+##### index
 
-• **value**: `TData` *extends* `any`[] ? `TData`\<`TData`\>\[`number`\] : `never`
+`number`
 
-• **opts?**: `UpdateMetaOptions`
+##### value
+
+`TData` *extends* `any`[] ? `TData`\<`TData`\>\[`number`\] : `never`
+
+##### opts?
+
+`UpdateMetaOptions`
 
 #### Returns
 
@@ -396,7 +426,9 @@ Updates the field's errorMap
 
 #### Parameters
 
-• **errorMap**: `ValidationErrorMap`
+##### errorMap
+
+`ValidationErrorMap`
 
 #### Returns
 
@@ -418,7 +450,9 @@ Sets the field metadata.
 
 #### Parameters
 
-• **updater**: [`Updater`](../type-aliases/updater.md)\<[`FieldMeta`](../type-aliases/fieldmeta.md)\>
+##### updater
+
+[`Updater`](../type-aliases/updater.md)\<[`FieldMeta`](../type-aliases/fieldmeta.md)\>
 
 #### Returns
 
@@ -440,9 +474,13 @@ Sets the field value and run the `change` validator.
 
 #### Parameters
 
-• **updater**: [`Updater`](../type-aliases/updater.md)\<`TData`\>
+##### updater
 
-• **options?**: `UpdateMetaOptions`
+[`Updater`](../type-aliases/updater.md)\<`TData`\>
+
+##### options?
+
+`UpdateMetaOptions`
 
 #### Returns
 
@@ -467,11 +505,17 @@ Swaps the values at the specified indices.
 
 #### Parameters
 
-• **aIndex**: `number`
+##### aIndex
 
-• **bIndex**: `number`
+`number`
 
-• **opts?**: `UpdateMetaOptions`
+##### bIndex
+
+`number`
+
+##### opts?
+
+`UpdateMetaOptions`
 
 #### Returns
 
@@ -493,7 +537,9 @@ Updates the field instance with new options.
 
 #### Parameters
 
-• **opts**: [`FieldApiOptions`](../interfaces/fieldapioptions.md)\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
+##### opts
+
+[`FieldApiOptions`](../interfaces/fieldapioptions.md)\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
 
 #### Returns
 
@@ -515,7 +561,9 @@ Validates the field value.
 
 #### Parameters
 
-• **cause**: `ValidationCause`
+##### cause
+
+`ValidationCause`
 
 #### Returns
 

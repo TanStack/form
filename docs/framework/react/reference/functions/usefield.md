@@ -25,7 +25,9 @@ A hook for managing a field in a form.
 
 ## Parameters
 
-• **opts**: `UseFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
+### opts
+
+`UseFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
 
 An object with field options.
 

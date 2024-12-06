@@ -25,7 +25,9 @@ type UseField<TParentData, TFormValidator>: <TName, TFieldValidator, TData>(opts
 
 ## Parameters
 
-• **opts**: `Omit`\<`UseFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
+### opts
+
+`Omit`\<`UseFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
 
 ## Returns
 

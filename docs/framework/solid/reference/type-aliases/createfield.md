@@ -25,7 +25,9 @@ type CreateField<TParentData, TFormValidator>: <TName, TFieldValidator, TData>(o
 
 ## Parameters
 
-• **opts**
+### opts
+
+() => `object` & `Omit`\<`CreateFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
 
 ## Returns
 

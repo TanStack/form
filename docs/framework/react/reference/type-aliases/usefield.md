@@ -29,7 +29,9 @@ A function that takes an optional object with a `name` property and field option
 
 ## Parameters
 
-• **opts**: `Omit`\<`UseFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
+### opts
+
+`Omit`\<`UseFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
 
 ## Returns
 

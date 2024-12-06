@@ -49,11 +49,15 @@ Subscribe: <TSelected>(props) => Element;
 
 #### Parameters
 
-• **props**
+##### props
 
-• **props.children**: `Element` \| (`state`) => `Element`
+###### children
 
-• **props.selector?**
+`Element` \| (`state`) => `Element`
+
+###### selector
+
+(`state`) => `TSelected`
 
 #### Returns
 
@@ -77,7 +81,9 @@ useStore: <TSelected>(selector?) => () => TSelected;
 
 #### Parameters
 
-• **selector?**
+##### selector?
+
+(`state`) => `TSelected`
 
 #### Returns
 

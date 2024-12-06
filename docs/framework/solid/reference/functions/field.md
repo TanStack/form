@@ -23,7 +23,9 @@ function Field<TParentData, TName, TFieldValidator, TFormValidator, TData>(props
 
 ## Parameters
 
-• **props**: `object` & `FieldApiOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\> & `object`
+### props
+
+`object` & `FieldApiOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\> & `object`
 
 ## Returns
 

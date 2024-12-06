@@ -25,9 +25,13 @@ new TanStackFormController<TParentData, TFormValidator>(host, config?): TanStack
 
 #### Parameters
 
-• **host**: `ReactiveControllerHost`
+##### host
 
-• **config?**: `FormOptions`\<`TParentData`, `TFormValidator`\>
+`ReactiveControllerHost`
+
+##### config?
+
+`FormOptions`\<`TParentData`, `TFormValidator`\>
 
 #### Returns
 
@@ -67,9 +71,13 @@ field<TName, TFieldValidator, TData>(fieldConfig, render): object
 
 #### Parameters
 
-• **fieldConfig**: `FieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
+##### fieldConfig
 
-• **render**: `renderCallback`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
+`FieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
+
+##### render
+
+`renderCallback`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
 
 #### Returns
 
@@ -81,19 +89,19 @@ field<TName, TFieldValidator, TData>(fieldConfig, render): object
 values: object;
 ```
 
-##### values.form
+###### values.form
 
 ```ts
 form: FormApi<TParentData, TFormValidator>;
 ```
 
-##### values.options
+###### values.options
 
 ```ts
 options: FieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>;
 ```
 
-##### values.render
+###### values.render
 
 ```ts
 render: renderCallback<TParentData, TName, TFieldValidator, TFormValidator, TData>;

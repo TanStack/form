@@ -23,11 +23,15 @@ type FormValidator<TFormData, TType, TFn>: object;
 
 #### Parameters
 
-• **options**
+##### options
 
-• **options.value**: `TType`
+###### value
 
-• **fn**: `TFn`
+`TType`
+
+##### fn
+
+`TFn`
 
 #### Returns
 
@@ -37,11 +41,15 @@ type FormValidator<TFormData, TType, TFn>: object;
 
 #### Parameters
 
-• **options**
+##### options
 
-• **options.value**: `TType`
+###### value
 
-• **fn**: `TFn`
+`TType`
+
+##### fn
+
+`TFn`
 
 #### Returns
 

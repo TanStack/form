@@ -17,7 +17,9 @@ function createForm<TParentData, TFormValidator>(opts?): FormApi<TParentData, TF
 
 ## Parameters
 
-• **opts?**
+### opts?
+
+() => `FormOptions`\<`TParentData`, `TFormValidator`\>
 
 ## Returns
 

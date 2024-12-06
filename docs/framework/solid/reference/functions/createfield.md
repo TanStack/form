@@ -23,7 +23,9 @@ function createField<TParentData, TName, TFieldValidator, TFormValidator, TData>
 
 ## Parameters
 
-• **opts**
+### opts
+
+() => `CreateFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
 
 ## Returns
 

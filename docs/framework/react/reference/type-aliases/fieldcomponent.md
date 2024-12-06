@@ -30,10 +30,12 @@ A type alias representing a field component for a specific form data type.
 
 ## Parameters
 
-• **\{
+### \{
   children,
   ...fieldOptions
-\}**: `Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
+\}
+
+`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
 
 ## Returns
 

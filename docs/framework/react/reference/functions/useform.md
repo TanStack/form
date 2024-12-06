@@ -21,7 +21,9 @@ This API encapsulates all the necessary functionalities related to the form. It 
 
 ## Parameters
 
-• **opts?**: `FormOptions`\<`TFormData`, `TFormValidator`\>
+### opts?
+
+`FormOptions`\<`TFormData`, `TFormValidator`\>
 
 ## Returns
 
