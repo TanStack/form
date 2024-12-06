@@ -31,16 +31,12 @@ const { data, isLoading } = useQuery({
     }
 });
 
-const defaultValues = reactive({
-    firstName: '',
-    lastName: '',
-});
+const firstName = computed(() => data.value?.firstName || '')
+const lastName = computed(() => data.value?.lastName || '')
 
-watchEffect(() => {
-    if (data.value) {
-        defaultValues.firstName = data.value.firstName;
-        defaultValues.lastName = data.value.lastName;
-    }
+const defaultValues = reactive({
+    firstName,
+    lastName
 });
 
 const form = useForm({
