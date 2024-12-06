@@ -621,12 +621,6 @@ export class FormApi<
           // Mark them as touched
           field.instance.setMeta((prev) => ({ ...prev, isTouched: true }))
         }
-
-        // If any fields are not blurred
-        if (!field.instance.state.meta.isBlurred) {
-          // Mark them as blurred
-          field.instance.setMeta((prev) => ({ ...prev, isBlurred: true }))
-        }
       })
     })
 
@@ -688,12 +682,6 @@ export class FormApi<
     if (!fieldInstance.state.meta.isTouched) {
       // Mark it as touched
       fieldInstance.setMeta((prev) => ({ ...prev, isTouched: true }))
-    }
-
-    // If the field is not blurred (same logic as in validateAllFields)
-    if (!fieldInstance.state.meta.isBlurred) {
-      // Mark it as blurred
-      fieldInstance.setMeta((prev) => ({ ...prev, isBlurred: true }))
     }
 
     return fieldInstance.validate(cause)
@@ -967,6 +955,19 @@ export class FormApi<
       this.store.setState((prev) => ({ ...prev, isSubmitting: false }))
     }
 
+    // Set all fields to blurred
+    this.store.batch(() => {
+      void (
+        Object.values(this.fieldInfo) as FieldInfo<any, TFormValidator>[]
+      ).forEach((field) => {
+        if (!field.instance) return
+
+        if (!field.instance.state.meta.isBlurred) {
+          field.instance.setMeta((prev) => ({ ...prev, isBlurred: true }))
+        }
+      })
+    })
+
     // Validate form and all fields
     await this.validateAllFields('submit')
 
@@ -1094,7 +1095,6 @@ export class FormApi<
         this.setFieldMeta(field, (prev) => ({
           ...prev,
           isTouched: true,
-          isBlurred: true,
           isDirty: true,
           errorMap: {
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
