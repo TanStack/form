@@ -487,14 +487,12 @@ import { z } from 'zod'
 
 // ...
 
-const formSchema = z.object({
-  age: z.number().gte(13, 'You must be 13 to make an account'),
-})
-
 const form = useForm({
   validatorAdapter: zodValidator(),
   validators: {
-    onChange: formSchema
+    onChange: z.object({
+      age: z.number().gte(13, 'You must be 13 to make an account'),
+    })
   },
 })
 ```
@@ -514,6 +512,40 @@ This means that:
 ```
 
 Will still display the error message from the form-level validation.
+
+
+Should you want to separate the validators from the body of the component, you can do so as follows.
+
+```tsx
+const userSchema = z.object({
+  age: z.number().gte(13, 'You must be 13 to make an account'),
+})
+
+type User = z.infer<typeof userSchema>
+
+function App() {
+  const form = useForm({
+    defaultValues: {
+      age: 0,
+    },
+    validators: {
+      onChange: userSchema,
+    },
+    validatorAdapter: zodValidator()
+  })
+
+  return (
+    <div>
+      <form.Field
+        name="age"
+        children={(field) => {
+          return <>{/* ... */}</>
+        }}
+      />
+    </div>
+  )
+}
+```
 
 ## Preventing invalid forms from being submitted
 
