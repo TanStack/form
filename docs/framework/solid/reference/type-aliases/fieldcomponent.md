@@ -28,10 +28,12 @@ type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData
 
 ## Parameters
 
-• **\{
+### \{
   children,
   ...fieldOptions
-\}**: `Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
+\}
+
+`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
 
 ## Returns
 

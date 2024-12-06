@@ -17,9 +17,13 @@ function useTransform<TFormData, TFormValidator>(fn, deps): FormTransform<TFormD
 
 ## Parameters
 
-• **fn**
+### fn
 
-• **deps**: `unknown`[]
+(`formBase`) => `FormApi`\<`TFormData`, `TFormValidator`\>
+
+### deps
+
+`unknown`[]
 
 ## Returns
 

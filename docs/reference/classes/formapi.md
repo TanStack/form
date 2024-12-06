@@ -29,7 +29,9 @@ Constructs a new `FormApi` instance with the given form options.
 
 #### Parameters
 
-• **opts?**: [`FormOptions`](../interfaces/formoptions.md)\<`TFormData`, `TFormValidator`\>
+##### opts?
+
+[`FormOptions`](../interfaces/formoptions.md)\<`TFormData`, `TFormValidator`\>
 
 #### Returns
 
@@ -113,7 +115,9 @@ deleteField<TField>(field): void
 
 #### Parameters
 
-• **field**: `TField`
+##### field
+
+`TField`
 
 #### Returns
 
@@ -139,7 +143,9 @@ Gets the field info of the specified field.
 
 #### Parameters
 
-• **field**: `TField`
+##### field
+
+`TField`
 
 #### Returns
 
@@ -165,7 +171,9 @@ Gets the metadata of the specified field.
 
 #### Parameters
 
-• **field**: `TField`
+##### field
+
+`TField`
 
 #### Returns
 
@@ -191,7 +199,9 @@ Gets the value of the specified field.
 
 #### Parameters
 
-• **field**: `TField`
+##### field
+
+`TField`
 
 #### Returns
 
@@ -239,13 +249,21 @@ Inserts a value into an array field at the specified index, shifting the subsequ
 
 #### Parameters
 
-• **field**: `TField`
+##### field
 
-• **index**: `number`
+`TField`
 
-• **value**: [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\>\[`number`\] : `never`
+##### index
 
-• **opts?**: `UpdateMetaOptions`
+`number`
+
+##### value
+
+[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\>\[`number`\] : `never`
+
+##### opts?
+
+`UpdateMetaOptions`
 
 #### Returns
 
@@ -291,13 +309,21 @@ Moves the value at the first specified index to the second specified index withi
 
 #### Parameters
 
-• **field**: `TField`
+##### field
 
-• **index1**: `number`
+`TField`
 
-• **index2**: `number`
+##### index1
 
-• **opts?**: `UpdateMetaOptions`
+`number`
+
+##### index2
+
+`number`
+
+##### opts?
+
+`UpdateMetaOptions`
 
 #### Returns
 
@@ -326,11 +352,17 @@ Pushes a value into an array field.
 
 #### Parameters
 
-• **field**: `TField`
+##### field
 
-• **value**: [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\>\[`number`\] : `never`
+`TField`
 
-• **opts?**: `UpdateMetaOptions`
+##### value
+
+[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\>\[`number`\] : `never`
+
+##### opts?
+
+`UpdateMetaOptions`
 
 #### Returns
 
@@ -359,11 +391,17 @@ Removes a value from an array field at the specified index.
 
 #### Parameters
 
-• **field**: `TField`
+##### field
 
-• **index**: `number`
+`TField`
 
-• **opts?**: `UpdateMetaOptions`
+##### index
+
+`number`
+
+##### opts?
+
+`UpdateMetaOptions`
 
 #### Returns
 
@@ -393,13 +431,21 @@ Replaces a value into an array field at the specified index.
 
 #### Parameters
 
-• **field**: `TField`
+##### field
 
-• **index**: `number`
+`TField`
 
-• **value**: [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\>\[`number`\] : `never`
+##### index
 
-• **opts?**: `UpdateMetaOptions`
+`number`
+
+##### value
+
+[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\>\[`number`\] : `never`
+
+##### opts?
+
+`UpdateMetaOptions`
 
 #### Returns
 
@@ -422,15 +468,19 @@ If values are provided, the form will be reset to those values instead and the d
 
 #### Parameters
 
-• **values?**: `TFormData`
+##### values?
+
+`TFormData`
 
 Optional values to reset the form to.
 
-• **opts?**
+##### opts?
 
 Optional options to control the reset behavior.
 
-• **opts.keepDefaultValues?**: `boolean`
+###### keepDefaultValues
+
+`boolean`
 
 #### Returns
 
@@ -454,7 +504,9 @@ resetFieldMeta<TField>(fieldMeta): Record<TField, FieldMeta>
 
 #### Parameters
 
-• **fieldMeta**: `Record`\<`TField`, [`FieldMeta`](../type-aliases/fieldmeta.md)\>
+##### fieldMeta
+
+`Record`\<`TField`, [`FieldMeta`](../type-aliases/fieldmeta.md)\>
 
 #### Returns
 
@@ -476,7 +528,9 @@ Updates the form's errorMap
 
 #### Parameters
 
-• **errorMap**: `ValidationErrorMap`
+##### errorMap
+
+`ValidationErrorMap`
 
 #### Returns
 
@@ -502,9 +556,13 @@ Updates the metadata of the specified field.
 
 #### Parameters
 
-• **field**: `TField`
+##### field
 
-• **updater**: [`Updater`](../type-aliases/updater.md)\<[`FieldMeta`](../type-aliases/fieldmeta.md)\>
+`TField`
+
+##### updater
+
+[`Updater`](../type-aliases/updater.md)\<[`FieldMeta`](../type-aliases/fieldmeta.md)\>
 
 #### Returns
 
@@ -533,11 +591,17 @@ Sets the value of the specified field and optionally updates the touched state.
 
 #### Parameters
 
-• **field**: `TField`
+##### field
 
-• **updater**: [`Updater`](../type-aliases/updater.md)\<[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\>\>
+`TField`
 
-• **opts?**: `UpdateMetaOptions`
+##### updater
+
+[`Updater`](../type-aliases/updater.md)\<[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\>\>
+
+##### opts?
+
+`UpdateMetaOptions`
 
 #### Returns
 
@@ -567,13 +631,21 @@ Swaps the values at the specified indices within an array field.
 
 #### Parameters
 
-• **field**: `TField`
+##### field
 
-• **index1**: `number`
+`TField`
 
-• **index2**: `number`
+##### index1
 
-• **opts?**: `UpdateMetaOptions`
+`number`
+
+##### index2
+
+`number`
+
+##### opts?
+
+`UpdateMetaOptions`
 
 #### Returns
 
@@ -595,7 +667,9 @@ Updates the form options and form state.
 
 #### Parameters
 
-• **options?**: [`FormOptions`](../interfaces/formoptions.md)\<`TFormData`, `TFormValidator`\>
+##### options?
+
+[`FormOptions`](../interfaces/formoptions.md)\<`TFormData`, `TFormValidator`\>
 
 #### Returns
 
@@ -617,7 +691,9 @@ Validates form and all fields in using the correct handlers for a given validati
 
 #### Parameters
 
-• **cause**: `ValidationCause`
+##### cause
+
+`ValidationCause`
 
 #### Returns
 
@@ -646,11 +722,17 @@ Validates the children of a specified array in the form starting from a given in
 
 #### Parameters
 
-• **field**: `TField`
+##### field
 
-• **index**: `number`
+`TField`
 
-• **cause**: `ValidationCause`
+##### index
+
+`number`
+
+##### cause
+
+`ValidationCause`
 
 #### Returns
 
@@ -676,9 +758,13 @@ Validates a specified field in the form using the correct handlers for a given v
 
 #### Parameters
 
-• **field**: `TField`
+##### field
 
-• **cause**: `ValidationCause`
+`TField`
+
+##### cause
+
+`ValidationCause`
 
 #### Returns
 

@@ -27,7 +27,9 @@ The `Field` component uses the `useField` hook internally to manage the field in
 
 ## Parameters
 
-• **\_\_namedParameters**: `FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
+### \_\_namedParameters
+
+`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
 
 ## Returns
 

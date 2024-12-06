@@ -43,11 +43,15 @@ A `Subscribe` function that allows you to listen and react to changes in the for
 
 #### Parameters
 
-• **props**
+##### props
 
-• **props.children**: `ReactNode` \| (`state`) => `ReactNode`
+###### children
 
-• **props.selector?**
+`ReactNode` \| (`state`) => `ReactNode`
+
+###### selector
+
+(`state`) => `TSelected`
 
 #### Returns
 
@@ -87,7 +91,9 @@ A `useStore` hook that connects to the internal store of the form. It can be use
 
 #### Parameters
 
-• **selector?**
+##### selector?
+
+(`state`) => `TSelected`
 
 #### Returns
 
