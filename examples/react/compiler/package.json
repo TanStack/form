@@ -16,9 +16,9 @@
   "devDependencies": {
     "@types/react": "npm:types-react@rc",
     "@types/react-dom": "npm:types-react-dom@rc",
-    "@vitejs/plugin-react": "^4.3.3",
-    "babel-plugin-react-compiler": "^19.0.0-beta-0dec889-20241115",
-    "eslint-plugin-react-compiler": "^19.0.0-beta-0dec889-20241115",
+    "@vitejs/plugin-react": "^4.3.4",
+    "babel-plugin-react-compiler": "^19.0.0-beta-df7b47d-20241124",
+    "eslint-plugin-react-compiler": "^19.0.0-beta-df7b47d-20241124",
     "vite": "^5.4.11"
   },
   "overrides": {
