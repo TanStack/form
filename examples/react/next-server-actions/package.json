@@ -10,7 +10,7 @@
   "dependencies": {
     "@tanstack/react-form": "^0.39.0",
     "@tanstack/react-store": "^0.6.1",
-    "next": "15.0.3",
+    "next": "15.0.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

@@ -5,7 +5,7 @@
     "type": "git",
     "url": "https://github.com/tanstack/form.git"
   },
-  "packageManager": "pnpm@9.14.4",
+  "packageManager": "pnpm@9.15.0",
   "type": "module",
   "scripts": {
     "clean": "pnpm --filter \"./packages/**\" run clean",
@@ -38,7 +38,7 @@
     ]
   },
   "devDependencies": {
-    "@eslint-react/eslint-plugin": "^1.17.3",
+    "@eslint-react/eslint-plugin": "^1.18.0",
     "@solidjs/testing-library": "^0.8.10",
     "@tanstack/config": "^0.14.2",
     "@testing-library/jest-dom": "^6.6.3",
@@ -48,12 +48,12 @@
     "@types/node": "^22.10.1",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@vitest/coverage-istanbul": "^2.1.4",
+    "@vitest/coverage-istanbul": "^2.1.8",
     "eslint": "^9.16.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "jsdom": "^25.0.1",
     "knip": "^5.39.2",
-    "nx": "^20.2.0",
+    "nx": "^20.2.1",
     "prettier": "^3.4.2",
     "publint": "^0.2.12",
     "react": "^18.3.1",
@@ -65,10 +65,10 @@
     "typescript51": "npm:typescript@5.1",
     "typescript52": "npm:typescript@5.2",
     "typescript53": "npm:typescript@5.3",
-    "typescript54": "npm:typescript@5.4",
-    "typescript55": "npm:typescript@5.5",
+    "typescript54": "npm:typescript@5.7.2",
+    "typescript55": "npm:typescript@5.7.2",
     "vite": "^5.4.11",
-    "vitest": "^2.1.4",
+    "vitest": "^2.1.8",
     "vue": "^3.3.4"
   }
 }
