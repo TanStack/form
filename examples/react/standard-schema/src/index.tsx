@@ -1,8 +1,9 @@
 import { useForm } from '@tanstack/react-form'
+import { type } from 'arktype'
 import * as React from 'react'
 import { createRoot } from 'react-dom/client'
 import * as v from 'valibot'
-import { type } from 'arktype'
+import { z } from 'zod'
 import type { FieldApi } from '@tanstack/react-form'
 
 function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
@@ -16,7 +17,16 @@ function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
   )
 }
 
-// @ts-ignore - Unused for demo purposes
+// @ts-ignore - Might be unused for demo purposes
+const ZodSchema = z.object({
+  firstName: z
+    .string()
+    .min(3, '[Zod] You must have a length of at least 3')
+    .startsWith('A', "[Zod] First name must start with 'A'"),
+  lastName: z.string().min(3, '[Zod] You must have a length of at least 3'),
+})
+
+// @ts-ignore - Might be unused for demo purposes
 const ValibotSchema = v.object({
   firstName: v.pipe(
     v.string(),
@@ -29,10 +39,7 @@ const ValibotSchema = v.object({
   ),
 })
 
-// Coming soon!
-// const ZodSchema = ...
-
-// @ts-ignore - Unused for demo purposes
+// @ts-ignore - Might be unused for demo purposes
 const ArkTypeSchema = type({
   firstName: 'string >= 3',
   lastName: 'string >= 3',
@@ -46,7 +53,8 @@ export default function App() {
     },
     validators: {
       // DEMO: You can switch between schemas seamlessly
-      onChange: ValibotSchema,
+      onChange: ZodSchema,
+      // onChange: ValibotSchema,
       // onChange: ArkTypeSchema,
     },
     onSubmit: async ({ value }) => {

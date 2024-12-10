@@ -324,15 +324,16 @@ This will run `onChangeAsync` every 1500ms while `onBlurAsync` will run every 50
 
 ## Validation through Schema Libraries
 
-While functions provide more flexibility and customization over your validation, they can be a bit verbose. To help solve this, there are libraries that provide schema-based validation to make shorthand and type-strict validation substantially easier.
+While functions provide more flexibility and customization over your validation, they can be a bit verbose. To help solve this, there are libraries that provide schema-based validation to make shorthand and type-strict validation substantially easier. You can also define a single schema for your entire form and pass it to the form level, errors will be automatically propagated to the fields.
 
 ### Standard Schema Libraries
 
 TanStack Form natively supports all libraries following the [Standard Schema specification](https://github.com/standard-schema/standard-schema), most notably:
+- [Zod](https://zod.dev/)
 - [Valibot](https://valibot.dev/)
 - [ArkType](https://arktype.io/)
 
-To use schemas from these libraries you can simply pass them to the `validators` props as you would do with a custom function:
+To use schemas from these libraries you can pass them to the `validators` props as you would do with a custom function:
 
 ```vue
 <script setup lang="ts">
@@ -348,7 +349,6 @@ const form = useForm({
 <!-- ... -->
     <form.Field
         name="age"
-        :validator-adapter="zodValidator()"
         :validators="{
             onChange: z.number().gte(13, 'You must be 13 to make an account')
         }"
@@ -361,49 +361,7 @@ const form = useForm({
 </template>
 ```
 
-### Other Schema Libraries (Zod, Yup)
-
-We also support other libraries, [Zod](https://zod.dev/) and [Yup](https://github.com/jquense/yup) through an official adapter:
-
-```bash
-$ npm install @tanstack/zod-form-adapter zod
-# or
-$ npm install @tanstack/yup-form-adapter yup
-```
-
-Once done, we can add the adapter to the `validator` property on the form or field:
-
-```vue
-<script setup lang="ts">
-import { zodValidator } from '@tanstack/zod-form-adapter'
-import { z } from 'zod'
-// ...
-
-const form = useForm({
-    // Either add the validator here or on `Field`
-    validatorAdapter: zodValidator(),
-    // ...
-})
-</script>
-
-<template>
-<!-- ... -->
-    <form.Field
-        name="age"
-        :validator-adapter="zodValidator()"
-        :validators="{
-            onChange: z.number().gte(13, 'You must be 13 to make an account')
-        }"
-    >
-        <template v-slot="{ field }">
-            <!-- ... -->
-        </template>
-    </form.Field>
-<!-- ... -->
-</template>
-```
-
-These adapters also support async operations using the proper property names:
+Async validations on form and field level are supported as well:
 
 ```vue
 <template>
@@ -432,44 +390,46 @@ These adapters also support async operations using the proper property names:
 </template>
 ```
 
-### Form Level Schema Validation
+### Other Schema Libraries
 
-You can also use a Standard Schema or an adapter at the form level:
+We also support [Yup](https://github.com/jquense/yup) through an official adapter:
 
-```typescript
-import { zodValidator } from '@tanstack/zod-form-adapter' // Not required for Standard Schema libraries
-import { z } from 'zod'
+```bash
+$ npm install @tanstack/yup-form-adapter yup
+```
+
+Once done, we can add the adapter to the `validator` property on the form or field:
+
+```vue
+<script setup lang="ts">
+import { yupValidator } from '@tanstack/zod-form-adapter'
+import * as yup from 'yup'
 
 // ...
 
 const form = useForm({
-  validatorAdapter: zodValidator(), // Not required for Standard Schema libraries
-  validators: {
-    onChange: z.object({
-      age: z.number().gte(13, 'You must be 13 to make an account'),
-    }),
-  },
+    // Either add the validator here or on `Field`
+    validatorAdapter: yupValidator(),
+    // ...
 })
-```
+</script>
 
-If you use the adapter at the form level, it will pass the validation to the fields of the same name.
-
-This means that:
-
-```vue
 <template>
-    <!-- ... -->
+<!-- ... -->
     <form.Field
         name="age"
+        :validator-adapter="yupValidator()"
+        :validators="{
+            onChange: yup.number().moreThan(13, 'You must be 13 to make an account')
+        }"
     >
         <template v-slot="{ field }">
             <!-- ... -->
         </template>
     </form.Field>
+<!-- ... -->
 </template>
 ```
-
-Will still display the error message from the form-level validation.
 
 ## Preventing invalid forms from being submitted
 

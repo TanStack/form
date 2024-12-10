@@ -13,7 +13,8 @@
     "arktype": "2.0.0-rc.23",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "valibot": "^1.0.0-beta.7"
+    "valibot": "^1.0.0-beta.9",
+    "zod": "^3.24.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

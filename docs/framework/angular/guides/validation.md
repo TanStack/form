@@ -384,15 +384,16 @@ This will debounce every async call with a 500ms delay. You can even override th
 
 ## Validation through Schema Libraries
 
-While functions provide more flexibility and customization over your validation, they can be a bit verbose. To help solve this, there are libraries that provide schema-based validation to make shorthand and type-strict validation substantially easier.
+While functions provide more flexibility and customization over your validation, they can be a bit verbose. To help solve this, there are libraries that provide schema-based validation to make shorthand and type-strict validation substantially easier. You can also define a single schema for your entire form and pass it to the form level, errors will be automatically propagated to the fields.
 
 ### Standard Schema Libraries
 
 TanStack Form natively supports all libraries following the [Standard Schema specification](https://github.com/standard-schema/standard-schema), most notably:
+- [Zod](https://zod.dev/)
 - [Valibot](https://valibot.dev/)
 - [ArkType](https://arktype.io/)
 
-To use schemas from these libraries you can simply pass them to the `validators` props as you would do with a custom function:
+To use schemas from these libraries you can pass them to the `validators` props as you would do with a custom function:
 
 ```angular-ts
 import { z } from 'zod'
@@ -425,53 +426,8 @@ export class AppComponent {
 }
 ```
 
-### Other Schema Libraries (Zod, Yup)
+Async validations on form and field level are supported as well:
 
-We also support other libraries, [Zod](https://zod.dev/) and [Yup](https://github.com/jquense/yup) through an official adapter:
-
-```bash
-$ npm install @tanstack/zod-form-adapter zod
-# or
-$ npm install @tanstack/yup-form-adapter yup
-```
-
-Once done, we can add the adapter to the `validator` property on the form or field:
-
-```angular-ts
-import { zodValidator } from '@tanstack/zod-form-adapter'
-import { z } from 'zod'
-
-@Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [TanStackField],
-  template: `
-    <ng-container
-      [tanstackField]="form"
-      name="age"
-      [validators]="{
-        onChange: z.number().gte(13, 'You must be 13 to make an account'),
-      }"
-      #age="field"
-    >
-      <!-- ... -->
-    </ng-container>
-  `,
-})
-export class AppComponent {
-  form = injectForm({
-    // Either add the validator here or on `Field`
-    validatorAdapter: zodValidator(),
-    // ...
-  })
-
-  z = z
-
-  // ...
-}
-```
-
-These adapters also support async operations using the proper property names:
 
 ```angular-ts
 @Component({
@@ -508,37 +464,50 @@ export class AppComponent {
 }
 ```
 
-### Form Level Schema Validation
+### Other Schema Libraries
 
-You can also use a Standard Schema or an adapter at the form level:
+We also support [Yup](https://github.com/jquense/yup) through an official adapter:
 
-```typescript
-import { zodValidator } from '@tanstack/zod-form-adapter' // Not required for Standard Schema libraries
-import { z } from 'zod'
+```bash
+$ npm install @tanstack/yup-form-adapter yup
+```
 
-// ...
+Once done, we can add the adapter to the `validator` property on the form or field:
 
-const form = injectForm({
-  validatorAdapter: zodValidator(), // Not required for Standard Schema libraries
-  validators: {
-    onChange: z.object({
-      age: z.number().gte(13, 'You must be 13 to make an account'),
-    }),
-  },
+```angular-ts
+import { yupValidator } from '@tanstack/yup-form-adapter'
+import * as yup from 'yup'
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [TanStackField],
+  template: `
+    <ng-container
+      [tanstackField]="form"
+      name="age"
+      [validators]="{
+        onChange: yup.number().moreThan(13, 'You must be 13 to make an account'),
+      }"
+      #age="field"
+    >
+      <!-- ... -->
+    </ng-container>
+  `,
 })
+export class AppComponent {
+  form = injectForm({
+    // Either add the validator here or on `Field`
+    validatorAdapter: yupValidator(),
+    // ...
+  })
+
+  yup = yup
+
+  // ...
+}
 ```
 
-If you use the adapter at the form level, it will pass the validation to the fields of the same name.
-
-This means that:
-
-```html
-<ng-container [tanstackField]="form" name="age" #age="field">
-  <!-- ... -->
-</ng-container>
-```
-
-Will still display the error message from the form-level validation.
 
 ## Preventing invalid forms from being submitted
 

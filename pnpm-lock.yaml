@@ -248,8 +248,8 @@ importers:
         specifier: ^2.8.1
         version: 2.8.1
       valibot:
-        specifier: ^1.0.0-beta.7
-        version: 1.0.0-beta.7(typescript@5.6.3)
+        specifier: ^1.0.0-beta.9
+        version: 1.0.0-beta.9(typescript@5.6.3)
       zone.js:
         specifier: ^0.15.0
         version: 0.15.0
@@ -596,7 +596,7 @@ importers:
         version: 5.4.11(@types/node@22.10.1)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.48))(terser@5.36.0)
       vite-tsconfig-paths:
         specifier: ^5.1.2
-        version: 5.1.3(typescript@5.6.3)(vite@5.4.11(@types/node@22.10.1)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1)(terser@5.36.0))
+        version: 5.1.3(typescript@5.6.3)(vite@5.4.11(@types/node@22.10.1)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.48))(terser@5.36.0))
 
   examples/react/simple:
     dependencies:
@@ -638,8 +638,11 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
       valibot:
-        specifier: ^1.0.0-beta.7
-        version: 1.0.0-beta.7(typescript@5.7.2)
+        specifier: ^1.0.0-beta.9
+        version: 1.0.0-beta.9(typescript@5.7.2)
+      zod:
+        specifier: ^3.24.0
+        version: 3.24.0
     devDependencies:
       '@types/react':
         specifier: ^18.3.3
@@ -701,7 +704,7 @@ importers:
         version: 5.4.11(@types/node@22.10.1)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.48))(terser@5.36.0)
       vite-tsconfig-paths:
         specifier: ^5.1.2
-        version: 5.1.3(typescript@5.6.3)(vite@5.4.11(@types/node@22.10.1)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1)(terser@5.36.0))
+        version: 5.1.3(typescript@5.6.3)(vite@5.4.11(@types/node@22.10.1)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.48))(terser@5.36.0))
 
   examples/react/ui-libraries:
     dependencies:
@@ -776,8 +779,8 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
       valibot:
-        specifier: ^1.0.0-beta.7
-        version: 1.0.0-beta.7(typescript@5.7.2)
+        specifier: ^1.0.0-beta.9
+        version: 1.0.0-beta.9(typescript@5.7.2)
     devDependencies:
       '@types/react':
         specifier: ^18.3.3
@@ -904,8 +907,8 @@ importers:
         specifier: ^1.9.3
         version: 1.9.3
       valibot:
-        specifier: ^1.0.0-beta.7
-        version: 1.0.0-beta.7(typescript@5.6.3)
+        specifier: ^1.0.0-beta.9
+        version: 1.0.0-beta.9(typescript@5.6.3)
     devDependencies:
       typescript:
         specifier: 5.6.3
@@ -1020,8 +1023,8 @@ importers:
         specifier: ^0.39.1
         version: link:../../../packages/vue-form
       valibot:
-        specifier: ^1.0.0-beta.7
-        version: 1.0.0-beta.7(typescript@5.6.3)
+        specifier: ^1.0.0-beta.9
+        version: 1.0.0-beta.9(typescript@5.6.3)
       vue:
         specifier: ^3.3.4
         version: 3.5.12(typescript@5.6.3)
@@ -1154,8 +1157,8 @@ importers:
         specifier: 2.0.0-rc.23
         version: 2.0.0-rc.23
       valibot:
-        specifier: ^1.0.0-beta.7
-        version: 1.0.0-beta.7(typescript@5.7.2)
+        specifier: 1.0.0-beta.9
+        version: 1.0.0-beta.9(typescript@5.7.2)
       zod:
         specifier: ^3.24.0
         version: 3.24.0
@@ -1239,8 +1242,8 @@ importers:
         specifier: workspace:*
         version: link:../react-form
       valibot:
-        specifier: ^1.0.0-beta.7
-        version: 1.0.0-beta.7(typescript@5.7.2)
+        specifier: ^1.0.0-beta.9
+        version: 1.0.0-beta.9(typescript@5.7.2)
 
   packages/vue-form:
     dependencies:
@@ -10094,8 +10097,8 @@ packages:
       typescript:
         optional: true
 
-  valibot@1.0.0-beta.7:
-    resolution: {integrity: sha512-8CsDu3tqyg7quEHMzCOYdQ/d9NlmVQKtd4AlFje6oJpvqo70EIZjSakKIeWltJyNAiUtdtLe0LAk4625gavoeQ==}
+  valibot@1.0.0-beta.9:
+    resolution: {integrity: sha512-yEX8gMAZ2R1yI2uwOO4NCtVnJQx36zn3vD0omzzj9FhcoblvPukENIiRZXKZwCnqSeV80bMm8wNiGhQ0S8fiww==}
     peerDependencies:
       typescript: '>=5'
     peerDependenciesMeta:
@@ -13883,7 +13886,7 @@ snapshots:
       v8flags: 4.0.1
       vite-plugin-dts: 4.0.3(@types/node@22.10.1)(rollup@4.26.0)(typescript@5.6.3)(vite@5.4.11(@types/node@22.10.1)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1)(terser@5.36.0))
       vite-plugin-externalize-deps: 0.8.0(vite@5.4.11(@types/node@22.10.1)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1)(terser@5.36.0))
-      vite-tsconfig-paths: 5.1.3(typescript@5.6.3)(vite@5.4.11(@types/node@22.10.1)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1)(terser@5.36.0))
+      vite-tsconfig-paths: 5.1.3(typescript@5.6.3)(vite@5.4.11(@types/node@22.10.1)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.48))(terser@5.36.0))
     transitivePeerDependencies:
       - '@types/node'
       - esbuild
@@ -20754,11 +20757,11 @@ snapshots:
     optionalDependencies:
       typescript: 5.6.3
 
-  valibot@1.0.0-beta.7(typescript@5.6.3):
+  valibot@1.0.0-beta.9(typescript@5.6.3):
     optionalDependencies:
       typescript: 5.6.3
 
-  valibot@1.0.0-beta.7(typescript@5.7.2):
+  valibot@1.0.0-beta.9(typescript@5.7.2):
     optionalDependencies:
       typescript: 5.7.2
 
@@ -20940,7 +20943,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vite-tsconfig-paths@5.1.3(typescript@5.6.3)(vite@5.4.11(@types/node@22.10.1)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1)(terser@5.36.0)):
+  vite-tsconfig-paths@5.1.3(typescript@5.6.3)(vite@5.4.11(@types/node@22.10.1)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.48))(terser@5.36.0)):
     dependencies:
       debug: 4.3.7
       globrex: 0.1.2
