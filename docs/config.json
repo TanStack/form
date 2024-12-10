@@ -443,6 +443,10 @@
               "to": "framework/react/examples/query-integration"
             },
             {
+              "label": "Standard Schema",
+              "to": "framework/react/examples/standard-schema"
+            },
+            {
               "label": "Yup",
               "to": "framework/react/examples/yup"
             },

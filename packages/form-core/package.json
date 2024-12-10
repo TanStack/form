@@ -53,5 +53,11 @@
   ],
   "dependencies": {
     "@tanstack/store": "^0.6.0"
+  },
+  "devDependencies": {
+    "@standard-schema/spec": "1.0.0-beta.3",
+    "arktype": "2.0.0-rc.23",
+    "valibot": "^1.0.0-beta.9",
+    "zod": "^3.24.0"
   }
 }

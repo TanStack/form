@@ -8,8 +8,10 @@ import {
   isNonEmptyArray,
   setBy,
 } from './utils'
-import type { Updater } from './utils'
-import type { DeepKeys, DeepValue } from './util-types'
+import {
+  isStandardSchemaValidator,
+  standardSchemaValidator,
+} from './standardSchemaValidator'
 import type { FieldApi, FieldMeta } from './FieldApi'
 import type {
   FormValidationError,
@@ -22,6 +24,9 @@ import type {
   ValidationSource,
   Validator,
 } from './types'
+import type { DeepKeys, DeepValue } from './util-types'
+import type { Updater } from './utils'
+import type { v1 } from '@standard-schema/spec'
 
 export type FieldsErrorMapFromValidator<TFormData> = Partial<
   Record<DeepKeys<TFormData>, ValidationErrorMap>
@@ -43,8 +48,10 @@ export type FormValidateOrFn<
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > =
   TFormValidator extends Validator<TFormData, infer TFN>
-    ? TFN
-    : FormValidateFn<TFormData, TFormValidator>
+    ? TFN | FormValidateFn<TFormData, TFormValidator>
+    :
+        | FormValidateFn<TFormData, TFormValidator>
+        | v1.StandardSchema<TFormData, unknown>
 
 /**
  * @private
@@ -82,7 +89,9 @@ export type FormAsyncValidateOrFn<
 > =
   TFormValidator extends Validator<TFormData, infer FFN>
     ? FFN | FormValidateAsyncFn<TFormData, TFormValidator>
-    : FormValidateAsyncFn<TFormData, TFormValidator>
+    :
+        | FormValidateAsyncFn<TFormData, TFormValidator>
+        | v1.StandardSchema<TFormData, unknown>
 
 export interface FormValidators<
   TFormData,
@@ -503,8 +512,18 @@ export class FormApi<
     type: TType
   }): ReturnType<ReturnType<Validator<any>>[TType]> {
     const adapter = this.options.validatorAdapter
-    if (adapter && typeof props.validate !== 'function') {
+    if (
+      adapter &&
+      (typeof props.validate !== 'function' || '~standard' in props.validate)
+    ) {
       return adapter()[props.type](props.value, props.validate) as never
+    }
+
+    if (isStandardSchemaValidator(props.validate)) {
+      return standardSchemaValidator()()[props.type](
+        props.value,
+        props.validate,
+      ) as never
     }
 
     return (props.validate as FormValidateFn<any, any>)(props.value) as never

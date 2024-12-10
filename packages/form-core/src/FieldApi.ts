@@ -1,5 +1,9 @@
 import { Store } from '@tanstack/store'
 import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
+import {
+  isStandardSchemaValidator,
+  standardSchemaValidator,
+} from './standardSchemaValidator'
 import type { FieldInfo, FieldsErrorMapFromValidator, FormApi } from './FormApi'
 import type {
   UpdateMetaOptions,
@@ -583,12 +587,22 @@ export class FieldApi<
       this.options.validatorAdapter,
     ] as const
     for (const adapter of adapters) {
-      if (adapter && typeof props.validate !== 'function') {
+      if (
+        adapter &&
+        (typeof props.validate !== 'function' || '~standard' in props.validate)
+      ) {
         return adapter()[props.type](
           props.value as never,
           props.validate,
         ) as never
       }
+    }
+
+    if (isStandardSchemaValidator(props.validate)) {
+      return standardSchemaValidator()()[props.type](
+        props.value,
+        props.validate,
+      ) as never
     }
 
     return (props.validate as FieldValidateFn<any, any>)(props.value) as never

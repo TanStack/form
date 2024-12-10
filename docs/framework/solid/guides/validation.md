@@ -312,37 +312,32 @@ This will debounce every async call with a 500ms delay. You can even override th
 
 > This will run `onChangeAsync` every 1500ms while `onBlurAsync` will run every 500ms.
 
-## Adapter-Based Validation (Zod, Yup, Valibot)
+## Validation through Schema Libraries
 
-While functions provide more flexibility and customization over your validation, they can be a bit verbose. To help solve this, there are libraries like [Valibot](https://valibot.dev/), [Yup](https://github.com/jquense/yup), and [Zod](https://zod.dev/) that provide schema-based validation to make shorthand and type-strict validation substantially easier.
+While functions provide more flexibility and customization over your validation, they can be a bit verbose. To help solve this, there are libraries that provide schema-based validation to make shorthand and type-strict validation substantially easier. You can also define a single schema for your entire form and pass it to the form level, errors will be automatically propagated to the fields.
 
-Luckily, we support all of these libraries through official adapters:
+### Standard Schema Libraries
 
-```bash
-$ npm install @tanstack/zod-form-adapter zod
-# or
-$ npm install @tanstack/yup-form-adapter yup
-# or
-$ npm install @tanstack/valibot-form-adapter valibot
-```
+TanStack Form natively supports all libraries following the [Standard Schema specification](https://github.com/standard-schema/standard-schema), most notably:
+- [Zod](https://zod.dev/)
+- [Valibot](https://valibot.dev/)
+- [ArkType](https://arktype.io/)
 
-Once done, we can add the adapter to the `validator` property on the form or field:
+*Note:* make sure to use the latest version of the schema libraries as older versions might not support Standard Schema yet.
+
+To use schemas from these libraries you can pass them to the `validators` props as you would do with a custom function:
 
 ```tsx
-import { zodValidator } from '@tanstack/zod-form-adapter'
 import { z } from 'zod'
 
 // ...
 
 const form = createForm(() => ({
-  // Either add the validator here or on `Field`
-  validatorAdapter: zodValidator(),
   // ...
 }));
 
 <form.Field
   name="age"
-  validatorAdapter={zodValidator()}
   validators={{
     onChange: z.number().gte(13, 'You must be 13 to make an account'),
   }}
@@ -352,7 +347,7 @@ const form = createForm(() => ({
 />
 ```
 
-These adapters also support async operations using the proper property names:
+Async validations on form and field level are supported as well:
 
 ```tsx
 <form.Field
@@ -376,43 +371,40 @@ These adapters also support async operations using the proper property names:
 />
 ```
 
-### Form Level Adapter Validation
+### Other Schema Libraries
 
+We also support [Yup](https://github.com/jquense/yup) through an official adapter:
 
-You can also use the adapter at the form level:
+```bash
+$ npm install @tanstack/yup-form-adapter yup
+```
+
+Once done, we can add the adapter to the `validator` property on the form or field:
+
 
 ```tsx
-import { zodValidator } from '@tanstack/zod-form-adapter'
-import { z } from 'zod'
+import { yupValidator } from '@tanstack/yup-form-adapter'
+import * as yup from 'yup'
 
 // ...
 
 const form = createForm(() => ({
-  validatorAdapter: zodValidator(),
-  validators: {
-    onChange: z.object({
-      age: z.number().gte(13, 'You must be 13 to make an account'),
-    }),
-  },
-}))
-```
-
-If you use the adapter at the form level, it will pass the validation to the fields of the same name.
-
-This means that:
-
-```tsx
+  // Either add the validator here or on `Field`
+  validatorAdapter: yupValidator(),
+  // ...
+}));
 
 <form.Field
   name="age"
+  validatorAdapter={yupValidator()}
+  validators={{
+    onChange: yup.number().moreThan(13, 'You must be 13 to make an account'),
+  }}
   children={(field) => {
     return <>{/* ... */}</>
   }}
 />
 ```
-
-Will still display the error message from the form-level validation.
-
 
 ## Preventing invalid forms from being submitted
 
