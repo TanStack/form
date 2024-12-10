@@ -375,7 +375,7 @@ export class FormApi<
    *
    * **Note:**
    * Do not use `state` directly, as it is not reactive.
-   * Please use form.useStore() utility to subscribe to state
+   * Please use useStore(form.store) utility to subscribe to state
    */
   state!: FormState<TFormData>
   /**
@@ -998,6 +998,17 @@ export class FormApi<
       })
       return
     }
+
+    this.store.batch(() => {
+      void (
+        Object.values(this.fieldInfo) as FieldInfo<TFormData, TFormValidator>[]
+      ).forEach((field) => {
+        field.instance?.options.listeners?.onSubmit?.({
+          value: field.instance.state.value,
+          fieldApi: field.instance,
+        })
+      })
+    })
 
     try {
       // Run the submit code

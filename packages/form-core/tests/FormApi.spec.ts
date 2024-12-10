@@ -1704,6 +1704,30 @@ describe('form api', () => {
     expect(form.state.errors).toStrictEqual(['first name is required'])
   })
 
+  it('should run listener onSubmit', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    let triggered!: string
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onSubmit: ({ value }) => {
+          triggered = value
+        },
+      },
+    })
+
+    field.mount()
+    await form.handleSubmit()
+
+    expect(triggered).toStrictEqual('test')
+  })
+
   it('should update a nullable object', async () => {
     const form = new FormApi({
       defaultValues: {

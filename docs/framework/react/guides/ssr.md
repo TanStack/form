@@ -114,7 +114,7 @@ function Home() {
     transform: useTransform((baseForm) => mergeForm(baseForm, state), [state]),
   })
 
-  const formErrors = form.useStore((formState) => formState.errors)
+  const formErrors = useStore(form.store, (formState) => formState.errors)
 
   return (
     <form action={handleForm.url} method="post" encType={'multipart/form-data'}>
@@ -249,7 +249,7 @@ export const ClientComp = () => {
     transform: useTransform((baseForm) => mergeForm(baseForm, state!), [state]),
   })
 
-  const formErrors = form.useStore((formState) => formState.errors)
+  const formErrors = useStore(form.store, (formState) => formState.errors)
 
   return (
     <form action={action as never} onSubmit={() => form.handleSubmit()}>
@@ -410,8 +410,8 @@ export default function Index() {
       [actionData],
     ),
   })
-  
-  const formErrors = form.useStore((formState) => formState.errors)
+
+  const formErrors = useStore(form.store, (formState) => formState.errors)
 
   return (
     <Form method="post" onSubmit={() => form.handleSubmit()}>

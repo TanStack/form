@@ -17,9 +17,13 @@ function useTransform<TFormData, TFormValidator>(fn, deps): FormTransform<TFormD
 
 ## Parameters
 
-• **fn**
+### fn
 
-• **deps**: `unknown`[]
+(`formBase`) => `FormApi`\<`TFormData`, `TFormValidator`\>
+
+### deps
+
+`unknown`[]
 
 ## Returns
 
@@ -27,4 +31,4 @@ function useTransform<TFormData, TFormValidator>(fn, deps): FormTransform<TFormD
 
 ## Defined in
 
-[useTransform.ts:3](https://github.com/TanStack/form/blob/main/packages/react-form/src/useTransform.ts#L3)
+[packages/react-form/src/useTransform.ts:3](https://github.com/TanStack/form/blob/main/packages/react-form/src/useTransform.ts#L3)

@@ -27,7 +27,9 @@ The `Field` component uses the `useField` hook internally to manage the field in
 
 ## Parameters
 
-• **\_\_namedParameters**: `FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
+### \_\_namedParameters
+
+`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
 
 ## Returns
 
@@ -35,4 +37,4 @@ The `Field` component uses the `useField` hook internally to manage the field in
 
 ## Defined in
 
-[useField.tsx:164](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L164)
+[packages/react-form/src/useField.tsx:164](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L164)

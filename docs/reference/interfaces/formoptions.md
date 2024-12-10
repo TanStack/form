@@ -81,11 +81,15 @@ A function to be called when the form is submitted, what should happen once the 
 
 #### Parameters
 
-• **props**
+##### props
 
-• **props.formApi**: [`FormApi`](../classes/formapi.md)\<`TFormData`, `TFormValidator`\>
+###### formApi
 
-• **props.value**: `TFormData`
+[`FormApi`](../classes/formapi.md)\<`TFormData`, `TFormValidator`\>
+
+###### value
+
+`TFormData`
 
 #### Returns
 
@@ -107,11 +111,15 @@ Specify an action for scenarios where the user tries to submit an invalid form.
 
 #### Parameters
 
-• **props**
+##### props
 
-• **props.formApi**: [`FormApi`](../classes/formapi.md)\<`TFormData`, `TFormValidator`\>
+###### formApi
 
-• **props.value**: `TFormData`
+[`FormApi`](../classes/formapi.md)\<`TFormData`, `TFormValidator`\>
+
+###### value
+
+`TFormData`
 
 #### Returns
 

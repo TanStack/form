@@ -178,7 +178,7 @@ export default function App() {
 
   // Subscribe to the form's error map so that updates to it will render
   // alternately, you can use `form.Subscribe`
-  const formErrorMap = form.useStore((state) => state.errorMap)
+  const formErrorMap = useStore(form.store, (state) => state.errorMap)
 
   return (
     <div>

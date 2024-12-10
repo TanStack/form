@@ -102,6 +102,10 @@
               "to": "framework/react/guides/linked-fields"
             },
             {
+              "label": "Listeners",
+              "to": "framework/react/guides/listeners"
+            },
+            {
               "label": "UI Libraries",
               "to": "framework/react/guides/ui-libraries"
             },
@@ -399,6 +403,21 @@
             {
               "label": "Functions / injectStore",
               "to": "framework/angular/reference/functions/injectstore"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Community Resources",
+      "children": [],
+      "frameworks": [
+        {
+          "label": "react",
+          "children": [
+            {
+              "label": "Balastrong's Tutorials",
+              "to": "framework/react/community/balastrongs-tutorials"
             }
           ]
         }

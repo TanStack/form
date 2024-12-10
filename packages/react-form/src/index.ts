@@ -1,6 +1,8 @@
 export * from '@tanstack/form-core'
 
-export type { ReactFormApi } from './useForm'
+export { useStore } from '@tanstack/react-store'
+
+export type { ReactFormApi, ReactFormExtendedApi } from './useForm'
 export { useForm } from './useForm'
 
 export type { UseField, FieldComponent } from './useField'

@@ -176,12 +176,12 @@ import { z } from 'zod'
 
 ## Reactivity
 
-`@tanstack/react-form` offers various ways to subscribe to form and field state changes, most notably the `form.useStore` hook and the `form.Subscribe` component. These methods allow you to optimize your form's rendering performance by only updating components when necessary.
+`@tanstack/react-form` offers various ways to subscribe to form and field state changes, most notably the `useStore(form.store)` hook and the `form.Subscribe` component. These methods allow you to optimize your form's rendering performance by only updating components when necessary.
 
 Example:
 
 ```tsx
-const firstName = form.useStore((state) => state.values.firstName)
+const firstName = useStore(form.store, (state) => state.values.firstName)
 //...
 <form.Subscribe
   selector={(state) => [state.canSubmit, state.isSubmitting]}
@@ -193,7 +193,27 @@ const firstName = form.useStore((state) => state.values.firstName)
 />
 ```
 
-Note: The usage of the `form.useField` hook to achieve reactivity is discouraged since it is designed to be used thoughtfully within the `form.Field` component. You might want to use `form.useStore` instead.
+Note: The usage of the `useField` hook to achieve reactivity is discouraged since it is designed to be used thoughtfully within the `form.Field` component. You might want to use `useStore(form.store)` instead.
+
+## Listeners
+
+`@tanstack/react-form` allows you to react to specific triggers and "listen" to them to dispatch side effects.
+
+Example:
+
+```tsx
+<form.Field
+  name="country"
+  listeners={{
+    onChange: ({ value }) => {
+      console.log(`Country changed to: ${value}, resetting province`)
+      form.setFieldValue('province', '')
+    }
+  }}
+/>
+```
+
+More information can be found at [Listeners](./listeners.md)
 
 ## Array Fields
 

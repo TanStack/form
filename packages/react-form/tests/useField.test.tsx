@@ -3,9 +3,10 @@ import { describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import { StrictMode } from 'react'
+import { useStore } from '@tanstack/react-store'
 import { useForm } from '../src/index'
 import { sleep } from './utils'
-import type { FieldApi, FormApi } from '../src/index'
+import type { FieldApi } from '../src/index'
 
 const user = userEvent.setup()
 
@@ -827,7 +828,7 @@ describe('useField', () => {
           },
         },
       })
-      const errors = form.useStore((s) => s.errors)
+      const errors = useStore(form.store, (s) => s.errors)
 
       return (
         <>

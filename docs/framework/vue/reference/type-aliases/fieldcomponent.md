@@ -25,9 +25,13 @@ type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData
 
 ## Parameters
 
-• **fieldOptions**: `Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
+### fieldOptions
 
-• **context**: `SetupContext`\<`object`, `SlotsType`\<`object`\>\>
+`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
+
+### context
+
+`SetupContext`\<`object`, `SlotsType`\<`object`\>\>
 
 ## Returns
 
@@ -35,4 +39,4 @@ type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData
 
 ## Defined in
 
-[useField.tsx:117](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L117)
+[packages/vue-form/src/useField.tsx:117](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L117)

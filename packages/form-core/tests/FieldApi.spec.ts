@@ -485,6 +485,29 @@ describe('field api', () => {
     ])
   })
 
+  it('should add a field when the key is numeric but the parent is not an array', () => {
+    const form = new FormApi({
+      defaultValues: {
+        items: {} as Record<number, { quantity: number }>,
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'items.2.quantity',
+    })
+
+    field.setValue(10)
+
+    expect(form.state.values).toStrictEqual({
+      items: {
+        2: {
+          quantity: 10,
+        },
+      },
+    })
+  })
+
   it('should not throw errors when no meta info is stored on a field and a form re-renders', async () => {
     const form = new FormApi({
       defaultValues: {
@@ -930,6 +953,153 @@ describe('field api', () => {
     expect(field.getMeta().errorMap).toMatchObject({
       onSubmit: 'Please enter a different value',
     })
+  })
+
+  it('should run listener onChange', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    let triggered!: string
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onChange: ({ value }) => {
+          triggered = value
+        },
+      },
+    })
+
+    field.mount()
+
+    field.setValue('other')
+    expect(triggered).toStrictEqual('other')
+  })
+
+  it('should not run the listener onChange on mount', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    let triggered!: string
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onChange: ({ value }) => {
+          triggered = value
+        },
+      },
+    })
+
+    field.mount()
+
+    expect(triggered).toStrictEqual(undefined)
+  })
+
+  it('should change the form state when running listener onChange', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'foo',
+        greet: 'bar',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onChange: ({ value }) => {
+          form.setFieldValue('greet', `hello ${value}`)
+        },
+      },
+    })
+
+    field.mount()
+
+    field.setValue('baz')
+    expect(form.getFieldValue('name')).toStrictEqual('baz')
+    expect(form.getFieldValue('greet')).toStrictEqual('hello baz')
+  })
+
+  it('should reset the form on a listener', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'foo',
+        greet: 'bar',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onChange: () => {
+          form.reset({
+            ...form.state.values,
+            greet: '',
+          })
+        },
+      },
+    })
+
+    field.mount()
+
+    field.setValue('other')
+    expect(form.getFieldValue('name')).toStrictEqual('other')
+    expect(form.getFieldValue('greet')).toStrictEqual('')
+  })
+
+  it('should run listener onBlur', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    let triggered!: string
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onBlur: ({ value }) => {
+          triggered = value
+        },
+      },
+    })
+
+    field.mount()
+
+    field.handleBlur()
+    expect(triggered).toStrictEqual('test')
+  })
+
+  it('should run listener onMount', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    let triggered!: string
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onMount: ({ value }) => {
+          triggered = value
+        },
+      },
+    })
+
+    field.mount()
+
+    expect(triggered).toStrictEqual('test')
   })
 
   it('should contain multiple errors when running validation onBlur and onChange', () => {

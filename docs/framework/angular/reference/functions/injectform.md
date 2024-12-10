@@ -17,7 +17,9 @@ function injectForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormV
 
 ## Parameters
 
-• **opts?**: `FormOptions`\<`TFormData`, `TFormValidator`\>
+### opts?
+
+`FormOptions`\<`TFormData`, `TFormValidator`\>
 
 ## Returns
 

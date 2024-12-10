@@ -23,7 +23,9 @@ function useField<TParentData, TName, TFieldValidator, TFormValidator, TData>(op
 
 ## Parameters
 
-• **opts**: `UseFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
+### opts
+
+`UseFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
 
 ## Returns
 
@@ -43,4 +45,4 @@ readonly state: Readonly<Ref<FieldState<TData>, FieldState<TData>>> = fieldState
 
 ## Defined in
 
-[useField.tsx:49](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L49)
+[packages/vue-form/src/useField.tsx:49](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L49)

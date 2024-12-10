@@ -21,7 +21,7 @@ Field: FieldComponent<TFormData, TFormValidator>;
 
 #### Defined in
 
-[useForm.tsx:14](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L14)
+[packages/vue-form/src/useForm.tsx:14](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L14)
 
 ***
 
@@ -37,11 +37,15 @@ Subscribe: <TSelected>(props, context) => any;
 
 #### Parameters
 
-• **props**
+##### props
 
-• **props.selector?**
+###### selector
 
-• **context**: `SetupContext`\<`EmitsOptions`, `SlotsType`\<`object`\>\>
+(`state`) => `TSelected`
+
+##### context
+
+`SetupContext`\<`EmitsOptions`, `SlotsType`\<`object`\>\>
 
 #### Returns
 
@@ -49,7 +53,7 @@ Subscribe: <TSelected>(props, context) => any;
 
 #### Defined in
 
-[useForm.tsx:19](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L19)
+[packages/vue-form/src/useForm.tsx:19](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L19)
 
 ***
 
@@ -61,7 +65,7 @@ useField: UseField<TFormData, TFormValidator>;
 
 #### Defined in
 
-[useForm.tsx:15](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L15)
+[packages/vue-form/src/useForm.tsx:15](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L15)
 
 ***
 
@@ -77,7 +81,9 @@ useStore: <TSelected>(selector?) => Readonly<Ref<TSelected, TSelected>>;
 
 #### Parameters
 
-• **selector?**
+##### selector?
+
+(`state`) => `TSelected`
 
 #### Returns
 
@@ -85,4 +91,4 @@ useStore: <TSelected>(selector?) => Readonly<Ref<TSelected, TSelected>>;
 
 #### Defined in
 
-[useForm.tsx:16](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L16)
+[packages/vue-form/src/useForm.tsx:16](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L16)

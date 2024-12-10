@@ -17,7 +17,9 @@ type UpdaterFn<TInput, TOutput>: (input) => TOutput;
 
 ## Parameters
 
-• **input**: `TInput`
+### input
+
+`TInput`
 
 ## Returns
 

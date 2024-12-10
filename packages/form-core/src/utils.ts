@@ -49,7 +49,10 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
 
     const key = path.shift()
 
-    if (typeof key === 'string') {
+    if (
+      typeof key === 'string' ||
+      (typeof key === 'number' && !Array.isArray(parent))
+    ) {
       if (typeof parent === 'object') {
         if (parent === null) {
           parent = {}
@@ -64,7 +67,7 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
       }
     }
 
-    if (Array.isArray(parent) && key !== undefined) {
+    if (Array.isArray(parent) && typeof key === 'number') {
       const prefix = parent.slice(0, key)
       return [
         ...(prefix.length ? prefix : new Array(key)),

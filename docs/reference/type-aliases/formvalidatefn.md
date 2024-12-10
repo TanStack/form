@@ -17,11 +17,15 @@ type FormValidateFn<TFormData, TFormValidator>: (props) => FormValidationError<T
 
 ## Parameters
 
-• **props**
+### props
 
-• **props.formApi**: [`FormApi`](../classes/formapi.md)\<`TFormData`, `TFormValidator`\>
+#### formApi
 
-• **props.value**: `TFormData`
+[`FormApi`](../classes/formapi.md)\<`TFormData`, `TFormValidator`\>
+
+#### value
+
+`TFormData`
 
 ## Returns
 
