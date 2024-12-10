@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@tanstack/form-core": "^0.39.1",
-    "@tanstack/react-form": "^0.39.1",
+    "@tanstack/react-form": "^0.39.2",
     "@tanstack/react-router": "^1.81.1",
     "@tanstack/react-store": "^0.6.1",
     "@tanstack/start": "^1.81.1",
