@@ -424,6 +424,8 @@ TanStack Form natively supports all libraries following the [Standard Schema spe
 - [Valibot](https://valibot.dev/)
 - [ArkType](https://arktype.io/)
 
+*Note:* make sure to use the latest version of the schema libraries as older versions might not support Standard Schema yet.
+
 To use schemas from these libraries you can pass them to the `validators` props as you would do with a custom function:
 
 ```tsx
