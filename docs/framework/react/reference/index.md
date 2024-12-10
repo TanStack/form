@@ -20,4 +20,5 @@ title: "@tanstack/react-form"
 - [Field](functions/field.md)
 - [useField](functions/usefield.md)
 - [useForm](functions/useform.md)
+- [useStore](functions/usestore.md)
 - [useTransform](functions/usetransform.md)
