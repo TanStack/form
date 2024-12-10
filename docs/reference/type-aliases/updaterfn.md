@@ -27,4 +27,4 @@ type UpdaterFn<TInput, TOutput>: (input) => TOutput;
 
 ## Defined in
 
-[packages/form-core/src/utils.ts:5](https://github.com/TanStack/Formblob/main/packages/form-core/src/utils.ts#L5)
+[packages/form-core/src/utils.ts:5](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L5)
