@@ -11,7 +11,9 @@ function isStandardSchemaValidator(validator): validator is StandardSchema<unkno
 
 ## Parameters
 
-• **validator**: `unknown`
+### validator
+
+`unknown`
 
 ## Returns
 
@@ -19,4 +21,4 @@ function isStandardSchemaValidator(validator): validator is StandardSchema<unkno
 
 ## Defined in
 
-[packages/form-core/src/standardSchemaValidator.ts:87](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchemaValidator.ts#L87)
+[packages/form-core/src/standardSchemaValidator.ts:87](https://github.com/TanStack/Formblob/main/packages/form-core/src/standardSchemaValidator.ts#L87)

@@ -11,7 +11,9 @@ function standardSchemaValidator(params): Validator<unknown, StandardSchema<any,
 
 ## Parameters
 
-• **params**: `Params` = `{}`
+### params
+
+`Params` = `{}`
 
 ## Returns
 
@@ -19,4 +21,4 @@ function standardSchemaValidator(params): Validator<unknown, StandardSchema<any,
 
 ## Defined in
 
-[packages/form-core/src/standardSchemaValidator.ts:49](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchemaValidator.ts#L49)
+[packages/form-core/src/standardSchemaValidator.ts:49](https://github.com/TanStack/Formblob/main/packages/form-core/src/standardSchemaValidator.ts#L49)
