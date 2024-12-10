@@ -1,12 +1,12 @@
 import '@mantine/core/styles.css'
 
-import { MantineProvider, TextInput, Checkbox } from '@mantine/core'
+import { Checkbox, MantineProvider, TextInput } from '@mantine/core'
 import { useForm } from '@tanstack/react-form'
 import TextField from '@mui/material/TextField'
 import { Checkbox as MuiCheckbox } from '@mui/material'
 
 export default function MainComponent() {
-  const { Field, Subscribe, handleSubmit, state, useStore } = useForm({
+  const form = useForm({
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -18,19 +18,17 @@ export default function MainComponent() {
       console.log(value)
     },
   })
-  console.log({
-    values: useStore((state) => state.values),
-  })
+
   return (
     <MantineProvider>
       <form
         onSubmit={(e) => {
           e.preventDefault()
           e.stopPropagation()
-          handleSubmit()
+          form.handleSubmit()
         }}
       >
-        <Field
+        <form.Field
           name="firstName"
           children={({ state, handleChange, handleBlur }) => {
             return (
@@ -43,7 +41,7 @@ export default function MainComponent() {
             )
           }}
         />
-        <Field
+        <form.Field
           name="lastName"
           children={({ state, handleChange, handleBlur }) => {
             return (
@@ -59,7 +57,7 @@ export default function MainComponent() {
             )
           }}
         />
-        <Field
+        <form.Field
           name="isChecked"
           children={({ state, handleChange, handleBlur }) => {
             return (
@@ -71,7 +69,7 @@ export default function MainComponent() {
             )
           }}
         />
-        <Field
+        <form.Field
           name="isMuiCheckBox"
           children={({ state, handleChange, handleBlur }) => {
             return (
@@ -83,7 +81,7 @@ export default function MainComponent() {
             )
           }}
         />
-        <Subscribe
+        <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
           children={([canSubmit, isSubmitting]) => (
             <button type="submit" disabled={!canSubmit}>
@@ -92,9 +90,6 @@ export default function MainComponent() {
           )}
         />
       </form>
-      <div>
-        <pre>{JSON.stringify(state.values, null, 2)}</pre>
-      </div>
     </MantineProvider>
   )
 }
