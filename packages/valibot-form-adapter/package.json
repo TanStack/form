@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/valibot-form-adapter",
-  "version": "0.39.0",
+  "version": "0.39.1",
   "description": "The Valibot adapter for TanStack Form.",
   "author": "tannerlinsley",
   "license": "MIT",
