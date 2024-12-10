@@ -23,3 +23,4 @@ title: "@tanstack/vue-form"
 
 - [useField](functions/usefield.md)
 - [useForm](functions/useform.md)
+- [useStore](functions/usestore.md)
