@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import * as v from 'valibot'
+import { z } from 'zod'
 import { type } from 'arktype'
 import { FieldApi, FormApi, standardSchemaValidator } from '../src/index'
 import { sleep } from './utils'
@@ -103,9 +104,60 @@ describe('standard schema validator', () => {
       expect(form.state.errors).toStrictEqual(['First name is too short'])
     })
 
-    // TODO: Waiting for https://github.com/colinhacks/zod/pull/3850
-    it.todo('should support standard schema sync validation with zod')
-    it.todo('should support standard schema async validation with zod')
+    it('should support standard schema sync validation with zod', async () => {
+      const form = new FormApi({
+      defaultValues: {
+        email: '',
+      },
+      validators: {
+        onChange: z.object({
+        email: z.string().email('email must be an email address'),
+        }),
+      },
+      validatorAdapter: standardSchemaValidator(),
+      })
+
+      const field = new FieldApi({
+      form,
+      name: 'email',
+      })
+
+      field.mount()
+
+      field.setValue('test')
+      expect(form.state.errors).toStrictEqual([
+      'email must be an email address',
+      ])
+    })
+
+    it('should support standard schema async validation with zod', async () => {
+      vi.useFakeTimers()
+
+      const form = new FormApi({
+      defaultValues: {
+        email: '',
+      },
+      validators: {
+        onChangeAsync: z.object({
+        email: z.string().email('email must be an email address'),
+        }),
+      },
+      validatorAdapter: standardSchemaValidator(),
+      })
+
+      const field = new FieldApi({
+      form,
+      name: 'email',
+      })
+
+      field.mount()
+
+      field.setValue('test')
+      await vi.runAllTimersAsync()
+      expect(form.state.errors).toStrictEqual([
+      'email must be an email address',
+      ])
+    })
 
     it('should support standard schema async validation with valibot', async () => {
       vi.useFakeTimers()
