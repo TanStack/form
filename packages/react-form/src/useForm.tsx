@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type { PropsWithChildren, ReactNode } from 'react'
-import type { FieldComponent, UseField } from './useField'
+import type { FieldComponent } from './useField'
 import type { NoInfer } from '@tanstack/react-store'
 import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
 
@@ -19,17 +19,7 @@ export interface ReactFormApi<
    * A React component to render form fields. With this, you can render and manage individual form fields.
    */
   Field: FieldComponent<TFormData, TFormValidator>
-  /**
-   * A custom React hook that provides functionalities related to individual form fields. It gives you access to field values, errors, and allows you to set or update field values.
-   */
-  useField: UseField<TFormData, TFormValidator>
-  /**
-   * A `useStore` hook that connects to the internal store of the form. It can be used to access the form's current state or any other related state information. You can optionally pass in a selector function to cherry-pick specific parts of the state
-   */
-  useStore: <TSelected = NoInfer<FormState<TFormData>>>(
-    selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,
-  ) => TSelected
-  /**
+   /**
    * A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
    */
   Subscribe: <TSelected = NoInfer<FormState<TFormData>>>(props: {
