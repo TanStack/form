@@ -106,27 +106,27 @@ describe('standard schema validator', () => {
 
     it('should support standard schema sync validation with zod', async () => {
       const form = new FormApi({
-      defaultValues: {
-        email: '',
-      },
-      validators: {
-        onChange: z.object({
-        email: z.string().email('email must be an email address'),
-        }),
-      },
-      validatorAdapter: standardSchemaValidator(),
+        defaultValues: {
+          email: '',
+        },
+        validators: {
+          onChange: z.object({
+            email: z.string().email('email must be an email address'),
+          }),
+        },
+        validatorAdapter: standardSchemaValidator(),
       })
 
       const field = new FieldApi({
-      form,
-      name: 'email',
+        form,
+        name: 'email',
       })
 
       field.mount()
 
       field.setValue('test')
       expect(form.state.errors).toStrictEqual([
-      'email must be an email address',
+        'email must be an email address',
       ])
     })
 
@@ -134,20 +134,20 @@ describe('standard schema validator', () => {
       vi.useFakeTimers()
 
       const form = new FormApi({
-      defaultValues: {
-        email: '',
-      },
-      validators: {
-        onChangeAsync: z.object({
-        email: z.string().email('email must be an email address'),
-        }),
-      },
-      validatorAdapter: standardSchemaValidator(),
+        defaultValues: {
+          email: '',
+        },
+        validators: {
+          onChangeAsync: z.object({
+            email: z.string().email('email must be an email address'),
+          }),
+        },
+        validatorAdapter: standardSchemaValidator(),
       })
 
       const field = new FieldApi({
-      form,
-      name: 'email',
+        form,
+        name: 'email',
       })
 
       field.mount()
@@ -155,7 +155,7 @@ describe('standard schema validator', () => {
       field.setValue('test')
       await vi.runAllTimersAsync()
       expect(form.state.errors).toStrictEqual([
-      'email must be an email address',
+        'email must be an email address',
       ])
     })
 
