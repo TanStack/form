@@ -19,7 +19,7 @@ export interface ReactFormApi<
    * A React component to render form fields. With this, you can render and manage individual form fields.
    */
   Field: FieldComponent<TFormData, TFormValidator>
-   /**
+  /**
    * A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
    */
   Subscribe: <TSelected = NoInfer<FormState<TFormData>>>(props: {
