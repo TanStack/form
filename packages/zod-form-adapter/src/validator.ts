@@ -40,6 +40,10 @@ export function defaultFormTransformer(transformErrors: TransformFn) {
   })
 }
 
+/**
+ * @deprecated With zod 3.24.0 the adapter is no longer needed and will be soon removed.
+ * If you were passing some parameters you can use the `standardSchemaValidator` instead.
+ */
 export const zodValidator =
   (params: Params = {}): Validator<unknown, ZodType> =>
   () => {
