@@ -6,7 +6,7 @@ title: isStandardSchemaValidator
 # Function: isStandardSchemaValidator()
 
 ```ts
-function isStandardSchemaValidator(validator): validator is StandardSchema<unknown, unknown>
+function isStandardSchemaValidator(validator): validator is StandardSchemaV1
 ```
 
 ## Parameters
@@ -17,7 +17,7 @@ function isStandardSchemaValidator(validator): validator is StandardSchema<unkno
 
 ## Returns
 
-`validator is StandardSchema<unknown, unknown>`
+`validator is StandardSchemaV1`
 
 ## Defined in
 

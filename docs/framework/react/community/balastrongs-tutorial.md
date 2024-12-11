@@ -1,6 +1,6 @@
 ---
-id: balastrongs-tutorials
-title: Balastrong's Tutorials
+id: balastrong-tutorial
+title: Balastrong's Tutorial
 ---
 
 TanStack Form maintainer [Balastrong](https://bsky.app/profile/leonardomontini.dev) has created a series of video tutorials showcasing the most relevant features of the library. You'll find step by step guides that give you some extra insights into what you can build with TanStack Form, plus some nice tips and tricks.

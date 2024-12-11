@@ -6,7 +6,7 @@ title: standardSchemaValidator
 # Function: standardSchemaValidator()
 
 ```ts
-function standardSchemaValidator(params): Validator<unknown, StandardSchema<any, any>>
+function standardSchemaValidator(params): Validator<unknown, StandardSchemaV1>
 ```
 
 ## Parameters
@@ -17,7 +17,7 @@ function standardSchemaValidator(params): Validator<unknown, StandardSchema<any,
 
 ## Returns
 
-`Validator`\<`unknown`, `StandardSchema`\<`any`, `any`\>\>
+`Validator`\<`unknown`, `StandardSchemaV1`\>
 
 ## Defined in
 

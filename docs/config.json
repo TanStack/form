@@ -416,8 +416,8 @@
           "label": "react",
           "children": [
             {
-              "label": "Balastrong's Tutorials",
-              "to": "framework/react/community/balastrongs-tutorials"
+              "label": "Balastrong's Tutorial",
+              "to": "framework/react/community/balastrong-tutorial"
             }
           ]
         }
