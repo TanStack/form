@@ -26,7 +26,7 @@ export default function App() {
       // Do something with form data
       console.log(value)
     },
-    // Add a validator to support Valibot usage in Form and Field
+    // Add a validator to support Valibot usage in Form and Field (no longer needed with valibot@1.0.0 or higher)
     validatorAdapter: valibotValidator(),
   })
 

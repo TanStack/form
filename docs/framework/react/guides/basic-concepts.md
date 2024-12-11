@@ -144,34 +144,43 @@ Example:
 />
 ```
 
-## Validation Adapters
+## Validation with Schema Libraries
 
-In addition to hand-rolled validation options, we also provide adapters like `@tanstack/zod-form-adapter`, `@tanstack/yup-form-adapter`, and `@tanstack/valibot-form-adapter` to enable usage with common schema validation tools like [Zod](https://zod.dev/), [Yup](https://github.com/jquense/yup), and [Valibot](https://valibot.dev/).
+In addition to hand-rolled validation options, we also support the [Standard Schema](https://github.com/standard-schema/standard-schema) specification.
 
-Example:
+You can define a schema using any of the libraries implementing the specification and pass it to a form or field validator.
+
+Supported libraries include:
+
+- [Zod](https://zod.dev/)
+- [Valibot](https://valibot.dev/)
+- [ArkType](https://arktype.io/)
 
 ```tsx
-import { zodValidator } from '@tanstack/zod-form-adapter'
-import { z } from 'zod'
+const userSchema = z.object({
+  age: z.number().gte(13, 'You must be 13 to make an account'),
+})
 
-// ...
-<form.Field
-  name="firstName"
-  validatorAdapter={zodValidator()}
-  validators={{
-    onChange: z.string().min(3, 'First name must be at least 3 characters'),
-    onChangeAsyncDebounceMs: 500,
-    onChangeAsync: z.string().refine(
-      async (value) => {
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-        return !value.includes('error')
-      },
-      {
-        message: "No 'error' allowed in first name",
-      },
-    ),
-  }}
-/>
+function App() {
+  const form = useForm({
+    defaultValues: {
+      age: 0,
+    },
+    validators: {
+      onChange: userSchema,
+    },
+  })
+  return (
+    <div>
+      <form.Field
+        name="age"
+        children={(field) => {
+          return <>{/* ... */}</>
+        }}
+      />
+    </div>
+  )
+}
 ```
 
 ## Reactivity

@@ -81,7 +81,7 @@ export class AppComponent {
       // Do something with form data
       console.log(value)
     },
-    // Add a validator to support Zod usage in Form and Field
+    // Add a validator to support Zod usage in Form and Field (no longer needed with valibot@1.0.0 or higher)
     validatorAdapter: valibotValidator(),
   })
 
