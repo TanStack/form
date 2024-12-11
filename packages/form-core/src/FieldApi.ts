@@ -15,6 +15,7 @@ import type {
 } from './types'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
 import type { DeepKeys, DeepValue, NoInfer } from './util-types'
+import type { StandardSchemaV1 } from '@standard-schema/spec'
 
 /**
  * @private
@@ -68,13 +69,15 @@ export type FieldValidateOrFn<
               TFormValidator,
               TData
             >
-      : FieldValidateFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
+      :
+          | FieldValidateFn<
+              TParentData,
+              TName,
+              TFieldValidator,
+              TFormValidator,
+              TData
+            >
+          | StandardSchemaV1
 
 /**
  * @private
@@ -129,13 +132,15 @@ export type FieldAsyncValidateOrFn<
               TFormValidator,
               TData
             >
-      : FieldValidateAsyncFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
+      :
+          | FieldValidateAsyncFn<
+              TParentData,
+              TName,
+              TFieldValidator,
+              TFormValidator,
+              TData
+            >
+          | StandardSchemaV1<TData, unknown>
 
 /**
  * @private

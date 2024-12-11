@@ -114,7 +114,6 @@ describe('standard schema validator', () => {
             email: z.string().email('email must be an email address'),
           }),
         },
-        validatorAdapter: standardSchemaValidator(),
       })
 
       const field = new FieldApi({
@@ -142,7 +141,6 @@ describe('standard schema validator', () => {
             email: z.string().email('email must be an email address'),
           }),
         },
-        validatorAdapter: standardSchemaValidator(),
       })
 
       const field = new FieldApi({
@@ -179,7 +177,6 @@ describe('standard schema validator', () => {
             lastName: v.string(),
           }),
         },
-        validatorAdapter: standardSchemaValidator(),
       })
 
       const field = new FieldApi({
@@ -202,7 +199,6 @@ describe('standard schema validator', () => {
         validators: {
           onChange: type({ email: 'string.email' as 'string' }),
         },
-        validatorAdapter: standardSchemaValidator(),
       })
 
       const field = new FieldApi({
@@ -308,7 +304,6 @@ describe('standard schema validator', () => {
             v.minLength(3, 'First name is too short'),
           ),
         },
-        validatorAdapter: standardSchemaValidator(),
       })
 
       field.mount()
@@ -339,7 +334,6 @@ describe('standard schema validator', () => {
             }, 'First name is too short'),
           ),
         },
-        validatorAdapter: standardSchemaValidator(),
       })
 
       field.mount()
@@ -362,7 +356,6 @@ describe('standard schema validator', () => {
         validators: {
           onChange: type('string.email' as 'string'),
         },
-        validatorAdapter: standardSchemaValidator(),
       })
 
       field.mount()
@@ -372,5 +365,33 @@ describe('standard schema validator', () => {
         'must be an email address (was "test")',
       ])
     })
+  })
+
+  it('should support standard schema sync validation with zod', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        email: '',
+      },
+      validators: {
+        onChange: z.object({
+          email: z.string().email('email must be an email address'),
+        }),
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'email',
+      validators: {
+        onChange: z.string().email('email must be an email address'),
+      },
+    })
+
+    field.mount()
+
+    field.setValue('test')
+    expect(field.getMeta().errors).toStrictEqual([
+      'email must be an email address',
+    ])
   })
 })
