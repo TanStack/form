@@ -17,7 +17,6 @@ function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
   )
 }
 
-// @ts-ignore - Might be unused for demo purposes
 const ZodSchema = z.object({
   firstName: z
     .string()
@@ -26,7 +25,6 @@ const ZodSchema = z.object({
   lastName: z.string().min(3, '[Zod] You must have a length of at least 3'),
 })
 
-// @ts-ignore - Might be unused for demo purposes
 const ValibotSchema = v.object({
   firstName: v.pipe(
     v.string(),
@@ -39,7 +37,6 @@ const ValibotSchema = v.object({
   ),
 })
 
-// @ts-ignore - Might be unused for demo purposes
 const ArkTypeSchema = type({
   firstName: 'string >= 3',
   lastName: 'string >= 3',
