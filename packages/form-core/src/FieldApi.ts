@@ -50,7 +50,9 @@ export type FieldValidateOrFn<
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > =
   | (TFieldValidator extends Validator<TData, infer TFN> ? TFN : never)
-  | (TFormValidator extends Validator<TParentData, infer FFN> ? FFN : never)
+  | (TFormValidator extends Validator<TParentData, infer FFN>
+      ? FFN | StandardSchemaV1<TParentData>
+      : never)
   | FieldValidateFn<TParentData, TName, TFieldValidator, TFormValidator, TData>
   | StandardSchemaV1<TData>
 
@@ -88,7 +90,9 @@ export type FieldAsyncValidateOrFn<
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > =
   | (TFieldValidator extends Validator<TData, infer TFN> ? TFN : never)
-  | (TFormValidator extends Validator<TParentData, infer FFN> ? FFN : never)
+  | (TFormValidator extends Validator<TParentData, infer FFN>
+      ? FFN | StandardSchemaV1<TParentData>
+      : never)
   | FieldValidateAsyncFn<
       TParentData,
       TName,
