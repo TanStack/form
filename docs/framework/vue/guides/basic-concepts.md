@@ -146,7 +146,7 @@ Example:
 </template>
 ```
 
-## Validation with Schema Libraries
+## Validation with Standard Schema Libraries
 
 In addition to hand-rolled validation options, we also support the [Standard Schema](https://github.com/standard-schema/standard-schema) specification.
 
