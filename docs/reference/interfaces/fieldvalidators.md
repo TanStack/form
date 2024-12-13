@@ -36,7 +36,7 @@ z.string().min(1) // if `zodAdapter` is passed
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:226](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L226)
+[packages/form-core/src/FieldApi.ts:182](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L182)
 
 ***
 
@@ -57,7 +57,7 @@ z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:239](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L239)
+[packages/form-core/src/FieldApi.ts:195](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L195)
 
 ***
 
@@ -73,7 +73,7 @@ If set to a number larger than 0, will debounce the async validation event by th
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:252](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L252)
+[packages/form-core/src/FieldApi.ts:208](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L208)
 
 ***
 
@@ -87,7 +87,7 @@ An optional list of field names that should trigger this field's `onBlur` and `o
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:256](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L256)
+[packages/form-core/src/FieldApi.ts:212](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L212)
 
 ***
 
@@ -108,7 +108,7 @@ z.string().min(1) // if `zodAdapter` is passed
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:190](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L190)
+[packages/form-core/src/FieldApi.ts:146](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L146)
 
 ***
 
@@ -129,7 +129,7 @@ z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:203](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L203)
+[packages/form-core/src/FieldApi.ts:159](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L159)
 
 ***
 
@@ -145,7 +145,7 @@ If set to a number larger than 0, will debounce the async validation event by th
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:215](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L215)
+[packages/form-core/src/FieldApi.ts:171](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L171)
 
 ***
 
@@ -159,7 +159,7 @@ An optional list of field names that should trigger this field's `onChange` and 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:219](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L219)
+[packages/form-core/src/FieldApi.ts:175](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L175)
 
 ***
 
@@ -173,7 +173,7 @@ An optional function that takes a param of `formApi` which is a generic type of 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:177](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L177)
+[packages/form-core/src/FieldApi.ts:133](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L133)
 
 ***
 
@@ -194,7 +194,7 @@ z.string().min(1) // if `zodAdapter` is passed
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:263](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L263)
+[packages/form-core/src/FieldApi.ts:219](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L219)
 
 ***
 
@@ -215,4 +215,4 @@ z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:276](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L276)
+[packages/form-core/src/FieldApi.ts:232](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L232)
