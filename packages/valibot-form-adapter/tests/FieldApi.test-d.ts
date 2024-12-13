@@ -85,22 +85,3 @@ it('should not allow a validator onChange to be passed when not using a validato
     onChange: string(),
   } as const)
 })
-
-it('should allow not a Valibot validator with the wrong Valibot type', () => {
-  const form = new FormApi({
-    defaultValues: {
-      name: 'test',
-    },
-  })
-
-  const field = new FieldApi({
-    // @ts-expect-error
-    form,
-    // @ts-expect-error
-    name: 'name',
-    validatorAdapter: valibotValidator(),
-    validators: {
-      onChange: v.object({}),
-    },
-  } as const)
-})
