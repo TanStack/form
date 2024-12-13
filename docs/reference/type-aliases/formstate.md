@@ -179,4 +179,4 @@ The current values of the form fields.
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:252](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L252)
+[packages/form-core/src/FormApi.ts:248](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L248)
