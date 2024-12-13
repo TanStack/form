@@ -88,8 +88,7 @@ it('should not allow a validator onChange to be passed when not using a validato
   })
 })
 
-// This is not possible without higher-kinded types AFAIK
-it.skip('should allow not a Zod validator with the wrong Zod type', () => {
+it('should allow not a Zod validator with the wrong Zod type', () => {
   const form = new FormApi({
     defaultValues: {
       name: 'test',
@@ -97,7 +96,9 @@ it.skip('should allow not a Zod validator with the wrong Zod type', () => {
   } as const)
 
   const field = new FieldApi({
+    // @ts-expect-error
     form,
+    // @ts-expect-error
     name: 'name',
     validatorAdapter: zodValidator(),
     validators: {
