@@ -17,9 +17,9 @@ A hook for managing a field in a form.
 
 • **TName** *extends* `string` \| `number`
 
-• **TFieldValidator** *extends* `undefined` \| `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> = `undefined`
+• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> = `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `StandardSchemaV1`\<`DeepValue`\<`TParentData`, `TName`\>\>\>
 
-• **TFormValidator** *extends* `undefined` \| `Validator`\<`TParentData`, `unknown`\> = `undefined`
+• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> = `Validator`\<`TParentData`, `StandardSchemaV1`\<`TParentData`\>\>
 
 • **TData** = `DeepValue`\<`TParentData`, `TName`\>
 
@@ -39,4 +39,4 @@ The `FieldApi` instance for the specified field.
 
 ## Defined in
 
-[packages/react-form/src/useField.tsx:50](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L50)
+[packages/react-form/src/useField.tsx:61](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L61)

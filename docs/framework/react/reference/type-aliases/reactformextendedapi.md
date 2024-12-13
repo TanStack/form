@@ -15,8 +15,8 @@ An extended version of the `FormApi` class that includes React-specific function
 
 • **TFormData**
 
-• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> \| `undefined` = `undefined`
+• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> = `Validator`\<`TFormData`, `StandardSchemaV1`\<`TFormData`\>\>
 
 ## Defined in
 
-[packages/react-form/src/useForm.tsx:34](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L34)
+[packages/react-form/src/useForm.tsx:42](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L42)

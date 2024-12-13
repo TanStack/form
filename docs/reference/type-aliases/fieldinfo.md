@@ -15,14 +15,14 @@ An object representing the field information for a specific field within the for
 
 • **TFormData**
 
-• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> \| `undefined` = `undefined`
+• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> = `Validator`\<`TFormData`, [`StandardSchemaV1`](standardschemav1.md)\<`TFormData`\>\>
 
 ## Type declaration
 
 ### instance
 
 ```ts
-instance: FieldApi<TFormData, any, Validator<unknown, unknown> | undefined, TFormValidator> | null;
+instance: FieldApi<TFormData, any, Validator<unknown, unknown>, TFormValidator> | null;
 ```
 
 An instance of the FieldAPI.
@@ -37,4 +37,4 @@ A record of field validation internal handling.
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:206](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L206)
+[packages/form-core/src/FormApi.ts:227](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L227)

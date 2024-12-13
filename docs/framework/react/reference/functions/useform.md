@@ -17,7 +17,7 @@ This API encapsulates all the necessary functionalities related to the form. It 
 
 • **TFormData**
 
-• **TFormValidator** *extends* `undefined` \| `Validator`\<`TFormData`, `unknown`\> = `undefined`
+• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> = `Validator`\<`TFormData`, `StandardSchemaV1`\<`TFormData`\>\>
 
 ## Parameters
 
@@ -31,4 +31,4 @@ This API encapsulates all the necessary functionalities related to the form. It 
 
 ## Defined in
 
-[packages/react-form/src/useForm.tsx:57](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L57)
+[packages/react-form/src/useForm.tsx:68](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L68)

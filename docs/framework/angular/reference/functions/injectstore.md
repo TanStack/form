@@ -13,7 +13,7 @@ function injectStore<TFormData, TFormValidator, TSelected>(form, selector?): Sig
 
 • **TFormData**
 
-• **TFormValidator** *extends* `undefined` \| `Validator`\<`TFormData`, `unknown`\> = `undefined`
+• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> = `Validator`\<`TFormData`, `StandardSchemaV1`\<`TFormData`\>\>
 
 • **TSelected** = `NoInfer`\<`FormState`\<`TFormData`\>\>
 
@@ -33,4 +33,4 @@ function injectStore<TFormData, TFormValidator, TSelected>(form, selector?): Sig
 
 ## Defined in
 
-[inject-store.ts:4](https://github.com/TanStack/form/blob/main/packages/angular-form/src/inject-store.ts#L4)
+[inject-store.ts:9](https://github.com/TanStack/form/blob/main/packages/angular-form/src/inject-store.ts#L9)

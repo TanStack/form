@@ -13,7 +13,7 @@ type FormValidateFn<TFormData, TFormValidator>: (props) => FormValidationError<T
 
 • **TFormData**
 
-• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> \| `undefined` = `undefined`
+• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> = `Validator`\<`TFormData`, [`StandardSchemaV1`](standardschemav1.md)\<`TFormData`\>\>
 
 ## Parameters
 

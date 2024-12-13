@@ -9,7 +9,7 @@ title: TanStackFormController
 
 • **TParentData**
 
-• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
+• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> = `Validator`\<`TParentData`, `StandardSchemaV1`\<`TParentData`\>\>
 
 ## Implements
 
@@ -39,7 +39,7 @@ new TanStackFormController<TParentData, TFormValidator>(host, config?): TanStack
 
 #### Defined in
 
-[tanstack-form-controller.ts:93](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L93)
+[tanstack-form-controller.ts:105](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L105)
 
 ## Properties
 
@@ -51,7 +51,7 @@ api: FormApi<TParentData, TFormValidator>;
 
 #### Defined in
 
-[tanstack-form-controller.ts:91](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L91)
+[tanstack-form-controller.ts:103](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L103)
 
 ## Methods
 
@@ -65,7 +65,7 @@ field<TName, TFieldValidator, TData>(fieldConfig, render): object
 
 • **TName** *extends* `string` \| `number`
 
-• **TFieldValidator** *extends* `undefined` \| `Validator`\<`DeepValue`\<`TParentData`, `TName`, `IsNullable`\<`TParentData`\>\>, `unknown`\> = `undefined`
+• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`, `IsNullable`\<`TParentData`\>\>, `unknown`\> = `Validator`\<`DeepValue`\<`TParentData`, `TName`, `IsNullable`\<`TParentData`\>\>, `StandardSchemaV1`\<`DeepValue`\<`TParentData`, `TName`, `IsNullable`\<`TParentData`\>\>\>\>
 
 • **TData** = `DeepValue`\<`TParentData`, `TName`, `IsNullable`\<`TParentData`\>\>
 
@@ -109,7 +109,7 @@ render: renderCallback<TParentData, TName, TFieldValidator, TFormValidator, TDat
 
 #### Defined in
 
-[tanstack-form-controller.ts:112](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L112)
+[tanstack-form-controller.ts:124](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L124)
 
 ***
 
@@ -133,7 +133,7 @@ which is only called when the component is connected to the document.
 
 #### Defined in
 
-[tanstack-form-controller.ts:102](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L102)
+[tanstack-form-controller.ts:114](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L114)
 
 ***
 
@@ -158,4 +158,4 @@ document.
 
 #### Defined in
 
-[tanstack-form-controller.ts:108](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L108)
+[tanstack-form-controller.ts:120](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L120)

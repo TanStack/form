@@ -9,7 +9,7 @@ title: SolidFormApi
 
 • **TFormData**
 
-• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> \| `undefined` = `undefined`
+• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> = `Validator`\<`TFormData`, `StandardSchemaV1`\<`TFormData`\>\>
 
 ## Properties
 
@@ -21,7 +21,7 @@ createField: CreateField<TFormData, TFormValidator>;
 
 #### Defined in
 
-[packages/solid-form/src/createForm.tsx:16](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L16)
+[packages/solid-form/src/createForm.tsx:24](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L24)
 
 ***
 
@@ -33,7 +33,7 @@ Field: FieldComponent<TFormData, TFormValidator>;
 
 #### Defined in
 
-[packages/solid-form/src/createForm.tsx:15](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L15)
+[packages/solid-form/src/createForm.tsx:23](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L23)
 
 ***
 
@@ -65,7 +65,7 @@ Subscribe: <TSelected>(props) => Element;
 
 #### Defined in
 
-[packages/solid-form/src/createForm.tsx:20](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L20)
+[packages/solid-form/src/createForm.tsx:28](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L28)
 
 ***
 
@@ -95,4 +95,4 @@ useStore: <TSelected>(selector?) => () => TSelected;
 
 #### Defined in
 
-[packages/solid-form/src/createForm.tsx:17](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L17)
+[packages/solid-form/src/createForm.tsx:25](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L25)

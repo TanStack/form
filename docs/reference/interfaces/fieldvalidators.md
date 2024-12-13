@@ -11,9 +11,9 @@ title: FieldValidators
 
 • **TName** *extends* [`DeepKeys`](../type-aliases/deepkeys.md)\<`TParentData`\>
 
-• **TFieldValidator** *extends* `Validator`\<[`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\>, `unknown`\> \| `undefined` = `undefined`
+• **TFieldValidator** *extends* `Validator`\<[`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\>, `unknown`\> = `Validator`\<[`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\>, [`StandardSchemaV1`](../type-aliases/standardschemav1.md)\<[`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\>\>\>
 
-• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
+• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> = `Validator`\<`TParentData`, [`StandardSchemaV1`](../type-aliases/standardschemav1.md)\<`TParentData`\>\>
 
 • **TData** *extends* [`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\> = [`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\>
 
@@ -36,7 +36,7 @@ z.string().min(1) // if `zodAdapter` is passed
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:190](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L190)
+[packages/form-core/src/FieldApi.ts:219](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L219)
 
 ***
 
@@ -57,7 +57,7 @@ z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:203](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L203)
+[packages/form-core/src/FieldApi.ts:232](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L232)
 
 ***
 
@@ -73,7 +73,7 @@ If set to a number larger than 0, will debounce the async validation event by th
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:216](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L216)
+[packages/form-core/src/FieldApi.ts:245](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L245)
 
 ***
 
@@ -87,7 +87,7 @@ An optional list of field names that should trigger this field's `onBlur` and `o
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:220](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L220)
+[packages/form-core/src/FieldApi.ts:249](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L249)
 
 ***
 
@@ -108,7 +108,7 @@ z.string().min(1) // if `zodAdapter` is passed
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:154](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L154)
+[packages/form-core/src/FieldApi.ts:183](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L183)
 
 ***
 
@@ -129,7 +129,7 @@ z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:167](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L167)
+[packages/form-core/src/FieldApi.ts:196](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L196)
 
 ***
 
@@ -145,7 +145,7 @@ If set to a number larger than 0, will debounce the async validation event by th
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:179](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L179)
+[packages/form-core/src/FieldApi.ts:208](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L208)
 
 ***
 
@@ -159,7 +159,7 @@ An optional list of field names that should trigger this field's `onChange` and 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:183](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L183)
+[packages/form-core/src/FieldApi.ts:212](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L212)
 
 ***
 
@@ -173,7 +173,7 @@ An optional function that takes a param of `formApi` which is a generic type of 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:141](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L141)
+[packages/form-core/src/FieldApi.ts:170](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L170)
 
 ***
 
@@ -194,7 +194,7 @@ z.string().min(1) // if `zodAdapter` is passed
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:227](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L227)
+[packages/form-core/src/FieldApi.ts:256](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L256)
 
 ***
 
@@ -215,4 +215,4 @@ z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:240](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L240)
+[packages/form-core/src/FieldApi.ts:269](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L269)

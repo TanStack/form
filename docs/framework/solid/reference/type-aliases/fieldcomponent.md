@@ -16,13 +16,13 @@ type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData
 
 • **TParentData**
 
-• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
+• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> = `Validator`\<`TParentData`, `StandardSchemaV1`\<`TParentData`\>\>
 
 ## Type Parameters
 
 • **TName** *extends* `DeepKeys`\<`TParentData`\>
 
-• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> \| `undefined` = `undefined`
+• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> = `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `StandardSchemaV1`\<`DeepValue`\<`TParentData`, `TName`\>\>\>
 
 • **TData** *extends* `DeepValue`\<`TParentData`, `TName`\> = `DeepValue`\<`TParentData`, `TName`\>
 
@@ -41,4 +41,4 @@ type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData
 
 ## Defined in
 
-[packages/solid-form/src/createField.tsx:160](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L160)
+[packages/solid-form/src/createField.tsx:182](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L182)

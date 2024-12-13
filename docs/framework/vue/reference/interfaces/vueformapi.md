@@ -9,7 +9,7 @@ title: VueFormApi
 
 • **TFormData**
 
-• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> \| `undefined` = `undefined`
+• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> = `Validator`\<`TFormData`, `StandardSchemaV1`\<`TFormData`\>\>
 
 ## Properties
 
@@ -21,7 +21,7 @@ Field: FieldComponent<TFormData, TFormValidator>;
 
 #### Defined in
 
-[packages/vue-form/src/useForm.tsx:14](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L14)
+[packages/vue-form/src/useForm.tsx:22](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L22)
 
 ***
 
@@ -53,7 +53,7 @@ Subscribe: <TSelected>(props, context) => any;
 
 #### Defined in
 
-[packages/vue-form/src/useForm.tsx:19](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L19)
+[packages/vue-form/src/useForm.tsx:27](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L27)
 
 ***
 
@@ -65,7 +65,7 @@ useField: UseField<TFormData, TFormValidator>;
 
 #### Defined in
 
-[packages/vue-form/src/useForm.tsx:15](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L15)
+[packages/vue-form/src/useForm.tsx:23](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L23)
 
 ***
 
@@ -91,4 +91,4 @@ useStore: <TSelected>(selector?) => Readonly<Ref<TSelected, TSelected>>;
 
 #### Defined in
 
-[packages/vue-form/src/useForm.tsx:16](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L16)
+[packages/vue-form/src/useForm.tsx:24](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L24)

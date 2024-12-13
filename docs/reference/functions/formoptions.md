@@ -13,7 +13,7 @@ function formOptions<TFormData, TFormValidator>(defaultOpts?): undefined | FormO
 
 • **TFormData**
 
-• **TFormValidator** *extends* `undefined` \| `Validator`\<`TFormData`, `unknown`\> = `undefined`
+• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> = `Validator`\<`TFormData`, [`StandardSchemaV1`](../type-aliases/standardschemav1.md)\<`TFormData`\>\>
 
 ## Parameters
 
@@ -27,4 +27,4 @@ function formOptions<TFormData, TFormValidator>(defaultOpts?): undefined | FormO
 
 ## Defined in
 
-[packages/form-core/src/formOptions.ts:4](https://github.com/TanStack/form/blob/main/packages/form-core/src/formOptions.ts#L4)
+[packages/form-core/src/formOptions.ts:5](https://github.com/TanStack/form/blob/main/packages/form-core/src/formOptions.ts#L5)

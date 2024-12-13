@@ -17,13 +17,13 @@ A function that takes an optional object with a `name` property and field option
 
 • **TParentData**
 
-• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
+• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> = `Validator`\<`TParentData`, `StandardSchemaV1`\<`TParentData`\>\>
 
 ## Type Parameters
 
 • **TName** *extends* `DeepKeys`\<`TParentData`\>
 
-• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> \| `undefined` = `undefined`
+• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> = `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `StandardSchemaV1`\<`DeepValue`\<`TParentData`, `TName`\>\>\>
 
 • **TData** *extends* `DeepValue`\<`TParentData`, `TName`\> = `DeepValue`\<`TParentData`, `TName`\>
 
@@ -39,4 +39,4 @@ A function that takes an optional object with a `name` property and field option
 
 ## Defined in
 
-[packages/react-form/src/useField.tsx:26](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L26)
+[packages/react-form/src/useField.tsx:32](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L32)
