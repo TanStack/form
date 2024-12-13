@@ -144,7 +144,7 @@ Example:
 />
 ```
 
-## Validation with Schema Libraries
+## Validation with Standard Schema Libraries
 
 In addition to hand-rolled validation options, we also support the [Standard Schema](https://github.com/standard-schema/standard-schema) specification.
 
@@ -157,6 +157,8 @@ Supported libraries include:
 - [ArkType](https://arktype.io/)
 
 ```tsx
+import { z } from 'zod'
+
 const userSchema = z.object({
   age: z.number().gte(13, 'You must be 13 to make an account'),
 })
