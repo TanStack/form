@@ -1,29 +1,40 @@
 import { FieldApi } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
 import { defineComponent, onMounted, onUnmounted, watch } from 'vue'
-import type { DeepKeys, DeepValue, Validator } from '@tanstack/form-core'
+import type {
+  DeepKeys,
+  DeepValue,
+  StandardSchemaV1,
+  Validator,
+} from '@tanstack/form-core'
 import type { Ref, SetupContext, SlotsType } from 'vue'
 import type { UseFieldOptions } from './types'
 
 export interface VueFieldApi<
   TParentData,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  TFormValidator extends Validator<TParentData, unknown> = Validator<
+    TParentData,
+    StandardSchemaV1<TParentData>
+  >,
 > {
   Field: FieldComponent<TParentData, TFormValidator>
 }
 
 export type UseField<
   TParentData,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  TFormValidator extends Validator<TParentData, unknown> = Validator<
+    TParentData,
+    StandardSchemaV1<TParentData>
+  >,
 > = <
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
+  TFieldValidator extends Validator<
+    DeepValue<TParentData, TName>,
+    unknown
+  > = Validator<
+    DeepValue<TParentData, TName>,
+    StandardSchemaV1<DeepValue<TParentData, TName>>
+  >,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 >(
   opts: Omit<
@@ -49,12 +60,17 @@ export type UseField<
 export function useField<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  TFieldValidator extends Validator<
+    DeepValue<TParentData, TName>,
+    unknown
+  > = Validator<
+    DeepValue<TParentData, TName>,
+    StandardSchemaV1<DeepValue<TParentData, TName>>
+  >,
+  TFormValidator extends Validator<TParentData, unknown> = Validator<
+    TParentData,
+    StandardSchemaV1<TParentData>
+  >,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 >(
   opts: UseFieldOptions<
@@ -105,25 +121,35 @@ export function useField<
 type FieldComponentProps<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  TFieldValidator extends Validator<
+    DeepValue<TParentData, TName>,
+    unknown
+  > = Validator<
+    DeepValue<TParentData, TName>,
+    StandardSchemaV1<DeepValue<TParentData, TName>>
+  >,
+  TFormValidator extends Validator<TParentData, unknown> = Validator<
+    TParentData,
+    StandardSchemaV1<TParentData>
+  >,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>
 
 export type FieldComponent<
   TParentData,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  TFormValidator extends Validator<TParentData, unknown> = Validator<
+    TParentData,
+    StandardSchemaV1<TParentData>
+  >,
 > = <
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
+  TFieldValidator extends Validator<
+    DeepValue<TParentData, TName>,
+    unknown
+  > = Validator<
+    DeepValue<TParentData, TName>,
+    StandardSchemaV1<DeepValue<TParentData, TName>>
+  >,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 >(
   fieldOptions: Omit<
@@ -163,12 +189,17 @@ export const Field = defineComponent(
   <
     TParentData,
     TName extends DeepKeys<TParentData>,
-    TFieldValidator extends
-      | Validator<DeepValue<TParentData, TName>, unknown>
-      | undefined = undefined,
-    TFormValidator extends
-      | Validator<TParentData, unknown>
-      | undefined = undefined,
+    TFieldValidator extends Validator<
+      DeepValue<TParentData, TName>,
+      unknown
+    > = Validator<
+      DeepValue<TParentData, TName>,
+      StandardSchemaV1<DeepValue<TParentData, TName>>
+    >,
+    TFormValidator extends Validator<TParentData, unknown> = Validator<
+      TParentData,
+      StandardSchemaV1<TParentData>
+    >,
     TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   >(
     fieldOptions: UseFieldOptions<

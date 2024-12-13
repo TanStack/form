@@ -23,12 +23,17 @@ import type { StandardSchemaV1 } from '@standard-schema/spec'
 export type FieldValidateFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  TFieldValidator extends Validator<
+    DeepValue<TParentData, TName>,
+    unknown
+  > = Validator<
+    DeepValue<TParentData, TName>,
+    StandardSchemaV1<DeepValue<TParentData, TName>>
+  >,
+  TFormValidator extends Validator<TParentData, unknown> = Validator<
+    TParentData,
+    StandardSchemaV1<TParentData>
+  >,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (props: {
   value: TData
@@ -41,12 +46,17 @@ export type FieldValidateFn<
 export type FieldValidateOrFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  TFieldValidator extends Validator<
+    DeepValue<TParentData, TName>,
+    unknown
+  > = Validator<
+    DeepValue<TParentData, TName>,
+    StandardSchemaV1<DeepValue<TParentData, TName>>
+  >,
+  TFormValidator extends Validator<TParentData, unknown> = Validator<
+    TParentData,
+    StandardSchemaV1<TParentData>
+  >,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > =
   | (TFieldValidator extends Validator<TData, infer TFN>
@@ -56,7 +66,6 @@ export type FieldValidateOrFn<
       ? FFN | StandardSchemaV1<TParentData>
       : never)
   | FieldValidateFn<TParentData, TName, TFieldValidator, TFormValidator, TData>
-  | StandardSchemaV1<TData>
 
 /**
  * @private
@@ -64,12 +73,17 @@ export type FieldValidateOrFn<
 export type FieldValidateAsyncFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  TFieldValidator extends Validator<
+    DeepValue<TParentData, TName>,
+    unknown
+  > = Validator<
+    DeepValue<TParentData, TName>,
+    StandardSchemaV1<DeepValue<TParentData, TName>>
+  >,
+  TFormValidator extends Validator<TParentData, unknown> = Validator<
+    TParentData,
+    StandardSchemaV1<TParentData>
+  >,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (options: {
   value: TData
@@ -83,12 +97,17 @@ export type FieldValidateAsyncFn<
 export type FieldAsyncValidateOrFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  TFieldValidator extends Validator<
+    DeepValue<TParentData, TName>,
+    unknown
+  > = Validator<
+    DeepValue<TParentData, TName>,
+    StandardSchemaV1<DeepValue<TParentData, TName>>
+  >,
+  TFormValidator extends Validator<TParentData, unknown> = Validator<
+    TParentData,
+    StandardSchemaV1<TParentData>
+  >,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > =
   | (TFieldValidator extends Validator<TData, infer TFN>
@@ -112,12 +131,17 @@ export type FieldAsyncValidateOrFn<
 export type FieldListenerFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  TFieldValidator extends Validator<
+    DeepValue<TParentData, TName>,
+    unknown
+  > = Validator<
+    DeepValue<TParentData, TName>,
+    StandardSchemaV1<DeepValue<TParentData, TName>>
+  >,
+  TFormValidator extends Validator<TParentData, unknown> = Validator<
+    TParentData,
+    StandardSchemaV1<TParentData>
+  >,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (props: {
   value: TData
@@ -127,12 +151,17 @@ export type FieldListenerFn<
 export interface FieldValidators<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  TFieldValidator extends Validator<
+    DeepValue<TParentData, TName>,
+    unknown
+  > = Validator<
+    DeepValue<TParentData, TName>,
+    StandardSchemaV1<DeepValue<TParentData, TName>>
+  >,
+  TFormValidator extends Validator<TParentData, unknown> = Validator<
+    TParentData,
+    StandardSchemaV1<TParentData>
+  >,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   /**
@@ -249,12 +278,17 @@ export interface FieldValidators<
 export interface FieldListeners<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  TFieldValidator extends Validator<
+    DeepValue<TParentData, TName>,
+    unknown
+  > = Validator<
+    DeepValue<TParentData, TName>,
+    StandardSchemaV1<DeepValue<TParentData, TName>>
+  >,
+  TFormValidator extends Validator<TParentData, unknown> = Validator<
+    TParentData,
+    StandardSchemaV1<TParentData>
+  >,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   onChange?: FieldListenerFn<
@@ -293,12 +327,17 @@ export interface FieldListeners<
 export interface FieldOptions<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  TFieldValidator extends Validator<
+    DeepValue<TParentData, TName>,
+    unknown
+  > = Validator<
+    DeepValue<TParentData, TName>,
+    StandardSchemaV1<DeepValue<TParentData, TName>>
+  >,
+  TFormValidator extends Validator<TParentData, unknown> = Validator<
+    TParentData,
+    StandardSchemaV1<TParentData>
+  >,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   /**
@@ -353,12 +392,17 @@ export interface FieldOptions<
 export interface FieldApiOptions<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  TFieldValidator extends Validator<
+    DeepValue<TParentData, TName>,
+    unknown
+  > = Validator<
+    DeepValue<TParentData, TName>,
+    StandardSchemaV1<DeepValue<TParentData, TName>>
+  >,
+  TFormValidator extends Validator<TParentData, unknown> = Validator<
+    TParentData,
+    StandardSchemaV1<TParentData>
+  >,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > extends FieldOptions<
     TParentData,
@@ -430,12 +474,17 @@ export type FieldState<TData> = {
 export class FieldApi<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  TFieldValidator extends Validator<
+    DeepValue<TParentData, TName>,
+    unknown
+  > = Validator<
+    DeepValue<TParentData, TName>,
+    StandardSchemaV1<DeepValue<TParentData, TName>>
+  >,
+  TFormValidator extends Validator<TParentData, unknown> = Validator<
+    TParentData,
+    StandardSchemaV1<TParentData>
+  >,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   /**

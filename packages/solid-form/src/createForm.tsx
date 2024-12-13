@@ -4,13 +4,21 @@ import { useStore } from '@tanstack/solid-store'
 import { Field, createField } from './createField'
 import type { JSXElement } from 'solid-js'
 import type { CreateField, FieldComponent } from './createField'
-import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
+import type {
+  FormOptions,
+  FormState,
+  StandardSchemaV1,
+  Validator,
+} from '@tanstack/form-core'
 
 type NoInfer<T> = [T][T extends any ? 0 : never]
 
 export interface SolidFormApi<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TFormValidator extends Validator<TFormData, unknown> = Validator<
+    TFormData,
+    StandardSchemaV1<TFormData>
+  >,
 > {
   Field: FieldComponent<TFormData, TFormValidator>
   createField: CreateField<TFormData, TFormValidator>
@@ -25,9 +33,10 @@ export interface SolidFormApi<
 
 export function createForm<
   TParentData,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  TFormValidator extends Validator<TParentData, unknown> = Validator<
+    TParentData,
+    StandardSchemaV1<TParentData>
+  >,
 >(opts?: () => FormOptions<TParentData, TFormValidator>) {
   const options = opts?.()
   const api = new FormApi<TParentData, TFormValidator>(options)

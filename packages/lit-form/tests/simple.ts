@@ -17,7 +17,7 @@ export const sampleData: Employee = {
   jobTitle: '',
 }
 
-const formConfig: FormOptions<Employee, undefined> = {
+const formConfig: FormOptions<Employee> = {
   defaultValues: sampleData,
 }
 

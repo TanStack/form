@@ -6,14 +6,22 @@ import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type { PropsWithChildren, ReactNode } from 'react'
 import type { FieldComponent } from './useField'
 import type { NoInfer } from '@tanstack/react-store'
-import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
+import type {
+  FormOptions,
+  FormState,
+  StandardSchemaV1,
+  Validator,
+} from '@tanstack/form-core'
 
 /**
  * Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`
  */
 export interface ReactFormApi<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TFormValidator extends Validator<TFormData, unknown> = Validator<
+    TFormData,
+    StandardSchemaV1<TFormData>
+  >,
 > {
   /**
    * A React component to render form fields. With this, you can render and manage individual form fields.
@@ -33,7 +41,10 @@ export interface ReactFormApi<
  */
 export type ReactFormExtendedApi<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TFormValidator extends Validator<TFormData, unknown> = Validator<
+    TFormData,
+    StandardSchemaV1<TFormData>
+  >,
 > = FormApi<TFormData, TFormValidator> & ReactFormApi<TFormData, TFormValidator>
 
 function LocalSubscribe({
@@ -56,7 +67,10 @@ function LocalSubscribe({
  */
 export function useForm<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TFormValidator extends Validator<TFormData, unknown> = Validator<
+    TFormData,
+    StandardSchemaV1<TFormData>
+  >,
 >(opts?: FormOptions<TFormData, TFormValidator>) {
   const [formApi] = useState(() => {
     const api = new FormApi<TFormData, TFormValidator>(opts)

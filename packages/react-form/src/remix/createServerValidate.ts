@@ -3,6 +3,7 @@ import { ServerValidateError } from './error'
 import type {
   FormOptions,
   FormValidationError,
+  StandardSchemaV1,
   ValidationError,
   Validator,
 } from '@tanstack/form-core'
@@ -14,7 +15,10 @@ type OnServerValidateFn<TFormData> = (props: {
 
 type OnServerValidateOrFn<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TFormValidator extends Validator<TFormData, unknown> = Validator<
+    TFormData,
+    StandardSchemaV1<TFormData>
+  >,
 > =
   TFormValidator extends Validator<TFormData, infer FFN>
     ? FFN | OnServerValidateFn<TFormData>
@@ -22,7 +26,10 @@ type OnServerValidateOrFn<
 
 interface CreateServerValidateOptions<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TFormValidator extends Validator<TFormData, unknown> = Validator<
+    TFormData,
+    StandardSchemaV1<TFormData>
+  >,
 > extends FormOptions<TFormData, TFormValidator> {
   onServerValidate: OnServerValidateOrFn<TFormData, TFormValidator>
 }
@@ -36,9 +43,10 @@ const isFormValidationError = (
 export const createServerValidate =
   <
     TFormData,
-    TFormValidator extends
-      | Validator<TFormData, unknown>
-      | undefined = undefined,
+    TFormValidator extends Validator<TFormData, unknown> = Validator<
+      TFormData,
+      StandardSchemaV1<TFormData>
+    >,
   >(
     defaultOpts: CreateServerValidateOptions<TFormData, TFormValidator>,
   ) =>

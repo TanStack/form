@@ -2,14 +2,22 @@ import { FormApi } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
 import { defineComponent, h, onMounted } from 'vue'
 import { Field, useField } from './useField'
-import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
+import type {
+  FormOptions,
+  FormState,
+  StandardSchemaV1,
+  Validator,
+} from '@tanstack/form-core'
 import type { NoInfer } from '@tanstack/vue-store'
 import type { EmitsOptions, Ref, SetupContext, SlotsType } from 'vue'
 import type { FieldComponent, UseField } from './useField'
 
 export interface VueFormApi<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TFormValidator extends Validator<TFormData, unknown> = Validator<
+    TFormData,
+    StandardSchemaV1<TFormData>
+  >,
 > {
   Field: FieldComponent<TFormData, TFormValidator>
   useField: UseField<TFormData, TFormValidator>
@@ -29,7 +37,10 @@ export interface VueFormApi<
 
 export function useForm<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TFormValidator extends Validator<TFormData, unknown> = Validator<
+    TFormData,
+    StandardSchemaV1<TFormData>
+  >,
 >(opts?: FormOptions<TFormData, TFormValidator>) {
   const formApi = (() => {
     const api = new FormApi<TFormData, TFormValidator>(opts)

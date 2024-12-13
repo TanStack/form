@@ -14,6 +14,7 @@ import type {
   FieldOptions,
   FieldValidators,
   NoInfer as NoInferHack,
+  StandardSchemaV1,
   Validator,
 } from '@tanstack/form-core'
 
@@ -25,12 +26,17 @@ import type {
 export class TanStackField<
     TParentData,
     const TName extends DeepKeys<TParentData>,
-    TFieldValidator extends
-      | Validator<DeepValue<TParentData, TName>, unknown>
-      | undefined = undefined,
-    TFormValidator extends
-      | Validator<TParentData, unknown>
-      | undefined = undefined,
+    TFieldValidator extends Validator<
+      DeepValue<TParentData, TName>,
+      unknown
+    > = Validator<
+      DeepValue<TParentData, TName>,
+      StandardSchemaV1<DeepValue<TParentData, TName>>
+    >,
+    TFormValidator extends Validator<TParentData, unknown> = Validator<
+      TParentData,
+      StandardSchemaV1<TParentData>
+    >,
     TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   >
   implements
