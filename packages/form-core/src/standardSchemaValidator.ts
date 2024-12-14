@@ -4,14 +4,14 @@ import type {
   ValidatorAdapterParams,
 } from './types'
 
-type Params = ValidatorAdapterParams<Issue>
+type Params = ValidatorAdapterParams<StandardSchemaV1Issue>
 type TransformFn = NonNullable<Params['transformErrors']>
 
 function prefixSchemaToErrors(
-  issues: readonly Issue[],
+  issues: readonly StandardSchemaV1Issue[],
   transformErrors: TransformFn,
 ) {
-  const schema = new Map<string, Issue[]>()
+  const schema = new Map<string, StandardSchemaV1Issue[]>()
 
   for (const issue of issues) {
     const path = [...(issue.path ?? [])]
@@ -38,8 +38,8 @@ function prefixSchemaToErrors(
 }
 
 function defaultFormTransformer(transformErrors: TransformFn) {
-  return (issues: readonly Issue[]) => ({
-    form: transformErrors(issues as Issue[]),
+  return (issues: readonly StandardSchemaV1Issue[]) => ({
+    form: transformErrors(issues as StandardSchemaV1Issue[]),
     fields: prefixSchemaToErrors(issues, transformErrors),
   })
 }
@@ -49,7 +49,8 @@ export const standardSchemaValidator =
   () => {
     const transformFieldErrors =
       params.transformErrors ??
-      ((issues: Issue[]) => issues.map((issue) => issue.message).join(', '))
+      ((issues: StandardSchemaV1Issue[]) =>
+        issues.map((issue) => issue.message).join(', '))
 
     const getTransformStrategy = (validationSource: 'form' | 'field') =>
       validationSource === 'form'
@@ -68,7 +69,7 @@ export const standardSchemaValidator =
 
         const transformer = getTransformStrategy(validationSource)
 
-        return transformer(result.issues as Issue[])
+        return transformer(result.issues as StandardSchemaV1Issue[])
       },
       async validateAsync({ value, validationSource }, fn) {
         const result = await fn['~standard'].validate(value)
@@ -77,7 +78,7 @@ export const standardSchemaValidator =
 
         const transformer = getTransformStrategy(validationSource)
 
-        return transformer(result.issues as Issue[])
+        return transformer(result.issues as StandardSchemaV1Issue[])
       },
     }
   }
@@ -90,17 +91,17 @@ export const isStandardSchemaValidator = (
 /**
  * The Standard Schema interface.
  */
-type StandardSchemaV1<Input = unknown, Output = Input> = {
+export type StandardSchemaV1<Input = unknown, Output = Input> = {
   /**
    * The Standard Schema properties.
    */
-  readonly '~standard': Props<Input, Output>
+  readonly '~standard': StandardSchemaV1Props<Input, Output>
 }
 
 /**
  * The Standard Schema properties interface.
  */
-export interface Props<Input = unknown, Output = Input> {
+interface StandardSchemaV1Props<Input = unknown, Output = Input> {
   /**
    * The version number of the standard.
    */
@@ -114,20 +115,22 @@ export interface Props<Input = unknown, Output = Input> {
    */
   readonly validate: (
     value: unknown,
-  ) => Result<Output> | Promise<Result<Output>>
+  ) => StandardSchemaV1Result<Output> | Promise<StandardSchemaV1Result<Output>>
   /**
    * Inferred types associated with the schema.
    */
-  readonly types?: Types<Input, Output> | undefined
+  readonly types?: StandardSchemaV1Types<Input, Output> | undefined
 }
 /**
  * The result interface of the validate function.
  */
-export type Result<Output> = SuccessResult<Output> | FailureResult
+type StandardSchemaV1Result<Output> =
+  | StandardSchemaV1SuccessResult<Output>
+  | StandardSchemaV1FailureResult
 /**
  * The result interface if validation succeeds.
  */
-export interface SuccessResult<Output> {
+interface StandardSchemaV1SuccessResult<Output> {
   /**
    * The typed output value.
    */
@@ -140,16 +143,16 @@ export interface SuccessResult<Output> {
 /**
  * The result interface if validation fails.
  */
-export interface FailureResult {
+interface StandardSchemaV1FailureResult {
   /**
    * The issues of failed validation.
    */
-  readonly issues: ReadonlyArray<Issue>
+  readonly issues: ReadonlyArray<StandardSchemaV1Issue>
 }
 /**
  * The issue interface of the failure output.
  */
-export interface Issue {
+interface StandardSchemaV1Issue {
   /**
    * The error message of the issue.
    */
@@ -157,12 +160,14 @@ export interface Issue {
   /**
    * The path of the issue, if any.
    */
-  readonly path?: ReadonlyArray<PropertyKey | PathSegment> | undefined
+  readonly path?:
+    | ReadonlyArray<PropertyKey | StandardSchemaV1PathSegment>
+    | undefined
 }
 /**
  * The path segment interface of the issue.
  */
-export interface PathSegment {
+interface StandardSchemaV1PathSegment {
   /**
    * The key representing a path segment.
    */
@@ -171,7 +176,7 @@ export interface PathSegment {
 /**
  * The Standard Schema types interface.
  */
-export interface Types<Input = unknown, Output = Input> {
+interface StandardSchemaV1Types<Input = unknown, Output = Input> {
   /**
    * The input type of the schema.
    */
@@ -181,16 +186,3 @@ export interface Types<Input = unknown, Output = Input> {
    */
   readonly output: Output
 }
-/**
- * Infers the input type of a Standard Schema.
- */
-export type InferInput<Schema extends StandardSchemaV1> = NonNullable<
-  Schema['~standard']['types']
->['input']
-/**
- * Infers the output type of a Standard Schema.
- */
-export type InferOutput<Schema extends StandardSchemaV1> = NonNullable<
-  Schema['~standard']['types']
->['output']
-export {}

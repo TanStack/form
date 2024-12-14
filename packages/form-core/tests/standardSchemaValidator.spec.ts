@@ -13,7 +13,6 @@ describe('standard schema validator', () => {
           firstName: '',
           lastName: '',
         },
-        validatorAdapter: standardSchemaValidator(),
         validators: {
           onChange: v.object({
             firstName: v.pipe(
@@ -79,7 +78,6 @@ describe('standard schema validator', () => {
           firstName: '',
           lastName: '',
         },
-        validatorAdapter: standardSchemaValidator(),
         validators: {
           onChangeAsync: v.objectAsync({
             firstName: v.pipeAsync(
@@ -111,7 +109,6 @@ describe('standard schema validator', () => {
         defaultValues: {
           email: '',
         },
-        validatorAdapter: standardSchemaValidator(),
         validators: {
           onChange: z.object({
             email: z.string().email('email must be an email address'),
@@ -139,7 +136,6 @@ describe('standard schema validator', () => {
         defaultValues: {
           email: '',
         },
-        validatorAdapter: standardSchemaValidator(),
         validators: {
           onChangeAsync: z.object({
             email: z.string().email('email must be an email address'),
@@ -169,7 +165,6 @@ describe('standard schema validator', () => {
           firstName: '',
           lastName: '',
         },
-        validatorAdapter: standardSchemaValidator(),
         validators: {
           onChangeAsync: v.objectAsync({
             firstName: v.pipeAsync(
@@ -225,7 +220,6 @@ describe('standard schema validator', () => {
           name: '',
           surname: '',
         },
-        validatorAdapter: standardSchemaValidator(),
         validators: {
           onChange: v.object({
             name: v.pipe(
@@ -304,7 +298,6 @@ describe('standard schema validator', () => {
       const field = new FieldApi({
         form,
         name: 'firstName',
-        validatorAdapter: standardSchemaValidator(),
         validators: {
           onChange: v.pipe(
             v.string(),
@@ -332,7 +325,6 @@ describe('standard schema validator', () => {
       const field = new FieldApi({
         form,
         name: 'firstName',
-        validatorAdapter: standardSchemaValidator(),
         validators: {
           onChangeAsync: v.pipeAsync(
             v.string(),
@@ -380,7 +372,6 @@ describe('standard schema validator', () => {
       defaultValues: {
         email: '',
       },
-      validatorAdapter: standardSchemaValidator(),
       validators: {
         onChange: z.object({
           email: z.string().email('email must be an email address'),

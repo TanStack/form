@@ -12,6 +12,7 @@ import {
   isStandardSchemaValidator,
   standardSchemaValidator,
 } from './standardSchemaValidator'
+import type { StandardSchemaV1 } from './standardSchemaValidator'
 import type { FieldApi, FieldMeta } from './FieldApi'
 import type {
   FormValidationError,
@@ -48,7 +49,9 @@ export type FormValidateOrFn<
 > =
   TFormValidator extends Validator<TFormData, infer TFN>
     ? TFN | FormValidateFn<TFormData, TFormValidator>
-    : FormValidateFn<TFormData, TFormValidator>
+    :
+        | FormValidateFn<TFormData, TFormValidator>
+        | StandardSchemaV1<TFormData, unknown>
 
 /**
  * @private
@@ -86,7 +89,9 @@ export type FormAsyncValidateOrFn<
 > =
   TFormValidator extends Validator<TFormData, infer FFN>
     ? FFN | FormValidateAsyncFn<TFormData, TFormValidator>
-    : FormValidateAsyncFn<TFormData, TFormValidator>
+    :
+        | FormValidateAsyncFn<TFormData, TFormValidator>
+        | StandardSchemaV1<TFormData, unknown>
 
 export interface FormValidators<
   TFormData,

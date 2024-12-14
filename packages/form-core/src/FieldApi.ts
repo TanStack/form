@@ -4,6 +4,7 @@ import {
   isStandardSchemaValidator,
   standardSchemaValidator,
 } from './standardSchemaValidator'
+import type { StandardSchemaV1 } from './standardSchemaValidator'
 import type { FieldInfo, FieldsErrorMapFromValidator, FormApi } from './FormApi'
 import type {
   UpdateMetaOptions,
@@ -48,33 +49,10 @@ export type FieldValidateOrFn<
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > =
-  TFieldValidator extends Validator<TData, infer TFN>
-    ?
-        | TFN
-        | FieldValidateFn<
-            TParentData,
-            TName,
-            TFieldValidator,
-            TFormValidator,
-            TData
-          >
-    : TFormValidator extends Validator<TParentData, infer FFN>
-      ?
-          | FFN
-          | FieldValidateFn<
-              TParentData,
-              TName,
-              TFieldValidator,
-              TFormValidator,
-              TData
-            >
-      : FieldValidateFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
+  | (TFieldValidator extends Validator<TData, infer TFN> ? TFN : never)
+  | (TFormValidator extends Validator<TParentData, infer FFN> ? FFN : never)
+  | FieldValidateFn<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  | StandardSchemaV1<TData, unknown>
 
 /**
  * @private
@@ -109,33 +87,16 @@ export type FieldAsyncValidateOrFn<
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > =
-  TFieldValidator extends Validator<TData, infer TFN>
-    ?
-        | TFN
-        | FieldValidateAsyncFn<
-            TParentData,
-            TName,
-            TFieldValidator,
-            TFormValidator,
-            TData
-          >
-    : TFormValidator extends Validator<TParentData, infer FFN>
-      ?
-          | FFN
-          | FieldValidateAsyncFn<
-              TParentData,
-              TName,
-              TFieldValidator,
-              TFormValidator,
-              TData
-            >
-      : FieldValidateAsyncFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
+  | (TFieldValidator extends Validator<TData, infer TFN> ? TFN : never)
+  | (TFormValidator extends Validator<TParentData, infer FFN> ? FFN : never)
+  | FieldValidateAsyncFn<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData
+    >
+  | StandardSchemaV1<TData, unknown>
 
 /**
  * @private
