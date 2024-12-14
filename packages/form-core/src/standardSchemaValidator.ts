@@ -46,7 +46,7 @@ function defaultFormTransformer(transformErrors: TransformFn) {
 }
 
 export const standardSchemaValidator =
-  (params: Params = {}): Validator<unknown, StandardSchemaV1> =>
+  (params: Params = {}): Validator<unknown, StandardSchemaV1<any>> =>
   () => {
     const transformFieldErrors =
       params.transformErrors ??
