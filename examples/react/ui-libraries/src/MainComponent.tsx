@@ -28,9 +28,8 @@ export default function MainComponent() {
           form.handleSubmit()
         }}
       >
-        <form.Field
-          name="firstName"
-          children={({ state, handleChange, handleBlur }) => {
+        <form.Field name="firstName">
+          {({ state, handleChange, handleBlur }) => {
             return (
               <TextInput
                 defaultValue={state.value}
@@ -40,10 +39,9 @@ export default function MainComponent() {
               />
             )
           }}
-        />
-        <form.Field
-          name="lastName"
-          children={({ state, handleChange, handleBlur }) => {
+        </form.Field>
+        <form.Field name="lastName">
+          {({ state, handleChange, handleBlur }) => {
             return (
               <TextField
                 id="filled-basic"
@@ -56,10 +54,9 @@ export default function MainComponent() {
               />
             )
           }}
-        />
-        <form.Field
-          name="isChecked"
-          children={({ state, handleChange, handleBlur }) => {
+        </form.Field>
+        <form.Field name="isChecked">
+          {({ state, handleChange, handleBlur }) => {
             return (
               <Checkbox
                 onChange={(e) => handleChange(e.target.checked)}
@@ -68,10 +65,9 @@ export default function MainComponent() {
               />
             )
           }}
-        />
-        <form.Field
-          name="isMuiCheckBox"
-          children={({ state, handleChange, handleBlur }) => {
+        </form.Field>
+        <form.Field name="isMuiCheckBox">
+          {({ state, handleChange, handleBlur }) => {
             return (
               <MuiCheckbox
                 onChange={(e) => handleChange(e.target.checked)}
@@ -80,15 +76,16 @@ export default function MainComponent() {
               />
             )
           }}
-        />
+        </form.Field>
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
-          children={([canSubmit, isSubmitting]) => (
+        >
+          {([canSubmit, isSubmitting]) => (
             <button type="submit" disabled={!canSubmit}>
               {isSubmitting ? '...' : 'Submit'}
             </button>
           )}
-        />
+        </form.Subscribe>
       </form>
     </MantineProvider>
   )

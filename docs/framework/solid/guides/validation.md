@@ -275,18 +275,19 @@ Instead, we enable an easy method for debouncing your `async` calls by adding a 
   name="age"
   asyncDebounceMs={500}
   validators={{
-      onChangeAsync: async ({ value }) => {
-        // ...
-      }
+    onChangeAsync: async ({ value }) => {
+      // ...
+    }
   }}
-  children={(field) => {
+>
+  {(field) => {
     return (
       <>
       {/* ... */}
       </>
     );
   }}
-/>
+</form.Field>
 ```
 
 This will debounce every async call with a 500ms delay. You can even override this property on a per-validation property:
@@ -304,10 +305,11 @@ This will debounce every async call with a 500ms delay. You can even override th
       // ...
     },
   }}
-  children={(field) => {
+>
+  {(field) => {
     return <>{/* ... */}</>
   }}
-/>
+</form.Field>
 ```
 
 > This will run `onChangeAsync` every 1500ms while `onBlurAsync` will run every 500ms.
@@ -341,10 +343,11 @@ const form = createForm(() => ({
   validators={{
     onChange: z.number().gte(13, 'You must be 13 to make an account'),
   }}
-  children={(field) => {
+>
+  {(field) => {
     return <>{/* ... */}</>
   }}
-/>
+</form.Field>
 ```
 
 Async validations on form and field level are supported as well:
@@ -365,10 +368,11 @@ Async validations on form and field level are supported as well:
       },
     ),
   }}
-  children={(field) => {
+>
+  {(field) => {
     return <>{/* ... */}</>
   }}
-/>
+</form.Field>
 ```
 
 ### Other Schema Libraries
@@ -400,10 +404,11 @@ const form = createForm(() => ({
   validators={{
     onChange: yup.number().moreThan(13, 'You must be 13 to make an account'),
   }}
-  children={(field) => {
+>
+  {(field) => {
     return <>{/* ... */}</>
   }}
-/>
+</form.Field>
 ```
 
 ## Preventing invalid forms from being submitted
@@ -426,11 +431,12 @@ return (
       canSubmit: state.canSubmit,
       isSubmitting: state.isSubmitting,
     })}
-    children={(state) => (
+  >
+    {(state) => (
       <button type="submit" disabled={!state().canSubmit}>
         {state().isSubmitting ? '...' : 'Submit'}
       </button>
     )}
-  />
+  </form.Subscribe>
 )
 ```

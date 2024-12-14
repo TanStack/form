@@ -15,20 +15,18 @@ it('should type state.value properly', () => {
 
     return (
       <>
-        <form.Field
-          name="firstName"
-          children={(field) => {
+        <form.Field name="firstName">
+          {(field) => {
             assertType<'test'>(field().state.value)
             return null
           }}
-        />
-        <form.Field
-          name="age"
-          children={(field) => {
+        </form.Field>
+        <form.Field name="age">
+          {(field) => {
             assertType<84>(field().state.value)
             return null
           }}
-        />
+        </form.Field>
       </>
     )
   }
@@ -56,8 +54,9 @@ it('should type onChange properly', () => {
               return null
             },
           }}
-          children={() => null}
-        />
+        >
+          {() => null}
+        </form.Field>
         <form.Field
           name="age"
           validators={{
@@ -66,8 +65,9 @@ it('should type onChange properly', () => {
               return null
             },
           }}
-          children={() => null}
-        />
+        >
+          {() => null}
+        </form.Field>
       </>
     )
   }

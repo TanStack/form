@@ -27,9 +27,8 @@ describe('useField', () => {
 
       return (
         <>
-          <form.Field
-            name="firstName"
-            children={(field) => {
+          <form.Field name="firstName">
+            {(field) => {
               return (
                 <input
                   data-testid="fieldinput"
@@ -39,7 +38,7 @@ describe('useField', () => {
                 />
               )
             }}
-          />
+          </form.Field>
         </>
       )
     }
@@ -68,7 +67,8 @@ describe('useField', () => {
           <form.Field
             name="firstName"
             defaultValue="otherName"
-            children={(field) => {
+          >
+            {(field) => {
               return (
                 <input
                   data-testid="fieldinput"
@@ -78,7 +78,7 @@ describe('useField', () => {
                 />
               )
             }}
-          />
+          </form.Field>
         </>
       )
     }
@@ -110,7 +110,8 @@ describe('useField', () => {
             validators={{
               onChange: ({ value }) => (value === 'other' ? error : undefined),
             }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -126,7 +127,7 @@ describe('useField', () => {
                 <p>{field.getMeta().errors}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -160,7 +161,8 @@ describe('useField', () => {
             validators={{
               onChange: ({ value }) => (value === 'other' ? error : undefined),
             }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -172,7 +174,7 @@ describe('useField', () => {
                 <p>{field.getMeta().errorMap.onChange}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -211,7 +213,8 @@ describe('useField', () => {
               onBlur: ({ value }) =>
                 value === 'other' ? onBlurError : undefined,
             }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -224,7 +227,7 @@ describe('useField', () => {
                 <p>{field.getMeta().errorMap.onBlur}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -265,7 +268,8 @@ describe('useField', () => {
                 return error
               },
             }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -277,7 +281,7 @@ describe('useField', () => {
                 <p>{field.getMeta().errorMap.onChange}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -321,7 +325,8 @@ describe('useField', () => {
                 return onBlurError
               },
             }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -334,7 +339,7 @@ describe('useField', () => {
                 <p>{field.getMeta().errorMap.onBlur}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -381,7 +386,8 @@ describe('useField', () => {
                 return error
               },
             }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -393,7 +399,7 @@ describe('useField', () => {
                 <p>{field.getMeta().errors}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -448,7 +454,8 @@ describe('useField', () => {
                     onChange: ({ value }) =>
                       !value ? 'A first name is required' : undefined,
                   }}
-                  children={(field) => {
+                >
+                  {(field) => {
                     // Avoid hasty abstractions. Render props are great!
                     return (
                       <>
@@ -463,13 +470,12 @@ describe('useField', () => {
                       </>
                     )
                   }}
-                />
+                </form.Field>
               ) : null}
             </div>
             <div>
-              <form.Field
-                name="lastName"
-                children={(field) => (
+              <form.Field name="lastName">
+                {(field) => (
                   <>
                     <label htmlFor={field.name}>Last Name:</label>
                     <input
@@ -481,16 +487,17 @@ describe('useField', () => {
                     <FieldInfo field={field} />
                   </>
                 )}
-              />
+              </form.Field>
             </div>
             <form.Subscribe
               selector={(state) => [state.canSubmit, state.isSubmitting]}
-              children={([canSubmit, isSubmitting]) => (
+            >
+              {([canSubmit, isSubmitting]) => (
                 <button type="submit" disabled={!canSubmit}>
                   {isSubmitting ? '...' : 'Submit'}
                 </button>
               )}
-            />
+            </form.Subscribe>
             <button type="button" onClick={() => setShowField((prev) => !prev)}>
               {showField ? 'Hide field' : 'Show field'}
             </button>
@@ -571,12 +578,13 @@ describe('useField', () => {
             </form.Field>
             <form.Subscribe
               selector={(state) => [state.canSubmit, state.isSubmitting]}
-              children={([canSubmit, isSubmitting]) => (
+            >
+              {([canSubmit, isSubmitting]) => (
                 <button type="submit" disabled={!canSubmit}>
                   {isSubmitting ? '...' : 'Submit'}
                 </button>
               )}
-            />
+            </form.Subscribe>
           </form>
         </div>
       )
@@ -670,12 +678,13 @@ describe('useField', () => {
             </form.Field>
             <form.Subscribe
               selector={(state) => [state.canSubmit, state.isSubmitting]}
-              children={([canSubmit, isSubmitting]) => (
+            >
+              {([canSubmit, isSubmitting]) => (
                 <button type="submit" disabled={!canSubmit}>
                   {isSubmitting ? '...' : 'Submit'}
                 </button>
               )}
-            />
+            </form.Subscribe>
           </form>
         </div>
       )
@@ -788,10 +797,9 @@ describe('useField', () => {
       })
 
       return (
-        <form.Field
-          name="name.last"
-          children={(field) => <p>{field.state.value}</p>}
-        />
+        <form.Field name="name.last">
+          {(field) => <p>{field.state.value}</p>}
+        </form.Field>
       )
     }
 
@@ -835,7 +843,8 @@ describe('useField', () => {
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -847,7 +856,7 @@ describe('useField', () => {
                 <p>{errors}</p>
               </div>
             )}
-          />
+          </form.Field>
           <button onClick={form.handleSubmit}>Submit</button>
         </>
       )

@@ -23,7 +23,8 @@ describe('useForm', () => {
           <form.Field
             name="firstName"
             defaultValue={''}
-            children={(field) => {
+          >
+            {(field) => {
               return (
                 <input
                   data-testid="fieldinput"
@@ -33,7 +34,7 @@ describe('useForm', () => {
                 />
               )
             }}
-          />
+          </form.Field>
         </>
       )
     }
@@ -61,12 +62,11 @@ describe('useForm', () => {
 
       return (
         <>
-          <form.Field
-            name="firstName"
-            children={(field) => {
+          <form.Field name="firstName">
+            {(field) => {
               return <p>{field.state.value}</p>
             }}
-          />
+          </form.Field>
         </>
       )
     }
@@ -93,9 +93,8 @@ describe('useForm', () => {
 
       return (
         <>
-          <form.Field
-            name="firstName"
-            children={(field) => {
+          <form.Field name="firstName">
+            {(field) => {
               return (
                 <input
                   value={field.state.value}
@@ -105,7 +104,7 @@ describe('useForm', () => {
                 />
               )
             }}
-          />
+          </form.Field>
           <button onClick={form.handleSubmit}>Submit</button>
           {submittedData && <p>Submitted data: {submittedData.firstName}</p>}
         </>
@@ -179,9 +178,8 @@ describe('useForm', () => {
       const onChangeError = useStore(form.store, (s) => s.errorMap.onChange)
       return (
         <>
-          <form.Field
-            name="firstName"
-            children={(field) => (
+          <form.Field name="firstName">
+            {(field) => (
               <input
                 data-testid="fieldinput"
                 name={field.name}
@@ -190,7 +188,7 @@ describe('useForm', () => {
                 onChange={(e) => field.handleChange(e.target.value)}
               />
             )}
-          />
+          </form.Field>
           <p>{onChangeError?.toString()}</p>
         </>
       )
@@ -226,9 +224,8 @@ describe('useForm', () => {
       const errors = useStore(form.store, (s) => s.errors)
       return (
         <>
-          <form.Field
-            name="firstName"
-            children={(field) => (
+          <form.Field name="firstName">
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -244,7 +241,7 @@ describe('useForm', () => {
                 <p>{errors}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -279,7 +276,8 @@ describe('useForm', () => {
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -291,7 +289,7 @@ describe('useForm', () => {
                 <p>{errors.onChange?.toString()}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -330,7 +328,8 @@ describe('useForm', () => {
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -343,7 +342,7 @@ describe('useForm', () => {
                 <p>{errors.onBlur?.toString()}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -388,7 +387,8 @@ describe('useForm', () => {
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -402,7 +402,7 @@ describe('useForm', () => {
                 </p>
               </div>
             )}
-          />
+          </form.Field>
           <p data-testid={'form-onchange'}>{errors.onChange?.toString()}</p>
           <p data-testid={'form-onblur'}>{errors.onBlur?.toString()}</p>
         </>
@@ -454,7 +454,8 @@ describe('useForm', () => {
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -466,7 +467,7 @@ describe('useForm', () => {
                 <p>{errors.onChange?.toString()}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -509,7 +510,8 @@ describe('useForm', () => {
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -523,7 +525,7 @@ describe('useForm', () => {
                 </p>
               </div>
             )}
-          />
+          </form.Field>
           <p data-testid="form-error">{errors.onChange?.toString()}</p>
         </>
       )
@@ -580,7 +582,8 @@ describe('useForm', () => {
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -593,7 +596,7 @@ describe('useForm', () => {
                 <p>{errors.onBlur?.toString()}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -641,7 +644,8 @@ describe('useForm', () => {
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -653,7 +657,7 @@ describe('useForm', () => {
                 <p>{errors}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -691,9 +695,8 @@ describe('useForm', () => {
 
       return (
         <>
-          <form.Field
-            name="firstName"
-            children={(field) => (
+          <form.Field name="firstName">
+            {(field) => (
               <>
                 <input
                   data-testid="fieldinput"
@@ -708,7 +711,7 @@ describe('useForm', () => {
                 </p>
               </>
             )}
-          />
+          </form.Field>
           <p data-testid="form-error">{onChangeError?.toString()}</p>
         </>
       )

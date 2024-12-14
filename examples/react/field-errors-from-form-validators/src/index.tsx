@@ -67,7 +67,8 @@ export default function App() {
           validators={{
             onSubmit: ({ value }) => (!value ? 'Required field' : null),
           }}
-          children={(field) => (
+        >
+          {(field) => (
             <div>
               <label htmlFor={field.name}>Username:</label>
               <input
@@ -83,14 +84,15 @@ export default function App() {
               ) : null}
             </div>
           )}
-        />
+        </form.Field>
 
         <form.Field
           name="age"
           validators={{
             onSubmit: ({ value }) => (!value ? 'Required field' : null),
           }}
-          children={(field) => (
+        >
+          {(field) => (
             <div>
               <label htmlFor={field.name}>Age:</label>
               <input
@@ -105,10 +107,9 @@ export default function App() {
               ) : null}
             </div>
           )}
-        />
-        <form.Subscribe
-          selector={(state) => [state.errorMap]}
-          children={([errorMap]) =>
+        </form.Field>
+        <form.Subscribe selector={(state) => [state.errorMap]}>
+          {([errorMap]) =>
             errorMap.onSubmit ? (
               <div>
                 <em>
@@ -118,15 +119,16 @@ export default function App() {
               </div>
             ) : null
           }
-        />
+        </form.Subscribe>
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
-          children={([canSubmit, isSubmitting]) => (
+        >
+          {([canSubmit, isSubmitting]) => (
             <button type="submit" disabled={!canSubmit}>
               {isSubmitting ? '...' : 'Submit'}
             </button>
           )}
-        />
+        </form.Subscribe>
       </form>
     </div>
   )

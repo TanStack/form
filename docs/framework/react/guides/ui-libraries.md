@@ -41,34 +41,32 @@ export default function App() {
 
   return (
     <>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            handleSubmit()
-          }}
-        >
-          <Field
-            name="firstName"
-            children={({ state, handleChange, handleBlur }) => (
-              <TextInput
-                defaultValue={state.value}
-                onChange={(e) => handleChange(e.target.value)}
-                onBlur={handleBlur}
-                placeholder="Enter your name"
-              />
-            )}
-          />
-          <Field
-            name="isChecked"
-            children={({ state, handleChange, handleBlur }) => (
-              <Checkbox
-                onChange={(e) => handleChange(e.target.checked)}
-                onBlur={handleBlur}
-                checked={state.value}
-              />
-            )}
-          />
-        </form>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          handleSubmit()
+        }}
+      >
+        <Field name="firstName">
+          {({ state, handleChange, handleBlur }) => (
+            <TextInput
+              defaultValue={state.value}
+              onChange={(e) => handleChange(e.target.value)}
+              onBlur={handleBlur}
+              placeholder="Enter your name"
+            />
+          )}
+        </Field>
+        <Field name="isChecked">
+          {({ state, handleChange, handleBlur }) => (
+            <Checkbox
+              onChange={(e) => handleChange(e.target.checked)}
+              onBlur={handleBlur}
+              checked={state.value}
+            />
+          )}
+        </Field>
+      </form>
       <div>
         <pre>{JSON.stringify(state.values, null, 2)}</pre>
       </div>
@@ -90,36 +88,33 @@ export default function App() {
 The process for integrating Material UI components is similar. Here's an example using TextField and Checkbox from Material UI:
 
 ```tsx
-        <Field
-            name="lastName"
-            children={({ state, handleChange, handleBlur }) => {
-              return (
-                <TextField
-                  id="filled-basic"
-                  label="Filled"
-                  variant="filled"
-                  defaultValue={state.value}
-                  onChange={(e) => handleChange(e.target.value)}
-                  onBlur={handleBlur}
-                  placeholder="Enter your last name"
-                />
-              );
-            }}
-          />
+        <Field name="lastName">
+          {({ state, handleChange, handleBlur }) => {
+            return (
+              <TextField
+                id="filled-basic"
+                label="Filled"
+                variant="filled"
+                defaultValue={state.value}
+                onChange={(e) => handleChange(e.target.value)}
+                onBlur={handleBlur}
+                placeholder="Enter your last name"
+              />
+            );
+          }}
+        </Field>
 
-           <Field
-            name="isMuiCheckBox"
-            children={({ state, handleChange, handleBlur }) => {
-              return (
-                <MuiCheckbox
-                  onChange={(e) => handleChange(e.target.checked)}
-                  onBlur={handleBlur}
-                  checked={state.value}
-                />
-              );
-            }}
-          />
-
+        <Field name="isMuiCheckBox">
+          {({ state, handleChange, handleBlur }) => {
+            return (
+              <MuiCheckbox
+                onChange={(e) => handleChange(e.target.checked)}
+                onBlur={handleBlur}
+                checked={state.value}
+              />
+            );
+          }}
+        </Field>
 ```
 
 - The integration approach is the same as with Mantine.

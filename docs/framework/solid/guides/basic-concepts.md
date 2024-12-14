@@ -58,9 +58,8 @@ A Field represents a single form input element, such as a text input or a checkb
 Example:
 
 ```tsx
-<form.Field
-  name="firstName"
-  children={(field) => (
+<form.Field name="firstName">
+  {(field) => (
     <input
       name={field().name}
       value={field().state.value}
@@ -68,7 +67,7 @@ Example:
       onInput={(e) => field().handleChange(e.target.value)}
     />
   )}
-/>
+</form.Field>
 ```
 
 ## Field State
@@ -125,7 +124,8 @@ Example:
       return value.includes('error') && 'No "error" allowed in first name';
     },
   }}
-  children={(field) => (
+>
+  {(field) => (
     <>
       <input
         name={field().name}
@@ -136,7 +136,7 @@ Example:
       <p>{field().state.meta.errors[0]}</p>
     </>
   )}
-/>
+</form.Field>
 ```
 
 ## Validation with Standard Schema Libraries
@@ -170,7 +170,8 @@ import { z } from 'zod'
       }
     ),
   }}
-  children={(field) => (
+>
+  {(field) => (
     <>
       <input
         name={field().name}
@@ -181,7 +182,7 @@ import { z } from 'zod'
       <p>{field().state.meta.errors[0]}</p>
     </>
   )}
-/>
+</form.Field>
 ```
 
 ## Reactivity
@@ -198,12 +199,13 @@ const firstName = form.useStore((state) => state.values.firstName)
     canSubmit: state.canSubmit,
     isSubmitting: state.isSubmitting,
   })}
-  children={(state) => (
+>
+  {(state) => (
     <button type="submit" disabled={!state().canSubmit}>
       {state().isSubmitting ? '...' : 'Submit'}
     </button>
   )}
-/>
+</form.Subscribe>
 ```
 
 ## Array Fields
@@ -215,10 +217,8 @@ When working with array fields, you can use the fields `pushValue`, `removeValue
 Example:
 
 ```tsx
-<form.Field
-  name="hobbies"
-  mode="array"
-  children={(hobbiesField) => (
+<form.Field name="hobbies" mode="array">
+  {(hobbiesField) => (
     <div>
       Hobbies
       <div>
@@ -229,9 +229,8 @@ Example:
           <Index each={hobbiesField().state.value}>
             {(_, i) => (
               <div>
-                <form.Field
-                  name={`hobbies[${i}].name`}
-                  children={(field) => (
+                <form.Field name={`hobbies[${i}].name`}>
+                  {(field) => (
                     <div>
                       <label for={field().name}>Name:</label>
                       <input
@@ -249,10 +248,9 @@ Example:
                       </button>
                     </div>
                   )}
-                />
-                <form.Field
-                  name={`hobbies[${i}].description`}
-                  children={(field) => {
+                </form.Field>
+                <form.Field name={`hobbies[${i}].description`}>
+                  {(field) => {
                     return (
                       <div>
                         <label for={field().name}>Description:</label>
@@ -266,7 +264,7 @@ Example:
                       </div>
                     );
                   }}
-                />
+                </form.Field>
               </div>
             )}
           </Index>
@@ -286,7 +284,7 @@ Example:
       </button>
     </div>
   )}
-/>
+</form.Field>
 ```
 
 These are the basic concepts and terminology used in the `@tanstack/solid-form` library. Understanding these concepts will help you work more effectively with the library and create complex forms with ease.

@@ -31,9 +31,8 @@ export default function App() {
           }}
         >
           <div>
-            <form.Field
-              name="fullName"
-              children={(field) => (
+            <form.Field name="fullName">
+              {(field) => (
                 <input
                   name={field.name}
                   value={field.state.value}
@@ -41,7 +40,7 @@ export default function App() {
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
               )}
-            />
+            </form.Field>
           </div>
           <button type="submit">Submit</button>
         </form>

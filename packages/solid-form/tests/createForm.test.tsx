@@ -22,7 +22,8 @@ describe('createForm', () => {
           <form.Field
             name="firstName"
             defaultValue={''}
-            children={(field) => (
+          >
+            {(field) => (
               <input
                 data-testid="fieldinput"
                 value={field().state.value}
@@ -30,7 +31,7 @@ describe('createForm', () => {
                 onChange={(e) => field().handleChange(e.currentTarget.value)}
               />
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -58,12 +59,11 @@ describe('createForm', () => {
 
       return (
         <>
-          <form.Field
-            name="firstName"
-            children={(field) => {
+          <form.Field name="firstName">
+            {(field) => {
               return <p>{field().state.value}</p>
             }}
-          />
+          </form.Field>
         </>
       )
     }
@@ -87,9 +87,8 @@ describe('createForm', () => {
 
       return (
         <>
-          <form.Field
-            name="firstName"
-            children={(field) => {
+          <form.Field name="firstName">
+            {(field) => {
               return (
                 <input
                   value={field().state.value}
@@ -99,7 +98,7 @@ describe('createForm', () => {
                 />
               )
             }}
-          />
+          </form.Field>
           <button onClick={form.handleSubmit}>Submit</button>
         </>
       )
@@ -167,9 +166,8 @@ describe('createForm', () => {
 
       return (
         <>
-          <form.Field
-            name="firstName"
-            children={(field) => (
+          <form.Field name="firstName">
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -185,7 +183,7 @@ describe('createForm', () => {
                 <p>{errors().join(',')}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -219,7 +217,8 @@ describe('createForm', () => {
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
-            children={(field) => {
+          >
+            {(field) => {
               return (
                 <div>
                   <input
@@ -237,7 +236,7 @@ describe('createForm', () => {
                 </div>
               )
             }}
-          />
+          </form.Field>
         </>
       )
     }
@@ -275,7 +274,8 @@ describe('createForm', () => {
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -288,7 +288,7 @@ describe('createForm', () => {
                 <p>{errors()?.onBlur?.toString()}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -328,7 +328,8 @@ describe('createForm', () => {
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -340,7 +341,7 @@ describe('createForm', () => {
                 <p>{errors()?.onChange?.toString()}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -383,7 +384,8 @@ describe('createForm', () => {
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -396,7 +398,7 @@ describe('createForm', () => {
                 <p>{errors()?.onBlur?.toString()}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -446,7 +448,8 @@ describe('createForm', () => {
           <form.Field
             name="firstName"
             defaultMeta={{ isTouched: true }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -458,7 +461,7 @@ describe('createForm', () => {
                 <p>{errors()}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }

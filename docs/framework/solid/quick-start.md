@@ -30,9 +30,8 @@ function App() {
           }}
         >
           <div>
-            <form.Field
-              name="fullName"
-              children={(field) => (
+            <form.Field name="fullName">
+              {(field) => (
                 <input
                   name={field().name}
                   value={field().state.value}
@@ -40,7 +39,7 @@ function App() {
                   onInput={(e) => field().handleChange(e.target.value)}
                 />
               )}
-            />
+            </form.Field>
           </div>
           <button type="submit">Submit</button>
         </form>

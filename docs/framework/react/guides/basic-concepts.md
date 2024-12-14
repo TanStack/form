@@ -58,9 +58,8 @@ A Field represents a single form input element, such as a text input or a checkb
 Example:
 
 ```tsx
-<form.Field
-  name="firstName"
-  children={(field) => (
+<form.Field name="firstName">
+  {(field) => (
     <>
       <input
         value={field.state.value}
@@ -70,7 +69,7 @@ Example:
       <FieldInfo field={field} />
     </>
   )}
-/>
+</form.Field>
 ```
 
 ## Field State
@@ -131,7 +130,8 @@ Example:
       return value.includes('error') && 'No "error" allowed in first name'
     },
   }}
-  children={(field) => (
+>
+  {(field) => (
     <>
       <input
         value={field.state.value}
@@ -141,7 +141,7 @@ Example:
       <FieldInfo field={field} />
     </>
   )}
-/>
+</form.Field>
 ```
 
 ## Validation with Standard Schema Libraries
@@ -174,12 +174,11 @@ function App() {
   })
   return (
     <div>
-      <form.Field
-        name="age"
-        children={(field) => {
+      <form.Field name="age">
+        {(field) => {
           return <>{/* ... */}</>
         }}
-      />
+      </form.Field>
     </div>
   )
 }
@@ -196,12 +195,13 @@ const firstName = useStore(form.store, (state) => state.values.firstName)
 //...
 <form.Subscribe
   selector={(state) => [state.canSubmit, state.isSubmitting]}
-  children={([canSubmit, isSubmitting]) => (
+>
+  {([canSubmit, isSubmitting]) => (
     <button type="submit" disabled={!canSubmit}>
       {isSubmitting ? '...' : 'Submit'}
     </button>
   )}
-/>
+</form.Subscribe>
 ```
 
 Note: The usage of the `useField` hook to achieve reactivity is discouraged since it is designed to be used thoughtfully within the `form.Field` component. You might want to use `useStore(form.store)` instead.
@@ -235,10 +235,8 @@ When working with array fields, you can use the fields `pushValue`, `removeValue
 Example:
 
 ```tsx
-<form.Field
-  name="hobbies"
-  mode="array"
-  children={(hobbiesField) => (
+<form.Field name="hobbies" mode="array">
+  {(hobbiesField) => (
     <div>
       Hobbies
       <div>
@@ -246,9 +244,8 @@ Example:
           ? 'No hobbies found.'
           : hobbiesField.state.value.map((_, i) => (
               <div key={i}>
-                <form.Field
-                  name={`hobbies[${i}].name`}
-                  children={(field) => {
+                <form.Field name={`hobbies[${i}].name`}>
+                  {(field) => {
                     return (
                       <div>
                         <label htmlFor={field.name}>Name:</label>
@@ -269,10 +266,9 @@ Example:
                       </div>
                     )
                   }}
-                />
-                <form.Field
-                  name={`hobbies[${i}].description`}
-                  children={(field) => {
+                </form.Field>
+                <form.Field name={`hobbies[${i}].description`}>
+                  {(field) => {
                     return (
                       <div>
                         <label htmlFor={field.name}>Description:</label>
@@ -287,7 +283,7 @@ Example:
                       </div>
                     )
                   }}
-                />
+                </form.Field>
               </div>
             ))}
       </div>
@@ -305,7 +301,7 @@ Example:
       </button>
     </div>
   )}
-/>
+</form.Field>
 ```
 
 These are the basic concepts and terminology used in the `@tanstack/react-form` library. Understanding these concepts will help you work more effectively with the library and create complex forms with ease.

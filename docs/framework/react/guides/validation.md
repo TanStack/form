@@ -248,16 +248,15 @@ export default function App() {
             </>
           )}
         </form.Field>
-        <form.Subscribe
-          selector={(state) => [state.errorMap]}
-          children={([errorMap]) =>
+        <form.Subscribe selector={(state) => [state.errorMap]}>
+          {([errorMap]) =>
             errorMap.onSubmit ? (
               <div>
                 <em>There was an error on the form: {errorMap.onSubmit}</em>
               </div>
             ) : null
           }
-        />
+        </form.Subscribe>
         {/*...*/}
       </form>
     </div>
@@ -376,18 +375,19 @@ Instead, we enable an easy method for debouncing your `async` calls by adding a 
   name="age"
   asyncDebounceMs={500}
   validators={{
-      onChangeAsync: async ({value}) => {
-        // ...
-      }
+    onChangeAsync: async ({value}) => {
+      // ...
+    }
   }}
-  children={(field) => {
+>
+  {(field) => {
     return (
       <>
-		{/* ... */}
+		    {/* ... */}
       </>
     );
   }}
-/>
+</form.Field>
 ```
 
 This will debounce every async call with a 500ms delay. You can even override this property on a per-validation property:
@@ -405,10 +405,11 @@ This will debounce every async call with a 500ms delay. You can even override th
       // ...
     },
   }}
-  children={(field) => {
+>
+  {(field) => {
     return <>{/* ... */}</>
   }}
-/>
+</form.Field>
 ```
 
 > This will run `onChangeAsync` every 1500ms while `onBlurAsync` will run every 500ms.
@@ -444,12 +445,11 @@ function App() {
   })
   return (
     <div>
-      <form.Field
-        name="age"
-        children={(field) => {
+      <form.Field name="age">
+        {(field) => {
           return <>{/* ... */}</>
         }}
-      />
+      </form.Field>
     </div>
   )
 }
@@ -473,10 +473,11 @@ Async validations on form and field level are supported as well:
       },
     ),
   }}
-  children={(field) => {
+>
+  {(field) => {
     return <>{/* ... */}</>
   }}
-/>
+</form.Field>
 ```
 
 ### Other Schema Libraries
@@ -507,10 +508,11 @@ const form = useForm({
   validators={{
     onChange: yup.number().moreThan(13, 'You must be 13 to make an account'),
   }}
-  children={(field) => {
+>
+  {(field) => {
     return <>{/* ... */}</>
   }}
-/>
+</form.Field>
 ```
 
 ## Preventing invalid forms from being submitted

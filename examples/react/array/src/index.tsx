@@ -58,12 +58,13 @@ function App() {
         </form.Field>
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
-          children={([canSubmit, isSubmitting]) => (
+        >
+          {([canSubmit, isSubmitting]) => (
             <button type="submit" disabled={!canSubmit}>
               {isSubmitting ? '...' : 'Submit'}
             </button>
           )}
-        />
+        </form.Subscribe>
       </form>
     </div>
   )

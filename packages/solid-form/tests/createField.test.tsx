@@ -22,7 +22,8 @@ describe('createField', () => {
           <form.Field
             name="firstName"
             defaultValue="FirstName"
-            children={(field) => {
+          >
+            {(field) => {
               return (
                 <input
                   data-testid="fieldinput"
@@ -32,7 +33,7 @@ describe('createField', () => {
                 />
               )
             }}
-          />
+          </form.Field>
         </>
       )
     }
@@ -61,7 +62,8 @@ describe('createField', () => {
           <form.Field
             name="firstName"
             defaultValue="otherName"
-            children={(field) => {
+          >
+            {(field) => {
               return (
                 <input
                   data-testid="fieldinput"
@@ -71,7 +73,7 @@ describe('createField', () => {
                 />
               )
             }}
-          />
+          </form.Field>
         </>
       )
     }
@@ -99,7 +101,8 @@ describe('createField', () => {
               onChange: ({ value }) =>
                 value.includes('other') ? error : undefined,
             }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -115,7 +118,7 @@ describe('createField', () => {
                 <p>{field().getMeta().errors}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -145,7 +148,8 @@ describe('createField', () => {
               onChange: ({ value }) =>
                 value.includes('other') ? error : undefined,
             }}
-            children={(field) => {
+          >
+            {(field) => {
               return (
                 <div>
                   <input
@@ -163,7 +167,7 @@ describe('createField', () => {
                 </div>
               )
             }}
-          />
+          </form.Field>
         </>
       )
     }
@@ -197,7 +201,8 @@ describe('createField', () => {
               onBlur: ({ value }) =>
                 value.includes('other') ? onBlurError : undefined,
             }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -210,7 +215,7 @@ describe('createField', () => {
                 <p>{field().getMeta().errorMap.onBlur}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -246,7 +251,8 @@ describe('createField', () => {
                 return error
               },
             }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -258,7 +264,7 @@ describe('createField', () => {
                 <p>{field().getMeta().errorMap.onChange}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -297,7 +303,8 @@ describe('createField', () => {
                 return onBlurError
               },
             }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -310,7 +317,7 @@ describe('createField', () => {
                 <p>{field().getMeta().errorMap.onBlur}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }
@@ -352,7 +359,8 @@ describe('createField', () => {
                 return error
               },
             }}
-            children={(field) => (
+          >
+            {(field) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -364,7 +372,7 @@ describe('createField', () => {
                 <p>{field().getMeta().errors}</p>
               </div>
             )}
-          />
+          </form.Field>
         </>
       )
     }

@@ -65,7 +65,8 @@ function App() {
                 },
               ),
             }}
-            children={(field) => {
+          >
+            {(field) => {
               // Avoid hasty abstractions. Render props are great!
               return (
                 <>
@@ -81,12 +82,11 @@ function App() {
                 </>
               )
             }}
-          />
+          </form.Field>
         </div>
         <div>
-          <form.Field
-            name="lastName"
-            children={(field) => (
+          <form.Field name="lastName">
+            {(field) => (
               <>
                 <label for={field().name}>Last Name:</label>
                 <input
@@ -99,21 +99,22 @@ function App() {
                 <FieldInfo field={field()} />
               </>
             )}
-          />
+          </form.Field>
         </div>
         <form.Subscribe
           selector={(state) => ({
             canSubmit: state.canSubmit,
             isSubmitting: state.isSubmitting,
           })}
-          children={(state) => {
+        >
+          {(state) => {
             return (
               <button type="submit" disabled={!state().canSubmit}>
                 {state().isSubmitting ? '...' : 'Submit'}
               </button>
             )
           }}
-        />
+        </form.Subscribe>
       </form>
     </div>
   )
