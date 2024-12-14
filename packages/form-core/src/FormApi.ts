@@ -12,6 +12,7 @@ import {
   isStandardSchemaValidator,
   standardSchemaValidator,
 } from './standardSchemaValidator'
+import type { StandardSchemaV1 } from './standardSchemaValidator'
 import type { FieldApi, FieldMeta } from './FieldApi'
 import type {
   FormValidationError,
@@ -26,7 +27,6 @@ import type {
 } from './types'
 import type { DeepKeys, DeepValue } from './util-types'
 import type { Updater } from './utils'
-import type { StandardSchemaV1 } from '@standard-schema/spec'
 
 export type FieldsErrorMapFromValidator<TFormData> = Partial<
   Record<DeepKeys<TFormData>, ValidationErrorMap>
