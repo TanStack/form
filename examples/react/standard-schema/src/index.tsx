@@ -1,4 +1,4 @@
-import { standardSchemaValidator, useForm } from '@tanstack/react-form'
+import { useForm } from '@tanstack/react-form'
 import { type } from 'arktype'
 import * as React from 'react'
 import { createRoot } from 'react-dom/client'
@@ -51,7 +51,6 @@ export default function App() {
       firstName: '',
       lastName: '',
     },
-    validatorAdapter: standardSchemaValidator(),
     validators: {
       // DEMO: You can switch between schemas seamlessly
       onChange: ZodSchema,
