@@ -8,7 +8,6 @@ const config = {
   },
   extends: ['plugin:react/recommended', 'plugin:react-hooks/recommended'],
   rules: {
-    'react/no-children-prop': 'off',
     'react-compiler/react-compiler': 'error',
   },
 }
