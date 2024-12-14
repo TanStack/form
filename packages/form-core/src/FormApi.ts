@@ -49,9 +49,7 @@ export type FormValidateOrFn<
 > =
   TFormValidator extends Validator<TFormData, infer TFN>
     ? TFN | FormValidateFn<TFormData, TFormValidator>
-    :
-        | FormValidateFn<TFormData, TFormValidator>
-        | StandardSchemaV1<TFormData, unknown>
+    : FormValidateFn<TFormData, TFormValidator>
 
 /**
  * @private
@@ -89,9 +87,7 @@ export type FormAsyncValidateOrFn<
 > =
   TFormValidator extends Validator<TFormData, infer FFN>
     ? FFN | FormValidateAsyncFn<TFormData, TFormValidator>
-    :
-        | FormValidateAsyncFn<TFormData, TFormValidator>
-        | StandardSchemaV1<TFormData, unknown>
+    : FormValidateAsyncFn<TFormData, TFormValidator>
 
 export interface FormValidators<
   TFormData,

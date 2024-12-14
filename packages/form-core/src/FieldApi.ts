@@ -69,15 +69,13 @@ export type FieldValidateOrFn<
               TFormValidator,
               TData
             >
-      :
-          | FieldValidateFn<
-              TParentData,
-              TName,
-              TFieldValidator,
-              TFormValidator,
-              TData
-            >
-          | StandardSchemaV1
+      : FieldValidateFn<
+          TParentData,
+          TName,
+          TFieldValidator,
+          TFormValidator,
+          TData
+        >
 
 /**
  * @private
@@ -132,15 +130,13 @@ export type FieldAsyncValidateOrFn<
               TFormValidator,
               TData
             >
-      :
-          | FieldValidateAsyncFn<
-              TParentData,
-              TName,
-              TFieldValidator,
-              TFormValidator,
-              TData
-            >
-          | StandardSchemaV1<TData, unknown>
+      : FieldValidateAsyncFn<
+          TParentData,
+          TName,
+          TFieldValidator,
+          TFormValidator,
+          TData
+        >
 
 /**
  * @private
