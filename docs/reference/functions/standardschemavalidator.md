@@ -17,7 +17,7 @@ function standardSchemaValidator(params): Validator<unknown, StandardSchemaV1<an
 
 ## Returns
 
-`Validator`\<`unknown`, `StandardSchemaV1`\<`any`, `any`\>\>
+`Validator`\<`unknown`, [`StandardSchemaV1`](../type-aliases/standardschemav1.md)\<`any`, `any`\>\>
 
 ## Defined in
 
