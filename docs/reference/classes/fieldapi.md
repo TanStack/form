@@ -47,7 +47,7 @@ Initializes a new `FieldApi` instance.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:513](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L513)
+[packages/form-core/src/FieldApi.ts:474](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L474)
 
 ## Properties
 
@@ -61,7 +61,7 @@ A reference to the form API instance.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:475](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L475)
+[packages/form-core/src/FieldApi.ts:436](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L436)
 
 ***
 
@@ -75,7 +75,7 @@ The field name.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:485](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L485)
+[packages/form-core/src/FieldApi.ts:446](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L446)
 
 ***
 
@@ -89,7 +89,7 @@ The field options.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:489](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L489)
+[packages/form-core/src/FieldApi.ts:450](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L450)
 
 ***
 
@@ -103,7 +103,7 @@ The current field state.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:503](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L503)
+[packages/form-core/src/FieldApi.ts:464](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L464)
 
 ***
 
@@ -117,7 +117,7 @@ The field state store.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:499](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L499)
+[packages/form-core/src/FieldApi.ts:460](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L460)
 
 ***
 
@@ -129,7 +129,7 @@ timeoutIds: Record<ValidationCause, null | Timeout>;
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:508](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L508)
+[packages/form-core/src/FieldApi.ts:469](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L469)
 
 ## Methods
 
@@ -147,7 +147,7 @@ Gets the field information object.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:752](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L752)
+[packages/form-core/src/FieldApi.ts:713](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L713)
 
 ***
 
@@ -165,7 +165,7 @@ Gets the current field metadata.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:730](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L730)
+[packages/form-core/src/FieldApi.ts:691](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L691)
 
 ***
 
@@ -187,7 +187,7 @@ Use `field.state.value` instead.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:704](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L704)
+[packages/form-core/src/FieldApi.ts:665](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L665)
 
 ***
 
@@ -205,7 +205,7 @@ Handles the blur event.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:1104](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1104)
+[packages/form-core/src/FieldApi.ts:1065](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1065)
 
 ***
 
@@ -229,7 +229,7 @@ Handles the change event.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:1097](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1097)
+[packages/form-core/src/FieldApi.ts:1058](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1058)
 
 ***
 
@@ -264,7 +264,7 @@ Inserts a value at the specified index, shifting the subsequent values to the ri
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:765](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L765)
+[packages/form-core/src/FieldApi.ts:726](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L726)
 
 ***
 
@@ -286,7 +286,7 @@ Mounts the field instance to the form.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:614](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L614)
+[packages/form-core/src/FieldApi.ts:575](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L575)
 
 ***
 
@@ -321,7 +321,7 @@ Moves the value at the first specified index to the second specified index.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:795](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L795)
+[packages/form-core/src/FieldApi.ts:756](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L756)
 
 ***
 
@@ -349,7 +349,7 @@ Pushes a new value to the field.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:757](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L757)
+[packages/form-core/src/FieldApi.ts:718](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L718)
 
 ***
 
@@ -377,7 +377,7 @@ Removes a value at the specified index.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:783](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L783)
+[packages/form-core/src/FieldApi.ts:744](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L744)
 
 ***
 
@@ -412,7 +412,7 @@ Replaces a value at the specified index.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:774](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L774)
+[packages/form-core/src/FieldApi.ts:735](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L735)
 
 ***
 
@@ -436,7 +436,7 @@ Updates the field's errorMap
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:1124](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1124)
+[packages/form-core/src/FieldApi.ts:1085](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1085)
 
 ***
 
@@ -460,7 +460,7 @@ Sets the field metadata.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:746](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L746)
+[packages/form-core/src/FieldApi.ts:707](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L707)
 
 ***
 
@@ -488,7 +488,7 @@ Sets the field value and run the `change` validator.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:711](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L711)
+[packages/form-core/src/FieldApi.ts:672](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L672)
 
 ***
 
@@ -523,7 +523,7 @@ Swaps the values at the specified indices.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:789](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L789)
+[packages/form-core/src/FieldApi.ts:750](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L750)
 
 ***
 
@@ -547,7 +547,7 @@ Updates the field instance with new options.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:667](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L667)
+[packages/form-core/src/FieldApi.ts:628](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L628)
 
 ***
 
@@ -571,4 +571,4 @@ Validates the field value.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:1069](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1069)
+[packages/form-core/src/FieldApi.ts:1030](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1030)
