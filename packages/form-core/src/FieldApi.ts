@@ -15,7 +15,6 @@ import type {
 } from './types'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
 import type { DeepKeys, DeepValue, NoInfer } from './util-types'
-import type { StandardSchemaV1 } from '@standard-schema/spec'
 
 /**
  * @private

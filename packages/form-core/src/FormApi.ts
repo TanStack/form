@@ -26,7 +26,6 @@ import type {
 } from './types'
 import type { DeepKeys, DeepValue } from './util-types'
 import type { Updater } from './utils'
-import type { StandardSchemaV1 } from '@standard-schema/spec'
 
 export type FieldsErrorMapFromValidator<TFormData> = Partial<
   Record<DeepKeys<TFormData>, ValidationErrorMap>
