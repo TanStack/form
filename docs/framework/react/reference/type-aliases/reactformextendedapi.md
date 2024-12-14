@@ -15,7 +15,7 @@ An extended version of the `FormApi` class that includes React-specific function
 
 • **TFormData**
 
-• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> = `Validator`\<`TFormData`, `StandardSchemaV1`\<`TFormData`\>\>
+• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> = `StandardSchemaValidator`
 
 ## Defined in
 

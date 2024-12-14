@@ -19,9 +19,9 @@ The `Field` component uses the `useField` hook internally to manage the field in
 
 • **TName** *extends* `string` \| `number`
 
-• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> = `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `StandardSchemaV1`\<`DeepValue`\<`TParentData`, `TName`\>\>\>
+• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> = `Validator`\<`unknown`, `StandardSchemaV1`\>
 
-• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> = `Validator`\<`TParentData`, `StandardSchemaV1`\<`TParentData`\>\>
+• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> = `Validator`\<`unknown`, `StandardSchemaV1`\>
 
 • **TData** = `DeepValue`\<`TParentData`, `TName`\>
 
@@ -37,4 +37,4 @@ The `Field` component uses the `useField` hook internally to manage the field in
 
 ## Defined in
 
-[packages/react-form/src/useField.tsx:190](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L190)
+[packages/react-form/src/useField.tsx:178](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L178)

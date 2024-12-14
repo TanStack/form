@@ -13,7 +13,7 @@ function createForm<TParentData, TFormValidator>(opts?): FormApi<TParentData, TF
 
 • **TParentData**
 
-• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> = `Validator`\<`TParentData`, `StandardSchemaV1`\<`TParentData`\>\>
+• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> = `Validator`\<`unknown`, `StandardSchemaV1`\>
 
 ## Parameters
 

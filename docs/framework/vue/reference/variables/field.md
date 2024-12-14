@@ -21,4 +21,4 @@ FieldApiOptions\<TParentData, TName, TFieldValidator, TFormValidator, TData\> & 
 
 ## Defined in
 
-[packages/vue-form/src/useField.tsx:188](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L188)
+[packages/vue-form/src/useField.tsx:176](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L176)

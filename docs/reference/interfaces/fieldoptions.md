@@ -17,9 +17,9 @@ An object type representing the options for a field in a form.
 
 • **TName** *extends* [`DeepKeys`](../type-aliases/deepkeys.md)\<`TParentData`\>
 
-• **TFieldValidator** *extends* `Validator`\<[`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\>, `unknown`\> = `Validator`\<[`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\>, [`StandardSchemaV1`](../type-aliases/standardschemav1.md)\<[`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\>\>\>
+• **TFieldValidator** *extends* `Validator`\<[`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\>, `unknown`\> = [`StandardSchemaValidator`](../type-aliases/standardschemavalidator.md)
 
-• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> = `Validator`\<`TParentData`, [`StandardSchemaV1`](../type-aliases/standardschemav1.md)\<`TParentData`\>\>
+• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> = [`StandardSchemaValidator`](../type-aliases/standardschemavalidator.md)
 
 • **TData** *extends* [`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\> = [`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\>
 
@@ -35,7 +35,7 @@ If `true`, always run async validation, even if there are errors emitted during 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:349](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L349)
+[packages/form-core/src/FieldApi.ts:325](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L325)
 
 ***
 
@@ -49,7 +49,7 @@ The default time to debounce async validation if there is not a more specific de
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:345](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L345)
+[packages/form-core/src/FieldApi.ts:321](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L321)
 
 ***
 
@@ -63,7 +63,7 @@ An optional object with default metadata for the field.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:367](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L367)
+[packages/form-core/src/FieldApi.ts:343](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L343)
 
 ***
 
@@ -77,7 +77,7 @@ An optional default value for the field.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:341](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L341)
+[packages/form-core/src/FieldApi.ts:317](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L317)
 
 ***
 
@@ -91,7 +91,7 @@ A list of listeners which attach to the corresponding events
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:371](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L371)
+[packages/form-core/src/FieldApi.ts:347](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L347)
 
 ***
 
@@ -105,7 +105,7 @@ The field name. The type will be `DeepKeys<TParentData>` to ensure your name is 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:337](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L337)
+[packages/form-core/src/FieldApi.ts:313](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L313)
 
 ***
 
@@ -119,7 +119,7 @@ A validator provided by an extension, like `yupValidator` from `@tanstack/yup-fo
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:353](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L353)
+[packages/form-core/src/FieldApi.ts:329](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L329)
 
 ***
 
@@ -133,4 +133,4 @@ A list of validators to pass to the field
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:357](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L357)
+[packages/form-core/src/FieldApi.ts:333](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L333)

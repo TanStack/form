@@ -15,7 +15,7 @@ An object representing the field information for a specific field within the for
 
 • **TFormData**
 
-• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> = `Validator`\<`TFormData`, [`StandardSchemaV1`](standardschemav1.md)\<`TFormData`\>\>
+• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> = [`StandardSchemaValidator`](standardschemavalidator.md)
 
 ## Type declaration
 
@@ -37,4 +37,4 @@ A record of field validation internal handling.
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:223](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L223)
+[packages/form-core/src/FormApi.ts:224](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L224)

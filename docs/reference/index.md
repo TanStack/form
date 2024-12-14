@@ -5,10 +5,6 @@ title: "@tanstack/form-core"
 
 # @tanstack/form-core
 
-## Namespaces
-
-- [StandardSchemaV1](namespaces/standardschemav1/index.md)
-
 ## Classes
 
 - [FieldApi](classes/fieldapi.md)
@@ -34,7 +30,7 @@ title: "@tanstack/form-core"
 - [FormState](type-aliases/formstate.md)
 - [FormValidateFn](type-aliases/formvalidatefn.md)
 - [FormValidator](type-aliases/formvalidator.md)
-- [StandardSchemaV1](type-aliases/standardschemav1.md)
+- [StandardSchemaValidator](type-aliases/standardschemavalidator.md)
 - [Updater](type-aliases/updater.md)
 - [UpdaterFn](type-aliases/updaterfn.md)
 - [ValidationError](type-aliases/validationerror.md)
@@ -44,6 +40,6 @@ title: "@tanstack/form-core"
 ## Functions
 
 - [formOptions](functions/formoptions.md)
-- [isStandardSchemaValidator](functions/isStandardSchemaValidator,md)
+- [isStandardSchemaValidator](functions/isstandardschemavalidator.md)
 - [mergeForm](functions/mergeform.md)
-- [standardSchemaValidator](functions/StandardSchemaValidator,md)
+- [standardSchemaValidator](functions/standardschemavalidator.md)

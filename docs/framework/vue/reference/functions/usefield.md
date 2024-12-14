@@ -15,9 +15,9 @@ function useField<TParentData, TName, TFieldValidator, TFormValidator, TData>(op
 
 • **TName** *extends* `string` \| `number`
 
-• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> = `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `StandardSchemaV1`\<`DeepValue`\<`TParentData`, `TName`\>\>\>
+• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> = `Validator`\<`unknown`, `StandardSchemaV1`\>
 
-• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> = `Validator`\<`TParentData`, `StandardSchemaV1`\<`TParentData`\>\>
+• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> = `Validator`\<`unknown`, `StandardSchemaV1`\>
 
 • **TData** = `DeepValue`\<`TParentData`, `TName`\>
 
@@ -45,4 +45,4 @@ readonly state: Readonly<Ref<FieldState<TData>, FieldState<TData>>> = fieldState
 
 ## Defined in
 
-[packages/vue-form/src/useField.tsx:60](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L60)
+[packages/vue-form/src/useField.tsx:57](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L57)

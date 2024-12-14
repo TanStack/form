@@ -13,7 +13,7 @@ function injectStore<TFormData, TFormValidator, TSelected>(form, selector?): Sig
 
 • **TFormData**
 
-• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> = `Validator`\<`TFormData`, `StandardSchemaV1`\<`TFormData`\>\>
+• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> = `Validator`\<`unknown`, `StandardSchemaV1`\>
 
 • **TSelected** = `NoInfer`\<`FormState`\<`TFormData`\>\>
 

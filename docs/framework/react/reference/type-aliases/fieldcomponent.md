@@ -18,13 +18,13 @@ A type alias representing a field component for a specific form data type.
 
 • **TParentData**
 
-• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> = `Validator`\<`TParentData`, `StandardSchemaV1`\<`TParentData`\>\>
+• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> = `StandardSchemaValidator`
 
 ## Type Parameters
 
 • **TName** *extends* `DeepKeys`\<`TParentData`\>
 
-• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> = `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `StandardSchemaV1`\<`DeepValue`\<`TParentData`, `TName`\>\>\>
+• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> = `StandardSchemaValidator`
 
 • **TData** *extends* `DeepValue`\<`TParentData`, `TName`\> = `DeepValue`\<`TParentData`, `TName`\>
 
@@ -43,4 +43,4 @@ A type alias representing a field component for a specific form data type.
 
 ## Defined in
 
-[packages/react-form/src/useField.tsx:155](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L155)
+[packages/react-form/src/useField.tsx:146](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L146)

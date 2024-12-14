@@ -15,9 +15,9 @@ function Field<TParentData, TName, TFieldValidator, TFormValidator, TData>(props
 
 • **TName** *extends* `string` \| `number`
 
-• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> = `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `StandardSchemaV1`\<`DeepValue`\<`TParentData`, `TName`\>\>\>
+• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> = `Validator`\<`unknown`, `StandardSchemaV1`\>
 
-• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> = `Validator`\<`TParentData`, `StandardSchemaV1`\<`TParentData`\>\>
+• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> = `Validator`\<`unknown`, `StandardSchemaV1`\>
 
 • **TData** = `DeepValue`\<`TParentData`, `TName`\>
 
@@ -33,4 +33,4 @@ function Field<TParentData, TName, TFieldValidator, TFormValidator, TData>(props
 
 ## Defined in
 
-[packages/solid-form/src/createField.tsx:212](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L212)
+[packages/solid-form/src/createField.tsx:197](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L197)

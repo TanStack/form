@@ -13,7 +13,7 @@ function formOptions<TFormData, TFormValidator>(defaultOpts?): undefined | FormO
 
 • **TFormData**
 
-• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> = `Validator`\<`TFormData`, [`StandardSchemaV1`](../type-aliases/standardschemav1.md)\<`TFormData`\>\>
+• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> = `Validator`\<`unknown`, `StandardSchemaV1`\>
 
 ## Parameters
 

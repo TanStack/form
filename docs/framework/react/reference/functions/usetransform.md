@@ -13,7 +13,7 @@ function useTransform<TFormData, TFormValidator>(fn, deps): FormTransform<TFormD
 
 • **TFormData**
 
-• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> = `Validator`\<`TFormData`, `StandardSchemaV1`\<`TFormData`\>\>
+• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> = `Validator`\<`unknown`, `StandardSchemaV1`\>
 
 ## Parameters
 

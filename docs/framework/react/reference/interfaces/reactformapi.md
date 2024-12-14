@@ -11,7 +11,7 @@ Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned
 
 • **TFormData**
 
-• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> = `Validator`\<`TFormData`, `StandardSchemaV1`\<`TFormData`\>\>
+• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> = `StandardSchemaValidator`
 
 ## Properties
 

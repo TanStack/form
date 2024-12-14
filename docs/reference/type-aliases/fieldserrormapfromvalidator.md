@@ -15,4 +15,4 @@ type FieldsErrorMapFromValidator<TFormData>: Partial<Record<DeepKeys<TFormData>,
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:31](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L31)
+[packages/form-core/src/FormApi.ts:32](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L32)
