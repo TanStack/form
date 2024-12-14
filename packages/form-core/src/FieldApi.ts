@@ -1,9 +1,10 @@
 import { Store } from '@tanstack/store'
-import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
 import {
   isStandardSchemaValidator,
   standardSchemaValidator,
 } from './standardSchemaValidator'
+import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
+import type { StandardSchemaValidator } from './standardSchemaValidator'
 import type { FieldInfo, FieldsErrorMapFromValidator, FormApi } from './FormApi'
 import type {
   UpdateMetaOptions,
@@ -13,9 +14,8 @@ import type {
   ValidationSource,
   Validator,
 } from './types'
-import type { AsyncValidator, SyncValidator, Updater } from './utils'
 import type { DeepKeys, DeepValue, NoInfer } from './util-types'
-import type { StandardSchemaV1 } from '@standard-schema/spec'
+import type { AsyncValidator, SyncValidator, Updater } from './utils'
 
 /**
  * @private
@@ -26,14 +26,11 @@ export type FieldValidateFn<
   TFieldValidator extends Validator<
     DeepValue<TParentData, TName>,
     unknown
-  > = Validator<
-    DeepValue<TParentData, TName>,
-    StandardSchemaV1<DeepValue<TParentData, TName>>
-  >,
-  TFormValidator extends Validator<TParentData, unknown> = Validator<
+  > = StandardSchemaValidator,
+  TFormValidator extends Validator<
     TParentData,
-    StandardSchemaV1<TParentData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (props: {
   value: TData
@@ -49,14 +46,11 @@ export type FieldValidateOrFn<
   TFieldValidator extends Validator<
     DeepValue<TParentData, TName>,
     unknown
-  > = Validator<
-    DeepValue<TParentData, TName>,
-    StandardSchemaV1<DeepValue<TParentData, TName>>
-  >,
-  TFormValidator extends Validator<TParentData, unknown> = Validator<
+  > = StandardSchemaValidator,
+  TFormValidator extends Validator<
     TParentData,
-    StandardSchemaV1<TParentData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > =
   | (TFieldValidator extends Validator<TData, infer TFN> ? TFN : never)
@@ -72,14 +66,11 @@ export type FieldValidateAsyncFn<
   TFieldValidator extends Validator<
     DeepValue<TParentData, TName>,
     unknown
-  > = Validator<
-    DeepValue<TParentData, TName>,
-    StandardSchemaV1<DeepValue<TParentData, TName>>
-  >,
-  TFormValidator extends Validator<TParentData, unknown> = Validator<
+  > = StandardSchemaValidator,
+  TFormValidator extends Validator<
     TParentData,
-    StandardSchemaV1<TParentData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (options: {
   value: TData
@@ -96,14 +87,11 @@ export type FieldAsyncValidateOrFn<
   TFieldValidator extends Validator<
     DeepValue<TParentData, TName>,
     unknown
-  > = Validator<
-    DeepValue<TParentData, TName>,
-    StandardSchemaV1<DeepValue<TParentData, TName>>
-  >,
-  TFormValidator extends Validator<TParentData, unknown> = Validator<
+  > = StandardSchemaValidator,
+  TFormValidator extends Validator<
     TParentData,
-    StandardSchemaV1<TParentData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > =
   | (TFieldValidator extends Validator<TData, infer TFN> ? TFN : never)
@@ -125,14 +113,11 @@ export type FieldListenerFn<
   TFieldValidator extends Validator<
     DeepValue<TParentData, TName>,
     unknown
-  > = Validator<
-    DeepValue<TParentData, TName>,
-    StandardSchemaV1<DeepValue<TParentData, TName>>
-  >,
-  TFormValidator extends Validator<TParentData, unknown> = Validator<
+  > = StandardSchemaValidator,
+  TFormValidator extends Validator<
     TParentData,
-    StandardSchemaV1<TParentData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (props: {
   value: TData
@@ -145,14 +130,11 @@ export interface FieldValidators<
   TFieldValidator extends Validator<
     DeepValue<TParentData, TName>,
     unknown
-  > = Validator<
-    DeepValue<TParentData, TName>,
-    StandardSchemaV1<DeepValue<TParentData, TName>>
-  >,
-  TFormValidator extends Validator<TParentData, unknown> = Validator<
+  > = StandardSchemaValidator,
+  TFormValidator extends Validator<
     TParentData,
-    StandardSchemaV1<TParentData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   /**
@@ -272,14 +254,11 @@ export interface FieldListeners<
   TFieldValidator extends Validator<
     DeepValue<TParentData, TName>,
     unknown
-  > = Validator<
-    DeepValue<TParentData, TName>,
-    StandardSchemaV1<DeepValue<TParentData, TName>>
-  >,
-  TFormValidator extends Validator<TParentData, unknown> = Validator<
+  > = StandardSchemaValidator,
+  TFormValidator extends Validator<
     TParentData,
-    StandardSchemaV1<TParentData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   onChange?: FieldListenerFn<
@@ -321,14 +300,11 @@ export interface FieldOptions<
   TFieldValidator extends Validator<
     DeepValue<TParentData, TName>,
     unknown
-  > = Validator<
-    DeepValue<TParentData, TName>,
-    StandardSchemaV1<DeepValue<TParentData, TName>>
-  >,
-  TFormValidator extends Validator<TParentData, unknown> = Validator<
+  > = StandardSchemaValidator,
+  TFormValidator extends Validator<
     TParentData,
-    StandardSchemaV1<TParentData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   /**
@@ -386,14 +362,11 @@ export interface FieldApiOptions<
   TFieldValidator extends Validator<
     DeepValue<TParentData, TName>,
     unknown
-  > = Validator<
-    DeepValue<TParentData, TName>,
-    StandardSchemaV1<DeepValue<TParentData, TName>>
-  >,
-  TFormValidator extends Validator<TParentData, unknown> = Validator<
+  > = StandardSchemaValidator,
+  TFormValidator extends Validator<
     TParentData,
-    StandardSchemaV1<TParentData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > extends FieldOptions<
     TParentData,
@@ -468,14 +441,11 @@ export class FieldApi<
   TFieldValidator extends Validator<
     DeepValue<TParentData, TName>,
     unknown
-  > = Validator<
-    DeepValue<TParentData, TName>,
-    StandardSchemaV1<DeepValue<TParentData, TName>>
-  >,
-  TFormValidator extends Validator<TParentData, unknown> = Validator<
+  > = StandardSchemaValidator,
+  TFormValidator extends Validator<
     TParentData,
-    StandardSchemaV1<TParentData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   /**

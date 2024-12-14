@@ -7,7 +7,7 @@ import type {
   DeepValue,
   FieldOptions,
   FormOptions,
-  StandardSchemaV1,
+  StandardSchemaValidator,
   Validator,
 } from '@tanstack/form-core'
 import type { ElementPart, PartInfo } from 'lit/directive.js'
@@ -19,14 +19,11 @@ type renderCallback<
   TFieldValidator extends Validator<
     DeepValue<TParentData, TName>,
     unknown
-  > = Validator<
-    DeepValue<TParentData, TName>,
-    StandardSchemaV1<DeepValue<TParentData, TName>>
-  >,
-  TFormValidator extends Validator<TParentData, unknown> = Validator<
+  > = StandardSchemaValidator,
+  TFormValidator extends Validator<
     TParentData,
-    StandardSchemaV1<TParentData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (
   fieldOptions: FieldApi<
@@ -44,14 +41,11 @@ type fieldDirectiveType<
   TFieldValidator extends Validator<
     DeepValue<TParentData, TName>,
     unknown
-  > = Validator<
-    DeepValue<TParentData, TName>,
-    StandardSchemaV1<DeepValue<TParentData, TName>>
-  >,
-  TFormValidator extends Validator<TParentData, unknown> = Validator<
+  > = StandardSchemaValidator,
+  TFormValidator extends Validator<
     TParentData,
-    StandardSchemaV1<TParentData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (
   form: FormApi<TParentData, TFormValidator>,
@@ -91,10 +85,10 @@ type fieldDirectiveType<
 
 export class TanStackFormController<
   TParentData,
-  TFormValidator extends Validator<TParentData, unknown> = Validator<
+  TFormValidator extends Validator<
     TParentData,
-    StandardSchemaV1<TParentData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
 > implements ReactiveController
 {
   #host: ReactiveControllerHost
@@ -126,10 +120,7 @@ export class TanStackFormController<
     TFieldValidator extends Validator<
       DeepValue<TParentData, TName>,
       unknown
-    > = Validator<
-      DeepValue<TParentData, TName>,
-      StandardSchemaV1<DeepValue<TParentData, TName>>
-    >,
+    > = StandardSchemaValidator,
     TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   >(
     fieldConfig: FieldOptions<
@@ -165,14 +156,11 @@ class FieldDirective<
   TFieldValidator extends Validator<
     DeepValue<TParentData, TName>,
     unknown
-  > = Validator<
-    DeepValue<TParentData, TName>,
-    StandardSchemaV1<DeepValue<TParentData, TName>>
-  >,
-  TFormValidator extends Validator<TParentData, unknown> = Validator<
+  > = StandardSchemaValidator,
+  TFormValidator extends Validator<
     TParentData,
-    StandardSchemaV1<TParentData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > extends AsyncDirective {
   #registered = false

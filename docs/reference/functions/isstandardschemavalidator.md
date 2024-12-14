@@ -21,4 +21,4 @@ function isStandardSchemaValidator(validator): validator is StandardSchemaV1
 
 ## Defined in
 
-[packages/form-core/src/standardSchemaValidator.ts:87](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchemaValidator.ts#L87)
+[packages/form-core/src/StandardSchemaValidator,ts:87](https://github.com/TanStack/form/blob/main/packages/form-core/src/StandardSchemaValidator,ts#L87)

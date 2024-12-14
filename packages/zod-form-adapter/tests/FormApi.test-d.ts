@@ -96,9 +96,7 @@ it('should allow not a Zod validator with the wrong Zod type', () => {
   } as const)
 
   const field = new FieldApi({
-    // @ts-expect-error
     form,
-    // @ts-expect-error
     name: 'name',
     validatorAdapter: zodValidator(),
     validators: {

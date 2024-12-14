@@ -2,16 +2,16 @@ import { injectStore as injectAngularStore } from '@tanstack/angular-store'
 import type {
   FormApi,
   FormState,
-  StandardSchemaV1,
+  StandardSchemaValidator,
   Validator,
 } from '@tanstack/form-core'
 
 export function injectStore<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> = Validator<
+  TFormValidator extends Validator<
     TFormData,
-    StandardSchemaV1<TFormData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
   TSelected = NoInfer<FormState<TFormData>>,
 >(
   form: FormApi<TFormData, TFormValidator>,

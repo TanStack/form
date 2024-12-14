@@ -89,9 +89,7 @@ it('should allow not a Valibot validator with the wrong Valibot type', () => {
   } as const)
 
   const field = new FieldApi({
-    // @ts-expect-error
     form,
-    // @ts-expect-error
     name: 'name',
     validatorAdapter: valibotValidator(),
     validators: {

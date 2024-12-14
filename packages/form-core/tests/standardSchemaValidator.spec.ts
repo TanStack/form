@@ -13,6 +13,7 @@ describe('standard schema validator', () => {
           firstName: '',
           lastName: '',
         },
+
         validators: {
           onChange: v.object({
             firstName: v.pipe(

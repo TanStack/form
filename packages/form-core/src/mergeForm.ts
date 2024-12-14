@@ -1,7 +1,7 @@
 import type { FormApi } from './FormApi'
+import type { StandardSchemaValidator } from './standardSchemaValidator'
 import type { Validator } from './types'
 import type { NoInfer } from './util-types'
-import type { StandardSchemaV1 } from '@standard-schema/spec'
 
 /**
  * @private
@@ -36,10 +36,10 @@ export function mutateMergeDeep(target: object, source: object): object {
 
 export function mergeForm<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> = Validator<
+  TFormValidator extends Validator<
     TFormData,
-    StandardSchemaV1<TFormData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
 >(
   baseForm: FormApi<NoInfer<TFormData>, NoInfer<TFormValidator>>,
   state: Partial<FormApi<TFormData, TFormValidator>['state']>,

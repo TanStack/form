@@ -112,8 +112,7 @@ export default function App() {
             errorMap.onSubmit ? (
               <div>
                 <em>
-                  There was an error on the form:{' '}
-                  {errorMap.onSubmit?.toString()}
+                  There was an error on the form: {errorMap.onSubmit.toString()}
                 </em>
               </div>
             ) : null

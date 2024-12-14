@@ -9,7 +9,7 @@ import type { NoInfer } from '@tanstack/react-store'
 import type {
   FormOptions,
   FormState,
-  StandardSchemaV1,
+  StandardSchemaValidator,
   Validator,
 } from '@tanstack/form-core'
 
@@ -18,10 +18,10 @@ import type {
  */
 export interface ReactFormApi<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> = Validator<
+  TFormValidator extends Validator<
     TFormData,
-    StandardSchemaV1<TFormData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
 > {
   /**
    * A React component to render form fields. With this, you can render and manage individual form fields.
@@ -41,10 +41,10 @@ export interface ReactFormApi<
  */
 export type ReactFormExtendedApi<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> = Validator<
+  TFormValidator extends Validator<
     TFormData,
-    StandardSchemaV1<TFormData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
 > = FormApi<TFormData, TFormValidator> & ReactFormApi<TFormData, TFormValidator>
 
 function LocalSubscribe({
@@ -67,10 +67,10 @@ function LocalSubscribe({
  */
 export function useForm<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> = Validator<
+  TFormValidator extends Validator<
     TFormData,
-    StandardSchemaV1<TFormData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
 >(opts?: FormOptions<TFormData, TFormValidator>) {
   const [formApi] = useState(() => {
     const api = new FormApi<TFormData, TFormValidator>(opts)

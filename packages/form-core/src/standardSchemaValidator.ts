@@ -8,6 +8,8 @@ import type { StandardSchemaV1 } from '@standard-schema/spec'
 type Params = ValidatorAdapterParams<StandardSchemaV1.Issue>
 type TransformFn = NonNullable<Params['transformErrors']>
 
+export type StandardSchemaValidator = ReturnType<typeof standardSchemaValidator>
+
 function prefixSchemaToErrors(
   issues: readonly StandardSchemaV1.Issue[],
   transformErrors: TransformFn,

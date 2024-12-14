@@ -1,13 +1,13 @@
 import type { Validator } from './types'
 import type { FormOptions } from './FormApi'
-import type { StandardSchemaV1 } from '@standard-schema/spec'
+import type { StandardSchemaValidator } from './standardSchemaValidator'
 
 export function formOptions<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> = Validator<
+  TFormValidator extends Validator<
     TFormData,
-    StandardSchemaV1<TFormData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
 >(defaultOpts?: FormOptions<TFormData, TFormValidator>) {
   return defaultOpts
 }

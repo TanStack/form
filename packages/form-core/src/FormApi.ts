@@ -12,6 +12,7 @@ import {
   isStandardSchemaValidator,
   standardSchemaValidator,
 } from './standardSchemaValidator'
+import type { StandardSchemaValidator } from './standardSchemaValidator'
 import type { FieldApi, FieldMeta } from './FieldApi'
 import type {
   FormValidationError,
@@ -34,10 +35,10 @@ export type FieldsErrorMapFromValidator<TFormData> = Partial<
 
 export type FormValidateFn<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> = Validator<
+  TFormValidator extends Validator<
     TFormData,
-    StandardSchemaV1<TFormData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
 > = (props: {
   value: TFormData
   formApi: FormApi<TFormData, TFormValidator>
@@ -48,10 +49,10 @@ export type FormValidateFn<
  */
 export type FormValidateOrFn<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> = Validator<
+  TFormValidator extends Validator<
     TFormData,
-    StandardSchemaV1<TFormData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
 > =
   TFormValidator extends Validator<TFormData, infer TFN>
     ? TFN | FormValidateFn<TFormData, TFormValidator>
@@ -62,10 +63,10 @@ export type FormValidateOrFn<
  */
 export type FormValidateAsyncFn<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> = Validator<
+  TFormValidator extends Validator<
     TFormData,
-    StandardSchemaV1<TFormData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
 > = (props: {
   value: TFormData
   formApi: FormApi<TFormData, TFormValidator>
@@ -92,10 +93,10 @@ type ValidationPromiseResult<TFormData> =
  */
 export type FormAsyncValidateOrFn<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> = Validator<
+  TFormValidator extends Validator<
     TFormData,
-    StandardSchemaV1<TFormData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
 > =
   TFormValidator extends Validator<TFormData, infer FFN>
     ? FFN | FormValidateAsyncFn<TFormData, TFormValidator>
@@ -103,10 +104,10 @@ export type FormAsyncValidateOrFn<
 
 export interface FormValidators<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> = Validator<
+  TFormValidator extends Validator<
     TFormData,
-    StandardSchemaV1<TFormData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
 > {
   /**
    * Optional function that fires as soon as the component mounts.
@@ -145,10 +146,10 @@ export interface FormValidators<
  */
 export interface FormTransform<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> = Validator<
+  TFormValidator extends Validator<
     TFormData,
-    StandardSchemaV1<TFormData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
 > {
   fn: (
     formBase: FormApi<TFormData, TFormValidator>,
@@ -161,10 +162,10 @@ export interface FormTransform<
  */
 export interface FormOptions<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> = Validator<
+  TFormValidator extends Validator<
     TFormData,
-    StandardSchemaV1<TFormData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
 > {
   /**
    * Set initial values for your form.
@@ -222,10 +223,10 @@ export type ValidationMeta = {
  */
 export type FieldInfo<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> = Validator<
+  TFormValidator extends Validator<
     TFormData,
-    StandardSchemaV1<TFormData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
 > = {
   /**
    * An instance of the FieldAPI.
@@ -380,10 +381,10 @@ const isFormValidationError = (
  */
 export class FormApi<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> = Validator<
+  TFormValidator extends Validator<
     TFormData,
-    StandardSchemaV1<TFormData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
 > {
   /**
    * The options for the form.

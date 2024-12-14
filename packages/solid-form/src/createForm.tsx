@@ -7,7 +7,7 @@ import type { CreateField, FieldComponent } from './createField'
 import type {
   FormOptions,
   FormState,
-  StandardSchemaV1,
+  StandardSchemaValidator,
   Validator,
 } from '@tanstack/form-core'
 
@@ -15,10 +15,10 @@ type NoInfer<T> = [T][T extends any ? 0 : never]
 
 export interface SolidFormApi<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> = Validator<
+  TFormValidator extends Validator<
     TFormData,
-    StandardSchemaV1<TFormData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
 > {
   Field: FieldComponent<TFormData, TFormValidator>
   createField: CreateField<TFormData, TFormValidator>
@@ -33,10 +33,10 @@ export interface SolidFormApi<
 
 export function createForm<
   TParentData,
-  TFormValidator extends Validator<TParentData, unknown> = Validator<
+  TFormValidator extends Validator<
     TParentData,
-    StandardSchemaV1<TParentData>
-  >,
+    unknown
+  > = StandardSchemaValidator,
 >(opts?: () => FormOptions<TParentData, TFormValidator>) {
   const options = opts?.()
   const api = new FormApi<TParentData, TFormValidator>(options)
