@@ -6,7 +6,7 @@ title: isStandardSchemaValidator
 # Function: isStandardSchemaValidator()
 
 ```ts
-function isStandardSchemaValidator(validator): validator is StandardSchemaV1
+function isStandardSchemaValidator(validator): validator is StandardSchemaV1<unknown, unknown>
 ```
 
 ## Parameters
@@ -17,8 +17,8 @@ function isStandardSchemaValidator(validator): validator is StandardSchemaV1
 
 ## Returns
 
-`validator is StandardSchemaV1`
+`validator is StandardSchemaV1<unknown, unknown>`
 
 ## Defined in
 
-[packages/form-core/src/standardSchemaValidator.ts:87](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchemaValidator.ts#L87)
+[packages/form-core/src/standardSchemaValidator.ts:85](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchemaValidator.ts#L85)

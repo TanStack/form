@@ -57,4 +57,4 @@ type FormValidator<TFormData, TType, TFn>: object;
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:66](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L66)
+[packages/form-core/src/FormApi.ts:65](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L65)

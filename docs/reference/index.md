@@ -12,12 +12,18 @@ title: "@tanstack/form-core"
 
 ## Interfaces
 
+- [FailureResult](interfaces/failureresult.md)
 - [FieldApiOptions](interfaces/fieldapioptions.md)
 - [FieldListeners](interfaces/fieldlisteners.md)
 - [FieldOptions](interfaces/fieldoptions.md)
 - [FieldValidators](interfaces/fieldvalidators.md)
 - [FormOptions](interfaces/formoptions.md)
 - [FormValidators](interfaces/formvalidators.md)
+- [Issue](interfaces/issue.md)
+- [PathSegment](interfaces/pathsegment.md)
+- [Props](interfaces/props.md)
+- [SuccessResult](interfaces/successresult.md)
+- [Types](interfaces/types.md)
 
 ## Type Aliases
 
@@ -30,6 +36,9 @@ title: "@tanstack/form-core"
 - [FormState](type-aliases/formstate.md)
 - [FormValidateFn](type-aliases/formvalidatefn.md)
 - [FormValidator](type-aliases/formvalidator.md)
+- [InferInput](type-aliases/inferinput.md)
+- [InferOutput](type-aliases/inferoutput.md)
+- [Result](type-aliases/result.md)
 - [Updater](type-aliases/updater.md)
 - [UpdaterFn](type-aliases/updaterfn.md)
 - [ValidationError](type-aliases/validationerror.md)
