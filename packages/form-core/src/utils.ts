@@ -280,17 +280,24 @@ export function getSyncValidatorArray<T>(
   cause: ValidationCause,
   options: SyncValidatorArrayPartialOptions<T>,
 ): T extends FieldValidators<any, any>
-  ? Array<SyncValidator<T['onChange'] | T['onBlur'] | T['onSubmit']>>
+  ? Array<
+      SyncValidator<T['onChange'] | T['onBlur'] | T['onSubmit'] | T['onMount']>
+    >
   : T extends FormValidators<any, any>
-    ? Array<SyncValidator<T['onChange'] | T['onBlur'] | T['onSubmit']>>
+    ? Array<
+        SyncValidator<
+          T['onChange'] | T['onBlur'] | T['onSubmit'] | T['onMount']
+        >
+      >
     : never {
-  const { onChange, onBlur, onSubmit } = (options.validators || {}) as
+  const { onChange, onBlur, onSubmit, onMount } = (options.validators || {}) as
     | FieldValidators<any, any>
     | FormValidators<any, any>
 
   const changeValidator = { cause: 'change', validate: onChange } as const
   const blurValidator = { cause: 'blur', validate: onBlur } as const
   const submitValidator = { cause: 'submit', validate: onSubmit } as const
+  const mountValidator = { cause: 'mount', validate: onMount } as const
 
   // Allows us to clear onServer errors
   const serverValidator = {
@@ -299,6 +306,8 @@ export function getSyncValidatorArray<T>(
   } as const
 
   switch (cause) {
+    case 'mount':
+      return [mountValidator] as never
     case 'submit':
       return [
         changeValidator,
