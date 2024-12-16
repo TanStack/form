@@ -2353,4 +2353,35 @@ describe('form api', () => {
     expect(form.state.canSubmit).toBe(true)
     expect(passconfirmField.state.meta.errors.length).toBe(0)
   })
+
+  it("should set field errors from the form's onMount validator", async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onMount: () => {
+          return {
+            form: 'something went wrong',
+            fields: {
+              firstName: 'first name is required',
+            },
+          }
+        },
+      },
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+
+    firstNameField.mount()
+    form.mount()
+
+    expect(form.state.errorMap.onMount).toBe('something went wrong')
+    expect(firstNameField.state.meta.errorMap.onMount).toBe(
+      'first name is required',
+    )
+  })
 })

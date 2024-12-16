@@ -1,11 +1,11 @@
 import { Store } from '@tanstack/store'
-import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
 import {
   isStandardSchemaValidator,
   standardSchemaValidator,
 } from './standardSchemaValidator'
-import type { StandardSchemaV1 } from './standardSchemaValidator'
+import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
 import type { FieldInfo, FieldsErrorMapFromValidator, FormApi } from './FormApi'
+import type { StandardSchemaV1 } from './standardSchemaValidator'
 import type {
   UpdateMetaOptions,
   ValidationCause,
@@ -14,8 +14,8 @@ import type {
   ValidationSource,
   Validator,
 } from './types'
-import type { AsyncValidator, SyncValidator, Updater } from './utils'
 import type { DeepKeys, DeepValue, NoInfer } from './util-types'
+import type { AsyncValidator, SyncValidator, Updater } from './utils'
 
 /**
  * @private

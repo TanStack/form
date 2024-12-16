@@ -532,21 +532,8 @@ export class FormApi<
   mount = () => {
     const { onMount } = this.options.validators || {}
     if (!onMount) return
-    const error = this.runValidator({
-      validate: onMount,
-      value: {
-        value: this.state.values,
-        formApi: this,
-        validationSource: 'form',
-      },
-      type: 'validate',
-    })
-    if (error) {
-      this.store.setState((prev) => ({
-        ...prev,
-        errorMap: { ...prev.errorMap, onMount: error },
-      }))
-    }
+
+    this.validateSync('mount')
   }
 
   /**
