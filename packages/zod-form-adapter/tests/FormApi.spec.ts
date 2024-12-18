@@ -184,4 +184,50 @@ describe('zod form api', () => {
     name0Field.setValue('qwer')
     expect(name0Field.getMeta().errors).toEqual([])
   })
+
+  it('should clear errors if previously errors were set and now are fixed', () => {
+    const form = new FormApi({
+      defaultValues: {
+        password: '',
+        confirmPassword: '',
+      },
+      validatorAdapter: zodValidator(),
+      validators: {
+        onChange: z.object({
+          password: z.string(),
+          confirmPassword: z.string(),
+        }).refine(({ password, confirmPassword }) => password === confirmPassword, {
+          message: 'Passwords must match',
+          path: ['password'],
+        })
+      }
+    });
+    form.mount();
+
+    const field1 = new FieldApi({
+      form,
+      name: 'password',
+      defaultMeta: {
+        isTouched: true,
+      },
+    });
+    field1.mount();
+
+    const field2 = new FieldApi({
+      form,
+      name: 'confirmPassword',
+      defaultMeta: {
+        isTouched: true,
+      },
+    });
+    field2.mount();
+
+    field1.setValue('password');
+    expect(field1.getMeta().errors).toStrictEqual(['Passwords must match']);
+    expect(form.state.canSubmit).toBe(false);
+
+    field2.setValue('password');
+    expect(field2.getMeta().errors).toStrictEqual([]);
+    expect(form.state.canSubmit).toBe(true);
+  })
 })

@@ -747,6 +747,26 @@ export class FormApi<
               }))
             }
           }
+        } else {
+          for (const [field] of Object.entries(this.fieldInfo)) {
+            this.setFieldMeta(field as DeepKeys<TFormData>, (prev) => {
+              const newErrorMap = prev.errorMap;
+
+              if (prev.isDirty) {
+                for (const [errorKey] of Object.entries(prev.errorMap)) {
+                  newErrorMap[errorKey as ValidationErrorMapKeys] = undefined
+                }
+              }
+
+              return {
+                ...prev,
+                errorMap: {
+                  ...prev.errorMap,
+                  [errorMapKey]: undefined,
+                },
+              }
+            })
+          }
         }
 
         if (this.state.errorMap[errorMapKey] !== formError) {
@@ -875,7 +895,28 @@ export class FormApi<
                 }))
               }
             }
+          } else {
+            for (const [field] of Object.entries(this.fieldInfo)) {
+              this.setFieldMeta(field as DeepKeys<TFormData>, (prev) => {
+                const newErrorMap = prev.errorMap;
+
+                if (prev.isDirty) {
+                  for (const [errorKey] of Object.entries(prev.errorMap)) {
+                    newErrorMap[errorKey as ValidationErrorMapKeys] = undefined
+                  }
+                }
+
+                return {
+                  ...prev,
+                  errorMap: {
+                    ...prev.errorMap,
+                    [errorMapKey]: undefined,
+                  },
+                }
+              })
+            }
           }
+
           this.store.setState((prev) => ({
             ...prev,
             errorMap: {
