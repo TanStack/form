@@ -5,6 +5,7 @@ import type {
   Validator,
 } from '@tanstack/form-core'
 import type { FunctionComponent } from 'react'
+import { useForm } from './useForm'
 
 /**
  * The field options.
@@ -28,3 +29,12 @@ export type UseFieldOptions<
 > & {
   mode?: 'value' | 'array'
 }
+
+/**
+ * The return type use useForm with pre-populated generics
+ */
+export type UseFormReturnType<TForm, TFormValidator> = TFormValidator extends
+  | Validator<TForm, unknown>
+  | undefined
+  ? ReturnType<typeof useForm<TForm, TFormValidator>>
+  : never
