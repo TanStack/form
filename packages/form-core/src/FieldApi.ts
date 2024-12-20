@@ -385,7 +385,7 @@ export type FieldMeta = {
   /**
    * An array of errors related to the field value.
    */
-  errors: ValidationError[]
+  errors: Exclude<ValidationError, string[]>[]
   /**
    * A map of errors related to the field value.
    */
@@ -508,9 +508,9 @@ export class FieldApi<
         onUpdate: () => {
           const state = this.store.state
 
-          state.meta.errors = Object.values(state.meta.errorMap).filter(
-            (val: unknown) => val !== undefined,
-          )
+          state.meta.errors = Object.values(state.meta.errorMap)
+            .filter((val: unknown) => val !== undefined)
+            .flat()
 
           state.meta.isPristine = !state.meta.isDirty
 
@@ -1095,6 +1095,10 @@ export class FieldApi<
 
 function normalizeError(rawError?: ValidationError) {
   if (rawError) {
+    if (Array.isArray(rawError)) {
+      return rawError
+    }
+
     if (typeof rawError !== 'string') {
       return 'Invalid Form Values'
     }

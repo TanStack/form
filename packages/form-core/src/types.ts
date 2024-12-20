@@ -1,6 +1,6 @@
 import type { DeepKeys } from './util-types'
 
-export type ValidationError = undefined | false | null | string
+export type ValidationError = undefined | false | null | string | string[]
 
 export type ValidationSource = 'form' | 'field'
 

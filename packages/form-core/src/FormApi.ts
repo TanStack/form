@@ -444,6 +444,11 @@ export class FormApi<
               prev.push(curr)
               return prev
             } else if (curr && isFormValidationError(curr)) {
+              if (Array.isArray(curr)) {
+                prev.push(...curr)
+                return prev
+              }
+
               prev.push(curr.form)
               return prev
             }
@@ -1296,6 +1301,10 @@ function normalizeError<TFormData>(rawError?: FormValidationError<unknown>): {
   fieldErrors?: Partial<Record<DeepKeys<TFormData>, ValidationError>>
 } {
   if (rawError) {
+    if (Array.isArray(rawError)) {
+      return { formError: rawError }
+    }
+
     if (typeof rawError === 'object') {
       const formError = normalizeError(rawError.form).formError
       const fieldErrors = rawError.fields

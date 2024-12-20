@@ -68,6 +68,7 @@ export const createServerValidate =
     const onServerErrorStr =
       onServerError &&
       typeof onServerError !== 'string' &&
+      !Array.isArray(onServerError) &&
       isFormValidationError(onServerError)
         ? onServerError.form
         : onServerError
