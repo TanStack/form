@@ -17,8 +17,8 @@ export default function GenericTextField<
   TName extends InferValidFormKeys<TForm, string>,
   TFormValidator extends Validator<TForm, unknown> | undefined,
 >({ name, form }: {
-   name: TName;
-   form: ReturnType<typeof useForm<TForm, TFormValidator>
+  name: TName;
+  form: ReturnType<typeof useForm<TForm, TFormValidator>
 > }): JSX.Element {
   return (
     <form.Field name={name}>
@@ -65,8 +65,8 @@ export default function GenericTextField<
   TName extends InferValidFormKeys<TForm, string>,
   TFormValidator extends Validator<TForm, unknown> | undefined,
 >({ name, form }: {
-   name: TName;
-   form: ReturnType<typeof useForm<TForm, TFormValidator>
+  name: TName;
+  form: ReturnType<typeof useForm<TForm, TFormValidator>
 > }): JSX.Element {
   return (
     <form.Field name={name}>
@@ -83,7 +83,7 @@ export default function GenericTextField<
 
 function App() {
   const form = useForm({
-    defaultValues: { name: '', id: 0 },
+    defaultValues: { name: '', id: 0, interests: {hobbies: 'climbing'} },
     onSubmit: ({ value }) => {
       console.log(value);
     },
