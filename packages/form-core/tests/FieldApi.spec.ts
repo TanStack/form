@@ -1001,6 +1001,86 @@ describe('field api', () => {
     })
   })
 
+  it("should be able to return an array of errors from a validator's validate function", () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChange: ({ value }) => {
+          return value === 'other'
+            ? ['Please enter a different value', 'another error']
+            : undefined
+        },
+      },
+    })
+
+    field.mount()
+
+    field.setValue('other')
+    expect(field.getMeta().errorMap).toEqual({
+      onChange: ['Please enter a different value', 'another error'],
+    })
+    expect(field.getMeta().errors).toStrictEqual([
+      'Please enter a different value',
+      'another error',
+    ])
+  })
+
+  it('should merge array of validation errors from different validators', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChange: ({ value }) => {
+          return value === 'other'
+            ? ['Please enter a different value', 'another error']
+            : undefined
+        },
+        onBlur: () => {
+          return 'blurError'
+        },
+      },
+    })
+
+    field.mount()
+
+    field.setValue('other')
+    expect(field.getMeta().errorMap).toStrictEqual({
+      onChange: ['Please enter a different value', 'another error'],
+      onMount: undefined,
+    })
+    expect(field.getMeta().errors).toStrictEqual([
+      'Please enter a different value',
+      'another error',
+    ])
+
+    field.handleBlur()
+
+    expect(field.getMeta().errorMap).toStrictEqual({
+      onBlur: 'blurError',
+      onChange: ['Please enter a different value', 'another error'],
+      onMount: undefined,
+    })
+
+    expect(field.getMeta().errors).toStrictEqual([
+      'Please enter a different value',
+      'another error',
+      'blurError',
+    ])
+  })
+
   it('should run listener onChange', () => {
     const form = new FormApi({
       defaultValues: {
