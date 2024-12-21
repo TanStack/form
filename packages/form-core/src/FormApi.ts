@@ -750,7 +750,7 @@ export class FormApi<
         } else {
           for (const [field] of Object.entries(this.fieldInfo)) {
             this.setFieldMeta(field as DeepKeys<TFormData>, (prev) => {
-              const newErrorMap = prev.errorMap;
+              const newErrorMap = prev.errorMap
 
               if (prev.isDirty) {
                 for (const [errorKey] of Object.entries(prev.errorMap)) {
@@ -898,7 +898,7 @@ export class FormApi<
           } else {
             for (const [field] of Object.entries(this.fieldInfo)) {
               this.setFieldMeta(field as DeepKeys<TFormData>, (prev) => {
-                const newErrorMap = prev.errorMap;
+                const newErrorMap = prev.errorMap
 
                 if (prev.isDirty) {
                   for (const [errorKey] of Object.entries(prev.errorMap)) {

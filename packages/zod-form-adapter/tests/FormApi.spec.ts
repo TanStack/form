@@ -193,16 +193,21 @@ describe('zod form api', () => {
       },
       validatorAdapter: zodValidator(),
       validators: {
-        onChange: z.object({
-          password: z.string(),
-          confirmPassword: z.string(),
-        }).refine(({ password, confirmPassword }) => password === confirmPassword, {
-          message: 'Passwords must match',
-          path: ['password'],
-        })
-      }
-    });
-    form.mount();
+        onChange: z
+          .object({
+            password: z.string(),
+            confirmPassword: z.string(),
+          })
+          .refine(
+            ({ password, confirmPassword }) => password === confirmPassword,
+            {
+              message: 'Passwords must match',
+              path: ['password'],
+            },
+          ),
+      },
+    })
+    form.mount()
 
     const field1 = new FieldApi({
       form,
@@ -210,8 +215,8 @@ describe('zod form api', () => {
       defaultMeta: {
         isTouched: true,
       },
-    });
-    field1.mount();
+    })
+    field1.mount()
 
     const field2 = new FieldApi({
       form,
@@ -219,15 +224,15 @@ describe('zod form api', () => {
       defaultMeta: {
         isTouched: true,
       },
-    });
-    field2.mount();
+    })
+    field2.mount()
 
-    field1.setValue('password');
-    expect(field1.getMeta().errors).toStrictEqual(['Passwords must match']);
-    expect(form.state.canSubmit).toBe(false);
+    field1.setValue('password')
+    expect(field1.getMeta().errors).toStrictEqual(['Passwords must match'])
+    expect(form.state.canSubmit).toBe(false)
 
-    field2.setValue('password');
-    expect(field2.getMeta().errors).toStrictEqual([]);
-    expect(form.state.canSubmit).toBe(true);
+    field2.setValue('password')
+    expect(field2.getMeta().errors).toStrictEqual([])
+    expect(form.state.canSubmit).toBe(true)
   })
 })
