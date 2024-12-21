@@ -144,3 +144,15 @@ export type DeepValue<
                 : never
         : // Do not allow `TValue` to be anything else
           never
+
+/**
+ * Infers the form keys of valid fields
+ */
+export type InferValidFormKeys<
+  // Form generic slot
+  TForm,
+  // Desired type of the generic component
+  TFieldType,
+> = {
+  [K in DeepKeys<TForm>]: DeepValue<TForm, K> extends TFieldType ? K : never
+}[DeepKeys<TForm>]
