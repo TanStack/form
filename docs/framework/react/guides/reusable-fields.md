@@ -10,14 +10,13 @@ As TanStack form is a headless library, we provide you the core building blocks 
 To create a reusable fields, you can do the following.
 
 ```tsx
-import {  InferValidFormKeys } from '@tanstack/react-form';
+import {  InferValidFormKeys, UseFormReturnType } from '@tanstack/react-form';
 
 export default function GenericTextField<
   TForm,
   TFormValidator
-  TName extends InferValidFormKeys<TForm, string>,
 >({ name, form }: {
-  name: TName;
+  name: InferValidFormKeys<TForm, string>;
   form: UseFormReturnType<TForm, TFormValidator>,
 > }): JSX.Element {
   return (
@@ -34,10 +33,10 @@ export default function GenericTextField<
 }
 ```
 
-In this setup the GenericTextField will only accept names of fields that have a valid value type, in this case a string, as shown here.
+With the InferValidFormKeys the GenericTextField component's name prop will only accept the names of fields that have a valid value type, in this case a string, as shown here.
 
 ```tsx
- TName extends InferValidFormKeys<TForm, string>,
+  name: InferValidFormKeys<TForm, string>;
 ```
 
 Deep values can also be inferred using this method from the parent form.
@@ -58,14 +57,13 @@ function App() {
 ## Full Example
 
 ```tsx
-import { InferValidFormKeys } from '@tanstack/react-form';
+import { InferValidFormKeys, UseFormReturnType } from '@tanstack/react-form';
 
 export default function GenericTextField<
   TForm,
   TFormValidator
-  TName extends InferValidFormKeys<TForm, string>,
 >({ name, form }: {
-  name: TName;
+  name: InferValidFormKeys<TForm, string>;
   form: UseFormReturnType<TForm, TFormValidator>
 > }): JSX.Element {
   return (
