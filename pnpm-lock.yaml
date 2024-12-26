@@ -1113,8 +1113,8 @@ importers:
   packages/form-core:
     dependencies:
       '@tanstack/store':
-        specifier: https://pkg.pr.new/@tanstack/store@f8c01f6
-        version: https://pkg.pr.new/@tanstack/store@f8c01f6
+        specifier: https://pkg.pr.new/@tanstack/store@1aab40c
+        version: https://pkg.pr.new/@tanstack/store@1aab40c
 
   packages/lit-form:
     dependencies:
@@ -1135,8 +1135,8 @@ importers:
         specifier: workspace:*
         version: link:../form-core
       '@tanstack/react-store':
-        specifier: https://pkg.pr.new/@tanstack/react-store@f8c01f6
-        version: https://pkg.pr.new/@tanstack/react-store@f8c01f6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: https://pkg.pr.new/@tanstack/react-store@1aab40c
+        version: https://pkg.pr.new/@tanstack/react-store@1aab40c(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       decode-formdata:
         specifier: ^0.8.0
         version: 0.8.0
@@ -4431,6 +4431,13 @@ packages:
       react: ^17.0.0 || ^18.0.0
       react-dom: ^17.0.0 || ^18.0.0
 
+  '@tanstack/react-store@https://pkg.pr.new/@tanstack/react-store@1aab40c':
+    resolution: {tarball: https://pkg.pr.new/@tanstack/react-store@1aab40c}
+    version: 0.6.1
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
   '@tanstack/react-store@https://pkg.pr.new/@tanstack/react-store@f8c01f6':
     resolution: {tarball: https://pkg.pr.new/@tanstack/react-store@f8c01f6}
     version: 0.6.1
@@ -4477,8 +4484,12 @@ packages:
   '@tanstack/store@0.5.5':
     resolution: {integrity: sha512-EOSrgdDAJExbvRZEQ/Xhh9iZchXpMN+ga1Bnk8Nmygzs8TfiE6hbzThF+Pr2G19uHL6+DTDTHhJ8VQiOd7l4tA==}
 
-  '@tanstack/store@https://pkg.pr.new/@tanstack/store@f8c01f6':
-    resolution: {tarball: https://pkg.pr.new/@tanstack/store@f8c01f6}
+  '@tanstack/store@https://pkg.pr.new/@tanstack/store@1aab40c':
+    resolution: {tarball: https://pkg.pr.new/@tanstack/store@1aab40c}
+    version: 0.6.0
+
+  '@tanstack/store@https://pkg.pr.new/TanStack/store/@tanstack/store@1aab40cd83b10ad8a7a5dec8e264aa552f256cf3':
+    resolution: {tarball: https://pkg.pr.new/TanStack/store/@tanstack/store@1aab40cd83b10ad8a7a5dec8e264aa552f256cf3}
     version: 0.6.0
 
   '@tanstack/store@https://pkg.pr.new/TanStack/store/@tanstack/store@f8c01f6c3c4d803344121f5b863c1e5994d14151':
@@ -10221,6 +10232,11 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
+  use-sync-external-store@1.4.0:
+    resolution: {integrity: sha512-9WXSPC5fMv61vaupRkCKCxsPxBocVnwakBEkMIHHpkTTg6icbJtg6jzgtLDm4bl3cSHAca52rYWih0k4K3PfHw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
@@ -13898,6 +13914,13 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       use-sync-external-store: 1.2.2(react@18.3.1)
 
+  '@tanstack/react-store@https://pkg.pr.new/@tanstack/react-store@1aab40c(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@tanstack/store': https://pkg.pr.new/TanStack/store/@tanstack/store@1aab40cd83b10ad8a7a5dec8e264aa552f256cf3
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      use-sync-external-store: 1.4.0(react@18.3.1)
+
   '@tanstack/react-store@https://pkg.pr.new/@tanstack/react-store@f8c01f6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@tanstack/store': https://pkg.pr.new/TanStack/store/@tanstack/store@f8c01f6c3c4d803344121f5b863c1e5994d14151
@@ -13978,8 +14001,8 @@ snapshots:
       '@tanstack/start-vite-plugin': 1.79.0
       '@vinxi/react': 0.2.5
       '@vinxi/react-server-dom': 0.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vite@5.4.11(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0))
-      '@vinxi/server-components': 0.4.3(vinxi@0.4.3(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)(webpack-sources@3.2.3))
-      '@vinxi/server-functions': 0.4.3(vinxi@0.4.3(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)(webpack-sources@3.2.3))
+      '@vinxi/server-components': 0.4.3(vinxi@0.4.3(@types/node@20.17.5)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(magicast@0.3.5)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)(webpack-sources@3.2.3))
+      '@vinxi/server-functions': 0.4.3(vinxi@0.4.3(@types/node@20.17.5)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(magicast@0.3.5)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)(webpack-sources@3.2.3))
       import-meta-resolve: 4.1.0
       isbot: 5.1.17
       jsesc: 3.0.2
@@ -14026,7 +14049,9 @@ snapshots:
 
   '@tanstack/store@0.5.5': {}
 
-  '@tanstack/store@https://pkg.pr.new/@tanstack/store@f8c01f6': {}
+  '@tanstack/store@https://pkg.pr.new/@tanstack/store@1aab40c': {}
+
+  '@tanstack/store@https://pkg.pr.new/TanStack/store/@tanstack/store@1aab40cd83b10ad8a7a5dec8e264aa552f256cf3': {}
 
   '@tanstack/store@https://pkg.pr.new/TanStack/store/@tanstack/store@f8c01f6c3c4d803344121f5b863c1e5994d14151': {}
 
@@ -14537,7 +14562,7 @@ snapshots:
     transitivePeerDependencies:
       - uWebSockets.js
 
-  '@vinxi/plugin-directives@0.4.3(vinxi@0.4.3(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)(webpack-sources@3.2.3))':
+  '@vinxi/plugin-directives@0.4.3(vinxi@0.4.3(@types/node@20.17.5)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(magicast@0.3.5)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)(webpack-sources@3.2.3))':
     dependencies:
       '@babel/parser': 7.26.2
       acorn: 8.14.0
@@ -14559,9 +14584,9 @@ snapshots:
 
   '@vinxi/react@0.2.5': {}
 
-  '@vinxi/server-components@0.4.3(vinxi@0.4.3(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)(webpack-sources@3.2.3))':
+  '@vinxi/server-components@0.4.3(vinxi@0.4.3(@types/node@20.17.5)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(magicast@0.3.5)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)(webpack-sources@3.2.3))':
     dependencies:
-      '@vinxi/plugin-directives': 0.4.3(vinxi@0.4.3(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)(webpack-sources@3.2.3))
+      '@vinxi/plugin-directives': 0.4.3(vinxi@0.4.3(@types/node@20.17.5)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(magicast@0.3.5)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)(webpack-sources@3.2.3))
       acorn: 8.14.0
       acorn-loose: 8.4.0
       acorn-typescript: 1.4.13(acorn@8.14.0)
@@ -14570,9 +14595,9 @@ snapshots:
       recast: 0.23.9
       vinxi: 0.4.3(@types/node@20.17.5)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(magicast@0.3.5)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)(webpack-sources@3.2.3)
 
-  '@vinxi/server-functions@0.4.3(vinxi@0.4.3(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)(webpack-sources@3.2.3))':
+  '@vinxi/server-functions@0.4.3(vinxi@0.4.3(@types/node@20.17.5)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(magicast@0.3.5)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)(webpack-sources@3.2.3))':
     dependencies:
-      '@vinxi/plugin-directives': 0.4.3(vinxi@0.4.3(@types/node@20.17.5)(less@4.2.0)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)(webpack-sources@3.2.3))
+      '@vinxi/plugin-directives': 0.4.3(vinxi@0.4.3(@types/node@20.17.5)(encoding@0.1.13)(ioredis@5.4.1)(less@4.2.0)(magicast@0.3.5)(sass@1.80.7)(sugarss@4.0.1(postcss@8.4.49))(terser@5.36.0)(webpack-sources@3.2.3))
       acorn: 8.14.0
       acorn-loose: 8.4.0
       acorn-typescript: 1.4.13(acorn@8.14.0)
@@ -20880,6 +20905,10 @@ snapshots:
   use-sync-external-store@1.2.2(react@19.0.0-rc-5dcb0097-20240918):
     dependencies:
       react: 19.0.0-rc-5dcb0097-20240918
+
+  use-sync-external-store@1.4.0(react@18.3.1):
+    dependencies:
+      react: 18.3.1
 
   util-deprecate@1.0.2: {}
 
