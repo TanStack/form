@@ -17,7 +17,9 @@ function formOptions<TFormData, TFormValidator>(defaultOpts?): undefined | FormO
 
 ## Parameters
 
-• **defaultOpts?**: [`FormOptions`](../interfaces/formoptions.md)\<`TFormData`, `TFormValidator`\>
+### defaultOpts?
+
+[`FormOptions`](../interfaces/formoptions.md)\<`TFormData`, `TFormValidator`\>
 
 ## Returns
 

@@ -114,14 +114,21 @@ export class AppComponent {
 }
 ```
 
-## Validation Adapters
+## Validation with Standard Schema Libraries
 
-In addition to hand-rolled validation options, we also provide adapters like `@tanstack/zod-form-adapter`, `@tanstack/yup-form-adapter`, and `@tanstack/valibot-form-adapter` to enable usage with common schema validation tools like [Zod](https://zod.dev/), [Yup](https://github.com/jquense/yup), and [Valibot](https://valibot.dev/).
+In addition to hand-rolled validation options, we also support the [Standard Schema](https://github.com/standard-schema/standard-schema) specification.
+
+You can define a schema using any of the libraries implementing the specification and pass it to a form or field validator.
+
+Supported libraries include:
+
+- [Zod](https://zod.dev/)
+- [Valibot](https://valibot.dev/)
+- [ArkType](https://arktype.io/)
 
 Example:
 
 ```angular-ts
-import { zodValidator } from '@tanstack/zod-form-adapter'
 import { z } from 'zod'
 
 @Component({
@@ -132,7 +139,6 @@ import { z } from 'zod'
     <ng-container
       [tanstackField]="form"
       name="firstName"
-      [validatorAdapter]="zodValidator()"
       [validators]="{
         onChange: z.string().min(3, 'First name must be at least 3 characters'),
         onChangeAsyncDebounceMs: 500,
@@ -166,7 +172,6 @@ export class AppComponent {
   })
 
   z = z
-  zodValidator = zodValidator
 }
 ```
 

@@ -9,14 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/solid-form": "^0.39.0",
-    "@tanstack/zod-form-adapter": "^0.39.0",
+    "@tanstack/solid-form": "^0.40.4",
+    "@tanstack/zod-form-adapter": "^0.40.4",
     "solid-js": "^1.9.3",
-    "zod": "^3.23.8"
+    "zod": "^3.24.0"
   },
   "devDependencies": {
     "typescript": "5.6.3",
     "vite": "^5.4.11",
-    "vite-plugin-solid": "^2.10.2"
+    "vite-plugin-solid": "^2.11.0"
   }
 }

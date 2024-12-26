@@ -43,6 +43,10 @@ export function defaultFormTransformer(transformErrors: TransformFn) {
   })
 }
 
+/**
+ * @deprecated With valibot 1.0.0 the adapter is no longer needed and will be soon removed.
+ * If you were passing some parameters you can use the `standardSchemaValidator` instead.
+ */
 export const valibotValidator =
   (
     params: Params = {},

@@ -10,13 +10,13 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@tanstack/vue-form": "^0.39.0",
-    "@tanstack/zod-form-adapter": "^0.39.0",
+    "@tanstack/vue-form": "^0.40.4",
+    "@tanstack/zod-form-adapter": "^0.40.4",
     "vue": "^3.3.4",
-    "zod": "^3.23.8"
+    "zod": "^3.24.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.1.5",
+    "@vitejs/plugin-vue": "^5.2.1",
     "typescript": "5.6.3",
     "vite": "^5.4.11",
     "vue-tsc": "^2.0.26"

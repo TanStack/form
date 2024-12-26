@@ -1980,7 +1980,7 @@ describe('form api', () => {
       validators: {
         onSubmit: ({ value }) => {
           const fieldWithErrorIndex = value.employees.findIndex(
-            (v) => v.firstName === 'person-2',
+            (val) => val.firstName === 'person-2',
           )
 
           if (fieldWithErrorIndex !== -1) {
@@ -2135,4 +2135,65 @@ describe('form api', () => {
     expect(form.state.canSubmit).toBe(true)
     expect(passconfirmField.state.meta.errors.length).toBe(0)
   })
+
+  it("should set field errors from the form's onMount validator", async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onMount: () => {
+          return {
+            form: 'something went wrong',
+            fields: {
+              firstName: 'first name is required',
+            },
+          }
+        },
+      },
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+
+    firstNameField.mount()
+    form.mount()
+
+    expect(form.state.errorMap.onMount).toBe('something went wrong')
+    expect(firstNameField.state.meta.errorMap.onMount).toBe(
+      'first name is required',
+    )
+  })
+})
+
+it('should not change the onBlur state of the fields when the form is submitted', async () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+    },
+  })
+
+  const firstNameField = new FieldApi({
+    form,
+    name: 'firstName',
+  })
+  firstNameField.mount()
+
+  const lastNameField = new FieldApi({
+    form,
+    name: 'lastName',
+  })
+  lastNameField.mount()
+
+  firstNameField.handleBlur()
+
+  expect(firstNameField.state.meta.isBlurred).toBe(true)
+
+  await form.handleSubmit()
+
+  expect(firstNameField.state.meta.isBlurred).toBe(true)
+  expect(lastNameField.state.meta.isBlurred).toBe(false)
 })

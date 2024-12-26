@@ -30,10 +30,12 @@ A type alias representing a field component for a specific form data type.
 
 ## Parameters
 
-• **\{
+### \{
   children,
   ...fieldOptions
-\}**: `Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
+\}
+
+`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
 
 ## Returns
 
@@ -41,4 +43,4 @@ A type alias representing a field component for a specific form data type.
 
 ## Defined in
 
-[useField.tsx:134](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L134)
+[packages/react-form/src/useField.tsx:134](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L134)

@@ -1,6 +1,11 @@
 import { Derived, batch } from '@tanstack/store'
+import {
+  isStandardSchemaValidator,
+  standardSchemaValidator,
+} from './standardSchemaValidator'
 import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
 import type { FieldInfo, FieldsErrorMapFromValidator, FormApi } from './FormApi'
+import type { StandardSchemaV1 } from './standardSchemaValidator'
 import type {
   UpdateMetaOptions,
   ValidationCause,
@@ -9,8 +14,8 @@ import type {
   ValidationSource,
   Validator,
 } from './types'
-import type { AsyncValidator, SyncValidator, Updater } from './utils'
 import type { DeepKeys, DeepValue, NoInfer } from './util-types'
+import type { AsyncValidator, SyncValidator, Updater } from './utils'
 
 /**
  * @private
@@ -44,33 +49,10 @@ export type FieldValidateOrFn<
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > =
-  TFieldValidator extends Validator<TData, infer TFN>
-    ?
-        | TFN
-        | FieldValidateFn<
-            TParentData,
-            TName,
-            TFieldValidator,
-            TFormValidator,
-            TData
-          >
-    : TFormValidator extends Validator<TParentData, infer FFN>
-      ?
-          | FFN
-          | FieldValidateFn<
-              TParentData,
-              TName,
-              TFieldValidator,
-              TFormValidator,
-              TData
-            >
-      : FieldValidateFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
+  | (TFieldValidator extends Validator<TData, infer TFN> ? TFN : never)
+  | (TFormValidator extends Validator<TParentData, infer FFN> ? FFN : never)
+  | FieldValidateFn<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  | StandardSchemaV1<TData, unknown>
 
 /**
  * @private
@@ -105,33 +87,16 @@ export type FieldAsyncValidateOrFn<
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > =
-  TFieldValidator extends Validator<TData, infer TFN>
-    ?
-        | TFN
-        | FieldValidateAsyncFn<
-            TParentData,
-            TName,
-            TFieldValidator,
-            TFormValidator,
-            TData
-          >
-    : TFormValidator extends Validator<TParentData, infer FFN>
-      ?
-          | FFN
-          | FieldValidateAsyncFn<
-              TParentData,
-              TName,
-              TFieldValidator,
-              TFormValidator,
-              TData
-            >
-      : FieldValidateAsyncFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
+  | (TFieldValidator extends Validator<TData, infer TFN> ? TFN : never)
+  | (TFormValidator extends Validator<TParentData, infer FFN> ? FFN : never)
+  | FieldValidateAsyncFn<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData
+    >
+  | StandardSchemaV1<TData, unknown>
 
 /**
  * @private
@@ -575,12 +540,22 @@ export class FieldApi<
       this.options.validatorAdapter,
     ] as const
     for (const adapter of adapters) {
-      if (adapter && typeof props.validate !== 'function') {
+      if (
+        adapter &&
+        (typeof props.validate !== 'function' || '~standard' in props.validate)
+      ) {
         return adapter()[props.type](
           props.value as never,
           props.validate,
         ) as never
       }
+    }
+
+    if (isStandardSchemaValidator(props.validate)) {
+      return standardSchemaValidator()()[props.type](
+        props.value,
+        props.validate,
+      ) as never
     }
 
     return (props.validate as FieldValidateFn<any, any>)(props.value) as never

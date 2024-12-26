@@ -23,7 +23,9 @@ function useField<TParentData, TName, TFieldValidator, TFormValidator, TData>(op
 
 ## Parameters
 
-• **opts**: `UseFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
+### opts
+
+`UseFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
 
 ## Returns
 

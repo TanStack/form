@@ -116,6 +116,52 @@ describe('field api', () => {
     expect(field.getValue()).toBe('other')
   })
 
+  it('should set isBlurred correctly', () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+    field.mount()
+
+    expect(field.getMeta().isBlurred).toBe(false)
+
+    field.setValue('Bob')
+    expect(field.getMeta().isBlurred).toBe(false)
+
+    field.handleBlur()
+    expect(field.getMeta().isBlurred).toBe(true)
+  })
+
+  it('should set isBlurred correctly for arrays', () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstNames: ['Bob'],
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'firstNames',
+    })
+    field.mount()
+
+    expect(field.getMeta().isBlurred).toBe(false)
+
+    field.pushValue('Bill')
+    expect(field.getMeta().isBlurred).toBe(false)
+
+    field.handleBlur()
+    expect(field.getMeta().isBlurred).toBe(true)
+  })
+
   it('should push an array value correctly', () => {
     const form = new FormApi({
       defaultValues: {

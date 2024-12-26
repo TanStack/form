@@ -37,11 +37,15 @@ Subscribe: <TSelected>(props, context) => any;
 
 #### Parameters
 
-• **props**
+##### props
 
-• **props.selector?**
+###### selector
 
-• **context**: `SetupContext`\<`EmitsOptions`, `SlotsType`\<`object`\>\>
+(`state`) => `TSelected`
+
+##### context
+
+`SetupContext`\<`EmitsOptions`, `SlotsType`\<`object`\>\>
 
 #### Returns
 
@@ -77,7 +81,9 @@ useStore: <TSelected>(selector?) => Readonly<Ref<TSelected, TSelected>>;
 
 #### Parameters
 
-• **selector?**
+##### selector?
+
+(`state`) => `TSelected`
 
 #### Returns
 

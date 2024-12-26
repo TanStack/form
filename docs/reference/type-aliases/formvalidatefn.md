@@ -17,11 +17,15 @@ type FormValidateFn<TFormData, TFormValidator>: (props) => FormValidationError<T
 
 ## Parameters
 
-• **props**
+### props
 
-• **props.formApi**: [`FormApi`](../classes/formapi.md)\<`TFormData`, `TFormValidator`\>
+#### formApi
 
-• **props.value**: `TFormData`
+[`FormApi`](../classes/formapi.md)\<`TFormData`, `TFormValidator`\>
+
+#### value
+
+`TFormData`
 
 ## Returns
 
@@ -29,4 +33,4 @@ type FormValidateFn<TFormData, TFormValidator>: (props) => FormValidationError<T
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:30](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L30)
+[packages/form-core/src/FormApi.ts:35](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L35)

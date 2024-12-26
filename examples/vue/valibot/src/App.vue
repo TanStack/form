@@ -13,7 +13,7 @@ const form = useForm({
     // Do something with form data
     alert(JSON.stringify(value))
   },
-  // Add a validator to support Valibot usage in Form and Field
+  // Add a validator to support Valibot usage in Form and Field (no longer needed with valibot@1.0.0 or higher)
   validatorAdapter: valibotValidator(),
 })
 

@@ -409,6 +409,21 @@
       ]
     },
     {
+      "label": "Community Resources",
+      "children": [],
+      "frameworks": [
+        {
+          "label": "react",
+          "children": [
+            {
+              "label": "Balastrong's Tutorial",
+              "to": "framework/react/community/balastrong-tutorial"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "label": "Examples",
       "children": [],
       "frameworks": [
@@ -426,6 +441,10 @@
             {
               "label": "TanStack Query Integration",
               "to": "framework/react/examples/query-integration"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/react/examples/standard-schema"
             },
             {
               "label": "Yup",

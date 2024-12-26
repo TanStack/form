@@ -8,8 +8,11 @@ import {
   isNonEmptyArray,
   setBy,
 } from './utils'
-import type { Updater } from './utils'
-import type { DeepKeys, DeepValue } from './util-types'
+import {
+  isStandardSchemaValidator,
+  standardSchemaValidator,
+} from './standardSchemaValidator'
+import type { StandardSchemaV1 } from './standardSchemaValidator'
 import type { FieldApi, FieldMeta, FieldMetaBase } from './FieldApi'
 import type {
   FormValidationError,
@@ -22,6 +25,8 @@ import type {
   ValidationSource,
   Validator,
 } from './types'
+import type { DeepKeys, DeepValue } from './util-types'
+import type { Updater } from './utils'
 
 export type FieldsErrorMapFromValidator<TFormData> = Partial<
   Record<DeepKeys<TFormData>, ValidationErrorMap>
@@ -43,8 +48,10 @@ export type FormValidateOrFn<
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > =
   TFormValidator extends Validator<TFormData, infer TFN>
-    ? TFN
-    : FormValidateFn<TFormData, TFormValidator>
+    ? TFN | FormValidateFn<TFormData, TFormValidator>
+    :
+        | FormValidateFn<TFormData, TFormValidator>
+        | StandardSchemaV1<TFormData, unknown>
 
 /**
  * @private
@@ -82,7 +89,9 @@ export type FormAsyncValidateOrFn<
 > =
   TFormValidator extends Validator<TFormData, infer FFN>
     ? FFN | FormValidateAsyncFn<TFormData, TFormValidator>
-    : FormValidateAsyncFn<TFormData, TFormValidator>
+    :
+        | FormValidateAsyncFn<TFormData, TFormValidator>
+        | StandardSchemaV1<TFormData, unknown>
 
 export interface FormValidators<
   TFormData,
@@ -550,8 +559,18 @@ export class FormApi<
     type: TType
   }): ReturnType<ReturnType<Validator<any>>[TType]> {
     const adapter = this.options.validatorAdapter
-    if (adapter && typeof props.validate !== 'function') {
+    if (
+      adapter &&
+      (typeof props.validate !== 'function' || '~standard' in props.validate)
+    ) {
       return adapter()[props.type](props.value, props.validate) as never
+    }
+
+    if (isStandardSchemaValidator(props.validate)) {
+      return standardSchemaValidator()()[props.type](
+        props.value,
+        props.validate,
+      ) as never
     }
 
     return (props.validate as FormValidateFn<any, any>)(props.value) as never
@@ -676,12 +695,6 @@ export class FormApi<
           // Mark them as touched
           field.instance.setMeta((prev) => ({ ...prev, isTouched: true }))
         }
-
-        // If any fields are not blurred
-        if (!field.instance.state.meta.isBlurred) {
-          // Mark them as blurred
-          field.instance.setMeta((prev) => ({ ...prev, isBlurred: true }))
-        }
       })
     })
 
@@ -743,12 +756,6 @@ export class FormApi<
     if (!fieldInstance.state.meta.isTouched) {
       // Mark it as touched
       fieldInstance.setMeta((prev) => ({ ...prev, isTouched: true }))
-    }
-
-    // If the field is not blurred (same logic as in validateAllFields)
-    if (!fieldInstance.state.meta.isBlurred) {
-      // Mark it as blurred
-      fieldInstance.setMeta((prev) => ({ ...prev, isBlurred: true }))
     }
 
     return fieldInstance.validate(cause)
@@ -1152,7 +1159,6 @@ export class FormApi<
         this.setFieldMeta(field, (prev) => ({
           ...prev,
           isTouched: true,
-          isBlurred: true,
           isDirty: true,
           errorMap: {
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition

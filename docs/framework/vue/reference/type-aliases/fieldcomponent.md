@@ -25,9 +25,13 @@ type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData
 
 ## Parameters
 
-• **fieldOptions**: `Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
+### fieldOptions
 
-• **context**: `SetupContext`\<`object`, `SlotsType`\<`object`\>\>
+`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
+
+### context
+
+`SetupContext`\<`object`, `SlotsType`\<`object`\>\>
 
 ## Returns
 

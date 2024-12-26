@@ -19,9 +19,13 @@ function injectStore<TFormData, TFormValidator, TSelected>(form, selector?): Sig
 
 ## Parameters
 
-• **form**: `FormApi`\<`TFormData`, `TFormValidator`\>
+### form
 
-• **selector?**
+`FormApi`\<`TFormData`, `TFormValidator`\>
+
+### selector?
+
+(`state`) => `TSelected`
 
 ## Returns
 

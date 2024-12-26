@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/valibot-form-adapter",
-  "version": "0.39.0",
+  "version": "0.40.4",
   "description": "The Valibot adapter for TanStack Form.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -56,7 +56,7 @@
   },
   "devDependencies": {
     "@tanstack/react-form": "workspace:*",
-    "valibot": "^1.0.0-beta.5"
+    "valibot": "^1.0.0-beta.9"
   },
   "peerDependencies": {
     "valibot": "^1.0.0 || ^1.0.0-beta.4 || ^1.0.0-rc"

@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/form-core",
-  "version": "0.39.0",
+  "version": "0.40.4",
   "description": "Powerful, type-safe, framework agnostic forms.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -53,5 +53,10 @@
   ],
   "dependencies": {
     "@tanstack/store": "^0.7.0"
+  },
+  "devDependencies": {
+    "arktype": "2.0.0-rc.23",
+    "valibot": "^1.0.0-beta.9",
+    "zod": "^3.24.0"
   }
 }

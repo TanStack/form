@@ -17,7 +17,9 @@ function useForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormVali
 
 ## Parameters
 
-• **opts?**: `FormOptions`\<`TFormData`, `TFormValidator`\>
+### opts?
+
+`FormOptions`\<`TFormData`, `TFormValidator`\>
 
 ## Returns
 

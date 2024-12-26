@@ -23,7 +23,9 @@ function Field<TParentData, TName, TFieldValidator, TFormValidator, TData>(props
 
 ## Parameters
 
-• **props**: `object` & `FieldApiOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\> & `object`
+### props
+
+`object` & `FieldApiOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\> & `object`
 
 ## Returns
 
@@ -31,4 +33,4 @@ function Field<TParentData, TName, TFieldValidator, TFormValidator, TData>(props
 
 ## Defined in
 
-[createField.tsx:185](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L185)
+[packages/solid-form/src/createField.tsx:185](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L185)

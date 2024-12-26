@@ -25,7 +25,9 @@ A hook for managing a field in a form.
 
 ## Parameters
 
-• **opts**: `UseFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
+### opts
+
+`UseFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
 
 An object with field options.
 
@@ -37,4 +39,4 @@ The `FieldApi` instance for the specified field.
 
 ## Defined in
 
-[useField.tsx:50](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L50)
+[packages/react-form/src/useField.tsx:50](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L50)
