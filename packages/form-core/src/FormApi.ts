@@ -520,7 +520,7 @@ export class FormApi<
           errorMap = Object.assign(errorMap, { onMount: undefined })
         }
 
-        return {
+        let state = {
           ...currBaseStore,
           errorMap,
           fieldMeta: this.fieldMetaDerived.state,
@@ -535,6 +535,22 @@ export class FormApi<
           isPristine,
           isDirty,
         } as FormState<TFormData>
+
+        // Only run transform if state has shallowly changed - IE how React.useEffect works
+        const transformArray = this.options.transform?.deps ?? []
+        const shouldTransform =
+          transformArray.length !== this.prevTransformArray.length ||
+          transformArray.some((val, i) => val !== this.prevTransformArray[i])
+
+        if (shouldTransform) {
+          const newObj = Object.assign({}, this, { state })
+          // This mutates the state
+          this.options.transform?.fn(newObj)
+          state = newObj.state
+          this.prevTransformArray = transformArray
+        }
+
+        return state
       },
     })
 
@@ -585,21 +601,7 @@ export class FormApi<
     }
     const { onMount } = this.options.validators || {}
     if (!onMount) return cleanup
-    const error = this.runValidator({
-      validate: onMount,
-      value: {
-        value: this.state.values,
-        formApi: this,
-        validationSource: 'form',
-      },
-      type: 'validate',
-    })
-    if (error) {
-      this.baseStore.setState((prev) => ({
-        ...prev,
-        errorMap: { ...prev.errorMap, onMount: error },
-      }))
-    }
+    this.validateSync('mount')
 
     return cleanup
   }
