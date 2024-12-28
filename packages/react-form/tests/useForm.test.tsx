@@ -751,7 +751,7 @@ describe('useForm', () => {
 
       const { errors } = useStore(form.store, (state) => ({
         errors: state.errors,
-      }));
+      }))
 
       useEffect(() => {
         fn(errors)
