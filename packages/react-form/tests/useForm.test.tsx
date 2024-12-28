@@ -5,6 +5,7 @@ import { userEvent } from '@testing-library/user-event'
 import { useStore } from '@tanstack/react-store'
 import { useForm } from '../src/index'
 import { sleep } from './utils'
+import { useEffect } from 'react'
 
 const user = userEvent.setup()
 
@@ -731,5 +732,36 @@ describe('useForm', () => {
     await waitFor(() =>
       expect(formError.textContent).toBe('Something went wrong'),
     )
+  })
+
+  it('should not cause infinite re-renders when listening to state.errors', () => {
+    const fn = vi.fn()
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+        onSubmit: async ({ value }) => {
+          // Do something with form data
+          console.log(value)
+        },
+      })
+
+      const { errors } = useStore(form.store, (state) => ({
+        errors: state.errors,
+      }));
+
+      useEffect(() => {
+        fn(errors)
+      }, [errors])
+
+      return null
+    }
+
+    render(<Comp />)
+
+    expect(fn).toHaveBeenCalledTimes(1)
   })
 })
