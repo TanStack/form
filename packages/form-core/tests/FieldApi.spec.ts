@@ -1665,9 +1665,11 @@ describe('field api', () => {
     })
     nameField.mount()
     nameField.setErrorMap({
-      onChange: "name can't be Josh",
+      onChange: ["name can't be Josh"],
     })
-    expect(nameField.getMeta().errorMap.onChange).toEqual("name can't be Josh")
+    expect(nameField.getMeta().errorMap.onChange).toEqual([
+      "name can't be Josh",
+    ])
   })
   it('should preserve other values in the fieldApi errorMap when adding other values', () => {
     interface Form {
@@ -1680,16 +1682,20 @@ describe('field api', () => {
     })
     nameField.mount()
     nameField.setErrorMap({
-      onChange: "name can't be Josh",
+      onChange: ["name can't be Josh"],
     })
-    expect(nameField.getMeta().errorMap.onChange).toEqual("name can't be Josh")
+    expect(nameField.getMeta().errorMap.onChange).toEqual([
+      "name can't be Josh",
+    ])
     nameField.setErrorMap({
-      onBlur: 'name must begin with uppercase',
+      onBlur: ['name must begin with uppercase'],
     })
-    expect(nameField.getMeta().errorMap.onChange).toEqual("name can't be Josh")
-    expect(nameField.getMeta().errorMap.onBlur).toEqual(
+    expect(nameField.getMeta().errorMap.onChange).toEqual([
+      "name can't be Josh",
+    ])
+    expect(nameField.getMeta().errorMap.onBlur).toEqual([
       'name must begin with uppercase',
-    )
+    ])
   })
   it('should replace errorMap value if it exists in the fieldApi object', () => {
     interface Form {
@@ -1702,14 +1708,16 @@ describe('field api', () => {
     })
     nameField.mount()
     nameField.setErrorMap({
-      onChange: "name can't be Josh",
+      onChange: ["name can't be Josh"],
     })
-    expect(nameField.getMeta().errorMap.onChange).toEqual("name can't be Josh")
+    expect(nameField.getMeta().errorMap.onChange).toEqual([
+      "name can't be Josh",
+    ])
     nameField.setErrorMap({
-      onChange: 'other validation error',
+      onChange: ['other validation error'],
     })
-    expect(nameField.getMeta().errorMap.onChange).toEqual(
+    expect(nameField.getMeta().errorMap.onChange).toEqual([
       'other validation error',
-    )
+    ])
   })
 })

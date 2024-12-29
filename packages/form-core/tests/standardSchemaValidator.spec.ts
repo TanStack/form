@@ -55,7 +55,7 @@ describe('standard schema validator', () => {
           }),
         },
         validatorAdapter: standardSchemaValidator({
-          transformErrors: (issues) => issues.map((issue) => issue.message)[0],
+          transformErrors: (issues) => issues.map((issue) => issue.message),
         }),
       })
 

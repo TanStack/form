@@ -11,6 +11,7 @@ import type {
   ValidationCause,
   ValidationError,
   ValidationErrorMap,
+  ValidationResult,
   ValidationSource,
   Validator,
 } from './types'
@@ -33,7 +34,7 @@ export type FieldValidateFn<
 > = (props: {
   value: TData
   fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
-}) => ValidationError
+}) => ValidationResult
 
 /**
  * @private
@@ -71,7 +72,7 @@ export type FieldValidateAsyncFn<
   value: TData
   fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
   signal: AbortSignal
-}) => ValidationError | Promise<ValidationError>
+}) => ValidationResult | Promise<ValidationResult>
 
 /**
  * @private
@@ -385,7 +386,7 @@ export type FieldMeta = {
   /**
    * An array of errors related to the field value.
    */
-  errors: Exclude<ValidationError, string[]>[]
+  errors: ValidationError[]
   /**
    * A map of errors related to the field value.
    */
@@ -542,7 +543,7 @@ export class FieldApi<
     value: TValue
     type: TType
     // When `api` is 'field', the return type cannot be `FormValidationError`
-  }): TType extends 'validate' ? ValidationError : Promise<ValidationError> {
+  }): TType extends 'validate' ? ValidationResult : Promise<ValidationResult> {
     const adapters = [
       this.form.options.validatorAdapter,
       this.options.validatorAdapter,
@@ -606,8 +607,11 @@ export class FieldApi<
       if (error) {
         this.setMeta((prev) => ({
           ...prev,
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          errorMap: { ...prev?.errorMap, onMount: error },
+          errorMap: {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            ...prev?.errorMap,
+            onMount: Array.isArray(error) ? error : [error],
+          },
         }))
       }
     }
@@ -924,13 +928,13 @@ export class FieldApi<
      * We have to use a for loop and generate our promises this way, otherwise it won't be sync
      * when there are no validators needed to be run
      */
-    const validatesPromises: Promise<ValidationError | undefined>[] = []
-    const linkedPromises: Promise<ValidationError | undefined>[] = []
+    const validatesPromises: Promise<ValidationError[] | undefined>[] = []
+    const linkedPromises: Promise<ValidationError[] | undefined>[] = []
 
     const validateFieldAsyncFn = (
       field: FieldApi<any, any, any, any>,
       validateObj: AsyncValidator<any>,
-      promises: Promise<ValidationError | undefined>[],
+      promises: Promise<ValidationError[] | undefined>[],
     ) => {
       const errorMapKey = getErrorMapKey(validateObj.cause)
       const fieldValidatorMeta = field.getInfo().validationMetaMap[errorMapKey]
@@ -943,8 +947,8 @@ export class FieldApi<
       }
 
       promises.push(
-        new Promise<ValidationError | undefined>(async (resolve) => {
-          let rawError!: ValidationError | undefined
+        new Promise<ValidationError[] | undefined>(async (resolve) => {
+          let rawError!: ValidationResult
           try {
             rawError = await new Promise((rawResolve, rawReject) => {
               if (this.timeoutIds[validateObj.cause]) {
@@ -972,7 +976,7 @@ export class FieldApi<
               }, validateObj.debounceMs)
             })
           } catch (e: unknown) {
-            rawError = e as ValidationError
+            rawError = e as ValidationError[]
           }
           if (controller.signal.aborted) return resolve(undefined)
           const error = normalizeError(rawError)
@@ -1011,7 +1015,9 @@ export class FieldApi<
 
     let results: ValidationError[] = []
     if (validatesPromises.length || linkedPromises.length) {
-      results = await Promise.all(validatesPromises)
+      results = (await Promise.all(validatesPromises))
+        .filter((errors) => errors?.length)
+        .flat() as ValidationError[]
       await Promise.all(linkedPromises)
     }
 
@@ -1093,17 +1099,19 @@ export class FieldApi<
   }
 }
 
-function normalizeError(rawError?: ValidationError) {
+function normalizeError(
+  rawError?: ValidationResult,
+): ValidationError[] | undefined {
   if (rawError) {
     if (Array.isArray(rawError)) {
       return rawError
     }
 
     if (typeof rawError !== 'string') {
-      return 'Invalid Form Values'
+      return ['Invalid Field Values']
     }
 
-    return rawError
+    return [rawError]
   }
 
   return undefined

@@ -1,6 +1,13 @@
 import type { DeepKeys } from './util-types'
 
-export type ValidationError = undefined | false | null | string | string[]
+export type ValidationError = string
+
+export type ValidationResult =
+  | undefined
+  | false
+  | null
+  | ValidationError
+  | ValidationError[]
 
 export type ValidationSource = 'form' | 'field'
 
@@ -12,11 +19,11 @@ export type Validator<Type, Fn = unknown> = () => {
   validate(
     options: { value: Type; validationSource: ValidationSource },
     fn: Fn,
-  ): ValidationError | FormValidationError<unknown>
+  ): ValidationResult | FormValidationResult<unknown>
   validateAsync(
     options: { value: Type; validationSource: ValidationSource },
     fn: Fn,
-  ): Promise<ValidationError | FormValidationError<unknown>>
+  ): Promise<ValidationResult | FormValidationResult<unknown>>
 }
 
 /**
@@ -24,7 +31,7 @@ export type Validator<Type, Fn = unknown> = () => {
  * @private
  */
 export type ValidatorAdapterParams<TError = unknown> = {
-  transformErrors?: (errors: TError[]) => ValidationError
+  transformErrors?: (errors: TError[]) => ValidationError[]
 }
 
 /**
@@ -42,14 +49,21 @@ export type ValidationErrorMapKeys = `on${Capitalize<ValidationCause>}`
  * @private
  */
 export type ValidationErrorMap = {
-  [K in ValidationErrorMapKeys]?: ValidationError
+  [K in ValidationErrorMapKeys]?: ValidationError[]
 }
 
 /**
  * @private
  */
 export type FormValidationErrorMap = {
-  [K in ValidationErrorMapKeys]?: ValidationError | FormValidationError<unknown>
+  [K in ValidationErrorMapKeys]?:
+    | ValidationError[]
+    | FormValidationError<unknown>
+}
+
+export type FormValidationError<TFormData> = {
+  formError: ValidationError[] | undefined
+  fieldErrors?: Partial<Record<DeepKeys<TFormData>, ValidationError[]>>
 }
 
 /**
@@ -65,12 +79,10 @@ export type FormValidationErrorMap = {
  * }
  * ````
  */
-export type FormValidationError<TFormData> =
-  | ValidationError
-  | {
-      form?: ValidationError
-      fields: Partial<Record<DeepKeys<TFormData>, ValidationError>>
-    }
+export type FormValidationResult<TFormData> = {
+  form?: ValidationResult
+  fields: Partial<Record<DeepKeys<TFormData>, ValidationResult>>
+}
 
 /**
  * @private
