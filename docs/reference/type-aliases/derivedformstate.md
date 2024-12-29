@@ -37,7 +37,7 @@ The error array for the form itself.
 fieldMeta: Record<DeepKeys<TFormData>, FieldMeta>;
 ```
 
-A record of field metadata for each field in the form, not including the derived properties, like `errors` and such
+A record of field metadata for each field in the form.
 
 ### isBlurred
 

@@ -405,16 +405,16 @@ export class FormApi<
         const currBaseStore = currDepVals[0]
 
         const fieldMeta = {} as FormState<TFormData>['fieldMeta']
-        for (const fieldName of Object.keys(currBaseStore.fieldMetaBase) as Array<
-          keyof typeof currBaseStore.fieldMetaBase
-        >) {
+        for (const fieldName of Object.keys(
+          currBaseStore.fieldMetaBase,
+        ) as Array<keyof typeof currBaseStore.fieldMetaBase>) {
           const currBaseVal = currBaseStore.fieldMetaBase[
             fieldName as never
           ] as FieldMetaBase
 
-          const prevBaseVal = prevBaseStore?.fieldMetaBase[fieldName as never] as
-            | FieldMetaBase
-            | undefined
+          const prevBaseVal = prevBaseStore?.fieldMetaBase[
+            fieldName as never
+          ] as FieldMetaBase | undefined
 
           let fieldErrors =
             prevVal?.[fieldName as never as keyof typeof prevVal]?.errors
