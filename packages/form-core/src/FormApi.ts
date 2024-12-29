@@ -432,9 +432,9 @@ export class FormApi<
             prevVal?.[fieldName as never as keyof typeof prevVal]?.errors
           if (!prevBaseVal || currBaseVal.errorMap !== prevBaseVal.errorMap) {
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            fieldErrors = Object.values(currBaseVal.errorMap ?? {}).filter(
-              (val: unknown) => val !== undefined,
-            )
+            fieldErrors = Object.values(currBaseVal.errorMap ?? {})
+              .filter((val: unknown) => val !== undefined)
+              .flat()
           }
 
           // As a primitive, we don't need to aggressively persist the same referencial value for performance reasons
@@ -500,9 +500,7 @@ export class FormApi<
           currBaseStore.errorMap !== prevBaseStore.errorMap
         ) {
           errors = Object.values(currBaseStore.errorMap).reduce(
-            (_prev, curr) => {
-              const prev = _prev as ValidationError[]
-
+            (prev, curr) => {
               // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
               if (curr === undefined) return prev
 
@@ -527,7 +525,7 @@ export class FormApi<
         let errorMap = currBaseStore.errorMap
         if (shouldInvalidateOnMount) {
           errors = errors.filter(
-            (err) => err !== currBaseStore.errorMap.onMount,
+            (err) => err.length !== currBaseStore.errorMap.onMount?.length,
           )
           errorMap = Object.assign(errorMap, { onMount: undefined })
         }

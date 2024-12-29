@@ -212,6 +212,9 @@ describe('field api', () => {
     expect(field.getMeta().errors).toStrictEqual([
       'At least 3 names are required',
     ])
+    expect(field.getMeta().errorMap.onChange).toStrictEqual([
+      'At least 3 names are required',
+    ])
   })
 
   it('should insert a value into an array value correctly', () => {
@@ -1840,7 +1843,7 @@ describe('field api', () => {
       name: 'name',
       defaultMeta: {
         errorMap: {
-          onChange: 'THERE IS AN ERROR',
+          onChange: ['THERE IS AN ERROR'],
         },
       },
     })
