@@ -1149,6 +1149,8 @@ describe('form api', () => {
 
     form.setFieldValue('name', 'test')
     expect(form.state.errors).toStrictEqual([])
+    expect(form.state.errorMap).toEqual({})
+    expect(form.state.errorMap.onMount).toBeUndefined()
   })
 
   it('should validate fields during submit', async () => {

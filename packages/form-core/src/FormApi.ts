@@ -479,7 +479,7 @@ export class FormApi<
 
         const shouldInvalidateOnMount =
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          isTouched && currBaseStore?.errorMap?.onMount
+          isTouched && !!currBaseStore?.errorMap?.onMount?.length
 
         const isDirty = fieldMetaValues.some((field) => field?.isDirty)
         const isPristine = !isDirty
@@ -493,25 +493,28 @@ export class FormApi<
 
         const isValidating = !!isFieldsValidating
 
+        const errorMap = currBaseStore.errorMap
+        if (shouldInvalidateOnMount) {
+          delete errorMap.onMount
+        }
+
         // As `errors` is not a primitive, we need to aggressively persist the same referencial value for performance reasons
         let errors = prevVal?.errors ?? []
         if (
           !prevBaseStore ||
-          currBaseStore.errorMap !== prevBaseStore.errorMap
+          errorMap !== prevBaseStore.errorMap ||
+          shouldInvalidateOnMount
         ) {
-          errors = Object.values(currBaseStore.errorMap).reduce(
-            (prev, curr) => {
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              if (curr === undefined) return prev
+          errors = Object.values(errorMap).reduce((prev, curr) => {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            if (curr === undefined) return prev
 
-              if (isFormValidationError(curr)) {
-                return curr.formError ? prev.concat(curr.formError) : prev
-              }
+            if (isFormValidationError(curr)) {
+              return curr.formError ? prev.concat(curr.formError) : prev
+            }
 
-              return prev.concat(curr)
-            },
-            [] as ValidationError[],
-          ) as ValidationError[]
+            return prev.concat(curr)
+          }, [])
         }
 
         const isFormValid = errors.length === 0
@@ -521,14 +524,6 @@ export class FormApi<
             !isTouched &&
             !hasOnMountError) ||
           (!isValidating && !currBaseStore.isSubmitting && isValid)
-
-        let errorMap = currBaseStore.errorMap
-        if (shouldInvalidateOnMount) {
-          errors = errors.filter(
-            (err) => err.length !== currBaseStore.errorMap.onMount?.length,
-          )
-          errorMap = Object.assign(errorMap, { onMount: undefined })
-        }
 
         let state = {
           ...currBaseStore,
