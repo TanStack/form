@@ -35,4 +35,4 @@ The current value of the field.
 
 ## Defined in
 
-[packages/form-core/src/FieldApi.ts:403](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L403)
+[packages/form-core/src/FieldApi.ts:407](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L407)
