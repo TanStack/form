@@ -22,7 +22,7 @@ export function prefixSchemaToErrors(
     schema.set(path, (schema.get(path) ?? []).concat(yupError))
   }
 
-  const transformedSchema = {} as Record<string, ValidationError>
+  const transformedSchema = {} as Record<string, ValidationError[]>
 
   schema.forEach((value, key) => {
     transformedSchema[key] = transformErrors(value)
@@ -43,7 +43,7 @@ export const yupValidator =
   () => {
     const transformFieldErrors =
       params.transformErrors ??
-      ((errors: YupError[]) => errors.map((error) => error.message).join(', '))
+      ((errors: YupError[]) => errors.map((error) => error.message))
 
     const getTransformStrategy = (validationSource: 'form' | 'field') =>
       validationSource === 'form'

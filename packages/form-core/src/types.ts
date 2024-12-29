@@ -56,9 +56,7 @@ export type ValidationErrorMap = {
  * @private
  */
 export type FormValidationErrorMap = {
-  [K in ValidationErrorMapKeys]?:
-    | ValidationError[]
-    | FormValidationError<unknown>
+  [K in ValidationErrorMapKeys]?: ValidationError[]
 }
 
 export type FormValidationError<TFormData> = {

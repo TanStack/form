@@ -733,7 +733,8 @@ export class FormApi<
           type: 'validate',
         })
 
-        const { formError, fieldErrors } = normalizeError<TFormData>(rawError)
+        const { formError, fieldErrors } =
+          normalizeFormError<TFormData>(rawError)
 
         const errorMapKey = getErrorMapKey(validateObj.cause)
 
@@ -864,7 +865,7 @@ export class FormApi<
             rawError = e as ValidationError
           }
           const { formError, fieldErrors: fieldErrorsFromNormalizeError } =
-            normalizeError<TFormData>(rawError)
+            normalizeFormError<TFormData>(rawError)
 
           if (fieldErrorsFromNormalizeError) {
             fieldErrors = fieldErrors
@@ -1302,13 +1303,16 @@ export class FormApi<
   }
 }
 
-function normalizeError<TFormData>(
+/**
+ * @private
+ */
+export function normalizeFormError<TFormData>(
   rawError?: ValidationResult | FormValidationResult<unknown>,
 ): FormValidationError<TFormData> {
   if (rawError) {
     if (isFormValidationResult(rawError)) {
       return {
-        formError: normalizeError(rawError.form).formError,
+        formError: normalizeFormError(rawError.form).formError,
         fieldErrors: Object.entries(rawError.fields).reduce(
           (acc, [field, error]) => {
             acc[field as DeepKeys<TFormData>] = normalizeFieldError(error)

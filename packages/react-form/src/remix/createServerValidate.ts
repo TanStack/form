@@ -1,16 +1,16 @@
 import { decode } from 'decode-formdata'
+import { normalizeFormError } from '@tanstack/form-core'
 import { ServerValidateError } from './error'
 import type {
   FormOptions,
-  FormValidationError,
-  ValidationError,
+  ValidationResult,
   Validator,
 } from '@tanstack/form-core'
 import type { ServerFormState } from './types'
 
 type OnServerValidateFn<TFormData> = (props: {
   value: TFormData
-}) => ValidationError | Promise<ValidationError>
+}) => ValidationResult | Promise<ValidationResult>
 
 type OnServerValidateOrFn<
   TFormData,
@@ -25,12 +25,6 @@ interface CreateServerValidateOptions<
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > extends FormOptions<TFormData, TFormValidator> {
   onServerValidate: OnServerValidateOrFn<TFormData, TFormValidator>
-}
-
-const isFormValidationError = (
-  error: unknown,
-): error is FormValidationError<unknown> => {
-  return typeof error === 'object'
 }
 
 export const createServerValidate =
@@ -65,20 +59,14 @@ export const createServerValidate =
 
     if (!onServerError) return
 
-    const onServerErrorStr =
-      onServerError &&
-      typeof onServerError !== 'string' &&
-      !Array.isArray(onServerError) &&
-      isFormValidationError(onServerError)
-        ? onServerError.form
-        : onServerError
+    const onServerErrorArr = normalizeFormError(onServerError).formError
 
     const formState: ServerFormState<TFormData> = {
       errorMap: {
-        onServer: onServerError,
+        onServer: onServerErrorArr,
       },
       values,
-      errors: onServerErrorStr ? [onServerErrorStr] : [],
+      errors: onServerErrorArr ?? [],
     }
 
     throw new ServerValidateError({

@@ -91,7 +91,8 @@ describe('yup form api', () => {
     expect(nameField.getMeta().errors).toEqual([])
     nameField.setValue('q')
     expect(nameField.getMeta().errors).toEqual([
-      'You must have a length of at least 3, You must end with an "a"',
+      'You must have a length of at least 3',
+      'You must end with an "a"',
     ])
     expect(surnameField.getMeta().errors).toEqual([
       'You must have a length of at least 3',
@@ -111,7 +112,8 @@ describe('yup form api', () => {
         },
       },
       validatorAdapter: yupValidator({
-        transformErrors: (errors) => errors[0]?.message,
+        transformErrors: (errors) =>
+          errors.map((error) => '-> ' + error.message),
       }),
       validators: {
         onChange: yup.object({
@@ -142,13 +144,14 @@ describe('yup form api', () => {
     expect(nameField.getMeta().errors).toEqual([])
     nameField.setValue('q')
     expect(nameField.getMeta().errors).toEqual([
-      'You must have a length of at least 3',
+      '-> You must have a length of at least 3',
+      '-> You must end with an "a"',
     ])
     expect(fooBarField.getMeta().errors).toEqual([
-      'You must have a length of at least 4',
+      '-> You must have a length of at least 4',
     ])
     nameField.setValue('qwer')
-    expect(nameField.getMeta().errors).toEqual(['You must end with an "a"'])
+    expect(nameField.getMeta().errors).toEqual(['-> You must end with an "a"'])
     nameField.setValue('qwera')
     expect(nameField.getMeta().errors).toEqual([])
   })

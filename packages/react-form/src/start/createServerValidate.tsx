@@ -1,10 +1,11 @@
 import { decode } from 'decode-formdata'
+import { normalizeFormError } from '@tanstack/form-core'
 import { _tanstackInternalsCookie } from './utils'
 import { ServerValidateError } from './error'
 import type {
   FormOptions,
   FormValidationError,
-  ValidationError,
+  ValidationResult,
   Validator,
 } from '@tanstack/form-core'
 import type { FetchFn } from '@tanstack/start'
@@ -14,7 +15,7 @@ type Ctx = Parameters<FetchFn<FormData, unknown>>[1]
 
 type OnServerValidateFn<TFormData> = (props: {
   value: TFormData
-}) => ValidationError | Promise<ValidationError>
+}) => ValidationResult | Promise<ValidationResult>
 
 type OnServerValidateOrFn<
   TFormData,
@@ -71,20 +72,14 @@ export const createServerValidate =
 
     if (!onServerError) return
 
-    const onServerErrorStr =
-      onServerError &&
-      typeof onServerError !== 'string' &&
-      !Array.isArray(onServerError) &&
-      isFormValidationError(onServerError)
-        ? onServerError.form
-        : onServerError
+    const onServerErrorArr = normalizeFormError(onServerError).formError
 
     const formState: ServerFormState<TFormData> = {
       errorMap: {
-        onServer: onServerError,
+        onServer: onServerErrorArr,
       },
       values: data,
-      errors: onServerErrorStr ? [onServerErrorStr] : [],
+      errors: onServerErrorArr ?? [],
     }
 
     const cookie = await _tanstackInternalsCookie.serialize(formState)

@@ -186,7 +186,7 @@ describe('useForm', () => {
             )}
           </form.Field>
           <form.Subscribe selector={(state) => state.errorMap}>
-            {(errorMap: ValidationErrorMap) => <p>{errorMap.onChange}</p>}
+            {(errorMap: ValidationErrorMap) => <p>{errorMap.onChange?.[0]}</p>}
           </form.Subscribe>
         </div>
       )
@@ -277,7 +277,7 @@ describe('useForm', () => {
                     field.handleChange((e.target as HTMLInputElement).value)
                   }
                 />
-                <p>{errors.value.onChange}</p>
+                <p>{errors.value.onChange?.[0]}</p>
               </div>
             )}
           </form.Field>
@@ -333,8 +333,8 @@ describe('useForm', () => {
                     field.handleChange((e.target as HTMLInputElement).value)
                   }
                 />
-                <p>{errors.value.onChange}</p>
-                <p>{errors.value.onBlur}</p>
+                <p>{errors.value.onChange?.[0]}</p>
+                <p>{errors.value.onBlur?.[0]}</p>
               </div>
             )}
           </form.Field>
@@ -384,7 +384,7 @@ describe('useForm', () => {
                     field.handleChange((e.target as HTMLInputElement).value)
                   }
                 />
-                <p>{errors.value.onChange}</p>
+                <p>{errors.value.onChange?.[0]}</p>
               </div>
             )}
           </form.Field>
@@ -437,8 +437,8 @@ describe('useForm', () => {
                     field.handleChange((e.target as HTMLInputElement).value)
                   }
                 />
-                <p>{errors.value.onChange}</p>
-                <p>{errors.value.onBlur}</p>
+                <p>{errors.value.onChange?.[0]}</p>
+                <p>{errors.value.onBlur?.[0]}</p>
               </div>
             )}
           </form.Field>
