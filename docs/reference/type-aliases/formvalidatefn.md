@@ -6,7 +6,7 @@ title: FormValidateFn
 # Type Alias: FormValidateFn()\<TFormData, TFormValidator\>
 
 ```ts
-type FormValidateFn<TFormData, TFormValidator>: (props) => FormValidationError<TFormData>;
+type FormValidateFn<TFormData, TFormValidator>: (props) => ValidationResult | FormValidationResult<TFormData>;
 ```
 
 ## Type Parameters
@@ -29,8 +29,8 @@ type FormValidateFn<TFormData, TFormValidator>: (props) => FormValidationError<T
 
 ## Returns
 
-`FormValidationError`\<`TFormData`\>
+[`ValidationResult`](validationresult.md) \| `FormValidationResult`\<`TFormData`\>
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:35](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L35)
+[packages/form-core/src/FormApi.ts:38](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L38)
