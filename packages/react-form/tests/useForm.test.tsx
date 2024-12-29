@@ -3,9 +3,9 @@ import { describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import { useStore } from '@tanstack/react-store'
+import { useEffect } from 'react'
 import { useForm } from '../src/index'
 import { sleep } from './utils'
-import { useEffect } from 'react'
 
 const user = userEvent.setup()
 
