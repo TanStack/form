@@ -13,4 +13,4 @@ An object type representing the metadata of a field in a form.
 
 ## Defined in
 
-[packages/form-core/src/FieldApi.ts:402](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L402)
+[packages/form-core/src/FieldApi.ts:403](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L403)
