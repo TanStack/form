@@ -827,7 +827,7 @@ export class FieldApi<
             form's validator.
           */
           validateObj.validate
-            ? normalizeError(
+            ? normalizeFieldError(
                 field.runValidator({
                   validate: validateObj.validate,
                   value: {
@@ -979,7 +979,7 @@ export class FieldApi<
             rawError = e as ValidationError[]
           }
           if (controller.signal.aborted) return resolve(undefined)
-          const error = normalizeError(rawError)
+          const error = normalizeFieldError(rawError)
           const fieldErrorFromForm =
             asyncFormValidationResults[this.name]?.[errorMapKey]
           const fieldError = error || fieldErrorFromForm
@@ -1099,22 +1099,25 @@ export class FieldApi<
   }
 }
 
-function normalizeError(
+/**
+ * @private
+ */
+export function normalizeFieldError(
   rawError?: ValidationResult,
 ): ValidationError[] | undefined {
-  if (rawError) {
-    if (Array.isArray(rawError)) {
-      return rawError
-    }
-
-    if (typeof rawError !== 'string') {
-      return ['Invalid Field Values']
-    }
-
-    return [rawError]
+  if (!rawError) {
+    return undefined
   }
 
-  return undefined
+  if (Array.isArray(rawError)) {
+    return rawError
+  }
+
+  if (typeof rawError !== 'string') {
+    return ['Invalid Field Values']
+  }
+
+  return [rawError]
 }
 
 function getErrorMapKey(cause: ValidationCause) {

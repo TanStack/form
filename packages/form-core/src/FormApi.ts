@@ -12,8 +12,9 @@ import {
   isStandardSchemaValidator,
   standardSchemaValidator,
 } from './standardSchemaValidator'
-import type { StandardSchemaV1 } from './standardSchemaValidator'
+import { normalizeFieldError } from './FieldApi'
 import type { FieldApi, FieldMeta } from './FieldApi'
+import type { StandardSchemaV1 } from './standardSchemaValidator'
 import type {
   FormValidationError,
   FormValidationErrorMap,
@@ -1309,50 +1310,34 @@ export class FormApi<
 export function normalizeFormError<TFormData>(
   rawError?: ValidationResult | FormValidationResult<unknown>,
 ): FormValidationError<TFormData> {
-  if (rawError) {
-    if (isFormValidationResult(rawError)) {
-      return {
-        formError: normalizeFormError(rawError.form).formError,
-        fieldErrors: Object.entries(rawError.fields).reduce(
-          (acc, [field, error]) => {
-            acc[field as DeepKeys<TFormData>] = normalizeFieldError(error)
-            return acc
-          },
-          {} as Partial<Record<DeepKeys<TFormData>, ValidationError[]>>,
-        ),
-      }
-    }
-
-    if (Array.isArray(rawError)) {
-      return { formError: rawError }
-    }
-
-    if (typeof rawError !== 'string') {
-      return { formError: ['Invalid Form Values'] }
-    }
-
-    return { formError: [rawError] }
+  if (!rawError) {
+    return { formError: undefined }
   }
 
-  return { formError: undefined }
-}
+  if (isFormValidationResult(rawError)) {
+    const fieldErrors = Object.entries(rawError.fields).reduce(
+      (acc, [field, error]) => {
+        acc[field as DeepKeys<TFormData>] = normalizeFieldError(error)
+        return acc
+      },
+      {} as Partial<Record<DeepKeys<TFormData>, ValidationError[]>>,
+    )
 
-function normalizeFieldError(
-  rawError?: ValidationResult,
-): ValidationError[] | undefined {
-  if (rawError) {
-    if (Array.isArray(rawError)) {
-      return rawError
+    return {
+      formError: normalizeFormError(rawError.form).formError,
+      fieldErrors,
     }
-
-    if (typeof rawError !== 'string') {
-      return ['Invalid Field Values']
-    }
-
-    return [rawError]
   }
 
-  return undefined
+  if (Array.isArray(rawError)) {
+    return { formError: rawError }
+  }
+
+  if (typeof rawError !== 'string') {
+    return { formError: ['Invalid Form Values'] }
+  }
+
+  return { formError: [rawError] }
 }
 
 function getErrorMapKey(cause: ValidationCause) {

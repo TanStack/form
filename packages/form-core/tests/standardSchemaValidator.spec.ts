@@ -400,4 +400,53 @@ describe('standard schema validator', () => {
       'email must be an email address',
     ])
   })
+
+  it('should handle multiple errors on a field', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChange: z
+          .string()
+          .min(3, 'You must have a length of at least 3')
+          .regex(/^[a-z]+$/i, 'You must have only letters'),
+      },
+    })
+
+    field.mount()
+
+    // valid by default
+    expect(field.getMeta().errors).toEqual([])
+    expect(field.getMeta().errorMap.onChange).toEqual(undefined)
+
+    // too short
+    field.setValue('a')
+    expect(field.getMeta().errors).toEqual([
+      'You must have a length of at least 3',
+    ])
+    expect(field.getMeta().errorMap.onChange).toEqual([
+      'You must have a length of at least 3',
+    ])
+
+    // too short and invalid character
+    field.setValue('a#')
+    expect(field.getMeta().errors).toEqual([
+      'You must have a length of at least 3',
+      'You must have only letters',
+    ])
+    expect(field.getMeta().errorMap.onChange).toEqual([
+      'You must have a length of at least 3',
+      'You must have only letters',
+    ])
+
+    // valid
+    field.setValue('asdf')
+    expect(field.getMeta().errors).toEqual([])
+    expect(field.getMeta().errorMap.onChange).toEqual(undefined)
+  })
 })
