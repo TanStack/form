@@ -4,7 +4,7 @@ import type {
   FieldApiOptions,
   Validator,
 } from '@tanstack/form-core'
-import type { FunctionComponent } from 'react'
+import { ReactFormExtendedApi } from './useForm'
 
 /**
  * The field options.
@@ -28,3 +28,12 @@ export type UseFieldOptions<
 > & {
   mode?: 'value' | 'array'
 }
+
+/**
+ * The return type use useForm with pre-populated generics
+ */
+export type UseFormReturnType<TForm, TFormValidator> = TFormValidator extends
+  | Validator<TForm, unknown>
+  | undefined
+  ? ReactFormExtendedApi<TForm, TFormValidator>
+  : never
