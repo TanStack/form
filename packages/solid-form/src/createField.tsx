@@ -112,16 +112,27 @@ export function createField<
 
   extendedApi.Field = Field as never
 
+  let mounted = false
+  // Instantiates field meta and removes it when unrendered
+  onMount(() => {
+    const cleanupFn = api.mount()
+    mounted = true
+    onCleanup(() => {
+      cleanupFn()
+      mounted = false
+    })
+  })
+
   /**
    * fieldApi.update should not have any side effects. Think of it like a `useRef`
    * that we need to keep updated every render with the most up-to-date information.
    *
    * createComputed to make sure this effect runs before render effects
    */
-  createComputed(() => api.update(opts()))
-
-  // Instantiates field meta and removes it when unrendered
-  onMount(() => onCleanup(api.mount()))
+  createComputed(() => {
+    if (!mounted) return
+    api.update(opts())
+  })
 
   return makeFieldReactive(extendedApi as never)
 }
