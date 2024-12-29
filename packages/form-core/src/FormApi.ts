@@ -315,7 +315,7 @@ export type DerivedFormState<TFormData> = {
    */
   canSubmit: boolean
   /**
-   * A record of field metadata for each field in the form, not including the derived properties, like `errors` and such
+   * A record of field metadata for each field in the form.
    */
   fieldMeta: Record<DeepKeys<TFormData>, FieldMeta>
 }
@@ -405,19 +405,19 @@ export class FormApi<
         const currBaseStore = currDepVals[0]
 
         const fieldMeta = {} as FormState<TFormData>['fieldMeta']
-        for (const key of Object.keys(currBaseStore.fieldMetaBase) as Array<
+        for (const fieldName of Object.keys(currBaseStore.fieldMetaBase) as Array<
           keyof typeof currBaseStore.fieldMetaBase
         >) {
           const currBaseVal = currBaseStore.fieldMetaBase[
-            key as never
+            fieldName as never
           ] as FieldMetaBase
 
-          const prevBaseVal = prevBaseStore?.fieldMetaBase[key as never] as
+          const prevBaseVal = prevBaseStore?.fieldMetaBase[fieldName as never] as
             | FieldMetaBase
             | undefined
 
           let fieldErrors =
-            prevVal?.[key as never as keyof typeof prevVal]?.errors
+            prevVal?.[fieldName as never as keyof typeof prevVal]?.errors
           if (!prevBaseVal || currBaseVal.errorMap !== prevBaseVal.errorMap) {
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             fieldErrors = Object.values(currBaseVal.errorMap ?? {}).filter(
@@ -428,7 +428,7 @@ export class FormApi<
           // As a primitive, we don't need to aggressively persist the same referencial value for performance reasons
           const isFieldPristine = !currBaseVal.isDirty
 
-          fieldMeta[key] = {
+          fieldMeta[fieldName] = {
             ...currBaseVal,
             errors: fieldErrors,
             isPristine: isFieldPristine,
