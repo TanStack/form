@@ -34,7 +34,8 @@ describe('standard schema validator', () => {
 
       field.setValue('')
       expect(form.state.errors).toStrictEqual([
-        'First name is too short, You must end with an "a"',
+        'First name is too short',
+        'You must end with an "a"',
       ])
     })
 
@@ -55,7 +56,8 @@ describe('standard schema validator', () => {
           }),
         },
         validatorAdapter: standardSchemaValidator({
-          transformErrors: (issues) => issues.map((issue) => issue.message),
+          transformErrors: (issues) =>
+            issues.map((issue) => '-> ' + issue.message),
         }),
       })
 
@@ -67,7 +69,10 @@ describe('standard schema validator', () => {
       field.mount()
 
       field.setValue('')
-      expect(form.state.errors).toStrictEqual(['First name is too short'])
+      expect(form.state.errors).toStrictEqual([
+        '-> First name is too short',
+        '-> You must end with an "a"',
+      ])
     })
 
     it('should detect an async standard schema validator even without a validator adapter', async () => {
@@ -251,7 +256,8 @@ describe('standard schema validator', () => {
       expect(nameField.getMeta().errors).toEqual([])
       nameField.setValue('q')
       expect(nameField.getMeta().errors).toEqual([
-        'You must have a length of at least 3, You must end with an "a"',
+        'You must have a length of at least 3',
+        'You must end with an "a"',
       ])
       expect(surnameField.getMeta().errors).toEqual([
         'You must have a length of at least 3',

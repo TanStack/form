@@ -353,13 +353,13 @@ function getDefaultFormState<TFormData>(
 const isFormValidationResult = (
   error: unknown,
 ): error is FormValidationResult<unknown> => {
-  return typeof error === 'object'
+  return typeof error === 'object' && !Array.isArray(error)
 }
 
 const isFormValidationError = (
   error: unknown,
 ): error is FormValidationError<unknown> => {
-  return typeof error === 'object'
+  return typeof error === 'object' && !Array.isArray(error)
 }
 
 /**
