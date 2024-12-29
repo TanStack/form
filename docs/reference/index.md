@@ -21,10 +21,14 @@ title: "@tanstack/form-core"
 
 ## Type Aliases
 
+- [BaseFormState](type-aliases/baseformstate.md)
 - [DeepKeys](type-aliases/deepkeys.md)
 - [DeepValue](type-aliases/deepvalue.md)
+- [DerivedFormState](type-aliases/derivedformstate.md)
 - [FieldInfo](type-aliases/fieldinfo.md)
 - [FieldMeta](type-aliases/fieldmeta.md)
+- [FieldMetaBase](type-aliases/fieldmetabase.md)
+- [FieldMetaDerived](type-aliases/fieldmetaderived.md)
 - [FieldsErrorMapFromValidator](type-aliases/fieldserrormapfromvalidator.md)
 - [FieldState](type-aliases/fieldstate.md)
 - [FormState](type-aliases/formstate.md)

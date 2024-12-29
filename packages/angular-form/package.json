@@ -42,7 +42,7 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/angular-store": "^0.6.0",
+    "@tanstack/angular-store": "^0.7.0",
     "@tanstack/form-core": "workspace:*",
     "tslib": "^2.8.1"
   },
