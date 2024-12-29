@@ -109,11 +109,10 @@ export default function App() {
         <form.Subscribe
           selector={(state) => [state.errorMap]}
           children={([errorMap]) =>
-            errorMap.onSubmit ? (
+            errorMap.onSubmit?.length ? (
               <div>
                 <em>
-                  There was an error on the form:{' '}
-                  {errorMap.onSubmit?.toString()}
+                  There was an error on the form: {errorMap.onSubmit.join(', ')}
                 </em>
               </div>
             ) : null
