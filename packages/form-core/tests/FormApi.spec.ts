@@ -779,8 +779,8 @@ describe('form api', () => {
     expect(form.state.errors.length).toBe(0)
     field.setValue('other')
     expect(form.state.errors).toContain('Please enter a different value')
-    expect(form.state.errorMap).toMatchObject({
-      onChange: 'Please enter a different value',
+    expect(form.state.errorMap).toEqual({
+      onChange: ['Please enter a different value'],
     })
   })
 
@@ -812,7 +812,7 @@ describe('form api', () => {
     await vi.runAllTimersAsync()
     expect(form.state.errors).toContain('Please enter a different value')
     expect(form.state.errorMap).toMatchObject({
-      onChange: 'Please enter a different value',
+      onChange: ['Please enter a different value'],
     })
   })
 
@@ -851,7 +851,7 @@ describe('form api', () => {
     expect(sleepMock).toHaveBeenCalledTimes(1)
     expect(form.state.errors).toContain('Please enter a different value')
     expect(form.state.errorMap).toMatchObject({
-      onChange: 'Please enter a different value',
+      onChange: ['Please enter a different value'],
     })
   })
 
@@ -890,7 +890,7 @@ describe('form api', () => {
     expect(sleepMock).toHaveBeenCalledTimes(1)
     expect(form.state.errors).toContain('Please enter a different value')
     expect(form.state.errorMap).toMatchObject({
-      onChange: 'Please enter a different value',
+      onChange: ['Please enter a different value'],
     })
   })
 
@@ -918,7 +918,7 @@ describe('form api', () => {
     field.validate('blur')
     expect(form.state.errors).toContain('Please enter a different value')
     expect(form.state.errorMap).toMatchObject({
-      onBlur: 'Please enter a different value',
+      onBlur: ['Please enter a different value'],
     })
   })
 
@@ -950,7 +950,7 @@ describe('form api', () => {
     await vi.runAllTimersAsync()
     expect(form.state.errors).toContain('Please enter a different value')
     expect(form.state.errorMap).toMatchObject({
-      onBlur: 'Please enter a different value',
+      onBlur: ['Please enter a different value'],
     })
   })
 
@@ -988,7 +988,7 @@ describe('form api', () => {
     expect(sleepMock).toHaveBeenCalledTimes(1)
     expect(form.state.errors).toContain('Please enter a different value')
     expect(form.state.errorMap).toMatchObject({
-      onBlur: 'Please enter a different value',
+      onBlur: ['Please enter a different value'],
     })
   })
 
@@ -1026,7 +1026,7 @@ describe('form api', () => {
     expect(sleepMock).toHaveBeenCalledTimes(1)
     expect(form.state.errors).toContain('Please enter a different value')
     expect(form.state.errorMap).toMatchObject({
-      onBlur: 'Please enter a different value',
+      onBlur: ['Please enter a different value'],
     })
   })
 
@@ -1061,8 +1061,8 @@ describe('form api', () => {
       'Please enter a different value',
     ])
     expect(form.state.errorMap).toEqual({
-      onBlur: 'Please enter a different value',
-      onChange: 'Please enter a different value',
+      onBlur: ['Please enter a different value'],
+      onChange: ['Please enter a different value'],
     })
   })
 
@@ -1089,7 +1089,7 @@ describe('form api', () => {
     field.setValue('other')
     expect(form.state.errors).toStrictEqual(['Please enter a different value'])
     expect(form.state.errorMap).toEqual({
-      onChange: 'Please enter a different value',
+      onChange: ['Please enter a different value'],
     })
     field.setValue('test')
     expect(form.state.errors).toStrictEqual([])
@@ -1118,7 +1118,7 @@ describe('form api', () => {
 
     expect(form.state.errors).toStrictEqual(['Please enter a different value'])
     expect(form.state.errorMap).toEqual({
-      onMount: 'Please enter a different value',
+      onMount: ['Please enter a different value'],
     })
   })
 
@@ -1144,11 +1144,13 @@ describe('form api', () => {
 
     expect(form.state.errors).toStrictEqual(['Please enter a different value'])
     expect(form.state.errorMap).toEqual({
-      onMount: 'Please enter a different value',
+      onMount: ['Please enter a different value'],
     })
 
     form.setFieldValue('name', 'test')
     expect(form.state.errors).toStrictEqual([])
+    expect(form.state.errorMap).toEqual({})
+    expect(form.state.errorMap.onMount).toBeUndefined()
   })
 
   it('should validate fields during submit', async () => {
@@ -1343,8 +1345,8 @@ describe('form api', () => {
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
     expect(form.state.fieldMeta['firstName'].errorMap).toEqual({
-      onChange: 'first name is required',
-      onBlur: 'first name must be longer than 3 characters',
+      onChange: ['first name is required'],
+      onBlur: ['first name must be longer than 3 characters'],
     })
   })
 
@@ -1369,9 +1371,9 @@ describe('form api', () => {
     await form.handleSubmit()
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
-    expect(form.state.fieldMeta['firstName'].errorMap['onSubmit']).toEqual(
+    expect(form.state.fieldMeta['firstName'].errorMap['onSubmit']).toEqual([
       'first name is required',
-    )
+    ])
     field.handleChange('test')
     expect(form.state.isFieldsValid).toEqual(true)
     expect(form.state.canSubmit).toEqual(true)
@@ -1401,9 +1403,13 @@ describe('form api', () => {
     field.mount()
 
     await form.validateAllFields('change')
-    expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
+    expect(field.getMeta().errorMap.onChange).toEqual([
+      'first name is required',
+    ])
     await form.validateAllFields('change')
-    expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
+    expect(field.getMeta().errorMap.onChange).toEqual([
+      'first name is required',
+    ])
   })
 
   it('should validate a single field consistently if touched', async () => {
@@ -1430,9 +1436,13 @@ describe('form api', () => {
     field.mount()
 
     await form.validateField('firstName', 'change')
-    expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
+    expect(field.getMeta().errorMap.onChange).toEqual([
+      'first name is required',
+    ])
     await form.validateField('firstName', 'change')
-    expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
+    expect(field.getMeta().errorMap.onChange).toEqual([
+      'first name is required',
+    ])
   })
 
   it('should show onSubmit errors', async () => {
@@ -1456,7 +1466,7 @@ describe('form api', () => {
     field.mount()
 
     await form.handleSubmit()
-    expect(form.state.errors).toStrictEqual(['first name is required'])
+    expect(form.state.errors).toEqual(['first name is required'])
   })
 
   it('should run onChange validation during submit', async () => {
@@ -1572,9 +1582,9 @@ describe('form api', () => {
     const form = new FormApi<Form>()
     form.mount()
     form.setErrorMap({
-      onChange: "name can't be Josh",
+      onChange: ["name can't be Josh"],
     })
-    expect(form.state.errorMap.onChange).toEqual("name can't be Josh")
+    expect(form.state.errorMap.onChange).toEqual(["name can't be Josh"])
   })
 
   it('should preserve other values in the formApi errorMap when adding other values', () => {
@@ -1584,14 +1594,16 @@ describe('form api', () => {
     const form = new FormApi<Form>()
     form.mount()
     form.setErrorMap({
-      onChange: "name can't be Josh",
+      onChange: ["name can't be Josh"],
     })
-    expect(form.state.errorMap.onChange).toEqual("name can't be Josh")
+    expect(form.state.errorMap.onChange).toEqual(["name can't be Josh"])
     form.setErrorMap({
-      onBlur: 'name must begin with uppercase',
+      onBlur: ['name must begin with uppercase'],
     })
-    expect(form.state.errorMap.onChange).toEqual("name can't be Josh")
-    expect(form.state.errorMap.onBlur).toEqual('name must begin with uppercase')
+    expect(form.state.errorMap.onChange).toEqual(["name can't be Josh"])
+    expect(form.state.errorMap.onBlur).toEqual([
+      'name must begin with uppercase',
+    ])
   })
 
   it('should replace errorMap value if it exists in the FormApi object', () => {
@@ -1601,13 +1613,13 @@ describe('form api', () => {
     const form = new FormApi<Form>()
     form.mount()
     form.setErrorMap({
-      onChange: "name can't be Josh",
+      onChange: ["name can't be Josh"],
     })
-    expect(form.state.errorMap.onChange).toEqual("name can't be Josh")
+    expect(form.state.errorMap.onChange).toEqual(["name can't be Josh"])
     form.setErrorMap({
-      onChange: 'other validation error',
+      onChange: ['other validation error'],
     })
-    expect(form.state.errorMap.onChange).toEqual('other validation error')
+    expect(form.state.errorMap.onChange).toEqual(['other validation error'])
   })
 
   it("should set errors for the fields from the form's onSubmit validator", async () => {
@@ -1650,10 +1662,10 @@ describe('form api', () => {
     await form.handleSubmit()
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
-    expect(firstNameField.state.meta.errorMap.onSubmit).toBe(
+    expect(firstNameField.state.meta.errorMap.onSubmit).toEqual([
       'first name is required',
-    )
-    expect(form.state.errorMap.onSubmit).toBe('something went wrong')
+    ])
+    expect(form.state.errorMap.onSubmit).toEqual(['something went wrong'])
 
     // Check if the error is gone after the value is changed
     firstNameField.setValue('nothing')
@@ -1663,9 +1675,9 @@ describe('form api', () => {
     firstNameField.handleBlur()
     await form.handleSubmit()
 
-    expect(firstNameField.state.meta.errorMap.onSubmit).toBe(
+    expect(firstNameField.state.meta.errorMap.onSubmit).toEqual([
       'value cannot be "nothing"',
-    )
+    ])
 
     // Check if the error from the field's validator is shown
     firstNameField.setValue('something else')
@@ -1753,7 +1765,7 @@ describe('form api', () => {
     await vi.runAllTimersAsync()
 
     expect(formSyncChange).toHaveBeenCalled()
-    expect(firstNameField.state.meta.errorMap.onChange).toBe('field error')
+    expect(firstNameField.state.meta.errorMap.onChange).toEqual(['field error'])
     expect(formAsyncChange).not.toHaveBeenCalled()
   })
 
@@ -1787,7 +1799,7 @@ describe('form api', () => {
     await vi.runAllTimersAsync()
 
     expect(formSyncChange).toHaveBeenCalled()
-    expect(firstNameField.state.meta.errorMap.onChange).toBe('field error')
+    expect(firstNameField.state.meta.errorMap.onChange).toEqual(['field error'])
     expect(formAsyncChange).toHaveBeenCalled()
   })
 
@@ -1830,9 +1842,9 @@ describe('form api', () => {
 
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
-    expect(firstNameField.state.meta.errorMap.onChange).toBe(
+    expect(firstNameField.state.meta.errorMap.onChange).toEqual([
       'first name is required',
-    )
+    ])
 
     // Check if we can make the error go away by changing the value
     firstNameField.setValue('one')
@@ -1843,9 +1855,9 @@ describe('form api', () => {
 
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
-    expect(firstNameField.state.meta.errorMap.onChange).toBe(
+    expect(firstNameField.state.meta.errorMap.onChange).toEqual([
       'value cannot be "nothing"',
-    )
+    ])
 
     // Check if we can make the error go away by changing the value
     firstNameField.setValue('one')
@@ -1882,9 +1894,9 @@ describe('form api', () => {
 
     await form.handleSubmit()
 
-    expect(firstNameField.state.meta.errorMap.onSubmit).toEqual(
+    expect(firstNameField.state.meta.errorMap.onSubmit).toEqual([
       'first name is required',
-    )
+    ])
 
     firstNameField.setValue('this is a first name')
 
@@ -1918,9 +1930,9 @@ describe('form api', () => {
 
     await form.handleSubmit()
 
-    expect(namesField.state.meta.errorMap.onSubmit).toBe(
+    expect(namesField.state.meta.errorMap.onSubmit).toEqual([
       'person-2 cannot be used',
-    )
+    ])
   })
 
   it("should set errors for the fields from the form's onSubmitAsync validator for array fields", async () => {
@@ -1955,9 +1967,9 @@ describe('form api', () => {
     form.handleSubmit()
     await vi.runAllTimersAsync()
 
-    expect(field.state.meta.errorMap.onSubmit).toBe(
+    expect(field.state.meta.errorMap.onSubmit).toEqual([
       'Please enter a different value',
-    )
+    ])
 
     field.removeValue(1)
     form.handleSubmit()
@@ -2015,9 +2027,9 @@ describe('form api', () => {
 
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
-    expect(fieldInArray.state.meta.errorMap.onSubmit).toBe(
+    expect(fieldInArray.state.meta.errorMap.onSubmit).toStrictEqual([
       'person-2 is banned from registering',
-    )
+    ])
 
     fieldInArray.setValue('Somebody else')
 
@@ -2069,9 +2081,9 @@ describe('form api', () => {
 
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
-    expect(passconfirmField.state.meta.errorMap.onChange).toBe(
+    expect(passconfirmField.state.meta.errorMap.onChange).toEqual([
       'passwords do not match',
-    )
+    ])
 
     passconfirmField.setValue('one')
     expect(form.state.isFieldsValid).toEqual(true)
@@ -2123,9 +2135,9 @@ describe('form api', () => {
 
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
-    expect(passconfirmField.state.meta.errorMap.onChange).toBe(
+    expect(passconfirmField.state.meta.errorMap.onChange).toEqual([
       'passwords do not match',
-    )
+    ])
 
     passconfirmField.setValue('one')
 
@@ -2161,10 +2173,10 @@ describe('form api', () => {
     firstNameField.mount()
     form.mount()
 
-    expect(form.state.errorMap.onMount).toBe('something went wrong')
-    expect(firstNameField.state.meta.errorMap.onMount).toBe(
+    expect(form.state.errorMap.onMount).toEqual(['something went wrong'])
+    expect(firstNameField.state.meta.errorMap.onMount).toEqual([
       'first name is required',
-    )
+    ])
   })
 })
 

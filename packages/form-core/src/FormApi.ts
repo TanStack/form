@@ -12,16 +12,19 @@ import {
   isStandardSchemaValidator,
   standardSchemaValidator,
 } from './standardSchemaValidator'
-import type { StandardSchemaV1 } from './standardSchemaValidator'
+import { normalizeFieldError } from './FieldApi'
 import type { FieldApi, FieldMeta, FieldMetaBase } from './FieldApi'
+import type { StandardSchemaV1 } from './standardSchemaValidator'
 import type {
   FormValidationError,
   FormValidationErrorMap,
+  FormValidationResult,
   UpdateMetaOptions,
   ValidationCause,
   ValidationError,
   ValidationErrorMap,
   ValidationErrorMapKeys,
+  ValidationResult,
   ValidationSource,
   Validator,
 } from './types'
@@ -38,7 +41,7 @@ export type FormValidateFn<
 > = (props: {
   value: TFormData
   formApi: FormApi<TFormData, TFormValidator>
-}) => FormValidationError<TFormData>
+}) => ValidationResult | FormValidationResult<TFormData>
 
 /**
  * @private
@@ -63,19 +66,22 @@ export type FormValidateAsyncFn<
   value: TFormData
   formApi: FormApi<TFormData, TFormValidator>
   signal: AbortSignal
-}) => FormValidationError<TFormData> | Promise<FormValidationError<TFormData>>
+}) =>
+  | ValidationResult
+  | FormValidationResult<TFormData>
+  | Promise<ValidationResult | FormValidationResult<TFormData>>
 
 export type FormValidator<TFormData, TType, TFn = unknown> = {
   validate(options: { value: TType }, fn: TFn): ValidationError
   validateAsync(
     options: { value: TType },
     fn: TFn,
-  ): Promise<FormValidationError<TFormData>>
+  ): Promise<ValidationResult | FormValidationResult<TFormData>>
 }
 
 type ValidationPromiseResult<TFormData> =
   | {
-      fieldErrors: Partial<Record<DeepKeys<TFormData>, ValidationError>>
+      fieldErrors: Partial<Record<DeepKeys<TFormData>, ValidationError[]>>
       errorMapKey: ValidationErrorMapKeys
     }
   | undefined
@@ -344,10 +350,16 @@ function getDefaultFormState<TFormData>(
   }
 }
 
+const isFormValidationResult = (
+  error: unknown,
+): error is FormValidationResult<unknown> => {
+  return typeof error === 'object' && !Array.isArray(error)
+}
+
 const isFormValidationError = (
   error: unknown,
 ): error is FormValidationError<unknown> => {
-  return typeof error === 'object'
+  return typeof error === 'object' && !Array.isArray(error)
 }
 
 /**
@@ -420,9 +432,9 @@ export class FormApi<
             prevVal?.[fieldName as never as keyof typeof prevVal]?.errors
           if (!prevBaseVal || currBaseVal.errorMap !== prevBaseVal.errorMap) {
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            fieldErrors = Object.values(currBaseVal.errorMap ?? {}).filter(
-              (val: unknown) => val !== undefined,
-            )
+            fieldErrors = Object.values(currBaseVal.errorMap ?? {})
+              .filter((val: unknown) => val !== undefined)
+              .flat()
           }
 
           // As a primitive, we don't need to aggressively persist the same referencial value for performance reasons
@@ -467,7 +479,7 @@ export class FormApi<
 
         const shouldInvalidateOnMount =
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          isTouched && currBaseStore?.errorMap?.onMount
+          isTouched && !!currBaseStore?.errorMap?.onMount?.length
 
         const isDirty = fieldMetaValues.some((field) => field?.isDirty)
         const isPristine = !isDirty
@@ -481,27 +493,28 @@ export class FormApi<
 
         const isValidating = !!isFieldsValidating
 
+        const errorMap = currBaseStore.errorMap
+        if (shouldInvalidateOnMount) {
+          delete errorMap.onMount
+        }
+
         // As `errors` is not a primitive, we need to aggressively persist the same referencial value for performance reasons
         let errors = prevVal?.errors ?? []
         if (
           !prevBaseStore ||
-          currBaseStore.errorMap !== prevBaseStore.errorMap
+          errorMap !== prevBaseStore.errorMap ||
+          shouldInvalidateOnMount
         ) {
-          errors = Object.values(currBaseStore.errorMap).reduce(
-            (prev, curr) => {
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              if (curr === undefined) return prev
-              if (typeof curr === 'string') {
-                prev.push(curr)
-                return prev
-              } else if (curr && isFormValidationError(curr)) {
-                prev.push(curr.form)
-                return prev
-              }
-              return prev
-            },
-            [] as ValidationError[],
-          )
+          errors = Object.values(errorMap).reduce((prev, curr) => {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            if (curr === undefined) return prev
+
+            if (isFormValidationError(curr)) {
+              return curr.formError ? prev.concat(curr.formError) : prev
+            }
+
+            return prev.concat(curr)
+          }, [])
         }
 
         const isFormValid = errors.length === 0
@@ -511,14 +524,6 @@ export class FormApi<
             !isTouched &&
             !hasOnMountError) ||
           (!isValidating && !currBaseStore.isSubmitting && isValid)
-
-        let errorMap = currBaseStore.errorMap
-        if (shouldInvalidateOnMount) {
-          errors = errors.filter(
-            (err) => err !== currBaseStore.errorMap.onMount,
-          )
-          errorMap = Object.assign(errorMap, { onMount: undefined })
-        }
 
         let state = {
           ...currBaseStore,
@@ -573,7 +578,7 @@ export class FormApi<
       : FormAsyncValidateOrFn<TFormData, TFormValidator>
     value: TValue
     type: TType
-  }): ReturnType<ReturnType<Validator<any>>[TType]> {
+  }): ReturnType<ReturnType<Validator<TFormData>>[TType]> {
     const adapter = this.options.validatorAdapter
     if (
       adapter &&
@@ -792,7 +797,8 @@ export class FormApi<
           type: 'validate',
         })
 
-        const { formError, fieldErrors } = normalizeError<TFormData>(rawError)
+        const { formError, fieldErrors } =
+          normalizeFormError<TFormData>(rawError)
 
         const errorMapKey = getErrorMapKey(validateObj.cause)
 
@@ -876,7 +882,7 @@ export class FormApi<
     const promises: Promise<ValidationPromiseResult<TFormData>>[] = []
 
     let fieldErrors:
-      | Partial<Record<DeepKeys<TFormData>, ValidationError>>
+      | Partial<Record<DeepKeys<TFormData>, ValidationError[]>>
       | undefined
 
     for (const validateObj of validates) {
@@ -894,26 +900,26 @@ export class FormApi<
       promises.push(
         new Promise<ValidationPromiseResult<TFormData>>(async (resolve) => {
           let rawError!:
-            | ValidationError
-            | FormValidationError<unknown>
+            | ValidationResult
+            | FormValidationResult<unknown>
             | undefined
+
           try {
             rawError = await new Promise((rawResolve, rawReject) => {
               setTimeout(async () => {
                 if (controller.signal.aborted) return rawResolve(undefined)
                 try {
-                  rawResolve(
-                    await this.runValidator({
-                      validate: validateObj.validate!,
-                      value: {
-                        value: this.state.values,
-                        formApi: this,
-                        validationSource: 'form',
-                        signal: controller.signal,
-                      },
-                      type: 'validateAsync',
-                    }),
-                  )
+                  const err = await this.runValidator({
+                    validate: validateObj.validate!,
+                    value: {
+                      value: this.state.values,
+                      formApi: this,
+                      validationSource: 'form',
+                      signal: controller.signal,
+                    },
+                    type: 'validateAsync',
+                  })
+                  rawResolve(err)
                 } catch (e) {
                   rawReject(e)
                 }
@@ -923,7 +929,7 @@ export class FormApi<
             rawError = e as ValidationError
           }
           const { formError, fieldErrors: fieldErrorsFromNormalizeError } =
-            normalizeError<TFormData>(rawError)
+            normalizeFormError<TFormData>(rawError)
 
           if (fieldErrorsFromNormalizeError) {
             fieldErrors = fieldErrors
@@ -1364,25 +1370,40 @@ export class FormApi<
   }
 }
 
-function normalizeError<TFormData>(rawError?: FormValidationError<unknown>): {
-  formError: ValidationError
-  fieldErrors?: Partial<Record<DeepKeys<TFormData>, ValidationError>>
-} {
-  if (rawError) {
-    if (typeof rawError === 'object') {
-      const formError = normalizeError(rawError.form).formError
-      const fieldErrors = rawError.fields
-      return { formError, fieldErrors } as never
-    }
+/**
+ * @private
+ */
+export function normalizeFormError<TFormData>(
+  rawError?: ValidationResult | FormValidationResult<unknown>,
+): FormValidationError<TFormData> {
+  if (!rawError) {
+    return { formError: undefined }
+  }
 
-    if (typeof rawError !== 'string') {
-      return { formError: 'Invalid Form Values' }
-    }
+  if (isFormValidationResult(rawError)) {
+    const fieldErrors = Object.entries(rawError.fields).reduce(
+      (acc, [field, error]) => {
+        acc[field as DeepKeys<TFormData>] = normalizeFieldError(error)
+        return acc
+      },
+      {} as Partial<Record<DeepKeys<TFormData>, ValidationError[]>>,
+    )
 
+    return {
+      formError: normalizeFormError(rawError.form).formError,
+      fieldErrors,
+    }
+  }
+
+  if (Array.isArray(rawError)) {
     return { formError: rawError }
   }
 
-  return { formError: undefined }
+  if (typeof rawError !== 'string') {
+    return { formError: ['Invalid Form Values'] }
+  }
+
+  return { formError: [rawError] }
 }
 
 function getErrorMapKey(cause: ValidationCause) {

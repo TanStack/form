@@ -15,4 +15,4 @@ type FormState<TFormData>: BaseFormState<TFormData> & DerivedFormState<TFormData
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:323](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L323)
+[packages/form-core/src/FormApi.ts:329](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L329)

@@ -190,8 +190,8 @@ Or use the `errorMap` property to access the specific error you're looking for:
       #age="field"
     >
       <!-- ... -->
-      @if (age.api.state.meta.errorMap['onChange']) {
-        <em role="alert">{{ age.api.state.meta.errorMap['onChange'] }}</em>
+      @if (age.api.state.meta.errorMap['onChange']?.length) {
+        <em role="alert">{{ age.api.state.meta.errorMap['onChange'][0] }}</em>
       }
     </ng-container>
   `,
@@ -219,10 +219,10 @@ Example:
     <div>
       <ng-container [tanstackField]="form" name="age" #age="field">
         <!-- ... -->
-        @if (formErrorMap().onChange) {
+        @if (formErrorMap().onChange?.length) {
           <div>
             <em
-              >There was an error on the form: {{ formErrorMap().onChange }}</em
+              >There was an error on the form: {{ formErrorMap().onChange[0] }}</em
             >
           </div>
         }

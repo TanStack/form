@@ -113,4 +113,4 @@ A boolean indicating if the form and all its fields are valid.
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:272](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L272)
+[packages/form-core/src/FormApi.ts:278](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L278)

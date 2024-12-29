@@ -28,7 +28,7 @@ function prefixSchemaToErrors(
     schema.set(path, (schema.get(path) ?? []).concat(issue))
   }
 
-  const transformedSchema = {} as Record<string, ValidationError>
+  const transformedSchema = {} as Record<string, ValidationError[]>
 
   schema.forEach((value, key) => {
     transformedSchema[key] = transformErrors(value)
@@ -50,7 +50,7 @@ export const standardSchemaValidator =
     const transformFieldErrors =
       params.transformErrors ??
       ((issues: StandardSchemaV1Issue[]) =>
-        issues.map((issue) => issue.message).join(', '))
+        issues.map((issue) => issue.message))
 
     const getTransformStrategy = (validationSource: 'form' | 'field') =>
       validationSource === 'form'

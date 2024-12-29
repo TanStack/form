@@ -136,7 +136,7 @@ Or use the `errorMap` property to access the specific error you're looking for:
         }">
             <template v-slot="{ field }">
             <!-- ... -->
-                <em role="alert" v-if="field.state.meta.errorMap['onChange']">{{ field.state.meta.errorMap['onChange'] }}</em>
+                <em role="alert" v-if="field.state.meta.errorMap['onChange']?.length">{{ field.state.meta.errorMap['onChange'][0] }}</em>
             </template>
     </form.Field>
  <!-- ... -->
@@ -178,9 +178,9 @@ const formErrorMap = form.useStore((state) => state.errorMap)
 
 <template>
     <!-- ... -->
-    <div v-if="formErrorMap.onChange">
+    <div v-if="formErrorMap.onChange?.length">
         <em role="alert">
-            There was an error on the form: {{formErrorMap.onChange }}
+            There was an error on the form: {{formErrorMap.onChange[0] }}
         </em>
     </div>
     <!-- ... -->

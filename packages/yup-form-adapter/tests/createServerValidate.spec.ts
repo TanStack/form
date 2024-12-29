@@ -100,7 +100,7 @@ describe('yup createServerValidate api', () => {
     formData1.append('name', 'aa')
     expect(
       await serverValidate(formData1).catch((e) => e.formState.errors),
-    ).toEqual(['You must have a length of at least 3, UUID'])
+    ).toEqual(['You must have a length of at least 3', 'UUID'])
 
     const formData2 = new FormData()
     formData2.append('name', 'aaa')

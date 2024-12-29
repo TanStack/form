@@ -144,8 +144,8 @@ Or use the `errorMap` property to access the specific error you're looking for:
   {(field) => (
     <>
       {/* ... */}
-      {field().state.meta.errorMap['onChange'] ? (
-        <em>{field().state.meta.errorMap['onChange']}</em>
+      {field().state.meta.errorMap['onChange']?.length ? (
+        <em>{field().state.meta.errorMap['onChange'][0]}</em>
       ) : null}
     </>
   )}
@@ -185,9 +185,9 @@ export default function App() {
   return (
     <div>
       {/* ... */}
-      {formErrorMap().onChange ? (
+      {formErrorMap().onChange?.length ? (
         <div>
-          <em>There was an error on the form: {formErrorMap().onChange}</em>
+          <em>There was an error on the form: {formErrorMap().onChange[0]}</em>
         </div>
       ) : null}
       {/* ... */}

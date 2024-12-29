@@ -34,7 +34,8 @@ describe('standard schema validator', () => {
 
       field.setValue('')
       expect(form.state.errors).toStrictEqual([
-        'First name is too short, You must end with an "a"',
+        'First name is too short',
+        'You must end with an "a"',
       ])
     })
 
@@ -55,7 +56,8 @@ describe('standard schema validator', () => {
           }),
         },
         validatorAdapter: standardSchemaValidator({
-          transformErrors: (issues) => issues.map((issue) => issue.message)[0],
+          transformErrors: (issues) =>
+            issues.map((issue) => '-> ' + issue.message),
         }),
       })
 
@@ -67,7 +69,10 @@ describe('standard schema validator', () => {
       field.mount()
 
       field.setValue('')
-      expect(form.state.errors).toStrictEqual(['First name is too short'])
+      expect(form.state.errors).toStrictEqual([
+        '-> First name is too short',
+        '-> You must end with an "a"',
+      ])
     })
 
     it('should detect an async standard schema validator even without a validator adapter', async () => {
@@ -251,7 +256,8 @@ describe('standard schema validator', () => {
       expect(nameField.getMeta().errors).toEqual([])
       nameField.setValue('q')
       expect(nameField.getMeta().errors).toEqual([
-        'You must have a length of at least 3, You must end with an "a"',
+        'You must have a length of at least 3',
+        'You must end with an "a"',
       ])
       expect(surnameField.getMeta().errors).toEqual([
         'You must have a length of at least 3',
@@ -393,5 +399,54 @@ describe('standard schema validator', () => {
     expect(field.getMeta().errors).toStrictEqual([
       'email must be an email address',
     ])
+  })
+
+  it('should handle multiple errors on a field', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChange: z
+          .string()
+          .min(3, 'You must have a length of at least 3')
+          .regex(/^[a-z]+$/i, 'You must have only letters'),
+      },
+    })
+
+    field.mount()
+
+    // valid by default
+    expect(field.getMeta().errors).toEqual([])
+    expect(field.getMeta().errorMap.onChange).toEqual(undefined)
+
+    // too short
+    field.setValue('a')
+    expect(field.getMeta().errors).toEqual([
+      'You must have a length of at least 3',
+    ])
+    expect(field.getMeta().errorMap.onChange).toEqual([
+      'You must have a length of at least 3',
+    ])
+
+    // too short and invalid character
+    field.setValue('a#')
+    expect(field.getMeta().errors).toEqual([
+      'You must have a length of at least 3',
+      'You must have only letters',
+    ])
+    expect(field.getMeta().errorMap.onChange).toEqual([
+      'You must have a length of at least 3',
+      'You must have only letters',
+    ])
+
+    // valid
+    field.setValue('asdf')
+    expect(field.getMeta().errors).toEqual([])
+    expect(field.getMeta().errorMap.onChange).toEqual(undefined)
   })
 })

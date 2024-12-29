@@ -1,5 +1,6 @@
 import type {
   ValidationError,
+  ValidationResult,
   Validator,
   ValidatorAdapterParams,
 } from '@tanstack/form-core'
@@ -24,7 +25,7 @@ export function prefixSchemaToErrors(
     schema.set(path, (schema.get(path) ?? []).concat(zodError))
   }
 
-  const transformedSchema = {} as Record<string, ValidationError>
+  const transformedSchema = {} as Record<string, ValidationError[]>
 
   schema.forEach((value, key) => {
     transformedSchema[key] = transformErrors(value)
@@ -49,7 +50,7 @@ export const zodValidator =
   () => {
     const transformFieldErrors =
       params.transformErrors ??
-      ((issues: ZodIssue[]) => issues.map((issue) => issue.message).join(', '))
+      ((issues: ZodIssue[]) => issues.map((issue) => issue.message))
 
     const getTransformStrategy = (validationSource: 'form' | 'field') =>
       validationSource === 'form'
