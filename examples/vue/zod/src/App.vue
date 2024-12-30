@@ -13,7 +13,7 @@ const form = useForm({
     // Do something with form data
     alert(JSON.stringify(value))
   },
-  // Add a validator to support Zod usage in Form and Field
+  // Add a validator to support Zod usage in Form and Field (no longer needed with zod@3.24.0 or higher)
   validatorAdapter: zodValidator(),
 })
 

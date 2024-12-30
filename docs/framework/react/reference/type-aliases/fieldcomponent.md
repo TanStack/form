@@ -9,7 +9,7 @@ title: FieldComponent
 type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData>({
   children,
   ...fieldOptions
-}) => NodeType;
+}) => ReactNode;
 ```
 
 A type alias representing a field component for a specific form data type.
@@ -30,15 +30,17 @@ A type alias representing a field component for a specific form data type.
 
 ## Parameters
 
-• **\{
+### \{
   children,
   ...fieldOptions
-\}**: `Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
+\}
+
+`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
 
 ## Returns
 
-`NodeType`
+`ReactNode`
 
 ## Defined in
 
-[useField.tsx:134](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L134)
+[packages/react-form/src/useField.tsx:134](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L134)

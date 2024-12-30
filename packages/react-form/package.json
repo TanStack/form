@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/react-form",
-  "version": "0.34.0",
+  "version": "0.41.0",
   "description": "Powerful, type-safe forms for React.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -18,12 +18,12 @@
     "clean": "rimraf ./dist && rimraf ./coverage",
     "test:eslint": "eslint ./src ./tests",
     "test:types": "pnpm run \"/^test:types:ts[0-9]{2}$/\"",
-    "test:types:ts49": "node ../../node_modules/typescript49/lib/tsc.js -p tsconfig.legacy.json",
-    "test:types:ts50": "node ../../node_modules/typescript50/lib/tsc.js -p tsconfig.legacy.json",
     "test:types:ts51": "node ../../node_modules/typescript51/lib/tsc.js",
     "test:types:ts52": "node ../../node_modules/typescript52/lib/tsc.js",
     "test:types:ts53": "node ../../node_modules/typescript53/lib/tsc.js",
-    "test:types:ts54": "tsc",
+    "test:types:ts54": "node ../../node_modules/typescript54/lib/tsc.js",
+    "test:types:ts55": "node ../../node_modules/typescript55/lib/tsc.js",
+    "test:types:ts56": "tsc",
     "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
@@ -54,6 +54,16 @@
         "default": "./dist/cjs/nextjs/index.cjs"
       }
     },
+    "./remix": {
+      "import": {
+        "types": "./dist/esm/remix/index.d.ts",
+        "default": "./dist/esm/remix/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/remix/index.d.cts",
+        "default": "./dist/cjs/remix/index.cjs"
+      }
+    },
     "./start": {
       "import": {
         "types": "./dist/esm/start/index.d.ts",
@@ -72,19 +82,20 @@
     "src"
   ],
   "dependencies": {
-    "@remix-run/node": "^2.13.1",
+    "@remix-run/node": "^2.15.0",
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/react-store": "^0.5.5",
+    "@tanstack/react-store": "^0.7.0",
     "decode-formdata": "^0.8.0"
   },
   "devDependencies": {
-    "@tanstack/start": "^1.66.0",
+    "@tanstack/start": "^1.81.1",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.2",
+    "@vitejs/plugin-react": "^4.3.3",
+    "eslint-plugin-react-compiler": "^19.0.0-beta-0dec889-20241115",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "vite": "^5.4.8"
+    "vite": "^5.4.11"
   },
   "peerDependencies": {
     "@tanstack/start": "^1.43.13",

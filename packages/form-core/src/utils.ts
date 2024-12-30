@@ -49,7 +49,10 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
 
     const key = path.shift()
 
-    if (typeof key === 'string') {
+    if (
+      typeof key === 'string' ||
+      (typeof key === 'number' && !Array.isArray(parent))
+    ) {
       if (typeof parent === 'object') {
         if (parent === null) {
           parent = {}
@@ -64,7 +67,7 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
       }
     }
 
-    if (Array.isArray(parent) && key !== undefined) {
+    if (Array.isArray(parent) && typeof key === 'number') {
       const prefix = parent.slice(0, key)
       return [
         ...(prefix.length ? prefix : new Array(key)),
@@ -277,17 +280,24 @@ export function getSyncValidatorArray<T>(
   cause: ValidationCause,
   options: SyncValidatorArrayPartialOptions<T>,
 ): T extends FieldValidators<any, any>
-  ? Array<SyncValidator<T['onChange'] | T['onBlur'] | T['onSubmit']>>
+  ? Array<
+      SyncValidator<T['onChange'] | T['onBlur'] | T['onSubmit'] | T['onMount']>
+    >
   : T extends FormValidators<any, any>
-    ? Array<SyncValidator<T['onChange'] | T['onBlur'] | T['onSubmit']>>
+    ? Array<
+        SyncValidator<
+          T['onChange'] | T['onBlur'] | T['onSubmit'] | T['onMount']
+        >
+      >
     : never {
-  const { onChange, onBlur, onSubmit } = (options.validators || {}) as
+  const { onChange, onBlur, onSubmit, onMount } = (options.validators || {}) as
     | FieldValidators<any, any>
     | FormValidators<any, any>
 
   const changeValidator = { cause: 'change', validate: onChange } as const
   const blurValidator = { cause: 'blur', validate: onBlur } as const
   const submitValidator = { cause: 'submit', validate: onSubmit } as const
+  const mountValidator = { cause: 'mount', validate: onMount } as const
 
   // Allows us to clear onServer errors
   const serverValidator = {
@@ -296,6 +306,8 @@ export function getSyncValidatorArray<T>(
   } as const
 
   switch (cause) {
+    case 'mount':
+      return [mountValidator] as never
     case 'submit':
       return [
         changeValidator,

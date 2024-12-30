@@ -3,37 +3,6 @@ import { FieldApi, FormApi } from '../src/index'
 import { sleep } from './utils'
 
 describe('form api', () => {
-  it('should get default form state', () => {
-    const form = new FormApi()
-    form.mount()
-    expect(form.state).toEqual({
-      values: {},
-      fieldMeta: {},
-      canSubmit: true,
-      isFieldsValid: true,
-      isFieldsValidating: false,
-      isFormValid: true,
-      isFormValidating: false,
-      isSubmitted: false,
-      errors: [],
-      errorMap: {},
-      isSubmitting: false,
-      isTouched: false,
-      isBlurred: false,
-      isPristine: true,
-      isDirty: false,
-      isValid: true,
-      isValidating: false,
-      submissionAttempts: 0,
-      validationMetaMap: {
-        onChange: undefined,
-        onBlur: undefined,
-        onSubmit: undefined,
-        onMount: undefined,
-      },
-    })
-  })
-
   it('should get default form state when default values are passed', () => {
     const form = new FormApi({
       defaultValues: {
@@ -41,32 +10,9 @@ describe('form api', () => {
       },
     })
     form.mount()
-    expect(form.state).toEqual({
+    expect(form.state).toMatchObject({
       values: {
         name: 'test',
-      },
-      fieldMeta: {},
-      canSubmit: true,
-      isFieldsValid: true,
-      errors: [],
-      errorMap: {},
-      isFieldsValidating: false,
-      isFormValid: true,
-      isFormValidating: false,
-      isSubmitted: false,
-      isSubmitting: false,
-      isTouched: false,
-      isBlurred: false,
-      isPristine: true,
-      isDirty: false,
-      isValid: true,
-      isValidating: false,
-      submissionAttempts: 0,
-      validationMetaMap: {
-        onChange: undefined,
-        onBlur: undefined,
-        onSubmit: undefined,
-        onMount: undefined,
       },
     })
   })
@@ -78,31 +24,8 @@ describe('form api', () => {
       },
     })
     form.mount()
-    expect(form.state).toEqual({
-      values: {},
-      fieldMeta: {},
-      errors: [],
-      errorMap: {},
-      canSubmit: true,
-      isFieldsValid: true,
-      isFieldsValidating: false,
-      isFormValid: true,
-      isFormValidating: false,
-      isSubmitted: false,
-      isSubmitting: false,
-      isTouched: false,
-      isBlurred: false,
-      isPristine: true,
-      isDirty: false,
-      isValid: true,
-      isValidating: false,
+    expect(form.state).toMatchObject({
       submissionAttempts: 30,
-      validationMetaMap: {
-        onChange: undefined,
-        onBlur: undefined,
-        onSubmit: undefined,
-        onMount: undefined,
-      },
     })
   })
 
@@ -122,34 +45,11 @@ describe('form api', () => {
       },
     })
 
-    expect(form.state).toEqual({
+    expect(form.state).toMatchObject({
       values: {
         name: 'other',
       },
-      errors: [],
-      errorMap: {},
-      fieldMeta: {},
-      canSubmit: true,
-      isFieldsValid: true,
-      isFieldsValidating: false,
-      isFormValid: true,
-      isFormValidating: false,
-      isSubmitted: false,
-      isSubmitting: false,
-      isTouched: false,
-      isBlurred: false,
-      isPristine: true,
-      isDirty: false,
-      isValid: true,
-      isValidating: false,
       submissionAttempts: 300,
-      validationMetaMap: {
-        onChange: undefined,
-        onBlur: undefined,
-        onSubmit: undefined,
-        onMount: undefined,
-        onServer: undefined,
-      },
     })
   })
 
@@ -167,99 +67,85 @@ describe('form api', () => {
 
     form.reset()
 
-    expect(form.state).toEqual({
+    expect(form.state).toMatchObject({
       values: {
         name: 'test',
       },
-      errors: [],
-      errorMap: {},
       fieldMeta: {},
-      canSubmit: true,
-      isFieldsValid: true,
-      isFieldsValidating: false,
-      isFormValid: true,
-      isFormValidating: false,
-      isSubmitted: false,
-      isSubmitting: false,
-      isTouched: false,
-      isBlurred: false,
-      isPristine: true,
-      isDirty: false,
-      isValid: true,
-      isValidating: false,
       submissionAttempts: 0,
-      validationMetaMap: {
-        onChange: undefined,
-        onBlur: undefined,
-        onSubmit: undefined,
-        onMount: undefined,
+    })
+  })
+
+  it('should reset with provided custom default values', () => {
+    const defaultValues = {
+      name: 'test',
+      surname: 'test2',
+      age: 30,
+    }
+    const form = new FormApi({
+      defaultValues: defaultValues,
+    })
+
+    form.mount()
+    form.setFieldValue('name', 'other')
+
+    expect(form.state.values).toEqual({
+      name: 'other',
+      surname: 'test2',
+      age: 30,
+    })
+
+    form.reset()
+
+    expect(form.state.values).toEqual(defaultValues)
+
+    form.setFieldValue('name', 'other2')
+    form.setFieldValue('age', 33)
+
+    const resetValues = {
+      name: 'reset name',
+      age: 40,
+      surname: 'reset surname',
+    }
+    form.reset(resetValues)
+
+    expect(form.state).toMatchObject({
+      values: {
+        name: 'reset name',
+        age: 40,
+        surname: 'reset surname',
       },
     })
   })
 
-  it('should not wipe validators when resetting', () => {
-    const form = new FormApi({
-      defaultValues: {
-        name: 'test',
-      },
-    })
-
-    const field = new FieldApi({
-      form,
-      name: 'name',
-      validators: {
-        onChange: ({ value }) => (value.length > 0 ? undefined : 'required'),
-      },
-    })
-
+  it('should reset and set the new default values that are restored after an empty reset', () => {
+    const form = new FormApi({ defaultValues: { name: 'initial' } })
     form.mount()
 
+    const field = new FieldApi({ form, name: 'name' })
     field.mount()
 
+    form.reset({ name: 'other' })
+    expect(form.state.values).toEqual({ name: 'other' })
+
     field.handleChange('')
-
-    expect(form.state.isFieldsValid).toEqual(false)
-    expect(form.state.canSubmit).toEqual(false)
-
     form.reset()
+    expect(form.state.values).toEqual({ name: 'other' })
+  })
 
-    expect(form.state).toEqual({
-      values: { name: 'test' },
-      errors: [],
-      errorMap: {},
-      fieldMeta: {
-        name: {
-          isValidating: false,
-          isTouched: false,
-          isBlurred: false,
-          isDirty: false,
-          isPristine: true,
-          errors: [],
-          errorMap: {},
-        },
-      },
-      canSubmit: true,
-      isFieldsValid: true,
-      isFieldsValidating: false,
-      isFormValid: true,
-      isFormValidating: false,
-      isSubmitted: false,
-      isSubmitting: false,
-      isTouched: false,
-      isBlurred: false,
-      isPristine: true,
-      isDirty: false,
-      isValid: true,
-      isValidating: false,
-      submissionAttempts: 0,
-      validationMetaMap: {
-        onChange: undefined,
-        onBlur: undefined,
-        onSubmit: undefined,
-        onMount: undefined,
-        onServer: undefined,
-      },
-    })
+  it('should reset without setting the new default values that are restored after an empty reset if opts.keepDefaultValues is true', () => {
+    const form = new FormApi({ defaultValues: { name: 'initial' } })
+    form.mount()
+
+    const field = new FieldApi({ form, name: 'name' })
+    field.mount()
+
+    form.reset({ name: 'other' }, { keepDefaultValues: true })
+    expect(form.state.values).toEqual({ name: 'other' })
+
+    field.handleChange('')
+    form.reset()
+    expect(form.state.values).toEqual({ name: 'initial' })
   })
 
   it("should get a field's value", () => {
@@ -359,7 +245,8 @@ describe('form api', () => {
     })
     form.mount()
     // Since validation runs through the field, a field must be mounted for that array
-    new FieldApi({ form, name: 'names' }).mount()
+    const field = new FieldApi({ form, name: 'names' })
+    field.mount()
 
     form.pushFieldValue('names', 'other')
 
@@ -716,6 +603,8 @@ describe('form api', () => {
 
     const form = new FormApi<Form>()
 
+    form.mount()
+
     const field = new FieldApi({
       form,
       name: 'employees',
@@ -743,7 +632,7 @@ describe('form api', () => {
     }
 
     const form = new FormApi<Form>()
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'employees',
@@ -824,7 +713,7 @@ describe('form api', () => {
         age: 4,
       },
     })
-
+    form.mount()
     form.deleteField('names')
 
     expect(form.getFieldValue('age')).toStrictEqual(4)
@@ -1233,6 +1122,35 @@ describe('form api', () => {
     })
   })
 
+  it('should remove onMount error when the form is touched', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'other',
+      },
+      validators: {
+        onMount: ({ value }) => {
+          if (value.name === 'other') return 'Please enter a different value'
+          return
+        },
+      },
+    })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    form.mount()
+    field.mount()
+
+    expect(form.state.errors).toStrictEqual(['Please enter a different value'])
+    expect(form.state.errorMap).toEqual({
+      onMount: 'Please enter a different value',
+    })
+
+    form.setFieldValue('name', 'test')
+    expect(form.state.errors).toStrictEqual([])
+  })
+
   it('should validate fields during submit', async () => {
     const form = new FormApi({
       defaultValues: {
@@ -1240,6 +1158,7 @@ describe('form api', () => {
         lastName: '',
       },
     })
+    form.mount()
 
     const field = new FieldApi({
       form,
@@ -1279,7 +1198,7 @@ describe('form api', () => {
         person: null,
       } as { person: { firstName: string; lastName: string } | null },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'person.firstName',
@@ -1319,7 +1238,7 @@ describe('form api', () => {
         lastName: '',
       },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'firstName',
@@ -1344,6 +1263,51 @@ describe('form api', () => {
     ])
   })
 
+  it('should run form validation once during submit', async () => {
+    vi.useFakeTimers()
+    const formSubmit = vi.fn()
+    const fieldChangeValidator = vi
+      .fn()
+      .mockImplementation(async ({ value }) => {
+        await sleep(1000)
+        return value.length > 0 ? undefined : 'first name is required'
+      })
+
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      },
+      validators: {
+        onSubmitAsync: formSubmit,
+      },
+    })
+    form.mount()
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onChangeAsync: fieldChangeValidator,
+      },
+    })
+
+    field.mount()
+    field.handleChange('test')
+
+    await vi.runAllTimersAsync()
+    expect(fieldChangeValidator).toHaveBeenCalledOnce()
+
+    form.handleSubmit()
+    await vi.runAllTimersAsync()
+
+    expect(form.state.isFieldsValid).toEqual(true)
+    expect(form.state.isValid).toEqual(true)
+    expect(form.state.canSubmit).toEqual(true)
+
+    expect(fieldChangeValidator).toHaveBeenCalledTimes(2)
+    expect(formSubmit).toHaveBeenCalledOnce()
+  })
+
   it('should run all types of async validation on fields during submit', async () => {
     vi.useFakeTimers()
 
@@ -1353,7 +1317,7 @@ describe('form api', () => {
         lastName: '',
       },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'firstName',
@@ -1390,7 +1354,7 @@ describe('form api', () => {
         firstName: '',
       },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'firstName',
@@ -1433,8 +1397,8 @@ describe('form api', () => {
       },
     })
 
-    field.mount()
     form.mount()
+    field.mount()
 
     await form.validateAllFields('change')
     expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
@@ -1462,8 +1426,8 @@ describe('form api', () => {
       },
     })
 
-    field.mount()
     form.mount()
+    field.mount()
 
     await form.validateField('firstName', 'change')
     expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
@@ -1481,6 +1445,8 @@ describe('form api', () => {
           value.firstName.length > 0 ? undefined : 'first name is required',
       },
     })
+
+    form.mount()
 
     const field = new FieldApi({
       form,
@@ -1503,7 +1469,7 @@ describe('form api', () => {
           value.firstName.length > 0 ? undefined : 'first name is required',
       },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'firstName',
@@ -1515,13 +1481,37 @@ describe('form api', () => {
     expect(form.state.errors).toStrictEqual(['first name is required'])
   })
 
+  it('should run listener onSubmit', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    let triggered!: string
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onSubmit: ({ value }) => {
+          triggered = value
+        },
+      },
+    })
+
+    field.mount()
+    await form.handleSubmit()
+
+    expect(triggered).toStrictEqual('test')
+  })
+
   it('should update a nullable object', async () => {
     const form = new FormApi({
       defaultValues: {
         person: null,
       } as { person: { firstName: string } | null },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'person.firstName',
@@ -1541,7 +1531,7 @@ describe('form api', () => {
         person: null,
       } as { person: { nameInfo: { first: string } | null } | null },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'person.nameInfo.first',
@@ -1561,7 +1551,7 @@ describe('form api', () => {
         persons: null,
       } as { persons: Array<{ nameInfo: { first: string } }> | null },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'persons',
@@ -1580,6 +1570,7 @@ describe('form api', () => {
       name: string
     }
     const form = new FormApi<Form>()
+    form.mount()
     form.setErrorMap({
       onChange: "name can't be Josh",
     })
@@ -1591,6 +1582,7 @@ describe('form api', () => {
       name: string
     }
     const form = new FormApi<Form>()
+    form.mount()
     form.setErrorMap({
       onChange: "name can't be Josh",
     })
@@ -1607,6 +1599,7 @@ describe('form api', () => {
       name: string
     }
     const form = new FormApi<Form>()
+    form.mount()
     form.setErrorMap({
       onChange: "name can't be Josh",
     })
@@ -1637,6 +1630,8 @@ describe('form api', () => {
         },
       },
     })
+
+    form.mount()
 
     const firstNameField = new FieldApi({
       form,
@@ -1679,6 +1674,123 @@ describe('form api', () => {
     expect(form.state.errors).toStrictEqual([])
   })
 
+  it('should run validators in order form sync -> field sync -> form async -> field async', async () => {
+    const order: string[] = []
+    const formAsyncChange = vi.fn().mockImplementation(async () => {
+      order.push('formAsyncChange')
+      await sleep(1000)
+    })
+    const formSyncChange = vi.fn().mockImplementation(() => {
+      order.push('formSyncChange')
+    })
+    const fieldAsyncChange = vi.fn().mockImplementation(async () => {
+      order.push('fieldAsyncChange')
+      await sleep(1000)
+    })
+    const fieldSyncChange = vi.fn().mockImplementation(() => {
+      order.push('fieldSyncChange')
+    })
+
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onChange: formSyncChange,
+        onChangeAsync: formAsyncChange,
+      },
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onChange: fieldSyncChange,
+        onChangeAsync: fieldAsyncChange,
+      },
+    })
+
+    form.mount()
+    firstNameField.mount()
+
+    firstNameField.handleChange('something')
+    await vi.runAllTimersAsync()
+
+    expect(order).toStrictEqual([
+      'formSyncChange',
+      'fieldSyncChange',
+      'formAsyncChange',
+      'fieldAsyncChange',
+    ])
+  })
+
+  it('should not run form async validator if field sync has errored', async () => {
+    const formAsyncChange = vi.fn()
+    const formSyncChange = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onChange: formSyncChange,
+        onChangeAsync: formAsyncChange,
+      },
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onChange: ({ value }) => (value.length > 0 ? undefined : 'field error'),
+      },
+    })
+
+    form.mount()
+    firstNameField.mount()
+
+    firstNameField.handleChange('')
+    await vi.runAllTimersAsync()
+
+    expect(formSyncChange).toHaveBeenCalled()
+    expect(firstNameField.state.meta.errorMap.onChange).toBe('field error')
+    expect(formAsyncChange).not.toHaveBeenCalled()
+  })
+
+  it('runs form async validator if field sync has errored and asyncAlways is true', async () => {
+    const formAsyncChange = vi.fn()
+    const formSyncChange = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onChange: formSyncChange,
+        onChangeAsync: formAsyncChange,
+      },
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+      asyncAlways: true,
+      validators: {
+        onChange: ({ value }) => (value.length > 0 ? undefined : 'field error'),
+      },
+    })
+
+    form.mount()
+    firstNameField.mount()
+
+    firstNameField.handleChange('')
+    await vi.runAllTimersAsync()
+
+    expect(formSyncChange).toHaveBeenCalled()
+    expect(firstNameField.state.meta.errorMap.onChange).toBe('field error')
+    expect(formAsyncChange).toHaveBeenCalled()
+  })
+
   it("should set errors for the fields from the form's onChange validator", async () => {
     const form = new FormApi({
       defaultValues: {
@@ -1698,7 +1810,7 @@ describe('form api', () => {
         },
       },
     })
-
+    form.mount()
     const firstNameField = new FieldApi({
       form,
       name: 'firstName',
@@ -1760,7 +1872,7 @@ describe('form api', () => {
         },
       },
     })
-
+    form.mount()
     const firstNameField = new FieldApi({
       form,
       name: 'firstName',
@@ -1829,7 +1941,7 @@ describe('form api', () => {
         },
       },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'names',
@@ -1868,7 +1980,7 @@ describe('form api', () => {
       validators: {
         onSubmit: ({ value }) => {
           const fieldWithErrorIndex = value.employees.findIndex(
-            (v) => v.firstName === 'person-2',
+            (val) => val.firstName === 'person-2',
           )
 
           if (fieldWithErrorIndex !== -1) {
@@ -1883,7 +1995,7 @@ describe('form api', () => {
         },
       },
     })
-
+    form.mount()
     const field = new FieldApi({
       form,
       name: 'employees',
@@ -1936,7 +2048,7 @@ describe('form api', () => {
         },
       },
     })
-
+    form.mount()
     const passField = new FieldApi({
       form,
       name: 'password',
@@ -1988,7 +2100,7 @@ describe('form api', () => {
         },
       },
     })
-
+    form.mount()
     const passField = new FieldApi({
       form,
       name: 'password',
@@ -2023,4 +2135,65 @@ describe('form api', () => {
     expect(form.state.canSubmit).toBe(true)
     expect(passconfirmField.state.meta.errors.length).toBe(0)
   })
+
+  it("should set field errors from the form's onMount validator", async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onMount: () => {
+          return {
+            form: 'something went wrong',
+            fields: {
+              firstName: 'first name is required',
+            },
+          }
+        },
+      },
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+
+    firstNameField.mount()
+    form.mount()
+
+    expect(form.state.errorMap.onMount).toBe('something went wrong')
+    expect(firstNameField.state.meta.errorMap.onMount).toBe(
+      'first name is required',
+    )
+  })
+})
+
+it('should not change the onBlur state of the fields when the form is submitted', async () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+    },
+  })
+
+  const firstNameField = new FieldApi({
+    form,
+    name: 'firstName',
+  })
+  firstNameField.mount()
+
+  const lastNameField = new FieldApi({
+    form,
+    name: 'lastName',
+  })
+  lastNameField.mount()
+
+  firstNameField.handleBlur()
+
+  expect(firstNameField.state.meta.isBlurred).toBe(true)
+
+  await form.handleSubmit()
+
+  expect(firstNameField.state.meta.isBlurred).toBe(true)
+  expect(lastNameField.state.meta.isBlurred).toBe(false)
 })

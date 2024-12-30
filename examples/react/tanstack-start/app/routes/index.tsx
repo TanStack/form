@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { mergeForm, useForm, useTransform } from '@tanstack/react-form'
+import { useStore } from '@tanstack/react-store'
 import { formOpts, getFormDataFromServer, handleForm } from '~/utils/form'
 
 export const Route = createFileRoute('/')({
@@ -16,7 +17,7 @@ function Home() {
     transform: useTransform((baseForm) => mergeForm(baseForm, state), [state]),
   })
 
-  const formErrors = form.useStore((formState) => formState.errors)
+  const formErrors = useStore(form.store, (formState) => formState.errors)
 
   return (
     <form action={handleForm.url} method="post" encType={'multipart/form-data'}>

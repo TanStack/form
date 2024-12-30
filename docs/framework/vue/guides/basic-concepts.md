@@ -146,22 +146,25 @@ Example:
 </template>
 ```
 
-## Validation Adapters
+## Validation with Standard Schema Libraries
 
-In addition to hand-rolled validation options, we also provide adapters like `@tanstack/zod-form-adapter`, `@tanstack/yup-form-adapter`, and `@tanstack/valibot-form-adapter` to enable usage with common schema validation tools like [Zod](https://zod.dev/), [Yup](https://github.com/jquense/yup), and [Valibot](https://valibot.dev/).
+In addition to hand-rolled validation options, we also support the [Standard Schema](https://github.com/standard-schema/standard-schema) specification.
 
-Example:
+You can define a schema using any of the libraries implementing the specification and pass it to a form or field validator.
+
+Supported libraries include:
+
+- [Zod](https://zod.dev/)
+- [Valibot](https://valibot.dev/)
+- [ArkType](https://arktype.io/)
 
 ```vue
 <script setup lang="ts">
 import { useForm } from '@tanstack/vue-form'
-import { zodValidator } from '@tanstack/zod-form-adapter'
 import { z } from 'zod'
 
 const form = useForm({
   // ...
-  // Add a validator to support Zod usage in Form and Field
-  validatorAdapter: zodValidator(),
 })
 
 const onChangeFirstName = z.string().refine(
@@ -227,6 +230,35 @@ const firstName = form.useStore((state) => state.values.firstName)
     <!-- ... -->
 </template>
 ```
+
+## Listeners
+
+`@tanstack/vue-form` allows you to react to specific triggers and "listen" to them to dispatch side effects.
+
+Example:
+
+```vue
+<template>
+    <form.Field
+      name="country"
+      :listeners="{
+        onChange: ({ value }) => {
+          console.log(`Country changed to: ${value}, resetting province`)
+          form.setFieldValue('province', '')
+        } 
+      }"
+    >
+      <template v-slot="{ field }">
+        <input
+          :value="field.state.value"
+          @input="(e) => field.handleChange(e.target.value)"
+        />
+      </template>
+    </form.Field>
+</template>
+```
+
+More information can be found at [Listeners](./listeners.md)
 
 Note: The usage of the `form.useField` method to achieve reactivity is discouraged since it is designed to be used thoughtfully within the `form.Field` component. You might want to use `form.useStore` instead.
 

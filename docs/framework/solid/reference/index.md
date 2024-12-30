@@ -19,3 +19,4 @@ title: "@tanstack/solid-form"
 - [createField](functions/createfield.md)
 - [createForm](functions/createform.md)
 - [Field](functions/field.md)
+- [useStore](functions/usestore.md)

@@ -35,7 +35,7 @@ If `true`, always run async validation, even if there are errors emitted during 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:287](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L287)
+[packages/form-core/src/FieldApi.ts:311](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L311)
 
 ***
 
@@ -49,7 +49,7 @@ The default time to debounce async validation if there is not a more specific de
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:283](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L283)
+[packages/form-core/src/FieldApi.ts:307](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L307)
 
 ***
 
@@ -63,7 +63,7 @@ An optional object with default metadata for the field.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:305](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L305)
+[packages/form-core/src/FieldApi.ts:329](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L329)
 
 ***
 
@@ -77,7 +77,21 @@ An optional default value for the field.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:279](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L279)
+[packages/form-core/src/FieldApi.ts:303](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L303)
+
+***
+
+### listeners?
+
+```ts
+optional listeners: FieldListeners<TParentData, TName, TFieldValidator, TFormValidator, TData>;
+```
+
+A list of listeners which attach to the corresponding events
+
+#### Defined in
+
+[packages/form-core/src/FieldApi.ts:333](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L333)
 
 ***
 
@@ -91,7 +105,7 @@ The field name. The type will be `DeepKeys<TParentData>` to ensure your name is 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:275](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L275)
+[packages/form-core/src/FieldApi.ts:299](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L299)
 
 ***
 
@@ -105,7 +119,7 @@ A validator provided by an extension, like `yupValidator` from `@tanstack/yup-fo
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:291](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L291)
+[packages/form-core/src/FieldApi.ts:315](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L315)
 
 ***
 
@@ -119,4 +133,4 @@ A list of validators to pass to the field
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:295](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L295)
+[packages/form-core/src/FieldApi.ts:319](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L319)

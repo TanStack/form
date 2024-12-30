@@ -46,12 +46,19 @@ it('should allow a Zod validator to handle the correct Zod type on async methods
   })
 })
 
-it('should allow a functional onChange to be passed when using a validator', () => {
+it('should allow functional validators to be passed when using a validator adapter', () => {
   const form = new FormApi({
     defaultValues: {
       name: 'test',
     },
     validatorAdapter: zodValidator(),
+    validators: {
+      onChange: z.object({
+        name: z.string(),
+      }),
+      onChangeAsync: () => null,
+      onBlur: () => null,
+    },
   } as const)
 
   const field = new FieldApi({
@@ -59,7 +66,7 @@ it('should allow a functional onChange to be passed when using a validator', () 
     name: 'name',
     validators: {
       onChange: ({ value }) => {
-        assertType<'test'>(value)
+        assertType<string>(value)
         return undefined
       },
     },

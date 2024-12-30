@@ -37,11 +37,15 @@ Subscribe: <TSelected>(props, context) => any;
 
 #### Parameters
 
-• **props**
+##### props
 
-• **props.selector?**
+###### selector
 
-• **context**: `SetupContext`\<`EmitsOptions`, `SlotsType`\<`object`\>\>
+(`state`) => `TSelected`
+
+##### context
+
+`SetupContext`\<`EmitsOptions`, `SlotsType`\<`object`\>\>
 
 #### Returns
 
@@ -68,7 +72,7 @@ useField: UseField<TFormData, TFormValidator>;
 ### useStore()
 
 ```ts
-useStore: <TSelected>(selector?) => Readonly<Ref<TSelected>>;
+useStore: <TSelected>(selector?) => Readonly<Ref<TSelected, TSelected>>;
 ```
 
 #### Type Parameters
@@ -77,11 +81,13 @@ useStore: <TSelected>(selector?) => Readonly<Ref<TSelected>>;
 
 #### Parameters
 
-• **selector?**
+##### selector?
+
+(`state`) => `TSelected`
 
 #### Returns
 
-`Readonly`\<`Ref`\<`TSelected`\>\>
+`Readonly`\<`Ref`\<`TSelected`, `TSelected`\>\>
 
 #### Defined in
 

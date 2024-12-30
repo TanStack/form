@@ -1,6 +1,11 @@
-import { Store } from '@tanstack/store'
+import { Derived, batch } from '@tanstack/store'
+import {
+  isStandardSchemaValidator,
+  standardSchemaValidator,
+} from './standardSchemaValidator'
 import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
 import type { FieldInfo, FieldsErrorMapFromValidator, FormApi } from './FormApi'
+import type { StandardSchemaV1 } from './standardSchemaValidator'
 import type {
   UpdateMetaOptions,
   ValidationCause,
@@ -9,8 +14,8 @@ import type {
   ValidationSource,
   Validator,
 } from './types'
-import type { AsyncValidator, SyncValidator, Updater } from './utils'
 import type { DeepKeys, DeepValue, NoInfer } from './util-types'
+import type { AsyncValidator, SyncValidator, Updater } from './utils'
 
 /**
  * @private
@@ -44,33 +49,10 @@ export type FieldValidateOrFn<
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > =
-  TFieldValidator extends Validator<TData, infer TFN>
-    ?
-        | TFN
-        | FieldValidateFn<
-            TParentData,
-            TName,
-            TFieldValidator,
-            TFormValidator,
-            TData
-          >
-    : TFormValidator extends Validator<TParentData, infer FFN>
-      ?
-          | FFN
-          | FieldValidateFn<
-              TParentData,
-              TName,
-              TFieldValidator,
-              TFormValidator,
-              TData
-            >
-      : FieldValidateFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
+  | (TFieldValidator extends Validator<TData, infer TFN> ? TFN : never)
+  | (TFormValidator extends Validator<TParentData, infer FFN> ? FFN : never)
+  | FieldValidateFn<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  | StandardSchemaV1<TData, unknown>
 
 /**
  * @private
@@ -105,33 +87,34 @@ export type FieldAsyncValidateOrFn<
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > =
-  TFieldValidator extends Validator<TData, infer TFN>
-    ?
-        | TFN
-        | FieldValidateAsyncFn<
-            TParentData,
-            TName,
-            TFieldValidator,
-            TFormValidator,
-            TData
-          >
-    : TFormValidator extends Validator<TParentData, infer FFN>
-      ?
-          | FFN
-          | FieldValidateAsyncFn<
-              TParentData,
-              TName,
-              TFieldValidator,
-              TFormValidator,
-              TData
-            >
-      : FieldValidateAsyncFn<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
-          TData
-        >
+  | (TFieldValidator extends Validator<TData, infer TFN> ? TFN : never)
+  | (TFormValidator extends Validator<TParentData, infer FFN> ? FFN : never)
+  | FieldValidateAsyncFn<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData
+    >
+  | StandardSchemaV1<TData, unknown>
+
+/**
+ * @private
+ */
+export type FieldListenerFn<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> = (props: {
+  value: TData
+  fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
+}) => void
 
 export interface FieldValidators<
   TParentData,
@@ -255,6 +238,47 @@ export interface FieldValidators<
   >
 }
 
+export interface FieldListeners<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> {
+  onChange?: FieldListenerFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
+  onBlur?: FieldListenerFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
+  onMount?: FieldListenerFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
+  onSubmit?: FieldListenerFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
+}
+
 /**
  * An object type representing the options for a field in a form.
  */
@@ -303,6 +327,16 @@ export interface FieldOptions<
    * An optional object with default metadata for the field.
    */
   defaultMeta?: Partial<FieldMeta>
+  /**
+   * A list of listeners which attach to the corresponding events
+   */
+  listeners?: FieldListeners<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >
 }
 
 /**
@@ -328,10 +362,7 @@ export interface FieldApiOptions<
   form: FormApi<TParentData, TFormValidator>
 }
 
-/**
- * An object type representing the metadata of a field in a form.
- */
-export type FieldMeta = {
+export type FieldMetaBase = {
   /**
    * A flag indicating whether the field has been touched.
    */
@@ -341,17 +372,9 @@ export type FieldMeta = {
    */
   isBlurred: boolean
   /**
-   * A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
-   */
-  isPristine: boolean
-  /**
    * A flag that is `true` if the field's value has been modified by the user. Opposite of `isPristine`.
    */
   isDirty: boolean
-  /**
-   * An array of errors related to the field value.
-   */
-  errors: ValidationError[]
   /**
    * A map of errors related to the field value.
    */
@@ -361,6 +384,22 @@ export type FieldMeta = {
    */
   isValidating: boolean
 }
+
+export type FieldMetaDerived = {
+  /**
+   * An array of errors related to the field value.
+   */
+  errors: ValidationError[]
+  /**
+   * A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
+   */
+  isPristine: boolean
+}
+
+/**
+ * An object type representing the metadata of a field in a form.
+ */
+export type FieldMeta = FieldMetaBase & FieldMetaDerived
 
 /**
  * An object type representing the state of a field.
@@ -423,15 +462,14 @@ export class FieldApi<
   /**
    * The field state store.
    */
-  store!: Store<FieldState<TData>>
+  store!: Derived<FieldState<TData>>
   /**
    * The current field state.
    */
-  state!: FieldState<TData>
-  /**
-   * @private
-   */
-  prevState!: FieldState<TData>
+  get state() {
+    return this.store.state
+  }
+  timeoutIds: Record<ValidationCause, ReturnType<typeof setTimeout> | null>
 
   /**
    * Initializes a new `FieldApi` instance.
@@ -447,18 +485,18 @@ export class FieldApi<
   ) {
     this.form = opts.form as never
     this.name = opts.name as never
-
+    this.timeoutIds = {} as Record<ValidationCause, never>
     if (opts.defaultValue !== undefined) {
       this.form.setFieldValue(this.name, opts.defaultValue as never, {
         dontUpdateMeta: true,
       })
     }
 
-    this.store = new Store<FieldState<TData>>(
-      {
-        value: this.getValue(),
-
-        meta: this._getMeta() ?? {
+    this.store = new Derived({
+      deps: [this.form.store],
+      fn: () => {
+        const value = this.form.getFieldValue(this.name)
+        const meta = this.form.getFieldMeta(this.name) ?? {
           isValidating: false,
           isTouched: false,
           isBlurred: false,
@@ -467,26 +505,15 @@ export class FieldApi<
           errors: [],
           errorMap: {},
           ...opts.defaultMeta,
-        },
+        }
+
+        return {
+          value,
+          meta,
+        } as FieldState<TData>
       },
-      {
-        onUpdate: () => {
-          const state = this.store.state
+    })
 
-          state.meta.errors = Object.values(state.meta.errorMap).filter(
-            (val: unknown) => val !== undefined,
-          )
-
-          state.meta.isPristine = !state.meta.isDirty
-
-          this.prevState = state
-          this.state = state
-        },
-      },
-    )
-
-    this.state = this.store.state
-    this.prevState = this.state
     this.options = opts as never
   }
 
@@ -513,12 +540,22 @@ export class FieldApi<
       this.options.validatorAdapter,
     ] as const
     for (const adapter of adapters) {
-      if (adapter && typeof props.validate !== 'function') {
+      if (
+        adapter &&
+        (typeof props.validate !== 'function' || '~standard' in props.validate)
+      ) {
         return adapter()[props.type](
           props.value as never,
           props.validate,
         ) as never
       }
+    }
+
+    if (isStandardSchemaValidator(props.validate)) {
+      return standardSchemaValidator()()[props.type](
+        props.value,
+        props.validate,
+      ) as never
     }
 
     return (props.validate as FieldValidateFn<any, any>)(props.value) as never
@@ -528,22 +565,10 @@ export class FieldApi<
    * Mounts the field instance to the form.
    */
   mount = () => {
+    const cleanup = this.store.mount()
+
     const info = this.getInfo()
     info.instance = this as never
-    const unsubscribe = this.form.store.subscribe(() => {
-      this.store.batch(() => {
-        const nextValue = this.getValue()
-        const nextMeta = this.getMeta()
-
-        if (nextValue !== this.state.value) {
-          this.store.setState((prev) => ({ ...prev, value: nextValue }))
-        }
-
-        if (nextMeta !== this.state.meta) {
-          this.store.setState((prev) => ({ ...prev, meta: nextMeta }))
-        }
-      })
-    })
 
     this.update(this.options as never)
     const { onMount } = this.options.validators || {}
@@ -567,9 +592,12 @@ export class FieldApi<
       }
     }
 
-    return () => {
-      unsubscribe()
-    }
+    this.options.listeners?.onMount?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
+
+    return cleanup
   }
 
   /**
@@ -601,7 +629,7 @@ export class FieldApi<
     }
 
     // Default Meta
-    if (this._getMeta() === undefined) {
+    if (this.form.getFieldMeta(this.name) === undefined) {
       this.setMeta(this.state.meta)
     }
 
@@ -621,29 +649,16 @@ export class FieldApi<
    */
   setValue = (updater: Updater<TData>, options?: UpdateMetaOptions) => {
     this.form.setFieldValue(this.name, updater as never, options)
+
+    this.options.listeners?.onChange?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
+
     this.validate('change')
   }
 
-  /**
-   * @private
-   */
-  _getMeta = () => this.form.getFieldMeta(this.name)
-
-  /**
-   * Gets the current field metadata.
-   */
-  getMeta = () =>
-    this._getMeta() ??
-    ({
-      isValidating: false,
-      isTouched: false,
-      isBlurred: false,
-      isDirty: false,
-      isPristine: true,
-      errors: [],
-      errorMap: {},
-      ...this.options.defaultMeta,
-    } as FieldMeta)
+  getMeta = () => this.store.state.meta
 
   /**
    * Sets the field metadata.
@@ -752,7 +767,7 @@ export class FieldApi<
     // Needs type cast as eslint errantly believes this is always falsy
     let hasErrored = false as boolean
 
-    this.form.store.batch(() => {
+    batch(() => {
       const validateFieldFn = (
         field: FieldApi<any, any, any, any>,
         validateObj: SyncValidator<any>,
@@ -771,7 +786,7 @@ export class FieldApi<
                 field.runValidator({
                   validate: validateObj.validate,
                   value: {
-                    value: field.getValue(),
+                    value: field.store.state.value,
                     validationSource: 'field',
                     fieldApi: field,
                   },
@@ -891,14 +906,18 @@ export class FieldApi<
           let rawError!: ValidationError | undefined
           try {
             rawError = await new Promise((rawResolve, rawReject) => {
-              setTimeout(async () => {
+              if (this.timeoutIds[validateObj.cause]) {
+                clearTimeout(this.timeoutIds[validateObj.cause]!)
+              }
+
+              this.timeoutIds[validateObj.cause] = setTimeout(async () => {
                 if (controller.signal.aborted) return rawResolve(undefined)
                 try {
                   rawResolve(
                     await this.runValidator({
                       validate: validateObj.validate,
                       value: {
-                        value: field.getValue(),
+                        value: field.store.state.value,
                         fieldApi: field,
                         signal: controller.signal,
                         validationSource: 'field',
@@ -973,25 +992,12 @@ export class FieldApi<
     // If the field is pristine, do not validate
     if (!this.state.meta.isTouched) return []
 
-    let validationErrorFromForm: ValidationErrorMap = {}
-    let formValidationResultPromise: Promise<
-      FieldsErrorMapFromValidator<TParentData>
-    > = Promise.resolve({})
-
-    try {
-      const formValidationResult = this.form.validate(cause)
-      if (formValidationResult instanceof Promise) {
-        formValidationResultPromise = formValidationResult
-      } else {
-        const fieldErrorFromForm = formValidationResult[this.name]
-        if (fieldErrorFromForm) {
-          validationErrorFromForm = fieldErrorFromForm
-        }
-      }
-    } catch (_) {}
-
     // Attempt to sync validate first
-    const { hasErrored } = this.validateSync(cause, validationErrorFromForm)
+    const { fieldsErrorMap } = this.form.validateSync(cause)
+    const { hasErrored } = this.validateSync(
+      cause,
+      fieldsErrorMap[this.name] ?? {},
+    )
 
     if (hasErrored && !this.options.asyncAlways) {
       this.getInfo().validationMetaMap[
@@ -999,7 +1005,9 @@ export class FieldApi<
       ]?.lastAbortController.abort()
       return this.state.meta.errors
     }
+
     // No error? Attempt async validation
+    const formValidationResultPromise = this.form.validateAsync(cause)
     return this.validateAsync(cause, formValidationResultPromise)
   }
 
@@ -1023,6 +1031,11 @@ export class FieldApi<
       this.setMeta((prev) => ({ ...prev, isBlurred: true }))
     }
     this.validate('blur')
+
+    this.options.listeners?.onBlur?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
   }
 
   /**

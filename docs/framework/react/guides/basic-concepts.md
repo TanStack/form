@@ -144,44 +144,55 @@ Example:
 />
 ```
 
-## Validation Adapters
+## Validation with Standard Schema Libraries
 
-In addition to hand-rolled validation options, we also provide adapters like `@tanstack/zod-form-adapter`, `@tanstack/yup-form-adapter`, and `@tanstack/valibot-form-adapter` to enable usage with common schema validation tools like [Zod](https://zod.dev/), [Yup](https://github.com/jquense/yup), and [Valibot](https://valibot.dev/).
+In addition to hand-rolled validation options, we also support the [Standard Schema](https://github.com/standard-schema/standard-schema) specification.
 
-Example:
+You can define a schema using any of the libraries implementing the specification and pass it to a form or field validator.
+
+Supported libraries include:
+
+- [Zod](https://zod.dev/)
+- [Valibot](https://valibot.dev/)
+- [ArkType](https://arktype.io/)
 
 ```tsx
-import { zodValidator } from '@tanstack/zod-form-adapter'
 import { z } from 'zod'
 
-// ...
-<form.Field
-  name="firstName"
-  validatorAdapter={zodValidator()}
-  validators={{
-    onChange: z.string().min(3, 'First name must be at least 3 characters'),
-    onChangeAsyncDebounceMs: 500,
-    onChangeAsync: z.string().refine(
-      async (value) => {
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-        return !value.includes('error')
-      },
-      {
-        message: "No 'error' allowed in first name",
-      },
-    ),
-  }}
-/>
+const userSchema = z.object({
+  age: z.number().gte(13, 'You must be 13 to make an account'),
+})
+
+function App() {
+  const form = useForm({
+    defaultValues: {
+      age: 0,
+    },
+    validators: {
+      onChange: userSchema,
+    },
+  })
+  return (
+    <div>
+      <form.Field
+        name="age"
+        children={(field) => {
+          return <>{/* ... */}</>
+        }}
+      />
+    </div>
+  )
+}
 ```
 
 ## Reactivity
 
-`@tanstack/react-form` offers various ways to subscribe to form and field state changes, most notably the `form.useStore` hook and the `form.Subscribe` component. These methods allow you to optimize your form's rendering performance by only updating components when necessary.
+`@tanstack/react-form` offers various ways to subscribe to form and field state changes, most notably the `useStore(form.store)` hook and the `form.Subscribe` component. These methods allow you to optimize your form's rendering performance by only updating components when necessary.
 
 Example:
 
 ```tsx
-const firstName = form.useStore((state) => state.values.firstName)
+const firstName = useStore(form.store, (state) => state.values.firstName)
 //...
 <form.Subscribe
   selector={(state) => [state.canSubmit, state.isSubmitting]}
@@ -193,7 +204,27 @@ const firstName = form.useStore((state) => state.values.firstName)
 />
 ```
 
-Note: The usage of the `form.useField` hook to achieve reactivity is discouraged since it is designed to be used thoughtfully within the `form.Field` component. You might want to use `form.useStore` instead.
+Note: The usage of the `useField` hook to achieve reactivity is discouraged since it is designed to be used thoughtfully within the `form.Field` component. You might want to use `useStore(form.store)` instead.
+
+## Listeners
+
+`@tanstack/react-form` allows you to react to specific triggers and "listen" to them to dispatch side effects.
+
+Example:
+
+```tsx
+<form.Field
+  name="country"
+  listeners={{
+    onChange: ({ value }) => {
+      console.log(`Country changed to: ${value}, resetting province`)
+      form.setFieldValue('province', '')
+    }
+  }}
+/>
+```
+
+More information can be found at [Listeners](./listeners.md)
 
 ## Array Fields
 

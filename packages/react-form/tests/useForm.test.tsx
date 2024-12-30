@@ -2,6 +2,8 @@ import * as React from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
+import { useStore } from '@tanstack/react-store'
+import { useEffect } from 'react'
 import { useForm } from '../src/index'
 import { sleep } from './utils'
 
@@ -175,7 +177,7 @@ describe('useForm', () => {
           },
         },
       })
-      const onChangeError = form.useStore((s) => s.errorMap.onChange)
+      const onChangeError = useStore(form.store, (s) => s.errorMap.onChange)
       return (
         <>
           <form.Field
@@ -222,7 +224,7 @@ describe('useForm', () => {
         },
       })
 
-      const errors = form.useStore((s) => s.errors)
+      const errors = useStore(form.store, (s) => s.errors)
       return (
         <>
           <form.Field
@@ -272,7 +274,7 @@ describe('useForm', () => {
             value.firstName === 'other' ? error : undefined,
         },
       })
-      const errors = form.useStore((s) => s.errorMap)
+      const errors = useStore(form.store, (s) => s.errorMap)
       return (
         <>
           <form.Field
@@ -323,7 +325,7 @@ describe('useForm', () => {
         },
       })
 
-      const errors = form.useStore((s) => s.errorMap)
+      const errors = useStore(form.store, (s) => s.errorMap)
       return (
         <>
           <form.Field
@@ -381,7 +383,7 @@ describe('useForm', () => {
         },
       })
 
-      const errors = form.useStore((s) => s.errorMap)
+      const errors = useStore(form.store, (s) => s.errorMap)
       return (
         <>
           <form.Field
@@ -447,7 +449,7 @@ describe('useForm', () => {
           },
         },
       })
-      const errors = form.useStore((s) => s.errorMap)
+      const errors = useStore(form.store, (s) => s.errorMap)
       return (
         <>
           <form.Field
@@ -501,7 +503,7 @@ describe('useForm', () => {
         },
       })
 
-      const errors = form.useStore((s) => s.errorMap)
+      const errors = useStore(form.store, (s) => s.errorMap)
 
       return (
         <>
@@ -572,7 +574,7 @@ describe('useForm', () => {
           },
         },
       })
-      const errors = form.useStore((s) => s.errorMap)
+      const errors = useStore(form.store, (s) => s.errorMap)
 
       return (
         <>
@@ -633,7 +635,7 @@ describe('useForm', () => {
           },
         },
       })
-      const errors = form.useStore((s) => s.errors)
+      const errors = useStore(form.store, (s) => s.errors)
 
       return (
         <>
@@ -686,7 +688,7 @@ describe('useForm', () => {
         },
       })
 
-      const onChangeError = form.useStore((s) => s.errorMap.onChange)
+      const onChangeError = useStore(form.store, (s) => s.errorMap.onChange)
 
       return (
         <>
@@ -730,5 +732,36 @@ describe('useForm', () => {
     await waitFor(() =>
       expect(formError.textContent).toBe('Something went wrong'),
     )
+  })
+
+  it('should not cause infinite re-renders when listening to state.errors', () => {
+    const fn = vi.fn()
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+        onSubmit: async ({ value }) => {
+          // Do something with form data
+          console.log(value)
+        },
+      })
+
+      const { errors } = useStore(form.store, (state) => ({
+        errors: state.errors,
+      }))
+
+      useEffect(() => {
+        fn(errors)
+      }, [errors])
+
+      return null
+    }
+
+    render(<Comp />)
+
+    expect(fn).toHaveBeenCalledTimes(1)
   })
 })

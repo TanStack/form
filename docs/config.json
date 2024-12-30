@@ -102,6 +102,10 @@
               "to": "framework/react/guides/linked-fields"
             },
             {
+              "label": "Listeners",
+              "to": "framework/react/guides/listeners"
+            },
+            {
               "label": "UI Libraries",
               "to": "framework/react/guides/ui-libraries"
             },
@@ -434,6 +438,21 @@
       ]
     },
     {
+      "label": "Community Resources",
+      "children": [],
+      "frameworks": [
+        {
+          "label": "react",
+          "children": [
+            {
+              "label": "Balastrong's Tutorial",
+              "to": "framework/react/community/balastrong-tutorial"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "label": "Examples",
       "children": [],
       "frameworks": [
@@ -451,6 +470,10 @@
             {
               "label": "TanStack Query Integration",
               "to": "framework/react/examples/query-integration"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/react/examples/standard-schema"
             },
             {
               "label": "Yup",
@@ -471,6 +494,10 @@
             {
               "label": "Next Server Actions",
               "to": "framework/react/examples/next-server-actions"
+            },
+            {
+              "label": "Remix",
+              "to": "framework/react/examples/remix"
             },
             {
               "label": "UI Libraries",

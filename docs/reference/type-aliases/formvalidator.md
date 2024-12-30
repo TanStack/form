@@ -23,11 +23,15 @@ type FormValidator<TFormData, TType, TFn>: object;
 
 #### Parameters
 
-• **options**
+##### options
 
-• **options.value**: `TType`
+###### value
 
-• **fn**: `TFn`
+`TType`
+
+##### fn
+
+`TFn`
 
 #### Returns
 
@@ -37,11 +41,15 @@ type FormValidator<TFormData, TType, TFn>: object;
 
 #### Parameters
 
-• **options**
+##### options
 
-• **options.value**: `TType`
+###### value
 
-• **fn**: `TFn`
+`TType`
+
+##### fn
+
+`TFn`
 
 #### Returns
 
@@ -49,4 +57,4 @@ type FormValidator<TFormData, TType, TFn>: object;
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:61](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L61)
+[packages/form-core/src/FormApi.ts:68](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L68)

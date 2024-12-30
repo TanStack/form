@@ -9,8 +9,8 @@ Today we support the following meta-frameworks:
 
 - [TanStack Start](https://tanstack.com/start/)
 - [Next.js](https://nextjs.org/)
+- [Remix](https://remix.run)
 
-_We need help adding Remix support! [Come help us research and implement it here.](https://github.com/TanStack/form/issues/759)_
 
 ## Using TanStack Form in TanStack Start
 
@@ -20,7 +20,7 @@ This section focuses on integrating TanStack Form with TanStack Start.
 
 - Start a new `TanStack Start` project, following the steps in the [TanStack Start Quickstart Guide](https://tanstack.com/router/latest/docs/framework/react/guide/tanstack-start)
 - Install `@tanstack/react-form`
-- Install any [form validator](/form/latest/docs/framework/react/guides/validation#adapter-based-validation-zod-yup-valibot) of your choice. [Optional]
+- Install any [form validator](/form/latest/docs/framework/react/guides/validation#validation-through-schema-libraries) of your choice. [Optional]
 
 ### Start integration
 
@@ -114,7 +114,7 @@ function Home() {
     transform: useTransform((baseForm) => mergeForm(baseForm, state), [state]),
   })
 
-  const formErrors = form.useStore((formState) => formState.errors)
+  const formErrors = useStore(form.store, (formState) => formState.errors)
 
   return (
     <form action={handleForm.url} method="post" encType={'multipart/form-data'}>
@@ -169,7 +169,7 @@ This section focuses on integrating TanStack Form with `Next.js`, particularly u
 
 - Start a new `Next.js` project, following the steps in the [Next.js Documentation](https://nextjs.org/docs/getting-started/installation). Ensure you select `yes` for `Would you like to use App Router?` during the setup to access all new features provided by Next.js.
 - Install `@tanstack/react-form`
-- Install any [form validator](/form/latest/docs/framework/react/guides/validation#adapter-based-validation-zod-yup-valibot) of your choice. [Optional]
+- Install any [form validator](/form/latest/docs/framework/react/guides/validation#validation-through-schema-libraries) of your choice. [Optional]
 
 ## App Router integration
 
@@ -249,7 +249,7 @@ export const ClientComp = () => {
     transform: useTransform((baseForm) => mergeForm(baseForm, state!), [state]),
   })
 
-  const formErrors = form.useStore((formState) => formState.errors)
+  const formErrors = useStore(form.store, (formState) => formState.errors)
 
   return (
     <form action={action as never} onSubmit={() => form.handleSubmit()}>
@@ -306,3 +306,154 @@ Here, we're using [React's `useActionState` hook](https://unicorn-utterances.com
 >
 >
 > [This is a limitation of Next.js](https://github.com/phryneas/rehackt). Other meta-frameworks will likely not have this same problem.
+
+## Using TanStack Form in Remix
+
+> Before reading this section, it's suggested you understand how Remix actions work. [Check out Remix's docs for more information](https://remix.run/docs/en/main/discussion/data-flow#route-action)
+
+### Remix Prerequisites
+
+- Start a new `Remix` project, following the steps in the [Remix Documentation](https://remix.run/docs/en/main/start/quickstart).
+- Install `@tanstack/react-form`
+- Install any [form validator](/form/latest/docs/framework/react/guides/validation#validation-through-schema-libraries) of your choice. [Optional]
+
+## Remix integration
+
+Let's start by creating a `formOption` that we'll use to share the form's shape across the client and server.
+
+
+```typescript
+// routes/_index/route.tsx
+import { formOptions } from '@tanstack/react-form/remix'
+
+// You can pass other form options here, like `validatorAdapter`
+export const formOpts = formOptions({
+  defaultValues: {
+    firstName: '',
+    age: 0,
+  },
+})
+```
+
+Next, we can create [an action](https://remix.run/docs/en/main/discussion/data-flow#route-action) that will handle the form submission on the server.
+
+```tsx
+// routes/_index/route.tsx
+
+import {
+  ServerValidateError,
+  createServerValidate,
+  formOptions
+} from '@tanstack/react-form/remix'
+
+import type { ActionFunctionArgs } from '@remix-run/node'
+
+// export const formOpts = formOptions({
+
+// Create the server action that will infer the types of the form from `formOpts`
+const serverValidate = createServerValidate({
+  ...formOpts,
+  onServerValidate: ({ value }) => {
+    if (value.age < 12) {
+      return 'Server validation: You must be at least 12 to sign up'
+    }
+  },
+})
+
+export async function action({request}: ActionFunctionArgs) {
+  const formData = await request.formData()
+  try {
+    await serverValidate(formData)
+  } catch (e) {
+    if (e instanceof ServerValidateError) {
+      return e.formState
+    }
+
+    // Some other error occurred while validating your form
+    throw e
+  }
+
+  // Your form has successfully validated!
+
+}
+```
+
+Finally, the `action` will be called when the form submits.
+
+```tsx
+// routes/_index/route.tsx
+import { Form, useActionData } from '@remix-run/react'
+
+import { mergeForm, useForm, useTransform } from '@tanstack/react-form'
+import {
+  ServerValidateError,
+  createServerValidate,
+  formOptions,
+  initialFormState,
+} from '@tanstack/react-form/remix'
+
+import type { ActionFunctionArgs } from '@remix-run/node'
+
+// export const formOpts = formOptions({
+
+// const serverValidate = createServerValidate({
+
+// export async function action({request}: ActionFunctionArgs) {
+
+export default function Index() {
+  const actionData = useActionData<typeof action>()
+
+  const form = useForm({
+    ...formOpts,
+    transform: useTransform(
+      (baseForm) => mergeForm(baseForm, actionData ?? initialFormState),
+      [actionData],
+    ),
+  })
+
+  const formErrors = useStore(form.store, (formState) => formState.errors)
+
+  return (
+    <Form method="post" onSubmit={() => form.handleSubmit()}>
+      {formErrors.map((error) => (
+        <p key={error as string}>{error}</p>
+      ))}
+
+      <form.Field
+        name="age"
+        validators={{
+          onChange: ({ value }) =>
+            value < 8 ? 'Client validation: You must be at least 8' : undefined,
+        }}
+      >
+        {(field) => {
+          return (
+            <div>
+              <input
+                name="age"
+                type="number"
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+              />
+              {field.state.meta.errors.map((error) => (
+                <p key={error as string}>{error}</p>
+              ))}
+            </div>
+          )
+        }}
+      </form.Field>
+      <form.Subscribe
+        selector={(formState) => [formState.canSubmit, formState.isSubmitting]}
+      >
+        {([canSubmit, isSubmitting]) => (
+          <button type="submit" disabled={!canSubmit}>
+            {isSubmitting ? '...' : 'Submit'}
+          </button>
+        )}
+      </form.Subscribe>
+    </Form>
+  )
+}
+```
+
+Here, we're using [Remix's `useActionData` hook](https://remix.run/docs/en/main/hooks/use-action-data) and TanStack Form's `useTransform` hook to merge state returned from the server action with the form state.

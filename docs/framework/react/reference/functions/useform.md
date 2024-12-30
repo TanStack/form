@@ -6,7 +6,7 @@ title: useForm
 # Function: useForm()
 
 ```ts
-function useForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormValidator> & ReactFormApi<TFormData, TFormValidator>
+function useForm<TFormData, TFormValidator>(opts?): ReactFormExtendedApi<TFormData, TFormValidator>
 ```
 
 A custom React Hook that returns an extended instance of the `FormApi` class.
@@ -21,12 +21,14 @@ This API encapsulates all the necessary functionalities related to the form. It 
 
 ## Parameters
 
-• **opts?**: `FormOptions`\<`TFormData`, `TFormValidator`\>
+### opts?
+
+`FormOptions`\<`TFormData`, `TFormValidator`\>
 
 ## Returns
 
-`FormApi`\<`TFormData`, `TFormValidator`\> & [`ReactFormApi`](../interfaces/reactformapi.md)\<`TFormData`, `TFormValidator`\>
+[`ReactFormExtendedApi`](../type-aliases/reactformextendedapi.md)\<`TFormData`, `TFormValidator`\>
 
 ## Defined in
 
-[useForm.tsx:57](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L57)
+[packages/react-form/src/useForm.tsx:57](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L57)
