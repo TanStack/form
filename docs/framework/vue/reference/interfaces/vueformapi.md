@@ -45,7 +45,9 @@ Subscribe: <TSelected>(props, context) => any;
 
 ##### context
 
-`SetupContext`\<`EmitsOptions`, `SlotsType`\<`object`\>\>
+`SetupContext`\<`EmitsOptions`, `SlotsType`\<\{
+  `default`: `FormState`\<`TFormData`\>;
+ \}\>\>
 
 #### Returns
 

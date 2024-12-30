@@ -6,7 +6,7 @@ title: CreateField
 # Type Alias: CreateField()\<TParentData, TFormValidator\>
 
 ```ts
-type CreateField<TParentData, TFormValidator>: <TName, TFieldValidator, TData>(opts) => () => FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData> & SolidFieldApi<TParentData, TFormValidator>;
+type CreateField<TParentData, TFormValidator> = <TName, TFieldValidator, TData>(opts) => () => FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData> & SolidFieldApi<TParentData, TFormValidator>;
 ```
 
 ## Type Parameters
@@ -19,7 +19,9 @@ type CreateField<TParentData, TFormValidator>: <TName, TFieldValidator, TData>(o
 
 • **TName** *extends* `DeepKeys`\<`TParentData`\>
 
-• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> \| `undefined` = `undefined`
+• **TFieldValidator** *extends* 
+  \| `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\>
+  \| `undefined` = `undefined`
 
 • **TData** *extends* `DeepValue`\<`TParentData`, `TName`\> = `DeepValue`\<`TParentData`, `TName`\>
 

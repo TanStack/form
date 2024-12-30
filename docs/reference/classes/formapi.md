@@ -72,7 +72,7 @@ A record of field information for each field in the form.
 ### fieldMetaDerived
 
 ```ts
-fieldMetaDerived: Derived<Record<unknown extends TFormData ? string : TFormData extends readonly any[] & IsTuple<TFormData> ? PrefixTupleAccessor<TFormData<TFormData>, AllowedIndexes<TFormData<TFormData>, never>, []> : TFormData extends any[] ? PrefixArrayAccessor<TFormData<TFormData>, [any]> : TFormData extends Date ? never : TFormData extends object ? PrefixObjectAccessor<TFormData<TFormData>, []> : TFormData extends string | number | bigint | boolean ? "" : never, FieldMeta>, readonly any[]>;
+fieldMetaDerived: Derived<Record<unknown extends TFormData ? string : TFormData extends readonly any[] & IsTuple<TFormData> ? PrefixTupleAccessor<TFormData<TFormData>, AllowedIndexes<TFormData<TFormData>, never>, []> : TFormData extends any[] ? PrefixArrayAccessor<TFormData<TFormData>, [any]> : TFormData extends Date ? never : TFormData extends object ? PrefixObjectAccessor<TFormData<TFormData>, []> : TFormData extends string | number | bigint | boolean ? "" : never, FieldMeta>>;
 ```
 
 #### Defined in
@@ -98,7 +98,7 @@ The options for the form.
 ### store
 
 ```ts
-store: Derived<FormState<TFormData>, readonly any[]>;
+store: Derived<FormState<TFormData>>;
 ```
 
 #### Defined in
@@ -773,7 +773,9 @@ Validates the children of a specified array in the form starting from a given in
 ### validateField()
 
 ```ts
-validateField<TField>(field, cause): ValidationError[] | Promise<ValidationError[]>
+validateField<TField>(field, cause): 
+  | ValidationError[]
+| Promise<ValidationError[]>
 ```
 
 Validates a specified field in the form using the correct handlers for a given validation type.
@@ -794,7 +796,8 @@ Validates a specified field in the form using the correct handlers for a given v
 
 #### Returns
 
-[`ValidationError`](../type-aliases/validationerror.md)[] \| `Promise`\<[`ValidationError`](../type-aliases/validationerror.md)[]\>
+  \| [`ValidationError`](../type-aliases/validationerror.md)[]
+  \| `Promise`\<[`ValidationError`](../type-aliases/validationerror.md)[]\>
 
 #### Defined in
 

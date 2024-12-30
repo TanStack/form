@@ -6,7 +6,7 @@ title: FieldsErrorMapFromValidator
 # Type Alias: FieldsErrorMapFromValidator\<TFormData\>
 
 ```ts
-type FieldsErrorMapFromValidator<TFormData>: Partial<Record<DeepKeys<TFormData>, ValidationErrorMap>>;
+type FieldsErrorMapFromValidator<TFormData> = Partial<Record<DeepKeys<TFormData>, ValidationErrorMap>>;
 ```
 
 ## Type Parameters

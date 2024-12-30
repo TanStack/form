@@ -15,7 +15,9 @@ function useField<TParentData, TName, TFieldValidator, TFormValidator, TData>(op
 
 • **TName** *extends* `string` \| `number`
 
-• **TFieldValidator** *extends* `undefined` \| `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> = `undefined`
+• **TFieldValidator** *extends* 
+  \| `undefined`
+  \| `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> = `undefined`
 
 • **TFormValidator** *extends* `undefined` \| `Validator`\<`TParentData`, `unknown`\> = `undefined`
 

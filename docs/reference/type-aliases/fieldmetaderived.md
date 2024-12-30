@@ -6,7 +6,7 @@ title: FieldMetaDerived
 # Type Alias: FieldMetaDerived
 
 ```ts
-type FieldMetaDerived: object;
+type FieldMetaDerived = object;
 ```
 
 ## Type declaration

@@ -13,7 +13,7 @@
     "@tanstack/vue-form": "^0.41.0",
     "@tanstack/yup-form-adapter": "^0.41.0",
     "vue": "^3.3.4",
-    "yup": "^1.5.0"
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",

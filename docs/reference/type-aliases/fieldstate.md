@@ -6,7 +6,7 @@ title: FieldState
 # Type Alias: FieldState\<TData\>
 
 ```ts
-type FieldState<TData>: object;
+type FieldState<TData> = object;
 ```
 
 An object type representing the state of a field.

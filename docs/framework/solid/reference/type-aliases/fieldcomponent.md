@@ -6,7 +6,7 @@ title: FieldComponent
 # Type Alias: FieldComponent()\<TParentData, TFormValidator\>
 
 ```ts
-type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData>({
+type FieldComponent<TParentData, TFormValidator> = <TName, TFieldValidator, TData>({
   children,
   ...fieldOptions
 }) => JSXElement;
@@ -22,7 +22,9 @@ type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData
 
 • **TName** *extends* `DeepKeys`\<`TParentData`\>
 
-• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> \| `undefined` = `undefined`
+• **TFieldValidator** *extends* 
+  \| `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\>
+  \| `undefined` = `undefined`
 
 • **TData** *extends* `DeepValue`\<`TParentData`, `TName`\> = `DeepValue`\<`TParentData`, `TName`\>
 

@@ -6,7 +6,7 @@ title: FieldInfo
 # Type Alias: FieldInfo\<TFormData, TFormValidator\>
 
 ```ts
-type FieldInfo<TFormData, TFormValidator>: object;
+type FieldInfo<TFormData, TFormValidator> = object;
 ```
 
 An object representing the field information for a specific field within the form.
@@ -22,7 +22,9 @@ An object representing the field information for a specific field within the for
 ### instance
 
 ```ts
-instance: FieldApi<TFormData, any, Validator<unknown, unknown> | undefined, TFormValidator> | null;
+instance: 
+  | FieldApi<TFormData, any, Validator<unknown, unknown> | undefined, TFormValidator>
+  | null;
 ```
 
 An instance of the FieldAPI.

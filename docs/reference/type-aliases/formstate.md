@@ -6,7 +6,7 @@ title: FormState
 # Type Alias: FormState\<TFormData\>
 
 ```ts
-type FormState<TFormData>: BaseFormState<TFormData> & DerivedFormState<TFormData>;
+type FormState<TFormData> = BaseFormState<TFormData> & DerivedFormState<TFormData>;
 ```
 
 ## Type Parameters

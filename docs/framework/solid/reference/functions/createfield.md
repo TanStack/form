@@ -15,7 +15,9 @@ function createField<TParentData, TName, TFieldValidator, TFormValidator, TData>
 
 • **TName** *extends* `string` \| `number`
 
-• **TFieldValidator** *extends* `undefined` \| `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> = `undefined`
+• **TFieldValidator** *extends* 
+  \| `undefined`
+  \| `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> = `undefined`
 
 • **TFormValidator** *extends* `undefined` \| `Validator`\<`TParentData`, `unknown`\> = `undefined`
 

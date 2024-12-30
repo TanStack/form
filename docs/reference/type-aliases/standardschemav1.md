@@ -6,7 +6,7 @@ title: StandardSchemaV1
 # Type Alias: StandardSchemaV1\<Input, Output\>
 
 ```ts
-type StandardSchemaV1<Input, Output>: object;
+type StandardSchemaV1<Input, Output> = object;
 ```
 
 The Standard Schema interface.

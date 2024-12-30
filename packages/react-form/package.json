@@ -82,17 +82,17 @@
     "src"
   ],
   "dependencies": {
-    "@remix-run/node": "^2.15.0",
+    "@remix-run/node": "^2.15.2",
     "@tanstack/form-core": "workspace:*",
     "@tanstack/react-store": "^0.7.0",
     "decode-formdata": "^0.8.0"
   },
   "devDependencies": {
-    "@tanstack/start": "^1.81.1",
+    "@tanstack/start": "^1.92.11",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.3",
-    "eslint-plugin-react-compiler": "^19.0.0-beta-0dec889-20241115",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint-plugin-react-compiler": "^19.0.0-beta-b2e8e9c-20241220",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "vite": "^5.4.11"
