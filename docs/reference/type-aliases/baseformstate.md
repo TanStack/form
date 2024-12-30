@@ -6,7 +6,7 @@ title: BaseFormState
 # Type Alias: BaseFormState\<TFormData\>
 
 ```ts
-type BaseFormState<TFormData>: object;
+type BaseFormState<TFormData> = object;
 ```
 
 An object representing the current state of the form.

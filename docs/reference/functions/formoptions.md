@@ -6,7 +6,9 @@ title: formOptions
 # Function: formOptions()
 
 ```ts
-function formOptions<TFormData, TFormValidator>(defaultOpts?): undefined | FormOptions<TFormData, TFormValidator>
+function formOptions<TFormData, TFormValidator>(defaultOpts?): 
+  | undefined
+| FormOptions<TFormData, TFormValidator>
 ```
 
 ## Type Parameters
@@ -23,7 +25,8 @@ function formOptions<TFormData, TFormValidator>(defaultOpts?): undefined | FormO
 
 ## Returns
 
-`undefined` \| [`FormOptions`](../interfaces/formoptions.md)\<`TFormData`, `TFormValidator`\>
+  \| `undefined`
+  \| [`FormOptions`](../interfaces/formoptions.md)\<`TFormData`, `TFormValidator`\>
 
 ## Defined in
 

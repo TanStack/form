@@ -6,7 +6,7 @@ title: FormValidateFn
 # Type Alias: FormValidateFn()\<TFormData, TFormValidator\>
 
 ```ts
-type FormValidateFn<TFormData, TFormValidator>: (props) => FormValidationError<TFormData>;
+type FormValidateFn<TFormData, TFormValidator> = (props) => FormValidationError<TFormData>;
 ```
 
 ## Type Parameters

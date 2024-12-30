@@ -6,7 +6,7 @@ title: UpdaterFn
 # Type Alias: UpdaterFn()\<TInput, TOutput\>
 
 ```ts
-type UpdaterFn<TInput, TOutput>: (input) => TOutput;
+type UpdaterFn<TInput, TOutput> = (input) => TOutput;
 ```
 
 ## Type Parameters

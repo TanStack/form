@@ -19,7 +19,9 @@ the `new FieldApi` constructor.
 
 • **TName** *extends* [`DeepKeys`](../type-aliases/deepkeys.md)\<`TParentData`\>
 
-• **TFieldValidator** *extends* `Validator`\<[`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\>, `unknown`\> \| `undefined` = `undefined`
+• **TFieldValidator** *extends* 
+  \| `Validator`\<[`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\>, `unknown`\>
+  \| `undefined` = `undefined`
 
 • **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
 
@@ -96,7 +98,7 @@ The field options.
 ### store
 
 ```ts
-store: Derived<FieldState<TData>, readonly any[]>;
+store: Derived<FieldState<TData>>;
 ```
 
 The field state store.
@@ -558,7 +560,9 @@ Updates the field instance with new options.
 ### validate()
 
 ```ts
-validate(cause): ValidationError[] | Promise<ValidationError[]>
+validate(cause): 
+  | ValidationError[]
+| Promise<ValidationError[]>
 ```
 
 Validates the field value.
@@ -571,7 +575,8 @@ Validates the field value.
 
 #### Returns
 
-[`ValidationError`](../type-aliases/validationerror.md)[] \| `Promise`\<[`ValidationError`](../type-aliases/validationerror.md)[]\>
+  \| [`ValidationError`](../type-aliases/validationerror.md)[]
+  \| `Promise`\<[`ValidationError`](../type-aliases/validationerror.md)[]\>
 
 #### Defined in
 

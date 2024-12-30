@@ -6,7 +6,7 @@ title: UseField
 # Type Alias: UseField()\<TParentData, TFormValidator\>
 
 ```ts
-type UseField<TParentData, TFormValidator>: <TName, TFieldValidator, TData>(opts) => object;
+type UseField<TParentData, TFormValidator> = <TName, TFieldValidator, TData>(opts) => object;
 ```
 
 ## Type Parameters
@@ -19,7 +19,9 @@ type UseField<TParentData, TFormValidator>: <TName, TFieldValidator, TData>(opts
 
 • **TName** *extends* `DeepKeys`\<`TParentData`\>
 
-• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> \| `undefined` = `undefined`
+• **TFieldValidator** *extends* 
+  \| `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\>
+  \| `undefined` = `undefined`
 
 • **TData** *extends* `DeepValue`\<`TParentData`, `TName`\> = `DeepValue`\<`TParentData`, `TName`\>
 

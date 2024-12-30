@@ -6,7 +6,7 @@ title: FieldMeta
 # Type Alias: FieldMeta
 
 ```ts
-type FieldMeta: FieldMetaBase & FieldMetaDerived;
+type FieldMeta = FieldMetaBase & FieldMetaDerived;
 ```
 
 An object type representing the metadata of a field in a form.

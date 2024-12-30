@@ -6,7 +6,7 @@ title: ValidationMeta
 # Type Alias: ValidationMeta
 
 ```ts
-type ValidationMeta: object;
+type ValidationMeta = object;
 ```
 
 An object representing the validation metadata for a field. Not intended for public usage.

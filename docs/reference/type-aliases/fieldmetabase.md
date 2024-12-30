@@ -6,7 +6,7 @@ title: FieldMetaBase
 # Type Alias: FieldMetaBase
 
 ```ts
-type FieldMetaBase: object;
+type FieldMetaBase = object;
 ```
 
 ## Type declaration
