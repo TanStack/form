@@ -6,8 +6,10 @@ title: FieldState
 # Type Alias: FieldState\<TData\>
 
 ```ts
-type FieldState<TData>: object;
+type FieldState<TData> = object;
 ```
+
+Defined in: [packages/form-core/src/FieldApi.ts:407](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L407)
 
 An object type representing the state of a field.
 
@@ -32,7 +34,3 @@ value: TData;
 ```
 
 The current value of the field.
-
-## Defined in
-
-[packages/form-core/src/FieldApi.ts:407](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L407)

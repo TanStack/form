@@ -6,8 +6,10 @@ title: StandardSchemaV1
 # Type Alias: StandardSchemaV1\<Input, Output\>
 
 ```ts
-type StandardSchemaV1<Input, Output>: object;
+type StandardSchemaV1<Input, Output> = object;
 ```
+
+Defined in: [packages/form-core/src/standardSchemaValidator.ts:94](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchemaValidator.ts#L94)
 
 The Standard Schema interface.
 
@@ -26,7 +28,3 @@ readonly ~standard: StandardSchemaV1Props<Input, Output>;
 ```
 
 The Standard Schema properties.
-
-## Defined in
-
-[packages/form-core/src/standardSchemaValidator.ts:94](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchemaValidator.ts#L94)

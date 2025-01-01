@@ -5,6 +5,8 @@ title: VueFormApi
 
 # Interface: VueFormApi\<TFormData, TFormValidator\>
 
+Defined in: [packages/vue-form/src/useForm.tsx:10](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L10)
+
 ## Type Parameters
 
 • **TFormData**
@@ -19,9 +21,7 @@ title: VueFormApi
 Field: FieldComponent<TFormData, TFormValidator>;
 ```
 
-#### Defined in
-
-[packages/vue-form/src/useForm.tsx:14](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L14)
+Defined in: [packages/vue-form/src/useForm.tsx:14](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L14)
 
 ***
 
@@ -30,6 +30,8 @@ Field: FieldComponent<TFormData, TFormValidator>;
 ```ts
 Subscribe: <TSelected>(props, context) => any;
 ```
+
+Defined in: [packages/vue-form/src/useForm.tsx:19](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L19)
 
 #### Type Parameters
 
@@ -45,15 +47,13 @@ Subscribe: <TSelected>(props, context) => any;
 
 ##### context
 
-`SetupContext`\<`EmitsOptions`, `SlotsType`\<`object`\>\>
+`SetupContext`\<`EmitsOptions`, `SlotsType`\<\{
+  `default`: `FormState`\<`TFormData`\>;
+ \}\>\>
 
 #### Returns
 
 `any`
-
-#### Defined in
-
-[packages/vue-form/src/useForm.tsx:19](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L19)
 
 ***
 
@@ -63,9 +63,7 @@ Subscribe: <TSelected>(props, context) => any;
 useField: UseField<TFormData, TFormValidator>;
 ```
 
-#### Defined in
-
-[packages/vue-form/src/useForm.tsx:15](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L15)
+Defined in: [packages/vue-form/src/useForm.tsx:15](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L15)
 
 ***
 
@@ -74,6 +72,8 @@ useField: UseField<TFormData, TFormValidator>;
 ```ts
 useStore: <TSelected>(selector?) => Readonly<Ref<TSelected, TSelected>>;
 ```
+
+Defined in: [packages/vue-form/src/useForm.tsx:16](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L16)
 
 #### Type Parameters
 
@@ -88,7 +88,3 @@ useStore: <TSelected>(selector?) => Readonly<Ref<TSelected, TSelected>>;
 #### Returns
 
 `Readonly`\<`Ref`\<`TSelected`, `TSelected`\>\>
-
-#### Defined in
-
-[packages/vue-form/src/useForm.tsx:16](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L16)

@@ -6,8 +6,10 @@ title: FieldComponent
 # Type Alias: FieldComponent()\<TParentData, TFormValidator\>
 
 ```ts
-type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData>(fieldOptions, context) => any;
+type FieldComponent<TParentData, TFormValidator> = <TName, TFieldValidator, TData>(fieldOptions, context) => any;
 ```
+
+Defined in: [packages/vue-form/src/useField.tsx:117](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L117)
 
 ## Type Parameters
 
@@ -19,7 +21,9 @@ type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData
 
 • **TName** *extends* `DeepKeys`\<`TParentData`\>
 
-• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> \| `undefined` = `undefined`
+• **TFieldValidator** *extends* 
+  \| `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\>
+  \| `undefined` = `undefined`
 
 • **TData** *extends* `DeepValue`\<`TParentData`, `TName`\> = `DeepValue`\<`TParentData`, `TName`\>
 
@@ -31,12 +35,13 @@ type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData
 
 ### context
 
-`SetupContext`\<`object`, `SlotsType`\<`object`\>\>
+`SetupContext`\<\{\}, `SlotsType`\<\{
+  `default`: \{
+     `field`: `FieldApi`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>;
+     `state`: `FieldApi`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>\[`"state"`\];
+    \};
+ \}\>\>
 
 ## Returns
 
 `any`
-
-## Defined in
-
-[packages/vue-form/src/useField.tsx:117](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L117)
