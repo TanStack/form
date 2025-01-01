@@ -6,8 +6,10 @@ title: CreateField
 # Type Alias: CreateField()\<TParentData, TFormValidator\>
 
 ```ts
-type CreateField<TParentData, TFormValidator>: <TName, TFieldValidator, TData>(opts) => () => FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData> & SolidFieldApi<TParentData, TFormValidator>;
+type CreateField<TParentData, TFormValidator> = <TName, TFieldValidator, TData>(opts) => () => FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData> & SolidFieldApi<TParentData, TFormValidator>;
 ```
+
+Defined in: [packages/solid-form/src/createField.tsx:29](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L29)
 
 ## Type Parameters
 
@@ -19,7 +21,9 @@ type CreateField<TParentData, TFormValidator>: <TName, TFieldValidator, TData>(o
 
 • **TName** *extends* `DeepKeys`\<`TParentData`\>
 
-• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> \| `undefined` = `undefined`
+• **TFieldValidator** *extends* 
+  \| `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\>
+  \| `undefined` = `undefined`
 
 • **TData** *extends* `DeepValue`\<`TParentData`, `TName`\> = `DeepValue`\<`TParentData`, `TName`\>
 
@@ -36,7 +40,3 @@ type CreateField<TParentData, TFormValidator>: <TName, TFieldValidator, TData>(o
 ### Returns
 
 `FieldApi`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\> & `SolidFieldApi`\<`TParentData`, `TFormValidator`\>
-
-## Defined in
-
-[packages/solid-form/src/createField.tsx:29](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L29)

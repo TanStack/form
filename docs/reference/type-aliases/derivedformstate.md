@@ -6,8 +6,10 @@ title: DerivedFormState
 # Type Alias: DerivedFormState\<TFormData\>
 
 ```ts
-type DerivedFormState<TFormData>: object;
+type DerivedFormState<TFormData> = object;
 ```
+
+Defined in: [packages/form-core/src/FormApi.ts:272](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L272)
 
 ## Type Parameters
 
@@ -110,7 +112,3 @@ isValid: boolean;
 ```
 
 A boolean indicating if the form and all its fields are valid.
-
-## Defined in
-
-[packages/form-core/src/FormApi.ts:272](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L272)

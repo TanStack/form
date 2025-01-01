@@ -6,8 +6,10 @@ title: FieldMetaDerived
 # Type Alias: FieldMetaDerived
 
 ```ts
-type FieldMetaDerived: object;
+type FieldMetaDerived = object;
 ```
+
+Defined in: [packages/form-core/src/FieldApi.ts:388](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L388)
 
 ## Type declaration
 
@@ -26,7 +28,3 @@ isPristine: boolean;
 ```
 
 A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
-
-## Defined in
-
-[packages/form-core/src/FieldApi.ts:388](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L388)
