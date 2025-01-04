@@ -52,12 +52,35 @@ function TextField({ label }: TextFieldProps) {
   )
 }
 
+interface NumberFieldProps {
+  label: string
+}
+
+function NumberField({ label }: NumberFieldProps) {
+  const field = useFieldContext()
+  return (
+    <TextInput
+      value={field.state.value}
+      onChange={(e) => field.setValue(e.currentTarget.valueAsNumber)}
+      label={label}
+      type="number"
+      error={
+        field.state.meta.errors.length > 0 ? field.state.meta.errors[0] : null
+      }
+      defaultValue={field.options.defaultValue}
+    />
+  )
+}
+
+const FieldComponents = {
+  TextField,
+  NumberField,
+} as const
+
 type AppField<TFormData> = FieldComponent<
   TFormData,
   ValidatorType,
-  {
-    TextField: typeof TextField
-  }
+  typeof FieldComponents
 >
 
 export function useAppForm<TFormData>(
@@ -74,11 +97,7 @@ export function useAppForm<TFormData>(
         <form.Field {...props}>
           {(field) => (
             <FormFieldContext.Provider value={field}>
-              {children(
-                Object.assign(field, {
-                  TextField,
-                }),
-              )}
+              {children(Object.assign(field, FieldComponents))}
             </FormFieldContext.Provider>
           )}
         </form.Field>

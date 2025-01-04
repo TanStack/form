@@ -1,13 +1,24 @@
 import * as React from 'react'
 import { createRoot } from 'react-dom/client'
 import { MantineProvider } from '@mantine/core'
+import { z } from 'zod'
 import { useAppForm } from './app-form.tsx'
+
+const formSchema = z.object({
+  name: z.string(),
+  age: z.number().gte(13, 'You must be 13 to make an account'),
+})
+
+type FormValues = z.infer<typeof formSchema>
 
 export default function App() {
   const form = useAppForm({
     defaultValues: {
-      firstName: '',
-      lastName: '',
+      name: '',
+      age: 0,
+    } as FormValues,
+    validators: {
+      onChange: formSchema,
     },
     onSubmit: async ({ value }) => {
       // Do something with form data
@@ -28,32 +39,17 @@ export default function App() {
         <div>
           {/* A type-safe field component*/}
           <form.AppField
-            name="firstName"
-            validators={{
-              onChange: ({ value }) =>
-                !value
-                  ? 'A first name is required'
-                  : value.length < 3
-                    ? 'First name must be at least 3 characters'
-                    : undefined,
-              onChangeAsyncDebounceMs: 500,
-              onChangeAsync: async ({ value }) => {
-                await new Promise((resolve) => setTimeout(resolve, 1000))
-                return (
-                  value.includes('error') && 'No "error" allowed in first name'
-                )
-              },
-            }}
+            name="name"
             children={(field) => {
               // Avoid hasty abstractions. Render props are great!
-              return <field.TextField label="First Name" />
+              return <field.TextField label="Your Name" />
             }}
           />
         </div>
         <div>
           <form.AppField
-            name="lastName"
-            children={(field) => <field.TextField label="Last Name" />}
+            name="age"
+            children={(field) => <field.NumberField label="Your Age" />}
           />
         </div>
         <form.Subscribe
