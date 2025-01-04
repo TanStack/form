@@ -8,6 +8,9 @@ import type {
   ReactFormExtendedApi,
 } from '@tanstack/react-form'
 
+// If you're using a validator, you might replace `undefined` with the type of the Form validator.
+type ValidatorType = undefined
+
 /**
  * `any` might frighten you here, but it's not inherently a bad thing.
  *
@@ -38,6 +41,8 @@ function TextField({ label }: TextFieldProps) {
   const field = useFieldContext()
   return (
     <TextInput
+      value={field.state.value}
+      onChange={(e) => field.setValue(e.currentTarget.value)}
       label={label}
       error={
         field.state.meta.errors.length > 0 ? field.state.meta.errors[0] : null
@@ -47,16 +52,21 @@ function TextField({ label }: TextFieldProps) {
   )
 }
 
-type AppField<TFormData> = FieldComponent<TFormData> & {
-  TextField: typeof TextField
-}
+type AppField<TFormData> = FieldComponent<
+  TFormData,
+  ValidatorType,
+  {
+    TextField: typeof TextField
+  }
+>
 
 export function useAppForm<TFormData>(
-  props: FormOptions<TFormData>,
+  props: FormOptions<TFormData, ValidatorType>,
 ): ReactFormExtendedApi<TFormData> & {
   AppField: AppField<TFormData>
 } {
-  const form = useForm(props)
+  // You can override the default form options here by adding keys to the `props` object.
+  const form = useForm({ ...props })
 
   const AppField = useMemo(() => {
     return (({ children, ...props }) => {
@@ -76,8 +86,11 @@ export function useAppForm<TFormData>(
     }) satisfies AppField<TFormData>
   }, [form])
 
-  return {
-    ...form,
-    AppField,
-  }
+  const extendedForm = useMemo(() => {
+    return Object.assign(form, {
+      AppField,
+    })
+  }, [form, AppField])
+
+  return extendedForm
 }

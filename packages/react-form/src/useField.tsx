@@ -116,6 +116,7 @@ type FieldComponentProps<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  ExtendedApi = {},
 > = {
   children: (
     fieldApi: FieldApi<
@@ -124,7 +125,8 @@ type FieldComponentProps<
       TFieldValidator,
       TFormValidator,
       TData
-    >,
+    > &
+      ExtendedApi,
   ) => ReactNode
 } & UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>
 
@@ -136,6 +138,7 @@ export type FieldComponent<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
+  ExtendedApi = {},
 > = <
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
@@ -151,7 +154,8 @@ export type FieldComponent<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    ExtendedApi
   >,
   'form'
 >) => ReactNode

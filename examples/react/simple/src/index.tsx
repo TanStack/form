@@ -1,10 +1,10 @@
-import { useForm } from '@tanstack/react-form'
 import * as React from 'react'
 import { createRoot } from 'react-dom/client'
-import type { FieldApi } from '@tanstack/react-form'
+import { MantineProvider } from '@mantine/core'
+import { useAppForm } from './app-form.tsx'
 
 export default function App() {
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -27,7 +27,7 @@ export default function App() {
       >
         <div>
           {/* A type-safe field component*/}
-          <form.Field
+          <form.AppField
             name="firstName"
             validators={{
               onChange: ({ value }) =>
@@ -46,38 +46,14 @@ export default function App() {
             }}
             children={(field) => {
               // Avoid hasty abstractions. Render props are great!
-              return (
-                <>
-                  <label htmlFor={field.name}>First Name:</label>
-                  <input
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                  />
-                  <FieldInfo field={field} />
-                </>
-              )
+              return <field.TextField label="First Name" />
             }}
           />
         </div>
         <div>
-          <form.Field
+          <form.AppField
             name="lastName"
-            children={(field) => (
-              <>
-                <label htmlFor={field.name}>Last Name:</label>
-                <input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-                <FieldInfo field={field} />
-              </>
-            )}
+            children={(field) => <field.TextField label="Last Name" />}
           />
         </div>
         <form.Subscribe
@@ -101,7 +77,9 @@ export default function App() {
 const rootElement = document.getElementById('root')!
 
 createRoot(rootElement).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <MantineProvider>
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  </MantineProvider>,
 )
