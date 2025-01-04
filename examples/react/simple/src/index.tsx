@@ -1,18 +1,7 @@
-import type { FieldApi } from '@tanstack/react-form'
 import { useForm } from '@tanstack/react-form'
 import * as React from 'react'
 import { createRoot } from 'react-dom/client'
-
-function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
-  return (
-    <>
-      {field.state.meta.isTouched && field.state.meta.errors.length ? (
-        <em>{field.state.meta.errors.join(',')}</em>
-      ) : null}
-      {field.state.meta.isValidating ? 'Validating...' : null}
-    </>
-  )
-}
+import type { FieldApi } from '@tanstack/react-form'
 
 export default function App() {
   const form = useForm({

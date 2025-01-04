@@ -9,6 +9,7 @@
     "test:types": "tsc"
   },
   "dependencies": {
+    "@mantine/core": "7.13.5",
     "@tanstack/react-form": "^0.41.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
