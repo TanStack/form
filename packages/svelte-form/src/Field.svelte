@@ -1,0 +1,50 @@
+<!-- TODO (43081j): figure out how to reference types in generics -->
+<script type="ts" generics="TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>
+">
+  import type { Snippet } from 'svelte';
+  // TODO (43081j): somehow remove this circular reference
+  import { createField } from './createField';
+
+  type Props = {
+    children: Snippet<[
+      FieldApi<
+        TParentData,
+        TName,
+        TFieldValidator,
+        TFormValidator,
+        TData
+      >
+    ]>
+    [key: string]: unknown;
+  } & FieldApiOptions<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >;
+
+  let {
+    children
+  }: Props = $props();
+
+  const fieldApi = createField<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData
+  >(() => {
+    return fieldOptions
+  })
+</script>
+
+{@render children(fieldApi)}
