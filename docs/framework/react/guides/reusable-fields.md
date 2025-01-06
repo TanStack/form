@@ -10,7 +10,7 @@ As TanStack form is a headless library, we provide you the core building blocks 
 To create a reusable fields, you can do the following.
 
 ```tsx
-import {  InferValidFormKeys, UseFormReturnType } from '@tanstack/react-form';
+import { InferValidFormKeys, UseFormReturnType } from '@tanstack/react-form';
 
 export default function GenericTextField<
   TForm,
