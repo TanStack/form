@@ -48,7 +48,8 @@
   },
   "devDependencies": {
     "svelte": "^5.16.1",
-    "premove": "^4.0.0"
+    "premove": "^4.0.0",
+    "@sveltejs/vite-plugin-svelte": "^4.0.4"
   },
   "peerDependencies": {
     "svelte": "^5.16.1"

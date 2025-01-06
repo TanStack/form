@@ -1,11 +1,12 @@
 import { FieldApi } from '@tanstack/form-core'
 import { onDestroy, onMount } from 'svelte'
-import Field from './Field.js'
+import Field from './Field.svelte'
 
 import type {
   DeepKeys,
   DeepValue,
   FieldApiOptions,
+  Narrow,
   Validator,
 } from '@tanstack/form-core'
 
@@ -17,6 +18,37 @@ interface SvelteFieldApi<
 > {
   Field: Field<TParentData, TFormValidator>
 }
+
+export type CreateField<
+  TParentData,
+  TFormValidator extends
+    | Validator<TParentData, unknown>
+    | undefined = undefined,
+> = <
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends
+    | Validator<DeepValue<TParentData, TName>, unknown>
+    | undefined = undefined,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+>(
+  opts: () => { name: Narrow<TName> } & Omit<
+    FieldApiOptions<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData
+    >,
+    'form'
+  >,
+) => () => FieldApi<
+  TParentData,
+  TName,
+  TFieldValidator,
+  TFormValidator,
+  TData
+> &
+  SvelteFieldApi<TParentData, TFormValidator>
 
 export function createField<
   TParentData,
@@ -64,5 +96,5 @@ export function createField<
     api.update(opts())
   })
 
-  return extendedApi
+  return () => extendedApi
 }

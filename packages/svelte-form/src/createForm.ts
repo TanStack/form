@@ -1,14 +1,16 @@
 import { FormApi } from '@tanstack/form-core'
 import { onMount } from 'svelte'
-import { Field, createField } from './createField'
+import { createField } from './createField.js'
+import Field from './Field.svelte';
 import type { FormOptions, Validator } from '@tanstack/form-core'
+import type { CreateField } from './createField.js';
 
 export interface SvelteFormApi<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 > {
   Field: Field<TFormData, TFormValidator>
-  createField: typeof createField<TFormData, TFormValidator>
+  createField: CreateField<TFormData, TFormValidator>
 }
 
 export function createForm<
