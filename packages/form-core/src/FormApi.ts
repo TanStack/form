@@ -12,11 +12,10 @@ import {
   isStandardSchemaValidator,
   standardSchemaValidator,
 } from './standardSchemaValidator'
-import type { StandardSchemaV1 } from './standardSchemaValidator'
-import type { FieldApi, FieldMeta, FieldMetaBase } from './FieldApi'
-import type {
+import {
   FormValidationError,
   FormValidationErrorMap,
+  SpecialFormValidationError,
   UpdateMetaOptions,
   ValidationCause,
   ValidationError,
@@ -25,6 +24,8 @@ import type {
   ValidationSource,
   Validator,
 } from './types'
+import type { StandardSchemaV1 } from './standardSchemaValidator'
+import type { FieldApi, FieldMeta, FieldMetaBase } from './FieldApi'
 import type { DeepKeys, DeepValue } from './util-types'
 import type { Updater } from './utils'
 
@@ -158,10 +159,37 @@ export interface FormValidators<
 export interface FormTransform<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TOnMountReturn = unknown,
+  TOnChangeReturn = unknown,
+  TOnChangeAsyncReturn = unknown,
+  TOnBlurReturn = unknown,
+  TOnBlurAsyncReturn = unknown,
+  TOnSubmitReturn = unknown,
+  TOnSubmitAsyncReturn = unknown,
 > {
   fn: (
-    formBase: FormApi<TFormData, TFormValidator>,
-  ) => FormApi<TFormData, TFormValidator>
+    formBase: FormApi<
+      TFormData,
+      TFormValidator,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn
+    >,
+  ) => FormApi<
+    TFormData,
+    TFormValidator,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn
+  >
   deps: unknown[]
 }
 
@@ -186,7 +214,18 @@ export interface FormOptions<
   /**
    * The default state for the form.
    */
-  defaultState?: Partial<FormState<TFormData>>
+  defaultState?: Partial<
+    FormState<
+      TFormData,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn
+    >
+  >
   /**
    * If true, always run async validation, even when sync validation has produced an error. Defaults to undefined.
    */
@@ -218,16 +257,46 @@ export interface FormOptions<
    */
   onSubmit?: (props: {
     value: TFormData
-    formApi: FormApi<TFormData, TFormValidator>
+    formApi: FormApi<
+      TFormData,
+      TFormValidator,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn
+    >
   }) => any | Promise<any>
   /**
    * Specify an action for scenarios where the user tries to submit an invalid form.
    */
   onSubmitInvalid?: (props: {
     value: TFormData
-    formApi: FormApi<TFormData, TFormValidator>
+    formApi: FormApi<
+      TFormData,
+      TFormValidator,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn
+    >
   }) => void
-  transform?: FormTransform<TFormData, TFormValidator>
+  transform?: FormTransform<
+    TFormData,
+    TFormValidator,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn
+  >
 }
 
 /**
@@ -282,7 +351,15 @@ export type BaseFormState<
   /**
    * The error map for the form itself.
    */
-  errorMap: FormValidationErrorMap
+  errorMap: FormValidationErrorMap<
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn
+  >
   /**
    * An internal mechanism used for keeping track of validation logic in a form.
    */
@@ -318,7 +395,16 @@ export type BaseFormState<
   submissionAttempts: number
 }
 
-export type DerivedFormState<TFormData> = {
+export type DerivedFormState<
+  TFormData,
+  TOnMountReturn = unknown,
+  TOnChangeReturn = unknown,
+  TOnChangeAsyncReturn = unknown,
+  TOnBlurReturn = unknown,
+  TOnBlurAsyncReturn = unknown,
+  TOnSubmitReturn = unknown,
+  TOnSubmitAsyncReturn = unknown,
+> = {
   /**
    * A boolean indicating if the form is currently validating.
    */
@@ -330,7 +416,15 @@ export type DerivedFormState<TFormData> = {
   /**
    * The error array for the form itself.
    */
-  errors: ValidationError[]
+  errors: Array<
+    | TOnMountReturn
+    | TOnChangeReturn
+    | TOnChangeAsyncReturn
+    | TOnBlurReturn
+    | TOnBlurAsyncReturn
+    | TOnSubmitReturn
+    | TOnSubmitAsyncReturn
+  >
   /**
    * A boolean indicating if any of the form fields are currently validating.
    */
@@ -388,7 +482,16 @@ export type FormState<
   TOnSubmitReturn,
   TOnSubmitAsyncReturn
 > &
-  DerivedFormState<TFormData>
+  DerivedFormState<
+    TFormData,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn
+  >
 
 function getDefaultFormState<
   TFormData,
@@ -400,7 +503,18 @@ function getDefaultFormState<
   TOnSubmitReturn = unknown,
   TOnSubmitAsyncReturn = unknown,
 >(
-  defaultState: Partial<FormState<TFormData>>,
+  defaultState: Partial<
+    FormState<
+      TFormData,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn
+    >
+  >,
 ): BaseFormState<
   TFormData,
   TOnMountReturn,
@@ -431,8 +545,8 @@ function getDefaultFormState<
 
 const isFormValidationError = (
   error: unknown,
-): error is FormValidationError<unknown> => {
-  return typeof error === 'object'
+): error is SpecialFormValidationError<unknown> => {
+  return !!error && typeof error === 'object' && 'fields' in error
 }
 
 /**
@@ -456,7 +570,17 @@ export class FormApi<
   /**
    * The options for the form.
    */
-  options: FormOptions<TFormData, TFormValidator> = {}
+  options: FormOptions<
+    TFormData,
+    TFormValidator,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn
+  > = {}
   baseStore!: Store<
     BaseFormState<
       TFormData,
@@ -530,7 +654,16 @@ export class FormApi<
         const prevBaseStore = prevDepVals?.[0]
         const currBaseStore = currDepVals[0]
 
-        const fieldMeta = {} as FormState<TFormData>['fieldMeta']
+        const fieldMeta = {} as FormState<
+          TFormData,
+          TOnMountReturn,
+          TOnChangeReturn,
+          TOnChangeAsyncReturn,
+          TOnBlurReturn,
+          TOnBlurAsyncReturn,
+          TOnSubmitReturn,
+          TOnSubmitAsyncReturn
+        >['fieldMeta']
         for (const fieldName of Object.keys(
           currBaseStore.fieldMetaBase,
         ) as Array<keyof typeof currBaseStore.fieldMetaBase>) {
@@ -568,7 +701,18 @@ export class FormApi<
     this.store = new Derived({
       deps: [this.baseStore, this.fieldMetaDerived],
       fn: ({ prevDepVals, currDepVals, prevVal: _prevVal }) => {
-        const prevVal = _prevVal as FormState<TFormData> | undefined
+        const prevVal = _prevVal as
+          | FormState<
+              TFormData,
+              TOnMountReturn,
+              TOnChangeReturn,
+              TOnChangeAsyncReturn,
+              TOnBlurReturn,
+              TOnBlurAsyncReturn,
+              TOnSubmitReturn,
+              TOnSubmitAsyncReturn
+            >
+          | undefined
         const prevBaseStore = prevDepVals?.[0]
         const currBaseStore = currDepVals[0]
 
@@ -621,7 +765,7 @@ export class FormApi<
                 prev.push(curr)
                 return prev
               } else if (curr && isFormValidationError(curr)) {
-                prev.push(curr.form)
+                prev.push(curr.form as never)
                 return prev
               }
               return prev
@@ -668,7 +812,16 @@ export class FormApi<
           isBlurred,
           isPristine,
           isDirty,
-        } as FormState<TFormData>
+        } as FormState<
+          TFormData,
+          TOnMountReturn,
+          TOnChangeReturn,
+          TOnChangeAsyncReturn,
+          TOnBlurReturn,
+          TOnBlurAsyncReturn,
+          TOnSubmitReturn,
+          TOnSubmitAsyncReturn
+        >
 
         // Only run transform if state has shallowly changed - IE how React.useEffect works
         const transformArray = this.options.transform?.deps ?? []
@@ -697,7 +850,7 @@ export class FormApi<
   runValidator<
     TValue extends {
       value: TFormData
-      formApi: FormApi<any, any>
+      formApi: FormApi<any, any, any, any, any, any, any, any, any>
       validationSource: ValidationSource
     },
     TType extends 'validate' | 'validateAsync',
@@ -743,7 +896,19 @@ export class FormApi<
   /**
    * Updates the form options and form state.
    */
-  update = (options?: FormOptions<TFormData, TFormValidator>) => {
+  update = (
+    options?: FormOptions<
+      TFormData,
+      TFormValidator,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn
+    >,
+  ) => {
     if (!options) return
 
     const oldOptions = this.options
@@ -1487,7 +1652,17 @@ export class FormApi<
   /**
    * Updates the form's errorMap
    */
-  setErrorMap(errorMap: ValidationErrorMap) {
+  setErrorMap(
+    errorMap: ValidationErrorMap<
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn
+    >,
+  ) {
     this.baseStore.setState((prev) => ({
       ...prev,
       errorMap: {
@@ -1503,14 +1678,10 @@ function normalizeError<TFormData>(rawError?: FormValidationError<unknown>): {
   fieldErrors?: Partial<Record<DeepKeys<TFormData>, ValidationError>>
 } {
   if (rawError) {
-    if (typeof rawError === 'object') {
+    if (isFormValidationError(rawError)) {
       const formError = normalizeError(rawError.form).formError
       const fieldErrors = rawError.fields
       return { formError, fieldErrors } as never
-    }
-
-    if (typeof rawError !== 'string') {
-      return { formError: 'Invalid Form Values' }
     }
 
     return { formError: rawError }

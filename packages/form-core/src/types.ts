@@ -41,8 +41,21 @@ export type ValidationErrorMapKeys = `on${Capitalize<ValidationCause>}`
 /**
  * @private
  */
-export type ValidationErrorMap = {
-  [K in ValidationErrorMapKeys]?: ValidationError
+export type ValidationErrorMap<
+  TOnMountReturn = unknown,
+  TOnChangeReturn = unknown,
+  TOnChangeAsyncReturn = unknown,
+  TOnBlurReturn = unknown,
+  TOnBlurAsyncReturn = unknown,
+  TOnSubmitReturn = unknown,
+  TOnSubmitAsyncReturn = unknown,
+  TOnServerReturn = unknown,
+> = {
+  onMount?: TOnMountReturn
+  onChange?: TOnChangeReturn | TOnChangeAsyncReturn
+  onBlur?: TOnBlurReturn | TOnBlurAsyncReturn
+  onSubmit?: TOnSubmitReturn | TOnSubmitAsyncReturn
+  onServer?: TOnServerReturn
 }
 
 /**
@@ -56,12 +69,18 @@ export type FormValidationErrorMap<
   TOnBlurAsyncReturn = unknown,
   TOnSubmitReturn = unknown,
   TOnSubmitAsyncReturn = unknown,
+  TOnServerReturn = unknown,
 > = {
   onMount?: TOnMountReturn
   onChange?: TOnChangeReturn | TOnChangeAsyncReturn
   onBlur?: TOnBlurReturn | TOnBlurAsyncReturn
   onSubmit?: TOnSubmitReturn | TOnSubmitAsyncReturn
+  onServer?: TOnServerReturn
 }
+
+export type FormValidationError<TFormData> =
+  | ValidationError
+  | SpecialFormValidationError<TFormData>
 
 /**
  * @private
@@ -76,12 +95,10 @@ export type FormValidationErrorMap<
  * }
  * ````
  */
-export type FormValidationError<TFormData> =
-  | ValidationError
-  | {
-      form?: ValidationError
-      fields: Partial<Record<DeepKeys<TFormData>, ValidationError>>
-    }
+export type SpecialFormValidationError<TFormData> = {
+  form?: ValidationError
+  fields: Partial<Record<DeepKeys<TFormData>, ValidationError>>
+}
 
 /**
  * @private
