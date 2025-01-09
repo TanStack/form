@@ -59,7 +59,16 @@ export type FormValidateFn<
   TReturnType = unknown,
 > = (props: {
   value: TFormData
-  formApi: FormApi<TFormData, TFormValidator>
+  formApi: FormApi<TFormData, TFormValidator,
+    // This is technically an edge-type; which we try to keep non-`any`, but in this case
+    // It's referring to an inaccessible type from the field validate function inner types, so it's not a big deal
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any>
 }) => TReturnType
 
 /**
@@ -85,7 +94,19 @@ export type FormValidateAsyncFn<
   TReturnType = unknown,
 > = (props: {
   value: TFormData
-  formApi: FormApi<TFormData, TFormValidator>
+  formApi: FormApi<
+    TFormData,
+    TFormValidator,
+    // This is technically an edge-type; which we try to keep non-`any`, but in this case
+    // It's referring to an inaccessible type from the field validate function inner types, so it's not a big deal
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  >
   signal: AbortSignal
 }) => TReturnType | Promise<TReturnType>
 

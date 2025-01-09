@@ -33,7 +33,29 @@ export type FieldValidateFn<
   TReturnType = unknown,
 > = (props: {
   value: TData
-  fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  fieldApi: FieldApi<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData,
+    // This is technically an edge-type; which we try to keep non-`any`, but in this case
+    // It's referring to an inaccessible type from the field validate function inner types, so it's not a big deal
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  >
 }) => TReturnType
 
 /**
@@ -87,7 +109,29 @@ export type FieldValidateAsyncFn<
   TReturnType = unknown,
 > = (options: {
   value: TData
-  fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  fieldApi: FieldApi<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData,
+    // This is technically an edge-type; which we try to keep non-`any`, but in this case
+    // It's referring to an inaccessible type from the field validate function inner types, so it's not a big deal
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  >
   signal: AbortSignal
 }) => TReturnType | Promise<TReturnType>
 
@@ -141,7 +185,29 @@ export type FieldListenerFn<
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (props: {
   value: TData
-  fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  fieldApi: FieldApi<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData,
+    // This is technically an edge-type; which we try to keep non-`any`, but in this case
+    // It's referring to an inaccessible type from the field listener function inner types, so it's not a big deal
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  >
 }) => void
 
 export interface FieldValidators<
@@ -1003,7 +1069,31 @@ export class FieldApi<
         })
         return acc.concat(fieldValidates as never)
       },
-      [] as Array<SyncValidator<any> & { field: FieldApi<any, any, any, any> }>,
+      [] as Array<
+        SyncValidator<any> & {
+          field: FieldApi<
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any
+          >
+        }
+      >,
     )
 
     // Needs type cast as eslint errantly believes this is always falsy
@@ -1011,7 +1101,27 @@ export class FieldApi<
 
     batch(() => {
       const validateFieldFn = (
-        field: FieldApi<any, any, any, any>,
+        field: FieldApi<
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any
+        >,
         validateObj: SyncValidator<any>,
       ) => {
         const errorMapKey = getErrorMapKey(validateObj.cause)
@@ -1091,7 +1201,16 @@ export class FieldApi<
   validateAsync = async (
     cause: ValidationCause,
     formValidationResultPromise: Promise<
-      FieldsErrorMapFromValidator<TParentData>
+      FieldsErrorMapFromValidator<
+        TParentData,
+        TOnMountReturn,
+        TOnChangeReturn,
+        TOnChangeAsyncReturn,
+        TOnBlurReturn,
+        TOnBlurAsyncReturn,
+        TOnSubmitReturn,
+        TOnSubmitAsyncReturn
+      >
     >,
   ) => {
     const validates = getAsyncValidatorArray(cause, this.options)
@@ -1109,7 +1228,29 @@ export class FieldApi<
         return acc.concat(fieldValidates as never)
       },
       [] as Array<
-        AsyncValidator<any> & { field: FieldApi<any, any, any, any> }
+        AsyncValidator<any> & {
+          field: FieldApi<
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any,
+            any
+          >
+        }
       >,
     )
 
@@ -1129,7 +1270,27 @@ export class FieldApi<
     const linkedPromises: Promise<ValidationError | undefined>[] = []
 
     const validateFieldAsyncFn = (
-      field: FieldApi<any, any, any, any>,
+      field: FieldApi<
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any
+      >,
       validateObj: AsyncValidator<any>,
       promises: Promise<ValidationError | undefined>[],
     ) => {
@@ -1250,7 +1411,7 @@ export class FieldApi<
 
     // No error? Attempt async validation
     const formValidationResultPromise = this.form.validateAsync(cause)
-    return this.validateAsync(cause, formValidationResultPromise)
+    return this.validateAsync(cause, formValidationResultPromise as never)
   }
 
   /**
@@ -1284,13 +1445,16 @@ export class FieldApi<
    * Updates the field's errorMap
    */
   setErrorMap(errorMap: ValidationErrorMap) {
-    this.setMeta((prev) => ({
-      ...prev,
-      errorMap: {
-        ...prev.errorMap,
-        ...errorMap,
-      },
-    }))
+    this.setMeta(
+      (prev) =>
+        ({
+          ...prev,
+          errorMap: {
+            ...prev.errorMap,
+            ...errorMap,
+          },
+        }) as never,
+    )
   }
 }
 
