@@ -21,6 +21,8 @@ title: "@tanstack/form-core"
 
 ## Type Aliases
 
+- [AnyFieldApi](type-aliases/anyfieldapi.md)
+- [AnyFormApi](type-aliases/anyformapi.md)
 - [BaseFormState](type-aliases/baseformstate.md)
 - [DeepKeys](type-aliases/deepkeys.md)
 - [DeepValue](type-aliases/deepvalue.md)
