@@ -30,10 +30,11 @@ export type FieldValidateFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TReturnType = unknown,
 > = (props: {
   value: TData
   fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
-}) => ValidationError
+}) => TReturnType
 
 /**
  * @private
@@ -48,10 +49,26 @@ export type FieldValidateOrFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TReturnType = unknown,
 > =
-  | (TFieldValidator extends Validator<TData, infer TFN> ? TFN : never)
-  | (TFormValidator extends Validator<TParentData, infer FFN> ? FFN : never)
-  | FieldValidateFn<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  | (TFieldValidator extends Validator<TData, infer TFN, infer _TReturnType>
+      ? TFN
+      : never)
+  | (TFormValidator extends Validator<
+      TParentData,
+      infer FFN,
+      infer _TReturnType
+    >
+      ? FFN
+      : never)
+  | FieldValidateFn<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData,
+      TReturnType
+    >
   | StandardSchemaV1<TData, unknown>
 
 /**
@@ -67,11 +84,12 @@ export type FieldValidateAsyncFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TReturnType = unknown,
 > = (options: {
   value: TData
   fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
   signal: AbortSignal
-}) => ValidationError | Promise<ValidationError>
+}) => TReturnType | Promise<TReturnType>
 
 /**
  * @private
@@ -86,15 +104,25 @@ export type FieldAsyncValidateOrFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TReturnType = unknown,
 > =
-  | (TFieldValidator extends Validator<TData, infer TFN> ? TFN : never)
-  | (TFormValidator extends Validator<TParentData, infer FFN> ? FFN : never)
+  | (TFieldValidator extends Validator<TData, infer TFN, infer _TReturnType>
+      ? TFN
+      : never)
+  | (TFormValidator extends Validator<
+      TParentData,
+      infer FFN,
+      infer _TReturnType
+    >
+      ? FFN
+      : never)
   | FieldValidateAsyncFn<
       TParentData,
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TReturnType
     >
   | StandardSchemaV1<TData, unknown>
 
@@ -126,6 +154,13 @@ export interface FieldValidators<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TOnMountReturn = unknown,
+  TOnChangeReturn = unknown,
+  TOnChangeAsyncReturn = unknown,
+  TOnBlurReturn = unknown,
+  TOnBlurAsyncReturn = unknown,
+  TOnSubmitReturn = unknown,
+  TOnSubmitAsyncReturn = unknown,
 > {
   /**
    * An optional function that takes a param of `formApi` which is a generic type of `TData` and `TParentData`
@@ -135,7 +170,8 @@ export interface FieldValidators<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TOnMountReturn
   >
   /**
    * An optional property that takes a `ValidateFn` which is a generic of `TData` and `TParentData`.
@@ -148,7 +184,8 @@ export interface FieldValidators<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TOnChangeReturn
   >
   /**
    * An optional property similar to `onChange` but async validation. If `validatorAdapter`
@@ -161,7 +198,8 @@ export interface FieldValidators<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TOnChangeAsyncReturn
   >
   /**
    * An optional number to represent how long the `onChangeAsync` should wait before running
@@ -184,7 +222,8 @@ export interface FieldValidators<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TOnBlurReturn
   >
   /**
    * An optional property similar to `onBlur` but async validation. If `validatorAdapter`
@@ -197,7 +236,8 @@ export interface FieldValidators<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TOnBlurAsyncReturn
   >
 
   /**
@@ -221,7 +261,8 @@ export interface FieldValidators<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TOnSubmitReturn
   >
   /**
    * An optional property similar to `onSubmit` but async validation. If `validatorAdapter`
@@ -234,7 +275,8 @@ export interface FieldValidators<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TOnSubmitAsyncReturn
   >
 }
 
@@ -292,6 +334,13 @@ export interface FieldOptions<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TOnMountReturn = unknown,
+  TOnChangeReturn = unknown,
+  TOnChangeAsyncReturn = unknown,
+  TOnBlurReturn = unknown,
+  TOnBlurAsyncReturn = unknown,
+  TOnSubmitReturn = unknown,
+  TOnSubmitAsyncReturn = unknown,
 > {
   /**
    * The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
@@ -321,7 +370,14 @@ export interface FieldOptions<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn
   >
   /**
    * An optional object with default metadata for the field.

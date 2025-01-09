@@ -1,6 +1,6 @@
 import type { DeepKeys } from './util-types'
 
-export type ValidationError = undefined | false | null | string
+export type ValidationError = unknown
 
 export type ValidationSource = 'form' | 'field'
 
@@ -48,8 +48,19 @@ export type ValidationErrorMap = {
 /**
  * @private
  */
-export type FormValidationErrorMap = {
-  [K in ValidationErrorMapKeys]?: ValidationError | FormValidationError<unknown>
+export type FormValidationErrorMap<
+  TOnMountReturn = unknown,
+  TOnChangeReturn = unknown,
+  TOnChangeAsyncReturn = unknown,
+  TOnBlurReturn = unknown,
+  TOnBlurAsyncReturn = unknown,
+  TOnSubmitReturn = unknown,
+  TOnSubmitAsyncReturn = unknown,
+> = {
+  onMount?: TOnMountReturn
+  onChange?: TOnChangeReturn | TOnChangeAsyncReturn
+  onBlur?: TOnBlurReturn | TOnBlurAsyncReturn
+  onSubmit?: TOnSubmitReturn | TOnSubmitAsyncReturn
 }
 
 /**
