@@ -154,13 +154,13 @@ export interface FieldValidators<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TOnMountReturn = unknown,
-  TOnChangeReturn = unknown,
-  TOnChangeAsyncReturn = unknown,
-  TOnBlurReturn = unknown,
-  TOnBlurAsyncReturn = unknown,
-  TOnSubmitReturn = unknown,
-  TOnSubmitAsyncReturn = unknown,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
 > {
   /**
    * An optional function that takes a param of `formApi` which is a generic type of `TData` and `TParentData`
@@ -334,13 +334,13 @@ export interface FieldOptions<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TOnMountReturn = unknown,
-  TOnChangeReturn = unknown,
-  TOnChangeAsyncReturn = unknown,
-  TOnBlurReturn = unknown,
-  TOnBlurAsyncReturn = unknown,
-  TOnSubmitReturn = unknown,
-  TOnSubmitAsyncReturn = unknown,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
 > {
   /**
    * The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
@@ -408,20 +408,20 @@ export interface FieldApiOptions<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TOnMountReturn = unknown,
-  TOnChangeReturn = unknown,
-  TOnChangeAsyncReturn = unknown,
-  TOnBlurReturn = unknown,
-  TOnBlurAsyncReturn = unknown,
-  TOnSubmitReturn = unknown,
-  TOnSubmitAsyncReturn = unknown,
-  TFormOnMountReturn = unknown,
-  TFormOnChangeReturn = unknown,
-  TFormOnChangeAsyncReturn = unknown,
-  TFormOnBlurReturn = unknown,
-  TFormOnBlurAsyncReturn = unknown,
-  TFormOnSubmitReturn = unknown,
-  TFormOnSubmitAsyncReturn = unknown,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
+  TFormOnMountReturn = undefined,
+  TFormOnChangeReturn = undefined,
+  TFormOnChangeAsyncReturn = undefined,
+  TFormOnBlurReturn = undefined,
+  TFormOnBlurAsyncReturn = undefined,
+  TFormOnSubmitReturn = undefined,
+  TFormOnSubmitAsyncReturn = undefined,
 > extends FieldOptions<
     TParentData,
     TName,
@@ -450,13 +450,13 @@ export interface FieldApiOptions<
 }
 
 export type FieldMetaBase<
-  TOnMountReturn = unknown,
-  TOnChangeReturn = unknown,
-  TOnChangeAsyncReturn = unknown,
-  TOnBlurReturn = unknown,
-  TOnBlurAsyncReturn = unknown,
-  TOnSubmitReturn = unknown,
-  TOnSubmitAsyncReturn = unknown,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
 > = {
   /**
    * A flag indicating whether the field has been touched.
@@ -489,13 +489,13 @@ export type FieldMetaBase<
 }
 
 export type FieldMetaDerived<
-  TOnMountReturn = unknown,
-  TOnChangeReturn = unknown,
-  TOnChangeAsyncReturn = unknown,
-  TOnBlurReturn = unknown,
-  TOnBlurAsyncReturn = unknown,
-  TOnSubmitReturn = unknown,
-  TOnSubmitAsyncReturn = unknown,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
 > = {
   /**
    * An array of errors related to the field value.
@@ -519,13 +519,13 @@ export type FieldMetaDerived<
  * An object type representing the metadata of a field in a form.
  */
 export type FieldMeta<
-  TOnMountReturn = unknown,
-  TOnChangeReturn = unknown,
-  TOnChangeAsyncReturn = unknown,
-  TOnBlurReturn = unknown,
-  TOnBlurAsyncReturn = unknown,
-  TOnSubmitReturn = unknown,
-  TOnSubmitAsyncReturn = unknown,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
 > = FieldMetaBase<
   TOnMountReturn,
   TOnChangeReturn,
@@ -550,13 +550,13 @@ export type FieldMeta<
  */
 export type FieldState<
   TData,
-  TOnMountReturn = unknown,
-  TOnChangeReturn = unknown,
-  TOnChangeAsyncReturn = unknown,
-  TOnBlurReturn = unknown,
-  TOnBlurAsyncReturn = unknown,
-  TOnSubmitReturn = unknown,
-  TOnSubmitAsyncReturn = unknown,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
 > = {
   /**
    * The current value of the field.
@@ -595,20 +595,20 @@ export class FieldApi<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TOnMountReturn = unknown,
-  TOnChangeReturn = unknown,
-  TOnChangeAsyncReturn = unknown,
-  TOnBlurReturn = unknown,
-  TOnBlurAsyncReturn = unknown,
-  TOnSubmitReturn = unknown,
-  TOnSubmitAsyncReturn = unknown,
-  TFormOnMountReturn = unknown,
-  TFormOnChangeReturn = unknown,
-  TFormOnChangeAsyncReturn = unknown,
-  TFormOnBlurReturn = unknown,
-  TFormOnBlurAsyncReturn = unknown,
-  TFormOnSubmitReturn = unknown,
-  TFormOnSubmitAsyncReturn = unknown,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
+  TFormOnMountReturn = undefined,
+  TFormOnChangeReturn = undefined,
+  TFormOnChangeAsyncReturn = undefined,
+  TFormOnBlurReturn = undefined,
+  TFormOnBlurAsyncReturn = undefined,
+  TFormOnSubmitReturn = undefined,
+  TFormOnSubmitAsyncReturn = undefined,
 > {
   /**
    * A reference to the form API instance.
@@ -822,11 +822,14 @@ export class FieldApi<
         type: 'validate',
       })
       if (error) {
-        this.setMeta((prev) => ({
-          ...prev,
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          errorMap: { ...prev?.errorMap, onMount: error },
-        }))
+        this.setMeta(
+          (prev) =>
+            ({
+              ...prev,
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+              errorMap: { ...prev?.errorMap, onMount: error },
+            }) as never,
+        )
       }
     }
 

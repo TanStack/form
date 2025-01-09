@@ -31,13 +31,13 @@ import type { Updater } from './utils'
 
 export type FieldsErrorMapFromValidator<
   TFormData,
-  TOnMountReturn = unknown,
-  TOnChangeReturn = unknown,
-  TOnChangeAsyncReturn = unknown,
-  TOnBlurReturn = unknown,
-  TOnBlurAsyncReturn = unknown,
-  TOnSubmitReturn = unknown,
-  TOnSubmitAsyncReturn = unknown,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
 > = Partial<
   Record<
     DeepKeys<TFormData>,
@@ -121,13 +121,13 @@ export type FormAsyncValidateOrFn<
 export interface FormValidators<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-  TOnMountReturn = unknown,
-  TOnChangeReturn = unknown,
-  TOnChangeAsyncReturn = unknown,
-  TOnBlurReturn = unknown,
-  TOnBlurAsyncReturn = unknown,
-  TOnSubmitReturn = unknown,
-  TOnSubmitAsyncReturn = unknown,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
 > {
   /**
    * Optional function that fires as soon as the component mounts.
@@ -179,13 +179,13 @@ export interface FormValidators<
 export interface FormTransform<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-  TOnMountReturn = unknown,
-  TOnChangeReturn = unknown,
-  TOnChangeAsyncReturn = unknown,
-  TOnBlurReturn = unknown,
-  TOnBlurAsyncReturn = unknown,
-  TOnSubmitReturn = unknown,
-  TOnSubmitAsyncReturn = unknown,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
 > {
   fn: (
     formBase: FormApi<
@@ -219,13 +219,13 @@ export interface FormTransform<
 export interface FormOptions<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-  TOnMountReturn = unknown,
-  TOnChangeReturn = unknown,
-  TOnChangeAsyncReturn = unknown,
-  TOnBlurReturn = unknown,
-  TOnBlurAsyncReturn = unknown,
-  TOnSubmitReturn = unknown,
-  TOnSubmitAsyncReturn = unknown,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
 > {
   /**
    * Set initial values for your form.
@@ -356,13 +356,13 @@ export type FieldInfo<
  */
 export type BaseFormState<
   TFormData,
-  TOnMountReturn = unknown,
-  TOnChangeReturn = unknown,
-  TOnChangeAsyncReturn = unknown,
-  TOnBlurReturn = unknown,
-  TOnBlurAsyncReturn = unknown,
-  TOnSubmitReturn = unknown,
-  TOnSubmitAsyncReturn = unknown,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
 > = {
   /**
    * The current values of the form fields.
@@ -417,13 +417,13 @@ export type BaseFormState<
 
 export type DerivedFormState<
   TFormData,
-  TOnMountReturn = unknown,
-  TOnChangeReturn = unknown,
-  TOnChangeAsyncReturn = unknown,
-  TOnBlurReturn = unknown,
-  TOnBlurAsyncReturn = unknown,
-  TOnSubmitReturn = unknown,
-  TOnSubmitAsyncReturn = unknown,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
 > = {
   /**
    * A boolean indicating if the form is currently validating.
@@ -485,13 +485,13 @@ export type DerivedFormState<
 
 export type FormState<
   TFormData,
-  TOnMountReturn = unknown,
-  TOnChangeReturn = unknown,
-  TOnChangeAsyncReturn = unknown,
-  TOnBlurReturn = unknown,
-  TOnBlurAsyncReturn = unknown,
-  TOnSubmitReturn = unknown,
-  TOnSubmitAsyncReturn = unknown,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
 > = BaseFormState<
   TFormData,
   TOnMountReturn,
@@ -515,13 +515,13 @@ export type FormState<
 
 function getDefaultFormState<
   TFormData,
-  TOnMountReturn = unknown,
-  TOnChangeReturn = unknown,
-  TOnChangeAsyncReturn = unknown,
-  TOnBlurReturn = unknown,
-  TOnBlurAsyncReturn = unknown,
-  TOnSubmitReturn = unknown,
-  TOnSubmitAsyncReturn = unknown,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
 >(
   defaultState: Partial<
     FormState<
@@ -579,13 +579,13 @@ const isFormValidationError = (
 export class FormApi<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-  TOnMountReturn = unknown,
-  TOnChangeReturn = unknown,
-  TOnChangeAsyncReturn = unknown,
-  TOnBlurReturn = unknown,
-  TOnBlurAsyncReturn = unknown,
-  TOnSubmitReturn = unknown,
-  TOnSubmitAsyncReturn = unknown,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
 > {
   /**
    * The options for the form.
@@ -700,8 +700,8 @@ export class FormApi<
           if (!prevBaseVal || currBaseVal.errorMap !== prevBaseVal.errorMap) {
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             fieldErrors = Object.values(currBaseVal.errorMap ?? {}).filter(
-              (val: unknown) => val !== undefined,
-            )
+              (val) => val !== undefined,
+            ) as never
           }
 
           // As a primitive, we don't need to aggressively persist the same referencial value for performance reasons
