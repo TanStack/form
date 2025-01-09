@@ -3,10 +3,10 @@ id: DerivedFormState
 title: DerivedFormState
 ---
 
-# Type Alias: DerivedFormState\<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn\>
+# Type Alias: DerivedFormState\<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TOnServerReturn\>
 
 ```ts
-type DerivedFormState<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>: object;
+type DerivedFormState<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TOnServerReturn>: object;
 ```
 
 ## Type Parameters
@@ -26,6 +26,8 @@ type DerivedFormState<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsync
 • **TOnSubmitReturn** = `undefined`
 
 • **TOnSubmitAsyncReturn** = `undefined`
+
+• **TOnServerReturn** = `undefined`
 
 ## Type declaration
 
@@ -47,7 +49,8 @@ errors: (
   | TOnBlurReturn
   | TOnBlurAsyncReturn
   | TOnSubmitReturn
-  | TOnSubmitAsyncReturn)[];
+  | TOnSubmitAsyncReturn
+  | TOnServerReturn)[];
 ```
 
 The error array for the form itself.
@@ -134,4 +137,4 @@ A boolean indicating if the form and all its fields are valid.
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:442](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L442)
+[packages/form-core/src/FormApi.ts:445](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L445)

@@ -29,4 +29,4 @@ type FieldsErrorMapFromValidator<TFormData, TOnMountReturn, TOnChangeReturn, TOn
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:32](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L32)
+[packages/form-core/src/FormApi.ts:33](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L33)

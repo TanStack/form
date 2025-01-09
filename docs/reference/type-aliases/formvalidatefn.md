@@ -35,4 +35,4 @@ type FormValidateFn<TFormData, TFormValidator, TReturnType>: (props) => TReturnT
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:56](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L56)
+[packages/form-core/src/FormApi.ts:57](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L57)

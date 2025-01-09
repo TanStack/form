@@ -37,7 +37,7 @@ Optional function that validates the form data when a field loses focus, returns
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:179](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L179)
+[packages/form-core/src/FormApi.ts:180](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L180)
 
 ***
 
@@ -51,7 +51,7 @@ Optional onBlur asynchronous validation method for when a field loses focus retu
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:183](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L183)
+[packages/form-core/src/FormApi.ts:184](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L184)
 
 ***
 
@@ -65,7 +65,7 @@ The default time in milliseconds that if set to a number larger than 0, will deb
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:191](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L191)
+[packages/form-core/src/FormApi.ts:192](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L192)
 
 ***
 
@@ -79,7 +79,7 @@ Optional function that checks the validity of your data whenever a value changes
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:163](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L163)
+[packages/form-core/src/FormApi.ts:164](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L164)
 
 ***
 
@@ -93,7 +93,7 @@ Optional onChange asynchronous counterpart to onChange. Useful for more complex 
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:167](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L167)
+[packages/form-core/src/FormApi.ts:168](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L168)
 
 ***
 
@@ -107,7 +107,7 @@ The default time in milliseconds that if set to a number larger than 0, will deb
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:175](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L175)
+[packages/form-core/src/FormApi.ts:176](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L176)
 
 ***
 
@@ -121,7 +121,7 @@ Optional function that fires as soon as the component mounts.
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:159](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L159)
+[packages/form-core/src/FormApi.ts:160](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L160)
 
 ***
 
@@ -133,7 +133,7 @@ optional onSubmit: FormValidateOrFn<TFormData, TFormValidator, TOnSubmitReturn>;
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:192](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L192)
+[packages/form-core/src/FormApi.ts:193](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L193)
 
 ***
 
@@ -145,4 +145,4 @@ optional onSubmitAsync: FormAsyncValidateOrFn<TFormData, TFormValidator, TOnSubm
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:193](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L193)
+[packages/form-core/src/FormApi.ts:194](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L194)
