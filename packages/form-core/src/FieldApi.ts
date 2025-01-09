@@ -643,6 +643,33 @@ export type FieldState<
 }
 
 /**
+ * @public
+ *
+ * A type representing the Field API with all generics set to `any` for convenience.
+ */
+export type AnyFieldApi = FieldApi<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
+
+/**
  * A class representing the API for managing a form field.
  *
  * Normally, you will not need to create a new `FieldApi` instance directly.

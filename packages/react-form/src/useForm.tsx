@@ -1,4 +1,4 @@
-import { FormApi, functionalUpdate } from '@tanstack/form-core'
+import { AnyFormApi, FormApi, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
 import React, { useState } from 'react'
 import { Field } from './useField'
@@ -7,6 +7,7 @@ import type { PropsWithChildren, ReactNode } from 'react'
 import type { FieldComponent } from './useField'
 import type { NoInfer } from '@tanstack/react-store'
 import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
+import { AnyFormState } from './types'
 
 /**
  * Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`
@@ -112,10 +113,8 @@ function LocalSubscribe({
   selector,
   children,
 }: PropsWithChildren<{
-  form: FormApi<any, any, any, any, any, any, any, any, any>
-  selector: (
-    state: FormState<any, any, any, any, any, any, any, any>,
-  ) => FormState<any, any, any, any, any, any, any, any>
+  form: AnyFormApi
+  selector: (state: AnyFormState) => AnyFormState
 }>) {
   const data = useStore(form.store, selector)
 

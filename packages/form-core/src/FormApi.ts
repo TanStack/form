@@ -594,6 +594,13 @@ const isFormValidationError = (
 }
 
 /**
+ * @public
+ *
+ * A type representing the Form API with all generics set to `any` for convenience.
+ */
+export type AnyFormApi = FormApi<any, any, any, any, any, any, any, any, any>
+
+/**
  * A class representing the Form API. It handles the logic and interactions with the form state.
  *
  * Normally, you will not need to create a new `FormApi` instance directly. Instead, you will use a framework
