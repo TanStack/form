@@ -731,7 +731,18 @@ export class FieldApi<
   /**
    * The field state store.
    */
-  store!: Derived<FieldState<TData>>
+  store!: Derived<
+    FieldState<
+      TData,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn
+    >
+  >
   /**
    * The current field state.
    */
@@ -793,7 +804,16 @@ export class FieldApi<
         return {
           value,
           meta,
-        } as FieldState<TData>
+        } as FieldState<
+          TData,
+          TOnMountReturn,
+          TOnChangeReturn,
+          TOnChangeAsyncReturn,
+          TOnBlurReturn,
+          TOnBlurAsyncReturn,
+          TOnSubmitReturn,
+          TOnSubmitAsyncReturn
+        >
       },
     })
 
@@ -971,8 +991,19 @@ export class FieldApi<
   /**
    * Sets the field metadata.
    */
-  setMeta = (updater: Updater<FieldMeta>) =>
-    this.form.setFieldMeta(this.name, updater)
+  setMeta = (
+    updater: Updater<
+      FieldMeta<
+        TOnMountReturn,
+        TOnChangeReturn,
+        TOnChangeAsyncReturn,
+        TOnBlurReturn,
+        TOnBlurAsyncReturn,
+        TOnSubmitReturn,
+        TOnSubmitAsyncReturn
+      >
+    >,
+  ) => this.form.setFieldMeta(this.name, updater)
 
   /**
    * Gets the field information object.

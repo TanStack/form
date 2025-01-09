@@ -146,3 +146,56 @@ it('should type an array sub-field properly', () => {
 
   assertType<string>(field.state.value)
 })
+
+it('should have the correct types returned from form validators', () => {
+  const form = new FormApi({
+    defaultValues: {
+      name: 'test',
+    },
+    validators: {
+      onChange: () => {
+        return '123' as const
+      },
+    },
+  } as const)
+
+  assertType<'123' | undefined>(form.state.errorMap.onChange)
+})
+
+it('should have the correct types returned from form validators even when both onChange and onChangeAsync are present', () => {
+  const form = new FormApi({
+    defaultValues: {
+      name: 'test',
+    },
+    validators: {
+      onChange: () => {
+        return '123' as const
+      },
+      onChangeAsync: async () => {
+        return '123' as const
+      },
+    },
+  } as const)
+
+  assertType<'123' | undefined>(form.state.errorMap.onChange)
+})
+
+it('should have the correct types returned from field validators', () => {
+  const form = new FormApi({
+    defaultValues: {
+      name: 'test',
+    },
+  } as const)
+
+  const field = new FieldApi({
+    form,
+    name: 'name',
+    validators: {
+      onChange: () => {
+        return '123' as const
+      },
+    },
+  })
+
+  assertType<'123' | undefined>(field.state.meta.errorMap.onChange)
+})
