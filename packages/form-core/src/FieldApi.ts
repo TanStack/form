@@ -408,14 +408,45 @@ export interface FieldApiOptions<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TOnMountReturn = unknown,
+  TOnChangeReturn = unknown,
+  TOnChangeAsyncReturn = unknown,
+  TOnBlurReturn = unknown,
+  TOnBlurAsyncReturn = unknown,
+  TOnSubmitReturn = unknown,
+  TOnSubmitAsyncReturn = unknown,
+  TFormOnMountReturn = unknown,
+  TFormOnChangeReturn = unknown,
+  TFormOnChangeAsyncReturn = unknown,
+  TFormOnBlurReturn = unknown,
+  TFormOnBlurAsyncReturn = unknown,
+  TFormOnSubmitReturn = unknown,
+  TFormOnSubmitAsyncReturn = unknown,
 > extends FieldOptions<
     TParentData,
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn
   > {
-  form: FormApi<TParentData, TFormValidator>
+  form: FormApi<
+    TParentData,
+    TFormValidator,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn
+  >
 }
 
 export type FieldMetaBase<
@@ -564,6 +595,20 @@ export class FieldApi<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TOnMountReturn = unknown,
+  TOnChangeReturn = unknown,
+  TOnChangeAsyncReturn = unknown,
+  TOnBlurReturn = unknown,
+  TOnBlurAsyncReturn = unknown,
+  TOnSubmitReturn = unknown,
+  TOnSubmitAsyncReturn = unknown,
+  TFormOnMountReturn = unknown,
+  TFormOnChangeReturn = unknown,
+  TFormOnChangeAsyncReturn = unknown,
+  TFormOnBlurReturn = unknown,
+  TFormOnBlurAsyncReturn = unknown,
+  TFormOnSubmitReturn = unknown,
+  TFormOnSubmitAsyncReturn = unknown,
 > {
   /**
    * A reference to the form API instance.
@@ -573,7 +618,21 @@ export class FieldApi<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn
   >['form']
   /**
    * The field name.
@@ -587,7 +646,21 @@ export class FieldApi<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn
   > = {} as any
   /**
    * The field state store.
@@ -610,7 +683,21 @@ export class FieldApi<
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn,
+      TFormOnMountReturn,
+      TFormOnChangeReturn,
+      TFormOnChangeAsyncReturn,
+      TFormOnBlurReturn,
+      TFormOnBlurAsyncReturn,
+      TFormOnSubmitReturn,
+      TFormOnSubmitAsyncReturn
     >,
   ) {
     this.form = opts.form as never
@@ -653,10 +740,31 @@ export class FieldApi<
   runValidator<
     TValue extends {
       value: TData
-      fieldApi: FieldApi<any, any, any, any>
+      fieldApi: FieldApi<
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any
+      >
       validationSource: ValidationSource
     },
     TType extends 'validate' | 'validateAsync',
+    TReturnType = unknown,
   >(props: {
     validate: TType extends 'validate'
       ? FieldValidateOrFn<any, any, any, any>
@@ -664,7 +772,7 @@ export class FieldApi<
     value: TValue
     type: TType
     // When `api` is 'field', the return type cannot be `FormValidationError`
-  }): TType extends 'validate' ? ValidationError : Promise<ValidationError> {
+  }): TType extends 'validate' ? TReturnType : Promise<TReturnType> {
     const adapters = [
       this.form.options.validatorAdapter,
       this.options.validatorAdapter,
