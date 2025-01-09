@@ -5,6 +5,7 @@ import {
   getAsyncValidatorArray,
   getBy,
   getSyncValidatorArray,
+  isFormValidationError,
   isNonEmptyArray,
   setBy,
 } from './utils'
@@ -387,6 +388,7 @@ export type BaseFormState<
   TOnBlurAsyncReturn = undefined,
   TOnSubmitReturn = undefined,
   TOnSubmitAsyncReturn = undefined,
+  TOnServerReturn = undefined,
 > = {
   /**
    * The current values of the form fields.
@@ -402,7 +404,8 @@ export type BaseFormState<
     TOnBlurReturn,
     TOnBlurAsyncReturn,
     TOnSubmitReturn,
-    TOnSubmitAsyncReturn
+    TOnSubmitAsyncReturn,
+    TOnServerReturn
   >
   /**
    * An internal mechanism used for keeping track of validation logic in a form.
@@ -448,6 +451,7 @@ export type DerivedFormState<
   TOnBlurAsyncReturn = undefined,
   TOnSubmitReturn = undefined,
   TOnSubmitAsyncReturn = undefined,
+  TOnServerReturn = undefined,
 > = {
   /**
    * A boolean indicating if the form is currently validating.
@@ -468,6 +472,7 @@ export type DerivedFormState<
     | TOnBlurAsyncReturn
     | TOnSubmitReturn
     | TOnSubmitAsyncReturn
+    | TOnServerReturn
   >
   /**
    * A boolean indicating if any of the form fields are currently validating.
@@ -516,6 +521,7 @@ export type FormState<
   TOnBlurAsyncReturn = undefined,
   TOnSubmitReturn = undefined,
   TOnSubmitAsyncReturn = undefined,
+  TOnServerReturn = undefined,
 > = BaseFormState<
   TFormData,
   TOnMountReturn,
@@ -524,7 +530,8 @@ export type FormState<
   TOnBlurReturn,
   TOnBlurAsyncReturn,
   TOnSubmitReturn,
-  TOnSubmitAsyncReturn
+  TOnSubmitAsyncReturn,
+  TOnServerReturn
 > &
   DerivedFormState<
     TFormData,
@@ -534,7 +541,8 @@ export type FormState<
     TOnBlurReturn,
     TOnBlurAsyncReturn,
     TOnSubmitReturn,
-    TOnSubmitAsyncReturn
+    TOnSubmitAsyncReturn,
+    TOnServerReturn
   >
 
 function getDefaultFormState<
@@ -585,12 +593,6 @@ function getDefaultFormState<
       onServer: undefined,
     },
   }
-}
-
-const isFormValidationError = (
-  error: unknown,
-): error is SpecialFormValidationError<unknown> => {
-  return !!error && typeof error === 'object' && 'fields' in error
 }
 
 /**
@@ -1769,13 +1771,16 @@ export class FormApi<
       TOnSubmitAsyncReturn
     >,
   ) {
-    this.baseStore.setState((prev) => ({
-      ...prev,
-      errorMap: {
-        ...prev.errorMap,
-        ...errorMap,
-      },
-    }))
+    this.baseStore.setState(
+      (prev) =>
+        ({
+          ...prev,
+          errorMap: {
+            ...prev.errorMap,
+            ...errorMap,
+          },
+        }) as never,
+    )
   }
 }
 

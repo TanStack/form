@@ -1,4 +1,4 @@
-import type { ValidationCause } from './types'
+import type { SpecialFormValidationError, ValidationCause } from './types'
 import type { FormValidators } from './FormApi'
 import type { FieldValidators } from './FieldApi'
 
@@ -323,4 +323,10 @@ export function getSyncValidatorArray<T>(
     default:
       return [changeValidator, serverValidator] as never
   }
+}
+
+export const isFormValidationError = (
+  error: unknown,
+): error is SpecialFormValidationError<unknown> => {
+  return !!error && typeof error === 'object' && 'fields' in error
 }
