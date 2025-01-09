@@ -31,7 +31,7 @@ new TanStackFormController<TParentData, TFormValidator>(host, config?): TanStack
 
 ##### config?
 
-`FormOptions`\<`TParentData`, `TFormValidator`\>
+`FormOptions`\<`TParentData`, `TFormValidator`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`\>
 
 #### Returns
 
@@ -46,7 +46,7 @@ new TanStackFormController<TParentData, TFormValidator>(host, config?): TanStack
 ### api
 
 ```ts
-api: FormApi<TParentData, TFormValidator>;
+api: FormApi<TParentData, TFormValidator, undefined, undefined, undefined, undefined, undefined, undefined, undefined>;
 ```
 
 #### Defined in
@@ -73,7 +73,7 @@ field<TName, TFieldValidator, TData>(fieldConfig, render): object
 
 ##### fieldConfig
 
-`FieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
+`FieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`\>
 
 ##### render
 
@@ -92,13 +92,13 @@ values: object;
 ###### values.form
 
 ```ts
-form: FormApi<TParentData, TFormValidator>;
+form: FormApi<TParentData, TFormValidator, undefined, undefined, undefined, undefined, undefined, undefined, undefined>;
 ```
 
 ###### values.options
 
 ```ts
-options: FieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>;
+options: FieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData, undefined, undefined, undefined, undefined, undefined, undefined, undefined>;
 ```
 
 ###### values.render

@@ -35,7 +35,7 @@ type FormValidator<TFormData, TType, TFn>: object;
 
 #### Returns
 
-[`ValidationError`](validationerror.md)
+`unknown`
 
 ### validateAsync()
 
@@ -53,8 +53,8 @@ type FormValidator<TFormData, TType, TFn>: object;
 
 #### Returns
 
-`Promise`\<`FormValidationError`\<`TFormData`\>\>
+`Promise`\<`unknown`\>
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:68](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L68)
+[packages/form-core/src/FormApi.ts:116](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L116)

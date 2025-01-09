@@ -41,7 +41,7 @@ new TanStackField<TParentData, TName, TFieldValidator, TFormValidator, TData>():
 ### api
 
 ```ts
-api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>;
+api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined>;
 ```
 
 #### Defined in
@@ -161,7 +161,7 @@ The field name. The type will be `DeepKeys<TParentData>` to ensure your name is 
 ### tanstackField
 
 ```ts
-tanstackField: FormApi<TParentData, TFormValidator>;
+tanstackField: FormApi<TParentData, TFormValidator, undefined, undefined, undefined, undefined, undefined, undefined, undefined>;
 ```
 
 #### Defined in
@@ -207,7 +207,7 @@ A validator provided by an extension, like `yupValidator` from `@tanstack/yup-fo
 ### validators?
 
 ```ts
-optional validators: NoInfer<FieldValidators<TParentData, TName, TFieldValidator, TFormValidator, TData>>;
+optional validators: NoInfer<FieldValidators<TParentData, TName, TFieldValidator, TFormValidator, TData, undefined, undefined, undefined, undefined, undefined, undefined, undefined>>;
 ```
 
 A list of validators to pass to the field

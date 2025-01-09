@@ -3,10 +3,10 @@ id: FormValidateFn
 title: FormValidateFn
 ---
 
-# Type Alias: FormValidateFn()\<TFormData, TFormValidator\>
+# Type Alias: FormValidateFn()\<TFormData, TFormValidator, TReturnType\>
 
 ```ts
-type FormValidateFn<TFormData, TFormValidator>: (props) => FormValidationError<TFormData>;
+type FormValidateFn<TFormData, TFormValidator, TReturnType>: (props) => TReturnType;
 ```
 
 ## Type Parameters
@@ -15,13 +15,15 @@ type FormValidateFn<TFormData, TFormValidator>: (props) => FormValidationError<T
 
 • **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> \| `undefined` = `undefined`
 
+• **TReturnType** = `unknown`
+
 ## Parameters
 
 ### props
 
 #### formApi
 
-[`FormApi`](../classes/formapi.md)\<`TFormData`, `TFormValidator`\>
+[`FormApi`](../classes/formapi.md)\<`TFormData`, `TFormValidator`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>
 
 #### value
 
@@ -29,8 +31,8 @@ type FormValidateFn<TFormData, TFormValidator>: (props) => FormValidationError<T
 
 ## Returns
 
-`FormValidationError`\<`TFormData`\>
+`TReturnType`
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:35](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L35)
+[packages/form-core/src/FormApi.ts:56](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L56)

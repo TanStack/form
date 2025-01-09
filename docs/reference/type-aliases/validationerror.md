@@ -6,7 +6,7 @@ title: ValidationError
 # Type Alias: ValidationError
 
 ```ts
-type ValidationError: undefined | false | null | string;
+type ValidationError: unknown;
 ```
 
 ## Defined in

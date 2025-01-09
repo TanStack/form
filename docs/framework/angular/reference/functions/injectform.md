@@ -6,7 +6,7 @@ title: injectForm
 # Function: injectForm()
 
 ```ts
-function injectForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormValidator>
+function injectForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormValidator, undefined, undefined, undefined, undefined, undefined, undefined, undefined>
 ```
 
 ## Type Parameters
@@ -19,11 +19,11 @@ function injectForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormV
 
 ### opts?
 
-`FormOptions`\<`TFormData`, `TFormValidator`\>
+`FormOptions`\<`TFormData`, `TFormValidator`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`\>
 
 ## Returns
 
-`FormApi`\<`TFormData`, `TFormValidator`\>
+`FormApi`\<`TFormData`, `TFormValidator`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`\>
 
 ## Defined in
 

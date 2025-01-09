@@ -3,7 +3,7 @@ id: FormOptions
 title: FormOptions
 ---
 
-# Interface: FormOptions\<TFormData, TFormValidator\>
+# Interface: FormOptions\<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn\>
 
 An object representing the options for a form.
 
@@ -12,6 +12,20 @@ An object representing the options for a form.
 • **TFormData**
 
 • **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> \| `undefined` = `undefined`
+
+• **TOnMountReturn** = `undefined`
+
+• **TOnChangeReturn** = `undefined`
+
+• **TOnChangeAsyncReturn** = `undefined`
+
+• **TOnBlurReturn** = `undefined`
+
+• **TOnBlurAsyncReturn** = `undefined`
+
+• **TOnSubmitReturn** = `undefined`
+
+• **TOnSubmitAsyncReturn** = `undefined`
 
 ## Properties
 
@@ -25,7 +39,7 @@ If true, always run async validation, even when sync validation has produced an 
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:163](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L163)
+[packages/form-core/src/FormApi.ts:276](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L276)
 
 ***
 
@@ -39,21 +53,21 @@ Optional time in milliseconds if you want to introduce a delay before firing off
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:167](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L167)
+[packages/form-core/src/FormApi.ts:280](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L280)
 
 ***
 
 ### defaultState?
 
 ```ts
-optional defaultState: Partial<FormState<TFormData>>;
+optional defaultState: Partial<FormState<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>>;
 ```
 
 The default state for the form.
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:159](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L159)
+[packages/form-core/src/FormApi.ts:261](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L261)
 
 ***
 
@@ -67,7 +81,7 @@ Set initial values for your form.
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:155](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L155)
+[packages/form-core/src/FormApi.ts:257](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L257)
 
 ***
 
@@ -85,7 +99,7 @@ A function to be called when the form is submitted, what should happen once the 
 
 ###### formApi
 
-[`FormApi`](../classes/formapi.md)\<`TFormData`, `TFormValidator`\>
+[`FormApi`](../classes/formapi.md)\<`TFormData`, `TFormValidator`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`\>
 
 ###### value
 
@@ -97,7 +111,7 @@ A function to be called when the form is submitted, what should happen once the 
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:179](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L179)
+[packages/form-core/src/FormApi.ts:302](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L302)
 
 ***
 
@@ -115,7 +129,7 @@ Specify an action for scenarios where the user tries to submit an invalid form.
 
 ###### formApi
 
-[`FormApi`](../classes/formapi.md)\<`TFormData`, `TFormValidator`\>
+[`FormApi`](../classes/formapi.md)\<`TFormData`, `TFormValidator`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`\>
 
 ###### value
 
@@ -127,19 +141,19 @@ Specify an action for scenarios where the user tries to submit an invalid form.
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:186](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L186)
+[packages/form-core/src/FormApi.ts:319](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L319)
 
 ***
 
 ### transform?
 
 ```ts
-optional transform: FormTransform<TFormData, TFormValidator>;
+optional transform: FormTransform<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>;
 ```
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:190](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L190)
+[packages/form-core/src/FormApi.ts:333](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L333)
 
 ***
 
@@ -153,18 +167,18 @@ A validator adapter to support usage of extra validation types (IE: Zod, Yup, or
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:171](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L171)
+[packages/form-core/src/FormApi.ts:284](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L284)
 
 ***
 
 ### validators?
 
 ```ts
-optional validators: FormValidators<TFormData, TFormValidator>;
+optional validators: FormValidators<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>;
 ```
 
 A list of validators to pass to the form
 
 #### Defined in
 
-[packages/form-core/src/FormApi.ts:175](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L175)
+[packages/form-core/src/FormApi.ts:288](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L288)

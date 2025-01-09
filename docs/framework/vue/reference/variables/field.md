@@ -6,18 +6,18 @@ title: Field
 # Variable: Field()
 
 ```ts
-const Field: <TParentData, TName, TFieldValidator, TFormValidator, TData>(props) => CreateComponentPublicInstanceWithMixins<FieldApiOptions<TParentData, TName, TFieldValidator, TFormValidator, TData> & object & {} | {}, object, object, object, object, ComponentOptionsMixin, ComponentOptionsMixin, EmitsOptions, PublicProps, object, false, object, object, object, object, string, object, any, ComponentProvideOptions, OptionTypesType<object, object, object, object, object, object>, object & FieldApiOptions<TParentData, TName, TFieldValidator, TFormValidator, TData> & { mode?: "value" | ... 1 more ... | undefined; } & ({ ...; } | { ...; }), object, object, object, object, object>;
+const Field: <TParentData, TName, TFieldValidator, TFormValidator, TData>(props) => CreateComponentPublicInstanceWithMixins<FieldApiOptions<TParentData, TName, TFieldValidator, TFormValidator, TData, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined> & object & {} | {}, object, object, object, object, ComponentOptionsMixin, ComponentOptionsMixin, EmitsOptions, PublicProps, object, false, object, object, object, object, string, object, any, ComponentProvideOptions, OptionTypesType<object, object, object, object, object, object>, object & FieldApiOptions<TParentData, TName, TFieldValidator, TFormValidator, TData, undefined, undefined, undefined, undefined, ... 9 more ..., undefined> & { ...; } & ({ ...; } | { ...; }), object, object, object, object, object>;
 ```
 
 ## Parameters
 
 ### props
 
-FieldApiOptions\<TParentData, TName, TFieldValidator, TFormValidator, TData\> & \{ mode?: "value" \| ... 1 more ... \| undefined; \} & (\{ ...; \} \| \{ ...; \}) & `VNodeProps` & `AllowedComponentProps` & `ComponentCustomProps`
+FieldApiOptions\<TParentData, TName, TFieldValidator, TFormValidator, TData, undefined, undefined, undefined, undefined, ... 9 more ..., undefined\> & \{ ...; \} & (\{ ...; \} \| \{ ...; \}) & `VNodeProps` & `AllowedComponentProps` & `ComponentCustomProps`
 
 ## Returns
 
-`CreateComponentPublicInstanceWithMixins`\<`FieldApiOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\> & `object` & \{\} \| \{\}, `object`, `object`, `object`, `object`, `ComponentOptionsMixin`, `ComponentOptionsMixin`, `EmitsOptions`, `PublicProps`, `object`, `false`, `object`, `object`, `object`, `object`, `string`, `object`, `any`, `ComponentProvideOptions`, `OptionTypesType`\<`object`, `object`, `object`, `object`, `object`, `object`\>, `object` & FieldApiOptions\<TParentData, TName, TFieldValidator, TFormValidator, TData\> & \{ mode?: "value" \| ... 1 more ... \| undefined; \} & (\{ ...; \} \| \{ ...; \}), `object`, `object`, `object`, `object`, `object`\>
+`CreateComponentPublicInstanceWithMixins`\<`FieldApiOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`\> & `object` & \{\} \| \{\}, `object`, `object`, `object`, `object`, `ComponentOptionsMixin`, `ComponentOptionsMixin`, `EmitsOptions`, `PublicProps`, `object`, `false`, `object`, `object`, `object`, `object`, `string`, `object`, `any`, `ComponentProvideOptions`, `OptionTypesType`\<`object`, `object`, `object`, `object`, `object`, `object`\>, `object` & FieldApiOptions\<TParentData, TName, TFieldValidator, TFormValidator, TData, undefined, undefined, undefined, undefined, ... 9 more ..., undefined\> & \{ ...; \} & (\{ ...; \} \| \{ ...; \}), `object`, `object`, `object`, `object`, `object`\>
 
 ## Defined in
 

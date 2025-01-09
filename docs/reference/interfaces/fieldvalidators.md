@@ -3,7 +3,7 @@ id: FieldValidators
 title: FieldValidators
 ---
 
-# Interface: FieldValidators\<TParentData, TName, TFieldValidator, TFormValidator, TData\>
+# Interface: FieldValidators\<TParentData, TName, TFieldValidator, TFormValidator, TData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn\>
 
 ## Type Parameters
 
@@ -17,12 +17,26 @@ title: FieldValidators
 
 • **TData** *extends* [`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\> = [`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\>
 
+• **TOnMountReturn** = `undefined`
+
+• **TOnChangeReturn** = `undefined`
+
+• **TOnChangeAsyncReturn** = `undefined`
+
+• **TOnBlurReturn** = `undefined`
+
+• **TOnBlurAsyncReturn** = `undefined`
+
+• **TOnSubmitReturn** = `undefined`
+
+• **TOnSubmitAsyncReturn** = `undefined`
+
 ## Properties
 
 ### onBlur?
 
 ```ts
-optional onBlur: FieldValidateOrFn<TParentData, TName, TFieldValidator, TFormValidator, TData>;
+optional onBlur: FieldValidateOrFn<TParentData, TName, TFieldValidator, TFormValidator, TData, TOnBlurReturn>;
 ```
 
 An optional function, that runs on the blur event of input.
@@ -36,14 +50,14 @@ z.string().min(1) // if `zodAdapter` is passed
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:182](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L182)
+[packages/form-core/src/FieldApi.ts:286](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L286)
 
 ***
 
 ### onBlurAsync?
 
 ```ts
-optional onBlurAsync: FieldAsyncValidateOrFn<TParentData, TName, TFieldValidator, TFormValidator, TData>;
+optional onBlurAsync: FieldAsyncValidateOrFn<TParentData, TName, TFieldValidator, TFormValidator, TData, TOnBlurAsyncReturn>;
 ```
 
 An optional property similar to `onBlur` but async validation. If `validatorAdapter`
@@ -57,7 +71,7 @@ z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:195](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L195)
+[packages/form-core/src/FieldApi.ts:300](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L300)
 
 ***
 
@@ -73,7 +87,7 @@ If set to a number larger than 0, will debounce the async validation event by th
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:208](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L208)
+[packages/form-core/src/FieldApi.ts:314](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L314)
 
 ***
 
@@ -87,14 +101,14 @@ An optional list of field names that should trigger this field's `onBlur` and `o
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:212](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L212)
+[packages/form-core/src/FieldApi.ts:318](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L318)
 
 ***
 
 ### onChange?
 
 ```ts
-optional onChange: FieldValidateOrFn<TParentData, TName, TFieldValidator, TFormValidator, TData>;
+optional onChange: FieldValidateOrFn<TParentData, TName, TFieldValidator, TFormValidator, TData, TOnChangeReturn>;
 ```
 
 An optional property that takes a `ValidateFn` which is a generic of `TData` and `TParentData`.
@@ -108,14 +122,14 @@ z.string().min(1) // if `zodAdapter` is passed
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:146](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L146)
+[packages/form-core/src/FieldApi.ts:248](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L248)
 
 ***
 
 ### onChangeAsync?
 
 ```ts
-optional onChangeAsync: FieldAsyncValidateOrFn<TParentData, TName, TFieldValidator, TFormValidator, TData>;
+optional onChangeAsync: FieldAsyncValidateOrFn<TParentData, TName, TFieldValidator, TFormValidator, TData, TOnChangeAsyncReturn>;
 ```
 
 An optional property similar to `onChange` but async validation. If `validatorAdapter`
@@ -129,7 +143,7 @@ z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:159](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L159)
+[packages/form-core/src/FieldApi.ts:262](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L262)
 
 ***
 
@@ -145,7 +159,7 @@ If set to a number larger than 0, will debounce the async validation event by th
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:171](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L171)
+[packages/form-core/src/FieldApi.ts:275](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L275)
 
 ***
 
@@ -159,28 +173,28 @@ An optional list of field names that should trigger this field's `onChange` and 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:175](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L175)
+[packages/form-core/src/FieldApi.ts:279](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L279)
 
 ***
 
 ### onMount?
 
 ```ts
-optional onMount: FieldValidateOrFn<TParentData, TName, TFieldValidator, TFormValidator, TData>;
+optional onMount: FieldValidateOrFn<TParentData, TName, TFieldValidator, TFormValidator, TData, TOnMountReturn>;
 ```
 
 An optional function that takes a param of `formApi` which is a generic type of `TData` and `TParentData`
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:133](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L133)
+[packages/form-core/src/FieldApi.ts:234](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L234)
 
 ***
 
 ### onSubmit?
 
 ```ts
-optional onSubmit: FieldValidateOrFn<TParentData, TName, TFieldValidator, TFormValidator, TData>;
+optional onSubmit: FieldValidateOrFn<TParentData, TName, TFieldValidator, TFormValidator, TData, TOnSubmitReturn>;
 ```
 
 An optional function, that runs on the submit event of form.
@@ -194,14 +208,14 @@ z.string().min(1) // if `zodAdapter` is passed
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:219](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L219)
+[packages/form-core/src/FieldApi.ts:325](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L325)
 
 ***
 
 ### onSubmitAsync?
 
 ```ts
-optional onSubmitAsync: FieldAsyncValidateOrFn<TParentData, TName, TFieldValidator, TFormValidator, TData>;
+optional onSubmitAsync: FieldAsyncValidateOrFn<TParentData, TName, TFieldValidator, TFormValidator, TData, TOnSubmitAsyncReturn>;
 ```
 
 An optional property similar to `onSubmit` but async validation. If `validatorAdapter`
@@ -215,4 +229,4 @@ z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:232](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L232)
+[packages/form-core/src/FieldApi.ts:339](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L339)

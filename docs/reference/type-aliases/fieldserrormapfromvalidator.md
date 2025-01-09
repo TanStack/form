@@ -3,16 +3,30 @@ id: FieldsErrorMapFromValidator
 title: FieldsErrorMapFromValidator
 ---
 
-# Type Alias: FieldsErrorMapFromValidator\<TFormData\>
+# Type Alias: FieldsErrorMapFromValidator\<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn\>
 
 ```ts
-type FieldsErrorMapFromValidator<TFormData>: Partial<Record<DeepKeys<TFormData>, ValidationErrorMap>>;
+type FieldsErrorMapFromValidator<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>: Partial<Record<DeepKeys<TFormData>, ValidationErrorMap<TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>>>;
 ```
 
 ## Type Parameters
 
 • **TFormData**
 
+• **TOnMountReturn** = `undefined`
+
+• **TOnChangeReturn** = `undefined`
+
+• **TOnChangeAsyncReturn** = `undefined`
+
+• **TOnBlurReturn** = `undefined`
+
+• **TOnBlurAsyncReturn** = `undefined`
+
+• **TOnSubmitReturn** = `undefined`
+
+• **TOnSubmitAsyncReturn** = `undefined`
+
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:31](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L31)
+[packages/form-core/src/FormApi.ts:32](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L32)

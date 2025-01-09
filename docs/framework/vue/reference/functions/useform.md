@@ -6,7 +6,7 @@ title: useForm
 # Function: useForm()
 
 ```ts
-function useForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormValidator> & VueFormApi<TFormData, TFormValidator>
+function useForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormValidator, undefined, undefined, undefined, undefined, undefined, undefined, undefined> & VueFormApi<TFormData, TFormValidator>
 ```
 
 ## Type Parameters
@@ -19,11 +19,11 @@ function useForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormVali
 
 ### opts?
 
-`FormOptions`\<`TFormData`, `TFormValidator`\>
+`FormOptions`\<`TFormData`, `TFormValidator`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`\>
 
 ## Returns
 
-`FormApi`\<`TFormData`, `TFormValidator`\> & [`VueFormApi`](../interfaces/vueformapi.md)\<`TFormData`, `TFormValidator`\>
+`FormApi`\<`TFormData`, `TFormValidator`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`\> & [`VueFormApi`](../interfaces/vueformapi.md)\<`TFormData`, `TFormValidator`\>
 
 ## Defined in
 

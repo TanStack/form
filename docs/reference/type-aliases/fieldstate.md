@@ -3,10 +3,10 @@ id: FieldState
 title: FieldState
 ---
 
-# Type Alias: FieldState\<TData\>
+# Type Alias: FieldState\<TData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn\>
 
 ```ts
-type FieldState<TData>: object;
+type FieldState<TData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>: object;
 ```
 
 An object type representing the state of a field.
@@ -15,12 +15,26 @@ An object type representing the state of a field.
 
 • **TData**
 
+• **TOnMountReturn** = `undefined`
+
+• **TOnChangeReturn** = `undefined`
+
+• **TOnChangeAsyncReturn** = `undefined`
+
+• **TOnBlurReturn** = `undefined`
+
+• **TOnBlurAsyncReturn** = `undefined`
+
+• **TOnSubmitReturn** = `undefined`
+
+• **TOnSubmitAsyncReturn** = `undefined`
+
 ## Type declaration
 
 ### meta
 
 ```ts
-meta: FieldMeta;
+meta: FieldMeta<TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>;
 ```
 
 The current metadata of the field.
@@ -35,4 +49,4 @@ The current value of the field.
 
 ## Defined in
 
-[packages/form-core/src/FieldApi.ts:407](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L407)
+[packages/form-core/src/FieldApi.ts:617](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L617)

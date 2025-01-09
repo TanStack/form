@@ -3,15 +3,29 @@ id: DerivedFormState
 title: DerivedFormState
 ---
 
-# Type Alias: DerivedFormState\<TFormData\>
+# Type Alias: DerivedFormState\<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn\>
 
 ```ts
-type DerivedFormState<TFormData>: object;
+type DerivedFormState<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>: object;
 ```
 
 ## Type Parameters
 
 • **TFormData**
+
+• **TOnMountReturn** = `undefined`
+
+• **TOnChangeReturn** = `undefined`
+
+• **TOnChangeAsyncReturn** = `undefined`
+
+• **TOnBlurReturn** = `undefined`
+
+• **TOnBlurAsyncReturn** = `undefined`
+
+• **TOnSubmitReturn** = `undefined`
+
+• **TOnSubmitAsyncReturn** = `undefined`
 
 ## Type declaration
 
@@ -26,7 +40,14 @@ A boolean indicating if the form can be submitted based on its current state.
 ### errors
 
 ```ts
-errors: ValidationError[];
+errors: (
+  | TOnMountReturn
+  | TOnChangeReturn
+  | TOnChangeAsyncReturn
+  | TOnBlurReturn
+  | TOnBlurAsyncReturn
+  | TOnSubmitReturn
+  | TOnSubmitAsyncReturn)[];
 ```
 
 The error array for the form itself.
@@ -113,4 +134,4 @@ A boolean indicating if the form and all its fields are valid.
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:272](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L272)
+[packages/form-core/src/FormApi.ts:442](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L442)

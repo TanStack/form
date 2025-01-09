@@ -3,18 +3,41 @@ id: FieldMetaDerived
 title: FieldMetaDerived
 ---
 
-# Type Alias: FieldMetaDerived
+# Type Alias: FieldMetaDerived\<TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn\>
 
 ```ts
-type FieldMetaDerived: object;
+type FieldMetaDerived<TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>: object;
 ```
+
+## Type Parameters
+
+• **TOnMountReturn** = `undefined`
+
+• **TOnChangeReturn** = `undefined`
+
+• **TOnChangeAsyncReturn** = `undefined`
+
+• **TOnBlurReturn** = `undefined`
+
+• **TOnBlurAsyncReturn** = `undefined`
+
+• **TOnSubmitReturn** = `undefined`
+
+• **TOnSubmitAsyncReturn** = `undefined`
 
 ## Type declaration
 
 ### errors
 
 ```ts
-errors: ValidationError[];
+errors: (
+  | TOnMountReturn
+  | TOnChangeReturn
+  | TOnChangeAsyncReturn
+  | TOnBlurReturn
+  | TOnBlurAsyncReturn
+  | TOnSubmitReturn
+  | TOnSubmitAsyncReturn)[];
 ```
 
 An array of errors related to the field value.
@@ -29,4 +52,4 @@ A flag that is `true` if the field's value has not been modified by the user. Op
 
 ## Defined in
 
-[packages/form-core/src/FieldApi.ts:388](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L388)
+[packages/form-core/src/FieldApi.ts:557](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L557)

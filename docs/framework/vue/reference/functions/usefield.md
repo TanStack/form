@@ -34,13 +34,13 @@ function useField<TParentData, TName, TFieldValidator, TFormValidator, TData>(op
 ### api
 
 ```ts
-readonly api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData> & VueFieldApi<TParentData, TFormValidator> = fieldApi;
+readonly api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined> & VueFieldApi<TParentData, TFormValidator> = fieldApi;
 ```
 
 ### state
 
 ```ts
-readonly state: Readonly<Ref<FieldState<TData>, FieldState<TData>>> = fieldState;
+readonly state: Readonly<Ref<FieldState<TData, undefined, undefined, undefined, undefined, undefined, undefined, undefined>, FieldState<TData, undefined, undefined, undefined, undefined, undefined, undefined, undefined>>> = fieldState;
 ```
 
 ## Defined in

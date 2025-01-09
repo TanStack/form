@@ -33,6 +33,7 @@ title: "@tanstack/form-core"
 - [FieldState](type-aliases/fieldstate.md)
 - [FormState](type-aliases/formstate.md)
 - [FormValidateFn](type-aliases/formvalidatefn.md)
+- [FormValidationError](type-aliases/formvalidationerror.md)
 - [FormValidator](type-aliases/formvalidator.md)
 - [StandardSchemaV1](type-aliases/standardschemav1.md)
 - [Updater](type-aliases/updater.md)

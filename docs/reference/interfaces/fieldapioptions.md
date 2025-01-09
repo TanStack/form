@@ -3,13 +3,13 @@ id: FieldApiOptions
 title: FieldApiOptions
 ---
 
-# Interface: FieldApiOptions\<TParentData, TName, TFieldValidator, TFormValidator, TData\>
+# Interface: FieldApiOptions\<TParentData, TName, TFieldValidator, TFormValidator, TData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn\>
 
 An object type representing the required options for the FieldApi class.
 
 ## Extends
 
-- [`FieldOptions`](fieldoptions.md)\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
+- [`FieldOptions`](fieldoptions.md)\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`\>
 
 ## Type Parameters
 
@@ -22,6 +22,34 @@ An object type representing the required options for the FieldApi class.
 • **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
 
 • **TData** *extends* [`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\> = [`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\>
+
+• **TOnMountReturn** = `undefined`
+
+• **TOnChangeReturn** = `undefined`
+
+• **TOnChangeAsyncReturn** = `undefined`
+
+• **TOnBlurReturn** = `undefined`
+
+• **TOnBlurAsyncReturn** = `undefined`
+
+• **TOnSubmitReturn** = `undefined`
+
+• **TOnSubmitAsyncReturn** = `undefined`
+
+• **TFormOnMountReturn** = `undefined`
+
+• **TFormOnChangeReturn** = `undefined`
+
+• **TFormOnChangeAsyncReturn** = `undefined`
+
+• **TFormOnBlurReturn** = `undefined`
+
+• **TFormOnBlurAsyncReturn** = `undefined`
+
+• **TFormOnSubmitReturn** = `undefined`
+
+• **TFormOnSubmitAsyncReturn** = `undefined`
 
 ## Properties
 
@@ -39,7 +67,7 @@ If `true`, always run async validation, even if there are errors emitted during 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:311](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L311)
+[packages/form-core/src/FieldApi.ts:426](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L426)
 
 ***
 
@@ -57,14 +85,14 @@ The default time to debounce async validation if there is not a more specific de
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:307](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L307)
+[packages/form-core/src/FieldApi.ts:422](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L422)
 
 ***
 
 ### defaultMeta?
 
 ```ts
-optional defaultMeta: Partial<FieldMeta>;
+optional defaultMeta: Partial<FieldMeta<undefined, undefined, undefined, undefined, undefined, undefined, undefined>>;
 ```
 
 An optional object with default metadata for the field.
@@ -75,7 +103,7 @@ An optional object with default metadata for the field.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:329](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L329)
+[packages/form-core/src/FieldApi.ts:451](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L451)
 
 ***
 
@@ -93,19 +121,19 @@ An optional default value for the field.
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:303](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L303)
+[packages/form-core/src/FieldApi.ts:418](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L418)
 
 ***
 
 ### form
 
 ```ts
-form: FormApi<TParentData, TFormValidator>;
+form: FormApi<TParentData, TFormValidator, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn>;
 ```
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:362](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L362)
+[packages/form-core/src/FieldApi.ts:505](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L505)
 
 ***
 
@@ -123,7 +151,7 @@ A list of listeners which attach to the corresponding events
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:333](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L333)
+[packages/form-core/src/FieldApi.ts:455](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L455)
 
 ***
 
@@ -141,7 +169,7 @@ The field name. The type will be `DeepKeys<TParentData>` to ensure your name is 
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:299](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L299)
+[packages/form-core/src/FieldApi.ts:414](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L414)
 
 ***
 
@@ -159,14 +187,14 @@ A validator provided by an extension, like `yupValidator` from `@tanstack/yup-fo
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:315](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L315)
+[packages/form-core/src/FieldApi.ts:430](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L430)
 
 ***
 
 ### validators?
 
 ```ts
-optional validators: FieldValidators<TParentData, TName, TFieldValidator, TFormValidator, TData>;
+optional validators: FieldValidators<TParentData, TName, TFieldValidator, TFormValidator, TData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>;
 ```
 
 A list of validators to pass to the field
@@ -177,4 +205,4 @@ A list of validators to pass to the field
 
 #### Defined in
 
-[packages/form-core/src/FieldApi.ts:319](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L319)
+[packages/form-core/src/FieldApi.ts:434](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L434)

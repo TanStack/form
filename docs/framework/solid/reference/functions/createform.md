@@ -6,7 +6,7 @@ title: createForm
 # Function: createForm()
 
 ```ts
-function createForm<TParentData, TFormValidator>(opts?): FormApi<TParentData, TFormValidator> & SolidFormApi<TParentData, TFormValidator>
+function createForm<TParentData, TFormValidator>(opts?): FormApi<TParentData, TFormValidator, undefined, undefined, undefined, undefined, undefined, undefined, undefined> & SolidFormApi<TParentData, TFormValidator>
 ```
 
 ## Type Parameters
@@ -19,11 +19,11 @@ function createForm<TParentData, TFormValidator>(opts?): FormApi<TParentData, TF
 
 ### opts?
 
-() => `FormOptions`\<`TParentData`, `TFormValidator`\>
+() => `FormOptions`\<`TParentData`, `TFormValidator`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`\>
 
 ## Returns
 
-`FormApi`\<`TParentData`, `TFormValidator`\> & [`SolidFormApi`](../interfaces/solidformapi.md)\<`TParentData`, `TFormValidator`\>
+`FormApi`\<`TParentData`, `TFormValidator`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`\> & [`SolidFormApi`](../interfaces/solidformapi.md)\<`TParentData`, `TFormValidator`\>
 
 ## Defined in
 

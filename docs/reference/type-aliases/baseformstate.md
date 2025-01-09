@@ -3,10 +3,10 @@ id: BaseFormState
 title: BaseFormState
 ---
 
-# Type Alias: BaseFormState\<TFormData\>
+# Type Alias: BaseFormState\<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn\>
 
 ```ts
-type BaseFormState<TFormData>: object;
+type BaseFormState<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>: object;
 ```
 
 An object representing the current state of the form.
@@ -15,12 +15,26 @@ An object representing the current state of the form.
 
 • **TFormData**
 
+• **TOnMountReturn** = `undefined`
+
+• **TOnChangeReturn** = `undefined`
+
+• **TOnChangeAsyncReturn** = `undefined`
+
+• **TOnBlurReturn** = `undefined`
+
+• **TOnBlurAsyncReturn** = `undefined`
+
+• **TOnSubmitReturn** = `undefined`
+
+• **TOnSubmitAsyncReturn** = `undefined`
+
 ## Type declaration
 
 ### errorMap
 
 ```ts
-errorMap: FormValidationErrorMap;
+errorMap: FormValidationErrorMap<TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>;
 ```
 
 The error map for the form itself.
@@ -91,4 +105,4 @@ The current values of the form fields.
 
 ## Defined in
 
-[packages/form-core/src/FormApi.ts:228](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L228)
+[packages/form-core/src/FormApi.ts:381](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L381)

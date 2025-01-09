@@ -21,7 +21,7 @@ function injectStore<TFormData, TFormValidator, TSelected>(form, selector?): Sig
 
 ### form
 
-`FormApi`\<`TFormData`, `TFormValidator`\>
+`FormApi`\<`TFormData`, `TFormValidator`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`\>
 
 ### selector?
 
