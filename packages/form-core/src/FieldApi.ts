@@ -418,7 +418,15 @@ export interface FieldApiOptions<
   form: FormApi<TParentData, TFormValidator>
 }
 
-export type FieldMetaBase = {
+export type FieldMetaBase<
+  TOnMountReturn = unknown,
+  TOnChangeReturn = unknown,
+  TOnChangeAsyncReturn = unknown,
+  TOnBlurReturn = unknown,
+  TOnBlurAsyncReturn = unknown,
+  TOnSubmitReturn = unknown,
+  TOnSubmitAsyncReturn = unknown,
+> = {
   /**
    * A flag indicating whether the field has been touched.
    */
@@ -434,18 +442,42 @@ export type FieldMetaBase = {
   /**
    * A map of errors related to the field value.
    */
-  errorMap: ValidationErrorMap
+  errorMap: ValidationErrorMap<
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn
+  >
   /**
    * A flag indicating whether the field is currently being validated.
    */
   isValidating: boolean
 }
 
-export type FieldMetaDerived = {
+export type FieldMetaDerived<
+  TOnMountReturn = unknown,
+  TOnChangeReturn = unknown,
+  TOnChangeAsyncReturn = unknown,
+  TOnBlurReturn = unknown,
+  TOnBlurAsyncReturn = unknown,
+  TOnSubmitReturn = unknown,
+  TOnSubmitAsyncReturn = unknown,
+> = {
   /**
    * An array of errors related to the field value.
    */
-  errors: ValidationError[]
+  errors: Array<
+    | TOnMountReturn
+    | TOnChangeReturn
+    | TOnChangeAsyncReturn
+    | TOnBlurReturn
+    | TOnBlurAsyncReturn
+    | TOnSubmitReturn
+    | TOnSubmitAsyncReturn
+  >
   /**
    * A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
    */
@@ -455,12 +487,46 @@ export type FieldMetaDerived = {
 /**
  * An object type representing the metadata of a field in a form.
  */
-export type FieldMeta = FieldMetaBase & FieldMetaDerived
+export type FieldMeta<
+  TOnMountReturn = unknown,
+  TOnChangeReturn = unknown,
+  TOnChangeAsyncReturn = unknown,
+  TOnBlurReturn = unknown,
+  TOnBlurAsyncReturn = unknown,
+  TOnSubmitReturn = unknown,
+  TOnSubmitAsyncReturn = unknown,
+> = FieldMetaBase<
+  TOnMountReturn,
+  TOnChangeReturn,
+  TOnChangeAsyncReturn,
+  TOnBlurReturn,
+  TOnBlurAsyncReturn,
+  TOnSubmitReturn,
+  TOnSubmitAsyncReturn
+> &
+  FieldMetaDerived<
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn
+  >
 
 /**
  * An object type representing the state of a field.
  */
-export type FieldState<TData> = {
+export type FieldState<
+  TData,
+  TOnMountReturn = unknown,
+  TOnChangeReturn = unknown,
+  TOnChangeAsyncReturn = unknown,
+  TOnBlurReturn = unknown,
+  TOnBlurAsyncReturn = unknown,
+  TOnSubmitReturn = unknown,
+  TOnSubmitAsyncReturn = unknown,
+> = {
   /**
    * The current value of the field.
    */
@@ -468,7 +534,15 @@ export type FieldState<TData> = {
   /**
    * The current metadata of the field.
    */
-  meta: FieldMeta
+  meta: FieldMeta<
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn
+  >
 }
 
 /**

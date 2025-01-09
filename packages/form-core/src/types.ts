@@ -8,15 +8,15 @@ export type ValidationSource = 'form' | 'field'
  * If/when TypeScript supports higher-kinded types, this should not be `unknown` anymore
  * @private
  */
-export type Validator<Type, Fn = unknown> = () => {
+export type Validator<Type, Fn = unknown, TReturnType = unknown> = () => {
   validate(
     options: { value: Type; validationSource: ValidationSource },
     fn: Fn,
-  ): ValidationError | FormValidationError<unknown>
+  ): TReturnType
   validateAsync(
     options: { value: Type; validationSource: ValidationSource },
     fn: Fn,
-  ): Promise<ValidationError | FormValidationError<unknown>>
+  ): Promise<TReturnType>
 }
 
 /**

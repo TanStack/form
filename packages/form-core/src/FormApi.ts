@@ -12,7 +12,7 @@ import {
   isStandardSchemaValidator,
   standardSchemaValidator,
 } from './standardSchemaValidator'
-import {
+import type {
   FormValidationError,
   FormValidationErrorMap,
   SpecialFormValidationError,
@@ -759,7 +759,7 @@ export class FormApi<
         ) {
           errors = Object.values(currBaseStore.errorMap).reduce(
             (prev, curr) => {
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+
               if (curr === undefined) return prev
               if (typeof curr === 'string') {
                 prev.push(curr)
