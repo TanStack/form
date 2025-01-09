@@ -199,3 +199,38 @@ it('should have the correct types returned from field validators', () => {
 
   assertType<'123' | undefined>(field.state.meta.errorMap.onChange)
 })
+
+it('should have the correct types returned from field validators in array', () => {
+  const form = new FormApi({
+    defaultValues: {
+      name: 'test',
+    },
+  } as const)
+
+  const field = new FieldApi({
+    form,
+    name: 'name',
+    validators: {
+      onChange: () => {
+        return '123' as const
+      },
+    },
+  })
+
+  assertType<Array<'123' | undefined>>(field.state.meta.errors)
+})
+
+it('should have the correct types returned from form validators in array', () => {
+  const form = new FormApi({
+    defaultValues: {
+      name: 'test',
+    },
+    validators: {
+      onChange: () => {
+        return '123' as const
+      },
+    },
+  } as const)
+
+  assertType<Array<'123' | undefined>>(form.state.errors)
+})
