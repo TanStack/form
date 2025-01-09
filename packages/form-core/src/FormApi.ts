@@ -29,8 +29,28 @@ import type { FieldApi, FieldMeta, FieldMetaBase } from './FieldApi'
 import type { DeepKeys, DeepValue } from './util-types'
 import type { Updater } from './utils'
 
-export type FieldsErrorMapFromValidator<TFormData> = Partial<
-  Record<DeepKeys<TFormData>, ValidationErrorMap>
+export type FieldsErrorMapFromValidator<
+  TFormData,
+  TOnMountReturn = unknown,
+  TOnChangeReturn = unknown,
+  TOnChangeAsyncReturn = unknown,
+  TOnBlurReturn = unknown,
+  TOnBlurAsyncReturn = unknown,
+  TOnSubmitReturn = unknown,
+  TOnSubmitAsyncReturn = unknown,
+> = Partial<
+  Record<
+    DeepKeys<TFormData>,
+    ValidationErrorMap<
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn
+    >
+  >
 >
 
 export type FormValidateFn<
@@ -757,20 +777,8 @@ export class FormApi<
           !prevBaseStore ||
           currBaseStore.errorMap !== prevBaseStore.errorMap
         ) {
-          errors = Object.values(currBaseStore.errorMap).reduce(
-            (prev, curr) => {
-
-              if (curr === undefined) return prev
-              if (typeof curr === 'string') {
-                prev.push(curr)
-                return prev
-              } else if (curr && isFormValidationError(curr)) {
-                prev.push(curr.form as never)
-                return prev
-              }
-              return prev
-            },
-            [] as Array<
+          errors = Object.values(currBaseStore.errorMap).reduce<
+            Array<
               | TOnMountReturn
               | TOnChangeReturn
               | TOnChangeAsyncReturn
@@ -778,8 +786,16 @@ export class FormApi<
               | TOnBlurAsyncReturn
               | TOnSubmitReturn
               | TOnSubmitAsyncReturn
-            >,
-          )
+            >
+          >((prev, curr) => {
+            if (curr === undefined) return prev
+            if (curr && isFormValidationError(curr)) {
+              prev.push(curr.form as never)
+              return prev
+            }
+            prev.push(curr as never)
+            return prev
+          }, [])
         }
 
         const isFormValid = errors.length === 0
@@ -854,10 +870,11 @@ export class FormApi<
       validationSource: ValidationSource
     },
     TType extends 'validate' | 'validateAsync',
+    TReturnType = unknown,
   >(props: {
     validate: TType extends 'validate'
-      ? FormValidateOrFn<TFormData, TFormValidator>
-      : FormAsyncValidateOrFn<TFormData, TFormValidator>
+      ? FormValidateOrFn<TFormData, TFormValidator, TReturnType>
+      : FormAsyncValidateOrFn<TFormData, TFormValidator, TReturnType>
     value: TValue
     type: TType
   }): ReturnType<ReturnType<Validator<any>>[TType]> {
@@ -1070,12 +1087,30 @@ export class FormApi<
     cause: ValidationCause,
   ): {
     hasErrored: boolean
-    fieldsErrorMap: FieldsErrorMapFromValidator<TFormData>
+    fieldsErrorMap: FieldsErrorMapFromValidator<
+      TFormData,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn
+    >
   } => {
     const validates = getSyncValidatorArray(cause, this.options)
     let hasErrored = false as boolean
 
-    const fieldsErrorMap: FieldsErrorMapFromValidator<TFormData> = {}
+    const fieldsErrorMap: FieldsErrorMapFromValidator<
+      TFormData,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn
+    > = {}
 
     batch(() => {
       for (const validateObj of validates) {
@@ -1161,7 +1196,18 @@ export class FormApi<
    */
   validateAsync = async (
     cause: ValidationCause,
-  ): Promise<FieldsErrorMapFromValidator<TFormData>> => {
+  ): Promise<
+    FieldsErrorMapFromValidator<
+      TFormData,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn
+    >
+  > => {
     const validates = getAsyncValidatorArray(cause, this.options)
 
     if (!this.state.isFormValidating) {
@@ -1260,7 +1306,16 @@ export class FormApi<
 
     let results: ValidationPromiseResult<TFormData>[] = []
 
-    const fieldsErrorMap: FieldsErrorMapFromValidator<TFormData> = {}
+    const fieldsErrorMap: FieldsErrorMapFromValidator<
+      TFormData,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn
+    > = {}
     if (promises.length) {
       results = await Promise.all(promises)
       for (const fieldValidationResult of results) {
@@ -1296,8 +1351,28 @@ export class FormApi<
   validate = (
     cause: ValidationCause,
   ):
-    | FieldsErrorMapFromValidator<TFormData>
-    | Promise<FieldsErrorMapFromValidator<TFormData>> => {
+    | FieldsErrorMapFromValidator<
+        TFormData,
+        TOnMountReturn,
+        TOnChangeReturn,
+        TOnChangeAsyncReturn,
+        TOnBlurReturn,
+        TOnBlurAsyncReturn,
+        TOnSubmitReturn,
+        TOnSubmitAsyncReturn
+      >
+    | Promise<
+        FieldsErrorMapFromValidator<
+          TFormData,
+          TOnMountReturn,
+          TOnChangeReturn,
+          TOnChangeAsyncReturn,
+          TOnBlurReturn,
+          TOnBlurAsyncReturn,
+          TOnSubmitReturn,
+          TOnSubmitAsyncReturn
+        >
+      > => {
     // Attempt to sync validate first
     const { hasErrored, fieldsErrorMap } = this.validateSync(cause)
 
