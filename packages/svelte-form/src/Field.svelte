@@ -1,5 +1,5 @@
 <!-- TODO (43081j): figure out how to reference types in generics -->
-<script type="ts" generics="TParentData,
+<script lang="ts" generics="TParentData,
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
     | Validator<DeepValue<TParentData, TName>, unknown>

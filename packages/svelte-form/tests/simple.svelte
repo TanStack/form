@@ -1,4 +1,4 @@
-<script type="ts">
+<script lang="ts">
 import { createForm } from '../src/index.js'
 import type { FieldApi, FormOptions } from '../src/index.js'
 
