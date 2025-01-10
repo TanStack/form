@@ -41,6 +41,7 @@ const form = createForm(() => ({
 
   <form.Field
     name="firstName"
+    form={form}
     validators={{
       onChange: ({ value }) =>
         value.length < 3 ? 'Not long enough' : undefined,
@@ -65,6 +66,7 @@ const form = createForm(() => ({
   </form.Field>
   <form.Field
     name="lastName"
+    form={form}
     validators={{
       onChange: ({ value }) =>
         value.length < 3 ? 'Not long enough' : undefined,
@@ -89,6 +91,7 @@ const form = createForm(() => ({
   </form.Field>
   <form.Field
     name="color"
+    form={form}
   >
     {#snippet children(field)}
       <div>
@@ -112,6 +115,7 @@ const form = createForm(() => ({
   </form.Field>
   <form.Field
     name="employed"
+    form={form}
   >
     {#snippet children(field)}
       <div>
@@ -157,19 +161,19 @@ const form = createForm(() => ({
   <div>
     <button
       type="submit"
-      disabled={form.api.state.isSubmitting}
+      disabled={form.state.isSubmitting}
     >
-      {form.api.state.isSubmitting ? html` Submitting` : 'Submit'}
+      {form.state.isSubmitting ? html` Submitting` : 'Submit'}
     </button>
     <button
       type="button"
       id="reset"
       on:click={() => {
-        form.api.reset()
+        form.reset()
       }}
     >
       Reset
     </button>
   </div>
 </form>
-<pre>{JSON.stringify(form.api.state, null, 2)}</pre>
+<pre>{JSON.stringify(form.state, null, 2)}</pre>

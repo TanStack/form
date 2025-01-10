@@ -12,6 +12,7 @@
   import type { Snippet } from 'svelte';
   // TODO (43081j): somehow remove this circular reference
   import { createField } from './createField.svelte.js';
+  import type { FieldOptions } from '@tanstack/form-core';
 
   type Props = {
     children: Snippet<[
@@ -23,8 +24,7 @@
         TData
       >
     ]>
-    [key: string]: unknown;
-  } & FieldApiOptions<
+  } & FieldOptions<
     TParentData,
     TName,
     TFieldValidator,

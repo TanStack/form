@@ -96,5 +96,5 @@ export function createField<
     api.update(opts())
   })
 
-  return () => extendedApi
+  return extendedApi
 }
