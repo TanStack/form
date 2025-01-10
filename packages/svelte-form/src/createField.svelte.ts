@@ -41,7 +41,7 @@ export type CreateField<
     >,
     'form'
   >,
-) => () => FieldApi<
+) => FieldApi<
   TParentData,
   TName,
   TFieldValidator,
