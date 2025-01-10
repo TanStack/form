@@ -6,7 +6,7 @@ title: injectStore
 # Function: injectStore()
 
 ```ts
-function injectStore<TFormData, TFormValidator, TSelected>(form, selector?): Signal<TSelected>
+function injectStore<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TOnServerReturn, TSelected>(form, selector?): Signal<TSelected>
 ```
 
 Defined in: [inject-store.ts:4](https://github.com/TanStack/form/blob/main/packages/angular-form/src/inject-store.ts#L4)
@@ -17,13 +17,29 @@ Defined in: [inject-store.ts:4](https://github.com/TanStack/form/blob/main/packa
 
 • **TFormValidator** *extends* `undefined` \| `Validator`\<`TFormData`, `unknown`\> = `undefined`
 
+• **TOnMountReturn** = `undefined`
+
+• **TOnChangeReturn** = `undefined`
+
+• **TOnChangeAsyncReturn** = `undefined`
+
+• **TOnBlurReturn** = `undefined`
+
+• **TOnBlurAsyncReturn** = `undefined`
+
+• **TOnSubmitReturn** = `undefined`
+
+• **TOnSubmitAsyncReturn** = `undefined`
+
+• **TOnServerReturn** = `undefined`
+
 • **TSelected** = `NoInfer`\<`FormState`\<`TFormData`\>\>
 
 ## Parameters
 
 ### form
 
-`FormApi`\<`TFormData`, `TFormValidator`\>
+`FormApi`\<`TFormData`, `TFormValidator`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`, `TOnServerReturn`\>
 
 ### selector?
 
