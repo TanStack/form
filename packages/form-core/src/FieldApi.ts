@@ -206,6 +206,7 @@ export type FieldListenerFn<
     any,
     any,
     any,
+    any,
     any
   >
 }) => void
@@ -488,6 +489,7 @@ export interface FieldApiOptions<
   TFormOnBlurAsyncReturn = undefined,
   TFormOnSubmitReturn = undefined,
   TFormOnSubmitAsyncReturn = undefined,
+  TFormOnServerReturn = undefined,
 > extends FieldOptions<
     TParentData,
     TName,
@@ -511,7 +513,8 @@ export interface FieldApiOptions<
     TFormOnBlurReturn,
     TFormOnBlurAsyncReturn,
     TFormOnSubmitReturn,
-    TFormOnSubmitAsyncReturn
+    TFormOnSubmitAsyncReturn,
+    TFormOnServerReturn
   >
 }
 
@@ -666,6 +669,7 @@ export type AnyFieldApi = FieldApi<
   any,
   any,
   any,
+  any,
   any
 >
 
@@ -702,6 +706,7 @@ export class FieldApi<
   TFormOnBlurAsyncReturn = undefined,
   TFormOnSubmitReturn = undefined,
   TFormOnSubmitAsyncReturn = undefined,
+  TFormOnServerReturn = undefined,
 > {
   /**
    * A reference to the form API instance.
@@ -725,7 +730,8 @@ export class FieldApi<
     TFormOnBlurReturn,
     TFormOnBlurAsyncReturn,
     TFormOnSubmitReturn,
-    TFormOnSubmitAsyncReturn
+    TFormOnSubmitAsyncReturn,
+    TFormOnServerReturn
   >['form']
   /**
    * The field name.
@@ -801,7 +807,8 @@ export class FieldApi<
       TFormOnBlurReturn,
       TFormOnBlurAsyncReturn,
       TFormOnSubmitReturn,
-      TFormOnSubmitAsyncReturn
+      TFormOnSubmitAsyncReturn,
+      TFormOnServerReturn
     >,
   ) {
     this.form = opts.form as never
@@ -853,27 +860,7 @@ export class FieldApi<
   runValidator<
     TValue extends {
       value: TData
-      fieldApi: FieldApi<
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any
-      >
+      fieldApi: AnyFieldApi
       validationSource: ValidationSource
     },
     TType extends 'validate' | 'validateAsync',
@@ -977,7 +964,8 @@ export class FieldApi<
       TFormOnBlurReturn,
       TFormOnBlurAsyncReturn,
       TFormOnSubmitReturn,
-      TFormOnSubmitAsyncReturn
+      TFormOnSubmitAsyncReturn,
+      TFormOnServerReturn
     >,
   ) => {
     // Default Value
@@ -1173,27 +1161,7 @@ export class FieldApi<
 
     batch(() => {
       const validateFieldFn = (
-        field: FieldApi<
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any
-        >,
+        field: AnyFieldApi,
         validateObj: SyncValidator<any>,
       ) => {
         const errorMapKey = getErrorMapKey(validateObj.cause)
@@ -1342,27 +1310,7 @@ export class FieldApi<
     const linkedPromises: Promise<ValidationError | undefined>[] = []
 
     const validateFieldAsyncFn = (
-      field: FieldApi<
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any
-      >,
+      field: AnyFieldApi,
       validateObj: AsyncValidator<any>,
       promises: Promise<ValidationError | undefined>[],
     ) => {
