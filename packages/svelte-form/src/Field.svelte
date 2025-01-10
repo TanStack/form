@@ -11,7 +11,7 @@
 ">
   import type { Snippet } from 'svelte';
   // TODO (43081j): somehow remove this circular reference
-  import { createField } from './createField';
+  import { createField } from './createField.svelte.js';
 
   type Props = {
     children: Snippet<[
@@ -33,7 +33,8 @@
   >;
 
   let {
-    children
+    children,
+    ...fieldOptions
   }: Props = $props();
 
   const fieldApi = createField<

@@ -1,9 +1,9 @@
 import { FormApi } from '@tanstack/form-core'
 import { onMount } from 'svelte'
-import { createField } from './createField.js'
+import { createField } from './createField.svelte.js'
 import Field from './Field.svelte';
 import type { FormOptions, Validator } from '@tanstack/form-core'
-import type { CreateField } from './createField.js';
+import type { CreateField } from './createField.svelte.js';
 
 export interface SvelteFormApi<
   TFormData,
