@@ -1,5 +1,5 @@
+import { getHeader, removeResponseHeader } from 'vinxi/http'
 import { _tanstackInternalsCookie } from './utils'
-import type { FetchFnCtx } from '@tanstack/start'
 import type { ServerFormState } from './types'
 
 export const initialFormState = {
@@ -9,12 +9,12 @@ export const initialFormState = {
   errors: [],
 }
 
-export const getFormData = async (ctx: FetchFnCtx) => {
-  const data = (await _tanstackInternalsCookie.parse(
-    ctx.request.headers.get('Cookie'),
-  )) as undefined | ServerFormState<any>
+export const getFormData = async () => {
+  const data = (await _tanstackInternalsCookie.parse(getHeader('Cookie')!)) as
+    | undefined
+    | ServerFormState<any, unknown>
   // Delete the cookie before it hits the client again¸
-  ctx.request.headers.delete('Cookie')
+  removeResponseHeader('Cookie')
   if (!data) return initialFormState
   return data
 }

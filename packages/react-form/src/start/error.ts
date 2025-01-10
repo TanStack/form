@@ -1,8 +1,9 @@
+import type { AnyRouter, Redirect } from '@tanstack/react-router'
 import type { ServerFormState } from './types'
 
 interface ServerValidateErrorState<TFormData, TOnServerReturn = undefined> {
   formState: ServerFormState<TFormData, TOnServerReturn>
-  response: Response
+  redirect: Redirect<AnyRouter, string, string, string, string>
 }
 
 export class ServerValidateError<TFormData, TOnServerReturn = undefined>
@@ -10,12 +11,12 @@ export class ServerValidateError<TFormData, TOnServerReturn = undefined>
   implements ServerValidateErrorState<TFormData, TOnServerReturn>
 {
   formState: ServerFormState<TFormData, TOnServerReturn>
-  response: Response
+  redirect: Redirect<AnyRouter, string, string, string, string>
 
   constructor(options: ServerValidateErrorState<TFormData, TOnServerReturn>) {
     super('Your form has errors. Please check the fields and try again.')
     this.name = 'ServerValidateError'
-    this.response = options.response
+    this.redirect = options.redirect
     this.formState = options.formState
   }
 }

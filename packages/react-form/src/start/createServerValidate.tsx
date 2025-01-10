@@ -1,12 +1,11 @@
 import { decode } from 'decode-formdata'
 import { isFormValidationError } from '@tanstack/form-core'
+import { getHeader, setResponseStatus } from 'vinxi/http'
+import { redirect } from '@tanstack/react-router'
 import { _tanstackInternalsCookie } from './utils'
 import { ServerValidateError } from './error'
 import type { FormOptions, Validator } from '@tanstack/form-core'
-import type { FetchFn } from '@tanstack/start'
 import type { ServerFormState } from './types'
-
-type Ctx = Parameters<FetchFn<FormData, unknown>>[1]
 
 type OnServerValidateFn<TFormData, TOnServerReturn = undefined> = (props: {
   value: TFormData
@@ -47,7 +46,7 @@ export const createServerValidate =
       TOnServerReturn
     >,
   ) =>
-  async (ctx: Ctx, formData: FormData, info?: Parameters<typeof decode>[1]) => {
+  async (formData: FormData, info?: Parameters<typeof decode>[1]) => {
     const { validatorAdapter, onServerValidate } = defaultOpts
 
     const runValidator = async (propsValue: {
@@ -61,7 +60,7 @@ export const createServerValidate =
       return (onServerValidate as OnServerValidateFn<TFormData>)(propsValue)
     }
 
-    const referer = ctx.request.headers.get('referer')!
+    const referer = getHeader('referer')!
 
     const data = decode(formData, info) as never as TFormData
 
@@ -87,12 +86,13 @@ export const createServerValidate =
     const cookie = await _tanstackInternalsCookie.serialize(formState)
 
     throw new ServerValidateError({
-      response: new Response('ok', {
+      redirect: redirect({
+        to: referer,
+        status: 302,
+        throw: true,
         headers: {
-          Location: referer,
           'Set-Cookie': cookie,
         },
-        status: 302,
       }),
       formState: formState,
     })
