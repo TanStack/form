@@ -211,6 +211,7 @@ export interface FormTransform<
   TOnBlurAsyncReturn = undefined,
   TOnSubmitReturn = undefined,
   TOnSubmitAsyncReturn = undefined,
+  TOnServerReturn = undefined,
 > {
   fn: (
     formBase: FormApi<
@@ -222,7 +223,8 @@ export interface FormTransform<
       TOnBlurReturn,
       TOnBlurAsyncReturn,
       TOnSubmitReturn,
-      TOnSubmitAsyncReturn
+      TOnSubmitAsyncReturn,
+      TOnServerReturn
     >,
   ) => FormApi<
     TFormData,
@@ -233,7 +235,8 @@ export interface FormTransform<
     TOnBlurReturn,
     TOnBlurAsyncReturn,
     TOnSubmitReturn,
-    TOnSubmitAsyncReturn
+    TOnSubmitAsyncReturn,
+    TOnServerReturn
   >
   deps: unknown[]
 }
@@ -251,6 +254,7 @@ export interface FormOptions<
   TOnBlurAsyncReturn = undefined,
   TOnSubmitReturn = undefined,
   TOnSubmitAsyncReturn = undefined,
+  TOnServerReturn = undefined,
 > {
   /**
    * Set initial values for your form.
@@ -268,7 +272,8 @@ export interface FormOptions<
       TOnBlurReturn,
       TOnBlurAsyncReturn,
       TOnSubmitReturn,
-      TOnSubmitAsyncReturn
+      TOnSubmitAsyncReturn,
+      TOnServerReturn
     >
   >
   /**
@@ -311,7 +316,8 @@ export interface FormOptions<
       TOnBlurReturn,
       TOnBlurAsyncReturn,
       TOnSubmitReturn,
-      TOnSubmitAsyncReturn
+      TOnSubmitAsyncReturn,
+      TOnServerReturn
     >
   }) => any | Promise<any>
   /**
@@ -328,7 +334,8 @@ export interface FormOptions<
       TOnBlurReturn,
       TOnBlurAsyncReturn,
       TOnSubmitReturn,
-      TOnSubmitAsyncReturn
+      TOnSubmitAsyncReturn,
+      TOnServerReturn
     >
   }) => void
   transform?: FormTransform<
@@ -340,7 +347,8 @@ export interface FormOptions<
     TOnBlurReturn,
     TOnBlurAsyncReturn,
     TOnSubmitReturn,
-    TOnSubmitAsyncReturn
+    TOnSubmitAsyncReturn,
+    TOnServerReturn
   >
 }
 
@@ -554,6 +562,7 @@ function getDefaultFormState<
   TOnBlurAsyncReturn = undefined,
   TOnSubmitReturn = undefined,
   TOnSubmitAsyncReturn = undefined,
+  TOnServerReturn = undefined,
 >(
   defaultState: Partial<
     FormState<
@@ -564,7 +573,8 @@ function getDefaultFormState<
       TOnBlurReturn,
       TOnBlurAsyncReturn,
       TOnSubmitReturn,
-      TOnSubmitAsyncReturn
+      TOnSubmitAsyncReturn,
+      TOnServerReturn
     >
   >,
 ): BaseFormState<
@@ -575,7 +585,8 @@ function getDefaultFormState<
   TOnBlurReturn,
   TOnBlurAsyncReturn,
   TOnSubmitReturn,
-  TOnSubmitAsyncReturn
+  TOnSubmitAsyncReturn,
+  TOnServerReturn
 > {
   return {
     values: defaultState.values ?? ({} as never),
@@ -600,7 +611,7 @@ function getDefaultFormState<
  *
  * A type representing the Form API with all generics set to `any` for convenience.
  */
-export type AnyFormApi = FormApi<any, any, any, any, any, any, any, any, any>
+export type AnyFormApi = FormApi<any, any, any, any, any, any, any, any, any, any>
 
 /**
  * A class representing the Form API. It handles the logic and interactions with the form state.
@@ -619,6 +630,7 @@ export class FormApi<
   TOnBlurAsyncReturn = undefined,
   TOnSubmitReturn = undefined,
   TOnSubmitAsyncReturn = undefined,
+  TOnServerReturn = undefined,
 > {
   /**
    * The options for the form.
@@ -632,7 +644,8 @@ export class FormApi<
     TOnBlurReturn,
     TOnBlurAsyncReturn,
     TOnSubmitReturn,
-    TOnSubmitAsyncReturn
+    TOnSubmitAsyncReturn,
+    TOnServerReturn
   > = {}
   baseStore!: Store<
     BaseFormState<
@@ -643,7 +656,8 @@ export class FormApi<
       TOnBlurReturn,
       TOnBlurAsyncReturn,
       TOnSubmitReturn,
-      TOnSubmitAsyncReturn
+      TOnSubmitAsyncReturn,
+      TOnServerReturn
     >
   >
   fieldMetaDerived!: Derived<Record<DeepKeys<TFormData>, FieldMeta>>
@@ -656,7 +670,8 @@ export class FormApi<
       TOnBlurReturn,
       TOnBlurAsyncReturn,
       TOnSubmitReturn,
-      TOnSubmitAsyncReturn
+      TOnSubmitAsyncReturn,
+      TOnServerReturn
     >
   >
   /**
@@ -687,7 +702,8 @@ export class FormApi<
       TOnBlurReturn,
       TOnBlurAsyncReturn,
       TOnSubmitReturn,
-      TOnSubmitAsyncReturn
+      TOnSubmitAsyncReturn,
+      TOnServerReturn
     >,
   ) {
     this.baseStore = new Store(
@@ -763,7 +779,8 @@ export class FormApi<
               TOnBlurReturn,
               TOnBlurAsyncReturn,
               TOnSubmitReturn,
-              TOnSubmitAsyncReturn
+              TOnSubmitAsyncReturn,
+              TOnServerReturn
             >
           | undefined
         const prevBaseStore = prevDepVals?.[0]
@@ -819,6 +836,7 @@ export class FormApi<
               | TOnBlurAsyncReturn
               | TOnSubmitReturn
               | TOnSubmitAsyncReturn
+              | TOnServerReturn
             >
           >((prev, curr) => {
             if (curr === undefined) return prev
@@ -869,7 +887,8 @@ export class FormApi<
           TOnBlurReturn,
           TOnBlurAsyncReturn,
           TOnSubmitReturn,
-          TOnSubmitAsyncReturn
+          TOnSubmitAsyncReturn,
+          TOnServerReturn
         >
 
         // Only run transform if state has shallowly changed - IE how React.useEffect works
@@ -899,7 +918,7 @@ export class FormApi<
   runValidator<
     TValue extends {
       value: TFormData
-      formApi: FormApi<any, any, any, any, any, any, any, any, any>
+      formApi: FormApi<any, any, any, any, any, any, any, any, any, any>
       validationSource: ValidationSource
     },
     TType extends 'validate' | 'validateAsync',
@@ -956,7 +975,8 @@ export class FormApi<
       TOnBlurReturn,
       TOnBlurAsyncReturn,
       TOnSubmitReturn,
-      TOnSubmitAsyncReturn
+      TOnSubmitAsyncReturn,
+      TOnServerReturn
     >,
   ) => {
     if (!options) return

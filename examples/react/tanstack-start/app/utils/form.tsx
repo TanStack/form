@@ -38,7 +38,7 @@ export const handleForm = createServerFn({
     } catch (e) {
       if (e instanceof ServerValidateError) {
         // Log form errors or do any other logic here
-        throw e.redirect
+        return e.response
       }
 
       // Some other error occurred when parsing the form

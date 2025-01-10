@@ -1,7 +1,6 @@
 import { decode } from 'decode-formdata'
 import { isFormValidationError } from '@tanstack/form-core'
-import { getHeader, setResponseStatus } from 'vinxi/http'
-import { redirect } from '@tanstack/react-router'
+import { getHeader } from 'vinxi/http'
 import { _tanstackInternalsCookie } from './utils'
 import { ServerValidateError } from './error'
 import type { FormOptions, Validator } from '@tanstack/form-core'
@@ -86,13 +85,12 @@ export const createServerValidate =
     const cookie = await _tanstackInternalsCookie.serialize(formState)
 
     throw new ServerValidateError({
-      redirect: redirect({
-        to: referer,
-        status: 302,
-        throw: true,
+      response: new Response('ok', {
         headers: {
+          Location: referer,
           'Set-Cookie': cookie,
         },
+        status: 302,
       }),
       formState: formState,
     })
