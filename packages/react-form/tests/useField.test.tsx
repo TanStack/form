@@ -6,7 +6,7 @@ import { StrictMode } from 'react'
 import { useStore } from '@tanstack/react-store'
 import { useForm } from '../src/index'
 import { sleep } from './utils'
-import type { AnyFieldApi, FieldApi } from '../src/index'
+import type { AnyFieldApi } from '../src/index'
 
 const user = userEvent.setup()
 
