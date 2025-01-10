@@ -6,11 +6,13 @@ title: FieldComponent
 # Type Alias: FieldComponent()\<TParentData, TFormValidator, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn\>
 
 ```ts
-type FieldComponent<TParentData, TFormValidator, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn>: <TName, TFieldValidator, TData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>({
+type FieldComponent<TParentData, TFormValidator, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn> = <TName, TFieldValidator, TData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>({
   children,
   ...fieldOptions
 }) => ReactNode;
 ```
+
+Defined in: [packages/react-form/src/useField.tsx:281](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L281)
 
 A type alias representing a field component for a specific form data type.
 
@@ -38,7 +40,9 @@ A type alias representing a field component for a specific form data type.
 
 • **TName** *extends* `DeepKeys`\<`TParentData`\>
 
-• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> \| `undefined` = `undefined`
+• **TFieldValidator** *extends* 
+  \| `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\>
+  \| `undefined` = `undefined`
 
 • **TData** *extends* `DeepValue`\<`TParentData`, `TName`\> = `DeepValue`\<`TParentData`, `TName`\>
 
@@ -68,7 +72,3 @@ A type alias representing a field component for a specific form data type.
 ## Returns
 
 `ReactNode`
-
-## Defined in
-
-[packages/react-form/src/useField.tsx:281](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L281)

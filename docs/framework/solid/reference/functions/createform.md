@@ -6,8 +6,10 @@ title: createForm
 # Function: createForm()
 
 ```ts
-function createForm<TParentData, TFormValidator>(opts?): FormApi<TParentData, TFormValidator, undefined, undefined, undefined, undefined, undefined, undefined, undefined> & SolidFormApi<TParentData, TFormValidator>
+function createForm<TParentData, TFormValidator>(opts?): FormApi<TParentData, TFormValidator> & SolidFormApi<TParentData, TFormValidator>
 ```
+
+Defined in: [packages/solid-form/src/createForm.tsx:26](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L26)
 
 ## Type Parameters
 
@@ -19,12 +21,8 @@ function createForm<TParentData, TFormValidator>(opts?): FormApi<TParentData, TF
 
 ### opts?
 
-() => `FormOptions`\<`TParentData`, `TFormValidator`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`\>
+() => `FormOptions`\<`TParentData`, `TFormValidator`\>
 
 ## Returns
 
-`FormApi`\<`TParentData`, `TFormValidator`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`\> & [`SolidFormApi`](../interfaces/solidformapi.md)\<`TParentData`, `TFormValidator`\>
-
-## Defined in
-
-[packages/solid-form/src/createForm.tsx:26](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L26)
+`FormApi`\<`TParentData`, `TFormValidator`\> & [`SolidFormApi`](../interfaces/solidformapi.md)\<`TParentData`, `TFormValidator`\>

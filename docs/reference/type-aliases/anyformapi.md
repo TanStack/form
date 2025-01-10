@@ -6,11 +6,9 @@ title: AnyFormApi
 # Type Alias: AnyFormApi
 
 ```ts
-type AnyFormApi: FormApi<any, any, any, any, any, any, any, any, any>;
+type AnyFormApi = FormApi<any, any, any, any, any, any, any, any, any, any>;
 ```
 
+Defined in: [packages/form-core/src/FormApi.ts:614](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L614)
+
 A type representing the Form API with all generics set to `any` for convenience.
-
-## Defined in
-
-[packages/form-core/src/FormApi.ts:603](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L603)

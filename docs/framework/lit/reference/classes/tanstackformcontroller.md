@@ -5,6 +5,8 @@ title: TanStackFormController
 
 # Class: TanStackFormController\<TParentData, TFormValidator\>
 
+Defined in: [tanstack-form-controller.ts:81](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L81)
+
 ## Type Parameters
 
 • **TParentData**
@@ -23,6 +25,8 @@ title: TanStackFormController
 new TanStackFormController<TParentData, TFormValidator>(host, config?): TanStackFormController<TParentData, TFormValidator>
 ```
 
+Defined in: [tanstack-form-controller.ts:93](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L93)
+
 #### Parameters
 
 ##### host
@@ -31,27 +35,21 @@ new TanStackFormController<TParentData, TFormValidator>(host, config?): TanStack
 
 ##### config?
 
-`FormOptions`\<`TParentData`, `TFormValidator`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`\>
+`FormOptions`\<`TParentData`, `TFormValidator`\>
 
 #### Returns
 
 [`TanStackFormController`](tanstackformcontroller.md)\<`TParentData`, `TFormValidator`\>
-
-#### Defined in
-
-[tanstack-form-controller.ts:93](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L93)
 
 ## Properties
 
 ### api
 
 ```ts
-api: FormApi<TParentData, TFormValidator, undefined, undefined, undefined, undefined, undefined, undefined, undefined>;
+api: FormApi<TParentData, TFormValidator>;
 ```
 
-#### Defined in
-
-[tanstack-form-controller.ts:91](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L91)
+Defined in: [tanstack-form-controller.ts:91](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L91)
 
 ## Methods
 
@@ -61,11 +59,15 @@ api: FormApi<TParentData, TFormValidator, undefined, undefined, undefined, undef
 field<TName, TFieldValidator, TData>(fieldConfig, render): object
 ```
 
+Defined in: [tanstack-form-controller.ts:112](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L112)
+
 #### Type Parameters
 
 • **TName** *extends* `string` \| `number`
 
-• **TFieldValidator** *extends* `undefined` \| `Validator`\<`DeepValue`\<`TParentData`, `TName`, `IsNullable`\<`TParentData`\>\>, `unknown`\> = `undefined`
+• **TFieldValidator** *extends* 
+  \| `undefined`
+  \| `Validator`\<`DeepValue`\<`TParentData`, `TName`, `IsNullable`\<`TParentData`\>\>, `unknown`\> = `undefined`
 
 • **TData** = `DeepValue`\<`TParentData`, `TName`, `IsNullable`\<`TParentData`\>\>
 
@@ -73,7 +75,7 @@ field<TName, TFieldValidator, TData>(fieldConfig, render): object
 
 ##### fieldConfig
 
-`FieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`\>
+`FieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
 
 ##### render
 
@@ -92,13 +94,13 @@ values: object;
 ###### values.form
 
 ```ts
-form: FormApi<TParentData, TFormValidator, undefined, undefined, undefined, undefined, undefined, undefined, undefined>;
+form: FormApi<TParentData, TFormValidator>;
 ```
 
 ###### values.options
 
 ```ts
-options: FieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData, undefined, undefined, undefined, undefined, undefined, undefined, undefined>;
+options: FieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>;
 ```
 
 ###### values.render
@@ -107,10 +109,6 @@ options: FieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData
 render: renderCallback<TParentData, TName, TFieldValidator, TFormValidator, TData>;
 ```
 
-#### Defined in
-
-[tanstack-form-controller.ts:112](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L112)
-
 ***
 
 ### hostConnected()
@@ -118,6 +116,8 @@ render: renderCallback<TParentData, TName, TFieldValidator, TFormValidator, TDat
 ```ts
 hostConnected(): void
 ```
+
+Defined in: [tanstack-form-controller.ts:102](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L102)
 
 Called when the host is connected to the component tree. For custom
 element hosts, this corresponds to the `connectedCallback()` lifecycle,
@@ -129,11 +129,9 @@ which is only called when the component is connected to the document.
 
 #### Implementation of
 
-`ReactiveController.hostConnected`
-
-#### Defined in
-
-[tanstack-form-controller.ts:102](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L102)
+```ts
+ReactiveController.hostConnected
+```
 
 ***
 
@@ -142,6 +140,8 @@ which is only called when the component is connected to the document.
 ```ts
 hostDisconnected(): void
 ```
+
+Defined in: [tanstack-form-controller.ts:108](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L108)
 
 Called when the host is disconnected from the component tree. For custom
 element hosts, this corresponds to the `disconnectedCallback()` lifecycle,
@@ -154,8 +154,6 @@ document.
 
 #### Implementation of
 
-`ReactiveController.hostDisconnected`
-
-#### Defined in
-
-[tanstack-form-controller.ts:108](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L108)
+```ts
+ReactiveController.hostDisconnected
+```

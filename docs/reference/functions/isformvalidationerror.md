@@ -9,6 +9,8 @@ title: isFormValidationError
 function isFormValidationError(error): error is SpecialFormValidationError<unknown>
 ```
 
+Defined in: [packages/form-core/src/utils.ts:328](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L328)
+
 ## Parameters
 
 ### error
@@ -18,7 +20,3 @@ function isFormValidationError(error): error is SpecialFormValidationError<unkno
 ## Returns
 
 `error is SpecialFormValidationError<unknown>`
-
-## Defined in
-
-[packages/form-core/src/utils.ts:328](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L328)

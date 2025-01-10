@@ -9,6 +9,8 @@ title: useForm
 function useForm<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>(opts?): ReactFormExtendedApi<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>
 ```
 
+Defined in: [packages/react-form/src/useForm.tsx:134](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L134)
+
 A custom React Hook that returns an extended instance of the `FormApi` class.
 
 This API encapsulates all the necessary functionalities related to the form. It allows you to manage form state, handle submissions, and interact with form fields
@@ -42,7 +44,3 @@ This API encapsulates all the necessary functionalities related to the form. It 
 ## Returns
 
 [`ReactFormExtendedApi`](../type-aliases/reactformextendedapi.md)\<`TFormData`, `TFormValidator`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`\>
-
-## Defined in
-
-[packages/react-form/src/useForm.tsx:129](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L129)

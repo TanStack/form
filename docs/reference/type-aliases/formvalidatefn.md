@@ -6,8 +6,10 @@ title: FormValidateFn
 # Type Alias: FormValidateFn()\<TFormData, TFormValidator, TReturnType\>
 
 ```ts
-type FormValidateFn<TFormData, TFormValidator, TReturnType>: (props) => TReturnType;
+type FormValidateFn<TFormData, TFormValidator, TReturnType> = (props) => TReturnType;
 ```
+
+Defined in: [packages/form-core/src/FormApi.ts:57](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L57)
 
 ## Type Parameters
 
@@ -32,7 +34,3 @@ type FormValidateFn<TFormData, TFormValidator, TReturnType>: (props) => TReturnT
 ## Returns
 
 `TReturnType`
-
-## Defined in
-
-[packages/form-core/src/FormApi.ts:57](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L57)

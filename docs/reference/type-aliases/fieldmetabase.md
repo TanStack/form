@@ -6,8 +6,10 @@ title: FieldMetaBase
 # Type Alias: FieldMetaBase\<TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn\>
 
 ```ts
-type FieldMetaBase<TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>: object;
+type FieldMetaBase<TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn> = object;
 ```
+
+Defined in: [packages/form-core/src/FieldApi.ts:518](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L518)
 
 ## Type Parameters
 
@@ -66,7 +68,3 @@ isValidating: boolean;
 ```
 
 A flag indicating whether the field is currently being validated.
-
-## Defined in
-
-[packages/form-core/src/FieldApi.ts:518](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L518)

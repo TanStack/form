@@ -6,8 +6,10 @@ title: FieldMetaDerived
 # Type Alias: FieldMetaDerived\<TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn\>
 
 ```ts
-type FieldMetaDerived<TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>: object;
+type FieldMetaDerived<TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn> = object;
 ```
+
+Defined in: [packages/form-core/src/FieldApi.ts:557](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L557)
 
 ## Type Parameters
 
@@ -49,7 +51,3 @@ isPristine: boolean;
 ```
 
 A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
-
-## Defined in
-
-[packages/form-core/src/FieldApi.ts:557](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L557)

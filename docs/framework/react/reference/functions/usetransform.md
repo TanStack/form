@@ -9,6 +9,8 @@ title: useTransform
 function useTransform<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>(fn, deps): FormTransform<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>
 ```
 
+Defined in: [packages/react-form/src/useTransform.ts:3](https://github.com/TanStack/form/blob/main/packages/react-form/src/useTransform.ts#L3)
+
 ## Type Parameters
 
 • **TFormData**
@@ -42,7 +44,3 @@ function useTransform<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn
 ## Returns
 
 `FormTransform`\<`TFormData`, `TFormValidator`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`\>
-
-## Defined in
-
-[packages/react-form/src/useTransform.ts:3](https://github.com/TanStack/form/blob/main/packages/react-form/src/useTransform.ts#L3)

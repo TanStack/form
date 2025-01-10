@@ -9,6 +9,8 @@ title: injectStore
 function injectStore<TFormData, TFormValidator, TSelected>(form, selector?): Signal<TSelected>
 ```
 
+Defined in: [inject-store.ts:4](https://github.com/TanStack/form/blob/main/packages/angular-form/src/inject-store.ts#L4)
+
 ## Type Parameters
 
 • **TFormData**
@@ -21,7 +23,7 @@ function injectStore<TFormData, TFormValidator, TSelected>(form, selector?): Sig
 
 ### form
 
-`FormApi`\<`TFormData`, `TFormValidator`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`\>
+`FormApi`\<`TFormData`, `TFormValidator`\>
 
 ### selector?
 
@@ -30,7 +32,3 @@ function injectStore<TFormData, TFormValidator, TSelected>(form, selector?): Sig
 ## Returns
 
 `Signal`\<`TSelected`\>
-
-## Defined in
-
-[inject-store.ts:4](https://github.com/TanStack/form/blob/main/packages/angular-form/src/inject-store.ts#L4)

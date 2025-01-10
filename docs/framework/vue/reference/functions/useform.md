@@ -6,8 +6,10 @@ title: useForm
 # Function: useForm()
 
 ```ts
-function useForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormValidator, undefined, undefined, undefined, undefined, undefined, undefined, undefined> & VueFormApi<TFormData, TFormValidator>
+function useForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormValidator> & VueFormApi<TFormData, TFormValidator>
 ```
+
+Defined in: [packages/vue-form/src/useForm.tsx:30](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L30)
 
 ## Type Parameters
 
@@ -19,12 +21,8 @@ function useForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormVali
 
 ### opts?
 
-`FormOptions`\<`TFormData`, `TFormValidator`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`\>
+`FormOptions`\<`TFormData`, `TFormValidator`\>
 
 ## Returns
 
-`FormApi`\<`TFormData`, `TFormValidator`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`\> & [`VueFormApi`](../interfaces/vueformapi.md)\<`TFormData`, `TFormValidator`\>
-
-## Defined in
-
-[packages/vue-form/src/useForm.tsx:30](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L30)
+`FormApi`\<`TFormData`, `TFormValidator`\> & [`VueFormApi`](../interfaces/vueformapi.md)\<`TFormData`, `TFormValidator`\>

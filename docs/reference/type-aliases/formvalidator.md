@@ -6,8 +6,10 @@ title: FormValidator
 # Type Alias: FormValidator\<TFormData, TType, TFn\>
 
 ```ts
-type FormValidator<TFormData, TType, TFn>: object;
+type FormValidator<TFormData, TType, TFn> = object;
 ```
+
+Defined in: [packages/form-core/src/FormApi.ts:117](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L117)
 
 ## Type Parameters
 
@@ -54,7 +56,3 @@ type FormValidator<TFormData, TType, TFn>: object;
 #### Returns
 
 `Promise`\<`unknown`\>
-
-## Defined in
-
-[packages/form-core/src/FormApi.ts:117](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L117)

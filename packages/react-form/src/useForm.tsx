@@ -6,7 +6,12 @@ import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type { PropsWithChildren, ReactNode } from 'react'
 import type { FieldComponent } from './useField'
 import type { NoInfer } from '@tanstack/react-store'
-import type { AnyFormApi, FormOptions, FormState , Validator} from '@tanstack/form-core'
+import type {
+  AnyFormApi,
+  FormOptions,
+  FormState,
+  Validator,
+} from '@tanstack/form-core'
 import type { AnyFormState } from './types'
 
 /**

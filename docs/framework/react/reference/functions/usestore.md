@@ -11,6 +11,8 @@ title: useStore
 function useStore<TState, TSelected>(store, selector?): TSelected
 ```
 
+Defined in: node\_modules/.pnpm/@tanstack+react-store@0.7.0\_react-dom@18.3.1\_react@18.3.1\_\_react@18.3.1/node\_modules/@tanstack/react-store/dist/esm/index.d.ts:7
+
 ### Type Parameters
 
 • **TState**
@@ -31,15 +33,13 @@ function useStore<TState, TSelected>(store, selector?): TSelected
 
 `TSelected`
 
-### Defined in
-
-node\_modules/.pnpm/@tanstack+react-store@0.7.0\_react-dom@18.3.1\_react@18.3.1\_\_react@18.3.1/node\_modules/@tanstack/react-store/dist/esm/index.d.ts:7
-
 ## Call Signature
 
 ```ts
 function useStore<TState, TSelected>(store, selector?): TSelected
 ```
+
+Defined in: node\_modules/.pnpm/@tanstack+react-store@0.7.0\_react-dom@18.3.1\_react@18.3.1\_\_react@18.3.1/node\_modules/@tanstack/react-store/dist/esm/index.d.ts:8
 
 ### Type Parameters
 
@@ -60,7 +60,3 @@ function useStore<TState, TSelected>(store, selector?): TSelected
 ### Returns
 
 `TSelected`
-
-### Defined in
-
-node\_modules/.pnpm/@tanstack+react-store@0.7.0\_react-dom@18.3.1\_react@18.3.1\_\_react@18.3.1/node\_modules/@tanstack/react-store/dist/esm/index.d.ts:8

@@ -6,8 +6,10 @@ title: injectForm
 # Function: injectForm()
 
 ```ts
-function injectForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormValidator, undefined, undefined, undefined, undefined, undefined, undefined, undefined>
+function injectForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormValidator>
 ```
+
+Defined in: [inject-form.ts:5](https://github.com/TanStack/form/blob/main/packages/angular-form/src/inject-form.ts#L5)
 
 ## Type Parameters
 
@@ -19,12 +21,8 @@ function injectForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormV
 
 ### opts?
 
-`FormOptions`\<`TFormData`, `TFormValidator`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`\>
+`FormOptions`\<`TFormData`, `TFormValidator`\>
 
 ## Returns
 
-`FormApi`\<`TFormData`, `TFormValidator`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`, `undefined`\>
-
-## Defined in
-
-[inject-form.ts:5](https://github.com/TanStack/form/blob/main/packages/angular-form/src/inject-form.ts#L5)
+`FormApi`\<`TFormData`, `TFormValidator`\>

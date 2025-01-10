@@ -6,8 +6,10 @@ title: FieldState
 # Type Alias: FieldState\<TData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn\>
 
 ```ts
-type FieldState<TData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>: object;
+type FieldState<TData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn> = object;
 ```
+
+Defined in: [packages/form-core/src/FieldApi.ts:617](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L617)
 
 An object type representing the state of a field.
 
@@ -46,7 +48,3 @@ value: TData;
 ```
 
 The current value of the field.
-
-## Defined in
-
-[packages/form-core/src/FieldApi.ts:617](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L617)

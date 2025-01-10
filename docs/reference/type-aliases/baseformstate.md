@@ -6,8 +6,10 @@ title: BaseFormState
 # Type Alias: BaseFormState\<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TOnServerReturn\>
 
 ```ts
-type BaseFormState<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TOnServerReturn>: object;
+type BaseFormState<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TOnServerReturn> = object;
 ```
+
+Defined in: [packages/form-core/src/FormApi.ts:390](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L390)
 
 An object representing the current state of the form.
 
@@ -104,7 +106,3 @@ values: TFormData;
 ```
 
 The current values of the form fields.
-
-## Defined in
-
-[packages/form-core/src/FormApi.ts:382](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L382)

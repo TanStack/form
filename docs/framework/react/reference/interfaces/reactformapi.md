@@ -5,6 +5,8 @@ title: ReactFormApi
 
 # Interface: ReactFormApi\<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn\>
 
+Defined in: [packages/react-form/src/useForm.tsx:20](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L20)
+
 Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`
 
 ## Type Parameters
@@ -35,11 +37,9 @@ Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned
 Field: FieldComponent<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>;
 ```
 
+Defined in: [packages/react-form/src/useForm.tsx:34](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L34)
+
 A React component to render form fields. With this, you can render and manage individual form fields.
-
-#### Defined in
-
-[packages/react-form/src/useForm.tsx:29](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L29)
 
 ***
 
@@ -48,6 +48,8 @@ A React component to render form fields. With this, you can render and manage in
 ```ts
 Subscribe: <TSelected>(props) => ReactNode;
 ```
+
+Defined in: [packages/react-form/src/useForm.tsx:48](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L48)
 
 A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
 
@@ -70,7 +72,3 @@ A `Subscribe` function that allows you to listen and react to changes in the for
 #### Returns
 
 `ReactNode`
-
-#### Defined in
-
-[packages/react-form/src/useForm.tsx:43](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L43)

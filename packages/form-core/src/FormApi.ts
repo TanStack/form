@@ -611,7 +611,18 @@ function getDefaultFormState<
  *
  * A type representing the Form API with all generics set to `any` for convenience.
  */
-export type AnyFormApi = FormApi<any, any, any, any, any, any, any, any, any, any>
+export type AnyFormApi = FormApi<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
 
 /**
  * A class representing the Form API. It handles the logic and interactions with the form state.

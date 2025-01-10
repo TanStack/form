@@ -6,8 +6,10 @@ title: DerivedFormState
 # Type Alias: DerivedFormState\<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TOnServerReturn\>
 
 ```ts
-type DerivedFormState<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TOnServerReturn>: object;
+type DerivedFormState<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TOnServerReturn> = object;
 ```
+
+Defined in: [packages/form-core/src/FormApi.ts:453](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L453)
 
 ## Type Parameters
 
@@ -134,7 +136,3 @@ isValid: boolean;
 ```
 
 A boolean indicating if the form and all its fields are valid.
-
-## Defined in
-
-[packages/form-core/src/FormApi.ts:445](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L445)
