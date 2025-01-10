@@ -10,20 +10,16 @@
   },
   "dependencies": {
     "@tanstack/react-form": "^0.41.1",
-    "react": "^19.0.0-rc.1",
-    "react-dom": "^19.0.0-rc.1"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@types/react": "npm:types-react@rc",
-    "@types/react-dom": "npm:types-react-dom@rc",
+    "@types/react": "^19.0.4",
+    "@types/react-dom": "^19.0.2",
     "@vitejs/plugin-react": "^4.3.3",
-    "babel-plugin-react-compiler": "^19.0.0-beta-0dec889-20241115",
-    "eslint-plugin-react-compiler": "^19.0.0-beta-0dec889-20241115",
+    "babel-plugin-react-compiler": "^19.0.0-beta-63e3235-20250105",
+    "eslint-plugin-react-compiler": "^19.0.0-beta-63e3235-20250105",
     "vite": "^5.4.11"
-  },
-  "overrides": {
-    "@types/react": "npm:types-react@rc",
-    "@types/react-dom": "npm:types-react-dom@rc"
   },
   "browserslist": {
     "production": [
