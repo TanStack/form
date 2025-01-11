@@ -634,6 +634,7 @@ export class FieldApi<
     }
 
     this.options = opts as never
+    this.name = opts.name
   }
 
   /**

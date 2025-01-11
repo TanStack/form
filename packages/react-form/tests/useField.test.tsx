@@ -239,6 +239,95 @@ describe('useField', () => {
     expect(queryByText(onBlurError)).toBeInTheDocument()
   })
 
+  it('should properly update conditionally rendered fields', async () => {
+    type FormValues = {
+      firstField: string
+      secondField: string
+      showFirstField: boolean
+    }
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          firstField: '',
+          secondField: '',
+          showFirstField: true,
+        } as FormValues,
+      })
+
+      return (
+        <>
+          <form.Field name="showFirstField">
+            {({ handleChange, state }) => (
+              <div>
+                <span>Show first field</span>
+                <input
+                  data-testid="show-first-field"
+                  checked={state.value}
+                  type="checkbox"
+                  onChange={(e) => {
+                    handleChange(e.target.checked)
+                  }}
+                />
+              </div>
+            )}
+          </form.Field>
+          <form.Subscribe selector={(state) => state.values.showFirstField}>
+            {(someFlagChecked) => {
+              if (someFlagChecked) {
+                return (
+                  <form.Field name="firstField">
+                    {({ handleChange, state }) => (
+                      <label>
+                        first field
+                        <input
+                          data-testid="first-field"
+                          value={state.value}
+                          onChange={(e) => handleChange(e.target.value)}
+                        />
+                      </label>
+                    )}
+                  </form.Field>
+                )
+              }
+
+              return (
+                <form.Field name="secondField">
+                  {({ handleChange, state }) => (
+                    <label>
+                      second field
+                      <input
+                        data-testid="second-field"
+                        value={state.value}
+                        onChange={(e) => handleChange(e.target.value)}
+                      />
+                    </label>
+                  )}
+                </form.Field>
+              )
+            }}
+          </form.Subscribe>
+        </>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+
+    const showFirstFieldInput = getByTestId('show-first-field')
+
+    await user.type(getByTestId('first-field'), 'hello')
+    expect((getByTestId('first-field') as HTMLInputElement).value).toBe('hello')
+
+    await user.click(showFirstFieldInput)
+    await user.type(getByTestId('second-field'), 'world')
+    expect((getByTestId('second-field') as HTMLInputElement).value).toBe(
+      'world',
+    )
+
+    await user.click(showFirstFieldInput)
+    expect((getByTestId('first-field') as HTMLInputElement).value).toBe('hello')
+  })
+
   it('should validate async on change', async () => {
     type Person = {
       firstName: string
