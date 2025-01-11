@@ -6,10 +6,10 @@ title: Field
 # Function: Field()
 
 ```ts
-function Field<TParentData, TName, TFieldValidator, TFormValidator, TData>(props): Element
+function Field<TParentData, TName, TFieldValidator, TFormValidator, TData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn, TFormOnServerReturn>(props): Element
 ```
 
-Defined in: [packages/solid-form/src/createField.tsx:196](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L196)
+Defined in: [packages/solid-form/src/createField.tsx:483](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L483)
 
 ## Type Parameters
 
@@ -25,11 +25,41 @@ Defined in: [packages/solid-form/src/createField.tsx:196](https://github.com/Tan
 
 • **TData** = `DeepValue`\<`TParentData`, `TName`\>
 
+• **TOnMountReturn** = `undefined`
+
+• **TOnChangeReturn** = `undefined`
+
+• **TOnChangeAsyncReturn** = `undefined`
+
+• **TOnBlurReturn** = `undefined`
+
+• **TOnBlurAsyncReturn** = `undefined`
+
+• **TOnSubmitReturn** = `undefined`
+
+• **TOnSubmitAsyncReturn** = `undefined`
+
+• **TFormOnMountReturn** = `undefined`
+
+• **TFormOnChangeReturn** = `undefined`
+
+• **TFormOnChangeAsyncReturn** = `undefined`
+
+• **TFormOnBlurReturn** = `undefined`
+
+• **TFormOnBlurAsyncReturn** = `undefined`
+
+• **TFormOnSubmitReturn** = `undefined`
+
+• **TFormOnSubmitAsyncReturn** = `undefined`
+
+• **TFormOnServerReturn** = `undefined`
+
 ## Parameters
 
 ### props
 
-`object` & `FieldApiOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\> & `object`
+`object` & `FieldApiOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`, `TFormOnMountReturn`, `TFormOnChangeReturn`, `TFormOnChangeAsyncReturn`, `TFormOnBlurReturn`, `TFormOnBlurAsyncReturn`, `TFormOnSubmitReturn`, `TFormOnSubmitAsyncReturn`, `TFormOnServerReturn`\> & `object`
 
 ## Returns
 

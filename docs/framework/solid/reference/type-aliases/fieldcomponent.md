@@ -3,22 +3,38 @@ id: FieldComponent
 title: FieldComponent
 ---
 
-# Type Alias: FieldComponent()\<TParentData, TFormValidator\>
+# Type Alias: FieldComponent()\<TParentData, TFormValidator, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn, TFormOnServerReturn\>
 
 ```ts
-type FieldComponent<TParentData, TFormValidator> = <TName, TFieldValidator, TData>({
+type FieldComponent<TParentData, TFormValidator, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn, TFormOnServerReturn> = <TName, TFieldValidator, TData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>({
   children,
   ...fieldOptions
 }) => JSXElement;
 ```
 
-Defined in: [packages/solid-form/src/createField.tsx:171](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L171)
+Defined in: [packages/solid-form/src/createField.tsx:428](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L428)
 
 ## Type Parameters
 
 • **TParentData**
 
 • **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
+
+• **TFormOnMountReturn** = `undefined`
+
+• **TFormOnChangeReturn** = `undefined`
+
+• **TFormOnChangeAsyncReturn** = `undefined`
+
+• **TFormOnBlurReturn** = `undefined`
+
+• **TFormOnBlurAsyncReturn** = `undefined`
+
+• **TFormOnSubmitReturn** = `undefined`
+
+• **TFormOnSubmitAsyncReturn** = `undefined`
+
+• **TFormOnServerReturn** = `undefined`
 
 ## Type Parameters
 
@@ -30,6 +46,20 @@ Defined in: [packages/solid-form/src/createField.tsx:171](https://github.com/Tan
 
 • **TData** *extends* `DeepValue`\<`TParentData`, `TName`\> = `DeepValue`\<`TParentData`, `TName`\>
 
+• **TOnMountReturn** = `undefined`
+
+• **TOnChangeReturn** = `undefined`
+
+• **TOnChangeAsyncReturn** = `undefined`
+
+• **TOnBlurReturn** = `undefined`
+
+• **TOnBlurAsyncReturn** = `undefined`
+
+• **TOnSubmitReturn** = `undefined`
+
+• **TOnSubmitAsyncReturn** = `undefined`
+
 ## Parameters
 
 ### \{
@@ -37,7 +67,7 @@ Defined in: [packages/solid-form/src/createField.tsx:171](https://github.com/Tan
   ...fieldOptions
 \}
 
-`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
+`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`, `TFormOnMountReturn`, `TFormOnChangeReturn`, `TFormOnChangeAsyncReturn`, `TFormOnBlurReturn`, `TFormOnBlurAsyncReturn`, `TFormOnSubmitReturn`, `TFormOnSubmitAsyncReturn`, `TFormOnServerReturn`\>, `"form"`\>
 
 ## Returns
 

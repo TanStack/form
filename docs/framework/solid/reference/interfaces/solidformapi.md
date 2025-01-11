@@ -3,7 +3,7 @@ id: SolidFormApi
 title: SolidFormApi
 ---
 
-# Interface: SolidFormApi\<TFormData, TFormValidator\>
+# Interface: SolidFormApi\<TFormData, TFormValidator, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn, TFormOnServerReturn\>
 
 Defined in: [packages/solid-form/src/createForm.tsx:11](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L11)
 
@@ -13,25 +13,41 @@ Defined in: [packages/solid-form/src/createForm.tsx:11](https://github.com/TanSt
 
 • **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> \| `undefined` = `undefined`
 
+• **TFormOnMountReturn** = `undefined`
+
+• **TFormOnChangeReturn** = `undefined`
+
+• **TFormOnChangeAsyncReturn** = `undefined`
+
+• **TFormOnBlurReturn** = `undefined`
+
+• **TFormOnBlurAsyncReturn** = `undefined`
+
+• **TFormOnSubmitReturn** = `undefined`
+
+• **TFormOnSubmitAsyncReturn** = `undefined`
+
+• **TFormOnServerReturn** = `undefined`
+
 ## Properties
 
 ### createField
 
 ```ts
-createField: CreateField<TFormData, TFormValidator>;
+createField: CreateField<TFormData, TFormValidator, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn, TFormOnServerReturn>;
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:16](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L16)
+Defined in: [packages/solid-form/src/createForm.tsx:35](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L35)
 
 ***
 
 ### Field
 
 ```ts
-Field: FieldComponent<TFormData, TFormValidator>;
+Field: FieldComponent<TFormData, TFormValidator, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn, TFormOnServerReturn>;
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:15](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L15)
+Defined in: [packages/solid-form/src/createForm.tsx:23](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L23)
 
 ***
 
@@ -41,11 +57,11 @@ Defined in: [packages/solid-form/src/createForm.tsx:15](https://github.com/TanSt
 Subscribe: <TSelected>(props) => Element;
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:20](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L20)
+Defined in: [packages/solid-form/src/createForm.tsx:78](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L78)
 
 #### Type Parameters
 
-• **TSelected** = `FormState`\<`TFormData`\>
+• **TSelected** = `FormState`\<`TFormData`, `TFormOnMountReturn`, `TFormOnChangeReturn`, `TFormOnChangeAsyncReturn`, `TFormOnBlurReturn`, `TFormOnBlurAsyncReturn`, `TFormOnSubmitReturn`, `TFormOnSubmitAsyncReturn`, `TFormOnServerReturn`\>
 
 #### Parameters
 
@@ -71,11 +87,11 @@ Defined in: [packages/solid-form/src/createForm.tsx:20](https://github.com/TanSt
 useStore: <TSelected>(selector?) => () => TSelected;
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:17](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L17)
+Defined in: [packages/solid-form/src/createForm.tsx:47](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L47)
 
 #### Type Parameters
 
-• **TSelected** = `FormState`\<`TFormData`\>
+• **TSelected** = `FormState`\<`TFormData`, `TFormOnMountReturn`, `TFormOnChangeReturn`, `TFormOnChangeAsyncReturn`, `TFormOnBlurReturn`, `TFormOnBlurAsyncReturn`, `TFormOnSubmitReturn`, `TFormOnSubmitAsyncReturn`, `TFormOnServerReturn`\>
 
 #### Parameters
 
