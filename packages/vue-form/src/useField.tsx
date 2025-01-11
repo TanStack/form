@@ -19,6 +19,14 @@ export type FieldComponent<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
+  TFormOnMountReturn = undefined,
+  TFormOnChangeReturn = undefined,
+  TFormOnChangeAsyncReturn = undefined,
+  TFormOnBlurReturn = undefined,
+  TFormOnBlurAsyncReturn = undefined,
+  TFormOnSubmitReturn = undefined,
+  TFormOnSubmitAsyncReturn = undefined,
+  TFormOnServerReturn = undefined,
   // This complex type comes from Vue's return type for `DefineSetupFnComponent` but with our own types sprinkled in
   // This allows us to pre-bind some generics while keeping the props type unbound generics for props-based inferencing
 > = new <
@@ -27,6 +35,13 @@ export type FieldComponent<
     | Validator<DeepValue<TParentData, TName>, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
 >(
   props: Omit<
     FieldComponentProps<
@@ -34,7 +49,22 @@ export type FieldComponent<
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn,
+      TFormOnMountReturn,
+      TFormOnChangeReturn,
+      TFormOnChangeAsyncReturn,
+      TFormOnBlurReturn,
+      TFormOnBlurAsyncReturn,
+      TFormOnSubmitReturn,
+      TFormOnSubmitAsyncReturn,
+      TFormOnServerReturn
     >,
     'form'
   > &
@@ -47,7 +77,22 @@ export type FieldComponent<
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn,
+      TFormOnMountReturn,
+      TFormOnChangeReturn,
+      TFormOnChangeAsyncReturn,
+      TFormOnBlurReturn,
+      TFormOnBlurAsyncReturn,
+      TFormOnSubmitReturn,
+      TFormOnSubmitAsyncReturn,
+      TFormOnServerReturn
     >,
     'form'
   >,
@@ -69,14 +114,44 @@ export type FieldComponent<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData
+        TData,
+        TOnMountReturn,
+        TOnChangeReturn,
+        TOnChangeAsyncReturn,
+        TOnBlurReturn,
+        TOnBlurAsyncReturn,
+        TOnSubmitReturn,
+        TOnSubmitAsyncReturn,
+        TFormOnMountReturn,
+        TFormOnChangeReturn,
+        TFormOnChangeAsyncReturn,
+        TFormOnBlurReturn,
+        TFormOnBlurAsyncReturn,
+        TFormOnSubmitReturn,
+        TFormOnSubmitAsyncReturn,
+        TFormOnServerReturn
       >
       state: FieldApi<
         TParentData,
         TName,
         TFieldValidator,
         TFormValidator,
-        TData
+        TData,
+        TOnMountReturn,
+        TOnChangeReturn,
+        TOnChangeAsyncReturn,
+        TOnBlurReturn,
+        TOnBlurAsyncReturn,
+        TOnSubmitReturn,
+        TOnSubmitAsyncReturn,
+        TFormOnMountReturn,
+        TFormOnChangeReturn,
+        TFormOnChangeAsyncReturn,
+        TFormOnBlurReturn,
+        TFormOnBlurAsyncReturn,
+        TFormOnSubmitReturn,
+        TFormOnSubmitAsyncReturn,
+        TFormOnServerReturn
       >['state']
     }
   }>
@@ -87,8 +162,27 @@ export interface VueFieldApi<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
+  TFormOnMountReturn = undefined,
+  TFormOnChangeReturn = undefined,
+  TFormOnChangeAsyncReturn = undefined,
+  TFormOnBlurReturn = undefined,
+  TFormOnBlurAsyncReturn = undefined,
+  TFormOnSubmitReturn = undefined,
+  TFormOnSubmitAsyncReturn = undefined,
+  TFormOnServerReturn = undefined,
 > {
-  Field: FieldComponent<TParentData, TFormValidator>
+  Field: FieldComponent<
+    TParentData,
+    TFormValidator,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn,
+    TFormOnServerReturn
+  >
 }
 
 export type UseField<
@@ -96,20 +190,88 @@ export type UseField<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
+  TFormOnMountReturn = undefined,
+  TFormOnChangeReturn = undefined,
+  TFormOnChangeAsyncReturn = undefined,
+  TFormOnBlurReturn = undefined,
+  TFormOnBlurAsyncReturn = undefined,
+  TFormOnSubmitReturn = undefined,
+  TFormOnSubmitAsyncReturn = undefined,
+  TFormOnServerReturn = undefined,
 > = <
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
     | Validator<DeepValue<TParentData, TName>, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
 >(
   opts: Omit<
-    UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>,
+    UseFieldOptions<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn,
+      TFormOnMountReturn,
+      TFormOnChangeReturn,
+      TFormOnChangeAsyncReturn,
+      TFormOnBlurReturn,
+      TFormOnBlurAsyncReturn,
+      TFormOnSubmitReturn,
+      TFormOnSubmitAsyncReturn,
+      TFormOnServerReturn
+    >,
     'form'
   >,
 ) => {
-  api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData> &
-    VueFieldApi<TParentData, TFormValidator>
+  api: FieldApi<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn,
+    TFormOnServerReturn
+  > &
+    VueFieldApi<
+      TParentData,
+      TFormValidator,
+      TFormOnMountReturn,
+      TFormOnChangeReturn,
+      TFormOnChangeAsyncReturn,
+      TFormOnBlurReturn,
+      TFormOnBlurAsyncReturn,
+      TFormOnSubmitReturn,
+      TFormOnSubmitAsyncReturn,
+      TFormOnServerReturn
+    >
   state: Readonly<
     Ref<
       FieldApi<
@@ -117,7 +279,22 @@ export type UseField<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData
+        TData,
+        TOnMountReturn,
+        TOnChangeReturn,
+        TOnChangeAsyncReturn,
+        TOnBlurReturn,
+        TOnBlurAsyncReturn,
+        TOnSubmitReturn,
+        TOnSubmitAsyncReturn,
+        TFormOnMountReturn,
+        TFormOnChangeReturn,
+        TFormOnChangeAsyncReturn,
+        TFormOnBlurReturn,
+        TFormOnBlurAsyncReturn,
+        TFormOnSubmitReturn,
+        TFormOnSubmitAsyncReturn,
+        TFormOnServerReturn
       >['state']
     >
   >
@@ -133,13 +310,43 @@ export function useField<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
+  TFormOnMountReturn = undefined,
+  TFormOnChangeReturn = undefined,
+  TFormOnChangeAsyncReturn = undefined,
+  TFormOnBlurReturn = undefined,
+  TFormOnBlurAsyncReturn = undefined,
+  TFormOnSubmitReturn = undefined,
+  TFormOnSubmitAsyncReturn = undefined,
+  TFormOnServerReturn = undefined,
 >(
   opts: UseFieldOptions<
     TParentData,
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn,
+    TFormOnServerReturn
   >,
 ) {
   const fieldApi = (() => {
@@ -149,8 +356,19 @@ export function useField<
       name: opts.name,
     })
 
-    const extendedApi: typeof api & VueFieldApi<TParentData, TFormValidator> =
-      api as never
+    const extendedApi: typeof api &
+      VueFieldApi<
+        TParentData,
+        TFormValidator,
+        TFormOnMountReturn,
+        TFormOnChangeReturn,
+        TFormOnChangeAsyncReturn,
+        TFormOnBlurReturn,
+        TFormOnBlurAsyncReturn,
+        TFormOnSubmitReturn,
+        TFormOnSubmitAsyncReturn,
+        TFormOnServerReturn
+      > = api as never
 
     extendedApi.Field = Field as never
 
@@ -189,7 +407,43 @@ export type FieldComponentProps<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-> = UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
+  TFormOnMountReturn = undefined,
+  TFormOnChangeReturn = undefined,
+  TFormOnChangeAsyncReturn = undefined,
+  TFormOnBlurReturn = undefined,
+  TFormOnBlurAsyncReturn = undefined,
+  TFormOnSubmitReturn = undefined,
+  TFormOnSubmitAsyncReturn = undefined,
+  TFormOnServerReturn = undefined,
+> = UseFieldOptions<
+  TParentData,
+  TName,
+  TFieldValidator,
+  TFormValidator,
+  TData,
+  TOnMountReturn,
+  TOnChangeReturn,
+  TOnChangeAsyncReturn,
+  TOnBlurReturn,
+  TOnBlurAsyncReturn,
+  TOnSubmitReturn,
+  TOnSubmitAsyncReturn,
+  TFormOnMountReturn,
+  TFormOnChangeReturn,
+  TFormOnChangeAsyncReturn,
+  TFormOnBlurReturn,
+  TFormOnBlurAsyncReturn,
+  TFormOnSubmitReturn,
+  TFormOnSubmitAsyncReturn,
+  TFormOnServerReturn
+>
 
 export const Field = defineComponent(
   <
@@ -202,13 +456,43 @@ export const Field = defineComponent(
       | Validator<TParentData, unknown>
       | undefined = undefined,
     TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+    TOnMountReturn = undefined,
+    TOnChangeReturn = undefined,
+    TOnChangeAsyncReturn = undefined,
+    TOnBlurReturn = undefined,
+    TOnBlurAsyncReturn = undefined,
+    TOnSubmitReturn = undefined,
+    TOnSubmitAsyncReturn = undefined,
+    TFormOnMountReturn = undefined,
+    TFormOnChangeReturn = undefined,
+    TFormOnChangeAsyncReturn = undefined,
+    TFormOnBlurReturn = undefined,
+    TFormOnBlurAsyncReturn = undefined,
+    TFormOnSubmitReturn = undefined,
+    TFormOnSubmitAsyncReturn = undefined,
+    TFormOnServerReturn = undefined,
   >(
     fieldOptions: UseFieldOptions<
       TParentData,
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn,
+      TFormOnMountReturn,
+      TFormOnChangeReturn,
+      TFormOnChangeAsyncReturn,
+      TFormOnBlurReturn,
+      TFormOnBlurAsyncReturn,
+      TFormOnSubmitReturn,
+      TFormOnSubmitAsyncReturn,
+      TFormOnServerReturn
     >,
     context: SetupContext,
   ) => {
