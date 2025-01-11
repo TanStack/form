@@ -2,9 +2,9 @@ import { describe, expect, it, vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 import { render, waitFor } from '@testing-library/vue'
 import { userEvent } from '@testing-library/user-event'
-import { useForm } from '../../src'
-import { sleep } from '../utils'
-import type { FieldApi } from '../../src'
+import { useForm } from '../src'
+import { sleep } from './utils'
+import type { AnyFieldApi } from '../src'
 
 const user = userEvent.setup()
 
@@ -16,15 +16,13 @@ describe('useField', () => {
     }
 
     const Comp = defineComponent(() => {
-      const form = useForm<Person>()
+      const form = useForm({
+        defaultValues: {} as Person,
+      })
 
       return () => (
         <form.Field name="firstName" defaultValue="FirstName">
-          {({
-            field,
-          }: {
-            field: FieldApi<Person, 'firstName', never, never>
-          }) => (
+          {({ field }: { field: AnyFieldApi }) => (
             <input
               data-testid={'fieldinput'}
               value={field.state.value}
@@ -51,7 +49,7 @@ describe('useField', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm<Person>()
+      const form = useForm({ defaultValues: {} as Person })
 
       return () => (
         <form.Field
@@ -60,11 +58,7 @@ describe('useField', () => {
             onChange: ({ value }) => (value === 'other' ? error : undefined),
           }}
         >
-          {({
-            field,
-          }: {
-            field: FieldApi<Person, 'firstName', never, never>
-          }) => (
+          {({ field }: { field: AnyFieldApi }) => (
             <div>
               <input
                 data-testid="fieldinput"
@@ -98,7 +92,7 @@ describe('useField', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm<Person>()
+      const form = useForm({ defaultValues: {} as Person })
 
       return () => (
         <form.Field
@@ -107,11 +101,7 @@ describe('useField', () => {
             onChange: ({ value }) => (value === 'other' ? error : undefined),
           }}
         >
-          {({
-            field,
-          }: {
-            field: FieldApi<Person, 'firstName', never, never>
-          }) => (
+          {({ field }: { field: AnyFieldApi }) => (
             <div>
               <input
                 data-testid="fieldinput"
@@ -144,7 +134,7 @@ describe('useField', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm<Person>()
+      const form = useForm({ defaultValues: {} as Person })
 
       return () => (
         <form.Field
@@ -157,11 +147,7 @@ describe('useField', () => {
             },
           }}
         >
-          {({
-            field,
-          }: {
-            field: FieldApi<Person, 'firstName', never, never>
-          }) => (
+          {({ field }: { field: AnyFieldApi }) => (
             <div>
               <input
                 data-testid="fieldinput"
@@ -197,7 +183,7 @@ describe('useField', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm<Person>()
+      const form = useForm({ defaultValues: {} as Person })
 
       return () => (
         <form.Field
@@ -212,11 +198,7 @@ describe('useField', () => {
             },
           }}
         >
-          {({
-            field,
-          }: {
-            field: FieldApi<Person, 'firstName', never, never>
-          }) => (
+          {({ field }: { field: AnyFieldApi }) => (
             <div>
               <input
                 data-testid="fieldinput"
@@ -266,25 +248,12 @@ describe('useField', () => {
             }}
           >
             <form.Field name="people">
-              {({
-                field,
-              }: {
-                field: FieldApi<CompVal, 'people', never, never>
-              }) => (
+              {({ field }: { field: AnyFieldApi }) => (
                 <div>
-                  {field.state.value.map((_, i) => {
+                  {field.state.value.map((_: never, i: number) => {
                     return (
                       <form.Field key={i} name={`people[${i}]`}>
-                        {({
-                          field: subField,
-                        }: {
-                          field: FieldApi<
-                            CompVal,
-                            `people[${number}]`,
-                            never,
-                            never
-                          >
-                        }) => (
+                        {({ field: subField }: { field: AnyFieldApi }) => (
                           <div>
                             <label>
                               <div>Name for person {i}</div>
@@ -366,25 +335,12 @@ describe('useField', () => {
             }}
           >
             <form.Field name="people">
-              {({
-                field,
-              }: {
-                field: FieldApi<CompVal, 'people', never, never>
-              }) => (
+              {({ field }: { field: AnyFieldApi }) => (
                 <div>
-                  {field.state.value.map((_, i) => {
+                  {field.state.value.map((_: never, i: number) => {
                     return (
                       <form.Field key={i} name={`people[${i}].name`}>
-                        {({
-                          field: subField,
-                        }: {
-                          field: FieldApi<
-                            CompVal,
-                            `people[${number}].name`,
-                            never,
-                            never
-                          >
-                        }) => (
+                        {({ field: subField }: { field: AnyFieldApi }) => (
                           <div>
                             <label>
                               <div>Name for person {i}</div>
