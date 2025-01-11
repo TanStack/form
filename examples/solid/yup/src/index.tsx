@@ -4,10 +4,10 @@ import { render } from 'solid-js/web'
 import { createForm } from '@tanstack/solid-form'
 import { yupValidator } from '@tanstack/yup-form-adapter'
 import * as yup from 'yup'
-import type { FieldApi } from '@tanstack/solid-form'
+import type { AnyFieldApi } from '@tanstack/solid-form'
 
 interface FieldInfoProps {
-  field: FieldApi<any, any, any, any>
+  field: AnyFieldApi
 }
 
 function FieldInfo(props: FieldInfoProps) {
