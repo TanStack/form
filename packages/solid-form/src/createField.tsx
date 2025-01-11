@@ -22,8 +22,27 @@ interface SolidFieldApi<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
+  TFormOnMountReturn = undefined,
+  TFormOnChangeReturn = undefined,
+  TFormOnChangeAsyncReturn = undefined,
+  TFormOnBlurReturn = undefined,
+  TFormOnBlurAsyncReturn = undefined,
+  TFormOnSubmitReturn = undefined,
+  TFormOnSubmitAsyncReturn = undefined,
+  TFormOnServerReturn = undefined,
 > {
-  Field: FieldComponent<TParentData, TFormValidator>
+  Field: FieldComponent<
+    TParentData,
+    TFormValidator,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn,
+    TFormOnServerReturn
+  >
 }
 
 export type CreateField<
@@ -31,12 +50,27 @@ export type CreateField<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
+  TFormOnMountReturn = undefined,
+  TFormOnChangeReturn = undefined,
+  TFormOnChangeAsyncReturn = undefined,
+  TFormOnBlurReturn = undefined,
+  TFormOnBlurAsyncReturn = undefined,
+  TFormOnSubmitReturn = undefined,
+  TFormOnSubmitAsyncReturn = undefined,
+  TFormOnServerReturn = undefined,
 > = <
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
     | Validator<DeepValue<TParentData, TName>, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
 >(
   opts: () => { name: Narrow<TName> } & Omit<
     CreateFieldOptions<
@@ -44,7 +78,22 @@ export type CreateField<
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn,
+      TFormOnMountReturn,
+      TFormOnChangeReturn,
+      TFormOnChangeAsyncReturn,
+      TFormOnBlurReturn,
+      TFormOnBlurAsyncReturn,
+      TFormOnSubmitReturn,
+      TFormOnSubmitAsyncReturn,
+      TFormOnServerReturn
     >,
     'form'
   >,
@@ -53,9 +102,35 @@ export type CreateField<
   TName,
   TFieldValidator,
   TFormValidator,
-  TData
+  TData,
+  TOnMountReturn,
+  TOnChangeReturn,
+  TOnChangeAsyncReturn,
+  TOnBlurReturn,
+  TOnBlurAsyncReturn,
+  TOnSubmitReturn,
+  TOnSubmitAsyncReturn,
+  TFormOnMountReturn,
+  TFormOnChangeReturn,
+  TFormOnChangeAsyncReturn,
+  TFormOnBlurReturn,
+  TFormOnBlurAsyncReturn,
+  TFormOnSubmitReturn,
+  TFormOnSubmitAsyncReturn,
+  TFormOnServerReturn
 > &
-  SolidFieldApi<TParentData, TFormValidator>
+  SolidFieldApi<
+    TParentData,
+    TFormValidator,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn,
+    TFormOnServerReturn
+  >
 
 // ugly way to trick solid into triggering updates for changes on the fieldApi
 function makeFieldReactive<
@@ -68,15 +143,90 @@ function makeFieldReactive<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  FieldApiT extends FieldApi<
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
+  TFormOnMountReturn = undefined,
+  TFormOnChangeReturn = undefined,
+  TFormOnChangeAsyncReturn = undefined,
+  TFormOnBlurReturn = undefined,
+  TFormOnBlurAsyncReturn = undefined,
+  TFormOnSubmitReturn = undefined,
+  TFormOnSubmitAsyncReturn = undefined,
+  TFormOnServerReturn = undefined,
+>(
+  fieldApi: FieldApi<
     TParentData,
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
-  > = FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData> &
-    SolidFieldApi<TParentData, TFormValidator>,
->(fieldApi: FieldApiT): () => FieldApiT {
+    TData,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn,
+    TFormOnServerReturn
+  > &
+    SolidFieldApi<
+      TParentData,
+      TFormValidator,
+      TFormOnMountReturn,
+      TFormOnChangeReturn,
+      TFormOnChangeAsyncReturn,
+      TFormOnBlurReturn,
+      TFormOnBlurAsyncReturn,
+      TFormOnSubmitReturn,
+      TFormOnSubmitAsyncReturn,
+      TFormOnServerReturn
+    >,
+): () => FieldApi<
+  TParentData,
+  TName,
+  TFieldValidator,
+  TFormValidator,
+  TData,
+  TOnMountReturn,
+  TOnChangeReturn,
+  TOnChangeAsyncReturn,
+  TOnBlurReturn,
+  TOnBlurAsyncReturn,
+  TOnSubmitReturn,
+  TOnSubmitAsyncReturn,
+  TFormOnMountReturn,
+  TFormOnChangeReturn,
+  TFormOnChangeAsyncReturn,
+  TFormOnBlurReturn,
+  TFormOnBlurAsyncReturn,
+  TFormOnSubmitReturn,
+  TFormOnSubmitAsyncReturn,
+  TFormOnServerReturn
+> &
+  SolidFieldApi<
+    TParentData,
+    TFormValidator,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn,
+    TFormOnServerReturn
+  > {
   const [flag, setFlag] = createSignal(false)
   const fieldApiMemo = createMemo(() => [flag(), fieldApi] as const)
   const unsubscribeStore = fieldApi.store.subscribe(() => setFlag((f) => !f))
@@ -94,21 +244,62 @@ export function createField<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
+  TFormOnMountReturn = undefined,
+  TFormOnChangeReturn = undefined,
+  TFormOnChangeAsyncReturn = undefined,
+  TFormOnBlurReturn = undefined,
+  TFormOnBlurAsyncReturn = undefined,
+  TFormOnSubmitReturn = undefined,
+  TFormOnSubmitAsyncReturn = undefined,
+  TFormOnServerReturn = undefined,
 >(
   opts: () => CreateFieldOptions<
     TParentData,
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn,
+    TFormOnServerReturn
   >,
 ) {
   const options = opts()
 
   const api = new FieldApi(options)
 
-  const extendedApi: typeof api & SolidFieldApi<TParentData, TFormValidator> =
-    api as never
+  const extendedApi: typeof api &
+    SolidFieldApi<
+      TParentData,
+      TFormValidator,
+      TFormOnMountReturn,
+      TFormOnChangeReturn,
+      TFormOnChangeAsyncReturn,
+      TFormOnBlurReturn,
+      TFormOnBlurAsyncReturn,
+      TFormOnSubmitReturn,
+      TFormOnSubmitAsyncReturn,
+      TFormOnServerReturn
+    > = api as never
 
   extendedApi.Field = Field as never
 
@@ -134,7 +325,28 @@ export function createField<
     api.update(opts())
   })
 
-  return makeFieldReactive(extendedApi as never)
+  return makeFieldReactive<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn,
+    TFormOnServerReturn
+  >(extendedApi as never)
 }
 
 type FieldComponentProps<
@@ -147,6 +359,21 @@ type FieldComponentProps<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
+  TFormOnMountReturn = undefined,
+  TFormOnChangeReturn = undefined,
+  TFormOnChangeAsyncReturn = undefined,
+  TFormOnBlurReturn = undefined,
+  TFormOnBlurAsyncReturn = undefined,
+  TFormOnSubmitReturn = undefined,
+  TFormOnSubmitAsyncReturn = undefined,
+  TFormOnServerReturn = undefined,
 > = {
   children: (
     fieldApi: () => FieldApi<
@@ -154,7 +381,22 @@ type FieldComponentProps<
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn,
+      TFormOnMountReturn,
+      TFormOnChangeReturn,
+      TFormOnChangeAsyncReturn,
+      TFormOnBlurReturn,
+      TFormOnBlurAsyncReturn,
+      TFormOnSubmitReturn,
+      TFormOnSubmitAsyncReturn,
+      TFormOnServerReturn
     >,
   ) => JSXElement
 } & Omit<
@@ -163,7 +405,22 @@ type FieldComponentProps<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn,
+    TFormOnServerReturn
   >,
   'form'
 >
@@ -173,12 +430,27 @@ export type FieldComponent<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
+  TFormOnMountReturn = undefined,
+  TFormOnChangeReturn = undefined,
+  TFormOnChangeAsyncReturn = undefined,
+  TFormOnBlurReturn = undefined,
+  TFormOnBlurAsyncReturn = undefined,
+  TFormOnSubmitReturn = undefined,
+  TFormOnSubmitAsyncReturn = undefined,
+  TFormOnServerReturn = undefined,
 > = <
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
     | Validator<DeepValue<TParentData, TName>, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
 >({
   children,
   ...fieldOptions
@@ -188,7 +460,22 @@ export type FieldComponent<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn,
+    TFormOnServerReturn
   >,
   'form'
 >) => JSXElement
@@ -203,6 +490,21 @@ export function Field<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
+  TFormOnMountReturn = undefined,
+  TFormOnChangeReturn = undefined,
+  TFormOnChangeAsyncReturn = undefined,
+  TFormOnBlurReturn = undefined,
+  TFormOnBlurAsyncReturn = undefined,
+  TFormOnSubmitReturn = undefined,
+  TFormOnSubmitAsyncReturn = undefined,
+  TFormOnServerReturn = undefined,
 >(
   props: {
     children: (
@@ -211,7 +513,22 @@ export function Field<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData
+        TData,
+        TOnMountReturn,
+        TOnChangeReturn,
+        TOnChangeAsyncReturn,
+        TOnBlurReturn,
+        TOnBlurAsyncReturn,
+        TOnSubmitReturn,
+        TOnSubmitAsyncReturn,
+        TFormOnMountReturn,
+        TFormOnChangeReturn,
+        TFormOnChangeAsyncReturn,
+        TFormOnBlurReturn,
+        TFormOnBlurAsyncReturn,
+        TFormOnSubmitReturn,
+        TFormOnSubmitAsyncReturn,
+        TFormOnServerReturn
       >,
     ) => JSXElement
   } & CreateFieldOptions<
@@ -219,7 +536,22 @@ export function Field<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn,
+    TFormOnServerReturn
   >,
 ) {
   const fieldApi = createField<
@@ -227,7 +559,22 @@ export function Field<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn,
+    TFormOnServerReturn
   >(() => {
     const { children, ...fieldOptions } = props
     return fieldOptions
