@@ -42,7 +42,7 @@ export class TestForm extends LitElement {
                 value.length < 3 ? 'Not long enough' : undefined,
             },
           },
-          (field: FieldApi<Employee, 'firstName'>) => {
+          (field) => {
             return html` <div>
               <label>First Name</label>
               <input
@@ -67,7 +67,7 @@ export class TestForm extends LitElement {
                 value.length < 3 ? 'Not long enough' : undefined,
             },
           },
-          (field: FieldApi<Employee, 'lastName'>) => {
+          (field) => {
             return html` <div>
               <label>Last Name</label>
               <input
@@ -86,7 +86,7 @@ export class TestForm extends LitElement {
         )}
         ${this.form.field(
           { name: `color` },
-          (field: FieldApi<Employee, 'color'>) => {
+          (field) => {
             return html` <div>
               <label>Favorite Color</label>
               <select
@@ -108,7 +108,7 @@ export class TestForm extends LitElement {
         )}
         ${this.form.field(
           { name: `employed` },
-          (field: FieldApi<Employee, 'employed'>) => {
+          (field) => {
             return html`
               <div>
                 <label>Employed?</label>
@@ -131,7 +131,7 @@ export class TestForm extends LitElement {
                             : null,
                       },
                     },
-                    (subField: FieldApi<Employee, 'jobTitle'>) => {
+                    (subField) => {
                       return html` <div>
                         <label>Job Title</label>
                         <input
