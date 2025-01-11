@@ -2,9 +2,9 @@ import { describe, expect, it, vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 import { render, waitFor } from '@testing-library/vue'
 import { userEvent } from '@testing-library/user-event'
-import { useForm } from '../src/index'
-import { sleep } from './utils'
-import type { FieldApi } from '../src/index'
+import { useForm } from '../../src'
+import { sleep } from '../utils'
+import type { FieldApi } from '../../src'
 
 const user = userEvent.setup()
 
