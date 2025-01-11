@@ -3,8 +3,11 @@ import { useStore } from '@tanstack/vue-store'
 import { defineComponent, onMounted, onUnmounted, watch } from 'vue'
 import type { DeepKeys, DeepValue, Validator } from '@tanstack/form-core'
 import type {
-  DefineSetupFnComponent,
+  ComponentOptionsMixin,
+  CreateComponentPublicInstanceWithMixins,
   EmitsOptions,
+  EmitsToProps,
+  PublicProps,
   Ref,
   SetupContext,
   SlotsType,
@@ -16,12 +19,28 @@ export type FieldComponent<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
+  // This complex type comes from Vue's return type for `DefineSetupFnComponent` but with our own types sprinkled in
+  // This allows us to pre-bind some generics while keeping the props type unbound generics for props-based inferencing
+> = new <
   TName extends DeepKeys<TParentData> = DeepKeys<TParentData>,
   TFieldValidator extends
     | Validator<DeepValue<TParentData, TName>, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-> = DefineSetupFnComponent<
+>(
+  props: Omit<
+    FieldComponentProps<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData
+    >,
+    'form'
+  > &
+    EmitsToProps<EmitsOptions> &
+    PublicProps,
+) => CreateComponentPublicInstanceWithMixins<
   Omit<
     FieldComponentProps<
       TParentData,
@@ -32,7 +51,17 @@ export type FieldComponent<
     >,
     'form'
   >,
+  {},
+  {},
+  {},
+  {},
+  ComponentOptionsMixin,
+  ComponentOptionsMixin,
   EmitsOptions,
+  PublicProps,
+  {},
+  false,
+  {},
   SlotsType<{
     default: {
       field: FieldApi<

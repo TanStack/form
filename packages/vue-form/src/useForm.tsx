@@ -4,19 +4,42 @@ import { defineComponent, h, onMounted } from 'vue'
 import { Field, useField } from './useField'
 import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
 import type { NoInfer } from '@tanstack/vue-store'
-import type { DefineSetupFnComponent, EmitsOptions, Ref, SlotsType} from 'vue'
+import type {
+  ComponentOptionsMixin,
+  CreateComponentPublicInstanceWithMixins,
+  EmitsOptions,
+  EmitsToProps,
+  PublicProps,
+  Ref,
+  SlotsType,
+} from 'vue'
 import type { FieldComponent, UseField } from './useField'
 
-type SubscribeComponent<
-  TFormData,
-  TSelected = NoInfer<FormState<TFormData>>,
-> = DefineSetupFnComponent<
-  {
-    selector?: (state: NoInfer<FormState<TFormData>>) => TSelected
-  },
-  EmitsOptions,
-  SlotsType<{ default: NoInfer<FormState<TFormData>> }>
->
+type SubscribeComponent<TFormData> =
+  // This complex type comes from Vue's return type for `DefineSetupFnComponent` but with our own types sprinkled in
+  // This allows us to pre-bind some generics while keeping the props type unbound generics for props-based inferencing
+  new <TSelected = NoInfer<FormState<TFormData>>>(
+    props: {
+      selector?: (state: NoInfer<FormState<TFormData>>) => TSelected
+    } & EmitsToProps<EmitsOptions> &
+      PublicProps,
+  ) => CreateComponentPublicInstanceWithMixins<
+    {
+      selector?: (state: NoInfer<FormState<TFormData>>) => TSelected
+    },
+    {},
+    {},
+    {},
+    {},
+    ComponentOptionsMixin,
+    ComponentOptionsMixin,
+    EmitsOptions,
+    PublicProps,
+    {},
+    false,
+    {},
+    SlotsType<{ default: NoInfer<FormState<TFormData>> }>
+  >
 
 export interface VueFormApi<
   TFormData,
