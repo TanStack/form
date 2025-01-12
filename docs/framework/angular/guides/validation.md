@@ -204,6 +204,42 @@ export class AppComponent {
 }
 ```
 
+It's worth mentioning that our `errors` array and the `errorMap` matches the types returned by the validators. This means that:
+
+```angular-ts
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [TanStackField],
+  template: `
+    <ng-container
+      [tanstackField]="form"
+      name="age"
+      [validators]="{
+        onChange: ageValidator
+      }"
+      #age="field"
+    >
+      <!-- ... -->
+      <!-- errorMap.onChange is type `{isOldEnough: false} | undefined` -->
+	  <!-- meta.errors is type `Array<{isOldEnough: false} | undefined>` -->
+      @if (!age.api.state.meta.errorMap['onChange']?.isOldEnough) {
+        <em role="alert">The user is not old enough</em>
+      }
+    </ng-container>
+  `,
+})
+export class AppComponent {
+  ageValidator: FieldValidateFn<any, any, any, any, number> = ({ value }) =>
+    value < 13 ? 'You must be 13 to make an account' : undefined
+
+  // ...
+}
+```
+
+
+
+
 ## Validation at field level vs at form level
 
 As shown above, each `[tanstackField]` accepts its own validation rules via the `onChange`, `onBlur` etc... callbacks. It is also possible to define validation rules at the form level (as opposed to field by field) by passing similar callbacks to the `injectForm()` function.

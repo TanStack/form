@@ -143,6 +143,26 @@ Or use the `errorMap` property to access the specific error you're looking for:
 </template>
 ```
 
+It's worth mentioning that our `errors` array and the `errorMap` matches the types returned by the validators. This means that:
+
+```vue
+<form.Field
+  name="age"
+  :validators="{
+    onChange: ({value}) =>
+      value < 13 ? {isOldEnough: false} : undefined,
+  }"
+>
+  <template v-slot="{ field }">
+      <!-- ... -->
+      <!-- errorMap.onChange is type `{isOldEnough: false} | undefined` -->
+	  <!-- meta.errors is type `Array<{isOldEnough: false} | undefined>` -->
+      <em v-if="!field.state.meta.errorMap['onChange']?.isOldEnough">The user is not old enough</em>
+  </template>
+</form.Field>
+```
+
+
 ## Validation at field level vs at form level
 
 As shown above, each `<Field>` accepts its own validation rules via the `onChange`, `onBlur` etc... callbacks. It is also possible to define validation rules at the form level (as opposed to field by field) by passing similar callbacks to the `useForm()` function.

@@ -1092,7 +1092,7 @@ export class FieldApi<
       TFormValidator
     >[]
 
-    const linkedFields: FieldApi<any, any, any, any>[] = []
+    const linkedFields: AnyFieldApi[] = []
     for (const field of fields) {
       if (!field.instance) continue
       const { onChangeListenTo, onBlurListenTo } =
