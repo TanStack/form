@@ -6,11 +6,13 @@ title: FieldComponent
 # Type Alias: FieldComponent()\<TParentData, TFormValidator\>
 
 ```ts
-type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData>({
+type FieldComponent<TParentData, TFormValidator> = <TName, TFieldValidator, TData>({
   children,
   ...fieldOptions
 }) => JSXElement;
 ```
+
+Defined in: [packages/solid-form/src/createField.tsx:171](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L171)
 
 ## Type Parameters
 
@@ -22,7 +24,9 @@ type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData
 
 • **TName** *extends* `DeepKeys`\<`TParentData`\>
 
-• **TFieldValidator** *extends* `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> \| `undefined` = `undefined`
+• **TFieldValidator** *extends* 
+  \| `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\>
+  \| `undefined` = `undefined`
 
 • **TData** *extends* `DeepValue`\<`TParentData`, `TName`\> = `DeepValue`\<`TParentData`, `TName`\>
 
@@ -38,7 +42,3 @@ type FieldComponent<TParentData, TFormValidator>: <TName, TFieldValidator, TData
 ## Returns
 
 `JSXElement`
-
-## Defined in
-
-[packages/solid-form/src/createField.tsx:171](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L171)

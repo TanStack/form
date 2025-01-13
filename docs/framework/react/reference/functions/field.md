@@ -9,6 +9,8 @@ title: Field
 function Field<TParentData, TName, TFieldValidator, TFormValidator, TData>(__namedParameters): ReactNode
 ```
 
+Defined in: [packages/react-form/src/useField.tsx:164](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L164)
+
 A function component that takes field options and a render function as children and returns a React component.
 
 The `Field` component uses the `useField` hook internally to manage the field instance.
@@ -19,7 +21,9 @@ The `Field` component uses the `useField` hook internally to manage the field in
 
 • **TName** *extends* `string` \| `number`
 
-• **TFieldValidator** *extends* `undefined` \| `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> = `undefined`
+• **TFieldValidator** *extends* 
+  \| `undefined`
+  \| `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> = `undefined`
 
 • **TFormValidator** *extends* `undefined` \| `Validator`\<`TParentData`, `unknown`\> = `undefined`
 
@@ -34,7 +38,3 @@ The `Field` component uses the `useField` hook internally to manage the field in
 ## Returns
 
 `ReactNode`
-
-## Defined in
-
-[packages/react-form/src/useField.tsx:164](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L164)

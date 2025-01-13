@@ -9,6 +9,8 @@ title: injectForm
 function injectForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormValidator>
 ```
 
+Defined in: [inject-form.ts:5](https://github.com/TanStack/form/blob/main/packages/angular-form/src/inject-form.ts#L5)
+
 ## Type Parameters
 
 • **TFormData**
@@ -24,7 +26,3 @@ function injectForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormV
 ## Returns
 
 `FormApi`\<`TFormData`, `TFormValidator`\>
-
-## Defined in
-
-[inject-form.ts:5](https://github.com/TanStack/form/blob/main/packages/angular-form/src/inject-form.ts#L5)
