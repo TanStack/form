@@ -1,8 +1,7 @@
-import * as React from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
-import { StrictMode } from 'react'
+import { StrictMode, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import { useForm } from '../src/index'
 import { sleep } from './utils'
@@ -509,7 +508,7 @@ describe('useField', () => {
     }
 
     function Comp() {
-      const [showField, setShowField] = React.useState(true)
+      const [showField, setShowField] = useState(true)
 
       const form = useForm({
         defaultValues: {
@@ -589,9 +588,9 @@ describe('useField', () => {
     }
 
     const { getByText, findByText, queryByText } = render(
-      <React.StrictMode>
+      <StrictMode>
         <Comp />
-      </React.StrictMode>,
+      </StrictMode>,
     )
 
     await user.click(getByText('Submit'))
@@ -885,9 +884,9 @@ describe('useField', () => {
     }
 
     const { queryByText, findByText } = render(
-      <React.StrictMode>
+      <StrictMode>
         <Comp />
-      </React.StrictMode>,
+      </StrictMode>,
     )
 
     expect(queryByText('Test')).not.toBeInTheDocument()
