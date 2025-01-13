@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitest/config'
-import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { svelte } from '@sveltejs/vite-plugin-svelte'
 import packageJson from './package.json'
 
 export default defineConfig({
@@ -12,8 +12,5 @@ export default defineConfig({
     coverage: { enabled: true, provider: 'istanbul', include: ['src/**/*'] },
     typecheck: { enabled: true },
   },
-  plugins: [
-    svelte({
-    })
-  ]
+  plugins: [svelte({})],
 })

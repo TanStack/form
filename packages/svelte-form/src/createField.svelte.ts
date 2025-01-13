@@ -32,22 +32,10 @@ export type CreateField<
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 >(
   opts: () => { name: Narrow<TName> } & Omit<
-    FieldApiOptions<
-      TParentData,
-      TName,
-      TFieldValidator,
-      TFormValidator,
-      TData
-    >,
+    FieldApiOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>,
     'form'
   >,
-) => FieldApi<
-  TParentData,
-  TName,
-  TFieldValidator,
-  TFormValidator,
-  TData
-> &
+) => FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData> &
   SvelteFieldApi<TParentData, TFormValidator>
 
 export function createField<
