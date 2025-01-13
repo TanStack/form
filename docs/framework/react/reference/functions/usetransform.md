@@ -9,6 +9,8 @@ title: useTransform
 function useTransform<TFormData, TFormValidator>(fn, deps): FormTransform<TFormData, TFormValidator>
 ```
 
+Defined in: [packages/react-form/src/useTransform.ts:3](https://github.com/TanStack/form/blob/main/packages/react-form/src/useTransform.ts#L3)
+
 ## Type Parameters
 
 • **TFormData**
@@ -28,7 +30,3 @@ function useTransform<TFormData, TFormValidator>(fn, deps): FormTransform<TFormD
 ## Returns
 
 `FormTransform`\<`TFormData`, `TFormValidator`\>
-
-## Defined in
-
-[packages/react-form/src/useTransform.ts:3](https://github.com/TanStack/form/blob/main/packages/react-form/src/useTransform.ts#L3)

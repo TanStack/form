@@ -9,13 +9,17 @@ title: useField
 function useField<TParentData, TName, TFieldValidator, TFormValidator, TData>(opts): object
 ```
 
+Defined in: [packages/vue-form/src/useField.tsx:49](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L49)
+
 ## Type Parameters
 
 • **TParentData**
 
 • **TName** *extends* `string` \| `number`
 
-• **TFieldValidator** *extends* `undefined` \| `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> = `undefined`
+• **TFieldValidator** *extends* 
+  \| `undefined`
+  \| `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\> = `undefined`
 
 • **TFormValidator** *extends* `undefined` \| `Validator`\<`TParentData`, `unknown`\> = `undefined`
 
@@ -42,7 +46,3 @@ readonly api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TDat
 ```ts
 readonly state: Readonly<Ref<FieldState<TData>, FieldState<TData>>> = fieldState;
 ```
-
-## Defined in
-
-[packages/vue-form/src/useField.tsx:49](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L49)
