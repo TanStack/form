@@ -11,7 +11,7 @@
   },
   "homepage": "https://tanstack.com/form",
   "scripts": {
-    "clean": "premove ./build ./coverage",
+    "clean": "premove ./dist ./coverage",
     "test:eslint": "eslint ./src ./tests",
     "test:types": "pnpm run \"/^test:types:ts[0-9]{2}$/\"",
     "test:types:ts51": "node ../../node_modules/typescript51/lib/tsc.js",
@@ -23,18 +23,17 @@
     "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
-    "build": "tsc -p tsconfig.build.json"
+    "build": "svelte-package --input ./src --output ./dist"
   },
   "type": "module",
   "types": "dist/index.d.ts",
-  "main": "dist/index.js",
   "module": "dist/index.js",
+  "svelte": "./dist/index.js",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      }
+      "types": "./dist/index.d.ts",
+      "svelte": "./dist/index.js",
+      "import": "./dist/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -47,11 +46,12 @@
     "@tanstack/form-core": "workspace:*"
   },
   "devDependencies": {
-    "svelte": "^5.16.1",
+    "@sveltejs/package": "^2.3.7",
+    "@sveltejs/vite-plugin-svelte": "^4.0.4",
     "premove": "^4.0.0",
-    "@sveltejs/vite-plugin-svelte": "^4.0.4"
+    "svelte": "^5.16.1"
   },
   "peerDependencies": {
-    "svelte": "^5.16.1"
+    "svelte": "^5.0.0"
   }
 }
