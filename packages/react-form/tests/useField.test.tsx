@@ -1,3 +1,4 @@
+/* eslint-disable react-compiler/react-compiler */
 import { describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
@@ -1067,5 +1068,66 @@ describe('useField', () => {
     expect(getByText('[]')).toBeInTheDocument()
     await user.click(getByText('Add person'))
     expect(getByText(`["Test"]`)).toBeInTheDocument()
+  })
+
+  it('should not rerender unrelated fields', async () => {
+    const renderCount = {
+      field1: 0,
+      field2: 0,
+    }
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          field1: '',
+          field2: '',
+        },
+      })
+
+      return (
+        <>
+          <form.Field name="field1">
+            {(field) => {
+              renderCount.field1++
+              return (
+                <input
+                  data-testid="field1"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              )
+            }}
+          </form.Field>
+          <form.Field name="field2">
+            {(field) => {
+              renderCount.field2++
+              return (
+                <input
+                  data-testid="field2"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              )
+            }}
+          </form.Field>
+        </>
+      )
+    }
+
+    const { getByTestId } = render(
+      <StrictMode>
+        <Comp />
+      </StrictMode>,
+    )
+
+    const field1InitialRender = renderCount.field1
+    const field2InitialRender = renderCount.field2
+
+    await user.type(getByTestId('field1'), 'test')
+
+    // field1 should have rerendered
+    expect(renderCount.field1).toBeGreaterThan(field1InitialRender)
+    // field2 should not have rerendered
+    expect(renderCount.field2).toBe(field2InitialRender)
   })
 })
