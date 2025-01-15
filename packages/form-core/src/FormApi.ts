@@ -433,7 +433,8 @@ export class FormApi<
           if (
             prevFieldInfo &&
             prevFieldInfo.isPristine === isFieldPristine &&
-            prevFieldInfo.errors === fieldErrors
+            prevFieldInfo.errors === fieldErrors &&
+            currBaseVal === prevBaseVal
           ) {
             fieldMeta[fieldName] = prevFieldInfo
             continue
