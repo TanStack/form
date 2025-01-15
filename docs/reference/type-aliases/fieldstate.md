@@ -3,13 +3,13 @@ id: FieldState
 title: FieldState
 ---
 
-# Type Alias: FieldState\<TData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn\>
+# Type Alias: FieldState\<TData\>
 
 ```ts
-type FieldState<TData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn> = object;
+type FieldState<TData> = object;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:620](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L620)
+Defined in: [packages/form-core/src/FieldApi.ts:407](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L407)
 
 An object type representing the state of a field.
 
@@ -17,26 +17,12 @@ An object type representing the state of a field.
 
 • **TData**
 
-• **TOnMountReturn** = `undefined`
-
-• **TOnChangeReturn** = `undefined`
-
-• **TOnChangeAsyncReturn** = `undefined`
-
-• **TOnBlurReturn** = `undefined`
-
-• **TOnBlurAsyncReturn** = `undefined`
-
-• **TOnSubmitReturn** = `undefined`
-
-• **TOnSubmitAsyncReturn** = `undefined`
-
 ## Type declaration
 
 ### meta
 
 ```ts
-meta: FieldMeta<TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>;
+meta: FieldMeta;
 ```
 
 The current metadata of the field.

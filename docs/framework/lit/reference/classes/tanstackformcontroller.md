@@ -3,31 +3,15 @@ id: TanStackFormController
 title: TanStackFormController
 ---
 
-# Class: TanStackFormController\<TParentData, TFormValidator, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn, TFormOnServerReturn\>
+# Class: TanStackFormController\<TParentData, TFormValidator\>
 
-Defined in: [tanstack-form-controller.ts:181](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L181)
+Defined in: [tanstack-form-controller.ts:81](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L81)
 
 ## Type Parameters
 
 • **TParentData**
 
 • **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
-
-• **TFormOnMountReturn** = `undefined`
-
-• **TFormOnChangeReturn** = `undefined`
-
-• **TFormOnChangeAsyncReturn** = `undefined`
-
-• **TFormOnBlurReturn** = `undefined`
-
-• **TFormOnBlurAsyncReturn** = `undefined`
-
-• **TFormOnSubmitReturn** = `undefined`
-
-• **TFormOnSubmitAsyncReturn** = `undefined`
-
-• **TFormOnServerReturn** = `undefined`
 
 ## Implements
 
@@ -38,10 +22,10 @@ Defined in: [tanstack-form-controller.ts:181](https://github.com/TanStack/form/b
 ### new TanStackFormController()
 
 ```ts
-new TanStackFormController<TParentData, TFormValidator, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn, TFormOnServerReturn>(host, config?): TanStackFormController<TParentData, TFormValidator, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn, TFormOnServerReturn>
+new TanStackFormController<TParentData, TFormValidator>(host, config?): TanStackFormController<TParentData, TFormValidator>
 ```
 
-Defined in: [tanstack-form-controller.ts:212](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L212)
+Defined in: [tanstack-form-controller.ts:93](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L93)
 
 #### Parameters
 
@@ -51,31 +35,31 @@ Defined in: [tanstack-form-controller.ts:212](https://github.com/TanStack/form/b
 
 ##### config?
 
-`FormOptions`\<`TParentData`, `TFormValidator`, `TFormOnMountReturn`, `TFormOnChangeReturn`, `TFormOnChangeAsyncReturn`, `TFormOnBlurReturn`, `TFormOnBlurAsyncReturn`, `TFormOnSubmitReturn`, `TFormOnSubmitAsyncReturn`, `TFormOnServerReturn`\>
+`FormOptions`\<`TParentData`, `TFormValidator`\>
 
 #### Returns
 
-[`TanStackFormController`](tanstackformcontroller.md)\<`TParentData`, `TFormValidator`, `TFormOnMountReturn`, `TFormOnChangeReturn`, `TFormOnChangeAsyncReturn`, `TFormOnBlurReturn`, `TFormOnBlurAsyncReturn`, `TFormOnSubmitReturn`, `TFormOnSubmitAsyncReturn`, `TFormOnServerReturn`\>
+[`TanStackFormController`](tanstackformcontroller.md)\<`TParentData`, `TFormValidator`\>
 
 ## Properties
 
 ### api
 
 ```ts
-api: FormApi<TParentData, TFormValidator, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn, TFormOnServerReturn>;
+api: FormApi<TParentData, TFormValidator>;
 ```
 
-Defined in: [tanstack-form-controller.ts:199](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L199)
+Defined in: [tanstack-form-controller.ts:91](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L91)
 
 ## Methods
 
 ### field()
 
 ```ts
-field<TName, TFieldValidator, TData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>(fieldConfig, render): object
+field<TName, TFieldValidator, TData>(fieldConfig, render): object
 ```
 
-Defined in: [tanstack-form-controller.ts:253](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L253)
+Defined in: [tanstack-form-controller.ts:112](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L112)
 
 #### Type Parameters
 
@@ -87,29 +71,15 @@ Defined in: [tanstack-form-controller.ts:253](https://github.com/TanStack/form/b
 
 • **TData** = `DeepValue`\<`TParentData`, `TName`, `IsNullable`\<`TParentData`\>\>
 
-• **TOnMountReturn** = `undefined`
-
-• **TOnChangeReturn** = `undefined`
-
-• **TOnChangeAsyncReturn** = `undefined`
-
-• **TOnBlurReturn** = `undefined`
-
-• **TOnBlurAsyncReturn** = `undefined`
-
-• **TOnSubmitReturn** = `undefined`
-
-• **TOnSubmitAsyncReturn** = `undefined`
-
 #### Parameters
 
 ##### fieldConfig
 
-`FieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`\>
+`FieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
 
 ##### render
 
-`renderCallback`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`, `TFormOnMountReturn`, `TFormOnChangeReturn`, `TFormOnChangeAsyncReturn`, `TFormOnBlurReturn`, `TFormOnBlurAsyncReturn`, `TFormOnSubmitReturn`, `TFormOnSubmitAsyncReturn`, `TFormOnServerReturn`\>
+`renderCallback`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
 
 #### Returns
 
@@ -130,13 +100,13 @@ form: FormApi<TParentData, TFormValidator>;
 ###### values.options
 
 ```ts
-options: FieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>;
+options: FieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>;
 ```
 
 ###### values.render
 
 ```ts
-render: renderCallback<TParentData, TName, TFieldValidator, TFormValidator, TData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn, TFormOnServerReturn>;
+render: renderCallback<TParentData, TName, TFieldValidator, TFormValidator, TData>;
 ```
 
 ***
@@ -147,7 +117,7 @@ render: renderCallback<TParentData, TName, TFieldValidator, TFormValidator, TDat
 hostConnected(): void
 ```
 
-Defined in: [tanstack-form-controller.ts:243](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L243)
+Defined in: [tanstack-form-controller.ts:102](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L102)
 
 Called when the host is connected to the component tree. For custom
 element hosts, this corresponds to the `connectedCallback()` lifecycle,
@@ -171,7 +141,7 @@ ReactiveController.hostConnected
 hostDisconnected(): void
 ```
 
-Defined in: [tanstack-form-controller.ts:249](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L249)
+Defined in: [tanstack-form-controller.ts:108](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L108)
 
 Called when the host is disconnected from the component tree. For custom
 element hosts, this corresponds to the `disconnectedCallback()` lifecycle,

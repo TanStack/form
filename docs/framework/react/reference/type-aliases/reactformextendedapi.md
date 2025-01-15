@@ -3,13 +3,13 @@ id: ReactFormExtendedApi
 title: ReactFormExtendedApi
 ---
 
-# Type Alias: ReactFormExtendedApi\<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn\>
+# Type Alias: ReactFormExtendedApi\<TFormData, TFormValidator\>
 
 ```ts
-type ReactFormExtendedApi<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn> = FormApi<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn> & ReactFormApi<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>;
+type ReactFormExtendedApi<TFormData, TFormValidator> = FormApi<TFormData, TFormValidator> & ReactFormApi<TFormData, TFormValidator>;
 ```
 
-Defined in: [packages/react-form/src/useForm.tsx:83](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L83)
+Defined in: [packages/react-form/src/useForm.tsx:34](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L34)
 
 An extended version of the `FormApi` class that includes React-specific functionalities from `ReactFormApi`
 
@@ -18,17 +18,3 @@ An extended version of the `FormApi` class that includes React-specific function
 • **TFormData**
 
 • **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> \| `undefined` = `undefined`
-
-• **TOnMountReturn** = `undefined`
-
-• **TOnChangeReturn** = `undefined`
-
-• **TOnChangeAsyncReturn** = `undefined`
-
-• **TOnBlurReturn** = `undefined`
-
-• **TOnBlurAsyncReturn** = `undefined`
-
-• **TOnSubmitReturn** = `undefined`
-
-• **TOnSubmitAsyncReturn** = `undefined`

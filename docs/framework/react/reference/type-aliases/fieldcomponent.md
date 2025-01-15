@@ -3,16 +3,16 @@ id: FieldComponent
 title: FieldComponent
 ---
 
-# Type Alias: FieldComponent()\<TParentData, TFormValidator, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn\>
+# Type Alias: FieldComponent()\<TParentData, TFormValidator\>
 
 ```ts
-type FieldComponent<TParentData, TFormValidator, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn> = <TName, TFieldValidator, TData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>({
+type FieldComponent<TParentData, TFormValidator> = <TName, TFieldValidator, TData>({
   children,
   ...fieldOptions
 }) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/useField.tsx:281](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L281)
+Defined in: [packages/react-form/src/useField.tsx:134](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L134)
 
 A type alias representing a field component for a specific form data type.
 
@@ -21,20 +21,6 @@ A type alias representing a field component for a specific form data type.
 • **TParentData**
 
 • **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
-
-• **TFormOnMountReturn** = `undefined`
-
-• **TFormOnChangeReturn** = `undefined`
-
-• **TFormOnChangeAsyncReturn** = `undefined`
-
-• **TFormOnBlurReturn** = `undefined`
-
-• **TFormOnBlurAsyncReturn** = `undefined`
-
-• **TFormOnSubmitReturn** = `undefined`
-
-• **TFormOnSubmitAsyncReturn** = `undefined`
 
 ## Type Parameters
 
@@ -46,20 +32,6 @@ A type alias representing a field component for a specific form data type.
 
 • **TData** *extends* `DeepValue`\<`TParentData`, `TName`\> = `DeepValue`\<`TParentData`, `TName`\>
 
-• **TOnMountReturn** = `undefined`
-
-• **TOnChangeReturn** = `undefined`
-
-• **TOnChangeAsyncReturn** = `undefined`
-
-• **TOnBlurReturn** = `undefined`
-
-• **TOnBlurAsyncReturn** = `undefined`
-
-• **TOnSubmitReturn** = `undefined`
-
-• **TOnSubmitAsyncReturn** = `undefined`
-
 ## Parameters
 
 ### \{
@@ -67,7 +39,7 @@ A type alias representing a field component for a specific form data type.
   ...fieldOptions
 \}
 
-`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`, `TFormOnMountReturn`, `TFormOnChangeReturn`, `TFormOnChangeAsyncReturn`, `TFormOnBlurReturn`, `TFormOnBlurAsyncReturn`, `TFormOnSubmitReturn`, `TFormOnSubmitAsyncReturn`\>, `"form"`\>
+`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
 
 ## Returns
 

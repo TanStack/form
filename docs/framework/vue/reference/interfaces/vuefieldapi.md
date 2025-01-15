@@ -3,9 +3,9 @@ id: VueFieldApi
 title: VueFieldApi
 ---
 
-# Interface: VueFieldApi\<TParentData, TFormValidator, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn, TFormOnServerReturn\>
+# Interface: VueFieldApi\<TParentData, TFormValidator\>
 
-Defined in: [packages/vue-form/src/useField.tsx:160](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L160)
+Defined in: [packages/vue-form/src/useField.tsx:8](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L8)
 
 ## Type Parameters
 
@@ -13,28 +13,12 @@ Defined in: [packages/vue-form/src/useField.tsx:160](https://github.com/TanStack
 
 • **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
 
-• **TFormOnMountReturn** = `undefined`
-
-• **TFormOnChangeReturn** = `undefined`
-
-• **TFormOnChangeAsyncReturn** = `undefined`
-
-• **TFormOnBlurReturn** = `undefined`
-
-• **TFormOnBlurAsyncReturn** = `undefined`
-
-• **TFormOnSubmitReturn** = `undefined`
-
-• **TFormOnSubmitAsyncReturn** = `undefined`
-
-• **TFormOnServerReturn** = `undefined`
-
 ## Properties
 
 ### Field
 
 ```ts
-Field: FieldComponent<TParentData, TFormValidator, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn, TFormOnServerReturn>;
+Field: FieldComponent<TParentData, TFormValidator>;
 ```
 
-Defined in: [packages/vue-form/src/useField.tsx:174](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L174)
+Defined in: [packages/vue-form/src/useField.tsx:14](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L14)

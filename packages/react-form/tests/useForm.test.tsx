@@ -1,9 +1,8 @@
-import * as React from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import { useStore } from '@tanstack/react-store'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from '../src/index'
 import { sleep } from './utils'
 
@@ -79,7 +78,7 @@ describe('useForm', () => {
 
   it('should handle submitting properly', async () => {
     function Comp() {
-      const [submittedData, setSubmittedData] = React.useState<{
+      const [submittedData, setSubmittedData] = useState<{
         firstName: string
       } | null>(null)
 
@@ -125,8 +124,8 @@ describe('useForm', () => {
 
   it('should run on form mount', async () => {
     function Comp() {
-      const [formMounted, setFormMounted] = React.useState(false)
-      const [mountForm, setMountForm] = React.useState(false)
+      const [formMounted, setFormMounted] = useState(false)
+      const [mountForm, setMountForm] = useState(false)
 
       const form = useForm({
         defaultValues: {

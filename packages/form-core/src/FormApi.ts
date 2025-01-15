@@ -755,8 +755,10 @@ export class FormApi<
             fieldName as never
           ] as FieldMetaBase | undefined
 
-          let fieldErrors =
-            prevVal?.[fieldName as never as keyof typeof prevVal]?.errors
+          const prevFieldInfo =
+            prevVal?.[fieldName as never as keyof typeof prevVal]
+
+          let fieldErrors = prevFieldInfo?.errors
           if (!prevBaseVal || currBaseVal.errorMap !== prevBaseVal.errorMap) {
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             fieldErrors = Object.values(currBaseVal.errorMap ?? {}).filter(
@@ -766,6 +768,16 @@ export class FormApi<
 
           // As a primitive, we don't need to aggressively persist the same referencial value for performance reasons
           const isFieldPristine = !currBaseVal.isDirty
+
+          if (
+            prevFieldInfo &&
+            prevFieldInfo.isPristine === isFieldPristine &&
+            prevFieldInfo.errors === fieldErrors &&
+            currBaseVal === prevBaseVal
+          ) {
+            fieldMeta[fieldName] = prevFieldInfo
+            continue
+          }
 
           fieldMeta[fieldName] = {
             ...currBaseVal,

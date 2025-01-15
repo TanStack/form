@@ -3,13 +3,13 @@ id: BaseFormState
 title: BaseFormState
 ---
 
-# Type Alias: BaseFormState\<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TOnServerReturn\>
+# Type Alias: BaseFormState\<TFormData\>
 
 ```ts
-type BaseFormState<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TOnServerReturn> = object;
+type BaseFormState<TFormData> = object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:390](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L390)
+Defined in: [packages/form-core/src/FormApi.ts:228](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L228)
 
 An object representing the current state of the form.
 
@@ -17,28 +17,12 @@ An object representing the current state of the form.
 
 • **TFormData**
 
-• **TOnMountReturn** = `undefined`
-
-• **TOnChangeReturn** = `undefined`
-
-• **TOnChangeAsyncReturn** = `undefined`
-
-• **TOnBlurReturn** = `undefined`
-
-• **TOnBlurAsyncReturn** = `undefined`
-
-• **TOnSubmitReturn** = `undefined`
-
-• **TOnSubmitAsyncReturn** = `undefined`
-
-• **TOnServerReturn** = `undefined`
-
 ## Type declaration
 
 ### errorMap
 
 ```ts
-errorMap: FormValidationErrorMap<TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TOnServerReturn>;
+errorMap: FormValidationErrorMap;
 ```
 
 The error map for the form itself.

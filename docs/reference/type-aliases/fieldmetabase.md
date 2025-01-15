@@ -3,36 +3,20 @@ id: FieldMetaBase
 title: FieldMetaBase
 ---
 
-# Type Alias: FieldMetaBase\<TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn\>
+# Type Alias: FieldMetaBase
 
 ```ts
-type FieldMetaBase<TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn> = object;
+type FieldMetaBase = object;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:521](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L521)
-
-## Type Parameters
-
-• **TOnMountReturn** = `undefined`
-
-• **TOnChangeReturn** = `undefined`
-
-• **TOnChangeAsyncReturn** = `undefined`
-
-• **TOnBlurReturn** = `undefined`
-
-• **TOnBlurAsyncReturn** = `undefined`
-
-• **TOnSubmitReturn** = `undefined`
-
-• **TOnSubmitAsyncReturn** = `undefined`
+Defined in: [packages/form-core/src/FieldApi.ts:365](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L365)
 
 ## Type declaration
 
 ### errorMap
 
 ```ts
-errorMap: ValidationErrorMap<TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>;
+errorMap: ValidationErrorMap;
 ```
 
 A map of errors related to the field value.

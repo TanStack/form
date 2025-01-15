@@ -58,7 +58,6 @@
     "publint": "^0.2.12",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "rimraf": "^6.0.1",
     "sherif": "^1.0.2",
     "solid-js": "^1.9.4",
     "typescript": "5.6.3",

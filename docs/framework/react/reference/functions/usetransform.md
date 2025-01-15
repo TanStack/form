@@ -6,7 +6,7 @@ title: useTransform
 # Function: useTransform()
 
 ```ts
-function useTransform<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>(fn, deps): FormTransform<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>
+function useTransform<TFormData, TFormValidator>(fn, deps): FormTransform<TFormData, TFormValidator>
 ```
 
 Defined in: [packages/react-form/src/useTransform.ts:3](https://github.com/TanStack/form/blob/main/packages/react-form/src/useTransform.ts#L3)
@@ -17,25 +17,11 @@ Defined in: [packages/react-form/src/useTransform.ts:3](https://github.com/TanSt
 
 • **TFormValidator** *extends* `undefined` \| `Validator`\<`TFormData`, `unknown`\> = `undefined`
 
-• **TOnMountReturn** = `undefined`
-
-• **TOnChangeReturn** = `undefined`
-
-• **TOnChangeAsyncReturn** = `undefined`
-
-• **TOnBlurReturn** = `undefined`
-
-• **TOnBlurAsyncReturn** = `undefined`
-
-• **TOnSubmitReturn** = `undefined`
-
-• **TOnSubmitAsyncReturn** = `undefined`
-
 ## Parameters
 
 ### fn
 
-(`formBase`) => `FormApi`\<`TFormData`, `TFormValidator`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`\>
+(`formBase`) => `FormApi`\<`TFormData`, `TFormValidator`\>
 
 ### deps
 
@@ -43,4 +29,4 @@ Defined in: [packages/react-form/src/useTransform.ts:3](https://github.com/TanSt
 
 ## Returns
 
-`FormTransform`\<`TFormData`, `TFormValidator`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`\>
+`FormTransform`\<`TFormData`, `TFormValidator`\>

@@ -3,13 +3,13 @@ id: UseField
 title: UseField
 ---
 
-# Type Alias: UseField()\<TParentData, TFormValidator, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn\>
+# Type Alias: UseField()\<TParentData, TFormValidator\>
 
 ```ts
-type UseField<TParentData, TFormValidator, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn> = <TName, TFieldValidator, TData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>(opts) => FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TFormOnMountReturn, TFormOnChangeReturn, TFormOnChangeAsyncReturn, TFormOnBlurReturn, TFormOnBlurAsyncReturn, TFormOnSubmitReturn, TFormOnSubmitAsyncReturn>;
+type UseField<TParentData, TFormValidator> = <TName, TFieldValidator, TData>(opts) => FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>;
 ```
 
-Defined in: [packages/react-form/src/useField.tsx:43](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L43)
+Defined in: [packages/react-form/src/useField.tsx:26](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L26)
 
 A type representing a hook for using a field in a form with the given form data type.
 
@@ -21,20 +21,6 @@ A function that takes an optional object with a `name` property and field option
 
 • **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
 
-• **TFormOnMountReturn** = `undefined`
-
-• **TFormOnChangeReturn** = `undefined`
-
-• **TFormOnChangeAsyncReturn** = `undefined`
-
-• **TFormOnBlurReturn** = `undefined`
-
-• **TFormOnBlurAsyncReturn** = `undefined`
-
-• **TFormOnSubmitReturn** = `undefined`
-
-• **TFormOnSubmitAsyncReturn** = `undefined`
-
 ## Type Parameters
 
 • **TName** *extends* `DeepKeys`\<`TParentData`\>
@@ -45,26 +31,12 @@ A function that takes an optional object with a `name` property and field option
 
 • **TData** *extends* `DeepValue`\<`TParentData`, `TName`\> = `DeepValue`\<`TParentData`, `TName`\>
 
-• **TOnMountReturn** = `undefined`
-
-• **TOnChangeReturn** = `undefined`
-
-• **TOnChangeAsyncReturn** = `undefined`
-
-• **TOnBlurReturn** = `undefined`
-
-• **TOnBlurAsyncReturn** = `undefined`
-
-• **TOnSubmitReturn** = `undefined`
-
-• **TOnSubmitAsyncReturn** = `undefined`
-
 ## Parameters
 
 ### opts
 
-`Omit`\<`UseFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`, `TFormOnMountReturn`, `TFormOnChangeReturn`, `TFormOnChangeAsyncReturn`, `TFormOnBlurReturn`, `TFormOnBlurAsyncReturn`, `TFormOnSubmitReturn`, `TFormOnSubmitAsyncReturn`\>, `"form"`\>
+`Omit`\<`UseFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
 
 ## Returns
 
-`FieldApi`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`, `TFormOnMountReturn`, `TFormOnChangeReturn`, `TFormOnChangeAsyncReturn`, `TFormOnBlurReturn`, `TFormOnBlurAsyncReturn`, `TFormOnSubmitReturn`, `TFormOnSubmitAsyncReturn`\>
+`FieldApi`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>

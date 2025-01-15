@@ -3,43 +3,20 @@ id: FieldMetaDerived
 title: FieldMetaDerived
 ---
 
-# Type Alias: FieldMetaDerived\<TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn\>
+# Type Alias: FieldMetaDerived
 
 ```ts
-type FieldMetaDerived<TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn> = object;
+type FieldMetaDerived = object;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:560](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L560)
-
-## Type Parameters
-
-• **TOnMountReturn** = `undefined`
-
-• **TOnChangeReturn** = `undefined`
-
-• **TOnChangeAsyncReturn** = `undefined`
-
-• **TOnBlurReturn** = `undefined`
-
-• **TOnBlurAsyncReturn** = `undefined`
-
-• **TOnSubmitReturn** = `undefined`
-
-• **TOnSubmitAsyncReturn** = `undefined`
+Defined in: [packages/form-core/src/FieldApi.ts:388](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L388)
 
 ## Type declaration
 
 ### errors
 
 ```ts
-errors: (
-  | TOnMountReturn
-  | TOnChangeReturn
-  | TOnChangeAsyncReturn
-  | TOnBlurReturn
-  | TOnBlurAsyncReturn
-  | TOnSubmitReturn
-  | TOnSubmitAsyncReturn)[];
+errors: ValidationError[];
 ```
 
 An array of errors related to the field value.

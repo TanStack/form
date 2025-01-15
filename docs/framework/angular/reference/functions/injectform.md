@@ -6,7 +6,7 @@ title: injectForm
 # Function: injectForm()
 
 ```ts
-function injectForm<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TOnServerReturn>(opts?): FormApi<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TOnServerReturn>
+function injectForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormValidator>
 ```
 
 Defined in: [inject-form.ts:5](https://github.com/TanStack/form/blob/main/packages/angular-form/src/inject-form.ts#L5)
@@ -17,28 +17,12 @@ Defined in: [inject-form.ts:5](https://github.com/TanStack/form/blob/main/packag
 
 • **TFormValidator** *extends* `undefined` \| `Validator`\<`TFormData`, `unknown`\> = `undefined`
 
-• **TOnMountReturn** = `undefined`
-
-• **TOnChangeReturn** = `undefined`
-
-• **TOnChangeAsyncReturn** = `undefined`
-
-• **TOnBlurReturn** = `undefined`
-
-• **TOnBlurAsyncReturn** = `undefined`
-
-• **TOnSubmitReturn** = `undefined`
-
-• **TOnSubmitAsyncReturn** = `undefined`
-
-• **TOnServerReturn** = `undefined`
-
 ## Parameters
 
 ### opts?
 
-`FormOptions`\<`TFormData`, `TFormValidator`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`, `TOnServerReturn`\>
+`FormOptions`\<`TFormData`, `TFormValidator`\>
 
 ## Returns
 
-`FormApi`\<`TFormData`, `TFormValidator`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`, `TOnServerReturn`\>
+`FormApi`\<`TFormData`, `TFormValidator`\>

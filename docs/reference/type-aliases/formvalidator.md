@@ -9,7 +9,7 @@ title: FormValidator
 type FormValidator<TFormData, TType, TFn> = object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:117](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L117)
+Defined in: [packages/form-core/src/FormApi.ts:68](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L68)
 
 ## Type Parameters
 
@@ -37,7 +37,7 @@ Defined in: [packages/form-core/src/FormApi.ts:117](https://github.com/TanStack/
 
 #### Returns
 
-`unknown`
+[`ValidationError`](validationerror.md)
 
 ### validateAsync()
 
@@ -55,4 +55,4 @@ Defined in: [packages/form-core/src/FormApi.ts:117](https://github.com/TanStack/
 
 #### Returns
 
-`Promise`\<`unknown`\>
+`Promise`\<`FormValidationError`\<`TFormData`\>\>
