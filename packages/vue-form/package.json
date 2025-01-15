@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/vue-form",
-  "version": "0.41.1",
+  "version": "0.41.2",
   "description": "Powerful, type-safe forms for Vue.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
-    "vite": "^5.4.11",
+    "vite": "^5.1.8",
     "vue": "^3.5.13"
   },
   "peerDependencies": {

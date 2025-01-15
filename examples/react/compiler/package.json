@@ -14,12 +14,12 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@types/react": "^19.0.4",
-    "@types/react-dom": "^19.0.2",
+    "@types/react": "^19.0.7",
+    "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.3",
-    "babel-plugin-react-compiler": "^19.0.0-beta-63e3235-20250105",
-    "eslint-plugin-react-compiler": "^19.0.0-beta-63e3235-20250105",
-    "vite": "^5.4.11"
+    "babel-plugin-react-compiler": "19.0.0-beta-e552027-20250112",
+    "eslint-plugin-react-compiler": "19.0.0-beta-e552027-20250112",
+    "vite": "^5.1.8"
   },
   "browserslist": {
     "production": [

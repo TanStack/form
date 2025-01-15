@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/react-form",
-  "version": "0.41.1",
+  "version": "0.41.2",
   "description": "Powerful, type-safe forms for React.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -88,15 +88,15 @@
     "decode-formdata": "^0.8.0"
   },
   "devDependencies": {
-    "@tanstack/start": "^1.95.2",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
+    "@tanstack/start": "^1.95.7",
+    "@types/react": "^19.0.7",
+    "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.3",
-    "eslint-plugin-react-compiler": "^19.0.0-beta-63e3235-20250105",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "eslint-plugin-react-compiler": "19.0.0-beta-e552027-20250112",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "vinxi": "^0.5.1",
-    "vite": "^5.4.11"
+    "vite": "^5.1.8"
   },
   "peerDependencies": {
     "@tanstack/start": "^1.81.6",
