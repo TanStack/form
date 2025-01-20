@@ -16,9 +16,9 @@
   "devDependencies": {
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "@vitejs/plugin-react": "^4.3.3",
-    "babel-plugin-react-compiler": "^19.0.0-beta-0dec889-20241115",
-    "eslint-plugin-react-compiler": "^19.0.0-beta-0dec889-20241115",
+    "@vitejs/plugin-react": "^4.3.4",
+    "babel-plugin-react-compiler": "^19.0.0-beta-e552027-20250112",
+    "eslint-plugin-react-compiler": "^19.0.0-beta-e552027-20250112",
     "vite": "^5.4.11"
   },
   "browserslist": {
