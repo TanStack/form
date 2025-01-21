@@ -7,6 +7,7 @@ import {
   getSyncValidatorArray,
   isNonEmptyArray,
   setBy,
+  shallow,
 } from './utils'
 import {
   isStandardSchemaValidator,
@@ -404,6 +405,8 @@ export class FormApi<
         const prevBaseStore = prevDepVals?.[0]
         const currBaseStore = currDepVals[0]
 
+        let originalMetaCount = 0
+
         const fieldMeta = {} as FormState<TFormData>['fieldMeta']
         for (const fieldName of Object.keys(
           currBaseStore.fieldMetaBase,
@@ -437,6 +440,7 @@ export class FormApi<
             currBaseVal === prevBaseVal
           ) {
             fieldMeta[fieldName] = prevFieldInfo
+            originalMetaCount++
             continue
           }
 
@@ -445,6 +449,13 @@ export class FormApi<
             errors: fieldErrors,
             isPristine: isFieldPristine,
           } as FieldMeta
+        }
+
+        if (
+          prevVal &&
+          originalMetaCount === Object.keys(currBaseStore.fieldMetaBase).length
+        ) {
+          return prevVal
         }
 
         return fieldMeta
@@ -530,6 +541,26 @@ export class FormApi<
             (err) => err !== currBaseStore.errorMap.onMount,
           )
           errorMap = Object.assign(errorMap, { onMount: undefined })
+        }
+
+        if (
+          prevVal &&
+          prevBaseStore &&
+          prevVal.errorMap === errorMap &&
+          prevVal.fieldMeta === this.fieldMetaDerived.state &&
+          prevVal.errors === errors &&
+          prevVal.isFieldsValidating === isFieldsValidating &&
+          prevVal.isFieldsValid === isFieldsValid &&
+          prevVal.isFormValid === isFormValid &&
+          prevVal.isValid === isValid &&
+          prevVal.canSubmit === canSubmit &&
+          prevVal.isTouched === isTouched &&
+          prevVal.isBlurred === isBlurred &&
+          prevVal.isPristine === isPristine &&
+          prevVal.isDirty === isDirty &&
+          shallow(prevBaseStore, currBaseStore)
+        ) {
+          return prevVal
         }
 
         let state = {
@@ -629,16 +660,18 @@ export class FormApi<
     // Options need to be updated first so that when the store is updated, the state is correct for the derived state
     this.options = options
 
+    const shouldUpdateValues =
+      options.defaultValues &&
+      !shallow(options.defaultValues, oldOptions.defaultValues) &&
+      !this.state.isTouched
+
+    const shouldUpdateState =
+      !shallow(options.defaultState, oldOptions.defaultState) &&
+      !this.state.isTouched
+
+    if (!shouldUpdateValues && !shouldUpdateState) return
+
     batch(() => {
-      const shouldUpdateValues =
-        options.defaultValues &&
-        options.defaultValues !== oldOptions.defaultValues &&
-        !this.state.isTouched
-
-      const shouldUpdateState =
-        options.defaultState !== oldOptions.defaultState &&
-        !this.state.isTouched
-
       this.baseStore.setState(() =>
         getDefaultFormState(
           Object.assign(

@@ -763,4 +763,33 @@ describe('useForm', () => {
 
     expect(fn).toHaveBeenCalledTimes(1)
   })
+
+  it('should not cause infinite re-renders when listening to state', () => {
+    const fn = vi.fn()
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+        onSubmit: async ({ value }) => {
+          // Do something with form data
+          console.log(value)
+        },
+      })
+
+      const { values } = useStore(form.store)
+
+      useEffect(() => {
+        fn(values)
+      }, [values])
+
+      return null
+    }
+
+    render(<Comp />)
+
+    expect(fn).toHaveBeenCalledTimes(1)
+  })
 })
