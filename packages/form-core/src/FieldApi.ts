@@ -4,7 +4,12 @@ import {
   standardSchemaValidator,
 } from './standardSchemaValidator'
 import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
-import type { FieldInfo, FieldsErrorMapFromValidator, FormApi } from './FormApi'
+import type {
+  FieldInfo,
+  FieldsErrorMapFromValidator,
+  FormApi,
+  FormState,
+} from './FormApi'
 import type { StandardSchemaV1 } from './standardSchemaValidator'
 import type {
   UpdateMetaOptions,
@@ -115,6 +120,13 @@ export type FieldListenerFn<
   value: TData
   fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
 }) => void
+
+/**
+ * @private
+ */
+export type FieldMetaFn<TFormData, TMetaExtension extends object> = (
+  props: FormState<TFormData>,
+) => FieldMetaExtension<TMetaExtension>
 
 export interface FieldValidators<
   TParentData,
@@ -285,6 +297,7 @@ export interface FieldListeners<
 export interface FieldOptions<
   TParentData,
   TName extends DeepKeys<TParentData>,
+  TMetaExtension extends object,
   TFieldValidator extends
     | Validator<DeepValue<TParentData, TName>, unknown>
     | undefined = undefined,
@@ -337,6 +350,7 @@ export interface FieldOptions<
     TFormValidator,
     TData
   >
+  meta?: FieldMetaFn<FormData, TMetaExtension>
 }
 
 /**
@@ -396,10 +410,15 @@ export type FieldMetaDerived = {
   isPristine: boolean
 }
 
+export type FieldMetaExtension<TMetaExtension extends object = {}> =
+  TMetaExtension
+
 /**
  * An object type representing the metadata of a field in a form.
  */
-export type FieldMeta = FieldMetaBase & FieldMetaDerived
+export type FieldMeta<TMetaExtension extends object = {}> = FieldMetaBase &
+  FieldMetaDerived &
+  FieldMetaExtension<TMetaExtension>
 
 /**
  * An object type representing the state of a field.
@@ -597,6 +616,11 @@ export class FieldApi<
       fieldApi: this,
     })
 
+    this.setMeta((prev) => ({
+      ...prev,
+      ...this.options.meta?.(this.form.state),
+    }))
+
     return cleanup
   }
 
@@ -660,6 +684,8 @@ export class FieldApi<
   }
 
   getMeta = () => this.store.state.meta
+
+  meta = this.store.state.meta
 
   /**
    * Sets the field metadata.
