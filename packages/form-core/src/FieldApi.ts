@@ -126,7 +126,7 @@ export type FieldListenerFn<
  */
 export type FieldMetaFn<TFormData, TMetaExtension extends object> = (
   props: FormState<TFormData>,
-) => FieldMetaExtension<TMetaExtension>
+) => TMetaExtension
 
 export interface FieldValidators<
   TParentData,
@@ -297,7 +297,6 @@ export interface FieldListeners<
 export interface FieldOptions<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TMetaExtension extends object,
   TFieldValidator extends
     | Validator<DeepValue<TParentData, TName>, unknown>
     | undefined = undefined,
@@ -305,6 +304,7 @@ export interface FieldOptions<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TMetaExtension extends object = {},
 > {
   /**
    * The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
@@ -410,20 +410,17 @@ export type FieldMetaDerived = {
   isPristine: boolean
 }
 
-export type FieldMetaExtension<TMetaExtension extends object = {}> =
-  TMetaExtension
-
 /**
  * An object type representing the metadata of a field in a form.
  */
 export type FieldMeta<TMetaExtension extends object = {}> = FieldMetaBase &
   FieldMetaDerived &
-  FieldMetaExtension<TMetaExtension>
+  TMetaExtension
 
 /**
  * An object type representing the state of a field.
  */
-export type FieldState<TData> = {
+export type FieldState<TData, TMetaExtension extends object = {}> = {
   /**
    * The current value of the field.
    */
@@ -431,7 +428,7 @@ export type FieldState<TData> = {
   /**
    * The current metadata of the field.
    */
-  meta: FieldMeta
+  meta: FieldMeta<TMetaExtension>
 }
 
 /**
@@ -453,6 +450,7 @@ export class FieldApi<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TMetaExtension extends object = {},
 > {
   /**
    * A reference to the form API instance.
@@ -481,7 +479,7 @@ export class FieldApi<
   /**
    * The field state store.
    */
-  store!: Derived<FieldState<TData>>
+  store!: Derived<FieldState<TData, TMetaExtension>>
   /**
    * The current field state.
    */
@@ -529,7 +527,7 @@ export class FieldApi<
         return {
           value,
           meta,
-        } as FieldState<TData>
+        } as FieldState<TData, TMetaExtension>
       },
     })
 
@@ -657,6 +655,11 @@ export class FieldApi<
       this.setMeta(this.state.meta)
     }
 
+    this.setMeta((prev) => ({
+      ...prev,
+      ...this.options.meta?.(this.form.state),
+    }))
+
     this.options = opts as never
     this.name = opts.name
   }
@@ -685,7 +688,9 @@ export class FieldApi<
 
   getMeta = () => this.store.state.meta
 
-  meta = this.store.state.meta
+  get meta() {
+    return this.store.state as FieldMeta<TMetaExtension>
+  }
 
   /**
    * Sets the field metadata.

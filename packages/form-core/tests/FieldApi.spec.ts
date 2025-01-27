@@ -1760,4 +1760,22 @@ describe('field api', () => {
     nameField.mount()
     expect(nameField.getMeta().errors).toEqual(['THERE IS AN ERROR'])
   })
+
+  it('should have user defined meta', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+    form.mount()
+
+    const nameField = new FieldApi({
+      form,
+      name: 'name',
+      meta: () => ({ dinosaur: true }),
+    })
+
+    nameField.mount()
+    expect(nameField.meta.dinosaur).toEqual(true)
+  })
 })
