@@ -2613,3 +2613,23 @@ it('should not change the onBlur state of the fields when the form is submitted'
   expect(firstNameField.state.meta.isBlurred).toBe(true)
   expect(lastNameField.state.meta.isBlurred).toBe(false)
 })
+
+it('should pass the handleSubmit meta data to onSubmit', async () => {
+  let triggered!: string
+
+  const form = new FormApi({
+    defaultValues: {
+      pets: '',
+    },
+
+    onSubmitMeta: {} as { dinosaur: string },
+
+    onSubmit: async ({ meta }) => {
+      triggered = meta.dinosaur
+    },
+  })
+
+  await form.handleSubmit({ dinosaur: 'Stegosaurus' })
+
+  expect(triggered).toEqual('Stegosaurus')
+})

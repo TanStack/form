@@ -150,6 +150,7 @@ export interface FormTransform<
 export interface FormOptions<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TFormSubmitMeta extends object = never,
 > {
   /**
    * Set initial values for your form.
@@ -181,6 +182,7 @@ export interface FormOptions<
   onSubmit?: (props: {
     value: TFormData
     formApi: FormApi<TFormData, TFormValidator>
+    meta: TFormSubmitMeta
   }) => any | Promise<any>
   /**
    * Specify an action for scenarios where the user tries to submit an invalid form.
@@ -189,6 +191,11 @@ export interface FormOptions<
     value: TFormData
     formApi: FormApi<TFormData, TFormValidator>
   }) => void
+  /**
+   * onSubmitMeta, the data passed from the handleSubmit handler, to the onSubmit function props
+   */
+  onSubmitMeta?: TFormSubmitMeta
+
   transform?: FormTransform<TFormData, TFormValidator>
 }
 
@@ -362,11 +369,12 @@ const isFormValidationError = (
 export class FormApi<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TFormSubmitMeta extends object = never,
 > {
   /**
    * The options for the form.
    */
-  options: FormOptions<TFormData, TFormValidator> = {}
+  options: FormOptions<TFormData, TFormValidator, TFormSubmitMeta> = {}
   baseStore!: Store<BaseFormState<TFormData>>
   fieldMetaDerived!: Derived<Record<DeepKeys<TFormData>, FieldMeta>>
   store!: Derived<FormState<TFormData>>
@@ -1061,7 +1069,9 @@ export class FormApi<
   /**
    * Handles the form submission, performs validation, and calls the appropriate onSubmit or onInvalidSubmit callbacks.
    */
-  handleSubmit = async () => {
+  handleSubmit(): Promise<void>
+  handleSubmit(submitMeta: TFormSubmitMeta): Promise<void>
+  async handleSubmit(submitMeta?: TFormSubmitMeta): Promise<void> {
     this.baseStore.setState((old) => ({
       ...old,
       // Submission attempts mark the form as not submitted
@@ -1115,7 +1125,11 @@ export class FormApi<
 
     try {
       // Run the submit code
-      await this.options.onSubmit?.({ value: this.state.values, formApi: this })
+      await this.options.onSubmit?.({
+        value: this.state.values,
+        formApi: this,
+        meta: submitMeta as TFormSubmitMeta,
+      })
 
       batch(() => {
         this.baseStore.setState((prev) => ({ ...prev, isSubmitted: true }))
