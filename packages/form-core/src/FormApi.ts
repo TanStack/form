@@ -37,9 +37,10 @@ export type FieldsErrorMapFromValidator<TFormData> = Partial<
 export type FormValidateFn<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TFormSubmitMeta extends object = never,
 > = (props: {
   value: TFormData
-  formApi: FormApi<TFormData, TFormValidator>
+  formApi: FormApi<TFormData, TFormValidator, TFormSubmitMeta>
 }) => FormValidationError<TFormData>
 
 /**
@@ -61,9 +62,10 @@ export type FormValidateOrFn<
 export type FormValidateAsyncFn<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TFormSubmitMeta extends object = never,
 > = (props: {
   value: TFormData
-  formApi: FormApi<TFormData, TFormValidator>
+  formApi: FormApi<TFormData, TFormValidator, TFormSubmitMeta>
   signal: AbortSignal
 }) => FormValidationError<TFormData> | Promise<FormValidationError<TFormData>>
 
@@ -137,12 +139,15 @@ export interface FormValidators<
 export interface FormTransform<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TFormSubmitMeta extends object = never,
 > {
   fn: (
-    formBase: FormApi<TFormData, TFormValidator>,
-  ) => FormApi<TFormData, TFormValidator>
+    formBase: FormApi<TFormData, TFormValidator, TFormSubmitMeta>,
+  ) => FormApi<TFormData, TFormValidator, TFormSubmitMeta>
   deps: unknown[]
 }
+
+type SubmitMeta<T> = T extends never ? {} : { meta: T }
 
 /**
  * An object representing the options for a form.
@@ -179,17 +184,18 @@ export interface FormOptions<
   /**
    * A function to be called when the form is submitted, what should happen once the user submits a valid form returns `any` or a promise `Promise<any>`
    */
-  onSubmit?: (props: {
-    value: TFormData
-    formApi: FormApi<TFormData, TFormValidator>
-    meta: TFormSubmitMeta
-  }) => any | Promise<any>
+  onSubmit?: (
+    props: {
+      value: TFormData
+      formApi: FormApi<TFormData, TFormValidator>
+    } & SubmitMeta<TFormSubmitMeta>,
+  ) => any | Promise<any>
   /**
    * Specify an action for scenarios where the user tries to submit an invalid form.
    */
   onSubmitInvalid?: (props: {
     value: TFormData
-    formApi: FormApi<TFormData, TFormValidator>
+    formApi: FormApi<TFormData, TFormValidator, TFormSubmitMeta>
   }) => void
   /**
    * onSubmitMeta, the data passed from the handleSubmit handler, to the onSubmit function props
@@ -615,7 +621,7 @@ export class FormApi<
   runValidator<
     TValue extends {
       value: TFormData
-      formApi: FormApi<any, any>
+      formApi: FormApi<any, any, any>
       validationSource: ValidationSource
     },
     TType extends 'validate' | 'validateAsync',
@@ -1127,11 +1133,18 @@ export class FormApi<
 
     try {
       // Run the submit code
-      await this.options.onSubmit?.({
-        value: this.state.values,
-        formApi: this,
-        ...(submitMeta !== undefined ? { meta: submitMeta } : {}),
-      })
+      if (submitMeta !== undefined) {
+        await this.options.onSubmit?.({
+          value: this.state.values,
+          formApi: this,
+          meta: submitMeta,
+        })
+      } else {
+        await this.options.onSubmit?.({
+          value: this.state.values,
+          formApi: this,
+        })
+      }
 
       batch(() => {
         this.baseStore.setState((prev) => ({ ...prev, isSubmitted: true }))
