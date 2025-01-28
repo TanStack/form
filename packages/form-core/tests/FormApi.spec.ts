@@ -2625,6 +2625,8 @@ it('should pass the handleSubmit meta data to onSubmit', async () => {
     onSubmitMeta: {} as { dinosaur: string },
 
     onSubmit: async ({ meta }) => {
+      expect(meta.dinosaur).toEqual('Stegosaurus')
+
       triggered = meta.dinosaur
     },
   })
@@ -2635,44 +2637,44 @@ it('should pass the handleSubmit meta data to onSubmit', async () => {
 })
 
 // testing Ts inference not to be included in PR
-it('should pass the handleSubmit meta data to onSubmit', async () => {
-  let triggered!: string
+// it('should pass the handleSubmit meta data to onSubmit', async () => {
+//   let triggered!: string
 
-  const form = new FormApi({
-    defaultValues: {
-      pets: '',
-    },
+//   const form = new FormApi({
+//     defaultValues: {
+//       pets: '',
+//     },
 
-    onSubmitMeta: {} as { dinosaur: string },
+//     onSubmitMeta: {} as { dinosaur: string },
 
-    // recognizes that chicken should not exits
-    onSubmit: async ({ meta }) => {
-      triggered = meta.chicken
-    },
-  })
+//     // recognizes that chicken should not exits
+//     onSubmit: async ({ meta }) => {
+//       triggered = meta.chicken
+//     },
+//   })
 
-  // should the meta be required on handelSubmit, if onSubmitMeta is provided
-  await form.handleSubmit()
+//   // should the meta be required on handelSubmit, if onSubmitMeta is provided
+//   await form.handleSubmit()
 
-  expect(triggered).toEqual('Stegosaurus')
-})
+//   expect(triggered).toEqual('Stegosaurus')
+// })
 
-it('should pass the handleSubmit meta data to onSubmit', async () => {
-  let triggered!: string
+// it('should pass the handleSubmit meta data to onSubmit', async () => {
+//   let triggered!: string
 
-  const form = new FormApi({
-    defaultValues: {
-      pets: '',
-    },
+//   const form = new FormApi({
+//     defaultValues: {
+//       pets: '',
+//     },
 
-    onSubmit: async ({ meta }) => {
-      // infers meta as never
-      triggered = meta.chicken
-    },
-  })
+//     onSubmit: async ({ meta }) => {
+//       // infers meta as never
+//       triggered = meta.chicken
+//     },
+//   })
 
-  // infers handleSubmit props as never
-  await form.handleSubmit({ dinosaur: 'Stegosaurus' })
+//   // infers handleSubmit props as never
+//   await form.handleSubmit({ dinosaur: 'Stegosaurus' })
 
-  expect(triggered).toEqual('Stegosaurus')
-})
+//   expect(triggered).toEqual('Stegosaurus')
+// })
