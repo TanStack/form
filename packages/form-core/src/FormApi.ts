@@ -147,8 +147,6 @@ export interface FormTransform<
   deps: unknown[]
 }
 
-type SubmitMeta<T> = T extends never ? {} : { meta: T }
-
 /**
  * An object representing the options for a form.
  */
@@ -187,8 +185,10 @@ export interface FormOptions<
   onSubmit?: (
     props: {
       value: TFormData
-      formApi: FormApi<TFormData, TFormValidator>
-    } & SubmitMeta<TFormSubmitMeta>,
+      formApi: FormApi<TFormData, TFormValidator, TFormSubmitMeta>
+    } & TFormSubmitMeta extends object
+      ? { meta: TFormSubmitMeta }
+      : {},
   ) => any | Promise<any>
   /**
    * Specify an action for scenarios where the user tries to submit an invalid form.

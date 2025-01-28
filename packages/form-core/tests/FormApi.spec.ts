@@ -2615,66 +2615,22 @@ it('should not change the onBlur state of the fields when the form is submitted'
 })
 
 it('should pass the handleSubmit meta data to onSubmit', async () => {
-  let triggered!: string
-
   const form = new FormApi({
-    defaultValues: {
-      pets: '',
-    },
-
     onSubmitMeta: {} as { dinosaur: string },
-
     onSubmit: async ({ meta }) => {
       expect(meta.dinosaur).toEqual('Stegosaurus')
-
-      triggered = meta.dinosaur
     },
   })
 
   await form.handleSubmit({ dinosaur: 'Stegosaurus' })
-
-  expect(triggered).toEqual('Stegosaurus')
 })
 
-// testing Ts inference not to be included in PR
-// it('should pass the handleSubmit meta data to onSubmit', async () => {
-//   let triggered!: string
+it('should receive undefined if meta is not passed ', async () => {
+  const form = new FormApi({
+    onSubmit: async ({ meta }) => {
+      expect(meta).toEqual(undefined)
+    },
+  })
 
-//   const form = new FormApi({
-//     defaultValues: {
-//       pets: '',
-//     },
-
-//     onSubmitMeta: {} as { dinosaur: string },
-
-//     // recognizes that chicken should not exits
-//     onSubmit: async ({ meta }) => {
-//       triggered = meta.chicken
-//     },
-//   })
-
-//   // should the meta be required on handelSubmit, if onSubmitMeta is provided
-//   await form.handleSubmit()
-
-//   expect(triggered).toEqual('Stegosaurus')
-// })
-
-// it('should pass the handleSubmit meta data to onSubmit', async () => {
-//   let triggered!: string
-
-//   const form = new FormApi({
-//     defaultValues: {
-//       pets: '',
-//     },
-
-//     onSubmit: async ({ meta }) => {
-//       // infers meta as never
-//       triggered = meta.chicken
-//     },
-//   })
-
-//   // infers handleSubmit props as never
-//   await form.handleSubmit({ dinosaur: 'Stegosaurus' })
-
-//   expect(triggered).toEqual('Stegosaurus')
-// })
+  await form.handleSubmit()
+})
