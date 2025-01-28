@@ -149,8 +149,8 @@ export interface FormTransform<
  */
 export interface FormOptions<
   TFormData,
-  TFormSubmitMeta extends object = never,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TFormSubmitMeta extends object = never,
 > {
   /**
    * Set initial values for your form.
@@ -368,13 +368,13 @@ const isFormValidationError = (
  */
 export class FormApi<
   TFormData,
-  TFormSubmitMeta extends object = never,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TFormSubmitMeta extends object = never,
 > {
   /**
    * The options for the form.
    */
-  options: FormOptions<TFormData, TFormSubmitMeta, TFormValidator> = {}
+  options: FormOptions<TFormData, TFormValidator, TFormSubmitMeta> = {}
   baseStore!: Store<BaseFormState<TFormData>>
   fieldMetaDerived!: Derived<Record<DeepKeys<TFormData>, FieldMeta>>
   store!: Derived<FormState<TFormData>>
@@ -396,7 +396,7 @@ export class FormApi<
   /**
    * Constructs a new `FormApi` instance with the given form options.
    */
-  constructor(opts?: FormOptions<TFormData, TFormSubmitMeta, TFormValidator>) {
+  constructor(opts?: FormOptions<TFormData, TFormValidator, TFormSubmitMeta>) {
     this.baseStore = new Store(
       getDefaultFormState({
         ...(opts?.defaultState as any),
@@ -662,7 +662,7 @@ export class FormApi<
    * Updates the form options and form state.
    */
   update = (
-    options?: FormOptions<TFormData, TFormSubmitMeta, TFormValidator>,
+    options?: FormOptions<TFormData, TFormValidator, TFormSubmitMeta>,
   ) => {
     if (!options) return
 
