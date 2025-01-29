@@ -125,8 +125,8 @@ export type FieldListenerFn<
  * @private
  */
 export type FieldMetaFn<TFormData, TMetaExtension extends object> = (
-  props: FormState<TFormData>,
-) => TMetaExtension
+  props: Derived<FormState<TFormData>>,
+) => FieldMeta<TMetaExtension>
 
 export interface FieldValidators<
   TParentData,
@@ -366,12 +366,14 @@ export interface FieldApiOptions<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TMetaExtension extends object = {},
 > extends FieldOptions<
     TParentData,
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TMetaExtension
   > {
   form: FormApi<TParentData, TFormValidator>
 }
@@ -655,11 +657,6 @@ export class FieldApi<
       this.setMeta(this.state.meta)
     }
 
-    this.setMeta((prev) => ({
-      ...prev,
-      ...this.options.meta?.(this.form.state),
-    }))
-
     this.options = opts as never
     this.name = opts.name
   }
@@ -683,14 +680,15 @@ export class FieldApi<
       fieldApi: this,
     })
 
+    this.setMeta((prev) => ({
+      ...prev,
+      ...this.options.meta?.(this.form.state),
+    }))
+
     this.validate('change')
   }
 
-  getMeta = () => this.store.state.meta
-
-  get meta() {
-    return this.store.state as FieldMeta<TMetaExtension>
-  }
+  getMeta = () => this.store.state.meta as FieldMeta<TMetaExtension>
 
   /**
    * Sets the field metadata.
