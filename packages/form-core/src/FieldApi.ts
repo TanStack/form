@@ -462,7 +462,8 @@ export class FieldApi<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TMetaExtension
   >['form']
   /**
    * The field name.
@@ -544,7 +545,7 @@ export class FieldApi<
   runValidator<
     TValue extends {
       value: TData
-      fieldApi: FieldApi<any, any, any, any>
+      fieldApi: FieldApi<any, any, any, any, any>
       validationSource: ValidationSource
     },
     TType extends 'validate' | 'validateAsync',
@@ -756,7 +757,7 @@ export class FieldApi<
       TFormValidator
     >[]
 
-    const linkedFields: FieldApi<any, any, any, any>[] = []
+    const linkedFields: FieldApi<any, any, any, any, any>[] = []
     for (const field of fields) {
       if (!field.instance) continue
       const { onChangeListenTo, onBlurListenTo } =
@@ -793,7 +794,9 @@ export class FieldApi<
         })
         return acc.concat(fieldValidates as never)
       },
-      [] as Array<SyncValidator<any> & { field: FieldApi<any, any, any, any> }>,
+      [] as Array<
+        SyncValidator<any> & { field: FieldApi<any, any, any, any, any> }
+      >,
     )
 
     // Needs type cast as eslint errantly believes this is always falsy
@@ -801,7 +804,7 @@ export class FieldApi<
 
     batch(() => {
       const validateFieldFn = (
-        field: FieldApi<any, any, any, any>,
+        field: FieldApi<any, any, any, any, any>,
         validateObj: SyncValidator<any>,
       ) => {
         const errorMapKey = getErrorMapKey(validateObj.cause)
@@ -899,7 +902,7 @@ export class FieldApi<
         return acc.concat(fieldValidates as never)
       },
       [] as Array<
-        AsyncValidator<any> & { field: FieldApi<any, any, any, any> }
+        AsyncValidator<any> & { field: FieldApi<any, any, any, any, any> }
       >,
     )
 
@@ -919,7 +922,7 @@ export class FieldApi<
     const linkedPromises: Promise<ValidationError | undefined>[] = []
 
     const validateFieldAsyncFn = (
-      field: FieldApi<any, any, any, any>,
+      field: FieldApi<any, any, any, any, any>,
       validateObj: AsyncValidator<any>,
       promises: Promise<ValidationError | undefined>[],
     ) => {
