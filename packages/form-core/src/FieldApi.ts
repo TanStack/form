@@ -126,7 +126,7 @@ export type FieldListenerFn<
  */
 export type FieldMetaFn<TFormData, TMetaExtension extends object> = (
   props: Derived<FormState<TFormData>>,
-) => FieldMeta<TMetaExtension>
+) => TMetaExtension
 
 export interface FieldValidators<
   TParentData,
@@ -476,7 +476,8 @@ export class FieldApi<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TMetaExtension
   > = {} as any
   /**
    * The field state store.
@@ -499,7 +500,8 @@ export class FieldApi<
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TMetaExtension
     >,
   ) {
     this.form = opts.form as never
