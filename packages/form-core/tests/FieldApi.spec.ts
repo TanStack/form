@@ -1764,7 +1764,7 @@ describe('field api', () => {
   it('should have user defined meta', () => {
     const form = new FormApi({
       defaultValues: {
-        name: '',
+        name: 'Stegosaurus',
       },
     })
     form.mount()
@@ -1772,10 +1772,20 @@ describe('field api', () => {
     const nameField = new FieldApi({
       form,
       name: 'name',
-      meta: () => ({ dinosaur: true }),
+      meta: ({ values }) => ({
+        dinosaur: values.name === 'Stegosaurus' ? 'dino' : 'notDino',
+      }),
     })
 
     nameField.mount()
-    expect(nameField.meta.dinosaur).toEqual(true)
+
+    // cant infer dinosaur from getMeta()
+    expect(nameField.getMeta().dinosaur).toEqual('dino')
+
+    nameField.handleChange('Cat')
+
+    expect(nameField.state.value).toEqual('Cat')
+
+    expect(nameField.getMeta().dinosaur).toEqual('notDino')
   })
 })
