@@ -116,6 +116,7 @@ type FieldComponentProps<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension extends object = never,
 > = {
   children: (
     fieldApi: FieldApi<
@@ -123,10 +124,18 @@ type FieldComponentProps<
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TParentMetaExtension
     >,
   ) => ReactNode
-} & UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>
+} & UseFieldOptions<
+  TParentData,
+  TName,
+  TFieldValidator,
+  TFormValidator,
+  TData,
+  TParentMetaExtension
+>
 
 /**
  * A type alias representing a field component for a specific form data type.
@@ -136,6 +145,7 @@ export type FieldComponent<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
+  TParentMetaExtension extends object = never,
 > = <
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
@@ -151,7 +161,8 @@ export type FieldComponent<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   >,
   'form'
 >) => ReactNode
@@ -171,6 +182,7 @@ export const Field = (<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension extends object = never,
 >({
   children,
   ...fieldOptions
@@ -179,7 +191,8 @@ export const Field = (<
   TName,
   TFieldValidator,
   TFormValidator,
-  TData
+  TData,
+  TParentMetaExtension
 >): ReactNode => {
   const fieldApi = useField(fieldOptions as any)
 

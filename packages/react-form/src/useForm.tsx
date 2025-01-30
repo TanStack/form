@@ -14,11 +14,12 @@ import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
 export interface ReactFormApi<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TParentMetaExtension extends object = never,
 > {
   /**
    * A React component to render form fields. With this, you can render and manage individual form fields.
    */
-  Field: FieldComponent<TFormData, TFormValidator>
+  Field: FieldComponent<TFormData, TFormValidator, TParentMetaExtension>
   /**
    * A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
    */
@@ -34,14 +35,16 @@ export interface ReactFormApi<
 export type ReactFormExtendedApi<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-> = FormApi<TFormData, TFormValidator> & ReactFormApi<TFormData, TFormValidator>
+  TFormSubmitMeta extends object = never,
+> = FormApi<TFormData, TFormValidator, TFormSubmitMeta> &
+  ReactFormApi<TFormData, TFormValidator, TFormSubmitMeta>
 
 function LocalSubscribe({
   form,
   selector,
   children,
 }: PropsWithChildren<{
-  form: FormApi<any, any>
+  form: FormApi<any, any, any>
   selector: (state: FormState<any>) => FormState<any>
 }>) {
   const data = useStore(form.store, selector)
@@ -57,12 +60,16 @@ function LocalSubscribe({
 export function useForm<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
->(opts?: FormOptions<TFormData, TFormValidator>) {
+  TFormSubmitMeta extends object = never,
+>(opts?: FormOptions<TFormData, TFormValidator, TFormSubmitMeta>) {
   const [formApi] = useState(() => {
-    const api = new FormApi<TFormData, TFormValidator>(opts)
+    const api = new FormApi<TFormData, TFormValidator, TFormSubmitMeta>(opts)
 
-    const extendedApi: ReactFormExtendedApi<TFormData, TFormValidator> =
-      api as never
+    const extendedApi: ReactFormExtendedApi<
+      TFormData,
+      TFormValidator,
+      TFormSubmitMeta
+    > = api as never
     extendedApi.Field = function APIField(props) {
       return <Field {...props} form={api} />
     }

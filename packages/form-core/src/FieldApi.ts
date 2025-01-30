@@ -30,9 +30,17 @@ export type FieldValidateFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension extends object = never,
 > = (props: {
   value: TData
-  fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  fieldApi: FieldApi<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData,
+    TParentMetaExtension
+  >
 }) => ValidationError
 
 /**
@@ -48,10 +56,18 @@ export type FieldValidateOrFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension extends object = never,
 > =
   | (TFieldValidator extends Validator<TData, infer TFN> ? TFN : never)
   | (TFormValidator extends Validator<TParentData, infer FFN> ? FFN : never)
-  | FieldValidateFn<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  | FieldValidateFn<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData,
+      TParentMetaExtension
+    >
   | StandardSchemaV1<TData, unknown>
 
 /**
@@ -67,9 +83,17 @@ export type FieldValidateAsyncFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension extends object = never,
 > = (options: {
   value: TData
-  fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  fieldApi: FieldApi<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData,
+    TParentMetaExtension
+  >
   signal: AbortSignal
 }) => ValidationError | Promise<ValidationError>
 
@@ -86,6 +110,7 @@ export type FieldAsyncValidateOrFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension extends object = never,
 > =
   | (TFieldValidator extends Validator<TData, infer TFN> ? TFN : never)
   | (TFormValidator extends Validator<TParentData, infer FFN> ? FFN : never)
@@ -94,7 +119,8 @@ export type FieldAsyncValidateOrFn<
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TParentMetaExtension
     >
   | StandardSchemaV1<TData, unknown>
 
@@ -111,9 +137,17 @@ export type FieldListenerFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension extends object = never,
 > = (props: {
   value: TData
-  fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  fieldApi: FieldApi<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData,
+    TParentMetaExtension
+  >
 }) => void
 
 export interface FieldValidators<
@@ -126,6 +160,7 @@ export interface FieldValidators<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension extends object = never,
 > {
   /**
    * An optional function that takes a param of `formApi` which is a generic type of `TData` and `TParentData`
@@ -161,7 +196,8 @@ export interface FieldValidators<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   >
   /**
    * An optional number to represent how long the `onChangeAsync` should wait before running
@@ -197,7 +233,8 @@ export interface FieldValidators<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   >
 
   /**
@@ -234,7 +271,8 @@ export interface FieldValidators<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   >
 }
 
@@ -248,34 +286,39 @@ export interface FieldListeners<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension extends object = never,
 > {
   onChange?: FieldListenerFn<
     TParentData,
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   >
   onBlur?: FieldListenerFn<
     TParentData,
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   >
   onMount?: FieldListenerFn<
     TParentData,
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   >
   onSubmit?: FieldListenerFn<
     TParentData,
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   >
 }
 
@@ -292,6 +335,7 @@ export interface FieldOptions<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension extends object = never,
 > {
   /**
    * The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
@@ -321,7 +365,8 @@ export interface FieldOptions<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   >
   /**
    * An optional object with default metadata for the field.
@@ -335,7 +380,8 @@ export interface FieldOptions<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   >
 }
 
@@ -352,14 +398,16 @@ export interface FieldApiOptions<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension extends object = never,
 > extends FieldOptions<
     TParentData,
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   > {
-  form: FormApi<TParentData, TFormValidator>
+  form: FormApi<TParentData, TFormValidator, TParentMetaExtension>
 }
 
 export type FieldMetaBase = {
@@ -434,6 +482,7 @@ export class FieldApi<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension extends object = never,
 > {
   /**
    * A reference to the form API instance.
@@ -443,7 +492,8 @@ export class FieldApi<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   >['form']
   /**
    * The field name.
@@ -457,7 +507,8 @@ export class FieldApi<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   > = {} as any
   /**
    * The field state store.
@@ -480,7 +531,8 @@ export class FieldApi<
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TParentMetaExtension
     >,
   ) {
     this.form = opts.form as never
@@ -523,14 +575,14 @@ export class FieldApi<
   runValidator<
     TValue extends {
       value: TData
-      fieldApi: FieldApi<any, any, any, any>
+      fieldApi: FieldApi<any, any, any, any, any, any>
       validationSource: ValidationSource
     },
     TType extends 'validate' | 'validateAsync',
   >(props: {
     validate: TType extends 'validate'
-      ? FieldValidateOrFn<any, any, any, any>
-      : FieldAsyncValidateOrFn<any, any, any, any>
+      ? FieldValidateOrFn<any, any, any, any, any, any>
+      : FieldAsyncValidateOrFn<any, any, any, any, any, any>
     value: TValue
     type: TType
     // When `api` is 'field', the return type cannot be `FormValidationError`
@@ -558,7 +610,9 @@ export class FieldApi<
       ) as never
     }
 
-    return (props.validate as FieldValidateFn<any, any>)(props.value) as never
+    return (props.validate as FieldValidateFn<any, any, any, any, any, any>)(
+      props.value,
+    ) as never
   }
 
   /**
@@ -578,7 +632,7 @@ export class FieldApi<
         validate: onMount,
         value: {
           value: this.state.value,
-          fieldApi: this,
+          fieldApi: this as FieldApi<any, any, any, any, any, any>,
           validationSource: 'field',
         },
         type: 'validate',
@@ -594,7 +648,7 @@ export class FieldApi<
 
     this.options.listeners?.onMount?.({
       value: this.state.value,
-      fieldApi: this,
+      fieldApi: this as FieldApi<any, any, any, any, any, any>,
     })
 
     return cleanup
@@ -609,7 +663,8 @@ export class FieldApi<
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TParentMetaExtension
     >,
   ) => {
     // Default Value
@@ -762,7 +817,9 @@ export class FieldApi<
         })
         return acc.concat(fieldValidates as never)
       },
-      [] as Array<SyncValidator<any> & { field: FieldApi<any, any, any, any> }>,
+      [] as Array<
+        SyncValidator<any> & { field: FieldApi<any, any, any, any, any, any> }
+      >,
     )
 
     // Needs type cast as eslint errantly believes this is always falsy
@@ -770,7 +827,7 @@ export class FieldApi<
 
     batch(() => {
       const validateFieldFn = (
-        field: FieldApi<any, any, any, any>,
+        field: FieldApi<any, any, any, any, any, any>,
         validateObj: SyncValidator<any>,
       ) => {
         const errorMapKey = getErrorMapKey(validateObj.cause)
@@ -813,7 +870,10 @@ export class FieldApi<
       }
 
       for (const validateObj of validates) {
-        validateFieldFn(this, validateObj)
+        validateFieldFn(
+          this as FieldApi<any, any, any, any, any, any>,
+          validateObj,
+        )
       }
       for (const fieldValitateObj of linkedFieldValidates) {
         if (!fieldValitateObj.validate) continue
@@ -868,7 +928,7 @@ export class FieldApi<
         return acc.concat(fieldValidates as never)
       },
       [] as Array<
-        AsyncValidator<any> & { field: FieldApi<any, any, any, any> }
+        AsyncValidator<any> & { field: FieldApi<any, any, any, any, any, any> }
       >,
     )
 
@@ -888,7 +948,7 @@ export class FieldApi<
     const linkedPromises: Promise<ValidationError | undefined>[] = []
 
     const validateFieldAsyncFn = (
-      field: FieldApi<any, any, any, any>,
+      field: FieldApi<any, any, any, any, any, any>,
       validateObj: AsyncValidator<any>,
       promises: Promise<ValidationError | undefined>[],
     ) => {
@@ -958,7 +1018,11 @@ export class FieldApi<
     // TODO: Dedupe this logic to reduce bundle size
     for (const validateObj of validates) {
       if (!validateObj.validate) continue
-      validateFieldAsyncFn(this, validateObj, validatesPromises)
+      validateFieldAsyncFn(
+        this as FieldApi<any, any, any, any, any, any>,
+        validateObj,
+        validatesPromises,
+      )
     }
     for (const fieldValitateObj of linkedFieldValidates) {
       if (!fieldValitateObj.validate) continue
