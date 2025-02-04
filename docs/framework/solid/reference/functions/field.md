@@ -6,10 +6,10 @@ title: Field
 # Function: Field()
 
 ```ts
-function Field<TParentData, TName, TFieldValidator, TFormValidator, TData>(props): Element
+function Field<TParentData, TName, TFieldValidator, TFormValidator, TData, TParentMetaExtension>(props): Element
 ```
 
-Defined in: [packages/solid-form/src/createField.tsx:196](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L196)
+Defined in: [packages/solid-form/src/createField.tsx:217](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L217)
 
 ## Type Parameters
 
@@ -25,11 +25,13 @@ Defined in: [packages/solid-form/src/createField.tsx:196](https://github.com/Tan
 
 • **TData** = `DeepValue`\<`TParentData`, `TName`\>
 
+• **TParentMetaExtension** = `never`
+
 ## Parameters
 
 ### props
 
-`object` & `FieldApiOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\> & `object`
+`object` & `FieldApiOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `TParentMetaExtension`\> & `object`
 
 ## Returns
 

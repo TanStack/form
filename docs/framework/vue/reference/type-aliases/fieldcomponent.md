@@ -3,19 +3,21 @@ id: FieldComponent
 title: FieldComponent
 ---
 
-# Type Alias: FieldComponent()\<TParentData, TFormValidator\>
+# Type Alias: FieldComponent()\<TParentData, TFormValidator, TParentMetaExtension\>
 
 ```ts
-type FieldComponent<TParentData, TFormValidator> = <TName, TFieldValidator, TData>(fieldOptions, context) => any;
+type FieldComponent<TParentData, TFormValidator, TParentMetaExtension> = <TName, TFieldValidator, TData>(fieldOptions, context) => any;
 ```
 
-Defined in: [packages/vue-form/src/useField.tsx:117](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L117)
+Defined in: [packages/vue-form/src/useField.tsx:145](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L145)
 
 ## Type Parameters
 
 • **TParentData**
 
 • **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
+
+• **TParentMetaExtension** = `never`
 
 ## Type Parameters
 
@@ -31,14 +33,14 @@ Defined in: [packages/vue-form/src/useField.tsx:117](https://github.com/TanStack
 
 ### fieldOptions
 
-`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
+`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `TParentMetaExtension`\>, `"form"`\>
 
 ### context
 
 `SetupContext`\<\{\}, `SlotsType`\<\{
   `default`: \{
-     `field`: `FieldApi`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>;
-     `state`: `FieldApi`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>\[`"state"`\];
+     `field`: `FieldApi`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `TParentMetaExtension`\>;
+     `state`: `FieldApi`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `TParentMetaExtension`\>\[`"state"`\];
     \};
  \}\>\>
 

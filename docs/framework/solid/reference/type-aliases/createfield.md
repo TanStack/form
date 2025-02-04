@@ -3,19 +3,21 @@ id: CreateField
 title: CreateField
 ---
 
-# Type Alias: CreateField()\<TParentData, TFormValidator\>
+# Type Alias: CreateField()\<TParentData, TFormValidator, TParentMetaExtension\>
 
 ```ts
-type CreateField<TParentData, TFormValidator> = <TName, TFieldValidator, TData>(opts) => () => FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData> & SolidFieldApi<TParentData, TFormValidator>;
+type CreateField<TParentData, TFormValidator, TParentMetaExtension> = <TName, TFieldValidator, TData>(opts) => () => FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData, TParentMetaExtension> & SolidFieldApi<TParentData, TFormValidator, TParentMetaExtension>;
 ```
 
-Defined in: [packages/solid-form/src/createField.tsx:29](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L29)
+Defined in: [packages/solid-form/src/createField.tsx:30](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L30)
 
 ## Type Parameters
 
 • **TParentData**
 
 • **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
+
+• **TParentMetaExtension** = `never`
 
 ## Type Parameters
 
@@ -31,7 +33,7 @@ Defined in: [packages/solid-form/src/createField.tsx:29](https://github.com/TanS
 
 ### opts
 
-() => `object` & `Omit`\<`CreateFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
+() => `object` & `Omit`\<`CreateFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `TParentMetaExtension`\>, `"form"`\>
 
 ## Returns
 
@@ -39,4 +41,4 @@ Defined in: [packages/solid-form/src/createField.tsx:29](https://github.com/TanS
 
 ### Returns
 
-`FieldApi`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\> & `SolidFieldApi`\<`TParentData`, `TFormValidator`\>
+`FieldApi`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `TParentMetaExtension`\> & `SolidFieldApi`\<`TParentData`, `TFormValidator`, `TParentMetaExtension`\>

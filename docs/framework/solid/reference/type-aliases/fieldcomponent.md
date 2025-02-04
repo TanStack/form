@@ -3,22 +3,24 @@ id: FieldComponent
 title: FieldComponent
 ---
 
-# Type Alias: FieldComponent()\<TParentData, TFormValidator\>
+# Type Alias: FieldComponent()\<TParentData, TFormValidator, TParentMetaExtension\>
 
 ```ts
-type FieldComponent<TParentData, TFormValidator> = <TName, TFieldValidator, TData>({
+type FieldComponent<TParentData, TFormValidator, TParentMetaExtension> = <TName, TFieldValidator, TData>({
   children,
   ...fieldOptions
 }) => JSXElement;
 ```
 
-Defined in: [packages/solid-form/src/createField.tsx:171](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L171)
+Defined in: [packages/solid-form/src/createField.tsx:190](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L190)
 
 ## Type Parameters
 
 • **TParentData**
 
 • **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
+
+• **TParentMetaExtension** = `never`
 
 ## Type Parameters
 
@@ -37,7 +39,7 @@ Defined in: [packages/solid-form/src/createField.tsx:171](https://github.com/Tan
   ...fieldOptions
 \}
 
-`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
+`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `TParentMetaExtension`\>, `"form"`\>
 
 ## Returns
 

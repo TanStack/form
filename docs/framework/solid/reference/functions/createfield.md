@@ -6,10 +6,10 @@ title: createField
 # Function: createField()
 
 ```ts
-function createField<TParentData, TName, TFieldValidator, TFormValidator, TData>(opts): () => never
+function createField<TParentData, TName, TFieldValidator, TFormValidator, TData, TParentMetaExtension>(opts): () => never
 ```
 
-Defined in: [packages/solid-form/src/createField.tsx:87](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L87)
+Defined in: [packages/solid-form/src/createField.tsx:100](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L100)
 
 ## Type Parameters
 
@@ -25,11 +25,13 @@ Defined in: [packages/solid-form/src/createField.tsx:87](https://github.com/TanS
 
 • **TData** = `DeepValue`\<`TParentData`, `TName`\>
 
+• **TParentMetaExtension** = `never`
+
 ## Parameters
 
 ### opts
 
-() => `CreateFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
+() => `CreateFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `TParentMetaExtension`\>
 
 ## Returns
 
