@@ -6,7 +6,7 @@ title: injectStore
 # Function: injectStore()
 
 ```ts
-function injectStore<TFormData, TFormValidator, TSelected>(form, selector?): Signal<TSelected>
+function injectStore<TFormData, TFormValidator, TSelected, TFormSubmitMeta>(form, selector?): Signal<TSelected>
 ```
 
 Defined in: [inject-store.ts:4](https://github.com/TanStack/form/blob/main/packages/angular-form/src/inject-store.ts#L4)
@@ -19,11 +19,13 @@ Defined in: [inject-store.ts:4](https://github.com/TanStack/form/blob/main/packa
 
 • **TSelected** = `NoInfer`\<`FormState`\<`TFormData`\>\>
 
+• **TFormSubmitMeta** = `never`
+
 ## Parameters
 
 ### form
 
-`FormApi`\<`TFormData`, `TFormValidator`\>
+`FormApi`\<`TFormData`, `TFormValidator`, `TFormSubmitMeta`\>
 
 ### selector?
 
