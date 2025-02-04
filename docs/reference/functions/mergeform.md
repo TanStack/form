@@ -6,7 +6,7 @@ title: mergeForm
 # Function: mergeForm()
 
 ```ts
-function mergeForm<TFormData, TFormValidator>(baseForm, state): FormApi<NoInfer<TFormData>, NoInfer<TFormValidator>>
+function mergeForm<TFormData, TFormValidator, TFormSubmitMeta>(baseForm, state): FormApi<NoInfer<TFormData>, NoInfer<TFormValidator>, NoInfer<TFormSubmitMeta>>
 ```
 
 Defined in: [packages/form-core/src/mergeForm.ts:36](https://github.com/TanStack/form/blob/main/packages/form-core/src/mergeForm.ts#L36)
@@ -17,11 +17,13 @@ Defined in: [packages/form-core/src/mergeForm.ts:36](https://github.com/TanStack
 
 • **TFormValidator** *extends* `undefined` \| `Validator`\<`TFormData`, `unknown`\> = `undefined`
 
+• **TFormSubmitMeta** *extends* `object` = `never`
+
 ## Parameters
 
 ### baseForm
 
-[`FormApi`](../classes/formapi.md)\<`NoInfer`\<`TFormData`\>, `NoInfer`\<`TFormValidator`\>\>
+[`FormApi`](../classes/formapi.md)\<`NoInfer`\<`TFormData`\>, `NoInfer`\<`TFormValidator`\>, `NoInfer`\<`TFormSubmitMeta`\>\>
 
 ### state
 
@@ -29,4 +31,4 @@ Defined in: [packages/form-core/src/mergeForm.ts:36](https://github.com/TanStack
 
 ## Returns
 
-[`FormApi`](../classes/formapi.md)\<`NoInfer`\<`TFormData`\>, `NoInfer`\<`TFormValidator`\>\>
+[`FormApi`](../classes/formapi.md)\<`NoInfer`\<`TFormData`\>, `NoInfer`\<`TFormValidator`\>, `NoInfer`\<`TFormSubmitMeta`\>\>

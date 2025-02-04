@@ -9,7 +9,7 @@ title: FieldMetaBase
 type FieldMetaBase = object;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:365](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L365)
+Defined in: [packages/form-core/src/FieldApi.ts:413](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L413)
 
 ## Type declaration
 

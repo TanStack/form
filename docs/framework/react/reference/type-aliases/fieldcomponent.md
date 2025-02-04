@@ -3,16 +3,16 @@ id: FieldComponent
 title: FieldComponent
 ---
 
-# Type Alias: FieldComponent()\<TParentData, TFormValidator\>
+# Type Alias: FieldComponent()\<TParentData, TFormValidator, TParentMetaExtension\>
 
 ```ts
-type FieldComponent<TParentData, TFormValidator> = <TName, TFieldValidator, TData>({
+type FieldComponent<TParentData, TFormValidator, TParentMetaExtension> = <TName, TFieldValidator, TData>({
   children,
   ...fieldOptions
 }) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/useField.tsx:134](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L134)
+Defined in: [packages/react-form/src/useField.tsx:162](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L162)
 
 A type alias representing a field component for a specific form data type.
 
@@ -21,6 +21,8 @@ A type alias representing a field component for a specific form data type.
 • **TParentData**
 
 • **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
+
+• **TParentMetaExtension** *extends* `object` = `never`
 
 ## Type Parameters
 
@@ -39,7 +41,7 @@ A type alias representing a field component for a specific form data type.
   ...fieldOptions
 \}
 
-`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
+`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `TParentMetaExtension`\>, `"form"`\>
 
 ## Returns
 

@@ -6,7 +6,7 @@ title: useTransform
 # Function: useTransform()
 
 ```ts
-function useTransform<TFormData, TFormValidator>(fn, deps): FormTransform<TFormData, TFormValidator>
+function useTransform<TFormData, TFormValidator, TFormSubmitMeta>(fn, deps): FormTransform<TFormData, TFormValidator, TFormSubmitMeta>
 ```
 
 Defined in: [packages/react-form/src/useTransform.ts:3](https://github.com/TanStack/form/blob/main/packages/react-form/src/useTransform.ts#L3)
@@ -17,11 +17,13 @@ Defined in: [packages/react-form/src/useTransform.ts:3](https://github.com/TanSt
 
 • **TFormValidator** *extends* `undefined` \| `Validator`\<`TFormData`, `unknown`\> = `undefined`
 
+• **TFormSubmitMeta** *extends* `object` = `never`
+
 ## Parameters
 
 ### fn
 
-(`formBase`) => `FormApi`\<`TFormData`, `TFormValidator`\>
+(`formBase`) => `FormApi`\<`TFormData`, `TFormValidator`, `TFormSubmitMeta`\>
 
 ### deps
 
@@ -29,4 +31,4 @@ Defined in: [packages/react-form/src/useTransform.ts:3](https://github.com/TanSt
 
 ## Returns
 
-`FormTransform`\<`TFormData`, `TFormValidator`\>
+`FormTransform`\<`TFormData`, `TFormValidator`, `TFormSubmitMeta`\>

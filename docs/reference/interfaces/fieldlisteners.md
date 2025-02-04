@@ -3,9 +3,9 @@ id: FieldListeners
 title: FieldListeners
 ---
 
-# Interface: FieldListeners\<TParentData, TName, TFieldValidator, TFormValidator, TData\>
+# Interface: FieldListeners\<TParentData, TName, TFieldValidator, TFormValidator, TData, TParentMetaExtension\>
 
-Defined in: [packages/form-core/src/FieldApi.ts:241](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L241)
+Defined in: [packages/form-core/src/FieldApi.ts:279](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L279)
 
 ## Type Parameters
 
@@ -21,42 +21,44 @@ Defined in: [packages/form-core/src/FieldApi.ts:241](https://github.com/TanStack
 
 • **TData** *extends* [`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\> = [`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\>
 
+• **TParentMetaExtension** *extends* `object` = `never`
+
 ## Properties
 
 ### onBlur?
 
 ```ts
-optional onBlur: FieldListenerFn<TParentData, TName, TFieldValidator, TFormValidator, TData>;
+optional onBlur: FieldListenerFn<TParentData, TName, TFieldValidator, TFormValidator, TData, TParentMetaExtension>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:259](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L259)
+Defined in: [packages/form-core/src/FieldApi.ts:299](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L299)
 
 ***
 
 ### onChange?
 
 ```ts
-optional onChange: FieldListenerFn<TParentData, TName, TFieldValidator, TFormValidator, TData>;
+optional onChange: FieldListenerFn<TParentData, TName, TFieldValidator, TFormValidator, TData, TParentMetaExtension>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:252](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L252)
+Defined in: [packages/form-core/src/FieldApi.ts:291](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L291)
 
 ***
 
 ### onMount?
 
 ```ts
-optional onMount: FieldListenerFn<TParentData, TName, TFieldValidator, TFormValidator, TData>;
+optional onMount: FieldListenerFn<TParentData, TName, TFieldValidator, TFormValidator, TData, TParentMetaExtension>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:266](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L266)
+Defined in: [packages/form-core/src/FieldApi.ts:307](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L307)
 
 ***
 
 ### onSubmit?
 
 ```ts
-optional onSubmit: FieldListenerFn<TParentData, TName, TFieldValidator, TFormValidator, TData>;
+optional onSubmit: FieldListenerFn<TParentData, TName, TFieldValidator, TFormValidator, TData, TParentMetaExtension>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:273](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L273)
+Defined in: [packages/form-core/src/FieldApi.ts:315](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L315)

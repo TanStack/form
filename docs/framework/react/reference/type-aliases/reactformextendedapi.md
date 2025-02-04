@@ -3,13 +3,13 @@ id: ReactFormExtendedApi
 title: ReactFormExtendedApi
 ---
 
-# Type Alias: ReactFormExtendedApi\<TFormData, TFormValidator\>
+# Type Alias: ReactFormExtendedApi\<TFormData, TFormValidator, TFormSubmitMeta\>
 
 ```ts
-type ReactFormExtendedApi<TFormData, TFormValidator> = FormApi<TFormData, TFormValidator> & ReactFormApi<TFormData, TFormValidator>;
+type ReactFormExtendedApi<TFormData, TFormValidator, TFormSubmitMeta> = FormApi<TFormData, TFormValidator, TFormSubmitMeta> & ReactFormApi<TFormData, TFormValidator, TFormSubmitMeta>;
 ```
 
-Defined in: [packages/react-form/src/useForm.tsx:34](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L34)
+Defined in: [packages/react-form/src/useForm.tsx:35](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L35)
 
 An extended version of the `FormApi` class that includes React-specific functionalities from `ReactFormApi`
 
@@ -18,3 +18,5 @@ An extended version of the `FormApi` class that includes React-specific function
 • **TFormData**
 
 • **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> \| `undefined` = `undefined`
+
+• **TFormSubmitMeta** *extends* `object` = `never`

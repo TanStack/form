@@ -3,13 +3,13 @@ id: UseField
 title: UseField
 ---
 
-# Type Alias: UseField()\<TParentData, TFormValidator\>
+# Type Alias: UseField()\<TParentData, TFormValidator, TParentMetaExtension\>
 
 ```ts
-type UseField<TParentData, TFormValidator> = <TName, TFieldValidator, TData>(opts) => FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>;
+type UseField<TParentData, TFormValidator, TParentMetaExtension> = <TName, TFieldValidator, TData>(opts) => FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData, TParentMetaExtension>;
 ```
 
-Defined in: [packages/react-form/src/useField.tsx:26](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L26)
+Defined in: [packages/react-form/src/useField.tsx:27](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L27)
 
 A type representing a hook for using a field in a form with the given form data type.
 
@@ -20,6 +20,8 @@ A function that takes an optional object with a `name` property and field option
 • **TParentData**
 
 • **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
+
+• **TParentMetaExtension** *extends* `object` = `never`
 
 ## Type Parameters
 
@@ -35,8 +37,8 @@ A function that takes an optional object with a `name` property and field option
 
 ### opts
 
-`Omit`\<`UseFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
+`Omit`\<`UseFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `TParentMetaExtension`\>, `"form"`\>
 
 ## Returns
 
-`FieldApi`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
+`FieldApi`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `TParentMetaExtension`\>
