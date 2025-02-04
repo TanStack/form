@@ -32,12 +32,20 @@ export class TanStackField<
       | Validator<TParentData, unknown>
       | undefined = undefined,
     TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+    TParentMetaExtension = never,
   >
   implements
     OnInit,
     OnChanges,
     OnDestroy,
-    FieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>
+    FieldOptions<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData,
+      TParentMetaExtension
+    >
 {
   @Input({ required: true }) name!: TName
   // Setting as NoInferHack as it's the same internal type cast as TanStack Form Core
@@ -49,17 +57,39 @@ export class TanStackField<
   @Input() validatorAdapter?: TFieldValidator
   @Input({ required: true }) tanstackField!: FormApi<
     TParentData,
-    TFormValidator
+    TFormValidator,
+    TParentMetaExtension
   >
   @Input() validators?: NoInfer<
-    FieldValidators<TParentData, TName, TFieldValidator, TFormValidator, TData>
+    FieldValidators<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData,
+      TParentMetaExtension
+    >
   >
   @Input() listeners?: NoInfer<
-    FieldListeners<TParentData, TName, TFieldValidator, TFormValidator, TData>
+    FieldListeners<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData,
+      TParentMetaExtension
+    >
   >
   @Input() defaultMeta?: Partial<FieldMeta>
 
-  api!: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  api!: FieldApi<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData,
+    TParentMetaExtension
+  >
 
   private getOptions() {
     return {
