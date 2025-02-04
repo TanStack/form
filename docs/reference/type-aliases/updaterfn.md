@@ -1,0 +1,28 @@
+---
+id: UpdaterFn
+title: UpdaterFn
+---
+
+# Type Alias: UpdaterFn()\<TInput, TOutput\>
+
+```ts
+type UpdaterFn<TInput, TOutput> = (input) => TOutput;
+```
+
+Defined in: [packages/form-core/src/utils.ts:5](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L5)
+
+## Type Parameters
+
+• **TInput**
+
+• **TOutput** = `TInput`
+
+## Parameters
+
+### input
+
+`TInput`
+
+## Returns
+
+`TOutput`
