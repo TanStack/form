@@ -14,12 +14,12 @@ import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
 export interface ReactFormApi<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-  TParentMetaExtension extends object = never,
+  TFormSubmitMeta extends object = never,
 > {
   /**
    * A React component to render form fields. With this, you can render and manage individual form fields.
    */
-  Field: FieldComponent<TFormData, TFormValidator, TParentMetaExtension>
+  Field: FieldComponent<TFormData, TFormValidator, TFormSubmitMeta>
   /**
    * A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
    */

@@ -1744,6 +1744,10 @@ describe('field api', () => {
       defaultValues: {
         name: '',
       },
+      onSubmitMeta: {} as { dino: string },
+      onSubmit: async ({ meta }) => {
+        expect(meta.dino).toEqual('Stegosaurus')
+      },
     })
     form.mount()
 
@@ -1758,6 +1762,7 @@ describe('field api', () => {
     })
 
     nameField.mount()
+
     expect(nameField.getMeta().errors).toEqual(['THERE IS AN ERROR'])
   })
 })
