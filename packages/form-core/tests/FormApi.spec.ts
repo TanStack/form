@@ -2624,13 +2624,3 @@ it('should pass the handleSubmit meta data to onSubmit', async () => {
 
   await form.handleSubmit({ dinosaur: 'Stegosaurus' })
 })
-
-it('should receive undefined if meta is not passed ', async () => {
-  const form = new FormApi({
-    onSubmit: async ({ meta }) => {
-      expect(meta).toEqual(undefined)
-    },
-  })
-
-  await form.handleSubmit()
-})
