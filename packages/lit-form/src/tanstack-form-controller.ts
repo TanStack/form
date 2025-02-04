@@ -22,13 +22,15 @@ type renderCallback<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension = never,
 > = (
   fieldOptions: FieldApi<
     TParentData,
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   >,
 ) => unknown
 
@@ -42,6 +44,7 @@ type fieldDirectiveType<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension = never,
 > = (
   form: FormApi<TParentData, TFormValidator>,
   options: FieldOptions<
@@ -49,31 +52,35 @@ type fieldDirectiveType<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   >,
   render: renderCallback<
     TParentData,
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   >,
 ) => {
   values: {
-    form: FormApi<TParentData, TFormValidator>
+    form: FormApi<TParentData, TFormValidator, TParentMetaExtension>
     options: FieldOptions<
       TParentData,
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TParentMetaExtension
     >
     render: renderCallback<
       TParentData,
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TParentMetaExtension
     >
   }
 }
@@ -83,20 +90,23 @@ export class TanStackFormController<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
+  TParentMetaExtension = never,
 > implements ReactiveController
 {
   #host: ReactiveControllerHost
   #subscription?: () => void
 
-  api: FormApi<TParentData, TFormValidator>
+  api: FormApi<TParentData, TFormValidator, TParentMetaExtension>
 
   constructor(
     host: ReactiveControllerHost,
-    config?: FormOptions<TParentData, TFormValidator>,
+    config?: FormOptions<TParentData, TFormValidator, TParentMetaExtension>,
   ) {
     ;(this.#host = host).addController(this)
 
-    this.api = new FormApi<TParentData, TFormValidator>(config)
+    this.api = new FormApi<TParentData, TFormValidator, TParentMetaExtension>(
+      config,
+    )
   }
 
   hostConnected() {
@@ -121,14 +131,16 @@ export class TanStackFormController<
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TParentMetaExtension
     >,
     render: renderCallback<
       TParentData,
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TParentMetaExtension
     >,
   ) {
     return (
@@ -137,9 +149,10 @@ export class TanStackFormController<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData
+        TData,
+        TParentMetaExtension
       >
-    )(this.api, fieldConfig, render)
+    )(this.api as any, fieldConfig, render)
   }
 }
 
@@ -153,9 +166,17 @@ class FieldDirective<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension = never,
 > extends AsyncDirective {
   #registered = false
-  #field?: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  #field?: FieldApi<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData,
+    TParentMetaExtension
+  >
   #unmount?: () => void
 
   constructor(partInfo: PartInfo) {
@@ -198,20 +219,22 @@ class FieldDirective<
   }
 
   render(
-    _form: FormApi<TParentData, TFormValidator>,
+    _form: FormApi<TParentData, TFormValidator, TParentMetaExtension>,
     _fieldConfig: FieldOptions<
       TParentData,
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TParentMetaExtension
     >,
     _renderCallback: renderCallback<
       TParentData,
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TParentMetaExtension
     >,
   ) {
     if (this.#field) {
