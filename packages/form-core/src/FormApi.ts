@@ -198,10 +198,16 @@ export interface FormOptions<
    * A function to be called when the form is submitted, what should happen once the user submits a valid form returns `any` or a promise `Promise<any>`
    */
   onSubmit?: (
-    props: {
-      value: TFormData
-      formApi: FormApi<TFormData, TFormValidator, TFormSubmitMeta>
-    } & (TFormSubmitMeta extends never ? {} : { meta: TFormSubmitMeta }),
+    props: [TFormSubmitMeta] extends [never]
+      ? {
+          value: TFormData
+          formApi: FormApi<TFormData, TFormValidator, TFormSubmitMeta>
+        }
+      : {
+          value: TFormData
+          formApi: FormApi<TFormData, TFormValidator, TFormSubmitMeta>
+          meta: TFormSubmitMeta
+        },
   ) => any | Promise<any>
   /**
    * Specify an action for scenarios where the user tries to submit an invalid form.
