@@ -195,11 +195,11 @@ export interface AsyncValidator<T> {
 export function getAsyncValidatorArray<T>(
   cause: ValidationCause,
   options: AsyncValidatorArrayPartialOptions<T>,
-): T extends FieldValidators<any, any>
+): T extends FieldValidators<any, any, any>
   ? Array<
       AsyncValidator<T['onChangeAsync'] | T['onBlurAsync'] | T['onSubmitAsync']>
     >
-  : T extends FormValidators<any, any>
+  : T extends FormValidators<any, any, any>
     ? Array<
         AsyncValidator<
           T['onChangeAsync'] | T['onBlurAsync'] | T['onSubmitAsync']
@@ -214,8 +214,8 @@ export function getAsyncValidatorArray<T>(
     onBlurAsyncDebounceMs,
     onChangeAsyncDebounceMs,
   } = (options.validators || {}) as
-    | FieldValidators<any, any>
-    | FormValidators<any, any>
+    | FieldValidators<any, any, any>
+    | FormValidators<any, any, any>
 
   const defaultDebounceMs = asyncDebounceMs ?? 0
 
@@ -279,11 +279,11 @@ export interface SyncValidator<T> {
 export function getSyncValidatorArray<T>(
   cause: ValidationCause,
   options: SyncValidatorArrayPartialOptions<T>,
-): T extends FieldValidators<any, any>
+): T extends FieldValidators<any, any, any>
   ? Array<
       SyncValidator<T['onChange'] | T['onBlur'] | T['onSubmit'] | T['onMount']>
     >
-  : T extends FormValidators<any, any>
+  : T extends FormValidators<any, any, any>
     ? Array<
         SyncValidator<
           T['onChange'] | T['onBlur'] | T['onSubmit'] | T['onMount']
@@ -291,8 +291,8 @@ export function getSyncValidatorArray<T>(
       >
     : never {
   const { onChange, onBlur, onSubmit, onMount } = (options.validators || {}) as
-    | FieldValidators<any, any>
-    | FormValidators<any, any>
+    | FieldValidators<any, any, any>
+    | FormValidators<any, any, any>
 
   const changeValidator = { cause: 'change', validate: onChange } as const
   const blurValidator = { cause: 'blur', validate: onBlur } as const

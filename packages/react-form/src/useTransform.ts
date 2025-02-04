@@ -3,7 +3,7 @@ import type { FormApi, FormTransform, Validator } from '@tanstack/form-core'
 export function useTransform<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-  TFormSubmitMeta extends object = never,
+  TFormSubmitMeta = never,
 >(
   fn: (
     formBase: FormApi<any, any, any>,

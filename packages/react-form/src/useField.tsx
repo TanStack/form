@@ -11,7 +11,7 @@ interface ReactFieldApi<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
-  TParentMetaExtension extends object = never,
+  TParentMetaExtension = never,
 > {
   /**
    * A pre-bound and type-safe sub-field component using this field as a root.
@@ -29,7 +29,7 @@ export type UseField<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
-  TParentMetaExtension extends object = never,
+  TParentMetaExtension = never,
 > = <
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
@@ -73,7 +73,7 @@ export function useField<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TParentMetaExtension extends object = never,
+  TParentMetaExtension = never,
 >(
   opts: UseFieldOptions<
     TParentData,
@@ -135,7 +135,7 @@ type FieldComponentProps<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TParentMetaExtension extends object = never,
+  TParentMetaExtension = never,
 > = {
   children: (
     fieldApi: FieldApi<
@@ -164,7 +164,7 @@ export type FieldComponent<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
-  TParentMetaExtension extends object = never,
+  TParentMetaExtension = never,
 > = <
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
@@ -201,7 +201,7 @@ export const Field = (<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TParentMetaExtension extends object = never,
+  TParentMetaExtension = never,
 >({
   children,
   ...fieldOptions

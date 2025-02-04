@@ -36,7 +36,7 @@ export function mutateMergeDeep(target: object, source: object): object {
 export function mergeForm<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-  TFormSubmitMeta extends object = never,
+  TFormSubmitMeta = never,
 >(
   baseForm: FormApi<
     NoInfer<TFormData>,

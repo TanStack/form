@@ -30,7 +30,7 @@ export type FieldValidateFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TParentMetaExtension extends object = never,
+  TParentMetaExtension = never,
 > = (props: {
   value: TData
   fieldApi: FieldApi<
@@ -56,7 +56,7 @@ export type FieldValidateOrFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TParentMetaExtension extends object = never,
+  TParentMetaExtension = never,
 > =
   | (TFieldValidator extends Validator<TData, infer TFN> ? TFN : never)
   | (TFormValidator extends Validator<TParentData, infer FFN> ? FFN : never)
@@ -83,7 +83,7 @@ export type FieldValidateAsyncFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TParentMetaExtension extends object = never,
+  TParentMetaExtension = never,
 > = (options: {
   value: TData
   fieldApi: FieldApi<
@@ -110,7 +110,7 @@ export type FieldAsyncValidateOrFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TParentMetaExtension extends object = never,
+  TParentMetaExtension = never,
 > =
   | (TFieldValidator extends Validator<TData, infer TFN> ? TFN : never)
   | (TFormValidator extends Validator<TParentData, infer FFN> ? FFN : never)
@@ -137,7 +137,7 @@ export type FieldListenerFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TParentMetaExtension extends object = never,
+  TParentMetaExtension = never,
 > = (props: {
   value: TData
   fieldApi: FieldApi<
@@ -160,7 +160,7 @@ export interface FieldValidators<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TParentMetaExtension extends object = never,
+  TParentMetaExtension = never,
 > {
   /**
    * An optional function that takes a param of `formApi` which is a generic type of `TData` and `TParentData`
@@ -286,7 +286,7 @@ export interface FieldListeners<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TParentMetaExtension extends object = never,
+  TParentMetaExtension = never,
 > {
   onChange?: FieldListenerFn<
     TParentData,
@@ -335,7 +335,7 @@ export interface FieldOptions<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TParentMetaExtension extends object = never,
+  TParentMetaExtension = never,
 > {
   /**
    * The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
@@ -398,7 +398,7 @@ export interface FieldApiOptions<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TParentMetaExtension extends object = never,
+  TParentMetaExtension = never,
 > extends FieldOptions<
     TParentData,
     TName,
@@ -482,7 +482,7 @@ export class FieldApi<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TParentMetaExtension extends object = never,
+  TParentMetaExtension = never,
 > {
   /**
    * A reference to the form API instance.

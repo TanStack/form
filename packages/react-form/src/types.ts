@@ -19,7 +19,7 @@ export type UseFieldOptions<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TParentMetaExtension extends object = never,
+  TParentMetaExtension = never,
 > = FieldApiOptions<
   TParentData,
   TName,

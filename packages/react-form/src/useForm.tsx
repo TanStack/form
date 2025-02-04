@@ -14,7 +14,7 @@ import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
 export interface ReactFormApi<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-  TFormSubmitMeta extends object = never,
+  TFormSubmitMeta = never,
 > {
   /**
    * A React component to render form fields. With this, you can render and manage individual form fields.
@@ -35,7 +35,7 @@ export interface ReactFormApi<
 export type ReactFormExtendedApi<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-  TFormSubmitMeta extends object = never,
+  TFormSubmitMeta = never,
 > = FormApi<TFormData, TFormValidator, TFormSubmitMeta> &
   ReactFormApi<TFormData, TFormValidator, TFormSubmitMeta>
 
@@ -60,7 +60,7 @@ function LocalSubscribe({
 export function useForm<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-  TFormSubmitMeta extends object = never,
+  TFormSubmitMeta = never,
 >(opts?: FormOptions<TFormData, TFormValidator, TFormSubmitMeta>) {
   const [formApi] = useState(() => {
     const api = new FormApi<TFormData, TFormValidator, TFormSubmitMeta>(opts)
