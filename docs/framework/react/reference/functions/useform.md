@@ -21,7 +21,7 @@ This API encapsulates all the necessary functionalities related to the form. It 
 
 • **TFormValidator** *extends* `undefined` \| `Validator`\<`TFormData`, `unknown`\> = `undefined`
 
-• **TFormSubmitMeta** *extends* `object` = `never`
+• **TFormSubmitMeta** = `never`
 
 ## Parameters
 

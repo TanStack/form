@@ -27,7 +27,7 @@ A hook for managing a field in a form.
 
 • **TData** = `DeepValue`\<`TParentData`, `TName`\>
 
-• **TParentMetaExtension** *extends* `object` = `never`
+• **TParentMetaExtension** = `never`
 
 ## Parameters
 

@@ -21,7 +21,7 @@ A function that takes an optional object with a `name` property and field option
 
 • **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
 
-• **TParentMetaExtension** *extends* `object` = `never`
+• **TParentMetaExtension** = `never`
 
 ## Type Parameters
 

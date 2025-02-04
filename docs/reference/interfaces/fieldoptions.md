@@ -27,7 +27,7 @@ An object type representing the options for a field in a form.
 
 • **TData** *extends* [`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\> = [`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\>
 
-• **TParentMetaExtension** *extends* `object` = `never`
+• **TParentMetaExtension** = `never`
 
 ## Properties
 

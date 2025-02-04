@@ -9,7 +9,7 @@ title: DerivedFormState
 type DerivedFormState<TFormData> = object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:286](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L286)
+Defined in: [packages/form-core/src/FormApi.ts:302](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L302)
 
 ## Type Parameters
 

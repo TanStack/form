@@ -19,7 +19,7 @@ Defined in: [packages/form-core/src/formOptions.ts:4](https://github.com/TanStac
 
 • **TFormValidator** *extends* `undefined` \| `Validator`\<`TFormData`, `unknown`\> = `undefined`
 
-• **TFormSubmitMeta** *extends* `object` = `never`
+• **TFormSubmitMeta** = `never`
 
 ## Parameters
 

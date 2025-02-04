@@ -29,7 +29,7 @@ The `Field` component uses the `useField` hook internally to manage the field in
 
 • **TData** = `DeepValue`\<`TParentData`, `TName`\>
 
-• **TParentMetaExtension** *extends* `object` = `never`
+• **TParentMetaExtension** = `never`
 
 ## Parameters
 

@@ -29,7 +29,7 @@ the `new FieldApi` constructor.
 
 • **TData** *extends* [`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\> = [`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\>
 
-• **TParentMetaExtension** *extends* `object` = `never`
+• **TParentMetaExtension** = `never`
 
 ## Constructors
 
@@ -134,7 +134,7 @@ The current field state.
 ### getInfo()
 
 ```ts
-getInfo(): FieldInfo<TParentData, TFormValidator>
+getInfo(): FieldInfo<TParentData, TFormValidator, never>
 ```
 
 Defined in: [packages/form-core/src/FieldApi.ts:728](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L728)
@@ -143,7 +143,7 @@ Gets the field information object.
 
 #### Returns
 
-[`FieldInfo`](../type-aliases/fieldinfo.md)\<`TParentData`, `TFormValidator`\>
+[`FieldInfo`](../type-aliases/fieldinfo.md)\<`TParentData`, `TFormValidator`, `never`\>
 
 ***
 

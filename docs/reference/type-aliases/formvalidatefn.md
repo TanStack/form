@@ -17,7 +17,7 @@ Defined in: [packages/form-core/src/FormApi.ts:36](https://github.com/TanStack/f
 
 • **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> \| `undefined` = `undefined`
 
-• **TFormSubmitMeta** *extends* `object` = `never`
+• **TFormSubmitMeta** = `never`
 
 ## Parameters
 

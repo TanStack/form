@@ -15,7 +15,7 @@ Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned
 
 • **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> \| `undefined` = `undefined`
 
-• **TFormSubmitMeta** *extends* `object` = `never`
+• **TFormSubmitMeta** = `never`
 
 ## Properties
 

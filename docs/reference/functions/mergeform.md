@@ -17,7 +17,7 @@ Defined in: [packages/form-core/src/mergeForm.ts:36](https://github.com/TanStack
 
 • **TFormValidator** *extends* `undefined` \| `Validator`\<`TFormData`, `unknown`\> = `undefined`
 
-• **TFormSubmitMeta** *extends* `object` = `never`
+• **TFormSubmitMeta** = `never`
 
 ## Parameters
 

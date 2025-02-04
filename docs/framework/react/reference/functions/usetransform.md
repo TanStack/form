@@ -17,7 +17,7 @@ Defined in: [packages/react-form/src/useTransform.ts:3](https://github.com/TanSt
 
 • **TFormValidator** *extends* `undefined` \| `Validator`\<`TFormData`, `unknown`\> = `undefined`
 
-• **TFormSubmitMeta** *extends* `object` = `never`
+• **TFormSubmitMeta** = `never`
 
 ## Parameters
 
