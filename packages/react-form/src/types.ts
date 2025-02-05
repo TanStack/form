@@ -2,10 +2,8 @@ import type {
   DeepKeys,
   DeepValue,
   FieldApiOptions,
-  FormState,
   Validator,
 } from '@tanstack/form-core'
-import type { FunctionComponent } from 'react'
 
 /**
  * The field options.
@@ -57,5 +55,3 @@ export type UseFieldOptions<
 > & {
   mode?: 'value' | 'array'
 }
-
-export type AnyFormState = FormState<any, any, any, any, any, any, any, any>

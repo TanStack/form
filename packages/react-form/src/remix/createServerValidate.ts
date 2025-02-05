@@ -1,5 +1,5 @@
 import { decode } from 'decode-formdata'
-import { isFormValidationError } from '@tanstack/form-core'
+import { isGlobalFormValidationError } from '@tanstack/form-core'
 import { ServerValidateError } from './error'
 import type { FormOptions, Validator } from '@tanstack/form-core'
 import type { ServerFormState } from './types'
@@ -67,7 +67,7 @@ export const createServerValidate =
     if (!onServerError) return
 
     const onServerErrorVal = (
-      isFormValidationError(onServerError) ? onServerError.form : onServerError
+      isGlobalFormValidationError(onServerError) ? onServerError.form : onServerError
     ) as TOnServerReturn
 
     const formState: ServerFormState<TFormData, TOnServerReturn> = {

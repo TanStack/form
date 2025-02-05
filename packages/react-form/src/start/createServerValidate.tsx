@@ -1,5 +1,5 @@
 import { decode } from 'decode-formdata'
-import { isFormValidationError } from '@tanstack/form-core'
+import { isGlobalFormValidationError } from '@tanstack/form-core'
 import { getHeader } from 'vinxi/http'
 import { _tanstackInternalsCookie } from './utils'
 import { ServerValidateError } from './error'
@@ -71,7 +71,7 @@ export const createServerValidate =
     if (!onServerError) return
 
     const onServerErrorVal = (
-      isFormValidationError(onServerError) ? onServerError.form : onServerError
+      isGlobalFormValidationError(onServerError) ? onServerError.form : onServerError
     ) as TOnServerReturn
 
     const formState: ServerFormState<TFormData, TOnServerReturn> = {

@@ -5,7 +5,7 @@ import {
   getAsyncValidatorArray,
   getBy,
   getSyncValidatorArray,
-  isFormValidationError,
+  isGlobalFormValidationError,
   isNonEmptyArray,
   setBy,
   shallow,
@@ -17,7 +17,7 @@ import {
 import type {
   FormValidationError,
   FormValidationErrorMap,
-  SpecialFormValidationError,
+  GlobalFormValidationError,
   UpdateMetaOptions,
   ValidationCause,
   ValidationError,
@@ -554,6 +554,8 @@ export type FormState<
     TOnServerReturn
   >
 
+export type AnyFormState = FormState<any, any, any, any, any, any, any, any>
+
 function getDefaultFormState<
   TFormData,
   TOnMountReturn = undefined,
@@ -875,7 +877,7 @@ export class FormApi<
             >
           >((prev, curr) => {
             if (curr === undefined) return prev
-            if (curr && isFormValidationError(curr)) {
+            if (curr && isGlobalFormValidationError(curr)) {
               prev.push(curr.form as never)
               return prev
             }
@@ -1866,7 +1868,7 @@ function normalizeError<TFormData>(rawError?: FormValidationError<unknown>): {
   fieldErrors?: Partial<Record<DeepKeys<TFormData>, ValidationError>>
 } {
   if (rawError) {
-    if (isFormValidationError(rawError)) {
+    if (isGlobalFormValidationError(rawError)) {
       const formError = normalizeError(rawError.form).formError
       const fieldErrors = rawError.fields
       return { formError, fieldErrors } as never

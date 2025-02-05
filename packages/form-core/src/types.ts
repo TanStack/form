@@ -80,7 +80,7 @@ export type FormValidationErrorMap<
 
 export type FormValidationError<TFormData> =
   | ValidationError
-  | SpecialFormValidationError<TFormData>
+  | GlobalFormValidationError<TFormData>
 
 /**
  * @private
@@ -95,7 +95,7 @@ export type FormValidationError<TFormData> =
  * }
  * ````
  */
-export type SpecialFormValidationError<TFormData> = {
+export type GlobalFormValidationError<TFormData> = {
   form?: ValidationError
   fields: Partial<Record<DeepKeys<TFormData>, ValidationError>>
 }
