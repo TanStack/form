@@ -11,8 +11,8 @@ import type {
   FormOptions,
   FormState,
   Validator,
+  AnyFormState,
 } from '@tanstack/form-core'
-import type { AnyFormState } from './types'
 
 /**
  * Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`
