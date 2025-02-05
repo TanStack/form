@@ -52,4 +52,5 @@ title: "@tanstack/form-core"
 - [isFormValidationError](functions/isformvalidationerror.md)
 - [isStandardSchemaValidator](functions/isstandardschemavalidator.md)
 - [mergeForm](functions/mergeform.md)
+- [shallow](functions/shallow.md)
 - [standardSchemaValidator](functions/standardschemavalidator.md)

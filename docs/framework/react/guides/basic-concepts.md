@@ -204,6 +204,16 @@ const firstName = useStore(form.store, (state) => state.values.firstName)
 />
 ```
 
+It is important to remember that while the `useStore` hook's `selector` prop is optional, it is strongly recommended to provide one, as omitting it will result in unnecessary re-renders.
+
+```tsx
+// Correct use
+const firstName = useStore(form.store, (state) => state.values.firstName)
+const errors = useStore(form.store,  (state) => state.errorMap)
+// Incorrect use
+const store = useStore(form.store)
+```
+
 Note: The usage of the `useField` hook to achieve reactivity is discouraged since it is designed to be used thoughtfully within the `form.Field` component. You might want to use `useStore(form.store)` instead.
 
 ## Listeners
