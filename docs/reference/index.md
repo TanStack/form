@@ -25,6 +25,7 @@ title: "@tanstack/form-core"
 
 - [AnyFieldApi](type-aliases/anyfieldapi.md)
 - [AnyFormApi](type-aliases/anyformapi.md)
+- [AnyFormState](type-aliases/anyformstate.md)
 - [BaseFormState](type-aliases/baseformstate.md)
 - [DeepKeys](type-aliases/deepkeys.md)
 - [DeepValue](type-aliases/deepvalue.md)
@@ -49,7 +50,7 @@ title: "@tanstack/form-core"
 ## Functions
 
 - [formOptions](functions/formoptions.md)
-- [isFormValidationError](functions/isformvalidationerror.md)
+- [isGlobalFormValidationError](functions/isglobalformvalidationerror.md)
 - [isStandardSchemaValidator](functions/isstandardschemavalidator.md)
 - [mergeForm](functions/mergeform.md)
 - [shallow](functions/shallow.md)

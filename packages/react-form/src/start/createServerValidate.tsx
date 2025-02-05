@@ -71,7 +71,9 @@ export const createServerValidate =
     if (!onServerError) return
 
     const onServerErrorVal = (
-      isGlobalFormValidationError(onServerError) ? onServerError.form : onServerError
+      isGlobalFormValidationError(onServerError)
+        ? onServerError.form
+        : onServerError
     ) as TOnServerReturn
 
     const formState: ServerFormState<TFormData, TOnServerReturn> = {
