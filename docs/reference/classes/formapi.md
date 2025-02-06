@@ -301,7 +301,7 @@ moveFieldValues<TField>(
    opts?): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:1389](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1389)
+Defined in: [packages/form-core/src/FormApi.ts:1378](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1378)
 
 Moves the value at the first specified index to the second specified index within an array field.
 
@@ -379,7 +379,7 @@ removeFieldValue<TField>(
 opts?): Promise<void>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:1324](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1324)
+Defined in: [packages/form-core/src/FormApi.ts:1313](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1313)
 
 Removes a value from an array field at the specified index.
 
@@ -417,7 +417,7 @@ replaceFieldValue<TField>(
 opts?): Promise<void>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:1298](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1298)
+Defined in: [packages/form-core/src/FormApi.ts:1287](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1287)
 
 Replaces a value into an array field at the specified index.
 
@@ -512,7 +512,7 @@ Defined in: [packages/form-core/src/FormApi.ts:1185](https://github.com/TanStack
 setErrorMap(errorMap): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:1413](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1413)
+Defined in: [packages/form-core/src/FormApi.ts:1402](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1402)
 
 Updates the form's errorMap
 
@@ -605,7 +605,7 @@ swapFieldValues<TField>(
    opts?): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:1363](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1363)
+Defined in: [packages/form-core/src/FormApi.ts:1352](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1352)
 
 Swaps the values at the specified indices within an array field.
 
