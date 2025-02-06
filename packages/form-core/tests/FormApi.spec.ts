@@ -330,6 +330,72 @@ describe('form api', () => {
     expect(form.state.errors).toStrictEqual(['At least 3 names are required'])
   })
 
+  it("should shift errors when inserting an array field's primitive value", async () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two'],
+      },
+    })
+    form.mount()
+    // Since validation runs through the field, a field must be mounted for that array
+    new FieldApi({ form, name: 'names' }).mount()
+
+    const field0 = new FieldApi({
+      form,
+      name: 'names[0]',
+      validators: {
+        onChange: ({ value }) => value !== 'test' && 'Invalid value',
+      },
+    })
+    field0.mount()
+
+    const field1 = new FieldApi({
+      form,
+      name: 'names[1]',
+      validators: {
+        onChange: ({ value }) => value !== 'test' && 'Invalid value',
+      },
+    })
+    field1.mount()
+
+    expect(field0.state.meta.errors).toStrictEqual([])
+
+    field0.handleChange('other')
+    expect(field0.state.meta.errors).toStrictEqual(['Invalid value'])
+
+    await form.insertFieldValue('names', 0, 'test')
+
+    expect(field0.state.meta.errors).toStrictEqual([])
+    expect(field1.state.meta.errors).toStrictEqual(['Invalid value'])
+  })
+
+  it("should shift errors when inserting an array field's nested value", async () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: [{ first: 'test' }, { first: 'test2' }],
+      },
+    })
+    form.mount()
+    // Since validation runs through the field, a field must be mounted for that array
+    new FieldApi({ form, name: 'names' }).mount()
+
+    const field1 = new FieldApi({
+      form,
+      name: 'names[0].first',
+      defaultValue: 'test',
+      validators: {
+        onChange: ({ value }) => value !== 'test' && 'Invalid value',
+      },
+    })
+    field1.mount()
+
+    expect(field1.state.meta.errors).toStrictEqual([])
+
+    await form.insertFieldValue('names', 0, { first: 'other' })
+
+    expect(field1.state.meta.errors).toStrictEqual(['Invalid value'])
+  })
+
   it("should validate all shifted fields when inserting an array field's value", async () => {
     const form = new FormApi({
       defaultValues: {

@@ -1290,6 +1290,7 @@ export class FormApi<
 
     // Validate the whole array + all fields that have shifted
     await this.validateField(field, 'change')
+    await this.validateArrayFieldsStartingFrom(field, index, 'change')
   }
 
   /**
