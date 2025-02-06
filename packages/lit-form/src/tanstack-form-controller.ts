@@ -152,7 +152,7 @@ export class TanStackFormController<
         TData,
         TParentMetaExtension
       >
-    )(this.api as any, fieldConfig, render)
+    )(this.api as never, fieldConfig, render)
   }
 }
 
