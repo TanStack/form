@@ -330,23 +330,17 @@ describe('form api', () => {
     expect(form.state.errors).toStrictEqual(['At least 3 names are required'])
   })
 
-  it("should shift errors when inserting an array field's primitive value", async () => {
+  it("should shift meta (including errors) when inserting an array field's primitive value", async () => {
     const form = new FormApi({
       defaultValues: {
-        names: ['one', 'two'],
+        names: ['one', 'two', 'three'],
       },
     })
     form.mount()
-    // Since validation runs through the field, a field must be mounted for that array
+
     new FieldApi({ form, name: 'names' }).mount()
 
-    const field0 = new FieldApi({
-      form,
-      name: 'names[0]',
-      validators: {
-        onChange: ({ value }) => value !== 'test' && 'Invalid value',
-      },
-    })
+    const field0 = new FieldApi({ form, name: 'names[0]' })
     field0.mount()
 
     const field1 = new FieldApi({
@@ -358,18 +352,47 @@ describe('form api', () => {
     })
     field1.mount()
 
-    expect(field0.state.meta.errors).toStrictEqual([])
+    const field2 = new FieldApi({
+      form,
+      name: 'names[2]',
+      validators: {
+        onChange: ({ value }) => value !== 'test' && 'Invalid value',
+      },
+    })
+    field2.mount()
 
-    field0.handleChange('other')
-    expect(field0.state.meta.errors).toStrictEqual(['Invalid value'])
+    const field3 = new FieldApi({ form, name: 'names[3]' })
+    field2.mount()
 
-    await form.insertFieldValue('names', 0, 'test')
+    field0.handleChange('foo')
+    expect(field0.state.meta.isDirty).toBe(true)
 
-    expect(field0.state.meta.errors).toStrictEqual([])
+    field1.handleBlur()
+    expect(field1.state.meta.isBlurred).toBe(true)
+
+    field1.handleChange('other')
     expect(field1.state.meta.errors).toStrictEqual(['Invalid value'])
+
+    await form.insertFieldValue('names', 1, 'test')
+
+    // field0 meta didn't move on field1 as we inserted after it
+    expect(field0.state.meta.isDirty).toBe(true)
+    expect(field1.state.meta.isDirty).toBe(false)
+
+    // field1 meta (isBlurred = true) moved on field2
+    expect(field0.state.meta.isBlurred).toBe(false)
+    expect(field1.state.meta.isBlurred).toBe(false)
+    expect(field2.state.meta.isBlurred).toBe(true)
+    expect(field3.state.meta.isBlurred).toBe(false)
+
+    // field1 errors moved on field2
+    expect(field0.state.meta.errors).toStrictEqual([])
+    expect(field1.state.meta.errors).toStrictEqual([])
+    expect(field2.state.meta.errors).toStrictEqual(['Invalid value'])
+    expect(field3.state.meta.errors).toStrictEqual([])
   })
 
-  it("should shift errors when inserting an array field's nested value", async () => {
+  it("should shift meta (including errors) when inserting an array field's nested value", async () => {
     const form = new FormApi({
       defaultValues: {
         names: [{ first: 'test' }, { first: 'test2' }],
@@ -379,21 +402,37 @@ describe('form api', () => {
     // Since validation runs through the field, a field must be mounted for that array
     new FieldApi({ form, name: 'names' }).mount()
 
-    const field1 = new FieldApi({
+    const field0 = new FieldApi({
       form,
       name: 'names[0].first',
-      defaultValue: 'test',
       validators: {
-        onChange: ({ value }) => value !== 'test' && 'Invalid value',
+        onBlur: ({ value }) => value !== 'test' && 'Invalid value',
+      },
+      defaultValue: 'other',
+    })
+    field0.mount()
+
+    const field1 = new FieldApi({
+      form,
+      name: 'names[1].first',
+      validators: {
+        onBlur: ({ value }) => value !== 'test' && 'Invalid value',
       },
     })
     field1.mount()
 
-    expect(field1.state.meta.errors).toStrictEqual([])
+    expect(field0.state.meta.errors).toStrictEqual([])
+    expect(field0.state.meta.isBlurred).toBe(false)
+    field0.handleBlur()
+    expect(field0.state.meta.errors).toStrictEqual(['Invalid value'])
+    expect(field0.state.meta.isBlurred).toBe(true)
 
-    await form.insertFieldValue('names', 0, { first: 'other' })
+    await form.insertFieldValue('names', 0, { first: 'test' })
 
+    expect(field0.state.meta.errors).toStrictEqual([])
+    expect(field0.state.meta.isBlurred).toBe(false)
     expect(field1.state.meta.errors).toStrictEqual(['Invalid value'])
+    expect(field1.state.meta.isBlurred).toBe(true)
   })
 
   it("should validate all shifted fields when inserting an array field's value", async () => {

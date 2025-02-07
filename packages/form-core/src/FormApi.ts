@@ -1265,9 +1265,6 @@ export class FormApi<
     this.validateField(field, 'change')
   }
 
-  /**
-   * Inserts a value into an array field at the specified index, shifting the subsequent values to the right.
-   */
   insertFieldValue = async <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,
@@ -1287,6 +1284,49 @@ export class FormApi<
       },
       opts,
     )
+
+    const currentValue = this.getFieldValue(field)
+
+    const lastIndex = Array.isArray(currentValue)
+      ? Math.max(currentValue.length - 1, 0)
+      : 0
+
+    const fieldKeysToValidate = [`${field}[${index}]`]
+    for (let i = index + 1; i <= lastIndex; i++) {
+      fieldKeysToValidate.push(`${field}[${i}]`)
+    }
+
+    const fieldsToShift = Object.keys(this.fieldInfo).filter((fieldKey) =>
+      fieldKeysToValidate.some((key) => fieldKey.startsWith(key)),
+    ) as DeepKeys<TFormData>[]
+
+    fieldsToShift.reverse().forEach((fieldKey) => {
+      let currIndex = 0
+      const nextFieldKey = fieldKey
+        .toString()
+        .replace(/\[(\d+)\]/, (_, num) => {
+          currIndex = parseInt(num, 10)
+          return `[${currIndex + 1}]`
+        }) as DeepKeys<TFormData>
+
+      const currFieldMeta = this.getFieldMeta(fieldKey)
+
+      if (currFieldMeta) {
+        this.setFieldMeta(nextFieldKey, currFieldMeta)
+      }
+
+      if (index === currIndex) {
+        this.setFieldMeta(fieldKey, {
+          isValidating: false,
+          isTouched: false,
+          isBlurred: false,
+          isDirty: false,
+          isPristine: true,
+          errors: [],
+          errorMap: {},
+        })
+      }
+    })
 
     // Validate the whole array + all fields that have shifted
     await this.validateField(field, 'change')
