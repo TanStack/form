@@ -734,28 +734,16 @@ describe('form api', () => {
     form.mount()
     new FieldApi({ form, name: 'users' }).mount()
 
-    const field0Name = new FieldApi({
-      form,
-      name: 'users[0].name',
-    })
+    const field0Name = new FieldApi({ form, name: 'users[0].name' })
     field0Name.mount()
 
-    const field0Surname = new FieldApi({
-      form,
-      name: 'users[0].surname',
-    })
+    const field0Surname = new FieldApi({ form, name: 'users[0].surname' })
     field0Surname.mount()
 
-    const field1Name = new FieldApi({
-      form,
-      name: 'users[1].name',
-    })
+    const field1Name = new FieldApi({ form, name: 'users[1].name' })
     field1Name.mount()
 
-    const field1Surname = new FieldApi({
-      form,
-      name: 'users[1].surname',
-    })
+    const field1Surname = new FieldApi({ form, name: 'users[1].surname' })
     field1Surname.mount()
 
     field0Name.handleBlur()
@@ -849,59 +837,116 @@ describe('form api', () => {
     expect(field2.state.meta.errors).toStrictEqual([])
   })
 
-  it('should move meta (nested) when moving array values', () => {
+  it('should move meta (nested) when moving array values forward', () => {
     const form = new FormApi({
       defaultValues: {
         users: [
           { name: 'test', surname: 'test' },
           { name: 'test2', surname: 'test2' },
+          { name: 'test3', surname: 'test3' },
         ],
       },
     })
     form.mount()
     new FieldApi({ form, name: 'users' }).mount()
 
-    const field0Name = new FieldApi({
-      form,
-      name: 'users[0].name',
-    })
+    const field0Name = new FieldApi({ form, name: 'users[0].name' })
     field0Name.mount()
 
-    const field0Surname = new FieldApi({
-      form,
-      name: 'users[0].surname',
-    })
+    const field0Surname = new FieldApi({ form, name: 'users[0].surname' })
     field0Surname.mount()
 
-    const field1Name = new FieldApi({
-      form,
-      name: 'users[1].name',
-    })
+    const field1Name = new FieldApi({ form, name: 'users[1].name' })
     field1Name.mount()
 
-    const field1Surname = new FieldApi({
-      form,
-      name: 'users[1].surname',
-    })
+    const field1Surname = new FieldApi({ form, name: 'users[1].surname' })
     field1Surname.mount()
+
+    const field2Name = new FieldApi({ form, name: 'users[2].name' })
+    field2Name.mount()
+
+    const field2Surname = new FieldApi({ form, name: 'users[2].surname' })
+    field2Surname.mount()
 
     field0Name.handleBlur()
     expect(field0Name.state.meta.isBlurred).toBe(true)
     expect(field0Surname.state.meta.isBlurred).toBe(false)
     expect(field1Name.state.meta.isBlurred).toBe(false)
     expect(field1Surname.state.meta.isBlurred).toBe(false)
+    expect(field2Name.state.meta.isBlurred).toBe(false)
+    expect(field2Surname.state.meta.isBlurred).toBe(false)
 
-    form.moveFieldValues('users', 0, 1)
+    form.moveFieldValues('users', 0, 2)
 
     expect(form.getFieldValue('users')).toStrictEqual([
       { name: 'test2', surname: 'test2' },
+      { name: 'test3', surname: 'test3' },
       { name: 'test', surname: 'test' },
     ])
 
     expect(field0Name.state.meta.isBlurred).toBe(false)
     expect(field0Surname.state.meta.isBlurred).toBe(false)
+    expect(field1Name.state.meta.isBlurred).toBe(false)
+    expect(field1Surname.state.meta.isBlurred).toBe(false)
+    expect(field2Name.state.meta.isBlurred).toBe(true)
+    expect(field2Surname.state.meta.isBlurred).toBe(false)
+  })
+
+  it('should move meta (nested) when moving array values backward', () => {
+    const form = new FormApi({
+      defaultValues: {
+        users: [
+          { name: 'test', surname: 'test' },
+          { name: 'test2', surname: 'test2' },
+          { name: 'test3', surname: 'test3' },
+        ],
+      },
+    })
+    form.mount()
+    new FieldApi({ form, name: 'users' }).mount()
+
+    const field0Name = new FieldApi({ form, name: 'users[0].name' })
+    field0Name.mount()
+
+    const field0Surname = new FieldApi({ form, name: 'users[0].surname' })
+    field0Surname.mount()
+
+    const field1Name = new FieldApi({ form, name: 'users[1].name' })
+    field1Name.mount()
+
+    const field1Surname = new FieldApi({ form, name: 'users[1].surname' })
+    field1Surname.mount()
+
+    const field2Name = new FieldApi({ form, name: 'users[2].name' })
+    field2Name.mount()
+
+    const field2Surname = new FieldApi({ form, name: 'users[2].surname' })
+    field2Surname.mount()
+
+    field1Name.handleBlur()
+    field2Name.handleBlur()
+
+    expect(field0Name.state.meta.isBlurred).toBe(false)
+    expect(field0Surname.state.meta.isBlurred).toBe(false)
     expect(field1Name.state.meta.isBlurred).toBe(true)
     expect(field1Surname.state.meta.isBlurred).toBe(false)
+    expect(field2Name.state.meta.isBlurred).toBe(true)
+    expect(field2Surname.state.meta.isBlurred).toBe(false)
+
+    form.moveFieldValues('users', 2, 0)
+
+    expect(form.getFieldValue('users')).toStrictEqual([
+      { name: 'test3', surname: 'test3' },
+      { name: 'test', surname: 'test' },
+      { name: 'test2', surname: 'test2' },
+    ])
+
+    expect(field0Name.state.meta.isBlurred).toBe(true)
+    expect(field0Surname.state.meta.isBlurred).toBe(false)
+    expect(field1Name.state.meta.isBlurred).toBe(false)
+    expect(field1Surname.state.meta.isBlurred).toBe(false)
+    expect(field2Name.state.meta.isBlurred).toBe(true)
+    expect(field2Surname.state.meta.isBlurred).toBe(false)
   })
 
   it('should handle fields inside an array', async () => {
