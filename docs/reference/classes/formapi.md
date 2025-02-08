@@ -241,9 +241,7 @@ insertFieldValue<TField>(
 opts?): Promise<void>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:1271](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1271)
-
-Inserts a value into an array field at the specified index, shifting the subsequent values to the right.
+Defined in: [packages/form-core/src/FormApi.ts:1445](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1445)
 
 #### Type Parameters
 
@@ -301,7 +299,7 @@ moveFieldValues<TField>(
    opts?): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:1378](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1378)
+Defined in: [packages/form-core/src/FormApi.ts:1570](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1570)
 
 Moves the value at the first specified index to the second specified index within an array field.
 
@@ -379,7 +377,7 @@ removeFieldValue<TField>(
 opts?): Promise<void>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:1313](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1313)
+Defined in: [packages/form-core/src/FormApi.ts:1501](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1501)
 
 Removes a value from an array field at the specified index.
 
@@ -417,7 +415,7 @@ replaceFieldValue<TField>(
 opts?): Promise<void>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:1287](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1287)
+Defined in: [packages/form-core/src/FormApi.ts:1475](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1475)
 
 Replaces a value into an array field at the specified index.
 
@@ -512,7 +510,7 @@ Defined in: [packages/form-core/src/FormApi.ts:1185](https://github.com/TanStack
 setErrorMap(errorMap): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:1402](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1402)
+Defined in: [packages/form-core/src/FormApi.ts:1596](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1596)
 
 Updates the form's errorMap
 
@@ -605,7 +603,7 @@ swapFieldValues<TField>(
    opts?): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:1352](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1352)
+Defined in: [packages/form-core/src/FormApi.ts:1542](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1542)
 
 Swaps the values at the specified indices within an array field.
 
