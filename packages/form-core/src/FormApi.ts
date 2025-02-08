@@ -1283,7 +1283,7 @@ export class FormApi<
 
     switch (mode) {
       case 'insert':
-        this.handleInsertMode(affectedFields, index)
+        this.handleInsertMode(affectedFields, field, index)
         break
       case 'remove':
         this.handleRemoveMode(affectedFields)
@@ -1295,7 +1295,7 @@ export class FormApi<
         break
       case 'move':
         if (secondIndex !== undefined) {
-          this.handleMoveMode(field, index, secondIndex)
+          this.handleMoveMode(affectedFields, field, index, secondIndex)
         }
         break
     }
@@ -1308,22 +1308,27 @@ export class FormApi<
     secondIndex?: number,
   ): DeepKeys<TFormData>[] {
     const currentValue = this.getFieldValue(field)
-    const lastIndex = Array.isArray(currentValue)
-      ? Math.max(currentValue.length - 1, 0)
-      : 0
 
     const affectedFieldKeys = [`${field}[${index}]`]
 
-    if (mode === 'insert' || mode === 'remove') {
-      for (let i = index + 1; i <= lastIndex; i++) {
+    if (mode === 'swap') {
+      affectedFieldKeys.push(`${field}[${secondIndex}]`)
+    } else if (mode === 'move') {
+      const startIndex = Math.min(index, secondIndex!)
+      const endIndex = Math.max(index, secondIndex!)
+
+      for (let i = startIndex; i <= endIndex; i++) {
+        if (i !== secondIndex) {
+          affectedFieldKeys.push(`${field}[${i}]`)
+        }
+      }
+    } else {
+      const arrayFieldLength = Array.isArray(currentValue)
+        ? Math.max(currentValue.length, 0)
+        : 0
+      for (let i = index + 1; i < arrayFieldLength; i++) {
         affectedFieldKeys.push(`${field}[${i}]`)
       }
-    } else if (
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      (mode === 'swap' || mode === 'move') &&
-      secondIndex !== undefined
-    ) {
-      affectedFieldKeys.push(`${field}[${secondIndex}]`)
     }
 
     return Object.keys(this.fieldInfo).filter((fieldKey) =>
@@ -1331,22 +1336,16 @@ export class FormApi<
     ) as DeepKeys<TFormData>[]
   }
 
-  private handleInsertMode(fields: DeepKeys<TFormData>[], insertIndex: number) {
-    fields.reverse().forEach((fieldKey) => {
-      let currIndex = 0
-      const nextFieldKey = fieldKey
-        .toString()
-        .replace(/\[(\d+)\]/, (_, num) => {
-          currIndex = parseInt(num, 10)
-          return `[${currIndex + 1}]`
-        }) as DeepKeys<TFormData>
+  private handleInsertMode(
+    fields: DeepKeys<TFormData>[],
+    field: DeepKeys<TFormData>,
+    insertIndex: number,
+  ) {
+    this.handleShiftMeta(fields, 'down')
 
-      const currFieldMeta = this.getFieldMeta(fieldKey)
-      if (currFieldMeta) {
-        this.setFieldMeta(nextFieldKey, currFieldMeta)
-      }
-
-      if (insertIndex === currIndex) {
+    // Reset the field meta for the newly inserted field
+    fields.forEach((fieldKey) => {
+      if (fieldKey.toString().startsWith(`${field}[${insertIndex}]`)) {
         this.setFieldMeta(fieldKey, {
           isValidating: false,
           isTouched: false,
@@ -1361,12 +1360,24 @@ export class FormApi<
   }
 
   private handleRemoveMode(fields: DeepKeys<TFormData>[]) {
-    fields.forEach((fieldKey) => {
+    this.handleShiftMeta(fields, 'up')
+  }
+
+  private handleShiftMeta(
+    fields: DeepKeys<TFormData>[],
+    direction: 'up' | 'down',
+  ) {
+    const sortedFields =
+      direction === 'up' ? [...fields] : [...fields].reverse()
+
+    sortedFields.forEach((fieldKey) => {
       const nextFieldKey = fieldKey
         .toString()
         .replace(/\[(\d+)\]/, (_, num) => {
           const currIndex = parseInt(num, 10)
-          return `[${currIndex + 1}]`
+          const newIndex =
+            direction === 'up' ? currIndex + 1 : Math.max(0, currIndex - 1)
+          return `[${newIndex}]`
         }) as DeepKeys<TFormData>
 
       const nextFieldMeta = this.getFieldMeta(nextFieldKey)
@@ -1374,6 +1385,36 @@ export class FormApi<
         this.setFieldMeta(fieldKey, nextFieldMeta)
       }
     })
+  }
+
+  private handleMoveMode(
+    fields: DeepKeys<TFormData>[],
+    field: DeepKeys<TFormData>,
+    fromIndex: number,
+    toIndex: number,
+  ) {
+    Object.keys(this.fieldInfo).forEach((fieldKey) => {
+      if (
+        typeof fieldKey === 'string' &&
+        fieldKey.startsWith(`${field}[${toIndex}]`)
+      ) {
+        const fromKey = fieldKey.replace(
+          `${field}[${toIndex}]`,
+          `${field}[${fromIndex}]`,
+        ) as DeepKeys<TFormData>
+
+        const fromMeta = this.getFieldMeta(fromKey)
+        if (fromMeta) {
+          this.setFieldMeta(fieldKey as DeepKeys<TFormData>, fromMeta)
+        }
+      }
+    })
+
+    if (fromIndex < toIndex) {
+      this.handleShiftMeta(fields, 'down')
+    } else {
+      this.handleShiftMeta(fields, 'up')
+    }
   }
 
   private handleSwapMode(
@@ -1399,50 +1440,6 @@ export class FormApi<
         if (meta2) this.setFieldMeta(fieldKey, meta2)
       }
     })
-  }
-
-  private handleMoveMode(
-    field: DeepKeys<TFormData>,
-    fromIndex: number,
-    toIndex: number,
-  ) {
-    const metas = new Map<string, FieldMeta>()
-    const [minIndex, maxIndex] = [
-      Math.min(fromIndex, toIndex),
-      Math.max(fromIndex, toIndex),
-    ]
-
-    Object.keys(this.fieldInfo).forEach((fieldKey) => {
-      const match = fieldKey.match(new RegExp(`${field}\\[(\\d+)\\]`))
-      if (match?.[1]) {
-        const arrayIndex = parseInt(match[1], 10)
-        if (arrayIndex >= minIndex && arrayIndex <= maxIndex) {
-          const meta = this.getFieldMeta(fieldKey as DeepKeys<TFormData>)
-          if (meta) metas.set(fieldKey, meta)
-        }
-      }
-    })
-    Array.from(metas.keys()).forEach((fieldKey) => {
-      const match = fieldKey.match(new RegExp(`${field}\\[(\\d+)\\](.*)$`))
-      if (!match?.[1]) return
-
-      const currIndex = parseInt(match[1], 10)
-      const suffix = match[2]
-      const newIndex = this.calculateNewIndex(currIndex, fromIndex, toIndex)
-      const newKey = `${field}[${newIndex}]${suffix}` as DeepKeys<TFormData>
-
-      const meta = metas.get(fieldKey)
-      if (meta) this.setFieldMeta(newKey, meta)
-    })
-  }
-
-  private calculateNewIndex(
-    currentIndex: number,
-    fromIndex: number,
-    toIndex: number,
-  ): number {
-    if (currentIndex === fromIndex) return toIndex
-    return fromIndex < toIndex ? currentIndex - 1 : currentIndex + 1
   }
 
   insertFieldValue = async <TField extends DeepKeys<TFormData>>(
