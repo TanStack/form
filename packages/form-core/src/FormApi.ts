@@ -1265,6 +1265,145 @@ export class FormApi<
     this.validateField(field, 'change')
   }
 
+  /**
+   * @private
+   */
+  private handleArrayFieldMetaShift = (
+    field: DeepKeys<TFormData>,
+    index: number,
+    mode: 'insert' | 'remove' | 'swap' | 'move',
+    secondIndex?: number,
+  ) => {
+    const currentValue = this.getFieldValue(field)
+    const lastIndex = Array.isArray(currentValue)
+      ? Math.max(currentValue.length - 1, 0)
+      : 0
+
+    const fieldKeysToValidate = [`${field}[${index}]`]
+    if (mode === 'insert' || mode === 'remove') {
+      for (let i = index + 1; i <= lastIndex; i++) {
+        fieldKeysToValidate.push(`${field}[${i}]`)
+      }
+    } else if (
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      (mode === 'swap' || mode === 'move') &&
+      secondIndex !== undefined
+    ) {
+      fieldKeysToValidate.push(`${field}[${secondIndex}]`)
+    }
+
+    const fieldsToHandle = Object.keys(this.fieldInfo).filter((fieldKey) =>
+      fieldKeysToValidate.some((key) => fieldKey.startsWith(key)),
+    ) as DeepKeys<TFormData>[]
+
+    if (mode === 'insert') {
+      fieldsToHandle.reverse().forEach((fieldKey) => {
+        let currIndex = 0
+        const nextFieldKey = fieldKey
+          .toString()
+          .replace(/\[(\d+)\]/, (_, num) => {
+            currIndex = parseInt(num, 10)
+            return `[${currIndex + 1}]`
+          }) as DeepKeys<TFormData>
+
+        const currFieldMeta = this.getFieldMeta(fieldKey)
+        if (currFieldMeta) {
+          this.setFieldMeta(nextFieldKey, currFieldMeta)
+        }
+
+        if (index === currIndex) {
+          this.setFieldMeta(fieldKey, {
+            isValidating: false,
+            isTouched: false,
+            isBlurred: false,
+            isDirty: false,
+            isPristine: true,
+            errors: [],
+            errorMap: {},
+          })
+        }
+      })
+    } else if (mode === 'remove') {
+      fieldsToHandle.forEach((fieldKey) => {
+        let currIndex = 0
+        fieldKey.toString().replace(/\[(\d+)\]/, (_, num) => {
+          currIndex = parseInt(num, 10)
+          return ``
+        })
+
+        const nextFieldKey = fieldKey
+          .toString()
+          .replace(/\[(\d+)\]/, (_, num) => {
+            currIndex = parseInt(num, 10)
+            return `[${currIndex + 1}]`
+          }) as DeepKeys<TFormData>
+
+        const nextFieldMeta = this.getFieldMeta(nextFieldKey)
+        if (nextFieldMeta) {
+          this.setFieldMeta(fieldKey, nextFieldMeta)
+        }
+      })
+    } else if (mode === 'swap' && secondIndex !== undefined) {
+      fieldsToHandle.forEach((fieldKey) => {
+        if (
+          typeof fieldKey === 'string' &&
+          fieldKey.startsWith(`${field}[${index}]`)
+        ) {
+          const swappedKey = fieldKey.replace(
+            `${field}[${index}]`,
+            `${field}[${secondIndex}]`,
+          ) as DeepKeys<TFormData>
+          const meta1 = this.getFieldMeta(fieldKey)
+          const meta2 = this.getFieldMeta(swappedKey)
+          if (meta1) this.setFieldMeta(swappedKey, meta1)
+          if (meta2) this.setFieldMeta(fieldKey, meta2)
+        }
+      })
+    } else if (mode === 'move' && secondIndex !== undefined) {
+      const metas = new Map<string, FieldMeta>()
+      const indexRange: [number, number] = [
+        Math.min(index, secondIndex),
+        Math.max(index, secondIndex),
+      ]
+
+      // Store all affected metas first
+      Object.keys(this.fieldInfo).forEach((fieldKey) => {
+        const match = fieldKey.match(new RegExp(`${field}\\[(\\d+)\\]`))
+        if (match?.[1]) {
+          const arrayIndex = parseInt(match[1], 10)
+          if (arrayIndex >= indexRange[0] && arrayIndex <= indexRange[1]) {
+            const meta = this.getFieldMeta(fieldKey as DeepKeys<TFormData>)
+            if (meta) {
+              metas.set(fieldKey, meta)
+            }
+          }
+        }
+      })
+
+      // Handle the move operation
+      Array.from(metas.keys()).forEach((fieldKey) => {
+        const match = fieldKey.match(new RegExp(`${field}\\[(\\d+)\\](.*)$`))
+        if (match?.[1]) {
+          const currIndex = parseInt(match[1], 10)
+          const suffix = match[2] // captures any nested path after the array index
+
+          let newIndex: number
+          if (currIndex === index) {
+            newIndex = secondIndex
+          } else {
+            newIndex = index < secondIndex ? currIndex - 1 : currIndex + 1
+          }
+
+          const newKey = `${field}[${newIndex}]${suffix}` as DeepKeys<TFormData>
+          const meta = metas.get(fieldKey)
+          if (meta) {
+            this.setFieldMeta(newKey, meta)
+          }
+        }
+      })
+    }
+  }
+
   insertFieldValue = async <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,
@@ -1285,48 +1424,7 @@ export class FormApi<
       opts,
     )
 
-    const currentValue = this.getFieldValue(field)
-
-    const lastIndex = Array.isArray(currentValue)
-      ? Math.max(currentValue.length - 1, 0)
-      : 0
-
-    const fieldKeysToValidate = [`${field}[${index}]`]
-    for (let i = index + 1; i <= lastIndex; i++) {
-      fieldKeysToValidate.push(`${field}[${i}]`)
-    }
-
-    const fieldsToShift = Object.keys(this.fieldInfo).filter((fieldKey) =>
-      fieldKeysToValidate.some((key) => fieldKey.startsWith(key)),
-    ) as DeepKeys<TFormData>[]
-
-    fieldsToShift.reverse().forEach((fieldKey) => {
-      let currIndex = 0
-      const nextFieldKey = fieldKey
-        .toString()
-        .replace(/\[(\d+)\]/, (_, num) => {
-          currIndex = parseInt(num, 10)
-          return `[${currIndex + 1}]`
-        }) as DeepKeys<TFormData>
-
-      const currFieldMeta = this.getFieldMeta(fieldKey)
-
-      if (currFieldMeta) {
-        this.setFieldMeta(nextFieldKey, currFieldMeta)
-      }
-
-      if (index === currIndex) {
-        this.setFieldMeta(fieldKey, {
-          isValidating: false,
-          isTouched: false,
-          isBlurred: false,
-          isDirty: false,
-          isPristine: true,
-          errors: [],
-          errorMap: {},
-        })
-      }
-    })
+    this.handleArrayFieldMetaShift(field, index, 'insert')
 
     // Validate the whole array + all fields that have shifted
     await this.validateField(field, 'change')
@@ -1383,6 +1481,8 @@ export class FormApi<
       opts,
     )
 
+    this.handleArrayFieldMetaShift(field, index, 'remove')
+
     if (lastIndex !== null) {
       const start = `${field}[${lastIndex}]`
       const fieldsToDelete = Object.keys(this.fieldInfo).filter((f) =>
@@ -1417,6 +1517,8 @@ export class FormApi<
       opts,
     )
 
+    this.handleArrayFieldMetaShift(field, index1, 'swap', index2)
+
     // Validate the whole array
     this.validateField(field, 'change')
     // Validate the swapped fields
@@ -1441,6 +1543,8 @@ export class FormApi<
       },
       opts,
     )
+
+    this.handleArrayFieldMetaShift(field, index1, 'move', index2)
 
     // Validate the whole array
     this.validateField(field, 'change')
