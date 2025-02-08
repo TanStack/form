@@ -1307,8 +1307,6 @@ export class FormApi<
     mode: 'insert' | 'remove' | 'swap' | 'move',
     secondIndex?: number,
   ): DeepKeys<TFormData>[] {
-    const currentValue = this.getFieldValue(field)
-
     const affectedFieldKeys = [`${field}[${index}]`]
 
     if (mode === 'swap') {
@@ -1323,6 +1321,7 @@ export class FormApi<
         }
       }
     } else {
+      const currentValue = this.getFieldValue(field)
       const arrayFieldLength = Array.isArray(currentValue)
         ? Math.max(currentValue.length, 0)
         : 0
@@ -1336,37 +1335,7 @@ export class FormApi<
     ) as DeepKeys<TFormData>[]
   }
 
-  private handleInsertMode(
-    fields: DeepKeys<TFormData>[],
-    field: DeepKeys<TFormData>,
-    insertIndex: number,
-  ) {
-    this.handleShiftMeta(fields, 'down')
-
-    // Reset the field meta for the newly inserted field
-    fields.forEach((fieldKey) => {
-      if (fieldKey.toString().startsWith(`${field}[${insertIndex}]`)) {
-        this.setFieldMeta(fieldKey, {
-          isValidating: false,
-          isTouched: false,
-          isBlurred: false,
-          isDirty: false,
-          isPristine: true,
-          errors: [],
-          errorMap: {},
-        })
-      }
-    })
-  }
-
-  private handleRemoveMode(fields: DeepKeys<TFormData>[]) {
-    this.handleShiftMeta(fields, 'up')
-  }
-
-  private handleShiftMeta(
-    fields: DeepKeys<TFormData>[],
-    direction: 'up' | 'down',
-  ) {
+  private shiftMeta(fields: DeepKeys<TFormData>[], direction: 'up' | 'down') {
     const sortedFields =
       direction === 'up' ? [...fields] : [...fields].reverse()
 
@@ -1387,12 +1356,61 @@ export class FormApi<
     })
   }
 
+  private handleInsertMode(
+    fields: DeepKeys<TFormData>[],
+    field: DeepKeys<TFormData>,
+    insertIndex: number,
+  ) {
+    this.shiftMeta(fields, 'down')
+
+    // Reset the field meta for the newly inserted field
+    fields.forEach((fieldKey) => {
+      if (fieldKey.toString().startsWith(`${field}[${insertIndex}]`)) {
+        this.setFieldMeta(fieldKey, {
+          isValidating: false,
+          isTouched: false,
+          isBlurred: false,
+          isDirty: false,
+          isPristine: true,
+          errors: [],
+          errorMap: {},
+        })
+      }
+    })
+  }
+
+  private handleRemoveMode(fields: DeepKeys<TFormData>[]) {
+    this.shiftMeta(fields, 'up')
+  }
+
   private handleMoveMode(
     fields: DeepKeys<TFormData>[],
     field: DeepKeys<TFormData>,
     fromIndex: number,
     toIndex: number,
   ) {
+    // Store the original field meta that will be reapplied at the destination index
+    const fromFields = new Map<DeepKeys<TFormData>, FieldMeta>()
+    Object.keys(this.fieldInfo)
+      .filter(
+        (fieldKey) =>
+          typeof fieldKey === 'string' &&
+          fieldKey.startsWith(`${field}[${fromIndex}]`),
+      )
+      .forEach((fieldKey) => {
+        const fieldMeta = this.getFieldMeta(fieldKey as DeepKeys<TFormData>)
+        if (fieldMeta) {
+          fromFields.set(fieldKey as DeepKeys<TFormData>, fieldMeta)
+        }
+      })
+
+    if (fromIndex < toIndex) {
+      this.shiftMeta(fields, 'up')
+    } else {
+      this.shiftMeta(fields, 'down')
+    }
+
+    // Reapply the stored field meta at the destination index
     Object.keys(this.fieldInfo).forEach((fieldKey) => {
       if (
         typeof fieldKey === 'string' &&
@@ -1403,18 +1421,12 @@ export class FormApi<
           `${field}[${fromIndex}]`,
         ) as DeepKeys<TFormData>
 
-        const fromMeta = this.getFieldMeta(fromKey)
+        const fromMeta = fromFields.get(fromKey)
         if (fromMeta) {
           this.setFieldMeta(fieldKey as DeepKeys<TFormData>, fromMeta)
         }
       }
     })
-
-    if (fromIndex < toIndex) {
-      this.handleShiftMeta(fields, 'down')
-    } else {
-      this.handleShiftMeta(fields, 'up')
-    }
   }
 
   private handleSwapMode(
