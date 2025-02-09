@@ -9,7 +9,7 @@ title: BaseFormState
 type BaseFormState<TFormData> = object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:229](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L229)
+Defined in: [packages/form-core/src/FormApi.ts:230](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L230)
 
 An object representing the current state of the form.
 
