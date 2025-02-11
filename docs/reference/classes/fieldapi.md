@@ -185,7 +185,7 @@ Use `field.state.value` instead.
 handleBlur(): void
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1025](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1025)
+Defined in: [packages/form-core/src/FieldApi.ts:1030](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1030)
 
 Handles the blur event.
 
@@ -201,7 +201,7 @@ Handles the blur event.
 handleChange(updater): void
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1018](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1018)
+Defined in: [packages/form-core/src/FieldApi.ts:1023](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1023)
 
 Handles the change event.
 
@@ -394,7 +394,7 @@ Replaces a value at the specified index.
 setErrorMap(errorMap): void
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1045](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1045)
+Defined in: [packages/form-core/src/FieldApi.ts:1050](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1050)
 
 Updates the field's errorMap
 
@@ -516,7 +516,7 @@ Updates the field instance with new options.
 ### validate()
 
 ```ts
-validate(cause): 
+validate(cause, opts?): 
   | ValidationError[]
 | Promise<ValidationError[]>
 ```
@@ -530,6 +530,12 @@ Validates the field value.
 ##### cause
 
 `ValidationCause`
+
+##### opts?
+
+###### skipFormValidation
+
+`boolean`
 
 #### Returns
 
