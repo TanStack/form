@@ -722,7 +722,7 @@ export class FormApi<
   }
 
   /**
-   * Validates form and all fields in using the correct handlers for a given validation cause.
+   * Validates all fields using the correct handlers for a given validation cause.
    */
   validateAllFields = async (cause: ValidationCause) => {
     const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
@@ -735,7 +735,9 @@ export class FormApi<
         // Validate the field
         fieldValidationPromises.push(
           // Remember, `validate` is either a sync operation or a promise
-          Promise.resolve().then(() => fieldInstance.validate(cause)),
+          Promise.resolve().then(() =>
+            fieldInstance.validate(cause, { skipFormValidation: true }),
+          ),
         )
         // If any fields are not touched
         if (!field.instance.state.meta.isTouched) {
@@ -1076,8 +1078,18 @@ export class FormApi<
       this.baseStore.setState((prev) => ({ ...prev, isSubmitting: false }))
     }
 
-    // Validate form and all fields
     await this.validateAllFields('submit')
+
+    if (!this.state.isFieldsValid) {
+      done()
+      this.options.onSubmitInvalid?.({
+        value: this.state.values,
+        formApi: this,
+      })
+      return
+    }
+
+    await this.validate('submit')
 
     // Fields are invalid, do not submit
     if (!this.state.isValid) {

@@ -1263,7 +1263,31 @@ describe('form api', () => {
     ])
   })
 
-  it('should run form validation once during submit', async () => {
+  it('should run form submit validation once during submit, not once per field', async () => {
+    const formSubmit = vi.fn().mockReturnValue(false)
+
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+        age: 0,
+      },
+      validators: {
+        onSubmit: formSubmit,
+      },
+    })
+    form.mount()
+
+    new FieldApi({ form, name: 'firstName' }).mount()
+    new FieldApi({ form, name: 'lastName' }).mount()
+    new FieldApi({ form, name: 'age' }).mount()
+
+    await form.handleSubmit()
+
+    expect(formSubmit).toHaveBeenCalledOnce()
+  })
+
+  it('should run form async submit validation once during submit', async () => {
     vi.useFakeTimers()
     const formSubmit = vi.fn()
     const fieldChangeValidator = vi
