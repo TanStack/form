@@ -50,16 +50,12 @@ export function metaHelper<
       const endIndex = Math.max(index, secondIndex!)
 
       for (let i = startIndex; i <= endIndex; i++) {
-        if (i !== secondIndex) {
-          affectedFieldKeys.push(`${field}[${i}]`)
-        }
+        affectedFieldKeys.push(`${field}[${i}]`)
       }
     } else {
       const currentValue = formApi.getFieldValue(field)
-      const arrayFieldLength = Array.isArray(currentValue)
-        ? Math.max(currentValue.length, 0)
-        : 0
-      for (let i = index + 1; i < arrayFieldLength; i++) {
+      const fieldItems = Array.isArray(currentValue) ? currentValue.length : 0
+      for (let i = index + 1; i < fieldItems; i++) {
         affectedFieldKeys.push(`${field}[${i}]`)
       }
     }
@@ -126,11 +122,7 @@ export function metaHelper<
     // Store the original field meta that will be reapplied at the destination index
     const fromFields = new Map<DeepKeys<TFormData>, FieldMeta>()
     Object.keys(formApi.fieldInfo)
-      .filter(
-        (fieldKey) =>
-          typeof fieldKey === 'string' &&
-          fieldKey.startsWith(`${field}[${fromIndex}]`),
-      )
+      .filter((fieldKey) => fieldKey.startsWith(`${field}[${fromIndex}]`))
       .forEach((fieldKey) => {
         const fieldMeta = formApi.getFieldMeta(fieldKey as DeepKeys<TFormData>)
         if (fieldMeta) {
@@ -138,18 +130,12 @@ export function metaHelper<
         }
       })
 
-    if (fromIndex < toIndex) {
-      shiftMeta(fields, 'up')
-    } else {
-      shiftMeta(fields, 'down')
-    }
+    shiftMeta(fields, fromIndex < toIndex ? 'up' : 'down')
 
     // Reapply the stored field meta at the destination index
-    Object.keys(formApi.fieldInfo).forEach((fieldKey) => {
-      if (
-        typeof fieldKey === 'string' &&
-        fieldKey.startsWith(`${field}[${toIndex}]`)
-      ) {
+    Object.keys(formApi.fieldInfo)
+      .filter((fieldKey) => fieldKey.startsWith(`${field}[${toIndex}]`))
+      .forEach((fieldKey) => {
         const fromKey = fieldKey.replace(
           `${field}[${toIndex}]`,
           `${field}[${fromIndex}]`,
@@ -159,8 +145,7 @@ export function metaHelper<
         if (fromMeta) {
           formApi.setFieldMeta(fieldKey as DeepKeys<TFormData>, fromMeta)
         }
-      }
-    })
+      })
   }
 
   const handleSwapMode = (
@@ -170,14 +155,13 @@ export function metaHelper<
     secondIndex: number,
   ) => {
     fields.forEach((fieldKey) => {
-      if (
-        typeof fieldKey === 'string' &&
-        fieldKey.startsWith(`${field}[${index}]`)
-      ) {
-        const swappedKey = fieldKey.replace(
-          `${field}[${index}]`,
-          `${field}[${secondIndex}]`,
-        ) as DeepKeys<TFormData>
+      if (fieldKey.toString().startsWith(`${field}[${index}]`)) {
+        const swappedKey = fieldKey
+          .toString()
+          .replace(
+            `${field}[${index}]`,
+            `${field}[${secondIndex}]`,
+          ) as DeepKeys<TFormData>
 
         const meta1 = formApi.getFieldMeta(fieldKey)
         const meta2 = formApi.getFieldMeta(swappedKey)
