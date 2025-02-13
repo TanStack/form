@@ -769,7 +769,11 @@ export class FormApi<
     const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
     batch(() => {
       void (
-        Object.values(this.fieldInfo) as FieldInfo<any, TFormValidator>[]
+        Object.values(this.fieldInfo) as FieldInfo<
+          any,
+          TFormValidator,
+          TFormSubmitMeta
+        >[]
       ).forEach((field) => {
         if (!field.instance) return
         const fieldInstance = field.instance
@@ -1146,7 +1150,11 @@ export class FormApi<
 
     batch(() => {
       void (
-        Object.values(this.fieldInfo) as FieldInfo<TFormData, TFormValidator>[]
+        Object.values(this.fieldInfo) as FieldInfo<
+          TFormData,
+          TFormValidator,
+          TFormSubmitMeta
+        >[]
       ).forEach((field) => {
         field.instance?.options.listeners?.onSubmit?.({
           value: field.instance.state.value,
