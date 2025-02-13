@@ -13,6 +13,7 @@ import {
   isStandardSchemaValidator,
   standardSchemaValidator,
 } from './standardSchemaValidator'
+import { metaHelper } from './metaHelper'
 import type { StandardSchemaV1 } from './standardSchemaValidator'
 import type { FieldApi, FieldMeta, FieldMetaBase } from './FieldApi'
 import type {
@@ -1265,9 +1266,6 @@ export class FormApi<
     this.validateField(field, 'change')
   }
 
-  /**
-   * Inserts a value into an array field at the specified index, shifting the subsequent values to the right.
-   */
   insertFieldValue = async <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,
@@ -1290,6 +1288,11 @@ export class FormApi<
 
     // Validate the whole array + all fields that have shifted
     await this.validateField(field, 'change')
+
+    // Shift down all meta after validating to make sure the new field has been mounted
+    metaHelper(this).handleArrayFieldMetaShift(field, index, 'insert')
+
+    await this.validateArrayFieldsStartingFrom(field, index, 'change')
   }
 
   /**
@@ -1342,6 +1345,9 @@ export class FormApi<
       opts,
     )
 
+    // Shift up all meta
+    metaHelper(this).handleArrayFieldMetaShift(field, index, 'remove')
+
     if (lastIndex !== null) {
       const start = `${field}[${lastIndex}]`
       const fieldsToDelete = Object.keys(this.fieldInfo).filter((f) =>
@@ -1376,6 +1382,9 @@ export class FormApi<
       opts,
     )
 
+    // Swap meta
+    metaHelper(this).handleArrayFieldMetaShift(field, index1, 'swap', index2)
+
     // Validate the whole array
     this.validateField(field, 'change')
     // Validate the swapped fields
@@ -1400,6 +1409,9 @@ export class FormApi<
       },
       opts,
     )
+
+    // Move meta between index1 and index2
+    metaHelper(this).handleArrayFieldMetaShift(field, index1, 'move', index2)
 
     // Validate the whole array
     this.validateField(field, 'change')

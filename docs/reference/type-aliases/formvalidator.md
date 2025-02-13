@@ -9,7 +9,7 @@ title: FormValidator
 type FormValidator<TFormData, TType, TFn> = object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:69](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L69)
+Defined in: [packages/form-core/src/FormApi.ts:70](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L70)
 
 ## Type Parameters
 
