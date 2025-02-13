@@ -9,8 +9,8 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-form": "^0.41.4",
-    "@tanstack/valibot-form-adapter": "^0.41.4",
+    "@tanstack/react-form": "^0.42.0",
+    "@tanstack/valibot-form-adapter": "^0.42.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "valibot": "^1.0.0-beta.9"
