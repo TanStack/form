@@ -1286,10 +1286,12 @@ export class FormApi<
       opts,
     )
 
-    metaHelper(this).handleArrayFieldMetaShift(field, index, 'insert')
-
     // Validate the whole array + all fields that have shifted
     await this.validateField(field, 'change')
+
+    // Shift down all meta after validating to make sure the new field has been mounted
+    metaHelper(this).handleArrayFieldMetaShift(field, index, 'insert')
+
     await this.validateArrayFieldsStartingFrom(field, index, 'change')
   }
 
@@ -1343,6 +1345,7 @@ export class FormApi<
       opts,
     )
 
+    // Shift up all meta
     metaHelper(this).handleArrayFieldMetaShift(field, index, 'remove')
 
     if (lastIndex !== null) {
@@ -1379,6 +1382,7 @@ export class FormApi<
       opts,
     )
 
+    // Swap meta
     metaHelper(this).handleArrayFieldMetaShift(field, index1, 'swap', index2)
 
     // Validate the whole array
@@ -1406,6 +1410,7 @@ export class FormApi<
       opts,
     )
 
+    // Move meta between index1 and index2
     metaHelper(this).handleArrayFieldMetaShift(field, index1, 'move', index2)
 
     // Validate the whole array
