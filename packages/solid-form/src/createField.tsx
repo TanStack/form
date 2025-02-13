@@ -22,8 +22,9 @@ interface SolidFieldApi<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
+  TParentMetaExtension = never,
 > {
-  Field: FieldComponent<TParentData, TFormValidator>
+  Field: FieldComponent<TParentData, TFormValidator, TParentMetaExtension>
 }
 
 export type CreateField<
@@ -31,6 +32,7 @@ export type CreateField<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
+  TParentMetaExtension = never,
 > = <
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
@@ -44,7 +46,8 @@ export type CreateField<
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TParentMetaExtension
     >,
     'form'
   >,
@@ -53,9 +56,10 @@ export type CreateField<
   TName,
   TFieldValidator,
   TFormValidator,
-  TData
+  TData,
+  TParentMetaExtension
 > &
-  SolidFieldApi<TParentData, TFormValidator>
+  SolidFieldApi<TParentData, TFormValidator, TParentMetaExtension>
 
 // ugly way to trick solid into triggering updates for changes on the fieldApi
 function makeFieldReactive<
@@ -68,14 +72,23 @@ function makeFieldReactive<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension = never,
   FieldApiT extends FieldApi<
     TParentData,
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
-  > = FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData> &
-    SolidFieldApi<TParentData, TFormValidator>,
+    TData,
+    TParentMetaExtension
+  > = FieldApi<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData,
+    TParentMetaExtension
+  > &
+    SolidFieldApi<TParentData, TFormValidator, TParentMetaExtension>,
 >(fieldApi: FieldApiT): () => FieldApiT {
   const [flag, setFlag] = createSignal(false)
   const fieldApiMemo = createMemo(() => [flag(), fieldApi] as const)
@@ -94,20 +107,23 @@ export function createField<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension = never,
 >(
   opts: () => CreateFieldOptions<
     TParentData,
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   >,
 ) {
   const options = opts()
 
   const api = new FieldApi(options)
 
-  const extendedApi: typeof api & SolidFieldApi<TParentData, TFormValidator> =
+  const extendedApi: typeof api &
+    SolidFieldApi<TParentData, TFormValidator, TParentMetaExtension> =
     api as never
 
   extendedApi.Field = Field as never
@@ -147,6 +163,7 @@ type FieldComponentProps<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension = never,
 > = {
   children: (
     fieldApi: () => FieldApi<
@@ -154,7 +171,8 @@ type FieldComponentProps<
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TParentMetaExtension
     >,
   ) => JSXElement
 } & Omit<
@@ -163,7 +181,8 @@ type FieldComponentProps<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   >,
   'form'
 >
@@ -173,6 +192,7 @@ export type FieldComponent<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
+  TParentMetaExtension = never,
 > = <
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
@@ -188,7 +208,8 @@ export type FieldComponent<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   >,
   'form'
 >) => JSXElement
@@ -203,6 +224,7 @@ export function Field<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension = never,
 >(
   props: {
     children: (
@@ -211,7 +233,8 @@ export function Field<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData
+        TData,
+        TParentMetaExtension
       >,
     ) => JSXElement
   } & CreateFieldOptions<
@@ -219,7 +242,8 @@ export function Field<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   >,
 ) {
   const fieldApi = createField<
@@ -227,7 +251,8 @@ export function Field<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   >(() => {
     const { children, ...fieldOptions } = props
     return fieldOptions

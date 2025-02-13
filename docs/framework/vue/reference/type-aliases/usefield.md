@@ -3,19 +3,21 @@ id: UseField
 title: UseField
 ---
 
-# Type Alias: UseField()\<TParentData, TFormValidator\>
+# Type Alias: UseField()\<TParentData, TFormValidator, TParentMetaExtension\>
 
 ```ts
-type UseField<TParentData, TFormValidator> = <TName, TFieldValidator, TData>(opts) => object;
+type UseField<TParentData, TFormValidator, TParentMetaExtension> = <TName, TFieldValidator, TData>(opts) => object;
 ```
 
-Defined in: [packages/vue-form/src/useField.tsx:17](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L17)
+Defined in: [packages/vue-form/src/useField.tsx:18](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L18)
 
 ## Type Parameters
 
 • **TParentData**
 
 • **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
+
+• **TParentMetaExtension** = `never`
 
 ## Type Parameters
 
@@ -31,7 +33,7 @@ Defined in: [packages/vue-form/src/useField.tsx:17](https://github.com/TanStack/
 
 ### opts
 
-`Omit`\<`UseFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
+`Omit`\<`UseFieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`, `TParentMetaExtension`\>, `"form"`\>
 
 ## Returns
 
@@ -40,11 +42,11 @@ Defined in: [packages/vue-form/src/useField.tsx:17](https://github.com/TanStack/
 ### api
 
 ```ts
-api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData> & VueFieldApi<TParentData, TFormValidator>;
+api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData, TParentMetaExtension> & VueFieldApi<TParentData, TFormValidator, TParentMetaExtension>;
 ```
 
 ### state
 
 ```ts
-state: Readonly<Ref<FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>["state"]>>;
+state: Readonly<Ref<FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData, TParentMetaExtension>["state"]>>;
 ```

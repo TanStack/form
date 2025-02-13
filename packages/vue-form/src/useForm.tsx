@@ -10,9 +10,10 @@ import type { FieldComponent, UseField } from './useField'
 export interface VueFormApi<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TFormSubmitMeta = never,
 > {
-  Field: FieldComponent<TFormData, TFormValidator>
-  useField: UseField<TFormData, TFormValidator>
+  Field: FieldComponent<TFormData, TFormValidator, TFormSubmitMeta>
+  useField: UseField<TFormData, TFormValidator, TFormSubmitMeta>
   useStore: <TSelected = NoInfer<FormState<TFormData>>>(
     selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,
   ) => Readonly<Ref<TSelected>>
@@ -30,12 +31,13 @@ export interface VueFormApi<
 export function useForm<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
->(opts?: FormOptions<TFormData, TFormValidator>) {
+  TFormSubmitMeta = never,
+>(opts?: FormOptions<TFormData, TFormValidator, TFormSubmitMeta>) {
   const formApi = (() => {
-    const api = new FormApi<TFormData, TFormValidator>(opts)
+    const api = new FormApi<TFormData, TFormValidator, TFormSubmitMeta>(opts)
 
-    const extendedApi: typeof api & VueFormApi<TFormData, TFormValidator> =
-      api as never
+    const extendedApi: typeof api &
+      VueFormApi<TFormData, TFormValidator, TFormSubmitMeta> = api as never
     extendedApi.Field = defineComponent(
       (props, context) => {
         return () =>

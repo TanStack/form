@@ -3,7 +3,7 @@ id: VueFormApi
 title: VueFormApi
 ---
 
-# Interface: VueFormApi\<TFormData, TFormValidator\>
+# Interface: VueFormApi\<TFormData, TFormValidator, TFormSubmitMeta\>
 
 Defined in: [packages/vue-form/src/useForm.tsx:10](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L10)
 
@@ -13,15 +13,17 @@ Defined in: [packages/vue-form/src/useForm.tsx:10](https://github.com/TanStack/f
 
 • **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> \| `undefined` = `undefined`
 
+• **TFormSubmitMeta** = `never`
+
 ## Properties
 
 ### Field
 
 ```ts
-Field: FieldComponent<TFormData, TFormValidator>;
+Field: FieldComponent<TFormData, TFormValidator, TFormSubmitMeta>;
 ```
 
-Defined in: [packages/vue-form/src/useForm.tsx:14](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L14)
+Defined in: [packages/vue-form/src/useForm.tsx:15](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L15)
 
 ***
 
@@ -31,7 +33,7 @@ Defined in: [packages/vue-form/src/useForm.tsx:14](https://github.com/TanStack/f
 Subscribe: <TSelected>(props, context) => any;
 ```
 
-Defined in: [packages/vue-form/src/useForm.tsx:19](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L19)
+Defined in: [packages/vue-form/src/useForm.tsx:20](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L20)
 
 #### Type Parameters
 
@@ -60,10 +62,10 @@ Defined in: [packages/vue-form/src/useForm.tsx:19](https://github.com/TanStack/f
 ### useField
 
 ```ts
-useField: UseField<TFormData, TFormValidator>;
+useField: UseField<TFormData, TFormValidator, TFormSubmitMeta>;
 ```
 
-Defined in: [packages/vue-form/src/useForm.tsx:15](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L15)
+Defined in: [packages/vue-form/src/useForm.tsx:16](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L16)
 
 ***
 
@@ -73,7 +75,7 @@ Defined in: [packages/vue-form/src/useForm.tsx:15](https://github.com/TanStack/f
 useStore: <TSelected>(selector?) => Readonly<Ref<TSelected, TSelected>>;
 ```
 
-Defined in: [packages/vue-form/src/useForm.tsx:16](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L16)
+Defined in: [packages/vue-form/src/useForm.tsx:17](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L17)
 
 #### Type Parameters
 

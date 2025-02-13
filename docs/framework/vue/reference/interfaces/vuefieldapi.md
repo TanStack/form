@@ -3,7 +3,7 @@ id: VueFieldApi
 title: VueFieldApi
 ---
 
-# Interface: VueFieldApi\<TParentData, TFormValidator\>
+# Interface: VueFieldApi\<TParentData, TFormValidator, TParentMetaExtension\>
 
 Defined in: [packages/vue-form/src/useField.tsx:8](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L8)
 
@@ -13,12 +13,14 @@ Defined in: [packages/vue-form/src/useField.tsx:8](https://github.com/TanStack/f
 
 • **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
 
+• **TParentMetaExtension** = `never`
+
 ## Properties
 
 ### Field
 
 ```ts
-Field: FieldComponent<TParentData, TFormValidator>;
+Field: FieldComponent<TParentData, TFormValidator, TParentMetaExtension>;
 ```
 
-Defined in: [packages/vue-form/src/useField.tsx:14](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L14)
+Defined in: [packages/vue-form/src/useField.tsx:15](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L15)

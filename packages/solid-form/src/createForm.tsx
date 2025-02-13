@@ -11,9 +11,10 @@ type NoInfer<T> = [T][T extends any ? 0 : never]
 export interface SolidFormApi<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TFormSubmitMeta = never,
 > {
-  Field: FieldComponent<TFormData, TFormValidator>
-  createField: CreateField<TFormData, TFormValidator>
+  Field: FieldComponent<TFormData, TFormValidator, TFormSubmitMeta>
+  createField: CreateField<TFormData, TFormValidator, TFormSubmitMeta>
   useStore: <TSelected = NoInfer<FormState<TFormData>>>(
     selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,
   ) => () => TSelected
@@ -28,11 +29,12 @@ export function createForm<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
->(opts?: () => FormOptions<TParentData, TFormValidator>) {
+  TFormSubmitMeta = never,
+>(opts?: () => FormOptions<TParentData, TFormValidator, TFormSubmitMeta>) {
   const options = opts?.()
-  const api = new FormApi<TParentData, TFormValidator>(options)
-  const extendedApi: typeof api & SolidFormApi<TParentData, TFormValidator> =
-    api as never
+  const api = new FormApi<TParentData, TFormValidator, TFormSubmitMeta>(options)
+  const extendedApi: typeof api &
+    SolidFormApi<TParentData, TFormValidator, TFormSubmitMeta> = api as never
 
   extendedApi.Field = (props) => <Field {...props} form={api} />
   extendedApi.createField = (props) =>

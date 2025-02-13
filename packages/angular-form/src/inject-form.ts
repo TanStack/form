@@ -5,8 +5,9 @@ import type { FormOptions, Validator } from '@tanstack/form-core'
 export function injectForm<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
->(opts?: FormOptions<TFormData, TFormValidator>) {
-  const api = new FormApi<TFormData, TFormValidator>(opts)
+  TFormSubmitMeta = never,
+>(opts?: FormOptions<TFormData, TFormValidator, TFormSubmitMeta>) {
+  const api = new FormApi<TFormData, TFormValidator, TFormSubmitMeta>(opts)
 
   injectStore(api.store, (state) => state.isSubmitting)
 
