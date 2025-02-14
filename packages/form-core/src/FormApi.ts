@@ -17,7 +17,6 @@ import {
 import type {
   FormValidationError,
   FormValidationErrorMap,
-  GlobalFormValidationError,
   UpdateMetaOptions,
   ValidationCause,
   ValidationError,
@@ -88,7 +87,7 @@ export type FormValidateOrFn<
     ? TFN | FormValidateFn<TFormData, TFormValidator, TReturnType>
     :
         | FormValidateFn<TFormData, TFormValidator, TReturnType>
-        | StandardSchemaV1<TFormData, unknown>
+        | StandardSchemaV1<TFormData, TReturnType>
 
 /**
  * @private
@@ -142,7 +141,7 @@ export type FormAsyncValidateOrFn<
     ? FFN | FormValidateAsyncFn<TFormData, TFormValidator, TReturnType>
     :
         | FormValidateAsyncFn<TFormData, TFormValidator, TReturnType>
-        | StandardSchemaV1<TFormData, unknown>
+        | StandardSchemaV1<TFormData, TReturnType>
 
 export interface FormValidators<
   TFormData,
