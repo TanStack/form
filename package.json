@@ -51,7 +51,7 @@
     "eslint-plugin-react-hooks": "^5.1.0",
     "jsdom": "^26.0.0",
     "knip": "^5.39.2",
-    "nx": "^20.3.1",
+    "nx": "20.4.0",
     "premove": "^4.0.0",
     "prettier": "^3.4.2",
     "publint": "^0.3.2",

@@ -14,6 +14,9 @@ import {
   isStandardSchemaValidator,
   standardSchemaValidator,
 } from './standardSchemaValidator'
+import { metaHelper } from './metaHelper'
+import type { StandardSchemaV1 } from './standardSchemaValidator'
+import type { FieldApi, FieldMeta, FieldMetaBase } from './FieldApi'
 import type {
   FormValidationError,
   FormValidationErrorMap,
@@ -25,8 +28,6 @@ import type {
   ValidationSource,
   Validator,
 } from './types'
-import type { StandardSchemaV1 } from './standardSchemaValidator'
-import type { FieldApi, FieldMeta, FieldMetaBase } from './FieldApi'
 import type { DeepKeys, DeepValue } from './util-types'
 import type { Updater } from './utils'
 
@@ -1104,7 +1105,7 @@ export class FormApi<
   }
 
   /**
-   * Validates form and all fields in using the correct handlers for a given validation cause.
+   * Validates all fields using the correct handlers for a given validation cause.
    */
   validateAllFields = async (cause: ValidationCause) => {
     const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
@@ -1117,7 +1118,9 @@ export class FormApi<
         // Validate the field
         fieldValidationPromises.push(
           // Remember, `validate` is either a sync operation or a promise
-          Promise.resolve().then(() => fieldInstance.validate(cause)),
+          Promise.resolve().then(() =>
+            fieldInstance.validate(cause, { skipFormValidation: true }),
+          ),
         )
         // If any fields are not touched
         if (!field.instance.state.meta.isTouched) {
@@ -1516,8 +1519,18 @@ export class FormApi<
       this.baseStore.setState((prev) => ({ ...prev, isSubmitting: false }))
     }
 
-    // Validate form and all fields
     await this.validateAllFields('submit')
+
+    if (!this.state.isFieldsValid) {
+      done()
+      this.options.onSubmitInvalid?.({
+        value: this.state.values,
+        formApi: this,
+      })
+      return
+    }
+
+    await this.validate('submit')
 
     // Fields are invalid, do not submit
     if (!this.state.isValid) {
@@ -1693,9 +1706,6 @@ export class FormApi<
     this.validateField(field, 'change')
   }
 
-  /**
-   * Inserts a value into an array field at the specified index, shifting the subsequent values to the right.
-   */
   insertFieldValue = async <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,
@@ -1718,6 +1728,11 @@ export class FormApi<
 
     // Validate the whole array + all fields that have shifted
     await this.validateField(field, 'change')
+
+    // Shift down all meta after validating to make sure the new field has been mounted
+    metaHelper(this).handleArrayFieldMetaShift(field, index, 'insert')
+
+    await this.validateArrayFieldsStartingFrom(field, index, 'change')
   }
 
   /**
@@ -1770,6 +1785,9 @@ export class FormApi<
       opts,
     )
 
+    // Shift up all meta
+    metaHelper(this).handleArrayFieldMetaShift(field, index, 'remove')
+
     if (lastIndex !== null) {
       const start = `${field}[${lastIndex}]`
       const fieldsToDelete = Object.keys(this.fieldInfo).filter((f) =>
@@ -1804,6 +1822,9 @@ export class FormApi<
       opts,
     )
 
+    // Swap meta
+    metaHelper(this).handleArrayFieldMetaShift(field, index1, 'swap', index2)
+
     // Validate the whole array
     this.validateField(field, 'change')
     // Validate the swapped fields
@@ -1828,6 +1849,9 @@ export class FormApi<
       },
       opts,
     )
+
+    // Move meta between index1 and index2
+    metaHelper(this).handleArrayFieldMetaShift(field, index1, 'move', index2)
 
     // Validate the whole array
     this.validateField(field, 'change')

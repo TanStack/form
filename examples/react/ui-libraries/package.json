@@ -9,7 +9,7 @@
     "test:types": "tsc --noEmit"
   },
   "dependencies": {
-    "@tanstack/react-form": "^0.41.3",
+    "@tanstack/react-form": "^0.42.0",
     "@mui/material": "6.4.0",
     "@mantine/hooks": "7.16.0",
     "@mantine/core": "7.16.0",
