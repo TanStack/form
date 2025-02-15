@@ -15,8 +15,8 @@ import {
   standardSchemaValidator,
 } from './standardSchemaValidator'
 import { metaHelper } from './metaHelper'
+import type { AnyFieldMeta, AnyFieldMetaBase, FieldApi } from './FieldApi'
 import type { StandardSchemaV1 } from './standardSchemaValidator'
-import type { FieldApi, FieldMeta, FieldMetaBase } from './FieldApi'
 import type {
   FormValidationError,
   FormValidationErrorMap,
@@ -423,7 +423,7 @@ export type BaseFormState<
   /**
    * A record of field metadata for each field in the form, not including the derived properties, like `errors` and such
    */
-  fieldMetaBase: Record<DeepKeys<TFormData>, FieldMetaBase>
+  fieldMetaBase: Record<DeepKeys<TFormData>, AnyFieldMetaBase>
   /**
    * A boolean indicating if the form is currently in the process of being submitted after `handleSubmit` is called.
    *
@@ -518,7 +518,7 @@ export type DerivedFormState<
   /**
    * A record of field metadata for each field in the form.
    */
-  fieldMeta: Record<DeepKeys<TFormData>, FieldMeta>
+  fieldMeta: Record<DeepKeys<TFormData>, AnyFieldMeta>
 }
 
 export type FormState<
@@ -674,7 +674,7 @@ export class FormApi<
       TOnServerReturn
     >
   >
-  fieldMetaDerived!: Derived<Record<DeepKeys<TFormData>, FieldMeta>>
+  fieldMetaDerived!: Derived<Record<DeepKeys<TFormData>, AnyFieldMeta>>
   store!: Derived<
     FormState<
       TFormData,
@@ -732,7 +732,7 @@ export class FormApi<
       deps: [this.baseStore],
       fn: ({ prevDepVals, currDepVals, prevVal: _prevVal }) => {
         const prevVal = _prevVal as
-          | Record<DeepKeys<TFormData>, FieldMeta>
+          | Record<DeepKeys<TFormData>, AnyFieldMeta>
           | undefined
         const prevBaseStore = prevDepVals?.[0]
         const currBaseStore = currDepVals[0]
@@ -755,11 +755,11 @@ export class FormApi<
         ) as Array<keyof typeof currBaseStore.fieldMetaBase>) {
           const currBaseVal = currBaseStore.fieldMetaBase[
             fieldName as never
-          ] as FieldMetaBase
+          ] as AnyFieldMetaBase
 
           const prevBaseVal = prevBaseStore?.fieldMetaBase[
             fieldName as never
-          ] as FieldMetaBase | undefined
+          ] as AnyFieldMetaBase | undefined
 
           const prevFieldInfo =
             prevVal?.[fieldName as never as keyof typeof prevVal]
@@ -790,7 +790,7 @@ export class FormApi<
             ...currBaseVal,
             errors: fieldErrors,
             isPristine: isFieldPristine,
-          } as FieldMeta
+          } as AnyFieldMeta
         }
 
         if (
@@ -825,7 +825,7 @@ export class FormApi<
 
         // Computed state
         const fieldMetaValues = Object.values(currBaseStore.fieldMetaBase) as (
-          | FieldMeta
+          | AnyFieldMeta
           | undefined
         )[]
 
@@ -1579,7 +1579,7 @@ export class FormApi<
    */
   getFieldMeta = <TField extends DeepKeys<TFormData>>(
     field: TField,
-  ): FieldMeta | undefined => {
+  ): AnyFieldMeta | undefined => {
     return this.state.fieldMeta[field]
   }
 
@@ -1607,7 +1607,7 @@ export class FormApi<
    */
   setFieldMeta = <TField extends DeepKeys<TFormData>>(
     field: TField,
-    updater: Updater<FieldMeta<any, any, any, any, any, any, any>>,
+    updater: Updater<AnyFieldMeta>,
   ) => {
     this.baseStore.setState((prev) => {
       return {
@@ -1624,10 +1624,10 @@ export class FormApi<
   }
 
   resetFieldMeta = <TField extends DeepKeys<TFormData>>(
-    fieldMeta: Record<TField, FieldMeta>,
-  ): Record<TField, FieldMeta> => {
+    fieldMeta: Record<TField, AnyFieldMeta>,
+  ): Record<TField, AnyFieldMeta> => {
     return Object.keys(fieldMeta).reduce(
-      (acc: Record<TField, FieldMeta>, key) => {
+      (acc: Record<TField, AnyFieldMeta>, key) => {
         const fieldKey = key as TField
         acc[fieldKey] = {
           isValidating: false,
@@ -1640,7 +1640,7 @@ export class FormApi<
         }
         return acc
       },
-      {} as Record<TField, FieldMeta>,
+      {} as Record<TField, AnyFieldMeta>,
     )
   }
 
