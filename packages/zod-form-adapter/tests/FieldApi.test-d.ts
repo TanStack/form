@@ -105,3 +105,22 @@ it.skip('should allow not a Zod validator with the wrong Zod type', () => {
     },
   })
 })
+
+it('should allow a validator onChange to set the error map type', () => {
+  const form = new FormApi({
+    defaultValues: {
+      name: 'test',
+    },
+  } as const)
+
+  const field = new FieldApi({
+    form,
+    name: 'name',
+    validatorAdapter: zodValidator(),
+    validators: {
+      onChange: z.string(),
+    },
+  })
+
+  field.getMeta().errorMap.onChange
+})
