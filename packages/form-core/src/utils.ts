@@ -1,4 +1,4 @@
-import type { ValidationCause } from './types'
+import type { GlobalFormValidationError, ValidationCause } from './types'
 import type { FormValidators } from './FormApi'
 import type { FieldValidators } from './FieldApi'
 
@@ -323,6 +323,12 @@ export function getSyncValidatorArray<T>(
     default:
       return [changeValidator, serverValidator] as never
   }
+}
+
+export const isGlobalFormValidationError = (
+  error: unknown,
+): error is GlobalFormValidationError<unknown> => {
+  return !!error && typeof error === 'object' && 'fields' in error
 }
 
 export function shallow<T>(objA: T, objB: T) {

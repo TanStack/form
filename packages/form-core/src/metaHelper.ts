@@ -8,7 +8,28 @@ type ArrayFieldMode = 'insert' | 'remove' | 'swap' | 'move'
 export function metaHelper<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
->(formApi: FormApi<TFormData, TFormValidator>) {
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
+  TOnServerReturn = undefined,
+>(
+  formApi: FormApi<
+    TFormData,
+    TFormValidator,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn,
+    TOnServerReturn
+  >,
+) {
   function handleArrayFieldMetaShift(
     field: DeepKeys<TFormData>,
     index: number,

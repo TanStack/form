@@ -12,6 +12,7 @@ export const Route = createFileRoute('/')({
 
 function Home() {
   const { state } = Route.useLoaderData()
+
   const form = useForm({
     ...formOpts,
     transform: useTransform((baseForm) => mergeForm(baseForm, state), [state]),
@@ -22,7 +23,7 @@ function Home() {
   return (
     <form action={handleForm.url} method="post" encType={'multipart/form-data'}>
       {formErrors.map((error) => (
-        <p key={error as string}>{error}</p>
+        <p key={error as never as string}>{error}</p>
       ))}
 
       <form.Field

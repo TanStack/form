@@ -22,13 +22,43 @@ type renderCallback<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
+  TFormOnMountReturn = undefined,
+  TFormOnChangeReturn = undefined,
+  TFormOnChangeAsyncReturn = undefined,
+  TFormOnBlurReturn = undefined,
+  TFormOnBlurAsyncReturn = undefined,
+  TFormOnSubmitReturn = undefined,
+  TFormOnSubmitAsyncReturn = undefined,
+  TFormOnServerReturn = undefined,
 > = (
   fieldOptions: FieldApi<
     TParentData,
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn,
+    TFormOnServerReturn
   >,
 ) => unknown
 
@@ -42,21 +72,69 @@ type fieldDirectiveType<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
+  TFormOnMountReturn = undefined,
+  TFormOnChangeReturn = undefined,
+  TFormOnChangeAsyncReturn = undefined,
+  TFormOnBlurReturn = undefined,
+  TFormOnBlurAsyncReturn = undefined,
+  TFormOnSubmitReturn = undefined,
+  TFormOnSubmitAsyncReturn = undefined,
+  TFormOnServerReturn = undefined,
 > = (
-  form: FormApi<TParentData, TFormValidator>,
+  form: FormApi<
+    TParentData,
+    TFormValidator,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn,
+    TFormOnServerReturn
+  >,
   options: FieldOptions<
     TParentData,
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn
   >,
   render: renderCallback<
     TParentData,
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn,
+    TFormOnServerReturn
   >,
 ) => {
   values: {
@@ -66,14 +144,36 @@ type fieldDirectiveType<
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn
     >
     render: renderCallback<
       TParentData,
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn,
+      TFormOnMountReturn,
+      TFormOnChangeReturn,
+      TFormOnChangeAsyncReturn,
+      TFormOnBlurReturn,
+      TFormOnBlurAsyncReturn,
+      TFormOnSubmitReturn,
+      TFormOnSubmitAsyncReturn,
+      TFormOnServerReturn
     >
   }
 }
@@ -83,20 +183,61 @@ export class TanStackFormController<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
+  TFormOnMountReturn = undefined,
+  TFormOnChangeReturn = undefined,
+  TFormOnChangeAsyncReturn = undefined,
+  TFormOnBlurReturn = undefined,
+  TFormOnBlurAsyncReturn = undefined,
+  TFormOnSubmitReturn = undefined,
+  TFormOnSubmitAsyncReturn = undefined,
+  TFormOnServerReturn = undefined,
 > implements ReactiveController
 {
   #host: ReactiveControllerHost
   #subscription?: () => void
 
-  api: FormApi<TParentData, TFormValidator>
+  api: FormApi<
+    TParentData,
+    TFormValidator,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn,
+    TFormOnServerReturn
+  >
 
   constructor(
     host: ReactiveControllerHost,
-    config?: FormOptions<TParentData, TFormValidator>,
+    config?: FormOptions<
+      TParentData,
+      TFormValidator,
+      TFormOnMountReturn,
+      TFormOnChangeReturn,
+      TFormOnChangeAsyncReturn,
+      TFormOnBlurReturn,
+      TFormOnBlurAsyncReturn,
+      TFormOnSubmitReturn,
+      TFormOnSubmitAsyncReturn,
+      TFormOnServerReturn
+    >,
   ) {
     ;(this.#host = host).addController(this)
 
-    this.api = new FormApi<TParentData, TFormValidator>(config)
+    this.api = new FormApi<
+      TParentData,
+      TFormValidator,
+      TFormOnMountReturn,
+      TFormOnChangeReturn,
+      TFormOnChangeAsyncReturn,
+      TFormOnBlurReturn,
+      TFormOnBlurAsyncReturn,
+      TFormOnSubmitReturn,
+      TFormOnSubmitAsyncReturn,
+      TFormOnServerReturn
+    >(config)
   }
 
   hostConnected() {
@@ -115,20 +256,49 @@ export class TanStackFormController<
       | Validator<DeepValue<TParentData, TName>, unknown>
       | undefined = undefined,
     TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+    TOnMountReturn = undefined,
+    TOnChangeReturn = undefined,
+    TOnChangeAsyncReturn = undefined,
+    TOnBlurReturn = undefined,
+    TOnBlurAsyncReturn = undefined,
+    TOnSubmitReturn = undefined,
+    TOnSubmitAsyncReturn = undefined,
   >(
     fieldConfig: FieldOptions<
       TParentData,
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn
     >,
     render: renderCallback<
       TParentData,
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn,
+      TFormOnMountReturn,
+      TFormOnChangeReturn,
+      TFormOnChangeAsyncReturn,
+      TFormOnBlurReturn,
+      TFormOnBlurAsyncReturn,
+      TFormOnSubmitReturn,
+      TFormOnSubmitAsyncReturn,
+      TFormOnServerReturn
     >,
   ) {
     return (
@@ -137,7 +307,22 @@ export class TanStackFormController<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData
+        TData,
+        TOnMountReturn,
+        TOnChangeReturn,
+        TOnChangeAsyncReturn,
+        TOnBlurReturn,
+        TOnBlurAsyncReturn,
+        TOnSubmitReturn,
+        TOnSubmitAsyncReturn,
+        TFormOnMountReturn,
+        TFormOnChangeReturn,
+        TFormOnChangeAsyncReturn,
+        TFormOnBlurReturn,
+        TFormOnBlurAsyncReturn,
+        TFormOnSubmitReturn,
+        TFormOnSubmitAsyncReturn,
+        TFormOnServerReturn
       >
     )(this.api, fieldConfig, render)
   }
@@ -153,9 +338,45 @@ class FieldDirective<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TOnMountReturn = undefined,
+  TOnChangeReturn = undefined,
+  TOnChangeAsyncReturn = undefined,
+  TOnBlurReturn = undefined,
+  TOnBlurAsyncReturn = undefined,
+  TOnSubmitReturn = undefined,
+  TOnSubmitAsyncReturn = undefined,
+  TFormOnMountReturn = undefined,
+  TFormOnChangeReturn = undefined,
+  TFormOnChangeAsyncReturn = undefined,
+  TFormOnBlurReturn = undefined,
+  TFormOnBlurAsyncReturn = undefined,
+  TFormOnSubmitReturn = undefined,
+  TFormOnSubmitAsyncReturn = undefined,
+  TFormOnServerReturn = undefined,
 > extends AsyncDirective {
   #registered = false
-  #field?: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  #field?: FieldApi<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData,
+    TOnMountReturn,
+    TOnChangeReturn,
+    TOnChangeAsyncReturn,
+    TOnBlurReturn,
+    TOnBlurAsyncReturn,
+    TOnSubmitReturn,
+    TOnSubmitAsyncReturn,
+    TFormOnMountReturn,
+    TFormOnChangeReturn,
+    TFormOnChangeAsyncReturn,
+    TFormOnBlurReturn,
+    TFormOnBlurAsyncReturn,
+    TFormOnSubmitReturn,
+    TFormOnSubmitAsyncReturn,
+    TFormOnServerReturn
+  >
   #unmount?: () => void
 
   constructor(partInfo: PartInfo) {
@@ -198,20 +419,53 @@ class FieldDirective<
   }
 
   render(
-    _form: FormApi<TParentData, TFormValidator>,
+    _form: FormApi<
+      TParentData,
+      TFormValidator,
+      TFormOnMountReturn,
+      TFormOnChangeReturn,
+      TFormOnChangeAsyncReturn,
+      TFormOnBlurReturn,
+      TFormOnBlurAsyncReturn,
+      TFormOnSubmitReturn,
+      TFormOnSubmitAsyncReturn,
+      TFormOnServerReturn
+    >,
     _fieldConfig: FieldOptions<
       TParentData,
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn
     >,
     _renderCallback: renderCallback<
       TParentData,
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TOnMountReturn,
+      TOnChangeReturn,
+      TOnChangeAsyncReturn,
+      TOnBlurReturn,
+      TOnBlurAsyncReturn,
+      TOnSubmitReturn,
+      TOnSubmitAsyncReturn,
+      TFormOnMountReturn,
+      TFormOnChangeReturn,
+      TFormOnChangeAsyncReturn,
+      TFormOnBlurReturn,
+      TFormOnBlurAsyncReturn,
+      TFormOnSubmitReturn,
+      TFormOnSubmitAsyncReturn,
+      TFormOnServerReturn
     >,
   ) {
     if (this.#field) {

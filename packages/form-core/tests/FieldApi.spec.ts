@@ -1753,7 +1753,7 @@ describe('field api', () => {
       defaultMeta: {
         errorMap: {
           onChange: 'THERE IS AN ERROR',
-        },
+        } as never,
       },
     })
 

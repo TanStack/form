@@ -37,8 +37,32 @@ export function mergeForm<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 >(
-  baseForm: FormApi<NoInfer<TFormData>, NoInfer<TFormValidator>>,
-  state: Partial<FormApi<TFormData, TFormValidator>['state']>,
+  baseForm: FormApi<
+    NoInfer<TFormData>,
+    NoInfer<TFormValidator>,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  >,
+  state: Partial<
+    FormApi<
+      TFormData,
+      TFormValidator,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any
+    >['state']
+  >,
 ) {
   mutateMergeDeep(baseForm.state, state)
   return baseForm

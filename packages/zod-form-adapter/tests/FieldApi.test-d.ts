@@ -81,8 +81,10 @@ it('should not allow a validator onChange to be passed when not using a validato
   const field = new FieldApi({
     form,
     name: 'name',
-    // @ts-expect-error Requires a validator
-    onChange: z.string(),
+    validators: {
+      // @ts-expect-error Requires a validator
+      onChange: z.string(),
+    },
   })
 })
 
