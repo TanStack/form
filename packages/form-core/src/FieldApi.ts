@@ -93,11 +93,6 @@ export type FieldValidateOrFn<
     >
   | StandardSchemaV1<TData, unknown>
 
-export type FieldValidateReturnTypeCheck<
-  TReturn,
-  TFnItself extends FieldValidateOrFn<any, any, any, any, any, any>,
-> = [TReturn] extends [undefined] ? TFnItself : TReturn
-
 /**
  * @private
  */
@@ -233,95 +228,46 @@ export interface FieldValidators<
   TOnBlurAsyncReturn = undefined,
   TOnSubmitReturn = undefined,
   TOnSubmitAsyncReturn = undefined,
-  TOnMount extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnMountReturn
-      >
-    | undefined = undefined,
-  TOnChange extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnChangeReturn
-      >
-    | undefined = undefined,
-  TOnChangeAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnChangeAsyncReturn
-      >
-    | undefined = undefined,
-  TOnBlur extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnBlurReturn
-      >
-    | undefined = undefined,
-  TOnBlurAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnBlurAsyncReturn
-      >
-    | undefined = undefined,
-  TOnSubmit extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnSubmitReturn
-      >
-    | undefined = undefined,
-  TOnSubmitAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnSubmitAsyncReturn
-      >
-    | undefined = undefined,
 > {
   /**
    * An optional function that takes a param of `formApi` which is a generic type of `TData` and `TParentData`
    */
-  onMount?: TOnMount
+  onMount?: FieldValidateOrFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData,
+    TOnMountReturn
+  >
   /**
    * An optional property that takes a `ValidateFn` which is a generic of `TData` and `TParentData`.
    * If `validatorAdapter` is passed, this may also accept a property from the respective adapter
    *
    * @example z.string().min(1) // if `zodAdapter` is passed
    */
-  onChange?: TOnChange
+  onChange?: FieldValidateOrFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData,
+    TOnChangeReturn
+  >
   /**
    * An optional property similar to `onChange` but async validation. If `validatorAdapter`
    * is passed, this may also accept a property from the respective adapter
    *
    * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // if `zodAdapter` is passed
    */
-  onChangeAsync?: TOnChangeAsync
+  onChangeAsync?: FieldAsyncValidateOrFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData,
+    TOnChangeAsyncReturn
+  >
   /**
    * An optional number to represent how long the `onChangeAsync` should wait before running
    *
@@ -338,14 +284,28 @@ export interface FieldValidators<
    *
    * @example z.string().min(1) // if `zodAdapter` is passed
    */
-  onBlur?: TOnBlur
+  onBlur?: FieldValidateOrFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData,
+    TOnBlurReturn
+  >
   /**
    * An optional property similar to `onBlur` but async validation. If `validatorAdapter`
    * is passed, this may also accept a property from the respective adapter
    *
    * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // if `zodAdapter` is passed
    */
-  onBlurAsync?: TOnBlurAsync
+  onBlurAsync?: FieldAsyncValidateOrFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData,
+    TOnBlurAsyncReturn
+  >
 
   /**
    * An optional number to represent how long the `onBlurAsync` should wait before running
@@ -363,14 +323,28 @@ export interface FieldValidators<
    *
    * @example z.string().min(1) // if `zodAdapter` is passed
    */
-  onSubmit?: TOnSubmit
+  onSubmit?: FieldValidateOrFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData,
+    TOnSubmitReturn
+  >
   /**
    * An optional property similar to `onSubmit` but async validation. If `validatorAdapter`
    * is passed, this may also accept a property from the respective adapter
    *
    * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' }) // if `zodAdapter` is passed
    */
-  onSubmitAsync?: TOnSubmitAsync
+  onSubmitAsync?: FieldAsyncValidateOrFn<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData,
+    TOnSubmitAsyncReturn
+  >
 }
 
 export interface FieldListeners<
@@ -434,76 +408,6 @@ export interface FieldOptions<
   TOnBlurAsyncReturn = undefined,
   TOnSubmitReturn = undefined,
   TOnSubmitAsyncReturn = undefined,
-  TOnMount extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnMountReturn
-      >
-    | undefined = undefined,
-  TOnChange extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnChangeReturn
-      >
-    | undefined = undefined,
-  TOnChangeAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnChangeAsyncReturn
-      >
-    | undefined = undefined,
-  TOnBlur extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnBlurReturn
-      >
-    | undefined = undefined,
-  TOnBlurAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnBlurAsyncReturn
-      >
-    | undefined = undefined,
-  TOnSubmit extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnSubmitReturn
-      >
-    | undefined = undefined,
-  TOnSubmitAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnSubmitAsyncReturn
-      >
-    | undefined = undefined,
 > {
   /**
    * The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
@@ -540,41 +444,12 @@ export interface FieldOptions<
     TOnBlurReturn,
     TOnBlurAsyncReturn,
     TOnSubmitReturn,
-    TOnSubmitAsyncReturn,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync
+    TOnSubmitAsyncReturn
   >
   /**
    * An optional object with default metadata for the field.
    */
-  defaultMeta?: Partial<
-    FieldMeta<
-      TParentData,
-      TName,
-      TFieldValidator,
-      TFormValidator,
-      TData,
-      TOnMountReturn,
-      TOnChangeReturn,
-      TOnChangeAsyncReturn,
-      TOnBlurReturn,
-      TOnBlurAsyncReturn,
-      TOnSubmitReturn,
-      TOnSubmitAsyncReturn,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync
-    >
-  >
+  defaultMeta?: Partial<FieldMeta>
   /**
    * A list of listeners which attach to the corresponding events
    */
@@ -615,76 +490,6 @@ export interface FieldApiOptions<
   TFormOnSubmitReturn = undefined,
   TFormOnSubmitAsyncReturn = undefined,
   TFormOnServerReturn = undefined,
-  TOnMount extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnMountReturn
-      >
-    | undefined = undefined,
-  TOnChange extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnChangeReturn
-      >
-    | undefined = undefined,
-  TOnChangeAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnChangeAsyncReturn
-      >
-    | undefined = undefined,
-  TOnBlur extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnBlurReturn
-      >
-    | undefined = undefined,
-  TOnBlurAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnBlurAsyncReturn
-      >
-    | undefined = undefined,
-  TOnSubmit extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnSubmitReturn
-      >
-    | undefined = undefined,
-  TOnSubmitAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnSubmitAsyncReturn
-      >
-    | undefined = undefined,
 > extends FieldOptions<
     TParentData,
     TName,
@@ -697,14 +502,7 @@ export interface FieldApiOptions<
     TOnBlurReturn,
     TOnBlurAsyncReturn,
     TOnSubmitReturn,
-    TOnSubmitAsyncReturn,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync
+    TOnSubmitAsyncReturn
   > {
   form: FormApi<
     TParentData,
@@ -721,15 +519,6 @@ export interface FieldApiOptions<
 }
 
 export type FieldMetaBase<
-  TParentData,
-  TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
-  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
   TOnChangeAsyncReturn = undefined,
@@ -737,76 +526,6 @@ export type FieldMetaBase<
   TOnBlurAsyncReturn = undefined,
   TOnSubmitReturn = undefined,
   TOnSubmitAsyncReturn = undefined,
-  _TOnMount extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnMountReturn
-      >
-    | undefined = undefined,
-  TOnChange extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnChangeReturn
-      >
-    | undefined = undefined,
-  _TOnChangeAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnChangeAsyncReturn
-      >
-    | undefined = undefined,
-  _TOnBlur extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnBlurReturn
-      >
-    | undefined = undefined,
-  _TOnBlurAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnBlurAsyncReturn
-      >
-    | undefined = undefined,
-  _TOnSubmit extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnSubmitReturn
-      >
-    | undefined = undefined,
-  _TOnSubmitAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnSubmitAsyncReturn
-      >
-    | undefined = undefined,
 > = {
   /**
    * A flag indicating whether the field has been touched.
@@ -825,7 +544,7 @@ export type FieldMetaBase<
    */
   errorMap: ValidationErrorMap<
     TOnMountReturn,
-    FieldValidateReturnTypeCheck<TOnChangeReturn, TOnChange>,
+    TOnChangeReturn,
     TOnChangeAsyncReturn,
     TOnBlurReturn,
     TOnBlurAsyncReturn,
@@ -839,15 +558,6 @@ export type FieldMetaBase<
 }
 
 export type FieldMetaDerived<
-  TParentData,
-  TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
-  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
   TOnChangeAsyncReturn = undefined,
@@ -855,76 +565,6 @@ export type FieldMetaDerived<
   TOnBlurAsyncReturn = undefined,
   TOnSubmitReturn = undefined,
   TOnSubmitAsyncReturn = undefined,
-  _TOnMount extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnMountReturn
-      >
-    | undefined = undefined,
-  _TOnChange extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnChangeReturn
-      >
-    | undefined = undefined,
-  _TOnChangeAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnChangeAsyncReturn
-      >
-    | undefined = undefined,
-  _TOnBlur extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnBlurReturn
-      >
-    | undefined = undefined,
-  _TOnBlurAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnBlurAsyncReturn
-      >
-    | undefined = undefined,
-  _TOnSubmit extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnSubmitReturn
-      >
-    | undefined = undefined,
-  _TOnSubmitAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnSubmitAsyncReturn
-      >
-    | undefined = undefined,
 > = {
   /**
    * An array of errors related to the field value.
@@ -948,15 +588,6 @@ export type FieldMetaDerived<
  * An object type representing the metadata of a field in a form.
  */
 export type FieldMeta<
-  TParentData,
-  TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
-  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
   TOnChangeAsyncReturn = undefined,
@@ -964,132 +595,30 @@ export type FieldMeta<
   TOnBlurAsyncReturn = undefined,
   TOnSubmitReturn = undefined,
   TOnSubmitAsyncReturn = undefined,
-  TOnMount extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnMountReturn
-      >
-    | undefined = undefined,
-  TOnChange extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnChangeReturn
-      >
-    | undefined = undefined,
-  TOnChangeAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnChangeAsyncReturn
-      >
-    | undefined = undefined,
-  TOnBlur extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnBlurReturn
-      >
-    | undefined = undefined,
-  TOnBlurAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnBlurAsyncReturn
-      >
-    | undefined = undefined,
-  TOnSubmit extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnSubmitReturn
-      >
-    | undefined = undefined,
-  TOnSubmitAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnSubmitAsyncReturn
-      >
-    | undefined = undefined,
 > = FieldMetaBase<
-  TParentData,
-  TName,
-  TFieldValidator,
-  TFormValidator,
-  TData,
   TOnMountReturn,
   TOnChangeReturn,
   TOnChangeAsyncReturn,
   TOnBlurReturn,
   TOnBlurAsyncReturn,
   TOnSubmitReturn,
-  TOnSubmitAsyncReturn,
-  TOnMount,
-  TOnChange,
-  TOnChangeAsync,
-  TOnBlur,
-  TOnBlurAsync,
-  TOnSubmit,
-  TOnSubmitAsync
+  TOnSubmitAsyncReturn
 > &
   FieldMetaDerived<
-    TParentData,
-    TName,
-    TFieldValidator,
-    TFormValidator,
-    TData,
     TOnMountReturn,
     TOnChangeReturn,
     TOnChangeAsyncReturn,
     TOnBlurReturn,
     TOnBlurAsyncReturn,
     TOnSubmitReturn,
-    TOnSubmitAsyncReturn,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync
+    TOnSubmitAsyncReturn
   >
 
 /**
  * An object type representing the state of a field.
  */
 export type FieldState<
-  TParentData,
-  TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
-  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TData,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
   TOnChangeAsyncReturn = undefined,
@@ -1097,76 +626,6 @@ export type FieldState<
   TOnBlurAsyncReturn = undefined,
   TOnSubmitReturn = undefined,
   TOnSubmitAsyncReturn = undefined,
-  TOnMount extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnMountReturn
-      >
-    | undefined = undefined,
-  TOnChange extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnChangeReturn
-      >
-    | undefined = undefined,
-  TOnChangeAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnChangeAsyncReturn
-      >
-    | undefined = undefined,
-  TOnBlur extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnBlurReturn
-      >
-    | undefined = undefined,
-  TOnBlurAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnBlurAsyncReturn
-      >
-    | undefined = undefined,
-  TOnSubmit extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnSubmitReturn
-      >
-    | undefined = undefined,
-  TOnSubmitAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnSubmitAsyncReturn
-      >
-    | undefined = undefined,
 > = {
   /**
    * The current value of the field.
@@ -1176,25 +635,13 @@ export type FieldState<
    * The current metadata of the field.
    */
   meta: FieldMeta<
-    TParentData,
-    TName,
-    TFieldValidator,
-    TFormValidator,
-    TData,
     TOnMountReturn,
     TOnChangeReturn,
     TOnChangeAsyncReturn,
     TOnBlurReturn,
     TOnBlurAsyncReturn,
     TOnSubmitReturn,
-    TOnSubmitAsyncReturn,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync
+    TOnSubmitAsyncReturn
   >
 }
 
@@ -1260,77 +707,6 @@ export class FieldApi<
   TFormOnSubmitReturn = undefined,
   TFormOnSubmitAsyncReturn = undefined,
   TFormOnServerReturn = undefined,
-  TOnMount extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnMountReturn
-      >
-    | undefined = undefined,
-  TOnChange extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnChangeReturn
-      >
-    | undefined = undefined,
-  TOnChangeAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnChangeAsyncReturn
-      >
-    | undefined = undefined,
-  TOnBlur extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnBlurReturn
-      >
-    | undefined = undefined,
-  TOnBlurAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnBlurAsyncReturn
-      >
-    | undefined = undefined,
-  TOnSubmit extends
-    | FieldValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnSubmitReturn
-      >
-    | undefined = undefined,
-  TOnSubmitAsync extends
-    | FieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
-        TOnSubmitAsyncReturn
-      >
-    | undefined = undefined,
-  // TODO: Add `TOnFormMount`, `TOnFormChange`, et al
 > {
   /**
    * A reference to the form API instance.
@@ -1355,14 +731,7 @@ export class FieldApi<
     TFormOnBlurAsyncReturn,
     TFormOnSubmitReturn,
     TFormOnSubmitAsyncReturn,
-    TFormOnServerReturn,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync
+    TFormOnServerReturn
   >['form']
   /**
    * The field name.
@@ -1390,25 +759,13 @@ export class FieldApi<
     TFormOnBlurReturn,
     TFormOnBlurAsyncReturn,
     TFormOnSubmitReturn,
-    TFormOnSubmitAsyncReturn,
-    TFormOnServerReturn,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync
+    TFormOnSubmitAsyncReturn
   > = {} as any
   /**
    * The field state store.
    */
   store!: Derived<
     FieldState<
-      TParentData,
-      TName,
-      TFieldValidator,
-      TFormValidator,
       TData,
       TOnMountReturn,
       TOnChangeReturn,
@@ -1416,14 +773,7 @@ export class FieldApi<
       TOnBlurReturn,
       TOnBlurAsyncReturn,
       TOnSubmitReturn,
-      TOnSubmitAsyncReturn,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync
+      TOnSubmitAsyncReturn
     >
   >
   /**
@@ -1458,14 +808,7 @@ export class FieldApi<
       TFormOnBlurAsyncReturn,
       TFormOnSubmitReturn,
       TFormOnSubmitAsyncReturn,
-      TFormOnServerReturn,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync
+      TFormOnServerReturn
     >,
   ) {
     this.form = opts.form as never
@@ -1496,10 +839,6 @@ export class FieldApi<
           value,
           meta,
         } as FieldState<
-          TParentData,
-          TName,
-          TFieldValidator,
-          TFormValidator,
           TData,
           TOnMountReturn,
           TOnChangeReturn,
@@ -1507,14 +846,7 @@ export class FieldApi<
           TOnBlurReturn,
           TOnBlurAsyncReturn,
           TOnSubmitReturn,
-          TOnSubmitAsyncReturn,
-          TOnMount,
-          TOnChange,
-          TOnChangeAsync,
-          TOnBlur,
-          TOnBlurAsync,
-          TOnSubmit,
-          TOnSubmitAsync
+          TOnSubmitAsyncReturn
         >
       },
     })
@@ -1633,14 +965,7 @@ export class FieldApi<
       TFormOnBlurAsyncReturn,
       TFormOnSubmitReturn,
       TFormOnSubmitAsyncReturn,
-      TFormOnServerReturn,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync
+      TFormOnServerReturn
     >,
   ) => {
     // Default Value
@@ -1698,25 +1023,13 @@ export class FieldApi<
   setMeta = (
     updater: Updater<
       FieldMeta<
-        TParentData,
-        TName,
-        TFieldValidator,
-        TFormValidator,
-        TData,
         TOnMountReturn,
         TOnChangeReturn,
         TOnChangeAsyncReturn,
         TOnBlurReturn,
         TOnBlurAsyncReturn,
         TOnSubmitReturn,
-        TOnSubmitAsyncReturn,
-        TOnMount,
-        TOnChange,
-        TOnChangeAsync,
-        TOnBlur,
-        TOnBlurAsync,
-        TOnSubmit,
-        TOnSubmitAsync
+        TOnSubmitAsyncReturn
       >
     >,
   ) => this.form.setFieldMeta(this.name, updater)
