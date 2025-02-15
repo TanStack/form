@@ -170,6 +170,45 @@ export type FieldAsyncValidateOrFn<
     >
   | StandardSchemaV1<TData, unknown>
 
+export type GetFieldAsyncValidatorMeta<
+  TValidator extends FieldAsyncValidateOrFn<
+    unknown,
+    string,
+    any,
+    any,
+    unknown,
+    unknown
+  >,
+> = TValidator
+
+export type GetFieldValidatorMeta<
+  TValidator extends FieldValidateOrFn<
+    unknown,
+    string,
+    any,
+    any,
+    unknown,
+    unknown
+  >,
+> =
+  TValidator extends Validator<unknown, any, any>
+    ? // Hardcoded for now, but we should probably make this more dynamic
+      string
+    : TValidator extends StandardSchemaV1<unknown, infer TStandardOut>
+      ? TStandardOut
+      : TValidator extends FieldValidateFn<
+            unknown,
+            string,
+            any,
+            any,
+            any,
+            infer TOut
+          >
+        ? TOut
+        : [TValidator] extends [undefined]
+          ? undefined
+          : never
+
 /**
  * @private
  */
@@ -772,13 +811,13 @@ export type FieldMetaBase<
    */
   // TODO: FIX THIS
   errorMap: ValidationErrorMap<
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync
+    GetFieldValidatorMeta<TOnMount>,
+    GetFieldValidatorMeta<TOnChange>,
+    GetFieldAsyncValidatorMeta<TOnChangeAsync>,
+    GetFieldValidatorMeta<TOnBlur>,
+    GetFieldAsyncValidatorMeta<TOnBlurAsync>,
+    GetFieldValidatorMeta<TOnSubmit>,
+    GetFieldAsyncValidatorMeta<TOnSubmitAsync>
   >
   /**
    * A flag indicating whether the field is currently being validated.
@@ -887,13 +926,13 @@ export type FieldMetaDerived<
    */
   // TODO: Fix this
   errors: Array<
-    | TOnMount
-    | TOnChange
-    | TOnChangeAsync
-    | TOnBlur
-    | TOnBlurAsync
-    | TOnSubmit
-    | TOnSubmitAsync
+    | GetFieldValidatorMeta<TOnMount>
+    | GetFieldValidatorMeta<TOnChange>
+    | GetFieldAsyncValidatorMeta<TOnChangeAsync>
+    | GetFieldValidatorMeta<TOnBlur>
+    | GetFieldAsyncValidatorMeta<TOnBlurAsync>
+    | GetFieldValidatorMeta<TOnSubmit>
+    | GetFieldAsyncValidatorMeta<TOnSubmitAsync>
   >
   /**
    * A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
