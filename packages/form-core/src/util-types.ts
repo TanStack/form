@@ -19,11 +19,6 @@ type NarrowRaw<A> =
 /**
  * @private
  */
-export type NoInfer<T> = [T][T extends any ? 0 : never]
-
-/**
- * @private
- */
 export type Narrow<A> = Try<A, [], NarrowRaw<A>>
 
 type Try<A1, A2, Catch = never> = A1 extends A2 ? A1 : Catch
