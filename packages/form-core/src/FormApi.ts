@@ -812,6 +812,41 @@ export class FormApi<
   }
 
   /**
+   * Validates an array of field in the form using the correct handlers for a given validation type.
+   */
+  validateFields = async (
+    fields: DeepKeys<TFormData>[],
+    cause: ValidationCause,
+  ) => {
+    // Validate the fields
+    const fieldValidationPromises: Promise<ValidationError[]>[] = []
+    batch(() => {
+      fields.forEach((field) => {
+        const fieldInstance = this.fieldInfo[field]?.instance
+        if (!fieldInstance) return
+
+        // If any fields are not touched
+        if (!fieldInstance.state.meta.isTouched) {
+          // Mark them as touched
+          fieldInstance.setMeta((prev) => ({
+              ...prev,
+              isTouched: true,
+          }))
+        }
+
+        fieldValidationPromises.push(
+          Promise.resolve().then(() =>
+            this.validateField(field, cause),
+          ),
+        )
+      })
+    })
+
+    const errorsArray = await Promise.all(fieldValidationPromises)
+    return errorsArray.flat()
+  }
+
+  /**
    * TODO: This code is copied from FieldApi, we should refactor to share
    * @private
    */
