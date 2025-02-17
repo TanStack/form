@@ -634,6 +634,8 @@ export class FormApi<
       },
     })
 
+    this.handleSubmit = this.handleSubmit.bind(this)
+
     this.update(opts || {})
   }
 
