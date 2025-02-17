@@ -235,28 +235,98 @@ it('should have the correct types returned from form validators in array', () =>
   assertType<Array<'123' | undefined>>(form.state.errors)
 })
 
-describe('standard schema validator', () => {
-  it('', () => {
-    const form = new FormApi({
-      defaultValues: {
-        firstName: '',
+it('should handle "fields" return types added to the field\'s errorMap itself', () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+    },
+    validators: {
+      onChange: () => {
+        return {
+          fields: {
+            firstName: 'Testing' as const,
+          },
+        }
       },
-      validators: {
-        onChange: () => {
-          return {
-            fields: {
-              firstName: 'Testing' as const,
-            },
-          }
-        },
-      },
-    })
-
-    const field = new FieldApi({
-      form,
-      name: 'firstName',
-    })
-
-    assertType<'Testing'>(field.getMeta().errorMap.onChange)
+    },
   })
+
+  const field = new FieldApi({
+    form,
+    name: 'firstName',
+  })
+
+  assertType<'Testing' | undefined>(field.getMeta().errorMap.onChange)
+})
+
+it('should handle "fields" return types added to the field\'s error array itself', () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+    },
+    validators: {
+      onChange: () => {
+        return {
+          fields: {
+            firstName: 'Testing' as const,
+          },
+        }
+      },
+    },
+  })
+
+  const field = new FieldApi({
+    form,
+    name: 'firstName',
+  })
+
+  assertType<Array<'Testing' | undefined>>(field.getMeta().errors)
+})
+
+it('should handle "fields" async return types added to the field\'s errorMap itself', () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+    },
+    validators: {
+      onChangeAsync: async () => {
+        return {
+          fields: {
+            firstName: 'Testing' as const,
+          },
+        }
+      },
+    },
+  })
+
+  const field = new FieldApi({
+    form,
+    name: 'firstName',
+  })
+
+  assertType<'Testing' | undefined>(field.getMeta().errorMap.onChange)
+})
+
+it('should handle "fields" async return types added to the field\'s error array itself', () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+    },
+    validators: {
+      onChangeAsync: async () => {
+        return {
+          fields: {
+            firstName: 'Testing' as const,
+          },
+        }
+      },
+    },
+  })
+
+  const field = new FieldApi({
+    form,
+    name: 'firstName',
+  })
+
+  assertType<Array<'Testing' | undefined>>(field.getMeta().errors)
 })
