@@ -15,12 +15,14 @@ export type UseFieldOptions<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension = never,
 > = FieldApiOptions<
   TParentData,
   TName,
   TFieldValidator,
   TFormValidator,
-  TData
+  TData,
+  TParentMetaExtension
 > & {
   mode?: 'value' | 'array'
 }

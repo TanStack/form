@@ -10,8 +10,9 @@ export interface VueFieldApi<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
+  TParentMetaExtension = never,
 > {
-  Field: FieldComponent<TParentData, TFormValidator>
+  Field: FieldComponent<TParentData, TFormValidator, TParentMetaExtension>
 }
 
 export type UseField<
@@ -19,6 +20,7 @@ export type UseField<
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
+  TParentMetaExtension = never,
 > = <
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
@@ -27,12 +29,26 @@ export type UseField<
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 >(
   opts: Omit<
-    UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>,
+    UseFieldOptions<
+      TParentData,
+      TName,
+      TFieldValidator,
+      TFormValidator,
+      TData,
+      TParentMetaExtension
+    >,
     'form'
   >,
 ) => {
-  api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData> &
-    VueFieldApi<TParentData, TFormValidator>
+  api: FieldApi<
+    TParentData,
+    TName,
+    TFieldValidator,
+    TFormValidator,
+    TData,
+    TParentMetaExtension
+  > &
+    VueFieldApi<TParentData, TFormValidator, TParentMetaExtension>
   state: Readonly<
     Ref<
       FieldApi<
@@ -40,7 +56,8 @@ export type UseField<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData
+        TData,
+        TParentMetaExtension
       >['state']
     >
   >
@@ -56,13 +73,15 @@ export function useField<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TParentMetaExtension = never,
 >(
   opts: UseFieldOptions<
     TParentData,
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TParentMetaExtension
   >,
 ) {
   const fieldApi = (() => {
@@ -72,7 +91,8 @@ export function useField<
       name: opts.name,
     })
 
-    const extendedApi: typeof api & VueFieldApi<TParentData, TFormValidator> =
+    const extendedApi: typeof api &
+      VueFieldApi<TParentData, TFormValidator, TParentMetaExtension> =
       api as never
 
     extendedApi.Field = Field as never
@@ -112,13 +132,22 @@ type FieldComponentProps<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-> = UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  TParentMetaExtension = never,
+> = UseFieldOptions<
+  TParentData,
+  TName,
+  TFieldValidator,
+  TFormValidator,
+  TData,
+  TParentMetaExtension
+>
 
 export type FieldComponent<
   TParentData,
   TFormValidator extends
     | Validator<TParentData, unknown>
     | undefined = undefined,
+  TParentMetaExtension = never,
 > = <
   TName extends DeepKeys<TParentData>,
   TFieldValidator extends
@@ -132,7 +161,8 @@ export type FieldComponent<
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TParentMetaExtension
     >,
     'form'
   >,
@@ -145,14 +175,16 @@ export type FieldComponent<
           TName,
           TFieldValidator,
           TFormValidator,
-          TData
+          TData,
+          TParentMetaExtension
         >
         state: FieldApi<
           TParentData,
           TName,
           TFieldValidator,
           TFormValidator,
-          TData
+          TData,
+          TParentMetaExtension
         >['state']
       }
     }>
@@ -170,13 +202,15 @@ export const Field = defineComponent(
       | Validator<TParentData, unknown>
       | undefined = undefined,
     TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+    TParentMetaExtension = never,
   >(
     fieldOptions: UseFieldOptions<
       TParentData,
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TParentMetaExtension
     >,
     context: SetupContext,
   ) => {

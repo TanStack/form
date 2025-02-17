@@ -3,7 +3,7 @@ id: SolidFormApi
 title: SolidFormApi
 ---
 
-# Interface: SolidFormApi\<TFormData, TFormValidator\>
+# Interface: SolidFormApi\<TFormData, TFormValidator, TFormSubmitMeta\>
 
 Defined in: [packages/solid-form/src/createForm.tsx:11](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L11)
 
@@ -13,25 +13,27 @@ Defined in: [packages/solid-form/src/createForm.tsx:11](https://github.com/TanSt
 
 • **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> \| `undefined` = `undefined`
 
+• **TFormSubmitMeta** = `never`
+
 ## Properties
 
 ### createField
 
 ```ts
-createField: CreateField<TFormData, TFormValidator>;
+createField: CreateField<TFormData, TFormValidator, TFormSubmitMeta>;
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:16](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L16)
+Defined in: [packages/solid-form/src/createForm.tsx:17](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L17)
 
 ***
 
 ### Field
 
 ```ts
-Field: FieldComponent<TFormData, TFormValidator>;
+Field: FieldComponent<TFormData, TFormValidator, TFormSubmitMeta>;
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:15](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L15)
+Defined in: [packages/solid-form/src/createForm.tsx:16](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L16)
 
 ***
 
@@ -41,7 +43,7 @@ Defined in: [packages/solid-form/src/createForm.tsx:15](https://github.com/TanSt
 Subscribe: <TSelected>(props) => Element;
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:20](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L20)
+Defined in: [packages/solid-form/src/createForm.tsx:21](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L21)
 
 #### Type Parameters
 
@@ -71,7 +73,7 @@ Defined in: [packages/solid-form/src/createForm.tsx:20](https://github.com/TanSt
 useStore: <TSelected>(selector?) => () => TSelected;
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:17](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L17)
+Defined in: [packages/solid-form/src/createForm.tsx:18](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L18)
 
 #### Type Parameters
 

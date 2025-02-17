@@ -5,8 +5,9 @@ export function injectStore<
   TFormData,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
   TSelected = NoInfer<FormState<TFormData>>,
+  TFormSubmitMeta = never,
 >(
-  form: FormApi<TFormData, TFormValidator>,
+  form: FormApi<TFormData, TFormValidator, TFormSubmitMeta>,
   selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,
 ) {
   return injectAngularStore(form.store, selector)
