@@ -6,7 +6,7 @@ export function useTransform<
   TFormSubmitMeta = never,
 >(
   fn: (
-    formBase: FormApi<any, any, any>,
+    formBase: FormApi<any, any, TFormSubmitMeta>,
   ) => FormApi<TFormData, TFormValidator, TFormSubmitMeta>,
   deps: unknown[],
 ): FormTransform<TFormData, TFormValidator, TFormSubmitMeta> {
