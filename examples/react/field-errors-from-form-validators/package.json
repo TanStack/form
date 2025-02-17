@@ -14,10 +14,10 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
+    "@types/react": "^19.0.7",
+    "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.3",
-    "vite": "^5.4.11"
+    "vite": "^5.1.8"
   },
   "browserslist": {
     "production": [

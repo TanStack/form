@@ -993,7 +993,9 @@ describe('form api', () => {
       employees: Partial<Employee>[]
     }
 
-    const form = new FormApi<Form>()
+    const form = new FormApi({
+      defaultValues: {} as Form,
+    })
 
     form.mount()
 
@@ -1023,7 +1025,9 @@ describe('form api', () => {
       employees: Partial<Employee>[]
     }
 
-    const form = new FormApi<Form>()
+    const form = new FormApi({
+      defaultValues: {} as Form,
+    })
     form.mount()
     const field = new FieldApi({
       form,
@@ -1985,11 +1989,11 @@ describe('form api', () => {
     interface Form {
       name: string
     }
-    const form = new FormApi<Form>()
+    const form = new FormApi({ defaultValues: {} as Form })
     form.mount()
     form.setErrorMap({
       onChange: "name can't be Josh",
-    })
+    } as never)
     expect(form.state.errorMap.onChange).toEqual("name can't be Josh")
   })
 
@@ -1997,15 +2001,15 @@ describe('form api', () => {
     interface Form {
       name: string
     }
-    const form = new FormApi<Form>()
+    const form = new FormApi({ defaultValues: {} as Form })
     form.mount()
     form.setErrorMap({
       onChange: "name can't be Josh",
-    })
+    } as never)
     expect(form.state.errorMap.onChange).toEqual("name can't be Josh")
     form.setErrorMap({
       onBlur: 'name must begin with uppercase',
-    })
+    } as never)
     expect(form.state.errorMap.onChange).toEqual("name can't be Josh")
     expect(form.state.errorMap.onBlur).toEqual('name must begin with uppercase')
   })
@@ -2014,15 +2018,15 @@ describe('form api', () => {
     interface Form {
       name: string
     }
-    const form = new FormApi<Form>()
+    const form = new FormApi({ defaultValues: {} as Form })
     form.mount()
     form.setErrorMap({
       onChange: "name can't be Josh",
-    })
+    } as never)
     expect(form.state.errorMap.onChange).toEqual("name can't be Josh")
     form.setErrorMap({
       onChange: 'other validation error',
-    })
+    } as never)
     expect(form.state.errorMap.onChange).toEqual('other validation error')
   })
 
@@ -2392,7 +2396,7 @@ describe('form api', () => {
       employees: Partial<Employee>[]
     }
 
-    const form = new FormApi<Form>({
+    const form = new FormApi({
       validators: {
         onSubmit: ({ value }) => {
           const fieldWithErrorIndex = value.employees.findIndex(
@@ -2410,6 +2414,7 @@ describe('form api', () => {
           return null
         },
       },
+      defaultValues: {} as Form,
     })
     form.mount()
     const field = new FieldApi({

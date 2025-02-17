@@ -58,10 +58,10 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
-    "vite": "^5.4.11",
-    "vue": "^3.5.12"
+    "vite": "^5.1.8",
+    "vue": "^3.5.13"
   },
   "peerDependencies": {
-    "vue": "^3.3.0"
+    "vue": "^3.4.0"
   }
 }

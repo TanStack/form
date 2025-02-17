@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { FieldApi } from '@tanstack/vue-form'
+import { AnyFieldApi } from '@tanstack/vue-form'
 
 const props = defineProps<{
-  state: FieldApi<any, any, any, any>['state']
+  state: AnyFieldApi['state']
 }>()
 </script>
 

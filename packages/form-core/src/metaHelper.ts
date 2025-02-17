@@ -1,14 +1,36 @@
-import type { FieldMeta } from './FieldApi'
-import type { FormApi } from './FormApi'
-import type { Validator } from './types'
+import type {
+  FormApi,
+  FormAsyncValidateOrFn,
+  FormValidateOrFn,
+} from './FormApi'
+import type { AnyFieldMeta } from './FieldApi'
 import type { DeepKeys } from './util-types'
 
 type ArrayFieldMode = 'insert' | 'remove' | 'swap' | 'move'
 
 export function metaHelper<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
->(formApi: FormApi<TFormData, TFormValidator>) {
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+>(
+  formApi: FormApi<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer
+  >,
+) {
   function handleArrayFieldMetaShift(
     field: DeepKeys<TFormData>,
     index: number,
@@ -90,7 +112,7 @@ export function metaHelper<
     })
   }
 
-  const getEmptyFieldMeta = (): FieldMeta => ({
+  const getEmptyFieldMeta = (): AnyFieldMeta => ({
     isValidating: false,
     isTouched: false,
     isBlurred: false,

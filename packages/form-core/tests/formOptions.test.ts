@@ -8,11 +8,11 @@ describe('formOptions', () => {
       lastName: string
     }
 
-    const formOpts = formOptions<Person>({
+    const formOpts = formOptions({
       defaultValues: {
         firstName: 'FirstName',
         lastName: 'LastName',
-      },
+      } as Person,
     })
 
     const form = new FormApi({
