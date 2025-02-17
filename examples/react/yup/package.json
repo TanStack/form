@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@tanstack/react-form": "^0.42.0",
-    "@tanstack/yup-form-adapter": "^0.42.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "yup": "^1.5.0"

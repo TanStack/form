@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@tanstack/vue-form": "^0.42.0",
-    "@tanstack/zod-form-adapter": "^0.42.0",
     "vue": "^3.5.13",
     "zod": "^3.24.0"
   },

@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "solid-js": "^1.9.4",
-    "@tanstack/valibot-form-adapter": "^0.42.0",
     "@tanstack/solid-form": "^0.42.0",
     "valibot": "^1.0.0-beta.9"
   },
