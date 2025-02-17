@@ -30,7 +30,7 @@ Defined in: [packages/form-core/src/standardSchemaValidator.ts:48](https://githu
 #### Returns
 
   \| `undefined`
-  \| readonly `StandardSchemaV1Issue`[]
+  \| readonly [`StandardSchemaV1Issue`](../interfaces/standardschemav1issue.md)[]
   \| \{
   `fields`: \{\};
   `form`: \{\};
@@ -52,7 +52,7 @@ Defined in: [packages/form-core/src/standardSchemaValidator.ts:48](https://githu
 
 `Promise`\<
   \| `undefined`
-  \| readonly `StandardSchemaV1Issue`[]
+  \| readonly [`StandardSchemaV1Issue`](../interfaces/standardschemav1issue.md)[]
   \| \{
   `fields`: \{\};
   `form`: \{\};
