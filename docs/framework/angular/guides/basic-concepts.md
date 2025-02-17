@@ -88,7 +88,7 @@ Example:
   `,
 })
 export class AppComponent {
-  firstNameValidator: FieldValidateFn<any, any, any, any, string> = ({
+  firstNameValidator: FieldValidateFn<any, any, string, any> = ({
                                                                        value,
                                                                      }) =>
     !value
@@ -97,7 +97,7 @@ export class AppComponent {
         ? 'First name must be at least 3 characters'
         : undefined
 
-  firstNameAsyncValidator: FieldValidateAsyncFn<any, any, any, any, string> =
+  firstNameAsyncValidator: FieldValidateAsyncFn<any, any, string, any> =
     async ({ value }) => {
       await new Promise((resolve) => setTimeout(resolve, 1000))
       return value.includes('error') && 'No "error" allowed in first name'
