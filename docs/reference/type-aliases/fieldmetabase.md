@@ -11,7 +11,7 @@ title: FieldMetaBase
 type FieldMetaBase<TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn> = object;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:521](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L521)
+Defined in: [packages/form-core/src/FieldApi.ts:359](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L359)
 
 ## Type Parameters
 

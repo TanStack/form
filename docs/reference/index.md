@@ -41,11 +41,16 @@ title: "@tanstack/form-core"
 - [FormValidationError](type-aliases/formvalidationerror.md)
 - [FormValidator](type-aliases/formvalidator.md)
 - [StandardSchemaV1](type-aliases/standardschemav1.md)
+- [TStandardSchemaValidatorValue](type-aliases/tstandardschemavalidatorvalue.md)
 - [Updater](type-aliases/updater.md)
 - [UpdaterFn](type-aliases/updaterfn.md)
 - [ValidationError](type-aliases/validationerror.md)
 - [ValidationMeta](type-aliases/validationmeta.md)
 - [ValidationSource](type-aliases/validationsource.md)
+
+## Variables
+
+- [standardSchemaValidators](variables/standardschemavalidators.md)
 
 ## Functions
 
@@ -54,4 +59,3 @@ title: "@tanstack/form-core"
 - [isStandardSchemaValidator](functions/isstandardschemavalidator.md)
 - [mergeForm](functions/mergeform.md)
 - [shallow](functions/shallow.md)
-- [standardSchemaValidator](functions/standardschemavalidator.md)

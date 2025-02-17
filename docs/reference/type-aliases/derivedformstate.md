@@ -11,7 +11,7 @@ title: DerivedFormState
 type DerivedFormState<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TOnServerReturn> = object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:454](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L454)
+Defined in: [packages/form-core/src/FormApi.ts:398](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L398)
 
 ## Type Parameters
 

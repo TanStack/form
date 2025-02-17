@@ -5,8 +5,10 @@ import {
 } from './standardSchemaValidator'
 import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
 import type { FieldInfo, FieldsErrorMapFromValidator, FormApi } from './FormApi'
-import type { StandardSchemaV1 ,
-  TStandardSchemaValidatorValue} from './standardSchemaValidator'
+import type {
+  StandardSchemaV1,
+  TStandardSchemaValidatorValue,
+} from './standardSchemaValidator'
 import type {
   UpdateMetaOptions,
   ValidationCause,

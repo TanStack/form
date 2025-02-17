@@ -8,7 +8,7 @@ title: injectForm
 # Function: injectForm()
 
 ```ts
-function injectForm<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TOnServerReturn>(opts?): FormApi<TFormData, TFormValidator, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TOnServerReturn>
+function injectForm<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TOnServerReturn>(opts?): FormApi<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn, TOnServerReturn>
 ```
 
 Defined in: [inject-form.ts:5](https://github.com/TanStack/form/blob/main/packages/angular-form/src/inject-form.ts#L5)
@@ -16,8 +16,6 @@ Defined in: [inject-form.ts:5](https://github.com/TanStack/form/blob/main/packag
 ## Type Parameters
 
 • **TFormData**
-
-• **TFormValidator** *extends* `undefined` \| `Validator`\<`TFormData`, `unknown`\> = `undefined`
 
 • **TOnMountReturn** = `undefined`
 
@@ -39,8 +37,8 @@ Defined in: [inject-form.ts:5](https://github.com/TanStack/form/blob/main/packag
 
 ### opts?
 
-`FormOptions`\<`TFormData`, `TFormValidator`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`, `TOnServerReturn`\>
+`FormOptions`\<`TFormData`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`, `TOnServerReturn`\>
 
 ## Returns
 
-`FormApi`\<`TFormData`, `TFormValidator`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`, `TOnServerReturn`\>
+`FormApi`\<`TFormData`, `TOnMountReturn`, `TOnChangeReturn`, `TOnChangeAsyncReturn`, `TOnBlurReturn`, `TOnBlurAsyncReturn`, `TOnSubmitReturn`, `TOnSubmitAsyncReturn`, `TOnServerReturn`\>

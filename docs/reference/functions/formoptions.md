@@ -8,26 +8,24 @@ title: formOptions
 # Function: formOptions()
 
 ```ts
-function formOptions<TFormData, TFormValidator>(defaultOpts?): 
+function formOptions<TFormData>(defaultOpts?): 
   | undefined
-| FormOptions<TFormData, TFormValidator>
+| FormOptions<TFormData>
 ```
 
-Defined in: [packages/form-core/src/formOptions.ts:4](https://github.com/TanStack/form/blob/main/packages/form-core/src/formOptions.ts#L4)
+Defined in: [packages/form-core/src/formOptions.ts:3](https://github.com/TanStack/form/blob/main/packages/form-core/src/formOptions.ts#L3)
 
 ## Type Parameters
 
 • **TFormData**
 
-• **TFormValidator** *extends* `undefined` \| `Validator`\<`TFormData`, `unknown`\> = `undefined`
-
 ## Parameters
 
 ### defaultOpts?
 
-[`FormOptions`](../interfaces/formoptions.md)\<`TFormData`, `TFormValidator`\>
+[`FormOptions`](../interfaces/formoptions.md)\<`TFormData`\>
 
 ## Returns
 
   \| `undefined`
-  \| [`FormOptions`](../interfaces/formoptions.md)\<`TFormData`, `TFormValidator`\>
+  \| [`FormOptions`](../interfaces/formoptions.md)\<`TFormData`\>

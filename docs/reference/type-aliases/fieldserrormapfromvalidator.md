@@ -11,7 +11,7 @@ title: FieldsErrorMapFromValidator
 type FieldsErrorMapFromValidator<TFormData, TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn> = Partial<Record<DeepKeys<TFormData>, ValidationErrorMap<TOnMountReturn, TOnChangeReturn, TOnChangeAsyncReturn, TOnBlurReturn, TOnBlurAsyncReturn, TOnSubmitReturn, TOnSubmitAsyncReturn>>>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:34](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L34)
+Defined in: [packages/form-core/src/FormApi.ts:35](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L35)
 
 ## Type Parameters
 

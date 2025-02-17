@@ -1,8 +1,4 @@
-import type {
-  DeepKeys,
-  DeepValue,
-  FieldApiOptions,
-} from '@tanstack/form-core'
+import type { DeepKeys, DeepValue, FieldApiOptions } from '@tanstack/form-core'
 
 export type CreateFieldOptions<
   TParentData,

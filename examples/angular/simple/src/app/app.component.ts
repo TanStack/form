@@ -62,9 +62,7 @@ import type {
   `,
 })
 export class AppComponent {
-  firstNameValidator: FieldValidateFn<any, any, string, any> = ({
-    value,
-  }) =>
+  firstNameValidator: FieldValidateFn<any, any, string, any> = ({ value }) =>
     !value
       ? 'A first name is required'
       : value.length < 3
