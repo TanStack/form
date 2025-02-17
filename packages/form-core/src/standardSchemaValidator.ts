@@ -141,7 +141,7 @@ interface StandardSchemaV1FailureResult {
 /**
  * The issue interface of the failure output.
  */
-interface StandardSchemaV1Issue {
+export interface StandardSchemaV1Issue {
   /**
    * The error message of the issue.
    */

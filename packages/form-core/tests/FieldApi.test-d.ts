@@ -24,7 +24,7 @@ it('should type value when nothing is passed into constructor', () => {
     age?: number
   }
 
-  const form = new FormApi<FormValues>()
+  const form = new FormApi({defaultValues: {} as FormValues})
 
   const field = new FieldApi({
     form,
@@ -42,10 +42,10 @@ it('should type required fields in constructor', () => {
     age?: number
   }
 
-  const form = new FormApi<FormValues>({
+  const form = new FormApi({
     defaultValues: {
       name: 'test',
-    },
+    } as FormValues,
   })
 
   const field = new FieldApi({
@@ -64,8 +64,8 @@ it('should type value properly for completely partial forms', () => {
     age?: number
   }
 
-  const form = new FormApi<CompletelyPartialFormValues>({
-    defaultValues: {},
+  const form = new FormApi({
+    defaultValues: {} as CompletelyPartialFormValues,
   })
 
   const field = new FieldApi({

@@ -17,6 +17,7 @@ import {
 import { metaHelper } from './metaHelper'
 import type {
   StandardSchemaV1,
+  StandardSchemaV1Issue,
   TStandardSchemaValidatorValue,
 } from './standardSchemaValidator'
 import type { FieldApi, FieldMeta, FieldMetaBase } from './FieldApi'
@@ -34,34 +35,35 @@ import type { Updater } from './utils'
 
 export type FieldsErrorMapFromValidator<
   TFormData,
-  TOnMountReturn = undefined,
-  TOnChangeReturn = undefined,
-  TOnChangeAsyncReturn = undefined,
-  TOnBlurReturn = undefined,
-  TOnBlurAsyncReturn = undefined,
-  TOnSubmitReturn = undefined,
-  TOnSubmitAsyncReturn = undefined,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
 > = Partial<
   Record<
     DeepKeys<TFormData>,
     ValidationErrorMap<
-      TOnMountReturn,
-      TOnChangeReturn,
-      TOnChangeAsyncReturn,
-      TOnBlurReturn,
-      TOnBlurAsyncReturn,
-      TOnSubmitReturn,
-      TOnSubmitAsyncReturn
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync
     >
   >
 >
 
-export type FormValidateFn<TFormData, TReturnType = unknown> = (props: {
+export type FormValidateFn<TFormData> = (props: {
   value: TFormData
   formApi: FormApi<
     TFormData,
     // This is technically an edge-type; which we try to keep non-`any`, but in this case
     // It's referring to an inaccessible type from the field validate function inner types, so it's not a big deal
+    any,
     any,
     any,
     any,
@@ -70,24 +72,34 @@ export type FormValidateFn<TFormData, TReturnType = unknown> = (props: {
     any,
     any
   >
-}) => TReturnType
+}) => unknown
 
 /**
  * @private
  */
-export type FormValidateOrFn<TFormData, TReturnType = unknown> =
-  | FormValidateFn<TFormData, TReturnType>
-  | StandardSchemaV1<TFormData, TReturnType>
+export type FormValidateOrFn<TFormData> =
+  | FormValidateFn<TFormData>
+  | StandardSchemaV1<TFormData, unknown>
+
+export type UnwrapFormValidateOrFn<
+  TValidateOrFn extends undefined | FormValidateOrFn<any>,
+> =
+  [TValidateOrFn] extends [FormValidateFn<any>]
+    ? ReturnType<TValidateOrFn>
+    : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
+      ? Record<string, StandardSchemaV1Issue[]>
+      : undefined
 
 /**
  * @private
  */
-export type FormValidateAsyncFn<TFormData, TReturnType = unknown> = (props: {
+export type FormValidateAsyncFn<TFormData> = (props: {
   value: TFormData
   formApi: FormApi<
     TFormData,
     // This is technically an edge-type; which we try to keep non-`any`, but in this case
     // It's referring to an inaccessible type from the field validate function inner types, so it's not a big deal
+    any,
     any,
     any,
     any,
@@ -97,7 +109,7 @@ export type FormValidateAsyncFn<TFormData, TReturnType = unknown> = (props: {
     any
   >
   signal: AbortSignal
-}) => TReturnType | Promise<TReturnType>
+}) => unknown | Promise<unknown>
 
 export type FormValidator<TFormData, TType, TFn = unknown> = {
   validate(options: { value: TType }, fn: TFn): ValidationError
@@ -117,32 +129,41 @@ type ValidationPromiseResult<TFormData> =
 /**
  * @private
  */
-export type FormAsyncValidateOrFn<TFormData, TReturnType = undefined> =
-  | FormValidateAsyncFn<TFormData, TReturnType>
-  | StandardSchemaV1<TFormData, TReturnType>
+export type FormAsyncValidateOrFn<TFormData> =
+  | FormValidateAsyncFn<TFormData>
+  | StandardSchemaV1<TFormData, unknown>
+
+export type UnwrapFormAsyncValidateOrFn<
+  TValidateOrFn extends undefined | FormAsyncValidateOrFn<any>,
+> =
+  [TValidateOrFn] extends [FormValidateAsyncFn<any>]
+    ? Awaited<ReturnType<TValidateOrFn>>
+    : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
+      ? Record<string, StandardSchemaV1Issue[]>
+      : undefined
 
 export interface FormValidators<
   TFormData,
-  TOnMountReturn = undefined,
-  TOnChangeReturn = undefined,
-  TOnChangeAsyncReturn = undefined,
-  TOnBlurReturn = undefined,
-  TOnBlurAsyncReturn = undefined,
-  TOnSubmitReturn = undefined,
-  TOnSubmitAsyncReturn = undefined,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
 > {
   /**
    * Optional function that fires as soon as the component mounts.
    */
-  onMount?: FormValidateOrFn<TFormData, TOnMountReturn>
+  onMount?: TOnMount
   /**
    * Optional function that checks the validity of your data whenever a value changes
    */
-  onChange?: FormValidateOrFn<TFormData, TOnChangeReturn>
+  onChange?: TOnChange
   /**
    * Optional onChange asynchronous counterpart to onChange. Useful for more complex validation logic that might involve server requests.
    */
-  onChangeAsync?: FormAsyncValidateOrFn<TFormData, TOnChangeAsyncReturn>
+  onChangeAsync?: TOnChangeAsync
   /**
    * The default time in milliseconds that if set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds.
    */
@@ -150,17 +171,17 @@ export interface FormValidators<
   /**
    * Optional function that validates the form data when a field loses focus, returns a `FormValidationError`
    */
-  onBlur?: FormValidateOrFn<TFormData, TOnBlurReturn>
+  onBlur?: TOnBlur
   /**
    * Optional onBlur asynchronous validation method for when a field loses focus returns a ` FormValidationError` or a promise of `Promise<FormValidationError>`
    */
-  onBlurAsync?: FormAsyncValidateOrFn<TFormData, TOnBlurAsyncReturn>
+  onBlurAsync?: TOnBlurAsync
   /**
    * The default time in milliseconds that if set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds.
    */
   onBlurAsyncDebounceMs?: number
-  onSubmit?: FormValidateOrFn<TFormData, TOnSubmitReturn>
-  onSubmitAsync?: FormAsyncValidateOrFn<TFormData, TOnSubmitAsyncReturn>
+  onSubmit?: TOnSubmit
+  onSubmitAsync?: TOnSubmitAsync
 }
 
 /**
@@ -168,37 +189,37 @@ export interface FormValidators<
  */
 export interface FormTransform<
   TFormData,
-  TOnMountReturn = undefined,
-  TOnChangeReturn = undefined,
-  TOnChangeAsyncReturn = undefined,
-  TOnBlurReturn = undefined,
-  TOnBlurAsyncReturn = undefined,
-  TOnSubmitReturn = undefined,
-  TOnSubmitAsyncReturn = undefined,
-  TOnServerReturn = undefined,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
 > {
   fn: (
     formBase: FormApi<
       TFormData,
-      TOnMountReturn,
-      TOnChangeReturn,
-      TOnChangeAsyncReturn,
-      TOnBlurReturn,
-      TOnBlurAsyncReturn,
-      TOnSubmitReturn,
-      TOnSubmitAsyncReturn,
-      TOnServerReturn
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
     >,
   ) => FormApi<
     TFormData,
-    TOnMountReturn,
-    TOnChangeReturn,
-    TOnChangeAsyncReturn,
-    TOnBlurReturn,
-    TOnBlurAsyncReturn,
-    TOnSubmitReturn,
-    TOnSubmitAsyncReturn,
-    TOnServerReturn
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer
   >
   deps: unknown[]
 }
@@ -208,14 +229,14 @@ export interface FormTransform<
  */
 export interface FormOptions<
   TFormData,
-  TOnMountReturn = undefined,
-  TOnChangeReturn = undefined,
-  TOnChangeAsyncReturn = undefined,
-  TOnBlurReturn = undefined,
-  TOnBlurAsyncReturn = undefined,
-  TOnSubmitReturn = undefined,
-  TOnSubmitAsyncReturn = undefined,
-  TOnServerReturn = undefined,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
 > {
   /**
    * Set initial values for your form.
@@ -227,14 +248,14 @@ export interface FormOptions<
   defaultState?: Partial<
     FormState<
       TFormData,
-      TOnMountReturn,
-      TOnChangeReturn,
-      TOnChangeAsyncReturn,
-      TOnBlurReturn,
-      TOnBlurAsyncReturn,
-      TOnSubmitReturn,
-      TOnSubmitAsyncReturn,
-      TOnServerReturn
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
     >
   >
   /**
@@ -250,13 +271,13 @@ export interface FormOptions<
    */
   validators?: FormValidators<
     TFormData,
-    TOnMountReturn,
-    TOnChangeReturn,
-    TOnChangeAsyncReturn,
-    TOnBlurReturn,
-    TOnBlurAsyncReturn,
-    TOnSubmitReturn,
-    TOnSubmitAsyncReturn
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync
   >
   /**
    * A function to be called when the form is submitted, what should happen once the user submits a valid form returns `any` or a promise `Promise<any>`
@@ -265,14 +286,14 @@ export interface FormOptions<
     value: TFormData
     formApi: FormApi<
       TFormData,
-      TOnMountReturn,
-      TOnChangeReturn,
-      TOnChangeAsyncReturn,
-      TOnBlurReturn,
-      TOnBlurAsyncReturn,
-      TOnSubmitReturn,
-      TOnSubmitAsyncReturn,
-      TOnServerReturn
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
     >
   }) => any | Promise<any>
   /**
@@ -282,26 +303,26 @@ export interface FormOptions<
     value: TFormData
     formApi: FormApi<
       TFormData,
-      TOnMountReturn,
-      TOnChangeReturn,
-      TOnChangeAsyncReturn,
-      TOnBlurReturn,
-      TOnBlurAsyncReturn,
-      TOnSubmitReturn,
-      TOnSubmitAsyncReturn,
-      TOnServerReturn
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
     >
   }) => void
   transform?: FormTransform<
     TFormData,
-    TOnMountReturn,
-    TOnChangeReturn,
-    TOnChangeAsyncReturn,
-    TOnBlurReturn,
-    TOnBlurAsyncReturn,
-    TOnSubmitReturn,
-    TOnSubmitAsyncReturn,
-    TOnServerReturn
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer
   >
 }
 
@@ -334,14 +355,14 @@ export type FieldInfo<TFormData> = {
  */
 export type BaseFormState<
   TFormData,
-  TOnMountReturn = undefined,
-  TOnChangeReturn = undefined,
-  TOnChangeAsyncReturn = undefined,
-  TOnBlurReturn = undefined,
-  TOnBlurAsyncReturn = undefined,
-  TOnSubmitReturn = undefined,
-  TOnSubmitAsyncReturn = undefined,
-  TOnServerReturn = undefined,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
 > = {
   /**
    * The current values of the form fields.
@@ -351,14 +372,14 @@ export type BaseFormState<
    * The error map for the form itself.
    */
   errorMap: FormValidationErrorMap<
-    TOnMountReturn,
-    TOnChangeReturn,
-    TOnChangeAsyncReturn,
-    TOnBlurReturn,
-    TOnBlurAsyncReturn,
-    TOnSubmitReturn,
-    TOnSubmitAsyncReturn,
-    TOnServerReturn
+    UnwrapFormValidateOrFn<TOnMount>,
+    UnwrapFormValidateOrFn<TOnChange>,
+    UnwrapFormAsyncValidateOrFn<TOnChangeAsync>,
+    UnwrapFormValidateOrFn<TOnBlur>,
+    UnwrapFormAsyncValidateOrFn<TOnBlurAsync>,
+    UnwrapFormValidateOrFn<TOnSubmit>,
+    UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>,
+    UnwrapFormAsyncValidateOrFn<TOnServer>
   >
   /**
    * An internal mechanism used for keeping track of validation logic in a form.
@@ -397,14 +418,14 @@ export type BaseFormState<
 
 export type DerivedFormState<
   TFormData,
-  TOnMountReturn = undefined,
-  TOnChangeReturn = undefined,
-  TOnChangeAsyncReturn = undefined,
-  TOnBlurReturn = undefined,
-  TOnBlurAsyncReturn = undefined,
-  TOnSubmitReturn = undefined,
-  TOnSubmitAsyncReturn = undefined,
-  TOnServerReturn = undefined,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
 > = {
   /**
    * A boolean indicating if the form is currently validating.
@@ -418,14 +439,14 @@ export type DerivedFormState<
    * The error array for the form itself.
    */
   errors: Array<
-    | TOnMountReturn
-    | TOnChangeReturn
-    | TOnChangeAsyncReturn
-    | TOnBlurReturn
-    | TOnBlurAsyncReturn
-    | TOnSubmitReturn
-    | TOnSubmitAsyncReturn
-    | TOnServerReturn
+    | UnwrapFormValidateOrFn<TOnMount>
+    | UnwrapFormValidateOrFn<TOnChange>
+    | UnwrapFormAsyncValidateOrFn<TOnChangeAsync>
+    | UnwrapFormValidateOrFn<TOnBlur>
+    | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
+    | UnwrapFormValidateOrFn<TOnSubmit>
+    | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
+    | UnwrapFormAsyncValidateOrFn<TOnServer>
   >
   /**
    * A boolean indicating if any of the form fields are currently validating.
@@ -467,73 +488,83 @@ export type DerivedFormState<
 
 export type FormState<
   TFormData,
-  TOnMountReturn = undefined,
-  TOnChangeReturn = undefined,
-  TOnChangeAsyncReturn = undefined,
-  TOnBlurReturn = undefined,
-  TOnBlurAsyncReturn = undefined,
-  TOnSubmitReturn = undefined,
-  TOnSubmitAsyncReturn = undefined,
-  TOnServerReturn = undefined,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
 > = BaseFormState<
   TFormData,
-  TOnMountReturn,
-  TOnChangeReturn,
-  TOnChangeAsyncReturn,
-  TOnBlurReturn,
-  TOnBlurAsyncReturn,
-  TOnSubmitReturn,
-  TOnSubmitAsyncReturn,
-  TOnServerReturn
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnServer
 > &
   DerivedFormState<
     TFormData,
-    TOnMountReturn,
-    TOnChangeReturn,
-    TOnChangeAsyncReturn,
-    TOnBlurReturn,
-    TOnBlurAsyncReturn,
-    TOnSubmitReturn,
-    TOnSubmitAsyncReturn,
-    TOnServerReturn
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer
   >
 
-export type AnyFormState = FormState<any, any, any, any, any, any, any, any>
+export type AnyFormState = FormState<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
 
 function getDefaultFormState<
   TFormData,
-  TOnMountReturn = undefined,
-  TOnChangeReturn = undefined,
-  TOnChangeAsyncReturn = undefined,
-  TOnBlurReturn = undefined,
-  TOnBlurAsyncReturn = undefined,
-  TOnSubmitReturn = undefined,
-  TOnSubmitAsyncReturn = undefined,
-  TOnServerReturn = undefined,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
 >(
   defaultState: Partial<
     FormState<
       TFormData,
-      TOnMountReturn,
-      TOnChangeReturn,
-      TOnChangeAsyncReturn,
-      TOnBlurReturn,
-      TOnBlurAsyncReturn,
-      TOnSubmitReturn,
-      TOnSubmitAsyncReturn,
-      TOnServerReturn
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
     >
   >,
 ): BaseFormState<
   TFormData,
-  TOnMountReturn,
-  TOnChangeReturn,
-  TOnChangeAsyncReturn,
-  TOnBlurReturn,
-  TOnBlurAsyncReturn,
-  TOnSubmitReturn,
-  TOnSubmitAsyncReturn,
-  TOnServerReturn
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnServer
 > {
   return {
     values: defaultState.values ?? ({} as never),
@@ -569,54 +600,54 @@ export type AnyFormApi = FormApi<any, any, any, any, any, any, any, any, any>
  */
 export class FormApi<
   TFormData,
-  TOnMountReturn = undefined,
-  TOnChangeReturn = undefined,
-  TOnChangeAsyncReturn = undefined,
-  TOnBlurReturn = undefined,
-  TOnBlurAsyncReturn = undefined,
-  TOnSubmitReturn = undefined,
-  TOnSubmitAsyncReturn = undefined,
-  TOnServerReturn = undefined,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
 > {
   /**
    * The options for the form.
    */
   options: FormOptions<
     TFormData,
-    TOnMountReturn,
-    TOnChangeReturn,
-    TOnChangeAsyncReturn,
-    TOnBlurReturn,
-    TOnBlurAsyncReturn,
-    TOnSubmitReturn,
-    TOnSubmitAsyncReturn,
-    TOnServerReturn
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer
   > = {}
   baseStore!: Store<
     BaseFormState<
       TFormData,
-      TOnMountReturn,
-      TOnChangeReturn,
-      TOnChangeAsyncReturn,
-      TOnBlurReturn,
-      TOnBlurAsyncReturn,
-      TOnSubmitReturn,
-      TOnSubmitAsyncReturn,
-      TOnServerReturn
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
     >
   >
   fieldMetaDerived!: Derived<Record<DeepKeys<TFormData>, FieldMeta>>
   store!: Derived<
     FormState<
       TFormData,
-      TOnMountReturn,
-      TOnChangeReturn,
-      TOnChangeAsyncReturn,
-      TOnBlurReturn,
-      TOnBlurAsyncReturn,
-      TOnSubmitReturn,
-      TOnSubmitAsyncReturn,
-      TOnServerReturn
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
     >
   >
   /**
@@ -639,14 +670,14 @@ export class FormApi<
   constructor(
     opts?: FormOptions<
       TFormData,
-      TOnMountReturn,
-      TOnChangeReturn,
-      TOnChangeAsyncReturn,
-      TOnBlurReturn,
-      TOnBlurAsyncReturn,
-      TOnSubmitReturn,
-      TOnSubmitAsyncReturn,
-      TOnServerReturn
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
     >,
   ) {
     this.baseStore = new Store(
@@ -670,13 +701,14 @@ export class FormApi<
 
         const fieldMeta = {} as FormState<
           TFormData,
-          TOnMountReturn,
-          TOnChangeReturn,
-          TOnChangeAsyncReturn,
-          TOnBlurReturn,
-          TOnBlurAsyncReturn,
-          TOnSubmitReturn,
-          TOnSubmitAsyncReturn
+          TOnMount,
+          TOnChange,
+          TOnChangeAsync,
+          TOnBlur,
+          TOnBlurAsync,
+          TOnSubmit,
+          TOnSubmitAsync,
+          TOnServer
         >['fieldMeta']
 
         for (const fieldName of Object.keys(
@@ -748,14 +780,14 @@ export class FormApi<
         const prevVal = _prevVal as
           | FormState<
               TFormData,
-              TOnMountReturn,
-              TOnChangeReturn,
-              TOnChangeAsyncReturn,
-              TOnBlurReturn,
-              TOnBlurAsyncReturn,
-              TOnSubmitReturn,
-              TOnSubmitAsyncReturn,
-              TOnServerReturn
+              TOnMount,
+              TOnChange,
+              TOnChangeAsync,
+              TOnBlur,
+              TOnBlurAsync,
+              TOnSubmit,
+              TOnSubmitAsync,
+              TOnServer
             >
           | undefined
         const prevBaseStore = prevDepVals?.[0]
@@ -804,17 +836,18 @@ export class FormApi<
         ) {
           errors = Object.values(currBaseStore.errorMap).reduce<
             Array<
-              | TOnMountReturn
-              | TOnChangeReturn
-              | TOnChangeAsyncReturn
-              | TOnBlurReturn
-              | TOnBlurAsyncReturn
-              | TOnSubmitReturn
-              | TOnSubmitAsyncReturn
-              | TOnServerReturn
+              | UnwrapFormValidateOrFn<TOnMount>
+              | UnwrapFormValidateOrFn<TOnChange>
+              | UnwrapFormAsyncValidateOrFn<TOnChangeAsync>
+              | UnwrapFormValidateOrFn<TOnBlur>
+              | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
+              | UnwrapFormValidateOrFn<TOnSubmit>
+              | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
+              | UnwrapFormAsyncValidateOrFn<TOnServer>
             >
           >((prev, curr) => {
             if (curr === undefined) return prev
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (curr && isGlobalFormValidationError(curr)) {
               prev.push(curr.form as never)
               return prev
@@ -876,14 +909,14 @@ export class FormApi<
           isDirty,
         } as FormState<
           TFormData,
-          TOnMountReturn,
-          TOnChangeReturn,
-          TOnChangeAsyncReturn,
-          TOnBlurReturn,
-          TOnBlurAsyncReturn,
-          TOnSubmitReturn,
-          TOnSubmitAsyncReturn,
-          TOnServerReturn
+          TOnMount,
+          TOnChange,
+          TOnChangeAsync,
+          TOnBlur,
+          TOnBlurAsync,
+          TOnSubmit,
+          TOnSubmitAsync,
+          TOnServer
         >
 
         // Only run transform if state has shallowly changed - IE how React.useEffect works
@@ -915,14 +948,13 @@ export class FormApi<
       formApi: AnyFormApi
     },
     TType extends 'validate' | 'validateAsync',
-    TReturnType = unknown,
   >(props: {
     validate: TType extends 'validate'
-      ? FormValidateOrFn<TFormData, TReturnType>
-      : FormAsyncValidateOrFn<TFormData, TReturnType>
+      ? FormValidateOrFn<TFormData>
+      : FormAsyncValidateOrFn<TFormData>
     value: TValue
     type: TType
-  }): TReturnType {
+  }): unknown {
     if (isStandardSchemaValidator(props.validate)) {
       return standardSchemaValidators[props.type](
         props.value,
@@ -930,7 +962,7 @@ export class FormApi<
       ) as never
     }
 
-    return (props.validate as FormValidateFn<any, any>)(props.value) as never
+    return (props.validate as FormValidateFn<any>)(props.value) as never
   }
 
   mount = () => {
@@ -953,14 +985,14 @@ export class FormApi<
   update = (
     options?: FormOptions<
       TFormData,
-      TOnMountReturn,
-      TOnChangeReturn,
-      TOnChangeAsyncReturn,
-      TOnBlurReturn,
-      TOnBlurAsyncReturn,
-      TOnSubmitReturn,
-      TOnSubmitAsyncReturn,
-      TOnServerReturn
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
     >,
   ) => {
     if (!options) return
@@ -1130,13 +1162,13 @@ export class FormApi<
     hasErrored: boolean
     fieldsErrorMap: FieldsErrorMapFromValidator<
       TFormData,
-      TOnMountReturn,
-      TOnChangeReturn,
-      TOnChangeAsyncReturn,
-      TOnBlurReturn,
-      TOnBlurAsyncReturn,
-      TOnSubmitReturn,
-      TOnSubmitAsyncReturn
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync
     >
   } => {
     const validates = getSyncValidatorArray(cause, this.options)
@@ -1144,13 +1176,13 @@ export class FormApi<
 
     const fieldsErrorMap: FieldsErrorMapFromValidator<
       TFormData,
-      TOnMountReturn,
-      TOnChangeReturn,
-      TOnChangeAsyncReturn,
-      TOnBlurReturn,
-      TOnBlurAsyncReturn,
-      TOnSubmitReturn,
-      TOnSubmitAsyncReturn
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync
     > = {}
 
     batch(() => {
@@ -1240,13 +1272,13 @@ export class FormApi<
   ): Promise<
     FieldsErrorMapFromValidator<
       TFormData,
-      TOnMountReturn,
-      TOnChangeReturn,
-      TOnChangeAsyncReturn,
-      TOnBlurReturn,
-      TOnBlurAsyncReturn,
-      TOnSubmitReturn,
-      TOnSubmitAsyncReturn
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync
     >
   > => {
     const validates = getAsyncValidatorArray(cause, this.options)
@@ -1349,13 +1381,13 @@ export class FormApi<
 
     const fieldsErrorMap: FieldsErrorMapFromValidator<
       TFormData,
-      TOnMountReturn,
-      TOnChangeReturn,
-      TOnChangeAsyncReturn,
-      TOnBlurReturn,
-      TOnBlurAsyncReturn,
-      TOnSubmitReturn,
-      TOnSubmitAsyncReturn
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync
     > = {}
     if (promises.length) {
       results = await Promise.all(promises)
@@ -1394,24 +1426,24 @@ export class FormApi<
   ):
     | FieldsErrorMapFromValidator<
         TFormData,
-        TOnMountReturn,
-        TOnChangeReturn,
-        TOnChangeAsyncReturn,
-        TOnBlurReturn,
-        TOnBlurAsyncReturn,
-        TOnSubmitReturn,
-        TOnSubmitAsyncReturn
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync
       >
     | Promise<
         FieldsErrorMapFromValidator<
           TFormData,
-          TOnMountReturn,
-          TOnChangeReturn,
-          TOnChangeAsyncReturn,
-          TOnBlurReturn,
-          TOnBlurAsyncReturn,
-          TOnSubmitReturn,
-          TOnSubmitAsyncReturn
+          TOnMount,
+          TOnChange,
+          TOnChangeAsync,
+          TOnBlur,
+          TOnBlurAsync,
+          TOnSubmit,
+          TOnSubmitAsync
         >
       > => {
     // Attempt to sync validate first
@@ -1791,13 +1823,13 @@ export class FormApi<
    */
   setErrorMap(
     errorMap: ValidationErrorMap<
-      TOnMountReturn,
-      TOnChangeReturn,
-      TOnChangeAsyncReturn,
-      TOnBlurReturn,
-      TOnBlurAsyncReturn,
-      TOnSubmitReturn,
-      TOnSubmitAsyncReturn
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync
     >,
   ) {
     this.baseStore.setState(

@@ -993,7 +993,9 @@ describe('form api', () => {
       employees: Partial<Employee>[]
     }
 
-    const form = new FormApi<Form>()
+    const form = new FormApi({
+      defaultValues: {} as Form,
+    })
 
     form.mount()
 
@@ -1023,7 +1025,9 @@ describe('form api', () => {
       employees: Partial<Employee>[]
     }
 
-    const form = new FormApi<Form>()
+    const form = new FormApi({
+      defaultValues: {} as Form,
+    })
     form.mount()
     const field = new FieldApi({
       form,
@@ -1985,7 +1989,7 @@ describe('form api', () => {
     interface Form {
       name: string
     }
-    const form = new FormApi<Form>()
+    const form = new FormApi({ defaultValues: {} as Form })
     form.mount()
     form.setErrorMap({
       onChange: "name can't be Josh",
@@ -1997,7 +2001,7 @@ describe('form api', () => {
     interface Form {
       name: string
     }
-    const form = new FormApi<Form>()
+    const form = new FormApi({ defaultValues: {} as Form })
     form.mount()
     form.setErrorMap({
       onChange: "name can't be Josh",
@@ -2014,7 +2018,7 @@ describe('form api', () => {
     interface Form {
       name: string
     }
-    const form = new FormApi<Form>()
+    const form = new FormApi({ defaultValues: {} as Form })
     form.mount()
     form.setErrorMap({
       onChange: "name can't be Josh",
