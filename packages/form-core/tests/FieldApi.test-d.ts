@@ -1,4 +1,4 @@
-import { assertType, it } from 'vitest'
+import { assertType, describe, it } from 'vitest'
 import { FieldApi, FormApi } from '../src/index'
 
 it('should type value properly', () => {
@@ -24,7 +24,7 @@ it('should type value when nothing is passed into constructor', () => {
     age?: number
   }
 
-  const form = new FormApi({defaultValues: {} as FormValues})
+  const form = new FormApi({ defaultValues: {} as FormValues })
 
   const field = new FieldApi({
     form,
@@ -233,4 +233,30 @@ it('should have the correct types returned from form validators in array', () =>
   } as const)
 
   assertType<Array<'123' | undefined>>(form.state.errors)
+})
+
+describe('standard schema validator', () => {
+  it('', () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      validators: {
+        onChange: () => {
+          return {
+            fields: {
+              firstName: 'Testing' as const,
+            },
+          }
+        },
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+
+    assertType<'Testing'>(field.getMeta().errorMap.onChange)
+  })
 })
