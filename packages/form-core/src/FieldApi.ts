@@ -112,6 +112,11 @@ export type UnwrapFieldValidateOrFn<
   TValidateOrFn extends undefined | FieldValidateOrFn<any, any, any>,
   TFormValidateOrFn extends undefined | FormValidateOrFn<any>,
 > =
+  | ([TFormValidateOrFn] extends [StandardSchemaV1<any, infer TStandardOut>]
+      ? TName extends keyof TStandardOut
+        ? StandardSchemaV1Issue[]
+        : undefined
+      : undefined)
   | (UnwrapFormValidateOrFn<TFormValidateOrFn> extends infer TFormValidateVal
       ? TFormValidateVal extends { fields: any }
         ? TName extends keyof TFormValidateVal['fields']
@@ -177,6 +182,11 @@ export type UnwrapFieldAsyncValidateOrFn<
   TValidateOrFn extends undefined | FieldAsyncValidateOrFn<any, any, any>,
   TFormValidateOrFn extends undefined | FormAsyncValidateOrFn<any>,
 > =
+  | ([TFormValidateOrFn] extends [StandardSchemaV1<any, infer TStandardOut>]
+      ? TName extends keyof TStandardOut
+        ? StandardSchemaV1Issue[]
+        : undefined
+      : undefined)
   | (UnwrapFormAsyncValidateOrFn<TFormValidateOrFn> extends infer TFormValidateVal
       ? TFormValidateVal extends { fields: any }
         ? TName extends keyof TFormValidateVal['fields']
