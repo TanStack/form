@@ -30,7 +30,6 @@ export type FieldValidateFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TReturnType = unknown,
 > = (props: {
   value: TData
   fieldApi: FieldApi<
@@ -56,7 +55,7 @@ export type FieldValidateFn<
     any,
     any
   >
-}) => TReturnType
+}) => unknown
 
 /**
  * @private
@@ -71,7 +70,6 @@ export type FieldValidateOrFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TReturnType = unknown,
 > =
   | (TFieldValidator extends Validator<TData, infer TFN, infer _TReturnType>
       ? TFN
@@ -83,14 +81,7 @@ export type FieldValidateOrFn<
     >
       ? FFN
       : never)
-  | FieldValidateFn<
-      TParentData,
-      TName,
-      TFieldValidator,
-      TFormValidator,
-      TData,
-      TReturnType
-    >
+  | FieldValidateFn<TParentData, TName, TFieldValidator, TFormValidator, TData>
   | StandardSchemaV1<TData, unknown>
 
 /**
@@ -106,7 +97,6 @@ export type FieldValidateAsyncFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TReturnType = unknown,
 > = (options: {
   value: TData
   fieldApi: FieldApi<
@@ -133,7 +123,7 @@ export type FieldValidateAsyncFn<
     any
   >
   signal: AbortSignal
-}) => TReturnType | Promise<TReturnType>
+}) => unknown | Promise<unknown>
 
 /**
  * @private
@@ -148,7 +138,6 @@ export type FieldAsyncValidateOrFn<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TReturnType = unknown,
 > =
   | (TFieldValidator extends Validator<TData, infer TFN, infer _TReturnType>
       ? TFN
@@ -165,46 +154,24 @@ export type FieldAsyncValidateOrFn<
       TName,
       TFieldValidator,
       TFormValidator,
-      TData,
-      TReturnType
+      TData
     >
   | StandardSchemaV1<TData, unknown>
 
 export type GetFieldAsyncValidatorMeta<
-  TValidator extends FieldAsyncValidateOrFn<
-    unknown,
-    string,
-    any,
-    any,
-    unknown,
-    unknown
-  >,
+  TValidator extends FieldAsyncValidateOrFn<unknown, string, any, any, unknown>,
 > = TValidator
 
 export type GetFieldValidatorMeta<
-  TValidator extends FieldValidateOrFn<
-    unknown,
-    string,
-    any,
-    any,
-    unknown,
-    unknown
-  >,
+  TValidator extends FieldValidateOrFn<unknown, string, any, any, unknown>,
 > =
   TValidator extends Validator<unknown, any, any>
     ? // Hardcoded for now, but we should probably make this more dynamic
       string
     : TValidator extends StandardSchemaV1<unknown, infer TStandardOut>
       ? TStandardOut
-      : TValidator extends FieldValidateFn<
-            unknown,
-            string,
-            any,
-            any,
-            any,
-            infer TOut
-          >
-        ? TOut
+      : TValidator extends FieldValidateFn<unknown, string, any, any, any>
+        ? ReturnType<TValidator>
         : [TValidator] extends [undefined]
           ? undefined
           : never
@@ -267,8 +234,7 @@ export interface FieldValidators<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnChange extends
     | undefined
@@ -277,8 +243,7 @@ export interface FieldValidators<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnChangeAsync extends
     | undefined
@@ -287,8 +252,7 @@ export interface FieldValidators<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnBlur extends
     | undefined
@@ -297,8 +261,7 @@ export interface FieldValidators<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnBlurAsync extends
     | undefined
@@ -307,8 +270,7 @@ export interface FieldValidators<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnSubmit extends
     | undefined
@@ -317,8 +279,7 @@ export interface FieldValidators<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnSubmitAsync extends
     | undefined
@@ -327,8 +288,7 @@ export interface FieldValidators<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
 > {
   /**
@@ -462,8 +422,7 @@ export interface FieldOptions<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnChange extends
     | undefined
@@ -472,8 +431,7 @@ export interface FieldOptions<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnChangeAsync extends
     | undefined
@@ -482,8 +440,7 @@ export interface FieldOptions<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnBlur extends
     | undefined
@@ -492,8 +449,7 @@ export interface FieldOptions<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnBlurAsync extends
     | undefined
@@ -502,8 +458,7 @@ export interface FieldOptions<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnSubmit extends
     | undefined
@@ -512,8 +467,7 @@ export interface FieldOptions<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnSubmitAsync extends
     | undefined
@@ -522,8 +476,7 @@ export interface FieldOptions<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
 > {
   /**
@@ -614,8 +567,7 @@ export interface FieldApiOptions<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnChange extends
     | undefined
@@ -624,8 +576,7 @@ export interface FieldApiOptions<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnChangeAsync extends
     | undefined
@@ -634,8 +585,7 @@ export interface FieldApiOptions<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnBlur extends
     | undefined
@@ -644,8 +594,7 @@ export interface FieldApiOptions<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnBlurAsync extends
     | undefined
@@ -654,8 +603,7 @@ export interface FieldApiOptions<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnSubmit extends
     | undefined
@@ -664,8 +612,7 @@ export interface FieldApiOptions<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnSubmitAsync extends
     | undefined
@@ -674,8 +621,7 @@ export interface FieldApiOptions<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TFormOnMountReturn = undefined,
   TFormOnChangeReturn = undefined,
@@ -730,8 +676,7 @@ export type FieldMetaBase<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnChange extends
     | undefined
@@ -740,8 +685,7 @@ export type FieldMetaBase<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnChangeAsync extends
     | undefined
@@ -750,8 +694,7 @@ export type FieldMetaBase<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnBlur extends
     | undefined
@@ -760,8 +703,7 @@ export type FieldMetaBase<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnBlurAsync extends
     | undefined
@@ -770,8 +712,7 @@ export type FieldMetaBase<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnSubmit extends
     | undefined
@@ -780,8 +721,7 @@ export type FieldMetaBase<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnSubmitAsync extends
     | undefined
@@ -790,8 +730,7 @@ export type FieldMetaBase<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
 > = {
   /**
@@ -857,8 +796,7 @@ export type FieldMetaDerived<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnChange extends
     | undefined
@@ -867,8 +805,7 @@ export type FieldMetaDerived<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnChangeAsync extends
     | undefined
@@ -877,8 +814,7 @@ export type FieldMetaDerived<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnBlur extends
     | undefined
@@ -887,8 +823,7 @@ export type FieldMetaDerived<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnBlurAsync extends
     | undefined
@@ -897,8 +832,7 @@ export type FieldMetaDerived<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnSubmit extends
     | undefined
@@ -907,8 +841,7 @@ export type FieldMetaDerived<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnSubmitAsync extends
     | undefined
@@ -917,8 +850,7 @@ export type FieldMetaDerived<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
 > = {
   /**
@@ -960,8 +892,7 @@ export type FieldMeta<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnChange extends
     | undefined
@@ -970,8 +901,7 @@ export type FieldMeta<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnChangeAsync extends
     | undefined
@@ -980,8 +910,7 @@ export type FieldMeta<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnBlur extends
     | undefined
@@ -990,8 +919,7 @@ export type FieldMeta<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnBlurAsync extends
     | undefined
@@ -1000,8 +928,7 @@ export type FieldMeta<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnSubmit extends
     | undefined
@@ -1010,8 +937,7 @@ export type FieldMeta<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnSubmitAsync extends
     | undefined
@@ -1020,8 +946,7 @@ export type FieldMeta<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
 > = FieldMetaBase<
   TParentData,
@@ -1087,8 +1012,7 @@ export type FieldState<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnChange extends
     | undefined
@@ -1097,8 +1021,7 @@ export type FieldState<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnChangeAsync extends
     | undefined
@@ -1107,8 +1030,7 @@ export type FieldState<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnBlur extends
     | undefined
@@ -1117,8 +1039,7 @@ export type FieldState<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnBlurAsync extends
     | undefined
@@ -1127,8 +1048,7 @@ export type FieldState<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnSubmit extends
     | undefined
@@ -1137,8 +1057,7 @@ export type FieldState<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnSubmitAsync extends
     | undefined
@@ -1147,8 +1066,7 @@ export type FieldState<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
 > = {
   /**
@@ -1228,8 +1146,7 @@ export class FieldApi<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnChange extends
     | undefined
@@ -1238,8 +1155,7 @@ export class FieldApi<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnChangeAsync extends
     | undefined
@@ -1248,8 +1164,7 @@ export class FieldApi<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnBlur extends
     | undefined
@@ -1258,8 +1173,7 @@ export class FieldApi<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnBlurAsync extends
     | undefined
@@ -1268,8 +1182,7 @@ export class FieldApi<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnSubmit extends
     | undefined
@@ -1278,8 +1191,7 @@ export class FieldApi<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TOnSubmitAsync extends
     | undefined
@@ -1288,8 +1200,7 @@ export class FieldApi<
         TName,
         TFieldValidator,
         TFormValidator,
-        TData,
-        unknown
+        TData
       > = undefined,
   TFormOnMountReturn = undefined,
   TFormOnChangeReturn = undefined,
