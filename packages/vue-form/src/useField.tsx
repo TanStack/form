@@ -1,7 +1,7 @@
 import { FieldApi } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
 import { defineComponent, onMounted, onUnmounted, watch } from 'vue'
-import type { DeepKeys, DeepValue, Validator } from '@tanstack/form-core'
+import type { DeepKeys, DeepValue } from '@tanstack/form-core'
 import type {
   ComponentOptionsMixin,
   CreateComponentPublicInstanceWithMixins,
@@ -16,9 +16,6 @@ import type { UseFieldOptions } from './types'
 
 export type FieldComponent<
   TParentData,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TFormOnMountReturn = undefined,
   TFormOnChangeReturn = undefined,
   TFormOnChangeAsyncReturn = undefined,
@@ -31,9 +28,6 @@ export type FieldComponent<
   // This allows us to pre-bind some generics while keeping the props type unbound generics for props-based inferencing
 > = new <
   TName extends DeepKeys<TParentData> = DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
@@ -47,8 +41,6 @@ export type FieldComponent<
     FieldComponentProps<
       TParentData,
       TName,
-      TFieldValidator,
-      TFormValidator,
       TData,
       TOnMountReturn,
       TOnChangeReturn,
@@ -75,8 +67,6 @@ export type FieldComponent<
     FieldComponentProps<
       TParentData,
       TName,
-      TFieldValidator,
-      TFormValidator,
       TData,
       TOnMountReturn,
       TOnChangeReturn,
@@ -112,8 +102,6 @@ export type FieldComponent<
       field: FieldApi<
         TParentData,
         TName,
-        TFieldValidator,
-        TFormValidator,
         TData,
         TOnMountReturn,
         TOnChangeReturn,
@@ -134,8 +122,6 @@ export type FieldComponent<
       state: FieldApi<
         TParentData,
         TName,
-        TFieldValidator,
-        TFormValidator,
         TData,
         TOnMountReturn,
         TOnChangeReturn,
@@ -159,9 +145,6 @@ export type FieldComponent<
 
 export interface VueFieldApi<
   TParentData,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TFormOnMountReturn = undefined,
   TFormOnChangeReturn = undefined,
   TFormOnChangeAsyncReturn = undefined,
@@ -173,7 +156,6 @@ export interface VueFieldApi<
 > {
   Field: FieldComponent<
     TParentData,
-    TFormValidator,
     TFormOnMountReturn,
     TFormOnChangeReturn,
     TFormOnChangeAsyncReturn,
@@ -187,9 +169,6 @@ export interface VueFieldApi<
 
 export type UseField<
   TParentData,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TFormOnMountReturn = undefined,
   TFormOnChangeReturn = undefined,
   TFormOnChangeAsyncReturn = undefined,
@@ -200,9 +179,6 @@ export type UseField<
   TFormOnServerReturn = undefined,
 > = <
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
@@ -216,8 +192,6 @@ export type UseField<
     UseFieldOptions<
       TParentData,
       TName,
-      TFieldValidator,
-      TFormValidator,
       TData,
       TOnMountReturn,
       TOnChangeReturn,
@@ -241,8 +215,6 @@ export type UseField<
   api: FieldApi<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
     TData,
     TOnMountReturn,
     TOnChangeReturn,
@@ -262,7 +234,6 @@ export type UseField<
   > &
     VueFieldApi<
       TParentData,
-      TFormValidator,
       TFormOnMountReturn,
       TFormOnChangeReturn,
       TFormOnChangeAsyncReturn,
@@ -277,8 +248,6 @@ export type UseField<
       FieldApi<
         TParentData,
         TName,
-        TFieldValidator,
-        TFormValidator,
         TData,
         TOnMountReturn,
         TOnChangeReturn,
@@ -303,12 +272,6 @@ export type UseField<
 export function useField<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
@@ -329,8 +292,6 @@ export function useField<
   opts: UseFieldOptions<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
     TData,
     TOnMountReturn,
     TOnChangeReturn,
@@ -359,7 +320,6 @@ export function useField<
     const extendedApi: typeof api &
       VueFieldApi<
         TParentData,
-        TFormValidator,
         TFormOnMountReturn,
         TFormOnChangeReturn,
         TFormOnChangeAsyncReturn,
@@ -400,12 +360,6 @@ export function useField<
 export type FieldComponentProps<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
@@ -425,8 +379,6 @@ export type FieldComponentProps<
 > = UseFieldOptions<
   TParentData,
   TName,
-  TFieldValidator,
-  TFormValidator,
   TData,
   TOnMountReturn,
   TOnChangeReturn,
@@ -449,12 +401,6 @@ export const Field = defineComponent(
   <
     TParentData,
     TName extends DeepKeys<TParentData>,
-    TFieldValidator extends
-      | Validator<DeepValue<TParentData, TName>, unknown>
-      | undefined = undefined,
-    TFormValidator extends
-      | Validator<TParentData, unknown>
-      | undefined = undefined,
     TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
     TOnMountReturn = undefined,
     TOnChangeReturn = undefined,
@@ -475,8 +421,6 @@ export const Field = defineComponent(
     fieldOptions: UseFieldOptions<
       TParentData,
       TName,
-      TFieldValidator,
-      TFormValidator,
       TData,
       TOnMountReturn,
       TOnChangeReturn,

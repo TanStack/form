@@ -1,9 +1,8 @@
 import { injectStore as injectAngularStore } from '@tanstack/angular-store'
-import type { FormApi, FormState, Validator } from '@tanstack/form-core'
+import type { FormApi, FormState } from '@tanstack/form-core'
 
 export function injectStore<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
   TOnChangeAsyncReturn = undefined,
@@ -16,7 +15,6 @@ export function injectStore<
 >(
   form: FormApi<
     TFormData,
-    TFormValidator,
     TOnMountReturn,
     TOnChangeReturn,
     TOnChangeAsyncReturn,

@@ -2,7 +2,7 @@ import { FormApi } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
 import { defineComponent, h, onMounted } from 'vue'
 import { Field, useField } from './useField'
-import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
+import type { FormOptions, FormState } from '@tanstack/form-core'
 import type { NoInfer } from '@tanstack/vue-store'
 import type {
   ComponentOptionsMixin,
@@ -109,7 +109,6 @@ type SubscribeComponent<
 
 export interface VueFormApi<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
   TFormOnMountReturn = undefined,
   TFormOnChangeReturn = undefined,
   TFormOnChangeAsyncReturn = undefined,
@@ -121,7 +120,6 @@ export interface VueFormApi<
 > {
   Field: FieldComponent<
     TFormData,
-    TFormValidator,
     TFormOnMountReturn,
     TFormOnChangeReturn,
     TFormOnChangeAsyncReturn,
@@ -133,7 +131,6 @@ export interface VueFormApi<
   >
   useField: UseField<
     TFormData,
-    TFormValidator,
     TFormOnMountReturn,
     TFormOnChangeReturn,
     TFormOnChangeAsyncReturn,
@@ -189,7 +186,6 @@ export interface VueFormApi<
 
 export function useForm<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
   TFormOnMountReturn = undefined,
   TFormOnChangeReturn = undefined,
   TFormOnChangeAsyncReturn = undefined,
@@ -201,7 +197,6 @@ export function useForm<
 >(
   opts?: FormOptions<
     TFormData,
-    TFormValidator,
     TFormOnMountReturn,
     TFormOnChangeReturn,
     TFormOnChangeAsyncReturn,
@@ -215,7 +210,6 @@ export function useForm<
   const formApi = (() => {
     const api = new FormApi<
       TFormData,
-      TFormValidator,
       TFormOnMountReturn,
       TFormOnChangeReturn,
       TFormOnChangeAsyncReturn,
@@ -229,7 +223,6 @@ export function useForm<
     const extendedApi: typeof api &
       VueFormApi<
         TFormData,
-        TFormValidator,
         TFormOnMountReturn,
         TFormOnChangeReturn,
         TFormOnChangeAsyncReturn,

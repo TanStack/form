@@ -1,8 +1,7 @@
-import type { FormApi, FormTransform, Validator } from '@tanstack/form-core'
+import type { FormApi, FormTransform } from '@tanstack/form-core'
 
 export function useTransform<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
   TOnChangeAsyncReturn = undefined,
@@ -15,7 +14,6 @@ export function useTransform<
     formBase: FormApi<any, any, any, any, any, any, any, any, any>,
   ) => FormApi<
     TFormData,
-    TFormValidator,
     TOnMountReturn,
     TOnChangeReturn,
     TOnChangeAsyncReturn,
@@ -27,7 +25,6 @@ export function useTransform<
   deps: unknown[],
 ): FormTransform<
   TFormData,
-  TFormValidator,
   TOnMountReturn,
   TOnChangeReturn,
   TOnChangeAsyncReturn,

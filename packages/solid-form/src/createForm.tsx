@@ -4,13 +4,12 @@ import { useStore } from '@tanstack/solid-store'
 import { Field, createField } from './createField'
 import type { JSXElement } from 'solid-js'
 import type { CreateField, FieldComponent } from './createField'
-import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
+import type { FormOptions, FormState } from '@tanstack/form-core'
 
 type NoInfer<T> = [T][T extends any ? 0 : never]
 
 export interface SolidFormApi<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
   TFormOnMountReturn = undefined,
   TFormOnChangeReturn = undefined,
   TFormOnChangeAsyncReturn = undefined,
@@ -22,7 +21,6 @@ export interface SolidFormApi<
 > {
   Field: FieldComponent<
     TFormData,
-    TFormValidator,
     TFormOnMountReturn,
     TFormOnChangeReturn,
     TFormOnChangeAsyncReturn,
@@ -34,7 +32,6 @@ export interface SolidFormApi<
   >
   createField: CreateField<
     TFormData,
-    TFormValidator,
     TFormOnMountReturn,
     TFormOnChangeReturn,
     TFormOnChangeAsyncReturn,
@@ -111,9 +108,6 @@ export interface SolidFormApi<
 
 export function createForm<
   TParentData,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TFormOnMountReturn = undefined,
   TFormOnChangeReturn = undefined,
   TFormOnChangeAsyncReturn = undefined,
@@ -125,7 +119,6 @@ export function createForm<
 >(
   opts?: () => FormOptions<
     TParentData,
-    TFormValidator,
     TFormOnMountReturn,
     TFormOnChangeReturn,
     TFormOnChangeAsyncReturn,
@@ -139,7 +132,6 @@ export function createForm<
   const options = opts?.()
   const api = new FormApi<
     TParentData,
-    TFormValidator,
     TFormOnMountReturn,
     TFormOnChangeReturn,
     TFormOnChangeAsyncReturn,
@@ -152,7 +144,6 @@ export function createForm<
   const extendedApi: typeof api &
     SolidFormApi<
       TParentData,
-      TFormValidator,
       TFormOnMountReturn,
       TFormOnChangeReturn,
       TFormOnChangeAsyncReturn,

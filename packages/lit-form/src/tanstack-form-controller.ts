@@ -7,7 +7,6 @@ import type {
   DeepValue,
   FieldOptions,
   FormOptions,
-  Validator,
 } from '@tanstack/form-core'
 import type { ElementPart, PartInfo } from 'lit/directive.js'
 import type { ReactiveController, ReactiveControllerHost } from 'lit'
@@ -15,12 +14,6 @@ import type { ReactiveController, ReactiveControllerHost } from 'lit'
 type renderCallback<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
@@ -41,8 +34,6 @@ type renderCallback<
   fieldOptions: FieldApi<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
     TData,
     TOnMountReturn,
     TOnChangeReturn,
@@ -65,12 +56,6 @@ type renderCallback<
 type fieldDirectiveType<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
@@ -90,7 +75,6 @@ type fieldDirectiveType<
 > = (
   form: FormApi<
     TParentData,
-    TFormValidator,
     TFormOnMountReturn,
     TFormOnChangeReturn,
     TFormOnChangeAsyncReturn,
@@ -103,8 +87,6 @@ type fieldDirectiveType<
   options: FieldOptions<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
     TData,
     TOnMountReturn,
     TOnChangeReturn,
@@ -117,8 +99,6 @@ type fieldDirectiveType<
   render: renderCallback<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
     TData,
     TOnMountReturn,
     TOnChangeReturn,
@@ -138,12 +118,10 @@ type fieldDirectiveType<
   >,
 ) => {
   values: {
-    form: FormApi<TParentData, TFormValidator>
+    form: FormApi<TParentData>
     options: FieldOptions<
       TParentData,
       TName,
-      TFieldValidator,
-      TFormValidator,
       TData,
       TOnMountReturn,
       TOnChangeReturn,
@@ -156,8 +134,6 @@ type fieldDirectiveType<
     render: renderCallback<
       TParentData,
       TName,
-      TFieldValidator,
-      TFormValidator,
       TData,
       TOnMountReturn,
       TOnChangeReturn,
@@ -180,9 +156,6 @@ type fieldDirectiveType<
 
 export class TanStackFormController<
   TParentData,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TFormOnMountReturn = undefined,
   TFormOnChangeReturn = undefined,
   TFormOnChangeAsyncReturn = undefined,
@@ -198,7 +171,6 @@ export class TanStackFormController<
 
   api: FormApi<
     TParentData,
-    TFormValidator,
     TFormOnMountReturn,
     TFormOnChangeReturn,
     TFormOnChangeAsyncReturn,
@@ -213,7 +185,6 @@ export class TanStackFormController<
     host: ReactiveControllerHost,
     config?: FormOptions<
       TParentData,
-      TFormValidator,
       TFormOnMountReturn,
       TFormOnChangeReturn,
       TFormOnChangeAsyncReturn,
@@ -228,7 +199,6 @@ export class TanStackFormController<
 
     this.api = new FormApi<
       TParentData,
-      TFormValidator,
       TFormOnMountReturn,
       TFormOnChangeReturn,
       TFormOnChangeAsyncReturn,
@@ -252,9 +222,6 @@ export class TanStackFormController<
 
   field<
     TName extends DeepKeys<TParentData>,
-    TFieldValidator extends
-      | Validator<DeepValue<TParentData, TName>, unknown>
-      | undefined = undefined,
     TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
     TOnMountReturn = undefined,
     TOnChangeReturn = undefined,
@@ -267,8 +234,6 @@ export class TanStackFormController<
     fieldConfig: FieldOptions<
       TParentData,
       TName,
-      TFieldValidator,
-      TFormValidator,
       TData,
       TOnMountReturn,
       TOnChangeReturn,
@@ -281,8 +246,6 @@ export class TanStackFormController<
     render: renderCallback<
       TParentData,
       TName,
-      TFieldValidator,
-      TFormValidator,
       TData,
       TOnMountReturn,
       TOnChangeReturn,
@@ -305,8 +268,6 @@ export class TanStackFormController<
       fieldDirective as unknown as fieldDirectiveType<
         TParentData,
         TName,
-        TFieldValidator,
-        TFormValidator,
         TData,
         TOnMountReturn,
         TOnChangeReturn,
@@ -331,12 +292,6 @@ export class TanStackFormController<
 class FieldDirective<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
@@ -358,8 +313,6 @@ class FieldDirective<
   #field?: FieldApi<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
     TData,
     TOnMountReturn,
     TOnChangeReturn,
@@ -421,7 +374,6 @@ class FieldDirective<
   render(
     _form: FormApi<
       TParentData,
-      TFormValidator,
       TFormOnMountReturn,
       TFormOnChangeReturn,
       TFormOnChangeAsyncReturn,
@@ -434,8 +386,6 @@ class FieldDirective<
     _fieldConfig: FieldOptions<
       TParentData,
       TName,
-      TFieldValidator,
-      TFormValidator,
       TData,
       TOnMountReturn,
       TOnChangeReturn,
@@ -448,8 +398,6 @@ class FieldDirective<
     _renderCallback: renderCallback<
       TParentData,
       TName,
-      TFieldValidator,
-      TFormValidator,
       TData,
       TOnMountReturn,
       TOnChangeReturn,

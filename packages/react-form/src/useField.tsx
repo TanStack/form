@@ -4,13 +4,10 @@ import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type { FunctionComponent, ReactNode } from 'react'
 import type { UseFieldOptions } from './types'
-import type { DeepKeys, DeepValue, Validator } from '@tanstack/form-core'
+import type { DeepKeys, DeepValue } from '@tanstack/form-core'
 
 interface ReactFieldApi<
   TParentData,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TFormOnMountReturn = undefined,
   TFormOnChangeReturn = undefined,
   TFormOnChangeAsyncReturn = undefined,
@@ -24,7 +21,6 @@ interface ReactFieldApi<
    */
   Field: FieldComponent<
     TParentData,
-    TFormValidator,
     TFormOnMountReturn,
     TFormOnChangeReturn,
     TFormOnChangeAsyncReturn,
@@ -42,9 +38,6 @@ interface ReactFieldApi<
  */
 export type UseField<
   TParentData,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TFormOnMountReturn = undefined,
   TFormOnChangeReturn = undefined,
   TFormOnChangeAsyncReturn = undefined,
@@ -54,9 +47,6 @@ export type UseField<
   TFormOnSubmitAsyncReturn = undefined,
 > = <
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
@@ -70,8 +60,6 @@ export type UseField<
     UseFieldOptions<
       TParentData,
       TName,
-      TFieldValidator,
-      TFormValidator,
       TData,
       TOnMountReturn,
       TOnChangeReturn,
@@ -93,8 +81,6 @@ export type UseField<
 ) => FieldApi<
   TParentData,
   TName,
-  TFieldValidator,
-  TFormValidator,
   TData,
   TOnMountReturn,
   TOnChangeReturn,
@@ -121,12 +107,6 @@ export type UseField<
 export function useField<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
@@ -146,8 +126,6 @@ export function useField<
   opts: UseFieldOptions<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
     TData,
     TOnMountReturn,
     TOnChangeReturn,
@@ -172,8 +150,7 @@ export function useField<
       name: opts.name,
     })
 
-    const extendedApi: typeof api & ReactFieldApi<TParentData, TFormValidator> =
-      api as never
+    const extendedApi: typeof api & ReactFieldApi<TParentData> = api as never
 
     extendedApi.Field = Field as never
 
@@ -208,12 +185,6 @@ export function useField<
 type FieldComponentProps<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
@@ -234,8 +205,6 @@ type FieldComponentProps<
     fieldApi: FieldApi<
       TParentData,
       TName,
-      TFieldValidator,
-      TFormValidator,
       TData,
       TOnMountReturn,
       TOnChangeReturn,
@@ -256,8 +225,6 @@ type FieldComponentProps<
 } & UseFieldOptions<
   TParentData,
   TName,
-  TFieldValidator,
-  TFormValidator,
   TData,
   TOnMountReturn,
   TOnChangeReturn,
@@ -280,9 +247,6 @@ type FieldComponentProps<
  */
 export type FieldComponent<
   TParentData,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TFormOnMountReturn = undefined,
   TFormOnChangeReturn = undefined,
   TFormOnChangeAsyncReturn = undefined,
@@ -292,9 +256,6 @@ export type FieldComponent<
   TFormOnSubmitAsyncReturn = undefined,
 > = <
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
@@ -310,8 +271,6 @@ export type FieldComponent<
   FieldComponentProps<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
     TData,
     TOnMountReturn,
     TOnChangeReturn,
@@ -339,12 +298,6 @@ export type FieldComponent<
 export const Field = (<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
@@ -366,8 +319,6 @@ export const Field = (<
 }: FieldComponentProps<
   TParentData,
   TName,
-  TFieldValidator,
-  TFormValidator,
   TData,
   TOnMountReturn,
   TOnChangeReturn,
@@ -399,8 +350,6 @@ export const Field = (<
   return (<>{jsxToDisplay}</>) as never
 }) satisfies FunctionComponent<
   FieldComponentProps<
-    any,
-    any,
     any,
     any,
     any,

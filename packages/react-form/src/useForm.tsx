@@ -8,10 +8,9 @@ import type { FieldComponent } from './useField'
 import type { NoInfer } from '@tanstack/react-store'
 import type {
   AnyFormApi,
+  AnyFormState,
   FormOptions,
   FormState,
-  Validator,
-  AnyFormState,
 } from '@tanstack/form-core'
 
 /**
@@ -19,7 +18,6 @@ import type {
  */
 export interface ReactFormApi<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
   TOnChangeAsyncReturn = undefined,
@@ -33,7 +31,6 @@ export interface ReactFormApi<
    */
   Field: FieldComponent<
     TFormData,
-    TFormValidator,
     TOnMountReturn,
     TOnChangeReturn,
     TOnChangeAsyncReturn,
@@ -82,7 +79,6 @@ export interface ReactFormApi<
  */
 export type ReactFormExtendedApi<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
   TOnChangeAsyncReturn = undefined,
@@ -92,7 +88,6 @@ export type ReactFormExtendedApi<
   TOnSubmitAsyncReturn = undefined,
 > = FormApi<
   TFormData,
-  TFormValidator,
   TOnMountReturn,
   TOnChangeReturn,
   TOnChangeAsyncReturn,
@@ -103,7 +98,6 @@ export type ReactFormExtendedApi<
 > &
   ReactFormApi<
     TFormData,
-    TFormValidator,
     TOnMountReturn,
     TOnChangeReturn,
     TOnChangeAsyncReturn,
@@ -133,7 +127,6 @@ function LocalSubscribe({
  */
 export function useForm<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
   TOnChangeAsyncReturn = undefined,
@@ -144,7 +137,6 @@ export function useForm<
 >(
   opts?: FormOptions<
     TFormData,
-    TFormValidator,
     TOnMountReturn,
     TOnChangeReturn,
     TOnChangeAsyncReturn,
@@ -157,7 +149,6 @@ export function useForm<
   const [formApi] = useState(() => {
     const api = new FormApi<
       TFormData,
-      TFormValidator,
       TOnMountReturn,
       TOnChangeReturn,
       TOnChangeAsyncReturn,
@@ -169,7 +160,6 @@ export function useForm<
 
     const extendedApi: ReactFormExtendedApi<
       TFormData,
-      TFormValidator,
       TOnMountReturn,
       TOnChangeReturn,
       TOnChangeAsyncReturn,

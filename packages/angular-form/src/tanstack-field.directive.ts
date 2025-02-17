@@ -14,7 +14,6 @@ import type {
   FieldOptions,
   FieldValidators,
   NoInfer as NoInferHack,
-  Validator,
 } from '@tanstack/form-core'
 
 @Directive({
@@ -25,12 +24,6 @@ import type {
 export class TanStackField<
     TParentData,
     const TName extends DeepKeys<TParentData>,
-    TFieldValidator extends
-      | Validator<DeepValue<TParentData, TName>, unknown>
-      | undefined = undefined,
-    TFormValidator extends
-      | Validator<TParentData, unknown>
-      | undefined = undefined,
     TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
     TOnMountReturn = undefined,
     TOnChangeReturn = undefined,
@@ -55,8 +48,6 @@ export class TanStackField<
     FieldOptions<
       TParentData,
       TName,
-      TFieldValidator,
-      TFormValidator,
       TData,
       TOnMountReturn,
       TOnChangeReturn,
@@ -74,10 +65,8 @@ export class TanStackField<
   @Input() defaultValue?: NoInferHack<TData>
   @Input({ transform: numberAttribute }) asyncDebounceMs?: number
   @Input({ transform: booleanAttribute }) asyncAlways?: boolean
-  @Input() validatorAdapter?: TFieldValidator
   @Input({ required: true }) tanstackField!: FormApi<
     TParentData,
-    TFormValidator,
     TFormOnMountReturn,
     TFormOnChangeReturn,
     TFormOnChangeAsyncReturn,
@@ -91,8 +80,6 @@ export class TanStackField<
     FieldValidators<
       TParentData,
       TName,
-      TFieldValidator,
-      TFormValidator,
       TData,
       TOnMountReturn,
       TOnChangeReturn,
@@ -103,16 +90,13 @@ export class TanStackField<
       TOnSubmitAsyncReturn
     >
   >
-  @Input() listeners?: NoInfer<
-    FieldListeners<TParentData, TName, TFieldValidator, TFormValidator, TData>
-  >
+  @Input() listeners?: NoInfer<FieldListeners<TParentData, TName, TData>>
   @Input() defaultMeta?: Partial<FieldMeta>
+  @Input() disableErrorFlat?: boolean
 
   api!: FieldApi<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
     TData,
     TOnMountReturn,
     TOnChangeReturn,
@@ -134,8 +118,6 @@ export class TanStackField<
   private getOptions(): FieldApiOptions<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
     TData,
     TOnMountReturn,
     TOnChangeReturn,
@@ -157,7 +139,7 @@ export class TanStackField<
       defaultValue: this.defaultValue,
       asyncDebounceMs: this.asyncDebounceMs,
       asyncAlways: this.asyncAlways,
-      validatorAdapter: this.validatorAdapter,
+      disableErrorFlat: this.disableErrorFlat,
       validators: this.validators,
       listeners: this.listeners,
       defaultMeta: this.defaultMeta,
