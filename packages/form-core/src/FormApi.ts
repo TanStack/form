@@ -20,7 +20,7 @@ import type {
   StandardSchemaV1Issue,
   TStandardSchemaValidatorValue,
 } from './standardSchemaValidator'
-import type { FieldApi, FieldMeta, FieldMetaBase } from './FieldApi'
+import type { AnyFieldMeta, AnyFieldMetaBase, FieldApi } from './FieldApi'
 import type {
   FormValidationError,
   FormValidationErrorMap,
@@ -33,7 +33,11 @@ import type {
 import type { DeepKeys, DeepValue } from './util-types'
 import type { Updater } from './utils'
 
-export type FieldsErrorMapFromValidator<
+/**
+ * @private
+ */
+// TODO: Add the `Unwrap` type to the errors
+type FormErrorMapFromValidator<
   TFormData,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
   TOnChange extends undefined | FormValidateOrFn<TFormData>,
@@ -83,12 +87,11 @@ export type FormValidateOrFn<TFormData> =
 
 export type UnwrapFormValidateOrFn<
   TValidateOrFn extends undefined | FormValidateOrFn<any>,
-> =
-  [TValidateOrFn] extends [FormValidateFn<any>]
-    ? ReturnType<TValidateOrFn>
-    : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
-      ? Record<string, StandardSchemaV1Issue[]>
-      : undefined
+> = [TValidateOrFn] extends [FormValidateFn<any>]
+  ? ReturnType<TValidateOrFn>
+  : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
+    ? Record<string, StandardSchemaV1Issue[]>
+    : undefined
 
 /**
  * @private
@@ -135,12 +138,11 @@ export type FormAsyncValidateOrFn<TFormData> =
 
 export type UnwrapFormAsyncValidateOrFn<
   TValidateOrFn extends undefined | FormAsyncValidateOrFn<any>,
-> =
-  [TValidateOrFn] extends [FormValidateAsyncFn<any>]
-    ? Awaited<ReturnType<TValidateOrFn>>
-    : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
-      ? Record<string, StandardSchemaV1Issue[]>
-      : undefined
+> = [TValidateOrFn] extends [FormValidateAsyncFn<any>]
+  ? Awaited<ReturnType<TValidateOrFn>>
+  : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
+    ? Record<string, StandardSchemaV1Issue[]>
+    : undefined
 
 export interface FormValidators<
   TFormData,
@@ -343,7 +345,26 @@ export type FieldInfo<TFormData> = {
   /**
    * An instance of the FieldAPI.
    */
-  instance: FieldApi<TFormData, any> | null
+  instance: FieldApi<
+    TFormData,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  > | null
   /**
    * A record of field validation internal handling.
    */
@@ -388,7 +409,7 @@ export type BaseFormState<
   /**
    * A record of field metadata for each field in the form, not including the derived properties, like `errors` and such
    */
-  fieldMetaBase: Record<DeepKeys<TFormData>, FieldMetaBase>
+  fieldMetaBase: Record<DeepKeys<TFormData>, AnyFieldMetaBase>
   /**
    * A boolean indicating if the form is currently in the process of being submitted after `handleSubmit` is called.
    *
@@ -483,7 +504,7 @@ export type DerivedFormState<
   /**
    * A record of field metadata for each field in the form.
    */
-  fieldMeta: Record<DeepKeys<TFormData>, FieldMeta>
+  fieldMeta: Record<DeepKeys<TFormData>, AnyFieldMeta>
 }
 
 export type FormState<
@@ -636,7 +657,7 @@ export class FormApi<
       TOnServer
     >
   >
-  fieldMetaDerived!: Derived<Record<DeepKeys<TFormData>, FieldMeta>>
+  fieldMetaDerived!: Derived<Record<DeepKeys<TFormData>, AnyFieldMeta>>
   store!: Derived<
     FormState<
       TFormData,
@@ -692,7 +713,7 @@ export class FormApi<
       deps: [this.baseStore],
       fn: ({ prevDepVals, currDepVals, prevVal: _prevVal }) => {
         const prevVal = _prevVal as
-          | Record<DeepKeys<TFormData>, FieldMeta>
+          | Record<DeepKeys<TFormData>, AnyFieldMeta>
           | undefined
         const prevBaseStore = prevDepVals?.[0]
         const currBaseStore = currDepVals[0]
@@ -716,11 +737,11 @@ export class FormApi<
         ) as Array<keyof typeof currBaseStore.fieldMetaBase>) {
           const currBaseVal = currBaseStore.fieldMetaBase[
             fieldName as never
-          ] as FieldMetaBase
+          ] as AnyFieldMetaBase
 
           const prevBaseVal = prevBaseStore?.fieldMetaBase[
             fieldName as never
-          ] as FieldMetaBase | undefined
+          ] as AnyFieldMetaBase | undefined
 
           const prevFieldInfo =
             prevVal?.[fieldName as never as keyof typeof prevVal]
@@ -760,7 +781,7 @@ export class FormApi<
             ...currBaseVal,
             errors: fieldErrors,
             isPristine: isFieldPristine,
-          } as FieldMeta
+          } as AnyFieldMeta
         }
 
         if (
@@ -795,7 +816,7 @@ export class FormApi<
 
         // Computed state
         const fieldMetaValues = Object.values(currBaseStore.fieldMetaBase) as (
-          | FieldMeta
+          | AnyFieldMeta
           | undefined
         )[]
 
@@ -1160,7 +1181,7 @@ export class FormApi<
     cause: ValidationCause,
   ): {
     hasErrored: boolean
-    fieldsErrorMap: FieldsErrorMapFromValidator<
+    fieldsErrorMap: FormErrorMapFromValidator<
       TFormData,
       TOnMount,
       TOnChange,
@@ -1174,7 +1195,7 @@ export class FormApi<
     const validates = getSyncValidatorArray(cause, this.options)
     let hasErrored = false as boolean
 
-    const fieldsErrorMap: FieldsErrorMapFromValidator<
+    const fieldsErrorMap: FormErrorMapFromValidator<
       TFormData,
       TOnMount,
       TOnChange,
@@ -1270,7 +1291,7 @@ export class FormApi<
   validateAsync = async (
     cause: ValidationCause,
   ): Promise<
-    FieldsErrorMapFromValidator<
+    FormErrorMapFromValidator<
       TFormData,
       TOnMount,
       TOnChange,
@@ -1298,6 +1319,7 @@ export class FormApi<
       | undefined
 
     for (const validateObj of validates) {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!validateObj.validate) continue
       const key = getErrorMapKey(validateObj.cause)
       const fieldValidatorMeta = this.state.validationMetaMap[key]
@@ -1379,7 +1401,7 @@ export class FormApi<
 
     let results: ValidationPromiseResult<TFormData>[] = []
 
-    const fieldsErrorMap: FieldsErrorMapFromValidator<
+    const fieldsErrorMap: FormErrorMapFromValidator<
       TFormData,
       TOnMount,
       TOnChange,
@@ -1424,7 +1446,7 @@ export class FormApi<
   validate = (
     cause: ValidationCause,
   ):
-    | FieldsErrorMapFromValidator<
+    | FormErrorMapFromValidator<
         TFormData,
         TOnMount,
         TOnChange,
@@ -1435,7 +1457,7 @@ export class FormApi<
         TOnSubmitAsync
       >
     | Promise<
-        FieldsErrorMapFromValidator<
+        FormErrorMapFromValidator<
           TFormData,
           TOnMount,
           TOnChange,
@@ -1538,7 +1560,7 @@ export class FormApi<
    */
   getFieldMeta = <TField extends DeepKeys<TFormData>>(
     field: TField,
-  ): FieldMeta | undefined => {
+  ): AnyFieldMeta | undefined => {
     return this.state.fieldMeta[field]
   }
 
@@ -1566,7 +1588,7 @@ export class FormApi<
    */
   setFieldMeta = <TField extends DeepKeys<TFormData>>(
     field: TField,
-    updater: Updater<FieldMeta<any, any, any, any, any, any, any>>,
+    updater: Updater<AnyFieldMeta>,
   ) => {
     this.baseStore.setState((prev) => {
       return {
@@ -1583,10 +1605,10 @@ export class FormApi<
   }
 
   resetFieldMeta = <TField extends DeepKeys<TFormData>>(
-    fieldMeta: Record<TField, FieldMeta>,
-  ): Record<TField, FieldMeta> => {
+    fieldMeta: Record<TField, AnyFieldMeta>,
+  ): Record<TField, AnyFieldMeta> => {
     return Object.keys(fieldMeta).reduce(
-      (acc: Record<TField, FieldMeta>, key) => {
+      (acc: Record<TField, AnyFieldMeta>, key) => {
         const fieldKey = key as TField
         acc[fieldKey] = {
           isValidating: false,
@@ -1599,7 +1621,7 @@ export class FormApi<
         }
         return acc
       },
-      {} as Record<TField, FieldMeta>,
+      {} as Record<TField, AnyFieldMeta>,
     )
   }
 
