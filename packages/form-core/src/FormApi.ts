@@ -12,10 +12,13 @@ import {
 } from './utils'
 import {
   isStandardSchemaValidator,
-  standardSchemaValidator,
+  standardSchemaValidators,
 } from './standardSchemaValidator'
 import { metaHelper } from './metaHelper'
-import type { StandardSchemaV1 } from './standardSchemaValidator'
+import type {
+  StandardSchemaV1,
+  TStandardSchemaValidatorValue,
+} from './standardSchemaValidator'
 import type { FieldApi, FieldMeta, FieldMetaBase } from './FieldApi'
 import type {
   FormValidationError,
@@ -25,8 +28,6 @@ import type {
   ValidationError,
   ValidationErrorMap,
   ValidationErrorMapKeys,
-  ValidationSource,
-  Validator,
 } from './types'
 import type { DeepKeys, DeepValue } from './util-types'
 import type { Updater } from './utils'
@@ -55,15 +56,10 @@ export type FieldsErrorMapFromValidator<
   >
 >
 
-export type FormValidateFn<
-  TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-  TReturnType = unknown,
-> = (props: {
+export type FormValidateFn<TFormData, TReturnType = unknown> = (props: {
   value: TFormData
   formApi: FormApi<
     TFormData,
-    TFormValidator,
     // This is technically an edge-type; which we try to keep non-`any`, but in this case
     // It's referring to an inaccessible type from the field validate function inner types, so it's not a big deal
     any,
@@ -79,29 +75,17 @@ export type FormValidateFn<
 /**
  * @private
  */
-export type FormValidateOrFn<
-  TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-  TReturnType = unknown,
-> =
-  TFormValidator extends Validator<TFormData, infer TFN>
-    ? TFN | FormValidateFn<TFormData, TFormValidator, TReturnType>
-    :
-        | FormValidateFn<TFormData, TFormValidator, TReturnType>
-        | StandardSchemaV1<TFormData, TReturnType>
+export type FormValidateOrFn<TFormData, TReturnType = unknown> =
+  | FormValidateFn<TFormData, TReturnType>
+  | StandardSchemaV1<TFormData, TReturnType>
 
 /**
  * @private
  */
-export type FormValidateAsyncFn<
-  TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-  TReturnType = unknown,
-> = (props: {
+export type FormValidateAsyncFn<TFormData, TReturnType = unknown> = (props: {
   value: TFormData
   formApi: FormApi<
     TFormData,
-    TFormValidator,
     // This is technically an edge-type; which we try to keep non-`any`, but in this case
     // It's referring to an inaccessible type from the field validate function inner types, so it's not a big deal
     any,
@@ -133,20 +117,12 @@ type ValidationPromiseResult<TFormData> =
 /**
  * @private
  */
-export type FormAsyncValidateOrFn<
-  TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-  TReturnType = undefined,
-> =
-  TFormValidator extends Validator<TFormData, infer FFN>
-    ? FFN | FormValidateAsyncFn<TFormData, TFormValidator, TReturnType>
-    :
-        | FormValidateAsyncFn<TFormData, TFormValidator, TReturnType>
-        | StandardSchemaV1<TFormData, TReturnType>
+export type FormAsyncValidateOrFn<TFormData, TReturnType = undefined> =
+  | FormValidateAsyncFn<TFormData, TReturnType>
+  | StandardSchemaV1<TFormData, TReturnType>
 
 export interface FormValidators<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
   TOnChangeAsyncReturn = undefined,
@@ -158,19 +134,15 @@ export interface FormValidators<
   /**
    * Optional function that fires as soon as the component mounts.
    */
-  onMount?: FormValidateOrFn<TFormData, TFormValidator, TOnMountReturn>
+  onMount?: FormValidateOrFn<TFormData, TOnMountReturn>
   /**
    * Optional function that checks the validity of your data whenever a value changes
    */
-  onChange?: FormValidateOrFn<TFormData, TFormValidator, TOnChangeReturn>
+  onChange?: FormValidateOrFn<TFormData, TOnChangeReturn>
   /**
    * Optional onChange asynchronous counterpart to onChange. Useful for more complex validation logic that might involve server requests.
    */
-  onChangeAsync?: FormAsyncValidateOrFn<
-    TFormData,
-    TFormValidator,
-    TOnChangeAsyncReturn
-  >
+  onChangeAsync?: FormAsyncValidateOrFn<TFormData, TOnChangeAsyncReturn>
   /**
    * The default time in milliseconds that if set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds.
    */
@@ -178,25 +150,17 @@ export interface FormValidators<
   /**
    * Optional function that validates the form data when a field loses focus, returns a `FormValidationError`
    */
-  onBlur?: FormValidateOrFn<TFormData, TFormValidator, TOnBlurReturn>
+  onBlur?: FormValidateOrFn<TFormData, TOnBlurReturn>
   /**
    * Optional onBlur asynchronous validation method for when a field loses focus returns a ` FormValidationError` or a promise of `Promise<FormValidationError>`
    */
-  onBlurAsync?: FormAsyncValidateOrFn<
-    TFormData,
-    TFormValidator,
-    TOnBlurAsyncReturn
-  >
+  onBlurAsync?: FormAsyncValidateOrFn<TFormData, TOnBlurAsyncReturn>
   /**
    * The default time in milliseconds that if set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds.
    */
   onBlurAsyncDebounceMs?: number
-  onSubmit?: FormValidateOrFn<TFormData, TFormValidator, TOnSubmitReturn>
-  onSubmitAsync?: FormAsyncValidateOrFn<
-    TFormData,
-    TFormValidator,
-    TOnSubmitAsyncReturn
-  >
+  onSubmit?: FormValidateOrFn<TFormData, TOnSubmitReturn>
+  onSubmitAsync?: FormAsyncValidateOrFn<TFormData, TOnSubmitAsyncReturn>
 }
 
 /**
@@ -204,7 +168,6 @@ export interface FormValidators<
  */
 export interface FormTransform<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
   TOnChangeAsyncReturn = undefined,
@@ -217,7 +180,6 @@ export interface FormTransform<
   fn: (
     formBase: FormApi<
       TFormData,
-      TFormValidator,
       TOnMountReturn,
       TOnChangeReturn,
       TOnChangeAsyncReturn,
@@ -229,7 +191,6 @@ export interface FormTransform<
     >,
   ) => FormApi<
     TFormData,
-    TFormValidator,
     TOnMountReturn,
     TOnChangeReturn,
     TOnChangeAsyncReturn,
@@ -247,7 +208,6 @@ export interface FormTransform<
  */
 export interface FormOptions<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
   TOnChangeAsyncReturn = undefined,
@@ -286,15 +246,10 @@ export interface FormOptions<
    */
   asyncDebounceMs?: number
   /**
-   * A validator adapter to support usage of extra validation types (IE: Zod, Yup, or Valibot usage)
-   */
-  validatorAdapter?: TFormValidator
-  /**
    * A list of validators to pass to the form
    */
   validators?: FormValidators<
     TFormData,
-    TFormValidator,
     TOnMountReturn,
     TOnChangeReturn,
     TOnChangeAsyncReturn,
@@ -310,7 +265,6 @@ export interface FormOptions<
     value: TFormData
     formApi: FormApi<
       TFormData,
-      TFormValidator,
       TOnMountReturn,
       TOnChangeReturn,
       TOnChangeAsyncReturn,
@@ -328,7 +282,6 @@ export interface FormOptions<
     value: TFormData
     formApi: FormApi<
       TFormData,
-      TFormValidator,
       TOnMountReturn,
       TOnChangeReturn,
       TOnChangeAsyncReturn,
@@ -341,7 +294,6 @@ export interface FormOptions<
   }) => void
   transform?: FormTransform<
     TFormData,
-    TFormValidator,
     TOnMountReturn,
     TOnChangeReturn,
     TOnChangeAsyncReturn,
@@ -366,19 +318,11 @@ export type ValidationMeta = {
 /**
  * An object representing the field information for a specific field within the form.
  */
-export type FieldInfo<
-  TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-> = {
+export type FieldInfo<TFormData> = {
   /**
    * An instance of the FieldAPI.
    */
-  instance: FieldApi<
-    TFormData,
-    any,
-    Validator<unknown, unknown> | undefined,
-    TFormValidator
-  > | null
+  instance: FieldApi<TFormData, any> | null
   /**
    * A record of field validation internal handling.
    */
@@ -614,18 +558,7 @@ function getDefaultFormState<
  *
  * A type representing the Form API with all generics set to `any` for convenience.
  */
-export type AnyFormApi = FormApi<
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any
->
+export type AnyFormApi = FormApi<any, any, any, any, any, any, any, any, any>
 
 /**
  * A class representing the Form API. It handles the logic and interactions with the form state.
@@ -636,7 +569,6 @@ export type AnyFormApi = FormApi<
  */
 export class FormApi<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
   TOnChangeAsyncReturn = undefined,
@@ -651,7 +583,6 @@ export class FormApi<
    */
   options: FormOptions<
     TFormData,
-    TFormValidator,
     TOnMountReturn,
     TOnChangeReturn,
     TOnChangeAsyncReturn,
@@ -691,8 +622,7 @@ export class FormApi<
   /**
    * A record of field information for each field in the form.
    */
-  fieldInfo: Record<DeepKeys<TFormData>, FieldInfo<TFormData, TFormValidator>> =
-    {} as any
+  fieldInfo: Record<DeepKeys<TFormData>, FieldInfo<TFormData>> = {} as any
 
   get state() {
     return this.store.state
@@ -709,7 +639,6 @@ export class FormApi<
   constructor(
     opts?: FormOptions<
       TFormData,
-      TFormValidator,
       TOnMountReturn,
       TOnChangeReturn,
       TOnChangeAsyncReturn,
@@ -770,9 +699,18 @@ export class FormApi<
             fieldErrors = Object.values(currBaseVal.errorMap ?? {}).filter(
               (val) => val !== undefined,
             ) as never
+
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            const fieldInstance = this.getFieldInfo(fieldName)?.instance
+
+            if (fieldInstance && !fieldInstance.options.disableErrorFlat) {
+              fieldErrors = (fieldErrors as undefined | string[])?.flat(
+                1,
+              ) as never
+            }
           }
 
-          // As a primitive, we don't need to aggressively persist the same referencial value for performance reasons
+          // As a primitive, we don't need to aggressively persist the same referential value for performance reasons
           const isFieldPristine = !currBaseVal.isDirty
 
           if (
@@ -973,30 +911,20 @@ export class FormApi<
    * @private
    */
   runValidator<
-    TValue extends {
-      value: TFormData
-      formApi: FormApi<any, any, any, any, any, any, any, any, any, any>
-      validationSource: ValidationSource
+    TValue extends TStandardSchemaValidatorValue<TFormData> & {
+      formApi: AnyFormApi
     },
     TType extends 'validate' | 'validateAsync',
     TReturnType = unknown,
   >(props: {
     validate: TType extends 'validate'
-      ? FormValidateOrFn<TFormData, TFormValidator, TReturnType>
-      : FormAsyncValidateOrFn<TFormData, TFormValidator, TReturnType>
+      ? FormValidateOrFn<TFormData, TReturnType>
+      : FormAsyncValidateOrFn<TFormData, TReturnType>
     value: TValue
     type: TType
-  }): ReturnType<ReturnType<Validator<any>>[TType]> {
-    const adapter = this.options.validatorAdapter
-    if (
-      adapter &&
-      (typeof props.validate !== 'function' || '~standard' in props.validate)
-    ) {
-      return adapter()[props.type](props.value, props.validate) as never
-    }
-
+  }): TReturnType {
     if (isStandardSchemaValidator(props.validate)) {
-      return standardSchemaValidator()()[props.type](
+      return standardSchemaValidators[props.type](
         props.value,
         props.validate,
       ) as never
@@ -1025,7 +953,6 @@ export class FormApi<
   update = (
     options?: FormOptions<
       TFormData,
-      TFormValidator,
       TOnMountReturn,
       TOnChangeReturn,
       TOnChangeAsyncReturn,
@@ -1110,24 +1037,24 @@ export class FormApi<
   validateAllFields = async (cause: ValidationCause) => {
     const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
     batch(() => {
-      void (
-        Object.values(this.fieldInfo) as FieldInfo<any, TFormValidator>[]
-      ).forEach((field) => {
-        if (!field.instance) return
-        const fieldInstance = field.instance
-        // Validate the field
-        fieldValidationPromises.push(
-          // Remember, `validate` is either a sync operation or a promise
-          Promise.resolve().then(() =>
-            fieldInstance.validate(cause, { skipFormValidation: true }),
-          ),
-        )
-        // If any fields are not touched
-        if (!field.instance.state.meta.isTouched) {
-          // Mark them as touched
-          field.instance.setMeta((prev) => ({ ...prev, isTouched: true }))
-        }
-      })
+      void (Object.values(this.fieldInfo) as FieldInfo<any>[]).forEach(
+        (field) => {
+          if (!field.instance) return
+          const fieldInstance = field.instance
+          // Validate the field
+          fieldValidationPromises.push(
+            // Remember, `validate` is either a sync operation or a promise
+            Promise.resolve().then(() =>
+              fieldInstance.validate(cause, { skipFormValidation: true }),
+            ),
+          )
+          // If any fields are not touched
+          if (!field.instance.state.meta.isTouched) {
+            // Mark them as touched
+            field.instance.setMeta((prev) => ({ ...prev, isTouched: true }))
+          }
+        },
+      )
     })
 
     const fieldErrorMapMap = await Promise.all(fieldValidationPromises)
@@ -1543,14 +1470,14 @@ export class FormApi<
     }
 
     batch(() => {
-      void (
-        Object.values(this.fieldInfo) as FieldInfo<TFormData, TFormValidator>[]
-      ).forEach((field) => {
-        field.instance?.options.listeners?.onSubmit?.({
-          value: field.instance.state.value,
-          fieldApi: field.instance,
-        })
-      })
+      void (Object.values(this.fieldInfo) as FieldInfo<TFormData>[]).forEach(
+        (field) => {
+          field.instance?.options.listeners?.onSubmit?.({
+            value: field.instance.state.value,
+            fieldApi: field.instance,
+          })
+        },
+      )
     })
 
     try {
@@ -1588,7 +1515,7 @@ export class FormApi<
    */
   getFieldInfo = <TField extends DeepKeys<TFormData>>(
     field: TField,
-  ): FieldInfo<TFormData, TFormValidator> => {
+  ): FieldInfo<TFormData> => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     return (this.fieldInfo[field] ||= {
       instance: null,

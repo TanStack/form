@@ -1,7 +1,8 @@
 import { Derived, batch } from '@tanstack/store'
 import {
   isStandardSchemaValidator,
-  standardSchemaValidator,
+  standardSchemaValidators,
+  TStandardSchemaValidatorValue,
 } from './standardSchemaValidator'
 import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
 import type { FieldInfo, FieldsErrorMapFromValidator, FormApi } from './FormApi'
@@ -11,8 +12,6 @@ import type {
   ValidationCause,
   ValidationError,
   ValidationErrorMap,
-  ValidationSource,
-  Validator,
 } from './types'
 import type { DeepKeys, DeepValue, NoInfer } from './util-types'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
@@ -23,12 +22,6 @@ import type { AsyncValidator, SyncValidator, Updater } from './utils'
 export type FieldValidateFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TReturnType = unknown,
 > = (props: {
@@ -36,8 +29,6 @@ export type FieldValidateFn<
   fieldApi: FieldApi<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
     TData,
     // This is technically an edge-type; which we try to keep non-`any`, but in this case
     // It's referring to an inaccessible type from the field validate function inner types, so it's not a big deal
@@ -64,33 +55,10 @@ export type FieldValidateFn<
 export type FieldValidateOrFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TReturnType = unknown,
 > =
-  | (TFieldValidator extends Validator<TData, infer TFN, infer _TReturnType>
-      ? TFN
-      : never)
-  | (TFormValidator extends Validator<
-      TParentData,
-      infer FFN,
-      infer _TReturnType
-    >
-      ? FFN
-      : never)
-  | FieldValidateFn<
-      TParentData,
-      TName,
-      TFieldValidator,
-      TFormValidator,
-      TData,
-      TReturnType
-    >
+  | FieldValidateFn<TParentData, TName, TData, TReturnType>
   | StandardSchemaV1<TData, unknown>
 
 /**
@@ -99,12 +67,6 @@ export type FieldValidateOrFn<
 export type FieldValidateAsyncFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TReturnType = unknown,
 > = (options: {
@@ -112,8 +74,6 @@ export type FieldValidateAsyncFn<
   fieldApi: FieldApi<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
     TData,
     // This is technically an edge-type; which we try to keep non-`any`, but in this case
     // It's referring to an inaccessible type from the field validate function inner types, so it's not a big deal
@@ -141,33 +101,10 @@ export type FieldValidateAsyncFn<
 export type FieldAsyncValidateOrFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TReturnType = unknown,
 > =
-  | (TFieldValidator extends Validator<TData, infer TFN, infer _TReturnType>
-      ? TFN
-      : never)
-  | (TFormValidator extends Validator<
-      TParentData,
-      infer FFN,
-      infer _TReturnType
-    >
-      ? FFN
-      : never)
-  | FieldValidateAsyncFn<
-      TParentData,
-      TName,
-      TFieldValidator,
-      TFormValidator,
-      TData,
-      TReturnType
-    >
+  | FieldValidateAsyncFn<TParentData, TName, TData, TReturnType>
   | StandardSchemaV1<TData, unknown>
 
 /**
@@ -176,20 +113,12 @@ export type FieldAsyncValidateOrFn<
 export type FieldListenerFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (props: {
   value: TData
   fieldApi: FieldApi<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
     TData,
     // This is technically an edge-type; which we try to keep non-`any`, but in this case
     // It's referring to an inaccessible type from the field listener function inner types, so it's not a big deal
@@ -214,12 +143,6 @@ export type FieldListenerFn<
 export interface FieldValidators<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
@@ -232,28 +155,14 @@ export interface FieldValidators<
   /**
    * An optional function that takes a param of `formApi` which is a generic type of `TData` and `TParentData`
    */
-  onMount?: FieldValidateOrFn<
-    TParentData,
-    TName,
-    TFieldValidator,
-    TFormValidator,
-    TData,
-    TOnMountReturn
-  >
+  onMount?: FieldValidateOrFn<TParentData, TName, TData, TOnMountReturn>
   /**
    * An optional property that takes a `ValidateFn` which is a generic of `TData` and `TParentData`.
    * If `validatorAdapter` is passed, this may also accept a property from the respective adapter
    *
    * @example z.string().min(1) // if `zodAdapter` is passed
    */
-  onChange?: FieldValidateOrFn<
-    TParentData,
-    TName,
-    TFieldValidator,
-    TFormValidator,
-    TData,
-    TOnChangeReturn
-  >
+  onChange?: FieldValidateOrFn<TParentData, TName, TData, TOnChangeReturn>
   /**
    * An optional property similar to `onChange` but async validation. If `validatorAdapter`
    * is passed, this may also accept a property from the respective adapter
@@ -263,8 +172,6 @@ export interface FieldValidators<
   onChangeAsync?: FieldAsyncValidateOrFn<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
     TData,
     TOnChangeAsyncReturn
   >
@@ -284,14 +191,7 @@ export interface FieldValidators<
    *
    * @example z.string().min(1) // if `zodAdapter` is passed
    */
-  onBlur?: FieldValidateOrFn<
-    TParentData,
-    TName,
-    TFieldValidator,
-    TFormValidator,
-    TData,
-    TOnBlurReturn
-  >
+  onBlur?: FieldValidateOrFn<TParentData, TName, TData, TOnBlurReturn>
   /**
    * An optional property similar to `onBlur` but async validation. If `validatorAdapter`
    * is passed, this may also accept a property from the respective adapter
@@ -301,8 +201,6 @@ export interface FieldValidators<
   onBlurAsync?: FieldAsyncValidateOrFn<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
     TData,
     TOnBlurAsyncReturn
   >
@@ -323,14 +221,7 @@ export interface FieldValidators<
    *
    * @example z.string().min(1) // if `zodAdapter` is passed
    */
-  onSubmit?: FieldValidateOrFn<
-    TParentData,
-    TName,
-    TFieldValidator,
-    TFormValidator,
-    TData,
-    TOnSubmitReturn
-  >
+  onSubmit?: FieldValidateOrFn<TParentData, TName, TData, TOnSubmitReturn>
   /**
    * An optional property similar to `onSubmit` but async validation. If `validatorAdapter`
    * is passed, this may also accept a property from the respective adapter
@@ -340,8 +231,6 @@ export interface FieldValidators<
   onSubmitAsync?: FieldAsyncValidateOrFn<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
     TData,
     TOnSubmitAsyncReturn
   >
@@ -350,42 +239,12 @@ export interface FieldValidators<
 export interface FieldListeners<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
-  onChange?: FieldListenerFn<
-    TParentData,
-    TName,
-    TFieldValidator,
-    TFormValidator,
-    TData
-  >
-  onBlur?: FieldListenerFn<
-    TParentData,
-    TName,
-    TFieldValidator,
-    TFormValidator,
-    TData
-  >
-  onMount?: FieldListenerFn<
-    TParentData,
-    TName,
-    TFieldValidator,
-    TFormValidator,
-    TData
-  >
-  onSubmit?: FieldListenerFn<
-    TParentData,
-    TName,
-    TFieldValidator,
-    TFormValidator,
-    TData
-  >
+  onChange?: FieldListenerFn<TParentData, TName, TData>
+  onBlur?: FieldListenerFn<TParentData, TName, TData>
+  onMount?: FieldListenerFn<TParentData, TName, TData>
+  onSubmit?: FieldListenerFn<TParentData, TName, TData>
 }
 
 /**
@@ -394,12 +253,6 @@ export interface FieldListeners<
 export interface FieldOptions<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
@@ -426,17 +279,11 @@ export interface FieldOptions<
    */
   asyncAlways?: boolean
   /**
-   * A validator provided by an extension, like `yupValidator` from `@tanstack/yup-form-adapter`
-   */
-  validatorAdapter?: TFieldValidator
-  /**
    * A list of validators to pass to the field
    */
   validators?: FieldValidators<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
     TData,
     TOnMountReturn,
     TOnChangeReturn,
@@ -453,13 +300,11 @@ export interface FieldOptions<
   /**
    * A list of listeners which attach to the corresponding events
    */
-  listeners?: FieldListeners<
-    TParentData,
-    TName,
-    TFieldValidator,
-    TFormValidator,
-    TData
-  >
+  listeners?: FieldListeners<TParentData, TName, TData>
+  /**
+   * Disable the `flat(1)` operation on `field.errors`. This is useful if you want to keep the error structure as is. Not suggested for most use-cases.
+   */
+  disableErrorFlat?: boolean
 }
 
 /**
@@ -468,12 +313,6 @@ export interface FieldOptions<
 export interface FieldApiOptions<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
@@ -493,8 +332,6 @@ export interface FieldApiOptions<
 > extends FieldOptions<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
     TData,
     TOnMountReturn,
     TOnChangeReturn,
@@ -506,7 +343,6 @@ export interface FieldApiOptions<
   > {
   form: FormApi<
     TParentData,
-    TFormValidator,
     TFormOnMountReturn,
     TFormOnChangeReturn,
     TFormOnChangeAsyncReturn,
@@ -668,8 +504,6 @@ export type AnyFieldApi = FieldApi<
   any,
   any,
   any,
-  any,
-  any,
   any
 >
 
@@ -685,12 +519,6 @@ export type AnyFieldApi = FieldApi<
 export class FieldApi<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
@@ -714,8 +542,6 @@ export class FieldApi<
   form: FieldApiOptions<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
     TData,
     TOnMountReturn,
     TOnChangeReturn,
@@ -743,8 +569,6 @@ export class FieldApi<
   options: FieldApiOptions<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
     TData,
     TOnMountReturn,
     TOnChangeReturn,
@@ -791,8 +615,6 @@ export class FieldApi<
     opts: FieldApiOptions<
       TParentData,
       TName,
-      TFieldValidator,
-      TFormValidator,
       TData,
       TOnMountReturn,
       TOnChangeReturn,
@@ -858,10 +680,8 @@ export class FieldApi<
    * @private
    */
   runValidator<
-    TValue extends {
-      value: TData
+    TValue extends TStandardSchemaValidatorValue<TData> & {
       fieldApi: AnyFieldApi
-      validationSource: ValidationSource
     },
     TType extends 'validate' | 'validateAsync',
     TReturnType = unknown,
@@ -873,24 +693,8 @@ export class FieldApi<
     type: TType
     // When `api` is 'field', the return type cannot be `FormValidationError`
   }): TType extends 'validate' ? TReturnType : Promise<TReturnType> {
-    const adapters = [
-      this.form.options.validatorAdapter,
-      this.options.validatorAdapter,
-    ] as const
-    for (const adapter of adapters) {
-      if (
-        adapter &&
-        (typeof props.validate !== 'function' || '~standard' in props.validate)
-      ) {
-        return adapter()[props.type](
-          props.value as never,
-          props.validate,
-        ) as never
-      }
-    }
-
     if (isStandardSchemaValidator(props.validate)) {
-      return standardSchemaValidator()()[props.type](
+      return standardSchemaValidators[props.type](
         props.value,
         props.validate,
       ) as never
@@ -948,8 +752,6 @@ export class FieldApi<
     opts: FieldApiOptions<
       TParentData,
       TName,
-      TFieldValidator,
-      TFormValidator,
       TData,
       TOnMountReturn,
       TOnChangeReturn,
@@ -1087,10 +889,7 @@ export class FieldApi<
    * @private
    */
   getLinkedFields = (cause: ValidationCause) => {
-    const fields = Object.values(this.form.fieldInfo) as FieldInfo<
-      any,
-      TFormValidator
-    >[]
+    const fields = Object.values(this.form.fieldInfo) as FieldInfo<any>[]
 
     const linkedFields: AnyFieldApi[] = []
     for (const field of fields) {
@@ -1132,8 +931,6 @@ export class FieldApi<
       [] as Array<
         SyncValidator<any> & {
           field: FieldApi<
-            any,
-            any,
             any,
             any,
             any,
@@ -1269,27 +1066,7 @@ export class FieldApi<
       },
       [] as Array<
         AsyncValidator<any> & {
-          field: FieldApi<
-            any,
-            any,
-            any,
-            any,
-            any,
-            any,
-            any,
-            any,
-            any,
-            any,
-            any,
-            any,
-            any,
-            any,
-            any,
-            any,
-            any,
-            any,
-            any
-          >
+          field: AnyFieldApi
         }
       >,
     )
@@ -1485,10 +1262,6 @@ export class FieldApi<
 
 function normalizeError(rawError?: ValidationError) {
   if (rawError) {
-    if (typeof rawError !== 'string') {
-      return 'Invalid Form Values'
-    }
-
     return rawError
   }
 

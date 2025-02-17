@@ -1,5 +1,4 @@
 import type { FormApi } from './FormApi'
-import type { Validator } from './types'
 import type { NoInfer } from './util-types'
 
 /**
@@ -33,35 +32,10 @@ export function mutateMergeDeep(target: object, source: object): object {
   return target
 }
 
-export function mergeForm<
-  TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
->(
-  baseForm: FormApi<
-    NoInfer<TFormData>,
-    NoInfer<TFormValidator>,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any
-  >,
+export function mergeForm<TFormData>(
+  baseForm: FormApi<NoInfer<TFormData>, any, any, any, any, any, any, any, any>,
   state: Partial<
-    FormApi<
-      TFormData,
-      TFormValidator,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any
-    >['state']
+    FormApi<TFormData, any, any, any, any, any, any, any, any>['state']
   >,
 ) {
   mutateMergeDeep(baseForm.state, state)

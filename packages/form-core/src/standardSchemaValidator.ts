@@ -1,16 +1,11 @@
-import type {
-  ValidationError,
-  Validator,
-  ValidatorAdapterParams,
-} from './types'
+import type { ValidationSource } from './types'
 
-type Params = ValidatorAdapterParams<StandardSchemaV1Issue>
-type TransformFn = NonNullable<Params['transformErrors']>
+export type TStandardSchemaValidatorValue<TData> = {
+  value: TData
+  validationSource: ValidationSource
+}
 
-function prefixSchemaToErrors(
-  issues: readonly StandardSchemaV1Issue[],
-  transformErrors: TransformFn,
-) {
+function prefixSchemaToErrors(issues: readonly StandardSchemaV1Issue[]) {
   const schema = new Map<string, StandardSchemaV1Issue[]>()
 
   for (const issue of issues) {
@@ -28,60 +23,54 @@ function prefixSchemaToErrors(
     schema.set(path, (schema.get(path) ?? []).concat(issue))
   }
 
-  const transformedSchema = {} as Record<string, ValidationError>
-
-  schema.forEach((value, key) => {
-    transformedSchema[key] = transformErrors(value)
-  })
-
-  return transformedSchema
+  return Object.fromEntries(schema)
 }
 
-function defaultFormTransformer(transformErrors: TransformFn) {
-  return (issues: readonly StandardSchemaV1Issue[]) => ({
-    form: transformErrors(issues as StandardSchemaV1Issue[]),
-    fields: prefixSchemaToErrors(issues, transformErrors),
-  })
-}
+const defaultFieldTransformer = (issues: readonly StandardSchemaV1Issue[]) =>
+  issues
 
-export const standardSchemaValidator =
-  (params: Params = {}): Validator<unknown, StandardSchemaV1<any>> =>
-  () => {
-    const transformFieldErrors =
-      params.transformErrors ??
-      ((issues: StandardSchemaV1Issue[]) =>
-        issues.map((issue) => issue.message).join(', '))
-
-    const getTransformStrategy = (validationSource: 'form' | 'field') =>
-      validationSource === 'form'
-        ? defaultFormTransformer(transformFieldErrors)
-        : transformFieldErrors
-
-    return {
-      validate({ value, validationSource }, fn) {
-        const result = fn['~standard'].validate(value)
-
-        if (result instanceof Promise) {
-          throw new Error('async function passed to sync validator')
-        }
-
-        if (!result.issues) return
-
-        const transformer = getTransformStrategy(validationSource)
-
-        return transformer(result.issues as StandardSchemaV1Issue[])
-      },
-      async validateAsync({ value, validationSource }, fn) {
-        const result = await fn['~standard'].validate(value)
-
-        if (!result.issues) return
-
-        const transformer = getTransformStrategy(validationSource)
-
-        return transformer(result.issues as StandardSchemaV1Issue[])
-      },
-    }
+const defaultFormTransformer = (issues: readonly StandardSchemaV1Issue[]) => {
+  const schemaErrors = prefixSchemaToErrors(issues)
+  return {
+    form: schemaErrors,
+    fields: schemaErrors,
   }
+}
+
+const transformIssues = (
+  validationSource: 'form' | 'field',
+  issues: readonly StandardSchemaV1Issue[],
+) =>
+  validationSource === 'form'
+    ? defaultFormTransformer(issues)
+    : defaultFieldTransformer(issues)
+
+export const standardSchemaValidators = {
+  validate(
+    { value, validationSource }: TStandardSchemaValidatorValue<unknown>,
+    schema: StandardSchemaV1,
+  ) {
+    const result = schema['~standard'].validate(value)
+
+    if (result instanceof Promise) {
+      throw new Error('async function passed to sync validator')
+    }
+
+    if (!result.issues) return
+
+    return transformIssues(validationSource, result.issues)
+  },
+  async validateAsync(
+    { value, validationSource }: TStandardSchemaValidatorValue<unknown>,
+    schema: StandardSchemaV1,
+  ) {
+    const result = await schema['~standard'].validate(value)
+
+    if (!result.issues) return
+
+    return transformIssues(validationSource, result.issues)
+  },
+}
 
 export const isStandardSchemaValidator = (
   validator: unknown,

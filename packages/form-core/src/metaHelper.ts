@@ -1,13 +1,11 @@
 import type { FieldMeta } from './FieldApi'
 import type { FormApi } from './FormApi'
-import type { Validator } from './types'
 import type { DeepKeys } from './util-types'
 
 type ArrayFieldMode = 'insert' | 'remove' | 'swap' | 'move'
 
 export function metaHelper<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
   TOnMountReturn = undefined,
   TOnChangeReturn = undefined,
   TOnChangeAsyncReturn = undefined,
@@ -19,7 +17,6 @@ export function metaHelper<
 >(
   formApi: FormApi<
     TFormData,
-    TFormValidator,
     TOnMountReturn,
     TOnChangeReturn,
     TOnChangeAsyncReturn,
