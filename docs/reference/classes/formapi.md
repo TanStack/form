@@ -137,6 +137,34 @@ Defined in: [packages/form-core/src/FormApi.ts:1240](https://github.com/TanStack
 
 ***
 
+### getAllErrors()
+
+```ts
+getAllErrors(): object
+```
+
+Defined in: [packages/form-core/src/FormApi.ts:1438](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1438)
+
+Returns form and field level errors
+
+#### Returns
+
+`object`
+
+##### fields
+
+```ts
+fields: Record<string, ValidationErrorMap>;
+```
+
+##### form
+
+```ts
+form: ValidationError[];
+```
+
+***
+
 ### getFieldInfo()
 
 ```ts
