@@ -1865,6 +1865,39 @@ export class FormApi<
         }) as never,
     )
   }
+
+  /**
+   * Returns form and field level errors
+   */
+  getAllErrors = () => {
+    return {
+      form: this.state.errors,
+      fields: Object.entries(this.state.fieldMeta).reduce(
+        (acc, [fieldName, fieldMeta]) => {
+          // reduces error map down to keys with errors
+          const fieldErrors = Object.entries(
+            (fieldMeta as FieldMeta).errorMap,
+          ).reduce(
+            (errorAcc, [errorName, errorValue]) => {
+              if (errorValue != null) {
+                errorAcc[errorName as ValidationErrorMapKeys] = errorValue
+              }
+
+              return errorAcc
+            },
+            {} as Record<ValidationErrorMapKeys, ValidationError>,
+          )
+
+          if (Object.keys(fieldErrors).length) {
+            acc[fieldName] = fieldErrors
+          }
+
+          return acc
+        },
+        {} as Record<string, ValidationErrorMap>,
+      ),
+    }
+  }
 }
 
 function normalizeError<TFormData>(rawError?: FormValidationError<unknown>): {
