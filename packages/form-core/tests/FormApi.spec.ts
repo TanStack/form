@@ -1462,6 +1462,49 @@ describe('form api', () => {
     })
   })
 
+  it('should return all errors', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'other',
+      },
+      validators: {
+        onChange: ({ value }) => {
+          if (value.name === 'other') return 'onChange - form'
+          return
+        },
+        onMount: ({ value }) => {
+          if (value.name === 'other') return 'onMount - form'
+          return
+        },
+      },
+    })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChange: ({ value }) => {
+          if (value === 'other') {
+            return 'onChange - field'
+          }
+          return
+        },
+      },
+    })
+
+    form.mount()
+    field.mount()
+    expect(form.getAllErrors()).toEqual({
+      fields: {},
+      form: ['onMount - form'],
+    })
+
+    field.setValue('other')
+    expect(form.getAllErrors()).toEqual({
+      fields: { name: { onChange: 'onChange - field' } },
+      form: ['onChange - form'],
+    })
+  })
+
   it('should reset onChange errors when the issue is resolved', () => {
     const form = new FormApi({
       defaultValues: {
