@@ -4,7 +4,12 @@ import {
   standardSchemaValidator,
 } from './standardSchemaValidator'
 import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
-import type { FieldInfo, FieldsErrorMapFromValidator, FormApi } from './FormApi'
+import type {
+  FieldInfo,
+  FieldsErrorMapFromValidator,
+  FormApi,
+  FormState,
+} from './FormApi'
 import type { StandardSchemaV1 } from './standardSchemaValidator'
 import type {
   UpdateMetaOptions,
@@ -115,6 +120,13 @@ export type FieldListenerFn<
   value: TData
   fieldApi: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
 }) => void
+
+/**
+ * @private
+ */
+export type FieldMetaFn<TFormData, TMetaExtension extends object> = (
+  props: Derived<FormState<TFormData>>,
+) => TMetaExtension
 
 export interface FieldValidators<
   TParentData,
@@ -292,6 +304,7 @@ export interface FieldOptions<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TMetaExtension extends object = {},
 > {
   /**
    * The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
@@ -337,6 +350,7 @@ export interface FieldOptions<
     TFormValidator,
     TData
   >
+  meta?: FieldMetaFn<FormData, TMetaExtension>
 }
 
 /**
@@ -352,12 +366,14 @@ export interface FieldApiOptions<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TMetaExtension extends object = {},
 > extends FieldOptions<
     TParentData,
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TMetaExtension
   > {
   form: FormApi<TParentData, TFormValidator>
 }
@@ -399,12 +415,14 @@ export type FieldMetaDerived = {
 /**
  * An object type representing the metadata of a field in a form.
  */
-export type FieldMeta = FieldMetaBase & FieldMetaDerived
+export type FieldMeta<TMetaExtension extends object = {}> = FieldMetaBase &
+  FieldMetaDerived &
+  TMetaExtension
 
 /**
  * An object type representing the state of a field.
  */
-export type FieldState<TData> = {
+export type FieldState<TData, TMetaExtension extends object = {}> = {
   /**
    * The current value of the field.
    */
@@ -412,7 +430,7 @@ export type FieldState<TData> = {
   /**
    * The current metadata of the field.
    */
-  meta: FieldMeta
+  meta: FieldMeta<TMetaExtension>
 }
 
 /**
@@ -434,6 +452,7 @@ export class FieldApi<
     | Validator<TParentData, unknown>
     | undefined = undefined,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TMetaExtension extends object = {},
 > {
   /**
    * A reference to the form API instance.
@@ -443,7 +462,8 @@ export class FieldApi<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TMetaExtension
   >['form']
   /**
    * The field name.
@@ -457,12 +477,13 @@ export class FieldApi<
     TName,
     TFieldValidator,
     TFormValidator,
-    TData
+    TData,
+    TMetaExtension
   > = {} as any
   /**
    * The field state store.
    */
-  store!: Derived<FieldState<TData>>
+  store!: Derived<FieldState<TData, TMetaExtension>>
   /**
    * The current field state.
    */
@@ -480,7 +501,8 @@ export class FieldApi<
       TName,
       TFieldValidator,
       TFormValidator,
-      TData
+      TData,
+      TMetaExtension
     >,
   ) {
     this.form = opts.form as never
@@ -510,7 +532,7 @@ export class FieldApi<
         return {
           value,
           meta,
-        } as FieldState<TData>
+        } as FieldState<TData, TMetaExtension>
       },
     })
 
@@ -523,7 +545,7 @@ export class FieldApi<
   runValidator<
     TValue extends {
       value: TData
-      fieldApi: FieldApi<any, any, any, any>
+      fieldApi: FieldApi<any, any, any, any, any>
       validationSource: ValidationSource
     },
     TType extends 'validate' | 'validateAsync',
@@ -597,6 +619,11 @@ export class FieldApi<
       fieldApi: this,
     })
 
+    this.setMeta((prev) => ({
+      ...prev,
+      ...this.options.meta?.(this.form.state),
+    }))
+
     return cleanup
   }
 
@@ -656,10 +683,15 @@ export class FieldApi<
       fieldApi: this,
     })
 
+    this.setMeta((prev) => ({
+      ...prev,
+      ...this.options.meta?.(this.form.state),
+    }))
+
     this.validate('change')
   }
 
-  getMeta = () => this.store.state.meta
+  getMeta = () => this.store.state.meta as FieldMeta<TMetaExtension>
 
   /**
    * Sets the field metadata.
@@ -725,7 +757,7 @@ export class FieldApi<
       TFormValidator
     >[]
 
-    const linkedFields: FieldApi<any, any, any, any>[] = []
+    const linkedFields: FieldApi<any, any, any, any, any>[] = []
     for (const field of fields) {
       if (!field.instance) continue
       const { onChangeListenTo, onBlurListenTo } =
@@ -762,7 +794,9 @@ export class FieldApi<
         })
         return acc.concat(fieldValidates as never)
       },
-      [] as Array<SyncValidator<any> & { field: FieldApi<any, any, any, any> }>,
+      [] as Array<
+        SyncValidator<any> & { field: FieldApi<any, any, any, any, any> }
+      >,
     )
 
     // Needs type cast as eslint errantly believes this is always falsy
@@ -770,7 +804,7 @@ export class FieldApi<
 
     batch(() => {
       const validateFieldFn = (
-        field: FieldApi<any, any, any, any>,
+        field: FieldApi<any, any, any, any, any>,
         validateObj: SyncValidator<any>,
       ) => {
         const errorMapKey = getErrorMapKey(validateObj.cause)
@@ -868,7 +902,7 @@ export class FieldApi<
         return acc.concat(fieldValidates as never)
       },
       [] as Array<
-        AsyncValidator<any> & { field: FieldApi<any, any, any, any> }
+        AsyncValidator<any> & { field: FieldApi<any, any, any, any, any> }
       >,
     )
 
@@ -888,7 +922,7 @@ export class FieldApi<
     const linkedPromises: Promise<ValidationError | undefined>[] = []
 
     const validateFieldAsyncFn = (
-      field: FieldApi<any, any, any, any>,
+      field: FieldApi<any, any, any, any, any>,
       validateObj: AsyncValidator<any>,
       promises: Promise<ValidationError | undefined>[],
     ) => {
