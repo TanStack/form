@@ -1,6 +1,16 @@
 import { describe, expect, test } from 'vitest'
 import { mutateMergeDeep } from '../src/index'
 
+
+describe('mutateMergeDeep', () => {
+  it('should not allow prototype pollution', () => {
+    const target = {};
+    const source = JSON.parse('{"__proto__": {"polluted": "yes"}}');
+    mutateMergeDeep(target, source);
+    expect(({} as any).polluted).toBeUndefined();
+  });
+});
+
 describe('mutateMergeDeep', () => {
   test('Should merge two objects by mutating', () => {
     const a = { a: 1 }
