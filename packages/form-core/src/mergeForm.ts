@@ -5,32 +5,28 @@ import type { NoInfer } from './util-types'
 /**
  * @private
  */
-export function mutateMergeDeep(target: object, source: object): object {
-  const targetKeys = Object.keys(target)
-  const sourceKeys = Object.keys(source)
-  const keySet = new Set([...targetKeys, ...sourceKeys])
-  for (const key of keySet) {
-    const targetKey = key as never as keyof typeof target
-    const sourceKey = key as never as keyof typeof source
-
-    if (Array.isArray(target[targetKey]) && Array.isArray(source[sourceKey])) {
-      // always use the source array to prevent array fields from multiplying
-      target[targetKey] = source[sourceKey] as [] as never
-    } else if (
-      typeof target[targetKey] === 'object' &&
-      typeof source[sourceKey] === 'object'
-    ) {
-      mutateMergeDeep(target[targetKey] as {}, source[sourceKey] as {})
-    } else {
-      // Prevent assigning undefined to target, only if undefined is not explicitly set on source
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (!(sourceKey in source) && source[sourceKey] === undefined) {
-        continue
+function mutateMergeDeep(target:any, source:any) {
+  for (const key in source) {
+    if (!Object.prototype.hasOwnProperty.call(source, key) ||
+        key === '__proto__' ||
+        key === 'constructor' ||
+        key === 'prototype') {
+      continue;
+    }
+    if (typeof source[key] === 'object' && source[key] !== null) {
+      if (!target[key]) {
+        target[key] = Array.isArray(source[key]) ? [] : {};
       }
-      target[targetKey] = source[sourceKey] as never
+      mutateMergeDeep(target[key], source[key]);
+    } else {
+      target[key] = source[key];
     }
   }
-  return target
+  return target;
+}
+
+function isSafeProperty(key: string) {
+  return key !== '__proto__' && key !== 'constructor' && key !== 'prototype';
 }
 
 export function mergeForm<
