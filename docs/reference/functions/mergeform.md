@@ -9,7 +9,7 @@ title: mergeForm
 function mergeForm<TFormData, TFormValidator>(baseForm, state): FormApi<NoInfer<TFormData>, NoInfer<TFormValidator>>
 ```
 
-Defined in: [packages/form-core/src/mergeForm.ts:36](https://github.com/TanStack/form/blob/main/packages/form-core/src/mergeForm.ts#L36)
+Defined in: [packages/form-core/src/mergeForm.ts:75](https://github.com/TanStack/form/blob/main/packages/form-core/src/mergeForm.ts#L75)
 
 ## Type Parameters
 
