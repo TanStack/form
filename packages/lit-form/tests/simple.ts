@@ -1,6 +1,5 @@
 import { LitElement, html } from 'lit'
 import { TanStackFormController } from '../src/index.js'
-import type { FieldApi, FormOptions } from '../src/index.js'
 
 interface Employee {
   firstName: string
@@ -17,7 +16,7 @@ export const sampleData: Employee = {
   jobTitle: '',
 }
 
-const formConfig: FormOptions<Employee, undefined> = {
+const formConfig = {
   defaultValues: sampleData,
 }
 
