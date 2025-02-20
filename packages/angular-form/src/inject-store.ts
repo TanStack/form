@@ -1,41 +1,58 @@
 import { injectStore as injectAngularStore } from '@tanstack/angular-store'
-import type { FormApi, FormState } from '@tanstack/form-core'
+import type {
+  FormApi,
+  FormAsyncValidateOrFn,
+  FormState,
+  FormValidateOrFn,
+} from '@tanstack/form-core'
 
 export function injectStore<
   TFormData,
-  TOnMountReturn = undefined,
-  TOnChangeReturn = undefined,
-  TOnChangeAsyncReturn = undefined,
-  TOnBlurReturn = undefined,
-  TOnBlurAsyncReturn = undefined,
-  TOnSubmitReturn = undefined,
-  TOnSubmitAsyncReturn = undefined,
-  TOnServerReturn = undefined,
-  TSelected = NoInfer<FormState<TFormData>>,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSelected = NoInfer<
+    FormState<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
+    >
+  >,
 >(
   form: FormApi<
     TFormData,
-    TOnMountReturn,
-    TOnChangeReturn,
-    TOnChangeAsyncReturn,
-    TOnBlurReturn,
-    TOnBlurAsyncReturn,
-    TOnSubmitReturn,
-    TOnSubmitAsyncReturn,
-    TOnServerReturn
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer
   >,
   selector?: (
     state: NoInfer<
       FormState<
         TFormData,
-        TOnMountReturn,
-        TOnChangeReturn,
-        TOnChangeAsyncReturn,
-        TOnBlurReturn,
-        TOnBlurAsyncReturn,
-        TOnSubmitReturn,
-        TOnSubmitAsyncReturn,
-        TOnServerReturn
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TOnServer
       >
     >,
   ) => TSelected,

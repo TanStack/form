@@ -4,8 +4,13 @@ import {
   booleanAttribute,
   numberAttribute,
 } from '@angular/core'
-import { FieldApi, FieldApiOptions, FormApi } from '@tanstack/form-core'
-import type { OnChanges, OnDestroy, OnInit } from '@angular/core'
+import {
+  FieldApi,
+  FieldApiOptions,
+  FieldAsyncValidateOrFn,
+  FieldValidateOrFn,
+  FormApi,
+} from '@tanstack/form-core'
 import type {
   DeepKeys,
   DeepValue,
@@ -13,8 +18,11 @@ import type {
   FieldMeta,
   FieldOptions,
   FieldValidators,
+  FormAsyncValidateOrFn,
+  FormValidateOrFn,
   NoInfer as NoInferHack,
 } from '@tanstack/form-core'
+import type { OnChanges, OnDestroy, OnInit } from '@angular/core'
 
 @Directive({
   selector: '[tanstackField]',
@@ -24,22 +32,28 @@ import type {
 export class TanStackField<
     TParentData,
     const TName extends DeepKeys<TParentData>,
-    TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-    TOnMountReturn = undefined,
-    TOnChangeReturn = undefined,
-    TOnChangeAsyncReturn = undefined,
-    TOnBlurReturn = undefined,
-    TOnBlurAsyncReturn = undefined,
-    TOnSubmitReturn = undefined,
-    TOnSubmitAsyncReturn = undefined,
-    TFormOnMountReturn = undefined,
-    TFormOnChangeReturn = undefined,
-    TFormOnChangeAsyncReturn = undefined,
-    TFormOnBlurReturn = undefined,
-    TFormOnBlurAsyncReturn = undefined,
-    TFormOnSubmitReturn = undefined,
-    TFormOnSubmitAsyncReturn = undefined,
-    TFormOnServerReturn = undefined,
+    TData extends DeepValue<TParentData, TName>,
+    TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    TOnChangeAsync extends
+      | undefined
+      | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    TOnBlurAsync extends
+      | undefined
+      | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    TOnSubmitAsync extends
+      | undefined
+      | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+    TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+    TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+    TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+    TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+    TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+    TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+    TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   >
   implements
     OnInit,
@@ -49,13 +63,13 @@ export class TanStackField<
       TParentData,
       TName,
       TData,
-      TOnMountReturn,
-      TOnChangeReturn,
-      TOnChangeAsyncReturn,
-      TOnBlurReturn,
-      TOnBlurAsyncReturn,
-      TOnSubmitReturn,
-      TOnSubmitAsyncReturn
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync
     >
 {
   @Input({ required: true }) name!: TName
@@ -67,73 +81,93 @@ export class TanStackField<
   @Input({ transform: booleanAttribute }) asyncAlways?: boolean
   @Input({ required: true }) tanstackField!: FormApi<
     TParentData,
-    TFormOnMountReturn,
-    TFormOnChangeReturn,
-    TFormOnChangeAsyncReturn,
-    TFormOnBlurReturn,
-    TFormOnBlurAsyncReturn,
-    TFormOnSubmitReturn,
-    TFormOnSubmitAsyncReturn,
-    TFormOnServerReturn
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer
   >
   @Input() validators?: NoInfer<
     FieldValidators<
       TParentData,
       TName,
       TData,
-      TOnMountReturn,
-      TOnChangeReturn,
-      TOnChangeAsyncReturn,
-      TOnBlurReturn,
-      TOnBlurAsyncReturn,
-      TOnSubmitReturn,
-      TOnSubmitAsyncReturn
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync
     >
   >
   @Input() listeners?: NoInfer<FieldListeners<TParentData, TName, TData>>
-  @Input() defaultMeta?: Partial<FieldMeta>
+  @Input() defaultMeta?: Partial<
+    FieldMeta<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync
+    >
+  >
   @Input() disableErrorFlat?: boolean
 
   api!: FieldApi<
     TParentData,
     TName,
     TData,
-    TOnMountReturn,
-    TOnChangeReturn,
-    TOnChangeAsyncReturn,
-    TOnBlurReturn,
-    TOnBlurAsyncReturn,
-    TOnSubmitReturn,
-    TOnSubmitAsyncReturn,
-    TFormOnMountReturn,
-    TFormOnChangeReturn,
-    TFormOnChangeAsyncReturn,
-    TFormOnBlurReturn,
-    TFormOnBlurAsyncReturn,
-    TFormOnSubmitReturn,
-    TFormOnSubmitAsyncReturn,
-    TFormOnServerReturn
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer
   >
 
   private getOptions(): FieldApiOptions<
     TParentData,
     TName,
     TData,
-    TOnMountReturn,
-    TOnChangeReturn,
-    TOnChangeAsyncReturn,
-    TOnBlurReturn,
-    TOnBlurAsyncReturn,
-    TOnSubmitReturn,
-    TOnSubmitAsyncReturn,
-    TFormOnMountReturn,
-    TFormOnChangeReturn,
-    TFormOnChangeAsyncReturn,
-    TFormOnBlurReturn,
-    TFormOnBlurAsyncReturn,
-    TFormOnSubmitReturn,
-    TFormOnSubmitAsyncReturn,
-    TFormOnServerReturn
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer
   > {
     return {
       defaultValue: this.defaultValue,

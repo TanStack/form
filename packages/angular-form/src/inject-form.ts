@@ -1,40 +1,44 @@
 import { FormApi } from '@tanstack/form-core'
 import { injectStore } from '@tanstack/angular-store'
-import type { FormOptions } from '@tanstack/form-core'
+import type {
+  FormAsyncValidateOrFn,
+  FormOptions,
+  FormValidateOrFn,
+} from '@tanstack/form-core'
 
 export function injectForm<
   TFormData,
-  TOnMountReturn = undefined,
-  TOnChangeReturn = undefined,
-  TOnChangeAsyncReturn = undefined,
-  TOnBlurReturn = undefined,
-  TOnBlurAsyncReturn = undefined,
-  TOnSubmitReturn = undefined,
-  TOnSubmitAsyncReturn = undefined,
-  TOnServerReturn = undefined,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
 >(
   opts?: FormOptions<
     TFormData,
-    TOnMountReturn,
-    TOnChangeReturn,
-    TOnChangeAsyncReturn,
-    TOnBlurReturn,
-    TOnBlurAsyncReturn,
-    TOnSubmitReturn,
-    TOnSubmitAsyncReturn,
-    TOnServerReturn
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer
   >,
 ) {
   const api = new FormApi<
     TFormData,
-    TOnMountReturn,
-    TOnChangeReturn,
-    TOnChangeAsyncReturn,
-    TOnBlurReturn,
-    TOnBlurAsyncReturn,
-    TOnSubmitReturn,
-    TOnSubmitAsyncReturn,
-    TOnServerReturn
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer
   >(opts)
 
   injectStore(api.store, (state) => state.isSubmitting)
