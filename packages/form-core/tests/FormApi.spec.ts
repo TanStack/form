@@ -1466,6 +1466,7 @@ describe('form api', () => {
     const form = new FormApi({
       defaultValues: {
         name: 'other',
+        age: 'hi',
       },
       validators: {
         onChange: ({ value }) => {
@@ -1495,13 +1496,24 @@ describe('form api', () => {
     field.mount()
     expect(form.getAllErrors()).toEqual({
       fields: {},
-      form: ['onMount - form'],
+      form: {
+        errors: ['onMount - form'],
+        errorMap: { onMount: 'onMount - form' },
+      },
     })
 
     field.setValue('other')
-    expect(form.getAllErrors()).toEqual({
-      fields: { name: { onChange: 'onChange - field' } },
-      form: ['onChange - form'],
+    expect(form.getAllErrors()).toStrictEqual({
+      fields: {
+        name: {
+          errors: ['onChange - field'],
+          errorMap: { onChange: 'onChange - field' },
+        },
+      },
+      form: {
+        errors: ['onChange - form'],
+        errorMap: { onChange: 'onChange - form' },
+      },
     })
   })
 

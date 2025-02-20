@@ -1870,31 +1870,46 @@ export class FormApi<
    * Returns form and field level errors
    */
   getAllErrors = () => {
+    const reduceErrorMap = (errorMap: ValidationErrorMap) => {
+      return Object.entries(errorMap).reduce(
+        (errorAcc, [errorName, errorValue]) => {
+          if (errorValue != null) {
+            errorAcc[errorName as ValidationErrorMapKeys] = errorValue
+          }
+
+          return errorAcc
+        },
+        {} as Record<ValidationErrorMapKeys, ValidationError>,
+      )
+    }
+    console.log(this.state.errors)
+
     return {
-      form: this.state.errors,
+      form: {
+        errors: this.state.errors,
+        errorMap: reduceErrorMap(this.state.errorMap as ValidationErrorMap),
+      },
       fields: Object.entries(this.state.fieldMeta).reduce(
         (acc, [fieldName, fieldMeta]) => {
           // reduces error map down to keys with errors
-          const fieldErrors = Object.entries(
-            (fieldMeta as FieldMeta).errorMap,
-          ).reduce(
-            (errorAcc, [errorName, errorValue]) => {
-              if (errorValue != null) {
-                errorAcc[errorName as ValidationErrorMapKeys] = errorValue
-              }
+          const fieldErrors = reduceErrorMap((fieldMeta as FieldMeta).errorMap)
 
-              return errorAcc
-            },
-            {} as Record<ValidationErrorMapKeys, ValidationError>,
-          )
-
-          if (Object.keys(fieldErrors).length) {
-            acc[fieldName] = fieldErrors
+          if (
+            Object.keys(fieldErrors).length &&
+            (fieldMeta as FieldMeta).errors.length
+          ) {
+            acc[fieldName] = {
+              errors: (fieldMeta as FieldMeta).errors,
+              errorMap: fieldErrors,
+            }
           }
 
           return acc
         },
-        {} as Record<string, ValidationErrorMap>,
+        {} as Record<
+          string,
+          { errors: ValidationError[]; errorMap: ValidationErrorMap }
+        >,
       ),
     }
   }
