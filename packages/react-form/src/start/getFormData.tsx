@@ -12,7 +12,7 @@ export const initialFormState = {
 export const getFormData = async () => {
   const data = (await _tanstackInternalsCookie.parse(getHeader('Cookie')!)) as
     | undefined
-    | ServerFormState<any, unknown>
+    | ServerFormState<any, undefined>
   // Delete the cookie before it hits the client again¸
   removeResponseHeader('Cookie')
   if (!data) return initialFormState

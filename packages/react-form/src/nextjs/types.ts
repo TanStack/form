@@ -1,6 +1,9 @@
-import type { FormState } from '@tanstack/form-core'
+import type { FormAsyncValidateOrFn, FormState } from '@tanstack/form-core'
 
-export type ServerFormState<TFormData, TOnServerReturn = undefined> = Pick<
+export type ServerFormState<
+  TFormData,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+> = Pick<
   FormState<
     TFormData,
     undefined,
@@ -10,7 +13,7 @@ export type ServerFormState<TFormData, TOnServerReturn = undefined> = Pick<
     undefined,
     undefined,
     undefined,
-    TOnServerReturn
+    TOnServer
   >,
   'values' | 'errors' | 'errorMap'
 >

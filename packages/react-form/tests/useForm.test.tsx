@@ -16,7 +16,9 @@ describe('useForm', () => {
     }
 
     function Comp() {
-      const form = useForm<Person>()
+      const form = useForm({
+        defaultValues: {} as Person,
+      })
 
       return (
         <>

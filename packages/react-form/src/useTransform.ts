@@ -1,37 +1,45 @@
-import type { FormApi, FormTransform } from '@tanstack/form-core'
+import type {
+  FormApi,
+  FormAsyncValidateOrFn,
+  FormTransform,
+  FormValidateOrFn,
+} from '@tanstack/form-core'
 
 export function useTransform<
   TFormData,
-  TOnMountReturn = undefined,
-  TOnChangeReturn = undefined,
-  TOnChangeAsyncReturn = undefined,
-  TOnBlurReturn = undefined,
-  TOnBlurAsyncReturn = undefined,
-  TOnSubmitReturn = undefined,
-  TOnSubmitAsyncReturn = undefined,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
 >(
   fn: (
     formBase: FormApi<any, any, any, any, any, any, any, any, any>,
   ) => FormApi<
     TFormData,
-    TOnMountReturn,
-    TOnChangeReturn,
-    TOnChangeAsyncReturn,
-    TOnBlurReturn,
-    TOnBlurAsyncReturn,
-    TOnSubmitReturn,
-    TOnSubmitAsyncReturn
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer
   >,
   deps: unknown[],
 ): FormTransform<
   TFormData,
-  TOnMountReturn,
-  TOnChangeReturn,
-  TOnChangeAsyncReturn,
-  TOnBlurReturn,
-  TOnBlurAsyncReturn,
-  TOnSubmitReturn,
-  TOnSubmitAsyncReturn
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnServer
 > {
   return {
     fn,

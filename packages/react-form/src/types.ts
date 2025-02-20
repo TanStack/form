@@ -1,4 +1,12 @@
-import type { DeepKeys, DeepValue, FieldApiOptions } from '@tanstack/form-core'
+import type {
+  DeepKeys,
+  DeepValue,
+  FieldApiOptions,
+  FieldAsyncValidateOrFn,
+  FieldValidateOrFn,
+  FormAsyncValidateOrFn,
+  FormValidateOrFn,
+} from '@tanstack/form-core'
 
 /**
  * The field options.
@@ -6,39 +14,47 @@ import type { DeepKeys, DeepValue, FieldApiOptions } from '@tanstack/form-core'
 export type UseFieldOptions<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TOnMountReturn = undefined,
-  TOnChangeReturn = undefined,
-  TOnChangeAsyncReturn = undefined,
-  TOnBlurReturn = undefined,
-  TOnBlurAsyncReturn = undefined,
-  TOnSubmitReturn = undefined,
-  TOnSubmitAsyncReturn = undefined,
-  TFormOnMountReturn = undefined,
-  TFormOnChangeReturn = undefined,
-  TFormOnChangeAsyncReturn = undefined,
-  TFormOnBlurReturn = undefined,
-  TFormOnBlurAsyncReturn = undefined,
-  TFormOnSubmitReturn = undefined,
-  TFormOnSubmitAsyncReturn = undefined,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
 > = FieldApiOptions<
   TParentData,
   TName,
   TData,
-  TOnMountReturn,
-  TOnChangeReturn,
-  TOnChangeAsyncReturn,
-  TOnBlurReturn,
-  TOnBlurAsyncReturn,
-  TOnSubmitReturn,
-  TOnSubmitAsyncReturn,
-  TFormOnMountReturn,
-  TFormOnChangeReturn,
-  TFormOnChangeAsyncReturn,
-  TFormOnBlurReturn,
-  TFormOnBlurAsyncReturn,
-  TFormOnSubmitReturn,
-  TFormOnSubmitAsyncReturn
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TFormOnMount,
+  TFormOnChange,
+  TFormOnChangeAsync,
+  TFormOnBlur,
+  TFormOnBlurAsync,
+  TFormOnSubmit,
+  TFormOnSubmitAsync,
+  TFormOnServer
 > & {
   mode?: 'value' | 'array'
 }

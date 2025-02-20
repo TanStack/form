@@ -2,32 +2,41 @@ import React, { useMemo, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
+import type {
+  DeepKeys,
+  DeepValue,
+  FieldAsyncValidateOrFn,
+  FieldValidateOrFn,
+  FormAsyncValidateOrFn,
+  FormValidateOrFn,
+} from '@tanstack/form-core'
 import type { FunctionComponent, ReactNode } from 'react'
 import type { UseFieldOptions } from './types'
-import type { DeepKeys, DeepValue } from '@tanstack/form-core'
 
 interface ReactFieldApi<
   TParentData,
-  TFormOnMountReturn = undefined,
-  TFormOnChangeReturn = undefined,
-  TFormOnChangeAsyncReturn = undefined,
-  TFormOnBlurReturn = undefined,
-  TFormOnBlurAsyncReturn = undefined,
-  TFormOnSubmitReturn = undefined,
-  TFormOnSubmitAsyncReturn = undefined,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
 > {
   /**
    * A pre-bound and type-safe sub-field component using this field as a root.
    */
   Field: FieldComponent<
     TParentData,
-    TFormOnMountReturn,
-    TFormOnChangeReturn,
-    TFormOnChangeAsyncReturn,
-    TFormOnBlurReturn,
-    TFormOnBlurAsyncReturn,
-    TFormOnSubmitReturn,
-    TFormOnSubmitAsyncReturn
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer
   >
 }
 
@@ -38,43 +47,51 @@ interface ReactFieldApi<
  */
 export type UseField<
   TParentData,
-  TFormOnMountReturn = undefined,
-  TFormOnChangeReturn = undefined,
-  TFormOnChangeAsyncReturn = undefined,
-  TFormOnBlurReturn = undefined,
-  TFormOnBlurAsyncReturn = undefined,
-  TFormOnSubmitReturn = undefined,
-  TFormOnSubmitAsyncReturn = undefined,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
 > = <
   TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TOnMountReturn = undefined,
-  TOnChangeReturn = undefined,
-  TOnChangeAsyncReturn = undefined,
-  TOnBlurReturn = undefined,
-  TOnBlurAsyncReturn = undefined,
-  TOnSubmitReturn = undefined,
-  TOnSubmitAsyncReturn = undefined,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
 >(
   opts: Omit<
     UseFieldOptions<
       TParentData,
       TName,
       TData,
-      TOnMountReturn,
-      TOnChangeReturn,
-      TOnChangeAsyncReturn,
-      TOnBlurReturn,
-      TOnBlurAsyncReturn,
-      TOnSubmitReturn,
-      TOnSubmitAsyncReturn,
-      TFormOnMountReturn,
-      TFormOnChangeReturn,
-      TFormOnChangeAsyncReturn,
-      TFormOnBlurReturn,
-      TFormOnBlurAsyncReturn,
-      TFormOnSubmitReturn,
-      TFormOnSubmitAsyncReturn
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnServer
     >,
     'form'
   >,
@@ -82,20 +99,21 @@ export type UseField<
   TParentData,
   TName,
   TData,
-  TOnMountReturn,
-  TOnChangeReturn,
-  TOnChangeAsyncReturn,
-  TOnBlurReturn,
-  TOnBlurAsyncReturn,
-  TOnSubmitReturn,
-  TOnSubmitAsyncReturn,
-  TFormOnMountReturn,
-  TFormOnChangeReturn,
-  TFormOnChangeAsyncReturn,
-  TFormOnBlurReturn,
-  TFormOnBlurAsyncReturn,
-  TFormOnSubmitReturn,
-  TFormOnSubmitAsyncReturn
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TFormOnMount,
+  TFormOnChange,
+  TFormOnChangeAsync,
+  TFormOnBlur,
+  TFormOnBlurAsync,
+  TFormOnSubmit,
+  TFormOnSubmitAsync,
+  TFormOnServer
 >
 
 /**
@@ -107,40 +125,48 @@ export type UseField<
 export function useField<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TOnMountReturn = undefined,
-  TOnChangeReturn = undefined,
-  TOnChangeAsyncReturn = undefined,
-  TOnBlurReturn = undefined,
-  TOnBlurAsyncReturn = undefined,
-  TOnSubmitReturn = undefined,
-  TOnSubmitAsyncReturn = undefined,
-  TFormOnMountReturn = undefined,
-  TFormOnChangeReturn = undefined,
-  TFormOnChangeAsyncReturn = undefined,
-  TFormOnBlurReturn = undefined,
-  TFormOnBlurAsyncReturn = undefined,
-  TFormOnSubmitReturn = undefined,
-  TFormOnSubmitAsyncReturn = undefined,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
 >(
   opts: UseFieldOptions<
     TParentData,
     TName,
     TData,
-    TOnMountReturn,
-    TOnChangeReturn,
-    TOnChangeAsyncReturn,
-    TOnBlurReturn,
-    TOnBlurAsyncReturn,
-    TOnSubmitReturn,
-    TOnSubmitAsyncReturn,
-    TFormOnMountReturn,
-    TFormOnChangeReturn,
-    TFormOnChangeAsyncReturn,
-    TFormOnBlurReturn,
-    TFormOnBlurAsyncReturn,
-    TFormOnSubmitReturn,
-    TFormOnSubmitAsyncReturn
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer
   >,
 ) {
   const [fieldApi] = useState(() => {
@@ -150,7 +176,18 @@ export function useField<
       name: opts.name,
     })
 
-    const extendedApi: typeof api & ReactFieldApi<TParentData> = api as never
+    const extendedApi: typeof api &
+      ReactFieldApi<
+        TParentData,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnServer
+      > = api as never
 
     extendedApi.Field = Field as never
 
@@ -185,61 +222,70 @@ export function useField<
 type FieldComponentProps<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TOnMountReturn = undefined,
-  TOnChangeReturn = undefined,
-  TOnChangeAsyncReturn = undefined,
-  TOnBlurReturn = undefined,
-  TOnBlurAsyncReturn = undefined,
-  TOnSubmitReturn = undefined,
-  TOnSubmitAsyncReturn = undefined,
-  TFormOnMountReturn = undefined,
-  TFormOnChangeReturn = undefined,
-  TFormOnChangeAsyncReturn = undefined,
-  TFormOnBlurReturn = undefined,
-  TFormOnBlurAsyncReturn = undefined,
-  TFormOnSubmitReturn = undefined,
-  TFormOnSubmitAsyncReturn = undefined,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
 > = {
   children: (
     fieldApi: FieldApi<
       TParentData,
       TName,
       TData,
-      TOnMountReturn,
-      TOnChangeReturn,
-      TOnChangeAsyncReturn,
-      TOnBlurReturn,
-      TOnBlurAsyncReturn,
-      TOnSubmitReturn,
-      TOnSubmitAsyncReturn,
-      TFormOnMountReturn,
-      TFormOnChangeReturn,
-      TFormOnChangeAsyncReturn,
-      TFormOnBlurReturn,
-      TFormOnBlurAsyncReturn,
-      TFormOnSubmitReturn,
-      TFormOnSubmitAsyncReturn
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnServer
     >,
   ) => ReactNode
 } & UseFieldOptions<
   TParentData,
   TName,
   TData,
-  TOnMountReturn,
-  TOnChangeReturn,
-  TOnChangeAsyncReturn,
-  TOnBlurReturn,
-  TOnBlurAsyncReturn,
-  TOnSubmitReturn,
-  TOnSubmitAsyncReturn,
-  TFormOnMountReturn,
-  TFormOnChangeReturn,
-  TFormOnChangeAsyncReturn,
-  TFormOnBlurReturn,
-  TFormOnBlurAsyncReturn,
-  TFormOnSubmitReturn,
-  TFormOnSubmitAsyncReturn
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TFormOnMount,
+  TFormOnChange,
+  TFormOnChangeAsync,
+  TFormOnBlur,
+  TFormOnBlurAsync,
+  TFormOnSubmit,
+  TFormOnSubmitAsync,
+  TFormOnServer
 >
 
 /**
@@ -247,23 +293,30 @@ type FieldComponentProps<
  */
 export type FieldComponent<
   TParentData,
-  TFormOnMountReturn = undefined,
-  TFormOnChangeReturn = undefined,
-  TFormOnChangeAsyncReturn = undefined,
-  TFormOnBlurReturn = undefined,
-  TFormOnBlurAsyncReturn = undefined,
-  TFormOnSubmitReturn = undefined,
-  TFormOnSubmitAsyncReturn = undefined,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
 > = <
   TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TOnMountReturn = undefined,
-  TOnChangeReturn = undefined,
-  TOnChangeAsyncReturn = undefined,
-  TOnBlurReturn = undefined,
-  TOnBlurAsyncReturn = undefined,
-  TOnSubmitReturn = undefined,
-  TOnSubmitAsyncReturn = undefined,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
 >({
   children,
   ...fieldOptions
@@ -272,20 +325,21 @@ export type FieldComponent<
     TParentData,
     TName,
     TData,
-    TOnMountReturn,
-    TOnChangeReturn,
-    TOnChangeAsyncReturn,
-    TOnBlurReturn,
-    TOnBlurAsyncReturn,
-    TOnSubmitReturn,
-    TOnSubmitAsyncReturn,
-    TFormOnMountReturn,
-    TFormOnChangeReturn,
-    TFormOnChangeAsyncReturn,
-    TFormOnBlurReturn,
-    TFormOnBlurAsyncReturn,
-    TFormOnSubmitReturn,
-    TFormOnSubmitAsyncReturn
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer
   >,
   'form'
 >) => ReactNode
@@ -298,21 +352,28 @@ export type FieldComponent<
 export const Field = (<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-  TOnMountReturn = undefined,
-  TOnChangeReturn = undefined,
-  TOnChangeAsyncReturn = undefined,
-  TOnBlurReturn = undefined,
-  TOnBlurAsyncReturn = undefined,
-  TOnSubmitReturn = undefined,
-  TOnSubmitAsyncReturn = undefined,
-  TFormOnMountReturn = undefined,
-  TFormOnChangeReturn = undefined,
-  TFormOnChangeAsyncReturn = undefined,
-  TFormOnBlurReturn = undefined,
-  TFormOnBlurAsyncReturn = undefined,
-  TFormOnSubmitReturn = undefined,
-  TFormOnSubmitAsyncReturn = undefined,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
 >({
   children,
   ...fieldOptions
@@ -320,20 +381,21 @@ export const Field = (<
   TParentData,
   TName,
   TData,
-  TOnMountReturn,
-  TOnChangeReturn,
-  TOnChangeAsyncReturn,
-  TOnBlurReturn,
-  TOnBlurAsyncReturn,
-  TOnSubmitReturn,
-  TOnSubmitAsyncReturn,
-  TFormOnMountReturn,
-  TFormOnChangeReturn,
-  TFormOnChangeAsyncReturn,
-  TFormOnBlurReturn,
-  TFormOnBlurAsyncReturn,
-  TFormOnSubmitReturn,
-  TFormOnSubmitAsyncReturn
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TFormOnMount,
+  TFormOnChange,
+  TFormOnChangeAsync,
+  TFormOnBlur,
+  TFormOnBlurAsync,
+  TFormOnSubmit,
+  TFormOnSubmitAsync,
+  TFormOnServer
 >): ReactNode => {
   const fieldApi = useField(fieldOptions as any)
 
@@ -350,6 +412,7 @@ export const Field = (<
   return (<>{jsxToDisplay}</>) as never
 }) satisfies FunctionComponent<
   FieldComponentProps<
+    any,
     any,
     any,
     any,
