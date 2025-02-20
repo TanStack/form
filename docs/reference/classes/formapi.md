@@ -746,3 +746,37 @@ Validates a specified field in the form using the correct handlers for a given v
 
   \| [`ValidationError`](../type-aliases/validationerror.md)[]
   \| `Promise`\<[`ValidationError`](../type-aliases/validationerror.md)[]\>
+
+***
+
+### validateFields()
+
+```ts
+validateFields<TField>(fields: DeepKeys<TFormData>[], cause): Promise<ValidationError[]>
+```
+
+Defined in: [packages/form-core/src/FormApi.ts:797](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L797)
+
+Validates an array of fields in the form using the correct handlers for a given validation type.
+
+#### Type Parameters
+
+• **TField** *extends* `string` \| `number`
+
+#### Parameters
+
+##### fields
+
+`TField[]`
+
+An array of field keys to validate.
+
+##### cause
+
+`ValidationCause`
+
+The cause of the validation.
+
+#### Returns
+
+`Promise`\<[`ValidationError`](../type-aliases/validationerror.md)[]\>
