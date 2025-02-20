@@ -8,7 +8,7 @@
     "_test:types": "tsc"
   },
   "dependencies": {
-    "@remix-run/node": "^2.15.0",
+    "@remix-run/node": "^2.15.3",
     "@remix-run/react": "^2.15.0",
     "@remix-run/serve": "^2.15.0",
     "@tanstack/react-form": "^0.42.0",
