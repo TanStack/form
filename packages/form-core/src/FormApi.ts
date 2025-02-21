@@ -1882,24 +1882,25 @@ export class FormApi<
         {} as Record<ValidationErrorMapKeys, ValidationError>,
       )
     }
-    console.log(this.state.errors)
 
     return {
       form: {
         errors: this.state.errors,
-        errorMap: reduceErrorMap(this.state.errorMap as ValidationErrorMap),
+        errorMap: reduceErrorMap(this.state.errorMap),
       },
       fields: Object.entries(this.state.fieldMeta).reduce(
         (acc, [fieldName, fieldMeta]) => {
           // reduces error map down to keys with errors
-          const fieldErrors = reduceErrorMap((fieldMeta as FieldMeta).errorMap)
+          const fieldErrors = reduceErrorMap(
+            (fieldMeta as AnyFieldMeta).errorMap,
+          )
 
           if (
             Object.keys(fieldErrors).length &&
-            (fieldMeta as FieldMeta).errors.length
+            (fieldMeta as AnyFieldMeta).errors.length
           ) {
             acc[fieldName] = {
-              errors: (fieldMeta as FieldMeta).errors,
+              errors: (fieldMeta as AnyFieldMeta).errors,
               errorMap: fieldErrors,
             }
           }
