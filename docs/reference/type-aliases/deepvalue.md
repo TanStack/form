@@ -11,7 +11,7 @@ title: DeepValue
 type DeepValue<TValue, TAccessor, TNullable> = unknown extends TValue ? TValue : TValue extends ReadonlyArray<any> ? TAccessor extends `[${infer TBrackets}].${infer TAfter}` ? DeepValue<DeepValue<TValue, TBrackets>, TAfter> : TAccessor extends `[${infer TBrackets}]` ? DeepValue<TValue, TBrackets> : TAccessor extends keyof TValue ? TValue[TAccessor] : TValue[TAccessor & number] : TValue extends Record<string | number, any> ? TAccessor extends `${infer TBefore}[${infer TEverythingElse}` ? DeepValue<DeepValue<TValue, TBefore>, `[${TEverythingElse}`> : TAccessor extends `[${infer TBrackets}]` ? DeepValue<TValue, TBrackets> : TAccessor extends `${infer TBefore}.${infer TAfter}` ? DeepValue<DeepValue<TValue, TBefore>, TAfter> : TAccessor extends string ? TNullable extends true ? Nullable<TValue[TAccessor]> : TValue[TAccessor] : never : never;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:109](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L109)
+Defined in: [packages/form-core/src/util-types.ts:111](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L111)
 
 Infer the type of a deeply nested property within an object or an array.
 

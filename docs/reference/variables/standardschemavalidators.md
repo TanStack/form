@@ -25,7 +25,7 @@ Defined in: [packages/form-core/src/standardSchemaValidator.ts:48](https://githu
 
 ##### schema
 
-[`StandardSchemaV1`](../type-aliases/standardschemav1.md)\<`unknown`, `unknown`\>
+[`StandardSchemaV1`](../type-aliases/standardschemav1.md)
 
 #### Returns
 
@@ -46,7 +46,7 @@ Defined in: [packages/form-core/src/standardSchemaValidator.ts:48](https://githu
 
 ##### schema
 
-[`StandardSchemaV1`](../type-aliases/standardschemav1.md)\<`unknown`, `unknown`\>
+[`StandardSchemaV1`](../type-aliases/standardschemav1.md)
 
 #### Returns
 

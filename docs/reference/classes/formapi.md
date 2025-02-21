@@ -62,7 +62,7 @@ Constructs a new `FormApi` instance with the given form options.
 ### baseStore
 
 ```ts
-baseStore: Store<BaseFormState<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer>, (cb) => BaseFormState<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer>>;
+baseStore: Store<BaseFormState<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer>>;
 ```
 
 Defined in: [packages/form-core/src/FormApi.ts:647](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L647)
@@ -208,7 +208,7 @@ Gets the metadata of the specified field.
 ### getFieldValue()
 
 ```ts
-getFieldValue<TField>(field): DeepValue<TFormData, TField, IsNullable<TFormData>>
+getFieldValue<TField>(field): DeepValue<TFormData, TField>
 ```
 
 Defined in: [packages/form-core/src/FormApi.ts:1554](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1554)
@@ -227,7 +227,7 @@ Gets the value of the specified field.
 
 #### Returns
 
-[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\>
+[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>
 
 ***
 
@@ -486,7 +486,7 @@ Optional values to reset the form to.
 
 Optional options to control the reset behavior.
 
-###### keepDefaultValues
+###### keepDefaultValues?
 
 `boolean`
 

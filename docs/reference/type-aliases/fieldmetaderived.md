@@ -11,7 +11,7 @@ title: FieldMetaDerived
 type FieldMetaDerived<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync> = object;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:564](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L564)
+Defined in: [packages/form-core/src/FieldApi.ts:569](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L569)
 
 ## Type Parameters
 
@@ -55,13 +55,13 @@ Defined in: [packages/form-core/src/FieldApi.ts:564](https://github.com/TanStack
 
 ```ts
 errors: (
-  | UnwrapFieldValidateOrFn<TParentData, TName, TOnMount, TFormOnMount>
-  | UnwrapFieldValidateOrFn<TParentData, TName, TOnChange, TFormOnChange>
-  | UnwrapFieldAsyncValidateOrFn<TParentData, TName, TOnChangeAsync, TFormOnChangeAsync>
-  | UnwrapFieldValidateOrFn<TParentData, TName, TOnBlur, TFormOnBlur>
-  | UnwrapFieldAsyncValidateOrFn<TParentData, TName, TOnBlurAsync, TFormOnBlurAsync>
-  | UnwrapFieldValidateOrFn<TParentData, TName, TOnSubmit, TFormOnSubmit>
-  | UnwrapFieldAsyncValidateOrFn<TParentData, TName, TOnSubmitAsync, TFormOnSubmitAsync>)[];
+  | UnwrapOneLevelOfArray<UnwrapFieldValidateOrFn<TParentData, TName, TOnMount, TFormOnMount>>
+  | UnwrapOneLevelOfArray<UnwrapFieldValidateOrFn<TParentData, TName, TOnChange, TFormOnChange>>
+  | UnwrapOneLevelOfArray<UnwrapFieldAsyncValidateOrFn<TParentData, TName, TOnChangeAsync, TFormOnChangeAsync>>
+  | UnwrapOneLevelOfArray<UnwrapFieldValidateOrFn<TParentData, TName, TOnBlur, TFormOnBlur>>
+  | UnwrapOneLevelOfArray<UnwrapFieldAsyncValidateOrFn<TParentData, TName, TOnBlurAsync, TFormOnBlurAsync>>
+  | UnwrapOneLevelOfArray<UnwrapFieldValidateOrFn<TParentData, TName, TOnSubmit, TFormOnSubmit>>
+  | UnwrapOneLevelOfArray<UnwrapFieldAsyncValidateOrFn<TParentData, TName, TOnSubmitAsync, TFormOnSubmitAsync>>)[];
 ```
 
 An array of errors related to the field value.
