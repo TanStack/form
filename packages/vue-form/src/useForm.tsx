@@ -1,4 +1,4 @@
-import { FormApi } from '@tanstack/form-core'
+import { FormApi, type FormAsyncValidateOrFn, type FormValidateOrFn } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
 import { defineComponent, h, onMounted } from 'vue'
 import { Field, useField } from './useField'
@@ -16,30 +16,30 @@ import type {
 import type { FieldComponent, UseField } from './useField'
 
 type SubscribeComponent<
-  TFormData,
-  TFormOnMountReturn = undefined,
-  TFormOnChangeReturn = undefined,
-  TFormOnChangeAsyncReturn = undefined,
-  TFormOnBlurReturn = undefined,
-  TFormOnBlurAsyncReturn = undefined,
-  TFormOnSubmitReturn = undefined,
-  TFormOnSubmitAsyncReturn = undefined,
-  TFormOnServerReturn = undefined,
+  TParentData,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
 > =
   // This complex type comes from Vue's return type for `DefineSetupFnComponent` but with our own types sprinkled in
   // This allows us to pre-bind some generics while keeping the props type unbound generics for props-based inferencing
   new <
     TSelected = NoInfer<
       FormState<
-        TFormData,
-        TFormOnMountReturn,
-        TFormOnChangeReturn,
-        TFormOnChangeAsyncReturn,
-        TFormOnBlurReturn,
-        TFormOnBlurAsyncReturn,
-        TFormOnSubmitReturn,
-        TFormOnSubmitAsyncReturn,
-        TFormOnServerReturn
+        TParentData,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnServer
       >
     >,
   >(
@@ -47,15 +47,15 @@ type SubscribeComponent<
       selector?: (
         state: NoInfer<
           FormState<
-            TFormData,
-            TFormOnMountReturn,
-            TFormOnChangeReturn,
-            TFormOnChangeAsyncReturn,
-            TFormOnBlurReturn,
-            TFormOnBlurAsyncReturn,
-            TFormOnSubmitReturn,
-            TFormOnSubmitAsyncReturn,
-            TFormOnServerReturn
+            TParentData,
+            TFormOnMount,
+            TFormOnChange,
+            TFormOnChangeAsync,
+            TFormOnBlur,
+            TFormOnBlurAsync,
+            TFormOnSubmit,
+            TFormOnSubmitAsync,
+            TFormOnServer
           >
         >,
       ) => TSelected
@@ -66,15 +66,15 @@ type SubscribeComponent<
       selector?: (
         state: NoInfer<
           FormState<
-            TFormData,
-            TFormOnMountReturn,
-            TFormOnChangeReturn,
-            TFormOnChangeAsyncReturn,
-            TFormOnBlurReturn,
-            TFormOnBlurAsyncReturn,
-            TFormOnSubmitReturn,
-            TFormOnSubmitAsyncReturn,
-            TFormOnServerReturn
+            TParentData,
+            TFormOnMount,
+            TFormOnChange,
+            TFormOnChangeAsync,
+            TFormOnBlur,
+            TFormOnBlurAsync,
+            TFormOnSubmit,
+            TFormOnSubmitAsync,
+            TFormOnServer
           >
         >,
       ) => TSelected
@@ -93,144 +93,144 @@ type SubscribeComponent<
     SlotsType<{
       default: NoInfer<
         FormState<
-          TFormData,
-          TFormOnMountReturn,
-          TFormOnChangeReturn,
-          TFormOnChangeAsyncReturn,
-          TFormOnBlurReturn,
-          TFormOnBlurAsyncReturn,
-          TFormOnSubmitReturn,
-          TFormOnSubmitAsyncReturn,
-          TFormOnServerReturn
+          TParentData,
+          TFormOnMount,
+          TFormOnChange,
+          TFormOnChangeAsync,
+          TFormOnBlur,
+          TFormOnBlurAsync,
+          TFormOnSubmit,
+          TFormOnSubmitAsync,
+          TFormOnServer
         >
       >
     }>
   >
 
 export interface VueFormApi<
-  TFormData,
-  TFormOnMountReturn = undefined,
-  TFormOnChangeReturn = undefined,
-  TFormOnChangeAsyncReturn = undefined,
-  TFormOnBlurReturn = undefined,
-  TFormOnBlurAsyncReturn = undefined,
-  TFormOnSubmitReturn = undefined,
-  TFormOnSubmitAsyncReturn = undefined,
-  TFormOnServerReturn = undefined,
+  TParentData,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
 > {
   Field: FieldComponent<
-    TFormData,
-    TFormOnMountReturn,
-    TFormOnChangeReturn,
-    TFormOnChangeAsyncReturn,
-    TFormOnBlurReturn,
-    TFormOnBlurAsyncReturn,
-    TFormOnSubmitReturn,
-    TFormOnSubmitAsyncReturn,
-    TFormOnServerReturn
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer
   >
   useField: UseField<
-    TFormData,
-    TFormOnMountReturn,
-    TFormOnChangeReturn,
-    TFormOnChangeAsyncReturn,
-    TFormOnBlurReturn,
-    TFormOnBlurAsyncReturn,
-    TFormOnSubmitReturn,
-    TFormOnSubmitAsyncReturn,
-    TFormOnServerReturn
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer
   >
   useStore: <
     TSelected = NoInfer<
       FormState<
-        TFormData,
-        TFormOnMountReturn,
-        TFormOnChangeReturn,
-        TFormOnChangeAsyncReturn,
-        TFormOnBlurReturn,
-        TFormOnBlurAsyncReturn,
-        TFormOnSubmitReturn,
-        TFormOnSubmitAsyncReturn,
-        TFormOnServerReturn
+        TParentData,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnServer
       >
     >,
   >(
     selector?: (
       state: NoInfer<
         FormState<
-          TFormData,
-          TFormOnMountReturn,
-          TFormOnChangeReturn,
-          TFormOnChangeAsyncReturn,
-          TFormOnBlurReturn,
-          TFormOnBlurAsyncReturn,
-          TFormOnSubmitReturn,
-          TFormOnSubmitAsyncReturn,
-          TFormOnServerReturn
+          TParentData,
+          TFormOnMount,
+          TFormOnChange,
+          TFormOnChangeAsync,
+          TFormOnBlur,
+          TFormOnBlurAsync,
+          TFormOnSubmit,
+          TFormOnSubmitAsync,
+          TFormOnServer
         >
       >,
     ) => TSelected,
   ) => Readonly<Ref<TSelected>>
   Subscribe: SubscribeComponent<
-    TFormData,
-    TFormOnMountReturn,
-    TFormOnChangeReturn,
-    TFormOnChangeAsyncReturn,
-    TFormOnBlurReturn,
-    TFormOnBlurAsyncReturn,
-    TFormOnSubmitReturn,
-    TFormOnSubmitAsyncReturn,
-    TFormOnServerReturn
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer
   >
 }
 
 export function useForm<
-  TFormData,
-  TFormOnMountReturn = undefined,
-  TFormOnChangeReturn = undefined,
-  TFormOnChangeAsyncReturn = undefined,
-  TFormOnBlurReturn = undefined,
-  TFormOnBlurAsyncReturn = undefined,
-  TFormOnSubmitReturn = undefined,
-  TFormOnSubmitAsyncReturn = undefined,
-  TFormOnServerReturn = undefined,
+  TParentData,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
 >(
   opts?: FormOptions<
-    TFormData,
-    TFormOnMountReturn,
-    TFormOnChangeReturn,
-    TFormOnChangeAsyncReturn,
-    TFormOnBlurReturn,
-    TFormOnBlurAsyncReturn,
-    TFormOnSubmitReturn,
-    TFormOnSubmitAsyncReturn,
-    TFormOnServerReturn
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer
   >,
 ) {
   const formApi = (() => {
     const api = new FormApi<
-      TFormData,
-      TFormOnMountReturn,
-      TFormOnChangeReturn,
-      TFormOnChangeAsyncReturn,
-      TFormOnBlurReturn,
-      TFormOnBlurAsyncReturn,
-      TFormOnSubmitReturn,
-      TFormOnSubmitAsyncReturn,
-      TFormOnServerReturn
+      TParentData,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnServer
     >(opts)
 
     const extendedApi: typeof api &
       VueFormApi<
-        TFormData,
-        TFormOnMountReturn,
-        TFormOnChangeReturn,
-        TFormOnChangeAsyncReturn,
-        TFormOnBlurReturn,
-        TFormOnBlurAsyncReturn,
-        TFormOnSubmitReturn,
-        TFormOnSubmitAsyncReturn,
-        TFormOnServerReturn
+        TParentData,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnServer
       > = api as never
     extendedApi.Field = defineComponent(
       (props, context) => {
