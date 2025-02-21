@@ -16,6 +16,7 @@ export function injectStore<
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
   TSelected = NoInfer<
     FormState<
       TFormData,
@@ -29,7 +30,6 @@ export function injectStore<
       TOnServer
     >
   >,
-  TSubmitMeta,
 >(
   form: FormApi<
     TFormData,

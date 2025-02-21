@@ -47,6 +47,7 @@ it('should not have recursion problems and type register properly', () => {
     TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
     TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
     TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TSubmitMeta,
   >(
     f: ReactFormExtendedApi<
       TFormData,
@@ -57,7 +58,8 @@ it('should not have recursion problems and type register properly', () => {
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
-      TOnServer
+      TOnServer,
+      TSubmitMeta
     >,
   ) => f
 
