@@ -15,9 +15,10 @@ export function useTransform<
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
 >(
   fn: (
-    formBase: FormApi<any, any, any, any, any, any, any, any, any>,
+    formBase: FormApi<any, any, any, any, any, any, any, any, any, any>,
   ) => FormApi<
     TFormData,
     TOnMount,
@@ -27,7 +28,8 @@ export function useTransform<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
-    TOnServer
+    TOnServer,
+    TSubmitMeta
   >,
   deps: unknown[],
 ): FormTransform<
@@ -39,7 +41,8 @@ export function useTransform<
   TOnBlurAsync,
   TOnSubmit,
   TOnSubmitAsync,
-  TOnServer
+  TOnServer,
+  TSubmitMeta
 > {
   return {
     fn,
