@@ -74,6 +74,7 @@ export type FormValidateFn<TFormData> = (props: {
     any,
     any,
     any,
+    any,
     any
   >
 }) => unknown
@@ -102,6 +103,7 @@ export type FormValidateAsyncFn<TFormData> = (props: {
     TFormData,
     // This is technically an edge-type; which we try to keep non-`any`, but in this case
     // It's referring to an inaccessible type from the field validate function inner types, so it's not a big deal
+    any,
     any,
     any,
     any,
@@ -199,6 +201,7 @@ export interface FormTransform<
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
 > {
   fn: (
     formBase: FormApi<
@@ -210,7 +213,8 @@ export interface FormTransform<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
-      TOnServer
+      TOnServer,
+      TSubmitMeta
     >,
   ) => FormApi<
     TFormData,
@@ -221,7 +225,8 @@ export interface FormTransform<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
-    TOnServer
+    TOnServer,
+    TSubmitMeta
   >
   deps: unknown[]
 }
@@ -239,6 +244,7 @@ export interface FormOptions<
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
 > {
   /**
    * Set initial values for your form.
@@ -281,23 +287,49 @@ export interface FormOptions<
     TOnSubmit,
     TOnSubmitAsync
   >
+
+  /**
+   * onSubmitMeta, the data passed from the handleSubmit handler, to the onSubmit function props
+   */
+  onSubmitMeta?: TSubmitMeta
+
   /**
    * A function to be called when the form is submitted, what should happen once the user submits a valid form returns `any` or a promise `Promise<any>`
    */
-  onSubmit?: (props: {
-    value: TFormData
-    formApi: FormApi<
-      TFormData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnServer
-    >
-  }) => any | Promise<any>
+  onSubmit?: (
+    props: [TSubmitMeta] extends [never]
+      ? {
+          value: TFormData
+          formApi: FormApi<
+            TFormData,
+            TOnMount,
+            TOnChange,
+            TOnChangeAsync,
+            TOnBlur,
+            TOnBlurAsync,
+            TOnSubmit,
+            TOnSubmitAsync,
+            TOnServer,
+            TSubmitMeta
+          >
+        }
+      : {
+          value: TFormData
+          formApi: FormApi<
+            TFormData,
+            TOnMount,
+            TOnChange,
+            TOnChangeAsync,
+            TOnBlur,
+            TOnBlurAsync,
+            TOnSubmit,
+            TOnSubmitAsync,
+            TOnServer,
+            TSubmitMeta
+          >
+          meta: TSubmitMeta
+        },
+  ) => any | Promise<any>
   /**
    * Specify an action for scenarios where the user tries to submit an invalid form.
    */
@@ -312,7 +344,8 @@ export interface FormOptions<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
-      TOnServer
+      TOnServer,
+      TSubmitMeta
     >
   }) => void
   transform?: FormTransform<
@@ -324,7 +357,8 @@ export interface FormOptions<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
-    TOnServer
+    TOnServer,
+    TSubmitMeta
   >
 }
 
@@ -347,6 +381,7 @@ export type FieldInfo<TFormData> = {
    */
   instance: FieldApi<
     TFormData,
+    any,
     any,
     any,
     any,
@@ -610,7 +645,18 @@ function getDefaultFormState<
  *
  * A type representing the Form API with all generics set to `any` for convenience.
  */
-export type AnyFormApi = FormApi<any, any, any, any, any, any, any, any, any>
+export type AnyFormApi = FormApi<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
 
 /**
  * A class representing the Form API. It handles the logic and interactions with the form state.
@@ -629,6 +675,7 @@ export class FormApi<
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
 > {
   /**
    * The options for the form.
@@ -642,7 +689,8 @@ export class FormApi<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
-    TOnServer
+    TOnServer,
+    TSubmitMeta
   > = {}
   baseStore!: Store<
     BaseFormState<
@@ -698,7 +746,8 @@ export class FormApi<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
-      TOnServer
+      TOnServer,
+      TSubmitMeta
     >,
   ) {
     this.baseStore = new Store(
@@ -958,6 +1007,8 @@ export class FormApi<
       },
     })
 
+    this.handleSubmit = this.handleSubmit.bind(this)
+
     this.update(opts || {})
   }
 
@@ -1013,7 +1064,8 @@ export class FormApi<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
-      TOnServer
+      TOnServer,
+      TSubmitMeta
     >,
   ) => {
     if (!options) return
@@ -1482,7 +1534,9 @@ export class FormApi<
   /**
    * Handles the form submission, performs validation, and calls the appropriate onSubmit or onInvalidSubmit callbacks.
    */
-  handleSubmit = async () => {
+  handleSubmit(): Promise<void>
+  handleSubmit(submitMeta: TSubmitMeta): Promise<void>
+  async handleSubmit(submitMeta?: TSubmitMeta): Promise<void> {
     this.baseStore.setState((old) => ({
       ...old,
       // Submission attempts mark the form as not submitted
@@ -1536,7 +1590,11 @@ export class FormApi<
 
     try {
       // Run the submit code
-      await this.options.onSubmit?.({ value: this.state.values, formApi: this })
+      await this.options.onSubmit?.({
+        value: this.state.values,
+        formApi: this,
+        ...(submitMeta ? { meta: submitMeta } : {}),
+      } as any)
 
       batch(() => {
         this.baseStore.setState((prev) => ({ ...prev, isSubmitted: true }))

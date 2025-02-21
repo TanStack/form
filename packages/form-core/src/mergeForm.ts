@@ -72,9 +72,20 @@ export function mutateMergeDeep(
 }
 
 export function mergeForm<TFormData>(
-  baseForm: FormApi<NoInfer<TFormData>, any, any, any, any, any, any, any, any>,
+  baseForm: FormApi<
+    NoInfer<TFormData>,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  >,
   state: Partial<
-    FormApi<TFormData, any, any, any, any, any, any, any, any>['state']
+    FormApi<TFormData, any, any, any, any, any, any, any, any, any>['state']
   >,
 ) {
   mutateMergeDeep(baseForm.state, state)
