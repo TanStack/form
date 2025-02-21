@@ -29,6 +29,7 @@ export function injectStore<
       TOnServer
     >
   >,
+  TSubmitMeta,
 >(
   form: FormApi<
     TFormData,
@@ -39,7 +40,8 @@ export function injectStore<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
-    TOnServer
+    TOnServer,
+    TSubmitMeta
   >,
   selector?: (
     state: NoInfer<
