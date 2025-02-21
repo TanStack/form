@@ -83,7 +83,7 @@
   ],
   "dependencies": {
     "@remix-run/node": "^2.15.3",
-    "@tanstack/form-core": "workspace:*",
+    "@tanstack/form-core": "^0.42.1",
     "@tanstack/react-store": "^0.7.0",
     "decode-formdata": "^0.8.0"
   },
@@ -91,12 +91,12 @@
     "@tanstack/start": "^1.95.7",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
-    "@vitejs/plugin-react": "^4.3.3",
+    "@vitejs/plugin-react": "^4.3.4",
     "eslint-plugin-react-compiler": "19.0.0-beta-e552027-20250112",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "vinxi": "^0.5.1",
-    "vite": "^5.1.8"
+    "vite": "^6.1.1"
   },
   "peerDependencies": {
     "@tanstack/start": "^1.81.6",
