@@ -31,7 +31,7 @@ Let's start by creating a `formOption` that we'll use to share the form's shape 
 // Notice the import path is different from the typical import location
 import { formOptions } from '@tanstack/react-form/start'
 
-// You can pass other form options here, like `validatorAdapter`
+// You can pass other form options here
 export const formOpts = formOptions({
   defaultValues: {
     firstName: '',
@@ -180,7 +180,7 @@ Let's start by creating a `formOption` that we'll use to share the form's shape 
 // Notice the import path is different from the client
 import { formOptions } from '@tanstack/react-form/nextjs'
 
-// You can pass other form options here, like `validatorAdapter`
+// You can pass other form options here
 export const formOpts = formOptions({
   defaultValues: {
     firstName: '',
@@ -326,7 +326,7 @@ Let's start by creating a `formOption` that we'll use to share the form's shape 
 // routes/_index/route.tsx
 import { formOptions } from '@tanstack/react-form/remix'
 
-// You can pass other form options here, like `validatorAdapter`
+// You can pass other form options here
 export const formOpts = formOptions({
   defaultValues: {
     firstName: '',

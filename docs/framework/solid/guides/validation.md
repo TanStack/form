@@ -397,41 +397,6 @@ Async validations on form and field level are supported as well:
 />
 ```
 
-### Other Schema Libraries
-
-We also support [Yup](https://github.com/jquense/yup) through an official adapter:
-
-```bash
-$ npm install @tanstack/yup-form-adapter yup
-```
-
-Once done, we can add the adapter to the `validator` property on the form or field:
-
-
-```tsx
-import { yupValidator } from '@tanstack/yup-form-adapter'
-import * as yup from 'yup'
-
-// ...
-
-const form = createForm(() => ({
-  // Either add the validator here or on `Field`
-  validatorAdapter: yupValidator(),
-  // ...
-}));
-
-<form.Field
-  name="age"
-  validatorAdapter={yupValidator()}
-  validators={{
-    onChange: yup.number().moreThan(13, 'You must be 13 to make an account'),
-  }}
-  children={(field) => {
-    return <>{/* ... */}</>
-  }}
-/>
-```
-
 ## Preventing invalid forms from being submitted
 
 The `onChange`, `onBlur` etc... callbacks are also run when the form is submitted and the submission is blocked if the form is invalid.

@@ -412,47 +412,6 @@ Async validations on form and field level are supported as well:
 </template>
 ```
 
-### Other Schema Libraries
-
-We also support [Yup](https://github.com/jquense/yup) through an official adapter:
-
-```bash
-$ npm install @tanstack/yup-form-adapter yup
-```
-
-Once done, we can add the adapter to the `validator` property on the form or field:
-
-```vue
-<script setup lang="ts">
-import { yupValidator } from '@tanstack/zod-form-adapter'
-import * as yup from 'yup'
-
-// ...
-
-const form = useForm({
-    // Either add the validator here or on `Field`
-    validatorAdapter: yupValidator(),
-    // ...
-})
-</script>
-
-<template>
-<!-- ... -->
-    <form.Field
-        name="age"
-        :validator-adapter="yupValidator()"
-        :validators="{
-            onChange: yup.number().moreThan(13, 'You must be 13 to make an account')
-        }"
-    >
-        <template v-slot="{ field }">
-            <!-- ... -->
-        </template>
-    </form.Field>
-<!-- ... -->
-</template>
-```
-
 ## Preventing invalid forms from being submitted
 
 The `onChange`, `onBlur` etc... callbacks are also run when the form is submitted and the submission is blocked if the form is invalid.
