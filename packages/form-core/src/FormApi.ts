@@ -201,7 +201,7 @@ export interface FormTransform<
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TSubmitMeta,
+  TSubmitMeta = never,
 > {
   fn: (
     formBase: FormApi<
@@ -244,7 +244,7 @@ export interface FormOptions<
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TSubmitMeta,
+  TSubmitMeta = never,
 > {
   /**
    * Set initial values for your form.
@@ -675,7 +675,7 @@ export class FormApi<
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TSubmitMeta,
+  TSubmitMeta = never,
 > {
   /**
    * The options for the form.
