@@ -66,27 +66,3 @@ $ yarn add @tanstack/lit-form
 ```
 
 > Depending on your environment, you might need to add polyfills. If you want to support older browsers, you need to transpile the library from `node_modules` yourselves.
-
-In addition, we support Zod, Yup, and Valibot as validators through official validator packages:
-
-### Validator Adapters
-```bash
-# npm
-$ npm i @tanstack/zod-form-adapter zod
-$ npm i @tanstack/yup-form-adapter yup
-$ npm i @tanstack/valibot-form-adapter valibot
-
-# pnpm
-$ pnpm add @tanstack/zod-form-adapter zod
-$ pnpm add @tanstack/yup-form-adapter yup
-$ pnpm add @tanstack/valibot-form-adapter valibot
-
-# bun
-$ bun add @tanstack/zod-form-adapter zod
-$ bun add @tanstack/yup-form-adapter yup
-$ bun add @tanstack/valibot-form-adapter valibot
-
-# yarn
-$ yarn add @tanstack/zod-form-adapter zod
-$ yarn add @tanstack/yup-form-adapter yup
-$ yarn add @tanstack/valibot-form-adapter valibot
