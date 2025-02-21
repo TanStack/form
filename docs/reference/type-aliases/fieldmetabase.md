@@ -11,7 +11,7 @@ title: FieldMetaBase
 type FieldMetaBase<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync> = object;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:473](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L473)
+Defined in: [packages/form-core/src/FieldApi.ts:478](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L478)
 
 ## Type Parameters
 

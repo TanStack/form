@@ -8,9 +8,9 @@ title: formOptions
 # Function: formOptions()
 
 ```ts
-function formOptions<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer>(defaultOpts?): 
+function formOptions<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta>(defaultOpts?): 
   | undefined
-| FormOptions<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer>
+| FormOptions<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta>
 ```
 
 Defined in: [packages/form-core/src/formOptions.ts:7](https://github.com/TanStack/form/blob/main/packages/form-core/src/formOptions.ts#L7)
@@ -35,13 +35,15 @@ Defined in: [packages/form-core/src/formOptions.ts:7](https://github.com/TanStac
 
 • **TOnServer** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
 
+• **TSubmitMeta**
+
 ## Parameters
 
 ### defaultOpts?
 
-[`FormOptions`](../interfaces/formoptions.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`\>
+[`FormOptions`](../interfaces/formoptions.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`\>
 
 ## Returns
 
   \| `undefined`
-  \| [`FormOptions`](../interfaces/formoptions.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`\>
+  \| [`FormOptions`](../interfaces/formoptions.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`\>
