@@ -9,4 +9,4 @@ export type { UseField, FieldComponent } from './useField'
 export { useField, Field } from './useField'
 
 export { useTransform } from './useTransform'
-export { createFormHook } from './createFormHook'
+export { createFormHook, createFormHookContext } from './createFormHook'

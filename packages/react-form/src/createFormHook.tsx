@@ -7,43 +7,19 @@ import type {
   FormOptions,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { ComponentType } from 'react'
+import type { ComponentType, Context } from 'react'
 import type { FieldComponent } from './useField'
 import type { ReactFormExtendedApi } from './useForm'
 
-interface CreateFormHookProps {
-  components: Record<string, ComponentType>
-}
-
-export function createFormHook({ components }: CreateFormHookProps) {
-  type AppField<
-    TParentData,
-    TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
-    TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-    TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-    TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-    TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-    TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-    TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-    TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  > = FieldComponent<
-    TParentData,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnServer,
-    typeof components
-  >
-
+export function createFormHookContext() {
   // We should never hit the `null` case here
-  const FormFieldContext = createContext<AnyFieldApi>(null as never)
+  const context = createContext<AnyFieldApi>(null as never)
 
+  /**
+   * This context only works when within a `component` passed to `createFormHook`
+   */
   function useFieldContext<TData>() {
-    const field = useContext(FormFieldContext)
+    const field = useContext(context)
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!field) {
@@ -71,6 +47,42 @@ export function createFormHook({ components }: CreateFormHookProps) {
       any
     >
   }
+
+  return { context, useFieldContext }
+}
+
+interface CreateFormHookProps<
+  TComponents extends Record<string, ComponentType<any>>,
+> {
+  components: TComponents
+  context: Context<AnyFieldApi>
+}
+
+export function createFormHook<
+  const TComponents extends Record<string, ComponentType<any>>,
+>({ components, context }: CreateFormHookProps<TComponents>) {
+  type AppField<
+    TParentData,
+    TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+    TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+    TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+    TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+    TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+    TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+    TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+    TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  > = FieldComponent<
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    typeof components
+  >
 
   function useAppForm<
     TFormData,
@@ -117,17 +129,17 @@ export function createFormHook({ components }: CreateFormHookProps) {
       TOnServer
     >
   } {
-    // You can override the default form options here by adding keys to the `props` object.
-    const form = useForm({ ...props })
+    const form = useForm(props)
 
     const AppField = useMemo(() => {
       return (({ children, ...props }) => {
         return (
           <form.Field {...props}>
             {(field) => (
-              <FormFieldContext value={field}>
+              // eslint-disable-next-line @eslint-react/no-context-provider
+              <context.Provider value={field}>
                 {children(Object.assign(field, components))}
-              </FormFieldContext>
+              </context.Provider>
             )}
           </form.Field>
         )
@@ -155,6 +167,5 @@ export function createFormHook({ components }: CreateFormHookProps) {
 
   return {
     useAppForm,
-    useFieldContext,
   }
 }
