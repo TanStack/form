@@ -83,7 +83,7 @@
   ],
   "dependencies": {
     "@remix-run/node": "^2.15.3",
-    "@tanstack/form-core": "^0.42.1",
+    "@tanstack/form-core": "workspace:*",
     "@tanstack/react-store": "^0.7.0",
     "decode-formdata": "^0.8.0"
   },
