@@ -19,7 +19,7 @@ describe('createFormHook', () => {
       )
     }
 
-    const { useAppForm, withForm } = createFormHook({
+    const { useAppForm } = createFormHook({
       components: {
         TextField,
       },
@@ -31,18 +31,6 @@ describe('createFormHook', () => {
       lastName: string
     }
 
-    const ChildForm = withForm<Person, { title: string }>(({ form, title }) => {
-      return (
-        <div>
-          <p>{title}</p>
-          <form.AppField
-            name="firstName"
-            children={(field) => <field.TextField label="First Name" />}
-          />
-        </div>
-      )
-    })
-
     function Comp() {
       const form = useAppForm({
         defaultValues: {
@@ -53,7 +41,10 @@ describe('createFormHook', () => {
 
       return (
         <>
-          <ChildForm form={form} title={'Testing'} />
+          <form.AppField
+            name="firstName"
+            children={(field) => <field.TextField label="Testing" />}
+          />
         </>
       )
     }
