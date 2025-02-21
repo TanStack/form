@@ -6,23 +6,37 @@ title: useForm
 # Function: useForm()
 
 ```ts
-function useForm<TFormData, TFormValidator>(opts?): FormApi<TFormData, TFormValidator> & VueFormApi<TFormData, TFormValidator>
+function useForm<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer>(opts?): FormApi<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer> & VueFormApi<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer>
 ```
 
-Defined in: [packages/vue-form/src/useForm.tsx:30](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L30)
+Defined in: [packages/vue-form/src/useForm.tsx:192](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L192)
 
 ## Type Parameters
 
-• **TFormData**
+• **TParentData**
 
-• **TFormValidator** *extends* `undefined` \| `Validator`\<`TFormData`, `unknown`\> = `undefined`
+• **TFormOnMount** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnChange** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnChangeAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnBlur** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnBlurAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnSubmit** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnSubmitAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnServer** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
 
 ## Parameters
 
 ### opts?
 
-`FormOptions`\<`TFormData`, `TFormValidator`\>
+`FormOptions`\<`TParentData`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`\>
 
 ## Returns
 
-`FormApi`\<`TFormData`, `TFormValidator`\> & [`VueFormApi`](../interfaces/vueformapi.md)\<`TFormData`, `TFormValidator`\>
+`FormApi`\<`TParentData`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`\> & [`VueFormApi`](../interfaces/vueformapi.md)\<`TParentData`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`\>

@@ -204,6 +204,42 @@ export class AppComponent {
 }
 ```
 
+It's worth mentioning that our `errors` array and the `errorMap` matches the types returned by the validators. This means that:
+
+```angular-ts
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [TanStackField],
+  template: `
+    <ng-container
+      [tanstackField]="form"
+      name="age"
+      [validators]="{
+        onChange: ageValidator
+      }"
+      #age="field"
+    >
+      <!-- ... -->
+      <!-- errorMap.onChange is type `{isOldEnough: false} | undefined` -->
+	  <!-- meta.errors is type `Array<{isOldEnough: false} | undefined>` -->
+      @if (!age.api.state.meta.errorMap['onChange']?.isOldEnough) {
+        <em role="alert">The user is not old enough</em>
+      }
+    </ng-container>
+  `,
+})
+export class AppComponent {
+  ageValidator: FieldValidateFn<any, any, any, any, number> = ({ value }) =>
+    value < 13 ? 'You must be 13 to make an account' : undefined
+
+  // ...
+}
+```
+
+
+
+
 ## Validation at field level vs at form level
 
 As shown above, each `[tanstackField]` accepts its own validation rules via the `onChange`, `onBlur` etc... callbacks. It is also possible to define validation rules at the form level (as opposed to field by field) by passing similar callbacks to the `injectForm()` function.
@@ -288,7 +324,7 @@ To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods 
   `,
 })
 export class AppComponent {
-  ageValidator: FieldValidateAsyncFn<any, any, any, any, number> = async ({
+  ageValidator: FieldValidateAsyncFn<any, string, number> = async ({
     value,
   }) => {
     await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -332,7 +368,7 @@ export class AppComponent {
   ensureAge13: FieldValidateFn<any, any, any, any, number> = ({ value }) =>
     value < 13 ? 'You must be at least 13' : undefined
 
-  ensureOlderAge: FieldValidateAsyncFn<any, any, any, any, number> = async ({
+  ensureOlderAge: FieldValidateAsyncFn<any, string, number> = async ({
     value,
   }) => {
     const currentAge = await fetchCurrentAgeOnProfile()
@@ -418,7 +454,7 @@ import { z } from 'zod'
   `,
 })
 export class AppComponent {
-  form = injectForm({ 
+  form = injectForm({
     // ...
    })
 
@@ -465,51 +501,6 @@ export class AppComponent {
   // ...
 }
 ```
-
-### Other Schema Libraries
-
-We also support [Yup](https://github.com/jquense/yup) through an official adapter:
-
-```bash
-$ npm install @tanstack/yup-form-adapter yup
-```
-
-Once done, we can add the adapter to the `validator` property on the form or field:
-
-```angular-ts
-import { yupValidator } from '@tanstack/yup-form-adapter'
-import * as yup from 'yup'
-
-@Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [TanStackField],
-  template: `
-    <ng-container
-      [tanstackField]="form"
-      name="age"
-      [validators]="{
-        onChange: yup.number().moreThan(13, 'You must be 13 to make an account'),
-      }"
-      #age="field"
-    >
-      <!-- ... -->
-    </ng-container>
-  `,
-})
-export class AppComponent {
-  form = injectForm({
-    // Either add the validator here or on `Field`
-    validatorAdapter: yupValidator(),
-    // ...
-  })
-
-  yup = yup
-
-  // ...
-}
-```
-
 
 ## Preventing invalid forms from being submitted
 

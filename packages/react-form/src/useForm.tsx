@@ -3,27 +3,79 @@ import { useStore } from '@tanstack/react-store'
 import React, { useState } from 'react'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
+import type {
+  AnyFormApi,
+  AnyFormState,
+  FormAsyncValidateOrFn,
+  FormOptions,
+  FormState,
+  FormValidateOrFn,
+} from '@tanstack/form-core'
 import type { PropsWithChildren, ReactNode } from 'react'
 import type { FieldComponent } from './useField'
 import type { NoInfer } from '@tanstack/react-store'
-import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
 
 /**
  * Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`
  */
 export interface ReactFormApi<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
 > {
   /**
    * A React component to render form fields. With this, you can render and manage individual form fields.
    */
-  Field: FieldComponent<TFormData, TFormValidator>
+  Field: FieldComponent<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer
+  >
   /**
    * A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
    */
-  Subscribe: <TSelected = NoInfer<FormState<TFormData>>>(props: {
-    selector?: (state: NoInfer<FormState<TFormData>>) => TSelected
+  Subscribe: <
+    TSelected = NoInfer<
+      FormState<
+        TFormData,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TOnServer
+      >
+    >,
+  >(props: {
+    selector?: (
+      state: NoInfer<
+        FormState<
+          TFormData,
+          TOnMount,
+          TOnChange,
+          TOnChangeAsync,
+          TOnBlur,
+          TOnBlurAsync,
+          TOnSubmit,
+          TOnSubmitAsync,
+          TOnServer
+        >
+      >,
+    ) => TSelected
     children: ((state: NoInfer<TSelected>) => ReactNode) | ReactNode
   }) => ReactNode
 }
@@ -33,16 +85,44 @@ export interface ReactFormApi<
  */
 export type ReactFormExtendedApi<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-> = FormApi<TFormData, TFormValidator> & ReactFormApi<TFormData, TFormValidator>
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+> = FormApi<
+  TFormData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnServer
+> &
+  ReactFormApi<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer
+  >
 
 function LocalSubscribe({
   form,
   selector,
   children,
 }: PropsWithChildren<{
-  form: FormApi<any, any>
-  selector: (state: FormState<any>) => FormState<any>
+  form: AnyFormApi
+  selector: (state: AnyFormState) => AnyFormState
 }>) {
   const data = useStore(form.store, selector)
 
@@ -56,13 +136,51 @@ function LocalSubscribe({
  */
 export function useForm<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
->(opts?: FormOptions<TFormData, TFormValidator>) {
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+>(
+  opts?: FormOptions<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer
+  >,
+) {
   const [formApi] = useState(() => {
-    const api = new FormApi<TFormData, TFormValidator>(opts)
+    const api = new FormApi<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
+    >(opts)
 
-    const extendedApi: ReactFormExtendedApi<TFormData, TFormValidator> =
-      api as never
+    const extendedApi: ReactFormExtendedApi<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
+    > = api as never
     extendedApi.Field = function APIField(props) {
       return <Field {...props} form={api} />
     }

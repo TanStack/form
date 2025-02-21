@@ -3,17 +3,33 @@ id: DerivedFormState
 title: DerivedFormState
 ---
 
-# Type Alias: DerivedFormState\<TFormData\>
+# Type Alias: DerivedFormState\<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer\>
 
 ```ts
-type DerivedFormState<TFormData> = object;
+type DerivedFormState<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer> = object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:274](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L274)
+Defined in: [packages/form-core/src/FormApi.ts:440](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L440)
 
 ## Type Parameters
 
 • **TFormData**
+
+• **TOnMount** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnChange** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnChangeAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TOnBlur** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnBlurAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TOnSubmit** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnSubmitAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TOnServer** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
 
 ## Type declaration
 
@@ -28,7 +44,15 @@ A boolean indicating if the form can be submitted based on its current state.
 ### errors
 
 ```ts
-errors: ValidationError[];
+errors: (
+  | UnwrapFormValidateOrFn<TOnMount>
+  | UnwrapFormValidateOrFn<TOnChange>
+  | UnwrapFormAsyncValidateOrFn<TOnChangeAsync>
+  | UnwrapFormValidateOrFn<TOnBlur>
+  | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
+  | UnwrapFormValidateOrFn<TOnSubmit>
+  | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
+  | UnwrapFormAsyncValidateOrFn<TOnServer>)[];
 ```
 
 The error array for the form itself.
@@ -36,7 +60,7 @@ The error array for the form itself.
 ### fieldMeta
 
 ```ts
-fieldMeta: Record<DeepKeys<TFormData>, FieldMeta>;
+fieldMeta: Record<DeepKeys<TFormData>, AnyFieldMeta>;
 ```
 
 A record of field metadata for each field in the form.

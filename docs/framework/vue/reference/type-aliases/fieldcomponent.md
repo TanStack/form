@@ -3,45 +3,50 @@ id: FieldComponent
 title: FieldComponent
 ---
 
-# Type Alias: FieldComponent()\<TParentData, TFormValidator\>
+# Type Alias: FieldComponent()\<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer\>
 
 ```ts
-type FieldComponent<TParentData, TFormValidator> = <TName, TFieldValidator, TData>(fieldOptions, context) => any;
+type FieldComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer> = <TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync>(props) => CreateComponentPublicInstanceWithMixins<Omit<FieldComponentProps<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer>, "form">, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, EmitsOptions, PublicProps, {}, false, {}, SlotsType<{
+  default: {
+     field: FieldApi<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer>;
+     state: FieldApi<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer>["state"];
+    };
+}>>;
 ```
 
-Defined in: [packages/vue-form/src/useField.tsx:117](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L117)
+Defined in: [packages/vue-form/src/useField.tsx:24](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L24)
 
 ## Type Parameters
 
 • **TParentData**
 
-• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
+• **TFormOnMount** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
 
-## Type Parameters
+• **TFormOnChange** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
 
-• **TName** *extends* `DeepKeys`\<`TParentData`\>
+• **TFormOnChangeAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
 
-• **TFieldValidator** *extends* 
-  \| `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\>
-  \| `undefined` = `undefined`
+• **TFormOnBlur** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
 
-• **TData** *extends* `DeepValue`\<`TParentData`, `TName`\> = `DeepValue`\<`TParentData`, `TName`\>
+• **TFormOnBlurAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnSubmit** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnSubmitAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnServer** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
 
 ## Parameters
 
-### fieldOptions
+### props
 
-`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
-
-### context
-
-`SetupContext`\<\{\}, `SlotsType`\<\{
-  `default`: \{
-     `field`: `FieldApi`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>;
-     `state`: `FieldApi`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>\[`"state"`\];
-    \};
- \}\>\>
+`Omit`\<[`FieldComponentProps`](fieldcomponentprops.md)\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`\>, `"form"`\> & `EmitsToProps`\<`EmitsOptions`\> & `PublicProps`
 
 ## Returns
 
-`any`
+`CreateComponentPublicInstanceWithMixins`\<`Omit`\<[`FieldComponentProps`](fieldcomponentprops.md)\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`\>, `"form"`\>, \{\}, \{\}, \{\}, \{\}, `ComponentOptionsMixin`, `ComponentOptionsMixin`, `EmitsOptions`, `PublicProps`, \{\}, `false`, \{\}, `SlotsType`\<\{
+  `default`: \{
+     `field`: `FieldApi`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`\>;
+     `state`: `FieldApi`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`\>\[`"state"`\];
+    \};
+ \}\>\>

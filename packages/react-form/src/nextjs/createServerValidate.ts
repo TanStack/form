@@ -1,83 +1,111 @@
 import { decode } from 'decode-formdata'
+import {
+  isGlobalFormValidationError,
+  isStandardSchemaValidator,
+  standardSchemaValidators,
+} from '@tanstack/form-core'
 import { ServerValidateError } from './error'
 import type {
+  FormAsyncValidateOrFn,
   FormOptions,
-  FormValidationError,
-  ValidationError,
-  Validator,
+  FormValidateAsyncFn,
+  FormValidateOrFn,
+  UnwrapFormAsyncValidateOrFn,
 } from '@tanstack/form-core'
 import type { ServerFormState } from './types'
 
-type OnServerValidateFn<TFormData> = (props: {
-  value: TFormData
-}) => ValidationError | Promise<ValidationError>
-
-type OnServerValidateOrFn<
-  TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-> =
-  TFormValidator extends Validator<TFormData, infer FFN>
-    ? FFN | OnServerValidateFn<TFormData>
-    : OnServerValidateFn<TFormData>
-
 interface CreateServerValidateOptions<
   TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
-> extends FormOptions<TFormData, TFormValidator> {
-  onServerValidate: OnServerValidateOrFn<TFormData, TFormValidator>
-}
-
-const isFormValidationError = (
-  error: unknown,
-): error is FormValidationError<unknown> => {
-  return typeof error === 'object'
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+> extends FormOptions<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer
+  > {
+  onServerValidate: TOnServer
 }
 
 export const createServerValidate =
   <
     TFormData,
-    TFormValidator extends
-      | Validator<TFormData, unknown>
-      | undefined = undefined,
+    TOnMount extends undefined | FormValidateOrFn<TFormData>,
+    TOnChange extends undefined | FormValidateOrFn<TFormData>,
+    TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+    TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+    TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   >(
-    defaultOpts: CreateServerValidateOptions<TFormData, TFormValidator>,
+    defaultOpts: CreateServerValidateOptions<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
+    >,
   ) =>
   async (formData: FormData, info?: Parameters<typeof decode>[1]) => {
-    const { validatorAdapter, onServerValidate } = defaultOpts
+    const { onServerValidate } = defaultOpts
 
-    const runValidator = async (propsValue: {
+    const runValidator = async ({
+      value,
+      validationSource,
+    }: {
       value: TFormData
       validationSource: 'form'
     }) => {
-      if (validatorAdapter && typeof onServerValidate !== 'function') {
-        return validatorAdapter().validateAsync(propsValue, onServerValidate)
+      if (isStandardSchemaValidator(onServerValidate)) {
+        return await standardSchemaValidators.validateAsync(
+          { value, validationSource },
+          onServerValidate,
+        )
       }
-
-      return (onServerValidate as OnServerValidateFn<TFormData>)(propsValue)
+      return (onServerValidate as FormValidateAsyncFn<TFormData>)({
+        value,
+        signal: undefined as never,
+        formApi: undefined as never,
+      })
     }
 
     const values = decode(formData, info) as never as TFormData
 
-    const onServerError = await runValidator({
+    const onServerError = (await runValidator({
       value: values,
       validationSource: 'form',
-    })
+    })) as UnwrapFormAsyncValidateOrFn<TOnServer> | undefined
 
     if (!onServerError) return
 
-    const onServerErrorStr =
-      onServerError &&
-      typeof onServerError !== 'string' &&
-      isFormValidationError(onServerError)
+    const onServerErrorVal = (
+      isGlobalFormValidationError(onServerError)
         ? onServerError.form
         : onServerError
+    ) as UnwrapFormAsyncValidateOrFn<TOnServer>
 
-    const formState: ServerFormState<TFormData> = {
+    const formState: ServerFormState<TFormData, TOnServer> = {
       errorMap: {
         onServer: onServerError,
       },
       values,
-      errors: onServerErrorStr ? [onServerErrorStr] : [],
+      errors: onServerErrorVal ? [onServerErrorVal] : [],
     }
 
     throw new ServerValidateError({
@@ -85,7 +113,7 @@ export const createServerValidate =
     })
   }
 
-export const initialFormState: ServerFormState<any> = {
+export const initialFormState: ServerFormState<any, undefined> = {
   errorMap: {
     onServer: undefined,
   },

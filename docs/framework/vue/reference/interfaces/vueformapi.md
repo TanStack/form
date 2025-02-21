@@ -3,67 +3,59 @@ id: VueFormApi
 title: VueFormApi
 ---
 
-# Interface: VueFormApi\<TFormData, TFormValidator\>
+# Interface: VueFormApi\<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer\>
 
-Defined in: [packages/vue-form/src/useForm.tsx:10](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L10)
+Defined in: [packages/vue-form/src/useForm.tsx:115](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L115)
 
 ## Type Parameters
 
-• **TFormData**
+• **TParentData**
 
-• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> \| `undefined` = `undefined`
+• **TFormOnMount** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnChange** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnChangeAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnBlur** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnBlurAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnSubmit** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnSubmitAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnServer** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
 
 ## Properties
 
 ### Field
 
 ```ts
-Field: FieldComponent<TFormData, TFormValidator>;
+Field: FieldComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer>;
 ```
 
-Defined in: [packages/vue-form/src/useForm.tsx:14](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L14)
+Defined in: [packages/vue-form/src/useForm.tsx:126](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L126)
 
 ***
 
-### Subscribe()
+### Subscribe
 
 ```ts
-Subscribe: <TSelected>(props, context) => any;
+Subscribe: SubscribeComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer>;
 ```
 
-Defined in: [packages/vue-form/src/useForm.tsx:19](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L19)
-
-#### Type Parameters
-
-• **TSelected** = `FormState`\<`TFormData`\>
-
-#### Parameters
-
-##### props
-
-###### selector
-
-(`state`) => `TSelected`
-
-##### context
-
-`SetupContext`\<`EmitsOptions`, `SlotsType`\<\{
-  `default`: `FormState`\<`TFormData`\>;
- \}\>\>
-
-#### Returns
-
-`any`
+Defined in: [packages/vue-form/src/useForm.tsx:179](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L179)
 
 ***
 
 ### useField
 
 ```ts
-useField: UseField<TFormData, TFormValidator>;
+useField: UseField<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer>;
 ```
 
-Defined in: [packages/vue-form/src/useForm.tsx:15](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L15)
+Defined in: [packages/vue-form/src/useForm.tsx:137](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L137)
 
 ***
 
@@ -73,11 +65,11 @@ Defined in: [packages/vue-form/src/useForm.tsx:15](https://github.com/TanStack/f
 useStore: <TSelected>(selector?) => Readonly<Ref<TSelected, TSelected>>;
 ```
 
-Defined in: [packages/vue-form/src/useForm.tsx:16](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L16)
+Defined in: [packages/vue-form/src/useForm.tsx:148](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useForm.tsx#L148)
 
 #### Type Parameters
 
-• **TSelected** = `FormState`\<`TFormData`\>
+• **TSelected** = `FormState`\<`TParentData`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`\>
 
 #### Parameters
 

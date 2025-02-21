@@ -6,23 +6,37 @@ title: createForm
 # Function: createForm()
 
 ```ts
-function createForm<TParentData, TFormValidator>(opts?): FormApi<TParentData, TFormValidator> & SolidFormApi<TParentData, TFormValidator>
+function createForm<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer>(opts?): FormApi<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer> & SolidFormApi<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer>
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:26](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L26)
+Defined in: [packages/solid-form/src/createForm.tsx:114](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L114)
 
 ## Type Parameters
 
 • **TParentData**
 
-• **TFormValidator** *extends* `undefined` \| `Validator`\<`TParentData`, `unknown`\> = `undefined`
+• **TFormOnMount** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnChange** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnChangeAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnBlur** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnBlurAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnSubmit** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnSubmitAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnServer** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
 
 ## Parameters
 
 ### opts?
 
-() => `FormOptions`\<`TParentData`, `TFormValidator`\>
+() => `FormOptions`\<`TParentData`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`\>
 
 ## Returns
 
-`FormApi`\<`TParentData`, `TFormValidator`\> & [`SolidFormApi`](../interfaces/solidformapi.md)\<`TParentData`, `TFormValidator`\>
+`FormApi`\<`TParentData`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`\> & [`SolidFormApi`](../interfaces/solidformapi.md)\<`TParentData`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`\>

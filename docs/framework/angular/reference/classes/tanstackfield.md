@@ -3,9 +3,9 @@ id: TanStackField
 title: TanStackField
 ---
 
-# Class: TanStackField\<TParentData, TName, TFieldValidator, TFormValidator, TData\>
+# Class: TanStackField\<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer\>
 
-Defined in: [tanstack-field.directive.ts:25](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L25)
+Defined in: [tanstack-field.directive.ts:32](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L32)
 
 ## Type Parameters
 
@@ -13,42 +13,66 @@ Defined in: [tanstack-field.directive.ts:25](https://github.com/TanStack/form/bl
 
 • **TName** *extends* `DeepKeys`\<`TParentData`\>
 
-• **TFieldValidator** *extends* 
-  \| `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\>
-  \| `undefined` = `undefined`
+• **TData** *extends* `DeepValue`\<`TParentData`, `TName`\>
 
-• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
+• **TOnMount** *extends* `undefined` \| `FieldValidateOrFn`\<`TParentData`, `TName`, `TData`\>
 
-• **TData** *extends* `DeepValue`\<`TParentData`, `TName`\> = `DeepValue`\<`TParentData`, `TName`\>
+• **TOnChange** *extends* `undefined` \| `FieldValidateOrFn`\<`TParentData`, `TName`, `TData`\>
+
+• **TOnChangeAsync** *extends* `undefined` \| `FieldAsyncValidateOrFn`\<`TParentData`, `TName`, `TData`\>
+
+• **TOnBlur** *extends* `undefined` \| `FieldValidateOrFn`\<`TParentData`, `TName`, `TData`\>
+
+• **TOnBlurAsync** *extends* `undefined` \| `FieldAsyncValidateOrFn`\<`TParentData`, `TName`, `TData`\>
+
+• **TOnSubmit** *extends* `undefined` \| `FieldValidateOrFn`\<`TParentData`, `TName`, `TData`\>
+
+• **TOnSubmitAsync** *extends* `undefined` \| `FieldAsyncValidateOrFn`\<`TParentData`, `TName`, `TData`\>
+
+• **TFormOnMount** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnChange** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnChangeAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnBlur** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnBlurAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnSubmit** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnSubmitAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnServer** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
 
 ## Implements
 
 - `OnInit`
 - `OnChanges`
 - `OnDestroy`
-- `FieldOptions`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
+- `FieldOptions`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`\>
 
 ## Constructors
 
 ### new TanStackField()
 
 ```ts
-new TanStackField<TParentData, TName, TFieldValidator, TFormValidator, TData>(): TanStackField<TParentData, TName, TFieldValidator, TFormValidator, TData>
+new TanStackField<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer>(): TanStackField<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer>
 ```
 
 #### Returns
 
-[`TanStackField`](tanstackfield.md)\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>
+[`TanStackField`](tanstackfield.md)\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`\>
 
 ## Properties
 
 ### api
 
 ```ts
-api: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>;
+api: FieldApi<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer>;
 ```
 
-Defined in: [tanstack-field.directive.ts:62](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L62)
+Defined in: [tanstack-field.directive.ts:131](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L131)
 
 ***
 
@@ -58,7 +82,7 @@ Defined in: [tanstack-field.directive.ts:62](https://github.com/TanStack/form/bl
 optional asyncAlways: boolean;
 ```
 
-Defined in: [tanstack-field.directive.ts:48](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L48)
+Defined in: [tanstack-field.directive.ts:81](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L81)
 
 If `true`, always run async validation, even if there are errors emitted during synchronous validation.
 
@@ -76,7 +100,7 @@ FieldOptions.asyncAlways
 optional asyncDebounceMs: number;
 ```
 
-Defined in: [tanstack-field.directive.ts:47](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L47)
+Defined in: [tanstack-field.directive.ts:80](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L80)
 
 The default time to debounce async validation if there is not a more specific debounce time passed.
 
@@ -91,10 +115,10 @@ FieldOptions.asyncDebounceMs
 ### defaultMeta?
 
 ```ts
-optional defaultMeta: Partial<FieldMeta>;
+optional defaultMeta: Partial<FieldMeta<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync>>;
 ```
 
-Defined in: [tanstack-field.directive.ts:60](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L60)
+Defined in: [tanstack-field.directive.ts:108](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L108)
 
 An optional object with default metadata for the field.
 
@@ -112,7 +136,7 @@ FieldOptions.defaultMeta
 optional defaultValue: NoInfer<TData>;
 ```
 
-Defined in: [tanstack-field.directive.ts:46](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L46)
+Defined in: [tanstack-field.directive.ts:79](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L79)
 
 An optional default value for the field.
 
@@ -124,13 +148,31 @@ FieldOptions.defaultValue
 
 ***
 
+### disableErrorFlat?
+
+```ts
+optional disableErrorFlat: boolean;
+```
+
+Defined in: [tanstack-field.directive.ts:129](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L129)
+
+Disable the `flat(1)` operation on `field.errors`. This is useful if you want to keep the error structure as is. Not suggested for most use-cases.
+
+#### Implementation of
+
+```ts
+FieldOptions.disableErrorFlat
+```
+
+***
+
 ### listeners?
 
 ```ts
-optional listeners: NoInfer<FieldListeners<TParentData, TName, TFieldValidator, TFormValidator, TData>>;
+optional listeners: NoInfer<FieldListeners<TParentData, TName, TData>>;
 ```
 
-Defined in: [tanstack-field.directive.ts:57](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L57)
+Defined in: [tanstack-field.directive.ts:107](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L107)
 
 A list of listeners which attach to the corresponding events
 
@@ -148,7 +190,7 @@ FieldOptions.listeners
 name: TName;
 ```
 
-Defined in: [tanstack-field.directive.ts:42](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L42)
+Defined in: [tanstack-field.directive.ts:75](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L75)
 
 The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
 
@@ -163,10 +205,10 @@ FieldOptions.name
 ### tanstackField
 
 ```ts
-tanstackField: FormApi<TParentData, TFormValidator>;
+tanstackField: FormApi<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer>;
 ```
 
-Defined in: [tanstack-field.directive.ts:50](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L50)
+Defined in: [tanstack-field.directive.ts:82](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L82)
 
 ***
 
@@ -176,7 +218,7 @@ Defined in: [tanstack-field.directive.ts:50](https://github.com/TanStack/form/bl
 optional unmount: () => void;
 ```
 
-Defined in: [tanstack-field.directive.ts:78](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L78)
+Defined in: [tanstack-field.directive.ts:185](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L185)
 
 #### Returns
 
@@ -184,31 +226,13 @@ Defined in: [tanstack-field.directive.ts:78](https://github.com/TanStack/form/bl
 
 ***
 
-### validatorAdapter?
-
-```ts
-optional validatorAdapter: TFieldValidator;
-```
-
-Defined in: [tanstack-field.directive.ts:49](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L49)
-
-A validator provided by an extension, like `yupValidator` from `@tanstack/yup-form-adapter`
-
-#### Implementation of
-
-```ts
-FieldOptions.validatorAdapter
-```
-
-***
-
 ### validators?
 
 ```ts
-optional validators: NoInfer<FieldValidators<TParentData, TName, TFieldValidator, TFormValidator, TData>>;
+optional validators: NoInfer<FieldValidators<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync>>;
 ```
 
-Defined in: [tanstack-field.directive.ts:54](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L54)
+Defined in: [tanstack-field.directive.ts:93](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L93)
 
 A list of validators to pass to the field
 
@@ -226,7 +250,7 @@ FieldOptions.validators
 ngOnChanges(): void
 ```
 
-Defined in: [tanstack-field.directive.ts:90](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L90)
+Defined in: [tanstack-field.directive.ts:197](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L197)
 
 A callback method that is invoked immediately after the
 default change detector has checked data-bound properties
@@ -251,7 +275,7 @@ OnChanges.ngOnChanges
 ngOnDestroy(): void
 ```
 
-Defined in: [tanstack-field.directive.ts:86](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L86)
+Defined in: [tanstack-field.directive.ts:193](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L193)
 
 A callback method that performs custom clean-up, invoked immediately
 before a directive, pipe, or service instance is destroyed.
@@ -274,7 +298,7 @@ OnDestroy.ngOnDestroy
 ngOnInit(): void
 ```
 
-Defined in: [tanstack-field.directive.ts:80](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L80)
+Defined in: [tanstack-field.directive.ts:187](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L187)
 
 A callback method that is invoked immediately after the
 default change detector has checked the directive's

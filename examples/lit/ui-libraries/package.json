@@ -14,7 +14,7 @@
     "lit": "^3.2.1"
   },
   "devDependencies": {
-    "vite": "^5.4.11"
+    "vite": "^6.1.1"
   },
   "browserslist": {
     "production": [

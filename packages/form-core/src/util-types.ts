@@ -1,6 +1,8 @@
 type Nullable<T> = T | null
 type IsNullable<T> = [null] extends [T] ? true : false
 
+export type UnwrapOneLevelOfArray<T> = T extends (infer U)[] ? U : T
+
 /**
  * @private
  */

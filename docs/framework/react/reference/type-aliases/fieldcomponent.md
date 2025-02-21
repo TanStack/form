@@ -3,16 +3,16 @@ id: FieldComponent
 title: FieldComponent
 ---
 
-# Type Alias: FieldComponent()\<TParentData, TFormValidator\>
+# Type Alias: FieldComponent()\<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer\>
 
 ```ts
-type FieldComponent<TParentData, TFormValidator> = <TName, TFieldValidator, TData>({
+type FieldComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer> = <TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync>({
   children,
   ...fieldOptions
 }) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/useField.tsx:134](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L134)
+Defined in: [packages/react-form/src/useField.tsx:294](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L294)
 
 A type alias representing a field component for a specific form data type.
 
@@ -20,17 +20,41 @@ A type alias representing a field component for a specific form data type.
 
 • **TParentData**
 
-• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
+• **TFormOnMount** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnChange** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnChangeAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnBlur** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnBlurAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnSubmit** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnSubmitAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnServer** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
 
 ## Type Parameters
 
 • **TName** *extends* `DeepKeys`\<`TParentData`\>
 
-• **TFieldValidator** *extends* 
-  \| `Validator`\<`DeepValue`\<`TParentData`, `TName`\>, `unknown`\>
-  \| `undefined` = `undefined`
+• **TData** *extends* `DeepValue`\<`TParentData`, `TName`\>
 
-• **TData** *extends* `DeepValue`\<`TParentData`, `TName`\> = `DeepValue`\<`TParentData`, `TName`\>
+• **TOnMount** *extends* `undefined` \| `FieldValidateOrFn`\<`TParentData`, `TName`, `TData`\>
+
+• **TOnChange** *extends* `undefined` \| `FieldValidateOrFn`\<`TParentData`, `TName`, `TData`\>
+
+• **TOnChangeAsync** *extends* `undefined` \| `FieldAsyncValidateOrFn`\<`TParentData`, `TName`, `TData`\>
+
+• **TOnBlur** *extends* `undefined` \| `FieldValidateOrFn`\<`TParentData`, `TName`, `TData`\>
+
+• **TOnBlurAsync** *extends* `undefined` \| `FieldAsyncValidateOrFn`\<`TParentData`, `TName`, `TData`\>
+
+• **TOnSubmit** *extends* `undefined` \| `FieldValidateOrFn`\<`TParentData`, `TName`, `TData`\>
+
+• **TOnSubmitAsync** *extends* `undefined` \| `FieldAsyncValidateOrFn`\<`TParentData`, `TName`, `TData`\>
 
 ## Parameters
 
@@ -39,7 +63,7 @@ A type alias representing a field component for a specific form data type.
   ...fieldOptions
 \}
 
-`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TFieldValidator`, `TFormValidator`, `TData`\>, `"form"`\>
+`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`\>, `"form"`\>
 
 ## Returns
 

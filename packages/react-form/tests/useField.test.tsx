@@ -6,7 +6,7 @@ import { StrictMode, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import { useForm } from '../src/index'
 import { sleep } from './utils'
-import type { FieldApi } from '../src/index'
+import type { AnyFieldApi } from '../src/index'
 
 const user = userEvent.setup()
 
@@ -497,7 +497,7 @@ describe('useField', () => {
   })
 
   it('should handle strict mode properly with conditional fields', async () => {
-    function FieldInfo({ field }: { field: FieldApi<any, any> }) {
+    function FieldInfo({ field }: { field: AnyFieldApi }) {
       return (
         <>
           {field.state.meta.isTouched && field.state.meta.errors.length ? (

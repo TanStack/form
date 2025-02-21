@@ -3,13 +3,13 @@ id: FieldInfo
 title: FieldInfo
 ---
 
-# Type Alias: FieldInfo\<TFormData, TFormValidator\>
+# Type Alias: FieldInfo\<TFormData\>
 
 ```ts
-type FieldInfo<TFormData, TFormValidator> = object;
+type FieldInfo<TFormData> = object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:208](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L208)
+Defined in: [packages/form-core/src/FormApi.ts:344](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L344)
 
 An object representing the field information for a specific field within the form.
 
@@ -17,15 +17,13 @@ An object representing the field information for a specific field within the for
 
 • **TFormData**
 
-• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> \| `undefined` = `undefined`
-
 ## Type declaration
 
 ### instance
 
 ```ts
 instance: 
-  | FieldApi<TFormData, any, Validator<unknown, unknown> | undefined, TFormValidator>
+  | FieldApi<TFormData, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any>
   | null;
 ```
 

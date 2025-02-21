@@ -3,35 +3,49 @@ id: SolidFormApi
 title: SolidFormApi
 ---
 
-# Interface: SolidFormApi\<TFormData, TFormValidator\>
+# Interface: SolidFormApi\<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer\>
 
-Defined in: [packages/solid-form/src/createForm.tsx:11](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L11)
+Defined in: [packages/solid-form/src/createForm.tsx:16](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L16)
 
 ## Type Parameters
 
-• **TFormData**
+• **TParentData**
 
-• **TFormValidator** *extends* `Validator`\<`TFormData`, `unknown`\> \| `undefined` = `undefined`
+• **TFormOnMount** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnChange** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnChangeAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnBlur** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnBlurAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnSubmit** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnSubmitAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnServer** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
 
 ## Properties
 
 ### createField
 
 ```ts
-createField: CreateField<TFormData, TFormValidator>;
+createField: CreateField<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer>;
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:16](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L16)
+Defined in: [packages/solid-form/src/createForm.tsx:38](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L38)
 
 ***
 
 ### Field
 
 ```ts
-Field: FieldComponent<TFormData, TFormValidator>;
+Field: FieldComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer>;
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:15](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L15)
+Defined in: [packages/solid-form/src/createForm.tsx:27](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L27)
 
 ***
 
@@ -41,11 +55,11 @@ Defined in: [packages/solid-form/src/createForm.tsx:15](https://github.com/TanSt
 Subscribe: <TSelected>(props) => Element;
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:20](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L20)
+Defined in: [packages/solid-form/src/createForm.tsx:80](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L80)
 
 #### Type Parameters
 
-• **TSelected** = `FormState`\<`TFormData`\>
+• **TSelected** = `FormState`\<`TParentData`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`\>
 
 #### Parameters
 
@@ -55,7 +69,7 @@ Defined in: [packages/solid-form/src/createForm.tsx:20](https://github.com/TanSt
 
 `Element` \| (`state`) => `Element`
 
-###### selector
+###### selector?
 
 (`state`) => `TSelected`
 
@@ -71,11 +85,11 @@ Defined in: [packages/solid-form/src/createForm.tsx:20](https://github.com/TanSt
 useStore: <TSelected>(selector?) => () => TSelected;
 ```
 
-Defined in: [packages/solid-form/src/createForm.tsx:17](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L17)
+Defined in: [packages/solid-form/src/createForm.tsx:49](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createForm.tsx#L49)
 
 #### Type Parameters
 
-• **TSelected** = `FormState`\<`TFormData`\>
+• **TSelected** = `FormState`\<`TParentData`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`\>
 
 #### Parameters
 

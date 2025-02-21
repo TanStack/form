@@ -6,27 +6,25 @@ title: mergeForm
 # Function: mergeForm()
 
 ```ts
-function mergeForm<TFormData, TFormValidator>(baseForm, state): FormApi<NoInfer<TFormData>, NoInfer<TFormValidator>>
+function mergeForm<TFormData>(baseForm, state): FormApi<NoInfer<TFormData>, any, any, any, any, any, any, any, any>
 ```
 
-Defined in: [packages/form-core/src/mergeForm.ts:75](https://github.com/TanStack/form/blob/main/packages/form-core/src/mergeForm.ts#L75)
+Defined in: [packages/form-core/src/mergeForm.ts:74](https://github.com/TanStack/form/blob/main/packages/form-core/src/mergeForm.ts#L74)
 
 ## Type Parameters
 
 • **TFormData**
 
-• **TFormValidator** *extends* `undefined` \| `Validator`\<`TFormData`, `unknown`\> = `undefined`
-
 ## Parameters
 
 ### baseForm
 
-[`FormApi`](../classes/formapi.md)\<`NoInfer`\<`TFormData`\>, `NoInfer`\<`TFormValidator`\>\>
+[`FormApi`](../classes/formapi.md)\<`NoInfer`\<`TFormData`\>, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>
 
 ### state
 
-`Partial`\<[`FormState`](../type-aliases/formstate.md)\<`TFormData`\>\>
+`Partial`\<[`FormState`](../type-aliases/formstate.md)\<`TFormData`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>\>
 
 ## Returns
 
-[`FormApi`](../classes/formapi.md)\<`NoInfer`\<`TFormData`\>, `NoInfer`\<`TFormValidator`\>\>
+[`FormApi`](../classes/formapi.md)\<`NoInfer`\<`TFormData`\>, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>

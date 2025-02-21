@@ -3,22 +3,36 @@ id: VueFieldApi
 title: VueFieldApi
 ---
 
-# Interface: VueFieldApi\<TParentData, TFormValidator\>
+# Interface: VueFieldApi\<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer\>
 
-Defined in: [packages/vue-form/src/useField.tsx:8](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L8)
+Defined in: [packages/vue-form/src/useField.tsx:159](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L159)
 
 ## Type Parameters
 
 • **TParentData**
 
-• **TFormValidator** *extends* `Validator`\<`TParentData`, `unknown`\> \| `undefined` = `undefined`
+• **TFormOnMount** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnChange** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnChangeAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnBlur** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnBlurAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnSubmit** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnSubmitAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
+• **TFormOnServer** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
 
 ## Properties
 
 ### Field
 
 ```ts
-Field: FieldComponent<TParentData, TFormValidator>;
+Field: FieldComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer>;
 ```
 
-Defined in: [packages/vue-form/src/useField.tsx:14](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L14)
+Defined in: [packages/vue-form/src/useField.tsx:170](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L170)

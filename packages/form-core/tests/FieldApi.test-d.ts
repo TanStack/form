@@ -1,4 +1,4 @@
-import { assertType, it } from 'vitest'
+import { assertType, describe, it } from 'vitest'
 import { FieldApi, FormApi } from '../src/index'
 
 it('should type value properly', () => {
@@ -24,7 +24,7 @@ it('should type value when nothing is passed into constructor', () => {
     age?: number
   }
 
-  const form = new FormApi<FormValues>()
+  const form = new FormApi({ defaultValues: {} as FormValues })
 
   const field = new FieldApi({
     form,
@@ -42,10 +42,10 @@ it('should type required fields in constructor', () => {
     age?: number
   }
 
-  const form = new FormApi<FormValues>({
+  const form = new FormApi({
     defaultValues: {
       name: 'test',
-    },
+    } as FormValues,
   })
 
   const field = new FieldApi({
@@ -64,8 +64,8 @@ it('should type value properly for completely partial forms', () => {
     age?: number
   }
 
-  const form = new FormApi<CompletelyPartialFormValues>({
-    defaultValues: {},
+  const form = new FormApi({
+    defaultValues: {} as CompletelyPartialFormValues,
   })
 
   const field = new FieldApi({
@@ -145,4 +145,188 @@ it('should type an array sub-field properly', () => {
   })
 
   assertType<string>(field.state.value)
+})
+
+it('should have the correct types returned from form validators', () => {
+  const form = new FormApi({
+    defaultValues: {
+      name: 'test',
+    },
+    validators: {
+      onChange: () => {
+        return '123' as const
+      },
+    },
+  } as const)
+
+  assertType<'123' | undefined>(form.state.errorMap.onChange)
+})
+
+it('should have the correct types returned from form validators even when both onChange and onChangeAsync are present', () => {
+  const form = new FormApi({
+    defaultValues: {
+      name: 'test',
+    },
+    validators: {
+      onChange: () => {
+        return '123' as const
+      },
+      onChangeAsync: async () => {
+        return '123' as const
+      },
+    },
+  } as const)
+
+  assertType<'123' | undefined>(form.state.errorMap.onChange)
+})
+
+it('should have the correct types returned from field validators', () => {
+  const form = new FormApi({
+    defaultValues: {
+      name: 'test',
+    },
+  } as const)
+
+  const field = new FieldApi({
+    form,
+    name: 'name',
+    validators: {
+      onChange: () => {
+        return '123' as const
+      },
+    },
+  })
+
+  assertType<'123' | undefined>(field.state.meta.errorMap.onChange)
+})
+
+it('should have the correct types returned from field validators in array', () => {
+  const form = new FormApi({
+    defaultValues: {
+      name: 'test',
+    },
+  } as const)
+
+  const field = new FieldApi({
+    form,
+    name: 'name',
+    validators: {
+      onChange: () => {
+        return '123' as const
+      },
+    },
+  })
+
+  assertType<Array<'123' | undefined>>(field.state.meta.errors)
+})
+
+it('should have the correct types returned from form validators in array', () => {
+  const form = new FormApi({
+    defaultValues: {
+      name: 'test',
+    },
+    validators: {
+      onChange: () => {
+        return '123' as const
+      },
+    },
+  } as const)
+
+  assertType<Array<'123' | undefined>>(form.state.errors)
+})
+
+it('should handle "fields" return types added to the field\'s errorMap itself', () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+    },
+    validators: {
+      onChange: () => {
+        return {
+          fields: {
+            firstName: 'Testing' as const,
+          },
+        }
+      },
+    },
+  })
+
+  const field = new FieldApi({
+    form,
+    name: 'firstName',
+  })
+
+  assertType<'Testing' | undefined>(field.getMeta().errorMap.onChange)
+})
+
+it('should handle "fields" return types added to the field\'s error array itself', () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+    },
+    validators: {
+      onChange: () => {
+        return {
+          fields: {
+            firstName: 'Testing' as const,
+          },
+        }
+      },
+    },
+  })
+
+  const field = new FieldApi({
+    form,
+    name: 'firstName',
+  })
+
+  assertType<Array<'Testing' | undefined>>(field.getMeta().errors)
+})
+
+it('should handle "fields" async return types added to the field\'s errorMap itself', () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+    },
+    validators: {
+      onChangeAsync: async () => {
+        return {
+          fields: {
+            firstName: 'Testing' as const,
+          },
+        }
+      },
+    },
+  })
+
+  const field = new FieldApi({
+    form,
+    name: 'firstName',
+  })
+
+  assertType<'Testing' | undefined>(field.getMeta().errorMap.onChange)
+})
+
+it('should handle "fields" async return types added to the field\'s error array itself', () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+    },
+    validators: {
+      onChangeAsync: async () => {
+        return {
+          fields: {
+            firstName: 'Testing' as const,
+          },
+        }
+      },
+    },
+  })
+
+  const field = new FieldApi({
+    form,
+    name: 'firstName',
+  })
+
+  assertType<Array<'Testing' | undefined>>(field.getMeta().errors)
 })
