@@ -97,7 +97,7 @@ export class AppComponent {
         ? 'First name must be at least 3 characters'
         : undefined
 
-  firstNameAsyncValidator: FieldValidateAsyncFn<any, any, string, any> =
+  firstNameAsyncValidator: FieldValidateAsyncFn<any, string, any> =
     async ({ value }) => {
       await new Promise((resolve) => setTimeout(resolve, 1000))
       return value.includes('error') && 'No "error" allowed in first name'

@@ -324,7 +324,7 @@ To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods 
   `,
 })
 export class AppComponent {
-  ageValidator: FieldValidateAsyncFn<any, any, any, any, number> = async ({
+  ageValidator: FieldValidateAsyncFn<any, string, number> = async ({
     value,
   }) => {
     await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -368,7 +368,7 @@ export class AppComponent {
   ensureAge13: FieldValidateFn<any, any, any, any, number> = ({ value }) =>
     value < 13 ? 'You must be at least 13' : undefined
 
-  ensureOlderAge: FieldValidateAsyncFn<any, any, any, any, number> = async ({
+  ensureOlderAge: FieldValidateAsyncFn<any, string, number> = async ({
     value,
   }) => {
     const currentAge = await fetchCurrentAgeOnProfile()
@@ -454,7 +454,7 @@ import { z } from 'zod'
   `,
 })
 export class AppComponent {
-  form = injectForm({ 
+  form = injectForm({
     // ...
    })
 

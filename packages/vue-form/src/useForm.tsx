@@ -1,8 +1,13 @@
-import { FormApi, type FormAsyncValidateOrFn, type FormValidateOrFn } from '@tanstack/form-core'
+import { FormApi } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
 import { defineComponent, h, onMounted } from 'vue'
 import { Field, useField } from './useField'
-import type { FormOptions, FormState } from '@tanstack/form-core'
+import type {
+  FormAsyncValidateOrFn,
+  FormOptions,
+  FormState,
+  FormValidateOrFn,
+} from '@tanstack/form-core'
 import type { NoInfer } from '@tanstack/vue-store'
 import type {
   ComponentOptionsMixin,
