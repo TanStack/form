@@ -152,8 +152,8 @@ export function makePathArray(str: string | Array<string | number>) {
   }
 
   return str
-    .replaceAll('[', '.')
-    .replaceAll(']', '')
+    .replace(/\[/g, '.')
+    .replace(/\]/g, '')
     .replace(reFindNumbers0, intReplace)
     .replace(reFindNumbers1, `.${intReplace}.`)
     .replace(reFindNumbers2, `${intReplace}.`)
