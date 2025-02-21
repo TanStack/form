@@ -1,0 +1,32 @@
+---
+id: FormValidateFn
+title: FormValidateFn
+---
+
+# Type Alias: FormValidateFn()\<TFormData\>
+
+```ts
+type FormValidateFn<TFormData> = (props) => unknown;
+```
+
+Defined in: [packages/form-core/src/FormApi.ts:64](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L64)
+
+## Type Parameters
+
+• **TFormData**
+
+## Parameters
+
+### props
+
+#### formApi
+
+[`FormApi`](../classes/formapi.md)\<`TFormData`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>
+
+#### value
+
+`TFormData`
+
+## Returns
+
+`unknown`
