@@ -5,6 +5,12 @@ import {
 } from './standardSchemaValidator'
 import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
 import type {
+  DeepKeys,
+  DeepValue,
+  NoInfer,
+  UnwrapOneLevelOfArray,
+} from './util-types'
+import type {
   StandardSchemaV1,
   StandardSchemaV1Issue,
   TStandardSchemaValidatorValue,
@@ -23,7 +29,6 @@ import type {
   ValidationError,
   ValidationErrorMap,
 } from './types'
-import type { DeepKeys, DeepValue, NoInfer } from './util-types'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
 
 /**
@@ -590,27 +595,41 @@ export type FieldMetaDerived<
    * An array of errors related to the field value.
    */
   errors: Array<
-    | UnwrapFieldValidateOrFn<TParentData, TName, TOnMount, TFormOnMount>
-    | UnwrapFieldValidateOrFn<TParentData, TName, TOnChange, TFormOnChange>
-    | UnwrapFieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TOnChangeAsync,
-        TFormOnChangeAsync
+    | UnwrapOneLevelOfArray<
+        UnwrapFieldValidateOrFn<TParentData, TName, TOnMount, TFormOnMount>
       >
-    | UnwrapFieldValidateOrFn<TParentData, TName, TOnBlur, TFormOnBlur>
-    | UnwrapFieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TOnBlurAsync,
-        TFormOnBlurAsync
+    | UnwrapOneLevelOfArray<
+        UnwrapFieldValidateOrFn<TParentData, TName, TOnChange, TFormOnChange>
       >
-    | UnwrapFieldValidateOrFn<TParentData, TName, TOnSubmit, TFormOnSubmit>
-    | UnwrapFieldAsyncValidateOrFn<
-        TParentData,
-        TName,
-        TOnSubmitAsync,
-        TFormOnSubmitAsync
+    | UnwrapOneLevelOfArray<
+        UnwrapFieldAsyncValidateOrFn<
+          TParentData,
+          TName,
+          TOnChangeAsync,
+          TFormOnChangeAsync
+        >
+      >
+    | UnwrapOneLevelOfArray<
+        UnwrapFieldValidateOrFn<TParentData, TName, TOnBlur, TFormOnBlur>
+      >
+    | UnwrapOneLevelOfArray<
+        UnwrapFieldAsyncValidateOrFn<
+          TParentData,
+          TName,
+          TOnBlurAsync,
+          TFormOnBlurAsync
+        >
+      >
+    | UnwrapOneLevelOfArray<
+        UnwrapFieldValidateOrFn<TParentData, TName, TOnSubmit, TFormOnSubmit>
+      >
+    | UnwrapOneLevelOfArray<
+        UnwrapFieldAsyncValidateOrFn<
+          TParentData,
+          TName,
+          TOnSubmitAsync,
+          TFormOnSubmitAsync
+        >
       >
   >
   /**
