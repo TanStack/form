@@ -20,7 +20,6 @@ This section focuses on integrating TanStack Form with TanStack Start.
 
 - Start a new `TanStack Start` project, following the steps in the [TanStack Start Quickstart Guide](https://tanstack.com/router/latest/docs/framework/react/guide/tanstack-start)
 - Install `@tanstack/react-form`
-- Install any [form validator](/form/latest/docs/framework/react/guides/validation#validation-through-schema-libraries) of your choice. [Optional]
 
 ### Start integration
 
@@ -40,7 +39,7 @@ export const formOpts = formOptions({
 })
 ```
 
-Next, we can create [a Start Server Action](https://tanstack.com/router/latest/docs/framework/react/guide/server-functions) that will handle the form submission on the server.
+Next, we can create [a Start Server Action](https://tanstack.com/start/latest/docs/framework/react/server-functions) that will handle the form submission on the server.
 
 ```typescript
 // app/routes/index.tsx, but can be extracted to any other path
@@ -58,28 +57,32 @@ const serverValidate = createServerValidate({
   },
 })
 
-export const handleForm = createServerFn(
-  'POST',
-  async (formData: FormData, ctx) => {
+export const handleForm = createServerFn({
+  method: 'POST',
+})
+  .validator((data: unknown) => {
+    if (!(data instanceof FormData)) {
+      throw new Error('Invalid form data')
+    }
+    return data
+  })
+  .handler(async (ctx) => {
     try {
-      await serverValidate(ctx, formData)
+      await serverValidate(ctx.data)
     } catch (e) {
       if (e instanceof ServerValidateError) {
+        // Log form errors or do any other logic here
         return e.response
       }
 
       // Some other error occurred when parsing the form
       console.error(e)
-      return new Response('There was an internal error', {
-        status: 500,
-      })
+      setResponseStatus(500)
+      return 'There was an internal error'
     }
 
-    return new Response('Form has validated successfully', {
-      status: 200,
-    })
-  },
-)
+    return 'Form has validated successfully'
+  })
 ```
 
 Then we need to establish a way to grab the form data from `serverValidate`'s `response` using another server action:
@@ -88,9 +91,11 @@ Then we need to establish a way to grab the form data from `serverValidate`'s `r
 // app/routes/index.tsx, but can be extracted to any other path
 import { getFormData } from '@tanstack/react-form/start'
 
-export const getFormDataFromServer = createServerFn('GET', async (_, ctx) => {
-  return getFormData(ctx)
-})
+export const getFormDataFromServer = createServerFn({ method: 'GET' }).handler(
+  async () => {
+    return getFormData()
+  },
+)
 ```
 
 Finally, we'll use `getFormDataFromServer` in our loader to get the state from our server into our client and `handleForm` in our client-side form component.
@@ -161,7 +166,7 @@ function Home() {
 
 ## Using TanStack Form in a Next.js App Router
 
-> Before reading this section, it's suggested you understand how React Server Components and React Server Actions work. [Check out this blog series for more information](https://unicorn-utterances.com/collections/react-beyond-the-render)
+> Before reading this section, it's suggested you understand how React Server Components and React Server Actions work. [Check out this blog series for more information](https://playfulprogramming.com/collections/react-beyond-the-render)
 
 This section focuses on integrating TanStack Form with `Next.js`, particularly using the `App Router` and `Server Actions`.
 
@@ -189,7 +194,7 @@ export const formOpts = formOptions({
 })
 ```
 
-Next, we can create [a React Server Action](https://unicorn-utterances.com/posts/what-are-react-server-components) that will handle the form submission on the server.
+Next, we can create [a React Server Action](https://playfulprogramming.com/posts/what-are-react-server-components) that will handle the form submission on the server.
 
 ```typescript
 // action.ts
@@ -294,7 +299,7 @@ export const ClientComp = () => {
 }
 ```
 
-Here, we're using [React's `useActionState` hook](https://unicorn-utterances.com/posts/what-is-use-action-state-and-form-status) and TanStack Form's `useTransform` hook to merge state returned from the server action with the form state.
+Here, we're using [React's `useActionState` hook](https://playfulprogramming.com/posts/what-is-use-action-state-and-form-status) and TanStack Form's `useTransform` hook to merge state returned from the server action with the form state.
 
 > If you get the following error in your Next.js application:
 >
