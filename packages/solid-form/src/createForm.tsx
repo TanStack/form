@@ -2,72 +2,77 @@ import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import { createComputed, onMount } from 'solid-js'
 import { useStore } from '@tanstack/solid-store'
 import { Field, createField } from './createField'
+import type {
+  FormAsyncValidateOrFn,
+  FormOptions,
+  FormState,
+  FormValidateOrFn,
+} from '@tanstack/form-core'
 import type { JSXElement } from 'solid-js'
 import type { CreateField, FieldComponent } from './createField'
-import type { FormOptions, FormState } from '@tanstack/form-core'
 
 type NoInfer<T> = [T][T extends any ? 0 : never]
 
 export interface SolidFormApi<
-  TFormData,
-  TFormOnMountReturn = undefined,
-  TFormOnChangeReturn = undefined,
-  TFormOnChangeAsyncReturn = undefined,
-  TFormOnBlurReturn = undefined,
-  TFormOnBlurAsyncReturn = undefined,
-  TFormOnSubmitReturn = undefined,
-  TFormOnSubmitAsyncReturn = undefined,
-  TFormOnServerReturn = undefined,
+  TParentData,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
 > {
   Field: FieldComponent<
-    TFormData,
-    TFormOnMountReturn,
-    TFormOnChangeReturn,
-    TFormOnChangeAsyncReturn,
-    TFormOnBlurReturn,
-    TFormOnBlurAsyncReturn,
-    TFormOnSubmitReturn,
-    TFormOnSubmitAsyncReturn,
-    TFormOnServerReturn
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer
   >
   createField: CreateField<
-    TFormData,
-    TFormOnMountReturn,
-    TFormOnChangeReturn,
-    TFormOnChangeAsyncReturn,
-    TFormOnBlurReturn,
-    TFormOnBlurAsyncReturn,
-    TFormOnSubmitReturn,
-    TFormOnSubmitAsyncReturn,
-    TFormOnServerReturn
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer
   >
   useStore: <
     TSelected = NoInfer<
       FormState<
-        TFormData,
-        TFormOnMountReturn,
-        TFormOnChangeReturn,
-        TFormOnChangeAsyncReturn,
-        TFormOnBlurReturn,
-        TFormOnBlurAsyncReturn,
-        TFormOnSubmitReturn,
-        TFormOnSubmitAsyncReturn,
-        TFormOnServerReturn
+        TParentData,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnServer
       >
     >,
   >(
     selector?: (
       state: NoInfer<
         FormState<
-          TFormData,
-          TFormOnMountReturn,
-          TFormOnChangeReturn,
-          TFormOnChangeAsyncReturn,
-          TFormOnBlurReturn,
-          TFormOnBlurAsyncReturn,
-          TFormOnSubmitReturn,
-          TFormOnSubmitAsyncReturn,
-          TFormOnServerReturn
+          TParentData,
+          TFormOnMount,
+          TFormOnChange,
+          TFormOnChangeAsync,
+          TFormOnBlur,
+          TFormOnBlurAsync,
+          TFormOnSubmit,
+          TFormOnSubmitAsync,
+          TFormOnServer
         >
       >,
     ) => TSelected,
@@ -75,30 +80,30 @@ export interface SolidFormApi<
   Subscribe: <
     TSelected = NoInfer<
       FormState<
-        TFormData,
-        TFormOnMountReturn,
-        TFormOnChangeReturn,
-        TFormOnChangeAsyncReturn,
-        TFormOnBlurReturn,
-        TFormOnBlurAsyncReturn,
-        TFormOnSubmitReturn,
-        TFormOnSubmitAsyncReturn,
-        TFormOnServerReturn
+        TParentData,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnServer
       >
     >,
   >(props: {
     selector?: (
       state: NoInfer<
         FormState<
-          TFormData,
-          TFormOnMountReturn,
-          TFormOnChangeReturn,
-          TFormOnChangeAsyncReturn,
-          TFormOnBlurReturn,
-          TFormOnBlurAsyncReturn,
-          TFormOnSubmitReturn,
-          TFormOnSubmitAsyncReturn,
-          TFormOnServerReturn
+          TParentData,
+          TFormOnMount,
+          TFormOnChange,
+          TFormOnChangeAsync,
+          TFormOnBlur,
+          TFormOnBlurAsync,
+          TFormOnSubmit,
+          TFormOnSubmitAsync,
+          TFormOnServer
         >
       >,
     ) => TSelected
@@ -108,50 +113,50 @@ export interface SolidFormApi<
 
 export function createForm<
   TParentData,
-  TFormOnMountReturn = undefined,
-  TFormOnChangeReturn = undefined,
-  TFormOnChangeAsyncReturn = undefined,
-  TFormOnBlurReturn = undefined,
-  TFormOnBlurAsyncReturn = undefined,
-  TFormOnSubmitReturn = undefined,
-  TFormOnSubmitAsyncReturn = undefined,
-  TFormOnServerReturn = undefined,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
 >(
   opts?: () => FormOptions<
     TParentData,
-    TFormOnMountReturn,
-    TFormOnChangeReturn,
-    TFormOnChangeAsyncReturn,
-    TFormOnBlurReturn,
-    TFormOnBlurAsyncReturn,
-    TFormOnSubmitReturn,
-    TFormOnSubmitAsyncReturn,
-    TFormOnServerReturn
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer
   >,
 ) {
   const options = opts?.()
   const api = new FormApi<
     TParentData,
-    TFormOnMountReturn,
-    TFormOnChangeReturn,
-    TFormOnChangeAsyncReturn,
-    TFormOnBlurReturn,
-    TFormOnBlurAsyncReturn,
-    TFormOnSubmitReturn,
-    TFormOnSubmitAsyncReturn,
-    TFormOnServerReturn
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer
   >(options)
   const extendedApi: typeof api &
     SolidFormApi<
       TParentData,
-      TFormOnMountReturn,
-      TFormOnChangeReturn,
-      TFormOnChangeAsyncReturn,
-      TFormOnBlurReturn,
-      TFormOnBlurAsyncReturn,
-      TFormOnSubmitReturn,
-      TFormOnSubmitAsyncReturn,
-      TFormOnServerReturn
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnServer
     > = api as never
 
   extendedApi.Field = (props) => <Field {...props} form={api} />

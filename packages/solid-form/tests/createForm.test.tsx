@@ -16,7 +16,7 @@ describe('createForm', () => {
     }
 
     function Comp() {
-      const form = createForm<Person>()
+      const form = createForm(() => ({ defaultValues: {} as Person }))
       return (
         <>
           <form.Field
