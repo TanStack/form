@@ -53,7 +53,7 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/form-core": "^0.42.1",
+    "@tanstack/form-core": "workspace:*",
     "@tanstack/vue-store": "^0.7.0"
   },
   "devDependencies": {
