@@ -296,40 +296,22 @@ export interface FormOptions<
   /**
    * A function to be called when the form is submitted, what should happen once the user submits a valid form returns `any` or a promise `Promise<any>`
    */
-  onSubmit?: (
-    props: [TSubmitMeta] extends [never]
-      ? {
-          value: TFormData
-          formApi: FormApi<
-            TFormData,
-            TOnMount,
-            TOnChange,
-            TOnChangeAsync,
-            TOnBlur,
-            TOnBlurAsync,
-            TOnSubmit,
-            TOnSubmitAsync,
-            TOnServer,
-            TSubmitMeta
-          >
-        }
-      : {
-          value: TFormData
-          formApi: FormApi<
-            TFormData,
-            TOnMount,
-            TOnChange,
-            TOnChangeAsync,
-            TOnBlur,
-            TOnBlurAsync,
-            TOnSubmit,
-            TOnSubmitAsync,
-            TOnServer,
-            TSubmitMeta
-          >
-          meta: TSubmitMeta
-        },
-  ) => any | Promise<any>
+  onSubmit?: (props: {
+    value: TFormData
+    formApi: FormApi<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer,
+      TSubmitMeta
+    >
+    meta: TSubmitMeta
+  }) => any | Promise<any>
   /**
    * Specify an action for scenarios where the user tries to submit an invalid form.
    */
@@ -1593,7 +1575,7 @@ export class FormApi<
       await this.options.onSubmit?.({
         value: this.state.values,
         formApi: this,
-        ...(submitMeta ? { meta: submitMeta } : {}),
+        meta: submitMeta,
       } as any)
 
       batch(() => {
