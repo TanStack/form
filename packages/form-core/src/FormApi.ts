@@ -1293,26 +1293,26 @@ export class FormApi<
           hasErrored = true
         }
       }
-    })
 
-    /**
-     *  when we have an error for onSubmit in the state, we want
-     *  to clear the error as soon as the user enters a valid value in the field
-     */
-    const submitErrKey = getErrorMapKey('submit')
-    if (
-      this.state.errorMap[submitErrKey] &&
-      cause !== 'submit' &&
-      !hasErrored
-    ) {
-      this.baseStore.setState((prev) => ({
-        ...prev,
-        errorMap: {
-          ...prev.errorMap,
-          [submitErrKey]: undefined,
-        },
-      }))
-    }
+      /**
+       *  when we have an error for onSubmit in the state, we want
+       *  to clear the error as soon as the user enters a valid value in the field
+       */
+      const submitErrKey = getErrorMapKey('submit')
+      if (
+        this.state.errorMap[submitErrKey] &&
+        cause !== 'submit' &&
+        !hasErrored
+      ) {
+        this.baseStore.setState((prev) => ({
+          ...prev,
+          errorMap: {
+            ...prev.errorMap,
+            [submitErrKey]: undefined,
+          },
+        }))
+      }
+    })
 
     this.prevFieldsErrorMap = newFieldsErrorMap
 
