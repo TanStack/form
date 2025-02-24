@@ -168,7 +168,7 @@ Returns form and field level errors
 ##### fields
 
 ```ts
-fields: Record<string, {
+fields: Record<DeepKeys<TFormData>, {
   errorMap: ValidationErrorMap;
   errors: unknown[];
 }>;
@@ -183,7 +183,7 @@ form: object;
 ###### form.errorMap
 
 ```ts
-errorMap: Record<"onChange" | "onBlur" | "onSubmit" | "onMount" | "onServer", unknown>;
+errorMap: FormValidationErrorMap<UnwrapFormValidateOrFn<TOnMount>, UnwrapFormValidateOrFn<TOnChange>, UnwrapFormAsyncValidateOrFn<TOnChangeAsync>, UnwrapFormValidateOrFn<TOnBlur>, UnwrapFormAsyncValidateOrFn<TOnBlurAsync>, UnwrapFormValidateOrFn<TOnSubmit>, UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>, UnwrapFormAsyncValidateOrFn<TOnServer>>;
 ```
 
 ###### form.errors
