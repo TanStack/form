@@ -285,10 +285,6 @@
               "to": "framework/react/reference/index"
             },
             {
-              "label": "Functions / createServerValidate",
-              "to": "framework/react/reference/functions/createservervalidate"
-            },
-            {
               "label": "Functions / Field",
               "to": "framework/react/reference/functions/field"
             },
