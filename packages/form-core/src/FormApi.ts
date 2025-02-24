@@ -1865,6 +1865,64 @@ export class FormApi<
         }) as never,
     )
   }
+
+  /**
+   * Returns form and field level errors
+   */
+  getAllErrors = (): {
+    form: {
+      errors: Array<
+        | UnwrapFormValidateOrFn<TOnMount>
+        | UnwrapFormValidateOrFn<TOnChange>
+        | UnwrapFormAsyncValidateOrFn<TOnChangeAsync>
+        | UnwrapFormValidateOrFn<TOnBlur>
+        | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
+        | UnwrapFormValidateOrFn<TOnSubmit>
+        | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
+        | UnwrapFormAsyncValidateOrFn<TOnServer>
+      >
+      errorMap: FormValidationErrorMap<
+        UnwrapFormValidateOrFn<TOnMount>,
+        UnwrapFormValidateOrFn<TOnChange>,
+        UnwrapFormAsyncValidateOrFn<TOnChangeAsync>,
+        UnwrapFormValidateOrFn<TOnBlur>,
+        UnwrapFormAsyncValidateOrFn<TOnBlurAsync>,
+        UnwrapFormValidateOrFn<TOnSubmit>,
+        UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>,
+        UnwrapFormAsyncValidateOrFn<TOnServer>
+      >
+    }
+    fields: Record<
+      DeepKeys<TFormData>,
+      { errors: ValidationError[]; errorMap: ValidationErrorMap }
+    >
+  } => {
+    return {
+      form: {
+        errors: this.state.errors,
+        errorMap: this.state.errorMap,
+      },
+      fields: Object.entries(this.state.fieldMeta).reduce(
+        (acc, [fieldName, fieldMeta]) => {
+          if (
+            Object.keys(fieldMeta as AnyFieldMeta).length &&
+            (fieldMeta as AnyFieldMeta).errors.length
+          ) {
+            acc[fieldName as DeepKeys<TFormData>] = {
+              errors: (fieldMeta as AnyFieldMeta).errors,
+              errorMap: (fieldMeta as AnyFieldMeta).errorMap,
+            }
+          }
+
+          return acc
+        },
+        {} as Record<
+          DeepKeys<TFormData>,
+          { errors: ValidationError[]; errorMap: ValidationErrorMap }
+        >,
+      ),
+    }
+  }
 }
 
 function normalizeError<TFormData>(rawError?: FormValidationError<unknown>): {
