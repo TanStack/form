@@ -1870,45 +1870,27 @@ export class FormApi<
    * Returns form and field level errors
    */
   getAllErrors = () => {
-    const reduceErrorMap = (errorMap: ValidationErrorMap) => {
-      return Object.entries(errorMap).reduce(
-        (errorAcc, [errorName, errorValue]) => {
-          if (errorValue != null) {
-            errorAcc[errorName as ValidationErrorMapKeys] = errorValue
-          }
-
-          return errorAcc
-        },
-        {} as Record<ValidationErrorMapKeys, ValidationError>,
-      )
-    }
-
     return {
       form: {
         errors: this.state.errors,
-        errorMap: reduceErrorMap(this.state.errorMap),
+        errorMap: this.state.errorMap,
       },
       fields: Object.entries(this.state.fieldMeta).reduce(
         (acc, [fieldName, fieldMeta]) => {
-          // reduces error map down to keys with errors
-          const fieldErrors = reduceErrorMap(
-            (fieldMeta as AnyFieldMeta).errorMap,
-          )
-
           if (
-            Object.keys(fieldErrors).length &&
+            Object.keys(fieldMeta as AnyFieldMeta).length &&
             (fieldMeta as AnyFieldMeta).errors.length
           ) {
-            acc[fieldName] = {
+            acc[fieldName as DeepKeys<TFormData>] = {
               errors: (fieldMeta as AnyFieldMeta).errors,
-              errorMap: fieldErrors,
+              errorMap: (fieldMeta as AnyFieldMeta).errorMap,
             }
           }
 
           return acc
         },
         {} as Record<
-          string,
+          DeepKeys<TFormData>,
           { errors: ValidationError[]; errorMap: ValidationErrorMap }
         >,
       ),

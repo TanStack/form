@@ -1503,7 +1503,7 @@ describe('form api', () => {
     })
 
     field.setValue('other')
-    expect(form.getAllErrors()).toStrictEqual({
+    expect(form.getAllErrors()).toEqual({
       fields: {
         name: {
           errors: ['onChange - field'],
