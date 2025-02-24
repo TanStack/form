@@ -88,14 +88,14 @@
     "decode-formdata": "^0.8.0"
   },
   "devDependencies": {
-    "@tanstack/start": "^1.95.7",
+    "@tanstack/start": "^1.111.6",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
     "eslint-plugin-react-compiler": "19.0.0-beta-e552027-20250112",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "vinxi": "^0.5.1",
+    "vinxi": "^0.5.3",
     "vite": "^6.1.1"
   },
   "peerDependencies": {

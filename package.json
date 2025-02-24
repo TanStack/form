@@ -38,37 +38,37 @@
     ]
   },
   "devDependencies": {
-    "@eslint-react/eslint-plugin": "^1.17.3",
+    "@eslint-react/eslint-plugin": "^1.27.0",
     "@solidjs/testing-library": "^0.8.10",
     "@tanstack/config": "0.16.3",
     "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.1.0",
-    "@testing-library/user-event": "^14.5.2",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
     "@testing-library/vue": "^8.1.0",
     "@types/node": "^22.10.6",
-    "@vitest/coverage-istanbul": "^3.0.6",
-    "eslint": "9.18.0",
+    "@vitest/coverage-istanbul": "^3.0.7",
+    "eslint": "9.21.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "jsdom": "^26.0.0",
-    "knip": "^5.39.2",
-    "nx": "20.4.0",
+    "knip": "^5.44.5",
+    "nx": "20.4.6",
     "premove": "^4.0.0",
-    "prettier": "^3.4.2",
-    "publint": "^0.3.2",
-    "sherif": "^1.0.2",
+    "prettier": "^3.5.2",
+    "publint": "^0.3.6",
+    "sherif": "^1.3.0",
     "typescript": "5.6.3",
     "typescript51": "npm:typescript@5.1",
     "typescript52": "npm:typescript@5.2",
     "typescript53": "npm:typescript@5.3",
-    "typescript54": "npm:typescript@5.4",
-    "typescript55": "npm:typescript@5.5",
+    "typescript54": "npm:typescript@5.7.3",
+    "typescript55": "npm:typescript@5.7.3",
     "vite": "^6.1.1",
-    "vitest": "^3.0.6"
+    "vitest": "^3.0.7"
   },
   "pnpm": {
     "//": "https://github.com/jsdom/cssstyle/issues/182",
     "overrides": {
-      "cssstyle": "4.1.0"
+      "cssstyle": "4.2.1"
     }
   }
 }
