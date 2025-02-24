@@ -1869,7 +1869,34 @@ export class FormApi<
   /**
    * Returns form and field level errors
    */
-  getAllErrors = () => {
+  getAllErrors = (): {
+    form: {
+      errors: Array<
+        | UnwrapFormValidateOrFn<TOnMount>
+        | UnwrapFormValidateOrFn<TOnChange>
+        | UnwrapFormAsyncValidateOrFn<TOnChangeAsync>
+        | UnwrapFormValidateOrFn<TOnBlur>
+        | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
+        | UnwrapFormValidateOrFn<TOnSubmit>
+        | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
+        | UnwrapFormAsyncValidateOrFn<TOnServer>
+      >
+      errorMap: FormValidationErrorMap<
+        UnwrapFormValidateOrFn<TOnMount>,
+        UnwrapFormValidateOrFn<TOnChange>,
+        UnwrapFormAsyncValidateOrFn<TOnChangeAsync>,
+        UnwrapFormValidateOrFn<TOnBlur>,
+        UnwrapFormAsyncValidateOrFn<TOnBlurAsync>,
+        UnwrapFormValidateOrFn<TOnSubmit>,
+        UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>,
+        UnwrapFormAsyncValidateOrFn<TOnServer>
+      >
+    }
+    fields: Record<
+      DeepKeys<TFormData>,
+      { errors: ValidationError[]; errorMap: ValidationErrorMap }
+    >
+  } => {
     return {
       form: {
         errors: this.state.errors,
