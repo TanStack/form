@@ -7,7 +7,7 @@ import type {
   FormOptions,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { ComponentType, Context } from 'react'
+import type { ComponentType, Context, JSX, PropsWithChildren } from 'react'
 import type { FieldComponent } from './useField'
 import type { ReactFormExtendedApi } from './useForm'
 
@@ -57,6 +57,93 @@ interface CreateFormHookProps<
 > {
   components: TComponents
   context: Context<AnyFieldApi>
+}
+
+type AppFieldExtendedReactFormApi<
+  TFormData,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
+  TComponents extends Record<string, ComponentType<any>>,
+> = ReactFormExtendedApi<
+  TFormData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnServer,
+  TSubmitMeta
+> & {
+  AppField: FieldComponent<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer,
+    TSubmitMeta,
+    TComponents
+  >
+}
+
+interface WithFormProps<
+  TFormData,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
+  TComponents extends Record<string, ComponentType<any>>,
+  TRenderProps extends Record<string, unknown> = Record<string, never>,
+> extends FormOptions<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer,
+    TSubmitMeta
+  > {
+  // Optional, but adds props to the `render` function outside of `form`
+  props?: TRenderProps
+  render: (
+    props: PropsWithChildren<
+      TRenderProps & {
+        form: AppFieldExtendedReactFormApi<
+          TFormData,
+          TOnMount,
+          TOnChange,
+          TOnChangeAsync,
+          TOnBlur,
+          TOnBlurAsync,
+          TOnSubmit,
+          TOnSubmitAsync,
+          TOnServer,
+          TSubmitMeta,
+          TComponents
+        >
+      }
+    >,
+  ) => JSX.Element
 }
 
 export function createFormHook<
@@ -111,7 +198,7 @@ export function createFormHook<
       TOnServer,
       TSubmitMeta
     >,
-  ): ReactFormExtendedApi<
+  ): AppFieldExtendedReactFormApi<
     TFormData,
     TOnMount,
     TOnChange,
@@ -121,21 +208,9 @@ export function createFormHook<
     TOnSubmit,
     TOnSubmitAsync,
     TOnServer,
-    TSubmitMeta
-  > & {
-    AppField: AppField<
-      TFormData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnServer,
-      TSubmitMeta
-    >
-  } {
+    TSubmitMeta,
+    typeof components
+  > {
     const form = useForm(props)
 
     const AppField = useMemo(() => {
@@ -173,7 +248,53 @@ export function createFormHook<
     return extendedForm
   }
 
+  function withForm<
+    TFormData,
+    TOnMount extends undefined | FormValidateOrFn<TFormData>,
+    TOnChange extends undefined | FormValidateOrFn<TFormData>,
+    TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+    TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+    TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TSubmitMeta,
+    TRenderProps extends Record<string, unknown> = Record<string, never>,
+  >({
+    render,
+    props,
+  }: WithFormProps<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer,
+    TSubmitMeta,
+    typeof components,
+    TRenderProps
+  >): WithFormProps<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer,
+    TSubmitMeta,
+    typeof components,
+    TRenderProps
+  >['render'] {
+    return (innerProps) => render({ ...props, ...innerProps })
+  }
+
   return {
     useAppForm,
+    withForm,
   }
 }
