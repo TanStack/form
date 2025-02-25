@@ -19,6 +19,8 @@ title: "@tanstack/react-form"
 
 ## Functions
 
+- [createFormHook](functions/createformhook.md)
+- [createFormHookContext](functions/createformhookcontext.md)
 - [Field](functions/field.md)
 - [useField](functions/usefield.md)
 - [useForm](functions/useform.md)
