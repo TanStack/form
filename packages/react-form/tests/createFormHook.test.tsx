@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { render } from '@testing-library/react'
-import { createFormHook, createFormHookContext, useForm } from '../src'
 import { formOptions } from '@tanstack/form-core'
+import { createFormHook, createFormHookContext, useForm } from '../src'
 
 const { context, useFieldContext } = createFormHookContext()
 
