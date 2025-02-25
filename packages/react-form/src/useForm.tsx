@@ -28,6 +28,7 @@ export interface ReactFormApi<
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
 > {
   /**
    * A React component to render form fields. With this, you can render and manage individual form fields.
@@ -41,7 +42,8 @@ export interface ReactFormApi<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
-    TOnServer
+    TOnServer,
+    TSubmitMeta
   >
   /**
    * A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
@@ -93,6 +95,7 @@ export type ReactFormExtendedApi<
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
 > = FormApi<
   TFormData,
   TOnMount,
@@ -102,7 +105,8 @@ export type ReactFormExtendedApi<
   TOnBlurAsync,
   TOnSubmit,
   TOnSubmitAsync,
-  TOnServer
+  TOnServer,
+  TSubmitMeta
 > &
   ReactFormApi<
     TFormData,
@@ -113,7 +117,8 @@ export type ReactFormExtendedApi<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
-    TOnServer
+    TOnServer,
+    TSubmitMeta
   >
 
 function LocalSubscribe({
@@ -144,6 +149,7 @@ export function useForm<
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
 >(
   opts?: FormOptions<
     TFormData,
@@ -154,7 +160,8 @@ export function useForm<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
-    TOnServer
+    TOnServer,
+    TSubmitMeta
   >,
 ) {
   const [formApi] = useState(() => {
@@ -167,7 +174,8 @@ export function useForm<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
-      TOnServer
+      TOnServer,
+      TSubmitMeta
     >(opts)
 
     const extendedApi: ReactFormExtendedApi<
@@ -179,7 +187,8 @@ export function useForm<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
-      TOnServer
+      TOnServer,
+      TSubmitMeta
     > = api as never
     extendedApi.Field = function APIField(props) {
       return <Field {...props} form={api} />

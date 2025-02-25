@@ -96,6 +96,7 @@ export type FieldValidateFn<
     any,
     any,
     any,
+    any,
     any
   >
 }) => unknown
@@ -179,6 +180,7 @@ export type FieldValidateAsyncFn<
     any,
     any,
     any,
+    any,
     any
   >
   signal: AbortSignal
@@ -247,6 +249,7 @@ export type FieldListenerFn<
     TData,
     // This is technically an edge-type; which we try to keep non-`any`, but in this case
     // It's referring to an inaccessible type from the field listener function inner types, so it's not a big deal
+    any,
     any,
     any,
     any,
@@ -471,6 +474,7 @@ export interface FieldApiOptions<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TParentSubmitMeta,
 > extends FieldOptions<
     TParentData,
     TName,
@@ -492,7 +496,8 @@ export interface FieldApiOptions<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TParentSubmitMeta
   >
 }
 
@@ -843,6 +848,7 @@ export type AnyFieldApi = FieldApi<
   any,
   any,
   any,
+  any,
   any
 >
 
@@ -880,6 +886,7 @@ export class FieldApi<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TParentSubmitMeta,
 > {
   /**
    * A reference to the form API instance.
@@ -902,7 +909,8 @@ export class FieldApi<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TParentSubmitMeta
   >['form']
   /**
    * The field name.
@@ -929,7 +937,8 @@ export class FieldApi<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TParentSubmitMeta
   > = {} as any
   /**
    * The field state store.
@@ -985,7 +994,8 @@ export class FieldApi<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
-      TFormOnServer
+      TFormOnServer,
+      TParentSubmitMeta
     >,
   ) {
     this.form = opts.form as never
@@ -1130,7 +1140,8 @@ export class FieldApi<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
-      TFormOnServer
+      TFormOnServer,
+      TParentSubmitMeta
     >,
   ) => {
     // Default Value

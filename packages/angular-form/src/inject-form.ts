@@ -16,6 +16,7 @@ export function injectForm<
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
 >(
   opts?: FormOptions<
     TFormData,
@@ -26,7 +27,8 @@ export function injectForm<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
-    TOnServer
+    TOnServer,
+    TSubmitMeta
   >,
 ) {
   const api = new FormApi<
@@ -38,7 +40,8 @@ export function injectForm<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
-    TOnServer
+    TOnServer,
+    TSubmitMeta
   >(opts)
 
   injectStore(api.store, (state) => state.isSubmitting)

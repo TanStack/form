@@ -54,6 +54,7 @@ export class TanStackField<
     TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
     TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
     TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+    TSubmitMeta,
   >
   implements
     OnInit,
@@ -88,7 +89,8 @@ export class TanStackField<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TSubmitMeta
   >
   @Input() validators?: NoInfer<
     FieldValidators<
@@ -146,7 +148,8 @@ export class TanStackField<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TSubmitMeta
   >
 
   private getOptions(): FieldApiOptions<
@@ -167,7 +170,8 @@ export class TanStackField<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TSubmitMeta
   > {
     return {
       defaultValue: this.defaultValue,
