@@ -716,6 +716,20 @@ export class FormApi<
   prevTransformArray: unknown[] = []
 
   /**
+   * @private map of errors originated from form level validators
+   */
+  prevFieldsErrorMap: FormErrorMapFromValidator<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync
+  > = {}
+
+  /**
    * Constructs a new `FormApi` instance with the given form options.
    */
   constructor(
@@ -899,7 +913,7 @@ export class FormApi<
             >
           >((prev, curr) => {
             if (curr === undefined) return prev
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+
             if (curr && isGlobalFormValidationError(curr)) {
               prev.push(curr.form as never)
               return prev
@@ -1229,7 +1243,7 @@ export class FormApi<
     const validates = getSyncValidatorArray(cause, this.options)
     let hasErrored = false as boolean
 
-    const fieldsErrorMap: FormErrorMapFromValidator<
+    const newFieldsErrorMap: FormErrorMapFromValidator<
       TFormData,
       TOnMount,
       TOnChange,
@@ -1261,12 +1275,12 @@ export class FormApi<
         if (fieldErrors) {
           for (const [field, fieldError] of Object.entries(fieldErrors)) {
             const oldErrorMap =
-              fieldsErrorMap[field as DeepKeys<TFormData>] || {}
+              newFieldsErrorMap[field as DeepKeys<TFormData>] || {}
             const newErrorMap = {
               ...oldErrorMap,
               [errorMapKey]: fieldError,
             }
-            fieldsErrorMap[field as DeepKeys<TFormData>] = newErrorMap
+            newFieldsErrorMap[field as DeepKeys<TFormData>] = newErrorMap
 
             const fieldMeta = this.getFieldMeta(field as DeepKeys<TFormData>)
             if (fieldMeta && fieldMeta.errorMap[errorMapKey] !== fieldError) {
@@ -1278,6 +1292,24 @@ export class FormApi<
                 },
               }))
             }
+          }
+        }
+
+        for (const field of Object.keys(this.prevFieldsErrorMap) as Array<
+          DeepKeys<TFormData>
+        >) {
+          const fieldMeta = this.getFieldMeta(field)
+          if (
+            fieldMeta?.errorMap[errorMapKey] &&
+            !newFieldsErrorMap[field]?.[errorMapKey]
+          ) {
+            this.setFieldMeta(field, (prev) => ({
+              ...prev,
+              errorMap: {
+                ...prev.errorMap,
+                [errorMapKey]: undefined,
+              },
+            }))
           }
         }
 
@@ -1295,28 +1327,30 @@ export class FormApi<
           hasErrored = true
         }
       }
+
+      /**
+       *  when we have an error for onSubmit in the state, we want
+       *  to clear the error as soon as the user enters a valid value in the field
+       */
+      const submitErrKey = getErrorMapKey('submit')
+      if (
+        this.state.errorMap[submitErrKey] &&
+        cause !== 'submit' &&
+        !hasErrored
+      ) {
+        this.baseStore.setState((prev) => ({
+          ...prev,
+          errorMap: {
+            ...prev.errorMap,
+            [submitErrKey]: undefined,
+          },
+        }))
+      }
     })
 
-    /**
-     *  when we have an error for onSubmit in the state, we want
-     *  to clear the error as soon as the user enters a valid value in the field
-     */
-    const submitErrKey = getErrorMapKey('submit')
-    if (
-      this.state.errorMap[submitErrKey] &&
-      cause !== 'submit' &&
-      !hasErrored
-    ) {
-      this.baseStore.setState((prev) => ({
-        ...prev,
-        errorMap: {
-          ...prev.errorMap,
-          [submitErrKey]: undefined,
-        },
-      }))
-    }
+    this.prevFieldsErrorMap = newFieldsErrorMap
 
-    return { hasErrored, fieldsErrorMap }
+    return { hasErrored, fieldsErrorMap: newFieldsErrorMap }
   }
 
   /**
@@ -1353,7 +1387,6 @@ export class FormApi<
       | undefined
 
     for (const validateObj of validates) {
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!validateObj.validate) continue
       const key = getErrorMapKey(validateObj.cause)
       const fieldValidatorMeta = this.state.validationMetaMap[key]

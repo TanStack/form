@@ -2642,6 +2642,64 @@ describe('form api', () => {
       'first name is required',
     )
   })
+
+  it('clears previous form level errors when they are no longer valid', () => {
+    const form = new FormApi({
+      defaultValues: {
+        interests: [
+          { interestName: 'Interest 1' },
+          { interestName: 'Interest 2' },
+        ],
+      },
+      validators: {
+        onChange: ({ value }) => {
+          const interestNames = value.interests.map(
+            (interest) => interest.interestName,
+          )
+          const uniqueInterestNames = new Set(interestNames)
+
+          if (uniqueInterestNames.size !== interestNames.length) {
+            return {
+              fields: {
+                interests: 'No duplicate interests allowed',
+              },
+            }
+          }
+
+          return null
+        },
+      },
+    })
+    form.mount()
+
+    const interestsField = new FieldApi({
+      form,
+      name: 'interests',
+    })
+    interestsField.mount()
+
+    const field0 = new FieldApi({
+      form,
+      name: 'interests[0].interestName',
+    })
+    field0.mount()
+
+    const field1 = new FieldApi({
+      form,
+      name: 'interests[1].interestName',
+    })
+    field1.mount()
+
+    // When creating a duplicate interest via form level validator
+    field1.setValue('Interest 1')
+    expect(interestsField.state.meta.errors).toStrictEqual([
+      'No duplicate interests allowed',
+    ])
+
+    // When fixing the duplicate interest via form level validator
+    field1.setValue('Interest 2')
+    expect(interestsField.state.meta.errors).toStrictEqual([])
+  })
 })
 
 it('should not change the onBlur state of the fields when the form is submitted', async () => {
