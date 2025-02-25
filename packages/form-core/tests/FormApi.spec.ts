@@ -1462,6 +1462,61 @@ describe('form api', () => {
     })
   })
 
+  it('should return all errors', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'other',
+        age: 'hi',
+      },
+      validators: {
+        onChange: ({ value }) => {
+          if (value.name === 'other') return 'onChange - form'
+          return
+        },
+        onMount: ({ value }) => {
+          if (value.name === 'other') return 'onMount - form'
+          return
+        },
+      },
+    })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChange: ({ value }) => {
+          if (value === 'other') {
+            return 'onChange - field'
+          }
+          return
+        },
+      },
+    })
+
+    form.mount()
+    field.mount()
+    expect(form.getAllErrors()).toEqual({
+      fields: {},
+      form: {
+        errors: ['onMount - form'],
+        errorMap: { onMount: 'onMount - form' },
+      },
+    })
+
+    field.setValue('other')
+    expect(form.getAllErrors()).toEqual({
+      fields: {
+        name: {
+          errors: ['onChange - field'],
+          errorMap: { onChange: 'onChange - field' },
+        },
+      },
+      form: {
+        errors: ['onChange - form'],
+        errorMap: { onChange: 'onChange - form' },
+      },
+    })
+  })
+
   it('should reset onChange errors when the issue is resolved', () => {
     const form = new FormApi({
       defaultValues: {
@@ -2675,4 +2730,26 @@ it('should not change the onBlur state of the fields when the form is submitted'
 
   expect(firstNameField.state.meta.isBlurred).toBe(true)
   expect(lastNameField.state.meta.isBlurred).toBe(false)
+})
+
+it('should pass the handleSubmit meta data to onSubmit', async () => {
+  const form = new FormApi({
+    onSubmitMeta: {} as { dinosaur: string },
+    onSubmit: async ({ meta }) => {
+      expect(meta.dinosaur).toEqual('Stegosaurus')
+    },
+  })
+
+  await form.handleSubmit({ dinosaur: 'Stegosaurus' })
+})
+
+it('should pass the handleSubmit default meta data to onSubmit', async () => {
+  const form = new FormApi({
+    onSubmitMeta: { dinosaur: 'Frank' } as { dinosaur: string },
+    onSubmit: async ({ meta }) => {
+      expect(meta.dinosaur).toEqual('Frank')
+    },
+  })
+
+  await form.handleSubmit()
 })

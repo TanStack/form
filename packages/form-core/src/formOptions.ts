@@ -14,6 +14,7 @@ export function formOptions<
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
 >(
   defaultOpts?: FormOptions<
     TFormData,
@@ -24,7 +25,8 @@ export function formOptions<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
-    TOnServer
+    TOnServer,
+    TSubmitMeta
   >,
 ) {
   return defaultOpts

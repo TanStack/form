@@ -122,6 +122,7 @@ export interface VueFormApi<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TSubmitMeta,
 > {
   Field: FieldComponent<
     TParentData,
@@ -132,7 +133,8 @@ export interface VueFormApi<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TSubmitMeta
   >
   useField: UseField<
     TParentData,
@@ -143,7 +145,8 @@ export interface VueFormApi<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TSubmitMeta
   >
   useStore: <
     TSelected = NoInfer<
@@ -199,6 +202,7 @@ export function useForm<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TSubmitMeta,
 >(
   opts?: FormOptions<
     TParentData,
@@ -209,7 +213,8 @@ export function useForm<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TSubmitMeta
   >,
 ) {
   const formApi = (() => {
@@ -222,7 +227,8 @@ export function useForm<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
-      TFormOnServer
+      TFormOnServer,
+      TSubmitMeta
     >(opts)
 
     const extendedApi: typeof api &
@@ -235,7 +241,8 @@ export function useForm<
         TFormOnBlurAsync,
         TFormOnSubmit,
         TFormOnSubmitAsync,
-        TFormOnServer
+        TFormOnServer,
+        TSubmitMeta
       > = api as never
     extendedApi.Field = defineComponent(
       (props, context) => {

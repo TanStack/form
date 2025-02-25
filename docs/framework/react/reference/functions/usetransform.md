@@ -8,7 +8,7 @@ title: useTransform
 # Function: useTransform()
 
 ```ts
-function useTransform<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer>(fn, deps): FormTransform<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer>
+function useTransform<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta>(fn, deps): FormTransform<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta>
 ```
 
 Defined in: [packages/react-form/src/useTransform.ts:8](https://github.com/TanStack/form/blob/main/packages/react-form/src/useTransform.ts#L8)
@@ -33,11 +33,13 @@ Defined in: [packages/react-form/src/useTransform.ts:8](https://github.com/TanSt
 
 • **TOnServer** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
 
+• **TSubmitMeta**
+
 ## Parameters
 
 ### fn
 
-(`formBase`) => `FormApi`\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`\>
+(`formBase`) => `FormApi`\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`\>
 
 ### deps
 
@@ -45,4 +47,4 @@ Defined in: [packages/react-form/src/useTransform.ts:8](https://github.com/TanSt
 
 ## Returns
 
-`FormTransform`\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`\>
+`FormTransform`\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`\>

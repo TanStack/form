@@ -31,6 +31,7 @@ export type FieldComponent<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TParentSubmitMeta,
   // This complex type comes from Vue's return type for `DefineSetupFnComponent` but with our own types sprinkled in
   // This allows us to pre-bind some generics while keeping the props type unbound generics for props-based inferencing
 > = new <
@@ -69,7 +70,8 @@ export type FieldComponent<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
-      TFormOnServer
+      TFormOnServer,
+      TParentSubmitMeta
     >,
     'form'
   > &
@@ -95,7 +97,8 @@ export type FieldComponent<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
-      TFormOnServer
+      TFormOnServer,
+      TParentSubmitMeta
     >,
     'form'
   >,
@@ -130,7 +133,8 @@ export type FieldComponent<
         TFormOnBlurAsync,
         TFormOnSubmit,
         TFormOnSubmitAsync,
-        TFormOnServer
+        TFormOnServer,
+        TParentSubmitMeta
       >
       state: FieldApi<
         TParentData,
@@ -150,7 +154,8 @@ export type FieldComponent<
         TFormOnBlurAsync,
         TFormOnSubmit,
         TFormOnSubmitAsync,
-        TFormOnServer
+        TFormOnServer,
+        TParentSubmitMeta
       >['state']
     }
   }>
@@ -166,6 +171,7 @@ export interface VueFieldApi<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TParentSubmitMeta,
 > {
   Field: FieldComponent<
     TParentData,
@@ -176,7 +182,8 @@ export interface VueFieldApi<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TParentSubmitMeta
   >
 }
 
@@ -190,6 +197,7 @@ export type UseField<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TParentSubmitMeta,
 > = <
   TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
@@ -226,7 +234,8 @@ export type UseField<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
-      TFormOnServer
+      TFormOnServer,
+      TParentSubmitMeta
     >,
     'form'
   >,
@@ -249,7 +258,8 @@ export type UseField<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TParentSubmitMeta
   > &
     VueFieldApi<
       TParentData,
@@ -260,7 +270,8 @@ export type UseField<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
-      TFormOnServer
+      TFormOnServer,
+      TParentSubmitMeta
     >
   state: Readonly<
     Ref<
@@ -282,7 +293,8 @@ export type UseField<
         TFormOnBlurAsync,
         TFormOnSubmit,
         TFormOnSubmitAsync,
-        TFormOnServer
+        TFormOnServer,
+        TParentSubmitMeta
       >['state']
     >
   >
@@ -313,6 +325,7 @@ export function useField<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TParentSubmitMeta,
 >(
   opts: UseFieldOptions<
     TParentData,
@@ -332,7 +345,8 @@ export function useField<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TParentSubmitMeta
   >,
 ) {
   const fieldApi = (() => {
@@ -352,7 +366,8 @@ export function useField<
         TFormOnBlurAsync,
         TFormOnSubmit,
         TFormOnSubmitAsync,
-        TFormOnServer
+        TFormOnServer,
+        TParentSubmitMeta
       > = api as never
 
     extendedApi.Field = Field as never
@@ -407,6 +422,7 @@ export type FieldComponentProps<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TParentSubmitMeta,
 > = UseFieldOptions<
   TParentData,
   TName,
@@ -425,7 +441,8 @@ export type FieldComponentProps<
   TFormOnBlurAsync,
   TFormOnSubmit,
   TFormOnSubmitAsync,
-  TFormOnServer
+  TFormOnServer,
+  TParentSubmitMeta
 >
 
 export const Field = defineComponent(
@@ -454,6 +471,7 @@ export const Field = defineComponent(
     TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
     TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
     TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+    TParentSubmitMeta,
   >(
     fieldOptions: UseFieldOptions<
       TParentData,
@@ -473,7 +491,8 @@ export const Field = defineComponent(
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
-      TFormOnServer
+      TFormOnServer,
+      TParentSubmitMeta
     >,
     context: SetupContext,
   ) => {
