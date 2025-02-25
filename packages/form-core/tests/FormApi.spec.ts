@@ -2684,3 +2684,14 @@ it('should pass the handleSubmit meta data to onSubmit', async () => {
 
   await form.handleSubmit({ dinosaur: 'Stegosaurus' })
 })
+
+it('should pass the handleSubmit default meta data to onSubmit', async () => {
+  const form = new FormApi({
+    onSubmitMeta: { dinosaur: 'Frank' } as { dinosaur: string },
+    onSubmit: async ({ meta }) => {
+      expect(meta.dinosaur).toEqual('Frank')
+    },
+  })
+
+  await form.handleSubmit()
+})

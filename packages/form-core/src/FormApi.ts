@@ -1575,7 +1575,7 @@ export class FormApi<
       await this.options.onSubmit?.({
         value: this.state.values,
         formApi: this,
-        meta: submitMeta,
+        meta: submitMeta ?? this.options.onSubmitMeta,
       } as any)
 
       batch(() => {
