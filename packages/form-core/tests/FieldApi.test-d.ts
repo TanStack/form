@@ -330,3 +330,29 @@ it('should handle "fields" async return types added to the field\'s error array 
 
   assertType<Array<'Testing' | undefined>>(field.getMeta().errors)
 })
+
+it('should handle "sub-fields" async return types added to the field\'s error array itself', () => {
+  const form = new FormApi({
+    defaultValues: {
+      person: {
+        firstName: '',
+      },
+    },
+    validators: {
+      onChangeAsync: async () => {
+        return {
+          fields: {
+            'person.firstName': 'Testing' as const,
+          },
+        }
+      },
+    },
+  })
+
+  const field = new FieldApi({
+    form,
+    name: 'person.firstName',
+  })
+
+  assertType<Array<'Testing' | undefined>>(field.getMeta().errors)
+})

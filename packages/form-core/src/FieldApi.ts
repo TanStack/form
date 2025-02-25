@@ -19,9 +19,9 @@ import type {
   FieldInfo,
   FormApi,
   FormAsyncValidateOrFn,
+  FormValidateAsyncFn,
+  FormValidateFn,
   FormValidateOrFn,
-  UnwrapFormAsyncValidateOrFn,
-  UnwrapFormValidateOrFn,
 } from './FormApi'
 import type {
   UpdateMetaOptions,
@@ -112,6 +112,16 @@ export type FieldValidateOrFn<
   | FieldValidateFn<TParentData, TName, TData>
   | StandardSchemaV1<TData, unknown>
 
+type StandardBrandedSchemaV1<T> = T & { __standardSchemaV1: true }
+
+type UnwrapFormValidateOrFnForInner<
+  TValidateOrFn extends undefined | FormValidateOrFn<any>,
+> = [TValidateOrFn] extends [FormValidateFn<any>]
+  ? ReturnType<TValidateOrFn>
+  : [TValidateOrFn] extends [StandardSchemaV1<infer TOut, any>]
+    ? StandardBrandedSchemaV1<TOut>
+    : undefined
+
 export type UnwrapFieldValidateOrFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
@@ -123,12 +133,16 @@ export type UnwrapFieldValidateOrFn<
         ? StandardSchemaV1Issue[]
         : undefined
       : undefined)
-  | (UnwrapFormValidateOrFn<TFormValidateOrFn> extends infer TFormValidateVal
-      ? TFormValidateVal extends { fields: any }
-        ? TName extends keyof TFormValidateVal['fields']
-          ? TFormValidateVal['fields'][TName]
+  | (UnwrapFormValidateOrFnForInner<TFormValidateOrFn> extends infer TFormValidateVal
+      ? TFormValidateVal extends { __standardSchemaV1: true }
+        ? [DeepValue<TFormValidateVal, TName>] extends [never]
+          ? undefined
+          : StandardSchemaV1Issue[]
+        : TFormValidateVal extends { fields: any }
+          ? TName extends keyof TFormValidateVal['fields']
+            ? TFormValidateVal['fields'][TName]
+            : undefined
           : undefined
-        : undefined
       : never)
   | ([TValidateOrFn] extends [FieldValidateFn<any, any, any>]
       ? ReturnType<TValidateOrFn>
@@ -183,6 +197,14 @@ export type FieldAsyncValidateOrFn<
   | FieldValidateAsyncFn<TParentData, TName, TData>
   | StandardSchemaV1<TData, unknown>
 
+type UnwrapFormAsyncValidateOrFnForInner<
+  TValidateOrFn extends undefined | FormAsyncValidateOrFn<any>,
+> = [TValidateOrFn] extends [FormValidateAsyncFn<any>]
+  ? Awaited<ReturnType<TValidateOrFn>>
+  : [TValidateOrFn] extends [StandardSchemaV1<infer TOut, any>]
+    ? StandardBrandedSchemaV1<TOut>
+    : undefined
+
 export type UnwrapFieldAsyncValidateOrFn<
   TParentData,
   TName extends DeepKeys<TParentData>,
@@ -194,12 +216,16 @@ export type UnwrapFieldAsyncValidateOrFn<
         ? StandardSchemaV1Issue[]
         : undefined
       : undefined)
-  | (UnwrapFormAsyncValidateOrFn<TFormValidateOrFn> extends infer TFormValidateVal
-      ? TFormValidateVal extends { fields: any }
-        ? TName extends keyof TFormValidateVal['fields']
-          ? TFormValidateVal['fields'][TName]
+  | (UnwrapFormAsyncValidateOrFnForInner<TFormValidateOrFn> extends infer TFormValidateVal
+      ? TFormValidateVal extends { __standardSchemaV1: true }
+        ? [DeepValue<TFormValidateVal, TName>] extends [never]
+          ? undefined
+          : StandardSchemaV1Issue[]
+        : TFormValidateVal extends { fields: any }
+          ? TName extends keyof TFormValidateVal['fields']
+            ? TFormValidateVal['fields'][TName]
+            : undefined
           : undefined
-        : undefined
       : never)
   | ([TValidateOrFn] extends [FieldValidateAsyncFn<any, any, any>]
       ? Awaited<ReturnType<TValidateOrFn>>

@@ -155,6 +155,57 @@ Defined in: [packages/form-core/src/FormApi.ts:1701](https://github.com/TanStack
 
 ***
 
+### getAllErrors()
+
+```ts
+getAllErrors(): object
+```
+
+Defined in: [packages/form-core/src/FormApi.ts:1872](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1872)
+
+Returns form and field level errors
+
+#### Returns
+
+`object`
+
+##### fields
+
+```ts
+fields: Record<DeepKeys<TFormData>, {
+  errorMap: ValidationErrorMap;
+  errors: unknown[];
+}>;
+```
+
+##### form
+
+```ts
+form: object;
+```
+
+###### form.errorMap
+
+```ts
+errorMap: FormValidationErrorMap<UnwrapFormValidateOrFn<TOnMount>, UnwrapFormValidateOrFn<TOnChange>, UnwrapFormAsyncValidateOrFn<TOnChangeAsync>, UnwrapFormValidateOrFn<TOnBlur>, UnwrapFormAsyncValidateOrFn<TOnBlurAsync>, UnwrapFormValidateOrFn<TOnSubmit>, UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>, UnwrapFormAsyncValidateOrFn<TOnServer>>;
+```
+
+###### form.errors
+
+```ts
+errors: (
+  | UnwrapFormValidateOrFn<TOnMount>
+  | UnwrapFormValidateOrFn<TOnChange>
+  | UnwrapFormAsyncValidateOrFn<TOnChangeAsync>
+  | UnwrapFormValidateOrFn<TOnBlur>
+  | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
+  | UnwrapFormValidateOrFn<TOnSubmit>
+  | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
+  | UnwrapFormAsyncValidateOrFn<TOnServer>)[];
+```
+
+***
+
 ### getFieldInfo()
 
 ```ts
