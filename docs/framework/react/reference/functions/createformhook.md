@@ -8,20 +8,22 @@ title: createFormHook
 # Function: createFormHook()
 
 ```ts
-function createFormHook<TComponents>(__namedParameters): object
+function createFormHook<TComponents, TFormComponents>(__namedParameters): object
 ```
 
-Defined in: [packages/react-form/src/createFormHook.tsx:149](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L149)
+Defined in: [packages/react-form/src/createFormHook.tsx:186](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L186)
 
 ## Type Parameters
 
 • **TComponents** *extends* `Record`\<`string`, `ComponentType`\<`any`\>\>
 
+• **TFormComponents** *extends* `Record`\<`string`, `ComponentType`\<`any`\>\>
+
 ## Parameters
 
 ### \_\_namedParameters
 
-`CreateFormHookProps`\<`TComponents`\>
+`CreateFormHookProps`\<`TComponents`, `TFormComponents`\>
 
 ## Returns
 
@@ -30,7 +32,7 @@ Defined in: [packages/react-form/src/createFormHook.tsx:149](https://github.com/
 ### useAppForm()
 
 ```ts
-useAppForm: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta>(props) => AppFieldExtendedReactFormApi<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta, TComponents>;
+useAppForm: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta>(props) => AppFieldExtendedReactFormApi<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta, TComponents, TFormComponents>;
 ```
 
 #### Type Parameters
@@ -63,7 +65,7 @@ useAppForm: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsy
 
 #### Returns
 
-`AppFieldExtendedReactFormApi`\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`, `TComponents`\>
+`AppFieldExtendedReactFormApi`\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`, `TComponents`, `TFormComponents`\>
 
 ### withForm()
 
@@ -99,7 +101,7 @@ withForm: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync
 
 ##### \_\_namedParameters
 
-`WithFormProps`\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`, `TComponents`, `TRenderProps`\>
+`WithFormProps`\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`, `TComponents`, `TFormComponents`, `TRenderProps`\>
 
 #### Returns
 
