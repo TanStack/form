@@ -44,6 +44,7 @@ export function createFormHookContext() {
       any,
       any,
       any,
+      any,
       any
     >
   }
@@ -71,6 +72,7 @@ export function createFormHook<
     TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
     TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
     TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+    TSubmitMeta,
   > = FieldComponent<
     TParentData,
     TFormOnMount,
@@ -81,6 +83,7 @@ export function createFormHook<
     TFormOnSubmit,
     TFormOnSubmitAsync,
     TFormOnServer,
+    TSubmitMeta,
     typeof components
   >
 
@@ -94,6 +97,7 @@ export function createFormHook<
     TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
     TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
     TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TSubmitMeta,
   >(
     props: FormOptions<
       TFormData,
@@ -104,7 +108,8 @@ export function createFormHook<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
-      TOnServer
+      TOnServer,
+      TSubmitMeta
     >,
   ): ReactFormExtendedApi<
     TFormData,
@@ -115,7 +120,8 @@ export function createFormHook<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
-    TOnServer
+    TOnServer,
+    TSubmitMeta
   > & {
     AppField: AppField<
       TFormData,
@@ -126,7 +132,8 @@ export function createFormHook<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
-      TOnServer
+      TOnServer,
+      TSubmitMeta
     >
   } {
     const form = useForm(props)
@@ -152,7 +159,8 @@ export function createFormHook<
         TOnBlurAsync,
         TOnSubmit,
         TOnSubmitAsync,
-        TOnServer
+        TOnServer,
+        TSubmitMeta
       >
     }, [form])
 
