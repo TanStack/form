@@ -250,3 +250,68 @@ type DoubleDeepArray = DeepValue<
 >
 
 assertType<string>(0 as never as DoubleDeepArray)
+
+// Deepness is infinite error check
+type Cart = {
+  id: number
+  product: {
+    id: string
+    description?: string
+    price_internet?: number
+    price_dealer_region?: number
+    price_dealer?: number
+    stock:
+      | {
+          id: string
+          quantity: number
+          isChecked: boolean
+        }[]
+      | null
+  }
+  quantity: number
+  isChecked: boolean
+}[]
+
+type Payment_types = {
+  id: string
+  title: string
+  name: string
+}[]
+
+type Shipping_methods = {
+  id: string
+  title: string
+  name: string
+}[]
+
+type Userr = {
+  id: string
+  first_name: string | null
+  email: string | null
+  avatar:
+    | string
+    | ({
+        url?: string
+      } & {
+        id: string
+        storage: string
+        filename_disk: string | null
+        filename_original: string | null
+        filename_download: string | null
+        filename_preview: string | null
+        filename_thumbnail: string | null
+        filename_medium: string | null
+        filename_large: string | null
+        filename_huge: string | null
+        filename_icon: string | null
+        filename_icon_large: string | null
+        focal_point_y: number | null
+      })
+    | null
+  // Reference Cart, Payment_types, Shipping_methods
+  cart: Cart | null
+  payment_types: Payment_types | null
+  shipping_methods: Shipping_methods | null
+}
+
+type UserKeys = DeepValue<Userr, DeepKeys<Userr>>
