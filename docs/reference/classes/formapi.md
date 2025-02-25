@@ -350,7 +350,7 @@ Defined in: [packages/form-core/src/FormApi.ts:1763](https://github.com/TanStack
 
 ##### value
 
-[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\>\[`number`\] : `never`
+[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
 
 ##### opts?
 
@@ -447,7 +447,7 @@ Pushes a value into an array field.
 
 ##### value
 
-[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\>\[`number`\] : `never`
+[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
 
 ##### opts?
 
@@ -526,7 +526,7 @@ Replaces a value into an array field at the specified index.
 
 ##### value
 
-[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\>\[`number`\] : `never`
+[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
 
 ##### opts?
 
@@ -672,7 +672,7 @@ Sets the value of the specified field and optionally updates the touched state.
 
 ##### updater
 
-[`Updater`](../type-aliases/updater.md)\<[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, `IsNullable`\<`TFormData`\>\>\>
+[`Updater`](../type-aliases/updater.md)\<[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>\>
 
 ##### opts?
 
