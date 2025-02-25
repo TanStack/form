@@ -161,7 +161,7 @@ Defined in: [packages/form-core/src/FormApi.ts:1701](https://github.com/TanStack
 getAllErrors(): object
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:1872](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1872)
+Defined in: [packages/form-core/src/FormApi.ts:1912](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1912)
 
 Returns form and field level errors
 
