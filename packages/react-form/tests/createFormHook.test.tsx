@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { render } from '@testing-library/react'
 import { formOptions } from '@tanstack/form-core'
-import { createFormHook, createFormHookContext, useForm } from '../src'
+import { createFormHook, createFormHookContexts } from '../src'
 
-const { context, useFieldContext } = createFormHookContext()
+const { fieldContext, useFieldContext, formContext, useFormContext } =
+  createFormHookContexts()
 
 function TextField({ label }: { label: string }) {
   const field = useFieldContext<string>()
@@ -18,11 +19,24 @@ function TextField({ label }: { label: string }) {
   )
 }
 
+function SubscribeButton({ label }: { label: string }) {
+  const form = useFormContext()
+  return (
+    <form.Subscribe selector={(state) => state.isSubmitting}>
+      {(isSubmitting) => <button disabled={isSubmitting}>{label}</button>}
+    </form.Subscribe>
+  )
+}
+
 const { useAppForm, withForm } = createFormHook({
-  components: {
+  fieldComponents: {
     TextField,
   },
-  context,
+  formComponents: {
+    SubscribeButton,
+  },
+  fieldContext,
+  formContext,
 })
 
 describe('createFormHook', () => {
@@ -77,6 +91,9 @@ describe('createFormHook', () => {
               name="firstName"
               children={(field) => <field.TextField label="First Name" />}
             />
+            <form.AppForm>
+              <form.SubscribeButton label="Submit" />
+            </form.AppForm>
           </div>
         )
       },

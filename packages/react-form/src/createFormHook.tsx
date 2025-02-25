@@ -2,7 +2,9 @@ import { createContext, useContext, useMemo } from 'react'
 import { useForm } from './useForm'
 import type {
   AnyFieldApi,
+  AnyFormApi,
   FieldApi,
+  FormApi,
   FormAsyncValidateOrFn,
   FormOptions,
   FormValidateOrFn,
@@ -11,19 +13,18 @@ import type { ComponentType, Context, JSX, PropsWithChildren } from 'react'
 import type { FieldComponent } from './useField'
 import type { ReactFormExtendedApi } from './useForm'
 
-export function createFormHookContext() {
+export function createFormHookContexts() {
   // We should never hit the `null` case here
-  const context = createContext<AnyFieldApi>(null as never)
+  const fieldContext = createContext<AnyFieldApi>(null as never)
 
-  /**
-   * This context only works when within a `component` passed to `createFormHook`
-   */
   function useFieldContext<TData>() {
-    const field = useContext(context)
+    const field = useContext(fieldContext)
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!field) {
-      throw new Error('useFieldContext must be used within a FormFieldContext')
+      throw new Error(
+        '`fieldContext` only works when within a `fieldComponent` passed to `createFormHook`',
+      )
     }
 
     return field as FieldApi<
@@ -49,14 +50,45 @@ export function createFormHookContext() {
     >
   }
 
-  return { context, useFieldContext }
+  // We should never hit the `null` case here
+  const formContext = createContext<AnyFormApi>(null as never)
+
+  function useFormContext() {
+    const form = useContext(formContext)
+
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!form) {
+      throw new Error(
+        '`formContext` only works when within a `formComponent` passed to `createFormHook`',
+      )
+    }
+
+    return form as ReactFormExtendedApi<
+      // If you need access to the form data, you need to use `withForm` instead
+      Record<string, never>,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any
+    >
+  }
+
+  return { fieldContext, useFieldContext, useFormContext, formContext }
 }
 
 interface CreateFormHookProps<
-  TComponents extends Record<string, ComponentType<any>>,
+  TFieldComponents extends Record<string, ComponentType<any>>,
+  TFormComponents extends Record<string, ComponentType<any>>,
 > {
-  components: TComponents
-  context: Context<AnyFieldApi>
+  fieldComponents: TFieldComponents
+  fieldContext: Context<AnyFieldApi>
+  formComponents: TFormComponents
+  formContext: Context<AnyFormApi>
 }
 
 type AppFieldExtendedReactFormApi<
@@ -70,7 +102,8 @@ type AppFieldExtendedReactFormApi<
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta,
-  TComponents extends Record<string, ComponentType<any>>,
+  TFieldComponents extends Record<string, ComponentType<any>>,
+  TFormComponents extends Record<string, ComponentType<any>>,
 > = ReactFormExtendedApi<
   TFormData,
   TOnMount,
@@ -82,21 +115,23 @@ type AppFieldExtendedReactFormApi<
   TOnSubmitAsync,
   TOnServer,
   TSubmitMeta
-> & {
-  AppField: FieldComponent<
-    TFormData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnServer,
-    TSubmitMeta,
-    TComponents
-  >
-}
+> &
+  TFormComponents & {
+    AppField: FieldComponent<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer,
+      TSubmitMeta,
+      TFieldComponents
+    >
+    AppForm: ComponentType<PropsWithChildren>
+  }
 
 interface WithFormProps<
   TFormData,
@@ -109,7 +144,8 @@ interface WithFormProps<
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta,
-  TComponents extends Record<string, ComponentType<any>>,
+  TFieldComponents extends Record<string, ComponentType<any>>,
+  TFormComponents extends Record<string, ComponentType<any>>,
   TRenderProps extends Record<string, unknown> = Record<string, never>,
 > extends FormOptions<
     TFormData,
@@ -139,7 +175,8 @@ interface WithFormProps<
           TOnSubmitAsync,
           TOnServer,
           TSubmitMeta,
-          TComponents
+          TFieldComponents,
+          TFormComponents
         >
       }
     >,
@@ -148,7 +185,13 @@ interface WithFormProps<
 
 export function createFormHook<
   const TComponents extends Record<string, ComponentType<any>>,
->({ components, context }: CreateFormHookProps<TComponents>) {
+  const TFormComponents extends Record<string, ComponentType<any>>,
+>({
+  fieldComponents,
+  fieldContext,
+  formContext,
+  formComponents,
+}: CreateFormHookProps<TComponents, TFormComponents>) {
   type AppField<
     TParentData,
     TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
@@ -171,7 +214,7 @@ export function createFormHook<
     TFormOnSubmitAsync,
     TFormOnServer,
     TSubmitMeta,
-    typeof components
+    typeof fieldComponents
   >
 
   function useAppForm<
@@ -209,9 +252,18 @@ export function createFormHook<
     TOnSubmitAsync,
     TOnServer,
     TSubmitMeta,
-    typeof components
+    typeof fieldComponents,
+    typeof formComponents
   > {
     const form = useForm(props)
+
+    const AppForm = useMemo(() => {
+      return (({ children }) => {
+        return (
+          <formContext.Provider value={form}>{children}</formContext.Provider>
+        )
+      }) as ComponentType<PropsWithChildren>
+    }, [form])
 
     const AppField = useMemo(() => {
       return (({ children, ...props }) => {
@@ -219,9 +271,9 @@ export function createFormHook<
           <form.Field {...props}>
             {(field) => (
               // eslint-disable-next-line @eslint-react/no-context-provider
-              <context.Provider value={field}>
-                {children(Object.assign(field, components))}
-              </context.Provider>
+              <fieldContext.Provider value={field}>
+                {children(Object.assign(field, fieldComponents))}
+              </fieldContext.Provider>
             )}
           </form.Field>
         )
@@ -242,8 +294,10 @@ export function createFormHook<
     const extendedForm = useMemo(() => {
       return Object.assign(form, {
         AppField,
+        AppForm,
+        ...formComponents,
       })
-    }, [form, AppField])
+    }, [form, AppField, AppForm])
 
     return extendedForm
   }
@@ -274,7 +328,8 @@ export function createFormHook<
     TOnSubmitAsync,
     TOnServer,
     TSubmitMeta,
-    typeof components,
+    typeof fieldComponents,
+    typeof formComponents,
     TRenderProps
   >): WithFormProps<
     TFormData,
@@ -287,7 +342,8 @@ export function createFormHook<
     TOnSubmitAsync,
     TOnServer,
     TSubmitMeta,
-    typeof components,
+    typeof fieldComponents,
+    typeof formComponents,
     TRenderProps
   >['render'] {
     return (innerProps) => render({ ...props, ...innerProps })
