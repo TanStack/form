@@ -1,4 +1,4 @@
-import { getHeader, removeResponseHeader } from 'vinxi/http'
+import { getHeader, removeResponseHeader } from '@tanstack/react-start/server'
 import { _tanstackInternalsCookie } from './utils'
 import type { ServerFormState } from './types'
 

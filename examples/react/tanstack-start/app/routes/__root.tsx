@@ -3,7 +3,7 @@ import {
   ScrollRestoration,
   createRootRoute,
 } from '@tanstack/react-router'
-import { Meta, Scripts } from '@tanstack/start'
+import { Meta, Scripts } from '@tanstack/react-start'
 import * as React from 'react'
 
 export const Route = createRootRoute({

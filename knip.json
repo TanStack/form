@@ -1,5 +1,5 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
-  "ignoreDependencies": ["@tanstack/start", "vinxi"],
+  "ignoreDependencies": ["@tanstack/react-start", "vinxi"],
   "ignoreWorkspaces": ["examples/**"]
 }

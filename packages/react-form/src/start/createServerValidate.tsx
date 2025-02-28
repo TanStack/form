@@ -4,7 +4,7 @@ import {
   isStandardSchemaValidator,
   standardSchemaValidators,
 } from '@tanstack/form-core'
-import { getHeader } from 'vinxi/http'
+import { getHeader } from '@tanstack/react-start/server'
 import { _tanstackInternalsCookie } from './utils'
 import { ServerValidateError } from './error'
 import type {
