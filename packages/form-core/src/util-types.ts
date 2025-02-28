@@ -1,13 +1,7 @@
-type Nullable<T> = T | null
-type IsNullable<T> = [null] extends [T] ? true : false
-
-export type UnwrapOneLevelOfArray<T> = T extends (infer U)[] ? U : T
-
 /**
  * @private
  */
-export type RequiredByKey<T, K extends keyof T> = Omit<T, K> &
-  Required<Pick<T, K>>
+export type UnwrapOneLevelOfArray<T> = T extends (infer U)[] ? U : T
 
 type Narrowable = string | number | bigint | boolean
 
@@ -18,23 +12,17 @@ type NarrowRaw<A> =
       [K in keyof A]: A[K] extends Function ? A[K] : NarrowRaw<A[K]>
     }
 
-/**
- * @private
- */
-export type NoInfer<T> = [T][T extends any ? 0 : never]
+type Try<A1, A2, Catch = never> = A1 extends A2 ? A1 : Catch
 
 /**
  * @private
  */
 export type Narrow<A> = Try<A, [], NarrowRaw<A>>
 
-type Try<A1, A2, Catch = never> = A1 extends A2 ? A1 : Catch
-
 /**
- * Hack to get TypeScript to show simplified types in error messages
  * @private
  */
-export type Pretty<T> = { [K in keyof T]: T[K] } & {}
+export type NoInfer<T> = [T][T extends any ? 0 : never]
 
 type ComputeRange<
   N extends number,
@@ -105,6 +93,16 @@ type PrefixFromDepth<
   TDepth extends any[],
 > = TDepth['length'] extends 0 ? T : `.${T}`
 
+// Hack changing Typescript's default get behavior in order to work with union objects
+type Get<T, K extends string> = T extends { [Key in K]: infer V }
+  ? V
+  : T extends { [Key in K]?: infer W }
+    ? W | undefined
+    : never
+
+type ApplyNull<T> = null extends T ? null : never
+type ApplyUndefined<T> = undefined extends T ? undefined : never
+
 /**
  * Infer the type of a deeply nested property within an object or an array.
  */
@@ -113,36 +111,45 @@ export type DeepValue<
   TValue,
   // A string representing the path of the property we're trying to access
   TAccessor,
-  TNullable extends boolean = IsNullable<TValue>,
-> =
-  // If TValue is any it will recurse forever, this terminates the recursion
-  unknown extends TValue
-    ? TValue
+  // Depth for preventing infinite recursion
+  TDepth extends ReadonlyArray<any> = [],
+> = unknown extends TValue // If TValue is any it will recurse forever, this terminates the recursion
+  ? TValue
+  : TDepth['length'] extends 10
+    ? unknown
     : // Check if we're looking for the property in an array
       TValue extends ReadonlyArray<any>
       ? TAccessor extends `[${infer TBrackets}].${infer TAfter}`
         ? /*
           Extract the first element from the accessor path (`TBrackets`)
           and recursively call `DeepValue` with it
-          */
-          DeepValue<DeepValue<TValue, TBrackets>, TAfter>
+        */
+          DeepValue<
+            DeepValue<TValue, TBrackets, [...TDepth, any]>,
+            TAfter,
+            [...TDepth, any]
+          >
         : TAccessor extends `[${infer TBrackets}]`
-          ? DeepValue<TValue, TBrackets>
+          ? DeepValue<TValue, TBrackets, [...TDepth, any]>
           : TAccessor extends keyof TValue
             ? TValue[TAccessor]
             : TValue[TAccessor & number]
-      : // Check if we're looking for the property in an object
-        TValue extends Record<string | number, any>
-        ? TAccessor extends `${infer TBefore}[${infer TEverythingElse}`
-          ? DeepValue<DeepValue<TValue, TBefore>, `[${TEverythingElse}`>
-          : TAccessor extends `[${infer TBrackets}]`
-            ? DeepValue<TValue, TBrackets>
-            : TAccessor extends `${infer TBefore}.${infer TAfter}`
-              ? DeepValue<DeepValue<TValue, TBefore>, TAfter>
-              : TAccessor extends string
-                ? TNullable extends true
-                  ? Nullable<TValue[TAccessor]>
-                  : TValue[TAccessor]
-                : never
-        : // Do not allow `TValue` to be anything else
-          never
+      : TAccessor extends `${infer TBefore}[${infer TEverythingElse}`
+        ? DeepValue<
+            DeepValue<TValue, TBefore, [...TDepth, any]>,
+            `[${TEverythingElse}`,
+            [...TDepth, any]
+          >
+        : TAccessor extends `[${infer TBrackets}]`
+          ? DeepValue<TValue, TBrackets, [...TDepth, any]>
+          : TAccessor extends `${infer TBefore}.${infer TAfter}`
+            ? DeepValue<
+                DeepValue<TValue, TBefore, [...TDepth, any]>,
+                TAfter,
+                [...TDepth, any]
+              >
+            : TAccessor extends string
+              ?
+                  | Get<TValue, TAccessor>
+                  | (ApplyNull<TValue> | ApplyUndefined<TValue>)
+              : never

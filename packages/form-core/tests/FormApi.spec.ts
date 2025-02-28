@@ -2753,3 +2753,27 @@ it('should pass the handleSubmit default meta data to onSubmit', async () => {
 
   await form.handleSubmit()
 })
+
+it('should read and update union objects', async () => {
+  const form = new FormApi({
+    defaultValues: {
+      person: { firstName: 'firstName' },
+    } as { person?: { firstName: string } | { age: number } | null },
+  })
+
+  const field = new FieldApi({
+    form,
+    name: 'person.firstName',
+  })
+  field.mount()
+  expect(field.getValue()).toStrictEqual('firstName')
+
+  form.setFieldValue('person', { age: 0 })
+
+  const field2 = new FieldApi({
+    form,
+    name: 'person.age',
+  })
+  field2.mount()
+  expect(field2.getValue()).toStrictEqual(0)
+})
