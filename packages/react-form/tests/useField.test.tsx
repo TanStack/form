@@ -501,7 +501,9 @@ describe('useField', () => {
       return (
         <>
           {field.state.meta.isTouched && field.state.meta.errors.length ? (
-            <em>{field.state.meta.errors.map((error) => error.message).join(',')}</em>
+            <em>
+              {field.state.meta.errors.map((error) => error.message).join(',')}
+            </em>
           ) : null}
           {field.state.meta.isValidating ? 'Validating...' : null}
         </>

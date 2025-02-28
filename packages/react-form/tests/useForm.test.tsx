@@ -706,7 +706,9 @@ describe('useForm', () => {
                 />
 
                 <p data-testid="field-error">
-                  {field.state.meta.errors.map((error) => error.message).join('')}
+                  {field.state.meta.errors
+                    .map((error) => error.message)
+                    .join('')}
                 </p>
               </>
             )}

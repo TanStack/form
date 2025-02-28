@@ -75,7 +75,9 @@ export class TanStackFormDemo extends LitElement {
                               field.state.meta.isTouched &&
                               field.state.meta.errors.length
                             )}"
-                            .errorText="${field.state.meta.errors.map((error) => error.message).join(', ')}"
+                            .errorText="${field.state.meta.errors
+                              .map((error) => error.message)
+                              .join(', ')}"
                           ></md-filled-text-field>
                         </div>`
                       },
@@ -98,9 +100,9 @@ export class TanStackFormDemo extends LitElement {
                               lastNameField.state.meta.isTouched &&
                               lastNameField.state.meta.errors.length
                             )}"
-                            .errorText="${lastNameField.state.meta.errors.map((error) => error.message).join(
-                              ', ',
-                            )}"
+                            .errorText="${lastNameField.state.meta.errors
+                              .map((error) => error.message)
+                              .join(', ')}"
                           ></md-filled-text-field>
                         </div>`
                       },
@@ -149,9 +151,9 @@ export class TanStackFormDemo extends LitElement {
                                       }}"
                                       .error="${!!jobTitleField.state.meta
                                         .errors.length}"
-                                      .errorText="${jobTitleField.state.meta.errors.map((error) => error.message).join(
-                                        ', ',
-                                      )}"
+                                      .errorText="${jobTitleField.state.meta.errors
+                                        .map((error) => error.message)
+                                        .join(', ')}"
                                     ></md-filled-text-field>
                                   </div>`
                                 },
