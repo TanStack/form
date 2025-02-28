@@ -111,7 +111,7 @@ withForm: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync
 
 ###### props
 
-`PropsWithChildren`\<`TRenderProps` & `object`\>
+`PropsWithChildren`\<`NoInfer`\<`TRenderProps`\> & `object`\>
 
 ##### Returns
 
