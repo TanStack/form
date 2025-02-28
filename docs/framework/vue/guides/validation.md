@@ -33,7 +33,7 @@ Here is an example:
                 @input="(e) => field.handleChange((e.target as HTMLInputElement).valueAsNumber)
                 "
             />
-            <em role="alert" v-if="field.state.meta.errors">{{ field.state.meta.errors.join(', ') }}</em>
+            <em role="alert" v-if="field.state.meta.errors">{{ field.state.meta.errors.map((error) => error.message).join(', ') }}</em>
         </template>
     </form.Field>
  <!-- ... -->
@@ -63,7 +63,7 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
                 @input="(e) => field.handleChange((e.target as HTMLInputElement).valueAsNumber)
                 "
             />
-            <em role="alert" v-if="field.state.meta.errors">{{ field.state.meta.errors.join(', ') }}</em>
+            <em role="alert" v-if="field.state.meta.errors">{{ field.state.meta.errors.map((error) => error.message).join(', ') }}</em>
         </template>
     </form.Field>
  <!-- ... -->
@@ -94,7 +94,7 @@ So you can control when the validation is done by implementing the desired callb
                 @input="(e) => field.handleChange((e.target as HTMLInputElement).valueAsNumber)
                 "
             />
-            <em role="alert" v-if="field.state.meta.errors">{{ field.state.meta.errors.join(', ') }}</em>
+            <em role="alert" v-if="field.state.meta.errors">{{ field.state.meta.errors.map((error) => error.message).join(', ') }}</em>
         </template>
     </form.Field>
  <!-- ... -->
@@ -117,7 +117,7 @@ Once you have your validation in place, you can map the errors from an array to 
         }">
             <template v-slot="{ field }">
             <!-- ... -->
-                <em role="alert" v-if="field.state.meta.errors">{{ field.state.meta.errors.join(', ') }}</em>
+                <em role="alert" v-if="field.state.meta.errors">{{ field.state.meta.errors.map((error) => error.message).join(', ') }}</em>
             </template>
     </form.Field>
  <!-- ... -->
@@ -240,7 +240,7 @@ const onChangeAge = async ({ value }) => {
                 @input="(e) => field.handleChange((e.target as HTMLInputElement).valueAsNumber)
                 "
             />
-            <em role="alert" v-if="field.state.meta.errors">{{ field.state.meta.errors.join(', ') }}</em>
+            <em role="alert" v-if="field.state.meta.errors">{{ field.state.meta.errors.map((error) => error.message).join(', ') }}</em>
         </template>
     </form.Field>
  <!-- ... -->
@@ -281,7 +281,7 @@ const onBlurAgeAsync = async ({ value }) => {
                 @input="(e) => field.handleChange((e.target as HTMLInputElement).valueAsNumber)
                 "
             />
-            <em role="alert" v-if="field.state.meta.errors">{{ field.state.meta.errors.join(', ') }}</em>
+            <em role="alert" v-if="field.state.meta.errors">{{ field.state.meta.errors.map((error) => error.message).join(', ') }}</em>
         </template>
     </form.Field>
  <!-- ... -->

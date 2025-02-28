@@ -78,7 +78,7 @@ export default function Index() {
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.valueAsNumber)}
               />
-              {field.state.meta.errors.map((error) => (
+              {field.state.meta.errors.map((error) => error.message).map((error) => (
                 <p key={error as string}>{error}</p>
               ))}
             </div>

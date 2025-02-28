@@ -79,7 +79,7 @@ export default function App() {
                 }}
               />
               {field.state.meta.errors.length > 0 ? (
-                <em role="alert">{field.state.meta.errors.join(', ')}</em>
+                <em role="alert">{field.state.meta.errors.map((error) => error.message).join(', ')}</em>
               ) : null}
             </div>
           )}
@@ -101,7 +101,7 @@ export default function App() {
                 onChange={(e) => field.handleChange(e.target.valueAsNumber)}
               />
               {field.state.meta.errors.length > 0 ? (
-                <em role="alert">{field.state.meta.errors.join(', ')}</em>
+                <em role="alert">{field.state.meta.errors.map((error) => error.message).join(', ')}</em>
               ) : null}
             </div>
           )}

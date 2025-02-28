@@ -13,7 +13,7 @@ function FieldInfo(props: FieldInfoProps) {
     <>
       {props.field.state.meta.isTouched &&
       props.field.state.meta.errors.length ? (
-        <em>{props.field.state.meta.errors.join(',')}</em>
+        <em>{props.field.state.meta.errors.map((error) => error.message).join(',')}</em>
       ) : null}
       {props.field.state.meta.isValidating ? 'Validating...' : null}
     </>

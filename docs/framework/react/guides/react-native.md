@@ -20,7 +20,7 @@ Here is an example:
       <TextInput value={field.state.value} onChangeText={field.handleChange} />
       {
         field.state.meta.errors
-          ? <Text>{field.state.meta.errors.join(', ')}</Text>
+          ? <Text>{field.state.meta.errors.map((error) => error.message).join(', ')}</Text>
           : null
       }
     </>
