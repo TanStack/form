@@ -114,6 +114,10 @@
               "to": "framework/react/guides/ui-libraries"
             },
             {
+              "label": "Form Composition",
+              "to": "framework/react/guides/form-composition"
+            },
+            {
               "label": "React Native",
               "to": "framework/react/guides/react-native"
             },
