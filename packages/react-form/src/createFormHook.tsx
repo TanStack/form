@@ -116,7 +116,7 @@ type AppFieldExtendedReactFormApi<
   TOnServer,
   TSubmitMeta
 > &
-  TFormComponents & {
+  NoInfer<TFormComponents> & {
     AppField: FieldComponent<
       TFormData,
       TOnMount,
@@ -128,7 +128,7 @@ type AppFieldExtendedReactFormApi<
       TOnSubmitAsync,
       TOnServer,
       TSubmitMeta,
-      TFieldComponents
+      NoInfer<TFieldComponents>
     >
     AppForm: ComponentType<PropsWithChildren>
   }
@@ -163,7 +163,7 @@ interface WithFormProps<
   props?: TRenderProps
   render: (
     props: PropsWithChildren<
-      TRenderProps & {
+      NoInfer<TRenderProps> & {
         form: AppFieldExtendedReactFormApi<
           TFormData,
           TOnMount,
@@ -192,31 +192,6 @@ export function createFormHook<
   formContext,
   formComponents,
 }: CreateFormHookProps<TComponents, TFormComponents>) {
-  type AppField<
-    TParentData,
-    TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
-    TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-    TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-    TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-    TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-    TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-    TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-    TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-    TSubmitMeta,
-  > = FieldComponent<
-    TParentData,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnServer,
-    TSubmitMeta,
-    typeof fieldComponents
-  >
-
   function useAppForm<
     TFormData,
     TOnMount extends undefined | FormValidateOrFn<TFormData>,
@@ -252,8 +227,8 @@ export function createFormHook<
     TOnSubmitAsync,
     TOnServer,
     TSubmitMeta,
-    typeof fieldComponents,
-    typeof formComponents
+    TComponents,
+    TFormComponents
   > {
     const form = useForm(props)
 
@@ -277,7 +252,7 @@ export function createFormHook<
             )}
           </form.Field>
         )
-      }) satisfies AppField<
+      }) as FieldComponent<
         TFormData,
         TOnMount,
         TOnChange,
@@ -287,7 +262,8 @@ export function createFormHook<
         TOnSubmit,
         TOnSubmitAsync,
         TOnServer,
-        TSubmitMeta
+        TSubmitMeta,
+        TComponents
       >
     }, [form])
 
@@ -328,8 +304,8 @@ export function createFormHook<
     TOnSubmitAsync,
     TOnServer,
     TSubmitMeta,
-    typeof fieldComponents,
-    typeof formComponents,
+    TComponents,
+    TFormComponents,
     TRenderProps
   >): WithFormProps<
     TFormData,
@@ -342,8 +318,8 @@ export function createFormHook<
     TOnSubmitAsync,
     TOnServer,
     TSubmitMeta,
-    typeof fieldComponents,
-    typeof formComponents,
+    TComponents,
+    TFormComponents,
     TRenderProps
   >['render'] {
     return (innerProps) => render({ ...props, ...innerProps })

@@ -6,9 +6,17 @@ import { createFormHook, createFormHookContexts } from '../src'
 const { fieldContext, useFieldContext, formContext, useFormContext } =
   createFormHookContexts()
 
+function Test() {
+  return null
+}
+
 const { useAppForm, withForm } = createFormHook({
-  fieldComponents: {},
-  formComponents: {},
+  fieldComponents: {
+    Test,
+  },
+  formComponents: {
+    Test,
+  },
   fieldContext,
   formContext,
 })
@@ -80,12 +88,15 @@ describe('createFormHook', () => {
       render: ({ form, initialValues }) => {
         return (
           <div className="m-3">
-            <form.AppField name={`editors.${initialValues}.key`}>
+            <form.AppField name={`editors.${initialValues}.key` as const}>
               {(field) => {
                 assertType<string>(field.state.value)
                 return null
               }}
             </form.AppField>
+            <form.AppForm>
+              <form.Test />
+            </form.AppForm>
           </div>
         )
       },

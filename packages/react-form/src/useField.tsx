@@ -317,7 +317,7 @@ export type FieldComponent<
   TPatentSubmitMeta,
   ExtendedApi = {},
 > = <
-  TName extends DeepKeys<TParentData>,
+  const TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
