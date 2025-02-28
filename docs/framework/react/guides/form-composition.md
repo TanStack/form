@@ -147,3 +147,174 @@ function App() {
   )
 }
 ```
+
+# Breaking big forms into smaller pieces
+
+Sometimes forms get very large; it's just how it goes sometimes. While TanStack Form supports large forms well, it's never fun to work with a files hundreds or thousands of lines of code long.
+
+To solve this, we support breaking forms into smaller pieces using the `withForm` higher-order component.
+
+```tsx
+const { useAppForm, withForm } = createFormHook({
+  fieldComponents: {
+    TextField,
+  },
+  formComponents: {
+    SubscribeButton,
+  },
+  fieldContext,
+  formContext,
+})
+
+const ChildForm = withForm({
+  // These valeus are only used for type-checking, and are not used at runtime
+  // This allows you to `...formOpts` from `formOptions` without needing to redeclare the options
+  defaultValues: {
+    firstName: 'John',
+    lastName: 'Doe',
+  },
+  // Optional, but adds props to the `render` function in addition to `form`
+  props: {
+    // These props are also set as default values for the `render` function
+    title: 'Child Form',
+  },
+  render: function Render({ form, title }) {
+    return (
+      <div>
+        <p>{title}</p>
+        <form.AppField
+          name="firstName"
+          children={(field) => <field.TextField label="First Name" />}
+        />
+        <form.AppForm>
+            <form.SubscribeButton label="Submit" />
+        </form.AppForm>
+      </div>
+    )
+  },
+})
+
+function App() {
+  const form = useAppForm({
+    defaultValues: {
+      firstName: 'John',
+      lastName: 'Doe',
+    },
+  })
+
+  return <ChildForm form={form} title={'Testing'} />
+}
+```
+
+## `withForm` FAQ
+
+> Why a higher-order component instead of a hook?
+
+While hooks are the future of React, higher-order components are still a powerful tool for composition. In particular, the API of `useForm` enables us to have strong type-safety without requiring users to pass generics.
+
+> Why am I getting ESLint errors about hooks in `render`?
+
+ESLint looks for hooks in the top-level of a function, and `render` may not be recogized as a top-level component, depending on how you defined it.
+
+```tsx
+// This will cause ESLint errors with hooks usage
+const ChildForm = withForm({
+  // ...
+  render: ({ form, title }) => {
+    // ...
+  },
+})
+```
+
+```tsx
+// This works fine
+const ChildForm = withForm({
+  // ...
+  render: function Render({ form, title }) {
+    // ...
+  },
+})
+```
+
+# Putting it all together
+
+Now that we've covered the basics of creating custom form hooks, let's put it all together in a single example.
+
+```tsx
+// /src/hooks/form.ts, to be used across the entire app
+const { fieldContext, useFieldContext, formContext, useFormContext } =
+  createFormHookContexts()
+
+function TextField({ label }: { label: string }) {
+  const field = useFieldContext<string>()
+  return (
+    <label>
+      <div>{label}</div>
+      <input
+        value={field.state.value}
+        onChange={(e) => field.handleChange(e.target.value)}
+      />
+    </label>
+  )
+}
+
+function SubscribeButton({ label }: { label: string }) {
+  const form = useFormContext()
+  return (
+    <form.Subscribe selector={(state) => state.isSubmitting}>
+      {(isSubmitting) => <button disabled={isSubmitting}>{label}</button>}
+    </form.Subscribe>
+  )
+}
+
+const { useAppForm, withForm } = createFormHook({
+  fieldComponents: {
+    TextField,
+  },
+  formComponents: {
+    SubscribeButton,
+  },
+  fieldContext,
+  formContext,
+})
+
+// /src/features/people/shared-form.ts, to be used across `people` features
+const formOpts = formOptions({
+  defaultValues: {
+    firstName: 'John',
+    lastName: 'Doe',
+  },
+})
+
+// /src/features/people/nested-form.ts, to be used in the `people` page
+const ChildForm = withForm({
+  ...formOpts,
+  // Optional, but adds props to the `render` function outside of `form`
+  props: {
+    title: 'Child Form',
+  },
+  render: ({ form, title }) => {
+    return (
+      <div>
+        <p>{title}</p>
+        <form.AppField
+          name="firstName"
+          children={(field) => <field.TextField label="First Name" />}
+        />
+        <form.AppForm>
+            <form.SubscribeButton label="Submit" />
+        </form.AppForm>
+      </div>
+    )
+  },
+})
+
+// /src/features/people/page.ts
+const Parent = () => {
+  const form = useAppForm({
+    ...formOpts,
+  })
+
+  return <ChildForm form={form} title={'Testing'} />
+}
+```
