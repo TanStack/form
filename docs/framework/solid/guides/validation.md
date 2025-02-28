@@ -34,7 +34,7 @@ Here is an example:
         onChange={(e) => field().handleChange(e.target.valueAsNumber)}
       />
       {field().state.meta.errors ? (
-        <em role="alert">{field().state.meta.errors.join(', ')}</em>
+        <em role="alert">{field().state.meta.errors.map((error) => error.message).join(', ')}</em>
       ) : null}
     </>
   )}
@@ -65,7 +65,7 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
         onChange={(e) => field().handleChange(e.target.valueAsNumber)}
       />
       {field().state.meta.errors ? (
-        <em role="alert">{field().state.meta.errors.join(', ')}</em>
+        <em role="alert">{field().state.meta.errors.map((error) => error.message).join(', ')}</em>
       ) : null}
     </>
   )}
@@ -97,7 +97,7 @@ So you can control when the validation is done by implementing the desired callb
         onChange={(e) => field().handleChange(e.target.valueAsNumber)}
       />
       {field().state.meta.errors ? (
-        <em role="alert">{field().state.meta.errors.join(', ')}</em>
+        <em role="alert">{field().state.meta.errors.map((error) => error.message).join(', ')}</em>
       ) : null}
     </>
   )}
@@ -123,7 +123,7 @@ Once you have your validation in place, you can map the errors from an array to 
       <>
         {/* ... */}
         {field().state.meta.errors.length ? (
-          <em>{field().state.meta.errors.join(',')}</em>
+          <em>{field().state.meta.errors.map((error) => error.message).join(',')}</em>
         ) : null}
       </>
     );
@@ -249,7 +249,7 @@ To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods 
         onChange={(e) => field().handleChange(e.target.valueAsNumber)}
       />
       {field().state.meta.errors ? (
-        <em role="alert">{field().state.meta.errors.join(', ')}</em>
+        <em role="alert">{field().state.meta.errors.map((error) => error.message).join(', ')}</em>
       ) : null}
     </>
   )}
@@ -281,7 +281,7 @@ Synchronous and Asynchronous validations can coexist. For example, it is possibl
         onChange={(e) => field().handleChange(e.target.valueAsNumber)}
       />
       {field().state.meta.errors ? (
-        <em role="alert">{field().state.meta.errors.join(', ')}</em>
+        <em role="alert">{field().state.meta.errors.map((error) => error.message).join(', ')}</em>
       ) : null}
     </>
   )}

@@ -38,7 +38,7 @@ Here is an example:
         (input)="age.api.handleChange($any($event).target.valueAsNumber)"
       />
       @if (age.api.state.meta.errors) {
-        <em role="alert">{{ age.api.state.meta.errors.join(', ') }}</em>
+        <em role="alert">{{ age.api.state.meta.errors.map((error) => error.message).join(', ') }}</em>
       }
     </ng-container>
   `,
@@ -79,7 +79,7 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
         (input)="age.api.handleChange($any($event).target.valueAsNumber)"
       />
       @if (age.api.state.meta.errors) {
-        <em role="alert">{{ age.api.state.meta.errors.join(', ') }}</em>
+        <em role="alert">{{ age.api.state.meta.errors.map((error) => error.message).join(', ') }}</em>
       }
     </ng-container>
   `,
@@ -121,7 +121,7 @@ So you can control when the validation is done by implementing the desired callb
         (input)="age.api.handleChange($any($event).target.valueAsNumber)"
       />
       @if (age.api.state.meta.errors) {
-        <em role="alert">{{ age.api.state.meta.errors.join(', ') }}</em>
+        <em role="alert">{{ age.api.state.meta.errors.map((error) => error.message).join(', ') }}</em>
       }
     </ng-container>
   `,
@@ -160,7 +160,7 @@ Once you have your validation in place, you can map the errors from an array to 
     >
       <!-- ... -->
       @if (age.api.state.meta.errors) {
-        <em role="alert">{{ age.api.state.meta.errors.join(', ') }}</em>
+        <em role="alert">{{ age.api.state.meta.errors.map((error) => error.message).join(', ') }}</em>
       }
     </ng-container>
   `,
@@ -318,7 +318,7 @@ To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods 
         (input)="age.api.handleChange($any($event).target.valueAsNumber)"
       />
       @if (age.api.state.meta.errors) {
-        <em role="alert">{{ age.api.state.meta.errors.join(', ') }}</em>
+        <em role="alert">{{ age.api.state.meta.errors.map((error) => error.message).join(', ') }}</em>
       }
     </ng-container>
   `,
@@ -359,7 +359,7 @@ Synchronous and Asynchronous validations can coexist. For example, it is possibl
         (input)="age.api.handleChange($any($event).target.value)"
       />
       @if (age.api.state.meta.errors) {
-        <em role="alert">{{ age.api.state.meta.errors.join(', ') }}</em>
+        <em role="alert">{{ age.api.state.meta.errors.map((error) => error.message).join(', ') }}</em>
       }
     </ng-container>
   `,
