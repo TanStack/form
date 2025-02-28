@@ -49,7 +49,6 @@ title: "@tanstack/form-core"
 - [UnwrapFieldValidateOrFn](type-aliases/unwrapfieldvalidateorfn.md)
 - [UnwrapFormAsyncValidateOrFn](type-aliases/unwrapformasyncvalidateorfn.md)
 - [UnwrapFormValidateOrFn](type-aliases/unwrapformvalidateorfn.md)
-- [UnwrapOneLevelOfArray](type-aliases/unwraponelevelofarray.md)
 - [Updater](type-aliases/updater.md)
 - [UpdaterFn](type-aliases/updaterfn.md)
 - [ValidationError](type-aliases/validationerror.md)
