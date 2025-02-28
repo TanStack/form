@@ -18,6 +18,10 @@
           "to": "installation"
         },
         {
+          "label": "Philosophy",
+          "to": "philosophy"
+        },
+        {
           "label": "Comparison",
           "to": "comparison"
         },
