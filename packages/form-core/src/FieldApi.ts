@@ -7,7 +7,6 @@ import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
 import type {
   DeepKeys,
   DeepValue,
-  NoInfer,
   UnwrapOneLevelOfArray,
 } from './util-types'
 import type {

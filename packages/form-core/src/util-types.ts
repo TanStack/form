@@ -19,11 +19,6 @@ type Try<A1, A2, Catch = never> = A1 extends A2 ? A1 : Catch
  */
 export type Narrow<A> = Try<A, [], NarrowRaw<A>>
 
-/**
- * @private
- */
-export type NoInfer<T> = [T][T extends any ? 0 : never]
-
 type ComputeRange<
   N extends number,
   Result extends Array<unknown> = [],
