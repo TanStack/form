@@ -37,6 +37,14 @@ An object representing the current state of the form.
 
 ## Type declaration
 
+### \_force\_re\_eval?
+
+```ts
+optional _force_re_eval: boolean;
+```
+
+@private, used to force a re-evaluation of the form state when options change
+
 ### errorMap
 
 ```ts
