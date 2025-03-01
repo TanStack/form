@@ -106,6 +106,10 @@
               "to": "framework/react/guides/listeners"
             },
             {
+              "label": "Submission Handling",
+              "to": "framework/react/guides/submission-handling"
+            },
+            {
               "label": "UI Libraries",
               "to": "framework/react/guides/ui-libraries"
             },
