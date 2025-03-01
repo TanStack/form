@@ -11,7 +11,7 @@ title: DeepKeys
 type DeepKeys<T, TDepth> = TDepth["length"] extends 5 ? never : unknown extends T ? PrefixFromDepth<string, TDepth> : T extends readonly any[] & IsTuple<T> ? PrefixTupleAccessor<T, AllowedIndexes<T>, TDepth> : T extends any[] ? PrefixArrayAccessor<T, [...TDepth, any]> : T extends Date ? never : T extends object ? PrefixObjectAccessor<T, TDepth> : T extends string | number | boolean | bigint ? "" : never;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:75](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L75)
+Defined in: [packages/form-core/src/util-types.ts:70](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L70)
 
 The keys of an object or array, deeply nested.
 
