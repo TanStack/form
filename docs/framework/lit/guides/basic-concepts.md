@@ -12,13 +12,13 @@ You can create options for your form so that it can be shared between multiple f
 For Example:
 
 ```tsx
-const formOpts = formOptions<Employee>({
+const formOpts = formOptions({
   defaultValues: {
     firstName: '',
     lastName: '',
     employed: false,
     jobTitle: '',
-  },
+  } as Employee,
 })
 ```
 
@@ -27,20 +27,20 @@ const formOpts = formOptions<Employee>({
 A Form Instance is an object that represents an individual form and provides methods and properties for working with the form. You create a form instance using the `TanStackFormController` interface provided by `@tanstack/lit-form`. The `TanStackFormController` is instantiated with the current form's (`this`) class and some default form options. It initializes the form state, handles form submission, and provides methods to manage form fields and their validation.
 
 ```tsx
-#form = new TanStackFormController<Employee>(this, {
+#form = new TanStackFormController(this, {
   defaultValues: {
     firstName: '',
     lastName: '',
     employed: false,
     jobTitle: '',
-  },
+  } as Employee,
 })
 ```
 
 You may also create a form instance without using `formOptions` by using the standalone `TanStackFormController` API:
 
 ```tsx
-#form = new TanStackFormController<Employee>(this, {
+#form = new TanStackFormController(this, {
   ...formOpts,
 })
 ```

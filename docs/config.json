@@ -206,24 +206,8 @@
               "to": "framework/lit/guides/basic-concepts"
             },
             {
-              "label": "Form Validation",
-              "to": "framework/lit/guides/validation"
-            },
-            {
-              "label": "Async Initial Values",
-              "to": "framework/lit/guides/async-initial-values"
-            },
-            {
               "label": "Arrays",
               "to": "framework/lit/guides/arrays"
-            },
-            {
-              "label": "Linked Fields",
-              "to": "framework/lit/guides/linked-fields"
-            },
-            {
-              "label": "UI Libraries",
-              "to": "framework/lit/guides/ui-libraries"
             }
           ]
         }
