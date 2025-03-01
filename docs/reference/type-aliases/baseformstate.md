@@ -61,6 +61,14 @@ fieldMetaBase: Record<DeepKeys<TFormData>, AnyFieldMetaBase>;
 
 A record of field metadata for each field in the form, not including the derived properties, like `errors` and such
 
+### isSubmitSuccessful
+
+```ts
+isSubmitSuccessful: boolean;
+```
+
+A boolean indicating if the last submission was successful.
+
 ### isSubmitted
 
 ```ts
