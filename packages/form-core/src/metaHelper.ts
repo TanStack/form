@@ -110,6 +110,8 @@ export function metaHelper<
       const nextFieldMeta = formApi.getFieldMeta(nextFieldKey)
       if (nextFieldMeta) {
         formApi.setFieldMeta(fieldKey, nextFieldMeta)
+      } else {
+        formApi.setFieldMeta(fieldKey, getEmptyFieldMeta())
       }
     })
   }
