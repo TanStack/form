@@ -720,9 +720,11 @@ export class FormApi<
   prevTransformArray: unknown[] = []
 
   /**
-   * @private map of errors originated from form level validators
+   * @private Persistent store of all field validation errors originating from form-level validators.
+   * Maintains the cumulative state across validation cycles, including cleared errors (undefined values).
+   * This map preserves the complete validation state for all fields.
    */
-  prevFieldsErrorMap: FormErrorMapFromValidator<
+  cumulativeFieldsErrorMap: FormErrorMapFromValidator<
     TFormData,
     TOnMount,
     TOnChange,
@@ -1256,7 +1258,8 @@ export class FormApi<
     const validates = getSyncValidatorArray(cause, this.options)
     let hasErrored = false as boolean
 
-    const newFieldsErrorMap: FormErrorMapFromValidator<
+    // This map will only include fields that have errors in the current validation cycle
+    const currentValidationErrorMap: FormErrorMapFromValidator<
       TFormData,
       TOnMount,
       TOnChange,
@@ -1286,18 +1289,21 @@ export class FormApi<
         const errorMapKey = getErrorMapKey(validateObj.cause)
 
         if (fieldErrors) {
-          for (const [field, fieldError] of Object.entries(fieldErrors)) {
-            const oldErrorMap =
-              newFieldsErrorMap[field as DeepKeys<TFormData>] || {}
+          for (const [field, fieldError] of Object.entries(fieldErrors) as [
+            DeepKeys<TFormData>,
+            ValidationError,
+          ][]) {
+            const oldErrorMap = this.cumulativeFieldsErrorMap[field] || {}
             const newErrorMap = {
               ...oldErrorMap,
               [errorMapKey]: fieldError,
             }
-            newFieldsErrorMap[field as DeepKeys<TFormData>] = newErrorMap
+            currentValidationErrorMap[field] = newErrorMap
+            this.cumulativeFieldsErrorMap[field] = newErrorMap
 
-            const fieldMeta = this.getFieldMeta(field as DeepKeys<TFormData>)
+            const fieldMeta = this.getFieldMeta(field)
             if (fieldMeta && fieldMeta.errorMap[errorMapKey] !== fieldError) {
-              this.setFieldMeta(field as DeepKeys<TFormData>, (prev) => ({
+              this.setFieldMeta(field, (prev) => ({
                 ...prev,
                 errorMap: {
                   ...prev.errorMap,
@@ -1308,14 +1314,19 @@ export class FormApi<
           }
         }
 
-        for (const field of Object.keys(this.prevFieldsErrorMap) as Array<
+        for (const field of Object.keys(this.cumulativeFieldsErrorMap) as Array<
           DeepKeys<TFormData>
         >) {
           const fieldMeta = this.getFieldMeta(field)
           if (
             fieldMeta?.errorMap[errorMapKey] &&
-            !newFieldsErrorMap[field]?.[errorMapKey]
+            !currentValidationErrorMap[field]?.[errorMapKey]
           ) {
+            this.cumulativeFieldsErrorMap[field] = {
+              ...this.cumulativeFieldsErrorMap[field],
+              [errorMapKey]: undefined,
+            }
+
             this.setFieldMeta(field, (prev) => ({
               ...prev,
               errorMap: {
@@ -1361,9 +1372,7 @@ export class FormApi<
       }
     })
 
-    this.prevFieldsErrorMap = newFieldsErrorMap
-
-    return { hasErrored, fieldsErrorMap: newFieldsErrorMap }
+    return { hasErrored, fieldsErrorMap: currentValidationErrorMap }
   }
 
   /**
