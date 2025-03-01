@@ -301,6 +301,31 @@ importers:
         specifier: ^6.1.1
         version: 6.1.1(@types/node@22.13.4)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1(postcss@8.5.3))(terser@5.39.0)(tsx@4.19.2)(yaml@2.7.0)
 
+  examples/react/large-form:
+    dependencies:
+      '@tanstack/react-form':
+        specifier: ^0.47.2
+        version: link:../../../packages/react-form
+      react:
+        specifier: ^19.0.0
+        version: 19.0.0
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.0.0(react@19.0.0)
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.7
+        version: 19.0.10
+      '@types/react-dom':
+        specifier: ^19.0.3
+        version: 19.0.3(@types/react@19.0.10)
+      '@vitejs/plugin-react':
+        specifier: ^4.3.4
+        version: 4.3.4(vite@6.1.1(@types/node@22.13.4)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1(postcss@8.5.3))(terser@5.39.0)(tsx@4.19.2)(yaml@2.7.0))
+      vite:
+        specifier: ^6.1.1
+        version: 6.1.1(@types/node@22.13.4)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1(postcss@8.5.3))(terser@5.39.0)(tsx@4.19.2)(yaml@2.7.0)
+
   examples/react/next-server-actions:
     dependencies:
       '@tanstack/react-form':
@@ -668,7 +693,7 @@ importers:
     devDependencies:
       '@analogjs/vite-plugin-angular':
         specifier: ^1.14.0
-        version: 1.14.0(cd780e18b8a84628a778c3355ac746d2)
+        version: 1.14.0(yeq7fw4xtj6lssrfmz37g2aa4q)
       '@angular/common':
         specifier: ^19.2.0
         version: 19.2.0(@angular/core@19.2.0(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)
@@ -10418,7 +10443,7 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@analogjs/vite-plugin-angular@1.14.0(cd780e18b8a84628a778c3355ac746d2)':
+  '@analogjs/vite-plugin-angular@1.14.0(yeq7fw4xtj6lssrfmz37g2aa4q)':
     dependencies:
       ts-morph: 21.0.1
       vfile: 6.0.3
