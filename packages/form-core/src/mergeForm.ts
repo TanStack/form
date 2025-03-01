@@ -1,5 +1,4 @@
 import type { FormApi } from './FormApi'
-import type { NoInfer } from './util-types'
 
 function isValidKey(key: string | number | symbol): boolean {
   const dangerousProps = ['__proto__', 'constructor', 'prototype']

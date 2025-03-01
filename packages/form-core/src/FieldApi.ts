@@ -4,12 +4,7 @@ import {
   standardSchemaValidators,
 } from './standardSchemaValidator'
 import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
-import type {
-  DeepKeys,
-  DeepValue,
-  NoInfer,
-  UnwrapOneLevelOfArray,
-} from './util-types'
+import type { DeepKeys, DeepValue, UnwrapOneLevelOfArray } from './util-types'
 import type {
   StandardSchemaV1,
   StandardSchemaV1Issue,

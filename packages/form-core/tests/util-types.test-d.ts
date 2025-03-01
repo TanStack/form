@@ -87,19 +87,100 @@ type NestedKeysExample = DeepValue<
 >
 assertType<number>(0 as never as NestedKeysExample)
 
-type NestedNullableKeys = DeepValue<
-  {
-    meta: { mainUser: 'hello' } | null
-  },
-  'meta.mainUser'
+type NestedNullableObjectCase = {
+  null: { mainUser: 'name' } | null
+  undefined: { mainUser: 'name' } | undefined
+  optional?: { mainUser: 'name' }
+  mixed: { mainUser: 'name' } | null | undefined
+}
+
+type NestedNullableObjectCaseNull = DeepValue<
+  NestedNullableObjectCase,
+  'null.mainUser'
 >
-assertType<'hello' | null>(0 as never as NestedNullableKeys)
+assertType<'name' | null>(0 as never as NestedNullableObjectCaseNull)
+type NestedNullableObjectCaseUndefined = DeepValue<
+  NestedNullableObjectCase,
+  'undefined.mainUser'
+>
+assertType<'name' | undefined>(0 as never as NestedNullableObjectCaseUndefined)
+type NestedNullableObjectCaseOptional = DeepValue<
+  NestedNullableObjectCase,
+  'undefined.mainUser'
+>
+assertType<'name' | undefined>(0 as never as NestedNullableObjectCaseOptional)
+type NestedNullableObjectCaseMixed = DeepValue<
+  NestedNullableObjectCase,
+  'mixed.mainUser'
+>
+assertType<'name' | null | undefined>(
+  0 as never as NestedNullableObjectCaseMixed,
+)
+
+type DoubleNestedNullableObjectCase = {
+  mixed?: { mainUser: { name: 'name' } } | null | undefined
+}
+type DoubleNestedNullableObjectA = DeepValue<
+  DoubleNestedNullableObjectCase,
+  'mixed.mainUser'
+>
+assertType<{ name: 'name' } | null | undefined>(
+  0 as never as DoubleNestedNullableObjectA,
+)
+type DoubleNestedNullableObjectB = DeepValue<
+  DoubleNestedNullableObjectCase,
+  'mixed.mainUser.name'
+>
+assertType<'name' | null | undefined>(0 as never as DoubleNestedNullableObjectB)
+
+type NestedObjectUnionCase = {
+  normal:
+    | { a: User }
+    | { a: string }
+    | { b: string }
+    | { c: { user: User } | { user: number } }
+}
+type NestedObjectUnionA = DeepValue<NestedObjectUnionCase, 'normal.a.age'>
+assertType<number>(0 as never as NestedObjectUnionA)
+type NestedObjectUnionB = DeepValue<NestedObjectUnionCase, 'normal.b'>
+assertType<string>(0 as never as NestedObjectUnionB)
+type NestedObjectUnionC = DeepValue<NestedObjectUnionCase, 'normal.c.user.id'>
+assertType<string>(0 as never as NestedObjectUnionC)
+
+type NestedNullableObjectUnionCase = {
+  nullable:
+    | { a?: number; b?: { c: boolean } | null }
+    | { b?: { c: string; e: number } }
+}
+type NestedNullableObjectUnionA = DeepValue<
+  NestedNullableObjectUnionCase,
+  'nullable.a'
+>
+assertType<number | undefined>(0 as never as NestedNullableObjectUnionA)
+type NestedNullableObjectUnionB = DeepValue<
+  NestedNullableObjectUnionCase,
+  'nullable.b.c'
+>
+assertType<string | boolean | null | undefined>(
+  0 as never as NestedNullableObjectUnionB,
+)
+type NestedNullableObjectUnionC = DeepValue<
+  NestedNullableObjectUnionCase,
+  'nullable.b.e'
+>
+assertType<number | null | undefined>(0 as never as NestedNullableObjectUnionC)
 
 type NestedArrayExample = DeepValue<{ users: User[] }, 'users[0].age'>
 assertType<number>(0 as never as NestedArrayExample)
 
 type NestedLooseArrayExample = DeepValue<{ users: User[] }, 'users[number].age'>
 assertType<number>(0 as never as NestedLooseArrayExample)
+
+type NestedArrayUnionExample = DeepValue<
+  { users: string | User[] },
+  'users[0].age'
+>
+assertType<number>(0 as never as NestedArrayUnionExample)
 
 type NestedTupleExample = DeepValue<
   { topUsers: [User, 0, User] },
@@ -169,3 +250,68 @@ type DoubleDeepArray = DeepValue<
 >
 
 assertType<string>(0 as never as DoubleDeepArray)
+
+// Deepness is infinite error check
+type Cart = {
+  id: number
+  product: {
+    id: string
+    description?: string
+    price_internet?: number
+    price_dealer_region?: number
+    price_dealer?: number
+    stock:
+      | {
+          id: string
+          quantity: number
+          isChecked: boolean
+        }[]
+      | null
+  }
+  quantity: number
+  isChecked: boolean
+}[]
+
+type Payment_types = {
+  id: string
+  title: string
+  name: string
+}[]
+
+type Shipping_methods = {
+  id: string
+  title: string
+  name: string
+}[]
+
+type Userr = {
+  id: string
+  first_name: string | null
+  email: string | null
+  avatar:
+    | string
+    | ({
+        url?: string
+      } & {
+        id: string
+        storage: string
+        filename_disk: string | null
+        filename_original: string | null
+        filename_download: string | null
+        filename_preview: string | null
+        filename_thumbnail: string | null
+        filename_medium: string | null
+        filename_large: string | null
+        filename_huge: string | null
+        filename_icon: string | null
+        filename_icon_large: string | null
+        focal_point_y: number | null
+      })
+    | null
+  // Reference Cart, Payment_types, Shipping_methods
+  cart: Cart | null
+  payment_types: Payment_types | null
+  shipping_methods: Shipping_methods | null
+}
+
+type UserKeys = DeepValue<Userr, DeepKeys<Userr>>
