@@ -1,18 +1,11 @@
 import { createServerFn } from '@tanstack/react-start'
-import { formOptions } from '@tanstack/react-form'
 import {
   ServerValidateError,
   createServerValidate,
   getFormData,
 } from '@tanstack/react-form/start'
 import { setResponseStatus } from '@tanstack/react-start/server'
-
-export const formOpts = formOptions({
-  defaultValues: {
-    firstName: '',
-    age: 0,
-  },
-})
+import { formOpts } from './form-isomorphic'
 
 const serverValidate = createServerValidate({
   ...formOpts,
