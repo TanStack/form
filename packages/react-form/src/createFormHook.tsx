@@ -289,7 +289,7 @@ export function createFormHook<
     TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
     TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
     TSubmitMeta,
-    TRenderProps extends Record<string, unknown> = Record<string, never>,
+    TRenderProps extends Record<string, unknown> = {},
   >({
     render,
     props,
