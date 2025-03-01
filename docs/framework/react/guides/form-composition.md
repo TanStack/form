@@ -49,7 +49,7 @@ Once this scaffolding is in place, you can start adding custom field and form co
 ```tsx
 function TextField({ label }: { label: string }) {
   // Use the context returned from `createFormHookContexts`
-  // The `Field` that it should have a `value` type of `string`
+  // The `Field` infers that it should have a `value` type of `string`
   const field = useFieldContext<string>()
   return (
     <label>
@@ -142,6 +142,7 @@ function App() {
 
   return (
     <form.AppForm>
+     // Notice the `AppForm` component wrapper; `AppForm` provides the required context
       <form.SubscribeButton label="Submit" />
     </form.AppForm>
   )
@@ -150,7 +151,7 @@ function App() {
 
 # Breaking big forms into smaller pieces
 
-Sometimes forms get very large; it's just how it goes sometimes. While TanStack Form supports large forms well, it's never fun to work with a files hundreds or thousands of lines of code long.
+Sometimes forms get very large; it's just how it goes sometimes. While TanStack Form supports large forms well, it's never fun to work with hundreds or thousands of lines of code long files.
 
 To solve this, we support breaking forms into smaller pieces using the `withForm` higher-order component.
 
