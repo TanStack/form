@@ -319,3 +319,10 @@ const Parent = () => {
   return <ChildForm form={form} title={'Testing'} />
 }
 ```
+
+# API Usage Guidance
+
+Here's a chart to help you decide what APIs you should be using:
+
+![](https://raw.githubusercontent.com/TanStack/form/main/docs/assets/react_form_composability.svg)
+
