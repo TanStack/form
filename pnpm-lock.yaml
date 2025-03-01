@@ -304,7 +304,7 @@ importers:
   examples/react/large-form:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^0.47.2
+        specifier: ^0.47.3
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0

@@ -2838,3 +2838,29 @@ it('should read and update union objects', async () => {
   field2.mount()
   expect(field2.getValue()).toStrictEqual(0)
 })
+
+it('should update isSubmitSuccessful correctly during form submission', async () => {
+  const onSubmit = vi.fn().mockResolvedValue(undefined)
+  const form = new FormApi({
+    defaultValues: {
+      name: 'test',
+    },
+    onSubmit,
+  })
+
+  form.mount()
+
+  expect(form.state.isSubmitSuccessful).toBe(false)
+
+  await form.handleSubmit()
+
+  expect(form.state.isSubmitSuccessful).toBe(true)
+  expect(onSubmit).toHaveBeenCalledTimes(1)
+
+  // Simulate a failed submission
+  onSubmit.mockRejectedValueOnce(new Error('Submission failed'))
+
+  await expect(form.handleSubmit()).rejects.toThrow('Submission failed')
+
+  expect(form.state.isSubmitSuccessful).toBe(false)
+})
