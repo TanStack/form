@@ -197,6 +197,19 @@
               "to": "framework/solid/guides/linked-fields"
             }
           ]
+        },
+        {
+          "label": "lit",
+          "children": [
+            {
+              "label": "Basic Concepts",
+              "to": "framework/lit/guides/basic-concepts"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/lit/guides/arrays"
+            }
+          ]
         }
       ]
     },
@@ -385,7 +398,7 @@
             },
             {
               "label": "Classes / TanStackFormController",
-              "to": "framework/lit/reference/classes/tanstackformcontroller"
+              "to": "framework/lit/reference/tanstackformcontroller"
             }
           ]
         },
