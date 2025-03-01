@@ -5,7 +5,7 @@ import {
   getFormData,
 } from '@tanstack/react-form/start'
 import { setResponseStatus } from '@tanstack/react-start/server'
-import {formOpts} from "./form-isomorphic";
+import { formOpts } from './form-isomorphic'
 
 const serverValidate = createServerValidate({
   ...formOpts,
