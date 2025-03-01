@@ -10,7 +10,7 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
   return (
     <>
       {field.state.meta.isTouched && field.state.meta.errors.length ? (
-        <em>{field.state.meta.errors.join(',')}</em>
+        <em>{field.state.meta.errors.map((err) => err.message).join(',')}</em>
       ) : null}
       {field.state.meta.isValidating ? 'Validating...' : null}
     </>
@@ -58,9 +58,6 @@ export default function App() {
       // Do something with form data
       console.log(value)
     },
-    // DEMO: There's no need to pass an adapter! You may use it only if you need to pass custom options.
-    // validatorAdapter: standardSchemaValidator(),
-    // validatorAdapter: standardSchemaValidator({ transformErrors: (issues) => issues.map((issue) => issue.message)[0] }),
   })
 
   return (
