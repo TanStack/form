@@ -126,12 +126,8 @@ export class TanStackFormDemo extends LitElement {
                                   name: `employees[${index}].jobTitle`,
                                   defaultValue: '',
                                   validators: {
-                                    onChange: ({
-                                      value,
-                                    }: {
-                                      value: string
-                                    }) => {
-                                      return value.length === 0
+                                    onChange: ({ value }) => {
+                                      return value?.length === 0
                                         ? 'Needs to have a job here'
                                         : null
                                     },

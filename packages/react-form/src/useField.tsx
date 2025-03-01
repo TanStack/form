@@ -2,20 +2,44 @@ import React, { useMemo, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
+import type {
+  DeepKeys,
+  DeepValue,
+  FieldAsyncValidateOrFn,
+  FieldValidateOrFn,
+  FormAsyncValidateOrFn,
+  FormValidateOrFn,
+} from '@tanstack/form-core'
 import type { FunctionComponent, ReactNode } from 'react'
 import type { UseFieldOptions } from './types'
-import type { DeepKeys, DeepValue, Validator } from '@tanstack/form-core'
 
 interface ReactFieldApi<
   TParentData,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TPatentSubmitMeta,
 > {
   /**
    * A pre-bound and type-safe sub-field component using this field as a root.
    */
-  Field: FieldComponent<TParentData, TFormValidator>
+  Field: FieldComponent<
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TPatentSubmitMeta
+  >
 }
 
 /**
@@ -25,21 +49,77 @@ interface ReactFieldApi<
  */
 export type UseField<
   TParentData,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TPatentSubmitMeta,
 > = <
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
 >(
   opts: Omit<
-    UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>,
+    UseFieldOptions<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnServer,
+      TPatentSubmitMeta
+    >,
     'form'
   >,
-) => FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
+) => FieldApi<
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TFormOnMount,
+  TFormOnChange,
+  TFormOnChangeAsync,
+  TFormOnBlur,
+  TFormOnBlurAsync,
+  TFormOnSubmit,
+  TFormOnSubmitAsync,
+  TFormOnServer,
+  TPatentSubmitMeta
+>
 
 /**
  * A hook for managing a field in a form.
@@ -50,20 +130,50 @@ export type UseField<
 export function useField<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
-  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TPatentSubmitMeta,
 >(
   opts: UseFieldOptions<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
-    TData
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TPatentSubmitMeta
   >,
 ) {
   const [fieldApi] = useState(() => {
@@ -73,8 +183,19 @@ export function useField<
       name: opts.name,
     })
 
-    const extendedApi: typeof api & ReactFieldApi<TParentData, TFormValidator> =
-      api as never
+    const extendedApi: typeof api &
+      ReactFieldApi<
+        TParentData,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnServer,
+        TPatentSubmitMeta
+      > = api as never
 
     extendedApi.Field = Field as never
 
@@ -109,39 +230,108 @@ export function useField<
 type FieldComponentProps<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
-  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TPatentSubmitMeta,
+  ExtendedApi = {},
 > = {
   children: (
     fieldApi: FieldApi<
       TParentData,
       TName,
-      TFieldValidator,
-      TFormValidator,
-      TData
-    >,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnServer,
+      TPatentSubmitMeta
+    > &
+      ExtendedApi,
   ) => ReactNode
-} & UseFieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>
+} & UseFieldOptions<
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TFormOnMount,
+  TFormOnChange,
+  TFormOnChangeAsync,
+  TFormOnBlur,
+  TFormOnBlurAsync,
+  TFormOnSubmit,
+  TFormOnSubmitAsync,
+  TFormOnServer,
+  TPatentSubmitMeta
+>
 
 /**
  * A type alias representing a field component for a specific form data type.
  */
 export type FieldComponent<
   TParentData,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TPatentSubmitMeta,
+  ExtendedApi = {},
 > = <
-  TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  const TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
 >({
   children,
   ...fieldOptions
@@ -149,9 +339,24 @@ export type FieldComponent<
   FieldComponentProps<
     TParentData,
     TName,
-    TFieldValidator,
-    TFormValidator,
-    TData
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TPatentSubmitMeta,
+    ExtendedApi
   >,
   'form'
 >) => ReactNode
@@ -164,22 +369,52 @@ export type FieldComponent<
 export const Field = (<
   TParentData,
   TName extends DeepKeys<TParentData>,
-  TFieldValidator extends
-    | Validator<DeepValue<TParentData, TName>, unknown>
-    | undefined = undefined,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
-  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TPatentSubmitMeta,
 >({
   children,
   ...fieldOptions
 }: FieldComponentProps<
   TParentData,
   TName,
-  TFieldValidator,
-  TFormValidator,
-  TData
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TFormOnMount,
+  TFormOnChange,
+  TFormOnChangeAsync,
+  TFormOnBlur,
+  TFormOnBlurAsync,
+  TFormOnSubmit,
+  TFormOnSubmitAsync,
+  TFormOnServer,
+  TPatentSubmitMeta
 >): ReactNode => {
   const fieldApi = useField(fieldOptions as any)
 
@@ -194,4 +429,26 @@ export const Field = (<
     [children, fieldApi, fieldApi.state.value, fieldApi.state.meta],
   )
   return (<>{jsxToDisplay}</>) as never
-}) satisfies FunctionComponent<FieldComponentProps<any, any, any, any, any>>
+}) satisfies FunctionComponent<
+  FieldComponentProps<
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  >
+>

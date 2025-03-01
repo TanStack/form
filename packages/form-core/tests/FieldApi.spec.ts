@@ -1309,7 +1309,7 @@ describe('field api', () => {
     interface Form {
       name: string
     }
-    const form = new FormApi<Form>()
+    const form = new FormApi({ defaultValues: {} as Form })
 
     form.mount()
 
@@ -1681,7 +1681,7 @@ describe('field api', () => {
     interface Form {
       name: string
     }
-    const form = new FormApi<Form>()
+    const form = new FormApi({ defaultValues: {} as Form })
     form.mount()
     const nameField = new FieldApi({
       form,
@@ -1697,7 +1697,7 @@ describe('field api', () => {
     interface Form {
       name: string
     }
-    const form = new FormApi<Form>()
+    const form = new FormApi({ defaultValues: {} as Form })
     form.mount()
     const nameField = new FieldApi({
       form,
@@ -1720,7 +1720,7 @@ describe('field api', () => {
     interface Form {
       name: string
     }
-    const form = new FormApi<Form>()
+    const form = new FormApi({ defaultValues: {} as Form })
     form.mount()
     const nameField = new FieldApi({
       form,
@@ -1753,7 +1753,7 @@ describe('field api', () => {
       defaultMeta: {
         errorMap: {
           onChange: 'THERE IS AN ERROR',
-        },
+        } as never,
       },
     })
 

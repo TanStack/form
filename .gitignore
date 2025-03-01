@@ -37,6 +37,8 @@ stats.html
 .nx/workspace-data
 .pnpm-store
 .tsup
+.svelte-kit
 
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+tsconfig.vitest-temp.json

@@ -38,7 +38,7 @@ const form = useForm({
 You may also create a form instance without using `formOptions` by using the standalone `useForm` API:
 
 ```tsx
-const form = useForm<Person>({
+const form = useForm({
   onSubmit: async ({ value }) => {
     // Do something with form data
     console.log(value)
@@ -47,7 +47,7 @@ const form = useForm<Person>({
     firstName: '',
     lastName: '',
     hobbies: [],
-  },
+  } as Person,
 })
 ```
 
@@ -202,6 +202,16 @@ const firstName = useStore(form.store, (state) => state.values.firstName)
     </button>
   )}
 />
+```
+
+It is important to remember that while the `useStore` hook's `selector` prop is optional, it is strongly recommended to provide one, as omitting it will result in unnecessary re-renders.
+
+```tsx
+// Correct use
+const firstName = useStore(form.store, (state) => state.values.firstName)
+const errors = useStore(form.store,  (state) => state.errorMap)
+// Incorrect use
+const store = useStore(form.store)
 ```
 
 Note: The usage of the `useField` hook to achieve reactivity is discouraged since it is designed to be used thoughtfully within the `form.Field` component. You might want to use `useStore(form.store)` instead.

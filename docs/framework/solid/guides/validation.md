@@ -152,6 +152,32 @@ Or use the `errorMap` property to access the specific error you're looking for:
 </form.Field>
 ```
 
+
+It's worth mentioning that our `errors` array and the `errorMap` matches the types returned by the validators. This means that:
+
+```tsx
+<form.Field
+  name="age"
+  validators={{
+    onChange: ({value}) =>
+      value < 13 ? {isOldEnough: false} : undefined,
+  }}
+>
+  {(field) => (
+    <>
+      {/* ... */}
+      {/* errorMap.onChange is type `{isOldEnough: false} | undefined` */}
+	  {/* meta.errors is type `Array<{isOldEnough: false} | undefined>` */}
+      {!field().state.meta.errorMap['onChange']?.isOldEnough ? (
+        <em>The user is not old enough</em>
+      ) : null}
+    </>
+  )}
+</form.Field>
+```
+
+
+
 ## Validation at field level vs at form level
 
 As shown above, each `<Field>` accepts its own validation rules via the `onChange`, `onBlur` etc... callbacks. It is also possible to define validation rules at the form level (as opposed to field by field) by passing similar callbacks to the `createForm()` hook.
@@ -364,41 +390,6 @@ Async validations on form and field level are supported as well:
         message: 'You can only increase the age',
       },
     ),
-  }}
-  children={(field) => {
-    return <>{/* ... */}</>
-  }}
-/>
-```
-
-### Other Schema Libraries
-
-We also support [Yup](https://github.com/jquense/yup) through an official adapter:
-
-```bash
-$ npm install @tanstack/yup-form-adapter yup
-```
-
-Once done, we can add the adapter to the `validator` property on the form or field:
-
-
-```tsx
-import { yupValidator } from '@tanstack/yup-form-adapter'
-import * as yup from 'yup'
-
-// ...
-
-const form = createForm(() => ({
-  // Either add the validator here or on `Field`
-  validatorAdapter: yupValidator(),
-  // ...
-}));
-
-<form.Field
-  name="age"
-  validatorAdapter={yupValidator()}
-  validators={{
-    onChange: yup.number().moreThan(13, 'You must be 13 to make an account'),
   }}
   children={(field) => {
     return <>{/* ... */}</>

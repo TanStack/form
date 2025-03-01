@@ -15,7 +15,7 @@ describe('createField', () => {
     }
 
     function Comp() {
-      const form = createForm<Person>()
+      const form = createForm(() => ({ defaultValues: {} as Person }))
 
       return (
         <>
@@ -49,11 +49,11 @@ describe('createField', () => {
     }
 
     function Comp() {
-      const form = createForm<Person>(() => ({
+      const form = createForm(() => ({
         defaultValues: {
           firstName: 'FirstName',
           lastName: 'LastName',
-        },
+        } as Person,
       }))
 
       return (
@@ -89,7 +89,7 @@ describe('createField', () => {
     const error = 'Please enter a different value'
 
     function Comp() {
-      const form = createForm<Person>()
+      const form = createForm(() => ({ defaultValues: {} as Person }))
 
       return (
         <>
@@ -134,7 +134,7 @@ describe('createField', () => {
     const error = 'Please enter a different value'
 
     function Comp() {
-      const form = createForm<Person>()
+      const form = createForm(() => ({ defaultValues: {} as Person }))
 
       return (
         <>
@@ -184,7 +184,7 @@ describe('createField', () => {
     const onBlurError = 'Please enter a different value (onBlurError)'
 
     function Comp() {
-      const form = createForm<Person>()
+      const form = createForm(() => ({ defaultValues: {} as Person }))
 
       return (
         <>
@@ -233,7 +233,7 @@ describe('createField', () => {
     const error = 'Please enter a different value'
 
     function Comp() {
-      const form = createForm<Person>()
+      const form = createForm(() => ({ defaultValues: {} as Person }))
 
       return (
         <>
@@ -280,7 +280,7 @@ describe('createField', () => {
     const onBlurError = 'Please enter a different value (onBlurError)'
 
     function Comp() {
-      const form = createForm<Person>()
+      const form = createForm(() => ({ defaultValues: {} as Person }))
 
       return (
         <>
@@ -337,7 +337,7 @@ describe('createField', () => {
     const error = 'Please enter a different value'
 
     function Comp() {
-      const form = createForm<Person>()
+      const form = createForm(() => ({ defaultValues: {} as Person }))
 
       return (
         <>

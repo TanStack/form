@@ -2,10 +2,10 @@ import { describe, expect, it, vi } from 'vitest'
 import { userEvent } from '@testing-library/user-event'
 import { render, waitFor } from '@testing-library/vue'
 import { defineComponent, h, ref } from 'vue'
-import { useForm } from '../src/index'
+import { useForm } from '../src'
 import { sleep } from './utils'
 
-import type { FieldApi, ValidationErrorMap } from '../src/index'
+import type { AnyFieldApi, ValidationErrorMap } from '../src'
 
 const user = userEvent.setup()
 
@@ -17,15 +17,11 @@ type Person = {
 describe('useForm', () => {
   it('preserved field state', async () => {
     const Comp = defineComponent(() => {
-      const form = useForm<Person>()
+      const form = useForm({ defaultValues: {} as Person })
 
       return () => (
         <form.Field name="firstName" defaultValue="">
-          {({
-            field,
-          }: {
-            field: FieldApi<Person, 'firstName', never, never>
-          }) => (
+          {({ field }: { field: AnyFieldApi }) => (
             <input
               data-testid={'fieldinput'}
               value={field.state.value}
@@ -57,11 +53,7 @@ describe('useForm', () => {
 
       return () => (
         <form.Field name="firstName">
-          {({
-            field,
-          }: {
-            field: FieldApi<Person, 'firstName', never, never>
-          }) => <p>{field.state.value}</p>}
+          {({ field }: { field: AnyFieldApi }) => <p>{field.state.value}</p>}
         </form.Field>
       )
     })
@@ -87,11 +79,7 @@ describe('useForm', () => {
       return () => (
         <div>
           <form.Field name="firstName">
-            {({
-              field,
-            }: {
-              field: FieldApi<Person, 'firstName', never, never>
-            }) => {
+            {({ field }: { field: AnyFieldApi }) => {
               return (
                 <input
                   value={field.state.value}
@@ -158,7 +146,8 @@ describe('useForm', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm<Person>({
+      const form = useForm({
+        defaultValues: {} as Person,
         validators: {
           onChange() {
             return error
@@ -169,11 +158,7 @@ describe('useForm', () => {
       return () => (
         <div>
           <form.Field name="firstName">
-            {({
-              field,
-            }: {
-              field: FieldApi<Person, 'firstName', never, never>
-            }) => (
+            {({ field }: { field: AnyFieldApi }) => (
               <input
                 data-testid="fieldinput"
                 name={field.name}
@@ -203,7 +188,8 @@ describe('useForm', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm<Person>({
+      const form = useForm({
+        defaultValues: {} as Person,
         validators: {
           onChange: ({ value }) =>
             value.firstName === 'other' ? error : undefined,
@@ -215,11 +201,7 @@ describe('useForm', () => {
       return () => (
         <div>
           <form.Field name="firstName">
-            {({
-              field,
-            }: {
-              field: FieldApi<Person, 'firstName', never, never>
-            }) => (
+            {({ field }: { field: AnyFieldApi }) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -250,7 +232,8 @@ describe('useForm', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm<Person>({
+      const form = useForm({
+        defaultValues: {} as Person,
         validators: {
           onChange: ({ value }) =>
             value.firstName === 'other' ? error : undefined,
@@ -262,11 +245,7 @@ describe('useForm', () => {
       return () => (
         <div>
           <form.Field name="firstName" defaultMeta={{ isTouched: true }}>
-            {({
-              field,
-            }: {
-              field: FieldApi<Person, 'firstName', never, never>
-            }) => (
+            {({ field }: { field: AnyFieldApi }) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -318,11 +297,7 @@ describe('useForm', () => {
       return () => (
         <div>
           <form.Field name="firstName" defaultMeta={{ isTouched: true }}>
-            {({
-              field,
-            }: {
-              field: FieldApi<Person, 'firstName', never, never>
-            }) => (
+            {({ field }: { field: AnyFieldApi }) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -355,7 +330,8 @@ describe('useForm', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm<Person>({
+      const form = useForm({
+        defaultValues: {} as Person,
         validators: {
           onChangeAsync: async () => {
             await sleep(10)
@@ -369,11 +345,7 @@ describe('useForm', () => {
       return () => (
         <div>
           <form.Field name="firstName" defaultMeta={{ isTouched: true }}>
-            {({
-              field,
-            }: {
-              field: FieldApi<Person, 'firstName', never, never>
-            }) => (
+            {({ field }: { field: AnyFieldApi }) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -405,7 +377,8 @@ describe('useForm', () => {
     const onBlurError = 'Please enter a different value (onBlurError)'
 
     const Comp = defineComponent(() => {
-      const form = useForm<Person>({
+      const form = useForm({
+        defaultValues: {} as Person,
         validators: {
           onChangeAsync: async () => {
             await sleep(10)
@@ -422,11 +395,7 @@ describe('useForm', () => {
       return () => (
         <div>
           <form.Field name="firstName" defaultMeta={{ isTouched: true }}>
-            {({
-              field,
-            }: {
-              field: FieldApi<Person, 'firstName', never, never>
-            }) => (
+            {({ field }: { field: AnyFieldApi }) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -464,7 +433,8 @@ describe('useForm', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm<Person>({
+      const form = useForm({
+        defaultValues: {} as Person,
         validators: {
           onChangeAsyncDebounceMs: 100,
           onChangeAsync: async () => {
@@ -479,11 +449,7 @@ describe('useForm', () => {
       return () => (
         <div>
           <form.Field name="firstName" defaultMeta={{ isTouched: true }}>
-            {({
-              field,
-            }: {
-              field: FieldApi<Person, 'firstName', never, never>
-            }) => (
+            {({ field }: { field: AnyFieldApi }) => (
               <div>
                 <input
                   data-testid="fieldinput"

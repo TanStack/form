@@ -12,12 +12,12 @@ You can create options for your form so that it can be shared between multiple f
 Example:
 
 ```ts
-const formOpts = formOptions<Person>({
+const formOpts = formOptions({
   defaultValues: {
     firstName: '',
     lastName: '',
     hobbies: [],
-  },
+  } as Person,
 })
 ```
 
@@ -38,7 +38,7 @@ const form = useForm({
 You may also create a form instance without using `formOptions` by using the standalone `useForm` API:
 
 ```ts
-const form = useForm<Person>({
+const form = useForm({
   onSubmit: async ({ value }) => {
     // Do something with form data
     console.log(value)
@@ -47,7 +47,7 @@ const form = useForm<Person>({
     firstName: '',
     lastName: '',
     hobbies: [],
-  },
+  } as Person,
 })
 ```
 

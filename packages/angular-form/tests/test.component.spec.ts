@@ -67,11 +67,11 @@ describe('TanStackFieldDirective', () => {
       imports: [TanStackField],
     })
     class TestComponent {
-      form = injectForm<Person>({
+      form = injectForm({
         defaultValues: {
           firstName: 'FirstName',
           lastName: 'LastName',
-        },
+        } as Person,
       })
     }
 
@@ -119,11 +119,11 @@ describe('TanStackFieldDirective', () => {
       otherValidator: FieldValidateFn<Person, 'firstName'> = ({ value }) =>
         value === 'other' ? error : undefined
 
-      form = injectForm<Person>({
+      form = injectForm({
         defaultValues: {
           firstName: 'FirstName',
           lastName: 'LastName',
-        },
+        } as Person,
       })
     }
 
@@ -166,11 +166,11 @@ describe('TanStackFieldDirective', () => {
       otherValidator: FieldValidateFn<Person, 'firstName'> = ({ value }) =>
         value === 'other' ? error : undefined
 
-      form = injectForm<Person>({
+      form = injectForm({
         defaultValues: {
           firstName: '',
           lastName: '',
-        },
+        } as Person,
       })
     }
 
@@ -224,11 +224,11 @@ describe('TanStackFieldDirective', () => {
       onBlur: FieldValidateFn<Person, 'firstName'> = ({ value }) =>
         value === 'other' ? onBlurError : undefined
 
-      form = injectForm<Person>({
+      form = injectForm({
         defaultValues: {
           firstName: '',
           lastName: '',
-        },
+        } as Person,
       })
     }
 
@@ -278,11 +278,11 @@ describe('TanStackFieldDirective', () => {
         return error
       }
 
-      form = injectForm<Person>({
+      form = injectForm({
         defaultValues: {
           firstName: '',
           lastName: '',
-        },
+        } as Person,
       })
     }
 
@@ -341,11 +341,11 @@ describe('TanStackFieldDirective', () => {
         return onBlurError
       }
 
-      form = injectForm<Person>({
+      form = injectForm({
         defaultValues: {
           firstName: '',
           lastName: '',
-        },
+        } as Person,
       })
     }
 

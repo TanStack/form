@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { assertType, it } from 'vitest'
 import { useForm } from '../src/index'
 

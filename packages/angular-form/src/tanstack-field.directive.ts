@@ -4,8 +4,13 @@ import {
   booleanAttribute,
   numberAttribute,
 } from '@angular/core'
-import { FieldApi, FormApi } from '@tanstack/form-core'
-import type { OnChanges, OnDestroy, OnInit } from '@angular/core'
+import {
+  FieldApi,
+  FieldApiOptions,
+  FieldAsyncValidateOrFn,
+  FieldValidateOrFn,
+  FormApi,
+} from '@tanstack/form-core'
 import type {
   DeepKeys,
   DeepValue,
@@ -13,9 +18,10 @@ import type {
   FieldMeta,
   FieldOptions,
   FieldValidators,
-  NoInfer as NoInferHack,
-  Validator,
+  FormAsyncValidateOrFn,
+  FormValidateOrFn,
 } from '@tanstack/form-core'
+import type { OnChanges, OnDestroy, OnInit } from '@angular/core'
 
 @Directive({
   selector: '[tanstackField]',
@@ -25,48 +31,149 @@ import type {
 export class TanStackField<
     TParentData,
     const TName extends DeepKeys<TParentData>,
-    TFieldValidator extends
-      | Validator<DeepValue<TParentData, TName>, unknown>
-      | undefined = undefined,
-    TFormValidator extends
-      | Validator<TParentData, unknown>
-      | undefined = undefined,
-    TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+    TData extends DeepValue<TParentData, TName>,
+    TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    TOnChangeAsync extends
+      | undefined
+      | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    TOnBlurAsync extends
+      | undefined
+      | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    TOnSubmitAsync extends
+      | undefined
+      | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+    TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+    TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+    TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+    TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+    TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+    TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+    TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+    TSubmitMeta,
   >
   implements
     OnInit,
     OnChanges,
     OnDestroy,
-    FieldOptions<TParentData, TName, TFieldValidator, TFormValidator, TData>
+    FieldOptions<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync
+    >
 {
   @Input({ required: true }) name!: TName
-  // Setting as NoInferHack as it's the same internal type cast as TanStack Form Core
-  // This can be removed when TanStack Form Core is moved to TS min of 5.4
-  // and the NoInfer internal util type is rm-rf'd
-  @Input() defaultValue?: NoInferHack<TData>
+  @Input() defaultValue?: NoInfer<TData>
   @Input({ transform: numberAttribute }) asyncDebounceMs?: number
   @Input({ transform: booleanAttribute }) asyncAlways?: boolean
-  @Input() validatorAdapter?: TFieldValidator
   @Input({ required: true }) tanstackField!: FormApi<
     TParentData,
-    TFormValidator
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TSubmitMeta
   >
   @Input() validators?: NoInfer<
-    FieldValidators<TParentData, TName, TFieldValidator, TFormValidator, TData>
+    FieldValidators<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync
+    >
   >
-  @Input() listeners?: NoInfer<
-    FieldListeners<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  @Input() listeners?: NoInfer<FieldListeners<TParentData, TName, TData>>
+  @Input() defaultMeta?: Partial<
+    FieldMeta<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync
+    >
   >
-  @Input() defaultMeta?: Partial<FieldMeta>
+  @Input() disableErrorFlat?: boolean
 
-  api!: FieldApi<TParentData, TName, TFieldValidator, TFormValidator, TData>
+  api!: FieldApi<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TSubmitMeta
+  >
 
-  private getOptions() {
+  private getOptions(): FieldApiOptions<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TSubmitMeta
+  > {
     return {
       defaultValue: this.defaultValue,
       asyncDebounceMs: this.asyncDebounceMs,
       asyncAlways: this.asyncAlways,
-      validatorAdapter: this.validatorAdapter,
+      disableErrorFlat: this.disableErrorFlat,
       validators: this.validators,
       listeners: this.listeners,
       defaultMeta: this.defaultMeta,

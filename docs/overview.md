@@ -33,9 +33,9 @@ In the example below, you can see TanStack Form in action with the React framewo
 import * as React from 'react'
 import { createRoot } from 'react-dom/client'
 import { useForm } from '@tanstack/react-form'
-import type { FieldApi } from '@tanstack/react-form'
+import type { AnyFieldApi } from '@tanstack/react-form'
 
-function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
+function FieldInfo({ field }: { field: AnyFieldApi }) {
   return (
     <>
       {field.state.meta.isTouched && field.state.meta.errors.length ? (

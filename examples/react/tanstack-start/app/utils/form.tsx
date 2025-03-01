@@ -1,17 +1,11 @@
-import { createServerFn } from '@tanstack/start'
-import { formOptions } from '@tanstack/react-form'
+import { createServerFn } from '@tanstack/react-start'
 import {
   ServerValidateError,
   createServerValidate,
   getFormData,
 } from '@tanstack/react-form/start'
-
-export const formOpts = formOptions({
-  defaultValues: {
-    firstName: '',
-    age: 0,
-  },
-})
+import { setResponseStatus } from '@tanstack/react-start/server'
+import { formOpts } from './form-isomorphic'
 
 const serverValidate = createServerValidate({
   ...formOpts,
@@ -22,29 +16,35 @@ const serverValidate = createServerValidate({
   },
 })
 
-export const handleForm = createServerFn(
-  'POST',
-  async (formData: FormData, ctx) => {
+export const handleForm = createServerFn({
+  method: 'POST',
+})
+  .validator((data: unknown) => {
+    if (!(data instanceof FormData)) {
+      throw new Error('Invalid form data')
+    }
+    return data
+  })
+  .handler(async (ctx) => {
     try {
-      await serverValidate(ctx, formData)
+      await serverValidate(ctx.data)
     } catch (e) {
       if (e instanceof ServerValidateError) {
+        // Log form errors or do any other logic here
         return e.response
       }
 
       // Some other error occurred when parsing the form
       console.error(e)
-      return new Response('There was an internal error', {
-        status: 500,
-      })
+      setResponseStatus(500)
+      return 'There was an internal error'
     }
 
-    return new Response('Form has validated successfully', {
-      status: 200,
-    })
+    return 'Form has validated successfully'
+  })
+
+export const getFormDataFromServer = createServerFn({ method: 'GET' }).handler(
+  async () => {
+    return getFormData()
   },
 )
-
-export const getFormDataFromServer = createServerFn('GET', async (_, ctx) => {
-  return getFormData(ctx)
-})

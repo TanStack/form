@@ -2,43 +2,173 @@ import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import { createComputed, onMount } from 'solid-js'
 import { useStore } from '@tanstack/solid-store'
 import { Field, createField } from './createField'
+import type {
+  FormAsyncValidateOrFn,
+  FormOptions,
+  FormState,
+  FormValidateOrFn,
+} from '@tanstack/form-core'
 import type { JSXElement } from 'solid-js'
 import type { CreateField, FieldComponent } from './createField'
-import type { FormOptions, FormState, Validator } from '@tanstack/form-core'
-
-type NoInfer<T> = [T][T extends any ? 0 : never]
 
 export interface SolidFormApi<
-  TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TParentData,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TSubmitMeta,
 > {
-  Field: FieldComponent<TFormData, TFormValidator>
-  createField: CreateField<TFormData, TFormValidator>
-  useStore: <TSelected = NoInfer<FormState<TFormData>>>(
-    selector?: (state: NoInfer<FormState<TFormData>>) => TSelected,
+  Field: FieldComponent<
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TSubmitMeta
+  >
+  createField: CreateField<
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TSubmitMeta
+  >
+  useStore: <
+    TSelected = NoInfer<
+      FormState<
+        TParentData,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnServer
+      >
+    >,
+  >(
+    selector?: (
+      state: NoInfer<
+        FormState<
+          TParentData,
+          TFormOnMount,
+          TFormOnChange,
+          TFormOnChangeAsync,
+          TFormOnBlur,
+          TFormOnBlurAsync,
+          TFormOnSubmit,
+          TFormOnSubmitAsync,
+          TFormOnServer
+        >
+      >,
+    ) => TSelected,
   ) => () => TSelected
-  Subscribe: <TSelected = NoInfer<FormState<TFormData>>>(props: {
-    selector?: (state: NoInfer<FormState<TFormData>>) => TSelected
+  Subscribe: <
+    TSelected = NoInfer<
+      FormState<
+        TParentData,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnServer
+      >
+    >,
+  >(props: {
+    selector?: (
+      state: NoInfer<
+        FormState<
+          TParentData,
+          TFormOnMount,
+          TFormOnChange,
+          TFormOnChangeAsync,
+          TFormOnBlur,
+          TFormOnBlurAsync,
+          TFormOnSubmit,
+          TFormOnSubmitAsync,
+          TFormOnServer
+        >
+      >,
+    ) => TSelected
     children: ((state: () => NoInfer<TSelected>) => JSXElement) | JSXElement
   }) => JSXElement
 }
 
 export function createForm<
   TParentData,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
->(opts?: () => FormOptions<TParentData, TFormValidator>) {
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TSubmitMeta,
+>(
+  opts?: () => FormOptions<
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TSubmitMeta
+  >,
+) {
   const options = opts?.()
-  const api = new FormApi<TParentData, TFormValidator>(options)
-  const extendedApi: typeof api & SolidFormApi<TParentData, TFormValidator> =
-    api as never
+  const api = new FormApi<
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TSubmitMeta
+  >(options)
+  const extendedApi: typeof api &
+    SolidFormApi<
+      TParentData,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnServer,
+      TSubmitMeta
+    > = api as never
 
   extendedApi.Field = (props) => <Field {...props} form={api} />
   extendedApi.createField = (props) =>
     createField(() => {
       return { ...props(), form: api }
-    })
+    }) as never
   extendedApi.useStore = (selector) => useStore(api.store, selector)
   extendedApi.Subscribe = (props) =>
     functionalUpdate(props.children, useStore(api.store, props.selector))

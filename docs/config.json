@@ -18,6 +18,10 @@
           "to": "installation"
         },
         {
+          "label": "Philosophy",
+          "to": "philosophy"
+        },
+        {
           "label": "Comparison",
           "to": "comparison"
         },
@@ -108,6 +112,10 @@
             {
               "label": "UI Libraries",
               "to": "framework/react/guides/ui-libraries"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/react/guides/form-composition"
             },
             {
               "label": "React Native",
@@ -312,10 +320,6 @@
             {
               "label": "React Reference",
               "to": "framework/react/reference/index"
-            },
-            {
-              "label": "Functions / createServerValidate",
-              "to": "framework/react/reference/functions/createservervalidate"
             },
             {
               "label": "Functions / Field",
