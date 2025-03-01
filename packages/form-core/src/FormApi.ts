@@ -452,6 +452,10 @@ export type BaseFormState<
    * A counter for tracking the number of submission attempts.
    */
   submissionAttempts: number
+  /**
+   * @private, used to force a re-evaluation of the form state when options change
+   */
+  _force_re_eval?: boolean
 }
 
 export type DerivedFormState<
@@ -1073,6 +1077,11 @@ export class FormApi<
     // Options need to be updated first so that when the store is updated, the state is correct for the derived state
     this.options = options
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    const shouldUpdateReeval = !!options.transform?.deps?.some(
+      (val, i) => val !== this.prevTransformArray[i],
+    )
+
     const shouldUpdateValues =
       options.defaultValues &&
       !shallow(options.defaultValues, oldOptions.defaultValues) &&
@@ -1082,7 +1091,7 @@ export class FormApi<
       !shallow(options.defaultState, oldOptions.defaultState) &&
       !this.state.isTouched
 
-    if (!shouldUpdateValues && !shouldUpdateState) return
+    if (!shouldUpdateValues && !shouldUpdateState && !shouldUpdateReeval) return
 
     batch(() => {
       this.baseStore.setState(() =>
@@ -1097,6 +1106,10 @@ export class FormApi<
               ? {
                   values: options.defaultValues,
                 }
+              : {},
+
+            shouldUpdateReeval
+              ? { _force_re_eval: !this.state._force_re_eval }
               : {},
           ),
         ),

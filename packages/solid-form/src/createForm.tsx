@@ -11,8 +11,6 @@ import type {
 import type { JSXElement } from 'solid-js'
 import type { CreateField, FieldComponent } from './createField'
 
-type NoInfer<T> = [T][T extends any ? 0 : never]
-
 export interface SolidFormApi<
   TParentData,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,

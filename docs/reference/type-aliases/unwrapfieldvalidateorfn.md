@@ -14,7 +14,7 @@ type UnwrapFieldValidateOrFn<TParentData, TName, TValidateOrFn, TFormValidateOrF
   | [TValidateOrFn] extends [FieldValidateFn<any, any, any>] ? ReturnType<TValidateOrFn> : [TValidateOrFn] extends [StandardSchemaV1<any, any>] ? StandardSchemaV1Issue[] : undefined;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:125](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L125)
+Defined in: [packages/form-core/src/FieldApi.ts:120](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L120)
 
 ## Type Parameters
 

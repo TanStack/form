@@ -14,7 +14,7 @@
     "@mantine/core": "7.16.0",
     "@mantine/hooks": "7.16.0",
     "@mui/material": "6.4.0",
-    "@tanstack/react-form": "^0.45.1",
+    "@tanstack/react-form": "^0.47.1",
     "@yme/lay-postcss": "0.1.0",
     "postcss": "8.5.1",
     "postcss-preset-mantine": "1.17.0",
@@ -27,7 +27,7 @@
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
     "@vitejs/plugin-react-swc": "^3.8.0",
-    "typescript": "5.6.3",
+    "typescript": "5.8.2",
     "vite": "^6.1.1"
   },
   "browserslist": {
