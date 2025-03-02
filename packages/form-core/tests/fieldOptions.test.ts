@@ -43,12 +43,12 @@ describe('fieldOptions', () => {
 
     const firstNameFieldOpts = fieldOptions({
       formOptions: { ...formOpts },
-      fieldOptions: { name: 'firstName' },
+      name: 'firstName',
     })
 
     const lastNameFieldOpts = fieldOptions({
       formOptions: { ...formOpts },
-      fieldOptions: { name: 'lastName' },
+      name: 'lastName',
     })
 
     const form = new FormApi({
@@ -119,7 +119,7 @@ describe('fieldOptions', () => {
 
     const fieldOpts = fieldOptions({
       formOptions: { ...formOpts },
-      fieldOptions: { name: 'fullName' },
+      name: 'fullName',
     })
 
     const field = new FieldApi({
@@ -147,15 +147,13 @@ describe('fieldOptions', () => {
 
     const fieldOpts = fieldOptions({
       formOptions: { ...formOpts },
-      fieldOptions: {
-        name: 'fullName',
-        validators: {
-          onChange: ({ value }) => {
-            if (value.length < 3) {
-              return 'Full name must be at least 3 characters long'
-            }
-            return null
-          },
+      name: 'fullName',
+      validators: {
+        onChange: ({ value }) => {
+          if (value.length < 3) {
+            return 'Full name must be at least 3 characters long'
+          }
+          return null
         },
       },
     })
@@ -207,7 +205,7 @@ describe('dynamicFieldOptions', () => {
     // Create options for the interests array field
     const interestsFieldOpts = fieldOptions({
       formOptions: { ...formOpts },
-      fieldOptions: { name: 'interests' },
+      name: 'interests',
     })
 
     const interestsField = new FieldApi({
@@ -219,7 +217,7 @@ describe('dynamicFieldOptions', () => {
     // Create dynamic options for the individual interest fields
     const interestNameOpts = dynamicFieldOptions((index: number) => ({
       formOptions: { ...formOpts },
-      fieldOptions: { name: `interests[${index}].interestName` },
+      name: `interests[${index}].interestName`,
     }))
 
     const interestName0 = new FieldApi({
@@ -257,7 +255,7 @@ describe('dynamicFieldOptions', () => {
 
     const interestsFieldOpts = fieldOptions({
       formOptions: { ...formOpts },
-      fieldOptions: { name: 'interests' },
+      name: 'interests',
     })
 
     const interestsField = new FieldApi({
@@ -268,9 +266,7 @@ describe('dynamicFieldOptions', () => {
 
     const interestNameOpts = dynamicFieldOptions((index: number) => ({
       formOptions: { ...formOpts },
-      fieldOptions: {
-        name: `interests[${index}].interestName`,
-      },
+      name: `interests[${index}].interestName`,
     }))
 
     const interestName0 = new FieldApi({
@@ -281,14 +277,12 @@ describe('dynamicFieldOptions', () => {
 
     const interestLevelOpts = dynamicFieldOptions((index: number) => ({
       formOptions: { ...formOpts },
-      fieldOptions: {
-        name: `interests[${index}].interestLevel`,
-        listeners: {
-          onChange: ({ value, fieldApi }) => {
-            if (value > 9000) {
-              fieldApi.form.setFieldValue('fullName', 'vegeta')
-            }
-          },
+      name: `interests[${index}].interestLevel`,
+      listeners: {
+        onChange: ({ value, fieldApi }) => {
+          if (value > 9000) {
+            fieldApi.form.setFieldValue('fullName', 'vegeta')
+          }
         },
       },
     }))

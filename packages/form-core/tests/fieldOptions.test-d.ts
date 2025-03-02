@@ -61,10 +61,8 @@ describe('fieldOptions type results', () => {
   it('should allow static field options', () => {
     const options = fieldOptions({
       formOptions: { ...formOptions({ defaultValues }) },
-      fieldOptions: {
-        name: 'fullName',
-        defaultValue: 'John',
-      },
+      name: 'fullName',
+      defaultValue: 'John',
     })
 
     type ExpectedType = CreateExpectedFieldOptionsType<
@@ -99,7 +97,7 @@ describe('fieldOptions type results', () => {
 
     const options = dynamicFieldOptions((idx: number) => ({
       formOptions: { ...formOptions({ defaultValues: complexDefaultValues }) },
-      fieldOptions: { name: `user.profile.addresses[${idx}].zipCode` },
+      name: `user.profile.addresses[${idx}].zipCode`,
     }))
 
     type ExpectedType = CreateExpectedFieldOptionsType<
@@ -126,9 +124,7 @@ describe('fieldOptions type results', () => {
 
     const options = fieldOptions({
       formOptions: { ...formOpts },
-      fieldOptions: {
-        name: 'fullName',
-      },
+      name: 'fullName',
     })
 
     const form = new FormApi({ ...formOpts })
@@ -152,10 +148,8 @@ describe('fieldOptions type results', () => {
 
     const options = fieldOptions({
       formOptions: { ...formOpts },
-      fieldOptions: {
-        name: 'fullName',
-        validators: { onChange: () => 1000 },
-      },
+      name: 'fullName',
+      validators: { onChange: () => 1000 },
     })
 
     const form = new FormApi({ ...formOpts })
@@ -190,12 +184,10 @@ describe('fieldOptions type results', () => {
 
     const options = fieldOptions({
       formOptions: { ...formOpts },
-      fieldOptions: {
-        name: 'fullName',
-        validators: {
-          onChange: () => {
-            return 1000 // Number return type at field level
-          },
+      name: 'fullName',
+      validators: {
+        onChange: () => {
+          return 1000 // Number return type at field level
         },
       },
     })
@@ -221,7 +213,7 @@ describe('dynamicFieldOptions', () => {
   it('should allow dynamic field options', () => {
     const options = dynamicFieldOptions((idx: number) => ({
       formOptions: { ...formOptions({ defaultValues }) },
-      fieldOptions: { name: `interests[${idx}].name` },
+      name: `interests[${idx}].name`,
     }))
 
     type ExpectedType = CreateExpectedFieldOptionsType<
@@ -249,9 +241,7 @@ describe('dynamicFieldOptions', () => {
 
     const fieldOpts = dynamicFieldOptions((_) => ({
       formOptions: { ...formOpts },
-      fieldOptions: {
-        name: 'fullName',
-      },
+      name: 'fullName',
     }))
 
     const form = new FormApi({ ...formOpts })
@@ -275,10 +265,8 @@ describe('dynamicFieldOptions', () => {
 
     const options = dynamicFieldOptions((idx: number) => ({
       formOptions: { ...formOpts },
-      fieldOptions: {
-        name: `interests[${idx}].name`,
-        validators: { onChange: () => 1000 },
-      },
+      name: `interests[${idx}].name`,
+      validators: { onChange: () => 1000 },
     }))
 
     const form = new FormApi({ ...formOpts })
@@ -312,12 +300,10 @@ describe('dynamicFieldOptions', () => {
 
     const fieldOpts = dynamicFieldOptions((_) => ({
       formOptions: { ...formOpts },
-      fieldOptions: {
-        name: 'fullName',
-        validators: {
-          onChange: () => {
-            return 1000 // Number return type at field level
-          },
+      name: 'fullName',
+      validators: {
+        onChange: () => {
+          return 1000 // Number return type at field level
         },
       },
     }))

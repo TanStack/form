@@ -127,34 +127,32 @@ export function fieldOptions<
       TOnServer,
       TSubmitMeta
     >
-  } & {
-    fieldOptions: Omit<
-      FieldApiOptions<
-        TFormData,
-        K,
-        DeepValue<TFormData, K>,
-        TFieldOnMount,
-        TFieldOnChange,
-        TFieldOnChangeAsync,
-        TFieldOnBlur,
-        TFieldOnBlurAsync,
-        TFieldOnSubmit,
-        TFieldOnSubmitAsync,
-        TOnMount,
-        TOnChange,
-        TOnChangeAsync,
-        TOnBlur,
-        TOnBlurAsync,
-        TOnSubmit,
-        TOnSubmitAsync,
-        TOnServer,
-        TSubmitMeta
-      >,
-      'form'
-    > & {
+  } & Omit<
+    FieldApiOptions<
+      TFormData,
+      K,
+      DeepValue<TFormData, K>,
+      TFieldOnMount,
+      TFieldOnChange,
+      TFieldOnChangeAsync,
+      TFieldOnBlur,
+      TFieldOnBlurAsync,
+      TFieldOnSubmit,
+      TFieldOnSubmitAsync,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer,
+      TSubmitMeta
+    >,
+    'form'
+  > & {
       mode?: 'value' | 'array'
-    }
-  },
+    },
 ): Omit<
   FieldApiOptions<
     TFormData,
@@ -181,7 +179,8 @@ export function fieldOptions<
 > & {
   mode?: 'value' | 'array'
 } {
-  return options.fieldOptions
+  const { formOptions, ...fieldOpts } = options
+  return fieldOpts
 }
 
 /**
@@ -239,28 +238,26 @@ export function dynamicFieldOptions<
       TOnServer,
       TSubmitMeta
     >
-  } & {
-    fieldOptions: FieldApiOptionsExcludingForm<
-      TFormData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnServer,
-      TSubmitMeta,
-      K,
-      TFieldOnMount,
-      TFieldOnChange,
-      TFieldOnChangeAsync,
-      TFieldOnBlur,
-      TFieldOnBlurAsync,
-      TFieldOnSubmit,
-      TFieldOnSubmitAsync
-    >
-  },
+  } & FieldApiOptionsExcludingForm<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer,
+    TSubmitMeta,
+    K,
+    TFieldOnMount,
+    TFieldOnChange,
+    TFieldOnChangeAsync,
+    TFieldOnBlur,
+    TFieldOnBlurAsync,
+    TFieldOnSubmit,
+    TFieldOnSubmitAsync
+  >,
 ): (
   param: TParam,
 ) => FieldApiOptionsExcludingForm<
@@ -283,5 +280,8 @@ export function dynamicFieldOptions<
   TFieldOnSubmit,
   TFieldOnSubmitAsync
 > {
-  return (param: TParam) => fn(param).fieldOptions
+  return (param: TParam) => {
+    const { formOptions, ...fieldOpts } = fn(param)
+    return fieldOpts
+  }
 }
