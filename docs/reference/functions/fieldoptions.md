@@ -72,7 +72,7 @@ This is useful for creating field options that are not dependent on parameters s
 
 ### options
 
-`object` & `object`
+`object` & `Omit`\<[`FieldApiOptions`](../interfaces/fieldapioptions.md)\<`TFormData`, `K`, [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `K`\>, `TFieldOnMount`, `TFieldOnChange`, `TFieldOnChangeAsync`, `TFieldOnBlur`, `TFieldOnBlurAsync`, `TFieldOnSubmit`, `TFieldOnSubmitAsync`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`\>, `"form"`\> & `object`
 
 The options for the field.
 

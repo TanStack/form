@@ -11,7 +11,7 @@ title: dynamicFieldOptions
 function dynamicFieldOptions<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta, K, TFieldOnMount, TFieldOnChange, TFieldOnChangeAsync, TFieldOnBlur, TFieldOnBlurAsync, TFieldOnSubmit, TFieldOnSubmitAsync, TParam>(fn): (param) => FieldApiOptionsExcludingForm<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta, K, TFieldOnMount, TFieldOnChange, TFieldOnChangeAsync, TFieldOnBlur, TFieldOnBlurAsync, TFieldOnSubmit, TFieldOnSubmitAsync>
 ```
 
-Defined in: [packages/form-core/src/fieldOptions.ts:194](https://github.com/TanStack/form/blob/main/packages/form-core/src/fieldOptions.ts#L194)
+Defined in: [packages/form-core/src/fieldOptions.ts:193](https://github.com/TanStack/form/blob/main/packages/form-core/src/fieldOptions.ts#L193)
 
 Dynamic field options are a way to create field options dynamically.
 This is useful for creating field options that are dependent on parameters such as indexes.
@@ -74,7 +74,7 @@ This is useful for creating field options that are dependent on parameters such 
 
 ### fn
 
-(`param`) => `object` & `object`
+(`param`) => `object` & `Omit`\<[`FieldApiOptions`](../interfaces/fieldapioptions.md)\<`TFormData`, `K`, [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `K`, \[\]\>, `TFieldOnMount`, `TFieldOnChange`, `TFieldOnChangeAsync`, `TFieldOnBlur`, `TFieldOnBlurAsync`, `TFieldOnSubmit`, `TFieldOnSubmitAsync`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`\>, `"form"`\> & `object`
 
 A function that returns the form options (for type inference) and field options.
 
