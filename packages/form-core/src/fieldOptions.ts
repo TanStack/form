@@ -127,32 +127,26 @@ export function fieldOptions<
       TOnServer,
       TSubmitMeta
     >
-  } & Omit<
-    FieldApiOptions<
-      TFormData,
-      K,
-      DeepValue<TFormData, K>,
-      TFieldOnMount,
-      TFieldOnChange,
-      TFieldOnChangeAsync,
-      TFieldOnBlur,
-      TFieldOnBlurAsync,
-      TFieldOnSubmit,
-      TFieldOnSubmitAsync,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnServer,
-      TSubmitMeta
-    >,
-    'form'
-  > & {
-      mode?: 'value' | 'array'
-    },
+  } & FieldApiOptionsExcludingForm<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer,
+    TSubmitMeta,
+    K,
+    TFieldOnMount,
+    TFieldOnChange,
+    TFieldOnChangeAsync,
+    TFieldOnBlur,
+    TFieldOnBlurAsync,
+    TFieldOnSubmit,
+    TFieldOnSubmitAsync
+  >,
 ): Omit<
   FieldApiOptions<
     TFormData,
