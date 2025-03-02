@@ -10,7 +10,10 @@ import type {
 } from './FormApi'
 import type { DeepKeys, DeepValue } from './util-types'
 
-type FieldOptionsExcludingForm<
+/**
+ * @private
+ */
+export type FieldOptionsExcludingForm<
   TFormData,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
   TOnChange extends undefined | FormValidateOrFn<TFormData>,
@@ -22,18 +25,53 @@ type FieldOptionsExcludingForm<
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta,
   K extends DeepKeys<TFormData> = DeepKeys<TFormData>,
+  TFieldOnMount extends
+    | undefined
+    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
+    | undefined
+    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
+  TFieldOnChange extends
+    | undefined
+    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
+    | undefined
+    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
+  TFieldOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
+    | undefined
+    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
+  TFieldOnBlur extends
+    | undefined
+    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
+    | undefined
+    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
+  TFieldOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
+    | undefined
+    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
+  TFieldOnSubmit extends
+    | undefined
+    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
+    | undefined
+    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
+  TFieldOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
+    | undefined
+    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
 > = Omit<
   FieldApiOptions<
     TFormData,
     K,
     DeepValue<TFormData, K>,
-    FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
-    FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
-    FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
-    FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
-    FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
-    FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
-    FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
+    TFieldOnMount,
+    TFieldOnChange,
+    TFieldOnChangeAsync,
+    TFieldOnBlur,
+    TFieldOnBlurAsync,
+    TFieldOnSubmit,
+    TFieldOnSubmitAsync,
     TOnMount,
     TOnChange,
     TOnChangeAsync,
@@ -67,7 +105,28 @@ export function fieldOptions<
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta,
-  K extends DeepKeys<TFormData> = DeepKeys<TFormData>,
+  K extends DeepKeys<TFormData>,
+  TFieldOnMount extends
+    | undefined
+    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
+  TFieldOnChange extends
+    | undefined
+    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
+  TFieldOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
+  TFieldOnBlur extends
+    | undefined
+    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
+  TFieldOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
+  TFieldOnSubmit extends
+    | undefined
+    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
+  TFieldOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
 >(
   options: {
     formOptions: FormOptions<
@@ -83,33 +142,59 @@ export function fieldOptions<
       TSubmitMeta
     >
   } & {
-    fieldOptions: FieldOptionsExcludingForm<
-      TFormData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnServer,
-      TSubmitMeta,
-      K
-    >
+    fieldOptions: Omit<
+      FieldApiOptions<
+        TFormData,
+        K,
+        DeepValue<TFormData, K>,
+        TFieldOnMount,
+        TFieldOnChange,
+        TFieldOnChangeAsync,
+        TFieldOnBlur,
+        TFieldOnBlurAsync,
+        TFieldOnSubmit,
+        TFieldOnSubmitAsync,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TOnServer,
+        TSubmitMeta
+      >,
+      'form'
+    > & {
+      mode?: 'value' | 'array'
+    }
   },
-): FieldOptionsExcludingForm<
-  TFormData,
-  TOnMount,
-  TOnChange,
-  TOnChangeAsync,
-  TOnBlur,
-  TOnBlurAsync,
-  TOnSubmit,
-  TOnSubmitAsync,
-  TOnServer,
-  TSubmitMeta,
-  K
-> {
+): Omit<
+  FieldApiOptions<
+    TFormData,
+    K,
+    DeepValue<TFormData, K>,
+    TFieldOnMount,
+    TFieldOnChange,
+    TFieldOnChangeAsync,
+    TFieldOnBlur,
+    TFieldOnBlurAsync,
+    TFieldOnSubmit,
+    TFieldOnSubmitAsync,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer,
+    TSubmitMeta
+  >,
+  'form'
+> & {
+  mode?: 'value' | 'array'
+} {
   return options.fieldOptions
 }
 
@@ -132,6 +217,41 @@ export function dynamicFieldOptions<
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta,
   K extends DeepKeys<TFormData> = DeepKeys<TFormData>,
+  TFieldOnMount extends
+    | undefined
+    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
+    | undefined
+    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
+  TFieldOnChange extends
+    | undefined
+    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
+    | undefined
+    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
+  TFieldOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
+    | undefined
+    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
+  TFieldOnBlur extends
+    | undefined
+    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
+    | undefined
+    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
+  TFieldOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
+    | undefined
+    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
+  TFieldOnSubmit extends
+    | undefined
+    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
+    | undefined
+    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
+  TFieldOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
+    | undefined
+    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
   TParam = any,
 >(
   fn: (param: TParam) => {
@@ -159,7 +279,14 @@ export function dynamicFieldOptions<
       TOnSubmitAsync,
       TOnServer,
       TSubmitMeta,
-      K
+      K,
+      TFieldOnMount,
+      TFieldOnChange,
+      TFieldOnChangeAsync,
+      TFieldOnBlur,
+      TFieldOnBlurAsync,
+      TFieldOnSubmit,
+      TFieldOnSubmitAsync
     >
   },
 ): (
@@ -175,7 +302,14 @@ export function dynamicFieldOptions<
   TOnSubmitAsync,
   TOnServer,
   TSubmitMeta,
-  K
+  K,
+  TFieldOnMount,
+  TFieldOnChange,
+  TFieldOnChangeAsync,
+  TFieldOnBlur,
+  TFieldOnBlurAsync,
+  TFieldOnSubmit,
+  TFieldOnSubmitAsync
 > {
   return (param: TParam) => fn(param).fieldOptions
 }
