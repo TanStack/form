@@ -13,7 +13,7 @@ import type { DeepKeys, DeepValue } from './util-types'
 /**
  * @private
  */
-export type FieldOptionsExcludingForm<
+export type FieldApiOptionsExcludingForm<
   TFormData,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
   TOnChange extends undefined | FormValidateOrFn<TFormData>,
@@ -24,40 +24,26 @@ export type FieldOptionsExcludingForm<
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta,
-  K extends DeepKeys<TFormData> = DeepKeys<TFormData>,
+  K extends DeepKeys<TFormData>,
   TFieldOnMount extends
-    | undefined
-    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
     | undefined
     | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
   TFieldOnChange extends
     | undefined
-    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
-    | undefined
     | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
   TFieldOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
     | undefined
     | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
   TFieldOnBlur extends
     | undefined
-    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
-    | undefined
     | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
   TFieldOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
     | undefined
     | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
   TFieldOnSubmit extends
     | undefined
-    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
-    | undefined
     | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
   TFieldOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
     | undefined
     | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
 > = Omit<
@@ -216,40 +202,26 @@ export function dynamicFieldOptions<
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta,
-  K extends DeepKeys<TFormData> = DeepKeys<TFormData>,
+  K extends DeepKeys<TFormData>,
   TFieldOnMount extends
-    | undefined
-    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
     | undefined
     | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
   TFieldOnChange extends
     | undefined
-    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
-    | undefined
     | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
   TFieldOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
     | undefined
     | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
   TFieldOnBlur extends
     | undefined
-    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
-    | undefined
     | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
   TFieldOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
     | undefined
     | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
   TFieldOnSubmit extends
     | undefined
-    | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
-    | undefined
     | FieldValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
   TFieldOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>> =
     | undefined
     | FieldAsyncValidateOrFn<TFormData, K, DeepValue<TFormData, K>>,
   TParam = any,
@@ -268,7 +240,7 @@ export function dynamicFieldOptions<
       TSubmitMeta
     >
   } & {
-    fieldOptions: FieldOptionsExcludingForm<
+    fieldOptions: FieldApiOptionsExcludingForm<
       TFormData,
       TOnMount,
       TOnChange,
@@ -291,7 +263,7 @@ export function dynamicFieldOptions<
   },
 ): (
   param: TParam,
-) => FieldOptionsExcludingForm<
+) => FieldApiOptionsExcludingForm<
   TFormData,
   TOnMount,
   TOnChange,

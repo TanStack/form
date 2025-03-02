@@ -7,11 +7,18 @@ import {
   formOptions,
 } from '../src'
 import type {
-  FieldOptionsExcludingForm,
+  DeepKeys,
+  DeepValue,
+  FieldApiOptionsExcludingForm,
+  FieldAsyncValidateOrFn,
+  FieldValidateOrFn,
   FormAsyncValidateOrFn,
   FormValidateOrFn,
 } from '../src'
 
+/**
+ * Default values shared for test cases.
+ */
 const defaultValues = {
   fullName: '',
   interests: [
@@ -21,6 +28,34 @@ const defaultValues = {
     },
   ],
 }
+
+/**
+ * This type is used to build the expected type for the field options.
+ */
+type CreateExpectedFieldOptionsType<
+  TValues,
+  TName extends DeepKeys<TValues>,
+  TSubmitMeta = any,
+> = FieldApiOptionsExcludingForm<
+  TValues,
+  FormValidateOrFn<TValues> | undefined, // TOnMount
+  FormValidateOrFn<TValues> | undefined, // TOnChange
+  FormAsyncValidateOrFn<TValues> | undefined, // TOnChangeAsync
+  FormValidateOrFn<TValues> | undefined, // TOnBlur
+  FormAsyncValidateOrFn<TValues> | undefined, // TOnBlurAsync
+  FormValidateOrFn<TValues> | undefined, // TOnSubmit
+  FormAsyncValidateOrFn<TValues> | undefined, // TOnSubmitAsync
+  FormAsyncValidateOrFn<TValues> | undefined, // TOnServer
+  TSubmitMeta,
+  TName,
+  undefined | FieldValidateOrFn<TValues, TName, DeepValue<TValues, TName>>, // TFieldOnMount
+  undefined | FieldValidateOrFn<TValues, TName, DeepValue<TValues, TName>>, // TFieldOnChange
+  undefined | FieldAsyncValidateOrFn<TValues, TName, DeepValue<TValues, TName>>, // TFieldOnChangeAsync
+  undefined | FieldValidateOrFn<TValues, TName, DeepValue<TValues, TName>>, // TFieldOnBlur
+  undefined | FieldAsyncValidateOrFn<TValues, TName, DeepValue<TValues, TName>>, // TFieldOnBlurAsync
+  undefined | FieldValidateOrFn<TValues, TName, DeepValue<TValues, TName>>, // TFieldOnSubmit
+  undefined | FieldAsyncValidateOrFn<TValues, TName, DeepValue<TValues, TName>> // TFieldOnSubmitAsync
+>
 
 describe('fieldOptions type results', () => {
   it('should allow static field options', () => {
@@ -32,22 +67,13 @@ describe('fieldOptions type results', () => {
       },
     })
 
-    type ExpectedType<TSubmitMeta> = FieldOptionsExcludingForm<
+    type ExpectedType = CreateExpectedFieldOptionsType<
       typeof defaultValues,
-      FormValidateOrFn<typeof defaultValues> | undefined, // TOnMount
-      FormValidateOrFn<typeof defaultValues> | undefined, // TOnChange
-      FormAsyncValidateOrFn<typeof defaultValues> | undefined, // TOnChangeAsync
-      FormValidateOrFn<typeof defaultValues> | undefined, // TOnBlur
-      FormAsyncValidateOrFn<typeof defaultValues> | undefined, // TOnBlurAsync
-      FormValidateOrFn<typeof defaultValues> | undefined, // TOnSubmit
-      FormAsyncValidateOrFn<typeof defaultValues> | undefined, // TOnSubmitAsync
-      FormAsyncValidateOrFn<typeof defaultValues> | undefined, // TOnServer
-      TSubmitMeta,
       'fullName'
     >
 
     // Assert that the options match the expected type
-    assertType<ExpectedType<any>>(options)
+    assertType<ExpectedType>(options)
   })
 
   it('should type complex nested paths correctly', () => {
@@ -76,21 +102,12 @@ describe('fieldOptions type results', () => {
       fieldOptions: { name: `user.profile.addresses[${idx}].zipCode` },
     }))
 
-    assertType<
-      FieldOptionsExcludingForm<
-        typeof complexDefaultValues,
-        FormValidateOrFn<typeof complexDefaultValues> | undefined,
-        FormValidateOrFn<typeof complexDefaultValues> | undefined,
-        FormAsyncValidateOrFn<typeof complexDefaultValues> | undefined,
-        FormValidateOrFn<typeof complexDefaultValues> | undefined,
-        FormAsyncValidateOrFn<typeof complexDefaultValues> | undefined,
-        FormValidateOrFn<typeof complexDefaultValues> | undefined,
-        FormAsyncValidateOrFn<typeof complexDefaultValues> | undefined,
-        FormAsyncValidateOrFn<typeof complexDefaultValues> | undefined,
-        any,
-        `user.profile.addresses[${number}].zipCode`
-      >
-    >(options(0))
+    type ExpectedType = CreateExpectedFieldOptionsType<
+      typeof complexDefaultValues,
+      `user.profile.addresses[${number}].zipCode`
+    >
+
+    assertType<ExpectedType>(options(0))
   })
 
   it('should respect error types from form level', () => {
@@ -207,22 +224,13 @@ describe('dynamicFieldOptions', () => {
       fieldOptions: { name: `interests[${idx}].name` },
     }))
 
-    type ExpectedType<TSubmitMeta> = FieldOptionsExcludingForm<
+    type ExpectedType = CreateExpectedFieldOptionsType<
       typeof defaultValues,
-      FormValidateOrFn<typeof defaultValues> | undefined, // TOnMount
-      FormValidateOrFn<typeof defaultValues> | undefined, // TOnChange
-      FormAsyncValidateOrFn<typeof defaultValues> | undefined, // TOnChangeAsync
-      FormValidateOrFn<typeof defaultValues> | undefined, // TOnBlur
-      FormAsyncValidateOrFn<typeof defaultValues> | undefined, // TOnBlurAsync
-      FormValidateOrFn<typeof defaultValues> | undefined, // TOnSubmit
-      FormAsyncValidateOrFn<typeof defaultValues> | undefined, // TOnSubmitAsync
-      FormAsyncValidateOrFn<typeof defaultValues> | undefined, // TOnServer
-      TSubmitMeta,
       `interests[${number}].name`
     >
 
     // Assert that the options match the expected type
-    assertType<ExpectedType<any>>(options(0))
+    assertType<ExpectedType>(options(0))
   })
 
   it('should respect error types from form level with dynamicFieldOptions', () => {

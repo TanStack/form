@@ -7,6 +7,9 @@ import {
   formOptions,
 } from '../src'
 
+/**
+ * Default values shared for test cases.
+ */
 const defaultValues = {
   fullName: '',
   interests: [
