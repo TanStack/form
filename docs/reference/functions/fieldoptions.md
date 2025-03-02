@@ -8,7 +8,7 @@ title: fieldOptions
 # Function: fieldOptions()
 
 ```ts
-function fieldOptions<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta, K, TFieldOnMount, TFieldOnChange, TFieldOnChangeAsync, TFieldOnBlur, TFieldOnBlurAsync, TFieldOnSubmit, TFieldOnSubmitAsync>(options): Omit<FieldApiOptions<TFormData, K, DeepValue<TFormData, K>, TFieldOnMount, TFieldOnChange, TFieldOnChangeAsync, TFieldOnBlur, TFieldOnBlurAsync, TFieldOnSubmit, TFieldOnSubmitAsync, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta>, "form"> & object
+function fieldOptions<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta, K, TFieldOnMount, TFieldOnChange, TFieldOnChangeAsync, TFieldOnBlur, TFieldOnBlurAsync, TFieldOnSubmit, TFieldOnSubmitAsync>(options): FieldApiOptionsExcludingForm<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta, K, TFieldOnMount, TFieldOnChange, TFieldOnChangeAsync, TFieldOnBlur, TFieldOnBlurAsync, TFieldOnSubmit, TFieldOnSubmitAsync>
 ```
 
 Defined in: [packages/form-core/src/fieldOptions.ts:83](https://github.com/TanStack/form/blob/main/packages/form-core/src/fieldOptions.ts#L83)
@@ -78,6 +78,6 @@ The options for the field.
 
 ## Returns
 
-`Omit`\<[`FieldApiOptions`](../interfaces/fieldapioptions.md)\<`TFormData`, `K`, [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `K`\>, `TFieldOnMount`, `TFieldOnChange`, `TFieldOnChangeAsync`, `TFieldOnBlur`, `TFieldOnBlurAsync`, `TFieldOnSubmit`, `TFieldOnSubmitAsync`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`\>, `"form"`\> & `object`
+`FieldApiOptionsExcludingForm`\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`, `K`, `TFieldOnMount`, `TFieldOnChange`, `TFieldOnChangeAsync`, `TFieldOnBlur`, `TFieldOnBlurAsync`, `TFieldOnSubmit`, `TFieldOnSubmitAsync`\>
 
 The field options.
