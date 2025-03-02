@@ -11,7 +11,7 @@ title: fieldOptions
 function fieldOptions<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta, K, TFieldOnMount, TFieldOnChange, TFieldOnChangeAsync, TFieldOnBlur, TFieldOnBlurAsync, TFieldOnSubmit, TFieldOnSubmitAsync>(options): Omit<FieldApiOptions<TFormData, K, DeepValue<TFormData, K>, TFieldOnMount, TFieldOnChange, TFieldOnChangeAsync, TFieldOnBlur, TFieldOnBlurAsync, TFieldOnSubmit, TFieldOnSubmitAsync, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta>, "form"> & object
 ```
 
-Defined in: [packages/form-core/src/fieldOptions.ts:97](https://github.com/TanStack/form/blob/main/packages/form-core/src/fieldOptions.ts#L97)
+Defined in: [packages/form-core/src/fieldOptions.ts:83](https://github.com/TanStack/form/blob/main/packages/form-core/src/fieldOptions.ts#L83)
 
 Static field options are a way to create field options statically.
 This is useful for creating field options that are not dependent on parameters such as indexes.
