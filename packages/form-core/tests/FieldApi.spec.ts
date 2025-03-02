@@ -1805,4 +1805,49 @@ describe('field api', () => {
     expect(field.getMeta().errors).toStrictEqual([])
     expect(form.state.canSubmit).toBe(true)
   })
+
+  it('should remove the meta from deleted object fields', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: {
+          john: {
+            firstName: 'John',
+            lastName: '',
+          },
+          martha: {
+            firstName: 'Martha',
+            lastName: 'Mustermann',
+          },
+        },
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'names.john.lastName',
+      validators: {
+        onChange: () => 'Last name is required',
+      },
+    })
+
+    form.mount()
+    field.mount()
+
+    field.setValue('JohnLastName')
+
+    expect(form.state.canSubmit).toBe(false)
+
+    form.deleteField('names.john')
+
+    expect(form.getFieldValue('names')).toEqual({
+      martha: {
+        firstName: 'Martha',
+        lastName: 'Mustermann',
+      },
+    })
+
+    expect(field.getMeta().errorMap).toStrictEqual({})
+    expect(field.getMeta().errors).toStrictEqual([])
+    expect(form.state.canSubmit).toBe(true)
+  })
 })

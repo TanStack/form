@@ -840,6 +840,8 @@ export class FormApi<
           } as AnyFieldMeta
         }
 
+        if (!Object.keys(currBaseStore.fieldMetaBase).length) return fieldMeta
+
         if (
           prevVal &&
           originalMetaCount === Object.keys(currBaseStore.fieldMetaBase).length
@@ -1768,14 +1770,24 @@ export class FormApi<
   }
 
   deleteField = <TField extends DeepKeys<TFormData>>(field: TField) => {
+    const subFieldsToDelete = Object.keys(this.fieldInfo).filter((f) => {
+      const fieldStr = field.toString()
+      return f !== fieldStr && f.startsWith(fieldStr)
+    })
+
+    const fieldsToDelete = [...subFieldsToDelete, field]
+
+    // Cleanup the last fields
     this.baseStore.setState((prev) => {
       const newState = { ...prev }
-      newState.values = deleteBy(newState.values, field)
-      delete newState.fieldMetaBase[field]
+      fieldsToDelete.forEach((f) => {
+        newState.values = deleteBy(newState.values, f)
+        delete this.fieldInfo[f as never]
+        delete newState.fieldMetaBase[f as never]
+      })
 
       return newState
     })
-    delete this.fieldInfo[field]
   }
 
   /**
@@ -1880,12 +1892,7 @@ export class FormApi<
 
     if (lastIndex !== null) {
       const start = `${field}[${lastIndex}]`
-      const fieldsToDelete = Object.keys(this.fieldInfo).filter((f) =>
-        f.startsWith(start),
-      )
-
-      // Cleanup the last fields
-      fieldsToDelete.forEach((f) => this.deleteField(f as TField))
+      this.deleteField(start as never)
     }
 
     // Validate the whole array + all fields that have shifted
