@@ -1,34 +1,8 @@
-import {
-  createFormHook,
-  createFormHookContexts,
-  useStore,
-} from '@tanstack/react-form'
+import { createFormHook } from '@tanstack/react-form'
+import { lazy } from 'react'
+import { fieldContext, formContext, useFormContext } from './form-context.tsx'
 
-const { fieldContext, useFieldContext, formContext, useFormContext } =
-  createFormHookContexts()
-
-function TextField({ label }: { label: string }) {
-  const field = useFieldContext<string>()
-
-  const errors = useStore(field.store, (state) => state.meta.errors)
-
-  return (
-    <div>
-      <label>
-        <div>{label}</div>
-        <input
-          value={field.state.value}
-          onChange={(e) => field.handleChange(e.target.value)}
-        />
-      </label>
-      {errors.map((error: string) => (
-        <div key={error} style={{ color: 'red' }}>
-          {error}
-        </div>
-      ))}
-    </div>
-  )
-}
+const TextField = lazy(() => import('../components/text-fields.tsx'))
 
 function SubscribeButton({ label }: { label: string }) {
   const form = useFormContext()
