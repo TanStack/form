@@ -12,12 +12,12 @@ You can create options for your form so that it can be shared between multiple f
 Example:
 
 ```tsx
-const formOpts = formOptions<Person>({
+const formOpts = formOptions({
   defaultValues: {
     firstName: '',
     lastName: '',
     hobbies: [],
-  },
+  } as Person,
 })
 ```
 
