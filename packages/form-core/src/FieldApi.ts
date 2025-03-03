@@ -14,6 +14,7 @@ import type {
   FieldInfo,
   FormApi,
   FormAsyncValidateOrFn,
+  FormState,
   FormValidateAsyncFn,
   FormValidateFn,
   FormValidateOrFn,
@@ -77,6 +78,7 @@ export type FieldValidateFn<
     TData,
     // This is technically an edge-type; which we try to keep non-`any`, but in this case
     // It's referring to an inaccessible type from the field validate function inner types, so it's not a big deal
+    any,
     any,
     any,
     any,
@@ -176,6 +178,7 @@ export type FieldValidateAsyncFn<
     any,
     any,
     any,
+    any,
     any
   >
   signal: AbortSignal
@@ -259,9 +262,38 @@ export type FieldListenerFn<
     any,
     any,
     any,
+    any,
     any
   >
 }) => void
+
+/**
+ * @private
+ */
+export type FieldMetaFn<
+  TParentData,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFieldMetaExtension extends object,
+> = (
+  props: FormState<
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer
+  >,
+) => TFieldMetaExtension
 
 export interface FieldValidators<
   TParentData,
@@ -375,6 +407,15 @@ export interface FieldOptions<
   TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFieldMetaExtension extends object,
 > {
   /**
    * The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
@@ -428,13 +469,30 @@ export interface FieldOptions<
       any,
       any,
       any,
-      any
+      any,
+      TFieldMetaExtension
     >
   >
   /**
    * A list of listeners which attach to the corresponding events
    */
   listeners?: FieldListeners<TParentData, TName, TData>
+
+  /**
+   * A list of listeners which attach to the corresponding events
+   */
+  meta?: FieldMetaFn<
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TFieldMetaExtension
+  >
   /**
    * Disable the `flat(1)` operation on `field.errors`. This is useful if you want to keep the error structure as is. Not suggested for most use-cases.
    */
@@ -470,6 +528,7 @@ export interface FieldApiOptions<
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TParentSubmitMeta,
+  TFieldMetaExtension extends object,
 > extends FieldOptions<
     TParentData,
     TName,
@@ -480,7 +539,16 @@ export interface FieldApiOptions<
     TOnBlur,
     TOnBlurAsync,
     TOnSubmit,
-    TOnSubmitAsync
+    TOnSubmitAsync,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TFieldMetaExtension
   > {
   form: FormApi<
     TParentData,
@@ -520,6 +588,7 @@ export type FieldMetaBase<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFieldMetaExtension = {},
 > = {
   /**
    * A flag indicating whether the field has been touched.
@@ -564,9 +633,10 @@ export type FieldMetaBase<
    * A flag indicating whether the field is currently being validated.
    */
   isValidating: boolean
-}
+} & TFieldMetaExtension
 
 export type AnyFieldMetaBase = FieldMetaBase<
+  any,
   any,
   any,
   any,
@@ -610,6 +680,7 @@ export type FieldMetaDerived<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFieldMetaExtension extends object = {},
 > = {
   /**
    * An array of errors related to the field value.
@@ -656,9 +727,10 @@ export type FieldMetaDerived<
    * A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
    */
   isPristine: boolean
-}
+} & TFieldMetaExtension
 
 export type AnyFieldMetaDerived = FieldMetaDerived<
+  any,
   any,
   any,
   any,
@@ -705,6 +777,7 @@ export type FieldMeta<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFieldMetaExtension extends object = {},
 > = FieldMetaBase<
   TParentData,
   TName,
@@ -722,7 +795,8 @@ export type FieldMeta<
   TFormOnBlur,
   TFormOnBlurAsync,
   TFormOnSubmit,
-  TFormOnSubmitAsync
+  TFormOnSubmitAsync,
+  TFieldMetaExtension
 > &
   FieldMetaDerived<
     TParentData,
@@ -741,10 +815,12 @@ export type FieldMeta<
     TFormOnBlur,
     TFormOnBlurAsync,
     TFormOnSubmit,
-    TFormOnSubmitAsync
+    TFormOnSubmitAsync,
+    TFieldMetaExtension
   >
 
 export type AnyFieldMeta = FieldMeta<
+  any,
   any,
   any,
   any,
@@ -791,6 +867,7 @@ export type FieldState<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFieldMetaExtension extends object,
 > = {
   /**
    * The current value of the field.
@@ -816,7 +893,8 @@ export type FieldState<
     TFormOnBlur,
     TFormOnBlurAsync,
     TFormOnSubmit,
-    TFormOnSubmitAsync
+    TFormOnSubmitAsync,
+    TFieldMetaExtension
   >
 }
 
@@ -826,6 +904,7 @@ export type FieldState<
  * A type representing the Field API with all generics set to `any` for convenience.
  */
 export type AnyFieldApi = FieldApi<
+  any,
   any,
   any,
   any,
@@ -882,6 +961,7 @@ export class FieldApi<
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TParentSubmitMeta,
+  TFieldMetaExtension extends object,
 > {
   /**
    * A reference to the form API instance.
@@ -905,7 +985,8 @@ export class FieldApi<
     TFormOnSubmit,
     TFormOnSubmitAsync,
     TFormOnServer,
-    TParentSubmitMeta
+    TParentSubmitMeta,
+    TFieldMetaExtension
   >['form']
   /**
    * The field name.
@@ -933,7 +1014,8 @@ export class FieldApi<
     TFormOnSubmit,
     TFormOnSubmitAsync,
     TFormOnServer,
-    TParentSubmitMeta
+    TParentSubmitMeta,
+    TFieldMetaExtension
   > = {} as any
   /**
    * The field state store.
@@ -956,7 +1038,8 @@ export class FieldApi<
       TFormOnBlur,
       TFormOnBlurAsync,
       TFormOnSubmit,
-      TFormOnSubmitAsync
+      TFormOnSubmitAsync,
+      TFieldMetaExtension
     >
   >
   /**
@@ -990,7 +1073,8 @@ export class FieldApi<
       TFormOnSubmit,
       TFormOnSubmitAsync,
       TFormOnServer,
-      TParentSubmitMeta
+      TParentSubmitMeta,
+      TFieldMetaExtension
     >,
   ) {
     this.form = opts.form as never
@@ -1037,7 +1121,8 @@ export class FieldApi<
           TFormOnBlur,
           TFormOnBlurAsync,
           TFormOnSubmit,
-          TFormOnSubmitAsync
+          TFormOnSubmitAsync,
+          TFieldMetaExtension
         >
       },
     })
@@ -1136,7 +1221,8 @@ export class FieldApi<
       TFormOnSubmit,
       TFormOnSubmitAsync,
       TFormOnServer,
-      TParentSubmitMeta
+      TParentSubmitMeta,
+      TFieldMetaExtension
     >,
   ) => {
     // Default Value
@@ -1183,6 +1269,11 @@ export class FieldApi<
       fieldApi: this,
     })
 
+    this.setMeta((prev) => ({
+      ...prev,
+      ...this.options.meta?.(this.form.state),
+    }))
+
     this.validate('change')
   }
 
@@ -1210,7 +1301,8 @@ export class FieldApi<
         TFormOnBlur,
         TFormOnBlurAsync,
         TFormOnSubmit,
-        TFormOnSubmitAsync
+        TFormOnSubmitAsync,
+        TFieldMetaExtension
       >
     >,
   ) => this.form.setFieldMeta(this.name, updater)
