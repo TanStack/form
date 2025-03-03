@@ -468,18 +468,6 @@
               "to": "framework/react/examples/standard-schema"
             },
             {
-              "label": "Yup",
-              "to": "framework/react/examples/yup"
-            },
-            {
-              "label": "Zod",
-              "to": "framework/react/examples/zod"
-            },
-            {
-              "label": "Valibot",
-              "to": "framework/react/examples/valibot"
-            },
-            {
               "label": "TanStack Start",
               "to": "framework/react/examples/tanstack-start"
             },
@@ -511,18 +499,6 @@
             {
               "label": "Arrays",
               "to": "framework/vue/examples/array"
-            },
-            {
-              "label": "Yup",
-              "to": "framework/vue/examples/yup"
-            },
-            {
-              "label": "Zod",
-              "to": "framework/vue/examples/zod"
-            },
-            {
-              "label": "Valibot",
-              "to": "framework/vue/examples/valibot"
             }
           ]
         },
@@ -536,18 +512,6 @@
             {
               "label": "Arrays",
               "to": "framework/angular/examples/array"
-            },
-            {
-              "label": "Yup",
-              "to": "framework/angular/examples/yup"
-            },
-            {
-              "label": "Zod",
-              "to": "framework/angular/examples/zod"
-            },
-            {
-              "label": "Valibot",
-              "to": "framework/angular/examples/valibot"
             }
           ]
         },
@@ -561,18 +525,6 @@
             {
               "label": "Arrays",
               "to": "framework/solid/examples/array"
-            },
-            {
-              "label": "Yup",
-              "to": "framework/solid/examples/yup"
-            },
-            {
-              "label": "Zod",
-              "to": "framework/solid/examples/zod"
-            },
-            {
-              "label": "Valibot",
-              "to": "framework/solid/examples/valibot"
             }
           ]
         },
