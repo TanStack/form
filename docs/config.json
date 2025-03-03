@@ -102,6 +102,10 @@
               "to": "framework/react/guides/linked-fields"
             },
             {
+              "label": "Reactivity",
+              "to": "framework/react/guides/reactivity"
+            },
+            {
               "label": "Listeners",
               "to": "framework/react/guides/listeners"
             },
