@@ -18,6 +18,10 @@
           "to": "installation"
         },
         {
+          "label": "Philosophy",
+          "to": "philosophy"
+        },
+        {
           "label": "Comparison",
           "to": "comparison"
         },
@@ -110,8 +114,16 @@
               "to": "framework/react/guides/listeners"
             },
             {
+              "label": "Submission Handling",
+              "to": "framework/react/guides/submission-handling"
+            },
+            {
               "label": "UI Libraries",
               "to": "framework/react/guides/ui-libraries"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/react/guides/form-composition"
             },
             {
               "label": "React Native",
@@ -191,6 +203,19 @@
             {
               "label": "Linked Fields",
               "to": "framework/solid/guides/linked-fields"
+            }
+          ]
+        },
+        {
+          "label": "lit",
+          "children": [
+            {
+              "label": "Basic Concepts",
+              "to": "framework/lit/guides/basic-concepts"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/lit/guides/arrays"
             }
           ]
         }
@@ -381,7 +406,7 @@
             },
             {
               "label": "Classes / TanStackFormController",
-              "to": "framework/lit/reference/classes/tanstackformcontroller"
+              "to": "framework/lit/reference/tanstackformcontroller"
             }
           ]
         },
@@ -447,18 +472,6 @@
               "to": "framework/react/examples/standard-schema"
             },
             {
-              "label": "Yup",
-              "to": "framework/react/examples/yup"
-            },
-            {
-              "label": "Zod",
-              "to": "framework/react/examples/zod"
-            },
-            {
-              "label": "Valibot",
-              "to": "framework/react/examples/valibot"
-            },
-            {
               "label": "TanStack Start",
               "to": "framework/react/examples/tanstack-start"
             },
@@ -490,18 +503,6 @@
             {
               "label": "Arrays",
               "to": "framework/vue/examples/array"
-            },
-            {
-              "label": "Yup",
-              "to": "framework/vue/examples/yup"
-            },
-            {
-              "label": "Zod",
-              "to": "framework/vue/examples/zod"
-            },
-            {
-              "label": "Valibot",
-              "to": "framework/vue/examples/valibot"
             }
           ]
         },
@@ -515,18 +516,6 @@
             {
               "label": "Arrays",
               "to": "framework/angular/examples/array"
-            },
-            {
-              "label": "Yup",
-              "to": "framework/angular/examples/yup"
-            },
-            {
-              "label": "Zod",
-              "to": "framework/angular/examples/zod"
-            },
-            {
-              "label": "Valibot",
-              "to": "framework/angular/examples/valibot"
             }
           ]
         },
@@ -540,18 +529,6 @@
             {
               "label": "Arrays",
               "to": "framework/solid/examples/array"
-            },
-            {
-              "label": "Yup",
-              "to": "framework/solid/examples/yup"
-            },
-            {
-              "label": "Zod",
-              "to": "framework/solid/examples/zod"
-            },
-            {
-              "label": "Valibot",
-              "to": "framework/solid/examples/valibot"
             }
           ]
         },

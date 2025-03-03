@@ -11,7 +11,7 @@ title: mergeForm
 function mergeForm<TFormData>(baseForm, state): FormApi<NoInfer<TFormData>, any, any, any, any, any, any, any, any, any>
 ```
 
-Defined in: [packages/form-core/src/mergeForm.ts:74](https://github.com/TanStack/form/blob/main/packages/form-core/src/mergeForm.ts#L74)
+Defined in: [packages/form-core/src/mergeForm.ts:73](https://github.com/TanStack/form/blob/main/packages/form-core/src/mergeForm.ts#L73)
 
 ## Type Parameters
 

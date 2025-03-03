@@ -2643,7 +2643,68 @@ describe('form api', () => {
     )
   })
 
-  it('clears previous form level errors when they are no longer valid', () => {
+  it('clears errors on all fields affected by form validation when condition resolves', () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      },
+      validators: {
+        onChange: ({ value }) => {
+          if (value.firstName && value.lastName) {
+            return {
+              fields: {
+                firstName: 'Do not enter both firstName and lastName',
+                lastName: 'Do not enter both firstName and lastName',
+              },
+            }
+          }
+          return null
+        },
+      },
+    })
+    form.mount()
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+    firstNameField.mount()
+
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+    })
+    lastNameField.mount()
+
+    // Set values to trigger validation errors
+    firstNameField.setValue('John')
+    lastNameField.setValue('Doe')
+
+    // Verify both fields have errors
+    expect(firstNameField.state.meta.errors).toContain(
+      'Do not enter both firstName and lastName',
+    )
+    expect(lastNameField.state.meta.errors).toContain(
+      'Do not enter both firstName and lastName',
+    )
+
+    // Clear one field's value
+    firstNameField.setValue('')
+
+    // Verify both fields have their errors cleared
+    expect(firstNameField.state.meta.errors).toStrictEqual([])
+    expect(lastNameField.state.meta.errors).toStrictEqual([])
+
+    // Verify previous error map still contains values for the fields as it should indicate the last error map processed for the fields
+    const cumulativeFieldsErrorMap = form.cumulativeFieldsErrorMap
+    expect(cumulativeFieldsErrorMap.firstName).toBeDefined()
+    expect(cumulativeFieldsErrorMap.lastName).toBeDefined()
+    expect(cumulativeFieldsErrorMap.firstName?.onChange).toBeUndefined()
+    expect(cumulativeFieldsErrorMap.lastName?.onChange).toBeUndefined()
+  })
+
+  it('clears previous form level errors for subfields when they are no longer valid', () => {
     const form = new FormApi({
       defaultValues: {
         interests: [
@@ -2752,4 +2813,54 @@ it('should pass the handleSubmit default meta data to onSubmit', async () => {
   })
 
   await form.handleSubmit()
+})
+
+it('should read and update union objects', async () => {
+  const form = new FormApi({
+    defaultValues: {
+      person: { firstName: 'firstName' },
+    } as { person?: { firstName: string } | { age: number } | null },
+  })
+
+  const field = new FieldApi({
+    form,
+    name: 'person.firstName',
+  })
+  field.mount()
+  expect(field.getValue()).toStrictEqual('firstName')
+
+  form.setFieldValue('person', { age: 0 })
+
+  const field2 = new FieldApi({
+    form,
+    name: 'person.age',
+  })
+  field2.mount()
+  expect(field2.getValue()).toStrictEqual(0)
+})
+
+it('should update isSubmitSuccessful correctly during form submission', async () => {
+  const onSubmit = vi.fn().mockResolvedValue(undefined)
+  const form = new FormApi({
+    defaultValues: {
+      name: 'test',
+    },
+    onSubmit,
+  })
+
+  form.mount()
+
+  expect(form.state.isSubmitSuccessful).toBe(false)
+
+  await form.handleSubmit()
+
+  expect(form.state.isSubmitSuccessful).toBe(true)
+  expect(onSubmit).toHaveBeenCalledTimes(1)
+
+  // Simulate a failed submission
+  onSubmit.mockRejectedValueOnce(new Error('Submission failed'))
+
+  await expect(form.handleSubmit()).rejects.toThrow('Submission failed')
+
+  expect(form.state.isSubmitSuccessful).toBe(false)
 })

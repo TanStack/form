@@ -5,10 +5,6 @@ title: Overview
 
 TanStack Form is the ultimate solution for handling forms in web applications, providing a powerful and flexible approach to form management. Designed with first-class TypeScript support, headless UI components, and a framework-agnostic design, it streamlines form handling and ensures a seamless experience across various front-end frameworks.
 
-> **TanStack Form is in release candidate mode, meaning that there should be extremely few or no breaking changes prior to a 1.x release.**
->
-> To learn more and see [our roadmap to v1, please check our GitHub](https://github.com/TanStack/form/issues/813).
-
 ## Motivation
 
 Most web frameworks do not offer a comprehensive solution for form handling, leaving developers to create their own custom implementations or rely on less-capable libraries. This often results in a lack of consistency, poor performance, and increased development time. TanStack Form aims to address these challenges by providing an all-in-one solution for managing forms that is both powerful and easy to use.

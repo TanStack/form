@@ -452,6 +452,14 @@ export type BaseFormState<
    * A counter for tracking the number of submission attempts.
    */
   submissionAttempts: number
+  /**
+   * A boolean indicating if the last submission was successful.
+   */
+  isSubmitSuccessful: boolean
+  /**
+   * @private, used to force a re-evaluation of the form state when options change
+   */
+  _force_re_eval?: boolean
 }
 
 export type DerivedFormState<
@@ -612,6 +620,7 @@ function getDefaultFormState<
     isSubmitting: defaultState.isSubmitting ?? false,
     isValidating: defaultState.isValidating ?? false,
     submissionAttempts: defaultState.submissionAttempts ?? 0,
+    isSubmitSuccessful: defaultState.isSubmitSuccessful ?? false,
     validationMetaMap: defaultState.validationMetaMap ?? {
       onChange: undefined,
       onBlur: undefined,
@@ -716,9 +725,11 @@ export class FormApi<
   prevTransformArray: unknown[] = []
 
   /**
-   * @private map of errors originated from form level validators
+   * @private Persistent store of all field validation errors originating from form-level validators.
+   * Maintains the cumulative state across validation cycles, including cleared errors (undefined values).
+   * This map preserves the complete validation state for all fields.
    */
-  prevFieldsErrorMap: FormErrorMapFromValidator<
+  cumulativeFieldsErrorMap: FormErrorMapFromValidator<
     TFormData,
     TOnMount,
     TOnChange,
@@ -828,6 +839,8 @@ export class FormApi<
             isPristine: isFieldPristine,
           } as AnyFieldMeta
         }
+
+        if (!Object.keys(currBaseStore.fieldMetaBase).length) return fieldMeta
 
         if (
           prevVal &&
@@ -1071,6 +1084,11 @@ export class FormApi<
     // Options need to be updated first so that when the store is updated, the state is correct for the derived state
     this.options = options
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    const shouldUpdateReeval = !!options.transform?.deps?.some(
+      (val, i) => val !== this.prevTransformArray[i],
+    )
+
     const shouldUpdateValues =
       options.defaultValues &&
       !shallow(options.defaultValues, oldOptions.defaultValues) &&
@@ -1080,7 +1098,7 @@ export class FormApi<
       !shallow(options.defaultState, oldOptions.defaultState) &&
       !this.state.isTouched
 
-    if (!shouldUpdateValues && !shouldUpdateState) return
+    if (!shouldUpdateValues && !shouldUpdateState && !shouldUpdateReeval) return
 
     batch(() => {
       this.baseStore.setState(() =>
@@ -1095,6 +1113,10 @@ export class FormApi<
               ? {
                   values: options.defaultValues,
                 }
+              : {},
+
+            shouldUpdateReeval
+              ? { _force_re_eval: !this.state._force_re_eval }
               : {},
           ),
         ),
@@ -1243,7 +1265,8 @@ export class FormApi<
     const validates = getSyncValidatorArray(cause, this.options)
     let hasErrored = false as boolean
 
-    const newFieldsErrorMap: FormErrorMapFromValidator<
+    // This map will only include fields that have errors in the current validation cycle
+    const currentValidationErrorMap: FormErrorMapFromValidator<
       TFormData,
       TOnMount,
       TOnChange,
@@ -1273,18 +1296,21 @@ export class FormApi<
         const errorMapKey = getErrorMapKey(validateObj.cause)
 
         if (fieldErrors) {
-          for (const [field, fieldError] of Object.entries(fieldErrors)) {
-            const oldErrorMap =
-              newFieldsErrorMap[field as DeepKeys<TFormData>] || {}
+          for (const [field, fieldError] of Object.entries(fieldErrors) as [
+            DeepKeys<TFormData>,
+            ValidationError,
+          ][]) {
+            const oldErrorMap = this.cumulativeFieldsErrorMap[field] || {}
             const newErrorMap = {
               ...oldErrorMap,
               [errorMapKey]: fieldError,
             }
-            newFieldsErrorMap[field as DeepKeys<TFormData>] = newErrorMap
+            currentValidationErrorMap[field] = newErrorMap
+            this.cumulativeFieldsErrorMap[field] = newErrorMap
 
-            const fieldMeta = this.getFieldMeta(field as DeepKeys<TFormData>)
+            const fieldMeta = this.getFieldMeta(field)
             if (fieldMeta && fieldMeta.errorMap[errorMapKey] !== fieldError) {
-              this.setFieldMeta(field as DeepKeys<TFormData>, (prev) => ({
+              this.setFieldMeta(field, (prev) => ({
                 ...prev,
                 errorMap: {
                   ...prev.errorMap,
@@ -1295,14 +1321,19 @@ export class FormApi<
           }
         }
 
-        for (const field of Object.keys(this.prevFieldsErrorMap) as Array<
+        for (const field of Object.keys(this.cumulativeFieldsErrorMap) as Array<
           DeepKeys<TFormData>
         >) {
           const fieldMeta = this.getFieldMeta(field)
           if (
             fieldMeta?.errorMap[errorMapKey] &&
-            !newFieldsErrorMap[field]?.[errorMapKey]
+            !currentValidationErrorMap[field]?.[errorMapKey]
           ) {
+            this.cumulativeFieldsErrorMap[field] = {
+              ...this.cumulativeFieldsErrorMap[field],
+              [errorMapKey]: undefined,
+            }
+
             this.setFieldMeta(field, (prev) => ({
               ...prev,
               errorMap: {
@@ -1348,9 +1379,7 @@ export class FormApi<
       }
     })
 
-    this.prevFieldsErrorMap = newFieldsErrorMap
-
-    return { hasErrored, fieldsErrorMap: newFieldsErrorMap }
+    return { hasErrored, fieldsErrorMap: currentValidationErrorMap }
   }
 
   /**
@@ -1558,6 +1587,7 @@ export class FormApi<
       isSubmitted: false,
       // Count submission attempts
       submissionAttempts: old.submissionAttempts + 1,
+      isSubmitSuccessful: false, // Reset isSubmitSuccessful at the start of submission
     }))
 
     // Don't let invalid forms submit
@@ -1612,10 +1642,18 @@ export class FormApi<
       } as any)
 
       batch(() => {
-        this.baseStore.setState((prev) => ({ ...prev, isSubmitted: true }))
+        this.baseStore.setState((prev) => ({
+          ...prev,
+          isSubmitted: true,
+          isSubmitSuccessful: true, // Set isSubmitSuccessful to true on successful submission
+        }))
         done()
       })
     } catch (err) {
+      this.baseStore.setState((prev) => ({
+        ...prev,
+        isSubmitSuccessful: false, // Ensure isSubmitSuccessful is false if an error occurs
+      }))
       done()
       throw err
     }
@@ -1732,14 +1770,24 @@ export class FormApi<
   }
 
   deleteField = <TField extends DeepKeys<TFormData>>(field: TField) => {
+    const subFieldsToDelete = Object.keys(this.fieldInfo).filter((f) => {
+      const fieldStr = field.toString()
+      return f !== fieldStr && f.startsWith(fieldStr)
+    })
+
+    const fieldsToDelete = [...subFieldsToDelete, field]
+
+    // Cleanup the last fields
     this.baseStore.setState((prev) => {
       const newState = { ...prev }
-      newState.values = deleteBy(newState.values, field)
-      delete newState.fieldMetaBase[field]
+      fieldsToDelete.forEach((f) => {
+        newState.values = deleteBy(newState.values, f)
+        delete this.fieldInfo[f as never]
+        delete newState.fieldMetaBase[f as never]
+      })
 
       return newState
     })
-    delete this.fieldInfo[field]
   }
 
   /**
@@ -1844,12 +1892,7 @@ export class FormApi<
 
     if (lastIndex !== null) {
       const start = `${field}[${lastIndex}]`
-      const fieldsToDelete = Object.keys(this.fieldInfo).filter((f) =>
-        f.startsWith(start),
-      )
-
-      // Cleanup the last fields
-      fieldsToDelete.forEach((f) => this.deleteField(f as TField))
+      this.deleteField(start as never)
     }
 
     // Validate the whole array + all fields that have shifted

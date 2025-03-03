@@ -1760,4 +1760,94 @@ describe('field api', () => {
     nameField.mount()
     expect(nameField.getMeta().errors).toEqual(['THERE IS AN ERROR'])
   })
+
+  it('should remove the meta from deleted fields', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: [
+          {
+            firstName: 'John',
+            lastName: '',
+          },
+          {
+            firstName: 'Martha',
+            lastName: 'Mustermann',
+          },
+        ],
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: `names[${0}].lastName`,
+      validators: {
+        onMount: ({ value }) =>
+          value.length > 0 ? undefined : 'Last name is required',
+        onChange: ({ value }) =>
+          value.length > 0 ? undefined : 'Last name is required',
+      },
+    })
+
+    form.mount()
+    field.mount()
+
+    expect(form.state.canSubmit).toBe(false)
+
+    await form.removeFieldValue('names', 0)
+
+    expect(form.getFieldValue('names')).toEqual([
+      {
+        firstName: 'Martha',
+        lastName: 'Mustermann',
+      },
+    ])
+
+    expect(field.getMeta().errors).toStrictEqual([])
+    expect(form.state.canSubmit).toBe(true)
+  })
+
+  it('should remove the meta from deleted object fields', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: {
+          john: {
+            firstName: 'John',
+            lastName: '',
+          },
+          martha: {
+            firstName: 'Martha',
+            lastName: 'Mustermann',
+          },
+        },
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'names.john.lastName',
+      validators: {
+        onChange: () => 'Last name is required',
+      },
+    })
+
+    form.mount()
+    field.mount()
+
+    field.setValue('JohnLastName')
+
+    expect(form.state.canSubmit).toBe(false)
+
+    form.deleteField('names.john')
+
+    expect(form.getFieldValue('names')).toEqual({
+      martha: {
+        firstName: 'Martha',
+        lastName: 'Mustermann',
+      },
+    })
+
+    expect(field.getMeta().errorMap).toStrictEqual({})
+    expect(field.getMeta().errors).toStrictEqual([])
+    expect(form.state.canSubmit).toBe(true)
+  })
 })

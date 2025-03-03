@@ -37,6 +37,14 @@ An object representing the current state of the form.
 
 ## Type declaration
 
+### \_force\_re\_eval?
+
+```ts
+optional _force_re_eval: boolean;
+```
+
+@private, used to force a re-evaluation of the form state when options change
+
 ### errorMap
 
 ```ts
@@ -52,6 +60,14 @@ fieldMetaBase: Record<DeepKeys<TFormData>, AnyFieldMetaBase>;
 ```
 
 A record of field metadata for each field in the form, not including the derived properties, like `errors` and such
+
+### isSubmitSuccessful
+
+```ts
+isSubmitSuccessful: boolean;
+```
+
+A boolean indicating if the last submission was successful.
 
 ### isSubmitted
 
