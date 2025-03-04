@@ -110,6 +110,10 @@
               "to": "framework/react/guides/listeners"
             },
             {
+              "label": "Custom Errors",
+              "to": "framework/react/guides/custom-errors"
+            },
+            {
               "label": "Submission Handling",
               "to": "framework/react/guides/submission-handling"
             },
