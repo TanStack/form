@@ -3,11 +3,14 @@ id: custom-errors
 title: Custom Errors
 ---
 
+
+
 TanStack Form provides complete flexibility in the types of error values you can return from validators. While string errors are common and easy to work with, the library supports any type of value as an error.
 
 as a note truthy values will return the error while falsy will not
 `truthy = error`
 `falsy = no error`
+
 
 ## Return String Values from Forms
 
@@ -16,7 +19,7 @@ as a note truthy values will return the error while falsy will not
   name="username"
   validators={{
     onChange: ({ value }) =>
-      value.length < 3 ? 'Username must be at least 3 characters' : undefined,
+      value.length < 3 ? "Username must be at least 3 characters" : undefined
   }}
 />
 ```
@@ -26,33 +29,28 @@ For form-level validation affecting multiple fields:
 ```tsx
 const form = useForm({
   defaultValues: {
-    username: '',
-    email: '',
+    username: "",
+    email: ""
   },
   validators: {
     onChange: ({ value }) => {
       return {
         fields: {
-          username:
-            value.username.length < 3 ? 'Username too short' : undefined,
-          email: !value.email.includes('@') ? 'Invalid email' : undefined,
-        },
-      }
-    },
-  },
-})
+          username: value.username.length < 3 ? "Username too short" : undefined,
+          email: !value.email.includes("@") ? "Invalid email" : undefined
+        }
+      };
+    }
+  }
+});
 ```
 
 String errors are the most common type and are easily displayed in your UI:
 
 ```tsx
-{
-  field.state.meta.errors.map((error, i) => (
-    <div key={i} className="error">
-      {error}
-    </div>
-  ))
-}
+{field.state.meta.errors.map((error, i) => (
+  <div key={i} className="error">{error}</div>
+))}
 ```
 
 ### Numbers
@@ -63,18 +61,15 @@ Useful for representing quantities, thresholds, or magnitudes:
 <form.Field
   name="age"
   validators={{
-    onChange: ({ value }) => (value < 18 ? 18 - value : undefined),
+    onChange: ({ value }) => value < 18 ? 18 - value : undefined
   }}
 />
 ```
 
 Display in UI:
-
 ```tsx
-{
-  /* TypeScript knows the error is a number based on your validator */
-}
-;<div className="error">
+{/* TypeScript knows the error is a number based on your validator */}
+<div className="error">
   You need {field.state.meta.errors[0]} more years to be eligible
 </div>
 ```
@@ -87,19 +82,16 @@ Simple flags to indicate error state:
 <form.Field
   name="accepted"
   validators={{
-    onChange: ({ value }) => (!value ? true : undefined),
+    onChange: ({ value }) => !value ? true : undefined
   }}
 />
 ```
 
 Display in UI:
-
 ```tsx
-{
-  field.state.meta.errors[0] === true && (
-    <div className="error">You must accept the terms</div>
-  )
-}
+{field.state.meta.errors[0] === true && (
+  <div className="error">You must accept the terms</div>
+)}
 ```
 
 ### Objects
@@ -111,30 +103,27 @@ Rich error objects with multiple properties:
   name="email"
   validators={{
     onChange: ({ value }) => {
-      if (!value.includes('@')) {
+      if (!value.includes("@")) {
         return {
-          message: 'Invalid email format',
-          severity: 'error',
-          code: 1001,
-        }
+          message: "Invalid email format",
+          severity: "error",
+          code: 1001
+        };
       }
-      return undefined
-    },
+      return undefined;
+    }
   }}
 />
 ```
 
 Display in UI:
-
 ```tsx
-{
-  typeof field.state.meta.errors[0] === 'object' && (
-    <div className={`error ${field.state.meta.errors[0].severity}`}>
-      {field.state.meta.errors[0].message}
-      <small> (Code: {field.state.meta.errors[0].code})</small>
-    </div>
-  )
-}
+{typeof field.state.meta.errors[0] === "object" && (
+  <div className={`error ${field.state.meta.errors[0].severity}`}>
+    {field.state.meta.errors[0].message}
+    <small> (Code: {field.state.meta.errors[0].code})</small>
+  </div>
+)}
 ```
 
 in the example above it depends on the event error you want to display.
@@ -148,29 +137,26 @@ Multiple error messages for a single field:
   name="password"
   validators={{
     onChange: ({ value }) => {
-      const errors = []
-      if (value.length < 8) errors.push('Password too short')
-      if (!/[A-Z]/.test(value)) errors.push('Missing uppercase letter')
-      if (!/[0-9]/.test(value)) errors.push('Missing number')
+      const errors = [];
+      if (value.length < 8) errors.push("Password too short");
+      if (!/[A-Z]/.test(value)) errors.push("Missing uppercase letter");
+      if (!/[0-9]/.test(value)) errors.push("Missing number");
 
-      return errors.length ? errors : undefined
-    },
+      return errors.length ? errors : undefined;
+    }
   }}
 />
 ```
 
 Display in UI:
-
 ```tsx
-{
-  Array.isArray(field.state.meta.errors) && (
-    <ul className="error-list">
-      {field.state.meta.errors.map((err, i) => (
-        <li key={i}>{err}</li>
-      ))}
-    </ul>
-  )
-}
+{Array.isArray(field.state.meta.errors) && (
+  <ul className="error-list">
+    {field.state.meta.errors.map((err, i) => (
+      <li key={i}>{err}</li>
+    ))}
+  </ul>
+)}
 ```
 
 ## The `disableErrorFlat` Prop on Fields
@@ -182,11 +168,9 @@ By default, TanStack Form flattens errors from all validation sources (onChange,
   name="email"
   disableErrorFlat
   validators={{
-    onChange: ({ value }) =>
-      !value.includes('@') ? 'Invalid email format' : undefined,
-    onBlur: ({ value }) =>
-      !value.endsWith('.com') ? 'Only .com domains allowed' : undefined,
-    onSubmit: ({ value }) => (value.length < 5 ? 'Email too short' : undefined),
+    onChange: ({ value }) => !value.includes("@") ? "Invalid email format" : undefined,
+    onBlur: ({ value }) => !value.endsWith(".com") ? "Only .com domains allowed" : undefined,
+    onSubmit: ({ value }) => value.length < 5 ? "Email too short" : undefined
   }}
 />
 ```
@@ -194,28 +178,22 @@ By default, TanStack Form flattens errors from all validation sources (onChange,
 Without `disableErrorFlat`, all errors would be combined into `field.state.meta.errors`. With it, you can access errors by their source:
 
 ```tsx
-/* Access errors by validation source */
-{
-  field.state.meta.errorMap.onChange && (
-    <div className="real-time-error">{field.state.meta.errorMap.onChange}</div>
-  )
-}
+{/* Access errors by validation source */}
+{field.state.meta.errorMap.onChange && (
+  <div className="real-time-error">{field.state.meta.errorMap.onChange}</div>
+)}
 
-{
-  field.state.meta.errorMap.onBlur && (
-    <div className="blur-feedback">{field.state.meta.errorMap.onBlur}</div>
-  )
-}
 
-{
-  field.state.meta.errorMap.onSubmit && (
-    <div className="submit-error">{field.state.meta.errorMap.onSubmit}</div>
-  )
-}
+{field.state.meta.errorMap.onBlur && (
+  <div className="blur-feedback">{field.state.meta.errorMap.onBlur}</div>
+)}
+
+{field.state.meta.errorMap.onSubmit && (
+  <div className="submit-error">{field.state.meta.errorMap.onSubmit}</div>
+)}
 ```
 
 This is useful for:
-
 - Displaying different types of errors with different UI treatments
 - Prioritizing errors (e.g., showing submission errors more prominently)
 - Implementing progressive disclosure of errors
@@ -230,28 +208,28 @@ TanStack Form provides strong type safety for error handling. Each key in the `e
   validators={{
     onChange: ({ value }) => {
       // This returns a string or undefined
-      return value.length < 8 ? 'Too short' : undefined
+      return value.length < 8 ? "Too short" : undefined;
     },
     onBlur: ({ value }) => {
       // This returns an object or undefined
       if (!/[A-Z]/.test(value)) {
-        return { message: 'Missing uppercase', level: 'warning' }
+        return { message: "Missing uppercase", level: "warning" };
       }
-      return undefined
-    },
+      return undefined;
+    }
   }}
   children={(field) => {
     // TypeScript knows that errors[0] can be string | { message: string, level: string } | undefined
-    const error = field.state.meta.errors[0]
+    const error = field.state.meta.errors[0];
 
     // Type-safe error handling
-    if (typeof error === 'string') {
-      return <div className="string-error">{error}</div>
-    } else if (error && typeof error === 'object') {
-      return <div className={error.level}>{error.message}</div>
+    if (typeof error === "string") {
+      return <div className="string-error">{error}</div>;
+    } else if (error && typeof error === "object") {
+      return <div className={error.level}>{error.message}</div>;
     }
 
-    return null
+    return null;
   }}
 />
 ```
