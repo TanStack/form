@@ -588,7 +588,7 @@ export type FieldMetaBase<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFieldMetaExtension = {},
+  TFieldMetaExtension extends object = {},
 > = {
   /**
    * A flag indicating whether the field has been touched.
@@ -1194,6 +1194,11 @@ export class FieldApi<
       value: this.state.value,
       fieldApi: this,
     })
+
+    this.setMeta((prev) => ({
+      ...prev,
+      ...this.options.meta?.(this.form.state),
+    }))
 
     return cleanup
   }
