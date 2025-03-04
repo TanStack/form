@@ -5,10 +5,10 @@ title: Custom Errors
 
 
 
+TanStack Form provides complete flexibility in the types of error values you can return from validators. While string errors are common and easy to work with, the library supports any type of value as an error.
+
 
 ## Return String Values from Forms
-
-By default, TanStack Form allows you to return string error messages from validators:
 
 ```tsx
 <form.Field
@@ -51,7 +51,7 @@ String errors are the most common type and are easily displayed in your UI:
 
 ## Return Non-String Values from Forms
 
-TanStack Form supports returning non-string values as errors, providing flexibility for different validation scenarios:
+TanStack Form supports returning non-string values as errors, providing flexibility for different validation scenarios. It's important to note that any `truthy` value is handled as an error, while falsy values (except for 0) are considered valid. For example, returning 0 is treated as valid, not as an error.
 
 ### Numbers
 
@@ -68,11 +68,10 @@ Useful for representing quantities, thresholds, or magnitudes:
 
 Display in UI:
 ```tsx
-{typeof field.state.meta.errors[0] === "number" && (
-  <div className="error">
-    You need {field.state.meta.errors[0]} more years to be eligible
-  </div>
-)}
+{/* TypeScript knows the error is a number based on your validator */}
+<div className="error">
+  You need {field.state.meta.errors[0]} more years to be eligible
+</div>
 ```
 
 ### Booleans
@@ -127,14 +126,7 @@ Display in UI:
 )}
 ```
 
-or
-```tsx
-{field.state.meta.errorMap.onChange?.message ? (
-    <p>{field.state.meta.errorMap.onBlur?.message}</p>
-  ) : null}
-```
-
-in the example above it depends on the event error you want to display either `onChange` `onBlur` or else, but of course with TypeScript support helping you out
+in the example above it depends on the event error you want to display.
 
 ### Arrays
 
@@ -207,7 +199,7 @@ This is useful for:
 
 ## Type Safety of `errors` and `errorMap`
 
-TanStack Form provides strong type safety for error handling. The types of your error values are preserved throughout the form lifecycle:
+TanStack Form provides strong type safety for error handling. Each key in the `errorMap` has exactly the type returned by its corresponding validator, while the `errors` array contains a union type of all the possible error values from all validators:
 
 ```tsx
 <form.Field
