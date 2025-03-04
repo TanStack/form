@@ -464,6 +464,10 @@
               "to": "framework/react/examples/array"
             },
             {
+              "label": "Form Composition",
+              "to": "framework/react/examples/large-form"
+            },
+            {
               "label": "TanStack Query Integration",
               "to": "framework/react/examples/query-integration"
             },
