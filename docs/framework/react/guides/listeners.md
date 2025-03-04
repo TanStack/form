@@ -36,8 +36,8 @@ function App() {
         name="country"
         listeners={{
           onChange: ({ value }) => {
-            console.log(`Country changed to: ${value}, resetting province`);
-            form.setFieldValue("province", "");
+            console.log(`Country changed to: ${value}, resetting province`)
+            form.setFieldValue('province', '')
           },
         }}
       >

@@ -6,6 +6,7 @@ title: Installation
 TanStack Form is compatible with various front-end frameworks, including React, Vue, and Solid. To use TanStack Form with your desired framework, install the corresponding adapter via your preferred package manager:
 
 ### React Example
+
 ```bash
 # npm
 $ npm i @tanstack/react-form
@@ -18,6 +19,7 @@ $ yarn add @tanstack/react-form
 ```
 
 ### Vue Example
+
 ```bash
 # npm
 $ npm i @tanstack/vue-form
@@ -30,6 +32,7 @@ $ yarn add @tanstack/vue-form
 ```
 
 ### Angular Example
+
 ```bash
 # npm
 $ npm i @tanstack/angular-form
@@ -42,6 +45,7 @@ $ yarn add @tanstack/angular-form
 ```
 
 ### Solid Example
+
 ```bash
 # npm
 $ npm i @tanstack/solid-form
@@ -54,6 +58,7 @@ $ yarn add @tanstack/solid-form
 ```
 
 ### Lit Example
+
 ```bash
 # npm
 $ npm i @tanstack/lit-form

@@ -47,16 +47,11 @@ export class TestForm extends LitElement {
 
 This will generate the mapped HTML every time you run pushValue on the field:
 
-
 ```html
 <div class="container">
-  <button
-     type="button"
-     @click=${() => {
-     peopleField.pushValue({name: "",age: ""})
-}}>
-      Add Person
-    </button>
+  <button type="button" @click="${()" ="">
+    { peopleField.pushValue({name: "",age: ""}) }}> Add Person
+  </button>
 </div>
 ```
 
@@ -70,24 +65,22 @@ return html`
     },
     (field) => {
       return html`
-          <input
-            type="text"
-            placeholder="Name"
-            .value="${field.state.value}"
-            @input="${(e: Event) => {
-              const target = e.target as HTMLInputElement;
-              field.handleChange(target.value);
-            }}"
-          />
-      `;
+        <input
+          type="text"
+          placeholder="Name"
+          .value="${field.state.value}"
+          @input="${(e: Event) => {
+            const target = e.target as HTMLInputElement
+            field.handleChange(target.value)
+          }}"
+        />
+      `
     },
   )}
-  `
+`
 ```
 
-
 ## Full Example
-
 
 ```typescript
 export class TestForm extends LitElement {

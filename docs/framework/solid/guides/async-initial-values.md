@@ -17,17 +17,17 @@ As such, this guide shows you how you can mix-n-match TanStack Form with TanStac
 ## Basic Usage
 
 ```tsx
-import { createForm } from '@tanstack/solid-form';
-import { createQuery } from '@tanstack/solid-query';
+import { createForm } from '@tanstack/solid-form'
+import { createQuery } from '@tanstack/solid-query'
 
 export default function App() {
   const { data, isLoading } = createQuery(() => ({
     queryKey: ['data'],
     queryFn: async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      return { firstName: 'FirstName', lastName: 'LastName' };
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      return { firstName: 'FirstName', lastName: 'LastName' }
     },
-  }));
+  }))
 
   const form = createForm(() => ({
     defaultValues: {
@@ -36,15 +36,14 @@ export default function App() {
     },
     onSubmit: async ({ value }) => {
       // Do something with form data
-      console.log(value);
+      console.log(value)
     },
-  }));
+  }))
 
-  if (isLoading) return <p>Loading..</p>;
+  if (isLoading) return <p>Loading..</p>
 
-  return null;
+  return null
 }
-
 ```
 
 This will show a loading spinner until the data is fetched, and then it will render the form with the fetched data as the initial values.

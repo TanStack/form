@@ -25,7 +25,7 @@ This typically is a sign that you should break down your form into smaller forms
 A workaround to this problem is to cast `field.state.value` using TypeScript's `as` keyword:
 
 ```tsx
-const value = field.state.value as string;
+const value = field.state.value as string
 ```
 
 # `Type instantiation is excessively deep and possibly infinite`

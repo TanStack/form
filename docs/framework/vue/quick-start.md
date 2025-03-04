@@ -23,13 +23,15 @@ const form = useForm({
 
 <template>
   <div>
-    <form @submit="
-      (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        form.handleSubmit()
-      }
-    ">
+    <form
+      @submit="
+        (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          form.handleSubmit()
+        }
+      "
+    >
       <div>
         <form.Field name="fullName">
           <template v-slot="{ field }">
@@ -49,4 +51,3 @@ const form = useForm({
 ```
 
 From here, you'll be ready to explore all of the other features of TanStack Form!
-

@@ -16,10 +16,9 @@ At it's most basic, `createFormHook` is a function that takes a `fieldContext` a
 > This un-customized `useAppForm` hook is identical to `useForm`, but that will quickly change as we add more options to `createFormHook`.
 
 ```tsx
-import {createFormHookContexts, createFormHook } from '@tanstack/react-form'
+import { createFormHookContexts, createFormHook } from '@tanstack/react-form'
 
-const { fieldContext, formContext } =
-  createFormHookContexts()
+const { fieldContext, formContext } = createFormHookContexts()
 
 const { useAppForm } = createFormHook({
   fieldContext,
@@ -70,7 +69,7 @@ const { useAppForm } = createFormHook({
   fieldContext,
   formContext,
   fieldComponents: {
-    TextField
+    TextField,
   },
   formComponents: {},
 })
@@ -142,7 +141,8 @@ function App() {
 
   return (
     <form.AppForm>
-     // Notice the `AppForm` component wrapper; `AppForm` provides the required context
+      // Notice the `AppForm` component wrapper; `AppForm` provides the required
+      context
       <form.SubscribeButton label="Submit" />
     </form.AppForm>
   )
@@ -188,7 +188,7 @@ const ChildForm = withForm({
           children={(field) => <field.TextField label="First Name" />}
         />
         <form.AppForm>
-            <form.SubscribeButton label="Submit" />
+          <form.SubscribeButton label="Submit" />
         </form.AppForm>
       </div>
     )
@@ -273,8 +273,8 @@ export default function TextField({ label }: { label: string }) {
 
 ```tsx
 // src/hooks/form.ts
-import {lazy} from 'react'
-import {createFormHook} from '@tanstack/react-form'
+import { lazy } from 'react'
+import { createFormHook } from '@tanstack/react-form'
 
 const TextField = lazy(() => import('../components/text-fields.tsx'))
 
@@ -282,7 +282,7 @@ const { useAppForm, withForm } = createFormHook({
   fieldContext,
   formContext,
   fieldComponents: {
-    TextField
+    TextField,
   },
   formComponents: {},
 })
@@ -370,7 +370,7 @@ const ChildForm = withForm({
           children={(field) => <field.TextField label="First Name" />}
         />
         <form.AppForm>
-            <form.SubscribeButton label="Submit" />
+          <form.SubscribeButton label="Submit" />
         </form.AppForm>
       </div>
     )
@@ -392,4 +392,3 @@ const Parent = () => {
 Here's a chart to help you decide what APIs you should be using:
 
 ![](https://raw.githubusercontent.com/TanStack/form/main/docs/assets/react_form_composability.svg)
-

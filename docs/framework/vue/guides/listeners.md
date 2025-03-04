@@ -41,7 +41,7 @@ const form = useForm({
         onChange: ({ value }) => {
           console.log(`Country changed to: ${value}, resetting province`)
           form.setFieldValue('province', '')
-        }
+        },
       }"
     >
       <template v-slot="{ field }">

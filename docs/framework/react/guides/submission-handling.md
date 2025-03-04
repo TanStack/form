@@ -11,17 +11,16 @@ First you must define the default state of the form.onSubmitMeta prop:
 
 ```tsx
 const form = useForm({
-    defaultValues: {
-      firstName: 'Rick',
-    },
-    // {} is the default value passed to `onSubmit`'s `meta` property
-    onSubmitMeta: {} as { lastName: string },
-    onSubmit: async ({ value, meta }) => {
-
-      // Do something with the values passed via handleSubmit
-      console.log(`${value.firstName} - ${meta}`)
-    },
-  })
+  defaultValues: {
+    firstName: 'Rick',
+  },
+  // {} is the default value passed to `onSubmit`'s `meta` property
+  onSubmitMeta: {} as { lastName: string },
+  onSubmit: async ({ value, meta }) => {
+    // Do something with the values passed via handleSubmit
+    console.log(`${value.firstName} - ${meta}`)
+  },
+})
 ```
 
 Note: the default state of onSubmitMeta is `never`, so if the prop is not provided and you try to access it in `handleSubmit`, or `onSubmit` it will error.
@@ -37,6 +36,5 @@ Then when you call `onSubmit` you can provide it the predefined meta like so:
       lastName: 'Astley',
     })
   }}
->
-</form>
+></form>
 ```

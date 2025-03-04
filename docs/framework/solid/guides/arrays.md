@@ -14,7 +14,7 @@ with [`Index` from `solid-js`](https://www.solidjs.com/tutorial/flow_index):
 function App() {
   const form = createForm(() => ({
     defaultValues: {
-      people: []
+      people: [],
     },
   }))
 
@@ -24,9 +24,9 @@ function App() {
         <Show when={field().state.value.length > 0}>
           {/* Do not change this to `For` or things will not work as-expected */}
           <Index each={field().state.value}>
-            {(_, i) => (
+            {(_, i) =>
               null // ...
-            )}
+            }
           </Index>
         </Show>
       )}
@@ -43,10 +43,7 @@ function App() {
 This will generate the mapped JSX every time you run `pushValue` on `field`:
 
 ```jsx
-<button
-  onClick={() => field().pushValue({ name: '', age: 0 })}
-  type="button"
->
+<button onClick={() => field().pushValue({ name: '', age: 0 })} type="button">
   Add person
 </button>
 ```
@@ -54,7 +51,7 @@ This will generate the mapped JSX every time you run `pushValue` on `field`:
 Finally, you can use a subfield like so:
 
 ```jsx
- <form.Field name={`people[${i}].name`}>
+<form.Field name={`people[${i}].name`}>
   {(subField) => (
     <input
       value={subField().state.value}

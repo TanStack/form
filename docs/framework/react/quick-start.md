@@ -95,13 +95,13 @@ const PeoplePage = () => {
   const form = useForm({
     defaultValues: {
       username: '',
-      age: 0
+      age: 0,
     },
     onSubmit: ({ value }) => {
       // Do something with form data
-      alert(JSON.stringify(value, null, 2));
+      alert(JSON.stringify(value, null, 2))
     },
-  });
+  })
 
   return (
     <form.Field
@@ -126,7 +126,7 @@ const PeoplePage = () => {
         </>
       )}
     />
-  );
+  )
 }
 
 const rootElement = document.getElementById('root')!

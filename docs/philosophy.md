@@ -46,7 +46,7 @@ When writing sufficiently correct TanStack Form code, you should not be able to 
 Instead of:
 
 ```typescript
-useForm<MyForm>();
+useForm<MyForm>()
 ```
 
 You should do:
@@ -57,7 +57,7 @@ useForm({
     name: 'Bill Luo',
     age: 24,
   } as MyForm,
-});
+})
 ```
 
 ## Libraries are liberating
@@ -68,7 +68,7 @@ To support this, we have a number of utilities that make it easier to build your
 
 ```typescript
 // Exported from your own library with pre-bound components for your forms.
-export const { useAppForm, withForm } = createFormHook(/* options */);
+export const { useAppForm, withForm } = createFormHook(/* options */)
 ```
 
 Without doing so, you're adding substantially more boilerplate to your apps and making your forms less consistent and user-friendly.

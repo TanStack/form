@@ -126,7 +126,7 @@ Once you have your validation in place, you can map the errors from an array to 
           <em>{field().state.meta.errors.join(',')}</em>
         ) : null}
       </>
-    );
+    )
   }}
 </form.Field>
 ```
@@ -152,22 +152,20 @@ Or use the `errorMap` property to access the specific error you're looking for:
 </form.Field>
 ```
 
-
 It's worth mentioning that our `errors` array and the `errorMap` matches the types returned by the validators. This means that:
 
 ```tsx
 <form.Field
   name="age"
   validators={{
-    onChange: ({value}) =>
-      value < 13 ? {isOldEnough: false} : undefined,
+    onChange: ({ value }) => (value < 13 ? { isOldEnough: false } : undefined),
   }}
 >
   {(field) => (
     <>
       {/* ... */}
       {/* errorMap.onChange is type `{isOldEnough: false} | undefined` */}
-	  {/* meta.errors is type `Array<{isOldEnough: false} | undefined>` */}
+      {/* meta.errors is type `Array<{isOldEnough: false} | undefined>` */}
       {!field().state.meta.errorMap['onChange']?.isOldEnough ? (
         <em>The user is not old enough</em>
       ) : null}
@@ -175,8 +173,6 @@ It's worth mentioning that our `errors` array and the `errorMap` matches the typ
   )}
 </form.Field>
 ```
-
-
 
 ## Validation at field level vs at form level
 
@@ -191,22 +187,22 @@ export default function App() {
       age: 0,
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
+      console.log(value)
     },
     validators: {
       // Add validators to the form the same way you would add them to a field
       onChange({ value }) {
         if (value.age < 13) {
-          return 'Must be 13 or older to sign';
+          return 'Must be 13 or older to sign'
         }
-        return undefined;
+        return undefined
       },
     },
-  }));
+  }))
 
   // Subscribe to the form's error map so that updates to it will render
   // alternately, you can use `form.Subscribe`
-  const formErrorMap = form.useStore((state) => state.errorMap);
+  const formErrorMap = form.useStore((state) => state.errorMap)
 
   return (
     <div>
@@ -218,7 +214,7 @@ export default function App() {
       ) : null}
       {/* ... */}
     </div>
-  );
+  )
 }
 ```
 
@@ -233,8 +229,8 @@ To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods 
   name="age"
   validators={{
     onChangeAsync: async ({ value }) => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      return value < 13 ? 'You must be 13 to make an account' : undefined;
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      return value < 13 ? 'You must be 13 to make an account' : undefined
     },
   }}
 >
@@ -264,8 +260,8 @@ Synchronous and Asynchronous validations can coexist. For example, it is possibl
   validators={{
     onBlur: ({ value }) => (value < 13 ? 'You must be at least 13' : undefined),
     onBlurAsync: async ({ value }) => {
-      const currentAge = await fetchCurrentAgeOnProfile();
-      return value < currentAge ? 'You can only increase the age' : undefined;
+      const currentAge = await fetchCurrentAgeOnProfile()
+      return value < currentAge ? 'You can only increase the age' : undefined
     },
   }}
 >
@@ -301,16 +297,12 @@ Instead, we enable an easy method for debouncing your `async` calls by adding a 
   name="age"
   asyncDebounceMs={500}
   validators={{
-      onChangeAsync: async ({ value }) => {
-        // ...
-      }
+    onChangeAsync: async ({ value }) => {
+      // ...
+    },
   }}
   children={(field) => {
-    return (
-      <>
-      {/* ... */}
-      </>
-    );
+    return <>{/* ... */}</>
   }}
 />
 ```
@@ -345,11 +337,12 @@ While functions provide more flexibility and customization over your validation,
 ### Standard Schema Libraries
 
 TanStack Form natively supports all libraries following the [Standard Schema specification](https://github.com/standard-schema/standard-schema), most notably:
+
 - [Zod](https://zod.dev/)
 - [Valibot](https://valibot.dev/)
 - [ArkType](https://arktype.io/)
 
-*Note:* make sure to use the latest version of the schema libraries as older versions might not support Standard Schema yet.
+_Note:_ make sure to use the latest version of the schema libraries as older versions might not support Standard Schema yet.
 
 To use schemas from these libraries you can pass them to the `validators` props as you would do with a custom function:
 
@@ -360,9 +353,9 @@ import { z } from 'zod'
 
 const form = createForm(() => ({
   // ...
-}));
+}))
 
-<form.Field
+;<form.Field
   name="age"
   validators={{
     onChange: z.number().gte(13, 'You must be 13 to make an account'),
@@ -406,7 +399,9 @@ The form state object has a `canSubmit` flag that is false when any field is inv
 You can subscribe to it via `form.Subscribe` and use the value in order to, for example, disable the submit button when the form is invalid (in practice, disabled buttons are not accessible, use `aria-disabled` instead).
 
 ```tsx
-const form = createForm(() => ({/* ... */}))
+const form = createForm(() => ({
+  /* ... */
+}))
 
 return (
   /* ... */
