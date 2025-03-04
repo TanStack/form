@@ -3,11 +3,9 @@ id: custom-errors
 title: Custom Errors
 ---
 
-TanStack Form provides complete flexibility in the types of error values you can return from validators. While string errors are common and easy to work with, the library supports any type of value as an error.
+TanStack Form provides complete flexibility in the types of error values you can return from validators. String errors are the most common and easy to work with, but the library allows you to return any type of value from your validators.
 
-as a note truthy values will return the error while falsy will not
-`truthy = error`
-`falsy = no error`
+As a general rule, any truthy value is considered as an error and will mark the form or field as invalid, while falsy values (`false`, `undefined`, `null`, etc..) mean there is no error, the form or field is valid.
 
 ## Return String Values from Forms
 
@@ -194,9 +192,6 @@ By default, TanStack Form flattens errors from all validation sources (onChange,
 Without `disableErrorFlat`, all errors would be combined into `field.state.meta.errors`. With it, you can access errors by their source:
 
 ```tsx
-{
-  /* Access errors by validation source */
-}
 {
   field.state.meta.errorMap.onChange && (
     <div className="real-time-error">{field.state.meta.errorMap.onChange}</div>
