@@ -13,15 +13,15 @@ Here's an example of a form following many of our best practices, which will all
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createFormHook, createFormHookContexts } from '@tanstack/react-form'
+// Form components that pre-bind events from the form hook; check our "Form Composition" guide for more
 import { TextField, NumberField, SubmitButton } from '~our-app/ui-library'
 // We also support Valibot, ArkType, and any other standard schema library
 import { z } from 'zod'
 
-const { fieldContext, useFieldContext, formContext, useFormContext } =
-  createFormHookContexts()
+const { fieldContext, formContext } = createFormHookContexts()
 
 // Allow us to bind components to the form to keep type safety but reduce production boilerplate
-const { useAppForm, withForm } = createFormHook({
+const { useAppForm } = createFormHook({
   fieldComponents: {
     TextField,
     NumberField,
