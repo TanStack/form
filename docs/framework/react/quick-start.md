@@ -3,7 +3,7 @@ id: quick-start
 title: Quick Start
 ---
 
-TanStack Form is unlike most form libraries you've used before. It's designed for large-scale production usage, with a focus on type safety, performance, and developer experience.
+TanStack Form is unlike most form libraries you've used before. It's designed for large-scale production usage, with a focus on type safety, performance and composition for an unmatched developer experience.
 
 As a result, we've developed [a philosophy around the library's usage](/form/latest/docs/philosophy) that values scalability and long-term developer experience over short and sharable code snippets.
 
@@ -21,6 +21,7 @@ import { z } from 'zod'
 const { fieldContext, formContext } = createFormHookContexts()
 
 // Allow us to bind components to the form to keep type safety but reduce production boilerplate
+// Define this once to have a generator of consistent form instances throughout your app
 const { useAppForm } = createFormHook({
   fieldComponents: {
     TextField,
@@ -61,6 +62,7 @@ const PeoplePage = () => {
     >
       <h1>Personal Information</h1>
       {/* Components are bound to `form` and `field` to ensure extreme type safety */}
+      {/* Use `form.AppField` to render a component bound to a single field */}
       <form.AppField
         name="username"
         children={(field) => <field.TextField label="Full Name" />}
@@ -70,7 +72,7 @@ const PeoplePage = () => {
         name="age"
         children={(field) => <field.NumberField label="Age" />}
       />
-      {/* Our customized hook enables usage of `form.AppField` and `form.AppForm` components */}
+      {/* Components in `form.AppForm` have access to the form context */}
       <form.AppForm>
         <form.SubmitButton />
       </form.AppForm>
