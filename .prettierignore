@@ -4,6 +4,6 @@
 **/build
 **/coverage
 **/dist
-**/docs
+**/docs/**/reference/**
 **/codemods/**/__testfixtures__
 pnpm-lock.yaml
