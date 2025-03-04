@@ -55,8 +55,6 @@ String errors are the most common type and are easily displayed in your UI:
 }
 ```
 
-
-
 ### Numbers
 
 Useful for representing quantities, thresholds, or magnitudes:
@@ -196,7 +194,7 @@ By default, TanStack Form flattens errors from all validation sources (onChange,
 Without `disableErrorFlat`, all errors would be combined into `field.state.meta.errors`. With it, you can access errors by their source:
 
 ```tsx
-  /* Access errors by validation source */
+/* Access errors by validation source */
 {
   field.state.meta.errorMap.onChange && (
     <div className="real-time-error">{field.state.meta.errorMap.onChange}</div>
