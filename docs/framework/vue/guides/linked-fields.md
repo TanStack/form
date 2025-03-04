@@ -24,52 +24,58 @@ To do this, you can add a `onChangeListenTo` property to the `confirm_password` 
 import { useForm } from '@tanstack/vue-form'
 
 const form = useForm({
-    defaultValues: {
-        password: '',
-        confirm_password: '',
-    },
-    // ...
+  defaultValues: {
+    password: '',
+    confirm_password: '',
+  },
+  // ...
 })
 </script>
 
 <template>
-    <div>
-        <form @submit.prevent.stop="form.handleSubmit">
-            <div>
-                <form.Field name="password">
-                    <template v-slot="{ field }">
-                        <div>Password:</div>
-                        <input 
-                            :value="field.state.value"
-                            @input="(e) => field.handleChange((e.target as HTMLInputElement).value)" 
-                        />
-                    </template>
-                </form.Field>
-                <form.Field 
-                    name="confirm_password" 
-                    :validators="{
-                        onChangeListenTo: ['password'],
-                        onChange: ({ value, fieldApi }) => {
-                            if (value !== fieldApi.form.getFieldValue('password')) {
-                                return 'Passwords do not match'
-                            }
-                            return undefined
-                        },
-                    }"
-                >
-                    <template v-slot="{ field }">
-                        <div>Confirm Password:</div>
-                        <input 
-                            :value="field.state.value"
-                            @input="(e) => field.handleChange((e.target as HTMLInputElement).value)" 
-                        />
-                        <div v-for="(err, index) in field.state.meta.errors" :key="index">{{ err }}</div>
-                    </template>
-                </form.Field>
+  <div>
+    <form @submit.prevent.stop="form.handleSubmit">
+      <div>
+        <form.Field name="password">
+          <template v-slot="{ field }">
+            <div>Password:</div>
+            <input
+              :value="field.state.value"
+              @input="
+                (e) => field.handleChange((e.target as HTMLInputElement).value)
+              "
+            />
+          </template>
+        </form.Field>
+        <form.Field
+          name="confirm_password"
+          :validators="{
+            onChangeListenTo: ['password'],
+            onChange: ({ value, fieldApi }) => {
+              if (value !== fieldApi.form.getFieldValue('password')) {
+                return 'Passwords do not match'
+              }
+              return undefined
+            },
+          }"
+        >
+          <template v-slot="{ field }">
+            <div>Confirm Password:</div>
+            <input
+              :value="field.state.value"
+              @input="
+                (e) => field.handleChange((e.target as HTMLInputElement).value)
+              "
+            />
+            <div v-for="(err, index) in field.state.meta.errors" :key="index">
+              {{ err }}
             </div>
-            <button type="submit">Submit</button>
-        </form>
-    </div>
+          </template>
+        </form.Field>
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
 </template>
 ```
 

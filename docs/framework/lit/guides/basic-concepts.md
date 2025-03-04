@@ -87,7 +87,10 @@ For Example:
 Each field has its own state, which includes its current value, validation status, error messages, and other metadata. You can access a field's state using its `field.state` property.
 
 ```tsx
-const { value, meta: { errors, isValidating } } = field.state
+const {
+  value,
+  meta: { errors, isValidating },
+} = field.state
 ```
 
 There are three field states can be very useful to see how the user interacts with a field. A field is _"touched"_ when the user clicks/tabs into it, _"pristine"_ until the user changes value in it, and _"dirty"_ after the value has been changed. You can check these states via the `isTouched`, `isPristine` and `isDirty` flags, as seen below.

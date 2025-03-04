@@ -20,7 +20,7 @@ To solve this, we need to make sure that the "confirm password" validation is re
 To do this, you can add a `onChangeListenTo` property to the `confirm_password` field.
 
 ```tsx
- function App() {
+function App() {
   const form = useForm({
     defaultValues: {
       password: '',

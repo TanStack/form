@@ -11,18 +11,17 @@ Here is an example:
 <form.Field
   name="age"
   validators={{
-    onChange: val => val < 13 ? "You must be 13 to make an account" : undefined
+    onChange: (val) =>
+      val < 13 ? 'You must be 13 to make an account' : undefined,
   }}
 >
-  {field => (
+  {(field) => (
     <>
       <Text>Age:</Text>
       <TextInput value={field.state.value} onChangeText={field.handleChange} />
-      {
-        field.state.meta.errors
-          ? <Text>{field.state.meta.errors.join(', ')}</Text>
-          : null
-      }
+      {field.state.meta.errors ? (
+        <Text>{field.state.meta.errors.join(', ')}</Text>
+      ) : null}
     </>
   )}
 </form.Field>

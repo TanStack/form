@@ -70,7 +70,7 @@ Where `getPeopleName` is a method on the class like so
 
 ```typescript
 export class AppComponent {
-  getPeopleName = (idx: number) => `people[${idx}].name` as const;
+  getPeopleName = (idx: number) => `people[${idx}].name` as const
 
   // ...
 }
@@ -79,6 +79,7 @@ export class AppComponent {
 > While it's unfortunate that you need to use a function to get the field name, it's a requirement for how our strict TypeScript types work.
 >
 > See, if we did the following:
+>
 > ```angular-html
 > <ng-container [tanstackField]="form" [name]="'people[' + $index + '].name'"></ng-container>
 > ```
