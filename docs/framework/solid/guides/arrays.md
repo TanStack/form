@@ -24,8 +24,8 @@ function App() {
         <Show when={field().state.value.length > 0}>
           {/* Do not change this to `For` or things will not work as-expected */}
           <Index each={field().state.value}>
-            {(_, i) =>
-              null // ...
+            {
+              (_, i) => null // ...
             }
           </Index>
         </Show>
