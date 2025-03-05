@@ -168,7 +168,7 @@ const { useAppForm, withForm } = createFormHook({
 })
 
 const ChildForm = withForm({
-  // These valeus are only used for type-checking, and are not used at runtime
+  // These values are only used for type-checking, and are not used at runtime
   // This allows you to `...formOpts` from `formOptions` without needing to redeclare the options
   defaultValues: {
     firstName: 'John',
