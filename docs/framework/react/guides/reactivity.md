@@ -17,16 +17,14 @@ The `useStore` hook is perfect when you need to access form values within the lo
 
 ```tsx
 const firstName = useStore(form.store, (state) => state.values.firstName)
-const errors = useStore(form.store,  (state) => state.errorMap)
+const errors = useStore(form.store, (state) => state.errorMap)
 ```
-
 
 You can access any piece of the form state in the selector.
 
->  Note, that `useStore` will cause a whole component re-render whenever the value subscribed to changes.
+> Note, that `useStore` will cause a whole component re-render whenever the value subscribed to changes.
 
 While it IS possible to omit the selector, resist the urge as omitting it would result in many unnecessary re-renders whenever any of the form state changes.
-
 
 ## form.Subscribe
 
