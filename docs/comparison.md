@@ -26,8 +26,17 @@ Feature/Capability Key:
 | Async validation                                  | ✅                                           | ✅                             | ❓                                     | ✅                                               | ✅                                     |
 | Built-in async validation debounce                | ✅                                           | ❓                             | ❓                                     | ❓                                               | ❓                                     |
 | Schema-based Validation                           | ✅                                           | ✅                             | ❓                                     | ✅                                               | ❓                                     |
+| First Party Devtools | 🛑*(2) | 🛑 | ✅*(3) | ✅ | ❓ |
+| SSR integrations | ✅ | 🛑 | 🛑 | 🛑 | 🛑 |
+| React Compiler support | ✅ | ❓ | ❓ | 🛑 | ❓ |
 
 \*(1) For nested arrays, react-hook-form requires you [to cast the field array by its name](https://react-hook-form.com/docs/usefieldarray) if you're using TypeScript
+
+*(2) Planned
+
+*(3) Via Redux Devtools
+
+
 
 [bpl-tanstack-form]: https://bundlephobia.com/result?p=@tanstack/react-form
 [bp-tanstack-form]: https://badgen.net/bundlephobia/minzip/@tanstack/react-form?label=💾
