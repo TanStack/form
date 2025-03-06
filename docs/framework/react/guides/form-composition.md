@@ -52,7 +52,7 @@ Once this scaffolding is in place, you can start adding custom field and form co
 ```tsx
 import { useFieldContext } from './form-context.tsx'
 
-function TextField({ label }: { label: string }) {
+export function TextField({ label }: { label: string }) {
   // The `Field` infers that it should have a `value` type of `string`
   const field = useFieldContext<string>()
   return (
@@ -70,6 +70,8 @@ function TextField({ label }: { label: string }) {
 You're then able to register this component with your form hook.
 
 ```tsx
+import { TextField } from './text-field.tsx'
+
 const { useAppForm } = createFormHook({
   fieldContext,
   formContext,
