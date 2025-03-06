@@ -44,9 +44,11 @@ type AllowedIndexes<
     ? AllowedIndexes<Tail, Keys | Tail['length']>
     : Keys
 
-type PrefixArrayAccessor<T extends any[], TDepth extends any[]> = {
-  [K in keyof T]: `[${number}]${DeepKeys<T[K], TDepth>}`
-}[number]
+type PrefixArrayAccessor<T extends any[], TDepth extends any[]> =
+  | {
+      [K in keyof T]: `[${number}]${DeepKeys<T[K], TDepth>}`
+    }[number]
+  | `[${number}]`
 
 type PrefixTupleAccessor<
   T extends any[],
