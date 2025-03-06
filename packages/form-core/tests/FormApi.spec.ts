@@ -2886,3 +2886,72 @@ it('should reset the fields value and meta to default state', async () => {
   expect(form.state.values.name).toStrictEqual('tony')
   expect(field.state.meta.isTouched).toBe(false)
 })
+
+it('should allow submit when invalid on mount with canSubmitWhenInvalid', async () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+    },
+    validators: {
+      onMount: () => {
+        return {
+          form: 'something went wrong',
+          fields: {
+            firstName: 'first name is required',
+          },
+        }
+      },
+    },
+  })
+
+  const firstNameField = new FieldApi({
+    form,
+    name: 'firstName',
+  })
+
+  firstNameField.mount()
+  form.mount()
+
+  expect(form.state.canSubmit).not.toBe(true) // canSubmitWhenInvalid by default not active
+
+  form.update({ canSubmitWhenInvalid: true })
+
+  expect(form.state.canSubmit).toBe(true)
+})
+
+it('should allow submit when invalid with canSubmitWhenInvalid', async () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+    },
+    validators: {
+      onChange: ({ value }) => {
+        if (value.firstName.length > 18) {
+          return {
+            form: 'something went wrong',
+            fields: {
+              firstName: 'first name is longer than 18 characters',
+            },
+          }
+        }
+        return null
+      },
+    },
+  })
+
+  const firstNameField = new FieldApi({
+    form,
+    name: 'firstName',
+  })
+
+  firstNameField.mount()
+  form.mount()
+
+  firstNameField.setValue('this is a first name')
+
+  expect(form.state.canSubmit).not.toBe(true) // canSubmitWhenInvalid by default not active
+
+  form.update({ canSubmitWhenInvalid: true })
+
+  expect(form.state.canSubmit).toBe(true)
+})
