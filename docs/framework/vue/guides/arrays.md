@@ -12,14 +12,14 @@ with [`Index` from `solid-js`](https://www.solidjs.com/tutorial/flow_index):
 
 ```vue
 <script setup lang="ts">
-  import { useForm } from '@tanstack/vue-form'
+import { useForm } from '@tanstack/vue-form'
 
-  const form = useForm({
-    defaultValues: {
-      people: [] as Array<{ age: number; name: string }>,
-    },
-    onSubmit: ({ value }) => alert(JSON.stringify(value)),
-  })
+const form = useForm({
+  defaultValues: {
+    people: [] as Array<{ age: number; name: string }>,
+  },
+  onSubmit: ({ value }) => alert(JSON.stringify(value)),
+})
 </script>
 
 <template>
@@ -44,10 +44,7 @@ with [`Index` from `solid-js`](https://www.solidjs.com/tutorial/flow_index):
 This will generate the mapped slot every time you run `pushValue` on `field`:
 
 ```vue
-<button
-  @click="field.pushValue({ name: '', age: 0 })"
-  type="button"
->
+<button @click="field.pushValue({ name: '', age: 0 })" type="button">
   Add person
 </button>
 ```
@@ -83,14 +80,14 @@ Finally, you can use a subfield like so:
 
 ```vue
 <script setup lang="ts">
-  import { useForm } from '@tanstack/vue-form'
+import { useForm } from '@tanstack/vue-form'
 
-  const form = useForm({
-    defaultValues: {
-      people: [] as Array<{ age: number; name: string }>,
-    },
-    onSubmit: ({ value }) => alert(JSON.stringify(value)),
-  })
+const form = useForm({
+  defaultValues: {
+    people: [] as Array<{ age: number; name: string }>,
+  },
+  onSubmit: ({ value }) => alert(JSON.stringify(value)),
+})
 </script>
 
 <template>

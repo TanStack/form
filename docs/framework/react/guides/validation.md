@@ -19,7 +19,7 @@ Here is an example:
 <form.Field
   name="age"
   validators={{
-    onChange: ({value}) =>
+    onChange: ({ value }) =>
       value < 13 ? 'You must be 13 to make an account' : undefined,
   }}
 >
@@ -47,7 +47,7 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
 <form.Field
   name="age"
   validators={{
-    onBlur: ({value}) =>
+    onBlur: ({ value }) =>
       value < 13 ? 'You must be 13 to make an account' : undefined,
   }}
 >
@@ -78,9 +78,9 @@ So you can control when the validation is done by implementing the desired callb
 <form.Field
   name="age"
   validators={{
-    onChange: ({value}) =>
+    onChange: ({ value }) =>
       value < 13 ? 'You must be 13 to make an account' : undefined,
-    onBlur: ({value}) => (value < 0 ? 'Invalid value' : undefined),
+    onBlur: ({ value }) => (value < 0 ? 'Invalid value' : undefined),
   }}
 >
   {(field) => (
@@ -114,7 +114,7 @@ Once you have your validation in place, you can map the errors from an array to 
 <form.Field
   name="age"
   validators={{
-    onChange: ({value}) =>
+    onChange: ({ value }) =>
       value < 13 ? 'You must be 13 to make an account' : undefined,
   }}
 >
@@ -122,7 +122,9 @@ Once you have your validation in place, you can map the errors from an array to 
     return (
       <>
         {/* ... */}
-        {field.state.meta.errors.length ? <em>{field.state.meta.errors.join(",")}</em> : null}
+        {field.state.meta.errors.length ? (
+          <em>{field.state.meta.errors.join(',')}</em>
+        ) : null}
       </>
     )
   }}
@@ -135,7 +137,7 @@ Or use the `errorMap` property to access the specific error you're looking for:
 <form.Field
   name="age"
   validators={{
-    onChange: ({value}) =>
+    onChange: ({ value }) =>
       value < 13 ? 'You must be 13 to make an account' : undefined,
   }}
 >
@@ -144,6 +146,28 @@ Or use the `errorMap` property to access the specific error you're looking for:
       {/* ... */}
       {field.state.meta.errorMap['onChange'] ? (
         <em>{field.state.meta.errorMap['onChange']}</em>
+      ) : null}
+    </>
+  )}
+</form.Field>
+```
+
+It's worth mentioning that our `errors` array and the `errorMap` matches the types returned by the validators. This means that:
+
+```tsx
+<form.Field
+  name="age"
+  validators={{
+    onChange: ({ value }) => (value < 13 ? { isOldEnough: false } : undefined),
+  }}
+>
+  {(field) => (
+    <>
+      {/* ... */}
+      {/* errorMap.onChange is type `{isOldEnough: false} | undefined` */}
+      {/* meta.errors is type `Array<{isOldEnough: false} | undefined>` */}
+      {!field.state.meta.errorMap['onChange']?.isOldEnough ? (
+        <em>The user is not old enough</em>
       ) : null}
     </>
   )}
@@ -270,29 +294,31 @@ export default function App() {
 > This means that:
 >
 > ```jsx
->  const form = useForm({
->     defaultValues: {
->       age: 0,
+> const form = useForm({
+>   defaultValues: {
+>     age: 0,
+>   },
+>   validators: {
+>     onChange: ({ value }) => {
+>       return {
+>         fields: {
+>           age: value.age < 12 ? 'Too young!' : undefined,
+>         },
+>       }
 >     },
->     validators: {
->       onChange: ({ value }) => {
->         return {
->           fields: {
->             age: value.age < 12 ? 'Too young!' : undefined,
->           },
->         }
->       },
->     },
+>   },
 > })
 >
 > // ...
 >
-> return <form.Field
->   name="age"
->   validators={{
->     onChange: ({ value }) => value % 2 === 0 ? 'Must be odd!' : undefined,
->   }}
-> />
+> return (
+>   <form.Field
+>     name="age"
+>     validators={{
+>       onChange: ({ value }) => (value % 2 === 0 ? 'Must be odd!' : undefined),
+>     }}
+>   />
+> )
 > ```
 >
 > Will only show `'Must be odd!` even if the 'Too young!' error is returned by the form-level validation.
@@ -307,7 +333,7 @@ To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods 
 <form.Field
   name="age"
   validators={{
-    onChangeAsync: async ({value}) => {
+    onChangeAsync: async ({ value }) => {
       await new Promise((resolve) => setTimeout(resolve, 1000))
       return value < 13 ? 'You must be 13 to make an account' : undefined
     },
@@ -337,8 +363,8 @@ Synchronous and Asynchronous validations can coexist. For example, it is possibl
 <form.Field
   name="age"
   validators={{
-    onBlur: ({value}) => (value < 13 ? 'You must be at least 13' : undefined),
-    onBlurAsync: async ({value}) => {
+    onBlur: ({ value }) => (value < 13 ? 'You must be at least 13' : undefined),
+    onBlurAsync: async ({ value }) => {
       const currentAge = await fetchCurrentAgeOnProfile()
       return value < currentAge ? 'You can only increase the age' : undefined
     },
@@ -376,16 +402,12 @@ Instead, we enable an easy method for debouncing your `async` calls by adding a 
   name="age"
   asyncDebounceMs={500}
   validators={{
-      onChangeAsync: async ({value}) => {
-        // ...
-      }
+    onChangeAsync: async ({ value }) => {
+      // ...
+    },
   }}
   children={(field) => {
-    return (
-      <>
-		{/* ... */}
-      </>
-    );
+    return <>{/* ... */}</>
   }}
 />
 ```
@@ -398,10 +420,10 @@ This will debounce every async call with a 500ms delay. You can even override th
   asyncDebounceMs={500}
   validators={{
     onChangeAsyncDebounceMs: 1500,
-    onChangeAsync: async ({value}) => {
+    onChangeAsync: async ({ value }) => {
       // ...
     },
-    onBlurAsync: async ({value}) => {
+    onBlurAsync: async ({ value }) => {
       // ...
     },
   }}
@@ -420,11 +442,12 @@ While functions provide more flexibility and customization over your validation,
 ### Standard Schema Libraries
 
 TanStack Form natively supports all libraries following the [Standard Schema specification](https://github.com/standard-schema/standard-schema), most notably:
+
 - [Zod](https://zod.dev/)
 - [Valibot](https://valibot.dev/)
 - [ArkType](https://arktype.io/)
 
-*Note:* make sure to use the latest version of the schema libraries as older versions might not support Standard Schema yet.
+_Note:_ make sure to use the latest version of the schema libraries as older versions might not support Standard Schema yet.
 
 To use schemas from these libraries you can pass them to the `validators` props as you would do with a custom function:
 
@@ -472,40 +495,6 @@ Async validations on form and field level are supported as well:
         message: 'You can only increase the age',
       },
     ),
-  }}
-  children={(field) => {
-    return <>{/* ... */}</>
-  }}
-/>
-```
-
-### Other Schema Libraries
-
-We also support [Yup](https://github.com/jquense/yup) through an official adapter:
-
-```bash
-$ npm install @tanstack/yup-form-adapter yup
-```
-
-Once done, we can add the adapter to the `validator` property on the form or field:
-
-```tsx
-import { yupValidator } from '@tanstack/yup-form-adapter'
-import * as yup from 'yup'
-
-// ...
-
-const form = useForm({
-  // Either add the validator here or on `Field`
-  validatorAdapter: yupValidator(),
-  // ...
-})
-
-<form.Field
-  name="age"
-  validatorAdapter={yupValidator()}
-  validators={{
-    onChange: yup.number().moreThan(13, 'You must be 13 to make an account'),
   }}
   children={(field) => {
     return <>{/* ... */}</>

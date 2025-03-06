@@ -16,7 +16,7 @@ describe('createForm', () => {
     }
 
     function Comp() {
-      const form = createForm<Person>()
+      const form = createForm(() => ({ defaultValues: {} as Person }))
       return (
         <>
           <form.Field
@@ -156,7 +156,8 @@ describe('createForm', () => {
     const error = 'Please enter a different value'
 
     function Comp() {
-      const form = createForm<Person>(() => ({
+      const form = createForm(() => ({
+        defaultValues: {} as Person,
         validators: {
           onChange: ({ value }) =>
             value.firstName.includes('other') ? error : undefined,
@@ -204,7 +205,8 @@ describe('createForm', () => {
     const error = 'Please enter a different value'
 
     function Comp() {
-      const form = createForm<Person>(() => ({
+      const form = createForm(() => ({
+        defaultValues: {} as Person,
         validators: {
           onChange: ({ value }) =>
             value.firstName.includes('other') ? error : undefined,
@@ -258,7 +260,8 @@ describe('createForm', () => {
     const onBlurError = 'Please enter a different value (onBlurError)'
 
     function Comp() {
-      const form = createForm<Person>(() => ({
+      const form = createForm(() => ({
+        defaultValues: {} as Person,
         validators: {
           onChange: ({ value }) =>
             value.firstName.includes('other') ? onChangeError : undefined,
@@ -311,7 +314,8 @@ describe('createForm', () => {
     const error = 'Please enter a different value'
 
     function Comp() {
-      const form = createForm<Person>(() => ({
+      const form = createForm(() => ({
+        defaultValues: {} as Person,
         validators: {
           onChangeAsync: async () => {
             await sleep(10)
@@ -362,7 +366,8 @@ describe('createForm', () => {
     const onBlurError = 'Please enter a different value (onBlurError)'
 
     function Comp() {
-      const form = createForm<Person>(() => ({
+      const form = createForm(() => ({
+        defaultValues: {} as Person,
         validators: {
           async onChangeAsync() {
             await sleep(10)
@@ -423,7 +428,8 @@ describe('createForm', () => {
     const error = 'Please enter a different value'
 
     function Comp() {
-      const form = createForm<Person>(() => ({
+      const form = createForm(() => ({
+        defaultValues: {} as Person,
         validators: {
           onChangeAsyncDebounceMs: 100,
           onChangeAsync: async () => {

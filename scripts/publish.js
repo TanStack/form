@@ -21,18 +21,6 @@ await publish({
       packageDir: 'packages/vue-form',
     },
     {
-      name: '@tanstack/zod-form-adapter',
-      packageDir: 'packages/zod-form-adapter',
-    },
-    {
-      name: '@tanstack/yup-form-adapter',
-      packageDir: 'packages/yup-form-adapter',
-    },
-    {
-      name: '@tanstack/valibot-form-adapter',
-      packageDir: 'packages/valibot-form-adapter',
-    },
-    {
       name: '@tanstack/solid-form',
       packageDir: 'packages/solid-form',
     },

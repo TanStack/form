@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import * as v from 'valibot'
 import { z } from 'zod'
 import { type } from 'arktype'
-import { FieldApi, FormApi, standardSchemaValidator } from '../src/index'
+import { FieldApi, FormApi } from '../src/index'
 import { sleep } from './utils'
 
 describe('standard schema validator', () => {
@@ -33,41 +33,14 @@ describe('standard schema validator', () => {
       field.mount()
 
       field.setValue('')
-      expect(form.state.errors).toStrictEqual([
-        'First name is too short, You must end with an "a"',
+      expect(form.state.errors).toMatchObject([
+        {
+          firstName: [
+            { message: 'First name is too short' },
+            { message: 'You must end with an "a"' },
+          ],
+        },
       ])
-    })
-
-    it('should support standard schema sync validation with valibot and reads adapter params', async () => {
-      const form = new FormApi({
-        defaultValues: {
-          firstName: '',
-          lastName: '',
-        },
-        validators: {
-          onChange: v.object({
-            firstName: v.pipe(
-              v.string(),
-              v.minLength(3, 'First name is too short'),
-              v.endsWith('a', 'You must end with an "a"'),
-            ),
-            lastName: v.string(),
-          }),
-        },
-        validatorAdapter: standardSchemaValidator({
-          transformErrors: (issues) => issues.map((issue) => issue.message)[0],
-        }),
-      })
-
-      const field = new FieldApi({
-        form,
-        name: 'firstName',
-      })
-
-      field.mount()
-
-      field.setValue('')
-      expect(form.state.errors).toStrictEqual(['First name is too short'])
     })
 
     it('should detect an async standard schema validator even without a validator adapter', async () => {
@@ -101,7 +74,11 @@ describe('standard schema validator', () => {
 
       field.setValue('')
       await vi.runAllTimersAsync()
-      expect(form.state.errors).toStrictEqual(['First name is too short'])
+      expect(form.state.errors).toMatchObject([
+        {
+          firstName: [{ message: 'First name is too short' }],
+        },
+      ])
     })
 
     it('should support standard schema sync validation with zod', async () => {
@@ -124,8 +101,10 @@ describe('standard schema validator', () => {
       field.mount()
 
       field.setValue('test')
-      expect(form.state.errors).toStrictEqual([
-        'email must be an email address',
+      expect(form.state.errors).toMatchObject([
+        {
+          email: [{ message: 'email must be an email address' }],
+        },
       ])
     })
 
@@ -152,8 +131,8 @@ describe('standard schema validator', () => {
 
       field.setValue('test')
       await vi.runAllTimersAsync()
-      expect(form.state.errors).toStrictEqual([
-        'email must be an email address',
+      expect(form.state.errors).toMatchObject([
+        { email: [{ message: 'email must be an email address' }] },
       ])
     })
 
@@ -188,7 +167,9 @@ describe('standard schema validator', () => {
 
       field.setValue('')
       await vi.runAllTimersAsync()
-      expect(form.state.errors).toStrictEqual(['First name is too short'])
+      expect(form.state.errors).toMatchObject([
+        { firstName: [{ message: 'First name is too short' }] },
+      ])
     })
 
     it('should support standard schema sync validation with arktype', async () => {
@@ -209,8 +190,14 @@ describe('standard schema validator', () => {
       field.mount()
 
       field.setValue('test')
-      expect(form.state.errors).toStrictEqual([
-        'email must be an email address (was "test")',
+      expect(form.state.errors).toMatchObject([
+        {
+          email: [
+            {
+              message: 'email must be an email address (was "test")',
+            },
+          ],
+        },
       ])
     })
 
@@ -248,18 +235,23 @@ describe('standard schema validator', () => {
       nameField.mount()
       surnameField.mount()
 
-      expect(nameField.getMeta().errors).toEqual([])
+      expect(nameField.getMeta().errors).toMatchObject([])
       nameField.setValue('q')
-      expect(nameField.getMeta().errors).toEqual([
-        'You must have a length of at least 3, You must end with an "a"',
+      expect(nameField.getMeta().errors).toMatchObject([
+        {
+          message: 'You must have a length of at least 3',
+        },
+        { message: 'You must end with an "a"' },
       ])
-      expect(surnameField.getMeta().errors).toEqual([
-        'You must have a length of at least 3',
+      expect(surnameField.getMeta().errors).toMatchObject([
+        { message: 'You must have a length of at least 3' },
       ])
       nameField.setValue('qwer')
-      expect(nameField.getMeta().errors).toEqual(['You must end with an "a"'])
+      expect(nameField.getMeta().errors).toMatchObject([
+        { message: 'You must end with an "a"' },
+      ])
       nameField.setValue('qwera')
-      expect(nameField.getMeta().errors).toEqual([])
+      expect(nameField.getMeta().errors).toMatchObject([])
     })
   })
 
@@ -282,8 +274,10 @@ describe('standard schema validator', () => {
       field.mount()
 
       field.setValue('test')
-      expect(field.getMeta().errors).toStrictEqual([
-        'must be an email address (was "test")',
+      expect(field.getMeta().errors).toMatchObject([
+        {
+          message: 'must be an email address (was "test")',
+        },
       ])
     })
 
@@ -309,7 +303,9 @@ describe('standard schema validator', () => {
       field.mount()
 
       field.setValue('')
-      expect(field.getMeta().errors).toStrictEqual(['First name is too short'])
+      expect(field.getMeta().errors).toMatchObject([
+        { message: 'First name is too short' },
+      ])
     })
 
     it('should support standard schema async validation with valibot', async () => {
@@ -340,7 +336,9 @@ describe('standard schema validator', () => {
 
       field.setValue('')
       await vi.runAllTimersAsync()
-      expect(field.getMeta().errors).toStrictEqual(['First name is too short'])
+      expect(field.getMeta().errors).toMatchObject([
+        { message: 'First name is too short' },
+      ])
     })
 
     it('should support standard schema sync validation with arktype', async () => {
@@ -361,8 +359,10 @@ describe('standard schema validator', () => {
       field.mount()
 
       field.setValue('test')
-      expect(field.getMeta().errors).toStrictEqual([
-        'must be an email address (was "test")',
+      expect(field.getMeta().errors).toMatchObject([
+        {
+          message: 'must be an email address (was "test")',
+        },
       ])
     })
   })
@@ -390,8 +390,12 @@ describe('standard schema validator', () => {
     field.mount()
 
     field.setValue('test')
-    expect(field.getMeta().errors).toStrictEqual([
-      'email must be an email address',
+    expect(field.getMeta().errors).toMatchObject([
+      { message: 'email must be an email address' },
     ])
   })
+
+  it.todo(
+    'Should allow for `disableErrorFlat` to disable flattening `errors` array',
+  )
 })

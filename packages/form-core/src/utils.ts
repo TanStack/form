@@ -1,4 +1,4 @@
-import type { ValidationCause } from './types'
+import type { GlobalFormValidationError, ValidationCause } from './types'
 import type { FormValidators } from './FormApi'
 import type { FieldValidators } from './FieldApi'
 
@@ -152,8 +152,8 @@ export function makePathArray(str: string | Array<string | number>) {
   }
 
   return str
-    .replaceAll('[', '.')
-    .replaceAll(']', '')
+    .replace(/\[/g, '.')
+    .replace(/\]/g, '')
     .replace(reFindNumbers0, intReplace)
     .replace(reFindNumbers1, `.${intReplace}.`)
     .replace(reFindNumbers2, `${intReplace}.`)
@@ -195,11 +195,11 @@ export interface AsyncValidator<T> {
 export function getAsyncValidatorArray<T>(
   cause: ValidationCause,
   options: AsyncValidatorArrayPartialOptions<T>,
-): T extends FieldValidators<any, any>
+): T extends FieldValidators<any, any, any, any, any, any, any, any, any, any>
   ? Array<
       AsyncValidator<T['onChangeAsync'] | T['onBlurAsync'] | T['onSubmitAsync']>
     >
-  : T extends FormValidators<any, any>
+  : T extends FormValidators<any, any, any, any, any, any, any, any>
     ? Array<
         AsyncValidator<
           T['onChangeAsync'] | T['onBlurAsync'] | T['onSubmitAsync']
@@ -214,8 +214,8 @@ export function getAsyncValidatorArray<T>(
     onBlurAsyncDebounceMs,
     onChangeAsyncDebounceMs,
   } = (options.validators || {}) as
-    | FieldValidators<any, any>
-    | FormValidators<any, any>
+    | FieldValidators<any, any, any, any, any, any, any, any, any, any>
+    | FormValidators<any, any, any, any, any, any, any, any>
 
   const defaultDebounceMs = asyncDebounceMs ?? 0
 
@@ -279,11 +279,11 @@ export interface SyncValidator<T> {
 export function getSyncValidatorArray<T>(
   cause: ValidationCause,
   options: SyncValidatorArrayPartialOptions<T>,
-): T extends FieldValidators<any, any>
+): T extends FieldValidators<any, any, any, any, any, any, any, any, any, any>
   ? Array<
       SyncValidator<T['onChange'] | T['onBlur'] | T['onSubmit'] | T['onMount']>
     >
-  : T extends FormValidators<any, any>
+  : T extends FormValidators<any, any, any, any, any, any, any, any>
     ? Array<
         SyncValidator<
           T['onChange'] | T['onBlur'] | T['onSubmit'] | T['onMount']
@@ -291,8 +291,8 @@ export function getSyncValidatorArray<T>(
       >
     : never {
   const { onChange, onBlur, onSubmit, onMount } = (options.validators || {}) as
-    | FieldValidators<any, any>
-    | FormValidators<any, any>
+    | FieldValidators<any, any, any, any, any, any, any, any, any, any>
+    | FormValidators<any, any, any, any, any, any, any, any>
 
   const changeValidator = { cause: 'change', validate: onChange } as const
   const blurValidator = { cause: 'blur', validate: onBlur } as const
@@ -323,4 +323,56 @@ export function getSyncValidatorArray<T>(
     default:
       return [changeValidator, serverValidator] as never
   }
+}
+
+export const isGlobalFormValidationError = (
+  error: unknown,
+): error is GlobalFormValidationError<unknown> => {
+  return !!error && typeof error === 'object' && 'fields' in error
+}
+
+export function shallow<T>(objA: T, objB: T) {
+  if (Object.is(objA, objB)) {
+    return true
+  }
+
+  if (
+    typeof objA !== 'object' ||
+    objA === null ||
+    typeof objB !== 'object' ||
+    objB === null
+  ) {
+    return false
+  }
+
+  if (objA instanceof Map && objB instanceof Map) {
+    if (objA.size !== objB.size) return false
+    for (const [k, v] of objA) {
+      if (!objB.has(k) || !Object.is(v, objB.get(k))) return false
+    }
+    return true
+  }
+
+  if (objA instanceof Set && objB instanceof Set) {
+    if (objA.size !== objB.size) return false
+    for (const v of objA) {
+      if (!objB.has(v)) return false
+    }
+    return true
+  }
+
+  const keysA = Object.keys(objA)
+  if (keysA.length !== Object.keys(objB).length) {
+    return false
+  }
+
+  for (let i = 0; i < keysA.length; i++) {
+    if (
+      !Object.prototype.hasOwnProperty.call(objB, keysA[i] as string) ||
+      !Object.is(objA[keysA[i] as keyof T], objB[keysA[i] as keyof T])
+    ) {
+      return false
+    }
+  }
+  return true
 }

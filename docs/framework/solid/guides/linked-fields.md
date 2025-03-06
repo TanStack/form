@@ -27,7 +27,7 @@ export default function App() {
       confirm_password: '',
     },
     // ...
-  }));
+  }))
 
   return (
     <div>
@@ -48,9 +48,9 @@ export default function App() {
           onChangeListenTo: ['password'],
           onChange: ({ value, fieldApi }) => {
             if (value !== fieldApi.form.getFieldValue('password')) {
-              return 'Passwords do not match';
+              return 'Passwords do not match'
             }
-            return undefined;
+            return undefined
           },
         }}
       >
@@ -70,7 +70,7 @@ export default function App() {
         )}
       </form.Field>
     </div>
-  );
+  )
 }
 ```
 

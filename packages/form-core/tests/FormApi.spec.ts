@@ -330,6 +330,147 @@ describe('form api', () => {
     expect(form.state.errors).toStrictEqual(['At least 3 names are required'])
   })
 
+  it("should shift meta (including errors) when inserting an array field's primitive value", async () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
+    form.mount()
+
+    new FieldApi({ form, name: 'names' }).mount()
+
+    const field0 = new FieldApi({ form, name: 'names[0]' })
+    field0.mount()
+
+    const field1 = new FieldApi({
+      form,
+      name: 'names[1]',
+      validators: {
+        onChange: ({ value }) => value !== 'test' && 'Invalid value',
+      },
+    })
+    field1.mount()
+
+    const field2 = new FieldApi({
+      form,
+      name: 'names[2]',
+      validators: {
+        onChange: ({ value }) => value !== 'test' && 'Invalid value',
+      },
+    })
+    field2.mount()
+
+    const field3 = new FieldApi({ form, name: 'names[3]' })
+    field3.mount()
+
+    field0.handleChange('foo')
+    expect(field0.state.meta.isDirty).toBe(true)
+
+    field1.handleBlur()
+    expect(field1.state.meta.isBlurred).toBe(true)
+
+    field1.handleChange('other')
+    expect(field1.state.meta.errors).toStrictEqual(['Invalid value'])
+
+    await form.insertFieldValue('names', 1, 'test')
+
+    // field0 meta didn't move on field1 as we inserted after it
+    expect(field0.state.meta.isDirty).toBe(true)
+    expect(field1.state.meta.isDirty).toBe(false)
+
+    // field1 meta (isBlurred = true) moved on field2
+    expect(field0.state.meta.isBlurred).toBe(false)
+    expect(field1.state.meta.isBlurred).toBe(false)
+    expect(field2.state.meta.isBlurred).toBe(true)
+    expect(field3.state.meta.isBlurred).toBe(false)
+
+    // field1 errors moved on field2
+    expect(field0.state.meta.errors).toStrictEqual([])
+    expect(field1.state.meta.errors).toStrictEqual([])
+    expect(field2.state.meta.errors).toStrictEqual(['Invalid value'])
+    expect(field3.state.meta.errors).toStrictEqual([])
+  })
+
+  it("should shift meta (including errors) when inserting an array field's primitive value, last element meta", async () => {
+    const form = new FormApi({ defaultValues: { names: ['one'] } })
+    form.mount()
+
+    new FieldApi({ form, name: 'names' }).mount()
+
+    const field0 = new FieldApi({
+      form,
+      name: 'names[0]',
+      validators: {
+        onBlur: ({ value }) => value !== 'test' && 'Invalid value',
+      },
+    })
+    field0.mount()
+
+    const field1 = new FieldApi({ form, name: 'names[1]' })
+    field1.mount()
+
+    field0.handleChange('foo')
+    expect(field0.state.meta.isDirty).toBe(true)
+
+    field0.handleBlur()
+    expect(field0.state.meta.isBlurred).toBe(true)
+    expect(field0.state.meta.errors).toStrictEqual(['Invalid value'])
+
+    await form.insertFieldValue('names', 0, 'test')
+
+    expect(field0.state.meta.isDirty).toBe(false)
+    expect(field0.state.meta.isBlurred).toBe(false)
+    expect(field0.state.meta.errors).toStrictEqual([])
+
+    expect(field1.state.meta.isDirty).toBe(true)
+    expect(field1.state.meta.isBlurred).toBe(true)
+    expect(field1.state.meta.errors).toStrictEqual(['Invalid value'])
+  })
+
+  it("should shift meta (including errors) when inserting an array field's nested value", async () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: [{ first: 'test' }, { first: 'test2' }],
+      },
+    })
+    form.mount()
+    // Since validation runs through the field, a field must be mounted for that array
+    new FieldApi({ form, name: 'names' }).mount()
+
+    const field0 = new FieldApi({
+      form,
+      name: 'names[0].first',
+      validators: {
+        onBlur: ({ value }) => value !== 'test' && 'Invalid value',
+      },
+      defaultValue: 'other',
+    })
+    field0.mount()
+
+    const field1 = new FieldApi({
+      form,
+      name: 'names[1].first',
+      validators: {
+        onBlur: ({ value }) => value !== 'test' && 'Invalid value',
+      },
+    })
+    field1.mount()
+
+    expect(field0.state.meta.errors).toStrictEqual([])
+    expect(field0.state.meta.isBlurred).toBe(false)
+    field0.handleBlur()
+    expect(field0.state.meta.errors).toStrictEqual(['Invalid value'])
+    expect(field0.state.meta.isBlurred).toBe(true)
+
+    await form.insertFieldValue('names', 0, { first: 'test' })
+
+    expect(field0.state.meta.errors).toStrictEqual([])
+    expect(field0.state.meta.isBlurred).toBe(false)
+    expect(field1.state.meta.errors).toStrictEqual(['Invalid value'])
+    expect(field1.state.meta.isBlurred).toBe(true)
+  })
+
   it("should validate all shifted fields when inserting an array field's value", async () => {
     const form = new FormApi({
       defaultValues: {
@@ -446,6 +587,58 @@ describe('form api', () => {
     expect(field3.state.meta.errors).toStrictEqual([])
   })
 
+  it('should shift meta (nested) when removing array values', () => {
+    const form = new FormApi({
+      defaultValues: {
+        users: [
+          { name: 'test', surname: 'test' },
+          { name: 'test2', surname: 'test2' },
+          { name: 'test3', surname: 'test3' },
+        ],
+      },
+    })
+    form.mount()
+    new FieldApi({ form, name: 'users' }).mount()
+    const field0Name = new FieldApi({ form, name: 'users[0].name' })
+    field0Name.mount()
+    const field0Surname = new FieldApi({ form, name: 'users[0].surname' })
+    field0Surname.mount()
+    const field1Name = new FieldApi({ form, name: 'users[1].name' })
+    field1Name.mount()
+    const field1Surname = new FieldApi({ form, name: 'users[1].surname' })
+    field1Surname.mount()
+    const field2Name = new FieldApi({ form, name: 'users[2].name' })
+    field2Name.mount()
+    const field2Surname = new FieldApi({ form, name: 'users[2].surname' })
+    field2Surname.mount()
+
+    expect(field0Name.state.meta.isBlurred).toBe(false)
+    expect(field0Surname.state.meta.isBlurred).toBe(false)
+    expect(field1Name.state.meta.isBlurred).toBe(false)
+    expect(field1Surname.state.meta.isBlurred).toBe(false)
+    expect(field2Name.state.meta.isBlurred).toBe(false)
+    expect(field2Surname.state.meta.isBlurred).toBe(false)
+
+    field0Name.handleBlur()
+    field2Name.handleBlur()
+    field2Surname.handleBlur()
+
+    expect(field0Name.state.meta.isBlurred).toBe(true)
+    expect(field0Surname.state.meta.isBlurred).toBe(false)
+    expect(field1Name.state.meta.isBlurred).toBe(false)
+    expect(field1Surname.state.meta.isBlurred).toBe(false)
+    expect(field2Name.state.meta.isBlurred).toBe(true)
+    expect(field2Surname.state.meta.isBlurred).toBe(true)
+
+    form.removeFieldValue('users', 1)
+
+    expect(field0Name.state.meta.isBlurred).toBe(true)
+    expect(field0Surname.state.meta.isBlurred).toBe(false)
+    // field2's meta moved on field1 now
+    expect(field1Name.state.meta.isBlurred).toBe(true)
+    expect(field1Surname.state.meta.isBlurred).toBe(true)
+  })
+
   it("should swap an array field's value", () => {
     const form = new FormApi({
       defaultValues: {
@@ -521,6 +714,93 @@ describe('form api', () => {
     expect(field2.state.meta.errors).toStrictEqual([])
   })
 
+  it('should swap meta when swapping array values', () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
+    form.mount()
+    // Since validation runs through the field, a field must be mounted for that array
+    new FieldApi({ form, name: 'names' }).mount()
+
+    const field0 = new FieldApi({ form, name: 'names[0]' })
+    field0.mount()
+
+    const field1 = new FieldApi({ form, name: 'names[1]' })
+    field1.mount()
+
+    const field2 = new FieldApi({ form, name: 'names[2]' })
+    field2.mount()
+
+    field1.handleBlur()
+    field1.setErrorMap({ onSubmit: 'test' })
+
+    expect(field0.state.meta.isBlurred).toBe(false)
+    expect(field1.state.meta.isBlurred).toBe(true)
+    expect(field2.state.meta.isBlurred).toBe(false)
+
+    expect(field0.state.meta.errors).toStrictEqual([])
+    expect(field1.state.meta.errors).toStrictEqual(['test'])
+    expect(field2.state.meta.errors).toStrictEqual([])
+
+    form.swapFieldValues('names', 1, 2)
+
+    expect(form.getFieldValue('names')).toStrictEqual(['one', 'three', 'two'])
+
+    expect(field0.state.meta.isBlurred).toBe(false)
+    expect(field1.state.meta.isBlurred).toBe(false)
+    expect(field2.state.meta.isBlurred).toBe(true)
+
+    expect(field0.state.meta.errors).toStrictEqual([])
+    expect(field1.state.meta.errors).toStrictEqual([])
+    // field2 doesn't have any error since it has been revalidated after swap (but has no validator)
+    expect(field2.state.meta.errors).toStrictEqual([])
+  })
+
+  it('should swap meta (nested) when swapping array values', () => {
+    const form = new FormApi({
+      defaultValues: {
+        users: [
+          { name: 'test', surname: 'test' },
+          { name: 'test2', surname: 'test2' },
+        ],
+      },
+    })
+    form.mount()
+    new FieldApi({ form, name: 'users' }).mount()
+
+    const field0Name = new FieldApi({ form, name: 'users[0].name' })
+    field0Name.mount()
+
+    const field0Surname = new FieldApi({ form, name: 'users[0].surname' })
+    field0Surname.mount()
+
+    const field1Name = new FieldApi({ form, name: 'users[1].name' })
+    field1Name.mount()
+
+    const field1Surname = new FieldApi({ form, name: 'users[1].surname' })
+    field1Surname.mount()
+
+    field0Name.handleBlur()
+    expect(field0Name.state.meta.isBlurred).toBe(true)
+    expect(field0Surname.state.meta.isBlurred).toBe(false)
+    expect(field1Name.state.meta.isBlurred).toBe(false)
+    expect(field1Surname.state.meta.isBlurred).toBe(false)
+
+    form.swapFieldValues('users', 0, 1)
+
+    expect(form.getFieldValue('users')).toStrictEqual([
+      { name: 'test2', surname: 'test2' },
+      { name: 'test', surname: 'test' },
+    ])
+
+    expect(field0Name.state.meta.isBlurred).toBe(false)
+    expect(field0Surname.state.meta.isBlurred).toBe(false)
+    expect(field1Name.state.meta.isBlurred).toBe(true)
+    expect(field1Surname.state.meta.isBlurred).toBe(false)
+  })
+
   it("should move an array field's value", () => {
     const form = new FormApi({
       defaultValues: {
@@ -593,6 +873,118 @@ describe('form api', () => {
     expect(field2.state.meta.errors).toStrictEqual([])
   })
 
+  it('should move meta (nested) when moving array values forward', () => {
+    const form = new FormApi({
+      defaultValues: {
+        users: [
+          { name: 'test', surname: 'test' },
+          { name: 'test2', surname: 'test2' },
+          { name: 'test3', surname: 'test3' },
+        ],
+      },
+    })
+    form.mount()
+    new FieldApi({ form, name: 'users' }).mount()
+
+    const field0Name = new FieldApi({ form, name: 'users[0].name' })
+    field0Name.mount()
+
+    const field0Surname = new FieldApi({ form, name: 'users[0].surname' })
+    field0Surname.mount()
+
+    const field1Name = new FieldApi({ form, name: 'users[1].name' })
+    field1Name.mount()
+
+    const field1Surname = new FieldApi({ form, name: 'users[1].surname' })
+    field1Surname.mount()
+
+    const field2Name = new FieldApi({ form, name: 'users[2].name' })
+    field2Name.mount()
+
+    const field2Surname = new FieldApi({ form, name: 'users[2].surname' })
+    field2Surname.mount()
+
+    field0Name.handleBlur()
+    expect(field0Name.state.meta.isBlurred).toBe(true)
+    expect(field0Surname.state.meta.isBlurred).toBe(false)
+    expect(field1Name.state.meta.isBlurred).toBe(false)
+    expect(field1Surname.state.meta.isBlurred).toBe(false)
+    expect(field2Name.state.meta.isBlurred).toBe(false)
+    expect(field2Surname.state.meta.isBlurred).toBe(false)
+
+    form.moveFieldValues('users', 0, 2)
+
+    expect(form.getFieldValue('users')).toStrictEqual([
+      { name: 'test2', surname: 'test2' },
+      { name: 'test3', surname: 'test3' },
+      { name: 'test', surname: 'test' },
+    ])
+
+    expect(field0Name.state.meta.isBlurred).toBe(false)
+    expect(field0Surname.state.meta.isBlurred).toBe(false)
+    expect(field1Name.state.meta.isBlurred).toBe(false)
+    expect(field1Surname.state.meta.isBlurred).toBe(false)
+    expect(field2Name.state.meta.isBlurred).toBe(true)
+    expect(field2Surname.state.meta.isBlurred).toBe(false)
+  })
+
+  it('should move meta (nested) when moving array values backward', () => {
+    const form = new FormApi({
+      defaultValues: {
+        users: [
+          { name: 'test', surname: 'test' },
+          { name: 'test2', surname: 'test2' },
+          { name: 'test3', surname: 'test3' },
+        ],
+      },
+    })
+    form.mount()
+    new FieldApi({ form, name: 'users' }).mount()
+
+    const field0Name = new FieldApi({ form, name: 'users[0].name' })
+    field0Name.mount()
+
+    const field0Surname = new FieldApi({ form, name: 'users[0].surname' })
+    field0Surname.mount()
+
+    const field1Name = new FieldApi({ form, name: 'users[1].name' })
+    field1Name.mount()
+
+    const field1Surname = new FieldApi({ form, name: 'users[1].surname' })
+    field1Surname.mount()
+
+    const field2Name = new FieldApi({ form, name: 'users[2].name' })
+    field2Name.mount()
+
+    const field2Surname = new FieldApi({ form, name: 'users[2].surname' })
+    field2Surname.mount()
+
+    field1Name.handleBlur()
+    field2Name.handleBlur()
+
+    expect(field0Name.state.meta.isBlurred).toBe(false)
+    expect(field0Surname.state.meta.isBlurred).toBe(false)
+    expect(field1Name.state.meta.isBlurred).toBe(true)
+    expect(field1Surname.state.meta.isBlurred).toBe(false)
+    expect(field2Name.state.meta.isBlurred).toBe(true)
+    expect(field2Surname.state.meta.isBlurred).toBe(false)
+
+    form.moveFieldValues('users', 2, 0)
+
+    expect(form.getFieldValue('users')).toStrictEqual([
+      { name: 'test3', surname: 'test3' },
+      { name: 'test', surname: 'test' },
+      { name: 'test2', surname: 'test2' },
+    ])
+
+    expect(field0Name.state.meta.isBlurred).toBe(true)
+    expect(field0Surname.state.meta.isBlurred).toBe(false)
+    expect(field1Name.state.meta.isBlurred).toBe(false)
+    expect(field1Surname.state.meta.isBlurred).toBe(false)
+    expect(field2Name.state.meta.isBlurred).toBe(true)
+    expect(field2Surname.state.meta.isBlurred).toBe(false)
+  })
+
   it('should handle fields inside an array', async () => {
     interface Employee {
       firstName: string
@@ -601,7 +993,9 @@ describe('form api', () => {
       employees: Partial<Employee>[]
     }
 
-    const form = new FormApi<Form>()
+    const form = new FormApi({
+      defaultValues: {} as Form,
+    })
 
     form.mount()
 
@@ -631,7 +1025,9 @@ describe('form api', () => {
       employees: Partial<Employee>[]
     }
 
-    const form = new FormApi<Form>()
+    const form = new FormApi({
+      defaultValues: {} as Form,
+    })
     form.mount()
     const field = new FieldApi({
       form,
@@ -1066,6 +1462,61 @@ describe('form api', () => {
     })
   })
 
+  it('should return all errors', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'other',
+        age: 'hi',
+      },
+      validators: {
+        onChange: ({ value }) => {
+          if (value.name === 'other') return 'onChange - form'
+          return
+        },
+        onMount: ({ value }) => {
+          if (value.name === 'other') return 'onMount - form'
+          return
+        },
+      },
+    })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChange: ({ value }) => {
+          if (value === 'other') {
+            return 'onChange - field'
+          }
+          return
+        },
+      },
+    })
+
+    form.mount()
+    field.mount()
+    expect(form.getAllErrors()).toEqual({
+      fields: {},
+      form: {
+        errors: ['onMount - form'],
+        errorMap: { onMount: 'onMount - form' },
+      },
+    })
+
+    field.setValue('other')
+    expect(form.getAllErrors()).toEqual({
+      fields: {
+        name: {
+          errors: ['onChange - field'],
+          errorMap: { onChange: 'onChange - field' },
+        },
+      },
+      form: {
+        errors: ['onChange - form'],
+        errorMap: { onChange: 'onChange - form' },
+      },
+    })
+  })
+
   it('should reset onChange errors when the issue is resolved', () => {
     const form = new FormApi({
       defaultValues: {
@@ -1263,7 +1714,31 @@ describe('form api', () => {
     ])
   })
 
-  it('should run form validation once during submit', async () => {
+  it('should run form submit validation once during submit, not once per field', async () => {
+    const formSubmit = vi.fn().mockReturnValue(false)
+
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+        age: 0,
+      },
+      validators: {
+        onSubmit: formSubmit,
+      },
+    })
+    form.mount()
+
+    new FieldApi({ form, name: 'firstName' }).mount()
+    new FieldApi({ form, name: 'lastName' }).mount()
+    new FieldApi({ form, name: 'age' }).mount()
+
+    await form.handleSubmit()
+
+    expect(formSubmit).toHaveBeenCalledOnce()
+  })
+
+  it('should run form async submit validation once during submit', async () => {
     vi.useFakeTimers()
     const formSubmit = vi.fn()
     const fieldChangeValidator = vi
@@ -1569,11 +2044,11 @@ describe('form api', () => {
     interface Form {
       name: string
     }
-    const form = new FormApi<Form>()
+    const form = new FormApi({ defaultValues: {} as Form })
     form.mount()
     form.setErrorMap({
       onChange: "name can't be Josh",
-    })
+    } as never)
     expect(form.state.errorMap.onChange).toEqual("name can't be Josh")
   })
 
@@ -1581,15 +2056,15 @@ describe('form api', () => {
     interface Form {
       name: string
     }
-    const form = new FormApi<Form>()
+    const form = new FormApi({ defaultValues: {} as Form })
     form.mount()
     form.setErrorMap({
       onChange: "name can't be Josh",
-    })
+    } as never)
     expect(form.state.errorMap.onChange).toEqual("name can't be Josh")
     form.setErrorMap({
       onBlur: 'name must begin with uppercase',
-    })
+    } as never)
     expect(form.state.errorMap.onChange).toEqual("name can't be Josh")
     expect(form.state.errorMap.onBlur).toEqual('name must begin with uppercase')
   })
@@ -1598,15 +2073,15 @@ describe('form api', () => {
     interface Form {
       name: string
     }
-    const form = new FormApi<Form>()
+    const form = new FormApi({ defaultValues: {} as Form })
     form.mount()
     form.setErrorMap({
       onChange: "name can't be Josh",
-    })
+    } as never)
     expect(form.state.errorMap.onChange).toEqual("name can't be Josh")
     form.setErrorMap({
       onChange: 'other validation error',
-    })
+    } as never)
     expect(form.state.errorMap.onChange).toEqual('other validation error')
   })
 
@@ -1976,7 +2451,7 @@ describe('form api', () => {
       employees: Partial<Employee>[]
     }
 
-    const form = new FormApi<Form>({
+    const form = new FormApi({
       validators: {
         onSubmit: ({ value }) => {
           const fieldWithErrorIndex = value.employees.findIndex(
@@ -1994,6 +2469,7 @@ describe('form api', () => {
           return null
         },
       },
+      defaultValues: {} as Form,
     })
     form.mount()
     const field = new FieldApi({
@@ -2166,6 +2642,125 @@ describe('form api', () => {
       'first name is required',
     )
   })
+
+  it('clears errors on all fields affected by form validation when condition resolves', () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      },
+      validators: {
+        onChange: ({ value }) => {
+          if (value.firstName && value.lastName) {
+            return {
+              fields: {
+                firstName: 'Do not enter both firstName and lastName',
+                lastName: 'Do not enter both firstName and lastName',
+              },
+            }
+          }
+          return null
+        },
+      },
+    })
+    form.mount()
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+    firstNameField.mount()
+
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+    })
+    lastNameField.mount()
+
+    // Set values to trigger validation errors
+    firstNameField.setValue('John')
+    lastNameField.setValue('Doe')
+
+    // Verify both fields have errors
+    expect(firstNameField.state.meta.errors).toContain(
+      'Do not enter both firstName and lastName',
+    )
+    expect(lastNameField.state.meta.errors).toContain(
+      'Do not enter both firstName and lastName',
+    )
+
+    // Clear one field's value
+    firstNameField.setValue('')
+
+    // Verify both fields have their errors cleared
+    expect(firstNameField.state.meta.errors).toStrictEqual([])
+    expect(lastNameField.state.meta.errors).toStrictEqual([])
+
+    // Verify previous error map still contains values for the fields as it should indicate the last error map processed for the fields
+    const cumulativeFieldsErrorMap = form.cumulativeFieldsErrorMap
+    expect(cumulativeFieldsErrorMap.firstName).toBeDefined()
+    expect(cumulativeFieldsErrorMap.lastName).toBeDefined()
+    expect(cumulativeFieldsErrorMap.firstName?.onChange).toBeUndefined()
+    expect(cumulativeFieldsErrorMap.lastName?.onChange).toBeUndefined()
+  })
+
+  it('clears previous form level errors for subfields when they are no longer valid', () => {
+    const form = new FormApi({
+      defaultValues: {
+        interests: [
+          { interestName: 'Interest 1' },
+          { interestName: 'Interest 2' },
+        ],
+      },
+      validators: {
+        onChange: ({ value }) => {
+          const interestNames = value.interests.map(
+            (interest) => interest.interestName,
+          )
+          const uniqueInterestNames = new Set(interestNames)
+
+          if (uniqueInterestNames.size !== interestNames.length) {
+            return {
+              fields: {
+                interests: 'No duplicate interests allowed',
+              },
+            }
+          }
+
+          return null
+        },
+      },
+    })
+    form.mount()
+
+    const interestsField = new FieldApi({
+      form,
+      name: 'interests',
+    })
+    interestsField.mount()
+
+    const field0 = new FieldApi({
+      form,
+      name: 'interests[0].interestName',
+    })
+    field0.mount()
+
+    const field1 = new FieldApi({
+      form,
+      name: 'interests[1].interestName',
+    })
+    field1.mount()
+
+    // When creating a duplicate interest via form level validator
+    field1.setValue('Interest 1')
+    expect(interestsField.state.meta.errors).toStrictEqual([
+      'No duplicate interests allowed',
+    ])
+
+    // When fixing the duplicate interest via form level validator
+    field1.setValue('Interest 2')
+    expect(interestsField.state.meta.errors).toStrictEqual([])
+  })
 })
 
 it('should not change the onBlur state of the fields when the form is submitted', async () => {
@@ -2196,4 +2791,76 @@ it('should not change the onBlur state of the fields when the form is submitted'
 
   expect(firstNameField.state.meta.isBlurred).toBe(true)
   expect(lastNameField.state.meta.isBlurred).toBe(false)
+})
+
+it('should pass the handleSubmit meta data to onSubmit', async () => {
+  const form = new FormApi({
+    onSubmitMeta: {} as { dinosaur: string },
+    onSubmit: async ({ meta }) => {
+      expect(meta.dinosaur).toEqual('Stegosaurus')
+    },
+  })
+
+  await form.handleSubmit({ dinosaur: 'Stegosaurus' })
+})
+
+it('should pass the handleSubmit default meta data to onSubmit', async () => {
+  const form = new FormApi({
+    onSubmitMeta: { dinosaur: 'Frank' } as { dinosaur: string },
+    onSubmit: async ({ meta }) => {
+      expect(meta.dinosaur).toEqual('Frank')
+    },
+  })
+
+  await form.handleSubmit()
+})
+
+it('should read and update union objects', async () => {
+  const form = new FormApi({
+    defaultValues: {
+      person: { firstName: 'firstName' },
+    } as { person?: { firstName: string } | { age: number } | null },
+  })
+
+  const field = new FieldApi({
+    form,
+    name: 'person.firstName',
+  })
+  field.mount()
+  expect(field.getValue()).toStrictEqual('firstName')
+
+  form.setFieldValue('person', { age: 0 })
+
+  const field2 = new FieldApi({
+    form,
+    name: 'person.age',
+  })
+  field2.mount()
+  expect(field2.getValue()).toStrictEqual(0)
+})
+
+it('should update isSubmitSuccessful correctly during form submission', async () => {
+  const onSubmit = vi.fn().mockResolvedValue(undefined)
+  const form = new FormApi({
+    defaultValues: {
+      name: 'test',
+    },
+    onSubmit,
+  })
+
+  form.mount()
+
+  expect(form.state.isSubmitSuccessful).toBe(false)
+
+  await form.handleSubmit()
+
+  expect(form.state.isSubmitSuccessful).toBe(true)
+  expect(onSubmit).toHaveBeenCalledTimes(1)
+
+  // Simulate a failed submission
+  onSubmit.mockRejectedValueOnce(new Error('Submission failed'))
+
+  await expect(form.handleSubmit()).rejects.toThrow('Submission failed')
+
+  expect(form.state.isSubmitSuccessful).toBe(false)
 })

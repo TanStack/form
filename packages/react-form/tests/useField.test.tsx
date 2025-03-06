@@ -1,12 +1,12 @@
-import * as React from 'react'
+/* eslint-disable react-compiler/react-compiler */
 import { describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
-import { StrictMode } from 'react'
+import { StrictMode, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import { useForm } from '../src/index'
 import { sleep } from './utils'
-import type { FieldApi } from '../src/index'
+import type { AnyFieldApi } from '../src/index'
 
 const user = userEvent.setup()
 
@@ -239,6 +239,95 @@ describe('useField', () => {
     expect(queryByText(onBlurError)).toBeInTheDocument()
   })
 
+  it('should properly update conditionally rendered fields', async () => {
+    type FormValues = {
+      firstField: string
+      secondField: string
+      showFirstField: boolean
+    }
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          firstField: '',
+          secondField: '',
+          showFirstField: true,
+        } as FormValues,
+      })
+
+      return (
+        <>
+          <form.Field name="showFirstField">
+            {({ handleChange, state }) => (
+              <div>
+                <span>Show first field</span>
+                <input
+                  data-testid="show-first-field"
+                  checked={state.value}
+                  type="checkbox"
+                  onChange={(e) => {
+                    handleChange(e.target.checked)
+                  }}
+                />
+              </div>
+            )}
+          </form.Field>
+          <form.Subscribe selector={(state) => state.values.showFirstField}>
+            {(someFlagChecked) => {
+              if (someFlagChecked) {
+                return (
+                  <form.Field name="firstField">
+                    {({ handleChange, state }) => (
+                      <label>
+                        first field
+                        <input
+                          data-testid="first-field"
+                          value={state.value}
+                          onChange={(e) => handleChange(e.target.value)}
+                        />
+                      </label>
+                    )}
+                  </form.Field>
+                )
+              }
+
+              return (
+                <form.Field name="secondField">
+                  {({ handleChange, state }) => (
+                    <label>
+                      second field
+                      <input
+                        data-testid="second-field"
+                        value={state.value}
+                        onChange={(e) => handleChange(e.target.value)}
+                      />
+                    </label>
+                  )}
+                </form.Field>
+              )
+            }}
+          </form.Subscribe>
+        </>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+
+    const showFirstFieldInput = getByTestId('show-first-field')
+
+    await user.type(getByTestId('first-field'), 'hello')
+    expect((getByTestId('first-field') as HTMLInputElement).value).toBe('hello')
+
+    await user.click(showFirstFieldInput)
+    await user.type(getByTestId('second-field'), 'world')
+    expect((getByTestId('second-field') as HTMLInputElement).value).toBe(
+      'world',
+    )
+
+    await user.click(showFirstFieldInput)
+    expect((getByTestId('first-field') as HTMLInputElement).value).toBe('hello')
+  })
+
   it('should validate async on change', async () => {
     type Person = {
       firstName: string
@@ -408,7 +497,7 @@ describe('useField', () => {
   })
 
   it('should handle strict mode properly with conditional fields', async () => {
-    function FieldInfo({ field }: { field: FieldApi<any, any> }) {
+    function FieldInfo({ field }: { field: AnyFieldApi }) {
       return (
         <>
           {field.state.meta.isTouched && field.state.meta.errors.length ? (
@@ -420,7 +509,7 @@ describe('useField', () => {
     }
 
     function Comp() {
-      const [showField, setShowField] = React.useState(true)
+      const [showField, setShowField] = useState(true)
 
       const form = useForm({
         defaultValues: {
@@ -500,9 +589,9 @@ describe('useField', () => {
     }
 
     const { getByText, findByText, queryByText } = render(
-      <React.StrictMode>
+      <StrictMode>
         <Comp />
-      </React.StrictMode>,
+      </StrictMode>,
     )
 
     await user.click(getByText('Submit'))
@@ -796,9 +885,9 @@ describe('useField', () => {
     }
 
     const { queryByText, findByText } = render(
-      <React.StrictMode>
+      <StrictMode>
         <Comp />
-      </React.StrictMode>,
+      </StrictMode>,
     )
 
     expect(queryByText('Test')).not.toBeInTheDocument()
@@ -979,5 +1068,66 @@ describe('useField', () => {
     expect(getByText('[]')).toBeInTheDocument()
     await user.click(getByText('Add person'))
     expect(getByText(`["Test"]`)).toBeInTheDocument()
+  })
+
+  it('should not rerender unrelated fields', async () => {
+    const renderCount = {
+      field1: 0,
+      field2: 0,
+    }
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          field1: '',
+          field2: '',
+        },
+      })
+
+      return (
+        <>
+          <form.Field name="field1">
+            {(field) => {
+              renderCount.field1++
+              return (
+                <input
+                  data-testid="field1"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              )
+            }}
+          </form.Field>
+          <form.Field name="field2">
+            {(field) => {
+              renderCount.field2++
+              return (
+                <input
+                  data-testid="field2"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              )
+            }}
+          </form.Field>
+        </>
+      )
+    }
+
+    const { getByTestId } = render(
+      <StrictMode>
+        <Comp />
+      </StrictMode>,
+    )
+
+    const field1InitialRender = renderCount.field1
+    const field2InitialRender = renderCount.field2
+
+    await user.type(getByTestId('field1'), 'test')
+
+    // field1 should have rerendered
+    expect(renderCount.field1).toBeGreaterThan(field1InitialRender)
+    // field2 should not have rerendered
+    expect(renderCount.field2).toBe(field2InitialRender)
   })
 })

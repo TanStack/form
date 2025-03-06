@@ -12,12 +12,12 @@ You can create options for your form so that it can be shared between multiple f
 Example:
 
 ```tsx
-const formOpts = formOptions<Person>({
+const formOpts = formOptions({
   defaultValues: {
     firstName: '',
     lastName: '',
     hobbies: [],
-  },
+  } as Person,
 })
 ```
 
@@ -38,7 +38,7 @@ const form = useForm({
 You may also create a form instance without using `formOptions` by using the standalone `useForm` API:
 
 ```tsx
-const form = useForm<Person>({
+const form = useForm({
   onSubmit: async ({ value }) => {
     // Do something with form data
     console.log(value)
@@ -47,7 +47,7 @@ const form = useForm<Person>({
     firstName: '',
     lastName: '',
     hobbies: [],
-  },
+  } as Person,
 })
 ```
 
@@ -80,7 +80,10 @@ Each field has its own state, which includes its current value, validation statu
 Example:
 
 ```tsx
-const { value, meta: { errors, isValidating } } = field.state
+const {
+  value,
+  meta: { errors, isValidating },
+} = field.state
 ```
 
 There are three field states can be very useful to see how the user interacts with a field. A field is _"touched"_ when the user clicks/tabs into it, _"pristine"_ until the user changes value in it, and _"dirty"_ after the value has been changed. You can check these states via the `isTouched`, `isPristine` and `isDirty` flags, as seen below.
@@ -94,7 +97,6 @@ const { isTouched, isPristine, isDirty } = field.state.meta
 > **Important note for users coming from `React Hook Form`**: the `isDirty` flag in `TanStack/form` is different from the flag with the same name in RHF.
 > In RHF, `isDirty = true`, when the form's values are different from the original values. If the user changes the values in a form, and then changes them again to end up with values that match the form's default values, `isDirty` will be `false` in RHF, but `true` in `TanStack/form`.
 > The default values are exposed both on the form's and the field's level in `TanStack/form` (`form.options.defaultValues`, `field.options.defaultValue`), so you can write your own `isDefaultValue()` helper if you need to emulate RHF's behavior.`
-
 
 ## Field API
 
@@ -204,6 +206,16 @@ const firstName = useStore(form.store, (state) => state.values.firstName)
 />
 ```
 
+It is important to remember that while the `useStore` hook's `selector` prop is optional, it is strongly recommended to provide one, as omitting it will result in unnecessary re-renders.
+
+```tsx
+// Correct use
+const firstName = useStore(form.store, (state) => state.values.firstName)
+const errors = useStore(form.store, (state) => state.errorMap)
+// Incorrect use
+const store = useStore(form.store)
+```
+
 Note: The usage of the `useField` hook to achieve reactivity is discouraged since it is designed to be used thoughtfully within the `form.Field` component. You might want to use `useStore(form.store)` instead.
 
 ## Listeners
@@ -219,7 +231,7 @@ Example:
     onChange: ({ value }) => {
       console.log(`Country changed to: ${value}, resetting province`)
       form.setFieldValue('province', '')
-    }
+    },
   }}
 />
 ```

@@ -1,9 +1,8 @@
-import * as React from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import { useStore } from '@tanstack/react-store'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from '../src/index'
 import { sleep } from './utils'
 
@@ -17,7 +16,9 @@ describe('useForm', () => {
     }
 
     function Comp() {
-      const form = useForm<Person>()
+      const form = useForm({
+        defaultValues: {} as Person,
+      })
 
       return (
         <>
@@ -79,7 +80,7 @@ describe('useForm', () => {
 
   it('should handle submitting properly', async () => {
     function Comp() {
-      const [submittedData, setSubmittedData] = React.useState<{
+      const [submittedData, setSubmittedData] = useState<{
         firstName: string
       } | null>(null)
 
@@ -125,8 +126,8 @@ describe('useForm', () => {
 
   it('should run on form mount', async () => {
     function Comp() {
-      const [formMounted, setFormMounted] = React.useState(false)
-      const [mountForm, setMountForm] = React.useState(false)
+      const [formMounted, setFormMounted] = useState(false)
+      const [mountForm, setMountForm] = useState(false)
 
       const form = useForm({
         defaultValues: {
@@ -756,6 +757,35 @@ describe('useForm', () => {
       useEffect(() => {
         fn(errors)
       }, [errors])
+
+      return null
+    }
+
+    render(<Comp />)
+
+    expect(fn).toHaveBeenCalledTimes(1)
+  })
+
+  it('should not cause infinite re-renders when listening to state', () => {
+    const fn = vi.fn()
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+        onSubmit: async ({ value }) => {
+          // Do something with form data
+          console.log(value)
+        },
+      })
+
+      const { values } = useStore(form.store)
+
+      useEffect(() => {
+        fn(values)
+      }, [values])
 
       return null
     }

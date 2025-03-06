@@ -41,7 +41,10 @@ Each field has its own state, which includes its current value, validation statu
 Example:
 
 ```tsx
-const { value, meta: { errors, isValidating } } = field.state
+const {
+  value,
+  meta: { errors, isValidating },
+} = field.state
 ```
 
 There are three field states can be very useful to see how the user interacts with a field. A field is _"touched"_ when the user clicks/tabs into it, _"pristine"_ until the user changes value in it, and _"dirty"_ after the value has been changed. You can check these states via the `isTouched`, `isPristine` and `isDirty` flags, as seen below.
@@ -88,7 +91,7 @@ Example:
   `,
 })
 export class AppComponent {
-  firstNameValidator: FieldValidateFn<any, any, any, any, string> = ({
+  firstNameValidator: FieldValidateFn<any, any, string, any> = ({
                                                                        value,
                                                                      }) =>
     !value
@@ -97,7 +100,7 @@ export class AppComponent {
         ? 'First name must be at least 3 characters'
         : undefined
 
-  firstNameAsyncValidator: FieldValidateAsyncFn<any, any, any, any, string> =
+  firstNameAsyncValidator: FieldValidateAsyncFn<any, string, any> =
     async ({ value }) => {
       await new Promise((resolve) => setTimeout(resolve, 1000))
       return value.includes('error') && 'No "error" allowed in first name'
@@ -186,7 +189,7 @@ import { injectForm, injectStore } from '@tanstack/angular-form'
 
 @Component(/*...*/)
 class AppComponent {
-  form = injectForm(/*...*/);
+  form = injectForm(/*...*/)
   canSubmit = injectStore(this.form, (state) => state.canSubmit)
   isSubmitting = injectStore(this.form, (state) => state.isSubmitting)
 }

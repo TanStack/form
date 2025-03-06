@@ -18,6 +18,10 @@
           "to": "installation"
         },
         {
+          "label": "Philosophy",
+          "to": "philosophy"
+        },
+        {
           "label": "Comparison",
           "to": "comparison"
         },
@@ -102,12 +106,28 @@
               "to": "framework/react/guides/linked-fields"
             },
             {
+              "label": "Reactivity",
+              "to": "framework/react/guides/reactivity"
+            },
+            {
               "label": "Listeners",
               "to": "framework/react/guides/listeners"
             },
             {
+              "label": "Custom Errors",
+              "to": "framework/react/guides/custom-errors"
+            },
+            {
+              "label": "Submission Handling",
+              "to": "framework/react/guides/submission-handling"
+            },
+            {
               "label": "UI Libraries",
               "to": "framework/react/guides/ui-libraries"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/react/guides/form-composition"
             },
             {
               "label": "React Native",
@@ -187,6 +207,19 @@
             {
               "label": "Linked Fields",
               "to": "framework/solid/guides/linked-fields"
+            }
+          ]
+        },
+        {
+          "label": "lit",
+          "children": [
+            {
+              "label": "Basic Concepts",
+              "to": "framework/lit/guides/basic-concepts"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/lit/guides/arrays"
             }
           ]
         }
@@ -285,10 +318,6 @@
               "to": "framework/react/reference/index"
             },
             {
-              "label": "Functions / createServerValidate",
-              "to": "framework/react/reference/functions/createservervalidate"
-            },
-            {
               "label": "Functions / Field",
               "to": "framework/react/reference/functions/field"
             },
@@ -381,7 +410,7 @@
             },
             {
               "label": "Classes / TanStackFormController",
-              "to": "framework/lit/reference/classes/tanstackformcontroller"
+              "to": "framework/lit/reference/tanstackformcontroller"
             }
           ]
         },
@@ -439,24 +468,16 @@
               "to": "framework/react/examples/array"
             },
             {
+              "label": "Form Composition",
+              "to": "framework/react/examples/large-form"
+            },
+            {
               "label": "TanStack Query Integration",
               "to": "framework/react/examples/query-integration"
             },
             {
               "label": "Standard Schema",
               "to": "framework/react/examples/standard-schema"
-            },
-            {
-              "label": "Yup",
-              "to": "framework/react/examples/yup"
-            },
-            {
-              "label": "Zod",
-              "to": "framework/react/examples/zod"
-            },
-            {
-              "label": "Valibot",
-              "to": "framework/react/examples/valibot"
             },
             {
               "label": "TanStack Start",
@@ -490,18 +511,6 @@
             {
               "label": "Arrays",
               "to": "framework/vue/examples/array"
-            },
-            {
-              "label": "Yup",
-              "to": "framework/vue/examples/yup"
-            },
-            {
-              "label": "Zod",
-              "to": "framework/vue/examples/zod"
-            },
-            {
-              "label": "Valibot",
-              "to": "framework/vue/examples/valibot"
             }
           ]
         },
@@ -515,18 +524,6 @@
             {
               "label": "Arrays",
               "to": "framework/angular/examples/array"
-            },
-            {
-              "label": "Yup",
-              "to": "framework/angular/examples/yup"
-            },
-            {
-              "label": "Zod",
-              "to": "framework/angular/examples/zod"
-            },
-            {
-              "label": "Valibot",
-              "to": "framework/angular/examples/valibot"
             }
           ]
         },
@@ -540,18 +537,6 @@
             {
               "label": "Arrays",
               "to": "framework/solid/examples/array"
-            },
-            {
-              "label": "Yup",
-              "to": "framework/solid/examples/yup"
-            },
-            {
-              "label": "Zod",
-              "to": "framework/solid/examples/zod"
-            },
-            {
-              "label": "Valibot",
-              "to": "framework/solid/examples/valibot"
             }
           ]
         },
