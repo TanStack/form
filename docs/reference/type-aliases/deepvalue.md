@@ -13,7 +13,7 @@ type DeepValue<TValue, TAccessor, TDepth> = unknown extends TValue ? TValue : TD
   | ApplyNull<...> | ApplyUndefined<...> : never;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:104](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L104)
+Defined in: [packages/form-core/src/util-types.ts:106](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L106)
 
 Infer the type of a deeply nested property within an object or an array.
 
