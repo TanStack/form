@@ -3,7 +3,7 @@ id: form-composition
 title: Form Composition
 ---
 
-A common criticism of TanStack Form is its verbosity out-of-the-box. While this _can_ be useful for educational purposes - helping enforce understanding our APIs - it's not ideal in production usecases.
+A common criticism of TanStack Form is its verbosity out-of-the-box. While this _can_ be useful for educational purposes - helping enforce understanding our APIs - it's not ideal in production use cases.
 
 As a result, while `form.Field` enables the most powerful and flexible usage of TanStack Form, we provide APIs that wrap it and make your application code less verbose.
 
@@ -18,7 +18,9 @@ At it's most basic, `createFormHook` is a function that takes a `fieldContext` a
 ```tsx
 import { createFormHookContexts, createFormHook } from '@tanstack/react-form'
 
-const { fieldContext, formContext } = createFormHookContexts()
+// export useFieldContext for use in your custom components
+export const { fieldContext, formContext, useFieldContext } =
+  createFormHookContexts()
 
 const { useAppForm } = createFormHook({
   fieldContext,
@@ -45,9 +47,12 @@ function App() {
 
 Once this scaffolding is in place, you can start adding custom field and form components to your form hook.
 
+> Note: the `useFieldContext` must be the same one exported from your custom form context
+
 ```tsx
+import { useFieldContext } from './form-context.tsx'
+
 function TextField({ label }: { label: string }) {
-  // Use the context returned from `createFormHookContexts`
   // The `Field` infers that it should have a `value` type of `string`
   const field = useFieldContext<string>()
   return (
