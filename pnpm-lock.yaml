@@ -635,6 +635,50 @@ importers:
         specifier: ^2.11.2
         version: 2.11.6(@testing-library/jest-dom@6.6.3)(solid-js@1.9.5)(vite@6.2.0(@types/node@22.13.9)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0))
 
+  examples/svelte/array:
+    dependencies:
+      '@tanstack/svelte-form':
+        specifier: ^1.0.0
+        version: link:../../../packages/svelte-form
+    devDependencies:
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^5.0.3
+        version: 5.0.3(svelte@5.22.5)(vite@6.2.0(@types/node@22.13.9)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0))
+      '@tsconfig/svelte':
+        specifier: ^5.0.4
+        version: 5.0.4
+      svelte:
+        specifier: ^5.20.2
+        version: 5.22.5
+      typescript:
+        specifier: 5.8.2
+        version: 5.8.2
+      vite:
+        specifier: ^6.1.1
+        version: 6.2.0(@types/node@22.13.9)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1(postcss@8.5.1))(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0)
+
+  examples/svelte/simple:
+    dependencies:
+      '@tanstack/svelte-form':
+        specifier: ^1.0.0
+        version: link:../../../packages/svelte-form
+    devDependencies:
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^5.0.3
+        version: 5.0.3(svelte@5.22.5)(vite@6.2.0(@types/node@22.13.9)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0))
+      '@tsconfig/svelte':
+        specifier: ^5.0.4
+        version: 5.0.4
+      svelte:
+        specifier: ^5.20.2
+        version: 5.22.5
+      typescript:
+        specifier: 5.8.2
+        version: 5.8.2
+      vite:
+        specifier: ^6.1.1
+        version: 6.2.0(@types/node@22.13.9)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1(postcss@8.5.1))(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0)
+
   examples/vue/array:
     dependencies:
       '@tanstack/vue-form':
@@ -818,18 +862,21 @@ importers:
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../form-core
+      '@tanstack/svelte-store':
+        specifier: ^0.7.0
+        version: 0.7.0(svelte@5.22.5)
     devDependencies:
       '@sveltejs/package':
-        specifier: ^2.3.7
+        specifier: ^2.3.10
         version: 2.3.10(svelte@5.22.5)(typescript@5.8.2)
       '@sveltejs/vite-plugin-svelte':
-        specifier: ^4.0.4
-        version: 4.0.4(svelte@5.22.5)(vite@6.2.0(@types/node@22.13.9)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0))
+        specifier: ^5.0.3
+        version: 5.0.3(svelte@5.22.5)(vite@6.2.0(@types/node@22.13.9)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0))
       premove:
         specifier: ^4.0.0
         version: 4.0.0
       svelte:
-        specifier: ^5.16.1
+        specifier: ^5.20.2
         version: 5.22.5
 
   packages/vue-form:
@@ -3907,20 +3954,20 @@ packages:
     peerDependencies:
       svelte: ^3.44.0 || ^4.0.0 || ^5.0.0-next.1
 
-  '@sveltejs/vite-plugin-svelte-inspector@3.0.1':
-    resolution: {integrity: sha512-2CKypmj1sM4GE7HjllT7UKmo4Q6L5xFRd7VMGEWhYnZ+wc6AUVU01IBd7yUi6WnFndEwWoMNOd6e8UjoN0nbvQ==}
+  '@sveltejs/vite-plugin-svelte-inspector@4.0.1':
+    resolution: {integrity: sha512-J/Nmb2Q2y7mck2hyCX4ckVHcR5tu2J+MtBEQqpDrrgELZ2uvraQcK/ioCV61AqkdXFgriksOKIceDcQmqnGhVw==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22}
     peerDependencies:
-      '@sveltejs/vite-plugin-svelte': ^4.0.0-next.0||^4.0.0
-      svelte: ^5.0.0-next.96 || ^5.0.0
-      vite: ^5.0.0
+      '@sveltejs/vite-plugin-svelte': ^5.0.0
+      svelte: ^5.0.0
+      vite: ^6.0.0
 
-  '@sveltejs/vite-plugin-svelte@4.0.4':
-    resolution: {integrity: sha512-0ba1RQ/PHen5FGpdSrW7Y3fAMQjrXantECALeOiOdBdzR5+5vPP6HVZRLmZaQL+W8m++o+haIAKq5qT+MiZ7VA==}
+  '@sveltejs/vite-plugin-svelte@5.0.3':
+    resolution: {integrity: sha512-MCFS6CrQDu1yGwspm4qtli0e63vaPCehf6V7pIMP15AsWgMKrqDGCPFF/0kn4SP0ii4aySu4Pa62+fIRGFMjgw==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22}
     peerDependencies:
-      svelte: ^5.0.0-next.96 || ^5.0.0
-      vite: ^5.0.0
+      svelte: ^5.0.0
+      vite: ^6.0.0
 
   '@swc/core-darwin-arm64@1.11.7':
     resolution: {integrity: sha512-3+LhCP2H50CLI6yv/lhOtoZ5B/hi7Q/23dye1KhbSDeDprLTm/KfLJh/iQqwaHUponf5m8C2U0y6DD+HGLz8Yw==}
@@ -4158,6 +4205,11 @@ packages:
   '@tanstack/store@0.7.0':
     resolution: {integrity: sha512-CNIhdoUsmD2NolYuaIs8VfWM467RK6oIBAW4nPEKZhg1smZ+/CwtCdpURgp7nxSqOaV9oKkzdWD80+bC66F/Jg==}
 
+  '@tanstack/svelte-store@0.7.0':
+    resolution: {integrity: sha512-FVuPuCLkGV/YcsJImIiJAZRh3s8DqI8C9jQMNXymELwsrpe538Vmb81fxHHNZx9MCtzsFcHfYOkImFB4r4QcfA==}
+    peerDependencies:
+      svelte: ^5.0.0
+
   '@tanstack/virtual-file-routes@1.99.0':
     resolution: {integrity: sha512-XvX8bfdo4CYiCW+ItVdBfCorh3PwQFqYqd7ll+XKWiWOJpqUGIG7VlziVavARZpUySiY2VBlHadiUYS7jhgjRg==}
     engines: {node: '>=12'}
@@ -4225,6 +4277,9 @@ packages:
 
   '@ts-morph/common@0.22.0':
     resolution: {integrity: sha512-HqNBuV/oIlMKdkLshXd1zKBqNQCsuPEsgQOkfFQ/eUKjRlwndXW1AjN9LVkBEIukm00gGXSRmfkl0Wv5VXLnlw==}
+
+  '@tsconfig/svelte@5.0.4':
+    resolution: {integrity: sha512-BV9NplVgLmSi4mwKzD8BD/NQ8erOY/nUE/GpgWe2ckx+wIQF5RyRirn/QsSSCPeulVpc3RA/iJt6DpfTIZps0Q==}
 
   '@tufjs/canonical-json@2.0.0':
     resolution: {integrity: sha512-yVtV8zsdo8qFHe+/3kw81dSLyF7D576A5cCFCi4X7B39tWT7SekaEFUnvnWJHz+9qO7qJTah1JbrDjWKqFtdWA==}
@@ -13602,18 +13657,18 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@sveltejs/vite-plugin-svelte-inspector@3.0.1(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.22.5)(vite@6.2.0(@types/node@22.13.9)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0)))(svelte@5.22.5)(vite@6.2.0(@types/node@22.13.9)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0))':
+  '@sveltejs/vite-plugin-svelte-inspector@4.0.1(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.22.5)(vite@6.2.0(@types/node@22.13.9)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0)))(svelte@5.22.5)(vite@6.2.0(@types/node@22.13.9)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte': 4.0.4(svelte@5.22.5)(vite@6.2.0(@types/node@22.13.9)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0))
+      '@sveltejs/vite-plugin-svelte': 5.0.3(svelte@5.22.5)(vite@6.2.0(@types/node@22.13.9)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0))
       debug: 4.4.0(supports-color@9.4.0)
       svelte: 5.22.5
       vite: 6.2.0(@types/node@22.13.9)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1(postcss@8.5.1))(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0)
     transitivePeerDependencies:
       - supports-color
 
-  '@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.22.5)(vite@6.2.0(@types/node@22.13.9)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0))':
+  '@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.22.5)(vite@6.2.0(@types/node@22.13.9)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte-inspector': 3.0.1(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.22.5)(vite@6.2.0(@types/node@22.13.9)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0)))(svelte@5.22.5)(vite@6.2.0(@types/node@22.13.9)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0))
+      '@sveltejs/vite-plugin-svelte-inspector': 4.0.1(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.22.5)(vite@6.2.0(@types/node@22.13.9)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0)))(svelte@5.22.5)(vite@6.2.0(@types/node@22.13.9)(jiti@2.4.2)(less@4.2.2)(sass@1.85.1)(sugarss@4.0.1)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0))
       debug: 4.4.0(supports-color@9.4.0)
       deepmerge: 4.3.1
       kleur: 4.1.5
@@ -14445,6 +14500,11 @@ snapshots:
 
   '@tanstack/store@0.7.0': {}
 
+  '@tanstack/svelte-store@0.7.0(svelte@5.22.5)':
+    dependencies:
+      '@tanstack/store': 0.7.0
+      svelte: 5.22.5
+
   '@tanstack/virtual-file-routes@1.99.0': {}
 
   '@tanstack/vue-store@0.7.0(vue@3.5.13(typescript@5.8.2))':
@@ -14523,6 +14583,8 @@ snapshots:
       minimatch: 9.0.5
       mkdirp: 3.0.1
       path-browserify: 1.0.1
+
+  '@tsconfig/svelte@5.0.4': {}
 
   '@tufjs/canonical-json@2.0.0': {}
 
