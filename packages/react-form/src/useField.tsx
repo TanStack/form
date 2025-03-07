@@ -305,17 +305,17 @@ type FieldComponentProps<
  * A type alias representing a field component for a specific form data type.
  */
 export type FieldComponent<
-  TParentData,
-  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TPatentSubmitMeta,
-  ExtendedApi = {},
+  in out TParentData,
+  in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TPatentSubmitMeta,
+  in out ExtendedApi = {},
 > = <
   const TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,

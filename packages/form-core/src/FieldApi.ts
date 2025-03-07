@@ -445,31 +445,31 @@ export interface FieldOptions<
  * An object type representing the required options for the FieldApi class.
  */
 export interface FieldApiOptions<
-  TParentData,
-  TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName>,
-  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChangeAsync extends
+  in out TParentData,
+  in out TName extends DeepKeys<TParentData>,
+  in out TData extends DeepValue<TParentData, TName>,
+  in out TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  in out TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  in out TOnChangeAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnBlurAsync extends
+  in out TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  in out TOnBlurAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnSubmitAsync extends
+  in out TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  in out TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TParentSubmitMeta,
+  in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TParentSubmitMeta,
 > extends FieldOptions<
     TParentData,
     TName,
@@ -857,31 +857,31 @@ export type AnyFieldApi = FieldApi<
  * the `new FieldApi` constructor.
  */
 export class FieldApi<
-  TParentData,
-  TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName>,
-  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnChangeAsync extends
+  in out TParentData,
+  in out TName extends DeepKeys<TParentData>,
+  in out TData extends DeepValue<TParentData, TName>,
+  in out TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  in out TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  in out TOnChangeAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnBlurAsync extends
+  in out TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  in out TOnBlurAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  TOnSubmitAsync extends
+  in out TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  in out TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TParentSubmitMeta,
+  in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TParentSubmitMeta,
 > {
   /**
    * A reference to the form API instance.
