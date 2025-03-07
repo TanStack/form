@@ -8,42 +8,21 @@ title: formOptions
 # Function: formOptions()
 
 ```ts
-function formOptions<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta>(defaultOpts?): 
-  | undefined
-| FormOptions<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta>
+function formOptions<T>(defaultOpts): T
 ```
 
 Defined in: [packages/form-core/src/formOptions.ts:7](https://github.com/TanStack/form/blob/main/packages/form-core/src/formOptions.ts#L7)
 
 ## Type Parameters
 
-• **TFormData**
-
-• **TOnMount** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
-
-• **TOnChange** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
-
-• **TOnChangeAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
-
-• **TOnBlur** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
-
-• **TOnBlurAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
-
-• **TOnSubmit** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
-
-• **TOnSubmitAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
-
-• **TOnServer** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
-
-• **TSubmitMeta**
+• **T** *extends* `Partial`\<[`FormOptions`](../interfaces/formoptions.md)\<`any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>\>
 
 ## Parameters
 
-### defaultOpts?
+### defaultOpts
 
-[`FormOptions`](../interfaces/formoptions.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`\>
+`T`
 
 ## Returns
 
-  \| `undefined`
-  \| [`FormOptions`](../interfaces/formoptions.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`\>
+`T`
