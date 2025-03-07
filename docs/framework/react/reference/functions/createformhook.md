@@ -11,7 +11,7 @@ title: createFormHook
 function createFormHook<TComponents, TFormComponents>(__namedParameters): object
 ```
 
-Defined in: [packages/react-form/src/createFormHook.tsx:186](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L186)
+Defined in: [packages/react-form/src/createFormHook.tsx:188](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L188)
 
 ## Type Parameters
 
@@ -111,7 +111,7 @@ withForm: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync
 
 ###### props
 
-`PropsWithChildren`\<`NoInfer`\<`TRenderProps`\> & `object`\>
+`PropsWithChildren`\<`NoInfer`\<`UnwrapOrAny`\<`TRenderProps`\>\> & `object`\>
 
 ##### Returns
 

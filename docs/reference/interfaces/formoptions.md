@@ -158,7 +158,7 @@ onSubmitMeta, the data passed from the handleSubmit handler, to the onSubmit fun
 ### transform?
 
 ```ts
-optional transform: FormTransform<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta>;
+optional transform: FormTransform<NoInfer<TFormData>, NoInfer<TOnMount>, NoInfer<TOnChange>, NoInfer<TOnChangeAsync>, NoInfer<TOnBlur>, NoInfer<TOnBlurAsync>, NoInfer<TOnSubmit>, NoInfer<TOnSubmitAsync>, NoInfer<TOnServer>, NoInfer<TSubmitMeta>>;
 ```
 
 Defined in: [packages/form-core/src/FormApi.ts:333](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L333)

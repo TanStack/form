@@ -102,4 +102,84 @@ describe('createFormHook', () => {
       },
     })
   })
+
+  it('types should be properly inferred when using formOptions', () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+
+    const formOpts = formOptions({
+      defaultValues: {
+        firstName: 'FirstName',
+        lastName: 'LastName',
+      } as Person,
+    })
+
+    const WithFormComponent = withForm({
+      ...formOpts,
+      render: ({ form }) => {
+        assertType<Person>(form.state.values)
+        return <form.Test />
+      },
+    })
+  })
+
+  it('types should be properly inferred when passing args alongside formOptions', () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+
+    const formOpts = formOptions({
+      defaultValues: {
+        firstName: 'FirstName',
+        lastName: 'LastName',
+      } as Person,
+    })
+
+    const WithFormComponent = withForm({
+      ...formOpts,
+      onSubmitMeta: {
+        test: 'test',
+      },
+      render: ({ form }) => {
+        assertType<(submitMeta: { test: string }) => Promise<void>>(
+          form.handleSubmit,
+        )
+        return <form.Test />
+      },
+    })
+  })
+
+  it('types should be properly inferred when formOptions are being overridden', () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+
+    type PersonWithAge = Person & {
+      age: number
+    }
+
+    const formOpts = formOptions({
+      defaultValues: {
+        firstName: 'FirstName',
+        lastName: 'LastName',
+      } as Person,
+    })
+
+    const WithFormComponent = withForm({
+      ...formOpts,
+      defaultValues: {
+        firstName: 'FirstName',
+        lastName: 'LastName',
+        age: 10,
+      } as PersonWithAge,
+      render: ({ form }) => {
+        assertType<PersonWithAge>(form.state.values)
+        return <form.Test />
+      },
+    })
+  })
 })
