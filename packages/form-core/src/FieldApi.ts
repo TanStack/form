@@ -1226,7 +1226,16 @@ export class FieldApi<
   pushValue = (
     value: TData extends any[] ? TData[number] : never,
     opts?: UpdateMetaOptions,
-  ) => this.form.pushFieldValue(this.name, value as any, opts)
+  ) => {
+    this.form.pushFieldValue(this.name, value as any, opts)
+
+    this.options.listeners?.onChange?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
+
+    this.validate('change')
+  }
 
   /**
    * Inserts a value at the specified index, shifting the subsequent values to the right.
@@ -1235,7 +1244,16 @@ export class FieldApi<
     index: number,
     value: TData extends any[] ? TData[number] : never,
     opts?: UpdateMetaOptions,
-  ) => this.form.insertFieldValue(this.name, index, value as any, opts)
+  ) => {
+    this.form.insertFieldValue(this.name, index, value as any, opts)
+
+    this.options.listeners?.onChange?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
+
+    this.validate('change')
+  }
 
   /**
    * Replaces a value at the specified index.
@@ -1244,25 +1262,58 @@ export class FieldApi<
     index: number,
     value: TData extends any[] ? TData[number] : never,
     opts?: UpdateMetaOptions,
-  ) => this.form.replaceFieldValue(this.name, index, value as any, opts)
+  ) => {
+    this.form.replaceFieldValue(this.name, index, value as any, opts)
+
+    this.options.listeners?.onChange?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
+
+    this.validate('change')
+  }
 
   /**
    * Removes a value at the specified index.
    */
-  removeValue = (index: number, opts?: UpdateMetaOptions) =>
+  removeValue = (index: number, opts?: UpdateMetaOptions) => {
     this.form.removeFieldValue(this.name, index, opts)
+
+    this.options.listeners?.onChange?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
+
+    this.validate('change')
+  }
 
   /**
    * Swaps the values at the specified indices.
    */
-  swapValues = (aIndex: number, bIndex: number, opts?: UpdateMetaOptions) =>
+  swapValues = (aIndex: number, bIndex: number, opts?: UpdateMetaOptions) => {
     this.form.swapFieldValues(this.name, aIndex, bIndex, opts)
+
+    this.options.listeners?.onChange?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
+
+    this.validate('change')
+  }
 
   /**
    * Moves the value at the first specified index to the second specified index.
    */
-  moveValue = (aIndex: number, bIndex: number, opts?: UpdateMetaOptions) =>
+  moveValue = (aIndex: number, bIndex: number, opts?: UpdateMetaOptions) => {
     this.form.moveFieldValues(this.name, aIndex, bIndex, opts)
+
+    this.options.listeners?.onChange?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
+
+    this.validate('change')
+  }
 
   /**
    * @private
