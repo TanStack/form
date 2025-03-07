@@ -1156,6 +1156,196 @@ describe('field api', () => {
     expect(form.getFieldValue('greet')).toStrictEqual('hello baz')
   })
 
+  it('should change the form state when running listener onChange with pushValue', () => {
+    const form = new FormApi({
+      defaultValues: {
+        items: ['first item', 'second item'],
+        itemsCount: 2,
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'items',
+      listeners: {
+        onChange: ({ value }) => {
+          form.setFieldValue('itemsCount', value.length)
+        },
+      },
+    })
+
+    field.mount()
+
+    field.pushValue('third item')
+
+    expect(form.getFieldValue('itemsCount')).toStrictEqual(3)
+    expect(form.getFieldValue('items')).toStrictEqual([
+      'first item',
+      'second item',
+      'third item',
+    ])
+  })
+
+  it('should change the form state when running listener onChange with insertValue', () => {
+    const form = new FormApi({
+      defaultValues: {
+        items: ['first item', 'second item'],
+        itemsCount: 2,
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'items',
+      listeners: {
+        onChange: ({ value }) => {
+          form.setFieldValue('itemsCount', value.length)
+        },
+      },
+    })
+
+    field.mount()
+
+    field.insertValue(1, 'middle item')
+
+    expect(form.getFieldValue('itemsCount')).toStrictEqual(3)
+    expect(form.getFieldValue('items')).toStrictEqual([
+      'first item',
+      'middle item',
+      'second item',
+    ])
+  })
+
+  it('should change the form state when running listener onChange with replaceValue', () => {
+    const form = new FormApi({
+      defaultValues: {
+        items: ['first item', 'second item'],
+        itemsModified: false,
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'items',
+      listeners: {
+        onChange: () => {
+          form.setFieldValue('itemsModified', true)
+        },
+      },
+    })
+
+    field.mount()
+
+    field.replaceValue(0, 'replaced item')
+
+    expect(form.getFieldValue('itemsModified')).toStrictEqual(true)
+    expect(form.getFieldValue('items')).toStrictEqual([
+      'replaced item',
+      'second item',
+    ])
+  })
+
+  it('should change the form state when running listener onChange with removeValue', () => {
+    const form = new FormApi({
+      defaultValues: {
+        items: ['first item', 'second item', 'third item'],
+        itemsCount: 3,
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'items',
+      listeners: {
+        onChange: ({ value }) => {
+          form.setFieldValue('itemsCount', value.length)
+        },
+      },
+    })
+
+    field.mount()
+
+    field.removeValue(1)
+
+    expect(form.getFieldValue('itemsCount')).toStrictEqual(2)
+    expect(form.getFieldValue('items')).toStrictEqual([
+      'first item',
+      'third item',
+    ])
+  })
+
+  it('should change the form state when running listener onChange with swapValues', () => {
+    const form = new FormApi({
+      defaultValues: {
+        items: ['first item', 'second item', 'third item'],
+        itemsModified: false,
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'items',
+      listeners: {
+        onChange: () => {
+          form.setFieldValue('itemsModified', true)
+        },
+      },
+    })
+
+    field.mount()
+
+    field.swapValues(0, 2)
+
+    expect(form.getFieldValue('itemsModified')).toStrictEqual(true)
+    expect(form.getFieldValue('items')).toStrictEqual([
+      'third item',
+      'second item',
+      'first item',
+    ])
+  })
+
+  it('should change the form state when running listener onChange with moveValue', () => {
+    const form = new FormApi({
+      defaultValues: {
+        items: ['first item', 'second item', 'third item'],
+        itemsModified: false,
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'items',
+      listeners: {
+        onChange: () => {
+          form.setFieldValue('itemsModified', true)
+        },
+      },
+    })
+
+    field.mount()
+
+    field.moveValue(0, 2)
+
+    expect(form.getFieldValue('itemsModified')).toStrictEqual(true)
+    expect(form.getFieldValue('items')).toStrictEqual([
+      'second item',
+      'third item',
+      'first item',
+    ])
+  })
+
   it('should reset the form on a listener', () => {
     const form = new FormApi({
       defaultValues: {
