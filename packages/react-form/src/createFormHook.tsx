@@ -13,6 +13,8 @@ import type { ComponentType, Context, JSX, PropsWithChildren } from 'react'
 import type { FieldComponent } from './useField'
 import type { ReactFormExtendedApi } from './useForm'
 
+type UnwrapOrAny<T> = [T] extends [unknown] ? any : T
+
 export function createFormHookContexts() {
   // We should never hit the `null` case here
   const fieldContext = createContext<AnyFieldApi>(null as never)
@@ -308,19 +310,19 @@ export function createFormHook<
     TFormComponents,
     TRenderProps
   >): WithFormProps<
-    TFormData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnServer,
-    TSubmitMeta,
-    TComponents,
-    TFormComponents,
-    TRenderProps
+    UnwrapOrAny<TFormData>,
+    UnwrapOrAny<TOnMount>,
+    UnwrapOrAny<TOnChange>,
+    UnwrapOrAny<TOnChangeAsync>,
+    UnwrapOrAny<TOnBlur>,
+    UnwrapOrAny<TOnBlurAsync>,
+    UnwrapOrAny<TOnSubmit>,
+    UnwrapOrAny<TOnSubmitAsync>,
+    UnwrapOrAny<TOnServer>,
+    UnwrapOrAny<TSubmitMeta>,
+    UnwrapOrAny<TComponents>,
+    UnwrapOrAny<TFormComponents>,
+    UnwrapOrAny<TRenderProps>
   >['render'] {
     return (innerProps) => render({ ...props, ...innerProps })
   }
