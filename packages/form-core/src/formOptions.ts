@@ -1,7 +1,5 @@
 import type {
-  FormAsyncValidateOrFn,
   FormOptions,
-  FormValidateOrFn,
 } from './FormApi'
 
 export function formOptions<
