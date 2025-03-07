@@ -1,47 +1,41 @@
-<script lang="ts">
-import { createForm } from '../src/index.js'
-import type { FieldApi, FormOptions } from '../src/index.js'
+<script module lang="ts">
+  interface Employee {
+    firstName: string
+    lastName: string
+  }
 
-interface Employee {
-  firstName: string
-  lastName: string
-  color?: '#FF0000' | '#00FF00' | '#0000FF'
-  employed: boolean
-  jobTitle: string
-}
-
-const sampleData: Employee = {
-  firstName: 'Bob',
-  lastName: '',
-  employed: false,
-  jobTitle: '',
-}
-
-const formConfig: FormOptions<Employee, undefined> = {
-  defaultValues: sampleData,
-}
-
-const form = createForm(() => ({
-  defaultValues: {
-    firstName: '',
+  export const sampleData: Employee = {
+    firstName: 'Christian',
     lastName: '',
-  },
-  onSubmit: async ({ value }) => {
-    // Do something with form data
-    console.log(value)
-  },
-}))
-
+  }
 </script>
+
+<script lang="ts">
+  import { createForm } from '@tanstack/svelte-form'
+
+  const form = createForm(() => ({
+    defaultValues: sampleData,
+    onSubmit: async ({ value }) => {
+      // Do something with form data
+      console.log(JSON.stringify(value))
+    },
+  }))
+
+  const state = form.useStore()
+</script>
+
 <form
   id="form"
-  on:submit|preventDefault={form.onSubmit}
+  onsubmit={(e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    form.handleSubmit()
+  }}
 >
   <h1>TanStack Form - Svelte Demo</h1>
 
   <form.Field
     name="firstName"
-    form={form}
     validators={{
       onChange: ({ value }) =>
         value.length < 3 ? 'Not long enough' : undefined,
@@ -49,14 +43,14 @@ const form = createForm(() => ({
   >
     {#snippet children(field)}
       <div>
-        <label>First Name</label>
+        <label for={field.name}>First Name</label>
         <input
-          id="firstName"
+          id={field.name}
           type="text"
           placeholder="First Name"
           value={field.state.value}
-          on:blur={() => field.handleBlur()}
-          on:input={(e: Event) => {
+          onblur={() => field.handleBlur()}
+          oninput={(e: Event) => {
             const target = e.target as HTMLInputElement
             field.handleChange(target.value)
           }}
@@ -66,7 +60,6 @@ const form = createForm(() => ({
   </form.Field>
   <form.Field
     name="lastName"
-    form={form}
     validators={{
       onChange: ({ value }) =>
         value.length < 3 ? 'Not long enough' : undefined,
@@ -74,101 +67,41 @@ const form = createForm(() => ({
   >
     {#snippet children(field)}
       <div>
-        <label>Last Name</label>
+        <label for={field.name}>Last Name</label>
         <input
-          id="lastName"
+          id={field.name}
           type="text"
           placeholder="Last Name"
           value={field.state.value}
-          on:blur={() => field.handleBlur()}
-          on:input={(e: Event) => {
+          onblur={() => field.handleBlur()}
+          oninput={(e: Event) => {
             const target = e.target as HTMLInputElement
             field.handleChange(target.value)
           }}
         />
+        {#each field.state.meta.errors as error}
+          <em>{error}</em>
+        {/each}
       </div>
-    {/snippet}
-  </form.Field>
-  <form.Field
-    name="color"
-    form={form}
-  >
-    {#snippet children(field)}
-      <div>
-        <label>Favorite Color</label>
-        <select
-          value={field.state.value}
-          on:blur={() => field.handleBlur()}
-          on:input={(e: Event) => {
-            const target = e.target as HTMLInputElement
-            field.handleChange(
-              target.value as '#FF0000' | '#00FF00' | '#0000FF',
-            )
-          }}
-        >
-          <option value="#FF0000">Red</option>
-          <option value="#00FF00">Green</option>
-          <option value="#0000FF">Blue</option>
-        </select>
-      </div>
-    {/snippet}
-  </form.Field>
-  <form.Field
-    name="employed"
-    form={form}
-  >
-    {#snippet children(field)}
-      <div>
-        <label>Employed?</label>
-        <input
-          on:input={() => field.handleChange(!field.state.value)}
-          checked={field.state.value}
-          on:blur={() => field.handleBlur()}
-          id="employed"
-          type="checkbox"
-        />
-      </div>
-      {#if field.state.value}
-        <form.Field
-          name="jobTitle"
-          validators={{
-            onChange: ({ value }) =>
-              value.length === 0
-                ? 'Needs to have a job here'
-                : null,
-          }}
-        >
-          {#snippet children(field)}
-            <div>
-              <label>Job Title</label>
-              <input
-                type="text"
-                id="jobTitle"
-                placeholder="Job Title"
-                value={subField.state.value}
-                on:blur={() => subField.handleBlur()}
-                on:input={(e: Event) => {
-                  const target = e.target as HTMLInputElement
-                  subField.handleChange(target.value)
-                }}
-              />
-            </div>
-          {/snippet}
-        </form.Field>
-      {/if}
     {/snippet}
   </form.Field>
   <div>
-    <button
-      type="submit"
-      disabled={form.state.isSubmitting}
+    <form.Subscribe
+      selector={(state) => ({
+        canSubmit: state.canSubmit,
+        isSubmitting: state.isSubmitting,
+      })}
     >
-      {form.state.isSubmitting ? html` Submitting` : 'Submit'}
-    </button>
+      {#snippet children({ canSubmit, isSubmitting })}
+        <button type="submit" disabled={!canSubmit}>
+          {isSubmitting ? 'Submitting' : 'Submit'}
+        </button>
+      {/snippet}
+    </form.Subscribe>
     <button
       type="button"
       id="reset"
-      on:click={() => {
+      onclick={() => {
         form.reset()
       }}
     >
@@ -176,4 +109,5 @@ const form = createForm(() => ({
     </button>
   </div>
 </form>
-<pre>{JSON.stringify(form.state, null, 2)}</pre>
+
+<pre>{JSON.stringify(state.current, null, 2)}</pre>

@@ -1,44 +1,236 @@
 import { FormApi } from '@tanstack/form-core'
+import { useStore } from '@tanstack/svelte-store'
 import { onMount } from 'svelte'
-import { createField } from './createField.svelte.js'
-import Field from './Field.svelte'
-import type { FormOptions, Validator } from '@tanstack/form-core'
-import type { CreateField } from './createField.svelte.js'
+// @ts-ignore tsc doesn't know about named exports from svelte files
+import Field, { createField } from './Field.svelte'
+import Subscribe from './Subscribe.svelte'
+import type {
+  Component,
+  ComponentConstructorOptions,
+  Snippet,
+  SvelteComponent,
+} from 'svelte'
+import type {
+  FormAsyncValidateOrFn,
+  FormOptions,
+  FormState,
+  FormValidateOrFn,
+} from '@tanstack/form-core'
+import type { CreateField, FieldComponent, WithoutFunction } from './types.js'
 
 export interface SvelteFormApi<
-  TFormData,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
+  TParentData,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TSubmitMeta,
 > {
-  Field: Field<TFormData, TFormValidator>
-  createField: CreateField<TFormData, TFormValidator>
+  Field: FieldComponent<
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TSubmitMeta
+  >
+  createField: CreateField<
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TSubmitMeta
+  >
+  useStore: <
+    TSelected = NoInfer<
+      FormState<
+        TParentData,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnServer
+      >
+    >,
+  >(
+    selector?: (
+      state: NoInfer<
+        FormState<
+          TParentData,
+          TFormOnMount,
+          TFormOnChange,
+          TFormOnChangeAsync,
+          TFormOnBlur,
+          TFormOnBlurAsync,
+          TFormOnSubmit,
+          TFormOnSubmitAsync,
+          TFormOnServer
+        >
+      >,
+    ) => TSelected,
+  ) => { current: TSelected }
+  // This giant type allows the type
+  // - to be used as a function (which they are now in Svelte 5)
+  // - to be used as a class (which they were in Svelte 4, and which Svelte intellisense still uses for backwards compat)
+  // - to preserve the generics correctly
+  // Once Svelte intellisense no longer has/needs backwards compat, we can remove the class constructor part
+  Subscribe: (<
+    TSelected = NoInfer<
+      FormState<
+        TParentData,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnServer
+      >
+    >,
+  >(
+    internal: any,
+    props: {
+      selector?: (
+        state: NoInfer<
+          FormState<
+            TParentData,
+            TFormOnMount,
+            TFormOnChange,
+            TFormOnChangeAsync,
+            TFormOnBlur,
+            TFormOnBlurAsync,
+            TFormOnSubmit,
+            TFormOnSubmitAsync,
+            TFormOnServer
+          >
+        >,
+      ) => TSelected
+      children: Snippet<[NoInfer<TSelected>]>
+    },
+  ) => {}) &
+    (new <
+      TSelected = NoInfer<
+        FormState<
+          TParentData,
+          TFormOnMount,
+          TFormOnChange,
+          TFormOnChangeAsync,
+          TFormOnBlur,
+          TFormOnBlurAsync,
+          TFormOnSubmit,
+          TFormOnSubmitAsync,
+          TFormOnServer
+        >
+      >,
+    >(
+      opts: ComponentConstructorOptions<{
+        selector?: (
+          state: NoInfer<
+            FormState<
+              TParentData,
+              TFormOnMount,
+              TFormOnChange,
+              TFormOnChangeAsync,
+              TFormOnBlur,
+              TFormOnBlurAsync,
+              TFormOnSubmit,
+              TFormOnSubmitAsync,
+              TFormOnServer
+            >
+          >,
+        ) => TSelected
+        children: Snippet<[NoInfer<TSelected>]>
+      }>,
+    ) => SvelteComponent) &
+    WithoutFunction<Component>
 }
 
 export function createForm<
   TParentData,
-  TFormValidator extends
-    | Validator<TParentData, unknown>
-    | undefined = undefined,
->(opts?: () => FormOptions<TParentData, TFormValidator>) {
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TSubmitMeta,
+>(
+  opts?: () => FormOptions<
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TSubmitMeta
+  >,
+) {
   const options = opts?.()
-  const api = new FormApi<TParentData, TFormValidator>(options)
-  const extendedApi: typeof api & SvelteFormApi<TParentData, TFormValidator> =
-    api as never
+  const api = new FormApi<
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TSubmitMeta
+  >(options)
+  const extendedApi: typeof api &
+    SvelteFormApi<
+      TParentData,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnServer,
+      TSubmitMeta
+    > = api as never
 
-  // TODO (43081j): somehow this needs to actually be
-  // `<Field ...props form={api}>`.
-  // No clue right now how we do that
-  extendedApi.Field = Field
+  // @ts-expect-error constructor definition exists only on a type level
+  extendedApi.Field = (internal, props) =>
+    Field(internal, { ...props, form: api })
   extendedApi.createField = (props) =>
-    // TODO (43081j): type is excessively deep.. no clue why yet
     createField(() => {
       return { ...props(), form: api }
-    })
+    }) as never
+  extendedApi.useStore = (selector) => useStore(api.store, selector)
+  // @ts-expect-error constructor definition exists only on a type level
+  extendedApi.Subscribe = (internal, props) =>
+    Subscribe(internal, { ...props, store: api.store })
 
   onMount(api.mount)
 
-  // TODO (43081j): does this actually work? we don't use any observed
-  // data, so maybe svelte won't re-run this effect?
-  $effect(() => api.update(opts?.()))
+  // formApi.update should not have any side effects. Think of it like a `useRef`
+  // that we need to keep updated every render with the most up-to-date information.
+  $effect.pre(() => api.update(opts?.()))
 
   return extendedApi
 }
