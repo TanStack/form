@@ -32,7 +32,7 @@ The `form.Subscribe` component is best suited when you need to react to somethin
 
 ```tsx
 <form.Subscribe
-  selector={(state) => state.firstName}
+  selector={(state) => state.values.firstName}
   children={(firstName) => (
     <form.Field>{(field) => <input name="lastName" value={field.state.lastName} onChange={field.handleChange}/></form.Field>
   )}
