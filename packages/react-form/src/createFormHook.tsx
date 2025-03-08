@@ -13,7 +13,42 @@ import type { ComponentType, Context, JSX, PropsWithChildren } from 'react'
 import type { FieldComponent } from './useField'
 import type { ReactFormExtendedApi } from './useForm'
 
-type UnwrapOrAny<T> = [T] extends [unknown] ? any : T
+/**
+ * TypeScript inferencing is weird.
+ *
+ * If you have:
+ *
+ * @example
+ *
+ * interface Args<T> {
+ *     arg?: T
+ * }
+ *
+ * function test<T>(arg?: Partial<Args<T>>): T {
+ *     return 0 as any;
+ * }
+ *
+ * const a = test({});
+ *
+ * Then `T` will default to `unknown`.
+ *
+ * However, if we change `test` to be:
+ *
+ * @example
+ *
+ * function test<T extends undefined>(arg?: Partial<Args<T>>): T;
+ *
+ * Then `T` becomes `undefined`.
+ *
+ * Here, we are checking if the passed type `T` extends `DefaultT` and **only**
+ * `DefaultT`, as if that's the case we assume that inferencing has not occured.
+ */
+type UnwrapOrAny<T> = [unknown] extends [T] ? any : T
+type UnwrapDefaultOrAny<DefaultT, T> = [DefaultT] extends [T]
+  ? [T] extends [DefaultT]
+    ? any
+    : T
+  : T
 
 export function createFormHookContexts() {
   // We should never hit the `null` case here
@@ -311,14 +346,14 @@ export function createFormHook<
     TRenderProps
   >): WithFormProps<
     UnwrapOrAny<TFormData>,
-    UnwrapOrAny<TOnMount>,
-    UnwrapOrAny<TOnChange>,
-    UnwrapOrAny<TOnChangeAsync>,
-    UnwrapOrAny<TOnBlur>,
-    UnwrapOrAny<TOnBlurAsync>,
-    UnwrapOrAny<TOnSubmit>,
-    UnwrapOrAny<TOnSubmitAsync>,
-    UnwrapOrAny<TOnServer>,
+    UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnMount>,
+    UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnChange>,
+    UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnChangeAsync>,
+    UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnBlur>,
+    UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnBlurAsync>,
+    UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnSubmit>,
+    UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnSubmitAsync>,
+    UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnServer>,
     UnwrapOrAny<TSubmitMeta>,
     UnwrapOrAny<TComponents>,
     UnwrapOrAny<TFormComponents>,

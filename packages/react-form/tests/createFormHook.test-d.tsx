@@ -182,4 +182,70 @@ describe('createFormHook', () => {
       },
     })
   })
+
+  it('withForm props should be properly inferred', () => {
+    const WithFormComponent = withForm({
+      props: {
+        prop1: 'test',
+        prop2: 10,
+      },
+      render: ({ form, ...props }) => {
+        assertType<{
+          prop1: string
+          prop2: number
+          children?: React.ReactNode
+        }>(props)
+        return <form.Test />
+      },
+    })
+  })
+
+  it("component made from withForm should have it's props properly typed", () => {
+    const formOpts = formOptions({
+      defaultValues: {
+        firstName: 'FirstName',
+        lastName: 'LastName',
+      },
+    })
+
+    const appForm = useAppForm(formOpts)
+
+    const WithFormComponent = withForm({
+      ...formOpts,
+      props: {
+        prop1: 'test',
+        prop2: 10,
+      },
+      render: ({ form, ...props }) => {
+        assertType<{
+          prop1: string
+          prop2: number
+        }>(props)
+        return <form.Test />
+      },
+    })
+
+    const CorrectComponent = (
+      <WithFormComponent form={appForm} prop1="test" prop2={10} />
+    )
+
+    // @ts-expect-error Missing required props prop1 and prop2
+    const MissingPropsComponent = <WithFormComponent form={appForm} />
+
+    const incorrectFormOpts = formOptions({
+      defaultValues: {
+        firstName: 'FirstName',
+        lastName: 'LastName',
+        firstNameWrong: 'FirstName',
+        lastNameWrong: 'LastName',
+      },
+    })
+
+    const incorrectAppForm = useAppForm(incorrectFormOpts)
+
+    const IncorrectFormOptsComponent = (
+      // @ts-expect-error Incorrect form opts
+      <WithFormComponent form={incorrectAppForm} prop1="test" prop2={10} />
+    )
+  })
 })
