@@ -38,7 +38,6 @@ class DB {
 }
 
 // Dummy Database to emulate server-side actions
-// This will show you the robustness of react-query integration
 const db = new DB()
 
 export default function App() {
