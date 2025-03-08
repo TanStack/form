@@ -1156,81 +1156,46 @@ describe('field api', () => {
     expect(form.getFieldValue('greet')).toStrictEqual('hello baz')
   })
 
-  it('should listen to array field changes', () => {
+  it('should run the onChange listener when the field array is changed', () => {
     const form = new FormApi({
       defaultValues: {
-        items: ['first item', 'second item'],
+        items: ['one', 'two'],
         itemsCount: 2,
         itemsModified: false,
       },
     })
-
     form.mount()
+
+    let arr!: string[]
 
     const field = new FieldApi({
       form,
       name: 'items',
       listeners: {
         onChange: ({ value }) => {
-          form.setFieldValue('itemsCount', value.length)
-          form.setFieldValue('itemsModified', true)
+          arr = value
         },
       },
     })
-
     field.mount()
 
-    type CheckFieldValuesArgs = {
-      itemsCount: number
-      items: string[]
-    }
-
-    const checkFieldValuesAndResetForNextTest = ({
-      itemsCount,
-      items,
-    }: CheckFieldValuesArgs) => {
-      expect(form.getFieldValue('itemsCount')).toStrictEqual(itemsCount)
-      expect(form.getFieldValue('items')).toStrictEqual(items)
-      expect(form.getFieldValue('itemsModified')).toStrictEqual(true)
-
-      form.setFieldValue('itemsModified', false)
-    }
-
-    field.pushValue('third item')
-    checkFieldValuesAndResetForNextTest({
-      itemsCount: 3,
-      items: ['first item', 'second item', 'third item'],
-    })
-
-    field.insertValue(1, 'middle item')
-    checkFieldValuesAndResetForNextTest({
-      itemsCount: 4,
-      items: ['first item', 'middle item', 'second item', 'third item'],
-    })
-
-    field.replaceValue(0, 'replaced item')
-    checkFieldValuesAndResetForNextTest({
-      itemsCount: 4,
-      items: ['replaced item', 'middle item', 'second item', 'third item'],
-    })
-
     field.removeValue(1)
-    checkFieldValuesAndResetForNextTest({
-      itemsCount: 3,
-      items: ['replaced item', 'second item', 'third item'],
-    })
+    expect(arr).toStrictEqual(['one'])
+
+    field.replaceValue(0, 'start')
+    expect(arr).toStrictEqual(['start'])
+
+    field.pushValue('end')
+    expect(arr).toStrictEqual(['start', 'end'])
+
+    field.insertValue(1, 'middle')
+    expect(arr).toStrictEqual(['start', 'middle', 'end'])
 
     field.swapValues(0, 2)
-    checkFieldValuesAndResetForNextTest({
-      itemsCount: 3,
-      items: ['third item', 'second item', 'replaced item'],
-    })
+    expect(arr).toStrictEqual(['end', 'middle', 'start'])
 
-    field.moveValue(0, 2)
-    checkFieldValuesAndResetForNextTest({
-      itemsCount: 3,
-      items: ['second item', 'replaced item', 'third item'],
-    })
+    field.moveValue(0, 1)
+    expect(arr).toStrictEqual(['middle', 'end', 'start'])
   })
 
   it('should reset the form on a listener', () => {
