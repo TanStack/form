@@ -494,6 +494,10 @@ export interface FieldApiOptions<
     TFormOnServer,
     TParentSubmitMeta
   >
+  /**
+   * If true, the default value will not be set in the constructor.
+   */
+  deferDefaultValue?: boolean
 }
 
 export type FieldMetaBase<
@@ -996,7 +1000,7 @@ export class FieldApi<
     this.form = opts.form as never
     this.name = opts.name as never
     this.timeoutIds = {} as Record<ValidationCause, never>
-    if (opts.defaultValue !== undefined) {
+    if (!opts.deferDefaultValue && opts.defaultValue !== undefined) {
       this.form.setFieldValue(this.name, opts.defaultValue as never, {
         dontUpdateMeta: true,
       })
