@@ -1012,7 +1012,7 @@ export class FieldApi<
       fn: () => {
         const value = this.form.getFieldValue(this.name)
         const meta = this.form.getFieldMeta(this.name) ?? {
-          defaultFieldMeta,
+          ...defaultFieldMeta,
           ...opts.defaultMeta,
         }
 
