@@ -121,6 +121,18 @@ An optional default value for the field.
 
 ***
 
+### deferDefaultValue?
+
+```ts
+optional deferDefaultValue: boolean;
+```
+
+Defined in: [packages/form-core/src/FieldApi.ts:500](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L500)
+
+If true, the default value will not be set in the constructor.
+
+***
+
 ### disableErrorFlat?
 
 ```ts
