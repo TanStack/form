@@ -181,6 +181,7 @@ export function useField<
       ...opts,
       form: opts.form,
       name: opts.name,
+      deferDefaultValue: true, // Prevents https://react.dev/link/setstate-in-render by setting the default value after initial mount for React
     })
 
     const extendedApi: typeof api &
@@ -203,6 +204,18 @@ export function useField<
   })
 
   useIsomorphicLayoutEffect(fieldApi.mount, [fieldApi])
+
+  useIsomorphicLayoutEffect(() => {
+    if (fieldApi.options.defaultValue !== undefined) {
+      fieldApi.form.setFieldValue(
+        fieldApi.name,
+        fieldApi.options.defaultValue as never,
+        {
+          dontUpdateMeta: true,
+        },
+      )
+    }
+  }, [fieldApi])
 
   /**
    * fieldApi.update should not have any side effects. Think of it like a `useRef`
