@@ -61,6 +61,8 @@ title: "@tanstack/form-core"
 
 ## Functions
 
+- [dynamicFieldOptions](functions/dynamicfieldoptions.md)
+- [fieldOptions](functions/fieldoptions.md)
 - [formOptions](functions/formoptions.md)
 - [isGlobalFormValidationError](functions/isglobalformvalidationerror.md)
 - [isStandardSchemaValidator](functions/isstandardschemavalidator.md)
