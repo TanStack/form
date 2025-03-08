@@ -20,20 +20,39 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
   )
 }
 
+class DB {
+  private data: { firstName: string; lastName: string }
+
+  constructor() {
+    this.data = { firstName: 'FirstName', lastName: 'LastName' }
+  }
+
+  getData(): { firstName: string; lastName: string } {
+    return { ...this.data }
+  }
+
+  async saveUser(value: { firstName: string; lastName: string }) {
+    this.data = value
+    return value
+  }
+}
+
+// Dummy Database to emulate server-side actions
+const db = new DB()
+
 export default function App() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ['data'],
     queryFn: async () => {
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      return { firstName: 'FirstName', lastName: 'LastName' }
+      return db.getData()
     },
   })
 
   const saveUserMutation = useMutation({
     mutationFn: async (value: { firstName: string; lastName: string }) => {
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      console.log(value)
-      return value
+      db.saveUser(value)
     },
   })
 
@@ -42,9 +61,15 @@ export default function App() {
       firstName: data?.firstName ?? '',
       lastName: data?.lastName ?? '',
     },
-    onSubmit: async ({ value }) => {
+    onSubmit: async ({ formApi, value }) => {
       // Do something with form data
       await saveUserMutation.mutateAsync(value)
+
+      // Invalidating query to recheck fresh data
+      await refetch()
+
+      // Reset the form to start-over with a clean state
+      formApi.reset()
     },
   })
 
