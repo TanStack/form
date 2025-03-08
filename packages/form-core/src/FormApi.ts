@@ -1,5 +1,6 @@
 import { Derived, Store, batch } from '@tanstack/store'
 import {
+  defaultFieldMeta,
   deleteBy,
   functionalUpdate,
   getAsyncValidatorArray,
@@ -1715,21 +1716,16 @@ export class FormApi<
     })
   }
 
+  /**
+   * resets every field's meta
+   */
   resetFieldMeta = <TField extends DeepKeys<TFormData>>(
     fieldMeta: Record<TField, AnyFieldMeta>,
   ): Record<TField, AnyFieldMeta> => {
     return Object.keys(fieldMeta).reduce(
       (acc: Record<TField, AnyFieldMeta>, key) => {
         const fieldKey = key as TField
-        acc[fieldKey] = {
-          isValidating: false,
-          isTouched: false,
-          isBlurred: false,
-          isDirty: false,
-          isPristine: true,
-          errors: [],
-          errorMap: {},
-        }
+        acc[fieldKey] = defaultFieldMeta
         return acc
       },
       {} as Record<TField, AnyFieldMeta>,
@@ -1956,6 +1952,28 @@ export class FormApi<
     this.validateField(`${field}[${index1}]` as DeepKeys<TFormData>, 'change')
     this.validateField(`${field}[${index2}]` as DeepKeys<TFormData>, 'change')
   }
+
+  /**
+   * Resets the field value and meta to default state
+   */
+  resetField = <TField extends DeepKeys<TFormData>>(field: TField) => {
+    this.baseStore.setState((prev) => {
+      return {
+        ...prev,
+        fieldMetaBase: {
+          ...prev.fieldMetaBase,
+          [field]: defaultFieldMeta,
+        },
+        values: {
+          ...prev.values,
+          [field]:
+            this.options.defaultValues &&
+            this.options.defaultValues[field as keyof TFormData],
+        },
+      }
+    })
+  }
+
   /**
    * Updates the form's errorMap
    */

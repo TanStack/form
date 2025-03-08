@@ -57,6 +57,7 @@ title: "@tanstack/form-core"
 
 ## Variables
 
+- [defaultFieldMeta](variables/defaultfieldmeta.md)
 - [standardSchemaValidators](variables/standardschemavalidators.md)
 
 ## Functions

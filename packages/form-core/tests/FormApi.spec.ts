@@ -2864,3 +2864,26 @@ it('should update isSubmitSuccessful correctly during form submission', async ()
 
   expect(form.state.isSubmitSuccessful).toBe(false)
 })
+
+it('should reset the fields value and meta to default state', async () => {
+  const form = new FormApi({
+    defaultValues: {
+      name: 'tony',
+    } as { name: string },
+  })
+  form.mount()
+  const field = new FieldApi({
+    form,
+    name: 'name',
+  })
+
+  field.mount()
+  field.setValue('hawk')
+
+  expect(form.state.values.name).toStrictEqual('hawk')
+  expect(field.state.meta.isTouched).toBe(true)
+
+  form.resetField('name')
+  expect(form.state.values.name).toStrictEqual('tony')
+  expect(field.state.meta.isTouched).toBe(false)
+})
