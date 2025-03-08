@@ -34,7 +34,15 @@ The `form.Subscribe` component is best suited when you need to react to somethin
 <form.Subscribe
   selector={(state) => state.values.firstName}
   children={(firstName) => (
-    <form.Field>{(field) => <input name="lastName" value={field.state.lastName} onChange={field.handleChange}/></form.Field>
+    <form.Field>
+      {(field) => (
+        <input
+          name="lastName"
+          value={field.state.lastName}
+          onChange={field.handleChange}
+        />
+      )}
+    </form.Field>
   )}
 />
 ```
