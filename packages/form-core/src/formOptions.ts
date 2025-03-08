@@ -1,6 +1,4 @@
-import type {
-  FormOptions,
-} from './FormApi'
+import type { FormOptions } from './FormApi'
 
 export function formOptions<
   T extends Partial<

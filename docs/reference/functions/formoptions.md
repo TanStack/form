@@ -11,7 +11,7 @@ title: formOptions
 function formOptions<T>(defaultOpts): T
 ```
 
-Defined in: [packages/form-core/src/formOptions.ts:7](https://github.com/TanStack/form/blob/main/packages/form-core/src/formOptions.ts#L7)
+Defined in: [packages/form-core/src/formOptions.ts:3](https://github.com/TanStack/form/blob/main/packages/form-core/src/formOptions.ts#L3)
 
 ## Type Parameters
 
