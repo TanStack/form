@@ -1156,6 +1156,46 @@ describe('field api', () => {
     expect(form.getFieldValue('greet')).toStrictEqual('hello baz')
   })
 
+  it('should run the onChange listener when the field array is changed', () => {
+    const form = new FormApi({
+      defaultValues: {
+        items: ['one', 'two'],
+      },
+    })
+    form.mount()
+
+    let arr!: string[]
+
+    const field = new FieldApi({
+      form,
+      name: 'items',
+      listeners: {
+        onChange: ({ value }) => {
+          arr = value
+        },
+      },
+    })
+    field.mount()
+
+    field.removeValue(1)
+    expect(arr).toStrictEqual(['one'])
+
+    field.replaceValue(0, 'start')
+    expect(arr).toStrictEqual(['start'])
+
+    field.pushValue('end')
+    expect(arr).toStrictEqual(['start', 'end'])
+
+    field.insertValue(1, 'middle')
+    expect(arr).toStrictEqual(['start', 'middle', 'end'])
+
+    field.swapValues(0, 2)
+    expect(arr).toStrictEqual(['end', 'middle', 'start'])
+
+    field.moveValue(0, 1)
+    expect(arr).toStrictEqual(['middle', 'end', 'start'])
+  })
+
   it('should reset the form on a listener', () => {
     const form = new FormApi({
       defaultValues: {
