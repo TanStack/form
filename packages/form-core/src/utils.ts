@@ -1,6 +1,6 @@
 import type { GlobalFormValidationError, ValidationCause } from './types'
 import type { FormValidators } from './FormApi'
-import type { FieldValidators } from './FieldApi'
+import type { AnyFieldMeta, FieldValidators } from './FieldApi'
 
 export type UpdaterFn<TInput, TOutput = TInput> = (input: TInput) => TOutput
 
@@ -375,4 +375,14 @@ export function shallow<T>(objA: T, objB: T) {
     }
   }
   return true
+}
+
+export const defaultFieldMeta: AnyFieldMeta = {
+  isValidating: false,
+  isTouched: false,
+  isBlurred: false,
+  isDirty: false,
+  isPristine: true,
+  errors: [],
+  errorMap: {},
 }

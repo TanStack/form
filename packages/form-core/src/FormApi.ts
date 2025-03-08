@@ -1,5 +1,6 @@
 import { Derived, Store, batch } from '@tanstack/store'
 import {
+  defaultFieldMeta,
   deleteBy,
   functionalUpdate,
   getAsyncValidatorArray,
@@ -1724,15 +1725,7 @@ export class FormApi<
     return Object.keys(fieldMeta).reduce(
       (acc: Record<TField, AnyFieldMeta>, key) => {
         const fieldKey = key as TField
-        acc[fieldKey] = {
-          isValidating: false,
-          isTouched: false,
-          isBlurred: false,
-          isDirty: false,
-          isPristine: true,
-          errors: [],
-          errorMap: {},
-        }
+        acc[fieldKey] = defaultFieldMeta
         return acc
       },
       {} as Record<TField, AnyFieldMeta>,
@@ -1969,15 +1962,7 @@ export class FormApi<
         ...prev,
         fieldMetaBase: {
           ...prev.fieldMetaBase,
-          [field]: {
-            isValidating: false,
-            isTouched: false,
-            isBlurred: false,
-            isDirty: false,
-            isPristine: true,
-            errors: [],
-            errorMap: {},
-          },
+          [field]: defaultFieldMeta,
         },
         values: {
           ...prev.values,
