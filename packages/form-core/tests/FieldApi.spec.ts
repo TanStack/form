@@ -1160,8 +1160,6 @@ describe('field api', () => {
     const form = new FormApi({
       defaultValues: {
         items: ['one', 'two'],
-        itemsCount: 2,
-        itemsModified: false,
       },
     })
     form.mount()
