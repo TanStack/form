@@ -19,40 +19,40 @@ As such, this guide shows you how you can mix-n-match TanStack Form with TanStac
 
 ```vue
 <script setup lang="ts">
-import { useForm } from '@tanstack/vue-form';
-import { useQuery } from '@tanstack/vue-query';
-import { watchEffect, reactive } from 'vue';
+import { useForm } from '@tanstack/vue-form'
+import { useQuery } from '@tanstack/vue-query'
+import { watchEffect, reactive } from 'vue'
 
 const { data, isLoading } = useQuery({
-    queryKey: ['data'],
-    queryFn: async () => {
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-        return { firstName: 'FirstName', lastName: "LastName" }
-    }
-});
+  queryKey: ['data'],
+  queryFn: async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    return { firstName: 'FirstName', lastName: 'LastName' }
+  },
+})
 
 const firstName = computed(() => data.value?.firstName || '')
 const lastName = computed(() => data.value?.lastName || '')
 
 const defaultValues = reactive({
-    firstName,
-    lastName
-});
+  firstName,
+  lastName,
+})
 
 const form = useForm({
-    defaultValues,
-    onSubmit: async ({ value }) => {
-        // Do something with form data
-        console.log(value)
-    },
+  defaultValues,
+  onSubmit: async ({ value }) => {
+    // Do something with form data
+    console.log(value)
+  },
 })
 </script>
 
 <template>
-    <p v-if="isLoading">Loading..</p>
-    <form v-else @submit.prevent.stop="form.handleSubmit">
-        <!-- ... -->
-    </form>
+  <p v-if="isLoading">Loading..</p>
+  <form v-else @submit.prevent.stop="form.handleSubmit">
+    <!-- ... -->
+  </form>
 </template>
 ```
 

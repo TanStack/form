@@ -33,6 +33,7 @@ export type CreateFieldOptions<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TSubmitMeta,
 > = FieldApiOptions<
   TParentData,
   TName,
@@ -51,7 +52,8 @@ export type CreateFieldOptions<
   TFormOnBlurAsync,
   TFormOnSubmit,
   TFormOnSubmitAsync,
-  TFormOnServer
+  TFormOnServer,
+  TSubmitMeta
 > & {
   mode?: 'value' | 'array'
 }

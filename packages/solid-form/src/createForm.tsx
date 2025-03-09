@@ -11,8 +11,6 @@ import type {
 import type { JSXElement } from 'solid-js'
 import type { CreateField, FieldComponent } from './createField'
 
-type NoInfer<T> = [T][T extends any ? 0 : never]
-
 export interface SolidFormApi<
   TParentData,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
@@ -23,6 +21,7 @@ export interface SolidFormApi<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TSubmitMeta,
 > {
   Field: FieldComponent<
     TParentData,
@@ -33,7 +32,8 @@ export interface SolidFormApi<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TSubmitMeta
   >
   createField: CreateField<
     TParentData,
@@ -44,7 +44,8 @@ export interface SolidFormApi<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TSubmitMeta
   >
   useStore: <
     TSelected = NoInfer<
@@ -121,6 +122,7 @@ export function createForm<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TSubmitMeta,
 >(
   opts?: () => FormOptions<
     TParentData,
@@ -131,7 +133,8 @@ export function createForm<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TSubmitMeta
   >,
 ) {
   const options = opts?.()
@@ -144,7 +147,8 @@ export function createForm<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TSubmitMeta
   >(options)
   const extendedApi: typeof api &
     SolidFormApi<
@@ -156,7 +160,8 @@ export function createForm<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
-      TFormOnServer
+      TFormOnServer,
+      TSubmitMeta
     > = api as never
 
   extendedApi.Field = (props) => <Field {...props} form={api} />

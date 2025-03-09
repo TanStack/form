@@ -59,18 +59,18 @@ Example:
 
 ```vue
 <template>
-    <!-- ... -->
-    <form.Field name="fullName">
-        <template v-slot="{ field }">
-            <input
-                :name="field.name"
-                :value="field.state.value"
-                @blur="field.handleBlur"
-                @input="(e) => field.handleChange(e.target.value)"
-            />
-        </template>
-    </form.Field>
-    <!-- ... -->
+  <!-- ... -->
+  <form.Field name="fullName">
+    <template v-slot="{ field }">
+      <input
+        :name="field.name"
+        :value="field.state.value"
+        @blur="field.handleBlur"
+        @input="(e) => field.handleChange(e.target.value)"
+      />
+    </template>
+  </form.Field>
+  <!-- ... -->
 </template>
 ```
 
@@ -81,7 +81,10 @@ Each field has its own state, which includes its current value, validation statu
 Example:
 
 ```js
-const { value, meta: { errors, isValidating } } = field.state
+const {
+  value,
+  meta: { errors, isValidating },
+} = field.state
 ```
 
 There are three field states can be very useful to see how the user interacts with a field. A field is _"touched"_ when the user clicks/tabs into it, _"pristine"_ until the user changes value in it, and _"dirty"_ after the value has been changed. You can check these states via the `isTouched`, `isPristine` and `isDirty` flags, as seen below.
@@ -100,12 +103,12 @@ Example:
 
 ```vue
 <template v-slot="{ field }">
-    <input
-        :name="field.name"
-        :value="field.state.value"
-        @blur="field.handleBlur"
-        @input="(e) => field.handleChange(e.target.value)"
-    />
+  <input
+    :name="field.name"
+    :value="field.state.value"
+    @blur="field.handleBlur"
+    @input="(e) => field.handleChange(e.target.value)"
+  />
 </template>
 ```
 
@@ -179,30 +182,28 @@ const onChangeFirstName = z.string().refine(
 </script>
 
 <template>
-<!-- ... -->
-    <form.Field
-        name="firstName"
-        :validators="{
-          onChange: z
-            .string()
-            .min(3, 'First name must be at least 3 characters'),
-          onChangeAsyncDebounceMs: 500,
-          onChangeAsync: onChangeFirstName,
-        }"
-      >
-        <template v-slot="{ field, state }">
-          <label :htmlFor="field.name">First Name:</label>
-          <input
-            :id="field.name"
-            :name="field.name"
-            :value="field.state.value"
-            @input="(e) => field.handleChange((e.target as HTMLInputElement).value)"
-            @blur="field.handleBlur"
-          />
-          <FieldInfo :state="state" />
-        </template>
-    </form.Field>
-<!-- ... -->
+  <!-- ... -->
+  <form.Field
+    name="firstName"
+    :validators="{
+      onChange: z.string().min(3, 'First name must be at least 3 characters'),
+      onChangeAsyncDebounceMs: 500,
+      onChangeAsync: onChangeFirstName,
+    }"
+  >
+    <template v-slot="{ field, state }">
+      <label :htmlFor="field.name">First Name:</label>
+      <input
+        :id="field.name"
+        :name="field.name"
+        :value="field.state.value"
+        @input="(e) => field.handleChange((e.target as HTMLInputElement).value)"
+        @blur="field.handleBlur"
+      />
+      <FieldInfo :state="state" />
+    </template>
+  </form.Field>
+  <!-- ... -->
 </template>
 ```
 
@@ -219,15 +220,15 @@ const firstName = form.useStore((state) => state.values.firstName)
 </script>
 
 <template>
-    <!-- ... -->
-    <form.Subscribe>
-        <template v-slot="{ canSubmit, isSubmitting }">
-            <button type="submit" :disabled="!canSubmit">
-            {{ isSubmitting ? '...' : 'Submit' }}
-            </button>
-        </template>
-    </form.Subscribe>
-    <!-- ... -->
+  <!-- ... -->
+  <form.Subscribe>
+    <template v-slot="{ canSubmit, isSubmitting }">
+      <button type="submit" :disabled="!canSubmit">
+        {{ isSubmitting ? '...' : 'Submit' }}
+      </button>
+    </template>
+  </form.Subscribe>
+  <!-- ... -->
 </template>
 ```
 
@@ -239,22 +240,22 @@ Example:
 
 ```vue
 <template>
-    <form.Field
-      name="country"
-      :listeners="{
-        onChange: ({ value }) => {
-          console.log(`Country changed to: ${value}, resetting province`)
-          form.setFieldValue('province', '')
-        } 
-      }"
-    >
-      <template v-slot="{ field }">
-        <input
-          :value="field.state.value"
-          @input="(e) => field.handleChange(e.target.value)"
-        />
-      </template>
-    </form.Field>
+  <form.Field
+    name="country"
+    :listeners="{
+      onChange: ({ value }) => {
+        console.log(`Country changed to: ${value}, resetting province`)
+        form.setFieldValue('province', '')
+      },
+    }"
+  >
+    <template v-slot="{ field }">
+      <input
+        :value="field.state.value"
+        @input="(e) => field.handleChange(e.target.value)"
+      />
+    </template>
+  </form.Field>
 </template>
 ```
 
@@ -278,7 +279,14 @@ Example:
         <div>
           Hobbies
           <div>
-            <div v-if="Array.isArray(hobbiesField.state.value) && !hobbiesField.state.value.length">No hobbies found.</div>
+            <div
+              v-if="
+                Array.isArray(hobbiesField.state.value) &&
+                !hobbiesField.state.value.length
+              "
+            >
+              No hobbies found.
+            </div>
             <div v-else>
               <div v-for="(_, i) in hobbiesField.state.value" :key="i">
                 <form.Field :name="`hobbies[${i}].name`">

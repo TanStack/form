@@ -20,7 +20,6 @@ import type {
   FieldValidators,
   FormAsyncValidateOrFn,
   FormValidateOrFn,
-  NoInfer as NoInferHack,
 } from '@tanstack/form-core'
 import type { OnChanges, OnDestroy, OnInit } from '@angular/core'
 
@@ -54,6 +53,7 @@ export class TanStackField<
     TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
     TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
     TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+    TSubmitMeta,
   >
   implements
     OnInit,
@@ -73,10 +73,7 @@ export class TanStackField<
     >
 {
   @Input({ required: true }) name!: TName
-  // Setting as NoInferHack as it's the same internal type cast as TanStack Form Core
-  // This can be removed when TanStack Form Core is moved to TS min of 5.4
-  // and the NoInfer internal util type is rm-rf'd
-  @Input() defaultValue?: NoInferHack<TData>
+  @Input() defaultValue?: NoInfer<TData>
   @Input({ transform: numberAttribute }) asyncDebounceMs?: number
   @Input({ transform: booleanAttribute }) asyncAlways?: boolean
   @Input({ required: true }) tanstackField!: FormApi<
@@ -88,7 +85,8 @@ export class TanStackField<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TSubmitMeta
   >
   @Input() validators?: NoInfer<
     FieldValidators<
@@ -146,7 +144,8 @@ export class TanStackField<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TSubmitMeta
   >
 
   private getOptions(): FieldApiOptions<
@@ -167,7 +166,8 @@ export class TanStackField<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TSubmitMeta
   > {
     return {
       defaultValue: this.defaultValue,

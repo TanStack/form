@@ -40,6 +40,7 @@ type renderCallback<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TParentSubmitMeta,
 > = (
   fieldOptions: FieldApi<
     TParentData,
@@ -59,7 +60,8 @@ type renderCallback<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TParentSubmitMeta
   >,
 ) => unknown
 
@@ -88,6 +90,7 @@ type fieldDirectiveType<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TSubmitMeta,
 > = (
   form: FormApi<
     TParentData,
@@ -98,7 +101,8 @@ type fieldDirectiveType<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TSubmitMeta
   >,
   options: FieldOptions<
     TParentData,
@@ -130,7 +134,8 @@ type fieldDirectiveType<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TSubmitMeta
   >,
 ) => {
   values: {
@@ -143,7 +148,8 @@ type fieldDirectiveType<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
-      TFormOnServer
+      TFormOnServer,
+      TSubmitMeta
     >
     options: FieldOptions<
       TParentData,
@@ -175,7 +181,8 @@ type fieldDirectiveType<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
-      TFormOnServer
+      TFormOnServer,
+      TSubmitMeta
     >
   }
 }
@@ -190,6 +197,7 @@ export class TanStackFormController<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TSubmitMeta,
 > implements ReactiveController
 {
   #host: ReactiveControllerHost
@@ -204,7 +212,8 @@ export class TanStackFormController<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TSubmitMeta
   >
 
   constructor(
@@ -218,7 +227,8 @@ export class TanStackFormController<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
-      TFormOnServer
+      TFormOnServer,
+      TSubmitMeta
     >,
   ) {
     ;(this.#host = host).addController(this)
@@ -232,7 +242,8 @@ export class TanStackFormController<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
-      TFormOnServer
+      TFormOnServer,
+      TSubmitMeta
     >(config)
   }
 
@@ -293,7 +304,8 @@ export class TanStackFormController<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
-      TFormOnServer
+      TFormOnServer,
+      TSubmitMeta
     >,
   ) {
     return (
@@ -315,7 +327,8 @@ export class TanStackFormController<
         TFormOnBlurAsync,
         TFormOnSubmit,
         TFormOnSubmitAsync,
-        TFormOnServer
+        TFormOnServer,
+        TSubmitMeta
       >
     )(this.api, fieldConfig, render)
   }
@@ -346,6 +359,7 @@ class FieldDirective<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TSubmitMeta,
 > extends AsyncDirective {
   #registered = false
   #field?: FieldApi<
@@ -366,7 +380,8 @@ class FieldDirective<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TSubmitMeta
   >
   #unmount?: () => void
 
@@ -419,7 +434,8 @@ class FieldDirective<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
-      TFormOnServer
+      TFormOnServer,
+      TSubmitMeta
     >,
     _fieldConfig: FieldOptions<
       TParentData,
@@ -451,7 +467,8 @@ class FieldDirective<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
-      TFormOnServer
+      TFormOnServer,
+      TSubmitMeta
     >,
   ) {
     if (this.#field) {

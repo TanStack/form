@@ -1462,6 +1462,61 @@ describe('form api', () => {
     })
   })
 
+  it('should return all errors', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'other',
+        age: 'hi',
+      },
+      validators: {
+        onChange: ({ value }) => {
+          if (value.name === 'other') return 'onChange - form'
+          return
+        },
+        onMount: ({ value }) => {
+          if (value.name === 'other') return 'onMount - form'
+          return
+        },
+      },
+    })
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChange: ({ value }) => {
+          if (value === 'other') {
+            return 'onChange - field'
+          }
+          return
+        },
+      },
+    })
+
+    form.mount()
+    field.mount()
+    expect(form.getAllErrors()).toEqual({
+      fields: {},
+      form: {
+        errors: ['onMount - form'],
+        errorMap: { onMount: 'onMount - form' },
+      },
+    })
+
+    field.setValue('other')
+    expect(form.getAllErrors()).toEqual({
+      fields: {
+        name: {
+          errors: ['onChange - field'],
+          errorMap: { onChange: 'onChange - field' },
+        },
+      },
+      form: {
+        errors: ['onChange - form'],
+        errorMap: { onChange: 'onChange - form' },
+      },
+    })
+  })
+
   it('should reset onChange errors when the issue is resolved', () => {
     const form = new FormApi({
       defaultValues: {
@@ -2587,6 +2642,125 @@ describe('form api', () => {
       'first name is required',
     )
   })
+
+  it('clears errors on all fields affected by form validation when condition resolves', () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      },
+      validators: {
+        onChange: ({ value }) => {
+          if (value.firstName && value.lastName) {
+            return {
+              fields: {
+                firstName: 'Do not enter both firstName and lastName',
+                lastName: 'Do not enter both firstName and lastName',
+              },
+            }
+          }
+          return null
+        },
+      },
+    })
+    form.mount()
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+    firstNameField.mount()
+
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+    })
+    lastNameField.mount()
+
+    // Set values to trigger validation errors
+    firstNameField.setValue('John')
+    lastNameField.setValue('Doe')
+
+    // Verify both fields have errors
+    expect(firstNameField.state.meta.errors).toContain(
+      'Do not enter both firstName and lastName',
+    )
+    expect(lastNameField.state.meta.errors).toContain(
+      'Do not enter both firstName and lastName',
+    )
+
+    // Clear one field's value
+    firstNameField.setValue('')
+
+    // Verify both fields have their errors cleared
+    expect(firstNameField.state.meta.errors).toStrictEqual([])
+    expect(lastNameField.state.meta.errors).toStrictEqual([])
+
+    // Verify previous error map still contains values for the fields as it should indicate the last error map processed for the fields
+    const cumulativeFieldsErrorMap = form.cumulativeFieldsErrorMap
+    expect(cumulativeFieldsErrorMap.firstName).toBeDefined()
+    expect(cumulativeFieldsErrorMap.lastName).toBeDefined()
+    expect(cumulativeFieldsErrorMap.firstName?.onChange).toBeUndefined()
+    expect(cumulativeFieldsErrorMap.lastName?.onChange).toBeUndefined()
+  })
+
+  it('clears previous form level errors for subfields when they are no longer valid', () => {
+    const form = new FormApi({
+      defaultValues: {
+        interests: [
+          { interestName: 'Interest 1' },
+          { interestName: 'Interest 2' },
+        ],
+      },
+      validators: {
+        onChange: ({ value }) => {
+          const interestNames = value.interests.map(
+            (interest) => interest.interestName,
+          )
+          const uniqueInterestNames = new Set(interestNames)
+
+          if (uniqueInterestNames.size !== interestNames.length) {
+            return {
+              fields: {
+                interests: 'No duplicate interests allowed',
+              },
+            }
+          }
+
+          return null
+        },
+      },
+    })
+    form.mount()
+
+    const interestsField = new FieldApi({
+      form,
+      name: 'interests',
+    })
+    interestsField.mount()
+
+    const field0 = new FieldApi({
+      form,
+      name: 'interests[0].interestName',
+    })
+    field0.mount()
+
+    const field1 = new FieldApi({
+      form,
+      name: 'interests[1].interestName',
+    })
+    field1.mount()
+
+    // When creating a duplicate interest via form level validator
+    field1.setValue('Interest 1')
+    expect(interestsField.state.meta.errors).toStrictEqual([
+      'No duplicate interests allowed',
+    ])
+
+    // When fixing the duplicate interest via form level validator
+    field1.setValue('Interest 2')
+    expect(interestsField.state.meta.errors).toStrictEqual([])
+  })
 })
 
 it('should not change the onBlur state of the fields when the form is submitted', async () => {
@@ -2617,4 +2791,76 @@ it('should not change the onBlur state of the fields when the form is submitted'
 
   expect(firstNameField.state.meta.isBlurred).toBe(true)
   expect(lastNameField.state.meta.isBlurred).toBe(false)
+})
+
+it('should pass the handleSubmit meta data to onSubmit', async () => {
+  const form = new FormApi({
+    onSubmitMeta: {} as { dinosaur: string },
+    onSubmit: async ({ meta }) => {
+      expect(meta.dinosaur).toEqual('Stegosaurus')
+    },
+  })
+
+  await form.handleSubmit({ dinosaur: 'Stegosaurus' })
+})
+
+it('should pass the handleSubmit default meta data to onSubmit', async () => {
+  const form = new FormApi({
+    onSubmitMeta: { dinosaur: 'Frank' } as { dinosaur: string },
+    onSubmit: async ({ meta }) => {
+      expect(meta.dinosaur).toEqual('Frank')
+    },
+  })
+
+  await form.handleSubmit()
+})
+
+it('should read and update union objects', async () => {
+  const form = new FormApi({
+    defaultValues: {
+      person: { firstName: 'firstName' },
+    } as { person?: { firstName: string } | { age: number } | null },
+  })
+
+  const field = new FieldApi({
+    form,
+    name: 'person.firstName',
+  })
+  field.mount()
+  expect(field.getValue()).toStrictEqual('firstName')
+
+  form.setFieldValue('person', { age: 0 })
+
+  const field2 = new FieldApi({
+    form,
+    name: 'person.age',
+  })
+  field2.mount()
+  expect(field2.getValue()).toStrictEqual(0)
+})
+
+it('should update isSubmitSuccessful correctly during form submission', async () => {
+  const onSubmit = vi.fn().mockResolvedValue(undefined)
+  const form = new FormApi({
+    defaultValues: {
+      name: 'test',
+    },
+    onSubmit,
+  })
+
+  form.mount()
+
+  expect(form.state.isSubmitSuccessful).toBe(false)
+
+  await form.handleSubmit()
+
+  expect(form.state.isSubmitSuccessful).toBe(true)
+  expect(onSubmit).toHaveBeenCalledTimes(1)
+
+  // Simulate a failed submission
+  onSubmit.mockRejectedValueOnce(new Error('Submission failed'))
+
+  await expect(form.handleSubmit()).rejects.toThrow('Submission failed')
+
+  expect(form.state.isSubmitSuccessful).toBe(false)
 })

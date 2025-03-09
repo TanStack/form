@@ -11,7 +11,6 @@ Today we support the following meta-frameworks:
 - [Next.js](https://nextjs.org/)
 - [Remix](https://remix.run)
 
-
 ## Using TanStack Form in TanStack Start
 
 This section focuses on integrating TanStack Form with TanStack Start.
@@ -309,7 +308,6 @@ Here, we're using [React's `useActionState` hook](https://playfulprogramming.com
 >
 > This is because you're not importing server-side code from `@tanstack/react-form/nextjs`. Ensure you're importing the correct module based on the environment.
 >
->
 > [This is a limitation of Next.js](https://github.com/phryneas/rehackt). Other meta-frameworks will likely not have this same problem.
 
 ## Using TanStack Form in Remix
@@ -325,7 +323,6 @@ Here, we're using [React's `useActionState` hook](https://playfulprogramming.com
 ## Remix integration
 
 Let's start by creating a `formOption` that we'll use to share the form's shape across the client and server.
-
 
 ```typescript
 // routes/_index/route.tsx
@@ -348,7 +345,7 @@ Next, we can create [an action](https://remix.run/docs/en/main/discussion/data-f
 import {
   ServerValidateError,
   createServerValidate,
-  formOptions
+  formOptions,
 } from '@tanstack/react-form/remix'
 
 import type { ActionFunctionArgs } from '@remix-run/node'
@@ -365,7 +362,7 @@ const serverValidate = createServerValidate({
   },
 })
 
-export async function action({request}: ActionFunctionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData()
   try {
     await serverValidate(formData)
@@ -379,7 +376,6 @@ export async function action({request}: ActionFunctionArgs) {
   }
 
   // Your form has successfully validated!
-
 }
 ```
 

@@ -41,34 +41,34 @@ export default function App() {
 
   return (
     <>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            handleSubmit()
-          }}
-        >
-          <Field
-            name="firstName"
-            children={({ state, handleChange, handleBlur }) => (
-              <TextInput
-                defaultValue={state.value}
-                onChange={(e) => handleChange(e.target.value)}
-                onBlur={handleBlur}
-                placeholder="Enter your name"
-              />
-            )}
-          />
-          <Field
-            name="isChecked"
-            children={({ state, handleChange, handleBlur }) => (
-              <Checkbox
-                onChange={(e) => handleChange(e.target.checked)}
-                onBlur={handleBlur}
-                checked={state.value}
-              />
-            )}
-          />
-        </form>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          handleSubmit()
+        }}
+      >
+        <Field
+          name="firstName"
+          children={({ state, handleChange, handleBlur }) => (
+            <TextInput
+              defaultValue={state.value}
+              onChange={(e) => handleChange(e.target.value)}
+              onBlur={handleBlur}
+              placeholder="Enter your name"
+            />
+          )}
+        />
+        <Field
+          name="isChecked"
+          children={({ state, handleChange, handleBlur }) => (
+            <Checkbox
+              onChange={(e) => handleChange(e.target.checked)}
+              onBlur={handleBlur}
+              checked={state.value}
+            />
+          )}
+        />
+      </form>
       <div>
         <pre>{JSON.stringify(state.values, null, 2)}</pre>
       </div>

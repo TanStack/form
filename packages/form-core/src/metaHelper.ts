@@ -18,6 +18,7 @@ export function metaHelper<
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
 >(
   formApi: FormApi<
     TFormData,
@@ -28,7 +29,8 @@ export function metaHelper<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
-    TOnServer
+    TOnServer,
+    TSubmitMeta
   >,
 ) {
   function handleArrayFieldMetaShift(
@@ -108,6 +110,8 @@ export function metaHelper<
       const nextFieldMeta = formApi.getFieldMeta(nextFieldKey)
       if (nextFieldMeta) {
         formApi.setFieldMeta(fieldKey, nextFieldMeta)
+      } else {
+        formApi.setFieldMeta(fieldKey, getEmptyFieldMeta())
       }
     })
   }

@@ -9,3 +9,6 @@ export type { UseField, FieldComponent } from './useField'
 export { useField, Field } from './useField'
 
 export { useTransform } from './useTransform'
+
+export type { WithFormProps } from './createFormHook'
+export { createFormHook, createFormHookContexts } from './createFormHook'

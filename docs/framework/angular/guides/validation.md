@@ -237,9 +237,6 @@ export class AppComponent {
 }
 ```
 
-
-
-
 ## Validation at field level vs at form level
 
 As shown above, each `[tanstackField]` accepts its own validation rules via the `onChange`, `onBlur` etc... callbacks. It is also possible to define validation rules at the form level (as opposed to field by field) by passing similar callbacks to the `injectForm()` function.
@@ -425,11 +422,12 @@ While functions provide more flexibility and customization over your validation,
 ### Standard Schema Libraries
 
 TanStack Form natively supports all libraries following the [Standard Schema specification](https://github.com/standard-schema/standard-schema), most notably:
+
 - [Zod](https://zod.dev/)
 - [Valibot](https://valibot.dev/)
 - [ArkType](https://arktype.io/)
 
-*Note:* make sure to use the latest version of the schema libraries as older versions might not support Standard Schema yet.
+_Note:_ make sure to use the latest version of the schema libraries as older versions might not support Standard Schema yet.
 
 To use schemas from these libraries you can pass them to the `validators` props as you would do with a custom function:
 
@@ -465,7 +463,6 @@ export class AppComponent {
 ```
 
 Async validations on form and field level are supported as well:
-
 
 ```angular-ts
 @Component({

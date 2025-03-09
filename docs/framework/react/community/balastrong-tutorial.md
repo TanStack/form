@@ -7,7 +7,6 @@ TanStack Form maintainer [Balastrong](https://bsky.app/profile/leonardomontini.d
 
 [Watch the full playlist](https://www.youtube.com/playlist?list=PLOQjd5dsGSxInTKUWTxyqSKwZCjDIUs0Y)
 
-
 ## 1. [Setup and validation](https://youtu.be/Pf1qn35bgjs)
 
 The first steps into TanStack Form learning all the basics, from setting up the library to creating a simple form with text fields and validation (sync, debounced and async). [Watch video (8:16)](https://youtu.be/Pf1qn35bgjs)

@@ -1,18 +1,11 @@
-import { createServerFn } from '@tanstack/start'
-import { formOptions } from '@tanstack/react-form'
+import { createServerFn } from '@tanstack/react-start'
 import {
   ServerValidateError,
   createServerValidate,
   getFormData,
 } from '@tanstack/react-form/start'
-import { setResponseStatus } from 'vinxi/http'
-
-export const formOpts = formOptions({
-  defaultValues: {
-    firstName: '',
-    age: 0,
-  },
-})
+import { setResponseStatus } from '@tanstack/react-start/server'
+import { formOpts } from './form-isomorphic'
 
 const serverValidate = createServerValidate({
   ...formOpts,

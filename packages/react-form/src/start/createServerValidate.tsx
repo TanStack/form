@@ -4,7 +4,7 @@ import {
   isStandardSchemaValidator,
   standardSchemaValidators,
 } from '@tanstack/form-core'
-import { getHeader } from 'vinxi/http'
+import { getHeader } from '@tanstack/react-start/server'
 import { _tanstackInternalsCookie } from './utils'
 import { ServerValidateError } from './error'
 import type {
@@ -26,6 +26,7 @@ interface CreateServerValidateOptions<
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
 > extends FormOptions<
     TFormData,
     TOnMount,
@@ -35,7 +36,8 @@ interface CreateServerValidateOptions<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
-    TOnServer
+    TOnServer,
+    TSubmitMeta
   > {
   onServerValidate: TOnServer
 }
@@ -51,6 +53,7 @@ export const createServerValidate =
     TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
     TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
     TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TSubmitMeta,
   >(
     defaultOpts: CreateServerValidateOptions<
       TFormData,
@@ -61,7 +64,8 @@ export const createServerValidate =
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
-      TOnServer
+      TOnServer,
+      TSubmitMeta
     >,
   ) =>
   async (formData: FormData, info?: Parameters<typeof decode>[1]) => {
