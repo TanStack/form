@@ -17,7 +17,7 @@ Defined in: [packages/vue-form/src/useField.tsx:303](https://github.com/TanStack
 
 • **TParentData**
 
-• **TName** *extends* `string` \| `number`
+• **TName** *extends* `string`
 
 • **TData**
 

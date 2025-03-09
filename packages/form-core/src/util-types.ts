@@ -125,13 +125,15 @@ export type DeepKeysAndValuesObject<T, TPrefix extends string> = {
 export type DeepKeysAndValues<T, TPrefix extends string = ''> =
   IsAny<T> extends true
     ? T
-    : T extends string | number | boolean | bigint ? Record<never, never> : T extends ReadonlyArray<any>
-      ? number extends T['length']
-        ? DeepKeysAndValuesArray<T, TPrefix>
-        : DeepKeysAndValuesTuple<T, TPrefix>
-      : T extends object
-        ? DeepKeysAndValuesObject<T, TPrefix>
-        : Record<never, never>
+    : T extends string | number | boolean | bigint
+      ? Record<never, never>
+      : T extends ReadonlyArray<any>
+        ? number extends T['length']
+          ? DeepKeysAndValuesArray<T, TPrefix>
+          : DeepKeysAndValuesTuple<T, TPrefix>
+        : T extends object
+          ? DeepKeysAndValuesObject<T, TPrefix>
+          : Record<never, never>
 
 /**
  * The keys of an object or array, deeply nested.

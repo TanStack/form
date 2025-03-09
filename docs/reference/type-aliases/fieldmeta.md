@@ -11,7 +11,7 @@ title: FieldMeta
 type FieldMeta<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync> = FieldMetaBase<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync> & FieldMetaDerived<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:684](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L684)
+Defined in: [packages/form-core/src/FieldApi.ts:671](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L671)
 
 An object type representing the metadata of a field in a form.
 
@@ -19,7 +19,7 @@ An object type representing the metadata of a field in a form.
 
 • **TParentData**
 
-• **TName** *extends* [`DeepKeys`](deepkeys.md)\<`TParentData`\>
+• **TName** *extends* `string`
 
 • **TData** *extends* [`DeepValue`](deepvalue.md)\<`TParentData`, `TName`\>
 
