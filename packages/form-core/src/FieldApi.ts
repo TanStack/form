@@ -1183,6 +1183,12 @@ export class FieldApi<
       fieldApi: this,
     })
 
+    this.form.options.listeners?.onChange?.({
+      fieldName: this.name,
+      fieldValue: this.state.value as any,
+      formApi: this.form,
+    })
+
     this.validate('change')
   }
 
@@ -1233,6 +1239,12 @@ export class FieldApi<
       value: this.state.value,
       fieldApi: this,
     })
+
+    this.form.options.listeners?.onChange?.({
+      fieldName: this.name,
+      fieldValue: this.state.value as any,
+      formApi: this.form,
+    })
   }
 
   /**
@@ -1248,6 +1260,12 @@ export class FieldApi<
     this.options.listeners?.onChange?.({
       value: this.state.value,
       fieldApi: this,
+    })
+
+    this.form.options.listeners?.onChange?.({
+      fieldName: this.name,
+      fieldValue: this.state.value as any,
+      formApi: this.form,
     })
   }
 
@@ -1265,6 +1283,12 @@ export class FieldApi<
       value: this.state.value,
       fieldApi: this,
     })
+
+    this.form.options.listeners?.onChange?.({
+      fieldName: this.name,
+      fieldValue: this.state.value as any,
+      formApi: this.form,
+    })
   }
 
   /**
@@ -1276,6 +1300,12 @@ export class FieldApi<
     this.options.listeners?.onChange?.({
       value: this.state.value,
       fieldApi: this,
+    })
+
+    this.form.options.listeners?.onChange?.({
+      fieldName: this.name,
+      fieldValue: this.state.value as any,
+      formApi: this.form,
     })
   }
 
@@ -1289,6 +1319,12 @@ export class FieldApi<
       value: this.state.value,
       fieldApi: this,
     })
+
+    this.form.options.listeners?.onChange?.({
+      fieldName: this.name,
+      fieldValue: this.state.value as any,
+      formApi: this.form,
+    })
   }
 
   /**
@@ -1300,6 +1336,12 @@ export class FieldApi<
     this.options.listeners?.onChange?.({
       value: this.state.value,
       fieldApi: this,
+    })
+
+    this.form.options.listeners?.onChange?.({
+      fieldName: this.name,
+      fieldValue: this.state.value as any,
+      formApi: this.form,
     })
   }
 
@@ -1643,6 +1685,12 @@ export class FieldApi<
     this.options.listeners?.onBlur?.({
       value: this.state.value,
       fieldApi: this,
+    })
+
+    this.form.options.listeners?.onBlur?.({
+      fieldName: this.name,
+      fieldValue: this.state.value as any,
+      formApi: this.form,
     })
   }
 
