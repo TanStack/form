@@ -4,7 +4,12 @@ import {
   standardSchemaValidators,
 } from './standardSchemaValidator'
 import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
-import type { DeepKeys, DeepValue, UnwrapOneLevelOfArray } from './util-types'
+import type {
+  DeepKeys,
+  DeepValue,
+  UnwrapOneLevelOfArray,
+  ValidateName,
+} from './util-types'
 import type {
   StandardSchemaV1,
   StandardSchemaV1Issue,
@@ -32,7 +37,7 @@ import type { AsyncValidator, SyncValidator, Updater } from './utils'
 // TODO: Add the `Unwrap` type to the errors
 type FieldErrorMapFromValidator<
   TFormData,
-  TName extends DeepKeys<TFormData>,
+  TName extends string,
   TData extends DeepValue<TFormData, TName>,
   TOnMount extends undefined | FieldValidateOrFn<TFormData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TFormData, TName, TData>,
@@ -49,7 +54,7 @@ type FieldErrorMapFromValidator<
     | FieldAsyncValidateOrFn<TFormData, TName, TData>,
 > = Partial<
   Record<
-    DeepKeys<TFormData>,
+    DeepKeys<TFormData> & string,
     ValidationErrorMap<
       TOnMount,
       TOnChange,
@@ -67,7 +72,7 @@ type FieldErrorMapFromValidator<
  */
 export type FieldValidateFn<
   TParentData,
-  TName extends DeepKeys<TParentData>,
+  TName extends string,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (props: {
   value: TData
@@ -101,7 +106,7 @@ export type FieldValidateFn<
  */
 export type FieldValidateOrFn<
   TParentData,
-  TName extends DeepKeys<TParentData>,
+  TName extends string,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > =
   | FieldValidateFn<TParentData, TName, TData>
@@ -118,8 +123,7 @@ type UnwrapFormValidateOrFnForInner<
     : undefined
 
 export type UnwrapFieldValidateOrFn<
-  TParentData,
-  TName extends DeepKeys<TParentData>,
+  TName extends string,
   TValidateOrFn extends undefined | FieldValidateOrFn<any, any, any>,
   TFormValidateOrFn extends undefined | FormValidateOrFn<any>,
 > =
@@ -151,7 +155,7 @@ export type UnwrapFieldValidateOrFn<
  */
 export type FieldValidateAsyncFn<
   TParentData,
-  TName extends DeepKeys<TParentData>,
+  TName extends string,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (options: {
   value: TData
@@ -186,7 +190,7 @@ export type FieldValidateAsyncFn<
  */
 export type FieldAsyncValidateOrFn<
   TParentData,
-  TName extends DeepKeys<TParentData>,
+  TName extends string,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > =
   | FieldValidateAsyncFn<TParentData, TName, TData>
@@ -201,8 +205,7 @@ type UnwrapFormAsyncValidateOrFnForInner<
     : undefined
 
 export type UnwrapFieldAsyncValidateOrFn<
-  TParentData,
-  TName extends DeepKeys<TParentData>,
+  TName extends string,
   TValidateOrFn extends undefined | FieldAsyncValidateOrFn<any, any, any>,
   TFormValidateOrFn extends undefined | FormAsyncValidateOrFn<any>,
 > =
@@ -234,7 +237,7 @@ export type UnwrapFieldAsyncValidateOrFn<
  */
 export type FieldListenerFn<
   TParentData,
-  TName extends DeepKeys<TParentData>,
+  TName extends string,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (props: {
   value: TData
@@ -265,7 +268,7 @@ export type FieldListenerFn<
 
 export interface FieldValidators<
   TParentData,
-  TName extends DeepKeys<TParentData>,
+  TName extends string,
   TData extends DeepValue<TParentData, TName>,
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
@@ -346,7 +349,7 @@ export interface FieldValidators<
 
 export interface FieldListeners<
   TParentData,
-  TName extends DeepKeys<TParentData>,
+  TName extends string,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   onChange?: FieldListenerFn<TParentData, TName, TData>
@@ -360,7 +363,7 @@ export interface FieldListeners<
  */
 export interface FieldOptions<
   TParentData,
-  TName extends DeepKeys<TParentData>,
+  TName extends string,
   TData extends DeepValue<TParentData, TName>,
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
@@ -379,7 +382,7 @@ export interface FieldOptions<
   /**
    * The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
    */
-  name: TName
+  name: ValidateName<TParentData, TName>
   /**
    * An optional default value for the field.
    */
@@ -446,28 +449,42 @@ export interface FieldOptions<
  */
 export interface FieldApiOptions<
   in out TParentData,
-  in out TName extends DeepKeys<TParentData>,
+  in out TName extends string,
   in out TData extends DeepValue<TParentData, TName>,
-  in out TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  in out TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  in out TOnMount extends
+    | undefined
+    | FieldValidateOrFn<TParentData, TName, TData>,
+  in out TOnChange extends
+    | undefined
+    | FieldValidateOrFn<TParentData, TName, TData>,
   in out TOnChangeAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  in out TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  in out TOnBlur extends
+    | undefined
+    | FieldValidateOrFn<TParentData, TName, TData>,
   in out TOnBlurAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  in out TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  in out TOnSubmit extends
+    | undefined
+    | FieldValidateOrFn<TParentData, TName, TData>,
   in out TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-  in out TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnChangeAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-  in out TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnBlurAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-  in out TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnSubmitAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   in out TParentSubmitMeta,
 > extends FieldOptions<
@@ -498,7 +515,7 @@ export interface FieldApiOptions<
 
 export type FieldMetaBase<
   TParentData,
-  TName extends DeepKeys<TParentData>,
+  TName extends string,
   TData extends DeepValue<TParentData, TName>,
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
@@ -537,28 +554,13 @@ export type FieldMetaBase<
    * A map of errors related to the field value.
    */
   errorMap: ValidationErrorMap<
-    UnwrapFieldValidateOrFn<TParentData, TName, TOnMount, TFormOnMount>,
-    UnwrapFieldValidateOrFn<TParentData, TName, TOnChange, TFormOnChange>,
-    UnwrapFieldAsyncValidateOrFn<
-      TParentData,
-      TName,
-      TOnChangeAsync,
-      TFormOnChangeAsync
-    >,
-    UnwrapFieldValidateOrFn<TParentData, TName, TOnBlur, TFormOnBlur>,
-    UnwrapFieldAsyncValidateOrFn<
-      TParentData,
-      TName,
-      TOnBlurAsync,
-      TFormOnBlurAsync
-    >,
-    UnwrapFieldValidateOrFn<TParentData, TName, TOnSubmit, TFormOnSubmit>,
-    UnwrapFieldAsyncValidateOrFn<
-      TParentData,
-      TName,
-      TOnSubmitAsync,
-      TFormOnSubmitAsync
-    >
+    UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>,
+    UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>,
+    UnwrapFieldAsyncValidateOrFn<TName, TOnChangeAsync, TFormOnChangeAsync>,
+    UnwrapFieldValidateOrFn<TName, TOnBlur, TFormOnBlur>,
+    UnwrapFieldAsyncValidateOrFn<TName, TOnBlurAsync, TFormOnBlurAsync>,
+    UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>,
+    UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>
   >
   /**
    * A flag indicating whether the field is currently being validated.
@@ -588,7 +590,7 @@ export type AnyFieldMetaBase = FieldMetaBase<
 
 export type FieldMetaDerived<
   TParentData,
-  TName extends DeepKeys<TParentData>,
+  TName extends string,
   TData extends DeepValue<TParentData, TName>,
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
@@ -616,40 +618,25 @@ export type FieldMetaDerived<
    */
   errors: Array<
     | UnwrapOneLevelOfArray<
-        UnwrapFieldValidateOrFn<TParentData, TName, TOnMount, TFormOnMount>
+        UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>
       >
     | UnwrapOneLevelOfArray<
-        UnwrapFieldValidateOrFn<TParentData, TName, TOnChange, TFormOnChange>
+        UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>
       >
     | UnwrapOneLevelOfArray<
-        UnwrapFieldAsyncValidateOrFn<
-          TParentData,
-          TName,
-          TOnChangeAsync,
-          TFormOnChangeAsync
-        >
+        UnwrapFieldAsyncValidateOrFn<TName, TOnChangeAsync, TFormOnChangeAsync>
       >
     | UnwrapOneLevelOfArray<
-        UnwrapFieldValidateOrFn<TParentData, TName, TOnBlur, TFormOnBlur>
+        UnwrapFieldValidateOrFn<TName, TOnBlur, TFormOnBlur>
       >
     | UnwrapOneLevelOfArray<
-        UnwrapFieldAsyncValidateOrFn<
-          TParentData,
-          TName,
-          TOnBlurAsync,
-          TFormOnBlurAsync
-        >
+        UnwrapFieldAsyncValidateOrFn<TName, TOnBlurAsync, TFormOnBlurAsync>
       >
     | UnwrapOneLevelOfArray<
-        UnwrapFieldValidateOrFn<TParentData, TName, TOnSubmit, TFormOnSubmit>
+        UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>
       >
     | UnwrapOneLevelOfArray<
-        UnwrapFieldAsyncValidateOrFn<
-          TParentData,
-          TName,
-          TOnSubmitAsync,
-          TFormOnSubmitAsync
-        >
+        UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>
       >
   >
   /**
@@ -683,7 +670,7 @@ export type AnyFieldMetaDerived = FieldMetaDerived<
  */
 export type FieldMeta<
   TParentData,
-  TName extends DeepKeys<TParentData>,
+  TName extends string,
   TData extends DeepValue<TParentData, TName>,
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
@@ -769,7 +756,7 @@ export type AnyFieldMeta = FieldMeta<
  */
 export type FieldState<
   TParentData,
-  TName extends DeepKeys<TParentData>,
+  TName extends string,
   TData extends DeepValue<TParentData, TName>,
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
@@ -858,28 +845,42 @@ export type AnyFieldApi = FieldApi<
  */
 export class FieldApi<
   in out TParentData,
-  in out TName extends DeepKeys<TParentData>,
+  in out TName extends string,
   in out TData extends DeepValue<TParentData, TName>,
-  in out TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-  in out TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  in out TOnMount extends
+    | undefined
+    | FieldValidateOrFn<TParentData, TName, TData>,
+  in out TOnChange extends
+    | undefined
+    | FieldValidateOrFn<TParentData, TName, TData>,
   in out TOnChangeAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  in out TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  in out TOnBlur extends
+    | undefined
+    | FieldValidateOrFn<TParentData, TName, TData>,
   in out TOnBlurAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  in out TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  in out TOnSubmit extends
+    | undefined
+    | FieldValidateOrFn<TParentData, TName, TData>,
   in out TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-  in out TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnChangeAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-  in out TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnBlurAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-  in out TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnSubmitAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   in out TParentSubmitMeta,
 > {
@@ -1005,7 +1006,7 @@ export class FieldApi<
     this.store = new Derived({
       deps: [this.form.store],
       fn: () => {
-        const value = this.form.getFieldValue(this.name)
+        const value = this.form.getFieldValue(this.name as string)
         const meta = this.form.getFieldMeta(this.name) ?? {
           isValidating: false,
           isTouched: false,
@@ -1169,7 +1170,7 @@ export class FieldApi<
    * @deprecated Use `field.state.value` instead.
    */
   getValue = (): TData => {
-    return this.form.getFieldValue(this.name) as TData
+    return this.form.getFieldValue(this.name as string) as TData
   }
 
   /**

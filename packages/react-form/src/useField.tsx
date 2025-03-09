@@ -308,11 +308,17 @@ export type FieldComponent<
   in out TParentData,
   in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-  in out TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnChangeAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-  in out TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnBlurAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-  in out TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnSubmitAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   in out TPatentSubmitMeta,
   in out ExtendedApi = {},

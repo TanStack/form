@@ -19,132 +19,138 @@ type Try<A1, A2, Catch = never> = A1 extends A2 ? A1 : Catch
  */
 export type Narrow<A> = Try<A, [], NarrowRaw<A>>
 
-type ComputeRange<
-  N extends number,
-  Result extends Array<unknown> = [],
-> = Result['length'] extends N
-  ? Result
-  : ComputeRange<N, [...Result, Result['length']]>
-type Index40 = ComputeRange<40>[number]
+type IsAny<T> = 0 extends 1 & T ? true : false
 
-// Is this type a tuple?
-type IsTuple<T> = T extends readonly any[] & { length: infer Length }
-  ? Length extends Index40
-    ? T
+export type DeepKeysAndValuesArray<
+  T extends ReadonlyArray<any>,
+  TPrefix extends string,
+  TNextPrefix extends string = `${TPrefix}[${number}]` | `${TPrefix}[number]`,
+> = { [TKey in TNextPrefix]: T[number] } & DeepKeysAndValues<
+  T[number],
+  TNextPrefix
+>
+
+export type TupleAccessor<
+  TPrefix extends string,
+  TKey,
+> = `${TPrefix}[${TKey & string}]`
+
+export type AllTupleKeys<T> = T extends any ? keyof T & `${number}` : never
+
+export type GetValue<T, TKey> = T extends any
+  ? TKey extends keyof T
+    ? T[TKey]
     : never
   : never
 
-// If this type is a tuple, what indices are allowed?
-type AllowedIndexes<
-  Tuple extends ReadonlyArray<any>,
-  Keys extends number = never,
-> = Tuple extends readonly []
-  ? Keys
-  : Tuple extends readonly [infer _, ...infer Tail]
-    ? AllowedIndexes<Tail, Keys | Tail['length']>
-    : Keys
-
-type PrefixArrayAccessor<T extends any[], TDepth extends any[]> = {
-  [K in keyof T]: `[${number}]${DeepKeys<T[K], TDepth>}`
-}[number]
-
-type PrefixTupleAccessor<
-  T extends any[],
-  TIndex extends number,
-  TDepth extends any[],
-> = {
-  [K in TIndex]: `[${K}]` | `[${K}]${DeepKeys<T[K], TDepth>}`
-}[TIndex]
-
-type PrefixObjectAccessor<T extends object, TDepth extends any[]> = {
-  [K in keyof T]-?: K extends string | number
-    ?
-        | PrefixFromDepth<K, TDepth>
-        | `${PrefixFromDepth<K, TDepth>}${DeepKeys<T[K], [TDepth]>}`
+export type FlattenTupleKeys<T, TPrefix extends string> = T extends any
+  ? AllTupleKeys<T> extends infer TKey extends AllTupleKeys<T>
+    ? TKey extends any
+      ? TupleAccessor<TPrefix, TKey> extends infer TAccessor extends string
+        ? T[TKey] extends infer TValue
+          ? TValue extends any
+            ? keyof DeepKeysAndValues<TValue, TAccessor>
+            : never
+          : never
+        : never
+      : never
     : never
-}[keyof T]
+  : never
+
+export type FlattenTupleValues<T, TKey, TPrefix extends string> = T extends any
+  ? AllObjectKeys<T> extends infer TAllKeys extends AllTupleKeys<T>
+    ? TAllKeys extends any
+      ? TupleAccessor<TPrefix, TAllKeys> extends infer TAccessor extends string
+        ? T[TAllKeys] extends infer TValue
+          ? TValue extends any
+            ? TKey extends keyof DeepKeysAndValues<TValue, TAccessor>
+              ? DeepKeysAndValues<TValue, TAccessor>[TKey]
+              : never
+            : never
+          : never
+        : never
+      : never
+    : never
+  : never
+
+export type DeepKeysAndValuesTuple<T, TPrefix extends string> = {
+  [TKey in AllTupleKeys<T> as TupleAccessor<TPrefix, TKey>]: GetValue<T, TKey>
+} & {
+  [TKey in FlattenTupleKeys<T, TPrefix>]: FlattenTupleValues<T, TKey, TPrefix>
+}
+
+export type ObjectAccessor<
+  TPrefix extends string,
+  TKey extends string | number,
+> = TPrefix extends '' ? `${TKey}` : `${TPrefix}.${TKey}`
+
+export type AllObjectKeys<T> = T extends any
+  ? keyof T & (string | number)
+  : never
+
+export type FlattenObjectKeys<T, TPrefix extends string> = T extends any
+  ? AllObjectKeys<T> extends infer TKey extends AllObjectKeys<T>
+    ? TKey extends any
+      ? T[TKey] extends infer TValue
+        ? TValue extends any
+          ? keyof DeepKeysAndValues<TValue, ObjectAccessor<TPrefix, TKey>>
+          : never
+        : never
+      : never
+    : never
+  : never
+
+export type FlattenObjectValues<T, TKey, TPrefix extends string> = T extends any
+  ? AllObjectKeys<T> extends infer TAllKeys extends AllObjectKeys<T>
+    ? TAllKeys extends any
+      ? ObjectAccessor<TPrefix, TAllKeys> extends infer TAccessor extends string
+        ? T[TAllKeys] extends infer TValue
+          ? TValue extends any
+            ? TKey extends keyof DeepKeysAndValues<TValue, TAccessor>
+              ? DeepKeysAndValues<TValue, TAccessor>[TKey]
+              : never
+            : never
+          : never
+        : never
+      : never
+    : never
+  : never
+
+export type DeepKeysAndValuesObject<T, TPrefix extends string> = {
+  [TKey in AllObjectKeys<T> as ObjectAccessor<TPrefix, TKey>]: GetValue<T, TKey>
+} & {
+  [TKey in FlattenObjectKeys<T, TPrefix>]: FlattenObjectValues<T, TKey, TPrefix>
+}
+
+export type DeepKeysAndValues<T, TPrefix extends string = ''> =
+  IsAny<T> extends true
+    ? T
+    : T extends string | number | boolean | bigint ? Record<never, never> : T extends ReadonlyArray<any>
+      ? number extends T['length']
+        ? DeepKeysAndValuesArray<T, TPrefix>
+        : DeepKeysAndValuesTuple<T, TPrefix>
+      : T extends object
+        ? DeepKeysAndValuesObject<T, TPrefix>
+        : Record<never, never>
 
 /**
  * The keys of an object or array, deeply nested.
  */
-export type DeepKeys<T, TDepth extends any[] = []> = TDepth['length'] extends 5
-  ? never
-  : unknown extends T
-    ? PrefixFromDepth<string, TDepth>
-    : T extends readonly any[] & IsTuple<T>
-      ? PrefixTupleAccessor<T, AllowedIndexes<T>, TDepth>
-      : T extends any[]
-        ? PrefixArrayAccessor<T, [...TDepth, any]>
-        : T extends Date
-          ? never
-          : T extends object
-            ? PrefixObjectAccessor<T, TDepth>
-            : T extends string | number | boolean | bigint
-              ? ''
-              : never
+export type DeepKeys<T> = unknown extends T
+  ? string
+  : keyof DeepKeysAndValues<T> & string
 
-type PrefixFromDepth<
-  T extends string | number,
-  TDepth extends any[],
-> = TDepth['length'] extends 0 ? T : `.${T}`
+export type ValidateName<T, TName extends string> = ConstrainLiteral<
+  TName,
+  DeepKeys<T>
+>
 
-// Hack changing Typescript's default get behavior in order to work with union objects
-type Get<T, K extends string> = T extends { [Key in K]: infer V }
-  ? V
-  : T extends { [Key in K]?: infer W }
-    ? W | undefined
-    : never
-
-type ApplyNull<T> = null extends T ? null : never
-type ApplyUndefined<T> = undefined extends T ? undefined : never
+export type ConstrainLiteral<T, TConstraint, TDefault = TConstraint> =
+  | (T & TConstraint)
+  | TDefault
 
 /**
  * Infer the type of a deeply nested property within an object or an array.
  */
-export type DeepValue<
-  // The object or array in which we have the property whose type we're trying to infer
-  TValue,
-  // A string representing the path of the property we're trying to access
-  TAccessor,
-  // Depth for preventing infinite recursion
-  TDepth extends ReadonlyArray<any> = [],
-> = unknown extends TValue // If TValue is any it will recurse forever, this terminates the recursion
-  ? TValue
-  : TDepth['length'] extends 10
-    ? unknown
-    : // Check if we're looking for the property in an array
-      TValue extends ReadonlyArray<any>
-      ? TAccessor extends `[${infer TBrackets}].${infer TAfter}`
-        ? /*
-          Extract the first element from the accessor path (`TBrackets`)
-          and recursively call `DeepValue` with it
-        */
-          DeepValue<
-            DeepValue<TValue, TBrackets, [...TDepth, any]>,
-            TAfter,
-            [...TDepth, any]
-          >
-        : TAccessor extends `[${infer TBrackets}]`
-          ? DeepValue<TValue, TBrackets, [...TDepth, any]>
-          : TAccessor extends keyof TValue
-            ? TValue[TAccessor]
-            : TValue[TAccessor & number]
-      : TAccessor extends `${infer TBefore}[${infer TEverythingElse}`
-        ? DeepValue<
-            DeepValue<TValue, TBefore, [...TDepth, any]>,
-            `[${TEverythingElse}`,
-            [...TDepth, any]
-          >
-        : TAccessor extends `[${infer TBrackets}]`
-          ? DeepValue<TValue, TBrackets, [...TDepth, any]>
-          : TAccessor extends `${infer TBefore}.${infer TAfter}`
-            ? DeepValue<
-                DeepValue<TValue, TBefore, [...TDepth, any]>,
-                TAfter,
-                [...TDepth, any]
-              >
-            : TAccessor extends string
-              ?
-                  | Get<TValue, TAccessor>
-                  | (ApplyNull<TValue> | ApplyUndefined<TValue>)
-              : never
+export type DeepValue<TValue, TAccessor> = DeepKeysAndValues<TValue>[TAccessor &
+  keyof DeepKeysAndValues<TValue>]
