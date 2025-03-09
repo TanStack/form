@@ -331,16 +331,16 @@ export interface FormOptions<
     >
   }) => void
   transform?: FormTransform<
-    TFormData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnServer,
-    TSubmitMeta
+    NoInfer<TFormData>,
+    NoInfer<TOnMount>,
+    NoInfer<TOnChange>,
+    NoInfer<TOnChangeAsync>,
+    NoInfer<TOnBlur>,
+    NoInfer<TOnBlurAsync>,
+    NoInfer<TOnSubmit>,
+    NoInfer<TOnSubmitAsync>,
+    NoInfer<TOnServer>,
+    NoInfer<TSubmitMeta>
   >
 }
 

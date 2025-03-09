@@ -9,7 +9,7 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/lit-form": "^1.0.0",
+    "@tanstack/lit-form": "^1.0.5",
     "lit": "^3.2.1"
   },
   "devDependencies": {
