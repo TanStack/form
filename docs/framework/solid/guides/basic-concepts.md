@@ -239,7 +239,7 @@ Example:
                         name={field().name}
                         value={field().state.value}
                         onBlur={field().handleBlur}
-                        onChange={(e) => field().handleChange(e.target.value)}
+                        onInput={(e) => field().handleChange(e.target.value)}
                       />
                       <button
                         type="button"
@@ -261,7 +261,7 @@ Example:
                           name={field().name}
                           value={field().state.value}
                           onBlur={field().handleBlur}
-                          onChange={(e) => field().handleChange(e.target.value)}
+                          onInput={(e) => field().handleChange(e.target.value)}
                         />
                       </div>
                     );

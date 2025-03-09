@@ -31,7 +31,7 @@ Here is an example:
         name={field().name}
         value={field().state.value}
         type="number"
-        onChange={(e) => field().handleChange(e.target.valueAsNumber)}
+        onInput={(e) => field().handleChange(e.target.valueAsNumber)}
       />
       {field().state.meta.errors ? (
         <em role="alert">{field().state.meta.errors.join(', ')}</em>
@@ -61,8 +61,8 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
         type="number"
         // Listen to the onBlur event on the field
         onBlur={field().handleBlur}
-        // We always need to implement onChange, so that TanStack Form receives the changes
-        onChange={(e) => field().handleChange(e.target.valueAsNumber)}
+        // We always need to implement onInput, so that TanStack Form receives the changes
+        onInput={(e) => field().handleChange(e.target.valueAsNumber)}
       />
       {field().state.meta.errors ? (
         <em role="alert">{field().state.meta.errors.join(', ')}</em>
@@ -93,8 +93,8 @@ So you can control when the validation is done by implementing the desired callb
         type="number"
         // Listen to the onBlur event on the field
         onBlur={field().handleBlur}
-        // We always need to implement onChange, so that TanStack Form receives the changes
-        onChange={(e) => field().handleChange(e.target.valueAsNumber)}
+        // We always need to implement onInput, so that TanStack Form receives the changes
+        onInput={(e) => field().handleChange(e.target.valueAsNumber)}
       />
       {field().state.meta.errors ? (
         <em role="alert">{field().state.meta.errors.join(', ')}</em>
@@ -246,7 +246,7 @@ To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods 
         name={field().name}
         value={field().state.value}
         type="number"
-        onChange={(e) => field().handleChange(e.target.valueAsNumber)}
+        onInput={(e) => field().handleChange(e.target.valueAsNumber)}
       />
       {field().state.meta.errors ? (
         <em role="alert">{field().state.meta.errors.join(', ')}</em>
@@ -278,7 +278,7 @@ Synchronous and Asynchronous validations can coexist. For example, it is possibl
         value={field().state.value}
         type="number"
         onBlur={field().handleBlur}
-        onChange={(e) => field().handleChange(e.target.valueAsNumber)}
+        onInput={(e) => field().handleChange(e.target.valueAsNumber)}
       />
       {field().state.meta.errors ? (
         <em role="alert">{field().state.meta.errors.join(', ')}</em>
