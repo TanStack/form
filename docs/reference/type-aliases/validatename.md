@@ -11,7 +11,7 @@ title: ValidateName
 type ValidateName<T, TName> = ConstrainLiteral<TName, DeepKeys<T>>;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:145](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L145)
+Defined in: [packages/form-core/src/util-types.ts:114](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L114)
 
 ## Type Parameters
 

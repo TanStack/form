@@ -11,7 +11,7 @@ title: ConstrainLiteral
 type ConstrainLiteral<T, TConstraint, TDefault> = T & TConstraint | TDefault;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:150](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L150)
+Defined in: [packages/form-core/src/util-types.ts:119](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L119)
 
 ## Type Parameters
 
