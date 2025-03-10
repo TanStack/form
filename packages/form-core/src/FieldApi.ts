@@ -1603,7 +1603,7 @@ export class FieldApi<
       : this.form.validateSync(cause)
     const { hasErrored } = this.validateSync(
       cause,
-      fieldsErrorMap[this.name] ?? {},
+      (fieldsErrorMap[this.name] ?? {}) as ValidationErrorMap,
     )
 
     if (hasErrored && !this.options.asyncAlways) {

@@ -392,15 +392,15 @@ export type FieldInfo<TFormData> = {
  * An object representing the current state of the form.
  */
 export type BaseFormState<
-  TFormData,
-  TOnMount extends undefined | FormValidateOrFn<TFormData>,
-  TOnChange extends undefined | FormValidateOrFn<TFormData>,
-  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TFormData,
+  in out TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
 > = {
   /**
    * The current values of the form fields.
@@ -463,15 +463,15 @@ export type BaseFormState<
 }
 
 export type DerivedFormState<
-  TFormData,
-  TOnMount extends undefined | FormValidateOrFn<TFormData>,
-  TOnChange extends undefined | FormValidateOrFn<TFormData>,
-  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TFormData,
+  in out TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
 > = {
   /**
    * A boolean indicating if the form is currently validating.

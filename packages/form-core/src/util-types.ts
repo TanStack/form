@@ -21,13 +21,18 @@ export type Narrow<A> = Try<A, [], NarrowRaw<A>>
 
 type IsAny<T> = 0 extends 1 & T ? true : false
 
-export type DeepKeysAndValuesArray<
+export type ArrayAccessor<TPrefix extends string> =
+  | `${TPrefix}[${number}]`
+  | `${TPrefix}[number]`
+
+export type DeepKeysAndValuesArrayUnion<
   T extends ReadonlyArray<any>,
   TPrefix extends string,
-  TNextPrefix extends string = `${TPrefix}[${number}]` | `${TPrefix}[number]`,
-> = { [TKey in TNextPrefix]: T[number] } & DeepKeysAndValues<
+  TAcc,
+> = DeepKeysAndValuesUnion<
   T[number],
-  TNextPrefix
+  ArrayAccessor<TPrefix>,
+  TAcc | Record<ArrayAccessor<TPrefix>, T[number]>
 >
 
 export type TupleAccessor<
@@ -37,101 +42,67 @@ export type TupleAccessor<
 
 export type AllTupleKeys<T> = T extends any ? keyof T & `${number}` : never
 
-export type GetValue<T, TKey> = T extends any
-  ? TKey extends keyof T
-    ? T[TKey]
-    : never
+export type DeepKeysAndValuesTupleUnion<
+  T extends ReadonlyArray<any>,
+  TPrefix extends string,
+  TAcc,
+  TAllKeys extends AllTupleKeys<T> = AllTupleKeys<T>,
+> = TAllKeys extends any
+  ? DeepKeysAndValuesUnion<
+      T[TAllKeys],
+      TupleAccessor<TPrefix, TAllKeys>,
+      TAcc | Record<TupleAccessor<TPrefix, TAllKeys>, T[TAllKeys]>
+    >
   : never
 
-export type FlattenTupleKeys<T, TPrefix extends string> = T extends any
-  ? AllTupleKeys<T> extends infer TKey extends AllTupleKeys<T>
-    ? TKey extends any
-      ? TupleAccessor<TPrefix, TKey> extends infer TAccessor extends string
-        ? T[TKey] extends infer TValue
-          ? TValue extends any
-            ? keyof DeepKeysAndValues<TValue, TAccessor>
-            : never
-          : never
-        : never
-      : never
-    : never
+export type AllObjectKeys<T> = T extends any
+  ? keyof T & (string | number)
   : never
-
-export type FlattenTupleValues<T, TKey, TPrefix extends string> = T extends any
-  ? AllObjectKeys<T> extends infer TAllKeys extends AllTupleKeys<T>
-    ? TAllKeys extends any
-      ? TupleAccessor<TPrefix, TAllKeys> extends infer TAccessor extends string
-        ? T[TAllKeys] extends infer TValue
-          ? TValue extends any
-            ? TKey extends keyof DeepKeysAndValues<TValue, TAccessor>
-              ? DeepKeysAndValues<TValue, TAccessor>[TKey]
-              : never
-            : never
-          : never
-        : never
-      : never
-    : never
-  : never
-
-export type DeepKeysAndValuesTuple<T, TPrefix extends string> = {
-  [TKey in AllTupleKeys<T> as TupleAccessor<TPrefix, TKey>]: GetValue<T, TKey>
-} & {
-  [TKey in FlattenTupleKeys<T, TPrefix>]: FlattenTupleValues<T, TKey, TPrefix>
-}
 
 export type ObjectAccessor<
   TPrefix extends string,
   TKey extends string | number,
 > = TPrefix extends '' ? `${TKey}` : `${TPrefix}.${TKey}`
 
-export type AllObjectKeys<T> = T extends any
-  ? keyof T & (string | number)
+export type DeepKeysAndValuesObjectUnion<
+  T,
+  TPrefix extends string,
+  TAcc,
+  TAllKeys extends AllObjectKeys<T> = AllObjectKeys<T>,
+> = TAllKeys extends any
+  ? DeepKeysAndValuesUnion<
+      T[TAllKeys],
+      ObjectAccessor<TPrefix, TAllKeys>,
+      TAcc | Record<ObjectAccessor<TPrefix, TAllKeys>, T[TAllKeys]>
+    >
   : never
 
-export type FlattenObjectKeys<T, TPrefix extends string> = T extends any
-  ? AllObjectKeys<T> extends infer TKey extends AllObjectKeys<T>
-    ? TKey extends any
-      ? T[TKey] extends infer TValue
-        ? TValue extends any
-          ? keyof DeepKeysAndValues<TValue, ObjectAccessor<TPrefix, TKey>>
-          : never
-        : never
-      : never
-    : never
-  : never
-
-export type FlattenObjectValues<T, TKey, TPrefix extends string> = T extends any
-  ? AllObjectKeys<T> extends infer TAllKeys extends AllObjectKeys<T>
-    ? TAllKeys extends any
-      ? ObjectAccessor<TPrefix, TAllKeys> extends infer TAccessor extends string
-        ? T[TAllKeys] extends infer TValue
-          ? TValue extends any
-            ? TKey extends keyof DeepKeysAndValues<TValue, TAccessor>
-              ? DeepKeysAndValues<TValue, TAccessor>[TKey]
-              : never
-            : never
-          : never
-        : never
-      : never
-    : never
-  : never
-
-export type DeepKeysAndValuesObject<T, TPrefix extends string> = {
-  [TKey in AllObjectKeys<T> as ObjectAccessor<TPrefix, TKey>]: GetValue<T, TKey>
-} & {
-  [TKey in FlattenObjectKeys<T, TPrefix>]: FlattenObjectValues<T, TKey, TPrefix>
-}
-
-export type DeepKeysAndValues<T, TPrefix extends string = ''> =
+export type DeepKeysAndValuesUnion<
+  T,
+  TPrefix extends string = '',
+  TAcc = never,
+> =
   IsAny<T> extends true
     ? T
-    : T extends string | number | boolean | bigint ? Record<never, never> : T extends ReadonlyArray<any>
-      ? number extends T['length']
-        ? DeepKeysAndValuesArray<T, TPrefix>
-        : DeepKeysAndValuesTuple<T, TPrefix>
-      : T extends object
-        ? DeepKeysAndValuesObject<T, TPrefix>
-        : Record<never, never>
+    : T extends string | number | boolean | bigint | Date
+      ? TAcc
+      : T extends ReadonlyArray<any>
+        ? number extends T['length']
+          ? DeepKeysAndValuesArrayUnion<T, TPrefix, TAcc>
+          : DeepKeysAndValuesTupleUnion<T, TPrefix, TAcc>
+        : T extends object
+          ? DeepKeysAndValuesObjectUnion<T, TPrefix, TAcc>
+          : TAcc
+
+export type UnionToIntersection<T> = (
+  T extends any ? (param: T) => any : never
+) extends (param: infer TI) => any
+  ? TI
+  : never
+
+export type DeepKeysAndValues<T> = UnionToIntersection<
+  DeepKeysAndValuesUnion<T>
+>
 
 /**
  * The keys of an object or array, deeply nested.

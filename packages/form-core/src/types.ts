@@ -19,14 +19,14 @@ export type ValidationErrorMapKeys = `on${Capitalize<ValidationCause>}`
  * @private
  */
 export type ValidationErrorMap<
-  TOnMountReturn = unknown,
-  TOnChangeReturn = unknown,
-  TOnChangeAsyncReturn = unknown,
-  TOnBlurReturn = unknown,
-  TOnBlurAsyncReturn = unknown,
-  TOnSubmitReturn = unknown,
-  TOnSubmitAsyncReturn = unknown,
-  TOnServerReturn = unknown,
+  in out TOnMountReturn = unknown,
+  in out TOnChangeReturn = unknown,
+  in out TOnChangeAsyncReturn = unknown,
+  in out TOnBlurReturn = unknown,
+  in out TOnBlurAsyncReturn = unknown,
+  in out TOnSubmitReturn = unknown,
+  in out TOnSubmitAsyncReturn = unknown,
+  in out TOnServerReturn = unknown,
 > = {
   onMount?: TOnMountReturn
   onChange?: TOnChangeReturn | TOnChangeAsyncReturn
