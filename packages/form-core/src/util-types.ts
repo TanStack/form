@@ -111,7 +111,6 @@ export type DeepKeys<T> = unknown extends T
   ? string
   : keyof DeepKeysAndValues<T> & string
 
-
 export type ConstrainLiteral<T, TConstraint, TDefault = TConstraint> =
   | (T & TConstraint)
   | TDefault
