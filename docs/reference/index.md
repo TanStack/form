@@ -63,7 +63,6 @@ title: "@tanstack/form-core"
 - [UnwrapFormValidateOrFn](type-aliases/unwrapformvalidateorfn.md)
 - [Updater](type-aliases/updater.md)
 - [UpdaterFn](type-aliases/updaterfn.md)
-- [ValidateName](type-aliases/validatename.md)
 - [ValidationError](type-aliases/validationerror.md)
 - [ValidationMeta](type-aliases/validationmeta.md)
 - [ValidationSource](type-aliases/validationsource.md)

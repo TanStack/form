@@ -11,13 +11,13 @@ title: FieldMetaDerived
 type FieldMetaDerived<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync> = object;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:591](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L591)
+Defined in: [packages/form-core/src/FieldApi.ts:586](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L586)
 
 ## Type Parameters
 
 • **TParentData**
 
-• **TName** *extends* `string`
+• **TName** *extends* [`DeepKeys`](deepkeys.md)\<`TParentData`\>
 
 • **TData** *extends* [`DeepValue`](deepvalue.md)\<`TParentData`, `TName`\>
 
