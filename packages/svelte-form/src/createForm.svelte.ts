@@ -219,7 +219,7 @@ export function createForm<
   extendedApi.createField = (props) =>
     createField(() => {
       return { ...props(), form: api }
-    }) as never
+    }) as never // Type cast because else "Error: Type instantiation is excessively deep and possibly infinite."
   extendedApi.useStore = (selector) => useStore(api.store, selector)
   // @ts-expect-error constructor definition exists only on a type level
   extendedApi.Subscribe = (internal, props) =>
