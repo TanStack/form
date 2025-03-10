@@ -1310,10 +1310,7 @@ export class FieldApi<
       if (!field.instance) continue
       const { onChangeListenTo, onBlurListenTo } =
         field.instance.options.validators || {}
-      if (
-        cause === 'change' &&
-        onChangeListenTo?.includes(this.name)
-      ) {
+      if (cause === 'change' && onChangeListenTo?.includes(this.name)) {
         linkedFields.push(field.instance)
       }
       if (cause === 'blur' && onBlurListenTo?.includes(this.name as string)) {
