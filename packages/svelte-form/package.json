@@ -4,6 +4,9 @@
   "description": "Powerful, type-safe forms for Svelte.",
   "author": "tannerlinsley",
   "license": "MIT",
+  "keywords": [
+    "svelte"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/TanStack/form.git",
