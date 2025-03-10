@@ -30,7 +30,7 @@ import type {
   ValidationErrorMap,
   ValidationErrorMapKeys,
 } from './types'
-import type { DeepKeys, DeepValue } from './util-types'
+import type { DeepKeys, DeepValue, ValidateName } from './util-types'
 import type { Updater } from './utils'
 
 /**
@@ -48,7 +48,7 @@ type FormErrorMapFromValidator<
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
 > = Partial<
   Record<
-    DeepKeys<TFormData>,
+    DeepKeys<TFormData> & string,
     ValidationErrorMap<
       TOnMount,
       TOnChange,
@@ -235,16 +235,16 @@ export interface FormTransform<
  * An object representing the options for a form.
  */
 export interface FormOptions<
-  TFormData,
-  TOnMount extends undefined | FormValidateOrFn<TFormData>,
-  TOnChange extends undefined | FormValidateOrFn<TFormData>,
-  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TSubmitMeta = never,
+  in out TFormData,
+  in out TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TSubmitMeta = never,
 > {
   /**
    * Set initial values for your form.
@@ -532,38 +532,38 @@ export type DerivedFormState<
   fieldMeta: Record<DeepKeys<TFormData>, AnyFieldMeta>
 }
 
-export type FormState<
-  TFormData,
-  TOnMount extends undefined | FormValidateOrFn<TFormData>,
-  TOnChange extends undefined | FormValidateOrFn<TFormData>,
-  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-> = BaseFormState<
-  TFormData,
-  TOnMount,
-  TOnChange,
-  TOnChangeAsync,
-  TOnBlur,
-  TOnBlurAsync,
-  TOnSubmit,
-  TOnSubmitAsync,
-  TOnServer
-> &
-  DerivedFormState<
-    TFormData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnServer
-  >
+export interface FormState<
+  in out TFormData,
+  in out TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+> extends BaseFormState<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
+    >,
+    DerivedFormState<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
+    > {}
 
 export type AnyFormState = FormState<
   any,
@@ -657,16 +657,16 @@ export type AnyFormApi = FormApi<
  * However, if you need to create a new instance manually, you can do so by calling the `new FormApi` constructor.
  */
 export class FormApi<
-  TFormData,
-  TOnMount extends undefined | FormValidateOrFn<TFormData>,
-  TOnChange extends undefined | FormValidateOrFn<TFormData>,
-  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TSubmitMeta = never,
+  in out TFormData,
+  in out TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TSubmitMeta = never,
 > {
   /**
    * The options for the form.
@@ -1187,7 +1187,7 @@ export class FormApi<
   /**
    * Validates the children of a specified array in the form starting from a given index until the end using the correct handlers for a given validation type.
    */
-  validateArrayFieldsStartingFrom = async <TField extends DeepKeys<TFormData>>(
+  validateArrayFieldsStartingFrom = async <TField extends string>(
     field: TField,
     index: number,
     cause: ValidationCause,
@@ -1226,8 +1226,8 @@ export class FormApi<
   /**
    * Validates a specified field in the form using the correct handlers for a given validation type.
    */
-  validateField = <TField extends DeepKeys<TFormData>>(
-    field: TField,
+  validateField = <TField extends string>(
+    field: ValidateName<TFormData, TField>,
     cause: ValidationCause,
   ) => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -1662,15 +1662,15 @@ export class FormApi<
   /**
    * Gets the value of the specified field.
    */
-  getFieldValue = <TField extends DeepKeys<TFormData>>(
+  getFieldValue = <TField extends string>(
     field: TField,
   ): DeepValue<TFormData, TField> => getBy(this.state.values, field)
 
   /**
    * Gets the metadata of the specified field.
    */
-  getFieldMeta = <TField extends DeepKeys<TFormData>>(
-    field: TField,
+  getFieldMeta = <TField extends string>(
+    field: ValidateName<TFormData, TField>,
   ): AnyFieldMeta | undefined => {
     return this.state.fieldMeta[field]
   }
@@ -1678,8 +1678,8 @@ export class FormApi<
   /**
    * Gets the field info of the specified field.
    */
-  getFieldInfo = <TField extends DeepKeys<TFormData>>(
-    field: TField,
+  getFieldInfo = <TField extends string>(
+    field: ValidateName<TFormData, TField>,
   ): FieldInfo<TFormData> => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     return (this.fieldInfo[field] ||= {
@@ -1697,8 +1697,8 @@ export class FormApi<
   /**
    * Updates the metadata of the specified field.
    */
-  setFieldMeta = <TField extends DeepKeys<TFormData>>(
-    field: TField,
+  setFieldMeta = <TField extends string>(
+    field: ValidateName<TFormData, TField>,
     updater: Updater<AnyFieldMeta>,
   ) => {
     this.baseStore.setState((prev) => {
@@ -1715,7 +1715,7 @@ export class FormApi<
     })
   }
 
-  resetFieldMeta = <TField extends DeepKeys<TFormData>>(
+  resetFieldMeta = <TField extends string>(
     fieldMeta: Record<TField, AnyFieldMeta>,
   ): Record<TField, AnyFieldMeta> => {
     return Object.keys(fieldMeta).reduce(
@@ -1739,8 +1739,8 @@ export class FormApi<
   /**
    * Sets the value of the specified field and optionally updates the touched state.
    */
-  setFieldValue = <TField extends DeepKeys<TFormData>>(
-    field: TField,
+  setFieldValue = <TField extends string>(
+    field: ValidateName<TFormData, TField>,
     updater: Updater<DeepValue<TFormData, TField>>,
     opts?: UpdateMetaOptions,
   ) => {
@@ -1769,7 +1769,7 @@ export class FormApi<
     })
   }
 
-  deleteField = <TField extends DeepKeys<TFormData>>(field: TField) => {
+  deleteField = <TField extends string>(field: TField) => {
     const subFieldsToDelete = Object.keys(this.fieldInfo).filter((f) => {
       const fieldStr = field.toString()
       return f !== fieldStr && f.startsWith(fieldStr)
@@ -1793,8 +1793,8 @@ export class FormApi<
   /**
    * Pushes a value into an array field.
    */
-  pushFieldValue = <TField extends DeepKeys<TFormData>>(
-    field: TField,
+  pushFieldValue = <TField extends string>(
+    field: ValidateName<TFormData, TField>,
     value: DeepValue<TFormData, TField> extends any[]
       ? DeepValue<TFormData, TField>[number]
       : never,
@@ -1808,8 +1808,8 @@ export class FormApi<
     this.validateField(field, 'change')
   }
 
-  insertFieldValue = async <TField extends DeepKeys<TFormData>>(
-    field: TField,
+  insertFieldValue = async <TField extends string>(
+    field: ValidateName<TFormData, TField>,
     index: number,
     value: DeepValue<TFormData, TField> extends any[]
       ? DeepValue<TFormData, TField>[number]
@@ -1840,8 +1840,8 @@ export class FormApi<
   /**
    * Replaces a value into an array field at the specified index.
    */
-  replaceFieldValue = async <TField extends DeepKeys<TFormData>>(
-    field: TField,
+  replaceFieldValue = async <TField extends string>(
+    field: ValidateName<TFormData, TField>,
     index: number,
     value: DeepValue<TFormData, TField> extends any[]
       ? DeepValue<TFormData, TField>[number]
@@ -1866,8 +1866,8 @@ export class FormApi<
   /**
    * Removes a value from an array field at the specified index.
    */
-  removeFieldValue = async <TField extends DeepKeys<TFormData>>(
-    field: TField,
+  removeFieldValue = async <TField extends string>(
+    field: ValidateName<TFormData, TField>,
     index: number,
     opts?: UpdateMetaOptions,
   ) => {
@@ -1903,8 +1903,8 @@ export class FormApi<
   /**
    * Swaps the values at the specified indices within an array field.
    */
-  swapFieldValues = <TField extends DeepKeys<TFormData>>(
-    field: TField,
+  swapFieldValues = <TField extends string>(
+    field: ValidateName<TFormData, TField>,
     index1: number,
     index2: number,
     opts?: UpdateMetaOptions,
@@ -1932,8 +1932,8 @@ export class FormApi<
   /**
    * Moves the value at the first specified index to the second specified index within an array field.
    */
-  moveFieldValues = <TField extends DeepKeys<TFormData>>(
-    field: TField,
+  moveFieldValues = <TField extends string>(
+    field: ValidateName<TFormData, TField>,
     index1: number,
     index2: number,
     opts?: UpdateMetaOptions,

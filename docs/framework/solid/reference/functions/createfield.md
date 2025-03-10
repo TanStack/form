@@ -17,7 +17,7 @@ Defined in: [packages/solid-form/src/createField.tsx:236](https://github.com/Tan
 
 • **TParentData**
 
-• **TName** *extends* `string` \| `number`
+• **TName** *extends* `string`
 
 • **TData**
 
