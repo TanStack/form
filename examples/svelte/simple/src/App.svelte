@@ -146,5 +146,3 @@
     </button>
   </div>
 </form>
-
-<pre>{JSON.stringify(form.state, null, 2)}</pre>
