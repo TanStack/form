@@ -75,19 +75,18 @@ export type UseField<
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
 >(
-  opts: 
-    UseFieldOptionsBound<
-      TParentData,
-      TName,
-      TData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync
-    >
+  opts: UseFieldOptionsBound<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync
+  >,
 ) => FieldApi<
   TParentData,
   TName,
