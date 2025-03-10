@@ -8,7 +8,6 @@ import type {
   DeepKeys,
   DeepValue,
   UnwrapOneLevelOfArray,
-  ValidateName,
 } from './util-types'
 import type {
   StandardSchemaV1,
@@ -37,7 +36,7 @@ import type { AsyncValidator, SyncValidator, Updater } from './utils'
 // TODO: Add the `Unwrap` type to the errors
 type FieldErrorMapFromValidator<
   TFormData,
-  TName extends string,
+  TName extends DeepKeys<TFormData>,
   TData extends DeepValue<TFormData, TName>,
   TOnMount extends undefined | FieldValidateOrFn<TFormData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TFormData, TName, TData>,
@@ -72,7 +71,7 @@ type FieldErrorMapFromValidator<
  */
 export type FieldValidateFn<
   TParentData,
-  TName extends string,
+  TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (props: {
   value: TData
@@ -106,7 +105,7 @@ export type FieldValidateFn<
  */
 export type FieldValidateOrFn<
   TParentData,
-  TName extends string,
+  TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > =
   | FieldValidateFn<TParentData, TName, TData>
@@ -155,7 +154,7 @@ export type UnwrapFieldValidateOrFn<
  */
 export type FieldValidateAsyncFn<
   TParentData,
-  TName extends string,
+  TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (options: {
   value: TData
@@ -190,7 +189,7 @@ export type FieldValidateAsyncFn<
  */
 export type FieldAsyncValidateOrFn<
   TParentData,
-  TName extends string,
+  TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > =
   | FieldValidateAsyncFn<TParentData, TName, TData>
@@ -237,7 +236,7 @@ export type UnwrapFieldAsyncValidateOrFn<
  */
 export type FieldListenerFn<
   TParentData,
-  TName extends string,
+  TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > = (props: {
   value: TData
@@ -268,7 +267,7 @@ export type FieldListenerFn<
 
 export interface FieldValidators<
   TParentData,
-  TName extends string,
+  TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
@@ -349,7 +348,7 @@ export interface FieldValidators<
 
 export interface FieldListeners<
   TParentData,
-  TName extends string,
+  TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   onChange?: FieldListenerFn<TParentData, TName, TData>
@@ -363,7 +362,7 @@ export interface FieldListeners<
  */
 export interface FieldOptions<
   TParentData,
-  TName extends string,
+  TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
@@ -382,7 +381,7 @@ export interface FieldOptions<
   /**
    * The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
    */
-  name: ValidateName<TParentData, TName>
+  name: TName
   /**
    * An optional default value for the field.
    */
@@ -449,7 +448,7 @@ export interface FieldOptions<
  */
 export interface FieldApiOptions<
   in out TParentData,
-  in out TName extends string,
+  in out TName extends DeepKeys<TParentData>,
   in out TData extends DeepValue<TParentData, TName>,
   in out TOnMount extends
     | undefined
@@ -515,7 +514,7 @@ export interface FieldApiOptions<
 
 export type FieldMetaBase<
   TParentData,
-  TName extends string,
+  TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
@@ -590,7 +589,7 @@ export type AnyFieldMetaBase = FieldMetaBase<
 
 export type FieldMetaDerived<
   TParentData,
-  TName extends string,
+  TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
@@ -670,7 +669,7 @@ export type AnyFieldMetaDerived = FieldMetaDerived<
  */
 export type FieldMeta<
   TParentData,
-  TName extends string,
+  TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
@@ -756,7 +755,7 @@ export type AnyFieldMeta = FieldMeta<
  */
 export type FieldState<
   TParentData,
-  TName extends string,
+  TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
@@ -845,7 +844,7 @@ export type AnyFieldApi = FieldApi<
  */
 export class FieldApi<
   in out TParentData,
-  in out TName extends string,
+  in out TName extends DeepKeys<TParentData>,
   in out TData extends DeepValue<TParentData, TName>,
   in out TOnMount extends
     | undefined

@@ -30,7 +30,7 @@ import type {
   ValidationErrorMap,
   ValidationErrorMapKeys,
 } from './types'
-import type { DeepKeys, DeepValue, ValidateName } from './util-types'
+import type { DeepKeys, DeepValue } from './util-types'
 import type { Updater } from './utils'
 
 /**
@@ -1226,8 +1226,8 @@ export class FormApi<
   /**
    * Validates a specified field in the form using the correct handlers for a given validation type.
    */
-  validateField = <TField extends string>(
-    field: ValidateName<TFormData, TField>,
+  validateField = <TField extends DeepKeys<TFormData>>(
+    field: TField,
     cause: ValidationCause,
   ) => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -1669,8 +1669,8 @@ export class FormApi<
   /**
    * Gets the metadata of the specified field.
    */
-  getFieldMeta = <TField extends string>(
-    field: ValidateName<TFormData, TField>,
+  getFieldMeta = <TField extends DeepKeys<TFormData>>(
+    field: TField,
   ): AnyFieldMeta | undefined => {
     return this.state.fieldMeta[field]
   }
@@ -1678,8 +1678,8 @@ export class FormApi<
   /**
    * Gets the field info of the specified field.
    */
-  getFieldInfo = <TField extends string>(
-    field: ValidateName<TFormData, TField>,
+  getFieldInfo = <TField extends DeepKeys<TFormData>>(
+    field: TField,
   ): FieldInfo<TFormData> => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     return (this.fieldInfo[field] ||= {
@@ -1697,8 +1697,8 @@ export class FormApi<
   /**
    * Updates the metadata of the specified field.
    */
-  setFieldMeta = <TField extends string>(
-    field: ValidateName<TFormData, TField>,
+  setFieldMeta = <TField extends DeepKeys<TFormData>>(
+    field: TField,
     updater: Updater<AnyFieldMeta>,
   ) => {
     this.baseStore.setState((prev) => {
@@ -1739,8 +1739,8 @@ export class FormApi<
   /**
    * Sets the value of the specified field and optionally updates the touched state.
    */
-  setFieldValue = <TField extends string>(
-    field: ValidateName<TFormData, TField>,
+  setFieldValue = <TField extends DeepKeys<TFormData>>(
+    field: TField,
     updater: Updater<DeepValue<TFormData, TField>>,
     opts?: UpdateMetaOptions,
   ) => {
@@ -1793,8 +1793,8 @@ export class FormApi<
   /**
    * Pushes a value into an array field.
    */
-  pushFieldValue = <TField extends string>(
-    field: ValidateName<TFormData, TField>,
+  pushFieldValue = <TField extends DeepKeys<TFormData>>(
+    field: TField,
     value: DeepValue<TFormData, TField> extends any[]
       ? DeepValue<TFormData, TField>[number]
       : never,
@@ -1808,8 +1808,8 @@ export class FormApi<
     this.validateField(field, 'change')
   }
 
-  insertFieldValue = async <TField extends string>(
-    field: ValidateName<TFormData, TField>,
+  insertFieldValue = async <TField extends DeepKeys<TFormData>>(
+    field:TField,
     index: number,
     value: DeepValue<TFormData, TField> extends any[]
       ? DeepValue<TFormData, TField>[number]
@@ -1840,8 +1840,8 @@ export class FormApi<
   /**
    * Replaces a value into an array field at the specified index.
    */
-  replaceFieldValue = async <TField extends string>(
-    field: ValidateName<TFormData, TField>,
+  replaceFieldValue = async <TField extends DeepKeys<TFormData>>(
+    field: TField,
     index: number,
     value: DeepValue<TFormData, TField> extends any[]
       ? DeepValue<TFormData, TField>[number]
@@ -1866,8 +1866,8 @@ export class FormApi<
   /**
    * Removes a value from an array field at the specified index.
    */
-  removeFieldValue = async <TField extends string>(
-    field: ValidateName<TFormData, TField>,
+  removeFieldValue = async <TField extends DeepKeys<TFormData>>(
+    field: TField,
     index: number,
     opts?: UpdateMetaOptions,
   ) => {
@@ -1903,8 +1903,8 @@ export class FormApi<
   /**
    * Swaps the values at the specified indices within an array field.
    */
-  swapFieldValues = <TField extends string>(
-    field: ValidateName<TFormData, TField>,
+  swapFieldValues = <TField extends DeepKeys<TFormData>>(
+    field: TField,
     index1: number,
     index2: number,
     opts?: UpdateMetaOptions,
@@ -1932,8 +1932,8 @@ export class FormApi<
   /**
    * Moves the value at the first specified index to the second specified index within an array field.
    */
-  moveFieldValues = <TField extends string>(
-    field: ValidateName<TFormData, TField>,
+  moveFieldValues = <TField extends DeepKeys<TFormData>>(
+    field: TField,
     index1: number,
     index2: number,
     opts?: UpdateMetaOptions,
