@@ -9,7 +9,7 @@ import type {
   FormValidateOrFn,
 } from '@tanstack/form-core'
 
-export interface FieldOptionsMode {
+interface FieldOptionsMode {
   mode?: 'value' | 'array'
 }
 
