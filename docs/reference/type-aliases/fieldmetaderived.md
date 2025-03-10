@@ -11,13 +11,13 @@ title: FieldMetaDerived
 type FieldMetaDerived<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync> = object;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:589](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L589)
+Defined in: [packages/form-core/src/FieldApi.ts:591](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L591)
 
 ## Type Parameters
 
 • **TParentData**
 
-• **TName** *extends* [`DeepKeys`](deepkeys.md)\<`TParentData`\>
+• **TName** *extends* `string`
 
 • **TData** *extends* [`DeepValue`](deepvalue.md)\<`TParentData`, `TName`\>
 
@@ -55,13 +55,13 @@ Defined in: [packages/form-core/src/FieldApi.ts:589](https://github.com/TanStack
 
 ```ts
 errors: (
-  | UnwrapOneLevelOfArray<UnwrapFieldValidateOrFn<TParentData, TName, TOnMount, TFormOnMount>>
-  | UnwrapOneLevelOfArray<UnwrapFieldValidateOrFn<TParentData, TName, TOnChange, TFormOnChange>>
-  | UnwrapOneLevelOfArray<UnwrapFieldAsyncValidateOrFn<TParentData, TName, TOnChangeAsync, TFormOnChangeAsync>>
-  | UnwrapOneLevelOfArray<UnwrapFieldValidateOrFn<TParentData, TName, TOnBlur, TFormOnBlur>>
-  | UnwrapOneLevelOfArray<UnwrapFieldAsyncValidateOrFn<TParentData, TName, TOnBlurAsync, TFormOnBlurAsync>>
-  | UnwrapOneLevelOfArray<UnwrapFieldValidateOrFn<TParentData, TName, TOnSubmit, TFormOnSubmit>>
-  | UnwrapOneLevelOfArray<UnwrapFieldAsyncValidateOrFn<TParentData, TName, TOnSubmitAsync, TFormOnSubmitAsync>>)[];
+  | UnwrapOneLevelOfArray<UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>>
+  | UnwrapOneLevelOfArray<UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>>
+  | UnwrapOneLevelOfArray<UnwrapFieldAsyncValidateOrFn<TName, TOnChangeAsync, TFormOnChangeAsync>>
+  | UnwrapOneLevelOfArray<UnwrapFieldValidateOrFn<TName, TOnBlur, TFormOnBlur>>
+  | UnwrapOneLevelOfArray<UnwrapFieldAsyncValidateOrFn<TName, TOnBlurAsync, TFormOnBlurAsync>>
+  | UnwrapOneLevelOfArray<UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>>
+  | UnwrapOneLevelOfArray<UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>>)[];
 ```
 
 An array of errors related to the field value.

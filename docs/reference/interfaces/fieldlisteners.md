@@ -7,13 +7,13 @@ title: FieldListeners
 
 # Interface: FieldListeners\<TParentData, TName, TData\>
 
-Defined in: [packages/form-core/src/FieldApi.ts:347](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L347)
+Defined in: [packages/form-core/src/FieldApi.ts:350](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L350)
 
 ## Type Parameters
 
 • **TParentData**
 
-• **TName** *extends* [`DeepKeys`](../type-aliases/deepkeys.md)\<`TParentData`\>
+• **TName** *extends* `string`
 
 • **TData** *extends* [`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\> = [`DeepValue`](../type-aliases/deepvalue.md)\<`TParentData`, `TName`\>
 
@@ -25,7 +25,7 @@ Defined in: [packages/form-core/src/FieldApi.ts:347](https://github.com/TanStack
 optional onBlur: FieldListenerFn<TParentData, TName, TData>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:353](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L353)
+Defined in: [packages/form-core/src/FieldApi.ts:356](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L356)
 
 ***
 
@@ -35,7 +35,7 @@ Defined in: [packages/form-core/src/FieldApi.ts:353](https://github.com/TanStack
 optional onChange: FieldListenerFn<TParentData, TName, TData>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:352](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L352)
+Defined in: [packages/form-core/src/FieldApi.ts:355](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L355)
 
 ***
 
@@ -45,7 +45,7 @@ Defined in: [packages/form-core/src/FieldApi.ts:352](https://github.com/TanStack
 optional onMount: FieldListenerFn<TParentData, TName, TData>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:354](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L354)
+Defined in: [packages/form-core/src/FieldApi.ts:357](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L357)
 
 ***
 
@@ -55,4 +55,4 @@ Defined in: [packages/form-core/src/FieldApi.ts:354](https://github.com/TanStack
 optional onSubmit: FieldListenerFn<TParentData, TName, TData>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:355](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L355)
+Defined in: [packages/form-core/src/FieldApi.ts:358](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L358)

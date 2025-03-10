@@ -19,7 +19,7 @@ A hook for managing a field in a form.
 
 • **TParentData**
 
-• **TName** *extends* `string` \| `number`
+• **TName** *extends* `string`
 
 • **TData**
 
