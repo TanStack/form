@@ -13,13 +13,7 @@
   "scripts": {
     "clean": "premove ./dist ./coverage",
     "test:eslint": "eslint ./src ./tests",
-    "test:types": "pnpm run \"/^test:types:ts[0-9]{2}$/\"",
-    "test:types:ts51": "node ../../node_modules/typescript51/lib/tsc.js",
-    "test:types:ts52": "node ../../node_modules/typescript52/lib/tsc.js",
-    "test:types:ts53": "node ../../node_modules/typescript53/lib/tsc.js",
-    "test:types:ts54": "node ../../node_modules/typescript54/lib/tsc.js",
-    "test:types:ts55": "node ../../node_modules/typescript55/lib/tsc.js",
-    "test:types:ts56": "tsc",
+    "test:types": "svelte-check",
     "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
@@ -50,7 +44,8 @@
     "@sveltejs/package": "^2.3.10",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "premove": "^4.0.0",
-    "svelte": "^5.20.2"
+    "svelte": "^5.20.2",
+    "svelte-check": "^4.1.5"
   },
   "peerDependencies": {
     "svelte": "^5.0.0"

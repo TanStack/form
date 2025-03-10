@@ -1,7 +1,6 @@
 import { FormApi } from '@tanstack/form-core'
 import { useStore } from '@tanstack/svelte-store'
 import { onMount } from 'svelte'
-// @ts-ignore tsc doesn't know about named exports from svelte files
 import Field, { createField } from './Field.svelte'
 import Subscribe from './Subscribe.svelte'
 import type {
