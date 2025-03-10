@@ -48,7 +48,7 @@ type FormErrorMapFromValidator<
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
 > = Partial<
   Record<
-    DeepKeys<TFormData> & string,
+    DeepKeys<TFormData>,
     ValidationErrorMap<
       TOnMount,
       TOnChange,
@@ -1187,7 +1187,7 @@ export class FormApi<
   /**
    * Validates the children of a specified array in the form starting from a given index until the end using the correct handlers for a given validation type.
    */
-  validateArrayFieldsStartingFrom = async <TField extends string>(
+  validateArrayFieldsStartingFrom = async <TField extends DeepKeys<TFormData>>(
     field: TField,
     index: number,
     cause: ValidationCause,
@@ -1662,7 +1662,7 @@ export class FormApi<
   /**
    * Gets the value of the specified field.
    */
-  getFieldValue = <TField extends string>(
+  getFieldValue = <TField extends DeepKeys<TFormData>>(
     field: TField,
   ): DeepValue<TFormData, TField> => getBy(this.state.values, field)
 
@@ -1715,7 +1715,7 @@ export class FormApi<
     })
   }
 
-  resetFieldMeta = <TField extends string>(
+  resetFieldMeta = <TField extends DeepKeys<TFormData>>(
     fieldMeta: Record<TField, AnyFieldMeta>,
   ): Record<TField, AnyFieldMeta> => {
     return Object.keys(fieldMeta).reduce(
@@ -1769,7 +1769,7 @@ export class FormApi<
     })
   }
 
-  deleteField = <TField extends string>(field: TField) => {
+  deleteField = <TField extends DeepKeys<TFormData>>(field: TField) => {
     const subFieldsToDelete = Object.keys(this.fieldInfo).filter((f) => {
       const fieldStr = field.toString()
       return f !== fieldStr && f.startsWith(fieldStr)

@@ -53,7 +53,7 @@ type FieldErrorMapFromValidator<
     | FieldAsyncValidateOrFn<TFormData, TName, TData>,
 > = Partial<
   Record<
-    DeepKeys<TFormData> & string,
+    DeepKeys<TFormData>,
     ValidationErrorMap<
       TOnMount,
       TOnChange,
@@ -1005,7 +1005,7 @@ export class FieldApi<
     this.store = new Derived({
       deps: [this.form.store],
       fn: () => {
-        const value = this.form.getFieldValue(this.name as string)
+        const value = this.form.getFieldValue(this.name)
         const meta = this.form.getFieldMeta(this.name) ?? {
           isValidating: false,
           isTouched: false,
@@ -1169,7 +1169,7 @@ export class FieldApi<
    * @deprecated Use `field.state.value` instead.
    */
   getValue = (): TData => {
-    return this.form.getFieldValue(this.name as string) as TData
+    return this.form.getFieldValue(this.name) as TData
   }
 
   /**
@@ -1316,7 +1316,7 @@ export class FieldApi<
         field.instance.options.validators || {}
       if (
         cause === 'change' &&
-        onChangeListenTo?.includes(this.name as string)
+        onChangeListenTo?.includes(this.name)
       ) {
         linkedFields.push(field.instance)
       }
@@ -1602,7 +1602,7 @@ export class FieldApi<
       : this.form.validateSync(cause)
     const { hasErrored } = this.validateSync(
       cause,
-      (fieldsErrorMap[this.name] ?? {}) as ValidationErrorMap,
+      fieldsErrorMap[this.name] ?? {},
     )
 
     if (hasErrored && !this.options.asyncAlways) {

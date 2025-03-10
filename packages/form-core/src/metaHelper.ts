@@ -107,7 +107,7 @@ export function metaHelper<
 
     sortedFields.forEach((fieldKey) => {
       const nextFieldKey = updateIndex(
-        (fieldKey as string).toString(),
+        fieldKey.toString(),
         direction,
       )
       const nextFieldMeta = formApi.getFieldMeta(nextFieldKey)
