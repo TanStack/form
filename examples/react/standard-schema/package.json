@@ -10,17 +10,17 @@
   },
   "dependencies": {
     "@tanstack/react-form": "^1.0.5",
-    "arktype": "^2.0.0",
+    "arktype": "^2.1.9",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "valibot": "^1.0.0-beta.9",
-    "zod": "^3.24.0"
+    "valibot": "^1.0.0-rc.3",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^6.1.1"
+    "vite": "^6.2.1"
   },
   "browserslist": {
     "production": [
