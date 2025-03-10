@@ -75,8 +75,8 @@ export type UseField<
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
 >(
-  opts: Omit<
-    UseFieldOptions<
+  opts: 
+    UseFieldOptionsBound<
       TParentData,
       TName,
       TData,
@@ -86,19 +86,8 @@ export type UseField<
       TOnBlur,
       TOnBlurAsync,
       TOnSubmit,
-      TOnSubmitAsync,
-      TFormOnMount,
-      TFormOnChange,
-      TFormOnChangeAsync,
-      TFormOnBlur,
-      TFormOnBlurAsync,
-      TFormOnSubmit,
-      TFormOnSubmitAsync,
-      TFormOnServer,
-      TPatentSubmitMeta
-    >,
-    'form'
-  >,
+      TOnSubmitAsync
+    >
 ) => FieldApi<
   TParentData,
   TName,
