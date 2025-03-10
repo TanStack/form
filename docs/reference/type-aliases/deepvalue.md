@@ -11,7 +11,7 @@ title: DeepValue
 type DeepValue<TValue, TAccessor> = DeepKeysAndValues<TValue>[TAccessor & keyof DeepKeysAndValues<TValue>];
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:157](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L157)
+Defined in: [packages/form-core/src/util-types.ts:126](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L126)
 
 Infer the type of a deeply nested property within an object or an array.
 

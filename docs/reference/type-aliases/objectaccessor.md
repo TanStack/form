@@ -11,7 +11,7 @@ title: ObjectAccessor
 type ObjectAccessor<TPrefix, TKey> = TPrefix extends "" ? `${TKey}` : `${TPrefix}.${TKey}`;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:82](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L82)
+Defined in: [packages/form-core/src/util-types.ts:62](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L62)
 
 ## Type Parameters
 
