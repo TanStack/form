@@ -1,6 +1,5 @@
 import { Derived, Store, batch } from '@tanstack/store'
 import {
-  defaultFieldMeta,
   deleteBy,
   functionalUpdate,
   getAsyncValidatorArray,
@@ -11,11 +10,12 @@ import {
   setBy,
   shallow,
 } from './utils'
+
 import {
   isStandardSchemaValidator,
   standardSchemaValidators,
 } from './standardSchemaValidator'
-import { metaHelper } from './metaHelper'
+import { defaultFieldMeta, metaHelper } from './metaHelper'
 import type {
   StandardSchemaV1,
   StandardSchemaV1Issue,

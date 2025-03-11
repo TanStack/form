@@ -376,13 +376,3 @@ export function shallow<T>(objA: T, objB: T) {
   }
   return true
 }
-
-export const defaultFieldMeta: AnyFieldMeta = {
-  isValidating: false,
-  isTouched: false,
-  isBlurred: false,
-  isDirty: false,
-  isPristine: true,
-  errors: [],
-  errorMap: {},
-}

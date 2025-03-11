@@ -3,12 +3,8 @@ import {
   isStandardSchemaValidator,
   standardSchemaValidators,
 } from './standardSchemaValidator'
-import {
-  defaultFieldMeta,
-  getAsyncValidatorArray,
-  getBy,
-  getSyncValidatorArray,
-} from './utils'
+import { defaultFieldMeta } from './metaHelper'
+import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
 import type { DeepKeys, DeepValue, UnwrapOneLevelOfArray } from './util-types'
 import type {
   StandardSchemaV1,
