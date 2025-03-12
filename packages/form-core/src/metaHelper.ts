@@ -106,10 +106,7 @@ export function metaHelper<
     const sortedFields = direction === 'up' ? fields : [...fields].reverse()
 
     sortedFields.forEach((fieldKey) => {
-      const nextFieldKey = updateIndex(
-        fieldKey.toString(),
-        direction,
-      )
+      const nextFieldKey = updateIndex(fieldKey.toString(), direction)
       const nextFieldMeta = formApi.getFieldMeta(nextFieldKey)
       if (nextFieldMeta) {
         formApi.setFieldMeta(fieldKey, nextFieldMeta)
