@@ -1994,16 +1994,15 @@ describe('form api', () => {
   })
 
   it('should run the form listener onChange', async () => {
-    let triggered!: string
     let name!: string
 
     const form = new FormApi({
       defaultValues: {
         name: 'test',
+        age: 0,
       },
       listeners: {
-        onChange: ({ fieldValue, fieldName }) => {
-          triggered = fieldValue
+        onChange: ({ formApi, fieldName }) => {
           name = fieldName
         },
       },
@@ -2017,7 +2016,7 @@ describe('form api', () => {
     field.mount()
     field.setValue('newTest')
 
-    expect(triggered).toStrictEqual('newTest')
+    expect(form.state.values[name]).toStrictEqual('newTest')
     expect(name).toStrictEqual('name')
   })
 
@@ -2028,10 +2027,11 @@ describe('form api', () => {
     const form = new FormApi({
       defaultValues: {
         items: ['one', 'two'],
+        age: 0,
       },
       listeners: {
-        onChange: ({ fieldValue, fieldName }) => {
-          arr = fieldValue
+        onChange: ({ formApi, fieldName }) => {
+          arr = formApi.state.values[fieldName]
           name = fieldName
         },
       },
@@ -2071,10 +2071,10 @@ describe('form api', () => {
     const form = new FormApi({
       defaultValues: {
         name: 'test',
+        age: 0,
       },
       listeners: {
-        onBlur: ({ fieldValue, fieldName }) => {
-          triggered = fieldValue
+        onBlur: ({ fieldName, formApi }) => {
           name = fieldName
         },
       },
