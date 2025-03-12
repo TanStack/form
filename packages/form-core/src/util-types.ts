@@ -90,27 +90,13 @@ export type DeepRecordUnion<T, TPrefix extends string = '', TAcc = never> =
           ? DeepRecordObjectUnion<T, TPrefix, TAcc>
           : TAcc
 
-export type DeepRecordKeys<
-  T,
-  TRecord = DeepRecordUnion<T>,
-> = TRecord extends any ? keyof TRecord : never
-
-export type DeepRecordValues<
-  T,
-  TKey,
-  TRecord = DeepRecordUnion<T>,
-> = TRecord extends any
-  ? TKey extends keyof TRecord
-    ? TRecord[TKey & keyof TRecord]
-    : never
+export type UnionToIntersection<T> = (
+  T extends any ? (param: T) => any : never
+) extends (param: infer TI) => any
+  ? TI
   : never
 
-export type DeepRecord<T> =
-  IsAny<T> extends true
-    ? T
-    : {
-        [TKey in DeepRecordKeys<T>]: DeepRecordValues<T, TKey>
-      }
+export type DeepRecord<T> = UnionToIntersection<DeepRecordUnion<T>>
 
 /**
  * The keys of an object or array, deeply nested.
