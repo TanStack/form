@@ -193,40 +193,43 @@ export interface FormValidators<
  */
 export interface FormTransform<
   TFormData,
-  TOnMount extends undefined | FormValidateOrFn<TFormData>,
-  TOnChange extends undefined | FormValidateOrFn<TFormData>,
-  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta = never,
 > {
-  fn: (
+  fn: <
+    TFFormData extends TFormData,
+    TFOnMount extends undefined | FormValidateOrFn<TFFormData>,
+    TFOnChange extends undefined | FormValidateOrFn<TFFormData>,
+    TFOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFFormData>,
+    TFOnBlur extends undefined | FormValidateOrFn<TFFormData>,
+    TFOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFFormData>,
+    TFOnSubmit extends undefined | FormValidateOrFn<TFFormData>,
+    TFOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFFormData>,
+    TFOnServer extends undefined | FormValidateOrFn<TFFormData>,
+    TFSubmitMeta extends TSubmitMeta
+  >(
     formBase: FormApi<
-      TFormData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnServer,
-      TSubmitMeta
+      TFFormData,
+      TFOnMount,
+      TFOnChange,
+      TFOnChangeAsync,
+      TFOnBlur,
+      TFOnBlurAsync,
+      TFOnSubmit,
+      TFOnSubmitAsync,
+      TFOnServer,
+      TFSubmitMeta
     >,
   ) => FormApi<
-    TFormData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnServer,
-    TSubmitMeta
+    TFFormData,
+    TFOnMount,
+    TFOnChange,
+    TFOnChangeAsync,
+    TFOnBlur,
+    TFOnBlurAsync,
+    TFOnSubmit,
+    TFOnSubmitAsync,
+    TFOnServer,
+    TFSubmitMeta
   >
   deps: unknown[]
 }
@@ -296,52 +299,63 @@ export interface FormOptions<
   /**
    * A function to be called when the form is submitted, what should happen once the user submits a valid form returns `any` or a promise `Promise<any>`
    */
-  onSubmit?: (props: {
-    value: TFormData
+  onSubmit?: <
+    TFFormData extends TFormData,
+    TFOnMount extends undefined | FormValidateOrFn<TFFormData>,
+    TFOnChange extends undefined | FormValidateOrFn<TFFormData>,
+    TFOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFFormData>,
+    TFOnBlur extends undefined | FormValidateOrFn<TFFormData>,
+    TFOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFFormData>,
+    TFOnSubmit extends undefined | FormValidateOrFn<TFFormData>,
+    TFOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFFormData>,
+    TFOnServer extends undefined | FormValidateOrFn<TFFormData>,
+    TFSubmitMeta extends TSubmitMeta
+  >(props: {
+    value: TFFormData
     formApi: FormApi<
-      TFormData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnServer,
-      TSubmitMeta
+      TFFormData,
+      TFOnMount,
+      TFOnChange,
+      TFOnChangeAsync,
+      TFOnBlur,
+      TFOnBlurAsync,
+      TFOnSubmit,
+      TFOnSubmitAsync,
+      TFOnServer,
+      TFSubmitMeta
     >
     meta: TSubmitMeta
   }) => any | Promise<any>
   /**
    * Specify an action for scenarios where the user tries to submit an invalid form.
    */
-  onSubmitInvalid?: (props: {
-    value: TFormData
+  onSubmitInvalid?: <
+    TFFormData extends TFormData,
+    TFOnMount extends undefined | FormValidateOrFn<TFFormData>,
+    TFOnChange extends undefined | FormValidateOrFn<TFFormData>,
+    TFOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFFormData>,
+    TFOnBlur extends undefined | FormValidateOrFn<TFFormData>,
+    TFOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFFormData>,
+    TFOnSubmit extends undefined | FormValidateOrFn<TFFormData>,
+    TFOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFFormData>,
+    TFOnServer extends undefined | FormValidateOrFn<TFFormData>,
+    TFSubmitMeta extends TSubmitMeta
+  >(props: {
+    value: TFFormData
     formApi: FormApi<
-      TFormData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnServer,
-      TSubmitMeta
+      TFFormData,
+      TFOnMount,
+      TFOnChange,
+      TFOnChangeAsync,
+      TFOnBlur,
+      TFOnBlurAsync,
+      TFOnSubmit,
+      TFOnSubmitAsync,
+      TFOnServer,
+      TFSubmitMeta
     >
   }) => void
-  transform?: FormTransform<
-    NoInfer<TFormData>,
-    NoInfer<TOnMount>,
-    NoInfer<TOnChange>,
-    NoInfer<TOnChangeAsync>,
-    NoInfer<TOnBlur>,
-    NoInfer<TOnBlurAsync>,
-    NoInfer<TOnSubmit>,
-    NoInfer<TOnSubmitAsync>,
-    NoInfer<TOnServer>,
-    NoInfer<TSubmitMeta>
-  >
+  transform?: FormTransform<NoInfer<TFormData>>
 }
 
 /**
