@@ -8,22 +8,22 @@
     "_test:types": "tsc"
   },
   "dependencies": {
-    "@remix-run/node": "^2.15.3",
-    "@remix-run/react": "^2.15.3",
-    "@remix-run/serve": "^2.15.3",
+    "@remix-run/node": "^2.16.0",
+    "@remix-run/react": "^2.16.0",
+    "@remix-run/serve": "^2.16.0",
     "@tanstack/react-form": "^1.0.5",
     "@tanstack/react-store": "^0.7.0",
-    "isbot": "^5.1.17",
+    "isbot": "^5.1.23",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@remix-run/dev": "^2.15.0",
+    "@remix-run/dev": "^2.16.0",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "typescript": "5.8.2",
-    "vite": "^6.1.1",
-    "vite-tsconfig-paths": "^5.1.2"
+    "vite": "^6.2.1",
+    "vite-tsconfig-paths": "^5.1.4"
   },
   "engines": {
     "node": ">=20.0.0"

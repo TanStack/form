@@ -19,7 +19,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "babel-plugin-react-compiler": "19.0.0-beta-e552027-20250112",
     "eslint-plugin-react-compiler": "19.0.0-beta-e552027-20250112",
-    "vite": "^6.1.1"
+    "vite": "^6.2.1"
   },
   "browserslist": {
     "production": [

@@ -11,12 +11,12 @@
   "dependencies": {
     "@tanstack/form-core": "^1.0.5",
     "@tanstack/react-form": "^1.0.5",
-    "@tanstack/react-router": "^1.112.0",
-    "@tanstack/react-start": "^1.112.0",
+    "@tanstack/react-router": "^1.114.4",
+    "@tanstack/react-start": "^1.114.4",
     "@tanstack/react-store": "^0.7.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "vinxi": "^0.5.1"
+    "vinxi": "^0.5.3"
   },
   "devDependencies": {
     "@types/node": "^22.10.6",
@@ -24,7 +24,7 @@
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
     "typescript": "5.8.2",
-    "vite": "^6.1.1",
-    "vite-tsconfig-paths": "^5.1.2"
+    "vite": "^6.2.1",
+    "vite-tsconfig-paths": "^5.1.4"
   }
 }
