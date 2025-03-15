@@ -30,3 +30,7 @@ Use schema libraries like zod, yup or valibot to define your schema with validat
 ## 6. [Side effects and listeners](https://youtu.be/A-w2IG7DAso)
 
 Similarly to field validators, you can attach events to field listeners and react to them, for example to reset a field when another one it depends on has changed. [Watch video (5:50)](https://youtu.be/A-w2IG7DAso)
+
+## 7. [Composable Fields for Large Forms](https://youtu.be/YJ3rW85fnKo)
+
+With the Composition APIs you can create reusable components, pre-bound and connected to a generic form context, heavily reducing repetitive code in all form instances across the app. This is especially useful for large forms with many fields. [Watch video (11:01)](https://youtu.be/YJ3rW85fnKo)
