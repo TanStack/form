@@ -1510,7 +1510,7 @@ export class FormApi<
     }
 
     // 
-    const validationType = this.state.submissionAttempts === 0
+    const validationType = this.state.submissionAttempts === 1
     ? this.options.validationOnFirstAttempt ?? 'submit'
     : this.options.validationOnConsequentAttempts ?? 'submit';
 
