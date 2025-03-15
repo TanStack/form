@@ -3,6 +3,7 @@ import {
   isStandardSchemaValidator,
   standardSchemaValidators,
 } from './standardSchemaValidator'
+import { defaultFieldMeta } from './metaHelper'
 import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
 import type { DeepKeys, DeepValue, UnwrapOneLevelOfArray } from './util-types'
 import type {
@@ -1007,13 +1008,7 @@ export class FieldApi<
       fn: () => {
         const value = this.form.getFieldValue(this.name)
         const meta = this.form.getFieldMeta(this.name) ?? {
-          isValidating: false,
-          isTouched: false,
-          isBlurred: false,
-          isDirty: false,
-          isPristine: true,
-          errors: [],
-          errorMap: {},
+          ...defaultFieldMeta,
           ...opts.defaultMeta,
         }
 
