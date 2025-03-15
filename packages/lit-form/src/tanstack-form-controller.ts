@@ -231,8 +231,6 @@ export class TanStackFormController<
       TSubmitMeta
     >,
   ) {
-    ;(this.#host = host).addController(this)
-
     this.api = new FormApi<
       TParentData,
       TFormOnMount,
@@ -245,6 +243,7 @@ export class TanStackFormController<
       TFormOnServer,
       TSubmitMeta
     >(config)
+    ;(this.#host = host).addController(this)
   }
 
   hostConnected() {
