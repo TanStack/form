@@ -856,7 +856,6 @@ describe('form api', () => {
       },
     })
     field1.mount()
-
     const field2 = new FieldApi({
       form,
       name: 'names[1]',

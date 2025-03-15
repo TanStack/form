@@ -11,13 +11,13 @@ title: createField
 function createField<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer, TParentSubmitMeta>(opts): () => FieldApi<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer, TParentSubmitMeta> & SolidFieldApi<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer, TParentSubmitMeta>
 ```
 
-Defined in: [packages/solid-form/src/createField.tsx:236](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L236)
+Defined in: [packages/solid-form/src/createField.tsx:223](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L223)
 
 ## Type Parameters
 
 • **TParentData**
 
-• **TName** *extends* `string` \| `number`
+• **TName** *extends* `string`
 
 • **TData**
 

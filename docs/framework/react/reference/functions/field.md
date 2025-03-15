@@ -11,7 +11,7 @@ title: Field
 function Field<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer, TPatentSubmitMeta>(__namedParameters): ReactNode
 ```
 
-Defined in: [packages/react-form/src/useField.tsx:369](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L369)
+Defined in: [packages/react-form/src/useField.tsx:425](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L425)
 
 A function component that takes field options and a render function as children and returns a React component.
 
@@ -21,7 +21,7 @@ The `Field` component uses the `useField` hook internally to manage the field in
 
 • **TParentData**
 
-• **TName** *extends* `string` \| `number`
+• **TName** *extends* `string`
 
 • **TData**
 

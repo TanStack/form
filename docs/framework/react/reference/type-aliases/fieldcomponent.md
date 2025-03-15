@@ -14,7 +14,7 @@ type FieldComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync
 }) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/useField.tsx:307](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L307)
+Defined in: [packages/react-form/src/useField.tsx:360](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L360)
 
 A type alias representing a field component for a specific form data type.
 
@@ -69,7 +69,7 @@ A type alias representing a field component for a specific form data type.
   ...fieldOptions
 \}
 
-`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`, `TPatentSubmitMeta`, `ExtendedApi`\>, `"form"`\>
+`FieldComponentBoundProps`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`, `TPatentSubmitMeta`, `ExtendedApi`\>
 
 ## Returns
 

@@ -14,7 +14,7 @@ type FieldComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync
 }) => JSXElement;
 ```
 
-Defined in: [packages/solid-form/src/createField.tsx:425](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L425)
+Defined in: [packages/solid-form/src/createField.tsx:400](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L400)
 
 ## Type Parameters
 
@@ -65,7 +65,7 @@ Defined in: [packages/solid-form/src/createField.tsx:425](https://github.com/Tan
   ...fieldOptions
 \}
 
-`Omit`\<`FieldComponentProps`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`, `TParentSubmitMeta`\>, `"form"`\>
+`FieldComponentBoundProps`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`, `TParentSubmitMeta`\>
 
 ## Returns
 

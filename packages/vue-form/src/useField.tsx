@@ -19,7 +19,7 @@ import type {
   SetupContext,
   SlotsType,
 } from 'vue'
-import type { UseFieldOptions } from './types'
+import type { UseFieldOptions, UseFieldOptionsBound } from './types'
 
 export type FieldComponent<
   TParentData,
@@ -51,56 +51,32 @@ export type FieldComponent<
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
 >(
-  props: Omit<
-    FieldComponentProps<
-      TParentData,
-      TName,
-      TData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TFormOnMount,
-      TFormOnChange,
-      TFormOnChangeAsync,
-      TFormOnBlur,
-      TFormOnBlurAsync,
-      TFormOnSubmit,
-      TFormOnSubmitAsync,
-      TFormOnServer,
-      TParentSubmitMeta
-    >,
-    'form'
+  props: FieldComponentBoundProps<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync
   > &
     EmitsToProps<EmitsOptions> &
     PublicProps,
 ) => CreateComponentPublicInstanceWithMixins<
-  Omit<
-    FieldComponentProps<
-      TParentData,
-      TName,
-      TData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TFormOnMount,
-      TFormOnChange,
-      TFormOnChangeAsync,
-      TFormOnBlur,
-      TFormOnBlurAsync,
-      TFormOnSubmit,
-      TFormOnSubmitAsync,
-      TFormOnServer,
-      TParentSubmitMeta
-    >,
-    'form'
+  FieldComponentBoundProps<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync
   >,
   {},
   {},
@@ -215,29 +191,17 @@ export type UseField<
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
 >(
-  opts: Omit<
-    UseFieldOptions<
-      TParentData,
-      TName,
-      TData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TFormOnMount,
-      TFormOnChange,
-      TFormOnChangeAsync,
-      TFormOnBlur,
-      TFormOnBlurAsync,
-      TFormOnSubmit,
-      TFormOnSubmitAsync,
-      TFormOnServer,
-      TParentSubmitMeta
-    >,
-    'form'
+  opts: UseFieldOptionsBound<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync
   >,
 ) => {
   api: FieldApi<
@@ -443,6 +407,36 @@ export type FieldComponentProps<
   TFormOnSubmitAsync,
   TFormOnServer,
   TParentSubmitMeta
+>
+
+export type FieldComponentBoundProps<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+> = UseFieldOptionsBound<
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync
 >
 
 export const Field = defineComponent(

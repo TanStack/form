@@ -11,13 +11,13 @@ title: Field
 function Field<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer, TParentSubmitMeta>(props): Element
 ```
 
-Defined in: [packages/solid-form/src/createField.tsx:480](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L480)
+Defined in: [packages/solid-form/src/createField.tsx:524](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L524)
 
 ## Type Parameters
 
 • **TParentData**
 
-• **TName** *extends* `string` \| `number`
+• **TName** *extends* `string`
 
 • **TData**
 
@@ -57,7 +57,7 @@ Defined in: [packages/solid-form/src/createField.tsx:480](https://github.com/Tan
 
 ### props
 
-`object` & `FieldApiOptions`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`, `TParentSubmitMeta`\> & `object`
+`FieldComponentProps`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`, `TParentSubmitMeta`\>
 
 ## Returns
 

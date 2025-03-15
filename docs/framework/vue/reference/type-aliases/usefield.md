@@ -11,7 +11,7 @@ title: UseField
 type UseField<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer, TParentSubmitMeta> = <TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync>(opts) => object;
 ```
 
-Defined in: [packages/vue-form/src/useField.tsx:190](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L190)
+Defined in: [packages/vue-form/src/useField.tsx:166](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L166)
 
 ## Type Parameters
 
@@ -59,7 +59,7 @@ Defined in: [packages/vue-form/src/useField.tsx:190](https://github.com/TanStack
 
 ### opts
 
-`Omit`\<`UseFieldOptions`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`, `TParentSubmitMeta`\>, `"form"`\>
+`UseFieldOptionsBound`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`\>
 
 ## Returns
 
