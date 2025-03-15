@@ -11,6 +11,7 @@
   "dependencies": {
     "@tanstack/react-form": "^1.0.5",
     "arktype": "^2.0.0",
+    "effect": "^3.13.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "valibot": "^1.0.0-beta.9",
