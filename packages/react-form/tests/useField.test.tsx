@@ -290,28 +290,26 @@ describe('useField', () => {
                   </form.Field>
                 )
               }
-
-              return (
-                <form.Field name="secondField">
-                  {({ handleChange, state }) => (
-                    <label>
-                      second field
-                      <input
-                        data-testid="second-field"
-                        value={state.value}
-                        onChange={(e) => handleChange(e.target.value)}
-                      />
-                    </label>
-                  )}
-                </form.Field>
-              )
+              return null
             }}
           </form.Subscribe>
+          <form.Field name="secondField">
+            {({ handleChange, state }) => (
+              <label>
+                second field
+                <input
+                  data-testid="second-field"
+                  value={state.value}
+                  onChange={(e) => handleChange(e.target.value)}
+                />
+              </label>
+            )}
+          </form.Field>
         </>
       )
     }
 
-    const { getByTestId } = render(<Comp />)
+    const { getByTestId, debug } = render(<Comp />)
 
     const showFirstFieldInput = getByTestId('show-first-field')
 
@@ -1129,5 +1127,65 @@ describe('useField', () => {
     expect(renderCount.field1).toBeGreaterThan(field1InitialRender)
     // field2 should not have rerendered
     expect(renderCount.field2).toBe(field2InitialRender)
+  })
+
+  it('should render once per change if not tracking validation state', async () => {
+    let regularRenders = 0
+    let rendersWithTracking = 0
+    const inputText = 'example'
+    const expectedRenders = inputText.length
+    // 1 by default and seems like 1 for useStore
+    const baseRenders = 2
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          field1: '',
+          field2: '',
+        },
+      })
+
+      return (
+        <>
+          <form.Field
+            name="field1"
+            children={(field) => {
+              regularRenders++
+              return (
+                <input
+                  data-testid="fieldinput1"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              )
+            }}
+          />
+          <form.Field
+            name="field2"
+            trackValidationState
+            children={(field) => {
+              rendersWithTracking++
+              return (
+                <input
+                  data-testid="fieldinput2"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              )
+            }}
+          />
+        </>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    await user.type(getByTestId('fieldinput1'), inputText)
+    expect(regularRenders).toEqual(expectedRenders + baseRenders)
+
+    await user.type(getByTestId('fieldinput2'), inputText)
+    // Each change triggers two renders due to isValidating state being updated
+    expect(rendersWithTracking).toEqual(expectedRenders * 2 + baseRenders)
   })
 })

@@ -439,6 +439,10 @@ export interface FieldOptions<
    * Disable the `flat(1)` operation on `field.errors`. This is useful if you want to keep the error structure as is. Not suggested for most use-cases.
    */
   disableErrorFlat?: boolean
+  /**
+   * Should the field's isValidating state be updated during validation
+   */
+  trackValidationState?: boolean
 }
 
 /**
@@ -1473,12 +1477,14 @@ export class FieldApi<
       >,
     )
 
-    if (!this.state.meta.isValidating) {
+    if (!this.state.meta.isValidating && this.options.trackValidationState) {
       this.setMeta((prev) => ({ ...prev, isValidating: true }))
     }
 
     for (const linkedField of linkedFields) {
-      linkedField.setMeta((prev) => ({ ...prev, isValidating: true }))
+      if (linkedField.options.trackValidationState) {
+        linkedField.setMeta((prev) => ({ ...prev, isValidating: true }))
+      }
     }
 
     /**
@@ -1577,10 +1583,14 @@ export class FieldApi<
       await Promise.all(linkedPromises)
     }
 
-    this.setMeta((prev) => ({ ...prev, isValidating: false }))
+    if (this.options.trackValidationState) {
+      this.setMeta((prev) => ({ ...prev, isValidating: false }))
+    }
 
     for (const linkedField of linkedFields) {
-      linkedField.setMeta((prev) => ({ ...prev, isValidating: false }))
+      if (linkedField.options.trackValidationState) {
+        linkedField.setMeta((prev) => ({ ...prev, isValidating: false }))
+      }
     }
 
     return results.filter(Boolean)
