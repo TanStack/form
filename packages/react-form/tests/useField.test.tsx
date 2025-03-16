@@ -290,26 +290,27 @@ describe('useField', () => {
                   </form.Field>
                 )
               }
-              return null
+              return (
+                <form.Field name="secondField">
+                  {({ handleChange, state }) => (
+                    <label>
+                      second field
+                      <input
+                        data-testid="second-field"
+                        value={state.value}
+                        onChange={(e) => handleChange(e.target.value)}
+                      />
+                    </label>
+                  )}
+                </form.Field>
+              )
             }}
           </form.Subscribe>
-          <form.Field name="secondField">
-            {({ handleChange, state }) => (
-              <label>
-                second field
-                <input
-                  data-testid="second-field"
-                  value={state.value}
-                  onChange={(e) => handleChange(e.target.value)}
-                />
-              </label>
-            )}
-          </form.Field>
         </>
       )
     }
 
-    const { getByTestId, debug } = render(<Comp />)
+    const { getByTestId } = render(<Comp />)
 
     const showFirstFieldInput = getByTestId('show-first-field')
 
