@@ -59,7 +59,7 @@ describe('Svelte Tests', () => {
 
     await userEvent.type(lastName, lastNameValue)
 
-    expect(await lastName.getAttribute('error-text')).toBeFalsy()
+    expect(lastName.getAttribute('error-text')).toBeFalsy()
     expect(element.querySelector('em')).not.toBeInTheDocument()
   })
 })

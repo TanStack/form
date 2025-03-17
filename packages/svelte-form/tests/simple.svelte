@@ -11,7 +11,7 @@
 </script>
 
 <script lang="ts">
-  import { createForm } from '@tanstack/svelte-form'
+  import { createForm } from '../src/index.js'
 
   const form = createForm(() => ({
     defaultValues: sampleData,
