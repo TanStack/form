@@ -93,11 +93,10 @@
       }
     })
 
-    // TODO (43081j): does this do what i think? we don't access anything
-    // svelte is aware of, so maybe it'll never call this?
     $effect.pre(() => {
+      // Invoke options function before mounted check, else it wouldn't rerun on changes to options.
+      // Changes to options are seen by the effect because signals inside them are picked up.
       const current = opts()
-      Object.values(current) // make sure we're watching all the things
       if (!mounted) return
       api.update(current)
     })

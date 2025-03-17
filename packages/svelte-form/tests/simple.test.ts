@@ -4,7 +4,7 @@ import '@testing-library/jest-dom'
 import { userEvent } from '@testing-library/user-event'
 import { mount, unmount } from 'svelte'
 // @ts-ignore tsc doesn't know about named exports from svelte files
-import TestForm, { sampleData } from './simple.svelte'
+import TestForm, { getSampleData } from './simple.svelte'
 
 describe('Svelte Tests', () => {
   let element: HTMLDivElement
@@ -24,11 +24,20 @@ describe('Svelte Tests', () => {
 
   it('should have initial values', async () => {
     expect(element.querySelector<HTMLInputElement>('#firstName')).toHaveValue(
-      sampleData.firstName,
+      getSampleData().firstName,
     )
     expect(element.querySelector<HTMLInputElement>('#lastName')).toHaveValue(
-      sampleData.lastName,
+      getSampleData().lastName,
     )
+  })
+
+  it('should change initial values when defaults update', async () => {
+    await userEvent.click(element.querySelector<HTMLButtonElement>('#change')!)
+
+    expect(element.querySelector<HTMLInputElement>('#firstName')).toHaveValue(
+      getSampleData().firstName,
+    )
+    expect(getSampleData().firstName).toBe('Julian')
   })
 
   it('should mirror user input', async () => {
@@ -44,10 +53,10 @@ describe('Svelte Tests', () => {
     const firstName = element.querySelector<HTMLInputElement>('#firstName')!
     await userEvent.type(firstName, '-Joseph')
 
-    expect(firstName).toHaveValue(sampleData.firstName + '-Joseph')
+    expect(firstName).toHaveValue(getSampleData().firstName + '-Joseph')
 
     await userEvent.click(element.querySelector<HTMLButtonElement>('#reset')!)
-    expect(firstName).toHaveValue(sampleData.firstName)
+    expect(firstName).toHaveValue(getSampleData().firstName)
   })
 
   it('should display validation', async () => {

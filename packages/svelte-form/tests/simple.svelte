@@ -1,13 +1,17 @@
+<svelte:options runes />
+
 <script module lang="ts">
   interface Employee {
     firstName: string
     lastName: string
   }
 
-  export const sampleData: Employee = {
+  let sampleData: Employee = $state({
     firstName: 'Christian',
     lastName: '',
-  }
+  })
+
+  export const getSampleData = () => sampleData
 </script>
 
 <script lang="ts">
@@ -21,7 +25,7 @@
     },
   }))
 
-  const state = form.useStore()
+  const formState = form.useStore()
 </script>
 
 <form
@@ -110,4 +114,11 @@
   </div>
 </form>
 
-<pre>{JSON.stringify(state.current, null, 2)}</pre>
+<button
+  id="change"
+  onclick={() => (sampleData = { firstName: 'Julian', lastName: '' })}
+>
+  Change Sample Data
+</button>
+
+<pre>{JSON.stringify(formState.current, null, 2)}</pre>
