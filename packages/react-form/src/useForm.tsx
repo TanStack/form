@@ -11,7 +11,7 @@ import type {
   FormState,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { PropsWithChildren, ReactNode } from 'react'
+import type { FormEventHandler, PropsWithChildren, ReactNode } from 'react'
 import type { FieldComponent } from './useField'
 import type { NoInfer } from '@tanstack/react-store'
 
@@ -80,6 +80,12 @@ export interface ReactFormApi<
     ) => TSelected
     children: ((state: NoInfer<TSelected>) => ReactNode) | ReactNode
   }) => ReactNode
+  /**
+   * A function that handles form submissions with server-actions support. Internally calls `handleSubmit` method, but additionally takes care of client-side validation.
+   */
+  handleActionSubmit: (
+    submitMeta?: TSubmitMeta,
+  ) => FormEventHandler<HTMLFormElement>
 }
 
 /**
@@ -164,6 +170,7 @@ export function useForm<
     TSubmitMeta
   >,
 ) {
+  const isActionSubmittedRef = React.useRef(false)
   const [formApi] = useState(() => {
     const api = new FormApi<
       TFormData,
@@ -201,6 +208,24 @@ export function useForm<
           children={props.children}
         />
       )
+    }
+    extendedApi.handleActionSubmit = (submitMeta) => {
+      return async (event) => {
+        if (isActionSubmittedRef.current) {
+          isActionSubmittedRef.current = false
+          return
+        }
+
+        event.preventDefault()
+
+        await new Promise((resolve) => setTimeout(resolve, 0))
+        await (submitMeta ? api.handleSubmit(submitMeta) : api.handleSubmit())
+
+        if (api.state.isValid) {
+          isActionSubmittedRef.current = true
+          ;(event.target as HTMLFormElement).requestSubmit()
+        }
+      }
     }
 
     return extendedApi
