@@ -59,6 +59,18 @@ Optional time in milliseconds if you want to introduce a delay before firing off
 
 ***
 
+### canSubmitWhenInvalid?
+
+```ts
+optional canSubmitWhenInvalid: boolean;
+```
+
+Defined in: [packages/form-core/src/FormApi.ts:280](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L280)
+
+If true, allows to submit when form is invalid. Defaults to undefined.
+
+***
+
 ### defaultState?
 
 ```ts
@@ -89,7 +101,7 @@ Set initial values for your form.
 optional onSubmit: (props) => any;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:300](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L300)
+Defined in: [packages/form-core/src/FormApi.ts:303](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L303)
 
 A function to be called when the form is submitted, what should happen once the user submits a valid form returns `any` or a promise `Promise<any>`
 
@@ -121,7 +133,7 @@ A function to be called when the form is submitted, what should happen once the 
 optional onSubmitInvalid: (props) => void;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:319](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L319)
+Defined in: [packages/form-core/src/FormApi.ts:322](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L322)
 
 Specify an action for scenarios where the user tries to submit an invalid form.
 
@@ -149,7 +161,7 @@ Specify an action for scenarios where the user tries to submit an invalid form.
 optional onSubmitMeta: TSubmitMeta;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:295](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L295)
+Defined in: [packages/form-core/src/FormApi.ts:298](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L298)
 
 onSubmitMeta, the data passed from the handleSubmit handler, to the onSubmit function props
 
@@ -161,7 +173,7 @@ onSubmitMeta, the data passed from the handleSubmit handler, to the onSubmit fun
 optional transform: FormTransform<NoInfer<TFormData>, NoInfer<TOnMount>, NoInfer<TOnChange>, NoInfer<TOnChangeAsync>, NoInfer<TOnBlur>, NoInfer<TOnBlurAsync>, NoInfer<TOnSubmit>, NoInfer<TOnSubmitAsync>, NoInfer<TOnServer>, NoInfer<TSubmitMeta>>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:334](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L334)
+Defined in: [packages/form-core/src/FormApi.ts:337](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L337)
 
 ***
 
@@ -171,6 +183,6 @@ Defined in: [packages/form-core/src/FormApi.ts:334](https://github.com/TanStack/
 optional validators: FormValidators<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:281](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L281)
+Defined in: [packages/form-core/src/FormApi.ts:284](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L284)
 
 A list of validators to pass to the form
