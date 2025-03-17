@@ -227,11 +227,10 @@ function makeFieldReactive<
     TFormOnServer,
     TParentSubmitMeta
   > {
-  const [flag, setFlag] = createSignal(false)
-  const fieldApiMemo = createMemo(() => [flag(), fieldApi] as const)
-  const unsubscribeStore = fieldApi.store.subscribe(() => setFlag((f) => !f))
+  const [field, setField] = createSignal(fieldApi, { equals: false })
+  const unsubscribeStore = fieldApi.store.subscribe(() => setField(fieldApi))
   onCleanup(unsubscribeStore)
-  return () => fieldApiMemo()[1]
+  return field
 }
 
 export function createField<

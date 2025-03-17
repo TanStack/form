@@ -10,6 +10,7 @@ title: "@tanstack/react-form"
 ## Interfaces
 
 - [ReactFormApi](interfaces/reactformapi.md)
+- [WithFormProps](interfaces/withformprops.md)
 
 ## Type Aliases
 

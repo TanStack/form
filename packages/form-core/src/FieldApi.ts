@@ -3,6 +3,7 @@ import {
   isStandardSchemaValidator,
   standardSchemaValidators,
 } from './standardSchemaValidator'
+import { defaultFieldMeta } from './metaHelper'
 import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
 import type { DeepKeys, DeepValue, UnwrapOneLevelOfArray } from './util-types'
 import type {
@@ -1007,13 +1008,7 @@ export class FieldApi<
       fn: () => {
         const value = this.form.getFieldValue(this.name)
         const meta = this.form.getFieldMeta(this.name) ?? {
-          isValidating: false,
-          isTouched: false,
-          isBlurred: false,
-          isDirty: false,
-          isPristine: true,
-          errors: [],
-          errorMap: {},
+          ...defaultFieldMeta,
           ...opts.defaultMeta,
         }
 
@@ -1226,7 +1221,14 @@ export class FieldApi<
   pushValue = (
     value: TData extends any[] ? TData[number] : never,
     opts?: UpdateMetaOptions,
-  ) => this.form.pushFieldValue(this.name, value as any, opts)
+  ) => {
+    this.form.pushFieldValue(this.name, value as any, opts)
+
+    this.options.listeners?.onChange?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
+  }
 
   /**
    * Inserts a value at the specified index, shifting the subsequent values to the right.
@@ -1235,7 +1237,14 @@ export class FieldApi<
     index: number,
     value: TData extends any[] ? TData[number] : never,
     opts?: UpdateMetaOptions,
-  ) => this.form.insertFieldValue(this.name, index, value as any, opts)
+  ) => {
+    this.form.insertFieldValue(this.name, index, value as any, opts)
+
+    this.options.listeners?.onChange?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
+  }
 
   /**
    * Replaces a value at the specified index.
@@ -1244,25 +1253,50 @@ export class FieldApi<
     index: number,
     value: TData extends any[] ? TData[number] : never,
     opts?: UpdateMetaOptions,
-  ) => this.form.replaceFieldValue(this.name, index, value as any, opts)
+  ) => {
+    this.form.replaceFieldValue(this.name, index, value as any, opts)
+
+    this.options.listeners?.onChange?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
+  }
 
   /**
    * Removes a value at the specified index.
    */
-  removeValue = (index: number, opts?: UpdateMetaOptions) =>
+  removeValue = (index: number, opts?: UpdateMetaOptions) => {
     this.form.removeFieldValue(this.name, index, opts)
+
+    this.options.listeners?.onChange?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
+  }
 
   /**
    * Swaps the values at the specified indices.
    */
-  swapValues = (aIndex: number, bIndex: number, opts?: UpdateMetaOptions) =>
+  swapValues = (aIndex: number, bIndex: number, opts?: UpdateMetaOptions) => {
     this.form.swapFieldValues(this.name, aIndex, bIndex, opts)
+
+    this.options.listeners?.onChange?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
+  }
 
   /**
    * Moves the value at the first specified index to the second specified index.
    */
-  moveValue = (aIndex: number, bIndex: number, opts?: UpdateMetaOptions) =>
+  moveValue = (aIndex: number, bIndex: number, opts?: UpdateMetaOptions) => {
     this.form.moveFieldValues(this.name, aIndex, bIndex, opts)
+
+    this.options.listeners?.onChange?.({
+      value: this.state.value,
+      fieldApi: this,
+    })
+  }
 
   /**
    * @private

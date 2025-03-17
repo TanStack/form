@@ -31,12 +31,20 @@ While it IS possible to omit the selector, resist the urge as omitting it would 
 The `form.Subscribe` component is best suited when you need to react to something within the UI of your component. For example, showing or hiding ui based on the value of a form field.
 
 ```tsx
-<form.Subscribe>
-  selector={(state) => state.firstName}
+<form.Subscribe
+  selector={(state) => state.values.firstName}
   children={(firstName) => (
-    <form.Field>{(field) => <input name="lastName" value={field.state.lastName} onChange={field.handleChange}/></form.Field>
+    <form.Field>
+      {(field) => (
+        <input
+          name="lastName"
+          value={field.state.lastName}
+          onChange={field.handleChange}
+        />
+      )}
+    </form.Field>
   )}
-</form.Subscribe>
+/>
 ```
 
 > The `form.Subscribe` component doesn't trigger component-level re-renders. Anytime the value subscribed to changes, only the `form.Subscribe` component re-renders.
