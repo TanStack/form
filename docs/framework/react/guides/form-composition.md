@@ -160,7 +160,7 @@ function App() {
 
 Sometimes forms get very large; it's just how it goes sometimes. While TanStack Form supports large forms well, it's never fun to work with hundreds or thousands of lines of code long files.
 
-To solve this, we support breaking forms into smaller pieces using the `withForm` higher-order component.
+To solve this, we support breaking forms into smaller pieces using the `withForm` higher-order component (HOC).
 
 ```tsx
 const { useAppForm, withForm } = createFormHook({
@@ -235,7 +235,7 @@ const ChildForm = withForm({
 ```
 
 ```tsx
-// This works fine
+// This works fine ✅
 const ChildForm = withForm({
   // ...
   render: function Render({ form, title }) {

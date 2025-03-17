@@ -5,7 +5,7 @@ title: Link Two Form Fields Together
 
 You may find yourself needing to link two fields together; when one is validated as another field's value has changed.
 One such usage is when you have both a `password` and `confirm_password` field,
-where you want to `confirm_password` to error out when `password`'s value does not match;
+where you want to `confirm_password` to error out when `password`'s value does not match or empty;
 regardless of which field triggered the value change.
 
 Imagine the following userflow:

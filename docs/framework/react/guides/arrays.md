@@ -113,7 +113,7 @@ function App() {
           selector={(state) => [state.canSubmit, state.isSubmitting]}
           children={([canSubmit, isSubmitting]) => (
             <button type="submit" disabled={!canSubmit}>
-              {isSubmitting ? '...' : 'Submit'}
+              {isSubmitting ? 'Loading...' : 'Submit'}
             </button>
           )}
         />
