@@ -8,21 +8,36 @@ TanStack Form is headless and it should support React Native out-of-the-box with
 Here is an example:
 
 ```tsx
-<form.Field
-  name="age"
-  validators={{
-    onChange: (val) =>
-      val < 13 ? 'You must be 13 to make an account' : undefined,
-  }}
->
-  {(field) => (
-    <>
-      <Text>Age:</Text>
-      <TextInput value={field.state.value} onChangeText={field.handleChange} />
-      {field.state.meta.errors ? (
-        <Text>{field.state.meta.errors.join(', ')}</Text>
-      ) : null}
-    </>
-  )}
-</form.Field>
+import { Text, View, TextInput } from 'react-native';
+import { useForm } from "@tanstack/react-form";
+
+
+export default function App() {
+  //Doesnt work even if changed to "Form" instead of "form"
+  const form = useForm({
+    defaultValues: {
+      name: "",
+    },
+    onSubmit: async ({ value }) => {
+      // Do something with form data
+      console.log(value);
+    },
+  }); 
+  return ( 
+    <View style={{ flex: 1 }}>
+      <form.Field
+        name="name"
+        children={(field) => (
+          <Text>Enter a name!</Text> 
+          <TextInput
+            value={field.state.value}
+            onBlur={field.handleBlur}
+            onChangeText={(e) => field.handleChange(e)}
+          />
+        )}
+      />
+    </View>
+  );
+}
+
 ```
