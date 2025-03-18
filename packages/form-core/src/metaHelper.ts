@@ -8,6 +8,16 @@ import type { DeepKeys } from './util-types'
 
 type ArrayFieldMode = 'insert' | 'remove' | 'swap' | 'move'
 
+export const defaultFieldMeta: AnyFieldMeta = {
+  isValidating: false,
+  isTouched: false,
+  isBlurred: false,
+  isDirty: false,
+  isPristine: true,
+  errors: [],
+  errorMap: {},
+}
+
 export function metaHelper<
   TFormData,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
@@ -116,15 +126,7 @@ export function metaHelper<
     })
   }
 
-  const getEmptyFieldMeta = (): AnyFieldMeta => ({
-    isValidating: false,
-    isTouched: false,
-    isBlurred: false,
-    isDirty: false,
-    isPristine: true,
-    errors: [],
-    errorMap: {},
-  })
+  const getEmptyFieldMeta = (): AnyFieldMeta => defaultFieldMeta
 
   const handleInsertMode = (
     fields: DeepKeys<TFormData>[],
