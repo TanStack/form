@@ -49,4 +49,4 @@ The `form.Subscribe` component is best suited when you need to react to somethin
 
 > The `form.Subscribe` component doesn't trigger component-level re-renders. Anytime the value subscribed to changes, only the `form.Subscribe` component re-renders.
 
-The choice between whether to use `useStore` or `form.Subscibe` mainly boils down to that if it's rendered in the ui, reach for `form.Subscribe` for its optimizations perks, and if you need the reactivity within the logic, then `useStore` is the choice to make.
+The choice between whether to use `useStore` or `form.Subscribe` mainly boils down to that if it's rendered in the ui, reach for `form.Subscribe` for its optimizations perks, and if you need the reactivity within the logic, then `useStore` is the choice to make.
