@@ -102,7 +102,12 @@ Finally, we'll use `getFormDataFromServer` in our loader to get the state from o
 ```tsx
 // app/routes/index.tsx
 import { createFileRoute } from '@tanstack/react-router'
-import { mergeForm, useForm, useStore, useTransform } from '@tanstack/react-form'
+import {
+  mergeForm,
+  useForm,
+  useStore,
+  useTransform,
+} from '@tanstack/react-form'
 
 export const Route = createFileRoute('/')({
   component: Home,
@@ -241,7 +246,12 @@ Finally, we'll use `someAction` in our client-side form component.
 import { useActionState } from 'react'
 import { initialFormState } from '@tanstack/react-form/nextjs'
 // Notice the import is from `react-form`, not `react-form/nextjs`
-import { mergeForm, useForm, useStore, useTransform } from '@tanstack/react-form'
+import {
+  mergeForm,
+  useForm,
+  useStore,
+  useTransform,
+} from '@tanstack/react-form'
 import someAction from './action'
 import { formOpts } from './shared-code'
 
@@ -385,7 +395,12 @@ Finally, the `action` will be called when the form submits.
 // routes/_index/route.tsx
 import { Form, useActionData } from '@remix-run/react'
 
-import { mergeForm, useForm, useStore, useTransform } from '@tanstack/react-form'
+import {
+  mergeForm,
+  useForm,
+  useStore,
+  useTransform,
+} from '@tanstack/react-form'
 import {
   ServerValidateError,
   createServerValidate,
