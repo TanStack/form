@@ -164,7 +164,6 @@ export function useForm<
     TSubmitMeta
   >,
 ) {
-  const isActionSubmittedRef = React.useRef(false)
   const [formApi] = useState(() => {
     const api = new FormApi<
       TFormData,
