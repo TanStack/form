@@ -2,7 +2,7 @@
 
 import { useActionState } from 'react'
 import { mergeForm, useForm, useTransform } from '@tanstack/react-form'
-import { initialFormState } from '@tanstack/react-form/nextjs'
+import { initialFormState, useActionSubmit } from '@tanstack/react-form/nextjs'
 import { useStore } from '@tanstack/react-store'
 import someAction from './action'
 import { formOpts } from './shared-code'
@@ -18,10 +18,11 @@ export const ClientComp = () => {
     ),
   })
 
+  const onActionSubmit = useActionSubmit(form)
   const formErrors = useStore(form.store, (formState) => formState.errors)
 
   return (
-    <form action={action as never} onSubmit={form.handleActionSubmit()}>
+    <form action={action as never} onSubmit={onActionSubmit()}>
       {formErrors.map((error) => (
         <p key={error as unknown as string}>{error}</p>
       ))}
