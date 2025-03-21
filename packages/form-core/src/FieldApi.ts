@@ -1135,8 +1135,11 @@ export class FieldApi<
       TParentSubmitMeta
     >,
   ) => {
-    // Default Value
+    this.options = opts as never
+    // It is important to update the name first, as it can change in specific use cases (array fields).
+    this.name = opts.name
 
+    // Default Value
     if (this.state.value === undefined) {
       const formDefault = getBy(opts.form.options.defaultValues, opts.name)
 
@@ -1155,9 +1158,6 @@ export class FieldApi<
     if (this.form.getFieldMeta(this.name) === undefined) {
       this.setMeta(this.state.meta)
     }
-
-    this.options = opts as never
-    this.name = opts.name
   }
 
   /**
