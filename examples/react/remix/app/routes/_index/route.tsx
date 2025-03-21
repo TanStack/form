@@ -30,7 +30,8 @@ const serverValidate = createServerValidate({
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData()
   try {
-    await serverValidate(formData)
+    const validatedData = await serverValidate(formData)
+    console.log('validatedData', validatedData)
   } catch (e) {
     if (e instanceof ServerValidateError) {
       return e.formState

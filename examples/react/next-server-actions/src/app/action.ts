@@ -17,7 +17,8 @@ const serverValidate = createServerValidate({
 
 export default async function someAction(prev: unknown, formData: FormData) {
   try {
-    await serverValidate(formData)
+    const validatedData = await serverValidate(formData)
+    console.log('validatedData', validatedData)
   } catch (e) {
     if (e instanceof ServerValidateError) {
       return e.formState

@@ -27,7 +27,8 @@ export const handleForm = createServerFn({
   })
   .handler(async (ctx) => {
     try {
-      await serverValidate(ctx.data)
+      const validatedData = await serverValidate(ctx.data)
+      console.log('validatedData', validatedData)
     } catch (e) {
       if (e instanceof ServerValidateError) {
         // Log form errors or do any other logic here

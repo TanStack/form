@@ -67,7 +67,8 @@ export const handleForm = createServerFn({
   })
   .handler(async (ctx) => {
     try {
-      await serverValidate(ctx.data)
+      const validatedData = await serverValidate(ctx.data)
+      console.log('validatedData', validatedData)
     } catch (e) {
       if (e instanceof ServerValidateError) {
         // Log form errors or do any other logic here
@@ -223,7 +224,8 @@ const serverValidate = createServerValidate({
 
 export default async function someAction(prev: unknown, formData: FormData) {
   try {
-    await serverValidate(formData)
+    const validatedData = await serverValidate(formData)
+    console.log('validatedData', validatedData)
   } catch (e) {
     if (e instanceof ServerValidateError) {
       return e.formState
@@ -375,7 +377,8 @@ const serverValidate = createServerValidate({
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData()
   try {
-    await serverValidate(formData)
+    const validatedData = await serverValidate(formData)
+    console.log('validatedData', validatedData)
   } catch (e) {
     if (e instanceof ServerValidateError) {
       return e.formState
