@@ -1,4 +1,4 @@
-import { formOptions } from '@tanstack/react-form'
+import { formOptions } from '@tanstack/react-form/start'
 
 export const formOpts = formOptions({
   defaultValues: {
