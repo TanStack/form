@@ -3,7 +3,6 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import '@testing-library/jest-dom'
 import { userEvent } from '@testing-library/user-event'
 import { mount, unmount } from 'svelte'
-// @ts-ignore tsc doesn't know about named exports from svelte files
 import TestForm, { getSampleData } from './simple.svelte'
 
 describe('Svelte Tests', () => {
