@@ -997,11 +997,6 @@ export class FieldApi<
     this.form = opts.form as never
     this.name = opts.name as never
     this.timeoutIds = {} as Record<ValidationCause, never>
-    if (opts.defaultValue !== undefined) {
-      this.form.setFieldValue(this.name, opts.defaultValue as never, {
-        dontUpdateMeta: true,
-      })
-    }
 
     this.store = new Derived({
       deps: [this.form.store],
@@ -1071,6 +1066,12 @@ export class FieldApi<
    */
   mount = () => {
     const cleanup = this.store.mount()
+
+    if (this.options.defaultValue !== undefined) {
+      this.form.setFieldValue(this.name, this.options.defaultValue as never, {
+        dontUpdateMeta: true,
+      })
+    }
 
     const info = this.getInfo()
     info.instance = this as never
@@ -1553,7 +1554,6 @@ export class FieldApi<
 
     // TODO: Dedupe this logic to reduce bundle size
     for (const validateObj of validates) {
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!validateObj.validate) continue
       validateFieldAsyncFn(this, validateObj, validatesPromises)
     }

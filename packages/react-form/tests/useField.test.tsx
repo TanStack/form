@@ -1130,4 +1130,51 @@ describe('useField', () => {
     // field2 should not have rerendered
     expect(renderCount.field2).toBe(field2InitialRender)
   })
+
+  it('should handle defaultValue without setstate-in-render error', async () => {
+    // Spy on console.error before rendering
+    const consoleErrorSpy = vi.spyOn(console, 'error')
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          fieldOne: '',
+          fieldTwo: '',
+        },
+      })
+
+      const fieldOne = useStore(form.store, (state) => state.values.fieldOne)
+
+      return (
+        <form>
+          <form.Field
+            name="fieldOne"
+            children={(field) => {
+              return (
+                <input
+                  data-testid={field.name}
+                  id={field.name}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              )
+            }}
+          />
+          {fieldOne && (
+            <form.Field
+              name="fieldTwo"
+              defaultValue="default field two value"
+              children={(_) => null}
+            />
+          )}
+        </form>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    await user.type(getByTestId('fieldOne'), 'John')
+
+    // Should not log an error
+    expect(consoleErrorSpy).not.toHaveBeenCalled()
+  })
 })
