@@ -492,9 +492,6 @@ importers:
 
   examples/react/tanstack-start:
     dependencies:
-      '@tanstack/form-core':
-        specifier: ^1.1.2
-        version: link:../../../packages/form-core
       '@tanstack/react-form':
         specifier: ^1.1.2
         version: link:../../../packages/react-form
