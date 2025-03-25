@@ -198,20 +198,31 @@ export interface WithFormProps<
   > {
   // Optional, but adds props to the `render` function outside of `form`
   props?: TRenderProps
-  render: (
+  render: <
+    TFFormData extends TFormData,
+    TFOnMount extends undefined | FormValidateOrFn<TFFormData>,
+    TFOnChange extends undefined | FormValidateOrFn<TFFormData>,
+    TFOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFFormData>,
+    TFOnBlur extends undefined | FormValidateOrFn<TFFormData>,
+    TFOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFFormData>,
+    TFOnSubmit extends undefined | FormValidateOrFn<TFFormData>,
+    TFOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFFormData>,
+    TFOnServer extends undefined | FormAsyncValidateOrFn<TFFormData>,
+    TFSubmitMeta,
+  >(
     props: PropsWithChildren<
       NoInfer<TRenderProps> & {
         form: AppFieldExtendedReactFormApi<
-          TFormData,
-          TOnMount,
-          TOnChange,
-          TOnChangeAsync,
-          TOnBlur,
-          TOnBlurAsync,
-          TOnSubmit,
-          TOnSubmitAsync,
-          TOnServer,
-          TSubmitMeta,
+          TFFormData,
+          TFOnMount,
+          TFOnChange,
+          TFOnChangeAsync,
+          TFOnBlur,
+          TFOnBlurAsync,
+          TFOnSubmit,
+          TFOnSubmitAsync,
+          TFOnServer,
+          TFSubmitMeta,
           TFieldComponents,
           TFormComponents
         >
