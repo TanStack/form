@@ -100,7 +100,7 @@ export const createServerValidate =
       validationSource: 'form',
     })) as UnwrapFormAsyncValidateOrFn<TOnServer> | undefined
 
-    if (!onServerError) return data;
+    if (!onServerError) return data
 
     const onServerErrorVal = (
       isGlobalFormValidationError(onServerError)
