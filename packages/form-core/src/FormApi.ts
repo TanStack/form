@@ -947,13 +947,14 @@ export class FormApi<
 
         const isFormValid = errors.length === 0
         const isValid = isFieldsValid && isFormValid
+        const submitInvalid = this.options.canSubmitWhenInvalid ?? false
         const canSubmit =
           (currBaseStore.submissionAttempts === 0 &&
             !isTouched &&
-            (!hasOnMountError || this.options.canSubmitWhenInvalid)) ||
+            (!hasOnMountError || submitInvalid)) ||
           (!isValidating &&
             !currBaseStore.isSubmitting &&
-            (isValid || this.options.canSubmitWhenInvalid))
+            (isValid || submitInvalid))
 
         let errorMap = currBaseStore.errorMap
         if (shouldInvalidateOnMount) {
