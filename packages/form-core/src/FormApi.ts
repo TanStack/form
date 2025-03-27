@@ -442,7 +442,11 @@ export type BaseFormState<
    */
   isSubmitting: boolean
   /**
-   * A boolean indicating if the form has been submitted.
+   * A boolean indicating if the `onSubmit` function has completed successfully.
+   *
+   * Goes back to `false` at each new submission attempt.
+   *
+   * Note: you can use isSubmitting to check if the form is currently submitting.
    */
   isSubmitted: boolean
   /**
