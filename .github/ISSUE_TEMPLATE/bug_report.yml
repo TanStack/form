@@ -88,7 +88,7 @@ body:
     attributes:
       label: Platform
       description: |
-        Please let us know which Operating System, Browser and Browser version you were using when the issue occurred.
+        Please let us know which Operating System, Browser, and Browser version you were using when the issue occurred.
       placeholder: |
         - OS: [e.g. macOS, Windows, Linux, iOS, Android]
         - Browser: [e.g. Chrome, Safari, Firefox, React Native]
