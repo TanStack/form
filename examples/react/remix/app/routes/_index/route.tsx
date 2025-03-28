@@ -32,6 +32,11 @@ export async function action({ request }: ActionFunctionArgs) {
   try {
     const validatedData = await serverValidate(formData)
     console.log('validatedData', validatedData)
+    // Persist the form data to the database
+    // await sql`
+    //   INSERT INTO users (name, email, password)
+    //   VALUES (${validatedData.name}, ${validatedData.email}, ${validatedData.password})
+    // `
   } catch (e) {
     if (e instanceof ServerValidateError) {
       return e.formState
