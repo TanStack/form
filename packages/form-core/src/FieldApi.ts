@@ -1135,17 +1135,25 @@ export class FieldApi<
       TParentSubmitMeta
     >,
   ) => {
-    // Default Value
+    this.options = opts as never
 
+    const nameHasChanged = this.name !== opts.name
+    this.name = opts.name
+
+    // Default Value
     if (this.state.value === undefined) {
       const formDefault = getBy(opts.form.options.defaultValues, opts.name)
 
-      if (opts.defaultValue !== undefined) {
-        this.setValue(opts.defaultValue as never, {
+      const defaultValue = opts.defaultValue ?? formDefault
+
+      // The name is dynamic in array fields. It changes when the user performs operations like removing or reordering.
+      // In this case, we don't want to force a default value if the store managed to find an existing value.
+      if (nameHasChanged) {
+        this.setValue((val) => val || defaultValue, {
           dontUpdateMeta: true,
         })
-      } else if (formDefault !== undefined) {
-        this.setValue(formDefault as never, {
+      } else if (defaultValue !== undefined) {
+        this.setValue(defaultValue as never, {
           dontUpdateMeta: true,
         })
       }
@@ -1155,9 +1163,6 @@ export class FieldApi<
     if (this.form.getFieldMeta(this.name) === undefined) {
       this.setMeta(this.state.meta)
     }
-
-    this.options = opts as never
-    this.name = opts.name
   }
 
   /**
