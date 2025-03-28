@@ -112,6 +112,11 @@ Example:
 />
 ```
 
+## Form button with type="reset"
+
+> When using `<button type="reset">` in conjunction with TanStack Form's `form.reset()`, you need to prevent the default HTML reset behavior to avoid unexpected resets of form elements (especially `<select>` elements) to their initial HTML values.
+Use `event.preventDefault()` inside the button's `onClick` handler to prevent the native form reset. Alternatively, using `<button type="button">` will prevent the native HTML reset.
+
 ## Validation
 
 `@tanstack/react-form` provides both synchronous and asynchronous validation out of the box. Validation functions can be passed to the `form.Field` component using the `validators` prop.
