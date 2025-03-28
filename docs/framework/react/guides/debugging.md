@@ -5,7 +5,7 @@ title: Debugging React Usage
 
 Here's a list of common errors you might see in the console and how to fix them.
 
-# Changing an uncontrolled input to be controlled
+## Changing an uncontrolled input to be controlled
 
 If you see this error in the console:
 
@@ -16,7 +16,7 @@ Warning: A component is changing an uncontrolled input to be controlled. This is
 It's likely you forgot the `defaultValues` in your `useForm` Hook or `form.Field` component usage. This is occurring
 because the input is being rendered before the form value is initialized and is therefore changing from `undefined` to `""` when a text input is made.
 
-# Field value is of type `unknown`
+## Field value is of type `unknown`
 
 If you're using `form.Field` and, upon inspecting the value of `field.state.value`, you see that the value of a field is of type `unknown`, it's likely that your form's type was too large for us to safely evaluate.
 
@@ -28,7 +28,7 @@ A workaround to this problem is to cast `field.state.value` using TypeScript's `
 const value = field.state.value as string
 ```
 
-# `Type instantiation is excessively deep and possibly infinite`
+## `Type instantiation is excessively deep and possibly infinite`
 
 If you see this error in the console when running `tsc`:
 
