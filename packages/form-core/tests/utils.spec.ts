@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { deleteBy, getBy, makePathArray, setBy } from '../src/index'
+import {
+  deleteBy,
+  determineErrorValue,
+  getBy,
+  makePathArray,
+  setBy,
+} from '../src/index'
 
 describe('getBy', () => {
   const structure = {
@@ -150,5 +156,182 @@ describe('makePathArray', () => {
       'age',
       2,
     ])
+  })
+})
+
+describe('determineErrorValue', () => {
+  describe('when a new form validator error exists', () => {
+    it('should return the new form error with source "form"', () => {
+      const result = determineErrorValue({
+        newFormValidatorError: 'Form error',
+        isPreviousErrorFromFormValidator: false,
+        previousErrorValue: 'Field error',
+      })
+
+      expect(result).toEqual({
+        newErrorValue: 'Form error',
+        newSource: 'form',
+      })
+    })
+
+    it('should return the new form error even if previous error was from form', () => {
+      const result = determineErrorValue({
+        newFormValidatorError: 'New form error',
+        isPreviousErrorFromFormValidator: true,
+        previousErrorValue: 'Old form error',
+      })
+
+      expect(result).toEqual({
+        newErrorValue: 'New form error',
+        newSource: 'form',
+      })
+    })
+  })
+
+  describe('when no new form validator error exists', () => {
+    it('should clear the error if previous error was from form validator', () => {
+      const result = determineErrorValue({
+        newFormValidatorError: undefined,
+        isPreviousErrorFromFormValidator: true,
+        previousErrorValue: 'Old form error',
+      })
+
+      expect(result).toEqual({
+        newErrorValue: undefined,
+        newSource: undefined,
+      })
+    })
+
+    it('should clear the error if new error is null and previous error was from form', () => {
+      const result = determineErrorValue({
+        newFormValidatorError: null,
+        isPreviousErrorFromFormValidator: true,
+        previousErrorValue: 'Old form error',
+      })
+
+      expect(result).toEqual({
+        newErrorValue: undefined,
+        newSource: undefined,
+      })
+    })
+
+    it('should retain field error if previous error was from field', () => {
+      const result = determineErrorValue({
+        newFormValidatorError: undefined,
+        isPreviousErrorFromFormValidator: false,
+        previousErrorValue: 'Field error',
+      })
+
+      expect(result).toEqual({
+        newErrorValue: 'Field error',
+        newSource: 'field',
+      })
+    })
+
+    it('should retain field error if new error is null and previous error was from field', () => {
+      const result = determineErrorValue({
+        newFormValidatorError: null,
+        isPreviousErrorFromFormValidator: false,
+        previousErrorValue: 'Field error',
+      })
+
+      expect(result).toEqual({
+        newErrorValue: 'Field error',
+        newSource: 'field',
+      })
+    })
+
+    it('should handle case when previous error is null', () => {
+      const result = determineErrorValue({
+        newFormValidatorError: undefined,
+        isPreviousErrorFromFormValidator: false,
+        previousErrorValue: null,
+      })
+
+      expect(result).toEqual({
+        newErrorValue: null,
+        newSource: 'field',
+      })
+    })
+
+    it('should handle case when previous error is undefined', () => {
+      const result = determineErrorValue({
+        newFormValidatorError: undefined,
+        isPreviousErrorFromFormValidator: false,
+        previousErrorValue: undefined,
+      })
+
+      expect(result).toEqual({
+        newErrorValue: undefined,
+        newSource: 'field',
+      })
+    })
+  })
+
+  describe('edge cases', () => {
+    it('should handle complex previous error objects', () => {
+      const complexError = { message: 'Complex field error', code: 456 }
+      const result = determineErrorValue({
+        newFormValidatorError: undefined,
+        isPreviousErrorFromFormValidator: false,
+        previousErrorValue: complexError,
+      })
+
+      expect(result).toEqual({
+        newErrorValue: complexError,
+        newSource: 'field',
+      })
+    })
+
+    it('should treat falsy values as not errors', () => {
+      // This is consistent with current behavior as of v1.1.2
+
+      // Test with empty string
+      const result1 = determineErrorValue({
+        newFormValidatorError: undefined,
+        isPreviousErrorFromFormValidator: true,
+        previousErrorValue: '',
+      })
+      expect(result1).toEqual({
+        newErrorValue: undefined,
+        newSource: undefined,
+      })
+
+      // Test with 0
+      const result2 = determineErrorValue({
+        newFormValidatorError: undefined,
+        isPreviousErrorFromFormValidator: true,
+        previousErrorValue: 0,
+      })
+      expect(result2).toEqual({
+        newErrorValue: undefined,
+        newSource: undefined,
+      })
+
+      // Test with false
+      const result3 = determineErrorValue({
+        newFormValidatorError: undefined,
+        isPreviousErrorFromFormValidator: true,
+        previousErrorValue: false,
+      })
+      expect(result3).toEqual({
+        newErrorValue: undefined,
+        newSource: undefined,
+      })
+    })
+
+    it('should prioritize form validator errors over field errors', () => {
+      // Note that field level validation will prioritize field errors over form errors, this function is only used for form level validation
+      const result = determineErrorValue({
+        newFormValidatorError: 'Form error',
+        isPreviousErrorFromFormValidator: false,
+        previousErrorValue: 'Field error',
+      })
+
+      expect(result).toEqual({
+        newErrorValue: 'Form error',
+        newSource: 'form',
+      })
+    })
   })
 })
