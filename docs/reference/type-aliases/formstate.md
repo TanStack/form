@@ -11,7 +11,7 @@ title: FormState
 type FormState<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer> = BaseFormState<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer> & DerivedFormState<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:540](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L540)
+Defined in: [packages/form-core/src/FormApi.ts:541](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L541)
 
 ## Type Parameters
 
