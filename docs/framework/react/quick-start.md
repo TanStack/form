@@ -121,7 +121,7 @@ const PeoplePage = () => {
             onChange={(e) => field.handleChange(e.target.valueAsNumber)}
           />
           {field.state.meta.errors.length ? (
-            <em>{field.state.meta.errors.join(',')}</em>
+            <em>{field.state.meta.errors.map(error => error.message).join(', ')}</em>
           ) : null}
         </>
       )}
