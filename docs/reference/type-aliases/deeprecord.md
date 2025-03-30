@@ -8,10 +8,10 @@ title: DeepRecord
 # Type Alias: DeepRecord\<T\>
 
 ```ts
-type DeepRecord<T> = IsAny<T> extends true ? T : { [TKey in DeepRecordKeys<T>]: DeepRecordValues<T, TKey> };
+type DeepRecord<T> = UnionToIntersection<DeepRecordUnion<T>>;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:108](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L108)
+Defined in: [packages/form-core/src/util-types.ts:99](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L99)
 
 ## Type Parameters
 

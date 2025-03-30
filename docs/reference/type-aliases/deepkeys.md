@@ -11,7 +11,7 @@ title: DeepKeys
 type DeepKeys<T> = unknown extends T ? string : keyof DeepRecord<T> & string;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:118](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L118)
+Defined in: [packages/form-core/src/util-types.ts:104](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L104)
 
 The keys of an object or array, deeply nested.
 
