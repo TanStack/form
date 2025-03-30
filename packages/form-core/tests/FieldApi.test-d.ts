@@ -32,7 +32,7 @@ it('should type value when nothing is passed into constructor', () => {
   })
 
   assertType<string | undefined>(field.state.value)
-  assertType<'name' | 'age'>(field.options.name)
+  assertType<'name'>(field.options.name)
   assertType<string | undefined>(field.getValue())
 })
 
