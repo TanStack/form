@@ -202,9 +202,7 @@ export default function App() {
 ```
 
 Alternatively, you can use `<button type="button">` to prevent the native HTML reset.
-From the previous example you see the change in the `form.Subscribe`.
-
-Example:
+From the previous example you can see the change in the `form.Subscribe`.
 
 ```tsx
 <form.Subscribe
