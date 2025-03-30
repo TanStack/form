@@ -77,7 +77,7 @@ Defined in: [tanstack-form-controller.ts:206](https://github.com/TanStack/form/b
 field<TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync>(fieldConfig, render): object
 ```
 
-Defined in: [tanstack-form-controller.ts:260](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L260)
+Defined in: [tanstack-form-controller.ts:259](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L259)
 
 #### Type Parameters
 
@@ -145,7 +145,7 @@ render: renderCallback<TParentData, TName, TData, TOnMount, TOnChange, TOnChange
 hostConnected(): void
 ```
 
-Defined in: [tanstack-form-controller.ts:250](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L250)
+Defined in: [tanstack-form-controller.ts:249](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L249)
 
 Called when the host is connected to the component tree. For custom
 element hosts, this corresponds to the `connectedCallback()` lifecycle,
@@ -169,7 +169,7 @@ ReactiveController.hostConnected
 hostDisconnected(): void
 ```
 
-Defined in: [tanstack-form-controller.ts:256](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L256)
+Defined in: [tanstack-form-controller.ts:255](https://github.com/TanStack/form/blob/main/packages/lit-form/src/tanstack-form-controller.ts#L255)
 
 Called when the host is disconnected from the component tree. For custom
 element hosts, this corresponds to the `disconnectedCallback()` lifecycle,

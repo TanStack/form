@@ -3,6 +3,7 @@ import {
   isStandardSchemaValidator,
   standardSchemaValidators,
 } from './standardSchemaValidator'
+import { defaultFieldMeta } from './metaHelper'
 import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
 import type { DeepKeys, DeepValue, UnwrapOneLevelOfArray } from './util-types'
 import type {
@@ -992,24 +993,13 @@ export class FieldApi<
     this.form = opts.form as never
     this.name = opts.name as never
     this.timeoutIds = {} as Record<ValidationCause, never>
-    if (opts.defaultValue !== undefined) {
-      this.form.setFieldValue(this.name, opts.defaultValue as never, {
-        dontUpdateMeta: true,
-      })
-    }
 
     this.store = new Derived({
       deps: [this.form.store],
       fn: () => {
         const value = this.form.getFieldValue(this.name)
         const meta = this.form.getFieldMeta(this.name) ?? {
-          isValidating: false,
-          isTouched: false,
-          isBlurred: false,
-          isDirty: false,
-          isPristine: true,
-          errors: [],
-          errorMap: {},
+          ...defaultFieldMeta,
           ...opts.defaultMeta,
         }
 
@@ -1072,6 +1062,12 @@ export class FieldApi<
    */
   mount = () => {
     const cleanup = this.store.mount()
+
+    if (this.options.defaultValue !== undefined) {
+      this.form.setFieldValue(this.name, this.options.defaultValue as never, {
+        dontUpdateMeta: true,
+      })
+    }
 
     const info = this.getInfo()
     info.instance = this as never
@@ -1551,7 +1547,6 @@ export class FieldApi<
 
     // TODO: Dedupe this logic to reduce bundle size
     for (const validateObj of validates) {
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!validateObj.validate) continue
       validateFieldAsyncFn(this, validateObj, validatesPromises)
     }
