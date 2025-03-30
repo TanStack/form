@@ -583,7 +583,7 @@ Resets the field value and meta to default state
 
 #### Type Parameters
 
-• **TField** *extends* `string` \| `number`
+• **TField** *extends* `string`
 
 #### Parameters
 
