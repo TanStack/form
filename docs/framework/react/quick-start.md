@@ -137,5 +137,90 @@ All properties from `useForm` can be used in `useAppForm` and all properties fro
 
 ## Form button with type="reset"
 
-> When using `<button type="reset">` in conjunction with TanStack Form's `form.reset()`, you need to prevent the default HTML reset behavior to avoid unexpected resets of form elements (especially `<select>` elements) to their initial HTML values.
-Use `event.preventDefault()` inside the button's `onClick` handler to prevent the native form reset. Alternatively, using `<button type="button">` will prevent the native HTML reset.
+When using `<button type="reset">` in conjunction with TanStack Form's `form.reset()`, you need to prevent the default HTML reset behavior to avoid unexpected resets of form elements (especially `<select>` elements) to their initial HTML values.
+Use `event.preventDefault()` inside the button's `onClick` handler to prevent the native form reset.
+
+Example:
+
+```tsx
+import "./styles.css";
+import { useForm } from "@tanstack/react-form";
+
+export default function App() {
+  const form = useForm({
+    defaultValues: { value: "B", },
+    onSubmit: (values) => { console.log(values); },
+  });
+  return (
+    <div>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          form.handleSubmit();
+        }}
+      >
+        <form.Field
+          name={"value"}
+          children={(field) => {
+            return (
+              <>
+                <select
+                  id={field.name}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                >
+                  <option value={"A"}>A</option>
+                  <option value={"B"}>B</option>
+                  <option value={"C"}>C</option>
+                </select>
+              </>
+            );
+          }}
+        />
+
+        <form.Subscribe
+          selector={(state) => [state.canSubmit, state.isSubmitting]}
+          children={() => (
+            <>
+              <button type="submit">Submit</button>
+              <button
+                type="reset"
+                onClick={(event) => {
+                  event.preventDefault(); // <-- Here is the change
+                  form.reset();
+                }}
+              >
+                Reset
+              </button>
+            </>
+          )}
+        />
+      </form>
+    </div>
+  );
+}
+```
+
+Alternatively, you can use `<button type="button">` to prevent the native HTML reset.
+From the previous example you see the change in the `form.Subscribe`.
+
+Example:
+
+```tsx
+<form.Subscribe
+  selector={(state) => [state.canSubmit, state.isSubmitting]}
+  children={() => (
+    <>
+      <button type="submit">Submit</button>
+      <button
+        type="button" // <-- Here is the change
+        onClick={() => {
+          form.reset();
+        }}
+      >
+        Reset
+      </button>
+    </>
+  )}
+/>
+```
