@@ -24,13 +24,9 @@ assertType<
 type ArraySupport = DeepKeys<{ users: User[] }>
 assertType<
   | 'users'
-  | `users[number]`
   | `users[${number}]`
-  | `users[number].name`
   | `users[${number}].name`
-  | `users[number].id`
   | `users[${number}].id`
-  | `users[number].age`
   | `users[${number}].age`
 >(0 as never as ArraySupport)
 

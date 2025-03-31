@@ -21,9 +21,7 @@ export type Narrow<A> = Try<A, [], NarrowRaw<A>>
 
 type IsAny<T> = 0 extends 1 & T ? true : false
 
-export type ArrayAccessor<TPrefix extends string> =
-  | `${TPrefix}[${number}]`
-  | `${TPrefix}[number]`
+export type ArrayAccessor<TPrefix extends string> = `${TPrefix}[${number}]`
 
 export type DeepRecordArrayUnion<
   T extends ReadonlyArray<any>,
