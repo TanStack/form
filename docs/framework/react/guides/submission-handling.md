@@ -5,7 +5,7 @@ title: Submission handling
 
 In a situation where you want to have multiple form submission types, for example, a form that has a button that navigates to a sub-form and another button that handles a standard submission, you can make use of the onSubmitMeta prop and the handleSubmit function overloads.
 
-# Basic Usage
+## Basic Usage
 
 First you must define the default state of the form.onSubmitMeta prop:
 

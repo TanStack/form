@@ -7,7 +7,7 @@ A common criticism of TanStack Form is its verbosity out-of-the-box. While this 
 
 As a result, while `form.Field` enables the most powerful and flexible usage of TanStack Form, we provide APIs that wrap it and make your application code less verbose.
 
-# Custom Form Hooks
+## Custom Form Hooks
 
 The most powerful way to compose forms is to create custom form hooks. This allows you to create a form hook that is tailored to your application's needs, including pre-bound custom UI components and more.
 
@@ -43,7 +43,7 @@ function App() {
 }
 ```
 
-## Pre-bound Field Components
+### Pre-bound Field Components
 
 Once this scaffolding is in place, you can start adding custom field and form components to your form hook.
 
@@ -105,7 +105,7 @@ function App() {
 
 This not only allows you to reuse the UI of your shared component, but retains the type-safety you'd expect from TanStack Form: Typo `name` and get a TypeScript error.
 
-### A note on performance
+#### A note on performance
 
 While context is a valuable tool in the React ecosystem, there's appropriate concern from many users that providing a reactive value through a context will cause unnecessary re-renders.
 
@@ -113,7 +113,7 @@ While context is a valuable tool in the React ecosystem, there's appropriate con
 
 While this is a good concern to call out, it's not a problem for TanStack Form; the values provided through context are not reactive themselves, but instead are static class instances with reactive properties ([using TanStack Store as our signals implementation to power the show](https://tanstack.com/store)).
 
-## Pre-bound Form Components
+### Pre-bound Form Components
 
 While `form.AppField` solves many of the problems with Field boilerplate and reusability, it doesn't solve the problem of _form_ boilerplate and reusability.
 
@@ -156,7 +156,7 @@ function App() {
 }
 ```
 
-# Breaking big forms into smaller pieces
+## Breaking big forms into smaller pieces
 
 Sometimes forms get very large; it's just how it goes sometimes. While TanStack Form supports large forms well, it's never fun to work with hundreds or thousands of lines of code long files.
 
@@ -214,7 +214,7 @@ function App() {
 }
 ```
 
-## `withForm` FAQ
+### `withForm` FAQ
 
 > Why a higher-order component instead of a hook?
 
@@ -244,7 +244,7 @@ const ChildForm = withForm({
 })
 ```
 
-# Tree-shaking form and field components
+## Tree-shaking form and field components
 
 While the above examples are great for getting started, they're not ideal for certain use-cases where you might have hundreds of form and field components.
 In particular, you may not want to include all of your form and field components in the bundle of every file that uses your form hook.
@@ -311,7 +311,7 @@ export default function App() {
 
 This will show the Suspense fallback while the `TextField` component is being loaded, and then render the form once it's loaded.
 
-# Putting it all together
+## Putting it all together
 
 Now that we've covered the basics of creating custom form hooks, let's put it all together in a single example.
 
@@ -394,7 +394,7 @@ const Parent = () => {
 }
 ```
 
-# API Usage Guidance
+## API Usage Guidance
 
 Here's a chart to help you decide what APIs you should be using:
 

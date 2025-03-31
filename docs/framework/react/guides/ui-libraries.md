@@ -3,13 +3,13 @@ id: ui-libraries
 title: UI Libraries
 ---
 
-# Usage of TanStack Form with UI Libraries
+## Usage of TanStack Form with UI Libraries
 
 TanStack Form is a headless library, offering you complete flexibility to style it as you see fit. It's compatible with a wide range of UI libraries, including `Tailwind`, `Material UI`, `Mantine`, or even plain CSS.
 
 This guide focuses on `Material UI` and `Mantine`, but the concepts are applicable to any UI library of your choice.
 
-## Prerequisites
+### Prerequisites
 
 Before integrating TanStack Form with a UI library, ensure the necessary dependencies are installed in your project:
 
@@ -18,7 +18,7 @@ Before integrating TanStack Form with a UI library, ensure the necessary depende
 
 Note: While you can mix and match libraries, it's generally advisable to stick with one to maintain consistency and minimize bloat.
 
-## Example with Mantine
+### Example with Mantine
 
 Here's an example demonstrating the integration of TanStack Form with Mantine components:
 
@@ -85,7 +85,7 @@ export default function App() {
 - By following these steps, you can seamlessly integrate Mantine components with TanStack Form.
 - This methodology is equally applicable to other components, such as `Checkbox`, ensuring consistent integration across different UI elements.
 
-## Usage with Material UI
+### Usage with Material UI
 
 The process for integrating Material UI components is similar. Here's an example using TextField and Checkbox from Material UI:
 
