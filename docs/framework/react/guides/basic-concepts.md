@@ -123,8 +123,8 @@ Example:
 <button
   type="reset"
   onClick={(event) => {
-    event.preventDefault();
-    form.reset();
+    event.preventDefault()
+    form.reset()
   }}
 >
   Reset
@@ -137,7 +137,7 @@ Alternatively, you can use `<button type="button">` to prevent the native HTML r
 <button
   type="button"
   onClick={() => {
-    form.reset();
+    form.reset()
   }}
 >
   Reset
