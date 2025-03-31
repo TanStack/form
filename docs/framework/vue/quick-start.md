@@ -31,7 +31,7 @@ const form = useForm({
               :name="field.name"
               :value="field.state.value"
               @blur="field.handleBlur"
-              @input="(e) => field.handleChange(e.target.value)"
+              @input="(e) => field.handleChange((e.target as HTMLInputElement).value)"
             />
           </template>
         </form.Field>
