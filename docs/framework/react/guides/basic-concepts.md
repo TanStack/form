@@ -120,84 +120,28 @@ Use `event.preventDefault()` inside the button's `onClick` handler to prevent th
 Example:
 
 ```tsx
-import "./styles.css";
-import { useForm } from "@tanstack/react-form";
-
-export default function App() {
-  const form = useForm({
-    defaultValues: { value: "B", },
-    onSubmit: (values) => { console.log(values); },
-  });
-  return (
-    <div>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          form.handleSubmit();
-        }}
-      >
-        <form.Field
-          name={"value"}
-          children={(field) => {
-            return (
-              <>
-                <select
-                  id={field.name}
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                >
-                  <option value={"A"}>A</option>
-                  <option value={"B"}>B</option>
-                  <option value={"C"}>C</option>
-                </select>
-              </>
-            );
-          }}
-        />
-
-        <form.Subscribe
-          selector={(state) => [state.canSubmit, state.isSubmitting]}
-          children={() => (
-            <>
-              <button type="submit">Submit</button>
-              <button
-                type="reset"
-                onClick={(event) => {
-                  event.preventDefault(); // <-- Here is the change
-                  form.reset();
-                }}
-              >
-                Reset
-              </button>
-            </>
-          )}
-        />
-      </form>
-    </div>
-  );
-}
+<button
+  type="reset"
+  onClick={(event) => {
+    event.preventDefault();
+    form.reset();
+  }}
+>
+  Reset
+</button>
 ```
 
 Alternatively, you can use `<button type="button">` to prevent the native HTML reset.
-From the previous example you can see the change in the `form.Subscribe`.
 
 ```tsx
-<form.Subscribe
-  selector={(state) => [state.canSubmit, state.isSubmitting]}
-  children={() => (
-    <>
-      <button type="submit">Submit</button>
-      <button
-        type="button" // <-- Here is the change
-        onClick={() => {
-          form.reset();
-        }}
-      >
-        Reset
-      </button>
-    </>
-  )}
-/>
+<button
+  type="button"
+  onClick={() => {
+    form.reset();
+  }}
+>
+  Reset
+</button>
 ```
 
 ## Validation
