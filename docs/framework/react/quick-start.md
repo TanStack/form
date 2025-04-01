@@ -134,35 +134,3 @@ ReactDOM.createRoot(rootElement).render(<PeoplePage />)
 ```
 
 All properties from `useForm` can be used in `useAppForm` and all properties from `form.Field` can be used in `form.AppField`.
-
-## Form button with type="reset"
-
-When using `<button type="reset">` in conjunction with TanStack Form's `form.reset()`, you need to prevent the default HTML reset behavior to avoid unexpected resets of form elements (especially `<select>` elements) to their initial HTML values.
-Use `event.preventDefault()` inside the button's `onClick` handler to prevent the native form reset.
-
-Example:
-
-```tsx
-<button
-  type="reset"
-  onClick={(event) => {
-    event.preventDefault()
-    form.reset()
-  }}
->
-  Reset
-</button>
-```
-
-Alternatively, you can use `<button type="button">` to prevent the native HTML reset.
-
-```tsx
-<button
-  type="button"
-  onClick={() => {
-    form.reset()
-  }}
->
-  Reset
-</button>
-```
