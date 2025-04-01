@@ -1,6 +1,6 @@
 /* eslint-disable react-compiler/react-compiler */
 import { describe, expect, it, vi } from 'vitest'
-import { render, waitFor } from '@testing-library/react'
+import { render, waitFor, within } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import { StrictMode, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
@@ -1068,6 +1068,101 @@ describe('useField', () => {
     expect(getByText('[]')).toBeInTheDocument()
     await user.click(getByText('Add person'))
     expect(getByText(`["Test"]`)).toBeInTheDocument()
+  })
+
+  it('should handle removing element from array', async () => {
+    type Person = {
+      name: string
+      id: number
+    }
+
+    const fakePeople = {
+      jack: {
+        id: 5,
+        name: 'Jack',
+      },
+      molly: {
+        id: 6,
+        name: 'Molly',
+      },
+      george: {
+        id: 7,
+        name: 'George',
+      },
+    } satisfies Record<string, Person>
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          people: [fakePeople.jack, fakePeople.molly, fakePeople.george],
+        },
+      })
+
+      return (
+        <form.Field name="people" mode="array">
+          {(field) => {
+            return (
+              <div>
+                <div data-testid="container">
+                  {field.state.value.map((item, i) => {
+                    return (
+                      <form.Field key={item.id} name={`people[${i}].name`}>
+                        {(subField) => {
+                          return (
+                            <div>
+                              <label>
+                                <div>Name for person {i}</div>
+                                <span>{subField.state.value}</span>
+                                <input
+                                  name={subField.name}
+                                  value={subField.state.value}
+                                  onChange={(e) =>
+                                    subField.handleChange(e.target.value)
+                                  }
+                                />
+                              </label>
+                            </div>
+                          )
+                        }}
+                      </form.Field>
+                    )
+                  })}
+                </div>
+                <button onClick={() => field.removeValue(1)} type="button">
+                  Remove person
+                </button>
+              </div>
+            )
+          }}
+        </form.Field>
+      )
+    }
+
+    const { getByText, queryByText, getByTestId } = render(
+      <StrictMode>
+        <Comp />
+      </StrictMode>,
+    )
+
+    let exisingPeople: Person[] = [
+      fakePeople.jack,
+      fakePeople.molly,
+      fakePeople.george,
+    ]
+    exisingPeople.forEach((person) =>
+      expect(getByText(person.name)).toBeInTheDocument(),
+    )
+    const container = getByTestId('container')
+    expect(within(container).getAllByRole('textbox')).toHaveLength(3)
+
+    await user.click(getByText('Remove person'))
+
+    expect(within(container).getAllByRole('textbox')).toHaveLength(2)
+    exisingPeople = [fakePeople.jack, fakePeople.george]
+    exisingPeople.forEach((person) =>
+      expect(getByText(person.name)).toBeInTheDocument(),
+    )
+    expect(queryByText(fakePeople.molly.name)).not.toBeInTheDocument()
   })
 
   it('should not rerender unrelated fields', async () => {
