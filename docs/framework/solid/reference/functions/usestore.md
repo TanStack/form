@@ -13,7 +13,7 @@ title: useStore
 function useStore<TState, TSelected>(store, selector?): Accessor<TSelected>
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.7.0\_solid-js@1.9.4/node\_modules/@tanstack/solid-store/dist/esm/index.d.ts:8
+Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.7.0\_solid-js@1.9.5/node\_modules/@tanstack/solid-store/dist/esm/index.d.ts:8
 
 ### Type Parameters
 
@@ -41,7 +41,7 @@ Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.7.0\_solid-js@1.9.4/node
 function useStore<TState, TSelected>(store, selector?): Accessor<TSelected>
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.7.0\_solid-js@1.9.4/node\_modules/@tanstack/solid-store/dist/esm/index.d.ts:9
+Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.7.0\_solid-js@1.9.5/node\_modules/@tanstack/solid-store/dist/esm/index.d.ts:9
 
 ### Type Parameters
 
