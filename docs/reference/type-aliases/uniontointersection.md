@@ -11,7 +11,7 @@ title: UnionToIntersection
 type UnionToIntersection<T> = T extends any ? (param) => any : never extends (param) => any ? TI : never;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:93](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L93)
+Defined in: [packages/form-core/src/util-types.ts:91](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L91)
 
 ## Type Parameters
 

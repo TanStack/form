@@ -13,7 +13,7 @@ type DeepRecordTupleUnion<T, TPrefix, TAcc, TAllKeys> = TAllKeys extends any ? D
   | Record<TupleAccessor<TPrefix, TAllKeys>, T[TAllKeys]>> : never;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:45](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L45)
+Defined in: [packages/form-core/src/util-types.ts:43](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L43)
 
 ## Type Parameters
 

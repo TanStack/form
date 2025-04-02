@@ -13,7 +13,7 @@ type DeepRecordArrayUnion<T, TPrefix, TAcc> = DeepRecordUnion<T[number], ArrayAc
 | Record<ArrayAccessor<TPrefix>, T[number]>>;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:28](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L28)
+Defined in: [packages/form-core/src/util-types.ts:26](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L26)
 
 ## Type Parameters
 

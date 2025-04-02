@@ -11,7 +11,7 @@ title: DeepRecordUnion
 type DeepRecordUnion<T, TPrefix, TAcc> = IsAny<T> extends true ? T : T extends string | number | boolean | bigint | Date ? TAcc : T extends ReadonlyArray<any> ? number extends T["length"] ? DeepRecordArrayUnion<T, TPrefix, TAcc> : DeepRecordTupleUnion<T, TPrefix, TAcc> : T extends object ? DeepRecordObjectUnion<T, TPrefix, TAcc> : TAcc;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:80](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L80)
+Defined in: [packages/form-core/src/util-types.ts:78](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L78)
 
 ## Type Parameters
 

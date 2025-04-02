@@ -8,7 +8,7 @@ title: ArrayAccessor
 # Type Alias: ArrayAccessor\<TPrefix\>
 
 ```ts
-type ArrayAccessor<TPrefix> = `${TPrefix}[${number}]` | `${TPrefix}[number]`;
+type ArrayAccessor<TPrefix> = `${TPrefix}[${number}]`;
 ```
 
 Defined in: [packages/form-core/src/util-types.ts:24](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L24)
