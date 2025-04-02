@@ -81,7 +81,7 @@ Defined in: [tanstack-form-controller.ts:259](https://github.com/TanStack/form/b
 
 #### Type Parameters
 
-• **TName** *extends* `string` \| `number`
+• **TName** *extends* `string`
 
 • **TData**
 

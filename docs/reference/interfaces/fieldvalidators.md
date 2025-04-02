@@ -7,7 +7,7 @@ title: FieldValidators
 
 # Interface: FieldValidators\<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync\>
 
-Defined in: [packages/form-core/src/FieldApi.ts:267](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L267)
+Defined in: [packages/form-core/src/FieldApi.ts:265](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L265)
 
 ## Type Parameters
 
@@ -39,7 +39,7 @@ Defined in: [packages/form-core/src/FieldApi.ts:267](https://github.com/TanStack
 optional onBlur: TOnBlur;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:316](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L316)
+Defined in: [packages/form-core/src/FieldApi.ts:314](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L314)
 
 An optional function, that runs on the blur event of input.
 
@@ -57,7 +57,7 @@ z.string().min(1)
 optional onBlurAsync: TOnBlurAsync;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:322](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L322)
+Defined in: [packages/form-core/src/FieldApi.ts:320](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L320)
 
 An optional property similar to `onBlur` but async validation.
 
@@ -75,7 +75,7 @@ z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })
 optional onBlurAsyncDebounceMs: number;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:329](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L329)
+Defined in: [packages/form-core/src/FieldApi.ts:327](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L327)
 
 An optional number to represent how long the `onBlurAsync` should wait before running
 
@@ -86,10 +86,10 @@ If set to a number larger than 0, will debounce the async validation event by th
 ### onBlurListenTo?
 
 ```ts
-optional onBlurListenTo: unknown extends TParentData ? string : TParentData extends readonly any[] & IsTuple<TParentData> ? PrefixTupleAccessor<TParentData<TParentData>, AllowedIndexes<TParentData<TParentData>, never>, []> : TParentData extends any[] ? PrefixArrayAccessor<TParentData<TParentData>, [any]> : TParentData extends Date ? never : TParentData extends object ? PrefixObjectAccessor<TParentData<TParentData>, []> : TParentData extends string | number | bigint | boolean ? "" : never[];
+optional onBlurListenTo: DeepKeys<TParentData>[];
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:333](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L333)
+Defined in: [packages/form-core/src/FieldApi.ts:331](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L331)
 
 An optional list of field names that should trigger this field's `onBlur` and `onBlurAsync` events when its value changes
 
@@ -101,7 +101,7 @@ An optional list of field names that should trigger this field's `onBlur` and `o
 optional onChange: TOnChange;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:294](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L294)
+Defined in: [packages/form-core/src/FieldApi.ts:292](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L292)
 
 An optional function, that runs on the change event of input.
 
@@ -119,7 +119,7 @@ z.string().min(1)
 optional onChangeAsync: TOnChangeAsync;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:300](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L300)
+Defined in: [packages/form-core/src/FieldApi.ts:298](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L298)
 
 An optional property similar to `onChange` but async validation
 
@@ -137,7 +137,7 @@ z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })
 optional onChangeAsyncDebounceMs: number;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:306](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L306)
+Defined in: [packages/form-core/src/FieldApi.ts:304](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L304)
 
 An optional number to represent how long the `onChangeAsync` should wait before running
 
@@ -148,10 +148,10 @@ If set to a number larger than 0, will debounce the async validation event by th
 ### onChangeListenTo?
 
 ```ts
-optional onChangeListenTo: unknown extends TParentData ? string : TParentData extends readonly any[] & IsTuple<TParentData> ? PrefixTupleAccessor<TParentData<TParentData>, AllowedIndexes<TParentData<TParentData>, never>, []> : TParentData extends any[] ? PrefixArrayAccessor<TParentData<TParentData>, [any]> : TParentData extends Date ? never : TParentData extends object ? PrefixObjectAccessor<TParentData<TParentData>, []> : TParentData extends string | number | bigint | boolean ? "" : never[];
+optional onChangeListenTo: DeepKeys<TParentData>[];
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:310](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L310)
+Defined in: [packages/form-core/src/FieldApi.ts:308](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L308)
 
 An optional list of field names that should trigger this field's `onChange` and `onChangeAsync` events when its value changes
 
@@ -163,7 +163,7 @@ An optional list of field names that should trigger this field's `onChange` and 
 optional onMount: TOnMount;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:288](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L288)
+Defined in: [packages/form-core/src/FieldApi.ts:286](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L286)
 
 An optional function, that runs on the mount event of input.
 
@@ -175,7 +175,7 @@ An optional function, that runs on the mount event of input.
 optional onSubmit: TOnSubmit;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:339](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L339)
+Defined in: [packages/form-core/src/FieldApi.ts:337](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L337)
 
 An optional function, that runs on the submit event of form.
 
@@ -193,7 +193,7 @@ z.string().min(1)
 optional onSubmitAsync: TOnSubmitAsync;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:345](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L345)
+Defined in: [packages/form-core/src/FieldApi.ts:343](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L343)
 
 An optional property similar to `onSubmit` but async validation.
 

@@ -25,7 +25,7 @@ Defined in: [packages/form-core/src/mergeForm.ts:73](https://github.com/TanStack
 
 ### state
 
-`Partial`\<[`FormState`](../type-aliases/formstate.md)\<`TFormData`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>\>
+`Partial`\<[`FormState`](../interfaces/formstate.md)\<`TFormData`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>\>
 
 ## Returns
 

@@ -236,16 +236,16 @@ export interface FormTransform<
  * An object representing the options for a form.
  */
 export interface FormOptions<
-  TFormData,
-  TOnMount extends undefined | FormValidateOrFn<TFormData>,
-  TOnChange extends undefined | FormValidateOrFn<TFormData>,
-  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TSubmitMeta = never,
+  in out TFormData,
+  in out TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TSubmitMeta = never,
 > {
   /**
    * Set initial values for your form.
@@ -393,15 +393,15 @@ export type FieldInfo<TFormData> = {
  * An object representing the current state of the form.
  */
 export type BaseFormState<
-  TFormData,
-  TOnMount extends undefined | FormValidateOrFn<TFormData>,
-  TOnChange extends undefined | FormValidateOrFn<TFormData>,
-  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TFormData,
+  in out TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
 > = {
   /**
    * The current values of the form fields.
@@ -468,15 +468,15 @@ export type BaseFormState<
 }
 
 export type DerivedFormState<
-  TFormData,
-  TOnMount extends undefined | FormValidateOrFn<TFormData>,
-  TOnChange extends undefined | FormValidateOrFn<TFormData>,
-  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TFormData,
+  in out TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
 > = {
   /**
    * A boolean indicating if the form is currently validating.
@@ -537,38 +537,38 @@ export type DerivedFormState<
   fieldMeta: Record<DeepKeys<TFormData>, AnyFieldMeta>
 }
 
-export type FormState<
-  TFormData,
-  TOnMount extends undefined | FormValidateOrFn<TFormData>,
-  TOnChange extends undefined | FormValidateOrFn<TFormData>,
-  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-> = BaseFormState<
-  TFormData,
-  TOnMount,
-  TOnChange,
-  TOnChangeAsync,
-  TOnBlur,
-  TOnBlurAsync,
-  TOnSubmit,
-  TOnSubmitAsync,
-  TOnServer
-> &
-  DerivedFormState<
-    TFormData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnServer
-  >
+export interface FormState<
+  in out TFormData,
+  in out TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+> extends BaseFormState<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
+    >,
+    DerivedFormState<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
+    > {}
 
 export type AnyFormState = FormState<
   any,
@@ -662,16 +662,16 @@ export type AnyFormApi = FormApi<
  * However, if you need to create a new instance manually, you can do so by calling the `new FormApi` constructor.
  */
 export class FormApi<
-  TFormData,
-  TOnMount extends undefined | FormValidateOrFn<TFormData>,
-  TOnChange extends undefined | FormValidateOrFn<TFormData>,
-  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TSubmitMeta = never,
+  in out TFormData,
+  in out TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TSubmitMeta = never,
 > {
   /**
    * The options for the form.

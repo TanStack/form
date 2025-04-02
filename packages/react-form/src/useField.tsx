@@ -11,7 +11,7 @@ import type {
   FormValidateOrFn,
 } from '@tanstack/form-core'
 import type { FunctionComponent, ReactNode } from 'react'
-import type { UseFieldOptions } from './types'
+import type { UseFieldOptions, UseFieldOptionsBound } from './types'
 
 interface ReactFieldApi<
   TParentData,
@@ -75,29 +75,17 @@ export type UseField<
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
 >(
-  opts: Omit<
-    UseFieldOptions<
-      TParentData,
-      TName,
-      TData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TFormOnMount,
-      TFormOnChange,
-      TFormOnChangeAsync,
-      TFormOnBlur,
-      TFormOnBlurAsync,
-      TFormOnSubmit,
-      TFormOnSubmitAsync,
-      TFormOnServer,
-      TPatentSubmitMeta
-    >,
-    'form'
+  opts: UseFieldOptionsBound<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync
   >,
 ) => FieldApi<
   TParentData,
@@ -227,7 +215,7 @@ export function useField<
 /**
  * @param children A render function that takes a field API instance and returns a React element.
  */
-type FieldComponentProps<
+interface FieldComponentProps<
   TParentData,
   TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
@@ -254,7 +242,27 @@ type FieldComponentProps<
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TPatentSubmitMeta,
   ExtendedApi = {},
-> = {
+> extends UseFieldOptions<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TPatentSubmitMeta
+  > {
   children: (
     fieldApi: FieldApi<
       TParentData,
@@ -279,33 +287,25 @@ type FieldComponentProps<
     > &
       ExtendedApi,
   ) => ReactNode
-} & UseFieldOptions<
-  TParentData,
-  TName,
-  TData,
-  TOnMount,
-  TOnChange,
-  TOnChangeAsync,
-  TOnBlur,
-  TOnBlurAsync,
-  TOnSubmit,
-  TOnSubmitAsync,
-  TFormOnMount,
-  TFormOnChange,
-  TFormOnChangeAsync,
-  TFormOnBlur,
-  TFormOnBlurAsync,
-  TFormOnSubmit,
-  TFormOnSubmitAsync,
-  TFormOnServer,
-  TPatentSubmitMeta
->
+}
 
-/**
- * A type alias representing a field component for a specific form data type.
- */
-export type FieldComponent<
+interface FieldComponentBoundProps<
   TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
@@ -316,6 +316,65 @@ export type FieldComponent<
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TPatentSubmitMeta,
   ExtendedApi = {},
+> extends UseFieldOptionsBound<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync
+  > {
+  children: (
+    fieldApi: FieldApi<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnServer,
+      TPatentSubmitMeta
+    > &
+      ExtendedApi,
+  ) => ReactNode
+}
+
+/**
+ * A type alias representing a field component for a specific form data type.
+ */
+export type FieldComponent<
+  in out TParentData,
+  in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChangeAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnBlurAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnSubmitAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TPatentSubmitMeta,
+  in out ExtendedApi = {},
 > = <
   const TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
@@ -335,30 +394,27 @@ export type FieldComponent<
 >({
   children,
   ...fieldOptions
-}: Omit<
-  FieldComponentProps<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnServer,
-    TPatentSubmitMeta,
-    ExtendedApi
-  >,
-  'form'
+}: FieldComponentBoundProps<
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TFormOnMount,
+  TFormOnChange,
+  TFormOnChangeAsync,
+  TFormOnBlur,
+  TFormOnBlurAsync,
+  TFormOnSubmit,
+  TFormOnSubmitAsync,
+  TFormOnServer,
+  TPatentSubmitMeta,
+  ExtendedApi
 >) => ReactNode
 
 /**
