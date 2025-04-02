@@ -15,6 +15,7 @@ title: "@tanstack/vue-form"
 ## Type Aliases
 
 - [FieldComponent](type-aliases/fieldcomponent.md)
+- [FieldComponentBoundProps](type-aliases/fieldcomponentboundprops.md)
 - [FieldComponentProps](type-aliases/fieldcomponentprops.md)
 - [UseField](type-aliases/usefield.md)
 

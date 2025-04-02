@@ -74,7 +74,7 @@ Defined in: [packages/form-core/src/FormApi.ts:691](https://github.com/TanStack/
 ### fieldInfo
 
 ```ts
-fieldInfo: Record<unknown extends TFormData ? string : TFormData extends readonly any[] & IsTuple<TFormData> ? PrefixTupleAccessor<TFormData<TFormData>, AllowedIndexes<TFormData<TFormData>, never>, []> : TFormData extends any[] ? PrefixArrayAccessor<TFormData<TFormData>, [any]> : TFormData extends Date ? never : TFormData extends object ? PrefixObjectAccessor<TFormData<TFormData>, []> : TFormData extends string | number | bigint | boolean ? "" : never, FieldInfo<TFormData>>;
+fieldInfo: Record<DeepKeys<TFormData>, FieldInfo<TFormData>>;
 ```
 
 Defined in: [packages/form-core/src/FormApi.ts:721](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L721)
@@ -86,7 +86,7 @@ A record of field information for each field in the form.
 ### fieldMetaDerived
 
 ```ts
-fieldMetaDerived: Derived<Record<unknown extends TFormData ? string : TFormData extends readonly any[] & IsTuple<TFormData> ? PrefixTupleAccessor<TFormData<TFormData>, AllowedIndexes<TFormData<TFormData>, never>, []> : TFormData extends any[] ? PrefixArrayAccessor<TFormData<TFormData>, [any]> : TFormData extends Date ? never : TFormData extends object ? PrefixObjectAccessor<TFormData<TFormData>, []> : TFormData extends string | number | bigint | boolean ? "" : never, AnyFieldMeta>>;
+fieldMetaDerived: Derived<Record<DeepKeys<TFormData>, AnyFieldMeta>>;
 ```
 
 Defined in: [packages/form-core/src/FormApi.ts:704](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L704)
@@ -127,7 +127,7 @@ Defined in: [packages/form-core/src/FormApi.ts:723](https://github.com/TanStack/
 
 ##### Returns
 
-[`FormState`](../type-aliases/formstate.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`\>
+[`FormState`](../interfaces/formstate.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`\>
 
 ## Methods
 
@@ -141,7 +141,7 @@ Defined in: [packages/form-core/src/FormApi.ts:1772](https://github.com/TanStack
 
 #### Type Parameters
 
-• **TField** *extends* `string` \| `number`
+• **TField** *extends* `string`
 
 #### Parameters
 
@@ -218,7 +218,7 @@ Gets the field info of the specified field.
 
 #### Type Parameters
 
-• **TField** *extends* `string` \| `number`
+• **TField** *extends* `string`
 
 #### Parameters
 
@@ -244,7 +244,7 @@ Gets the metadata of the specified field.
 
 #### Type Parameters
 
-• **TField** *extends* `string` \| `number`
+• **TField** *extends* `string`
 
 #### Parameters
 
@@ -270,7 +270,7 @@ Gets the value of the specified field.
 
 #### Type Parameters
 
-• **TField** *extends* `string` \| `number`
+• **TField** *extends* `string`
 
 #### Parameters
 
@@ -336,7 +336,7 @@ Defined in: [packages/form-core/src/FormApi.ts:1811](https://github.com/TanStack
 
 #### Type Parameters
 
-• **TField** *extends* `string` \| `number`
+• **TField** *extends* `string`
 
 #### Parameters
 
@@ -350,7 +350,7 @@ Defined in: [packages/form-core/src/FormApi.ts:1811](https://github.com/TanStack
 
 ##### value
 
-[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, \[\]\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, \[\]\>\[`number`\] : `never`
+[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? [`DeepValue`](../type-aliases/deepvalue.md)\<[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>\>\[`number`\] : `never`
 
 ##### opts?
 
@@ -396,7 +396,7 @@ Moves the value at the first specified index to the second specified index withi
 
 #### Type Parameters
 
-• **TField** *extends* `string` \| `number`
+• **TField** *extends* `string`
 
 #### Parameters
 
@@ -437,7 +437,7 @@ Pushes a value into an array field.
 
 #### Type Parameters
 
-• **TField** *extends* `string` \| `number`
+• **TField** *extends* `string`
 
 #### Parameters
 
@@ -447,7 +447,7 @@ Pushes a value into an array field.
 
 ##### value
 
-[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, \[\]\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, \[\]\>\[`number`\] : `never`
+[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? [`DeepValue`](../type-aliases/deepvalue.md)\<[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>\>\[`number`\] : `never`
 
 ##### opts?
 
@@ -474,7 +474,7 @@ Removes a value from an array field at the specified index.
 
 #### Type Parameters
 
-• **TField** *extends* `string` \| `number`
+• **TField** *extends* `string`
 
 #### Parameters
 
@@ -512,7 +512,7 @@ Replaces a value into an array field at the specified index.
 
 #### Type Parameters
 
-• **TField** *extends* `string` \| `number`
+• **TField** *extends* `string`
 
 #### Parameters
 
@@ -526,7 +526,7 @@ Replaces a value into an array field at the specified index.
 
 ##### value
 
-[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, \[\]\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, \[\]\>\[`number`\] : `never`
+[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? [`DeepValue`](../type-aliases/deepvalue.md)\<[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>\>\[`number`\] : `never`
 
 ##### opts?
 
@@ -583,7 +583,7 @@ Resets the field value and meta to default state
 
 #### Type Parameters
 
-• **TField** *extends* `string` \| `number`
+• **TField** *extends* `string`
 
 #### Parameters
 
@@ -609,7 +609,7 @@ resets every field's meta
 
 #### Type Parameters
 
-• **TField** *extends* `string` \| `number`
+• **TField** *extends* `string`
 
 #### Parameters
 
@@ -657,7 +657,7 @@ Updates the metadata of the specified field.
 
 #### Type Parameters
 
-• **TField** *extends* `string` \| `number`
+• **TField** *extends* `string`
 
 #### Parameters
 
@@ -690,7 +690,7 @@ Sets the value of the specified field and optionally updates the touched state.
 
 #### Type Parameters
 
-• **TField** *extends* `string` \| `number`
+• **TField** *extends* `string`
 
 #### Parameters
 
@@ -700,7 +700,7 @@ Sets the value of the specified field and optionally updates the touched state.
 
 ##### updater
 
-[`Updater`](../type-aliases/updater.md)\<[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`, \[\]\>\>
+[`Updater`](../type-aliases/updater.md)\<[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>\>
 
 ##### opts?
 
@@ -728,7 +728,7 @@ Swaps the values at the specified indices within an array field.
 
 #### Type Parameters
 
-• **TField** *extends* `string` \| `number`
+• **TField** *extends* `string`
 
 #### Parameters
 
@@ -813,7 +813,7 @@ Validates the children of a specified array in the form starting from a given in
 
 #### Type Parameters
 
-• **TField** *extends* `string` \| `number`
+• **TField** *extends* `string`
 
 #### Parameters
 
@@ -847,7 +847,7 @@ Validates a specified field in the form using the correct handlers for a given v
 
 #### Type Parameters
 
-• **TField** *extends* `string` \| `number`
+• **TField** *extends* `string`
 
 #### Parameters
 

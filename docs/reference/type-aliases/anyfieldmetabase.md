@@ -11,4 +11,4 @@ title: AnyFieldMetaBase
 type AnyFieldMetaBase = FieldMetaBase<any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:570](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L570)
+Defined in: [packages/form-core/src/FieldApi.ts:567](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L567)
