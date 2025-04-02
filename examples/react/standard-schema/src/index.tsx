@@ -49,16 +49,16 @@ const EffectSchema = S.standardSchemaV1(
       S.minLength(3),
       S.annotations({
         message: () => '[Effect/Schema] You must have a length of at least 3',
-      })
+      }),
     ),
     lastName: S.String.pipe(
       S.minLength(3),
       S.annotations({
         message: () => '[Effect/Schema] You must have a length of at least 3',
-      })
+      }),
     ),
-  })
-);
+  }),
+)
 
 export default function App() {
   const form = useForm({
