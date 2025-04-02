@@ -856,7 +856,6 @@ describe('form api', () => {
       },
     })
     field1.mount()
-
     const field2 = new FieldApi({
       form,
       name: 'names[1]',
@@ -2863,4 +2862,27 @@ it('should update isSubmitSuccessful correctly during form submission', async ()
   await expect(form.handleSubmit()).rejects.toThrow('Submission failed')
 
   expect(form.state.isSubmitSuccessful).toBe(false)
+})
+
+it('should reset the fields value and meta to default state', async () => {
+  const form = new FormApi({
+    defaultValues: {
+      name: 'tony',
+    } as { name: string },
+  })
+  form.mount()
+  const field = new FieldApi({
+    form,
+    name: 'name',
+  })
+
+  field.mount()
+  field.setValue('hawk')
+
+  expect(form.state.values.name).toStrictEqual('hawk')
+  expect(field.state.meta.isTouched).toBe(true)
+
+  form.resetField('name')
+  expect(form.state.values.name).toStrictEqual('tony')
+  expect(field.state.meta.isTouched).toBe(false)
 })

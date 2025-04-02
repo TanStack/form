@@ -1,6 +1,6 @@
 /* eslint-disable react-compiler/react-compiler */
 import { describe, expect, it, vi } from 'vitest'
-import { render, waitFor } from '@testing-library/react'
+import { render, waitFor, within } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import { StrictMode, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
@@ -1070,6 +1070,101 @@ describe('useField', () => {
     expect(getByText(`["Test"]`)).toBeInTheDocument()
   })
 
+  it('should handle removing element from array', async () => {
+    type Person = {
+      name: string
+      id: number
+    }
+
+    const fakePeople = {
+      jack: {
+        id: 5,
+        name: 'Jack',
+      },
+      molly: {
+        id: 6,
+        name: 'Molly',
+      },
+      george: {
+        id: 7,
+        name: 'George',
+      },
+    } satisfies Record<string, Person>
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          people: [fakePeople.jack, fakePeople.molly, fakePeople.george],
+        },
+      })
+
+      return (
+        <form.Field name="people" mode="array">
+          {(field) => {
+            return (
+              <div>
+                <div data-testid="container">
+                  {field.state.value.map((item, i) => {
+                    return (
+                      <form.Field key={item.id} name={`people[${i}].name`}>
+                        {(subField) => {
+                          return (
+                            <div>
+                              <label>
+                                <div>Name for person {i}</div>
+                                <span>{subField.state.value}</span>
+                                <input
+                                  name={subField.name}
+                                  value={subField.state.value}
+                                  onChange={(e) =>
+                                    subField.handleChange(e.target.value)
+                                  }
+                                />
+                              </label>
+                            </div>
+                          )
+                        }}
+                      </form.Field>
+                    )
+                  })}
+                </div>
+                <button onClick={() => field.removeValue(1)} type="button">
+                  Remove person
+                </button>
+              </div>
+            )
+          }}
+        </form.Field>
+      )
+    }
+
+    const { getByText, queryByText, getByTestId } = render(
+      <StrictMode>
+        <Comp />
+      </StrictMode>,
+    )
+
+    let exisingPeople: Person[] = [
+      fakePeople.jack,
+      fakePeople.molly,
+      fakePeople.george,
+    ]
+    exisingPeople.forEach((person) =>
+      expect(getByText(person.name)).toBeInTheDocument(),
+    )
+    const container = getByTestId('container')
+    expect(within(container).getAllByRole('textbox')).toHaveLength(3)
+
+    await user.click(getByText('Remove person'))
+
+    expect(within(container).getAllByRole('textbox')).toHaveLength(2)
+    exisingPeople = [fakePeople.jack, fakePeople.george]
+    exisingPeople.forEach((person) =>
+      expect(getByText(person.name)).toBeInTheDocument(),
+    )
+    expect(queryByText(fakePeople.molly.name)).not.toBeInTheDocument()
+  })
+
   it('should not rerender unrelated fields', async () => {
     const renderCount = {
       field1: 0,
@@ -1129,5 +1224,52 @@ describe('useField', () => {
     expect(renderCount.field1).toBeGreaterThan(field1InitialRender)
     // field2 should not have rerendered
     expect(renderCount.field2).toBe(field2InitialRender)
+  })
+
+  it('should handle defaultValue without setstate-in-render error', async () => {
+    // Spy on console.error before rendering
+    const consoleErrorSpy = vi.spyOn(console, 'error')
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          fieldOne: '',
+          fieldTwo: '',
+        },
+      })
+
+      const fieldOne = useStore(form.store, (state) => state.values.fieldOne)
+
+      return (
+        <form>
+          <form.Field
+            name="fieldOne"
+            children={(field) => {
+              return (
+                <input
+                  data-testid={field.name}
+                  id={field.name}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              )
+            }}
+          />
+          {fieldOne && (
+            <form.Field
+              name="fieldTwo"
+              defaultValue="default field two value"
+              children={(_) => null}
+            />
+          )}
+        </form>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    await user.type(getByTestId('fieldOne'), 'John')
+
+    // Should not log an error
+    expect(consoleErrorSpy).not.toHaveBeenCalled()
   })
 })

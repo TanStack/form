@@ -26,8 +26,7 @@ Let's start by creating a `formOption` that we'll use to share the form's shape 
 
 ```typescript
 // app/routes/index.tsx, but can be extracted to any other path
-// Notice the import path is different from the typical import location
-import { formOptions } from '@tanstack/react-form/start'
+import { formOptions } from '@tanstack/react-form'
 
 // You can pass other form options here
 export const formOpts = formOptions({
@@ -67,7 +66,13 @@ export const handleForm = createServerFn({
   })
   .handler(async (ctx) => {
     try {
-      await serverValidate(ctx.data)
+      const validatedData = await serverValidate(ctx.data)
+      console.log('validatedData', validatedData)
+      // Persist the form data to the database
+      // await sql`
+      //   INSERT INTO users (name, email, password)
+      //   VALUES (${validatedData.name}, ${validatedData.email}, ${validatedData.password})
+      // `
     } catch (e) {
       if (e instanceof ServerValidateError) {
         // Log form errors or do any other logic here
@@ -102,7 +107,12 @@ Finally, we'll use `getFormDataFromServer` in our loader to get the state from o
 ```tsx
 // app/routes/index.tsx
 import { createFileRoute } from '@tanstack/react-router'
-import { mergeForm, useForm, useTransform } from '@tanstack/react-form'
+import {
+  mergeForm,
+  useForm,
+  useStore,
+  useTransform,
+} from '@tanstack/react-form'
 
 export const Route = createFileRoute('/')({
   component: Home,
@@ -218,7 +228,13 @@ const serverValidate = createServerValidate({
 
 export default async function someAction(prev: unknown, formData: FormData) {
   try {
-    await serverValidate(formData)
+    const validatedData = await serverValidate(formData)
+    console.log('validatedData', validatedData)
+    // Persist the form data to the database
+    // await sql`
+    //   INSERT INTO users (name, email, password)
+    //   VALUES (${validatedData.name}, ${validatedData.email}, ${validatedData.password})
+    // `
   } catch (e) {
     if (e instanceof ServerValidateError) {
       return e.formState
@@ -241,7 +257,12 @@ Finally, we'll use `someAction` in our client-side form component.
 import { useActionState } from 'react'
 import { initialFormState } from '@tanstack/react-form/nextjs'
 // Notice the import is from `react-form`, not `react-form/nextjs`
-import { mergeForm, useForm, useTransform } from '@tanstack/react-form'
+import {
+  mergeForm,
+  useForm,
+  useStore,
+  useTransform,
+} from '@tanstack/react-form'
 import someAction from './action'
 import { formOpts } from './shared-code'
 
@@ -365,7 +386,13 @@ const serverValidate = createServerValidate({
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData()
   try {
-    await serverValidate(formData)
+    const validatedData = await serverValidate(formData)
+    console.log('validatedData', validatedData)
+    // Persist the form data to the database
+    // await sql`
+    //   INSERT INTO users (name, email, password)
+    //   VALUES (${validatedData.name}, ${validatedData.email}, ${validatedData.password})
+    // `
   } catch (e) {
     if (e instanceof ServerValidateError) {
       return e.formState
@@ -385,7 +412,12 @@ Finally, the `action` will be called when the form submits.
 // routes/_index/route.tsx
 import { Form, useActionData } from '@remix-run/react'
 
-import { mergeForm, useForm, useTransform } from '@tanstack/react-form'
+import {
+  mergeForm,
+  useForm,
+  useStore,
+  useTransform,
+} from '@tanstack/react-form'
 import {
   ServerValidateError,
   createServerValidate,
