@@ -320,4 +320,36 @@ Example:
 />
 ```
 
+## Reset Buttons
+
+When using `<button type="reset">` in conjunction with TanStack Form's `form.reset()`, you need to prevent the default HTML reset behavior to avoid unexpected resets of form elements (especially `<select>` elements) to their initial HTML values.
+Use `event.preventDefault()` inside the button's `onClick` handler to prevent the native form reset.
+
+Example:
+
+```tsx
+<button
+  type="reset"
+  onClick={(event) => {
+    event.preventDefault()
+    form.reset()
+  }}
+>
+  Reset
+</button>
+```
+
+Alternatively, you can use `<button type="button">` to prevent the native HTML reset.
+
+```tsx
+<button
+  type="button"
+  onClick={() => {
+    form.reset()
+  }}
+>
+  Reset
+</button>
+```
+
 These are the basic concepts and terminology used in the `@tanstack/react-form` library. Understanding these concepts will help you work more effectively with the library and create complex forms with ease.
