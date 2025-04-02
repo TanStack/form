@@ -1595,9 +1595,6 @@ export class FormApi<
       isSubmitSuccessful: false, // Reset isSubmitSuccessful at the start of submission
     }))
 
-    // Don't let invalid forms submit
-    if (!this.state.canSubmit) return
-
     this.baseStore.setState((d) => ({ ...d, isSubmitting: true }))
 
     const done = () => {
