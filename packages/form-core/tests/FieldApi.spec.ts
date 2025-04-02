@@ -1890,4 +1890,125 @@ describe('field api', () => {
     expect(field.getMeta().errors).toStrictEqual([])
     expect(form.state.canSubmit).toBe(true)
   })
+
+  it('should touch all fields on submit regardless of canSubmit', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: 'John',
+        lastName: 'Doe',
+      },
+      validators: {
+        onChange: () => 'form error',
+      },
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+    })
+
+    form.mount()
+    firstNameField.mount()
+    lastNameField.mount()
+
+    firstNameField.handleChange((existing) => existing)
+
+    expect(form.state.canSubmit).toBe(false)
+    expect(firstNameField.getMeta().isTouched).toBe(true)
+    expect(lastNameField.getMeta().isTouched).toBe(false)
+
+    await form.handleSubmit()
+
+    expect(form.state.canSubmit).toBe(false)
+    expect(firstNameField.getMeta().isTouched).toBe(true)
+    expect(lastNameField.getMeta().isTouched).toBe(true)
+  })
+
+  it('should not trigger form onSubmit validators if field onSubmit validators errored', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: 'John',
+        lastName: 'Doe',
+      },
+      validators: {
+        onSubmit: () => 'form error',
+      },
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onSubmit: () => 'firstNameField error',
+      },
+    })
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+      validators: {
+        onSubmit: () => 'lastNameField error',
+      },
+    })
+
+    form.mount()
+    firstNameField.mount()
+    lastNameField.mount()
+
+    expect(form.state.canSubmit).toBe(true)
+    expect(form.getAllErrors().form.errors).toEqual([])
+    expect(firstNameField.getMeta().errors).toEqual([])
+    expect(lastNameField.getMeta().errors).toEqual([])
+
+    await form.handleSubmit()
+    expect(form.state.canSubmit).toBe(false)
+    expect(form.getAllErrors().form.errors).toEqual([])
+    expect(firstNameField.getMeta().errors).toEqual(['firstNameField error'])
+    expect(lastNameField.getMeta().errors).toEqual(['lastNameField error'])
+  })
+
+  it('should trigger form onSubmit validators if field onSubmit validators did not error', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: 'John',
+        lastName: 'Doe',
+      },
+      validators: {
+        onSubmit: () => 'form error',
+      },
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onSubmit: () => false,
+      },
+    })
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+      validators: {
+        onSubmit: () => false,
+      },
+    })
+
+    form.mount()
+    firstNameField.mount()
+    lastNameField.mount()
+
+    expect(form.state.canSubmit).toBe(true)
+    expect(form.getAllErrors().form.errors).toEqual([])
+    expect(firstNameField.getMeta().errors).toEqual([])
+    expect(lastNameField.getMeta().errors).toEqual([])
+
+    await form.handleSubmit()
+    expect(form.state.canSubmit).toBe(false)
+    expect(form.getAllErrors().form.errors).toEqual(['form error'])
+    expect(firstNameField.getMeta().errors).toEqual([])
+    expect(lastNameField.getMeta().errors).toEqual([])
+  })
 })
