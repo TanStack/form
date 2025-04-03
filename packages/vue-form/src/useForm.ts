@@ -1,6 +1,12 @@
-import { useStore } from '@tanstack/vue-store'
 import { FormApi } from '@tanstack/form-core'
-import { defineComponent, h, onMounted, onScopeDispose, watchEffect } from 'vue'
+import {
+  defineComponent,
+  h,
+  onMounted,
+  onScopeDispose,
+  shallowRef,
+  watchEffect,
+} from 'vue'
 import { Field, useField } from './useField'
 import { NOOP } from './utils'
 import type { FieldComponent, UseField } from './useField'
@@ -263,13 +269,24 @@ export function useForm<
   extendedApi.useField = (props) => {
     return useField(() => ({ ...props(), form: api })) as never
   }
-  extendedApi.useStore = (selector) => {
-    return useStore(api.store as never, selector as never) as never
+  extendedApi.useStore = (selector = (v) => v as never) => {
+    const state = shallowRef(selector(api!.store.state))
+    const cleanup = api!.store.subscribe(() => {
+      state.value = selector(api!.store.state)
+    })
+    onScopeDispose(cleanup)
+
+    return state as never
   }
   extendedApi.Subscribe = defineComponent(
-    (props, context) => {
-      const data = useStore(api.store as never, props.selector as never)
-      return () => context.slots.default!(data.value)
+    (props, { slots }) => {
+      const state = shallowRef(props.selector(api!.store.state))
+      const cleanup = api!.store.subscribe(() => {
+        state.value = props.selector(api!.store.state)
+      })
+      onScopeDispose(cleanup)
+
+      return () => slots.default!(state.value)
     },
     {
       name: 'Subscribe',
@@ -277,7 +294,7 @@ export function useForm<
       props: {
         selector: {
           type: Function,
-          default: undefined,
+          default: (v) => v,
         },
       },
     },
