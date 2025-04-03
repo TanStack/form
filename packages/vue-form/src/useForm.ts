@@ -229,15 +229,7 @@ export function useForm<
     TFormOnSubmitAsync,
     TFormOnServer,
     TSubmitMeta
-  >
-
-  watchEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!api) api = new FormApi(opts?.())
-    else api.update(opts?.())
-  })
-
-  const extendedApi: typeof api &
+  > &
     VueFormApi<
       TParentData,
       TFormOnMount,
@@ -249,9 +241,15 @@ export function useForm<
       TFormOnSubmitAsync,
       TFormOnServer,
       TSubmitMeta
-    > = api! as never
+    >
 
-  extendedApi.Field = defineComponent(
+  watchEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!api) api = new FormApi(opts?.()) as never
+    else api.update(opts?.())
+  })
+
+  api!.Field = defineComponent(
     (_, context) => {
       return () =>
         h(Field as never, { ...context.attrs, form: api }, context.slots)
@@ -262,10 +260,10 @@ export function useForm<
     },
   ) as never
 
-  extendedApi.useField = (props) => {
+  api!.useField = (props) => {
     return useField(() => ({ ...props(), form: api })) as never
   }
-  extendedApi.useStore = (selector = (v) => v as never) => {
+  api!.useStore = (selector = (v) => v as never) => {
     const state = shallowRef(selector(api!.store.state))
     const cleanup = api!.store.subscribe(() => {
       state.value = selector(api!.store.state)
@@ -274,7 +272,7 @@ export function useForm<
 
     return state as never
   }
-  extendedApi.Subscribe = defineComponent(
+  api!.Subscribe = defineComponent(
     (props, { slots }) => {
       const state = shallowRef(props.selector(api!.store.state))
       const cleanup = api!.store.subscribe(() => {
@@ -298,9 +296,9 @@ export function useForm<
 
   let cleanup = NOOP
   onMounted(() => {
-    cleanup = extendedApi.mount()
+    cleanup = api!.mount()
   })
   onScopeDispose(cleanup)
 
-  return extendedApi
+  return api!
 }
