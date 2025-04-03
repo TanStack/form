@@ -16,9 +16,9 @@ describe('useField', () => {
     }
 
     const Comp = defineComponent(() => {
-      const form = useForm({
+      const form = useForm(() => ({
         defaultValues: {} as Person,
-      })
+      }))
 
       return () => (
         <form.Field name="firstName" defaultValue="FirstName">
@@ -49,7 +49,7 @@ describe('useField', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm({ defaultValues: {} as Person })
+      const form = useForm(() => ({ defaultValues: {} as Person }))
 
       return () => (
         <form.Field
@@ -92,7 +92,7 @@ describe('useField', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm({ defaultValues: {} as Person })
+      const form = useForm(() => ({ defaultValues: {} as Person }))
 
       return () => (
         <form.Field
@@ -134,7 +134,7 @@ describe('useField', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm({ defaultValues: {} as Person })
+      const form = useForm(() => ({ defaultValues: {} as Person }))
 
       return () => (
         <form.Field
@@ -183,7 +183,7 @@ describe('useField', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm({ defaultValues: {} as Person })
+      const form = useForm(() => ({ defaultValues: {} as Person }))
 
       return () => (
         <form.Field
@@ -231,12 +231,12 @@ describe('useField', () => {
     type CompVal = { people: Array<string> }
 
     const Comp = defineComponent(() => {
-      const form = useForm({
+      const form = useForm(() => ({
         defaultValues: {
           people: [],
         } as CompVal,
         onSubmit: ({ value }) => fn(value),
-      })
+      }))
 
       return () => (
         <div>
@@ -318,12 +318,12 @@ describe('useField', () => {
     type CompVal = { people: Array<{ age: number; name: string }> }
 
     const Comp = defineComponent(() => {
-      const form = useForm({
+      const form = useForm(() => ({
         defaultValues: {
           people: [],
         } as CompVal,
         onSubmit: ({ value }) => fn(value),
-      })
+      }))
 
       return () => (
         <div>
