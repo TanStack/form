@@ -252,13 +252,9 @@ export function useForm<
     > = api! as never
 
   extendedApi.Field = defineComponent(
-    (props, context) => {
+    (_, context) => {
       return () =>
-        h(
-          Field as never,
-          { ...props, ...context.attrs, form: api },
-          context.slots,
-        )
+        h(Field as never, { ...context.attrs, form: api }, context.slots)
     },
     {
       name: 'APIField',
