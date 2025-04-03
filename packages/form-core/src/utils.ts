@@ -1,4 +1,8 @@
-import type { GlobalFormValidationError, ValidationCause } from './types'
+import type {
+  GlobalFormValidationError,
+  ValidationCause,
+  ValidationError,
+} from './types'
 import type { FormValidators } from './FormApi'
 import type { AnyFieldMeta, FieldValidators } from './FieldApi'
 
@@ -375,4 +379,31 @@ export function shallow<T>(objA: T, objB: T) {
     }
   }
   return true
+}
+
+/**
+ * Determines the logic for determining the error value to set on the field meta within the form sync validation.
+ * @private
+ */
+export const determineErrorValue = ({
+  newFormValidatorError,
+  isPreviousErrorFromFormValidator,
+  previousErrorValue,
+}: {
+  newFormValidatorError: ValidationError
+  isPreviousErrorFromFormValidator: boolean
+  previousErrorValue: ValidationError
+}) => {
+  // All falsy values are not considered errors
+  if (newFormValidatorError) {
+    return { newErrorValue: newFormValidatorError, newSource: 'form' }
+  }
+
+  // Clears form level error since it's now stale
+  if (isPreviousErrorFromFormValidator) {
+    return { newErrorValue: undefined, newSource: undefined }
+  }
+
+  // Do not clear field level validators since they're handled by the field validator
+  return { newErrorValue: previousErrorValue, newSource: 'field' }
 }

@@ -24,6 +24,7 @@ import type {
   ValidationCause,
   ValidationError,
   ValidationErrorMap,
+  ValidationErrorMapSource,
 } from './types'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
 
@@ -559,6 +560,10 @@ export type FieldMetaBase<
     UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>
   >
   /**
+   * @private allows tracking the source of the errors in the error map
+   */
+  errorSourceMap: ValidationErrorMapSource
+  /**
    * A flag indicating whether the field is currently being validated.
    */
   isValidating: boolean
@@ -1092,6 +1097,11 @@ export class FieldApi<
               ...prev,
               // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
               errorMap: { ...prev?.errorMap, onMount: error },
+              errorSourceMap: {
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                ...prev?.errorSourceMap,
+                onMount: 'field',
+              },
             }) as never,
         )
       }
@@ -1387,6 +1397,14 @@ export class FieldApi<
                 // Prefer the error message from the field validators if they exist
                 error ? error : errorFromForm[errorMapKey],
             },
+            errorSourceMap: {
+              ...prev.errorSourceMap,
+              [getErrorMapKey(validateObj.cause)]: error
+                ? 'field'
+                : errorFromForm[errorMapKey]
+                  ? 'form'
+                  : undefined,
+            },
           }))
         }
         if (error || errorFromForm[errorMapKey]) {
@@ -1418,6 +1436,10 @@ export class FieldApi<
         ...prev,
         errorMap: {
           ...prev.errorMap,
+          [submitErrKey]: undefined,
+        },
+        errorSourceMap: {
+          ...prev.errorSourceMap,
           [submitErrKey]: undefined,
         },
       }))
@@ -1541,6 +1563,14 @@ export class FieldApi<
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 ...prev?.errorMap,
                 [errorMapKey]: fieldError,
+              },
+              errorSourceMap: {
+                ...prev.errorSourceMap,
+                [errorMapKey]: error
+                  ? 'field'
+                  : fieldErrorFromForm
+                    ? 'form'
+                    : undefined,
               },
             }
           })
