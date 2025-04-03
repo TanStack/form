@@ -564,7 +564,6 @@ export function useField<
   let cleanup = NOOP
   const state = shallowRef(api!.store.state)
   const unsubscribeStore = api!.store.subscribe(() => {
-    if (shallow(state.value, api!.store.state)) return
     triggerRef(state)
   })
 
