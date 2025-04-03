@@ -234,7 +234,7 @@ export function useForm<
   watchEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!api) api = new FormApi(opts?.())
-    api.update(opts?.())
+    else api.update(opts?.())
   })
 
   const extendedApi: typeof api &
