@@ -8,7 +8,6 @@ import {
   watchEffect,
 } from 'vue'
 import { Field, useField } from './useField'
-import { NOOP } from './utils'
 import type { FieldComponent, UseField } from './useField'
 import type {
   DefineSetupFnComponent,
@@ -294,7 +293,7 @@ export function useForm<
     },
   ) as never
 
-  let cleanup = NOOP
+  let cleanup = () => {}
   onMounted(() => {
     cleanup = api!.mount()
   })

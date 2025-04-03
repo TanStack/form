@@ -3,12 +3,11 @@ import {
   defineComponent,
   onBeforeUnmount,
   onMounted,
+  onScopeDispose,
   shallowRef,
   triggerRef,
   watchEffect,
 } from 'vue'
-import { shallow } from '@tanstack/vue-store'
-import { NOOP } from './utils'
 import type {
   DeepKeys,
   DeepValue,
@@ -561,17 +560,17 @@ export function useField<
     }
   })
 
-  let cleanup = NOOP
   const state = shallowRef(api!.store.state)
   const unsubscribeStore = api!.store.subscribe(() => {
     triggerRef(state)
   })
 
+  let cleanup = () => {}
   onMounted(() => {
     cleanup = api.mount()
   })
 
-  onBeforeUnmount(() => {
+  onScopeDispose(() => {
     cleanup()
     unsubscribeStore()
   })
