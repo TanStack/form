@@ -966,7 +966,10 @@ export class FieldApi<
   }
   timeoutIds: Record<ValidationCause, ReturnType<typeof setTimeout> | null>
 
-  private debounceTimeouts: Record<'onChange' | 'onBlur', ReturnType<typeof setTimeout> | null> = {
+  private debounceTimeouts: Record<
+    'onChange' | 'onBlur',
+    ReturnType<typeof setTimeout> | null
+  > = {
     onChange: null,
     onBlur: null,
   }
