@@ -2904,8 +2904,5 @@ it('should allow submission, when the form is invalid, with canSubmitWhenInvalid
     },
   })
   form.mount()
-  expect(form.state.canSubmit).toBe(false)
-
-  form.update({ canSubmitWhenInvalid: true })
   expect(form.state.canSubmit).toBe(true)
 })

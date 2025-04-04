@@ -1096,11 +1096,10 @@ export class FormApi<
     // Options need to be updated first so that when the store is updated, the state is correct for the derived state
     this.options = options
 
-    const shouldUpdateReeval =
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      !!options.transform?.deps?.some(
-        (val, i) => val !== this.prevTransformArray[i],
-      ) || oldOptions.canSubmitWhenInvalid !== options.canSubmitWhenInvalid
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    const shouldUpdateReeval = !!options.transform?.deps?.some(
+      (val, i) => val !== this.prevTransformArray[i],
+    )
 
     const shouldUpdateValues =
       options.defaultValues &&
