@@ -1595,6 +1595,21 @@ export class FormApi<
       isSubmitSuccessful: false, // Reset isSubmitSuccessful at the start of submission
     }))
 
+    batch(() => {
+      void (Object.values(this.fieldInfo) as FieldInfo<any>[]).forEach(
+        (field) => {
+          if (!field.instance) return
+          // If any fields are not touched
+          if (!field.instance.state.meta.isTouched) {
+            // Mark them as touched
+            field.instance.setMeta((prev) => ({ ...prev, isTouched: true }))
+          }
+        },
+      )
+    })
+
+    if (!this.state.canSubmit) return
+
     this.baseStore.setState((d) => ({ ...d, isSubmitting: true }))
 
     const done = () => {
