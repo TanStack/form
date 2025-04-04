@@ -23,13 +23,13 @@ To do this, you can add a `onChangeListenTo` property to the `confirm_password` 
 <script setup lang="ts">
 import { useForm } from '@tanstack/vue-form'
 
-const form = useForm({
+const form = useForm(() => ({
   defaultValues: {
     password: '',
     confirm_password: '',
   },
   // ...
-})
+}))
 </script>
 
 <template>

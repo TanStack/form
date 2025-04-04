@@ -24,13 +24,13 @@ Events that can be "listened" to are:
 <script setup>
 import { useForm } from '@tanstack/vue-form'
 
-const form = useForm({
+const form = useForm(() => ({
   defaultValues: {
     country: '',
     province: '',
   },
   // ...
-})
+}))
 </script>
 
 <template>

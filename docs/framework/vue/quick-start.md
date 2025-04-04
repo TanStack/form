@@ -10,7 +10,7 @@ The bare minimum to get started with TanStack Form is to create a form and add a
 <script setup>
 import { useForm } from '@tanstack/vue-form'
 
-const form = useForm({
+const form = useForm(() => ({
   defaultValues: {
     fullName: '',
   },
@@ -18,7 +18,7 @@ const form = useForm({
     // Do something with form data
     console.log(value)
   },
-})
+}))
 </script>
 
 <template>

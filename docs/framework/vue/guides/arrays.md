@@ -14,12 +14,12 @@ with [`Index` from `solid-js`](https://www.solidjs.com/tutorial/flow_index):
 <script setup lang="ts">
 import { useForm } from '@tanstack/vue-form'
 
-const form = useForm({
+const form = useForm(() => ({
   defaultValues: {
     people: [] as Array<{ age: number; name: string }>,
   },
   onSubmit: ({ value }) => alert(JSON.stringify(value)),
-})
+}))
 </script>
 
 <template>
@@ -82,12 +82,12 @@ Finally, you can use a subfield like so:
 <script setup lang="ts">
 import { useForm } from '@tanstack/vue-form'
 
-const form = useForm({
+const form = useForm(() => ({
   defaultValues: {
     people: [] as Array<{ age: number; name: string }>,
   },
   onSubmit: ({ value }) => alert(JSON.stringify(value)),
-})
+}))
 </script>
 
 <template>
