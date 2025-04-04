@@ -67,7 +67,7 @@ optional canSubmitWhenInvalid: boolean;
 
 Defined in: [packages/form-core/src/FormApi.ts:281](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L281)
 
-If true, allows to submit when form is invalid. Defaults to undefined.
+If true, allows the form to be submitted in an invalid state i.e. canSubmit will remain true regardless of validation errors. Defaults to undefined.
 
 ***
 
