@@ -276,6 +276,10 @@ export interface FormOptions<
    */
   asyncDebounceMs?: number
   /**
+   * If true, allows the form to be submitted in an invalid state i.e. canSubmit will remain true regardless of validation errors. Defaults to undefined.
+   */
+  canSubmitWhenInvalid?: boolean
+  /**
    * A list of validators to pass to the form
    */
   validators?: FormValidators<
@@ -943,11 +947,13 @@ export class FormApi<
 
         const isFormValid = errors.length === 0
         const isValid = isFieldsValid && isFormValid
+        const submitInvalid = this.options.canSubmitWhenInvalid ?? false
         const canSubmit =
           (currBaseStore.submissionAttempts === 0 &&
             !isTouched &&
             !hasOnMountError) ||
-          (!isValidating && !currBaseStore.isSubmitting && isValid)
+          (!isValidating && !currBaseStore.isSubmitting && isValid) ||
+          submitInvalid
 
         let errorMap = currBaseStore.errorMap
         if (shouldInvalidateOnMount) {
@@ -1595,7 +1601,6 @@ export class FormApi<
       isSubmitSuccessful: false, // Reset isSubmitSuccessful at the start of submission
     }))
 
-    // Don't let invalid forms submit
     if (!this.state.canSubmit) return
 
     this.baseStore.setState((d) => ({ ...d, isSubmitting: true }))
