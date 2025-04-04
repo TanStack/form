@@ -2886,3 +2886,25 @@ it('should reset the fields value and meta to default state', async () => {
   expect(form.state.values.name).toStrictEqual('tony')
   expect(field.state.meta.isTouched).toBe(false)
 })
+
+it('should allow submission, when the form is invalid, with canSubmitWhenInvalid', async () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+    },
+    canSubmitWhenInvalid: true,
+    validators: {
+      onMount: () => {
+        return {
+          form: 'something went wrong',
+          fields: {
+            firstName: 'first name is required',
+          },
+        }
+      },
+    },
+  })
+  form.mount()
+  expect(form.state.isValid).toBe(false)
+  expect(form.state.canSubmit).toBe(true)
+})
