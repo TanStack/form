@@ -349,7 +349,9 @@ export interface FieldListeners<
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   onChange?: FieldListenerFn<TParentData, TName, TData>
+  onChangeDebounceMs?: number // Added debounce option for onChange
   onBlur?: FieldListenerFn<TParentData, TName, TData>
+  onBlurAsyncDebounceMs?: number // Added debounce option for onBlur
   onMount?: FieldListenerFn<TParentData, TName, TData>
   onSubmit?: FieldListenerFn<TParentData, TName, TData>
 }
@@ -963,6 +965,11 @@ export class FieldApi<
     return this.store.state
   }
   timeoutIds: Record<ValidationCause, ReturnType<typeof setTimeout> | null>
+
+  private debounceTimeouts: Record<'onChange' | 'onBlur', ReturnType<typeof setTimeout> | null> = {
+    onChange: null,
+    onBlur: null,
+  }
 
   /**
    * Initializes a new `FieldApi` instance.
@@ -1613,30 +1620,64 @@ export class FieldApi<
   }
 
   /**
-   * Handles the change event.
+   * Handles the change event with debounce support.
    */
   handleChange = (updater: Updater<TData>) => {
-    this.setValue(updater)
+    const debounceMs = this.options.listeners?.onChangeDebounceMs || 0
+
+    if (this.debounceTimeouts.onChange) {
+      clearTimeout(this.debounceTimeouts.onChange)
+    }
+
+    if (debounceMs > 0) {
+      this.debounceTimeouts.onChange = setTimeout(() => {
+        this.setValue(updater)
+        this.options.listeners?.onChange?.({
+          value: this.state.value,
+          fieldApi: this,
+        })
+      }, debounceMs)
+    } else {
+      this.setValue(updater)
+      this.options.listeners?.onChange?.({
+        value: this.state.value,
+        fieldApi: this,
+      })
+    }
   }
 
   /**
-   * Handles the blur event.
+   * Handles the blur event with debounce support.
    */
   handleBlur = () => {
-    const prevTouched = this.state.meta.isTouched
-    if (!prevTouched) {
-      this.setMeta((prev) => ({ ...prev, isTouched: true }))
-      this.validate('change')
-    }
-    if (!this.state.meta.isBlurred) {
-      this.setMeta((prev) => ({ ...prev, isBlurred: true }))
-    }
-    this.validate('blur')
+    const debounceMs = this.options.listeners?.onBlurAsyncDebounceMs || 0
 
-    this.options.listeners?.onBlur?.({
-      value: this.state.value,
-      fieldApi: this,
-    })
+    if (this.debounceTimeouts.onBlur) {
+      clearTimeout(this.debounceTimeouts.onBlur)
+    }
+
+    const executeBlurLogic = () => {
+      const prevTouched = this.state.meta.isTouched
+      if (!prevTouched) {
+        this.setMeta((prev) => ({ ...prev, isTouched: true }))
+        this.validate('change')
+      }
+      if (!this.state.meta.isBlurred) {
+        this.setMeta((prev) => ({ ...prev, isBlurred: true }))
+      }
+      this.validate('blur')
+
+      this.options.listeners?.onBlur?.({
+        value: this.state.value,
+        fieldApi: this,
+      })
+    }
+
+    if (debounceMs > 0) {
+      this.debounceTimeouts.onBlur = setTimeout(executeBlurLogic, debounceMs)
+    } else {
+      executeBlurLogic()
+    }
   }
 
   /**
