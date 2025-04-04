@@ -31,21 +31,16 @@ const { data, isLoading } = useQuery({
   },
 })
 
-const firstName = computed(() => data.value?.firstName || '')
-const lastName = computed(() => data.value?.lastName || '')
-
-const defaultValues = reactive({
-  firstName,
-  lastName,
-})
-
-const form = useForm({
-  defaultValues,
+const form = useForm(() => ({
+  defaultValues: {
+    firstName: data.value?.firstName || '',
+    lastName: data.value?.lastName || '',
+  },
   onSubmit: async ({ value }) => {
     // Do something with form data
     console.log(value)
   },
-})
+}))
 </script>
 
 <template>

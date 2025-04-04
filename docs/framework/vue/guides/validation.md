@@ -191,7 +191,7 @@ Example:
 <script setup lang="ts">
 import { useForm } from '@tanstack/vue-form'
 
-const form = useForm({
+const form = useForm(() => ({
   defaultValues: {
     age: 0,
   },
@@ -207,7 +207,7 @@ const form = useForm({
       return undefined
     },
   },
-})
+}))
 
 // Subscribe to the form's error map so that updates to it will render
 // alternately, you can use `form.Subscribe`
@@ -392,9 +392,9 @@ To use schemas from these libraries you can pass them to the `validators` props 
 import { z } from 'zod'
 // ...
 
-const form = useForm({
+const form = useForm(() => ({
   // ...
-})
+}))
 </script>
 
 <template>

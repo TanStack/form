@@ -26,19 +26,19 @@ const formOpts = formOptions({
 A Form Instance is an object that represents an individual form and provides methods and properties for working with the form. You create a form instance using the `useForm` function. The function accepts an object with an `onSubmit` function, which is called when the form is submitted.
 
 ```js
-const form = useForm({
+const form = useForm(() => ({
   ...formOpts,
   onSubmit: async ({ value }) => {
     // Do something with form data
     console.log(value)
   },
-})
+}))
 ```
 
 You may also create a form instance without using `formOptions` by using the standalone `useForm` API:
 
 ```ts
-const form = useForm({
+const form = useForm(() => ({
   onSubmit: async ({ value }) => {
     // Do something with form data
     console.log(value)
@@ -48,7 +48,7 @@ const form = useForm({
     lastName: '',
     hobbies: [],
   } as Person,
-})
+}))
 ```
 
 ## Field
@@ -166,9 +166,9 @@ Supported libraries include:
 import { useForm } from '@tanstack/vue-form'
 import { z } from 'zod'
 
-const form = useForm({
+const form = useForm(() => ({
   // ...
-})
+}))
 
 const onChangeFirstName = z.string().refine(
   async (value) => {
