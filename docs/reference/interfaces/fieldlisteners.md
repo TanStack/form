@@ -29,10 +29,10 @@ Defined in: [packages/form-core/src/FieldApi.ts:353](https://github.com/TanStack
 
 ***
 
-### onBlurAsyncDebounceMs?
+### onBlurDebounceMs?
 
 ```ts
-optional onBlurAsyncDebounceMs: number;
+optional onBlurDebounceMs: number;
 ```
 
 Defined in: [packages/form-core/src/FieldApi.ts:354](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L354)
