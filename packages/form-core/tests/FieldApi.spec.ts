@@ -1941,7 +1941,7 @@ describe('field api', () => {
       name: 'name',
       listeners: {
         onBlur: onBlurMock,
-        onBlurAsyncDebounceMs: 300,
+        onBlurDebounceMs: 300,
       },
     })
 

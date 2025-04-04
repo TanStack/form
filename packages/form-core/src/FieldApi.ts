@@ -351,7 +351,7 @@ export interface FieldListeners<
   onChange?: FieldListenerFn<TParentData, TName, TData>
   onChangeDebounceMs?: number
   onBlur?: FieldListenerFn<TParentData, TName, TData>
-  onBlurAsyncDebounceMs?: number
+  onBlurDebounceMs?: number
   onMount?: FieldListenerFn<TParentData, TName, TData>
   onSubmit?: FieldListenerFn<TParentData, TName, TData>
 }
@@ -1653,7 +1653,7 @@ export class FieldApi<
    * Handles the blur event with debounce support.
    */
   handleBlur = () => {
-    const debounceMs = this.options.listeners?.onBlurAsyncDebounceMs || 0
+    const debounceMs = this.options.listeners?.onBlurDebounceMs || 0
 
     if (this.debounceTimeouts.onBlur) {
       clearTimeout(this.debounceTimeouts.onBlur)
