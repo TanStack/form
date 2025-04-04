@@ -951,10 +951,9 @@ export class FormApi<
         const canSubmit =
           (currBaseStore.submissionAttempts === 0 &&
             !isTouched &&
-            (!hasOnMountError || submitInvalid)) ||
-          (!isValidating &&
-            !currBaseStore.isSubmitting &&
-            (isValid || submitInvalid))
+            !hasOnMountError) ||
+          (!isValidating && !currBaseStore.isSubmitting && isValid) ||
+          submitInvalid
 
         let errorMap = currBaseStore.errorMap
         if (shouldInvalidateOnMount) {
