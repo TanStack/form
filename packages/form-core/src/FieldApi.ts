@@ -1412,7 +1412,8 @@ export class FieldApi<
     if (
       this.state.meta.errorMap[submitErrKey] &&
       cause !== 'submit' &&
-      !hasErrored
+      !hasErrored &&
+      this.state.meta.isDirty
     ) {
       this.setMeta((prev) => ({
         ...prev,
