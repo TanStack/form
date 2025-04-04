@@ -349,9 +349,9 @@ export interface FieldListeners<
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   onChange?: FieldListenerFn<TParentData, TName, TData>
-  onChangeDebounceMs?: number // Added debounce option for onChange
+  onChangeDebounceMs?: number
   onBlur?: FieldListenerFn<TParentData, TName, TData>
-  onBlurAsyncDebounceMs?: number // Added debounce option for onBlur
+  onBlurAsyncDebounceMs?: number
   onMount?: FieldListenerFn<TParentData, TName, TData>
   onSubmit?: FieldListenerFn<TParentData, TName, TData>
 }
