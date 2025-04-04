@@ -13,6 +13,7 @@ import type {
   DefineSetupFnComponent,
   EmitsOptions,
   EmitsToProps,
+  FunctionalComponent,
   PublicProps,
   Ref,
   SlotsType,
@@ -248,16 +249,10 @@ export function useForm<
     else api.update(opts?.())
   })
 
-  api!.Field = defineComponent(
-    (_, context) => {
-      return () =>
-        h(Field as never, { ...context.attrs, form: api }, context.slots)
-    },
-    {
-      name: 'APIField',
-      inheritAttrs: false,
-    },
-  ) as never
+  const APIField: FunctionalComponent = (_, { attrs, slots }) =>
+    h(Field as never, { ...attrs, form: api }, slots)
+
+  api!.Field = APIField as never
 
   api!.useField = (props) => {
     return useField(() => ({ ...props(), form: api })) as never
