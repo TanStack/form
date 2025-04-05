@@ -61,6 +61,7 @@ describe('field api', () => {
       isDirty: false,
       errors: [],
       errorMap: {},
+      errorSourceMap: {},
     })
   })
 
@@ -90,6 +91,7 @@ describe('field api', () => {
       isPristine: false,
       errors: [],
       errorMap: {},
+      errorSourceMap: {},
     })
   })
 
@@ -362,7 +364,7 @@ describe('field api', () => {
     ])
   })
 
-  it('should remove a subfield from an array field correctly', async () => {
+  it('should remove a subfield from an errorMap: {}array field correctly', async () => {
     const form = new FormApi({
       defaultValues: {
         people: [] as Array<{ name: string }>,
@@ -1889,5 +1891,31 @@ describe('field api', () => {
     expect(field.getMeta().errorMap).toStrictEqual({})
     expect(field.getMeta().errors).toStrictEqual([])
     expect(form.state.canSubmit).toBe(true)
+  })
+
+  it('should update the errorSourceMap with field source when field async field error is added', async () => {
+    vi.useFakeTimers()
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChangeAsync: async () => {
+          return 'Error'
+        },
+      },
+    })
+    field.mount()
+
+    field.setValue('test')
+    await vi.runAllTimersAsync()
+
+    expect(field.getMeta().errorSourceMap.onChange).toEqual('field')
   })
 })
