@@ -993,11 +993,16 @@ export class FieldApi<
     this.form = opts.form as never
     this.name = opts.name as never
     this.timeoutIds = {} as Record<ValidationCause, never>
+    // Only really relevant for arrays, the value could be gone once Derived's update fn is triggered
+    const potentialPreviousValue = this.form.getFieldValue(this.name)
 
     this.store = new Derived({
       deps: [this.form.store],
       fn: () => {
-        const value = this.form.getFieldValue(this.name)
+        let value = this.form.getFieldValue(this.name)
+        if (value === undefined && potentialPreviousValue !== undefined) {
+          value = potentialPreviousValue
+        }
         const meta = this.form.getFieldMeta(this.name) ?? {
           ...defaultFieldMeta,
           ...opts.defaultMeta,
