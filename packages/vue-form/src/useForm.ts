@@ -261,9 +261,8 @@ export function useForm<
     const state = shallowRef(selector(api!.store.state))
     const cleanup = api!.store.subscribe(() => {
       const newValue = selector(api!.store.state)
-      if (shallow(newValue, state.value)) {
-        state.value = newValue
-      }
+      if (shallow(newValue, state.value)) return
+      state.value = newValue
     })
     onScopeDispose(cleanup)
 
@@ -274,9 +273,8 @@ export function useForm<
       const state = shallowRef(props.selector(api!.store.state))
       const cleanup = api!.store.subscribe(() => {
         const newValue = props.selector(api!.store.state)
-        if (shallow(newValue, state.value)) {
-          state.value = newValue
-        }
+        if (shallow(newValue, state.value)) return
+        state.value = newValue
       })
       onScopeDispose(cleanup)
 
