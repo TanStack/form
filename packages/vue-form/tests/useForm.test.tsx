@@ -24,7 +24,7 @@ describe('useForm', () => {
           {({ field, value }: { field: AnyFieldApi; value: any }) => (
             <input
               data-testid={'fieldinput'}
-              value={value}
+              value={value()}
               onBlur={field.handleBlur}
               onInput={(e) =>
                 field.handleChange((e.target as HTMLInputElement).value)
@@ -53,7 +53,7 @@ describe('useForm', () => {
 
       return () => (
         <form.Field name="firstName">
-          {({ value }: { field: AnyFieldApi; value: any }) => <p>{value}</p>}
+          {({ value }: { field: AnyFieldApi; value: any }) => <p>{value()}</p>}
         </form.Field>
       )
     })
@@ -82,7 +82,7 @@ describe('useForm', () => {
             {({ field, value }: { field: AnyFieldApi; value: any }) => {
               return (
                 <input
-                  value={value}
+                  value={value()}
                   onBlur={field.handleBlur}
                   onInput={(e) =>
                     field.handleChange((e.target as HTMLInputElement).value)
@@ -162,7 +162,7 @@ describe('useForm', () => {
               <input
                 data-testid="fieldinput"
                 name={field.name}
-                value={value}
+                value={value()}
                 onBlur={field.handleBlur}
                 onInput={(e) =>
                   field.handleChange((e.target as HTMLInputElement).value)
@@ -206,7 +206,7 @@ describe('useForm', () => {
                 <input
                   data-testid="fieldinput"
                   name={field.name}
-                  value={value}
+                  value={value()}
                   onBlur={field.handleBlur}
                   onInput={(e) =>
                     field.setValue((e.target as HTMLInputElement).value, {
@@ -250,7 +250,7 @@ describe('useForm', () => {
                 <input
                   data-testid="fieldinput"
                   name={field.name}
-                  value={value}
+                  value={value()}
                   onBlur={field.handleBlur}
                   onInput={(e) =>
                     field.handleChange((e.target as HTMLInputElement).value)
@@ -302,7 +302,7 @@ describe('useForm', () => {
                 <input
                   data-testid="fieldinput"
                   name={field.name}
-                  value={value}
+                  value={value()}
                   onBlur={field.handleBlur}
                   onInput={(e) =>
                     field.handleChange((e.target as HTMLInputElement).value)
@@ -350,7 +350,7 @@ describe('useForm', () => {
                 <input
                   data-testid="fieldinput"
                   name={field.name}
-                  value={value}
+                  value={value()}
                   onBlur={field.handleBlur}
                   onInput={(e) =>
                     field.handleChange((e.target as HTMLInputElement).value)
@@ -400,7 +400,7 @@ describe('useForm', () => {
                 <input
                   data-testid="fieldinput"
                   name={field.name}
-                  value={value}
+                  value={value()}
                   onBlur={field.handleBlur}
                   onInput={(e) =>
                     field.handleChange((e.target as HTMLInputElement).value)
@@ -454,7 +454,7 @@ describe('useForm', () => {
                 <input
                   data-testid="fieldinput"
                   name={field.name}
-                  value={value}
+                  value={value()}
                   onBlur={field.handleBlur}
                   onInput={(e) =>
                     field.handleChange((e.target as HTMLInputElement).value)

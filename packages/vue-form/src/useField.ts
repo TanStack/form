@@ -20,7 +20,6 @@ import type {
   EmitsOptions,
   EmitsToProps,
   PublicProps,
-  Ref,
   SetupContext,
   SlotsType,
   VNode,
@@ -187,7 +186,7 @@ export type FieldComponent<
           TFormOnServer,
           TParentSubmitMeta
         >
-        state: FieldApi<
+        value: () => FieldApi<
           TParentData,
           TName,
           TData,
@@ -207,7 +206,28 @@ export type FieldComponent<
           TFormOnSubmitAsync,
           TFormOnServer,
           TParentSubmitMeta
-        >['state']
+        >['state']['value']
+        meta: () => FieldApi<
+          TParentData,
+          TName,
+          TData,
+          TOnMount,
+          TOnChange,
+          TOnChangeAsync,
+          TOnBlur,
+          TOnBlurAsync,
+          TOnSubmit,
+          TOnSubmitAsync,
+          TFormOnMount,
+          TFormOnChange,
+          TFormOnChangeAsync,
+          TFormOnBlur,
+          TFormOnBlurAsync,
+          TFormOnSubmit,
+          TFormOnSubmitAsync,
+          TFormOnServer,
+          TParentSubmitMeta
+        >['state']['meta']
       }) => VNode[]
     }>
   >
@@ -313,54 +333,48 @@ export type UseField<
       TFormOnServer,
       TParentSubmitMeta
     >
-  value: Readonly<
-    Ref<
-      FieldApi<
-        TParentData,
-        TName,
-        TData,
-        TOnMount,
-        TOnChange,
-        TOnChangeAsync,
-        TOnBlur,
-        TOnBlurAsync,
-        TOnSubmit,
-        TOnSubmitAsync,
-        TFormOnMount,
-        TFormOnChange,
-        TFormOnChangeAsync,
-        TFormOnBlur,
-        TFormOnBlurAsync,
-        TFormOnSubmit,
-        TFormOnSubmitAsync,
-        TFormOnServer,
-        TParentSubmitMeta
-      >['state']['value']
-    >
-  >
-  meta: Readonly<
-    FieldApi<
-      TParentData,
-      TName,
-      TData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TFormOnMount,
-      TFormOnChange,
-      TFormOnChangeAsync,
-      TFormOnBlur,
-      TFormOnBlurAsync,
-      TFormOnSubmit,
-      TFormOnSubmitAsync,
-      TFormOnServer,
-      TParentSubmitMeta
-    >['state']['meta']
-  >
+  value: () => FieldApi<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TParentSubmitMeta
+  >['state']['value']
+  meta: () => FieldApi<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TParentSubmitMeta
+  >['state']['meta']
 }
 
 export const Field = defineComponent(
@@ -421,7 +435,7 @@ export const Field = defineComponent(
     return () =>
       context.slots.default!({
         field: api,
-        value: value.value,
+        value,
         meta,
       })
   },
@@ -513,54 +527,48 @@ export function useField<
       TFormOnServer,
       TParentSubmitMeta
     >
-  value: Readonly<
-    Ref<
-      FieldApi<
-        TParentData,
-        TName,
-        TData,
-        TOnMount,
-        TOnChange,
-        TOnChangeAsync,
-        TOnBlur,
-        TOnBlurAsync,
-        TOnSubmit,
-        TOnSubmitAsync,
-        TFormOnMount,
-        TFormOnChange,
-        TFormOnChangeAsync,
-        TFormOnBlur,
-        TFormOnBlurAsync,
-        TFormOnSubmit,
-        TFormOnSubmitAsync,
-        TFormOnServer,
-        TParentSubmitMeta
-      >['state']['value']
-    >
-  >
-  meta: Readonly<
-    FieldApi<
-      TParentData,
-      TName,
-      TData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TFormOnMount,
-      TFormOnChange,
-      TFormOnChangeAsync,
-      TFormOnBlur,
-      TFormOnBlurAsync,
-      TFormOnSubmit,
-      TFormOnSubmitAsync,
-      TFormOnServer,
-      TParentSubmitMeta
-    >['state']['meta']
-  >
+  value: () => FieldApi<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TParentSubmitMeta
+  >['state']['value']
+  meta: () => FieldApi<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnServer,
+    TParentSubmitMeta
+  >['state']['meta']
 } {
   let api: FieldApi<
     TParentData,
@@ -629,7 +637,7 @@ export function useField<
 
   return {
     api: api! as never,
-    value,
-    meta,
+    value: () => value.value as never,
+    meta: () => meta as never,
   }
 }
