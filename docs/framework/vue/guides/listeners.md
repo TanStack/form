@@ -44,18 +44,18 @@ const form = useForm(() => ({
         },
       }"
     >
-      <template v-slot="{ field }">
+      <template v-slot="{ field, value }">
         <input
-          :value="field.state.value"
+          :value="value"
           @input="(e) => field.handleChange(e.target.value)"
         />
       </template>
     </form.Field>
 
     <form.Field name="province">
-      <template v-slot="{ field }">
+      <template v-slot="{ field, value }">
         <input
-          :value="field.state.value"
+          :value="value"
           @input="(e) => field.handleChange(e.target.value)"
         />
       </template>

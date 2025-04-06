@@ -24,14 +24,14 @@ const form = useForm(() => ({
 
 <template>
   <form.Field name="people">
-    <template v-slot="{ field, state }">
+    <template v-slot="{ field, value }">
       <div>
         <form.Field
-          v-for="(_, i) of field.state.value"
+          v-for="(_, i) of value"
           :key="i"
           :name="`people[${i}].name`"
         >
-          <template v-slot="{ field: subField, state }">
+          <template v-slot="{ field: subField, meta }">
             <!-- ... -->
           </template>
         </form.Field>
@@ -57,12 +57,12 @@ Finally, you can use a subfield like so:
   :key="i"
   :name="`people[${i}].name`"
 >
-  <template v-slot="{ field: subField, state }">
+  <template v-slot="{ field: subField, value }">
     <div>
       <label>
         <div>Name for person {{ i }}</div>
         <input
-          :value="subField.state.value"
+          :value="value"
           @input="
           (e) =>
           subField.handleChange(
@@ -102,19 +102,19 @@ const form = useForm(() => ({
   >
     <div>
       <form.Field name="people">
-        <template v-slot="{ field, state }">
+        <template v-slot="field">
           <div>
             <form.Field
-              v-for="(_, i) of field.state.value"
+              v-for="(_, i) of field.value"
               :key="i"
               :name="`people[${i}].name`"
             >
-              <template v-slot="{ field: subField, state }">
+              <template v-slot="{ field: subField, value }">
                 <div>
                   <label>
                     <div>Name for person {{ i }}</div>
                     <input
-                      :value="subField.state.value"
+                      :value="value"
                       @input="
                         (e) =>
                           subField.handleChange(

@@ -26,10 +26,10 @@ const form = useForm(() => ({
     <form @submit.prevent.stop="form.handleSubmit">
       <div>
         <form.Field name="fullName">
-          <template v-slot="{ field }">
+          <template v-slot="{ field, value }">
             <input
               :name="field.name"
-              :value="field.state.value"
+              :value="value"
               @blur="field.handleBlur"
               @input="(e) => field.handleChange((e.target as HTMLInputElement).value)"
             />

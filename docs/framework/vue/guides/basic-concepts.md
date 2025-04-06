@@ -61,10 +61,10 @@ Example:
 <template>
   <!-- ... -->
   <form.Field name="fullName">
-    <template v-slot="{ field }">
+    <template v-slot="{ field, value }">
       <input
         :name="field.name"
-        :value="field.state.value"
+        :value="value"
         @blur="field.handleBlur"
         @input="(e) => field.handleChange(e.target.value)"
       />
@@ -102,10 +102,10 @@ The Field API is an object provided by a scoped slot using the `v-slot` directiv
 Example:
 
 ```vue
-<template v-slot="{ field }">
+<template v-slot="{ field, value }">
   <input
     :name="field.name"
-    :value="field.state.value"
+    :value="value"
     @blur="field.handleBlur"
     @input="(e) => field.handleChange(e.target.value)"
   />
@@ -136,13 +136,13 @@ Example:
         },
     }"
     >
-        <template v-slot="{ field }">
+        <template v-slot="{ field, value, meta }">
             <input
-                :value="field.state.value"
+                :value="value"
                 @input="(e) => field.handleChange(e.target.value)"
                 @blur="field.handleBlur"
             />
-            <FieldInfo :field="field" />
+            <FieldInfo :meta="meta" />
         </template>
     </form.Field>
     <!-- ... -->
@@ -191,16 +191,16 @@ const onChangeFirstName = z.string().refine(
       onChangeAsync: onChangeFirstName,
     }"
   >
-    <template v-slot="{ field, state }">
+    <template v-slot="{ field, value, meta }">
       <label :htmlFor="field.name">First Name:</label>
       <input
         :id="field.name"
         :name="field.name"
-        :value="field.state.value"
+        :value="value"
         @input="(e) => field.handleChange((e.target as HTMLInputElement).value)"
         @blur="field.handleBlur"
       />
-      <FieldInfo :state="state" />
+      <FieldInfo :meta="meta" />
     </template>
   </form.Field>
   <!-- ... -->
@@ -249,9 +249,9 @@ Example:
       },
     }"
   >
-    <template v-slot="{ field }">
+    <template v-slot="{ field, value }">
       <input
-        :value="field.state.value"
+        :value="value"
         @input="(e) => field.handleChange(e.target.value)"
       />
     </template>
@@ -290,13 +290,13 @@ Example:
             <div v-else>
               <div v-for="(_, i) in hobbiesField.state.value" :key="i">
                 <form.Field :name="`hobbies[${i}].name`">
-                  <template v-slot="{ field }">
+                  <template v-slot="{ field, value, meta }">
                     <div>
                       <label :for="field.name">Name:</label>
                       <input
                         :id="field.name"
                         :name="field.name"
-                        :value="field.state.value"
+                        :value="value"
                         @blur="field.handleBlur"
                         @input="(e) => field.handleChange(e.target.value)"
                       />
@@ -306,22 +306,22 @@ Example:
                       >
                         X
                       </button>
-                      <FieldInfo :field="field" />
+                      <FieldInfo :meta="meta" />
                     </div>
                   </template>
                 </form.Field>
                 <form.Field :name="`hobbies[${i}].description`">
-                  <template v-slot="{ field }">
+                  <template v-slot="{ field, value, meta }">
                     <div>
                       <label :for="field.name">Description:</label>
                       <input
                         :id="field.name"
                         :name="field.name"
-                        :value="field.state.value"
+                        :value="value"
                         @blur="field.handleBlur"
                         @input="(e) => field.handleChange(e.target.value)"
                       />
-                      <FieldInfo :field="field" />
+                      <FieldInfo :meta="meta" />
                     </div>
                   </template>
                 </form.Field>

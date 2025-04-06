@@ -25,19 +25,17 @@ Here is an example:
         value < 13 ? 'You must be 13 to make an account' : undefined,
     }"
   >
-    <template v-slot="{ field }">
+    <template v-slot="{ field, value, meta }">
       <label :for="field.name">Age:</label>
       <input
         :id="field.name"
         :name="field.name"
-        :value="field.state.value"
+        :value="value"
         type="number"
         @input="(e) => field.handleChange((e.target as HTMLInputElement).valueAsNumber)
                 "
       />
-      <em role="alert" v-if="field.state.meta.errors">{{
-        field.state.meta.errors.join(', ')
-      }}</em>
+      <em role="alert" v-if="meta.errors">{{ meta.errors.join(', ') }}</em>
     </template>
   </form.Field>
   <!-- ... -->
@@ -56,22 +54,20 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
         value < 13 ? 'You must be 13 to make an account' : undefined,
     }"
   >
-    <template v-slot="{ field }">
+    <template v-slot="{ field, value, meta }">
       <label :for="field.name">Age:</label>
       <!-- We always need to implement onChange, so that TanStack Form receives the changes -->
       <!-- Listen to the onBlur event on the field -->
       <input
         :id="field.name"
         :name="field.name"
-        :value="field.state.value"
+        :value="value"
         type="number"
         @blur="field.handleBlur"
         @input="(e) => field.handleChange((e.target as HTMLInputElement).valueAsNumber)
                 "
       />
-      <em role="alert" v-if="field.state.meta.errors">{{
-        field.state.meta.errors.join(', ')
-      }}</em>
+      <em role="alert" v-if="meta.errors">{{ meta.errors.join(', ') }}</em>
     </template>
   </form.Field>
   <!-- ... -->
@@ -91,22 +87,20 @@ So you can control when the validation is done by implementing the desired callb
       onBlur: ({ value }) => (value < 0 ? 'Invalid value' : undefined),
     }"
   >
-    <template v-slot="{ field }">
+    <template v-slot="{ field, value, meta }">
       <label :for="field.name">Age:</label>
       <!-- We always need to implement onChange, so that TanStack Form receives the changes -->
       <!-- Listen to the onBlur event on the field -->
       <input
         :id="field.name"
         :name="field.name"
-        :value="field.state.value"
+        :value="value"
         type="number"
         @blur="field.handleBlur"
         @input="(e) => field.handleChange((e.target as HTMLInputElement).valueAsNumber)
                 "
       />
-      <em role="alert" v-if="field.state.meta.errors">{{
-        field.state.meta.errors.join(', ')
-      }}</em>
+      <em role="alert" v-if="meta.errors">{{ meta.errors.join(', ') }}</em>
     </template>
   </form.Field>
   <!-- ... -->
@@ -129,11 +123,9 @@ Once you have your validation in place, you can map the errors from an array to 
         value < 13 ? 'You must be 13 to make an account' : undefined,
     }"
   >
-    <template v-slot="{ field }">
+    <template v-slot="{ field, meta }">
       <!-- ... -->
-      <em role="alert" v-if="field.state.meta.errors">{{
-        field.state.meta.errors.join(', ')
-      }}</em>
+      <em role="alert" v-if="meta.errors">{{ meta.errors.join(', ') }}</em>
     </template>
   </form.Field>
   <!-- ... -->
@@ -152,10 +144,10 @@ Or use the `errorMap` property to access the specific error you're looking for:
         value < 13 ? 'You must be 13 to make an account' : undefined,
     }"
   >
-    <template v-slot="{ field }">
+    <template v-slot="{ field, meta }">
       <!-- ... -->
-      <em role="alert" v-if="field.state.meta.errorMap['onChange']">{{
-        field.state.meta.errorMap['onChange']
+      <em role="alert" v-if="meta.errorMap['onChange']">{{
+        meta.errorMap['onChange']
       }}</em>
     </template>
   </form.Field>
@@ -172,11 +164,11 @@ It's worth mentioning that our `errors` array and the `errorMap` matches the typ
     onChange: ({ value }) => (value < 13 ? { isOldEnough: false } : undefined),
   }"
 >
-  <template v-slot="{ field }">
+  <template v-slot="{ field, meta }">
       <!-- ... -->
       <!-- errorMap.onChange is type `{isOldEnough: false} | undefined` -->
 	  <!-- meta.errors is type `Array<{isOldEnough: false} | undefined>` -->
-      <em v-if="!field.state.meta.errorMap['onChange']?.isOldEnough">The user is not old enough</em>
+      <em v-if="!meta.errorMap['onChange']?.isOldEnough">The user is not old enough</em>
   </template>
 </form.Field>
 ```
@@ -249,21 +241,19 @@ const onChangeAge = async ({ value }) => {
       onChangeAsync: onChangeAge,
     }"
   >
-    <template v-slot="{ field }">
+    <template v-slot="{ field, value, meta }">
       <label :for="field.name">Age:</label>
       <input
         :id="field.name"
         :name="field.name"
-        :value="field.state.value"
+        :value="value"
         type="number"
         @input="
           (e) =>
             field.handleChange((e.target as HTMLInputElement).valueAsNumber)
         "
       />
-      <em role="alert" v-if="field.state.meta.errors">{{
-        field.state.meta.errors.join(', ')
-      }}</em>
+      <em role="alert" v-if="meta.errors">{{ meta.errors.join(', ') }}</em>
     </template>
   </form.Field>
   <!-- ... -->
@@ -293,12 +283,12 @@ const onBlurAgeAsync = async ({ value }) => {
       onBlurAsync: onBlurAgeAsync,
     }"
   >
-    <template v-slot="{ field }">
+    <template v-slot="{ field, value, meta }">
       <label :for="field.name">Age:</label>
       <input
         :id="field.name"
         :name="field.name"
-        :value="field.state.value"
+        :value="value"
         type="number"
         @blur="field.handleBlur"
         @input="
@@ -306,9 +296,7 @@ const onBlurAgeAsync = async ({ value }) => {
             field.handleChange((e.target as HTMLInputElement).valueAsNumber)
         "
       />
-      <em role="alert" v-if="field.state.meta.errors">{{
-        field.state.meta.errors.join(', ')
-      }}</em>
+      <em role="alert" v-if="meta.errors">{{ meta.errors.join(', ') }}</em>
     </template>
   </form.Field>
   <!-- ... -->
