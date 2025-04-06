@@ -1,11 +1,10 @@
-import { FieldApi } from '@tanstack/form-core'
+import { FieldApi, shallow } from '@tanstack/form-core'
 import {
   defineComponent,
-  onBeforeUnmount,
   onMounted,
   onScopeDispose,
+  shallowReactive,
   shallowRef,
-  triggerRef,
   watchEffect,
 } from 'vue'
 import type {
@@ -314,7 +313,7 @@ export type UseField<
       TFormOnServer,
       TParentSubmitMeta
     >
-  state: Readonly<
+  value: Readonly<
     Ref<
       FieldApi<
         TParentData,
@@ -336,8 +335,31 @@ export type UseField<
         TFormOnSubmitAsync,
         TFormOnServer,
         TParentSubmitMeta
-      >['state']
+      >['state']['value']
     >
+  >
+  meta: Readonly<
+    FieldApi<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnServer,
+      TParentSubmitMeta
+    >['state']['meta']
   >
 }
 
@@ -392,14 +414,15 @@ export const Field = defineComponent(
     >,
     context: SetupContext,
   ) => {
-    const { api, state } = useField(() => ({
+    const { api, value, meta } = useField(() => ({
       ...(context.attrs as any),
     }))
 
     return () =>
       context.slots.default!({
         field: api,
-        state: state.value,
+        value: value.value,
+        meta,
       })
   },
   {
@@ -490,7 +513,7 @@ export function useField<
       TFormOnServer,
       TParentSubmitMeta
     >
-  state: Readonly<
+  value: Readonly<
     Ref<
       FieldApi<
         TParentData,
@@ -512,8 +535,31 @@ export function useField<
         TFormOnSubmitAsync,
         TFormOnServer,
         TParentSubmitMeta
-      >['state']
+      >['state']['value']
     >
+  >
+  meta: Readonly<
+    FieldApi<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnServer,
+      TParentSubmitMeta
+    >['state']['meta']
   >
 } {
   let api: FieldApi<
@@ -560,9 +606,15 @@ export function useField<
     }
   })
 
-  const state = shallowRef(api!.store.state)
-  const unsubscribeStore = api!.store.subscribe(() => {
-    triggerRef(state)
+  const value = shallowRef<any>(api!.store.state.value)
+  const meta = shallowReactive<any>(api!.store.state.meta)
+  const unsubscribeStore = api!.store.subscribe(({ currentVal, prevVal }) => {
+    value.value = api!.store.state.value
+    const currentMeta = currentVal.meta
+    if (shallow(currentMeta, prevVal.meta)) return
+    for (const field of Object.keys(currentMeta)) {
+      meta[field] = currentMeta[field as keyof typeof currentMeta]
+    }
   })
 
   let cleanup = () => {}
@@ -577,6 +629,7 @@ export function useField<
 
   return {
     api: api! as never,
-    state,
+    value,
+    meta,
   }
 }

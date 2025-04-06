@@ -1,4 +1,4 @@
-import { FormApi } from '@tanstack/form-core'
+import { FormApi, shallow } from '@tanstack/form-core'
 import {
   defineComponent,
   h,
@@ -260,7 +260,10 @@ export function useForm<
   api!.useStore = (selector = (v) => v as never) => {
     const state = shallowRef(selector(api!.store.state))
     const cleanup = api!.store.subscribe(() => {
-      state.value = selector(api!.store.state)
+      const newValue = selector(api!.store.state)
+      if (shallow(newValue, state.value)) {
+        state.value = newValue
+      }
     })
     onScopeDispose(cleanup)
 
@@ -270,7 +273,10 @@ export function useForm<
     (props, { slots }) => {
       const state = shallowRef(props.selector(api!.store.state))
       const cleanup = api!.store.subscribe(() => {
-        state.value = props.selector(api!.store.state)
+        const newValue = props.selector(api!.store.state)
+        if (shallow(newValue, state.value)) {
+          state.value = newValue
+        }
       })
       onScopeDispose(cleanup)
 
