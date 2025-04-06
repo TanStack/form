@@ -30,12 +30,12 @@ Here is an example:
       <input
         :id="field.name"
         :name="field.name"
-        :value="value"
+        :value="value()"
         type="number"
         @input="(e) => field.handleChange((e.target as HTMLInputElement).valueAsNumber)
                 "
       />
-      <em role="alert" v-if="meta.errors">{{ meta.errors.join(', ') }}</em>
+      <em role="alert" v-if="meta().errors">{{ meta().errors.join(', ') }}</em>
     </template>
   </form.Field>
   <!-- ... -->
@@ -61,13 +61,13 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
       <input
         :id="field.name"
         :name="field.name"
-        :value="value"
+        :value="value()"
         type="number"
         @blur="field.handleBlur"
         @input="(e) => field.handleChange((e.target as HTMLInputElement).valueAsNumber)
                 "
       />
-      <em role="alert" v-if="meta.errors">{{ meta.errors.join(', ') }}</em>
+      <em role="alert" v-if="meta().errors">{{ meta().errors.join(', ') }}</em>
     </template>
   </form.Field>
   <!-- ... -->
@@ -94,13 +94,13 @@ So you can control when the validation is done by implementing the desired callb
       <input
         :id="field.name"
         :name="field.name"
-        :value="value"
+        :value="value()"
         type="number"
         @blur="field.handleBlur"
         @input="(e) => field.handleChange((e.target as HTMLInputElement).valueAsNumber)
                 "
       />
-      <em role="alert" v-if="meta.errors">{{ meta.errors.join(', ') }}</em>
+      <em role="alert" v-if="meta().errors">{{ meta().errors.join(', ') }}</em>
     </template>
   </form.Field>
   <!-- ... -->
@@ -125,7 +125,7 @@ Once you have your validation in place, you can map the errors from an array to 
   >
     <template v-slot="{ field, meta }">
       <!-- ... -->
-      <em role="alert" v-if="meta.errors">{{ meta.errors.join(', ') }}</em>
+      <em role="alert" v-if="meta().errors">{{ meta().errors.join(', ') }}</em>
     </template>
   </form.Field>
   <!-- ... -->
@@ -146,8 +146,8 @@ Or use the `errorMap` property to access the specific error you're looking for:
   >
     <template v-slot="{ field, meta }">
       <!-- ... -->
-      <em role="alert" v-if="meta.errorMap['onChange']">{{
-        meta.errorMap['onChange']
+      <em role="alert" v-if="meta().errorMap['onChange']">{{
+        meta().errorMap['onChange']
       }}</em>
     </template>
   </form.Field>
@@ -167,8 +167,8 @@ It's worth mentioning that our `errors` array and the `errorMap` matches the typ
   <template v-slot="{ field, meta }">
       <!-- ... -->
       <!-- errorMap.onChange is type `{isOldEnough: false} | undefined` -->
-	  <!-- meta.errors is type `Array<{isOldEnough: false} | undefined>` -->
-      <em v-if="!meta.errorMap['onChange']?.isOldEnough">The user is not old enough</em>
+	    <!-- meta().errors is type `Array<{isOldEnough: false} | undefined>` -->
+      <em v-if="!meta().errorMap['onChange']?.isOldEnough">The user is not old enough</em>
   </template>
 </form.Field>
 ```
@@ -246,14 +246,14 @@ const onChangeAge = async ({ value }) => {
       <input
         :id="field.name"
         :name="field.name"
-        :value="value"
+        :value="value()"
         type="number"
         @input="
           (e) =>
             field.handleChange((e.target as HTMLInputElement).valueAsNumber)
         "
       />
-      <em role="alert" v-if="meta.errors">{{ meta.errors.join(', ') }}</em>
+      <em role="alert" v-if="meta().errors">{{ meta().errors.join(', ') }}</em>
     </template>
   </form.Field>
   <!-- ... -->
@@ -288,7 +288,7 @@ const onBlurAgeAsync = async ({ value }) => {
       <input
         :id="field.name"
         :name="field.name"
-        :value="value"
+        :value="value()"
         type="number"
         @blur="field.handleBlur"
         @input="
@@ -296,7 +296,7 @@ const onBlurAgeAsync = async ({ value }) => {
             field.handleChange((e.target as HTMLInputElement).valueAsNumber)
         "
       />
-      <em role="alert" v-if="meta.errors">{{ meta.errors.join(', ') }}</em>
+      <em role="alert" v-if="meta().errors">{{ meta.errors.join(', ') }}</em>
     </template>
   </form.Field>
   <!-- ... -->

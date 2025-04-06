@@ -27,7 +27,7 @@ const form = useForm(() => ({
     <template v-slot="{ field, value }">
       <div>
         <form.Field
-          v-for="(_, i) of value"
+          v-for="(_, i) of value()"
           :key="i"
           :name="`people[${i}].name`"
         >
@@ -52,17 +52,13 @@ This will generate the mapped slot every time you run `pushValue` on `field`:
 Finally, you can use a subfield like so:
 
 ```vue
-<form.Field
-  v-for="(_, i) of field.state.value"
-  :key="i"
-  :name="`people[${i}].name`"
->
+<form.Field v-for="(_, i) of value()" :key="i" :name="`people[${i}].name`">
   <template v-slot="{ field: subField, value }">
     <div>
       <label>
         <div>Name for person {{ i }}</div>
         <input
-          :value="value"
+          :value="value()"
           @input="
           (e) =>
           subField.handleChange(
@@ -102,10 +98,10 @@ const form = useForm(() => ({
   >
     <div>
       <form.Field name="people">
-        <template v-slot="field">
+        <template v-slot="{ value }">
           <div>
             <form.Field
-              v-for="(_, i) of field.value"
+              v-for="(_, i) of value()"
               :key="i"
               :name="`people[${i}].name`"
             >
@@ -114,7 +110,7 @@ const form = useForm(() => ({
                   <label>
                     <div>Name for person {{ i }}</div>
                     <input
-                      :value="value"
+                      :value="value()"
                       @input="
                         (e) =>
                           subField.handleChange(

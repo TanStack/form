@@ -64,7 +64,7 @@ Example:
     <template v-slot="{ field, value }">
       <input
         :name="field.name"
-        :value="value"
+        :value="value()"
         @blur="field.handleBlur"
         @input="(e) => field.handleChange(e.target.value)"
       />
@@ -105,7 +105,7 @@ Example:
 <template v-slot="{ field, value }">
   <input
     :name="field.name"
-    :value="value"
+    :value="value()"
     @blur="field.handleBlur"
     @input="(e) => field.handleChange(e.target.value)"
   />
@@ -138,11 +138,11 @@ Example:
     >
         <template v-slot="{ field, value, meta }">
             <input
-                :value="value"
+                :value="value()"
                 @input="(e) => field.handleChange(e.target.value)"
                 @blur="field.handleBlur"
             />
-            <FieldInfo :meta="meta" />
+            <FieldInfo :meta="meta()" />
         </template>
     </form.Field>
     <!-- ... -->
@@ -196,11 +196,11 @@ const onChangeFirstName = z.string().refine(
       <input
         :id="field.name"
         :name="field.name"
-        :value="value"
+        :value="value()"
         @input="(e) => field.handleChange((e.target as HTMLInputElement).value)"
         @blur="field.handleBlur"
       />
-      <FieldInfo :meta="meta" />
+      <FieldInfo :meta="meta()" />
     </template>
   </form.Field>
   <!-- ... -->
@@ -251,7 +251,7 @@ Example:
   >
     <template v-slot="{ field, value }">
       <input
-        :value="value"
+        :value="value()"
         @input="(e) => field.handleChange(e.target.value)"
       />
     </template>
@@ -296,7 +296,7 @@ Example:
                       <input
                         :id="field.name"
                         :name="field.name"
-                        :value="value"
+                        :value="value()"
                         @blur="field.handleBlur"
                         @input="(e) => field.handleChange(e.target.value)"
                       />
@@ -306,7 +306,7 @@ Example:
                       >
                         X
                       </button>
-                      <FieldInfo :meta="meta" />
+                      <FieldInfo :meta="meta()" />
                     </div>
                   </template>
                 </form.Field>
@@ -317,11 +317,11 @@ Example:
                       <input
                         :id="field.name"
                         :name="field.name"
-                        :value="value"
+                        :value="value()"
                         @blur="field.handleBlur"
                         @input="(e) => field.handleChange(e.target.value)"
                       />
-                      <FieldInfo :meta="meta" />
+                      <FieldInfo :meta="meta()" />
                     </div>
                   </template>
                 </form.Field>

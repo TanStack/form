@@ -29,7 +29,7 @@ const form = useForm(() => ({
           <template v-slot="{ field, value }">
             <input
               :name="field.name"
-              :value="value"
+              :value="value()"
               @blur="field.handleBlur"
               @input="(e) => field.handleChange((e.target as HTMLInputElement).value)"
             />

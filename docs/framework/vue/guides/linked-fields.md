@@ -40,7 +40,7 @@ const form = useForm(() => ({
           <template v-slot="{ field, value }">
             <div>Password:</div>
             <input
-              :value="value"
+              :value="value()"
               @input="
                 (e) => field.handleChange((e.target as HTMLInputElement).value)
               "
@@ -62,12 +62,12 @@ const form = useForm(() => ({
           <template v-slot="{ field, value, meta }">
             <div>Confirm Password:</div>
             <input
-              :value="value"
+              :value="value()"
               @input="
                 (e) => field.handleChange((e.target as HTMLInputElement).value)
               "
             />
-            <div v-for="(err, index) in meta.errors" :key="index">
+            <div v-for="(err, index) in meta().errors" :key="index">
               {{ err }}
             </div>
           </template>
