@@ -58,12 +58,12 @@ describe('useField', () => {
             onChange: ({ value }) => (value === 'other' ? error : undefined),
           }}
         >
-          {({ field, value }: { field: AnyFieldApi; value: any }) => (
+          {({ field }: { field: AnyFieldApi; value: any }) => (
             <div>
               <input
                 data-testid="fieldinput"
                 name={field.name}
-                value={value()}
+                value={field.state.value}
                 onBlur={field.handleBlur}
                 onInput={(e) =>
                   field.setValue((e.target as HTMLInputElement).value, {
@@ -147,20 +147,12 @@ describe('useField', () => {
             },
           }}
         >
-          {({
-            field,
-            value,
-            meta,
-          }: {
-            field: AnyFieldApi
-            value: any
-            meta: any
-          }) => (
+          {({ field, meta }: { field: AnyFieldApi; value: any; meta: any }) => (
             <div>
               <input
                 data-testid="fieldinput"
                 name={field.name}
-                value={value()}
+                value={field.state.value}
                 onBlur={field.handleBlur}
                 onInput={(e) =>
                   field.handleChange((e.target as HTMLInputElement).value)
@@ -206,20 +198,12 @@ describe('useField', () => {
             },
           }}
         >
-          {({
-            field,
-            value,
-            meta,
-          }: {
-            field: AnyFieldApi
-            value: any
-            meta: any
-          }) => (
+          {({ field, meta }: { field: AnyFieldApi; value: any; meta: any }) => (
             <div>
               <input
                 data-testid="fieldinput"
                 name={field.name}
-                value={value()}
+                value={field.state.value}
                 onBlur={field.handleBlur}
                 onInput={(e) =>
                   field.handleChange((e.target as HTMLInputElement).value)
@@ -277,7 +261,6 @@ describe('useField', () => {
                       <form.Field key={i} name={`people[${i}]`}>
                         {({
                           field: subField,
-                          value,
                         }: {
                           field: AnyFieldApi
                           value: any
@@ -286,7 +269,7 @@ describe('useField', () => {
                             <label>
                               <div>Name for person {i}</div>
                               <input
-                                value={value()}
+                                value={field.state.value}
                                 onChange={(e) =>
                                   subField.handleChange(
                                     (e.target as HTMLInputElement).value,
