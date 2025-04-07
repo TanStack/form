@@ -25,7 +25,17 @@ Defined in: [packages/form-core/src/FieldApi.ts:346](https://github.com/TanStack
 optional onBlur: FieldListenerFn<TParentData, TName, TData>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:352](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L352)
+Defined in: [packages/form-core/src/FieldApi.ts:353](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L353)
+
+***
+
+### onBlurDebounceMs?
+
+```ts
+optional onBlurDebounceMs: number;
+```
+
+Defined in: [packages/form-core/src/FieldApi.ts:354](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L354)
 
 ***
 
@@ -39,13 +49,23 @@ Defined in: [packages/form-core/src/FieldApi.ts:351](https://github.com/TanStack
 
 ***
 
+### onChangeDebounceMs?
+
+```ts
+optional onChangeDebounceMs: number;
+```
+
+Defined in: [packages/form-core/src/FieldApi.ts:352](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L352)
+
+***
+
 ### onMount?
 
 ```ts
 optional onMount: FieldListenerFn<TParentData, TName, TData>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:353](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L353)
+Defined in: [packages/form-core/src/FieldApi.ts:355](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L355)
 
 ***
 
@@ -55,4 +75,4 @@ Defined in: [packages/form-core/src/FieldApi.ts:353](https://github.com/TanStack
 optional onSubmit: FieldListenerFn<TParentData, TName, TData>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:354](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L354)
+Defined in: [packages/form-core/src/FieldApi.ts:356](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L356)
