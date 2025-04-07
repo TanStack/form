@@ -11,7 +11,7 @@ title: FieldMetaBase
 type FieldMetaBase<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync> = object;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:473](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L473)
+Defined in: [packages/form-core/src/FieldApi.ts:512](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L512)
 
 ## Type Parameters
 
@@ -54,7 +54,7 @@ Defined in: [packages/form-core/src/FieldApi.ts:473](https://github.com/TanStack
 ### errorMap
 
 ```ts
-errorMap: ValidationErrorMap<UnwrapFieldValidateOrFn<TParentData, TName, TOnMount, TFormOnMount>, UnwrapFieldValidateOrFn<TParentData, TName, TOnChange, TFormOnChange>, UnwrapFieldAsyncValidateOrFn<TParentData, TName, TOnChangeAsync, TFormOnChangeAsync>, UnwrapFieldValidateOrFn<TParentData, TName, TOnBlur, TFormOnBlur>, UnwrapFieldAsyncValidateOrFn<TParentData, TName, TOnBlurAsync, TFormOnBlurAsync>, UnwrapFieldValidateOrFn<TParentData, TName, TOnSubmit, TFormOnSubmit>, UnwrapFieldAsyncValidateOrFn<TParentData, TName, TOnSubmitAsync, TFormOnSubmitAsync>>;
+errorMap: ValidationErrorMap<UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>, UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>, UnwrapFieldAsyncValidateOrFn<TName, TOnChangeAsync, TFormOnChangeAsync>, UnwrapFieldValidateOrFn<TName, TOnBlur, TFormOnBlur>, UnwrapFieldAsyncValidateOrFn<TName, TOnBlurAsync, TFormOnBlurAsync>, UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>, UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>>;
 ```
 
 A map of errors related to the field value.

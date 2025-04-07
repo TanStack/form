@@ -54,7 +54,7 @@ it('should type required fields in constructor', () => {
   })
 
   assertType<string>(field.state.value)
-  assertType<'name'>(field.options.name)
+  assertType<'name' | 'age'>(field.options.name)
   assertType<string>(field.getValue())
 })
 
@@ -74,7 +74,7 @@ it('should type value properly for completely partial forms', () => {
   })
 
   assertType<'test' | undefined>(field.state.value)
-  assertType<'name'>(field.options.name)
+  assertType<'name' | 'age'>(field.options.name)
   assertType<'test' | undefined>(field.getValue())
 })
 
@@ -326,6 +326,32 @@ it('should handle "fields" async return types added to the field\'s error array 
   const field = new FieldApi({
     form,
     name: 'firstName',
+  })
+
+  assertType<Array<'Testing' | undefined>>(field.getMeta().errors)
+})
+
+it('should handle "sub-fields" async return types added to the field\'s error array itself', () => {
+  const form = new FormApi({
+    defaultValues: {
+      person: {
+        firstName: '',
+      },
+    },
+    validators: {
+      onChangeAsync: async () => {
+        return {
+          fields: {
+            'person.firstName': 'Testing' as const,
+          },
+        }
+      },
+    },
+  })
+
+  const field = new FieldApi({
+    form,
+    name: 'person.firstName',
   })
 
   assertType<Array<'Testing' | undefined>>(field.getMeta().errors)

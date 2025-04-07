@@ -14,7 +14,7 @@ While we could implement many of these features from scratch, it would end up lo
 
 As such, this guide shows you how you can mix-n-match TanStack Form with TanStack Query to achieve the desired behavior.
 
-# Basic Usage
+## Basic Usage
 
 ```tsx
 import { useForm } from '@tanstack/react-form'

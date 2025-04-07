@@ -11,7 +11,7 @@ title: BaseFormState
 type BaseFormState<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer> = object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:377](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L377)
+Defined in: [packages/form-core/src/FormApi.ts:399](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L399)
 
 An object representing the current state of the form.
 
@@ -37,6 +37,14 @@ An object representing the current state of the form.
 
 ## Type declaration
 
+### \_force\_re\_eval?
+
+```ts
+optional _force_re_eval: boolean;
+```
+
+@private, used to force a re-evaluation of the form state when options change
+
 ### errorMap
 
 ```ts
@@ -53,13 +61,25 @@ fieldMetaBase: Record<DeepKeys<TFormData>, AnyFieldMetaBase>;
 
 A record of field metadata for each field in the form, not including the derived properties, like `errors` and such
 
+### isSubmitSuccessful
+
+```ts
+isSubmitSuccessful: boolean;
+```
+
+A boolean indicating if the last submission was successful.
+
 ### isSubmitted
 
 ```ts
 isSubmitted: boolean;
 ```
 
-A boolean indicating if the form has been submitted.
+A boolean indicating if the `onSubmit` function has completed successfully.
+
+Goes back to `false` at each new submission attempt.
+
+Note: you can use isSubmitting to check if the form is currently submitting.
 
 ### isSubmitting
 

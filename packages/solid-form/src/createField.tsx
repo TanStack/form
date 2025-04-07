@@ -18,7 +18,7 @@ import type {
 } from '@tanstack/form-core'
 
 import type { JSXElement } from 'solid-js'
-import type { CreateFieldOptions } from './types'
+import type { CreateFieldOptions, CreateFieldOptionsBound } from './types'
 
 interface SolidFieldApi<
   TParentData,
@@ -30,6 +30,7 @@ interface SolidFieldApi<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TParentSubmitMeta,
 > {
   Field: FieldComponent<
     TParentData,
@@ -40,7 +41,8 @@ interface SolidFieldApi<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TParentSubmitMeta
   >
 }
 
@@ -54,6 +56,7 @@ export type CreateField<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TParentSubmitMeta,
 > = <
   TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
@@ -71,28 +74,17 @@ export type CreateField<
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
 >(
-  opts: () => { name: Narrow<TName> } & Omit<
-    CreateFieldOptions<
-      TParentData,
-      TName,
-      TData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TFormOnMount,
-      TFormOnChange,
-      TFormOnChangeAsync,
-      TFormOnBlur,
-      TFormOnBlurAsync,
-      TFormOnSubmit,
-      TFormOnSubmitAsync,
-      TFormOnServer
-    >,
-    'form'
+  opts: () => { name: Narrow<TName> } & CreateFieldOptionsBound<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync
   >,
 ) => () => FieldApi<
   TParentData,
@@ -112,7 +104,8 @@ export type CreateField<
   TFormOnBlurAsync,
   TFormOnSubmit,
   TFormOnSubmitAsync,
-  TFormOnServer
+  TFormOnServer,
+  TParentSubmitMeta
 > &
   SolidFieldApi<
     TParentData,
@@ -123,7 +116,8 @@ export type CreateField<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TParentSubmitMeta
   >
 
 // ugly way to trick solid into triggering updates for changes on the fieldApi
@@ -152,6 +146,7 @@ function makeFieldReactive<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TParentSubmitMeta,
 >(
   fieldApi: FieldApi<
     TParentData,
@@ -171,7 +166,8 @@ function makeFieldReactive<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TParentSubmitMeta
   > &
     SolidFieldApi<
       TParentData,
@@ -182,7 +178,8 @@ function makeFieldReactive<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
-      TFormOnServer
+      TFormOnServer,
+      TParentSubmitMeta
     >,
 ): () => FieldApi<
   TParentData,
@@ -202,7 +199,8 @@ function makeFieldReactive<
   TFormOnBlurAsync,
   TFormOnSubmit,
   TFormOnSubmitAsync,
-  TFormOnServer
+  TFormOnServer,
+  TParentSubmitMeta
 > &
   SolidFieldApi<
     TParentData,
@@ -213,13 +211,13 @@ function makeFieldReactive<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TParentSubmitMeta
   > {
-  const [flag, setFlag] = createSignal(false)
-  const fieldApiMemo = createMemo(() => [flag(), fieldApi] as const)
-  const unsubscribeStore = fieldApi.store.subscribe(() => setFlag((f) => !f))
+  const [field, setField] = createSignal(fieldApi, { equals: false })
+  const unsubscribeStore = fieldApi.store.subscribe(() => setField(fieldApi))
   onCleanup(unsubscribeStore)
-  return () => fieldApiMemo()[1]
+  return field
 }
 
 export function createField<
@@ -247,6 +245,7 @@ export function createField<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TParentSubmitMeta,
 >(
   opts: () => CreateFieldOptions<
     TParentData,
@@ -266,7 +265,8 @@ export function createField<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TParentSubmitMeta
   >,
 ) {
   const options = opts()
@@ -283,7 +283,8 @@ export function createField<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
-      TFormOnServer
+      TFormOnServer,
+      TParentSubmitMeta
     > = api as never
 
   extendedApi.Field = Field as never
@@ -328,11 +329,12 @@ export function createField<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TParentSubmitMeta
   >(extendedApi as never)
 }
 
-type FieldComponentProps<
+interface FieldComponentBoundProps<
   TParentData,
   TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
@@ -357,7 +359,19 @@ type FieldComponentProps<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-> = {
+  TParentSubmitMeta,
+> extends CreateFieldOptionsBound<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync
+  > {
   children: (
     fieldApi: () => FieldApi<
       TParentData,
@@ -377,32 +391,11 @@ type FieldComponentProps<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
-      TFormOnServer
+      TFormOnServer,
+      TParentSubmitMeta
     >,
   ) => JSXElement
-} & Omit<
-  CreateFieldOptions<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnServer
-  >,
-  'form'
->
+}
 
 export type FieldComponent<
   TParentData,
@@ -414,6 +407,7 @@ export type FieldComponent<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TParentSubmitMeta,
 > = <
   TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
@@ -433,8 +427,55 @@ export type FieldComponent<
 >({
   children,
   ...fieldOptions
-}: Omit<
-  FieldComponentProps<
+}: FieldComponentBoundProps<
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TFormOnMount,
+  TFormOnChange,
+  TFormOnChangeAsync,
+  TFormOnBlur,
+  TFormOnBlurAsync,
+  TFormOnSubmit,
+  TFormOnSubmitAsync,
+  TFormOnServer,
+  TParentSubmitMeta
+>) => JSXElement
+
+interface FieldComponentProps<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TParentSubmitMeta,
+> extends CreateFieldOptions<
     TParentData,
     TName,
     TData,
@@ -452,10 +493,33 @@ export type FieldComponent<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
-  >,
-  'form'
->) => JSXElement
+    TFormOnServer,
+    TParentSubmitMeta
+  > {
+  children: (
+    fieldApi: () => FieldApi<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnServer,
+      TParentSubmitMeta
+    >,
+  ) => JSXElement
+}
 
 export function Field<
   TParentData,
@@ -482,31 +546,9 @@ export function Field<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TParentSubmitMeta,
 >(
-  props: {
-    children: (
-      fieldApi: () => FieldApi<
-        TParentData,
-        TName,
-        TData,
-        TOnMount,
-        TOnChange,
-        TOnChangeAsync,
-        TOnBlur,
-        TOnBlurAsync,
-        TOnSubmit,
-        TOnSubmitAsync,
-        TFormOnMount,
-        TFormOnChange,
-        TFormOnChangeAsync,
-        TFormOnBlur,
-        TFormOnBlurAsync,
-        TFormOnSubmit,
-        TFormOnSubmitAsync,
-        TFormOnServer
-      >,
-    ) => JSXElement
-  } & CreateFieldOptions<
+  props: FieldComponentProps<
     TParentData,
     TName,
     TData,
@@ -524,7 +566,8 @@ export function Field<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TParentSubmitMeta
   >,
 ) {
   const fieldApi = createField<
@@ -545,7 +588,8 @@ export function Field<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
-    TFormOnServer
+    TFormOnServer,
+    TParentSubmitMeta
   >(() => {
     const { children, ...fieldOptions } = props
     return fieldOptions

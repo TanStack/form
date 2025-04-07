@@ -12,12 +12,12 @@ You can create options for your form so that it can be shared between multiple f
 Example:
 
 ```tsx
-const formOpts = formOptions<Person>({
+const formOpts = formOptions({
   defaultValues: {
     firstName: '',
     lastName: '',
     hobbies: [],
-  },
+  } as Person,
 })
 ```
 
@@ -30,7 +30,7 @@ const form = createForm(() => ({
   ...formOpts,
   onSubmit: async ({ value }) => {
     // Do something with form data
-    console.log(value);
+    console.log(value)
   },
 }))
 ```
@@ -41,7 +41,7 @@ You may also create a form instance without using `formOptions` by using the sta
 const form = createForm<Person>(() => ({
   onSubmit: async ({ value }) => {
     // Do something with form data
-    console.log(value);
+    console.log(value)
   },
   defaultValues: {
     firstName: '',
@@ -78,7 +78,10 @@ Each field has its own state, which includes its current value, validation statu
 Example:
 
 ```tsx
-const { value, meta: { errors, isValidating } } = field().state
+const {
+  value,
+  meta: { errors, isValidating },
+} = field().state
 ```
 
 There are three field states can be very useful to see how the user interacts with a field. A field is _"touched"_ when the user clicks/tabs into it, _"pristine"_ until the user changes value in it, and _"dirty"_ after the value has been changed. You can check these states via the `isTouched`, `isPristine` and `isDirty` flags, as seen below.
@@ -118,11 +121,11 @@ Example:
       !value
         ? 'A first name is required'
         : value.length < 3
-        ? 'First name must be at least 3 characters'
-        : undefined,
+          ? 'First name must be at least 3 characters'
+          : undefined,
     onChangeAsync: async ({ value }) => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      return value.includes('error') && 'No "error" allowed in first name';
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      return value.includes('error') && 'No "error" allowed in first name'
     },
   }}
   children={(field) => (
@@ -155,19 +158,19 @@ Supported libraries include:
 import { z } from 'zod'
 
 // ...
-<form.Field
+;<form.Field
   name="firstName"
   validators={{
     onChange: z.string().min(3, 'First name must be at least 3 characters'),
     onChangeAsyncDebounceMs: 500,
     onChangeAsync: z.string().refine(
       async (value) => {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        return !value.includes('error');
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        return !value.includes('error')
       },
       {
         message: 'No "error" allowed in first name',
-      }
+      },
     ),
   }}
   children={(field) => (
@@ -239,7 +242,7 @@ Example:
                         name={field().name}
                         value={field().state.value}
                         onBlur={field().handleBlur}
-                        onChange={(e) => field().handleChange(e.target.value)}
+                        onInput={(e) => field().handleChange(e.target.value)}
                       />
                       <button
                         type="button"
@@ -261,10 +264,10 @@ Example:
                           name={field().name}
                           value={field().state.value}
                           onBlur={field().handleBlur}
-                          onChange={(e) => field().handleChange(e.target.value)}
+                          onInput={(e) => field().handleChange(e.target.value)}
                         />
                       </div>
-                    );
+                    )
                   }}
                 />
               </div>

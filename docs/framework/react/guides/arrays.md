@@ -34,10 +34,7 @@ function App() {
 This will generate the mapped JSX every time you run `pushValue` on `field`:
 
 ```jsx
-<button
-  onClick={() => field.pushValue({ name: '', age: 0 })}
-  type="button"
->
+<button onClick={() => field.pushValue({ name: '', age: 0 })} type="button">
   Add person
 </button>
 ```
@@ -49,9 +46,7 @@ Finally, you can use a subfield like so:
   {(subField) => (
     <input
       value={subField.state.value}
-      onChange={(e) =>
-        subField.handleChange(e.target.value)
-      }
+      onChange={(e) => subField.handleChange(e.target.value)}
     />
   )}
 </form.Field>
@@ -67,7 +62,7 @@ function App() {
     },
     onSubmit({ value }) {
       alert(JSON.stringify(value))
-    }
+    },
   })
 
   return (

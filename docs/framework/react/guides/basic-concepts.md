@@ -12,12 +12,12 @@ You can create options for your form so that it can be shared between multiple f
 Example:
 
 ```tsx
-const formOpts = formOptions<Person>({
+const formOpts = formOptions({
   defaultValues: {
     firstName: '',
     lastName: '',
     hobbies: [],
-  },
+  } as Person,
 })
 ```
 
@@ -80,10 +80,13 @@ Each field has its own state, which includes its current value, validation statu
 Example:
 
 ```tsx
-const { value, meta: { errors, isValidating } } = field.state
+const {
+  value,
+  meta: { errors, isValidating },
+} = field.state
 ```
 
-There are three field states can be very useful to see how the user interacts with a field. A field is _"touched"_ when the user clicks/tabs into it, _"pristine"_ until the user changes value in it, and _"dirty"_ after the value has been changed. You can check these states via the `isTouched`, `isPristine` and `isDirty` flags, as seen below.
+There are three field states that can be useful to see how the user interacts with a field: A field is _"touched"_ when the user clicks/tabs into it, _"pristine"_ until the user changes value in it, and _"dirty"_ after the value has been changed. You can check these states via the `isTouched`, `isPristine` and `isDirty` flags, as seen below.
 
 ```tsx
 const { isTouched, isPristine, isDirty } = field.state.meta
@@ -94,7 +97,6 @@ const { isTouched, isPristine, isDirty } = field.state.meta
 > **Important note for users coming from `React Hook Form`**: the `isDirty` flag in `TanStack/form` is different from the flag with the same name in RHF.
 > In RHF, `isDirty = true`, when the form's values are different from the original values. If the user changes the values in a form, and then changes them again to end up with values that match the form's default values, `isDirty` will be `false` in RHF, but `true` in `TanStack/form`.
 > The default values are exposed both on the form's and the field's level in `TanStack/form` (`form.options.defaultValues`, `field.options.defaultValue`), so you can write your own `isDefaultValue()` helper if you need to emulate RHF's behavior.`
-
 
 ## Field API
 
@@ -209,7 +211,7 @@ It is important to remember that while the `useStore` hook's `selector` prop is 
 ```tsx
 // Correct use
 const firstName = useStore(form.store, (state) => state.values.firstName)
-const errors = useStore(form.store,  (state) => state.errorMap)
+const errors = useStore(form.store, (state) => state.errorMap)
 // Incorrect use
 const store = useStore(form.store)
 ```
@@ -229,7 +231,7 @@ Example:
     onChange: ({ value }) => {
       console.log(`Country changed to: ${value}, resetting province`)
       form.setFieldValue('province', '')
-    }
+    },
   }}
 />
 ```
@@ -316,6 +318,38 @@ Example:
     </div>
   )}
 />
+```
+
+## Reset Buttons
+
+When using `<button type="reset">` in conjunction with TanStack Form's `form.reset()`, you need to prevent the default HTML reset behavior to avoid unexpected resets of form elements (especially `<select>` elements) to their initial HTML values.
+Use `event.preventDefault()` inside the button's `onClick` handler to prevent the native form reset.
+
+Example:
+
+```tsx
+<button
+  type="reset"
+  onClick={(event) => {
+    event.preventDefault()
+    form.reset()
+  }}
+>
+  Reset
+</button>
+```
+
+Alternatively, you can use `<button type="button">` to prevent the native HTML reset.
+
+```tsx
+<button
+  type="button"
+  onClick={() => {
+    form.reset()
+  }}
+>
+  Reset
+</button>
 ```
 
 These are the basic concepts and terminology used in the `@tanstack/react-form` library. Understanding these concepts will help you work more effectively with the library and create complex forms with ease.

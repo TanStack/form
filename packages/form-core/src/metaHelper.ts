@@ -8,6 +8,16 @@ import type { DeepKeys } from './util-types'
 
 type ArrayFieldMode = 'insert' | 'remove' | 'swap' | 'move'
 
+export const defaultFieldMeta: AnyFieldMeta = {
+  isValidating: false,
+  isTouched: false,
+  isBlurred: false,
+  isDirty: false,
+  isPristine: true,
+  errors: [],
+  errorMap: {},
+}
+
 export function metaHelper<
   TFormData,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
@@ -18,6 +28,7 @@ export function metaHelper<
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
 >(
   formApi: FormApi<
     TFormData,
@@ -28,7 +39,8 @@ export function metaHelper<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
-    TOnServer
+    TOnServer,
+    TSubmitMeta
   >,
 ) {
   function handleArrayFieldMetaShift(
@@ -108,19 +120,13 @@ export function metaHelper<
       const nextFieldMeta = formApi.getFieldMeta(nextFieldKey)
       if (nextFieldMeta) {
         formApi.setFieldMeta(fieldKey, nextFieldMeta)
+      } else {
+        formApi.setFieldMeta(fieldKey, getEmptyFieldMeta())
       }
     })
   }
 
-  const getEmptyFieldMeta = (): AnyFieldMeta => ({
-    isValidating: false,
-    isTouched: false,
-    isBlurred: false,
-    isDirty: false,
-    isPristine: true,
-    errors: [],
-    errorMap: {},
-  })
+  const getEmptyFieldMeta = (): AnyFieldMeta => defaultFieldMeta
 
   const handleInsertMode = (
     fields: DeepKeys<TFormData>[],

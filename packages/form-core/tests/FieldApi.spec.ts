@@ -1156,6 +1156,46 @@ describe('field api', () => {
     expect(form.getFieldValue('greet')).toStrictEqual('hello baz')
   })
 
+  it('should run the onChange listener when the field array is changed', () => {
+    const form = new FormApi({
+      defaultValues: {
+        items: ['one', 'two'],
+      },
+    })
+    form.mount()
+
+    let arr!: string[]
+
+    const field = new FieldApi({
+      form,
+      name: 'items',
+      listeners: {
+        onChange: ({ value }) => {
+          arr = value
+        },
+      },
+    })
+    field.mount()
+
+    field.removeValue(1)
+    expect(arr).toStrictEqual(['one'])
+
+    field.replaceValue(0, 'start')
+    expect(arr).toStrictEqual(['start'])
+
+    field.pushValue('end')
+    expect(arr).toStrictEqual(['start', 'end'])
+
+    field.insertValue(1, 'middle')
+    expect(arr).toStrictEqual(['start', 'middle', 'end'])
+
+    field.swapValues(0, 2)
+    expect(arr).toStrictEqual(['end', 'middle', 'start'])
+
+    field.moveValue(0, 1)
+    expect(arr).toStrictEqual(['middle', 'end', 'start'])
+  })
+
   it('should reset the form on a listener', () => {
     const form = new FormApi({
       defaultValues: {
@@ -1759,5 +1799,95 @@ describe('field api', () => {
 
     nameField.mount()
     expect(nameField.getMeta().errors).toEqual(['THERE IS AN ERROR'])
+  })
+
+  it('should remove the meta from deleted fields', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: [
+          {
+            firstName: 'John',
+            lastName: '',
+          },
+          {
+            firstName: 'Martha',
+            lastName: 'Mustermann',
+          },
+        ],
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: `names[${0}].lastName`,
+      validators: {
+        onMount: ({ value }) =>
+          value.length > 0 ? undefined : 'Last name is required',
+        onChange: ({ value }) =>
+          value.length > 0 ? undefined : 'Last name is required',
+      },
+    })
+
+    form.mount()
+    field.mount()
+
+    expect(form.state.canSubmit).toBe(false)
+
+    await form.removeFieldValue('names', 0)
+
+    expect(form.getFieldValue('names')).toEqual([
+      {
+        firstName: 'Martha',
+        lastName: 'Mustermann',
+      },
+    ])
+
+    expect(field.getMeta().errors).toStrictEqual([])
+    expect(form.state.canSubmit).toBe(true)
+  })
+
+  it('should remove the meta from deleted object fields', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: {
+          john: {
+            firstName: 'John',
+            lastName: '',
+          },
+          martha: {
+            firstName: 'Martha',
+            lastName: 'Mustermann',
+          },
+        },
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'names.john.lastName',
+      validators: {
+        onChange: () => 'Last name is required',
+      },
+    })
+
+    form.mount()
+    field.mount()
+
+    field.setValue('JohnLastName')
+
+    expect(form.state.canSubmit).toBe(false)
+
+    form.deleteField('names.john')
+
+    expect(form.getFieldValue('names')).toEqual({
+      martha: {
+        firstName: 'Martha',
+        lastName: 'Mustermann',
+      },
+    })
+
+    expect(field.getMeta().errorMap).toStrictEqual({})
+    expect(field.getMeta().errors).toStrictEqual([])
+    expect(form.state.canSubmit).toBe(true)
   })
 })

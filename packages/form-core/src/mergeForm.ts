@@ -1,5 +1,4 @@
 import type { FormApi } from './FormApi'
-import type { NoInfer } from './util-types'
 
 function isValidKey(key: string | number | symbol): boolean {
   const dangerousProps = ['__proto__', 'constructor', 'prototype']
@@ -72,9 +71,20 @@ export function mutateMergeDeep(
 }
 
 export function mergeForm<TFormData>(
-  baseForm: FormApi<NoInfer<TFormData>, any, any, any, any, any, any, any, any>,
+  baseForm: FormApi<
+    NoInfer<TFormData>,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  >,
   state: Partial<
-    FormApi<TFormData, any, any, any, any, any, any, any, any>['state']
+    FormApi<TFormData, any, any, any, any, any, any, any, any, any>['state']
   >,
 ) {
   mutateMergeDeep(baseForm.state, state)
