@@ -349,7 +349,9 @@ export interface FieldListeners<
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
 > {
   onChange?: FieldListenerFn<TParentData, TName, TData>
+  onChangeDebounceMs?: number
   onBlur?: FieldListenerFn<TParentData, TName, TData>
+  onBlurDebounceMs?: number
   onMount?: FieldListenerFn<TParentData, TName, TData>
   onSubmit?: FieldListenerFn<TParentData, TName, TData>
 }
@@ -1175,10 +1177,7 @@ export class FieldApi<
   setValue = (updater: Updater<TData>, options?: UpdateMetaOptions) => {
     this.form.setFieldValue(this.name, updater as never, options)
 
-    this.options.listeners?.onChange?.({
-      value: this.state.value,
-      fieldApi: this,
-    })
+    this.triggerOnChangeListener()
 
     this.validate('change')
   }
@@ -1226,10 +1225,7 @@ export class FieldApi<
   ) => {
     this.form.pushFieldValue(this.name, value as any, opts)
 
-    this.options.listeners?.onChange?.({
-      value: this.state.value,
-      fieldApi: this,
-    })
+    this.triggerOnChangeListener()
   }
 
   /**
@@ -1242,10 +1238,7 @@ export class FieldApi<
   ) => {
     this.form.insertFieldValue(this.name, index, value as any, opts)
 
-    this.options.listeners?.onChange?.({
-      value: this.state.value,
-      fieldApi: this,
-    })
+    this.triggerOnChangeListener()
   }
 
   /**
@@ -1258,10 +1251,7 @@ export class FieldApi<
   ) => {
     this.form.replaceFieldValue(this.name, index, value as any, opts)
 
-    this.options.listeners?.onChange?.({
-      value: this.state.value,
-      fieldApi: this,
-    })
+    this.triggerOnChangeListener()
   }
 
   /**
@@ -1270,10 +1260,7 @@ export class FieldApi<
   removeValue = (index: number, opts?: UpdateMetaOptions) => {
     this.form.removeFieldValue(this.name, index, opts)
 
-    this.options.listeners?.onChange?.({
-      value: this.state.value,
-      fieldApi: this,
-    })
+    this.triggerOnChangeListener()
   }
 
   /**
@@ -1282,10 +1269,7 @@ export class FieldApi<
   swapValues = (aIndex: number, bIndex: number, opts?: UpdateMetaOptions) => {
     this.form.swapFieldValues(this.name, aIndex, bIndex, opts)
 
-    this.options.listeners?.onChange?.({
-      value: this.state.value,
-      fieldApi: this,
-    })
+    this.triggerOnChangeListener()
   }
 
   /**
@@ -1294,10 +1278,7 @@ export class FieldApi<
   moveValue = (aIndex: number, bIndex: number, opts?: UpdateMetaOptions) => {
     this.form.moveFieldValues(this.name, aIndex, bIndex, opts)
 
-    this.options.listeners?.onChange?.({
-      value: this.state.value,
-      fieldApi: this,
-    })
+    this.triggerOnChangeListener()
   }
 
   /**
@@ -1633,10 +1614,7 @@ export class FieldApi<
     }
     this.validate('blur')
 
-    this.options.listeners?.onBlur?.({
-      value: this.state.value,
-      fieldApi: this,
-    })
+    this.triggerOnBlurListener()
   }
 
   /**
@@ -1653,6 +1631,50 @@ export class FieldApi<
           },
         }) as never,
     )
+  }
+
+  private triggerOnBlurListener() {
+    const debounceMs = this.options.listeners?.onBlurDebounceMs
+
+    if (debounceMs && debounceMs > 0) {
+      if (this.timeoutIds.blur) {
+        clearTimeout(this.timeoutIds.blur)
+      }
+
+      this.timeoutIds.blur = setTimeout(() => {
+        this.options.listeners?.onBlur?.({
+          value: this.state.value,
+          fieldApi: this,
+        })
+      }, debounceMs)
+    } else {
+      this.options.listeners?.onBlur?.({
+        value: this.state.value,
+        fieldApi: this,
+      })
+    }
+  }
+
+  private triggerOnChangeListener() {
+    const debounceMs = this.options.listeners?.onChangeDebounceMs
+
+    if (debounceMs && debounceMs > 0) {
+      if (this.timeoutIds.change) {
+        clearTimeout(this.timeoutIds.change)
+      }
+
+      this.timeoutIds.change = setTimeout(() => {
+        this.options.listeners?.onChange?.({
+          value: this.state.value,
+          fieldApi: this,
+        })
+      }, debounceMs)
+    } else {
+      this.options.listeners?.onChange?.({
+        value: this.state.value,
+        fieldApi: this,
+      })
+    }
   }
 }
 
