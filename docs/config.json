@@ -289,8 +289,12 @@
           "to": "reference/type-aliases/fieldstate"
         },
         {
-          "label": "Types / FormState",
-          "to": "reference/type-aliases/formstate"
+          "label": "Types / BaseFormState",
+          "to": "reference/type-aliases/baseformstate"
+        },
+        {
+          "label": "Types / DerivedFormState",
+          "to": "reference/type-aliases/derivesformstate"
         },
         {
           "label": "Types / Updater",
