@@ -81,7 +81,7 @@ assertType<'meta' | 'meta.mainUser' | `meta.mainUser.${string}`>(
  */
 type DiscriminatedUnion = { name: string } & (
   | { variant: 'foo' }
-  | { variant: 'bar'; baz: string }
+  | { variant: 'bar'; baz: boolean }
 )
 type DiscriminatedUnionKeys = DeepKeys<DiscriminatedUnion>
 assertType<'name' | 'variant' | 'baz'>(0 as never as DiscriminatedUnionKeys)
@@ -89,7 +89,7 @@ assertType<'name' | 'variant' | 'baz'>(0 as never as DiscriminatedUnionKeys)
 type DiscriminatedUnionValueShared = DeepValue<DiscriminatedUnion, 'variant'>
 assertType<'foo' | 'bar'>(0 as never as DiscriminatedUnionValueShared)
 type DiscriminatedUnionValueFixed = DeepValue<DiscriminatedUnion, 'baz'>
-assertType<string | undefined>(0 as never as DiscriminatedUnionValueFixed)
+assertType<boolean>(0 as never as DiscriminatedUnionValueFixed)
 
 /**
  * Properly handles `object` edgecase like so:

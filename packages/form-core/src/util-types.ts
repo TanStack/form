@@ -94,19 +94,20 @@ export type UnionToIntersection<T> = (
   ? TI
   : never
 
-export type DeepRecord<T> = T extends any
-  ? UnionToIntersection<DeepRecordUnion<T>>
-  : never
+export type DeepRecord<T> = UnionToIntersection<DeepRecordUnion<T>>
+
+type UnionKeys<T> = T extends any ? keyof T : never
 
 /**
  * The keys of an object or array, deeply nested.
  */
 export type DeepKeys<T> = unknown extends T
   ? string
-  : keyof DeepRecord<T> & string
+  : UnionKeys<DeepRecordUnion<T>> & string
 
 /**
  * Infer the type of a deeply nested property within an object or an array.
  */
-export type DeepValue<TValue, TAccessor> = DeepRecord<TValue>[TAccessor &
-  keyof DeepRecord<TValue>]
+export type DeepValue<TValue, TAccessor> = TValue extends any
+  ? DeepRecord<TValue>[TAccessor & keyof DeepRecord<TValue>]
+  : never
