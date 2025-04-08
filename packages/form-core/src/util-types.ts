@@ -94,7 +94,9 @@ export type UnionToIntersection<T> = (
   ? TI
   : never
 
-export type DeepRecord<T> = UnionToIntersection<DeepRecordUnion<T>>
+export type DeepRecord<T> = T extends any
+  ? UnionToIntersection<DeepRecordUnion<T>>
+  : never
 
 /**
  * The keys of an object or array, deeply nested.
