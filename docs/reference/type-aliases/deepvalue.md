@@ -8,7 +8,7 @@ title: DeepValue
 # Type Alias: DeepValue\<TValue, TAccessor\>
 
 ```ts
-type DeepValue<TValue, TAccessor> = DeepRecord<TValue>[TAccessor & keyof DeepRecord<TValue>];
+type DeepValue<TValue, TAccessor> = TValue extends any ? DeepRecord<TValue>[TAccessor & keyof DeepRecord<TValue>] : never;
 ```
 
 Defined in: [packages/form-core/src/util-types.ts:111](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L111)

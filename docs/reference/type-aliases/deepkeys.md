@@ -8,7 +8,7 @@ title: DeepKeys
 # Type Alias: DeepKeys\<T\>
 
 ```ts
-type DeepKeys<T> = unknown extends T ? string : keyof DeepRecord<T> & string;
+type DeepKeys<T> = unknown extends T ? string : UnionKeys<DeepRecordUnion<T>> & string;
 ```
 
 Defined in: [packages/form-core/src/util-types.ts:104](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L104)
