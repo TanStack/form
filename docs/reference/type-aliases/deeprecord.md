@@ -8,7 +8,7 @@ title: DeepRecord
 # Type Alias: DeepRecord\<T\>
 
 ```ts
-type DeepRecord<T> = UnionToIntersection<DeepRecordUnion<T>>;
+type DeepRecord<T> = T extends any ? UnionToIntersection<DeepRecordUnion<T>> : never;
 ```
 
 Defined in: [packages/form-core/src/util-types.ts:97](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L97)
