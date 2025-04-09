@@ -54,7 +54,7 @@
     "@tanstack/store": "^0.7.0"
   },
   "devDependencies": {
-    "arktype": "^2.1.15",
+    "arktype": "^2.1.19",
     "valibot": "^1.0.0",
     "zod": "^3.24.2"
   }
