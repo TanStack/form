@@ -226,6 +226,8 @@
       ]
     },
     {
+      "collapsible": true,
+      "defaultCollapsed": true,
       "label": "API Reference",
       "children": [
         {

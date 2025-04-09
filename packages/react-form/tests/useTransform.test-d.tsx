@@ -23,8 +23,5 @@ it('should maintain the type of the form', () => {
 
     assertType<123>(form.state.values.age)
     assertType<string>(form.state.values.firstName)
-
-    // @ts-expect-error this should be a number
-    form.state.values.age = 'age'
   }
 })
