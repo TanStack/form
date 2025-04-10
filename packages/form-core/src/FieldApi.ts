@@ -1415,7 +1415,8 @@ export class FieldApi<
             fieldLevelError,
           })
 
-        if (field.state.meta.errorMap[errorMapKey] !== newErrorValue) {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (field.state.meta.errorMap?.[errorMapKey] !== newErrorValue) {
           field.setMeta((prev) => ({
             ...prev,
             errorMap: {

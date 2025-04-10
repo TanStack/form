@@ -1339,7 +1339,8 @@ export class FormApi<
           }
         }
 
-        if (this.state.errorMap[errorMapKey] !== formError) {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (this.state.errorMap?.[errorMapKey] !== formError) {
           this.baseStore.setState((prev) => ({
             ...prev,
             errorMap: {
