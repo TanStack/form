@@ -4,7 +4,12 @@ import {
   standardSchemaValidators,
 } from './standardSchemaValidator'
 import { defaultFieldMeta } from './metaHelper'
-import { determineFieldLevelErrorSourceAndValue, getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
+import {
+  determineFieldLevelErrorSourceAndValue,
+  getAsyncValidatorArray,
+  getBy,
+  getSyncValidatorArray,
+} from './utils'
 import type { DeepKeys, DeepValue, UnwrapOneLevelOfArray } from './util-types'
 import type {
   StandardSchemaV1,
@@ -1388,24 +1393,27 @@ export class FieldApi<
         //       )
         //     : errorFromForm[errorMapKey]
 
-        const fieldLevelError = validateObj.validate ? normalizeError(
-          field.runValidator({
-            validate: validateObj.validate,
-            value: {
-              value: field.store.state.value,
-              validationSource: 'field',
-              fieldApi: field,
-            },
-            type: 'validate',
-          }),
-        ) : undefined;
+        const fieldLevelError = validateObj.validate
+          ? normalizeError(
+              field.runValidator({
+                validate: validateObj.validate,
+                value: {
+                  value: field.store.state.value,
+                  validationSource: 'field',
+                  fieldApi: field,
+                },
+                type: 'validate',
+              }),
+            )
+          : undefined
 
-        const formLevelError = errorFromForm[errorMapKey];
+        const formLevelError = errorFromForm[errorMapKey]
 
-        const { newErrorValue, newSource } = determineFieldLevelErrorSourceAndValue({
-          formLevelError,
-          fieldLevelError,
-        })
+        const { newErrorValue, newSource } =
+          determineFieldLevelErrorSourceAndValue({
+            formLevelError,
+            fieldLevelError,
+          })
 
         if (field.state.meta.errorMap[errorMapKey] !== newErrorValue) {
           field.setMeta((prev) => ({
@@ -1570,13 +1578,15 @@ export class FieldApi<
           //   asyncFormValidationResults[this.name]?.[errorMapKey]
           // const fieldError = error || fieldErrorFromForm
 
-          const fieldLevelError = normalizeError(rawError);
-          const formLevelError = asyncFormValidationResults[this.name]?.[errorMapKey];
+          const fieldLevelError = normalizeError(rawError)
+          const formLevelError =
+            asyncFormValidationResults[this.name]?.[errorMapKey]
 
-          const { newErrorValue, newSource } = determineFieldLevelErrorSourceAndValue({
-            formLevelError,
-            fieldLevelError,
-          })
+          const { newErrorValue, newSource } =
+            determineFieldLevelErrorSourceAndValue({
+              formLevelError,
+              fieldLevelError,
+            })
 
           field.setMeta((prev) => {
             return {

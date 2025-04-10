@@ -394,7 +394,10 @@ export const determineFormLevelErrorSourceAndValue = ({
   newFormValidatorError: ValidationError
   isPreviousErrorFromFormValidator: boolean
   previousErrorValue: ValidationError
-}):  { newErrorValue: ValidationError, newSource: ValidationSource | undefined } => {
+}): {
+  newErrorValue: ValidationError
+  newSource: ValidationSource | undefined
+} => {
   // All falsy values are not considered errors
   if (newFormValidatorError) {
     return { newErrorValue: newFormValidatorError, newSource: 'form' }
@@ -409,7 +412,7 @@ export const determineFormLevelErrorSourceAndValue = ({
   if (previousErrorValue) {
     return { newErrorValue: previousErrorValue, newSource: 'field' }
   }
-  
+
   // No new or previous error, clear the error
   return { newErrorValue: undefined, newSource: undefined }
 }
@@ -424,7 +427,10 @@ export const determineFieldLevelErrorSourceAndValue = ({
 }: {
   formLevelError: ValidationError
   fieldLevelError: ValidationError
-}): { newErrorValue: ValidationError, newSource: ValidationSource | undefined } => {
+}): {
+  newErrorValue: ValidationError
+  newSource: ValidationSource | undefined
+} => {
   // At field level, we prioritize the field level error
   if (fieldLevelError) {
     return { newErrorValue: fieldLevelError, newSource: 'field' }

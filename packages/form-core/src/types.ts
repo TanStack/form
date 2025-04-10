@@ -50,7 +50,7 @@ const a: ValidationErrorMapSource = {
   onChange: 'field',
 }
 
-const test = a.onBlur;
+const test = a.onBlur
 
 /**
  * @private

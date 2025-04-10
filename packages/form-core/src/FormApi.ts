@@ -1304,14 +1304,15 @@ export class FormApi<
 
           const newFormValidatorError = fieldErrors?.[field]
 
-          const { newErrorValue, newSource } = determineFormLevelErrorSourceAndValue({
-            newFormValidatorError,
-            isPreviousErrorFromFormValidator:
+          const { newErrorValue, newSource } =
+            determineFormLevelErrorSourceAndValue({
+              newFormValidatorError,
+              isPreviousErrorFromFormValidator:
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                currentErrorMapSource?.[errorMapKey] === 'form',
               // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              currentErrorMapSource?.[errorMapKey] === 'form',
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            previousErrorValue: currentErrorMap?.[errorMapKey],
-          })
+              previousErrorValue: currentErrorMap?.[errorMapKey],
+            })
 
           if (newSource === 'form') {
             currentValidationErrorMap[field] = {
@@ -1457,7 +1458,10 @@ export class FormApi<
 
           if (fieldErrorsFromNormalizeError) {
             fieldErrorsFromFormValidators = fieldErrorsFromFormValidators
-              ? { ...fieldErrorsFromFormValidators, ...fieldErrorsFromNormalizeError }
+              ? {
+                  ...fieldErrorsFromFormValidators,
+                  ...fieldErrorsFromNormalizeError,
+                }
               : fieldErrorsFromNormalizeError
           }
           const errorMapKey = getErrorMapKey(validateObj.cause)
@@ -1475,14 +1479,15 @@ export class FormApi<
 
             const newFormValidatorError = fieldErrorsFromFormValidators?.[field]
 
-            const { newErrorValue, newSource } = determineFormLevelErrorSourceAndValue({
-              newFormValidatorError,
-              isPreviousErrorFromFormValidator:
+            const { newErrorValue, newSource } =
+              determineFormLevelErrorSourceAndValue({
+                newFormValidatorError,
+                isPreviousErrorFromFormValidator:
+                  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                  currentErrorMapSource?.[errorMapKey] === 'form',
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                currentErrorMapSource?.[errorMapKey] === 'form',
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              previousErrorValue: currentErrorMap?.[errorMapKey],
-            })
+                previousErrorValue: currentErrorMap?.[errorMapKey],
+              })
 
             if (
               // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -1510,7 +1515,11 @@ export class FormApi<
             },
           }))
 
-          resolve(fieldErrorsFromFormValidators ? { fieldErrors: fieldErrorsFromFormValidators, errorMapKey } : undefined)
+          resolve(
+            fieldErrorsFromFormValidators
+              ? { fieldErrors: fieldErrorsFromFormValidators, errorMapKey }
+              : undefined,
+          )
         }),
       )
     }
