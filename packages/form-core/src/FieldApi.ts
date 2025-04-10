@@ -20,6 +20,7 @@ import type {
   FormValidateOrFn,
 } from './FormApi'
 import type {
+  ListenerCause,
   UpdateMetaOptions,
   ValidationCause,
   ValidationError,
@@ -964,7 +965,10 @@ export class FieldApi<
   get state() {
     return this.store.state
   }
-  timeoutIds: Record<ValidationCause, ReturnType<typeof setTimeout> | null>
+  timeoutIds: {
+    validations: Record<ValidationCause, ReturnType<typeof setTimeout> | null>
+    listeners: Record<ListenerCause, ReturnType<typeof setTimeout> | null>
+  }
 
   /**
    * Initializes a new `FieldApi` instance.
@@ -994,7 +998,10 @@ export class FieldApi<
   ) {
     this.form = opts.form as never
     this.name = opts.name as never
-    this.timeoutIds = {} as Record<ValidationCause, never>
+    this.timeoutIds = {
+      validations: {} as Record<ValidationCause, never>,
+      listeners: {} as Record<ListenerCause, never>,
+    }
 
     this.store = new Derived({
       deps: [this.form.store],
@@ -1483,29 +1490,32 @@ export class FieldApi<
           let rawError!: ValidationError | undefined
           try {
             rawError = await new Promise((rawResolve, rawReject) => {
-              if (this.timeoutIds[validateObj.cause]) {
-                clearTimeout(this.timeoutIds[validateObj.cause]!)
+              if (this.timeoutIds.validations[validateObj.cause]) {
+                clearTimeout(this.timeoutIds.validations[validateObj.cause]!)
               }
 
-              this.timeoutIds[validateObj.cause] = setTimeout(async () => {
-                if (controller.signal.aborted) return rawResolve(undefined)
-                try {
-                  rawResolve(
-                    await this.runValidator({
-                      validate: validateObj.validate,
-                      value: {
-                        value: field.store.state.value,
-                        fieldApi: field,
-                        signal: controller.signal,
-                        validationSource: 'field',
-                      },
-                      type: 'validateAsync',
-                    }),
-                  )
-                } catch (e) {
-                  rawReject(e)
-                }
-              }, validateObj.debounceMs)
+              this.timeoutIds.validations[validateObj.cause] = setTimeout(
+                async () => {
+                  if (controller.signal.aborted) return rawResolve(undefined)
+                  try {
+                    rawResolve(
+                      await this.runValidator({
+                        validate: validateObj.validate,
+                        value: {
+                          value: field.store.state.value,
+                          fieldApi: field,
+                          signal: controller.signal,
+                          validationSource: 'field',
+                        },
+                        type: 'validateAsync',
+                      }),
+                    )
+                  } catch (e) {
+                    rawReject(e)
+                  }
+                },
+                validateObj.debounceMs,
+              )
             })
           } catch (e: unknown) {
             rawError = e as ValidationError
@@ -1637,11 +1647,11 @@ export class FieldApi<
     const debounceMs = this.options.listeners?.onBlurDebounceMs
 
     if (debounceMs && debounceMs > 0) {
-      if (this.timeoutIds.blur) {
-        clearTimeout(this.timeoutIds.blur)
+      if (this.timeoutIds.listeners.blur) {
+        clearTimeout(this.timeoutIds.listeners.blur)
       }
 
-      this.timeoutIds.blur = setTimeout(() => {
+      this.timeoutIds.listeners.blur = setTimeout(() => {
         this.options.listeners?.onBlur?.({
           value: this.state.value,
           fieldApi: this,
@@ -1659,11 +1669,11 @@ export class FieldApi<
     const debounceMs = this.options.listeners?.onChangeDebounceMs
 
     if (debounceMs && debounceMs > 0) {
-      if (this.timeoutIds.change) {
-        clearTimeout(this.timeoutIds.change)
+      if (this.timeoutIds.listeners.change) {
+        clearTimeout(this.timeoutIds.listeners.change)
       }
 
-      this.timeoutIds.change = setTimeout(() => {
+      this.timeoutIds.listeners.change = setTimeout(() => {
         this.options.listeners?.onChange?.({
           value: this.state.value,
           fieldApi: this,
