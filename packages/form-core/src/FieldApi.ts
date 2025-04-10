@@ -4,7 +4,7 @@ import {
   standardSchemaValidators,
 } from './standardSchemaValidator'
 import { defaultFieldMeta } from './metaHelper'
-import { getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
+import { determineFieldLevelErrorSourceAndValue, getAsyncValidatorArray, getBy, getSyncValidatorArray } from './utils'
 import type { DeepKeys, DeepValue, UnwrapOneLevelOfArray } from './util-types'
 import type {
   StandardSchemaV1,
@@ -1367,47 +1367,60 @@ export class FieldApi<
       ) => {
         const errorMapKey = getErrorMapKey(validateObj.cause)
 
-        const error =
-          /*
-            If `validateObj.validate` is `undefined`, then the field doesn't have
-            a validator for this event, but there still could be an error that
-            needs to be cleaned up related to the current event left by the
-            form's validator.
-          */
-          validateObj.validate
-            ? normalizeError(
-                field.runValidator({
-                  validate: validateObj.validate,
-                  value: {
-                    value: field.store.state.value,
-                    validationSource: 'field',
-                    fieldApi: field,
-                  },
-                  type: 'validate',
-                }),
-              )
-            : errorFromForm[errorMapKey]
+        // const error =
+        //   /*
+        //     If `validateObj.validate` is `undefined`, then the field doesn't have
+        //     a validator for this event, but there still could be an error that
+        //     needs to be cleaned up related to the current event left by the
+        //     form's validator.
+        //   */
+        //   validateObj.validate
+        //     ? normalizeError(
+        //         field.runValidator({
+        //           validate: validateObj.validate,
+        //           value: {
+        //             value: field.store.state.value,
+        //             validationSource: 'field',
+        //             fieldApi: field,
+        //           },
+        //           type: 'validate',
+        //         }),
+        //       )
+        //     : errorFromForm[errorMapKey]
 
-        if (field.state.meta.errorMap[errorMapKey] !== error) {
+        const fieldLevelError = validateObj.validate ? normalizeError(
+          field.runValidator({
+            validate: validateObj.validate,
+            value: {
+              value: field.store.state.value,
+              validationSource: 'field',
+              fieldApi: field,
+            },
+            type: 'validate',
+          }),
+        ) : undefined;
+
+        const formLevelError = errorFromForm[errorMapKey];
+
+        const { newErrorValue, newSource } = determineFieldLevelErrorSourceAndValue({
+          formLevelError,
+          fieldLevelError,
+        })
+
+        if (field.state.meta.errorMap[errorMapKey] !== newErrorValue) {
           field.setMeta((prev) => ({
             ...prev,
             errorMap: {
               ...prev.errorMap,
-              [getErrorMapKey(validateObj.cause)]:
-                // Prefer the error message from the field validators if they exist
-                error ? error : errorFromForm[errorMapKey],
+              [errorMapKey]: newErrorValue,
             },
             errorSourceMap: {
               ...prev.errorSourceMap,
-              [getErrorMapKey(validateObj.cause)]: error
-                ? 'field'
-                : errorFromForm[errorMapKey]
-                  ? 'form'
-                  : undefined,
+              [errorMapKey]: newSource,
             },
           }))
         }
-        if (error || errorFromForm[errorMapKey]) {
+        if (newErrorValue) {
           hasErrored = true
         }
       }
@@ -1552,30 +1565,35 @@ export class FieldApi<
             rawError = e as ValidationError
           }
           if (controller.signal.aborted) return resolve(undefined)
-          const error = normalizeError(rawError)
-          const fieldErrorFromForm =
-            asyncFormValidationResults[this.name]?.[errorMapKey]
-          const fieldError = error || fieldErrorFromForm
+          // const error = normalizeError(rawError)
+          // const fieldErrorFromForm =
+          //   asyncFormValidationResults[this.name]?.[errorMapKey]
+          // const fieldError = error || fieldErrorFromForm
+
+          const fieldLevelError = normalizeError(rawError);
+          const formLevelError = asyncFormValidationResults[this.name]?.[errorMapKey];
+
+          const { newErrorValue, newSource } = determineFieldLevelErrorSourceAndValue({
+            formLevelError,
+            fieldLevelError,
+          })
+
           field.setMeta((prev) => {
             return {
               ...prev,
               errorMap: {
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 ...prev?.errorMap,
-                [errorMapKey]: fieldError,
+                [errorMapKey]: newErrorValue,
               },
               errorSourceMap: {
                 ...prev.errorSourceMap,
-                [errorMapKey]: error
-                  ? 'field'
-                  : fieldErrorFromForm
-                    ? 'form'
-                    : undefined,
+                [errorMapKey]: newSource,
               },
             }
           })
 
-          resolve(fieldError)
+          resolve(newErrorValue)
         }),
       )
     }

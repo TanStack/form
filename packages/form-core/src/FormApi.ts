@@ -1,7 +1,7 @@
 import { Derived, Store, batch } from '@tanstack/store'
 import {
   deleteBy,
-  determineErrorValue,
+  determineFormLevelErrorSourceAndValue,
   functionalUpdate,
   getAsyncValidatorArray,
   getBy,
@@ -1304,7 +1304,7 @@ export class FormApi<
 
           const newFormValidatorError = fieldErrors?.[field]
 
-          const { newErrorValue, newSource } = determineErrorValue({
+          const { newErrorValue, newSource } = determineFormLevelErrorSourceAndValue({
             newFormValidatorError,
             isPreviousErrorFromFormValidator:
               // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -1405,7 +1405,7 @@ export class FormApi<
      */
     const promises: Promise<ValidationPromiseResult<TFormData>>[] = []
 
-    let fieldErrors:
+    let fieldErrorsFromFormValidators:
       | Partial<Record<DeepKeys<TFormData>, ValidationError>>
       | undefined
 
@@ -1456,8 +1456,8 @@ export class FormApi<
             normalizeError<TFormData>(rawError)
 
           if (fieldErrorsFromNormalizeError) {
-            fieldErrors = fieldErrors
-              ? { ...fieldErrors, ...fieldErrorsFromNormalizeError }
+            fieldErrorsFromFormValidators = fieldErrorsFromFormValidators
+              ? { ...fieldErrorsFromFormValidators, ...fieldErrorsFromNormalizeError }
               : fieldErrorsFromNormalizeError
           }
           const errorMapKey = getErrorMapKey(validateObj.cause)
@@ -1473,9 +1473,9 @@ export class FormApi<
               errorSourceMap: currentErrorMapSource,
             } = fieldMeta
 
-            const newFormValidatorError = fieldErrors?.[field]
+            const newFormValidatorError = fieldErrorsFromFormValidators?.[field]
 
-            const { newErrorValue, newSource } = determineErrorValue({
+            const { newErrorValue, newSource } = determineFormLevelErrorSourceAndValue({
               newFormValidatorError,
               isPreviousErrorFromFormValidator:
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -1510,7 +1510,7 @@ export class FormApi<
             },
           }))
 
-          resolve(fieldErrors ? { fieldErrors, errorMapKey } : undefined)
+          resolve(fieldErrorsFromFormValidators ? { fieldErrors: fieldErrorsFromFormValidators, errorMapKey } : undefined)
         }),
       )
     }

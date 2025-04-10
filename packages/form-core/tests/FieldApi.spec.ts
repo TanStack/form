@@ -364,7 +364,7 @@ describe('field api', () => {
     ])
   })
 
-  it('should remove a subfield from an errorMap: {}array field correctly', async () => {
+  it('should remove a subfield from an array field correctly', async () => {
     const form = new FormApi({
       defaultValues: {
         people: [] as Array<{ name: string }>,

@@ -46,6 +46,12 @@ export type ValidationErrorMapSource = {
   onServer?: ValidationSource
 }
 
+const a: ValidationErrorMapSource = {
+  onChange: 'field',
+}
+
+const test = a.onBlur;
+
 /**
  * @private
  */

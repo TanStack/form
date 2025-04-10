@@ -2,6 +2,7 @@ import type {
   GlobalFormValidationError,
   ValidationCause,
   ValidationError,
+  ValidationSource,
 } from './types'
 import type { FormValidators } from './FormApi'
 import type { AnyFieldMeta, FieldValidators } from './FieldApi'
@@ -382,10 +383,10 @@ export function shallow<T>(objA: T, objB: T) {
 }
 
 /**
- * Determines the logic for determining the error value to set on the field meta within the form sync validation.
+ * Determines the logic for determining the error source and value to set on the field meta within the form level sync/async validation.
  * @private
  */
-export const determineErrorValue = ({
+export const determineFormLevelErrorSourceAndValue = ({
   newFormValidatorError,
   isPreviousErrorFromFormValidator,
   previousErrorValue,
@@ -393,7 +394,7 @@ export const determineErrorValue = ({
   newFormValidatorError: ValidationError
   isPreviousErrorFromFormValidator: boolean
   previousErrorValue: ValidationError
-}) => {
+}):  { newErrorValue: ValidationError, newSource: ValidationSource | undefined } => {
   // All falsy values are not considered errors
   if (newFormValidatorError) {
     return { newErrorValue: newFormValidatorError, newSource: 'form' }
@@ -404,6 +405,35 @@ export const determineErrorValue = ({
     return { newErrorValue: undefined, newSource: undefined }
   }
 
-  // Do not clear field level validators since they're handled by the field validator
-  return { newErrorValue: previousErrorValue, newSource: 'field' }
+  // At this point, we have a preivous error which must have been set by the field validator, keep as is
+  if (previousErrorValue) {
+    return { newErrorValue: previousErrorValue, newSource: 'field' }
+  }
+  
+  // No new or previous error, clear the error
+  return { newErrorValue: undefined, newSource: undefined }
+}
+
+/**
+ * Determines the logic for determining the error source and value to set on the field meta within the field level sync/async validation.
+ * @private
+ */
+export const determineFieldLevelErrorSourceAndValue = ({
+  formLevelError,
+  fieldLevelError,
+}: {
+  formLevelError: ValidationError
+  fieldLevelError: ValidationError
+}): { newErrorValue: ValidationError, newSource: ValidationSource | undefined } => {
+  // At field level, we prioritize the field level error
+  if (fieldLevelError) {
+    return { newErrorValue: fieldLevelError, newSource: 'field' }
+  }
+
+  // If there is no field level error, and there is a form level error, we set the form level error
+  if (formLevelError) {
+    return { newErrorValue: formLevelError, newSource: 'form' }
+  }
+
+  return { newErrorValue: undefined, newSource: undefined }
 }
