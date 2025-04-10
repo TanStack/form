@@ -88,24 +88,21 @@ export type DeepRecordUnion<T, TPrefix extends string = '', TAcc = never> =
           ? DeepRecordObjectUnion<T, TPrefix, TAcc>
           : TAcc
 
-type UnionKeys<T> = T extends any ? keyof T : never
+export type DeepRecord<T> = {
+  [TRecord in DeepRecordUnion<T> as keyof TRecord]: TRecord[keyof TRecord]
+}
 
 /**
  * The keys of an object or array, deeply nested.
  */
 export type DeepKeys<T> = unknown extends T
   ? string
-  : UnionKeys<DeepRecordUnion<T>> & string
+  : keyof DeepRecord<T> & string
 
 /**
  * Infer the type of a deeply nested property within an object or an array.
  */
-export type DeepValue<TValue, TAccessor> = TValue extends any
-  ? IndexDeepRecord<TAccessor, DeepRecordUnion<TValue>>
-  : never
-
-export type IndexDeepRecord<TAccessor, TDeepRecord> = TDeepRecord extends any
-  ? TAccessor extends keyof TDeepRecord
-    ? TDeepRecord[TAccessor]
+export type DeepValue<TValue, TAccessor> =
+  DeepRecord<TValue> extends infer TDeepRecord
+    ? TDeepRecord[TAccessor & keyof TDeepRecord]
     : never
-  : never
