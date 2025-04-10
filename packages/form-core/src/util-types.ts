@@ -92,12 +92,14 @@ export type DeepRecord<T> = {
   [TRecord in DeepRecordUnion<T> as keyof TRecord]: TRecord[keyof TRecord]
 }
 
+type UnionKeys<T> = T extends any ? keyof T : never
+
 /**
  * The keys of an object or array, deeply nested.
  */
 export type DeepKeys<T> = unknown extends T
   ? string
-  : keyof DeepRecord<T> & string
+  : UnionKeys<DeepRecordUnion<T>> & string
 
 /**
  * Infer the type of a deeply nested property within an object or an array.
