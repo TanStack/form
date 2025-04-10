@@ -105,7 +105,7 @@ export type DeepValue<TValue, TAccessor> = TValue extends any
   : never
 
 export type IndexDeepRecord<TAccessor, TDeepRecord> = TDeepRecord extends any
-  ? TAccessor & keyof TDeepRecord extends never
-    ? never
-    : TDeepRecord[TAccessor & keyof TDeepRecord]
+  ? TAccessor extends keyof TDeepRecord
+    ? TDeepRecord[TAccessor]
+    : never
   : never
