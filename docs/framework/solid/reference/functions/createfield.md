@@ -19,7 +19,7 @@ Defined in: [packages/solid-form/src/createField.tsx:223](https://github.com/Tan
 
 • **TName** *extends* `string`
 
-• **TData**
+• **TData** *extends* `never`
 
 • **TOnMount** *extends* `undefined` \| `FieldValidateOrFn`\<`TParentData`, `TName`, `TData`\>
 
