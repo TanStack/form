@@ -1,4 +1,4 @@
-import { deleteCookie, getHeader } from '@tanstack/react-start/server'
+import { deleteCookie } from '@tanstack/react-start/server'
 import { _tanstackInternalsCookie } from './utils'
 import type { ServerFormState } from './types'
 
