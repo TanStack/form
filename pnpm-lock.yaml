@@ -753,9 +753,6 @@ importers:
 
   packages/react-form:
     dependencies:
-      '@remix-run/node':
-        specifier: ^2.16.5
-        version: 2.16.5(typescript@5.8.3)
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../form-core
@@ -13325,18 +13322,6 @@ snapshots:
     optionalDependencies:
       typescript: 5.8.2
 
-  '@remix-run/node@2.16.5(typescript@5.8.3)':
-    dependencies:
-      '@remix-run/server-runtime': 2.16.5(typescript@5.8.3)
-      '@remix-run/web-fetch': 4.4.2
-      '@web3-storage/multipart-parser': 1.0.0
-      cookie-signature: 1.2.2
-      source-map-support: 0.5.21
-      stream-slice: 0.1.2
-      undici: 6.21.2
-    optionalDependencies:
-      typescript: 5.8.3
-
   '@remix-run/react@2.16.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.2)':
     dependencies:
       '@remix-run/router': 1.23.0
@@ -13376,18 +13361,6 @@ snapshots:
       turbo-stream: 2.4.0
     optionalDependencies:
       typescript: 5.8.2
-
-  '@remix-run/server-runtime@2.16.5(typescript@5.8.3)':
-    dependencies:
-      '@remix-run/router': 1.23.0
-      '@types/cookie': 0.6.0
-      '@web3-storage/multipart-parser': 1.0.0
-      cookie: 0.7.2
-      set-cookie-parser: 2.7.1
-      source-map: 0.7.4
-      turbo-stream: 2.4.0
-    optionalDependencies:
-      typescript: 5.8.3
 
   '@remix-run/web-blob@3.1.0':
     dependencies:
