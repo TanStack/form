@@ -213,7 +213,7 @@ Use `field.state.value` instead.
 handleBlur(): void
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1683](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1683)
+Defined in: [packages/form-core/src/FieldApi.ts:1684](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1684)
 
 Handles the blur event.
 
@@ -229,7 +229,7 @@ Handles the blur event.
 handleChange(updater): void
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1676](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1676)
+Defined in: [packages/form-core/src/FieldApi.ts:1677](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1677)
 
 Handles the change event.
 
@@ -422,7 +422,7 @@ Replaces a value at the specified index.
 setErrorMap(errorMap): void
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1703](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1703)
+Defined in: [packages/form-core/src/FieldApi.ts:1704](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1704)
 
 Updates the field's errorMap
 
@@ -547,7 +547,7 @@ Updates the field instance with new options.
 validate(cause, opts?): unknown[] | Promise<unknown[]>
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1643](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1643)
+Defined in: [packages/form-core/src/FieldApi.ts:1644](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1644)
 
 Validates the field value.
 
