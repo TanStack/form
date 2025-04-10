@@ -1361,7 +1361,8 @@ export class FormApi<
        */
       const submitErrKey = getErrorMapKey('submit')
       if (
-        this.state.errorMap[submitErrKey] &&
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        this.state.errorMap?.[submitErrKey] &&
         cause !== 'submit' &&
         !hasErrored
       ) {
