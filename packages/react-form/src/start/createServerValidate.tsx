@@ -4,7 +4,7 @@ import {
   isStandardSchemaValidator,
   standardSchemaValidators,
 } from '@tanstack/form-core'
-import { getHeader, setCookie } from '@tanstack/react-start/server'
+import { getHeader } from '@tanstack/react-start/server'
 import { _tanstackInternalsCookie } from './utils'
 import { ServerValidateError } from './error'
 import type {
@@ -116,9 +116,7 @@ export const createServerValidate =
       errors: onServerErrorVal ? [onServerErrorVal] : [],
     }
 
-    const cookie = _tanstackInternalsCookie.serialize(formState)
-
-    setCookie(_tanstackInternalsCookie.name, cookie)
+    _tanstackInternalsCookie.set(formState)
 
     throw new ServerValidateError({
       response: new Response('ok', {

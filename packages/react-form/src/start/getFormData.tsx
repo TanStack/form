@@ -10,7 +10,7 @@ export const initialFormState = {
 }
 
 export const getFormData = async () => {
-  const data = _tanstackInternalsCookie.parse() as
+  const data = _tanstackInternalsCookie.get() as
     | undefined
     | ServerFormState<any, undefined>
   // Delete the temporary cookie from the client after reading it

@@ -1,4 +1,4 @@
-import { getCookie } from '@tanstack/react-start/server'
+import { getCookie, setCookie } from '@tanstack/react-start/server'
 import * as devalue from 'devalue'
 
 export const _tanstackInternalsCookie = {
@@ -8,5 +8,8 @@ export const _tanstackInternalsCookie = {
     if (!cookie) return undefined
     return devalue.parse(cookie)
   },
-  serialize: (data: any) => devalue.stringify(data),
+  save: (data: any) => {
+    const cookie = devalue.stringify(data)
+    setCookie(_tanstackInternalsCookie.name, cookie)
+  },
 }
