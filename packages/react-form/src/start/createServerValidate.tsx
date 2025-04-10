@@ -116,7 +116,7 @@ export const createServerValidate =
       errors: onServerErrorVal ? [onServerErrorVal] : [],
     }
 
-    const cookie = await _tanstackInternalsCookie.serialize(formState)
+    const cookie = _tanstackInternalsCookie.serialize(formState)
 
     throw new ServerValidateError({
       response: new Response('ok', {
