@@ -56,7 +56,7 @@ useForm({
   defaultValues: {
     name: 'Bill Luo',
     age: 24,
-  } as MyForm,
+  } satisfies MyForm,
 })
 ```
 
