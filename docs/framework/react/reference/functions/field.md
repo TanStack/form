@@ -23,7 +23,7 @@ The `Field` component uses the `useField` hook internally to manage the field in
 
 • **TName** *extends* `string`
 
-• **TData**
+• **TData** *extends* `never`
 
 • **TOnMount** *extends* `undefined` \| `FieldValidateOrFn`\<`TParentData`, `TName`, `TData`\>
 
