@@ -1372,27 +1372,6 @@ export class FieldApi<
       ) => {
         const errorMapKey = getErrorMapKey(validateObj.cause)
 
-        // const error =
-        //   /*
-        //     If `validateObj.validate` is `undefined`, then the field doesn't have
-        //     a validator for this event, but there still could be an error that
-        //     needs to be cleaned up related to the current event left by the
-        //     form's validator.
-        //   */
-        //   validateObj.validate
-        //     ? normalizeError(
-        //         field.runValidator({
-        //           validate: validateObj.validate,
-        //           value: {
-        //             value: field.store.state.value,
-        //             validationSource: 'field',
-        //             fieldApi: field,
-        //           },
-        //           type: 'validate',
-        //         }),
-        //       )
-        //     : errorFromForm[errorMapKey]
-
         const fieldLevelError = validateObj.validate
           ? normalizeError(
               field.runValidator({
@@ -1574,10 +1553,6 @@ export class FieldApi<
             rawError = e as ValidationError
           }
           if (controller.signal.aborted) return resolve(undefined)
-          // const error = normalizeError(rawError)
-          // const fieldErrorFromForm =
-          //   asyncFormValidationResults[this.name]?.[errorMapKey]
-          // const fieldError = error || fieldErrorFromForm
 
           const fieldLevelError = normalizeError(rawError)
           const formLevelError =
