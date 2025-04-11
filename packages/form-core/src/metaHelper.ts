@@ -89,7 +89,9 @@ export function metaHelper<
       }
     } else {
       const currentValue = formApi.getFieldValue(field)
-      const fieldItems = Array.isArray(currentValue) ? currentValue.length : 0
+      const fieldItems = Array.isArray(currentValue)
+        ? (currentValue as Array<unknown>).length
+        : 0
       for (let i = index + 1; i < fieldItems; i++) {
         affectedFieldKeys.push(getFieldPath(field, i))
       }

@@ -8,10 +8,10 @@ title: DeepValue
 # Type Alias: DeepValue\<TValue, TAccessor\>
 
 ```ts
-type DeepValue<TValue, TAccessor> = TValue extends any ? DeepRecord<TValue>[TAccessor & keyof DeepRecord<TValue>] : never;
+type DeepValue<TValue, TAccessor> = DeepRecord<TValue> extends infer TDeepRecord ? TDeepRecord[TAccessor & keyof TDeepRecord] : never;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:111](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L111)
+Defined in: [packages/form-core/src/util-types.ts:107](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L107)
 
 Infer the type of a deeply nested property within an object or an array.
 

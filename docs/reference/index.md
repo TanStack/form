@@ -55,7 +55,6 @@ title: "@tanstack/form-core"
 - [StandardSchemaV1](type-aliases/standardschemav1.md)
 - [TStandardSchemaValidatorValue](type-aliases/tstandardschemavalidatorvalue.md)
 - [TupleAccessor](type-aliases/tupleaccessor.md)
-- [UnionToIntersection](type-aliases/uniontointersection.md)
 - [UnwrapFieldAsyncValidateOrFn](type-aliases/unwrapfieldasyncvalidateorfn.md)
 - [UnwrapFieldValidateOrFn](type-aliases/unwrapfieldvalidateorfn.md)
 - [UnwrapFormAsyncValidateOrFn](type-aliases/unwrapformasyncvalidateorfn.md)
