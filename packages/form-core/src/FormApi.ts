@@ -1206,7 +1206,7 @@ export class FormApi<
     const currentValue = this.getFieldValue(field)
 
     const lastIndex = Array.isArray(currentValue)
-      ? Math.max(currentValue.length - 1, 0)
+      ? Math.max((currentValue as Array<unknown>).length - 1, 0)
       : null
 
     // We have to validate all fields that have shifted (at least the current field)
@@ -1879,7 +1879,7 @@ export class FormApi<
     const fieldValue = this.getFieldValue(field)
 
     const lastIndex = Array.isArray(fieldValue)
-      ? Math.max(fieldValue.length - 1, 0)
+      ? Math.max((fieldValue as Array<unknown>).length - 1, 0)
       : null
 
     this.setFieldValue(

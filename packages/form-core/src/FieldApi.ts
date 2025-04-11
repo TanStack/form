@@ -1063,7 +1063,7 @@ export class FieldApi<
   mount = () => {
     const cleanup = this.store.mount()
 
-    if (this.options.defaultValue !== undefined) {
+    if ((this.options.defaultValue as unknown) !== undefined) {
       this.form.setFieldValue(this.name, this.options.defaultValue as never, {
         dontUpdateMeta: true,
       })
@@ -1137,15 +1137,15 @@ export class FieldApi<
     this.name = opts.name
 
     // Default Value
-    if (this.state.value === undefined) {
+    if ((this.state.value as unknown) === undefined) {
       const formDefault = getBy(opts.form.options.defaultValues, opts.name)
 
-      const defaultValue = opts.defaultValue ?? formDefault
+      const defaultValue = (opts.defaultValue as unknown) ?? formDefault
 
       // The name is dynamic in array fields. It changes when the user performs operations like removing or reordering.
       // In this case, we don't want to force a default value if the store managed to find an existing value.
       if (nameHasChanged) {
-        this.setValue((val) => val || defaultValue, {
+        this.setValue((val) => (val as unknown) || defaultValue, {
           dontUpdateMeta: true,
         })
       } else if (defaultValue !== undefined) {

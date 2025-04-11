@@ -19,7 +19,7 @@ Defined in: [packages/vue-form/src/useField.tsx:267](https://github.com/TanStack
 
 • **TName** *extends* `string`
 
-• **TData**
+• **TData** *extends* `never`
 
 • **TOnMount** *extends* `undefined` \| `FieldValidateOrFn`\<`TParentData`, `TName`, `TData`\>
 

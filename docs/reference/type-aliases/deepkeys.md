@@ -11,7 +11,7 @@ title: DeepKeys
 type DeepKeys<T> = unknown extends T ? string : UnionKeys<DeepRecordUnion<T>> & string;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:104](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L104)
+Defined in: [packages/form-core/src/util-types.ts:100](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L100)
 
 The keys of an object or array, deeply nested.
 

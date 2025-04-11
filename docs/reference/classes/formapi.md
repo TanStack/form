@@ -350,7 +350,7 @@ Defined in: [packages/form-core/src/FormApi.ts:1816](https://github.com/TanStack
 
 ##### value
 
-[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
+[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
 
 ##### opts?
 
@@ -447,7 +447,7 @@ Pushes a value into an array field.
 
 ##### value
 
-[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
+[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
 
 ##### opts?
 
@@ -526,7 +526,7 @@ Replaces a value into an array field at the specified index.
 
 ##### value
 
-[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
+[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
 
 ##### opts?
 

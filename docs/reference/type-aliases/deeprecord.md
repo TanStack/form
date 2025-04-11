@@ -8,10 +8,10 @@ title: DeepRecord
 # Type Alias: DeepRecord\<T\>
 
 ```ts
-type DeepRecord<T> = UnionToIntersection<DeepRecordUnion<T>>;
+type DeepRecord<T> = { [TRecord in DeepRecordUnion<T> as keyof TRecord]: TRecord[keyof TRecord] };
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:97](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L97)
+Defined in: [packages/form-core/src/util-types.ts:91](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L91)
 
 ## Type Parameters
 
