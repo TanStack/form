@@ -453,6 +453,10 @@
             {
               "label": "Balastrong's Tutorial",
               "to": "framework/react/community/balastrong-tutorial"
+            },
+            {
+              "label": "Atharva's Tutorial",
+              "to": "framework/react/community/atharva-tutorial"
             }
           ]
         }
