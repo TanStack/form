@@ -1890,4 +1890,68 @@ describe('field api', () => {
     expect(field.getMeta().errors).toStrictEqual([])
     expect(form.state.canSubmit).toBe(true)
   })
+
+  it('should debounce onChange listener', async () => {
+    vi.useFakeTimers()
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    form.mount()
+
+    const onChangeMock = vi.fn()
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onChange: onChangeMock,
+        onChangeDebounceMs: 500,
+      },
+    })
+
+    field.mount()
+
+    field.handleChange('first')
+    field.handleChange('second')
+    expect(onChangeMock).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(500)
+    expect(onChangeMock).toHaveBeenCalledTimes(1)
+    expect(onChangeMock).toHaveBeenCalledWith({
+      value: 'second',
+      fieldApi: field,
+    })
+  })
+
+  it('should debounce onBlur listener', async () => {
+    vi.useFakeTimers()
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    form.mount()
+
+    const onBlurMock = vi.fn()
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onBlur: onBlurMock,
+        onBlurDebounceMs: 300,
+      },
+    })
+
+    field.mount()
+
+    field.handleBlur()
+    field.handleBlur()
+    expect(onBlurMock).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(300)
+    expect(onBlurMock).toHaveBeenCalledTimes(1)
+  })
 })

@@ -13,6 +13,11 @@ export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount' | 'server'
 /**
  * @private
  */
+export type ListenerCause = 'change' | 'blur' | 'submit' | 'mount'
+
+/**
+ * @private
+ */
 export type ValidationErrorMapKeys = `on${Capitalize<ValidationCause>}`
 
 /**
