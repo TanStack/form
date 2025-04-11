@@ -58,9 +58,9 @@ expectTypeOf(0 as never as NestedPartialSupport).toEqualTypeOf<
  * Properly handles `object` edgecase nesting like so:
  */
 type ObjectNestedEdgecase = DeepKeys<{ meta: { mainUser: object } }>
-expectTypeOf(0 as never as ObjectNestedEdgecase).toEqualTypeOf<
-  'meta' | 'meta.mainUser' | `meta.mainUser.${string}`
->()
+expectTypeOf(0 as never as ObjectNestedEdgecase).toEqualTypeOf(
+  0 as never as 'meta' | 'meta.mainUser' | `meta.mainUser.${string}`,
+)
 
 /**
  * Properly handles `object` edgecase like so:
@@ -72,9 +72,9 @@ expectTypeOf(0 as never as ObjectEdgecase).toEqualTypeOf<string>()
  * Properly handles `object` edgecase nesting like so:
  */
 type UnknownNestedEdgecase = DeepKeys<{ meta: { mainUser: unknown } }>
-expectTypeOf().toEqualTypeOf<
-  'meta' | 'meta.mainUser' | `meta.mainUser.${string}`
->(0 as never as UnknownNestedEdgecase)
+expectTypeOf(
+  0 as never as 'meta' | 'meta.mainUser' | `meta.mainUser.${string}`,
+).toEqualTypeOf(0 as never as UnknownNestedEdgecase)
 
 /**
  * Properly handles discriminated unions like so:
@@ -141,7 +141,7 @@ type NestedNullableObjectCaseMixed = DeepValue<
   NestedNullableObjectCase,
   'mixed.mainUser'
 >
-expectTypeOf().toEqualTypeOf<'name' | null | undefined>(
+expectTypeOf(0 as never as 'name' | null | undefined).toEqualTypeOf(
   0 as never as NestedNullableObjectCaseMixed,
 )
 
@@ -152,7 +152,7 @@ type DoubleNestedNullableObjectA = DeepValue<
   DoubleNestedNullableObjectCase,
   'mixed.mainUser'
 >
-expectTypeOf().toEqualTypeOf<{ name: 'name' } | null | undefined>(
+expectTypeOf(0 as never as { name: 'name' } | null | undefined).toEqualTypeOf(
   0 as never as DoubleNestedNullableObjectA,
 )
 type DoubleNestedNullableObjectB = DeepValue<
@@ -193,7 +193,7 @@ type NestedNullableObjectUnionB = DeepValue<
   NestedNullableObjectUnionCase,
   'nullable.b.c'
 >
-expectTypeOf().toEqualTypeOf<string | boolean | null | undefined>(
+expectTypeOf(0 as never as string | boolean | null | undefined).toEqualTypeOf(
   0 as never as NestedNullableObjectUnionB,
 )
 type NestedNullableObjectUnionC = DeepValue<
