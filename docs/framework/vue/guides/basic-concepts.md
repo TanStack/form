@@ -26,19 +26,19 @@ const formOpts = formOptions({
 A Form Instance is an object that represents an individual form and provides methods and properties for working with the form. You create a form instance using the `useForm` function. The function accepts an object with an `onSubmit` function, which is called when the form is submitted.
 
 ```js
-const form = useForm({
+const form = useForm(() => ({
   ...formOpts,
   onSubmit: async ({ value }) => {
     // Do something with form data
     console.log(value)
   },
-})
+}))
 ```
 
 You may also create a form instance without using `formOptions` by using the standalone `useForm` API:
 
 ```ts
-const form = useForm({
+const form = useForm(() => ({
   onSubmit: async ({ value }) => {
     // Do something with form data
     console.log(value)
@@ -48,7 +48,7 @@ const form = useForm({
     lastName: '',
     hobbies: [],
   } as Person,
-})
+}))
 ```
 
 ## Field
@@ -61,10 +61,10 @@ Example:
 <template>
   <!-- ... -->
   <form.Field name="fullName">
-    <template v-slot="{ field }">
+    <template v-slot="{ field, value }">
       <input
         :name="field.name"
-        :value="field.state.value"
+        :value="value()"
         @blur="field.handleBlur"
         @input="(e) => field.handleChange(e.target.value)"
       />
@@ -102,10 +102,10 @@ The Field API is an object provided by a scoped slot using the `v-slot` directiv
 Example:
 
 ```vue
-<template v-slot="{ field }">
+<template v-slot="{ field, value }">
   <input
     :name="field.name"
-    :value="field.state.value"
+    :value="value()"
     @blur="field.handleBlur"
     @input="(e) => field.handleChange(e.target.value)"
   />
@@ -136,13 +136,13 @@ Example:
         },
     }"
     >
-        <template v-slot="{ field }">
+        <template v-slot="{ field, value, meta }">
             <input
-                :value="field.state.value"
+                :value="value()"
                 @input="(e) => field.handleChange(e.target.value)"
                 @blur="field.handleBlur"
             />
-            <FieldInfo :field="field" />
+            <FieldInfo :meta="meta()" />
         </template>
     </form.Field>
     <!-- ... -->
@@ -166,9 +166,9 @@ Supported libraries include:
 import { useForm } from '@tanstack/vue-form'
 import { z } from 'zod'
 
-const form = useForm({
+const form = useForm(() => ({
   // ...
-})
+}))
 
 const onChangeFirstName = z.string().refine(
   async (value) => {
@@ -191,16 +191,16 @@ const onChangeFirstName = z.string().refine(
       onChangeAsync: onChangeFirstName,
     }"
   >
-    <template v-slot="{ field, state }">
+    <template v-slot="{ field, value, meta }">
       <label :htmlFor="field.name">First Name:</label>
       <input
         :id="field.name"
         :name="field.name"
-        :value="field.state.value"
+        :value="value()"
         @input="(e) => field.handleChange((e.target as HTMLInputElement).value)"
         @blur="field.handleBlur"
       />
-      <FieldInfo :state="state" />
+      <FieldInfo :meta="meta()" />
     </template>
   </form.Field>
   <!-- ... -->
@@ -249,9 +249,9 @@ Example:
       },
     }"
   >
-    <template v-slot="{ field }">
+    <template v-slot="{ field, value }">
       <input
-        :value="field.state.value"
+        :value="value()"
         @input="(e) => field.handleChange(e.target.value)"
       />
     </template>
@@ -290,13 +290,13 @@ Example:
             <div v-else>
               <div v-for="(_, i) in hobbiesField.state.value" :key="i">
                 <form.Field :name="`hobbies[${i}].name`">
-                  <template v-slot="{ field }">
+                  <template v-slot="{ field, value, meta }">
                     <div>
                       <label :for="field.name">Name:</label>
                       <input
                         :id="field.name"
                         :name="field.name"
-                        :value="field.state.value"
+                        :value="value()"
                         @blur="field.handleBlur"
                         @input="(e) => field.handleChange(e.target.value)"
                       />
@@ -306,22 +306,22 @@ Example:
                       >
                         X
                       </button>
-                      <FieldInfo :field="field" />
+                      <FieldInfo :meta="meta()" />
                     </div>
                   </template>
                 </form.Field>
                 <form.Field :name="`hobbies[${i}].description`">
-                  <template v-slot="{ field }">
+                  <template v-slot="{ field, value, meta }">
                     <div>
                       <label :for="field.name">Description:</label>
                       <input
                         :id="field.name"
                         :name="field.name"
-                        :value="field.state.value"
+                        :value="value()"
                         @blur="field.handleBlur"
                         @input="(e) => field.handleChange(e.target.value)"
                       />
-                      <FieldInfo :field="field" />
+                      <FieldInfo :meta="meta()" />
                     </div>
                   </template>
                 </form.Field>
