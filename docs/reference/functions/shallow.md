@@ -11,7 +11,7 @@ title: shallow
 function shallow<T>(objA, objB): boolean
 ```
 
-Defined in: [packages/form-core/src/utils.ts:334](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L334)
+Defined in: [packages/form-core/src/utils.ts:339](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L339)
 
 ## Type Parameters
 

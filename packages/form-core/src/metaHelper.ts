@@ -16,6 +16,7 @@ export const defaultFieldMeta: AnyFieldMeta = {
   isPristine: true,
   errors: [],
   errorMap: {},
+  errorSourceMap: {},
 }
 
 export function metaHelper<

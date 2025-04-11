@@ -587,7 +587,7 @@ describe('form api', () => {
     expect(field3.state.meta.errors).toStrictEqual([])
   })
 
-  it('should shift meta (nested) when removing array values', () => {
+  it('should shift meta (nested) when removing array values', async () => {
     const form = new FormApi({
       defaultValues: {
         users: [
@@ -630,7 +630,7 @@ describe('form api', () => {
     expect(field2Name.state.meta.isBlurred).toBe(true)
     expect(field2Surname.state.meta.isBlurred).toBe(true)
 
-    form.removeFieldValue('users', 1)
+    await form.removeFieldValue('users', 1)
 
     expect(field0Name.state.meta.isBlurred).toBe(true)
     expect(field0Surname.state.meta.isBlurred).toBe(false)
@@ -2694,13 +2694,6 @@ describe('form api', () => {
     // Verify both fields have their errors cleared
     expect(firstNameField.state.meta.errors).toStrictEqual([])
     expect(lastNameField.state.meta.errors).toStrictEqual([])
-
-    // Verify previous error map still contains values for the fields as it should indicate the last error map processed for the fields
-    const cumulativeFieldsErrorMap = form.cumulativeFieldsErrorMap
-    expect(cumulativeFieldsErrorMap.firstName).toBeDefined()
-    expect(cumulativeFieldsErrorMap.lastName).toBeDefined()
-    expect(cumulativeFieldsErrorMap.firstName?.onChange).toBeUndefined()
-    expect(cumulativeFieldsErrorMap.lastName?.onChange).toBeUndefined()
   })
 
   it('clears previous form level errors for subfields when they are no longer valid', () => {
