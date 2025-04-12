@@ -43,24 +43,14 @@
         "default": "./dist/cjs/index.cjs"
       }
     },
-    "./nextjs": {
+    "./server": {
       "import": {
-        "types": "./dist/esm/nextjs/index.d.ts",
-        "default": "./dist/esm/nextjs/index.js"
+        "types": "./dist/esm/server/index.d.ts",
+        "default": "./dist/esm/server/index.js"
       },
       "require": {
-        "types": "./dist/cjs/nextjs/index.d.cts",
-        "default": "./dist/cjs/nextjs/index.cjs"
-      }
-    },
-    "./remix": {
-      "import": {
-        "types": "./dist/esm/remix/index.d.ts",
-        "default": "./dist/esm/remix/index.js"
-      },
-      "require": {
-        "types": "./dist/cjs/remix/index.d.cts",
-        "default": "./dist/cjs/remix/index.cjs"
+        "types": "./dist/cjs/server/index.d.cts",
+        "default": "./dist/cjs/server/index.cjs"
       }
     },
     "./start": {

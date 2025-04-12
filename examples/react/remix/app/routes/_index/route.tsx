@@ -6,7 +6,7 @@ import {
   createServerValidate,
   formOptions,
   initialFormState,
-} from '@tanstack/react-form/remix'
+} from '@tanstack/react-form/server'
 import { useStore } from '@tanstack/react-store'
 
 import type { ActionFunctionArgs } from '@remix-run/node'

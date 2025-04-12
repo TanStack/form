@@ -192,7 +192,7 @@ Let's start by creating a `formOption` that we'll use to share the form's shape 
 ```typescript
 // shared-code.ts
 // Notice the import path is different from the client
-import { formOptions } from '@tanstack/react-form/nextjs'
+import { formOptions } from '@tanstack/react-form/server'
 
 // You can pass other form options here
 export const formOpts = formOptions({
@@ -213,7 +213,7 @@ Next, we can create [a React Server Action](https://playfulprogramming.com/posts
 import {
   ServerValidateError,
   createServerValidate,
-} from '@tanstack/react-form/nextjs'
+} from '@tanstack/react-form/server'
 import { formOpts } from './shared-code'
 
 // Create the server action that will infer the types of the form from `formOpts`
@@ -255,7 +255,7 @@ Finally, we'll use `someAction` in our client-side form component.
 'use client'
 
 import { useActionState } from 'react'
-import { initialFormState } from '@tanstack/react-form/nextjs'
+import { initialFormState } from '@tanstack/react-form/server'
 // Notice the import is from `react-form`, not `react-form/nextjs`
 import {
   mergeForm,
@@ -327,7 +327,7 @@ Here, we're using [React's `useActionState` hook](https://playfulprogramming.com
 > x You're importing a component that needs `useState`. This React hook only works in a client component. To fix, mark the file (or its parent) with the `"use client"` directive.
 > ```
 >
-> This is because you're not importing server-side code from `@tanstack/react-form/nextjs`. Ensure you're importing the correct module based on the environment.
+> This is because you're not importing server-side code from `@tanstack/react-form/server`. Ensure you're importing the correct module based on the environment.
 >
 > [This is a limitation of Next.js](https://github.com/phryneas/rehackt). Other meta-frameworks will likely not have this same problem.
 
@@ -347,7 +347,7 @@ Let's start by creating a `formOption` that we'll use to share the form's shape 
 
 ```typescript
 // routes/_index/route.tsx
-import { formOptions } from '@tanstack/react-form/remix'
+import { formOptions } from '@tanstack/react-form/server'
 
 // You can pass other form options here
 export const formOpts = formOptions({
@@ -367,7 +367,7 @@ import {
   ServerValidateError,
   createServerValidate,
   formOptions,
-} from '@tanstack/react-form/remix'
+} from '@tanstack/react-form/server'
 
 import type { ActionFunctionArgs } from '@remix-run/node'
 
@@ -423,7 +423,7 @@ import {
   createServerValidate,
   formOptions,
   initialFormState,
-} from '@tanstack/react-form/remix'
+} from '@tanstack/react-form/server'
 
 import type { ActionFunctionArgs } from '@remix-run/node'
 
