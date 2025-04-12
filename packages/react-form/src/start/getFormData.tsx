@@ -1,4 +1,7 @@
-import * as utils from './utils'
+import {
+  deleteInternalTanStackCookie,
+  getInternalTanStackCookie,
+} from './utils'
 import type { ServerFormState } from './types'
 
 export const initialFormState = {
@@ -9,11 +12,11 @@ export const initialFormState = {
 }
 
 export const getFormData = async () => {
-  const data = utils.getInternalTanstackCookie() as
+  const data = getInternalTanStackCookie() as
     | undefined
     | ServerFormState<any, undefined>
   // Delete the temporary cookie from the client after reading it
-  utils.deleteInternalTanstackCookie()
+  deleteInternalTanStackCookie()
   if (!data) return initialFormState
   return data
 }
