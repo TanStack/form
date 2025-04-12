@@ -256,7 +256,7 @@ Finally, we'll use `someAction` in our client-side form component.
 
 import { useActionState } from 'react'
 import { initialFormState } from '@tanstack/react-form/server'
-// Notice the import is from `react-form`, not `react-form/nextjs`
+// Notice the import is from `react-form`, not `react-form/server`
 import {
   mergeForm,
   useForm,
