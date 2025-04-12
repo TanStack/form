@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-start/server'
 import * as devalue from 'devalue'
 
-const _INTERNALS_COOKIE_NAME = '_tanstack-internals'
+const _INTERNALS_COOKIE_NAME = '_tanstack_form_internals'
 
 export const setInternalTanstackCookie = (data: any) => {
   const cookie = devalue.stringify(data)
