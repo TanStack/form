@@ -1,5 +1,4 @@
-import { deleteCookie } from '@tanstack/react-start/server'
-import { _tanstackInternalsCookie } from './utils'
+import * as utils from './utils'
 import type { ServerFormState } from './types'
 
 export const initialFormState = {
@@ -10,11 +9,11 @@ export const initialFormState = {
 }
 
 export const getFormData = async () => {
-  const data = _tanstackInternalsCookie.get() as
+  const data = utils.getInternalTanstackCookie() as
     | undefined
     | ServerFormState<any, undefined>
   // Delete the temporary cookie from the client after reading it
-  deleteCookie(_tanstackInternalsCookie.name)
+  utils.deleteInternalTanstackCookie()
   if (!data) return initialFormState
   return data
 }

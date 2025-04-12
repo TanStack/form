@@ -1,15 +1,23 @@
-import { getCookie, setCookie } from '@tanstack/react-start/server'
+import {
+  deleteCookie,
+  getCookie,
+  setCookie,
+} from '@tanstack/react-start/server'
 import * as devalue from 'devalue'
 
-export const _tanstackInternalsCookie = {
-  name: '_tanstack-internals',
-  parse: () => {
-    const cookie = getCookie(_tanstackInternalsCookie.name)
-    if (!cookie) return undefined
-    return devalue.parse(cookie)
-  },
-  save: (data: any) => {
-    const cookie = devalue.stringify(data)
-    setCookie(_tanstackInternalsCookie.name, cookie)
-  },
+const _INTERNALS_COOKIE_NAME = '_tanstack-internals'
+
+export const setInternalTanstackCookie = (data: any) => {
+  const cookie = devalue.stringify(data)
+  setCookie(_INTERNALS_COOKIE_NAME, cookie)
+}
+
+export const getInternalTanstackCookie = () => {
+  const cookie = getCookie(_INTERNALS_COOKIE_NAME)
+  if (!cookie) return undefined
+  return devalue.parse(cookie)
+}
+
+export const deleteInternalTanstackCookie = () => {
+  deleteCookie(_INTERNALS_COOKIE_NAME)
 }
