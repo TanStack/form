@@ -301,12 +301,12 @@ export interface FormOptions<
   /**
    * Specifies which validation type to use on the first submission attempt
    */
-  validationOnFirstAttempt?: ValidationCause;
-  
+  validationOnFirstAttempt?: ValidationCause
+
   /**
    * Specifies which validation type to use on subsequent submission attempts
    */
-  validationOnConsequentAttempts?: ValidationCause;
+  validationOnConsequentAttempts?: ValidationCause
   /**
    * A function to be called when the form is submitted, what should happen once the user submits a valid form returns `any` or a promise `Promise<any>`
    */
@@ -1618,10 +1618,11 @@ export class FormApi<
       this.baseStore.setState((prev) => ({ ...prev, isSubmitting: false }))
     }
 
-    // 
-    const validationType = this.state.submissionAttempts === 1
-    ? this.options.validationOnFirstAttempt ?? 'submit'
-    : this.options.validationOnConsequentAttempts ?? 'submit';
+    //
+    const validationType =
+      this.state.submissionAttempts === 1
+        ? (this.options.validationOnFirstAttempt ?? 'submit')
+        : (this.options.validationOnConsequentAttempts ?? 'submit')
 
     await this.validateAllFields(validationType)
 
