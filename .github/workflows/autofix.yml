@@ -14,6 +14,7 @@ permissions:
 
 jobs:
   autofix:
+    if: ${{ !contains(github.event.head_commit.message, 'apply automated fixes') }}
     name: autofix
     runs-on: ubuntu-latest
     steps:
@@ -24,6 +25,7 @@ jobs:
       - name: Fix formatting
         run: pnpm prettier:write
       - name: Generate Docs
+        if: ${{ github.event_name == 'push' }}
         run: pnpm docs:generate
       - name: Apply fixes
         uses: autofix-ci/action@551dded8c6cc8a1054039c8bc0b8b48c51dfc6ef
