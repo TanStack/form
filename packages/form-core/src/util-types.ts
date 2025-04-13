@@ -21,40 +21,43 @@ export type Narrow<A> = Try<A, [], NarrowRaw<A>>
 
 type IsAny<T> = 0 extends 1 & T ? true : false
 
+export interface DeepKeyAndValue<in out TKey, in out TValue> {
+  key: TKey
+  value: TValue
+}
+
+export type AnyDeepKeyAndValue = DeepKeyAndValue<any, any>
+
 export type ArrayAccessor<TPrefix extends string> = `${TPrefix}[${number}]`
 
-export type DeepRecordArrayUnion<
+export type DeepKeyAndValueArray<
   T extends ReadonlyArray<any>,
   TPrefix extends string,
-  TAcc,
   TNullable,
-> = DeepRecordUnion<
-  T[number],
-  ArrayAccessor<TPrefix>,
-  TAcc | Record<ArrayAccessor<TPrefix>, T[number]>,
-  TNullable
->
+> =
+  | DeepKeyAndValue<ArrayAccessor<TPrefix>, T[number]>
+  | DeepKeysAndValues<T[number], ArrayAccessor<TPrefix>, TNullable>
 
 export type TupleAccessor<
   TPrefix extends string,
-  TKey,
-> = `${TPrefix}[${TKey & string}]`
+  TKey extends string,
+> = `${TPrefix}[${TKey}]`
 
 export type AllTupleKeys<T> = T extends any ? keyof T & `${number}` : never
 
-export type DeepRecordTupleUnion<
+export type DeepKeyAndValueTuple<
   T extends ReadonlyArray<any>,
   TPrefix extends string,
-  TAcc,
   TNullable,
   TAllKeys extends AllTupleKeys<T> = AllTupleKeys<T>,
 > = TAllKeys extends any
-  ? DeepRecordUnion<
-      NonNullable<T[TAllKeys]>,
-      TupleAccessor<TPrefix, TAllKeys>,
-      TAcc | Record<TupleAccessor<TPrefix, TAllKeys>, T[TAllKeys]>,
-      TNullable | Nullable<T[TAllKeys]>
-    >
+  ?
+      | DeepKeyAndValue<TupleAccessor<TPrefix, TAllKeys>, T[TAllKeys]>
+      | DeepKeysAndValues<
+          NonNullable<T[TAllKeys]>,
+          TupleAccessor<TPrefix, TAllKeys>,
+          TNullable | Nullable<T[TAllKeys]>
+        >
   : never
 
 export type AllObjectKeys<T> = T extends any
@@ -68,61 +71,66 @@ export type ObjectAccessor<
 
 export type Nullable<T> = T & (undefined | null)
 
-export type DeepRecordObjectUnion<
+export type DeepKeyAndValueObject<
   T,
   TPrefix extends string,
-  TAcc,
   TNullable,
   TAllKeys extends AllObjectKeys<T> = AllObjectKeys<T>,
 > = TAllKeys extends any
-  ? DeepRecordUnion<
-      NonNullable<T[TAllKeys]>,
-      ObjectAccessor<TPrefix, TAllKeys>,
-      TAcc | Record<ObjectAccessor<TPrefix, TAllKeys>, T[TAllKeys] | TNullable>,
-      Nullable<TNullable | T[TAllKeys]>
-    >
+  ?
+      | DeepKeyAndValue<
+          ObjectAccessor<TPrefix, TAllKeys>,
+          T[TAllKeys] | TNullable
+        >
+      | DeepKeysAndValues<
+          NonNullable<T[TAllKeys]>,
+          ObjectAccessor<TPrefix, TAllKeys>,
+          TNullable | Nullable<T[TAllKeys]>
+        >
   : never
 
 export type UnknownAccessor<TPrefix extends string> = TPrefix extends ''
   ? string
   : `${TPrefix}.${string}`
 
-export type DeepRecordUnknownUnion<TPrefix extends string, TAcc> =
-  | TAcc
-  | Record<UnknownAccessor<TPrefix>, unknown>
+export type DeepKeyAndValueUnknown<TPrefix extends string> = DeepKeyAndValue<
+  UnknownAccessor<TPrefix>,
+  unknown
+>
 
-export type DeepRecordUnion<
+export type DeepKeysAndValues<
   T,
   TPrefix extends string = '',
-  TAcc = never,
   TNullable = Nullable<T>,
 > =
   IsAny<T> extends true
     ? T
     : T extends string | number | boolean | bigint | Date
-      ? TAcc
+      ? never
       : T extends ReadonlyArray<any>
         ? number extends T['length']
-          ? DeepRecordArrayUnion<T, TPrefix, TAcc, TNullable>
-          : DeepRecordTupleUnion<T, TPrefix, TAcc, TNullable>
+          ? DeepKeyAndValueArray<T, TPrefix, TNullable>
+          : DeepKeyAndValueTuple<T, TPrefix, TNullable>
         : keyof T extends never
-          ? DeepRecordUnknownUnion<TPrefix, TAcc>
+          ? DeepKeyAndValueUnknown<TPrefix>
           : T extends object
-            ? DeepRecordObjectUnion<T, TPrefix, TAcc, TNullable>
-            : TAcc
+            ? DeepKeyAndValueObject<T, TPrefix, TNullable>
+            : never
 
 export type DeepRecord<T> = {
-  [TRecord in DeepRecordUnion<T> as keyof TRecord]: TRecord[keyof TRecord]
+  [TRecord in DeepKeysAndValues<T> extends AnyDeepKeyAndValue
+    ? DeepKeysAndValues<T>
+    : never as TRecord['key']]: TRecord['value']
 }
-
-type UnionKeys<T> = T extends any ? keyof T : never
 
 /**
  * The keys of an object or array, deeply nested.
  */
 export type DeepKeys<T> = unknown extends T
   ? string
-  : UnionKeys<DeepRecordUnion<T>> & string
+  : DeepKeysAndValues<T> extends AnyDeepKeyAndValue
+    ? DeepKeysAndValues<T>['key']
+    : never
 
 /**
  * Infer the type of a deeply nested property within an object or an array.
