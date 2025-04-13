@@ -1,11 +1,11 @@
-import { assertType } from 'vitest'
+import { expectTypeOf } from 'vitest'
 import type { DeepKeys, DeepValue } from '../src/index'
 
 /**
  * Properly recognizes that `0` is not an object and should not have subkeys
  */
 type TupleSupport = DeepKeys<{ topUsers: [User, 0, User] }>
-assertType<
+expectTypeOf(0 as never as TupleSupport).toEqualTypeOf<
   | 'topUsers'
   | 'topUsers[0]'
   | 'topUsers[0].name'
@@ -16,65 +16,65 @@ assertType<
   | 'topUsers[2].name'
   | 'topUsers[2].id'
   | 'topUsers[2].age'
->(0 as never as TupleSupport)
+>()
 
 /**
  * Properly recognizes that a normal number index won't cut it and should be `[number]` prefixed instead
  */
 type ArraySupport = DeepKeys<{ users: User[] }>
-assertType<
+expectTypeOf(0 as never as ArraySupport).toEqualTypeOf<
   | 'users'
   | `users[${number}]`
   | `users[${number}].name`
   | `users[${number}].id`
   | `users[${number}].age`
->(0 as never as ArraySupport)
+>()
 
 /**
  * Properly handles deep object nesting like so:
  */
 type NestedSupport = DeepKeys<{ meta: { mainUser: User } }>
-assertType<
+expectTypeOf(0 as never as NestedSupport).toEqualTypeOf<
   | 'meta'
   | 'meta.mainUser'
   | 'meta.mainUser.name'
   | 'meta.mainUser.id'
   | 'meta.mainUser.age'
->(0 as never as NestedSupport)
+>()
 
 /**
  * Properly handles deep partial object nesting like so:
  */
 type NestedPartialSupport = DeepKeys<{ meta?: { mainUser?: User } }>
-assertType<
+expectTypeOf(0 as never as NestedPartialSupport).toEqualTypeOf<
   | 'meta'
   | 'meta.mainUser'
   | 'meta.mainUser.name'
   | 'meta.mainUser.id'
   | 'meta.mainUser.age'
->(0 as never as NestedPartialSupport)
+>()
 
 /**
  * Properly handles `object` edgecase nesting like so:
  */
 type ObjectNestedEdgecase = DeepKeys<{ meta: { mainUser: object } }>
-assertType<'meta' | 'meta.mainUser' | `meta.mainUser.${string}`>(
-  0 as never as ObjectNestedEdgecase,
+expectTypeOf(0 as never as ObjectNestedEdgecase).toEqualTypeOf(
+  0 as never as 'meta' | 'meta.mainUser' | `meta.mainUser.${string}`,
 )
 
 /**
  * Properly handles `object` edgecase like so:
  */
 type ObjectEdgecase = DeepKeys<object>
-assertType<string>(0 as never as ObjectEdgecase)
+expectTypeOf(0 as never as ObjectEdgecase).toEqualTypeOf<string>()
 
 /**
  * Properly handles `object` edgecase nesting like so:
  */
 type UnknownNestedEdgecase = DeepKeys<{ meta: { mainUser: unknown } }>
-assertType<'meta' | 'meta.mainUser' | `meta.mainUser.${string}`>(
-  0 as never as UnknownNestedEdgecase,
-)
+expectTypeOf(
+  0 as never as 'meta' | 'meta.mainUser' | `meta.mainUser.${string}`,
+).toEqualTypeOf(0 as never as UnknownNestedEdgecase)
 
 /**
  * Properly handles discriminated unions like so:
@@ -84,24 +84,30 @@ type DiscriminatedUnion = { name: string } & (
   | { variant: 'bar'; baz: boolean }
 )
 type DiscriminatedUnionKeys = DeepKeys<DiscriminatedUnion>
-assertType<'name' | 'variant' | 'baz'>(0 as never as DiscriminatedUnionKeys)
+expectTypeOf(0 as never as DiscriminatedUnionKeys).toEqualTypeOf<
+  'name' | 'variant' | 'baz'
+>()
 
 type DiscriminatedUnionValueShared = DeepValue<DiscriminatedUnion, 'variant'>
-assertType<'foo' | 'bar'>(0 as never as DiscriminatedUnionValueShared)
+expectTypeOf(0 as never as DiscriminatedUnionValueShared).toEqualTypeOf<
+  'foo' | 'bar'
+>()
 type DiscriminatedUnionValueFixed = DeepValue<DiscriminatedUnion, 'baz'>
-assertType<boolean>(0 as never as DiscriminatedUnionValueFixed)
+expectTypeOf(
+  0 as never as DiscriminatedUnionValueFixed,
+).toEqualTypeOf<boolean>()
 
 /**
  * Properly handles `object` edgecase like so:
  */
 type UnknownEdgecase = DeepKeys<unknown>
-assertType<string>(0 as never as UnknownEdgecase)
+expectTypeOf(0 as never as UnknownEdgecase).toEqualTypeOf<string>()
 
 type NestedKeysExample = DeepValue<
   { meta: { mainUser: User } },
   'meta.mainUser.age'
 >
-assertType<number>(0 as never as NestedKeysExample)
+expectTypeOf(0 as never as NestedKeysExample).toEqualTypeOf<number>()
 
 type NestedNullableObjectCase = {
   null: { mainUser: 'name' } | null
@@ -114,22 +120,28 @@ type NestedNullableObjectCaseNull = DeepValue<
   NestedNullableObjectCase,
   'null.mainUser'
 >
-assertType<'name' | null>(0 as never as NestedNullableObjectCaseNull)
+expectTypeOf(0 as never as NestedNullableObjectCaseNull).toEqualTypeOf<
+  'name' | null
+>()
 type NestedNullableObjectCaseUndefined = DeepValue<
   NestedNullableObjectCase,
   'undefined.mainUser'
 >
-assertType<'name' | undefined>(0 as never as NestedNullableObjectCaseUndefined)
+expectTypeOf(0 as never as NestedNullableObjectCaseUndefined).toEqualTypeOf<
+  'name' | undefined
+>()
 type NestedNullableObjectCaseOptional = DeepValue<
   NestedNullableObjectCase,
   'undefined.mainUser'
 >
-assertType<'name' | undefined>(0 as never as NestedNullableObjectCaseOptional)
+expectTypeOf(0 as never as NestedNullableObjectCaseOptional).toEqualTypeOf<
+  'name' | undefined
+>()
 type NestedNullableObjectCaseMixed = DeepValue<
   NestedNullableObjectCase,
   'mixed.mainUser'
 >
-assertType<'name' | null | undefined>(
+expectTypeOf(0 as never as 'name' | null | undefined).toEqualTypeOf(
   0 as never as NestedNullableObjectCaseMixed,
 )
 
@@ -140,14 +152,16 @@ type DoubleNestedNullableObjectA = DeepValue<
   DoubleNestedNullableObjectCase,
   'mixed.mainUser'
 >
-assertType<{ name: 'name' } | null | undefined>(
+expectTypeOf(0 as never as { name: 'name' } | null | undefined).toEqualTypeOf(
   0 as never as DoubleNestedNullableObjectA,
 )
 type DoubleNestedNullableObjectB = DeepValue<
   DoubleNestedNullableObjectCase,
   'mixed.mainUser.name'
 >
-assertType<'name' | null | undefined>(0 as never as DoubleNestedNullableObjectB)
+expectTypeOf(0 as never as DoubleNestedNullableObjectB).toEqualTypeOf<
+  'name' | null | undefined
+>()
 
 type NestedObjectUnionCase = {
   normal:
@@ -157,11 +171,11 @@ type NestedObjectUnionCase = {
     | { c: { user: User } | { user: number } }
 }
 type NestedObjectUnionA = DeepValue<NestedObjectUnionCase, 'normal.a.age'>
-assertType<number>(0 as never as NestedObjectUnionA)
+expectTypeOf(0 as never as NestedObjectUnionA).toEqualTypeOf<number>()
 type NestedObjectUnionB = DeepValue<NestedObjectUnionCase, 'normal.b'>
-assertType<string>(0 as never as NestedObjectUnionB)
+expectTypeOf(0 as never as NestedObjectUnionB).toEqualTypeOf<string>()
 type NestedObjectUnionC = DeepValue<NestedObjectUnionCase, 'normal.c.user.id'>
-assertType<string>(0 as never as NestedObjectUnionC)
+expectTypeOf(0 as never as NestedObjectUnionC).toEqualTypeOf<string>()
 
 type NestedNullableObjectUnionCase = {
   nullable:
@@ -172,67 +186,73 @@ type NestedNullableObjectUnionA = DeepValue<
   NestedNullableObjectUnionCase,
   'nullable.a'
 >
-assertType<number | undefined>(0 as never as NestedNullableObjectUnionA)
+expectTypeOf(0 as never as NestedNullableObjectUnionA).toEqualTypeOf<
+  number | undefined
+>()
 type NestedNullableObjectUnionB = DeepValue<
   NestedNullableObjectUnionCase,
   'nullable.b.c'
 >
-assertType<string | boolean | null | undefined>(
+expectTypeOf(0 as never as string | boolean | null | undefined).toEqualTypeOf(
   0 as never as NestedNullableObjectUnionB,
 )
 type NestedNullableObjectUnionC = DeepValue<
   NestedNullableObjectUnionCase,
   'nullable.b.e'
 >
-assertType<number | null | undefined>(0 as never as NestedNullableObjectUnionC)
+expectTypeOf(0 as never as NestedNullableObjectUnionC).toEqualTypeOf<
+  number | null | undefined
+>()
 
 type NestedArrayExample = DeepValue<{ users: User[] }, 'users[0].age'>
-assertType<number>(0 as never as NestedArrayExample)
+expectTypeOf(0 as never as NestedArrayExample).toEqualTypeOf<number>()
 
 type NestedLooseArrayExample = DeepValue<{ users: User[] }, 'users[number].age'>
-assertType<number>(0 as never as NestedLooseArrayExample)
+expectTypeOf(0 as never as NestedLooseArrayExample).toEqualTypeOf<number>()
 
 type NestedArrayUnionExample = DeepValue<
   { users: string | User[] },
   'users[0].age'
 >
-assertType<number>(0 as never as NestedArrayUnionExample)
+expectTypeOf(0 as never as NestedArrayUnionExample).toEqualTypeOf<number>()
 
 type NestedTupleExample = DeepValue<
   { topUsers: [User, 0, User] },
   'topUsers[0].age'
 >
-assertType<number>(0 as never as NestedTupleExample)
+expectTypeOf(0 as never as NestedTupleExample).toEqualTypeOf<number>()
 
 type NestedTupleBroadExample = DeepValue<
   { topUsers: User[] },
   `topUsers[${number}].age`
 >
-assertType<number>(0 as never as NestedTupleBroadExample)
+expectTypeOf(0 as never as NestedTupleBroadExample).toEqualTypeOf<number>()
 
 type DeeplyNestedTupleBroadExample = DeepValue<
   { nested: { topUsers: User[] } },
   `nested.topUsers[${number}].age`
 >
-assertType<number>(0 as never as DeeplyNestedTupleBroadExample)
+expectTypeOf(
+  0 as never as DeeplyNestedTupleBroadExample,
+).toEqualTypeOf<number>()
 
 type SimpleArrayExample = DeepValue<User[], `[${number}]`>
-assertType<User>(0 as never as SimpleArrayExample)
+expectTypeOf(0 as never as SimpleArrayExample).toEqualTypeOf<User>()
 
 type SimpleNestedArrayExample = DeepValue<User[], `[${number}].age`>
-assertType<number>(0 as never as SimpleNestedArrayExample)
+expectTypeOf(0 as never as SimpleNestedArrayExample).toEqualTypeOf<number>()
 
 type NestedTupleItemExample = DeepValue<
   { topUsers: [User, 0, User] },
   'topUsers[1]'
 >
-assertType<0>(0 as never as NestedTupleItemExample)
+expectTypeOf(0 as never as NestedTupleItemExample).toEqualTypeOf<0>()
 
 type ArrayExample = DeepValue<[1, 2, 3], '[1]'>
-assertType<2>(0 as never as ArrayExample)
+expectTypeOf(0 as never as ArrayExample).toEqualTypeOf<2>()
 
 type NonNestedObjExample = DeepValue<{ a: 1 }, 'a'>
-assertType<1>(0 as never as NonNestedObjExample)
+expectTypeOf(0 as never as NonNestedObjExample).toEqualTypeOf<1>()
 
 interface User {
   name: string
@@ -251,7 +271,7 @@ type FormDefinitionValue = DeepValue<
   `nested.people[${number}].name`
 >
 
-assertType<string>(0 as never as FormDefinitionValue)
+expectTypeOf(0 as never as FormDefinitionValue).toEqualTypeOf<string>()
 
 type DoubleDeepArray = DeepValue<
   {
@@ -265,7 +285,7 @@ type DoubleDeepArray = DeepValue<
   `people[${0}].parents[${0}].name`
 >
 
-assertType<string>(0 as never as DoubleDeepArray)
+expectTypeOf(0 as never as DoubleDeepArray).toEqualTypeOf<string>()
 
 // Deepness is infinite error check
 type Cart = {
