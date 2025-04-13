@@ -297,16 +297,6 @@ export interface FormOptions<
    * onSubmitMeta, the data passed from the handleSubmit handler, to the onSubmit function props
    */
   onSubmitMeta?: TSubmitMeta
-
-  /**
-   * Specifies which validation type to use on the first submission attempt
-   */
-  validationOnFirstAttempt?: ValidationCause;
-  
-  /**
-   * Specifies which validation type to use on subsequent submission attempts
-   */
-  validationOnConsequentAttempts?: ValidationCause;
   /**
    * A function to be called when the form is submitted, what should happen once the user submits a valid form returns `any` or a promise `Promise<any>`
    */
@@ -1618,12 +1608,7 @@ export class FormApi<
       this.baseStore.setState((prev) => ({ ...prev, isSubmitting: false }))
     }
 
-    // 
-    const validationType = this.state.submissionAttempts === 1
-    ? this.options.validationOnFirstAttempt ?? 'submit'
-    : this.options.validationOnConsequentAttempts ?? 'submit';
-
-    await this.validateAllFields(validationType)
+    await this.validateAllFields('submit')
 
     if (!this.state.isFieldsValid) {
       done()
@@ -1634,7 +1619,7 @@ export class FormApi<
       return
     }
 
-    await this.validate(validationType)
+    await this.validate('submit')
 
     // Fields are invalid, do not submit
     if (!this.state.isValid) {
