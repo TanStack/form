@@ -11,7 +11,7 @@
   "dependencies": {
     "@tanstack/react-form": "^1.3.3",
     "arktype": "^2.1.19",
-    "effect": "^3.14.7",
+    "effect": "^3.14.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "valibot": "^1.0.0",
@@ -21,7 +21,7 @@
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^6.2.5"
+    "vite": "^6.2.6"
   },
   "browserslist": {
     "production": [

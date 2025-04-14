@@ -28,7 +28,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "@vitejs/plugin-react-swc": "^3.8.1",
     "typescript": "5.8.2",
-    "vite": "^6.2.5"
+    "vite": "^6.2.6"
   },
   "browserslist": {
     "production": [
