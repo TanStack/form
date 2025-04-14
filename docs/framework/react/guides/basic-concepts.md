@@ -72,6 +72,18 @@ Example:
   )}
 />
 ```
+If you are using ESLint, make sure to add this to your eslintrc to avoid linting errors.
+```json
+  "rules": {
+    "react/no-children-prop": [
+      true,
+      {
+        "allowFunctions": true
+      }
+    ],
+  }
+```
+
 
 ## Field State
 
