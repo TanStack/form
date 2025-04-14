@@ -22,7 +22,7 @@ export type Narrow<A> = Try<A, [], NarrowRaw<A>>
 type IsAny<T> = 0 extends 1 & T ? true : false
 
 export interface AnyDeepKeyAndValue {
-  key: any
+  key: string
   value: any
 }
 
