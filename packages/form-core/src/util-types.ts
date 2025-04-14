@@ -21,43 +21,59 @@ export type Narrow<A> = Try<A, [], NarrowRaw<A>>
 
 type IsAny<T> = 0 extends 1 & T ? true : false
 
-export interface DeepKeyAndValue<in out TKey, in out TValue> {
-  key: TKey
-  value: TValue
+export interface AnyDeepKeyAndValue {
+  key: any
+  value: any
 }
 
-export type AnyDeepKeyAndValue = DeepKeyAndValue<any, any>
+export type ArrayAccessor<TParent extends AnyDeepKeyAndValue> =
+  `${TParent['key'] extends never ? '' : TParent['key']}[${number}]`
 
-export type ArrayAccessor<TPrefix extends string> = `${TPrefix}[${number}]`
+export interface ArrayDeepKeyAndValue<
+  in out TParent extends AnyDeepKeyAndValue,
+  in out T extends ReadonlyArray<any>,
+> {
+  key: ArrayAccessor<TParent>
+  value: T[number] | Nullable<TParent['value']>
+}
 
 export type DeepKeyAndValueArray<
+  TParent extends AnyDeepKeyAndValue,
   T extends ReadonlyArray<any>,
-  TPrefix extends string,
-  TNullable,
-> =
-  | DeepKeyAndValue<ArrayAccessor<TPrefix>, T[number]>
-  | DeepKeysAndValues<T[number], ArrayAccessor<TPrefix>, TNullable>
+  TAcc,
+> = DeepKeysAndValues<
+  NonNullable<T[number]>,
+  ArrayDeepKeyAndValue<TParent, T>,
+  TAcc | ArrayDeepKeyAndValue<TParent, T>
+>
 
 export type TupleAccessor<
-  TPrefix extends string,
+  TParent extends AnyDeepKeyAndValue,
   TKey extends string,
-> = `${TPrefix}[${TKey}]`
+> = `${TParent['key'] extends never ? '' : TParent['key']}[${TKey}]`
+
+export interface TupleDeepKeyAndValue<
+  in out TParent extends AnyDeepKeyAndValue,
+  in out T,
+  in out TKey extends AllTupleKeys<T>,
+> {
+  key: TupleAccessor<TParent, TKey>
+  value: T[TKey] | Nullable<TParent['value']>
+}
 
 export type AllTupleKeys<T> = T extends any ? keyof T & `${number}` : never
 
 export type DeepKeyAndValueTuple<
+  TParent extends AnyDeepKeyAndValue,
   T extends ReadonlyArray<any>,
-  TPrefix extends string,
-  TNullable,
+  TAcc,
   TAllKeys extends AllTupleKeys<T> = AllTupleKeys<T>,
 > = TAllKeys extends any
-  ?
-      | DeepKeyAndValue<TupleAccessor<TPrefix, TAllKeys>, T[TAllKeys]>
-      | DeepKeysAndValues<
-          NonNullable<T[TAllKeys]>,
-          TupleAccessor<TPrefix, TAllKeys>,
-          TNullable | Nullable<T[TAllKeys]>
-        >
+  ? DeepKeysAndValues<
+      NonNullable<T[TAllKeys]>,
+      TupleDeepKeyAndValue<TParent, T, TAllKeys>,
+      TAcc | TupleDeepKeyAndValue<TParent, T, TAllKeys>
+    >
   : never
 
 export type AllObjectKeys<T> = T extends any
@@ -65,57 +81,63 @@ export type AllObjectKeys<T> = T extends any
   : never
 
 export type ObjectAccessor<
-  TPrefix extends string,
+  TParent extends AnyDeepKeyAndValue,
   TKey extends string | number,
-> = TPrefix extends '' ? `${TKey}` : `${TPrefix}.${TKey}`
+> = TParent['key'] extends never ? `${TKey}` : `${TParent['key']}.${TKey}`
 
 export type Nullable<T> = T & (undefined | null)
 
+export interface ObjectDeepKeyAndValue<
+  in out TParent extends AnyDeepKeyAndValue,
+  in out T,
+  in out TKey extends AllObjectKeys<T>,
+> {
+  key: ObjectAccessor<TParent, TKey>
+  value: T[TKey] | Nullable<TParent['value']>
+}
+
 export type DeepKeyAndValueObject<
+  TParent extends AnyDeepKeyAndValue,
   T,
-  TPrefix extends string,
-  TNullable,
+  TAcc,
   TAllKeys extends AllObjectKeys<T> = AllObjectKeys<T>,
 > = TAllKeys extends any
-  ?
-      | DeepKeyAndValue<
-          ObjectAccessor<TPrefix, TAllKeys>,
-          T[TAllKeys] | TNullable
-        >
-      | DeepKeysAndValues<
-          NonNullable<T[TAllKeys]>,
-          ObjectAccessor<TPrefix, TAllKeys>,
-          TNullable | Nullable<T[TAllKeys]>
-        >
+  ? DeepKeysAndValues<
+      NonNullable<T[TAllKeys]>,
+      ObjectDeepKeyAndValue<TParent, T, TAllKeys>,
+      TAcc | ObjectDeepKeyAndValue<TParent, T, TAllKeys>
+    >
   : never
 
-export type UnknownAccessor<TPrefix extends string> = TPrefix extends ''
-  ? string
-  : `${TPrefix}.${string}`
+export type UnknownAccessor<TParent extends AnyDeepKeyAndValue> =
+  TParent['key'] extends never ? string : `${TParent['key']}.${string}`
 
-export type DeepKeyAndValueUnknown<TPrefix extends string> = DeepKeyAndValue<
-  UnknownAccessor<TPrefix>,
-  unknown
->
+export interface UnknownDeepKeyAndValue<TParent extends AnyDeepKeyAndValue> {
+  key: UnknownAccessor<TParent>
+  value: unknown
+}
+
+export type DeepKeyAndValueUnknown<TParent extends AnyDeepKeyAndValue> =
+  UnknownDeepKeyAndValue<TParent>
 
 export type DeepKeysAndValues<
   T,
-  TPrefix extends string = '',
-  TNullable = Nullable<T>,
+  TParent extends AnyDeepKeyAndValue = never,
+  TAcc = never,
 > =
   IsAny<T> extends true
     ? T
     : T extends string | number | boolean | bigint | Date
-      ? never
+      ? TAcc
       : T extends ReadonlyArray<any>
         ? number extends T['length']
-          ? DeepKeyAndValueArray<T, TPrefix, TNullable>
-          : DeepKeyAndValueTuple<T, TPrefix, TNullable>
+          ? DeepKeyAndValueArray<TParent, T, TAcc>
+          : DeepKeyAndValueTuple<TParent, T, TAcc>
         : keyof T extends never
-          ? DeepKeyAndValueUnknown<TPrefix>
+          ? TAcc | DeepKeyAndValueUnknown<TParent>
           : T extends object
-            ? DeepKeyAndValueObject<T, TPrefix, TNullable>
-            : never
+            ? DeepKeyAndValueObject<TParent, T, TAcc>
+            : TAcc
 
 export type DeepRecord<T> = {
   [TRecord in DeepKeysAndValues<T> extends AnyDeepKeyAndValue

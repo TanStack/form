@@ -1,5 +1,12 @@
 import { expectTypeOf } from 'vitest'
-import type { DeepKeys, DeepValue } from '../src/index'
+import type {
+  DeepKeys,
+  DeepKeysAndValues,
+  DeepRecord,
+  DeepValue,
+} from '../src/index'
+
+type hi = DeepRecord<{ topUsers: [User, 0, User] }>
 
 /**
  * Properly recognizes that `0` is not an object and should not have subkeys
@@ -201,13 +208,16 @@ type NestedNullableObjectUnionC = DeepValue<
   'nullable.b.e'
 >
 expectTypeOf(0 as never as NestedNullableObjectUnionC).toEqualTypeOf<
-  number | null | undefined
+  number | undefined
 >()
 
 type NestedArrayExample = DeepValue<{ users: User[] }, 'users[0].age'>
 expectTypeOf(0 as never as NestedArrayExample).toEqualTypeOf<number>()
 
-type NestedLooseArrayExample = DeepValue<{ users: User[] }, 'users[number].age'>
+type NestedLooseArrayExample = DeepValue<
+  { users: User[] },
+  `users[${number}].age`
+>
 expectTypeOf(0 as never as NestedLooseArrayExample).toEqualTypeOf<number>()
 
 type NestedArrayUnionExample = DeepValue<
