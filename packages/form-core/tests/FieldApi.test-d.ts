@@ -134,7 +134,7 @@ it('should type an array sub-field properly', () => {
 
   const field = new FieldApi({
     form,
-    name: `nested.people[${1}].name`,
+    name: `nested.people[1].name`,
     validators: {
       onChangeAsync: async ({ value }) => {
         assertType<string>(value)
