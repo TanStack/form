@@ -19,8 +19,6 @@ type Try<A1, A2, Catch = never> = A1 extends A2 ? A1 : Catch
  */
 export type Narrow<A> = Try<A, [], NarrowRaw<A>>
 
-type IsAny<T> = 0 extends 1 & T ? true : false
-
 export interface AnyDeepKeyAndValue {
   key: string
   value: any
