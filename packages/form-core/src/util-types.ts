@@ -117,15 +117,13 @@ export interface UnknownDeepKeyAndValue<TParent extends AnyDeepKeyAndValue> {
   value: unknown
 }
 
-export type DeepKeyAndValueUnknown<TParent extends AnyDeepKeyAndValue> =
-  UnknownDeepKeyAndValue<TParent>
-
 export type DeepKeysAndValues<
   T,
   TParent extends AnyDeepKeyAndValue = never,
   TAcc = never,
-> =
-  IsAny<T> extends true
+> = unknown extends T
+  ? TAcc | UnknownDeepKeyAndValue<TParent>
+  : unknown extends T // this stops runaway recursion when T is any
     ? T
     : T extends string | number | boolean | bigint | Date
       ? TAcc
@@ -134,7 +132,7 @@ export type DeepKeysAndValues<
           ? DeepKeyAndValueArray<TParent, T, TAcc>
           : DeepKeyAndValueTuple<TParent, T, TAcc>
         : keyof T extends never
-          ? TAcc | DeepKeyAndValueUnknown<TParent>
+          ? TAcc | UnknownDeepKeyAndValue<TParent>
           : T extends object
             ? DeepKeyAndValueObject<TParent, T, TAcc>
             : TAcc
