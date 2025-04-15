@@ -1,12 +1,13 @@
-import { decode } from 'decode-formdata'
 import {
   isGlobalFormValidationError,
   isStandardSchemaValidator,
   standardSchemaValidators,
 } from '@tanstack/form-core'
 import { getHeader } from '@tanstack/react-start/server'
-import { _tanstackInternalsCookie } from './utils'
+import { decode } from 'decode-formdata'
 import { ServerValidateError } from './error'
+import { setInternalTanStackCookie } from './utils'
+import type { ServerFormState } from './types'
 import type {
   FormAsyncValidateOrFn,
   FormOptions,
@@ -14,7 +15,6 @@ import type {
   FormValidateOrFn,
   UnwrapFormAsyncValidateOrFn,
 } from '@tanstack/form-core'
-import type { ServerFormState } from './types'
 
 interface CreateServerValidateOptions<
   TFormData,
@@ -116,13 +116,12 @@ export const createServerValidate =
       errors: onServerErrorVal ? [onServerErrorVal] : [],
     }
 
-    const cookie = await _tanstackInternalsCookie.serialize(formState)
+    setInternalTanStackCookie(formState)
 
     throw new ServerValidateError({
       response: new Response('ok', {
         headers: {
           Location: referer,
-          'Set-Cookie': cookie,
         },
         status: 302,
       }),

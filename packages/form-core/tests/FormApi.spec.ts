@@ -856,7 +856,6 @@ describe('form api', () => {
       },
     })
     field1.mount()
-
     const field2 = new FieldApi({
       form,
       name: 'names[1]',
@@ -2761,129 +2760,151 @@ describe('form api', () => {
     field1.setValue('Interest 2')
     expect(interestsField.state.meta.errors).toStrictEqual([])
   })
-})
 
-it('should not change the onBlur state of the fields when the form is submitted', async () => {
-  const form = new FormApi({
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-    },
+  it('should not change the onBlur state of the fields when the form is submitted', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      },
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+    firstNameField.mount()
+
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+    })
+    lastNameField.mount()
+
+    firstNameField.handleBlur()
+
+    expect(firstNameField.state.meta.isBlurred).toBe(true)
+
+    await form.handleSubmit()
+
+    expect(firstNameField.state.meta.isBlurred).toBe(true)
+    expect(lastNameField.state.meta.isBlurred).toBe(false)
   })
 
-  const firstNameField = new FieldApi({
-    form,
-    name: 'firstName',
-  })
-  firstNameField.mount()
+  it('should pass the handleSubmit meta data to onSubmit', async () => {
+    const form = new FormApi({
+      onSubmitMeta: {} as { dinosaur: string },
+      onSubmit: async ({ meta }) => {
+        expect(meta.dinosaur).toEqual('Stegosaurus')
+      },
+    })
 
-  const lastNameField = new FieldApi({
-    form,
-    name: 'lastName',
-  })
-  lastNameField.mount()
-
-  firstNameField.handleBlur()
-
-  expect(firstNameField.state.meta.isBlurred).toBe(true)
-
-  await form.handleSubmit()
-
-  expect(firstNameField.state.meta.isBlurred).toBe(true)
-  expect(lastNameField.state.meta.isBlurred).toBe(false)
-})
-
-it('should pass the handleSubmit meta data to onSubmit', async () => {
-  const form = new FormApi({
-    onSubmitMeta: {} as { dinosaur: string },
-    onSubmit: async ({ meta }) => {
-      expect(meta.dinosaur).toEqual('Stegosaurus')
-    },
+    await form.handleSubmit({ dinosaur: 'Stegosaurus' })
   })
 
-  await form.handleSubmit({ dinosaur: 'Stegosaurus' })
-})
+  it('should pass the handleSubmit default meta data to onSubmit', async () => {
+    const form = new FormApi({
+      onSubmitMeta: { dinosaur: 'Frank' } as { dinosaur: string },
+      onSubmit: async ({ meta }) => {
+        expect(meta.dinosaur).toEqual('Frank')
+      },
+    })
 
-it('should pass the handleSubmit default meta data to onSubmit', async () => {
-  const form = new FormApi({
-    onSubmitMeta: { dinosaur: 'Frank' } as { dinosaur: string },
-    onSubmit: async ({ meta }) => {
-      expect(meta.dinosaur).toEqual('Frank')
-    },
+    await form.handleSubmit()
   })
 
-  await form.handleSubmit()
-})
+  it('should read and update union objects', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        person: { firstName: 'firstName' },
+      } as { person?: { firstName: string } | { age: number } | null },
+    })
 
-it('should read and update union objects', async () => {
-  const form = new FormApi({
-    defaultValues: {
-      person: { firstName: 'firstName' },
-    } as { person?: { firstName: string } | { age: number } | null },
+    const field = new FieldApi({
+      form,
+      name: 'person.firstName',
+    })
+    field.mount()
+    expect(field.getValue()).toStrictEqual('firstName')
+
+    form.setFieldValue('person', { age: 0 })
+
+    const field2 = new FieldApi({
+      form,
+      name: 'person.age',
+    })
+    field2.mount()
+    expect(field2.getValue()).toStrictEqual(0)
   })
 
-  const field = new FieldApi({
-    form,
-    name: 'person.firstName',
-  })
-  field.mount()
-  expect(field.getValue()).toStrictEqual('firstName')
+  it('should update isSubmitSuccessful correctly during form submission', async () => {
+    const onSubmit = vi.fn().mockResolvedValue(undefined)
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      onSubmit,
+    })
 
-  form.setFieldValue('person', { age: 0 })
+    form.mount()
 
-  const field2 = new FieldApi({
-    form,
-    name: 'person.age',
-  })
-  field2.mount()
-  expect(field2.getValue()).toStrictEqual(0)
-})
+    expect(form.state.isSubmitSuccessful).toBe(false)
 
-it('should update isSubmitSuccessful correctly during form submission', async () => {
-  const onSubmit = vi.fn().mockResolvedValue(undefined)
-  const form = new FormApi({
-    defaultValues: {
-      name: 'test',
-    },
-    onSubmit,
-  })
+    await form.handleSubmit()
 
-  form.mount()
+    expect(form.state.isSubmitSuccessful).toBe(true)
+    expect(onSubmit).toHaveBeenCalledTimes(1)
 
-  expect(form.state.isSubmitSuccessful).toBe(false)
+    // Simulate a failed submission
+    onSubmit.mockRejectedValueOnce(new Error('Submission failed'))
 
-  await form.handleSubmit()
+    await expect(form.handleSubmit()).rejects.toThrow('Submission failed')
 
-  expect(form.state.isSubmitSuccessful).toBe(true)
-  expect(onSubmit).toHaveBeenCalledTimes(1)
-
-  // Simulate a failed submission
-  onSubmit.mockRejectedValueOnce(new Error('Submission failed'))
-
-  await expect(form.handleSubmit()).rejects.toThrow('Submission failed')
-
-  expect(form.state.isSubmitSuccessful).toBe(false)
-})
-
-it('should reset the fields value and meta to default state', async () => {
-  const form = new FormApi({
-    defaultValues: {
-      name: 'tony',
-    } as { name: string },
-  })
-  form.mount()
-  const field = new FieldApi({
-    form,
-    name: 'name',
+    expect(form.state.isSubmitSuccessful).toBe(false)
   })
 
-  field.mount()
-  field.setValue('hawk')
+  it('should reset the fields value and meta to default state', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'tony',
+      } as { name: string },
+    })
+    form.mount()
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
 
-  expect(form.state.values.name).toStrictEqual('hawk')
-  expect(field.state.meta.isTouched).toBe(true)
+    field.mount()
+    field.setValue('hawk')
 
-  form.resetField('name')
-  expect(form.state.values.name).toStrictEqual('tony')
-  expect(field.state.meta.isTouched).toBe(false)
+    expect(form.state.values.name).toStrictEqual('hawk')
+    expect(field.state.meta.isTouched).toBe(true)
+
+    form.resetField('name')
+    expect(form.state.values.name).toStrictEqual('tony')
+    expect(field.state.meta.isTouched).toBe(false)
+  })
+
+  it('should allow submission, when the form is invalid, with canSubmitWhenInvalid', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      canSubmitWhenInvalid: true,
+      validators: {
+        onMount: () => {
+          return {
+            form: 'something went wrong',
+            fields: {
+              firstName: 'first name is required',
+            },
+          }
+        },
+      },
+    })
+    form.mount()
+    expect(form.state.isValid).toBe(false)
+    expect(form.state.canSubmit).toBe(true)
+  })
 })

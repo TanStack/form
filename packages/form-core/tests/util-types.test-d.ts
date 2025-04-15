@@ -24,6 +24,7 @@ assertType<
 type ArraySupport = DeepKeys<{ users: User[] }>
 assertType<
   | 'users'
+  | `users[${number}]`
   | `users[${number}].name`
   | `users[${number}].id`
   | `users[${number}].age`
@@ -74,6 +75,21 @@ type UnknownNestedEdgecase = DeepKeys<{ meta: { mainUser: unknown } }>
 assertType<'meta' | 'meta.mainUser' | `meta.mainUser.${string}`>(
   0 as never as UnknownNestedEdgecase,
 )
+
+/**
+ * Properly handles discriminated unions like so:
+ */
+type DiscriminatedUnion = { name: string } & (
+  | { variant: 'foo' }
+  | { variant: 'bar'; baz: boolean }
+)
+type DiscriminatedUnionKeys = DeepKeys<DiscriminatedUnion>
+assertType<'name' | 'variant' | 'baz'>(0 as never as DiscriminatedUnionKeys)
+
+type DiscriminatedUnionValueShared = DeepValue<DiscriminatedUnion, 'variant'>
+assertType<'foo' | 'bar'>(0 as never as DiscriminatedUnionValueShared)
+type DiscriminatedUnionValueFixed = DeepValue<DiscriminatedUnion, 'baz'>
+assertType<boolean>(0 as never as DiscriminatedUnionValueFixed)
 
 /**
  * Properly handles `object` edgecase like so:

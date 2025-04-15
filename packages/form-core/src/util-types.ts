@@ -19,132 +19,92 @@ type Try<A1, A2, Catch = never> = A1 extends A2 ? A1 : Catch
  */
 export type Narrow<A> = Try<A, [], NarrowRaw<A>>
 
-type ComputeRange<
-  N extends number,
-  Result extends Array<unknown> = [],
-> = Result['length'] extends N
-  ? Result
-  : ComputeRange<N, [...Result, Result['length']]>
-type Index40 = ComputeRange<40>[number]
+type IsAny<T> = 0 extends 1 & T ? true : false
 
-// Is this type a tuple?
-type IsTuple<T> = T extends readonly any[] & { length: infer Length }
-  ? Length extends Index40
-    ? T
-    : never
+export type ArrayAccessor<TPrefix extends string> = `${TPrefix}[${number}]`
+
+export type DeepRecordArrayUnion<
+  T extends ReadonlyArray<any>,
+  TPrefix extends string,
+  TAcc,
+> = DeepRecordUnion<
+  T[number],
+  ArrayAccessor<TPrefix>,
+  TAcc | Record<ArrayAccessor<TPrefix>, T[number]>
+>
+
+export type TupleAccessor<
+  TPrefix extends string,
+  TKey,
+> = `${TPrefix}[${TKey & string}]`
+
+export type AllTupleKeys<T> = T extends any ? keyof T & `${number}` : never
+
+export type DeepRecordTupleUnion<
+  T extends ReadonlyArray<any>,
+  TPrefix extends string,
+  TAcc,
+  TAllKeys extends AllTupleKeys<T> = AllTupleKeys<T>,
+> = TAllKeys extends any
+  ? DeepRecordUnion<
+      T[TAllKeys],
+      TupleAccessor<TPrefix, TAllKeys>,
+      TAcc | Record<TupleAccessor<TPrefix, TAllKeys>, T[TAllKeys]>
+    >
   : never
 
-// If this type is a tuple, what indices are allowed?
-type AllowedIndexes<
-  Tuple extends ReadonlyArray<any>,
-  Keys extends number = never,
-> = Tuple extends readonly []
-  ? Keys
-  : Tuple extends readonly [infer _, ...infer Tail]
-    ? AllowedIndexes<Tail, Keys | Tail['length']>
-    : Keys
+export type AllObjectKeys<T> = T extends any
+  ? keyof T & (string | number)
+  : never
 
-type PrefixArrayAccessor<T extends any[], TDepth extends any[]> = {
-  [K in keyof T]: `[${number}]${DeepKeys<T[K], TDepth>}`
-}[number]
+export type ObjectAccessor<
+  TPrefix extends string,
+  TKey extends string | number,
+> = TPrefix extends '' ? `${TKey}` : `${TPrefix}.${TKey}`
 
-type PrefixTupleAccessor<
-  T extends any[],
-  TIndex extends number,
-  TDepth extends any[],
-> = {
-  [K in TIndex]: `[${K}]` | `[${K}]${DeepKeys<T[K], TDepth>}`
-}[TIndex]
+export type DeepRecordObjectUnion<
+  T,
+  TPrefix extends string,
+  TAcc,
+  TAllKeys extends AllObjectKeys<T> = AllObjectKeys<T>,
+> = TAllKeys extends any
+  ? DeepRecordUnion<
+      T[TAllKeys],
+      ObjectAccessor<TPrefix, TAllKeys>,
+      TAcc | Record<ObjectAccessor<TPrefix, TAllKeys>, T[TAllKeys]>
+    >
+  : never
 
-type PrefixObjectAccessor<T extends object, TDepth extends any[]> = {
-  [K in keyof T]-?: K extends string | number
-    ?
-        | PrefixFromDepth<K, TDepth>
-        | `${PrefixFromDepth<K, TDepth>}${DeepKeys<T[K], [TDepth]>}`
-    : never
-}[keyof T]
+export type DeepRecordUnion<T, TPrefix extends string = '', TAcc = never> =
+  IsAny<T> extends true
+    ? T
+    : T extends string | number | boolean | bigint | Date
+      ? TAcc
+      : T extends ReadonlyArray<any>
+        ? number extends T['length']
+          ? DeepRecordArrayUnion<T, TPrefix, TAcc>
+          : DeepRecordTupleUnion<T, TPrefix, TAcc>
+        : T extends object
+          ? DeepRecordObjectUnion<T, TPrefix, TAcc>
+          : TAcc
+
+export type DeepRecord<T> = {
+  [TRecord in DeepRecordUnion<T> as keyof TRecord]: TRecord[keyof TRecord]
+}
+
+type UnionKeys<T> = T extends any ? keyof T : never
 
 /**
  * The keys of an object or array, deeply nested.
  */
-export type DeepKeys<T, TDepth extends any[] = []> = TDepth['length'] extends 5
-  ? never
-  : unknown extends T
-    ? PrefixFromDepth<string, TDepth>
-    : T extends readonly any[] & IsTuple<T>
-      ? PrefixTupleAccessor<T, AllowedIndexes<T>, TDepth>
-      : T extends any[]
-        ? PrefixArrayAccessor<T, [...TDepth, any]>
-        : T extends Date
-          ? never
-          : T extends object
-            ? PrefixObjectAccessor<T, TDepth>
-            : T extends string | number | boolean | bigint
-              ? ''
-              : never
-
-type PrefixFromDepth<
-  T extends string | number,
-  TDepth extends any[],
-> = TDepth['length'] extends 0 ? T : `.${T}`
-
-// Hack changing Typescript's default get behavior in order to work with union objects
-type Get<T, K extends string> = T extends { [Key in K]: infer V }
-  ? V
-  : T extends { [Key in K]?: infer W }
-    ? W | undefined
-    : never
-
-type ApplyNull<T> = null extends T ? null : never
-type ApplyUndefined<T> = undefined extends T ? undefined : never
+export type DeepKeys<T> = unknown extends T
+  ? string
+  : UnionKeys<DeepRecordUnion<T>> & string
 
 /**
  * Infer the type of a deeply nested property within an object or an array.
  */
-export type DeepValue<
-  // The object or array in which we have the property whose type we're trying to infer
-  TValue,
-  // A string representing the path of the property we're trying to access
-  TAccessor,
-  // Depth for preventing infinite recursion
-  TDepth extends ReadonlyArray<any> = [],
-> = unknown extends TValue // If TValue is any it will recurse forever, this terminates the recursion
-  ? TValue
-  : TDepth['length'] extends 10
-    ? unknown
-    : // Check if we're looking for the property in an array
-      TValue extends ReadonlyArray<any>
-      ? TAccessor extends `[${infer TBrackets}].${infer TAfter}`
-        ? /*
-          Extract the first element from the accessor path (`TBrackets`)
-          and recursively call `DeepValue` with it
-        */
-          DeepValue<
-            DeepValue<TValue, TBrackets, [...TDepth, any]>,
-            TAfter,
-            [...TDepth, any]
-          >
-        : TAccessor extends `[${infer TBrackets}]`
-          ? DeepValue<TValue, TBrackets, [...TDepth, any]>
-          : TAccessor extends keyof TValue
-            ? TValue[TAccessor]
-            : TValue[TAccessor & number]
-      : TAccessor extends `${infer TBefore}[${infer TEverythingElse}`
-        ? DeepValue<
-            DeepValue<TValue, TBefore, [...TDepth, any]>,
-            `[${TEverythingElse}`,
-            [...TDepth, any]
-          >
-        : TAccessor extends `[${infer TBrackets}]`
-          ? DeepValue<TValue, TBrackets, [...TDepth, any]>
-          : TAccessor extends `${infer TBefore}.${infer TAfter}`
-            ? DeepValue<
-                DeepValue<TValue, TBefore, [...TDepth, any]>,
-                TAfter,
-                [...TDepth, any]
-              >
-            : TAccessor extends string
-              ?
-                  | Get<TValue, TAccessor>
-                  | (ApplyNull<TValue> | ApplyUndefined<TValue>)
-              : never
+export type DeepValue<TValue, TAccessor> =
+  DeepRecord<TValue> extends infer TDeepRecord
+    ? TDeepRecord[TAccessor & keyof TDeepRecord]
+    : never

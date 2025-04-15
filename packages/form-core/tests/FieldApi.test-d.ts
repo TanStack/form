@@ -54,7 +54,7 @@ it('should type required fields in constructor', () => {
   })
 
   assertType<string>(field.state.value)
-  assertType<'name'>(field.options.name)
+  assertType<'name' | 'age'>(field.options.name)
   assertType<string>(field.getValue())
 })
 
@@ -74,7 +74,7 @@ it('should type value properly for completely partial forms', () => {
   })
 
   assertType<'test' | undefined>(field.state.value)
-  assertType<'name'>(field.options.name)
+  assertType<'name' | 'age'>(field.options.name)
   assertType<'test' | undefined>(field.getValue())
 })
 

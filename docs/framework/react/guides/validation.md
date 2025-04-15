@@ -446,6 +446,7 @@ TanStack Form natively supports all libraries following the [Standard Schema spe
 - [Zod](https://zod.dev/)
 - [Valibot](https://valibot.dev/)
 - [ArkType](https://arktype.io/)
+- [Effect/Schema](https://effect.website/docs/schema/standard-schema/)
 
 _Note:_ make sure to use the latest version of the schema libraries as older versions might not support Standard Schema yet.
 
