@@ -1165,6 +1165,77 @@ describe('useField', () => {
     expect(queryByText(fakePeople.molly.name)).not.toBeInTheDocument()
   })
 
+  it('should not make field uncontrolled during array item removal', async () => {
+    // Spy on console.error before rendering
+    const consoleErrorSpy = vi.spyOn(console, 'error')
+
+    let id = 0
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          people: [] as { id: number; name: string }[],
+        },
+      })
+
+      return (
+        <form>
+          <form.Field name="people" mode="array">
+            {(people) => (
+              <div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    people.pushValue({
+                      id: id,
+                      name: `${id++}`,
+                    })
+                  }}
+                  data-testid="add"
+                >
+                  Add
+                </button>
+                {people.state.value.map((person, i) => (
+                  <form.Field name={`people[${i}].name`} key={person.id}>
+                    {(field) => {
+                      return (
+                        <div>
+                          <input
+                            type="text"
+                            value={field.state.value}
+                            onChange={(e) => {
+                              field.handleChange(e.target.value)
+                            }}
+                          />
+                          <button
+                            type="button"
+                            data-testid={`remove-${person.id}`}
+                            onClick={() => {
+                              people.removeValue(i)
+                            }}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      )
+                    }}
+                  </form.Field>
+                ))}
+              </div>
+            )}
+          </form.Field>
+        </form>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    await user.click(getByTestId('add'))
+    await user.click(getByTestId('add'))
+    await user.click(getByTestId('remove-0'))
+    // Making a controlled field uncontrolled will log an error
+    expect(consoleErrorSpy).not.toHaveBeenCalled()
+  })
+
   it('should not rerender unrelated fields', async () => {
     const renderCount = {
       field1: 0,
