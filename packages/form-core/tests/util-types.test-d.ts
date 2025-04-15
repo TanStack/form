@@ -1,12 +1,5 @@
 import { expectTypeOf } from 'vitest'
-import type {
-  DeepKeys,
-  DeepKeysAndValues,
-  DeepRecord,
-  DeepValue,
-} from '../src/index'
-
-type hi = DeepRecord<{ topUsers: [User, 0, User] }>
+import type { DeepKeys, DeepValue } from '../src/index'
 
 /**
  * Properly recognizes that `0` is not an object and should not have subkeys
