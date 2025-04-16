@@ -2066,6 +2066,17 @@ export class FormApi<
       ),
     }
   }
+
+  /**
+   * FIXME this name is not final. It's merely to show the stateless wrapper this
+   * method represents.
+   */
+  getValidationIssuesFromSchema(schema: StandardSchemaV1) {
+    return standardSchemaValidators.validate(
+      { value: this.state.values, validationSource: 'form' },
+      schema,
+    )
+  }
 }
 
 function normalizeError<TFormData>(rawError?: FormValidationError<unknown>): {
