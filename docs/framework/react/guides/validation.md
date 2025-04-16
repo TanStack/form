@@ -510,7 +510,6 @@ If you need even more control over your Standard Schema validation, you can comb
   name="age"
   asyncDebounceMs={500}
   validators={{
-    onChange: 1500,
     onChangeAsync: async ({ value, fieldApi }) => {
       const errors = fieldApi.parseValueWithSchema(
         z.number().gte(13, 'You must be 13 to make an account'),

@@ -1956,7 +1956,9 @@ describe('field api', () => {
     expect(onBlurMock).toHaveBeenCalledTimes(1)
   })
 
-  it('should pass the current value to the standard schema when calling parseValueWithSchema', async () => {
+  it('should pass the current value to the Standard Schema when calling parseValueWithSchema', async () => {
+    const schema = z.string().min(3)
+
     const form = new FormApi({
       defaultValues: {
         firstName: '',
@@ -1971,18 +1973,20 @@ describe('field api', () => {
     field.mount()
 
     // The schema should complain that the value is too short
-    const firstNameSchemaResult = field.parseValueWithSchema(z.string().min(3))
-    expect(firstNameSchemaResult).not.toBeUndefined()
-    expect(Array.isArray(firstNameSchemaResult)).toBe(true)
-    expect(firstNameSchemaResult).not.toHaveLength(0)
+    const issueResult = field.parseValueWithSchema(schema)
+    expect(issueResult).toBeDefined()
+    expect(Array.isArray(issueResult)).toBe(true)
+    expect(issueResult?.length).toBeGreaterThan(0)
 
     field.setValue('some long name that satisfies firstNameSchemaResult')
     // the schema should now be satisfied
-    const successResult = field.parseValueWithSchema(z.string().min(3))
+    const successResult = field.parseValueWithSchema(schema)
     expect(successResult).toBeUndefined()
   })
 
-  it('should pass the current value to the standard schema when calling parseValueWithSchemaAsync', async () => {
+  it('should pass the current value to the Standard Schema when calling parseValueWithSchemaAsync', async () => {
+    const schema = z.string().min(3)
+
     const form = new FormApi({
       defaultValues: {
         firstName: '',
@@ -1997,25 +2001,25 @@ describe('field api', () => {
     field.mount()
 
     // The schema should complain that the value is too short
-    const firstNamePromise = field.parseValueWithSchemaAsync(z.string().min(3))
-    expect(firstNamePromise).toBeInstanceOf(Promise)
+    const issuePromise = field.parseValueWithSchemaAsync(schema)
+    expect(issuePromise).toBeInstanceOf(Promise)
 
-    const firstNameSchemaResult = await firstNamePromise
+    const issueResult = await issuePromise
 
-    expect(firstNameSchemaResult).not.toBeUndefined()
-    expect(Array.isArray(firstNameSchemaResult)).toBe(true)
-    expect(firstNameSchemaResult).not.toHaveLength(0)
+    expect(issueResult).toBeDefined()
+    expect(Array.isArray(issueResult)).toBe(true)
+    expect(issueResult?.length).toBeGreaterThan(0)
 
     field.setValue('some long name that satisfies firstNameSchemaResult')
     // the schema should now be satisfied
-    const successPromise = field.parseValueWithSchemaAsync(z.string().min(3))
+    const successPromise = field.parseValueWithSchemaAsync(schema)
     expect(successPromise).toBeInstanceOf(Promise)
 
     const successResult = await successPromise
     expect(successResult).toBeUndefined()
   })
 
-  it('should throw an error when passing an async schema to parseValueWithSchema', async () => {
+  it('should throw an error when passing an async Standard Schema to parseValueWithSchema', async () => {
     const testSchema = z.string().superRefine(async () => {
       await sleep(1000)
       return true

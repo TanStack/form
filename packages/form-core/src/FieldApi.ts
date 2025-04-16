@@ -1648,7 +1648,7 @@ export class FieldApi<
    * issues (if any). This method does NOT set any internal errors.
    * @param schema The standard schema to parse this field's value with.
    */
-  parseValueWithSchema(schema: StandardSchemaV1) {
+  parseValueWithSchema = (schema: StandardSchemaV1<TData, unknown>) => {
     return standardSchemaValidators.validate(
       { value: this.state.value, validationSource: 'field' },
       schema,
@@ -1660,7 +1660,7 @@ export class FieldApi<
    * issues (if any). This method does NOT set any internal errors.
    * @param schema The standard schema to parse this field's value with.
    */
-  parseValueWithSchemaAsync(schema: StandardSchemaV1) {
+  parseValueWithSchemaAsync = (schema: StandardSchemaV1<TData, unknown>) => {
     return standardSchemaValidators.validateAsync(
       { value: this.state.value, validationSource: 'field' },
       schema,

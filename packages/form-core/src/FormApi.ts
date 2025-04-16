@@ -2072,7 +2072,9 @@ export class FormApi<
    * issues (if any). This method does NOT set any internal errors.
    * @param schema The standard schema to parse the form values with.
    */
-  parseFieldValuesWithSchema(schema: StandardSchemaV1) {
+  parseFieldValuesWithSchema = (
+    schema: StandardSchemaV1<TFormData, unknown>,
+  ) => {
     return standardSchemaValidators.validate(
       { value: this.state.values, validationSource: 'form' },
       schema,
@@ -2084,7 +2086,9 @@ export class FormApi<
    * issues (if any). This method does NOT set any internal errors.
    * @param schema The standard schema to parse the form values with.
    */
-  parseFieldValuesWithSchemaAsync(schema: StandardSchemaV1) {
+  parseFieldValuesWithSchemaAsync = (
+    schema: StandardSchemaV1<TFormData, unknown>,
+  ) => {
     return standardSchemaValidators.validateAsync(
       { value: this.state.values, validationSource: 'form' },
       schema,
