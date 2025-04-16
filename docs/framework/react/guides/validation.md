@@ -503,6 +503,28 @@ Async validations on form and field level are supported as well:
 />
 ```
 
+If you need even more control over your Standard Schema validation, you can combine a Standard Schema with a callback function like so:
+
+```tsx
+<form.Field
+  name="age"
+  asyncDebounceMs={500}
+  validators={{
+    onChange: 1500,
+    onChangeAsync: async ({ value, fieldApi }) => {
+      const errors = fieldApi.parseValueWithSchema(
+        z.number().gte(13, 'You must be 13 to make an account'),
+      )
+      if (errors) return errors
+      // continue with your validation
+    },
+  }}
+  children={(field) => {
+    return <>{/* ... */}</>
+  }}
+/>
+```
+
 ## Preventing invalid forms from being submitted
 
 The `onChange`, `onBlur` etc... callbacks are also run when the form is submitted and the submission is blocked if the form is invalid.
