@@ -154,8 +154,4 @@ export type DeepKeys<T> = unknown extends T
  * Infer the type of a deeply nested property within an object or an array.
  */
 export type DeepValue<TValue, TAccessor> =
-  DeepRecord<TValue> extends infer TDeepRecord
-    ? TAccessor extends keyof TDeepRecord
-      ? TDeepRecord[TAccessor]
-      : never
-    : never
+  TAccessor extends DeepKeys<TValue> ? DeepRecord<TValue>[TAccessor] : never
