@@ -2040,11 +2040,11 @@ describe('field api', () => {
     }).toThrowError()
     // async to async is fine
     expect(() => {
-      form.parseValuesWithSchemaAsync(testSchema)
+      field.parseValueWithSchemaAsync(testSchema)
     }).not.toThrowError()
     // sync to async is also fine
     expect(() => {
-      form.parseValuesWithSchemaAsync(z.any())
+      field.parseValueWithSchemaAsync(z.any())
     }).not.toThrowError()
   })
 })
