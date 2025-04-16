@@ -1186,11 +1186,6 @@ export class FieldApi<
 
     this.triggerOnChangeListener()
 
-    this.form.options.listeners?.onChange?.({
-      fieldName: this.name as never,
-      formApi: this.form,
-    })
-
     this.validate('change')
   }
 
@@ -1238,15 +1233,6 @@ export class FieldApi<
     this.form.pushFieldValue(this.name, value as any, opts)
 
     this.triggerOnChangeListener()
-    this.options.listeners?.onChange?.({
-      value: this.state.value,
-      fieldApi: this,
-    })
-
-    this.form.options.listeners?.onChange?.({
-      fieldName: this.name as never,
-      formApi: this.form,
-    })
   }
 
   /**
@@ -1260,15 +1246,6 @@ export class FieldApi<
     this.form.insertFieldValue(this.name, index, value as any, opts)
 
     this.triggerOnChangeListener()
-    this.options.listeners?.onChange?.({
-      value: this.state.value,
-      fieldApi: this,
-    })
-
-    this.form.options.listeners?.onChange?.({
-      fieldName: this.name as never,
-      formApi: this.form,
-    })
   }
 
   /**
@@ -1282,15 +1259,6 @@ export class FieldApi<
     this.form.replaceFieldValue(this.name, index, value as any, opts)
 
     this.triggerOnChangeListener()
-    this.options.listeners?.onChange?.({
-      value: this.state.value,
-      fieldApi: this,
-    })
-
-    this.form.options.listeners?.onChange?.({
-      fieldName: this.name as never,
-      formApi: this.form,
-    })
   }
 
   /**
@@ -1300,15 +1268,6 @@ export class FieldApi<
     this.form.removeFieldValue(this.name, index, opts)
 
     this.triggerOnChangeListener()
-    this.options.listeners?.onChange?.({
-      value: this.state.value,
-      fieldApi: this,
-    })
-
-    this.form.options.listeners?.onChange?.({
-      fieldName: this.name as never,
-      formApi: this.form,
-    })
   }
 
   /**
@@ -1318,15 +1277,6 @@ export class FieldApi<
     this.form.swapFieldValues(this.name, aIndex, bIndex, opts)
 
     this.triggerOnChangeListener()
-    this.options.listeners?.onChange?.({
-      value: this.state.value,
-      fieldApi: this,
-    })
-
-    this.form.options.listeners?.onChange?.({
-      fieldName: this.name as never,
-      formApi: this.form,
-    })
   }
 
   /**
@@ -1336,15 +1286,6 @@ export class FieldApi<
     this.form.moveFieldValues(this.name, aIndex, bIndex, opts)
 
     this.triggerOnChangeListener()
-    this.options.listeners?.onChange?.({
-      value: this.state.value,
-      fieldApi: this,
-    })
-
-    this.form.options.listeners?.onChange?.({
-      fieldName: this.name as never,
-      formApi: this.form,
-    })
   }
 
   /**
@@ -1684,15 +1625,6 @@ export class FieldApi<
     this.validate('blur')
 
     this.triggerOnBlurListener()
-    this.options.listeners?.onBlur?.({
-      value: this.state.value,
-      fieldApi: this,
-    })
-
-    this.form.options.listeners?.onBlur?.({
-      fieldName: this.name,
-      formApi: this.form,
-    })
   }
 
   /**
@@ -1724,11 +1656,21 @@ export class FieldApi<
           value: this.state.value,
           fieldApi: this,
         })
+
+        this.form.options.listeners?.onBlur?.({
+          fieldName: this.name,
+          formApi: this.form,
+        })
       }, debounceMs)
     } else {
       this.options.listeners?.onBlur?.({
         value: this.state.value,
         fieldApi: this,
+      })
+
+      this.form.options.listeners?.onBlur?.({
+        fieldName: this.name,
+        formApi: this.form,
       })
     }
   }
@@ -1746,11 +1688,21 @@ export class FieldApi<
           value: this.state.value,
           fieldApi: this,
         })
+
+        this.form.options.listeners?.onChange?.({
+          fieldName: this.name as never,
+          formApi: this.form,
+        })
       }, debounceMs)
     } else {
       this.options.listeners?.onChange?.({
         value: this.state.value,
         fieldApi: this,
+      })
+
+      this.form.options.listeners?.onChange?.({
+        fieldName: this.name as never,
+        formApi: this.form,
       })
     }
   }
