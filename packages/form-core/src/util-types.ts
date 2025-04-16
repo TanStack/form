@@ -19,8 +19,6 @@ type Try<A1, A2, Catch = never> = A1 extends A2 ? A1 : Catch
  */
 export type Narrow<A> = Try<A, [], NarrowRaw<A>>
 
-type IsAny<T> = 0 extends 1 & T ? true : false
-
 export interface AnyDeepKeyAndValue {
   key: string
   value: any
@@ -117,15 +115,13 @@ export interface UnknownDeepKeyAndValue<TParent extends AnyDeepKeyAndValue> {
   value: unknown
 }
 
-export type DeepKeyAndValueUnknown<TParent extends AnyDeepKeyAndValue> =
-  UnknownDeepKeyAndValue<TParent>
-
 export type DeepKeysAndValues<
   T,
   TParent extends AnyDeepKeyAndValue = never,
   TAcc = never,
-> =
-  IsAny<T> extends true
+> = unknown extends T
+  ? TAcc | UnknownDeepKeyAndValue<TParent>
+  : unknown extends T // this stops runaway recursion when T is any
     ? T
     : T extends string | number | boolean | bigint | Date
       ? TAcc
@@ -134,7 +130,7 @@ export type DeepKeysAndValues<
           ? DeepKeyAndValueArray<TParent, T, TAcc>
           : DeepKeyAndValueTuple<TParent, T, TAcc>
         : keyof T extends never
-          ? TAcc | DeepKeyAndValueUnknown<TParent>
+          ? TAcc | UnknownDeepKeyAndValue<TParent>
           : T extends object
             ? DeepKeyAndValueObject<TParent, T, TAcc>
             : TAcc
