@@ -12,12 +12,15 @@ You can create options for your form so that it can be shared between multiple f
 Example:
 
 ```tsx
+interface User {
+  firstName: string
+  lastName: string
+  hobbies: Array<string>
+}
+const defaultUser: User = { firstName: '', lastName: '', hobbies: [] }
+
 const formOpts = formOptions({
-  defaultValues: {
-    firstName: '',
-    lastName: '',
-    hobbies: [],
-  } as Person,
+  defaultValues: defaultUser,
 })
 ```
 
@@ -38,16 +41,19 @@ const form = useForm({
 You may also create a form instance without using `formOptions` by using the standalone `useForm` API:
 
 ```tsx
+interface User {
+  firstName: string
+  lastName: string
+  hobbies: Array<string>
+}
+const defaultUser: User = { firstName: '', lastName: '', hobbies: [] }
+
 const form = useForm({
+  defaultValues: defaultUser,
   onSubmit: async ({ value }) => {
     // Do something with form data
     console.log(value)
   },
-  defaultValues: {
-    firstName: '',
-    lastName: '',
-    hobbies: [],
-  } as Person,
 })
 ```
 

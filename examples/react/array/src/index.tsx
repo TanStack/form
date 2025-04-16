@@ -2,11 +2,16 @@ import * as React from 'react'
 import { createRoot } from 'react-dom/client'
 import { useForm } from '@tanstack/react-form'
 
+interface Person {
+  name: string
+  age: number
+}
+
+const defaultPeople: { people: Array<Person> } = { people: [] }
+
 function App() {
   const form = useForm({
-    defaultValues: {
-      people: [] as Array<{ name: string; age: number }>,
-    },
+    defaultValues: defaultPeople,
     onSubmit({ value }) {
       alert(JSON.stringify(value))
     },
