@@ -2068,11 +2068,24 @@ export class FormApi<
   }
 
   /**
-   * FIXME this name is not final. It's merely to show the stateless wrapper this
-   * method represents.
+   * Parses the form's values with a given standard schema and returns
+   * issues (if any). This method does NOT set any internal errors.
+   * @param schema The standard schema to parse the form values with.
    */
-  getValidationIssuesFromSchema(schema: StandardSchemaV1) {
+  parseValuesWithSchema(schema: StandardSchemaV1) {
     return standardSchemaValidators.validate(
+      { value: this.state.values, validationSource: 'form' },
+      schema,
+    )
+  }
+
+  /**
+   * Parses the form's values with a given standard schema and returns
+   * issues (if any). This method does NOT set any internal errors.
+   * @param schema The standard schema to parse the form values with.
+   */
+  parseValuesWithSchemaAsync(schema: StandardSchemaV1) {
+    return standardSchemaValidators.validateAsync(
       { value: this.state.values, validationSource: 'form' },
       schema,
     )

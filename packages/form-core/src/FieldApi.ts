@@ -1643,6 +1643,30 @@ export class FieldApi<
     )
   }
 
+  /**
+   * Parses the field's value with the given schema and returns
+   * issues (if any). This method does NOT set any internal errors.
+   * @param schema The standard schema to parse this field's value with.
+   */
+  parseValueWithSchema(schema: StandardSchemaV1) {
+    return standardSchemaValidators.validate(
+      { value: this.state.value, validationSource: 'field' },
+      schema,
+    )
+  }
+
+  /**
+   * Parses the field's value with the given schema and returns
+   * issues (if any). This method does NOT set any internal errors.
+   * @param schema The standard schema to parse this field's value with.
+   */
+  parseValueWithSchemaAsync(schema: StandardSchemaV1) {
+    return standardSchemaValidators.validateAsync(
+      { value: this.state.value, validationSource: 'field' },
+      schema,
+    )
+  }
+
   private triggerOnBlurListener() {
     const debounceMs = this.options.listeners?.onBlurDebounceMs
 
