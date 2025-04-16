@@ -828,12 +828,14 @@ export class FormApi<
             }
           }
 
-          // As a primitive, we don't need to aggressively persist the same referential value for performance reasons
+          // As primitives, we don't need to aggressively persist the same referential value for performance reasons
           const isFieldPristine = !currBaseVal.isDirty
+          const isFieldValid = !isNonEmptyArray(fieldErrors ?? [])
 
           if (
             prevFieldInfo &&
             prevFieldInfo.isPristine === isFieldPristine &&
+            prevFieldInfo.isValid === isFieldValid &&
             prevFieldInfo.errors === fieldErrors &&
             currBaseVal === prevBaseVal
           ) {
@@ -846,6 +848,7 @@ export class FormApi<
             ...currBaseVal,
             errors: fieldErrors,
             isPristine: isFieldPristine,
+            isValid: isFieldValid,
           } as AnyFieldMeta
         }
 
@@ -891,11 +894,9 @@ export class FormApi<
           (field) => field?.isValidating,
         )
 
-        const isFieldsValid = !fieldMetaValues.some(
-          (field) =>
-            field?.errorMap &&
-            isNonEmptyArray(Object.values(field.errorMap).filter(Boolean)),
-        )
+        const isFieldsValid = fieldMetaValues
+          .filter(Boolean)
+          .every((field) => field!.isValid)
 
         const isTouched = fieldMetaValues.some((field) => field?.isTouched)
         const isBlurred = fieldMetaValues.some((field) => field?.isBlurred)
@@ -1321,13 +1322,20 @@ export class FormApi<
 
             const fieldMeta = this.getFieldMeta(field)
             if (fieldMeta && fieldMeta.errorMap[errorMapKey] !== fieldError) {
-              this.setFieldMeta(field, (prev) => ({
-                ...prev,
-                errorMap: {
+              this.setFieldMeta(field, (prev) => {
+                const errorMap = {
                   ...prev.errorMap,
                   [errorMapKey]: fieldError,
-                },
-              }))
+                }
+                const fieldIsValid =
+                  Object.values(errorMap).filter(Boolean).length === 0
+
+                return {
+                  ...prev,
+                  errorMap,
+                  isValid: fieldIsValid,
+                }
+              })
             }
           }
         }
@@ -1345,13 +1353,20 @@ export class FormApi<
               [errorMapKey]: undefined,
             }
 
-            this.setFieldMeta(field, (prev) => ({
-              ...prev,
-              errorMap: {
+            this.setFieldMeta(field, (prev) => {
+              const errorMap = {
                 ...prev.errorMap,
                 [errorMapKey]: undefined,
-              },
-            }))
+              }
+              const fieldIsValid =
+                Object.values(errorMap).filter(Boolean).length === 0
+
+              return {
+                ...prev,
+                isValid: fieldIsValid,
+                errorMap,
+              }
+            })
           }
         }
 
@@ -1483,13 +1498,20 @@ export class FormApi<
             for (const [field, fieldError] of Object.entries(fieldErrors)) {
               const fieldMeta = this.getFieldMeta(field as DeepKeys<TFormData>)
               if (fieldMeta && fieldMeta.errorMap[errorMapKey] !== fieldError) {
-                this.setFieldMeta(field as DeepKeys<TFormData>, (prev) => ({
-                  ...prev,
-                  errorMap: {
+                this.setFieldMeta(field as DeepKeys<TFormData>, (prev) => {
+                  const errorMap = {
                     ...prev.errorMap,
                     [errorMapKey]: fieldError,
-                  },
-                }))
+                  }
+                  const fieldIsValid =
+                    Object.values(errorMap).filter(Boolean).length === 0
+
+                  return {
+                    ...prev,
+                    errorMap,
+                    isValid: fieldIsValid,
+                  }
+                })
               }
             }
           }
@@ -1753,16 +1775,24 @@ export class FormApi<
 
     batch(() => {
       if (!dontUpdateMeta) {
-        this.setFieldMeta(field, (prev) => ({
-          ...prev,
-          isTouched: true,
-          isDirty: true,
-          errorMap: {
+        this.setFieldMeta(field, (prev) => {
+          const errorMap = {
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             ...prev?.errorMap,
             onMount: undefined,
-          },
-        }))
+          }
+
+          const fieldIsValid =
+            Object.values(errorMap).filter(Boolean).length === 0
+
+          return {
+            ...prev,
+            isTouched: true,
+            isDirty: true,
+            errorMap,
+            isValid: fieldIsValid,
+          }
+        })
       }
 
       this.baseStore.setState((prev) => {

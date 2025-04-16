@@ -642,6 +642,10 @@ export type FieldMetaDerived<
    * A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
    */
   isPristine: boolean
+  /**
+   * A boolean indicating if the field is valid.
+   */
+  isValid: boolean
 }
 
 export type AnyFieldMetaDerived = FieldMetaDerived<
@@ -1095,14 +1099,19 @@ export class FieldApi<
         type: 'validate',
       })
       if (error) {
-        this.setMeta(
-          (prev) =>
-            ({
-              ...prev,
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              errorMap: { ...prev?.errorMap, onMount: error },
-            }) as never,
-        )
+        this.setMeta((prev) => {
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          const errorMap = { ...prev?.errorMap, onMount: error }
+
+          const fieldIsValid =
+            Object.values(errorMap).filter(Boolean).length === 0
+
+          return {
+            ...prev,
+            errorMap,
+            isValid: fieldIsValid,
+          } as never
+        })
       }
     }
 
@@ -1367,15 +1376,22 @@ export class FieldApi<
             : errorFromForm[errorMapKey]
 
         if (field.state.meta.errorMap[errorMapKey] !== error) {
-          field.setMeta((prev) => ({
-            ...prev,
-            errorMap: {
+          field.setMeta((prev) => {
+            const errorMap = {
               ...prev.errorMap,
               [getErrorMapKey(validateObj.cause)]:
                 // Prefer the error message from the field validators if they exist
-                error ? error : errorFromForm[errorMapKey],
-            },
-          }))
+                error ?? errorFromForm[errorMapKey],
+            }
+            const fieldIsValid =
+              Object.values(errorMap).filter(Boolean).length === 0
+
+            return {
+              ...prev,
+              errorMap,
+              isValid: fieldIsValid,
+            }
+          })
         }
         if (error || errorFromForm[errorMapKey]) {
           hasErrored = true
@@ -1402,13 +1418,21 @@ export class FieldApi<
       cause !== 'submit' &&
       !hasErrored
     ) {
-      this.setMeta((prev) => ({
-        ...prev,
-        errorMap: {
+      this.setMeta((prev) => {
+        const errorMap = {
           ...prev.errorMap,
           [submitErrKey]: undefined,
-        },
-      }))
+        }
+
+        const fieldIsValid =
+          Object.values(errorMap).filter(Boolean).length === 0
+
+        return {
+          ...prev,
+          errorMap,
+          isValid: fieldIsValid,
+        }
+      })
     }
 
     return { hasErrored }
@@ -1526,13 +1550,19 @@ export class FieldApi<
             asyncFormValidationResults[this.name]?.[errorMapKey]
           const fieldError = error || fieldErrorFromForm
           field.setMeta((prev) => {
+            const errorMap = {
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+              ...prev?.errorMap,
+              [errorMapKey]: fieldError,
+            }
+
+            const fieldIsValid =
+              Object.values(errorMap).filter(Boolean).length === 0
+
             return {
               ...prev,
-              errorMap: {
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                ...prev?.errorMap,
-                [errorMapKey]: fieldError,
-              },
+              errorMap,
+              isValid: fieldIsValid,
             }
           })
 
@@ -1631,16 +1661,21 @@ export class FieldApi<
    * Updates the field's errorMap
    */
   setErrorMap(errorMap: ValidationErrorMap) {
-    this.setMeta(
-      (prev) =>
-        ({
-          ...prev,
-          errorMap: {
-            ...prev.errorMap,
-            ...errorMap,
-          },
-        }) as never,
-    )
+    this.setMeta((prev) => {
+      const newErrorMap = {
+        ...prev.errorMap,
+        ...errorMap,
+      }
+
+      const fieldIsValid =
+        Object.values(newErrorMap).filter(Boolean).length === 0
+
+      return {
+        ...prev,
+        errorMap: newErrorMap,
+        isValid: fieldIsValid,
+      } as never
+    })
   }
 
   /**
