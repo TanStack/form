@@ -59,6 +59,7 @@ title: "@tanstack/form-core"
 - [Nullable](type-aliases/nullable.md)
 - [ObjectAccessor](type-aliases/objectaccessor.md)
 - [StandardSchemaV1](type-aliases/standardschemav1.md)
+- [TStandardSchemaValidatorIssue](type-aliases/tstandardschemavalidatorissue.md)
 - [TStandardSchemaValidatorValue](type-aliases/tstandardschemavalidatorvalue.md)
 - [TupleAccessor](type-aliases/tupleaccessor.md)
 - [UnknownAccessor](type-aliases/unknownaccessor.md)

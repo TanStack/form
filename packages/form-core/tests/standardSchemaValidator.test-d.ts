@@ -1,6 +1,6 @@
 import { assertType, describe, it } from 'vitest'
 import { z } from 'zod'
-import { FieldApi, FormApi } from '../src/index'
+import { FieldApi, FormApi, standardSchemaValidators } from '../src/index'
 import type { StandardSchemaV1Issue } from '../src/index'
 
 describe('standard schema validator', () => {
@@ -55,5 +55,40 @@ describe('standard schema validator', () => {
     assertType<undefined | StandardSchemaV1Issue[]>(
       field.getMeta().errorMap.onChange,
     )
+  })
+
+  type FormLevelStandardSchemaIssue = {
+    form: Record<string, StandardSchemaV1Issue[]>
+    fields: Record<string, StandardSchemaV1Issue[]>
+  }
+
+  it('Should return different Standard Schema Issue types from validate based on scope', () => {
+    const formSourceError = standardSchemaValidators.validate(
+      { value: '', validationSource: 'form' },
+      z.string(),
+    )
+    const fieldSourceError = standardSchemaValidators.validate(
+      { value: '', validationSource: 'field' },
+      z.string(),
+    )
+
+    assertType<FormLevelStandardSchemaIssue | undefined>(formSourceError)
+    assertType<StandardSchemaV1Issue[] | undefined>(fieldSourceError)
+  })
+
+  it('Should return different Standard Schema Issue types from validateAsync based on scope', () => {
+    const formSourceError = standardSchemaValidators.validateAsync(
+      { value: '', validationSource: 'form' },
+      z.string(),
+    )
+    const fieldSourceError = standardSchemaValidators.validateAsync(
+      { value: '', validationSource: 'field' },
+      z.string(),
+    )
+
+    assertType<Promise<FormLevelStandardSchemaIssue | undefined>>(
+      formSourceError,
+    )
+    assertType<Promise<StandardSchemaV1Issue[] | undefined>>(fieldSourceError)
   })
 })

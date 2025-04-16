@@ -422,6 +422,75 @@ Moves the value at the first specified index to the second specified index withi
 
 ***
 
+### parseValuesWithSchema()
+
+```ts
+parseValuesWithSchema(schema): 
+  | undefined
+  | {
+  fields: Record<string, StandardSchemaV1Issue[]>;
+  form: Record<string, StandardSchemaV1Issue[]>;
+}
+```
+
+Defined in: [packages/form-core/src/FormApi.ts:2075](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2075)
+
+Parses the form's values with a given standard schema and returns
+issues (if any). This method does NOT set any internal errors.
+
+#### Parameters
+
+##### schema
+
+[`StandardSchemaV1`](../type-aliases/standardschemav1.md)\<`TFormData`, `unknown`\>
+
+The standard schema to parse the form values with.
+
+#### Returns
+
+  \| `undefined`
+  \| \{
+  `fields`: `Record`\<`string`, [`StandardSchemaV1Issue`](../interfaces/standardschemav1issue.md)[]\>;
+  `form`: `Record`\<`string`, [`StandardSchemaV1Issue`](../interfaces/standardschemav1issue.md)[]\>;
+ \}
+
+***
+
+### parseValuesWithSchemaAsync()
+
+```ts
+parseValuesWithSchemaAsync(schema): Promise<
+  | undefined
+  | {
+  fields: Record<string, StandardSchemaV1Issue[]>;
+  form: Record<string, StandardSchemaV1Issue[]>;
+}>
+```
+
+Defined in: [packages/form-core/src/FormApi.ts:2087](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2087)
+
+Parses the form's values with a given standard schema and returns
+issues (if any). This method does NOT set any internal errors.
+
+#### Parameters
+
+##### schema
+
+[`StandardSchemaV1`](../type-aliases/standardschemav1.md)\<`TFormData`, `unknown`\>
+
+The standard schema to parse the form values with.
+
+#### Returns
+
+`Promise`\<
+  \| `undefined`
+  \| \{
+  `fields`: `Record`\<`string`, [`StandardSchemaV1Issue`](../interfaces/standardschemav1issue.md)[]\>;
+  `form`: `Record`\<`string`, [`StandardSchemaV1Issue`](../interfaces/standardschemav1issue.md)[]\>;
+ \}\>
+
+***
+
 ### pushFieldValue()
 
 ```ts
