@@ -30,7 +30,7 @@ export type ArrayAccessor<TParent extends AnyDeepKeyAndValue> =
 export interface ArrayDeepKeyAndValue<
   in out TParent extends AnyDeepKeyAndValue,
   in out T extends ReadonlyArray<any>,
-> {
+> extends AnyDeepKeyAndValue {
   key: ArrayAccessor<TParent>
   value: T[number] | Nullable<TParent['value']>
 }
@@ -39,7 +39,7 @@ export type DeepKeyAndValueArray<
   TParent extends AnyDeepKeyAndValue,
   T extends ReadonlyArray<any>,
   TAcc,
-> = DeepKeysAndValues<
+> = DeepKeysAndValuesImpl<
   NonNullable<T[number]>,
   ArrayDeepKeyAndValue<TParent, T>,
   TAcc | ArrayDeepKeyAndValue<TParent, T>
@@ -54,7 +54,7 @@ export interface TupleDeepKeyAndValue<
   in out TParent extends AnyDeepKeyAndValue,
   in out T,
   in out TKey extends AllTupleKeys<T>,
-> {
+> extends AnyDeepKeyAndValue {
   key: TupleAccessor<TParent, TKey>
   value: T[TKey] | Nullable<TParent['value']>
 }
@@ -67,7 +67,7 @@ export type DeepKeyAndValueTuple<
   TAcc,
   TAllKeys extends AllTupleKeys<T> = AllTupleKeys<T>,
 > = TAllKeys extends any
-  ? DeepKeysAndValues<
+  ? DeepKeysAndValuesImpl<
       NonNullable<T[TAllKeys]>,
       TupleDeepKeyAndValue<TParent, T, TAllKeys>,
       TAcc | TupleDeepKeyAndValue<TParent, T, TAllKeys>
@@ -85,13 +85,19 @@ export type ObjectAccessor<
 
 export type Nullable<T> = T & (undefined | null)
 
+export type ObjectValue<
+  TParent extends AnyDeepKeyAndValue,
+  T,
+  TKey extends AllObjectKeys<T>,
+> = T[TKey] | Nullable<TParent['value']>
+
 export interface ObjectDeepKeyAndValue<
   in out TParent extends AnyDeepKeyAndValue,
   in out T,
   in out TKey extends AllObjectKeys<T>,
-> {
+> extends AnyDeepKeyAndValue {
   key: ObjectAccessor<TParent, TKey>
-  value: T[TKey] | Nullable<TParent['value']>
+  value: ObjectValue<TParent, T, TKey>
 }
 
 export type DeepKeyAndValueObject<
@@ -100,7 +106,7 @@ export type DeepKeyAndValueObject<
   TAcc,
   TAllKeys extends AllObjectKeys<T> = AllObjectKeys<T>,
 > = TAllKeys extends any
-  ? DeepKeysAndValues<
+  ? DeepKeysAndValuesImpl<
       NonNullable<T[TAllKeys]>,
       ObjectDeepKeyAndValue<TParent, T, TAllKeys>,
       TAcc | ObjectDeepKeyAndValue<TParent, T, TAllKeys>
@@ -110,12 +116,18 @@ export type DeepKeyAndValueObject<
 export type UnknownAccessor<TParent extends AnyDeepKeyAndValue> =
   TParent['key'] extends never ? string : `${TParent['key']}.${string}`
 
-export interface UnknownDeepKeyAndValue<TParent extends AnyDeepKeyAndValue> {
+export interface UnknownDeepKeyAndValue<TParent extends AnyDeepKeyAndValue>
+  extends AnyDeepKeyAndValue {
   key: UnknownAccessor<TParent>
   value: unknown
 }
 
-export type DeepKeysAndValues<
+export type DeepKeysAndValues<T> =
+  DeepKeysAndValuesImpl<T> extends AnyDeepKeyAndValue
+    ? DeepKeysAndValuesImpl<T>
+    : never
+
+export type DeepKeysAndValuesImpl<
   T,
   TParent extends AnyDeepKeyAndValue = never,
   TAcc = never,
@@ -136,9 +148,7 @@ export type DeepKeysAndValues<
             : TAcc
 
 export type DeepRecord<T> = {
-  [TRecord in DeepKeysAndValues<T> extends AnyDeepKeyAndValue
-    ? DeepKeysAndValues<T>
-    : never as TRecord['key']]: TRecord['value']
+  [TRecord in DeepKeysAndValues<T> as TRecord['key']]: TRecord['value']
 }
 
 /**
@@ -146,12 +156,13 @@ export type DeepRecord<T> = {
  */
 export type DeepKeys<T> = unknown extends T
   ? string
-  : DeepKeysAndValues<T> extends AnyDeepKeyAndValue
-    ? DeepKeysAndValues<T>['key']
-    : never
+  : DeepKeysAndValues<T>['key']
 
 /**
  * Infer the type of a deeply nested property within an object or an array.
  */
-export type DeepValue<TValue, TAccessor> =
-  TAccessor extends DeepKeys<TValue> ? DeepRecord<TValue>[TAccessor] : never
+export type DeepValue<TValue, TAccessor> = unknown extends TValue
+  ? TValue
+  : TAccessor extends DeepKeys<TValue>
+    ? DeepRecord<TValue>[TAccessor]
+    : never
