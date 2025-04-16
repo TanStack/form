@@ -2922,7 +2922,7 @@ describe('form api', () => {
     form.mount()
 
     // First name schema should complain that 'firstName' is too short
-    const issueResult = form.parseFieldValuesWithSchema(schema)
+    const issueResult = form.parseValuesWithSchema(schema)
     expect(issueResult).toBeDefined()
     expect(Array.isArray(issueResult)).toBe(false)
 
@@ -2938,7 +2938,7 @@ describe('form api', () => {
       'some long name that satisfies firstNameSchemaResult',
     )
     // firstName should now be satisfied
-    const successResult = form.parseFieldValuesWithSchema(schema)
+    const successResult = form.parseValuesWithSchema(schema)
     expect(successResult).toBeUndefined()
   })
 
@@ -2957,7 +2957,7 @@ describe('form api', () => {
     form.mount()
 
     // First name schema should complain that 'firstName' is too short
-    const issuePromise = form.parseFieldValuesWithSchemaAsync(schema)
+    const issuePromise = form.parseValuesWithSchemaAsync(schema)
     expect(issuePromise).toBeInstanceOf(Promise)
 
     const issueResult = await issuePromise
@@ -2978,7 +2978,7 @@ describe('form api', () => {
     )
 
     // firstName should now be satisfied
-    const successPromise = form.parseFieldValuesWithSchemaAsync(schema)
+    const successPromise = form.parseValuesWithSchemaAsync(schema)
     expect(successPromise).toBeInstanceOf(Promise)
 
     const successResult = await successPromise
@@ -3004,15 +3004,15 @@ describe('form api', () => {
 
     // async passed to sync should error
     expect(() => {
-      form.parseFieldValuesWithSchema(testSchema)
+      form.parseValuesWithSchema(testSchema)
     }).toThrowError()
     // async to async is fine
     expect(() => {
-      form.parseFieldValuesWithSchemaAsync(testSchema)
+      form.parseValuesWithSchemaAsync(testSchema)
     }).not.toThrowError()
     // sync to async is also fine
     expect(() => {
-      form.parseFieldValuesWithSchemaAsync(z.any())
+      form.parseValuesWithSchemaAsync(z.any())
     }).not.toThrowError()
   })
 })

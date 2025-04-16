@@ -106,9 +106,9 @@ it('should only have form-level error types returned from parseFieldValuesWithSc
   })
   // assert that it doesn't think it's a field-level error
   assertType<FormLevelStandardSchemaIssue | undefined>(
-    form.parseFieldValuesWithSchema(schema),
+    form.parseValuesWithSchema(schema),
   )
   assertType<Promise<FormLevelStandardSchemaIssue | undefined>>(
-    form.parseFieldValuesWithSchemaAsync(schema),
+    form.parseValuesWithSchemaAsync(schema),
   )
 })
