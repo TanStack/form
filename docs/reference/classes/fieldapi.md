@@ -343,6 +343,63 @@ Moves the value at the first specified index to the second specified index.
 
 ***
 
+### parseValueWithSchema()
+
+```ts
+parseValueWithSchema(schema): 
+  | undefined
+  | StandardSchemaV1Issue[]
+```
+
+Defined in: [packages/form-core/src/FieldApi.ts:1651](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1651)
+
+Parses the field's value with the given schema and returns
+issues (if any). This method does NOT set any internal errors.
+
+#### Parameters
+
+##### schema
+
+[`StandardSchemaV1`](../type-aliases/standardschemav1.md)\<`TData`, `unknown`\>
+
+The standard schema to parse this field's value with.
+
+#### Returns
+
+  \| `undefined`
+  \| [`StandardSchemaV1Issue`](../interfaces/standardschemav1issue.md)[]
+
+***
+
+### parseValueWithSchemaAsync()
+
+```ts
+parseValueWithSchemaAsync(schema): Promise<
+  | undefined
+| StandardSchemaV1Issue[]>
+```
+
+Defined in: [packages/form-core/src/FieldApi.ts:1663](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1663)
+
+Parses the field's value with the given schema and returns
+issues (if any). This method does NOT set any internal errors.
+
+#### Parameters
+
+##### schema
+
+[`StandardSchemaV1`](../type-aliases/standardschemav1.md)\<`TData`, `unknown`\>
+
+The standard schema to parse this field's value with.
+
+#### Returns
+
+`Promise`\<
+  \| `undefined`
+  \| [`StandardSchemaV1Issue`](../interfaces/standardschemav1issue.md)[]\>
+
+***
+
 ### pushValue()
 
 ```ts
