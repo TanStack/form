@@ -43,7 +43,6 @@ title: "@tanstack/form-core"
 - [DeepKeyAndValueArray](type-aliases/deepkeyandvaluearray.md)
 - [DeepKeyAndValueObject](type-aliases/deepkeyandvalueobject.md)
 - [DeepKeyAndValueTuple](type-aliases/deepkeyandvaluetuple.md)
-- [DeepKeyAndValueUnknown](type-aliases/deepkeyandvalueunknown.md)
 - [DeepKeys](type-aliases/deepkeys.md)
 - [DeepKeysAndValues](type-aliases/deepkeysandvalues.md)
 - [DeepRecord](type-aliases/deeprecord.md)

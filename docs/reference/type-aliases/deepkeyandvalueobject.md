@@ -13,7 +13,7 @@ type DeepKeyAndValueObject<TParent, T, TAcc, TAllKeys> = TAllKeys extends any ? 
   | ObjectDeepKeyAndValue<TParent, T, TAllKeys>> : never;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:99](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L99)
+Defined in: [packages/form-core/src/util-types.ts:97](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L97)
 
 ## Type Parameters
 

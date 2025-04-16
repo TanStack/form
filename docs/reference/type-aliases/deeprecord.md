@@ -11,7 +11,7 @@ title: DeepRecord
 type DeepRecord<T> = { [TRecord in DeepKeysAndValues<T> extends AnyDeepKeyAndValue ? DeepKeysAndValues<T> : never as TRecord["key"]]: TRecord["value"] };
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:142](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L142)
+Defined in: [packages/form-core/src/util-types.ts:138](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L138)
 
 ## Type Parameters
 

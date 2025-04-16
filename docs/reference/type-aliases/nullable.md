@@ -11,7 +11,7 @@ title: Nullable
 type Nullable<T> = T & undefined | null;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:88](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L88)
+Defined in: [packages/form-core/src/util-types.ts:86](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L86)
 
 ## Type Parameters
 
