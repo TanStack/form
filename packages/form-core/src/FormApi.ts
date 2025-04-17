@@ -21,7 +21,12 @@ import type {
   StandardSchemaV1Issue,
   TStandardSchemaValidatorValue,
 } from './standardSchemaValidator'
-import type { AnyFieldMeta, AnyFieldMetaBase, FieldApi } from './FieldApi'
+import type {
+  AnyFieldApi,
+  AnyFieldMeta,
+  AnyFieldMetaBase,
+  FieldApi,
+} from './FieldApi'
 import type {
   FormValidationError,
   FormValidationErrorMap,
@@ -259,6 +264,7 @@ export interface FormListeners<
       TOnServer,
       TSubmitMeta
     >
+    fieldApi: AnyFieldApi
   }) => void
 
   onBlur?: (props: {
@@ -275,6 +281,7 @@ export interface FormListeners<
       TOnServer,
       TSubmitMeta
     >
+    fieldApi: AnyFieldApi
   }) => void
 
   onMount?: (props: {
