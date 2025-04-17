@@ -1,6 +1,4 @@
-/// <reference lib="dom" />
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import '@testing-library/jest-dom'
 import { userEvent } from '@testing-library/user-event'
 import { mount, unmount } from 'svelte'
 import TestForm, { getSampleData } from './simple.svelte'

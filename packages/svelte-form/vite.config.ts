@@ -1,15 +1,16 @@
 import { defineConfig } from 'vitest/config'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
-// @ts-expect-error tsconfig with NodeNext throws an annoying error here which is not relevant
-import packageJson from './package.json'
+import { svelteTesting } from '@testing-library/svelte/vite'
+import packageJson from './package.json' with { type: 'json' }
 
 export default defineConfig({
+  plugins: [svelte(), svelteTesting()],
   test: {
     name: packageJson.name,
     dir: './tests',
     watch: false,
     environment: 'jsdom',
-    globals: true,
+    setupFiles: ['./tests/test-setup.ts'],
     coverage: { enabled: true, provider: 'istanbul', include: ['src/**/*'] },
     typecheck: { enabled: true },
   },
@@ -18,5 +19,4 @@ export default defineConfig({
         conditions: ['browser'],
       }
     : undefined,
-  plugins: [svelte({})],
 })
