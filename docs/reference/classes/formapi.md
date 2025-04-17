@@ -326,9 +326,9 @@ Handles the form submission, performs validation, and calls the appropriate onSu
 
 ```ts
 insertFieldValue<TField>(
-   field,
-   index,
-   value,
+   field, 
+   index, 
+   value, 
 opts?): Promise<void>
 ```
 
@@ -350,7 +350,7 @@ Defined in: [packages/form-core/src/FormApi.ts:1816](https://github.com/TanStack
 
 ##### value
 
-[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
+[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
 
 ##### opts?
 
@@ -384,9 +384,9 @@ Defined in: [packages/form-core/src/FormApi.ts:1060](https://github.com/TanStack
 
 ```ts
 moveFieldValues<TField>(
-   field,
-   index1,
-   index2,
+   field, 
+   index1, 
+   index2, 
    opts?): void
 ```
 
@@ -422,12 +422,81 @@ Moves the value at the first specified index to the second specified index withi
 
 ***
 
+### parseValuesWithSchema()
+
+```ts
+parseValuesWithSchema(schema): 
+  | undefined
+  | {
+  fields: Record<string, StandardSchemaV1Issue[]>;
+  form: Record<string, StandardSchemaV1Issue[]>;
+}
+```
+
+Defined in: [packages/form-core/src/FormApi.ts:2075](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2075)
+
+Parses the form's values with a given standard schema and returns
+issues (if any). This method does NOT set any internal errors.
+
+#### Parameters
+
+##### schema
+
+[`StandardSchemaV1`](../type-aliases/standardschemav1.md)\<`TFormData`, `unknown`\>
+
+The standard schema to parse the form values with.
+
+#### Returns
+
+  \| `undefined`
+  \| \{
+  `fields`: `Record`\<`string`, [`StandardSchemaV1Issue`](../interfaces/standardschemav1issue.md)[]\>;
+  `form`: `Record`\<`string`, [`StandardSchemaV1Issue`](../interfaces/standardschemav1issue.md)[]\>;
+ \}
+
+***
+
+### parseValuesWithSchemaAsync()
+
+```ts
+parseValuesWithSchemaAsync(schema): Promise<
+  | undefined
+  | {
+  fields: Record<string, StandardSchemaV1Issue[]>;
+  form: Record<string, StandardSchemaV1Issue[]>;
+}>
+```
+
+Defined in: [packages/form-core/src/FormApi.ts:2087](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2087)
+
+Parses the form's values with a given standard schema and returns
+issues (if any). This method does NOT set any internal errors.
+
+#### Parameters
+
+##### schema
+
+[`StandardSchemaV1`](../type-aliases/standardschemav1.md)\<`TFormData`, `unknown`\>
+
+The standard schema to parse the form values with.
+
+#### Returns
+
+`Promise`\<
+  \| `undefined`
+  \| \{
+  `fields`: `Record`\<`string`, [`StandardSchemaV1Issue`](../interfaces/standardschemav1issue.md)[]\>;
+  `form`: `Record`\<`string`, [`StandardSchemaV1Issue`](../interfaces/standardschemav1issue.md)[]\>;
+ \}\>
+
+***
+
 ### pushFieldValue()
 
 ```ts
 pushFieldValue<TField>(
-   field,
-   value,
+   field, 
+   value, 
    opts?): void
 ```
 
@@ -447,7 +516,7 @@ Pushes a value into an array field.
 
 ##### value
 
-[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
+[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
 
 ##### opts?
 
@@ -463,8 +532,8 @@ Pushes a value into an array field.
 
 ```ts
 removeFieldValue<TField>(
-   field,
-   index,
+   field, 
+   index, 
 opts?): Promise<void>
 ```
 
@@ -500,9 +569,9 @@ Removes a value from an array field at the specified index.
 
 ```ts
 replaceFieldValue<TField>(
-   field,
-   index,
-   value,
+   field, 
+   index, 
+   value, 
 opts?): Promise<void>
 ```
 
@@ -526,7 +595,7 @@ Replaces a value into an array field at the specified index.
 
 ##### value
 
-[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
+[`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/deepvalue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
 
 ##### opts?
 
@@ -679,8 +748,8 @@ Updates the metadata of the specified field.
 
 ```ts
 setFieldValue<TField>(
-   field,
-   updater,
+   field, 
+   updater, 
    opts?): void
 ```
 
@@ -716,9 +785,9 @@ Sets the value of the specified field and optionally updates the touched state.
 
 ```ts
 swapFieldValues<TField>(
-   field,
-   index1,
-   index2,
+   field, 
+   index1, 
+   index2, 
    opts?): void
 ```
 
@@ -802,8 +871,8 @@ Validates all fields using the correct handlers for a given validation cause.
 
 ```ts
 validateArrayFieldsStartingFrom<TField>(
-   field,
-   index,
+   field, 
+   index, 
 cause): Promise<unknown[]>
 ```
 

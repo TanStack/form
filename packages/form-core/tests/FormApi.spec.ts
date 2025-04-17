@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+import { z } from 'zod'
 import { FieldApi, FormApi } from '../src/index'
 import { sleep } from './utils'
 
@@ -2906,5 +2907,112 @@ describe('form api', () => {
     form.mount()
     expect(form.state.isValid).toBe(false)
     expect(form.state.canSubmit).toBe(true)
+  })
+
+  it('should pass the current values to the Standard Schema when calling parseValuesWithSchema', async () => {
+    const schema = z.object({
+      firstName: z.string().min(3),
+    })
+
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+    })
+    form.mount()
+
+    // First name schema should complain that 'firstName' is too short
+    const issueResult = form.parseValuesWithSchema(schema)
+    expect(issueResult).toBeDefined()
+    expect(Array.isArray(issueResult)).toBe(false)
+
+    expect(issueResult).toHaveProperty('fields')
+    expect(issueResult).toHaveProperty('form')
+
+    expect(issueResult?.fields).toHaveProperty('firstName')
+    expect(Array.isArray(issueResult?.fields['firstName'])).toBe(true)
+    expect(issueResult?.fields['firstName']?.length).toBeGreaterThan(0)
+
+    form.setFieldValue(
+      'firstName',
+      'some long name that satisfies firstNameSchemaResult',
+    )
+    // firstName should now be satisfied
+    const successResult = form.parseValuesWithSchema(schema)
+    expect(successResult).toBeUndefined()
+  })
+
+  it('should pass the current values to the Standard Schema when calling parseValuesWithSchemaAsync', async () => {
+    vi.useFakeTimers()
+
+    const schema = z.object({
+      firstName: z.string().min(3),
+    })
+
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+    })
+    form.mount()
+
+    // First name schema should complain that 'firstName' is too short
+    const issuePromise = form.parseValuesWithSchemaAsync(schema)
+    expect(issuePromise).toBeInstanceOf(Promise)
+
+    const issueResult = await issuePromise
+
+    expect(issueResult).toBeDefined()
+    expect(Array.isArray(issueResult)).toBe(false)
+
+    expect(issueResult).toHaveProperty('fields')
+    expect(issueResult).toHaveProperty('form')
+
+    expect(issueResult?.fields).toHaveProperty('firstName')
+    expect(Array.isArray(issueResult?.fields['firstName'])).toBe(true)
+    expect(issueResult?.fields['firstName']?.length).toBeGreaterThan(0)
+
+    form.setFieldValue(
+      'firstName',
+      'some long name that satisfies firstNameSchemaResult',
+    )
+
+    // firstName should now be satisfied
+    const successPromise = form.parseValuesWithSchemaAsync(schema)
+    expect(successPromise).toBeInstanceOf(Promise)
+
+    const successResult = await successPromise
+    expect(successResult).toBeUndefined()
+  })
+
+  it('should throw an error when passing an async Standard Schema to parseValuesWithSchema', async () => {
+    const testSchema = z
+      .object({
+        name: z.string(),
+      })
+      .superRefine(async () => {
+        await sleep(1000)
+        return true
+      })
+
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+    form.mount()
+
+    // async passed to sync should error
+    expect(() => {
+      form.parseValuesWithSchema(testSchema)
+    }).toThrowError()
+    // async to async is fine
+    expect(() => {
+      form.parseValuesWithSchemaAsync(testSchema)
+    }).not.toThrowError()
+    // sync to async is also fine
+    expect(() => {
+      form.parseValuesWithSchemaAsync(z.any())
+    }).not.toThrowError()
   })
 })

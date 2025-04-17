@@ -67,3 +67,25 @@ function App() {
   )
 }
 ```
+
+### Built-in Debouncing
+
+If you are making an API request inside a listener, you may want to debounce the calls as it can lead to performance issues.
+We enable an easy method for debouncing your listeners by adding a `onChangeDebounceMs` or `onBlurDebounceMs`.
+
+```tsx
+<form.Field
+  name="country"
+  listeners={{
+    onChangeDebounceMs: 500, // 500ms debounce
+    onChange: ({ value }) => {
+      console.log(`Country changed to: ${value} without a change within 500ms, resetting province`)
+      form.setFieldValue('province', '')
+    },
+  }}
+>
+  {(field) => (
+    /* ... */
+  )}
+</form.Field>
+```
