@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { FieldApi, FormApi } from '../src/index'
 import { sleep } from './utils'
+import type { AnyFieldApi, AnyFormApi } from '../src/index'
 
 describe('form api', () => {
   it('should get default form state when default values are passed', () => {
@@ -1994,16 +1995,20 @@ describe('form api', () => {
   })
 
   it('should run the form listener onChange', async () => {
-    let name!: string
+    let fieldNameCheck!: string
+    let fieldApiCheck!: AnyFieldApi
+    let formApiCheck!: AnyFormApi
 
     const form = new FormApi({
       defaultValues: {
-        name: 'test',
-        age: 0,
+        name: '',
       },
       listeners: {
-        onChange: ({ fieldName }) => {
-          name = fieldName
+        onChange: ({ fieldName, fieldApi, formApi }) => {
+          fieldNameCheck = fieldName
+          fieldApiCheck = fieldApi
+
+          formApiCheck = formApi as any
         },
       },
     })
@@ -2016,8 +2021,9 @@ describe('form api', () => {
     field.mount()
     field.setValue('newTest')
 
-    expect(form.state.values.name).toStrictEqual('newTest')
-    expect(name).toStrictEqual('name')
+    expect(fieldNameCheck).toStrictEqual('name')
+    expect(fieldApiCheck.state.value).toStrictEqual('newTest')
+    expect(formApiCheck.state.values.name).toStrictEqual('newTest')
   })
 
   it('should run the form listener onChange when the field array is changed', () => {
@@ -2065,7 +2071,9 @@ describe('form api', () => {
   })
 
   it('should run the form listener onBlur', async () => {
-    let name!: string
+    let fieldNameCheck!: string
+    let fieldApiCheck!: AnyFieldApi
+    let formApiCheck!: AnyFormApi
 
     const form = new FormApi({
       defaultValues: {
@@ -2073,8 +2081,11 @@ describe('form api', () => {
         age: 0,
       },
       listeners: {
-        onBlur: ({ fieldName }) => {
-          name = fieldName
+        onBlur: ({ fieldName, fieldApi, formApi }) => {
+          fieldNameCheck = fieldName
+          fieldApiCheck = fieldApi
+
+          formApiCheck = formApi as any
         },
       },
     })
@@ -2087,7 +2098,9 @@ describe('form api', () => {
     field.mount()
     field.handleBlur()
 
-    expect(name).toStrictEqual('name')
+    expect(fieldNameCheck).toStrictEqual('name')
+    expect(fieldApiCheck.state.value).toStrictEqual('test')
+    expect(formApiCheck.state.values.name).toStrictEqual('test')
   })
 
   it('should run the field listener onSubmit', async () => {

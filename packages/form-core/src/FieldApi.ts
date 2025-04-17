@@ -1719,6 +1719,7 @@ export class FieldApi<
         this.form.options.listeners?.onBlur?.({
           fieldName: this.name,
           formApi: this.form,
+          fieldApi: this,
         })
       }, debounceMs)
     } else {
@@ -1730,6 +1731,7 @@ export class FieldApi<
       this.form.options.listeners?.onBlur?.({
         fieldName: this.name,
         formApi: this.form,
+        fieldApi: this,
       })
     }
   }
@@ -1751,6 +1753,7 @@ export class FieldApi<
         this.form.options.listeners?.onChange?.({
           fieldName: this.name as never,
           formApi: this.form,
+          fieldApi: this,
         })
       }, debounceMs)
     } else {
@@ -1762,6 +1765,7 @@ export class FieldApi<
       this.form.options.listeners?.onChange?.({
         fieldName: this.name as never,
         formApi: this.form,
+        fieldApi: this,
       })
     }
   }
