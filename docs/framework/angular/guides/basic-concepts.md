@@ -239,6 +239,12 @@ When working with array fields, you can use the fields `pushValue`, `removeValue
 Example:
 
 ```angular-ts
+interface Hobby {
+  name: string
+  description: string
+  yearsOfExperience: number
+}
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -311,18 +317,13 @@ export class AppComponent {
     description: '',
     yearsOfExperience: 0,
   }
+  defaultHobbies: { hobbies: Array<Hobby> } = { hobbies: [] }
 
   getHobbyName = (idx: number) => `hobbies[${idx}].name` as const;
   getHobbyDesc = (idx: number) => `hobbies[${idx}].description` as const;
 
   form = injectForm({
-    defaultValues: {
-      hobbies: [] as Array<{
-        name: string
-        description: string
-        yearsOfExperience: number
-      }>,
-    },
+    defaultValues: this.defaultHobbies,
     onSubmit({ value }) {
       alert(JSON.stringify(value))
     },
