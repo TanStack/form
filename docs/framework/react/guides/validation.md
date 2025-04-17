@@ -227,16 +227,23 @@ export default function App() {
   const form = useForm({
     defaultValues: {
       age: 0,
+      socials: [],
+      details: {
+        email: '',
+      },
     },
     validators: {
       onSubmitAsync: async ({ value }) => {
-        // Verify the age on the server
-        const isOlderThan13 = await verifyAgeOnServer(value.age)
-        if (!isOlderThan13) {
+        // Validate the value on the server
+        const hasErrors = await verifyDataOnServer(value)
+        if (hasErrors) {
           return {
             form: 'Invalid data', // The `form` key is optional
             fields: {
               age: 'Must be 13 or older to sign',
+              // Set errors on nested fields with the field's name
+              'socials[0].url': 'The provided URL does not exist'
+              'details.email': 'An email is required',
             },
           }
         }
@@ -449,6 +456,8 @@ TanStack Form natively supports all libraries following the [Standard Schema spe
 - [Effect/Schema](https://effect.website/docs/schema/standard-schema/)
 
 _Note:_ make sure to use the latest version of the schema libraries as older versions might not support Standard Schema yet.
+
+> Validation will not provide you with transformed values. See [submission handling](./submission-handling.md) for more information.
 
 To use schemas from these libraries you can pass them to the `validators` props as you would do with a custom function:
 
