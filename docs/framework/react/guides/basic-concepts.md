@@ -12,12 +12,15 @@ You can create options for your form so that it can be shared between multiple f
 Example:
 
 ```tsx
+interface User {
+  firstName: string
+  lastName: string
+  hobbies: Array<string>
+}
+const defaultUser: User = { firstName: '', lastName: '', hobbies: [] }
+
 const formOpts = formOptions({
-  defaultValues: {
-    firstName: '',
-    lastName: '',
-    hobbies: [],
-  } as Person,
+  defaultValues: defaultUser,
 })
 ```
 
@@ -38,16 +41,19 @@ const form = useForm({
 You may also create a form instance without using `formOptions` by using the standalone `useForm` API:
 
 ```tsx
+interface User {
+  firstName: string
+  lastName: string
+  hobbies: Array<string>
+}
+const defaultUser: User = { firstName: '', lastName: '', hobbies: [] }
+
 const form = useForm({
+  defaultValues: defaultUser,
   onSubmit: async ({ value }) => {
     // Do something with form data
     console.log(value)
   },
-  defaultValues: {
-    firstName: '',
-    lastName: '',
-    hobbies: [],
-  } as Person,
 })
 ```
 
@@ -86,7 +92,7 @@ const {
 } = field.state
 ```
 
-There are three field states can be very useful to see how the user interacts with a field. A field is _"touched"_ when the user clicks/tabs into it, _"pristine"_ until the user changes value in it, and _"dirty"_ after the value has been changed. You can check these states via the `isTouched`, `isPristine` and `isDirty` flags, as seen below.
+There are three field states that can be useful to see how the user interacts with a field: A field is _"touched"_ when the user clicks/tabs into it, _"pristine"_ until the user changes value in it, and _"dirty"_ after the value has been changed. You can check these states via the `isTouched`, `isPristine` and `isDirty` flags, as seen below.
 
 ```tsx
 const { isTouched, isPristine, isDirty } = field.state.meta
@@ -318,6 +324,38 @@ Example:
     </div>
   )}
 />
+```
+
+## Reset Buttons
+
+When using `<button type="reset">` in conjunction with TanStack Form's `form.reset()`, you need to prevent the default HTML reset behavior to avoid unexpected resets of form elements (especially `<select>` elements) to their initial HTML values.
+Use `event.preventDefault()` inside the button's `onClick` handler to prevent the native form reset.
+
+Example:
+
+```tsx
+<button
+  type="reset"
+  onClick={(event) => {
+    event.preventDefault()
+    form.reset()
+  }}
+>
+  Reset
+</button>
+```
+
+Alternatively, you can use `<button type="button">` to prevent the native HTML reset.
+
+```tsx
+<button
+  type="button"
+  onClick={() => {
+    form.reset()
+  }}
+>
+  Reset
+</button>
 ```
 
 These are the basic concepts and terminology used in the `@tanstack/react-form` library. Understanding these concepts will help you work more effectively with the library and create complex forms with ease.

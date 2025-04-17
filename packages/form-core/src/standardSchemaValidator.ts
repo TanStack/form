@@ -1,9 +1,23 @@
 import type { ValidationSource } from './types'
 
-export type TStandardSchemaValidatorValue<TData> = {
+export type TStandardSchemaValidatorValue<
+  TData,
+  TSource extends ValidationSource = ValidationSource,
+> = {
   value: TData
-  validationSource: ValidationSource
+  validationSource: TSource
 }
+
+export type TStandardSchemaValidatorIssue<
+  TSource extends ValidationSource = ValidationSource,
+> = TSource extends 'form'
+  ? {
+      form: Record<string, StandardSchemaV1Issue[]>
+      fields: Record<string, StandardSchemaV1Issue[]>
+    }
+  : TSource extends 'field'
+    ? StandardSchemaV1Issue[]
+    : never
 
 function prefixSchemaToErrors(issues: readonly StandardSchemaV1Issue[]) {
   const schema = new Map<string, StandardSchemaV1Issue[]>()
@@ -26,30 +40,24 @@ function prefixSchemaToErrors(issues: readonly StandardSchemaV1Issue[]) {
   return Object.fromEntries(schema)
 }
 
-const defaultFieldTransformer = (issues: readonly StandardSchemaV1Issue[]) =>
-  issues
-
-const defaultFormTransformer = (issues: readonly StandardSchemaV1Issue[]) => {
+const transformFormIssues = <TSource extends ValidationSource>(
+  issues: readonly StandardSchemaV1Issue[],
+): TStandardSchemaValidatorIssue<TSource> => {
   const schemaErrors = prefixSchemaToErrors(issues)
   return {
     form: schemaErrors,
     fields: schemaErrors,
-  }
+  } as TStandardSchemaValidatorIssue<TSource>
 }
 
-const transformIssues = (
-  validationSource: 'form' | 'field',
-  issues: readonly StandardSchemaV1Issue[],
-) =>
-  validationSource === 'form'
-    ? defaultFormTransformer(issues)
-    : defaultFieldTransformer(issues)
-
 export const standardSchemaValidators = {
-  validate(
-    { value, validationSource }: TStandardSchemaValidatorValue<unknown>,
+  validate<TSource extends ValidationSource = ValidationSource>(
+    {
+      value,
+      validationSource,
+    }: TStandardSchemaValidatorValue<unknown, TSource>,
     schema: StandardSchemaV1,
-  ) {
+  ): TStandardSchemaValidatorIssue<TSource> | undefined {
     const result = schema['~standard'].validate(value)
 
     if (result instanceof Promise) {
@@ -58,17 +66,24 @@ export const standardSchemaValidators = {
 
     if (!result.issues) return
 
-    return transformIssues(validationSource, result.issues)
+    if (validationSource === 'field')
+      return result.issues as TStandardSchemaValidatorIssue<TSource>
+    return transformFormIssues<TSource>(result.issues)
   },
-  async validateAsync(
-    { value, validationSource }: TStandardSchemaValidatorValue<unknown>,
+  async validateAsync<TSource extends ValidationSource>(
+    {
+      value,
+      validationSource,
+    }: TStandardSchemaValidatorValue<unknown, TSource>,
     schema: StandardSchemaV1,
-  ) {
+  ): Promise<TStandardSchemaValidatorIssue<TSource> | undefined> {
     const result = await schema['~standard'].validate(value)
 
     if (!result.issues) return
 
-    return transformIssues(validationSource, result.issues)
+    if (validationSource === 'field')
+      return result.issues as TStandardSchemaValidatorIssue<TSource>
+    return transformFormIssues<TSource>(result.issues)
   },
 }
 

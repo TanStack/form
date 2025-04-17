@@ -1,5 +1,7 @@
 import { assertType, describe, it } from 'vitest'
+import { z } from 'zod'
 import { FieldApi, FormApi } from '../src/index'
+import type { StandardSchemaV1Issue } from '../src/index'
 
 it('should type value properly', () => {
   const form = new FormApi({
@@ -54,7 +56,7 @@ it('should type required fields in constructor', () => {
   })
 
   assertType<string>(field.state.value)
-  assertType<'name'>(field.options.name)
+  assertType<'name' | 'age'>(field.options.name)
   assertType<string>(field.getValue())
 })
 
@@ -74,7 +76,7 @@ it('should type value properly for completely partial forms', () => {
   })
 
   assertType<'test' | undefined>(field.state.value)
-  assertType<'name'>(field.options.name)
+  assertType<'name' | 'age'>(field.options.name)
   assertType<'test' | undefined>(field.getValue())
 })
 
@@ -134,7 +136,7 @@ it('should type an array sub-field properly', () => {
 
   const field = new FieldApi({
     form,
-    name: `nested.people[${1}].name`,
+    name: `nested.people[1].name`,
     validators: {
       onChangeAsync: async ({ value }) => {
         assertType<string>(value)
@@ -355,4 +357,26 @@ it('should handle "sub-fields" async return types added to the field\'s error ar
   })
 
   assertType<Array<'Testing' | undefined>>(field.getMeta().errors)
+})
+
+it('should only have field-level error types returned from parseValueWithSchema and parseValueWithSchemaAsync', () => {
+  const form = new FormApi({
+    defaultValues: { name: '' },
+  })
+  form.mount()
+
+  const field = new FieldApi({
+    form,
+    name: 'name',
+  })
+  field.mount()
+
+  const schema = z.string()
+  // assert that it doesn't think it's a form-level error
+  assertType<StandardSchemaV1Issue[] | undefined>(
+    field.parseValueWithSchema(schema),
+  )
+  assertType<Promise<StandardSchemaV1Issue[] | undefined>>(
+    field.parseValueWithSchemaAsync(schema),
+  )
 })

@@ -446,6 +446,7 @@ TanStack Form natively supports all libraries following the [Standard Schema spe
 - [Zod](https://zod.dev/)
 - [Valibot](https://valibot.dev/)
 - [ArkType](https://arktype.io/)
+- [Effect/Schema](https://effect.website/docs/schema/standard-schema/)
 
 _Note:_ make sure to use the latest version of the schema libraries as older versions might not support Standard Schema yet.
 
@@ -495,6 +496,27 @@ Async validations on form and field level are supported as well:
         message: 'You can only increase the age',
       },
     ),
+  }}
+  children={(field) => {
+    return <>{/* ... */}</>
+  }}
+/>
+```
+
+If you need even more control over your Standard Schema validation, you can combine a Standard Schema with a callback function like so:
+
+```tsx
+<form.Field
+  name="age"
+  asyncDebounceMs={500}
+  validators={{
+    onChangeAsync: async ({ value, fieldApi }) => {
+      const errors = fieldApi.parseValueWithSchema(
+        z.number().gte(13, 'You must be 13 to make an account'),
+      )
+      if (errors) return errors
+      // continue with your validation
+    },
   }}
   children={(field) => {
     return <>{/* ... */}</>

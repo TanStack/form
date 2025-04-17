@@ -1,6 +1,11 @@
 import { assertType, it } from 'vitest'
+import { z } from 'zod'
 import { FormApi } from '../src'
-import type { ValidationError, ValidationErrorMap } from '../src'
+import type {
+  StandardSchemaV1Issue,
+  ValidationError,
+  ValidationErrorMap,
+} from '../src'
 
 it('should return all errors matching the right type from getAllErrors', () => {
   const form = new FormApi({
@@ -82,5 +87,28 @@ it('should type handleChange correctly', () => {
 
   assertType<(submitMeta: { group: string }) => Promise<void>>(
     form.handleSubmit,
+  )
+})
+
+type FormLevelStandardSchemaIssue = {
+  form: Record<string, StandardSchemaV1Issue[]>
+  fields: Record<string, StandardSchemaV1Issue[]>
+}
+
+it('should only have form-level error types returned from parseFieldValuesWithSchema and parseFieldValuesWithSchemaAsync', () => {
+  const form = new FormApi({
+    defaultValues: { name: '' },
+  })
+  form.mount()
+
+  const schema = z.object({
+    name: z.string(),
+  })
+  // assert that it doesn't think it's a field-level error
+  assertType<FormLevelStandardSchemaIssue | undefined>(
+    form.parseValuesWithSchema(schema),
+  )
+  assertType<Promise<FormLevelStandardSchemaIssue | undefined>>(
+    form.parseValuesWithSchemaAsync(schema),
   )
 })

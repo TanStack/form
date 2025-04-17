@@ -11,17 +11,21 @@ title: standardSchemaValidators
 const standardSchemaValidators: object;
 ```
 
-Defined in: [packages/form-core/src/standardSchemaValidator.ts:48](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchemaValidator.ts#L48)
+Defined in: [packages/form-core/src/standardSchemaValidator.ts:53](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchemaValidator.ts#L53)
 
 ## Type declaration
 
 ### validate()
 
+#### Type Parameters
+
+• **TSource** *extends* [`ValidationSource`](../type-aliases/validationsource.md) = [`ValidationSource`](../type-aliases/validationsource.md)
+
 #### Parameters
 
 ##### \_\_namedParameters
 
-[`TStandardSchemaValidatorValue`](../type-aliases/tstandardschemavalidatorvalue.md)\<`unknown`\>
+[`TStandardSchemaValidatorValue`](../type-aliases/tstandardschemavalidatorvalue.md)\<`unknown`, `TSource`\>
 
 ##### schema
 
@@ -30,19 +34,19 @@ Defined in: [packages/form-core/src/standardSchemaValidator.ts:48](https://githu
 #### Returns
 
   \| `undefined`
-  \| readonly [`StandardSchemaV1Issue`](../interfaces/standardschemav1issue.md)[]
-  \| \{
-  `fields`: \{\};
-  `form`: \{\};
- \}
+  \| [`TStandardSchemaValidatorIssue`](../type-aliases/tstandardschemavalidatorissue.md)\<`TSource`\>
 
 ### validateAsync()
+
+#### Type Parameters
+
+• **TSource** *extends* [`ValidationSource`](../type-aliases/validationsource.md)
 
 #### Parameters
 
 ##### \_\_namedParameters
 
-[`TStandardSchemaValidatorValue`](../type-aliases/tstandardschemavalidatorvalue.md)\<`unknown`\>
+[`TStandardSchemaValidatorValue`](../type-aliases/tstandardschemavalidatorvalue.md)\<`unknown`, `TSource`\>
 
 ##### schema
 
@@ -52,8 +56,4 @@ Defined in: [packages/form-core/src/standardSchemaValidator.ts:48](https://githu
 
 `Promise`\<
   \| `undefined`
-  \| readonly [`StandardSchemaV1Issue`](../interfaces/standardschemav1issue.md)[]
-  \| \{
-  `fields`: \{\};
-  `form`: \{\};
- \}\>
+  \| [`TStandardSchemaValidatorIssue`](../type-aliases/tstandardschemavalidatorissue.md)\<`TSource`\>\>

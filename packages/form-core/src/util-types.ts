@@ -19,132 +19,143 @@ type Try<A1, A2, Catch = never> = A1 extends A2 ? A1 : Catch
  */
 export type Narrow<A> = Try<A, [], NarrowRaw<A>>
 
-type ComputeRange<
-  N extends number,
-  Result extends Array<unknown> = [],
-> = Result['length'] extends N
-  ? Result
-  : ComputeRange<N, [...Result, Result['length']]>
-type Index40 = ComputeRange<40>[number]
+export interface AnyDeepKeyAndValue {
+  key: string
+  value: any
+}
 
-// Is this type a tuple?
-type IsTuple<T> = T extends readonly any[] & { length: infer Length }
-  ? Length extends Index40
-    ? T
-    : never
+export type ArrayAccessor<TParent extends AnyDeepKeyAndValue> =
+  `${TParent['key'] extends never ? '' : TParent['key']}[${number}]`
+
+export interface ArrayDeepKeyAndValue<
+  in out TParent extends AnyDeepKeyAndValue,
+  in out T extends ReadonlyArray<any>,
+> {
+  key: ArrayAccessor<TParent>
+  value: T[number] | Nullable<TParent['value']>
+}
+
+export type DeepKeyAndValueArray<
+  TParent extends AnyDeepKeyAndValue,
+  T extends ReadonlyArray<any>,
+  TAcc,
+> = DeepKeysAndValues<
+  NonNullable<T[number]>,
+  ArrayDeepKeyAndValue<TParent, T>,
+  TAcc | ArrayDeepKeyAndValue<TParent, T>
+>
+
+export type TupleAccessor<
+  TParent extends AnyDeepKeyAndValue,
+  TKey extends string,
+> = `${TParent['key'] extends never ? '' : TParent['key']}[${TKey}]`
+
+export interface TupleDeepKeyAndValue<
+  in out TParent extends AnyDeepKeyAndValue,
+  in out T,
+  in out TKey extends AllTupleKeys<T>,
+> {
+  key: TupleAccessor<TParent, TKey>
+  value: T[TKey] | Nullable<TParent['value']>
+}
+
+export type AllTupleKeys<T> = T extends any ? keyof T & `${number}` : never
+
+export type DeepKeyAndValueTuple<
+  TParent extends AnyDeepKeyAndValue,
+  T extends ReadonlyArray<any>,
+  TAcc,
+  TAllKeys extends AllTupleKeys<T> = AllTupleKeys<T>,
+> = TAllKeys extends any
+  ? DeepKeysAndValues<
+      NonNullable<T[TAllKeys]>,
+      TupleDeepKeyAndValue<TParent, T, TAllKeys>,
+      TAcc | TupleDeepKeyAndValue<TParent, T, TAllKeys>
+    >
   : never
 
-// If this type is a tuple, what indices are allowed?
-type AllowedIndexes<
-  Tuple extends ReadonlyArray<any>,
-  Keys extends number = never,
-> = Tuple extends readonly []
-  ? Keys
-  : Tuple extends readonly [infer _, ...infer Tail]
-    ? AllowedIndexes<Tail, Keys | Tail['length']>
-    : Keys
+export type AllObjectKeys<T> = T extends any
+  ? keyof T & (string | number)
+  : never
 
-type PrefixArrayAccessor<T extends any[], TDepth extends any[]> = {
-  [K in keyof T]: `[${number}]${DeepKeys<T[K], TDepth>}`
-}[number]
+export type ObjectAccessor<
+  TParent extends AnyDeepKeyAndValue,
+  TKey extends string | number,
+> = TParent['key'] extends never ? `${TKey}` : `${TParent['key']}.${TKey}`
 
-type PrefixTupleAccessor<
-  T extends any[],
-  TIndex extends number,
-  TDepth extends any[],
-> = {
-  [K in TIndex]: `[${K}]` | `[${K}]${DeepKeys<T[K], TDepth>}`
-}[TIndex]
+export type Nullable<T> = T & (undefined | null)
 
-type PrefixObjectAccessor<T extends object, TDepth extends any[]> = {
-  [K in keyof T]-?: K extends string | number
-    ?
-        | PrefixFromDepth<K, TDepth>
-        | `${PrefixFromDepth<K, TDepth>}${DeepKeys<T[K], [TDepth]>}`
-    : never
-}[keyof T]
+export interface ObjectDeepKeyAndValue<
+  in out TParent extends AnyDeepKeyAndValue,
+  in out T,
+  in out TKey extends AllObjectKeys<T>,
+> {
+  key: ObjectAccessor<TParent, TKey>
+  value: T[TKey] | Nullable<TParent['value']>
+}
+
+export type DeepKeyAndValueObject<
+  TParent extends AnyDeepKeyAndValue,
+  T,
+  TAcc,
+  TAllKeys extends AllObjectKeys<T> = AllObjectKeys<T>,
+> = TAllKeys extends any
+  ? DeepKeysAndValues<
+      NonNullable<T[TAllKeys]>,
+      ObjectDeepKeyAndValue<TParent, T, TAllKeys>,
+      TAcc | ObjectDeepKeyAndValue<TParent, T, TAllKeys>
+    >
+  : never
+
+export type UnknownAccessor<TParent extends AnyDeepKeyAndValue> =
+  TParent['key'] extends never ? string : `${TParent['key']}.${string}`
+
+export interface UnknownDeepKeyAndValue<TParent extends AnyDeepKeyAndValue> {
+  key: UnknownAccessor<TParent>
+  value: unknown
+}
+
+export type DeepKeysAndValues<
+  T,
+  TParent extends AnyDeepKeyAndValue = never,
+  TAcc = never,
+> = unknown extends T
+  ? TAcc | UnknownDeepKeyAndValue<TParent>
+  : unknown extends T // this stops runaway recursion when T is any
+    ? T
+    : T extends string | number | boolean | bigint | Date
+      ? TAcc
+      : T extends ReadonlyArray<any>
+        ? number extends T['length']
+          ? DeepKeyAndValueArray<TParent, T, TAcc>
+          : DeepKeyAndValueTuple<TParent, T, TAcc>
+        : keyof T extends never
+          ? TAcc | UnknownDeepKeyAndValue<TParent>
+          : T extends object
+            ? DeepKeyAndValueObject<TParent, T, TAcc>
+            : TAcc
+
+export type DeepRecord<T> = {
+  [TRecord in DeepKeysAndValues<T> extends AnyDeepKeyAndValue
+    ? DeepKeysAndValues<T>
+    : never as TRecord['key']]: TRecord['value']
+}
 
 /**
  * The keys of an object or array, deeply nested.
  */
-export type DeepKeys<T, TDepth extends any[] = []> = TDepth['length'] extends 5
-  ? never
-  : unknown extends T
-    ? PrefixFromDepth<string, TDepth>
-    : T extends readonly any[] & IsTuple<T>
-      ? PrefixTupleAccessor<T, AllowedIndexes<T>, TDepth>
-      : T extends any[]
-        ? PrefixArrayAccessor<T, [...TDepth, any]>
-        : T extends Date
-          ? never
-          : T extends object
-            ? PrefixObjectAccessor<T, TDepth>
-            : T extends string | number | boolean | bigint
-              ? ''
-              : never
-
-type PrefixFromDepth<
-  T extends string | number,
-  TDepth extends any[],
-> = TDepth['length'] extends 0 ? T : `.${T}`
-
-// Hack changing Typescript's default get behavior in order to work with union objects
-type Get<T, K extends string> = T extends { [Key in K]: infer V }
-  ? V
-  : T extends { [Key in K]?: infer W }
-    ? W | undefined
+export type DeepKeys<T> = unknown extends T
+  ? string
+  : DeepKeysAndValues<T> extends AnyDeepKeyAndValue
+    ? DeepKeysAndValues<T>['key']
     : never
-
-type ApplyNull<T> = null extends T ? null : never
-type ApplyUndefined<T> = undefined extends T ? undefined : never
 
 /**
  * Infer the type of a deeply nested property within an object or an array.
  */
-export type DeepValue<
-  // The object or array in which we have the property whose type we're trying to infer
-  TValue,
-  // A string representing the path of the property we're trying to access
-  TAccessor,
-  // Depth for preventing infinite recursion
-  TDepth extends ReadonlyArray<any> = [],
-> = unknown extends TValue // If TValue is any it will recurse forever, this terminates the recursion
-  ? TValue
-  : TDepth['length'] extends 10
-    ? unknown
-    : // Check if we're looking for the property in an array
-      TValue extends ReadonlyArray<any>
-      ? TAccessor extends `[${infer TBrackets}].${infer TAfter}`
-        ? /*
-          Extract the first element from the accessor path (`TBrackets`)
-          and recursively call `DeepValue` with it
-        */
-          DeepValue<
-            DeepValue<TValue, TBrackets, [...TDepth, any]>,
-            TAfter,
-            [...TDepth, any]
-          >
-        : TAccessor extends `[${infer TBrackets}]`
-          ? DeepValue<TValue, TBrackets, [...TDepth, any]>
-          : TAccessor extends keyof TValue
-            ? TValue[TAccessor]
-            : TValue[TAccessor & number]
-      : TAccessor extends `${infer TBefore}[${infer TEverythingElse}`
-        ? DeepValue<
-            DeepValue<TValue, TBefore, [...TDepth, any]>,
-            `[${TEverythingElse}`,
-            [...TDepth, any]
-          >
-        : TAccessor extends `[${infer TBrackets}]`
-          ? DeepValue<TValue, TBrackets, [...TDepth, any]>
-          : TAccessor extends `${infer TBefore}.${infer TAfter}`
-            ? DeepValue<
-                DeepValue<TValue, TBefore, [...TDepth, any]>,
-                TAfter,
-                [...TDepth, any]
-              >
-            : TAccessor extends string
-              ?
-                  | Get<TValue, TAccessor>
-                  | (ApplyNull<TValue> | ApplyUndefined<TValue>)
-              : never
+export type DeepValue<TValue, TAccessor> =
+  DeepRecord<TValue> extends infer TDeepRecord
+    ? TAccessor extends keyof TDeepRecord
+      ? TDeepRecord[TAccessor]
+      : never
+    : never

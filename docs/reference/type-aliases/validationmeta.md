@@ -11,7 +11,7 @@ title: ValidationMeta
 type ValidationMeta = object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:351](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L351)
+Defined in: [packages/form-core/src/FormApi.ts:355](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L355)
 
 An object representing the validation metadata for a field. Not intended for public usage.
 

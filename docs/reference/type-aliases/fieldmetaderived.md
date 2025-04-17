@@ -55,13 +55,13 @@ Defined in: [packages/form-core/src/FieldApi.ts:590](https://github.com/TanStack
 
 ```ts
 errors: (
-  | UnwrapOneLevelOfArray<UnwrapFieldValidateOrFn<TParentData, TName, TOnMount, TFormOnMount>>
-  | UnwrapOneLevelOfArray<UnwrapFieldValidateOrFn<TParentData, TName, TOnChange, TFormOnChange>>
-  | UnwrapOneLevelOfArray<UnwrapFieldAsyncValidateOrFn<TParentData, TName, TOnChangeAsync, TFormOnChangeAsync>>
-  | UnwrapOneLevelOfArray<UnwrapFieldValidateOrFn<TParentData, TName, TOnBlur, TFormOnBlur>>
-  | UnwrapOneLevelOfArray<UnwrapFieldAsyncValidateOrFn<TParentData, TName, TOnBlurAsync, TFormOnBlurAsync>>
-  | UnwrapOneLevelOfArray<UnwrapFieldValidateOrFn<TParentData, TName, TOnSubmit, TFormOnSubmit>>
-  | UnwrapOneLevelOfArray<UnwrapFieldAsyncValidateOrFn<TParentData, TName, TOnSubmitAsync, TFormOnSubmitAsync>>)[];
+  | UnwrapOneLevelOfArray<UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>>
+  | UnwrapOneLevelOfArray<UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>>
+  | UnwrapOneLevelOfArray<UnwrapFieldAsyncValidateOrFn<TName, TOnChangeAsync, TFormOnChangeAsync>>
+  | UnwrapOneLevelOfArray<UnwrapFieldValidateOrFn<TName, TOnBlur, TFormOnBlur>>
+  | UnwrapOneLevelOfArray<UnwrapFieldAsyncValidateOrFn<TName, TOnBlurAsync, TFormOnBlurAsync>>
+  | UnwrapOneLevelOfArray<UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>>
+  | UnwrapOneLevelOfArray<UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>>)[];
 ```
 
 An array of errors related to the field value.
