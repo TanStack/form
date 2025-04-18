@@ -235,9 +235,6 @@ describe('createFormHook', () => {
     const incorrectFormOpts = formOptions({
       defaultValues: {
         firstName: 'FirstName',
-        lastName: 'LastName',
-        firstNameWrong: 'FirstName',
-        lastNameWrong: 'LastName',
       },
     })
 
@@ -246,6 +243,20 @@ describe('createFormHook', () => {
     const IncorrectFormOptsComponent = (
       // @ts-expect-error Incorrect form opts
       <WithFormComponent form={incorrectAppForm} prop1="test" prop2={10} />
+    )
+
+    const extendingFormOpts = formOptions({
+      defaultValues: {
+        firstName: 'FirstName',
+        lastName: 'LastName',
+        country: 'Country',
+      },
+    })
+
+    const extendingAppForm = useAppForm(extendingFormOpts)
+
+    const ExtendingFormOptsComponent = (
+      <WithFormComponent form={extendingAppForm} prop1="test" prop2={10} />
     )
   })
 })
