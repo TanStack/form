@@ -245,20 +245,20 @@ const form = useForm({
     // Add validators to the form the same way you would add them to a field
     onSubmitAsync({ value }) {
       // Validate the value on the server
-        const hasErrors = await verifyDataOnServer(value)
-        if (hasErrors) {
-          return {
-            form: 'Invalid data', // The `form` key is optional
-            fields: {
-              age: 'Must be 13 or older to sign',
-              // Set errors on nested fields with the field's name
-              'socials[0].url': 'The provided URL does not exist'
-              'details.email': 'An email is required',
-            },
-          }
+      const hasErrors = await verifyDataOnServer(value)
+      if (hasErrors) {
+        return {
+          form: 'Invalid data', // The `form` key is optional
+          fields: {
+            age: 'Must be 13 or older to sign',
+            // Set errors on nested fields with the field's name
+            'socials[0].url': 'The provided URL does not exist',
+            'details.email': 'An email is required',
+          },
         }
+      }
 
-        return null
+      return null
     },
   },
 })

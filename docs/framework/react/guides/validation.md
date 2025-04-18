@@ -242,7 +242,7 @@ export default function App() {
             fields: {
               age: 'Must be 13 or older to sign',
               // Set errors on nested fields with the field's name
-              'socials[0].url': 'The provided URL does not exist'
+              'socials[0].url': 'The provided URL does not exist',
               'details.email': 'An email is required',
             },
           }

@@ -11,7 +11,7 @@ To receive meta data in your `onSubmit` function, you can specify the `onSubmitM
 > Note: if `form.handleSubmit()` is called without metadata, it will use the provided default.
 
 ```tsx
-import { useForm } from '@tanstack/react-form'
+import { createForm } from '@tanstack/solid-form'
 
 type FormMeta = {
   section: 'personalInfo' | 'paymentInfo' | null
@@ -23,8 +23,8 @@ const defaultMeta: FormMeta = {
   section: null,
 }
 
-function App() {
-  const form = useForm({
+export default function App() {
+  const form = createForm(() => ({
     defaultValues: {
       personal: {
         name: '',
@@ -40,7 +40,7 @@ function App() {
       // Do something with the values passed via handleSubmit
       console.log(`Selected section - ${meta.section}`, value)
     },
-  })
+  }))
 
   return (
     <>
@@ -82,6 +82,11 @@ While Tanstack Form provides [Standard Schema support](./validation.md) for vali
 The value passed to the `onSubmit` function will always be the input data. To receive the output data of a Standard Schema, parse it in the `onSubmit` function:
 
 ```tsx
+import { createForm } from '@tanstack/solid-form'
+import { z } from 'zod'
+
+// ...
+
 const schema = z.object({
   age: z.string().transform((age) => Number(age)),
 })
@@ -91,7 +96,7 @@ const defaultValues: z.input<typeof schema> = {
   age: '13',
 }
 
-const form = useForm({
+const form = createForm(() => ({
   defaultValues,
   validators: {
     onChange: schema,
@@ -102,5 +107,5 @@ const form = useForm({
     const result = schema.parse(value)
     const outputAge: number = result.age
   },
-})
+}))
 ```
