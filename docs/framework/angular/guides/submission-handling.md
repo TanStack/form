@@ -94,6 +94,9 @@ const defaultValues: z.input<typeof schema> = {
 
 // ...
 
+@Component({
+  // ...
+})
 export class AppComponent {
   name = 'Angular'
   form = injectForm({
