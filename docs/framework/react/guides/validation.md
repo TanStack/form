@@ -440,7 +440,7 @@ This will debounce every async call with a 500ms delay. You can even override th
 />
 ```
 
-> This will run `onChangeAsync` every 1500ms while `onBlurAsync` will run every 500ms.
+This will run `onChangeAsync` every 1500ms while `onBlurAsync` will run every 500ms.
 
 ## Validation through Schema Libraries
 
