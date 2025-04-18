@@ -5,8 +5,8 @@ title: Submission handling
 
 ## Passing additional data to submission handling
 
-You may want to split your long form into multiple sections, for example, when creating a booking form.
-To receive meta data in your `onSubmit` function, you can specify the `onSubmitMeta` property.
+You may have multiple types of submission behaviour, for example, going back to another page or staying on the form.
+You can accomplish this by specifying the `onSubmitMeta` property. This meta data will be passed to the `onSubmit` function.
 
 > Note: if `form.handleSubmit()` is called without metadata, it will use the provided default.
 
@@ -14,63 +14,50 @@ To receive meta data in your `onSubmit` function, you can specify the `onSubmitM
 import { createForm } from '@tanstack/solid-form'
 
 type FormMeta = {
-  section: 'personalInfo' | 'paymentInfo' | null
+  submitAction: 'continue' | 'backToMenu' | null
 }
 
 // Metadata is not required to call form.handleSubmit().
 // Specify what values to use as default if no meta is passed
 const defaultMeta: FormMeta = {
-  section: null,
+  submitAction: null,
 }
 
 export default function App() {
   const form = createForm(() => ({
     defaultValues: {
-      personal: {
-        name: '',
-        email: '',
-      },
-      payment: {
-        address: '',
-      },
+      data: '',
     },
     // Define what meta values to expect on submission
     onSubmitMeta: defaultMeta,
     onSubmit: async ({ value, meta }) => {
       // Do something with the values passed via handleSubmit
-      console.log(`Selected section - ${meta.section}`, value)
+      console.log(`Selected action - ${meta.submitAction}`, value)
     },
   }))
 
   return (
-    <>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          // Overwrites the default specified in onSubmitMeta
-          form.handleSubmit({
-            section: 'personalInfo',
-          })
-        }}
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+      }}
+    >
+      {/* ... */}
+      <button
+        type="submit"
+        // Overwrites the default specified in onSubmitMeta
+        onClick={() => form.handleSubmit({ submitAction: 'continue' })}
       >
-        {/* ... */}
-        <button type="submit">Submit Personal Info</button>
-      </form>
-
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          form.handleSubmit({
-            section: 'paymentInfo',
-          })
-        }}
+        Submit and continue
+      </button>
+      <button
+        type="submit"
+        onClick={() => form.handleSubmit({ submitAction: 'backToMenu' })}
       >
-        {/* ... */}
-        <button type="submit">Submit Payment Info</button>
-      </form>
-    </>
+        Submit and back to menu
+      </button>
+    </form>
   )
 }
 ```
