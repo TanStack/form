@@ -324,6 +324,7 @@ export default function App() {
 >     validators={{
 >       onChange: ({ value }) => (value % 2 === 0 ? 'Must be odd!' : undefined),
 >     }}
+>     children={() => <>{/* ... */}</>}
 >   />
 > )
 > ```
