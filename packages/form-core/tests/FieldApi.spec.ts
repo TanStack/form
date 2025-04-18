@@ -1195,6 +1195,9 @@ describe('field api', () => {
 
     field.moveValue(0, 1)
     expect(arr).toStrictEqual(['middle', 'end', 'start'])
+
+    field.clearValues()
+    expect(arr).toStrictEqual([])
   })
 
   it('should reset the form on a listener', () => {
