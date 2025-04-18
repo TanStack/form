@@ -120,9 +120,9 @@ const PeoplePage = () => {
             type="number"
             onChange={(e) => field.handleChange(e.target.valueAsNumber)}
           />
-          {field.state.meta.errors.length ? (
+          {!field.state.meta.isValid && (
             <em>{field.state.meta.errors.join(',')}</em>
-          ) : null}
+          )}
         </>
       )}
     />

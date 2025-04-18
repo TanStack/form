@@ -35,7 +35,7 @@ Here is an example:
         @input="(e) => field.handleChange((e.target as HTMLInputElement).valueAsNumber)
                 "
       />
-      <em role="alert" v-if="field.state.meta.errors">{{
+      <em role="alert" v-if="!field.state.meta.isValid">{{
         field.state.meta.errors.join(', ')
       }}</em>
     </template>
@@ -69,7 +69,7 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
         @input="(e) => field.handleChange((e.target as HTMLInputElement).valueAsNumber)
                 "
       />
-      <em role="alert" v-if="field.state.meta.errors">{{
+      <em role="alert" v-if="!field.state.meta.isValid">{{
         field.state.meta.errors.join(', ')
       }}</em>
     </template>
@@ -104,7 +104,7 @@ So you can control when the validation is done by implementing the desired callb
         @input="(e) => field.handleChange((e.target as HTMLInputElement).valueAsNumber)
                 "
       />
-      <em role="alert" v-if="field.state.meta.errors">{{
+      <em role="alert" v-if="!field.state.meta.isValid">{{
         field.state.meta.errors.join(', ')
       }}</em>
     </template>
@@ -131,7 +131,7 @@ Once you have your validation in place, you can map the errors from an array to 
   >
     <template v-slot="{ field }">
       <!-- ... -->
-      <em role="alert" v-if="field.state.meta.errors">{{
+      <em role="alert" v-if="!field.state.meta.isValid">{{
         field.state.meta.errors.join(', ')
       }}</em>
     </template>
@@ -261,7 +261,7 @@ const onChangeAge = async ({ value }) => {
             field.handleChange((e.target as HTMLInputElement).valueAsNumber)
         "
       />
-      <em role="alert" v-if="field.state.meta.errors">{{
+      <em role="alert" v-if="!field.state.meta.isValid">{{
         field.state.meta.errors.join(', ')
       }}</em>
     </template>
@@ -306,7 +306,7 @@ const onBlurAgeAsync = async ({ value }) => {
             field.handleChange((e.target as HTMLInputElement).valueAsNumber)
         "
       />
-      <em role="alert" v-if="field.state.meta.errors">{{
+      <em role="alert" v-if="!field.state.meta.isValid">{{
         field.state.meta.errors.join(', ')
       }}</em>
     </template>

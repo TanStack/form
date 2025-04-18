@@ -33,9 +33,9 @@ Here is an example:
         type="number"
         onChange={(e) => field.handleChange(e.target.valueAsNumber)}
       />
-      {field.state.meta.errors ? (
+      {!field.state.meta.isValid && (
         <em role="alert">{field.state.meta.errors.join(', ')}</em>
-      ) : null}
+      )}
     </>
   )}
 </form.Field>
@@ -64,9 +64,9 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
         // We always need to implement onChange, so that TanStack Form receives the changes
         onChange={(e) => field.handleChange(e.target.valueAsNumber)}
       />
-      {field.state.meta.errors ? (
+      {!field.state.meta.isValid && (
         <em role="alert">{field.state.meta.errors.join(', ')}</em>
-      ) : null}
+      )}
     </>
   )}
 </form.Field>
@@ -96,9 +96,9 @@ So you can control when the validation is done by implementing the desired callb
         // We always need to implement onChange, so that TanStack Form receives the changes
         onChange={(e) => field.handleChange(e.target.valueAsNumber)}
       />
-      {field.state.meta.errors ? (
+      {!field.state.meta.isValid && (
         <em role="alert">{field.state.meta.errors.join(', ')}</em>
-      ) : null}
+      )}
     </>
   )}
 </form.Field>
@@ -122,9 +122,9 @@ Once you have your validation in place, you can map the errors from an array to 
     return (
       <>
         {/* ... */}
-        {field.state.meta.errors.length ? (
+        {!field.state.meta.isValid && (
           <em>{field.state.meta.errors.join(',')}</em>
-        ) : null}
+        )}
       </>
     )
   }}
@@ -266,9 +266,9 @@ export default function App() {
                 type="number"
                 onChange={(e) => field.handleChange(e.target.valueAsNumber)}
               />
-              {field.state.meta.errors ? (
+              {!field.state.meta.isValid && (
                 <em role="alert">{field.state.meta.errors.join(', ')}</em>
-              ) : null}
+              )}
             </>
           )}
         </form.Field>
@@ -349,9 +349,9 @@ To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods 
         type="number"
         onChange={(e) => field.handleChange(e.target.valueAsNumber)}
       />
-      {field.state.meta.errors ? (
+      {!field.state.meta.isValid && (
         <em role="alert">{field.state.meta.errors.join(', ')}</em>
-      ) : null}
+      )}
     </>
   )}
 </form.Field>
@@ -381,9 +381,9 @@ Synchronous and Asynchronous validations can coexist. For example, it is possibl
         onBlur={field.handleBlur}
         onChange={(e) => field.handleChange(e.target.valueAsNumber)}
       />
-      {field.state.meta.errors ? (
+      {!field.state.meta.isValid && (
         <em role="alert">{field.state.meta.errors.join(', ')}</em>
-      ) : null}
+      )}
     </>
   )}
 </form.Field>
