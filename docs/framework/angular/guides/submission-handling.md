@@ -44,7 +44,6 @@ const defaultMeta: FormMeta = {
   </div>
   `,
 })
-
 export class AppComponent {
   name = 'Angular';
   form = injectForm({
