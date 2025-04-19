@@ -1680,10 +1680,22 @@ export class FieldApi<
           value: this.state.value,
           fieldApi: this,
         })
+
+        this.form.options.listeners?.onBlur?.({
+          fieldName: this.name,
+          formApi: this.form,
+          fieldApi: this,
+        })
       }, debounceMs)
     } else {
       this.options.listeners?.onBlur?.({
         value: this.state.value,
+        fieldApi: this,
+      })
+
+      this.form.options.listeners?.onBlur?.({
+        fieldName: this.name,
+        formApi: this.form,
         fieldApi: this,
       })
     }
@@ -1702,10 +1714,22 @@ export class FieldApi<
           value: this.state.value,
           fieldApi: this,
         })
+
+        this.form.options.listeners?.onChange?.({
+          fieldName: this.name as never,
+          formApi: this.form,
+          fieldApi: this,
+        })
       }, debounceMs)
     } else {
       this.options.listeners?.onChange?.({
         value: this.state.value,
+        fieldApi: this,
+      })
+
+      this.form.options.listeners?.onChange?.({
+        fieldName: this.name as never,
+        formApi: this.form,
         fieldApi: this,
       })
     }
