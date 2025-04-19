@@ -7,7 +7,11 @@ title: ObjectDeepKeyAndValue
 
 # Interface: ObjectDeepKeyAndValue\<TParent, T, TKey\>
 
-Defined in: [packages/form-core/src/util-types.ts:88](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L88)
+Defined in: [packages/form-core/src/util-types.ts:94](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L94)
+
+## Extends
+
+- [`AnyDeepKeyAndValue`](anydeepkeyandvalue.md)
 
 ## Type Parameters
 
@@ -25,16 +29,22 @@ Defined in: [packages/form-core/src/util-types.ts:88](https://github.com/TanStac
 key: ObjectAccessor<TParent, TKey>;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:93](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L93)
+Defined in: [packages/form-core/src/util-types.ts:99](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L99)
+
+#### Overrides
+
+[`AnyDeepKeyAndValue`](anydeepkeyandvalue.md).[`key`](AnyDeepKeyAndValue.md#key)
 
 ***
 
 ### value
 
 ```ts
-value: 
-  | T[TKey]
-| Nullable<TParent["value"]>;
+value: ObjectValue<TParent, T, TKey>;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:94](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L94)
+Defined in: [packages/form-core/src/util-types.ts:100](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L100)
+
+#### Overrides
+
+[`AnyDeepKeyAndValue`](anydeepkeyandvalue.md).[`value`](AnyDeepKeyAndValue.md#value)

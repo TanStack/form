@@ -21,7 +21,7 @@ A hook for managing a field in a form.
 
 • **TName** *extends* `string`
 
-• **TData** *extends* `never`
+• **TData**
 
 • **TOnMount** *extends* `undefined` \| `FieldValidateOrFn`\<`TParentData`, `TName`, `TData`\>
 
