@@ -225,6 +225,91 @@ const formErrorMap = form.useStore((state) => state.errorMap)
 </template>
 ```
 
+### Setting field-level errors from the form's validators
+
+You can set errors on the fields from the form's validators. One common use case for this is validating all the fields on submit by calling a single API endpoint in the form's `onSubmitAsync` validator.
+
+```vue
+<script setup lang="ts">
+import { useForm } from '@tanstack/vue-form'
+
+const form = useForm({
+  defaultValues: {
+    age: 0,
+    socials: [],
+    details: {
+      email: '',
+    },
+  },
+  validators: {
+    // Add validators to the form the same way you would add them to a field
+    onSubmitAsync({ value }) {
+      // Validate the value on the server
+      const hasErrors = await verifyDataOnServer(value)
+      if (hasErrors) {
+        return {
+          form: 'Invalid data', // The `form` key is optional
+          fields: {
+            age: 'Must be 13 or older to sign',
+            // Set errors on nested fields with the field's name
+            'socials[0].url': 'The provided URL does not exist',
+            'details.email': 'An email is required',
+          },
+        }
+      }
+
+      return null
+    },
+  },
+})
+</script>
+
+<template>
+  <!-- ... -->
+</template>
+```
+
+> Something worth mentioning is that if you have a form validation function that returns an error, that error may be overwritten by the field-specific validation.
+>
+> This means that:
+>
+> ```vue
+> <script setup lang="ts">
+> import { useForm } from '@tanstack/vue-form'
+>
+> const form = useForm({
+>   defaultValues: {
+>     age: 0,
+>   },
+>   validators: {
+>     onChange: ({ value }) => {
+>       return {
+>         fields: {
+>           age: value.age < 12 ? 'Too young!' : undefined,
+>         },
+>       }
+>     },
+>   },
+> })
+> </script>
+>
+> <template>
+>   <!-- ... -->
+>   <form.Field
+>     name="age"
+>     :validators="{
+>       onChange: ({ value }) => (value % 2 === 0 ? 'Must be odd!' : undefined),
+>     }"
+>   >
+>     <template v-slot="{ field }">
+>       <!-- ... -->
+>     </template>
+>   </form.Field>
+> </template>
+> ```
+>
+> Will only show `'Must be odd!` even if the 'Too young!' error is returned by the form-level validation.
+
 ## Asynchronous Functional Validation
 
 While we suspect most validations will be synchronous, there are many instances where a network call or some other async operation would be useful to validate against.
@@ -384,6 +469,8 @@ TanStack Form natively supports all libraries following the [Standard Schema spe
 - [ArkType](https://arktype.io/)
 
 _Note:_ make sure to use the latest version of the schema libraries as older versions might not support Standard Schema yet.
+
+> Validation will not provide you with transformed values. See [submission handling](./submission-handling.md) for more information.
 
 To use schemas from these libraries you can pass them to the `validators` props as you would do with a custom function:
 
