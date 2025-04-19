@@ -70,7 +70,7 @@ export class TanStackFormDemo extends LitElement {
                             />
                           </div>
                           ${field.state.meta.isTouched &&
-                          field.state.meta.errors.length
+                          !field.state.meta.isValid
                             ? html`${repeat(
                                 field.state.meta.errors,
                                 (__, idx) => idx,
@@ -167,7 +167,7 @@ export class TanStackFormDemo extends LitElement {
                                       />
                                     </div>
                                     ${jobTitleField.state.meta.isTouched &&
-                                    jobTitleField.state.meta.errors.length
+                                    !jobTitleField.state.meta.isValid
                                       ? html`${repeat(
                                           jobTitleField.state.meta.errors,
                                           (__, idx) => idx,

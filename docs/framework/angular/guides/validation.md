@@ -120,7 +120,7 @@ So you can control when the validation is done by implementing the desired callb
         (blur)="age.api.handleBlur()"
         (input)="age.api.handleChange($any($event).target.valueAsNumber)"
       />
-      @if (age.api.state.meta.errors) {
+      @if (!age.api.state.meta.isValid) {
         <em role="alert">{{ age.api.state.meta.errors.join(', ') }}</em>
       }
     </ng-container>
