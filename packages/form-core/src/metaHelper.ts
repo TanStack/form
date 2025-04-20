@@ -7,7 +7,6 @@ import type { AnyFieldMeta } from './FieldApi'
 import type { DeepKeys } from './util-types'
 
 type ValueFieldMode = 'insert' | 'remove' | 'swap' | 'move'
-type ArrayFieldMode = 'filter'
 
 export const defaultFieldMeta: AnyFieldMeta = {
   isValidating: false,
@@ -44,52 +43,163 @@ export function metaHelper<
     TSubmitMeta
   >,
 ) {
-  function handleArrayFieldMetaShift(
+  /**
+   * Handle the meta shift caused from moving a field from one index to another.
+   */
+  function handleArrayMove(
     field: DeepKeys<TFormData>,
-    remainingIndeces: number[],
-    mode: ArrayFieldMode,
-  ): void
+    fromIndex: number,
+    toIndex: number,
+  ) {
+    const affectedFields = getAffectedFields(field, fromIndex, 'move', toIndex)
+
+    const startIndex = Math.min(fromIndex, toIndex)
+    const endIndex = Math.max(fromIndex, toIndex)
+    for (let i = startIndex; i <= endIndex; i++) {
+      affectedFields.push(getFieldPath(field, i))
+    }
+
+    // Store the original field meta that will be reapplied at the destination index
+    const fromFields = Object.keys(formApi.fieldInfo).reduce(
+      (fieldMap, fieldKey) => {
+        if (fieldKey.startsWith(getFieldPath(field, fromIndex))) {
+          fieldMap.set(
+            fieldKey as DeepKeys<TFormData>,
+            formApi.getFieldMeta(fieldKey as DeepKeys<TFormData>),
+          )
+        }
+        return fieldMap
+      },
+      new Map<DeepKeys<TFormData>, AnyFieldMeta | undefined>(),
+    )
+
+    shiftMeta(affectedFields, fromIndex < toIndex ? 'up' : 'down')
+
+    // Reapply the stored field meta at the destination index
+    Object.keys(formApi.fieldInfo)
+      .filter((fieldKey) => fieldKey.startsWith(getFieldPath(field, toIndex)))
+      .forEach((fieldKey) => {
+        const fromKey = fieldKey.replace(
+          getFieldPath(field, toIndex),
+          getFieldPath(field, fromIndex),
+        ) as DeepKeys<TFormData>
+
+        const fromMeta = fromFields.get(fromKey)
+        if (fromMeta) {
+          formApi.setFieldMeta(fieldKey as DeepKeys<TFormData>, fromMeta)
+        }
+      })
+  }
+
+  /**
+   * Handle the meta shift from removing a field at the specified index.
+   */
+  function handleArrayRemove(field: DeepKeys<TFormData>, index: number) {
+    const affectedFields = getAffectedFields(field, index, 'remove')
+
+    shiftMeta(affectedFields, 'up')
+  }
+
+  /**
+   * Handle the meta shift from swapping two fields at the specified indeces.
+   */
+  function handleArraySwap(
+    field: DeepKeys<TFormData>,
+    index: number,
+    secondIndex: number,
+  ) {
+    const affectedFields = getAffectedFields(field, index, 'swap', secondIndex)
+
+    affectedFields.forEach((fieldKey) => {
+      if (!fieldKey.toString().startsWith(getFieldPath(field, index))) {
+        return
+      }
+
+      const swappedKey = fieldKey
+        .toString()
+        .replace(
+          getFieldPath(field, index),
+          getFieldPath(field, secondIndex),
+        ) as DeepKeys<TFormData>
+
+      const [meta1, meta2] = [
+        formApi.getFieldMeta(fieldKey),
+        formApi.getFieldMeta(swappedKey),
+      ]
+
+      if (meta1) formApi.setFieldMeta(swappedKey, meta1)
+      if (meta2) formApi.setFieldMeta(fieldKey, meta2)
+    })
+  }
+
+  /**
+   * Handle the meta shift from inserting a field at the specified index.
+   */
+  function handleArrayInsert(field: DeepKeys<TFormData>, insertIndex: number) {
+    const affectedFields = getAffectedFields(field, insertIndex, 'insert')
+
+    shiftMeta(affectedFields, 'down')
+
+    affectedFields.forEach((fieldKey) => {
+      if (fieldKey.toString().startsWith(getFieldPath(field, insertIndex))) {
+        formApi.setFieldMeta(fieldKey, getEmptyFieldMeta())
+      }
+    })
+  }
+
+  /**
+   * @deprecated Use the explicit functions of the metaHelper instead.
+   */
   function handleArrayFieldMetaShift(
     field: DeepKeys<TFormData>,
     index: number,
     mode: ValueFieldMode,
     secondIndex?: number,
-  ): void
-  function handleArrayFieldMetaShift(
-    field: DeepKeys<TFormData>,
-    index: number | number[],
-    mode: ArrayFieldMode | ValueFieldMode,
-    secondIndex?: number,
   ) {
-    if (Array.isArray(index)) {
-      if (mode === 'filter') {
-        return handleFilterMode(field, index)
-      }
-    } else {
-      const affectedFields = getAffectedFields(
-        field,
-        index,
-        mode as ValueFieldMode,
-        secondIndex,
-      )
-
-      switch (mode as ValueFieldMode) {
-        case 'insert':
-          return handleInsertMode(affectedFields, field, index)
-        case 'remove':
-          return handleRemoveMode(affectedFields)
-        case 'swap':
-          return (
-            secondIndex !== undefined &&
-            handleSwapMode(affectedFields, field, index, secondIndex)
-          )
-        case 'move':
-          return (
-            secondIndex !== undefined &&
-            handleMoveMode(affectedFields, field, index, secondIndex)
-          )
-      }
+    switch (mode) {
+      case 'insert':
+        return handleArrayInsert(field, index)
+      case 'remove':
+        return handleArrayRemove(field, index)
+      case 'swap':
+        return (
+          secondIndex !== undefined &&
+          handleArraySwap(field, index, secondIndex)
+        )
+      case 'move':
+        return (
+          secondIndex !== undefined &&
+          handleArrayMove(field, index, secondIndex)
+        )
     }
+  }
+
+  /**
+   * Handle the meta shift from filtering out indeces.
+   * @param remainingIndices An array of indeces that were NOT filtered out of the original array.
+   */
+  function handleArrayFilter(
+    field: DeepKeys<TFormData>,
+    remainingIndices: number[],
+  ) {
+    if (remainingIndices.length === 0) return
+
+    // create a map between the index and its new location
+    remainingIndices.forEach((fromIndex, toIndex) => {
+      if (fromIndex === toIndex) return
+      // assign it the original meta
+      const fieldKey = getFieldPath(field, toIndex)
+      const originalFieldKey = getFieldPath(field, fromIndex)
+      const originalFieldMeta = formApi.getFieldMeta(originalFieldKey)
+      if (originalFieldMeta) {
+        formApi.setFieldMeta(fieldKey, originalFieldMeta)
+      } else {
+        formApi.setFieldMeta(fieldKey, {
+          ...getEmptyFieldMeta(),
+          isTouched: originalFieldKey as unknown as boolean,
+        })
+      }
+    })
   }
 
   function getFieldPath(
@@ -107,23 +217,29 @@ export function metaHelper<
   ): DeepKeys<TFormData>[] {
     const affectedFieldKeys = [getFieldPath(field, index)]
 
-    if (mode === 'swap') {
-      affectedFieldKeys.push(getFieldPath(field, secondIndex!))
-    } else if (mode === 'move') {
-      const [startIndex, endIndex] = [
-        Math.min(index, secondIndex!),
-        Math.max(index, secondIndex!),
-      ]
-      for (let i = startIndex; i <= endIndex; i++) {
-        affectedFieldKeys.push(getFieldPath(field, i))
+    switch (mode) {
+      case 'swap':
+        affectedFieldKeys.push(getFieldPath(field, secondIndex!))
+        break
+      case 'move': {
+        const [startIndex, endIndex] = [
+          Math.min(index, secondIndex!),
+          Math.max(index, secondIndex!),
+        ]
+        for (let i = startIndex; i <= endIndex; i++) {
+          affectedFieldKeys.push(getFieldPath(field, i))
+        }
+        break
       }
-    } else {
-      const currentValue = formApi.getFieldValue(field)
-      const fieldItems = Array.isArray(currentValue)
-        ? (currentValue as Array<unknown>).length
-        : 0
-      for (let i = index + 1; i < fieldItems; i++) {
-        affectedFieldKeys.push(getFieldPath(field, i))
+      default: {
+        const currentValue = formApi.getFieldValue(field)
+        const fieldItems = Array.isArray(currentValue)
+          ? (currentValue as Array<unknown>).length
+          : 0
+        for (let i = index + 1; i < fieldItems; i++) {
+          affectedFieldKeys.push(getFieldPath(field, i))
+        }
+        break
       }
     }
 
@@ -160,109 +276,12 @@ export function metaHelper<
 
   const getEmptyFieldMeta = (): AnyFieldMeta => defaultFieldMeta
 
-  const handleInsertMode = (
-    fields: DeepKeys<TFormData>[],
-    field: DeepKeys<TFormData>,
-    insertIndex: number,
-  ) => {
-    shiftMeta(fields, 'down')
-
-    fields.forEach((fieldKey) => {
-      if (fieldKey.toString().startsWith(getFieldPath(field, insertIndex))) {
-        formApi.setFieldMeta(fieldKey, getEmptyFieldMeta())
-      }
-    })
+  return {
+    handleArrayFieldMetaShift,
+    handleArrayMove,
+    handleArrayRemove,
+    handleArraySwap,
+    handleArrayInsert,
+    handleArrayFilter,
   }
-
-  const handleRemoveMode = (fields: DeepKeys<TFormData>[]) => {
-    shiftMeta(fields, 'up')
-  }
-
-  const handleFilterMode = (
-    field: DeepKeys<TFormData>,
-    remainingIndices: number[],
-  ) => {
-    if (remainingIndices.length === 0) return
-
-    // create a map between the index and its new location
-    remainingIndices.forEach((fromIndex, toIndex) => {
-      if (fromIndex === toIndex) return
-      // assign it the original meta
-      const fieldKey = getFieldPath(field, toIndex)
-      const originalFieldKey = getFieldPath(field, fromIndex)
-      const originalFieldMeta = formApi.getFieldMeta(originalFieldKey)
-      if (originalFieldMeta) {
-        formApi.setFieldMeta(fieldKey, originalFieldMeta)
-      } else {
-        formApi.setFieldMeta(fieldKey, {
-          ...getEmptyFieldMeta(),
-          isTouched: originalFieldKey as unknown as boolean,
-        })
-      }
-    })
-  }
-
-  const handleMoveMode = (
-    fields: DeepKeys<TFormData>[],
-    field: DeepKeys<TFormData>,
-    fromIndex: number,
-    toIndex: number,
-  ) => {
-    // Store the original field meta that will be reapplied at the destination index
-    const fromFields = new Map(
-      Object.keys(formApi.fieldInfo)
-        .filter((fieldKey) =>
-          fieldKey.startsWith(getFieldPath(field, fromIndex)),
-        )
-        .map((fieldKey) => [
-          fieldKey as DeepKeys<TFormData>,
-          formApi.getFieldMeta(fieldKey as DeepKeys<TFormData>),
-        ]),
-    )
-
-    shiftMeta(fields, fromIndex < toIndex ? 'up' : 'down')
-
-    // Reapply the stored field meta at the destination index
-    Object.keys(formApi.fieldInfo)
-      .filter((fieldKey) => fieldKey.startsWith(getFieldPath(field, toIndex)))
-      .forEach((fieldKey) => {
-        const fromKey = fieldKey.replace(
-          getFieldPath(field, toIndex),
-          getFieldPath(field, fromIndex),
-        ) as DeepKeys<TFormData>
-
-        const fromMeta = fromFields.get(fromKey)
-        if (fromMeta) {
-          formApi.setFieldMeta(fieldKey as DeepKeys<TFormData>, fromMeta)
-        }
-      })
-  }
-
-  const handleSwapMode = (
-    fields: DeepKeys<TFormData>[],
-    field: DeepKeys<TFormData>,
-    index: number,
-    secondIndex: number,
-  ) => {
-    fields.forEach((fieldKey) => {
-      if (!fieldKey.toString().startsWith(getFieldPath(field, index))) return
-
-      const swappedKey = fieldKey
-        .toString()
-        .replace(
-          getFieldPath(field, index),
-          getFieldPath(field, secondIndex),
-        ) as DeepKeys<TFormData>
-
-      const [meta1, meta2] = [
-        formApi.getFieldMeta(fieldKey),
-        formApi.getFieldMeta(swappedKey),
-      ]
-
-      if (meta1) formApi.setFieldMeta(swappedKey, meta1)
-      if (meta2) formApi.setFieldMeta(fieldKey, meta2)
-    })
-  }
-
-  return { handleArrayFieldMetaShift }
 }
