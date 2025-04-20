@@ -8,12 +8,12 @@ title: DeepKeyAndValueObject
 # Type Alias: DeepKeyAndValueObject\<TParent, T, TAcc, TAllKeys\>
 
 ```ts
-type DeepKeyAndValueObject<TParent, T, TAcc, TAllKeys> = TAllKeys extends any ? DeepKeysAndValues<NonNullable<T[TAllKeys]>, ObjectDeepKeyAndValue<TParent, T, TAllKeys>, 
+type DeepKeyAndValueObject<TParent, T, TAcc, TAllKeys> = TAllKeys extends any ? DeepKeysAndValuesImpl<NonNullable<T[TAllKeys]>, ObjectDeepKeyAndValue<TParent, T, TAllKeys>, 
   | TAcc
   | ObjectDeepKeyAndValue<TParent, T, TAllKeys>> : never;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:97](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L97)
+Defined in: [packages/form-core/src/util-types.ts:103](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L103)
 
 ## Type Parameters
 

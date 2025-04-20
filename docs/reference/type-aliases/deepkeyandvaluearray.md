@@ -8,7 +8,7 @@ title: DeepKeyAndValueArray
 # Type Alias: DeepKeyAndValueArray\<TParent, T, TAcc\>
 
 ```ts
-type DeepKeyAndValueArray<TParent, T, TAcc> = DeepKeysAndValues<NonNullable<T[number]>, ArrayDeepKeyAndValue<TParent, T>, 
+type DeepKeyAndValueArray<TParent, T, TAcc> = DeepKeysAndValuesImpl<NonNullable<T[number]>, ArrayDeepKeyAndValue<TParent, T>, 
   | TAcc
 | ArrayDeepKeyAndValue<TParent, T>>;
 ```
