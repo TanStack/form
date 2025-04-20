@@ -98,6 +98,11 @@ export class AppComponent {
 ## Full Example
 
 ```angular-ts
+interface Person {
+  name: string
+  age: number
+}
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -138,19 +143,12 @@ export class AppComponent {
     </form>
   `,
 })
-
-interface Person {
-  name: string
-  age: number
-}
-
-const defaultPeople: { people: Array<Person> } = { people: [] }
-
 export class AppComponent {
   defaultPerson = { name: '', age: 0 }
+  defaultPeople: { people: Array<Person> } = { people: [] }
 
   form = injectForm({
-    defaultValues: defaultPeople,
+    defaultValues: this.defaultPeople,
     onSubmit({ value }) {
       alert(JSON.stringify(value))
     },

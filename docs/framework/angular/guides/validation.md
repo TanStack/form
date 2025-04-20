@@ -222,7 +222,7 @@ It's worth mentioning that our `errors` array and the `errorMap` matches the typ
     >
       <!-- ... -->
       <!-- errorMap.onChange is type `{isOldEnough: false} | undefined` -->
-	  <!-- meta.errors is type `Array<{isOldEnough: false} | undefined>` -->
+      <!-- meta.errors is type `Array<{isOldEnough: false} | undefined>` -->
       @if (!age.api.state.meta.errorMap['onChange']?.isOldEnough) {
         <em role="alert">The user is not old enough</em>
       }
