@@ -1021,6 +1021,31 @@ export class FormApi<
           this.options.transform?.fn(newObj)
           state = newObj.state
           this.prevTransformArray = transformArray
+
+          const serverErrorMap = this.store.state.errorMap['onServer'] as any
+
+          batch(() => {
+            void (Object.values(this.fieldInfo) as FieldInfo<any>[]).forEach(
+              (field) => {
+                const fieldInstance = field.instance
+
+                if (!fieldInstance) return
+
+                if (fieldInstance.name in serverErrorMap) {
+                  fieldInstance.setMeta((prev) => ({
+                    ...prev,
+                    errorMap: {
+                      ...prev.errorMap,
+                      onServer: serverErrorMap[fieldInstance.name],
+                    },
+                  }))
+                  fieldInstance.mount()
+                }
+
+                this.validateField(fieldInstance.name, 'server')
+              },
+            )
+          })
         }
 
         return state
@@ -1385,6 +1410,20 @@ export class FormApi<
           errorMap: {
             ...prev.errorMap,
             [submitErrKey]: undefined,
+          },
+        }))
+      }
+
+      /**
+       *  when we have an error for onServer in the state, we want
+       *  to clear the error as soon as the user changes the value in the field
+       */
+      if (cause !== 'server') {
+        this.baseStore.setState((prev) => ({
+          ...prev,
+          errorMap: {
+            ...prev.errorMap,
+            onServer: undefined,
           },
         }))
       }
@@ -1774,6 +1813,7 @@ export class FormApi<
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             ...prev?.errorMap,
             onMount: undefined,
+            onServer: undefined,
           },
         }))
       }
