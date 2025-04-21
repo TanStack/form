@@ -794,4 +794,103 @@ describe('useForm', () => {
 
     expect(fn).toHaveBeenCalledTimes(1)
   })
+
+  it('preserves empty string values when removing array elements', async () => {
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          interests: [{ interestName: '', id: 0 }],
+        },
+      })
+      return (
+        <form>
+          <form.Field name="interests" mode="array">
+            {(interestsFieldArray) => (
+              <div>
+                <button
+                  type="button"
+                  data-testid="add-interest"
+                  onClick={() => {
+                    interestsFieldArray.pushValue({
+                      id: form.getFieldValue('interests').length,
+                      interestName: '',
+                    })
+                  }}
+                >
+                  Add
+                </button>
+
+                {interestsFieldArray.state.value.map((row, i) => {
+                  return (
+                    <form.Field
+                      key={row.id}
+                      name={`interests[${i}].interestName`}
+                    >
+                      {(field) => {
+                        return (
+                          <div style={{ display: 'flex' }}>
+                            <input
+                              type="text"
+                              value={field.state.value}
+                              onChange={(e) => {
+                                field.handleChange(e.target.value)
+                              }}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                interestsFieldArray.removeValue(i)
+                              }}
+                              data-testid={`remove-interest-${i}`}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        )
+                      }}
+                    </form.Field>
+                  )
+                })}
+                <div data-testid="interests-log">
+                  <p>{JSON.stringify(form.getFieldValue('interests'))}</p>
+                </div>
+                <button
+                  type="button"
+                  data-testid="append-interests-to-paragraph"
+                  onClick={() => {
+                    const interestsLog = document.querySelector(
+                      '[data-testid="interests-log"] p',
+                    )
+                    if (interestsLog) {
+                      interestsLog.textContent = JSON.stringify(
+                        form.getFieldValue('interests'),
+                      )
+                    }
+                  }}
+                >
+                  Log Interests
+                </button>
+              </div>
+            )}
+          </form.Field>
+        </form>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+
+    // Add 2 interests
+    await user.click(getByTestId('add-interest'))
+    await user.click(getByTestId('add-interest'))
+
+    // Remove the first interest
+    await user.click(getByTestId('remove-interest-0'))
+
+    expect(getByTestId('interests-log').textContent).toBe(
+      JSON.stringify([
+        { id: 1, interestName: '' },
+        { id: 2, interestName: '' },
+      ]),
+    )
+  })
 })
