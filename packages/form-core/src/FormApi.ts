@@ -1326,15 +1326,15 @@ export class FormApi<
             currentErrorMap?.[errorMapKey] !== newErrorValue
           ) {
             this.setFieldMeta(field, (prev) => ({
-                ...prev,
-                errorMap: {
-                  ...prev.errorMap,
-                  [errorMapKey]: newErrorValue,
-                },
-                errorSourceMap: {
-                  ...prev.errorSourceMap,
-                  [errorMapKey]: newSource,
-                },
+              ...prev,
+              errorMap: {
+                ...prev.errorMap,
+                [errorMapKey]: newErrorValue,
+              },
+              errorSourceMap: {
+                ...prev.errorSourceMap,
+                [errorMapKey]: newSource,
+              },
             }))
           }
         }
