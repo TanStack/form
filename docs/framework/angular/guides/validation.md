@@ -295,7 +295,6 @@ You can set errors on the fields from the form's validators. One common use case
 ```angular-ts
 @Component({
   selector: 'app-root',
-  standalone: true,
   imports: [TanStackField],
   template: `
     <form (submit)="handleSubmit($event)">
@@ -324,7 +323,6 @@ You can set errors on the fields from the form's validators. One common use case
 })
 
 export class AppComponent {
-  name = 'Angular';
   form = injectForm({
     defaultValues: {
       age: 0,
@@ -392,7 +390,6 @@ export class AppComponent {
 > `,
 > })
 > export class AppComponent {
->   name = 'Angular';
 >   form = injectForm({
 >     defaultValues: {
 >       age: 0,

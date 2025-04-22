@@ -27,7 +27,6 @@ const defaultMeta: FormMeta = {
 
 @Component({
   selector: 'app-root',
-  standalone: true,
   template: `
     <form (submit)="handleSubmit($event)">
       <button type="submit" (click)="
@@ -40,7 +39,6 @@ const defaultMeta: FormMeta = {
   `,
 })
 export class AppComponent {
-  name = 'Angular';
   form = injectForm({
     defaultValues: {
       data: '',
@@ -90,7 +88,6 @@ const defaultValues: z.input<typeof schema> = {
   // ...
 })
 export class AppComponent {
-  name = 'Angular'
   form = injectForm({
     defaultValues,
     validators: {
