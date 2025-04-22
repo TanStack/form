@@ -478,7 +478,20 @@ export const Field = (<
   const fieldApi = useField(fieldOptions as any)
 
   const jsxToDisplay = useMemo(
-    () => functionalUpdate(children, fieldApi as any),
+    () => {
+      /**
+       * When field names switch field store and form store are out of sync.
+       * When in this state, React should not render the component
+       */
+      const isFieldStoreOutofSync =
+        fieldApi.state.value !== fieldApi.form.getFieldValue(fieldOptions.name)
+
+      if (isFieldStoreOutofSync) {
+        return null
+      }
+
+      return functionalUpdate(children, fieldApi as any)
+    },
     /**
      * The reason this exists is to fix an issue with the React Compiler.
      * Namely, functionalUpdate is memoized where it checks for `fieldApi`, which is a static type.
