@@ -14,7 +14,7 @@
     "@mantine/core": "7.17.4",
     "@mantine/hooks": "7.17.4",
     "@mui/material": "6.4.11",
-    "@tanstack/react-form": "^1.5.0",
+    "@tanstack/react-form": "^1.6.3",
     "@yme/lay-postcss": "0.1.0",
     "postcss": "8.5.3",
     "postcss-preset-mantine": "1.17.0",
@@ -25,10 +25,10 @@
   "devDependencies": {
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
-    "@vitejs/plugin-react": "^4.3.4",
-    "@vitejs/plugin-react-swc": "^3.8.1",
+    "@vitejs/plugin-react": "^4.4.1",
+    "@vitejs/plugin-react-swc": "^3.9.0",
     "typescript": "5.8.2",
-    "vite": "^6.2.6"
+    "vite": "^6.3.2"
   },
   "browserslist": {
     "production": [
