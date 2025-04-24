@@ -1,4 +1,4 @@
-import { assertType, it } from 'vitest'
+import { expectTypeOf, it } from 'vitest'
 import { useForm } from '../src/index'
 
 it('should type state.value properly', () => {
@@ -15,14 +15,14 @@ it('should type state.value properly', () => {
         <form.Field
           name="firstName"
           children={(field) => {
-            assertType<'test'>(field.state.value)
+            expectTypeOf(field.state.value).toEqualTypeOf<'test'>()
             return null
           }}
         />
         <form.Field
           name="age"
           children={(field) => {
-            assertType<84>(field.state.value)
+            expectTypeOf(field.state.value).toEqualTypeOf<84>()
             return null
           }}
         />
@@ -46,7 +46,7 @@ it('should type onChange properly', () => {
           name="firstName"
           validators={{
             onChange: ({ value }) => {
-              assertType<'test'>(value)
+              expectTypeOf(value).toEqualTypeOf<'test'>()
               return null
             },
           }}
@@ -56,7 +56,7 @@ it('should type onChange properly', () => {
           name="age"
           validators={{
             onChange: ({ value }) => {
-              assertType<84>(value)
+              expectTypeOf(value).toEqualTypeOf<84>()
               return null
             },
           }}

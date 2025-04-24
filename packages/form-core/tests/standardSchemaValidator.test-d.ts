@@ -1,4 +1,4 @@
-import { assertType, describe, it } from 'vitest'
+import { describe, expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
 import { FieldApi, FormApi, standardSchemaValidators } from '../src/index'
 import type { StandardSchemaV1Issue } from '../src/index'
@@ -23,9 +23,9 @@ describe('standard schema validator', () => {
       name: 'firstName',
     })
 
-    assertType<undefined | StandardSchemaV1Issue[]>(
-      field.getMeta().errorMap.onChange,
-    )
+    expectTypeOf(field.getMeta().errorMap.onChange).toEqualTypeOf<
+      undefined | StandardSchemaV1Issue[]
+    >()
   })
 
   it("Should add sub-field's onChange errorMap from the form", () => {
@@ -52,9 +52,9 @@ describe('standard schema validator', () => {
       name: 'person.firstName',
     })
 
-    assertType<undefined | StandardSchemaV1Issue[]>(
-      field.getMeta().errorMap.onChange,
-    )
+    expectTypeOf(field.getMeta().errorMap.onChange).toEqualTypeOf<
+      undefined | StandardSchemaV1Issue[]
+    >()
   })
 
   type FormLevelStandardSchemaIssue = {
@@ -72,8 +72,12 @@ describe('standard schema validator', () => {
       z.string(),
     )
 
-    assertType<FormLevelStandardSchemaIssue | undefined>(formSourceError)
-    assertType<StandardSchemaV1Issue[] | undefined>(fieldSourceError)
+    expectTypeOf(formSourceError).toEqualTypeOf<
+      FormLevelStandardSchemaIssue | undefined
+    >()
+    expectTypeOf(fieldSourceError).toEqualTypeOf<
+      StandardSchemaV1Issue[] | undefined
+    >()
   })
 
   it('Should return different Standard Schema Issue types from validateAsync based on scope', () => {
@@ -86,9 +90,11 @@ describe('standard schema validator', () => {
       z.string(),
     )
 
-    assertType<Promise<FormLevelStandardSchemaIssue | undefined>>(
+    expectTypeOf<Promise<FormLevelStandardSchemaIssue | undefined>>(
       formSourceError,
     )
-    assertType<Promise<StandardSchemaV1Issue[] | undefined>>(fieldSourceError)
+    expectTypeOf(fieldSourceError).toEqualTypeOf<
+      Promise<StandardSchemaV1Issue[] | undefined>
+    >()
   })
 })

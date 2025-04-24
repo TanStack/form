@@ -1,4 +1,4 @@
-import { assertType, it } from 'vitest'
+import { expectTypeOf, it } from 'vitest'
 import { formOptions, mergeForm, useForm, useTransform } from '../src'
 import type { ServerFormState } from '../src/nextjs/types'
 
@@ -21,7 +21,7 @@ it('should maintain the type of the form', () => {
       ),
     })
 
-    assertType<123>(form.state.values.age)
-    assertType<string>(form.state.values.firstName)
+    expectTypeOf(form.state.values.age).toEqualTypeOf<123>()
+    expectTypeOf(form.state.values.firstName).toEqualTypeOf<''>()
   }
 })
