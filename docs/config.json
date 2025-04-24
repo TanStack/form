@@ -75,6 +75,15 @@
               "to": "framework/lit/quick-start"
             }
           ]
+        },
+        {
+          "label": "svelte",
+          "children": [
+            {
+              "label": "Quick Start",
+              "to": "framework/svelte/quick-start"
+            }
+          ]
         }
       ]
     },
@@ -220,6 +229,31 @@
             {
               "label": "Arrays",
               "to": "framework/lit/guides/arrays"
+            }
+          ]
+        },
+        {
+          "label": "svelte",
+          "children": [
+            {
+              "label": "Basic Concepts",
+              "to": "framework/svelte/guides/basic-concepts"
+            },
+            {
+              "label": "Form Validation",
+              "to": "framework/svelte/guides/validation"
+            },
+            {
+              "label": "Async Initial Values",
+              "to": "framework/svelte/guides/async-initial-values"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/svelte/guides/arrays"
+            },
+            {
+              "label": "Linked Fields",
+              "to": "framework/svelte/guides/linked-fields"
             }
           ]
         }
@@ -556,6 +590,19 @@
             {
               "label": "UI Libraries",
               "to": "framework/lit/examples/ui-libraries"
+            }
+          ]
+        },
+        {
+          "label": "svelte",
+          "children": [
+            {
+              "label": "Simple",
+              "to": "framework/svelte/examples/simple"
+            },
+            {
+              "label": "Arrays",
+              "to": "framework/svelte/examples/array"
             }
           ]
         }

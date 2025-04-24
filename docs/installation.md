@@ -70,4 +70,17 @@ $ bun add @tanstack/lit-form
 $ yarn add @tanstack/lit-form
 ```
 
+### Svelte Example
+
+```bash
+# npm
+$ npm i @tanstack/svelte-form
+# pnpm
+$ pnpm add @tanstack/svelte-form
+# bun
+$ bun add @tanstack/svelte-form
+# yarn
+$ yarn add @tanstack/svelte-form
+```
+
 > Depending on your environment, you might need to add polyfills. If you want to support older browsers, you need to transpile the library from `node_modules` yourselves.
