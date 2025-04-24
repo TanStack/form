@@ -90,9 +90,9 @@ describe('standard schema validator', () => {
       z.string(),
     )
 
-    expectTypeOf<Promise<FormLevelStandardSchemaIssue | undefined>>(
-      formSourceError,
-    )
+    expectTypeOf(formSourceError).toEqualTypeOf<
+      Promise<FormLevelStandardSchemaIssue | undefined>
+    >()
     expectTypeOf(fieldSourceError).toEqualTypeOf<
       Promise<StandardSchemaV1Issue[] | undefined>
     >()

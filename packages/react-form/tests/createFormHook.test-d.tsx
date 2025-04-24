@@ -144,9 +144,10 @@ describe('createFormHook', () => {
         test: 'test',
       },
       render: ({ form }) => {
-        expectTypeOf<(submitMeta: { test: string }) => Promise<void>>(
-          form.handleSubmit,
-        )
+        expectTypeOf(form.handleSubmit).toEqualTypeOf<{
+          (): Promise<void>
+          (submitMeta: { test: string }): Promise<void>
+        }>
         return <form.Test />
       },
     })
@@ -190,11 +191,11 @@ describe('createFormHook', () => {
         prop2: 10,
       },
       render: ({ form, ...props }) => {
-        expectTypeOf<{
+        expectTypeOf(props).toEqualTypeOf<{
           prop1: string
           prop2: number
           children?: React.ReactNode
-        }>(props)
+        }>()
         return <form.Test />
       },
     })
@@ -216,11 +217,11 @@ describe('createFormHook', () => {
         prop1: 'test',
         prop2: 10,
       },
-      render: ({ form, ...props }) => {
-        expectTypeOf<{
+      render: ({ form, children, ...props }) => {
+        expectTypeOf(props).toEqualTypeOf<{
           prop1: string
           prop2: number
-        }>(props)
+        }>()
         return <form.Test />
       },
     })
