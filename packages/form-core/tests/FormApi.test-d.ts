@@ -1,4 +1,4 @@
-import { assertType, it } from 'vitest'
+import { expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
 import { FormApi } from '../src'
 import type {
@@ -28,15 +28,15 @@ it('should return all errors matching the right type from getAllErrors', () => {
 
   errors.form.errorMap.onChange
 
-  assertType<{
+  expectTypeOf(errors.form.errorMap).toEqualTypeOf<{
     onBlur?: { onBlur: true; onBlurNumber: number } | 'onBlurAsync'
     onChange?: readonly ['onChange'] | 'onChangeAsync'
     onMount?: 10
     onSubmit?: 'onSubmit' | 'onSubmitAsync'
     onServer?: undefined
-  }>(errors.form.errorMap)
+  }>()
 
-  assertType<
+  expectTypeOf(errors.form.errors).toEqualTypeOf<
     (
       | readonly ['onChange']
       | 'onChangeAsync'
@@ -47,9 +47,9 @@ it('should return all errors matching the right type from getAllErrors', () => {
       | 'onBlurAsync'
       | undefined
     )[]
-  >(errors.form.errors)
+  >()
 
-  assertType<{
+  expectTypeOf(errors.fields).toEqualTypeOf<{
     firstName: {
       errors: ValidationError[]
       errorMap: ValidationErrorMap
@@ -58,7 +58,7 @@ it('should return all errors matching the right type from getAllErrors', () => {
       errors: ValidationError[]
       errorMap: ValidationErrorMap
     }
-  }>(errors.fields)
+  }>()
 })
 
 it('should type handleSubmit as never when onSubmitMeta is not passed', () => {
@@ -68,7 +68,10 @@ it('should type handleSubmit as never when onSubmitMeta is not passed', () => {
     },
   } as const)
 
-  assertType<() => Promise<void>>(form.handleSubmit)
+  expectTypeOf(form.handleSubmit).toEqualTypeOf<{
+    (): Promise<void>
+    (submitMeta: never): Promise<void>
+  }>()
 })
 
 type OnSubmitMeta = {
@@ -85,9 +88,10 @@ it('should type handleChange correctly', () => {
 
   form.handleSubmit({ group: 'track' })
 
-  assertType<(submitMeta: { group: string }) => Promise<void>>(
-    form.handleSubmit,
-  )
+  expectTypeOf(form.handleSubmit).toEqualTypeOf<{
+    (): Promise<void>
+    (submitMeta: OnSubmitMeta): Promise<void>
+  }>()
 })
 
 type FormLevelStandardSchemaIssue = {
@@ -105,10 +109,10 @@ it('should only have form-level error types returned from parseFieldValuesWithSc
     name: z.string(),
   })
   // assert that it doesn't think it's a field-level error
-  assertType<FormLevelStandardSchemaIssue | undefined>(
-    form.parseValuesWithSchema(schema),
-  )
-  assertType<Promise<FormLevelStandardSchemaIssue | undefined>>(
-    form.parseValuesWithSchemaAsync(schema),
-  )
+  expectTypeOf(form.parseValuesWithSchema(schema)).toEqualTypeOf<
+    FormLevelStandardSchemaIssue | undefined
+  >()
+  expectTypeOf(form.parseValuesWithSchemaAsync(schema)).toEqualTypeOf<
+    Promise<FormLevelStandardSchemaIssue | undefined>
+  >()
 })

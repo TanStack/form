@@ -1,4 +1,4 @@
-import { assertType, describe, it } from 'vitest'
+import { describe, expectTypeOf, it } from 'vitest'
 import { formOptions, useForm } from '../src/index'
 import type { FormAsyncValidateOrFn, FormValidateOrFn } from '../src/index'
 import type { ReactFormExtendedApi } from '../src/useForm'
@@ -13,7 +13,7 @@ describe('useForm', () => {
           // as const is required here
         } as const,
         onSubmit({ value }) {
-          assertType<84>(value.age)
+          expectTypeOf(value.age).toEqualTypeOf<84>()
         },
       })
     }
@@ -29,7 +29,7 @@ describe('useForm', () => {
         } as const,
         validators: {
           onChange({ value }) {
-            assertType<84>(value.age)
+            expectTypeOf(value.age).toEqualTypeOf<84>()
             return undefined
           },
         },
@@ -93,7 +93,7 @@ describe('useForm', () => {
 
     const form = useForm(formOpts)
 
-    assertType<Person>(form.state.values)
+    expectTypeOf(form.state.values).toEqualTypeOf<Person>()
   })
 
   it('types should be properly inferred when passing args alongside formOptions', () => {
@@ -116,9 +116,10 @@ describe('useForm', () => {
       },
     })
 
-    assertType<(submitMeta: { test: string }) => Promise<void>>(
-      form.handleSubmit,
-    )
+    expectTypeOf(form.handleSubmit).toEqualTypeOf<{
+      (): Promise<void>
+      (submitMeta: { test: string }): Promise<void>
+    }>()
   })
 
   it('types should be properly inferred when formOptions are being overridden', () => {
@@ -144,9 +145,9 @@ describe('useForm', () => {
         firstName: 'FirstName',
         lastName: 'LastName',
         age: 10,
-      } as PersonWithAge,
+      },
     })
 
-    assertType<Person>(form.state.values)
+    expectTypeOf(form.state.values).toExtend<PersonWithAge>()
   })
 })
