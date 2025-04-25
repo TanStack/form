@@ -167,7 +167,7 @@ type AppFieldExtendedReactFormApi<
     AppForm: Component<ParentProps>
   }
 
-export interface WithFormProps<
+interface WithFormProps<
   TFormData,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
   TOnChange extends undefined | FormValidateOrFn<TFormData>,
