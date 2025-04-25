@@ -656,6 +656,10 @@ export type FieldMetaDerived<
    * A boolean indicating if the field is valid. Evaluates `true` if there are no field errors.
    */
   isValid: boolean
+  /**
+   * A flag indicating whether the field's current value is the default value
+   */
+  isDefaultValue: boolean
 }
 
 export type AnyFieldMetaDerived = FieldMetaDerived<

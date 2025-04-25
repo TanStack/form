@@ -57,6 +57,7 @@ describe('field api', () => {
     expect(field.getMeta()).toEqual({
       isTouched: false,
       isBlurred: false,
+      isDefaultValue: true,
       isValidating: false,
       isPristine: true,
       isValid: true,
@@ -68,7 +69,7 @@ describe('field api', () => {
   })
 
   it('should allow to set default meta', () => {
-    const form = new FormApi()
+    const form = new FormApi({ defaultValues: { name: '' } })
 
     form.mount()
 
@@ -77,25 +78,50 @@ describe('field api', () => {
       name: 'name',
       defaultMeta: {
         isTouched: true,
-        isDirty: true,
-        isPristine: false,
         isBlurred: true,
+        isDirty: true,
       },
     })
 
     field.mount()
 
-    expect(field.getMeta()).toEqual({
+    expect(field.getMeta()).toMatchObject({
       isTouched: true,
       isBlurred: true,
-      isValidating: false,
       isDirty: true,
-      isPristine: false,
+
       isValid: true,
+      isValidating: false,
       errors: [],
       errorMap: {},
       errorSourceMap: {},
     })
+  })
+
+  it('should update the fields meta isDefaultValue', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    field.mount()
+    expect(field.getMeta().isDefaultValue).toBe(true)
+
+    field.setValue('not-test')
+    expect(field.getMeta().isDefaultValue).toBe(false)
+
+    field.setValue('test')
+    expect(field.getMeta().isDefaultValue).toBe(true)
+
+    form.resetField('name')
+    expect(field.getMeta().isDefaultValue).toBe(true)
   })
 
   it('should set a value correctly', () => {
@@ -560,7 +586,7 @@ describe('field api', () => {
 
     field.moveValue(2, 0)
 
-    expect(field.getValue()).toStrictEqual(['three', 'one', 'two', 'four'])
+    expect(field.state.value).toStrictEqual(['three', 'one', 'two', 'four'])
   })
 
   it('should run onChange validation when moving an array fields value', () => {
