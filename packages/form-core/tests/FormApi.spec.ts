@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { FieldApi, FormApi } from '../src/index'
 import { sleep } from './utils'
+import type { AnyFieldApi, AnyFormApi } from '../src/index'
 
 describe('form api', () => {
   it('should get default form state when default values are passed', () => {
@@ -1956,7 +1957,144 @@ describe('form api', () => {
     expect(form.state.errors).toStrictEqual(['first name is required'])
   })
 
-  it('should run listener onSubmit', async () => {
+  it('should run the form listener onSubmit', async () => {
+    let triggered!: string
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      listeners: {
+        onSubmit: ({ formApi }) => {
+          triggered = formApi.state.values.name
+        },
+      },
+    })
+
+    form.mount()
+    await form.handleSubmit()
+
+    expect(triggered).toStrictEqual('test')
+  })
+
+  it('should run the form listener onMount', async () => {
+    let triggered!: string
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      listeners: {
+        onMount: ({ formApi }) => {
+          triggered = formApi.state.values.name
+        },
+      },
+    })
+
+    form.mount()
+
+    expect(triggered).toStrictEqual('test')
+  })
+
+  it('should run the form listener onChange', async () => {
+    let fieldApiCheck!: AnyFieldApi
+    let formApiCheck!: AnyFormApi
+
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+      listeners: {
+        onChange: ({ fieldApi, formApi }) => {
+          fieldApiCheck = fieldApi
+
+          formApiCheck = formApi as any
+        },
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+    field.mount()
+    field.setValue('newTest')
+
+    expect(fieldApiCheck.state.value).toStrictEqual('newTest')
+    expect(formApiCheck.state.values.name).toStrictEqual('newTest')
+  })
+
+  it('should run the form listener onChange when the field array is changed', () => {
+    let arr!: any
+
+    const form = new FormApi({
+      defaultValues: {
+        items: ['one', 'two'],
+        age: 0,
+      },
+      listeners: {
+        onChange: ({ fieldApi }) => {
+          arr = fieldApi.state.value
+        },
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'items',
+    })
+    field.mount()
+
+    field.removeValue(1)
+    expect(arr).toStrictEqual(['one'])
+
+    field.replaceValue(0, 'start')
+    expect(arr).toStrictEqual(['start'])
+
+    field.pushValue('end')
+    expect(arr).toStrictEqual(['start', 'end'])
+
+    field.insertValue(1, 'middle')
+    expect(arr).toStrictEqual(['start', 'middle', 'end'])
+
+    field.swapValues(0, 2)
+    expect(arr).toStrictEqual(['end', 'middle', 'start'])
+
+    field.moveValue(0, 1)
+    expect(arr).toStrictEqual(['middle', 'end', 'start'])
+  })
+
+  it('should run the form listener onBlur', async () => {
+    let fieldApiCheck!: AnyFieldApi
+    let formApiCheck!: AnyFormApi
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+        age: 0,
+      },
+      listeners: {
+        onBlur: ({ fieldApi, formApi }) => {
+          fieldApiCheck = fieldApi
+
+          formApiCheck = formApi as any
+        },
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+    field.mount()
+    field.handleBlur()
+
+    expect(fieldApiCheck.state.value).toStrictEqual('test')
+    expect(formApiCheck.state.values.name).toStrictEqual('test')
+  })
+
+  it('should run the field listener onSubmit', async () => {
     const form = new FormApi({
       defaultValues: {
         name: 'test',
