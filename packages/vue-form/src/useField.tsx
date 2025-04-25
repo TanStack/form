@@ -32,6 +32,7 @@ export type FieldComponent<
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TParentSubmitMeta,
+  ExtendedApi = {},
   // This complex type comes from Vue's return type for `DefineSetupFnComponent` but with our own types sprinkled in
   // This allows us to pre-bind some generics while keeping the props type unbound generics for props-based inferencing
 > = new <
@@ -64,7 +65,8 @@ export type FieldComponent<
     TOnSubmitAsync
   > &
     EmitsToProps<EmitsOptions> &
-    PublicProps,
+    PublicProps &
+    ExtendedApi,
 ) => CreateComponentPublicInstanceWithMixins<
   FieldComponentBoundProps<
     TParentData,
