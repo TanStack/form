@@ -294,7 +294,7 @@ handleSubmit(): Promise<void>
 
 Defined in: [packages/form-core/src/FormApi.ts:1612](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1612)
 
-Handles the form submission, performs validation, and calls the appropriate onSubmit or onInvalidSubmit callbacks.
+Handles the form submission, performs validation, and calls the appropriate onSubmit or onSubmitInvalid callbacks.
 
 ##### Returns
 
@@ -308,7 +308,7 @@ handleSubmit(submitMeta): Promise<void>
 
 Defined in: [packages/form-core/src/FormApi.ts:1613](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1613)
 
-Handles the form submission, performs validation, and calls the appropriate onSubmit or onInvalidSubmit callbacks.
+Handles the form submission, performs validation, and calls the appropriate onSubmit or onSubmitInvalid callbacks.
 
 ##### Parameters
 
