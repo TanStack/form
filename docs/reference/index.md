@@ -20,6 +20,7 @@ title: "@tanstack/form-core"
 - [FieldListeners](interfaces/fieldlisteners.md)
 - [FieldOptions](interfaces/fieldoptions.md)
 - [FieldValidators](interfaces/fieldvalidators.md)
+- [FormListeners](interfaces/formlisteners.md)
 - [FormOptions](interfaces/formoptions.md)
 - [FormState](interfaces/formstate.md)
 - [FormValidators](interfaces/formvalidators.md)
