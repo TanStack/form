@@ -1200,6 +1200,25 @@ describe('field api', () => {
     expect(arr).toStrictEqual([])
   })
 
+  it('should not break when clearValues is called on a non-array field', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'foo',
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    field.mount()
+
+    expect(() => field.clearValues()).not.toThrow()
+  })
+
   it('should reset the form on a listener', () => {
     const form = new FormApi({
       defaultValues: {
