@@ -15,10 +15,10 @@ In this example, when the user changes the country, the selected province needs 
 
 Events that can be "listened" to are:
 
-- onChange
-- onBlur
-- onMount
-- onSubmit
+- `onChange`
+- `onBlur`
+- `onMount`
+- `onSubmit`
 
 ```tsx
 function App() {
@@ -90,18 +90,18 @@ We enable an easy method for debouncing your listeners by adding a `onChangeDebo
 </form.Field>
 ```
 
-### form listeners
+### Form listeners
 
 At a higher level, listeners are also available at the form level, allowing you access to the `onMount` and `onSubmit` events, and having `onChange` and `onBlur` propagated to all the form's children.
 
 `onMount` and `onSubmit` listeners have to following props:
 
-- formApi
+- `formApi`
 
-`onChange` and `onBlur` listeners have access to formApi, as well as:
+`onChange` and `onBlur` listeners have access to:
 
-- fieldName
-- fieldApi
+- `fieldApi`
+- `formApi`
 
 ```tsx
 const form = useForm({
@@ -111,11 +111,14 @@ const form = useForm({
       loggingService('mount', formApi.state.values)
     },
 
-    onChange: ({ formApi }) => {
+    onChange: ({ formApi, fieldApi }) => {
       // autosave logic
       if (formApi.state.isValid) {
         formApi.handleSubmit()
       }
+
+      // fieldApi represents the field that triggered the event.
+      console.log(fieldApi.name, fieldApi.state.value)
     },
   },
 })

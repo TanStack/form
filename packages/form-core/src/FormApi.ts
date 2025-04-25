@@ -248,11 +248,9 @@ export interface FormListeners<
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TField extends DeepKeys<TFormData>,
   TSubmitMeta = never,
 > {
   onChange?: (props: {
-    fieldName: keyof TFormData
     formApi: FormApi<
       TFormData,
       TOnMount,
@@ -269,7 +267,6 @@ export interface FormListeners<
   }) => void
 
   onBlur?: (props: {
-    fieldName: TField
     formApi: FormApi<
       TFormData,
       TOnMount,
@@ -395,7 +392,6 @@ export interface FormOptions<
     TOnSubmit,
     TOnSubmitAsync,
     TOnServer,
-    DeepKeys<TFormData>,
     TSubmitMeta
   >
 

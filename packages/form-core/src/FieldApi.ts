@@ -1705,7 +1705,6 @@ export class FieldApi<
   private triggerOnBlurListener() {
     const debounceMs = this.options.listeners?.onBlurDebounceMs
     this.form.options.listeners?.onBlur?.({
-      fieldName: this.name,
       formApi: this.form,
       fieldApi: this,
     })
@@ -1733,7 +1732,6 @@ export class FieldApi<
     const debounceMs = this.options.listeners?.onChangeDebounceMs
 
     this.form.options.listeners?.onChange?.({
-      fieldName: this.name as never,
       formApi: this.form,
       fieldApi: this,
     })
