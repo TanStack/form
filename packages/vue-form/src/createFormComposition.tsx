@@ -225,10 +225,10 @@ export function createFormComposition<
   > {
     const form = useForm(props)
 
-    const AppForm = defineComponent(() => {
+    const AppForm = defineComponent((_, { slots }) => {
       provide(formProviderKey, form)
       return () => {
-        return <slot />
+        return slots.default!()
       }
     })
 

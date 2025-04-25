@@ -65,8 +65,7 @@ export type FieldComponent<
     TOnSubmitAsync
   > &
     EmitsToProps<EmitsOptions> &
-    PublicProps &
-    ExtendedApi,
+    PublicProps,
 ) => CreateComponentPublicInstanceWithMixins<
   FieldComponentBoundProps<
     TParentData,
@@ -113,7 +112,8 @@ export type FieldComponent<
         TFormOnSubmitAsync,
         TFormOnServer,
         TParentSubmitMeta
-      >
+      > &
+        ExtendedApi
       state: FieldApi<
         TParentData,
         TName,
