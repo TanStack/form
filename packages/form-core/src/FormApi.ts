@@ -1607,7 +1607,7 @@ export class FormApi<
   }
 
   /**
-   * Handles the form submission, performs validation, and calls the appropriate onSubmit or onInvalidSubmit callbacks.
+   * Handles the form submission, performs validation, and calls the appropriate onSubmit or onSubmitInvalid callbacks.
    */
   handleSubmit(): Promise<void>
   handleSubmit(submitMeta: TSubmitMeta): Promise<void>
