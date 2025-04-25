@@ -1704,6 +1704,10 @@ export class FieldApi<
 
   private triggerOnBlurListener() {
     const debounceMs = this.options.listeners?.onBlurDebounceMs
+    this.form.options.listeners?.onBlur?.({
+      formApi: this.form,
+      fieldApi: this,
+    })
 
     if (debounceMs && debounceMs > 0) {
       if (this.timeoutIds.listeners.blur) {
@@ -1726,6 +1730,11 @@ export class FieldApi<
 
   private triggerOnChangeListener() {
     const debounceMs = this.options.listeners?.onChangeDebounceMs
+
+    this.form.options.listeners?.onChange?.({
+      formApi: this.form,
+      fieldApi: this,
+    })
 
     if (debounceMs && debounceMs > 0) {
       if (this.timeoutIds.listeners.change) {
