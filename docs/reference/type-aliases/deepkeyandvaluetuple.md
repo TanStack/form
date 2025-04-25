@@ -8,12 +8,12 @@ title: DeepKeyAndValueTuple
 # Type Alias: DeepKeyAndValueTuple\<TParent, T, TAcc, TAllKeys\>
 
 ```ts
-type DeepKeyAndValueTuple<TParent, T, TAcc, TAllKeys> = TAllKeys extends any ? DeepKeysAndValues<NonNullable<T[TAllKeys]>, TupleDeepKeyAndValue<TParent, T, TAllKeys>, 
+type DeepKeyAndValueTuple<TParent, T, TAcc, TAllKeys> = TAllKeys extends any ? DeepKeysAndValuesImpl<NonNullable<T[TAllKeys]>, TupleDeepKeyAndValue<TParent, T, TAllKeys>, 
   | TAcc
   | TupleDeepKeyAndValue<TParent, T, TAllKeys>> : never;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:66](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L66)
+Defined in: [packages/form-core/src/util-types.ts:64](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L64)
 
 ## Type Parameters
 

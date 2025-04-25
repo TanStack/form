@@ -11,7 +11,7 @@
     "@remix-run/node": "^2.16.5",
     "@remix-run/react": "^2.16.5",
     "@remix-run/serve": "^2.16.5",
-    "@tanstack/react-form": "^1.4.0",
+    "@tanstack/react-form": "^1.6.3",
     "@tanstack/react-store": "^0.7.0",
     "isbot": "^5.1.26",
     "react": "^19.0.0",
@@ -22,7 +22,7 @@
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "typescript": "5.8.2",
-    "vite": "^6.2.6",
+    "vite": "^6.3.2",
     "vite-tsconfig-paths": "^5.1.4"
   },
   "engines": {

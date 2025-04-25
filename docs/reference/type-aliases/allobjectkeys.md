@@ -11,7 +11,7 @@ title: AllObjectKeys
 type AllObjectKeys<T> = T extends any ? keyof T & string | number : never;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:79](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L79)
+Defined in: [packages/form-core/src/util-types.ts:77](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L77)
 
 ## Type Parameters
 

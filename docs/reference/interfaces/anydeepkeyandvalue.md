@@ -7,7 +7,14 @@ title: AnyDeepKeyAndValue
 
 # Interface: AnyDeepKeyAndValue
 
-Defined in: [packages/form-core/src/util-types.ts:24](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L24)
+Defined in: [packages/form-core/src/util-types.ts:22](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L22)
+
+## Extended by
+
+- [`ArrayDeepKeyAndValue`](arraydeepkeyandvalue.md)
+- [`TupleDeepKeyAndValue`](tupledeepkeyandvalue.md)
+- [`ObjectDeepKeyAndValue`](objectdeepkeyandvalue.md)
+- [`UnknownDeepKeyAndValue`](unknowndeepkeyandvalue.md)
 
 ## Properties
 
@@ -17,7 +24,7 @@ Defined in: [packages/form-core/src/util-types.ts:24](https://github.com/TanStac
 key: string;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:25](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L25)
+Defined in: [packages/form-core/src/util-types.ts:23](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L23)
 
 ***
 
@@ -27,4 +34,4 @@ Defined in: [packages/form-core/src/util-types.ts:25](https://github.com/TanStac
 value: any;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:26](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L26)
+Defined in: [packages/form-core/src/util-types.ts:24](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L24)

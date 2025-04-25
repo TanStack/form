@@ -1,4 +1,4 @@
-import { assertType, describe, expect, it } from 'vitest'
+import { describe, expectTypeOf, it } from 'vitest'
 import { FormApi, formOptions } from '../src/index'
 
 describe('formOptions', () => {
@@ -19,7 +19,7 @@ describe('formOptions', () => {
       ...formOpts,
     })
 
-    assertType<Person>(form.state.values)
+    expectTypeOf(form.state.values).toEqualTypeOf<Person>()
   })
 
   it('types should be properly inferred when passing args alongside formOptions', () => {
@@ -42,9 +42,10 @@ describe('formOptions', () => {
       },
     })
 
-    assertType<(submitMeta: { test: string }) => Promise<void>>(
-      form.handleSubmit,
-    )
+    expectTypeOf(form.handleSubmit).toEqualTypeOf<{
+      (): Promise<void>
+      (submitMeta: { test: string }): Promise<void>
+    }>()
   })
 
   it('types should be properly inferred when formOptions are being overridden', () => {
@@ -73,6 +74,6 @@ describe('formOptions', () => {
       },
     })
 
-    assertType<PersonWithAge>(form.state.values)
+    expectTypeOf(form.state.values).toExtend<PersonWithAge>()
   })
 })

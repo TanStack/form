@@ -52,11 +52,15 @@ useForm<MyForm>()
 You should do:
 
 ```typescript
+interface Person {
+  name: string
+  age: number
+}
+
+const defaultPerson: Person = { name: 'Bill Luo', age: 24 }
+
 useForm({
-  defaultValues: {
-    name: 'Bill Luo',
-    age: 24,
-  } as MyForm,
+  defaultValues: defaultPerson,
 })
 ```
 

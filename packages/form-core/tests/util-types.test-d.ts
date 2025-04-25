@@ -354,3 +354,30 @@ type Userr = {
 }
 
 type UserKeys = DeepValue<Userr, DeepKeys<Userr>>
+
+type ObjectWithAny = {
+  a: any
+  b: number
+  obj: {
+    c: any
+    d: number
+  }
+}
+
+type AnyObjectKeys = DeepKeys<ObjectWithAny>
+expectTypeOf(0 as never as AnyObjectKeys).toEqualTypeOf<
+  'a' | 'b' | 'obj' | `a.${string}` | 'obj.c' | `obj.c.${string}` | 'obj.d'
+>()
+type AnyObjectExample = DeepValue<ObjectWithAny, 'a'>
+expectTypeOf(0 as never as AnyObjectExample).toEqualTypeOf<any>()
+type AnyObjectExample2 = DeepValue<ObjectWithAny, 'b'>
+expectTypeOf(0 as never as AnyObjectExample2).toEqualTypeOf<number>()
+type AnyObjectExample3 = DeepValue<ObjectWithAny, 'obj'>
+expectTypeOf(0 as never as AnyObjectExample3).toEqualTypeOf<{
+  c: any
+  d: number
+}>
+type AnyObjectExample4 = DeepValue<ObjectWithAny, 'obj.c'>
+expectTypeOf(0 as never as AnyObjectExample4).toEqualTypeOf<any>()
+type AnyObjectExample5 = DeepValue<ObjectWithAny, 'obj.d'>
+expectTypeOf(0 as never as AnyObjectExample5).toEqualTypeOf<number>()

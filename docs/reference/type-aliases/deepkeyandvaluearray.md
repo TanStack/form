@@ -8,12 +8,12 @@ title: DeepKeyAndValueArray
 # Type Alias: DeepKeyAndValueArray\<TParent, T, TAcc\>
 
 ```ts
-type DeepKeyAndValueArray<TParent, T, TAcc> = DeepKeysAndValues<NonNullable<T[number]>, ArrayDeepKeyAndValue<TParent, T>, 
+type DeepKeyAndValueArray<TParent, T, TAcc> = DeepKeysAndValuesImpl<NonNullable<T[number]>, ArrayDeepKeyAndValue<TParent, T>, 
   | TAcc
 | ArrayDeepKeyAndValue<TParent, T>>;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:40](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L40)
+Defined in: [packages/form-core/src/util-types.ts:38](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L38)
 
 ## Type Parameters
 

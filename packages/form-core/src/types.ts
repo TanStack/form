@@ -41,6 +41,17 @@ export type ValidationErrorMap<
 }
 
 /**
+ * @private allows tracking the source of the errors in the error map
+ */
+export type ValidationErrorMapSource = {
+  onMount?: ValidationSource
+  onChange?: ValidationSource
+  onBlur?: ValidationSource
+  onSubmit?: ValidationSource
+  onServer?: ValidationSource
+}
+
+/**
  * @private
  */
 export type FormValidationErrorMap<
