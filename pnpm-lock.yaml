@@ -701,6 +701,28 @@ importers:
         specifier: ^2.2.2
         version: 2.2.8(typescript@5.8.2)
 
+  examples/vue/field-components:
+    dependencies:
+      '@tanstack/vue-form':
+        specifier: ^1.6.3
+        version: link:../../../packages/vue-form
+      vue:
+        specifier: ^3.5.13
+        version: 3.5.13(typescript@5.8.2)
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^5.2.3
+        version: 5.2.3(vite@6.3.2(@types/node@22.13.14)(jiti@2.4.2)(less@4.2.2)(sass@1.86.1)(sugarss@4.0.1(postcss@8.5.3))(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1))(vue@3.5.13(typescript@5.8.2))
+      typescript:
+        specifier: 5.8.2
+        version: 5.8.2
+      vite:
+        specifier: ^6.3.2
+        version: 6.3.2(@types/node@22.13.14)(jiti@2.4.2)(less@4.2.2)(sass@1.86.1)(sugarss@4.0.1(postcss@8.5.3))(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1)
+      vue-tsc:
+        specifier: ^2.2.2
+        version: 2.2.8(typescript@5.8.2)
+
   examples/vue/simple:
     dependencies:
       '@tanstack/vue-form':
