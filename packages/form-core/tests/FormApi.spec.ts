@@ -1995,7 +1995,6 @@ describe('form api', () => {
   })
 
   it('should run the form listener onChange', async () => {
-    let fieldNameCheck!: string
     let fieldApiCheck!: AnyFieldApi
     let formApiCheck!: AnyFormApi
 
@@ -2004,8 +2003,7 @@ describe('form api', () => {
         name: '',
       },
       listeners: {
-        onChange: ({ fieldName, fieldApi, formApi }) => {
-          fieldNameCheck = fieldName
+        onChange: ({ fieldApi, formApi }) => {
           fieldApiCheck = fieldApi
 
           formApiCheck = formApi as any
@@ -2021,14 +2019,12 @@ describe('form api', () => {
     field.mount()
     field.setValue('newTest')
 
-    expect(fieldNameCheck).toStrictEqual('name')
     expect(fieldApiCheck.state.value).toStrictEqual('newTest')
     expect(formApiCheck.state.values.name).toStrictEqual('newTest')
   })
 
   it('should run the form listener onChange when the field array is changed', () => {
     let arr!: any
-    let name!: string
 
     const form = new FormApi({
       defaultValues: {
@@ -2036,9 +2032,8 @@ describe('form api', () => {
         age: 0,
       },
       listeners: {
-        onChange: ({ formApi, fieldName }) => {
-          arr = formApi.state.values[fieldName]
-          name = fieldName
+        onChange: ({ fieldApi }) => {
+          arr = fieldApi.state.value
         },
       },
     })
@@ -2052,7 +2047,6 @@ describe('form api', () => {
 
     field.removeValue(1)
     expect(arr).toStrictEqual(['one'])
-    expect(name).toStrictEqual('items')
 
     field.replaceValue(0, 'start')
     expect(arr).toStrictEqual(['start'])
@@ -2071,7 +2065,6 @@ describe('form api', () => {
   })
 
   it('should run the form listener onBlur', async () => {
-    let fieldNameCheck!: string
     let fieldApiCheck!: AnyFieldApi
     let formApiCheck!: AnyFormApi
 
@@ -2081,8 +2074,7 @@ describe('form api', () => {
         age: 0,
       },
       listeners: {
-        onBlur: ({ fieldName, fieldApi, formApi }) => {
-          fieldNameCheck = fieldName
+        onBlur: ({ fieldApi, formApi }) => {
           fieldApiCheck = fieldApi
 
           formApiCheck = formApi as any
@@ -2098,7 +2090,6 @@ describe('form api', () => {
     field.mount()
     field.handleBlur()
 
-    expect(fieldNameCheck).toStrictEqual('name')
     expect(fieldApiCheck.state.value).toStrictEqual('test')
     expect(formApiCheck.state.values.name).toStrictEqual('test')
   })
