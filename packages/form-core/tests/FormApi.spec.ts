@@ -2064,6 +2064,39 @@ describe('form api', () => {
     expect(arr).toStrictEqual(['middle', 'end', 'start'])
   })
 
+  it('should debounce onChange listener', async () => {
+    vi.useFakeTimers()
+    const onChangeMock = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+      listeners: {
+        onChange: onChangeMock,
+        onChangeDebounceMs: 500,
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+    field.mount()
+
+    field.handleChange('first')
+    field.handleChange('second')
+    expect(onChangeMock).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(500)
+    expect(onChangeMock).toHaveBeenCalledTimes(1)
+    expect(onChangeMock).toHaveBeenCalledWith({
+      formApi: form,
+      fieldApi: field,
+    })
+  })
+
   it('should run the form listener onBlur', async () => {
     let fieldApiCheck!: AnyFieldApi
     let formApiCheck!: AnyFormApi
@@ -2092,6 +2125,35 @@ describe('form api', () => {
 
     expect(fieldApiCheck.state.value).toStrictEqual('test')
     expect(formApiCheck.state.values.name).toStrictEqual('test')
+  })
+
+  it('should debounce onBlur listener', async () => {
+    vi.useFakeTimers()
+    const onBlurMock = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+      listeners: {
+        onBlur: onBlurMock,
+        onBlurDebounceMs: 500,
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+    field.mount()
+
+    field.handleBlur()
+    field.handleBlur()
+    expect(onBlurMock).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(500)
+    expect(onBlurMock).toHaveBeenCalledTimes(1)
   })
 
   it('should run the field listener onSubmit', async () => {

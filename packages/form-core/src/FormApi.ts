@@ -265,6 +265,7 @@ export interface FormListeners<
     >
     fieldApi: AnyFieldApi
   }) => void
+  onChangeDebounceMs?: number
 
   onBlur?: (props: {
     formApi: FormApi<
@@ -281,6 +282,7 @@ export interface FormListeners<
     >
     fieldApi: AnyFieldApi
   }) => void
+  onBlurDebounceMs?: number
 
   onMount?: (props: {
     formApi: FormApi<
