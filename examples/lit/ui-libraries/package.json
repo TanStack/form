@@ -10,11 +10,11 @@
   },
   "dependencies": {
     "@material/web": "^2.3.0",
-    "@tanstack/lit-form": "^1.5.0",
+    "@tanstack/lit-form": "^1.7.1",
     "lit": "^3.3.0"
   },
   "devDependencies": {
-    "vite": "^6.2.6"
+    "vite": "^6.3.2"
   },
   "browserslist": {
     "production": [

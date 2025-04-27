@@ -62,6 +62,7 @@ describe('field api', () => {
       isDirty: false,
       errors: [],
       errorMap: {},
+      errorSourceMap: {},
     })
   })
 
@@ -91,6 +92,7 @@ describe('field api', () => {
       isPristine: false,
       errors: [],
       errorMap: {},
+      errorSourceMap: {},
     })
   })
 
@@ -2050,5 +2052,246 @@ describe('field api', () => {
     expect(() => {
       field.parseValueWithSchemaAsync(z.any())
     }).not.toThrowError()
+  })
+
+  it('should update submission meta when calling handleSubmit', async () => {
+    let doError = true
+    let externalAttemptsCounter = 0
+    const form = new FormApi({
+      defaultValues: {
+        firstName: 'John',
+        lastName: 'Doe',
+      },
+      validators: {
+        onChange: () => (doError ? 'form error' : undefined),
+      },
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+    })
+
+    form.mount()
+    firstNameField.mount()
+    lastNameField.mount()
+
+    // assert initial state
+    expect(form.state.canSubmit).toBe(true)
+    expect(form.state.isFormValid).toBe(true)
+    expect(form.state.isSubmitted).toBe(false)
+    expect(form.state.isSubmitSuccessful).toBe(false)
+    expect(form.state.submissionAttempts).toBe(externalAttemptsCounter)
+
+    await form.handleSubmit()
+    externalAttemptsCounter += 1
+
+    // error occurred. The meta should reflect it
+    expect(form.state.canSubmit).toBe(false)
+    expect(form.state.isFormValid).toBe(false)
+    expect(form.state.isSubmitted).toBe(false)
+    expect(form.state.isSubmitSuccessful).toBe(false)
+    expect(form.state.submissionAttempts).toBe(externalAttemptsCounter)
+
+    await form.handleSubmit()
+    externalAttemptsCounter += 1
+
+    // form has errors and was still submitted. Meta should reflect that
+    expect(form.state.canSubmit).toBe(false)
+    expect(form.state.isFormValid).toBe(false)
+    expect(form.state.isSubmitted).toBe(false)
+    expect(form.state.isSubmitSuccessful).toBe(false)
+    expect(form.state.submissionAttempts).toBe(externalAttemptsCounter)
+
+    // remove error and touched state
+    doError = false
+    form.validate('change')
+
+    await form.handleSubmit()
+    externalAttemptsCounter += 1
+
+    // form had no errors, assert that it was successful
+    expect(form.state.canSubmit).toBe(true)
+    expect(form.state.isFormValid).toBe(true)
+    expect(form.state.isSubmitted).toBe(true)
+    expect(form.state.isSubmitSuccessful).toBe(true)
+    expect(form.state.submissionAttempts).toBe(externalAttemptsCounter)
+  })
+
+  it('should touch all fields when calling handleSubmit regardless of errors', async () => {
+    let doError = true
+    const form = new FormApi({
+      defaultValues: {
+        firstName: 'John',
+        lastName: 'Doe',
+      },
+      validators: {
+        onChange: () => (doError ? 'form error' : undefined),
+      },
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+    })
+
+    form.mount()
+    firstNameField.mount()
+    lastNameField.mount()
+
+    function undoTouchedState() {
+      firstNameField.setMeta((prev) => ({ ...prev, isTouched: false }))
+      lastNameField.setMeta((prev) => ({ ...prev, isTouched: false }))
+    }
+
+    // assert initial state
+    expect(firstNameField.getMeta().isTouched).toBe(false)
+    expect(lastNameField.getMeta().isTouched).toBe(false)
+
+    await form.handleSubmit()
+
+    // form has errors now. All fields should be touched
+    expect(firstNameField.getMeta().isTouched).toBe(true)
+    expect(lastNameField.getMeta().isTouched).toBe(true)
+
+    undoTouchedState()
+    await form.handleSubmit()
+
+    // form has errors and was still submitted. Fields should still be touched
+    expect(firstNameField.getMeta().isTouched).toBe(true)
+    expect(lastNameField.getMeta().isTouched).toBe(true)
+
+    // remove error
+    doError = false
+    form.validate('change')
+
+    undoTouchedState()
+    await form.handleSubmit()
+
+    // submission succeeded. Fields should be touched
+    expect(firstNameField.getMeta().isTouched).toBe(true)
+    expect(lastNameField.getMeta().isTouched).toBe(true)
+  })
+
+  it('should not trigger form validators in handleSubmit if field validators errored', async () => {
+    const validators = {
+      onChange: () => 'onChange',
+      onBlur: () => 'onBlur',
+      onSubmit: () => 'onSubmit',
+    }
+    const allErrors = ['onChange', 'onBlur', 'onSubmit']
+    const form = new FormApi({
+      defaultValues: {
+        firstName: 'John',
+        lastName: 'Doe',
+      },
+      validators,
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+      validators,
+    })
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+      validators,
+    })
+
+    form.mount()
+    firstNameField.mount()
+    lastNameField.mount()
+
+    // since we have no mount error, we expect all errors to be empty
+    expect(form.state.canSubmit).toBe(true)
+    expect(form.getAllErrors().form.errors).toEqual([])
+    expect(firstNameField.getMeta().errors).toEqual([])
+    expect(lastNameField.getMeta().errors).toEqual([])
+
+    await form.handleSubmit()
+
+    // after handling submission, the form should reflect the changes
+    expect(form.state.canSubmit).toBe(false)
+    expect(form.getAllErrors().form.errors).toEqual([])
+    expect(firstNameField.getMeta().errors).toEqual(allErrors)
+    expect(lastNameField.getMeta().errors).toEqual(allErrors)
+  })
+
+  it('should trigger form validators in handleSubmit if field validators are valid', async () => {
+    const validators = {
+      onChange: () => 'onChange',
+      onBlur: () => 'onBlur',
+      onSubmit: () => 'onSubmit',
+    }
+    const allErrors = ['onChange', 'onBlur', 'onSubmit']
+    const form = new FormApi({
+      defaultValues: {
+        firstName: 'John',
+        lastName: 'Doe',
+      },
+      validators,
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+    })
+
+    form.mount()
+    firstNameField.mount()
+    lastNameField.mount()
+
+    // since we have no mount error, we expect all errors to be empty
+    expect(form.state.canSubmit).toBe(true)
+    expect(form.getAllErrors().form.errors).toEqual([])
+    expect(firstNameField.getMeta().errors).toEqual([])
+    expect(lastNameField.getMeta().errors).toEqual([])
+
+    await form.handleSubmit()
+
+    // field validators passed, so form validators should've triggered
+    expect(form.state.canSubmit).toBe(false)
+    expect(form.getAllErrors().form.errors).toEqual(allErrors)
+    expect(firstNameField.getMeta().errors).toEqual([])
+    expect(lastNameField.getMeta().errors).toEqual([])
+  })
+
+  it('should update the errorSourceMap with field source when field async field error is added', async () => {
+    vi.useFakeTimers()
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChangeAsync: async () => {
+          return 'Error'
+        },
+      },
+    })
+    field.mount()
+
+    field.setValue('test')
+    await vi.runAllTimersAsync()
+
+    expect(field.getMeta().errorSourceMap.onChange).toEqual('field')
   })
 })
