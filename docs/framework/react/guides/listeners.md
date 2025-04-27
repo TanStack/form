@@ -92,7 +92,7 @@ We enable an easy method for debouncing your listeners by adding a `onChangeDebo
 
 ### Form listeners
 
-At a higher level, listeners are also available at the form level, allowing you access to the `onMount` and `onSubmit` events, and having `onChange` and `onBlur` propagated to all the form's children.
+At a higher level, listeners are also available at the form level, allowing you access to the `onMount` and `onSubmit` events, and having `onChange` and `onBlur` propagated to all the form's children. Form-level listeners can also be debounced in the same way as previously discussed.
 
 `onMount` and `onSubmit` listeners have to following props:
 
@@ -120,6 +120,7 @@ const form = useForm({
       // fieldApi represents the field that triggered the event.
       console.log(fieldApi.name, fieldApi.state.value)
     },
+    onChangeDebounceMs: 500,
   },
 })
 ```
