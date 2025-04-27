@@ -194,7 +194,7 @@ importers:
   examples/lit/simple:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^1.7.0
+        specifier: ^1.7.1
         version: link:../../../packages/lit-form
       lit:
         specifier: ^3.3.0
@@ -210,7 +210,7 @@ importers:
         specifier: ^2.3.0
         version: 2.3.0
       '@tanstack/lit-form':
-        specifier: ^1.7.0
+        specifier: ^1.7.1
         version: link:../../../packages/lit-form
       lit:
         specifier: ^3.3.0
