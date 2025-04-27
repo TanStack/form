@@ -868,29 +868,27 @@ export class FormApi<
           | undefined
         const prevBaseStore = prevDepVals?.[0]
         const currBaseStore = currDepVals[0]
+        const currFieldMeta = currDepVals[1]
 
         // Computed state
-        const fieldMetaValues = Object.values(currBaseStore.fieldMetaBase) as (
-          | AnyFieldMeta
-          | undefined
-        )[]
+        const fieldMetaValues = Object.values(currFieldMeta).filter(
+          Boolean,
+        ) as AnyFieldMeta[]
 
         const isFieldsValidating = fieldMetaValues.some(
-          (field) => field?.isValidating,
+          (field) => field.isValidating,
         )
 
-        const isFieldsValid = fieldMetaValues
-          .filter(Boolean)
-          .every((field) => field!.isValid)
+        const isFieldsValid = fieldMetaValues.every((field) => field.isValid)
 
-        const isTouched = fieldMetaValues.some((field) => field?.isTouched)
-        const isBlurred = fieldMetaValues.some((field) => field?.isBlurred)
+        const isTouched = fieldMetaValues.some((field) => field.isTouched)
+        const isBlurred = fieldMetaValues.some((field) => field.isBlurred)
 
         const shouldInvalidateOnMount =
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          isTouched && currBaseStore?.errorMap?.onMount
+          isTouched && currBaseStore.errorMap?.onMount
 
-        const isDirty = fieldMetaValues.some((field) => field?.isDirty)
+        const isDirty = fieldMetaValues.some((field) => field.isDirty)
         const isPristine = !isDirty
 
         const hasOnMountError = Boolean(
@@ -1331,12 +1329,9 @@ export class FormApi<
                 ...prev.errorMap,
                 [errorMapKey]: newErrorValue,
               }
-              const fieldIsValid =
-                Object.values(errorMap).filter(Boolean).length === 0
 
               return {
                 ...prev,
-                isValid: fieldIsValid,
                 errorMap,
                 errorSourceMap: {
                   ...prev.errorSourceMap,
@@ -1509,12 +1504,9 @@ export class FormApi<
                   [errorMapKey]: newErrorValue,
                 }
 
-                const fieldIsValid =
-                  Object.values(errorMap).filter(Boolean).length === 0
                 return {
                   ...prev,
                   errorMap,
-                  isValid: fieldIsValid,
                   errorSourceMap: {
                     ...prev.errorSourceMap,
                     [errorMapKey]: newSource,
@@ -1808,15 +1800,11 @@ export class FormApi<
             onMount: undefined,
           }
 
-          const fieldIsValid =
-            Object.values(errorMap).filter(Boolean).length === 0
-
           return {
             ...prev,
             isTouched: true,
             isDirty: true,
             errorMap,
-            isValid: fieldIsValid,
           }
         })
       }

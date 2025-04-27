@@ -1113,13 +1113,9 @@ export class FieldApi<
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           const errorMap = { ...prev?.errorMap, onMount: error }
 
-          const fieldIsValid =
-            Object.values(errorMap).filter(Boolean).length === 0
-
           return {
             ...prev,
             errorMap,
-            isValid: fieldIsValid,
             errorSourceMap: {
               // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
               ...prev?.errorSourceMap,
@@ -1398,13 +1394,9 @@ export class FieldApi<
               [errorMapKey]: newErrorValue,
             }
 
-            const fieldIsValid =
-              Object.values(errorMap).filter(Boolean).length === 0
-
             return {
               ...prev,
               errorMap,
-              isValid: fieldIsValid,
               errorSourceMap: {
                 ...prev.errorSourceMap,
                 [errorMapKey]: newSource,
@@ -1444,13 +1436,9 @@ export class FieldApi<
           [submitErrKey]: undefined,
         }
 
-        const fieldIsValid =
-          Object.values(errorMap).filter(Boolean).length === 0
-
         return {
           ...prev,
           errorMap,
-          isValid: fieldIsValid,
           errorSourceMap: {
             ...prev.errorSourceMap,
             [submitErrKey]: undefined,
@@ -1587,13 +1575,9 @@ export class FieldApi<
               [errorMapKey]: newErrorValue,
             }
 
-            const fieldIsValid =
-              Object.values(errorMap).filter(Boolean).length === 0
-
             return {
               ...prev,
               errorMap,
-              isValid: fieldIsValid,
               errorSourceMap: {
                 ...prev.errorSourceMap,
                 [errorMapKey]: newSource,
@@ -1702,13 +1686,9 @@ export class FieldApi<
         ...errorMap,
       }
 
-      const fieldIsValid =
-        Object.values(newErrorMap).filter(Boolean).length === 0
-
       return {
         ...prev,
         errorMap: newErrorMap,
-        isValid: fieldIsValid,
       } as never
     })
   }
