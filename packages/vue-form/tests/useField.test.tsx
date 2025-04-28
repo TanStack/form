@@ -16,16 +16,16 @@ describe('useField', () => {
     }
 
     const Comp = defineComponent(() => {
-      const form = useForm({
+      const form = useForm(() => ({
         defaultValues: {} as Person,
-      })
+      }))
 
       return () => (
         <form.Field name="firstName" defaultValue="FirstName">
-          {({ field }: { field: AnyFieldApi }) => (
+          {({ field, value }: { field: AnyFieldApi; value: any }) => (
             <input
               data-testid={'fieldinput'}
-              value={field.state.value}
+              value={value()}
               onBlur={field.handleBlur}
               onInput={(e) =>
                 field.handleChange((e.target as HTMLInputElement).value)
@@ -49,7 +49,7 @@ describe('useField', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm({ defaultValues: {} as Person })
+      const form = useForm(() => ({ defaultValues: {} as Person }))
 
       return () => (
         <form.Field
@@ -58,7 +58,7 @@ describe('useField', () => {
             onChange: ({ value }) => (value === 'other' ? error : undefined),
           }}
         >
-          {({ field }: { field: AnyFieldApi }) => (
+          {({ field }: { field: AnyFieldApi; value: any }) => (
             <div>
               <input
                 data-testid="fieldinput"
@@ -92,7 +92,7 @@ describe('useField', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm({ defaultValues: {} as Person })
+      const form = useForm(() => ({ defaultValues: {} as Person }))
 
       return () => (
         <form.Field
@@ -101,12 +101,12 @@ describe('useField', () => {
             onChange: ({ value }) => (value === 'other' ? error : undefined),
           }}
         >
-          {({ field }: { field: AnyFieldApi }) => (
+          {({ field, value }: { field: AnyFieldApi; value: any }) => (
             <div>
               <input
                 data-testid="fieldinput"
                 name={field.name}
-                value={field.state.value}
+                value={value()}
                 onBlur={field.handleBlur}
                 onInput={(e) =>
                   field.handleChange((e.target as HTMLInputElement).value)
@@ -134,7 +134,7 @@ describe('useField', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm({ defaultValues: {} as Person })
+      const form = useForm(() => ({ defaultValues: {} as Person }))
 
       return () => (
         <form.Field
@@ -147,7 +147,7 @@ describe('useField', () => {
             },
           }}
         >
-          {({ field }: { field: AnyFieldApi }) => (
+          {({ field, meta }: { field: AnyFieldApi; value: any; meta: any }) => (
             <div>
               <input
                 data-testid="fieldinput"
@@ -158,7 +158,7 @@ describe('useField', () => {
                   field.handleChange((e.target as HTMLInputElement).value)
                 }
               />
-              <p>{field.getMeta().errors}</p>
+              <p>{meta().errors}</p>
             </div>
           )}
         </form.Field>
@@ -183,7 +183,7 @@ describe('useField', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm({ defaultValues: {} as Person })
+      const form = useForm(() => ({ defaultValues: {} as Person }))
 
       return () => (
         <form.Field
@@ -198,7 +198,7 @@ describe('useField', () => {
             },
           }}
         >
-          {({ field }: { field: AnyFieldApi }) => (
+          {({ field, meta }: { field: AnyFieldApi; value: any; meta: any }) => (
             <div>
               <input
                 data-testid="fieldinput"
@@ -209,7 +209,7 @@ describe('useField', () => {
                   field.handleChange((e.target as HTMLInputElement).value)
                 }
               />
-              <p>{field.getMeta().errors}</p>
+              <p>{meta().errors}</p>
             </div>
           )}
         </form.Field>
@@ -231,12 +231,12 @@ describe('useField', () => {
     type CompVal = { people: Array<string> }
 
     const Comp = defineComponent(() => {
-      const form = useForm({
+      const form = useForm(() => ({
         defaultValues: {
           people: [],
         } as CompVal,
         onSubmit: ({ value }) => fn(value),
-      })
+      }))
 
       return () => (
         <div>
@@ -248,17 +248,28 @@ describe('useField', () => {
             }}
           >
             <form.Field name="people">
-              {({ field }: { field: AnyFieldApi }) => (
+              {({
+                field,
+                value: arrValue,
+              }: {
+                field: AnyFieldApi
+                value: any
+              }) => (
                 <div>
-                  {field.state.value.map((_: never, i: number) => {
+                  {arrValue().map((_: never, i: number) => {
                     return (
                       <form.Field key={i} name={`people[${i}]`}>
-                        {({ field: subField }: { field: AnyFieldApi }) => (
+                        {({
+                          field: subField,
+                        }: {
+                          field: AnyFieldApi
+                          value: any
+                        }) => (
                           <div>
                             <label>
                               <div>Name for person {i}</div>
                               <input
-                                value={subField.state.value}
+                                value={field.state.value}
                                 onChange={(e) =>
                                   subField.handleChange(
                                     (e.target as HTMLInputElement).value,
@@ -312,18 +323,18 @@ describe('useField', () => {
     expect(fn).toHaveBeenCalledWith({ people: ['John'] })
   })
 
-  it('should handle arrays with subvalues', async () => {
+  it('should handle arrays with subvalues 2', async () => {
     const fn = vi.fn()
 
     type CompVal = { people: Array<{ age: number; name: string }> }
 
     const Comp = defineComponent(() => {
-      const form = useForm({
+      const form = useForm(() => ({
         defaultValues: {
           people: [],
         } as CompVal,
         onSubmit: ({ value }) => fn(value),
-      })
+      }))
 
       return () => (
         <div>
@@ -335,17 +346,29 @@ describe('useField', () => {
             }}
           >
             <form.Field name="people">
-              {({ field }: { field: AnyFieldApi }) => (
+              {({
+                field,
+                value: arrValue,
+              }: {
+                field: AnyFieldApi
+                value: any
+              }) => (
                 <div>
-                  {field.state.value.map((_: never, i: number) => {
+                  {arrValue().map((_: never, i: number) => {
                     return (
                       <form.Field key={i} name={`people[${i}].name`}>
-                        {({ field: subField }: { field: AnyFieldApi }) => (
+                        {({
+                          field: subField,
+                          value,
+                        }: {
+                          field: AnyFieldApi
+                          value: any
+                        }) => (
                           <div>
                             <label>
                               <div>Name for person {i}</div>
                               <input
-                                value={subField.state.value}
+                                value={value()}
                                 onChange={(e) =>
                                   subField.handleChange(
                                     (e.target as HTMLInputElement).value,

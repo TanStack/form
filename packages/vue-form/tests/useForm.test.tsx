@@ -17,11 +17,11 @@ type Person = {
 describe('useForm', () => {
   it('preserved field state', async () => {
     const Comp = defineComponent(() => {
-      const form = useForm({ defaultValues: {} as Person })
+      const form = useForm(() => ({ defaultValues: {} as Person }))
 
       return () => (
         <form.Field name="firstName" defaultValue="">
-          {({ field }: { field: AnyFieldApi }) => (
+          {({ field }: { field: AnyFieldApi; value: any }) => (
             <input
               data-testid={'fieldinput'}
               value={field.state.value}
@@ -44,16 +44,16 @@ describe('useForm', () => {
 
   it('should allow default values to be set', async () => {
     const Comp = defineComponent(() => {
-      const form = useForm({
+      const form = useForm(() => ({
         defaultValues: {
           firstName: 'FirstName',
           lastName: 'LastName',
         } as Person,
-      })
+      }))
 
       return () => (
         <form.Field name="firstName">
-          {({ field }: { field: AnyFieldApi }) => <p>{field.state.value}</p>}
+          {({ value }: { field: AnyFieldApi; value: any }) => <p>{value()}</p>}
         </form.Field>
       )
     })
@@ -67,19 +67,19 @@ describe('useForm', () => {
     const Comp = defineComponent(() => {
       const submittedData = ref<{ firstName: string }>()
 
-      const form = useForm({
+      const form = useForm(() => ({
         defaultValues: {
           firstName: 'FirstName',
         },
         onSubmit: ({ value }) => {
           submittedData.value = value
         },
-      })
+      }))
 
       return () => (
         <div>
           <form.Field name="firstName">
-            {({ field }: { field: AnyFieldApi }) => {
+            {({ field }: { field: AnyFieldApi; value: any }) => {
               return (
                 <input
                   value={field.state.value}
@@ -115,7 +115,7 @@ describe('useForm', () => {
       const formMounted = ref(false)
       const mountForm = ref(false)
 
-      const form = useForm({
+      const form = useForm(() => ({
         defaultValues: {
           firstName: 'FirstName',
         },
@@ -125,7 +125,7 @@ describe('useForm', () => {
             return undefined
           },
         },
-      })
+      }))
 
       return () =>
         mountForm.value ? (
@@ -146,19 +146,19 @@ describe('useForm', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm({
+      const form = useForm(() => ({
         defaultValues: {} as Person,
         validators: {
           onChange() {
             return error
           },
         },
-      })
+      }))
 
       return () => (
         <div>
           <form.Field name="firstName">
-            {({ field }: { field: AnyFieldApi }) => (
+            {({ field }: { field: AnyFieldApi; value: any }) => (
               <input
                 data-testid="fieldinput"
                 name={field.name}
@@ -188,20 +188,20 @@ describe('useForm', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm({
+      const form = useForm(() => ({
         defaultValues: {} as Person,
         validators: {
           onChange: ({ value }) =>
             value.firstName === 'other' ? error : undefined,
         },
-      })
+      }))
 
       const errors = form.useStore((s) => s.errors)
 
       return () => (
         <div>
           <form.Field name="firstName">
-            {({ field }: { field: AnyFieldApi }) => (
+            {({ field }: { field: AnyFieldApi; value: any }) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -232,20 +232,20 @@ describe('useForm', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm({
+      const form = useForm(() => ({
         defaultValues: {} as Person,
         validators: {
           onChange: ({ value }) =>
             value.firstName === 'other' ? error : undefined,
         },
-      })
+      }))
 
       const errors = form.useStore((s) => s.errorMap)
 
       return () => (
         <div>
           <form.Field name="firstName" defaultMeta={{ isTouched: true }}>
-            {({ field }: { field: AnyFieldApi }) => (
+            {({ field }: { field: AnyFieldApi; value: any }) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -276,7 +276,7 @@ describe('useForm', () => {
     const onBlurError = 'Please enter a different value (onBlurError)'
 
     const Comp = defineComponent(() => {
-      const form = useForm({
+      const form = useForm(() => ({
         defaultValues: {
           firstName: '',
         },
@@ -290,14 +290,14 @@ describe('useForm', () => {
             return undefined
           },
         },
-      })
+      }))
 
       const errors = form.useStore((s) => s.errorMap)
 
       return () => (
         <div>
           <form.Field name="firstName" defaultMeta={{ isTouched: true }}>
-            {({ field }: { field: AnyFieldApi }) => (
+            {({ field }: { field: AnyFieldApi; value: any }) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -330,7 +330,7 @@ describe('useForm', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm({
+      const form = useForm(() => ({
         defaultValues: {} as Person,
         validators: {
           onChangeAsync: async () => {
@@ -338,14 +338,14 @@ describe('useForm', () => {
             return error
           },
         },
-      })
+      }))
 
       const errors = form.useStore((s) => s.errorMap)
 
       return () => (
         <div>
           <form.Field name="firstName" defaultMeta={{ isTouched: true }}>
-            {({ field }: { field: AnyFieldApi }) => (
+            {({ field }: { field: AnyFieldApi; value: any }) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -377,7 +377,7 @@ describe('useForm', () => {
     const onBlurError = 'Please enter a different value (onBlurError)'
 
     const Comp = defineComponent(() => {
-      const form = useForm({
+      const form = useForm(() => ({
         defaultValues: {} as Person,
         validators: {
           onChangeAsync: async () => {
@@ -389,13 +389,13 @@ describe('useForm', () => {
             return onBlurError
           },
         },
-      })
+      }))
       const errors = form.useStore((s) => s.errorMap)
 
       return () => (
         <div>
           <form.Field name="firstName" defaultMeta={{ isTouched: true }}>
-            {({ field }: { field: AnyFieldApi }) => (
+            {({ field }: { field: AnyFieldApi; value: any }) => (
               <div>
                 <input
                   data-testid="fieldinput"
@@ -433,7 +433,7 @@ describe('useForm', () => {
     const error = 'Please enter a different value'
 
     const Comp = defineComponent(() => {
-      const form = useForm({
+      const form = useForm(() => ({
         defaultValues: {} as Person,
         validators: {
           onChangeAsyncDebounceMs: 100,
@@ -443,13 +443,13 @@ describe('useForm', () => {
             return error
           },
         },
-      })
+      }))
       const errors = form.useStore((s) => s.errors)
 
       return () => (
         <div>
           <form.Field name="firstName" defaultMeta={{ isTouched: true }}>
-            {({ field }: { field: AnyFieldApi }) => (
+            {({ field }: { field: AnyFieldApi; value: any }) => (
               <div>
                 <input
                   data-testid="fieldinput"

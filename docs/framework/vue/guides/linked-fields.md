@@ -23,13 +23,13 @@ To do this, you can add a `onChangeListenTo` property to the `confirm_password` 
 <script setup lang="ts">
 import { useForm } from '@tanstack/vue-form'
 
-const form = useForm({
+const form = useForm(() => ({
   defaultValues: {
     password: '',
     confirm_password: '',
   },
   // ...
-})
+}))
 </script>
 
 <template>
@@ -37,10 +37,10 @@ const form = useForm({
     <form @submit.prevent.stop="form.handleSubmit">
       <div>
         <form.Field name="password">
-          <template v-slot="{ field }">
+          <template v-slot="{ field, value }">
             <div>Password:</div>
             <input
-              :value="field.state.value"
+              :value="value()"
               @input="
                 (e) => field.handleChange((e.target as HTMLInputElement).value)
               "
@@ -59,15 +59,15 @@ const form = useForm({
             },
           }"
         >
-          <template v-slot="{ field }">
+          <template v-slot="{ field, value, meta }">
             <div>Confirm Password:</div>
             <input
-              :value="field.state.value"
+              :value="value()"
               @input="
                 (e) => field.handleChange((e.target as HTMLInputElement).value)
               "
             />
-            <div v-for="(err, index) in field.state.meta.errors" :key="index">
+            <div v-for="(err, index) in meta().errors" :key="index">
               {{ err }}
             </div>
           </template>

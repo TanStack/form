@@ -14,24 +14,24 @@ with [`Index` from `solid-js`](https://www.solidjs.com/tutorial/flow_index):
 <script setup lang="ts">
 import { useForm } from '@tanstack/vue-form'
 
-const form = useForm({
+const form = useForm(() => ({
   defaultValues: {
     people: [] as Array<{ age: number; name: string }>,
   },
   onSubmit: ({ value }) => alert(JSON.stringify(value)),
-})
+}))
 </script>
 
 <template>
   <form.Field name="people">
-    <template v-slot="{ field, state }">
+    <template v-slot="{ field, value }">
       <div>
         <form.Field
-          v-for="(_, i) of field.state.value"
+          v-for="(_, i) of value()"
           :key="i"
           :name="`people[${i}].name`"
         >
-          <template v-slot="{ field: subField, state }">
+          <template v-slot="{ field: subField, meta }">
             <!-- ... -->
           </template>
         </form.Field>
@@ -52,17 +52,13 @@ This will generate the mapped slot every time you run `pushValue` on `field`:
 Finally, you can use a subfield like so:
 
 ```vue
-<form.Field
-  v-for="(_, i) of field.state.value"
-  :key="i"
-  :name="`people[${i}].name`"
->
-  <template v-slot="{ field: subField, state }">
+<form.Field v-for="(_, i) of value()" :key="i" :name="`people[${i}].name`">
+  <template v-slot="{ field: subField, value }">
     <div>
       <label>
         <div>Name for person {{ i }}</div>
         <input
-          :value="subField.state.value"
+          :value="value()"
           @input="
           (e) =>
           subField.handleChange(
@@ -82,12 +78,12 @@ Finally, you can use a subfield like so:
 <script setup lang="ts">
 import { useForm } from '@tanstack/vue-form'
 
-const form = useForm({
+const form = useForm(() => ({
   defaultValues: {
     people: [] as Array<{ age: number; name: string }>,
   },
   onSubmit: ({ value }) => alert(JSON.stringify(value)),
-})
+}))
 </script>
 
 <template>
@@ -102,19 +98,19 @@ const form = useForm({
   >
     <div>
       <form.Field name="people">
-        <template v-slot="{ field, state }">
+        <template v-slot="{ value }">
           <div>
             <form.Field
-              v-for="(_, i) of field.state.value"
+              v-for="(_, i) of value()"
               :key="i"
               :name="`people[${i}].name`"
             >
-              <template v-slot="{ field: subField, state }">
+              <template v-slot="{ field: subField, value }">
                 <div>
                   <label>
                     <div>Name for person {{ i }}</div>
                     <input
-                      :value="subField.state.value"
+                      :value="value()"
                       @input="
                         (e) =>
                           subField.handleChange(
