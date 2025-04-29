@@ -1,4 +1,4 @@
-import { assertType, describe, it } from 'vitest'
+import { expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
 import { FieldApi, FormApi } from '../src/index'
 import type { StandardSchemaV1Issue } from '../src/index'
@@ -15,9 +15,9 @@ it('should type value properly', () => {
     name: 'name',
   })
 
-  assertType<'test'>(field.state.value)
-  assertType<'name'>(field.options.name)
-  assertType<'test'>(field.getValue())
+  expectTypeOf(field.state.value).toEqualTypeOf<'test'>()
+  expectTypeOf(field.options.name).toEqualTypeOf<'name'>()
+  expectTypeOf(field.getValue()).toEqualTypeOf<'test'>()
 })
 
 it('should type value when nothing is passed into constructor', () => {
@@ -33,9 +33,9 @@ it('should type value when nothing is passed into constructor', () => {
     name: 'name' as const,
   })
 
-  assertType<string | undefined>(field.state.value)
-  assertType<'name'>(field.options.name)
-  assertType<string | undefined>(field.getValue())
+  expectTypeOf(field.state.value).toEqualTypeOf<string | undefined>()
+  expectTypeOf(field.options.name).toEqualTypeOf<'name'>()
+  expectTypeOf(field.getValue()).toEqualTypeOf<string | undefined>()
 })
 
 it('should type required fields in constructor', () => {
@@ -55,9 +55,9 @@ it('should type required fields in constructor', () => {
     name: 'name' as const,
   })
 
-  assertType<string>(field.state.value)
-  assertType<'name' | 'age'>(field.options.name)
-  assertType<string>(field.getValue())
+  expectTypeOf(field.state.value).toEqualTypeOf<string>()
+  expectTypeOf(field.options.name).toEqualTypeOf<'name'>()
+  expectTypeOf(field.getValue()).toEqualTypeOf<string>()
 })
 
 it('should type value properly for completely partial forms', () => {
@@ -75,9 +75,9 @@ it('should type value properly for completely partial forms', () => {
     name: 'name' as const,
   })
 
-  assertType<'test' | undefined>(field.state.value)
-  assertType<'name' | 'age'>(field.options.name)
-  assertType<'test' | undefined>(field.getValue())
+  expectTypeOf(field.state.value).toEqualTypeOf<'test' | undefined>()
+  expectTypeOf(field.options.name).toEqualTypeOf<'name'>()
+  expectTypeOf(field.getValue()).toEqualTypeOf<'test' | undefined>()
 })
 
 it('should type onChange properly', () => {
@@ -92,7 +92,7 @@ it('should type onChange properly', () => {
     name: 'name',
     validators: {
       onChange: ({ value }) => {
-        assertType<'test'>(value)
+        expectTypeOf(value).toEqualTypeOf<'test'>()
 
         return undefined
       },
@@ -112,7 +112,7 @@ it('should type onChangeAsync properly', () => {
     name: 'name',
     validators: {
       onChangeAsync: async ({ value }) => {
-        assertType<'test'>(value)
+        expectTypeOf(value).toEqualTypeOf<'test'>()
 
         return undefined
       },
@@ -139,14 +139,14 @@ it('should type an array sub-field properly', () => {
     name: `nested.people[1].name`,
     validators: {
       onChangeAsync: async ({ value }) => {
-        assertType<string>(value)
+        expectTypeOf(value).toEqualTypeOf<string>()
 
         return undefined
       },
     },
   })
 
-  assertType<string>(field.state.value)
+  expectTypeOf(field.state.value).toEqualTypeOf<string>()
 })
 
 it('should have the correct types returned from form validators', () => {
@@ -161,7 +161,7 @@ it('should have the correct types returned from form validators', () => {
     },
   } as const)
 
-  assertType<'123' | undefined>(form.state.errorMap.onChange)
+  expectTypeOf(form.state.errorMap.onChange).toEqualTypeOf<'123' | undefined>()
 })
 
 it('should have the correct types returned from form validators even when both onChange and onChangeAsync are present', () => {
@@ -179,7 +179,7 @@ it('should have the correct types returned from form validators even when both o
     },
   } as const)
 
-  assertType<'123' | undefined>(form.state.errorMap.onChange)
+  expectTypeOf(form.state.errorMap.onChange).toEqualTypeOf<'123' | undefined>()
 })
 
 it('should have the correct types returned from field validators', () => {
@@ -199,7 +199,9 @@ it('should have the correct types returned from field validators', () => {
     },
   })
 
-  assertType<'123' | undefined>(field.state.meta.errorMap.onChange)
+  expectTypeOf(field.state.meta.errorMap.onChange).toEqualTypeOf<
+    '123' | undefined
+  >()
 })
 
 it('should have the correct types returned from field validators in array', () => {
@@ -219,7 +221,9 @@ it('should have the correct types returned from field validators in array', () =
     },
   })
 
-  assertType<Array<'123' | undefined>>(field.state.meta.errors)
+  expectTypeOf(field.state.meta.errors).toEqualTypeOf<
+    Array<'123' | undefined>
+  >()
 })
 
 it('should have the correct types returned from form validators in array', () => {
@@ -234,7 +238,7 @@ it('should have the correct types returned from form validators in array', () =>
     },
   } as const)
 
-  assertType<Array<'123' | undefined>>(form.state.errors)
+  expectTypeOf(form.state.errors).toEqualTypeOf<Array<'123' | undefined>>()
 })
 
 it('should handle "fields" return types added to the field\'s errorMap itself', () => {
@@ -258,7 +262,9 @@ it('should handle "fields" return types added to the field\'s errorMap itself', 
     name: 'firstName',
   })
 
-  assertType<'Testing' | undefined>(field.getMeta().errorMap.onChange)
+  expectTypeOf(field.getMeta().errorMap.onChange).toEqualTypeOf<
+    'Testing' | undefined
+  >()
 })
 
 it('should handle "fields" return types added to the field\'s error array itself', () => {
@@ -282,7 +288,9 @@ it('should handle "fields" return types added to the field\'s error array itself
     name: 'firstName',
   })
 
-  assertType<Array<'Testing' | undefined>>(field.getMeta().errors)
+  expectTypeOf(field.getMeta().errors).toEqualTypeOf<
+    Array<'Testing' | undefined>
+  >()
 })
 
 it('should handle "fields" async return types added to the field\'s errorMap itself', () => {
@@ -306,7 +314,9 @@ it('should handle "fields" async return types added to the field\'s errorMap its
     name: 'firstName',
   })
 
-  assertType<'Testing' | undefined>(field.getMeta().errorMap.onChange)
+  expectTypeOf(field.getMeta().errorMap.onChange).toEqualTypeOf<
+    'Testing' | undefined
+  >()
 })
 
 it('should handle "fields" async return types added to the field\'s error array itself', () => {
@@ -330,7 +340,9 @@ it('should handle "fields" async return types added to the field\'s error array 
     name: 'firstName',
   })
 
-  assertType<Array<'Testing' | undefined>>(field.getMeta().errors)
+  expectTypeOf(field.getMeta().errors).toEqualTypeOf<
+    Array<'Testing' | undefined>
+  >()
 })
 
 it('should handle "sub-fields" async return types added to the field\'s error array itself', () => {
@@ -356,7 +368,9 @@ it('should handle "sub-fields" async return types added to the field\'s error ar
     name: 'person.firstName',
   })
 
-  assertType<Array<'Testing' | undefined>>(field.getMeta().errors)
+  expectTypeOf(field.getMeta().errors).toEqualTypeOf<
+    Array<'Testing' | undefined>
+  >()
 })
 
 it('should only have field-level error types returned from parseValueWithSchema and parseValueWithSchemaAsync', () => {
@@ -373,10 +387,10 @@ it('should only have field-level error types returned from parseValueWithSchema 
 
   const schema = z.string()
   // assert that it doesn't think it's a form-level error
-  assertType<StandardSchemaV1Issue[] | undefined>(
-    field.parseValueWithSchema(schema),
-  )
-  assertType<Promise<StandardSchemaV1Issue[] | undefined>>(
-    field.parseValueWithSchemaAsync(schema),
-  )
+  expectTypeOf(field.parseValueWithSchema(schema)).toEqualTypeOf<
+    StandardSchemaV1Issue[] | undefined
+  >()
+  expectTypeOf(field.parseValueWithSchemaAsync(schema)).toEqualTypeOf<
+    Promise<StandardSchemaV1Issue[] | undefined>
+  >()
 })
