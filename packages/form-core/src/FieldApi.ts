@@ -653,7 +653,7 @@ export type FieldMetaDerived<
    */
   isPristine: boolean
   /**
-   * A boolean indicating if the field is valid.
+   * A boolean indicating if the field is valid. Evaluates `true` if there are no field errors.
    */
   isValid: boolean
 }

@@ -607,7 +607,7 @@ export type DerivedFormState<
    */
   isFieldsValidating: boolean
   /**
-   * A boolean indicating if all the form fields are valid.
+   * A boolean indicating if all the form fields are valid. Evaluates `true` if there are no field errors.
    */
   isFieldsValid: boolean
   /**
@@ -619,15 +619,15 @@ export type DerivedFormState<
    */
   isBlurred: boolean
   /**
-   * A boolean indicating if any of the form's fields' values have been modified by the user. `True` if the user have modified at least one of the fields. Opposite of `isPristine`.
+   * A boolean indicating if any of the form's fields' values have been modified by the user. Evaluates `true` if the user have modified at least one of the fields. Opposite of `isPristine`.
    */
   isDirty: boolean
   /**
-   * A boolean indicating if none of the form's fields' values have been modified by the user. `True` if the user have not modified any of the fields. Opposite of `isDirty`.
+   * A boolean indicating if none of the form's fields' values have been modified by the user. Evaluates `true` if the user have not modified any of the fields. Opposite of `isDirty`.
    */
   isPristine: boolean
   /**
-   * A boolean indicating if the form and all its fields are valid.
+   * A boolean indicating if the form and all its fields are valid. Evaluates `true` if there are no errors.
    */
   isValid: boolean
   /**
