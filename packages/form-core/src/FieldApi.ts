@@ -1111,20 +1111,19 @@ export class FieldApi<
         type: 'validate',
       })
       if (error) {
-        this.setMeta((prev) => {
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          const errorMap = { ...prev?.errorMap, onMount: error }
-
-          return {
-            ...prev,
-            errorMap,
-            errorSourceMap: {
+        this.setMeta(
+          (prev) =>
+            ({
+              ...prev,
               // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              ...prev?.errorSourceMap,
-              onMount: 'field',
-            },
-          } as never
-        })
+              errorMap: { ...prev?.errorMap, onMount: error },
+              errorSourceMap: {
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                ...prev?.errorSourceMap,
+                onMount: 'field',
+              },
+            }) as never,
+        )
       }
     }
 
@@ -1389,22 +1388,19 @@ export class FieldApi<
             fieldLevelError,
           })
 
-        if (field.state.meta.errorMap[errorMapKey] !== newErrorValue) {
-          field.setMeta((prev) => {
-            const errorMap = {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (field.state.meta.errorMap?.[errorMapKey] !== newErrorValue) {
+          field.setMeta((prev) => ({
+            ...prev,
+            errorMap: {
               ...prev.errorMap,
               [errorMapKey]: newErrorValue,
-            }
-
-            return {
-              ...prev,
-              errorMap,
-              errorSourceMap: {
-                ...prev.errorSourceMap,
-                [errorMapKey]: newSource,
-              },
-            }
-          })
+            },
+            errorSourceMap: {
+              ...prev.errorSourceMap,
+              [errorMapKey]: newSource,
+            },
+          }))
         }
         if (newErrorValue) {
           hasErrored = true
@@ -1432,21 +1428,17 @@ export class FieldApi<
       cause !== 'submit' &&
       !hasErrored
     ) {
-      this.setMeta((prev) => {
-        const errorMap = {
+      this.setMeta((prev) => ({
+        ...prev,
+        errorMap: {
           ...prev.errorMap,
           [submitErrKey]: undefined,
-        }
-
-        return {
-          ...prev,
-          errorMap,
-          errorSourceMap: {
-            ...prev.errorSourceMap,
-            [submitErrKey]: undefined,
-          },
-        }
-      })
+        },
+        errorSourceMap: {
+          ...prev.errorSourceMap,
+          [submitErrKey]: undefined,
+        },
+      }))
     }
 
     return { hasErrored }
@@ -1571,15 +1563,13 @@ export class FieldApi<
             })
 
           field.setMeta((prev) => {
-            const errorMap = {
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              ...prev?.errorMap,
-              [errorMapKey]: newErrorValue,
-            }
-
             return {
               ...prev,
-              errorMap,
+              errorMap: {
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                ...prev?.errorMap,
+                [errorMapKey]: newErrorValue,
+              },
               errorSourceMap: {
                 ...prev.errorSourceMap,
                 [errorMapKey]: newSource,
@@ -1682,17 +1672,16 @@ export class FieldApi<
    * Updates the field's errorMap
    */
   setErrorMap(errorMap: ValidationErrorMap) {
-    this.setMeta((prev) => {
-      const newErrorMap = {
-        ...prev.errorMap,
-        ...errorMap,
-      }
-
-      return {
-        ...prev,
-        errorMap: newErrorMap,
-      } as never
-    })
+    this.setMeta(
+      (prev) =>
+        ({
+          ...prev,
+          errorMap: {
+            ...prev.errorMap,
+            ...errorMap,
+          },
+        }) as never,
+    )
   }
 
   /**
