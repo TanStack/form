@@ -1425,21 +1425,17 @@ export class FormApi<
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             currentErrorMap?.[errorMapKey] !== newErrorValue
           ) {
-            this.setFieldMeta(field, (prev) => {
-              const errorMap = {
+            this.setFieldMeta(field, (prev) => ({
+              ...prev,
+              errorMap: {
                 ...prev.errorMap,
                 [errorMapKey]: newErrorValue,
-              }
-
-              return {
-                ...prev,
-                errorMap,
-                errorSourceMap: {
-                  ...prev.errorSourceMap,
-                  [errorMapKey]: newSource,
-                },
-              }
-            })
+              },
+              errorSourceMap: {
+                ...prev.errorSourceMap,
+                [errorMapKey]: newSource,
+              },
+            }))
           }
         }
 
@@ -1599,21 +1595,17 @@ export class FormApi<
               // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
               currentErrorMap?.[errorMapKey] !== newErrorValue
             ) {
-              this.setFieldMeta(field, (prev) => {
-                const errorMap = {
+              this.setFieldMeta(field, (prev) => ({
+                ...prev,
+                errorMap: {
                   ...prev.errorMap,
                   [errorMapKey]: newErrorValue,
-                }
-
-                return {
-                  ...prev,
-                  errorMap,
-                  errorSourceMap: {
-                    ...prev.errorSourceMap,
-                    [errorMapKey]: newSource,
-                  },
-                }
-              })
+                },
+                errorSourceMap: {
+                  ...prev.errorSourceMap,
+                  [errorMapKey]: newSource,
+                },
+              }))
             }
           }
 
@@ -1896,20 +1888,16 @@ export class FormApi<
 
     batch(() => {
       if (!dontUpdateMeta) {
-        this.setFieldMeta(field, (prev) => {
-          const errorMap = {
+        this.setFieldMeta(field, (prev) => ({
+          ...prev,
+          isTouched: true,
+          isDirty: true,
+          errorMap: {
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             ...prev?.errorMap,
             onMount: undefined,
-          }
-
-          return {
-            ...prev,
-            isTouched: true,
-            isDirty: true,
-            errorMap,
-          }
-        })
+          },
+        }))
       }
 
       this.baseStore.setState((prev) => {
