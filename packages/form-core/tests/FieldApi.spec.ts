@@ -587,7 +587,7 @@ describe('field api', () => {
 
     field.moveValue(2, 0)
 
-    expect(field.state.value).toStrictEqual(['three', 'one', 'two', 'four'])
+    expect(field.getValue()).toStrictEqual(['three', 'one', 'two', 'four'])
   })
 
   it('should run onChange validation when moving an array fields value', () => {
