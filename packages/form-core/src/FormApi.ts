@@ -888,21 +888,17 @@ export class FormApi<
         for (const fieldName of Object.keys(
           currBaseStore.fieldMetaBase,
         ) as Array<keyof typeof currBaseStore.fieldMetaBase>) {
-          // an object representing the current fieldMeta
           const currBaseMeta = currBaseStore.fieldMetaBase[
             fieldName as never
           ] as AnyFieldMetaBase
 
-          // an object representing the previous fieldMeta
           const prevBaseMeta = prevBaseStore?.fieldMetaBase[
             fieldName as never
           ] as AnyFieldMetaBase | undefined
 
-          // an object representing the current fieldInfo
           const prevFieldInfo =
             prevVal?.[fieldName as never as keyof typeof prevVal]
 
-          // current field value
           const curFieldVal = currBaseStore.values[fieldName as never]
 
           let fieldErrors = prevFieldInfo?.errors

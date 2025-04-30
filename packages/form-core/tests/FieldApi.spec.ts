@@ -69,7 +69,7 @@ describe('field api', () => {
   })
 
   it('should allow to set default meta', () => {
-    const form = new FormApi({ defaultValues: { name: '' } })
+    const form = new FormApi()
 
     form.mount()
 
@@ -90,6 +90,7 @@ describe('field api', () => {
       isBlurred: true,
       isDirty: true,
 
+      // derived meta data
       isValid: true,
       isValidating: false,
       errors: [],
