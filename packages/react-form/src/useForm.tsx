@@ -6,12 +6,13 @@ import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
   AnyFormApi,
   AnyFormState,
+  BaseFormOptions,
   FormAsyncValidateOrFn,
   FormOptions,
   FormState,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { PropsWithChildren, ReactNode } from 'react'
+import type { ComponentType, JSX, PropsWithChildren, ReactNode } from 'react'
 import type { FieldComponent } from './useField'
 import type { NoInfer } from '@tanstack/react-store'
 
@@ -219,4 +220,79 @@ export function useForm<
   })
 
   return formApi
+}
+
+export interface FormGroupProps<
+  TSubsetData,
+  TSubmitMeta = never,
+  TRenderProps extends Record<string, unknown> = Record<string, never>,
+> extends BaseFormOptions<TSubsetData, TSubmitMeta> {
+  // Optional, but adds props to the `render` function outside of `form`
+  props?: TRenderProps
+  render: <
+    TFormData extends TSubsetData,
+    TOnMount extends undefined | FormValidateOrFn<TFormData>,
+    TOnChange extends undefined | FormValidateOrFn<TFormData>,
+    TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+    TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+    TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  >(
+    props: PropsWithChildren<
+      NoInfer<TRenderProps> & {
+        form: ReactFormExtendedApi<
+          TFormData,
+          TOnMount,
+          TOnChange,
+          TOnChangeAsync,
+          TOnBlur,
+          TOnBlurAsync,
+          TOnSubmit,
+          TOnSubmitAsync,
+          TOnServer,
+          TSubmitMeta
+        >
+      }
+    >,
+  ) => JSX.Element
+}
+
+export function createFormGroup<
+  TSubsetData,
+  TSubmitMeta,
+  TRenderProps extends Record<string, unknown> = {},
+>({
+  render,
+  props,
+}: FormGroupProps<TSubsetData, TSubmitMeta, TRenderProps>): <
+  TFormData extends TSubsetData,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+>(
+  params: PropsWithChildren<
+    NoInfer<TRenderProps> & {
+      form: ReactFormExtendedApi<
+        TFormData,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TOnServer,
+        TSubmitMeta
+      >
+    }
+  >,
+) => JSX.Element {
+  return (innerProps) => render({ ...props, ...innerProps })
 }
