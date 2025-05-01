@@ -5,7 +5,6 @@ import type {
   AnyFormApi,
   BaseFormOptions,
   FieldApi,
-  FormApi,
   FormAsyncValidateOrFn,
   FormOptions,
   FormValidateOrFn,
@@ -221,7 +220,7 @@ export interface WithFormProps<
   ) => JSX.Element
 }
 
-export interface FormGroupProps<
+export interface CreateFormGroupProps<
   TSubsetData,
   TFieldComponents extends Record<string, ComponentType<any>>,
   TFormComponents extends Record<string, ComponentType<any>>,
@@ -356,8 +355,6 @@ export function createFormHook<
     return extendedForm
   }
 
-  type UnknownOrMeta<T, K> = unknown extends T ? K : T
-
   function withForm<
     TFormData,
     TOnMount extends undefined | FormValidateOrFn<TFormData>,
@@ -412,7 +409,7 @@ export function createFormHook<
   >({
     render,
     props,
-  }: FormGroupProps<
+  }: CreateFormGroupProps<
     TSubsetData,
     TComponents,
     TFormComponents,

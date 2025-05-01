@@ -10,5 +10,5 @@ export { useField, Field } from './useField'
 
 export { useTransform } from './useTransform'
 
-export type { WithFormProps } from './createFormHook'
+export type { WithFormProps, CreateFormGroupProps } from './createFormHook'
 export { createFormHook, createFormHookContexts } from './createFormHook'
