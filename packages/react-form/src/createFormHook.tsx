@@ -231,20 +231,19 @@ export interface FormGroupProps<
   // Optional, but adds props to the `render` function outside of `form`
   props?: TRenderProps
   render: <
-    TFormData extends TSubsetData,
-    TOnMount extends undefined | FormValidateOrFn<TFormData>,
-    TOnChange extends undefined | FormValidateOrFn<TFormData>,
-    TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-    TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-    TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-    TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-    TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-    TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnMount extends undefined | FormValidateOrFn<TSubsetData>,
+    TOnChange extends undefined | FormValidateOrFn<TSubsetData>,
+    TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TSubsetData>,
+    TOnBlur extends undefined | FormValidateOrFn<TSubsetData>,
+    TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TSubsetData>,
+    TOnSubmit extends undefined | FormValidateOrFn<TSubsetData>,
+    TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TSubsetData>,
+    TOnServer extends undefined | FormAsyncValidateOrFn<TSubsetData>,
   >(
     props: PropsWithChildren<
       NoInfer<TRenderProps> & {
         form: AppFieldExtendedReactFormApi<
-          TFormData,
+          TSubsetData,
           TOnMount,
           TOnChange,
           TOnChangeAsync,
@@ -357,6 +356,8 @@ export function createFormHook<
     return extendedForm
   }
 
+  type UnknownOrMeta<T, K> = unknown extends T ? K : T
+
   function withForm<
     TFormData,
     TOnMount extends undefined | FormValidateOrFn<TFormData>,
@@ -427,6 +428,7 @@ export function createFormHook<
     TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
     TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
     TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TFormSubmitMeta,
   >(
     params: PropsWithChildren<
       NoInfer<TRenderProps> & {
@@ -440,14 +442,14 @@ export function createFormHook<
           TOnSubmit,
           TOnSubmitAsync,
           TOnServer,
-          TSubmitMeta,
+          unknown extends TSubmitMeta ? TFormSubmitMeta : TSubmitMeta,
           TComponents,
           TFormComponents
         >
       }
     >,
   ) => JSX.Element {
-    return (innerProps) => render({ ...props, ...innerProps })
+    return (innerProps) => render({ ...props, ...innerProps } as any)
   }
 
   return {
