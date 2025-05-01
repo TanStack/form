@@ -3,6 +3,7 @@ import { useForm } from './useForm'
 import type {
   AnyFieldApi,
   AnyFormApi,
+  BaseFormOptions,
   FieldApi,
   FormApi,
   FormAsyncValidateOrFn,
@@ -220,6 +221,47 @@ export interface WithFormProps<
   ) => JSX.Element
 }
 
+export interface FormGroupProps<
+  TSubsetData,
+  TFieldComponents extends Record<string, ComponentType<any>>,
+  TFormComponents extends Record<string, ComponentType<any>>,
+  TSubmitMeta = never,
+  TRenderProps extends Record<string, unknown> = Record<string, never>,
+> extends BaseFormOptions<TSubsetData, TSubmitMeta> {
+  // Optional, but adds props to the `render` function outside of `form`
+  props?: TRenderProps
+  render: <
+    TFormData extends TSubsetData,
+    TOnMount extends undefined | FormValidateOrFn<TFormData>,
+    TOnChange extends undefined | FormValidateOrFn<TFormData>,
+    TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+    TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+    TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  >(
+    props: PropsWithChildren<
+      NoInfer<TRenderProps> & {
+        form: AppFieldExtendedReactFormApi<
+          TFormData,
+          TOnMount,
+          TOnChange,
+          TOnChangeAsync,
+          TOnBlur,
+          TOnBlurAsync,
+          TOnSubmit,
+          TOnSubmitAsync,
+          TOnServer,
+          TSubmitMeta,
+          TFieldComponents,
+          TFormComponents
+        >
+      }
+    >,
+  ) => JSX.Element
+}
+
 export function createFormHook<
   const TComponents extends Record<string, ComponentType<any>>,
   const TFormComponents extends Record<string, ComponentType<any>>,
@@ -362,8 +404,55 @@ export function createFormHook<
     return (innerProps) => render({ ...props, ...innerProps })
   }
 
+  function createFormGroup<
+    TSubsetData,
+    TSubmitMeta,
+    TRenderProps extends Record<string, unknown> = {},
+  >({
+    render,
+    props,
+  }: FormGroupProps<
+    TSubsetData,
+    TComponents,
+    TFormComponents,
+    TSubmitMeta,
+    TRenderProps
+  >): <
+    TFormData extends TSubsetData,
+    TOnMount extends undefined | FormValidateOrFn<TFormData>,
+    TOnChange extends undefined | FormValidateOrFn<TFormData>,
+    TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+    TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+    TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  >(
+    params: PropsWithChildren<
+      NoInfer<TRenderProps> & {
+        form: AppFieldExtendedReactFormApi<
+          TFormData,
+          TOnMount,
+          TOnChange,
+          TOnChangeAsync,
+          TOnBlur,
+          TOnBlurAsync,
+          TOnSubmit,
+          TOnSubmitAsync,
+          TOnServer,
+          TSubmitMeta,
+          TComponents,
+          TFormComponents
+        >
+      }
+    >,
+  ) => JSX.Element {
+    return (innerProps) => render({ ...props, ...innerProps })
+  }
+
   return {
     useAppForm,
     withForm,
+    createFormGroup,
   }
 }
