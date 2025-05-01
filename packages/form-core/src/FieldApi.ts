@@ -652,6 +652,10 @@ export type FieldMetaDerived<
    * A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
    */
   isPristine: boolean
+  /**
+   * A boolean indicating if the field is valid. Evaluates `true` if there are no field errors.
+   */
+  isValid: boolean
 }
 
 export type AnyFieldMetaDerived = FieldMetaDerived<

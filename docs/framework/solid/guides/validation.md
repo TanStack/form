@@ -33,7 +33,7 @@ Here is an example:
         type="number"
         onInput={(e) => field().handleChange(e.target.valueAsNumber)}
       />
-      {field().state.meta.errors ? (
+      {!field().state.meta.isValid ? (
         <em role="alert">{field().state.meta.errors.join(', ')}</em>
       ) : null}
     </>
@@ -64,7 +64,7 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
         // We always need to implement onInput, so that TanStack Form receives the changes
         onInput={(e) => field().handleChange(e.target.valueAsNumber)}
       />
-      {field().state.meta.errors ? (
+      {!field().state.meta.isValid ? (
         <em role="alert">{field().state.meta.errors.join(', ')}</em>
       ) : null}
     </>
@@ -96,7 +96,7 @@ So you can control when the validation is done by implementing the desired callb
         // We always need to implement onInput, so that TanStack Form receives the changes
         onInput={(e) => field().handleChange(e.target.valueAsNumber)}
       />
-      {field().state.meta.errors ? (
+      {!field().state.meta.isValid ? (
         <em role="alert">{field().state.meta.errors.join(', ')}</em>
       ) : null}
     </>
@@ -122,7 +122,7 @@ Once you have your validation in place, you can map the errors from an array to 
     return (
       <>
         {/* ... */}
-        {field().state.meta.errors.length ? (
+        {!field().state.meta.isValid ? (
           <em>{field().state.meta.errors.join(',')}</em>
         ) : null}
       </>
@@ -364,7 +364,7 @@ To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods 
         type="number"
         onInput={(e) => field().handleChange(e.target.valueAsNumber)}
       />
-      {field().state.meta.errors ? (
+      {!field().state.meta.isValid ? (
         <em role="alert">{field().state.meta.errors.join(', ')}</em>
       ) : null}
     </>

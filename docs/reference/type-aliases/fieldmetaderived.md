@@ -73,3 +73,11 @@ isPristine: boolean;
 ```
 
 A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
+
+### isValid
+
+```ts
+isValid: boolean;
+```
+
+A boolean indicating if the field is valid. Evaluates `true` if there are no field errors.

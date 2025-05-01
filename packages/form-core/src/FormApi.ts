@@ -612,7 +612,7 @@ export type DerivedFormState<
    */
   isFieldsValidating: boolean
   /**
-   * A boolean indicating if all the form fields are valid.
+   * A boolean indicating if all the form fields are valid. Evaluates `true` if there are no field errors.
    */
   isFieldsValid: boolean
   /**
@@ -624,15 +624,15 @@ export type DerivedFormState<
    */
   isBlurred: boolean
   /**
-   * A boolean indicating if any of the form's fields' values have been modified by the user. `True` if the user have modified at least one of the fields. Opposite of `isPristine`.
+   * A boolean indicating if any of the form's fields' values have been modified by the user. Evaluates `true` if the user have modified at least one of the fields. Opposite of `isPristine`.
    */
   isDirty: boolean
   /**
-   * A boolean indicating if none of the form's fields' values have been modified by the user. `True` if the user have not modified any of the fields. Opposite of `isDirty`.
+   * A boolean indicating if none of the form's fields' values have been modified by the user. Evaluates `true` if the user have not modified any of the fields. Opposite of `isDirty`.
    */
   isPristine: boolean
   /**
-   * A boolean indicating if the form and all its fields are valid.
+   * A boolean indicating if the form and all its fields are valid. Evaluates `true` if there are no errors.
    */
   isValid: boolean
   /**
@@ -916,12 +916,14 @@ export class FormApi<
             }
           }
 
-          // As a primitive, we don't need to aggressively persist the same referential value for performance reasons
+          // As primitives, we don't need to aggressively persist the same referential value for performance reasons
           const isFieldPristine = !currBaseVal.isDirty
+          const isFieldValid = !isNonEmptyArray(fieldErrors ?? [])
 
           if (
             prevFieldInfo &&
             prevFieldInfo.isPristine === isFieldPristine &&
+            prevFieldInfo.isValid === isFieldValid &&
             prevFieldInfo.errors === fieldErrors &&
             currBaseVal === prevBaseVal
           ) {
@@ -934,6 +936,7 @@ export class FormApi<
             ...currBaseVal,
             errors: fieldErrors,
             isPristine: isFieldPristine,
+            isValid: isFieldValid,
           } as AnyFieldMeta
         }
 
@@ -968,31 +971,27 @@ export class FormApi<
           | undefined
         const prevBaseStore = prevDepVals?.[0]
         const currBaseStore = currDepVals[0]
+        const currFieldMeta = currDepVals[1]
 
         // Computed state
-        const fieldMetaValues = Object.values(currBaseStore.fieldMetaBase) as (
-          | AnyFieldMeta
-          | undefined
-        )[]
+        const fieldMetaValues = Object.values(currFieldMeta).filter(
+          Boolean,
+        ) as AnyFieldMeta[]
 
         const isFieldsValidating = fieldMetaValues.some(
-          (field) => field?.isValidating,
+          (field) => field.isValidating,
         )
 
-        const isFieldsValid = !fieldMetaValues.some(
-          (field) =>
-            field?.errorMap &&
-            isNonEmptyArray(Object.values(field.errorMap).filter(Boolean)),
-        )
+        const isFieldsValid = fieldMetaValues.every((field) => field.isValid)
 
-        const isTouched = fieldMetaValues.some((field) => field?.isTouched)
-        const isBlurred = fieldMetaValues.some((field) => field?.isBlurred)
+        const isTouched = fieldMetaValues.some((field) => field.isTouched)
+        const isBlurred = fieldMetaValues.some((field) => field.isBlurred)
 
         const shouldInvalidateOnMount =
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          isTouched && currBaseStore?.errorMap?.onMount
+          isTouched && currBaseStore.errorMap?.onMount
 
-        const isDirty = fieldMetaValues.some((field) => field?.isDirty)
+        const isDirty = fieldMetaValues.some((field) => field.isDirty)
         const isPristine = !isDirty
 
         const hasOnMountError = Boolean(

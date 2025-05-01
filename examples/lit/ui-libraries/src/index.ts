@@ -73,7 +73,7 @@ export class TanStackFormDemo extends LitElement {
                             }}"
                             .error="${!!(
                               field.state.meta.isTouched &&
-                              field.state.meta.errors.length
+                              !field.state.meta.isValid
                             )}"
                             .errorText="${field.state.meta.errors.join(', ')}"
                           ></md-filled-text-field>
@@ -96,7 +96,7 @@ export class TanStackFormDemo extends LitElement {
                             }}"
                             .error="${!!(
                               lastNameField.state.meta.isTouched &&
-                              lastNameField.state.meta.errors.length
+                              !lastNameField.state.meta.isValid
                             )}"
                             .errorText="${lastNameField.state.meta.errors.join(
                               ', ',
@@ -147,8 +147,8 @@ export class TanStackFormDemo extends LitElement {
                                           e.target as HTMLInputElement
                                         jobTitleField.handleChange(target.value)
                                       }}"
-                                      .error="${!!jobTitleField.state.meta
-                                        .errors.length}"
+                                      .error="${!jobTitleField.state.meta
+                                        .isValid}"
                                       .errorText="${jobTitleField.state.meta.errors.join(
                                         ', ',
                                       )}"
