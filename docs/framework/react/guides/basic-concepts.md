@@ -98,7 +98,7 @@ There are three states in the metadata that can be useful to see how the user in
 - _"pristine"_, until the user changes the field value
 - _"dirty"_, after the fields value has been changed
 
-You can check these states via the `isTouched`, `isPristine` and `isDirty` flags, as seen below.
+You can check these states via the `isTouched`, `isPristine`, and `isDirty` flags, as seen below.
 
 ```tsx
 const { isTouched, isPristine, isDirty } = field.state.meta
@@ -118,12 +118,12 @@ Persistent `dirty` state
 - **Libraries**: Angular Form, Vue FormKit.
 - **Behavior**: A field remains 'dirty' once changed, even if reverted to the default value.
 
-We have chosen the persistent 'dirty' state model. To also support a non-persistent 'dirty' state, we introduce the isDefault field. This field acts as an inverse of the non-persistent 'dirty' state.
+We have chosen the persistent 'dirty' state model. To also support a non-persistent 'dirty' state, we introduce the isDefault flag. This flag acts as an inverse of the non-persistent 'dirty' state.
 
 ```tsx
 const { isTouched, isPristine, isDirty, isDefaultValue } = field.state.meta
 
-//The following line will re-create the non-Persistent `dirty` functionality.
+// The following line will re-create the non-Persistent `dirty` functionality.
 const nonPersistentIsDirty = !isDefaultValue
 ```
 
