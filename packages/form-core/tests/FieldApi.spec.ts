@@ -100,29 +100,74 @@ describe('field api', () => {
   })
 
   it('should update the fields meta isDefaultValue', () => {
-    const form = new FormApi({
+    // primitives
+    const primitiveMetaForm = new FormApi({
       defaultValues: {
         name: 'test',
       },
     })
-    form.mount()
+    primitiveMetaForm.mount()
 
-    const field = new FieldApi({
-      form,
+    const primitiveField = new FieldApi({
+      form: primitiveMetaForm,
       name: 'name',
     })
 
-    field.mount()
-    expect(field.getMeta().isDefaultValue).toBe(true)
+    primitiveField.mount()
+    expect(primitiveField.getMeta().isDefaultValue).toBe(true)
 
-    field.setValue('not-test')
-    expect(field.getMeta().isDefaultValue).toBe(false)
+    primitiveField.setValue('not-test')
+    expect(primitiveField.getMeta().isDefaultValue).toBe(false)
 
-    field.setValue('test')
-    expect(field.getMeta().isDefaultValue).toBe(true)
+    primitiveField.setValue('test')
+    expect(primitiveField.getMeta().isDefaultValue).toBe(true)
 
-    form.resetField('name')
-    expect(field.getMeta().isDefaultValue).toBe(true)
+    primitiveMetaForm.resetField('name')
+    expect(primitiveField.getMeta().isDefaultValue).toBe(true)
+
+    // arrays
+    const arrayMetaForm = new FormApi({
+      defaultValues: {
+        arr: ['', ''],
+      },
+    })
+    arrayMetaForm.mount()
+
+    const arrayField = new FieldApi({
+      form: arrayMetaForm,
+      name: 'arr',
+    })
+
+    arrayField.mount()
+    expect(arrayField.getMeta().isDefaultValue).toBe(true)
+
+    arrayField.setValue(['hello', 'goodbye'])
+    expect(arrayField.getMeta().isDefaultValue).toBe(false)
+
+    arrayField.setValue(['', ''])
+    expect(arrayField.getMeta().isDefaultValue).toBe(true)
+
+    // objects
+    const objectMetaForm = new FormApi({
+      defaultValues: {
+        obj: { firstName: 'John', lastName: 'Wick' },
+      },
+    })
+    objectMetaForm.mount()
+
+    const objectField = new FieldApi({
+      form: objectMetaForm,
+      name: 'obj',
+    })
+
+    objectField.mount()
+    expect(objectField.getMeta().isDefaultValue).toBe(true)
+
+    objectField.setValue({ firstName: 'John', lastName: 'Travolta' })
+    expect(objectField.getMeta().isDefaultValue).toBe(false)
+
+    objectField.setValue({ firstName: 'John', lastName: 'Wick' })
+    expect(objectField.getMeta().isDefaultValue).toBe(true)
   })
 
   it('should set a value correctly', () => {

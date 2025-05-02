@@ -1,5 +1,6 @@
 import { Derived, Store, batch } from '@tanstack/store'
 import {
+  deepEqual,
   deleteBy,
   determineFormLevelErrorSourceAndValue,
   functionalUpdate,
@@ -924,9 +925,10 @@ export class FormApi<
           // As primitives, we don't need to aggressively persist the same referential value for performance reasons
           const isFieldValid = !isNonEmptyArray(fieldErrors ?? [])
           const isFieldPristine = !currBaseMeta.isDirty
-          const isDefaultValue =
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            curFieldVal === this.options.defaultValues?.[fieldName as never]
+          const isDefaultValue = deepEqual(
+            curFieldVal,
+            this.options.defaultValues?.[fieldName as never],
+          )
 
           if (
             prevFieldInfo &&

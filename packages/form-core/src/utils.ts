@@ -443,3 +443,37 @@ export const determineFieldLevelErrorSourceAndValue = ({
 
   return { newErrorValue: undefined, newSource: undefined }
 }
+
+export const deepEqual = <T>(a: T, b: T): boolean => {
+  // returns primitive equality
+  if (a === b) {
+    return true
+  }
+
+  // checks that props are object and not null
+  if (
+    typeof a !== 'object' ||
+    a === null ||
+    typeof b !== 'object' ||
+    b === null
+  ) {
+    return false
+  }
+
+  // arrays are treated as objects with numeric keys
+  const keysA = Object.keys(a)
+  const keysB = Object.keys(b)
+
+  if (keysA.length !== keysB.length) {
+    return false
+  }
+
+  // recursively calls deepEqual down the object chain
+  for (const key of keysA) {
+    if (!keysB.includes(key) || !deepEqual((a as any)[key], (b as any)[key])) {
+      return false
+    }
+  }
+
+  return true
+}

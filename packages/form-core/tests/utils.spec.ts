@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  deepEqual,
   deleteBy,
   determineFieldLevelErrorSourceAndValue,
   determineFormLevelErrorSourceAndValue,
@@ -490,5 +491,55 @@ describe('determineFieldLevelErrorSourceAndValue', () => {
         newSource: 'field',
       })
     })
+  })
+})
+
+describe('deepEqual', () => {
+  it('should test equality between primitives', () => {
+    const numbersTrue = deepEqual(1, 1)
+    expect(numbersTrue).toEqual(true)
+
+    const stringFalse = deepEqual('uh oh', '')
+    expect(stringFalse).toEqual(false)
+
+    const boolTrue = deepEqual(true, true)
+    expect(boolTrue).toEqual(true)
+
+    const nullFalse = deepEqual(null, {})
+    expect(nullFalse).toEqual(false)
+
+    const undefinedFalse = deepEqual(undefined, null)
+    expect(undefinedFalse).toEqual(false)
+  })
+
+  it('should test equality between arrays', () => {
+    const arrayTrue = deepEqual([], [])
+    expect(arrayTrue).toEqual(true)
+
+    const arrayDeepTrue = deepEqual([[1]], [[1]])
+    expect(arrayDeepTrue).toEqual(true)
+
+    const arrayFalse = deepEqual([], [''])
+    expect(arrayFalse).toEqual(false)
+
+    const arrayDeepFalse = deepEqual([[1]], [])
+    expect(arrayDeepFalse).toEqual(false)
+  })
+
+  it('should test equality between objects', () => {
+    const objTrue = deepEqual({ test: 'same' }, { test: 'same' })
+    expect(objTrue).toEqual(true)
+
+    const objFalse = deepEqual({ test: 'not' }, { test: 'same' })
+    expect(objFalse).toEqual(false)
+
+    const objDeepFalse = deepEqual({ test: 'not' }, { test: { test: 'same' } })
+    expect(objDeepFalse).toEqual(false)
+
+    const objDeepArrFalse = deepEqual({ test: [] }, { test: [[]] })
+    expect(objDeepArrFalse).toEqual(false)
+
+    const objNullFalse = deepEqual({ test: '' }, null)
+    expect(objNullFalse).toEqual(false)
   })
 })
