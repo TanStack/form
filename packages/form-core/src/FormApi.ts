@@ -862,7 +862,6 @@ export class FormApi<
       }),
     )
 
-    // creates a tanstack store derived record of the fields derivedMeta that lazily updates
     this.fieldMetaDerived = new Derived({
       deps: [this.baseStore],
       fn: ({ prevDepVals, currDepVals, prevVal: _prevVal }) => {
