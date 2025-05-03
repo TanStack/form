@@ -81,7 +81,7 @@ A boolean indicating if any of the form fields have been blurred.
 isDirty: boolean;
 ```
 
-A boolean indicating if any of the form's fields' values have been modified by the user. `True` if the user have modified at least one of the fields. Opposite of `isPristine`.
+A boolean indicating if any of the form's fields' values have been modified by the user. Evaluates `true` if the user have modified at least one of the fields. Opposite of `isPristine`.
 
 ### isFieldsValid
 
@@ -89,7 +89,7 @@ A boolean indicating if any of the form's fields' values have been modified by t
 isFieldsValid: boolean;
 ```
 
-A boolean indicating if all the form fields are valid.
+A boolean indicating if all the form fields are valid. Evaluates `true` if there are no field errors.
 
 ### isFieldsValidating
 
@@ -121,7 +121,7 @@ A boolean indicating if the form is currently validating.
 isPristine: boolean;
 ```
 
-A boolean indicating if none of the form's fields' values have been modified by the user. `True` if the user have not modified any of the fields. Opposite of `isDirty`.
+A boolean indicating if none of the form's fields' values have been modified by the user. Evaluates `true` if the user have not modified any of the fields. Opposite of `isDirty`.
 
 ### isTouched
 
@@ -137,4 +137,4 @@ A boolean indicating if any of the form fields have been touched.
 isValid: boolean;
 ```
 
-A boolean indicating if the form and all its fields are valid.
+A boolean indicating if the form and all its fields are valid. Evaluates `true` if there are no errors.

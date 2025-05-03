@@ -14,6 +14,7 @@ export const defaultFieldMeta: AnyFieldMeta = {
   isBlurred: false,
   isDirty: false,
   isPristine: true,
+  isValid: true,
   errors: [],
   errorMap: {},
   errorSourceMap: {},
