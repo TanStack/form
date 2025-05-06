@@ -357,7 +357,7 @@ parseValueWithSchema(schema):
   | StandardSchemaV1Issue[]
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1692](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1692)
+Defined in: [packages/form-core/src/FieldApi.ts:1699](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1699)
 
 Parses the field's value with the given schema and returns
 issues (if any). This method does NOT set any internal errors.
@@ -385,7 +385,7 @@ parseValueWithSchemaAsync(schema): Promise<
 | StandardSchemaV1Issue[]>
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1704](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1704)
+Defined in: [packages/form-core/src/FieldApi.ts:1711](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1711)
 
 Parses the field's value with the given schema and returns
 issues (if any). This method does NOT set any internal errors.
@@ -505,7 +505,7 @@ Updates the field's errorMap
 
 ##### errorMap
 
-`ValidationErrorMap`
+`ValidationErrorMap`\<[`UnwrapFieldValidateOrFn`](../type-aliases/unwrapfieldvalidateorfn.md)\<`TName`, `TOnMount`, `TFormOnMount`\>, [`UnwrapFieldValidateOrFn`](../type-aliases/unwrapfieldvalidateorfn.md)\<`TName`, `TOnChange`, `TFormOnChange`\>, [`UnwrapFieldAsyncValidateOrFn`](../type-aliases/unwrapfieldasyncvalidateorfn.md)\<`TName`, `TOnChangeAsync`, `TFormOnChangeAsync`\>, [`UnwrapFieldValidateOrFn`](../type-aliases/unwrapfieldvalidateorfn.md)\<`TName`, `TOnBlur`, `TFormOnBlur`\>, [`UnwrapFieldAsyncValidateOrFn`](../type-aliases/unwrapfieldasyncvalidateorfn.md)\<`TName`, `TOnBlurAsync`, `TFormOnBlurAsync`\>, [`UnwrapFieldValidateOrFn`](../type-aliases/unwrapfieldvalidateorfn.md)\<`TName`, `TOnSubmit`, `TFormOnSubmit`\>, [`UnwrapFieldAsyncValidateOrFn`](../type-aliases/unwrapfieldasyncvalidateorfn.md)\<`TName`, `TOnSubmitAsync`, `TFormOnSubmitAsync`\>\>
 
 #### Returns
 
@@ -527,7 +527,7 @@ Sets the field metadata.
 
 ##### updater
 
-[`Updater`](../type-aliases/updater.md)\<[`FieldMeta`](../type-aliases/fieldmeta.md)\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`\>\>
+[`Updater`](../type-aliases/updater.md)\<[`FieldMetaBase`](../type-aliases/fieldmetabase.md)\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`\>\>
 
 #### Returns
 
