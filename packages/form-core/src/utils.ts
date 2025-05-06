@@ -1,11 +1,11 @@
+import type { FieldValidators } from './FieldApi'
+import type { FormValidators } from './FormApi'
 import type {
   GlobalFormValidationError,
   ValidationCause,
   ValidationError,
   ValidationSource,
 } from './types'
-import type { FormValidators } from './FormApi'
-import type { AnyFieldMeta, FieldValidators } from './FieldApi'
 
 export type UpdaterFn<TInput, TOutput = TInput> = (input: TInput) => TOutput
 
