@@ -736,7 +736,7 @@ describe('form api', () => {
     field2.mount()
 
     field1.handleBlur()
-    field1.setErrorMap({ onSubmit: 'test' })
+    field1.setErrorMap({ onSubmit: 'test' as never })
 
     expect(field0.state.meta.isBlurred).toBe(false)
     expect(field1.state.meta.isBlurred).toBe(true)
