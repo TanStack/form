@@ -1844,7 +1844,7 @@ export class FormApi<
    */
   setFieldMeta = <TField extends DeepKeys<TFormData>>(
     field: TField,
-    updater: Updater<AnyFieldMeta>,
+    updater: Updater<AnyFieldMetaBase>,
   ) => {
     this.baseStore.setState((prev) => {
       return {

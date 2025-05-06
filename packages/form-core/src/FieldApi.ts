@@ -1217,7 +1217,7 @@ export class FieldApi<
    */
   setMeta = (
     updater: Updater<
-      FieldMeta<
+      FieldMetaBase<
         TParentData,
         TName,
         TData,
