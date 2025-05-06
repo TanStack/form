@@ -1671,17 +1671,24 @@ export class FieldApi<
   /**
    * Updates the field's errorMap
    */
-  setErrorMap(errorMap: ValidationErrorMap) {
-    this.setMeta(
-      (prev) =>
-        ({
-          ...prev,
-          errorMap: {
-            ...prev.errorMap,
-            ...errorMap,
-          },
-        }) as never,
-    )
+  setErrorMap(
+    errorMap: ValidationErrorMap<
+      UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>,
+      UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>,
+      UnwrapFieldAsyncValidateOrFn<TName, TOnChangeAsync, TFormOnChangeAsync>,
+      UnwrapFieldValidateOrFn<TName, TOnBlur, TFormOnBlur>,
+      UnwrapFieldAsyncValidateOrFn<TName, TOnBlurAsync, TFormOnBlurAsync>,
+      UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>,
+      UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>
+    >,
+  ) {
+    this.setMeta((prev) => ({
+      ...prev,
+      errorMap: {
+        ...prev.errorMap,
+        ...errorMap,
+      },
+    }))
   }
 
   /**

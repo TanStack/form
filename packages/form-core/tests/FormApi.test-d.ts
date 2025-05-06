@@ -116,3 +116,46 @@ it('should only have form-level error types returned from parseFieldValuesWithSc
     Promise<FormLevelStandardSchemaIssue | undefined>
   >()
 })
+
+it("should allow setting manual errors according to the validator's return type", () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+    },
+    validators: {
+      onChange: () => ['onChange'] as const,
+      onMount: () => 10 as const,
+      onBlur: () => ({ onBlur: true as const, onBlurNumber: 1 }),
+      onSubmit: () => 'onSubmit' as const,
+      onBlurAsync: () => Promise.resolve('onBlurAsync' as const),
+      onChangeAsync: () => Promise.resolve('onChangeAsync' as const),
+      onSubmitAsync: () => Promise.resolve('onSubmitAsync' as const),
+    },
+  })
+
+  expectTypeOf(form.setErrorMap).parameter(0).toEqualTypeOf<{
+    onMount: 10 | undefined
+    onChange: readonly ['onChange'] | 'onChangeAsync' | undefined
+    onBlur: { onBlur: true; onBlurNumber: number } | 'onBlurAsync' | undefined
+    onSubmit: 'onSubmit' | 'onSubmitAsync' | undefined
+    onServer: undefined
+  }>
+})
+
+it('should not allow setting manual errors if no validator is specified', () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+    },
+  })
+
+  expectTypeOf(form.setErrorMap).parameter(0).toEqualTypeOf<{
+    onMount: undefined
+    onChange: undefined
+    onBlur: undefined
+    onSubmit: undefined
+    onServer: undefined
+  }>
+})

@@ -1785,9 +1785,7 @@ describe('field api', () => {
       name: 'name',
     })
     nameField.mount()
-    nameField.setErrorMap({
-      onChange: "name can't be Josh",
-    })
+    nameField.setErrorMap({ onChange: "name can't be Josh" as never })
     expect(nameField.getMeta().isValid).toBe(false)
     expect(nameField.getMeta().errorMap.onChange).toEqual("name can't be Josh")
   })
@@ -1802,14 +1800,10 @@ describe('field api', () => {
       name: 'name',
     })
     nameField.mount()
-    nameField.setErrorMap({
-      onChange: "name can't be Josh",
-    })
+    nameField.setErrorMap({ onChange: "name can't be Josh" as never })
     expect(nameField.getMeta().isValid).toBe(false)
     expect(nameField.getMeta().errorMap.onChange).toEqual("name can't be Josh")
-    nameField.setErrorMap({
-      onBlur: 'name must begin with uppercase',
-    })
+    nameField.setErrorMap({ onBlur: 'name must begin with uppercase' as never })
     expect(nameField.getMeta().isValid).toBe(false)
     expect(nameField.getMeta().errorMap.onChange).toEqual("name can't be Josh")
     expect(nameField.getMeta().errorMap.onBlur).toEqual(
@@ -1827,14 +1821,10 @@ describe('field api', () => {
       name: 'name',
     })
     nameField.mount()
-    nameField.setErrorMap({
-      onChange: "name can't be Josh",
-    })
+    nameField.setErrorMap({ onChange: "name can't be Josh" as never })
     expect(nameField.getMeta().isValid).toBe(false)
     expect(nameField.getMeta().errorMap.onChange).toEqual("name can't be Josh")
-    nameField.setErrorMap({
-      onChange: 'other validation error',
-    })
+    nameField.setErrorMap({ onChange: 'other validation error' as never })
     expect(nameField.getMeta().errorMap.onChange).toEqual(
       'other validation error',
     )
