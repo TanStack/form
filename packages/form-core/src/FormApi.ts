@@ -899,7 +899,7 @@ export class FormApi<
           const prevFieldInfo =
             prevVal?.[fieldName as never as keyof typeof prevVal]
 
-          const curFieldVal = currBaseStore.values[fieldName as never]
+          const curFieldVal = getBy(currBaseStore.values, fieldName)
 
           let fieldErrors = prevFieldInfo?.errors
           if (
@@ -926,7 +926,7 @@ export class FormApi<
           const isFieldPristine = !currBaseMeta.isDirty
           const isDefaultValue = deepEqual(
             curFieldVal,
-            this.options.defaultValues?.[fieldName as never],
+            getBy(this.options.defaultValues, fieldName),
           )
 
           if (
