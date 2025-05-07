@@ -927,13 +927,11 @@ export class FormApi<
             evaluate(
               curFieldVal,
               getBy(this.options.defaultValues, fieldName),
-              { deep: true },
             ) ||
             evaluate(
               curFieldVal,
               // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
               this.getFieldInfo(fieldName)?.instance?.options.defaultValue,
-              { deep: true },
             )
 
           if (

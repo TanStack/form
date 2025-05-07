@@ -336,9 +336,7 @@ export const isGlobalFormValidationError = (
   return !!error && typeof error === 'object' && 'fields' in error
 }
 
-export function evaluate<T>(objA: T, objB: T, opt?: { deep?: boolean }) {
-  const deepSearch = opt?.deep || false
-
+export function evaluate<T>(objA: T, objB: T) {
   if (Object.is(objA, objB)) {
     return true
   }
@@ -377,23 +375,12 @@ export function evaluate<T>(objA: T, objB: T, opt?: { deep?: boolean }) {
 
   for (const key of keysA) {
     // performs recursive search down the object tree
-    if (deepSearch) {
-      if (
-        !keysB.includes(key) ||
-        !evaluate(objA[key as keyof T], objB[key as keyof T], { deep: true })
-      ) {
-        return false
-      }
-    }
 
-    // shallow evaluation of object
-    if (!deepSearch) {
-      if (
-        !Object.prototype.hasOwnProperty.call(objB, key as string) ||
-        !Object.is(objA[key as keyof T], objB[key as keyof T])
-      ) {
-        return false
-      }
+    if (
+      !keysB.includes(key) ||
+      !evaluate(objA[key as keyof T], objB[key as keyof T])
+    ) {
+      return false
     }
   }
 

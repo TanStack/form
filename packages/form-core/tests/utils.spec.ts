@@ -516,10 +516,7 @@ describe('evaluate', () => {
     const arrayTrue = evaluate([], [])
     expect(arrayTrue).toEqual(true)
 
-    const arrayDeepSearchFalse = evaluate([[1]], [[1]])
-    expect(arrayDeepSearchFalse).toEqual(false)
-
-    const arrayDeepSearchTrue = evaluate([[1]], [[1]], { deep: true })
+    const arrayDeepSearchTrue = evaluate([[1]], [[1]])
     expect(arrayDeepSearchTrue).toEqual(true)
 
     const arrayFalse = evaluate([], [''])
@@ -528,15 +525,12 @@ describe('evaluate', () => {
     const arrayDeepFalse = evaluate([[1]], [])
     expect(arrayDeepFalse).toEqual(false)
 
-    const arrayComplexFalse = evaluate([[{ test: 'true' }], null], [[1], {}], {
-      deep: true,
-    })
+    const arrayComplexFalse = evaluate([[{ test: 'true' }], null], [[1], {}])
     expect(arrayComplexFalse).toEqual(false)
 
     const arrayComplexTrue = evaluate(
       [[{ test: 'true' }], null],
       [[{ test: 'true' }], null],
-      { deep: true },
     )
     expect(arrayComplexTrue).toEqual(true)
   })
@@ -560,14 +554,12 @@ describe('evaluate', () => {
     const objComplexFalse = evaluate(
       { test: { testTwo: '' }, arr: [[1]] },
       { test: { testTwo: false }, arr: [[1], [0]] },
-      { deep: true },
     )
     expect(objComplexFalse).toEqual(false)
 
     const objComplexTrue = evaluate(
       { test: { testTwo: '' }, arr: [[1]] },
       { test: { testTwo: '' }, arr: [[1]] },
-      { deep: true },
     )
     expect(objComplexTrue).toEqual(true)
   })
