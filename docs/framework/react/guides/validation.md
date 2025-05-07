@@ -33,9 +33,9 @@ Here is an example:
         type="number"
         onChange={(e) => field.handleChange(e.target.valueAsNumber)}
       />
-      {field.state.meta.errors ? (
+      {!field.state.meta.isValid && (
         <em role="alert">{field.state.meta.errors.join(', ')}</em>
-      ) : null}
+      )}
     </>
   )}
 </form.Field>
@@ -64,9 +64,9 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
         // We always need to implement onChange, so that TanStack Form receives the changes
         onChange={(e) => field.handleChange(e.target.valueAsNumber)}
       />
-      {field.state.meta.errors ? (
+      {!field.state.meta.isValid && (
         <em role="alert">{field.state.meta.errors.join(', ')}</em>
-      ) : null}
+      )}
     </>
   )}
 </form.Field>
@@ -96,9 +96,9 @@ So you can control when the validation is done by implementing the desired callb
         // We always need to implement onChange, so that TanStack Form receives the changes
         onChange={(e) => field.handleChange(e.target.valueAsNumber)}
       />
-      {field.state.meta.errors ? (
+      {!field.state.meta.isValid && (
         <em role="alert">{field.state.meta.errors.join(', ')}</em>
-      ) : null}
+      )}
     </>
   )}
 </form.Field>
@@ -122,9 +122,9 @@ Once you have your validation in place, you can map the errors from an array to 
     return (
       <>
         {/* ... */}
-        {field.state.meta.errors.length ? (
+        {!field.state.meta.isValid && (
           <em>{field.state.meta.errors.join(',')}</em>
-        ) : null}
+        )}
       </>
     )
   }}
@@ -227,16 +227,23 @@ export default function App() {
   const form = useForm({
     defaultValues: {
       age: 0,
+      socials: [],
+      details: {
+        email: '',
+      },
     },
     validators: {
       onSubmitAsync: async ({ value }) => {
-        // Verify the age on the server
-        const isOlderThan13 = await verifyAgeOnServer(value.age)
-        if (!isOlderThan13) {
+        // Validate the value on the server
+        const hasErrors = await verifyDataOnServer(value)
+        if (hasErrors) {
           return {
             form: 'Invalid data', // The `form` key is optional
             fields: {
               age: 'Must be 13 or older to sign',
+              // Set errors on nested fields with the field's name
+              'socials[0].url': 'The provided URL does not exist',
+              'details.email': 'An email is required',
             },
           }
         }
@@ -266,9 +273,9 @@ export default function App() {
                 type="number"
                 onChange={(e) => field.handleChange(e.target.valueAsNumber)}
               />
-              {field.state.meta.errors ? (
+              {!field.state.meta.isValid && (
                 <em role="alert">{field.state.meta.errors.join(', ')}</em>
-              ) : null}
+              )}
             </>
           )}
         </form.Field>
@@ -317,6 +324,7 @@ export default function App() {
 >     validators={{
 >       onChange: ({ value }) => (value % 2 === 0 ? 'Must be odd!' : undefined),
 >     }}
+>     children={() => <>{/* ... */}</>}
 >   />
 > )
 > ```
@@ -349,9 +357,9 @@ To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods 
         type="number"
         onChange={(e) => field.handleChange(e.target.valueAsNumber)}
       />
-      {field.state.meta.errors ? (
+      {!field.state.meta.isValid && (
         <em role="alert">{field.state.meta.errors.join(', ')}</em>
-      ) : null}
+      )}
     </>
   )}
 </form.Field>
@@ -381,9 +389,9 @@ Synchronous and Asynchronous validations can coexist. For example, it is possibl
         onBlur={field.handleBlur}
         onChange={(e) => field.handleChange(e.target.valueAsNumber)}
       />
-      {field.state.meta.errors ? (
+      {!field.state.meta.isValid && (
         <em role="alert">{field.state.meta.errors.join(', ')}</em>
-      ) : null}
+      )}
     </>
   )}
 </form.Field>
@@ -433,7 +441,7 @@ This will debounce every async call with a 500ms delay. You can even override th
 />
 ```
 
-> This will run `onChangeAsync` every 1500ms while `onBlurAsync` will run every 500ms.
+This will run `onChangeAsync` every 1500ms while `onBlurAsync` will run every 500ms.
 
 ## Validation through Schema Libraries
 
@@ -449,6 +457,8 @@ TanStack Form natively supports all libraries following the [Standard Schema spe
 - [Effect/Schema](https://effect.website/docs/schema/standard-schema/)
 
 _Note:_ make sure to use the latest version of the schema libraries as older versions might not support Standard Schema yet.
+
+> Validation will not provide you with transformed values. See [submission handling](./submission-handling.md) for more information.
 
 To use schemas from these libraries you can pass them to the `validators` props as you would do with a custom function:
 
