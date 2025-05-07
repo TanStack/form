@@ -137,6 +137,11 @@ it("should allow setting manual errors according to the validator's return type"
     },
   })
 
+  form.setErrorMap({
+    onMount: 10,
+    onChange: ['onChange'],
+  })
+
   expectTypeOf(form.setErrorMap).parameter(0).toEqualTypeOf<{
     onMount: 10 | undefined | GlobalFormValidationError<FormData>
     onChange:
@@ -156,6 +161,27 @@ it("should allow setting manual errors according to the validator's return type"
       | GlobalFormValidationError<FormData>
     onServer: undefined
   }>
+})
+
+it('should allow setting field errors from the global form error map', () => {
+  type FormData = {
+    firstName: string
+    lastName: string
+  }
+
+  const form = new FormApi({
+    defaultValues: {} as FormData,
+  })
+
+  form.setErrorMap({
+    onChange: {
+      fields: {
+        firstName: 'error',
+        // @ts-expect-error
+        nonExistentField: 'error',
+      },
+    },
+  })
 })
 
 it('should not allow setting manual errors if no validator is specified', () => {
