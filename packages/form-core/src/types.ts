@@ -55,6 +55,7 @@ export type ValidationErrorMapSource = {
  * @private
  */
 export type FormValidationErrorMap<
+  TFormData,
   TOnMountReturn = unknown,
   TOnChangeReturn = unknown,
   TOnChangeAsyncReturn = unknown,
@@ -64,10 +65,19 @@ export type FormValidationErrorMap<
   TOnSubmitAsyncReturn = unknown,
   TOnServerReturn = unknown,
 > = {
-  onMount?: TOnMountReturn
-  onChange?: TOnChangeReturn | TOnChangeAsyncReturn
-  onBlur?: TOnBlurReturn | TOnBlurAsyncReturn
-  onSubmit?: TOnSubmitReturn | TOnSubmitAsyncReturn
+  onMount?: TOnMountReturn | GlobalFormValidationError<TFormData>
+  onChange?:
+    | TOnChangeReturn
+    | TOnChangeAsyncReturn
+    | GlobalFormValidationError<TFormData>
+  onBlur?:
+    | TOnBlurReturn
+    | TOnBlurAsyncReturn
+    | GlobalFormValidationError<TFormData>
+  onSubmit?:
+    | TOnSubmitReturn
+    | TOnSubmitAsyncReturn
+    | GlobalFormValidationError<TFormData>
   onServer?: TOnServerReturn
 }
 

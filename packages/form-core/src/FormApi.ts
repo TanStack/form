@@ -513,7 +513,7 @@ export type BaseFormState<
   /**
    * The error map for the form itself.
    */
-  errorMap: FormValidationErrorMap<
+  errorMap: ValidationErrorMap<
     UnwrapFormValidateOrFn<TOnMount>,
     UnwrapFormValidateOrFn<TOnChange>,
     UnwrapFormAsyncValidateOrFn<TOnChangeAsync>,
@@ -2122,7 +2122,8 @@ export class FormApi<
    * Updates the form's errorMap
    */
   setErrorMap(
-    errorMap: ValidationErrorMap<
+    errorMap: FormValidationErrorMap<
+      TFormData,
       UnwrapFormValidateOrFn<TOnMount>,
       UnwrapFormValidateOrFn<TOnChange>,
       UnwrapFormAsyncValidateOrFn<TOnChangeAsync>,
@@ -2133,13 +2134,50 @@ export class FormApi<
       UnwrapFormAsyncValidateOrFn<TOnServer>
     >,
   ) {
-    this.baseStore.setState((prev) => ({
-      ...prev,
-      errorMap: {
-        ...prev.errorMap,
-        ...errorMap,
-      },
-    }))
+    batch(() => {
+      Object.entries(errorMap).forEach(([key, value]) => {
+        const errorMapKey = key as ValidationErrorMapKeys
+
+        if (isGlobalFormValidationError(value)) {
+          const { formError, fieldErrors } = normalizeError<TFormData>(value)
+
+          for (const fieldName of Object.keys(
+            this.fieldInfo,
+          ) as DeepKeys<TFormData>[]) {
+            const fieldMeta = this.getFieldMeta(fieldName)
+            if (!fieldMeta) continue
+
+            this.setFieldMeta(fieldName, (prev) => ({
+              ...prev,
+              errorMap: {
+                ...prev.errorMap,
+                [errorMapKey]: fieldErrors?.[fieldName],
+              },
+              errorSourceMap: {
+                ...prev.errorSourceMap,
+                [errorMapKey]: 'form',
+              },
+            }))
+          }
+
+          this.baseStore.setState((prev) => ({
+            ...prev,
+            errorMap: {
+              ...prev.errorMap,
+              [errorMapKey]: formError,
+            },
+          }))
+        } else {
+          this.baseStore.setState((prev) => ({
+            ...prev,
+            errorMap: {
+              ...prev.errorMap,
+              [errorMapKey]: value,
+            },
+          }))
+        }
+      })
+    })
   }
 
   /**
@@ -2157,7 +2195,7 @@ export class FormApi<
         | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
         | UnwrapFormAsyncValidateOrFn<TOnServer>
       >
-      errorMap: FormValidationErrorMap<
+      errorMap: ValidationErrorMap<
         UnwrapFormValidateOrFn<TOnMount>,
         UnwrapFormValidateOrFn<TOnChange>,
         UnwrapFormAsyncValidateOrFn<TOnChangeAsync>,
