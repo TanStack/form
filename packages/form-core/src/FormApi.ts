@@ -1,6 +1,5 @@
 import { Derived, Store, batch } from '@tanstack/store'
 import {
-  deepEqual,
   deleteBy,
   determineFormLevelErrorSourceAndValue,
   evaluate,
@@ -11,7 +10,6 @@ import {
   isGlobalFormValidationError,
   isNonEmptyArray,
   setBy,
-  shallow,
 } from './utils'
 
 import {
@@ -1089,7 +1087,7 @@ export class FormApi<
           prevVal.isPristine === isPristine &&
           prevVal.isDefaultValue === isDefaultValue &&
           prevVal.isDirty === isDirty &&
-          shallow(prevBaseStore, currBaseStore)
+          evaluate(prevBaseStore, currBaseStore)
         ) {
           return prevVal
         }
@@ -1217,11 +1215,11 @@ export class FormApi<
 
     const shouldUpdateValues =
       options.defaultValues &&
-      !shallow(options.defaultValues, oldOptions.defaultValues) &&
+      !evaluate(options.defaultValues, oldOptions.defaultValues) &&
       !this.state.isTouched
 
     const shouldUpdateState =
-      !shallow(options.defaultState, oldOptions.defaultState) &&
+      !evaluate(options.defaultState, oldOptions.defaultState) &&
       !this.state.isTouched
 
     if (!shouldUpdateValues && !shouldUpdateState && !shouldUpdateReeval) return
