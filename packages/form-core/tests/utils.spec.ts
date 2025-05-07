@@ -524,6 +524,15 @@ describe('deepEqual', () => {
 
     const arrayDeepFalse = deepEqual([[1]], [])
     expect(arrayDeepFalse).toEqual(false)
+
+    const arrayComplexFalse = deepEqual([[{ test: 'true' }], null], [[1], {}])
+    expect(arrayComplexFalse).toEqual(false)
+
+    const arrayComplexTrue = deepEqual(
+      [[{ test: 'true' }], null],
+      [[{ test: 'true' }], null],
+    )
+    expect(arrayComplexTrue).toEqual(true)
   })
 
   it('should test equality between objects', () => {
@@ -541,5 +550,17 @@ describe('deepEqual', () => {
 
     const objNullFalse = deepEqual({ test: '' }, null)
     expect(objNullFalse).toEqual(false)
+
+    const objComplexFalse = deepEqual(
+      { test: { testTwo: '' }, arr: [[1]] },
+      { test: { testTwo: false }, arr: [[1], [0]] },
+    )
+    expect(objComplexFalse).toEqual(false)
+
+    const objComplexTrue = deepEqual(
+      { test: { testTwo: '' }, arr: [[1]] },
+      { test: { testTwo: '' }, arr: [[1]] },
+    )
+    expect(objComplexTrue).toEqual(true)
   })
 })
