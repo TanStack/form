@@ -1022,7 +1022,11 @@ export class FormApi<
           state = newObj.state
           this.prevTransformArray = transformArray
 
-          const serverErrorMap = this.store.state.errorMap['onServer'] as any
+          const serverErrorMap = this.store.state.errorMap['onServer'] as
+            | Record<string, string>
+            | undefined
+
+          if (!serverErrorMap) return state
 
           batch(() => {
             void (Object.values(this.fieldInfo) as FieldInfo<any>[]).forEach(
