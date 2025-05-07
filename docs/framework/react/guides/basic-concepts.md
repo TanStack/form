@@ -94,11 +94,9 @@ const {
 
 There are three states in the metadata that can be useful to see how the user interacts with a field:
 
-- _"touched"_, after the user clicks/tabs into the field
-- _"pristine"_, until the user changes the field value
-- _"dirty"_, after the fields value has been changed
-
-You can check these states via the `isTouched`, `isPristine`, and `isDirty` flags, as seen below.
+- _"isTouched"_, after the user clicks/tabs into the field
+- _"isPristine"_, until the user changes the field value
+- _"isDirty"_, after the fields value has been changed
 
 ```tsx
 const { isTouched, isPristine, isDirty } = field.state.meta
