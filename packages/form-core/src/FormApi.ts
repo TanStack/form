@@ -1004,7 +1004,7 @@ export class FormApi<
 
         const isTouched = fieldMetaValues.some((field) => field.isTouched)
         const isBlurred = fieldMetaValues.some((field) => field.isBlurred)
-        const isDefaultValue = fieldMetaValues.some(
+        const isDefaultValue = fieldMetaValues.every(
           (field) => field.isDefaultValue,
         )
 
