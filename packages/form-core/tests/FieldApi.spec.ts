@@ -111,6 +111,7 @@ describe('field api', () => {
     const primitiveField = new FieldApi({
       form: primitiveMetaForm,
       name: 'name',
+      defaultValue: 'another-test',
     })
 
     primitiveField.mount()
@@ -123,6 +124,9 @@ describe('field api', () => {
     expect(primitiveField.getMeta().isDefaultValue).toBe(true)
 
     primitiveMetaForm.resetField('name')
+    expect(primitiveField.getMeta().isDefaultValue).toBe(true)
+
+    primitiveField.setValue('another-test')
     expect(primitiveField.getMeta().isDefaultValue).toBe(true)
   })
 
