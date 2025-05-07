@@ -382,6 +382,70 @@ export function shallow<T>(objA: T, objB: T) {
   return true
 }
 
+export function evaluate<T>(objA: T, objB: T, opt?: { deep?: boolean }) {
+  const deepSearch = opt?.deep || false
+
+  if (Object.is(objA, objB)) {
+    return true
+  }
+
+  if (
+    typeof objA !== 'object' ||
+    objA === null ||
+    typeof objB !== 'object' ||
+    objB === null
+  ) {
+    return false
+  }
+
+  if (objA instanceof Map && objB instanceof Map) {
+    if (objA.size !== objB.size) return false
+    for (const [k, v] of objA) {
+      if (!objB.has(k) || !Object.is(v, objB.get(k))) return false
+    }
+    return true
+  }
+
+  if (objA instanceof Set && objB instanceof Set) {
+    if (objA.size !== objB.size) return false
+    for (const v of objA) {
+      if (!objB.has(v)) return false
+    }
+    return true
+  }
+
+  const keysA = Object.keys(objA)
+  const keysB = Object.keys(objB)
+
+  if (keysA.length !== keysB.length) {
+    return false
+  }
+
+  for (const key of keysA) {
+    // performs recursive search down the object tree
+    if (deepSearch) {
+      if (
+        !keysB.includes(key) ||
+        !evaluate(objA[key as keyof T], objB[key as keyof T], { deep: true })
+      ) {
+        return false
+      }
+    }
+
+    // shallow evaluation of object
+    if (!deepSearch) {
+      if (
+        !Object.prototype.hasOwnProperty.call(objB, key as string) ||
+        !Object.is(objA[key as keyof T], objB[key as keyof T])
+      ) {
+        return false
+      }
+    }
+  }
+
+  return true
+}
+
 /**
  * Determines the logic for determining the error source and value to set on the field meta within the form level sync/async validation.
  * @private

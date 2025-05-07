@@ -100,34 +100,34 @@ describe('field api', () => {
   })
 
   it('should update the fields meta isDefaultValue with primitives', () => {
-    // primitives
-    const primitiveMetaForm = new FormApi({
+    const form = new FormApi({
       defaultValues: {
         name: 'test',
       },
     })
-    primitiveMetaForm.mount()
+    form.mount()
 
-    const primitiveField = new FieldApi({
-      form: primitiveMetaForm,
+    const field = new FieldApi({
+      form: form,
       name: 'name',
       defaultValue: 'another-test',
     })
+    field.mount()
 
-    primitiveField.mount()
-    expect(primitiveField.getMeta().isDefaultValue).toBe(true)
+    expect(field.getMeta().isDefaultValue).toBe(true)
 
-    primitiveField.setValue('not-test')
-    expect(primitiveField.getMeta().isDefaultValue).toBe(false)
+    field.setValue('not-test')
+    expect(field.getMeta().isDefaultValue).toBe(false)
 
-    primitiveField.setValue('test')
-    expect(primitiveField.getMeta().isDefaultValue).toBe(true)
+    field.setValue('test')
+    expect(field.getMeta().isDefaultValue).toBe(true)
 
-    primitiveMetaForm.resetField('name')
-    expect(primitiveField.getMeta().isDefaultValue).toBe(true)
+    form.resetField('name')
+    expect(field.getMeta().isDefaultValue).toBe(true)
 
-    primitiveField.setValue('another-test')
-    expect(primitiveField.getMeta().isDefaultValue).toBe(true)
+    // checks the defaultValue provided to the field
+    field.setValue('another-test')
+    expect(field.getMeta().isDefaultValue).toBe(true)
   })
 
   it('should update the fields meta isDefaultValue with arrays - simple', () => {
@@ -142,8 +142,8 @@ describe('field api', () => {
       form: form,
       name: 'arr',
     })
-
     field.mount()
+
     expect(field.getMeta().isDefaultValue).toBe(true)
 
     field.setValue(['hello', 'goodbye'])

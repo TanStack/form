@@ -3,6 +3,7 @@ import {
   deepEqual,
   deleteBy,
   determineFormLevelErrorSourceAndValue,
+  evaluate,
   functionalUpdate,
   getAsyncValidatorArray,
   getBy,
@@ -925,14 +926,16 @@ export class FormApi<
           const isFieldValid = !isNonEmptyArray(fieldErrors ?? [])
           const isFieldPristine = !currBaseMeta.isDirty
           const isDefaultValue =
-            deepEqual(
+            evaluate(
               curFieldVal,
               getBy(this.options.defaultValues, fieldName),
+              { deep: true },
             ) ||
-            deepEqual(
+            evaluate(
               curFieldVal,
               // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
               this.getFieldInfo(fieldName)?.instance?.options.defaultValue,
+              { deep: true },
             )
 
           if (
