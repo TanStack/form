@@ -55,7 +55,7 @@ export type ValidationErrorMapSource = {
  * @private
  */
 export type FormValidationErrorMap<
-  TFormData,
+  TFormData = unknown,
   TOnMountReturn = unknown,
   TOnChangeReturn = unknown,
   TOnChangeAsyncReturn = unknown,
