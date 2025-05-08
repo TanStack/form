@@ -256,7 +256,7 @@ export class FormLensApi<
    * Gets the metadata of the specified field.
    */
   getFieldMeta = <TField extends DeepKeys<TLensData>>(field: TField) => {
-    return this.formInstance.state.fieldMeta[this.getFormFieldName(field)]
+    return this.formInstance.getFieldMeta(this.getFormFieldName(field))
   }
 
   /**
