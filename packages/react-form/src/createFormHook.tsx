@@ -275,7 +275,6 @@ export function createFormHook<
           <formContext.Provider value={form}>{children}</formContext.Provider>
         )
       }) as ComponentType<PropsWithChildren>
-      AppForm.displayName = 'AppForm'
       return AppForm
     }, [form])
 
@@ -304,8 +303,6 @@ export function createFormHook<
         TSubmitMeta,
         TComponents
       >
-      // @ts-expect-error React component property
-      AppField.displayName = 'AppField'
       return AppField
     }, [form])
 
