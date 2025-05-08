@@ -270,15 +270,17 @@ export function createFormHook<
     const form = useForm(props)
 
     const AppForm = useMemo(() => {
-      return (({ children }) => {
+      const AppForm = (({ children }) => {
         return (
           <formContext.Provider value={form}>{children}</formContext.Provider>
         )
       }) as ComponentType<PropsWithChildren>
+      AppForm.displayName = 'AppForm'
+      return AppForm
     }, [form])
 
     const AppField = useMemo(() => {
-      return (({ children, ...props }) => {
+      const AppField = (({ children, ...props }) => {
         return (
           <form.Field {...props}>
             {(field) => (
@@ -302,6 +304,9 @@ export function createFormHook<
         TSubmitMeta,
         TComponents
       >
+      // @ts-expect-error React component property
+      AppField.displayName = 'AppField'
+      return AppField
     }, [form])
 
     const extendedForm = useMemo(() => {
