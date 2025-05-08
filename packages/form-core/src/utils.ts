@@ -336,7 +336,7 @@ export const isGlobalFormValidationError = (
   return !!error && typeof error === 'object' && 'fields' in error
 }
 
-export function shallow<T>(objA: T, objB: T) {
+export function evaluate<T>(objA: T, objB: T) {
   if (Object.is(objA, objB)) {
     return true
   }
@@ -367,18 +367,23 @@ export function shallow<T>(objA: T, objB: T) {
   }
 
   const keysA = Object.keys(objA)
-  if (keysA.length !== Object.keys(objB).length) {
+  const keysB = Object.keys(objB)
+
+  if (keysA.length !== keysB.length) {
     return false
   }
 
-  for (let i = 0; i < keysA.length; i++) {
+  for (const key of keysA) {
+    // performs recursive search down the object tree
+
     if (
-      !Object.prototype.hasOwnProperty.call(objB, keysA[i] as string) ||
-      !Object.is(objA[keysA[i] as keyof T], objB[keysA[i] as keyof T])
+      !keysB.includes(key) ||
+      !evaluate(objA[key as keyof T], objB[key as keyof T])
     ) {
       return false
     }
   }
+
   return true
 }
 

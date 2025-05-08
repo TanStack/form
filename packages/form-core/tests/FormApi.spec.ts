@@ -3080,6 +3080,34 @@ describe('form api', () => {
     expect(field.state.meta.isTouched).toBe(false)
   })
 
+  it('should set the form isDefaultValue meta', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'tony',
+        lastName: 'hawk',
+      },
+    })
+    form.mount()
+
+    const nameField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    nameField.mount()
+
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+    })
+    lastNameField.mount()
+
+    lastNameField.setValue('')
+    expect(form.state.isDefaultValue).toBe(false)
+
+    lastNameField.setValue('hawk')
+    expect(form.state.isDefaultValue).toBe(true)
+  })
+
   it('should allow submission, when the form is invalid, with canSubmitWhenInvalid', async () => {
     const form = new FormApi({
       defaultValues: {

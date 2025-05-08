@@ -2,6 +2,7 @@ import { Derived, Store, batch } from '@tanstack/store'
 import {
   deleteBy,
   determineFormLevelErrorSourceAndValue,
+  evaluate,
   functionalUpdate,
   getAsyncValidatorArray,
   getBy,
@@ -9,7 +10,6 @@ import {
   isGlobalFormValidationError,
   isNonEmptyArray,
   setBy,
-  shallow,
 } from './utils'
 
 import {
@@ -627,6 +627,10 @@ export type DerivedFormState<
    */
   isPristine: boolean
   /**
+   * A boolean indicating if all of the form's fields are the same as default values.
+   */
+  isDefaultValue: boolean
+  /**
    * A boolean indicating if the form and all its fields are valid. Evaluates `true` if there are no errors.
    */
   isValid: boolean
@@ -883,21 +887,26 @@ export class FormApi<
         for (const fieldName of Object.keys(
           currBaseStore.fieldMetaBase,
         ) as Array<keyof typeof currBaseStore.fieldMetaBase>) {
-          const currBaseVal = currBaseStore.fieldMetaBase[
+          const currBaseMeta = currBaseStore.fieldMetaBase[
             fieldName as never
           ] as AnyFieldMetaBase
 
-          const prevBaseVal = prevBaseStore?.fieldMetaBase[
+          const prevBaseMeta = prevBaseStore?.fieldMetaBase[
             fieldName as never
           ] as AnyFieldMetaBase | undefined
 
           const prevFieldInfo =
             prevVal?.[fieldName as never as keyof typeof prevVal]
 
+          const curFieldVal = getBy(currBaseStore.values, fieldName)
+
           let fieldErrors = prevFieldInfo?.errors
-          if (!prevBaseVal || currBaseVal.errorMap !== prevBaseVal.errorMap) {
+          if (
+            !prevBaseMeta ||
+            currBaseMeta.errorMap !== prevBaseMeta.errorMap
+          ) {
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            fieldErrors = Object.values(currBaseVal.errorMap ?? {}).filter(
+            fieldErrors = Object.values(currBaseMeta.errorMap ?? {}).filter(
               (val) => val !== undefined,
             ) as never
 
@@ -912,15 +921,26 @@ export class FormApi<
           }
 
           // As primitives, we don't need to aggressively persist the same referential value for performance reasons
-          const isFieldPristine = !currBaseVal.isDirty
           const isFieldValid = !isNonEmptyArray(fieldErrors ?? [])
+          const isFieldPristine = !currBaseMeta.isDirty
+          const isDefaultValue =
+            evaluate(
+              curFieldVal,
+              getBy(this.options.defaultValues, fieldName),
+            ) ||
+            evaluate(
+              curFieldVal,
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+              this.getFieldInfo(fieldName)?.instance?.options.defaultValue,
+            )
 
           if (
             prevFieldInfo &&
             prevFieldInfo.isPristine === isFieldPristine &&
             prevFieldInfo.isValid === isFieldValid &&
+            prevFieldInfo.isDefaultValue === isDefaultValue &&
             prevFieldInfo.errors === fieldErrors &&
-            currBaseVal === prevBaseVal
+            currBaseMeta === prevBaseMeta
           ) {
             fieldMeta[fieldName] = prevFieldInfo
             originalMetaCount++
@@ -928,10 +948,11 @@ export class FormApi<
           }
 
           fieldMeta[fieldName] = {
-            ...currBaseVal,
+            ...currBaseMeta,
             errors: fieldErrors,
             isPristine: isFieldPristine,
             isValid: isFieldValid,
+            isDefaultValue: isDefaultValue,
           } as AnyFieldMeta
         }
 
@@ -981,6 +1002,9 @@ export class FormApi<
 
         const isTouched = fieldMetaValues.some((field) => field.isTouched)
         const isBlurred = fieldMetaValues.some((field) => field.isBlurred)
+        const isDefaultValue = fieldMetaValues.every(
+          (field) => field.isDefaultValue,
+        )
 
         const shouldInvalidateOnMount =
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -1059,8 +1083,9 @@ export class FormApi<
           prevVal.isTouched === isTouched &&
           prevVal.isBlurred === isBlurred &&
           prevVal.isPristine === isPristine &&
+          prevVal.isDefaultValue === isDefaultValue &&
           prevVal.isDirty === isDirty &&
-          shallow(prevBaseStore, currBaseStore)
+          evaluate(prevBaseStore, currBaseStore)
         ) {
           return prevVal
         }
@@ -1078,6 +1103,7 @@ export class FormApi<
           isTouched,
           isBlurred,
           isPristine,
+          isDefaultValue,
           isDirty,
         } as FormState<
           TFormData,
@@ -1187,11 +1213,11 @@ export class FormApi<
 
     const shouldUpdateValues =
       options.defaultValues &&
-      !shallow(options.defaultValues, oldOptions.defaultValues) &&
+      !evaluate(options.defaultValues, oldOptions.defaultValues) &&
       !this.state.isTouched
 
     const shouldUpdateState =
-      !shallow(options.defaultState, oldOptions.defaultState) &&
+      !evaluate(options.defaultState, oldOptions.defaultState) &&
       !this.state.isTouched
 
     if (!shouldUpdateValues && !shouldUpdateState && !shouldUpdateReeval) return

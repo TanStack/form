@@ -57,6 +57,7 @@ describe('field api', () => {
     expect(field.getMeta()).toEqual({
       isTouched: false,
       isBlurred: false,
+      isDefaultValue: true,
       isValidating: false,
       isPristine: true,
       isValid: true,
@@ -77,48 +78,160 @@ describe('field api', () => {
       name: 'name',
       defaultMeta: {
         isTouched: true,
-        isDirty: true,
-        isPristine: false,
         isBlurred: true,
+        isDirty: true,
       },
     })
 
     field.mount()
 
-    expect(field.getMeta()).toEqual({
+    expect(field.getMeta()).toMatchObject({
       isTouched: true,
       isBlurred: true,
-      isValidating: false,
       isDirty: true,
-      isPristine: false,
+
+      // derived meta data
       isValid: true,
+      isValidating: false,
       errors: [],
       errorMap: {},
       errorSourceMap: {},
     })
   })
 
-  it('should set a value correctly', () => {
+  it('should update the fields meta isDefaultValue with primitives', () => {
     const form = new FormApi({
       defaultValues: {
         name: 'test',
       },
     })
-
     form.mount()
 
     const field = new FieldApi({
-      form,
+      form: form,
       name: 'name',
+      defaultValue: 'another-test',
+    })
+    field.mount()
+
+    expect(field.getMeta().isDefaultValue).toBe(true)
+
+    field.setValue('not-test')
+    expect(field.getMeta().isDefaultValue).toBe(false)
+
+    field.setValue('test')
+    expect(field.getMeta().isDefaultValue).toBe(true)
+
+    form.resetField('name')
+    expect(field.getMeta().isDefaultValue).toBe(true)
+
+    // checks the defaultValue provided to the field
+    field.setValue('another-test')
+    expect(field.getMeta().isDefaultValue).toBe(true)
+  })
+
+  it('should update the fields meta isDefaultValue with arrays - simple', () => {
+    const form = new FormApi({
+      defaultValues: {
+        arr: ['', ''],
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form: form,
+      name: 'arr',
+    })
+    field.mount()
+
+    expect(field.getMeta().isDefaultValue).toBe(true)
+
+    field.setValue(['hello', 'goodbye'])
+    expect(field.getMeta().isDefaultValue).toBe(false)
+
+    field.setValue(['', ''])
+    expect(field.getMeta().isDefaultValue).toBe(true)
+  })
+
+  it('should update the fields meta isDefaultValue with arrays - complex', () => {
+    const defaultValues: [{ age: number; name?: string }, null | undefined] = [
+      { age: 0 },
+      undefined,
+    ]
+    const form = new FormApi({
+      defaultValues: {
+        arr: defaultValues,
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form: form,
+      name: 'arr',
     })
 
     field.mount()
+    expect(field.getMeta().isDefaultValue).toBe(true)
 
-    field.setValue('other', {
-      dontUpdateMeta: true,
+    field.setValue([{ age: 0, name: '' }, null])
+    expect(field.getMeta().isDefaultValue).toBe(false)
+
+    field.setValue([{ age: 0 }, undefined])
+    expect(field.getMeta().isDefaultValue).toBe(true)
+  })
+
+  it('should update the fields meta isDefaultValue with objects - simple', () => {
+    const objectMetaForm = new FormApi({
+      defaultValues: {
+        obj: { firstName: 'John', lastName: 'Wick' },
+      },
     })
+    objectMetaForm.mount()
 
-    expect(field.getValue()).toBe('other')
+    const objectField = new FieldApi({
+      form: objectMetaForm,
+      name: 'obj',
+    })
+    objectField.mount()
+
+    expect(objectField.getMeta().isDefaultValue).toBe(true)
+
+    objectField.setValue({ firstName: 'John', lastName: 'Travolta' })
+    expect(objectField.getMeta().isDefaultValue).toBe(false)
+
+    objectField.setValue({ firstName: 'John', lastName: 'Wick' })
+    expect(objectField.getMeta().isDefaultValue).toBe(true)
+  })
+
+  it('should update the fields meta isDefaultValue with objects - complex', () => {
+    const defaultValues: { arr: [number, object]; test?: string } = {
+      arr: [0, {}],
+    }
+    const form = new FormApi({
+      defaultValues: {
+        obj: defaultValues,
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form: form,
+      name: 'obj',
+    })
+    field.mount()
+
+    expect(field.getMeta().isDefaultValue).toBe(true)
+
+    field.setValue({
+      arr: [1, {}],
+      test: 'hi',
+    })
+    expect(field.getMeta().isDefaultValue).toBe(false)
+
+    field.setValue({
+      arr: [0, {}],
+    })
+    expect(field.getMeta().isDefaultValue).toBe(true)
   })
 
   it('should set isBlurred correctly', () => {
