@@ -66,6 +66,14 @@ errors: (
 
 An array of errors related to the field value.
 
+### isDefaultValue
+
+```ts
+isDefaultValue: boolean;
+```
+
+A flag indicating whether the field's current value is the default value
+
 ### isPristine
 
 ```ts

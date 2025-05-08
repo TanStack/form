@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/svelte-form",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "description": "Powerful, type-safe forms for Svelte.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -48,7 +48,7 @@
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@testing-library/svelte": "^5.2.7",
     "svelte": "^5.28.2",
-    "svelte-check": "^4.1.6"
+    "svelte-check": "^4.1.7"
   },
   "peerDependencies": {
     "svelte": "^5.0.0"

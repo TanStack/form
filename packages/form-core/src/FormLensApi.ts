@@ -10,7 +10,7 @@ import type {
   FormState,
   FormValidateOrFn,
 } from './FormApi'
-import type { AnyFieldMeta } from './FieldApi'
+import type { AnyFieldMeta, AnyFieldMetaBase } from './FieldApi'
 import type { DeepKeys, DeepKeysOfType, DeepValue } from './util-types'
 import type {
   FormValidationErrorMap,
@@ -271,7 +271,7 @@ export class FormLensApi<
    */
   setFieldMeta = <TField extends DeepKeys<TLensData>>(
     field: TField,
-    updater: Updater<AnyFieldMeta>,
+    updater: Updater<AnyFieldMetaBase>,
   ) => {
     return this.formInstance.setFieldMeta(this.getFormFieldName(field), updater)
   }

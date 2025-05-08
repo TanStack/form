@@ -736,7 +736,7 @@ describe('form api', () => {
     field2.mount()
 
     field1.handleBlur()
-    field1.setErrorMap({ onSubmit: 'test' })
+    field1.setErrorMap({ onSubmit: 'test' as never })
 
     expect(field0.state.meta.isBlurred).toBe(false)
     expect(field1.state.meta.isBlurred).toBe(true)
@@ -3078,6 +3078,34 @@ describe('form api', () => {
     form.resetField('name')
     expect(form.state.values.name).toStrictEqual('tony')
     expect(field.state.meta.isTouched).toBe(false)
+  })
+
+  it('should set the form isDefaultValue meta', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'tony',
+        lastName: 'hawk',
+      },
+    })
+    form.mount()
+
+    const nameField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    nameField.mount()
+
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+    })
+    lastNameField.mount()
+
+    lastNameField.setValue('')
+    expect(form.state.isDefaultValue).toBe(false)
+
+    lastNameField.setValue('hawk')
+    expect(form.state.isDefaultValue).toBe(true)
   })
 
   it('should allow submission, when the form is invalid, with canSubmitWhenInvalid', async () => {
