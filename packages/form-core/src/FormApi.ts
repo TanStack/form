@@ -37,7 +37,7 @@ import type {
   ValidationErrorMap,
   ValidationErrorMapKeys,
 } from './types'
-import type { DeepKeys, DeepValue } from './util-types'
+import type { DeepKeys, DeepKeysOfType, DeepValue } from './util-types'
 import type { Updater } from './utils'
 
 /**
@@ -518,7 +518,7 @@ export type BaseFormState<
   /**
    * The error map for the form itself.
    */
-  errorMap: FormValidationErrorMap<
+  errorMap: ValidationErrorMap<
     UnwrapFormValidateOrFn<TOnMount>,
     UnwrapFormValidateOrFn<TOnChange>,
     UnwrapFormAsyncValidateOrFn<TOnChangeAsync>,
@@ -1314,7 +1314,9 @@ export class FormApi<
   /**
    * Validates the children of a specified array in the form starting from a given index until the end using the correct handlers for a given validation type.
    */
-  validateArrayFieldsStartingFrom = async <TField extends DeepKeys<TFormData>>(
+  validateArrayFieldsStartingFrom = async <
+    TField extends DeepKeysOfType<TFormData, any[]>,
+  >(
     field: TField,
     index: number,
     cause: ValidationCause,
@@ -1964,7 +1966,7 @@ export class FormApi<
   /**
    * Pushes a value into an array field.
    */
-  pushFieldValue = <TField extends DeepKeys<TFormData>>(
+  pushFieldValue = <TField extends DeepKeysOfType<TFormData, any[]>>(
     field: TField,
     value: DeepValue<TFormData, TField> extends any[]
       ? DeepValue<TFormData, TField>[number]
@@ -1979,7 +1981,7 @@ export class FormApi<
     this.validateField(field, 'change')
   }
 
-  insertFieldValue = async <TField extends DeepKeys<TFormData>>(
+  insertFieldValue = async <TField extends DeepKeysOfType<TFormData, any[]>>(
     field: TField,
     index: number,
     value: DeepValue<TFormData, TField> extends any[]
@@ -2011,7 +2013,7 @@ export class FormApi<
   /**
    * Replaces a value into an array field at the specified index.
    */
-  replaceFieldValue = async <TField extends DeepKeys<TFormData>>(
+  replaceFieldValue = async <TField extends DeepKeysOfType<TFormData, any[]>>(
     field: TField,
     index: number,
     value: DeepValue<TFormData, TField> extends any[]
@@ -2037,7 +2039,7 @@ export class FormApi<
   /**
    * Removes a value from an array field at the specified index.
    */
-  removeFieldValue = async <TField extends DeepKeys<TFormData>>(
+  removeFieldValue = async <TField extends DeepKeysOfType<TFormData, any[]>>(
     field: TField,
     index: number,
     opts?: UpdateMetaOptions,
@@ -2074,7 +2076,7 @@ export class FormApi<
   /**
    * Swaps the values at the specified indices within an array field.
    */
-  swapFieldValues = <TField extends DeepKeys<TFormData>>(
+  swapFieldValues = <TField extends DeepKeysOfType<TFormData, any[]>>(
     field: TField,
     index1: number,
     index2: number,
@@ -2103,7 +2105,7 @@ export class FormApi<
   /**
    * Moves the value at the first specified index to the second specified index within an array field.
    */
-  moveFieldValues = <TField extends DeepKeys<TFormData>>(
+  moveFieldValues = <TField extends DeepKeysOfType<TFormData, any[]>>(
     field: TField,
     index1: number,
     index2: number,
@@ -2150,7 +2152,8 @@ export class FormApi<
    * Updates the form's errorMap
    */
   setErrorMap(
-    errorMap: ValidationErrorMap<
+    errorMap: FormValidationErrorMap<
+      TFormData,
       UnwrapFormValidateOrFn<TOnMount>,
       UnwrapFormValidateOrFn<TOnChange>,
       UnwrapFormAsyncValidateOrFn<TOnChangeAsync>,
@@ -2161,13 +2164,50 @@ export class FormApi<
       UnwrapFormAsyncValidateOrFn<TOnServer>
     >,
   ) {
-    this.baseStore.setState((prev) => ({
-      ...prev,
-      errorMap: {
-        ...prev.errorMap,
-        ...errorMap,
-      },
-    }))
+    batch(() => {
+      Object.entries(errorMap).forEach(([key, value]) => {
+        const errorMapKey = key as ValidationErrorMapKeys
+
+        if (isGlobalFormValidationError(value)) {
+          const { formError, fieldErrors } = normalizeError<TFormData>(value)
+
+          for (const fieldName of Object.keys(
+            this.fieldInfo,
+          ) as DeepKeys<TFormData>[]) {
+            const fieldMeta = this.getFieldMeta(fieldName)
+            if (!fieldMeta) continue
+
+            this.setFieldMeta(fieldName, (prev) => ({
+              ...prev,
+              errorMap: {
+                ...prev.errorMap,
+                [errorMapKey]: fieldErrors?.[fieldName],
+              },
+              errorSourceMap: {
+                ...prev.errorSourceMap,
+                [errorMapKey]: 'form',
+              },
+            }))
+          }
+
+          this.baseStore.setState((prev) => ({
+            ...prev,
+            errorMap: {
+              ...prev.errorMap,
+              [errorMapKey]: formError,
+            },
+          }))
+        } else {
+          this.baseStore.setState((prev) => ({
+            ...prev,
+            errorMap: {
+              ...prev.errorMap,
+              [errorMapKey]: value,
+            },
+          }))
+        }
+      })
+    })
   }
 
   /**
@@ -2185,7 +2225,7 @@ export class FormApi<
         | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
         | UnwrapFormAsyncValidateOrFn<TOnServer>
       >
-      errorMap: FormValidationErrorMap<
+      errorMap: ValidationErrorMap<
         UnwrapFormValidateOrFn<TOnMount>,
         UnwrapFormValidateOrFn<TOnChange>,
         UnwrapFormAsyncValidateOrFn<TOnChangeAsync>,

@@ -2285,6 +2285,37 @@ describe('form api', () => {
     expect(form.state.errorMap.onChange).toEqual('other validation error')
   })
 
+  it('should spread errors in fields when setErrorMap receives a global form validation error', () => {
+    const form = new FormApi({
+      defaultValues: { name: '', interests: [] as { label: string }[] },
+    })
+    form.mount()
+
+    const field = new FieldApi({ form, name: 'name' })
+    field.mount()
+
+    const arrayElementField = new FieldApi({ form, name: 'interests[0].label' })
+    arrayElementField.mount()
+
+    form.setErrorMap({
+      onChange: {
+        form: 'global error',
+        fields: {
+          name: 'name is required',
+          'interests[0].label': 'label is required',
+        },
+      },
+      onBlur: 'Form Error' as never,
+    })
+
+    expect(form.state.errorMap.onChange).toEqual('global error')
+    expect(form.state.errorMap.onBlur).toEqual('Form Error')
+    expect(field.getMeta().errorMap.onChange).toEqual('name is required')
+    expect(arrayElementField.getMeta().errorMap.onChange).toEqual(
+      'label is required',
+    )
+  })
+
   it("should set errors for the fields from the form's onSubmit validator", async () => {
     const form = new FormApi({
       defaultValues: {
