@@ -1,9 +1,13 @@
-import { createContext, useContext, useMemo } from 'react'
+/* eslint-disable @eslint-react/no-context-provider */
+import { createContext, useContext, useMemo, useState } from 'react'
+import { FormLensApi, getBy } from '@tanstack/form-core'
 import { useForm } from './useForm'
 import type {
   AnyFieldApi,
   AnyFormApi,
   BaseFormOptions,
+  DeepKeysOfType,
+  DeepValue,
   FieldApi,
   FormAsyncValidateOrFn,
   FormOptions,
@@ -170,6 +174,67 @@ type AppFieldExtendedReactFormApi<
     AppForm: ComponentType<PropsWithChildren>
   }
 
+type AppLensExtendedReactFormApi<
+  TFormData,
+  TName extends DeepKeysOfType<TFormData, TLensData>,
+  TLensData,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
+  TFieldComponents extends Record<string, ComponentType<any>>,
+  TFormComponents extends Record<string, ComponentType<any>>,
+> = FormLensApi<
+  TFormData,
+  TLensData,
+  TName,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnServer,
+  TSubmitMeta
+> &
+  NoInfer<TFormComponents> & {
+    AppField: FieldComponent<
+      TLensData,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      TSubmitMeta,
+      NoInfer<TFieldComponents>
+    >
+    AppForm: ComponentType<PropsWithChildren>
+    /**
+     * A React component to render form fields. With this, you can render and manage individual form fields.
+     */
+    Field: FieldComponent<
+      TLensData,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      TSubmitMeta
+    >
+  }
+
 export interface WithFormProps<
   TFormData,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
@@ -260,6 +325,39 @@ export interface CreateFormGroupProps<
   ) => JSX.Element
 }
 
+export interface CreateFormLensProps<
+  TLensData,
+  TFieldComponents extends Record<string, ComponentType<any>>,
+  TFormComponents extends Record<string, ComponentType<any>>,
+  TSubmitMeta = never,
+  TRenderProps extends Record<string, unknown> = Record<string, never>,
+> extends BaseFormOptions<TLensData, TSubmitMeta> {
+  // Optional, but adds props to the `render` function outside of `form`
+  props?: TRenderProps
+  render: (
+    props: PropsWithChildren<
+      NoInfer<TRenderProps> & {
+        lens: AppLensExtendedReactFormApi<
+          unknown,
+          string,
+          TLensData,
+          undefined | FormValidateOrFn<unknown>,
+          undefined | FormValidateOrFn<unknown>,
+          undefined | FormAsyncValidateOrFn<unknown>,
+          undefined | FormValidateOrFn<unknown>,
+          undefined | FormAsyncValidateOrFn<unknown>,
+          undefined | FormValidateOrFn<unknown>,
+          undefined | FormAsyncValidateOrFn<unknown>,
+          undefined | FormAsyncValidateOrFn<unknown>,
+          TSubmitMeta,
+          TFieldComponents,
+          TFormComponents
+        >
+      }
+    >,
+  ) => JSX.Element
+}
+
 export function createFormHook<
   const TComponents extends Record<string, ComponentType<any>>,
   const TFormComponents extends Record<string, ComponentType<any>>,
@@ -269,6 +367,135 @@ export function createFormHook<
   formContext,
   formComponents,
 }: CreateFormHookProps<TComponents, TFormComponents>) {
+  function useFormLens<
+    TFormData,
+    TName extends DeepKeysOfType<TFormData, TLensData>,
+    TLensData,
+    TOnMount extends undefined | FormValidateOrFn<TFormData>,
+    TOnChange extends undefined | FormValidateOrFn<TFormData>,
+    TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+    TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+    TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TSubmitMeta = never,
+  >(opts: {
+    form: AppFieldExtendedReactFormApi<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer,
+      TSubmitMeta,
+      TComponents,
+      TFormComponents
+    >
+    name: TName
+    defaultValues?: TLensData
+    onSubmitMeta?: TSubmitMeta
+  }): AppLensExtendedReactFormApi<
+    TFormData,
+    TName,
+    TLensData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer,
+    TSubmitMeta,
+    TComponents,
+    TFormComponents
+  > {
+    const [formLensApi] = useState(() => {
+      const api = new FormLensApi(opts)
+      return api
+    })
+
+    const AppForm = useMemo(() => {
+      return ((appFormProps) => {
+        return <opts.form.AppForm {...appFormProps} />
+      }) as ComponentType<PropsWithChildren>
+    }, [opts])
+
+    const AppField = useMemo(() => {
+      return (({ name, ...appFieldProps }) => {
+        return (
+          <opts.form.AppField
+            // @ts-expect-error because it doesn't recognize the name as a valid path.
+            name={`${opts.name}.${name}`}
+            {...appFieldProps}
+          />
+        )
+      }) as FieldComponent<
+        DeepValue<TFormData, TName>,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        TSubmitMeta,
+        TComponents
+      >
+    }, [opts])
+
+    const Field = useMemo(() => {
+      return (({ name, ...fieldProps }) => {
+        return (
+          // @ts-expect-error because it doesn't recognize the name as a valid path.
+          <opts.form.Field name={`${opts.name}.${name}`} {...fieldProps} />
+        )
+      }) as FieldComponent<
+        DeepValue<TFormData, TName>,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        TSubmitMeta
+      >
+    }, [opts])
+
+    const formLens = useMemo(() => {
+      return Object.assign(formLensApi, {
+        AppField,
+        AppForm,
+        Field,
+        ...formComponents,
+      }) as AppLensExtendedReactFormApi<
+        TFormData,
+        TName,
+        TLensData,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TOnServer,
+        TSubmitMeta,
+        TComponents,
+        TFormComponents
+      >
+    }, [formLensApi, AppField, AppForm, Field])
+
+    return formLens
+  }
+
   function useAppForm<
     TFormData,
     TOnMount extends undefined | FormValidateOrFn<TFormData>,
@@ -449,9 +676,67 @@ export function createFormHook<
     return (innerProps) => render({ ...props, ...innerProps } as any)
   }
 
+  function withFormLens<
+    TLensData,
+    TSubmitMeta,
+    TRenderProps extends Record<string, unknown> = {},
+  >({
+    render,
+    props,
+    defaultValues,
+  }: CreateFormLensProps<
+    TLensData,
+    TComponents,
+    TFormComponents,
+    TSubmitMeta,
+    TRenderProps
+  >): <
+    TFormData,
+    TName extends DeepKeysOfType<TFormData, TLensData>,
+    TOnMount extends undefined | FormValidateOrFn<TFormData>,
+    TOnChange extends undefined | FormValidateOrFn<TFormData>,
+    TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+    TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+    TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TFormSubmitMeta,
+  >(
+    params: PropsWithChildren<
+      NoInfer<TRenderProps> & {
+        form: AppFieldExtendedReactFormApi<
+          TFormData,
+          TOnMount,
+          TOnChange,
+          TOnChangeAsync,
+          TOnBlur,
+          TOnBlurAsync,
+          TOnSubmit,
+          TOnSubmitAsync,
+          TOnServer,
+          unknown extends TSubmitMeta ? TFormSubmitMeta : TSubmitMeta,
+          TComponents,
+          TFormComponents
+        >
+        name: TName
+      }
+    >,
+  ) => JSX.Element {
+    return function Render(innerProps) {
+      const lensApi = useFormLens({
+        ...innerProps,
+        defaultValues,
+      })
+
+      return render({ ...props, ...innerProps, lens: lensApi as any })
+    }
+  }
+
   return {
     useAppForm,
     withForm,
     createFormGroup,
+    withFormLens,
   }
 }

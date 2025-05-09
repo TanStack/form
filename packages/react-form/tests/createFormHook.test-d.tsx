@@ -10,7 +10,7 @@ function Test() {
   return null
 }
 
-const { useAppForm, withForm, createFormGroup } = createFormHook({
+const { useAppForm, withForm, createFormGroup, withFormLens } = createFormHook({
   fieldComponents: {
     Test,
   },
@@ -550,5 +550,285 @@ describe('createFormHook', () => {
 
     const CorrectComponent1 = <FormGroup form={formA} />
     const CorrectComponent2 = <FormGroup form={formB} />
+  })
+
+  it('should infer subset values and props when calling withFormLens', () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    type ComponentProps = {
+      prop1: string
+      prop2: number
+    }
+
+    const defaultValues: Person = {
+      firstName: 'FirstName',
+      lastName: 'LastName',
+    }
+
+    const FormGroupComponent = withFormLens({
+      defaultValues,
+      render: function Render({ lens, children, ...props }) {
+        // Existing types may be inferred
+        expectTypeOf(lens.state.values.firstName).toEqualTypeOf<string>()
+        expectTypeOf(lens.state.values.lastName).toEqualTypeOf<string>()
+
+        expectTypeOf(lens.state.values).toEqualTypeOf<Person>()
+        expectTypeOf(children).toEqualTypeOf<React.ReactNode>()
+        expectTypeOf(props).toEqualTypeOf<{}>()
+        return <lens.Test />
+      },
+    })
+
+    const FormGroupComponentWithProps = createFormGroup({
+      ...defaultValues,
+      props: {} as ComponentProps,
+      render: ({ form, children, ...props }) => {
+        expectTypeOf(props).toEqualTypeOf<{
+          prop1: string
+          prop2: number
+        }>()
+        return <form.Test />
+      },
+    })
+  })
+
+  it('should allow spreading formOptions when calling withFormLens', () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+
+    const defaultValues: Person = {
+      firstName: '',
+      lastName: '',
+    }
+    const formOpts = formOptions({
+      defaultValues,
+      validators: {
+        onChange: () => 'Error',
+      },
+      listeners: {
+        onBlur: () => 'Something',
+      },
+      asyncAlways: true,
+      asyncDebounceMs: 500,
+    })
+
+    // validators and listeners are ignored, only defaultValues is acknowledged
+    const FormGroupComponent = withFormLens({
+      ...formOpts,
+      render: function Render({ lens }) {
+        // Existing types may be inferred
+        expectTypeOf(lens.state.values.firstName).toEqualTypeOf<string>()
+        expectTypeOf(lens.state.values.lastName).toEqualTypeOf<string>()
+        return <lens.Test />
+      },
+    })
+
+    const noDefaultValuesFormOpts = formOptions({
+      onSubmitMeta: { foo: '' },
+    })
+
+    const UnknownFormGroupComponent = withFormLens({
+      ...noDefaultValuesFormOpts,
+      render: function Render({ lens }) {
+        // lens.state.values can be anything.
+        // note that T extends unknown !== unknown extends T.
+        expectTypeOf<unknown>().toExtend<typeof lens.state.values>()
+
+        // either no submit meta or of the type in formOptions
+        expectTypeOf(lens.handleSubmit).parameters.toEqualTypeOf<
+          [] | [{ foo: string }]
+        >()
+        return <lens.Test />
+      },
+    })
+  })
+
+  it('should allow passing compatible forms to withFormLens', () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    type ComponentProps = {
+      prop1: string
+      prop2: number
+    }
+
+    const defaultValues: Person = {
+      firstName: 'FirstName',
+      lastName: 'LastName',
+    }
+
+    const FormGroup = withFormLens({
+      defaultValues,
+      props: {} as ComponentProps,
+      render: () => {
+        return <></>
+      },
+    })
+
+    const equalAppForm = useAppForm({
+      defaultValues,
+    })
+
+    // -----------------
+    // Assert that an equal form is not compatible as you have no name to pass
+    const NoSubfield = (
+      // @ts-expect-error
+      <FormGroup form={equalAppForm} name="" prop1="Test" prop2={10} />
+    )
+
+    // -----------------
+    // Assert that a form extending Person in a property is allowed
+
+    const extendedAppForm = useAppForm({
+      defaultValues: { person: { ...defaultValues, address: '' }, address: '' },
+    })
+    // While it has other properties, it satisfies defaultValues
+    const CorrectComponent1 = (
+      <FormGroup form={extendedAppForm} name="person" prop1="Test" prop2={10} />
+    )
+
+    const MissingProps = (
+      // @ts-expect-error because prop1 and prop2 are not added
+      <FormGroup form={extendedAppForm} name="person" />
+    )
+
+    // -----------------
+    // Assert that a form not satisfying Person errors
+    const incompatibleAppForm = useAppForm({
+      defaultValues: { person: { ...defaultValues, lastName: 0 } },
+    })
+    const IncompatibleComponent = (
+      // @ts-expect-error because the required subset of properties is not compatible.
+      <FormGroup form={incompatibleAppForm} name="" prop1="test" prop2={10} />
+    )
+  })
+
+  it('should require strict equal submitMeta if it is set in withFormLens', () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    type SubmitMeta = {
+      correct: string
+    }
+
+    const defaultValues = {
+      person: { firstName: 'FirstName', lastName: 'LastName' } as Person,
+    }
+    const onSubmitMeta: SubmitMeta = {
+      correct: 'Prop',
+    }
+
+    const FormLensNoMeta = withFormLens({
+      defaultValues: {} as Person,
+      render: function Render({ lens }) {
+        // Since handleSubmit always allows to submit without meta, this is okay
+        lens.handleSubmit()
+
+        // To match withForm's behaviour, handleSubmit's meta should be unknown if not set.
+        expectTypeOf(lens.handleSubmit).parameters.toEqualTypeOf<
+          [] | [unknown]
+        >()
+
+        return <lens.Test />
+      },
+    })
+
+    const FormGroupWithMeta = withFormLens({
+      defaultValues: {} as Person,
+      onSubmitMeta,
+      render: function Render({ lens }) {
+        // Since handleSubmit always allows to submit without meta, this is okay
+        lens.handleSubmit()
+
+        // This matches the value
+        lens.handleSubmit({ correct: '' })
+
+        // This does not.
+        // @ts-expect-error
+        lens.handleSubmit({ wrong: 'Meta' })
+
+        return <lens.Test />
+      },
+    })
+
+    const noMetaForm = useAppForm({
+      defaultValues,
+    })
+
+    const CorrectComponent1 = <FormLensNoMeta form={noMetaForm} name="person" />
+
+    const WrongComponent1 = (
+      // @ts-expect-error because the meta is not existent
+      <FormGroupWithMeta form={noMetaForm} name="person" />
+    )
+
+    const metaForm = useAppForm({
+      defaultValues,
+      onSubmitMeta,
+    })
+
+    const CorrectComponent2 = <FormLensNoMeta form={metaForm} name="person" />
+    const CorrectComponent3 = (
+      <FormGroupWithMeta form={metaForm} name="person" />
+    )
+
+    const diffMetaForm = useAppForm({
+      defaultValues,
+      onSubmitMeta: { ...onSubmitMeta, something: 'else' },
+    })
+
+    const CorrectComponent4 = (
+      <FormLensNoMeta form={diffMetaForm} name="person" />
+    )
+    const WrongComponent2 = (
+      // @ts-expect-error because the metas do not align.
+      <FormGroupWithMeta form={diffMetaForm} name="person" />
+    )
+  })
+
+  it('should accept any validators for withFormLens', () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+
+    const defaultValues = {
+      person: { firstName: 'FirstName', lastName: 'LastName' } satisfies Person,
+    }
+
+    const formA = useAppForm({
+      defaultValues,
+      validators: {
+        onChange: () => 'A',
+      },
+      listeners: {
+        onChange: () => 'A',
+      },
+    })
+    const formB = useAppForm({
+      defaultValues,
+      validators: {
+        onChange: () => 'B',
+      },
+      listeners: {
+        onChange: () => 'B',
+      },
+    })
+
+    const FormGroup = withFormLens({
+      defaultValues: defaultValues.person,
+      render: function Render({ lens }) {
+        return <lens.Test />
+      },
+    })
+
+    const CorrectComponent1 = <FormGroup form={formA} name="person" />
+    const CorrectComponent2 = <FormGroup form={formB} name="person" />
   })
 })
