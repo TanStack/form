@@ -325,7 +325,7 @@ export interface CreateFormGroupProps<
   ) => JSX.Element
 }
 
-export interface CreateFormLensProps<
+export interface WithFormLensProps<
   TLensData,
   TFieldComponents extends Record<string, ComponentType<any>>,
   TFormComponents extends Record<string, ComponentType<any>>,
@@ -687,7 +687,7 @@ export function createFormHook<
     render,
     props,
     defaultValues,
-  }: CreateFormLensProps<
+  }: WithFormLensProps<
     TLensData,
     TComponents,
     TFormComponents,
