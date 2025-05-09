@@ -11,7 +11,7 @@ title: ArrayAccessor
 type ArrayAccessor<TParent> = `${TParent["key"] extends never ? "" : TParent["key"]}[${number}]`;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:27](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L27)
+Defined in: [packages/form-core/src/util-types.ts:30](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L30)
 
 ## Type Parameters
 
