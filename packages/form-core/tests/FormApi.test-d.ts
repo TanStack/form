@@ -2,6 +2,7 @@ import { expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
 import { FormApi } from '../src'
 import type {
+  GlobalFormValidationError,
   StandardSchemaV1Issue,
   ValidationError,
   ValidationErrorMap,
@@ -118,11 +119,13 @@ it('should only have form-level error types returned from parseFieldValuesWithSc
 })
 
 it("should allow setting manual errors according to the validator's return type", () => {
+  type FormData = {
+    firstName: string
+    lastName: string
+  }
+
   const form = new FormApi({
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-    },
+    defaultValues: {} as FormData,
     validators: {
       onChange: () => ['onChange'] as const,
       onMount: () => 10 as const,
@@ -134,28 +137,67 @@ it("should allow setting manual errors according to the validator's return type"
     },
   })
 
+  form.setErrorMap({
+    onMount: 10,
+    onChange: ['onChange'],
+  })
+
   expectTypeOf(form.setErrorMap).parameter(0).toEqualTypeOf<{
-    onMount: 10 | undefined
-    onChange: readonly ['onChange'] | 'onChangeAsync' | undefined
-    onBlur: { onBlur: true; onBlurNumber: number } | 'onBlurAsync' | undefined
-    onSubmit: 'onSubmit' | 'onSubmitAsync' | undefined
+    onMount: 10 | undefined | GlobalFormValidationError<FormData>
+    onChange:
+      | readonly ['onChange']
+      | 'onChangeAsync'
+      | undefined
+      | GlobalFormValidationError<FormData>
+    onBlur:
+      | { onBlur: true; onBlurNumber: number }
+      | 'onBlurAsync'
+      | undefined
+      | GlobalFormValidationError<FormData>
+    onSubmit:
+      | 'onSubmit'
+      | 'onSubmitAsync'
+      | undefined
+      | GlobalFormValidationError<FormData>
     onServer: undefined
   }>
 })
 
-it('should not allow setting manual errors if no validator is specified', () => {
+it('should allow setting field errors from the global form error map', () => {
+  type FormData = {
+    firstName: string
+    lastName: string
+  }
+
   const form = new FormApi({
-    defaultValues: {
-      firstName: '',
-      lastName: '',
+    defaultValues: {} as FormData,
+  })
+
+  form.setErrorMap({
+    onChange: {
+      fields: {
+        firstName: 'error',
+        // @ts-expect-error
+        nonExistentField: 'error',
+      },
     },
+  })
+})
+
+it('should not allow setting manual errors if no validator is specified', () => {
+  type FormData = {
+    firstName: string
+    lastName: string
+  }
+  const form = new FormApi({
+    defaultValues: {} as FormData,
   })
 
   expectTypeOf(form.setErrorMap).parameter(0).toEqualTypeOf<{
-    onMount: undefined
-    onChange: undefined
-    onBlur: undefined
-    onSubmit: undefined
+    onMount: undefined | GlobalFormValidationError<FormData>
+    onChange: undefined | GlobalFormValidationError<FormData>
+    onBlur: undefined | GlobalFormValidationError<FormData>
+    onSubmit: undefined | GlobalFormValidationError<FormData>
     onServer: undefined
   }>
 })
