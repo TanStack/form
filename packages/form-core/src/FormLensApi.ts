@@ -79,7 +79,7 @@ export class FormLensApi<
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TSubmitMeta = never,
 > {
-  private formInstance: FormApi<
+  private readonly formInstance: FormApi<
     TFormData,
     TOnMount,
     TOnChange,
@@ -92,9 +92,13 @@ export class FormLensApi<
     TSubmitMeta
   >
 
-  private lensPrefix: TName
+  private readonly lensPrefix: TName
 
-  private getFormFieldName = <TField extends DeepKeys<TLensData>>(
+  /**
+   * Get the true name of the field.
+   * @private
+   */
+  getFormFieldName = <TField extends DeepKeys<TLensData>>(
     subfield: TField,
   ): DeepKeys<TFormData> => {
     // TODO find better solution to chaining names. This is prone to breaking if the syntax ever changes

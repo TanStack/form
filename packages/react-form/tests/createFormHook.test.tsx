@@ -202,4 +202,86 @@ describe('createFormHook', () => {
     expect(input).toHaveValue('John')
     expect(getByText('Testing')).toBeInTheDocument()
   })
+
+  it('should use the correct field name in Field with withFormLens', () => {
+    const formOpts = formOptions({
+      defaultValues: {
+        person: {
+          firstName: 'John',
+          lastName: 'Doe',
+        },
+        people: [
+          {
+            firstName: 'Jane',
+            lastName: 'Doe',
+          },
+          {
+            firstName: 'Robert',
+            lastName: 'Doe',
+          },
+        ],
+      },
+    })
+
+    const ChildFormAsField = withFormLens({
+      defaultValues: formOpts.defaultValues.person,
+      render: ({ lens }) => {
+        return (
+          <div>
+            <p>{lens.name}</p>
+            <lens.AppField
+              name="firstName"
+              children={(field) => <field.TextField label={field.name} />}
+            />
+            <lens.AppForm>
+              <lens.SubscribeButton label="Submit" />
+            </lens.AppForm>
+          </div>
+        )
+      },
+    })
+    const ChildFormAsArray = withFormLens({
+      defaultValues: [formOpts.defaultValues.person],
+      props: {
+        title: '',
+      },
+      render: ({ lens, title }) => {
+        return (
+          <div>
+            <p>{title}</p>
+            <lens.AppField
+              name="[0].firstName"
+              children={(field) => <field.TextField label={field.name} />}
+            />
+            <lens.AppForm>
+              <lens.SubscribeButton label="Submit" />
+            </lens.AppForm>
+          </div>
+        )
+      },
+    })
+
+    const Parent = () => {
+      const form = useAppForm({
+        ...formOpts,
+      })
+
+      return (
+        <>
+          <ChildFormAsField form={form} name="person" />
+          <ChildFormAsArray form={form} name="people" title="Testing" />
+          <ChildFormAsField form={form} name="people[1]" />
+        </>
+      )
+    }
+
+    const { getByLabelText, getByText } = render(<Parent />)
+    const inputField1 = getByLabelText('person.firstName')
+    const inputArray = getByLabelText('people[0].firstName')
+    const inputField2 = getByLabelText('people[1].firstName')
+    expect(inputField1).toHaveValue('John')
+    expect(inputArray).toHaveValue('Jane')
+    expect(inputField2).toHaveValue('Robert')
+    expect(getByText('Testing')).toBeInTheDocument()
+  })
 })

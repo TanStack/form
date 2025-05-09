@@ -430,7 +430,7 @@ export function createFormHook<
         return (
           <opts.form.AppField
             // @ts-expect-error because it doesn't recognize the name as a valid path.
-            name={`${opts.name}.${name}`}
+            name={formLensApi.getFormFieldName(name)}
             {...appFieldProps}
           />
         )
@@ -447,13 +447,16 @@ export function createFormHook<
         TSubmitMeta,
         TComponents
       >
-    }, [opts])
+    }, [opts, formLensApi])
 
     const Field = useMemo(() => {
       return (({ name, ...fieldProps }) => {
         return (
-          // @ts-expect-error because it doesn't recognize the name as a valid path.
-          <opts.form.Field name={`${opts.name}.${name}`} {...fieldProps} />
+          <opts.form.Field
+            // @ts-expect-error because it doesn't recognize the name as a valid path.
+            name={formLensApi.getFormFieldName(name)}
+            {...fieldProps}
+          />
         )
       }) as FieldComponent<
         DeepValue<TFormData, TName>,
@@ -467,7 +470,7 @@ export function createFormHook<
         any,
         TSubmitMeta
       >
-    }, [opts])
+    }, [opts, formLensApi])
 
     const formLens = useMemo(() => {
       return Object.assign(formLensApi, {
