@@ -803,9 +803,9 @@ it('form should reset when rendered correctly - react', async () => {
         name: '',
       },
       onSubmit: ({ value }) => {
-        expect(value).toEqual({ name: 'test' })
+        expect(value).toEqual({ name: 'another-test' })
 
-        form.reset({ name: 'test' })
+        form.reset(value)
       },
     })
 
@@ -830,6 +830,10 @@ it('form should reset when rendered correctly - react', async () => {
         >
           submit
         </button>
+
+        <button type="button" onClick={() => form.reset()} data-testid="reset">
+          reset
+        </button>
       </div>
     )
   }
@@ -837,11 +841,15 @@ it('form should reset when rendered correctly - react', async () => {
   const { getByTestId } = render(<Comp />)
   const input = getByTestId('fieldinput')
   const submit = getByTestId('submit')
+  const reset = getByTestId('reset')
 
   await user.type(input, 'test')
   await waitFor(() => expect(input).toHaveValue('test'))
 
-  await user.click(submit)
+  await user.click(reset)
+  await waitFor(() => expect(input).toHaveValue(''))
 
-  await waitFor(() => expect(input).toHaveValue('test'))
+  await user.type(input, 'another-test')
+  await user.click(submit)
+  await waitFor(() => expect(input).toHaveValue('another-test'))
 })
