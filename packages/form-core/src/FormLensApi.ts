@@ -32,18 +32,26 @@ export interface FormLensOptions<
   in out TSubsetData,
   in out TFormData,
   in out TName extends DeepKeys<TFormData>,
+  in out TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TSubmitMeta = never,
 > {
   form: FormApi<
     TFormData,
-    FormValidateOrFn<TFormData> | undefined,
-    FormValidateOrFn<TFormData> | undefined,
-    FormAsyncValidateOrFn<TFormData> | undefined,
-    FormValidateOrFn<TFormData> | undefined,
-    FormAsyncValidateOrFn<TFormData> | undefined,
-    FormValidateOrFn<TFormData> | undefined,
-    FormAsyncValidateOrFn<TFormData> | undefined,
-    FormAsyncValidateOrFn<TFormData> | undefined,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer,
     TSubmitMeta
   >
   name: TName
@@ -61,18 +69,26 @@ export class FormLensApi<
   in out TFormData,
   in out TLensData,
   in out TName extends DeepKeysOfType<TFormData, TLensData>,
+  in out TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TSubmitMeta = never,
 > {
   private formInstance: FormApi<
     TFormData,
-    FormValidateOrFn<TFormData> | undefined,
-    FormValidateOrFn<TFormData> | undefined,
-    FormAsyncValidateOrFn<TFormData> | undefined,
-    FormValidateOrFn<TFormData> | undefined,
-    FormAsyncValidateOrFn<TFormData> | undefined,
-    FormValidateOrFn<TFormData> | undefined,
-    FormAsyncValidateOrFn<TFormData> | undefined,
-    FormAsyncValidateOrFn<TFormData> | undefined,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer,
     TSubmitMeta
   >
 
@@ -105,14 +121,14 @@ export class FormLensApi<
    */
   get options(): FormOptions<
     TFormData,
-    FormValidateOrFn<TFormData> | undefined,
-    FormValidateOrFn<TFormData> | undefined,
-    FormAsyncValidateOrFn<TFormData> | undefined,
-    FormValidateOrFn<TFormData> | undefined,
-    FormAsyncValidateOrFn<TFormData> | undefined,
-    FormValidateOrFn<TFormData> | undefined,
-    FormAsyncValidateOrFn<TFormData> | undefined,
-    FormAsyncValidateOrFn<TFormData> | undefined,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer,
     TSubmitMeta
   > {
     return this.formInstance.options
@@ -121,14 +137,14 @@ export class FormLensApi<
   get baseStore(): Store<
     BaseFormState<
       TFormData,
-      FormValidateOrFn<TFormData> | undefined,
-      FormValidateOrFn<TFormData> | undefined,
-      FormAsyncValidateOrFn<TFormData> | undefined,
-      FormValidateOrFn<TFormData> | undefined,
-      FormAsyncValidateOrFn<TFormData> | undefined,
-      FormValidateOrFn<TFormData> | undefined,
-      FormAsyncValidateOrFn<TFormData> | undefined,
-      FormAsyncValidateOrFn<TFormData> | undefined
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
     >
   > {
     return this.formInstance.baseStore
@@ -141,14 +157,14 @@ export class FormLensApi<
   get store(): Derived<
     FormState<
       TFormData,
-      FormValidateOrFn<TFormData> | undefined,
-      FormValidateOrFn<TFormData> | undefined,
-      FormAsyncValidateOrFn<TFormData> | undefined,
-      FormValidateOrFn<TFormData> | undefined,
-      FormAsyncValidateOrFn<TFormData> | undefined,
-      FormValidateOrFn<TFormData> | undefined,
-      FormAsyncValidateOrFn<TFormData> | undefined,
-      FormAsyncValidateOrFn<TFormData> | undefined
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
     >
   > {
     return this.formInstance.store
@@ -168,7 +184,22 @@ export class FormLensApi<
   /**
    * Constructs a new `FormApi` instance with the given form options.
    */
-  constructor(opts: FormLensOptions<TLensData, TFormData, TName, TSubmitMeta>) {
+  constructor(
+    opts: FormLensOptions<
+      TLensData,
+      TFormData,
+      TName,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer,
+      TSubmitMeta
+    >,
+  ) {
     this.formInstance = opts.form
     this.lensPrefix = opts.name
 
@@ -183,14 +214,14 @@ export class FormLensApi<
   update: (
     options?: FormOptions<
       TFormData,
-      FormValidateOrFn<TFormData> | undefined,
-      FormValidateOrFn<TFormData> | undefined,
-      FormAsyncValidateOrFn<TFormData> | undefined,
-      FormValidateOrFn<TFormData> | undefined,
-      FormAsyncValidateOrFn<TFormData> | undefined,
-      FormValidateOrFn<TFormData> | undefined,
-      FormAsyncValidateOrFn<TFormData> | undefined,
-      FormAsyncValidateOrFn<TFormData> | undefined,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer,
       TSubmitMeta
     >,
   ) => void
@@ -284,6 +315,7 @@ export class FormLensApi<
     updater: Updater<DeepValue<TLensData, TField>>,
     opts?: UpdateMetaOptions,
   ) => {
+    console.log(this.getFormFieldName(field))
     return this.formInstance.setFieldValue(
       this.getFormFieldName(field) as never,
       updater as never,
@@ -461,10 +493,13 @@ export class FormLensApi<
             return data
           }
           // the field error is a subfield of the lens
-          const newFieldName = fieldName.replace(
-            `${this.lensPrefix}.`,
+          let newFieldName = fieldName.replace(
+            this.lensPrefix,
             '',
           ) as DeepKeys<TLensData>
+          if (newFieldName.startsWith('.')) {
+            newFieldName = newFieldName.slice(1)
+          }
           data.fields[newFieldName] = errorData
           return data
         },

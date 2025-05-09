@@ -529,4 +529,493 @@ describe('form lens api', () => {
       form.getFieldInfo('relatives.father.age'),
     )
   })
+
+  it('should be compliant with top level array defaultValues', () => {
+    const form = new FormApi({
+      defaultValues: { people: [{ name: 'Default' }, { name: 'Default' }] },
+    })
+    form.mount()
+
+    const lens = new FormLensApi({
+      form,
+      defaultValues: [{ name: '' }],
+      name: 'people',
+    })
+
+    lens.setFieldValue('[0]', { name: 'Override One' })
+    lens.setFieldValue('[1].name', 'Override Two')
+
+    expect(form.getFieldValue('people[0].name')).toBe('Override One')
+    expect(form.getFieldValue('people[1].name')).toBe('Override Two')
+  })
+
+  it('should forward validateArrayFieldsStartingFrom to form', async () => {
+    vi.useFakeTimers()
+    const defaultValues = {
+      people: {
+        names: [
+          {
+            name: '',
+          },
+          {
+            name: '',
+          },
+          {
+            name: '',
+          },
+        ],
+      },
+    }
+
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const field0 = new FieldApi({
+      form,
+      name: 'people.names[0].name',
+    })
+    const field1 = new FieldApi({
+      form,
+      name: 'people.names[1].name',
+    })
+    const field2 = new FieldApi({
+      form,
+      name: 'people.names[2].name',
+    })
+    field0.mount()
+    field1.mount()
+    field2.mount()
+
+    const lens = new FormLensApi({
+      form,
+      defaultValues: {
+        names: [{ name: '' }],
+      },
+      name: 'people',
+    })
+
+    lens.validateArrayFieldsStartingFrom('names', 1, 'change')
+
+    await vi.runAllTimersAsync()
+
+    expect(field0.getMeta().isTouched).toBe(false)
+    expect(field1.getMeta().isTouched).toBe(true)
+    expect(field2.getMeta().isTouched).toBe(true)
+  })
+
+  it('should forward handleSubmit to the form', async () => {
+    vi.useFakeTimers()
+
+    const defaultValues = {
+      person: {
+        name: '',
+      },
+    }
+
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const lens = new FormLensApi({
+      defaultValues: { name: '' },
+      form,
+      name: 'person',
+    })
+
+    lens.handleSubmit()
+
+    await vi.runAllTimersAsync()
+
+    expect(form.state.isSubmitted).toBe(true)
+    expect(form.state.isSubmitSuccessful).toBe(true)
+  })
+
+  it('should forward resetField to the form', () => {
+    const defaultValues = {
+      nested: {
+        field: {
+          name: '',
+        },
+      },
+    }
+
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const lens = new FormLensApi({
+      defaultValues: { name: '' },
+      form,
+      name: 'nested.field',
+    })
+
+    lens.setFieldValue('name', 'Nested')
+
+    expect(form.state.values.nested.field.name).toEqual('Nested')
+
+    lens.resetField('name')
+    expect(form.state.values.nested.field.name).toEqual('')
+  })
+
+  it('should forward deleteField to the form', () => {
+    const defaultValues = {
+      nested: {
+        field: {
+          name: '',
+        },
+      },
+    }
+
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const lens = new FormLensApi({
+      defaultValues: { name: '' },
+      form,
+      name: 'nested.field',
+    })
+
+    lens.deleteField('name')
+
+    expect(form.state.values.nested.field.name).toBeUndefined()
+  })
+
+  it('should forward array methods to the form', async () => {
+    vi.useFakeTimers()
+    const defaultValues = {
+      people: {
+        names: [
+          {
+            name: '',
+          },
+          {
+            name: '',
+          },
+          {
+            name: '',
+          },
+        ],
+      },
+    }
+
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const field0 = new FieldApi({
+      form,
+      name: 'people.names[0].name',
+    })
+    const field1 = new FieldApi({
+      form,
+      name: 'people.names[1].name',
+    })
+    const field2 = new FieldApi({
+      form,
+      name: 'people.names[2].name',
+    })
+    field0.mount()
+    field1.mount()
+    field2.mount()
+
+    const lens = new FormLensApi({
+      defaultValues: { names: [{ name: '' }] },
+      form,
+      name: 'people',
+    })
+
+    lens.validateArrayFieldsStartingFrom('names', 1, 'change')
+
+    await vi.runAllTimersAsync()
+
+    expect(field0.getMeta().isTouched).toBe(false)
+    expect(field1.getMeta().isTouched).toBe(true)
+    expect(field2.getMeta().isTouched).toBe(true)
+
+    lens.pushFieldValue('names', { name: 'Push' })
+
+    expect(form.getFieldValue('people.names')).toEqual([
+      {
+        name: '',
+      },
+      {
+        name: '',
+      },
+      {
+        name: '',
+      },
+      {
+        name: 'Push',
+      },
+    ])
+
+    lens.insertFieldValue('names', 1, { name: 'Insert' })
+
+    expect(form.getFieldValue('people.names')).toEqual([
+      {
+        name: '',
+      },
+      {
+        name: 'Insert',
+      },
+      {
+        name: '',
+      },
+      {
+        name: '',
+      },
+      {
+        name: 'Push',
+      },
+    ])
+
+    lens.replaceFieldValue('names', 2, { name: 'Replace' })
+
+    expect(form.getFieldValue('people.names')).toEqual([
+      {
+        name: '',
+      },
+      {
+        name: 'Insert',
+      },
+      {
+        name: 'Replace',
+      },
+      {
+        name: '',
+      },
+      {
+        name: 'Push',
+      },
+    ])
+
+    lens.removeFieldValue('names', 3)
+
+    expect(form.getFieldValue('people.names')).toEqual([
+      {
+        name: '',
+      },
+      {
+        name: 'Insert',
+      },
+      {
+        name: 'Replace',
+      },
+      {
+        name: 'Push',
+      },
+    ])
+
+    lens.swapFieldValues('names', 2, 3)
+
+    expect(form.getFieldValue('people.names')).toEqual([
+      {
+        name: '',
+      },
+      {
+        name: 'Insert',
+      },
+      {
+        name: 'Push',
+      },
+      {
+        name: 'Replace',
+      },
+    ])
+
+    lens.moveFieldValues('names', 0, 2)
+
+    expect(form.getFieldValue('people.names')).toEqual([
+      {
+        name: 'Insert',
+      },
+      {
+        name: 'Push',
+      },
+      {
+        name: '',
+      },
+      {
+        name: 'Replace',
+      },
+    ])
+  })
+
+  it('should parse getAllErrors to match subfield names', () => {
+    const emptyError = {
+      errors: [],
+      errorMap: {},
+    }
+    function errorWith(value: string) {
+      return {
+        errors: [value],
+        errorMap: {
+          onMount: value,
+        },
+      }
+    }
+    const defaultValues: FormValues = {
+      age: 0,
+      name: '',
+      people: [
+        { age: 0, name: '' },
+        { age: 0, name: '' },
+      ],
+      relatives: {
+        father: {
+          name: '',
+          age: 0,
+        },
+      },
+    }
+
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const field0 = new FieldApi({
+      form,
+      name: 'people[0].age',
+      validators: {
+        onMount: () => 'people[0].age',
+      },
+    })
+    const field1 = new FieldApi({
+      form,
+      name: 'people[1].name',
+      validators: {
+        onMount: () => 'people[1].name',
+      },
+    })
+    const field2 = new FieldApi({
+      form,
+      name: 'relatives.father',
+      validators: {
+        onMount: () => 'relatives.father',
+      },
+    })
+    field0.mount()
+    field1.mount()
+    field2.mount()
+
+    // Test one: people[0].age -> age
+    const lens1 = new FormLensApi({
+      defaultValues: {} as Person,
+      form,
+      name: 'people[0]',
+    })
+
+    expect(lens1.getAllErrors()).toEqual({
+      form: emptyError,
+      lens: emptyError,
+      fields: {
+        age: errorWith('people[0].age'),
+      },
+    })
+
+    // Test two: relatives.father -> Lens level error
+    const lens2 = new FormLensApi({
+      defaultValues: {} as Person,
+      form,
+      name: 'relatives.father',
+    })
+
+    expect(lens2.getAllErrors()).toEqual({
+      form: emptyError,
+      lens: errorWith('relatives.father'),
+      fields: {},
+    })
+
+    // Test three: array at top level -> namespaced
+    const lens3 = new FormLensApi({
+      defaultValues: [] as Person[],
+      form,
+      name: 'people',
+    })
+
+    expect(lens3.getAllErrors()).toEqual({
+      form: emptyError,
+      lens: emptyError,
+      fields: {
+        '[0].age': errorWith('people[0].age'),
+        '[1].name': errorWith('people[1].name'),
+      },
+    })
+  })
+
+  it('should inherit form errors in getAllErrors', () => {
+    type ValueType = { value: string }
+    type FormType = { nested: ValueType }
+
+    const defaultValues: FormType = {
+      nested: { value: '' },
+    }
+    const form = new FormApi({
+      defaultValues,
+      validators: {
+        onMount: () => 'Error',
+      },
+    })
+    form.mount()
+
+    const lens = new FormLensApi({
+      defaultValues: {} as ValueType,
+      form,
+      name: 'nested',
+    })
+
+    expect(lens.getAllErrors()).toEqual({
+      form: { errors: ['Error'], errorMap: { onMount: 'Error' } },
+      lens: {
+        errors: [],
+        errorMap: {},
+      },
+      fields: {},
+    })
+  })
+
+  it('should parse values with a provided schema', async () => {
+    vi.useFakeTimers()
+    const schema = z.object({
+      nested: z.object({
+        value: z.string().min(1),
+      }),
+    })
+    type FormType = z.input<typeof schema>
+
+    const defaultValues: FormType = {
+      nested: {
+        value: '',
+      },
+    }
+
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const lens = new FormLensApi({
+      defaultValues: { value: '' },
+      form,
+      name: 'nested',
+    })
+
+    const issuesSync = lens.parseValuesWithSchema(schema.shape.nested)
+    expect(issuesSync?.length).toBe(1)
+    expect(issuesSync?.[0]).toHaveProperty('message')
+
+    const issuesPromise = lens.parseValuesWithSchemaAsync(schema.shape.nested)
+    expect(issuesPromise).toBeInstanceOf(Promise)
+    const issuesAsync = await issuesPromise
+
+    expect(issuesAsync).toEqual(issuesSync)
+  })
 })
