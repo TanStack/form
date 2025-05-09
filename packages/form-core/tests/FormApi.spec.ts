@@ -3608,3 +3608,61 @@ it('should mark sourceMap as undefined when async field error is resolved', asyn
 
   expect(field.getMeta().errorSourceMap.onChange).toBeUndefined()
 })
+
+it('should reset nested fields', () => {
+  const defaultValues = {
+    shallow: '',
+    nested: {
+      field: {
+        name: '',
+      },
+    },
+  }
+
+  const form = new FormApi({
+    defaultValues,
+  })
+  form.mount()
+
+  form.setFieldValue('shallow', 'Shallow')
+  form.setFieldValue('nested.field.name', 'Nested')
+
+  expect(form.state.values.shallow).toEqual('Shallow')
+  expect(form.state.values.nested.field.name).toEqual('Nested')
+
+  form.resetField('shallow')
+  expect(form.state.values.shallow).toEqual('')
+
+  form.resetField('nested.field.name')
+  expect(form.state.values.nested.field.name).toEqual('')
+})
+
+it('should preserve nested fields on resetField if defaultValues is not provided', () => {
+  const defaultValues = {
+    shallow: '',
+    nested: {
+      field: {
+        name: '',
+      },
+    },
+  }
+
+  const form = new FormApi({
+    defaultState: {
+      values: defaultValues,
+    },
+  })
+  form.mount()
+
+  form.setFieldValue('shallow', 'Shallow')
+  form.setFieldValue('nested.field.name', 'Nested')
+
+  expect(form.state.values.shallow).toEqual('Shallow')
+  expect(form.state.values.nested.field.name).toEqual('Nested')
+
+  form.resetField('shallow')
+  expect(form.state.values.shallow).toEqual('Shallow')
+
+  form.resetField('nested.field.name')
+  expect(form.state.values.nested.field.name).toEqual('Nested')
+})

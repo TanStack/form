@@ -2139,12 +2139,9 @@ export class FormApi<
           ...prev.fieldMetaBase,
           [field]: defaultFieldMeta,
         },
-        values: {
-          ...prev.values,
-          [field]:
-            this.options.defaultValues &&
-            this.options.defaultValues[field as keyof TFormData],
-        },
+        values: this.options.defaultValues
+          ? setBy(prev.values, field, getBy(this.options.defaultValues, field))
+          : prev.values,
       }
     })
   }
