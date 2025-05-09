@@ -24,7 +24,7 @@ You can access any piece of the form state in the selector.
 
 > Note, that `useStore` will cause a whole component re-render whenever the value subscribed to changes.
 
-While it IS possible to omit the selector, resist the urge as omitting it would result in many unnecessary re-renders whenever any of the form state changes.
+While it is possible to omit the selector, resist the urge as omitting it would result in many unnecessary re-renders whenever any of the form state changes.
 
 ## form.Subscribe
 
