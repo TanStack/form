@@ -161,7 +161,7 @@ Defined in: [packages/form-core/src/FormApi.ts:1938](https://github.com/TanStack
 getAllErrors(): object
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2174](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2174)
+Defined in: [packages/form-core/src/FormApi.ts:2212](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2212)
 
 Returns form and field level errors
 
@@ -187,7 +187,7 @@ form: object;
 ###### form.errorMap
 
 ```ts
-errorMap: FormValidationErrorMap<UnwrapFormValidateOrFn<TOnMount>, UnwrapFormValidateOrFn<TOnChange>, UnwrapFormAsyncValidateOrFn<TOnChangeAsync>, UnwrapFormValidateOrFn<TOnBlur>, UnwrapFormAsyncValidateOrFn<TOnBlurAsync>, UnwrapFormValidateOrFn<TOnSubmit>, UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>, UnwrapFormAsyncValidateOrFn<TOnServer>>;
+errorMap: ValidationErrorMap<UnwrapFormValidateOrFn<TOnMount>, UnwrapFormValidateOrFn<TOnChange>, UnwrapFormAsyncValidateOrFn<TOnChangeAsync>, UnwrapFormValidateOrFn<TOnBlur>, UnwrapFormAsyncValidateOrFn<TOnBlurAsync>, UnwrapFormValidateOrFn<TOnSubmit>, UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>, UnwrapFormAsyncValidateOrFn<TOnServer>>;
 ```
 
 ###### form.errors
@@ -433,7 +433,7 @@ parseValuesWithSchema(schema):
 }
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2234](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2234)
+Defined in: [packages/form-core/src/FormApi.ts:2272](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2272)
 
 Parses the form's values with a given standard schema and returns
 issues (if any). This method does NOT set any internal errors.
@@ -467,7 +467,7 @@ parseValuesWithSchemaAsync(schema): Promise<
 }>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2246](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2246)
+Defined in: [packages/form-core/src/FormApi.ts:2284](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2284)
 
 Parses the form's values with a given standard schema and returns
 issues (if any). This method does NOT set any internal errors.
@@ -706,7 +706,7 @@ Updates the form's errorMap
 
 ##### errorMap
 
-`ValidationErrorMap`\<[`UnwrapFormValidateOrFn`](../type-aliases/unwrapformvalidateorfn.md)\<`TOnMount`\>, [`UnwrapFormValidateOrFn`](../type-aliases/unwrapformvalidateorfn.md)\<`TOnChange`\>, [`UnwrapFormAsyncValidateOrFn`](../type-aliases/unwrapformasyncvalidateorfn.md)\<`TOnChangeAsync`\>, [`UnwrapFormValidateOrFn`](../type-aliases/unwrapformvalidateorfn.md)\<`TOnBlur`\>, [`UnwrapFormAsyncValidateOrFn`](../type-aliases/unwrapformasyncvalidateorfn.md)\<`TOnBlurAsync`\>, [`UnwrapFormValidateOrFn`](../type-aliases/unwrapformvalidateorfn.md)\<`TOnSubmit`\>, [`UnwrapFormAsyncValidateOrFn`](../type-aliases/unwrapformasyncvalidateorfn.md)\<`TOnSubmitAsync`\>, [`UnwrapFormAsyncValidateOrFn`](../type-aliases/unwrapformasyncvalidateorfn.md)\<`TOnServer`\>\>
+`FormValidationErrorMap`\<`TFormData`, [`UnwrapFormValidateOrFn`](../type-aliases/unwrapformvalidateorfn.md)\<`TOnMount`\>, [`UnwrapFormValidateOrFn`](../type-aliases/unwrapformvalidateorfn.md)\<`TOnChange`\>, [`UnwrapFormAsyncValidateOrFn`](../type-aliases/unwrapformasyncvalidateorfn.md)\<`TOnChangeAsync`\>, [`UnwrapFormValidateOrFn`](../type-aliases/unwrapformvalidateorfn.md)\<`TOnBlur`\>, [`UnwrapFormAsyncValidateOrFn`](../type-aliases/unwrapformasyncvalidateorfn.md)\<`TOnBlurAsync`\>, [`UnwrapFormValidateOrFn`](../type-aliases/unwrapformvalidateorfn.md)\<`TOnSubmit`\>, [`UnwrapFormAsyncValidateOrFn`](../type-aliases/unwrapformasyncvalidateorfn.md)\<`TOnSubmitAsync`\>, [`UnwrapFormAsyncValidateOrFn`](../type-aliases/unwrapformasyncvalidateorfn.md)\<`TOnServer`\>\>
 
 #### Returns
 
