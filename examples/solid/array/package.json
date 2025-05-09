@@ -9,12 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/solid-form": "^1.8.0",
-    "solid-js": "^1.9.5"
+    "@tanstack/solid-form": "^1.10.0",
+    "solid-js": "^1.9.6"
   },
   "devDependencies": {
     "typescript": "5.8.2",
-    "vite": "^6.3.3",
+    "vite": "^6.3.4",
     "vite-plugin-solid": "^2.11.6"
   }
 }

@@ -394,3 +394,67 @@ it('should only have field-level error types returned from parseValueWithSchema 
     Promise<StandardSchemaV1Issue[] | undefined>
   >()
 })
+
+it("should allow setting manual errors according to the validator's return type", () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+    },
+    validators: {
+      onChange: () => {
+        return {
+          fields: {
+            firstName: '123' as const,
+          },
+        }
+      },
+    },
+  })
+
+  const field = new FieldApi({
+    form,
+    name: 'firstName',
+    validators: {
+      onChange: () => 10 as const,
+      onBlur: () => ['onBlur'] as const,
+    },
+  })
+
+  field.setErrorMap({
+    onChange: '123',
+  })
+
+  expectTypeOf(field.setErrorMap).parameter(0).toEqualTypeOf<{
+    onMount: undefined
+    onChange: '123' | 10 | undefined
+    onBlur: readonly ['onBlur'] | undefined
+    onSubmit: undefined
+    onServer: unknown
+  }>
+})
+
+it('should allow setting manual errors with standard schema validators on the field level', () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+    },
+  })
+
+  const field = new FieldApi({
+    form,
+    name: 'firstName',
+    validators: {
+      onChange: z.string(),
+    },
+  })
+
+  expectTypeOf(field.setErrorMap).parameter(0).toEqualTypeOf<{
+    onMount: undefined
+    onChange: { message: string }[] | undefined
+    onBlur: undefined
+    onSubmit: undefined
+    onServer: unknown
+  }>
+})

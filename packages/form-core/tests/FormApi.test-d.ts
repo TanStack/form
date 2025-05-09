@@ -118,6 +118,49 @@ it('should only have form-level error types returned from parseFieldValuesWithSc
   >()
 })
 
+it("should allow setting manual errors according to the validator's return type", () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+    },
+    validators: {
+      onChange: () => ['onChange'] as const,
+      onMount: () => 10 as const,
+      onBlur: () => ({ onBlur: true as const, onBlurNumber: 1 }),
+      onSubmit: () => 'onSubmit' as const,
+      onBlurAsync: () => Promise.resolve('onBlurAsync' as const),
+      onChangeAsync: () => Promise.resolve('onChangeAsync' as const),
+      onSubmitAsync: () => Promise.resolve('onSubmitAsync' as const),
+    },
+  })
+
+  expectTypeOf(form.setErrorMap).parameter(0).toEqualTypeOf<{
+    onMount: 10 | undefined
+    onChange: readonly ['onChange'] | 'onChangeAsync' | undefined
+    onBlur: { onBlur: true; onBlurNumber: number } | 'onBlurAsync' | undefined
+    onSubmit: 'onSubmit' | 'onSubmitAsync' | undefined
+    onServer: undefined
+  }>
+})
+
+it('should not allow setting manual errors if no validator is specified', () => {
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+    },
+  })
+
+  expectTypeOf(form.setErrorMap).parameter(0).toEqualTypeOf<{
+    onMount: undefined
+    onChange: undefined
+    onBlur: undefined
+    onSubmit: undefined
+    onServer: undefined
+  }>
+})
+
 it('should only allow array fields for array-specific methods', () => {
   type FormValues = {
     name: string
@@ -181,4 +224,10 @@ it('should only allow array fields for array-specific methods', () => {
   const move2 = form.moveFieldValues<AllKeys>
   // @ts-expect-error too wide!
   const move3 = form.moveFieldValues<RandomKeys>
+
+  const validate1 = form.validateArrayFieldsStartingFrom<OnlyArrayKeys>
+  // @ts-expect-error too wide!
+  const validate2 = form.validateArrayFieldsStartingFrom<AllKeys>
+  // @ts-expect-error too wide!
+  const validate3 = form.validateArrayFieldsStartingFrom<RandomKeys>
 })

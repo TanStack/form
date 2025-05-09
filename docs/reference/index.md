@@ -82,8 +82,8 @@ title: "@tanstack/form-core"
 
 ## Functions
 
+- [evaluate](functions/evaluate.md)
 - [formOptions](functions/formoptions.md)
 - [isGlobalFormValidationError](functions/isglobalformvalidationerror.md)
 - [isStandardSchemaValidator](functions/isstandardschemavalidator.md)
 - [mergeForm](functions/mergeform.md)
-- [shallow](functions/shallow.md)

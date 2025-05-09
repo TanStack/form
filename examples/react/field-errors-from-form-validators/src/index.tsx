@@ -78,7 +78,7 @@ export default function App() {
                   field.handleChange(e.target.value)
                 }}
               />
-              {field.state.meta.errors.length > 0 ? (
+              {!field.state.meta.isValid ? (
                 <em role="alert">{field.state.meta.errors.join(', ')}</em>
               ) : null}
             </div>
@@ -100,7 +100,7 @@ export default function App() {
                 type="number"
                 onChange={(e) => field.handleChange(e.target.valueAsNumber)}
               />
-              {field.state.meta.errors.length > 0 ? (
+              {!field.state.meta.isValid ? (
                 <em role="alert">{field.state.meta.errors.join(', ')}</em>
               ) : null}
             </div>
@@ -112,8 +112,7 @@ export default function App() {
             errorMap.onSubmit ? (
               <div>
                 <em>
-                  There was an error on the form:{' '}
-                  {errorMap.onSubmit?.toString()}
+                  There was an error on the form: {errorMap.onSubmit.toString()}
                 </em>
               </div>
             ) : null

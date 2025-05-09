@@ -652,6 +652,14 @@ export type FieldMetaDerived<
    * A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
    */
   isPristine: boolean
+  /**
+   * A boolean indicating if the field is valid. Evaluates `true` if there are no field errors.
+   */
+  isValid: boolean
+  /**
+   * A flag indicating whether the field's current value is the default value
+   */
+  isDefaultValue: boolean
 }
 
 export type AnyFieldMetaDerived = FieldMetaDerived<
@@ -1213,7 +1221,7 @@ export class FieldApi<
    */
   setMeta = (
     updater: Updater<
-      FieldMeta<
+      FieldMetaBase<
         TParentData,
         TName,
         TData,
@@ -1667,17 +1675,24 @@ export class FieldApi<
   /**
    * Updates the field's errorMap
    */
-  setErrorMap(errorMap: ValidationErrorMap) {
-    this.setMeta(
-      (prev) =>
-        ({
-          ...prev,
-          errorMap: {
-            ...prev.errorMap,
-            ...errorMap,
-          },
-        }) as never,
-    )
+  setErrorMap(
+    errorMap: ValidationErrorMap<
+      UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>,
+      UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>,
+      UnwrapFieldAsyncValidateOrFn<TName, TOnChangeAsync, TFormOnChangeAsync>,
+      UnwrapFieldValidateOrFn<TName, TOnBlur, TFormOnBlur>,
+      UnwrapFieldAsyncValidateOrFn<TName, TOnBlurAsync, TFormOnBlurAsync>,
+      UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>,
+      UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>
+    >,
+  ) {
+    this.setMeta((prev) => ({
+      ...prev,
+      errorMap: {
+        ...prev.errorMap,
+        ...errorMap,
+      },
+    }))
   }
 
   /**
