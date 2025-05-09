@@ -37,7 +37,7 @@ import type {
   ValidationErrorMap,
   ValidationErrorMapKeys,
 } from './types'
-import type { DeepKeys, DeepValue } from './util-types'
+import type { DeepKeys, DeepKeysOfType, DeepValue } from './util-types'
 import type { Updater } from './utils'
 
 /**
@@ -1309,7 +1309,9 @@ export class FormApi<
   /**
    * Validates the children of a specified array in the form starting from a given index until the end using the correct handlers for a given validation type.
    */
-  validateArrayFieldsStartingFrom = async <TField extends DeepKeys<TFormData>>(
+  validateArrayFieldsStartingFrom = async <
+    TField extends DeepKeysOfType<TFormData, any[]>,
+  >(
     field: TField,
     index: number,
     cause: ValidationCause,
@@ -1959,7 +1961,7 @@ export class FormApi<
   /**
    * Pushes a value into an array field.
    */
-  pushFieldValue = <TField extends DeepKeys<TFormData>>(
+  pushFieldValue = <TField extends DeepKeysOfType<TFormData, any[]>>(
     field: TField,
     value: DeepValue<TFormData, TField> extends any[]
       ? DeepValue<TFormData, TField>[number]
@@ -1974,7 +1976,7 @@ export class FormApi<
     this.validateField(field, 'change')
   }
 
-  insertFieldValue = async <TField extends DeepKeys<TFormData>>(
+  insertFieldValue = async <TField extends DeepKeysOfType<TFormData, any[]>>(
     field: TField,
     index: number,
     value: DeepValue<TFormData, TField> extends any[]
@@ -2006,7 +2008,7 @@ export class FormApi<
   /**
    * Replaces a value into an array field at the specified index.
    */
-  replaceFieldValue = async <TField extends DeepKeys<TFormData>>(
+  replaceFieldValue = async <TField extends DeepKeysOfType<TFormData, any[]>>(
     field: TField,
     index: number,
     value: DeepValue<TFormData, TField> extends any[]
@@ -2032,7 +2034,7 @@ export class FormApi<
   /**
    * Removes a value from an array field at the specified index.
    */
-  removeFieldValue = async <TField extends DeepKeys<TFormData>>(
+  removeFieldValue = async <TField extends DeepKeysOfType<TFormData, any[]>>(
     field: TField,
     index: number,
     opts?: UpdateMetaOptions,
@@ -2069,7 +2071,7 @@ export class FormApi<
   /**
    * Swaps the values at the specified indices within an array field.
    */
-  swapFieldValues = <TField extends DeepKeys<TFormData>>(
+  swapFieldValues = <TField extends DeepKeysOfType<TFormData, any[]>>(
     field: TField,
     index1: number,
     index2: number,
@@ -2098,7 +2100,7 @@ export class FormApi<
   /**
    * Moves the value at the first specified index to the second specified index within an array field.
    */
-  moveFieldValues = <TField extends DeepKeys<TFormData>>(
+  moveFieldValues = <TField extends DeepKeysOfType<TFormData, any[]>>(
     field: TField,
     index1: number,
     index2: number,

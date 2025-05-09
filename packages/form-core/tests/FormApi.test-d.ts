@@ -2,6 +2,7 @@ import { expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
 import { FormApi } from '../src'
 import type {
+  DeepKeys,
   GlobalFormValidationError,
   StandardSchemaV1Issue,
   ValidationError,
@@ -200,4 +201,75 @@ it('should not allow setting manual errors if no validator is specified', () => 
     onSubmit: undefined | GlobalFormValidationError<FormData>
     onServer: undefined
   }>
+})
+
+it('should only allow array fields for array-specific methods', () => {
+  type FormValues = {
+    name: string
+    age: number
+    startDate: Date
+    title: string | null | undefined
+    relatives: { name: string }[]
+    counts: (number | null | undefined)[]
+  }
+
+  const defaultValues: FormValues = {
+    name: '',
+    age: 0,
+    startDate: new Date(),
+    title: null,
+    relatives: [{ name: '' }],
+    counts: [5, null, undefined, 3],
+  }
+
+  const form = new FormApi({
+    defaultValues,
+  })
+  form.mount()
+
+  type AllKeys = DeepKeys<FormValues>
+  type OnlyArrayKeys = Extract<AllKeys, 'counts' | 'relatives'>
+  type RandomKeys = Extract<AllKeys, 'counts' | 'relatives' | 'title'>
+
+  const push1 = form.pushFieldValue<OnlyArrayKeys>
+  // @ts-expect-error too wide!
+  const push2 = form.pushFieldValue<AllKeys>
+  // @ts-expect-error too wide!
+  const push3 = form.pushFieldValue<RandomKeys>
+
+  const insert1 = form.insertFieldValue<OnlyArrayKeys>
+  // @ts-expect-error too wide!
+  const insert2 = form.insertFieldValue<AllKeys>
+  // @ts-expect-error too wide!
+  const insert3 = form.insertFieldValue<RandomKeys>
+
+  const replace1 = form.replaceFieldValue<OnlyArrayKeys>
+  // @ts-expect-error too wide!
+  const replace2 = form.replaceFieldValue<AllKeys>
+  // @ts-expect-error too wide!
+  const replace3 = form.replaceFieldValue<RandomKeys>
+
+  const remove1 = form.removeFieldValue<OnlyArrayKeys>
+  // @ts-expect-error too wide!
+  const remove2 = form.removeFieldValue<AllKeys>
+  // @ts-expect-error too wide!
+  const remove3 = form.removeFieldValue<RandomKeys>
+
+  const swap1 = form.swapFieldValues<OnlyArrayKeys>
+  // @ts-expect-error too wide!
+  const swap2 = form.swapFieldValues<AllKeys>
+  // @ts-expect-error too wide!
+  const swap3 = form.swapFieldValues<RandomKeys>
+
+  const move1 = form.moveFieldValues<OnlyArrayKeys>
+  // @ts-expect-error too wide!
+  const move2 = form.moveFieldValues<AllKeys>
+  // @ts-expect-error too wide!
+  const move3 = form.moveFieldValues<RandomKeys>
+
+  const validate1 = form.validateArrayFieldsStartingFrom<OnlyArrayKeys>
+  // @ts-expect-error too wide!
+  const validate2 = form.validateArrayFieldsStartingFrom<AllKeys>
+  // @ts-expect-error too wide!
+  const validate3 = form.validateArrayFieldsStartingFrom<RandomKeys>
 })
