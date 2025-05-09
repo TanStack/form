@@ -120,6 +120,25 @@ describe('form api', () => {
     })
   })
 
+  it('form should reset when rendered correctly - core', async () => {
+    const defaultValues = {
+      name: '',
+    }
+    const form = new FormApi({
+      defaultValues: defaultValues,
+      onSubmit: ({ value }) => {
+        form.reset(value)
+
+        expect(form.options.defaultValues).toMatchObject({
+          name: 'test',
+        })
+      },
+    })
+    form.mount()
+    form.setFieldValue('name', 'test')
+    form.handleSubmit()
+  })
+
   it('should reset and set the new default values that are restored after an empty reset', () => {
     const form = new FormApi({ defaultValues: { name: 'initial' } })
     form.mount()

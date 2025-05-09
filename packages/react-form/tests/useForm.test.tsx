@@ -795,3 +795,53 @@ describe('useForm', () => {
     expect(fn).toHaveBeenCalledTimes(1)
   })
 })
+
+it('form should reset when rendered correctly - react', async () => {
+  function Comp() {
+    const form = useForm({
+      defaultValues: {
+        name: '',
+      },
+      onSubmit: ({ value }) => {
+        expect(value).toEqual({ name: 'test' })
+
+        form.reset({ name: 'test' })
+      },
+    })
+
+    return (
+      <div>
+        <form.Field
+          name="name"
+          children={(field) => (
+            <input
+              data-testid="fieldinput"
+              name={field.name}
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+            />
+          )}
+        />
+
+        <button
+          type="button"
+          onClick={() => form.handleSubmit()}
+          data-testid="submit"
+        >
+          submit
+        </button>
+      </div>
+    )
+  }
+
+  const { getByTestId } = render(<Comp />)
+  const input = getByTestId('fieldinput')
+  const submit = getByTestId('submit')
+
+  await user.type(input, 'test')
+  await waitFor(() => expect(input).toHaveValue('test'))
+
+  await user.click(submit)
+
+  await waitFor(() => expect(input).toHaveValue('test'))
+})
