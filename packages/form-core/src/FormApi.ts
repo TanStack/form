@@ -316,6 +316,20 @@ export interface FormListeners<
 }
 
 /**
+ * An object representing the base properties of a form, unrelated to any validators
+ */
+export interface BaseFormOptions<in out TFormData, in out TSubmitMeta = never> {
+  /**
+   * Set initial values for your form.
+   */
+  defaultValues?: TFormData
+  /**
+   * onSubmitMeta, the data passed from the handleSubmit handler, to the onSubmit function props
+   */
+  onSubmitMeta?: TSubmitMeta
+}
+
+/**
  * An object representing the options for a form.
  */
 export interface FormOptions<
@@ -329,11 +343,7 @@ export interface FormOptions<
   in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TSubmitMeta = never,
-> {
-  /**
-   * Set initial values for your form.
-   */
-  defaultValues?: TFormData
+> extends BaseFormOptions<TFormData, TSubmitMeta> {
   /**
    * The default state for the form.
    */
@@ -375,11 +385,6 @@ export interface FormOptions<
     TOnSubmit,
     TOnSubmitAsync
   >
-
-  /**
-   * onSubmitMeta, the data passed from the handleSubmit handler, to the onSubmit function props
-   */
-  onSubmitMeta?: TSubmitMeta
 
   /**
    * form level listeners
@@ -2136,12 +2141,9 @@ export class FormApi<
           ...prev.fieldMetaBase,
           [field]: defaultFieldMeta,
         },
-        values: {
-          ...prev.values,
-          [field]:
-            this.options.defaultValues &&
-            this.options.defaultValues[field as keyof TFormData],
-        },
+        values: this.options.defaultValues
+          ? setBy(prev.values, field, getBy(this.options.defaultValues, field))
+          : prev.values,
       }
     })
   }
