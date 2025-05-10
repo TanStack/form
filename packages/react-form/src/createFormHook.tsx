@@ -1,21 +1,43 @@
 /* eslint-disable @eslint-react/no-context-provider */
 import { createContext, useContext, useMemo, useState } from 'react'
-import { FormLensApi, getBy } from '@tanstack/form-core'
+import { FormLensApi, functionalUpdate, getBy } from '@tanstack/form-core'
+import { useStore } from '@tanstack/react-store'
 import { useForm } from './useForm'
 import type {
   AnyFieldApi,
   AnyFormApi,
+  AnyFormLensApi,
+  AnyFormLensState,
   BaseFormOptions,
   DeepKeysOfType,
-  DeepValue,
   FieldApi,
   FormAsyncValidateOrFn,
+  FormLensState,
   FormOptions,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { ComponentType, Context, JSX, PropsWithChildren } from 'react'
+import type {
+  ComponentType,
+  Context,
+  JSX,
+  PropsWithChildren,
+  ReactNode,
+} from 'react'
 import type { FieldComponent } from './useField'
 import type { ReactFormExtendedApi } from './useForm'
+
+function LocalSubscribe({
+  lens,
+  selector,
+  children,
+}: PropsWithChildren<{
+  lens: AnyFormLensApi
+  selector: (state: AnyFormLensState) => AnyFormLensState
+}>) {
+  const data = useStore(lens.store, selector)
+
+  return functionalUpdate(children, data)
+}
 
 /**
  * TypeScript inferencing is weird.
@@ -174,7 +196,7 @@ type AppFieldExtendedReactFormApi<
     AppForm: ComponentType<PropsWithChildren>
   }
 
-type AppLensExtendedReactFormApi<
+type AppFieldExtendedReactFormLensApi<
   TFormData,
   TName extends DeepKeysOfType<TFormData, TLensData>,
   TLensData,
@@ -233,6 +255,44 @@ type AppLensExtendedReactFormApi<
       any,
       TSubmitMeta
     >
+
+    /**
+     * A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
+     */
+    Subscribe: <
+      TSelected = NoInfer<
+        FormLensState<
+          TFormData,
+          TLensData,
+          TOnMount,
+          TOnChange,
+          TOnChangeAsync,
+          TOnBlur,
+          TOnBlurAsync,
+          TOnSubmit,
+          TOnSubmitAsync,
+          TOnServer
+        >
+      >,
+    >(props: {
+      selector?: (
+        state: NoInfer<
+          FormLensState<
+            TFormData,
+            TLensData,
+            TOnMount,
+            TOnChange,
+            TOnChangeAsync,
+            TOnBlur,
+            TOnBlurAsync,
+            TOnSubmit,
+            TOnSubmitAsync,
+            TOnServer
+          >
+        >,
+      ) => TSelected
+      children: ((state: NoInfer<TSelected>) => ReactNode) | ReactNode
+    }) => ReactNode
   }
 
 export interface WithFormProps<
@@ -329,7 +389,7 @@ export interface WithFormLensProps<
   TLensData,
   TFieldComponents extends Record<string, ComponentType<any>>,
   TFormComponents extends Record<string, ComponentType<any>>,
-  TSubmitMeta = never,
+  TSubmitMeta,
   TRenderProps extends Record<string, unknown> = Record<string, never>,
 > extends BaseFormOptions<TLensData, TSubmitMeta> {
   // Optional, but adds props to the `render` function outside of `form`
@@ -337,7 +397,7 @@ export interface WithFormLensProps<
   render: (
     props: PropsWithChildren<
       NoInfer<TRenderProps> & {
-        lens: AppLensExtendedReactFormApi<
+        lens: AppFieldExtendedReactFormLensApi<
           unknown,
           string,
           TLensData,
@@ -349,7 +409,9 @@ export interface WithFormLensProps<
           undefined | FormValidateOrFn<unknown>,
           undefined | FormAsyncValidateOrFn<unknown>,
           undefined | FormAsyncValidateOrFn<unknown>,
-          TSubmitMeta,
+          // this types it as 'never' in the render prop. It should prevent any
+          // untyped meta passed to the handleSubmit by accident.
+          unknown extends TSubmitMeta ? never : TSubmitMeta,
           TFieldComponents,
           TFormComponents
         >
@@ -398,7 +460,7 @@ export function createFormHook<
     name: TName
     defaultValues?: TLensData
     onSubmitMeta?: TSubmitMeta
-  }): AppLensExtendedReactFormApi<
+  }): AppFieldExtendedReactFormLensApi<
     TFormData,
     TName,
     TLensData,
@@ -416,6 +478,7 @@ export function createFormHook<
   > {
     const [formLensApi] = useState(() => {
       const api = new FormLensApi(opts)
+
       return api
     })
 
@@ -435,7 +498,7 @@ export function createFormHook<
           />
         )
       }) as FieldComponent<
-        DeepValue<TFormData, TName>,
+        TLensData,
         any,
         any,
         any,
@@ -459,7 +522,7 @@ export function createFormHook<
           />
         )
       }) as FieldComponent<
-        DeepValue<TFormData, TName>,
+        TLensData,
         any,
         any,
         any,
@@ -472,13 +535,26 @@ export function createFormHook<
       >
     }, [opts, formLensApi])
 
+    const Subscribe = useMemo(() => {
+      return function Render(props: any) {
+        return (
+          <LocalSubscribe
+            lens={formLensApi}
+            selector={props.selector}
+            children={props.children}
+          />
+        )
+      }
+    }, [formLensApi])
+
     const formLens = useMemo(() => {
       return Object.assign(formLensApi, {
         AppField,
         AppForm,
         Field,
+        Subscribe,
         ...formComponents,
-      }) as AppLensExtendedReactFormApi<
+      }) as AppFieldExtendedReactFormLensApi<
         TFormData,
         TName,
         TLensData,
@@ -494,7 +570,7 @@ export function createFormHook<
         TComponents,
         TFormComponents
       >
-    }, [formLensApi, AppField, AppForm, Field])
+    }, [formLensApi, AppField, AppForm, Field, Subscribe])
 
     return formLens
   }

@@ -284,4 +284,53 @@ describe('createFormHook', () => {
     expect(inputField2).toHaveValue('Robert')
     expect(getByText('Testing')).toBeInTheDocument()
   })
+
+  it('should forward Field and Subscribe to the form', () => {
+    const formOpts = formOptions({
+      defaultValues: {
+        person: {
+          firstName: 'John',
+          lastName: 'Doe',
+        },
+      },
+    })
+
+    const ChildFormAsField = withFormLens({
+      defaultValues: formOpts.defaultValues.person,
+      render: ({ lens }) => {
+        return (
+          <div>
+            <p>{lens.name}</p>
+            <lens.Field
+              name="firstName"
+              children={(field) => (
+                <label>
+                  <div>{field.name}</div>
+                  <input
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                </label>
+              )}
+            />
+            <lens.Subscribe selector={(state) => state.values.lastName}>
+              {(lastName) => <p>{lastName}</p>}
+            </lens.Subscribe>
+          </div>
+        )
+      },
+    })
+
+    const Parent = () => {
+      const form = useAppForm({
+        ...formOpts,
+      })
+      return <ChildFormAsField form={form} name="person" />
+    }
+
+    const { getByLabelText, getByText } = render(<Parent />)
+    const input = getByLabelText('person.firstName')
+    expect(input).toHaveValue('John')
+    expect(getByText('Doe')).toBeInTheDocument()
+  })
 })

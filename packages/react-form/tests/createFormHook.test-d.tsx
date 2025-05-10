@@ -730,9 +730,9 @@ describe('createFormHook', () => {
         // Since handleSubmit always allows to submit without meta, this is okay
         lens.handleSubmit()
 
-        // To match withForm's behaviour, handleSubmit's meta should be unknown if not set.
+        // To prevent unwanted meta behaviour, handleSubmit's meta should be never if not set.
         expectTypeOf(lens.handleSubmit).parameters.toEqualTypeOf<
-          [] | [unknown]
+          [] | [submitMeta: never]
         >()
 
         return <lens.Test />

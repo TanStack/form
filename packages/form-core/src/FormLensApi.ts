@@ -1,13 +1,14 @@
+import { Derived } from '@tanstack/store'
 import { standardSchemaValidators } from './standardSchemaValidator'
 import { getBy } from './utils'
 import type { Updater } from './utils'
-import type { Derived, Store } from '@tanstack/store'
+import type { Store } from '@tanstack/store'
 import type {
   BaseFormState,
+  DerivedFormState,
   FormApi,
   FormAsyncValidateOrFn,
   FormOptions,
-  FormState,
   FormValidateOrFn,
 } from './FormApi'
 import type { AnyFieldMeta, AnyFieldMetaBase } from './FieldApi'
@@ -25,13 +26,139 @@ import type { StandardSchemaV1 } from './standardSchemaValidator'
 // - setErrorMap would require type-safe setting of the validators. Don't implement it.
 // - resetFieldMeta would require you to pass the metas to the form instance. It's some work, but feel free to implement
 
+export type AnyFormLensApi = FormLensApi<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
+
+type BaseFormLensState<
+  TFormData,
+  TLensData,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+> = Omit<
+  BaseFormState<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer
+  >,
+  'values'
+> & {
+  /**
+   * The current values of the lens fields.
+   */
+  values: TLensData
+}
+
+type DerivedFormLensState<
+  TFormData,
+  TLensData,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+> = Omit<
+  DerivedFormState<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer
+  >,
+  'fieldMeta'
+> & {
+  /**
+   * A record of field metadata for each field in the lens.
+   */
+  fieldMeta: Record<DeepKeys<TLensData>, AnyFieldMeta>
+}
+
+export interface FormLensState<
+  in out TFormData,
+  in out TLensData,
+  in out TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+> extends BaseFormLensState<
+      TFormData,
+      TLensData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
+    >,
+    DerivedFormLensState<
+      TFormData,
+      TLensData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer
+    > {}
+
+export type AnyFormLensState = FormLensState<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
+
 /**
  * An object representing the options for a form.
  */
 export interface FormLensOptions<
-  in out TSubsetData,
+  in out TLensData,
   in out TFormData,
-  in out TName extends DeepKeys<TFormData>,
+  in out TName extends DeepKeysOfType<TFormData, TLensData>,
   in out TOnMount extends undefined | FormValidateOrFn<TFormData>,
   in out TOnChange extends undefined | FormValidateOrFn<TFormData>,
   in out TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
@@ -58,7 +185,7 @@ export interface FormLensOptions<
   /**
    * The expected subsetValues that the form must provide.
    */
-  defaultValues?: TSubsetData
+  defaultValues?: TLensData
   /**
    * onSubmitMeta, the data passed from the handleSubmit handler, to the onSubmit function props
    */
@@ -158,9 +285,10 @@ export class FormLensApi<
     return this.formInstance.fieldMetaDerived
   }
 
-  get store(): Derived<
-    FormState<
+  store: Derived<
+    FormLensState<
       TFormData,
+      TLensData,
       TOnMount,
       TOnChange,
       TOnChangeAsync,
@@ -170,19 +298,12 @@ export class FormLensApi<
       TOnSubmitAsync,
       TOnServer
     >
-  > {
-    return this.formInstance.store
-  }
+  >
 
   // fieldInfo doesn't exist as it would require to know the path beforehand
 
   get state() {
-    const { values, errors, ...rest } = this.store.state
-    return {
-      ...rest,
-      errors: errors as unknown[],
-      values: getBy(values, this.lensPrefix) as TLensData,
-    }
+    return this.store.state
   }
 
   /**
@@ -206,6 +327,20 @@ export class FormLensApi<
   ) {
     this.formInstance = opts.form
     this.lensPrefix = opts.name
+
+    this.store = new Derived({
+      deps: [this.formInstance.store],
+      fn: ({ currDepVals }) => {
+        const currFormStore = currDepVals[0]
+        const { values: formValues, ...rest } = currFormStore
+
+        const values = getBy(formValues, opts.name) as TLensData
+        return {
+          values,
+          ...rest,
+        }
+      },
+    })
 
     this.update = opts.form.update.bind(opts.form)
     this.validateAllFields = opts.form.validateAllFields.bind(opts.form)
