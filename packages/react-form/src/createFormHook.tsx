@@ -1,8 +1,9 @@
 /* eslint-disable @eslint-react/no-context-provider */
 import { createContext, useContext, useMemo, useState } from 'react'
-import { FormLensApi, functionalUpdate, getBy } from '@tanstack/form-core'
+import { FormLensApi, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
 import { useForm } from './useForm'
+import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
   AnyFieldApi,
   AnyFormApi,
@@ -571,6 +572,8 @@ export function createFormHook<
         TFormComponents
       >
     }, [formLensApi, AppField, AppForm, Field, Subscribe])
+
+    useIsomorphicLayoutEffect(formLensApi.mount, [formLensApi])
 
     return formLens
   }

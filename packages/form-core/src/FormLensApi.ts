@@ -332,12 +332,9 @@ export class FormLensApi<
       deps: [this.formInstance.store],
       fn: ({ currDepVals }) => {
         const currFormStore = currDepVals[0]
-        const { values: formValues, ...rest } = currFormStore
-
-        const values = getBy(formValues, opts.name) as TLensData
         return {
-          values,
-          ...rest,
+          ...currFormStore,
+          values: this.formInstance.getFieldValue(opts.name) as TLensData,
         }
       },
     })
@@ -364,6 +361,15 @@ export class FormLensApi<
       TSubmitMeta
     >,
   ) => void
+
+  /**
+   * Mounts the lens instance to the form.
+   */
+  mount = () => {
+    const cleanup = this.store.mount()
+
+    return cleanup
+  }
 
   /**
    * Resets the form state to the default values.

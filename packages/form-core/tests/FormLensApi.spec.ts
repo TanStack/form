@@ -60,6 +60,9 @@ describe('form lens api', () => {
       name: 'relatives.father',
       defaultValues: {} as Person,
     })
+    lens1.mount()
+    lens2.mount()
+    lens3.mount()
 
     expect(lens1.state).toMatchObject({
       values: {
@@ -104,6 +107,7 @@ describe('form lens api', () => {
       defaultValues: {} as Person,
       name: 'relatives.father',
     })
+    lens.mount()
 
     expect(lens.name).toEqual('relatives.father')
   })
@@ -131,10 +135,10 @@ describe('form lens api', () => {
       defaultValues: {} as Person,
       name: 'relatives.father',
     })
+    lens.mount()
 
     expect(lens.baseStore).toStrictEqual(form.baseStore)
     expect(lens.options).toStrictEqual(form.options)
-    expect(lens.store).toStrictEqual(form.store)
     expect(lens.fieldMetaDerived).toStrictEqual(form.fieldMetaDerived)
   })
 
@@ -161,6 +165,7 @@ describe('form lens api', () => {
       defaultValues: {} as Person,
       name: 'relatives.father',
     })
+    lens.mount()
 
     function checkIfStateIsSynced() {
       const { values: formValues, ...formState } = form.state
@@ -254,6 +259,9 @@ describe('form lens api', () => {
       name: 'relatives.father',
       defaultValues: {} as Person,
     })
+    lens1.mount()
+    lens2.mount()
+    lens3.mount()
 
     lens1.validateField('age', 'change')
 
@@ -316,6 +324,9 @@ describe('form lens api', () => {
       name: 'relatives.father',
       defaultValues: {} as Person,
     })
+    lens1.mount()
+    lens2.mount()
+    lens3.mount()
 
     expect(lens1.getFieldValue('age')).toBe(1)
     expect(lens1.getFieldValue('name')).toBe('Lens one')
@@ -392,6 +403,9 @@ describe('form lens api', () => {
       name: 'relatives.father',
       defaultValues: {} as Person,
     })
+    lens1.mount()
+    lens2.mount()
+    lens3.mount()
 
     expect(lens1.getFieldMeta('age')?.isValid).toBe(true)
     expect(lens2.getFieldMeta('age')?.isValid).toBe(true)
@@ -460,6 +474,9 @@ describe('form lens api', () => {
       name: 'relatives.father',
       defaultValues: {} as Person,
     })
+    lens1.mount()
+    lens2.mount()
+    lens3.mount()
 
     field2.handleChange(0)
 
@@ -514,6 +531,9 @@ describe('form lens api', () => {
       name: 'relatives.father',
       defaultValues: {} as Person,
     })
+    lens1.mount()
+    lens2.mount()
+    lens3.mount()
 
     lens1.setFieldMeta('age', (p) => ({ ...p, isDirty: true }))
     lens2.setFieldMeta('age', (p) => ({ ...p, isBlurred: true }))
@@ -541,6 +561,7 @@ describe('form lens api', () => {
       defaultValues: [{ name: '' }],
       name: 'people',
     })
+    lens.mount()
 
     lens.setFieldValue('[0]', { name: 'Override One' })
     lens.setFieldValue('[1].name', 'Override Two')
@@ -595,6 +616,7 @@ describe('form lens api', () => {
       },
       name: 'people',
     })
+    lens.mount()
 
     lens.validateArrayFieldsStartingFrom('names', 1, 'change')
 
@@ -624,6 +646,7 @@ describe('form lens api', () => {
       form,
       name: 'person',
     })
+    lens.mount()
 
     lens.handleSubmit()
 
@@ -652,6 +675,7 @@ describe('form lens api', () => {
       form,
       name: 'nested.field',
     })
+    lens.mount()
 
     lens.setFieldValue('name', 'Nested')
 
@@ -680,6 +704,7 @@ describe('form lens api', () => {
       form,
       name: 'nested.field',
     })
+    lens.mount()
 
     lens.deleteField('name')
 
@@ -730,6 +755,7 @@ describe('form lens api', () => {
       form,
       name: 'people',
     })
+    lens.mount()
 
     lens.validateArrayFieldsStartingFrom('names', 1, 'change')
 
@@ -912,6 +938,7 @@ describe('form lens api', () => {
       form,
       name: 'people[0]',
     })
+    lens1.mount()
 
     expect(lens1.getAllErrors()).toEqual({
       form: emptyError,
@@ -927,6 +954,7 @@ describe('form lens api', () => {
       form,
       name: 'relatives.father',
     })
+    lens2.mount()
 
     expect(lens2.getAllErrors()).toEqual({
       form: emptyError,
@@ -940,6 +968,7 @@ describe('form lens api', () => {
       form,
       name: 'people',
     })
+    lens3.mount()
 
     expect(lens3.getAllErrors()).toEqual({
       form: emptyError,
@@ -971,6 +1000,7 @@ describe('form lens api', () => {
       form,
       name: 'nested',
     })
+    lens.mount()
 
     expect(lens.getAllErrors()).toEqual({
       form: { errors: ['Error'], errorMap: { onMount: 'Error' } },
@@ -1007,6 +1037,7 @@ describe('form lens api', () => {
       form,
       name: 'nested',
     })
+    lens.mount()
 
     const issuesSync = lens.parseValuesWithSchema(schema.shape.nested)
     expect(issuesSync?.length).toBe(1)
