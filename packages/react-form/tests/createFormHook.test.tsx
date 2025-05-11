@@ -29,7 +29,7 @@ function SubscribeButton({ label }: { label: string }) {
   )
 }
 
-const { useAppForm, withForm, createFormGroup, withFormLens } = createFormHook({
+const { useAppForm, withForm, withFormLens } = createFormHook({
   fieldComponents: {
     TextField,
   },
@@ -79,50 +79,6 @@ describe('createFormHook', () => {
     })
 
     const ChildForm = withForm({
-      ...formOpts,
-      // Optional, but adds props to the `render` function outside of `form`
-      props: {
-        title: 'Child Form',
-      },
-      render: ({ form, title }) => {
-        return (
-          <div>
-            <p>{title}</p>
-            <form.AppField
-              name="firstName"
-              children={(field) => <field.TextField label="First Name" />}
-            />
-            <form.AppForm>
-              <form.SubscribeButton label="Submit" />
-            </form.AppForm>
-          </div>
-        )
-      },
-    })
-
-    const Parent = () => {
-      const form = useAppForm({
-        ...formOpts,
-      })
-
-      return <ChildForm form={form} title={'Testing'} />
-    }
-
-    const { getByLabelText, getByText } = render(<Parent />)
-    const input = getByLabelText('First Name')
-    expect(input).toHaveValue('John')
-    expect(getByText('Testing')).toBeInTheDocument()
-  })
-
-  it('should handle createFormGroup types properly', () => {
-    const formOpts = formOptions({
-      defaultValues: {
-        firstName: 'John',
-        lastName: 'Doe',
-      },
-    })
-
-    const ChildForm = createFormGroup({
       ...formOpts,
       // Optional, but adds props to the `render` function outside of `form`
       props: {
