@@ -480,17 +480,28 @@ export function createFormHook<
     const [formLensApi] = useState(() => {
       const api = new FormLensApi(opts)
 
-      return api
-    })
+      const extendedApi: AppFieldExtendedReactFormLensApi<
+        TFormData,
+        TName,
+        TLensData,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TOnServer,
+        TSubmitMeta,
+        TComponents,
+        TFormComponents
+      > = api as never
 
-    const AppForm = useMemo(() => {
-      return ((appFormProps) => {
+      extendedApi.AppForm = function AppForm(appFormProps) {
         return <opts.form.AppForm {...appFormProps} />
-      }) as ComponentType<PropsWithChildren>
-    }, [opts])
+      }
 
-    const AppField = useMemo(() => {
-      return (({ name, ...appFieldProps }) => {
+      extendedApi.AppField = function AppField({ name, ...appFieldProps }) {
         return (
           <opts.form.AppField
             // @ts-expect-error because it doesn't recognize the name as a valid path.
@@ -498,23 +509,9 @@ export function createFormHook<
             {...appFieldProps}
           />
         )
-      }) as FieldComponent<
-        TLensData,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        TSubmitMeta,
-        TComponents
-      >
-    }, [opts, formLensApi])
+      }
 
-    const Field = useMemo(() => {
-      return (({ name, ...fieldProps }) => {
+      extendedApi.Field = function Field({ name, ...fieldProps }) {
         return (
           <opts.form.Field
             // @ts-expect-error because it doesn't recognize the name as a valid path.
@@ -522,22 +519,9 @@ export function createFormHook<
             {...fieldProps}
           />
         )
-      }) as FieldComponent<
-        TLensData,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        TSubmitMeta
-      >
-    }, [opts, formLensApi])
+      }
 
-    const Subscribe = useMemo(() => {
-      return function Render(props: any) {
+      extendedApi.Subscribe = function Subscribe(props: any) {
         return (
           <LocalSubscribe
             lens={formLensApi}
@@ -546,14 +530,8 @@ export function createFormHook<
           />
         )
       }
-    }, [formLensApi])
 
-    const formLens = useMemo(() => {
-      return Object.assign(formLensApi, {
-        AppField,
-        AppForm,
-        Field,
-        Subscribe,
+      return Object.assign(extendedApi, {
         ...formComponents,
       }) as AppFieldExtendedReactFormLensApi<
         TFormData,
@@ -571,11 +549,11 @@ export function createFormHook<
         TComponents,
         TFormComponents
       >
-    }, [formLensApi, AppField, AppForm, Field, Subscribe])
+    })
 
     useIsomorphicLayoutEffect(formLensApi.mount, [formLensApi])
 
-    return formLens
+    return formLensApi
   }
 
   function useAppForm<

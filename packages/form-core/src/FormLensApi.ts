@@ -206,7 +206,10 @@ export class FormLensApi<
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TSubmitMeta = never,
 > {
-  private readonly formInstance: FormApi<
+  /**
+   * The form that called this lens.
+   */
+  readonly form: FormApi<
     TFormData,
     TOnMount,
     TOnChange,
@@ -262,7 +265,7 @@ export class FormLensApi<
     TOnServer,
     TSubmitMeta
   > {
-    return this.formInstance.options
+    return this.form.options
   }
 
   get baseStore(): Store<
@@ -278,11 +281,11 @@ export class FormLensApi<
       TOnServer
     >
   > {
-    return this.formInstance.baseStore
+    return this.form.baseStore
   }
 
   get fieldMetaDerived(): Derived<Record<string, AnyFieldMeta>> {
-    return this.formInstance.fieldMetaDerived
+    return this.form.fieldMetaDerived
   }
 
   store: Derived<
@@ -325,16 +328,16 @@ export class FormLensApi<
       TSubmitMeta
     >,
   ) {
-    this.formInstance = opts.form
+    this.form = opts.form
     this.lensPrefix = opts.name
 
     this.store = new Derived({
-      deps: [this.formInstance.store],
+      deps: [this.form.store],
       fn: ({ currDepVals }) => {
         const currFormStore = currDepVals[0]
         return {
           ...currFormStore,
-          values: this.formInstance.getFieldValue(opts.name) as TLensData,
+          values: this.form.getFieldValue(opts.name) as TLensData,
         }
       },
     })
@@ -390,7 +393,7 @@ export class FormLensApi<
     index: number,
     cause: ValidationCause,
   ) => {
-    this.formInstance.validateArrayFieldsStartingFrom(
+    this.form.validateArrayFieldsStartingFrom(
       this.getFormFieldName(field),
       index,
       cause,
@@ -404,7 +407,7 @@ export class FormLensApi<
     field: TField,
     cause: ValidationCause,
   ) => {
-    this.formInstance.validateField(this.getFormFieldName(field), cause)
+    this.form.validateField(this.getFormFieldName(field), cause)
   }
 
   /**
@@ -414,7 +417,7 @@ export class FormLensApi<
   handleSubmit(submitMeta: TSubmitMeta): Promise<void>
   async handleSubmit(submitMeta?: TSubmitMeta): Promise<void> {
     // cast is required since the implementation isn't one of the two overloads
-    return this.formInstance.handleSubmit(submitMeta as any)
+    return this.form.handleSubmit(submitMeta as any)
   }
 
   /**
@@ -423,23 +426,24 @@ export class FormLensApi<
   getFieldValue = <TField extends DeepKeys<TLensData>>(
     field: TField,
   ): DeepValue<TLensData, TField> => {
-    return this.formInstance.getFieldValue(
-      this.getFormFieldName(field),
-    ) as DeepValue<TLensData, TField>
+    return this.form.getFieldValue(this.getFormFieldName(field)) as DeepValue<
+      TLensData,
+      TField
+    >
   }
 
   /**
    * Gets the metadata of the specified field.
    */
   getFieldMeta = <TField extends DeepKeys<TLensData>>(field: TField) => {
-    return this.formInstance.getFieldMeta(this.getFormFieldName(field))
+    return this.form.getFieldMeta(this.getFormFieldName(field))
   }
 
   /**
    * Gets the field info of the specified field.
    */
   getFieldInfo = <TField extends DeepKeys<TLensData>>(field: TField) => {
-    return this.formInstance.getFieldInfo(this.getFormFieldName(field))
+    return this.form.getFieldInfo(this.getFormFieldName(field))
   }
 
   /**
@@ -449,7 +453,7 @@ export class FormLensApi<
     field: TField,
     updater: Updater<AnyFieldMetaBase>,
   ) => {
-    return this.formInstance.setFieldMeta(this.getFormFieldName(field), updater)
+    return this.form.setFieldMeta(this.getFormFieldName(field), updater)
   }
 
   /**
@@ -461,7 +465,7 @@ export class FormLensApi<
     opts?: UpdateMetaOptions,
   ) => {
     console.log(this.getFormFieldName(field))
-    return this.formInstance.setFieldValue(
+    return this.form.setFieldValue(
       this.getFormFieldName(field) as never,
       updater as never,
       opts,
@@ -472,7 +476,7 @@ export class FormLensApi<
    * Delete a field and its subfields.
    */
   deleteField = <TField extends DeepKeys<TLensData>>(field: TField) => {
-    return this.formInstance.deleteField(this.getFormFieldName(field))
+    return this.form.deleteField(this.getFormFieldName(field))
   }
 
   /**
@@ -485,7 +489,7 @@ export class FormLensApi<
       : never,
     opts?: UpdateMetaOptions,
   ) => {
-    return this.formInstance.pushFieldValue(
+    return this.form.pushFieldValue(
       this.getFormFieldName(field),
       // since unknown doesn't extend an array, it types `value` as never.
       value as never,
@@ -504,7 +508,7 @@ export class FormLensApi<
       : never,
     opts?: UpdateMetaOptions,
   ) => {
-    return this.formInstance.insertFieldValue(
+    return this.form.insertFieldValue(
       this.getFormFieldName(field),
       index,
       // since unknown doesn't extend an array, it types `value` as never.
@@ -524,7 +528,7 @@ export class FormLensApi<
       : never,
     opts?: UpdateMetaOptions,
   ) => {
-    return this.formInstance.replaceFieldValue(
+    return this.form.replaceFieldValue(
       this.getFormFieldName(field),
       index,
       // since unknown doesn't extend an array, it types `value` as never.
@@ -541,11 +545,7 @@ export class FormLensApi<
     index: number,
     opts?: UpdateMetaOptions,
   ) => {
-    return this.formInstance.removeFieldValue(
-      this.getFormFieldName(field),
-      index,
-      opts,
-    )
+    return this.form.removeFieldValue(this.getFormFieldName(field), index, opts)
   }
 
   /**
@@ -557,7 +557,7 @@ export class FormLensApi<
     index2: number,
     opts?: UpdateMetaOptions,
   ) => {
-    return this.formInstance.swapFieldValues(
+    return this.form.swapFieldValues(
       this.getFormFieldName(field),
       index1,
       index2,
@@ -574,7 +574,7 @@ export class FormLensApi<
     index2: number,
     opts?: UpdateMetaOptions,
   ) => {
-    return this.formInstance.moveFieldValues(
+    return this.form.moveFieldValues(
       this.getFormFieldName(field),
       index1,
       index2,
@@ -586,7 +586,7 @@ export class FormLensApi<
    * Resets the field value and meta to default state
    */
   resetField = <TField extends DeepKeys<TLensData>>(field: TField) => {
-    return this.formInstance.resetField(this.getFormFieldName(field))
+    return this.form.resetField(this.getFormFieldName(field))
   }
 
   /**
@@ -606,7 +606,7 @@ export class FormLensApi<
       { errors: ValidationError[]; errorMap: ValidationErrorMap }
     >
   } => {
-    const allErrors = this.formInstance.getAllErrors()
+    const allErrors = this.form.getAllErrors()
     return {
       form: allErrors.form,
       ...Object.entries(
