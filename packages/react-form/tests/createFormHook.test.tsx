@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { render } from '@testing-library/react'
 import { formOptions } from '@tanstack/form-core'
-import { createFormHook, createFormHookContexts } from '../src'
+import userEvent from '@testing-library/user-event'
+import { createFormHook, createFormHookContexts, useStore } from '../src'
 
 const { fieldContext, useFieldContext, formContext, useFormContext } =
   createFormHookContexts()
@@ -332,5 +333,64 @@ describe('createFormHook', () => {
     const input = getByLabelText('person.firstName')
     expect(input).toHaveValue('John')
     expect(getByText('Doe')).toBeInTheDocument()
+  })
+
+  it('should not lose focus on update with withFormLens', async () => {
+    const formOpts = formOptions({
+      defaultValues: {
+        person: {
+          firstName: 'John',
+          lastName: 'Doe',
+        },
+      },
+    })
+
+    const ChildForm = withFormLens({
+      defaultValues: formOpts.defaultValues.person,
+      render: function Render({ lens }) {
+        const firstName = useStore(
+          lens.store,
+          (state) => state.values.firstName,
+        )
+        return (
+          <div>
+            <p>{firstName}</p>
+            <lens.Field
+              name="firstName"
+              children={(field) => (
+                <label>
+                  <div>{field.name}</div>
+                  <input
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                </label>
+              )}
+            />
+            <lens.Subscribe selector={(state) => state.values.lastName}>
+              {(lastName) => <p>{lastName}</p>}
+            </lens.Subscribe>
+          </div>
+        )
+      },
+    })
+
+    const Parent = () => {
+      const form = useAppForm({
+        ...formOpts,
+      })
+      return <ChildForm form={form} name="person" />
+    }
+
+    const { getByLabelText } = render(<Parent />)
+
+    const input = getByLabelText('person.firstName')
+    input.focus()
+    expect(input).toHaveFocus()
+
+    await userEvent.clear(input)
+    await userEvent.type(input, 'Something')
+
+    expect(input).toHaveFocus()
   })
 })

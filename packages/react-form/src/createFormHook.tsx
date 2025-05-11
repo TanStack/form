@@ -806,10 +806,14 @@ export function createFormHook<
     >,
   ) => JSX.Element {
     return function Render(innerProps) {
-      const lensApi = useFormLens({
-        ...innerProps,
-        defaultValues,
-      })
+      const lensProps = useMemo(
+        () => ({
+          ...innerProps,
+          defaultValues,
+        }),
+        [innerProps],
+      )
+      const lensApi = useFormLens(lensProps)
 
       return render({ ...props, ...innerProps, lens: lensApi as any })
     }
