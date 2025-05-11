@@ -421,6 +421,55 @@ export type FieldComponent<
 >) => ReactNode
 
 /**
+ * A type alias representing a field component for a form lens data type.
+ */
+export type LensFieldComponent<
+  in out TLensData,
+  in out TParentSubmitMeta,
+  in out ExtendedApi = {},
+> = <
+  const TName extends DeepKeys<TLensData>,
+  TData extends DeepValue<TLensData, TName>,
+  TOnMount extends undefined | FieldValidateOrFn<unknown, string, TData>,
+  TOnChange extends undefined | FieldValidateOrFn<unknown, string, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<unknown, string, TData>,
+  TOnBlur extends undefined | FieldValidateOrFn<unknown, string, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<unknown, string, TData>,
+  TOnSubmit extends undefined | FieldValidateOrFn<unknown, string, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<unknown, string, TData>,
+>({
+  children,
+  ...fieldOptions
+}: FieldComponentBoundProps<
+  unknown,
+  string,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  undefined | FormValidateOrFn<unknown>,
+  undefined | FormValidateOrFn<unknown>,
+  undefined | FormAsyncValidateOrFn<unknown>,
+  undefined | FormValidateOrFn<unknown>,
+  undefined | FormAsyncValidateOrFn<unknown>,
+  undefined | FormValidateOrFn<unknown>,
+  undefined | FormAsyncValidateOrFn<unknown>,
+  undefined | FormAsyncValidateOrFn<unknown>,
+  TParentSubmitMeta,
+  ExtendedApi
+>) => ReactNode
+
+/**
  * A function component that takes field options and a render function as children and returns a React component.
  *
  * The `Field` component uses the `useField` hook internally to manage the field instance.

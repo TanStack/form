@@ -24,7 +24,7 @@ import type {
   PropsWithChildren,
   ReactNode,
 } from 'react'
-import type { FieldComponent } from './useField'
+import type { FieldComponent, LensFieldComponent } from './useField'
 import type { ReactFormExtendedApi } from './useForm'
 
 function LocalSubscribe({
@@ -227,16 +227,8 @@ type AppFieldExtendedReactFormLensApi<
   TSubmitMeta
 > &
   NoInfer<TFormComponents> & {
-    AppField: FieldComponent<
+    AppField: LensFieldComponent<
       TLensData,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
       TSubmitMeta,
       NoInfer<TFieldComponents>
     >
@@ -244,18 +236,7 @@ type AppFieldExtendedReactFormLensApi<
     /**
      * A React component to render form fields. With this, you can render and manage individual form fields.
      */
-    Field: FieldComponent<
-      TLensData,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      TSubmitMeta
-    >
+    Field: LensFieldComponent<TLensData, TSubmitMeta, NoInfer<TFieldComponents>>
 
     /**
      * A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
@@ -463,22 +444,22 @@ export function createFormHook<
 
       extendedApi.AppField = function AppField({ name, ...appFieldProps }) {
         return (
+          // @ts-expect-error
           <opts.form.AppField
-            // @ts-expect-error because it doesn't recognize the name as a valid path.
             name={formLensApi.getFormFieldName(name)}
             {...appFieldProps}
           />
-        )
+        ) as never
       }
 
       extendedApi.Field = function Field({ name, ...fieldProps }) {
         return (
+          // @ts-expect-error
           <opts.form.Field
-            // @ts-expect-error because it doesn't recognize the name as a valid path.
             name={formLensApi.getFormFieldName(name)}
             {...fieldProps}
           />
-        )
+        ) as never
       }
 
       extendedApi.Subscribe = function Subscribe(props: any) {
