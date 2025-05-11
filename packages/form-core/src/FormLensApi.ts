@@ -169,18 +169,33 @@ export interface FormLensOptions<
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TSubmitMeta = never,
 > {
-  form: FormApi<
-    TFormData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnServer,
-    TSubmitMeta
-  >
+  form:
+    | FormApi<
+        TFormData,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TOnServer,
+        TSubmitMeta
+      >
+    | FormLensApi<
+        any,
+        TFormData,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        TSubmitMeta
+      >
   name: TName
   /**
    * The expected subsetValues that the form must provide.
@@ -225,7 +240,7 @@ export class FormLensApi<
   private readonly lensPrefix: TName
 
   /**
-   * Get the true name of the field.
+   * Get the true name of the field. Not required within `Field` or `AppField`.
    * @private
    */
   getFormFieldName = <TField extends DeepKeys<TLensData>>(
@@ -328,8 +343,13 @@ export class FormLensApi<
       TSubmitMeta
     >,
   ) {
-    this.form = opts.form
-    this.lensPrefix = opts.name
+    if (opts.form instanceof FormLensApi) {
+      this.form = opts.form.form as never
+      this.lensPrefix = opts.form.getFormFieldName(opts.name) as TName
+    } else {
+      this.form = opts.form
+      this.lensPrefix = opts.name
+    }
 
     this.store = new Derived({
       deps: [this.form.store],
@@ -337,14 +357,14 @@ export class FormLensApi<
         const currFormStore = currDepVals[0]
         return {
           ...currFormStore,
-          values: this.form.getFieldValue(opts.name) as TLensData,
+          values: this.form.getFieldValue(this.name) as TLensData,
         }
       },
     })
 
-    this.update = opts.form.update.bind(opts.form)
-    this.validateAllFields = opts.form.validateAllFields.bind(opts.form)
-    this.reset = opts.form.reset.bind(opts.form)
+    this.validateAllFields = this.form.validateAllFields.bind(this.form)
+    this.update = this.form.update.bind(this.form)
+    this.reset = this.form.reset.bind(this.form)
   }
 
   /**
@@ -464,7 +484,6 @@ export class FormLensApi<
     updater: Updater<DeepValue<TLensData, TField>>,
     opts?: UpdateMetaOptions,
   ) => {
-    console.log(this.getFormFieldName(field))
     return this.form.setFieldValue(
       this.getFormFieldName(field) as never,
       updater as never,

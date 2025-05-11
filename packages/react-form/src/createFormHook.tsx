@@ -765,33 +765,62 @@ export function createFormHook<
   >(
     params: PropsWithChildren<
       NoInfer<TRenderProps> & {
-        form: AppFieldExtendedReactFormApi<
-          TFormData,
-          TOnMount,
-          TOnChange,
-          TOnChangeAsync,
-          TOnBlur,
-          TOnBlurAsync,
-          TOnSubmit,
-          TOnSubmitAsync,
-          TOnServer,
-          unknown extends TSubmitMeta ? TFormSubmitMeta : TSubmitMeta,
-          TComponents,
-          TFormComponents
-        >
+        form:
+          | AppFieldExtendedReactFormApi<
+              TFormData,
+              TOnMount,
+              TOnChange,
+              TOnChangeAsync,
+              TOnBlur,
+              TOnBlurAsync,
+              TOnSubmit,
+              TOnSubmitAsync,
+              TOnServer,
+              unknown extends TSubmitMeta ? TFormSubmitMeta : TSubmitMeta,
+              TComponents,
+              TFormComponents
+            >
+          | AppFieldExtendedReactFormLensApi<
+              // Since this only occurs if you nest it within other form lenses, it can be more
+              // lenient with the types.
+              unknown,
+              string,
+              TFormData,
+              any,
+              any,
+              any,
+              any,
+              any,
+              any,
+              any,
+              any,
+              unknown extends TSubmitMeta ? TFormSubmitMeta : TSubmitMeta,
+              TComponents,
+              TFormComponents
+            >
         name: TName
       }
     >,
   ) => JSX.Element {
     return function Render(innerProps) {
-      const lensProps = useMemo(
-        () => ({
-          ...innerProps,
-          defaultValues,
-        }),
-        [innerProps],
-      )
-      const lensApi = useFormLens(lensProps)
+      const lensProps = useMemo(() => {
+        if (innerProps.form instanceof FormLensApi) {
+          const lens = innerProps.form
+          return {
+            ...innerProps,
+            // ensure that nested lenses still receive correct data from the top form
+            form: lens.form,
+            name: lens.getFormFieldName(innerProps.name),
+            defaultValues,
+          }
+        } else {
+          return {
+            ...innerProps,
+            defaultValues,
+          }
+        }
+      }, [innerProps])
+      const lensApi = useFormLens(lensProps as any)
 
       return render({ ...props, ...innerProps, lens: lensApi as any })
     }

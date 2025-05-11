@@ -831,4 +831,107 @@ describe('createFormHook', () => {
     const CorrectComponent1 = <FormGroup form={formA} name="person" />
     const CorrectComponent2 = <FormGroup form={formB} name="person" />
   })
+
+  it('should allow nesting withFormLens in other withFormLenses', () => {
+    type Nested = {
+      firstName: string
+    }
+    type Wrapper = {
+      field: Nested
+    }
+    type FormValues = {
+      form: Wrapper
+      unrelated: { something: { lastName: string } }
+    }
+
+    const defaultValues: FormValues = {
+      form: {
+        field: {
+          firstName: 'Test',
+        },
+      },
+      unrelated: {
+        something: {
+          lastName: '',
+        },
+      },
+    }
+
+    const form = useAppForm({
+      defaultValues,
+    })
+    const LensNested = withFormLens({
+      defaultValues: defaultValues.form.field,
+      render: function Render() {
+        return <></>
+      },
+    })
+    const LensWrapper = withFormLens({
+      defaultValues: defaultValues.form,
+      render: function Render({ lens }) {
+        return (
+          <div>
+            <LensNested form={lens} name="field" />
+          </div>
+        )
+      },
+    })
+
+    const Component = <LensWrapper form={form} name="form" />
+  })
+
+  it('should not allow withFormLenses with different metas to be nested', () => {
+    type Nested = {
+      firstName: string
+    }
+    type Wrapper = {
+      field: Nested
+    }
+    type FormValues = {
+      form: Wrapper
+      unrelated: { something: { lastName: string } }
+    }
+
+    const defaultValues: FormValues = {
+      form: {
+        field: {
+          firstName: 'Test',
+        },
+      },
+      unrelated: {
+        something: {
+          lastName: '',
+        },
+      },
+    }
+
+    const LensNestedNoMeta = withFormLens({
+      defaultValues: defaultValues.form.field,
+      render: function Render() {
+        return <></>
+      },
+    })
+    const LensNestedWithMeta = withFormLens({
+      defaultValues: defaultValues.form.field,
+      onSubmitMeta: { meta: '' },
+      render: function Render() {
+        return <></>
+      },
+    })
+    const LensWrapper = withFormLens({
+      defaultValues: defaultValues.form,
+      render: function Render({ lens }) {
+        return (
+          <div>
+            <LensNestedNoMeta form={lens} name="field" />
+            <LensNestedWithMeta
+              // @ts-expect-error Wrong meta!
+              form={lens}
+              name="field"
+            />
+          </div>
+        )
+      },
+    })
+  })
 })

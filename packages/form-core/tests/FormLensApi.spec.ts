@@ -1049,4 +1049,54 @@ describe('form lens api', () => {
 
     expect(issuesAsync).toEqual(issuesSync)
   })
+
+  it('should allow nesting form lenses within each other', () => {
+    type Nested = {
+      firstName: string
+    }
+    type Wrapper = {
+      field: Nested
+    }
+    type FormVals = {
+      form: Wrapper
+      unrelated: { something: { lastName: string } }
+    }
+
+    const defaultValues: FormVals = {
+      form: {
+        field: {
+          firstName: 'Test',
+        },
+      },
+      unrelated: {
+        something: {
+          lastName: '',
+        },
+      },
+    }
+
+    const form = new FormApi({
+      defaultValues,
+    })
+
+    const lensWrap = new FormLensApi({
+      defaultValues: defaultValues.form,
+      form,
+      name: 'form',
+    })
+    lensWrap.mount()
+
+    const lensNested = new FormLensApi({
+      defaultValues: defaultValues.form.field,
+      form: lensWrap,
+      name: 'field',
+    })
+    lensNested.mount()
+
+    expect(lensNested.name).toBe('form.field')
+    expect(lensWrap.name).toBe('form')
+    expect(lensNested.form).toEqual(lensWrap.form)
+    expect(lensNested.state.values).toEqual(lensWrap.state.values.field)
+    expect(lensNested.state.values).toEqual(form.state.values.form.field)
+  })
 })

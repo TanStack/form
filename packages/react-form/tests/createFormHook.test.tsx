@@ -393,4 +393,62 @@ describe('createFormHook', () => {
 
     expect(input).toHaveFocus()
   })
+
+  it('should allow nesting withFormLens in other withFormLenses', () => {
+    type Nested = {
+      firstName: string
+    }
+    type Wrapper = {
+      field: Nested
+    }
+    type FormValues = {
+      form: Wrapper
+      unrelated: { something: { lastName: string } }
+    }
+
+    const defaultValues: FormValues = {
+      form: {
+        field: {
+          firstName: 'Test',
+        },
+      },
+      unrelated: {
+        something: {
+          lastName: '',
+        },
+      },
+    }
+
+    const LensNested = withFormLens({
+      defaultValues: defaultValues.form.field,
+      render: function Render({ lens }) {
+        return (
+          <lens.Field name="firstName">
+            {(field) => <p>{field.name}</p>}
+          </lens.Field>
+        )
+      },
+    })
+    const LensWrapper = withFormLens({
+      defaultValues: defaultValues.form,
+      render: function Render({ lens }) {
+        return (
+          <div>
+            <LensNested form={lens} name="field" />
+          </div>
+        )
+      },
+    })
+
+    const Parent = () => {
+      const form = useAppForm({
+        defaultValues,
+      })
+      return <LensWrapper form={form} name="form" />
+    }
+
+    const { getByText } = render(<Parent />)
+
+    expect(getByText('form.field.firstName')).toBeInTheDocument()
+  })
 })
