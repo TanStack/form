@@ -467,7 +467,7 @@ export type LensFieldComponent<
   undefined | FormAsyncValidateOrFn<unknown>,
   TParentSubmitMeta,
   ExtendedApi
->) => ReactNode
+> & { name: TName }) => ReactNode
 
 /**
  * A function component that takes field options and a render function as children and returns a React component.
