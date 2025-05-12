@@ -1,6 +1,6 @@
 import { Derived } from '@tanstack/store'
 import { standardSchemaValidators } from './standardSchemaValidator'
-import { getBy } from './utils'
+import { defaultFieldMeta } from './metaHelper'
 import type { Updater } from './utils'
 import type { Store } from '@tanstack/store'
 import type {
@@ -64,12 +64,26 @@ type BaseFormLensState<
     TOnSubmitAsync,
     TOnServer
   >,
-  'values'
+  'values' | 'errorMap'
 > & {
   /**
    * The current values of the lens fields.
    */
   values: TLensData
+
+  formErrorMap: BaseFormState<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer
+  >['errorMap']
+
+  lensErrorMap: ValidationErrorMap
 }
 
 type DerivedFormLensState<
@@ -95,12 +109,26 @@ type DerivedFormLensState<
     TOnSubmitAsync,
     TOnServer
   >,
-  'fieldMeta'
+  'fieldMeta' | 'errors'
 > & {
   /**
    * A record of field metadata for each field in the lens.
    */
   fieldMeta: Record<DeepKeys<TLensData>, AnyFieldMeta>
+
+  formErrors: DerivedFormState<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer
+  >['errors']
+
+  lensErrors: unknown[]
 }
 
 export interface FormLensState<
@@ -196,6 +224,9 @@ export interface FormLensOptions<
         any,
         TSubmitMeta
       >
+  /**
+   * The path to the lens data.
+   */
   name: TName
   /**
    * The expected subsetValues that the form must provide.
@@ -325,7 +356,7 @@ export class FormLensApi<
   }
 
   /**
-   * Constructs a new `FormApi` instance with the given form options.
+   * Constructs a new `FormLensApi` instance with the given form options.
    */
   constructor(
     opts: FormLensOptions<
@@ -355,8 +386,24 @@ export class FormLensApi<
       deps: [this.form.store],
       fn: ({ currDepVals }) => {
         const currFormStore = currDepVals[0]
+        const {
+          errors: formErrors,
+          errorMap: formErrorMap,
+          values: _,
+          ...rest
+        } = currFormStore
+
+        const { errorMap: lensErrorMap, errors: lensErrors } =
+          this.form.getFieldMeta(this.name) ?? {
+            ...defaultFieldMeta,
+          }
+
         return {
-          ...currFormStore,
+          ...rest,
+          lensErrorMap,
+          lensErrors,
+          formErrorMap,
+          formErrors,
           values: this.form.getFieldValue(this.name) as TLensData,
         }
       },
@@ -408,7 +455,9 @@ export class FormLensApi<
   /**
    * Validates the children of a specified array in the form starting from a given index until the end using the correct handlers for a given validation type.
    */
-  validateArrayFieldsStartingFrom = async <TField extends DeepKeys<TLensData>>(
+  validateArrayFieldsStartingFrom = async <
+    TField extends DeepKeysOfType<TLensData, any[]>,
+  >(
     field: TField,
     index: number,
     cause: ValidationCause,
@@ -501,7 +550,7 @@ export class FormLensApi<
   /**
    * Pushes a value into an array field.
    */
-  pushFieldValue = <TField extends DeepKeys<TLensData>>(
+  pushFieldValue = <TField extends DeepKeysOfType<TLensData, any[]>>(
     field: TField,
     value: DeepValue<TLensData, TField> extends any[]
       ? DeepValue<TLensData, TField>[number]
@@ -519,7 +568,7 @@ export class FormLensApi<
   /**
    * Insert a value into an array field at the specified index.
    */
-  insertFieldValue = async <TField extends DeepKeys<TLensData>>(
+  insertFieldValue = async <TField extends DeepKeysOfType<TLensData, any[]>>(
     field: TField,
     index: number,
     value: DeepValue<TLensData, TField> extends any[]
@@ -539,7 +588,7 @@ export class FormLensApi<
   /**
    * Replaces a value into an array field at the specified index.
    */
-  replaceFieldValue = async <TField extends DeepKeys<TLensData>>(
+  replaceFieldValue = async <TField extends DeepKeysOfType<TLensData, any[]>>(
     field: TField,
     index: number,
     value: DeepValue<TLensData, TField> extends any[]
@@ -559,7 +608,7 @@ export class FormLensApi<
   /**
    * Removes a value from an array field at the specified index.
    */
-  removeFieldValue = async <TField extends DeepKeys<TLensData>>(
+  removeFieldValue = async <TField extends DeepKeysOfType<TLensData, any[]>>(
     field: TField,
     index: number,
     opts?: UpdateMetaOptions,
@@ -570,7 +619,7 @@ export class FormLensApi<
   /**
    * Swaps the values at the specified indices within an array field.
    */
-  swapFieldValues = <TField extends DeepKeys<TLensData>>(
+  swapFieldValues = <TField extends DeepKeysOfType<TLensData, any[]>>(
     field: TField,
     index1: number,
     index2: number,
@@ -587,7 +636,7 @@ export class FormLensApi<
   /**
    * Moves the value at the first specified index to the second specified index within an array field.
    */
-  moveFieldValues = <TField extends DeepKeys<TLensData>>(
+  moveFieldValues = <TField extends DeepKeysOfType<TLensData, any[]>>(
     field: TField,
     index1: number,
     index2: number,

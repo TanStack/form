@@ -1,8 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { FieldApi, FormApi, FormLensApi } from '../src/index'
-import { sleep } from './utils'
-import type { AnyFieldApi, AnyFormApi } from '../src/index'
+import { defaultFieldMeta } from '../src/metaHelper'
 
 describe('form lens api', () => {
   type Person = {
@@ -168,10 +167,27 @@ describe('form lens api', () => {
     lens.mount()
 
     function checkIfStateIsSynced() {
-      const { values: formValues, ...formState } = form.state
-      const { values: lensValues, ...lensState } = lens.state
+      const { values: formValues, errors, errorMap, ...formState } = form.state
+      const {
+        values: lensValues,
+        lensErrors,
+        lensErrorMap,
+        formErrorMap,
+        formErrors,
+        ...lensState
+      } = lens.state
 
       expect(lensValues).toEqual(formValues.relatives.father)
+      expect(errors).toEqual(formErrors)
+      expect(errorMap).toEqual(formErrorMap)
+      expect(lensErrors).toEqual(
+        form.getFieldMeta('relatives.father')?.errors ??
+          defaultFieldMeta.errors,
+      )
+      expect(lensErrorMap).toEqual(
+        form.getFieldMeta('relatives.father')?.errorMap ??
+          defaultFieldMeta.errorMap,
+      )
       expect(formState).toEqual(lensState)
     }
 
@@ -1099,4 +1115,52 @@ describe('form lens api', () => {
     expect(lensNested.state.values).toEqual(lensWrap.state.values.field)
     expect(lensNested.state.values).toEqual(form.state.values.form.field)
   })
+})
+
+it('should inherit errors on lens level from FieldApis with the same name', async () => {
+  vi.useFakeTimers()
+  const defaultValues = {
+    test: {
+      field: {
+        value: '',
+      },
+    },
+  }
+
+  const form = new FormApi({
+    defaultValues,
+    validators: {
+      onChange: () => {
+        return {
+          fields: {
+            'test.field': 'Error',
+          },
+        }
+      },
+    },
+  })
+  form.mount()
+
+  const field = new FieldApi({
+    form,
+    name: 'test.field',
+  })
+  field.mount()
+
+  const lens = new FormLensApi({
+    defaultValues: defaultValues.test.field,
+    form,
+    name: 'test.field',
+  })
+  lens.mount()
+
+  expect(lens.state.lensErrors).toEqual([])
+  expect(lens.state.lensErrorMap).toEqual({})
+
+  form.validate('change')
+
+  await vi.runAllTimersAsync()
+
+  expect(lens.state.lensErrors).toEqual(['Error'])
+  expect(lens.state.lensErrorMap).toEqual({ onChange: 'Error' })
 })
