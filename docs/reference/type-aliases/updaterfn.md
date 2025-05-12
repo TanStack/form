@@ -11,7 +11,7 @@ title: UpdaterFn
 type UpdaterFn<TInput, TOutput> = (input) => TOutput;
 ```
 
-Defined in: [packages/form-core/src/utils.ts:10](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L10)
+Defined in: [packages/form-core/src/utils.ts:10](https://github.com/Pascalmh/tanstack-form/blob/main/packages/form-core/src/utils.ts#L10)
 
 ## Type Parameters
 

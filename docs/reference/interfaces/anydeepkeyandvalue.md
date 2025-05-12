@@ -7,7 +7,7 @@ title: AnyDeepKeyAndValue
 
 # Interface: AnyDeepKeyAndValue\<K, V\>
 
-Defined in: [packages/form-core/src/util-types.ts:22](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L22)
+Defined in: [packages/form-core/src/util-types.ts:22](https://github.com/Pascalmh/tanstack-form/blob/main/packages/form-core/src/util-types.ts#L22)
 
 ## Extended by
 
@@ -30,7 +30,7 @@ Defined in: [packages/form-core/src/util-types.ts:22](https://github.com/TanStac
 key: K;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:26](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L26)
+Defined in: [packages/form-core/src/util-types.ts:26](https://github.com/Pascalmh/tanstack-form/blob/main/packages/form-core/src/util-types.ts#L26)
 
 ***
 
@@ -40,4 +40,4 @@ Defined in: [packages/form-core/src/util-types.ts:26](https://github.com/TanStac
 value: V;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:27](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L27)
+Defined in: [packages/form-core/src/util-types.ts:27](https://github.com/Pascalmh/tanstack-form/blob/main/packages/form-core/src/util-types.ts#L27)

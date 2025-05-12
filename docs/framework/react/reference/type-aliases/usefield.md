@@ -11,7 +11,7 @@ title: UseField
 type UseField<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer, TPatentSubmitMeta> = <TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync>(opts) => FieldApi<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer, TPatentSubmitMeta>;
 ```
 
-Defined in: [packages/react-form/src/useField.tsx:50](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L50)
+Defined in: [packages/react-form/src/useField.tsx:50](https://github.com/Pascalmh/tanstack-form/blob/main/packages/react-form/src/useField.tsx#L50)
 
 A type representing a hook for using a field in a form with the given form data type.
 

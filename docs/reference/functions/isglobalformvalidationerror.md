@@ -11,7 +11,7 @@ title: isGlobalFormValidationError
 function isGlobalFormValidationError(error): error is GlobalFormValidationError<unknown>
 ```
 
-Defined in: [packages/form-core/src/utils.ts:333](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L333)
+Defined in: [packages/form-core/src/utils.ts:333](https://github.com/Pascalmh/tanstack-form/blob/main/packages/form-core/src/utils.ts#L333)
 
 ## Parameters
 

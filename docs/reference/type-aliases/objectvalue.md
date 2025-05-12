@@ -11,7 +11,7 @@ title: ObjectValue
 type ObjectValue<TParent, T, TKey> = T[TKey] | Nullable<TParent["value"]>;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:91](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L91)
+Defined in: [packages/form-core/src/util-types.ts:91](https://github.com/Pascalmh/tanstack-form/blob/main/packages/form-core/src/util-types.ts#L91)
 
 ## Type Parameters
 

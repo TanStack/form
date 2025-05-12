@@ -7,7 +7,7 @@ title: ArrayDeepKeyAndValue
 
 # Interface: ArrayDeepKeyAndValue\<TParent, T\>
 
-Defined in: [packages/form-core/src/util-types.ts:33](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L33)
+Defined in: [packages/form-core/src/util-types.ts:33](https://github.com/Pascalmh/tanstack-form/blob/main/packages/form-core/src/util-types.ts#L33)
 
 ## Extends
 
@@ -27,7 +27,7 @@ Defined in: [packages/form-core/src/util-types.ts:33](https://github.com/TanStac
 key: `${TParent["key"] extends never ? "" : TParent["key"]}[${number}]`;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:37](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L37)
+Defined in: [packages/form-core/src/util-types.ts:37](https://github.com/Pascalmh/tanstack-form/blob/main/packages/form-core/src/util-types.ts#L37)
 
 #### Overrides
 
@@ -43,7 +43,7 @@ value:
 | Nullable<TParent["value"]>;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:38](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L38)
+Defined in: [packages/form-core/src/util-types.ts:38](https://github.com/Pascalmh/tanstack-form/blob/main/packages/form-core/src/util-types.ts#L38)
 
 #### Overrides
 

@@ -13,7 +13,7 @@ type DeepKeyAndValueArray<TParent, T, TAcc> = DeepKeysAndValuesImpl<NonNullable<
 | ArrayDeepKeyAndValue<TParent, T>>;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:41](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L41)
+Defined in: [packages/form-core/src/util-types.ts:41](https://github.com/Pascalmh/tanstack-form/blob/main/packages/form-core/src/util-types.ts#L41)
 
 ## Type Parameters
 

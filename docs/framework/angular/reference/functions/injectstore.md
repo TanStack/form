@@ -11,7 +11,7 @@ title: injectStore
 function injectStore<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta, TSelected>(form, selector?): Signal<TSelected>
 ```
 
-Defined in: [inject-store.ts:9](https://github.com/TanStack/form/blob/main/packages/angular-form/src/inject-store.ts#L9)
+Defined in: [inject-store.ts:9](https://github.com/Pascalmh/tanstack-form/blob/main/packages/angular-form/src/inject-store.ts#L9)
 
 ## Type Parameters
 
