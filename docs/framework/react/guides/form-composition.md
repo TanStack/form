@@ -244,6 +244,162 @@ const ChildForm = withForm({
 })
 ```
 
+## Reusing groups of fields in multiple forms
+
+Sometimes, a pair of fields are so closely related that it makes sense to group and reuse them — like the password example listed in the [linked fields guide](./linked-fields.md). Instead of repeating this logic across multiple forms, you can utilize the `withFormLens` higher-order component.
+
+> Unlike `withForm`, validators cannot be specified and could be any value.
+> Ensure that your fields can accept unknown error types.
+
+Rewriting the passwords example using `withFormLens` would look like this:
+
+```tsx
+const { useAppForm, withForm, withFormLens } = createFormHook({
+  fieldComponents: {
+    TextField,
+    ErrorInfo,
+  },
+  formComponents: {
+    SubscribeButton,
+  },
+  fieldContext,
+  formContext,
+})
+
+type PasswordFields = {
+  password: string
+  confirm_password: string
+}
+
+// These values are only used for type-checking, and are not used at runtime
+// This allows you to `...formOpts` from `formOptions` without needing to redeclare the options
+const defaultValues: PasswordFields = {
+  password: '',
+  confirm_password: '',
+}
+
+const PasswordFields = withFormLens({
+  defaultValues,
+  // You may also restrict the lens to only use forms that implement this submit meta.
+  // If none is provided, any form with the right defaultValues may use it.
+  // onSubmitMeta: { action: '' }
+
+  // Optional, but adds props to the `render` function in addition to `form`
+  props: {
+    // These default values are also for type-checking and are not used at runtime
+    title: 'Password',
+  },
+  // Internally, you will have access to a `lens` instead of a `form`
+  render: function Render({ lens, title }) {
+    // access reactive values using the lense's store
+    const password = useStore(lens.store, (state) => state.values.password)
+    const isSubmitting = useStore(lens.store, (state) => state.isSubmitting)
+
+    return (
+      <div>
+        <h2>{title}</h2>
+        {/* Lenses also have access to Field, Subscribe, Field, AppField and AppForm */}
+        <lens.AppField name="password">
+          {(field) => <field.TextField label="Password" />}
+        </lens.AppField>
+        <lens.AppField
+          name="confirm_password"
+          validators={{
+            onChangeListenTo: ['password'],
+            onChange: ({ value, fieldApi }) => {
+              // The form could be any values, so it is typed as 'unknown'
+              const values: unknown = fieldApi.form.state.values
+              // use the lens methods instead
+              if (value !== lens.getFieldValue('password')) {
+                return 'Passwords do not match'
+              }
+              return undefined
+            },
+          }}
+        >
+          {(field) => (
+            <div>
+              <field.TextField label="Confirm Password" />
+              <field.ErrorInfo />
+            </div>
+          )}
+        </lens.AppField>
+      </div>
+    )
+  },
+})
+```
+
+We can now use these grouped fields in any form that implements the default values:
+
+```tsx
+// You are allowed to extend the lens fields as long as the
+// existing properties remain unchanged
+type Account = PasswordFields & {
+  provider: string
+  username: string
+}
+
+// You may nest the lens fields wherever you want
+type FormValues = {
+  name: string
+  age: number
+  account_data: PasswordFields
+  linked_accounts: Account[]
+}
+
+const defaultValues: FormValues = {
+  name: '',
+  age: 0,
+  account_data: {
+    password: '',
+    confirm_password: '',
+  },
+  linked_accounts: [
+    {
+      provider: 'TanStack',
+      username: '',
+      password: '',
+      confirm_password: '',
+    },
+  ],
+}
+
+function App() {
+  const form = useAppForm({
+    defaultValues,
+    // If the lens didn't specify an `onSubmitMeta` property,
+    // the form may implement any meta it wants.
+    // Otherwise, the meta must be defined and match.
+    onSubmitMeta: { action: '' },
+  })
+
+  return (
+    <form.AppForm>
+      <PasswordFields
+        form={form}
+        // You must specify where the fields can be found
+        name="account_data"
+        title="Passwords"
+      />
+      <form.Field name="linked_accounts" mode="array">
+        {(field) =>
+          field.state.value.map((account, i) => (
+            <PasswordFields
+              key={account.provider}
+              form={form}
+              // The fields may be in nested fields
+              name={`linked_accounts[${i}]`}
+              title={account.provider}
+            />
+          ))
+        }
+      </form.Field>
+    </form.AppForm>
+  )
+}
+```
+
 ## Tree-shaking form and field components
 
 While the above examples are great for getting started, they're not ideal for certain use-cases where you might have hundreds of form and field components.
