@@ -291,7 +291,7 @@ const PasswordFields = withFormLens({
   },
   // Internally, you will have access to a `lens` instead of a `form`
   render: function Render({ lens, title }) {
-    // access reactive values using the lense's store
+    // access reactive values using the lens store
     const password = useStore(lens.store, (state) => state.values.password)
     const isSubmitting = useStore(lens.store, (state) => state.isSubmitting)
 
