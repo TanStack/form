@@ -1314,6 +1314,15 @@ export class FieldApi<
   }
 
   /**
+   * Clear all values from the array.
+   */
+  clearValues = (opts?: UpdateMetaOptions) => {
+    this.form.clearFieldValues(this.name, opts)
+
+    this.triggerOnChangeListener()
+  }
+
+  /**
    * @private
    */
   getLinkedFields = (cause: ValidationCause) => {
