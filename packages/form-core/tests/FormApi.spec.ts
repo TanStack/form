@@ -3610,7 +3610,7 @@ it('should reset nested fields', () => {
 })
 
 it('should preserve nested fields on resetField if defaultValues is not provided', () => {
-  const defaultValues = {
+  const state = {
     shallow: '',
     nested: {
       field: {
@@ -3620,9 +3620,7 @@ it('should preserve nested fields on resetField if defaultValues is not provided
   }
 
   const form = new FormApi({
-    defaultState: {
-      values: defaultValues,
-    },
+    defaultState: { values: state },
   })
   form.mount()
 
