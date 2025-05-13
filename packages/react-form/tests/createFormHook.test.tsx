@@ -4,6 +4,8 @@ import { formOptions } from '@tanstack/form-core'
 import userEvent from '@testing-library/user-event'
 import { createFormHook, createFormHookContexts, useStore } from '../src'
 
+const user = userEvent.setup()
+
 const { fieldContext, useFieldContext, formContext, useFormContext } =
   createFormHookContexts()
 
@@ -344,8 +346,8 @@ describe('createFormHook', () => {
     input.focus()
     expect(input).toHaveFocus()
 
-    await userEvent.clear(input)
-    await userEvent.type(input, 'Something')
+    await user.clear(input)
+    await user.type(input, 'Something')
 
     expect(input).toHaveFocus()
   })
