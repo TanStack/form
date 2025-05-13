@@ -227,6 +227,20 @@ type AppFieldExtendedReactFormLensApi<
   TSubmitMeta
 > &
   NoInfer<TFormComponents> & {
+    form: AppFieldExtendedReactFormApi<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer,
+      TSubmitMeta,
+      TFieldComponents,
+      TFormComponents
+    >
     AppField: LensFieldComponent<
       TLensData,
       TSubmitMeta,
@@ -701,20 +715,35 @@ export function createFormHook<
         if (innerProps.form instanceof FormLensApi) {
           const lens = innerProps.form
           return {
-            ...innerProps,
-            // ensure that nested lenses still receive correct data from the top form
-            form: lens.form,
+            // ensure that nested lenses still receive data from the top form
+            // Since we don't create new generics in the return function and it's unused outside this function,
+            // this will just be an any cast for now.
+            form: lens.form as AppFieldExtendedReactFormApi<
+              any,
+              any,
+              any,
+              any,
+              any,
+              any,
+              any,
+              any,
+              any,
+              any,
+              any,
+              any
+            >,
             name: lens.getFormFieldName(innerProps.name),
             defaultValues,
           }
         } else {
           return {
-            ...innerProps,
+            form: innerProps.form,
+            name: innerProps.name,
             defaultValues,
           }
         }
-      }, [innerProps])
-      const lensApi = useFormLens(lensProps as any)
+      }, [innerProps.form, innerProps.name])
+      const lensApi = useFormLens(lensProps)
 
       return render({ ...props, ...innerProps, lens: lensApi as any })
     }
