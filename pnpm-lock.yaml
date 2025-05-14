@@ -812,6 +812,9 @@ importers:
       valibot:
         specifier: ^1.1.0
         version: 1.1.0(typescript@5.8.3)
+      zod:
+        specifier: ^3.24.4
+        version: 3.24.4
     devDependencies:
       '@tanstack/react-start':
         specifier: ^1.120.3

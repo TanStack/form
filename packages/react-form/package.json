@@ -85,7 +85,8 @@
     "@tanstack/react-store": "^0.7.0",
     "decode-formdata": "^0.9.0",
     "valibot": "^1.1.0",
-    "devalue": "^5.1.1"
+    "devalue": "^5.1.1",
+    "zod": "^3.24.4"
   },
   "devDependencies": {
     "@tanstack/react-start": "^1.120.3",
