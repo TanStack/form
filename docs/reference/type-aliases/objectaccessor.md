@@ -11,7 +11,7 @@ title: ObjectAccessor
 type ObjectAccessor<TParent, TKey> = TParent["key"] extends never ? `${TKey}` : `${TParent["key"]}.${TKey}`;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:81](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L81)
+Defined in: [packages/form-core/src/util-types.ts:84](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L84)
 
 ## Type Parameters
 

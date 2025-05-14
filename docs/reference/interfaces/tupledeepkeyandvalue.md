@@ -7,7 +7,7 @@ title: TupleDeepKeyAndValue
 
 # Interface: TupleDeepKeyAndValue\<TParent, T, TKey\>
 
-Defined in: [packages/form-core/src/util-types.ts:53](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L53)
+Defined in: [packages/form-core/src/util-types.ts:56](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L56)
 
 ## Extends
 
@@ -29,7 +29,7 @@ Defined in: [packages/form-core/src/util-types.ts:53](https://github.com/TanStac
 key: `${TParent["key"] extends never ? "" : TParent["key"]}[${TKey}]`;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:58](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L58)
+Defined in: [packages/form-core/src/util-types.ts:61](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L61)
 
 #### Overrides
 
@@ -45,7 +45,7 @@ value:
 | Nullable<TParent["value"]>;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:59](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L59)
+Defined in: [packages/form-core/src/util-types.ts:62](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L62)
 
 #### Overrides
 

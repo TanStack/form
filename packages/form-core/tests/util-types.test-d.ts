@@ -1,11 +1,11 @@
 import { expectTypeOf } from 'vitest'
-import type { DeepKeys, DeepValue } from '../src/index'
+import type { DeepKeys, DeepKeysOfType, DeepValue } from '../src/index'
 
 /**
  * Properly recognizes that `0` is not an object and should not have subkeys
  */
-type TupleSupport = DeepKeys<{ topUsers: [User, 0, User] }>
-expectTypeOf(0 as never as TupleSupport).toEqualTypeOf<
+type TupleSupport = { topUsers: [User, 0, User] }
+expectTypeOf(0 as never as DeepKeys<TupleSupport>).toEqualTypeOf<
   | 'topUsers'
   | 'topUsers[0]'
   | 'topUsers[0].name'
@@ -17,50 +17,95 @@ expectTypeOf(0 as never as TupleSupport).toEqualTypeOf<
   | 'topUsers[2].id'
   | 'topUsers[2].age'
 >()
+expectTypeOf(0 as never as DeepKeysOfType<TupleSupport, number>).toEqualTypeOf<
+  'topUsers[0].age' | 'topUsers[1]' | 'topUsers[2].age'
+>()
+expectTypeOf(0 as never as DeepKeysOfType<TupleSupport, string>).toEqualTypeOf<
+  'topUsers[0].name' | 'topUsers[0].id' | 'topUsers[2].name' | 'topUsers[2].id'
+>()
+expectTypeOf(0 as never as DeepKeysOfType<TupleSupport, User>).toEqualTypeOf<
+  'topUsers[0]' | 'topUsers[2]'
+>()
+expectTypeOf(
+  0 as never as DeepKeysOfType<TupleSupport, Date>,
+).toEqualTypeOf<never>()
 
 /**
  * Properly recognizes that a normal number index won't cut it and should be `[number]` prefixed instead
  */
-type ArraySupport = DeepKeys<{ users: User[] }>
-expectTypeOf(0 as never as ArraySupport).toEqualTypeOf<
+type ArraySupport = { users: User[] }
+expectTypeOf(0 as never as DeepKeys<ArraySupport>).toEqualTypeOf<
   | 'users'
   | `users[${number}]`
   | `users[${number}].name`
   | `users[${number}].id`
   | `users[${number}].age`
 >()
+expectTypeOf(
+  0 as never as DeepKeysOfType<ArraySupport, number>,
+).toEqualTypeOf<`users[${number}].age`>()
+expectTypeOf(0 as never as DeepKeysOfType<ArraySupport, string>).toEqualTypeOf<
+  `users[${number}].name` | `users[${number}].id`
+>()
+expectTypeOf(
+  0 as never as DeepKeysOfType<ArraySupport, User>,
+).toEqualTypeOf<`users[${number}]`>()
+expectTypeOf(
+  0 as never as DeepKeysOfType<ArraySupport, Date>,
+).toEqualTypeOf<never>()
 
 /**
  * Properly handles deep object nesting like so:
  */
-type NestedSupport = DeepKeys<{ meta: { mainUser: User } }>
-expectTypeOf(0 as never as NestedSupport).toEqualTypeOf<
+type NestedSupport = { meta: { mainUser: User } }
+expectTypeOf(0 as never as DeepKeys<NestedSupport>).toEqualTypeOf<
   | 'meta'
   | 'meta.mainUser'
   | 'meta.mainUser.name'
   | 'meta.mainUser.id'
   | 'meta.mainUser.age'
 >()
+expectTypeOf(
+  0 as never as DeepKeysOfType<NestedSupport, number>,
+).toEqualTypeOf<`meta.mainUser.age`>()
+expectTypeOf(0 as never as DeepKeysOfType<NestedSupport, string>).toEqualTypeOf<
+  `meta.mainUser.name` | `meta.mainUser.id`
+>()
+expectTypeOf(
+  0 as never as DeepKeysOfType<NestedSupport, User>,
+).toEqualTypeOf<`meta.mainUser`>()
+expectTypeOf(
+  0 as never as DeepKeysOfType<NestedSupport, Date>,
+).toEqualTypeOf<never>()
 
 /**
  * Properly handles deep partial object nesting like so:
  */
-type NestedPartialSupport = DeepKeys<{ meta?: { mainUser?: User } }>
-expectTypeOf(0 as never as NestedPartialSupport).toEqualTypeOf<
+type NestedPartialSupport = { meta?: { mainUser?: User } }
+expectTypeOf(0 as never as DeepKeys<NestedPartialSupport>).toEqualTypeOf<
   | 'meta'
   | 'meta.mainUser'
   | 'meta.mainUser.name'
   | 'meta.mainUser.id'
   | 'meta.mainUser.age'
 >()
+expectTypeOf(
+  0 as never as DeepKeysOfType<NestedPartialSupport, number>,
+).toEqualTypeOf<never>()
+expectTypeOf(
+  0 as never as DeepKeysOfType<NestedPartialSupport, number | undefined>,
+).toEqualTypeOf<'meta.mainUser.age'>()
 
 /**
  * Properly handles `object` edgecase nesting like so:
  */
-type ObjectNestedEdgecase = DeepKeys<{ meta: { mainUser: object } }>
-expectTypeOf(0 as never as ObjectNestedEdgecase).toEqualTypeOf(
+type ObjectNestedEdgecase = { meta: { mainUser: object } }
+expectTypeOf(0 as never as DeepKeys<ObjectNestedEdgecase>).toEqualTypeOf(
   0 as never as 'meta' | 'meta.mainUser' | `meta.mainUser.${string}`,
 )
+expectTypeOf(
+  0 as never as DeepKeysOfType<ObjectNestedEdgecase, object>,
+).toEqualTypeOf<'meta' | 'meta.mainUser'>()
 
 /**
  * Properly handles `object` edgecase like so:
@@ -71,10 +116,13 @@ expectTypeOf(0 as never as ObjectEdgecase).toEqualTypeOf<string>()
 /**
  * Properly handles `object` edgecase nesting like so:
  */
-type UnknownNestedEdgecase = DeepKeys<{ meta: { mainUser: unknown } }>
+type UnknownNestedEdgecase = { meta: { mainUser: unknown } }
 expectTypeOf(
   0 as never as 'meta' | 'meta.mainUser' | `meta.mainUser.${string}`,
-).toEqualTypeOf(0 as never as UnknownNestedEdgecase)
+).toEqualTypeOf(0 as never as DeepKeys<UnknownNestedEdgecase>)
+expectTypeOf(
+  0 as never as DeepKeysOfType<UnknownNestedEdgecase, object>,
+).toEqualTypeOf<'meta'>()
 
 /**
  * Properly handles discriminated unions like so:
@@ -83,10 +131,15 @@ type DiscriminatedUnion = { name: string } & (
   | { variant: 'foo' }
   | { variant: 'bar'; baz: boolean }
 )
-type DiscriminatedUnionKeys = DeepKeys<DiscriminatedUnion>
-expectTypeOf(0 as never as DiscriminatedUnionKeys).toEqualTypeOf<
+expectTypeOf(0 as never as DeepKeys<DiscriminatedUnion>).toEqualTypeOf<
   'name' | 'variant' | 'baz'
 >()
+expectTypeOf(
+  0 as never as DeepKeysOfType<DiscriminatedUnion, string>,
+).toEqualTypeOf<'name' | 'variant'>()
+expectTypeOf(
+  0 as never as DeepKeysOfType<DiscriminatedUnion, boolean>,
+).toEqualTypeOf<'baz'>()
 
 type DiscriminatedUnionValueShared = DeepValue<DiscriminatedUnion, 'variant'>
 expectTypeOf(0 as never as DiscriminatedUnionValueShared).toEqualTypeOf<
@@ -98,10 +151,16 @@ expectTypeOf(
 ).toEqualTypeOf<boolean>()
 
 /**
- * Properly handles `object` edgecase like so:
+ * Properly handles `unknown` edgecase like so:
  */
 type UnknownEdgecase = DeepKeys<unknown>
 expectTypeOf(0 as never as UnknownEdgecase).toEqualTypeOf<string>()
+expectTypeOf(
+  0 as never as DeepKeysOfType<unknown, unknown>,
+).toEqualTypeOf<string>()
+expectTypeOf(
+  0 as never as DeepKeysOfType<unknown, object>,
+).toEqualTypeOf<never>()
 
 type NestedKeysExample = DeepValue<
   { meta: { mainUser: User } },
@@ -364,9 +423,15 @@ type ObjectWithAny = {
   }
 }
 
-type AnyObjectKeys = DeepKeys<ObjectWithAny>
-expectTypeOf(0 as never as AnyObjectKeys).toEqualTypeOf<
+expectTypeOf(0 as never as DeepKeys<ObjectWithAny>).toEqualTypeOf<
   'a' | 'b' | 'obj' | `a.${string}` | 'obj.c' | `obj.c.${string}` | 'obj.d'
+>()
+// since any can also be number, It's okay to be included
+expectTypeOf(0 as never as DeepKeysOfType<ObjectWithAny, number>).toEqualTypeOf<
+  'a' | 'b' | 'obj.c' | 'obj.d'
+>()
+expectTypeOf(0 as never as DeepKeysOfType<ObjectWithAny, string>).toEqualTypeOf<
+  'a' | 'obj.c'
 >()
 type AnyObjectExample = DeepValue<ObjectWithAny, 'a'>
 expectTypeOf(0 as never as AnyObjectExample).toEqualTypeOf<any>()

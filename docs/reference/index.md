@@ -47,6 +47,7 @@ title: "@tanstack/form-core"
 - [DeepKeys](type-aliases/deepkeys.md)
 - [DeepKeysAndValues](type-aliases/deepkeysandvalues.md)
 - [DeepKeysAndValuesImpl](type-aliases/deepkeysandvaluesimpl.md)
+- [DeepKeysOfType](type-aliases/deepkeysoftype.md)
 - [DeepRecord](type-aliases/deeprecord.md)
 - [DeepValue](type-aliases/deepvalue.md)
 - [DerivedFormState](type-aliases/derivedformstate.md)
@@ -82,8 +83,8 @@ title: "@tanstack/form-core"
 
 ## Functions
 
+- [evaluate](functions/evaluate.md)
 - [formOptions](functions/formoptions.md)
 - [isGlobalFormValidationError](functions/isglobalformvalidationerror.md)
 - [isStandardSchemaValidator](functions/isstandardschemavalidator.md)
 - [mergeForm](functions/mergeform.md)
-- [shallow](functions/shallow.md)

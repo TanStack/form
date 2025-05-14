@@ -736,7 +736,7 @@ describe('form api', () => {
     field2.mount()
 
     field1.handleBlur()
-    field1.setErrorMap({ onSubmit: 'test' })
+    field1.setErrorMap({ onSubmit: 'test' as never })
 
     expect(field0.state.meta.isBlurred).toBe(false)
     expect(field1.state.meta.isBlurred).toBe(true)
@@ -2285,6 +2285,37 @@ describe('form api', () => {
     expect(form.state.errorMap.onChange).toEqual('other validation error')
   })
 
+  it('should spread errors in fields when setErrorMap receives a global form validation error', () => {
+    const form = new FormApi({
+      defaultValues: { name: '', interests: [] as { label: string }[] },
+    })
+    form.mount()
+
+    const field = new FieldApi({ form, name: 'name' })
+    field.mount()
+
+    const arrayElementField = new FieldApi({ form, name: 'interests[0].label' })
+    arrayElementField.mount()
+
+    form.setErrorMap({
+      onChange: {
+        form: 'global error',
+        fields: {
+          name: 'name is required',
+          'interests[0].label': 'label is required',
+        },
+      },
+      onBlur: 'Form Error' as never,
+    })
+
+    expect(form.state.errorMap.onChange).toEqual('global error')
+    expect(form.state.errorMap.onBlur).toEqual('Form Error')
+    expect(field.getMeta().errorMap.onChange).toEqual('name is required')
+    expect(arrayElementField.getMeta().errorMap.onChange).toEqual(
+      'label is required',
+    )
+  })
+
   it("should set errors for the fields from the form's onSubmit validator", async () => {
     const form = new FormApi({
       defaultValues: {
@@ -3078,6 +3109,34 @@ describe('form api', () => {
     form.resetField('name')
     expect(form.state.values.name).toStrictEqual('tony')
     expect(field.state.meta.isTouched).toBe(false)
+  })
+
+  it('should set the form isDefaultValue meta', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'tony',
+        lastName: 'hawk',
+      },
+    })
+    form.mount()
+
+    const nameField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    nameField.mount()
+
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+    })
+    lastNameField.mount()
+
+    lastNameField.setValue('')
+    expect(form.state.isDefaultValue).toBe(false)
+
+    lastNameField.setValue('hawk')
+    expect(form.state.isDefaultValue).toBe(true)
   })
 
   it('should allow submission, when the form is invalid, with canSubmitWhenInvalid', async () => {
