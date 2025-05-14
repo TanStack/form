@@ -84,6 +84,7 @@
     "@tanstack/form-core": "workspace:*",
     "@tanstack/react-store": "^0.7.0",
     "decode-formdata": "^0.9.0",
+    "valibot": "^1.1.0",
     "devalue": "^5.1.1"
   },
   "devDependencies": {
