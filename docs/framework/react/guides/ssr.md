@@ -25,7 +25,7 @@ This section focuses on integrating TanStack Form with TanStack Start.
 Let's start by creating a `formOption` that we'll use to share the form's shape across the client and server.
 
 ```typescript
-// app/routes/index.tsx, but can be extracted to any other path
+// src/utils/form-isomorphic.ts, but can be extracted to any other path
 import { formOptions } from '@tanstack/react-form'
 
 // You can pass other form options here
@@ -113,6 +113,7 @@ import {
   useStore,
   useTransform,
 } from '@tanstack/react-form'
+import { formOpts } from '~/utils/form-isomorphic'
 
 export const Route = createFileRoute('/')({
   component: Home,
