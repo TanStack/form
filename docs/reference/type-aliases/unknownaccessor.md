@@ -11,7 +11,7 @@ title: UnknownAccessor
 type UnknownAccessor<TParent> = TParent["key"] extends never ? string : `${TParent["key"]}.${string}`;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:119](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L119)
+Defined in: [packages/form-core/src/util-types.ts:119](https://github.com/Pascalmh/tanstack-form/blob/main/packages/form-core/src/util-types.ts#L119)
 
 ## Type Parameters
 

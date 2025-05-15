@@ -13,7 +13,7 @@ type DeepKeyAndValueTuple<TParent, T, TAcc, TAllKeys> = TAllKeys extends any ? D
   | TupleDeepKeyAndValue<TParent, T, TAllKeys>> : never;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:67](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L67)
+Defined in: [packages/form-core/src/util-types.ts:67](https://github.com/Pascalmh/tanstack-form/blob/main/packages/form-core/src/util-types.ts#L67)
 
 ## Type Parameters
 

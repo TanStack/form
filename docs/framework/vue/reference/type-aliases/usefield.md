@@ -11,7 +11,7 @@ title: UseField
 type UseField<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer, TParentSubmitMeta> = <TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync>(opts) => object;
 ```
 
-Defined in: [packages/vue-form/src/useField.tsx:166](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L166)
+Defined in: [packages/vue-form/src/useField.tsx:166](https://github.com/Pascalmh/tanstack-form/blob/main/packages/vue-form/src/useField.tsx#L166)
 
 ## Type Parameters
 

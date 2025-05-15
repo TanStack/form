@@ -11,7 +11,7 @@ title: FieldComponentBoundProps
 type FieldComponentBoundProps<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync> = UseFieldOptionsBound<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync>;
 ```
 
-Defined in: [packages/vue-form/src/useField.tsx:412](https://github.com/TanStack/form/blob/main/packages/vue-form/src/useField.tsx#L412)
+Defined in: [packages/vue-form/src/useField.tsx:412](https://github.com/Pascalmh/tanstack-form/blob/main/packages/vue-form/src/useField.tsx#L412)
 
 ## Type Parameters
 

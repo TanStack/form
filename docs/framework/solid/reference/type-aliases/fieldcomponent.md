@@ -14,7 +14,7 @@ type FieldComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync
 }) => JSXElement;
 ```
 
-Defined in: [packages/solid-form/src/createField.tsx:400](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L400)
+Defined in: [packages/solid-form/src/createField.tsx:400](https://github.com/Pascalmh/tanstack-form/blob/main/packages/solid-form/src/createField.tsx#L400)
 
 ## Type Parameters
 

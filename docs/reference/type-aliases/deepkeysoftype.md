@@ -11,7 +11,7 @@ title: DeepKeysOfType
 type DeepKeysOfType<TData, TValue> = Extract<DeepKeysAndValues<TData>, AnyDeepKeyAndValue<string, TValue>>["key"];
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:176](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L176)
+Defined in: [packages/form-core/src/util-types.ts:176](https://github.com/Pascalmh/tanstack-form/blob/main/packages/form-core/src/util-types.ts#L176)
 
 The keys of an object or array, deeply nested and only with a value of TValue
 

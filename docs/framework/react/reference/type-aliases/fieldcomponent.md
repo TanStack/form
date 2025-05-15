@@ -14,7 +14,7 @@ type FieldComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync
 }) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/useField.tsx:363](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L363)
+Defined in: [packages/react-form/src/useField.tsx:363](https://github.com/Pascalmh/tanstack-form/blob/main/packages/react-form/src/useField.tsx#L363)
 
 A type alias representing a field component for a specific form data type.
 
