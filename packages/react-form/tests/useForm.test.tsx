@@ -810,7 +810,13 @@ it('form should reset when rendered correctly - react', async () => {
     })
 
     return (
-      <div>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          form.handleSubmit()
+        }}
+      >
         <form.Field
           name="name"
           children={(field) => (
@@ -823,18 +829,14 @@ it('form should reset when rendered correctly - react', async () => {
           )}
         />
 
-        <button
-          type="button"
-          onClick={() => form.handleSubmit()}
-          data-testid="submit"
-        >
+        <button type="submit" data-testid="submit">
           submit
         </button>
 
-        <button type="button" onClick={() => form.reset()} data-testid="reset">
-          reset
+        <button type="reset" data-testid="reset" onClick={() => form.reset()}>
+          Reset
         </button>
-      </div>
+      </form>
     )
   }
 
