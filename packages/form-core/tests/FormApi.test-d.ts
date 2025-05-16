@@ -1,7 +1,9 @@
-import { assertType, it } from 'vitest'
+import { expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
 import { FormApi } from '../src'
 import type {
+  DeepKeys,
+  GlobalFormValidationError,
   StandardSchemaV1Issue,
   ValidationError,
   ValidationErrorMap,
@@ -28,15 +30,15 @@ it('should return all errors matching the right type from getAllErrors', () => {
 
   errors.form.errorMap.onChange
 
-  assertType<{
+  expectTypeOf(errors.form.errorMap).toEqualTypeOf<{
     onBlur?: { onBlur: true; onBlurNumber: number } | 'onBlurAsync'
     onChange?: readonly ['onChange'] | 'onChangeAsync'
     onMount?: 10
     onSubmit?: 'onSubmit' | 'onSubmitAsync'
     onServer?: undefined
-  }>(errors.form.errorMap)
+  }>()
 
-  assertType<
+  expectTypeOf(errors.form.errors).toEqualTypeOf<
     (
       | readonly ['onChange']
       | 'onChangeAsync'
@@ -47,9 +49,9 @@ it('should return all errors matching the right type from getAllErrors', () => {
       | 'onBlurAsync'
       | undefined
     )[]
-  >(errors.form.errors)
+  >()
 
-  assertType<{
+  expectTypeOf(errors.fields).toEqualTypeOf<{
     firstName: {
       errors: ValidationError[]
       errorMap: ValidationErrorMap
@@ -58,7 +60,7 @@ it('should return all errors matching the right type from getAllErrors', () => {
       errors: ValidationError[]
       errorMap: ValidationErrorMap
     }
-  }>(errors.fields)
+  }>()
 })
 
 it('should type handleSubmit as never when onSubmitMeta is not passed', () => {
@@ -68,7 +70,10 @@ it('should type handleSubmit as never when onSubmitMeta is not passed', () => {
     },
   } as const)
 
-  assertType<() => Promise<void>>(form.handleSubmit)
+  expectTypeOf(form.handleSubmit).toEqualTypeOf<{
+    (): Promise<void>
+    (submitMeta: never): Promise<void>
+  }>()
 })
 
 type OnSubmitMeta = {
@@ -85,9 +90,10 @@ it('should type handleChange correctly', () => {
 
   form.handleSubmit({ group: 'track' })
 
-  assertType<(submitMeta: { group: string }) => Promise<void>>(
-    form.handleSubmit,
-  )
+  expectTypeOf(form.handleSubmit).toEqualTypeOf<{
+    (): Promise<void>
+    (submitMeta: OnSubmitMeta): Promise<void>
+  }>()
 })
 
 type FormLevelStandardSchemaIssue = {
@@ -105,10 +111,165 @@ it('should only have form-level error types returned from parseFieldValuesWithSc
     name: z.string(),
   })
   // assert that it doesn't think it's a field-level error
-  assertType<FormLevelStandardSchemaIssue | undefined>(
-    form.parseValuesWithSchema(schema),
-  )
-  assertType<Promise<FormLevelStandardSchemaIssue | undefined>>(
-    form.parseValuesWithSchemaAsync(schema),
-  )
+  expectTypeOf(form.parseValuesWithSchema(schema)).toEqualTypeOf<
+    FormLevelStandardSchemaIssue | undefined
+  >()
+  expectTypeOf(form.parseValuesWithSchemaAsync(schema)).toEqualTypeOf<
+    Promise<FormLevelStandardSchemaIssue | undefined>
+  >()
+})
+
+it("should allow setting manual errors according to the validator's return type", () => {
+  type FormData = {
+    firstName: string
+    lastName: string
+  }
+
+  const form = new FormApi({
+    defaultValues: {} as FormData,
+    validators: {
+      onChange: () => ['onChange'] as const,
+      onMount: () => 10 as const,
+      onBlur: () => ({ onBlur: true as const, onBlurNumber: 1 }),
+      onSubmit: () => 'onSubmit' as const,
+      onBlurAsync: () => Promise.resolve('onBlurAsync' as const),
+      onChangeAsync: () => Promise.resolve('onChangeAsync' as const),
+      onSubmitAsync: () => Promise.resolve('onSubmitAsync' as const),
+    },
+  })
+
+  form.setErrorMap({
+    onMount: 10,
+    onChange: ['onChange'],
+  })
+
+  expectTypeOf(form.setErrorMap).parameter(0).toEqualTypeOf<{
+    onMount: 10 | undefined | GlobalFormValidationError<FormData>
+    onChange:
+      | readonly ['onChange']
+      | 'onChangeAsync'
+      | undefined
+      | GlobalFormValidationError<FormData>
+    onBlur:
+      | { onBlur: true; onBlurNumber: number }
+      | 'onBlurAsync'
+      | undefined
+      | GlobalFormValidationError<FormData>
+    onSubmit:
+      | 'onSubmit'
+      | 'onSubmitAsync'
+      | undefined
+      | GlobalFormValidationError<FormData>
+    onServer: undefined
+  }>
+})
+
+it('should allow setting field errors from the global form error map', () => {
+  type FormData = {
+    firstName: string
+    lastName: string
+  }
+
+  const form = new FormApi({
+    defaultValues: {} as FormData,
+  })
+
+  form.setErrorMap({
+    onChange: {
+      fields: {
+        firstName: 'error',
+        // @ts-expect-error
+        nonExistentField: 'error',
+      },
+    },
+  })
+})
+
+it('should not allow setting manual errors if no validator is specified', () => {
+  type FormData = {
+    firstName: string
+    lastName: string
+  }
+  const form = new FormApi({
+    defaultValues: {} as FormData,
+  })
+
+  expectTypeOf(form.setErrorMap).parameter(0).toEqualTypeOf<{
+    onMount: undefined | GlobalFormValidationError<FormData>
+    onChange: undefined | GlobalFormValidationError<FormData>
+    onBlur: undefined | GlobalFormValidationError<FormData>
+    onSubmit: undefined | GlobalFormValidationError<FormData>
+    onServer: undefined
+  }>
+})
+
+it('should only allow array fields for array-specific methods', () => {
+  type FormValues = {
+    name: string
+    age: number
+    startDate: Date
+    title: string | null | undefined
+    relatives: { name: string }[]
+    counts: (number | null | undefined)[]
+  }
+
+  const defaultValues: FormValues = {
+    name: '',
+    age: 0,
+    startDate: new Date(),
+    title: null,
+    relatives: [{ name: '' }],
+    counts: [5, null, undefined, 3],
+  }
+
+  const form = new FormApi({
+    defaultValues,
+  })
+  form.mount()
+
+  type AllKeys = DeepKeys<FormValues>
+  type OnlyArrayKeys = Extract<AllKeys, 'counts' | 'relatives'>
+  type RandomKeys = Extract<AllKeys, 'counts' | 'relatives' | 'title'>
+
+  const push1 = form.pushFieldValue<OnlyArrayKeys>
+  // @ts-expect-error too wide!
+  const push2 = form.pushFieldValue<AllKeys>
+  // @ts-expect-error too wide!
+  const push3 = form.pushFieldValue<RandomKeys>
+
+  const insert1 = form.insertFieldValue<OnlyArrayKeys>
+  // @ts-expect-error too wide!
+  const insert2 = form.insertFieldValue<AllKeys>
+  // @ts-expect-error too wide!
+  const insert3 = form.insertFieldValue<RandomKeys>
+
+  const replace1 = form.replaceFieldValue<OnlyArrayKeys>
+  // @ts-expect-error too wide!
+  const replace2 = form.replaceFieldValue<AllKeys>
+  // @ts-expect-error too wide!
+  const replace3 = form.replaceFieldValue<RandomKeys>
+
+  const remove1 = form.removeFieldValue<OnlyArrayKeys>
+  // @ts-expect-error too wide!
+  const remove2 = form.removeFieldValue<AllKeys>
+  // @ts-expect-error too wide!
+  const remove3 = form.removeFieldValue<RandomKeys>
+
+  const swap1 = form.swapFieldValues<OnlyArrayKeys>
+  // @ts-expect-error too wide!
+  const swap2 = form.swapFieldValues<AllKeys>
+  // @ts-expect-error too wide!
+  const swap3 = form.swapFieldValues<RandomKeys>
+
+  const move1 = form.moveFieldValues<OnlyArrayKeys>
+  // @ts-expect-error too wide!
+  const move2 = form.moveFieldValues<AllKeys>
+  // @ts-expect-error too wide!
+  const move3 = form.moveFieldValues<RandomKeys>
+
+  const validate1 = form.validateArrayFieldsStartingFrom<OnlyArrayKeys>
+  // @ts-expect-error too wide!
+  const validate2 = form.validateArrayFieldsStartingFrom<AllKeys>
+  // @ts-expect-error too wide!
+  const validate3 = form.validateArrayFieldsStartingFrom<RandomKeys>
 })

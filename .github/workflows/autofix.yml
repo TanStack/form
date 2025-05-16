@@ -4,6 +4,13 @@ on:
   pull_request:
   push:
     branches: [main, alpha, beta]
+  workflow_dispatch:
+    inputs:
+      generate-docs:
+        description: 'Generate docs'
+        required: false
+        default: false
+        type: boolean
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
@@ -25,7 +32,7 @@ jobs:
       - name: Fix formatting
         run: pnpm prettier:write
       - name: Generate Docs
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event_name == 'push' || github.event.inputs.generate-docs == true }}
         run: pnpm docs:generate
       - name: Apply fixes
         uses: autofix-ci/action@551dded8c6cc8a1054039c8bc0b8b48c51dfc6ef

@@ -19,9 +19,12 @@ type Try<A1, A2, Catch = never> = A1 extends A2 ? A1 : Catch
  */
 export type Narrow<A> = Try<A, [], NarrowRaw<A>>
 
-export interface AnyDeepKeyAndValue {
-  key: string
-  value: any
+export interface AnyDeepKeyAndValue<
+  K extends string = string,
+  V extends any = any,
+> {
+  key: K
+  value: V
 }
 
 export type ArrayAccessor<TParent extends AnyDeepKeyAndValue> =
@@ -166,3 +169,11 @@ export type DeepValue<TValue, TAccessor> = unknown extends TValue
   : TAccessor extends DeepKeys<TValue>
     ? DeepRecord<TValue>[TAccessor]
     : never
+
+/**
+ * The keys of an object or array, deeply nested and only with a value of TValue
+ */
+export type DeepKeysOfType<TData, TValue> = Extract<
+  DeepKeysAndValues<TData>,
+  AnyDeepKeyAndValue<string, TValue>
+>['key']
