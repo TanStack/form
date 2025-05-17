@@ -1,6 +1,6 @@
-import { FormApi, functionalUpdate } from '@tanstack/form-core'
+import { FormApi, evaluate, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
-import React, { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
@@ -164,6 +164,12 @@ export function useForm<
     TSubmitMeta
   >,
 ) {
+  const stableOptsRef = useRef<typeof opts>(opts)
+
+  if (!evaluate(opts, stableOptsRef.current)) {
+    stableOptsRef.current = opts
+  }
+
   const [formApi] = useState(() => {
     const api = new FormApi<
       TFormData,
@@ -216,7 +222,7 @@ export function useForm<
    */
   useIsomorphicLayoutEffect(() => {
     formApi.update(opts)
-  })
+  }, [stableOptsRef.current])
 
   return formApi
 }
