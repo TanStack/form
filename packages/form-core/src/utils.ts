@@ -341,6 +341,10 @@ export function evaluate<T>(objA: T, objB: T) {
     return true
   }
 
+  if (typeof objA === 'function' && typeof objB === 'function') {
+    return objA.toString() === objB.toString()
+  }
+
   if (
     typeof objA !== 'object' ||
     objA === null ||
