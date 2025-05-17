@@ -164,8 +164,9 @@ export function useForm<
     TSubmitMeta
   >,
 ) {
+  // stable reference of form options, needs to be tracked so form.update is only called
+  // when props are changed.
   const stableOptsRef = useRef<typeof opts>(opts)
-
   if (!evaluate(opts, stableOptsRef.current)) {
     stableOptsRef.current = opts
   }
