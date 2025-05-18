@@ -197,9 +197,11 @@ export function useForm<
       TOnServer,
       TSubmitMeta
     > = api as never
+
     extendedApi.Field = function APIField(props) {
       return <Field {...props} form={api} />
     }
+
     extendedApi.Subscribe = (props: any) => {
       return (
         <LocalSubscribe
@@ -222,7 +224,7 @@ export function useForm<
    * that we need to keep updated every render with the most up-to-date information.
    */
   useIsomorphicLayoutEffect(() => {
-    formApi.update(opts)
+    formApi.update(stableOptsRef.current)
   }, [stableOptsRef.current])
 
   return formApi
