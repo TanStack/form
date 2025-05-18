@@ -477,7 +477,7 @@ describe('useForm', () => {
     expect(getByText(error)).toBeInTheDocument()
   })
 
-  it('form should reset when rendered correctly - vue', async () => {
+  it('form should reset default value when resetting in onSubmit', async () => {
     const Comp = defineComponent(() => {
       const form = useForm({
         defaultValues: {
