@@ -224,7 +224,7 @@ export function useForm<
    * that we need to keep updated every render with the most up-to-date information.
    */
   useIsomorphicLayoutEffect(() => {
-    formApi.update(stableOptsRef.current)
+    formApi.update(opts)
   }, [stableOptsRef.current])
 
   return formApi
