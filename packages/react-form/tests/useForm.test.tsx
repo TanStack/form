@@ -795,7 +795,7 @@ describe('useForm', () => {
     expect(fn).toHaveBeenCalledTimes(1)
   })
 
-  it('form should reset when rendered correctly - react', async () => {
+  it('form should reset default value when resetting in onSubmit', async () => {
     function Comp() {
       const form = useForm({
         defaultValues: {

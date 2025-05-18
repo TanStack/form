@@ -371,7 +371,7 @@ describe('TanStackFieldDirective', () => {
   })
 })
 
-describe('form should reset when rendered correctly - angular', () => {
+describe('form should reset default value when resetting in onSubmit', () => {
   it('should be able to handle async resets', async () => {
     @Component({
       selector: 'test-component',

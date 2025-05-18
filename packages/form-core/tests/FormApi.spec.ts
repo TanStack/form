@@ -120,7 +120,7 @@ describe('form api', () => {
     })
   })
 
-  it('form should reset when rendered correctly - core', async () => {
+  it('form should reset default value when resetting in onSubmit', async () => {
     const defaultValues = {
       name: '',
     }
