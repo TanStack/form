@@ -161,7 +161,7 @@ Defined in: [packages/form-core/src/FormApi.ts:1940](https://github.com/TanStack
 getAllErrors(): object
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2214](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2214)
+Defined in: [packages/form-core/src/FormApi.ts:2211](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2211)
 
 Returns form and field level errors
 
@@ -433,7 +433,7 @@ parseValuesWithSchema(schema):
 }
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2274](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2274)
+Defined in: [packages/form-core/src/FormApi.ts:2271](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2271)
 
 Parses the form's values with a given standard schema and returns
 issues (if any). This method does NOT set any internal errors.
@@ -467,7 +467,7 @@ parseValuesWithSchemaAsync(schema): Promise<
 }>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2286](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2286)
+Defined in: [packages/form-core/src/FormApi.ts:2283](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2283)
 
 Parses the form's values with a given standard schema and returns
 issues (if any). This method does NOT set any internal errors.
@@ -698,7 +698,7 @@ resets every field's meta
 setErrorMap(errorMap): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2152](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2152)
+Defined in: [packages/form-core/src/FormApi.ts:2149](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2149)
 
 Updates the form's errorMap
 
