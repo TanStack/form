@@ -794,64 +794,116 @@ describe('useForm', () => {
 
     expect(fn).toHaveBeenCalledTimes(1)
   })
-})
 
-it('form should reset when rendered correctly - react', async () => {
-  function Comp() {
-    const form = useForm({
-      defaultValues: {
-        name: '',
-      },
-      onSubmit: ({ value }) => {
-        expect(value).toEqual({ name: 'another-test' })
+  it('form should reset when rendered correctly - react', async () => {
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          name: '',
+        },
+        onSubmit: ({ value }) => {
+          expect(value).toEqual({ name: 'another-test' })
 
-        form.reset(value)
-      },
-    })
+          form.reset(value)
+        },
+      })
 
-    return (
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          form.handleSubmit()
-        }}
-      >
-        <form.Field
-          name="name"
-          children={(field) => (
-            <input
-              data-testid="fieldinput"
-              name={field.name}
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
-            />
-          )}
-        />
+      return (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            form.handleSubmit()
+          }}
+        >
+          <form.Field
+            name="name"
+            children={(field) => (
+              <input
+                data-testid="fieldinput"
+                name={field.name}
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            )}
+          />
 
-        <button type="submit" data-testid="submit">
-          submit
-        </button>
+          <button type="submit" data-testid="submit">
+            submit
+          </button>
 
-        <button type="reset" data-testid="reset" onClick={() => form.reset()}>
-          Reset
-        </button>
-      </form>
-    )
-  }
+          <button type="reset" data-testid="reset" onClick={() => form.reset()}>
+            Reset
+          </button>
+        </form>
+      )
+    }
 
-  const { getByTestId } = render(<Comp />)
-  const input = getByTestId('fieldinput')
-  const submit = getByTestId('submit')
-  const reset = getByTestId('reset')
+    const { getByTestId } = render(<Comp />)
+    const input = getByTestId('fieldinput')
+    const submit = getByTestId('submit')
+    const reset = getByTestId('reset')
 
-  await user.type(input, 'test')
-  await waitFor(() => expect(input).toHaveValue('test'))
+    await user.type(input, 'test')
+    await waitFor(() => expect(input).toHaveValue('test'))
 
-  await user.click(reset)
-  await waitFor(() => expect(input).toHaveValue(''))
+    await user.click(reset)
+    await waitFor(() => expect(input).toHaveValue(''))
 
-  await user.type(input, 'another-test')
-  await user.click(submit)
-  await waitFor(() => expect(input).toHaveValue('another-test'))
+    await user.type(input, 'another-test')
+    await user.click(submit)
+    await waitFor(() => expect(input).toHaveValue('another-test'))
+  })
+
+  it('form should update when props are changed', async () => {
+    function Comp() {
+      const [defaultValue, setDefault] = useState<{
+        name: string
+      }>({ name: '' })
+
+      const form = useForm({
+        defaultValues: defaultValue,
+        onSubmit: ({ value }) => {
+          form.reset(value)
+        },
+      })
+
+      return (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            form.handleSubmit()
+          }}
+        >
+          <form.Field
+            name="name"
+            children={(field) => (
+              <input
+                data-testid="fieldinput"
+                name={field.name}
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            )}
+          />
+
+          <button
+            type="button"
+            data-testid="change-props"
+            onClick={() => setDefault({ name: 'props-change' })}
+          >
+            change props
+          </button>
+        </form>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    const input = getByTestId('fieldinput')
+    const changeProps = getByTestId('change-props')
+
+    await user.click(changeProps)
+    await waitFor(() => expect(input).toHaveValue('props-change'))
+  })
 })
