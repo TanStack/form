@@ -273,3 +273,33 @@ it('should only allow array fields for array-specific methods', () => {
   // @ts-expect-error too wide!
   const validate3 = form.validateArrayFieldsStartingFrom<RandomKeys>
 })
+
+it('should infer full field name union for form.resetField parameters', () => {
+  type FormData = {
+    shallow: string
+    nested: {
+      field: {
+        name: string
+      }
+    }
+  }
+
+  const defaultValue = {
+    shallow: '',
+    nested: {
+      field: {
+        name: '',
+      },
+    },
+  }
+
+  const form = new FormApi({
+    defaultValues: defaultValue as FormData,
+  })
+
+  expectTypeOf(form.resetField)
+    .parameter(0)
+    .toEqualTypeOf<
+      'shallow' | 'nested' | 'nested.field' | 'nested.field.name'
+    >()
+})
