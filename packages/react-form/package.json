@@ -87,7 +87,7 @@
     "devalue": "^5.1.1"
   },
   "devDependencies": {
-    "@tanstack/react-start": "^1.120.3",
+    "@tanstack/react-start": "^1.120.5",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.4.1",
