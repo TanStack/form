@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@tanstack/solid-form": "^1.11.2",
-    "solid-js": "^1.9.6"
+    "solid-js": "^1.9.7"
   },
   "devDependencies": {
     "typescript": "5.8.2",
