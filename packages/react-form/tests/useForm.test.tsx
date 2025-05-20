@@ -895,6 +895,14 @@ describe('useForm', () => {
           >
             change props
           </button>
+
+          <button
+            type="button"
+            data-testid="change-props-again"
+            onClick={() => setDefault({ name: 'props-change-again' })}
+          >
+            change props again
+          </button>
         </form>
       )
     }
@@ -902,8 +910,13 @@ describe('useForm', () => {
     const { getByTestId } = render(<Comp />)
     const input = getByTestId('fieldinput')
     const changeProps = getByTestId('change-props')
+    const changePropsAgain = getByTestId('change-props-again')
 
     await user.click(changeProps)
     await waitFor(() => expect(input).toHaveValue('props-change'))
+
+    // checks stableRef is comparing against previously set default
+    await user.click(changePropsAgain)
+    await waitFor(() => expect(input).toHaveValue('props-change-again'))
   })
 })
