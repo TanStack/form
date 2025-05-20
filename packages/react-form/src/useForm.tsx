@@ -164,13 +164,6 @@ export function useForm<
     TSubmitMeta
   >,
 ) {
-  // stable reference of form options, needs to be tracked so form.update is only called
-  // when props are changed.
-  const stableOptsRef = useRef<typeof opts>(opts)
-  if (!evaluate(opts, stableOptsRef.current)) {
-    stableOptsRef.current = opts
-  }
-
   const [formApi] = useState(() => {
     const api = new FormApi<
       TFormData,
@@ -219,12 +212,19 @@ export function useForm<
 
   useStore(formApi.store, (state) => state.isSubmitting)
 
+  // stable reference of form options, needs to be tracked so form.update is only called
+  // when props are changed.
+  const stableOptsRef = useRef<typeof opts>(opts)
+  if (!evaluate(opts, stableOptsRef.current)) {
+    stableOptsRef.current = opts
+  }
+
   /**
    * formApi.update should not have any side effects. Think of it like a `useRef`
    * that we need to keep updated every render with the most up-to-date information.
    */
   useIsomorphicLayoutEffect(() => {
-    formApi.update(opts)
+    formApi.update(stableOptsRef.current)
   }, [stableOptsRef.current])
 
   return formApi
