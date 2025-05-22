@@ -96,6 +96,43 @@ describe('setBy', () => {
       kids: [...structure.kids, { name: 'John' }],
     })
   })
+
+  it('should preserve arrays when setting them within other arrays', () => {
+    const table: { field: { value: number }[][] } = {
+      field: [
+        [
+          {
+            value: 0,
+          },
+          {
+            value: 1,
+          },
+        ],
+        [
+          {
+            value: 2,
+          },
+        ],
+      ],
+    }
+
+    const newTable = setBy(table, 'field[0][1].value', 2)
+    expect(newTable.field).toStrictEqual([
+      [
+        {
+          value: 0,
+        },
+        {
+          value: 2,
+        },
+      ],
+      [
+        {
+          value: 2,
+        },
+      ],
+    ])
+  })
 })
 
 describe('deleteBy', () => {
@@ -138,26 +175,53 @@ describe('deleteBy', () => {
 })
 
 describe('makePathArray', () => {
-  it('should convert dot notation to array', () => {
-    expect(makePathArray('name')).toEqual(['name'])
-    expect(makePathArray('mother.name')).toEqual(['mother', 'name'])
-    expect(makePathArray('kids[0].name')).toEqual(['kids', 0, 'name'])
-    expect(makePathArray('kids[0].name[1]')).toEqual(['kids', 0, 'name', 1])
-    expect(makePathArray('kids[0].name[1].age')).toEqual([
-      'kids',
+  it('should convert chained property access', () => {
+    expect(makePathArray('a')).toEqual(['a'])
+    expect(makePathArray('a.b')).toEqual(['a', 'b'])
+    expect(makePathArray('foo.bar.baz')).toEqual(['foo', 'bar', 'baz'])
+  })
+
+  it('should convert property access followed by array indeces', () => {
+    expect(makePathArray('a[0]')).toEqual(['a', 0])
+    expect(makePathArray('foo[1]')).toEqual(['foo', 1])
+    expect(makePathArray('a.b[2]')).toEqual(['a', 'b', 2])
+  })
+
+  it('should convert chained array indeces', () => {
+    expect(makePathArray('a[0][1]')).toEqual(['a', 0, 1])
+    expect(makePathArray('foo[3][4][5]')).toEqual(['foo', 3, 4, 5])
+  })
+
+  it('should convert array indeces followed by property access', () => {
+    expect(makePathArray('a[0].b')).toEqual(['a', 0, 'b'])
+    expect(makePathArray('foo[1].bar')).toEqual(['foo', 1, 'bar'])
+    expect(makePathArray('[2].bar')).toEqual([2, 'bar'])
+    expect(makePathArray('[1][5].baz')).toEqual([1, 5, 'baz'])
+  })
+
+  it('should convert mixed chains of access', () => {
+    expect(makePathArray('a.b[0].c[1].d')).toEqual(['a', 'b', 0, 'c', 1, 'd'])
+    expect(makePathArray('x[0].y[1].z')).toEqual(['x', 0, 'y', 1, 'z'])
+  })
+
+  it('should handle deeply nested paths', () => {
+    expect(makePathArray('a.b[0][1].c.d[2][3].e')).toEqual([
+      'a',
+      'b',
       0,
-      'name',
       1,
-      'age',
-    ])
-    expect(makePathArray('kids[0].name[1].age[2]')).toEqual([
-      'kids',
-      0,
-      'name',
-      1,
-      'age',
+      'c',
+      'd',
       2,
+      3,
+      'e',
     ])
+  })
+
+  it('should convert paths starting with multiple array indeces', () => {
+    expect(makePathArray('[0][1]')).toEqual([0, 1])
+    expect(makePathArray('[2][3].a')).toEqual([2, 3, 'a'])
+    expect(makePathArray('[4][5][6].b[7]')).toEqual([4, 5, 6, 'b', 7])
   })
 })
 
