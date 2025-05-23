@@ -124,7 +124,7 @@ function SubscribeButton({ label }: { label: string }) {
   const form = useFormContext()
   return (
     <form.Subscribe selector={(state) => state.isSubmitting}>
-      {(isSubmitting) => <button onClick={() => form.handleSubmit()} disabled={isSubmitting}>{label}</button>}
+      {(isSubmitting) => <button type="submit" disabled={isSubmitting}>{label}</button>}
     </form.Subscribe>
   )
 }
