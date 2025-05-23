@@ -2457,4 +2457,27 @@ describe('field api', () => {
 
     expect(field.getMeta().errorSourceMap.onChange).toEqual('field')
   })
+
+  it('should have user defined meta and react to value change', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'Stegosaurus',
+      },
+    })
+    form.mount()
+
+    const nameField = new FieldApi({
+      form,
+      name: 'name',
+      meta: ({ values }) => ({
+        dinosaur: values.name === 'Stegosaurus' ? 'dino' : 'notDino',
+      }),
+    })
+
+    nameField.mount()
+    expect(nameField.getMeta().dinosaur).toEqual('dino')
+
+    nameField.handleChange('Cat')
+    expect(nameField.getMeta().dinosaur).toEqual('notDino')
+  })
 })
