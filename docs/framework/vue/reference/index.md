@@ -9,22 +9,22 @@ title: "@tanstack/vue-form"
 
 ## Interfaces
 
-- [VueFieldApi](interfaces/vuefieldapi.md)
-- [VueFormApi](interfaces/vueformapi.md)
+- [VueFieldApi](../interfaces/vuefieldapi.md)
+- [VueFormApi](../interfaces/vueformapi.md)
 
 ## Type Aliases
 
-- [FieldComponent](type-aliases/fieldcomponent.md)
-- [FieldComponentBoundProps](type-aliases/fieldcomponentboundprops.md)
-- [FieldComponentProps](type-aliases/fieldcomponentprops.md)
-- [UseField](type-aliases/usefield.md)
+- [FieldComponent](../type-aliases/fieldcomponent.md)
+- [FieldComponentBoundProps](../type-aliases/fieldcomponentboundprops.md)
+- [FieldComponentProps](../type-aliases/fieldcomponentprops.md)
+- [UseField](../type-aliases/usefield.md)
 
 ## Variables
 
-- [Field](variables/field.md)
+- [Field](../variables/field.md)
 
 ## Functions
 
-- [useField](functions/usefield.md)
-- [useForm](functions/useform.md)
-- [useStore](functions/usestore.md)
+- [useField](../functions/usefield.md)
+- [useForm](../functions/useform.md)
+- [useStore](../functions/usestore.md)

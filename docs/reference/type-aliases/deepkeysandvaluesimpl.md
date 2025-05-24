@@ -21,6 +21,6 @@ Defined in: [packages/form-core/src/util-types.ts:133](https://github.com/TanSta
 
 • **T**
 
-• **TParent** *extends* [`AnyDeepKeyAndValue`](../interfaces/anydeepkeyandvalue.md) = `never`
+• **TParent** *extends* [`AnyDeepKeyAndValue`](../../interfaces/anydeepkeyandvalue.md) = `never`
 
 • **TAcc** = `never`
