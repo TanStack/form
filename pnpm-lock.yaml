@@ -44,12 +44,18 @@ importers:
       eslint-plugin-react-hooks:
         specifier: ^5.2.0
         version: 5.2.0(eslint@9.27.0(jiti@2.4.2))
+      fast-glob:
+        specifier: ^3.3.3
+        version: 3.3.3
       jsdom:
         specifier: ^26.1.0
         version: 26.1.0
       knip:
         specifier: ^5.56.0
         version: 5.56.0(@types/node@22.15.3)(typescript@5.8.2)
+      markdown-link-extractor:
+        specifier: ^4.0.2
+        version: 4.0.2
       nx:
         specifier: 20.8.2
         version: 20.8.2(@swc/core@1.11.24)
@@ -5668,6 +5674,13 @@ packages:
     resolution: {integrity: sha512-OAlb+T7V4Op9OwdkjmguYRqncdlx5JiofwOAUkmTF+jNdHwzTaTs4sRAGpzLF3oOz5xAyDGrPgeIDFQmDOTiJw==}
     engines: {node: '>= 16'}
 
+  cheerio-select@2.1.0:
+    resolution: {integrity: sha512-9v9kG0LvzrlcungtnJtpGNxY+fzECQKhK4EGJX2vByejiMX84MFNQw4UxPJl3bFbTMw+Dfs37XaIkCwTZfLh4g==}
+
+  cheerio@1.0.0:
+    resolution: {integrity: sha512-quS9HgjQpdaXOvsZz82Oz7uxtXiy6UIsIQcpBj7HRw2M63Skasm9qlDocAM7jNuaxdhpPU7c4kJN+gA5MCu4ww==}
+    engines: {node: '>=18.17'}
+
   chokidar@3.6.0:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
     engines: {node: '>= 8.10.0'}
@@ -6339,6 +6352,9 @@ packages:
   encodeurl@2.0.0:
     resolution: {integrity: sha512-Q0n9HRi4m6JuGIV1eFlmvJB7ZEVxu93IrMyiMsGC0lrMJMWzRgx6WGquyfQgZVb31vhGgXnfmPNNXmxnOkRBrg==}
     engines: {node: '>= 0.8'}
+
+  encoding-sniffer@0.2.0:
+    resolution: {integrity: sha512-ju7Wq1kg04I3HtiYIOrUrdfdDvkyO9s5XM8QAj/bN61Yo/Vb4vgJxy5vi4Yxk01gWHbrofpPtpxM8bKger9jhg==}
 
   encoding@0.1.13:
     resolution: {integrity: sha512-ETBauow1T35Y/WZMkio9jiM0Z5xjHHmJ4XmjZOq1l/dXz3lr2sRn87nJy20RupqSh1F2m3HHPSp8ShIPQJrJ3A==}
@@ -7165,8 +7181,14 @@ packages:
   html-escaper@2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
 
+  html-link-extractor@1.0.5:
+    resolution: {integrity: sha512-ADd49pudM157uWHwHQPUSX4ssMsvR/yHIswOR5CUfBdK9g9ZYGMhVSE6KZVHJ6kCkR0gH4htsfzU6zECDNVwyw==}
+
   htmlparser2@10.0.0:
     resolution: {integrity: sha512-TwAZM+zE5Tq3lrEHvOlvwgj1XLWQCtaaibSN11Q+gGBAS7Y1uZSWwXXRe4iF6OXnaq1riyQAPFOBtYc77Mxq0g==}
+
+  htmlparser2@9.1.0:
+    resolution: {integrity: sha512-5zfg6mHUoaer/97TxnGpxmbR7zJtPwIYFMZ/H5ucTlPZhKvtum05yiPK3Mgai3a0DyVxv7qYqoweaEd2nrYQzQ==}
 
   http-cache-semantics@4.1.1:
     resolution: {integrity: sha512-er295DKPVsV82j5kw1Gjt+ADA/XYHsajl82cGNQG2eyoPkvgUhX+nDIyelzhIWbbsXP39EHcI6l5tYs2FYqYXQ==}
@@ -8011,6 +8033,14 @@ packages:
     resolution: {integrity: sha512-a54IwgWPaeBCAAsv13YgmALOF1elABB08FxO9i+r4VFk5Vl4pKokRPeX8u5TCgSsPi6ec1otfLjdOpVcgbpshg==}
     hasBin: true
 
+  markdown-link-extractor@4.0.2:
+    resolution: {integrity: sha512-5cUOu4Vwx1wenJgxaudsJ8xwLUMN7747yDJX3V/L7+gi3e4MsCm7w5nbrDQQy8nEfnl4r5NV3pDXMAjhGXYXAw==}
+
+  marked@12.0.2:
+    resolution: {integrity: sha512-qXUm7e/YKFoqFPYPa3Ukg9xlI5cyAtGmyEIzMfW//m6kXwCy2Ps9DYf5ioijFKQ8qyuscrHoY04iJGctu2Kg0Q==}
+    engines: {node: '>= 18'}
+    hasBin: true
+
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
     engines: {node: '>= 0.4'}
@@ -8827,6 +8857,12 @@ packages:
 
   parse5-html-rewriting-stream@7.0.0:
     resolution: {integrity: sha512-mazCyGWkmCRWDI15Zp+UiCqMp/0dgEmkZRvhlsqqKYr4SsVm/TvnSpD9fCvqCA2zoWJcfRym846ejWBBHRiYEg==}
+
+  parse5-htmlparser2-tree-adapter@7.1.0:
+    resolution: {integrity: sha512-ruw5xyKs6lrpo9x9rCZqZZnIUntICjQAd0Wsmp396Ul9lN/h+ifgVV1x1gZHi8euej6wTfpqX8j+BFQxF0NS/g==}
+
+  parse5-parser-stream@7.1.2:
+    resolution: {integrity: sha512-JyeQc9iwFLn5TbvvqACIF/VXG6abODeB3Fwmv/TGdLk2LfbWkaySGY72at4+Ty7EkPZj854u4CrICqNk2qIbow==}
 
   parse5-sax-parser@7.0.0:
     resolution: {integrity: sha512-5A+v2SNsq8T6/mG3ahcz8ZtQ0OUFTatxPbeidoMB7tkJSGDY3tdfl4MHovtLQHkEn5CGxijNWRQHhRQ6IRpXKg==}
@@ -11334,9 +11370,9 @@ snapshots:
       tree-kill: 1.2.2
       tslib: 2.8.1
       typescript: 5.8.2
-      webpack: 5.98.0(@swc/core@1.11.24)(esbuild@0.25.4)
+      webpack: 5.98.0(@swc/core@1.11.24)
       webpack-dev-middleware: 7.4.2(webpack@5.98.0(@swc/core@1.11.24)(esbuild@0.25.4))
-      webpack-dev-server: 5.2.0(webpack@5.98.0(@swc/core@1.11.24)(esbuild@0.25.4))
+      webpack-dev-server: 5.2.0(webpack@5.98.0(@swc/core@1.11.24))
       webpack-merge: 6.0.1
       webpack-subresource-integrity: 5.1.0(webpack@5.98.0(@swc/core@1.11.24)(esbuild@0.25.4))
     optionalDependencies:
@@ -15260,7 +15296,7 @@ snapshots:
       '@tanstack/react-router': 1.120.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       vite: 6.3.5(@types/node@22.15.3)(jiti@2.4.2)(less@4.3.0)(sass@1.87.0)(sugarss@4.0.1(postcss@8.5.3))(terser@5.39.0)(tsx@4.19.4)(yaml@2.7.1)
       vite-plugin-solid: 2.11.6(@testing-library/jest-dom@6.6.3)(solid-js@1.9.7)(vite@6.3.5(@types/node@22.15.3)(jiti@2.4.2)(less@4.3.0)(sass@1.87.0)(sugarss@4.0.1(postcss@8.5.3))(terser@5.39.0)(tsx@4.19.4)(yaml@2.7.1))
-      webpack: 5.98.0(@swc/core@1.11.24)(esbuild@0.25.4)
+      webpack: 5.98.0(@swc/core@1.11.24)
     transitivePeerDependencies:
       - supports-color
 
@@ -16923,6 +16959,29 @@ snapshots:
 
   check-error@2.1.1: {}
 
+  cheerio-select@2.1.0:
+    dependencies:
+      boolbase: 1.0.0
+      css-select: 5.1.0
+      css-what: 6.1.0
+      domelementtype: 2.3.0
+      domhandler: 5.0.3
+      domutils: 3.2.2
+
+  cheerio@1.0.0:
+    dependencies:
+      cheerio-select: 2.1.0
+      dom-serializer: 2.0.0
+      domhandler: 5.0.3
+      domutils: 3.2.2
+      encoding-sniffer: 0.2.0
+      htmlparser2: 9.1.0
+      parse5: 7.3.0
+      parse5-htmlparser2-tree-adapter: 7.1.0
+      parse5-parser-stream: 7.1.2
+      undici: 6.21.2
+      whatwg-mimetype: 4.0.0
+
   chokidar@3.6.0:
     dependencies:
       anymatch: 3.1.3
@@ -17529,6 +17588,11 @@ snapshots:
   encodeurl@1.0.2: {}
 
   encodeurl@2.0.0: {}
+
+  encoding-sniffer@0.2.0:
+    dependencies:
+      iconv-lite: 0.6.3
+      whatwg-encoding: 3.1.1
 
   encoding@0.1.13:
     dependencies:
@@ -18699,12 +18763,23 @@ snapshots:
 
   html-escaper@2.0.2: {}
 
+  html-link-extractor@1.0.5:
+    dependencies:
+      cheerio: 1.0.0
+
   htmlparser2@10.0.0:
     dependencies:
       domelementtype: 2.3.0
       domhandler: 5.0.3
       domutils: 3.2.2
       entities: 6.0.0
+
+  htmlparser2@9.1.0:
+    dependencies:
+      domelementtype: 2.3.0
+      domhandler: 5.0.3
+      domutils: 3.2.2
+      entities: 4.5.0
 
   http-cache-semantics@4.1.1: {}
 
@@ -19575,6 +19650,13 @@ snapshots:
       mdurl: 2.0.0
       punycode.js: 2.3.1
       uc.micro: 2.1.0
+
+  markdown-link-extractor@4.0.2:
+    dependencies:
+      html-link-extractor: 1.0.5
+      marked: 12.0.2
+
+  marked@12.0.2: {}
 
   math-intrinsics@1.1.0: {}
 
@@ -20778,6 +20860,15 @@ snapshots:
       entities: 4.5.0
       parse5: 7.3.0
       parse5-sax-parser: 7.0.0
+
+  parse5-htmlparser2-tree-adapter@7.1.0:
+    dependencies:
+      domhandler: 5.0.3
+      parse5: 7.3.0
+
+  parse5-parser-stream@7.1.2:
+    dependencies:
+      parse5: 7.3.0
 
   parse5-sax-parser@7.0.0:
     dependencies:
@@ -22154,6 +22245,17 @@ snapshots:
       '@swc/core': 1.11.24
       esbuild: 0.25.4
 
+  terser-webpack-plugin@5.3.14(@swc/core@1.11.24)(webpack@5.98.0(@swc/core@1.11.24)):
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.25
+      jest-worker: 27.5.1
+      schema-utils: 4.3.2
+      serialize-javascript: 6.0.2
+      terser: 5.39.0
+      webpack: 5.98.0(@swc/core@1.11.24)
+    optionalDependencies:
+      '@swc/core': 1.11.24
+
   terser@5.39.0:
     dependencies:
       '@jridgewell/source-map': 0.3.6
@@ -23194,6 +23296,17 @@ snapshots:
     optionalDependencies:
       webpack: 5.98.0(@swc/core@1.11.24)(esbuild@0.25.4)
 
+  webpack-dev-middleware@7.4.2(webpack@5.98.0(@swc/core@1.11.24)):
+    dependencies:
+      colorette: 2.0.20
+      memfs: 4.17.0
+      mime-types: 2.1.35
+      on-finished: 2.4.1
+      range-parser: 1.2.1
+      schema-utils: 4.3.2
+    optionalDependencies:
+      webpack: 5.98.0(@swc/core@1.11.24)
+
   webpack-dev-server@5.2.0(webpack@5.98.0(@swc/core@1.11.24)(esbuild@0.25.4)):
     dependencies:
       '@types/bonjour': 3.5.13
@@ -23231,6 +23344,43 @@ snapshots:
       - supports-color
       - utf-8-validate
 
+  webpack-dev-server@5.2.0(webpack@5.98.0(@swc/core@1.11.24)):
+    dependencies:
+      '@types/bonjour': 3.5.13
+      '@types/connect-history-api-fallback': 1.5.4
+      '@types/express': 4.17.21
+      '@types/serve-index': 1.9.4
+      '@types/serve-static': 1.15.7
+      '@types/sockjs': 0.3.36
+      '@types/ws': 8.18.1
+      ansi-html-community: 0.0.8
+      bonjour-service: 1.3.0
+      chokidar: 3.6.0
+      colorette: 2.0.20
+      compression: 1.8.0
+      connect-history-api-fallback: 2.0.0
+      express: 4.21.2
+      graceful-fs: 4.2.11
+      http-proxy-middleware: 2.0.9(@types/express@4.17.21)
+      ipaddr.js: 2.2.0
+      launch-editor: 2.10.0
+      open: 10.1.0
+      p-retry: 6.2.1
+      schema-utils: 4.3.2
+      selfsigned: 2.4.1
+      serve-index: 1.9.1
+      sockjs: 0.3.24
+      spdy: 4.0.2
+      webpack-dev-middleware: 7.4.2(webpack@5.98.0(@swc/core@1.11.24))
+      ws: 8.18.1
+    optionalDependencies:
+      webpack: 5.98.0(@swc/core@1.11.24)
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - supports-color
+      - utf-8-validate
+
   webpack-merge@6.0.1:
     dependencies:
       clone-deep: 4.0.1
@@ -23245,6 +23395,36 @@ snapshots:
       webpack: 5.98.0(@swc/core@1.11.24)(esbuild@0.25.4)
 
   webpack-virtual-modules@0.6.2: {}
+
+  webpack@5.98.0(@swc/core@1.11.24):
+    dependencies:
+      '@types/eslint-scope': 3.7.7
+      '@types/estree': 1.0.7
+      '@webassemblyjs/ast': 1.14.1
+      '@webassemblyjs/wasm-edit': 1.14.1
+      '@webassemblyjs/wasm-parser': 1.14.1
+      acorn: 8.14.1
+      browserslist: 4.24.4
+      chrome-trace-event: 1.0.4
+      enhanced-resolve: 5.18.1
+      es-module-lexer: 1.7.0
+      eslint-scope: 5.1.1
+      events: 3.3.0
+      glob-to-regexp: 0.4.1
+      graceful-fs: 4.2.11
+      json-parse-even-better-errors: 2.3.1
+      loader-runner: 4.3.0
+      mime-types: 2.1.35
+      neo-async: 2.6.2
+      schema-utils: 4.3.2
+      tapable: 2.2.1
+      terser-webpack-plugin: 5.3.14(@swc/core@1.11.24)(webpack@5.98.0(@swc/core@1.11.24))
+      watchpack: 2.4.2
+      webpack-sources: 3.2.3
+    transitivePeerDependencies:
+      - '@swc/core'
+      - esbuild
+      - uglify-js
 
   webpack@5.98.0(@swc/core@1.11.24)(esbuild@0.25.4):
     dependencies:

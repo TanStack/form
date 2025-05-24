@@ -17,10 +17,10 @@ Defined in: [packages/form-core/src/util-types.ts:106](https://github.com/TanSta
 
 ## Type Parameters
 
-• **TParent** *extends* [`AnyDeepKeyAndValue`](../interfaces/anydeepkeyandvalue.md)
+• **TParent** *extends* [`AnyDeepKeyAndValue`](../../interfaces/anydeepkeyandvalue.md)
 
 • **T**
 
 • **TAcc**
 
-• **TAllKeys** *extends* [`AllObjectKeys`](allobjectkeys.md)\<`T`\> = [`AllObjectKeys`](allobjectkeys.md)\<`T`\>
+• **TAllKeys** *extends* [`AllObjectKeys`](../allobjectkeys.md)\<`T`\> = [`AllObjectKeys`](../allobjectkeys.md)\<`T`\>

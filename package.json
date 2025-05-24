@@ -29,7 +29,8 @@
     "prettier:write": "pnpm run prettier --write",
     "docs:generate": "node scripts/generateDocs.js",
     "cipublish": "node scripts/publish.js",
-    "cipublishforce": "CI=true pnpm cipublish"
+    "cipublishforce": "CI=true pnpm cipublish",
+    "verify-links": "node scripts/verify-links.ts"
   },
   "nx": {
     "includedScripts": [
@@ -49,8 +50,10 @@
     "@vitest/coverage-istanbul": "^3.1.3",
     "eslint": "9.27.0",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "fast-glob": "^3.3.3",
     "jsdom": "^26.1.0",
     "knip": "^5.56.0",
+    "markdown-link-extractor": "^4.0.2",
     "nx": "20.8.2",
     "premove": "^4.0.0",
     "prettier": "^3.5.3",
