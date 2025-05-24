@@ -1,6 +1,6 @@
-import { FormApi, functionalUpdate } from '@tanstack/form-core'
+import { FormApi, evaluate, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
-import React, { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
@@ -164,6 +164,13 @@ export function useForm<
     TSubmitMeta
   >,
 ) {
+  // stable reference of form options, needs to be tracked so form.update is only called
+  // when props are changed.
+  const stableOptsRef = useRef<typeof opts>(opts)
+  if (!evaluate(opts, stableOptsRef.current)) {
+    stableOptsRef.current = opts
+  }
+
   const [formApi] = useState(() => {
     const api = new FormApi<
       TFormData,
@@ -190,9 +197,11 @@ export function useForm<
       TOnServer,
       TSubmitMeta
     > = api as never
+
     extendedApi.Field = function APIField(props) {
       return <Field {...props} form={api} />
     }
+
     extendedApi.Subscribe = (props: any) => {
       return (
         <LocalSubscribe
@@ -216,7 +225,7 @@ export function useForm<
    */
   useIsomorphicLayoutEffect(() => {
     formApi.update(opts)
-  })
+  }, [stableOptsRef.current])
 
   return formApi
 }
