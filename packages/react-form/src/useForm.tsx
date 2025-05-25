@@ -215,17 +215,17 @@ export function useForm<
   // stable reference of form options, needs to be tracked so form.update is only called
   // when props are changed.
   const stableOptsRef = useRef<typeof opts>(opts)
-  if (!evaluate(opts, stableOptsRef.current)) {
-    stableOptsRef.current = opts
-  }
 
   /**
    * formApi.update should not have any side effects. Think of it like a `useRef`
    * that we need to keep updated every render with the most up-to-date information.
    */
   useIsomorphicLayoutEffect(() => {
-    formApi.update(stableOptsRef.current)
-  }, [stableOptsRef.current])
+    if (!evaluate(opts, stableOptsRef.current)) {
+      stableOptsRef.current = opts
+      formApi.update(opts)
+    }
+  })
 
   return formApi
 }
