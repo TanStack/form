@@ -135,11 +135,13 @@ export function deleteBy(obj: any, _path: any) {
   return doDelete(obj)
 }
 
-const reFindNumbers0 = /^(\d*)$/gm
-const reFindNumbers1 = /\.(\d*)\./gm
-const reFindNumbers2 = /^(\d*)\./gm
-const reFindNumbers3 = /\.(\d*$)/gm
-const reFindMultiplePeriods = /\.{2,}/gm
+const reLineOfOnlyDigits = /^(\d+)$/gm
+// the second dot must be in a lookahead or the engine
+// will skip subsequent numbers (like foo.0.1.)
+const reDigitsBetweenDots = /\.(\d+)(?=\.)/gm
+const reStartWithDigitThenDot = /^(\d+)\./gm
+const reDotWithDigitsToEnd = /\.(\d+$)/gm
+const reMultipleDots = /\.{2,}/gm
 
 const intPrefix = '__int__'
 const intReplace = `${intPrefix}$1`
@@ -156,21 +158,25 @@ export function makePathArray(str: string | Array<string | number>) {
     throw new Error('Path must be a string.')
   }
 
-  return str
-    .replace(/\[/g, '.')
-    .replace(/\]/g, '')
-    .replace(reFindNumbers0, intReplace)
-    .replace(reFindNumbers1, `.${intReplace}.`)
-    .replace(reFindNumbers2, `${intReplace}.`)
-    .replace(reFindNumbers3, `.${intReplace}`)
-    .replace(reFindMultiplePeriods, '.')
-    .split('.')
-    .map((d) => {
-      if (d.indexOf(intPrefix) === 0) {
-        return parseInt(d.substring(intPrefix.length), 10)
-      }
-      return d
-    })
+  return (
+    str
+      // Leading `[` may lead to wrong parsing down the line
+      // (Example: '[0][1]' should be '0.1', not '.0.1')
+      .replace(/(^\[)|]/gm, '')
+      .replace(/\[/g, '.')
+      .replace(reLineOfOnlyDigits, intReplace)
+      .replace(reDigitsBetweenDots, `.${intReplace}.`)
+      .replace(reStartWithDigitThenDot, `${intReplace}.`)
+      .replace(reDotWithDigitsToEnd, `.${intReplace}`)
+      .replace(reMultipleDots, '.')
+      .split('.')
+      .map((d) => {
+        if (d.indexOf(intPrefix) === 0) {
+          return parseInt(d.substring(intPrefix.length), 10)
+        }
+        return d
+      })
+  )
 }
 
 /**

@@ -19,9 +19,9 @@ An object type representing the state of a field.
 
 • **TParentData**
 
-• **TName** *extends* [`DeepKeys`](deepkeys.md)\<`TParentData`\>
+• **TName** *extends* [`DeepKeys`](../deepkeys.md)\<`TParentData`\>
 
-• **TData** *extends* [`DeepValue`](deepvalue.md)\<`TParentData`, `TName`\>
+• **TData** *extends* [`DeepValue`](../deepvalue.md)\<`TParentData`, `TName`\>
 
 • **TOnMount** *extends* `undefined` \| `FieldValidateOrFn`\<`TParentData`, `TName`, `TData`\>
 

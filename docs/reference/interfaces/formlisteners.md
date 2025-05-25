@@ -47,11 +47,11 @@ Defined in: [packages/form-core/src/FormApi.ts:270](https://github.com/TanStack/
 
 ###### fieldApi
 
-[`AnyFieldApi`](../type-aliases/anyfieldapi.md)
+[`AnyFieldApi`](../../type-aliases/anyfieldapi.md)
 
 ###### formApi
 
-[`FormApi`](../classes/formapi.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`\>
+[`FormApi`](../../classes/formapi.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`\>
 
 #### Returns
 
@@ -83,11 +83,11 @@ Defined in: [packages/form-core/src/FormApi.ts:253](https://github.com/TanStack/
 
 ###### fieldApi
 
-[`AnyFieldApi`](../type-aliases/anyfieldapi.md)
+[`AnyFieldApi`](../../type-aliases/anyfieldapi.md)
 
 ###### formApi
 
-[`FormApi`](../classes/formapi.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`\>
+[`FormApi`](../../classes/formapi.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`\>
 
 #### Returns
 
@@ -119,7 +119,7 @@ Defined in: [packages/form-core/src/FormApi.ts:287](https://github.com/TanStack/
 
 ###### formApi
 
-[`FormApi`](../classes/formapi.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`\>
+[`FormApi`](../../classes/formapi.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`\>
 
 #### Returns
 
@@ -141,7 +141,7 @@ Defined in: [packages/form-core/src/FormApi.ts:302](https://github.com/TanStack/
 
 ###### formApi
 
-[`FormApi`](../classes/formapi.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`\>
+[`FormApi`](../../classes/formapi.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`\>
 
 #### Returns
 
