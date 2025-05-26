@@ -2128,7 +2128,7 @@ export class FormApi<
   /**
    * Clear all values within an array field.
    */
-  clearFieldValues = <TField extends DeepKeys<TFormData>>(
+  clearFieldValues = <TField extends DeepKeysOfType<TFormData, any[]>>(
     field: TField,
     opts?: UpdateMetaOptions,
   ) => {

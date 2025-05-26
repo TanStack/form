@@ -3273,7 +3273,7 @@ describe('form api', () => {
       {
         firstName: 'Darcy',
       },
-    ] as const
+    ]
 
     const form = new FormApi({
       defaultValues: {
