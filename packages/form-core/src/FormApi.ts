@@ -1451,7 +1451,9 @@ export class FormApi<
 
           if (
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            currentErrorMap?.[errorMapKey] !== newErrorValue || (currentErrorMapSource?.onMount === 'form' && validateObj.cause !== 'server')
+            currentErrorMap?.[errorMapKey] !== newErrorValue ||
+            (currentErrorMapSource?.onMount === 'form' &&
+              validateObj.cause !== 'server')
           ) {
             this.setFieldMeta(field, (prev) => ({
               ...prev,

@@ -2997,9 +2997,10 @@ describe('form api', () => {
         onChange: ({ value }) => {
           return {
             fields: {
-              firstName: value.firstName !== 'john' ? 'first name is not john' : null,
+              firstName:
+                value.firstName !== 'john' ? 'first name is not john' : null,
               lastName: 'last name is required',
-            }
+            },
           }
         },
         onMount: () => {
@@ -3007,7 +3008,7 @@ describe('form api', () => {
             fields: {
               firstName: 'first name is required',
               lastName: 'last name is required',
-            }
+            },
           }
         },
       },
@@ -3036,21 +3037,31 @@ describe('form api', () => {
     lastNameField.mount()
     form.mount()
 
-    expect(firstNameField.state.meta.errorMap.onMount).toBe('first name is required')
+    expect(firstNameField.state.meta.errorMap.onMount).toBe(
+      'first name is required',
+    )
     expect(firstNameField.state.meta.errorSourceMap.onMount).toBe('form')
 
-    expect(middleNameField.state.meta.errorMap.onMount).toBe('middle name is required')
+    expect(middleNameField.state.meta.errorMap.onMount).toBe(
+      'middle name is required',
+    )
     expect(middleNameField.state.meta.errorSourceMap.onMount).toBe('field')
 
-    expect(lastNameField.state.meta.errorMap.onMount).toBe('last name is required')
+    expect(lastNameField.state.meta.errorMap.onMount).toBe(
+      'last name is required',
+    )
     expect(lastNameField.state.meta.errorSourceMap.onMount).toBe('form')
 
     firstNameField.setValue('other')
 
-    expect(firstNameField.state.meta.errorMap.onChange).toEqual('first name is not john')
+    expect(firstNameField.state.meta.errorMap.onChange).toEqual(
+      'first name is not john',
+    )
     expect(firstNameField.state.meta.errorSourceMap.onMount).toBeUndefined()
 
-    expect(middleNameField.state.meta.errorMap.onMount).toBe('middle name is required')
+    expect(middleNameField.state.meta.errorMap.onMount).toBe(
+      'middle name is required',
+    )
     expect(middleNameField.state.meta.errorSourceMap.onMount).toBe('field')
 
     expect(lastNameField.state.meta.errorMap.onMount).toBeUndefined()
@@ -3062,7 +3073,9 @@ describe('form api', () => {
     expect(firstNameField.state.meta.errorSourceMap.onMount).toBeUndefined()
 
     expect(middleNameField.state.meta.errorSourceMap.onMount).toBe('field')
-    expect(middleNameField.state.meta.errorMap.onMount).toBe('middle name is required')
+    expect(middleNameField.state.meta.errorMap.onMount).toBe(
+      'middle name is required',
+    )
 
     expect(lastNameField.state.meta.errorMap.onMount).toBeUndefined()
     expect(lastNameField.state.meta.errorSourceMap.onMount).toBeUndefined()
