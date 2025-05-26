@@ -3267,6 +3267,28 @@ describe('form api', () => {
       form.parseValuesWithSchemaAsync(z.any())
     }).not.toThrowError()
   })
+
+  it('should delete fields when resetting an array field to an empty array', () => {
+    const employees = [
+      {
+        firstName: 'Darcy',
+      },
+    ]
+
+    const form = new FormApi({
+      defaultValues: {
+        employees,
+      },
+    })
+    form.mount()
+
+    form.clearFieldValues('employees')
+
+    expect(form.getFieldValue('employees')).toEqual([])
+    expect(form.getFieldValue(`employees[0]`)).toBeUndefined()
+    expect(form.getFieldMeta(`employees[0]`)).toBeUndefined()
+    expect(form.state.values.employees).toStrictEqual([])
+  })
 })
 
 it('should reset the errorSourceMap for the field when the form is reset', () => {

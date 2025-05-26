@@ -1346,6 +1346,28 @@ describe('field api', () => {
 
     field.moveValue(0, 1)
     expect(arr).toStrictEqual(['middle', 'end', 'start'])
+
+    field.clearValues()
+    expect(arr).toStrictEqual([])
+  })
+
+  it('should not break when clearValues is called on a non-array field', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'foo',
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    field.mount()
+
+    expect(() => field.clearValues()).not.toThrow()
   })
 
   it('should reset the form on a listener', () => {
