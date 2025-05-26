@@ -1,0 +1,56 @@
+{
+  "name": "@tanstack/svelte-form",
+  "version": "1.11.3",
+  "description": "Powerful, type-safe forms for Svelte.",
+  "author": "tannerlinsley",
+  "license": "MIT",
+  "keywords": [
+    "svelte"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TanStack/form.git",
+    "directory": "packages/svelte-form"
+  },
+  "homepage": "https://tanstack.com/form",
+  "scripts": {
+    "clean": "premove ./dist ./coverage",
+    "test:eslint": "eslint ./src ./tests",
+    "test:types": "svelte-check",
+    "test:lib": "vitest",
+    "test:lib:dev": "pnpm run test:lib --watch",
+    "test:build": "publint --strict",
+    "build": "svelte-package --input ./src --output ./dist"
+  },
+  "type": "module",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "svelte": "./dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "svelte": "./dist/index.js",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "src"
+  ],
+  "dependencies": {
+    "@tanstack/form-core": "workspace:*",
+    "@tanstack/svelte-store": "^0.7.0"
+  },
+  "devDependencies": {
+    "@sveltejs/package": "^2.3.11",
+    "@sveltejs/vite-plugin-svelte": "^5.0.3",
+    "@testing-library/svelte": "^5.2.7",
+    "svelte": "^5.30.2",
+    "svelte-check": "^4.2.1"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0"
+  }
+}

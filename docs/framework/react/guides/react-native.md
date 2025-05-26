@@ -19,9 +19,9 @@ Here is an example:
     <>
       <Text>Age:</Text>
       <TextInput value={field.state.value} onChangeText={field.handleChange} />
-      {field.state.meta.errors ? (
+      {!field.state.meta.isValid && (
         <Text>{field.state.meta.errors.join(', ')}</Text>
-      ) : null}
+      )}
     </>
   )}
 </form.Field>

@@ -9,17 +9,17 @@
     "_test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-form": "^1.5.0",
+    "@tanstack/react-form": "^1.11.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
-    "@vitejs/plugin-react": "^4.3.4",
+    "@vitejs/plugin-react": "^4.4.1",
     "babel-plugin-react-compiler": "19.0.0-beta-ebf51a3-20250411",
     "eslint-plugin-react-compiler": "19.0.0-beta-ebf51a3-20250411",
-    "vite": "^6.2.6"
+    "vite": "^6.3.5"
   },
   "browserslist": {
     "production": [

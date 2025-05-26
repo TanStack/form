@@ -8,19 +8,19 @@ title: DeepKeyAndValueTuple
 # Type Alias: DeepKeyAndValueTuple\<TParent, T, TAcc, TAllKeys\>
 
 ```ts
-type DeepKeyAndValueTuple<TParent, T, TAcc, TAllKeys> = TAllKeys extends any ? DeepKeysAndValues<NonNullable<T[TAllKeys]>, TupleDeepKeyAndValue<TParent, T, TAllKeys>, 
+type DeepKeyAndValueTuple<TParent, T, TAcc, TAllKeys> = TAllKeys extends any ? DeepKeysAndValuesImpl<NonNullable<T[TAllKeys]>, TupleDeepKeyAndValue<TParent, T, TAllKeys>, 
   | TAcc
   | TupleDeepKeyAndValue<TParent, T, TAllKeys>> : never;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:64](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L64)
+Defined in: [packages/form-core/src/util-types.ts:67](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L67)
 
 ## Type Parameters
 
-• **TParent** *extends* [`AnyDeepKeyAndValue`](../interfaces/anydeepkeyandvalue.md)
+• **TParent** *extends* [`AnyDeepKeyAndValue`](../../interfaces/anydeepkeyandvalue.md)
 
 • **T** *extends* `ReadonlyArray`\<`any`\>
 
 • **TAcc**
 
-• **TAllKeys** *extends* [`AllTupleKeys`](alltuplekeys.md)\<`T`\> = [`AllTupleKeys`](alltuplekeys.md)\<`T`\>
+• **TAllKeys** *extends* [`AllTupleKeys`](../alltuplekeys.md)\<`T`\> = [`AllTupleKeys`](../alltuplekeys.md)\<`T`\>

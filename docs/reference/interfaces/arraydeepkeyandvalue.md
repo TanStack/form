@@ -7,11 +7,15 @@ title: ArrayDeepKeyAndValue
 
 # Interface: ArrayDeepKeyAndValue\<TParent, T\>
 
-Defined in: [packages/form-core/src/util-types.ts:30](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L30)
+Defined in: [packages/form-core/src/util-types.ts:33](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L33)
+
+## Extends
+
+- [`AnyDeepKeyAndValue`](../anydeepkeyandvalue.md)
 
 ## Type Parameters
 
-• **TParent** *extends* [`AnyDeepKeyAndValue`](anydeepkeyandvalue.md)
+• **TParent** *extends* [`AnyDeepKeyAndValue`](../anydeepkeyandvalue.md)
 
 • **T** *extends* `ReadonlyArray`\<`any`\>
 
@@ -23,7 +27,11 @@ Defined in: [packages/form-core/src/util-types.ts:30](https://github.com/TanStac
 key: `${TParent["key"] extends never ? "" : TParent["key"]}[${number}]`;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:34](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L34)
+Defined in: [packages/form-core/src/util-types.ts:37](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L37)
+
+#### Overrides
+
+[`AnyDeepKeyAndValue`](../anydeepkeyandvalue.md).[`key`](../AnyDeepKeyAndValue.md#key)
 
 ***
 
@@ -35,4 +43,8 @@ value:
 | Nullable<TParent["value"]>;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:35](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L35)
+Defined in: [packages/form-core/src/util-types.ts:38](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L38)
+
+#### Overrides
+
+[`AnyDeepKeyAndValue`](../anydeepkeyandvalue.md).[`value`](../AnyDeepKeyAndValue.md#value)
