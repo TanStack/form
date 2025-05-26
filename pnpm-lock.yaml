@@ -120,7 +120,7 @@ importers:
         specifier: ^19.2.11
         version: 19.2.11(@angular/common@19.2.11(@angular/core@19.2.11(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.11(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.11(@angular/animations@19.2.11(@angular/common@19.2.11(@angular/core@19.2.11(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.11(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.11(@angular/core@19.2.11(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.11(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2)
       '@tanstack/angular-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/angular-form
       rxjs:
         specifier: ^7.8.2
@@ -172,7 +172,7 @@ importers:
         specifier: ^19.2.11
         version: 19.2.11(@angular/common@19.2.11(@angular/core@19.2.11(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.11(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.11(@angular/animations@19.2.11(@angular/common@19.2.11(@angular/core@19.2.11(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.11(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.11(@angular/core@19.2.11(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.11(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2)
       '@tanstack/angular-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/angular-form
       rxjs:
         specifier: ^7.8.2
@@ -200,7 +200,7 @@ importers:
   examples/lit/simple:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/lit-form
       lit:
         specifier: ^3.3.0
@@ -216,7 +216,7 @@ importers:
         specifier: ^2.3.0
         version: 2.3.0
       '@tanstack/lit-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/lit-form
       lit:
         specifier: ^3.3.0
@@ -229,7 +229,7 @@ importers:
   examples/react/array:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -254,7 +254,7 @@ importers:
   examples/react/compiler:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -285,7 +285,7 @@ importers:
   examples/react/field-errors-from-form-validators:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -310,7 +310,7 @@ importers:
   examples/react/large-form:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -335,7 +335,7 @@ importers:
   examples/react/next-server-actions:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/react-form
       '@tanstack/react-store':
         specifier: ^0.7.0
@@ -366,7 +366,7 @@ importers:
   examples/react/query-integration:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/react-form
       '@tanstack/react-query':
         specifier: ^5.76.1
@@ -403,7 +403,7 @@ importers:
         specifier: ^2.16.6
         version: 2.16.6(typescript@5.8.2)
       '@tanstack/react-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/react-form
       '@tanstack/react-store':
         specifier: ^0.7.0
@@ -440,7 +440,7 @@ importers:
   examples/react/simple:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -465,7 +465,7 @@ importers:
   examples/react/standard-schema:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/react-form
       arktype:
         specifier: ^2.1.20
@@ -502,7 +502,7 @@ importers:
   examples/react/tanstack-start:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/react-form
       '@tanstack/react-router':
         specifier: ^1.120.5
@@ -563,7 +563,7 @@ importers:
         specifier: 6.4.11
         version: 6.4.11(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@tanstack/react-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/react-form
       '@yme/lay-postcss':
         specifier: 0.1.0
@@ -606,7 +606,7 @@ importers:
   examples/solid/array:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/solid-form
       solid-js:
         specifier: ^1.9.7
@@ -625,7 +625,7 @@ importers:
   examples/solid/simple:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/solid-form
       solid-js:
         specifier: ^1.9.7
@@ -644,7 +644,7 @@ importers:
   examples/svelte/array:
     dependencies:
       '@tanstack/svelte-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/svelte-form
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
@@ -666,7 +666,7 @@ importers:
   examples/svelte/simple:
     dependencies:
       '@tanstack/svelte-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/svelte-form
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
@@ -688,7 +688,7 @@ importers:
   examples/vue/array:
     dependencies:
       '@tanstack/vue-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/vue-form
       vue:
         specifier: ^3.5.13
@@ -710,7 +710,7 @@ importers:
   examples/vue/simple:
     dependencies:
       '@tanstack/vue-form':
-        specifier: ^1.11.3
+        specifier: ^1.12.0
         version: link:../../../packages/vue-form
       vue:
         specifier: ^3.5.13
@@ -11370,9 +11370,9 @@ snapshots:
       tree-kill: 1.2.2
       tslib: 2.8.1
       typescript: 5.8.2
-      webpack: 5.98.0(@swc/core@1.11.24)
+      webpack: 5.98.0(@swc/core@1.11.24)(esbuild@0.25.4)
       webpack-dev-middleware: 7.4.2(webpack@5.98.0(@swc/core@1.11.24)(esbuild@0.25.4))
-      webpack-dev-server: 5.2.0(webpack@5.98.0(@swc/core@1.11.24))
+      webpack-dev-server: 5.2.0(webpack@5.98.0(@swc/core@1.11.24)(esbuild@0.25.4))
       webpack-merge: 6.0.1
       webpack-subresource-integrity: 5.1.0(webpack@5.98.0(@swc/core@1.11.24)(esbuild@0.25.4))
     optionalDependencies:
@@ -15296,7 +15296,7 @@ snapshots:
       '@tanstack/react-router': 1.120.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       vite: 6.3.5(@types/node@22.15.3)(jiti@2.4.2)(less@4.3.0)(sass@1.87.0)(sugarss@4.0.1(postcss@8.5.3))(terser@5.39.0)(tsx@4.19.4)(yaml@2.7.1)
       vite-plugin-solid: 2.11.6(@testing-library/jest-dom@6.6.3)(solid-js@1.9.7)(vite@6.3.5(@types/node@22.15.3)(jiti@2.4.2)(less@4.3.0)(sass@1.87.0)(sugarss@4.0.1(postcss@8.5.3))(terser@5.39.0)(tsx@4.19.4)(yaml@2.7.1))
-      webpack: 5.98.0(@swc/core@1.11.24)
+      webpack: 5.98.0(@swc/core@1.11.24)(esbuild@0.25.4)
     transitivePeerDependencies:
       - supports-color
 
@@ -22245,17 +22245,6 @@ snapshots:
       '@swc/core': 1.11.24
       esbuild: 0.25.4
 
-  terser-webpack-plugin@5.3.14(@swc/core@1.11.24)(webpack@5.98.0(@swc/core@1.11.24)):
-    dependencies:
-      '@jridgewell/trace-mapping': 0.3.25
-      jest-worker: 27.5.1
-      schema-utils: 4.3.2
-      serialize-javascript: 6.0.2
-      terser: 5.39.0
-      webpack: 5.98.0(@swc/core@1.11.24)
-    optionalDependencies:
-      '@swc/core': 1.11.24
-
   terser@5.39.0:
     dependencies:
       '@jridgewell/source-map': 0.3.6
@@ -23296,17 +23285,6 @@ snapshots:
     optionalDependencies:
       webpack: 5.98.0(@swc/core@1.11.24)(esbuild@0.25.4)
 
-  webpack-dev-middleware@7.4.2(webpack@5.98.0(@swc/core@1.11.24)):
-    dependencies:
-      colorette: 2.0.20
-      memfs: 4.17.0
-      mime-types: 2.1.35
-      on-finished: 2.4.1
-      range-parser: 1.2.1
-      schema-utils: 4.3.2
-    optionalDependencies:
-      webpack: 5.98.0(@swc/core@1.11.24)
-
   webpack-dev-server@5.2.0(webpack@5.98.0(@swc/core@1.11.24)(esbuild@0.25.4)):
     dependencies:
       '@types/bonjour': 3.5.13
@@ -23344,43 +23322,6 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  webpack-dev-server@5.2.0(webpack@5.98.0(@swc/core@1.11.24)):
-    dependencies:
-      '@types/bonjour': 3.5.13
-      '@types/connect-history-api-fallback': 1.5.4
-      '@types/express': 4.17.21
-      '@types/serve-index': 1.9.4
-      '@types/serve-static': 1.15.7
-      '@types/sockjs': 0.3.36
-      '@types/ws': 8.18.1
-      ansi-html-community: 0.0.8
-      bonjour-service: 1.3.0
-      chokidar: 3.6.0
-      colorette: 2.0.20
-      compression: 1.8.0
-      connect-history-api-fallback: 2.0.0
-      express: 4.21.2
-      graceful-fs: 4.2.11
-      http-proxy-middleware: 2.0.9(@types/express@4.17.21)
-      ipaddr.js: 2.2.0
-      launch-editor: 2.10.0
-      open: 10.1.0
-      p-retry: 6.2.1
-      schema-utils: 4.3.2
-      selfsigned: 2.4.1
-      serve-index: 1.9.1
-      sockjs: 0.3.24
-      spdy: 4.0.2
-      webpack-dev-middleware: 7.4.2(webpack@5.98.0(@swc/core@1.11.24))
-      ws: 8.18.1
-    optionalDependencies:
-      webpack: 5.98.0(@swc/core@1.11.24)
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - supports-color
-      - utf-8-validate
-
   webpack-merge@6.0.1:
     dependencies:
       clone-deep: 4.0.1
@@ -23395,36 +23336,6 @@ snapshots:
       webpack: 5.98.0(@swc/core@1.11.24)(esbuild@0.25.4)
 
   webpack-virtual-modules@0.6.2: {}
-
-  webpack@5.98.0(@swc/core@1.11.24):
-    dependencies:
-      '@types/eslint-scope': 3.7.7
-      '@types/estree': 1.0.7
-      '@webassemblyjs/ast': 1.14.1
-      '@webassemblyjs/wasm-edit': 1.14.1
-      '@webassemblyjs/wasm-parser': 1.14.1
-      acorn: 8.14.1
-      browserslist: 4.24.4
-      chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.18.1
-      es-module-lexer: 1.7.0
-      eslint-scope: 5.1.1
-      events: 3.3.0
-      glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.11
-      json-parse-even-better-errors: 2.3.1
-      loader-runner: 4.3.0
-      mime-types: 2.1.35
-      neo-async: 2.6.2
-      schema-utils: 4.3.2
-      tapable: 2.2.1
-      terser-webpack-plugin: 5.3.14(@swc/core@1.11.24)(webpack@5.98.0(@swc/core@1.11.24))
-      watchpack: 2.4.2
-      webpack-sources: 3.2.3
-    transitivePeerDependencies:
-      - '@swc/core'
-      - esbuild
-      - uglify-js
 
   webpack@5.98.0(@swc/core@1.11.24)(esbuild@0.25.4):
     dependencies:
