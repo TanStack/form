@@ -1,6 +1,11 @@
 import { Component } from '@angular/core'
 import { TanStackField, injectForm, injectStore } from '@tanstack/angular-form'
 
+interface Person {
+  name: string
+  age: number
+}
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -42,12 +47,11 @@ import { TanStackField, injectForm, injectStore } from '@tanstack/angular-form'
   `,
 })
 export class AppComponent {
-  defaultPerson = { name: '', age: 0 }
+  defaultPerson: Person = { name: '', age: 0 }
+  defaultPeople: { people: Array<Person> } = { people: [] }
 
   form = injectForm({
-    defaultValues: {
-      people: [] as Array<{ name: string; age: number }>,
-    },
+    defaultValues: this.defaultPeople,
     onSubmit({ value }) {
       alert(JSON.stringify(value))
     },
