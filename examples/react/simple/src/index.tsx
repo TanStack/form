@@ -98,7 +98,14 @@ export default function App() {
               <button type="submit" disabled={!canSubmit}>
                 {isSubmitting ? '...' : 'Submit'}
               </button>
-              <button type="reset" onClick={() => form.reset()}>
+              <button
+                type="reset"
+                onClick={(e) => {
+                  // Avoid unexpected resets of form elements (especially <select> elements)
+                  e.preventDefault();
+                  form.reset();
+                }}
+              >
                 Reset
               </button>
             </>
