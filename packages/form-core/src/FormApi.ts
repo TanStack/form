@@ -29,6 +29,7 @@ import type {
   FieldApi,
 } from './FieldApi'
 import type {
+  ExtractGlobalFormError,
   FormValidationError,
   FormValidationErrorMap,
   UpdateMetaOptions,
@@ -96,7 +97,7 @@ export type FormValidateOrFn<TFormData> =
 export type UnwrapFormValidateOrFn<
   TValidateOrFn extends undefined | FormValidateOrFn<any>,
 > = [TValidateOrFn] extends [FormValidateFn<any>]
-  ? ReturnType<TValidateOrFn>
+  ? ExtractGlobalFormError<ReturnType<TValidateOrFn>>
   : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
     ? Record<string, StandardSchemaV1Issue[]>
     : undefined
@@ -148,7 +149,7 @@ export type FormAsyncValidateOrFn<TFormData> =
 export type UnwrapFormAsyncValidateOrFn<
   TValidateOrFn extends undefined | FormAsyncValidateOrFn<any>,
 > = [TValidateOrFn] extends [FormValidateAsyncFn<any>]
-  ? Awaited<ReturnType<TValidateOrFn>>
+  ? ExtractGlobalFormError<Awaited<ReturnType<TValidateOrFn>>>
   : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
     ? Record<string, StandardSchemaV1Issue[]>
     : undefined
