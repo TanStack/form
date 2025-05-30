@@ -47,10 +47,19 @@ const {
 } = field.state
 ```
 
-There are three field states can be very useful to see how the user interacts with a field. A field is _"touched"_ when the user clicks/tabs into it, _"pristine"_ until the user changes value in it, and _"dirty"_ after the value has been changed. You can check these states via the `isTouched`, `isPristine` and `isDirty` flags, as seen below.
+There are four states in the metadata that can be useful to see how the user interacts with a field:
+
+- _"isTouched"_, after the user changes the field or blurs the field
+- _"isDirty"_, after the field's value has been changed, even if it's been reverted to the default. Opposite of _"isPristine"_
+- _"isBlurred"_, after the field has been blurred (exited)
+- _"isDefaultValue"_, whether the field's current value is the default value
+
+There is also one additional derived state:
+
+- _"isPristine"_, until the user changes the field value. Opposite of _"isPristine"_
 
 ```tsx
-const { isTouched, isPristine, isDirty } = field.state.meta
+const { isTouched, isDirty, isBlurred, isDefaultValue, isPristine } = field.state.meta
 ```
 
 ![Field states](https://raw.githubusercontent.com/TanStack/form/main/docs/assets/field-states.png)
