@@ -1,7 +1,7 @@
 import {
   Directive,
-  Input,
   booleanAttribute,
+  input,
   numberAttribute,
 } from '@angular/core'
 import {
@@ -55,76 +55,77 @@ export class TanStackField<
     TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
     TSubmitMeta,
   >
-  implements
-    OnInit,
-    OnChanges,
-    OnDestroy,
-    FieldOptions<
-      TParentData,
-      TName,
-      TData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync
-    >
+  implements OnInit, OnChanges, OnDestroy
 {
-  @Input({ required: true }) name!: TName
-  @Input() defaultValue?: NoInfer<TData>
-  @Input({ transform: numberAttribute }) asyncDebounceMs?: number
-  @Input({ transform: booleanAttribute }) asyncAlways?: boolean
-  @Input({ required: true }) tanstackField!: FormApi<
-    TParentData,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnServer,
-    TSubmitMeta
-  >
-  @Input() validators?: NoInfer<
-    FieldValidators<
-      TParentData,
-      TName,
-      TData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync
-    >
-  >
-  @Input() listeners?: NoInfer<FieldListeners<TParentData, TName, TData>>
-  @Input() defaultMeta?: Partial<
-    FieldMeta<
-      TParentData,
-      TName,
-      TData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TFormOnMount,
-      TFormOnChange,
-      TFormOnChangeAsync,
-      TFormOnBlur,
-      TFormOnBlurAsync,
-      TFormOnSubmit,
-      TFormOnSubmitAsync
-    >
-  >
-  @Input() disableErrorFlat?: boolean
+  name = input.required<TName>()
+  defaultValue = input<NoInfer<TData>>()
+  asyncDebounceMs = input(undefined as never as number, {
+    transform: numberAttribute,
+  })
+  asyncAlways = input(undefined as never as boolean, {
+    transform: booleanAttribute,
+  })
+  tanstackField =
+    input.required<
+      FormApi<
+        TParentData,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnServer,
+        TSubmitMeta
+      >
+    >()
+
+  validators =
+    input<
+      NoInfer<
+        FieldValidators<
+          TParentData,
+          TName,
+          TData,
+          TOnMount,
+          TOnChange,
+          TOnChangeAsync,
+          TOnBlur,
+          TOnBlurAsync,
+          TOnSubmit,
+          TOnSubmitAsync
+        >
+      >
+    >()
+
+  listeners = input<NoInfer<FieldListeners<TParentData, TName, TData>>>()
+  defaultMeta =
+    input<
+      Partial<
+        FieldMeta<
+          TParentData,
+          TName,
+          TData,
+          TOnMount,
+          TOnChange,
+          TOnChangeAsync,
+          TOnBlur,
+          TOnBlurAsync,
+          TOnSubmit,
+          TOnSubmitAsync,
+          TFormOnMount,
+          TFormOnChange,
+          TFormOnChangeAsync,
+          TFormOnBlur,
+          TFormOnBlurAsync,
+          TFormOnSubmit,
+          TFormOnSubmitAsync
+        >
+      >
+    >()
+
+  disableErrorFlat = input<boolean>()
 
   api!: FieldApi<
     TParentData,
@@ -170,15 +171,15 @@ export class TanStackField<
     TSubmitMeta
   > {
     return {
-      defaultValue: this.defaultValue,
-      asyncDebounceMs: this.asyncDebounceMs,
-      asyncAlways: this.asyncAlways,
-      disableErrorFlat: this.disableErrorFlat,
-      validators: this.validators,
-      listeners: this.listeners,
-      defaultMeta: this.defaultMeta,
-      name: this.name,
-      form: this.tanstackField,
+      defaultValue: this.defaultValue(),
+      asyncDebounceMs: this.asyncDebounceMs(),
+      asyncAlways: this.asyncAlways(),
+      disableErrorFlat: this.disableErrorFlat(),
+      validators: this.validators(),
+      listeners: this.listeners(),
+      defaultMeta: this.defaultMeta(),
+      name: this.name(),
+      form: this.tanstackField(),
     }
   }
 
