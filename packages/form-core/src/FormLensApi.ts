@@ -1,6 +1,7 @@
 import { Derived } from '@tanstack/store'
 import { standardSchemaValidators } from './standardSchemaValidator'
 import { defaultFieldMeta } from './metaHelper'
+import { concatenatePaths } from './utils'
 import type { Updater } from './utils'
 import type { Store } from '@tanstack/store'
 import type {
@@ -277,16 +278,7 @@ export class FormLensApi<
   getFormFieldName = <TField extends DeepKeys<TLensData>>(
     subfield: TField,
   ): DeepKeys<TFormData> => {
-    // TODO find better solution to chaining names. This is prone to breaking if the syntax ever changes
-
-    // If lensData is an array at top level, the name
-    // would be [i].name
-    // this would be incompatible with the form as it's expected
-    // to receive lens.prefix[i].name and NOT lens.prefix.[i].name
-    if (subfield.charAt(0) === '[') {
-      return this.lensPrefix + subfield
-    }
-    return `${this.lensPrefix}.${subfield}`
+    return concatenatePaths(this.lensPrefix, subfield)
   }
 
   /**

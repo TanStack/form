@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  concatenatePaths,
   deleteBy,
   determineFieldLevelErrorSourceAndValue,
   determineFormLevelErrorSourceAndValue,
@@ -562,5 +563,45 @@ describe('evaluate', () => {
       { test: { testTwo: '' }, arr: [[1]] },
     )
     expect(objComplexTrue).toEqual(true)
+  })
+})
+
+describe('concatenatePaths', () => {
+  it('should concatenate two object accessors with dot', () => {
+    expect(concatenatePaths('user', 'name')).toBe('user.name')
+  })
+
+  it('should join array accessor and object path directly', () => {
+    expect(concatenatePaths('users', '[0]')).toBe('users[0]')
+  })
+
+  it('should join object accessor after array accessor with dot', () => {
+    expect(concatenatePaths('users[0]', 'name')).toBe('users[0].name')
+  })
+
+  it('should append array accessor after array accessor directly', () => {
+    expect(concatenatePaths('users[0]', '[1]')).toBe('users[0][1]')
+  })
+
+  it('should join object accessor after object accessor with dot', () => {
+    expect(concatenatePaths('profile', 'settings.theme')).toBe(
+      'profile.settings.theme',
+    )
+    expect(concatenatePaths('settings.theme', 'profile')).toBe(
+      'settings.theme.profile',
+    )
+  })
+
+  it('should handle empty paths', () => {
+    expect(concatenatePaths('', 'name')).toBe('name')
+    expect(concatenatePaths('user', '')).toBe('user')
+    expect(concatenatePaths('', '')).toBe('')
+  })
+
+  it('should handle complex nesting with array and object accessors', () => {
+    expect(concatenatePaths('data[0].items[2]', 'value')).toBe(
+      'data[0].items[2].value',
+    )
+    expect(concatenatePaths('data', '[1].value')).toBe('data[1].value')
   })
 })
