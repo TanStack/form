@@ -1,92 +1,48 @@
+import { Component, input } from '@angular/core'
 import {
-  Component,
-  inject,
-  Injectable,
-  input,
-  type OnChanges,
-  type OnDestroy,
-  type OnInit,
-  signal,
-} from '@angular/core'
-import { TanStackField, injectForm, injectStore } from '@tanstack/angular-form'
+  TanStackField,
+  TanStackFieldComponent,
+  injectField,
+  injectForm,
+  injectStore,
+} from '@tanstack/angular-form'
 import type {
-  AnyFormApi,
-  FieldApi,
   FieldValidateAsyncFn,
   FieldValidateFn,
 } from '@tanstack/angular-form'
 
-@Injectable()
-class TanStackFieldInjectable<T> {
-  field = signal<
-    FieldApi<
-      any,
-      any,
-      T,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any
-    >
-  >(null as never)
-}
-
-function injectProvideField(form: AnyFormApi) {
-  const base = inject(TanStackFieldInjectable)
-  base.field.set(form)
-}
-
 @Component({
-  selector: 'tanstack-app-field',
+  selector: 'app-text-field',
   standalone: true,
-  template: ` <ng-content></ng-content> `,
-  providers: [TanStackFieldInjectable],
+  template: `
+    @let api = lastName.api();
+    @if (api) {
+      <label [for]="api.name">{{ label() }}</label>
+      <input
+        [id]="api.name"
+        [name]="api.name"
+        [value]="api.state.value"
+        (blur)="api.handleBlur()"
+        (input)="api.handleChange($any($event).target.value)"
+      />
+    }
+  `,
 })
-class TanStackFieldComponent extends TanStackField<
-  // TODO: Infer this, don't make it `any`
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any
-> {
-  _ = injectProvideField(this.tanstackField);
+export class AppTextField {
+  label = input.required<string>()
+  lastName = injectField<string>()
 }
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [TanStackField],
+  imports: [TanStackField, TanStackFieldComponent, AppTextField],
   template: `
     <form (submit)="handleSubmit($event)">
       <div>
-        <tanstack-app-field
+        <app-text-field
+          label="First name:"
+          tanstack-app-field
           [tanstackField]="form"
           name="firstName"
           [validators]="{
@@ -94,22 +50,15 @@ class TanStackFieldComponent extends TanStackField<
             onChangeAsyncDebounceMs: 500,
             onChangeAsync: firstNameAsyncValidator,
           }"
-          #firstName="field"
-        >
-          <app-text-field/>
-        </tanstack-app-field>
+        />
       </div>
       <div>
-        <ng-container [tanstackField]="form" name="lastName" #lastName="field">
-          <label [for]="lastName.api.name">Last Name:</label>
-          <input
-            [id]="lastName.api.name"
-            [name]="lastName.api.name"
-            [value]="lastName.api.state.value"
-            (blur)="lastName.api.handleBlur()"
-            (input)="lastName.api.handleChange($any($event).target.value)"
-          />
-        </ng-container>
+        <app-text-field
+          label="Last name:"
+          tanstack-app-field
+          [tanstackField]="form"
+          name="lastName"
+        />
       </div>
       <button type="submit" [disabled]="!canSubmit()">
         {{ isSubmitting() ? '...' : 'Submit' }}
