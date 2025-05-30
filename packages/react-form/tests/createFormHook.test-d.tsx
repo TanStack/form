@@ -10,7 +10,7 @@ function Test() {
   return null
 }
 
-const { useAppForm, withForm, withFormLens } = createFormHook({
+const { useAppForm, withForm, withFieldGroup } = createFormHook({
   fieldComponents: {
     Test,
   },
@@ -102,7 +102,7 @@ describe('createFormHook', () => {
       },
     })
 
-    const ExampleUsage2 = withFormLens({
+    const ExampleUsage2 = withFieldGroup({
       defaultValues: {} as EditorValues,
       render: ({ lens }) => {
         const test = lens.state.values.key
@@ -286,7 +286,7 @@ describe('createFormHook', () => {
       lastName: 'LastName',
     }
 
-    const FormGroupComponent = withFormLens({
+    const FormGroupComponent = withFieldGroup({
       defaultValues,
       render: function Render({ lens, children, ...props }) {
         // Existing types may be inferred
@@ -300,7 +300,7 @@ describe('createFormHook', () => {
       },
     })
 
-    const FormGroupComponentWithProps = withFormLens({
+    const FormGroupComponentWithProps = withFieldGroup({
       ...defaultValues,
       props: {} as ComponentProps,
       render: ({ lens, children, ...props }) => {
@@ -336,7 +336,7 @@ describe('createFormHook', () => {
     })
 
     // validators and listeners are ignored, only defaultValues is acknowledged
-    const FormGroupComponent = withFormLens({
+    const FormGroupComponent = withFieldGroup({
       ...formOpts,
       render: function Render({ lens }) {
         // Existing types may be inferred
@@ -350,7 +350,7 @@ describe('createFormHook', () => {
       onSubmitMeta: { foo: '' },
     })
 
-    const UnknownFormGroupComponent = withFormLens({
+    const UnknownFormGroupComponent = withFieldGroup({
       ...noDefaultValuesFormOpts,
       render: function Render({ lens }) {
         // lens.state.values can be anything.
@@ -381,7 +381,7 @@ describe('createFormHook', () => {
       lastName: 'LastName',
     }
 
-    const FormGroup = withFormLens({
+    const FormGroup = withFieldGroup({
       defaultValues,
       props: {} as ComponentProps,
       render: () => {
@@ -443,7 +443,7 @@ describe('createFormHook', () => {
       correct: 'Prop',
     }
 
-    const FormLensNoMeta = withFormLens({
+    const FormLensNoMeta = withFieldGroup({
       defaultValues: {} as Person,
       render: function Render({ lens }) {
         // Since handleSubmit always allows to submit without meta, this is okay
@@ -458,7 +458,7 @@ describe('createFormHook', () => {
       },
     })
 
-    const FormGroupWithMeta = withFormLens({
+    const FormGroupWithMeta = withFieldGroup({
       defaultValues: {} as Person,
       onSubmitMeta,
       render: function Render({ lens }) {
@@ -540,7 +540,7 @@ describe('createFormHook', () => {
       },
     })
 
-    const FormGroup = withFormLens({
+    const FormGroup = withFieldGroup({
       defaultValues: defaultValues.person,
       render: function Render({ lens }) {
         return <lens.Test />
@@ -579,13 +579,13 @@ describe('createFormHook', () => {
     const form = useAppForm({
       defaultValues,
     })
-    const LensNested = withFormLens({
+    const LensNested = withFieldGroup({
       defaultValues: defaultValues.form.field,
       render: function Render() {
         return <></>
       },
     })
-    const LensWrapper = withFormLens({
+    const LensWrapper = withFieldGroup({
       defaultValues: defaultValues.form,
       render: function Render({ lens }) {
         return (
@@ -624,20 +624,20 @@ describe('createFormHook', () => {
       },
     }
 
-    const LensNestedNoMeta = withFormLens({
+    const LensNestedNoMeta = withFieldGroup({
       defaultValues: defaultValues.form.field,
       render: function Render() {
         return <></>
       },
     })
-    const LensNestedWithMeta = withFormLens({
+    const LensNestedWithMeta = withFieldGroup({
       defaultValues: defaultValues.form.field,
       onSubmitMeta: { meta: '' },
       render: function Render() {
         return <></>
       },
     })
-    const LensWrapper = withFormLens({
+    const LensWrapper = withFieldGroup({
       defaultValues: defaultValues.form,
       render: function Render({ lens }) {
         return (

@@ -31,7 +31,7 @@ function SubscribeButton({ label }: { label: string }) {
   )
 }
 
-const { useAppForm, withForm, withFormLens } = createFormHook({
+const { useAppForm, withForm, withFieldGroup } = createFormHook({
   fieldComponents: {
     TextField,
   },
@@ -126,7 +126,7 @@ describe('createFormHook', () => {
       },
     })
 
-    const ChildForm = withFormLens({
+    const ChildForm = withFieldGroup({
       defaultValues: formOpts.defaultValues.person,
       // Optional, but adds props to the `render` function outside of `form`
       props: {
@@ -182,7 +182,7 @@ describe('createFormHook', () => {
       },
     })
 
-    const ChildFormAsField = withFormLens({
+    const ChildFormAsField = withFieldGroup({
       defaultValues: formOpts.defaultValues.person,
       render: ({ lens }) => {
         return (
@@ -199,7 +199,7 @@ describe('createFormHook', () => {
         )
       },
     })
-    const ChildFormAsArray = withFormLens({
+    const ChildFormAsArray = withFieldGroup({
       defaultValues: [formOpts.defaultValues.person],
       props: {
         title: '',
@@ -254,7 +254,7 @@ describe('createFormHook', () => {
       },
     })
 
-    const ChildFormAsField = withFormLens({
+    const ChildFormAsField = withFieldGroup({
       defaultValues: formOpts.defaultValues.person,
       render: ({ lens }) => {
         return (
@@ -303,7 +303,7 @@ describe('createFormHook', () => {
       },
     })
 
-    const ChildForm = withFormLens({
+    const ChildForm = withFieldGroup({
       defaultValues: formOpts.defaultValues.person,
       render: function Render({ lens }) {
         const firstName = useStore(
@@ -377,7 +377,7 @@ describe('createFormHook', () => {
       },
     }
 
-    const LensNested = withFormLens({
+    const LensNested = withFieldGroup({
       defaultValues: defaultValues.form.field,
       render: function Render({ lens }) {
         return (
@@ -387,7 +387,7 @@ describe('createFormHook', () => {
         )
       },
     })
-    const LensWrapper = withFormLens({
+    const LensWrapper = withFieldGroup({
       defaultValues: defaultValues.form,
       render: function Render({ lens }) {
         return (
