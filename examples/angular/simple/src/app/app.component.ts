@@ -76,7 +76,7 @@ class TanStackFieldComponent extends TanStackField<
   any,
   any
 > {
-  _ = injectProvideField(this.tanstackField);
+  _ = injectProvideField(this.tanstackField)
 }
 
 @Component({
@@ -96,7 +96,7 @@ class TanStackFieldComponent extends TanStackField<
           }"
           #firstName="field"
         >
-          <app-text-field/>
+          <app-text-field />
         </tanstack-app-field>
       </div>
       <div>
