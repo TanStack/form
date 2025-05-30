@@ -11,11 +11,11 @@ Defined in: [packages/form-core/src/util-types.ts:122](https://github.com/TanSta
 
 ## Extends
 
-- [`AnyDeepKeyAndValue`](anydeepkeyandvalue.md)
+- [`AnyDeepKeyAndValue`](../anydeepkeyandvalue.md)
 
 ## Type Parameters
 
-• **TParent** *extends* [`AnyDeepKeyAndValue`](anydeepkeyandvalue.md)
+• **TParent** *extends* [`AnyDeepKeyAndValue`](../anydeepkeyandvalue.md)
 
 ## Properties
 
@@ -29,7 +29,7 @@ Defined in: [packages/form-core/src/util-types.ts:124](https://github.com/TanSta
 
 #### Overrides
 
-[`AnyDeepKeyAndValue`](anydeepkeyandvalue.md).[`key`](AnyDeepKeyAndValue.md#key)
+[`AnyDeepKeyAndValue`](../anydeepkeyandvalue.md).[`key`](../AnyDeepKeyAndValue.md#key)
 
 ***
 
@@ -43,4 +43,4 @@ Defined in: [packages/form-core/src/util-types.ts:125](https://github.com/TanSta
 
 #### Overrides
 
-[`AnyDeepKeyAndValue`](anydeepkeyandvalue.md).[`value`](AnyDeepKeyAndValue.md#value)
+[`AnyDeepKeyAndValue`](../anydeepkeyandvalue.md).[`value`](../AnyDeepKeyAndValue.md#value)

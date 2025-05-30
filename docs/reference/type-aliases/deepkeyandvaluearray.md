@@ -17,7 +17,7 @@ Defined in: [packages/form-core/src/util-types.ts:41](https://github.com/TanStac
 
 ## Type Parameters
 
-• **TParent** *extends* [`AnyDeepKeyAndValue`](../interfaces/anydeepkeyandvalue.md)
+• **TParent** *extends* [`AnyDeepKeyAndValue`](../../interfaces/anydeepkeyandvalue.md)
 
 • **T** *extends* `ReadonlyArray`\<`any`\>
 

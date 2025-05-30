@@ -57,7 +57,7 @@ Defined in: [tanstack-form-controller.ts:219](https://github.com/TanStack/form/b
 
 #### Returns
 
-[`TanStackFormController`](tanstackformcontroller.md)\<`TParentData`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`, `TSubmitMeta`\>
+[`TanStackFormController`](../tanstackformcontroller.md)\<`TParentData`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`, `TSubmitMeta`\>
 
 ## Properties
 
