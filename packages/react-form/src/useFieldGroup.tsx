@@ -204,7 +204,6 @@ export function useFieldGroup<
     }
 
     extendedApi.Field = function Field({ name, ...fieldProps }) {
-      console.log('Field', name, formLensApi.fieldsMap)
       return (
         <form.Field
           name={formLensApi.getFormFieldName(name)}

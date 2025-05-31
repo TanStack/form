@@ -674,5 +674,108 @@ describe('createFormHook', () => {
         )
       },
     })
+
+    it('should allow mapping withFieldGroup to different fields', () => {
+      const defaultValues = {
+        firstName: '',
+        lastName: '',
+        age: 0,
+        relatives: [{ firstName: '', lastName: '', age: 0 }],
+      }
+      const defaultFields = {
+        first: '',
+        last: '',
+      }
+
+      const form = useAppForm({
+        defaultValues,
+      })
+
+      const FieldGroup = withFieldGroup({
+        defaultValues: defaultFields,
+        render: function Render() {
+          return <></>
+        },
+      })
+
+      const Component1 = (
+        <FieldGroup
+          form={form}
+          fields={{
+            first: 'lastName',
+            last: 'firstName',
+          }}
+        />
+      )
+
+      const Component2 = (
+        <FieldGroup
+          form={form}
+          fields={{
+            first: 'relatives[0].lastName',
+            last: 'relatives[0].firstName',
+          }}
+        />
+      )
+    })
+
+    it('should not allow fields mapping if the top level is an array', () => {
+      const defaultValues = {
+        firstName: '',
+        lastName: '',
+        age: 0,
+        relatives: [{ firstName: '', lastName: '', age: 0 }],
+        relativesRecord: {
+          something: { firstName: '', lastName: '', age: 0 },
+        } as Record<string, { firstName: string; lastName: string }>,
+      }
+      const defaultFields = {
+        firstName: '',
+        lastName: '',
+      }
+
+      const form = useAppForm({
+        defaultValues,
+      })
+
+      const FieldGroupRecord = withFieldGroup({
+        defaultValues: { anything: defaultFields } as Record<
+          string,
+          typeof defaultFields
+        >,
+        render: function Render() {
+          return <></>
+        },
+      })
+      const FieldGroupArray = withFieldGroup({
+        defaultValues: [defaultFields],
+        render: function Render() {
+          return <></>
+        },
+      })
+
+      const CorrectComponent1 = (
+        <FieldGroupRecord form={form} fields="relativesRecord" />
+      )
+      const WrongComponent1 = (
+        <FieldGroupRecord
+          form={form}
+          // @ts-expect-error because record is non-indexable
+          fields={{
+            'any field goes': 'relatives[0]',
+          }}
+        />
+      )
+      const CorrectComponent3 = (
+        <FieldGroupArray form={form} fields="relatives" />
+      )
+      const WrongComponent2 = (
+        <FieldGroupArray
+          form={form}
+          // @ts-expect-error because arrays are non-indexable
+          fields={{}}
+        />
+      )
+    })
   })
 })

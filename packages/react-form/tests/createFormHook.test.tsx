@@ -116,7 +116,7 @@ describe('createFormHook', () => {
     expect(getByText('Testing')).toBeInTheDocument()
   })
 
-  it('should handle withFormLens types properly', () => {
+  it('should handle withFieldGroup types properly', () => {
     const formOpts = formOptions({
       defaultValues: {
         person: {
@@ -162,7 +162,7 @@ describe('createFormHook', () => {
     expect(getByText('Testing')).toBeInTheDocument()
   })
 
-  it('should use the correct field name in Field with withFormLens', () => {
+  it('should use the correct field name in Field with withFieldGroup', () => {
     const formOpts = formOptions({
       defaultValues: {
         person: {
@@ -291,7 +291,7 @@ describe('createFormHook', () => {
     expect(getByText('Doe')).toBeInTheDocument()
   })
 
-  it('should not lose focus on update with withFormLens', async () => {
+  it('should not lose focus on update with withFieldGroup', async () => {
     const formOpts = formOptions({
       defaultValues: {
         person: {
@@ -350,7 +350,7 @@ describe('createFormHook', () => {
     expect(input).toHaveFocus()
   })
 
-  it('should allow nesting withFormLens in other withFormLenses', () => {
+  it('should allow nesting withFieldGroup in other withFieldGroups', () => {
     type Nested = {
       firstName: string
     }
@@ -406,5 +406,48 @@ describe('createFormHook', () => {
     const { getByText } = render(<Parent />)
 
     expect(getByText('form.field.firstName')).toBeInTheDocument()
+  })
+
+  it('should allow mapping withFieldGroup to different values', () => {
+    const formOpts = formOptions({
+      defaultValues: {
+        unrelated: 'John',
+        values: '',
+      },
+    })
+
+    const ChildFormAsField = withFieldGroup({
+      defaultValues: { firstName: '', lastName: '' },
+      render: ({ group }) => {
+        return (
+          <div>
+            <group.AppField
+              name="firstName"
+              children={(field) => <field.TextField label={field.name} />}
+            />
+          </div>
+        )
+      },
+    })
+
+    const Parent = () => {
+      const form = useAppForm({
+        ...formOpts,
+      })
+
+      return (
+        <ChildFormAsField
+          form={form}
+          fields={{
+            firstName: 'unrelated',
+            lastName: 'values',
+          }}
+        />
+      )
+    }
+
+    const { getByLabelText } = render(<Parent />)
+    const inputField1 = getByLabelText('unrelated')
+    expect(inputField1).toHaveValue('John')
   })
 })

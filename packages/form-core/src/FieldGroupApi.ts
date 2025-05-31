@@ -202,7 +202,7 @@ export class FieldGroupApi<
           ...(opts.fields as FieldsMap<TFormData, TFieldGroupData>),
         }
         for (const key in fields) {
-          fields[key] = group.getFormFieldName(fields[key])
+          fields[key] = group.getFormFieldName(fields[key]) as never
         }
         this.fieldsMap = fields as never
       }
@@ -222,7 +222,7 @@ export class FieldGroupApi<
         } else {
           // we need to fetch the values from all places where they were mapped from
           values = {} as never
-          const fields: FieldsMap<TFormData, TFieldGroupData> = this
+          const fields: Record<keyof TFieldGroupData, string> = this
             .fieldsMap as never
           for (const key in fields) {
             values[key] = getBy(currFormStore.values, fields[key])

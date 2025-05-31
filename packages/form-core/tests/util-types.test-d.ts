@@ -511,4 +511,12 @@ describe('FieldsMap', () => {
       shouldNotExist: never
     }>()
   })
+
+  it('should return nevr for non-indexable types', () => {
+    type TopLevelArray = FieldsMap<FormData, { foo: string }[]>
+    type TopLevelObject = FieldsMap<FormData, Record<string, { foo: string }>>
+
+    expectTypeOf<TopLevelArray>().toBeNever()
+    expectTypeOf<TopLevelObject>().toBeNever()
+  })
 })
