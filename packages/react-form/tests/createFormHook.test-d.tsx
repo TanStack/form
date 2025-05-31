@@ -1,5 +1,4 @@
 import { describe, expectTypeOf, it } from 'vitest'
-import { render } from '@testing-library/react'
 import { formOptions } from '@tanstack/form-core'
 import { createFormHook, createFormHookContexts } from '../src'
 
@@ -271,7 +270,7 @@ describe('createFormHook', () => {
     )
   })
 
-  it('should infer subset values and props when calling withFormLens', () => {
+  it('should infer subset values and props when calling withFieldGroup', () => {
     type Person = {
       firstName: string
       lastName: string
@@ -313,7 +312,7 @@ describe('createFormHook', () => {
     })
   })
 
-  it('should allow spreading formOptions when calling withFormLens', () => {
+  it('should allow spreading formOptions when calling withFieldGroup', () => {
     type Person = {
       firstName: string
       lastName: string
@@ -366,7 +365,7 @@ describe('createFormHook', () => {
     })
   })
 
-  it('should allow passing compatible forms to withFormLens', () => {
+  it('should allow passing compatible forms to withFieldGroup', () => {
     type Person = {
       firstName: string
       lastName: string
@@ -396,8 +395,13 @@ describe('createFormHook', () => {
     // -----------------
     // Assert that an equal form is not compatible as you have no name to pass
     const NoSubfield = (
-      // @ts-expect-error
-      <FormGroup form={equalAppForm} name="" prop1="Test" prop2={10} />
+      <FormGroup
+        form={equalAppForm}
+        // @ts-expect-error
+        fields=""
+        prop1="Test"
+        prop2={10}
+      />
     )
 
     // -----------------
@@ -408,12 +412,17 @@ describe('createFormHook', () => {
     })
     // While it has other properties, it satisfies defaultValues
     const CorrectComponent1 = (
-      <FormGroup form={extendedAppForm} name="person" prop1="Test" prop2={10} />
+      <FormGroup
+        form={extendedAppForm}
+        fields="person"
+        prop1="Test"
+        prop2={10}
+      />
     )
 
     const MissingProps = (
       // @ts-expect-error because prop1 and prop2 are not added
-      <FormGroup form={extendedAppForm} name="person" />
+      <FormGroup form={extendedAppForm} fields="person" />
     )
 
     // -----------------
@@ -422,12 +431,17 @@ describe('createFormHook', () => {
       defaultValues: { person: { ...defaultValues, lastName: 0 } },
     })
     const IncompatibleComponent = (
-      // @ts-expect-error because the required subset of properties is not compatible.
-      <FormGroup form={incompatibleAppForm} name="" prop1="test" prop2={10} />
+      <FormGroup
+        // @ts-expect-error because the required subset of properties is not compatible.
+        form={incompatibleAppForm}
+        name=""
+        prop1="test"
+        prop2={10}
+      />
     )
   })
 
-  it('should require strict equal submitMeta if it is set in withFormLens', () => {
+  it('should require strict equal submitMeta if it is set in withFieldGroup', () => {
     type Person = {
       firstName: string
       lastName: string
@@ -480,11 +494,16 @@ describe('createFormHook', () => {
       defaultValues,
     })
 
-    const CorrectComponent1 = <FormLensNoMeta form={noMetaForm} name="person" />
+    const CorrectComponent1 = (
+      <FormLensNoMeta form={noMetaForm} fields="person" />
+    )
 
     const WrongComponent1 = (
-      // @ts-expect-error because the meta is not existent
-      <FormGroupWithMeta form={noMetaForm} name="person" />
+      <FormGroupWithMeta
+        // @ts-expect-error because the meta is not existent
+        form={noMetaForm}
+        fields="person"
+      />
     )
 
     const metaForm = useAppForm({
@@ -492,9 +511,9 @@ describe('createFormHook', () => {
       onSubmitMeta,
     })
 
-    const CorrectComponent2 = <FormLensNoMeta form={metaForm} name="person" />
+    const CorrectComponent2 = <FormLensNoMeta form={metaForm} fields="person" />
     const CorrectComponent3 = (
-      <FormGroupWithMeta form={metaForm} name="person" />
+      <FormGroupWithMeta form={metaForm} fields="person" />
     )
 
     const diffMetaForm = useAppForm({
@@ -503,15 +522,18 @@ describe('createFormHook', () => {
     })
 
     const CorrectComponent4 = (
-      <FormLensNoMeta form={diffMetaForm} name="person" />
+      <FormLensNoMeta form={diffMetaForm} fields="person" />
     )
     const WrongComponent2 = (
-      // @ts-expect-error because the metas do not align.
-      <FormGroupWithMeta form={diffMetaForm} name="person" />
+      <FormGroupWithMeta
+        // @ts-expect-error because the metas do not align.
+        form={diffMetaForm}
+        fields="person"
+      />
     )
   })
 
-  it('should accept any validators for withFormLens', () => {
+  it('should accept any validators for withFieldGroup', () => {
     type Person = {
       firstName: string
       lastName: string
@@ -547,11 +569,11 @@ describe('createFormHook', () => {
       },
     })
 
-    const CorrectComponent1 = <FormGroup form={formA} name="person" />
-    const CorrectComponent2 = <FormGroup form={formB} name="person" />
+    const CorrectComponent1 = <FormGroup form={formA} fields="person" />
+    const CorrectComponent2 = <FormGroup form={formB} fields="person" />
   })
 
-  it('should allow nesting withFormLens in other withFormLenses', () => {
+  it('should allow nesting withFieldGroup in other withFieldGroups', () => {
     type Nested = {
       firstName: string
     }
@@ -590,16 +612,16 @@ describe('createFormHook', () => {
       render: function Render({ lens }) {
         return (
           <div>
-            <LensNested form={lens} name="field" />
+            <LensNested form={lens} fields="field" />
           </div>
         )
       },
     })
 
-    const Component = <LensWrapper form={form} name="form" />
+    const Component = <LensWrapper form={form} fields="form" />
   })
 
-  it('should not allow withFormLenses with different metas to be nested', () => {
+  it('should not allow withFieldGroups with different metas to be nested', () => {
     type Nested = {
       firstName: string
     }
@@ -642,11 +664,11 @@ describe('createFormHook', () => {
       render: function Render({ lens }) {
         return (
           <div>
-            <LensNestedNoMeta form={lens} name="field" />
+            <LensNestedNoMeta form={lens} fields="field" />
             <LensNestedWithMeta
               // @ts-expect-error Wrong meta!
               form={lens}
-              name="field"
+              fields="field"
             />
           </div>
         )

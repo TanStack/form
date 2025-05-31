@@ -29,6 +29,7 @@ import type {
   FieldApi,
 } from './FieldApi'
 import type {
+  FieldManipulator,
   FormValidationError,
   FormValidationErrorMap,
   UpdateMetaOptions,
@@ -784,7 +785,8 @@ export class FormApi<
   in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TSubmitMeta = never,
-> {
+> implements FieldManipulator<TFormData, TSubmitMeta>
+{
   /**
    * The options for the form.
    */

@@ -153,7 +153,7 @@ describe('createFormHook', () => {
         ...formOpts,
       })
 
-      return <ChildForm form={form} name="person" title={'Testing'} />
+      return <ChildForm form={form} fields="person" title={'Testing'} />
     }
 
     const { getByLabelText, getByText } = render(<Parent />)
@@ -187,7 +187,6 @@ describe('createFormHook', () => {
       render: ({ lens }) => {
         return (
           <div>
-            <p>{lens.name}</p>
             <lens.AppField
               name="firstName"
               children={(field) => <field.TextField label={field.name} />}
@@ -227,9 +226,9 @@ describe('createFormHook', () => {
 
       return (
         <>
-          <ChildFormAsField form={form} name="person" />
-          <ChildFormAsArray form={form} name="people" title="Testing" />
-          <ChildFormAsField form={form} name="people[1]" />
+          <ChildFormAsField form={form} fields="person" />
+          <ChildFormAsArray form={form} fields="people" title="Testing" />
+          <ChildFormAsField form={form} fields="people[1]" />
         </>
       )
     }
@@ -259,7 +258,6 @@ describe('createFormHook', () => {
       render: ({ lens }) => {
         return (
           <div>
-            <p>{lens.name}</p>
             <lens.Field
               name="firstName"
               children={(field) => (
@@ -284,7 +282,7 @@ describe('createFormHook', () => {
       const form = useAppForm({
         ...formOpts,
       })
-      return <ChildFormAsField form={form} name="person" />
+      return <ChildFormAsField form={form} fields="person" />
     }
 
     const { getByLabelText, getByText } = render(<Parent />)
@@ -337,7 +335,7 @@ describe('createFormHook', () => {
       const form = useAppForm({
         ...formOpts,
       })
-      return <ChildForm form={form} name="person" />
+      return <ChildForm form={form} fields="person" />
     }
 
     const { getByLabelText } = render(<Parent />)
@@ -392,7 +390,7 @@ describe('createFormHook', () => {
       render: function Render({ lens }) {
         return (
           <div>
-            <LensNested form={lens} name="field" />
+            <LensNested form={lens} fields="field" />
           </div>
         )
       },
@@ -402,7 +400,7 @@ describe('createFormHook', () => {
       const form = useAppForm({
         defaultValues,
       })
-      return <LensWrapper form={form} name="form" />
+      return <LensWrapper form={form} fields="form" />
     }
 
     const { getByText } = render(<Parent />)

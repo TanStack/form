@@ -1,6 +1,5 @@
 /* eslint-disable @eslint-react/no-context-provider */
 import { createContext, useContext, useMemo } from 'react'
-import { FormLensApi } from '@tanstack/form-core'
 import { useForm } from './useForm'
 import { useFieldGroup } from './useFieldGroup'
 import type {
@@ -9,6 +8,7 @@ import type {
   BaseFormOptions,
   DeepKeysOfType,
   FieldApi,
+  FieldsMap,
   FormAsyncValidateOrFn,
   FormOptions,
   FormValidateOrFn,
@@ -16,7 +16,7 @@ import type {
 import type { ComponentType, Context, JSX, PropsWithChildren } from 'react'
 import type { FieldComponent } from './useField'
 import type { ReactFormExtendedApi } from './useForm'
-import type { AppFieldExtendedReactFormLensApi } from './useFieldGroup'
+import type { AppFieldExtendedReactFieldGroupApi } from './useFieldGroup'
 
 /**
  * TypeScript inferencing is weird.
@@ -228,22 +228,22 @@ export interface WithFormProps<
   ) => JSX.Element
 }
 
-export interface WithFormLensProps<
-  TLensData,
+export interface WithFieldGroupProps<
+  TFieldGroupData,
   TFieldComponents extends Record<string, ComponentType<any>>,
   TFormComponents extends Record<string, ComponentType<any>>,
   TSubmitMeta,
   TRenderProps extends Record<string, unknown> = Record<string, never>,
-> extends BaseFormOptions<TLensData, TSubmitMeta> {
+> extends BaseFormOptions<TFieldGroupData, TSubmitMeta> {
   // Optional, but adds props to the `render` function outside of `form`
   props?: TRenderProps
   render: (
     props: PropsWithChildren<
       NoInfer<TRenderProps> & {
-        lens: AppFieldExtendedReactFormLensApi<
+        lens: AppFieldExtendedReactFieldGroupApi<
           unknown,
-          string,
-          TLensData,
+          TFieldGroupData,
+          string | FieldsMap<unknown, TFieldGroupData>,
           undefined | FormValidateOrFn<unknown>,
           undefined | FormValidateOrFn<unknown>,
           undefined | FormAsyncValidateOrFn<unknown>,
@@ -406,22 +406,24 @@ export function createFormHook<
   }
 
   function withFieldGroup<
-    TLensData,
+    TFieldGroupData,
     TSubmitMeta,
     TRenderProps extends Record<string, unknown> = {},
   >({
     render,
     props,
     defaultValues,
-  }: WithFormLensProps<
-    TLensData,
+  }: WithFieldGroupProps<
+    TFieldGroupData,
     TComponents,
     TFormComponents,
     TSubmitMeta,
     TRenderProps
   >): <
     TFormData,
-    TName extends DeepKeysOfType<TFormData, TLensData>,
+    TFields extends
+      | DeepKeysOfType<TFormData, TFieldGroupData>
+      | FieldsMap<TFormData, TFieldGroupData>,
     TOnMount extends undefined | FormValidateOrFn<TFormData>,
     TOnChange extends undefined | FormValidateOrFn<TFormData>,
     TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
@@ -449,12 +451,12 @@ export function createFormHook<
               TComponents,
               TFormComponents
             >
-          | AppFieldExtendedReactFormLensApi<
+          | AppFieldExtendedReactFieldGroupApi<
               // Since this only occurs if you nest it within other form lenses, it can be more
               // lenient with the types.
               unknown,
-              string,
               TFormData,
+              string | FieldsMap<unknown, TFormData>,
               any,
               any,
               any,
@@ -467,46 +469,20 @@ export function createFormHook<
               TComponents,
               TFormComponents
             >
-        name: TName
+        fields: TFields
       }
     >,
   ) => JSX.Element {
     return function Render(innerProps) {
       const lensProps = useMemo(() => {
-        if (innerProps.form instanceof FormLensApi) {
-          const lens = innerProps.form
-          return {
-            // ensure that nested lenses still receive data from the top form
-            // Since we don't create new generics in the return function and it's unused outside this function,
-            // this will just be an any cast for now.
-            form: lens.form as AppFieldExtendedReactFormApi<
-              any,
-              any,
-              any,
-              any,
-              any,
-              any,
-              any,
-              any,
-              any,
-              any,
-              any,
-              any
-            >,
-            name: lens.getFormFieldName(innerProps.name),
-            defaultValues,
-            formComponents,
-          }
-        } else {
-          return {
-            form: innerProps.form,
-            name: innerProps.name,
-            defaultValues,
-            formComponents,
-          }
+        return {
+          form: innerProps.form,
+          fields: innerProps.fields,
+          defaultValues,
+          formComponents,
         }
-      }, [innerProps.form, innerProps.name])
-      const lensApi = useFieldGroup(lensProps)
+      }, [innerProps.form, innerProps.fields])
+      const lensApi = useFieldGroup(lensProps as any)
 
       return render({ ...props, ...innerProps, lens: lensApi as any })
     }

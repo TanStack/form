@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { useStore } from '@tanstack/react-store'
-import { FormLensApi, functionalUpdate } from '@tanstack/form-core'
+import { FieldGroupApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
-  AnyFormLensApi,
-  AnyFormLensState,
+  AnyFieldGroupApi,
   DeepKeysOfType,
+  FieldGroupState,
+  FieldsMap,
   FormAsyncValidateOrFn,
-  FormLensState,
   FormValidateOrFn,
 } from '@tanstack/form-core'
 import type { AppFieldExtendedReactFormApi } from './createFormHook'
@@ -19,8 +19,8 @@ function LocalSubscribe({
   selector,
   children,
 }: PropsWithChildren<{
-  lens: AnyFormLensApi
-  selector: (state: AnyFormLensState) => AnyFormLensState
+  lens: AnyFieldGroupApi
+  selector: (state: FieldGroupState<any>) => FieldGroupState<any>
 }>) {
   const data = useStore(lens.store, selector)
 
@@ -30,10 +30,12 @@ function LocalSubscribe({
 /**
  * @private
  */
-export type AppFieldExtendedReactFormLensApi<
+export type AppFieldExtendedReactFieldGroupApi<
   TFormData,
-  TName extends DeepKeysOfType<TFormData, TLensData>,
-  TLensData,
+  TFieldGroupData,
+  TFields extends
+    | DeepKeysOfType<TFormData, TFieldGroupData>
+    | FieldsMap<TFormData, TFieldGroupData>,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
   TOnChange extends undefined | FormValidateOrFn<TFormData>,
   TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
@@ -45,10 +47,10 @@ export type AppFieldExtendedReactFormLensApi<
   TSubmitMeta,
   TFieldComponents extends Record<string, ComponentType<any>>,
   TFormComponents extends Record<string, ComponentType<any>>,
-> = FormLensApi<
+> = FieldGroupApi<
   TFormData,
-  TLensData,
-  TName,
+  TFieldGroupData,
+  TFields,
   TOnMount,
   TOnChange,
   TOnChangeAsync,
@@ -60,22 +62,8 @@ export type AppFieldExtendedReactFormLensApi<
   TSubmitMeta
 > &
   NoInfer<TFormComponents> & {
-    form: AppFieldExtendedReactFormApi<
-      TFormData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnServer,
-      TSubmitMeta,
-      TFieldComponents,
-      TFormComponents
-    >
     AppField: LensFieldComponent<
-      TLensData,
+      TFieldGroupData,
       TSubmitMeta,
       NoInfer<TFieldComponents>
     >
@@ -83,51 +71,23 @@ export type AppFieldExtendedReactFormLensApi<
     /**
      * A React component to render form fields. With this, you can render and manage individual form fields.
      */
-    Field: LensFieldComponent<TLensData, TSubmitMeta>
+    Field: LensFieldComponent<TFieldGroupData, TSubmitMeta>
 
     /**
      * A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
      */
-    Subscribe: <
-      TSelected = NoInfer<
-        FormLensState<
-          TFormData,
-          TLensData,
-          TOnMount,
-          TOnChange,
-          TOnChangeAsync,
-          TOnBlur,
-          TOnBlurAsync,
-          TOnSubmit,
-          TOnSubmitAsync,
-          TOnServer
-        >
-      >,
-    >(props: {
-      selector?: (
-        state: NoInfer<
-          FormLensState<
-            TFormData,
-            TLensData,
-            TOnMount,
-            TOnChange,
-            TOnChangeAsync,
-            TOnBlur,
-            TOnBlurAsync,
-            TOnSubmit,
-            TOnSubmitAsync,
-            TOnServer
-          >
-        >,
-      ) => TSelected
+    Subscribe: <TSelected = NoInfer<FieldGroupState<TFieldGroupData>>>(props: {
+      selector?: (state: NoInfer<FieldGroupState<TFieldGroupData>>) => TSelected
       children: ((state: NoInfer<TSelected>) => ReactNode) | ReactNode
     }) => ReactNode
   }
 
 export function useFieldGroup<
   TFormData,
-  TName extends DeepKeysOfType<TFormData, TLensData>,
-  TLensData,
+  TFieldGroupData,
+  TFields extends
+    | DeepKeysOfType<TFormData, TFieldGroupData>
+    | FieldsMap<TFormData, TFieldGroupData>,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
   TOnChange extends undefined | FormValidateOrFn<TFormData>,
   TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
@@ -140,28 +100,47 @@ export function useFieldGroup<
   TFormComponents extends Record<string, ComponentType<any>>,
   TSubmitMeta = never,
 >(opts: {
-  form: AppFieldExtendedReactFormApi<
-    TFormData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnServer,
-    TSubmitMeta,
-    TComponents,
-    TFormComponents
-  >
-  name: TName
-  defaultValues?: TLensData
+  form:
+    | AppFieldExtendedReactFormApi<
+        TFormData,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TOnServer,
+        TSubmitMeta,
+        TComponents,
+        TFormComponents
+      >
+    | AppFieldExtendedReactFieldGroupApi<
+        // Since this only occurs if you nest it within other form lenses, it can be more
+        // lenient with the types.
+        unknown,
+        TFormData,
+        string | FieldsMap<unknown, TFormData>,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        TSubmitMeta,
+        TComponents,
+        TFormComponents
+      >
+  fields: TFields
+  defaultValues?: TFieldGroupData
   onSubmitMeta?: TSubmitMeta
   formComponents: TFormComponents
-}): AppFieldExtendedReactFormLensApi<
+}): AppFieldExtendedReactFieldGroupApi<
   TFormData,
-  TName,
-  TLensData,
+  TFieldGroupData,
+  TFields,
   TOnMount,
   TOnChange,
   TOnChangeAsync,
@@ -175,12 +154,29 @@ export function useFieldGroup<
   TFormComponents
 > {
   const [formLensApi] = useState(() => {
-    const api = new FormLensApi(opts)
+    const api = new FieldGroupApi(opts)
+    const form =
+      opts.form instanceof FieldGroupApi
+        ? (opts.form.form as AppFieldExtendedReactFormApi<
+            TFormData,
+            TOnMount,
+            TOnChange,
+            TOnChangeAsync,
+            TOnBlur,
+            TOnBlurAsync,
+            TOnSubmit,
+            TOnSubmitAsync,
+            TOnServer,
+            TSubmitMeta,
+            TComponents,
+            TFormComponents
+          >)
+        : opts.form
 
-    const extendedApi: AppFieldExtendedReactFormLensApi<
+    const extendedApi: AppFieldExtendedReactFieldGroupApi<
       TFormData,
-      TName,
-      TLensData,
+      TFieldGroupData,
+      TFields,
       TOnMount,
       TOnChange,
       TOnChangeAsync,
@@ -195,25 +191,24 @@ export function useFieldGroup<
     > = api as never
 
     extendedApi.AppForm = function AppForm(appFormProps) {
-      return <opts.form.AppForm {...appFormProps} />
+      return <form.AppForm {...appFormProps} />
     }
 
     extendedApi.AppField = function AppField({ name, ...appFieldProps }) {
       return (
-        // @ts-expect-error
-        <opts.form.AppField
+        <form.AppField
           name={formLensApi.getFormFieldName(name)}
-          {...appFieldProps}
+          {...(appFieldProps as any)}
         />
       ) as never
     }
 
     extendedApi.Field = function Field({ name, ...fieldProps }) {
+      console.log('Field', name, formLensApi.fieldsMap)
       return (
-        // @ts-expect-error
-        <opts.form.Field
+        <form.Field
           name={formLensApi.getFormFieldName(name)}
-          {...fieldProps}
+          {...(fieldProps as any)}
         />
       ) as never
     }
@@ -230,10 +225,10 @@ export function useFieldGroup<
 
     return Object.assign(extendedApi, {
       ...opts.formComponents,
-    }) as AppFieldExtendedReactFormLensApi<
+    }) as AppFieldExtendedReactFieldGroupApi<
       TFormData,
-      TName,
-      TLensData,
+      TFieldGroupData,
+      TFields,
       TOnMount,
       TOnChange,
       TOnChangeAsync,
