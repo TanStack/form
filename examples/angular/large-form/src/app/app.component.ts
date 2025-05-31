@@ -15,17 +15,14 @@ import type {
   selector: 'app-text-field',
   standalone: true,
   template: `
-    @let api = lastName.api();
-    @if (api) {
-      <label [for]="api.name">{{ label() }}</label>
-      <input
-        [id]="api.name"
-        [name]="api.name"
-        [value]="api.state.value"
-        (blur)="api.handleBlur()"
-        (input)="api.handleChange($any($event).target.value)"
-      />
-    }
+    <label [for]="lastName.api().name">{{ label() }}</label>
+    <input
+      [id]="lastName.api().name"
+      [name]="lastName.api().name"
+      [value]="lastName.api().state.value"
+      (blur)="lastName.api().handleBlur()"
+      (input)="lastName.api().handleChange($any($event).target.value)"
+    />
   `,
 })
 export class AppTextField {
