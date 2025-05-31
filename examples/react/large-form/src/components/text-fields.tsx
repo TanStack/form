@@ -13,7 +13,6 @@ export default function TextField({ label }: { label: string }) {
         <input
           value={field.state.value}
           onChange={(e) => field.handleChange(e.target.value)}
-          onBlur={field.handleBlur}
         />
       </label>
       {errors.map((error: string) => (

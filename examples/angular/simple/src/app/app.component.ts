@@ -1,83 +1,9 @@
-import {
-  Component,
-  inject,
-  Injectable,
-  input,
-  type OnChanges,
-  type OnDestroy,
-  type OnInit,
-  signal,
-} from '@angular/core'
+import { Component } from '@angular/core'
 import { TanStackField, injectForm, injectStore } from '@tanstack/angular-form'
 import type {
-  AnyFormApi,
-  FieldApi,
   FieldValidateAsyncFn,
   FieldValidateFn,
 } from '@tanstack/angular-form'
-
-@Injectable()
-class TanStackFieldInjectable<T> {
-  field = signal<
-    FieldApi<
-      any,
-      any,
-      T,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any
-    >
-  >(null as never)
-}
-
-function injectProvideField(form: AnyFormApi) {
-  const base = inject(TanStackFieldInjectable)
-  base.field.set(form)
-}
-
-@Component({
-  selector: 'tanstack-app-field',
-  standalone: true,
-  template: ` <ng-content></ng-content> `,
-  providers: [TanStackFieldInjectable],
-})
-class TanStackFieldComponent extends TanStackField<
-  // TODO: Infer this, don't make it `any`
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any
-> {
-  _ = injectProvideField(this.tanstackField)
-}
 
 @Component({
   selector: 'app-root',
@@ -86,7 +12,7 @@ class TanStackFieldComponent extends TanStackField<
   template: `
     <form (submit)="handleSubmit($event)">
       <div>
-        <tanstack-app-field
+        <ng-container
           [tanstackField]="form"
           name="firstName"
           [validators]="{
@@ -96,8 +22,25 @@ class TanStackFieldComponent extends TanStackField<
           }"
           #firstName="field"
         >
-          <app-text-field />
-        </tanstack-app-field>
+          <label [for]="firstName.api.name">First Name:</label>
+          <input
+            [id]="firstName.api.name"
+            [name]="firstName.api.name"
+            [value]="firstName.api.state.value"
+            (blur)="firstName.api.handleBlur()"
+            (input)="firstName.api.handleChange($any($event).target.value)"
+          />
+          @if (firstName.api.state.meta.isTouched) {
+            @for (error of firstName.api.state.meta.errors; track $index) {
+              <div style="color: red">
+                {{ error }}
+              </div>
+            }
+          }
+          @if (firstName.api.state.meta.isValidating) {
+            <p>Validating...</p>
+          }
+        </ng-container>
       </div>
       <div>
         <ng-container [tanstackField]="form" name="lastName" #lastName="field">
