@@ -1,5 +1,10 @@
-import { expectTypeOf } from 'vitest'
-import type { DeepKeys, DeepKeysOfType, DeepValue } from '../src/index'
+import { describe, expectTypeOf, it } from 'vitest'
+import type {
+  DeepKeys,
+  DeepKeysOfType,
+  DeepValue,
+  FieldsMap,
+} from '../src/index'
 
 /**
  * Properly recognizes that `0` is not an object and should not have subkeys
@@ -446,3 +451,64 @@ type AnyObjectExample4 = DeepValue<ObjectWithAny, 'obj.c'>
 expectTypeOf(0 as never as AnyObjectExample4).toEqualTypeOf<any>()
 type AnyObjectExample5 = DeepValue<ObjectWithAny, 'obj.d'>
 expectTypeOf(0 as never as AnyObjectExample5).toEqualTypeOf<number>()
+
+describe('FieldsMap', () => {
+  it('should map to all available types', () => {
+    type FormData = {
+      user: {
+        name: string
+        accounts: {
+          provider: string
+          id: number
+        }[]
+      }
+      metadata: {
+        created: string
+        tags: string[]
+      }
+      matrix: { values: number[][] }[]
+    }
+
+    type FieldGroup = {
+      stringField1: string
+      stringField2: string
+      stringArray: string[]
+      numberField: number
+    }
+
+    type Result = FieldsMap<FormData, FieldGroup>
+
+    expectTypeOf<Result>().toEqualTypeOf<{
+      stringField1:
+        | 'user.name'
+        | `user.accounts[${number}].provider`
+        | 'metadata.created'
+        | `metadata.tags[${number}]`
+      stringField2:
+        | 'user.name'
+        | `user.accounts[${number}].provider`
+        | 'metadata.created'
+        | `metadata.tags[${number}]`
+      stringArray: 'metadata.tags'
+      numberField:
+        | `user.accounts[${number}].id`
+        | `matrix[${number}].values[${number}][${number}]`
+    }>()
+  })
+
+  it('should return never if no path matches the target type', () => {
+    type FormData = {
+      id: string
+    }
+
+    type FieldGroup = {
+      shouldNotExist: number
+    }
+
+    type Result = FieldsMap<FormData, FieldGroup>
+
+    expectTypeOf<Result>().toEqualTypeOf<{
+      shouldNotExist: never
+    }>()
+  })
+})

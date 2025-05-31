@@ -468,3 +468,13 @@ export const determineFieldLevelErrorSourceAndValue = ({
 
   return { newErrorValue: undefined, newSource: undefined }
 }
+
+export function createFieldMap<T>(values: Readonly<T>): { [K in keyof T]: K } {
+  const output: { [K in keyof T]: K } = {} as any
+
+  for (const key in values) {
+    output[key] = key
+  }
+
+  return output
+}

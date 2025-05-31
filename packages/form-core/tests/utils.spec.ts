@@ -1,6 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, expectTypeOf, it } from 'vitest'
 import {
   concatenatePaths,
+  createFieldMap,
   deleteBy,
   determineFieldLevelErrorSourceAndValue,
   determineFormLevelErrorSourceAndValue,
@@ -667,5 +668,37 @@ describe('concatenatePaths', () => {
       'data[0].items[2].value',
     )
     expect(concatenatePaths('data', '[1].value')).toBe('data[1].value')
+  })
+})
+
+describe('createFieldMap', () => {
+  it('should return an empty object when given an empty object', () => {
+    const result = createFieldMap({})
+    expect(result).toEqual({})
+    expectTypeOf(result).toEqualTypeOf<{}>()
+  })
+
+  it('should map each key to its own name as a string', () => {
+    const input = { a: 1, b: 2 }
+    const result = createFieldMap(input)
+    expect(result).toEqual({ a: 'a', b: 'b' })
+    expectTypeOf(result).toEqualTypeOf<{ a: 'a'; b: 'b' }>()
+  })
+
+  it('should handle keys with special characters or numbers', () => {
+    const input = { '1key': 42, 'space key': 'x' }
+    const result = createFieldMap(input)
+    expect(result).toEqual({ '1key': '1key', 'space key': 'space key' })
+    expectTypeOf(result).toEqualTypeOf<{
+      '1key': '1key'
+      'space key': 'space key'
+    }>()
+  })
+
+  it('should not mutate the input object', () => {
+    const input = { a: 1 }
+    const copy = { ...input }
+    createFieldMap(input)
+    expect(input).toEqual(copy)
   })
 })
