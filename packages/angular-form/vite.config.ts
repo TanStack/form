@@ -1,7 +1,9 @@
 import { defineConfig } from 'vitest/config'
+import angular from '@analogjs/vite-plugin-angular'
 import packageJson from './package.json'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  plugins: [angular()],
   test: {
     name: packageJson.name,
     dir: './tests',
@@ -13,4 +15,7 @@ export default defineConfig({
     globals: true,
     restoreMocks: true,
   },
-})
+  define: {
+    'import.meta.vitest': mode !== 'production',
+  },
+}))
