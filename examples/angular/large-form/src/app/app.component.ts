@@ -15,22 +15,20 @@ import type {
   selector: 'app-text-field',
   standalone: true,
   template: `
-    @let api = lastName.api();
-    @if (api) {
-      <label [for]="api.name">{{ label() }}</label>
-      <input
-        [id]="api.name"
-        [name]="api.name"
-        [value]="api.state.value"
-        (blur)="api.handleBlur()"
-        (input)="api.handleChange($any($event).target.value)"
-      />
-    }
+    @let api = field.api();
+    <label [for]="api.name">{{ label() }}</label>
+    <input
+      [id]="api.name"
+      [name]="api.name"
+      [value]="api.state.value"
+      (blur)="api.handleBlur()"
+      (input)="api.handleChange($any($event).target.value)"
+    />
   `,
 })
 export class AppTextField {
-  label = input.required<string>()
-  lastName = injectField<string>()
+  readonly label = input.required<string>()
+  protected readonly field = injectField<string>()
 }
 
 @Component({
