@@ -240,7 +240,7 @@ export interface WithFieldGroupProps<
   render: (
     props: PropsWithChildren<
       NoInfer<TRenderProps> & {
-        lens: AppFieldExtendedReactFieldGroupApi<
+        group: AppFieldExtendedReactFieldGroupApi<
           unknown,
           TFieldGroupData,
           string | FieldsMap<unknown, TFieldGroupData>,
@@ -452,7 +452,7 @@ export function createFormHook<
               TFormComponents
             >
           | AppFieldExtendedReactFieldGroupApi<
-              // Since this only occurs if you nest it within other form lenses, it can be more
+              // Since this only occurs if you nest it within other field groups, it can be more
               // lenient with the types.
               unknown,
               TFormData,
@@ -474,7 +474,7 @@ export function createFormHook<
     >,
   ) => JSX.Element {
     return function Render(innerProps) {
-      const lensProps = useMemo(() => {
+      const fieldGroupProps = useMemo(() => {
         return {
           form: innerProps.form,
           fields: innerProps.fields,
@@ -482,9 +482,9 @@ export function createFormHook<
           formComponents,
         }
       }, [innerProps.form, innerProps.fields])
-      const lensApi = useFieldGroup(lensProps as any)
+      const fieldGroupApi = useFieldGroup(fieldGroupProps as any)
 
-      return render({ ...props, ...innerProps, lens: lensApi as any })
+      return render({ ...props, ...innerProps, group: fieldGroupApi as any })
     }
   }
 

@@ -103,19 +103,19 @@ describe('createFormHook', () => {
 
     const ExampleUsage2 = withFieldGroup({
       defaultValues: {} as EditorValues,
-      render: ({ lens }) => {
-        const test = lens.state.values.key
+      render: ({ group }) => {
+        const test = group.state.values.key
         return (
           <div className="m-3">
-            <lens.AppField name="key">
+            <group.AppField name="key">
               {(field) => {
                 expectTypeOf(field.state.value).toExtend<string>()
                 return null
               }}
-            </lens.AppField>
-            <lens.AppForm>
-              <lens.Test />
-            </lens.AppForm>
+            </group.AppField>
+            <group.AppForm>
+              <group.Test />
+            </group.AppForm>
           </div>
         )
       },
@@ -287,27 +287,27 @@ describe('createFormHook', () => {
 
     const FormGroupComponent = withFieldGroup({
       defaultValues,
-      render: function Render({ lens, children, ...props }) {
+      render: function Render({ group, children, ...props }) {
         // Existing types may be inferred
-        expectTypeOf(lens.state.values.firstName).toEqualTypeOf<string>()
-        expectTypeOf(lens.state.values.lastName).toEqualTypeOf<string>()
+        expectTypeOf(group.state.values.firstName).toEqualTypeOf<string>()
+        expectTypeOf(group.state.values.lastName).toEqualTypeOf<string>()
 
-        expectTypeOf(lens.state.values).toEqualTypeOf<Person>()
+        expectTypeOf(group.state.values).toEqualTypeOf<Person>()
         expectTypeOf(children).toEqualTypeOf<React.ReactNode>()
         expectTypeOf(props).toEqualTypeOf<{}>()
-        return <lens.Test />
+        return <group.Test />
       },
     })
 
     const FormGroupComponentWithProps = withFieldGroup({
       ...defaultValues,
       props: {} as ComponentProps,
-      render: ({ lens, children, ...props }) => {
+      render: ({ group, children, ...props }) => {
         expectTypeOf(props).toEqualTypeOf<{
           prop1: string
           prop2: number
         }>()
-        return <lens.Test />
+        return <group.Test />
       },
     })
   })
@@ -337,11 +337,11 @@ describe('createFormHook', () => {
     // validators and listeners are ignored, only defaultValues is acknowledged
     const FormGroupComponent = withFieldGroup({
       ...formOpts,
-      render: function Render({ lens }) {
+      render: function Render({ group }) {
         // Existing types may be inferred
-        expectTypeOf(lens.state.values.firstName).toEqualTypeOf<string>()
-        expectTypeOf(lens.state.values.lastName).toEqualTypeOf<string>()
-        return <lens.Test />
+        expectTypeOf(group.state.values.firstName).toEqualTypeOf<string>()
+        expectTypeOf(group.state.values.lastName).toEqualTypeOf<string>()
+        return <group.Test />
       },
     })
 
@@ -351,16 +351,16 @@ describe('createFormHook', () => {
 
     const UnknownFormGroupComponent = withFieldGroup({
       ...noDefaultValuesFormOpts,
-      render: function Render({ lens }) {
-        // lens.state.values can be anything.
+      render: function Render({ group }) {
+        // group.state.values can be anything.
         // note that T extends unknown !== unknown extends T.
-        expectTypeOf<unknown>().toExtend<typeof lens.state.values>()
+        expectTypeOf<unknown>().toExtend<typeof group.state.values>()
 
         // either no submit meta or of the type in formOptions
-        expectTypeOf(lens.handleSubmit).parameters.toEqualTypeOf<
+        expectTypeOf(group.handleSubmit).parameters.toEqualTypeOf<
           [] | [{ foo: string }]
         >()
-        return <lens.Test />
+        return <group.Test />
       },
     })
   })
@@ -459,34 +459,34 @@ describe('createFormHook', () => {
 
     const FormLensNoMeta = withFieldGroup({
       defaultValues: {} as Person,
-      render: function Render({ lens }) {
+      render: function Render({ group }) {
         // Since handleSubmit always allows to submit without meta, this is okay
-        lens.handleSubmit()
+        group.handleSubmit()
 
         // To prevent unwanted meta behaviour, handleSubmit's meta should be never if not set.
-        expectTypeOf(lens.handleSubmit).parameters.toEqualTypeOf<
+        expectTypeOf(group.handleSubmit).parameters.toEqualTypeOf<
           [] | [submitMeta: never]
         >()
 
-        return <lens.Test />
+        return <group.Test />
       },
     })
 
     const FormGroupWithMeta = withFieldGroup({
       defaultValues: {} as Person,
       onSubmitMeta,
-      render: function Render({ lens }) {
+      render: function Render({ group }) {
         // Since handleSubmit always allows to submit without meta, this is okay
-        lens.handleSubmit()
+        group.handleSubmit()
 
         // This matches the value
-        lens.handleSubmit({ correct: '' })
+        group.handleSubmit({ correct: '' })
 
         // This does not.
         // @ts-expect-error
-        lens.handleSubmit({ wrong: 'Meta' })
+        group.handleSubmit({ wrong: 'Meta' })
 
-        return <lens.Test />
+        return <group.Test />
       },
     })
 
@@ -564,8 +564,8 @@ describe('createFormHook', () => {
 
     const FormGroup = withFieldGroup({
       defaultValues: defaultValues.person,
-      render: function Render({ lens }) {
-        return <lens.Test />
+      render: function Render({ group }) {
+        return <group.Test />
       },
     })
 
@@ -609,10 +609,10 @@ describe('createFormHook', () => {
     })
     const LensWrapper = withFieldGroup({
       defaultValues: defaultValues.form,
-      render: function Render({ lens }) {
+      render: function Render({ group }) {
         return (
           <div>
-            <LensNested form={lens} fields="field" />
+            <LensNested form={group} fields="field" />
           </div>
         )
       },
@@ -661,13 +661,13 @@ describe('createFormHook', () => {
     })
     const LensWrapper = withFieldGroup({
       defaultValues: defaultValues.form,
-      render: function Render({ lens }) {
+      render: function Render({ group }) {
         return (
           <div>
-            <LensNestedNoMeta form={lens} fields="field" />
+            <LensNestedNoMeta form={group} fields="field" />
             <LensNestedWithMeta
               // @ts-expect-error Wrong meta!
-              form={lens}
+              form={group}
               fields="field"
             />
           </div>

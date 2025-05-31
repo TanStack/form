@@ -132,17 +132,17 @@ describe('createFormHook', () => {
       props: {
         title: 'Child Form',
       },
-      render: ({ lens, title }) => {
+      render: ({ group, title }) => {
         return (
           <div>
             <p>{title}</p>
-            <lens.AppField
+            <group.AppField
               name="firstName"
               children={(field) => <field.TextField label="First Name" />}
             />
-            <lens.AppForm>
-              <lens.SubscribeButton label="Submit" />
-            </lens.AppForm>
+            <group.AppForm>
+              <group.SubscribeButton label="Submit" />
+            </group.AppForm>
           </div>
         )
       },
@@ -184,16 +184,16 @@ describe('createFormHook', () => {
 
     const ChildFormAsField = withFieldGroup({
       defaultValues: formOpts.defaultValues.person,
-      render: ({ lens }) => {
+      render: ({ group }) => {
         return (
           <div>
-            <lens.AppField
+            <group.AppField
               name="firstName"
               children={(field) => <field.TextField label={field.name} />}
             />
-            <lens.AppForm>
-              <lens.SubscribeButton label="Submit" />
-            </lens.AppForm>
+            <group.AppForm>
+              <group.SubscribeButton label="Submit" />
+            </group.AppForm>
           </div>
         )
       },
@@ -203,17 +203,17 @@ describe('createFormHook', () => {
       props: {
         title: '',
       },
-      render: ({ lens, title }) => {
+      render: ({ group, title }) => {
         return (
           <div>
             <p>{title}</p>
-            <lens.AppField
+            <group.AppField
               name="[0].firstName"
               children={(field) => <field.TextField label={field.name} />}
             />
-            <lens.AppForm>
-              <lens.SubscribeButton label="Submit" />
-            </lens.AppForm>
+            <group.AppForm>
+              <group.SubscribeButton label="Submit" />
+            </group.AppForm>
           </div>
         )
       },
@@ -255,10 +255,10 @@ describe('createFormHook', () => {
 
     const ChildFormAsField = withFieldGroup({
       defaultValues: formOpts.defaultValues.person,
-      render: ({ lens }) => {
+      render: ({ group }) => {
         return (
           <div>
-            <lens.Field
+            <group.Field
               name="firstName"
               children={(field) => (
                 <label>
@@ -270,9 +270,9 @@ describe('createFormHook', () => {
                 </label>
               )}
             />
-            <lens.Subscribe selector={(state) => state.values.lastName}>
+            <group.Subscribe selector={(state) => state.values.lastName}>
               {(lastName) => <p>{lastName}</p>}
-            </lens.Subscribe>
+            </group.Subscribe>
           </div>
         )
       },
@@ -303,15 +303,15 @@ describe('createFormHook', () => {
 
     const ChildForm = withFieldGroup({
       defaultValues: formOpts.defaultValues.person,
-      render: function Render({ lens }) {
+      render: function Render({ group }) {
         const firstName = useStore(
-          lens.store,
+          group.store,
           (state) => state.values.firstName,
         )
         return (
           <div>
             <p>{firstName}</p>
-            <lens.Field
+            <group.Field
               name="firstName"
               children={(field) => (
                 <label>
@@ -323,9 +323,9 @@ describe('createFormHook', () => {
                 </label>
               )}
             />
-            <lens.Subscribe selector={(state) => state.values.lastName}>
+            <group.Subscribe selector={(state) => state.values.lastName}>
               {(lastName) => <p>{lastName}</p>}
-            </lens.Subscribe>
+            </group.Subscribe>
           </div>
         )
       },
@@ -377,20 +377,20 @@ describe('createFormHook', () => {
 
     const LensNested = withFieldGroup({
       defaultValues: defaultValues.form.field,
-      render: function Render({ lens }) {
+      render: function Render({ group }) {
         return (
-          <lens.Field name="firstName">
+          <group.Field name="firstName">
             {(field) => <p>{field.name}</p>}
-          </lens.Field>
+          </group.Field>
         )
       },
     })
     const LensWrapper = withFieldGroup({
       defaultValues: defaultValues.form,
-      render: function Render({ lens }) {
+      render: function Render({ group }) {
         return (
           <div>
-            <LensNested form={lens} fields="field" />
+            <LensNested form={group} fields="field" />
           </div>
         )
       },

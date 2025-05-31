@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { FieldApi, FieldGroupApi, FormApi } from '../src/index'
 
-describe('form lens api', () => {
+describe('field group api', () => {
   type Person = {
     name: string
     age: number
@@ -21,17 +21,17 @@ describe('form lens api', () => {
       age: -1,
       people: [
         {
-          name: 'Lens one',
+          name: 'fieldGroup one',
           age: 1,
         },
         {
-          name: 'Lens two',
+          name: 'fieldGroup two',
           age: 2,
         },
       ],
       relatives: {
         father: {
-          name: 'Lens three',
+          name: 'fieldGroup three',
           age: 3,
         },
       },
@@ -42,40 +42,40 @@ describe('form lens api', () => {
     })
     form.mount()
 
-    const lens1 = new FieldGroupApi({
+    const fieldGroup1 = new FieldGroupApi({
       form,
       fields: 'people[0]',
       defaultValues: {} as Person,
     })
-    const lens2 = new FieldGroupApi({
+    const fieldGroup2 = new FieldGroupApi({
       form,
       fields: 'people[1]',
       defaultValues: {} as Person,
     })
-    const lens3 = new FieldGroupApi({
+    const fieldGroup3 = new FieldGroupApi({
       form,
       fields: 'relatives.father',
       defaultValues: {} as Person,
     })
-    lens1.mount()
-    lens2.mount()
-    lens3.mount()
+    fieldGroup1.mount()
+    fieldGroup2.mount()
+    fieldGroup3.mount()
 
-    expect(lens1.state).toMatchObject({
+    expect(fieldGroup1.state).toMatchObject({
       values: {
-        name: 'Lens one',
+        name: 'fieldGroup one',
         age: 1,
       },
     })
-    expect(lens2.state).toMatchObject({
+    expect(fieldGroup2.state).toMatchObject({
       values: {
-        name: 'Lens two',
+        name: 'fieldGroup two',
         age: 2,
       },
     })
-    expect(lens3.state).toMatchObject({
+    expect(fieldGroup3.state).toMatchObject({
       values: {
-        name: 'Lens three',
+        name: 'fieldGroup three',
         age: 3,
       },
     })
@@ -99,27 +99,27 @@ describe('form lens api', () => {
     })
     form.mount()
 
-    const lens = new FieldGroupApi({
+    const fieldGroup = new FieldGroupApi({
       form,
       defaultValues: {} as Person,
       fields: 'relatives.father',
     })
-    lens.mount()
+    fieldGroup.mount()
 
-    expect(lens.state.values).toEqual(form.state.values.relatives.father)
+    expect(fieldGroup.state.values).toEqual(form.state.values.relatives.father)
 
     form.setFieldValue('relatives.father.name', 'New name')
     form.setFieldValue('relatives.father.age', 50)
 
-    expect(lens.state.values).toEqual(form.state.values.relatives.father)
+    expect(fieldGroup.state.values).toEqual(form.state.values.relatives.father)
 
-    lens.setFieldValue('name', 'Second new name')
-    lens.setFieldValue('age', 100)
+    fieldGroup.setFieldValue('name', 'Second new name')
+    fieldGroup.setFieldValue('age', 100)
 
-    expect(lens.state.values).toEqual(form.state.values.relatives.father)
-    lens.reset()
+    expect(fieldGroup.state.values).toEqual(form.state.values.relatives.father)
+    fieldGroup.reset()
 
-    expect(lens.state.values).toEqual(form.state.values.relatives.father)
+    expect(fieldGroup.state.values).toEqual(form.state.values.relatives.father)
   })
 
   it('should validate the right field from the form', () => {
@@ -128,17 +128,17 @@ describe('form lens api', () => {
       age: 0,
       people: [
         {
-          name: 'Lens one',
+          name: 'fieldGroup one',
           age: 1,
         },
         {
-          name: 'Lens two',
+          name: 'fieldGroup two',
           age: 2,
         },
       ],
       relatives: {
         father: {
-          name: 'Lens three',
+          name: 'fieldGroup three',
           age: 3,
         },
       },
@@ -175,38 +175,38 @@ describe('form lens api', () => {
     field2.mount()
     field3.mount()
 
-    const lens1 = new FieldGroupApi({
+    const fieldGroup1 = new FieldGroupApi({
       form,
       fields: 'people[0]',
       defaultValues: {} as Person,
     })
-    const lens2 = new FieldGroupApi({
+    const fieldGroup2 = new FieldGroupApi({
       form,
       fields: 'people[1]',
       defaultValues: {} as Person,
     })
-    const lens3 = new FieldGroupApi({
+    const fieldGroup3 = new FieldGroupApi({
       form,
       fields: 'relatives.father',
       defaultValues: {} as Person,
     })
-    lens1.mount()
-    lens2.mount()
-    lens3.mount()
+    fieldGroup1.mount()
+    fieldGroup2.mount()
+    fieldGroup3.mount()
 
-    lens1.validateField('age', 'change')
+    fieldGroup1.validateField('age', 'change')
 
     expect(field1.state.meta.errors).toEqual(['Field 1'])
     expect(field2.state.meta.errors).toEqual([])
     expect(field3.state.meta.errors).toEqual([])
 
-    lens2.validateField('age', 'change')
+    fieldGroup2.validateField('age', 'change')
 
     expect(field1.state.meta.errors).toEqual(['Field 1'])
     expect(field2.state.meta.errors).toEqual(['Field 2'])
     expect(field3.state.meta.errors).toEqual([])
 
-    lens3.validateField('age', 'change')
+    fieldGroup3.validateField('age', 'change')
 
     expect(field1.state.meta.errors).toEqual(['Field 1'])
     expect(field2.state.meta.errors).toEqual(['Field 2'])
@@ -219,17 +219,17 @@ describe('form lens api', () => {
       age: 0,
       people: [
         {
-          name: 'Lens one',
+          name: 'fieldGroup one',
           age: 1,
         },
         {
-          name: 'Lens two',
+          name: 'fieldGroup two',
           age: 2,
         },
       ],
       relatives: {
         father: {
-          name: 'Lens three',
+          name: 'fieldGroup three',
           age: 3,
         },
       },
@@ -240,33 +240,33 @@ describe('form lens api', () => {
     })
     form.mount()
 
-    const lens1 = new FieldGroupApi({
+    const fieldGroup1 = new FieldGroupApi({
       form,
       fields: 'people[0]',
       defaultValues: {} as Person,
     })
-    const lens2 = new FieldGroupApi({
+    const fieldGroup2 = new FieldGroupApi({
       form,
       fields: 'people[1]',
       defaultValues: {} as Person,
     })
-    const lens3 = new FieldGroupApi({
+    const fieldGroup3 = new FieldGroupApi({
       form,
       fields: 'relatives.father',
       defaultValues: {} as Person,
     })
-    lens1.mount()
-    lens2.mount()
-    lens3.mount()
+    fieldGroup1.mount()
+    fieldGroup2.mount()
+    fieldGroup3.mount()
 
-    expect(lens1.getFieldValue('age')).toBe(1)
-    expect(lens1.getFieldValue('name')).toBe('Lens one')
+    expect(fieldGroup1.getFieldValue('age')).toBe(1)
+    expect(fieldGroup1.getFieldValue('name')).toBe('fieldGroup one')
 
-    expect(lens2.getFieldValue('age')).toBe(2)
-    expect(lens2.getFieldValue('name')).toBe('Lens two')
+    expect(fieldGroup2.getFieldValue('age')).toBe(2)
+    expect(fieldGroup2.getFieldValue('name')).toBe('fieldGroup two')
 
-    expect(lens3.getFieldValue('age')).toBe(3)
-    expect(lens3.getFieldValue('name')).toBe('Lens three')
+    expect(fieldGroup3.getFieldValue('age')).toBe(3)
+    expect(fieldGroup3.getFieldValue('name')).toBe('fieldGroup three')
   })
 
   it('should get the correct field Meta from the nested field', () => {
@@ -275,17 +275,17 @@ describe('form lens api', () => {
       age: 0,
       people: [
         {
-          name: 'Lens one',
+          name: 'fieldGroup one',
           age: 1,
         },
         {
-          name: 'Lens two',
+          name: 'fieldGroup two',
           age: 2,
         },
       ],
       relatives: {
         father: {
-          name: 'Lens three',
+          name: 'fieldGroup three',
           age: 3,
         },
       },
@@ -319,36 +319,36 @@ describe('form lens api', () => {
     field1.handleChange(0)
     field2.handleBlur()
 
-    const lens1 = new FieldGroupApi({
+    const fieldGroup1 = new FieldGroupApi({
       form,
       fields: 'people[0]',
       defaultValues: {} as Person,
     })
-    const lens2 = new FieldGroupApi({
+    const fieldGroup2 = new FieldGroupApi({
       form,
       fields: 'people[1]',
       defaultValues: {} as Person,
     })
-    const lens3 = new FieldGroupApi({
+    const fieldGroup3 = new FieldGroupApi({
       form,
       fields: 'relatives.father',
       defaultValues: {} as Person,
     })
-    lens1.mount()
-    lens2.mount()
-    lens3.mount()
+    fieldGroup1.mount()
+    fieldGroup2.mount()
+    fieldGroup3.mount()
 
-    expect(lens1.getFieldMeta('age')?.isValid).toBe(true)
-    expect(lens2.getFieldMeta('age')?.isValid).toBe(true)
-    expect(lens3.getFieldMeta('age')?.isValid).toBe(false)
+    expect(fieldGroup1.getFieldMeta('age')?.isValid).toBe(true)
+    expect(fieldGroup2.getFieldMeta('age')?.isValid).toBe(true)
+    expect(fieldGroup3.getFieldMeta('age')?.isValid).toBe(false)
 
-    expect(lens1.getFieldMeta('age')?.isDirty).toBe(true)
-    expect(lens2.getFieldMeta('age')?.isDirty).toBe(false)
-    expect(lens3.getFieldMeta('age')?.isDirty).toBe(false)
+    expect(fieldGroup1.getFieldMeta('age')?.isDirty).toBe(true)
+    expect(fieldGroup2.getFieldMeta('age')?.isDirty).toBe(false)
+    expect(fieldGroup3.getFieldMeta('age')?.isDirty).toBe(false)
 
-    expect(lens1.getFieldMeta('age')?.isBlurred).toBe(false)
-    expect(lens2.getFieldMeta('age')?.isBlurred).toBe(true)
-    expect(lens3.getFieldMeta('age')?.isBlurred).toBe(false)
+    expect(fieldGroup1.getFieldMeta('age')?.isBlurred).toBe(false)
+    expect(fieldGroup2.getFieldMeta('age')?.isBlurred).toBe(true)
+    expect(fieldGroup3.getFieldMeta('age')?.isBlurred).toBe(false)
   })
 
   it('should be compliant with top level array defaultValues', () => {
@@ -357,15 +357,15 @@ describe('form lens api', () => {
     })
     form.mount()
 
-    const lens = new FieldGroupApi({
+    const fieldGroup = new FieldGroupApi({
       form,
       defaultValues: [{ name: '' }],
       fields: 'people',
     })
-    lens.mount()
+    fieldGroup.mount()
 
-    lens.setFieldValue('[0]', { name: 'Override One' })
-    lens.setFieldValue('[1].name', 'Override Two')
+    fieldGroup.setFieldValue('[0]', { name: 'Override One' })
+    fieldGroup.setFieldValue('[1].name', 'Override Two')
 
     expect(form.getFieldValue('people[0].name')).toBe('Override One')
     expect(form.getFieldValue('people[1].name')).toBe('Override Two')
@@ -410,16 +410,16 @@ describe('form lens api', () => {
     field1.mount()
     field2.mount()
 
-    const lens = new FieldGroupApi({
+    const fieldGroup = new FieldGroupApi({
       form,
       defaultValues: {
         names: [{ name: '' }],
       },
       fields: 'people',
     })
-    lens.mount()
+    fieldGroup.mount()
 
-    lens.validateArrayFieldsStartingFrom('names', 1, 'change')
+    fieldGroup.validateArrayFieldsStartingFrom('names', 1, 'change')
 
     await vi.runAllTimersAsync()
 
@@ -442,14 +442,14 @@ describe('form lens api', () => {
     })
     form.mount()
 
-    const lens = new FieldGroupApi({
+    const fieldGroup = new FieldGroupApi({
       defaultValues: { name: '' },
       form,
       fields: 'person',
     })
-    lens.mount()
+    fieldGroup.mount()
 
-    lens.handleSubmit()
+    fieldGroup.handleSubmit()
 
     await vi.runAllTimersAsync()
 
@@ -471,18 +471,18 @@ describe('form lens api', () => {
     })
     form.mount()
 
-    const lens = new FieldGroupApi({
+    const fieldGroup = new FieldGroupApi({
       defaultValues: { name: '' },
       form,
       fields: 'nested.field',
     })
-    lens.mount()
+    fieldGroup.mount()
 
-    lens.setFieldValue('name', 'Nested')
+    fieldGroup.setFieldValue('name', 'Nested')
 
     expect(form.state.values.nested.field.name).toEqual('Nested')
 
-    lens.resetField('name')
+    fieldGroup.resetField('name')
     expect(form.state.values.nested.field.name).toEqual('')
   })
 
@@ -500,14 +500,14 @@ describe('form lens api', () => {
     })
     form.mount()
 
-    const lens = new FieldGroupApi({
+    const fieldGroup = new FieldGroupApi({
       defaultValues: { name: '' },
       form,
       fields: 'nested.field',
     })
-    lens.mount()
+    fieldGroup.mount()
 
-    lens.deleteField('name')
+    fieldGroup.deleteField('name')
 
     expect(form.state.values.nested.field.name).toBeUndefined()
   })
@@ -551,14 +551,14 @@ describe('form lens api', () => {
     field1.mount()
     field2.mount()
 
-    const lens = new FieldGroupApi({
+    const fieldGroup = new FieldGroupApi({
       defaultValues: { names: [{ name: '' }] },
       form,
       fields: 'people',
     })
-    lens.mount()
+    fieldGroup.mount()
 
-    lens.validateArrayFieldsStartingFrom('names', 1, 'change')
+    fieldGroup.validateArrayFieldsStartingFrom('names', 1, 'change')
 
     await vi.runAllTimersAsync()
 
@@ -566,7 +566,7 @@ describe('form lens api', () => {
     expect(field1.getMeta().isTouched).toBe(true)
     expect(field2.getMeta().isTouched).toBe(true)
 
-    lens.pushFieldValue('names', { name: 'Push' })
+    fieldGroup.pushFieldValue('names', { name: 'Push' })
 
     expect(form.getFieldValue('people.names')).toEqual([
       {
@@ -583,27 +583,7 @@ describe('form lens api', () => {
       },
     ])
 
-    lens.insertFieldValue('names', 1, { name: 'Insert' })
-
-    expect(form.getFieldValue('people.names')).toEqual([
-      {
-        name: '',
-      },
-      {
-        name: 'Insert',
-      },
-      {
-        name: '',
-      },
-      {
-        name: '',
-      },
-      {
-        name: 'Push',
-      },
-    ])
-
-    lens.replaceFieldValue('names', 2, { name: 'Replace' })
+    fieldGroup.insertFieldValue('names', 1, { name: 'Insert' })
 
     expect(form.getFieldValue('people.names')).toEqual([
       {
@@ -613,7 +593,7 @@ describe('form lens api', () => {
         name: 'Insert',
       },
       {
-        name: 'Replace',
+        name: '',
       },
       {
         name: '',
@@ -623,7 +603,7 @@ describe('form lens api', () => {
       },
     ])
 
-    lens.removeFieldValue('names', 3)
+    fieldGroup.replaceFieldValue('names', 2, { name: 'Replace' })
 
     expect(form.getFieldValue('people.names')).toEqual([
       {
@@ -636,11 +616,31 @@ describe('form lens api', () => {
         name: 'Replace',
       },
       {
+        name: '',
+      },
+      {
         name: 'Push',
       },
     ])
 
-    lens.swapFieldValues('names', 2, 3)
+    fieldGroup.removeFieldValue('names', 3)
+
+    expect(form.getFieldValue('people.names')).toEqual([
+      {
+        name: '',
+      },
+      {
+        name: 'Insert',
+      },
+      {
+        name: 'Replace',
+      },
+      {
+        name: 'Push',
+      },
+    ])
+
+    fieldGroup.swapFieldValues('names', 2, 3)
 
     expect(form.getFieldValue('people.names')).toEqual([
       {
@@ -657,7 +657,7 @@ describe('form lens api', () => {
       },
     ])
 
-    lens.moveFieldValues('names', 0, 2)
+    fieldGroup.moveFieldValues('names', 0, 2)
 
     expect(form.getFieldValue('people.names')).toEqual([
       {
@@ -675,7 +675,7 @@ describe('form lens api', () => {
     ])
   })
 
-  it('should allow nesting form lenses within each other', () => {
+  it('should allow nesting form fieldGroupes within each other', () => {
     type Nested = {
       firstName: string
     }
@@ -704,22 +704,24 @@ describe('form lens api', () => {
       defaultValues,
     })
 
-    const lensWrap = new FieldGroupApi({
+    const fieldGroupWrap = new FieldGroupApi({
       defaultValues: defaultValues.form,
       form,
       fields: 'form',
     })
-    lensWrap.mount()
+    fieldGroupWrap.mount()
 
-    const lensNested = new FieldGroupApi({
+    const fieldGroupNested = new FieldGroupApi({
       defaultValues: defaultValues.form.field,
-      form: lensWrap,
+      form: fieldGroupWrap,
       fields: 'field',
     })
-    lensNested.mount()
+    fieldGroupNested.mount()
 
-    expect(lensNested.form).toEqual(lensWrap.form)
-    expect(lensNested.state.values).toEqual(lensWrap.state.values.field)
-    expect(lensNested.state.values).toEqual(form.state.values.form.field)
+    expect(fieldGroupNested.form).toEqual(fieldGroupWrap.form)
+    expect(fieldGroupNested.state.values).toEqual(
+      fieldGroupWrap.state.values.field,
+    )
+    expect(fieldGroupNested.state.values).toEqual(form.state.values.form.field)
   })
 })
