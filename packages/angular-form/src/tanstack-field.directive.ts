@@ -1,8 +1,11 @@
 import {
   Directive,
   booleanAttribute,
+  computed,
+  effect,
   input,
   numberAttribute,
+  untracked,
 } from '@angular/core'
 import {
   FieldApi,
@@ -16,12 +19,10 @@ import type {
   DeepValue,
   FieldListeners,
   FieldMeta,
-  FieldOptions,
   FieldValidators,
   FormAsyncValidateOrFn,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { OnChanges, OnDestroy, OnInit } from '@angular/core'
 
 @Directive({
   selector: '[tanstackField]',
@@ -29,34 +30,32 @@ import type { OnChanges, OnDestroy, OnInit } from '@angular/core'
   exportAs: 'field',
 })
 export class TanStackField<
-    TParentData,
-    const TName extends DeepKeys<TParentData>,
-    TData extends DeepValue<TParentData, TName>,
-    TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-    TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-    TOnChangeAsync extends
-      | undefined
-      | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-    TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-    TOnBlurAsync extends
-      | undefined
-      | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-    TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-    TOnSubmitAsync extends
-      | undefined
-      | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-    TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
-    TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-    TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-    TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-    TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-    TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-    TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-    TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-    TSubmitMeta,
-  >
-  implements OnInit, OnChanges, OnDestroy
-{
+  TParentData,
+  const TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName>,
+  TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TSubmitMeta,
+> {
   name = input.required<TName>()
   defaultValue = input<NoInfer<TData>>()
   asyncDebounceMs = input(undefined as never as number, {
@@ -149,55 +148,60 @@ export class TanStackField<
     TSubmitMeta
   >
 
-  private getOptions(): FieldApiOptions<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnServer,
-    TSubmitMeta
-  > {
-    return {
-      defaultValue: this.defaultValue(),
-      asyncDebounceMs: this.asyncDebounceMs(),
-      asyncAlways: this.asyncAlways(),
-      disableErrorFlat: this.disableErrorFlat(),
-      validators: this.validators(),
-      listeners: this.listeners(),
-      defaultMeta: this.defaultMeta(),
-      name: this.name(),
-      form: this.tanstackField(),
-    }
-  }
+  options = computed(
+    () =>
+      ({
+        defaultValue: this.defaultValue(),
+        asyncDebounceMs: this.asyncDebounceMs(),
+        asyncAlways: this.asyncAlways(),
+        disableErrorFlat: this.disableErrorFlat(),
+        validators: this.validators(),
+        listeners: this.listeners(),
+        defaultMeta: this.defaultMeta(),
+        name: this.name(),
+        form: this.tanstackField(),
+      }) as FieldApiOptions<
+        TParentData,
+        TName,
+        TData,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnServer,
+        TSubmitMeta
+      >,
+  )
 
-  unmount?: () => void
+  constructor() {
+    effect(() => {
+      this.api = new FieldApi(untracked(this.options))
+    })
 
-  ngOnInit() {
-    this.api = new FieldApi(this.getOptions())
+    effect((onCleanup) => {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (!this.api) return
+      const unmount = this.api.mount()
 
-    this.unmount = this.api.mount()
-  }
+      onCleanup(() => {
+        unmount()
+      })
+    })
 
-  ngOnDestroy() {
-    this.unmount?.()
-  }
-
-  ngOnChanges() {
-    const api = this.api as typeof this.api | undefined
-    if (!api) return
-    api.update(this.getOptions())
+    effect(() => {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (!this.api) return
+      this.api.update(this.options())
+    })
   }
 }
