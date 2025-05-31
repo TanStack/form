@@ -71,6 +71,17 @@
     "//": "https://github.com/jsdom/cssstyle/issues/182",
     "overrides": {
       "cssstyle": "4.3.1"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "@swc/core",
+      "esbuild",
+      "lmdb",
+      "msgpackr-extract",
+      "nx",
+      "sharp",
+      "unrs-resolver",
+      "vue-demi"
+    ]
   }
 }
