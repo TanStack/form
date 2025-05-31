@@ -1,4 +1,4 @@
-<img src="https://static.scarf.sh/a.png?x-pxid=be2d8a11-9712-4c1d-9963-580b2d4fb133" alt="Scarf analytics tracking pixel" />
+<img src="https://static.scarf.sh/a.png?x-pxid=be2d8a11-9712-4c1d-9963-580b2d4fb133" alt="" />
 
 ![TanStack Form Header](https://github.com/TanStack/form/raw/main/media/repo-header.png)
 
