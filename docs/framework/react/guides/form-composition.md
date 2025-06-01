@@ -250,15 +250,15 @@ const ChildForm = withForm({
 
 ## Reusing groups of fields in multiple forms
 
-Sometimes, a pair of fields are so closely related that it makes sense to group and reuse them — like the password example listed in the [linked fields guide](./linked-fields.md). Instead of repeating this logic across multiple forms, you can utilize the `withFormLens` higher-order component.
+Sometimes, a pair of fields are so closely related that it makes sense to group and reuse them — like the password example listed in the [linked fields guide](./linked-fields.md). Instead of repeating this logic across multiple forms, you can utilize the `withFieldGroup` higher-order component.
 
 > Unlike `withForm`, validators cannot be specified and could be any value.
 > Ensure that your fields can accept unknown error types.
 
-Rewriting the passwords example using `withFormLens` would look like this:
+Rewriting the passwords example using `withFieldGroup` would look like this:
 
 ```tsx
-const { useAppForm, withForm, withFormLens } = createFormHook({
+const { useAppForm, withForm, withFieldGroup } = createFormHook({
   fieldComponents: {
     TextField,
     ErrorInfo,
@@ -275,16 +275,16 @@ type PasswordFields = {
   confirm_password: string
 }
 
-// These values are only used for type-checking, and are not used at runtime
-// This allows you to `...formOpts` from `formOptions` without needing to redeclare the options
+// These default values are not used at runtime, but the keys are needed for mapping purposes.
+// This allows you to spread `formOptions` without needing to redeclare it.
 const defaultValues: PasswordFields = {
   password: '',
   confirm_password: '',
 }
 
-const PasswordFields = withFormLens({
+const FieldGroupPasswordField = withFieldGroup({
   defaultValues,
-  // You may also restrict the lens to only use forms that implement this submit meta.
+  // You may also restrict the group to only use forms that implement this submit meta.
   // If none is provided, any form with the right defaultValues may use it.
   // onSubmitMeta: { action: '' }
 
@@ -293,28 +293,32 @@ const PasswordFields = withFormLens({
     // These default values are also for type-checking and are not used at runtime
     title: 'Password',
   },
-  // Internally, you will have access to a `lens` instead of a `form`
-  render: function Render({ lens, title }) {
-    // access reactive values using the lens store
-    const password = useStore(lens.store, (state) => state.values.password)
-    const isSubmitting = useStore(lens.store, (state) => state.isSubmitting)
+  // Internally, you will have access to a `group` instead of a `form`
+  render: function Render({ group, title }) {
+    // access reactive values using the group store
+    const password = useStore(group.store, (state) => state.values.password)
+    // or the form itself
+    const isSubmitting = useStore(
+      group.form.store,
+      (state) => state.isSubmitting,
+    )
 
     return (
       <div>
         <h2>{title}</h2>
-        {/* Lenses also have access to Field, Subscribe, Field, AppField and AppForm */}
-        <lens.AppField name="password">
+        {/* Groups also have access to Field, Subscribe, Field, AppField and AppForm */}
+        <group.AppField name="password">
           {(field) => <field.TextField label="Password" />}
-        </lens.AppField>
-        <lens.AppField
+        </group.AppField>
+        <group.AppField
           name="confirm_password"
           validators={{
             onChangeListenTo: ['password'],
             onChange: ({ value, fieldApi }) => {
               // The form could be any values, so it is typed as 'unknown'
               const values: unknown = fieldApi.form.state.values
-              // use the lens methods instead
-              if (value !== lens.getFieldValue('password')) {
+              // use the group methods instead
+              if (value !== group.getFieldValue('password')) {
                 return 'Passwords do not match'
               }
               return undefined
@@ -327,7 +331,7 @@ const PasswordFields = withFormLens({
               <field.ErrorInfo />
             </div>
           )}
-        </lens.AppField>
+        </group.AppField>
       </div>
     )
   },
@@ -337,14 +341,14 @@ const PasswordFields = withFormLens({
 We can now use these grouped fields in any form that implements the default values:
 
 ```tsx
-// You are allowed to extend the lens fields as long as the
+// You are allowed to extend the group fields as long as the
 // existing properties remain unchanged
 type Account = PasswordFields & {
   provider: string
   username: string
 }
 
-// You may nest the lens fields wherever you want
+// You may nest the group fields wherever you want
 type FormValues = {
   name: string
   age: number
@@ -372,7 +376,7 @@ const defaultValues: FormValues = {
 function App() {
   const form = useAppForm({
     defaultValues,
-    // If the lens didn't specify an `onSubmitMeta` property,
+    // If the group didn't specify an `onSubmitMeta` property,
     // the form may implement any meta it wants.
     // Otherwise, the meta must be defined and match.
     onSubmitMeta: { action: '' },
@@ -383,7 +387,7 @@ function App() {
       <PasswordFields
         form={form}
         // You must specify where the fields can be found
-        name="account_data"
+        fields="account_data"
         title="Passwords"
       />
       <form.Field name="linked_accounts" mode="array">
@@ -393,7 +397,7 @@ function App() {
               key={account.provider}
               form={form}
               // The fields may be in nested fields
-              name={`linked_accounts[${i}]`}
+              fields={`linked_accounts[${i}]`}
               title={account.provider}
             />
           ))
@@ -402,6 +406,75 @@ function App() {
     </form.AppForm>
   )
 }
+```
+
+### Mapping field group values to somewhere different
+
+You may want to keep the password fields on the top level of your form, or rename the properties for clarity. You can map field group values
+to their true location by changing the `field` property:
+
+```tsx
+// To have an easier form, you can keep the fields on the top level
+type FormValues = {
+  name: string
+  age: number
+  password: string
+  confirm_password: string
+}
+
+const defaultValues: FormValues = {
+  name: '',
+  age: 0,
+  password: '',
+  confirm_password: '',
+}
+
+function App() {
+  const form = useAppForm({
+    defaultValues,
+  })
+
+  return (
+    <form.AppForm>
+      <PasswordFields
+        form={form}
+        // You can map the fields to their equivalent deep key
+        fields={{
+          password: 'password',
+          confirm_password: 'confirm_password',
+          // or map them to differently named keys entirely
+          // 'password': 'name'
+        }}
+        title="Passwords"
+      />
+    </form.AppForm>
+  )
+}
+```
+
+If you expect your fields to always be at the top level of your form, you can create a quick map
+of your field groups using a helper function:
+
+```tsx
+const defaultValues: PasswordFields = {
+  password: '',
+  confirm_password: '',
+}
+
+const passwordFields = createFieldMap(defaultValues)
+/* This generates the following map:
+ {
+    'password': 'password',
+    'confirm_password': 'confirm_password'
+ }
+*/
+
+// Usage:
+<PasswordFields
+  form={form}
+  fields={passwordFields}
+  title="Passwords"
+/>
 ```
 
 ## Tree-shaking form and field components
