@@ -408,10 +408,14 @@ function App() {
 }
 ```
 
-### Mapping field group values to somewhere different
+### Mapping field group values to a different field
 
 You may want to keep the password fields on the top level of your form, or rename the properties for clarity. You can map field group values
 to their true location by changing the `field` property:
+
+> [!IMPORTANT]
+> Due to TypeScript limitations, field mapping is only allowed for objects. You can use records or arrays at the top level of a field group,
+> but you will not be able to map the fields.
 
 ```tsx
 // To have an easier form, you can keep the fields on the top level
