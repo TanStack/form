@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { FieldApi, FieldGroupApi, FormApi } from '../src/index'
+import { defaultFieldMeta } from '../src/metaHelper'
 
 describe('field group api', () => {
   type Person = {
@@ -673,6 +674,10 @@ describe('field group api', () => {
         name: 'Replace',
       },
     ])
+
+    fieldGroup.clearFieldValues('names')
+
+    expect(form.getFieldValue('people.names')).toEqual([])
   })
 
   it('should allow nesting form fieldGroupes within each other', () => {
@@ -703,6 +708,7 @@ describe('field group api', () => {
     const form = new FormApi({
       defaultValues,
     })
+    form.mount()
 
     const fieldGroupWrap = new FieldGroupApi({
       defaultValues: defaultValues.form,
@@ -723,5 +729,163 @@ describe('field group api', () => {
       fieldGroupWrap.state.values.field,
     )
     expect(fieldGroupNested.state.values).toEqual(form.state.values.form.field)
+  })
+
+  it('should allow remapping values for fieldGroups', () => {
+    type FormVals = {
+      a: string
+      b: string
+    }
+
+    const defaultValues: FormVals = {
+      a: 'A',
+      b: 'B',
+    }
+    const group = {
+      firstName: '',
+      lastName: '',
+    }
+
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const fieldGroup = new FieldGroupApi({
+      form,
+      fields: {
+        firstName: 'a',
+        lastName: 'b',
+      },
+      defaultValues: group,
+    })
+    fieldGroup.mount()
+
+    expect(fieldGroup.state.values.firstName).toBe('A')
+    expect(fieldGroup.state.values.lastName).toBe('B')
+    expect(fieldGroup.getFormFieldName('firstName')).toBe('a')
+    expect(fieldGroup.getFormFieldName('lastName')).toBe('b')
+  })
+
+  it('should not crash on top-level array defaultValues', () => {
+    const defaultValues = {
+      firstName: '',
+      lastName: '',
+    }
+
+    const form = new FormApi({
+      defaultValues: { a: '', b: '' },
+    })
+    form.mount()
+
+    const fieldGroup = new FieldGroupApi({
+      defaultValues: [defaultValues],
+      form,
+      // @ts-expect-error Typing saves us here, but this edge case needs to be guarded either way
+      fields: {},
+    })
+    fieldGroup.mount()
+
+    expect(() =>
+      fieldGroup.getFormFieldName('[0].firstName'),
+    ).not.toThrowError()
+    expect(fieldGroup.getFormFieldName('[0].firstName')).toBeDefined()
+  })
+
+  it('should allow remapping with nested field groups', () => {
+    const formValues = {
+      a: 'A',
+      b: 'B',
+    }
+
+    const form = new FormApi({
+      defaultValues: formValues,
+    })
+    form.mount()
+
+    const groupWrapper = new FieldGroupApi({
+      form,
+      defaultValues: { foo: '', bar: '' },
+      fields: {
+        bar: 'b',
+        foo: 'a',
+      },
+    })
+    groupWrapper.mount()
+
+    const groupNested = new FieldGroupApi({
+      form: groupWrapper,
+      defaultValues: { shouldBeA: '', shouldBeB: '' },
+      fields: {
+        shouldBeA: 'foo',
+        shouldBeB: 'bar',
+      },
+    })
+    groupNested.mount()
+
+    expect(groupNested.state.values.shouldBeA).toBe('A')
+    expect(groupNested.state.values.shouldBeB).toBe('B')
+    expect(groupNested.getFormFieldName('shouldBeA')).toBe('a')
+    expect(groupNested.getFormFieldName('shouldBeB')).toBe('b')
+  })
+
+  it('should allow setting and resetting field meta in field groups', () => {
+    const form = new FormApi({
+      defaultValues: {
+        person: {
+          firstName: '',
+        },
+      },
+    })
+    form.mount()
+
+    const group = new FieldGroupApi({
+      defaultValues: { firstName: '' },
+      form,
+      fields: 'person',
+    })
+    group.mount()
+
+    group.setFieldMeta('firstName', (p) => ({ ...p, isTouched: true }))
+
+    expect(form.getFieldMeta('person.firstName')?.isTouched).toBe(true)
+  })
+
+  it('should forward validateAllFields to the form', async () => {
+    vi.useFakeTimers()
+    const form = new FormApi({
+      defaultValues: {
+        person: {
+          firstName: '',
+        },
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'person.firstName',
+      validators: {
+        onChange: () => 'Error',
+      },
+    })
+    field.mount()
+
+    const group = new FieldGroupApi({
+      defaultValues: { firstName: '' },
+      form,
+      fields: 'person',
+    })
+    group.mount()
+
+    group.validateAllFields('change')
+
+    await vi.runAllTimersAsync()
+
+    expect(form.state.isValid).toBe(false)
+    expect(field.state.meta.isValid).toBe(false)
+    expect(form.getAllErrors().fields['person.firstName'].errors).toEqual([
+      'Error',
+    ])
   })
 })
