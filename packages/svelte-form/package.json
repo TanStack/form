@@ -41,13 +41,13 @@
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/svelte-store": "^0.7.0"
+    "@tanstack/svelte-store": "^0.7.1"
   },
   "devDependencies": {
     "@sveltejs/package": "^2.3.11",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
-    "@testing-library/svelte": "^5.2.7",
-    "svelte": "^5.30.2",
+    "@testing-library/svelte": "^5.2.8",
+    "svelte": "^5.33.13",
     "svelte-check": "^4.2.1"
   },
   "peerDependencies": {
