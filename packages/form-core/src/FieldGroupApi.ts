@@ -460,14 +460,4 @@ export class FieldGroupApi<
 
   validateAllFields = (cause: ValidationCause) =>
     this.form.validateAllFields(cause)
-
-  resetFieldMeta = <TField extends DeepKeys<TFieldGroupData>>(
-    fieldMeta: Record<TField, AnyFieldMeta>,
-  ) => {
-    const actualFields: Record<DeepKeys<TFormData>, AnyFieldMeta> = {} as never
-    for (const key in fieldMeta) {
-      actualFields[this.getFormFieldName(key)] = fieldMeta[key]
-    }
-    return this.form.resetFieldMeta(actualFields)
-  }
 }

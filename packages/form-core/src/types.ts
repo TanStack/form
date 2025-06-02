@@ -173,13 +173,6 @@ export interface FieldManipulator<TFormData, TSubmitMeta> {
   ) => void
 
   /**
-   * Resets every field's meta
-   */
-  resetFieldMeta: <TField extends DeepKeys<TFormData>>(
-    fieldMeta: Record<TField, AnyFieldMeta>,
-  ) => Record<TField, AnyFieldMeta>
-
-  /**
    * Sets the value of the specified field and optionally updates the touched state.
    */
   setFieldValue: <TField extends DeepKeys<TFormData>>(
