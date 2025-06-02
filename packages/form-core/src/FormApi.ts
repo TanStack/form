@@ -2132,7 +2132,7 @@ export class FormApi<
    * @param opts
    */
   filterFieldValues = <
-    TField extends DeepKeys<TFormData>,
+    TField extends DeepKeysOfType<TFormData, any[]>,
     TData extends DeepValue<TFormData, TField>,
   >(
     field: TField,
