@@ -652,6 +652,14 @@ export type FieldMetaDerived<
    * A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
    */
   isPristine: boolean
+  /**
+   * A boolean indicating if the field is valid. Evaluates `true` if there are no field errors.
+   */
+  isValid: boolean
+  /**
+   * A flag indicating whether the field's current value is the default value
+   */
+  isDefaultValue: boolean
 }
 
 export type AnyFieldMetaDerived = FieldMetaDerived<
@@ -978,6 +986,7 @@ export class FieldApi<
   timeoutIds: {
     validations: Record<ValidationCause, ReturnType<typeof setTimeout> | null>
     listeners: Record<ListenerCause, ReturnType<typeof setTimeout> | null>
+    formListeners: Record<ListenerCause, ReturnType<typeof setTimeout> | null>
   }
 
   /**
@@ -1011,6 +1020,7 @@ export class FieldApi<
     this.timeoutIds = {
       validations: {} as Record<ValidationCause, never>,
       listeners: {} as Record<ListenerCause, never>,
+      formListeners: {} as Record<ListenerCause, never>,
     }
 
     this.store = new Derived({
@@ -1211,7 +1221,7 @@ export class FieldApi<
    */
   setMeta = (
     updater: Updater<
-      FieldMeta<
+      FieldMetaBase<
         TParentData,
         TName,
         TData,
@@ -1320,6 +1330,15 @@ export class FieldApi<
     },
   ) => {
     this.form.filterFieldValues(this.name, predicate, opts)
+
+    this.triggerOnChangeListener()
+  }
+
+  /**
+   * Clear all values from the array.
+   */
+  clearValues = (opts?: UpdateMetaOptions) => {
+    this.form.clearFieldValues(this.name, opts)
 
     this.triggerOnChangeListener()
   }
@@ -1686,17 +1705,24 @@ export class FieldApi<
   /**
    * Updates the field's errorMap
    */
-  setErrorMap(errorMap: ValidationErrorMap) {
-    this.setMeta(
-      (prev) =>
-        ({
-          ...prev,
-          errorMap: {
-            ...prev.errorMap,
-            ...errorMap,
-          },
-        }) as never,
-    )
+  setErrorMap(
+    errorMap: ValidationErrorMap<
+      UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>,
+      UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>,
+      UnwrapFieldAsyncValidateOrFn<TName, TOnChangeAsync, TFormOnChangeAsync>,
+      UnwrapFieldValidateOrFn<TName, TOnBlur, TFormOnBlur>,
+      UnwrapFieldAsyncValidateOrFn<TName, TOnBlurAsync, TFormOnBlurAsync>,
+      UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>,
+      UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>
+    >,
+  ) {
+    this.setMeta((prev) => ({
+      ...prev,
+      errorMap: {
+        ...prev.errorMap,
+        ...errorMap,
+      },
+    }))
   }
 
   /**
@@ -1724,9 +1750,27 @@ export class FieldApi<
   }
 
   private triggerOnBlurListener() {
-    const debounceMs = this.options.listeners?.onBlurDebounceMs
+    const formDebounceMs = this.form.options.listeners?.onBlurDebounceMs
+    if (formDebounceMs && formDebounceMs > 0) {
+      if (this.timeoutIds.formListeners.blur) {
+        clearTimeout(this.timeoutIds.formListeners.blur)
+      }
 
-    if (debounceMs && debounceMs > 0) {
+      this.timeoutIds.formListeners.blur = setTimeout(() => {
+        this.form.options.listeners?.onBlur?.({
+          formApi: this.form,
+          fieldApi: this,
+        })
+      }, formDebounceMs)
+    } else {
+      this.form.options.listeners?.onBlur?.({
+        formApi: this.form,
+        fieldApi: this,
+      })
+    }
+
+    const fieldDebounceMs = this.options.listeners?.onBlurDebounceMs
+    if (fieldDebounceMs && fieldDebounceMs > 0) {
       if (this.timeoutIds.listeners.blur) {
         clearTimeout(this.timeoutIds.listeners.blur)
       }
@@ -1736,7 +1780,7 @@ export class FieldApi<
           value: this.state.value,
           fieldApi: this,
         })
-      }, debounceMs)
+      }, fieldDebounceMs)
     } else {
       this.options.listeners?.onBlur?.({
         value: this.state.value,
@@ -1746,9 +1790,27 @@ export class FieldApi<
   }
 
   private triggerOnChangeListener() {
-    const debounceMs = this.options.listeners?.onChangeDebounceMs
+    const formDebounceMs = this.form.options.listeners?.onChangeDebounceMs
+    if (formDebounceMs && formDebounceMs > 0) {
+      if (this.timeoutIds.formListeners.blur) {
+        clearTimeout(this.timeoutIds.formListeners.blur)
+      }
 
-    if (debounceMs && debounceMs > 0) {
+      this.timeoutIds.formListeners.blur = setTimeout(() => {
+        this.form.options.listeners?.onChange?.({
+          formApi: this.form,
+          fieldApi: this,
+        })
+      }, formDebounceMs)
+    } else {
+      this.form.options.listeners?.onChange?.({
+        formApi: this.form,
+        fieldApi: this,
+      })
+    }
+
+    const fieldDebounceMs = this.options.listeners?.onChangeDebounceMs
+    if (fieldDebounceMs && fieldDebounceMs > 0) {
       if (this.timeoutIds.listeners.change) {
         clearTimeout(this.timeoutIds.listeners.change)
       }
@@ -1758,7 +1820,7 @@ export class FieldApi<
           value: this.state.value,
           fieldApi: this,
         })
-      }, debounceMs)
+      }, fieldDebounceMs)
     } else {
       this.options.listeners?.onChange?.({
         value: this.state.value,

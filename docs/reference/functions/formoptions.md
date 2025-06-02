@@ -15,7 +15,7 @@ Defined in: [packages/form-core/src/formOptions.ts:3](https://github.com/TanStac
 
 ## Type Parameters
 
-• **T** *extends* `Partial`\<[`FormOptions`](../interfaces/formoptions.md)\<`any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>\>
+• **T** *extends* `Partial`\<[`FormOptions`](../../interfaces/formoptions.md)\<`any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>\>
 
 ## Parameters
 

@@ -259,7 +259,7 @@ Example:
 </template>
 ```
 
-More information can be found at [Listeners](./listeners.md)
+More information can be found at [Listeners](../listeners.md)
 
 Note: The usage of the `form.useField` method to achieve reactivity is discouraged since it is designed to be used thoughtfully within the `form.Field` component. You might want to use `form.useStore` instead.
 

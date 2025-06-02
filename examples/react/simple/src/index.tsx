@@ -6,7 +6,7 @@ import type { AnyFieldApi } from '@tanstack/react-form'
 function FieldInfo({ field }: { field: AnyFieldApi }) {
   return (
     <>
-      {field.state.meta.isTouched && field.state.meta.errors.length ? (
+      {field.state.meta.isTouched && !field.state.meta.isValid ? (
         <em>{field.state.meta.errors.join(',')}</em>
       ) : null}
       {field.state.meta.isValidating ? 'Validating...' : null}
@@ -98,7 +98,14 @@ export default function App() {
               <button type="submit" disabled={!canSubmit}>
                 {isSubmitting ? '...' : 'Submit'}
               </button>
-              <button type="reset" onClick={() => form.reset()}>
+              <button
+                type="reset"
+                onClick={(e) => {
+                  // Avoid unexpected resets of form elements (especially <select> elements)
+                  e.preventDefault()
+                  form.reset()
+                }}
+              >
                 Reset
               </button>
             </>
