@@ -102,8 +102,8 @@ export default function App() {
                 type="reset"
                 onClick={(e) => {
                   // Avoid unexpected resets of form elements (especially <select> elements)
-                  e.preventDefault();
-                  form.reset();
+                  e.preventDefault()
+                  form.reset()
                 }}
               >
                 Reset
