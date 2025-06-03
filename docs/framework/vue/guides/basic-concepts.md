@@ -96,7 +96,7 @@ There are four states in the metadata that can be useful to see how the user int
 
 There is also one additional derived state:
 
-- _"isPristine"_, until the user changes the field value. Opposite of _"isPristine"_
+- _"isPristine"_, until the user changes the field value. Opposite of _"isDirty"_
 
 ```js
 const { isTouched, isDirty, isBlurred, isDefaultValue, isPristine } = field.state.meta
