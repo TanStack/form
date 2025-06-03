@@ -303,3 +303,66 @@ it('should infer full field name union for form.resetField parameters', () => {
       'shallow' | 'nested' | 'nested.field' | 'nested.field.name'
     >()
 })
+
+it('should extract the form error type from a global form error', () => {
+  type FormData = {
+    firstName: string
+    lastName: string
+  }
+
+  const form = new FormApi({
+    defaultValues: {} as FormData,
+    validators: {
+      onMount: () => {
+        return {
+          form: 'onMount' as const,
+          fields: {},
+        }
+      },
+      onChange: () => {
+        return {
+          form: 'onChange' as const,
+          fields: {},
+        }
+      },
+      onChangeAsync: () => {
+        return Promise.resolve({
+          form: 'onChangeAsync' as const,
+          fields: {},
+        })
+      },
+      onBlur: () => {
+        return {
+          form: 'onBlur' as const,
+          fields: {},
+        }
+      },
+      onBlurAsync: () => {
+        return Promise.resolve('onBlurAsync' as const)
+      },
+    },
+  })
+
+  expectTypeOf(form.state.errorMap.onChange).toEqualTypeOf<
+    'onChange' | 'onChangeAsync' | undefined
+  >()
+
+  expectTypeOf(form.state.errorMap.onMount).toEqualTypeOf<
+    'onMount' | undefined
+  >()
+
+  expectTypeOf(form.state.errorMap.onBlur).toEqualTypeOf<
+    'onBlur' | 'onBlurAsync' | undefined
+  >()
+
+  expectTypeOf(form.state.errors).toEqualTypeOf<
+    (
+      | 'onMount'
+      | 'onChange'
+      | 'onChangeAsync'
+      | 'onBlur'
+      | 'onBlurAsync'
+      | undefined
+    )[]
+  >
+})
