@@ -96,16 +96,37 @@ const {
 There are four states in the metadata that can be useful to see how the user interacts with a field:
 
 - _"isTouched"_, after the user changes the field or blurs the field
-- _"isDirty"_, after the field's value has been changed, even if it's been reverted to the default. Opposite of isPristine
-- _"isBlurred"_, after the field has been blurred (exited)
-- _"isDefaultValue"_, whether the field's current value is the default value
-
-There is also one additional derived state:
-
-- _"isPristine"_, until the user changes the field value. Opposite of isDirty
+- _"isDirty"_, after the field's value has been changed, even if it's been reverted to the default. Opposite of `isPristine`
+- _"isPristine"_, until the user changes the field value. Opposite of `isDirty`
+- _"isBlurred"_, after the field has been blurred
 
 ```tsx
-const { isTouched, isDirty, isBlurred, isDefaultValue, isPristine } = field.state.meta
+const { isTouched, isDirty, isPristine, isBlurred } = field.state.meta
 ```
 
 ![Field states](https://raw.githubusercontent.com/TanStack/form/main/docs/assets/field-states.png)
+
+## Understanding 'isDirty' in Different Libraries
+
+Non-Persistent `dirty` state
+
+- **Libraries**: React Hook Form (RHF), Formik, Final Form.
+- **Behavior**: A field is 'dirty' if its value differs from the default. Reverting to the default value makes it 'clean' again.
+
+Persistent `dirty` state
+
+- **Libraries**: Angular Form, Vue FormKit.
+- **Behavior**: A field remains 'dirty' once changed, even if reverted to the default value.
+
+We have chosen the persistent 'dirty' state model. To also support a non-persistent 'dirty' state, we introduce an additional flag:
+
+- _"isDefaultValue"_, whether the field's current value is the default value
+
+```tsx
+const { isDefaultValue, isTouched } = field.state.meta
+
+// The following line will re-create the non-Persistent `dirty` functionality.
+const nonPersistentIsDirty = !isDefaultValue
+```
+
+![Field states extended](https://raw.githubusercontent.com/TanStack/form/main/docs/assets/field-states-extended.png)
