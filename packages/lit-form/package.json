@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/lit-form",
-  "version": "1.12.0",
+  "version": "1.12.1",
   "description": "Powerful, type-safe forms for Lit.",
   "author": "tannerlinsley",
   "license": "MIT",

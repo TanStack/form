@@ -51,6 +51,7 @@ title: "@tanstack/form-core"
 - [DeepRecord](../type-aliases/deeprecord.md)
 - [DeepValue](../type-aliases/deepvalue.md)
 - [DerivedFormState](../type-aliases/derivedformstate.md)
+- [ExtractGlobalFormError](../type-aliases/extractglobalformerror.md)
 - [FieldInfo](../type-aliases/fieldinfo.md)
 - [FieldMeta](../type-aliases/fieldmeta.md)
 - [FieldMetaBase](../type-aliases/fieldmetabase.md)
