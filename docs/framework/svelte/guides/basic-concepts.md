@@ -72,7 +72,7 @@ Example:
 
 ## Field State
 
-Each field has its own state, which includes its current value, validation status, error messages, and other metadata. You can access a field's state using the `field().state` property.
+Each field has its own state, which includes its current value, validation status, error messages, and other metadata. You can access a field's state using the `field.state` property.
 
 Example:
 
