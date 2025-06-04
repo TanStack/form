@@ -92,7 +92,7 @@ There are four states in the metadata that can be useful to see how the user int
 - _"isBlurred"_, after the field has been blurred
 
 ```tsx
-const { isTouched, isDirty, isPristine, isBlurred } = field.state.meta
+const { isTouched, isDirty, isPristine, isBlurred } = field().state.meta
 ```
 
 ![Field states](https://raw.githubusercontent.com/TanStack/form/main/docs/assets/field-states.png)
@@ -114,7 +114,7 @@ We have chosen the persistent 'dirty' state model. To also support a non-persist
 - _"isDefaultValue"_, whether the field's current value is the default value
 
 ```tsx
-const { isDefaultValue, isTouched } = field.state.meta
+const { isDefaultValue, isTouched } = field().state.meta
 
 // The following line will re-create the non-Persistent `dirty` functionality.
 const nonPersistentIsDirty = !isDefaultValue
