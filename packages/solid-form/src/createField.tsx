@@ -360,6 +360,7 @@ interface FieldComponentBoundProps<
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TParentSubmitMeta,
+  ExtendedApi = {}
 > extends CreateFieldOptionsBound<
     TParentData,
     TName,
@@ -373,7 +374,7 @@ interface FieldComponentBoundProps<
     TOnSubmitAsync
   > {
   children: (
-    fieldApi: () => FieldApi<
+    fieldApi: (() => FieldApi<
       TParentData,
       TName,
       TData,
@@ -393,7 +394,7 @@ interface FieldComponentBoundProps<
       TFormOnSubmitAsync,
       TFormOnServer,
       TParentSubmitMeta
-    >,
+    >) & ExtendedApi,
   ) => JSXElement
 }
 
@@ -408,6 +409,7 @@ export type FieldComponent<
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TParentSubmitMeta,
+  ExtendedApi = {}
 > = <
   TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
@@ -446,7 +448,8 @@ export type FieldComponent<
   TFormOnSubmit,
   TFormOnSubmitAsync,
   TFormOnServer,
-  TParentSubmitMeta
+  TParentSubmitMeta,
+  ExtendedApi
 >) => JSXElement
 
 interface FieldComponentProps<
