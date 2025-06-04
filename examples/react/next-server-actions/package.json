@@ -8,7 +8,7 @@
     "_test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-form": "^1.12.0",
+    "@tanstack/react-form": "^1.12.1",
     "@tanstack/react-store": "^0.7.1",
     "next": "15.3.3",
     "react": "^19.0.0",

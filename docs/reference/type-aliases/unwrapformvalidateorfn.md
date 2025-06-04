@@ -8,10 +8,10 @@ title: UnwrapFormValidateOrFn
 # Type Alias: UnwrapFormValidateOrFn\<TValidateOrFn\>
 
 ```ts
-type UnwrapFormValidateOrFn<TValidateOrFn> = [TValidateOrFn] extends [FormValidateFn<any>] ? ReturnType<TValidateOrFn> : [TValidateOrFn] extends [StandardSchemaV1<any, any>] ? Record<string, StandardSchemaV1Issue[]> : undefined;
+type UnwrapFormValidateOrFn<TValidateOrFn> = [TValidateOrFn] extends [FormValidateFn<any>] ? ExtractGlobalFormError<ReturnType<TValidateOrFn>> : [TValidateOrFn] extends [StandardSchemaV1<any, any>] ? Record<string, StandardSchemaV1Issue[]> : undefined;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:96](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L96)
+Defined in: [packages/form-core/src/FormApi.ts:97](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L97)
 
 ## Type Parameters
 
