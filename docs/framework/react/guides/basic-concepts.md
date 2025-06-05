@@ -85,7 +85,7 @@ Each field has its own state, which includes its current value, validation statu
 
 Example:
 
-```tsx
+```ts
 const {
   value,
   meta: { errors, isValidating },
@@ -99,7 +99,7 @@ There are four states in the metadata that can be useful to see how the user int
 - _"isPristine"_, until the user changes the field value. Opposite of `isDirty`
 - _"isBlurred"_, after the field has been blurred
 
-```tsx
+```ts
 const { isTouched, isDirty, isPristine, isBlurred } = field.state.meta
 ```
 
@@ -121,7 +121,7 @@ We have chosen the persistent 'dirty' state model. To also support a non-persist
 
 - _"isDefaultValue"_, whether the field's current value is the default value
 
-```tsx
+```ts
 const { isDefaultValue, isTouched } = field.state.meta
 
 // The following line will re-create the non-Persistent `dirty` functionality.
