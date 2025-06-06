@@ -34,7 +34,7 @@ export type AppFieldExtendedReactFieldGroupApi<
   TFormData,
   TFieldGroupData,
   TFields extends
-    | DeepKeysOfType<TFormData, TFieldGroupData>
+    | DeepKeysOfType<TFormData, TFieldGroupData | null | undefined>
     | FieldsMap<TFormData, TFieldGroupData>,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
   TOnChange extends undefined | FormValidateOrFn<TFormData>,
@@ -86,7 +86,7 @@ export function useFieldGroup<
   TFormData,
   TFieldGroupData,
   TFields extends
-    | DeepKeysOfType<TFormData, TFieldGroupData>
+    | DeepKeysOfType<TFormData, TFieldGroupData | null | undefined>
     | FieldsMap<TFormData, TFieldGroupData>,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
   TOnChange extends undefined | FormValidateOrFn<TFormData>,

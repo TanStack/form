@@ -778,4 +778,45 @@ describe('createFormHook', () => {
       )
     })
   })
+
+  it('should allow mapping field groups to optional fields', () => {
+    const groupFields = {
+      name: '',
+    }
+
+    type WrapperValues = {
+      namespace: { name: string } | undefined
+      namespace2: { name: string } | null
+      namespace3: { name: string } | null | undefined
+      nope: null | undefined
+      nope2: { lastName: string } | null | undefined
+    }
+
+    const defaultValues: WrapperValues = {
+      namespace: undefined,
+      namespace2: null,
+      namespace3: null,
+      nope: null,
+      nope2: null,
+    }
+
+    const FieldGroup = withFieldGroup({
+      defaultValues: groupFields,
+      render: function Render() {
+        return <></>
+      },
+    })
+
+    const form = useAppForm({
+      defaultValues,
+    })
+
+    const Component = <FieldGroup form={form} fields="namespace" />
+    const Component2 = <FieldGroup form={form} fields="namespace2" />
+    const Component3 = <FieldGroup form={form} fields="namespace3" />
+    // @ts-expect-error because it doesn't ever evaluate to the expected values
+    const Component4 = <FieldGroup form={form} fields="nope" />
+    // @ts-expect-error because the types don't match properly
+    const Component5 = <FieldGroup form={form} fields="nope2" />
+  })
 })

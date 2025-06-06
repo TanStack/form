@@ -422,7 +422,7 @@ export function createFormHook<
   >): <
     TFormData,
     TFields extends
-      | DeepKeysOfType<TFormData, TFieldGroupData>
+      | DeepKeysOfType<TFormData, TFieldGroupData | null | undefined>
       | FieldsMap<TFormData, TFieldGroupData>,
     TOnMount extends undefined | FormValidateOrFn<TFormData>,
     TOnChange extends undefined | FormValidateOrFn<TFormData>,
