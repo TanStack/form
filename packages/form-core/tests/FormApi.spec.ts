@@ -812,11 +812,6 @@ describe('form api', () => {
     form.mount()
     form.moveFieldValues('names', 1, 2)
 
-    expect(form.options.defaultValues?.names).toStrictEqual([
-      'one',
-      'two',
-      'three',
-    ])
     expect(form.getFieldValue('names')).toStrictEqual(['one', 'three', 'two'])
   })
 
@@ -989,6 +984,38 @@ describe('form api', () => {
     expect(field1Surname.state.meta.isBlurred).toBe(false)
     expect(field2Name.state.meta.isBlurred).toBe(true)
     expect(field2Surname.state.meta.isBlurred).toBe(false)
+  })
+
+  it('should preserve array default values when manipulating array values', () => {
+    const defaultValues = {
+      names: ['one', 'two', 'three'],
+    }
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+    form.pushFieldValue('names', 'four')
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.insertFieldValue('names', 0, 'other')
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.replaceFieldValue('names', 1, 'other')
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.removeFieldValue('names', 1)
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.swapFieldValues('names', 1, 2)
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.moveFieldValues('names', 1, 2)
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
   })
 
   it('should handle fields inside an array', async () => {
