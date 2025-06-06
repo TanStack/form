@@ -137,7 +137,7 @@ Defined in: [packages/form-core/src/FormApi.ts:831](https://github.com/TanStack/
 clearFieldValues<TField>(field, opts?): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2132](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2132)
+Defined in: [packages/form-core/src/FormApi.ts:2133](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2133)
 
 Clear all values within an array field.
 
@@ -191,7 +191,7 @@ Defined in: [packages/form-core/src/FormApi.ts:1941](https://github.com/TanStack
 getAllErrors(): object
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2238](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2238)
+Defined in: [packages/form-core/src/FormApi.ts:2239](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2239)
 
 Returns form and field level errors
 
@@ -463,7 +463,7 @@ parseValuesWithSchema(schema):
 }
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2298](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2298)
+Defined in: [packages/form-core/src/FormApi.ts:2299](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2299)
 
 Parses the form's values with a given standard schema and returns
 issues (if any). This method does NOT set any internal errors.
@@ -497,7 +497,7 @@ parseValuesWithSchemaAsync(schema): Promise<
 }>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2310](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2310)
+Defined in: [packages/form-core/src/FormApi.ts:2311](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2311)
 
 Parses the form's values with a given standard schema and returns
 issues (if any). This method does NOT set any internal errors.
@@ -676,7 +676,7 @@ Optional options to control the reset behavior.
 resetField<TField>(field): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2158](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2158)
+Defined in: [packages/form-core/src/FormApi.ts:2159](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2159)
 
 Resets the field value and meta to default state
 
@@ -728,7 +728,7 @@ resets every field's meta
 setErrorMap(errorMap): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2176](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2176)
+Defined in: [packages/form-core/src/FormApi.ts:2177](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2177)
 
 Updates the form's errorMap
 
