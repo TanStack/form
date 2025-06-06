@@ -1421,7 +1421,7 @@ export class FormApi<
         const errorMapKey = getErrorMapKey(validateObj.cause)
 
         for (const field of Object.keys(
-          this.state.fieldMeta,
+          this.baseStore.state.fieldMetaBase, // Iterate over the field meta base since it is the source of truth
         ) as DeepKeys<TFormData>[]) {
           const fieldMeta = this.getFieldMeta(field)
           if (!fieldMeta) continue
@@ -1598,7 +1598,7 @@ export class FormApi<
           const errorMapKey = getErrorMapKey(validateObj.cause)
 
           for (const field of Object.keys(
-            this.state.fieldMeta,
+            this.baseStore.state.fieldMetaBase, // Iterate over the field meta base since it is the source of truth
           ) as DeepKeys<TFormData>[]) {
             const fieldMeta = this.getFieldMeta(field)
             if (!fieldMeta) continue
