@@ -812,6 +812,11 @@ describe('form api', () => {
     form.mount()
     form.moveFieldValues('names', 1, 2)
 
+    expect(form.options.defaultValues?.names).toStrictEqual([
+      'one',
+      'two',
+      'three',
+    ])
     expect(form.getFieldValue('names')).toStrictEqual(['one', 'three', 'two'])
   })
 
