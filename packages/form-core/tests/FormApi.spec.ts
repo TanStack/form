@@ -1016,6 +1016,10 @@ describe('form api', () => {
     form.reset()
     form.moveFieldValues('names', 1, 2)
     expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.clearFieldValues('names')
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
   })
 
   it('should handle fields inside an array', async () => {
