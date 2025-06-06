@@ -105,7 +105,7 @@ export class FieldGroupApi<
   in out TFormData,
   in out TFieldGroupData,
   in out TFields extends
-    | DeepKeysOfType<TFormData, TFieldGroupData>
+    | DeepKeysOfType<TFormData, TFieldGroupData | null | undefined>
     | FieldsMap<TFormData, TFieldGroupData>,
   in out TOnMount extends undefined | FormValidateOrFn<TFormData>,
   in out TOnChange extends undefined | FormValidateOrFn<TFormData>,
