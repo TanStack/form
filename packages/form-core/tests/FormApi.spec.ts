@@ -986,6 +986,42 @@ describe('form api', () => {
     expect(field2Surname.state.meta.isBlurred).toBe(false)
   })
 
+  it('should preserve array default values when manipulating array values', () => {
+    const defaultValues = {
+      names: ['one', 'two', 'three'],
+    }
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+    form.pushFieldValue('names', 'four')
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.insertFieldValue('names', 0, 'other')
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.replaceFieldValue('names', 1, 'other')
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.removeFieldValue('names', 1)
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.swapFieldValues('names', 1, 2)
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.moveFieldValues('names', 1, 2)
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.clearFieldValues('names')
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+  })
+
   it('should handle fields inside an array', async () => {
     interface Employee {
       firstName: string

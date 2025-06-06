@@ -2110,8 +2110,9 @@ export class FormApi<
     this.setFieldValue(
       field,
       (prev: any) => {
-        prev.splice(index2, 0, prev.splice(index1, 1)[0])
-        return prev
+        const next: any = [...prev]
+        next.splice(index2, 0, next.splice(index1, 1)[0])
+        return next
       },
       opts,
     )
