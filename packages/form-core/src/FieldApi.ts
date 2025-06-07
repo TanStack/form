@@ -238,11 +238,11 @@ export type UnwrapFieldAsyncValidateOrFn<
 /**
  * @private
  */
-export type FieldListenerFn<
+type FieldListenerFnProps<
   TParentData,
   TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
-> = (props: {
+> = {
   value: TData
   fieldApi: FieldApi<
     TParentData,
@@ -267,7 +267,25 @@ export type FieldListenerFn<
     any,
     any
   >
-}) => void
+}
+
+/**
+ * @private
+ */
+export type FieldListenerFn<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> = (props: FieldListenerFnProps<TParentData, TName, TData>) => void
+
+/**
+ * @private
+ */
+export type FieldListenerAsyncFn<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TData extends DeepValue<TParentData, TName> = DeepValue<TParentData, TName>,
+> = (props: FieldListenerFnProps<TParentData, TName, TData>) => Promise<void>
 
 export interface FieldValidators<
   TParentData,
@@ -357,6 +375,8 @@ export interface FieldListeners<
 > {
   onChange?: FieldListenerFn<TParentData, TName, TData>
   onChangeDebounceMs?: number
+  onChangeAsync?: FieldListenerAsyncFn<TParentData, TName, TData>
+  onChangeAsyncDebounceMs?: number
   onBlur?: FieldListenerFn<TParentData, TName, TData>
   onBlurDebounceMs?: number
   onMount?: FieldListenerFn<TParentData, TName, TData>
@@ -983,10 +1003,15 @@ export class FieldApi<
   get state() {
     return this.store.state
   }
+
   timeoutIds: {
     validations: Record<ValidationCause, ReturnType<typeof setTimeout> | null>
     listeners: Record<ListenerCause, ReturnType<typeof setTimeout> | null>
     formListeners: Record<ListenerCause, ReturnType<typeof setTimeout> | null>
+  }
+
+  promises: {
+    listeners: Record<ListenerCause, Promise<void> | null>
   }
 
   /**
@@ -1021,6 +1046,10 @@ export class FieldApi<
       validations: {} as Record<ValidationCause, never>,
       listeners: {} as Record<ListenerCause, never>,
       formListeners: {} as Record<ListenerCause, never>,
+    }
+
+    this.promises = {
+      listeners: {} as Record<ListenerCause, Promise<void> | null>,
     }
 
     this.store = new Derived({
@@ -1788,6 +1817,7 @@ export class FieldApi<
       })
     }
 
+    this.triggerOnChangeAsyncListener()
     const fieldDebounceMs = this.options.listeners?.onChangeDebounceMs
     if (fieldDebounceMs && fieldDebounceMs > 0) {
       if (this.timeoutIds.listeners.change) {
@@ -1806,6 +1836,64 @@ export class FieldApi<
         fieldApi: this,
       })
     }
+  }
+
+  private abortController: AbortController = new AbortController()
+  private collapseController: AbortController = new AbortController()
+  private triggerOnChangeAsyncListener() {
+    const fieldDebounceMs = this.options.listeners?.onChangeAsyncDebounceMs
+    if (fieldDebounceMs && fieldDebounceMs > 0) {
+      if (this.timeoutIds.listeners.change) {
+        clearTimeout(this.timeoutIds.listeners.change)
+        this.abortController.abort()
+      }
+
+      const debouncePromise = new Promise<void>((resolve) => {
+        this.abortController.signal.onabort = () => {
+          resolve()
+        }
+
+        this.collapseController.signal.onabort = () => {
+          this.options.listeners
+            ?.onChangeAsync?.({
+              value: this.state.value,
+              fieldApi: this,
+            })
+            .finally(resolve)
+        }
+
+        this.timeoutIds.listeners.change = setTimeout(() => {
+          this.options.listeners
+            ?.onChangeAsync?.({
+              value: this.state.value,
+              fieldApi: this,
+            })
+            .finally(resolve)
+        }, fieldDebounceMs)
+      }).finally(() => {
+        this.promises.listeners.change = null
+      })
+      this.promises.listeners.change = debouncePromise
+    } else {
+      const promise = this.options.listeners?.onChangeAsync?.({
+        value: this.state.value,
+        fieldApi: this,
+      })
+
+      if (promise) {
+        promise.finally(() => {
+          this.promises.listeners.change = null
+        })
+        this.promises.listeners.change = promise
+      }
+    }
+  }
+
+  collapseFieldOnChangeAsync = () => {
+    if (this.timeoutIds.listeners.change) {
+      clearTimeout(this.timeoutIds.listeners.change)
+    }
+    this.collapseController.abort()
   }
 }
 

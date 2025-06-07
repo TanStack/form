@@ -22,7 +22,7 @@ export default function App() {
     },
     onSubmit: async ({ value }) => {
       // Do something with form data
-      console.log(value)
+      console.log(value, 'Submitted')
     },
   })
 
@@ -76,6 +76,14 @@ export default function App() {
         <div>
           <form.Field
             name="lastName"
+            listeners={{
+              onChangeAsyncDebounceMs: 5_000,
+              onChangeAsync: async ({ value, fieldApi }) => {
+                await new Promise((resolve) => setTimeout(resolve, 1000))
+                if (value === 'CHANGED') return
+                fieldApi.form.setFieldValue('lastName', 'CHANGED')
+              },
+            }}
             children={(field) => (
               <>
                 <label htmlFor={field.name}>Last Name:</label>
