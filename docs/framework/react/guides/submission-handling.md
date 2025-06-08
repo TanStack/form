@@ -22,7 +22,6 @@ These are validation issues that can be detected immediately on the client side,
 <form.Field
   name="age"
   validators={{
-    // This lets you catch simple issues early and prevent invalid data from being submitted.
     onChange: ({ value }) =>
       value < 13 ? 'You must be 13 to make an account' : undefined,
   }}
