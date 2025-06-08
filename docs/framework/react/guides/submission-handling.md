@@ -73,10 +73,10 @@ const createAccountMutation = useMutation({
 
 const form = useForm({
   // ...
-  onSubmit: ({ value }) => {
+  onSubmit: async ({ value }) => {
     // If an error happens, they are accessible through
     // `createAccountMutation.error`
-    return createAccountMutation.mutateAsync(value)
+    await createAccountMutation.mutateAsync(value)
   },
 })
 ```
