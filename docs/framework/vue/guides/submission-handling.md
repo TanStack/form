@@ -12,7 +12,7 @@ When a user submits a form, there are several ways errors can occur — each req
 - **Server errors** – Unexpected problems on the backend, such as a failed request or an unknown error.
 
 > [!TIP]
-> If you need help understanding how validation works in TanStack Form, be sure to check out the [form validation](./validation.md) guide!
+> If you need help understanding how validation works in TanStack Form, be sure to check out the [form validation](../validation.md) guide!
 
 ### Synchronous user errors
 
@@ -40,7 +40,7 @@ These are validation issues that can be detected immediately on the client side,
 
 Asynchronous errors usually occur after the form is submitted, often due to external checks — like verifying whether a username or email is already taken. These kinds of errors can be handled using the async variants of form and field validators.
 
-Since these requests are usually at form level, see how you can [set field-level errors from the form's validators](./validation.md).
+Since these requests are usually at form level, see how you can [set field-level errors from the form's validators](../validation.md).
 
 ```vue
 <script setup lang="ts">
