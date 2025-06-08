@@ -7,7 +7,7 @@ title: Submission handling
 
 When a user submits a form, there are several ways errors can occur — each requiring its own handling approach. TanStack Form gives you the flexibility to handle errors your way. To help you get started, here’s how to approach the three most common types of errors you’ll run into:
 
-- **Synchronous user errors** – Things you can catch right away, like a field being left empty or text that's too short.
+- **Synchronous user errors** – Issues you can catch right away, like a field being left empty or text that's too short.
 - **Asynchronous user errors** – Issues that come up after submission, like finding out a username is already taken.
 - **Server errors** – Unexpected problems on the backend, such as a failed request or an unknown error.
 
@@ -56,11 +56,7 @@ const form = useForm({
 
       if (response.isError) {
         // Username is taken, return an error for the username field
-        return {
-          fields: {
-            username: response.message,
-          },
-        }
+        return 'Account is already taken!'
       }
       // The account creation was a success. There is no error that needs to be shown.
       return null
