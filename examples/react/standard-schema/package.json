@@ -11,16 +11,16 @@
   "dependencies": {
     "@tanstack/react-form": "^1.12.2",
     "arktype": "^2.1.20",
-    "effect": "^3.16.3",
+    "effect": "^3.16.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "valibot": "^1.1.0",
-    "zod": "^3.25.48"
+    "zod": "^3.25.56"
   },
   "devDependencies": {
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
-    "@vitejs/plugin-react": "^4.5.0",
+    "@vitejs/plugin-react": "^4.5.1",
     "vite": "^6.3.5"
   },
   "browserslist": {
