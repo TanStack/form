@@ -1,0 +1,22 @@
+{
+  "name": "@tanstack/form-example-vue-field-components",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:dev": "vite build -m development",
+    "test:types": "vue-tsc",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "@tanstack/vue-form": "^1.6.3",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.3",
+    "typescript": "5.8.2",
+    "vite": "^6.3.2",
+    "vue-tsc": "^2.2.2"
+  }
+}
