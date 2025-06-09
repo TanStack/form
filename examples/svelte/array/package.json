@@ -12,9 +12,9 @@
     "@tanstack/svelte-form": "^1.12.2"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^5.0.3",
+    "@sveltejs/vite-plugin-svelte": "^5.1.0",
     "@tsconfig/svelte": "^5.0.4",
-    "svelte": "^5.33.13",
+    "svelte": "^5.33.18",
     "typescript": "5.8.2",
     "vite": "^6.3.5"
   }

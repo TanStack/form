@@ -54,7 +54,7 @@
     "@angular/core": "^19.2.14",
     "@angular/platform-browser": "^19.2.14",
     "@angular/platform-browser-dynamic": "^19.2.14",
-    "@testing-library/angular": "^17.3.7",
+    "@testing-library/angular": "^17.4.0",
     "ng-packagr": "^19.2.2",
     "typescript": "5.8.2",
     "zone.js": "^0.15.1"
