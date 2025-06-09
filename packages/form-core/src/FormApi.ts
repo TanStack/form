@@ -485,6 +485,7 @@ export type FieldInfo<TFormData> = {
     any,
     any,
     any,
+    any,
     any
   > | null
   /**
