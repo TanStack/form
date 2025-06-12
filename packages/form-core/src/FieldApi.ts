@@ -1671,7 +1671,6 @@ export class FieldApi<
     const prevTouched = this.state.meta.isTouched
     if (!prevTouched) {
       this.setMeta((prev) => ({ ...prev, isTouched: true }))
-      this.validate('change')
     }
     if (!this.state.meta.isBlurred) {
       this.setMeta((prev) => ({ ...prev, isBlurred: true }))
