@@ -222,7 +222,7 @@ function App() {
 
 > Why a higher-order component instead of a hook?
 
-While hooks are the future of React, higher-order components are still a powerful tool for composition. In particular, the API of `useForm` enables us to have strong type-safety without requiring users to pass generics.
+While hooks are the future of React, higher-order components are still a powerful tool for composition. In particular, the API of `withForm` enables us to have strong type-safety without requiring users to pass generics.
 
 > Why am I getting ESLint errors about hooks in `render`?
 
