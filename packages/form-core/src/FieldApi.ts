@@ -1314,6 +1314,15 @@ export class FieldApi<
   }
 
   /**
+   * Clear all values from the array.
+   */
+  clearValues = (opts?: UpdateMetaOptions) => {
+    this.form.clearFieldValues(this.name, opts)
+
+    this.triggerOnChangeListener()
+  }
+
+  /**
    * @private
    */
   getLinkedFields = (cause: ValidationCause) => {
@@ -1662,7 +1671,6 @@ export class FieldApi<
     const prevTouched = this.state.meta.isTouched
     if (!prevTouched) {
       this.setMeta((prev) => ({ ...prev, isTouched: true }))
-      this.validate('change')
     }
     if (!this.state.meta.isBlurred) {
       this.setMeta((prev) => ({ ...prev, isBlurred: true }))

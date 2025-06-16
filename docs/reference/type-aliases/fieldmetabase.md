@@ -17,9 +17,9 @@ Defined in: [packages/form-core/src/FieldApi.ts:521](https://github.com/TanStack
 
 • **TParentData**
 
-• **TName** *extends* [`DeepKeys`](deepkeys.md)\<`TParentData`\>
+• **TName** *extends* [`DeepKeys`](../deepkeys.md)\<`TParentData`\>
 
-• **TData** *extends* [`DeepValue`](deepvalue.md)\<`TParentData`, `TName`\>
+• **TData** *extends* [`DeepValue`](../deepvalue.md)\<`TParentData`, `TName`\>
 
 • **TOnMount** *extends* `undefined` \| `FieldValidateOrFn`\<`TParentData`, `TName`, `TData`\>
 

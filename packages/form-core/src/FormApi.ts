@@ -29,6 +29,7 @@ import type {
   FieldApi,
 } from './FieldApi'
 import type {
+  ExtractGlobalFormError,
   FormValidationError,
   FormValidationErrorMap,
   UpdateMetaOptions,
@@ -96,7 +97,7 @@ export type FormValidateOrFn<TFormData> =
 export type UnwrapFormValidateOrFn<
   TValidateOrFn extends undefined | FormValidateOrFn<any>,
 > = [TValidateOrFn] extends [FormValidateFn<any>]
-  ? ReturnType<TValidateOrFn>
+  ? ExtractGlobalFormError<ReturnType<TValidateOrFn>>
   : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
     ? Record<string, StandardSchemaV1Issue[]>
     : undefined
@@ -148,7 +149,7 @@ export type FormAsyncValidateOrFn<TFormData> =
 export type UnwrapFormAsyncValidateOrFn<
   TValidateOrFn extends undefined | FormAsyncValidateOrFn<any>,
 > = [TValidateOrFn] extends [FormValidateAsyncFn<any>]
-  ? Awaited<ReturnType<TValidateOrFn>>
+  ? ExtractGlobalFormError<Awaited<ReturnType<TValidateOrFn>>>
   : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
     ? Record<string, StandardSchemaV1Issue[]>
     : undefined
@@ -2109,8 +2110,9 @@ export class FormApi<
     this.setFieldValue(
       field,
       (prev: any) => {
-        prev.splice(index2, 0, prev.splice(index1, 1)[0])
-        return prev
+        const next: any = [...prev]
+        next.splice(index2, 0, next.splice(index1, 1)[0])
+        return next
       },
       opts,
     )
@@ -2123,6 +2125,32 @@ export class FormApi<
     // Validate the moved fields
     this.validateField(`${field}[${index1}]` as DeepKeys<TFormData>, 'change')
     this.validateField(`${field}[${index2}]` as DeepKeys<TFormData>, 'change')
+  }
+
+  /**
+   * Clear all values within an array field.
+   */
+  clearFieldValues = <TField extends DeepKeysOfType<TFormData, any[]>>(
+    field: TField,
+    opts?: UpdateMetaOptions,
+  ) => {
+    const fieldValue = this.getFieldValue(field)
+
+    const lastIndex = Array.isArray(fieldValue)
+      ? Math.max((fieldValue as unknown[]).length - 1, 0)
+      : null
+
+    this.setFieldValue(field, [] as any, opts)
+
+    if (lastIndex !== null) {
+      for (let i = 0; i <= lastIndex; i++) {
+        const fieldKey = `${field}[${i}]`
+        this.deleteField(fieldKey as never)
+      }
+    }
+
+    // validate array change
+    this.validateField(field, 'change')
   }
 
   /**

@@ -17,7 +17,7 @@ Defined in: [packages/form-core/src/standardSchemaValidator.ts:3](https://github
 
 • **TData**
 
-• **TSource** *extends* [`ValidationSource`](validationsource.md) = [`ValidationSource`](validationsource.md)
+• **TSource** *extends* [`ValidationSource`](../validationsource.md) = [`ValidationSource`](../validationsource.md)
 
 ## Type declaration
 

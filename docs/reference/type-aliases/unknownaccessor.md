@@ -15,4 +15,4 @@ Defined in: [packages/form-core/src/util-types.ts:119](https://github.com/TanSta
 
 ## Type Parameters
 
-• **TParent** *extends* [`AnyDeepKeyAndValue`](../interfaces/anydeepkeyandvalue.md)
+• **TParent** *extends* [`AnyDeepKeyAndValue`](../../interfaces/anydeepkeyandvalue.md)

@@ -15,4 +15,4 @@ Defined in: [packages/form-core/src/standardSchemaValidator.ts:11](https://githu
 
 ## Type Parameters
 
-• **TSource** *extends* [`ValidationSource`](validationsource.md) = [`ValidationSource`](validationsource.md)
+• **TSource** *extends* [`ValidationSource`](../validationsource.md) = [`ValidationSource`](../validationsource.md)

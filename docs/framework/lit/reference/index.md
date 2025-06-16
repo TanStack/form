@@ -9,4 +9,4 @@ title: "@tanstack/lit-form"
 
 ## Classes
 
-- [TanStackFormController](classes/tanstackformcontroller.md)
+- [TanStackFormController](../classes/tanstackformcontroller.md)

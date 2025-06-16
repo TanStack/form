@@ -19,41 +19,41 @@ Defined in: [packages/form-core/src/standardSchemaValidator.ts:53](https://githu
 
 #### Type Parameters
 
-• **TSource** *extends* [`ValidationSource`](../type-aliases/validationsource.md) = [`ValidationSource`](../type-aliases/validationsource.md)
+• **TSource** *extends* [`ValidationSource`](../../type-aliases/validationsource.md) = [`ValidationSource`](../../type-aliases/validationsource.md)
 
 #### Parameters
 
 ##### \_\_namedParameters
 
-[`TStandardSchemaValidatorValue`](../type-aliases/tstandardschemavalidatorvalue.md)\<`unknown`, `TSource`\>
+[`TStandardSchemaValidatorValue`](../../type-aliases/tstandardschemavalidatorvalue.md)\<`unknown`, `TSource`\>
 
 ##### schema
 
-[`StandardSchemaV1`](../type-aliases/standardschemav1.md)
+[`StandardSchemaV1`](../../type-aliases/standardschemav1.md)
 
 #### Returns
 
   \| `undefined`
-  \| [`TStandardSchemaValidatorIssue`](../type-aliases/tstandardschemavalidatorissue.md)\<`TSource`\>
+  \| [`TStandardSchemaValidatorIssue`](../../type-aliases/tstandardschemavalidatorissue.md)\<`TSource`\>
 
 ### validateAsync()
 
 #### Type Parameters
 
-• **TSource** *extends* [`ValidationSource`](../type-aliases/validationsource.md)
+• **TSource** *extends* [`ValidationSource`](../../type-aliases/validationsource.md)
 
 #### Parameters
 
 ##### \_\_namedParameters
 
-[`TStandardSchemaValidatorValue`](../type-aliases/tstandardschemavalidatorvalue.md)\<`unknown`, `TSource`\>
+[`TStandardSchemaValidatorValue`](../../type-aliases/tstandardschemavalidatorvalue.md)\<`unknown`, `TSource`\>
 
 ##### schema
 
-[`StandardSchemaV1`](../type-aliases/standardschemav1.md)
+[`StandardSchemaV1`](../../type-aliases/standardschemav1.md)
 
 #### Returns
 
 `Promise`\<
   \| `undefined`
-  \| [`TStandardSchemaValidatorIssue`](../type-aliases/tstandardschemavalidatorissue.md)\<`TSource`\>\>
+  \| [`TStandardSchemaValidatorIssue`](../../type-aliases/tstandardschemavalidatorissue.md)\<`TSource`\>\>

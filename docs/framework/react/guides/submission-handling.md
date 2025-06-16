@@ -64,7 +64,7 @@ function App() {
 
 ## Transforming data with Standard Schemas
 
-While Tanstack Form provides [Standard Schema support](./validation.md) for validation, it does not preserve the Schema's output data.
+While Tanstack Form provides [Standard Schema support](../validation.md) for validation, it does not preserve the Schema's output data.
 
 The value passed to the `onSubmit` function will always be the input data. To receive the output data of a Standard Schema, parse it in the `onSubmit` function:
 

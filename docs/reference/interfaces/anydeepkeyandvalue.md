@@ -11,10 +11,10 @@ Defined in: [packages/form-core/src/util-types.ts:22](https://github.com/TanStac
 
 ## Extended by
 
-- [`ArrayDeepKeyAndValue`](arraydeepkeyandvalue.md)
-- [`TupleDeepKeyAndValue`](tupledeepkeyandvalue.md)
-- [`ObjectDeepKeyAndValue`](objectdeepkeyandvalue.md)
-- [`UnknownDeepKeyAndValue`](unknowndeepkeyandvalue.md)
+- [`ArrayDeepKeyAndValue`](../arraydeepkeyandvalue.md)
+- [`TupleDeepKeyAndValue`](../tupledeepkeyandvalue.md)
+- [`ObjectDeepKeyAndValue`](../objectdeepkeyandvalue.md)
+- [`UnknownDeepKeyAndValue`](../unknowndeepkeyandvalue.md)
 
 ## Type Parameters
 

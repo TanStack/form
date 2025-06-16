@@ -11,11 +11,11 @@ Defined in: [packages/form-core/src/util-types.ts:33](https://github.com/TanStac
 
 ## Extends
 
-- [`AnyDeepKeyAndValue`](anydeepkeyandvalue.md)
+- [`AnyDeepKeyAndValue`](../anydeepkeyandvalue.md)
 
 ## Type Parameters
 
-• **TParent** *extends* [`AnyDeepKeyAndValue`](anydeepkeyandvalue.md)
+• **TParent** *extends* [`AnyDeepKeyAndValue`](../anydeepkeyandvalue.md)
 
 • **T** *extends* `ReadonlyArray`\<`any`\>
 
@@ -31,7 +31,7 @@ Defined in: [packages/form-core/src/util-types.ts:37](https://github.com/TanStac
 
 #### Overrides
 
-[`AnyDeepKeyAndValue`](anydeepkeyandvalue.md).[`key`](AnyDeepKeyAndValue.md#key)
+[`AnyDeepKeyAndValue`](../anydeepkeyandvalue.md).[`key`](../AnyDeepKeyAndValue.md#key)
 
 ***
 
@@ -47,4 +47,4 @@ Defined in: [packages/form-core/src/util-types.ts:38](https://github.com/TanStac
 
 #### Overrides
 
-[`AnyDeepKeyAndValue`](anydeepkeyandvalue.md).[`value`](AnyDeepKeyAndValue.md#value)
+[`AnyDeepKeyAndValue`](../anydeepkeyandvalue.md).[`value`](../AnyDeepKeyAndValue.md#value)
