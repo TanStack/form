@@ -1,4 +1,4 @@
-import "zone.js"
+import 'zone.js'
 import '@analogjs/vitest-angular/setup-snapshots'
 import '@testing-library/jest-dom/vitest'
 
