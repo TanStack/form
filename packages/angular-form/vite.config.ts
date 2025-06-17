@@ -6,7 +6,10 @@ import packageJson from './package.json'
 const tsconfigPath = 'tsconfig.spec.json'
 
 export default defineConfig(({ mode }) => ({
-  plugins: [tsconfigPaths({projects: [tsconfigPath]}), angular({ tsconfig: tsconfigPath })],
+  plugins: [
+    tsconfigPaths({ projects: [tsconfigPath] }),
+    angular({ tsconfig: tsconfigPath }),
+  ],
   test: {
     name: packageJson.name,
     dir: './tests',
