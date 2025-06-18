@@ -4,7 +4,6 @@ import {
   Scripts,
   createRootRoute,
 } from '@tanstack/react-router'
-
 import type { ReactNode } from 'react'
 
 export const Route = createRootRoute({
