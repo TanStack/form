@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/spec",
+    "target": "es2016",
+    "types": ["vitest/globals", "node"],
+    "paths": {
+      "@tanstack/form-core": ["../form-core/src"]
+    }
+  },
+  "files": ["tests/test-setup.ts"],
+  "include": ["tests/**/*.spec.ts", "tests/**/*.d.ts"]
+}

@@ -1,5 +1,5 @@
 import { render } from '@testing-library/angular'
-import { Component } from '@angular/core'
+import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { describe, expect, it } from 'vitest'
 import { userEvent } from '@testing-library/user-event'
 import { TanStackField, injectForm } from '../src/index'
@@ -13,6 +13,7 @@ describe('TanStackFieldDirective', () => {
     @Component({
       selector: 'test-component',
       standalone: true,
+      changeDetection: ChangeDetectionStrategy.OnPush,
       template: `
         <ng-container [tanstackField]="form" name="firstName" #f="field">
           <input
@@ -49,6 +50,7 @@ describe('TanStackFieldDirective', () => {
     @Component({
       selector: 'test-component',
       standalone: true,
+      changeDetection: ChangeDetectionStrategy.OnPush,
       template: `
         <ng-container
           [tanstackField]="form"
@@ -91,6 +93,7 @@ describe('TanStackFieldDirective', () => {
     @Component({
       selector: 'test-component',
       standalone: true,
+      changeDetection: ChangeDetectionStrategy.OnPush,
       template: `
         <ng-container
           [tanstackField]="form"
@@ -143,6 +146,7 @@ describe('TanStackFieldDirective', () => {
     @Component({
       selector: 'test-component',
       standalone: true,
+      changeDetection: ChangeDetectionStrategy.OnPush,
       template: `
         <ng-container
           [tanstackField]="form"
@@ -193,6 +197,7 @@ describe('TanStackFieldDirective', () => {
     @Component({
       selector: 'test-component',
       standalone: true,
+      changeDetection: ChangeDetectionStrategy.OnPush,
       template: `
         <ng-container
           [tanstackField]="form"
@@ -252,6 +257,7 @@ describe('TanStackFieldDirective', () => {
     @Component({
       selector: 'test-component',
       standalone: true,
+      changeDetection: ChangeDetectionStrategy.OnPush,
       template: `
         <ng-container
           [tanstackField]="form"
@@ -306,6 +312,7 @@ describe('TanStackFieldDirective', () => {
     @Component({
       selector: 'test-component',
       standalone: true,
+      changeDetection: ChangeDetectionStrategy.OnPush,
       template: `
         <ng-container
           [tanstackField]="form"
