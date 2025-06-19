@@ -3,7 +3,7 @@ import { FieldApi } from '@tanstack/form-core'
 
 @Injectable({ providedIn: null })
 export class TanStackFieldInjectable<T> {
-  api = signal<
+  _api = signal<
     FieldApi<
       any,
       any,
@@ -26,6 +26,10 @@ export class TanStackFieldInjectable<T> {
       any
     >
   >(null as never)
+
+  get api() {
+    return this._api()
+  }
 }
 
 export function injectField<T>(): TanStackFieldInjectable<T> {

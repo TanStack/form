@@ -5,7 +5,7 @@ import {
   FieldAsyncValidateOrFn,
   FieldValidateOrFn,
 } from '@tanstack/form-core'
-import { TanStackField } from './tanstack-field.directive'
+import { TanStackField } from './tanstack-field'
 import { TanStackFieldInjectable } from './injectable'
 import type {
   FormAsyncValidateOrFn,
@@ -17,7 +17,7 @@ import type {
   standalone: true,
   providers: [TanStackFieldInjectable],
 })
-export class TanStackFieldComponent<
+export class TanStackAppField<
   TParentData,
   const TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
@@ -69,7 +69,7 @@ export class TanStackFieldComponent<
   constructor() {
     super()
     effect(() => {
-      this.base.api.set(this.api)
+      this.base._api.set(this.api)
     })
   }
 }

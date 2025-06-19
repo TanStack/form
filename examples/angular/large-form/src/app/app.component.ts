@@ -1,7 +1,7 @@
 import { Component, input } from '@angular/core'
 import {
+  TanStackAppField,
   TanStackField,
-  TanStackFieldComponent,
   injectField,
   injectForm,
   injectStore,
@@ -15,25 +15,35 @@ import type {
   selector: 'app-text-field',
   standalone: true,
   template: `
-    <label [for]="lastName.api().name">{{ label() }}</label>
+    <label [for]="field.api.name">{{ label() }}</label>
     <input
-      [id]="lastName.api().name"
-      [name]="lastName.api().name"
-      [value]="lastName.api().state.value"
-      (blur)="lastName.api().handleBlur()"
-      (input)="lastName.api().handleChange($any($event).target.value)"
+      [id]="field.api.name"
+      [name]="field.api.name"
+      [value]="field.api.state.value"
+      (blur)="field.api.handleBlur()"
+      (input)="field.api.handleChange($any($event).target.value)"
     />
+    @if (field.api.state.meta.isTouched) {
+      @for (error of field.api.state.meta.errors; track $index) {
+        <div style="color: red">
+          {{ error }}
+        </div>
+      }
+    }
+    @if (field.api.state.meta.isValidating) {
+      <p>Validating...</p>
+    }
   `,
 })
 export class AppTextField {
   label = input.required<string>()
-  lastName = injectField<string>()
+  field = injectField<string>()
 }
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [TanStackField, TanStackFieldComponent, AppTextField],
+  imports: [TanStackField, TanStackAppField, AppTextField],
   template: `
     <form (submit)="handleSubmit($event)">
       <div>
