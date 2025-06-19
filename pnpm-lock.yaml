@@ -172,7 +172,7 @@ importers:
         specifier: ^20.0.0
         version: 20.0.3(@angular/common@20.0.3(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.0.3(@angular/animations@20.0.3(@angular/common@20.0.3(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.0.3(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1)))(rxjs@7.8.2)
       '@tanstack/angular-form':
-        specifier: ^1.12.0
+        specifier: ^1.12.3
         version: link:../../../packages/angular-form
       rxjs:
         specifier: ^7.8.2
@@ -11117,9 +11117,9 @@ snapshots:
       tree-kill: 1.2.2
       tslib: 2.8.1
       typescript: 5.8.2
-      webpack: 5.99.8(@swc/core@1.12.1)
+      webpack: 5.99.8(@swc/core@1.12.1)(esbuild@0.25.5)
       webpack-dev-middleware: 7.4.2(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      webpack-dev-server: 5.2.1(webpack@5.99.8(@swc/core@1.12.1))
+      webpack-dev-server: 5.2.1(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
       webpack-merge: 6.0.1
       webpack-subresource-integrity: 5.1.0(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
     optionalDependencies:
@@ -14646,7 +14646,7 @@ snapshots:
       '@tanstack/react-router': 1.121.16(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       vite: 6.3.5(@types/node@22.15.29)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.5))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       vite-plugin-solid: 2.11.6(@testing-library/jest-dom@6.6.3)(solid-js@1.9.7)(vite@6.3.5(@types/node@22.15.29)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.5))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
-      webpack: 5.99.8(@swc/core@1.12.1)
+      webpack: 5.99.8(@swc/core@1.12.1)(esbuild@0.25.5)
     transitivePeerDependencies:
       - supports-color
 
@@ -21411,17 +21411,6 @@ snapshots:
       '@swc/core': 1.12.1
       esbuild: 0.25.5
 
-  terser-webpack-plugin@5.3.14(@swc/core@1.12.1)(webpack@5.99.8(@swc/core@1.12.1)):
-    dependencies:
-      '@jridgewell/trace-mapping': 0.3.25
-      jest-worker: 27.5.1
-      schema-utils: 4.3.2
-      serialize-javascript: 6.0.2
-      terser: 5.40.0
-      webpack: 5.99.8(@swc/core@1.12.1)
-    optionalDependencies:
-      '@swc/core': 1.12.1
-
   terser@5.39.1:
     dependencies:
       '@jridgewell/source-map': 0.3.6
@@ -22431,17 +22420,6 @@ snapshots:
     optionalDependencies:
       webpack: 5.99.8(@swc/core@1.12.1)(esbuild@0.25.5)
 
-  webpack-dev-middleware@7.4.2(webpack@5.99.8(@swc/core@1.12.1)):
-    dependencies:
-      colorette: 2.0.20
-      memfs: 4.17.2
-      mime-types: 2.1.35
-      on-finished: 2.4.1
-      range-parser: 1.2.1
-      schema-utils: 4.3.2
-    optionalDependencies:
-      webpack: 5.99.8(@swc/core@1.12.1)
-
   webpack-dev-server@5.2.1(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5)):
     dependencies:
       '@types/bonjour': 3.5.13
@@ -22480,44 +22458,6 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  webpack-dev-server@5.2.1(webpack@5.99.8(@swc/core@1.12.1)):
-    dependencies:
-      '@types/bonjour': 3.5.13
-      '@types/connect-history-api-fallback': 1.5.4
-      '@types/express': 4.17.22
-      '@types/express-serve-static-core': 4.19.6
-      '@types/serve-index': 1.9.4
-      '@types/serve-static': 1.15.7
-      '@types/sockjs': 0.3.36
-      '@types/ws': 8.18.1
-      ansi-html-community: 0.0.8
-      bonjour-service: 1.3.0
-      chokidar: 3.6.0
-      colorette: 2.0.20
-      compression: 1.8.0
-      connect-history-api-fallback: 2.0.0
-      express: 4.21.2
-      graceful-fs: 4.2.11
-      http-proxy-middleware: 2.0.9(@types/express@4.17.22)
-      ipaddr.js: 2.2.0
-      launch-editor: 2.10.0
-      open: 10.1.2
-      p-retry: 6.2.1
-      schema-utils: 4.3.2
-      selfsigned: 2.4.1
-      serve-index: 1.9.1
-      sockjs: 0.3.24
-      spdy: 4.0.2
-      webpack-dev-middleware: 7.4.2(webpack@5.99.8(@swc/core@1.12.1))
-      ws: 8.18.2
-    optionalDependencies:
-      webpack: 5.99.8(@swc/core@1.12.1)
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - supports-color
-      - utf-8-validate
-
   webpack-merge@6.0.1:
     dependencies:
       clone-deep: 4.0.1
@@ -22532,37 +22472,6 @@ snapshots:
       webpack: 5.99.8(@swc/core@1.12.1)(esbuild@0.25.5)
 
   webpack-virtual-modules@0.6.2: {}
-
-  webpack@5.99.8(@swc/core@1.12.1):
-    dependencies:
-      '@types/eslint-scope': 3.7.7
-      '@types/estree': 1.0.7
-      '@types/json-schema': 7.0.15
-      '@webassemblyjs/ast': 1.14.1
-      '@webassemblyjs/wasm-edit': 1.14.1
-      '@webassemblyjs/wasm-parser': 1.14.1
-      acorn: 8.15.0
-      browserslist: 4.25.0
-      chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.18.1
-      es-module-lexer: 1.7.0
-      eslint-scope: 5.1.1
-      events: 3.3.0
-      glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.11
-      json-parse-even-better-errors: 2.3.1
-      loader-runner: 4.3.0
-      mime-types: 2.1.35
-      neo-async: 2.6.2
-      schema-utils: 4.3.2
-      tapable: 2.2.2
-      terser-webpack-plugin: 5.3.14(@swc/core@1.12.1)(webpack@5.99.8(@swc/core@1.12.1))
-      watchpack: 2.4.4
-      webpack-sources: 3.3.0
-    transitivePeerDependencies:
-      - '@swc/core'
-      - esbuild
-      - uglify-js
 
   webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5):
     dependencies:
