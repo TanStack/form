@@ -1770,11 +1770,11 @@ export class FieldApi<
   private triggerOnChangeListener() {
     const formDebounceMs = this.form.options.listeners?.onChangeDebounceMs
     if (formDebounceMs && formDebounceMs > 0) {
-      if (this.timeoutIds.formListeners.blur) {
-        clearTimeout(this.timeoutIds.formListeners.blur)
+      if (this.timeoutIds.formListeners.change) {
+        clearTimeout(this.timeoutIds.formListeners.change)
       }
 
-      this.timeoutIds.formListeners.blur = setTimeout(() => {
+      this.timeoutIds.formListeners.change = setTimeout(() => {
         this.form.options.listeners?.onChange?.({
           formApi: this.form,
           fieldApi: this,
