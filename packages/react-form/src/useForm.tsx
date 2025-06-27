@@ -1,6 +1,6 @@
-import { FormApi, functionalUpdate } from '@tanstack/form-core'
+import { FormApi, evaluate, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
-import React, { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
@@ -190,9 +190,11 @@ export function useForm<
       TOnServer,
       TSubmitMeta
     > = api as never
+
     extendedApi.Field = function APIField(props) {
       return <Field {...props} form={api} />
     }
+
     extendedApi.Subscribe = (props: any) => {
       return (
         <LocalSubscribe
@@ -210,12 +212,19 @@ export function useForm<
 
   useStore(formApi.store, (state) => state.isSubmitting)
 
+  // stable reference of form options, needs to be tracked so form.update is only called
+  // when props are changed.
+  const stableOptsRef = useRef<typeof opts>(opts)
+
   /**
    * formApi.update should not have any side effects. Think of it like a `useRef`
    * that we need to keep updated every render with the most up-to-date information.
    */
   useIsomorphicLayoutEffect(() => {
-    formApi.update(opts)
+    if (!evaluate(opts, stableOptsRef.current)) {
+      stableOptsRef.current = opts
+      formApi.update(opts)
+    }
   })
 
   return formApi
