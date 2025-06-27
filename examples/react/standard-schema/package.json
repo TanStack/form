@@ -11,11 +11,11 @@
   "dependencies": {
     "@tanstack/react-form": "^1.12.3",
     "arktype": "^2.1.20",
-    "effect": "^3.16.7",
+    "effect": "^3.16.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "valibot": "^1.1.0",
-    "zod": "^3.25.64"
+    "zod": "^3.25.67"
   },
   "devDependencies": {
     "@types/react": "^19.0.7",
