@@ -2192,6 +2192,45 @@ describe('form api', () => {
     expect(onBlurMock).toHaveBeenCalledTimes(1)
   })
 
+  it('should run both onBlur and onChange listeners when onBlurDebounceMs and onChangeDebounceMs are provided', async () => {
+    vi.useFakeTimers()
+    const onBlurMock = vi.fn()
+    const onChangeMock = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+        age: 0,
+      },
+      listeners: {
+        onBlur: onBlurMock,
+        onBlurDebounceMs: 500,
+        onChange: onChangeMock,
+        onChangeDebounceMs: 500,
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+    field.mount()
+    field.handleBlur()
+    field.handleChange('test')
+
+    await vi.advanceTimersByTimeAsync(500)
+    expect(onBlurMock).toHaveBeenCalledTimes(1)
+    expect(onChangeMock).toHaveBeenCalledTimes(1)
+
+    field.handleChange('test2')
+    field.handleBlur()
+
+    await vi.advanceTimersByTimeAsync(500)
+    expect(onBlurMock).toHaveBeenCalledTimes(2)
+    expect(onChangeMock).toHaveBeenCalledTimes(2)
+  })
+
   it('should run the field listener onSubmit', async () => {
     const form = new FormApi({
       defaultValues: {
