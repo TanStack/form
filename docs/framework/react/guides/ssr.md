@@ -37,7 +37,7 @@ export const formOpts = formOptions({
 })
 ```
 
-Next, we can create [a Start Server Action](https://tanstack.com/start/latest/docs/framework/react/server-functions) that will handle the form submission on the server.
+Next, we can create [a Start Server Function](https://tanstack.com/start/latest/docs/framework/react/server-functions) that will handle the form submission on the server.
 
 ```typescript
 // app/routes/index.tsx, but can be extracted to any other path
