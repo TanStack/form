@@ -11,7 +11,7 @@ title: DerivedFormState
 type DerivedFormState<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer> = object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:474](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L474)
+Defined in: [packages/form-core/src/FormApi.ts:574](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L574)
 
 ## Type Parameters
 
@@ -75,13 +75,21 @@ isBlurred: boolean;
 
 A boolean indicating if any of the form fields have been blurred.
 
+### isDefaultValue
+
+```ts
+isDefaultValue: boolean;
+```
+
+A boolean indicating if all of the form's fields are the same as default values.
+
 ### isDirty
 
 ```ts
 isDirty: boolean;
 ```
 
-A boolean indicating if any of the form's fields' values have been modified by the user. `True` if the user have modified at least one of the fields. Opposite of `isPristine`.
+A boolean indicating if any of the form's fields' values have been modified by the user. Evaluates `true` if the user have modified at least one of the fields. Opposite of `isPristine`.
 
 ### isFieldsValid
 
@@ -89,7 +97,7 @@ A boolean indicating if any of the form's fields' values have been modified by t
 isFieldsValid: boolean;
 ```
 
-A boolean indicating if all the form fields are valid.
+A boolean indicating if all the form fields are valid. Evaluates `true` if there are no field errors.
 
 ### isFieldsValidating
 
@@ -121,7 +129,7 @@ A boolean indicating if the form is currently validating.
 isPristine: boolean;
 ```
 
-A boolean indicating if none of the form's fields' values have been modified by the user. `True` if the user have not modified any of the fields. Opposite of `isDirty`.
+A boolean indicating if none of the form's fields' values have been modified by the user. Evaluates `true` if the user have not modified any of the fields. Opposite of `isDirty`.
 
 ### isTouched
 
@@ -137,4 +145,4 @@ A boolean indicating if any of the form fields have been touched.
 isValid: boolean;
 ```
 
-A boolean indicating if the form and all its fields are valid.
+A boolean indicating if the form and all its fields are valid. Evaluates `true` if there are no errors.

@@ -11,15 +11,15 @@ title: FieldMetaDerived
 type FieldMetaDerived<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync> = object;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:590](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L590)
+Defined in: [packages/form-core/src/FieldApi.ts:600](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L600)
 
 ## Type Parameters
 
 • **TParentData**
 
-• **TName** *extends* [`DeepKeys`](deepkeys.md)\<`TParentData`\>
+• **TName** *extends* [`DeepKeys`](../deepkeys.md)\<`TParentData`\>
 
-• **TData** *extends* [`DeepValue`](deepvalue.md)\<`TParentData`, `TName`\>
+• **TData** *extends* [`DeepValue`](../deepvalue.md)\<`TParentData`, `TName`\>
 
 • **TOnMount** *extends* `undefined` \| `FieldValidateOrFn`\<`TParentData`, `TName`, `TData`\>
 
@@ -66,6 +66,14 @@ errors: (
 
 An array of errors related to the field value.
 
+### isDefaultValue
+
+```ts
+isDefaultValue: boolean;
+```
+
+A flag indicating whether the field's current value is the default value
+
 ### isPristine
 
 ```ts
@@ -73,3 +81,11 @@ isPristine: boolean;
 ```
 
 A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
+
+### isValid
+
+```ts
+isValid: boolean;
+```
+
+A boolean indicating if the field is valid. Evaluates `true` if there are no field errors.

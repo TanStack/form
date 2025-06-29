@@ -7,19 +7,19 @@ title: ObjectDeepKeyAndValue
 
 # Interface: ObjectDeepKeyAndValue\<TParent, T, TKey\>
 
-Defined in: [packages/form-core/src/util-types.ts:94](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L94)
+Defined in: [packages/form-core/src/util-types.ts:97](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L97)
 
 ## Extends
 
-- [`AnyDeepKeyAndValue`](anydeepkeyandvalue.md)
+- [`AnyDeepKeyAndValue`](../anydeepkeyandvalue.md)
 
 ## Type Parameters
 
-• **TParent** *extends* [`AnyDeepKeyAndValue`](anydeepkeyandvalue.md)
+• **TParent** *extends* [`AnyDeepKeyAndValue`](../anydeepkeyandvalue.md)
 
 • **T**
 
-• **TKey** *extends* [`AllObjectKeys`](../type-aliases/allobjectkeys.md)\<`T`\>
+• **TKey** *extends* [`AllObjectKeys`](../../type-aliases/allobjectkeys.md)\<`T`\>
 
 ## Properties
 
@@ -29,11 +29,11 @@ Defined in: [packages/form-core/src/util-types.ts:94](https://github.com/TanStac
 key: ObjectAccessor<TParent, TKey>;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:99](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L99)
+Defined in: [packages/form-core/src/util-types.ts:102](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L102)
 
 #### Overrides
 
-[`AnyDeepKeyAndValue`](anydeepkeyandvalue.md).[`key`](AnyDeepKeyAndValue.md#key)
+[`AnyDeepKeyAndValue`](../anydeepkeyandvalue.md).[`key`](../AnyDeepKeyAndValue.md#key)
 
 ***
 
@@ -43,8 +43,8 @@ Defined in: [packages/form-core/src/util-types.ts:99](https://github.com/TanStac
 value: ObjectValue<TParent, T, TKey>;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:100](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L100)
+Defined in: [packages/form-core/src/util-types.ts:103](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L103)
 
 #### Overrides
 
-[`AnyDeepKeyAndValue`](anydeepkeyandvalue.md).[`value`](AnyDeepKeyAndValue.md#value)
+[`AnyDeepKeyAndValue`](../anydeepkeyandvalue.md).[`value`](../AnyDeepKeyAndValue.md#value)

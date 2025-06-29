@@ -13,14 +13,14 @@ type DeepKeyAndValueObject<TParent, T, TAcc, TAllKeys> = TAllKeys extends any ? 
   | ObjectDeepKeyAndValue<TParent, T, TAllKeys>> : never;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:103](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L103)
+Defined in: [packages/form-core/src/util-types.ts:106](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L106)
 
 ## Type Parameters
 
-• **TParent** *extends* [`AnyDeepKeyAndValue`](../interfaces/anydeepkeyandvalue.md)
+• **TParent** *extends* [`AnyDeepKeyAndValue`](../../interfaces/anydeepkeyandvalue.md)
 
 • **T**
 
 • **TAcc**
 
-• **TAllKeys** *extends* [`AllObjectKeys`](allobjectkeys.md)\<`T`\> = [`AllObjectKeys`](allobjectkeys.md)\<`T`\>
+• **TAllKeys** *extends* [`AllObjectKeys`](../allobjectkeys.md)\<`T`\> = [`AllObjectKeys`](../allobjectkeys.md)\<`T`\>

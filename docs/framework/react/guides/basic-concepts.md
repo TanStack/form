@@ -85,24 +85,50 @@ Each field has its own state, which includes its current value, validation statu
 
 Example:
 
-```tsx
+```ts
 const {
   value,
   meta: { errors, isValidating },
 } = field.state
 ```
 
-There are three field states that can be useful to see how the user interacts with a field: A field is _"touched"_ when the user clicks/tabs into it, _"pristine"_ until the user changes value in it, and _"dirty"_ after the value has been changed. You can check these states via the `isTouched`, `isPristine` and `isDirty` flags, as seen below.
+There are four states in the metadata that can be useful to see how the user interacts with a field:
 
-```tsx
-const { isTouched, isPristine, isDirty } = field.state.meta
+- _"isTouched"_, after the user changes the field or blurs the field
+- _"isDirty"_, after the field's value has been changed, even if it's been reverted to the default. Opposite of `isPristine`
+- _"isPristine"_, until the user changes the field value. Opposite of `isDirty`
+- _"isBlurred"_, after the field has been blurred
+
+```ts
+const { isTouched, isDirty, isPristine, isBlurred } = field.state.meta
 ```
 
 ![Field states](https://raw.githubusercontent.com/TanStack/form/main/docs/assets/field-states.png)
 
-> **Important note for users coming from `React Hook Form`**: the `isDirty` flag in `TanStack/form` is different from the flag with the same name in RHF.
-> In RHF, `isDirty = true`, when the form's values are different from the original values. If the user changes the values in a form, and then changes them again to end up with values that match the form's default values, `isDirty` will be `false` in RHF, but `true` in `TanStack/form`.
-> The default values are exposed both on the form's and the field's level in `TanStack/form` (`form.options.defaultValues`, `field.options.defaultValue`), so you can write your own `isDefaultValue()` helper if you need to emulate RHF's behavior.`
+## Understanding 'isDirty' in Different Libraries
+
+Non-Persistent `dirty` state
+
+- **Libraries**: React Hook Form (RHF), Formik, Final Form.
+- **Behavior**: A field is 'dirty' if its value differs from the default. Reverting to the default value makes it 'clean' again.
+
+Persistent `dirty` state
+
+- **Libraries**: Angular Form, Vue FormKit.
+- **Behavior**: A field remains 'dirty' once changed, even if reverted to the default value.
+
+We have chosen the persistent 'dirty' state model. To also support a non-persistent 'dirty' state, we introduce an additional flag:
+
+- _"isDefaultValue"_, whether the field's current value is the default value
+
+```ts
+const { isDefaultValue, isTouched } = field.state.meta
+
+// The following line will re-create the non-Persistent `dirty` functionality.
+const nonPersistentIsDirty = !isDefaultValue
+```
+
+![Field states extended](https://raw.githubusercontent.com/TanStack/form/main/docs/assets/field-states-extended.png)
 
 ## Field API
 
@@ -242,7 +268,7 @@ Example:
 />
 ```
 
-More information can be found at [Listeners](./listeners.md)
+More information can be found at [Listeners](../listeners.md)
 
 ## Array Fields
 

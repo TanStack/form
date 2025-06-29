@@ -1,6 +1,11 @@
-import type { GlobalFormValidationError, ValidationCause } from './types'
+import type { FieldValidators } from './FieldApi'
 import type { FormValidators } from './FormApi'
-import type { AnyFieldMeta, FieldValidators } from './FieldApi'
+import type {
+  GlobalFormValidationError,
+  ValidationCause,
+  ValidationError,
+  ValidationSource,
+} from './types'
 
 export type UpdaterFn<TInput, TOutput = TInput> = (input: TInput) => TOutput
 
@@ -130,11 +135,13 @@ export function deleteBy(obj: any, _path: any) {
   return doDelete(obj)
 }
 
-const reFindNumbers0 = /^(\d*)$/gm
-const reFindNumbers1 = /\.(\d*)\./gm
-const reFindNumbers2 = /^(\d*)\./gm
-const reFindNumbers3 = /\.(\d*$)/gm
-const reFindMultiplePeriods = /\.{2,}/gm
+const reLineOfOnlyDigits = /^(\d+)$/gm
+// the second dot must be in a lookahead or the engine
+// will skip subsequent numbers (like foo.0.1.)
+const reDigitsBetweenDots = /\.(\d+)(?=\.)/gm
+const reStartWithDigitThenDot = /^(\d+)\./gm
+const reDotWithDigitsToEnd = /\.(\d+$)/gm
+const reMultipleDots = /\.{2,}/gm
 
 const intPrefix = '__int__'
 const intReplace = `${intPrefix}$1`
@@ -151,21 +158,25 @@ export function makePathArray(str: string | Array<string | number>) {
     throw new Error('Path must be a string.')
   }
 
-  return str
-    .replace(/\[/g, '.')
-    .replace(/\]/g, '')
-    .replace(reFindNumbers0, intReplace)
-    .replace(reFindNumbers1, `.${intReplace}.`)
-    .replace(reFindNumbers2, `${intReplace}.`)
-    .replace(reFindNumbers3, `.${intReplace}`)
-    .replace(reFindMultiplePeriods, '.')
-    .split('.')
-    .map((d) => {
-      if (d.indexOf(intPrefix) === 0) {
-        return parseInt(d.substring(intPrefix.length), 10)
-      }
-      return d
-    })
+  return (
+    str
+      // Leading `[` may lead to wrong parsing down the line
+      // (Example: '[0][1]' should be '0.1', not '.0.1')
+      .replace(/(^\[)|]/gm, '')
+      .replace(/\[/g, '.')
+      .replace(reLineOfOnlyDigits, intReplace)
+      .replace(reDigitsBetweenDots, `.${intReplace}.`)
+      .replace(reStartWithDigitThenDot, `${intReplace}.`)
+      .replace(reDotWithDigitsToEnd, `.${intReplace}`)
+      .replace(reMultipleDots, '.')
+      .split('.')
+      .map((d) => {
+        if (d.indexOf(intPrefix) === 0) {
+          return parseInt(d.substring(intPrefix.length), 10)
+        }
+        return d
+      })
+  )
 }
 
 /**
@@ -331,7 +342,7 @@ export const isGlobalFormValidationError = (
   return !!error && typeof error === 'object' && 'fields' in error
 }
 
-export function shallow<T>(objA: T, objB: T) {
+export function evaluate<T>(objA: T, objB: T) {
   if (Object.is(objA, objB)) {
     return true
   }
@@ -362,17 +373,84 @@ export function shallow<T>(objA: T, objB: T) {
   }
 
   const keysA = Object.keys(objA)
-  if (keysA.length !== Object.keys(objB).length) {
+  const keysB = Object.keys(objB)
+
+  if (keysA.length !== keysB.length) {
     return false
   }
 
-  for (let i = 0; i < keysA.length; i++) {
+  for (const key of keysA) {
+    // performs recursive search down the object tree
+
     if (
-      !Object.prototype.hasOwnProperty.call(objB, keysA[i] as string) ||
-      !Object.is(objA[keysA[i] as keyof T], objB[keysA[i] as keyof T])
+      !keysB.includes(key) ||
+      !evaluate(objA[key as keyof T], objB[key as keyof T])
     ) {
       return false
     }
   }
+
   return true
+}
+
+/**
+ * Determines the logic for determining the error source and value to set on the field meta within the form level sync/async validation.
+ * @private
+ */
+export const determineFormLevelErrorSourceAndValue = ({
+  newFormValidatorError,
+  isPreviousErrorFromFormValidator,
+  previousErrorValue,
+}: {
+  newFormValidatorError: ValidationError
+  isPreviousErrorFromFormValidator: boolean
+  previousErrorValue: ValidationError
+}): {
+  newErrorValue: ValidationError
+  newSource: ValidationSource | undefined
+} => {
+  // All falsy values are not considered errors
+  if (newFormValidatorError) {
+    return { newErrorValue: newFormValidatorError, newSource: 'form' }
+  }
+
+  // Clears form level error since it's now stale
+  if (isPreviousErrorFromFormValidator) {
+    return { newErrorValue: undefined, newSource: undefined }
+  }
+
+  // At this point, we have a preivous error which must have been set by the field validator, keep as is
+  if (previousErrorValue) {
+    return { newErrorValue: previousErrorValue, newSource: 'field' }
+  }
+
+  // No new or previous error, clear the error
+  return { newErrorValue: undefined, newSource: undefined }
+}
+
+/**
+ * Determines the logic for determining the error source and value to set on the field meta within the field level sync/async validation.
+ * @private
+ */
+export const determineFieldLevelErrorSourceAndValue = ({
+  formLevelError,
+  fieldLevelError,
+}: {
+  formLevelError: ValidationError
+  fieldLevelError: ValidationError
+}): {
+  newErrorValue: ValidationError
+  newSource: ValidationSource | undefined
+} => {
+  // At field level, we prioritize the field level error
+  if (fieldLevelError) {
+    return { newErrorValue: fieldLevelError, newSource: 'field' }
+  }
+
+  // If there is no field level error, and there is a form level error, we set the form level error
+  if (formLevelError) {
+    return { newErrorValue: formLevelError, newSource: 'form' }
+  }
+
+  return { newErrorValue: undefined, newSource: undefined }
 }

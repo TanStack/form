@@ -41,9 +41,21 @@ export type ValidationErrorMap<
 }
 
 /**
+ * @private allows tracking the source of the errors in the error map
+ */
+export type ValidationErrorMapSource = {
+  onMount?: ValidationSource
+  onChange?: ValidationSource
+  onBlur?: ValidationSource
+  onSubmit?: ValidationSource
+  onServer?: ValidationSource
+}
+
+/**
  * @private
  */
 export type FormValidationErrorMap<
+  TFormData = unknown,
   TOnMountReturn = unknown,
   TOnChangeReturn = unknown,
   TOnChangeAsyncReturn = unknown,
@@ -53,10 +65,19 @@ export type FormValidationErrorMap<
   TOnSubmitAsyncReturn = unknown,
   TOnServerReturn = unknown,
 > = {
-  onMount?: TOnMountReturn
-  onChange?: TOnChangeReturn | TOnChangeAsyncReturn
-  onBlur?: TOnBlurReturn | TOnBlurAsyncReturn
-  onSubmit?: TOnSubmitReturn | TOnSubmitAsyncReturn
+  onMount?: TOnMountReturn | GlobalFormValidationError<TFormData>
+  onChange?:
+    | TOnChangeReturn
+    | TOnChangeAsyncReturn
+    | GlobalFormValidationError<TFormData>
+  onBlur?:
+    | TOnBlurReturn
+    | TOnBlurAsyncReturn
+    | GlobalFormValidationError<TFormData>
+  onSubmit?:
+    | TOnSubmitReturn
+    | TOnSubmitAsyncReturn
+    | GlobalFormValidationError<TFormData>
   onServer?: TOnServerReturn
 }
 
@@ -81,6 +102,11 @@ export type GlobalFormValidationError<TFormData> = {
   form?: ValidationError
   fields: Partial<Record<DeepKeys<TFormData>, ValidationError>>
 }
+
+export type ExtractGlobalFormError<TFormError> =
+  TFormError extends GlobalFormValidationError<any>
+    ? TFormError['form']
+    : TFormError
 
 /**
  * @private

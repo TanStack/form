@@ -1,4 +1,4 @@
-import { assertType, describe, expect, it } from 'vitest'
+import { describe, expectTypeOf, it } from 'vitest'
 import { render } from '@testing-library/react'
 import { formOptions } from '@tanstack/form-core'
 import { createFormHook, createFormHookContexts } from '../src'
@@ -90,7 +90,7 @@ describe('createFormHook', () => {
           <div className="m-3">
             <form.AppField name={`editors.${initialValues}.key` as const}>
               {(field) => {
-                assertType<string>(field.state.value)
+                expectTypeOf(field.state.value).toExtend<string>()
                 return null
               }}
             </form.AppField>
@@ -119,7 +119,7 @@ describe('createFormHook', () => {
     const WithFormComponent = withForm({
       ...formOpts,
       render: ({ form }) => {
-        assertType<Person>(form.state.values)
+        expectTypeOf(form.state.values).toEqualTypeOf<Person>()
         return <form.Test />
       },
     })
@@ -144,9 +144,10 @@ describe('createFormHook', () => {
         test: 'test',
       },
       render: ({ form }) => {
-        assertType<(submitMeta: { test: string }) => Promise<void>>(
-          form.handleSubmit,
-        )
+        expectTypeOf(form.handleSubmit).toEqualTypeOf<{
+          (): Promise<void>
+          (submitMeta: { test: string }): Promise<void>
+        }>
         return <form.Test />
       },
     })
@@ -175,9 +176,9 @@ describe('createFormHook', () => {
         firstName: 'FirstName',
         lastName: 'LastName',
         age: 10,
-      } as PersonWithAge,
+      },
       render: ({ form }) => {
-        assertType<PersonWithAge>(form.state.values)
+        expectTypeOf(form.state.values).toExtend<PersonWithAge>()
         return <form.Test />
       },
     })
@@ -190,11 +191,11 @@ describe('createFormHook', () => {
         prop2: 10,
       },
       render: ({ form, ...props }) => {
-        assertType<{
+        expectTypeOf(props).toEqualTypeOf<{
           prop1: string
           prop2: number
           children?: React.ReactNode
-        }>(props)
+        }>()
         return <form.Test />
       },
     })
@@ -216,11 +217,11 @@ describe('createFormHook', () => {
         prop1: 'test',
         prop2: 10,
       },
-      render: ({ form, ...props }) => {
-        assertType<{
+      render: ({ form, children, ...props }) => {
+        expectTypeOf(props).toEqualTypeOf<{
           prop1: string
           prop2: number
-        }>(props)
+        }>()
         return <form.Test />
       },
     })
