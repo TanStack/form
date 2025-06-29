@@ -11,7 +11,7 @@ title: BaseFormState
 type BaseFormState<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer> = object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:498](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L498)
+Defined in: [packages/form-core/src/FormApi.ts:499](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L499)
 
 An object representing the current state of the form.
 
@@ -48,7 +48,7 @@ optional _force_re_eval: boolean;
 ### errorMap
 
 ```ts
-errorMap: FormValidationErrorMap<UnwrapFormValidateOrFn<TOnMount>, UnwrapFormValidateOrFn<TOnChange>, UnwrapFormAsyncValidateOrFn<TOnChangeAsync>, UnwrapFormValidateOrFn<TOnBlur>, UnwrapFormAsyncValidateOrFn<TOnBlurAsync>, UnwrapFormValidateOrFn<TOnSubmit>, UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>, UnwrapFormAsyncValidateOrFn<TOnServer>>;
+errorMap: ValidationErrorMap<UnwrapFormValidateOrFn<TOnMount>, UnwrapFormValidateOrFn<TOnChange>, UnwrapFormAsyncValidateOrFn<TOnChangeAsync>, UnwrapFormValidateOrFn<TOnBlur>, UnwrapFormAsyncValidateOrFn<TOnBlurAsync>, UnwrapFormValidateOrFn<TOnSubmit>, UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>, UnwrapFormAsyncValidateOrFn<TOnServer>>;
 ```
 
 The error map for the form itself.

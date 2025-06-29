@@ -15,6 +15,7 @@ export const defaultFieldMeta: AnyFieldMeta = {
   isDirty: false,
   isPristine: true,
   isValid: true,
+  isDefaultValue: true,
   errors: [],
   errorMap: {},
   errorSourceMap: {},

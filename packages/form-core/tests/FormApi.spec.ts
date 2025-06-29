@@ -986,6 +986,42 @@ describe('form api', () => {
     expect(field2Surname.state.meta.isBlurred).toBe(false)
   })
 
+  it('should preserve array default values when manipulating array values', () => {
+    const defaultValues = {
+      names: ['one', 'two', 'three'],
+    }
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+    form.pushFieldValue('names', 'four')
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.insertFieldValue('names', 0, 'other')
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.replaceFieldValue('names', 1, 'other')
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.removeFieldValue('names', 1)
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.swapFieldValues('names', 1, 2)
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.moveFieldValues('names', 1, 2)
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.clearFieldValues('names')
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+  })
+
   it('should handle fields inside an array', async () => {
     interface Employee {
       firstName: string
@@ -2156,6 +2192,45 @@ describe('form api', () => {
     expect(onBlurMock).toHaveBeenCalledTimes(1)
   })
 
+  it('should run both onBlur and onChange listeners when onBlurDebounceMs and onChangeDebounceMs are provided', async () => {
+    vi.useFakeTimers()
+    const onBlurMock = vi.fn()
+    const onChangeMock = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+        age: 0,
+      },
+      listeners: {
+        onBlur: onBlurMock,
+        onBlurDebounceMs: 500,
+        onChange: onChangeMock,
+        onChangeDebounceMs: 500,
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+    field.mount()
+    field.handleBlur()
+    field.handleChange('test')
+
+    await vi.advanceTimersByTimeAsync(500)
+    expect(onBlurMock).toHaveBeenCalledTimes(1)
+    expect(onChangeMock).toHaveBeenCalledTimes(1)
+
+    field.handleChange('test2')
+    field.handleBlur()
+
+    await vi.advanceTimersByTimeAsync(500)
+    expect(onBlurMock).toHaveBeenCalledTimes(2)
+    expect(onChangeMock).toHaveBeenCalledTimes(2)
+  })
+
   it('should run the field listener onSubmit', async () => {
     const form = new FormApi({
       defaultValues: {
@@ -2283,6 +2358,37 @@ describe('form api', () => {
       onChange: 'other validation error',
     } as never)
     expect(form.state.errorMap.onChange).toEqual('other validation error')
+  })
+
+  it('should spread errors in fields when setErrorMap receives a global form validation error', () => {
+    const form = new FormApi({
+      defaultValues: { name: '', interests: [] as { label: string }[] },
+    })
+    form.mount()
+
+    const field = new FieldApi({ form, name: 'name' })
+    field.mount()
+
+    const arrayElementField = new FieldApi({ form, name: 'interests[0].label' })
+    arrayElementField.mount()
+
+    form.setErrorMap({
+      onChange: {
+        form: 'global error',
+        fields: {
+          name: 'name is required',
+          'interests[0].label': 'label is required',
+        },
+      },
+      onBlur: 'Form Error' as never,
+    })
+
+    expect(form.state.errorMap.onChange).toEqual('global error')
+    expect(form.state.errorMap.onBlur).toEqual('Form Error')
+    expect(field.getMeta().errorMap.onChange).toEqual('name is required')
+    expect(arrayElementField.getMeta().errorMap.onChange).toEqual(
+      'label is required',
+    )
   })
 
   it("should set errors for the fields from the form's onSubmit validator", async () => {
@@ -3080,6 +3186,34 @@ describe('form api', () => {
     expect(field.state.meta.isTouched).toBe(false)
   })
 
+  it('should set the form isDefaultValue meta', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'tony',
+        lastName: 'hawk',
+      },
+    })
+    form.mount()
+
+    const nameField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    nameField.mount()
+
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+    })
+    lastNameField.mount()
+
+    lastNameField.setValue('')
+    expect(form.state.isDefaultValue).toBe(false)
+
+    lastNameField.setValue('hawk')
+    expect(form.state.isDefaultValue).toBe(true)
+  })
+
   it('should allow submission, when the form is invalid, with canSubmitWhenInvalid', async () => {
     const form = new FormApi({
       defaultValues: {
@@ -3207,6 +3341,28 @@ describe('form api', () => {
     expect(() => {
       form.parseValuesWithSchemaAsync(z.any())
     }).not.toThrowError()
+  })
+
+  it('should delete fields when resetting an array field to an empty array', () => {
+    const employees = [
+      {
+        firstName: 'Darcy',
+      },
+    ]
+
+    const form = new FormApi({
+      defaultValues: {
+        employees,
+      },
+    })
+    form.mount()
+
+    form.clearFieldValues('employees')
+
+    expect(form.getFieldValue('employees')).toEqual([])
+    expect(form.getFieldValue(`employees[0]`)).toBeUndefined()
+    expect(form.getFieldMeta(`employees[0]`)).toBeUndefined()
+    expect(form.state.values.employees).toStrictEqual([])
   })
 })
 
@@ -3579,4 +3735,89 @@ it('should mark sourceMap as undefined when async field error is resolved', asyn
   await vi.runAllTimersAsync()
 
   expect(field.getMeta().errorSourceMap.onChange).toBeUndefined()
+})
+
+it('should reset nested object fields', () => {
+  const defaultValues = {
+    shallow: '',
+    nested: {
+      field: {
+        name: '',
+      },
+    },
+  }
+
+  const form = new FormApi({
+    defaultValues,
+  })
+  form.mount()
+
+  form.setFieldValue('shallow', 'Shallow')
+  form.setFieldValue('nested.field.name', 'Nested')
+
+  expect(form.state.values.shallow).toEqual('Shallow')
+  expect(form.state.values.nested.field.name).toEqual('Nested')
+
+  form.resetField('shallow')
+  expect(form.state.values.shallow).toEqual('')
+
+  form.resetField('nested.field.name')
+  expect(form.state.values.nested.field.name).toEqual('')
+})
+
+it('should reset nested array fields', () => {
+  const defaultValues = {
+    shallow: '',
+    nested: {
+      arr: [{ name: '' }, { test: 'array-test' }],
+    },
+  }
+
+  const form = new FormApi({
+    defaultValues,
+  })
+  form.mount()
+
+  form.setFieldValue('shallow', 'Shallow')
+  form.setFieldValue('nested.arr[0].name', 'nested-arr')
+  form.setFieldValue('nested.arr[1].test', 'array-test-changed')
+
+  expect(form.state.values.shallow).toEqual('Shallow')
+  expect(form.state.values.nested.arr[0]?.name).toEqual('nested-arr')
+  expect(form.state.values.nested.arr[1]?.test).toEqual('array-test-changed')
+
+  form.resetField('shallow')
+  expect(form.state.values.shallow).toEqual('')
+
+  form.resetField('nested.arr[0].name')
+  expect(form.state.values.nested.arr[0]?.name).toEqual('')
+  expect(form.state.values.nested.arr[1]?.test).toEqual('array-test-changed')
+})
+
+it('should preserve nested fields on resetField if defaultValues is not provided', () => {
+  const state = {
+    shallow: '',
+    nested: {
+      field: {
+        name: '',
+      },
+    },
+  }
+
+  const form = new FormApi({
+    defaultState: { values: state },
+  })
+  form.mount()
+
+  form.setFieldValue('shallow', 'Shallow')
+  form.setFieldValue('nested.field.name', 'Nested')
+
+  expect(form.state.values.shallow).toEqual('Shallow')
+  expect(form.state.values.nested.field.name).toEqual('Nested')
+
+  form.resetField('shallow')
+  expect(form.state.values.shallow).toEqual('Shallow')
+
+  form.resetField('nested.field.name')
+  expect(form.state.values.nested.field.name).toEqual('Nested')
 })

@@ -11,7 +11,7 @@ title: DerivedFormState
 type DerivedFormState<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer> = object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:573](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L573)
+Defined in: [packages/form-core/src/FormApi.ts:574](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L574)
 
 ## Type Parameters
 
@@ -74,6 +74,14 @@ isBlurred: boolean;
 ```
 
 A boolean indicating if any of the form fields have been blurred.
+
+### isDefaultValue
+
+```ts
+isDefaultValue: boolean;
+```
+
+A boolean indicating if all of the form's fields are the same as default values.
 
 ### isDirty
 

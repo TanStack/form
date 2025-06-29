@@ -656,6 +656,10 @@ export type FieldMetaDerived<
    * A boolean indicating if the field is valid. Evaluates `true` if there are no field errors.
    */
   isValid: boolean
+  /**
+   * A flag indicating whether the field's current value is the default value
+   */
+  isDefaultValue: boolean
 }
 
 export type AnyFieldMetaDerived = FieldMetaDerived<
@@ -1310,6 +1314,15 @@ export class FieldApi<
   }
 
   /**
+   * Clear all values from the array.
+   */
+  clearValues = (opts?: UpdateMetaOptions) => {
+    this.form.clearFieldValues(this.name, opts)
+
+    this.triggerOnChangeListener()
+  }
+
+  /**
    * @private
    */
   getLinkedFields = (cause: ValidationCause) => {
@@ -1658,7 +1671,6 @@ export class FieldApi<
     const prevTouched = this.state.meta.isTouched
     if (!prevTouched) {
       this.setMeta((prev) => ({ ...prev, isTouched: true }))
-      this.validate('change')
     }
     if (!this.state.meta.isBlurred) {
       this.setMeta((prev) => ({ ...prev, isBlurred: true }))
@@ -1758,11 +1770,11 @@ export class FieldApi<
   private triggerOnChangeListener() {
     const formDebounceMs = this.form.options.listeners?.onChangeDebounceMs
     if (formDebounceMs && formDebounceMs > 0) {
-      if (this.timeoutIds.formListeners.blur) {
-        clearTimeout(this.timeoutIds.formListeners.blur)
+      if (this.timeoutIds.formListeners.change) {
+        clearTimeout(this.timeoutIds.formListeners.change)
       }
 
-      this.timeoutIds.formListeners.blur = setTimeout(() => {
+      this.timeoutIds.formListeners.change = setTimeout(() => {
         this.form.options.listeners?.onChange?.({
           formApi: this.form,
           fieldApi: this,
