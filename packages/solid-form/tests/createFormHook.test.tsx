@@ -12,8 +12,8 @@ function TextField({ label }: { label: string }) {
     <label>
       <div>{label}</div>
       <input
-        value={field.state.value}
-        onChange={(e) => field.handleChange(e.target.value)}
+        value={field().state.value}
+        onChange={(e) => field().handleChange(e.target.value)}
       />
     </label>
   )

@@ -8,7 +8,13 @@ import type {
   FormOptions,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { Accessor, Component, Context, JSX, ParentProps } from 'solid-js'
+import type {
+  Accessor,
+  Component,
+  Context,
+  JSXElement,
+  ParentProps,
+} from 'solid-js'
 import type { FieldComponent } from './createField'
 import type { SolidFormExtendedApi } from './createForm'
 
@@ -51,8 +57,8 @@ type UnwrapDefaultOrAny<DefaultT, T> = [DefaultT] extends [T]
 
 export function createFormHookContexts() {
   // We should never hit the `null` case here
-  const fieldContext = createContext<AnyFieldApi>(
-    null as unknown as AnyFieldApi,
+  const fieldContext = createContext<Accessor<AnyFieldApi>>(
+    null as unknown as Accessor<AnyFieldApi>,
   )
 
   function useFieldContext<TData>() {
@@ -65,26 +71,28 @@ export function createFormHookContexts() {
       )
     }
 
-    return field as FieldApi<
-      any,
-      string,
-      TData,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any
+    return field as Accessor<
+      FieldApi<
+        any,
+        string,
+        TData,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any
+      >
     >
   }
 
@@ -124,7 +132,7 @@ interface CreateFormHookProps<
   TFormComponents extends Record<string, Component<any>>,
 > {
   fieldComponents: TFieldComponents
-  fieldContext: Context<AnyFieldApi>
+  fieldContext: Context<Accessor<AnyFieldApi>>
   formComponents: TFormComponents
   formContext: Context<AnyFormApi>
 }
@@ -218,7 +226,7 @@ export interface WithFormProps<
         >
       }
     >,
-  ) => JSX.Element
+  ) => JSXElement
 }
 
 export function createFormHook<
@@ -280,7 +288,7 @@ export function createFormHook<
       return (
         <form.Field {...fieldProps}>
           {(field) => (
-            <opts.fieldContext.Provider value={field()}>
+            <opts.fieldContext.Provider value={field}>
               {childProps.children(Object.assign(field, opts.fieldComponents))}
             </opts.fieldContext.Provider>
           )}
