@@ -308,11 +308,26 @@ export function createFormHook<
       TComponents
     >
 
-    const extendedForm = Object.assign(form, {
-      AppField,
-      AppForm,
-      ...opts.formComponents,
-    })
+    const extendedForm: AppFieldExtendedSolidFormApi<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnServer,
+      TSubmitMeta,
+      TComponents,
+      TFormComponents
+    > = form as never
+    extendedForm.AppField = AppField
+    extendedForm.AppForm = AppForm
+    for (const [key, value] of Object.entries(opts.formComponents)) {
+      // Since it's a generic I need to cast it to an object
+      ;(extendedForm as Record<string, any>)[key] = value
+    }
 
     return extendedForm
   }
