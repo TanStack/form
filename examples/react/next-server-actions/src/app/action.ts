@@ -10,7 +10,12 @@ const serverValidate = createServerValidate({
   ...formOpts,
   onServerValidate: ({ value }) => {
     if (value.age < 12)
-      return { age: 'Server validation: You must be at least 12 to sign up' }
+      return {
+        fields: {
+          age: 'Server validation: You must be at least 12 to sign up',
+        },
+        form: 'Form level Error: Age must be at least 12',
+      }
   },
 })
 
