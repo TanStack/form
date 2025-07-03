@@ -1671,7 +1671,6 @@ export class FieldApi<
     const prevTouched = this.state.meta.isTouched
     if (!prevTouched) {
       this.setMeta((prev) => ({ ...prev, isTouched: true }))
-      this.validate('change')
     }
     if (!this.state.meta.isBlurred) {
       this.setMeta((prev) => ({ ...prev, isBlurred: true }))
@@ -1771,11 +1770,11 @@ export class FieldApi<
   private triggerOnChangeListener() {
     const formDebounceMs = this.form.options.listeners?.onChangeDebounceMs
     if (formDebounceMs && formDebounceMs > 0) {
-      if (this.timeoutIds.formListeners.blur) {
-        clearTimeout(this.timeoutIds.formListeners.blur)
+      if (this.timeoutIds.formListeners.change) {
+        clearTimeout(this.timeoutIds.formListeners.change)
       }
 
-      this.timeoutIds.formListeners.blur = setTimeout(() => {
+      this.timeoutIds.formListeners.change = setTimeout(() => {
         this.form.options.listeners?.onChange?.({
           formApi: this.form,
           fieldApi: this,

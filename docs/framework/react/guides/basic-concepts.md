@@ -85,21 +85,22 @@ Each field has its own state, which includes its current value, validation statu
 
 Example:
 
-```tsx
+```ts
 const {
   value,
   meta: { errors, isValidating },
 } = field.state
 ```
 
-There are three states in the metadata that can be useful to see how the user interacts with a field:
+There are four states in the metadata that can be useful to see how the user interacts with a field:
 
-- _"isTouched"_, after the user clicks/tabs into the field
-- _"isPristine"_, until the user changes the field value
-- _"isDirty"_, after the fields value has been changed
+- _"isTouched"_, after the user changes the field or blurs the field
+- _"isDirty"_, after the field's value has been changed, even if it's been reverted to the default. Opposite of `isPristine`
+- _"isPristine"_, until the user changes the field value. Opposite of `isDirty`
+- _"isBlurred"_, after the field has been blurred
 
-```tsx
-const { isTouched, isPristine, isDirty } = field.state.meta
+```ts
+const { isTouched, isDirty, isPristine, isBlurred } = field.state.meta
 ```
 
 ![Field states](https://raw.githubusercontent.com/TanStack/form/main/docs/assets/field-states.png)
@@ -116,10 +117,12 @@ Persistent `dirty` state
 - **Libraries**: Angular Form, Vue FormKit.
 - **Behavior**: A field remains 'dirty' once changed, even if reverted to the default value.
 
-We have chosen the persistent 'dirty' state model. To also support a non-persistent 'dirty' state, we introduce the isDefault flag. This flag acts as an inverse of the non-persistent 'dirty' state.
+We have chosen the persistent 'dirty' state model. To also support a non-persistent 'dirty' state, we introduce an additional flag:
 
-```tsx
-const { isTouched, isPristine, isDirty, isDefaultValue } = field.state.meta
+- _"isDefaultValue"_, whether the field's current value is the default value
+
+```ts
+const { isDefaultValue, isTouched } = field.state.meta
 
 // The following line will re-create the non-Persistent `dirty` functionality.
 const nonPersistentIsDirty = !isDefaultValue

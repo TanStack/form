@@ -379,7 +379,7 @@ parseValueWithSchema(schema):
   | StandardSchemaV1Issue[]
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1712](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1712)
+Defined in: [packages/form-core/src/FieldApi.ts:1711](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1711)
 
 Parses the field's value with the given schema and returns
 issues (if any). This method does NOT set any internal errors.
@@ -407,7 +407,7 @@ parseValueWithSchemaAsync(schema): Promise<
 | StandardSchemaV1Issue[]>
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1724](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1724)
+Defined in: [packages/form-core/src/FieldApi.ts:1723](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1723)
 
 Parses the field's value with the given schema and returns
 issues (if any). This method does NOT set any internal errors.
@@ -519,7 +519,7 @@ Replaces a value at the specified index.
 setErrorMap(errorMap): void
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1687](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1687)
+Defined in: [packages/form-core/src/FieldApi.ts:1686](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1686)
 
 Updates the field's errorMap
 

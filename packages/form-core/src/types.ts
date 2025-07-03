@@ -105,6 +105,11 @@ export type GlobalFormValidationError<TFormData> = {
   fields: Partial<Record<DeepKeys<TFormData>, ValidationError>>
 }
 
+export type ExtractGlobalFormError<TFormError> =
+  TFormError extends GlobalFormValidationError<any>
+    ? TFormError['form']
+    : TFormError
+
 /**
  * @private
  */

@@ -986,6 +986,42 @@ describe('form api', () => {
     expect(field2Surname.state.meta.isBlurred).toBe(false)
   })
 
+  it('should preserve array default values when manipulating array values', () => {
+    const defaultValues = {
+      names: ['one', 'two', 'three'],
+    }
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+    form.pushFieldValue('names', 'four')
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.insertFieldValue('names', 0, 'other')
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.replaceFieldValue('names', 1, 'other')
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.removeFieldValue('names', 1)
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.swapFieldValues('names', 1, 2)
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.moveFieldValues('names', 1, 2)
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.clearFieldValues('names')
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+  })
+
   it('should handle fields inside an array', async () => {
     interface Employee {
       firstName: string
@@ -2154,6 +2190,45 @@ describe('form api', () => {
 
     await vi.advanceTimersByTimeAsync(500)
     expect(onBlurMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('should run both onBlur and onChange listeners when onBlurDebounceMs and onChangeDebounceMs are provided', async () => {
+    vi.useFakeTimers()
+    const onBlurMock = vi.fn()
+    const onChangeMock = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+        age: 0,
+      },
+      listeners: {
+        onBlur: onBlurMock,
+        onBlurDebounceMs: 500,
+        onChange: onChangeMock,
+        onChangeDebounceMs: 500,
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+    field.mount()
+    field.handleBlur()
+    field.handleChange('test')
+
+    await vi.advanceTimersByTimeAsync(500)
+    expect(onBlurMock).toHaveBeenCalledTimes(1)
+    expect(onChangeMock).toHaveBeenCalledTimes(1)
+
+    field.handleChange('test2')
+    field.handleBlur()
+
+    await vi.advanceTimersByTimeAsync(500)
+    expect(onBlurMock).toHaveBeenCalledTimes(2)
+    expect(onChangeMock).toHaveBeenCalledTimes(2)
   })
 
   it('should run the field listener onSubmit', async () => {
