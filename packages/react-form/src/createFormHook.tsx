@@ -183,7 +183,7 @@ export interface WithFormProps<
   TSubmitMeta,
   TFieldComponents extends Record<string, ComponentType<any>>,
   TFormComponents extends Record<string, ComponentType<any>>,
-  TRenderProps extends Record<string, unknown> = Record<string, never>,
+  TRenderProps extends object = Record<string, never>,
 > extends FormOptions<
     TFormData,
     TOnMount,
@@ -326,7 +326,7 @@ export function createFormHook<
     TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
     TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
     TSubmitMeta,
-    TRenderProps extends Record<string, unknown> = {},
+    TRenderProps extends object = {},
   >({
     render,
     props,
