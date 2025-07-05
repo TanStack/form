@@ -191,6 +191,10 @@
             {
               "label": "Arrays",
               "to": "framework/angular/guides/arrays"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/angular/guides/form-composition"
             }
           ]
         },
@@ -568,6 +572,10 @@
             {
               "label": "Arrays",
               "to": "framework/angular/examples/array"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/angular/examples/large-form"
             }
           ]
         },
