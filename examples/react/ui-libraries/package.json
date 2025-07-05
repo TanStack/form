@@ -11,12 +11,12 @@
   "dependencies": {
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.0",
-    "@mantine/core": "7.17.4",
-    "@mantine/hooks": "7.17.4",
-    "@mui/material": "6.4.11",
-    "@tanstack/react-form": "^1.6.3",
+    "@mantine/core": "7.17.8",
+    "@mantine/hooks": "7.17.8",
+    "@mui/material": "6.4.12",
+    "@tanstack/react-form": "^1.12.4",
     "@yme/lay-postcss": "0.1.0",
-    "postcss": "8.5.3",
+    "postcss": "8.5.5",
     "postcss-preset-mantine": "1.17.0",
     "postcss-simple-vars": "7.0.1",
     "react": "^19.0.0",
@@ -25,10 +25,10 @@
   "devDependencies": {
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
-    "@vitejs/plugin-react": "^4.4.1",
-    "@vitejs/plugin-react-swc": "^3.9.0",
+    "@vitejs/plugin-react": "^4.5.2",
+    "@vitejs/plugin-react-swc": "^3.10.2",
     "typescript": "5.8.2",
-    "vite": "^6.3.2"
+    "vite": "^6.3.5"
   },
   "browserslist": {
     "production": [

@@ -2,10 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "paths": {
-      "@tanstack/form-core": ["../form-core/src"]
-    }
+    "moduleResolution": "NodeNext"
   },
   "include": ["src", "tests", "*.config.js", "*.config.ts"]
 }

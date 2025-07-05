@@ -9,21 +9,21 @@ title: "@tanstack/react-form"
 
 ## Interfaces
 
-- [ReactFormApi](interfaces/reactformapi.md)
-- [WithFormProps](interfaces/withformprops.md)
+- [ReactFormApi](../interfaces/reactformapi.md)
+- [WithFormProps](../interfaces/withformprops.md)
 
 ## Type Aliases
 
-- [FieldComponent](type-aliases/fieldcomponent.md)
-- [ReactFormExtendedApi](type-aliases/reactformextendedapi.md)
-- [UseField](type-aliases/usefield.md)
+- [FieldComponent](../type-aliases/fieldcomponent.md)
+- [ReactFormExtendedApi](../type-aliases/reactformextendedapi.md)
+- [UseField](../type-aliases/usefield.md)
 
 ## Functions
 
-- [createFormHook](functions/createformhook.md)
-- [createFormHookContexts](functions/createformhookcontexts.md)
-- [Field](functions/field.md)
-- [useField](functions/usefield.md)
-- [useForm](functions/useform.md)
-- [useStore](functions/usestore.md)
-- [useTransform](functions/usetransform.md)
+- [createFormHook](../functions/createformhook.md)
+- [createFormHookContexts](../functions/createformhookcontexts.md)
+- [Field](../functions/field.md)
+- [useField](../functions/usefield.md)
+- [useForm](../functions/useform.md)
+- [useStore](../functions/usestore.md)
+- [useTransform](../functions/usetransform.md)

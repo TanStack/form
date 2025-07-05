@@ -9,11 +9,11 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/lit-form": "^1.6.3",
+    "@tanstack/lit-form": "^1.12.4",
     "lit": "^3.3.0"
   },
   "devDependencies": {
-    "vite": "^6.3.2"
+    "vite": "^6.3.5"
   },
   "browserslist": {
     "production": [

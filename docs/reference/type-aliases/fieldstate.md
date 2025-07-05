@@ -11,7 +11,7 @@ title: FieldState
 type FieldState<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync> = object;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:766](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L766)
+Defined in: [packages/form-core/src/FieldApi.ts:774](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L774)
 
 An object type representing the state of a field.
 
@@ -19,9 +19,9 @@ An object type representing the state of a field.
 
 • **TParentData**
 
-• **TName** *extends* [`DeepKeys`](deepkeys.md)\<`TParentData`\>
+• **TName** *extends* [`DeepKeys`](../deepkeys.md)\<`TParentData`\>
 
-• **TData** *extends* [`DeepValue`](deepvalue.md)\<`TParentData`, `TName`\>
+• **TData** *extends* [`DeepValue`](../deepvalue.md)\<`TParentData`, `TName`\>
 
 • **TOnMount** *extends* `undefined` \| `FieldValidateOrFn`\<`TParentData`, `TName`, `TData`\>
 

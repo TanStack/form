@@ -3,38 +3,91 @@ id: submission-handling
 title: Submission handling
 ---
 
-In a situation where you want to have multiple form submission types, for example, a form that has a button that navigates to a sub-form and another button that handles a standard submission, you can make use of the onSubmitMeta prop and the handleSubmit function overloads.
+## Passing additional data to submission handling
 
-## Basic Usage
+You may have multiple types of submission behaviour, for example, going back to another page or staying on the form.
+You can accomplish this by specifying the `onSubmitMeta` property. This meta data will be passed to the `onSubmit` function.
 
-First you must define the default state of the form.onSubmitMeta prop:
+> Note: if `form.handleSubmit()` is called without metadata, it will use the provided default.
 
 ```tsx
-const form = useForm({
-  defaultValues: {
-    firstName: 'Rick',
-  },
-  // {} is the default value passed to `onSubmit`'s `meta` property
-  onSubmitMeta: {} as { lastName: string },
-  onSubmit: async ({ value, meta }) => {
-    // Do something with the values passed via handleSubmit
-    console.log(`${value.firstName} - ${meta}`)
-  },
-})
+import { useForm } from '@tanstack/react-form'
+
+type FormMeta = {
+  submitAction: 'continue' | 'backToMenu' | null
+}
+
+// Metadata is not required to call form.handleSubmit().
+// Specify what values to use as default if no meta is passed
+const defaultMeta: FormMeta = {
+  submitAction: null,
+}
+
+function App() {
+  const form = useForm({
+    defaultValues: {
+      data: '',
+    },
+    // Define what meta values to expect on submission
+    onSubmitMeta: defaultMeta,
+    onSubmit: async ({ value, meta }) => {
+      // Do something with the values passed via handleSubmit
+      console.log(`Selected action - ${meta.submitAction}`, value)
+    },
+  })
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+      }}
+    >
+      {/* ... */}
+      <button
+        type="submit"
+        // Overwrites the default specified in onSubmitMeta
+        onClick={() => form.handleSubmit({ submitAction: 'continue' })}
+      >
+        Submit and continue
+      </button>
+      <button
+        type="submit"
+        onClick={() => form.handleSubmit({ submitAction: 'backToMenu' })}
+      >
+        Submit and back to menu
+      </button>
+    </form>
+  )
+}
 ```
 
-Note: the default state of onSubmitMeta is `never`, so if the prop is not provided and you try to access it in `handleSubmit`, or `onSubmit` it will error.
+## Transforming data with Standard Schemas
 
-Then when you call `onSubmit` you can provide it the predefined meta like so:
+While Tanstack Form provides [Standard Schema support](../validation.md) for validation, it does not preserve the Schema's output data.
+
+The value passed to the `onSubmit` function will always be the input data. To receive the output data of a Standard Schema, parse it in the `onSubmit` function:
 
 ```tsx
-<form
-  onSubmit={(e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    form.handleSubmit({
-      lastName: 'Astley',
-    })
-  }}
-></form>
+const schema = z.object({
+  age: z.string().transform((age) => Number(age)),
+})
+
+// Tanstack Form uses the input type of Standard Schemas
+const defaultValues: z.input<typeof schema> = {
+  age: '13',
+}
+
+const form = useForm({
+  defaultValues,
+  validators: {
+    onChange: schema,
+  },
+  onSubmit: ({ value }) => {
+    const inputAge: string = value.age
+    // Pass it through the schema to get the transformed value
+    const result = schema.parse(value)
+    const outputAge: number = result.age
+  },
+})
 ```
