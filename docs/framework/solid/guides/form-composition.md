@@ -52,15 +52,15 @@ Once this scaffolding is in place, you can start adding custom field and form co
 ```tsx
 import { useFieldContext } from './form-context.tsx'
 
-export function TextField({ label }: { label: string }) {
+export function TextField(props: { label: string }) {
   // The `Field` infers that it should have a `value` type of `string`
   const field = useFieldContext<string>()
   return (
     <label>
-      <div>{label}</div>
+      <div>{props.label}</div>
       <input
-        value={field.state.value}
-        onChange={(e) => field.handleChange(e.target.value)}
+        value={field().state.value}
+        onChange={(e) => field().handleChange(e.target.value)}
       />
     </label>
   )
@@ -105,14 +105,6 @@ function App() {
 
 This not only allows you to reuse the UI of your shared component, but retains the type-safety you'd expect from TanStack Form: Typo `name` and get a TypeScript error.
 
-#### A note on performance
-
-While context is a valuable tool in the React ecosystem, there's appropriate concern from many users that providing a reactive value through a context will cause unnecessary re-renders.
-
-> Unfamiliar with this performance concern? [Mark Erikson's blog post explaining why Redux solves many of these problems](https://blog.isquaredsoftware.com/2021/01/context-redux-differences/) is a great place to start.
-
-While this is a good concern to call out, it's not a problem for TanStack Form; the values provided through context are not reactive themselves, but instead are static class instances with reactive properties ([using TanStack Store as our signals implementation to power the show](https://tanstack.com/store)).
-
 ### Pre-bound Form Components
 
 While `form.AppField` solves many of the problems with Field boilerplate and reusability, it doesn't solve the problem of _form_ boilerplate and reusability.
@@ -120,13 +112,13 @@ While `form.AppField` solves many of the problems with Field boilerplate and reu
 In particular, being able to share instances of `form.Subscribe` for, say, a reactive form submission button is a common usecase.
 
 ```tsx
-function SubscribeButton({ label }: { label: string }) {
+function SubscribeButton(props: { label: string }) {
   const form = useFormContext()
   return (
     <form.Subscribe selector={(state) => state.isSubmitting}>
       {(isSubmitting) => (
-        <button type="submit" disabled={isSubmitting}>
-          {label}
+        <button type="submit" disabled={isSubmitting()}>
+          {props.label}
         </button>
       )}
     </form.Subscribe>
@@ -190,17 +182,17 @@ const ChildForm = withForm({
     // These props are also set as default values for the `render` function
     title: 'Child Form',
   },
-  render: function Render({ form, title }) {
+  render: function Render(props) {
     return (
       <div>
-        <p>{title}</p>
-        <form.AppField
+        <p>{props.title}</p>
+        <props.form.AppField
           name="firstName"
           children={(field) => <field.TextField label="First Name" />}
         />
-        <form.AppForm>
-          <form.SubscribeButton label="Submit" />
-        </form.AppForm>
+        <props.form.AppForm>
+          <props.form.SubscribeButton label="Submit" />
+        </props.form.AppForm>
       </div>
     )
   },
@@ -224,40 +216,16 @@ function App() {
 
 While hooks are the future of React, higher-order components are still a powerful tool for composition. In particular, the API of `withForm` enables us to have strong type-safety without requiring users to pass generics.
 
-> Why am I getting ESLint errors about hooks in `render`?
-
-ESLint looks for hooks in the top-level of a function, and `render` may not be recogized as a top-level component, depending on how you defined it.
-
-```tsx
-// This will cause ESLint errors with hooks usage
-const ChildForm = withForm({
-  // ...
-  render: ({ form, title }) => {
-    // ...
-  },
-})
-```
-
-```tsx
-// This works fine
-const ChildForm = withForm({
-  // ...
-  render: function Render({ form, title }) {
-    // ...
-  },
-})
-```
-
 ## Tree-shaking form and field components
 
 While the above examples are great for getting started, they're not ideal for certain use-cases where you might have hundreds of form and field components.
 In particular, you may not want to include all of your form and field components in the bundle of every file that uses your form hook.
 
-To solve this, you can mix the `createFormHook` TanStack API with the React `lazy` and `Suspense` components:
+To solve this, you can mix the `createFormHook` TanStack API with the Solid `lazy` and `Suspense` components:
 
 ```typescript
 // src/hooks/form-context.ts
-import { createFormHookContexts } from '@tanstack/react-form'
+import { createFormHookContexts } from '@tanstack/solid-form'
 
 export const { fieldContext, useFieldContext, formContext, useFormContext } =
   createFormHookContexts()
@@ -267,15 +235,15 @@ export const { fieldContext, useFieldContext, formContext, useFormContext } =
 // src/components/text-field.tsx
 import { useFieldContext } from '../hooks/form-context.tsx'
 
-export default function TextField({ label }: { label: string }) {
+export default function TextField(props: { label: string }) {
   const field = useFieldContext<string>()
 
   return (
     <label>
-      <div>{label}</div>
+      <div>{props.label}</div>
       <input
-        value={field.state.value}
-        onChange={(e) => field.handleChange(e.target.value)}
+        value={field().state.value}
+        onChange={(e) => field().handleChange(e.target.value)}
       />
     </label>
   )
@@ -284,7 +252,7 @@ export default function TextField({ label }: { label: string }) {
 
 ```tsx
 // src/hooks/form.ts
-import { lazy } from 'react'
+import { lazy } from 'solid-js'
 import { createFormHook } from '@tanstack/react-form'
 
 const TextField = lazy(() => import('../components/text-fields.tsx'))
@@ -301,7 +269,7 @@ const { useAppForm, withForm } = createFormHook({
 
 ```tsx
 // src/App.tsx
-import { Suspense } from 'react'
+import { Suspense } from 'solid-js'
 import { PeopleForm } from './features/people/form.tsx'
 
 export default function App() {
@@ -324,24 +292,24 @@ Now that we've covered the basics of creating custom form hooks, let's put it al
 const { fieldContext, useFieldContext, formContext, useFormContext } =
   createFormHookContexts()
 
-function TextField({ label }: { label: string }) {
+function TextField(props: { label: string }) {
   const field = useFieldContext<string>()
   return (
     <label>
-      <div>{label}</div>
+      <div>{props.label}</div>
       <input
-        value={field.state.value}
-        onChange={(e) => field.handleChange(e.target.value)}
+        value={field().state.value}
+        onChange={(e) => field().handleChange(e.target.value)}
       />
     </label>
   )
 }
 
-function SubscribeButton({ label }: { label: string }) {
+function SubscribeButton(props: { label: string }) {
   const form = useFormContext()
   return (
     <form.Subscribe selector={(state) => state.isSubmitting}>
-      {(isSubmitting) => <button disabled={isSubmitting}>{label}</button>}
+      {(isSubmitting) => <button disabled={isSubmitting()}>{props.label}</button>}
     </form.Subscribe>
   )
 }
@@ -372,17 +340,17 @@ const ChildForm = withForm({
   props: {
     title: 'Child Form',
   },
-  render: ({ form, title }) => {
+  render: (props) => {
     return (
       <div>
         <p>{title}</p>
-        <form.AppField
+        <props.form.AppField
           name="firstName"
           children={(field) => <field.TextField label="First Name" />}
         />
-        <form.AppForm>
-          <form.SubscribeButton label="Submit" />
-        </form.AppForm>
+        <props.form.AppForm>
+          <props.form.SubscribeButton label="Submit" />
+        </props.form.AppForm>
       </div>
     )
   },
