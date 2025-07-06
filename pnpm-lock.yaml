@@ -390,8 +390,8 @@ importers:
         specifier: ^1.13.2
         version: link:../../../packages/react-form
       '@tanstack/react-store':
-        specifier: ^0.7.1
-        version: 0.7.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^0.7.3
+        version: 0.7.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       next:
         specifier: 15.3.3
         version: 15.3.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.1)
@@ -458,8 +458,8 @@ importers:
         specifier: ^1.13.2
         version: link:../../../packages/react-form
       '@tanstack/react-store':
-        specifier: ^0.7.1
-        version: 0.7.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^0.7.3
+        version: 0.7.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       isbot:
         specifier: ^5.1.28
         version: 5.1.28
@@ -563,8 +563,8 @@ importers:
         specifier: ^1.121.16
         version: 1.121.16(@tanstack/react-router@1.121.16(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@vitejs/plugin-react@4.5.2(vite@6.3.5(@types/node@22.15.29)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.5))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)))(encoding@0.1.13)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vite-plugin-solid@2.11.6(@testing-library/jest-dom@6.6.3)(solid-js@1.9.7)(vite@6.3.5(@types/node@22.15.29)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.5))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)))(vite@6.3.5(@types/node@22.15.29)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.5))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))(webpack@5.99.8(@swc/core@1.12.1))
       '@tanstack/react-store':
-        specifier: ^0.7.1
-        version: 0.7.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^0.7.3
+        version: 0.7.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -784,8 +784,8 @@ importers:
   packages/angular-form:
     dependencies:
       '@tanstack/angular-store':
-        specifier: ^0.7.1
-        version: 0.7.1(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))
+        specifier: ^0.7.3
+        version: 0.7.3(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../form-core
@@ -836,8 +836,8 @@ importers:
   packages/form-core:
     dependencies:
       '@tanstack/store':
-        specifier: ^0.7.1
-        version: 0.7.1
+        specifier: ^0.7.2
+        version: 0.7.2
     devDependencies:
       arktype:
         specifier: ^2.1.20
@@ -865,8 +865,8 @@ importers:
         specifier: workspace:*
         version: link:../form-core
       '@tanstack/react-store':
-        specifier: ^0.7.1
-        version: 0.7.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^0.7.3
+        version: 0.7.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       decode-formdata:
         specifier: ^0.9.0
         version: 0.9.0
@@ -908,8 +908,8 @@ importers:
         specifier: workspace:*
         version: link:../form-core
       '@tanstack/solid-store':
-        specifier: ^0.7.1
-        version: 0.7.1(solid-js@1.9.7)
+        specifier: ^0.7.3
+        version: 0.7.3(solid-js@1.9.7)
     devDependencies:
       solid-js:
         specifier: ^1.9.7
@@ -927,8 +927,8 @@ importers:
         specifier: workspace:*
         version: link:../form-core
       '@tanstack/svelte-store':
-        specifier: ^0.7.1
-        version: 0.7.1(svelte@5.34.3)
+        specifier: ^0.7.3
+        version: 0.7.3(svelte@5.34.3)
     devDependencies:
       '@sveltejs/package':
         specifier: ^2.3.11
@@ -952,8 +952,8 @@ importers:
         specifier: workspace:*
         version: link:../form-core
       '@tanstack/vue-store':
-        specifier: ^0.7.1
-        version: 0.7.1(vue@3.5.16(typescript@5.8.3))
+        specifier: ^0.7.3
+        version: 0.7.3(vue@3.5.16(typescript@5.8.3))
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.2.4
@@ -4218,8 +4218,8 @@ packages:
   '@swc/types@0.1.23':
     resolution: {integrity: sha512-u1iIVZV9Q0jxY+yM2vw/hZGDNudsN85bBpTqzAQ9rzkxW9D+e3aEM4Han+ow518gSewkXgjmEK0BD79ZcNVgPw==}
 
-  '@tanstack/angular-store@0.7.1':
-    resolution: {integrity: sha512-YS1vvEClOWOmFL9I0Kd7rFJ44qN8KkcDYsO+riy6GfBWrE0v9E6lFvkOzDQZDRBj9j3QXmZSz0VrvnQbdMyZCg==}
+  '@tanstack/angular-store@0.7.3':
+    resolution: {integrity: sha512-DTfTfj34PAWkcK3zdcXSJhZdL9uVj39CvrC7h9fhSDsrR9eRGfldJrasFUL9HHqR1i4h6utmKajliHeHf6ztKw==}
     peerDependencies:
       '@angular/common': '>=19.0.0'
       '@angular/core': '>=19.0.0'
@@ -4291,8 +4291,8 @@ packages:
       react-dom: '>=18.0.0 || >=19.0.0'
       vite: '>=6.0.0'
 
-  '@tanstack/react-store@0.7.1':
-    resolution: {integrity: sha512-qUTEKdId6QPWGiWyKAPf/gkN29scEsz6EUSJ0C3HgLMgaqTAyBsQ2sMCfGVcqb+kkhEXAdjleCgH6LAPD6f2sA==}
+  '@tanstack/react-store@0.7.3':
+    resolution: {integrity: sha512-3Dnqtbw9P2P0gw8uUM8WP2fFfg8XMDSZCTsywRPZe/XqqYW8PGkXKZTvP0AHkE4mpqP9Y43GpOg9vwO44azu6Q==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -4334,8 +4334,8 @@ packages:
     resolution: {integrity: sha512-gz3Mpn4t1cB3ZJLaeTJ6GS2wpAis24qJHvqyFQrTKjRiz8LOHqsGDOnT5vgA5Vdjlv3alZiyhPW7WFFctsI/VA==}
     engines: {node: '>=12'}
 
-  '@tanstack/solid-store@0.7.1':
-    resolution: {integrity: sha512-chcElOdXhDTcJnMrY02Q+EPyI11C6/vKIinxd7ALW5iGWaGEpo+Re5S1cIP4YyWYUqZE8nWU9O/imSnxZ+9W8A==}
+  '@tanstack/solid-store@0.7.3':
+    resolution: {integrity: sha512-fEdiGQdlzG/eS4lOaIWvKp94hopVZiDZ2IgrQ9ntu5QtLPXOABq/2VDSQI7jkx43e3AdLdvlXVrljxw2BVB9tw==}
     peerDependencies:
       solid-js: ^1.6.0
 
@@ -4365,11 +4365,11 @@ packages:
     resolution: {integrity: sha512-pbkbmm82CJMKs2uhBW3eXSpaNfVs+WaMjfdzDHo9/lCKKC/d0QlOk1+Kz28L2ENeU6DXRKphl0a8l5DAZTlACw==}
     engines: {node: '>=12'}
 
-  '@tanstack/store@0.7.1':
-    resolution: {integrity: sha512-PjUQKXEXhLYj2X5/6c1Xn/0/qKY0IVFxTJweopRfF26xfjVyb14yALydJrHupDh3/d+1WKmfEgZPBVCmDkzzwg==}
+  '@tanstack/store@0.7.2':
+    resolution: {integrity: sha512-RP80Z30BYiPX2Pyo0Nyw4s1SJFH2jyM6f9i3HfX4pA+gm5jsnYryscdq2aIQLnL4TaGuQMO+zXmN9nh1Qck+Pg==}
 
-  '@tanstack/svelte-store@0.7.1':
-    resolution: {integrity: sha512-09GSf96YCmwquWVqLbbX0VpO+bXdJFqzxTC7gVR6Q/uqd+3mwZnC3ORVMi25tFQDKNrbAtAzhpEwzOgSUobeyQ==}
+  '@tanstack/svelte-store@0.7.3':
+    resolution: {integrity: sha512-/NZGI42mT0V0WRmeJKymv1Oftp3ZtgDOB57Vp79g9JZACqeLGmCcJwWWSwUEdul41XJ4Q4o9XHRIUCtCEbKAfA==}
     peerDependencies:
       svelte: ^5.0.0
 
@@ -4385,8 +4385,8 @@ packages:
     resolution: {integrity: sha512-WpL1C9iR5/U7g3GpvHIssN5QvKnDnWhW05BQhaD6bAqoPCkQyBepxUF8ZRO4IGZRGVAZeMVqTbUA05BAQH/88g==}
     engines: {node: '>=18'}
 
-  '@tanstack/vue-store@0.7.1':
-    resolution: {integrity: sha512-lCO4DHc3kLFl1y0gBovhV8WUUyjdeGaycJ1b6UHUlwfR3OoK5ZxrphpBbX1Bf8zWK5xEeKuRUo33hbvp980+ag==}
+  '@tanstack/vue-store@0.7.3':
+    resolution: {integrity: sha512-UExSdMWnuMdOLoGO/1djkV0SS82OEr9iKjnwRyoeRy5UhRsLwKdvqWlin949n2K/KlZqLaws+/oYoxLv/CF7Mg==}
     peerDependencies:
       '@vue/composition-api': ^1.2.1
       vue: ^2.5.0 || ^3.0.0
@@ -14515,11 +14515,11 @@ snapshots:
     dependencies:
       '@swc/counter': 0.1.3
 
-  '@tanstack/angular-store@0.7.1(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))':
+  '@tanstack/angular-store@0.7.3(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))':
     dependencies:
       '@angular/common': 20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
       '@angular/core': 20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)
-      '@tanstack/store': 0.7.1
+      '@tanstack/store': 0.7.2
       tslib: 2.8.1
 
   '@tanstack/config@0.18.2(@types/node@22.15.29)(@typescript-eslint/utils@8.34.0(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.2))(eslint@9.29.0(jiti@2.4.2))(rollup@4.41.1)(typescript@5.8.2)(vite@6.3.5(@types/node@22.15.29)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.5))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))':
@@ -14588,7 +14588,7 @@ snapshots:
   '@tanstack/react-router@1.121.16(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@tanstack/history': 1.120.17
-      '@tanstack/react-store': 0.7.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@tanstack/react-store': 0.7.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@tanstack/router-core': 1.121.16
       jsesc: 3.1.0
       react: 19.1.0
@@ -14706,9 +14706,9 @@ snapshots:
       - webpack
       - xml2js
 
-  '@tanstack/react-store@0.7.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@tanstack/react-store@0.7.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
-      '@tanstack/store': 0.7.1
+      '@tanstack/store': 0.7.2
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
       use-sync-external-store: 1.5.0(react@19.1.0)
@@ -14716,7 +14716,7 @@ snapshots:
   '@tanstack/router-core@1.121.16':
     dependencies:
       '@tanstack/history': 1.120.17
-      '@tanstack/store': 0.7.1
+      '@tanstack/store': 0.7.2
       tiny-invariant: 1.3.3
 
   '@tanstack/router-generator@1.121.16':
@@ -14783,9 +14783,9 @@ snapshots:
       - supports-color
       - vite
 
-  '@tanstack/solid-store@0.7.1(solid-js@1.9.7)':
+  '@tanstack/solid-store@0.7.3(solid-js@1.9.7)':
     dependencies:
-      '@tanstack/store': 0.7.1
+      '@tanstack/store': 0.7.2
       solid-js: 1.9.7
 
   '@tanstack/start-client-core@1.121.16':
@@ -14882,11 +14882,11 @@ snapshots:
       - supports-color
       - vite
 
-  '@tanstack/store@0.7.1': {}
+  '@tanstack/store@0.7.2': {}
 
-  '@tanstack/svelte-store@0.7.1(svelte@5.34.3)':
+  '@tanstack/svelte-store@0.7.3(svelte@5.34.3)':
     dependencies:
-      '@tanstack/store': 0.7.1
+      '@tanstack/store': 0.7.2
       svelte: 5.34.3
 
   '@tanstack/typedoc-config@0.2.0(typescript@5.8.2)':
@@ -14912,9 +14912,9 @@ snapshots:
       - typescript
       - vite
 
-  '@tanstack/vue-store@0.7.1(vue@3.5.16(typescript@5.8.3))':
+  '@tanstack/vue-store@0.7.3(vue@3.5.16(typescript@5.8.3))':
     dependencies:
-      '@tanstack/store': 0.7.1
+      '@tanstack/store': 0.7.2
       vue: 3.5.16(typescript@5.8.3)
       vue-demi: 0.14.10(vue@3.5.16(typescript@5.8.3))
 

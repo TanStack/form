@@ -51,7 +51,7 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/store": "^0.7.1"
+    "@tanstack/store": "^0.7.2"
   },
   "devDependencies": {
     "arktype": "^2.1.20",
