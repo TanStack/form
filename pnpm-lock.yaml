@@ -674,6 +674,25 @@ importers:
         specifier: ^2.11.6
         version: 2.11.6(@testing-library/jest-dom@6.6.3)(solid-js@1.9.7)(vite@6.3.5(@types/node@22.15.29)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.5))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
 
+  examples/solid/large-form:
+    dependencies:
+      '@tanstack/solid-form':
+        specifier: ^1.12.4
+        version: link:../../../packages/solid-form
+      solid-js:
+        specifier: ^1.9.7
+        version: 1.9.7
+    devDependencies:
+      typescript:
+        specifier: 5.8.2
+        version: 5.8.2
+      vite:
+        specifier: ^6.3.5
+        version: 6.3.5(@types/node@22.15.29)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.5))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite-plugin-solid:
+        specifier: ^2.11.6
+        version: 2.11.6(@testing-library/jest-dom@6.6.3)(solid-js@1.9.7)(vite@6.3.5(@types/node@22.15.29)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.5))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
+
   examples/solid/simple:
     dependencies:
       '@tanstack/solid-form':
