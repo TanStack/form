@@ -1,11 +1,11 @@
-// import { useStore } from '@tanstack/solid-form'
-import { useFieldContext } from '../hooks/form-context.tsx'
 import { For } from 'solid-js'
+import { useStore } from '@tanstack/solid-form'
+import { useFieldContext } from '../hooks/form-context.tsx'
 
 export default function TextField(props: { label: string }) {
   const field = useFieldContext<string>()
 
-  // const errors = useStore(field().store, (state) => state.meta.errors)
+  const errors = useStore(field().store, (state) => state.meta.errors)
 
   return (
     <div>
@@ -16,11 +16,7 @@ export default function TextField(props: { label: string }) {
           onChange={(e) => field().handleChange(e.target.value)}
         />
       </label>
-      {/*
-        For some reason using `errors` from the store doesn't work as intended and shows the same error for all fields
-        But If you make a change it works correctly after the hot reload
-      */}
-      <For each={field().state.meta.errors}>
+      <For each={errors()}>
         {(error) => <div style={{ color: 'red' }}>{error}</div>}
       </For>
     </div>
