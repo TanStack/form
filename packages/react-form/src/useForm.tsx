@@ -1,6 +1,6 @@
-import { FormApi, evaluate, functionalUpdate } from '@tanstack/form-core'
+import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
@@ -210,21 +210,12 @@ export function useForm<
 
   useIsomorphicLayoutEffect(formApi.mount, [])
 
-  useStore(formApi.store, (state) => state.isSubmitting)
-
-  // stable reference of form options, needs to be tracked so form.update is only called
-  // when props are changed.
-  const stableOptsRef = useRef<typeof opts>(opts)
-
   /**
    * formApi.update should not have any side effects. Think of it like a `useRef`
    * that we need to keep updated every render with the most up-to-date information.
    */
   useIsomorphicLayoutEffect(() => {
-    if (!evaluate(opts, stableOptsRef.current)) {
-      stableOptsRef.current = opts
-      formApi.update(opts)
-    }
+    formApi.update(opts)
   })
 
   return formApi

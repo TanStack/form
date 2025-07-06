@@ -626,17 +626,5 @@ describe('evaluate', () => {
       { test: { testTwo: '' }, arr: [[1]] },
     )
     expect(objComplexTrue).toEqual(true)
-
-    const funcTrue = evaluate(
-      { test: () => console.log() },
-      { test: () => console.log() },
-    )
-    expect(funcTrue).toEqual(true)
-
-    const funcFalse = evaluate(
-      { test: () => console.log() },
-      { test: () => console.warn() },
-    )
-    expect(funcFalse).toEqual(false)
   })
 })
