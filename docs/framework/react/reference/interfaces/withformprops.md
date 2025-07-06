@@ -39,7 +39,7 @@ Defined in: [packages/react-form/src/createFormHook.tsx:173](https://github.com/
 
 • **TFormComponents** *extends* `Record`\<`string`, `ComponentType`\<`any`\>\>
 
-• **TRenderProps** *extends* `Record`\<`string`, `unknown`\> = `Record`\<`string`, `never`\>
+• **TRenderProps** *extends* `object` = `Record`\<`string`, `never`\>
 
 ## Properties
 
