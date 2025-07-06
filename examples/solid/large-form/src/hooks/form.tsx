@@ -8,7 +8,9 @@ function SubscribeButton(props: { label: string }) {
   const form = useFormContext()
   return (
     <form.Subscribe selector={(state) => state.isSubmitting}>
-      {(isSubmitting) => <button disabled={isSubmitting()}>{props.label}</button>}
+      {(isSubmitting) => (
+        <button disabled={isSubmitting()}>{props.label}</button>
+      )}
     </form.Subscribe>
   )
 }
