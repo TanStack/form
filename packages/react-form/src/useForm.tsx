@@ -193,7 +193,7 @@ export function useForm<
     extendedApi.Field = function APIField(props) {
       return <Field {...props} form={api} />
     }
-    extendedApi.Subscribe = (props: any) => {
+    extendedApi.Subscribe = function Subscribe(props: any) {
       return (
         <LocalSubscribe
           form={api}
