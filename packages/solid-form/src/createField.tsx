@@ -2,7 +2,6 @@ import { FieldApi } from '@tanstack/form-core'
 import {
   createComponent,
   createComputed,
-  createMemo,
   createSignal,
   onCleanup,
   onMount,
@@ -17,7 +16,7 @@ import type {
   Narrow,
 } from '@tanstack/form-core'
 
-import type { JSXElement } from 'solid-js'
+import type { Accessor, Component, JSX, JSXElement } from 'solid-js'
 import type { CreateFieldOptions, CreateFieldOptionsBound } from './types'
 
 interface SolidFieldApi<
@@ -359,7 +358,8 @@ interface FieldComponentBoundProps<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TParentSubmitMeta,
+  TPatentSubmitMeta,
+  ExtendedApi = {},
 > extends CreateFieldOptionsBound<
     TParentData,
     TName,
@@ -373,43 +373,56 @@ interface FieldComponentBoundProps<
     TOnSubmitAsync
   > {
   children: (
-    fieldApi: () => FieldApi<
-      TParentData,
-      TName,
-      TData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TFormOnMount,
-      TFormOnChange,
-      TFormOnChangeAsync,
-      TFormOnBlur,
-      TFormOnBlurAsync,
-      TFormOnSubmit,
-      TFormOnSubmitAsync,
-      TFormOnServer,
-      TParentSubmitMeta
-    >,
-  ) => JSXElement
+    fieldApi: Accessor<
+      FieldApi<
+        TParentData,
+        TName,
+        TData,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TFormOnMount,
+        TFormOnChange,
+        TFormOnChangeAsync,
+        TFormOnBlur,
+        TFormOnBlurAsync,
+        TFormOnSubmit,
+        TFormOnSubmitAsync,
+        TFormOnServer,
+        TPatentSubmitMeta
+      >
+    > &
+      ExtendedApi,
+  ) => JSX.Element
 }
 
+/**
+ * A type alias representing a field component for a specific form data type.
+ */
 export type FieldComponent<
-  TParentData,
-  TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
-  TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TParentSubmitMeta,
+  in out TParentData,
+  in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChangeAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnBlurAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnSubmitAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TPatentSubmitMeta,
+  in out ExtendedApi = {},
 > = <
-  TName extends DeepKeys<TParentData>,
+  const TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
@@ -446,8 +459,9 @@ export type FieldComponent<
   TFormOnSubmit,
   TFormOnSubmitAsync,
   TFormOnServer,
-  TParentSubmitMeta
->) => JSXElement
+  TPatentSubmitMeta,
+  ExtendedApi
+>) => JSX.Element
 
 interface FieldComponentProps<
   TParentData,
