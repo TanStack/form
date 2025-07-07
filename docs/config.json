@@ -191,6 +191,10 @@
             {
               "label": "Arrays",
               "to": "framework/angular/guides/arrays"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/angular/guides/form-composition"
             }
           ]
         },
@@ -216,6 +220,10 @@
             {
               "label": "Linked Fields",
               "to": "framework/solid/guides/linked-fields"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/solid/guides/form-composition"
             }
           ]
         },
@@ -568,6 +576,10 @@
             {
               "label": "Arrays",
               "to": "framework/angular/examples/array"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/angular/examples/large-form"
             }
           ]
         },
@@ -581,6 +593,10 @@
             {
               "label": "Arrays",
               "to": "framework/solid/examples/array"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/solid/examples/large-form"
             }
           ]
         },

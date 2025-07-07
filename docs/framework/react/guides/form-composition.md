@@ -302,12 +302,12 @@ const { useAppForm, withForm } = createFormHook({
 ```tsx
 // src/App.tsx
 import { Suspense } from 'react'
-import { PeoplePage } from './features/people/page.tsx'
+import { PeoplePage } from './features/people/form.tsx'
 
 export default function App() {
   return (
     <Suspense fallback={<p>Loading...</p>}>
-      <PeopleForm />
+      <PeoplePage />
     </Suspense>
   )
 }

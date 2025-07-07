@@ -95,7 +95,7 @@ withForm: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync
 
 • **TSubmitMeta**
 
-• **TRenderProps** *extends* `Record`\<`string`, `unknown`\> = \{\}
+• **TRenderProps** *extends* `object` = \{\}
 
 #### Parameters
 

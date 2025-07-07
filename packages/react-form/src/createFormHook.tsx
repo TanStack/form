@@ -183,7 +183,7 @@ export interface WithFormProps<
   TSubmitMeta,
   TFieldComponents extends Record<string, ComponentType<any>>,
   TFormComponents extends Record<string, ComponentType<any>>,
-  TRenderProps extends Record<string, unknown> = Record<string, never>,
+  TRenderProps extends object = Record<string, never>,
 > extends FormOptions<
     TFormData,
     TOnMount,
@@ -270,15 +270,16 @@ export function createFormHook<
     const form = useForm(props)
 
     const AppForm = useMemo(() => {
-      return (({ children }) => {
+      const AppForm = (({ children }) => {
         return (
           <formContext.Provider value={form}>{children}</formContext.Provider>
         )
       }) as ComponentType<PropsWithChildren>
+      return AppForm
     }, [form])
 
     const AppField = useMemo(() => {
-      return (({ children, ...props }) => {
+      const AppField = (({ children, ...props }) => {
         return (
           <form.Field {...props}>
             {(field) => (
@@ -302,6 +303,7 @@ export function createFormHook<
         TSubmitMeta,
         TComponents
       >
+      return AppField
     }, [form])
 
     const extendedForm = useMemo(() => {
@@ -326,7 +328,7 @@ export function createFormHook<
     TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
     TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
     TSubmitMeta,
-    TRenderProps extends Record<string, unknown> = {},
+    TRenderProps extends object = {},
   >({
     render,
     props,
