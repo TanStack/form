@@ -370,3 +370,52 @@ describe('TanStackFieldDirective', () => {
     expect(getByText(onBlurError)).toBeInTheDocument()
   })
 })
+
+describe('form should reset default value when resetting in onSubmit', () => {
+  it('should be able to handle async resets', async () => {
+    @Component({
+      selector: 'test-component',
+      standalone: true,
+      template: `
+        <ng-container [tanstackField]="form" name="name" #f="field">
+          <input
+            data-testid="fieldinput"
+            [value]="f.api.state.value"
+            (input)="f.api.handleChange($any($event).target.value)"
+          />
+        </ng-container>
+        <button
+          type="button"
+          (click)="form.handleSubmit()"
+          data-testid="submit"
+        >
+          submit
+        </button>
+      `,
+      imports: [TanStackField],
+    })
+    class TestComponent {
+      form = injectForm({
+        defaultValues: {
+          name: '',
+        },
+        onSubmit: ({ value }) => {
+          expect(value).toEqual({ name: 'test' })
+          this.form.reset({ name: 'test' })
+        },
+      })
+    }
+
+    const { getByTestId } = await render(TestComponent)
+
+    const input = getByTestId('fieldinput')
+    const submit = getByTestId('submit')
+
+    await user.type(input, 'test')
+    await expect(input).toHaveValue('test')
+
+    await user.click(submit)
+
+    await expect(input).toHaveValue('test')
+  })
+})
