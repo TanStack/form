@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/react-form",
-  "version": "1.13.2",
+  "version": "1.14.0",
   "description": "Powerful, type-safe forms for React.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -82,7 +82,7 @@
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/react-store": "^0.7.1",
+    "@tanstack/react-store": "^0.7.3",
     "decode-formdata": "^0.9.0",
     "devalue": "^5.1.1"
   },

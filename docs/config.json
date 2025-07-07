@@ -220,6 +220,10 @@
             {
               "label": "Linked Fields",
               "to": "framework/solid/guides/linked-fields"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/solid/guides/form-composition"
             }
           ]
         },
@@ -589,6 +593,10 @@
             {
               "label": "Arrays",
               "to": "framework/solid/examples/array"
+            },
+            {
+              "label": "Form Composition",
+              "to": "framework/solid/examples/large-form"
             }
           ]
         },

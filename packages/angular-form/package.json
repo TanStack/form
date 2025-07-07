@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/angular-form",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "description": "Powerful, type-safe forms for Angular.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -42,7 +42,7 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/angular-store": "^0.7.1",
+    "@tanstack/angular-store": "^0.7.3",
     "@tanstack/form-core": "workspace:*",
     "tslib": "^2.8.1"
   },
