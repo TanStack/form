@@ -11,7 +11,12 @@ import type {
   FormValidateOrFn,
 } from '@tanstack/form-core'
 import type { FunctionComponent, ReactNode } from 'react'
-import type { UseFieldOptions, UseFieldOptionsBound } from './types'
+import type {
+  AppFieldComponents,
+  AppFieldComponentsOfType,
+  UseFieldOptions,
+  UseFieldOptionsBound,
+} from './types'
 
 interface ReactFieldApi<
   TParentData,
@@ -23,7 +28,7 @@ interface ReactFieldApi<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TPatentSubmitMeta,
+  TParentSubmitMeta,
 > {
   /**
    * A pre-bound and type-safe sub-field component using this field as a root.
@@ -38,7 +43,7 @@ interface ReactFieldApi<
     TFormOnSubmit,
     TFormOnSubmitAsync,
     TFormOnServer,
-    TPatentSubmitMeta
+    TParentSubmitMeta
   >
 }
 
@@ -57,7 +62,7 @@ export type UseField<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TPatentSubmitMeta,
+  TParentSubmitMeta,
 > = <
   TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
@@ -106,7 +111,7 @@ export type UseField<
   TFormOnSubmit,
   TFormOnSubmitAsync,
   TFormOnServer,
-  TPatentSubmitMeta
+  TParentSubmitMeta
 >
 
 /**
@@ -140,7 +145,7 @@ export function useField<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TPatentSubmitMeta,
+  TParentSubmitMeta,
 >(
   opts: UseFieldOptions<
     TParentData,
@@ -161,7 +166,7 @@ export function useField<
     TFormOnSubmit,
     TFormOnSubmitAsync,
     TFormOnServer,
-    TPatentSubmitMeta
+    TParentSubmitMeta
   >,
 ) {
   const [fieldApi] = useState(() => {
@@ -182,7 +187,7 @@ export function useField<
         TFormOnSubmit,
         TFormOnSubmitAsync,
         TFormOnServer,
-        TPatentSubmitMeta
+        TParentSubmitMeta
       > = api as never
 
     extendedApi.Field = Field as never
@@ -243,8 +248,8 @@ interface FieldComponentProps<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TPatentSubmitMeta,
-  ExtendedApi = {},
+  TParentSubmitMeta,
+  ExtendedApi extends AppFieldComponents = {},
 > extends UseFieldOptions<
     TParentData,
     TName,
@@ -264,7 +269,7 @@ interface FieldComponentProps<
     TFormOnSubmit,
     TFormOnSubmitAsync,
     TFormOnServer,
-    TPatentSubmitMeta
+    TParentSubmitMeta
   > {
   children: (
     fieldApi: FieldApi<
@@ -286,9 +291,9 @@ interface FieldComponentProps<
       TFormOnSubmit,
       TFormOnSubmitAsync,
       TFormOnServer,
-      TPatentSubmitMeta
+      TParentSubmitMeta
     > &
-      ExtendedApi,
+      AppFieldComponentsOfType<TData, ExtendedApi>,
   ) => ReactNode
 }
 
@@ -317,8 +322,8 @@ interface FieldComponentBoundProps<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TPatentSubmitMeta,
-  ExtendedApi = {},
+  TParentSubmitMeta,
+  ExtendedApi extends AppFieldComponents = {},
 > extends UseFieldOptionsBound<
     TParentData,
     TName,
@@ -351,9 +356,9 @@ interface FieldComponentBoundProps<
       TFormOnSubmit,
       TFormOnSubmitAsync,
       TFormOnServer,
-      TPatentSubmitMeta
+      TParentSubmitMeta
     > &
-      ExtendedApi,
+      AppFieldComponentsOfType<TData, ExtendedApi>,
   ) => ReactNode
 }
 
@@ -376,8 +381,8 @@ export type FieldComponent<
     | undefined
     | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  in out TPatentSubmitMeta,
-  in out ExtendedApi = {},
+  in out TParentSubmitMeta,
+  in out ExtendedApi extends AppFieldComponents = {},
 > = <
   const TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
@@ -416,7 +421,7 @@ export type FieldComponent<
   TFormOnSubmit,
   TFormOnSubmitAsync,
   TFormOnServer,
-  TPatentSubmitMeta,
+  TParentSubmitMeta,
   ExtendedApi
 >) => ReactNode
 
@@ -450,7 +455,7 @@ export const Field = (<
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
-  TPatentSubmitMeta,
+  TParentSubmitMeta,
 >({
   children,
   ...fieldOptions
@@ -473,7 +478,7 @@ export const Field = (<
   TFormOnSubmit,
   TFormOnSubmitAsync,
   TFormOnServer,
-  TPatentSubmitMeta
+  TParentSubmitMeta
 >): ReactNode => {
   const fieldApi = useField(fieldOptions as any)
 
