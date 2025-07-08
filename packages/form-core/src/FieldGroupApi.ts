@@ -456,8 +456,6 @@ export class FieldGroupApi<
     return this.form.resetField(this.getFormFieldName(field))
   }
 
-  reset = () => this.form.reset()
-
   validateAllFields = (cause: ValidationCause) =>
     this.form.validateAllFields(cause)
 }
