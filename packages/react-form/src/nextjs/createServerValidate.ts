@@ -96,20 +96,41 @@ export const createServerValidate =
       validationSource: 'form',
     })) as UnwrapFormAsyncValidateOrFn<TOnServer> | undefined
 
+    console.log('ON SERVER ERROR', onServerError)
+
     if (!onServerError) return values
 
-    const onServerErrorVal = (
-      isGlobalFormValidationError(onServerError)
-        ? onServerError.form
-        : onServerError
-    ) as UnwrapFormAsyncValidateOrFn<TOnServer>
+    let onServerErrorVal = undefined
+    let onServerErrorValFields = undefined
+
+    if (isGlobalFormValidationError(onServerError)) {
+      onServerErrorVal =
+        onServerError.form as UnwrapFormAsyncValidateOrFn<TOnServer>
+      onServerErrorValFields =
+        onServerError.fields as UnwrapFormAsyncValidateOrFn<TOnServer>
+    } else {
+      onServerErrorVal = onServerError as UnwrapFormAsyncValidateOrFn<TOnServer>
+    }
+
+    // Extract string values from errors if they're in object format
+    const errorsArray = onServerErrorVal
+      ? Array.isArray(onServerErrorVal)
+        ? onServerErrorVal.map((err) =>
+            typeof err === 'object' ? Object.values(err)[0] : err,
+          )
+        : [
+            typeof onServerErrorVal === 'object'
+              ? Object.values(onServerErrorVal)[0]
+              : onServerErrorVal,
+          ]
+      : []
 
     const formState: ServerFormState<TFormData, TOnServer> = {
       errorMap: {
-        onServer: onServerError,
+        onServer: onServerErrorValFields,
       },
       values,
-      errors: onServerErrorVal ? [onServerErrorVal] : [],
+      errors: errorsArray,
     }
 
     throw new ServerValidateError({
