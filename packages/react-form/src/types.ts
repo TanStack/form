@@ -12,10 +12,7 @@ import type { ComponentType } from 'react'
 
 declare const dataTagFieldValueSymbol: unique symbol
 
-/**
- * @private
- */
-export type AnyDataTag = {
+type AnyDataTag = {
   [dataTagFieldValueSymbol]: any
 }
 
