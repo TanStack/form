@@ -1,6 +1,6 @@
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
@@ -191,10 +191,12 @@ export function useForm<
       TOnServer,
       TSubmitMeta
     > = api as never
+
     extendedApi.Field = function APIField(props) {
       return <Field {...props} form={api} />
     }
-    extendedApi.Subscribe = (props: any) => {
+
+    extendedApi.Subscribe = function Subscribe(props: any) {
       return (
         <LocalSubscribe
           form={api}
@@ -208,8 +210,6 @@ export function useForm<
   })
 
   useIsomorphicLayoutEffect(formApi.mount, [])
-
-  useStore(formApi.store, (state) => state.isSubmitting)
 
   /**
    * formApi.update should not have any side effects. Think of it like a `useRef`

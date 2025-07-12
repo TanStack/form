@@ -1,7 +1,15 @@
 import { defineConfig } from 'vitest/config'
+import angular from '@analogjs/vite-plugin-angular'
+import tsconfigPaths from 'vite-tsconfig-paths'
 import packageJson from './package.json'
 
-export default defineConfig({
+const tsconfigPath = 'tsconfig.spec.json'
+
+export default defineConfig(({ mode }) => ({
+  plugins: [
+    tsconfigPaths({ projects: [tsconfigPath] }),
+    angular({ tsconfig: tsconfigPath }),
+  ],
   test: {
     name: packageJson.name,
     dir: './tests',
@@ -13,4 +21,7 @@ export default defineConfig({
     globals: true,
     restoreMocks: true,
   },
-})
+  define: {
+    'import.meta.vitest': mode !== 'production',
+  },
+}))

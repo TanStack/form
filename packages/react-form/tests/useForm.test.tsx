@@ -794,4 +794,64 @@ describe('useForm', () => {
 
     expect(fn).toHaveBeenCalledTimes(1)
   })
+
+  it('form should reset default value when resetting in onSubmit', async () => {
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          name: '',
+        },
+        onSubmit: ({ value }) => {
+          expect(value).toEqual({ name: 'another-test' })
+
+          form.reset(value)
+        },
+      })
+
+      return (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            form.handleSubmit()
+          }}
+        >
+          <form.Field
+            name="name"
+            children={(field) => (
+              <input
+                data-testid="fieldinput"
+                name={field.name}
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            )}
+          />
+
+          <button type="submit" data-testid="submit">
+            submit
+          </button>
+
+          <button type="reset" data-testid="reset" onClick={() => form.reset()}>
+            Reset
+          </button>
+        </form>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    const input = getByTestId('fieldinput')
+    const submit = getByTestId('submit')
+    const reset = getByTestId('reset')
+
+    await user.type(input, 'test')
+    await waitFor(() => expect(input).toHaveValue('test'))
+
+    await user.click(reset)
+    await waitFor(() => expect(input).toHaveValue(''))
+
+    await user.type(input, 'another-test')
+    await user.click(submit)
+    await waitFor(() => expect(input).toHaveValue('another-test'))
+  })
 })

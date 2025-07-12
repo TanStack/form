@@ -819,4 +819,43 @@ describe('createFormHook', () => {
     // @ts-expect-error because the types don't match properly
     const Component5 = <FieldGroup form={form} fields="nope2" />
   })
+
+  it('should allow interfaces without index signatures to be assigned to `props` in withForm', () => {
+    interface TestNoSignature {
+      title: string
+    }
+
+    interface TestWithSignature {
+      title: string
+      [key: string]: unknown
+    }
+
+    const WithFormComponent1 = withForm({
+      defaultValues: { name: '' },
+      props: {} as TestNoSignature,
+      render: () => <></>,
+    })
+
+    const WithFormComponent2 = withForm({
+      defaultValues: { name: '' },
+      props: {} as TestWithSignature,
+      render: () => <></>,
+    })
+
+    const appForm = useAppForm({ defaultValues: { name: '' } })
+
+    const Component1 = <WithFormComponent1 title="" form={appForm} />
+    const Component2 = (
+      <WithFormComponent2 title="" something="else" form={appForm} />
+    )
+  })
+
+  it('should not allow null as prop in withForm', () => {
+    const WithFormComponent = withForm({
+      defaultValues: { name: '' },
+      // @ts-expect-error
+      props: null,
+      render: () => <></>,
+    })
+  })
 })

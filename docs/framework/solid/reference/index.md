@@ -10,6 +10,7 @@ title: "@tanstack/solid-form"
 ## Interfaces
 
 - [SolidFormApi](../interfaces/solidformapi.md)
+- [WithFormProps](../interfaces/withformprops.md)
 
 ## Type Aliases
 
@@ -20,5 +21,7 @@ title: "@tanstack/solid-form"
 
 - [createField](../functions/createfield.md)
 - [createForm](../functions/createform.md)
+- [createFormHook](../functions/createformhook.md)
+- [createFormHookContexts](../functions/createformhookcontexts.md)
 - [Field](../functions/field.md)
 - [useStore](../functions/usestore.md)

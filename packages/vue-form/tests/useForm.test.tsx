@@ -476,4 +476,55 @@ describe('useForm', () => {
     await waitFor(() => getByText(error))
     expect(getByText(error)).toBeInTheDocument()
   })
+
+  it('form should reset default value when resetting in onSubmit', async () => {
+    const Comp = defineComponent(() => {
+      const form = useForm({
+        defaultValues: {
+          name: '',
+        },
+        onSubmit: ({ value }) => {
+          expect(value).toEqual({ name: 'test' })
+
+          form.reset({ name: 'test' })
+        },
+      })
+
+      return () => (
+        <div>
+          <form.Field name="name">
+            {({ field }: { field: AnyFieldApi }) => (
+              <input
+                data-testid="fieldinput"
+                name={field.name}
+                value={field.state.value}
+                onInput={(e) =>
+                  field.handleChange((e.target as HTMLInputElement).value)
+                }
+              />
+            )}
+          </form.Field>
+
+          <button
+            type="button"
+            onClick={() => form.handleSubmit()}
+            data-testid="submit"
+          >
+            submit
+          </button>
+        </div>
+      )
+    })
+
+    const { getByTestId } = render(<Comp />)
+    const input = getByTestId('fieldinput')
+    const submit = getByTestId('submit')
+
+    await user.type(input, 'test')
+    await waitFor(() => expect(input).toHaveValue('test'))
+
+    await user.click(submit)
+
+    await waitFor(() => expect(input).toHaveValue('test'))
+  })
 })

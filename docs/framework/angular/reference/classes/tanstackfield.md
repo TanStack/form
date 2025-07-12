@@ -7,7 +7,11 @@ title: TanStackField
 
 # Class: TanStackField\<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer, TSubmitMeta\>
 
-Defined in: [tanstack-field.directive.ts:31](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L31)
+Defined in: [tanstack-field.ts:37](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L37)
+
+## Extended by
+
+- [`TanStackAppField`](../tanstackappfield.md)
 
 ## Type Parameters
 
@@ -52,9 +56,6 @@ Defined in: [tanstack-field.directive.ts:31](https://github.com/TanStack/form/bl
 ## Implements
 
 - `OnInit`
-- `OnChanges`
-- `OnDestroy`
-- `FieldOptions`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`\>
 
 ## Constructors
 
@@ -64,237 +65,175 @@ Defined in: [tanstack-field.directive.ts:31](https://github.com/TanStack/form/bl
 new TanStackField<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer, TSubmitMeta>(): TanStackField<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer, TSubmitMeta>
 ```
 
+Defined in: [tanstack-field.ts:202](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L202)
+
 #### Returns
 
 [`TanStackField`](../tanstackfield.md)\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`, `TSubmitMeta`\>
 
 ## Properties
 
-### api
+### \_api
 
 ```ts
-api: FieldApi<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer, TSubmitMeta>;
+_api: Signal<FieldApi<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer, TSubmitMeta>>;
 ```
 
-Defined in: [tanstack-field.directive.ts:129](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L129)
+Defined in: [tanstack-field.ts:137](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L137)
 
 ***
 
-### asyncAlways?
+### asyncAlways
 
 ```ts
-optional asyncAlways: boolean;
+asyncAlways: InputSignalWithTransform<boolean, unknown>;
 ```
 
-Defined in: [tanstack-field.directive.ts:78](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L78)
-
-If `true`, always run async validation, even if there are errors emitted during synchronous validation.
-
-#### Implementation of
-
-```ts
-FieldOptions.asyncAlways
-```
+Defined in: [tanstack-field.ts:70](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L70)
 
 ***
 
-### asyncDebounceMs?
+### asyncDebounceMs
 
 ```ts
-optional asyncDebounceMs: number;
+asyncDebounceMs: InputSignalWithTransform<number, unknown>;
 ```
 
-Defined in: [tanstack-field.directive.ts:77](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L77)
-
-The default time to debounce async validation if there is not a more specific debounce time passed.
-
-#### Implementation of
-
-```ts
-FieldOptions.asyncDebounceMs
-```
+Defined in: [tanstack-field.ts:67](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L67)
 
 ***
 
-### defaultMeta?
+### cd
 
 ```ts
-optional defaultMeta: Partial<FieldMeta<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync>>;
+cd: ChangeDetectorRef;
 ```
 
-Defined in: [tanstack-field.directive.ts:106](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L106)
-
-An optional object with default metadata for the field.
-
-#### Implementation of
-
-```ts
-FieldOptions.defaultMeta
-```
+Defined in: [tanstack-field.ts:216](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L216)
 
 ***
 
-### defaultValue?
+### defaultMeta
 
 ```ts
-optional defaultValue: NoInfer<TData>;
+defaultMeta: InputSignal<
+  | undefined
+| Partial<FieldMeta<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync>>>;
 ```
 
-Defined in: [tanstack-field.directive.ts:76](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L76)
-
-An optional default value for the field.
-
-#### Implementation of
-
-```ts
-FieldOptions.defaultValue
-```
+Defined in: [tanstack-field.ts:108](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L108)
 
 ***
 
-### disableErrorFlat?
+### defaultValue
 
 ```ts
-optional disableErrorFlat: boolean;
+defaultValue: InputSignal<undefined | NoInfer<TData>>;
 ```
 
-Defined in: [tanstack-field.directive.ts:127](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L127)
-
-Disable the `flat(1)` operation on `field.errors`. This is useful if you want to keep the error structure as is. Not suggested for most use-cases.
-
-#### Implementation of
-
-```ts
-FieldOptions.disableErrorFlat
-```
+Defined in: [tanstack-field.ts:66](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L66)
 
 ***
 
-### listeners?
+### disableErrorFlat
 
 ```ts
-optional listeners: NoInfer<FieldListeners<TParentData, TName, TData>>;
+disableErrorFlat: InputSignal<undefined | boolean>;
 ```
 
-Defined in: [tanstack-field.directive.ts:105](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L105)
+Defined in: [tanstack-field.ts:135](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L135)
 
-A list of listeners which attach to the corresponding events
+***
 
-#### Implementation of
+### injector
 
 ```ts
-FieldOptions.listeners
+injector: Injector;
 ```
+
+Defined in: [tanstack-field.ts:200](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L200)
+
+***
+
+### listeners
+
+```ts
+listeners: InputSignal<
+  | undefined
+| NoInfer<FieldListeners<TParentData, TName, TData>>>;
+```
+
+Defined in: [tanstack-field.ts:107](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L107)
+
+***
+
+### mode
+
+```ts
+mode: InputSignal<undefined | "value" | "array">;
+```
+
+Defined in: [tanstack-field.ts:133](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L133)
 
 ***
 
 ### name
 
 ```ts
-name: TName;
+name: InputSignal<TName>;
 ```
 
-Defined in: [tanstack-field.directive.ts:75](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L75)
+Defined in: [tanstack-field.ts:65](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L65)
 
-The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
+***
 
-#### Implementation of
+### options
 
 ```ts
-FieldOptions.name
+options: Signal<FieldApiOptions<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer, TSubmitMeta>>;
 ```
+
+Defined in: [tanstack-field.ts:165](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L165)
 
 ***
 
 ### tanstackField
 
 ```ts
-tanstackField: FormApi<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer, TSubmitMeta>;
+tanstackField: InputSignal<FormApi<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer, TSubmitMeta>>;
 ```
 
-Defined in: [tanstack-field.directive.ts:79](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L79)
+Defined in: [tanstack-field.ts:73](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L73)
 
 ***
 
-### unmount()?
+### validators
 
 ```ts
-optional unmount: () => void;
+validators: InputSignal<
+  | undefined
+| NoInfer<FieldValidators<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync>>>;
 ```
 
-Defined in: [tanstack-field.directive.ts:185](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L185)
+Defined in: [tanstack-field.ts:89](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L89)
 
-#### Returns
+## Accessors
 
-`void`
+### api
 
-***
-
-### validators?
+#### Get Signature
 
 ```ts
-optional validators: NoInfer<FieldValidators<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync>>;
+get api(): FieldApi<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer, TSubmitMeta>
 ```
 
-Defined in: [tanstack-field.directive.ts:91](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L91)
+Defined in: [tanstack-field.ts:141](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L141)
 
-A list of validators to pass to the field
+##### Returns
 
-#### Implementation of
-
-```ts
-FieldOptions.validators
-```
+`FieldApi`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`, `TSubmitMeta`\>
 
 ## Methods
-
-### ngOnChanges()
-
-```ts
-ngOnChanges(): void
-```
-
-Defined in: [tanstack-field.directive.ts:197](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L197)
-
-A callback method that is invoked immediately after the
-default change detector has checked data-bound properties
-if at least one has changed, and before the view and content
-children are checked.
-
-#### Returns
-
-`void`
-
-#### Implementation of
-
-```ts
-OnChanges.ngOnChanges
-```
-
-***
-
-### ngOnDestroy()
-
-```ts
-ngOnDestroy(): void
-```
-
-Defined in: [tanstack-field.directive.ts:193](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L193)
-
-A callback method that performs custom clean-up, invoked immediately
-before a directive, pipe, or service instance is destroyed.
-
-#### Returns
-
-`void`
-
-#### Implementation of
-
-```ts
-OnDestroy.ngOnDestroy
-```
-
-***
 
 ### ngOnInit()
 
@@ -302,7 +241,7 @@ OnDestroy.ngOnDestroy
 ngOnInit(): void
 ```
 
-Defined in: [tanstack-field.directive.ts:187](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.directive.ts#L187)
+Defined in: [tanstack-field.ts:218](https://github.com/TanStack/form/blob/main/packages/angular-form/src/tanstack-field.ts#L218)
 
 A callback method that is invoked immediately after the
 default change detector has checked the directive's
