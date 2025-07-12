@@ -1,5 +1,6 @@
 import { useAppForm } from '../../hooks/form.tsx'
 import { AddressFields } from './address-fields.tsx'
+import { FieldGroupEmergencyContact } from './emergency-contact.tsx'
 import { peopleFormOpts } from './shared-form.tsx'
 
 export const PeoplePage = () => {
@@ -57,14 +58,8 @@ export const PeoplePage = () => {
       />
       <AddressFields form={form} />
       <h2>Emergency Contact</h2>
-      <form.AppField
-        name="emergencyContact.fullName"
-        children={(field) => <field.TextField label="Full Name" />}
-      />
-      <form.AppField
-        name="emergencyContact.phone"
-        children={(field) => <field.TextField label="Phone" />}
-      />
+      <FieldGroupEmergencyContact form={form} fields="emergencyContact" />
+
       <form.AppForm>
         <form.SubscribeButton label="Submit" />
       </form.AppForm>
