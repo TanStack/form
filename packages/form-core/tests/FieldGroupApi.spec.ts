@@ -118,7 +118,7 @@ describe('field group api', () => {
     fieldGroup.setFieldValue('age', 100)
 
     expect(fieldGroup.state.values).toEqual(form.state.values.relatives.father)
-    fieldGroup.reset()
+    fieldGroup.form.reset()
 
     expect(fieldGroup.state.values).toEqual(form.state.values.relatives.father)
   })
