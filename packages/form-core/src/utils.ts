@@ -171,8 +171,14 @@ export function makePathArray(str: string | Array<string | number>) {
       .replace(reMultipleDots, '.')
       .split('.')
       .map((d) => {
-        if (d.indexOf(intPrefix) === 0) {
-          return parseInt(d.substring(intPrefix.length), 10)
+        if (d.startsWith(intPrefix)) {
+          const numStr = d.substring(intPrefix.length)
+          const num = parseInt(numStr, 10)
+
+          if (String(num) === numStr) {
+            return num
+          }
+          return numStr
         }
         return d
       })
