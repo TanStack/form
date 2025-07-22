@@ -195,6 +195,8 @@ export interface FormValidators<
   onBlurAsyncDebounceMs?: number
   onSubmit?: TOnSubmit
   onSubmitAsync?: TOnSubmitAsync
+  // TODO: Handle inferencing and return type inferencing
+  onDynamic?: undefined | FormValidateOrFn<TFormData>,
 }
 
 /**
@@ -387,6 +389,9 @@ export interface FormOptions<
     TOnSubmit,
     TOnSubmitAsync
   >
+
+  // TODO: Type this properly
+  validationLogic?: unknown;
 
   /**
    * form level listeners

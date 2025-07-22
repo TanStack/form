@@ -566,7 +566,11 @@ export type FieldMetaBase<
     UnwrapFieldAsyncValidateOrFn<TName, TOnBlurAsync, TFormOnBlurAsync>,
     UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>,
     UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>
-  >
+  > & {
+    // TODO: Type this properly
+    onDynamic?: StandardSchemaV1Issue[]
+  }
+
   /**
    * @private allows tracking the source of the errors in the error map
    */
