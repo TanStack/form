@@ -10,7 +10,13 @@ export type ValidationSource = 'form' | 'field'
  * "server" is only intended for SSR/SSG validation and should not execute anything
  * @private
  */
-export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount' | 'server' | 'dynamic'
+export type ValidationCause =
+  | 'change'
+  | 'blur'
+  | 'submit'
+  | 'mount'
+  | 'server'
+  | 'dynamic'
 
 /**
  * @private

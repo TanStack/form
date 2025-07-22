@@ -383,21 +383,23 @@ export function getSyncValidatorArrayWithLogic<T>(
         >
       >
     : never {
-    const runValidation = (props: Parameters<ValidationLogicProps['runValidation']>[0]) => {
-      return props.validators.filter(Boolean).map((validator) => {
-        return {
-          cause: props.cause,
-          validate: validator
-        }
-      })
-    }
-    
-    return options.validationLogic({
-      form: options.form,
-      validators: options.validators,
-      event: { type: cause },
-      runValidation
+  const runValidation = (
+    props: Parameters<ValidationLogicProps['runValidation']>[0],
+  ) => {
+    return props.validators.filter(Boolean).map((validator) => {
+      return {
+        cause: props.cause,
+        validate: validator,
+      }
     })
+  }
+
+  return options.validationLogic({
+    form: options.form,
+    validators: options.validators,
+    event: { type: cause },
+    runValidation,
+  })
 }
 
 export const isGlobalFormValidationError = (
