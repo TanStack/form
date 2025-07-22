@@ -101,8 +101,8 @@ export type UnwrapFormValidateOrFn<
 > = [TValidateOrFn] extends [FormValidateFn<any>]
   ? ExtractGlobalFormError<ReturnType<TValidateOrFn>>
   : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
-    ? Record<string, StandardSchemaV1Issue[]>
-    : undefined
+  ? Record<string, StandardSchemaV1Issue[]>
+  : undefined
 
 /**
  * @private
@@ -136,9 +136,9 @@ export type FormValidator<TFormData, TType, TFn = unknown> = {
 
 type ValidationPromiseResult<TFormData> =
   | {
-      fieldErrors: Partial<Record<DeepKeys<TFormData>, ValidationError>>
-      errorMapKey: ValidationErrorMapKeys
-    }
+    fieldErrors: Partial<Record<DeepKeys<TFormData>, ValidationError>>
+    errorMapKey: ValidationErrorMapKeys
+  }
   | undefined
 
 /**
@@ -153,8 +153,8 @@ export type UnwrapFormAsyncValidateOrFn<
 > = [TValidateOrFn] extends [FormValidateAsyncFn<any>]
   ? ExtractGlobalFormError<Awaited<ReturnType<TValidateOrFn>>>
   : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
-    ? Record<string, StandardSchemaV1Issue[]>
-    : undefined
+  ? Record<string, StandardSchemaV1Issue[]>
+  : undefined
 
 export interface FormValidators<
   TFormData,
@@ -663,27 +663,27 @@ export interface FormState<
   in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
 > extends BaseFormState<
-      TFormData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnServer
-    >,
-    DerivedFormState<
-      TFormData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnServer
-    > {}
+  TFormData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnServer
+>,
+  DerivedFormState<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer
+  > { }
 
 export type AnyFormState = FormState<
   any,
@@ -983,16 +983,16 @@ export class FormApi<
       fn: ({ prevDepVals, currDepVals, prevVal: _prevVal }) => {
         const prevVal = _prevVal as
           | FormState<
-              TFormData,
-              TOnMount,
-              TOnChange,
-              TOnChangeAsync,
-              TOnBlur,
-              TOnBlurAsync,
-              TOnSubmit,
-              TOnSubmitAsync,
-              TOnServer
-            >
+            TFormData,
+            TOnMount,
+            TOnChange,
+            TOnChangeAsync,
+            TOnBlur,
+            TOnBlurAsync,
+            TOnSubmit,
+            TOnSubmitAsync,
+            TOnServer
+          >
           | undefined
         const prevBaseStore = prevDepVals?.[0]
         const currBaseStore = currDepVals[0]
@@ -1025,8 +1025,8 @@ export class FormApi<
         const hasOnMountError = Boolean(
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           currBaseStore.errorMap?.onMount ||
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            fieldMetaValues.some((f) => f?.errorMap?.onMount),
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          fieldMetaValues.some((f) => f?.errorMap?.onMount),
         )
 
         const isValidating = !!isFieldsValidating
@@ -1159,8 +1159,8 @@ export class FormApi<
     TType extends 'validate' | 'validateAsync',
   >(props: {
     validate: TType extends 'validate'
-      ? FormValidateOrFn<TFormData>
-      : FormAsyncValidateOrFn<TFormData>
+    ? FormValidateOrFn<TFormData>
+    : FormAsyncValidateOrFn<TFormData>
     value: TValue
     type: TType
   }): unknown {
@@ -1242,8 +1242,8 @@ export class FormApi<
 
             shouldUpdateValues
               ? {
-                  values: options.defaultValues,
-                }
+                values: options.defaultValues,
+              }
               : {},
 
             shouldUpdateReeval
@@ -1446,12 +1446,6 @@ export class FormApi<
 
           const newFormValidatorError = fieldErrors?.[field]
 
-          if (!!newFormValidatorError) {
-            console.log(
-              `FormApi.validateSync: field "${field}" has a validation error for cause "${validateObj.cause}"`,
-              newFormValidatorError,)
-          }
-
           const { newErrorValue, newSource } =
             determineFormLevelErrorSourceAndValue({
               newFormValidatorError,
@@ -1461,13 +1455,6 @@ export class FormApi<
               // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
               previousErrorValue: currentErrorMap?.[errorMapKey],
             })
-
-            if (!!newFormValidatorError) {
-              console.log({
-                newErrorValue,
-                newSource,
-              })
-            }
 
           if (newSource === 'form') {
             currentValidationErrorMap[field] = {
@@ -1616,9 +1603,9 @@ export class FormApi<
           if (fieldErrorsFromNormalizeError) {
             fieldErrorsFromFormValidators = fieldErrorsFromFormValidators
               ? {
-                  ...fieldErrorsFromFormValidators,
-                  ...fieldErrorsFromNormalizeError,
-                }
+                ...fieldErrorsFromFormValidators,
+                ...fieldErrorsFromNormalizeError,
+              }
               : fieldErrorsFromNormalizeError
           }
           const errorMapKey = getErrorMapKey(validateObj.cause)
@@ -1729,6 +1716,17 @@ export class FormApi<
     cause: ValidationCause,
   ):
     | FormErrorMapFromValidator<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync
+    >
+    | Promise<
+      FormErrorMapFromValidator<
         TFormData,
         TOnMount,
         TOnChange,
@@ -1738,18 +1736,7 @@ export class FormApi<
         TOnSubmit,
         TOnSubmitAsync
       >
-    | Promise<
-        FormErrorMapFromValidator<
-          TFormData,
-          TOnMount,
-          TOnChange,
-          TOnChangeAsync,
-          TOnBlur,
-          TOnBlurAsync,
-          TOnSubmit,
-          TOnSubmitAsync
-        >
-      > => {
+    > => {
     // Attempt to sync validate first
     const { hasErrored, fieldsErrorMap } = this.validateSync(cause)
 

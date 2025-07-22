@@ -54,12 +54,15 @@ export function rhfValidationLogic(
         throw new Error(`Only 'onDynamic' validators are supported with 'rhfValidationLogic', but got '${validatorName}'`)
     }
 
+    // Allows us to clear onServer errors
+    const clearValidator = () => undefined;
+
     const validator = props.validators[validatorName];
     // Submission attempts are tracked before validation occurs
-    if (props.form.state.submissionAttempts === 1) {
+    if (props.form.state.submissionAttempts <= 1) {
         if (props.event.type !== 'submit') {
             return props.runValidation({
-                validators: [],
+                validators: [clearValidator],
                 form: props.form,
                 cause: 'dynamic',
             });
@@ -73,16 +76,16 @@ export function rhfValidationLogic(
     }
 
     // After submission, run validation on change events
-    if (props.event.type === "change") {
+    if (props.event.type === "change" || props.event.type === "submit") {
         return props.runValidation({
-            validators: [],
+            validators: [clearValidator, validator],
             form: props.form,
             cause: 'dynamic',
         });
     }
 
     return props.runValidation({
-        validators: [validator],
+        validators: [],
         form: props.form,
         cause: 'dynamic',
     });

@@ -42,7 +42,7 @@ describe('custom validation', () => {
         expect(field.state.meta.errorMap.onChange).toBe(undefined);
     });
 
-    it.only('rhf validation should work as-expected', async () => {
+    it('rhf validation should work as-expected', async () => {
         const form = new FormApi({
             defaultValues: {
                 name: '',
