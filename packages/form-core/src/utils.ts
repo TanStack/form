@@ -6,6 +6,7 @@ import type {
   ValidationError,
   ValidationSource,
 } from './types'
+import { defaultValidationLogic, ValidationLogicProps } from './ValidationLogic'
 
 export type UpdaterFn<TInput, TOutput = TInput> = (input: TInput) => TOutput
 
@@ -359,6 +360,44 @@ export function getSyncValidatorArray<T>(
     default:
       return [changeValidator, serverValidator] as never
   }
+}
+
+/**
+ * Enhanced version of getSyncValidatorArray that supports custom validation logic
+ * @private
+ */
+export function getSyncValidatorArrayWithLogic<T>(
+  cause: ValidationCause,
+  options: SyncValidatorArrayPartialOptions<T> & {
+    validationLogic?: any
+    form?: any
+  },
+): T extends FieldValidators<any, any, any, any, any, any, any, any, any, any>
+  ? Array<
+      SyncValidator<T['onChange'] | T['onBlur'] | T['onSubmit'] | T['onMount']>
+    >
+  : T extends FormValidators<any, any, any, any, any, any, any, any>
+    ? Array<
+        SyncValidator<
+          T['onChange'] | T['onBlur'] | T['onSubmit'] | T['onMount']
+        >
+      >
+    : never {
+    const runValidation = (props: Parameters<ValidationLogicProps['runValidation']>[0]) => {
+      return props.validators.filter(Boolean).map((validator) => {
+        return {
+          cause: props.cause,
+          validate: validator
+        }
+      })
+    }
+    
+    return options.validationLogic({
+      form: options.form,
+      validators: options.validators,
+      event: { type: cause },
+      runValidation
+    })
 }
 
 export const isGlobalFormValidationError = (

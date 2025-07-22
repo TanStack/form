@@ -10,7 +10,7 @@ export type ValidationSource = 'form' | 'field'
  * "server" is only intended for SSR/SSG validation and should not execute anything
  * @private
  */
-export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount' | 'server'
+export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount' | 'server' | 'dynamic'
 
 /**
  * @private
@@ -40,6 +40,7 @@ export type ValidationErrorMap<
   onBlur?: TOnBlurReturn | TOnBlurAsyncReturn
   onSubmit?: TOnSubmitReturn | TOnSubmitAsyncReturn
   onServer?: TOnServerReturn
+  onDynamic?: unknown
 }
 
 /**
@@ -51,6 +52,7 @@ export type ValidationErrorMapSource = {
   onBlur?: ValidationSource
   onSubmit?: ValidationSource
   onServer?: ValidationSource
+  onDynamic?: ValidationSource
 }
 
 /**
