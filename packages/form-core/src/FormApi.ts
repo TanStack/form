@@ -7,10 +7,12 @@ import {
   getAsyncValidatorArray,
   getBy,
   getSyncValidatorArray,
+  getSyncValidatorArrayWithLogic,
   isGlobalFormValidationError,
   isNonEmptyArray,
   setBy,
 } from './utils'
+import { defaultValidationLogic } from './ValidationLogic'
 
 import {
   isStandardSchemaValidator,
@@ -745,6 +747,7 @@ function getDefaultFormState<
       onSubmit: undefined,
       onMount: undefined,
       onServer: undefined,
+      onDynamic: undefined,
     },
   }
 }
@@ -1392,7 +1395,12 @@ export class FormApi<
       TOnSubmitAsync
     >
   } => {
-    const validates = getSyncValidatorArray(cause, this.options)
+    const validates = getSyncValidatorArrayWithLogic(cause, {
+      ...this.options,
+      form: this,
+      validationLogic: this.options.validationLogic || defaultValidationLogic
+    })
+
     let hasErrored = false as boolean
 
     // This map will only include fields that have errors in the current validation cycle
@@ -1438,6 +1446,12 @@ export class FormApi<
 
           const newFormValidatorError = fieldErrors?.[field]
 
+          if (!!newFormValidatorError) {
+            console.log(
+              `FormApi.validateSync: field "${field}" has a validation error for cause "${validateObj.cause}"`,
+              newFormValidatorError,)
+          }
+
           const { newErrorValue, newSource } =
             determineFormLevelErrorSourceAndValue({
               newFormValidatorError,
@@ -1447,6 +1461,13 @@ export class FormApi<
               // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
               previousErrorValue: currentErrorMap?.[errorMapKey],
             })
+
+            if (!!newFormValidatorError) {
+              console.log({
+                newErrorValue,
+                newSource,
+              })
+            }
 
           if (newSource === 'form') {
             currentValidationErrorMap[field] = {
@@ -1869,6 +1890,7 @@ export class FormApi<
         onSubmit: undefined,
         onMount: undefined,
         onServer: undefined,
+        onDynamic: undefined,
       },
     })
   }
@@ -2350,6 +2372,8 @@ function getErrorMapKey(cause: ValidationCause) {
       return 'onMount'
     case 'server':
       return 'onServer'
+    case "dynamic":
+      return 'onDynamic'
     case 'change':
     default:
       return 'onChange'

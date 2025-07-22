@@ -1,6 +1,6 @@
 import { AnyFormApi, FormValidators } from '../src/index'
 
-interface ValidationLogicProps {
+export interface ValidationLogicProps {
     // TODO: Type this properly
     form: AnyFormApi,
     // TODO: Type this properly
@@ -12,6 +12,8 @@ interface ValidationLogicProps {
     runValidation: (props: {
         validators: Array<FormValidators<any, any, any, any, any, any, any, any>[keyof FormValidators<any, any, any, any, any, any, any, any>]>
         form: AnyFormApi
+        // TODO: This should be on each validator 
+        cause?: 'change' | 'blur' | 'submit' | 'mount' | 'server' | 'dynamic'
     }) => void;
 }
 
@@ -33,10 +35,14 @@ interface ValidationLogicProps {
 export function rhfValidationLogic(
     props: ValidationLogicProps
 ) {
-    const validatorNames = Object.keys(props.validators);
+    const validatorNames = Object.keys(props.validators ?? {});
     if (validatorNames.length === 0) {
         // No validators is a valid case, just return
-        return;
+        return props.runValidation({
+            validators: [],
+            form: props.form,
+            cause: 'dynamic',
+        });
     }
 
     if (validatorNames.length > 1) {
@@ -49,31 +55,58 @@ export function rhfValidationLogic(
     }
 
     const validator = props.validators[validatorName];
-    if (props.form.state.submissionAttempts === 0) {
-        if (props.event.type !== 'submit') return;
+    // Submission attempts are tracked before validation occurs
+    if (props.form.state.submissionAttempts === 1) {
+        if (props.event.type !== 'submit') {
+            return props.runValidation({
+                validators: [],
+                form: props.form,
+                cause: 'dynamic',
+            });
+        }
+
         return props.runValidation({
             validators: [validator],
             form: props.form,
+            cause: 'dynamic',
         });
     }
 
-    if (props.event.type === "change") return;
+    // After submission, run validation on change events
+    if (props.event.type === "change") {
+        return props.runValidation({
+            validators: [],
+            form: props.form,
+            cause: 'dynamic',
+        });
+    }
 
     return props.runValidation({
         validators: [validator],
         form: props.form,
+        cause: 'dynamic',
     });
 }
 
 export function defaultValidationLogic(
     props: ValidationLogicProps
 ) {
+    // Handle case where no validators are provided
+    if (!props.validators) {
+        return props.runValidation({
+            validators: [],
+            form: props.form,
+            cause: props.event.type,
+        });
+    }
+
     switch (props.event.type) {
         case 'mount': {
             // Run mount validation
             return props.runValidation({
                 validators: [props.validators.onMount],
                 form: props.form,
+                cause: props.event.type,
             });
         }
         case 'submit': {
@@ -87,6 +120,7 @@ export function defaultValidationLogic(
                     (props.validators as any).onServer,
                 ],
                 form: props.form,
+                cause: props.event.type,
             });
         }
         case 'server': {
@@ -94,6 +128,7 @@ export function defaultValidationLogic(
             return props.runValidation({
                 validators: [(props.validators as any).onServer],
                 form: props.form,
+                cause: props.event.type,
             });
         }
         case 'blur': {
@@ -104,6 +139,7 @@ export function defaultValidationLogic(
                     (props.validators as any).onServer,
                 ],
                 form: props.form,
+                cause: props.event.type,
             });
         }
         case 'change': {
@@ -114,6 +150,7 @@ export function defaultValidationLogic(
                     (props.validators as any).onServer,
                 ],
                 form: props.form,
+                cause: props.event.type,
             });
         }
         default: {
