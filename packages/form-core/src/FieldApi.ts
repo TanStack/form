@@ -1360,7 +1360,8 @@ export class FieldApi<
     const validates = getSyncValidatorArrayWithLogic(cause, {
       ...this.options,
       form: this.form,
-      validationLogic: this.form.options.validationLogic || defaultValidationLogic
+      validationLogic:
+        this.form.options.validationLogic || defaultValidationLogic,
     })
 
     const linkedFields = this.getLinkedFields(cause)
@@ -1369,7 +1370,8 @@ export class FieldApi<
         const fieldValidates = getSyncValidatorArrayWithLogic(cause, {
           ...field.options,
           form: field.form,
-          validationLogic: field.form.options.validationLogic || defaultValidationLogic
+          validationLogic:
+            field.form.options.validationLogic || defaultValidationLogic,
         })
         fieldValidates.forEach((validate) => {
           ;(validate as any).field = field
