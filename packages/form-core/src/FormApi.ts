@@ -194,6 +194,8 @@ export interface FormValidators<
   onBlurAsyncDebounceMs?: number
   onSubmit?: TOnSubmit
   onSubmitAsync?: TOnSubmitAsync
+  // TODO: Handle inferencing and return type inferencing
+  onDynamic?: undefined | FormValidateOrFn<TFormData>,
 }
 
 /**
@@ -376,6 +378,9 @@ export interface FormOptions<
     TOnSubmit,
     TOnSubmitAsync
   >
+
+  // TODO: Type this properly
+  validationLogic?: unknown;
 
   /**
    * onSubmitMeta, the data passed from the handleSubmit handler, to the onSubmit function props
