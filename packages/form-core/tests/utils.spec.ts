@@ -133,6 +133,16 @@ describe('setBy', () => {
       ],
     ])
   })
+
+  it('should correctly set a value on a key with leading zeros', () => {
+    const initial = { name: 'test' }
+    const result = setBy(initial, '01234', 'some-value')
+
+    expect(result).toHaveProperty('01234')
+    expect(result['01234']).toBe('some-value')
+
+    expect(result).not.toHaveProperty('1234')
+  })
 })
 
 describe('deleteBy', () => {
@@ -222,6 +232,15 @@ describe('makePathArray', () => {
     expect(makePathArray('[0][1]')).toEqual([0, 1])
     expect(makePathArray('[2][3].a')).toEqual([2, 3, 'a'])
     expect(makePathArray('[4][5][6].b[7]')).toEqual([4, 5, 6, 'b', 7])
+  })
+
+  it('should preserve leading zeros on purely numeric strings', () => {
+    expect(makePathArray('01234')).toEqual(['01234'])
+    expect(makePathArray('007')).toEqual(['007'])
+  })
+
+  it('should still convert non-leading-zero numbers to number types', () => {
+    expect(makePathArray('12345')).toEqual([12345])
   })
 })
 
