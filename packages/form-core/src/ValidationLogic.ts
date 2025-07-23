@@ -1,10 +1,13 @@
-import { AnyFormApi, FormValidators } from '../src/index'
+import type { AnyFormApi, FormValidators } from './FormApi'
 
 export interface ValidationLogicProps {
   // TODO: Type this properly
   form: AnyFormApi
   // TODO: Type this properly
-  validators: FormValidators<any, any, any, any, any, any, any, any>
+  validators:
+    | FormValidators<any, any, any, any, any, any, any, any>
+    | undefined
+    | null
   event: {
     type: 'blur' | 'change' | 'submit' | 'mount' | 'server'
     fieldName?: string
@@ -79,7 +82,7 @@ export function rhfValidationLogic(props: ValidationLogicProps) {
   // Allows us to clear onServer errors
   const clearValidator = () => undefined
 
-  const validator = props.validators[validatorName]
+  const validator = props.validators![validatorName]
   // Submission attempts are tracked before validation occurs
   if (props.form.state.submissionAttempts <= 1) {
     if (props.event.type !== 'submit') {
