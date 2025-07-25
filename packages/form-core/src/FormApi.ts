@@ -1780,7 +1780,7 @@ export class FormApi<
 
     await this.validateAllFields('submit')
 
-    if (!this.state.isFieldsValid) {
+    if (!this.options.canSubmitWhenInvalid && !this.state.isFieldsValid) {
       done()
       this.options.onSubmitInvalid?.({
         value: this.state.values,
@@ -1792,7 +1792,7 @@ export class FormApi<
     await this.validate('submit')
 
     // Fields are invalid, do not submit
-    if (!this.state.isValid) {
+    if (!this.options.canSubmitWhenInvalid && !this.state.isValid) {
       done()
       this.options.onSubmitInvalid?.({
         value: this.state.values,
