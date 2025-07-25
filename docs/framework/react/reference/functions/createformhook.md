@@ -11,7 +11,7 @@ title: createFormHook
 function createFormHook<TComponents, TFormComponents>(__namedParameters): object
 ```
 
-Defined in: [packages/react-form/src/createFormHook.tsx:223](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L223)
+Defined in: [packages/react-form/src/createFormHook.tsx:266](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L266)
 
 ## Type Parameters
 
@@ -66,6 +66,66 @@ useAppForm: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsy
 #### Returns
 
 `AppFieldExtendedReactFormApi`\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`, `TComponents`, `TFormComponents`\>
+
+### withFieldGroup()
+
+```ts
+withFieldGroup: <TFieldGroupData, TSubmitMeta, TRenderProps>(__namedParameters) => <TFormData, TFields, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TFormSubmitMeta>(params) => Element;
+```
+
+#### Type Parameters
+
+• **TFieldGroupData**
+
+• **TSubmitMeta**
+
+• **TRenderProps** *extends* `Record`\<`string`, `unknown`\> = \{\}
+
+#### Parameters
+
+##### \_\_namedParameters
+
+[`WithFormLensProps`](../../interfaces/withformlensprops.md)\<`TFieldGroupData`, `TComponents`, `TFormComponents`, `TSubmitMeta`, `TRenderProps`\>
+
+#### Returns
+
+`Function`
+
+##### Type Parameters
+
+• **TFormData**
+
+• **TFields** *extends* 
+  \| `string`
+  \| \{ \[K in string \| number \| symbol\]: DeepKeysOfType\<TFormData, TFieldGroupData\[K\]\> \}
+
+• **TOnMount** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnChange** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnChangeAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TOnBlur** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnBlurAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TOnSubmit** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnSubmitAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TOnServer** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TFormSubmitMeta**
+
+##### Parameters
+
+###### params
+
+`PropsWithChildren`\<`NoInfer`\<`TRenderProps`\> & `object`\>
+
+##### Returns
+
+`Element`
 
 ### withForm()
 
