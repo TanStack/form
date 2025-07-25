@@ -188,6 +188,20 @@ export function makePathArray(str: string | Array<string | number>) {
 /**
  * @private
  */
+export function concatenatePaths(path1: string, path2: string): string {
+  if (path1.length === 0) return path2
+  if (path2.length === 0) return path1
+
+  if (path2.startsWith('[')) {
+    return path1 + path2
+  }
+
+  return `${path1}.${path2}`
+}
+
+/**
+ * @private
+ */
 export function isNonEmptyArray(obj: any) {
   return !(Array.isArray(obj) && obj.length === 0)
 }
@@ -459,4 +473,14 @@ export const determineFieldLevelErrorSourceAndValue = ({
   }
 
   return { newErrorValue: undefined, newSource: undefined }
+}
+
+export function createFieldMap<T>(values: Readonly<T>): { [K in keyof T]: K } {
+  const output: { [K in keyof T]: K } = {} as any
+
+  for (const key in values) {
+    output[key] = key
+  }
+
+  return output
 }

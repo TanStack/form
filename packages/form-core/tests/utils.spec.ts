@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, expectTypeOf, it } from 'vitest'
 import {
+  concatenatePaths,
+  createFieldMap,
   deleteBy,
   determineFieldLevelErrorSourceAndValue,
   determineFormLevelErrorSourceAndValue,
@@ -645,5 +647,77 @@ describe('evaluate', () => {
       { test: { testTwo: '' }, arr: [[1]] },
     )
     expect(objComplexTrue).toEqual(true)
+  })
+})
+
+describe('concatenatePaths', () => {
+  it('should concatenate two object accessors with dot', () => {
+    expect(concatenatePaths('user', 'name')).toBe('user.name')
+  })
+
+  it('should join array accessor and object path directly', () => {
+    expect(concatenatePaths('users', '[0]')).toBe('users[0]')
+  })
+
+  it('should join object accessor after array accessor with dot', () => {
+    expect(concatenatePaths('users[0]', 'name')).toBe('users[0].name')
+  })
+
+  it('should append array accessor after array accessor directly', () => {
+    expect(concatenatePaths('users[0]', '[1]')).toBe('users[0][1]')
+  })
+
+  it('should join object accessor after object accessor with dot', () => {
+    expect(concatenatePaths('profile', 'settings.theme')).toBe(
+      'profile.settings.theme',
+    )
+    expect(concatenatePaths('settings.theme', 'profile')).toBe(
+      'settings.theme.profile',
+    )
+  })
+
+  it('should handle empty paths', () => {
+    expect(concatenatePaths('', 'name')).toBe('name')
+    expect(concatenatePaths('user', '')).toBe('user')
+    expect(concatenatePaths('', '')).toBe('')
+  })
+
+  it('should handle complex nesting with array and object accessors', () => {
+    expect(concatenatePaths('data[0].items[2]', 'value')).toBe(
+      'data[0].items[2].value',
+    )
+    expect(concatenatePaths('data', '[1].value')).toBe('data[1].value')
+  })
+})
+
+describe('createFieldMap', () => {
+  it('should return an empty object when given an empty object', () => {
+    const result = createFieldMap({})
+    expect(result).toEqual({})
+    expectTypeOf(result).toEqualTypeOf<{}>()
+  })
+
+  it('should map each key to its own name as a string', () => {
+    const input = { a: 1, b: 2 }
+    const result = createFieldMap(input)
+    expect(result).toEqual({ a: 'a', b: 'b' })
+    expectTypeOf(result).toEqualTypeOf<{ a: 'a'; b: 'b' }>()
+  })
+
+  it('should handle keys with special characters or numbers', () => {
+    const input = { '1key': 42, 'space key': 'x' }
+    const result = createFieldMap(input)
+    expect(result).toEqual({ '1key': '1key', 'space key': 'space key' })
+    expectTypeOf(result).toEqualTypeOf<{
+      '1key': '1key'
+      'space key': 'space key'
+    }>()
+  })
+
+  it('should not mutate the input object', () => {
+    const input = { a: 1 }
+    const copy = { ...input }
+    createFieldMap(input)
+    expect(input).toEqual(copy)
   })
 })
