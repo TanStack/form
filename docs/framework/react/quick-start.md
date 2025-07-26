@@ -5,7 +5,7 @@ title: Quick Start
 
 TanStack Form is unlike most form libraries you've used before. It's designed for large-scale production usage, with a focus on type safety, performance and composition for an unmatched developer experience.
 
-As a result, we've developed [a philosophy around the library's usage](/form/latest/docs/philosophy) that values scalability and long-term developer experience over short and sharable code snippets.
+As a result, we've developed [a philosophy around the library's usage](../../../philosophy.md) that values scalability and long-term developer experience over short and sharable code snippets.
 
 Here's an example of a form following many of our best practices, which will allow you to rapidly develop even high-complexity forms after a short onboarding experience:
 

@@ -5,7 +5,7 @@
     "type": "git",
     "url": "https://github.com/tanstack/form.git"
   },
-  "packageManager": "pnpm@10.12.1",
+  "packageManager": "pnpm@10.13.1",
   "type": "module",
   "scripts": {
     "clean": "pnpm --filter \"./packages/**\" run clean",
@@ -27,10 +27,9 @@
     "dev": "pnpm run watch",
     "prettier": "prettier --ignore-unknown .",
     "prettier:write": "pnpm run prettier --write",
-    "docs:generate": "node scripts/generateDocs.js",
-    "cipublish": "node scripts/publish.js",
-    "cipublishforce": "CI=true pnpm cipublish",
-    "verify-links": "node scripts/verify-links.ts"
+    "docs:generate": "node scripts/generateDocs.ts",
+    "verify-links": "node scripts/verify-links.ts",
+    "cipublish": "node scripts/publish.ts"
   },
   "nx": {
     "includedScripts": [
@@ -46,19 +45,19 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@testing-library/vue": "^8.1.0",
-    "@types/node": "^22.10.6",
+    "@types/node": "^24.1.0",
     "@vitest/coverage-istanbul": "^3.2.3",
     "eslint": "9.29.0",
     "eslint-plugin-react-hooks": "^5.2.0",
-    "fast-glob": "^3.3.3",
     "jsdom": "^26.1.0",
     "knip": "^5.61.0",
     "markdown-link-extractor": "^4.0.2",
-    "nx": "20.8.2",
+    "nx": "21.3.7",
     "premove": "^4.0.0",
-    "prettier": "^3.5.3",
+    "prettier": "^3.6.2",
     "publint": "^0.3.12",
     "sherif": "^1.5.0",
+    "tinyglobby": "^0.2.14",
     "typescript": "5.8.2",
     "typescript54": "npm:typescript@5.8.3",
     "typescript55": "npm:typescript@5.8.3",

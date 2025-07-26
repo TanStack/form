@@ -250,7 +250,7 @@ const ChildForm = withForm({
 
 ## Reusing groups of fields in multiple forms
 
-Sometimes, a pair of fields are so closely related that it makes sense to group and reuse them — like the password example listed in the [linked fields guide](./linked-fields.md). Instead of repeating this logic across multiple forms, you can utilize the `withFieldGroup` higher-order component.
+Sometimes, a pair of fields are so closely related that it makes sense to group and reuse them — like the password example listed in the [linked fields guide](../linked-fields.md). Instead of repeating this logic across multiple forms, you can utilize the `withFieldGroup` higher-order component.
 
 > Unlike `withForm`, validators cannot be specified and could be any value.
 > Ensure that your fields can accept unknown error types.
