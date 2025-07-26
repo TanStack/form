@@ -9,7 +9,7 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-form": "^1.14.2",
+    "@tanstack/react-form": "^1.15.0",
     "arktype": "^2.1.20",
     "effect": "^3.16.7",
     "react": "^19.0.0",
