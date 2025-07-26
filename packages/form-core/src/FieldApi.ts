@@ -9,7 +9,9 @@ import {
   getAsyncValidatorArray,
   getBy,
   getSyncValidatorArray,
+  getSyncValidatorArrayWithLogic,
 } from './utils'
+import { defaultValidationLogic } from './ValidationLogic'
 import type { DeepKeys, DeepValue, UnwrapOneLevelOfArray } from './util-types'
 import type {
   StandardSchemaV1,
@@ -566,7 +568,11 @@ export type FieldMetaBase<
     UnwrapFieldAsyncValidateOrFn<TName, TOnBlurAsync, TFormOnBlurAsync>,
     UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>,
     UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>
-  >
+  > & {
+    // TODO: Type this properly
+    onDynamic?: StandardSchemaV1Issue[]
+  }
+
   /**
    * @private allows tracking the source of the errors in the error map
    */
@@ -1351,12 +1357,22 @@ export class FieldApi<
     cause: ValidationCause,
     errorFromForm: ValidationErrorMap,
   ) => {
-    const validates = getSyncValidatorArray(cause, this.options)
+    const validates = getSyncValidatorArrayWithLogic(cause, {
+      ...this.options,
+      form: this.form,
+      validationLogic:
+        this.form.options.validationLogic || defaultValidationLogic,
+    })
 
     const linkedFields = this.getLinkedFields(cause)
     const linkedFieldValidates = linkedFields.reduce(
       (acc, field) => {
-        const fieldValidates = getSyncValidatorArray(cause, field.options)
+        const fieldValidates = getSyncValidatorArrayWithLogic(cause, {
+          ...field.options,
+          form: field.form,
+          validationLogic:
+            field.form.options.validationLogic || defaultValidationLogic,
+        })
         fieldValidates.forEach((validate) => {
           ;(validate as any).field = field
         })

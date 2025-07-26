@@ -7,10 +7,12 @@ import {
   getAsyncValidatorArray,
   getBy,
   getSyncValidatorArray,
+  getSyncValidatorArrayWithLogic,
   isGlobalFormValidationError,
   isNonEmptyArray,
   setBy,
 } from './utils'
+import { defaultValidationLogic } from './ValidationLogic'
 
 import {
   isStandardSchemaValidator,
@@ -195,6 +197,8 @@ export interface FormValidators<
   onBlurAsyncDebounceMs?: number
   onSubmit?: TOnSubmit
   onSubmitAsync?: TOnSubmitAsync
+  // TODO: Handle inferencing and return type inferencing
+  onDynamic?: undefined | FormValidateOrFn<TFormData>
 }
 
 /**
@@ -387,6 +391,9 @@ export interface FormOptions<
     TOnSubmit,
     TOnSubmitAsync
   >
+
+  // TODO: Type this properly
+  validationLogic?: unknown
 
   /**
    * form level listeners
@@ -746,6 +753,7 @@ function getDefaultFormState<
       onSubmit: undefined,
       onMount: undefined,
       onServer: undefined,
+      onDynamic: undefined,
     },
   }
 }
@@ -1394,7 +1402,12 @@ export class FormApi<
       TOnSubmitAsync
     >
   } => {
-    const validates = getSyncValidatorArray(cause, this.options)
+    const validates = getSyncValidatorArrayWithLogic(cause, {
+      ...this.options,
+      form: this,
+      validationLogic: this.options.validationLogic || defaultValidationLogic,
+    })
+
     let hasErrored = false as boolean
 
     // This map will only include fields that have errors in the current validation cycle
@@ -1871,6 +1884,7 @@ export class FormApi<
         onSubmit: undefined,
         onMount: undefined,
         onServer: undefined,
+        onDynamic: undefined,
       },
     })
   }
@@ -2352,6 +2366,8 @@ function getErrorMapKey(cause: ValidationCause) {
       return 'onMount'
     case 'server':
       return 'onServer'
+    case 'dynamic':
+      return 'onDynamic'
     case 'change':
     default:
       return 'onChange'
