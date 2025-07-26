@@ -1,7 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: 🤔 Feature Requests & Questions
-    url: https://github.com/TanStack/virtual/discussions
+    url: https://github.com/TanStack/form/discussions
     about: Please ask and answer questions here.
   - name: 💬 Community Chat
     url: https://discord.gg/mQd7egN
