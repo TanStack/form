@@ -3289,7 +3289,7 @@ describe('form api', () => {
   })
 
   it('should call onSubmitInvalid, when the form is invalid, with canSubmitWhenInvalid', async () => {
-    const onSubmitInvalidMock = vi.fn();
+    const onSubmitInvalidMock = vi.fn()
     const form = new FormApi({
       defaultValues: {
         firstName: '',
@@ -3305,12 +3305,12 @@ describe('form api', () => {
           }
         },
       },
-      onSubmitInvalid: onSubmitInvalidMock
+      onSubmitInvalid: onSubmitInvalidMock,
     })
     form.mount()
     expect(form.state.isValid).toBe(false)
     await form.handleSubmit()
-    expect(onSubmitInvalidMock).toHaveBeenCalled();
+    expect(onSubmitInvalidMock).toHaveBeenCalled()
   })
 
   it('should pass the current values to the Standard Schema when calling parseValuesWithSchemaAsync', async () => {
