@@ -3288,6 +3288,31 @@ describe('form api', () => {
     expect(successResult).toBeUndefined()
   })
 
+  it('should call onSubmitInvalid, when the form is invalid, with canSubmitWhenInvalid', async () => {
+    const onSubmitInvalidMock = vi.fn();
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+      },
+      canSubmitWhenInvalid: true,
+      validators: {
+        onMount: () => {
+          return {
+            form: 'something went wrong',
+            fields: {
+              firstName: 'first name is required',
+            },
+          }
+        },
+      },
+      onSubmitInvalid: onSubmitInvalidMock
+    })
+    form.mount()
+    expect(form.state.isValid).toBe(false)
+    await form.handleSubmit()
+    expect(onSubmitInvalidMock).toHaveBeenCalled();
+  })
+
   it('should pass the current values to the Standard Schema when calling parseValuesWithSchemaAsync', async () => {
     vi.useFakeTimers()
 
