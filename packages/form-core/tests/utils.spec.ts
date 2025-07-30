@@ -688,6 +688,10 @@ describe('concatenatePaths', () => {
     )
     expect(concatenatePaths('data', '[1].value')).toBe('data[1].value')
   })
+
+  it('should not duplicate dots if the second path starts with one', () => {
+    expect(concatenatePaths('foo', '.bar')).toBe('foo.bar')
+  })
 })
 
 describe('createFieldMap', () => {
