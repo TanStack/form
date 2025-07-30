@@ -888,4 +888,35 @@ describe('field group api', () => {
       'Error',
     ])
   })
+
+  it('should generate form field names properly with nested objects', () => {
+    // https://github.com/TanStack/form/issues/1645
+    const form = new FormApi({
+      defaultValues: {
+        complexValue: {
+          prop1: 0,
+          prop2: 0,
+        },
+      },
+    })
+    form.mount()
+
+    const group = new FieldGroupApi({
+      defaultValues: {
+        complexValue: {
+          prop1: 0,
+          prop2: 0,
+        },
+      },
+      form,
+      fields: {
+        complexValue: 'complexValue',
+      },
+    })
+    group.mount()
+
+    expect(group.getFormFieldName('complexValue.prop1')).toBe(
+      'complexValue.prop1',
+    )
+  })
 })
