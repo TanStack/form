@@ -11,7 +11,7 @@
     "@remix-run/node": "^2.16.8",
     "@remix-run/react": "^2.16.8",
     "@remix-run/serve": "^2.16.8",
-    "@tanstack/react-form": "^1.15.0",
+    "@tanstack/react-form": "^1.15.1",
     "@tanstack/react-store": "^0.7.3",
     "isbot": "^5.1.28",
     "react": "^19.0.0",
