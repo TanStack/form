@@ -196,6 +196,11 @@ export function concatenatePaths(path1: string, path2: string): string {
     return path1 + path2
   }
 
+  // In cases where parent and child withFieldGroup forms are both nested
+  if (path2.startsWith('.')) {
+    return path1 + path2
+  }
+
   return `${path1}.${path2}`
 }
 
