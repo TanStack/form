@@ -281,7 +281,7 @@ importers:
   examples/react/array:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.15.1
+        specifier: ^1.15.2
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -306,7 +306,7 @@ importers:
   examples/react/compiler:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.15.1
+        specifier: ^1.15.2
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -337,7 +337,7 @@ importers:
   examples/react/field-errors-from-form-validators:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.15.1
+        specifier: ^1.15.2
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -362,7 +362,7 @@ importers:
   examples/react/large-form:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.15.1
+        specifier: ^1.15.2
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -387,7 +387,7 @@ importers:
   examples/react/next-server-actions:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.15.1
+        specifier: ^1.15.2
         version: link:../../../packages/react-form
       '@tanstack/react-store':
         specifier: ^0.7.3
@@ -418,7 +418,7 @@ importers:
   examples/react/query-integration:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.15.1
+        specifier: ^1.15.2
         version: link:../../../packages/react-form
       '@tanstack/react-query':
         specifier: ^5.80.7
@@ -455,7 +455,7 @@ importers:
         specifier: ^2.16.8
         version: 2.16.8(typescript@5.8.2)
       '@tanstack/react-form':
-        specifier: ^1.15.1
+        specifier: ^1.15.2
         version: link:../../../packages/react-form
       '@tanstack/react-store':
         specifier: ^0.7.3
@@ -492,7 +492,7 @@ importers:
   examples/react/simple:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.15.1
+        specifier: ^1.15.2
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -517,7 +517,7 @@ importers:
   examples/react/standard-schema:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.15.1
+        specifier: ^1.15.2
         version: link:../../../packages/react-form
       arktype:
         specifier: ^2.1.20
@@ -554,7 +554,7 @@ importers:
   examples/react/tanstack-start:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.15.1
+        specifier: ^1.15.2
         version: link:../../../packages/react-form
       '@tanstack/react-router':
         specifier: ^1.121.16
@@ -615,7 +615,7 @@ importers:
         specifier: 6.4.12
         version: 6.4.12(@emotion/react@11.14.0(@types/react@19.1.6)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.6)(react@19.1.0))(@types/react@19.1.6)(react@19.1.0))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@tanstack/react-form':
-        specifier: ^1.15.1
+        specifier: ^1.15.2
         version: link:../../../packages/react-form
       '@yme/lay-postcss':
         specifier: 0.1.0
