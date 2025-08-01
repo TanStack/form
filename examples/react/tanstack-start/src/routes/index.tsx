@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { mergeForm, useForm, useTransform } from '@tanstack/react-form'
 import { useStore } from '@tanstack/react-store'
-import { getFormDataFromServer, handleForm } from '~/utils/form'
-import { formOpts } from '~/utils/form-isomorphic'
+import { getFormDataFromServer, handleForm } from 'src/utils/form'
+import { formOpts } from 'src/utils/form-isomorphic'
 
 export const Route = createFileRoute('/')({
   component: Home,
