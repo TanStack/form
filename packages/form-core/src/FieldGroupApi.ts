@@ -458,4 +458,43 @@ export class FieldGroupApi<
 
   validateAllFields = (cause: ValidationCause) =>
     this.form.validateAllFields(cause)
+
+  /**
+   * Remaps field validator listener paths to their full form paths.
+   */
+  remapFieldProps = <TProps extends { validators?: any }>(
+    props: TProps,
+  ): TProps => {
+    const newProps = { ...props }
+    const validators = newProps.validators
+
+    if (
+      validators &&
+      (validators.onChangeListenTo || validators.onBlurListenTo)
+    ) {
+      const newValidators = { ...validators }
+
+      const remapListenTo = (listenTo: DeepKeys<any>[] | undefined) => {
+        if (!listenTo) return undefined
+        return listenTo.map((localFieldName) =>
+          this.getFormFieldName(localFieldName),
+        )
+      }
+
+      if (newValidators.onChangeListenTo) {
+        newValidators.onChangeListenTo = remapListenTo(
+          newValidators.onChangeListenTo,
+        )
+      }
+      if (newValidators.onBlurListenTo) {
+        newValidators.onBlurListenTo = remapListenTo(
+          newValidators.onBlurListenTo,
+        )
+      }
+
+      newProps.validators = newValidators
+    }
+
+    return newProps
+  }
 }

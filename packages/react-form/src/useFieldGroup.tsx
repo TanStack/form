@@ -198,7 +198,7 @@ export function useFieldGroup<
       return (
         <form.AppField
           name={formLensApi.getFormFieldName(name)}
-          {...(appFieldProps as any)}
+          {...formLensApi.remapFieldProps(appFieldProps as any)}
         />
       ) as never
     }
@@ -207,7 +207,7 @@ export function useFieldGroup<
       return (
         <form.Field
           name={formLensApi.getFormFieldName(name)}
-          {...(fieldProps as any)}
+          {...formLensApi.remapFieldProps(fieldProps as any)}
         />
       ) as never
     }

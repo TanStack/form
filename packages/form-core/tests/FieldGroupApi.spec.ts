@@ -919,4 +919,57 @@ describe('field group api', () => {
       'complexValue.prop1',
     )
   })
+
+  it('should remap listener paths with its remapFieldProps method', () => {
+    const form = new FormApi({
+      defaultValues: {
+        account: {
+          password: '',
+          confirmPassword: '',
+        },
+        userPassword: '',
+        userConfirmPassword: '',
+      },
+    })
+    form.mount()
+
+    const fieldGroupString = new FieldGroupApi({
+      form,
+      fields: 'account',
+      defaultValues: { password: '', confirmPassword: '' },
+    })
+    fieldGroupString.mount()
+
+    const props1 = {
+      validators: {
+        onChangeListenTo: ['password'],
+        onBlurListenTo: ['confirmPassword'],
+      },
+    }
+    const remappedProps1 = fieldGroupString.remapFieldProps(props1)
+    expect(remappedProps1.validators.onChangeListenTo).toEqual([
+      'account.password',
+    ])
+    expect(remappedProps1.validators.onBlurListenTo).toEqual([
+      'account.confirmPassword',
+    ])
+
+    const fieldGroupObject = new FieldGroupApi({
+      form,
+      fields: {
+        password: 'userPassword',
+        confirmPassword: 'userConfirmPassword',
+      },
+      defaultValues: { password: '', confirmPassword: '' },
+    })
+    fieldGroupObject.mount()
+
+    const props2 = {
+      validators: {
+        onChangeListenTo: ['password'],
+      },
+    }
+    const remappedProps2 = fieldGroupObject.remapFieldProps(props2)
+    expect(remappedProps2.validators.onChangeListenTo).toEqual(['userPassword'])
+  })
 })
