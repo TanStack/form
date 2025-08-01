@@ -18,6 +18,10 @@ import type { FieldComponent } from './useField'
 import type { ReactFormExtendedApi } from './useForm'
 import type { AppFieldExtendedReactFieldGroupApi } from './useFieldGroup'
 
+// We should never hit the `null` case here
+const fieldContext = createContext<AnyFieldApi>(null as never)
+const formContext = createContext<AnyFormApi>(null as never)
+
 /**
  * TypeScript inferencing is weird.
  *
@@ -56,9 +60,6 @@ type UnwrapDefaultOrAny<DefaultT, T> = [DefaultT] extends [T]
   : T
 
 export function createFormHookContexts() {
-  // We should never hit the `null` case here
-  const fieldContext = createContext<AnyFieldApi>(null as never)
-
   function useFieldContext<TData>() {
     const field = useContext(fieldContext)
 
@@ -91,9 +92,6 @@ export function createFormHookContexts() {
       any
     >
   }
-
-  // We should never hit the `null` case here
-  const formContext = createContext<AnyFormApi>(null as never)
 
   function useFormContext() {
     const form = useContext(formContext)
