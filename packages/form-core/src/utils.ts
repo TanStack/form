@@ -171,12 +171,37 @@ export function makePathArray(str: string | Array<string | number>) {
       .replace(reMultipleDots, '.')
       .split('.')
       .map((d) => {
-        if (d.indexOf(intPrefix) === 0) {
-          return parseInt(d.substring(intPrefix.length), 10)
+        if (d.startsWith(intPrefix)) {
+          const numStr = d.substring(intPrefix.length)
+          const num = parseInt(numStr, 10)
+
+          if (String(num) === numStr) {
+            return num
+          }
+          return numStr
         }
         return d
       })
   )
+}
+
+/**
+ * @private
+ */
+export function concatenatePaths(path1: string, path2: string): string {
+  if (path1.length === 0) return path2
+  if (path2.length === 0) return path1
+
+  if (path2.startsWith('[')) {
+    return path1 + path2
+  }
+
+  // In cases where parent and child withFieldGroup forms are both nested
+  if (path2.startsWith('.')) {
+    return path1 + path2
+  }
+
+  return `${path1}.${path2}`
 }
 
 /**
@@ -453,4 +478,14 @@ export const determineFieldLevelErrorSourceAndValue = ({
   }
 
   return { newErrorValue: undefined, newSource: undefined }
+}
+
+export function createFieldMap<T>(values: Readonly<T>): { [K in keyof T]: K } {
+  const output: { [K in keyof T]: K } = {} as any
+
+  for (const key in values) {
+    output[key] = key
+  }
+
+  return output
 }

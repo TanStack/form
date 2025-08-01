@@ -10,13 +10,17 @@ title: "@tanstack/form-core"
 ## Classes
 
 - [FieldApi](../classes/fieldapi.md)
+- [FieldGroupApi](../classes/fieldgroupapi.md)
 - [FormApi](../classes/formapi.md)
 
 ## Interfaces
 
 - [AnyDeepKeyAndValue](../interfaces/anydeepkeyandvalue.md)
 - [ArrayDeepKeyAndValue](../interfaces/arraydeepkeyandvalue.md)
+- [BaseFormOptions](../interfaces/baseformoptions.md)
 - [FieldApiOptions](../interfaces/fieldapioptions.md)
+- [FieldGroupOptions](../interfaces/fieldgroupoptions.md)
+- [FieldGroupState](../interfaces/fieldgroupstate.md)
 - [FieldListeners](../interfaces/fieldlisteners.md)
 - [FieldOptions](../interfaces/fieldoptions.md)
 - [FieldValidators](../interfaces/fieldvalidators.md)
@@ -34,6 +38,7 @@ title: "@tanstack/form-core"
 - [AllObjectKeys](../type-aliases/allobjectkeys.md)
 - [AllTupleKeys](../type-aliases/alltuplekeys.md)
 - [AnyFieldApi](../type-aliases/anyfieldapi.md)
+- [AnyFieldGroupApi](../type-aliases/anyfieldgroupapi.md)
 - [AnyFieldMeta](../type-aliases/anyfieldmeta.md)
 - [AnyFieldMetaBase](../type-aliases/anyfieldmetabase.md)
 - [AnyFieldMetaDerived](../type-aliases/anyfieldmetaderived.md)
@@ -56,6 +61,7 @@ title: "@tanstack/form-core"
 - [FieldMeta](../type-aliases/fieldmeta.md)
 - [FieldMetaBase](../type-aliases/fieldmetabase.md)
 - [FieldMetaDerived](../type-aliases/fieldmetaderived.md)
+- [FieldsMap](../type-aliases/fieldsmap.md)
 - [FieldState](../type-aliases/fieldstate.md)
 - [FormValidateFn](../type-aliases/formvalidatefn.md)
 - [FormValidationError](../type-aliases/formvalidationerror.md)
@@ -84,6 +90,7 @@ title: "@tanstack/form-core"
 
 ## Functions
 
+- [createFieldMap](../functions/createfieldmap.md)
 - [evaluate](../functions/evaluate.md)
 - [formOptions](../functions/formoptions.md)
 - [isGlobalFormValidationError](../functions/isglobalformvalidationerror.md)

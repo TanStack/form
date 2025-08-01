@@ -11,7 +11,7 @@ title: ExtractGlobalFormError
 type ExtractGlobalFormError<TFormError> = TFormError extends GlobalFormValidationError<any> ? TFormError["form"] : TFormError;
 ```
 
-Defined in: [packages/form-core/src/types.ts:106](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L106)
+Defined in: [packages/form-core/src/types.ts:108](https://github.com/TanStack/form/blob/main/packages/form-core/src/types.ts#L108)
 
 ## Type Parameters
 

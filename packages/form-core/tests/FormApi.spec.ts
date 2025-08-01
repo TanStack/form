@@ -120,6 +120,25 @@ describe('form api', () => {
     })
   })
 
+  it('form should reset default value when resetting in onSubmit', async () => {
+    const defaultValues = {
+      name: '',
+    }
+    const form = new FormApi({
+      defaultValues: defaultValues,
+      onSubmit: ({ value }) => {
+        form.reset(value)
+
+        expect(form.options.defaultValues).toMatchObject({
+          name: 'test',
+        })
+      },
+    })
+    form.mount()
+    form.setFieldValue('name', 'test')
+    form.handleSubmit()
+  })
+
   it('should reset and set the new default values that are restored after an empty reset', () => {
     const form = new FormApi({ defaultValues: { name: 'initial' } })
     form.mount()
@@ -3792,6 +3811,62 @@ it('should reset nested array fields', () => {
   form.resetField('nested.arr[0].name')
   expect(form.state.values.nested.arr[0]?.name).toEqual('')
   expect(form.state.values.nested.arr[1]?.test).toEqual('array-test-changed')
+})
+
+it('should preserve nested fields on resetField if defaultValues is not provided', () => {
+  const state = {
+    shallow: '',
+    nested: {
+      field: {
+        name: '',
+      },
+    },
+  }
+
+  const form = new FormApi({
+    defaultState: { values: state },
+  })
+  form.mount()
+
+  form.setFieldValue('shallow', 'Shallow')
+  form.setFieldValue('nested.field.name', 'Nested')
+
+  expect(form.state.values.shallow).toEqual('Shallow')
+  expect(form.state.values.nested.field.name).toEqual('Nested')
+
+  form.resetField('shallow')
+  expect(form.state.values.shallow).toEqual('Shallow')
+
+  form.resetField('nested.field.name')
+  expect(form.state.values.nested.field.name).toEqual('Nested')
+})
+
+it('should reset nested fields', () => {
+  const defaultValues = {
+    shallow: '',
+    nested: {
+      field: {
+        name: '',
+      },
+    },
+  }
+
+  const form = new FormApi({
+    defaultValues,
+  })
+  form.mount()
+
+  form.setFieldValue('shallow', 'Shallow')
+  form.setFieldValue('nested.field.name', 'Nested')
+
+  expect(form.state.values.shallow).toEqual('Shallow')
+  expect(form.state.values.nested.field.name).toEqual('Nested')
+
+  form.resetField('shallow')
+  expect(form.state.values.shallow).toEqual('')
+
+  form.resetField('nested.field.name')
+  expect(form.state.values.nested.field.name).toEqual('')
 })
 
 it('should preserve nested fields on resetField if defaultValues is not provided', () => {

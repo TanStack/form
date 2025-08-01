@@ -177,3 +177,19 @@ export type DeepKeysOfType<TData, TValue> = Extract<
   DeepKeysAndValues<TData>,
   AnyDeepKeyAndValue<string, TValue>
 >['key']
+
+/**
+ * Maps the deep keys of TFormData to the shallow keys of TFieldGroupData.
+ *  Since using template strings as keys is impractical, it relies on shallow keys only.
+ */
+export type FieldsMap<TFormData, TFieldGroupData> =
+  TFieldGroupData extends any[]
+    ? never
+    : string extends keyof TFieldGroupData
+      ? never
+      : {
+          [K in keyof TFieldGroupData]: DeepKeysOfType<
+            TFormData,
+            TFieldGroupData[K]
+          >
+        }
