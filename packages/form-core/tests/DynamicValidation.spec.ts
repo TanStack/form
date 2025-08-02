@@ -1,10 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { FieldApi, FormApi } from '../src/index'
-import {
-  rhfValidationLogic,
-  defaultValidationLogic,
-} from '../src/ValidationLogic'
+import { revalidateLogic, defaultValidationLogic } from '../src/ValidationLogic'
 
 describe('custom validation', () => {
   it('should handle default validation logic', async () => {
@@ -54,7 +51,7 @@ describe('custom validation', () => {
       defaultValues: {
         name: '',
       },
-      validationLogic: rhfValidationLogic,
+      validationLogic: revalidateLogic(),
       validators: {
         onDynamic: z.object({
           name: z.string().min(3, 'Name must be at least 3 characters long'),
@@ -102,7 +99,7 @@ describe('custom validation', () => {
       defaultValues: {
         name: '',
       },
-      validationLogic: rhfValidationLogic,
+      validationLogic: revalidateLogic(),
       validators: {
         onDynamicAsync: async () => {
           await promise
@@ -129,7 +126,7 @@ describe('custom validation', () => {
       defaultValues: {
         name: '',
       },
-      validationLogic: rhfValidationLogic,
+      validationLogic: revalidateLogic(),
       validators: {
         onChange: z.object({
           name: z.string().min(3, 'Name must be at least 3 characters long'),

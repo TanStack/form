@@ -36,6 +36,19 @@ export interface ValidationLogicProps {
   }) => void
 }
 
+export interface RevalidateLogicProps {
+  // This option allows you to configure a validation strategy when inputs with errors get re-validated after a user submits the form (onSubmit event and handleSubmit function executed). By default, re-validation occurs during the input change event.
+  reValidateMode?: 'change' | 'blur' | 'submit'
+  // This option allows you to configure the validation strategy before a user submits the form. The validation occurs during the onSubmit event, which is triggered by invoking the handleSubmit function.
+  mode?:
+    | // Validation is triggered on the change event for each input.
+    'change'
+    // Validation is triggered on the blur event.
+    | 'blur'
+    // Validation is triggered on the submit event, and inputs attach onChange event listeners to re-validate themselves.
+    | 'submit'
+}
+
 /**
  * This forces a form's validation logic to be ran as if it were a React Hook Form validation logic.
  *
@@ -44,70 +57,66 @@ export interface ValidationLogicProps {
  *
  * When the form is not yet submitted, it will not run the validation logic.
  * When the form is submitted, it will run the validation logic on `change`
- *
- * TODO: In the future, we should allow the validation logic to be changed via a `mode` and `reValidateMode`
- *
- * TODO: This should handle async validation properly, but will currently omit it for simplicity.
- *
- * TODO: Handle field validation logic as well?
  */
-export function rhfValidationLogic(props: ValidationLogicProps) {
-  const validatorNames = Object.keys(props.validators ?? {})
-  if (validatorNames.length === 0) {
-    // No validators is a valid case, just return
-    return props.runValidation({
-      validators: [],
-      form: props.form,
-    })
-  }
+export const revalidateLogic =
+  ({ reValidateMode = 'change', mode = 'submit' }: RevalidateLogicProps = {}) =>
+  (props: ValidationLogicProps) => {
+    const validatorNames = Object.keys(props.validators ?? {})
+    if (validatorNames.length === 0) {
+      // No validators is a valid case, just return
+      return props.runValidation({
+        validators: [],
+        form: props.form,
+      })
+    }
 
-  // Allows us to clear onServer errors
-  const clearValidator = { fn: () => undefined, cause: 'dynamic' } as const
+    // Allows us to clear onServer errors
+    const clearValidator = { fn: () => undefined, cause: 'dynamic' } as const
 
-  const dynamicValidator = {
-    fn: props.event.async
-      ? props.validators!['onDynamicAsync']
-      : props.validators!['onDynamic'],
-    cause: 'dynamic',
-  } as const
+    const dynamicValidator = {
+      fn: props.event.async
+        ? props.validators!['onDynamicAsync']
+        : props.validators!['onDynamic'],
+      cause: 'dynamic',
+    } as const
 
-  const validatorsToAdd = [] as ValidationLogicValidatorsFn[]
+    const validatorsToAdd = [] as ValidationLogicValidatorsFn[]
 
-  // Submission attempts are tracked before validation occurs
-  if (props.form.state.submissionAttempts <= 1) {
-    if (props.event.type !== 'submit') {
-      validatorsToAdd.push(clearValidator)
+    // Submission attempts are tracked before validation occurs
+    if (props.form.state.attempts[mode] <= 1) {
+      if (props.event.type !== mode) {
+        validatorsToAdd.push(clearValidator)
+      } else {
+        validatorsToAdd.push(dynamicValidator)
+      }
     } else {
-      validatorsToAdd.push(dynamicValidator)
+      // In default mode: "After submission, run validation on change events"
+      if (props.event.type === reValidateMode || props.event.type === mode) {
+        validatorsToAdd.push(clearValidator, dynamicValidator)
+      }
     }
-  } else {
-    // After submission, run validation on change events
-    if (props.event.type === 'change' || props.event.type === 'submit') {
-      validatorsToAdd.push(clearValidator, dynamicValidator)
+
+    let defaultValidators = [] as ValidationLogicValidatorsFn[]
+
+    defaultValidationLogic({
+      ...props,
+      runValidation: (vProps) => {
+        defaultValidators = vProps.validators as ValidationLogicValidatorsFn[]
+      },
+    })
+
+    if (validatorsToAdd.length === 0) {
+      return props.runValidation({
+        validators: defaultValidators,
+        form: props.form,
+      })
     }
-  }
 
-  let defaultValidators = [] as ValidationLogicValidatorsFn[]
-
-  defaultValidationLogic({
-    ...props,
-    runValidation: (vProps) => {
-      defaultValidators = vProps.validators as ValidationLogicValidatorsFn[]
-    },
-  })
-
-  if (validatorsToAdd.length === 0) {
     return props.runValidation({
-      validators: defaultValidators,
+      validators: [...defaultValidators, ...validatorsToAdd],
       form: props.form,
     })
   }
-
-  return props.runValidation({
-    validators: [...defaultValidators, ...validatorsToAdd],
-    form: props.form,
-  })
-}
 
 export function defaultValidationLogic(props: ValidationLogicProps) {
   // Handle case where no validators are provided
