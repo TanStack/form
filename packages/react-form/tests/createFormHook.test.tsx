@@ -450,4 +450,28 @@ describe('createFormHook', () => {
     const inputField1 = getByLabelText('unrelated')
     expect(inputField1).toHaveValue('John')
   })
+
+  it('should allow access to formId', () => {
+    function FormId() {
+      const form = useFormContext()
+
+      return <span data-testid="formId-target">{form.options.formId}</span>
+    }
+
+    function Comp() {
+      const form = useAppForm({
+        formId: 'test',
+      })
+
+      return (
+        <form.AppForm>
+          <FormId />
+        </form.AppForm>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    const input = getByTestId('formId-target')
+    expect(input).toHaveTextContent('test')
+  })
 })
