@@ -9,7 +9,7 @@ import type {
 export function useTransform(
   fn: (formBase: AnyFormApi) => AnyFormApi,
   deps: unknown[],
-): FormTransform<any, any, any, any, any, any, any, any, any, any> {
+): FormTransform<any, any, any, any, any, any, any, any, any, any, any, any> {
   return {
     fn,
     deps,
