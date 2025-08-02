@@ -91,6 +91,10 @@ export function createFormHookContexts() {
         any,
         any,
         any,
+        any,
+        any,
+        any,
+        any,
         any
       >
     >
@@ -112,6 +116,8 @@ export function createFormHookContexts() {
     return form as SolidFormExtendedApi<
       // If you need access to the form data, you need to use `withForm` instead
       Record<string, never>,
+      any,
+      any,
       any,
       any,
       any,
@@ -146,6 +152,8 @@ type AppFieldExtendedSolidFormApi<
   TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta,
   TFieldComponents extends Record<string, Component<any>>,
@@ -159,6 +167,8 @@ type AppFieldExtendedSolidFormApi<
   TOnBlurAsync,
   TOnSubmit,
   TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
   TOnServer,
   TSubmitMeta
 > &
@@ -172,6 +182,8 @@ type AppFieldExtendedSolidFormApi<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer,
       TSubmitMeta,
       NoInfer<TFieldComponents>
@@ -188,6 +200,8 @@ export interface WithFormProps<
   TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta,
   TFieldComponents extends Record<string, Component<any>>,
@@ -202,6 +216,8 @@ export interface WithFormProps<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TOnServer,
     TSubmitMeta
   > {
@@ -219,6 +235,8 @@ export interface WithFormProps<
           TOnBlurAsync,
           TOnSubmit,
           TOnSubmitAsync,
+          TOnDynamic,
+          TOnDynamicAsync,
           TOnServer,
           TSubmitMeta,
           TFieldComponents,
@@ -242,6 +260,8 @@ export function createFormHook<
     TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
     TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
     TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+    TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
     TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
     TSubmitMeta,
   >(
@@ -255,6 +275,8 @@ export function createFormHook<
         TOnBlurAsync,
         TOnSubmit,
         TOnSubmitAsync,
+        TOnDynamic,
+        TOnDynamicAsync,
         TOnServer,
         TSubmitMeta
       >
@@ -268,6 +290,8 @@ export function createFormHook<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TOnServer,
     TSubmitMeta,
     TComponents,
@@ -303,6 +327,8 @@ export function createFormHook<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer,
       TSubmitMeta,
       TComponents
@@ -317,6 +343,8 @@ export function createFormHook<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer,
       TSubmitMeta,
       TComponents,
@@ -341,6 +369,8 @@ export function createFormHook<
     TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
     TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
     TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+    TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
     TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
     TSubmitMeta,
     TRenderProps extends Record<string, unknown> = {},
@@ -356,6 +386,8 @@ export function createFormHook<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TOnServer,
     TSubmitMeta,
     TComponents,
@@ -370,6 +402,11 @@ export function createFormHook<
     UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnBlurAsync>,
     UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnSubmit>,
     UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnSubmitAsync>,
+    UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnDynamic>,
+    UnwrapDefaultOrAny<
+      undefined | FormValidateOrFn<TFormData>,
+      TOnDynamicAsync
+    >,
     UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnServer>,
     UnwrapOrAny<TSubmitMeta>,
     UnwrapOrAny<TComponents>,
