@@ -91,4 +91,36 @@ describe('custom validation', () => {
     // After submit, should validate on change and clear error
     expect(field.state.meta.errorMap.onDynamic).toBe(undefined)
   })
+
+  it('rhf validation should work as-expected with async validators', async () => {
+    let resolve = () => { }
+    const promise = new Promise<void>((res) => {
+      resolve = res
+    })
+
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+      validationLogic: rhfValidationLogic,
+      validators: {
+        onDynamicAsync: async () => {
+          await promise
+          return 'There was an error'
+        },
+      },
+    })
+
+    form.mount()
+
+    expect(form.state.errorMap.onDynamic).toBe(undefined)
+
+    const promise2 = form.handleSubmit();
+
+    resolve()
+    await promise;
+    await promise2;
+
+    expect(form.state.errorMap.onDynamic).toBe('There was an error');
+  })
 })
