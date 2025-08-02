@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
 import { FieldApi, FieldGroupApi, FormApi } from '../src/index'
-import { defaultFieldMeta } from '../src/metaHelper'
 
 describe('field group api', () => {
   type Person = {
@@ -918,5 +917,103 @@ describe('field group api', () => {
     expect(group.getFormFieldName('complexValue.prop1')).toBe(
       'complexValue.prop1',
     )
+  })
+
+  it('should remap the name of field options correctly', () => {
+    const form = new FormApi({
+      defaultValues: {
+        account: {
+          password: '',
+          confirmPassword: '',
+        },
+        userPassword: '',
+        userConfirmPassword: '',
+      },
+    })
+    form.mount()
+
+    const fieldGroupString = new FieldGroupApi({
+      form,
+      fields: 'account',
+      defaultValues: { password: '' },
+    })
+    fieldGroupString.mount()
+
+    const props1 = {
+      name: 'password',
+    }
+    const remappedProps1 = fieldGroupString.getFormFieldOptions(props1)
+    expect(remappedProps1.name).toBe('account.password')
+
+    const fieldGroupObject = new FieldGroupApi({
+      form,
+      fields: {
+        password: 'userPassword',
+        confirmPassword: 'userConfirmPassword',
+      },
+      defaultValues: { password: '' },
+    })
+    fieldGroupObject.mount()
+
+    const props2 = {
+      name: 'password',
+    }
+    const remappedProps2 = fieldGroupObject.getFormFieldOptions(props2)
+    expect(remappedProps2.name).toBe('userPassword')
+  })
+
+  it('should remap listener paths with its remapFieldProps method', () => {
+    const form = new FormApi({
+      defaultValues: {
+        account: {
+          password: '',
+          confirmPassword: '',
+        },
+        userPassword: '',
+        userConfirmPassword: '',
+      },
+    })
+    form.mount()
+
+    const fieldGroupString = new FieldGroupApi({
+      form,
+      fields: 'account',
+      defaultValues: { password: '', confirmPassword: '' },
+    })
+    fieldGroupString.mount()
+
+    const props1 = {
+      name: 'confirmPassword',
+      validators: {
+        onChangeListenTo: ['password'],
+        onBlurListenTo: ['confirmPassword'],
+      },
+    }
+    const remappedProps1 = fieldGroupString.getFormFieldOptions(props1)
+    expect(remappedProps1.validators.onChangeListenTo).toEqual([
+      'account.password',
+    ])
+    expect(remappedProps1.validators.onBlurListenTo).toEqual([
+      'account.confirmPassword',
+    ])
+
+    const fieldGroupObject = new FieldGroupApi({
+      form,
+      fields: {
+        password: 'userPassword',
+        confirmPassword: 'userConfirmPassword',
+      },
+      defaultValues: { password: '', confirmPassword: '' },
+    })
+    fieldGroupObject.mount()
+
+    const props2 = {
+      name: 'confirmPassword',
+      validators: {
+        onChangeListenTo: ['password'],
+      },
+    }
+    const remappedProps2 = fieldGroupObject.getFormFieldOptions(props2)
+    expect(remappedProps2.validators.onChangeListenTo).toEqual(['userPassword'])
   })
 })
