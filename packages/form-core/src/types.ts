@@ -75,6 +75,8 @@ export type FormValidationErrorMap<
   TOnBlurAsyncReturn = unknown,
   TOnSubmitReturn = unknown,
   TOnSubmitAsyncReturn = unknown,
+  TOnDynamicReturn = unknown,
+  TOnDynamicAsyncReturn = unknown,
   TOnServerReturn = unknown,
 > = {
   onMount?: TOnMountReturn | GlobalFormValidationError<TFormData>
@@ -90,6 +92,7 @@ export type FormValidationErrorMap<
     | TOnSubmitReturn
     | TOnSubmitAsyncReturn
     | GlobalFormValidationError<TFormData>
+  onDynamic?: TOnDynamicReturn | TOnDynamicAsyncReturn
   onServer?: TOnServerReturn
 }
 
