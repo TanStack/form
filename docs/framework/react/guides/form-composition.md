@@ -57,7 +57,7 @@ export function TextField({ label }: { label: string }) {
   const field = useFieldContext<string>()
   return (
     <label>
-      <div>{label}</div>
+      <span>{label}</span>
       <input
         value={field.state.value}
         onChange={(e) => field.handleChange(e.target.value)}
@@ -504,7 +504,7 @@ export default function TextField({ label }: { label: string }) {
 
   return (
     <label>
-      <div>{label}</div>
+      <span>{label}</span>
       <input
         value={field.state.value}
         onChange={(e) => field.handleChange(e.target.value)}
@@ -560,7 +560,7 @@ function TextField({ label }: { label: string }) {
   const field = useFieldContext<string>()
   return (
     <label>
-      <div>{label}</div>
+      <span>{label}</span>
       <input
         value={field.state.value}
         onChange={(e) => field.handleChange(e.target.value)}
