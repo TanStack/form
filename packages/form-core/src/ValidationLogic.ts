@@ -1,9 +1,8 @@
 import type { AnyFormApi, FormValidators } from './FormApi'
 
 export interface ValidationLogicValidatorsFn {
-  fn:
-  // TODO: Type this properly
-  FormValidators<
+  fn: // TODO: Type this properly
+  FormValidators<any, any, any, any, any, any, any, any>[keyof FormValidators<
     any,
     any,
     any,
@@ -12,7 +11,7 @@ export interface ValidationLogicValidatorsFn {
     any,
     any,
     any
-  >[keyof FormValidators<any, any, any, any, any, any, any, any>];
+  >]
   cause: 'change' | 'blur' | 'submit' | 'mount' | 'server' | 'dynamic'
 }
 
@@ -21,16 +20,16 @@ export interface ValidationLogicProps {
   form: AnyFormApi
   // TODO: Type this properly
   validators:
-  | FormValidators<any, any, any, any, any, any, any, any>
-  | undefined
-  | null
+    | FormValidators<any, any, any, any, any, any, any, any>
+    | undefined
+    | null
   event: {
     type: 'blur' | 'change' | 'submit' | 'mount' | 'server'
     fieldName?: string
     async: boolean
   }
   runValidation: (props: {
-    validators: Array<ValidationLogicValidatorsFn | undefined>;
+    validators: Array<ValidationLogicValidatorsFn | undefined>
     form: AnyFormApi
   }) => void
 }
@@ -66,7 +65,8 @@ export function rhfValidationLogic(props: ValidationLogicProps) {
   const dynamicValidator = {
     fn: props.event.async
       ? props.validators!['onDynamicAsync']
-      : props.validators!['onDynamic'], cause: 'dynamic'
+      : props.validators!['onDynamic'],
+    cause: 'dynamic',
   } as const
 
   let validatorsToAdd = [] as ValidationLogicValidatorsFn[]
@@ -91,7 +91,7 @@ export function rhfValidationLogic(props: ValidationLogicProps) {
     ...props,
     runValidation: (vProps) => {
       defaultValidators = vProps.validators as ValidationLogicValidatorsFn[]
-    }
+    },
   })
 
   if (validatorsToAdd.length === 0) {
@@ -120,27 +120,26 @@ export function defaultValidationLogic(props: ValidationLogicProps) {
 
   const onMountValidator = isAsync
     ? undefined
-    : { fn: props.validators.onMount, cause: 'mount' } as const
+    : ({ fn: props.validators.onMount, cause: 'mount' } as const)
 
   const onChangeValidator = {
-    fn: isAsync
-      ? props.validators.onChangeAsync
-      : props.validators.onChange, cause: 'change'
+    fn: isAsync ? props.validators.onChangeAsync : props.validators.onChange,
+    cause: 'change',
   } as const
 
   const onBlurValidator = {
-    fn: isAsync
-      ? props.validators.onBlurAsync
-      : props.validators.onBlur, cause: 'blur'
+    fn: isAsync ? props.validators.onBlurAsync : props.validators.onBlur,
+    cause: 'blur',
   } as const
 
   const onSubmitValidator = {
-    fn: isAsync
-      ? props.validators.onSubmitAsync
-      : props.validators.onSubmit, cause: 'submit'
+    fn: isAsync ? props.validators.onSubmitAsync : props.validators.onSubmit,
+    cause: 'submit',
   } as const
 
-  const onServerValidator = isAsync ? { fn: (props.validators as any).onServer, cause: 'server' } as const : undefined
+  const onServerValidator = isAsync
+    ? ({ fn: (props.validators as any).onServer, cause: 'server' } as const)
+    : undefined
 
   switch (props.event.type) {
     case 'mount': {
