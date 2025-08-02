@@ -9,7 +9,6 @@ import {
   getAsyncValidatorArray,
   getBy,
   getSyncValidatorArray,
-  getSyncValidatorArrayWithLogic,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
 import type { DeepKeys, DeepValue, UnwrapOneLevelOfArray } from './util-types'
@@ -1357,7 +1356,7 @@ export class FieldApi<
     cause: ValidationCause,
     errorFromForm: ValidationErrorMap,
   ) => {
-    const validates = getSyncValidatorArrayWithLogic(cause, {
+    const validates = getSyncValidatorArray(cause, {
       ...this.options,
       form: this.form,
       validationLogic:
@@ -1367,7 +1366,7 @@ export class FieldApi<
     const linkedFields = this.getLinkedFields(cause)
     const linkedFieldValidates = linkedFields.reduce(
       (acc, field) => {
-        const fieldValidates = getSyncValidatorArrayWithLogic(cause, {
+        const fieldValidates = getSyncValidatorArray(cause, {
           ...field.options,
           form: field.form,
           validationLogic:
@@ -1493,7 +1492,12 @@ export class FieldApi<
       >
     >,
   ) => {
-    const validates = getAsyncValidatorArray(cause, this.options)
+    const validates = getAsyncValidatorArray(cause, {
+      ...this.options,
+      form: this.form,
+      validationLogic:
+        this.form.options.validationLogic || defaultValidationLogic,
+    })
 
     // Get the field-specific error messages that are coming from the form's validator
     const asyncFormValidationResults = await formValidationResultPromise
@@ -1501,7 +1505,12 @@ export class FieldApi<
     const linkedFields = this.getLinkedFields(cause)
     const linkedFieldValidates = linkedFields.reduce(
       (acc, field) => {
-        const fieldValidates = getAsyncValidatorArray(cause, field.options)
+        const fieldValidates = getAsyncValidatorArray(cause, {
+          ...field.options,
+          form: field.form,
+          validationLogic:
+            field.form.options.validationLogic || defaultValidationLogic,
+        })
         fieldValidates.forEach((validate) => {
           ;(validate as any).field = field
         })

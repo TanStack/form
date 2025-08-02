@@ -5,10 +5,8 @@ import {
   evaluate,
   functionalUpdate,
   getAsyncValidatorArray,
-  getAsyncValidatorArrayWithLogic,
   getBy,
   getSyncValidatorArray,
-  getSyncValidatorArrayWithLogic,
   isGlobalFormValidationError,
   isNonEmptyArray,
   setBy,
@@ -1397,7 +1395,7 @@ export class FormApi<
       TOnSubmitAsync
     >
   } => {
-    const validates = getSyncValidatorArrayWithLogic(cause, {
+    const validates = getSyncValidatorArray(cause, {
       ...this.options,
       form: this,
       validationLogic: this.options.validationLogic || defaultValidationLogic,
@@ -1540,7 +1538,7 @@ export class FormApi<
       TOnSubmitAsync
     >
   > => {
-    const validates = getAsyncValidatorArrayWithLogic(cause, {
+    const validates = getAsyncValidatorArray(cause, {
       ...this.options,
       form: this,
       validationLogic: this.options.validationLogic || defaultValidationLogic,
