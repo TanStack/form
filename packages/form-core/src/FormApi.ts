@@ -570,7 +570,7 @@ export type BaseFormState<
     UnwrapFormAsyncValidateOrFn<TOnBlurAsync>,
     UnwrapFormValidateOrFn<TOnSubmit>,
     UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>,
-    UnwrapFormAsyncValidateOrFn<TOnDynamic>,
+    UnwrapFormValidateOrFn<TOnDynamic>,
     UnwrapFormAsyncValidateOrFn<TOnDynamicAsync>,
     UnwrapFormAsyncValidateOrFn<TOnServer>
   >
@@ -653,7 +653,7 @@ export type DerivedFormState<
     | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
     | UnwrapFormValidateOrFn<TOnSubmit>
     | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
-    | UnwrapFormAsyncValidateOrFn<TOnDynamic>
+    | UnwrapFormValidateOrFn<TOnDynamic>
     | UnwrapFormAsyncValidateOrFn<TOnDynamicAsync>
     | UnwrapFormAsyncValidateOrFn<TOnServer>
   >
@@ -2283,6 +2283,8 @@ export class FormApi<
       UnwrapFormAsyncValidateOrFn<TOnBlurAsync>,
       UnwrapFormValidateOrFn<TOnSubmit>,
       UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>,
+      UnwrapFormValidateOrFn<TOnDynamic>,
+      UnwrapFormAsyncValidateOrFn<TOnDynamicAsync>,
       UnwrapFormAsyncValidateOrFn<TOnServer>
     >,
   ) {
