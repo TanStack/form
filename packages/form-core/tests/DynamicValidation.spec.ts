@@ -93,7 +93,7 @@ describe('custom validation', () => {
   })
 
   it('rhf validation should work as-expected with async validators', async () => {
-    let resolve = () => { }
+    let resolve = () => {}
     const promise = new Promise<void>((res) => {
       resolve = res
     })
