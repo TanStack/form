@@ -29,6 +29,8 @@ type SubscribeComponent<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
 > =
   // This complex type comes from Vue's return type for `DefineSetupFnComponent` but with our own types sprinkled in
@@ -44,6 +46,8 @@ type SubscribeComponent<
         TFormOnBlurAsync,
         TFormOnSubmit,
         TFormOnSubmitAsync,
+        TFormOnDynamic,
+        TFormOnDynamicAsync,
         TFormOnServer
       >
     >,
@@ -60,6 +64,8 @@ type SubscribeComponent<
             TFormOnBlurAsync,
             TFormOnSubmit,
             TFormOnSubmitAsync,
+            TFormOnDynamic,
+            TFormOnDynamicAsync,
             TFormOnServer
           >
         >,
@@ -79,6 +85,8 @@ type SubscribeComponent<
             TFormOnBlurAsync,
             TFormOnSubmit,
             TFormOnSubmitAsync,
+            TFormOnDynamic,
+            TFormOnDynamicAsync,
             TFormOnServer
           >
         >,
@@ -106,6 +114,8 @@ type SubscribeComponent<
           TFormOnBlurAsync,
           TFormOnSubmit,
           TFormOnSubmitAsync,
+          TFormOnDynamic,
+          TFormOnDynamicAsync,
           TFormOnServer
         >
       >
@@ -121,6 +131,8 @@ export interface VueFormApi<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TSubmitMeta,
 > {
@@ -133,6 +145,8 @@ export interface VueFormApi<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TSubmitMeta
   >
@@ -145,6 +159,8 @@ export interface VueFormApi<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TSubmitMeta
   >
@@ -159,6 +175,8 @@ export interface VueFormApi<
         TFormOnBlurAsync,
         TFormOnSubmit,
         TFormOnSubmitAsync,
+        TFormOnDynamic,
+        TFormOnDynamicAsync,
         TFormOnServer
       >
     >,
@@ -174,6 +192,8 @@ export interface VueFormApi<
           TFormOnBlurAsync,
           TFormOnSubmit,
           TFormOnSubmitAsync,
+          TFormOnDynamic,
+          TFormOnDynamicAsync,
           TFormOnServer
         >
       >,
@@ -188,6 +208,8 @@ export interface VueFormApi<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer
   >
 }
@@ -201,6 +223,8 @@ export function useForm<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TSubmitMeta,
 >(
@@ -213,6 +237,8 @@ export function useForm<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TSubmitMeta
   >,
@@ -227,6 +253,8 @@ export function useForm<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
       TFormOnServer,
       TSubmitMeta
     >(opts)
@@ -241,6 +269,8 @@ export function useForm<
         TFormOnBlurAsync,
         TFormOnSubmit,
         TFormOnSubmitAsync,
+        TFormOnDynamic,
+        TFormOnDynamicAsync,
         TFormOnServer,
         TSubmitMeta
       > = api as never
