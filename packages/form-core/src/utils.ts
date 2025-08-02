@@ -6,6 +6,7 @@ import type {
   ValidationError,
   ValidationSource,
 } from './types'
+import { defaultValidationLogic, ValidationLogicProps } from './ValidationLogic'
 
 export type UpdaterFn<TInput, TOutput = TInput> = (input: TInput) => TOutput
 
@@ -225,78 +226,6 @@ export interface AsyncValidator<T> {
   debounceMs: number
 }
 
-/**
- * @private
- */
-export function getAsyncValidatorArray<T>(
-  cause: ValidationCause,
-  options: AsyncValidatorArrayPartialOptions<T>,
-): T extends FieldValidators<any, any, any, any, any, any, any, any, any, any>
-  ? Array<
-      AsyncValidator<T['onChangeAsync'] | T['onBlurAsync'] | T['onSubmitAsync']>
-    >
-  : T extends FormValidators<any, any, any, any, any, any, any, any>
-    ? Array<
-        AsyncValidator<
-          T['onChangeAsync'] | T['onBlurAsync'] | T['onSubmitAsync']
-        >
-      >
-    : never {
-  const { asyncDebounceMs } = options
-  const {
-    onChangeAsync,
-    onBlurAsync,
-    onSubmitAsync,
-    onBlurAsyncDebounceMs,
-    onChangeAsyncDebounceMs,
-  } = (options.validators || {}) as
-    | FieldValidators<any, any, any, any, any, any, any, any, any, any>
-    | FormValidators<any, any, any, any, any, any, any, any>
-
-  const defaultDebounceMs = asyncDebounceMs ?? 0
-
-  const changeValidator = {
-    cause: 'change',
-    validate: onChangeAsync,
-    debounceMs: onChangeAsyncDebounceMs ?? defaultDebounceMs,
-  } as const
-
-  const blurValidator = {
-    cause: 'blur',
-    validate: onBlurAsync,
-    debounceMs: onBlurAsyncDebounceMs ?? defaultDebounceMs,
-  } as const
-
-  const submitValidator = {
-    cause: 'submit',
-    validate: onSubmitAsync,
-    debounceMs: 0,
-  } as const
-
-  const noopValidator = (
-    validator:
-      | typeof changeValidator
-      | typeof blurValidator
-      | typeof submitValidator,
-  ) => ({ ...validator, debounceMs: 0 }) as const
-
-  switch (cause) {
-    case 'submit':
-      return [
-        noopValidator(changeValidator),
-        noopValidator(blurValidator),
-        submitValidator,
-      ] as never
-    case 'blur':
-      return [blurValidator] as never
-    case 'change':
-      return [changeValidator] as never
-    case 'server':
-    default:
-      return [] as never
-  }
-}
-
 interface SyncValidatorArrayPartialOptions<T> {
   validators?: T
 }
@@ -314,51 +243,125 @@ export interface SyncValidator<T> {
  */
 export function getSyncValidatorArray<T>(
   cause: ValidationCause,
-  options: SyncValidatorArrayPartialOptions<T>,
-): T extends FieldValidators<any, any, any, any, any, any, any, any, any, any>
+  options: SyncValidatorArrayPartialOptions<T> & {
+    validationLogic?: any
+    form?: any
+  },
+): T extends FieldValidators<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
   ? Array<
-      SyncValidator<T['onChange'] | T['onBlur'] | T['onSubmit'] | T['onMount']>
+      SyncValidator<
+        | T['onChange']
+        | T['onBlur']
+        | T['onSubmit']
+        | T['onMount']
+        | T['onDynamic']
+      >
     >
-  : T extends FormValidators<any, any, any, any, any, any, any, any>
+  : T extends FormValidators<any, any, any, any, any, any, any, any, any, any>
     ? Array<
         SyncValidator<
-          T['onChange'] | T['onBlur'] | T['onSubmit'] | T['onMount']
+          | T['onChange']
+          | T['onBlur']
+          | T['onSubmit']
+          | T['onMount']
+          | T['onDynamic']
         >
       >
     : never {
-  const { onChange, onBlur, onSubmit, onMount } = (options.validators || {}) as
-    | FieldValidators<any, any, any, any, any, any, any, any, any, any>
-    | FormValidators<any, any, any, any, any, any, any, any>
-
-  const changeValidator = { cause: 'change', validate: onChange } as const
-  const blurValidator = { cause: 'blur', validate: onBlur } as const
-  const submitValidator = { cause: 'submit', validate: onSubmit } as const
-  const mountValidator = { cause: 'mount', validate: onMount } as const
-
-  // Allows us to clear onServer errors
-  const serverValidator = {
-    cause: 'server',
-    validate: () => undefined,
-  } as const
-
-  switch (cause) {
-    case 'mount':
-      return [mountValidator] as never
-    case 'submit':
-      return [
-        changeValidator,
-        blurValidator,
-        submitValidator,
-        serverValidator,
-      ] as never
-    case 'server':
-      return [serverValidator] as never
-    case 'blur':
-      return [blurValidator, serverValidator] as never
-    case 'change':
-    default:
-      return [changeValidator, serverValidator] as never
+  const runValidation = (
+    props: Parameters<ValidationLogicProps['runValidation']>[0],
+  ) => {
+    return props.validators.filter(Boolean).map((validator) => {
+      return {
+        cause: validator!.cause,
+        validate: validator!.fn,
+      }
+    })
   }
+
+  return options.validationLogic({
+    form: options.form,
+    validators: options.validators,
+    event: { type: cause, async: false },
+    runValidation,
+  })
+}
+
+/**
+ * @private
+ */
+export function getAsyncValidatorArray<T>(
+  cause: ValidationCause,
+  options: AsyncValidatorArrayPartialOptions<T> & {
+    validationLogic?: any
+    form?: any
+  },
+): T extends FieldValidators<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
+  ? Array<
+      AsyncValidator<
+        | T['onChangeAsync']
+        | T['onBlurAsync']
+        | T['onSubmitAsync']
+        | T['onDynamicAsync']
+      >
+    >
+  : T extends FormValidators<any, any, any, any, any, any, any, any, any, any>
+    ? Array<
+        AsyncValidator<
+          | T['onChangeAsync']
+          | T['onBlurAsync']
+          | T['onSubmitAsync']
+          | T['onDynamicAsync']
+        >
+      >
+    : never {
+  const runValidation = (
+    props: Parameters<ValidationLogicProps['runValidation']>[0],
+  ) => {
+    return props.validators.filter(Boolean).map((validator) => {
+      const { asyncDebounceMs } = options
+      const defaultDebounceMs = asyncDebounceMs ?? 0
+
+      return {
+        cause: validator?.cause || cause,
+        validate: validator!.fn,
+        debounceMs: defaultDebounceMs,
+      }
+    })
+  }
+
+  return options.validationLogic({
+    form: options.form,
+    validators: options.validators,
+    event: { type: cause, async: true },
+    runValidation,
+  })
 }
 
 export const isGlobalFormValidationError = (

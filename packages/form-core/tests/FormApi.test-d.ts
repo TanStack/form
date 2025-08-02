@@ -36,6 +36,7 @@ it('should return all errors matching the right type from getAllErrors', () => {
     onMount?: 10
     onSubmit?: 'onSubmit' | 'onSubmitAsync'
     onServer?: undefined
+    onDynamic?: undefined
   }>()
 
   expectTypeOf(errors.form.errors).toEqualTypeOf<
@@ -133,6 +134,8 @@ it("should allow setting manual errors according to the validator's return type"
       onBlur: () => ({ onBlur: true as const, onBlurNumber: 1 }),
       onSubmit: () => 'onSubmit' as const,
       onBlurAsync: () => Promise.resolve('onBlurAsync' as const),
+      onDynamic: () => 'onDynamic' as const,
+      onDynamicAsync: () => Promise.resolve('onDynamicAsync' as const),
       onChangeAsync: () => Promise.resolve('onChangeAsync' as const),
       onSubmitAsync: () => Promise.resolve('onSubmitAsync' as const),
     },
@@ -158,6 +161,11 @@ it("should allow setting manual errors according to the validator's return type"
     onSubmit:
       | 'onSubmit'
       | 'onSubmitAsync'
+      | undefined
+      | GlobalFormValidationError<FormData>
+    onDynamic:
+      | 'onDynamic'
+      | 'onDynamicAsync'
       | undefined
       | GlobalFormValidationError<FormData>
     onServer: undefined
@@ -199,6 +207,7 @@ it('should not allow setting manual errors if no validator is specified', () => 
     onChange: undefined | GlobalFormValidationError<FormData>
     onBlur: undefined | GlobalFormValidationError<FormData>
     onSubmit: undefined | GlobalFormValidationError<FormData>
+    onDynamic: undefined | GlobalFormValidationError<FormData>
     onServer: undefined
   }>
 })

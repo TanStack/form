@@ -28,6 +28,8 @@ interface SolidFieldApi<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TParentSubmitMeta,
 > {
@@ -40,6 +42,8 @@ interface SolidFieldApi<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TParentSubmitMeta
   >
@@ -54,6 +58,8 @@ export type CreateField<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TParentSubmitMeta,
 > = <
@@ -72,6 +78,10 @@ export type CreateField<
   TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
 >(
   opts: () => { name: Narrow<TName> } & CreateFieldOptionsBound<
     TParentData,
@@ -83,7 +93,9 @@ export type CreateField<
     TOnBlur,
     TOnBlurAsync,
     TOnSubmit,
-    TOnSubmitAsync
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync
   >,
 ) => () => FieldApi<
   TParentData,
@@ -96,6 +108,8 @@ export type CreateField<
   TOnBlurAsync,
   TOnSubmit,
   TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
   TFormOnMount,
   TFormOnChange,
   TFormOnChangeAsync,
@@ -103,6 +117,8 @@ export type CreateField<
   TFormOnBlurAsync,
   TFormOnSubmit,
   TFormOnSubmitAsync,
+  TFormOnDynamic,
+  TFormOnDynamicAsync,
   TFormOnServer,
   TParentSubmitMeta
 > &
@@ -115,6 +131,8 @@ export type CreateField<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TParentSubmitMeta
   >
@@ -137,6 +155,10 @@ function makeFieldReactive<
   TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
@@ -144,6 +166,8 @@ function makeFieldReactive<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TParentSubmitMeta,
 >(
@@ -158,6 +182,8 @@ function makeFieldReactive<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TFormOnMount,
     TFormOnChange,
     TFormOnChangeAsync,
@@ -165,6 +191,8 @@ function makeFieldReactive<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TParentSubmitMeta
   > &
@@ -177,6 +205,8 @@ function makeFieldReactive<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
       TFormOnServer,
       TParentSubmitMeta
     >,
@@ -191,6 +221,8 @@ function makeFieldReactive<
   TOnBlurAsync,
   TOnSubmit,
   TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
   TFormOnMount,
   TFormOnChange,
   TFormOnChangeAsync,
@@ -198,6 +230,8 @@ function makeFieldReactive<
   TFormOnBlurAsync,
   TFormOnSubmit,
   TFormOnSubmitAsync,
+  TFormOnDynamic,
+  TFormOnDynamicAsync,
   TFormOnServer,
   TParentSubmitMeta
 > &
@@ -210,6 +244,8 @@ function makeFieldReactive<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TParentSubmitMeta
   > {
@@ -236,6 +272,10 @@ export function createField<
   TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
@@ -243,6 +283,8 @@ export function createField<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TParentSubmitMeta,
 >(
@@ -257,6 +299,8 @@ export function createField<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TFormOnMount,
     TFormOnChange,
     TFormOnChangeAsync,
@@ -264,6 +308,8 @@ export function createField<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TParentSubmitMeta
   >,
@@ -282,6 +328,8 @@ export function createField<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
       TFormOnServer,
       TParentSubmitMeta
     > = api as never
@@ -321,6 +369,8 @@ export function createField<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TFormOnMount,
     TFormOnChange,
     TFormOnChangeAsync,
@@ -328,6 +378,8 @@ export function createField<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TParentSubmitMeta
   >(extendedApi as never)
@@ -350,6 +402,10 @@ interface FieldComponentBoundProps<
   TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
@@ -357,6 +413,8 @@ interface FieldComponentBoundProps<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TPatentSubmitMeta,
   ExtendedApi = {},
@@ -370,7 +428,9 @@ interface FieldComponentBoundProps<
     TOnBlur,
     TOnBlurAsync,
     TOnSubmit,
-    TOnSubmitAsync
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync
   > {
   children: (
     fieldApi: Accessor<
@@ -385,6 +445,8 @@ interface FieldComponentBoundProps<
         TOnBlurAsync,
         TOnSubmit,
         TOnSubmitAsync,
+        TOnDynamic,
+        TOnDynamicAsync,
         TFormOnMount,
         TFormOnChange,
         TFormOnChangeAsync,
@@ -392,6 +454,8 @@ interface FieldComponentBoundProps<
         TFormOnBlurAsync,
         TFormOnSubmit,
         TFormOnSubmitAsync,
+        TFormOnDynamic,
+        TFormOnDynamicAsync,
         TFormOnServer,
         TPatentSubmitMeta
       >
@@ -418,6 +482,10 @@ export type FieldComponent<
   in out TFormOnSubmitAsync extends
     | undefined
     | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnDynamicAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   in out TPatentSubmitMeta,
   in out ExtendedApi = {},
@@ -437,6 +505,10 @@ export type FieldComponent<
   TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
 >({
   children,
   ...fieldOptions
@@ -451,6 +523,8 @@ export type FieldComponent<
   TOnBlurAsync,
   TOnSubmit,
   TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
   TFormOnMount,
   TFormOnChange,
   TFormOnChangeAsync,
@@ -458,6 +532,8 @@ export type FieldComponent<
   TFormOnBlurAsync,
   TFormOnSubmit,
   TFormOnSubmitAsync,
+  TFormOnDynamic,
+  TFormOnDynamicAsync,
   TFormOnServer,
   TPatentSubmitMeta,
   ExtendedApi
@@ -480,6 +556,10 @@ interface FieldComponentProps<
   TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
@@ -487,6 +567,8 @@ interface FieldComponentProps<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TParentSubmitMeta,
 > extends CreateFieldOptions<
@@ -500,6 +582,8 @@ interface FieldComponentProps<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TFormOnMount,
     TFormOnChange,
     TFormOnChangeAsync,
@@ -507,6 +591,8 @@ interface FieldComponentProps<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TParentSubmitMeta
   > {
@@ -522,6 +608,8 @@ interface FieldComponentProps<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TFormOnMount,
       TFormOnChange,
       TFormOnChangeAsync,
@@ -529,6 +617,8 @@ interface FieldComponentProps<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
       TFormOnServer,
       TParentSubmitMeta
     >,
@@ -552,6 +642,10 @@ export function Field<
   TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
@@ -559,6 +653,8 @@ export function Field<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TParentSubmitMeta,
 >(
@@ -573,6 +669,8 @@ export function Field<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TFormOnMount,
     TFormOnChange,
     TFormOnChangeAsync,
@@ -580,6 +678,8 @@ export function Field<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TParentSubmitMeta
   >,
@@ -595,6 +695,8 @@ export function Field<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TFormOnMount,
     TFormOnChange,
     TFormOnChangeAsync,
@@ -602,6 +704,8 @@ export function Field<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TParentSubmitMeta
   >(() => {

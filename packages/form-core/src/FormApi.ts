@@ -11,6 +11,7 @@ import {
   isNonEmptyArray,
   setBy,
 } from './utils'
+import { defaultValidationLogic } from './ValidationLogic'
 
 import {
   isStandardSchemaValidator,
@@ -84,6 +85,8 @@ export type FormValidateFn<TFormData> = (props: {
     any,
     any,
     any,
+    any,
+    any,
     any
   >
 }) => unknown
@@ -112,6 +115,8 @@ export type FormValidateAsyncFn<TFormData> = (props: {
     TFormData,
     // This is technically an edge-type; which we try to keep non-`any`, but in this case
     // It's referring to an inaccessible type from the field validate function inner types, so it's not a big deal
+    any,
+    any,
     any,
     any,
     any,
@@ -164,6 +169,8 @@ export interface FormValidators<
   TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
 > {
   /**
    * Optional function that fires as soon as the component mounts.
@@ -195,6 +202,8 @@ export interface FormValidators<
   onBlurAsyncDebounceMs?: number
   onSubmit?: TOnSubmit
   onSubmitAsync?: TOnSubmitAsync
+  onDynamic?: TOnDynamic
+  onDynamicAsync?: TOnDynamicAsync
 }
 
 /**
@@ -209,6 +218,8 @@ export interface FormTransform<
   TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta = never,
 > {
@@ -222,6 +233,8 @@ export interface FormTransform<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer,
       TSubmitMeta
     >,
@@ -234,6 +247,8 @@ export interface FormTransform<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TOnServer,
     TSubmitMeta
   >
@@ -249,6 +264,8 @@ export interface FormListeners<
   TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta = never,
 > {
@@ -262,6 +279,8 @@ export interface FormListeners<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer,
       TSubmitMeta
     >
@@ -279,6 +298,8 @@ export interface FormListeners<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer,
       TSubmitMeta
     >
@@ -296,6 +317,8 @@ export interface FormListeners<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer,
       TSubmitMeta
     >
@@ -311,6 +334,8 @@ export interface FormListeners<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer,
       TSubmitMeta
     >
@@ -343,6 +368,8 @@ export interface FormOptions<
   in out TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TSubmitMeta = never,
 > extends BaseFormOptions<TFormData, TSubmitMeta> {
@@ -359,6 +386,8 @@ export interface FormOptions<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer
     >
   >
@@ -385,8 +414,13 @@ export interface FormOptions<
     TOnBlur,
     TOnBlurAsync,
     TOnSubmit,
-    TOnSubmitAsync
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync
   >
+
+  // TODO: Type this properly
+  validationLogic?: unknown
 
   /**
    * form level listeners
@@ -400,6 +434,8 @@ export interface FormOptions<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TOnServer,
     TSubmitMeta
   >
@@ -418,6 +454,8 @@ export interface FormOptions<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer,
       TSubmitMeta
     >
@@ -437,6 +475,8 @@ export interface FormOptions<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer,
       TSubmitMeta
     >
@@ -450,6 +490,8 @@ export interface FormOptions<
     NoInfer<TOnBlurAsync>,
     NoInfer<TOnSubmit>,
     NoInfer<TOnSubmitAsync>,
+    NoInfer<TOnDynamic>,
+    NoInfer<TOnDynamicAsync>,
     NoInfer<TOnServer>,
     NoInfer<TSubmitMeta>
   >
@@ -491,6 +533,10 @@ export type FieldInfo<TFormData> = {
     any,
     any,
     any,
+    any,
+    any,
+    any,
+    any,
     any
   > | null
   /**
@@ -511,6 +557,8 @@ export type BaseFormState<
   in out TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
 > = {
   /**
@@ -528,6 +576,8 @@ export type BaseFormState<
     UnwrapFormAsyncValidateOrFn<TOnBlurAsync>,
     UnwrapFormValidateOrFn<TOnSubmit>,
     UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>,
+    UnwrapFormValidateOrFn<TOnDynamic>,
+    UnwrapFormAsyncValidateOrFn<TOnDynamicAsync>,
     UnwrapFormAsyncValidateOrFn<TOnServer>
   >
   /**
@@ -563,10 +613,11 @@ export type BaseFormState<
    * A boolean indicating if the form or any of its fields are currently validating.
    */
   isValidating: boolean
-  /**
-   * A counter for tracking the number of submission attempts.
-   */
-  submissionAttempts: number
+  attempts: {
+    blur: number
+    change: number
+    submit: number
+  }
   /**
    * A boolean indicating if the last submission was successful.
    */
@@ -586,6 +637,8 @@ export type DerivedFormState<
   in out TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
 > = {
   /**
@@ -607,6 +660,8 @@ export type DerivedFormState<
     | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
     | UnwrapFormValidateOrFn<TOnSubmit>
     | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
+    | UnwrapFormValidateOrFn<TOnDynamic>
+    | UnwrapFormAsyncValidateOrFn<TOnDynamicAsync>
     | UnwrapFormAsyncValidateOrFn<TOnServer>
   >
   /**
@@ -649,6 +704,10 @@ export type DerivedFormState<
    * A record of field metadata for each field in the form.
    */
   fieldMeta: Record<DeepKeys<TFormData>, AnyFieldMeta>
+  /**
+   * A counter for tracking the number of submission attempts.
+   */
+  submissionAttempts: number
 }
 
 export interface FormState<
@@ -660,6 +719,8 @@ export interface FormState<
   in out TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
 > extends BaseFormState<
       TFormData,
@@ -670,6 +731,8 @@ export interface FormState<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer
     >,
     DerivedFormState<
@@ -681,10 +744,14 @@ export interface FormState<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer
     > {}
 
 export type AnyFormState = FormState<
+  any,
+  any,
   any,
   any,
   any,
@@ -705,6 +772,8 @@ function getDefaultFormState<
   TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
 >(
   defaultState: Partial<
@@ -717,6 +786,8 @@ function getDefaultFormState<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer
     >
   >,
@@ -729,6 +800,8 @@ function getDefaultFormState<
   TOnBlurAsync,
   TOnSubmit,
   TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
   TOnServer
 > {
   return {
@@ -738,7 +811,11 @@ function getDefaultFormState<
     isSubmitted: defaultState.isSubmitted ?? false,
     isSubmitting: defaultState.isSubmitting ?? false,
     isValidating: defaultState.isValidating ?? false,
-    submissionAttempts: defaultState.submissionAttempts ?? 0,
+    attempts: defaultState.attempts ?? {
+      submit: 0,
+      change: defaultState.submissionAttempts ?? 0,
+      blur: 0,
+    },
     isSubmitSuccessful: defaultState.isSubmitSuccessful ?? false,
     validationMetaMap: defaultState.validationMetaMap ?? {
       onChange: undefined,
@@ -746,6 +823,7 @@ function getDefaultFormState<
       onSubmit: undefined,
       onMount: undefined,
       onServer: undefined,
+      onDynamic: undefined,
     },
   }
 }
@@ -756,6 +834,8 @@ function getDefaultFormState<
  * A type representing the Form API with all generics set to `any` for convenience.
  */
 export type AnyFormApi = FormApi<
+  any,
+  any,
   any,
   any,
   any,
@@ -784,6 +864,8 @@ export class FormApi<
   in out TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TSubmitMeta = never,
 > implements FieldManipulator<TFormData, TSubmitMeta>
@@ -800,6 +882,8 @@ export class FormApi<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TOnServer,
     TSubmitMeta
   > = {}
@@ -813,6 +897,8 @@ export class FormApi<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer
     >
   >
@@ -827,6 +913,8 @@ export class FormApi<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer
     >
   >
@@ -857,6 +945,8 @@ export class FormApi<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer,
       TSubmitMeta
     >,
@@ -889,6 +979,8 @@ export class FormApi<
           TOnBlurAsync,
           TOnSubmit,
           TOnSubmitAsync,
+          TOnDynamic,
+          TOnDynamicAsync,
           TOnServer
         >['fieldMeta']
 
@@ -990,6 +1082,8 @@ export class FormApi<
               TOnBlurAsync,
               TOnSubmit,
               TOnSubmitAsync,
+              TOnDynamic,
+              TOnDynamicAsync,
               TOnServer
             >
           | undefined
@@ -1005,6 +1099,8 @@ export class FormApi<
         const isFieldsValidating = fieldMetaValues.some(
           (field) => field.isValidating,
         )
+
+        const submissionAttempts = currBaseStore.attempts.submit
 
         const isFieldsValid = fieldMetaValues.every((field) => field.isValid)
 
@@ -1063,7 +1159,7 @@ export class FormApi<
         const isValid = isFieldsValid && isFormValid
         const submitInvalid = this.options.canSubmitWhenInvalid ?? false
         const canSubmit =
-          (currBaseStore.submissionAttempts === 0 &&
+          (currBaseStore.attempts.submit === 0 &&
             !isTouched &&
             !hasOnMountError) ||
           (!isValidating && !currBaseStore.isSubmitting && isValid) ||
@@ -1093,6 +1189,7 @@ export class FormApi<
           prevVal.isPristine === isPristine &&
           prevVal.isDefaultValue === isDefaultValue &&
           prevVal.isDirty === isDirty &&
+          prevVal.submissionAttempts === submissionAttempts &&
           evaluate(prevBaseStore, currBaseStore)
         ) {
           return prevVal
@@ -1113,6 +1210,7 @@ export class FormApi<
           isPristine,
           isDefaultValue,
           isDirty,
+          submissionAttempts,
         } as FormState<
           TFormData,
           TOnMount,
@@ -1122,6 +1220,8 @@ export class FormApi<
           TOnBlurAsync,
           TOnSubmit,
           TOnSubmitAsync,
+          TOnDynamic,
+          TOnDynamicAsync,
           TOnServer
         >
 
@@ -1203,6 +1303,8 @@ export class FormApi<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer,
       TSubmitMeta
     >,
@@ -1231,6 +1333,10 @@ export class FormApi<
     if (!shouldUpdateValues && !shouldUpdateState && !shouldUpdateReeval) return
 
     batch(() => {
+      const shouldUpdateSubmissionAttempts =
+        options.defaultState?.submissionAttempts !== undefined &&
+        options.defaultState.submissionAttempts !== this.state.attempts.submit
+
       this.baseStore.setState(() =>
         getDefaultFormState(
           Object.assign(
@@ -1247,6 +1353,15 @@ export class FormApi<
 
             shouldUpdateReeval
               ? { _force_re_eval: !this.state._force_re_eval }
+              : {},
+
+            shouldUpdateSubmissionAttempts
+              ? {
+                  attempts: {
+                    ...this.state.attempts,
+                    submit: options.defaultState?.submissionAttempts ?? 0,
+                  },
+                }
               : {},
           ),
         ),
@@ -1394,7 +1509,12 @@ export class FormApi<
       TOnSubmitAsync
     >
   } => {
-    const validates = getSyncValidatorArray(cause, this.options)
+    const validates = getSyncValidatorArray(cause, {
+      ...this.options,
+      form: this,
+      validationLogic: this.options.validationLogic || defaultValidationLogic,
+    })
+
     let hasErrored = false as boolean
 
     // This map will only include fields that have errors in the current validation cycle
@@ -1532,7 +1652,11 @@ export class FormApi<
       TOnSubmitAsync
     >
   > => {
-    const validates = getAsyncValidatorArray(cause, this.options)
+    const validates = getAsyncValidatorArray(cause, {
+      ...this.options,
+      form: this,
+      validationLogic: this.options.validationLogic || defaultValidationLogic,
+    })
 
     if (!this.state.isFormValidating) {
       this.baseStore.setState((prev) => ({ ...prev, isFormValidating: true }))
@@ -1753,7 +1877,7 @@ export class FormApi<
       // Submission attempts mark the form as not submitted
       isSubmitted: false,
       // Count submission attempts
-      submissionAttempts: old.submissionAttempts + 1,
+      attempts: { ...old.attempts, submit: old.attempts.submit + 1 },
       isSubmitSuccessful: false, // Reset isSubmitSuccessful at the start of submission
     }))
 
@@ -1871,6 +1995,7 @@ export class FormApi<
         onSubmit: undefined,
         onMount: undefined,
         onServer: undefined,
+        onDynamic: undefined,
       },
     })
   }
@@ -2191,6 +2316,8 @@ export class FormApi<
       UnwrapFormAsyncValidateOrFn<TOnBlurAsync>,
       UnwrapFormValidateOrFn<TOnSubmit>,
       UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>,
+      UnwrapFormValidateOrFn<TOnDynamic>,
+      UnwrapFormAsyncValidateOrFn<TOnDynamicAsync>,
       UnwrapFormAsyncValidateOrFn<TOnServer>
     >,
   ) {
@@ -2253,6 +2380,8 @@ export class FormApi<
         | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
         | UnwrapFormValidateOrFn<TOnSubmit>
         | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
+        | UnwrapFormValidateOrFn<TOnDynamic>
+        | UnwrapFormAsyncValidateOrFn<TOnDynamicAsync>
         | UnwrapFormAsyncValidateOrFn<TOnServer>
       >
       errorMap: ValidationErrorMap<
@@ -2263,6 +2392,8 @@ export class FormApi<
         UnwrapFormAsyncValidateOrFn<TOnBlurAsync>,
         UnwrapFormValidateOrFn<TOnSubmit>,
         UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>,
+        UnwrapFormValidateOrFn<TOnDynamic>,
+        UnwrapFormAsyncValidateOrFn<TOnDynamicAsync>,
         UnwrapFormAsyncValidateOrFn<TOnServer>
       >
     }
@@ -2352,6 +2483,8 @@ function getErrorMapKey(cause: ValidationCause) {
       return 'onMount'
     case 'server':
       return 'onServer'
+    case 'dynamic':
+      return 'onDynamic'
     case 'change':
     default:
       return 'onChange'

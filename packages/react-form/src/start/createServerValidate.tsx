@@ -25,6 +25,8 @@ interface CreateServerValidateOptions<
   TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta,
 > extends FormOptions<
@@ -36,6 +38,8 @@ interface CreateServerValidateOptions<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TOnServer,
     TSubmitMeta
   > {
@@ -52,6 +56,8 @@ export const createServerValidate =
     TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
     TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
     TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+    TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
     TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
     TSubmitMeta,
   >(
@@ -64,6 +70,8 @@ export const createServerValidate =
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer,
       TSubmitMeta
     >,

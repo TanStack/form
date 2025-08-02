@@ -431,6 +431,7 @@ it("should allow setting manual errors according to the validator's return type"
     onBlur: readonly ['onBlur'] | undefined
     onSubmit: undefined
     onServer: unknown
+    onDynamic: undefined
   }>
 })
 
@@ -456,5 +457,6 @@ it('should allow setting manual errors with standard schema validators on the fi
     onBlur: undefined
     onSubmit: undefined
     onServer: unknown
+    onDynamic: undefined
   }>
 })

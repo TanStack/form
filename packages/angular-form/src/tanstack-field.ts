@@ -51,6 +51,10 @@ export class TanStackField<
   TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
@@ -58,6 +62,8 @@ export class TanStackField<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TSubmitMeta,
 > implements OnInit
@@ -81,6 +87,8 @@ export class TanStackField<
         TFormOnBlurAsync,
         TFormOnSubmit,
         TFormOnSubmitAsync,
+        TFormOnDynamic,
+        TFormOnDynamicAsync,
         TFormOnServer,
         TSubmitMeta
       >
@@ -99,7 +107,9 @@ export class TanStackField<
           TOnBlur,
           TOnBlurAsync,
           TOnSubmit,
-          TOnSubmitAsync
+          TOnSubmitAsync,
+          TOnDynamic,
+          TOnDynamicAsync
         >
       >
     >()
@@ -119,13 +129,17 @@ export class TanStackField<
           TOnBlurAsync,
           TOnSubmit,
           TOnSubmitAsync,
+          TOnDynamic,
+          TOnDynamicAsync,
           TFormOnMount,
           TFormOnChange,
           TFormOnChangeAsync,
           TFormOnBlur,
           TFormOnBlurAsync,
           TFormOnSubmit,
-          TFormOnSubmitAsync
+          TFormOnSubmitAsync,
+          TFormOnDynamic,
+          TFormOnDynamicAsync
         >
       >
     >()
@@ -149,6 +163,8 @@ export class TanStackField<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TFormOnMount,
     TFormOnChange,
     TFormOnChangeAsync,
@@ -156,6 +172,8 @@ export class TanStackField<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TSubmitMeta
   > {
@@ -185,6 +203,8 @@ export class TanStackField<
         TOnBlurAsync,
         TOnSubmit,
         TOnSubmitAsync,
+        TOnDynamic,
+        TOnDynamicAsync,
         TFormOnMount,
         TFormOnChange,
         TFormOnChangeAsync,
@@ -192,6 +212,8 @@ export class TanStackField<
         TFormOnBlurAsync,
         TFormOnSubmit,
         TFormOnSubmitAsync,
+        TFormOnDynamic,
+        TFormOnDynamicAsync,
         TFormOnServer,
         TSubmitMeta
       >,
