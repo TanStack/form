@@ -3896,3 +3896,13 @@ it('should preserve nested fields on resetField if defaultValues is not provided
   form.resetField('nested.field.name')
   expect(form.state.values.nested.field.name).toEqual('Nested')
 })
+
+it('should accept name prop and store it', () => {
+  const form = new FormApi({
+    defaultValues: { age: 0 },
+    formId: 'age',
+  })
+  form.mount()
+
+  expect(form.state.formId).toEqual('age')
+})
