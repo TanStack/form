@@ -247,14 +247,37 @@ export function getSyncValidatorArray<T>(
     validationLogic?: any
     form?: any
   },
-): T extends FieldValidators<any, any, any, any, any, any, any, any, any, any>
+): T extends FieldValidators<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
   ? Array<
-      SyncValidator<T['onChange'] | T['onBlur'] | T['onSubmit'] | T['onMount']>
+      SyncValidator<
+        | T['onChange']
+        | T['onBlur']
+        | T['onSubmit']
+        | T['onMount']
+        | T['onDynamic']
+      >
     >
-  : T extends FormValidators<any, any, any, any, any, any, any, any>
+  : T extends FormValidators<any, any, any, any, any, any, any, any, any, any>
     ? Array<
         SyncValidator<
-          T['onChange'] | T['onBlur'] | T['onSubmit'] | T['onMount']
+          | T['onChange']
+          | T['onBlur']
+          | T['onSubmit']
+          | T['onMount']
+          | T['onDynamic']
         >
       >
     : never {
@@ -286,14 +309,35 @@ export function getAsyncValidatorArray<T>(
     validationLogic?: any
     form?: any
   },
-): T extends FieldValidators<any, any, any, any, any, any, any, any, any, any>
+): T extends FieldValidators<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
   ? Array<
-      AsyncValidator<T['onChangeAsync'] | T['onBlurAsync'] | T['onSubmitAsync']>
+      AsyncValidator<
+        | T['onChangeAsync']
+        | T['onBlurAsync']
+        | T['onSubmitAsync']
+        | T['onDynamicAsync']
+      >
     >
-  : T extends FormValidators<any, any, any, any, any, any, any, any>
+  : T extends FormValidators<any, any, any, any, any, any, any, any, any, any>
     ? Array<
         AsyncValidator<
-          T['onChangeAsync'] | T['onBlurAsync'] | T['onSubmitAsync']
+          | T['onChangeAsync']
+          | T['onBlurAsync']
+          | T['onSubmitAsync']
+          | T['onDynamicAsync']
         >
       >
     : never {

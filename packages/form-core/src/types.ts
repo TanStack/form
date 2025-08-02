@@ -39,14 +39,16 @@ export type ValidationErrorMap<
   TOnBlurAsyncReturn = unknown,
   TOnSubmitReturn = unknown,
   TOnSubmitAsyncReturn = unknown,
+  TOnDynamicReturn = unknown,
+  TOnDynamicAsyncReturn = unknown,
   TOnServerReturn = unknown,
 > = {
   onMount?: TOnMountReturn
   onChange?: TOnChangeReturn | TOnChangeAsyncReturn
   onBlur?: TOnBlurReturn | TOnBlurAsyncReturn
   onSubmit?: TOnSubmitReturn | TOnSubmitAsyncReturn
+  onDynamic?: TOnDynamicReturn | TOnDynamicAsyncReturn
   onServer?: TOnServerReturn
-  onDynamic?: unknown
 }
 
 /**
