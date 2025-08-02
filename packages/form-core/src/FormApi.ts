@@ -1155,6 +1155,10 @@ export class FormApi<
     this.update(opts || {})
   }
 
+  get formId(): string | undefined {
+    return this.state.formId
+  }
+
   /**
    * @private
    */

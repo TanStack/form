@@ -455,7 +455,7 @@ describe('createFormHook', () => {
     function FormId() {
       const form = useFormContext()
 
-      return <span data-testid="formId-target">{form.options.formId}</span>
+      return <span data-testid="formId-target">{form.formId}</span>
     }
 
     function Comp() {

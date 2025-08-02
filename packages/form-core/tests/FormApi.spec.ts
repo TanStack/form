@@ -3904,5 +3904,5 @@ it('should accept name prop and store it', () => {
   })
   form.mount()
 
-  expect(form.state.formId).toEqual('age')
+  expect(form.formId).toEqual('age')
 })
