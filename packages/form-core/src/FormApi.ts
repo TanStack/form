@@ -1314,6 +1314,24 @@ export class FormApi<
     return fieldErrorMapMap.flat()
   }
 
+  collapseAllFieldAsyncOnChange = async () => {
+    const proimises: Promise<void>[] = []
+    batch(() => {
+      void (Object.values(this.fieldInfo) as FieldInfo<any>[]).forEach(
+        (field) => {
+          if (!field.instance) return
+          const promise = field.instance.promises.listeners.change
+          field.instance.collapseFieldOnChangeAsync()
+          if (promise) {
+            proimises.push(promise)
+          }
+        },
+      )
+    })
+
+    await Promise.all(proimises)
+  }
+
   /**
    * Validates the children of a specified array in the form starting from a given index until the end using the correct handlers for a given validation type.
    */
@@ -1778,6 +1796,7 @@ export class FormApi<
       this.baseStore.setState((prev) => ({ ...prev, isSubmitting: false }))
     }
 
+    await this.collapseAllFieldAsyncOnChange()
     await this.validateAllFields('submit')
 
     if (!this.state.isFieldsValid) {
