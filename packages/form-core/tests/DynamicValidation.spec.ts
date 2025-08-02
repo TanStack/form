@@ -93,7 +93,7 @@ describe('custom validation', () => {
   })
 
   it('rhf validation should work as-expected with async validators', async () => {
-    let resolve = () => {}
+    let resolve = () => { }
     const promise = new Promise<void>((res) => {
       resolve = res
     })
@@ -122,5 +122,34 @@ describe('custom validation', () => {
     await promise2
 
     expect(form.state.errorMap.onDynamic).toBe('There was an error')
+  })
+
+  it('rhf validation should handle default validators as well', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+      validationLogic: rhfValidationLogic,
+      validators: {
+        onChange: z.object({
+          name: z.string().min(3, 'Name must be at least 3 characters long'),
+        }),
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    field.mount()
+    expect(field.getValue()).toBe('')
+    expect(field.state.meta.errorMap.onChange).toBe(undefined)
+    field.setValue('Jo')
+    expect(field.state.meta.errorMap.onChange).toMatchObject([
+      { message: 'Name must be at least 3 characters long' },
+    ])
   })
 })

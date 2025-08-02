@@ -369,8 +369,8 @@ export function getSyncValidatorArrayWithLogic<T>(
   ) => {
     return props.validators.filter(Boolean).map((validator) => {
       return {
-        cause: props.cause,
-        validate: validator,
+        cause: validator!.cause,
+        validate: validator!.fn,
       }
     })
   }
@@ -412,8 +412,8 @@ export function getAsyncValidatorArrayWithLogic<T>(
       const defaultDebounceMs = asyncDebounceMs ?? 0
 
       return {
-        cause: props.cause || cause,
-        validate: validator,
+        cause: validator!.cause || cause,
+        validate: validator!.fn,
         debounceMs: defaultDebounceMs,
       }
     })
