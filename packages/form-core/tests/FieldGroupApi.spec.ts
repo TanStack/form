@@ -919,6 +919,49 @@ describe('field group api', () => {
     )
   })
 
+  it('should remap the name of field options correctly', () => {
+    const form = new FormApi({
+      defaultValues: {
+        account: {
+          password: '',
+          confirmPassword: '',
+        },
+        userPassword: '',
+        userConfirmPassword: '',
+      },
+    })
+    form.mount()
+
+    const fieldGroupString = new FieldGroupApi({
+      form,
+      fields: 'account',
+      defaultValues: { password: '' },
+    })
+    fieldGroupString.mount()
+
+    const props1 = {
+      name: 'password',
+    }
+    const remappedProps1 = fieldGroupString.getFormFieldOptions(props1)
+    expect(remappedProps1.name).toBe('account.password')
+
+    const fieldGroupObject = new FieldGroupApi({
+      form,
+      fields: {
+        password: 'userPassword',
+        confirmPassword: 'userConfirmPassword',
+      },
+      defaultValues: { password: '' },
+    })
+    fieldGroupObject.mount()
+
+    const props2 = {
+      name: 'password',
+    }
+    const remappedProps2 = fieldGroupObject.getFormFieldOptions(props2)
+    expect(remappedProps2.name).toBe('userPassword')
+  })
+
   it('should remap listener paths with its remapFieldProps method', () => {
     const form = new FormApi({
       defaultValues: {

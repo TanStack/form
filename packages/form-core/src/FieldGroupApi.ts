@@ -186,6 +186,8 @@ export class FieldGroupApi<
     const newProps = { ...props }
     const validators = newProps.validators
 
+    newProps.name = this.getFormFieldName(props.name)
+
     if (
       validators &&
       (validators.onChangeListenTo || validators.onBlurListenTo)

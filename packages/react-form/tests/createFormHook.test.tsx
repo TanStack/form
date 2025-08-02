@@ -450,4 +450,88 @@ describe('createFormHook', () => {
     const inputField1 = getByLabelText('unrelated')
     expect(inputField1).toHaveValue('John')
   })
+
+  it('should remap GroupFieldApi.Field validators to the correct names', () => {
+    const FieldGroupString = withFieldGroup({
+      defaultValues: { password: '', confirmPassword: '' },
+      render: function Render({ group }) {
+        return (
+          <group.Field
+            name="password"
+            validators={{
+              onChange: () => null,
+              onChangeListenTo: ['password'],
+              onBlur: () => null,
+              onBlurListenTo: ['confirmPassword'],
+            }}
+          >
+            {(field) => {
+              expect(field.options.validators?.onChangeListenTo).toStrictEqual([
+                'account.password',
+              ])
+              expect(field.options.validators?.onBlurListenTo).toStrictEqual([
+                'account.confirmPassword',
+              ])
+              return <></>
+            }}
+          </group.Field>
+        )
+      },
+    })
+
+    const FieldGroupObject = withFieldGroup({
+      defaultValues: { password: '', confirmPassword: '' },
+      render: function Render({ group }) {
+        return (
+          <group.Field
+            name="password"
+            validators={{
+              onChange: () => null,
+              onChangeListenTo: ['password'],
+              onBlur: () => null,
+              onBlurListenTo: ['confirmPassword'],
+            }}
+          >
+            {(field) => {
+              expect(field.options.validators?.onChangeListenTo).toStrictEqual([
+                'userPassword',
+              ])
+              expect(field.options.validators?.onBlurListenTo).toStrictEqual([
+                'userConfirmPassword',
+              ])
+              return <></>
+            }}
+          </group.Field>
+        )
+      },
+    })
+
+    const Parent = () => {
+      const form = useAppForm({
+        defaultValues: {
+          account: {
+            password: '',
+            confirmPassword: '',
+          },
+          userPassword: '',
+          userConfirmPassword: '',
+        },
+      })
+
+      return (
+        <>
+          <FieldGroupString form={form} fields="account" />
+          <FieldGroupObject
+            form={form}
+            fields={{
+              password: 'userPassword',
+              confirmPassword: 'userConfirmPassword',
+            }}
+          />
+        </>
+      )
+    }
+
+    render(<Parent />)
+  })
 })
