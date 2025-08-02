@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
 import { FieldApi, FieldGroupApi, FormApi } from '../src/index'
-import { defaultFieldMeta } from '../src/metaHelper'
 
 describe('field group api', () => {
   type Person = {
@@ -941,12 +940,13 @@ describe('field group api', () => {
     fieldGroupString.mount()
 
     const props1 = {
+      name: 'confirmPassword',
       validators: {
         onChangeListenTo: ['password'],
         onBlurListenTo: ['confirmPassword'],
       },
     }
-    const remappedProps1 = fieldGroupString.remapFieldProps(props1)
+    const remappedProps1 = fieldGroupString.getFormFieldOptions(props1)
     expect(remappedProps1.validators.onChangeListenTo).toEqual([
       'account.password',
     ])
@@ -965,11 +965,12 @@ describe('field group api', () => {
     fieldGroupObject.mount()
 
     const props2 = {
+      name: 'confirmPassword',
       validators: {
         onChangeListenTo: ['password'],
       },
     }
-    const remappedProps2 = fieldGroupObject.remapFieldProps(props2)
+    const remappedProps2 = fieldGroupObject.getFormFieldOptions(props2)
     expect(remappedProps2.validators.onChangeListenTo).toEqual(['userPassword'])
   })
 })

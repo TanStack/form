@@ -6,7 +6,7 @@ import type {
   FormAsyncValidateOrFn,
   FormValidateOrFn,
 } from './FormApi'
-import type { AnyFieldMeta, AnyFieldMetaBase } from './FieldApi'
+import type { AnyFieldMetaBase, FieldOptions } from './FieldApi'
 import type {
   DeepKeys,
   DeepKeysOfType,
@@ -161,6 +161,53 @@ export class FieldGroupApi<
       ]
 
     return concatenatePaths(formMappedPath, restOfPath)
+  }
+
+  /**
+   * Get the field options with the true form DeepKeys for validators
+   * @private
+   */
+  getFormFieldOptions = <
+    TOptions extends FieldOptions<
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any
+    >,
+  >(
+    props: TOptions,
+  ): TOptions => {
+    const newProps = { ...props }
+    const validators = newProps.validators
+
+    if (
+      validators &&
+      (validators.onChangeListenTo || validators.onBlurListenTo)
+    ) {
+      const newValidators = { ...validators }
+
+      const remapListenTo = (listenTo: DeepKeys<any>[] | undefined) => {
+        if (!listenTo) return undefined
+        return listenTo.map((localFieldName) =>
+          this.getFormFieldName(localFieldName),
+        )
+      }
+
+      newValidators.onChangeListenTo = remapListenTo(
+        validators.onChangeListenTo,
+      )
+      newValidators.onBlurListenTo = remapListenTo(validators.onBlurListenTo)
+
+      newProps.validators = newValidators
+    }
+
+    return newProps
   }
 
   store: Derived<FieldGroupState<TFieldGroupData>>
@@ -458,43 +505,4 @@ export class FieldGroupApi<
 
   validateAllFields = (cause: ValidationCause) =>
     this.form.validateAllFields(cause)
-
-  /**
-   * Remaps field validator listener paths to their full form paths.
-   */
-  remapFieldProps = <TProps extends { validators?: any }>(
-    props: TProps,
-  ): TProps => {
-    const newProps = { ...props }
-    const validators = newProps.validators
-
-    if (
-      validators &&
-      (validators.onChangeListenTo || validators.onBlurListenTo)
-    ) {
-      const newValidators = { ...validators }
-
-      const remapListenTo = (listenTo: DeepKeys<any>[] | undefined) => {
-        if (!listenTo) return undefined
-        return listenTo.map((localFieldName) =>
-          this.getFormFieldName(localFieldName),
-        )
-      }
-
-      if (newValidators.onChangeListenTo) {
-        newValidators.onChangeListenTo = remapListenTo(
-          newValidators.onChangeListenTo,
-        )
-      }
-      if (newValidators.onBlurListenTo) {
-        newValidators.onBlurListenTo = remapListenTo(
-          newValidators.onBlurListenTo,
-        )
-      }
-
-      newProps.validators = newValidators
-    }
-
-    return newProps
-  }
 }

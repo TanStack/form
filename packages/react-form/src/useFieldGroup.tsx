@@ -194,21 +194,15 @@ export function useFieldGroup<
       return <form.AppForm {...appFormProps} />
     }
 
-    extendedApi.AppField = function AppField({ name, ...appFieldProps }) {
+    extendedApi.AppField = function AppField(props) {
       return (
-        <form.AppField
-          name={formLensApi.getFormFieldName(name)}
-          {...formLensApi.remapFieldProps(appFieldProps as any)}
-        />
+        <form.AppField {...(formLensApi.getFormFieldOptions(props) as any)} />
       ) as never
     }
 
-    extendedApi.Field = function Field({ name, ...fieldProps }) {
+    extendedApi.Field = function Field(props) {
       return (
-        <form.Field
-          name={formLensApi.getFormFieldName(name)}
-          {...formLensApi.remapFieldProps(fieldProps as any)}
-        />
+        <form.Field {...(formLensApi.getFormFieldOptions(props) as any)} />
       ) as never
     }
 
