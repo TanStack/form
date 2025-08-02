@@ -93,7 +93,7 @@ describe('custom validation', () => {
   })
 
   it('rhf validation should work as-expected with async validators', async () => {
-    let resolve = () => { }
+    let resolve = () => {}
     const promise = new Promise<void>((res) => {
       resolve = res
     })
@@ -115,12 +115,12 @@ describe('custom validation', () => {
 
     expect(form.state.errorMap.onDynamic).toBe(undefined)
 
-    const promise2 = form.handleSubmit();
+    const promise2 = form.handleSubmit()
 
     resolve()
-    await promise;
-    await promise2;
+    await promise
+    await promise2
 
-    expect(form.state.errorMap.onDynamic).toBe('There was an error');
+    expect(form.state.errorMap.onDynamic).toBe('There was an error')
   })
 })
