@@ -2,7 +2,9 @@ import type { AnyFormApi, FormValidators } from './FormApi'
 
 export interface ValidationLogicValidatorsFn {
   fn: // TODO: Type this properly
-  FormValidators<any, any, any, any, any, any, any, any>[keyof FormValidators<
+  FormValidators<
+    any,
+    any,
     any,
     any,
     any,
@@ -11,7 +13,7 @@ export interface ValidationLogicValidatorsFn {
     any,
     any,
     any
-  >]
+  >[keyof FormValidators<any, any, any, any, any, any, any, any, any, any>]
   cause: 'change' | 'blur' | 'submit' | 'mount' | 'server' | 'dynamic'
 }
 
@@ -20,7 +22,7 @@ export interface ValidationLogicProps {
   form: AnyFormApi
   // TODO: Type this properly
   validators:
-    | FormValidators<any, any, any, any, any, any, any, any>
+    | FormValidators<any, any, any, any, any, any, any, any, any, any>
     | undefined
     | null
   event: {
@@ -69,7 +71,7 @@ export function rhfValidationLogic(props: ValidationLogicProps) {
     cause: 'dynamic',
   } as const
 
-  let validatorsToAdd = [] as ValidationLogicValidatorsFn[]
+  const validatorsToAdd = [] as ValidationLogicValidatorsFn[]
 
   // Submission attempts are tracked before validation occurs
   if (props.form.state.submissionAttempts <= 1) {

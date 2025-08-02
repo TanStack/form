@@ -101,6 +101,10 @@ export type FieldValidateFn<
     any,
     any,
     any,
+    any,
+    any,
+    any,
+    any,
     any
   >
 }) => unknown
@@ -169,6 +173,10 @@ export type FieldValidateAsyncFn<
     TData,
     // This is technically an edge-type; which we try to keep non-`any`, but in this case
     // It's referring to an inaccessible type from the field validate function inner types, so it's not a big deal
+    any,
+    any,
+    any,
+    any,
     any,
     any,
     any,
@@ -266,6 +274,10 @@ export type FieldListenerFn<
     any,
     any,
     any,
+    any,
+    any,
+    any,
+    any,
     any
   >
 }) => void
@@ -285,6 +297,10 @@ export interface FieldValidators<
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
 > {
@@ -349,6 +365,8 @@ export interface FieldValidators<
    * @example z.string().refine(async (val) => val.length > 3, { message: 'Testing 123' })
    */
   onSubmitAsync?: TOnSubmitAsync
+  onDynamic?: TOnDynamic
+  onDynamicAsync?: TOnDynamicAsync
 }
 
 export interface FieldListeners<
@@ -384,6 +402,10 @@ export interface FieldOptions<
   TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
 > {
   /**
    * The field name. The type will be `DeepKeys<TParentData>` to ensure your name is a deep key of the parent dataset.
@@ -414,7 +436,9 @@ export interface FieldOptions<
     TOnBlur,
     TOnBlurAsync,
     TOnSubmit,
-    TOnSubmitAsync
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync
   >
   /**
    * An optional object with default metadata for the field.
@@ -431,6 +455,10 @@ export interface FieldOptions<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      any,
+      any,
       any,
       any,
       any,
@@ -478,6 +506,12 @@ export interface FieldApiOptions<
   in out TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnDynamic extends
+    | undefined
+    | FieldValidateOrFn<TParentData, TName, TData>,
+  in out TOnDynamicAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnChangeAsync extends
@@ -489,6 +523,10 @@ export interface FieldApiOptions<
     | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnSubmitAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnDynamicAsync extends
     | undefined
     | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
@@ -503,7 +541,9 @@ export interface FieldApiOptions<
     TOnBlur,
     TOnBlurAsync,
     TOnSubmit,
-    TOnSubmitAsync
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync
   > {
   form: FormApi<
     TParentData,
@@ -514,6 +554,8 @@ export interface FieldApiOptions<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TParentSubmitMeta
   >
@@ -536,6 +578,10 @@ export type FieldMetaBase<
   TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
@@ -543,6 +589,8 @@ export type FieldMetaBase<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
 > = {
   /**
    * A flag indicating whether the field has been touched.
@@ -566,11 +614,10 @@ export type FieldMetaBase<
     UnwrapFieldValidateOrFn<TName, TOnBlur, TFormOnBlur>,
     UnwrapFieldAsyncValidateOrFn<TName, TOnBlurAsync, TFormOnBlurAsync>,
     UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>,
-    UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>
-  > & {
-    // TODO: Type this properly
-    onDynamic?: StandardSchemaV1Issue[]
-  }
+    UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>,
+    UnwrapFieldValidateOrFn<TName, TOnDynamic, TFormOnDynamic>,
+    UnwrapFieldAsyncValidateOrFn<TName, TOnDynamicAsync, TFormOnDynamicAsync>
+  >
 
   /**
    * @private allows tracking the source of the errors in the error map
@@ -583,6 +630,10 @@ export type FieldMetaBase<
 }
 
 export type AnyFieldMetaBase = FieldMetaBase<
+  any,
+  any,
+  any,
+  any,
   any,
   any,
   any,
@@ -619,6 +670,10 @@ export type FieldMetaDerived<
   TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
@@ -626,6 +681,8 @@ export type FieldMetaDerived<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
 > = {
   /**
    * An array of errors related to the field value.
@@ -652,6 +709,16 @@ export type FieldMetaDerived<
     | UnwrapOneLevelOfArray<
         UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>
       >
+    | UnwrapOneLevelOfArray<
+        UnwrapFieldValidateOrFn<TName, TOnDynamic, TFormOnDynamic>
+      >
+    | UnwrapOneLevelOfArray<
+        UnwrapFieldAsyncValidateOrFn<
+          TName,
+          TOnDynamicAsync,
+          TFormOnDynamicAsync
+        >
+      >
   >
   /**
    * A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.
@@ -668,6 +735,10 @@ export type FieldMetaDerived<
 }
 
 export type AnyFieldMetaDerived = FieldMetaDerived<
+  any,
+  any,
+  any,
+  any,
   any,
   any,
   any,
@@ -707,6 +778,10 @@ export type FieldMeta<
   TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
@@ -714,6 +789,8 @@ export type FieldMeta<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
 > = FieldMetaBase<
   TParentData,
   TName,
@@ -725,13 +802,17 @@ export type FieldMeta<
   TOnBlurAsync,
   TOnSubmit,
   TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
   TFormOnMount,
   TFormOnChange,
   TFormOnChangeAsync,
   TFormOnBlur,
   TFormOnBlurAsync,
   TFormOnSubmit,
-  TFormOnSubmitAsync
+  TFormOnSubmitAsync,
+  TFormOnDynamic,
+  TFormOnDynamicAsync
 > &
   FieldMetaDerived<
     TParentData,
@@ -744,16 +825,24 @@ export type FieldMeta<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TFormOnMount,
     TFormOnChange,
     TFormOnChangeAsync,
     TFormOnBlur,
     TFormOnBlurAsync,
     TFormOnSubmit,
-    TFormOnSubmitAsync
+    TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync
   >
 
 export type AnyFieldMeta = FieldMeta<
+  any,
+  any,
+  any,
+  any,
   any,
   any,
   any,
@@ -793,6 +882,10 @@ export type FieldState<
   TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
@@ -800,6 +893,8 @@ export type FieldState<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
 > = {
   /**
    * The current value of the field.
@@ -819,13 +914,17 @@ export type FieldState<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TFormOnMount,
     TFormOnChange,
     TFormOnChangeAsync,
     TFormOnBlur,
     TFormOnBlurAsync,
     TFormOnSubmit,
-    TFormOnSubmitAsync
+    TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync
   >
 }
 
@@ -835,6 +934,10 @@ export type FieldState<
  * A type representing the Field API with all generics set to `any` for convenience.
  */
 export type AnyFieldApi = FieldApi<
+  any,
+  any,
+  any,
+  any,
   any,
   any,
   any,
@@ -890,6 +993,12 @@ export class FieldApi<
   in out TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnDynamic extends
+    | undefined
+    | FieldValidateOrFn<TParentData, TName, TData>,
+  in out TOnDynamicAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnChangeAsync extends
@@ -901,6 +1010,10 @@ export class FieldApi<
     | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnSubmitAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnDynamicAsync extends
     | undefined
     | FormAsyncValidateOrFn<TParentData>,
   in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
@@ -920,6 +1033,8 @@ export class FieldApi<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TFormOnMount,
     TFormOnChange,
     TFormOnChangeAsync,
@@ -927,6 +1042,8 @@ export class FieldApi<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TParentSubmitMeta
   >['form']
@@ -948,6 +1065,8 @@ export class FieldApi<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TFormOnMount,
     TFormOnChange,
     TFormOnChangeAsync,
@@ -955,6 +1074,8 @@ export class FieldApi<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TParentSubmitMeta
   > = {} as any
@@ -973,13 +1094,17 @@ export class FieldApi<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TFormOnMount,
       TFormOnChange,
       TFormOnChangeAsync,
       TFormOnBlur,
       TFormOnBlurAsync,
       TFormOnSubmit,
-      TFormOnSubmitAsync
+      TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync
     >
   >
   /**
@@ -1009,6 +1134,8 @@ export class FieldApi<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TFormOnMount,
       TFormOnChange,
       TFormOnChangeAsync,
@@ -1016,6 +1143,8 @@ export class FieldApi<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
       TFormOnServer,
       TParentSubmitMeta
     >,
@@ -1051,13 +1180,17 @@ export class FieldApi<
           TOnBlurAsync,
           TOnSubmit,
           TOnSubmitAsync,
+          TOnDynamic,
+          TOnDynamicAsync,
           TFormOnMount,
           TFormOnChange,
           TFormOnChangeAsync,
           TFormOnBlur,
           TFormOnBlurAsync,
           TFormOnSubmit,
-          TFormOnSubmitAsync
+          TFormOnSubmitAsync,
+          TFormOnDynamic,
+          TFormOnDynamicAsync
         >
       },
     })
@@ -1159,6 +1292,8 @@ export class FieldApi<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TFormOnMount,
       TFormOnChange,
       TFormOnChangeAsync,
@@ -1166,6 +1301,8 @@ export class FieldApi<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
       TFormOnServer,
       TParentSubmitMeta
     >,
@@ -1237,13 +1374,17 @@ export class FieldApi<
         TOnBlurAsync,
         TOnSubmit,
         TOnSubmitAsync,
+        TOnDynamic,
+        TOnDynamicAsync,
         TFormOnMount,
         TFormOnChange,
         TFormOnChangeAsync,
         TFormOnBlur,
         TFormOnBlurAsync,
         TFormOnSubmit,
-        TFormOnSubmitAsync
+        TFormOnSubmitAsync,
+        TFormOnDynamic,
+        TFormOnDynamicAsync
       >
     >,
   ) => this.form.setFieldMeta(this.name, updater)
@@ -1716,7 +1857,9 @@ export class FieldApi<
       UnwrapFieldValidateOrFn<TName, TOnBlur, TFormOnBlur>,
       UnwrapFieldAsyncValidateOrFn<TName, TOnBlurAsync, TFormOnBlurAsync>,
       UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>,
-      UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>
+      UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>,
+      UnwrapFieldValidateOrFn<TName, TOnDynamic, TFormOnDynamic>,
+      UnwrapFieldAsyncValidateOrFn<TName, TOnDynamicAsync, TFormOnDynamicAsync>
     >,
   ) {
     this.setMeta((prev) => ({
