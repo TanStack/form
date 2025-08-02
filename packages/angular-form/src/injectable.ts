@@ -23,6 +23,10 @@ export class TanStackFieldInjectable<T> {
       any,
       any,
       any,
+      any,
+      any,
+      any,
+      any,
       any
     >
   >(null as never)
