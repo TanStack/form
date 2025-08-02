@@ -133,9 +133,6 @@ interface CreateFormHookProps<
   formContext: Context<AnyFormApi>
 }
 
-/**
- * @private
- */
 export type AppFieldExtendedReactFormApi<
   TFormData,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
