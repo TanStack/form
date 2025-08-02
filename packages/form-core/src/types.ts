@@ -90,7 +90,10 @@ export type FormValidationErrorMap<
     | TOnSubmitReturn
     | TOnSubmitAsyncReturn
     | GlobalFormValidationError<TFormData>
-  onDynamic?: TOnDynamicReturn | TOnDynamicAsyncReturn
+  onDynamic?:
+    | TOnDynamicReturn
+    | TOnDynamicAsyncReturn
+    | GlobalFormValidationError<TFormData>
   onServer?: TOnServerReturn
 }
 
