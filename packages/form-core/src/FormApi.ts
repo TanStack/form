@@ -613,10 +613,11 @@ export type BaseFormState<
    * A boolean indicating if the form or any of its fields are currently validating.
    */
   isValidating: boolean
-  /**
-   * A counter for tracking the number of submission attempts.
-   */
-  submissionAttempts: number
+  attempts: {
+    blur: number
+    change: number
+    submit: number
+  }
   /**
    * A boolean indicating if the last submission was successful.
    */
@@ -703,6 +704,10 @@ export type DerivedFormState<
    * A record of field metadata for each field in the form.
    */
   fieldMeta: Record<DeepKeys<TFormData>, AnyFieldMeta>
+  /**
+   * A counter for tracking the number of submission attempts.
+   */
+  submissionAttempts: number
 }
 
 export interface FormState<
@@ -806,7 +811,11 @@ function getDefaultFormState<
     isSubmitted: defaultState.isSubmitted ?? false,
     isSubmitting: defaultState.isSubmitting ?? false,
     isValidating: defaultState.isValidating ?? false,
-    submissionAttempts: defaultState.submissionAttempts ?? 0,
+    attempts: defaultState.attempts ?? {
+      submit: 0,
+      change: defaultState.submissionAttempts ?? 0,
+      blur: 0,
+    },
     isSubmitSuccessful: defaultState.isSubmitSuccessful ?? false,
     validationMetaMap: defaultState.validationMetaMap ?? {
       onChange: undefined,
@@ -1091,6 +1100,8 @@ export class FormApi<
           (field) => field.isValidating,
         )
 
+        const submissionAttempts = currBaseStore.attempts.submit
+
         const isFieldsValid = fieldMetaValues.every((field) => field.isValid)
 
         const isTouched = fieldMetaValues.some((field) => field.isTouched)
@@ -1148,7 +1159,7 @@ export class FormApi<
         const isValid = isFieldsValid && isFormValid
         const submitInvalid = this.options.canSubmitWhenInvalid ?? false
         const canSubmit =
-          (currBaseStore.submissionAttempts === 0 &&
+          (currBaseStore.attempts.submit === 0 &&
             !isTouched &&
             !hasOnMountError) ||
           (!isValidating && !currBaseStore.isSubmitting && isValid) ||
@@ -1178,6 +1189,7 @@ export class FormApi<
           prevVal.isPristine === isPristine &&
           prevVal.isDefaultValue === isDefaultValue &&
           prevVal.isDirty === isDirty &&
+          prevVal.submissionAttempts === submissionAttempts &&
           evaluate(prevBaseStore, currBaseStore)
         ) {
           return prevVal
@@ -1198,6 +1210,7 @@ export class FormApi<
           isPristine,
           isDefaultValue,
           isDirty,
+          submissionAttempts,
         } as FormState<
           TFormData,
           TOnMount,
@@ -1320,6 +1333,10 @@ export class FormApi<
     if (!shouldUpdateValues && !shouldUpdateState && !shouldUpdateReeval) return
 
     batch(() => {
+      const shouldUpdateSubmissionAttempts =
+        options.defaultState?.submissionAttempts !== undefined &&
+        options.defaultState.submissionAttempts !== this.state.attempts.submit
+
       this.baseStore.setState(() =>
         getDefaultFormState(
           Object.assign(
@@ -1336,6 +1353,15 @@ export class FormApi<
 
             shouldUpdateReeval
               ? { _force_re_eval: !this.state._force_re_eval }
+              : {},
+
+            shouldUpdateSubmissionAttempts
+              ? {
+                  attempts: {
+                    ...this.state.attempts,
+                    submit: options.defaultState?.submissionAttempts ?? 0,
+                  },
+                }
               : {},
           ),
         ),
@@ -1851,7 +1877,7 @@ export class FormApi<
       // Submission attempts mark the form as not submitted
       isSubmitted: false,
       // Count submission attempts
-      submissionAttempts: old.submissionAttempts + 1,
+      attempts: { ...old.attempts, submit: old.attempts.submit + 1 },
       isSubmitSuccessful: false, // Reset isSubmitSuccessful at the start of submission
     }))
 
