@@ -5,12 +5,13 @@ export interface ValidationLogicProps {
   form: AnyFormApi
   // TODO: Type this properly
   validators:
-    | FormValidators<any, any, any, any, any, any, any, any>
-    | undefined
-    | null
+  | FormValidators<any, any, any, any, any, any, any, any>
+  | undefined
+  | null
   event: {
     type: 'blur' | 'change' | 'submit' | 'mount' | 'server'
     fieldName?: string
+    async: boolean
   }
   runValidation: (props: {
     validators: Array<
@@ -57,60 +58,37 @@ export function rhfValidationLogic(props: ValidationLogicProps) {
     })
   }
 
-  if (validatorNames.length > 1) {
-    throw new Error(
-      'Multiple validators are not supported with `rhfValidationLogic`',
-    )
-  }
-
-  const validatorName = validatorNames[0] as keyof FormValidators<
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any
-  >
-  if (validatorName !== 'onDynamic') {
-    throw new Error(
-      `Only 'onDynamic' validators are supported with 'rhfValidationLogic', but got '${validatorName}'`,
-    )
-  }
-
   // Allows us to clear onServer errors
   const clearValidator = () => undefined
 
-  const validator = props.validators![validatorName]
+  const dynamicValidator = props.event.async ? props.validators!["onDynamicAsync"] : props.validators!["onDynamic"]
+
+  let validatorsToAdd = [] as unknown[]
+
   // Submission attempts are tracked before validation occurs
   if (props.form.state.submissionAttempts <= 1) {
     if (props.event.type !== 'submit') {
-      return props.runValidation({
-        validators: [clearValidator],
-        form: props.form,
-        cause: 'dynamic',
-      })
+      validatorsToAdd.push(clearValidator);
+    } else {
+      validatorsToAdd.push(dynamicValidator);
     }
-
-    return props.runValidation({
-      validators: [validator],
-      form: props.form,
-      cause: 'dynamic',
-    })
+  } else {
+    // After submission, run validation on change events
+    if (props.event.type === 'change' || props.event.type === 'submit') {
+      validatorsToAdd.push(clearValidator, dynamicValidator);
+    }
   }
 
-  // After submission, run validation on change events
-  if (props.event.type === 'change' || props.event.type === 'submit') {
+  if (validatorsToAdd.length === 0) {
     return props.runValidation({
-      validators: [clearValidator, validator],
+      validators: [],
       form: props.form,
       cause: 'dynamic',
-    })
+    });
   }
 
   return props.runValidation({
-    validators: [],
+    validators: [...validatorsToAdd],
     form: props.form,
     cause: 'dynamic',
   })
@@ -126,11 +104,13 @@ export function defaultValidationLogic(props: ValidationLogicProps) {
     })
   }
 
+  const isAsync = props.event.async
+
   switch (props.event.type) {
     case 'mount': {
       // Run mount validation
       return props.runValidation({
-        validators: [props.validators.onMount],
+        validators: isAsync ? [] : [props.validators.onMount],
         form: props.form,
         cause: props.event.type,
       })
@@ -138,13 +118,19 @@ export function defaultValidationLogic(props: ValidationLogicProps) {
     case 'submit': {
       // Run change, blur, submit, server validation
       return props.runValidation({
-        validators: [
-          props.validators.onChange,
-          props.validators.onBlur,
-          props.validators.onSubmit,
-          // TODO: Fix this type
-          (props.validators as any).onServer,
-        ],
+        validators: isAsync
+          ? [
+            props.validators.onChangeAsync,
+            props.validators.onBlurAsync,
+            props.validators.onSubmitAsync,
+          ]
+          : [
+            props.validators.onChange,
+            props.validators.onBlur,
+            props.validators.onSubmit,
+            // TODO: Fix this type
+            (props.validators as any).onServer,
+          ],
         form: props.form,
         cause: props.event.type,
       })
@@ -160,10 +146,9 @@ export function defaultValidationLogic(props: ValidationLogicProps) {
     case 'blur': {
       // Run blur, server validation
       return props.runValidation({
-        validators: [
-          props.validators.onBlur,
-          (props.validators as any).onServer,
-        ],
+        validators: isAsync
+          ? [props.validators.onBlurAsync]
+          : [props.validators.onBlur, (props.validators as any).onServer],
         form: props.form,
         cause: props.event.type,
       })
@@ -171,10 +156,9 @@ export function defaultValidationLogic(props: ValidationLogicProps) {
     case 'change': {
       // Run change, server validation
       return props.runValidation({
-        validators: [
-          props.validators.onChange,
-          (props.validators as any).onServer,
-        ],
+        validators: isAsync
+          ? [props.validators.onChangeAsync]
+          : [props.validators.onChange, (props.validators as any).onServer],
         form: props.form,
         cause: props.event.type,
       })

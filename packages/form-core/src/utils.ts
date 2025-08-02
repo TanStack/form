@@ -397,7 +397,51 @@ export function getSyncValidatorArrayWithLogic<T>(
   return options.validationLogic({
     form: options.form,
     validators: options.validators,
-    event: { type: cause },
+    event: { type: cause, async: false },
+    runValidation,
+  })
+}
+
+/**
+ * Enhanced version of getAsyncValidatorArray that supports custom validation logic
+ * @private
+ */
+export function getAsyncValidatorArrayWithLogic<T>(
+  cause: ValidationCause,
+  options: AsyncValidatorArrayPartialOptions<T> & {
+    validationLogic?: any
+    form?: any
+  },
+): T extends FieldValidators<any, any, any, any, any, any, any, any, any, any>
+  ? Array<
+      AsyncValidator<T['onChangeAsync'] | T['onBlurAsync'] | T['onSubmitAsync']>
+    >
+  : T extends FormValidators<any, any, any, any, any, any, any, any>
+    ? Array<
+        AsyncValidator<
+          T['onChangeAsync'] | T['onBlurAsync'] | T['onSubmitAsync']
+        >
+      >
+    : never {
+  const runValidation = (
+    props: Parameters<ValidationLogicProps['runValidation']>[0],
+  ) => {
+    return props.validators.filter(Boolean).map((validator) => {
+      const { asyncDebounceMs } = options
+      const defaultDebounceMs = asyncDebounceMs ?? 0
+      
+      return {
+        cause: props.cause || cause,
+        validate: validator,
+        debounceMs: defaultDebounceMs,
+      }
+    })
+  }
+
+  return options.validationLogic({
+    form: options.form,
+    validators: options.validators,
+    event: { type: cause, async: true },
     runValidation,
   })
 }

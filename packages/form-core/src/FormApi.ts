@@ -5,6 +5,7 @@ import {
   evaluate,
   functionalUpdate,
   getAsyncValidatorArray,
+  getAsyncValidatorArrayWithLogic,
   getBy,
   getSyncValidatorArray,
   getSyncValidatorArrayWithLogic,
@@ -199,6 +200,7 @@ export interface FormValidators<
   onSubmitAsync?: TOnSubmitAsync
   // TODO: Handle inferencing and return type inferencing
   onDynamic?: undefined | FormValidateOrFn<TFormData>
+  onDynamicAsync?: undefined | FormValidateAsyncFn<TFormData>
 }
 
 /**
@@ -1545,7 +1547,11 @@ export class FormApi<
       TOnSubmitAsync
     >
   > => {
-    const validates = getAsyncValidatorArray(cause, this.options)
+    const validates = getAsyncValidatorArrayWithLogic(cause, {
+      ...this.options,
+      form: this,
+      validationLogic: this.options.validationLogic || defaultValidationLogic,
+    })
 
     if (!this.state.isFormValidating) {
       this.baseStore.setState((prev) => ({ ...prev, isFormValidating: true }))
