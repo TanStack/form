@@ -26,6 +26,8 @@ export interface SvelteFormApi<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TSubmitMeta,
 > {
@@ -38,6 +40,8 @@ export interface SvelteFormApi<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TSubmitMeta
   >
@@ -50,6 +54,8 @@ export interface SvelteFormApi<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TSubmitMeta
   >
@@ -64,6 +70,8 @@ export interface SvelteFormApi<
         TFormOnBlurAsync,
         TFormOnSubmit,
         TFormOnSubmitAsync,
+        TFormOnDynamic,
+        TFormOnDynamicAsync,
         TFormOnServer
       >
     >,
@@ -79,6 +87,8 @@ export interface SvelteFormApi<
           TFormOnBlurAsync,
           TFormOnSubmit,
           TFormOnSubmitAsync,
+          TFormOnDynamic,
+          TFormOnDynamicAsync,
           TFormOnServer
         >
       >,
@@ -100,6 +110,8 @@ export interface SvelteFormApi<
         TFormOnBlurAsync,
         TFormOnSubmit,
         TFormOnSubmitAsync,
+        TFormOnDynamic,
+        TFormOnDynamicAsync,
         TFormOnServer
       >
     >,
@@ -117,6 +129,8 @@ export interface SvelteFormApi<
             TFormOnBlurAsync,
             TFormOnSubmit,
             TFormOnSubmitAsync,
+            TFormOnDynamic,
+            TFormOnDynamicAsync,
             TFormOnServer
           >
         >,
@@ -135,6 +149,8 @@ export interface SvelteFormApi<
           TFormOnBlurAsync,
           TFormOnSubmit,
           TFormOnSubmitAsync,
+          TFormOnDynamic,
+          TFormOnDynamicAsync,
           TFormOnServer
         >
       >,
@@ -151,6 +167,8 @@ export interface SvelteFormApi<
               TFormOnBlurAsync,
               TFormOnSubmit,
               TFormOnSubmitAsync,
+              TFormOnDynamic,
+              TFormOnDynamicAsync,
               TFormOnServer
             >
           >,
@@ -170,6 +188,8 @@ export function createForm<
   TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
   TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+  TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TSubmitMeta,
 >(
@@ -182,6 +202,8 @@ export function createForm<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TSubmitMeta
   >,
@@ -196,6 +218,8 @@ export function createForm<
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TSubmitMeta
   >(options)
@@ -209,6 +233,8 @@ export function createForm<
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
       TFormOnServer,
       TSubmitMeta
     > = api as never

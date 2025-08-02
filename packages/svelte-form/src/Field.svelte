@@ -28,7 +28,11 @@
       | FieldAsyncValidateOrFn<TParentData, TName, TData>,
     TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
     TOnSubmitAsync extends
-      | undefined
+        | undefined
+      | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    TOnDynamicAsync extends
+        | undefined
       | FieldAsyncValidateOrFn<TParentData, TName, TData>,
     TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
     TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
@@ -37,6 +41,8 @@
     TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
     TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
     TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+    TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+    TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
     TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
     TParentSubmitMeta,
   >(
@@ -51,6 +57,8 @@
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TFormOnMount,
       TFormOnChange,
       TFormOnChangeAsync,
@@ -58,6 +66,8 @@
       TFormOnBlurAsync,
       TFormOnSubmit,
       TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
       TFormOnServer,
       TParentSubmitMeta
     >,
@@ -76,6 +86,8 @@
         TFormOnBlurAsync,
         TFormOnSubmit,
         TFormOnSubmitAsync,
+        TFormOnDynamic,
+        TFormOnDynamicAsync,
         TFormOnServer,
         TParentSubmitMeta
       > = api as never
@@ -131,6 +143,10 @@
     TOnSubmitAsync extends
       | undefined
       | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    TOnDynamicAsync extends
+      | undefined
+      | FieldAsyncValidateOrFn<TParentData, TName, TData>,
     TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
     TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
     TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
@@ -138,6 +154,8 @@
     TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
     TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
     TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+    TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+    TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
     TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
     TParentSubmitMeta,
 "
@@ -157,7 +175,11 @@
       | FieldAsyncValidateOrFn<TParentData, TName, TData>,
     TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
     TOnSubmitAsync extends
-      | undefined
+        | undefined
+      | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+    TOnDynamicAsync extends
+        | undefined
       | FieldAsyncValidateOrFn<TParentData, TName, TData>,
     TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
     TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
@@ -166,6 +188,8 @@
     TFormOnBlurAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
     TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
     TFormOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
+    TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+    TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
     TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
     TParentSubmitMeta,
   > = {
@@ -182,6 +206,8 @@
           TOnBlurAsync,
           TOnSubmit,
           TOnSubmitAsync,
+          TOnDynamic,
+          TOnDynamicAsync,
           TFormOnMount,
           TFormOnChange,
           TFormOnChangeAsync,
@@ -189,6 +215,8 @@
           TFormOnBlurAsync,
           TFormOnSubmit,
           TFormOnSubmitAsync,
+          TFormOnDynamic,
+          TFormOnDynamicAsync,
           TFormOnServer,
           TParentSubmitMeta
         >,
@@ -205,6 +233,8 @@
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TFormOnMount,
     TFormOnChange,
     TFormOnChangeAsync,
@@ -212,6 +242,8 @@
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TParentSubmitMeta
   >
@@ -230,6 +262,8 @@
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TFormOnMount,
     TFormOnChange,
     TFormOnChangeAsync,
@@ -237,6 +271,8 @@
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TParentSubmitMeta
   > = $props()
@@ -252,6 +288,8 @@
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TFormOnMount,
     TFormOnChange,
     TFormOnChangeAsync,
@@ -259,6 +297,8 @@
     TFormOnBlurAsync,
     TFormOnSubmit,
     TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
     TFormOnServer,
     TParentSubmitMeta
   >(() => {
