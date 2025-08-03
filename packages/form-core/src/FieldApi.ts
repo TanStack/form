@@ -1349,11 +1349,6 @@ export class FieldApi<
    * Sets the field value and run the `change` validator.
    */
   setValue = (updater: Updater<TData>, options?: UpdateMetaOptions) => {
-    this.form.baseStore.setState((prev) => ({
-      ...prev,
-      attempts: { ...prev.attempts, change: prev.attempts.change + 1 },
-    }))
-
     this.form.setFieldValue(this.name, updater as never, options)
 
     this.triggerOnChangeListener()
@@ -1839,20 +1834,13 @@ export class FieldApi<
    * Handles the blur event.
    */
   handleBlur = () => {
-    batch(() => {
-      this.form.baseStore.setState((prev) => ({
-        ...prev,
-        attempts: { ...prev.attempts, blur: prev.attempts.blur + 1 },
-      }))
-      const prevTouched = this.state.meta.isTouched
-      if (!prevTouched) {
-        this.setMeta((prev) => ({ ...prev, isTouched: true }))
-      }
-      if (!this.state.meta.isBlurred) {
-        this.setMeta((prev) => ({ ...prev, isBlurred: true }))
-      }
-    })
-
+    const prevTouched = this.state.meta.isTouched
+    if (!prevTouched) {
+      this.setMeta((prev) => ({ ...prev, isTouched: true }))
+    }
+    if (!this.state.meta.isBlurred) {
+      this.setMeta((prev) => ({ ...prev, isBlurred: true }))
+    }
     this.validate('blur')
 
     this.triggerOnBlurListener()

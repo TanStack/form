@@ -83,7 +83,7 @@ export const revalidateLogic =
     const validatorsToAdd = [] as ValidationLogicValidatorsFn[]
 
     // Submission attempts are tracked before validation occurs
-    if (props.form.state.attempts[mode] <= 1) {
+    if (props.form.state.submissionAttempts <= 1) {
       if (props.event.type !== mode) {
         validatorsToAdd.push(clearValidator)
       } else {
