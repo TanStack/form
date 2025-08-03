@@ -1786,8 +1786,8 @@ export class FormApi<
       this.options.onSubmitInvalid?.({
         value: this.state.values,
         formApi: this,
-        meta: submitMeta ?? this.options.onSubmitMeta,
-      } as any)
+        meta: submitMeta ?? (this.options.onSubmitMeta as TSubmitMeta),
+      })
       return
     }
 
@@ -1799,8 +1799,8 @@ export class FormApi<
       this.options.onSubmitInvalid?.({
         value: this.state.values,
         formApi: this,
-        meta: submitMeta ?? this.options.onSubmitMeta,
-      } as any)
+        meta: submitMeta ?? (this.options.onSubmitMeta as TSubmitMeta),
+      })
       return
     }
 
@@ -1822,8 +1822,8 @@ export class FormApi<
       await this.options.onSubmit?.({
         value: this.state.values,
         formApi: this,
-        meta: submitMeta ?? this.options.onSubmitMeta,
-      } as any)
+        meta: submitMeta ?? (this.options.onSubmitMeta as TSubmitMeta),
+      })
 
       batch(() => {
         this.baseStore.setState((prev) => ({
