@@ -70,9 +70,6 @@ export const revalidateLogic =
       })
     }
 
-    // Allows us to clear onServer errors
-    const clearValidator = { fn: () => undefined, cause: 'dynamic' } as const
-
     const dynamicValidator = {
       fn: props.event.async
         ? props.validators!['onDynamicAsync']
@@ -82,18 +79,11 @@ export const revalidateLogic =
 
     const validatorsToAdd = [] as ValidationLogicValidatorsFn[]
 
-    // Submission attempts are tracked before validation occurs
-    if (props.form.state.submissionAttempts <= 1) {
-      if (props.event.type !== mode) {
-        validatorsToAdd.push(clearValidator)
-      } else {
-        validatorsToAdd.push(dynamicValidator)
-      }
-    } else {
-      // In default mode: "After submission, run validation on change events"
-      if (props.event.type === reValidateMode || props.event.type === mode) {
-        validatorsToAdd.push(clearValidator, dynamicValidator)
-      }
+    const modeToWatch =
+      props.form.state.submissionAttempts === 0 ? mode : reValidateMode
+
+    if ([modeToWatch, 'submit'].includes(props.event.type)) {
+      validatorsToAdd.push(dynamicValidator)
     }
 
     let defaultValidators = [] as ValidationLogicValidatorsFn[]

@@ -149,4 +149,51 @@ describe('custom validation', () => {
       { message: 'Name must be at least 3 characters long' },
     ])
   })
+
+  it('rhf validation should handle `mode` and `reValidateMode`', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+      validationLogic: revalidateLogic({
+        mode: 'change',
+        reValidateMode: 'blur',
+      }),
+      validators: {
+        onDynamic: z.object({
+          name: z.string().min(3, 'Name must be at least 3 characters long'),
+        }),
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    field.mount()
+    expect(field.getValue()).toBe('')
+    expect(field.state.meta.errorMap.onDynamic).toBe(undefined)
+    field.setValue('Jo')
+    expect(field.state.meta.errorMap.onDynamic).toMatchObject([
+      { message: 'Name must be at least 3 characters long' },
+    ])
+
+    await form.handleSubmit()
+
+    expect(field.state.meta.errorMap.onDynamic).toMatchObject([
+      { message: 'Name must be at least 3 characters long' },
+    ])
+
+    field.setValue('Joe123')
+
+    expect(field.state.meta.errorMap.onDynamic).toMatchObject([
+      { message: 'Name must be at least 3 characters long' },
+    ])
+
+    field.handleBlur()
+    expect(field.state.meta.errorMap.onDynamic).toBe(undefined)
+  })
 })
