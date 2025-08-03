@@ -267,6 +267,8 @@ export interface WithFieldGroupProps<
           undefined | FormAsyncValidateOrFn<unknown>,
           undefined | FormValidateOrFn<unknown>,
           undefined | FormAsyncValidateOrFn<unknown>,
+          undefined | FormValidateOrFn<unknown>,
+          undefined | FormAsyncValidateOrFn<unknown>,
           undefined | FormAsyncValidateOrFn<unknown>,
           // this types it as 'never' in the render prop. It should prevent any
           // untyped meta passed to the handleSubmit by accident.
@@ -466,6 +468,8 @@ export function createFormHook<
     TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
     TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
     TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+    TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
     TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
     TFormSubmitMeta,
   >(
@@ -481,6 +485,8 @@ export function createFormHook<
               TOnBlurAsync,
               TOnSubmit,
               TOnSubmitAsync,
+              TOnDynamic,
+              TOnDynamicAsync,
               TOnServer,
               unknown extends TSubmitMeta ? TFormSubmitMeta : TSubmitMeta,
               TComponents,
@@ -492,6 +498,8 @@ export function createFormHook<
               unknown,
               TFormData,
               string | FieldsMap<unknown, TFormData>,
+              any,
+              any,
               any,
               any,
               any,

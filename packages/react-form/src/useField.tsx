@@ -509,6 +509,10 @@ export type LensFieldComponent<
   TOnSubmitAsync extends
     | undefined
     | FieldAsyncValidateOrFn<unknown, string, TData>,
+  TOnDynamic extends undefined | FieldValidateOrFn<unknown, string, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<unknown, string, TData>,
 >({
   children,
   ...fieldOptions
@@ -523,7 +527,11 @@ export type LensFieldComponent<
   TOnBlurAsync,
   TOnSubmit,
   TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
   undefined | FormValidateOrFn<unknown>,
+  undefined | FormValidateOrFn<unknown>,
+  undefined | FormAsyncValidateOrFn<unknown>,
   undefined | FormValidateOrFn<unknown>,
   undefined | FormAsyncValidateOrFn<unknown>,
   undefined | FormValidateOrFn<unknown>,
