@@ -1,6 +1,6 @@
 import type { AnyFormApi, FormValidators } from './FormApi'
 
-export interface ValidationLogicValidatorsFn {
+interface ValidationLogicValidatorsFn {
   fn: // TODO: Type this properly
   FormValidators<
     any,
@@ -36,17 +36,21 @@ export interface ValidationLogicProps {
   }) => void
 }
 
-export interface RevalidateLogicProps {
-  // This option allows you to configure a validation strategy when inputs with errors get re-validated after a user submits the form (onSubmit event and handleSubmit function executed). By default, re-validation occurs during the input change event.
-  reValidateMode?: 'change' | 'blur' | 'submit'
-  // This option allows you to configure the validation strategy before a user submits the form. The validation occurs during the onSubmit event, which is triggered by invoking the handleSubmit function.
-  mode?:
-    | // Validation is triggered on the change event for each input.
-    'change'
-    // Validation is triggered on the blur event.
-    | 'blur'
-    // Validation is triggered on the submit event, and inputs attach onChange event listeners to re-validate themselves.
-    | 'submit'
+interface RevalidateLogicProps {
+  /**
+   * @default 'submit'
+   *
+   * This is the mode that will be used before the form has been submitted.
+   * It will run the validation logic on `submit` by default, but can be set to `change` or `blur`.
+   */
+  mode?: 'change' | 'blur' | 'submit'
+  /**
+   * @default 'change'
+   *
+   * This is the mode that will be used after the form has been submitted.
+   * It will run the validation logic on `change` by default, but can be set to `blur` or `submit`.
+   */
+  modeAfterSubmission?: 'change' | 'blur' | 'submit'
 }
 
 /**
@@ -59,7 +63,10 @@ export interface RevalidateLogicProps {
  * When the form is submitted, it will run the validation logic on `change`
  */
 export const revalidateLogic =
-  ({ reValidateMode = 'change', mode = 'submit' }: RevalidateLogicProps = {}) =>
+  ({
+    mode = 'submit',
+    modeAfterSubmission = 'change',
+  }: RevalidateLogicProps = {}) =>
   (props: ValidationLogicProps) => {
     const validatorNames = Object.keys(props.validators ?? {})
     if (validatorNames.length === 0) {
@@ -80,7 +87,7 @@ export const revalidateLogic =
     const validatorsToAdd = [] as ValidationLogicValidatorsFn[]
 
     const modeToWatch =
-      props.form.state.submissionAttempts === 0 ? mode : reValidateMode
+      props.form.state.submissionAttempts === 0 ? mode : modeAfterSubmission
 
     if ([modeToWatch, 'submit'].includes(props.event.type)) {
       validatorsToAdd.push(dynamicValidator)

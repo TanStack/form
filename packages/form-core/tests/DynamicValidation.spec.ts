@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { FieldApi, FormApi } from '../src/index'
-import { revalidateLogic, defaultValidationLogic } from '../src/ValidationLogic'
+import { defaultValidationLogic, revalidateLogic } from '../src/ValidationLogic'
 
 describe('custom validation', () => {
   it('should handle default validation logic', async () => {
@@ -157,7 +157,7 @@ describe('custom validation', () => {
       },
       validationLogic: revalidateLogic({
         mode: 'change',
-        reValidateMode: 'blur',
+        modeAfterSubmission: 'blur',
       }),
       validators: {
         onDynamic: z.object({

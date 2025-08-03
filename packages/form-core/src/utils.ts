@@ -1,3 +1,5 @@
+import { defaultValidationLogic } from './ValidationLogic'
+import type { ValidationLogicProps } from './ValidationLogic';
 import type { FieldValidators } from './FieldApi'
 import type { FormValidators } from './FormApi'
 import type {
@@ -6,7 +8,6 @@ import type {
   ValidationError,
   ValidationSource,
 } from './types'
-import { defaultValidationLogic, ValidationLogicProps } from './ValidationLogic'
 
 export type UpdaterFn<TInput, TOutput = TInput> = (input: TInput) => TOutput
 
