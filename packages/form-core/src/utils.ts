@@ -385,6 +385,10 @@ export function getAsyncValidatorArray<T>(
           break
       }
 
+      if (cause === 'submit') {
+        debounceMs = 0
+      }
+
       return {
         cause: validatorCause,
         validate: validator!.fn,
