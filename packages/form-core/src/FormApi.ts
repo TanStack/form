@@ -314,6 +314,7 @@ export interface FormListeners<
       TOnServer,
       TSubmitMeta
     >
+    meta: TSubmitMeta
   }) => void
 }
 
@@ -1773,6 +1774,9 @@ export class FormApi<
 
     if (!this.state.canSubmit) return
 
+    const submitMetaArg =
+      submitMeta ?? (this.options.onSubmitMeta as TSubmitMeta)
+
     this.baseStore.setState((d) => ({ ...d, isSubmitting: true }))
 
     const done = () => {
@@ -1786,7 +1790,7 @@ export class FormApi<
       this.options.onSubmitInvalid?.({
         value: this.state.values,
         formApi: this,
-        meta: submitMeta ?? (this.options.onSubmitMeta as TSubmitMeta),
+        meta: submitMetaArg,
       })
       return
     }
@@ -1799,7 +1803,7 @@ export class FormApi<
       this.options.onSubmitInvalid?.({
         value: this.state.values,
         formApi: this,
-        meta: submitMeta ?? (this.options.onSubmitMeta as TSubmitMeta),
+        meta: submitMetaArg,
       })
       return
     }
@@ -1815,14 +1819,14 @@ export class FormApi<
       )
     })
 
-    this.options.listeners?.onSubmit?.({ formApi: this })
+    this.options.listeners?.onSubmit?.({ formApi: this, meta: submitMetaArg })
 
     try {
       // Run the submit code
       await this.options.onSubmit?.({
         value: this.state.values,
         formApi: this,
-        meta: submitMeta ?? (this.options.onSubmitMeta as TSubmitMeta),
+        meta: submitMetaArg,
       })
 
       batch(() => {
