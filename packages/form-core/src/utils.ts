@@ -342,17 +342,53 @@ export function getAsyncValidatorArray<T>(
         >
       >
     : never {
+  const { asyncDebounceMs } = options
+  const { onBlurAsyncDebounceMs, onChangeAsyncDebounceMs } =
+    (options.validators || {}) as
+      | FieldValidators<
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any
+        >
+      | FormValidators<any, any, any, any, any, any, any, any, any, any>
+
+  const defaultDebounceMs = asyncDebounceMs ?? 0
+
   const runValidation = (
     props: Parameters<ValidationLogicProps['runValidation']>[0],
   ) => {
     return props.validators.filter(Boolean).map((validator) => {
-      const { asyncDebounceMs } = options
-      const defaultDebounceMs = asyncDebounceMs ?? 0
+      const validatorCause = validator?.cause || cause
+
+      let debounceMs = defaultDebounceMs
+
+      switch (validatorCause) {
+        case 'change':
+          debounceMs = onChangeAsyncDebounceMs ?? defaultDebounceMs
+          break
+        case 'blur':
+          debounceMs = onBlurAsyncDebounceMs ?? defaultDebounceMs
+          break
+        case 'submit':
+          debounceMs = 0 // submit validators are always run immediately
+          break
+        default:
+          break
+      }
 
       return {
-        cause: validator?.cause || cause,
+        cause: validatorCause,
         validate: validator!.fn,
-        debounceMs: defaultDebounceMs,
+        debounceMs: debounceMs,
       }
     })
   }
