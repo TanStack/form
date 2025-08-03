@@ -440,6 +440,7 @@ export interface FormOptions<
       TOnServer,
       TSubmitMeta
     >
+    meta: TSubmitMeta
   }) => void
   transform?: FormTransform<
     NoInfer<TFormData>,
@@ -1785,7 +1786,8 @@ export class FormApi<
       this.options.onSubmitInvalid?.({
         value: this.state.values,
         formApi: this,
-      })
+        meta: submitMeta ?? this.options.onSubmitMeta,
+      } as any)
       return
     }
 
@@ -1797,7 +1799,8 @@ export class FormApi<
       this.options.onSubmitInvalid?.({
         value: this.state.values,
         formApi: this,
-      })
+        meta: submitMeta ?? this.options.onSubmitMeta,
+      } as any)
       return
     }
 
