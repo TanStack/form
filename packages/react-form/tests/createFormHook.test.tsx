@@ -451,11 +451,15 @@ describe('createFormHook', () => {
     expect(inputField1).toHaveValue('John')
   })
 
-  it('should accept formId and return it', () => {
-    function FormId() {
+  it('should accept formId and return it', async () => {
+    function Submit() {
       const form = useFormContext()
 
-      return <span data-testid="formId-target">{form.formId}</span>
+      return (
+        <button type="submit" form={form.formId} data-testid="formId-target">
+          {form.formId}
+        </button>
+      )
     }
 
     function Comp() {
@@ -465,13 +469,31 @@ describe('createFormHook', () => {
 
       return (
         <form.AppForm>
-          <FormId />
+          <form
+            id={form.formId}
+            onSubmit={(e) => {
+              e.preventDefault()
+              form.handleSubmit()
+            }}
+          ></form>
+
+          <form.Subscribe
+            selector={(state) => state.submissionAttempts}
+            children={(submissionAttempts) => (
+              <span data-testid="formId-result">{submissionAttempts}</span>
+            )}
+          />
+
+          <Submit />
         </form.AppForm>
       )
     }
 
     const { getByTestId } = render(<Comp />)
-    const input = getByTestId('formId-target')
-    expect(input).toHaveTextContent('test')
+    const target = getByTestId('formId-target')
+    const result = getByTestId('formId-result')
+
+    await user.click(target)
+    expect(result).toHaveTextContent('1')
   })
 })
