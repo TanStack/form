@@ -243,6 +243,10 @@
               "to": "framework/lit/guides/validation"
             },
             {
+              "label": "Dynamic Validation",
+              "to": "framework/lit/guides/dynamic-validation"
+            },
+            {
               "label": "Arrays",
               "to": "framework/lit/guides/arrays"
             }
