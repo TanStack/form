@@ -601,6 +601,10 @@
             {
               "label": "Form Composition",
               "to": "framework/solid/examples/large-form"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/solid/examples/standard-schema"
             }
           ]
         },
