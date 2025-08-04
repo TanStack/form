@@ -16,7 +16,7 @@
     "react-dom": "^19.0.0",
     "solid-js": "^1.9.7",
     "valibot": "^1.1.0",
-    "zod": "^3.25.64"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "typescript": "5.8.2",
