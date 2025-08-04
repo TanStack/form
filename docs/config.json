@@ -618,6 +618,10 @@
             {
               "label": "UI Libraries",
               "to": "framework/lit/examples/ui-libraries"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/lit/examples/standard-schema"
             }
           ]
         },
