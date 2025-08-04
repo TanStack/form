@@ -3,7 +3,6 @@ import { customElement } from 'lit/decorators.js'
 
 import { TanStackFormController } from '@tanstack/lit-form'
 import { repeat } from 'lit/directives/repeat.js'
-import { styles } from './styles.js'
 
 @customElement('tanstack-form-demo')
 export class TanStackFormDemo extends LitElement {
