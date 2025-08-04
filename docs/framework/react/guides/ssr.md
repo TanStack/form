@@ -147,7 +147,7 @@ function Home() {
           return (
             <div>
               <input
-                name="age"
+                name={field.name}
                 type="number"
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.valueAsNumber)}
@@ -293,7 +293,7 @@ export const ClientComp = () => {
           return (
             <div>
               <input
-                name="age"
+                name={field.name} // must explicitly set the name attribute for the POST request
                 type="number"
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.valueAsNumber)}
