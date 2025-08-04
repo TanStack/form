@@ -10,12 +10,15 @@ title: "@tanstack/react-form"
 ## Interfaces
 
 - [ReactFormApi](../interfaces/reactformapi.md)
-- [WithFormLensProps](../interfaces/withformlensprops.md)
+- [UseFieldOptions](../interfaces/usefieldoptions.md)
+- [UseFieldOptionsBound](../interfaces/usefieldoptionsbound.md)
+- [WithFieldGroupProps](../interfaces/withfieldgroupprops.md)
 - [WithFormProps](../interfaces/withformprops.md)
 
 ## Type Aliases
 
 - [FieldComponent](../type-aliases/fieldcomponent.md)
+- [LensFieldComponent](../type-aliases/lensfieldcomponent.md)
 - [ReactFormExtendedApi](../type-aliases/reactformextendedapi.md)
 - [UseField](../type-aliases/usefield.md)
 
@@ -25,6 +28,7 @@ title: "@tanstack/react-form"
 - [createFormHookContexts](../functions/createformhookcontexts.md)
 - [Field](../functions/field.md)
 - [useField](../functions/usefield.md)
+- [useFieldGroup](../functions/usefieldgroup.md)
 - [useForm](../functions/useform.md)
 - [useStore](../functions/usestore.md)
 - [useTransform](../functions/usetransform.md)

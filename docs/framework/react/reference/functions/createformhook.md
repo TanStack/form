@@ -85,7 +85,7 @@ withFieldGroup: <TFieldGroupData, TSubmitMeta, TRenderProps>(__namedParameters) 
 
 ##### \_\_namedParameters
 
-[`WithFormLensProps`](../../interfaces/withformlensprops.md)\<`TFieldGroupData`, `TComponents`, `TFormComponents`, `TSubmitMeta`, `TRenderProps`\>
+[`WithFieldGroupProps`](../../interfaces/withfieldgroupprops.md)\<`TFieldGroupData`, `TComponents`, `TFormComponents`, `TSubmitMeta`, `TRenderProps`\>
 
 #### Returns
 

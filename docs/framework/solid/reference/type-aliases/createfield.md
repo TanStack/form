@@ -59,7 +59,7 @@ Defined in: [packages/solid-form/src/createField.tsx:48](https://github.com/TanS
 
 ### opts
 
-() => `object` & `CreateFieldOptionsBound`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`\>
+() => `object` & [`CreateFieldOptionsBound`](../../interfaces/createfieldoptionsbound.md)\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`\>
 
 ## Returns
 
