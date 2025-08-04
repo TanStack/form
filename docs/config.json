@@ -272,6 +272,10 @@
               "to": "framework/svelte/guides/validation"
             },
             {
+              "label": "Dynamic Validation",
+              "to": "framework/svelte/guides/dynamic-validation"
+            },
+            {
               "label": "Async Initial Values",
               "to": "framework/svelte/guides/async-initial-values"
             },
