@@ -168,6 +168,10 @@
               "to": "framework/vue/guides/validation"
             },
             {
+              "label": "Dynamic Validation",
+              "to": "framework/vue/guides/dynamic-validation"
+            },
+            {
               "label": "Async Initial Values",
               "to": "framework/vue/guides/async-initial-values"
             },
