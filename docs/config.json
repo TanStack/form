@@ -193,6 +193,10 @@
               "to": "framework/angular/guides/validation"
             },
             {
+              "label": "Dynamic Validation",
+              "to": "framework/angular/guides/dynamic-validation"
+            },
+            {
               "label": "Arrays",
               "to": "framework/angular/guides/arrays"
             },
