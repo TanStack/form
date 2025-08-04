@@ -235,6 +235,10 @@
               "to": "framework/lit/guides/basic-concepts"
             },
             {
+              "label": "Form Validation",
+              "to": "framework/lit/guides/validation"
+            },
+            {
               "label": "Arrays",
               "to": "framework/lit/guides/arrays"
             }
