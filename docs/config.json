@@ -218,6 +218,10 @@
               "to": "framework/solid/guides/validation"
             },
             {
+              "label": "Dynamic Validation",
+              "to": "framework/solid/guides/dynamic-validation"
+            },
+            {
               "label": "Async Initial Values",
               "to": "framework/solid/guides/async-initial-values"
             },
