@@ -61,7 +61,7 @@
   "devDependencies": {
     "solid-js": "^1.9.7",
     "vite": "^6.3.5",
-    "vite-plugin-solid": "^2.11.6"
+    "vite-plugin-solid": "^2.11.8"
   },
   "peerDependencies": {
     "solid-js": "^1.6.0"

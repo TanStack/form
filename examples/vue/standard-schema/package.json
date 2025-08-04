@@ -12,12 +12,12 @@
   "dependencies": {
     "@tanstack/vue-form": "^1.15.1",
     "arktype": "^2.1.20",
-    "effect": "^3.16.7",
+    "effect": "^3.17.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "valibot": "^1.1.0",
     "vue": "^3.5.13",
-    "zod": "^3.25.64"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.4",
