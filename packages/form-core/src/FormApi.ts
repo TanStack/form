@@ -1605,6 +1605,26 @@ export class FormApi<
           },
         }))
       }
+
+      /**
+       *  when we have an error for onServer in the state, we want
+       *  to clear the error as soon as the user enters a valid value in the field
+       */
+      const serverErrKey = getErrorMapKey('server')
+      if (
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        this.state.errorMap?.[serverErrKey] &&
+        cause !== 'server' &&
+        !hasErrored
+      ) {
+        this.baseStore.setState((prev) => ({
+          ...prev,
+          errorMap: {
+            ...prev.errorMap,
+            [serverErrKey]: undefined,
+          },
+        }))
+      }
     })
 
     return { hasErrored, fieldsErrorMap: currentValidationErrorMap }
