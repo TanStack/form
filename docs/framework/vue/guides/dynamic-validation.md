@@ -171,7 +171,8 @@ const form = useForm({
             type="number"
             :value="field.state.value"
             @input="
-              (e) => field.handleChange((e.target as HTMLInputElement).valueAsNumber)
+              (e) =>
+                field.handleChange((e.target as HTMLInputElement).valueAsNumber)
             "
             @blur="field.handleBlur"
           />
