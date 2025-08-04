@@ -639,6 +639,10 @@
             {
               "label": "Arrays",
               "to": "framework/svelte/examples/array"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/svelte/examples/standard-schema"
             }
           ]
         }
