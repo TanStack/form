@@ -436,7 +436,7 @@ importers:
   examples/react/dynamic:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.15.3
+        specifier: ^1.16.0
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
