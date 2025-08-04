@@ -563,6 +563,10 @@
             {
               "label": "Arrays",
               "to": "framework/vue/examples/array"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/vue/examples/standard-schema"
             }
           ]
         },
