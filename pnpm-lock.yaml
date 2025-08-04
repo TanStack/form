@@ -120,7 +120,7 @@ importers:
         specifier: ^20.0.0
         version: 20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.0.6(@angular/animations@20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(rxjs@7.8.2)
       '@tanstack/angular-form':
-        specifier: ^1.15.1
+        specifier: ^1.16.0
         version: link:../../../packages/angular-form
       rxjs:
         specifier: ^7.8.2
@@ -172,7 +172,7 @@ importers:
         specifier: ^20.0.0
         version: 20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.0.6(@angular/animations@20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(rxjs@7.8.2)
       '@tanstack/angular-form':
-        specifier: ^1.15.1
+        specifier: ^1.16.0
         version: link:../../../packages/angular-form
       rxjs:
         specifier: ^7.8.2
@@ -224,7 +224,7 @@ importers:
         specifier: ^20.0.0
         version: 20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.0.6(@angular/animations@20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(rxjs@7.8.2)
       '@tanstack/angular-form':
-        specifier: ^1.15.1
+        specifier: ^1.16.0
         version: link:../../../packages/angular-form
       rxjs:
         specifier: ^7.8.2
@@ -276,7 +276,7 @@ importers:
         specifier: ^20.0.0
         version: 20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.0.6(@angular/animations@20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(rxjs@7.8.2)
       '@tanstack/angular-form':
-        specifier: ^1.15.1
+        specifier: ^1.16.0
         version: link:../../../packages/angular-form
       effect:
         specifier: ^3.16.7
@@ -313,7 +313,7 @@ importers:
   examples/lit/array:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^1.15.1
+        specifier: ^1.16.0
         version: link:../../../packages/lit-form
       lit:
         specifier: ^3.3.0
@@ -326,7 +326,7 @@ importers:
   examples/lit/simple:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^1.15.1
+        specifier: ^1.16.0
         version: link:../../../packages/lit-form
       lit:
         specifier: ^3.3.0
@@ -339,7 +339,7 @@ importers:
   examples/lit/standard-schema:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^1.15.1
+        specifier: ^1.16.0
         version: link:../../../packages/lit-form
       arktype:
         specifier: ^2.1.20
@@ -367,7 +367,7 @@ importers:
         specifier: ^2.3.0
         version: 2.3.0
       '@tanstack/lit-form':
-        specifier: ^1.15.1
+        specifier: ^1.16.0
         version: link:../../../packages/lit-form
       lit:
         specifier: ^3.3.0
@@ -380,7 +380,7 @@ importers:
   examples/react/array:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.15.3
+        specifier: ^1.16.0
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -405,7 +405,7 @@ importers:
   examples/react/compiler:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.15.3
+        specifier: ^1.16.0
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -436,7 +436,7 @@ importers:
   examples/react/field-errors-from-form-validators:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.15.3
+        specifier: ^1.16.0
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -461,7 +461,7 @@ importers:
   examples/react/large-form:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.15.3
+        specifier: ^1.16.0
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -486,7 +486,7 @@ importers:
   examples/react/next-server-actions:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.15.3
+        specifier: ^1.16.0
         version: link:../../../packages/react-form
       '@tanstack/react-store':
         specifier: ^0.7.3
@@ -517,7 +517,7 @@ importers:
   examples/react/query-integration:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.15.3
+        specifier: ^1.16.0
         version: link:../../../packages/react-form
       '@tanstack/react-query':
         specifier: ^5.80.7
@@ -554,7 +554,7 @@ importers:
         specifier: ^2.16.8
         version: 2.16.8(typescript@5.8.2)
       '@tanstack/react-form':
-        specifier: ^1.15.3
+        specifier: ^1.16.0
         version: link:../../../packages/react-form
       '@tanstack/react-store':
         specifier: ^0.7.3
@@ -591,7 +591,7 @@ importers:
   examples/react/simple:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.15.3
+        specifier: ^1.16.0
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -616,7 +616,7 @@ importers:
   examples/react/standard-schema:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.15.3
+        specifier: ^1.16.0
         version: link:../../../packages/react-form
       arktype:
         specifier: ^2.1.20
@@ -653,7 +653,7 @@ importers:
   examples/react/tanstack-start:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.15.3
+        specifier: ^1.16.0
         version: link:../../../packages/react-form
       '@tanstack/react-router':
         specifier: ^1.121.16
@@ -714,7 +714,7 @@ importers:
         specifier: 6.4.12
         version: 6.4.12(@emotion/react@11.14.0(@types/react@19.1.6)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.6)(react@19.1.0))(@types/react@19.1.6)(react@19.1.0))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@tanstack/react-form':
-        specifier: ^1.15.3
+        specifier: ^1.16.0
         version: link:../../../packages/react-form
       '@yme/lay-postcss':
         specifier: 0.1.0
@@ -757,7 +757,7 @@ importers:
   examples/solid/array:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^1.15.3
+        specifier: ^1.16.0
         version: link:../../../packages/solid-form
       solid-js:
         specifier: ^1.9.7
@@ -776,7 +776,7 @@ importers:
   examples/solid/large-form:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^1.15.3
+        specifier: ^1.16.0
         version: link:../../../packages/solid-form
       solid-js:
         specifier: ^1.9.7
@@ -795,7 +795,7 @@ importers:
   examples/solid/simple:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^1.15.3
+        specifier: ^1.16.0
         version: link:../../../packages/solid-form
       solid-js:
         specifier: ^1.9.7
@@ -814,7 +814,7 @@ importers:
   examples/solid/standard-schema:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^1.15.3
+        specifier: ^1.16.0
         version: link:../../../packages/solid-form
       arktype:
         specifier: ^2.1.20
@@ -851,7 +851,7 @@ importers:
   examples/svelte/array:
     dependencies:
       '@tanstack/svelte-form':
-        specifier: ^1.15.1
+        specifier: ^1.16.0
         version: link:../../../packages/svelte-form
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
@@ -873,7 +873,7 @@ importers:
   examples/svelte/simple:
     dependencies:
       '@tanstack/svelte-form':
-        specifier: ^1.15.1
+        specifier: ^1.16.0
         version: link:../../../packages/svelte-form
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
@@ -895,7 +895,7 @@ importers:
   examples/svelte/standard-schema:
     dependencies:
       '@tanstack/svelte-form':
-        specifier: ^1.15.1
+        specifier: ^1.16.0
         version: link:../../../packages/svelte-form
       arktype:
         specifier: ^2.1.20
@@ -929,7 +929,7 @@ importers:
   examples/vue/array:
     dependencies:
       '@tanstack/vue-form':
-        specifier: ^1.15.1
+        specifier: ^1.16.0
         version: link:../../../packages/vue-form
       vue:
         specifier: ^3.5.13
@@ -951,7 +951,7 @@ importers:
   examples/vue/simple:
     dependencies:
       '@tanstack/vue-form':
-        specifier: ^1.15.1
+        specifier: ^1.16.0
         version: link:../../../packages/vue-form
       vue:
         specifier: ^3.5.13
@@ -973,7 +973,7 @@ importers:
   examples/vue/standard-schema:
     dependencies:
       '@tanstack/vue-form':
-        specifier: ^1.15.1
+        specifier: ^1.16.0
         version: link:../../../packages/vue-form
       arktype:
         specifier: ^2.1.20
