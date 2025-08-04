@@ -147,9 +147,10 @@ export const defaultValidationLogic: ValidationLogicFn = (props) => {
     cause: 'submit',
   } as const
 
+  // Allows us to clear onServer errors
   const onServerValidator = isAsync
-    ? ({ fn: (props.validators as any).onServer, cause: 'server' } as const)
-    : undefined
+    ? undefined
+    : ({ fn: () => undefined, cause: 'server' } as const)
 
   switch (props.event.type) {
     case 'mount': {
@@ -174,7 +175,7 @@ export const defaultValidationLogic: ValidationLogicFn = (props) => {
     case 'server': {
       // Run server validation
       return props.runValidation({
-        validators: [onServerValidator],
+        validators: [],
         form: props.form,
       })
     }
