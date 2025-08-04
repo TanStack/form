@@ -580,6 +580,10 @@
             {
               "label": "Form Composition",
               "to": "framework/angular/examples/large-form"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/angular/examples/standard-schema"
             }
           ]
         },
