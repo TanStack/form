@@ -612,6 +612,10 @@
               "to": "framework/lit/examples/simple"
             },
             {
+              "label": "Array",
+              "to": "framework/lit/examples/array"
+            },
+            {
               "label": "UI Libraries",
               "to": "framework/lit/examples/ui-libraries"
             }

@@ -134,7 +134,7 @@ importers:
     devDependencies:
       '@angular-devkit/build-angular':
         specifier: ^20.0.0
-        version: 20.0.5(f245dd77b4c9f1390c45f4ecddc1533a)
+        version: 20.0.5(76ecc4c34b81a4060af826234478a183)
       '@angular/cli':
         specifier: ^20.0.0
         version: 20.0.5(@types/node@24.1.0)(chokidar@4.0.3)
@@ -186,7 +186,7 @@ importers:
     devDependencies:
       '@angular-devkit/build-angular':
         specifier: ^20.0.0
-        version: 20.0.5(76ecc4c34b81a4060af826234478a183)
+        version: 20.0.5(f245dd77b4c9f1390c45f4ecddc1533a)
       '@angular/cli':
         specifier: ^20.0.0
         version: 20.0.5(@types/node@24.1.0)(chokidar@4.0.3)
@@ -309,6 +309,19 @@ importers:
       typescript:
         specifier: 5.8.2
         version: 5.8.2
+
+  examples/lit/array:
+    dependencies:
+      '@tanstack/lit-form':
+        specifier: ^1.15.1
+        version: link:../../../packages/lit-form
+      lit:
+        specifier: ^3.3.0
+        version: 3.3.0
+    devDependencies:
+      vite:
+        specifier: ^6.3.5
+        version: 6.3.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.5))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   examples/lit/simple:
     dependencies:
