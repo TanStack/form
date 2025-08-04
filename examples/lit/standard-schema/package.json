@@ -17,7 +17,7 @@
     "zod": "^3.25.64"
   },
   "devDependencies": {
-    "vite": "^6.3.5"
+    "vite": "^7.0.6"
   },
   "browserslist": {
     "production": [
