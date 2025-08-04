@@ -143,6 +143,10 @@ Defined in: [packages/form-core/src/FormApi.ts:304](https://github.com/TanStack/
 
 [`FormApi`](../../classes/formapi.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`\>
 
+###### meta
+
+`TSubmitMeta`
+
 #### Returns
 
 `void`

@@ -18,7 +18,7 @@
     "@angular/platform-browser": "^20.0.0",
     "@angular/platform-browser-dynamic": "^20.0.0",
     "@angular/router": "^20.0.0",
-    "@tanstack/angular-form": "^1.15.1",
+    "@tanstack/angular-form": "^1.16.0",
     "effect": "^3.16.7",
     "rxjs": "^7.8.2",
     "tslib": "^2.8.1",
