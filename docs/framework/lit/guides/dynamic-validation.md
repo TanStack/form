@@ -196,9 +196,7 @@ export class MyForm extends LitElement {
                 }}
                 @blur=${() => field.handleBlur()}
               />
-              <p style="color: red;">
-                ${field.state.meta.errorMap.onDynamic}
-              </p>
+              <p style="color: red;">${field.state.meta.errorMap.onDynamic}</p>
             </div>
           `,
         )}
