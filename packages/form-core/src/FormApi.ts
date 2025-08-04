@@ -517,7 +517,6 @@ export type BaseFormState<
   in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
 > = {
-  formId?: string
   /**
    * The current values of the form fields.
    */
@@ -737,7 +736,6 @@ function getDefaultFormState<
   TOnServer
 > {
   return {
-    formId: defaultState.formId,
     values: defaultState.values ?? ({} as never),
     errorMap: defaultState.errorMap ?? {},
     fieldMetaBase: defaultState.fieldMetaBase ?? ({} as never),
@@ -872,7 +870,6 @@ export class FormApi<
         ...(opts?.defaultState as any),
         values: opts?.defaultValues ?? opts?.defaultState?.values,
         isFormValid: true,
-        formId: opts?.formId,
       }),
     )
 
@@ -1156,7 +1153,7 @@ export class FormApi<
   }
 
   get formId(): string | undefined {
-    return this.state.formId
+    return this.options.formId
   }
 
   /**

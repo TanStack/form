@@ -451,7 +451,7 @@ describe('createFormHook', () => {
     expect(inputField1).toHaveValue('John')
   })
 
-  it('should allow access to formId', () => {
+  it('should accept formId and return it', () => {
     function FormId() {
       const form = useFormContext()
 
