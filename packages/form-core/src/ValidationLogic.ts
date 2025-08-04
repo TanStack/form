@@ -1,8 +1,8 @@
 import type { AnyFormApi, FormValidators } from './FormApi'
 
 interface ValidationLogicValidatorsFn {
-  fn: // TODO: Type this properly
-  FormValidators<
+  // TODO: Type this properly
+  fn: FormValidators<
     any,
     any,
     any,
@@ -53,6 +53,8 @@ interface RevalidateLogicProps {
   modeAfterSubmission?: 'change' | 'blur' | 'submit'
 }
 
+export type ValidationLogicFn = (props: ValidationLogicProps) => void
+
 /**
  * This forces a form's validation logic to be ran as if it were a React Hook Form validation logic.
  *
@@ -66,8 +68,8 @@ export const revalidateLogic =
   ({
     mode = 'submit',
     modeAfterSubmission = 'change',
-  }: RevalidateLogicProps = {}) =>
-  (props: ValidationLogicProps) => {
+  }: RevalidateLogicProps = {}): ValidationLogicFn =>
+  (props) => {
     const validatorNames = Object.keys(props.validators ?? {})
     if (validatorNames.length === 0) {
       // No validators is a valid case, just return
@@ -115,7 +117,7 @@ export const revalidateLogic =
     })
   }
 
-export function defaultValidationLogic(props: ValidationLogicProps) {
+export const defaultValidationLogic: ValidationLogicFn = (props) => {
   // Handle case where no validators are provided
   if (!props.validators) {
     return props.runValidation({

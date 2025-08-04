@@ -18,6 +18,7 @@ import {
   standardSchemaValidators,
 } from './standardSchemaValidator'
 import { defaultFieldMeta, metaHelper } from './metaHelper'
+import type { ValidationLogicFn } from './ValidationLogic'
 import type {
   StandardSchemaV1,
   StandardSchemaV1Issue,
@@ -419,8 +420,7 @@ export interface FormOptions<
     TOnDynamicAsync
   >
 
-  // TODO: Type this properly
-  validationLogic?: unknown
+  validationLogic?: ValidationLogicFn
 
   /**
    * form level listeners
