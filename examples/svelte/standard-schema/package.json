@@ -1,0 +1,25 @@
+{
+  "name": "@tanstack/form-example-svelte-standard-schema",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tanstack/svelte-form": "^1.15.1",
+    "arktype": "^2.1.20",
+    "effect": "^3.16.7",
+    "valibot": "^1.1.0",
+    "zod": "^3.25.64"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^5.1.0",
+    "@tsconfig/svelte": "^5.0.4",
+    "svelte": "^5.34.3",
+    "typescript": "5.8.2",
+    "vite": "^6.3.5"
+  }
+}
