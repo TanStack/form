@@ -1,5 +1,5 @@
 {
-  "name": "@tanstack/form-example-angular-simple",
+  "name": "@tanstack/form-example-angular-standard-schema",
   "private": true,
   "type": "module",
   "scripts": {
