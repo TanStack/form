@@ -205,6 +205,7 @@ export interface FormValidators<
   onSubmitAsync?: TOnSubmitAsync
   onDynamic?: TOnDynamic
   onDynamicAsync?: TOnDynamicAsync
+  onDynamicAsyncDebounceMs?: number
 }
 
 /**

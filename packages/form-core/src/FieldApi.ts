@@ -367,6 +367,7 @@ export interface FieldValidators<
   onSubmitAsync?: TOnSubmitAsync
   onDynamic?: TOnDynamic
   onDynamicAsync?: TOnDynamicAsync
+  onDynamicAsyncDebounceMs?: number
 }
 
 export interface FieldListeners<

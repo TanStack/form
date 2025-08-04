@@ -343,23 +343,26 @@ export function getAsyncValidatorArray<T>(
       >
     : never {
   const { asyncDebounceMs } = options
-  const { onBlurAsyncDebounceMs, onChangeAsyncDebounceMs } =
-    (options.validators || {}) as
-      | FieldValidators<
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any
-        >
-      | FormValidators<any, any, any, any, any, any, any, any, any, any>
+  const {
+    onBlurAsyncDebounceMs,
+    onChangeAsyncDebounceMs,
+    onDynamicAsyncDebounceMs,
+  } = (options.validators || {}) as
+    | FieldValidators<
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any
+      >
+    | FormValidators<any, any, any, any, any, any, any, any, any, any>
 
   const defaultDebounceMs = asyncDebounceMs ?? 0
 
@@ -377,6 +380,9 @@ export function getAsyncValidatorArray<T>(
           break
         case 'blur':
           debounceMs = onBlurAsyncDebounceMs ?? defaultDebounceMs
+          break
+        case 'dynamic':
+          debounceMs = onDynamicAsyncDebounceMs ?? defaultDebounceMs
           break
         case 'submit':
           debounceMs = 0 // submit validators are always run immediately
