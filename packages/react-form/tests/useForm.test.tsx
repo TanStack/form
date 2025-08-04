@@ -854,4 +854,42 @@ describe('useForm', () => {
     await user.click(submit)
     await waitFor(() => expect(input).toHaveValue('another-test'))
   })
+
+  it('should accept formId and return it', async () => {
+    function Comp() {
+      const form = useForm({
+        formId: 'test',
+      })
+
+      return (
+        <>
+          <form
+            id={form.formId}
+            onSubmit={(e) => {
+              e.preventDefault()
+              form.handleSubmit()
+            }}
+          ></form>
+
+          <form.Subscribe
+            selector={(state) => state.submissionAttempts}
+            children={(submissionAttempts) => (
+              <span data-testid="formId-result">{submissionAttempts}</span>
+            )}
+          />
+
+          <button type="submit" form={form.formId} data-testid="formId-target">
+            {form.formId}
+          </button>
+        </>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    const target = getByTestId('formId-target')
+    const result = getByTestId('formId-result')
+
+    await user.click(target)
+    expect(result).toHaveTextContent('1')
+  })
 })
