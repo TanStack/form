@@ -103,6 +103,10 @@
               "to": "framework/react/guides/validation"
             },
             {
+              "label": "Dynamic Validation",
+              "to": "framework/react/guides/dynamic-validation"
+            },
+            {
               "label": "Async Initial Values",
               "to": "framework/react/guides/async-initial-values"
             },
@@ -164,6 +168,10 @@
               "to": "framework/vue/guides/validation"
             },
             {
+              "label": "Dynamic Validation",
+              "to": "framework/vue/guides/dynamic-validation"
+            },
+            {
               "label": "Async Initial Values",
               "to": "framework/vue/guides/async-initial-values"
             },
@@ -189,6 +197,10 @@
               "to": "framework/angular/guides/validation"
             },
             {
+              "label": "Dynamic Validation",
+              "to": "framework/angular/guides/dynamic-validation"
+            },
+            {
               "label": "Arrays",
               "to": "framework/angular/guides/arrays"
             },
@@ -208,6 +220,10 @@
             {
               "label": "Form Validation",
               "to": "framework/solid/guides/validation"
+            },
+            {
+              "label": "Dynamic Validation",
+              "to": "framework/solid/guides/dynamic-validation"
             },
             {
               "label": "Async Initial Values",
@@ -239,6 +255,10 @@
               "to": "framework/lit/guides/validation"
             },
             {
+              "label": "Dynamic Validation",
+              "to": "framework/lit/guides/dynamic-validation"
+            },
+            {
               "label": "Arrays",
               "to": "framework/lit/guides/arrays"
             }
@@ -254,6 +274,10 @@
             {
               "label": "Form Validation",
               "to": "framework/svelte/guides/validation"
+            },
+            {
+              "label": "Dynamic Validation",
+              "to": "framework/svelte/guides/dynamic-validation"
             },
             {
               "label": "Async Initial Values",
@@ -526,6 +550,10 @@
             {
               "label": "Form Composition",
               "to": "framework/react/examples/large-form"
+            },
+            {
+              "label": "Dynamic Validation",
+              "to": "framework/react/examples/dynamic"
             },
             {
               "label": "TanStack Query Integration",

@@ -14,10 +14,10 @@
     "effect": "^3.16.7",
     "lit": "^3.3.0",
     "valibot": "^1.1.0",
-    "zod": "^3.25.64"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
-    "vite": "^6.3.5"
+    "vite": "^7.0.6"
   },
   "browserslist": {
     "production": [
