@@ -196,4 +196,41 @@ describe('custom validation', () => {
     field.handleBlur()
     expect(field.state.meta.errorMap.onDynamic).toBe(undefined)
   })
+
+  it('rhf validation should work for fields as well', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+      validationLogic: revalidateLogic(),
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onDynamic: z.string().min(3, 'Name must be at least 3 characters long'),
+      },
+    })
+
+    field.mount()
+
+    expect(field.getValue()).toBe('')
+    expect(field.state.meta.errorMap.onDynamic).toBe(undefined)
+
+    field.setValue('Jo')
+    expect(field.state.meta.errorMap.onDynamic).toBe(undefined)
+
+    await form.handleSubmit()
+
+    expect(field.state.meta.errorMap.onDynamic).toMatchObject([
+      { message: 'Name must be at least 3 characters long' },
+    ])
+
+    field.setValue('Joe123')
+
+    expect(field.state.meta.errorMap.onDynamic).toBe(undefined)
+  })
 })

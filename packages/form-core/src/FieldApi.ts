@@ -1995,6 +1995,8 @@ function getErrorMapKey(cause: ValidationCause) {
       return 'onMount'
     case 'server':
       return 'onServer'
+    case 'dynamic':
+      return 'onDynamic'
     case 'change':
     default:
       return 'onChange'
