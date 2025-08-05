@@ -25,7 +25,7 @@ export default async function someAction(prev: unknown, formData: FormData) {
     //   VALUES (${validatedData.name}, ${validatedData.email}, ${validatedData.password})
     // `
   } catch (e) {
-    if (e instanceof ServerValidateError) {
+    if (serverValidate.isFormError(e)) {
       return e.formState
     }
 
