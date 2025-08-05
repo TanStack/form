@@ -11,7 +11,7 @@ title: createFormHook
 function createFormHook<TComponents, TFormComponents>(__namedParameters): object
 ```
 
-Defined in: [packages/react-form/src/createFormHook.tsx:266](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L266)
+Defined in: [packages/react-form/src/createFormHook.tsx:264](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L264)
 
 ## Type Parameters
 
@@ -85,7 +85,7 @@ withFieldGroup: <TFieldGroupData, TSubmitMeta, TRenderProps>(__namedParameters) 
 
 ##### \_\_namedParameters
 
-[`WithFormLensProps`](../../interfaces/withformlensprops.md)\<`TFieldGroupData`, `TComponents`, `TFormComponents`, `TSubmitMeta`, `TRenderProps`\>
+[`WithFieldGroupProps`](../../interfaces/withfieldgroupprops.md)\<`TFieldGroupData`, `TComponents`, `TFormComponents`, `TSubmitMeta`, `TRenderProps`\>
 
 #### Returns
 

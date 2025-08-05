@@ -51,4 +51,4 @@ useFormContext: () => SolidFormExtendedApi<Record<string, never>, any, any, any,
 
 #### Returns
 
-`SolidFormExtendedApi`\<`Record`\<`string`, `never`\>, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>
+[`SolidFormExtendedApi`](../../type-aliases/solidformextendedapi.md)\<`Record`\<`string`, `never`\>, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>

@@ -103,6 +103,10 @@
               "to": "framework/react/guides/validation"
             },
             {
+              "label": "Dynamic Validation",
+              "to": "framework/react/guides/dynamic-validation"
+            },
+            {
               "label": "Async Initial Values",
               "to": "framework/react/guides/async-initial-values"
             },
@@ -164,6 +168,10 @@
               "to": "framework/vue/guides/validation"
             },
             {
+              "label": "Dynamic Validation",
+              "to": "framework/vue/guides/dynamic-validation"
+            },
+            {
               "label": "Async Initial Values",
               "to": "framework/vue/guides/async-initial-values"
             },
@@ -189,6 +197,10 @@
               "to": "framework/angular/guides/validation"
             },
             {
+              "label": "Dynamic Validation",
+              "to": "framework/angular/guides/dynamic-validation"
+            },
+            {
               "label": "Arrays",
               "to": "framework/angular/guides/arrays"
             },
@@ -208,6 +220,10 @@
             {
               "label": "Form Validation",
               "to": "framework/solid/guides/validation"
+            },
+            {
+              "label": "Dynamic Validation",
+              "to": "framework/solid/guides/dynamic-validation"
             },
             {
               "label": "Async Initial Values",
@@ -235,6 +251,14 @@
               "to": "framework/lit/guides/basic-concepts"
             },
             {
+              "label": "Form Validation",
+              "to": "framework/lit/guides/validation"
+            },
+            {
+              "label": "Dynamic Validation",
+              "to": "framework/lit/guides/dynamic-validation"
+            },
+            {
               "label": "Arrays",
               "to": "framework/lit/guides/arrays"
             }
@@ -250,6 +274,10 @@
             {
               "label": "Form Validation",
               "to": "framework/svelte/guides/validation"
+            },
+            {
+              "label": "Dynamic Validation",
+              "to": "framework/svelte/guides/dynamic-validation"
             },
             {
               "label": "Async Initial Values",
@@ -524,6 +552,10 @@
               "to": "framework/react/examples/large-form"
             },
             {
+              "label": "Dynamic Validation",
+              "to": "framework/react/examples/dynamic"
+            },
+            {
               "label": "TanStack Query Integration",
               "to": "framework/react/examples/query-integration"
             },
@@ -563,6 +595,10 @@
             {
               "label": "Arrays",
               "to": "framework/vue/examples/array"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/vue/examples/standard-schema"
             }
           ]
         },
@@ -580,6 +616,10 @@
             {
               "label": "Form Composition",
               "to": "framework/angular/examples/large-form"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/angular/examples/standard-schema"
             }
           ]
         },
@@ -597,6 +637,10 @@
             {
               "label": "Form Composition",
               "to": "framework/solid/examples/large-form"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/solid/examples/standard-schema"
             }
           ]
         },
@@ -608,8 +652,16 @@
               "to": "framework/lit/examples/simple"
             },
             {
+              "label": "Array",
+              "to": "framework/lit/examples/array"
+            },
+            {
               "label": "UI Libraries",
               "to": "framework/lit/examples/ui-libraries"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/lit/examples/standard-schema"
             }
           ]
         },
@@ -623,6 +675,10 @@
             {
               "label": "Arrays",
               "to": "framework/svelte/examples/array"
+            },
+            {
+              "label": "Standard Schema",
+              "to": "framework/svelte/examples/standard-schema"
             }
           ]
         }

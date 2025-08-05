@@ -9,6 +9,8 @@ title: "@tanstack/solid-form"
 
 ## Interfaces
 
+- [CreateFieldOptions](../interfaces/createfieldoptions.md)
+- [CreateFieldOptionsBound](../interfaces/createfieldoptionsbound.md)
 - [SolidFormApi](../interfaces/solidformapi.md)
 - [WithFormProps](../interfaces/withformprops.md)
 
@@ -16,6 +18,7 @@ title: "@tanstack/solid-form"
 
 - [CreateField](../type-aliases/createfield.md)
 - [FieldComponent](../type-aliases/fieldcomponent.md)
+- [SolidFormExtendedApi](../type-aliases/solidformextendedapi.md)
 
 ## Functions
 

@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/react-form",
-  "version": "1.15.1",
+  "version": "1.17.0",
   "description": "Powerful, type-safe forms for React.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -94,7 +94,7 @@
     "eslint-plugin-react-compiler": "19.0.0-beta-ebf51a3-20250411",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "vite": "^6.3.5"
+    "vite": "^7.0.6"
   },
   "peerDependencies": {
     "@tanstack/react-start": "^1.130.10",

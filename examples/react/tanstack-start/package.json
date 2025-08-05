@@ -9,7 +9,7 @@
     "start": "node .output/server/index.mjs"
   },
   "dependencies": {
-    "@tanstack/react-form": "^1.15.1",
+    "@tanstack/react-form": "^1.17.0",
     "@tanstack/react-router": "^1.130.10",
     "@tanstack/react-start": "^1.130.10",
     "@tanstack/react-store": "^0.7.3",
@@ -22,7 +22,7 @@
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.5.2",
     "typescript": "5.8.2",
-    "vite": "^6.3.5",
+    "vite": "^7.0.6",
     "vite-tsconfig-paths": "^5.1.4"
   }
 }

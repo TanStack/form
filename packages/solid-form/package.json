@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/solid-form",
-  "version": "1.15.1",
+  "version": "1.17.0",
   "description": "Powerful, type-safe forms for Solid.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -60,7 +60,7 @@
   },
   "devDependencies": {
     "solid-js": "^1.9.7",
-    "vite": "^6.3.5",
+    "vite": "^7.0.6",
     "vite-plugin-solid": "^2.11.6"
   },
   "peerDependencies": {
