@@ -11,7 +11,7 @@ title: evaluate
 function evaluate<T>(objA, objB): boolean
 ```
 
-Defined in: [packages/form-core/src/utils.ts:370](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L370)
+Defined in: [packages/form-core/src/utils.ts:420](https://github.com/TanStack/form/blob/main/packages/form-core/src/utils.ts#L420)
 
 ## Type Parameters
 

@@ -8,10 +8,10 @@ title: useFieldGroup
 # Function: useFieldGroup()
 
 ```ts
-function useFieldGroup<TFormData, TFieldGroupData, TFields, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TComponents, TFormComponents, TSubmitMeta>(opts): AppFieldExtendedReactFieldGroupApi<TFormData, TFieldGroupData, TFields, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnServer, TSubmitMeta, TComponents, TFormComponents>
+function useFieldGroup<TFormData, TFieldGroupData, TFields, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TComponents, TFormComponents, TSubmitMeta>(opts): AppFieldExtendedReactFieldGroupApi<TFormData, TFieldGroupData, TFields, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta, TComponents, TFormComponents>
 ```
 
-Defined in: [packages/react-form/src/useFieldGroup.tsx:85](https://github.com/TanStack/form/blob/main/packages/react-form/src/useFieldGroup.tsx#L85)
+Defined in: [packages/react-form/src/useFieldGroup.tsx:89](https://github.com/TanStack/form/blob/main/packages/react-form/src/useFieldGroup.tsx#L89)
 
 ## Type Parameters
 
@@ -37,6 +37,10 @@ Defined in: [packages/react-form/src/useFieldGroup.tsx:85](https://github.com/Ta
 
 • **TOnSubmitAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
 
+• **TOnDynamic** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnDynamicAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
 • **TOnServer** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
 
 • **TComponents** *extends* `Record`\<`string`, `ComponentType`\<`any`\>\>
@@ -59,8 +63,8 @@ Defined in: [packages/react-form/src/useFieldGroup.tsx:85](https://github.com/Ta
 
 #### form
 
-  \| `AppFieldExtendedReactFormApi`\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`, `TComponents`, `TFormComponents`\>
-  \| `AppFieldExtendedReactFieldGroupApi`\<`unknown`, `TFormData`, `string` \| `FieldsMap`\<`unknown`, `TFormData`\>, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `TSubmitMeta`, `TComponents`, `TFormComponents`\>
+  \| `AppFieldExtendedReactFormApi`\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`, `TComponents`, `TFormComponents`\>
+  \| `AppFieldExtendedReactFieldGroupApi`\<`unknown`, `TFormData`, `string` \| `FieldsMap`\<`unknown`, `TFormData`\>, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `TSubmitMeta`, `TComponents`, `TFormComponents`\>
 
 #### formComponents
 
@@ -72,4 +76,4 @@ Defined in: [packages/react-form/src/useFieldGroup.tsx:85](https://github.com/Ta
 
 ## Returns
 
-`AppFieldExtendedReactFieldGroupApi`\<`TFormData`, `TFieldGroupData`, `TFields`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnServer`, `TSubmitMeta`, `TComponents`, `TFormComponents`\>
+`AppFieldExtendedReactFieldGroupApi`\<`TFormData`, `TFieldGroupData`, `TFields`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`, `TComponents`, `TFormComponents`\>
