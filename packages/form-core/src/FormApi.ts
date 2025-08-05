@@ -377,6 +377,10 @@ export interface FormOptions<
   in out TSubmitMeta = never,
 > extends BaseFormOptions<TFormData, TSubmitMeta> {
   /**
+   * The form name, used for devtools and identification
+   */
+  formId?: string
+  /**
    * The default state for the form.
    */
   defaultState?: Partial<
@@ -1236,6 +1240,10 @@ export class FormApi<
     this.handleSubmit = this.handleSubmit.bind(this)
 
     this.update(opts || {})
+  }
+
+  get formId(): string | undefined {
+    return this.options.formId
   }
 
   /**

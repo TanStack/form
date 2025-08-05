@@ -450,4 +450,50 @@ describe('createFormHook', () => {
     const inputField1 = getByLabelText('unrelated')
     expect(inputField1).toHaveValue('John')
   })
+
+  it('should accept formId and return it', async () => {
+    function Submit() {
+      const form = useFormContext()
+
+      return (
+        <button type="submit" form={form.formId} data-testid="formId-target">
+          {form.formId}
+        </button>
+      )
+    }
+
+    function Comp() {
+      const form = useAppForm({
+        formId: 'test',
+      })
+
+      return (
+        <form.AppForm>
+          <form
+            id={form.formId}
+            onSubmit={(e) => {
+              e.preventDefault()
+              form.handleSubmit()
+            }}
+          ></form>
+
+          <form.Subscribe
+            selector={(state) => state.submissionAttempts}
+            children={(submissionAttempts) => (
+              <span data-testid="formId-result">{submissionAttempts}</span>
+            )}
+          />
+
+          <Submit />
+        </form.AppForm>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    const target = getByTestId('formId-target')
+    const result = getByTestId('formId-result')
+
+    await user.click(target)
+    expect(result).toHaveTextContent('1')
+  })
 })
