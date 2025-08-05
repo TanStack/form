@@ -9,13 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/svelte-form": "^1.16.0"
+    "@tanstack/svelte-form": "^1.17.0"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.1.0",
     "@tsconfig/svelte": "^5.0.4",
     "svelte": "^5.34.3",
     "typescript": "5.8.2",
-    "vite": "^6.3.5"
+    "vite": "^7.0.6"
   }
 }

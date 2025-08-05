@@ -18,6 +18,7 @@ const serverValidate = createServerValidate({
 
 export const handleForm = createServerFn({
   method: 'POST',
+  response: 'raw',
 })
   .validator((data: unknown) => {
     if (!(data instanceof FormData)) {

@@ -7,7 +7,7 @@ title: FieldGroupState
 
 # Interface: FieldGroupState\<TFieldGroupData\>
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:37](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L37)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:39](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L39)
 
 ## Type Parameters
 
@@ -21,6 +21,6 @@ Defined in: [packages/form-core/src/FieldGroupApi.ts:37](https://github.com/TanS
 values: TFieldGroupData;
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:41](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L41)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:43](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L43)
 
 The current values of the field group

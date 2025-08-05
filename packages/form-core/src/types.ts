@@ -10,7 +10,13 @@ export type ValidationSource = 'form' | 'field'
  * "server" is only intended for SSR/SSG validation and should not execute anything
  * @private
  */
-export type ValidationCause = 'change' | 'blur' | 'submit' | 'mount' | 'server'
+export type ValidationCause =
+  | 'change'
+  | 'blur'
+  | 'submit'
+  | 'mount'
+  | 'server'
+  | 'dynamic'
 
 /**
  * @private
@@ -33,12 +39,15 @@ export type ValidationErrorMap<
   TOnBlurAsyncReturn = unknown,
   TOnSubmitReturn = unknown,
   TOnSubmitAsyncReturn = unknown,
+  TOnDynamicReturn = unknown,
+  TOnDynamicAsyncReturn = unknown,
   TOnServerReturn = unknown,
 > = {
   onMount?: TOnMountReturn
   onChange?: TOnChangeReturn | TOnChangeAsyncReturn
   onBlur?: TOnBlurReturn | TOnBlurAsyncReturn
   onSubmit?: TOnSubmitReturn | TOnSubmitAsyncReturn
+  onDynamic?: TOnDynamicReturn | TOnDynamicAsyncReturn
   onServer?: TOnServerReturn
 }
 
@@ -51,6 +60,7 @@ export type ValidationErrorMapSource = {
   onBlur?: ValidationSource
   onSubmit?: ValidationSource
   onServer?: ValidationSource
+  onDynamic?: ValidationSource
 }
 
 /**
@@ -65,6 +75,8 @@ export type FormValidationErrorMap<
   TOnBlurAsyncReturn = unknown,
   TOnSubmitReturn = unknown,
   TOnSubmitAsyncReturn = unknown,
+  TOnDynamicReturn = unknown,
+  TOnDynamicAsyncReturn = unknown,
   TOnServerReturn = unknown,
 > = {
   onMount?: TOnMountReturn | GlobalFormValidationError<TFormData>
@@ -79,6 +91,10 @@ export type FormValidationErrorMap<
   onSubmit?:
     | TOnSubmitReturn
     | TOnSubmitAsyncReturn
+    | GlobalFormValidationError<TFormData>
+  onDynamic?:
+    | TOnDynamicReturn
+    | TOnDynamicAsyncReturn
     | GlobalFormValidationError<TFormData>
   onServer?: TOnServerReturn
 }

@@ -8,13 +8,13 @@ title: LensFieldComponent
 # Type Alias: LensFieldComponent()\<TLensData, TParentSubmitMeta, ExtendedApi\>
 
 ```ts
-type LensFieldComponent<TLensData, TParentSubmitMeta, ExtendedApi> = <TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync>({
+type LensFieldComponent<TLensData, TParentSubmitMeta, ExtendedApi> = <TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync>({
   children,
   ...fieldOptions
 }) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/useField.tsx:426](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L426)
+Defined in: [packages/react-form/src/useField.tsx:492](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L492)
 
 A type alias representing a field component for a form lens data type.
 
@@ -46,6 +46,10 @@ A type alias representing a field component for a form lens data type.
 
 • **TOnSubmitAsync** *extends* `undefined` \| `FieldAsyncValidateOrFn`\<`unknown`, `string`, `TData`\>
 
+• **TOnDynamic** *extends* `undefined` \| `FieldValidateOrFn`\<`unknown`, `string`, `TData`\>
+
+• **TOnDynamicAsync** *extends* `undefined` \| `FieldAsyncValidateOrFn`\<`unknown`, `string`, `TData`\>
+
 ## Parameters
 
 ### \{
@@ -53,7 +57,7 @@ A type alias representing a field component for a form lens data type.
   ...fieldOptions
 \}
 
-`FieldComponentBoundProps`\<`unknown`, `string`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `undefined` \| `FormValidateOrFn`\<`unknown`\>, `undefined` \| `FormValidateOrFn`\<`unknown`\>, `undefined` \| `FormAsyncValidateOrFn`\<`unknown`\>, `undefined` \| `FormValidateOrFn`\<`unknown`\>, `undefined` \| `FormAsyncValidateOrFn`\<`unknown`\>, `undefined` \| `FormValidateOrFn`\<`unknown`\>, `undefined` \| `FormAsyncValidateOrFn`\<`unknown`\>, `undefined` \| `FormAsyncValidateOrFn`\<`unknown`\>, `TParentSubmitMeta`, `ExtendedApi`\> & `object`
+`FieldComponentBoundProps`\<`unknown`, `string`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `undefined` \| `FormValidateOrFn`\<`unknown`\>, `undefined` \| `FormValidateOrFn`\<`unknown`\>, `undefined` \| `FormAsyncValidateOrFn`\<`unknown`\>, `undefined` \| `FormValidateOrFn`\<`unknown`\>, `undefined` \| `FormAsyncValidateOrFn`\<`unknown`\>, `undefined` \| `FormValidateOrFn`\<`unknown`\>, `undefined` \| `FormAsyncValidateOrFn`\<`unknown`\>, `undefined` \| `FormValidateOrFn`\<`unknown`\>, `undefined` \| `FormAsyncValidateOrFn`\<`unknown`\>, `undefined` \| `FormAsyncValidateOrFn`\<`unknown`\>, `TParentSubmitMeta`, `ExtendedApi`\> & `object`
 
 ## Returns
 
