@@ -8,6 +8,7 @@ import {
   evaluate,
   getBy,
   makePathArray,
+  mergeOpts,
   setBy,
 } from '../src/index'
 
@@ -723,5 +724,30 @@ describe('createFieldMap', () => {
     const copy = { ...input }
     createFieldMap(input)
     expect(input).toEqual(copy)
+  })
+})
+
+describe('mergeOpts', () => {
+  type SomeOpts = {
+    foo?: string
+    bar?: boolean
+  }
+
+  it('should return the overrides if original object is undefined', () => {
+    expect(mergeOpts<SomeOpts>(undefined, { foo: 'test' })).toEqual({
+      foo: 'test',
+    })
+    expect(mergeOpts<SomeOpts>(null, { foo: 'test' })).toEqual({ foo: 'test' })
+  })
+
+  it('should preserve properties that were not overwritten', () => {
+    const original: SomeOpts = {
+      foo: 'test',
+    }
+    expect(mergeOpts(original, { bar: true })).toEqual({
+      foo: 'test',
+      bar: true,
+    })
+    expect(mergeOpts(original, {})).toEqual({ foo: 'test' })
   })
 })
