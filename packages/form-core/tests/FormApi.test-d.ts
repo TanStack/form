@@ -1,6 +1,6 @@
 import { expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
-import { FormApi } from '../src'
+import { FormApi, formOptions } from '../src'
 import type {
   DeepKeys,
   GlobalFormValidationError,
@@ -374,4 +374,72 @@ it('should extract the form error type from a global form error', () => {
       | undefined
     )[]
   >
+})
+
+it('listeners should be typed correctly', () => {
+  type FormData = {
+    firstName: string
+    lastName: string
+  }
+
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+    } as FormData,
+    listeners: {
+      onSubmit: ({ formApi }) => {
+        expectTypeOf(formApi.state.values).toEqualTypeOf<FormData>()
+      },
+    },
+  })
+
+  form.handleSubmit()
+})
+
+it('listeners sholud be types when using formOptions', () => {
+  type FormData = {
+    firstName: string
+    lastName: string
+  }
+
+  const formOpts = formOptions({
+    defaultValues: {
+      firstName: 'FirstName',
+      lastName: 'LastName',
+    } as FormData,
+    validators: {
+      onSubmit: () => {
+        return {
+          test: 'test',
+        }
+      },
+    },
+    listeners: {
+      onSubmit: ({ formApi }) => {
+        expectTypeOf(formApi.state.values).toEqualTypeOf<FormData>()
+      },
+    },
+  })
+
+  const form = new FormApi({
+    ...formOpts,
+    listeners: {
+      // this doesn't error since listeners return void
+      onSubmit: ({ formApi }) => {
+        console.log(formApi.state.values)
+      },
+    },
+    validators: {
+      // this errors becuase the return type is not the same as the validator return type
+      // onSubmit: () => 'custom on submit',
+      onSubmit: () => {
+        return {
+          test: 'can change the value!',
+        }
+      },
+    },
+  })
+
+  form.handleSubmit()
 })
