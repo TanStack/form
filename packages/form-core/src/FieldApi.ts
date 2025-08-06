@@ -1103,6 +1103,19 @@ export class FieldApi<
 
     this.update(this.options as never)
     const { onMount } = this.options.validators || {}
+    const formFieldMeta = this.form.getFieldMeta(this.name)
+    console.log(this.name)
+    console.log(formFieldMeta)
+
+    if (formFieldMeta && formFieldMeta.errors.length > 0) {
+      this.setMeta((prev) => ({
+        ...prev,
+
+        errorMap: formFieldMeta.errorMap,
+        errorSourceMap: formFieldMeta.errorSourceMap,
+        errors: formFieldMeta.errors,
+      }))
+    }
 
     if (onMount) {
       const error = this.runValidator({

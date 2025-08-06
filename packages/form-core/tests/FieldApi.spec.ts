@@ -2552,6 +2552,8 @@ describe('field api', () => {
     })
     fieldIndexed.mount()
 
+    expect(form.getFieldMeta(fieldIndexed.name)).toEqual([])
+
     expect(fieldIndexed.state.meta.errors).toStrictEqual({
       errors: [
         {
