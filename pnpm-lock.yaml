@@ -88,10 +88,10 @@ importers:
         version: typescript@5.8.3
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       vitest:
         specifier: ^3.2.3
-        version: 3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   examples/angular/array:
     dependencies:
@@ -120,7 +120,7 @@ importers:
         specifier: ^20.0.0
         version: 20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.0.6(@angular/animations@20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(rxjs@7.8.2)
       '@tanstack/angular-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/angular-form
       rxjs:
         specifier: ^7.8.2
@@ -134,7 +134,7 @@ importers:
     devDependencies:
       '@angular-devkit/build-angular':
         specifier: ^20.0.0
-        version: 20.0.5(nfnantpvxxnln3gt24dyppef6e)
+        version: 20.0.5(76ecc4c34b81a4060af826234478a183)
       '@angular/cli':
         specifier: ^20.0.0
         version: 20.0.5(@types/node@24.1.0)(chokidar@4.0.3)
@@ -172,7 +172,7 @@ importers:
         specifier: ^20.0.0
         version: 20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.0.6(@angular/animations@20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(rxjs@7.8.2)
       '@tanstack/angular-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/angular-form
       rxjs:
         specifier: ^7.8.2
@@ -186,7 +186,7 @@ importers:
     devDependencies:
       '@angular-devkit/build-angular':
         specifier: ^20.0.0
-        version: 20.0.5(ihmsye2bouaxe4zli4d5fzwduq)
+        version: 20.0.5(454e04673bed95c3d186db30149c134f)
       '@angular/cli':
         specifier: ^20.0.0
         version: 20.0.5(@types/node@24.1.0)(chokidar@4.0.3)
@@ -224,7 +224,7 @@ importers:
         specifier: ^20.0.0
         version: 20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.0.6(@angular/animations@20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(rxjs@7.8.2)
       '@tanstack/angular-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/angular-form
       rxjs:
         specifier: ^7.8.2
@@ -238,7 +238,7 @@ importers:
     devDependencies:
       '@angular-devkit/build-angular':
         specifier: ^20.0.0
-        version: 20.0.5(ihmsye2bouaxe4zli4d5fzwduq)
+        version: 20.0.5(454e04673bed95c3d186db30149c134f)
       '@angular/cli':
         specifier: ^20.0.0
         version: 20.0.5(@types/node@24.1.0)(chokidar@4.0.3)
@@ -276,7 +276,7 @@ importers:
         specifier: ^20.0.0
         version: 20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.0.6(@angular/animations@20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(rxjs@7.8.2)
       '@tanstack/angular-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/angular-form
       effect:
         specifier: ^3.16.7
@@ -299,7 +299,7 @@ importers:
     devDependencies:
       '@angular-devkit/build-angular':
         specifier: ^20.0.0
-        version: 20.0.5(ihmsye2bouaxe4zli4d5fzwduq)
+        version: 20.0.5(454e04673bed95c3d186db30149c134f)
       '@angular/cli':
         specifier: ^20.0.0
         version: 20.0.5(@types/node@24.1.0)(chokidar@4.0.3)
@@ -313,7 +313,7 @@ importers:
   examples/lit/array:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/lit-form
       lit:
         specifier: ^3.3.0
@@ -321,12 +321,12 @@ importers:
     devDependencies:
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   examples/lit/simple:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/lit-form
       lit:
         specifier: ^3.3.0
@@ -334,12 +334,12 @@ importers:
     devDependencies:
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   examples/lit/standard-schema:
     dependencies:
       '@tanstack/lit-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/lit-form
       arktype:
         specifier: ^2.1.20
@@ -359,7 +359,7 @@ importers:
     devDependencies:
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   examples/lit/ui-libraries:
     dependencies:
@@ -367,7 +367,7 @@ importers:
         specifier: ^2.3.0
         version: 2.3.0
       '@tanstack/lit-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/lit-form
       lit:
         specifier: ^3.3.0
@@ -375,12 +375,12 @@ importers:
     devDependencies:
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   examples/react/array:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -400,12 +400,12 @@ importers:
         version: 4.5.2(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   examples/react/compiler:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -431,12 +431,12 @@ importers:
         version: 19.0.0-beta-ebf51a3-20250411(eslint@9.32.0(jiti@2.4.2))
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   examples/react/dynamic:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -456,7 +456,7 @@ importers:
         version: 4.5.2(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       zod:
         specifier: ^3.25.76
         version: 3.25.76
@@ -464,7 +464,7 @@ importers:
   examples/react/field-errors-from-form-validators:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -484,12 +484,12 @@ importers:
         version: 4.5.2(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   examples/react/large-form:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -509,12 +509,12 @@ importers:
         version: 4.5.2(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   examples/react/next-server-actions:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/react-form
       '@tanstack/react-store':
         specifier: ^0.7.3
@@ -545,7 +545,7 @@ importers:
   examples/react/query-integration:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/react-form
       '@tanstack/react-query':
         specifier: ^5.80.7
@@ -568,7 +568,7 @@ importers:
         version: 4.5.2(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   examples/react/remix:
     dependencies:
@@ -582,7 +582,7 @@ importers:
         specifier: ^2.16.8
         version: 2.16.8(typescript@5.8.2)
       '@tanstack/react-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/react-form
       '@tanstack/react-store':
         specifier: ^0.7.3
@@ -611,7 +611,7 @@ importers:
         version: 5.8.2
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       vite-tsconfig-paths:
         specifier: ^5.1.4
         version: 5.1.4(typescript@5.8.2)(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
@@ -619,7 +619,7 @@ importers:
   examples/react/simple:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/react-form
       react:
         specifier: ^19.0.0
@@ -639,12 +639,12 @@ importers:
         version: 4.5.2(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   examples/react/standard-schema:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/react-form
       arktype:
         specifier: ^2.1.20
@@ -676,12 +676,12 @@ importers:
         version: 4.5.2(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   examples/react/tanstack-start:
     dependencies:
       '@tanstack/react-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/react-form
       '@tanstack/react-router':
         specifier: ^1.130.10
@@ -716,7 +716,7 @@ importers:
         version: 5.8.2
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       vite-tsconfig-paths:
         specifier: ^5.1.4
         version: 5.1.4(typescript@5.8.2)(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
@@ -739,7 +739,7 @@ importers:
         specifier: 6.4.12
         version: 6.4.12(@emotion/react@11.14.0(@types/react@19.1.6)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.6)(react@19.1.0))(@types/react@19.1.6)(react@19.1.0))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@tanstack/react-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/react-form
       '@yme/lay-postcss':
         specifier: 0.1.0
@@ -777,12 +777,12 @@ importers:
         version: 5.8.2
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   examples/solid/array:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/solid-form
       solid-js:
         specifier: ^1.9.7
@@ -793,7 +793,7 @@ importers:
         version: 5.8.2
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       vite-plugin-solid:
         specifier: ^2.11.6
         version: 2.11.6(@testing-library/jest-dom@6.6.3)(solid-js@1.9.7)(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
@@ -801,7 +801,7 @@ importers:
   examples/solid/large-form:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/solid-form
       solid-js:
         specifier: ^1.9.7
@@ -812,7 +812,7 @@ importers:
         version: 5.8.2
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       vite-plugin-solid:
         specifier: ^2.11.6
         version: 2.11.6(@testing-library/jest-dom@6.6.3)(solid-js@1.9.7)(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
@@ -820,7 +820,7 @@ importers:
   examples/solid/simple:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/solid-form
       solid-js:
         specifier: ^1.9.7
@@ -831,7 +831,7 @@ importers:
         version: 5.8.2
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       vite-plugin-solid:
         specifier: ^2.11.6
         version: 2.11.6(@testing-library/jest-dom@6.6.3)(solid-js@1.9.7)(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
@@ -839,7 +839,7 @@ importers:
   examples/solid/standard-schema:
     dependencies:
       '@tanstack/solid-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/solid-form
       arktype:
         specifier: ^2.1.20
@@ -868,7 +868,7 @@ importers:
         version: 5.8.2
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       vite-plugin-solid:
         specifier: ^2.11.6
         version: 2.11.6(@testing-library/jest-dom@6.6.3)(solid-js@1.9.7)(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
@@ -876,7 +876,7 @@ importers:
   examples/svelte/array:
     dependencies:
       '@tanstack/svelte-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/svelte-form
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
@@ -893,12 +893,12 @@ importers:
         version: 5.8.2
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   examples/svelte/simple:
     dependencies:
       '@tanstack/svelte-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/svelte-form
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
@@ -915,12 +915,12 @@ importers:
         version: 5.8.2
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   examples/svelte/standard-schema:
     dependencies:
       '@tanstack/svelte-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/svelte-form
       arktype:
         specifier: ^2.1.20
@@ -949,12 +949,12 @@ importers:
         version: 5.8.2
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   examples/vue/array:
     dependencies:
       '@tanstack/vue-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/vue-form
       vue:
         specifier: ^3.5.13
@@ -968,7 +968,7 @@ importers:
         version: 5.8.2
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       vue-tsc:
         specifier: ^2.2.2
         version: 2.2.10(typescript@5.8.2)
@@ -976,7 +976,7 @@ importers:
   examples/vue/simple:
     dependencies:
       '@tanstack/vue-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/vue-form
       vue:
         specifier: ^3.5.13
@@ -990,7 +990,7 @@ importers:
         version: 5.8.2
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       vue-tsc:
         specifier: ^2.2.2
         version: 2.2.10(typescript@5.8.2)
@@ -998,7 +998,7 @@ importers:
   examples/vue/standard-schema:
     dependencies:
       '@tanstack/vue-form':
-        specifier: ^1.17.0
+        specifier: ^1.19.0
         version: link:../../../packages/vue-form
       arktype:
         specifier: ^2.1.20
@@ -1030,7 +1030,7 @@ importers:
         version: 5.8.2
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       vue-tsc:
         specifier: ^2.2.2
         version: 2.2.10(typescript@5.8.2)
@@ -1049,10 +1049,10 @@ importers:
     devDependencies:
       '@analogjs/vite-plugin-angular':
         specifier: ^1.17.1
-        version: 1.17.1(hktgnfkj6jpck5dy63x3zbeziu)
+        version: 1.17.1(daa254f2130e13b71188b1fb05418dd5)
       '@analogjs/vitest-angular':
         specifier: ^1.17.1
-        version: 1.19.0(@analogjs/vite-plugin-angular@1.17.1(hktgnfkj6jpck5dy63x3zbeziu))(@angular-devkit/architect@0.2000.5(chokidar@4.0.3))(vitest@3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
+        version: 1.19.0(@analogjs/vite-plugin-angular@1.17.1(daa254f2130e13b71188b1fb05418dd5))(@angular-devkit/architect@0.2000.5(chokidar@4.0.3))(vitest@3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
       '@angular/common':
         specifier: ^20.0.0
         version: 20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
@@ -1073,7 +1073,7 @@ importers:
         version: 20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/compiler@20.0.6)(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.0.6(@angular/animations@20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))
       '@testing-library/angular':
         specifier: ^17.4.0
-        version: 17.4.0(et63vsrkp2gh7imm5w2nfv6y4q)
+        version: 17.4.0(17cd88c55c4aad4a6f5d297438ec4b45)
       ng-packagr:
         specifier: ^20.0.0
         version: 20.0.1(@angular/compiler-cli@20.0.6(@angular/compiler@20.0.6)(typescript@5.8.2))(tslib@2.8.1)(typescript@5.8.2)
@@ -1151,7 +1151,7 @@ importers:
         version: 19.1.0(react@19.1.0)
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   packages/solid-form:
     dependencies:
@@ -1167,7 +1167,7 @@ importers:
         version: 1.9.7
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       vite-plugin-solid:
         specifier: ^2.11.6
         version: 2.11.6(@testing-library/jest-dom@6.6.3)(solid-js@1.9.7)(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
@@ -1211,7 +1211,7 @@ importers:
         version: 5.2.4(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))(vue@3.5.16(typescript@5.8.3))
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       vue:
         specifier: ^3.5.13
         version: 3.5.16(typescript@5.8.3)
@@ -11278,19 +11278,19 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.12
       '@jridgewell/trace-mapping': 0.3.29
 
-  '@analogjs/vite-plugin-angular@1.17.1(hktgnfkj6jpck5dy63x3zbeziu)':
+  '@analogjs/vite-plugin-angular@1.17.1(daa254f2130e13b71188b1fb05418dd5)':
     dependencies:
       ts-morph: 21.0.1
       vfile: 6.0.3
     optionalDependencies:
       '@angular-devkit/build-angular': 20.0.5(@angular/compiler-cli@20.0.6(@angular/compiler@20.0.6)(typescript@5.8.2))(@angular/compiler@20.0.6)(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.0.6(@angular/animations@20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(@swc/core@1.12.1)(@types/node@24.1.0)(chokidar@4.0.3)(jiti@2.4.2)(ng-packagr@20.0.1(@angular/compiler-cli@20.0.6(@angular/compiler@20.0.6)(typescript@5.8.2))(tslib@2.8.1)(typescript@5.8.2))(tsx@4.19.4)(typescript@5.8.2)(vitest@3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))(yaml@2.8.0)
-      '@angular/build': 20.0.5(hwkkgkqv5bnzzempybnrx5sqsq)
+      '@angular/build': 20.0.5(adc485a213f91c05bfbb1034a9c0520e)
 
-  '@analogjs/vitest-angular@1.19.0(@analogjs/vite-plugin-angular@1.17.1(hktgnfkj6jpck5dy63x3zbeziu))(@angular-devkit/architect@0.2000.5(chokidar@4.0.3))(vitest@3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))':
+  '@analogjs/vitest-angular@1.19.0(@analogjs/vite-plugin-angular@1.17.1(daa254f2130e13b71188b1fb05418dd5))(@angular-devkit/architect@0.2000.5(chokidar@4.0.3))(vitest@3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))':
     dependencies:
-      '@analogjs/vite-plugin-angular': 1.17.1(hktgnfkj6jpck5dy63x3zbeziu)
+      '@analogjs/vite-plugin-angular': 1.17.1(daa254f2130e13b71188b1fb05418dd5)
       '@angular-devkit/architect': 0.2000.5(chokidar@4.0.3)
-      vitest: 3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vitest: 3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   '@angular-devkit/architect@0.2000.5(chokidar@4.0.3)':
     dependencies:
@@ -11299,13 +11299,185 @@ snapshots:
     transitivePeerDependencies:
       - chokidar
 
+  '@angular-devkit/build-angular@20.0.5(454e04673bed95c3d186db30149c134f)':
+    dependencies:
+      '@ampproject/remapping': 2.3.0
+      '@angular-devkit/architect': 0.2000.5(chokidar@4.0.3)
+      '@angular-devkit/build-webpack': 0.2000.5(chokidar@4.0.3)(webpack-dev-server@5.2.1(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5)))(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      '@angular-devkit/core': 20.0.5(chokidar@4.0.3)
+      '@angular/build': 20.0.5(ab08a5d67142ee74cb28c7ed009213e5)
+      '@angular/compiler-cli': 20.0.6(@angular/compiler@20.0.6)(typescript@5.8.2)
+      '@babel/core': 7.27.1
+      '@babel/generator': 7.27.1
+      '@babel/helper-annotate-as-pure': 7.27.1
+      '@babel/helper-split-export-declaration': 7.24.7
+      '@babel/plugin-transform-async-generator-functions': 7.27.1(@babel/core@7.27.1)
+      '@babel/plugin-transform-async-to-generator': 7.27.1(@babel/core@7.27.1)
+      '@babel/plugin-transform-runtime': 7.27.1(@babel/core@7.27.1)
+      '@babel/preset-env': 7.27.2(@babel/core@7.27.1)
+      '@babel/runtime': 7.27.1
+      '@discoveryjs/json-ext': 0.6.3
+      '@ngtools/webpack': 20.0.5(@angular/compiler-cli@20.0.6(@angular/compiler@20.0.6)(typescript@5.8.2))(typescript@5.8.2)(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      ansi-colors: 4.1.3
+      autoprefixer: 10.4.21(postcss@8.5.3)
+      babel-loader: 10.0.0(@babel/core@7.27.1)(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      browserslist: 4.25.0
+      copy-webpack-plugin: 13.0.0(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      css-loader: 7.1.2(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      esbuild-wasm: 0.25.5
+      fast-glob: 3.3.3
+      http-proxy-middleware: 3.0.5
+      istanbul-lib-instrument: 6.0.3
+      jsonc-parser: 3.3.1
+      karma-source-map-support: 1.4.0
+      less: 4.3.0
+      less-loader: 12.3.0(less@4.3.0)(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      license-webpack-plugin: 4.0.2(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      loader-utils: 3.3.1
+      mini-css-extract-plugin: 2.9.2(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      open: 10.1.2
+      ora: 8.2.0
+      picomatch: 4.0.2
+      piscina: 5.1.1
+      postcss: 8.5.3
+      postcss-loader: 8.1.1(postcss@8.5.3)(typescript@5.8.2)(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      resolve-url-loader: 5.0.0
+      rxjs: 7.8.2
+      sass: 1.88.0
+      sass-loader: 16.0.5(sass@1.88.0)(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      semver: 7.7.2
+      source-map-loader: 5.0.0(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      source-map-support: 0.5.21
+      terser: 5.39.1
+      tree-kill: 1.2.2
+      tslib: 2.8.1
+      typescript: 5.8.2
+      webpack: 5.99.8(@swc/core@1.12.1)(esbuild@0.25.5)
+      webpack-dev-middleware: 7.4.2(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      webpack-dev-server: 5.2.1(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      webpack-merge: 6.0.1
+      webpack-subresource-integrity: 5.1.0(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+    optionalDependencies:
+      '@angular/core': 20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)
+      '@angular/platform-browser': 20.0.6(@angular/animations@20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))
+      esbuild: 0.25.5
+      ng-packagr: 20.0.1(@angular/compiler-cli@20.0.6(@angular/compiler@20.0.6)(typescript@5.8.2))(tslib@2.8.1)(typescript@5.8.2)
+    transitivePeerDependencies:
+      - '@angular/compiler'
+      - '@rspack/core'
+      - '@swc/core'
+      - '@types/node'
+      - bufferutil
+      - chokidar
+      - debug
+      - html-webpack-plugin
+      - jiti
+      - lightningcss
+      - node-sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - tsx
+      - uglify-js
+      - utf-8-validate
+      - vitest
+      - webpack-cli
+      - yaml
+
+  '@angular-devkit/build-angular@20.0.5(76ecc4c34b81a4060af826234478a183)':
+    dependencies:
+      '@ampproject/remapping': 2.3.0
+      '@angular-devkit/architect': 0.2000.5(chokidar@4.0.3)
+      '@angular-devkit/build-webpack': 0.2000.5(chokidar@4.0.3)(webpack-dev-server@5.2.1(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5)))(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      '@angular-devkit/core': 20.0.5(chokidar@4.0.3)
+      '@angular/build': 20.0.5(c8c0d9e035ff0b13e082888640848146)
+      '@angular/compiler-cli': 20.0.6(@angular/compiler@20.0.6)(typescript@5.8.2)
+      '@babel/core': 7.27.1
+      '@babel/generator': 7.27.1
+      '@babel/helper-annotate-as-pure': 7.27.1
+      '@babel/helper-split-export-declaration': 7.24.7
+      '@babel/plugin-transform-async-generator-functions': 7.27.1(@babel/core@7.27.1)
+      '@babel/plugin-transform-async-to-generator': 7.27.1(@babel/core@7.27.1)
+      '@babel/plugin-transform-runtime': 7.27.1(@babel/core@7.27.1)
+      '@babel/preset-env': 7.27.2(@babel/core@7.27.1)
+      '@babel/runtime': 7.27.1
+      '@discoveryjs/json-ext': 0.6.3
+      '@ngtools/webpack': 20.0.5(@angular/compiler-cli@20.0.6(@angular/compiler@20.0.6)(typescript@5.8.2))(typescript@5.8.2)(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      ansi-colors: 4.1.3
+      autoprefixer: 10.4.21(postcss@8.5.3)
+      babel-loader: 10.0.0(@babel/core@7.27.1)(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      browserslist: 4.25.0
+      copy-webpack-plugin: 13.0.0(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      css-loader: 7.1.2(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      esbuild-wasm: 0.25.5
+      fast-glob: 3.3.3
+      http-proxy-middleware: 3.0.5
+      istanbul-lib-instrument: 6.0.3
+      jsonc-parser: 3.3.1
+      karma-source-map-support: 1.4.0
+      less: 4.3.0
+      less-loader: 12.3.0(less@4.3.0)(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      license-webpack-plugin: 4.0.2(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      loader-utils: 3.3.1
+      mini-css-extract-plugin: 2.9.2(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      open: 10.1.2
+      ora: 8.2.0
+      picomatch: 4.0.2
+      piscina: 5.1.1
+      postcss: 8.5.3
+      postcss-loader: 8.1.1(postcss@8.5.3)(typescript@5.8.2)(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      resolve-url-loader: 5.0.0
+      rxjs: 7.8.2
+      sass: 1.88.0
+      sass-loader: 16.0.5(sass@1.88.0)(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      semver: 7.7.2
+      source-map-loader: 5.0.0(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      source-map-support: 0.5.21
+      terser: 5.39.1
+      tree-kill: 1.2.2
+      tslib: 2.8.1
+      typescript: 5.8.2
+      webpack: 5.99.8(@swc/core@1.12.1)(esbuild@0.25.5)
+      webpack-dev-middleware: 7.4.2(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      webpack-dev-server: 5.2.1(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+      webpack-merge: 6.0.1
+      webpack-subresource-integrity: 5.1.0(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
+    optionalDependencies:
+      '@angular/core': 20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)
+      '@angular/platform-browser': 20.0.6(@angular/animations@20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))
+      esbuild: 0.25.5
+      ng-packagr: 20.0.1(@angular/compiler-cli@20.0.6(@angular/compiler@20.0.6)(typescript@5.8.2))(tslib@2.8.1)(typescript@5.8.2)
+    transitivePeerDependencies:
+      - '@angular/compiler'
+      - '@rspack/core'
+      - '@swc/core'
+      - '@types/node'
+      - bufferutil
+      - chokidar
+      - debug
+      - html-webpack-plugin
+      - jiti
+      - lightningcss
+      - node-sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - tsx
+      - uglify-js
+      - utf-8-validate
+      - vitest
+      - webpack-cli
+      - yaml
+
   ? '@angular-devkit/build-angular@20.0.5(@angular/compiler-cli@20.0.6(@angular/compiler@20.0.6)(typescript@5.8.2))(@angular/compiler@20.0.6)(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.0.6(@angular/animations@20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(@swc/core@1.12.1)(@types/node@24.1.0)(chokidar@4.0.3)(jiti@2.4.2)(ng-packagr@20.0.1(@angular/compiler-cli@20.0.6(@angular/compiler@20.0.6)(typescript@5.8.2))(tslib@2.8.1)(typescript@5.8.2))(tsx@4.19.4)(typescript@5.8.2)(vitest@3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))(yaml@2.8.0)'
   : dependencies:
       '@ampproject/remapping': 2.3.0
       '@angular-devkit/architect': 0.2000.5(chokidar@4.0.3)
       '@angular-devkit/build-webpack': 0.2000.5(chokidar@4.0.3)(webpack-dev-server@5.2.1(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5)))(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
       '@angular-devkit/core': 20.0.5(chokidar@4.0.3)
-      '@angular/build': 20.0.5(6mrzl7z5ywd2pbs5xvufr2guse)
+      '@angular/build': 20.0.5(ab08a5d67142ee74cb28c7ed009213e5)
       '@angular/compiler-cli': 20.0.6(@angular/compiler@20.0.6)(typescript@5.8.2)
       '@babel/core': 7.27.1
       '@babel/generator': 7.27.1
@@ -11385,178 +11557,6 @@ snapshots:
       - webpack-cli
       - yaml
     optional: true
-
-  '@angular-devkit/build-angular@20.0.5(ihmsye2bouaxe4zli4d5fzwduq)':
-    dependencies:
-      '@ampproject/remapping': 2.3.0
-      '@angular-devkit/architect': 0.2000.5(chokidar@4.0.3)
-      '@angular-devkit/build-webpack': 0.2000.5(chokidar@4.0.3)(webpack-dev-server@5.2.1(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5)))(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      '@angular-devkit/core': 20.0.5(chokidar@4.0.3)
-      '@angular/build': 20.0.5(6mrzl7z5ywd2pbs5xvufr2guse)
-      '@angular/compiler-cli': 20.0.6(@angular/compiler@20.0.6)(typescript@5.8.2)
-      '@babel/core': 7.27.1
-      '@babel/generator': 7.27.1
-      '@babel/helper-annotate-as-pure': 7.27.1
-      '@babel/helper-split-export-declaration': 7.24.7
-      '@babel/plugin-transform-async-generator-functions': 7.27.1(@babel/core@7.27.1)
-      '@babel/plugin-transform-async-to-generator': 7.27.1(@babel/core@7.27.1)
-      '@babel/plugin-transform-runtime': 7.27.1(@babel/core@7.27.1)
-      '@babel/preset-env': 7.27.2(@babel/core@7.27.1)
-      '@babel/runtime': 7.27.1
-      '@discoveryjs/json-ext': 0.6.3
-      '@ngtools/webpack': 20.0.5(@angular/compiler-cli@20.0.6(@angular/compiler@20.0.6)(typescript@5.8.2))(typescript@5.8.2)(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      ansi-colors: 4.1.3
-      autoprefixer: 10.4.21(postcss@8.5.3)
-      babel-loader: 10.0.0(@babel/core@7.27.1)(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      browserslist: 4.25.0
-      copy-webpack-plugin: 13.0.0(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      css-loader: 7.1.2(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      esbuild-wasm: 0.25.5
-      fast-glob: 3.3.3
-      http-proxy-middleware: 3.0.5
-      istanbul-lib-instrument: 6.0.3
-      jsonc-parser: 3.3.1
-      karma-source-map-support: 1.4.0
-      less: 4.3.0
-      less-loader: 12.3.0(less@4.3.0)(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      license-webpack-plugin: 4.0.2(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      loader-utils: 3.3.1
-      mini-css-extract-plugin: 2.9.2(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      open: 10.1.2
-      ora: 8.2.0
-      picomatch: 4.0.2
-      piscina: 5.1.1
-      postcss: 8.5.3
-      postcss-loader: 8.1.1(postcss@8.5.3)(typescript@5.8.2)(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      resolve-url-loader: 5.0.0
-      rxjs: 7.8.2
-      sass: 1.88.0
-      sass-loader: 16.0.5(sass@1.88.0)(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      semver: 7.7.2
-      source-map-loader: 5.0.0(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      source-map-support: 0.5.21
-      terser: 5.39.1
-      tree-kill: 1.2.2
-      tslib: 2.8.1
-      typescript: 5.8.2
-      webpack: 5.99.8(@swc/core@1.12.1)(esbuild@0.25.5)
-      webpack-dev-middleware: 7.4.2(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      webpack-dev-server: 5.2.1(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      webpack-merge: 6.0.1
-      webpack-subresource-integrity: 5.1.0(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-    optionalDependencies:
-      '@angular/core': 20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)
-      '@angular/platform-browser': 20.0.6(@angular/animations@20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))
-      esbuild: 0.25.5
-      ng-packagr: 20.0.1(@angular/compiler-cli@20.0.6(@angular/compiler@20.0.6)(typescript@5.8.2))(tslib@2.8.1)(typescript@5.8.2)
-    transitivePeerDependencies:
-      - '@angular/compiler'
-      - '@rspack/core'
-      - '@swc/core'
-      - '@types/node'
-      - bufferutil
-      - chokidar
-      - debug
-      - html-webpack-plugin
-      - jiti
-      - lightningcss
-      - node-sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - tsx
-      - uglify-js
-      - utf-8-validate
-      - vitest
-      - webpack-cli
-      - yaml
-
-  '@angular-devkit/build-angular@20.0.5(nfnantpvxxnln3gt24dyppef6e)':
-    dependencies:
-      '@ampproject/remapping': 2.3.0
-      '@angular-devkit/architect': 0.2000.5(chokidar@4.0.3)
-      '@angular-devkit/build-webpack': 0.2000.5(chokidar@4.0.3)(webpack-dev-server@5.2.1(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5)))(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      '@angular-devkit/core': 20.0.5(chokidar@4.0.3)
-      '@angular/build': 20.0.5(qrp3qr5lauwc4sbzayitwm7324)
-      '@angular/compiler-cli': 20.0.6(@angular/compiler@20.0.6)(typescript@5.8.2)
-      '@babel/core': 7.27.1
-      '@babel/generator': 7.27.1
-      '@babel/helper-annotate-as-pure': 7.27.1
-      '@babel/helper-split-export-declaration': 7.24.7
-      '@babel/plugin-transform-async-generator-functions': 7.27.1(@babel/core@7.27.1)
-      '@babel/plugin-transform-async-to-generator': 7.27.1(@babel/core@7.27.1)
-      '@babel/plugin-transform-runtime': 7.27.1(@babel/core@7.27.1)
-      '@babel/preset-env': 7.27.2(@babel/core@7.27.1)
-      '@babel/runtime': 7.27.1
-      '@discoveryjs/json-ext': 0.6.3
-      '@ngtools/webpack': 20.0.5(@angular/compiler-cli@20.0.6(@angular/compiler@20.0.6)(typescript@5.8.2))(typescript@5.8.2)(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      ansi-colors: 4.1.3
-      autoprefixer: 10.4.21(postcss@8.5.3)
-      babel-loader: 10.0.0(@babel/core@7.27.1)(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      browserslist: 4.25.0
-      copy-webpack-plugin: 13.0.0(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      css-loader: 7.1.2(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      esbuild-wasm: 0.25.5
-      fast-glob: 3.3.3
-      http-proxy-middleware: 3.0.5
-      istanbul-lib-instrument: 6.0.3
-      jsonc-parser: 3.3.1
-      karma-source-map-support: 1.4.0
-      less: 4.3.0
-      less-loader: 12.3.0(less@4.3.0)(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      license-webpack-plugin: 4.0.2(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      loader-utils: 3.3.1
-      mini-css-extract-plugin: 2.9.2(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      open: 10.1.2
-      ora: 8.2.0
-      picomatch: 4.0.2
-      piscina: 5.1.1
-      postcss: 8.5.3
-      postcss-loader: 8.1.1(postcss@8.5.3)(typescript@5.8.2)(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      resolve-url-loader: 5.0.0
-      rxjs: 7.8.2
-      sass: 1.88.0
-      sass-loader: 16.0.5(sass@1.88.0)(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      semver: 7.7.2
-      source-map-loader: 5.0.0(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      source-map-support: 0.5.21
-      terser: 5.39.1
-      tree-kill: 1.2.2
-      tslib: 2.8.1
-      typescript: 5.8.2
-      webpack: 5.99.8(@swc/core@1.12.1)(esbuild@0.25.5)
-      webpack-dev-middleware: 7.4.2(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      webpack-dev-server: 5.2.1(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-      webpack-merge: 6.0.1
-      webpack-subresource-integrity: 5.1.0(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))
-    optionalDependencies:
-      '@angular/core': 20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)
-      '@angular/platform-browser': 20.0.6(@angular/animations@20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))
-      esbuild: 0.25.5
-      ng-packagr: 20.0.1(@angular/compiler-cli@20.0.6(@angular/compiler@20.0.6)(typescript@5.8.2))(tslib@2.8.1)(typescript@5.8.2)
-    transitivePeerDependencies:
-      - '@angular/compiler'
-      - '@rspack/core'
-      - '@swc/core'
-      - '@types/node'
-      - bufferutil
-      - chokidar
-      - debug
-      - html-webpack-plugin
-      - jiti
-      - lightningcss
-      - node-sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - tsx
-      - uglify-js
-      - utf-8-validate
-      - vitest
-      - webpack-cli
-      - yaml
 
   '@angular-devkit/build-webpack@0.2000.5(chokidar@4.0.3)(webpack-dev-server@5.2.1(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5)))(webpack@5.99.8(@swc/core@1.12.1)(esbuild@0.25.5))':
     dependencies:
@@ -11594,7 +11594,7 @@ snapshots:
       '@angular/core': 20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)
       tslib: 2.8.1
 
-  '@angular/build@20.0.5(6mrzl7z5ywd2pbs5xvufr2guse)':
+  '@angular/build@20.0.5(ab08a5d67142ee74cb28c7ed009213e5)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@angular-devkit/architect': 0.2000.5(chokidar@4.0.3)
@@ -11624,7 +11624,7 @@ snapshots:
       tinyglobby: 0.2.13
       tslib: 2.8.1
       typescript: 5.8.2
-      vite: 6.3.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.88.0)(sugarss@4.0.1)(terser@5.39.1)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 6.3.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.88.0)(sugarss@4.0.1(postcss@8.5.6))(terser@5.39.1)(tsx@4.19.4)(yaml@2.8.0)
       watchpack: 2.4.2
     optionalDependencies:
       '@angular/core': 20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1)
@@ -11633,7 +11633,7 @@ snapshots:
       lmdb: 3.3.0
       ng-packagr: 20.0.1(@angular/compiler-cli@20.0.6(@angular/compiler@20.0.6)(typescript@5.8.2))(tslib@2.8.1)(typescript@5.8.2)
       postcss: 8.5.3
-      vitest: 3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vitest: 3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
     transitivePeerDependencies:
       - '@types/node'
       - chokidar
@@ -11647,7 +11647,7 @@ snapshots:
       - tsx
       - yaml
 
-  '@angular/build@20.0.5(hwkkgkqv5bnzzempybnrx5sqsq)':
+  '@angular/build@20.0.5(adc485a213f91c05bfbb1034a9c0520e)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@angular-devkit/architect': 0.2000.5(chokidar@4.0.3)
@@ -11685,7 +11685,8 @@ snapshots:
       less: 4.3.0
       lmdb: 3.3.0
       ng-packagr: 20.0.1(@angular/compiler-cli@20.0.6(@angular/compiler@20.0.6)(typescript@5.8.2))(tslib@2.8.1)(typescript@5.8.2)
-      vitest: 3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      postcss: 8.5.6
+      vitest: 3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
     transitivePeerDependencies:
       - '@types/node'
       - chokidar
@@ -11700,7 +11701,7 @@ snapshots:
       - yaml
     optional: true
 
-  '@angular/build@20.0.5(qrp3qr5lauwc4sbzayitwm7324)':
+  '@angular/build@20.0.5(c8c0d9e035ff0b13e082888640848146)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@angular-devkit/architect': 0.2000.5(chokidar@4.0.3)
@@ -14442,12 +14443,12 @@ snapshots:
       tar-fs: 2.1.3
       tsconfig-paths: 4.2.0
       valibot: 0.41.0(typescript@5.8.2)
-      vite-node: 3.2.3(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite-node: 3.2.3(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       ws: 7.5.10
     optionalDependencies:
       '@remix-run/serve': 2.16.8(typescript@5.8.2)
       typescript: 5.8.2
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -14876,7 +14877,7 @@ snapshots:
       '@sveltejs/vite-plugin-svelte': 5.1.0(svelte@5.34.3)(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
       debug: 4.4.1
       svelte: 5.34.3
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -14888,7 +14889,7 @@ snapshots:
       kleur: 4.1.5
       magic-string: 0.30.17
       svelte: 5.34.3
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       vitefu: 1.0.6(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
     transitivePeerDependencies:
       - supports-color
@@ -14981,7 +14982,7 @@ snapshots:
       '@tanstack/router-utils': 1.129.7
       babel-dead-code-elimination: 1.0.10
       tiny-invariant: 1.3.3
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -15049,7 +15050,7 @@ snapshots:
       '@tanstack/start-plugin-core': 1.130.10(@tanstack/react-router@1.130.10(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(encoding@0.1.13)(vite-plugin-solid@2.11.6(@testing-library/jest-dom@6.6.3)(solid-js@1.9.7)(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)))(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))(webpack@5.99.8(@swc/core@1.12.1))
       '@vitejs/plugin-react': 4.5.2(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
       pathe: 2.0.3
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       zod: 3.25.76
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -15105,7 +15106,7 @@ snapshots:
       '@vitejs/plugin-react': 4.5.2(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -15186,7 +15187,7 @@ snapshots:
       zod: 3.25.76
     optionalDependencies:
       '@tanstack/react-router': 1.130.10(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       vite-plugin-solid: 2.11.6(@testing-library/jest-dom@6.6.3)(solid-js@1.9.7)(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
       webpack: 5.99.8(@swc/core@1.12.1)(esbuild@0.25.5)
     transitivePeerDependencies:
@@ -15251,7 +15252,7 @@ snapshots:
       nitropack: 2.11.12(encoding@0.1.13)
       pathe: 2.0.3
       ufo: 1.6.1
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       vitefu: 1.1.1(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
       xmlbuilder2: 3.1.1
       zod: 3.25.76
@@ -15360,7 +15361,7 @@ snapshots:
       vue: 3.5.16(typescript@5.8.3)
       vue-demi: 0.14.10(vue@3.5.16(typescript@5.8.3))
 
-  '@testing-library/angular@17.4.0(et63vsrkp2gh7imm5w2nfv6y4q)':
+  '@testing-library/angular@17.4.0(17cd88c55c4aad4a6f5d297438ec4b45)':
     dependencies:
       '@angular/animations': 20.0.6(@angular/common@20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))
       '@angular/common': 20.0.6(@angular/core@20.0.6(@angular/compiler@20.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
@@ -15417,8 +15418,8 @@ snapshots:
       '@testing-library/dom': 10.4.0
       svelte: 5.34.3
     optionalDependencies:
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
-      vitest: 3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vitest: 3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   '@testing-library/user-event@14.6.1(@testing-library/dom@10.4.0)':
     dependencies:
@@ -15967,7 +15968,7 @@ snapshots:
 
   '@vitejs/plugin-basic-ssl@2.0.0(vite@6.3.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.88.0)(terser@5.39.1)(tsx@4.19.4)(yaml@2.8.0))':
     dependencies:
-      vite: 6.3.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.88.0)(sugarss@4.0.1)(terser@5.39.1)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 6.3.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.88.0)(sugarss@4.0.1(postcss@8.5.6))(terser@5.39.1)(tsx@4.19.4)(yaml@2.8.0)
 
   '@vitejs/plugin-basic-ssl@2.0.0(vite@6.3.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.88.0)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))':
     dependencies:
@@ -15978,7 +15979,7 @@ snapshots:
     dependencies:
       '@rolldown/pluginutils': 1.0.0-beta.11
       '@swc/core': 1.12.1
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
     transitivePeerDependencies:
       - '@swc/helpers'
 
@@ -15990,18 +15991,18 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.11
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
     transitivePeerDependencies:
       - supports-color
 
   '@vitejs/plugin-vue@5.2.4(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))(vue@3.5.16(typescript@5.8.2))':
     dependencies:
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       vue: 3.5.16(typescript@5.8.2)
 
   '@vitejs/plugin-vue@5.2.4(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))(vue@3.5.16(typescript@5.8.3))':
     dependencies:
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       vue: 3.5.16(typescript@5.8.3)
 
   '@vitest/coverage-istanbul@3.2.3(vitest@3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))':
@@ -16016,7 +16017,7 @@ snapshots:
       magicast: 0.3.5
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vitest: 3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -16037,13 +16038,13 @@ snapshots:
       vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.88.0)(sugarss@4.0.1(postcss@8.5.3))(terser@5.39.1)(tsx@4.19.4)(yaml@2.8.0)
     optional: true
 
-  '@vitest/mocker@3.2.3(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))':
+  '@vitest/mocker@3.2.3(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))':
     dependencies:
       '@vitest/spy': 3.2.3
       estree-walker: 3.0.3
       magic-string: 0.30.17
     optionalDependencies:
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   '@vitest/pretty-format@3.2.3':
     dependencies:
@@ -21860,6 +21861,11 @@ snapshots:
     dependencies:
       postcss: 8.5.5
 
+  sugarss@4.0.1(postcss@8.5.6):
+    dependencies:
+      postcss: 8.5.6
+    optional: true
+
   supports-color@10.0.0: {}
 
   supports-color@7.2.0:
@@ -22555,13 +22561,13 @@ snapshots:
       - yaml
     optional: true
 
-  vite-node@3.2.3(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0):
+  vite-node@3.2.3(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0):
     dependencies:
       cac: 6.7.14
       debug: 4.4.1
       es-module-lexer: 1.7.0
       pathe: 2.0.3
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
     transitivePeerDependencies:
       - '@types/node'
       - jiti
@@ -22589,7 +22595,7 @@ snapshots:
       magic-string: 0.30.17
       typescript: 5.8.2
     optionalDependencies:
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
@@ -22597,7 +22603,7 @@ snapshots:
 
   vite-plugin-externalize-deps@0.9.0(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)):
     dependencies:
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   vite-plugin-solid@2.11.6(@testing-library/jest-dom@6.6.3)(solid-js@1.9.7)(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)):
     dependencies:
@@ -22607,7 +22613,7 @@ snapshots:
       merge-anything: 5.1.7
       solid-js: 1.9.7
       solid-refresh: 0.6.3(solid-js@1.9.7)
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       vitefu: 1.0.6(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
     optionalDependencies:
       '@testing-library/jest-dom': 6.6.3
@@ -22620,7 +22626,7 @@ snapshots:
       globrex: 0.1.2
       tsconfck: 3.1.6(typescript@5.8.2)
     optionalDependencies:
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -22656,7 +22662,7 @@ snapshots:
       tsx: 4.19.4
       yaml: 2.8.0
 
-  vite@6.3.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.88.0)(sugarss@4.0.1)(terser@5.39.1)(tsx@4.19.4)(yaml@2.8.0):
+  vite@6.3.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.88.0)(sugarss@4.0.1(postcss@8.5.6))(terser@5.39.1)(tsx@4.19.4)(yaml@2.8.0):
     dependencies:
       esbuild: 0.25.5
       fdir: 6.4.5(picomatch@4.0.2)
@@ -22670,7 +22676,7 @@ snapshots:
       jiti: 2.4.2
       less: 4.3.0
       sass: 1.88.0
-      sugarss: 4.0.1(postcss@8.5.5)
+      sugarss: 4.0.1(postcss@8.5.6)
       terser: 5.39.1
       tsx: 4.19.4
       yaml: 2.8.0
@@ -22714,7 +22720,7 @@ snapshots:
       yaml: 2.8.0
     optional: true
 
-  vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0):
+  vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0):
     dependencies:
       esbuild: 0.25.5
       fdir: 6.4.6(picomatch@4.0.3)
@@ -22728,18 +22734,18 @@ snapshots:
       jiti: 2.4.2
       less: 4.3.0
       sass: 1.89.1
-      sugarss: 4.0.1(postcss@8.5.5)
+      sugarss: 4.0.1(postcss@8.5.6)
       terser: 5.40.0
       tsx: 4.19.4
       yaml: 2.8.0
 
   vitefu@1.0.6(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)):
     optionalDependencies:
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   vitefu@1.1.1(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)):
     optionalDependencies:
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
   vitest@3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.88.0)(sugarss@4.0.1(postcss@8.5.3))(terser@5.39.1)(tsx@4.19.4)(yaml@2.8.0):
     dependencies:
@@ -22785,11 +22791,11 @@ snapshots:
       - yaml
     optional: true
 
-  vitest@3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0):
+  vitest@3.2.3(@types/debug@4.1.12)(@types/node@24.1.0)(jiti@2.4.2)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0):
     dependencies:
       '@types/chai': 5.2.2
       '@vitest/expect': 3.2.3
-      '@vitest/mocker': 3.2.3(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
+      '@vitest/mocker': 3.2.3(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
       '@vitest/pretty-format': 3.2.3
       '@vitest/runner': 3.2.3
       '@vitest/snapshot': 3.2.3
@@ -22807,8 +22813,8 @@ snapshots:
       tinyglobby: 0.2.14
       tinypool: 1.1.0
       tinyrainbow: 2.0.0
-      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
-      vite-node: 3.2.3(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite-node: 3.2.3(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/debug': 4.1.12
