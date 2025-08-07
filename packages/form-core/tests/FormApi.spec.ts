@@ -3952,5 +3952,5 @@ it('should accept formId and return it', () => {
   })
   form.mount()
 
-  expect(form.formId).toEqual('age')
+  expect(form.formId()).toEqual('age')
 })
