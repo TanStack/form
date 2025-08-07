@@ -1,13 +1,13 @@
 {
-  "name": "@tanstack/solid-form",
-  "version": "1.20.0",
-  "description": "Powerful, type-safe forms for Solid.",
+  "name": "@tanstack/form-devtools",
+  "version": "0.0.1",
+  "description": "Devtools, for TanStack form.",
   "author": "tannerlinsley",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/TanStack/form.git",
-    "directory": "packages/solid-form"
+    "directory": "packages/form-devtools"
   },
   "homepage": "https://tanstack.com/form",
   "funding": {
@@ -30,21 +30,12 @@
   },
   "type": "module",
   "types": "dist/esm/index.d.ts",
-  "main": "dist/cjs/index.cjs",
   "module": "dist/esm/index.js",
   "exports": {
     ".": {
-      "solid": {
-        "types": "./dist/source/index.d.ts",
-        "default": "./dist/source/index.jsx"
-      },
       "import": {
         "types": "./dist/esm/index.d.ts",
         "default": "./dist/esm/index.js"
-      },
-      "require": {
-        "types": "./dist/cjs/index.d.cts",
-        "default": "./dist/cjs/index.cjs"
       }
     },
     "./package.json": "./package.json"
@@ -55,8 +46,11 @@
     "src"
   ],
   "dependencies": {
+    "@tanstack/devtools-ui": "^0.3.4",
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/solid-store": "^0.7.5"
+    "clsx": "^2.1.1",
+    "dayjs": "^1.11.13",
+    "goober": "^2.1.16"
   },
   "devDependencies": {
     "solid-js": "^1.9.9",

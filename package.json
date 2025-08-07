@@ -71,5 +71,9 @@
     "overrides": {
       "cssstyle": "4.6.0"
     }
+  },
+  "dependencies": {
+    "@changesets/cli": "^2.29.7",
+    "@svitejs/changesets-changelog-github-compact": "^1.2.0"
   }
 }
