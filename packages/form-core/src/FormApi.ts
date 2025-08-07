@@ -9,6 +9,7 @@ import {
   getSyncValidatorArray,
   isGlobalFormValidationError,
   isNonEmptyArray,
+  mergeOpts,
   setBy,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
@@ -35,6 +36,7 @@ import type {
   FieldManipulator,
   FormValidationError,
   FormValidationErrorMap,
+  ListenerCause,
   UpdateMetaOptions,
   ValidationCause,
   ValidationError,
@@ -931,6 +933,15 @@ export class FormApi<
   prevTransformArray: unknown[] = []
 
   /**
+   *
+   */
+  timeoutIds: {
+    validations: Record<ValidationCause, ReturnType<typeof setTimeout> | null>
+    listeners: Record<ListenerCause, ReturnType<typeof setTimeout> | null>
+    formListeners: Record<ListenerCause, ReturnType<typeof setTimeout> | null>
+  }
+
+  /**
    * Constructs a new `FormApi` instance with the given form options.
    */
   constructor(
@@ -949,6 +960,12 @@ export class FormApi<
       TSubmitMeta
     >,
   ) {
+    this.timeoutIds = {
+      validations: {} as Record<ValidationCause, never>,
+      listeners: {} as Record<ListenerCause, never>,
+      formListeners: {} as Record<ListenerCause, never>,
+    }
+
     this.baseStore = new Store(
       getDefaultFormState({
         ...(opts?.defaultState as any),
@@ -2056,6 +2073,8 @@ export class FormApi<
     opts?: UpdateMetaOptions,
   ) => {
     const dontUpdateMeta = opts?.dontUpdateMeta ?? false
+    const dontRunListeners = opts?.dontRunListeners ?? false
+    const dontValidate = opts?.dontValidate ?? false
 
     batch(() => {
       if (!dontUpdateMeta) {
@@ -2078,6 +2097,14 @@ export class FormApi<
         }
       })
     })
+
+    if (!dontRunListeners) {
+      this.getFieldInfo(field).instance?.triggerOnChangeListener()
+    }
+
+    if (!dontValidate) {
+      this.validateField(field, 'change')
+    }
   }
 
   deleteField = <TField extends DeepKeys<TFormData>>(field: TField) => {
@@ -2109,14 +2136,13 @@ export class FormApi<
     value: DeepValue<TFormData, TField> extends any[]
       ? DeepValue<TFormData, TField>[number]
       : never,
-    opts?: UpdateMetaOptions,
+    options?: UpdateMetaOptions,
   ) => {
     this.setFieldValue(
       field,
       (prev) => [...(Array.isArray(prev) ? prev : []), value] as any,
-      opts,
+      options,
     )
-    this.validateField(field, 'change')
   }
 
   insertFieldValue = async <TField extends DeepKeysOfType<TFormData, any[]>>(
@@ -2125,7 +2151,7 @@ export class FormApi<
     value: DeepValue<TFormData, TField> extends any[]
       ? DeepValue<TFormData, TField>[number]
       : never,
-    opts?: UpdateMetaOptions,
+    options?: UpdateMetaOptions,
   ) => {
     this.setFieldValue(
       field,
@@ -2136,7 +2162,7 @@ export class FormApi<
           ...(prev as DeepValue<TFormData, TField>[]).slice(index),
         ] as any
       },
-      opts,
+      mergeOpts(options, { dontValidate: true }),
     )
 
     // Validate the whole array + all fields that have shifted
@@ -2157,7 +2183,7 @@ export class FormApi<
     value: DeepValue<TFormData, TField> extends any[]
       ? DeepValue<TFormData, TField>[number]
       : never,
-    opts?: UpdateMetaOptions,
+    options?: UpdateMetaOptions,
   ) => {
     this.setFieldValue(
       field,
@@ -2166,7 +2192,7 @@ export class FormApi<
           i === index ? value : d,
         ) as any
       },
-      opts,
+      mergeOpts(options, { dontValidate: true }),
     )
 
     // Validate the whole array + all fields that have shifted
@@ -2180,7 +2206,7 @@ export class FormApi<
   removeFieldValue = async <TField extends DeepKeysOfType<TFormData, any[]>>(
     field: TField,
     index: number,
-    opts?: UpdateMetaOptions,
+    options?: UpdateMetaOptions,
   ) => {
     const fieldValue = this.getFieldValue(field)
 
@@ -2195,7 +2221,7 @@ export class FormApi<
           (_d, i) => i !== index,
         ) as any
       },
-      opts,
+      mergeOpts(options, { dontValidate: true }),
     )
 
     // Shift up all meta
@@ -2218,7 +2244,7 @@ export class FormApi<
     field: TField,
     index1: number,
     index2: number,
-    opts?: UpdateMetaOptions,
+    options?: UpdateMetaOptions,
   ) => {
     this.setFieldValue(
       field,
@@ -2227,7 +2253,7 @@ export class FormApi<
         const prev2 = prev[index2]!
         return setBy(setBy(prev, `${index1}`, prev2), `${index2}`, prev1)
       },
-      opts,
+      mergeOpts(options, { dontValidate: true }),
     )
 
     // Swap meta
@@ -2247,7 +2273,7 @@ export class FormApi<
     field: TField,
     index1: number,
     index2: number,
-    opts?: UpdateMetaOptions,
+    options?: UpdateMetaOptions,
   ) => {
     this.setFieldValue(
       field,
@@ -2256,7 +2282,7 @@ export class FormApi<
         next.splice(index2, 0, next.splice(index1, 1)[0])
         return next
       },
-      opts,
+      mergeOpts(options, { dontValidate: true }),
     )
 
     // Move meta between index1 and index2
@@ -2274,7 +2300,7 @@ export class FormApi<
    */
   clearFieldValues = <TField extends DeepKeysOfType<TFormData, any[]>>(
     field: TField,
-    opts?: UpdateMetaOptions,
+    options?: UpdateMetaOptions,
   ) => {
     const fieldValue = this.getFieldValue(field)
 
@@ -2282,7 +2308,11 @@ export class FormApi<
       ? Math.max((fieldValue as unknown[]).length - 1, 0)
       : null
 
-    this.setFieldValue(field, [] as any, opts)
+    this.setFieldValue(
+      field,
+      [] as any,
+      mergeOpts(options, { dontValidate: true }),
+    )
 
     if (lastIndex !== null) {
       for (let i = 0; i <= lastIndex; i++) {
