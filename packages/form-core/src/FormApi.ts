@@ -18,6 +18,7 @@ import {
   standardSchemaValidators,
 } from './standardSchemaValidator'
 import { defaultFieldMeta, metaHelper } from './metaHelper'
+import { DevtoolsEventClient } from './EventClient'
 import type { ValidationLogicFn } from './ValidationLogic'
 import type {
   StandardSchemaV1,
@@ -1240,6 +1241,12 @@ export class FormApi<
     this.handleSubmit = this.handleSubmit.bind(this)
 
     this.update(opts || {})
+
+    this.store.subscribe(() => {
+      DevtoolsEventClient.emit('form-state', {
+        state: this.store as never,
+      })
+    })
   }
 
   get formId(): string | undefined {
