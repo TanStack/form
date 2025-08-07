@@ -1,4 +1,8 @@
-import type { FormOptions } from './FormApi'
+import type {
+  FormAsyncValidateOrFn,
+  FormOptions,
+  FormValidateOrFn,
+} from './FormApi'
 
 export function formOptions<
   TFormData,

@@ -397,7 +397,7 @@ it('listeners should be typed correctly', () => {
   form.handleSubmit()
 })
 
-it('listeners sholud be types when using formOptions', () => {
+it('listeners should be typed correctly when using formOptions', () => {
   type FormData = {
     firstName: string
     lastName: string
@@ -433,10 +433,14 @@ it('listeners sholud be types when using formOptions', () => {
     validators: {
       // this errors becuase the return type is not the same as the validator return type
       // onSubmit: () => 'custom on submit',
+
       onSubmit: () => {
         return {
           test: 'can change the value!',
         }
+      },
+      onChange: () => {
+        return 'onChange'
       },
     },
   })
