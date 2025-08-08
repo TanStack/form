@@ -433,6 +433,34 @@ importers:
         specifier: ^7.0.6
         version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
 
+  examples/react/devtools:
+    dependencies:
+      '@tanstack/react-devtools':
+        specifier: https://pkg.pr.new/TanStack/devtools/@tanstack/react-devtools@0a0219b
+        version: https://pkg.pr.new/TanStack/devtools/@tanstack/react-devtools@0a0219b(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.7)
+      '@tanstack/react-form':
+        specifier: ^1.17.0
+        version: link:../../../packages/react-form
+      react:
+        specifier: ^19.0.0
+        version: 19.1.0
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.1.0(react@19.1.0)
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.7
+        version: 19.1.6
+      '@types/react-dom':
+        specifier: ^19.0.3
+        version: 19.1.5(@types/react@19.1.6)
+      '@vitejs/plugin-react':
+        specifier: ^4.5.2
+        version: 4.5.2(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
+      vite:
+        specifier: ^7.0.6
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+
   examples/react/dynamic:
     dependencies:
       '@tanstack/react-form':
@@ -1087,25 +1115,6 @@ importers:
         specifier: 0.15.1
         version: 0.15.1
 
-  packages/devtools-client:
-    dependencies:
-      '@tanstack/form-core':
-        specifier: workspace:*
-        version: link:../form-core
-      '@tanstack/solid-store':
-        specifier: ^0.7.3
-        version: 0.7.3(solid-js@1.9.7)
-    devDependencies:
-      solid-js:
-        specifier: ^1.9.7
-        version: 1.9.7
-      vite:
-        specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
-      vite-plugin-solid:
-        specifier: ^2.11.6
-        version: 2.11.6(@testing-library/jest-dom@6.6.3)(solid-js@1.9.7)(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
-
   packages/form-core:
     dependencies:
       '@tanstack/devtools-event-client':
@@ -1125,6 +1134,22 @@ importers:
         specifier: ^3.25.76
         version: 3.25.76
 
+  packages/form-devtools:
+    dependencies:
+      '@tanstack/form-core':
+        specifier: workspace:*
+        version: link:../form-core
+    devDependencies:
+      solid-js:
+        specifier: ^1.9.7
+        version: 1.9.7
+      vite:
+        specifier: ^7.0.6
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+      vite-plugin-solid:
+        specifier: ^2.11.6
+        version: 2.11.6(@testing-library/jest-dom@6.6.3)(solid-js@1.9.7)(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
+
   packages/lit-form:
     dependencies:
       '@tanstack/form-core':
@@ -1140,6 +1165,9 @@ importers:
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../form-core
+      '@tanstack/form-devtools':
+        specifier: workspace:*
+        version: link:../form-devtools
       '@tanstack/react-store':
         specifier: ^0.7.3
         version: 0.7.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -4353,6 +4381,26 @@ packages:
     resolution: {integrity: sha512-LtoMMhxAlorcGhmFYI+LhPgbPZCkgP6ra1YL604EeF6U98pLlQ3iWIGMdWSC+vWmPBWBNgmDBAhnAobLROJmwg==}
     engines: {node: '>=18'}
 
+  '@solid-primitives/event-listener@2.4.3':
+    resolution: {integrity: sha512-h4VqkYFv6Gf+L7SQj+Y6puigL/5DIi7x5q07VZET7AWcS+9/G3WfIE9WheniHWJs51OEkRB43w6lDys5YeFceg==}
+    peerDependencies:
+      solid-js: ^1.6.12
+
+  '@solid-primitives/keyboard@1.3.3':
+    resolution: {integrity: sha512-9dQHTTgLBqyAI7aavtO+HnpTVJgWQA1ghBSrmLtMu1SMxLPDuLfuNr+Tk5udb4AL4Ojg7h9JrKOGEEDqsJXWJA==}
+    peerDependencies:
+      solid-js: ^1.6.12
+
+  '@solid-primitives/rootless@1.5.2':
+    resolution: {integrity: sha512-9HULb0QAzL2r47CCad0M+NKFtQ+LrGGNHZfteX/ThdGvKIg2o2GYhBooZubTCd/RTu2l2+Nw4s+dEfiDGvdrrQ==}
+    peerDependencies:
+      solid-js: ^1.6.12
+
+  '@solid-primitives/utils@6.3.2':
+    resolution: {integrity: sha512-hZ/M/qr25QOCcwDPOHtGjxTD8w2mNyVAYvcfgwzBHq2RwNqHNdDNsMZYap20+ruRwW4A3Cdkczyoz0TSxLCAPQ==}
+    peerDependencies:
+      solid-js: ^1.6.12
+
   '@solidjs/testing-library@0.8.10':
     resolution: {integrity: sha512-qdeuIerwyq7oQTIrrKvV0aL9aFeuwTd86VYD3afdq5HYEwoox1OBTJy4y8A3TFZr8oAR0nujYgCzY/8wgHGfeQ==}
     engines: {node: '>= 14'}
@@ -4490,10 +4538,22 @@ packages:
     resolution: {integrity: sha512-q6P0aYj7X65biWDKkKFQ4feQoxF8Bcxd3U3CU5zjBt9sgUrc/w8kEfHoGy0cHtgsTSMLfPrzaAtvp6hTbofZmw==}
     engines: {node: '>=18'}
 
+  '@tanstack/devtools-event-bus@https://pkg.pr.new/TanStack/devtools/@tanstack/devtools-event-bus@0a0219bfd4a30d5c85939340277f9efc0d934d3b':
+    resolution: {tarball: https://pkg.pr.new/TanStack/devtools/@tanstack/devtools-event-bus@0a0219bfd4a30d5c85939340277f9efc0d934d3b}
+    version: 0.1.1
+    engines: {node: '>=18'}
+
   '@tanstack/devtools-event-client@https://pkg.pr.new/TanStack/devtools/@tanstack/devtools-event-client@11':
     resolution: {tarball: https://pkg.pr.new/TanStack/devtools/@tanstack/devtools-event-client@11}
     version: 0.1.1
     engines: {node: '>=18'}
+
+  '@tanstack/devtools@https://pkg.pr.new/TanStack/devtools/@tanstack/devtools@0a0219bfd4a30d5c85939340277f9efc0d934d3b':
+    resolution: {tarball: https://pkg.pr.new/TanStack/devtools/@tanstack/devtools@0a0219bfd4a30d5c85939340277f9efc0d934d3b}
+    version: 0.1.1
+    engines: {node: '>=18'}
+    peerDependencies:
+      solid-js: '>=1.9.7'
 
   '@tanstack/directive-functions-plugin@1.129.7':
     resolution: {integrity: sha512-2VvlVmDvwHOnDAXQQa+gnhDnWPW59JcqePFf1ujOG0QGv+pw1G+JzHpiLZs4Dwr4myMxMGzFp5AWtvF96rpE7Q==}
@@ -4515,6 +4575,16 @@ packages:
 
   '@tanstack/query-core@5.80.7':
     resolution: {integrity: sha512-s09l5zeUKC8q7DCCCIkVSns8zZrK4ZDT6ryEjxNBFi68G4z2EBobBS7rdOY3r6W1WbUDpc1fe5oY+YO/+2UVUg==}
+
+  '@tanstack/react-devtools@https://pkg.pr.new/TanStack/devtools/@tanstack/react-devtools@0a0219b':
+    resolution: {tarball: https://pkg.pr.new/TanStack/devtools/@tanstack/react-devtools@0a0219b}
+    version: 0.1.1
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@types/react': '>=16.8'
+      '@types/react-dom': '>=16.8'
+      react: '>=16.8'
+      react-dom: '>=16.8'
 
   '@tanstack/react-query@5.80.7':
     resolution: {integrity: sha512-u2F0VK6+anItoEvB3+rfvTO9GEh2vb00Je05OwlUe/A0lkJBgW1HckiY3f9YZa+jx6IOe4dHPh10dyp9aY3iRQ==}
@@ -7166,6 +7236,11 @@ packages:
     resolution: {integrity: sha512-otgSPpUmdWJ43VXyiNgEYE4luzHCL2pz4wQ0OnDluC6Eg4Ko3Vexy/SrSynglw/eR+OhkzmqFCZa/OFa/RgAOQ==}
     engines: {node: '>=0.6.0'}
     hasBin: true
+
+  goober@2.1.16:
+    resolution: {integrity: sha512-erjk19y1U33+XAMe1VTvIONHYoSqE4iS7BYUZfHaqeohLmnC0FdxEh7rQU+6MZ4OajItzjZFSRtVANrQwNq6/g==}
+    peerDependencies:
+      csstype: ^3.0.10
 
   gopd@1.2.0:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
@@ -11193,6 +11268,18 @@ packages:
       utf-8-validate:
         optional: true
 
+  ws@8.18.3:
+    resolution: {integrity: sha512-PEIGCY5tSlUt50cqyMXfCzX+oOPqN0vuGqWzbcJ2xvnkzkq46oOpz7dQaTDBdfICb4N14+GARUDw2XV2N4tvzg==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
   xml-name-validator@5.0.0:
     resolution: {integrity: sha512-EvGK8EJ3DhaHfbRlETOWAS5pO9MZITeauHKJyb8wyajUfQUenkIg2MvLDTZ4T/TgIcm3HU0TFBgWWboAZ30UHg==}
     engines: {node: '>=18'}
@@ -14865,6 +14952,27 @@ snapshots:
 
   '@sindresorhus/merge-streams@2.3.0': {}
 
+  '@solid-primitives/event-listener@2.4.3(solid-js@1.9.7)':
+    dependencies:
+      '@solid-primitives/utils': 6.3.2(solid-js@1.9.7)
+      solid-js: 1.9.7
+
+  '@solid-primitives/keyboard@1.3.3(solid-js@1.9.7)':
+    dependencies:
+      '@solid-primitives/event-listener': 2.4.3(solid-js@1.9.7)
+      '@solid-primitives/rootless': 1.5.2(solid-js@1.9.7)
+      '@solid-primitives/utils': 6.3.2(solid-js@1.9.7)
+      solid-js: 1.9.7
+
+  '@solid-primitives/rootless@1.5.2(solid-js@1.9.7)':
+    dependencies:
+      '@solid-primitives/utils': 6.3.2(solid-js@1.9.7)
+      solid-js: 1.9.7
+
+  '@solid-primitives/utils@6.3.2(solid-js@1.9.7)':
+    dependencies:
+      solid-js: 1.9.7
+
   '@solidjs/testing-library@0.8.10(solid-js@1.9.7)':
     dependencies:
       '@testing-library/dom': 10.4.0
@@ -15000,7 +15108,26 @@ snapshots:
       - typescript
       - vite
 
+  '@tanstack/devtools-event-bus@https://pkg.pr.new/TanStack/devtools/@tanstack/devtools-event-bus@0a0219bfd4a30d5c85939340277f9efc0d934d3b':
+    dependencies:
+      ws: 8.18.3
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
   '@tanstack/devtools-event-client@https://pkg.pr.new/TanStack/devtools/@tanstack/devtools-event-client@11': {}
+
+  '@tanstack/devtools@https://pkg.pr.new/TanStack/devtools/@tanstack/devtools@0a0219bfd4a30d5c85939340277f9efc0d934d3b(csstype@3.1.3)(solid-js@1.9.7)':
+    dependencies:
+      '@solid-primitives/keyboard': 1.3.3(solid-js@1.9.7)
+      '@tanstack/devtools-event-bus': https://pkg.pr.new/TanStack/devtools/@tanstack/devtools-event-bus@0a0219bfd4a30d5c85939340277f9efc0d934d3b
+      clsx: 2.1.1
+      goober: 2.1.16(csstype@3.1.3)
+      solid-js: 1.9.7
+    transitivePeerDependencies:
+      - bufferutil
+      - csstype
+      - utf-8-validate
 
   '@tanstack/directive-functions-plugin@1.129.7(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))':
     dependencies:
@@ -15046,6 +15173,19 @@ snapshots:
       - supports-color
 
   '@tanstack/query-core@5.80.7': {}
+
+  '@tanstack/react-devtools@https://pkg.pr.new/TanStack/devtools/@tanstack/react-devtools@0a0219b(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.7)':
+    dependencies:
+      '@tanstack/devtools': https://pkg.pr.new/TanStack/devtools/@tanstack/devtools@0a0219bfd4a30d5c85939340277f9efc0d934d3b(csstype@3.1.3)(solid-js@1.9.7)
+      '@types/react': 19.1.6
+      '@types/react-dom': 19.1.5(@types/react@19.1.6)
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+    transitivePeerDependencies:
+      - bufferutil
+      - csstype
+      - solid-js
+      - utf-8-validate
 
   '@tanstack/react-query@5.80.7(react@19.1.0)':
     dependencies:
@@ -18401,6 +18541,10 @@ snapshots:
   gonzales-pe@4.3.0:
     dependencies:
       minimist: 1.2.8
+
+  goober@2.1.16(csstype@3.1.3):
+    dependencies:
+      csstype: 3.1.3
 
   gopd@1.2.0: {}
 
@@ -23167,6 +23311,8 @@ snapshots:
   ws@7.5.10: {}
 
   ws@8.18.2: {}
+
+  ws@8.18.3: {}
 
   xml-name-validator@5.0.0: {}
 
