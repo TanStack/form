@@ -1347,6 +1347,9 @@ describe('field api', () => {
     field.moveValue(0, 1)
     expect(arr).toStrictEqual(['middle', 'end', 'start'])
 
+    field.filterValues((value) => value !== 'start')
+    expect(arr).toStrictEqual(['middle', 'end'])
+
     field.clearValues()
     expect(arr).toStrictEqual([])
   })
@@ -2237,6 +2240,122 @@ describe('field api', () => {
     expect(() => {
       field.parseValueWithSchemaAsync(z.any())
     }).not.toThrowError()
+  })
+
+  it('should filter array values using the predicate when calling filterValues', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'names',
+    })
+
+    field.mount()
+
+    field.filterValues((value) => value !== 'two')
+    expect(field.state.value).toStrictEqual(['one', 'three'])
+
+    field.filterValues((value) => value !== 'never')
+    expect(field.state.value).toStrictEqual(['one', 'three'])
+  })
+
+  it('should bind the predicate to the provided thisArg when calling filterValues', async () => {
+    // Very dirty way, but quick way to enforce lost `this` context
+    function SomeClass(this: any) {
+      this.check = 'correct this'
+    }
+    SomeClass.prototype.filterFunc = function () {
+      return this?.check === 'correct this'
+    }
+    // @ts-expect-error The 'new' expression expects class stuff, but
+    // we're trying to force ugly code in this unit test.
+    const instance = new SomeClass()
+
+    const predicate = instance.filterFunc
+
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three'],
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'names',
+    })
+
+    form.mount()
+    field.mount()
+
+    field.filterValues(predicate, { thisArg: instance })
+    // thisArg was bound, expect it to have returned true
+    expect(field.state.value).toStrictEqual(['one', 'two', 'three'])
+    field.filterValues(predicate)
+    // thisArg wasn't bound, expect it to have returned false
+    expect(field.state.value).toStrictEqual([])
+  })
+
+  it('should run onChange validation on the array when calling filterValues', async () => {
+    vi.useFakeTimers()
+    const form = new FormApi({
+      defaultValues: {
+        names: ['one', 'two', 'three', 'four', 'five'],
+      },
+    })
+    form.mount()
+    function getField(i: number) {
+      return new FieldApi({
+        name: `names[${i}]`,
+        form,
+        validators: {
+          onChange: () => 'error',
+        },
+      })
+    }
+
+    const arrayField = new FieldApi({
+      form,
+      name: 'names',
+      validators: {
+        onChange: () => 'error',
+      },
+    })
+    arrayField.mount()
+
+    const field0 = getField(0)
+    const field1 = getField(1)
+    const field2 = getField(2)
+    const field3 = getField(3)
+    const field4 = getField(4)
+    field0.mount()
+    field1.mount()
+    field2.mount()
+    field3.mount()
+    field4.mount()
+
+    arrayField.filterValues((value) => value !== 'three')
+    // validating fields is separate from filterValues and done with a promise,
+    // so make sure they resolve first
+    await vi.runAllTimersAsync()
+
+    expect(arrayField.getMeta().errors).toStrictEqual(['error'])
+
+    // field 0 and 1 weren't shifted, so they shouldn't trigger validation
+    expect(field0.getMeta().errors).toStrictEqual([])
+    expect(field1.getMeta().errors).toStrictEqual([])
+
+    // but the following fields were shifted
+    expect(field2.getMeta().errors).toStrictEqual(['error'])
+    expect(field3.getMeta().errors).toStrictEqual(['error'])
+
+    // field4 no longer exists, so it shouldn't have errors
+    expect(field4.getMeta().errors).toStrictEqual([])
   })
 
   it('should update submission meta when calling handleSubmit', async () => {
