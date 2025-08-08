@@ -32,10 +32,7 @@ export function formOptions<
   TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
   TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-
   TSubmitMeta = never,
->(
-  defaultOpts: TOptions,
-): TOptions {
+>(defaultOpts: TOptions): TOptions {
   return defaultOpts
 }
