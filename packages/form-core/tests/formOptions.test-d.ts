@@ -1,5 +1,6 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import { FormApi, formOptions } from '../src/index'
+import type { FormAsyncValidateOrFn, FormValidateOrFn } from '../src/index'
 
 describe('formOptions', () => {
   it('types should be properly inferred', () => {
@@ -75,5 +76,130 @@ describe('formOptions', () => {
     })
 
     expectTypeOf(form.state.values).toExtend<PersonWithAge>()
+  })
+
+  it('types should infer submitMeta', () => {
+    type FormData = {
+      firstName: string
+      lastName: string
+    }
+    type SubmitMeta = { bool: boolean }
+
+    const formOpts = formOptions({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      } as FormData,
+      onSubmitMeta: { bool: false } as SubmitMeta,
+      onSubmit: ({ meta }) => {
+        expectTypeOf(meta).toEqualTypeOf<SubmitMeta>()
+      },
+    })
+  })
+
+  it('types should infer validator types', () => {
+    type FormData = {
+      firstName: string
+      lastName: string
+    }
+
+    type formApiValidators = FormApi<
+      FormData,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any
+    >
+
+    const formOpts = formOptions({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      } as FormData,
+      validators: {
+        onChange: ({ value, formApi }) => {
+          expectTypeOf(value).toEqualTypeOf<FormData>()
+          expectTypeOf(formApi).toEqualTypeOf<formApiValidators>()
+        },
+      },
+    })
+  })
+
+  it('types should infer listeners types', () => {
+    type FormData = {
+      firstName: string
+      lastName: string
+    }
+
+    type FormApiListeners = FormApi<
+      FormData,
+      FormValidateOrFn<FormData> | undefined,
+      FormValidateOrFn<FormData> | undefined,
+      FormAsyncValidateOrFn<FormData> | undefined,
+      FormValidateOrFn<FormData> | undefined,
+      FormAsyncValidateOrFn<FormData> | undefined,
+      FormValidateOrFn<FormData> | undefined,
+      FormAsyncValidateOrFn<FormData> | undefined,
+      FormValidateOrFn<FormData> | undefined,
+      FormAsyncValidateOrFn<FormData> | undefined,
+      FormAsyncValidateOrFn<FormData> | undefined
+    >
+
+    const formOpts = formOptions({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      } as FormData,
+      listeners: {
+        onSubmit: ({ formApi, meta }) => {
+          expectTypeOf(formApi).toEqualTypeOf<FormApiListeners>()
+          expectTypeOf(meta).toEqualTypeOf<never>()
+        },
+      },
+    })
+  })
+
+  it('types should infer listeners types with submitMeta', () => {
+    type FormData = {
+      firstName: string
+      lastName: string
+    }
+    type SubmitMeta = { bool: boolean }
+
+    type FormApiListeners = FormApi<
+      FormData,
+      FormValidateOrFn<FormData> | undefined,
+      FormValidateOrFn<FormData> | undefined,
+      FormAsyncValidateOrFn<FormData> | undefined,
+      FormValidateOrFn<FormData> | undefined,
+      FormAsyncValidateOrFn<FormData> | undefined,
+      FormValidateOrFn<FormData> | undefined,
+      FormAsyncValidateOrFn<FormData> | undefined,
+      FormValidateOrFn<FormData> | undefined,
+      FormAsyncValidateOrFn<FormData> | undefined,
+      FormAsyncValidateOrFn<FormData> | undefined,
+      SubmitMeta
+    >
+
+    const formOpts = formOptions({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      } as FormData,
+      onSubmitMeta: { bool: false } as SubmitMeta,
+      listeners: {
+        onSubmit: ({ formApi, meta }) => {
+          expectTypeOf(formApi).toEqualTypeOf<FormApiListeners>()
+          expectTypeOf(meta).toEqualTypeOf<SubmitMeta>()
+        },
+      },
+    })
   })
 })
