@@ -8,21 +8,25 @@ title: formOptions
 # Function: formOptions()
 
 ```ts
-function formOptions<T>(defaultOpts): T
+function formOptions<TOptions, TFormData, TSubmitMeta>(defaultOpts): TOptions
 ```
 
-Defined in: [packages/form-core/src/formOptions.ts:3](https://github.com/TanStack/form/blob/main/packages/form-core/src/formOptions.ts#L3)
+Defined in: [packages/form-core/src/formOptions.ts:23](https://github.com/TanStack/form/blob/main/packages/form-core/src/formOptions.ts#L23)
 
 ## Type Parameters
 
-• **T** *extends* `Partial`\<[`FormOptions`](../../interfaces/formoptions.md)\<`any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>\>
+• **TOptions** *extends* `Partial`\<[`FormOptions`](../../interfaces/formoptions.md)\<`TFormData`, `undefined` \| `FormValidateOrFn`\<`TFormData`\>, `undefined` \| `FormValidateOrFn`\<`TFormData`\>, `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>, `undefined` \| `FormValidateOrFn`\<`TFormData`\>, `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>, `undefined` \| `FormValidateOrFn`\<`TFormData`\>, `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>, `undefined` \| `FormValidateOrFn`\<`TFormData`\>, `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>, `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>, `TSubmitMeta`\>\>
+
+• **TFormData** = `TOptions`\[`"defaultValues"`\]
+
+• **TSubmitMeta** = `TOptions`\[`"onSubmitMeta"`\]
 
 ## Parameters
 
 ### defaultOpts
 
-`T`
+`Partial`\<[`FormOptions`](../../interfaces/formoptions.md)\<`TFormData`, `undefined` \| `FormValidateOrFn`\<`TFormData`\>, `undefined` \| `FormValidateOrFn`\<`TFormData`\>, `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>, `undefined` \| `FormValidateOrFn`\<`TFormData`\>, `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>, `undefined` \| `FormValidateOrFn`\<`TFormData`\>, `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>, `undefined` \| `FormValidateOrFn`\<`TFormData`\>, `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>, `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>, `TSubmitMeta`\>\> & `TOptions`
 
 ## Returns
 
-`T`
+`TOptions`
