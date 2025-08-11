@@ -9,6 +9,7 @@ type EventMap = {
 class FormEventClient extends EventClient<EventMap> {
   constructor() {
     super({
+      debug: true,
       pluginId: 'form-devtools',
     })
   }

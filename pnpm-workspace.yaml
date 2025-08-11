@@ -49,6 +49,7 @@ catalog:
   '@vitejs/plugin-react': ^4.5.2
   '@vitest/coverage-istanbul': ^3.2.3
   arktype: ^2.1.20
+  babel-plugin-react-compiler: 19.0.0-beta-ebf51a3-20250411
   decode-formdata: ^0.9.0
   devalue: ^5.1.1
   eslint: 9.32.0
@@ -106,5 +107,91 @@ catalogs:
     '@tanstack/devtools-event-client': https://pkg.pr.new/TanStack/devtools/@tanstack/devtools-event-client@11
   conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b:
     '@tanstack/react-devtools': https://pkg.pr.new/TanStack/devtools/@tanstack/react-devtools@0a0219b
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_:
+    '@tanstack/react-devtools': ''
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_a:
+    '@tanstack/react-devtools': '@'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_at:
+    '@tanstack/react-devtools': '@t'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_ata:
+    '@tanstack/react-devtools': '@ta'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atan:
+    '@tanstack/react-devtools': '@tan'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atans:
+    '@tanstack/react-devtools': '@tans'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atanst:
+    '@tanstack/react-devtools': '@tanst'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atansta:
+    '@tanstack/react-devtools': '@tansta'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atanstac:
+    '@tanstack/react-devtools': '@tanstac'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atanstacl:
+    '@tanstack/react-devtools': '@tanstacl'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atanstack:
+    '@tanstack/react-devtools': '@tanstack'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atanstack/:
+    '@tanstack/react-devtools': '@tanstack/'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atanstack/r:
+    '@tanstack/react-devtools': '@tanstack/r'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atanstack/re:
+    '@tanstack/react-devtools': '@tanstack/re'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atanstack/rea:
+    '@tanstack/react-devtools': '@tanstack/rea'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atanstack/reac:
+    '@tanstack/react-devtools': '@tanstack/reac'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atanstack/react:
+    '@tanstack/react-devtools': '@tanstack/react'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atanstack/reactm:
+    '@tanstack/react-devtools': '@tanstack/react-'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atanstack/reactmd:
+    '@tanstack/react-devtools': '@tanstack/react-d'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atanstack/reactmde:
+    '@tanstack/react-devtools': '@tanstack/react-de'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atanstack/reactmdev:
+    '@tanstack/react-devtools': '@tanstack/react-dev'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atanstack/reactmdevt:
+    '@tanstack/react-devtools': '@tanstack/react-devt'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atanstack/reactmdevto:
+    '@tanstack/react-devtools': '@tanstack/react-devto'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atanstack/reactmdevtoo:
+    '@tanstack/react-devtools': '@tanstack/react-devtoo'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atanstack/reactmdevtool:
+    '@tanstack/react-devtools': '@tanstack/react-devtool'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_atanstack/reactmdevtools:
+    '@tanstack/react-devtools': '@tanstack/react-devtools'
+  conflicts_conflicts_@tanstack/devtools-event-client_https://pkg_pr_new/TanStack/devtools/atanstack/devtoolsmeventmclienta11_tanstack/devtoolsmeventmclienta11:
+    '@tanstack/devtools-event-client': tanstack/devtools-event-client@11
+  conflicts_conflicts_@tanstack/devtools-event-client_https://pkg_pr_new/TanStack/devtools/atanstack/devtoolsmeventmclienta11_tanstack/devtoolsmeventmclienta1:
+    '@tanstack/devtools-event-client': tanstack/devtools-event-client@1
+  conflicts_conflicts_@tanstack/devtools-event-client_https://pkg_pr_new/TanStack/devtools/atanstack/devtoolsmeventmclienta11_tanstack/devtoolsmeventmclienta:
+    '@tanstack/devtools-event-client': tanstack/devtools-event-client@
+  conflicts_conflicts_@tanstack/devtools-event-client_https://pkg_pr_new/TanStack/devtools/atanstack/devtoolsmeventmclienta11_tanstack/devtoolsmeventmclient:
+    '@tanstack/devtools-event-client': tanstack/devtools-event-client
+  conflicts_conflicts_@tanstack/devtools-event-client_https://pkg_pr_new/TanStack/devtools/atanstack/devtoolsmeventmclienta11_atanstack/devtoolsmeventmclient:
+    '@tanstack/devtools-event-client': '@tanstack/devtools-event-client'
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_:atanstack/reactmdevtools:
+    '@tanstack/react-devtools': :@tanstack/react-devtools
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_filatanstack/reactmdevtools:
+    '@tanstack/react-devtools': fil@tanstack/react-devtools
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_fiatanstack/reactmdevtools:
+    '@tanstack/react-devtools': fi@tanstack/react-devtools
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_fatanstack/reactmdevtools:
+    '@tanstack/react-devtools': f@tanstack/react-devtools
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_ile:atanstack/reactmdevtools:
+    '@tanstack/react-devtools': ile:@tanstack/react-devtools
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_ileatanstack/reactmdevtools:
+    '@tanstack/react-devtools': ile@tanstack/react-devtools
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_ilatanstack/reactmdevtools:
+    '@tanstack/react-devtools': il@tanstack/react-devtools
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_iatanstack/reactmdevtools:
+    '@tanstack/react-devtools': i@tanstack/react-devtools
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_0_2_0:
+    '@tanstack/react-devtools': 0.2.0
+  conflicts_conflicts_@tanstack/devtools-event-client_https://pkg_pr_new/TanStack/devtools/atanstack/devtoolsmeventmclienta11_:
+    '@tanstack/devtools-event-client': ''
+  conflicts_conflicts_@tanstack/devtools-event-client_https://pkg_pr_new/TanStack/devtools/atanstack/devtoolsmeventmclienta11_0_2_0:
+    '@tanstack/devtools-event-client': 0.2.0
+  conflicts_conflicts_@tanstack/devtools-event-client_https://pkg_pr_new/TanStack/devtools/atanstack/devtoolsmeventmclienta11_h0_2_0:
+    '@tanstack/devtools-event-client': ^0.2.0
 overrides:
   cssstyle: 4.4.0

@@ -11,6 +11,8 @@ createRoot(document.getElementById('root')!).render(
     <App />
 
     <TanstackDevtools
+      config={{ hideUntilHover: true }}
+      eventBusConfig={{ debug: true }}
       plugins={[
         {
           name: 'Tanstack Form',
