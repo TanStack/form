@@ -211,4 +211,65 @@ describe('formOptions', () => {
     const form = new FormApi(formOpts)
     const form2 = new FormApi({ ...formOpts })
   })
+
+  it('should allow overriding formOptions values', () => {
+    type FormData = {
+      firstName: string
+      lastName: string
+    }
+
+    const formOpts = formOptions({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      } as FormData,
+      validators: {
+        onSubmit: ({ formApi }) => {
+          if (formApi.formId === undefined) {
+            return 'needs formId'
+          }
+          return undefined
+        },
+      },
+    })
+
+    const form = new FormApi(formOpts)
+
+    expectTypeOf(form.state.errors).toEqualTypeOf<
+      ('needs formId' | undefined)[]
+    >()
+
+    const form2 = new FormApi({
+      ...formOpts,
+      validators: {
+        onChange: (params) => {
+          if (params.value.firstName.length === 0) {
+            return 'Too short!'
+          }
+          return undefined
+        },
+      },
+    })
+
+    expectTypeOf(form2.state.errors).toEqualTypeOf<
+      (undefined | 'Too short!')[]
+    >()
+
+    const form3 = new FormApi({
+      ...formOpts,
+      validators: {
+        ...formOpts.validators,
+        onChange: (params) => {
+          if (params.value.firstName.length === 0) {
+            return 'Too short!'
+          }
+          return undefined
+        },
+      },
+    })
+
+    expectTypeOf(form3.state.errors).toEqualTypeOf<
+      (undefined | 'Too short!' | 'needs formId')[]
+    >()
+  })
 })
