@@ -431,35 +431,26 @@ describe('standard schema validator', () => {
       ])
     })
 
-    it('should handle string array indices correctly (Yup compatibility)', async () => {
-      // Mock a Standard Schema validator that returns string indices like Yup
-      const mockYupLikeValidator = {
-        '~standard': {
-          version: 1 as const,
-          vendor: 'mock-yup',
-          validate: (value: unknown) => {
-            const typedValue = value as { people?: { name?: string }[] }
-            if (!typedValue.people?.[0]?.name) {
-              return {
-                issues: [
-                  {
-                    message: 'Name is required',
-                    path: ['people', '0', 'name'], // String index like Yup
-                  },
-                ],
-              }
-            }
-            return { value: typedValue }
-          },
-        },
-      }
+    it('should handle string array indices from standard schema validators', async () => {
+      // Use Zod's superRefine to simulate string paths that some standard schema validators return
+      const schemaWithStringPaths = z.object({ 
+        people: z.array(z.object({ 
+          name: z.string() 
+        }))
+      }).superRefine((_, ctx) => {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'Name is required',
+          path: ['people', '0', 'name'], // String index to test path handling
+        })
+      })
 
       const form = new FormApi({
         defaultValues: {
           people: [{ name: '' }],
         },
         validators: {
-          onChange: mockYupLikeValidator,
+          onChange: schemaWithStringPaths,
         },
       })
 
@@ -552,6 +543,39 @@ describe('standard schema validator', () => {
         {
           'user.profile.name': [{ message: 'Name is required' }],
         },
+      ])
+    })
+
+    it('should allow numeric object properties for standard schema issue paths', () => {
+      const form = new FormApi({
+        defaultValues: {
+          foo: {
+            0: { bar: '' },
+          },
+        },
+        validators: {
+          onChange: z.object({
+            foo: z.object({
+              0: z.object({ bar: z.string().email('Must be an email') }),
+            }),
+          }),
+        },
+      })
+      form.mount()
+
+      const field = new FieldApi({
+        form,
+        name: 'foo.0.bar',
+      })
+      field.mount()
+
+      field.setValue('test')
+
+      expect(form.state.errors).toMatchObject([
+        { 'foo.0.bar': [{ message: 'Must be an email' }] },
+      ])
+      expect(field.state.meta.errors).toMatchObject([
+        { message: 'Must be an email' },
       ])
     })
   })

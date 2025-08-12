@@ -19,25 +19,43 @@ export type TStandardSchemaValidatorIssue<
     ? StandardSchemaV1Issue[]
     : never
 
-function prefixSchemaToErrors(issues: readonly StandardSchemaV1Issue[]) {
+function prefixSchemaToErrors(
+  issues: readonly StandardSchemaV1Issue[],
+  formValue: unknown,
+) {
   const schema = new Map<string, StandardSchemaV1Issue[]>()
 
   for (const issue of issues) {
-    const path = [...(issue.path ?? [])]
-      .map((segment) => {
-        const normalizedSegment =
-          typeof segment === 'object' ? segment.key : segment
-        const isArrayIndex = 
-          typeof normalizedSegment === 'number' ||
-          (typeof normalizedSegment === 'string' && /^\d+$/.test(normalizedSegment))
-        
-        return isArrayIndex
-          ? `[${normalizedSegment}]`
-          : normalizedSegment
-      })
-      .join('.')
-      .replace(/\.\[/g, '[')
+    const issuePath = issue.path ?? []
 
+    let currentFormValue = formValue
+    let path = ''
+
+    for (let i = 0; i < issuePath.length; i++) {
+      const pathSegment = issuePath[i]
+      if (pathSegment === undefined) continue
+      
+      const segment =
+        typeof pathSegment === 'object' ? pathSegment.key : pathSegment
+
+      // Standard Schema doesn't specify if paths should use numbers or stringified numbers for array access.
+      // However, if we follow the path it provides and encounter an array, then we can assume it's intended for array access.
+      const segmentAsNumber = Number(segment)
+      if (Array.isArray(currentFormValue) && !Number.isNaN(segmentAsNumber)) {
+        path += `[${segmentAsNumber}]`
+      } else {
+        path += (i > 0 ? '.' : '') + String(segment)
+      }
+
+      if (
+        typeof currentFormValue === 'object' &&
+        currentFormValue !== null
+      ) {
+        currentFormValue = currentFormValue[segment as never]
+      } else {
+        currentFormValue = undefined
+      }
+    }
     schema.set(path, (schema.get(path) ?? []).concat(issue))
   }
 
@@ -46,8 +64,9 @@ function prefixSchemaToErrors(issues: readonly StandardSchemaV1Issue[]) {
 
 const transformFormIssues = <TSource extends ValidationSource>(
   issues: readonly StandardSchemaV1Issue[],
+  formValue: unknown,
 ): TStandardSchemaValidatorIssue<TSource> => {
-  const schemaErrors = prefixSchemaToErrors(issues)
+  const schemaErrors = prefixSchemaToErrors(issues, formValue)
   return {
     form: schemaErrors,
     fields: schemaErrors,
@@ -72,7 +91,7 @@ export const standardSchemaValidators = {
 
     if (validationSource === 'field')
       return result.issues as TStandardSchemaValidatorIssue<TSource>
-    return transformFormIssues<TSource>(result.issues)
+    return transformFormIssues<TSource>(result.issues, value)
   },
   async validateAsync<TSource extends ValidationSource>(
     {
@@ -87,7 +106,7 @@ export const standardSchemaValidators = {
 
     if (validationSource === 'field')
       return result.issues as TStandardSchemaValidatorIssue<TSource>
-    return transformFormIssues<TSource>(result.issues)
+    return transformFormIssues<TSource>(result.issues, value)
   },
 }
 
