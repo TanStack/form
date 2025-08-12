@@ -27,13 +27,12 @@ function prefixSchemaToErrors(issues: readonly StandardSchemaV1Issue[]) {
       .map((segment) => {
         const normalizedSegment =
           typeof segment === 'object' ? segment.key : segment
-        const isArrayIndex = 
+        const isArrayIndex =
           typeof normalizedSegment === 'number' ||
-          (typeof normalizedSegment === 'string' && /^\d+$/.test(normalizedSegment))
-        
-        return isArrayIndex
-          ? `[${normalizedSegment}]`
-          : normalizedSegment
+          (typeof normalizedSegment === 'string' &&
+            /^\d+$/.test(normalizedSegment))
+
+        return isArrayIndex ? `[${normalizedSegment}]` : normalizedSegment
       })
       .join('.')
       .replace(/\.\[/g, '[')

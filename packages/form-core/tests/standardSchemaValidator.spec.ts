@@ -512,7 +512,7 @@ describe('standard schema validator', () => {
 
       field.mount()
       field.setValue('')
-      
+
       expect(form.state.errors).toMatchObject([
         {
           'users[0].addresses[1].street': [{ message: 'Street is required' }],
