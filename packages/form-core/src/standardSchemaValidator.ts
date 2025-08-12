@@ -27,9 +27,21 @@ function prefixSchemaToErrors(
 
   for (const issue of issues) {
     const issuePath = issue.path ?? []
+    const path = [...(issue.path ?? [])]
+      .map((segment) => {
+        const normalizedSegment =
+          typeof segment === 'object' ? segment.key : segment
+        const isArrayIndex =
+          typeof normalizedSegment === 'number' ||
+          (typeof normalizedSegment === 'string' &&
+            /^\d+$/.test(normalizedSegment))
+
+        return isArrayIndex ? `[${normalizedSegment}]` : normalizedSegment
+      })
+      .join('.')
+      .replace(/\.\[/g, '[')
 
     let currentFormValue = formValue
-    let path = ''
 
     for (let i = 0; i < issuePath.length; i++) {
       const pathSegment = issuePath[i]
