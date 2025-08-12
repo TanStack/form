@@ -130,6 +130,9 @@ describe('formOptions', () => {
         },
       },
     })
+
+    const form = new FormApi(formOpts)
+    const form2 = new FormApi({ ...formOpts })
   })
 
   it('types should infer listeners types', () => {
@@ -164,6 +167,9 @@ describe('formOptions', () => {
         },
       },
     })
+
+    const form = new FormApi(formOpts)
+    const form2 = new FormApi({ ...formOpts })
   })
 
   it('types should infer listeners types with submitMeta', () => {
@@ -201,5 +207,8 @@ describe('formOptions', () => {
         },
       },
     })
+
+    const form = new FormApi(formOpts)
+    const form2 = new FormApi({ ...formOpts })
   })
 })
