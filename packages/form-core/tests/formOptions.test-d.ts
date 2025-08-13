@@ -16,11 +16,13 @@ describe('formOptions', () => {
       } as Person,
     })
 
-    const form = new FormApi({
+    const form1 = new FormApi(formOpts)
+    const form2 = new FormApi({
       ...formOpts,
     })
 
-    expectTypeOf(form.state.values).toEqualTypeOf<Person>()
+    expectTypeOf(form1.state.values).toEqualTypeOf<Person>()
+    expectTypeOf(form2.state.values).toEqualTypeOf<Person>()
   })
 
   it('types should be properly inferred when passing args alongside formOptions', () => {
@@ -66,6 +68,9 @@ describe('formOptions', () => {
       } as Person,
     })
 
+    const formOnly = new FormApi(formOpts)
+    expectTypeOf(formOnly.state.values).toEqualTypeOf<Person>()
+
     const form = new FormApi({
       ...formOpts,
       defaultValues: {
@@ -95,6 +100,9 @@ describe('formOptions', () => {
         expectTypeOf(meta).toEqualTypeOf<SubmitMeta>()
       },
     })
+
+    const form = new FormApi(formOpts)
+    const form2 = new FormApi({ ...formOpts })
   })
 
   it('types should infer validator types', () => {
