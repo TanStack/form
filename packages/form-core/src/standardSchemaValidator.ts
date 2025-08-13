@@ -34,7 +34,7 @@ function prefixSchemaToErrors(
     for (let i = 0; i < issuePath.length; i++) {
       const pathSegment = issuePath[i]
       if (pathSegment === undefined) continue
-      
+
       const segment =
         typeof pathSegment === 'object' ? pathSegment.key : pathSegment
 
@@ -47,10 +47,7 @@ function prefixSchemaToErrors(
         path += (i > 0 ? '.' : '') + String(segment)
       }
 
-      if (
-        typeof currentFormValue === 'object' &&
-        currentFormValue !== null
-      ) {
+      if (typeof currentFormValue === 'object' && currentFormValue !== null) {
         currentFormValue = currentFormValue[segment as never]
       } else {
         currentFormValue = undefined

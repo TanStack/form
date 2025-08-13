@@ -433,17 +433,21 @@ describe('standard schema validator', () => {
 
     it('should handle string array indices from standard schema validators', async () => {
       // Use Zod's superRefine to simulate string paths that some standard schema validators return
-      const schemaWithStringPaths = z.object({ 
-        people: z.array(z.object({ 
-          name: z.string() 
-        }))
-      }).superRefine((_, ctx) => {
-        ctx.addIssue({
-          code: 'custom',
-          message: 'Name is required',
-          path: ['people', '0', 'name'], // String index to test path handling
+      const schemaWithStringPaths = z
+        .object({
+          people: z.array(
+            z.object({
+              name: z.string(),
+            }),
+          ),
         })
-      })
+        .superRefine((_, ctx) => {
+          ctx.addIssue({
+            code: 'custom',
+            message: 'Name is required',
+            path: ['people', '0', 'name'], // String index to test path handling
+          })
+        })
 
       const form = new FormApi({
         defaultValues: {
