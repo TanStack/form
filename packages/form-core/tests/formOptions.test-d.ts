@@ -88,7 +88,23 @@ describe('formOptions', () => {
       firstName: string
       lastName: string
     }
+
     type SubmitMeta = { bool: boolean }
+
+    type ExpectedShape = FormApi<
+      FormData,
+      FormValidateOrFn<FormData> | undefined,
+      FormValidateOrFn<FormData> | undefined,
+      FormAsyncValidateOrFn<FormData> | undefined,
+      FormValidateOrFn<FormData> | undefined,
+      FormAsyncValidateOrFn<FormData> | undefined,
+      FormValidateOrFn<FormData> | undefined,
+      FormAsyncValidateOrFn<FormData> | undefined,
+      FormValidateOrFn<FormData> | undefined,
+      FormAsyncValidateOrFn<FormData> | undefined,
+      FormAsyncValidateOrFn<FormData> | undefined,
+      SubmitMeta
+    >
 
     const formOpts = formOptions({
       defaultValues: {
@@ -102,7 +118,10 @@ describe('formOptions', () => {
     })
 
     const form = new FormApi(formOpts)
+    expectTypeOf(form).toEqualTypeOf<ExpectedShape>()
+
     const form2 = new FormApi({ ...formOpts })
+    expectTypeOf(form2).toEqualTypeOf<ExpectedShape>()
   })
 
   it('types should infer validator types', () => {
@@ -111,7 +130,7 @@ describe('formOptions', () => {
       lastName: string
     }
 
-    type formApiValidators = FormApi<
+    type AnyFormApi = FormApi<
       FormData,
       any,
       any,
@@ -126,6 +145,21 @@ describe('formOptions', () => {
       any
     >
 
+    type ExpectedShape = FormApi<
+      FormData,
+      FormValidateOrFn<FormData> | undefined,
+      ({ value, formApi }: { value: FormData; formApi: AnyFormApi }) => void,
+      FormAsyncValidateOrFn<FormData> | undefined,
+      FormValidateOrFn<FormData> | undefined,
+      FormAsyncValidateOrFn<FormData> | undefined,
+      FormValidateOrFn<FormData> | undefined,
+      FormAsyncValidateOrFn<FormData> | undefined,
+      FormValidateOrFn<FormData> | undefined,
+      FormAsyncValidateOrFn<FormData> | undefined,
+      FormAsyncValidateOrFn<FormData> | undefined,
+      never
+    >
+
     const formOpts = formOptions({
       defaultValues: {
         firstName: '',
@@ -134,13 +168,16 @@ describe('formOptions', () => {
       validators: {
         onChange: ({ value, formApi }) => {
           expectTypeOf(value).toEqualTypeOf<FormData>()
-          expectTypeOf(formApi).toEqualTypeOf<formApiValidators>()
+          expectTypeOf(formApi).toEqualTypeOf<AnyFormApi>()
         },
       },
     })
 
     const form = new FormApi(formOpts)
+    expectTypeOf(form).toEqualTypeOf<ExpectedShape>()
+
     const form2 = new FormApi({ ...formOpts })
+    expectTypeOf(form2).toEqualTypeOf<ExpectedShape>()
   })
 
   it('types should infer listeners types', () => {
@@ -149,7 +186,7 @@ describe('formOptions', () => {
       lastName: string
     }
 
-    type FormApiListeners = FormApi<
+    type ExpectedShape = FormApi<
       FormData,
       FormValidateOrFn<FormData> | undefined,
       FormValidateOrFn<FormData> | undefined,
@@ -170,14 +207,17 @@ describe('formOptions', () => {
       } as FormData,
       listeners: {
         onSubmit: ({ formApi, meta }) => {
-          expectTypeOf(formApi).toEqualTypeOf<FormApiListeners>()
+          expectTypeOf(formApi).toEqualTypeOf<ExpectedShape>()
           expectTypeOf(meta).toEqualTypeOf<never>()
         },
       },
     })
 
     const form = new FormApi(formOpts)
+    expectTypeOf(form).toEqualTypeOf<ExpectedShape>()
+
     const form2 = new FormApi({ ...formOpts })
+    expectTypeOf(form2).toEqualTypeOf<ExpectedShape>()
   })
 
   it('types should infer listeners types with submitMeta', () => {
@@ -187,7 +227,7 @@ describe('formOptions', () => {
     }
     type SubmitMeta = { bool: boolean }
 
-    type FormApiListeners = FormApi<
+    type ExpectedShape = FormApi<
       FormData,
       FormValidateOrFn<FormData> | undefined,
       FormValidateOrFn<FormData> | undefined,
@@ -210,14 +250,17 @@ describe('formOptions', () => {
       onSubmitMeta: { bool: false } as SubmitMeta,
       listeners: {
         onSubmit: ({ formApi, meta }) => {
-          expectTypeOf(formApi).toEqualTypeOf<FormApiListeners>()
+          expectTypeOf(formApi).toEqualTypeOf<ExpectedShape>()
           expectTypeOf(meta).toEqualTypeOf<SubmitMeta>()
         },
       },
     })
 
     const form = new FormApi(formOpts)
+    expectTypeOf(form).toEqualTypeOf<ExpectedShape>()
+
     const form2 = new FormApi({ ...formOpts })
+    expectTypeOf(form2).toEqualTypeOf<ExpectedShape>()
   })
 
   it('should allow overriding formOptions values', () => {
