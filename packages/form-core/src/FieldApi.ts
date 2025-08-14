@@ -1241,6 +1241,28 @@ export class FieldApi<
     info.instance = this as never
 
     this.update(this.options as never)
+
+    const allFieldErrors = this.form.state._allFieldErrors
+    if (allFieldErrors?.[this.name]) {
+      const existingErrorMap = allFieldErrors[this.name]
+      if (existingErrorMap) {
+        this.setMeta((prev) => ({
+          ...prev,
+          errorMap: {
+            ...prev.errorMap,
+            ...existingErrorMap,
+          },
+          errorSourceMap: {
+            ...prev.errorSourceMap,
+            ...Object.keys(existingErrorMap).reduce((acc, key) => {
+              acc[key as keyof typeof acc] = 'form'
+              return acc
+            }, {} as Record<string, 'form'>),
+          },
+        }) as never)
+      }
+    }
+
     const { onMount } = this.options.validators || {}
 
     if (onMount) {

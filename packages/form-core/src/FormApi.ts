@@ -632,6 +632,11 @@ export type BaseFormState<
    * @private, used to force a re-evaluation of the form state when options change
    */
   _force_re_eval?: boolean
+  /**
+   * @private, stores field errors for all fields (including unmounted ones)
+   * This allows delayed-mounted fields to sync with existing validation errors
+   */
+  _allFieldErrors?: Partial<Record<DeepKeys<TFormData>, ValidationErrorMap>>
 }
 
 export type DerivedFormState<
@@ -1531,6 +1536,23 @@ export class FormApi<
         const { formError, fieldErrors } = normalizeError<TFormData>(rawError)
 
         const errorMapKey = getErrorMapKey(validateObj.cause)
+
+        if (fieldErrors) {
+          const allFieldErrors: Partial<Record<DeepKeys<TFormData>, ValidationErrorMap>> = this.state._allFieldErrors || {}
+          for (const [fieldName, fieldError] of Object.entries(fieldErrors)) {
+            if (fieldError) {
+              const typedFieldName = fieldName as DeepKeys<TFormData>
+              allFieldErrors[typedFieldName] = {
+                ...allFieldErrors[typedFieldName],
+                [errorMapKey]: fieldError,
+              }
+            }
+          }
+          this.baseStore.setState((prev) => ({
+            ...prev,
+            _allFieldErrors: allFieldErrors,
+          }))
+        }
 
         for (const field of Object.keys(
           this.state.fieldMeta,
