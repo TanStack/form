@@ -57,6 +57,8 @@ type FormErrorMapFromValidator<
   TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
 > = Partial<
   Record<
     DeepKeys<TFormData>,
@@ -67,7 +69,9 @@ type FormErrorMapFromValidator<
       TOnBlur,
       TOnBlurAsync,
       TOnSubmit,
-      TOnSubmitAsync
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync
     >
   >
 >
@@ -1491,7 +1495,9 @@ export class FormApi<
       TOnBlur,
       TOnBlurAsync,
       TOnSubmit,
-      TOnSubmitAsync
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync
     >
   } => {
     const validates = getSyncValidatorArray(cause, {
@@ -1511,7 +1517,9 @@ export class FormApi<
       TOnBlur,
       TOnBlurAsync,
       TOnSubmit,
-      TOnSubmitAsync
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync
     > = {}
 
     batch(() => {
@@ -1654,7 +1662,9 @@ export class FormApi<
       TOnBlur,
       TOnBlurAsync,
       TOnSubmit,
-      TOnSubmitAsync
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync
     >
   > => {
     const validates = getAsyncValidatorArray(cause, {
@@ -1801,7 +1811,9 @@ export class FormApi<
       TOnBlur,
       TOnBlurAsync,
       TOnSubmit,
-      TOnSubmitAsync
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync
     > = {}
     if (promises.length) {
       results = await Promise.all(promises)
@@ -1846,7 +1858,9 @@ export class FormApi<
         TOnBlur,
         TOnBlurAsync,
         TOnSubmit,
-        TOnSubmitAsync
+        TOnSubmitAsync,
+        TOnDynamic,
+        TOnDynamicAsync
       >
     | Promise<
         FormErrorMapFromValidator<
@@ -1857,7 +1871,9 @@ export class FormApi<
           TOnBlur,
           TOnBlurAsync,
           TOnSubmit,
-          TOnSubmitAsync
+          TOnSubmitAsync,
+          TOnDynamic,
+          TOnDynamicAsync
         >
       > => {
     // Attempt to sync validate first
