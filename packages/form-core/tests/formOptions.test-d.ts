@@ -323,4 +323,73 @@ describe('formOptions', () => {
       (undefined | 'Too short!' | 'needs formId')[]
     >()
   })
+
+  it('should allow form options to be passed to form with submit logic, and validators', () => {
+    type FormData = {
+      firstName: string
+      lastName: string
+    }
+
+    const formOpts = formOptions({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      } as FormData,
+      onSubmit: (data) => {
+        console.log(data)
+      },
+      validators: {
+        onSubmit: (data) => {},
+      },
+    })
+
+    const form = new FormApi(formOpts)
+  })
+
+  it('should allow form options to be passed to form with submit logic, and listeners', () => {
+    type FormData = {
+      firstName: string
+      lastName: string
+    }
+
+    const formOpts = formOptions({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      } as FormData,
+      onSubmit: (data) => {
+        console.log(data)
+      },
+      listeners: {
+        onSubmit: (data) => {},
+      },
+    })
+
+    const form = new FormApi(formOpts)
+  })
+
+  it('should allow form options to be passed to form with submit logic, listeners, and validators', () => {
+    type FormData = {
+      firstName: string
+      lastName: string
+    }
+
+    const formOpts = formOptions({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      } as FormData,
+      onSubmit: (data) => {
+        console.log(data)
+      },
+      listeners: {
+        onSubmit: (data) => {},
+      },
+      validators: {
+        onSubmit: (data) => {},
+      },
+    })
+
+    const form = new FormApi(formOpts)
+  })
 })
