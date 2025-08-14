@@ -11,7 +11,7 @@ title: FieldInfo
 type FieldInfo<TFormData> = object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:520](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L520)
+Defined in: [packages/form-core/src/FormApi.ts:524](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L524)
 
 An object representing the field information for a specific field within the form.
 
