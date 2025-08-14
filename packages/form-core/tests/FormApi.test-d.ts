@@ -1,6 +1,6 @@
 import { expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
-import { FormApi } from '../src'
+import { FormApi, formOptions } from '../src'
 import type {
   DeepKeys,
   GlobalFormValidationError,
@@ -36,6 +36,7 @@ it('should return all errors matching the right type from getAllErrors', () => {
     onMount?: 10
     onSubmit?: 'onSubmit' | 'onSubmitAsync'
     onServer?: undefined
+    onDynamic?: undefined
   }>()
 
   expectTypeOf(errors.form.errors).toEqualTypeOf<
@@ -133,6 +134,8 @@ it("should allow setting manual errors according to the validator's return type"
       onBlur: () => ({ onBlur: true as const, onBlurNumber: 1 }),
       onSubmit: () => 'onSubmit' as const,
       onBlurAsync: () => Promise.resolve('onBlurAsync' as const),
+      onDynamic: () => 'onDynamic' as const,
+      onDynamicAsync: () => Promise.resolve('onDynamicAsync' as const),
       onChangeAsync: () => Promise.resolve('onChangeAsync' as const),
       onSubmitAsync: () => Promise.resolve('onSubmitAsync' as const),
     },
@@ -158,6 +161,11 @@ it("should allow setting manual errors according to the validator's return type"
     onSubmit:
       | 'onSubmit'
       | 'onSubmitAsync'
+      | undefined
+      | GlobalFormValidationError<FormData>
+    onDynamic:
+      | 'onDynamic'
+      | 'onDynamicAsync'
       | undefined
       | GlobalFormValidationError<FormData>
     onServer: undefined
@@ -199,6 +207,7 @@ it('should not allow setting manual errors if no validator is specified', () => 
     onChange: undefined | GlobalFormValidationError<FormData>
     onBlur: undefined | GlobalFormValidationError<FormData>
     onSubmit: undefined | GlobalFormValidationError<FormData>
+    onDynamic: undefined | GlobalFormValidationError<FormData>
     onServer: undefined
   }>
 })
@@ -365,4 +374,76 @@ it('should extract the form error type from a global form error', () => {
       | undefined
     )[]
   >
+})
+
+it('listeners should be typed correctly', () => {
+  type FormData = {
+    firstName: string
+    lastName: string
+  }
+
+  const form = new FormApi({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+    } as FormData,
+    listeners: {
+      onSubmit: ({ formApi }) => {
+        expectTypeOf(formApi.state.values).toEqualTypeOf<FormData>()
+      },
+    },
+  })
+
+  form.handleSubmit()
+})
+
+it('listeners should be typed correctly when using formOptions', () => {
+  type FormData = {
+    firstName: string
+    lastName: string
+  }
+
+  const formOpts = formOptions({
+    defaultValues: {
+      firstName: 'FirstName',
+      lastName: 'LastName',
+    } as FormData,
+    validators: {
+      onSubmit: () => {
+        return {
+          test: 'test',
+        }
+      },
+    },
+    listeners: {
+      onSubmit: ({ formApi }) => {
+        expectTypeOf(formApi.state.values).toEqualTypeOf<FormData>()
+      },
+    },
+  })
+
+  const form = new FormApi({
+    ...formOpts,
+    listeners: {
+      // this doesn't error since listeners return void
+      onSubmit: ({ formApi }) => {
+        console.log(formApi.state.values)
+      },
+    },
+    validators: {
+      // this errors becuase the return type is not the same as the validator return type
+      // onSubmit: () => 'custom on submit',
+
+      onSubmit: () => {
+        return {
+          test: 'can change the value!',
+        }
+      },
+      onChange: () => {
+        return 'onChange'
+      },
+    },
+  })
+
+  form.handleSubmit()
 })

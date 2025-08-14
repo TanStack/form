@@ -3121,11 +3121,59 @@ describe('form api', () => {
     await form.handleSubmit({ dinosaur: 'Stegosaurus' })
   })
 
+  it('should pass the handleSubmit meta data to onSubmitInvalid', async () => {
+    const form = new FormApi({
+      onSubmitMeta: {} as { dinosaur: string },
+      onSubmitInvalid: async ({ meta }) => {
+        expect(meta.dinosaur).toEqual('Stegosaurus')
+      },
+    })
+
+    await form.handleSubmit({ dinosaur: 'Stegosaurus' })
+  })
+
+  it('should pass the handleSubmit meta data to the onSubmit listener', async () => {
+    const form = new FormApi({
+      onSubmitMeta: {} as { dinosaur: string },
+      listeners: {
+        onSubmit: ({ meta }) => {
+          expect(meta.dinosaur).toEqual('Stegosaurus')
+        },
+      },
+    })
+
+    await form.handleSubmit({ dinosaur: 'Stegosaurus' })
+  })
+
   it('should pass the handleSubmit default meta data to onSubmit', async () => {
     const form = new FormApi({
       onSubmitMeta: { dinosaur: 'Frank' } as { dinosaur: string },
       onSubmit: async ({ meta }) => {
         expect(meta.dinosaur).toEqual('Frank')
+      },
+    })
+
+    await form.handleSubmit()
+  })
+
+  it('should pass the handleSubmit default meta data to onSubmitInvalid', async () => {
+    const form = new FormApi({
+      onSubmitMeta: { dinosaur: 'Frank' } as { dinosaur: string },
+      onSubmitInvalid: async ({ meta }) => {
+        expect(meta.dinosaur).toEqual('Frank')
+      },
+    })
+
+    await form.handleSubmit()
+  })
+
+  it('should pass the handleSubmit default meta data to the onSubmit listener', async () => {
+    const form = new FormApi({
+      onSubmitMeta: { dinosaur: 'Frank' } as { dinosaur: string },
+      listeners: {
+        onSubmit: ({ meta }) => {
+          expect(meta.dinosaur).toEqual('Frank')
+        },
       },
     })
 
@@ -3895,4 +3943,14 @@ it('should preserve nested fields on resetField if defaultValues is not provided
 
   form.resetField('nested.field.name')
   expect(form.state.values.nested.field.name).toEqual('Nested')
+})
+
+it('should accept formId and return it', () => {
+  const form = new FormApi({
+    defaultValues: { age: 0 },
+    formId: 'age',
+  })
+  form.mount()
+
+  expect(form.formId).toEqual('age')
 })

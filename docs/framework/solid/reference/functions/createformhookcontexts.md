@@ -32,7 +32,7 @@ formContext: Context<AnyFormApi>;
 ### useFieldContext()
 
 ```ts
-useFieldContext: <TData>() => Accessor<FieldApi<any, string, TData, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any>>;
+useFieldContext: <TData>() => Accessor<FieldApi<any, string, TData, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any>>;
 ```
 
 #### Type Parameters
@@ -41,14 +41,14 @@ useFieldContext: <TData>() => Accessor<FieldApi<any, string, TData, any, any, an
 
 #### Returns
 
-`Accessor`\<`FieldApi`\<`any`, `string`, `TData`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>\>
+`Accessor`\<`FieldApi`\<`any`, `string`, `TData`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>\>
 
 ### useFormContext()
 
 ```ts
-useFormContext: () => SolidFormExtendedApi<Record<string, never>, any, any, any, any, any, any, any, any, any>;
+useFormContext: () => SolidFormExtendedApi<Record<string, never>, any, any, any, any, any, any, any, any, any, any, any>;
 ```
 
 #### Returns
 
-`SolidFormExtendedApi`\<`Record`\<`string`, `never`\>, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>
+[`SolidFormExtendedApi`](../../type-aliases/solidformextendedapi.md)\<`Record`\<`string`, `never`\>, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>

@@ -32,6 +32,7 @@ title: "@tanstack/form-core"
 - [StandardSchemaV1Issue](../interfaces/standardschemav1issue.md)
 - [TupleDeepKeyAndValue](../interfaces/tupledeepkeyandvalue.md)
 - [UnknownDeepKeyAndValue](../interfaces/unknowndeepkeyandvalue.md)
+- [ValidationLogicProps](../interfaces/validationlogicprops.md)
 
 ## Type Aliases
 
@@ -81,6 +82,7 @@ title: "@tanstack/form-core"
 - [Updater](../type-aliases/updater.md)
 - [UpdaterFn](../type-aliases/updaterfn.md)
 - [ValidationError](../type-aliases/validationerror.md)
+- [ValidationLogicFn](../type-aliases/validationlogicfn.md)
 - [ValidationMeta](../type-aliases/validationmeta.md)
 - [ValidationSource](../type-aliases/validationsource.md)
 
@@ -91,8 +93,10 @@ title: "@tanstack/form-core"
 ## Functions
 
 - [createFieldMap](../functions/createfieldmap.md)
+- [defaultValidationLogic](../functions/defaultvalidationlogic.md)
 - [evaluate](../functions/evaluate.md)
 - [formOptions](../functions/formoptions.md)
 - [isGlobalFormValidationError](../functions/isglobalformvalidationerror.md)
 - [isStandardSchemaValidator](../functions/isstandardschemavalidator.md)
 - [mergeForm](../functions/mergeform.md)
+- [revalidateLogic](../functions/revalidatelogic.md)

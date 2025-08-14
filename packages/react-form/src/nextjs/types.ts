@@ -13,6 +13,8 @@ export type ServerFormState<
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
     TOnServer
   >,
   'values' | 'errors' | 'errorMap'

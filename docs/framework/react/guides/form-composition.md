@@ -57,7 +57,7 @@ export function TextField({ label }: { label: string }) {
   const field = useFieldContext<string>()
   return (
     <label>
-      <div>{label}</div>
+      <span>{label}</span>
       <input
         value={field.state.value}
         onChange={(e) => field.handleChange(e.target.value)}
@@ -282,7 +282,7 @@ const defaultValues: PasswordFields = {
   confirm_password: '',
 }
 
-const FieldGroupPasswordField = withFieldGroup({
+const FieldGroupPasswordFields = withFieldGroup({
   defaultValues,
   // You may also restrict the group to only use forms that implement this submit meta.
   // If none is provided, any form with the right defaultValues may use it.
@@ -384,7 +384,7 @@ function App() {
 
   return (
     <form.AppForm>
-      <PasswordFields
+      <FieldGroupPasswordFields
         form={form}
         // You must specify where the fields can be found
         fields="account_data"
@@ -393,7 +393,7 @@ function App() {
       <form.Field name="linked_accounts" mode="array">
         {(field) =>
           field.state.value.map((account, i) => (
-            <PasswordFields
+            <FieldGroupPasswordFields
               key={account.provider}
               form={form}
               // The fields may be in nested fields
@@ -439,7 +439,7 @@ function App() {
 
   return (
     <form.AppForm>
-      <PasswordFields
+      <FieldGroupPasswordFields
         form={form}
         // You can map the fields to their equivalent deep key
         fields={{
@@ -473,7 +473,7 @@ const passwordFields = createFieldMap(defaultValues)
 */
 
 // Usage:
-<PasswordFields
+<FieldGroupPasswordFields
   form={form}
   fields={passwordFields}
   title="Passwords"
@@ -504,7 +504,7 @@ export default function TextField({ label }: { label: string }) {
 
   return (
     <label>
-      <div>{label}</div>
+      <span>{label}</span>
       <input
         value={field.state.value}
         onChange={(e) => field.handleChange(e.target.value)}
@@ -560,7 +560,7 @@ function TextField({ label }: { label: string }) {
   const field = useFieldContext<string>()
   return (
     <label>
-      <div>{label}</div>
+      <span>{label}</span>
       <input
         value={field.state.value}
         onChange={(e) => field.handleChange(e.target.value)}

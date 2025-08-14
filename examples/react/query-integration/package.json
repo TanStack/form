@@ -9,16 +9,16 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-form": "^1.15.2",
-    "@tanstack/react-query": "^5.80.7",
+    "@tanstack/react-form": "^1.19.2",
+    "@tanstack/react-query": "^5.84.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
-    "@vitejs/plugin-react": "^4.5.2",
-    "vite": "^6.3.5"
+    "@vitejs/plugin-react": "^4.7.0",
+    "vite": "^7.1.1"
   },
   "browserslist": {
     "production": [

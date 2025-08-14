@@ -31,6 +31,8 @@ export type AnyFieldGroupApi = FieldGroupApi<
   any,
   any,
   any,
+  any,
+  any,
   any
 >
 
@@ -57,6 +59,8 @@ export interface FieldGroupOptions<
   in out TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TSubmitMeta = never,
 > {
@@ -70,12 +74,16 @@ export interface FieldGroupOptions<
         TOnBlurAsync,
         TOnSubmit,
         TOnSubmitAsync,
+        TOnDynamic,
+        TOnDynamicAsync,
         TOnServer,
         TSubmitMeta
       >
     | FieldGroupApi<
         any,
         TFormData,
+        any,
+        any,
         any,
         any,
         any,
@@ -114,6 +122,8 @@ export class FieldGroupApi<
   in out TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
   in out TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  in out TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  in out TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TSubmitMeta = never,
 > implements FieldManipulator<TFieldGroupData, TSubmitMeta>
@@ -130,6 +140,8 @@ export class FieldGroupApi<
     TOnBlurAsync,
     TOnSubmit,
     TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
     TOnServer,
     TSubmitMeta
   >
@@ -169,6 +181,8 @@ export class FieldGroupApi<
    */
   getFormFieldOptions = <
     TOptions extends FieldOptions<
+      any,
+      any,
       any,
       any,
       any,
@@ -233,6 +247,8 @@ export class FieldGroupApi<
       TOnBlurAsync,
       TOnSubmit,
       TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
       TOnServer,
       TSubmitMeta
     >,
