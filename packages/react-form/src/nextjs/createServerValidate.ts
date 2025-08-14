@@ -44,6 +44,9 @@ interface CreateServerValidateOptions<
   onServerValidate: TOnServer
 }
 
+type Tail<T extends unknown[]> = T extends [unknown, ...infer R] ? R : never;
+
+
 export const createServerValidate =
   <
     TFormData,
@@ -74,7 +77,7 @@ export const createServerValidate =
       TSubmitMeta
     >,
   ) =>
-  async (formData: FormData, info?: Parameters<typeof decode>[1]) => {
+  async (formData: FormData, ...decodeOptions: Tail<Parameters<typeof decode>>) => {
     const { onServerValidate } = defaultOpts
 
     const runValidator = async ({
@@ -97,7 +100,7 @@ export const createServerValidate =
       })
     }
 
-    const values = decode(formData, info) as never as TFormData
+    const values = decode(formData, ...decodeOptions) as never as TFormData
 
     const onServerError = (await runValidator({
       value: values,
