@@ -2500,4 +2500,72 @@ describe('field api', () => {
 
     expect(field.state.meta.errors).toStrictEqual(['Blur error'])
   })
+
+  it('should pass errors to pushed fields', () => {
+    const schema = z.object({ arr: z.array(z.string().min(2)) })
+
+    const form = new FormApi({
+      defaultValues: {
+        arr: [''],
+      },
+      validators: { onChange: schema },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'arr',
+    })
+    field.mount()
+    field.pushValue('')
+
+    expect(form.state.errors).toStrictEqual([
+      {
+        'arr[0]': [
+          {
+            code: 'too_small',
+            exact: false,
+            inclusive: true,
+            message: 'String must contain at least 2 character(s)',
+            minimum: 2,
+            path: ['arr', 0],
+            type: 'string',
+          },
+        ],
+        'arr[1]': [
+          {
+            code: 'too_small',
+            exact: false,
+            inclusive: true,
+            message: 'String must contain at least 2 character(s)',
+            minimum: 2,
+            path: ['arr', 1],
+            type: 'string',
+          },
+        ],
+      },
+    ])
+
+    const fieldIndexed = new FieldApi({
+      form,
+      name: 'arr[1]',
+    })
+    fieldIndexed.mount()
+
+    expect(form.getFieldMeta(fieldIndexed.name)).toEqual([])
+
+    expect(fieldIndexed.state.meta.errors).toStrictEqual({
+      errors: [
+        {
+          code: 'too_small',
+          minimum: 2,
+          type: 'string',
+          inclusive: true,
+          exact: false,
+          message: 'String must contain at least 2 character(s)',
+          path: ['arr', 1],
+        },
+      ],
+    })
+  })
 })

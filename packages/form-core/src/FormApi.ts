@@ -2132,6 +2132,7 @@ export class FormApi<
       (prev) => [...(Array.isArray(prev) ? prev : []), value] as any,
       opts,
     )
+
     this.validateField(field, 'change')
   }
 
