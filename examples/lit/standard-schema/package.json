@@ -9,7 +9,7 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/lit-form": "^1.19.1",
+    "@tanstack/lit-form": "^1.19.2",
     "arktype": "^2.1.20",
     "effect": "^3.17.7",
     "lit": "^3.3.1",
