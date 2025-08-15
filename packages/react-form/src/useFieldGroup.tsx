@@ -213,13 +213,11 @@ export function useFieldGroup<
     extendedApi.AppField = function AppField(props) {
       return (
         <form.AppField {...(formLensApi.getFormFieldOptions(props) as any)} />
-      ) as never
+      )
     }
 
     extendedApi.Field = function Field(props) {
-      return (
-        <form.Field {...(formLensApi.getFormFieldOptions(props) as any)} />
-      ) as never
+      return <form.Field {...(formLensApi.getFormFieldOptions(props) as any)} />
     }
 
     extendedApi.Subscribe = function Subscribe(props: any) {

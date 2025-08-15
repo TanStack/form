@@ -451,7 +451,7 @@ describe('createFormHook', () => {
     expect(inputField1).toHaveValue('John')
   })
 
-  it('should remap GroupFieldApi.Field validators to the correct names', () => {
+  it('should remap FieldGroupApi.Field validators to the correct names', () => {
     const FieldGroupString = withFieldGroup({
       defaultValues: { password: '', confirmPassword: '' },
       render: function Render({ group }) {
