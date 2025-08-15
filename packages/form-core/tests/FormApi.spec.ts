@@ -3156,6 +3156,32 @@ describe('form api', () => {
     await form.handleSubmit()
   })
 
+  it('should call onSubmitInvalid when submitting while canSubmit is false (e.g., onMount error present)', async () => {
+    const onInvalid = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: { name: '' },
+      validators: {
+        onMount: ({ value }) => (!value.name ? 'Name required' : undefined),
+      },
+      onSubmitInvalid: ({ value, formApi }) => {
+        onInvalid(value, formApi)
+      },
+    })
+
+    form.mount()
+
+    // Mount a field to participate in touched/dirty state
+    new FieldApi({ form, name: 'name' }).mount()
+
+    // With an onMount error present, the form is invalid and cannot submit
+    expect(form.state.canSubmit).toBe(false)
+
+    await form.handleSubmit()
+
+    expect(onInvalid).toHaveBeenCalledTimes(1)
+  })
+
   it('should pass the handleSubmit default meta data to onSubmitInvalid', async () => {
     const form = new FormApi({
       onSubmitMeta: { dinosaur: 'Frank' } as { dinosaur: string },
