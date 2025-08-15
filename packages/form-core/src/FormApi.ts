@@ -1915,10 +1915,17 @@ export class FormApi<
       )
     })
 
-    if (!this.state.canSubmit) return
-
     const submitMetaArg =
       submitMeta ?? (this.options.onSubmitMeta as TSubmitMeta)
+
+    if (!this.state.canSubmit) {
+      this.options.onSubmitInvalid?.({
+        value: this.state.values,
+        formApi: this,
+        meta: submitMetaArg,
+      })
+      return
+    }
 
     this.baseStore.setState((d) => ({ ...d, isSubmitting: true }))
 
