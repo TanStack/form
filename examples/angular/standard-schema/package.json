@@ -10,14 +10,14 @@
     "test": "ng test"
   },
   "dependencies": {
-    "@angular/animations": "^20.1.6",
-    "@angular/common": "^20.1.6",
-    "@angular/compiler": "^20.1.6",
-    "@angular/core": "^20.1.6",
-    "@angular/forms": "^20.1.6",
-    "@angular/platform-browser": "^20.1.6",
-    "@angular/platform-browser-dynamic": "^20.1.6",
-    "@angular/router": "^20.1.6",
+    "@angular/animations": "^20.1.7",
+    "@angular/common": "^20.1.7",
+    "@angular/compiler": "^20.1.7",
+    "@angular/core": "^20.1.7",
+    "@angular/forms": "^20.1.7",
+    "@angular/platform-browser": "^20.1.7",
+    "@angular/platform-browser-dynamic": "^20.1.7",
+    "@angular/router": "^20.1.7",
     "@tanstack/angular-form": "^1.19.2",
     "effect": "^3.17.7",
     "rxjs": "^7.8.2",
@@ -27,9 +27,9 @@
     "zone.js": "0.15.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^20.1.5",
-    "@angular/cli": "^20.1.5",
-    "@angular/compiler-cli": "^20.1.6",
+    "@angular-devkit/build-angular": "^20.1.6",
+    "@angular/cli": "^20.1.6",
+    "@angular/compiler-cli": "^20.1.7",
     "typescript": "5.8.2"
   }
 }
