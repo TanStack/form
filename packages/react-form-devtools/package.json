@@ -1,5 +1,5 @@
 {
-  "name": "@tanstack/react-form",
+  "name": "@tanstack/react-form-devtools",
   "version": "1.17.0",
   "description": "Powerful, type-safe forms for React.",
   "author": "tannerlinsley",
@@ -43,36 +43,6 @@
         "default": "./dist/cjs/index.cjs"
       }
     },
-    "./nextjs": {
-      "import": {
-        "types": "./dist/esm/nextjs/index.d.ts",
-        "default": "./dist/esm/nextjs/index.js"
-      },
-      "require": {
-        "types": "./dist/cjs/nextjs/index.d.cts",
-        "default": "./dist/cjs/nextjs/index.cjs"
-      }
-    },
-    "./remix": {
-      "import": {
-        "types": "./dist/esm/remix/index.d.ts",
-        "default": "./dist/esm/remix/index.js"
-      },
-      "require": {
-        "types": "./dist/cjs/remix/index.d.cts",
-        "default": "./dist/cjs/remix/index.cjs"
-      }
-    },
-    "./start": {
-      "import": {
-        "types": "./dist/esm/start/index.d.ts",
-        "default": "./dist/esm/start/index.js"
-      },
-      "require": {
-        "types": "./dist/cjs/start/index.d.cts",
-        "default": "./dist/cjs/start/index.cjs"
-      }
-    },
     "./package.json": "./package.json"
   },
   "sideEffects": false,
@@ -81,13 +51,9 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/form-core": "workspace:*",
-    "@tanstack/react-store": "^0.7.3",
-    "decode-formdata": "^0.9.0",
-    "devalue": "^5.1.1"
+    "@tanstack/form-devtools": "workspace:*"
   },
   "devDependencies": {
-    "@tanstack/react-start": "^1.130.10",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.5.2",
@@ -97,12 +63,6 @@
     "vite": "^7.0.6"
   },
   "peerDependencies": {
-    "@tanstack/react-start": "^1.130.10",
     "react": "^17.0.0 || ^18.0.0 || ^19.0.0"
-  },
-  "peerDependenciesMeta": {
-    "@tanstack/react-start": {
-      "optional": true
-    }
   }
 }

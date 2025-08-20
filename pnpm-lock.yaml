@@ -381,7 +381,7 @@ importers:
     dependencies:
       '@tanstack/react-form':
         specifier: ^1.17.0
-        version: link:../../../packages/react-form
+        version: link:../../../packages/react-form-devtools
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -406,7 +406,7 @@ importers:
     dependencies:
       '@tanstack/react-form':
         specifier: ^1.17.0
-        version: link:../../../packages/react-form
+        version: link:../../../packages/react-form-devtools
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -440,7 +440,7 @@ importers:
         version: 0.2.0(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.7)
       '@tanstack/react-form':
         specifier: ^1.17.0
-        version: link:../../../packages/react-form
+        version: link:../../../packages/react-form-devtools
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -465,7 +465,7 @@ importers:
     dependencies:
       '@tanstack/react-form':
         specifier: ^1.17.0
-        version: link:../../../packages/react-form
+        version: link:../../../packages/react-form-devtools
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -493,7 +493,7 @@ importers:
     dependencies:
       '@tanstack/react-form':
         specifier: ^1.17.0
-        version: link:../../../packages/react-form
+        version: link:../../../packages/react-form-devtools
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -518,7 +518,7 @@ importers:
     dependencies:
       '@tanstack/react-form':
         specifier: ^1.17.0
-        version: link:../../../packages/react-form
+        version: link:../../../packages/react-form-devtools
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -543,7 +543,7 @@ importers:
     dependencies:
       '@tanstack/react-form':
         specifier: ^1.17.0
-        version: link:../../../packages/react-form
+        version: link:../../../packages/react-form-devtools
       '@tanstack/react-store':
         specifier: ^0.7.3
         version: 0.7.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -574,7 +574,7 @@ importers:
     dependencies:
       '@tanstack/react-form':
         specifier: ^1.17.0
-        version: link:../../../packages/react-form
+        version: link:../../../packages/react-form-devtools
       '@tanstack/react-query':
         specifier: ^5.80.7
         version: 5.80.7(react@19.1.0)
@@ -611,7 +611,7 @@ importers:
         version: 2.16.8(typescript@5.8.2)
       '@tanstack/react-form':
         specifier: ^1.17.0
-        version: link:../../../packages/react-form
+        version: link:../../../packages/react-form-devtools
       '@tanstack/react-store':
         specifier: ^0.7.3
         version: 0.7.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -648,7 +648,7 @@ importers:
     dependencies:
       '@tanstack/react-form':
         specifier: ^1.17.0
-        version: link:../../../packages/react-form
+        version: link:../../../packages/react-form-devtools
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -673,7 +673,7 @@ importers:
     dependencies:
       '@tanstack/react-form':
         specifier: ^1.17.0
-        version: link:../../../packages/react-form
+        version: link:../../../packages/react-form-devtools
       arktype:
         specifier: ^2.1.20
         version: 2.1.20
@@ -710,7 +710,7 @@ importers:
     dependencies:
       '@tanstack/react-form':
         specifier: ^1.17.0
-        version: link:../../../packages/react-form
+        version: link:../../../packages/react-form-devtools
       '@tanstack/react-router':
         specifier: ^1.130.10
         version: 1.130.10(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -768,7 +768,7 @@ importers:
         version: 6.4.12(@emotion/react@11.14.0(@types/react@19.1.6)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.6)(react@19.1.0))(@types/react@19.1.6)(react@19.1.0))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@tanstack/react-form':
         specifier: ^1.17.0
-        version: link:../../../packages/react-form
+        version: link:../../../packages/react-form-devtools
       '@yme/lay-postcss':
         specifier: 0.1.0
         version: 0.1.0(postcss@8.5.5)
@@ -1165,9 +1165,6 @@ importers:
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../form-core
-      '@tanstack/form-devtools':
-        specifier: workspace:*
-        version: link:../form-devtools
       '@tanstack/react-store':
         specifier: ^0.7.3
         version: 0.7.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -1181,6 +1178,34 @@ importers:
       '@tanstack/react-start':
         specifier: ^1.130.10
         version: 1.130.10(@tanstack/react-router@1.130.10(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@vitejs/plugin-react@4.5.2(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)))(encoding@0.1.13)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vite-plugin-solid@2.11.6(@testing-library/jest-dom@6.6.3)(solid-js@1.9.7)(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)))(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))(webpack@5.99.8(@swc/core@1.12.1))
+      '@types/react':
+        specifier: ^19.0.7
+        version: 19.1.6
+      '@types/react-dom':
+        specifier: ^19.0.3
+        version: 19.1.5(@types/react@19.1.6)
+      '@vitejs/plugin-react':
+        specifier: ^4.5.2
+        version: 4.5.2(vite@7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
+      eslint-plugin-react-compiler:
+        specifier: 19.0.0-beta-ebf51a3-20250411
+        version: 19.0.0-beta-ebf51a3-20250411(eslint@9.32.0(jiti@2.4.2))
+      react:
+        specifier: ^19.0.0
+        version: 19.1.0
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.1.0(react@19.1.0)
+      vite:
+        specifier: ^7.0.6
+        version: 7.0.6(@types/node@24.1.0)(jiti@2.4.2)(less@4.3.0)(sass@1.89.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0)
+
+  packages/react-form-devtools:
+    dependencies:
+      '@tanstack/form-devtools':
+        specifier: workspace:*
+        version: link:../form-devtools
+    devDependencies:
       '@types/react':
         specifier: ^19.0.7
         version: 19.1.6

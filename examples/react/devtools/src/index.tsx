@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { FormDevtools } from '@tanstack/react-form'
 
+import { FormDevtools } from '@tanstack/react-form-devtools'
 import { TanstackDevtools } from '@tanstack/react-devtools'
 
 import App from './App'

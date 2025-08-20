@@ -30,8 +30,10 @@ catalog:
   '@tanstack/devtools-event-clie': https://pkg.pr.new/TanStack/devtools/@tanstack/devtools-event-client
   '@tanstack/devtools-event-clien': https://pkg.pr.new/TanStack/devtools/@tanstack/devtools-event-client
   '@tanstack/devtools-event-client': https://pkg.pr.new/TanStack/devtools/@tanstack/devtools-event-client
+  '@tanstack/react--devtools': 0.2.0
   '@tanstack/react-devtools': https://pkg.pr.new/TanStack/devtools/@tanstack/react-devtools@11
   '@tanstack/react-form': ^1.17.0
+  '@tanstack/react-form-devtools': 0.2.0
   '@tanstack/react-start': ^1.130.10
   '@tanstack/react-store': ^0.7.3
   '@tanstack/solid-store': ^0.7.3
@@ -193,5 +195,7 @@ catalogs:
     '@tanstack/devtools-event-client': 0.2.0
   conflicts_conflicts_@tanstack/devtools-event-client_https://pkg_pr_new/TanStack/devtools/atanstack/devtoolsmeventmclienta11_h0_2_0:
     '@tanstack/devtools-event-client': ^0.2.0
+  conflicts_@tanstack/react-form-devtools_h1_17_0:
+    '@tanstack/react-form-devtools': ^1.17.0
 overrides:
   cssstyle: 4.4.0

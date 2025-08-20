@@ -932,6 +932,11 @@ export class FormApi<
   prevTransformArray: unknown[] = []
 
   /**
+   * @private
+   */
+  private _formId: string
+
+  /**
    * Constructs a new `FormApi` instance with the given form options.
    */
   constructor(
@@ -950,6 +955,8 @@ export class FormApi<
       TSubmitMeta
     >,
   ) {
+    this._formId = opts?.formId ?? crypto.randomUUID()
+
     this.baseStore = new Store(
       getDefaultFormState({
         ...(opts?.defaultState as any),
@@ -1249,8 +1256,8 @@ export class FormApi<
     })
   }
 
-  get formId(): string | undefined {
-    return this.options.formId
+  formId(): string | undefined {
+    return this._formId
   }
 
   /**
