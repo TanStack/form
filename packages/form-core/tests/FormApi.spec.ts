@@ -4241,11 +4241,10 @@ describe('onSubmitInvalid callback', () => {
     })
 
     form.mount()
-    expect(form.state.canSubmit).toBe(true) // canSubmitWhenInvalid allows submission
+    expect(form.state.canSubmit).toBe(true) 
 
     await form.handleSubmit()
 
-    // With canSubmitWhenInvalid: true, onSubmit should be called even if invalid
     expect(onSubmit).toHaveBeenCalled()
     expect(onSubmitInvalid).not.toHaveBeenCalled()
     expect(form.state.isSubmitting).toBe(false)
@@ -4266,13 +4265,12 @@ describe('onSubmitInvalid callback', () => {
     })
 
     form.mount()
-    // With canSubmitWhenInvalid: true, canSubmit is always true regardless of errors
+    
     expect(form.state.canSubmit).toBe(true)
-    expect(form.state.isValid).toBe(false) // Form is invalid due to onMount error
+    expect(form.state.isValid).toBe(false) 
 
     await form.handleSubmit()
-
-    // With canSubmitWhenInvalid: true, onSubmit should be called even with errors
+    
     expect(onSubmit).toHaveBeenCalled()
     expect(onSubmitInvalid).not.toHaveBeenCalled()
   })
