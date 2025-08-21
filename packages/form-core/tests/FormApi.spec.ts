@@ -3961,24 +3961,20 @@ describe('onSubmitInvalid callback', () => {
     const form = new FormApi({
       defaultValues: { name: '' },
       validators: {
-        onMount: ({ value }) => value.name ? undefined : 'Name is required',
+        onMount: ({ value }) => (value.name ? undefined : 'Name is required'),
       },
       onSubmitInvalid: ({ value, formApi, meta }) => {
         onInvalid(value, formApi, meta)
-      }
+      },
     })
-    
+
     form.mount()
     expect(form.state.canSubmit).toBe(false)
-    
+
     await form.handleSubmit()
-    
+
     expect(onInvalid).toHaveBeenCalledTimes(1)
-    expect(onInvalid).toHaveBeenCalledWith(
-      { name: '' },
-      form,
-      undefined
-    )
+    expect(onInvalid).toHaveBeenCalledWith({ name: '' }, form, undefined)
   })
 
   it('should call onSubmitInvalid with updated error state after validation', async () => {
@@ -3995,17 +3991,17 @@ describe('onSubmitInvalid callback', () => {
       },
       onSubmitInvalid: ({ value, formApi, meta }) => {
         onInvalid(value, formApi.state.errors, meta)
-      }
+      },
     })
-    
+
     form.mount()
     await form.handleSubmit()
-    
+
     expect(onInvalid).toHaveBeenCalledTimes(1)
     expect(onInvalid).toHaveBeenCalledWith(
       { name: '', email: '' },
       ['Name is required, Email is required'],
-      undefined
+      undefined,
     )
   })
 
@@ -4015,31 +4011,31 @@ describe('onSubmitInvalid callback', () => {
       defaultValues: { name: 'test', email: '' },
       onSubmitInvalid: ({ value, formApi, meta }) => {
         onInvalid(value, formApi.state.isFieldsValid, formApi.state.fieldMeta)
-      }
+      },
     })
-    
+
     const emailField = new FieldApi({
       form,
       name: 'email',
       validators: {
-        onSubmit: ({ value }) => !value ? 'Email is required' : undefined,
+        onSubmit: ({ value }) => (!value ? 'Email is required' : undefined),
       },
     })
-    
+
     form.mount()
     emailField.mount()
-    
+
     await form.handleSubmit()
-    
+
     expect(onInvalid).toHaveBeenCalledTimes(1)
     expect(onInvalid).toHaveBeenCalledWith(
       { name: 'test', email: '' },
       false,
       expect.objectContaining({
         email: expect.objectContaining({
-          errors: ['Email is required']
-        })
-      })
+          errors: ['Email is required'],
+        }),
+      }),
     )
   })
 
@@ -4048,16 +4044,16 @@ describe('onSubmitInvalid callback', () => {
     const form = new FormApi({
       defaultValues: { name: '' },
       validators: {
-        onSubmit: ({ value }) => !value.name ? 'Name is required' : undefined,
+        onSubmit: ({ value }) => (!value.name ? 'Name is required' : undefined),
       },
       onSubmitInvalid: ({ value, formApi, meta }) => {
         onInvalid(formApi === form, formApi.state.values)
-      }
+      },
     })
-    
+
     form.mount()
     await form.handleSubmit()
-    
+
     expect(onInvalid).toHaveBeenCalledWith(true, { name: '' })
   })
 
@@ -4067,16 +4063,16 @@ describe('onSubmitInvalid callback', () => {
     const form = new FormApi({
       defaultValues: { name: '' },
       validators: {
-        onSubmit: ({ value }) => !value.name ? 'Name is required' : undefined,
+        onSubmit: ({ value }) => (!value.name ? 'Name is required' : undefined),
       },
       onSubmitInvalid: ({ value, formApi, meta }) => {
         onInvalid(meta)
-      }
+      },
     })
-    
+
     form.mount()
     await (form.handleSubmit as any)(customMeta)
-    
+
     expect(onInvalid).toHaveBeenCalledWith(customMeta)
   })
 
@@ -4086,53 +4082,54 @@ describe('onSubmitInvalid callback', () => {
       defaultValues: { name: '', email: '', age: 0 },
       onSubmitInvalid: ({ value, formApi, meta }) => {
         onInvalid(formApi.state.fieldMeta)
-      }
+      },
     })
-    
+
     const nameField = new FieldApi({
       form,
       name: 'name',
       validators: {
-        onSubmit: ({ value }) => !value ? 'Name is required' : undefined,
+        onSubmit: ({ value }) => (!value ? 'Name is required' : undefined),
       },
     })
-    
+
     const emailField = new FieldApi({
       form,
       name: 'email',
       validators: {
-        onSubmit: ({ value }) => !value ? 'Email is required' : undefined,
+        onSubmit: ({ value }) => (!value ? 'Email is required' : undefined),
       },
     })
-    
+
     const ageField = new FieldApi({
       form,
       name: 'age',
       validators: {
-        onSubmit: ({ value }) => value < 18 ? 'Must be 18 or older' : undefined,
+        onSubmit: ({ value }) =>
+          value < 18 ? 'Must be 18 or older' : undefined,
       },
     })
-    
+
     form.mount()
     nameField.mount()
     emailField.mount()
     ageField.mount()
-    
+
     await form.handleSubmit()
-    
+
     expect(onInvalid).toHaveBeenCalledTimes(1)
     expect(onInvalid).toHaveBeenCalledWith(
       expect.objectContaining({
         name: expect.objectContaining({
-          errors: ['Name is required']
+          errors: ['Name is required'],
         }),
         email: expect.objectContaining({
-          errors: ['Email is required']
+          errors: ['Email is required'],
         }),
         age: expect.objectContaining({
-          errors: ['Must be 18 or older']
-        })
-      })
+          errors: ['Must be 18 or older'],
+        }),
+      }),
     )
   })
 
@@ -4141,23 +4138,25 @@ describe('onSubmitInvalid callback', () => {
     const form = new FormApi({
       defaultValues: { name: '', email: 'invalid' },
       validators: {
-        onMount: ({ value }) => !value.name ? 'Name is required on mount' : undefined,
-        onSubmit: ({ value }) => !value.email.includes('@') ? 'Invalid email format' : undefined,
+        onMount: ({ value }) =>
+          !value.name ? 'Name is required on mount' : undefined,
+        onSubmit: ({ value }) =>
+          !value.email.includes('@') ? 'Invalid email format' : undefined,
       },
       onSubmitInvalid: ({ value, formApi, meta }) => {
         onInvalid(formApi.state.errors, formApi.state.canSubmit)
-      }
+      },
     })
-    
+
     form.mount()
     expect(form.state.canSubmit).toBe(false)
-    
+
     await form.handleSubmit()
-    
+
     expect(onInvalid).toHaveBeenCalledTimes(1)
     expect(onInvalid).toHaveBeenCalledWith(
       ['Name is required on mount', 'Invalid email format'],
-      false
+      false,
     )
   })
 
@@ -4166,22 +4165,22 @@ describe('onSubmitInvalid callback', () => {
     const form = new FormApi({
       defaultValues: { name: '' },
       validators: {
-        onSubmit: ({ value }) => !value.name ? 'Name is required' : undefined,
+        onSubmit: ({ value }) => (!value.name ? 'Name is required' : undefined),
       },
       onSubmitInvalid: ({ value, formApi, meta }) => {
         onInvalid(formApi.state.isSubmitting)
-      }
+      },
     })
-    
+
     form.mount()
-    
+
     expect(form.state.isSubmitting).toBe(false)
-    
+
     const submitPromise = form.handleSubmit()
     expect(form.state.isSubmitting).toBe(true)
-    
+
     await submitPromise
-    
+
     expect(onInvalid).toHaveBeenCalledWith(false)
     expect(form.state.isSubmitting).toBe(false)
   })
@@ -4195,11 +4194,11 @@ describe('onSubmitInvalid callback', () => {
       },
       onSubmitInvalid: ({ value }) => {
         onInvalid(value)
-      }
+      },
     })
-    
+
     await form.handleSubmit()
-    
+
     expect(onSubmit).toHaveBeenCalledTimes(1)
     expect(onInvalid).not.toHaveBeenCalled()
   })
@@ -4241,7 +4240,7 @@ describe('onSubmitInvalid callback', () => {
     })
 
     form.mount()
-    expect(form.state.canSubmit).toBe(true) 
+    expect(form.state.canSubmit).toBe(true)
 
     await form.handleSubmit()
 
@@ -4249,7 +4248,6 @@ describe('onSubmitInvalid callback', () => {
     expect(onSubmitInvalid).not.toHaveBeenCalled()
     expect(form.state.isSubmitting).toBe(false)
   })
-
 
   it('should call onSubmit when canSubmitWhenInvalid is true even with onMount errors', async () => {
     const onSubmitInvalid = vi.fn()
@@ -4265,12 +4263,12 @@ describe('onSubmitInvalid callback', () => {
     })
 
     form.mount()
-    
+
     expect(form.state.canSubmit).toBe(true)
-    expect(form.state.isValid).toBe(false) 
+    expect(form.state.isValid).toBe(false)
 
     await form.handleSubmit()
-    
+
     expect(onSubmit).toHaveBeenCalled()
     expect(onSubmitInvalid).not.toHaveBeenCalled()
   })
