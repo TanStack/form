@@ -1915,8 +1915,6 @@ export class FormApi<
       )
     })
 
-    if (!this.state.canSubmit) return
-
     const submitMetaArg =
       submitMeta ?? (this.options.onSubmitMeta as TSubmitMeta)
 
@@ -1940,8 +1938,7 @@ export class FormApi<
 
     await this.validate('submit')
 
-    // Fields are invalid, do not submit
-    if (!this.state.isValid) {
+    if (!this.state.canSubmit) {
       done()
       this.options.onSubmitInvalid?.({
         value: this.state.values,
