@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/react-form-devtools",
-  "version": "1.17.0",
+  "version": "0.0.1",
   "description": "Powerful, type-safe forms for React.",
   "author": "tannerlinsley",
   "license": "MIT",

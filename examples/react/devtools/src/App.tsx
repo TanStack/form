@@ -26,6 +26,17 @@ export default function App() {
     },
   })
 
+  const form2 = useForm({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+    },
+    onSubmit: async ({ value }) => {
+      // Do something with form data
+      console.log(value)
+    },
+  })
+
   return (
     <div>
       <h1>Form Devtools Example</h1>
@@ -47,16 +58,8 @@ export default function App() {
                   : value.length < 3
                     ? 'First name must be at least 3 characters'
                     : undefined,
-              onChangeAsyncDebounceMs: 500,
-              onChangeAsync: async ({ value }) => {
-                await new Promise((resolve) => setTimeout(resolve, 1000))
-                return (
-                  value.includes('error') && 'No "error" allowed in first name'
-                )
-              },
             }}
             children={(field) => {
-              // Avoid hasty abstractions. Render props are great!
               return (
                 <>
                   <label htmlFor={field.name}>First Name:</label>
@@ -73,6 +76,7 @@ export default function App() {
             }}
           />
         </div>
+
         <div>
           <form.Field
             name="lastName"
@@ -101,7 +105,6 @@ export default function App() {
               <button
                 type="reset"
                 onClick={(e) => {
-                  // Avoid unexpected resets of form elements (especially <select> elements)
                   e.preventDefault()
                   form.reset()
                 }}
@@ -112,6 +115,36 @@ export default function App() {
           )}
         />
       </form>
+
+      <div>
+        {/* A type-safe field component*/}
+        <form2.Field
+          name="firstName"
+          validators={{
+            onChange: ({ value }) =>
+              !value
+                ? 'A first name is required'
+                : value.length < 3
+                  ? 'First name must be at least 3 characters'
+                  : undefined,
+          }}
+          children={(field) => {
+            return (
+              <>
+                <label htmlFor={field.name}>2 First Name:</label>
+                <input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                <FieldInfo field={field} />
+              </>
+            )
+          }}
+        />
+      </div>
     </div>
   )
 }

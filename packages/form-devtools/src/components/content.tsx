@@ -1,12 +1,15 @@
-import { useBusListenerState } from '../contexts/eventClientContext'
+import { useFormStateArray } from '../contexts/eventClientContext'
 
 export default function Content() {
-  const eventBus = useBusListenerState()
+  const formStateArray = useFormStateArray()
 
   return (
     <div>
       <div>form devtools</div>
-      <div>{JSON.stringify(eventBus()?.state)}</div>
+
+      {formStateArray().map((form) => (
+        <div>{JSON.stringify(form)}</div>
+      ))}
     </div>
   )
 }

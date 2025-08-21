@@ -197,5 +197,25 @@ catalogs:
     '@tanstack/devtools-event-client': ^0.2.0
   conflicts_@tanstack/react-form-devtools_h1_17_0:
     '@tanstack/react-form-devtools': ^1.17.0
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_w:
+    '@tanstack/react-devtools': w
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_wo:
+    '@tanstack/react-devtools': wo
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_wor:
+    '@tanstack/react-devtools': wor
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_work:
+    '@tanstack/react-devtools': work
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_worka:
+    '@tanstack/react-devtools': worka
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_workap:
+    '@tanstack/react-devtools': workap
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_workaps:
+    '@tanstack/react-devtools': workaps
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_workapc:
+    '@tanstack/react-devtools': workapc
+  conflicts_conflicts_@tanstack/react-devtools_https://pkg_pr_new/TanStack/devtools/atanstack/reactmdevtoolsa0a0219b_0_4_3:
+    '@tanstack/react-devtools': 0.4.3
+  conflicts_conflicts_@tanstack/devtools-event-client_https://pkg_pr_new/TanStack/devtools/atanstack/devtoolsmeventmclienta11_h0_2_2:
+    '@tanstack/devtools-event-client': ^0.2.2
 overrides:
   cssstyle: 4.4.0

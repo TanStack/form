@@ -1251,7 +1251,8 @@ export class FormApi<
 
     this.store.subscribe(() => {
       DevtoolsEventClient.emit('form-state', {
-        state: this.store.state as never,
+        id: this._formId,
+        state: this.store.state,
       })
     })
   }
