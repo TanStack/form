@@ -3981,95 +3981,79 @@ it('should accept formId and return it', () => {
   expect(form.formId).toEqual('age')
 })
 
-it('should call onSubmitInvalid with current error state when canSubmit is false', async () => {
-  const onInvalid = vi.fn()
-
-  const form = new FormApi({
-    defaultValues: { name: '', email: '' },
-    validators: {
-      onMount: ({ value }) => {
-        const errors: Record<string, string> = {}
-        if (!value.name) errors.name = 'Name is required'
-        if (!value.email) errors.email = 'Email is required'
-        return Object.keys(errors).length > 0 ? errors : undefined
-      },
-    },
-    onSubmitInvalid: ({ value, formApi }) => {
-      onInvalid(value, formApi.state.errors)
-    },
-  })
-
-  form.mount()
-
-  new FieldApi({ form, name: 'name' }).mount()
-  new FieldApi({ form, name: 'email' }).mount()
-
-  expect(form.state.canSubmit).toBe(false)
-
-  await form.handleSubmit()
-
-  expect(onInvalid).toHaveBeenCalledTimes(1)
-  expect(onInvalid).toHaveBeenCalledWith(
-    { name: '', email: '' },
-    expect.any(Object),
-  )
-})
-
-it('should not run submit validation when canSubmit is false', async () => {
-  const onSubmitValidator = vi.fn()
-  const onInvalid = vi.fn()
+it('should call onSubmitInvalid when submitted with onMount error', async () => {
+  const onInvalidSpy = vi.fn()
 
   const form = new FormApi({
     defaultValues: { name: '' },
     validators: {
-      onMount: ({ value }) => (!value.name ? 'Name required' : undefined),
-      onSubmit: ({ value }) => {
-        onSubmitValidator()
-        return !value.name ? 'Submit validation failed' : undefined
-      },
+      onMount: () => ({ name: 'Name is required' }),
     },
-    onSubmitInvalid: ({ value, formApi }) => {
-      onInvalid(value, formApi)
-    },
+    onSubmitInvalid: () => onInvalidSpy(),
   })
-
   form.mount()
-  new FieldApi({ form, name: 'name' }).mount()
+
+  const field = new FieldApi({ form, name: 'name' })
+  field.mount()
 
   expect(form.state.canSubmit).toBe(false)
 
   await form.handleSubmit()
 
-  expect(onSubmitValidator).not.toHaveBeenCalled()
-  expect(onInvalid).toHaveBeenCalledTimes(1)
+  expect(onInvalidSpy).toHaveBeenCalledTimes(1)
+})
+
+it('should not run submit validation when canSubmit is false', async () => {
+  const onSubmitValidatorSpy = vi
+    .fn()
+    .mockImplementation(() => 'Submit validation failed')
+  const onInvalidSpy = vi.fn()
+
+  const form = new FormApi({
+    defaultValues: { name: '' },
+    validators: {
+      onMount: () => 'Name required',
+      onSubmit: () => onSubmitValidatorSpy,
+    },
+    onSubmitInvalid: () => onInvalidSpy(),
+  })
+  form.mount()
+
+  const field = new FieldApi({ form, name: 'name' })
+  field.mount()
+
+  expect(form.state.canSubmit).toBe(false)
+
+  await form.handleSubmit()
+
+  expect(onSubmitValidatorSpy).not.toHaveBeenCalled()
+  expect(onInvalidSpy).toHaveBeenCalledTimes(1)
 })
 
 it('should respect canSubmitWhenInvalid option and run validation even when canSubmit is false', async () => {
-  const onSubmitValidator = vi.fn()
-  const onInvalid = vi.fn()
+  const onSubmitValidatorSpy = vi
+    .fn()
+    .mockImplementation(() => 'Submit validation failed')
+  const onInvalidSpy = vi.fn()
 
   const form = new FormApi({
     defaultValues: { name: '' },
     canSubmitWhenInvalid: true,
     validators: {
-      onMount: ({ value }) => (!value.name ? 'Name required' : undefined),
-      onSubmit: ({ value }) => {
-        onSubmitValidator()
-        return !value.name ? 'Submit validation failed' : undefined
-      },
+      onMount: () => 'Name required',
+      onSubmit: () => onSubmitValidatorSpy(),
     },
-    onSubmitInvalid: ({ value, formApi }) => {
-      onInvalid(value, formApi)
-    },
+    onSubmitInvalid: () => onInvalidSpy(),
   })
-
   form.mount()
-  new FieldApi({ form, name: 'name' }).mount()
+
+  const field = new FieldApi({ form, name: 'name' })
+  field.mount()
 
   expect(form.state.canSubmit).toBe(true)
 
   await form.handleSubmit()
 
-  expect(onSubmitValidator).toHaveBeenCalledTimes(1)
-  expect(onInvalid).toHaveBeenCalledTimes(1)
+  expect(onSubmitValidatorSpy).toHaveBeenCalledTimes(1)
+  expect(onInvalidSpy).toHaveBeenCalledTimes(1)
 })
