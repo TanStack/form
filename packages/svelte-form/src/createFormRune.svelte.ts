@@ -131,7 +131,7 @@ interface CreateFormRuneProps<
 /**
  * @private
  */
-export type AppFieldExtendedReactFormApi<
+type AppFieldExtendedSvelteFormApi<
   TFormData,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
   TOnChange extends undefined | FormValidateOrFn<TFormData>,
@@ -179,61 +179,6 @@ export type AppFieldExtendedReactFormApi<
     AppForm: Component<{ children: Snippet }>
   }
 
-export interface WithFormProps<
-  TFormData,
-  TOnMount extends undefined | FormValidateOrFn<TFormData>,
-  TOnChange extends undefined | FormValidateOrFn<TFormData>,
-  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
-  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TSubmitMeta,
-  TFieldComponents extends Record<string, Component<any, any>>,
-  TFormComponents extends Record<string, Component<any, any>>,
-  TRenderProps extends object = Record<string, never>,
-> extends FormOptions<
-    TFormData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TOnServer,
-    TSubmitMeta
-  > {
-  // Optional, but adds props to the `render` function outside of `form`
-  props?: TRenderProps
-  render: (
-    props: NoInfer<TRenderProps> & {
-      form: AppFieldExtendedReactFormApi<
-        TFormData,
-        TOnMount,
-        TOnChange,
-        TOnChangeAsync,
-        TOnBlur,
-        TOnBlurAsync,
-        TOnSubmit,
-        TOnSubmitAsync,
-        TOnDynamic,
-        TOnDynamicAsync,
-        TOnServer,
-        TSubmitMeta,
-        TFieldComponents,
-        TFormComponents
-      >
-      children: Snippet
-    },
-  ) => SvelteComponent
-}
-
 export function createFormRune<
   const TComponents extends Record<string, Component<any, any>>,
   const TFormComponents extends Record<string, Component<any, any>>,
@@ -269,7 +214,7 @@ export function createFormRune<
       TOnServer,
       TSubmitMeta
     >,
-  ): AppFieldExtendedReactFormApi<
+  ): AppFieldExtendedSvelteFormApi<
     TFormData,
     TOnMount,
     TOnChange,
