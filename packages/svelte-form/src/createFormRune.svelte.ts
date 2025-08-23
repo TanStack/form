@@ -2,10 +2,7 @@ import { createForm } from './createForm.svelte'
 import type {
   AnyFieldApi,
   AnyFormApi,
-  BaseFormOptions,
-  DeepKeysOfType,
   FieldApi,
-  FieldsMap,
   FormAsyncValidateOrFn,
   FormOptions,
   FormValidateOrFn,
@@ -13,10 +10,9 @@ import type {
 import type { FieldComponent } from './types.js'
 import type { SvelteFormExtendedApi } from './createForm.svelte'
 import { Component, getContext, Snippet, SvelteComponent } from 'svelte'
-
-// We should never hit the `null` case here
-const fieldContextKey = "__tanstack_field_context_key"
-const formContextKey = "__tanstack_form_context_key"
+import AppFormSvelte from './AppForm.svelte'
+import AppFieldSvelte from './AppField.svelte'
+import { fieldContextKey, formContextKey } from './context-keys.js'
 
 /**
  * TypeScript inferencing is weird.
@@ -51,8 +47,8 @@ const formContextKey = "__tanstack_form_context_key"
 type UnwrapOrAny<T> = [unknown] extends [T] ? any : T
 type UnwrapDefaultOrAny<DefaultT, T> = [DefaultT] extends [T]
   ? [T] extends [DefaultT]
-    ? any
-    : T
+  ? any
+  : T
   : T
 
 export function createFormHookContexts() {
@@ -181,7 +177,7 @@ export type AppFieldExtendedReactFormApi<
       TSubmitMeta,
       NoInfer<TFieldComponents>
     >
-    AppForm: Component<{children: Snippet}>
+    AppForm: Component<{ children: Snippet }>
   }
 
 export interface WithFormProps<
@@ -201,23 +197,23 @@ export interface WithFormProps<
   TFormComponents extends Record<string, Component<any, any>>,
   TRenderProps extends object = Record<string, never>,
 > extends FormOptions<
-    TFormData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TOnServer,
-    TSubmitMeta
-  > {
+  TFormData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
+  TOnServer,
+  TSubmitMeta
+> {
   // Optional, but adds props to the `render` function outside of `form`
   props?: TRenderProps
   render: (
-    props: 
+    props:
       NoInfer<TRenderProps> & {
         form: AppFieldExtendedReactFormApi<
           TFormData,
@@ -295,52 +291,31 @@ export function createFormHook<
   > {
     const form = createForm(props)
 
-    const AppForm = useMemo(() => {
-      const AppForm = (({ children }) => {
-        return (
-          <formContext.Provider value={form}>{children}</formContext.Provider>
-        )
-      }) as ComponentType<PropsWithChildren>
-      return AppForm
-    }, [form])
+    const AppForm = ((internal, props) => {
+      return AppFormSvelte(internal, { ...props, form })
+    }) as Component<{ children: Snippet }>
 
-    const AppField = useMemo(() => {
-      const AppField = (({ children, ...props }) => {
-        return (
-          <form.Field {...props}>
-            {(field) => (
-              // eslint-disable-next-line @eslint-react/no-context-provider
-              <fieldContext.Provider value={field}>
-                {children(Object.assign(field, fieldComponents))}
-              </fieldContext.Provider>
-            )}
-          </form.Field>
-        )
-      }) as FieldComponent<
-        TFormData,
-        TOnMount,
-        TOnChange,
-        TOnChangeAsync,
-        TOnBlur,
-        TOnBlurAsync,
-        TOnSubmit,
-        TOnSubmitAsync,
-        TOnDynamic,
-        TOnDynamicAsync,
-        TOnServer,
-        TSubmitMeta,
-        TComponents
-      >
-      return AppField
-    }, [form])
+    const AppField = ((internal, props) => AppFieldSvelte(internal, { ...props, form } as never)) as FieldComponent<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer,
+      TSubmitMeta,
+      TComponents
+    >
 
-    const extendedForm = useMemo(() => {
-      return Object.assign(form, {
-        AppField,
-        AppForm,
-        ...formComponents,
-      })
-    }, [form, AppField, AppForm])
+    const extendedForm = Object.assign(form, {
+      AppField,
+      AppForm,
+      ...formComponents,
+    })
 
     return extendedForm
   }
