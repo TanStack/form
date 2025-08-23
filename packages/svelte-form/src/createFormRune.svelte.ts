@@ -1,4 +1,8 @@
+import { getContext } from 'svelte'
 import { createForm } from './createForm.svelte'
+import AppFormSvelte from './AppForm.svelte'
+import AppFieldSvelte from './AppField.svelte'
+import { fieldContextKey, formContextKey } from './context-keys.js'
 import type {
   AnyFieldApi,
   AnyFormApi,
@@ -9,10 +13,7 @@ import type {
 } from '@tanstack/form-core'
 import type { FieldComponent } from './types.js'
 import type { SvelteFormExtendedApi } from './createForm.svelte'
-import { Component, getContext, Snippet, SvelteComponent } from 'svelte'
-import AppFormSvelte from './AppForm.svelte'
-import AppFieldSvelte from './AppField.svelte'
-import { fieldContextKey, formContextKey } from './context-keys.js'
+import type { Component, Snippet, SvelteComponent } from 'svelte';
 
 /**
  * TypeScript inferencing is weird.
