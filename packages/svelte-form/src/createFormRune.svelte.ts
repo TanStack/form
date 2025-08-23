@@ -10,9 +10,9 @@ import type {
   FormOptions,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { FieldComponent } from './useField'
+import type { FieldComponent } from './types.js'
 import type { SvelteFormExtendedApi } from './createForm.svelte'
-import { getContext } from 'svelte'
+import { Component, getContext, Snippet, SvelteComponent } from 'svelte'
 
 // We should never hit the `null` case here
 const fieldContextKey = "__tanstack_field_context_key"
@@ -124,8 +124,8 @@ export function createFormHookContexts() {
 }
 
 interface CreateFormHookProps<
-  TFieldComponents extends Record<string, ComponentType<any>>,
-  TFormComponents extends Record<string, ComponentType<any>>,
+  TFieldComponents extends Record<string, Component<any, any>>,
+  TFormComponents extends Record<string, Component<any, any>>,
 > {
   fieldComponents: TFieldComponents
   fieldContext: Context<AnyFieldApi>
@@ -149,8 +149,8 @@ export type AppFieldExtendedReactFormApi<
   TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta,
-  TFieldComponents extends Record<string, ComponentType<any>>,
-  TFormComponents extends Record<string, ComponentType<any>>,
+  TFieldComponents extends Record<string, Component<any, any>>,
+  TFormComponents extends Record<string, Component<any, any>>,
 > = SvelteFormExtendedApi<
   TFormData,
   TOnMount,
@@ -181,7 +181,7 @@ export type AppFieldExtendedReactFormApi<
       TSubmitMeta,
       NoInfer<TFieldComponents>
     >
-    AppForm: ComponentType<PropsWithChildren>
+    AppForm: Component<{children: Snippet}>
   }
 
 export interface WithFormProps<
@@ -197,8 +197,8 @@ export interface WithFormProps<
   TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta,
-  TFieldComponents extends Record<string, ComponentType<any>>,
-  TFormComponents extends Record<string, ComponentType<any>>,
+  TFieldComponents extends Record<string, Component<any, any>>,
+  TFormComponents extends Record<string, Component<any, any>>,
   TRenderProps extends object = Record<string, never>,
 > extends FormOptions<
     TFormData,
@@ -217,7 +217,7 @@ export interface WithFormProps<
   // Optional, but adds props to the `render` function outside of `form`
   props?: TRenderProps
   render: (
-    props: PropsWithChildren<
+    props: 
       NoInfer<TRenderProps> & {
         form: AppFieldExtendedReactFormApi<
           TFormData,
@@ -234,15 +234,15 @@ export interface WithFormProps<
           TSubmitMeta,
           TFieldComponents,
           TFormComponents
-        >
+        >,
+        children: Snippet
       }
-    >,
-  ) => JSX.Element
+  ) => SvelteComponent
 }
 
 export function createFormHook<
-  const TComponents extends Record<string, ComponentType<any>>,
-  const TFormComponents extends Record<string, ComponentType<any>>,
+  const TComponents extends Record<string, Component<any, any>>,
+  const TFormComponents extends Record<string, Component<any, any>>,
 >({
   fieldComponents,
   fieldContext,
