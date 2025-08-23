@@ -51,14 +51,14 @@ type UnwrapDefaultOrAny<DefaultT, T> = [DefaultT] extends [T]
   : T
   : T
 
-export function createFormHookContexts() {
+export function createFormRuneContexts() {
   function useFieldContext<TData>() {
     const field = getContext(fieldContextKey) as AnyFieldApi;
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!field) {
       throw new Error(
-        '`fieldContext` only works when within a `fieldComponent` passed to `createFormHook`',
+        '`fieldContext` only works when within a `fieldComponent` passed to `createFormRune`',
       )
     }
 
@@ -95,7 +95,7 @@ export function createFormHookContexts() {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!form) {
       throw new Error(
-        '`formContext` only works when within a `formComponent` passed to `createFormHook`',
+        '`formContext` only works when within a `formComponent` passed to `createFormRune`',
       )
     }
 
@@ -119,7 +119,7 @@ export function createFormHookContexts() {
   return { fieldContext: fieldContextKey, useFieldContext, useFormContext, formContext: formContextKey }
 }
 
-interface CreateFormHookProps<
+interface CreateFormRuneProps<
   TFieldComponents extends Record<string, Component<any, any>>,
   TFormComponents extends Record<string, Component<any, any>>,
 > {
@@ -236,7 +236,7 @@ export interface WithFormProps<
   ) => SvelteComponent
 }
 
-export function createFormHook<
+export function createFormRune<
   const TComponents extends Record<string, Component<any, any>>,
   const TFormComponents extends Record<string, Component<any, any>>,
 >({
@@ -244,7 +244,7 @@ export function createFormHook<
   fieldContext,
   formContext,
   formComponents,
-}: CreateFormHookProps<TComponents, TFormComponents>) {
+}: CreateFormRuneProps<TComponents, TFormComponents>) {
   function useAppForm<
     TFormData,
     TOnMount extends undefined | FormValidateOrFn<TFormData>,
