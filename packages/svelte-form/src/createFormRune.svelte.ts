@@ -241,7 +241,7 @@ export function createFormRune<
   fieldComponents,
   formComponents,
 }: CreateFormRuneProps<TComponents, TFormComponents>) {
-  function useAppForm<
+  function createAppForm<
     TFormData,
     TOnMount extends undefined | FormValidateOrFn<TFormData>,
     TOnChange extends undefined | FormValidateOrFn<TFormData>,
@@ -291,7 +291,7 @@ export function createFormRune<
       return AppFormSvelte(internal, { ...props, form })
     }) as Component<{ children: Snippet }>
 
-    const AppField = ((internal, props) => AppFieldSvelte(internal, { ...props, form, fieldComponents } as never)) as FieldComponent<
+    const AppField = ((internal, {children, ...fieldProps}) => AppFieldSvelte(internal, { fieldProps, form, fieldComponents, children } as never)) as FieldComponent<
       TFormData,
       TOnMount,
       TOnChange,
@@ -317,6 +317,6 @@ export function createFormRune<
   }
 
   return {
-    useAppForm,
+    createAppForm,
   }
 }

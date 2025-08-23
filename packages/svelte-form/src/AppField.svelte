@@ -7,11 +7,12 @@
     form: any
     fieldComponents: any
     children: Snippet
+    fieldProps: any
   }
-  const { children, form, fieldComponents }: Props = $props()
+  const { children, form, fieldComponents, fieldProps }: Props = $props()
 </script>
 
-<form.Field name="fullName">
+<form.Field {...fieldProps}>
   {#snippet children(field: any)}
     <InnerAppField field={field} children={children} fieldComponents={fieldComponents}/>
   {/snippet}
