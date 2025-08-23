@@ -5,13 +5,14 @@
 
   interface Props {
     form: any
+    fieldComponents: any
     children: Snippet
   }
-  const { children, form }: Props = $props()
+  const { children, form, fieldComponents }: Props = $props()
 </script>
 
 <form.Field name="fullName">
   {#snippet children(field: any)}
-    <InnerAppField field={field} children={children}/>
+    <InnerAppField field={field} children={children} fieldComponents={fieldComponents}/>
   {/snippet}
 </form.Field>

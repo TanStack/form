@@ -116,7 +116,7 @@ export function createFormRuneContexts() {
     >
   }
 
-  return { fieldContext: fieldContextKey, useFieldContext, useFormContext, formContext: formContextKey }
+  return { useFieldContext, useFormContext }
 }
 
 interface CreateFormRuneProps<
@@ -124,9 +124,7 @@ interface CreateFormRuneProps<
   TFormComponents extends Record<string, Component<any, any>>,
 > {
   fieldComponents: TFieldComponents
-  fieldContext: Context<AnyFieldApi>
   formComponents: TFormComponents
-  formContext: Context<AnyFormApi>
 }
 
 /**
@@ -241,8 +239,6 @@ export function createFormRune<
   const TFormComponents extends Record<string, Component<any, any>>,
 >({
   fieldComponents,
-  fieldContext,
-  formContext,
   formComponents,
 }: CreateFormRuneProps<TComponents, TFormComponents>) {
   function useAppForm<
@@ -295,7 +291,7 @@ export function createFormRune<
       return AppFormSvelte(internal, { ...props, form })
     }) as Component<{ children: Snippet }>
 
-    const AppField = ((internal, props) => AppFieldSvelte(internal, { ...props, form } as never)) as FieldComponent<
+    const AppField = ((internal, props) => AppFieldSvelte(internal, { ...props, form, fieldComponents } as never)) as FieldComponent<
       TFormData,
       TOnMount,
       TOnChange,
@@ -320,64 +316,7 @@ export function createFormRune<
     return extendedForm
   }
 
-  function withForm<
-    TFormData,
-    TOnMount extends undefined | FormValidateOrFn<TFormData>,
-    TOnChange extends undefined | FormValidateOrFn<TFormData>,
-    TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-    TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-    TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-    TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-    TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-    TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
-    TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-    TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-    TSubmitMeta,
-    TRenderProps extends object = {},
-  >({
-    render,
-    props,
-  }: WithFormProps<
-    TFormData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TOnServer,
-    TSubmitMeta,
-    TComponents,
-    TFormComponents,
-    TRenderProps
-  >): WithFormProps<
-    UnwrapOrAny<TFormData>,
-    UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnMount>,
-    UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnChange>,
-    UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnChangeAsync>,
-    UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnBlur>,
-    UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnBlurAsync>,
-    UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnSubmit>,
-    UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnSubmitAsync>,
-    UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnDynamic>,
-    UnwrapDefaultOrAny<
-      undefined | FormValidateOrFn<TFormData>,
-      TOnDynamicAsync
-    >,
-    UnwrapDefaultOrAny<undefined | FormValidateOrFn<TFormData>, TOnServer>,
-    UnwrapOrAny<TSubmitMeta>,
-    UnwrapOrAny<TComponents>,
-    UnwrapOrAny<TFormComponents>,
-    UnwrapOrAny<TRenderProps>
-  >['render'] {
-    return (innerProps) => render({ ...props, ...innerProps })
-  }
-
   return {
     useAppForm,
-    withForm,
   }
 }

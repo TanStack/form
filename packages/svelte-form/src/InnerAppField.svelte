@@ -5,12 +5,13 @@
 
   interface Props {
     field: any
-    children: Snippet
+    fieldComponents: any
+    children: Snippet<[any]>
   }
 
-  const { children, field }: Props = $props()
+  const { children, field, fieldComponents }: Props = $props()
 
   setContext(fieldContextKey, field)
 </script>
 
-{@render children?.()}
+{@render children?.(Object.assign(field, fieldComponents))}
