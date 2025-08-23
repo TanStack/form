@@ -13,7 +13,7 @@ import type {
 } from '@tanstack/form-core'
 import type { FieldComponent } from './types.js'
 import type { SvelteFormExtendedApi } from './createForm.svelte'
-import type { Component, Snippet, SvelteComponent } from 'svelte';
+import type { Component, Snippet, SvelteComponent } from 'svelte'
 
 /**
  * TypeScript inferencing is weird.
