@@ -23,20 +23,20 @@ export type CreateFieldOptions<
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChangeAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnBlurAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnSubmitAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnDynamicAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
@@ -136,20 +136,20 @@ export type FieldComponent<
     TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
     TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
     TOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+      | undefined
+      | FieldAsyncValidateOrFn<TParentData, TName, TData>,
     TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
     TOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+      | undefined
+      | FieldAsyncValidateOrFn<TParentData, TName, TData>,
     TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
     TOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+      | undefined
+      | FieldAsyncValidateOrFn<TParentData, TName, TData>,
     TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
     TOnDynamicAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+      | undefined
+      | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   >(
     internal: any,
     {
@@ -185,66 +185,66 @@ export type FieldComponent<
       'form'
     >,
   ) => {}) &
-  (new <
-    TName extends DeepKeys<TParentData>,
-    TData extends DeepValue<TParentData, TName>,
-    TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-    TOnChange extends
-    | undefined
-    | FieldValidateOrFn<TParentData, TName, TData>,
-    TOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-    TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
-    TOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-    TOnSubmit extends
-    | undefined
-    | FieldValidateOrFn<TParentData, TName, TData>,
-    TOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-    TOnDynamic extends
-    | undefined
-    | FieldValidateOrFn<TParentData, TName, TData>,
-    TOnDynamicAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-  >(
-    opts: ComponentConstructorOptions<
-      Omit<
-        FieldComponentProps<
-          TParentData,
-          TName,
-          TData,
-          TOnMount,
-          TOnChange,
-          TOnChangeAsync,
-          TOnBlur,
-          TOnBlurAsync,
-          TOnSubmit,
-          TOnSubmitAsync,
-          TOnDynamic,
-          TOnDynamicAsync,
-          TFormOnMount,
-          TFormOnChange,
-          TFormOnChangeAsync,
-          TFormOnBlur,
-          TFormOnBlurAsync,
-          TFormOnSubmit,
-          TFormOnSubmitAsync,
-          TFormOnDynamic,
-          TFormOnDynamicAsync,
-          TFormOnServer,
-          TParentSubmitMeta,
-          ExtendedApi
-        >,
-        'form'
-      >
-    >,
-  ) => SvelteComponent) &
-  WithoutFunction<Component>
+    (new <
+      TName extends DeepKeys<TParentData>,
+      TData extends DeepValue<TParentData, TName>,
+      TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+      TOnChange extends
+        | undefined
+        | FieldValidateOrFn<TParentData, TName, TData>,
+      TOnChangeAsync extends
+        | undefined
+        | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+      TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
+      TOnBlurAsync extends
+        | undefined
+        | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+      TOnSubmit extends
+        | undefined
+        | FieldValidateOrFn<TParentData, TName, TData>,
+      TOnSubmitAsync extends
+        | undefined
+        | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+      TOnDynamic extends
+        | undefined
+        | FieldValidateOrFn<TParentData, TName, TData>,
+      TOnDynamicAsync extends
+        | undefined
+        | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    >(
+      opts: ComponentConstructorOptions<
+        Omit<
+          FieldComponentProps<
+            TParentData,
+            TName,
+            TData,
+            TOnMount,
+            TOnChange,
+            TOnChangeAsync,
+            TOnBlur,
+            TOnBlurAsync,
+            TOnSubmit,
+            TOnSubmitAsync,
+            TOnDynamic,
+            TOnDynamicAsync,
+            TFormOnMount,
+            TFormOnChange,
+            TFormOnChangeAsync,
+            TFormOnBlur,
+            TFormOnBlurAsync,
+            TFormOnSubmit,
+            TFormOnSubmitAsync,
+            TFormOnDynamic,
+            TFormOnDynamicAsync,
+            TFormOnServer,
+            TParentSubmitMeta,
+            ExtendedApi
+          >,
+          'form'
+        >
+      >,
+    ) => SvelteComponent) &
+    WithoutFunction<Component>
 
 type FieldComponentProps<
   TParentData,
@@ -253,20 +253,20 @@ type FieldComponentProps<
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChangeAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnBlurAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnSubmitAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnDynamicAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
@@ -306,7 +306,8 @@ type FieldComponentProps<
         TFormOnDynamicAsync,
         TFormOnServer,
         TParentSubmitMeta
-      > & ExtendedApi,
+      > &
+        ExtendedApi,
     ]
   >
 } & Omit<
@@ -357,20 +358,20 @@ export type CreateField<
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChangeAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnBlurAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnSubmitAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnDynamicAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TSubmitMeta,
 >(
   opts: () => { name: Narrow<TName> } & Omit<
@@ -426,17 +427,17 @@ export type CreateField<
   TFormOnServer,
   TParentSubmitMeta
 > &
-    SvelteFieldApi<
-      TParentData,
-      TFormOnMount,
-      TFormOnChange,
-      TFormOnChangeAsync,
-      TFormOnBlur,
-      TFormOnBlurAsync,
-      TFormOnSubmit,
-      TFormOnSubmitAsync,
-      TFormOnDynamic,
-      TFormOnDynamicAsync,
-      TFormOnServer,
-      TParentSubmitMeta
-    >
+  SvelteFieldApi<
+    TParentData,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
+    TFormOnServer,
+    TParentSubmitMeta
+  >

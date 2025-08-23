@@ -31,6 +31,8 @@ describe('Svelte Tests', () => {
     await userEvent.type(firstName, firstNameValue)
 
     const form = JSON.parse(element.querySelector('pre')!.textContent!)
-    expect(form.values.firstName).toBe(getSampleData().firstName + firstNameValue)
+    expect(form.values.firstName).toBe(
+      getSampleData().firstName + firstNameValue,
+    )
   })
 })

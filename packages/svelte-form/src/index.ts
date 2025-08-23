@@ -8,4 +8,7 @@ export { default as Field, createField } from './Field.svelte'
 
 export type { CreateField, FieldComponent } from './types.js'
 
-export { createFormRune, createFormRuneContexts } from "./createFormRune.svelte.js"
+export {
+  createFormRune,
+  createFormRuneContexts,
+} from './createFormRune.svelte.js'

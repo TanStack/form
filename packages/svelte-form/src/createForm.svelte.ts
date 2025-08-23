@@ -179,7 +179,6 @@ export interface SvelteFormApi<
     WithoutFunction<Component>
 }
 
-
 /**
  * An extended version of the `FormApi` class that includes Svelte-specific functionalities from `SvelteFormApi`
  */
@@ -224,7 +223,6 @@ export type SvelteFormExtendedApi<
     TOnServer,
     TSubmitMeta
   >
-
 
 export function createForm<
   TParentData,

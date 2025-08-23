@@ -47,13 +47,13 @@ import { fieldContextKey, formContextKey } from './context-keys.js'
 type UnwrapOrAny<T> = [unknown] extends [T] ? any : T
 type UnwrapDefaultOrAny<DefaultT, T> = [DefaultT] extends [T]
   ? [T] extends [DefaultT]
-  ? any
-  : T
+    ? any
+    : T
   : T
 
 export function createFormRuneContexts() {
   function useFieldContext<TData>() {
-    const field = getContext(fieldContextKey) as AnyFieldApi;
+    const field = getContext(fieldContextKey) as AnyFieldApi
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!field) {
@@ -195,42 +195,41 @@ export interface WithFormProps<
   TFormComponents extends Record<string, Component<any, any>>,
   TRenderProps extends object = Record<string, never>,
 > extends FormOptions<
-  TFormData,
-  TOnMount,
-  TOnChange,
-  TOnChangeAsync,
-  TOnBlur,
-  TOnBlurAsync,
-  TOnSubmit,
-  TOnSubmitAsync,
-  TOnDynamic,
-  TOnDynamicAsync,
-  TOnServer,
-  TSubmitMeta
-> {
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TOnServer,
+    TSubmitMeta
+  > {
   // Optional, but adds props to the `render` function outside of `form`
   props?: TRenderProps
   render: (
-    props:
-      NoInfer<TRenderProps> & {
-        form: AppFieldExtendedReactFormApi<
-          TFormData,
-          TOnMount,
-          TOnChange,
-          TOnChangeAsync,
-          TOnBlur,
-          TOnBlurAsync,
-          TOnSubmit,
-          TOnSubmitAsync,
-          TOnDynamic,
-          TOnDynamicAsync,
-          TOnServer,
-          TSubmitMeta,
-          TFieldComponents,
-          TFormComponents
-        >,
-        children: Snippet
-      }
+    props: NoInfer<TRenderProps> & {
+      form: AppFieldExtendedReactFormApi<
+        TFormData,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TOnDynamic,
+        TOnDynamicAsync,
+        TOnServer,
+        TSubmitMeta,
+        TFieldComponents,
+        TFormComponents
+      >
+      children: Snippet
+    },
   ) => SvelteComponent
 }
 
@@ -291,7 +290,13 @@ export function createFormRune<
       return AppFormSvelte(internal, { ...props, form })
     }) as Component<{ children: Snippet }>
 
-    const AppField = ((internal, {children, ...fieldProps}) => AppFieldSvelte(internal, { fieldProps, form, fieldComponents, children } as never)) as FieldComponent<
+    const AppField = ((internal, { children, ...fieldProps }) =>
+      AppFieldSvelte(internal, {
+        fieldProps,
+        form,
+        fieldComponents,
+        children,
+      } as never)) as FieldComponent<
       TFormData,
       TOnMount,
       TOnChange,
