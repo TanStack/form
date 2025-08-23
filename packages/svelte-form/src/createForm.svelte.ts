@@ -179,6 +179,53 @@ export interface SvelteFormApi<
     WithoutFunction<Component>
 }
 
+
+/**
+ * An extended version of the `FormApi` class that includes Svelte-specific functionalities from `SvelteFormApi`
+ */
+export type SvelteFormExtendedApi<
+  TFormData,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
+> = FormApi<
+  TFormData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
+  TOnServer,
+  TSubmitMeta
+> &
+  SvelteFormApi<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TOnServer,
+    TSubmitMeta
+  >
+
+
 export function createForm<
   TParentData,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
@@ -241,10 +288,10 @@ export function createForm<
 
   // @ts-expect-error constructor definition exists only on a type level
   extendedApi.Field = (internal, props) =>
-    Field(internal, { ...props, form: api })
+    Field(internal, { ...props, form: api as never } as never)
   extendedApi.createField = (props) =>
     createField(() => {
-      return { ...props(), form: api }
+      return { ...props(), form: api } as never
     }) as never // Type cast because else "Error: Type instantiation is excessively deep and possibly infinite."
   extendedApi.useStore = (selector) => useStore(api.store, selector)
   // @ts-expect-error constructor definition exists only on a type level
