@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "@tanstack/react-form": "^1.19.2",
-    "@tanstack/react-router": "^1.131.25",
-    "@tanstack/react-start": "^1.131.25",
-    "@tanstack/react-store": "^0.7.3",
+    "@tanstack/react-router": "^1.131.27",
+    "@tanstack/react-start": "^1.131.27",
+    "@tanstack/react-store": "^0.7.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -22,7 +22,7 @@
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.7.0",
     "typescript": "5.8.2",
-    "vite": "^7.1.2",
+    "vite": "^7.1.3",
     "vite-tsconfig-paths": "^5.1.4"
   }
 }

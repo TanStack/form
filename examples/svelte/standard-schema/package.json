@@ -11,15 +11,15 @@
   "dependencies": {
     "@tanstack/svelte-form": "^1.19.2",
     "arktype": "^2.1.20",
-    "effect": "^3.17.7",
+    "effect": "^3.17.9",
     "valibot": "^1.1.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.1.1",
-    "@tsconfig/svelte": "^5.0.4",
-    "svelte": "^5.38.1",
+    "@tsconfig/svelte": "^5.0.5",
+    "svelte": "^5.38.3",
     "typescript": "5.8.2",
-    "vite": "^7.1.2"
+    "vite": "^7.1.3"
   }
 }
