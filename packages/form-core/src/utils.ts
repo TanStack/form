@@ -539,3 +539,18 @@ export function createFieldMap<T>(values: Readonly<T>): { [K in keyof T]: K } {
 
   return output
 }
+
+/**
+ * Merge the first parameter with the given overrides.
+ * @private
+ */
+export function mergeOpts<T>(
+  originalOpts: T | undefined | null,
+  overrides: T,
+): T {
+  if (originalOpts === undefined || originalOpts === null) {
+    return overrides
+  }
+
+  return { ...originalOpts, ...overrides }
+}
