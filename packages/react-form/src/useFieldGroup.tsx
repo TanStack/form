@@ -210,22 +210,14 @@ export function useFieldGroup<
       return <form.AppForm {...appFormProps} />
     }
 
-    extendedApi.AppField = function AppField({ name, ...appFieldProps }) {
+    extendedApi.AppField = function AppField(props) {
       return (
-        <form.AppField
-          name={formLensApi.getFormFieldName(name)}
-          {...(appFieldProps as any)}
-        />
-      ) as never
+        <form.AppField {...(formLensApi.getFormFieldOptions(props) as any)} />
+      )
     }
 
-    extendedApi.Field = function Field({ name, ...fieldProps }) {
-      return (
-        <form.Field
-          name={formLensApi.getFormFieldName(name)}
-          {...(fieldProps as any)}
-        />
-      ) as never
+    extendedApi.Field = function Field(props) {
+      return <form.Field {...(formLensApi.getFormFieldOptions(props) as any)} />
     }
 
     extendedApi.Subscribe = function Subscribe(props: any) {
