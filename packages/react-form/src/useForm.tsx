@@ -1,18 +1,17 @@
-import { FormApi, functionalUpdate } from '@tanstack/form-core'
+import { FormApi, formEventClient, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
-import { useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
   AnyFormApi,
   AnyFormState,
-  BaseFormOptions,
   FormAsyncValidateOrFn,
   FormOptions,
   FormState,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { ComponentType, JSX, PropsWithChildren, ReactNode } from 'react'
+import type { PropsWithChildren, ReactNode } from 'react'
 import type { FieldComponent } from './useField'
 import type { NoInfer } from '@tanstack/react-store'
 
@@ -183,6 +182,10 @@ export function useForm<
     TSubmitMeta
   >,
 ) {
+  const formId = useId()
+
+  const options = opts?.formId ? opts : { ...opts, formId: formId }
+
   const [formApi] = useState(() => {
     const api = new FormApi<
       TFormData,
@@ -197,7 +200,7 @@ export function useForm<
       TOnDynamicAsync,
       TOnServer,
       TSubmitMeta
-    >(opts)
+    >(options)
 
     const extendedApi: ReactFormExtendedApi<
       TFormData,
@@ -239,6 +242,17 @@ export function useForm<
    */
   useIsomorphicLayoutEffect(() => {
     formApi.update(opts)
+  })
+
+  /**
+   * clean up for devtools
+   */
+  useIsomorphicLayoutEffect(() => {
+    return () => {
+      formEventClient.emit('broadcast-form-unmounted', {
+        id: formId,
+      })
+    }
   })
 
   return formApi

@@ -12,7 +12,7 @@ createRoot(document.getElementById('root')!).render(
 
     <TanStackDevtools
       config={{ hideUntilHover: true }}
-      eventBusConfig={{ debug: true }}
+      // eventBusConfig={{ debug: true }}
       plugins={[
         {
           name: 'Tanstack Form',

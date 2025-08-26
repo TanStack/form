@@ -5,7 +5,7 @@ import {
   onCleanup,
   useContext,
 } from 'solid-js'
-import { DevtoolsEventClient } from '@tanstack/form-core'
+import { formEventClient } from '@tanstack/form-core'
 
 import type { ParentComponent } from 'solid-js'
 import type { AnyFormState } from '@tanstack/form-core'
@@ -22,6 +22,12 @@ const updateOrAddToArray = (
   // Add new item
   return [...oldArray, newItem]
 }
+const removeFromArray = (
+  oldArray: Array<{ id: string; state: AnyFormState }>,
+  removedItem: string,
+): Array<{ id: string; state: AnyFormState }> => {
+  return oldArray.filter((item) => item.id !== removedItem)
+}
 
 function useProviderValue() {
   const [formStateArray, setFormStateArray] = createSignal<
@@ -29,13 +35,28 @@ function useProviderValue() {
   >([])
 
   createEffect(() => {
-    const cleanup = DevtoolsEventClient.on('form-state', (_e) => {
+    const cleanup = formEventClient.on('broadcast-form-state', (_e) => {
       const e = _e as unknown as {
         type: string
         payload: { id: string; state: AnyFormState }
       }
 
       setFormStateArray(updateOrAddToArray(formStateArray(), e.payload))
+    })
+
+    onCleanup(() => cleanup())
+  })
+
+  createEffect(() => {
+    const cleanup = formEventClient.on('broadcast-form-unmounted', (_e) => {
+      const e = _e as unknown as {
+        type: string
+        payload: { id: string }
+      }
+
+      console.log('unmounted', e)
+
+      setFormStateArray(removeFromArray(formStateArray(), e.payload.id))
     })
 
     onCleanup(() => cleanup())

@@ -15,5 +15,5 @@ export function FormDevtools(): React.ReactElement | null {
     }
   }, [devtools])
 
-  return <div ref={ref}></div>
+  return <div style={{ height: '100%' }} ref={ref}></div>
 }

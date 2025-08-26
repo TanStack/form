@@ -27,9 +27,10 @@ export default function App() {
   })
 
   const form2 = useForm({
+    formId: 'hello',
     defaultValues: {
-      firstName: '',
-      lastName: '',
+      secondFirstName: '',
+      secondLastName: '',
     },
     onSubmit: async ({ value }) => {
       // Do something with form data
@@ -116,10 +117,11 @@ export default function App() {
         />
       </form>
 
+      <h1>Form Devtools Example 2</h1>
       <div>
         {/* A type-safe field component*/}
         <form2.Field
-          name="firstName"
+          name="secondFirstName"
           validators={{
             onChange: ({ value }) =>
               !value

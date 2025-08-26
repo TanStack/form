@@ -30,6 +30,7 @@ catalog:
   '@tanstack/devtools-event-clie': https://pkg.pr.new/TanStack/devtools/@tanstack/devtools-event-client
   '@tanstack/devtools-event-clien': https://pkg.pr.new/TanStack/devtools/@tanstack/devtools-event-client
   '@tanstack/devtools-event-client': https://pkg.pr.new/TanStack/devtools/@tanstack/devtools-event-client
+  '@tanstack/devtools-ui': ^0.3.1
   '@tanstack/react--devtools': 0.2.0
   '@tanstack/react-devtools': https://pkg.pr.new/TanStack/devtools/@tanstack/react-devtools@11
   '@tanstack/react-form': ^1.17.0
@@ -52,11 +53,14 @@ catalog:
   '@vitest/coverage-istanbul': ^3.2.3
   arktype: ^2.1.20
   babel-plugin-react-compiler: 19.0.0-beta-ebf51a3-20250411
+  clsx: ^2.1.1
+  dayjs: ^1.11.13
   decode-formdata: ^0.9.0
   devalue: ^5.1.1
   eslint: 9.32.0
   eslint-plugin-react-compiler: 19.0.0-beta-ebf51a3-20250411
   eslint-plugin-react-hooks: ^5.2.0
+  goober: ^2.1.16
   jsdom: ^26.1.0
   knip: ^5.61.0
   lit: ^3.3.0

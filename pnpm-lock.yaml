@@ -134,7 +134,7 @@ importers:
     devDependencies:
       '@angular-devkit/build-angular':
         specifier: ^20.0.0
-        version: 20.0.5(76ecc4c34b81a4060af826234478a183)
+        version: 20.0.5(454e04673bed95c3d186db30149c134f)
       '@angular/cli':
         specifier: ^20.0.0
         version: 20.0.5(@types/node@24.1.0)(chokidar@4.0.3)
@@ -186,7 +186,7 @@ importers:
     devDependencies:
       '@angular-devkit/build-angular':
         specifier: ^20.0.0
-        version: 20.0.5(454e04673bed95c3d186db30149c134f)
+        version: 20.0.5(76ecc4c34b81a4060af826234478a183)
       '@angular/cli':
         specifier: ^20.0.0
         version: 20.0.5(@types/node@24.1.0)(chokidar@4.0.3)
@@ -1139,9 +1139,24 @@ importers:
 
   packages/form-devtools:
     dependencies:
+      '@tanstack/devtools-ui':
+        specifier: ^0.3.1
+        version: 0.3.1(csstype@3.1.3)(solid-js@1.9.7)
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../form-core
+      '@tanstack/solid-store':
+        specifier: ^0.7.3
+        version: 0.7.3(solid-js@1.9.7)
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
+      dayjs:
+        specifier: ^1.11.13
+        version: 1.11.13
+      goober:
+        specifier: ^2.1.16
+        version: 2.1.16(csstype@3.1.3)
     devDependencies:
       solid-js:
         specifier: ^1.9.7
@@ -6247,6 +6262,9 @@ packages:
   data-urls@5.0.0:
     resolution: {integrity: sha512-ZYP5VBHshaDAiVZxjbRVcFJpc+4xGgT0bK3vzy1HLN8jTO975HEbuYzZJcHoQEY5K1a0z8YayJkyVETa08eNTg==}
     engines: {node: '>=18'}
+
+  dayjs@1.11.13:
+    resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
 
   db0@0.3.2:
     resolution: {integrity: sha512-xzWNQ6jk/+NtdfLyXEipbX55dmDSeteLFt/ayF+wZUU5bzKgmrDOxmInUTbyVRp46YwnJdkDA1KhB7WIXFofJw==}
@@ -17375,6 +17393,8 @@ snapshots:
     dependencies:
       whatwg-mimetype: 4.0.0
       whatwg-url: 14.2.0
+
+  dayjs@1.11.13: {}
 
   db0@0.3.2: {}
 

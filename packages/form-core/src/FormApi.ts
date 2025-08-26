@@ -18,7 +18,7 @@ import {
   standardSchemaValidators,
 } from './standardSchemaValidator'
 import { defaultFieldMeta, metaHelper } from './metaHelper'
-import { DevtoolsEventClient } from './EventClient'
+import { formEventClient } from './EventClient'
 import type { ValidationLogicFn } from './ValidationLogic'
 import type {
   StandardSchemaV1,
@@ -1250,10 +1250,23 @@ export class FormApi<
     this.update(opts || {})
 
     this.store.subscribe(() => {
-      DevtoolsEventClient.emit('form-state', {
+      formEventClient.emit('broadcast-form-state', {
         id: this._formId,
         state: this.store.state,
       })
+    })
+
+    formEventClient.on('request-form-state', (_e) => {
+      const e = _e as unknown as {
+        id: string
+      }
+
+      if (e.id === this._formId) {
+        formEventClient.emit('broadcast-form-state', {
+          id: this._formId,
+          state: this.store.state,
+        })
+      }
     })
   }
 

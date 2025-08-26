@@ -1,10 +1,11 @@
 import { FormEventClientProvider } from '../contexts/eventClientContext'
-import Content from './content'
+
+import { Shell } from './Shell'
 
 export function Devtools() {
   return (
     <FormEventClientProvider>
-      <Content />
+      <Shell />
     </FormEventClientProvider>
   )
 }
