@@ -648,6 +648,24 @@ describe('evaluate', () => {
     )
     expect(objComplexTrue).toEqual(true)
   })
+
+  it('should test equality between Date objects', () => {
+    const date1 = new Date('2025-01-01T00:00:00.000Z')
+    const date2 = new Date('2025-01-01T00:00:00.000Z')
+    const date3 = new Date('2025-01-02T00:00:00.000Z')
+
+    const dateTrue = evaluate(date1, date2)
+    expect(dateTrue).toEqual(true)
+
+    const dateFalse = evaluate(date1, date3)
+    expect(dateFalse).toEqual(false)
+
+    const dateObjectTrue = evaluate({ date: date1 }, { date: date2 })
+    expect(dateObjectTrue).toEqual(true)
+
+    const dateObjectFalse = evaluate({ date: date1 }, { date: date3 })
+    expect(dateObjectFalse).toEqual(false)
+  })
 })
 
 describe('concatenatePaths', () => {
