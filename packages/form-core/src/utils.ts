@@ -543,4 +543,3 @@ export function createFieldMap<T>(values: Readonly<T>): { [K in keyof T]: K } {
 
   return output
 }
-
