@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
 import { FieldApi, FieldGroupApi, FormApi } from '../src/index'
-import { defaultFieldMeta } from '../src/metaHelper'
 
 describe('field group api', () => {
   type Person = {
@@ -918,5 +917,144 @@ describe('field group api', () => {
     expect(group.getFormFieldName('complexValue.prop1')).toBe(
       'complexValue.prop1',
     )
+  })
+
+  it('should remap the name of field options correctly', () => {
+    const form = new FormApi({
+      defaultValues: {
+        user: {
+          profile: {
+            personal: {
+              firstName: '',
+              lastName: '',
+              email: '',
+            },
+            preferences: {
+              theme: 'light',
+              notifications: true,
+            },
+          },
+          settings: {
+            privacy: {
+              shareData: false,
+              allowMarketing: true,
+            },
+          },
+        },
+        alternateProfile: {
+          firstName: '',
+          lastName: '',
+          email: '',
+        },
+      },
+    })
+    form.mount()
+
+    const fieldGroupString = new FieldGroupApi({
+      form,
+      fields: 'user.profile.personal',
+      defaultValues: { firstName: '' },
+    })
+    fieldGroupString.mount()
+
+    const props1 = {
+      name: 'firstName',
+    }
+    const remappedProps1 = fieldGroupString.getFormFieldOptions(props1)
+    expect(remappedProps1.name).toBe('user.profile.personal.firstName')
+
+    const fieldGroupObject = new FieldGroupApi({
+      form,
+      fields: {
+        firstName: 'alternateProfile.firstName',
+        lastName: 'alternateProfile.lastName',
+        email: 'alternateProfile.email',
+      },
+      defaultValues: { firstName: '' },
+    })
+    fieldGroupObject.mount()
+
+    const props2 = {
+      name: 'firstName',
+    }
+    const remappedProps2 = fieldGroupObject.getFormFieldOptions(props2)
+    expect(remappedProps2.name).toBe('alternateProfile.firstName')
+  })
+
+  it('should remap listener paths with its remapFieldProps method', () => {
+    const form = new FormApi({
+      defaultValues: {
+        user: {
+          profile: {
+            personal: {
+              firstName: '',
+              lastName: '',
+              email: '',
+            },
+            preferences: {
+              theme: 'light',
+              notifications: true,
+            },
+          },
+          settings: {
+            privacy: {
+              shareData: false,
+              allowMarketing: true,
+            },
+          },
+        },
+        alternateProfile: {
+          firstName: '',
+          lastName: '',
+          email: '',
+        },
+      },
+    })
+    form.mount()
+
+    const fieldGroupString = new FieldGroupApi({
+      form,
+      fields: 'user.profile.personal',
+      defaultValues: { firstName: '', lastName: '', email: '' },
+    })
+    fieldGroupString.mount()
+
+    const props1 = {
+      name: 'email',
+      validators: {
+        onChangeListenTo: ['firstName'],
+        onBlurListenTo: ['lastName'],
+      },
+    }
+    const remappedProps1 = fieldGroupString.getFormFieldOptions(props1)
+    expect(remappedProps1.validators.onChangeListenTo).toEqual([
+      'user.profile.personal.firstName',
+    ])
+    expect(remappedProps1.validators.onBlurListenTo).toEqual([
+      'user.profile.personal.lastName',
+    ])
+
+    const fieldGroupObject = new FieldGroupApi({
+      form,
+      fields: {
+        firstName: 'alternateProfile.firstName',
+        lastName: 'alternateProfile.lastName',
+        email: 'alternateProfile.email',
+      },
+      defaultValues: { firstName: '', lastName: '', email: '' },
+    })
+    fieldGroupObject.mount()
+
+    const props2 = {
+      name: 'email',
+      validators: {
+        onChangeListenTo: ['firstName', 'lastName'],
+      },
+    }
+    const remappedProps2 = fieldGroupObject.getFormFieldOptions(props2)
+    expect(remappedProps2.validators.onChangeListenTo).toEqual([
+      'alternateProfile.firstName',
+      'alternateProfile.lastName',
+    ])
   })
 })
