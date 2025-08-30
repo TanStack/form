@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { FormApi } from '../src/FormApi'
+import type { AnyFormApi } from '../src/FormApi'
 
 describe('Form reset during submit', () => {
   it('should correctly reset to new default values when called during onSubmit', async () => {
@@ -84,6 +85,55 @@ describe('Form reset during submit', () => {
 
     // Should have the final reset value and not be dirty
     expect(form.state.values.value).toBe(3)
+    expect(form.state.isDirty).toBe(false)
+  })
+
+  it('should handle reset with defaultState values fallback', async () => {
+    const form = new FormApi({
+      defaultState: {
+        values: {
+          name: 'from-default-state',
+        },
+      },
+      onSubmit: async ({ formApi }) => {
+        // Reset without providing values - should fall back to defaultState.values
+        formApi.reset()
+      },
+    })
+
+    form.mount()
+
+    // Change the field value
+    form.setFieldValue('name', 'changed')
+    expect(form.state.isDirty).toBe(true)
+
+    // Submit the form
+    await form.handleSubmit()
+
+    // After reset without values, should fall back to defaultState.values
+    expect(form.state.values.name).toBe('from-default-state')
+    expect(form.state.isDirty).toBe(false)
+  })
+
+  it('should handle reset with no default values or defaultState', async () => {
+    const form = new FormApi({
+      onSubmit: async ({ formApi }) => {
+        // Reset without providing values and no defaults - should reset to empty
+        formApi.reset()
+      },
+    }) as AnyFormApi
+
+    form.mount()
+
+    // Change the field value
+    form.setFieldValue('name', 'some-value')
+    expect(form.state.isDirty).toBe(true)
+
+    // Submit the form
+    await form.handleSubmit()
+
+    // After reset with no defaults, should be empty/undefined
+    expect(form.state.values.name).toBeUndefined()
     expect(form.state.isDirty).toBe(false)
   })
 })
