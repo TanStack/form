@@ -600,6 +600,10 @@ export type BaseFormState<
    */
   fieldMetaBase: Record<DeepKeys<TFormData>, AnyFieldMetaBase>
   /**
+   * The default values that correspond to the current form state, used for determining isDirty correctly
+   */
+  _stateDefaultValues?: TFormData
+  /**
    * A boolean indicating if the form is currently in the process of being submitted after `handleSubmit` is called.
    *
    * Goes back to `false` when submission completes for one of the following reasons:
@@ -814,6 +818,7 @@ function getDefaultFormState<
     values: defaultState.values ?? ({} as never),
     errorMap: defaultState.errorMap ?? {},
     fieldMetaBase: defaultState.fieldMetaBase ?? ({} as never),
+    _stateDefaultValues: defaultState._stateDefaultValues,
     isSubmitted: defaultState.isSubmitted ?? false,
     isSubmitting: defaultState.isSubmitting ?? false,
     isValidating: defaultState.isValidating ?? false,
@@ -957,6 +962,7 @@ export class FormApi<
       getDefaultFormState({
         ...(opts?.defaultState as any),
         values: opts?.defaultValues ?? opts?.defaultState?.values,
+        _stateDefaultValues: opts?.defaultValues ?? opts?.defaultState?.values,
         isFormValid: true,
       }),
     )
@@ -1028,7 +1034,10 @@ export class FormApi<
           const isDefaultValue =
             evaluate(
               curFieldVal,
-              getBy(this.options.defaultValues, fieldName),
+              getBy(
+                currBaseStore._stateDefaultValues ?? this.options.defaultValues,
+                fieldName,
+              ),
             ) ||
             evaluate(
               curFieldVal,
@@ -1346,6 +1355,7 @@ export class FormApi<
             shouldUpdateValues
               ? {
                   values: options.defaultValues,
+                  _stateDefaultValues: options.defaultValues,
                 }
               : {},
 
@@ -1376,16 +1386,45 @@ export class FormApi<
       }
     }
 
-    this.baseStore.setState(() =>
-      getDefaultFormState({
+    this.baseStore.setState((prev) => {
+      const newState = getDefaultFormState({
         ...(this.options.defaultState as any),
         values:
           values ??
           this.options.defaultValues ??
           this.options.defaultState?.values,
+        _stateDefaultValues:
+          values ??
+          this.options.defaultValues ??
+          this.options.defaultState?.values,
         fieldMetaBase,
-      }),
-    )
+      }) as BaseFormState<
+        TFormData,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TOnDynamic,
+        TOnDynamicAsync,
+        TOnServer
+      >
+
+      // If the form is currently submitting, preserve submission-related state
+      if (prev.isSubmitting) {
+        return {
+          ...newState,
+          isSubmitting: prev.isSubmitting,
+          submissionAttempts: prev.submissionAttempts,
+          isSubmitted: prev.isSubmitted,
+          isSubmitSuccessful: prev.isSubmitSuccessful,
+        }
+      }
+
+      return newState
+    })
   }
 
   /**
