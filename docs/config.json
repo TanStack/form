@@ -139,6 +139,10 @@
               "to": "framework/react/guides/ui-libraries"
             },
             {
+              "label": "Focus Management",
+              "to": "framework/react/guides/focus-management"
+            },
+            {
               "label": "Form Composition",
               "to": "framework/react/guides/form-composition"
             },
