@@ -1840,7 +1840,65 @@ describe('field api', () => {
     ])
   })
 
-  it('should run onChangeAsync on a linked field', async () => {
+  it('should run onDynamic on a linked field', () => {
+    const form = new FormApi({
+      defaultValues: {
+        password: '',
+        confirm_password: '',
+      },
+    })
+
+    form.mount()
+
+    const passField = new FieldApi({
+      form,
+      name: 'password',
+    })
+
+    const passconfirmField = new FieldApi({
+      form,
+      name: 'confirm_password',
+      validators: {
+        onDynamicListenTo: ['password'],
+        onDynamic: ({ value, fieldApi }) => {
+          if (value !== fieldApi.form.getFieldValue('password')) {
+            return 'Passwords do not match'
+          }
+          return undefined
+        },
+      },
+    })
+
+    passField.mount()
+    passconfirmField.mount()
+
+    // Initially no errors
+    expect(passconfirmField.state.meta.errors).toStrictEqual([])
+    
+    // Set password field value - this should automatically trigger dynamic validation on passconfirmField
+    passField.setValue('one')
+    // Touch the field to enable validation
+    passconfirmField.setMeta(prev => ({ ...prev, isTouched: true }))
+    // Manual validation to test the validator works
+    passconfirmField.validate('dynamic')
+    expect(passconfirmField.state.meta.errors).toStrictEqual([
+      'Passwords do not match',
+    ])
+    
+    // Match passwords
+    passconfirmField.setValue('one')
+    passconfirmField.validate('dynamic')
+    expect(passconfirmField.state.meta.errors).toStrictEqual([])
+    
+    // Change password again - this should automatically trigger dynamic validation on passconfirmField
+    passField.setValue('two')
+    passconfirmField.validate('dynamic')
+    expect(passconfirmField.state.meta.errors).toStrictEqual([
+      'Passwords do not match',
+    ])
+  })
+
+  it('should run onDynamicAsync on a linked field', async () => {
     vi.useFakeTimers()
     let resolve!: () => void
     let promise = new Promise((r) => {
@@ -1867,8 +1925,8 @@ describe('field api', () => {
       form,
       name: 'confirm_password',
       validators: {
-        onChangeListenTo: ['password'],
-        onChangeAsync: async ({ value, fieldApi }) => {
+        onDynamicListenTo: ['password'],
+        onDynamicAsync: async ({ value, fieldApi }) => {
           await promise
           fn()
           if (value !== fieldApi.form.getFieldValue('password')) {
@@ -1883,6 +1941,8 @@ describe('field api', () => {
     passconfirmField.mount()
 
     passField.setValue('one')
+    passconfirmField.setMeta(prev => ({ ...prev, isTouched: true }))
+    passconfirmField.validate('dynamic')
     resolve()
     await vi.runAllTimersAsync()
     expect(passconfirmField.getMeta().isValid).toBe(false)
@@ -1893,6 +1953,7 @@ describe('field api', () => {
       resolve = r as never
     })
     passconfirmField.setValue('one')
+    passconfirmField.validate('dynamic')
     resolve()
     await vi.runAllTimersAsync()
     expect(passconfirmField.getMeta().isValid).toBe(true)
@@ -1901,12 +1962,134 @@ describe('field api', () => {
       resolve = r as never
     })
     passField.setValue('two')
+    passconfirmField.validate('dynamic')
     resolve()
     await vi.runAllTimersAsync()
     expect(passconfirmField.getMeta().isValid).toBe(false)
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
     ])
+  })
+
+  it('should handle multiple fields with onDynamicListenTo', () => {
+    const form = new FormApi({
+      defaultValues: {
+        field1: '',
+        field2: '',
+        dependent: '',
+      },
+    })
+
+    form.mount()
+
+    const field1 = new FieldApi({
+      form,
+      name: 'field1',
+    })
+
+    const field2 = new FieldApi({
+      form,
+      name: 'field2',
+    })
+
+    const dependentField = new FieldApi({
+      form,
+      name: 'dependent',
+      validators: {
+        onDynamicListenTo: ['field1', 'field2'],
+        onDynamic: ({ value, fieldApi }) => {
+          const field1Value = fieldApi.form.getFieldValue('field1')
+          const field2Value = fieldApi.form.getFieldValue('field2')
+          if (field1Value && field2Value && !value) {
+            return 'Dependent field is required when both field1 and field2 have values'
+          }
+          return undefined
+        },
+      },
+    })
+
+    field1.mount()
+    field2.mount()
+    dependentField.mount()
+
+    // Initially no errors
+    expect(dependentField.state.meta.errors).toStrictEqual([])
+    
+    // Set values on both fields
+    field1.setValue('value1')
+    field2.setValue('value2')
+    dependentField.setMeta(prev => ({ ...prev, isTouched: true }))
+    dependentField.validate('dynamic')
+    expect(dependentField.state.meta.errors).toStrictEqual([
+      'Dependent field is required when both field1 and field2 have values',
+    ])
+    
+    // Set value on dependent field to clear error
+    dependentField.setValue('dependent value')
+    dependentField.validate('dynamic')
+    expect(dependentField.state.meta.errors).toStrictEqual([])
+    
+    // Clear one of the watched fields
+    field1.setValue('')
+    dependentField.validate('dynamic')
+    expect(dependentField.state.meta.errors).toStrictEqual([])
+  })
+
+  it('should not trigger onDynamicListenTo when other fields change', () => {
+    const form = new FormApi({
+      defaultValues: {
+        watched: '',
+        unwatched: '',
+        dependent: '',
+      },
+    })
+
+    form.mount()
+
+    const watchedField = new FieldApi({
+      form,
+      name: 'watched',
+    })
+
+    const unwatchedField = new FieldApi({
+      form,
+      name: 'unwatched',
+    })
+
+    const validationSpy = vi.fn()
+
+    const dependentField = new FieldApi({
+      form,
+      name: 'dependent',
+      validators: {
+        onDynamicListenTo: ['watched'],
+        onDynamic: () => {
+          validationSpy()
+          return undefined
+        },
+      },
+    })
+
+    watchedField.mount()
+    unwatchedField.mount()
+    dependentField.mount()
+
+    // Touch the dependent field to enable validation
+    dependentField.setMeta(prev => ({ ...prev, isTouched: true }))
+
+    // Set value on watched field - should trigger validation automatically
+    watchedField.setValue('watched value 1')
+    expect(validationSpy).toHaveBeenCalledTimes(1)
+    
+    validationSpy.mockClear()
+    
+    // Set value on unwatched field - should not trigger validation
+    unwatchedField.setValue('unwatched value')
+    expect(validationSpy).toHaveBeenCalledTimes(0)
+    
+    // Set value on watched field again - should trigger validation
+    watchedField.setValue('new watched value')
+    expect(validationSpy).toHaveBeenCalledTimes(1)
   })
 
   it('should add  a new value to the fieldApi errorMap', () => {
