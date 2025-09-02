@@ -1538,7 +1538,9 @@ export class FormApi<
         const errorMapKey = getErrorMapKey(validateObj.cause)
 
         if (fieldErrors) {
-          const allFieldErrors: Partial<Record<DeepKeys<TFormData>, ValidationErrorMap>> = this.state._allFieldErrors || {}
+          const allFieldErrors: Partial<
+            Record<DeepKeys<TFormData>, ValidationErrorMap>
+          > = this.state._allFieldErrors || {}
           for (const [fieldName, fieldError] of Object.entries(fieldErrors)) {
             if (fieldError) {
               const typedFieldName = fieldName as DeepKeys<TFormData>

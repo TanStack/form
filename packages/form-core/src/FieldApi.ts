@@ -1246,20 +1246,26 @@ export class FieldApi<
     if (allFieldErrors?.[this.name]) {
       const existingErrorMap = allFieldErrors[this.name]
       if (existingErrorMap) {
-        this.setMeta((prev) => ({
-          ...prev,
-          errorMap: {
-            ...prev.errorMap,
-            ...existingErrorMap,
-          },
-          errorSourceMap: {
-            ...prev.errorSourceMap,
-            ...Object.keys(existingErrorMap).reduce((acc, key) => {
-              acc[key as keyof typeof acc] = 'form'
-              return acc
-            }, {} as Record<string, 'form'>),
-          },
-        }) as never)
+        this.setMeta(
+          (prev) =>
+            ({
+              ...prev,
+              errorMap: {
+                ...prev.errorMap,
+                ...existingErrorMap,
+              },
+              errorSourceMap: {
+                ...prev.errorSourceMap,
+                ...Object.keys(existingErrorMap).reduce(
+                  (acc, key) => {
+                    acc[key as keyof typeof acc] = 'form'
+                    return acc
+                  },
+                  {} as Record<string, 'form'>,
+                ),
+              },
+            }) as never,
+        )
       }
     }
 
