@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/svelte-form": "^1.19.3"
+    "@tanstack/svelte-form": "^1.19.4"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.1.1",
