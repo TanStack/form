@@ -6,3 +6,6 @@ coverage:
       default:
         target: auto
         threshold: 1%
+ignore:
+  - 'packages/form-devtools'
+  - 'packages/react-form-devtools'

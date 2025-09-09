@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
-import { FieldApi, FormApi } from '../src/index'
+import { FieldApi, FormApi, formEventClient } from '../src/index'
 import { sleep } from './utils'
 import type { AnyFieldApi, AnyFormApi } from '../src/index'
 
@@ -3952,5 +3952,27 @@ it('should accept formId and return it', () => {
   })
   form.mount()
 
-  expect(form.formId).toEqual('age')
+  expect(form.formId()).toEqual('age')
+})
+
+describe('formApi devtool events', () => {
+  it('should broadcast state changes', async () => {
+    let stateChange
+    const eventClient = vi.fn()
+
+    formEventClient.on('form-state-change', (e) => {
+      eventClient()
+      stateChange = e.payload.state.values.age
+    })
+
+    const form = new FormApi({
+      defaultValues: { age: 0 },
+    })
+    form.mount()
+
+    form.setFieldValue('age', 1)
+
+    expect(eventClient).toHaveBeenCalled()
+    expect(stateChange).toEqual(1)
+  })
 })

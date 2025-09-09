@@ -276,7 +276,7 @@ describe('formOptions', () => {
       } as FormData,
       validators: {
         onSubmit: ({ formApi }) => {
-          if (formApi.formId === undefined) {
+          if (formApi.formId() === undefined) {
             return 'needs formId'
           }
           return undefined
