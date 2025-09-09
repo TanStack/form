@@ -431,6 +431,10 @@ export function evaluate<T>(objA: T, objB: T) {
     return false
   }
 
+  if (objA instanceof Date && objB instanceof Date) {
+    return objA.getTime() === objB.getTime()
+  }
+
   if (objA instanceof Map && objB instanceof Map) {
     if (objA.size !== objB.size) return false
     for (const [k, v] of objA) {
