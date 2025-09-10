@@ -1556,9 +1556,16 @@ export class FormApi<
           }))
         }
 
-        for (const field of Object.keys(
-          this.state.fieldMeta,
-        ) as DeepKeys<TFormData>[]) {
+        const allFieldsToProcess = new Set([
+          ...Object.keys(this.state.fieldMeta),
+          ...Object.keys(fieldErrors || {}),
+        ] as DeepKeys<TFormData>[])
+
+        for (const field of allFieldsToProcess) {
+          if (fieldErrors?.[field] && !this.fieldInfo[field]) {
+            this.getFieldInfo(field)
+          }
+
           const fieldMeta = this.getFieldMeta(field)
           if (!fieldMeta) continue
 
@@ -2119,6 +2126,12 @@ export class FormApi<
         newState.values = deleteBy(newState.values, f)
         delete this.fieldInfo[f as never]
         delete newState.fieldMetaBase[f as never]
+        
+        if (newState._allFieldErrors?.[f as never]) {
+          const newAllFieldErrors = { ...newState._allFieldErrors }
+          delete newAllFieldErrors[f as never]
+          newState._allFieldErrors = newAllFieldErrors
+        }
       })
 
       return newState
