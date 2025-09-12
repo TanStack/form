@@ -80,7 +80,7 @@ A headless form library for managing complex form state with full control over f
       <p>
         We're looking for TanStack Form Partners to join our mission! Partner with us to push the boundaries of TanStack Form and build amazing things together.
       </p>
-      <a href="mailto:partners@tanstack.com?subject=TanStack TanStack Table Partnership" style="text-transform: uppercase; font-weight: bold;">Let's chat</a>
+      <a href="mailto:partners@tanstack.com?subject=TanStack TanStack Form Partnership" style="text-transform: uppercase; font-weight: bold;">Let's chat</a>
     </div>  
   </div>
 
