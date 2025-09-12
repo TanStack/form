@@ -42,7 +42,7 @@ A headless form library for managing complex form state with full control over f
 </div>
 
 
-<div align="center">
+<div align="center" style="font-size: 2rem; font-weight: bolder;">
 
   [Become a Sponsor!](https://github.com/sponsors/tannerlinsley/)
 
