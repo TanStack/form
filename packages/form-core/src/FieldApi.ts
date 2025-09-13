@@ -1315,21 +1315,26 @@ export class FieldApi<
 
     // Default Value
     if ((this.state.value as unknown) === undefined) {
-      const formDefault = getBy(opts.form.options.defaultValues, opts.name)
+      const formDefault = getBy(
+        opts.form.options.defaultValues,
+        opts.name,
+      ).value
 
       const defaultValue = (opts.defaultValue as unknown) ?? formDefault
 
       // The name is dynamic in array fields. It changes when the user performs operations like removing or reordering.
       // In this case, we don't want to force a default value if the store managed to find an existing value.
-      if (nameHasChanged) {
-        this.setValue((val) => (val as unknown) || defaultValue, {
-          dontUpdateMeta: true,
-        })
-      } else if (defaultValue !== undefined) {
-        this.setValue(defaultValue as never, {
-          dontUpdateMeta: true,
-        })
-      }
+
+      // TODO test what is actually needed here
+      // if (nameHasChanged) {
+      //   this.setValue((val) => (val as unknown) || defaultValue, {
+      //     dontUpdateMeta: true,
+      //   })
+      // } else if (defaultValue !== undefined) {
+      //   this.setValue(defaultValue as never, {
+      //     dontUpdateMeta: true,
+      //   })
+      // }
     }
 
     // Default Meta
