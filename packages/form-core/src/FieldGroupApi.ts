@@ -232,14 +232,14 @@ export class FieldGroupApi<
         let values: TFieldGroupData
         if (typeof this.fieldsMap === 'string') {
           // all values live at that name, so we can directly fetch it
-          values = getBy(currFormStore.values, this.fieldsMap)
+          values = getBy(currFormStore.values, this.fieldsMap).value
         } else {
           // we need to fetch the values from all places where they were mapped from
           values = {} as never
           const fields: Record<keyof TFieldGroupData, string> = this
             .fieldsMap as never
           for (const key in fields) {
-            values[key] = getBy(currFormStore.values, fields[key])
+            values[key] = getBy(currFormStore.values, fields[key]).value
           }
         }
 

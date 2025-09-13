@@ -21,25 +21,54 @@ describe('getBy', () => {
     mother: {
       name: 'Lisa',
     },
+    siblings: [{
+      name: undefined
+    }]
   }
 
   it('should get subfields by path', () => {
-    expect(getBy(structure, 'name')).toBe(structure.name)
-    expect(getBy(structure, 'mother.name')).toBe(structure.mother.name)
+    const name = getBy(structure, 'name');
+    expect(name.value).toBe(structure.name)
+    expect(name.found).toBe(true)
+
+    const motherName = getBy(structure, 'mother.name');
+    expect(motherName.value).toBe(structure.mother.name)
+    expect(motherName.found).toBe(true)
   })
 
   it('should get array subfields by path', () => {
-    expect(getBy(structure, 'kids[0].name')).toBe(structure.kids[0]!.name)
-    expect(getBy(structure, 'kids[0].age')).toBe(structure.kids[0]!.age)
+    const kidsName = getBy(structure, 'kids[0].name')
+    expect(kidsName.value).toBe(structure.kids[0]!.name)
+    expect(kidsName.found).toBe(true)
+
+    const kidsAge = getBy(structure, 'kids[0].age')
+    expect(kidsAge.value).toBe(structure.kids[0]!.age)
+    expect(kidsAge.found).toBe(true)
   })
 
   it('should get nested array subfields by path', () => {
-    expect(getBy(structure, 'kids[0].hobbies[0]')).toBe(
+    const hobbies0 = getBy(structure, 'kids[0].hobbies[0]');
+    expect(hobbies0.value).toBe(
       structure.kids[0]!.hobbies[0],
     )
-    expect(getBy(structure, 'kids[0].hobbies[1]')).toBe(
+    expect(hobbies0.found).toBe(true)
+
+    const hobbies1 = getBy(structure, 'kids[0].hobbies[1]');
+    expect(hobbies1.value).toBe(
       structure.kids[0]!.hobbies[1],
     )
+    expect(hobbies1.found).toBe(true)
+  })
+
+  it('should differentiate between explicit undefined vs. no path', () => {
+    const sibling0 = getBy(structure, 'siblings[0].name');
+    const sibling1 = getBy(structure, 'siblings[1].name');
+
+    expect(sibling0.value).toBeUndefined()
+    expect(sibling1.value).toBeUndefined()
+
+    expect(sibling0.found).toBe(true)
+    expect(sibling1.found).toBe(false)
   })
 })
 
