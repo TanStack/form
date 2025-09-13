@@ -2323,7 +2323,11 @@ export class FormApi<
           [field]: defaultFieldMeta,
         },
         values: this.options.defaultValues
-          ? setBy(prev.values, field, getBy(this.options.defaultValues, field).value)
+          ? setBy(
+              prev.values,
+              field,
+              getBy(this.options.defaultValues, field).value,
+            )
           : prev.values,
       }
     })
