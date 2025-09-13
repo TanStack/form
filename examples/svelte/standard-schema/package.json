@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/svelte-form": "^1.19.5",
+    "@tanstack/svelte-form": "^1.20.0",
     "arktype": "^2.1.22",
     "effect": "^3.17.13",
     "valibot": "^1.1.0",
