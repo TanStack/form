@@ -134,6 +134,14 @@ export interface UpdateMetaOptions {
    * @default false
    */
   dontUpdateMeta?: boolean
+  /**
+   * @default false
+   */
+  dontValidate?: boolean
+  /**
+   * @default false
+   */
+  dontRunListeners?: boolean
 }
 
 /**
