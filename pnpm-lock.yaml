@@ -1103,6 +1103,12 @@ importers:
         specifier: ^3.25.76
         version: 3.25.76
 
+  packages/form-server:
+    dependencies:
+      '@tanstack/form-core':
+        specifier: workspace:*
+        version: link:../form-core
+
   packages/lit-form:
     dependencies:
       '@tanstack/form-core':
