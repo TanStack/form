@@ -23,7 +23,6 @@ The `mapServerErrors` function converts different server error formats into a st
 ```tsx
 import { mapServerErrors } from '@tanstack/form-server'
 
-// Zod-like errors
 const zodError = {
   issues: [
     { path: ['name'], message: 'Name is required' },
@@ -32,7 +31,6 @@ const zodError = {
 }
 
 const mapped = mapServerErrors(zodError)
-// Result: { fields: { name: ['Name is required'], email: ['Invalid email format'] } }
 ```
 
 ### Supported Error Formats
@@ -46,7 +44,6 @@ const zodError = {
     { path: ['items', 0, 'price'], message: 'Price must be positive' }
   ]
 }
-// Maps to: { fields: { 'items.0.price': ['Price must be positive'] } }
 ```
 
 #### Rails-style Errors
@@ -57,7 +54,6 @@ const railsError = {
     email: ['Invalid email', 'Email already taken']
   }
 }
-// Maps to: { fields: { name: ['Name is required'], email: ['Invalid email', 'Email already taken'] } }
 ```
 
 #### Custom Field/Form Errors
@@ -68,7 +64,6 @@ const customError = {
   ],
   formError: { message: 'Form submission failed' }
 }
-// Maps to: { fields: { name: ['Name is required'] }, form: 'Form submission failed' }
 ```
 
 ### Path Mapping
@@ -139,18 +134,15 @@ const form = useForm({
       const result = await submitForm(value)
       
       await onServerSuccess(form, result, {
-        resetStrategy: 'values', // 'none' | 'values' | 'all'
         flash: {
           set: (message) => setFlashMessage(message),
           message: 'Form saved successfully!'
         },
         after: async () => {
-          // Navigate or perform other actions
           router.push('/success')
         }
       })
     } catch (error) {
-      // Handle errors...
     }
   }
 })
@@ -270,7 +262,6 @@ import { mapServerErrors, applyServerErrors, onServerSuccess } from '@tanstack/f
 async function createUser(formData: FormData) {
   'use server'
   
-  // Server action implementation
   try {
     const result = await db.user.create({
       data: Object.fromEntries(formData)
@@ -303,7 +294,6 @@ function UserForm() {
     }
   })
   
-  // Form JSX...
 }
 ```
 
@@ -329,11 +319,9 @@ function UserForm() {
   
   const form = useForm({
     onSubmit: ({ value }) => {
-      // Remix handles submission
     }
   })
 
-  // Apply server errors if present
   useEffect(() => {
     if (actionData?.error) {
       const mappedErrors = mapServerErrors(actionData.error)
@@ -341,6 +329,5 @@ function UserForm() {
     }
   }, [actionData])
   
-  // Form JSX...
 }
 ```
