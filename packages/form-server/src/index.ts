@@ -19,10 +19,11 @@ export type ApplyErrorsOptions = {
   separator?: string
 }
 
-export type SuccessOptions = {
+export type SuccessOptions<TResult = unknown> = {
   resetStrategy?: 'none' | 'values' | 'all'
   flash?: { set: (msg: string) => void; message?: string }
-  after?: () => void | Promise<void>
+  after?: (result: TResult) => void | Promise<void>
+  storeResult?: boolean
 }
 
 function isZodError(err: unknown): err is { issues: Array<{ path: (string | number)[]; message: string }> } {
@@ -278,27 +279,63 @@ export function applyServerErrors<TFormApi>(
   }
 }
 
-export async function onServerSuccess<TFormApi extends { reset?: (options?: { resetValidation?: boolean }) => void }>(
+export async function onServerSuccess<
+  TFormApi extends { 
+    reset?: (options?: { resetValidation?: boolean }) => void
+    setFormMeta?: (updater: (prev: unknown) => unknown) => void
+  },
+  TResult = unknown
+>(
   form: TFormApi,
-  _result: unknown,
-  opts?: SuccessOptions
+  result: TResult,
+  opts?: SuccessOptions<TResult>
 ): Promise<void> {
-  const { resetStrategy = 'none', flash, after } = opts || {}
+  if (!form || typeof form !== 'object') {
+    return
+  }
 
-  if (resetStrategy !== 'none' && form.reset) {
-    if (resetStrategy === 'values') {
-      form.reset({ resetValidation: false })
-    } else {
-      form.reset()
+  const { resetStrategy = 'none', flash, after, storeResult = false } = opts || {}
+
+  if (storeResult && 'setFormMeta' in form && typeof form.setFormMeta === 'function') {
+    try {
+      form.setFormMeta((prev: unknown) => {
+        const prevMeta = (prev as Record<string, unknown>) || {}
+        return {
+          ...prevMeta,
+          _serverResponse: result,
+        }
+      })
+    } catch {
+      // Skip if setFormMeta fails
     }
   }
 
-  if (flash?.set && flash.message) {
-    flash.set(flash.message)
+  if (resetStrategy !== 'none' && 'reset' in form && typeof form.reset === 'function') {
+    try {
+      if (resetStrategy === 'values') {
+        form.reset({ resetValidation: false })
+      } else {
+        form.reset()
+      }
+    } catch {
+      // Skip if reset fails
+    }
   }
 
-  if (after) {
-    await after()
+  if (flash?.set && flash.message && typeof flash.set === 'function') {
+    try {
+      flash.set(flash.message)
+    } catch {
+      // Skip if flash.set fails
+    }
+  }
+
+  if (after && typeof after === 'function') {
+    try {
+      await after(result)
+    } catch {
+      // Skip if after callback fails
+    }
   }
 }
 
