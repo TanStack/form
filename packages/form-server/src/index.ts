@@ -20,6 +20,61 @@ export type SuccessOptions = {
   after?: () => void | Promise<void>
 }
 
+function isZodError(err: unknown): err is { issues: Array<{ path: (string | number)[]; message: string }> } {
+  return (
+    typeof err === 'object' &&
+    err !== null &&
+    'issues' in err &&
+    Array.isArray((err as Record<string, unknown>).issues)
+  )
+}
+
+function isRailsError(err: unknown): err is { errors: Record<string, string | string[]> } {
+  return (
+    typeof err === 'object' &&
+    err !== null &&
+    'errors' in err &&
+    typeof (err as Record<string, unknown>).errors === 'object' &&
+    (err as Record<string, unknown>).errors !== null
+  )
+}
+
+function isNestJSError(err: unknown): err is { message: Array<{ field: string; message: string }> } {
+  return (
+    typeof err === 'object' &&
+    err !== null &&
+    'message' in err &&
+    Array.isArray((err as Record<string, unknown>).message)
+  )
+}
+
+function isCustomFieldError(err: unknown): err is { fieldErrors: ServerFieldError[] } {
+  return (
+    typeof err === 'object' &&
+    err !== null &&
+    'fieldErrors' in err &&
+    Array.isArray((err as Record<string, unknown>).fieldErrors)
+  )
+}
+
+function isCustomFormError(err: unknown): err is { formError: ServerFormError } {
+  return (
+    typeof err === 'object' &&
+    err !== null &&
+    'formError' in err &&
+    typeof (err as Record<string, unknown>).formError === 'object'
+  )
+}
+
+function hasStringMessage(err: unknown): err is { message: string } {
+  return (
+    typeof err === 'object' &&
+    err !== null &&
+    'message' in err &&
+    typeof (err as Record<string, unknown>).message === 'string'
+  )
+}
+
 export function mapServerErrors(
   err: unknown,
   opts?: { 
@@ -36,30 +91,29 @@ export function mapServerErrors(
 
   const result: MappedServerErrors = { fields: {} }
 
-  if ('issues' in err && Array.isArray((err as Record<string, unknown>).issues)) {
-    const issues = (err as Record<string, unknown>).issues as Array<{ path: (string | number)[]; message: string }>
-    for (const issue of issues) {
-      const path = pathMapper(issue.path.join('.'))
-      if (!result.fields[path]) result.fields[path] = []
-      result.fields[path].push(issue.message)
+  if (isZodError(err)) {
+    for (const issue of err.issues) {
+      if (issue.path && issue.message) {
+        const path = pathMapper(issue.path.join('.'))
+        if (!result.fields[path]) result.fields[path] = []
+        result.fields[path].push(issue.message)
+      }
     }
     return result
   }
 
-  if ('errors' in err && typeof (err as Record<string, unknown>).errors === 'object') {
-    const errors = (err as Record<string, unknown>).errors as Record<string, string | string[]>
-    for (const [key, value] of Object.entries(errors)) {
+  if (isRailsError(err)) {
+    for (const [key, value] of Object.entries(err.errors)) {
       const path = pathMapper(key)
       const messages = Array.isArray(value) ? value : [value]
-      result.fields[path] = messages
+      result.fields[path] = messages.filter(msg => typeof msg === 'string')
     }
     return result
   }
 
-  if ('message' in err && Array.isArray((err as Record<string, unknown>).message)) {
-    const messages = (err as Record<string, unknown>).message as Array<{ field: string; message: string }>
-    for (const item of messages) {
-      if (typeof item === 'object' && 'field' in item && 'message' in item) {
+  if (isNestJSError(err)) {
+    for (const item of err.message) {
+      if (typeof item === 'object' && item && 'field' in item && 'message' in item) {
         const path = pathMapper(item.field)
         if (!result.fields[path]) result.fields[path] = []
         result.fields[path].push(item.message)
@@ -68,20 +122,20 @@ export function mapServerErrors(
     return result
   }
 
-  if ('fieldErrors' in err && Array.isArray((err as Record<string, unknown>).fieldErrors)) {
-    const fieldErrors = (err as Record<string, unknown>).fieldErrors as ServerFieldError[]
-    for (const fieldError of fieldErrors) {
-      const path = pathMapper(fieldError.path)
-      if (!result.fields[path]) result.fields[path] = []
-      result.fields[path].push(fieldError.message)
+  if (isCustomFieldError(err)) {
+    for (const fieldError of err.fieldErrors) {
+      if (fieldError.path && fieldError.message) {
+        const path = pathMapper(fieldError.path)
+        if (!result.fields[path]) result.fields[path] = []
+        result.fields[path].push(fieldError.message)
+      }
     }
   }
 
-  if ('formError' in err && typeof (err as Record<string, unknown>).formError === 'object') {
-    const formError = (err as Record<string, unknown>).formError as ServerFormError
-    result.form = formError.message
-  } else if ('message' in err && typeof (err as Record<string, unknown>).message === 'string') {
-    result.form = (err as Record<string, unknown>).message as string
+  if (isCustomFormError(err)) {
+    result.form = err.formError.message
+  } else if (hasStringMessage(err)) {
+    result.form = err.message
   }
 
   if (Object.keys(result.fields).length === 0 && !result.form) {
