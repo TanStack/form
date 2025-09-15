@@ -91,20 +91,6 @@ function hasStringMessage(err: unknown): err is { message: string } {
   )
 }
 
-function defaultPathMapper(serverPath: string): string {
-  if (typeof serverPath !== 'string') {
-    return ''
-  }
-  
-  try {
-    return serverPath
-      .replace(/\[(\d+)\]/g, '.$1')
-      .replace(/\[([^\]]+)\]/g, '.$1')
-      .replace(/^\./, '')
-  } catch {
-    return serverPath
-  }
-}
 
 
 export function mapServerErrors(
@@ -117,13 +103,13 @@ export function mapServerErrors(
   const pathMapper = opts?.pathMapper || defaultPathMapper
   const fallbackFormMessage = opts?.fallbackFormMessage || 'An error occurred'
   
-  if (!err || typeof err !== 'object') {
-    return { fields: {}, form: fallbackFormMessage }
+  const result: MappedServerErrors = {
+    fields: {},
+    form: undefined
   }
 
-  if (!err) {
-    result.form = fallbackFormMessage
-    return result
+  if (!err || typeof err !== 'object') {
+    return { fields: {}, form: fallbackFormMessage }
   }
 
   if (isZodError(err)) {
@@ -141,70 +127,57 @@ export function mapServerErrors(
   }
 
   if (isRailsError(err)) {
-    try {
-      for (const [key, value] of Object.entries(err.errors)) {
-        if (typeof key === 'string') {
-          const path = pathMapper(key)
-          if (path) {
-            const messages = Array.isArray(value) ? value : [value]
-            const validMessages = messages.filter(msg => typeof msg === 'string' && msg.length > 0)
-            if (validMessages.length > 0) {
-              result.fields[path] = validMessages
-            }
+    for (const [key, value] of Object.entries(err.errors)) {
+      if (typeof key === 'string') {
+        const path = pathMapper(key)
+        if (path) {
+          const messages = Array.isArray(value) ? value : [value]
+          const validMessages = messages.filter(msg => typeof msg === 'string' && msg.length > 0)
+          if (validMessages.length > 0) {
+            result.fields[path] = validMessages
           }
         }
       }
-    } catch {
-      // Skip invalid Rails error format
     }
     return result
   }
 
   if (isNestJSError(err)) {
-    try {
-      for (const item of err.message) {
+    for (const item of err.message) {
+      if (
+        typeof item === 'object' &&
+        'field' in item &&
+        'message' in item
+      ) {
+        const field = item.field
+        const message = item.message
         if (
-          typeof item === 'object' &&
-          item &&
-          'field' in item &&
-          'message' in item
+          typeof field === 'string' &&
+          typeof message === 'string' &&
+          message.length > 0
         ) {
-          const field = item.field
-          const message = item.message
-          if (
-            typeof field === 'string' &&
-            typeof message === 'string' &&
-            message.length > 0
-          ) {
-            const path = pathMapper(field)
-            if (path) {
-              if (!result.fields[path]) result.fields[path] = []
-              result.fields[path].push(message)
-            }
+          const path = pathMapper(field)
+          if (path) {
+            if (!result.fields[path]) result.fields[path] = []
+            result.fields[path].push(message)
           }
         }
       }
-    } catch {
-      // Skip invalid NestJS error format
     }
     return result
   }
 
   if (isCustomFieldError(err)) {
-    try {
-      for (const fieldError of err.fieldErrors) {
-        if (fieldError?.path && fieldError?.message && 
-            typeof fieldError.path === 'string' && typeof fieldError.message === 'string' &&
-            fieldError.message.length > 0) {
-          const path = pathMapper(fieldError.path)
-          if (path) {
-            if (!result.fields[path]) result.fields[path] = []
-            result.fields[path].push(fieldError.message)
-          }
+    for (const fieldError of err.fieldErrors) {
+      if (fieldError.path && fieldError.message && 
+          typeof fieldError.path === 'string' && typeof fieldError.message === 'string' &&
+          fieldError.message.length > 0) {
+        const path = pathMapper(fieldError.path)
+        if (path) {
+          if (!result.fields[path]) result.fields[path] = []
+          result.fields[path].push(fieldError.message)
         }
       }
-    } catch {
-      // Skip invalid custom field error format
     }
 
     if (isCustomFormError(err)) {
@@ -235,16 +208,15 @@ export function mapServerErrors(
   return result
 }
 
-export function applyServerErrors<TFormApi>(
+export function applyServerErrors<TFormApi extends Record<string, unknown>>(
   form: TFormApi,
   mapped: MappedServerErrors,
   opts?: ApplyErrorsOptions,
 ): void {
   const { multipleMessages = 'first', separator = '; ' } = opts || {}
 
-  if (mapped.fields && typeof mapped.fields === 'object') {
-    for (const [path, messages] of Object.entries(mapped.fields)) {
-      if (messages && Array.isArray(messages) && messages.length > 0 && typeof path === 'string') {
+  for (const [path, messages] of Object.entries(mapped.fields)) {
+    if (Array.isArray(messages) && messages.length > 0) {
         let errorMessage: string | string[]
         
         switch (multipleMessages) {
@@ -264,49 +236,40 @@ export function applyServerErrors<TFormApi>(
         }
 
         if (errorMessage && 'setFieldMeta' in form && typeof form.setFieldMeta === 'function') {
-          try {
-            form.setFieldMeta(fieldPath, (prev: unknown) => {
-              const prevMeta = (prev as Record<string, unknown>) || {}
-              return {
-                ...prevMeta,
-                errorMap: {
-                  ...(prevMeta.errorMap as Record<string, unknown>),
-                  onServer: errorMessage,
-                },
-                errorSourceMap: {
-                  ...(prevMeta.errorSourceMap as Record<string, unknown>),
-                  onServer: 'server',
-                },
-              }
-            })
-          } catch {
-            // Skip if setFieldMeta fails
-          }
+          form.setFieldMeta(path, (prev: unknown) => {
+            const prevMeta = (prev as Record<string, unknown>)
+            return {
+              ...prevMeta,
+              errorMap: {
+                ...(prevMeta.errorMap as Record<string, unknown>),
+                onServer: errorMessage,
+              },
+              errorSourceMap: {
+                ...(prevMeta.errorSourceMap as Record<string, unknown>),
+                onServer: 'server',
+              },
+            }
+          })
         }
-      }
     }
   }
 
   if (mapped.form && typeof mapped.form === 'string' && mapped.form.length > 0) {
     if ('setFormMeta' in form && typeof form.setFormMeta === 'function') {
-      try {
-        form.setFormMeta((prev: unknown) => {
-          const prevMeta = (prev as Record<string, unknown>) || {}
-          return {
-            ...prevMeta,
-            errorMap: {
-              ...(prevMeta.errorMap as Record<string, unknown>),
-              onServer: mapped.form,
-            },
-            errorSourceMap: {
-              ...(prevMeta.errorSourceMap as Record<string, unknown>),
-              onServer: 'server',
-            },
-          }
-        })
-      } catch {
-        // Skip if setFormMeta fails
-      }
+      form.setFormMeta((prev: unknown) => {
+        const prevMeta = (prev as Record<string, unknown>)
+        return {
+          ...prevMeta,
+          errorMap: {
+            ...(prevMeta.errorMap as Record<string, unknown>),
+            onServer: mapped.form,
+          },
+          errorSourceMap: {
+            ...(prevMeta.errorSourceMap as Record<string, unknown>),
+            onServer: 'server',
+          },
+        }
+      })
     }
   }
 }
@@ -322,7 +285,7 @@ export async function onServerSuccess<
   result: TResult,
   opts?: SuccessOptions<TResult>,
 ): Promise<void> {
-  if (!form || typeof form !== 'object') {
+  if (typeof form !== 'object') {
     return
   }
 
@@ -334,46 +297,30 @@ export async function onServerSuccess<
   } = opts || {}
 
   if (storeResult && 'setFormMeta' in form && typeof form.setFormMeta === 'function') {
-    try {
-      form.setFormMeta((prev: unknown) => {
-        const prevMeta = (prev as Record<string, unknown>) || {}
-        return {
-          ...prevMeta,
-          _serverResponse: result,
-          _serverFormError: '',
-        }
-      })
-    } catch {
-      // Skip if setFormMeta fails
-    }
+    form.setFormMeta((prev: unknown) => {
+      const prevMeta = (prev as Record<string, unknown>)
+      return {
+        ...prevMeta,
+        _serverResponse: result,
+        _serverFormError: '',
+      }
+    })
   }
 
   if (resetStrategy !== 'none' && 'reset' in form && typeof form.reset === 'function') {
-    try {
-      if (resetStrategy === 'values') {
-        form.reset({ resetValidation: false })
-      } else {
-        form.reset()
-      }
-    } catch {
-      // Skip if reset fails
+    if (resetStrategy === 'values') {
+      form.reset({ resetValidation: false })
+    } else {
+      form.reset()
     }
   }
 
   if (flash?.set && flash.message && typeof flash.set === 'function') {
-    try {
-      flash.set(flash.message)
-    } catch {
-      // Skip if flash.set fails
-    }
+    flash.set(flash.message)
   }
 
   if (after && typeof after === 'function') {
-    try {
-      await after(result)
-    } catch {
-      // Skip if after callback fails
-    }
+    await after(result)
   }
 }
 
