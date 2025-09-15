@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
-import { applyServerErrors, mapServerErrors, onServerSuccess } from '../src/index'
+import {
+  applyServerErrors,
+  mapServerErrors,
+  onServerSuccess,
+} from '../src/index'
 
 describe('integration tests', () => {
   it('should handle complete error mapping and application flow', () => {
@@ -22,9 +26,18 @@ describe('integration tests', () => {
     applyServerErrors(mockForm, mappedErrors)
 
     expect(mockForm.setFieldMeta).toHaveBeenCalledTimes(3)
-    expect(mockForm.setFieldMeta).toHaveBeenCalledWith('name', expect.any(Function))
-    expect(mockForm.setFieldMeta).toHaveBeenCalledWith('email', expect.any(Function))
-    expect(mockForm.setFieldMeta).toHaveBeenCalledWith('items.0.price', expect.any(Function))
+    expect(mockForm.setFieldMeta).toHaveBeenCalledWith(
+      'name',
+      expect.any(Function),
+    )
+    expect(mockForm.setFieldMeta).toHaveBeenCalledWith(
+      'email',
+      expect.any(Function),
+    )
+    expect(mockForm.setFieldMeta).toHaveBeenCalledWith(
+      'items.0.price',
+      expect.any(Function),
+    )
   })
 
   it('should handle success flow with all options', async () => {
@@ -57,16 +70,17 @@ describe('integration tests', () => {
     }
 
     const serverError = {
-      fieldErrors: [
-        { path: 'username', message: 'Username already taken' },
-      ],
+      fieldErrors: [{ path: 'username', message: 'Username already taken' }],
       formError: { message: 'Account creation failed' },
     }
 
     const mappedErrors = mapServerErrors(serverError)
     applyServerErrors(mockForm, mappedErrors)
 
-    expect(mockForm.setFieldMeta).toHaveBeenCalledWith('username', expect.any(Function))
+    expect(mockForm.setFieldMeta).toHaveBeenCalledWith(
+      'username',
+      expect.any(Function),
+    )
     expect(mockForm.setFormMeta).toHaveBeenCalledWith(expect.any(Function))
 
     const fieldCallback = mockForm.setFieldMeta.mock.calls[0]?.[1]

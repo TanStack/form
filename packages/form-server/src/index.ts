@@ -1,17 +1,17 @@
-export type ServerFieldError = { 
+export type ServerFieldError = {
   path: string
   message: string
-  code?: string 
+  code?: string
 }
 
-export type ServerFormError = { 
+export type ServerFormError = {
   message: string
-  code?: string 
+  code?: string
 }
 
-export type MappedServerErrors = { 
+export type MappedServerErrors = {
   fields: Record<string, string[]>
-  form?: string 
+  form?: string
 }
 
 export type ApplyErrorsOptions = {
@@ -26,7 +26,9 @@ export type SuccessOptions<TResult = unknown> = {
   storeResult?: boolean
 }
 
-function isZodError(err: unknown): err is { issues: Array<{ path: (string | number)[]; message: string }> } {
+function isZodError(
+  err: unknown,
+): err is { issues: Array<{ path: (string | number)[]; message: string }> } {
   return (
     typeof err === 'object' &&
     err !== null &&
@@ -35,7 +37,9 @@ function isZodError(err: unknown): err is { issues: Array<{ path: (string | numb
   )
 }
 
-function isRailsError(err: unknown): err is { errors: Record<string, string | string[]> } {
+function isRailsError(
+  err: unknown,
+): err is { errors: Record<string, string | string[]> } {
   return (
     typeof err === 'object' &&
     err !== null &&
@@ -45,7 +49,9 @@ function isRailsError(err: unknown): err is { errors: Record<string, string | st
   )
 }
 
-function isNestJSError(err: unknown): err is { message: Array<{ field: string; message: string }> } {
+function isNestJSError(
+  err: unknown,
+): err is { message: Array<{ field: string; message: string }> } {
   return (
     typeof err === 'object' &&
     err !== null &&
@@ -54,7 +60,9 @@ function isNestJSError(err: unknown): err is { message: Array<{ field: string; m
   )
 }
 
-function isCustomFieldError(err: unknown): err is { fieldErrors: ServerFieldError[] } {
+function isCustomFieldError(
+  err: unknown,
+): err is { fieldErrors: ServerFieldError[] } {
   return (
     typeof err === 'object' &&
     err !== null &&
@@ -63,7 +71,9 @@ function isCustomFieldError(err: unknown): err is { fieldErrors: ServerFieldErro
   )
 }
 
-function isCustomFormError(err: unknown): err is { formError: ServerFormError } {
+function isCustomFormError(
+  err: unknown,
+): err is { formError: ServerFormError } {
   return (
     typeof err === 'object' &&
     err !== null &&
@@ -99,17 +109,16 @@ function defaultPathMapper(serverPath: string): string {
 
 export function mapServerErrors(
   err: unknown,
-  opts?: { 
+  opts?: {
     pathMapper?: (serverPath: string) => string
-    fallbackFormMessage?: string 
-  }
+    fallbackFormMessage?: string
+  },
 ): MappedServerErrors {
   const pathMapper = opts?.pathMapper || defaultPathMapper
   const fallbackFormMessage = opts?.fallbackFormMessage || 'An error occurred'
   
-  const result: MappedServerErrors = {
-    fields: {},
-    form: undefined
+  if (!err || typeof err !== 'object') {
+    return { fields: {}, form: fallbackFormMessage }
   }
 
   if (!err) {
@@ -133,13 +142,15 @@ export function mapServerErrors(
 
   if (isRailsError(err)) {
     try {
-      for (const [field, messages] of Object.entries(err.errors)) {
-        const mappedPath = pathMapper(field)
-        if (mappedPath) {
-          if (Array.isArray(messages)) {
-            result.fields[mappedPath] = messages.filter(msg => typeof msg === 'string' && msg.trim())
-          } else if (typeof messages === 'string' && messages.trim()) {
-            result.fields[mappedPath] = [messages]
+      for (const [key, value] of Object.entries(err.errors)) {
+        if (typeof key === 'string') {
+          const path = pathMapper(key)
+          if (path) {
+            const messages = Array.isArray(value) ? value : [value]
+            const validMessages = messages.filter(msg => typeof msg === 'string' && msg.length > 0)
+            if (validMessages.length > 0) {
+              result.fields[path] = validMessages
+            }
           }
         }
       }
@@ -152,10 +163,19 @@ export function mapServerErrors(
   if (isNestJSError(err)) {
     try {
       for (const item of err.message) {
-        if (typeof item === 'object' && item && 'field' in item && 'message' in item) {
+        if (
+          typeof item === 'object' &&
+          item &&
+          'field' in item &&
+          'message' in item
+        ) {
           const field = item.field
           const message = item.message
-          if (typeof field === 'string' && typeof message === 'string' && message.length > 0) {
+          if (
+            typeof field === 'string' &&
+            typeof message === 'string' &&
+            message.length > 0
+          ) {
             const path = pathMapper(field)
             if (path) {
               if (!result.fields[path]) result.fields[path] = []
@@ -173,7 +193,7 @@ export function mapServerErrors(
   if (isCustomFieldError(err)) {
     try {
       for (const fieldError of err.fieldErrors) {
-        if (fieldError && fieldError.path && fieldError.message && 
+        if (fieldError?.path && fieldError?.message && 
             typeof fieldError.path === 'string' && typeof fieldError.message === 'string' &&
             fieldError.message.length > 0) {
           const path = pathMapper(fieldError.path)
@@ -186,18 +206,24 @@ export function mapServerErrors(
     } catch {
       // Skip invalid custom field error format
     }
-    
+
     if (isCustomFormError(err)) {
-      if (typeof err.formError.message === 'string' && err.formError.message.length > 0) {
+      if (
+        typeof err.formError.message === 'string' &&
+        err.formError.message.length > 0
+      ) {
         result.form = err.formError.message
       }
     }
-    
+
     return result
   }
 
   if (isCustomFormError(err)) {
-    if (typeof err.formError.message === 'string' && err.formError.message.length > 0) {
+    if (
+      typeof err.formError.message === 'string' &&
+      err.formError.message.length > 0
+    ) {
       result.form = err.formError.message
     }
   } else if (hasStringMessage(err)) {
@@ -212,25 +238,32 @@ export function mapServerErrors(
 export function applyServerErrors<TFormApi>(
   form: TFormApi,
   mapped: MappedServerErrors,
-  opts?: ApplyErrorsOptions
+  opts?: ApplyErrorsOptions,
 ): void {
   const { multipleMessages = 'first', separator = '; ' } = opts || {}
 
-  if (form && typeof form === 'object' && 'setFieldMeta' in form && typeof form.setFieldMeta === 'function') {
-    for (const [fieldPath, messages] of Object.entries(mapped.fields)) {
-      if (Array.isArray(messages) && messages.length > 0) {
-        const validMessages = messages.filter(msg => typeof msg === 'string' && msg.trim())
-        if (validMessages.length > 0) {
-          let errorMessage: string | string[]
-
-          if (multipleMessages === 'first') {
-            errorMessage = validMessages[0] || ''
-          } else if (multipleMessages === 'join') {
-            errorMessage = validMessages.join(separator)
-          } else {
-            errorMessage = validMessages
+  if (mapped.fields && typeof mapped.fields === 'object') {
+    for (const [path, messages] of Object.entries(mapped.fields)) {
+      if (messages && Array.isArray(messages) && messages.length > 0 && typeof path === 'string') {
+        let errorMessage: string | string[]
+        
+        switch (multipleMessages) {
+          case 'join': {
+            errorMessage = messages.filter(msg => typeof msg === 'string' && msg.length > 0).join(separator)
+            break
           }
+          case 'array': {
+            errorMessage = messages.filter(msg => typeof msg === 'string' && msg.length > 0)
+            break
+          }
+          default: {
+            const firstValid = messages.find(msg => typeof msg === 'string' && msg.length > 0)
+            errorMessage = firstValid || ''
+            break
+          }
+        }
 
+        if (errorMessage && 'setFieldMeta' in form && typeof form.setFieldMeta === 'function') {
           try {
             form.setFieldMeta(fieldPath, (prev: unknown) => {
               const prevMeta = (prev as Record<string, unknown>) || {}
@@ -255,7 +288,7 @@ export function applyServerErrors<TFormApi>(
   }
 
   if (mapped.form && typeof mapped.form === 'string' && mapped.form.length > 0) {
-    if (form && typeof form === 'object' && 'setFormMeta' in form && typeof form.setFormMeta === 'function') {
+    if ('setFormMeta' in form && typeof form.setFormMeta === 'function') {
       try {
         form.setFormMeta((prev: unknown) => {
           const prevMeta = (prev as Record<string, unknown>) || {}
@@ -279,23 +312,28 @@ export function applyServerErrors<TFormApi>(
 }
 
 export async function onServerSuccess<
-  TFormApi extends { 
+  TFormApi extends {
     reset?: (options?: { resetValidation?: boolean }) => void
     setFormMeta?: (updater: (prev: unknown) => unknown) => void
   },
-  TResult = unknown
+  TResult = unknown,
 >(
   form: TFormApi,
   result: TResult,
-  opts?: SuccessOptions<TResult>
+  opts?: SuccessOptions<TResult>,
 ): Promise<void> {
   if (!form || typeof form !== 'object') {
     return
   }
 
-  const { resetStrategy = 'none', flash, after, storeResult = false } = opts || {}
+  const {
+    resetStrategy = 'none',
+    flash,
+    after,
+    storeResult = false,
+  } = opts || {}
 
-  if (storeResult && form && typeof form === 'object' && 'setFormMeta' in form && typeof form.setFormMeta === 'function') {
+  if (storeResult && 'setFormMeta' in form && typeof form.setFormMeta === 'function') {
     try {
       form.setFormMeta((prev: unknown) => {
         const prevMeta = (prev as Record<string, unknown>) || {}
@@ -310,7 +348,7 @@ export async function onServerSuccess<
     }
   }
 
-  if (resetStrategy !== 'none' && form && typeof form === 'object' && 'reset' in form && typeof form.reset === 'function') {
+  if (resetStrategy !== 'none' && 'reset' in form && typeof form.reset === 'function') {
     try {
       if (resetStrategy === 'values') {
         form.reset({ resetValidation: false })
@@ -339,7 +377,9 @@ export async function onServerSuccess<
   }
 }
 
-export const selectServerResponse = <T = unknown>(store: unknown): T | undefined => {
+export const selectServerResponse = <T = unknown>(
+  store: unknown,
+): T | undefined => {
   if (store && typeof store === 'object' && '_serverResponse' in store) {
     return (store as Record<string, unknown>)._serverResponse as T
   }
@@ -351,4 +391,19 @@ export const selectServerFormError = (store: unknown): string | undefined => {
     return (store as Record<string, unknown>)._serverFormError as string
   }
   return undefined
+}
+
+function defaultPathMapper(serverPath: string): string {
+  if (typeof serverPath !== 'string') {
+    return ''
+  }
+  
+  try {
+    return serverPath
+      .replace(/\[(\d+)\]/g, '.$1')
+      .replace(/\[([^\]]+)\]/g, '.$1')
+      .replace(/^\./, '')
+  } catch {
+    return serverPath
+  }
 }
