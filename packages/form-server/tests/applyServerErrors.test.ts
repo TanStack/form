@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import {  applyServerErrors } from '../src/index'
-import type {MappedServerErrors} from '../src/index';
+import type {ApplyErrorsOptions, MappedServerErrors} from '../src/index';
 
 describe('applyServerErrors', () => {
   it('should apply field errors to form', () => {
@@ -170,5 +170,71 @@ describe('applyServerErrors', () => {
     const newMeta = callback?.({ errorMap: {}, errorSourceMap: {} })
 
     expect(newMeta.errorMap.onServer).toBe('First error')
+  })
+
+  it('should handle multiple messages with first strategy (default)', () => {
+    const mockForm = {
+      setFieldMeta: vi.fn(),
+      setFormMeta: vi.fn(),
+    }
+
+    const mappedErrors: MappedServerErrors = {
+      fields: {
+        email: ['Invalid email format', 'Email already exists', 'Email too long']
+      }
+    }
+
+    applyServerErrors(mockForm, mappedErrors)
+
+    const callback = mockForm.setFieldMeta.mock.calls[0]?.[1]
+    const newMeta = callback?.({ errorMap: {}, errorSourceMap: {} })
+    expect(newMeta?.errorMap.onServer).toBe('Invalid email format')
+  })
+
+  it('should handle multiple messages with join strategy', () => {
+    const mockForm = {
+      setFieldMeta: vi.fn(),
+      setFormMeta: vi.fn(),
+    }
+
+    const mappedErrors: MappedServerErrors = {
+      fields: {
+        email: ['Invalid email format', 'Email already exists']
+      }
+    }
+
+    const options: ApplyErrorsOptions = {
+      multipleMessages: 'join',
+      separator: ' | '
+    }
+
+    applyServerErrors(mockForm, mappedErrors, options)
+
+    const callback = mockForm.setFieldMeta.mock.calls[0]?.[1]
+    const newMeta = callback?.({ errorMap: {}, errorSourceMap: {} })
+    expect(newMeta?.errorMap.onServer).toBe('Invalid email format | Email already exists')
+  })
+
+  it('should handle multiple messages with array strategy', () => {
+    const mockForm = {
+      setFieldMeta: vi.fn(),
+      setFormMeta: vi.fn(),
+    }
+
+    const mappedErrors: MappedServerErrors = {
+      fields: {
+        email: ['Invalid email format', 'Email already exists']
+      }
+    }
+
+    const options: ApplyErrorsOptions = {
+      multipleMessages: 'array'
+    }
+
+    applyServerErrors(mockForm, mappedErrors, options)
+
+    const callback = mockForm.setFieldMeta.mock.calls[0]?.[1]
+    const newMeta = callback?.({ errorMap: {}, errorSourceMap: {} })
+    expect(newMeta?.errorMap.onServer).toEqual(['Invalid email format', 'Email already exists'])
   })
 })

@@ -14,6 +14,11 @@ export type MappedServerErrors = {
   form?: string 
 }
 
+export type ApplyErrorsOptions = {
+  multipleMessages?: 'first' | 'join' | 'array'
+  separator?: string
+}
+
 export type SuccessOptions = {
   resetStrategy?: 'none' | 'values' | 'all'
   flash?: { set: (msg: string) => void; message?: string }
@@ -147,17 +152,30 @@ export function mapServerErrors(
 
 export function applyServerErrors<TFormApi extends { setFieldMeta: (path: string, updater: (prev: unknown) => unknown) => void; setFormMeta: (updater: (prev: unknown) => unknown) => void }>(
   form: TFormApi,
-  mapped: MappedServerErrors
+  mapped: MappedServerErrors,
+  opts?: ApplyErrorsOptions
 ): void {
+  const { multipleMessages = 'first', separator = '; ' } = opts || {}
+
   for (const [fieldPath, messages] of Object.entries(mapped.fields)) {
     if (messages.length > 0) {
       form.setFieldMeta(fieldPath, (prev: unknown) => {
         const prevMeta = (prev as Record<string, unknown>) || {}
+        
+        let errorValue: string | string[]
+        if (multipleMessages === 'array') {
+          errorValue = messages
+        } else if (multipleMessages === 'join') {
+          errorValue = messages.join(separator)
+        } else {
+          errorValue = messages[0] || ''
+        }
+
         return {
           ...prevMeta,
           errorMap: {
             ...(prevMeta.errorMap as Record<string, unknown>),
-            onServer: messages[0],
+            onServer: errorValue,
           },
           errorSourceMap: {
             ...(prevMeta.errorSourceMap as Record<string, unknown>),
