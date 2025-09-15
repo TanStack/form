@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
-import { onServerSuccess, type SuccessOptions } from '../src/index'
+import {  onServerSuccess } from '../src/index'
+import type {SuccessOptions} from '../src/index';
 
 describe('onServerSuccess', () => {
   it('should handle success with no options', async () => {
@@ -129,12 +130,10 @@ describe('onServerSuccess', () => {
 
     await onServerSuccess(mockForm, { success: true }, options)
 
-    // Verify all operations were called
     expect(mockForm.reset).toHaveBeenCalled()
     expect(mockFlashSet).toHaveBeenCalledWith('Success!')
     expect(mockAfter).toHaveBeenCalled()
 
-    // Verify order: reset should be called first
     const resetCallOrder = mockForm.reset.mock.invocationCallOrder[0]!
     const flashCallOrder = mockFlashSet.mock.invocationCallOrder[0]!
     const afterCallOrder = mockAfter.mock.invocationCallOrder[0]!
@@ -150,7 +149,6 @@ describe('onServerSuccess', () => {
       resetStrategy: 'all',
     }
 
-    // Should not throw error
     await expect(onServerSuccess(mockForm, { success: true }, options)).resolves.toBeUndefined()
   })
 

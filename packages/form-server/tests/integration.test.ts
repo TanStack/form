@@ -3,14 +3,12 @@ import { applyServerErrors, mapServerErrors, onServerSuccess } from '../src/inde
 
 describe('integration tests', () => {
   it('should handle complete error mapping and application flow', () => {
-    // Mock form instance
     const mockForm = {
       setFieldMeta: vi.fn(),
       setFormMeta: vi.fn(),
       reset: vi.fn(),
     }
 
-    // Simulate server error response
     const serverError = {
       issues: [
         { path: ['name'], message: 'Name is required' },
@@ -19,13 +17,10 @@ describe('integration tests', () => {
       ],
     }
 
-    // Map server errors
     const mappedErrors = mapServerErrors(serverError)
 
-    // Apply to form
     applyServerErrors(mockForm, mappedErrors)
 
-    // Verify field errors were applied
     expect(mockForm.setFieldMeta).toHaveBeenCalledTimes(3)
     expect(mockForm.setFieldMeta).toHaveBeenCalledWith('name', expect.any(Function))
     expect(mockForm.setFieldMeta).toHaveBeenCalledWith('email', expect.any(Function))
@@ -74,7 +69,6 @@ describe('integration tests', () => {
     expect(mockForm.setFieldMeta).toHaveBeenCalledWith('username', expect.any(Function))
     expect(mockForm.setFormMeta).toHaveBeenCalledWith(expect.any(Function))
 
-    // Verify error content
     const fieldCallback = mockForm.setFieldMeta.mock.calls[0]?.[1]
     const fieldMeta = fieldCallback?.({ errorMap: {}, errorSourceMap: {} })
     expect(fieldMeta?.errorMap.onServer).toBe('Username already taken')
@@ -103,7 +97,6 @@ describe('integration tests', () => {
   })
 
   it('should handle custom path mapper with real-world scenario', () => {
-    // Simulate a Rails-style error with bracket notation
     const railsError = {
       errors: {
         'user_attributes[profile_attributes][name]': 'Name is required',
@@ -112,7 +105,6 @@ describe('integration tests', () => {
       },
     }
 
-    // Custom mapper to handle Rails nested attributes
     const pathMapper = (path: string) => {
       return path
         .replace(/_attributes/g, '')

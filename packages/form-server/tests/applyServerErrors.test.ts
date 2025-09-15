@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
-import { applyServerErrors, type MappedServerErrors } from '../src/index'
+import {  applyServerErrors } from '../src/index'
+import type {MappedServerErrors} from '../src/index';
 
 describe('applyServerErrors', () => {
   it('should apply field errors to form', () => {
@@ -21,7 +22,7 @@ describe('applyServerErrors', () => {
     expect(mockForm.setFieldMeta).toHaveBeenCalledWith('email', expect.any(Function))
     expect(mockForm.setFormMeta).not.toHaveBeenCalled()
 
-    // Test the callback function for field meta
+    
     const nameCallback = mockForm.setFieldMeta.mock.calls[0]?.[1]
     const prevMeta = { errorMap: {}, errorSourceMap: {} }
     const newMeta = nameCallback?.(prevMeta)
@@ -48,7 +49,7 @@ describe('applyServerErrors', () => {
     expect(mockForm.setFieldMeta).not.toHaveBeenCalled()
     expect(mockForm.setFormMeta).toHaveBeenCalledWith(expect.any(Function))
 
-    // Test the callback function for form meta
+    
     const formCallback = mockForm.setFormMeta.mock.calls[0]?.[0]
     const prevMeta = { errorMap: {}, errorSourceMap: {} }
     const newMeta = formCallback?.(prevMeta)
@@ -93,7 +94,7 @@ describe('applyServerErrors', () => {
 
     applyServerErrors(mockForm, mappedErrors)
 
-    // Test field meta preservation
+    
     const fieldCallback = mockForm.setFieldMeta.mock.calls[0]?.[1]
     const prevFieldMeta = {
       errorMap: { onChange: 'Client validation error' },
@@ -112,7 +113,7 @@ describe('applyServerErrors', () => {
       },
     })
 
-    // Test form meta preservation
+    
     const formCallback = mockForm.setFormMeta.mock.calls[0]?.[0]
     const prevFormMeta = {
       errorMap: { onSubmit: 'Client form error' },

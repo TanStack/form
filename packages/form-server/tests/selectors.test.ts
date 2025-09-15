@@ -44,7 +44,7 @@ describe('selectors', () => {
       const result = selectServerResponse<UserResponse>(store)
 
       expect(result).toEqual({ id: 123, name: 'Test' })
-      // TypeScript should infer the correct type
+      
       if (result) {
         expect(typeof result.id).toBe('number')
         expect(typeof result.name).toBe('string')
