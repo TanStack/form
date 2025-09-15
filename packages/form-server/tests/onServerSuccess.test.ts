@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
-import {  onServerSuccess } from '../src/index'
-import type {SuccessOptions} from '../src/index';
+import { onServerSuccess } from '../src/index'
+import type { SuccessOptions } from '../src/index'
 
 describe('onServerSuccess', () => {
   it('should handle success with no options', async () => {
@@ -149,7 +149,9 @@ describe('onServerSuccess', () => {
       resetStrategy: 'all',
     }
 
-    await expect(onServerSuccess(mockForm, { success: true }, options)).resolves.toBeUndefined()
+    await expect(
+      onServerSuccess(mockForm, { success: true }, options),
+    ).resolves.toBeUndefined()
   })
 
   it('should handle all options together', async () => {

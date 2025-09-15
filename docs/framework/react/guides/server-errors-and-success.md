@@ -26,8 +26,8 @@ import { mapServerErrors } from '@tanstack/form-server'
 const zodError = {
   issues: [
     { path: ['name'], message: 'Name is required' },
-    { path: ['email'], message: 'Invalid email format' }
-  ]
+    { path: ['email'], message: 'Invalid email format' },
+  ],
 }
 
 const mapped = mapServerErrors(zodError)
@@ -38,31 +38,30 @@ const mapped = mapServerErrors(zodError)
 The function automatically detects and handles various server error formats:
 
 #### Zod-style Validation Errors
+
 ```tsx
 const zodError = {
-  issues: [
-    { path: ['items', 0, 'price'], message: 'Price must be positive' }
-  ]
+  issues: [{ path: ['items', 0, 'price'], message: 'Price must be positive' }],
 }
 ```
 
 #### Rails-style Errors
+
 ```tsx
 const railsError = {
   errors: {
     name: 'Name is required',
-    email: ['Invalid email', 'Email already taken']
-  }
+    email: ['Invalid email', 'Email already taken'],
+  },
 }
 ```
 
 #### Custom Field/Form Errors
+
 ```tsx
 const customError = {
-  fieldErrors: [
-    { path: 'name', message: 'Name is required' }
-  ],
-  formError: { message: 'Form submission failed' }
+  fieldErrors: [{ path: 'name', message: 'Name is required' }],
+  formError: { message: 'Form submission failed' },
 }
 ```
 
@@ -71,7 +70,7 @@ const customError = {
 Use custom path mappers to handle different naming conventions:
 
 ```tsx
-const pathMapper = (path: string) => 
+const pathMapper = (path: string) =>
   path.replace(/_attributes/g, '').replace(/\[(\w+)\]/g, '.$1')
 
 const mapped = mapServerErrors(railsError, { pathMapper })
@@ -95,14 +94,16 @@ function MyForm() {
         const mappedErrors = mapServerErrors(serverError)
         applyServerErrors(form, mappedErrors)
       }
-    }
+    },
   })
 
   return (
-    <form onSubmit={(e) => {
-      e.preventDefault()
-      form.handleSubmit()
-    }}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        form.handleSubmit()
+      }}
+    >
       <form.Field name="name">
         {(field) => (
           <div>
@@ -132,19 +133,18 @@ const form = useForm({
   onSubmit: async ({ value }) => {
     try {
       const result = await submitForm(value)
-      
+
       await onServerSuccess(form, result, {
         flash: {
           set: (message) => setFlashMessage(message),
-          message: 'Form saved successfully!'
+          message: 'Form saved successfully!',
         },
         after: async () => {
           router.push('/success')
-        }
+        },
       })
-    } catch (error) {
-    }
-  }
+    } catch (error) {}
+  },
 })
 ```
 
@@ -158,7 +158,11 @@ const form = useForm({
 
 ```tsx
 import { useForm } from '@tanstack/react-form'
-import { mapServerErrors, applyServerErrors, onServerSuccess } from '@tanstack/form-server'
+import {
+  mapServerErrors,
+  applyServerErrors,
+  onServerSuccess,
+} from '@tanstack/form-server'
 import { useState } from 'react'
 
 function UserForm() {
@@ -168,20 +172,20 @@ function UserForm() {
     defaultValues: {
       name: '',
       email: '',
-      profile: { bio: '' }
+      profile: { bio: '' },
     },
     onSubmit: async ({ value }) => {
       try {
         const result = await fetch('/api/users', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(value)
+          body: JSON.stringify(value),
         })
 
         if (!result.ok) {
           const error = await result.json()
           const mappedErrors = mapServerErrors(error, {
-            fallbackFormMessage: 'Failed to create user'
+            fallbackFormMessage: 'Failed to create user',
           })
           applyServerErrors(form, mappedErrors)
           return
@@ -192,26 +196,26 @@ function UserForm() {
           resetStrategy: 'all',
           flash: {
             set: setFlashMessage,
-            message: 'User created successfully!'
-          }
+            message: 'User created successfully!',
+          },
         })
       } catch (error) {
         const mappedErrors = mapServerErrors(error)
         applyServerErrors(form, mappedErrors)
       }
-    }
+    },
   })
 
   return (
     <div>
-      {flashMessage && (
-        <div className="success-message">{flashMessage}</div>
-      )}
-      
-      <form onSubmit={(e) => {
-        e.preventDefault()
-        form.handleSubmit()
-      }}>
+      {flashMessage && <div className="success-message">{flashMessage}</div>}
+
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          form.handleSubmit()
+        }}
+      >
         <form.Field name="name">
           {(field) => (
             <div>
@@ -221,7 +225,9 @@ function UserForm() {
                 onChange={(e) => field.handleChange(e.target.value)}
               />
               {field.state.meta.errors.map((error) => (
-                <p key={error} className="error">{error}</p>
+                <p key={error} className="error">
+                  {error}
+                </p>
               ))}
             </div>
           )}
@@ -237,7 +243,9 @@ function UserForm() {
                 onChange={(e) => field.handleChange(e.target.value)}
               />
               {field.state.meta.errors.map((error) => (
-                <p key={error} className="error">{error}</p>
+                <p key={error} className="error">
+                  {error}
+                </p>
               ))}
             </div>
           )}
@@ -257,14 +265,18 @@ function UserForm() {
 ### Next.js App Router
 
 ```tsx
-import { mapServerErrors, applyServerErrors, onServerSuccess } from '@tanstack/form-server'
+import {
+  mapServerErrors,
+  applyServerErrors,
+  onServerSuccess,
+} from '@tanstack/form-server'
 
 async function createUser(formData: FormData) {
   'use server'
-  
+
   try {
     const result = await db.user.create({
-      data: Object.fromEntries(formData)
+      data: Object.fromEntries(formData),
     })
     return { success: true, user: result }
   } catch (error) {
@@ -279,21 +291,20 @@ function UserForm() {
       Object.entries(value).forEach(([key, val]) => {
         formData.append(key, val as string)
       })
-      
+
       const result = await createUser(formData)
-      
+
       if (result.success) {
         await onServerSuccess(form, result.user, {
           resetStrategy: 'all',
-          flash: { set: toast.success, message: 'User created!' }
+          flash: { set: toast.success, message: 'User created!' },
         })
       } else {
         const mappedErrors = mapServerErrors(result.error)
         applyServerErrors(form, mappedErrors)
       }
-    }
+    },
   })
-  
 }
 ```
 
@@ -305,7 +316,7 @@ import { useActionData } from '@remix-run/react'
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData()
-  
+
   try {
     const user = await createUser(Object.fromEntries(formData))
     return redirect('/users')
@@ -316,10 +327,9 @@ export async function action({ request }: ActionFunctionArgs) {
 
 function UserForm() {
   const actionData = useActionData<typeof action>()
-  
+
   const form = useForm({
-    onSubmit: ({ value }) => {
-    }
+    onSubmit: ({ value }) => {},
   })
 
   useEffect(() => {
@@ -328,6 +338,5 @@ function UserForm() {
       applyServerErrors(form, mappedErrors)
     }
   }, [actionData])
-  
 }
 ```

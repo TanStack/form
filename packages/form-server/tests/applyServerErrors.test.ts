@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
-import {  applyServerErrors } from '../src/index'
-import type {ApplyErrorsOptions, MappedServerErrors} from '../src/index';
+import { applyServerErrors } from '../src/index'
+import type { ApplyErrorsOptions, MappedServerErrors } from '../src/index'
 
 describe('applyServerErrors', () => {
   it('should apply field errors to form', () => {
@@ -18,11 +18,16 @@ describe('applyServerErrors', () => {
 
     applyServerErrors(mockForm, mappedErrors)
 
-    expect(mockForm.setFieldMeta).toHaveBeenCalledWith('name', expect.any(Function))
-    expect(mockForm.setFieldMeta).toHaveBeenCalledWith('email', expect.any(Function))
+    expect(mockForm.setFieldMeta).toHaveBeenCalledWith(
+      'name',
+      expect.any(Function),
+    )
+    expect(mockForm.setFieldMeta).toHaveBeenCalledWith(
+      'email',
+      expect.any(Function),
+    )
     expect(mockForm.setFormMeta).not.toHaveBeenCalled()
 
-    
     const nameCallback = mockForm.setFieldMeta.mock.calls[0]?.[1]
     const prevMeta = { errorMap: {}, errorSourceMap: {} }
     const newMeta = nameCallback?.(prevMeta)
@@ -49,7 +54,6 @@ describe('applyServerErrors', () => {
     expect(mockForm.setFieldMeta).not.toHaveBeenCalled()
     expect(mockForm.setFormMeta).toHaveBeenCalledWith(expect.any(Function))
 
-    
     const formCallback = mockForm.setFormMeta.mock.calls[0]?.[0]
     const prevMeta = { errorMap: {}, errorSourceMap: {} }
     const newMeta = formCallback?.(prevMeta)
@@ -75,7 +79,10 @@ describe('applyServerErrors', () => {
 
     applyServerErrors(mockForm, mappedErrors)
 
-    expect(mockForm.setFieldMeta).toHaveBeenCalledWith('name', expect.any(Function))
+    expect(mockForm.setFieldMeta).toHaveBeenCalledWith(
+      'name',
+      expect.any(Function),
+    )
     expect(mockForm.setFormMeta).toHaveBeenCalledWith(expect.any(Function))
   })
 
@@ -94,7 +101,6 @@ describe('applyServerErrors', () => {
 
     applyServerErrors(mockForm, mappedErrors)
 
-    
     const fieldCallback = mockForm.setFieldMeta.mock.calls[0]?.[1]
     const prevFieldMeta = {
       errorMap: { onChange: 'Client validation error' },
@@ -103,17 +109,16 @@ describe('applyServerErrors', () => {
     const newFieldMeta = fieldCallback?.(prevFieldMeta)
 
     expect(newFieldMeta).toEqual({
-      errorMap: { 
+      errorMap: {
         onChange: 'Client validation error',
-        onServer: 'Server error' 
+        onServer: 'Server error',
       },
-      errorSourceMap: { 
+      errorSourceMap: {
         onChange: 'client',
-        onServer: 'server' 
+        onServer: 'server',
       },
     })
 
-    
     const formCallback = mockForm.setFormMeta.mock.calls[0]?.[0]
     const prevFormMeta = {
       errorMap: { onSubmit: 'Client form error' },
@@ -122,13 +127,13 @@ describe('applyServerErrors', () => {
     const newFormMeta = formCallback?.(prevFormMeta)
 
     expect(newFormMeta).toEqual({
-      errorMap: { 
+      errorMap: {
         onSubmit: 'Client form error',
-        onServer: 'Server form error' 
+        onServer: 'Server form error',
       },
-      errorSourceMap: { 
+      errorSourceMap: {
         onSubmit: 'client',
-        onServer: 'server' 
+        onServer: 'server',
       },
     })
   })
@@ -149,7 +154,10 @@ describe('applyServerErrors', () => {
     applyServerErrors(mockForm, mappedErrors)
 
     expect(mockForm.setFieldMeta).toHaveBeenCalledTimes(1)
-    expect(mockForm.setFieldMeta).toHaveBeenCalledWith('email', expect.any(Function))
+    expect(mockForm.setFieldMeta).toHaveBeenCalledWith(
+      'email',
+      expect.any(Function),
+    )
   })
 
   it('should use first error message when multiple exist', () => {
@@ -180,8 +188,12 @@ describe('applyServerErrors', () => {
 
     const mappedErrors: MappedServerErrors = {
       fields: {
-        email: ['Invalid email format', 'Email already exists', 'Email too long']
-      }
+        email: [
+          'Invalid email format',
+          'Email already exists',
+          'Email too long',
+        ],
+      },
     }
 
     applyServerErrors(mockForm, mappedErrors)
@@ -199,20 +211,22 @@ describe('applyServerErrors', () => {
 
     const mappedErrors: MappedServerErrors = {
       fields: {
-        email: ['Invalid email format', 'Email already exists']
-      }
+        email: ['Invalid email format', 'Email already exists'],
+      },
     }
 
     const options: ApplyErrorsOptions = {
       multipleMessages: 'join',
-      separator: ' | '
+      separator: ' | ',
     }
 
     applyServerErrors(mockForm, mappedErrors, options)
 
     const callback = mockForm.setFieldMeta.mock.calls[0]?.[1]
     const newMeta = callback?.({ errorMap: {}, errorSourceMap: {} })
-    expect(newMeta?.errorMap.onServer).toBe('Invalid email format | Email already exists')
+    expect(newMeta?.errorMap.onServer).toBe(
+      'Invalid email format | Email already exists',
+    )
   })
 
   it('should handle multiple messages with array strategy', () => {
@@ -223,18 +237,21 @@ describe('applyServerErrors', () => {
 
     const mappedErrors: MappedServerErrors = {
       fields: {
-        email: ['Invalid email format', 'Email already exists']
-      }
+        email: ['Invalid email format', 'Email already exists'],
+      },
     }
 
     const options: ApplyErrorsOptions = {
-      multipleMessages: 'array'
+      multipleMessages: 'array',
     }
 
     applyServerErrors(mockForm, mappedErrors, options)
 
     const callback = mockForm.setFieldMeta.mock.calls[0]?.[1]
     const newMeta = callback?.({ errorMap: {}, errorSourceMap: {} })
-    expect(newMeta?.errorMap.onServer).toEqual(['Invalid email format', 'Email already exists'])
+    expect(newMeta?.errorMap.onServer).toEqual([
+      'Invalid email format',
+      'Email already exists',
+    ])
   })
 })

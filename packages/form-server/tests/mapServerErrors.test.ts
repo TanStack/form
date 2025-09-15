@@ -26,7 +26,10 @@ describe('mapServerErrors', () => {
     it('should handle nested array paths', () => {
       const zodError = {
         issues: [
-          { path: ['users', 1, 'addresses', 0, 'street'], message: 'Street is required' },
+          {
+            path: ['users', 1, 'addresses', 0, 'street'],
+            message: 'Street is required',
+          },
         ],
       }
 
