@@ -24,6 +24,7 @@ export type SuccessOptions<TResult = unknown> = {
   flash?: { set: (msg: string) => void; message?: string }
   after?: (result: TResult) => void | Promise<void>
   storeResult?: boolean
+  onRedirect?: (response: TResult) => void | Promise<void>
 }
 
 function isZodError(
@@ -82,6 +83,29 @@ function isCustomFormError(
   )
 }
 
+function isStandardSchemaError(
+  err: unknown,
+): err is { issues: Array<{ path: (string | number)[]; message: string }> } {
+  if (typeof err !== 'object' || err === null || !('issues' in err)) {
+    return false
+  }
+  
+  const issues = (err as Record<string, unknown>).issues
+  if (!Array.isArray(issues) || issues.length === 0) {
+    return false
+  }
+  
+  return issues.every((issue: unknown) =>
+    typeof issue === 'object' &&
+    issue !== null &&
+    'path' in issue &&
+    'message' in issue &&
+    Array.isArray((issue as Record<string, unknown>).path) &&
+    typeof (issue as Record<string, unknown>).message === 'string' &&
+    (issue as Record<string, unknown>).message !== ''
+  )
+}
+
 function hasStringMessage(err: unknown): err is { message: string } {
   return (
     typeof err === 'object' &&
@@ -91,7 +115,16 @@ function hasStringMessage(err: unknown): err is { message: string } {
   )
 }
 
-
+function defaultPathMapper(serverPath: string): string {
+  if (typeof serverPath !== 'string') {
+    return ''
+  }
+  
+  return serverPath
+    .replace(/\[(\d+)\]/g, '.$1')
+    .replace(/\[([^\]]+)\]/g, '.$1')
+    .replace(/^\./, '')
+}
 
 export function mapServerErrors(
   err: unknown,
@@ -110,6 +143,20 @@ export function mapServerErrors(
 
   if (!err || typeof err !== 'object') {
     return { fields: {}, form: fallbackFormMessage }
+  }
+
+  if (isStandardSchemaError(err)) {
+    for (const issue of err.issues) {
+      const path = Array.isArray(issue.path) ? issue.path.join('.') : String(issue.path)
+      const mappedPath = pathMapper(path)
+      if (mappedPath) {
+        if (!result.fields[mappedPath]) {
+          result.fields[mappedPath] = []
+        }
+        result.fields[mappedPath].push(issue.message)
+      }
+    }
+    return result
   }
 
   if (isZodError(err)) {
@@ -340,17 +387,52 @@ export const selectServerFormError = (store: unknown): string | undefined => {
   return undefined
 }
 
-function defaultPathMapper(serverPath: string): string {
-  if (typeof serverPath !== 'string') {
-    return ''
+export function createServerErrorResponse(
+  error: unknown,
+  opts?: {
+    pathMapper?: (serverPath: string) => string
+    fallbackFormMessage?: string
+  }
+): { 
+  success: false
+  errors: MappedServerErrors 
+} {
+  return {
+    success: false,
+    errors: mapServerErrors(error, opts)
+  }
+}
+
+export function createServerSuccessResponse<T = unknown>(
+  data: T
+): { 
+  success: true
+  data: T 
+} {
+  return {
+    success: true,
+    data
+  }
+}
+
+export function getFormError(mapped: MappedServerErrors): string | undefined {
+  return mapped.form
+}
+
+export function hasFieldErrors(mapped: MappedServerErrors): boolean {
+  return Object.keys(mapped.fields).length > 0
+}
+
+export function getAllErrorMessages(mapped: MappedServerErrors): string[] {
+  const messages: string[] = []
+  
+  for (const fieldErrors of Object.values(mapped.fields)) {
+    messages.push(...fieldErrors)
   }
   
-  try {
-    return serverPath
-      .replace(/\[(\d+)\]/g, '.$1')
-      .replace(/\[([^\]]+)\]/g, '.$1')
-      .replace(/^\./, '')
-  } catch {
-    return serverPath
+  if (mapped.form) {
+    messages.push(mapped.form)
   }
+  
+  return messages
 }
