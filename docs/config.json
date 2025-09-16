@@ -155,6 +155,10 @@
               "to": "framework/react/guides/ssr"
             },
             {
+              "label": "Server Errors & Success Flows",
+              "to": "framework/react/guides/server-errors-and-success"
+            },
+            {
               "label": "Debugging",
               "to": "framework/react/guides/debugging"
             }
