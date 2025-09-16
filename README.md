@@ -35,7 +35,12 @@
 
 # TanStack Form
 
+A headless form library for managing complex form state with full control over fields, validation, and workflows across any framework.
 
+- Framework‑agnostic & headless — bring your own UI
+- Fully typed with TypeScript
+- Reactive hooks & extensible modular architecture
+- Sync & async validation with debouncing and nested fields
 
 ### <a href="https://tanstack.com/form">Read the docs →</b></a>
 
