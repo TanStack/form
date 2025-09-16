@@ -4,6 +4,12 @@ import type { Updater } from './utils'
 
 export type ValidationError = unknown
 
+export type FieldMappingConfig<TFormData> = 
+  | boolean 
+  | {
+      fields?: Partial<Record<DeepKeys<TFormData>, boolean>>
+    }
+
 export type ValidationSource = 'form' | 'field'
 
 /**
