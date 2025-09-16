@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
 import { FieldApi, FormApi } from '../src/index'
-import type { FieldMappingConfig } from '../src/types'
+import type { FieldMappingConfig } from '../src/index'
 
 interface TestFormData {
   username: string
@@ -23,7 +23,7 @@ const testSchema = z.object({
 describe('disableFieldMapping', () => {
   describe('shouldApplySchemaToField method', () => {
     it('should return true when no configuration is provided (default behavior)', () => {
-      const form = new FormApi<TestFormData>({
+      const form = new FormApi({
         defaultValues: {
           username: '',
           email: '',
@@ -38,7 +38,7 @@ describe('disableFieldMapping', () => {
     })
 
     it('should return false for all fields when disableFieldMapping is true', () => {
-      const form = new FormApi<TestFormData>({
+      const form = new FormApi({
         defaultValues: {
           username: '',
           email: '',
@@ -54,7 +54,7 @@ describe('disableFieldMapping', () => {
     })
 
     it('should return true for all fields when disableFieldMapping is false', () => {
-      const form = new FormApi<TestFormData>({
+      const form = new FormApi({
         defaultValues: {
           username: '',
           email: '',
@@ -75,7 +75,7 @@ describe('disableFieldMapping', () => {
         },
       }
 
-      const form = new FormApi<TestFormData>({
+      const form = new FormApi({
         defaultValues: {
           username: '',
           email: '',
@@ -88,7 +88,7 @@ describe('disableFieldMapping', () => {
     })
 
     it('should handle empty fields configuration', () => {
-      const form = new FormApi<TestFormData>({
+      const form = new FormApi({
         defaultValues: {
           username: '',
           email: '',
@@ -192,6 +192,8 @@ describe('disableFieldMapping', () => {
         },
         disableFieldMapping: {
           fields: {
+            username: true,
+            email: false,
           },
         },
       })
@@ -224,7 +226,7 @@ describe('disableFieldMapping', () => {
     })
 
     it('should handle configuration changes at runtime', () => {
-      const form = new FormApi<TestFormData>({
+      const form = new FormApi({
         defaultValues: {
           username: '',
           email: '',
