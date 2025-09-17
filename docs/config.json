@@ -157,6 +157,10 @@
             {
               "label": "Debugging",
               "to": "framework/react/guides/debugging"
+            },
+            {
+              "label": "Devtools",
+              "to": "framework/react/guides/devtools"
             }
           ]
         },
@@ -586,6 +590,10 @@
             {
               "label": "Field Errors From Form Validators",
               "to": "framework/react/examples/field-errors-from-form-validators"
+            },
+            {
+              "label": "Devtools",
+              "to": "framework/react/examples/devtools"
             }
           ]
         },
