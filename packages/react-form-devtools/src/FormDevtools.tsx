@@ -10,8 +10,6 @@ export const FormDevtools = (props?: FormDevtoolsReactInit) => {
   const [devtools] = useState(() => new FormDevtoolsCore({}))
 
   useEffect(() => {
-    if (import.meta.env.SSR) return
-
     if (devToolRef.current) {
       devtools.mount(devToolRef.current, props?.theme ?? 'dark')
     }
