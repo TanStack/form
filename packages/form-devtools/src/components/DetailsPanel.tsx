@@ -97,17 +97,17 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
             <ActionButtons selectedInstance={selectedInstance} />
           </div>
           <div class={styles().detailSection}>
-            <div class={styles().detailSectionHeader}>
-              Individual Fields
-            </div>
+            <div class={styles().detailSectionHeader}>Individual Fields</div>
             <div class={styles().stateContent}>
-              <div style={{
-                display: 'flex',
-                gap: '16px',
-              }}>
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '16px',
+                }}
+              >
                 <For each={Object.entries(individualFields())}>
                   {([fieldName, fieldData]) => (
-                    <div style={{ 'margin-bottom': '16px', }}>
+                    <div style={{ 'margin-bottom': '16px' }}>
                       <div
                         style={{
                           'font-weight': 'bold',
@@ -133,7 +133,6 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
               </div>
             )}
           </For>
-
         </div>
       </Show>
     </div>
