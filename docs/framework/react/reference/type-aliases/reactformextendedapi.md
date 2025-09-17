@@ -11,7 +11,7 @@ title: ReactFormExtendedApi
 type ReactFormExtendedApi<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta> = FormApi<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta> & ReactFormApi<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta>;
 ```
 
-Defined in: [packages/react-form/src/useForm.tsx:97](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L97)
+Defined in: [packages/react-form/src/useForm.tsx:96](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L96)
 
 An extended version of the `FormApi` class that includes React-specific functionalities from `ReactFormApi`
 
