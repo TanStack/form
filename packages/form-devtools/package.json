@@ -38,6 +38,12 @@
         "default": "./dist/esm/index.js"
       }
     },
+    "./production": {
+      "import": {
+        "types": "./dist/esm/production.d.ts",
+        "default": "./dist/esm/production.js"
+      }
+    },
     "./package.json": "./package.json"
   },
   "sideEffects": false,
