@@ -386,9 +386,15 @@ importers:
 
   examples/react/array:
     dependencies:
+      '@tanstack/react-devtools':
+        specifier: ^0.6.4
+        version: 0.6.4(@tanstack/devtools-ui@0.3.4(csstype@3.1.3)(solid-js@1.9.9))(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.9)
       '@tanstack/react-form':
         specifier: ^1.20.0
         version: link:../../../packages/react-form
+      '@tanstack/react-form-devtools':
+        specifier: ^0.0.1
+        version: link:../../../packages/react-form-devtools
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -411,9 +417,15 @@ importers:
 
   examples/react/compiler:
     dependencies:
+      '@tanstack/react-devtools':
+        specifier: ^0.6.4
+        version: 0.6.4(@tanstack/devtools-ui@0.3.4(csstype@3.1.3)(solid-js@1.9.9))(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.9)
       '@tanstack/react-form':
         specifier: ^1.20.0
         version: link:../../../packages/react-form
+      '@tanstack/react-form-devtools':
+        specifier: ^0.0.1
+        version: link:../../../packages/react-form-devtools
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -446,10 +458,10 @@ importers:
         specifier: ^0.6.4
         version: 0.6.4(@tanstack/devtools-ui@0.3.4(csstype@3.1.3)(solid-js@1.9.9))(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.9)
       '@tanstack/react-form':
-        specifier: workspace:*
+        specifier: ^1.20.0
         version: link:../../../packages/react-form
       '@tanstack/react-form-devtools':
-        specifier: workspace:*
+        specifier: ^0.0.1
         version: link:../../../packages/react-form-devtools
       react:
         specifier: ^19.0.0
@@ -473,9 +485,15 @@ importers:
 
   examples/react/dynamic:
     dependencies:
+      '@tanstack/react-devtools':
+        specifier: ^0.6.4
+        version: 0.6.4(@tanstack/devtools-ui@0.3.4(csstype@3.1.3)(solid-js@1.9.9))(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.9)
       '@tanstack/react-form':
         specifier: ^1.20.0
         version: link:../../../packages/react-form
+      '@tanstack/react-form-devtools':
+        specifier: ^0.0.1
+        version: link:../../../packages/react-form-devtools
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -501,9 +519,15 @@ importers:
 
   examples/react/field-errors-from-form-validators:
     dependencies:
+      '@tanstack/react-devtools':
+        specifier: ^0.6.4
+        version: 0.6.4(@tanstack/devtools-ui@0.3.4(csstype@3.1.3)(solid-js@1.9.9))(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.9)
       '@tanstack/react-form':
         specifier: ^1.20.0
         version: link:../../../packages/react-form
+      '@tanstack/react-form-devtools':
+        specifier: ^0.0.1
+        version: link:../../../packages/react-form-devtools
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -526,9 +550,15 @@ importers:
 
   examples/react/large-form:
     dependencies:
+      '@tanstack/react-devtools':
+        specifier: ^0.6.4
+        version: 0.6.4(@tanstack/devtools-ui@0.3.4(csstype@3.1.3)(solid-js@1.9.9))(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.9)
       '@tanstack/react-form':
         specifier: ^1.20.0
         version: link:../../../packages/react-form
+      '@tanstack/react-form-devtools':
+        specifier: ^0.0.1
+        version: link:../../../packages/react-form-devtools
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -582,9 +612,15 @@ importers:
 
   examples/react/query-integration:
     dependencies:
+      '@tanstack/react-devtools':
+        specifier: ^0.6.4
+        version: 0.6.4(@tanstack/devtools-ui@0.3.4(csstype@3.1.3)(solid-js@1.9.9))(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.9)
       '@tanstack/react-form':
         specifier: ^1.20.0
         version: link:../../../packages/react-form
+      '@tanstack/react-form-devtools':
+        specifier: ^0.0.1
+        version: link:../../../packages/react-form-devtools
       '@tanstack/react-query':
         specifier: ^5.87.4
         version: 5.89.0(react@19.1.0)
@@ -656,9 +692,15 @@ importers:
 
   examples/react/simple:
     dependencies:
+      '@tanstack/react-devtools':
+        specifier: ^0.6.4
+        version: 0.6.4(@tanstack/devtools-ui@0.3.4(csstype@3.1.3)(solid-js@1.9.9))(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.9)
       '@tanstack/react-form':
         specifier: ^1.20.0
         version: link:../../../packages/react-form
+      '@tanstack/react-form-devtools':
+        specifier: ^0.0.1
+        version: link:../../../packages/react-form-devtools
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -681,9 +723,15 @@ importers:
 
   examples/react/standard-schema:
     dependencies:
+      '@tanstack/react-devtools':
+        specifier: ^0.6.4
+        version: 0.6.4(@tanstack/devtools-ui@0.3.4(csstype@3.1.3)(solid-js@1.9.9))(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.9)
       '@tanstack/react-form':
         specifier: ^1.20.0
         version: link:../../../packages/react-form
+      '@tanstack/react-form-devtools':
+        specifier: ^0.0.1
+        version: link:../../../packages/react-form-devtools
       arktype:
         specifier: ^2.1.22
         version: 2.1.22
@@ -776,9 +824,15 @@ importers:
       '@mui/material':
         specifier: 6.5.0
         version: 6.5.0(@emotion/react@11.14.0(@types/react@19.1.6)(react@19.1.0))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.1.6)(react@19.1.0))(@types/react@19.1.6)(react@19.1.0))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@tanstack/react-devtools':
+        specifier: ^0.6.4
+        version: 0.6.4(@tanstack/devtools-ui@0.3.4(csstype@3.1.3)(solid-js@1.9.9))(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.9)
       '@tanstack/react-form':
         specifier: ^1.20.0
         version: link:../../../packages/react-form
+      '@tanstack/react-form-devtools':
+        specifier: ^0.0.1
+        version: link:../../../packages/react-form-devtools
       '@yme/lay-postcss':
         specifier: 0.1.0
         version: 0.1.0(postcss@8.5.6)
