@@ -962,7 +962,7 @@ importers:
   examples/svelte/array:
     dependencies:
       '@tanstack/svelte-form':
-        specifier: ^1.21.0
+        specifier: ^1.21.1
         version: link:../../../packages/svelte-form
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
@@ -984,7 +984,7 @@ importers:
   examples/svelte/simple:
     dependencies:
       '@tanstack/svelte-form':
-        specifier: ^1.21.0
+        specifier: ^1.21.1
         version: link:../../../packages/svelte-form
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
@@ -1006,7 +1006,7 @@ importers:
   examples/svelte/standard-schema:
     dependencies:
       '@tanstack/svelte-form':
-        specifier: ^1.21.0
+        specifier: ^1.21.1
         version: link:../../../packages/svelte-form
       arktype:
         specifier: ^2.1.22
