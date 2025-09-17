@@ -26,7 +26,7 @@
     "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
-    "build": "tsup"
+    "build": "tsdown"
   },
   "type": "module",
   "types": "dist/esm/index.d.ts",
@@ -34,8 +34,14 @@
   "exports": {
     ".": {
       "import": {
-        "types": "./dist/esm/index.d.ts",
-        "default": "./dist/esm/index.js"
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./production": {
+      "import": {
+        "types": "./dist/production.d.ts",
+        "default": "./dist/production.js"
       }
     },
     "./package.json": "./package.json"
@@ -53,8 +59,7 @@
     "@vitejs/plugin-react": "^4.7.0",
     "eslint-plugin-react-compiler": "19.0.0-beta-ebf51a3-20250411",
     "react": "^19.0.0",
-    "tsup": "^8.5.0",
-    "tsup-preset-solid": "^2.2.0",
+    "tsdown": "^0.15.2",
     "vite": "^7.1.5"
   },
   "peerDependencies": {

@@ -10,12 +10,16 @@ export const FormDevtools = (props?: FormDevtoolsReactInit) => {
   const [devtools] = useState(() => new FormDevtoolsCore({}))
 
   useEffect(() => {
+    if (import.meta.env.SSR) return
+
     if (devToolRef.current) {
       devtools.mount(devToolRef.current, props?.theme ?? 'dark')
     }
 
     return () => devtools.unmount()
   }, [devtools, props?.theme])
+
+  if (import.meta.env.SSR) return null
 
   return <div style={{ height: '100%' }} ref={devToolRef} />
 }
