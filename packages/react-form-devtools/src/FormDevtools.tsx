@@ -1,11 +1,11 @@
 import { FormDevtoolsCore } from '@tanstack/form-devtools'
 import { useEffect, useRef, useState } from 'react'
 
-interface FormDevtoolsReactProps {
+export interface FormDevtoolsReactInit {
   theme?: 'light' | 'dark'
 }
 
-export const FormDevtools = (props?: FormDevtoolsReactProps) => {
+export const FormDevtools = (props?: FormDevtoolsReactInit) => {
   const devToolRef = useRef<HTMLDivElement>(null)
   const [devtools] = useState(() => new FormDevtoolsCore({}))
 
