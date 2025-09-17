@@ -10,7 +10,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@tanstack/vue-form": "^1.21.0",
+    "@tanstack/vue-form": "^1.21.1",
     "arktype": "^2.1.22",
     "effect": "^3.17.13",
     "react": "^19.0.0",
