@@ -1,5 +1,8 @@
 import * as React from 'react'
 import { createRoot } from 'react-dom/client'
+
+import { TanStackDevtools } from '@tanstack/react-devtools'
+import { FormDevtoolsPlugin } from '@tanstack/react-form-devtools'
 import { useForm } from '@tanstack/react-form'
 import {
   QueryClient,
@@ -7,6 +10,7 @@ import {
   useMutation,
   useQuery,
 } from '@tanstack/react-query'
+
 import type { AnyFieldApi } from '@tanstack/react-form'
 
 function FieldInfo({ field }: { field: AnyFieldApi }) {
@@ -167,5 +171,10 @@ createRoot(rootElement).render(
     <QueryClientProvider client={queryClient}>
       <App />
     </QueryClientProvider>
+
+    <TanStackDevtools
+      config={{ hideUntilHover: true }}
+      plugins={[FormDevtoolsPlugin()]}
+    />
   </React.StrictMode>,
 )
