@@ -59,16 +59,23 @@ A headless form library for managing complex form state with full control over f
   <tr>
     <td>
         <a href="https://www.coderabbit.ai/?via=tanstack&dub_id=aCcEEdAOqqutX6OS">
-          <img src="https://tanstack.com/assets/coderabbit-light-DVMJ2jHi.svg" height="40" padding="20px" alt="Code Rabbit"/>
-        </a>
+			<picture>
+			  <source media="(prefers-color-scheme: dark)" srcset="https://tanstack.com/assets/coderabbit-dark-CMcuvjEy.svg" height="40" />
+			  <source media="(prefers-color-scheme: light)" srcset="https://tanstack.com/assets/coderabbit-light-DVMJ2jHi.svg" height="40" />
+			  <img src="https://tanstack.com/assets/coderabbit-light-DVMJ2jHi.svg" height="40" alt="CodeRabbit" />
+			</picture>        
+		</a>
     </td>
     <td padding="20">
       <a href="https://www.cloudflare.com?utm_source=tanstack">
-         <img src="https://tanstack.com/assets/cloudflare-black-CPufaW0B.svg" height="70" alt="Cloudflare"/>
+         <picture>
+		  <source media="(prefers-color-scheme: dark)" srcset="https://tanstack.com/assets/cloudflare-white-DQDB7UaL.svg" height="60" />
+		  <source media="(prefers-color-scheme: light)" srcset="https://tanstack.com/assets/cloudflare-black-CPufaW0B.svg" height="60" />
+		  <img src="https://tanstack.com/assets/cloudflare-black-CPufaW0B.svg" height="60" alt="Cloudflare" />
+		</picture>
       </a>
     </td>
   </tr>
-  
 </table>
 
 <div align="center">
