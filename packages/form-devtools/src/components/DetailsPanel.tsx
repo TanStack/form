@@ -72,6 +72,20 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
     },
   ])
 
+  const individualFields = createMemo(() => {
+    const fields: Record<string, { value: any; meta: any }> = {}
+    const values = state()?.values || {}
+    const fieldMeta = state()?.fieldMeta || {}
+
+    Object.keys(values).forEach((key) => {
+      fields[key] = {
+        value: values[key],
+        meta: fieldMeta[key],
+      }
+    })
+
+    return fields
+  })
   return (
     <div class={styles().stateDetails}>
       <Show when={selectedInstance()}>
@@ -82,17 +96,44 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
             <div class={styles().detailSectionHeader}>Actions</div>
             <ActionButtons selectedInstance={selectedInstance} />
           </div>
-
+          <div class={styles().detailSection}>
+            <div class={styles().detailSectionHeader}>
+              Individual Fields
+            </div>
+            <div class={styles().stateContent}>
+              <div style={{
+                display: 'flex',
+                gap: '16px',
+              }}>
+                <For each={Object.entries(individualFields())}>
+                  {([fieldName, fieldData]) => (
+                    <div style={{ 'margin-bottom': '16px', }}>
+                      <div
+                        style={{
+                          'font-weight': 'bold',
+                          'margin-bottom': '4px',
+                        }}
+                      >
+                        {fieldName}
+                      </div>
+                      <JsonTree copyable value={fieldData} />
+                    </div>
+                  )}
+                </For>
+              </div>
+            </div>
+          </div>
           <For each={sections()}>
             {(section) => (
               <div class={styles().detailSection}>
                 <div class={styles().detailSectionHeader}>{section.title}</div>
                 <div class={styles().stateContent}>
-                  <JsonTree value={section.value} />
+                  <JsonTree copyable value={section.value} />
                 </div>
               </div>
             )}
           </For>
+
         </div>
       </Show>
     </div>
