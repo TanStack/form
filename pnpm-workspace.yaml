@@ -61,6 +61,3 @@ catalog:
   zod: ^3.25.76
 overrides:
   cssstyle: 4.6.0
-catalogs:
-  conflicts_arktype_h2_1_22:
-    arktype: ^2.1.22
