@@ -10,9 +10,6 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
 
-    <TanStackDevtools
-      config={{ hideUntilHover: true }}
-      plugins={[FormDevtoolsPlugin()]}
-    />
+    <TanStackDevtools plugins={[FormDevtoolsPlugin()]} />
   </StrictMode>,
 )
