@@ -51,8 +51,9 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/devtools-event-client": "^0.2.4",
-    "@tanstack/store": "^0.7.5"
+    "@tanstack/devtools-event-client": "^0.2.5",
+    "@tanstack/store": "^0.7.5",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "arktype": "^2.1.22",

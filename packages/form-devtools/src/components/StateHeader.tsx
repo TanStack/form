@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
+import relativeTime from 'dayjs/plugin/relativeTime.js'
 import { createMemo, createSignal, onCleanup, onMount } from 'solid-js'
 
 import { useStyles } from '../styles/use-styles'
