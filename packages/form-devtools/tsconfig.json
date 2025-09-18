@@ -8,5 +8,5 @@
       "@tanstack/form-core": ["../form-core/src"]
     }
   },
-  "include": ["src", "tests", "eslint.config.js", "vite.config.ts"]
+  "include": ["src", "tests", "tsup.config.ts", "eslint.config.js", "vite.config.ts"]
 }
