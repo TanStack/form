@@ -26,25 +26,26 @@
     "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
-    "build": "vite build && tsc -p tsconfig.build.json"
+    "build": "tsup && tsc -p tsconfig.build.json"
   },
   "type": "module",
   "types": "dist/esm/index.d.ts",
   "module": "dist/esm/index.js",
   "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/esm/index.d.ts",
-        "default": "./dist/esm/index.js"
-      }
+    "browser": {
+      "development": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/dev.js"
+      },
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
-    "./production": {
-      "import": {
-        "types": "./dist/esm/production.d.ts",
-        "default": "./dist/esm/production.js"
-      }
+    "node": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/server.js"
     },
-    "./package.json": "./package.json"
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.js"
   },
   "sideEffects": false,
   "files": [
@@ -60,6 +61,8 @@
   },
   "devDependencies": {
     "solid-js": "^1.9.9",
+    "tsup": "^8.5.0",
+    "tsup-preset-solid": "^2.2.0",
     "vite": "^7.1.5",
     "vite-plugin-solid": "^2.11.8"
   },
