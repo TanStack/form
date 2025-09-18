@@ -30,9 +30,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         {children}
         <Scripts />
+        <TanStackDevtools plugins={[FormDevtoolsPlugin()]} />
       </body>
-
-      <TanStackDevtools plugins={[FormDevtoolsPlugin()]} />
     </html>
   )
 }
