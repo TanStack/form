@@ -17,7 +17,5 @@ export const FormDevtools = (props?: FormDevtoolsReactInit) => {
     return () => devtools.unmount()
   }, [devtools, props?.theme])
 
-  if (import.meta.env.SSR) return null
-
   return <div style={{ height: '100%' }} ref={devToolRef} />
 }

@@ -29,8 +29,8 @@
     "build": "tsup && tsc -p tsconfig.build.json"
   },
   "type": "module",
-  "types": "dist/esm/index.d.ts",
-  "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
   "exports": {
     "browser": {
       "development": {
