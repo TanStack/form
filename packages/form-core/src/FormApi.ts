@@ -2159,7 +2159,7 @@ export class FormApi<
     await this.validateField(field, 'change')
 
     // Shift down all meta after validating to make sure the new field has been mounted
-    metaHelper(this).handleArrayFieldMetaShift(field, index, 'insert')
+    metaHelper(this).handleArrayInsert(field, index)
 
     await this.validateArrayFieldsStartingFrom(field, index, 'change')
   }
@@ -2215,7 +2215,7 @@ export class FormApi<
     )
 
     // Shift up all meta
-    metaHelper(this).handleArrayFieldMetaShift(field, index, 'remove')
+    metaHelper(this).handleArrayRemove(field, index)
 
     if (lastIndex !== null) {
       const start = `${field}[${lastIndex}]`
@@ -2247,7 +2247,7 @@ export class FormApi<
     )
 
     // Swap meta
-    metaHelper(this).handleArrayFieldMetaShift(field, index1, 'swap', index2)
+    metaHelper(this).handleArraySwap(field, index1, index2)
 
     // Validate the whole array
     this.validateField(field, 'change')
@@ -2276,7 +2276,7 @@ export class FormApi<
     )
 
     // Move meta between index1 and index2
-    metaHelper(this).handleArrayFieldMetaShift(field, index1, 'move', index2)
+    metaHelper(this).handleArrayMove(field, index1, index2)
 
     // Validate the whole array
     this.validateField(field, 'change')
@@ -2323,7 +2323,11 @@ export class FormApi<
           [field]: defaultFieldMeta,
         },
         values: this.options.defaultValues
-          ? setBy(prev.values, field, getBy(this.options.defaultValues, field).value)
+          ? setBy(
+              prev.values,
+              field,
+              getBy(this.options.defaultValues, field).value,
+            )
           : prev.values,
       }
     })
