@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/angular-form",
-  "version": "1.21.3",
+  "version": "1.23.0",
   "description": "Powerful, type-safe forms for Angular.",
   "author": "tannerlinsley",
   "license": "MIT",
