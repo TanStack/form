@@ -8,7 +8,17 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "fixed": [],
+  "fixed": [
+    [
+      "@tanstack/form-core",
+      "@tanstack/angular-form",
+      "@tanstack/lit-form",
+      "@tanstack/react-form",
+      "@tanstack/solid-form",
+      "@tanstack/svelte-form",
+      "@tanstack/vue-form"
+    ]
+  ],
   "linked": [],
   "ignore": []
 }
