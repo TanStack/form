@@ -41,8 +41,10 @@
     ]
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.7",
     "@eslint-react/eslint-plugin": "^1.53.1",
     "@solidjs/testing-library": "^0.8.10",
+    "@svitejs/changesets-changelog-github-compact": "^1.2.0",
     "@tanstack/config": "0.20.1",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",
@@ -74,9 +76,5 @@
     "overrides": {
       "cssstyle": "4.6.0"
     }
-  },
-  "dependencies": {
-    "@changesets/cli": "^2.29.7",
-    "@svitejs/changesets-changelog-github-compact": "^1.2.0"
   }
 }
