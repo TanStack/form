@@ -42,7 +42,9 @@ describe('FieldInfo Management for PR #1691', () => {
       })
       delayedField.mount()
 
-      expect(delayedField.state.meta.errors).toContain('Delayed field is required')
+      expect(delayedField.state.meta.errors).toContain(
+        'Delayed field is required',
+      )
     })
 
     it('should handle multiple delayed fields with different error types', async () => {
