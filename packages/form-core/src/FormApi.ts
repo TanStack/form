@@ -1051,7 +1051,7 @@ export class FormApi<
           const prevFieldInfo =
             prevVal?.[fieldName as never as keyof typeof prevVal]
 
-          const curFieldVal = getBy(currBaseStore.values, fieldName)
+          const curFieldVal = getBy(currBaseStore.values, fieldName).value
 
           let fieldErrors = prevFieldInfo?.errors
           if (
@@ -1079,7 +1079,7 @@ export class FormApi<
           const isDefaultValue =
             evaluate(
               curFieldVal,
-              getBy(this.options.defaultValues, fieldName),
+              getBy(this.options.defaultValues, fieldName).value,
             ) ||
             evaluate(
               curFieldVal,
@@ -2131,7 +2131,7 @@ export class FormApi<
    */
   getFieldValue = <TField extends DeepKeys<TFormData>>(
     field: TField,
-  ): DeepValue<TFormData, TField> => getBy(this.state.values, field)
+  ): DeepValue<TFormData, TField> => getBy(this.state.values, field).value
 
   /**
    * Gets the metadata of the specified field.
@@ -2472,7 +2472,11 @@ export class FormApi<
           [field]: defaultFieldMeta,
         },
         values: this.options.defaultValues
-          ? setBy(prev.values, field, getBy(this.options.defaultValues, field))
+          ? setBy(
+              prev.values,
+              field,
+              getBy(this.options.defaultValues, field).value,
+            )
           : prev.values,
       }
     })
