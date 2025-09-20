@@ -1641,6 +1641,11 @@ export class FormApi<
         for (const field of Object.keys(
           this.state.fieldMeta,
         ) as DeepKeys<TFormData>[]) {
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          if (this.baseStore.state.fieldMetaBase[field] === undefined) {
+            continue
+          }
+
           const fieldMeta = this.getFieldMeta(field)
           if (!fieldMeta) continue
 
@@ -1844,6 +1849,11 @@ export class FormApi<
           for (const field of Object.keys(
             this.state.fieldMeta,
           ) as DeepKeys<TFormData>[]) {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            if (this.baseStore.state.fieldMetaBase[field] === undefined) {
+              continue
+            }
+
             const fieldMeta = this.getFieldMeta(field)
             if (!fieldMeta) continue
 
