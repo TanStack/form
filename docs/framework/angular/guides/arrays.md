@@ -10,6 +10,11 @@ TanStack Form supports arrays as values in a form, including sub-object values i
 To use an array, you can use `field.api.state.value` on an array value:
 
 ```angular-ts
+interface Person {
+  name: string
+  age: number
+}
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -25,10 +30,10 @@ To use an array, you can use `field.api.state.value` on an array value:
   `,
 })
 export class AppComponent {
+  defaultPeople: { people: Array<Person> } = { people: [] }
+
   form = injectForm({
-    defaultValues: {
-      people: [] as Array<{ name: string; age: number }>,
-    },
+    defaultValues: this.defaultPeople,
     onSubmit({ value }) {
       alert(JSON.stringify(value))
     },
@@ -93,6 +98,11 @@ export class AppComponent {
 ## Full Example
 
 ```angular-ts
+interface Person {
+  name: string
+  age: number
+}
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -135,11 +145,10 @@ export class AppComponent {
 })
 export class AppComponent {
   defaultPerson = { name: '', age: 0 }
+  defaultPeople: { people: Array<Person> } = { people: [] }
 
   form = injectForm({
-    defaultValues: {
-      people: [] as Array<{ name: string; age: number }>,
-    },
+    defaultValues: this.defaultPeople,
     onSubmit({ value }) {
       alert(JSON.stringify(value))
     },
