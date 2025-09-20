@@ -660,6 +660,11 @@ export type BaseFormState<
    * @private, used to force a re-evaluation of the form state when options change
    */
   _force_re_eval?: boolean
+  /**
+   * @private, stores field errors for all fields (including unmounted ones)
+   * This allows delayed-mounted fields to sync with existing validation errors
+   */
+  _allFieldErrors?: Partial<Record<DeepKeys<TFormData>, ValidationErrorMap>>
 }
 
 export type DerivedFormState<
@@ -1638,9 +1643,35 @@ export class FormApi<
 
         const errorMapKey = getErrorMapKey(validateObj.cause)
 
-        for (const field of Object.keys(
-          this.state.fieldMeta,
-        ) as DeepKeys<TFormData>[]) {
+        if (fieldErrors) {
+          const allFieldErrors: Partial<
+            Record<DeepKeys<TFormData>, ValidationErrorMap>
+          > = this.state._allFieldErrors || {}
+          for (const [fieldName, fieldError] of Object.entries(fieldErrors)) {
+            if (fieldError) {
+              const typedFieldName = fieldName as DeepKeys<TFormData>
+              allFieldErrors[typedFieldName] = {
+                ...allFieldErrors[typedFieldName],
+                [errorMapKey]: fieldError,
+              }
+            }
+          }
+          this.baseStore.setState((prev) => ({
+            ...prev,
+            _allFieldErrors: allFieldErrors,
+          }))
+        }
+
+        const allFieldsToProcess = new Set([
+          ...Object.keys(this.state.fieldMeta),
+          ...Object.keys(fieldErrors || {}),
+        ] as DeepKeys<TFormData>[])
+
+        for (const field of allFieldsToProcess) {
+          if (fieldErrors?.[field] && !this.fieldInfo[field]) {
+            this.getFieldInfo(field)
+          }
+
           const fieldMeta = this.getFieldMeta(field)
           if (!fieldMeta) continue
 
@@ -2257,6 +2288,12 @@ export class FormApi<
         newState.values = deleteBy(newState.values, f)
         delete this.fieldInfo[f as never]
         delete newState.fieldMetaBase[f as never]
+
+        if (newState._allFieldErrors?.[f as never]) {
+          const newAllFieldErrors = { ...newState._allFieldErrors }
+          delete newAllFieldErrors[f as never]
+          newState._allFieldErrors = newAllFieldErrors
+        }
       })
 
       return newState
