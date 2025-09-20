@@ -229,6 +229,7 @@ export class FieldGroupApi<
   store: Derived<FieldGroupState<TFieldGroupData>>
 
   get state() {
+    // this.store.values e.g {phone: '', fullName: ''}
     return this.store.state
   }
 
@@ -399,6 +400,17 @@ export class FieldGroupApi<
   }
 
   /**
+   * Delete all fields and their subfields.
+   */
+  deleteAllFields = () => {
+    const fieldGroupKeys = Object.keys(this.state.values || {})
+
+    fieldGroupKeys.forEach((key) => {
+      this.deleteField(key)
+    })
+  }
+
+  /**
    * Pushes a value into an array field.
    */
   pushFieldValue = <TField extends DeepKeysOfType<TFieldGroupData, any[]>>(
@@ -460,6 +472,14 @@ export class FieldGroupApi<
     )
   }
 
+  replaceAllFields = (newValues: TFieldGroupData) => {
+    this.deleteAllFields()
+
+    Object.entries(newValues || {}).forEach(([field, value]) => {
+      this.setFieldValue(field, value as never)
+    })
+  }
+
   /**
    * Removes a value from an array field at the specified index.
    */
@@ -519,6 +539,17 @@ export class FieldGroupApi<
    */
   resetField = <TField extends DeepKeys<TFieldGroupData>>(field: TField) => {
     return this.form.resetField(this.getFormFieldName(field))
+  }
+
+  /**
+   * Resets all fields values and meta to default state
+   */
+  resetAllFields = () => {
+    const fieldGroupKeys = Object.keys(this.state.values || {})
+
+    fieldGroupKeys.forEach((key) => {
+      this.resetField(key)
+    })
   }
 
   validateAllFields = (cause: ValidationCause) =>
