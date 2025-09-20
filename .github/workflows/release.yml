@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5.0.0
         with:
           fetch-depth: 0
       - name: Setup Tools
@@ -31,7 +31,7 @@ jobs:
       - name: Run Tests
         run: pnpm run test:ci
       - name: Run Changesets (version or publish)
-        uses: changesets/action@v1.4.9
+        uses: changesets/action@v1.5.3
         with:
           version: pnpm run changeset:version
           publish: pnpm run changeset:publish
