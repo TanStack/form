@@ -53,6 +53,7 @@
   "dependencies": {
     "@tanstack/devtools-event-client": "^0.2.5",
     "@tanstack/store": "^0.7.5",
+    "react-native-get-random-values": "^1.11.0",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
