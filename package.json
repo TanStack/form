@@ -8,9 +8,6 @@
   "packageManager": "pnpm@10.17.0",
   "type": "module",
   "scripts": {
-    "changeset": "changeset",
-    "changeset:publish": "changeset publish",
-    "changeset:version": "changeset version && pnpm install --no-frozen-lockfile && pnpm prettier:write",
     "clean": "pnpm --filter \"./packages/**\" run clean",
     "preinstall": "node -e \"if(process.env.CI == 'true') {console.log('Skipping preinstall...')} else {process.exit(1)}\" || npx -y only-allow pnpm",
     "test": "pnpm run test:ci",
@@ -32,7 +29,9 @@
     "prettier:write": "pnpm run prettier --write",
     "docs:generate": "node scripts/generateDocs.ts",
     "verify-links": "node scripts/verify-links.ts",
-    "cipublish": "node scripts/publish.ts"
+    "changeset": "changeset",
+    "changeset:publish": "changeset publish",
+    "changeset:version": "changeset version && pnpm install --no-frozen-lockfile && pnpm prettier:write"
   },
   "nx": {
     "includedScripts": [
@@ -54,7 +53,7 @@
     "@vitest/coverage-istanbul": "^3.2.4",
     "eslint": "9.36.0",
     "eslint-plugin-react-hooks": "^5.2.0",
-    "jsdom": "^26.1.0",
+    "jsdom": "^27.0.0",
     "knip": "^5.63.1",
     "markdown-link-extractor": "^4.0.2",
     "nx": "21.5.3",
@@ -70,11 +69,5 @@
     "typescript57": "npm:typescript@5.9.2",
     "vite": "^7.1.6",
     "vitest": "^3.2.4"
-  },
-  "pnpm": {
-    "//": "https://github.com/jsdom/cssstyle/issues/182",
-    "overrides": {
-      "cssstyle": "4.6.0"
-    }
   }
 }
