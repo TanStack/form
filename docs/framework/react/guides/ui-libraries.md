@@ -5,9 +5,9 @@ title: UI Libraries
 
 ## Usage of TanStack Form with UI Libraries
 
-TanStack Form is a headless library, offering you complete flexibility to style it as you see fit. It's compatible with a wide range of UI libraries, including `Tailwind`, `Material UI`, `Mantine`, or even plain CSS.
+TanStack Form is a headless library, offering you complete flexibility to style it as you see fit. It's compatible with a wide range of UI libraries, including `Tailwind`, `Material UI`, `Mantine`, `shadcn/ui`, or even plain CSS.
 
-This guide focuses on `Material UI` and `Mantine`, but the concepts are applicable to any UI library of your choice.
+This guide focuses on `Material UI`, `Mantine`, and `shadcn/ui`, but the concepts are applicable to any UI library of your choice.
 
 ### Prerequisites
 
@@ -15,6 +15,7 @@ Before integrating TanStack Form with a UI library, ensure the necessary depende
 
 - For `Material UI`, follow the installation instructions on their [official site](https://mui.com/material-ui/getting-started/).
 - For `Mantine`, refer to their [documentation](https://mantine.dev/).
+- For `shadcn/ui`, refer to their [official site](https://ui.shadcn.com/).
 
 Note: While you can mix and match libraries, it's generally advisable to stick with one to maintain consistency and minimize bloat.
 
@@ -29,8 +30,7 @@ import { useForm } from '@tanstack/react-form'
 export default function App() {
   const { Field, handleSubmit, state } = useForm({
     defaultValues: {
-      firstName: '',
-      lastName: '',
+      name: '',
       isChecked: false,
     },
     onSubmit: async ({ value }) => {
@@ -48,7 +48,7 @@ export default function App() {
         }}
       >
         <Field
-          name="firstName"
+          name="name"
           children={({ state, handleChange, handleBlur }) => (
             <TextInput
               defaultValue={state.value}
@@ -79,7 +79,7 @@ export default function App() {
 
 - Initially, we utilize the `useForm` hook from TanStack and destructure the necessary properties. This step is optional; alternatively, you could use `const form = useForm()` if preferred. TypeScript's type inference ensures a smooth experience regardless of the approach.
 - The `Field` component, derived from `useForm`, accepts several properties, such as `validators`. For this demonstration, we focus on two primary properties: `name` and `children`.
-  - The `name` property identifies each `Field`, for instance, `firstName` in our example.
+  - The `name` property identifies each `Field`, for instance, `name` in our example.
   - The `children` property leverages the concept of render props, allowing us to integrate components without unnecessary abstractions.
 - TanStack's design relies heavily on render props, providing access to `children` within the `Field` component. This approach is entirely type-safe. When integrating with Mantine components, such as `TextInput`, we selectively destructure properties like `state.value`, `handleChange`, and `handleBlur`. This selective approach is due to the slight differences in types between `TextInput` and the `field` we get in the children.
 - By following these steps, you can seamlessly integrate Mantine components with TanStack Form.
@@ -90,37 +90,69 @@ export default function App() {
 The process for integrating Material UI components is similar. Here's an example using TextField and Checkbox from Material UI:
 
 ```tsx
-        <Field
-            name="lastName"
-            children={({ state, handleChange, handleBlur }) => {
-              return (
-                <TextField
-                  id="filled-basic"
-                  label="Filled"
-                  variant="filled"
-                  defaultValue={state.value}
-                  onChange={(e) => handleChange(e.target.value)}
-                  onBlur={handleBlur}
-                  placeholder="Enter your last name"
-                />
-              );
-            }}
-          />
+<Field
+  name="name"
+  children={({ state, handleChange, handleBlur }) => {
+    return (
+      <TextField
+        id="filled-basic"
+        label="Filled"
+        variant="filled"
+        defaultValue={state.value}
+        onChange={(e) => handleChange(e.target.value)}
+        onBlur={handleBlur}
+        placeholder="Enter your name"
+      />
+    );
+  }}
+/>
 
-           <Field
-            name="isMuiCheckBox"
-            children={({ state, handleChange, handleBlur }) => {
-              return (
-                <MuiCheckbox
-                  onChange={(e) => handleChange(e.target.checked)}
-                  onBlur={handleBlur}
-                  checked={state.value}
-                />
-              );
-            }}
-          />
+<Field
+  name="isMuiCheckBox"
+  children={({ state, handleChange, handleBlur }) => {
+    return (
+      <MuiCheckbox
+        onChange={(e) => handleChange(e.target.checked)}
+        onBlur={handleBlur}
+        checked={state.value}
+      />
+    );
+  }}
+/>
 
 ```
 
 - The integration approach is the same as with Mantine.
 - The primary difference lies in the specific Material UI component properties and styling options.
+
+### Usage with shadcn/ui
+
+The process for integrating shadcn/ui components is similar. Here's an example using Input and Checkbox from shadcn/ui:
+
+```tsx
+<Field
+  name="name"
+  children={({ state, handleChange, handleBlur }) => (
+    <Input
+      defaultValue={state.value}
+      onChange={(e) => handleChange(e.target.value)}
+      onBlur={handleBlur}
+      placeholder="Enter your name"
+    />
+  )}
+/>
+<Field
+  name="isChecked"
+  children={({ state, handleChange, handleBlur }) => (
+    <Checkbox
+      onCheckedChange={(checked) => handleChange(checked === true)}
+      onBlur={handleBlur}
+      checked={state.value}
+    />
+  )}
+/>
+```
+
+- The integration approach is the same as with Mantine and Material UI.
+- The primary difference lies in the specific shadcn/ui component properties and styling options.
+- Note the onCheckedChange property of Checkbox instead of onChange.
