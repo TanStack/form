@@ -10,7 +10,7 @@ import type { DevtoolsFormState } from '../contexts/eventClientContext'
 dayjs.extend(relativeTime)
 
 type StateHeaderProps = {
-  selectedInstance: Accessor<DevtoolsFormState | null>
+  selectedInstance: Accessor<DevtoolsFormState | null | undefined>
 }
 
 export function StateHeader(props: StateHeaderProps) {
