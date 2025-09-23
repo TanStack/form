@@ -1,4 +1,5 @@
 import { Derived, Store, batch } from '@tanstack/store'
+import { v4 as uuidv4 } from 'uuid'
 import {
   deleteBy,
   determineFormLevelErrorSourceAndValue,
@@ -999,7 +1000,7 @@ export class FormApi<
       formListeners: {} as Record<ListenerCause, never>,
     }
 
-    this._formId = opts?.formId ?? crypto.randomUUID()
+    this._formId = opts?.formId ?? uuidv4()
 
     this._devtoolsSubmissionOverride = false
 
