@@ -38,7 +38,7 @@ function useProviderValue() {
   const [store, setStore] = createStore<DevtoolsState>(devtoolsStateInit)
 
   createEffect(() => {
-    const cleanup = formEventClient.on('form-state-change', (e) => {
+    const cleanup = formEventClient.on('form-api', (e) => {
       setStore('formState', (prev) => {
         const existing = prev.find((item) => item.id === e.payload.id)
 
@@ -72,7 +72,41 @@ function useProviderValue() {
   })
 
   createEffect(() => {
-    const cleanup = formEventClient.on('form-submission-state-change', (e) => {
+    const cleanup = formEventClient.on('form-state', (e) => {
+      setStore('formState', (prev) => {
+        const existing = prev.find((item) => item.id === e.payload.id)
+
+        if (existing) {
+          return prev.map((item) =>
+            item.id === e.payload.id
+              ? {
+                  ...item,
+                  state: e.payload.state,
+                  options: item.options,
+                  date: dayjs(),
+                }
+              : item,
+          )
+        }
+
+        return [
+          ...prev,
+          {
+            id: e.payload.id,
+            state: e.payload.state,
+            date: dayjs(),
+            options: {},
+            history: [],
+          },
+        ]
+      })
+    })
+
+    onCleanup(() => cleanup())
+  })
+
+  createEffect(() => {
+    const cleanup = formEventClient.on('form-submission', (e) => {
       setStore('formState', (prev) =>
         prev.map((item) => {
           if (item.id !== e.payload.id) return item
