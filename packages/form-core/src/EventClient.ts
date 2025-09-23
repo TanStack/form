@@ -9,6 +9,9 @@ type ExtractEventNames<T> = T extends `${string}:${infer EventName}`
 export type BroadcastFormState = {
   id: string
   state: AnyFormState
+}
+
+export type BroadcastFormOptions = {
   options: AnyFormOptions
 }
 
@@ -33,29 +36,26 @@ export type BroadcastFormSubmissionState =
       successful: true
     }
 
-export type BroadcastFormUnmounted = {
+export type BroadcastFormCompleteState = {
   id: string
+  state: AnyFormState
+  options: AnyFormOptions
 }
 
-export type RequestFormState = {
-  id: string
-}
-
-export type RequestFormReset = {
-  id: string
-}
-
-export type RequestFormForceReset = {
+export type BroadcastFormId = {
   id: string
 }
 
 type EventMap = {
-  'form-devtools:form-state-change': BroadcastFormState
-  'form-devtools:form-submission-state-change': BroadcastFormSubmissionState
-  'form-devtools:form-unmounted': BroadcastFormUnmounted
-  'form-devtools:request-form-state': RequestFormState
-  'form-devtools:request-form-reset': RequestFormReset
-  'form-devtools:request-form-force-submit': RequestFormForceReset
+  'form-devtools:form-state': BroadcastFormState
+  'form-devtools:form-submission': BroadcastFormSubmissionState
+  'form-devtools:form-api': BroadcastFormCompleteState
+
+  'form-devtools:form-unmounted': BroadcastFormId
+
+  'form-devtools:request-form-state': BroadcastFormId
+  'form-devtools:request-form-reset': BroadcastFormId
+  'form-devtools:request-form-force-submit': BroadcastFormId
 }
 
 export type EventClientEventMap = keyof EventMap
