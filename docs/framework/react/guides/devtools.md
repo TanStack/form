@@ -14,7 +14,7 @@ npm i @tanstack/react-devtools
 npm i @tanstack/react-form-devtools
 ```
 
-Next in the root of your application import the `TanstackDevtools`.
+Next in the root of your application import the `TanStackDevtools`.
 
 ```tsx
 import { TanStackDevtools } from '@tanstack/react-devtools'
@@ -30,7 +30,7 @@ createRoot(document.getElementById('root')!).render(
 )
 ```
 
-Import the `FormDevtoolsPlugin` from **TanStack Form** and provide it to the `TanstackDevtools` component.
+Import the `FormDevtoolsPlugin` from **TanStack Form** and provide it to the `TanStackDevtools` component.
 
 ```tsx
 import { TanStackDevtools } from '@tanstack/react-devtools'
@@ -47,6 +47,6 @@ createRoot(document.getElementById('root')!).render(
 )
 ```
 
-Finally add any additional configuration you desire to the `TanstackDevtools` component, more information can be found under the [TanStack Devtools Configuration](https://tanstack.com/devtools/) section.
+Finally add any additional configuration you desire to the `TanStackDevtools` component, more information can be found under the [TanStack Devtools Configuration](https://tanstack.com/devtools/) section.
 
 A complete working example can be found in our [examples section](https://tanstack.com/form/latest/docs/framework/react/examples/devtools).
