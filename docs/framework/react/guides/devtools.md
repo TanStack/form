@@ -17,7 +17,7 @@ npm i @tanstack/react-form-devtools
 Next in the root of your application import the `TanstackDevtools`.
 
 ```tsx
-import { TanstackDevtools } from '@tanstack/react-devtools'
+import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import App from './App'
 
@@ -25,7 +25,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
 
-    <TanstackDevtools />
+    <TanStackDevtools />
   </StrictMode>,
 )
 ```
@@ -33,7 +33,7 @@ createRoot(document.getElementById('root')!).render(
 Import the `FormDevtoolsPlugin` from **TanStack Form** and provide it to the `TanstackDevtools` component.
 
 ```tsx
-import { TanstackDevtools } from '@tanstack/react-devtools'
+import { TanStackDevtools } from '@tanstack/react-devtools'
 import { FormDevtoolsPlugin } from '@tanstack/react-form-devtools'
 
 import App from './App'
@@ -42,7 +42,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
 
-    <TanstackDevtools plugins={[FormDevtoolsPlugin()]} />
+    <TanStackDevtools plugins={[FormDevtoolsPlugin()]} />
   </StrictMode>,
 )
 ```
