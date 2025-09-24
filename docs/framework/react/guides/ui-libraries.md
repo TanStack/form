@@ -134,7 +134,7 @@ The process for integrating shadcn/ui components is similar. Here's an example u
   name="name"
   children={({ state, handleChange, handleBlur }) => (
     <Input
-      defaultValue={state.value}
+      value={state.value}
       onChange={(e) => handleChange(e.target.value)}
       onBlur={handleBlur}
       placeholder="Enter your name"
