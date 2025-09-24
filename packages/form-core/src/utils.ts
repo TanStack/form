@@ -440,6 +440,10 @@ export function evaluate<T>(objA: T, objB: T) {
     return false
   }
 
+  if (objA instanceof Date && objB instanceof Date) {
+    return objA.getTime() === objB.getTime()
+  }
+
   if (objA instanceof Map && objB instanceof Map) {
     if (objA.size !== objB.size) return false
     for (const [k, v] of objA) {
@@ -547,4 +551,19 @@ export function createFieldMap<T>(values: Readonly<T>): { [K in keyof T]: K } {
   }
 
   return output
+}
+
+/**
+ * Merge the first parameter with the given overrides.
+ * @private
+ */
+export function mergeOpts<T>(
+  originalOpts: T | undefined | null,
+  overrides: T,
+): T {
+  if (originalOpts === undefined || originalOpts === null) {
+    return overrides
+  }
+
+  return { ...originalOpts, ...overrides }
 }

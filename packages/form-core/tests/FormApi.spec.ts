@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
-import { FieldApi, FormApi } from '../src/index'
+import { FieldApi, FormApi, formEventClient } from '../src/index'
 import { sleep } from './utils'
 import type { AnyFieldApi, AnyFormApi } from '../src/index'
 
@@ -3952,5 +3952,5 @@ it('should accept formId and return it', () => {
   })
   form.mount()
 
-  expect(form.formId).toEqual('age')
+  expect(form.formId()).toEqual('age')
 })

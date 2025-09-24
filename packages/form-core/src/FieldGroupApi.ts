@@ -6,7 +6,7 @@ import type {
   FormAsyncValidateOrFn,
   FormValidateOrFn,
 } from './FormApi'
-import type { AnyFieldMeta, AnyFieldMetaBase } from './FieldApi'
+import type { AnyFieldMetaBase, FieldOptions } from './FieldApi'
 import type {
   DeepKeys,
   DeepKeysOfType,
@@ -173,6 +173,57 @@ export class FieldGroupApi<
       ]
 
     return concatenatePaths(formMappedPath, restOfPath)
+  }
+
+  /**
+   * Get the field options with the true form DeepKeys for validators
+   * @private
+   */
+  getFormFieldOptions = <
+    TOptions extends FieldOptions<
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any
+    >,
+  >(
+    props: TOptions,
+  ): TOptions => {
+    const newProps = { ...props }
+    const validators = newProps.validators
+
+    newProps.name = this.getFormFieldName(props.name)
+
+    if (
+      validators &&
+      (validators.onChangeListenTo || validators.onBlurListenTo)
+    ) {
+      const newValidators = { ...validators }
+
+      const remapListenTo = (listenTo: DeepKeys<any>[] | undefined) => {
+        if (!listenTo) return undefined
+        return listenTo.map((localFieldName) =>
+          this.getFormFieldName(localFieldName),
+        )
+      }
+
+      newValidators.onChangeListenTo = remapListenTo(
+        validators.onChangeListenTo,
+      )
+      newValidators.onBlurListenTo = remapListenTo(validators.onBlurListenTo)
+
+      newProps.validators = newValidators
+    }
+
+    return newProps
   }
 
   store: Derived<FieldGroupState<TFieldGroupData>>

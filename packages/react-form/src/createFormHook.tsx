@@ -50,7 +50,7 @@ const formContext = createContext<AnyFormApi>(null as never)
  * Then `T` becomes `undefined`.
  *
  * Here, we are checking if the passed type `T` extends `DefaultT` and **only**
- * `DefaultT`, as if that's the case we assume that inferencing has not occured.
+ * `DefaultT`, as if that's the case we assume that inferencing has not occurred.
  */
 type UnwrapOrAny<T> = [unknown] extends [T] ? any : T
 type UnwrapDefaultOrAny<DefaultT, T> = [DefaultT] extends [T]
