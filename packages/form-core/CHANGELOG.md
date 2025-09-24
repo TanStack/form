@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.23.2
+
+### Patch Changes
+
+- fix(form-core): handle string array indices in prefixSchemaToErrors ([#1689](https://github.com/TanStack/form/pull/1689))
+
 ## 1.23.1
 
 ### Patch Changes
