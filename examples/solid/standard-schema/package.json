@@ -9,18 +9,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/solid-form": "^1.19.1",
-    "arktype": "^2.1.20",
-    "effect": "^3.17.7",
+    "@tanstack/solid-form": "^1.23.1",
+    "arktype": "^2.1.22",
+    "effect": "^3.17.14",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "solid-js": "^1.9.8",
+    "solid-js": "^1.9.9",
     "valibot": "^1.1.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {
     "typescript": "5.8.2",
-    "vite": "^7.1.1",
+    "vite": "^7.1.6",
     "vite-plugin-solid": "^2.11.8"
   }
 }

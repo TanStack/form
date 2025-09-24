@@ -7,6 +7,7 @@ import type {
   DeepValue,
   FieldAsyncValidateOrFn,
   FieldValidateOrFn,
+  FieldValidators,
   FormAsyncValidateOrFn,
   FormValidateOrFn,
 } from '@tanstack/form-core'
@@ -516,32 +517,63 @@ export type LensFieldComponent<
 >({
   children,
   ...fieldOptions
-}: FieldComponentBoundProps<
-  unknown,
-  string,
-  TData,
-  TOnMount,
-  TOnChange,
-  TOnChangeAsync,
-  TOnBlur,
-  TOnBlurAsync,
-  TOnSubmit,
-  TOnSubmitAsync,
-  TOnDynamic,
-  TOnDynamicAsync,
-  undefined | FormValidateOrFn<unknown>,
-  undefined | FormValidateOrFn<unknown>,
-  undefined | FormAsyncValidateOrFn<unknown>,
-  undefined | FormValidateOrFn<unknown>,
-  undefined | FormAsyncValidateOrFn<unknown>,
-  undefined | FormValidateOrFn<unknown>,
-  undefined | FormAsyncValidateOrFn<unknown>,
-  undefined | FormValidateOrFn<unknown>,
-  undefined | FormAsyncValidateOrFn<unknown>,
-  undefined | FormAsyncValidateOrFn<unknown>,
-  TParentSubmitMeta,
-  ExtendedApi
-> & { name: TName }) => ReactNode
+}: Omit<
+  FieldComponentBoundProps<
+    unknown,
+    string,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    undefined | FormValidateOrFn<unknown>,
+    undefined | FormValidateOrFn<unknown>,
+    undefined | FormAsyncValidateOrFn<unknown>,
+    undefined | FormValidateOrFn<unknown>,
+    undefined | FormAsyncValidateOrFn<unknown>,
+    undefined | FormValidateOrFn<unknown>,
+    undefined | FormAsyncValidateOrFn<unknown>,
+    undefined | FormValidateOrFn<unknown>,
+    undefined | FormAsyncValidateOrFn<unknown>,
+    undefined | FormAsyncValidateOrFn<unknown>,
+    TParentSubmitMeta,
+    ExtendedApi
+  >,
+  'name' | 'validators'
+> & {
+  name: TName
+  validators?: Omit<
+    FieldValidators<
+      unknown,
+      string,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync
+    >,
+    'onChangeListenTo' | 'onBlurListenTo'
+  > & {
+    /**
+     * An optional list of field names that should trigger this field's `onChange` and `onChangeAsync` events when its value changes
+     */
+    onChangeListenTo?: DeepKeys<TLensData>[]
+    /**
+     * An optional list of field names that should trigger this field's `onBlur` and `onBlurAsync` events when its value changes
+     */
+    onBlurListenTo?: DeepKeys<TLensData>[]
+  }
+}) => ReactNode
 
 /**
  * A function component that takes field options and a render function as children and returns a React component.

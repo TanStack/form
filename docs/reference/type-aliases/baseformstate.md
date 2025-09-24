@@ -11,7 +11,7 @@ title: BaseFormState
 type BaseFormState<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer> = object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:558](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L558)
+Defined in: [packages/form-core/src/FormApi.ts:586](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L586)
 
 An object representing the current state of the form.
 

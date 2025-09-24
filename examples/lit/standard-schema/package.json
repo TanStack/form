@@ -9,15 +9,15 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/lit-form": "^1.19.1",
-    "arktype": "^2.1.20",
-    "effect": "^3.17.7",
+    "@tanstack/lit-form": "^1.23.1",
+    "arktype": "^2.1.22",
+    "effect": "^3.17.14",
     "lit": "^3.3.1",
     "valibot": "^1.1.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "vite": "^7.1.1"
+    "vite": "^7.1.6"
   },
   "browserslist": {
     "production": [

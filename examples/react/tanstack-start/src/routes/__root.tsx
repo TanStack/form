@@ -1,5 +1,8 @@
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 
+import { TanStackDevtools } from '@tanstack/react-devtools'
+import { FormDevtoolsPlugin } from '@tanstack/react-form-devtools'
+
 export const Route = createRootRoute({
   head: () => ({
     meta: [
@@ -27,6 +30,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         {children}
         <Scripts />
+        <TanStackDevtools plugins={[FormDevtoolsPlugin()]} />
       </body>
     </html>
   )

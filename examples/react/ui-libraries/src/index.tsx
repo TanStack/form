@@ -1,10 +1,14 @@
+import React from 'react'
+
+import { TanStackDevtools } from '@tanstack/react-devtools'
+import { FormDevtoolsPlugin } from '@tanstack/react-form-devtools'
+
 import { createRoot } from 'react-dom/client'
 import { createTheme } from '@mui/material/styles'
 import { red } from '@mui/material/colors'
 import { ThemeProvider } from '@emotion/react'
 import { CssBaseline } from '@mui/material'
 import MainComponent from './MainComponent'
-import React from 'react'
 
 const theme = createTheme({
   palette: {
@@ -34,5 +38,10 @@ const rootElement = document.getElementById('root')!
 createRoot(rootElement).render(
   <React.StrictMode>
     <App />
+
+    <TanStackDevtools
+      config={{ hideUntilHover: true }}
+      plugins={[FormDevtoolsPlugin()]}
+    />
   </React.StrictMode>,
 )
