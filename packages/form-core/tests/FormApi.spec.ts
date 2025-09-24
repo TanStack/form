@@ -3952,5 +3952,14 @@ it('should accept formId and return it', () => {
   })
   form.mount()
 
-  expect(form.formId()).toEqual('age')
+  expect(form.formId).toEqual('age')
+})
+
+it('should generate a formId if not provided', () => {
+  const form = new FormApi({
+    defaultValues: { age: 0 },
+  })
+  form.mount()
+
+  expect(form.formId.length).toBeGreaterThan(1)
 })
