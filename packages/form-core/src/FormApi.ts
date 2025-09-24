@@ -1,4 +1,5 @@
 import { Derived, Store, batch } from '@tanstack/store'
+import { debounce } from '@tanstack/pacer'
 import { v4 as uuidv4 } from 'uuid'
 import {
   deleteBy,
@@ -1291,13 +1292,23 @@ export class FormApi<
 
     this.update(opts || {})
 
+    const debouncedDevtoolState = debounce(
+      (state: AnyFormState) =>
+        formEventClient.emit('form-state', {
+          id: this._formId,
+          state: state,
+        }),
+      {
+        wait: 300,
+      },
+    )
+
+    // devtool broadcasts
     this.store.subscribe(() => {
-      formEventClient.emit('form-state', {
-        id: this._formId,
-        state: this.store.state,
-      })
+      debouncedDevtoolState(this.store.state)
     })
 
+    // devtool requests
     formEventClient.on('request-form-state', (e) => {
       if (e.payload.id === this._formId) {
         formEventClient.emit('form-api', {

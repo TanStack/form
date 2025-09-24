@@ -1183,6 +1183,9 @@ importers:
       '@tanstack/devtools-event-client':
         specifier: ^0.2.5
         version: 0.2.5
+      '@tanstack/pacer':
+        specifier: ^0.15.3
+        version: 0.15.3
       '@tanstack/store':
         specifier: ^0.7.5
         version: 0.7.5
@@ -4886,6 +4889,10 @@ packages:
   '@tanstack/history@1.131.2':
     resolution: {integrity: sha512-cs1WKawpXIe+vSTeiZUuSBy8JFjEuDgdMKZFRLKwQysKo8y2q6Q1HvS74Yw+m5IhOW1nTZooa6rlgdfXcgFAaw==}
     engines: {node: '>=12'}
+
+  '@tanstack/pacer@0.15.3':
+    resolution: {integrity: sha512-yF7TDPeCwss+4zlHAinBDUrG+RF4+f3oUedYsTEcyXSdgTLLwozFxA1nH72KugTE67A1BkpfSrgeMjDYHgaaPw==}
+    engines: {node: '>=18'}
 
   '@tanstack/publish-config@0.2.0':
     resolution: {integrity: sha512-RC0yRBFJvGuR58tKQUIkMXVEiATXgESIc+3/NTqoCC7D2YOF4fZGmHGYIanFEPQH7EGfQ5+Bwi+H6BOtKnymtw==}
@@ -15670,6 +15677,11 @@ snapshots:
       - typescript
 
   '@tanstack/history@1.131.2': {}
+
+  '@tanstack/pacer@0.15.3':
+    dependencies:
+      '@tanstack/devtools-event-client': 0.2.5
+      '@tanstack/store': 0.7.5
 
   '@tanstack/publish-config@0.2.0':
     dependencies:
