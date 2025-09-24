@@ -1183,9 +1183,6 @@ importers:
       '@tanstack/store':
         specifier: ^0.7.7
         version: 0.7.7
-      uuid:
-        specifier: ^13.0.0
-        version: 13.0.0
     devDependencies:
       arktype:
         specifier: ^2.1.22
