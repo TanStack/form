@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.23.1
+
+### Patch Changes
+
+- bump to latest event client, for angular ssr ([#1761](https://github.com/TanStack/form/pull/1761))
+
 ## 1.23.0
 
 ### Minor Changes
