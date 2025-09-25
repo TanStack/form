@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/svelte-form",
-  "version": "1.23.3",
+  "version": "1.23.4",
   "description": "Powerful, type-safe forms for Svelte.",
   "author": "tannerlinsley",
   "license": "MIT",
