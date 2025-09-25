@@ -110,3 +110,4 @@ title: "@tanstack/form-core"
 - [isStandardSchemaValidator](../functions/isstandardschemavalidator.md)
 - [mergeForm](../functions/mergeform.md)
 - [revalidateLogic](../functions/revalidatelogic.md)
+- [uuid](../functions/uuid.md)
