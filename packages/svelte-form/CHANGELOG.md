@@ -1,5 +1,12 @@
 # @tanstack/svelte-form
 
+## 1.23.4
+
+### Patch Changes
+
+- Updated dependencies [[`c978946`](https://github.com/TanStack/form/commit/c97894688c6f5f1953a87c26890e156ecb0bcaab)]:
+  - @tanstack/form-core@1.24.0
+
 ## 1.23.3
 
 ### Patch Changes
