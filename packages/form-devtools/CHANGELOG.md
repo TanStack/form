@@ -1,5 +1,12 @@
 # @tanstack/form-devtools
 
+## 0.1.3
+
+### Patch Changes
+
+- Updated dependencies [[`f608267`](https://github.com/TanStack/form/commit/f6082674290a2ec5bc1d3ae33f193539ac7fc4b6)]:
+  - @tanstack/form-core@1.23.3
+
 ## 0.1.2
 
 ### Patch Changes
