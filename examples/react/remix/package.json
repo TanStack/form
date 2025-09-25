@@ -19,10 +19,10 @@
   },
   "devDependencies": {
     "@remix-run/dev": "^2.17.1",
-    "@types/react": "^19.0.7",
+    "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "typescript": "5.8.2",
-    "vite": "^7.1.6",
+    "vite": "^7.1.7",
     "vite-tsconfig-paths": "^5.1.4"
   },
   "engines": {
