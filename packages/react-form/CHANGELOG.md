@@ -1,5 +1,12 @@
 # @tanstack/react-form
 
+## 1.23.3
+
+### Patch Changes
+
+- Updated dependencies [[`f608267`](https://github.com/TanStack/form/commit/f6082674290a2ec5bc1d3ae33f193539ac7fc4b6)]:
+  - @tanstack/form-core@1.23.3
+
 ## 1.23.2
 
 ### Patch Changes
