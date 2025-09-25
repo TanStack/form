@@ -51,7 +51,7 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/devtools-event-client": "^0.3.1",
+    "@tanstack/devtools-event-client": "^0.3.2",
     "@tanstack/store": "^0.7.7",
     "uuid": "^13.0.0"
   },
