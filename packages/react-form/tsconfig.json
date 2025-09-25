@@ -4,7 +4,10 @@
     "jsx": "react-jsx",
     "moduleResolution": "Bundler",
     "paths": {
-      "@tanstack/form-core": ["../form-core/src"]
+      "@tanstack/form-core": ["../form-core/src"],
+      "@tanstack/react-start/server": [
+        "./node_modules/@tanstack/react-start/dist/esm/server.d.ts"
+      ]
     }
   },
   "include": ["src", "tests", "eslint.config.js", "vite.config.ts"]
