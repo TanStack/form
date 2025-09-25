@@ -1,4 +1,4 @@
-import { formEventClient } from '@tanstack/form-core'
+import { FormEventClient } from '@tanstack/form-core'
 
 import { useStyles } from '../styles/use-styles'
 
@@ -17,6 +17,7 @@ export function ActionButtons(props: ActionButtonsProps) {
       <button
         class={styles().actionButton}
         onMouseDown={() => {
+          const formEventClient = new FormEventClient();
           formEventClient.emit('request-form-state', {
             id: props.selectedInstance()?.id as string,
           })
@@ -29,6 +30,7 @@ export function ActionButtons(props: ActionButtonsProps) {
       <button
         class={styles().actionButton}
         onMouseDown={() => {
+          const formEventClient = new FormEventClient();
           formEventClient.emit('request-form-reset', {
             id: props.selectedInstance()?.id as string,
           })
@@ -41,6 +43,7 @@ export function ActionButtons(props: ActionButtonsProps) {
       <button
         class={styles().actionButton}
         onMouseDown={() => {
+          const formEventClient = new FormEventClient();
           formEventClient.emit('request-form-force-submit', {
             id: props.selectedInstance()?.id as string,
           })

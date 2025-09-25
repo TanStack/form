@@ -14,24 +14,24 @@ export type BroadcastFormState = {
 
 export type BroadcastFormSubmissionState =
   | {
-      id: string
-      submissionAttempt: number
-      successful: false
-      stage: 'validateAllFields' | 'validate'
-      errors: any[]
-    }
+    id: string
+    submissionAttempt: number
+    successful: false
+    stage: 'validateAllFields' | 'validate'
+    errors: any[]
+  }
   | {
-      id: string
-      submissionAttempt: number
-      successful: false
-      stage: 'inflight'
-      onError: unknown
-    }
+    id: string
+    submissionAttempt: number
+    successful: false
+    stage: 'inflight'
+    onError: unknown
+  }
   | {
-      id: string
-      submissionAttempt: number
-      successful: true
-    }
+    id: string
+    submissionAttempt: number
+    successful: true
+  }
 
 export type BroadcastFormUnmounted = {
   id: string
@@ -62,12 +62,10 @@ export type EventClientEventMap = keyof EventMap
 
 export type EventClientEventNames = ExtractEventNames<EventClientEventMap>
 
-class FormEventClient extends EventClient<EventMap> {
+export class FormEventClient extends EventClient<EventMap> {
   constructor() {
     super({
       pluginId: 'form-devtools',
     })
   }
 }
-
-export const formEventClient = new FormEventClient()
