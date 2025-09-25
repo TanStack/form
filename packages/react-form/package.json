@@ -87,7 +87,7 @@
     "devalue": "^5.3.2"
   },
   "devDependencies": {
-    "@tanstack/react-start": "^1.131.50",
+    "@tanstack/react-start": "^1.132.6",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.7.0",
@@ -97,7 +97,7 @@
     "vite": "^7.1.6"
   },
   "peerDependencies": {
-    "@tanstack/react-start": "^1.130.10",
+    "@tanstack/react-start": "^1.132.6",
     "react": "^17.0.0 || ^18.0.0 || ^19.0.0"
   },
   "peerDependenciesMeta": {
