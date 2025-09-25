@@ -13,10 +13,10 @@ import type { Dayjs } from 'dayjs'
 
 type BroadcastFormSubmissionStateWithoutId =
   BroadcastFormSubmissionState extends infer T
-  ? T extends any
-  ? Omit<T, 'id'>
-  : never
-  : never
+    ? T extends any
+      ? Omit<T, 'id'>
+      : never
+    : never
 
 export type DevtoolsFormState = {
   id: string
@@ -38,7 +38,7 @@ function useProviderValue() {
   const [store, setStore] = createStore<DevtoolsState>(devtoolsStateInit)
 
   createEffect(() => {
-    const formEventClient = new FormEventClient();
+    const formEventClient = new FormEventClient()
     const cleanup = formEventClient.on('form-state-change', (e) => {
       setStore('formState', (prev) => {
         const existing = prev.find((item) => item.id === e.payload.id)
@@ -47,11 +47,11 @@ function useProviderValue() {
           return prev.map((item) =>
             item.id === e.payload.id
               ? {
-                ...item,
-                state: e.payload.state,
-                options: e.payload.options,
-                date: dayjs(),
-              }
+                  ...item,
+                  state: e.payload.state,
+                  options: e.payload.options,
+                  date: dayjs(),
+                }
               : item,
           )
         }
@@ -73,7 +73,7 @@ function useProviderValue() {
   })
 
   createEffect(() => {
-    const formEventClient = new FormEventClient();
+    const formEventClient = new FormEventClient()
     const cleanup = formEventClient.on('form-submission-state-change', (e) => {
       setStore('formState', (prev) =>
         prev.map((item) => {
@@ -94,7 +94,7 @@ function useProviderValue() {
   })
 
   createEffect(() => {
-    const formEventClient = new FormEventClient();
+    const formEventClient = new FormEventClient()
     const cleanup = formEventClient.on('form-unmounted', (e) => {
       setStore('formState', (prev) =>
         prev.filter((item) => item.id !== e.payload.id),
