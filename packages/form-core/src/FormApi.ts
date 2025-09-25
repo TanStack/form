@@ -1,5 +1,5 @@
 import { Derived, Store, batch } from '@tanstack/store'
-import { v4 as uuidv4 } from 'uuid'
+
 import {
   deleteBy,
   determineFormLevelErrorSourceAndValue,
@@ -12,6 +12,7 @@ import {
   isNonEmptyArray,
   mergeOpts,
   setBy,
+  uuid,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
 
@@ -1000,7 +1001,7 @@ export class FormApi<
       formListeners: {} as Record<ListenerCause, never>,
     }
 
-    this._formId = opts?.formId ?? uuidv4()
+    this._formId = opts?.formId ?? uuid()
 
     this._devtoolsSubmissionOverride = false
 
@@ -1329,7 +1330,7 @@ export class FormApi<
     })
   }
 
-  formId(): string | undefined {
+  get formId(): string {
     return this._formId
   }
 

@@ -864,7 +864,7 @@ describe('useForm', () => {
       return (
         <>
           <form
-            id={form.formId()}
+            id={form.formId}
             onSubmit={(e) => {
               e.preventDefault()
               form.handleSubmit()
@@ -878,12 +878,8 @@ describe('useForm', () => {
             )}
           />
 
-          <button
-            type="submit"
-            form={form.formId()}
-            data-testid="formId-target"
-          >
-            {form.formId()}
+          <button type="submit" form={form.formId} data-testid="formId-target">
+            {form.formId}
           </button>
         </>
       )

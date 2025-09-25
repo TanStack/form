@@ -540,8 +540,8 @@ describe('createFormHook', () => {
       const form = useFormContext()
 
       return (
-        <button type="submit" form={form.formId()} data-testid="formId-target">
-          {form.formId()}
+        <button type="submit" form={form.formId} data-testid="formId-target">
+          {form.formId}
         </button>
       )
     }
@@ -554,7 +554,7 @@ describe('createFormHook', () => {
       return (
         <form.AppForm>
           <form
-            id={form.formId()}
+            id={form.formId}
             onSubmit={(e) => {
               e.preventDefault()
               form.handleSubmit()

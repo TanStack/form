@@ -1,5 +1,19 @@
 # @tanstack/vue-form
 
+## 1.23.4
+
+### Patch Changes
+
+- Updated dependencies [[`c978946`](https://github.com/TanStack/form/commit/c97894688c6f5f1953a87c26890e156ecb0bcaab)]:
+  - @tanstack/form-core@1.24.0
+
+## 1.23.3
+
+### Patch Changes
+
+- Updated dependencies [[`f608267`](https://github.com/TanStack/form/commit/f6082674290a2ec5bc1d3ae33f193539ac7fc4b6)]:
+  - @tanstack/form-core@1.23.3
+
 ## 1.23.2
 
 ### Patch Changes
