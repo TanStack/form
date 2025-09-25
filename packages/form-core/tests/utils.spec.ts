@@ -10,6 +10,7 @@ import {
   makePathArray,
   mergeOpts,
   setBy,
+  uuid,
 } from '../src/index'
 
 describe('getBy', () => {
@@ -767,5 +768,36 @@ describe('mergeOpts', () => {
       bar: true,
     })
     expect(mergeOpts(original, {})).toEqual({ foo: 'test' })
+  })
+})
+
+describe('uuid', () => {
+  it('should return a string', () => {
+    const id = uuid()
+    expect(typeof id).toBe('string')
+  })
+
+  it('should match UUID v4 format', () => {
+    const id = uuid()
+    const uuidV4Regex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
+    expect(id).toMatch(uuidV4Regex)
+  })
+
+  it('should generate different values on multiple calls', () => {
+    const ids = new Set(Array.from({ length: 100 }, () => uuid()))
+    expect(ids.size).toBe(100)
+  })
+
+  it('should always produce 36 characters', () => {
+    const id = uuid()
+    expect(id.length).toBe(36)
+  })
+
+  it('should set correct version (4) and variant bits', () => {
+    const id = uuid()
+    const parts = id.split('-')
+    expect(parts[2]?.[0]).toBe('4')
+    expect(['8', '9', 'a', 'b']).toContain(parts[3]?.[0])
   })
 })
