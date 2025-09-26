@@ -191,7 +191,7 @@ export function useField<
     TPatentSubmitMeta
   >,
 ) {
-  const [fieldApi] = useState(() => {
+  const fieldApi = useMemo(() => {
     const api = new FieldApi({
       ...opts,
       form: opts.form,
@@ -217,12 +217,13 @@ export function useField<
     extendedApi.Field = Field as never
 
     return extendedApi
-  })
-
-  const nameHasChanged = fieldApi.name !== opts.name
-  if (nameHasChanged) {
-    fieldApi.baseStore.setState((prev) => ({ ...prev, name: opts.name }))
-  }
+    // We only want to
+    // update on name changes since those are at risk of becoming stale. The field
+    // state must be up to date for the internal JSX render.
+    // The other options can freely be in `fieldApi.update`
+    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [opts.name])
 
   useIsomorphicLayoutEffect(fieldApi.mount, [fieldApi])
 
