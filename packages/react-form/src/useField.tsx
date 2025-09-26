@@ -219,6 +219,11 @@ export function useField<
     return extendedApi
   })
 
+  const nameHasChanged = fieldApi.name !== opts.name
+  if (nameHasChanged) {
+    fieldApi.baseStore.setState((prev) => ({ ...prev, name: opts.name }))
+  }
+
   useIsomorphicLayoutEffect(fieldApi.mount, [fieldApi])
 
   /**

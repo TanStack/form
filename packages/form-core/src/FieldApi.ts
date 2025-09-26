@@ -1,4 +1,4 @@
-import { Derived, batch } from '@tanstack/store'
+import { Derived, Store, batch } from '@tanstack/store'
 import {
   isStandardSchemaValidator,
   standardSchemaValidators,
@@ -864,6 +864,10 @@ export type AnyFieldMeta = FieldMeta<
   any
 >
 
+export type FieldBaseState<TParentData, TName extends DeepKeys<TParentData>> = {
+  name: TName
+}
+
 /**
  * An object type representing the state of a field.
  */
@@ -1052,7 +1056,9 @@ export class FieldApi<
   /**
    * The field name.
    */
-  name!: DeepKeys<TParentData>
+  get name(): DeepKeys<TParentData> {
+    return this.baseStore.state.name
+  }
   /**
    * The field options.
    */
@@ -1081,6 +1087,8 @@ export class FieldApi<
     TFormOnServer,
     TParentSubmitMeta
   > = {} as any
+
+  baseStore: Store<FieldBaseState<TParentData, TName>>
   /**
    * The field state store.
    */
@@ -1152,7 +1160,9 @@ export class FieldApi<
     >,
   ) {
     this.form = opts.form as never
-    this.name = opts.name as never
+    this.baseStore = new Store({
+      name: opts.name,
+    })
     this.timeoutIds = {
       validations: {} as Record<ValidationCause, never>,
       listeners: {} as Record<ListenerCause, never>,
@@ -1160,7 +1170,7 @@ export class FieldApi<
     }
 
     this.store = new Derived({
-      deps: [this.form.store],
+      deps: [this.baseStore, this.form.store],
       fn: () => {
         const value = this.form.getFieldValue(this.name)
         const meta = this.form.getFieldMeta(this.name) ?? {
@@ -1312,7 +1322,9 @@ export class FieldApi<
     this.options = opts as never
 
     const nameHasChanged = this.name !== opts.name
-    this.name = opts.name
+    if (nameHasChanged) {
+      this.baseStore.setState((prev) => ({ ...prev, name: opts.name }))
+    }
 
     // Default Value
     if ((this.state.value as unknown) === undefined) {

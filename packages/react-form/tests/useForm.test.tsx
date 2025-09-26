@@ -896,4 +896,48 @@ describe('useForm', () => {
     await user.click(target)
     expect(result).toHaveTextContent('1')
   })
+
+  it('should allow custom component keys for arrays', async () => {
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          foo: [
+            { name: 'nameA', id: 'a' },
+            { name: 'nameB', id: 'b' },
+            { name: 'nameC', id: 'c' },
+          ],
+        },
+      })
+
+      return (
+        <>
+          <form.Field name="foo" mode="array">
+            {(arrayField) =>
+              arrayField.state.value.map((row, i) => (
+                <form.Field key={row.id} name={`foo[${i}].name`}>
+                  {(field) => {
+                    expect(field.name).toBe(`foo[${i}].name`)
+                    expect(field.state.value).not.toBeUndefined()
+                    return null
+                  }}
+                </form.Field>
+              ))
+            }
+          </form.Field>
+          <button
+            type="button"
+            onClick={() => form.removeFieldValue('foo', 1)}
+            data-testid="removeField"
+          >
+            Remove
+          </button>
+        </>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+
+    const target = getByTestId('removeField')
+    await user.click(target)
+  })
 })
