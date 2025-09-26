@@ -3,7 +3,7 @@ import {
   isStandardSchemaValidator,
   standardSchemaValidators,
 } from '@tanstack/form-core'
-import { getHeader } from '@tanstack/react-start/server'
+import { getRequestHeader } from '@tanstack/react-start/server'
 import { decode } from 'decode-formdata'
 import { ServerValidateError } from './error'
 import { setInternalTanStackCookie } from './utils'
@@ -99,7 +99,7 @@ export const createServerValidate =
       })
     }
 
-    const referer = getHeader('referer')!
+    const referer = getRequestHeader('referer')!
 
     const data = decode(formData, info) as never as TFormData
 
