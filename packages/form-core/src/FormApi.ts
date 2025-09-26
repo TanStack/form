@@ -1052,7 +1052,7 @@ export class FormApi<
           const prevFieldInfo =
             prevVal?.[fieldName as never as keyof typeof prevVal]
 
-          const curFieldVal = getBy(currBaseStore.values, fieldName)
+          const curFieldVal = getBy(currBaseStore.values, fieldName).value
 
           let fieldErrors = prevFieldInfo?.errors
           if (
@@ -1080,7 +1080,7 @@ export class FormApi<
           const isDefaultValue =
             evaluate(
               curFieldVal,
-              getBy(this.options.defaultValues, fieldName),
+              getBy(this.options.defaultValues, fieldName).value,
             ) ||
             evaluate(
               curFieldVal,
@@ -2132,7 +2132,7 @@ export class FormApi<
    */
   getFieldValue = <TField extends DeepKeys<TFormData>>(
     field: TField,
-  ): DeepValue<TFormData, TField> => getBy(this.state.values, field)
+  ): DeepValue<TFormData, TField> => getBy(this.state.values, field).value
 
   /**
    * Gets the metadata of the specified field.
@@ -2305,7 +2305,7 @@ export class FormApi<
     await this.validateField(field, 'change')
 
     // Shift down all meta after validating to make sure the new field has been mounted
-    metaHelper(this).handleArrayFieldMetaShift(field, index, 'insert')
+    metaHelper(this).handleArrayInsert(field, index)
 
     await this.validateArrayFieldsStartingFrom(field, index, 'change')
   }
@@ -2361,7 +2361,7 @@ export class FormApi<
     )
 
     // Shift up all meta
-    metaHelper(this).handleArrayFieldMetaShift(field, index, 'remove')
+    metaHelper(this).handleArrayRemove(field, index)
 
     if (lastIndex !== null) {
       const start = `${field}[${lastIndex}]`
@@ -2393,7 +2393,7 @@ export class FormApi<
     )
 
     // Swap meta
-    metaHelper(this).handleArrayFieldMetaShift(field, index1, 'swap', index2)
+    metaHelper(this).handleArraySwap(field, index1, index2)
 
     // Validate the whole array
     this.validateField(field, 'change')
@@ -2422,7 +2422,7 @@ export class FormApi<
     )
 
     // Move meta between index1 and index2
-    metaHelper(this).handleArrayFieldMetaShift(field, index1, 'move', index2)
+    metaHelper(this).handleArrayMove(field, index1, index2)
 
     // Validate the whole array
     this.validateField(field, 'change')
@@ -2473,7 +2473,11 @@ export class FormApi<
           [field]: defaultFieldMeta,
         },
         values: this.options.defaultValues
-          ? setBy(prev.values, field, getBy(this.options.defaultValues, field))
+          ? setBy(
+              prev.values,
+              field,
+              getBy(this.options.defaultValues, field).value,
+            )
           : prev.values,
       }
     })
