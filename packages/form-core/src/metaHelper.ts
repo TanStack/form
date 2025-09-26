@@ -154,34 +154,6 @@ export function metaHelper<
     })
   }
 
-  /**
-   * Handle the meta shift from filtering out indeces.
-   * @param remainingIndices An array of indeces that were NOT filtered out of the original array.
-   */
-  function handleArrayFilter(
-    field: DeepKeys<TFormData>,
-    remainingIndices: number[],
-  ) {
-    if (remainingIndices.length === 0) return
-
-    // create a map between the index and its new location
-    remainingIndices.forEach((fromIndex, toIndex) => {
-      if (fromIndex === toIndex) return
-      // assign it the original meta
-      const fieldKey = getFieldPath(field, toIndex)
-      const originalFieldKey = getFieldPath(field, fromIndex)
-      const originalFieldMeta = formApi.getFieldMeta(originalFieldKey)
-      if (originalFieldMeta) {
-        formApi.setFieldMeta(fieldKey, originalFieldMeta)
-      } else {
-        formApi.setFieldMeta(fieldKey, {
-          ...getEmptyFieldMeta(),
-          isTouched: originalFieldKey as unknown as boolean,
-        })
-      }
-    })
-  }
-
   function getFieldPath(
     field: DeepKeys<TFormData>,
     index: number,
@@ -261,6 +233,5 @@ export function metaHelper<
     handleArrayRemove,
     handleArraySwap,
     handleArrayInsert,
-    handleArrayFilter,
   }
 }
