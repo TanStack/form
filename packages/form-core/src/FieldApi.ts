@@ -1056,9 +1056,7 @@ export class FieldApi<
   /**
    * The field name.
    */
-  get name(): DeepKeys<TParentData> {
-    return this.baseStore.state.name
-  }
+  name: DeepKeys<TParentData>
   /**
    * The field options.
    */
@@ -1087,8 +1085,6 @@ export class FieldApi<
     TFormOnServer,
     TParentSubmitMeta
   > = {} as any
-
-  baseStore: Store<FieldBaseState<TParentData, TName>>
   /**
    * The field state store.
    */
@@ -1159,10 +1155,9 @@ export class FieldApi<
       TParentSubmitMeta
     >,
   ) {
-    this.form = opts.form as never
-    this.baseStore = new Store({
-      name: opts.name,
-    })
+    this.form = opts.form
+    this.name = opts.name
+
     this.timeoutIds = {
       validations: {} as Record<ValidationCause, never>,
       listeners: {} as Record<ListenerCause, never>,
@@ -1170,7 +1165,7 @@ export class FieldApi<
     }
 
     this.store = new Derived({
-      deps: [this.baseStore, this.form.store],
+      deps: [this.form.store],
       fn: () => {
         const value = this.form.getFieldValue(this.name)
         const meta = this.form.getFieldMeta(this.name) ?? {
@@ -1319,12 +1314,8 @@ export class FieldApi<
       TParentSubmitMeta
     >,
   ) => {
-    this.options = opts as never
-
-    const nameHasChanged = this.name !== opts.name
-    if (nameHasChanged) {
-      this.baseStore.setState((prev) => ({ ...prev, name: opts.name }))
-    }
+    this.options = opts
+    this.name = opts.name
 
     // Default Value
     if ((this.state.value as unknown) === undefined) {
@@ -1332,22 +1323,6 @@ export class FieldApi<
         opts.form.options.defaultValues,
         opts.name,
       ).value
-
-      const defaultValue = (opts.defaultValue as unknown) ?? formDefault
-
-      // The name is dynamic in array fields. It changes when the user performs operations like removing or reordering.
-      // In this case, we don't want to force a default value if the store managed to find an existing value.
-
-      // TODO test what is actually needed here
-      // if (nameHasChanged) {
-      //   this.setValue((val) => (val as unknown) || defaultValue, {
-      //     dontUpdateMeta: true,
-      //   })
-      // } else if (defaultValue !== undefined) {
-      //   this.setValue(defaultValue as never, {
-      //     dontUpdateMeta: true,
-      //   })
-      // }
     }
 
     // Default Meta
