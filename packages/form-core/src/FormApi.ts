@@ -2306,7 +2306,7 @@ export class FormApi<
       // Validate the whole array + all fields that have shifted
       await this.validateField(field, 'change')
     }
-  
+
     // Shift down all meta after validating to make sure the new field has been mounted
     metaHelper(this).handleArrayFieldMetaShift(field, index, 'insert')
 
