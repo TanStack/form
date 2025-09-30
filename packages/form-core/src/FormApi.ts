@@ -42,6 +42,7 @@ import type {
 import type {
   ExtractGlobalFormError,
   FieldManipulator,
+  FieldMappingConfig,
   FormValidationError,
   FormValidationErrorMap,
   ListenerCause,
@@ -441,6 +442,11 @@ export interface FormOptions<
   >
 
   validationLogic?: ValidationLogicFn
+
+  /**
+   * Controls how schema validation errors are mapped to form fields.
+   */
+  disableFieldMapping?: FieldMappingConfig<TFormData>
 
   /**
    * form level listeners
@@ -1334,6 +1340,30 @@ export class FormApi<
     return this._formId
   }
 
+  shouldApplySchemaToField = <TField extends DeepKeys<TFormData>>(
+    field: TField,
+  ): boolean => {
+    const config = this.options.disableFieldMapping
+
+    if (config === undefined) {
+      return true
+    }
+
+    if (typeof config === 'boolean') {
+      return !config
+    }
+
+    if (config.fields) {
+      const fieldConfig = config.fields[field]
+      if (fieldConfig === undefined) {
+        return true
+      }
+      return !fieldConfig
+    }
+
+    return true
+  }
+
   /**
    * @private
    */
@@ -1635,20 +1665,70 @@ export class FormApi<
           type: 'validate',
         })
 
-        const { formError, fieldErrors } = normalizeError<TFormData>(rawError)
+        const { formError, fieldErrors: rawFieldErrors } = normalizeError<TFormData>(rawError)
+
+        let fieldErrors = rawFieldErrors
+        let filteredFormError = formError
+        
+        if (this.options.disableFieldMapping) {
+          if (this.options.disableFieldMapping === true) {
+            fieldErrors = undefined
+            filteredFormError = undefined
+          } else if (rawFieldErrors) {
+            fieldErrors = {} as Record<DeepKeys<TFormData>, ValidationError>
+            for (const field in rawFieldErrors) {
+              if (this.shouldApplySchemaToField(field as DeepKeys<TFormData>)) {
+                fieldErrors[field as DeepKeys<TFormData>] = rawFieldErrors[field as DeepKeys<TFormData>]
+              }
+            }
+            if (Object.keys(fieldErrors).length === 0) {
+              fieldErrors = undefined
+            }
+            
+            if (formError && typeof formError === 'object' && !Array.isArray(formError)) {
+              const filteredError = {} as Record<string, ValidationError>
+              for (const field in formError as Record<string, ValidationError>) {
+                if (this.shouldApplySchemaToField(field as DeepKeys<TFormData>)) {
+                  filteredError[field] = (formError as Record<string, ValidationError>)[field]
+                }
+              }
+              if (Object.keys(filteredError).length === 0) {
+                filteredFormError = undefined
+              } else {
+                filteredFormError = filteredError
+              }
+            }
+          }
+        }
 
         const errorMapKey = getErrorMapKey(validateObj.cause)
 
-        for (const field of Object.keys(
-          this.state.fieldMeta,
-        ) as DeepKeys<TFormData>[]) {
+     
+        const fieldsToProcess = new Set([
+          ...Object.keys(this.state.fieldMeta),
+          ...(fieldErrors ? Object.keys(fieldErrors) : []),
+        ] as DeepKeys<TFormData>[])
+
+        for (const field of fieldsToProcess) {
+          if (!this.shouldApplySchemaToField(field)) {
+            continue
+          }
+
           const fieldMeta = this.getFieldMeta(field)
-          if (!fieldMeta) continue
+          
+          if (!fieldMeta && fieldErrors?.[field]) {
+            this.getFieldInfo(field)
+            const newFieldMeta = this.getFieldMeta(field)
+            if (!newFieldMeta) continue
+          }
+
+          const currentFieldMeta = this.getFieldMeta(field)
+          if (!currentFieldMeta) continue
 
           const {
             errorMap: currentErrorMap,
             errorSourceMap: currentErrorMapSource,
-          } = fieldMeta
+          } = currentFieldMeta
 
           const newFormValidatorError = fieldErrors?.[field]
 
@@ -1688,17 +1768,17 @@ export class FormApi<
         }
 
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (this.state.errorMap?.[errorMapKey] !== formError) {
+        if (this.state.errorMap?.[errorMapKey] !== filteredFormError) {
           this.baseStore.setState((prev) => ({
             ...prev,
             errorMap: {
               ...prev.errorMap,
-              [errorMapKey]: formError,
+              [errorMapKey]: filteredFormError,
             },
           }))
         }
 
-        if (formError || fieldErrors) {
+        if (filteredFormError || fieldErrors) {
           hasErrored = true
         }
       }
