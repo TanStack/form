@@ -1,17 +1,16 @@
 import { FieldGroupApi, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/solid-store'
 import { onCleanup, onMount } from 'solid-js'
-import type { Component, JSX, ParentProps } from 'solid-js';
+import type { Component, JSX, ParentProps } from 'solid-js'
 import type {
   DeepKeysOfType,
   FieldGroupState,
   FieldsMap,
   FormAsyncValidateOrFn,
-  FormValidateOrFn
+  FormValidateOrFn,
 } from '@tanstack/form-core'
 import type { LensFieldComponent } from './createField'
 import type { AppFieldExtendedSolidFormApi } from './createFormHook'
-
 
 /**
  * @private
@@ -91,49 +90,51 @@ export function createFieldGroup<
   TComponents extends Record<string, Component<any>>,
   TFormComponents extends Record<string, Component<any>>,
   TSubmitMeta = never,
->(opts: () => {
-  form:
-    | AppFieldExtendedSolidFormApi<
-        TFormData,
-        TOnMount,
-        TOnChange,
-        TOnChangeAsync,
-        TOnBlur,
-        TOnBlurAsync,
-        TOnSubmit,
-        TOnSubmitAsync,
-        TOnDynamic,
-        TOnDynamicAsync,
-        TOnServer,
-        TSubmitMeta,
-        TComponents,
-        TFormComponents
-      >
-    | AppFieldExtendedSolidFieldGroupApi<
-        // Since this only occurs if you nest it within other form lenses, it can be more
-        // lenient with the types.
-        unknown,
-        TFormData,
-        string | FieldsMap<unknown, TFormData>,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        any,
-        TSubmitMeta,
-        TComponents,
-        TFormComponents
-      >
-  fields: TFields
-  defaultValues?: TFieldGroupData
-  onSubmitMeta?: TSubmitMeta
-  formComponents: TFormComponents
-}): AppFieldExtendedSolidFieldGroupApi<
+>(
+  opts: () => {
+    form:
+      | AppFieldExtendedSolidFormApi<
+          TFormData,
+          TOnMount,
+          TOnChange,
+          TOnChangeAsync,
+          TOnBlur,
+          TOnBlurAsync,
+          TOnSubmit,
+          TOnSubmitAsync,
+          TOnDynamic,
+          TOnDynamicAsync,
+          TOnServer,
+          TSubmitMeta,
+          TComponents,
+          TFormComponents
+        >
+      | AppFieldExtendedSolidFieldGroupApi<
+          // Since this only occurs if you nest it within other form lenses, it can be more
+          // lenient with the types.
+          unknown,
+          TFormData,
+          string | FieldsMap<unknown, TFormData>,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          any,
+          TSubmitMeta,
+          TComponents,
+          TFormComponents
+        >
+    fields: TFields
+    defaultValues?: TFieldGroupData
+    onSubmitMeta?: TSubmitMeta
+    formComponents: TFormComponents
+  },
+): AppFieldExtendedSolidFieldGroupApi<
   TFormData,
   TFieldGroupData,
   TFields,
@@ -153,25 +154,26 @@ export function createFieldGroup<
 > {
   const options = opts()
   const api = new FieldGroupApi(options)
-  const form = options.form instanceof FieldGroupApi
-    ? (options.form.form as AppFieldExtendedSolidFormApi<
-        TFormData,
-        TOnMount,
-        TOnChange,
-        TOnChangeAsync,
-        TOnBlur,
-        TOnBlurAsync,
-        TOnSubmit,
-        TOnSubmitAsync,
-        TOnDynamic,
-        TOnDynamicAsync,
-        TOnServer,
-        TSubmitMeta,
-        TComponents,
-        TFormComponents
-      >)
-    : options.form
-  
+  const form =
+    options.form instanceof FieldGroupApi
+      ? (options.form.form as AppFieldExtendedSolidFormApi<
+          TFormData,
+          TOnMount,
+          TOnChange,
+          TOnChangeAsync,
+          TOnBlur,
+          TOnBlurAsync,
+          TOnSubmit,
+          TOnSubmitAsync,
+          TOnDynamic,
+          TOnDynamicAsync,
+          TOnServer,
+          TSubmitMeta,
+          TComponents,
+          TFormComponents
+        >)
+      : options.form
+
   const extendedApi: AppFieldExtendedSolidFieldGroupApi<
     TFormData,
     TFieldGroupData,

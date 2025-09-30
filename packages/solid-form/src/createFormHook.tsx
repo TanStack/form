@@ -20,7 +20,10 @@ import type {
 } from 'solid-js'
 import type { FieldComponent } from './createField'
 import type { SolidFormExtendedApi } from './createForm'
-import { createFieldGroup, type AppFieldExtendedSolidFieldGroupApi } from './createFieldGroup'
+import {
+  createFieldGroup,
+  type AppFieldExtendedSolidFieldGroupApi,
+} from './createFieldGroup'
 
 /**
  * TypeScript inferencing is weird.
@@ -253,7 +256,6 @@ export interface WithFormProps<
   ) => JSXElement
 }
 
-
 export interface WithFieldGroupProps<
   TFieldGroupData,
   TFieldComponents extends Record<string, Component<any>>,
@@ -290,7 +292,6 @@ export interface WithFieldGroupProps<
     >,
   ) => JSXElement
 }
-
 
 export function createFormHook<
   const TComponents extends Record<string, Component<any>>,
@@ -537,11 +538,11 @@ export function createFormHook<
   ) => JSXElement {
     return function Render(innerProps) {
       const fieldGroupProps = {
-          form: innerProps.form,
-          fields: innerProps.fields,
-          defaultValues,
-          formComponents: opts.formComponents,
-        }
+        form: innerProps.form,
+        fields: innerProps.fields,
+        defaultValues,
+        formComponents: opts.formComponents,
+      }
       const fieldGroupApi = createFieldGroup(() => fieldGroupProps)
 
       return render({ ...props, ...innerProps, group: fieldGroupApi as any })
