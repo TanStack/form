@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
-import { FieldApi, FormApi } from '../src/index'
+import { FieldApi, FormApi, formEventClient } from '../src/index'
 import { sleep } from './utils'
 import type { AnyFieldApi, AnyFormApi } from '../src/index'
 
@@ -4056,4 +4056,13 @@ it('should respect canSubmitWhenInvalid option and run validation even when canS
 
   expect(onSubmitValidatorSpy).toHaveBeenCalledTimes(1)
   expect(onInvalidSpy).toHaveBeenCalledTimes(1)
+})
+
+it('should generate a formId if not provided', () => {
+  const form = new FormApi({
+    defaultValues: { age: 0 },
+  })
+  form.mount()
+
+  expect(form.formId.length).toBeGreaterThan(1)
 })
