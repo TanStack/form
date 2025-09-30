@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.24.1
+
+### Patch Changes
+
+- fix(form-core): call `onSubmitInvalid` even when `canSubmit` is false ([#1697](https://github.com/TanStack/form/pull/1697))
+
 ## 1.24.0
 
 ### Minor Changes
