@@ -1,5 +1,7 @@
 import { createContext, splitProps, useContext } from 'solid-js'
 import { createForm } from './createForm'
+import { createFieldGroup } from './createFieldGroup'
+import type { AppFieldExtendedSolidFieldGroupApi } from './createFieldGroup'
 import type {
   AnyFieldApi,
   AnyFormApi,
@@ -20,10 +22,6 @@ import type {
 } from 'solid-js'
 import type { FieldComponent } from './createField'
 import type { SolidFormExtendedApi } from './createForm'
-import {
-  createFieldGroup,
-  type AppFieldExtendedSolidFieldGroupApi,
-} from './createFieldGroup'
 
 /**
  * TypeScript inferencing is weird.
