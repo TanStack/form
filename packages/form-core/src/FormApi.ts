@@ -1061,20 +1061,18 @@ export class FormApi<
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             fieldErrors = Object.values(currBaseMeta.errorMap ?? {}).filter(
               (val) => val !== undefined,
-            ) as never
+            )
 
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             const fieldInstance = this.getFieldInfo(fieldName)?.instance
 
             if (fieldInstance && !fieldInstance.options.disableErrorFlat) {
-              fieldErrors = (fieldErrors as undefined | string[])?.flat(
-                1,
-              ) as never
+              fieldErrors = fieldErrors.flat(1)
             }
           }
 
           // As primitives, we don't need to aggressively persist the same referential value for performance reasons
-          const isFieldValid = !isNonEmptyArray(fieldErrors ?? [])
+          const isFieldValid = !isNonEmptyArray(fieldErrors)
           const isFieldPristine = !currBaseMeta.isDirty
           const isDefaultValue =
             evaluate(
@@ -1102,11 +1100,11 @@ export class FormApi<
 
           fieldMeta[fieldName] = {
             ...currBaseMeta,
-            errors: fieldErrors,
+            errors: fieldErrors ?? [],
             isPristine: isFieldPristine,
             isValid: isFieldValid,
             isDefaultValue: isDefaultValue,
-          } as AnyFieldMeta
+          } satisfies AnyFieldMeta as AnyFieldMeta
         }
 
         if (!Object.keys(currBaseStore.fieldMetaBase).length) return fieldMeta
