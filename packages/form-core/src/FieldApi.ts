@@ -1,4 +1,4 @@
-import { Derived, batch } from '@tanstack/store'
+import { Derived, Store, batch } from '@tanstack/store'
 import {
   isStandardSchemaValidator,
   standardSchemaValidators,
@@ -864,6 +864,10 @@ export type AnyFieldMeta = FieldMeta<
   any
 >
 
+export type FieldBaseState<TParentData, TName extends DeepKeys<TParentData>> = {
+  name: TName
+}
+
 /**
  * An object type representing the state of a field.
  */
@@ -1052,7 +1056,7 @@ export class FieldApi<
   /**
    * The field name.
    */
-  name!: DeepKeys<TParentData>
+  name: DeepKeys<TParentData>
   /**
    * The field options.
    */
@@ -1151,8 +1155,9 @@ export class FieldApi<
       TParentSubmitMeta
     >,
   ) {
-    this.form = opts.form as never
-    this.name = opts.name as never
+    this.form = opts.form
+    this.name = opts.name
+
     this.timeoutIds = {
       validations: {} as Record<ValidationCause, never>,
       listeners: {} as Record<ListenerCause, never>,
@@ -1309,28 +1314,15 @@ export class FieldApi<
       TParentSubmitMeta
     >,
   ) => {
-    this.options = opts as never
-
-    const nameHasChanged = this.name !== opts.name
+    this.options = opts
     this.name = opts.name
 
     // Default Value
     if ((this.state.value as unknown) === undefined) {
-      const formDefault = getBy(opts.form.options.defaultValues, opts.name)
-
-      const defaultValue = (opts.defaultValue as unknown) ?? formDefault
-
-      // The name is dynamic in array fields. It changes when the user performs operations like removing or reordering.
-      // In this case, we don't want to force a default value if the store managed to find an existing value.
-      if (nameHasChanged) {
-        this.setValue((val) => (val as unknown) || defaultValue, {
-          dontUpdateMeta: true,
-        })
-      } else if (defaultValue !== undefined) {
-        this.setValue(defaultValue as never, {
-          dontUpdateMeta: true,
-        })
-      }
+      const formDefault = getBy(
+        opts.form.options.defaultValues,
+        opts.name,
+      ).value
     }
 
     // Default Meta
