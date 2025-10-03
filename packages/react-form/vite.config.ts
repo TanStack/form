@@ -25,7 +25,7 @@ export default mergeConfig(
       './src/remix/index.ts',
       './src/start/index.ts',
     ],
-    cjs: false,
+
     srcDir: './src',
   }),
 )
