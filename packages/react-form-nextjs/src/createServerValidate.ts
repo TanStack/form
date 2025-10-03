@@ -12,7 +12,7 @@ import type {
   FormValidateOrFn,
   UnwrapFormAsyncValidateOrFn,
 } from '@tanstack/form-core'
-import type { ServerFormState } from './types'
+import type { ServerFormState } from '@tanstack/react-form'
 
 interface CreateServerValidateOptions<
   TFormData,

@@ -1,5 +1,5 @@
-import type { ServerFormState } from './types'
 import type { FormAsyncValidateOrFn } from '@tanstack/form-core'
+import type { ServerFormState } from '@tanstack/react-form'
 
 interface ServerValidateErrorState<
   TFormData,

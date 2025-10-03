@@ -7,7 +7,7 @@ import { getRequestHeader } from '@tanstack/react-start/server'
 import { decode } from 'decode-formdata'
 import { ServerValidateError } from './error'
 import { setInternalTanStackCookie } from './utils'
-import type { ServerFormState } from './types'
+import type { ServerFormState } from '@tanstack/react-form'
 import type {
   FormAsyncValidateOrFn,
   FormOptions,

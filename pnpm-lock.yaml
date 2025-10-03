@@ -1296,15 +1296,9 @@ importers:
 
   packages/react-form-nextjs:
     dependencies:
-      '@tanstack/form-core':
-        specifier: workspace:*
-        version: link:../form-core
       '@tanstack/react-form':
         specifier: workspace:*
         version: link:../react-form
-      '@tanstack/react-store':
-        specifier: ^0.7.7
-        version: 0.7.7(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       decode-formdata:
         specifier: ^0.9.0
         version: 0.9.0
@@ -1339,9 +1333,6 @@ importers:
 
   packages/react-form-remix:
     dependencies:
-      '@tanstack/form-core':
-        specifier: workspace:*
-        version: link:../form-core
       '@tanstack/react-form':
         specifier: workspace:*
         version: link:../react-form
@@ -1382,9 +1373,6 @@ importers:
 
   packages/react-form-start:
     dependencies:
-      '@tanstack/form-core':
-        specifier: workspace:*
-        version: link:../form-core
       '@tanstack/react-form':
         specifier: workspace:*
         version: link:../react-form
