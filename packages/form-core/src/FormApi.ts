@@ -738,7 +738,7 @@ export type DerivedFormState<
   /**
    * A record of field metadata for each field in the form.
    */
-  fieldMeta: Record<DeepKeys<TFormData>, AnyFieldMeta>
+  fieldMeta: Record<DeepKeys<TFormData>, AnyFieldMeta | undefined>
 }
 
 export interface FormState<
@@ -929,7 +929,7 @@ export class FormApi<
       TOnServer
     >
   >
-  fieldMetaDerived!: Derived<Record<DeepKeys<TFormData>, AnyFieldMeta>>
+  fieldMetaDerived!: Derived<Record<DeepKeys<TFormData>, AnyFieldMeta | undefined>>
   store!: Derived<
     FormState<
       TFormData,
@@ -2195,15 +2195,15 @@ export class FormApi<
    * resets every field's meta
    */
   resetFieldMeta = <TField extends DeepKeys<TFormData>>(
-    fieldMeta: Record<TField, AnyFieldMeta>,
-  ): Record<TField, AnyFieldMeta> => {
+    fieldMeta: Record<TField, AnyFieldMeta | undefined>,
+  ): Record<TField, AnyFieldMeta | undefined> => {
     return Object.keys(fieldMeta).reduce(
-      (acc: Record<TField, AnyFieldMeta>, key) => {
+      (acc: Record<TField, AnyFieldMeta | undefined>, key) => {
         const fieldKey = key as TField
         acc[fieldKey] = defaultFieldMeta
         return acc
       },
-      {} as Record<TField, AnyFieldMeta>,
+      {} as Record<TField, AnyFieldMeta | undefined>,
     )
   }
 
