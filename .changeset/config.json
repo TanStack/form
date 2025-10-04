@@ -8,7 +8,13 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "fixed": [],
+  "fixed": [
+    [
+      "@tanstack/form-devtools",
+      "@tanstack/react-form-devtools",
+      "@tanstack/solid-form-devtools"
+    ]
+  ],
   "linked": [],
   "ignore": []
 }

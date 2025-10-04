@@ -1,0 +1,22 @@
+{
+  "name": "@tanstack/form-example-solid-devtools",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "test:types": "tsc",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tanstack/solid-devtools": "^0.7.7",
+    "@tanstack/solid-form": "^1.23.7",
+    "@tanstack/solid-form-devtools": "workspace:*",
+    "solid-js": "^1.9.9"
+  },
+  "devDependencies": {
+    "typescript": "5.8.2",
+    "vite": "^7.1.6",
+    "vite-plugin-solid": "^2.11.8"
+  }
+}
