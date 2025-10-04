@@ -62,6 +62,7 @@ class FormEventClient extends EventClient<EventMap> {
   constructor() {
     super({
       pluginId: 'form-devtools',
+      debug: true,
     })
   }
 }

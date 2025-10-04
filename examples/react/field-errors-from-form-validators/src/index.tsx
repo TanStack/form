@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client'
 
 import { useForm } from '@tanstack/react-form'
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import { FormDevtoolsPlugin } from '@tanstack/react-form-devtools'
+import { formDevtoolsPlugin } from '@tanstack/react-form-devtools'
 
 async function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -141,7 +141,7 @@ createRoot(rootElement).render(
 
     <TanStackDevtools
       config={{ hideUntilHover: true }}
-      plugins={[FormDevtoolsPlugin()]}
+      plugins={[formDevtoolsPlugin()]}
     />
   </>,
 )

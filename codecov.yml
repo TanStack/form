@@ -9,3 +9,4 @@ coverage:
 ignore:
   - 'packages/form-devtools'
   - 'packages/react-form-devtools'
+  - 'packages/solid-form-devtools'
