@@ -39,7 +39,7 @@ This comes with a number of advantages:
 
 ## Generics are grim
 
-You should never need to pass a generic or use an internal type when leveraging TanStack Form. This is because we've designed the library to inference everything from runtime defaults.
+You should never need to pass a generic or use an internal type when leveraging TanStack Form. This is because we've designed the library to infer everything from runtime defaults.
 
 When writing sufficiently correct TanStack Form code, you should not be able to distinguish between JavaScript usage and TypeScript usage, with the exception of any type casts you might do of runtime values.
 

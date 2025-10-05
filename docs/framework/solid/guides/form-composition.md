@@ -16,7 +16,7 @@ At it's most basic, `createFormHook` is a function that takes a `fieldContext` a
 > This un-customized `useAppForm` hook is identical to `useForm`, but that will quickly change as we add more options to `createFormHook`.
 
 ```tsx
-import { createFormHookContexts, createFormHook } from '@tanstack/react-form'
+import { createFormHookContexts, createFormHook } from '@tanstack/solid-form'
 
 // export useFieldContext for use in your custom components
 export const { fieldContext, formContext, useFieldContext } =
@@ -31,13 +31,13 @@ const { useAppForm } = createFormHook({
 })
 
 function App() {
-  const form = useAppForm({
+  const form = useAppForm(() => ({
     // Supports all useForm options
     defaultValues: {
       firstName: 'John',
       lastName: 'Doe',
     },
-  })
+  }))
 
   return <form.Field /> // ...
 }
@@ -86,12 +86,12 @@ And use it in your form:
 
 ```tsx
 function App() {
-  const form = useAppForm({
+  const form = useAppForm(() => ({
     defaultValues: {
       firstName: 'John',
       lastName: 'Doe',
     },
-  })
+  }))
 
   return (
     // Notice the `AppField` instead of `Field`; `AppField` provides the required context
@@ -135,12 +135,12 @@ const { useAppForm, withForm } = createFormHook({
 })
 
 function App() {
-  const form = useAppForm({
+  const form = useAppForm(() => ({
     defaultValues: {
       firstName: 'John',
       lastName: 'Doe',
     },
-  })
+  }))
 
   return (
     <form.AppForm>
@@ -199,12 +199,12 @@ const ChildForm = withForm({
 })
 
 function App() {
-  const form = useAppForm({
+  const form = useAppForm(() => ({
     defaultValues: {
       firstName: 'John',
       lastName: 'Doe',
     },
-  })
+  }))
 
   return <ChildForm form={form} title={'Testing'} />
 }
@@ -214,7 +214,7 @@ function App() {
 
 > Why a higher-order component instead of a hook?
 
-While hooks are the future of React, higher-order components are still a powerful tool for composition. In particular, the API of `withForm` enables us to have strong type-safety without requiring users to pass generics.
+While hooks are the future of Solid, higher-order components are still a powerful tool for composition. In particular, the API of `withForm` enables us to have strong type-safety without requiring users to pass generics.
 
 ## Tree-shaking form and field components
 
@@ -253,7 +253,7 @@ export default function TextField(props: { label: string }) {
 ```tsx
 // src/hooks/form.ts
 import { lazy } from 'solid-js'
-import { createFormHook } from '@tanstack/react-form'
+import { createFormHook } from '@tanstack/solid-form'
 
 const TextField = lazy(() => import('../components/text-fields.tsx'))
 

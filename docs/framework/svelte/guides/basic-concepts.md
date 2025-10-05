@@ -178,9 +178,10 @@ You can define a schema using any of the libraries implementing the specificatio
 
 Supported libraries include:
 
-- [Zod](https://zod.dev/)
-- [Valibot](https://valibot.dev/)
-- [ArkType](https://arktype.io/)
+- [Zod](https://zod.dev/) (v3.24.0 or higher)
+- [Valibot](https://valibot.dev/) (v1.0.0 or higher)
+- [ArkType](https://arktype.io/) (v2.1.20 or higher)
+- [Yup](https://github.com/jquense/yup) (v1.7.0 or higher)
 
 ```svelte
 <script>
