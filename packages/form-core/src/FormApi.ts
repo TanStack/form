@@ -929,7 +929,9 @@ export class FormApi<
       TOnServer
     >
   >
-  fieldMetaDerived!: Derived<Record<DeepKeys<TFormData>, AnyFieldMeta | undefined>>
+  fieldMetaDerived!: Derived<
+    Record<DeepKeys<TFormData>, AnyFieldMeta | undefined>
+  >
   store!: Derived<
     FormState<
       TFormData,

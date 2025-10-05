@@ -11,6 +11,7 @@ BREAKING CHANGE: `fieldMeta` values are now typed as `Record<DeepKeys<TData>, An
 **What changed:** The type now includes `undefined` in the union, forcing developers to handle the case where a field hasn't been mounted yet.
 
 **How to migrate:**
+
 ```typescript
 // Before (crashes at runtime)
 const isValid = form.state.fieldMeta.name.isValid
@@ -23,3 +24,4 @@ const fieldMeta = form.state.fieldMeta.name
 if (fieldMeta) {
   const isValid = fieldMeta.isValid
 }
+```
