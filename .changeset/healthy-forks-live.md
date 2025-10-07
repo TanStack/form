@@ -2,4 +2,4 @@
 '@tanstack/form-core': patch
 ---
 
-fix(core): prevent runtime errors when using `deleteField`
+fix(form-core): prevent runtime errors when using `deleteField`
