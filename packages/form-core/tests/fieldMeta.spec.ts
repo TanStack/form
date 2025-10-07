@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { FormApi, FieldApi } from '../src/index'
+import { FieldApi, FormApi } from '../src/index'
 
 describe('fieldMeta accessing', () => {
   it('should return undefined for unmounted fields', () => {
