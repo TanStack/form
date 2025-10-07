@@ -14,7 +14,6 @@ describe('fieldMeta accessing', () => {
     expect(form.state.fieldMeta.email).toBeUndefined()
   })
 
-
   it('should have defined fieldMeta after field is mounted', () => {
     const form = new FormApi({
       defaultValues: {
@@ -105,7 +104,6 @@ describe('fieldMeta accessing', () => {
     expect(fieldMetaAfterMount?.isValid).toBe(true)
   })
 
-
   it('should handle multiple fields with mixed mount states', () => {
     const form = new FormApi({
       defaultValues: {
@@ -185,5 +183,4 @@ describe('fieldMeta accessing', () => {
       passwordField.setValue('test123')
     }).not.toThrow()
   })
-
 })
