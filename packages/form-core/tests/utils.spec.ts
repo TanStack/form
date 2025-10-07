@@ -8,7 +8,9 @@ import {
   evaluate,
   getBy,
   makePathArray,
+  mergeOpts,
   setBy,
+  uuid,
 } from '../src/index'
 
 describe('getBy', () => {
@@ -648,6 +650,24 @@ describe('evaluate', () => {
     )
     expect(objComplexTrue).toEqual(true)
   })
+
+  it('should test equality between Date objects', () => {
+    const date1 = new Date('2025-01-01T00:00:00.000Z')
+    const date2 = new Date('2025-01-01T00:00:00.000Z')
+    const date3 = new Date('2025-01-02T00:00:00.000Z')
+
+    const dateTrue = evaluate(date1, date2)
+    expect(dateTrue).toEqual(true)
+
+    const dateFalse = evaluate(date1, date3)
+    expect(dateFalse).toEqual(false)
+
+    const dateObjectTrue = evaluate({ date: date1 }, { date: date2 })
+    expect(dateObjectTrue).toEqual(true)
+
+    const dateObjectFalse = evaluate({ date: date1 }, { date: date3 })
+    expect(dateObjectFalse).toEqual(false)
+  })
 })
 
 describe('concatenatePaths', () => {
@@ -723,5 +743,61 @@ describe('createFieldMap', () => {
     const copy = { ...input }
     createFieldMap(input)
     expect(input).toEqual(copy)
+  })
+})
+
+describe('mergeOpts', () => {
+  type SomeOpts = {
+    foo?: string
+    bar?: boolean
+  }
+
+  it('should return the overrides if original object is undefined', () => {
+    expect(mergeOpts<SomeOpts>(undefined, { foo: 'test' })).toEqual({
+      foo: 'test',
+    })
+    expect(mergeOpts<SomeOpts>(null, { foo: 'test' })).toEqual({ foo: 'test' })
+  })
+
+  it('should preserve properties that were not overwritten', () => {
+    const original: SomeOpts = {
+      foo: 'test',
+    }
+    expect(mergeOpts(original, { bar: true })).toEqual({
+      foo: 'test',
+      bar: true,
+    })
+    expect(mergeOpts(original, {})).toEqual({ foo: 'test' })
+  })
+})
+
+describe('uuid', () => {
+  it('should return a string', () => {
+    const id = uuid()
+    expect(typeof id).toBe('string')
+  })
+
+  it('should match UUID v4 format', () => {
+    const id = uuid()
+    const uuidV4Regex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
+    expect(id).toMatch(uuidV4Regex)
+  })
+
+  it('should generate different values on multiple calls', () => {
+    const ids = new Set(Array.from({ length: 100 }, () => uuid()))
+    expect(ids.size).toBe(100)
+  })
+
+  it('should always produce 36 characters', () => {
+    const id = uuid()
+    expect(id.length).toBe(36)
+  })
+
+  it('should set correct version (4) and variant bits', () => {
+    const id = uuid()
+    const parts = id.split('-')
+    expect(parts[2]?.[0]).toBe('4')
+    expect(['8', '9', 'a', 'b']).toContain(parts[3]?.[0])
   })
 })

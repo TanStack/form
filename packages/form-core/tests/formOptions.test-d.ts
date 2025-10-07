@@ -276,8 +276,8 @@ describe('formOptions', () => {
       } as FormData,
       validators: {
         onSubmit: ({ formApi }) => {
-          if (formApi.formId === undefined) {
-            return 'needs formId'
+          if (formApi.formId) {
+            return 'I just need an error'
           }
           return undefined
         },
@@ -287,7 +287,7 @@ describe('formOptions', () => {
     const form = new FormApi(formOpts)
 
     expectTypeOf(form.state.errors).toEqualTypeOf<
-      ('needs formId' | undefined)[]
+      ('I just need an error' | undefined)[]
     >()
 
     const form2 = new FormApi({
@@ -320,7 +320,7 @@ describe('formOptions', () => {
     })
 
     expectTypeOf(form3.state.errors).toEqualTypeOf<
-      (undefined | 'Too short!' | 'needs formId')[]
+      (undefined | 'Too short!' | 'I just need an error')[]
     >()
   })
 })

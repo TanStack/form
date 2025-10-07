@@ -69,10 +69,8 @@ Useful for representing quantities, thresholds, or magnitudes:
 Display in UI:
 
 ```tsx
-{
-  /* TypeScript knows the error is a number based on your validator */
-}
-;<div className="error">
+// TypeScript knows the error is a number based on your validator
+<div className="error">
   You need {field.state.meta.errors[0]} more years to be eligible
 </div>
 ```

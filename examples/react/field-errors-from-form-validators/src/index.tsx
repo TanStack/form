@@ -1,6 +1,8 @@
-import { useForm } from '@tanstack/react-form'
-import * as React from 'react'
 import { createRoot } from 'react-dom/client'
+
+import { useForm } from '@tanstack/react-form'
+import { TanStackDevtools } from '@tanstack/react-devtools'
+import { FormDevtoolsPlugin } from '@tanstack/react-form-devtools'
 
 async function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -133,4 +135,13 @@ export default function App() {
 
 const rootElement = document.getElementById('root')!
 
-createRoot(rootElement).render(<App />)
+createRoot(rootElement).render(
+  <>
+    <App />
+
+    <TanStackDevtools
+      config={{ hideUntilHover: true }}
+      plugins={[FormDevtoolsPlugin()]}
+    />
+  </>,
+)
