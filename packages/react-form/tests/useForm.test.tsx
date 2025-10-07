@@ -893,7 +893,7 @@ describe('useForm', () => {
     expect(result).toHaveTextContent('1')
   })
 
-   it('should not error when using deleteField in edge cases', async () => {
+  it('should not error when using deleteField in edge cases', async () => {
     function Comp() {
       const form = useForm({
         defaultValues: {
