@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.24.2
+
+### Patch Changes
+
+- fix(form-core): prevent runtime errors when using `deleteField` ([#1706](https://github.com/TanStack/form/pull/1706))
+
 ## 1.24.1
 
 ### Patch Changes
