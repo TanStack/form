@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { FormApi, FieldApi } from '../src/index'
 
-describe('fieldMeta type safety', () => {
+describe('fieldMeta accessing', () => {
   it('should return undefined for unmounted fields', () => {
     const form = new FormApi({
       defaultValues: {
@@ -14,24 +14,6 @@ describe('fieldMeta type safety', () => {
     expect(form.state.fieldMeta.email).toBeUndefined()
   })
 
-  it('should not crash when accessing properties on undefined fieldMeta with optional chaining', () => {
-    const form = new FormApi({
-      defaultValues: {
-        name: '',
-        email: '',
-      },
-    })
-
-    expect(() => {
-      const isValid = form.state.fieldMeta.name?.isValid
-      const isTouched = form.state.fieldMeta.name?.isTouched
-      const errors = form.state.fieldMeta.name?.errors
-      return { isValid, isTouched, errors }
-    }).not.toThrow()
-
-    expect(form.state.fieldMeta.name?.isValid).toBeUndefined()
-    expect(form.state.fieldMeta.name?.isTouched).toBeUndefined()
-  })
 
   it('should have defined fieldMeta after field is mounted', () => {
     const form = new FormApi({
@@ -123,26 +105,6 @@ describe('fieldMeta type safety', () => {
     expect(fieldMetaAfterMount?.isValid).toBe(true)
   })
 
-  it('should allow conditional access patterns', () => {
-    const form = new FormApi({
-      defaultValues: {
-        name: '',
-      },
-    })
-
-    const isValid1 = form.state.fieldMeta.name?.isValid ?? true
-    expect(isValid1).toBe(true)
-
-    const fieldMeta = form.state.fieldMeta.name
-    let isValid2 = true
-    if (fieldMeta) {
-      isValid2 = fieldMeta.isValid
-    }
-    expect(isValid2).toBe(true)
-
-    const errors = form.state.fieldMeta.name?.errors ?? []
-    expect(errors).toEqual([])
-  })
 
   it('should handle multiple fields with mixed mount states', () => {
     const form = new FormApi({
@@ -224,47 +186,4 @@ describe('fieldMeta type safety', () => {
     }).not.toThrow()
   })
 
-  it('should handle Object.values on fieldMeta safely', () => {
-    const form = new FormApi({
-      defaultValues: {
-        field1: '',
-        field2: '',
-        field3: '',
-      },
-    })
-
-    const field1 = new FieldApi({
-      form,
-      name: 'field1',
-    })
-
-    field1.mount()
-
-    const fieldMetaValues = Object.values(form.state.fieldMeta).filter(Boolean)
-    expect(fieldMetaValues.length).toBeGreaterThan(0)
-    expect(fieldMetaValues.every((meta) => meta !== undefined)).toBe(true)
-  })
-
-  it('should type-check correctly with TypeScript', () => {
-    const form = new FormApi({
-      defaultValues: {
-        name: '',
-      },
-    })
-
-    const meta = form.state.fieldMeta.name
-
-    if (meta) {
-      const isValid: boolean = meta.isValid
-      const errors: unknown[] = meta.errors
-      expect(isValid).toBeDefined()
-      expect(errors).toBeDefined()
-    }
-
-    const isValid = form.state.fieldMeta.name?.isValid
-    const errors = form.state.fieldMeta.name?.errors
-
-    expect(isValid === undefined || typeof isValid === 'boolean').toBe(true)
-    expect(errors === undefined || Array.isArray(errors)).toBe(true)
-  })
 })

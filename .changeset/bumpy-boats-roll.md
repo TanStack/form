@@ -1,5 +1,5 @@
 ---
-'@tanstack/form-core': major
+'@tanstack/form-core': patch
 ---
 
 Make fieldMeta values optional to reflect runtime behavior and prevent crashes
