@@ -538,7 +538,7 @@ export function createFormHook<
       const fieldGroupProps = createMemo(() => {
         return { form: innerProps.form, fields: innerProps.fields, defaultValues, formComponents: opts.formComponents }
       })
-      const fieldGroupApi = createFieldGroup(fieldGroupProps());
+      const fieldGroupApi = createFieldGroup(fieldGroupProps() as any);
       return render({ ...props, ...innerProps, group: fieldGroupApi as any })
     }
   }
