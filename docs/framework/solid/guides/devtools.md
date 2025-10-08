@@ -33,7 +33,7 @@ render(
 )
 ```
 
-Import the `FormDevtoolsPlugin` from **TanStack Form** and provide it to the `TanStackDevtools` component.
+Import the `formDevtoolsPlugin` from **TanStack Form** and provide it to the `TanStackDevtools` component.
 
 ```tsx
 import { TanStackDevtools } from '@tanstack/solid-devtools'
