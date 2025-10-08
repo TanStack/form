@@ -1240,12 +1240,6 @@ importers:
       '@tanstack/react-store':
         specifier: ^0.7.7
         version: 0.7.7(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      decode-formdata:
-        specifier: ^0.9.0
-        version: 0.9.0
-      devalue:
-        specifier: ^5.3.2
-        version: 5.3.2
     devDependencies:
       '@tanstack/react-start':
         specifier: ^1.132.32
@@ -1302,9 +1296,6 @@ importers:
       decode-formdata:
         specifier: ^0.9.0
         version: 0.9.0
-      devalue:
-        specifier: ^5.3.2
-        version: 5.3.2
     devDependencies:
       '@tanstack/react-start':
         specifier: ^1.132.32
@@ -1312,9 +1303,6 @@ importers:
       '@types/react':
         specifier: ^19.0.7
         version: 19.1.6
-      '@types/react-dom':
-        specifier: ^19.0.3
-        version: 19.1.5(@types/react@19.1.6)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@7.1.6(@types/node@24.1.0)(jiti@2.5.1)(less@4.4.0)(sass@1.90.0)(sugarss@5.0.1(postcss@8.5.6))(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.0))
@@ -1324,9 +1312,6 @@ importers:
       react:
         specifier: ^19.0.0
         version: 19.1.0
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.1.0(react@19.1.0)
       vite:
         specifier: ^7.1.6
         version: 7.1.6(@types/node@24.1.0)(jiti@2.5.1)(less@4.4.0)(sass@1.90.0)(sugarss@5.0.1(postcss@8.5.6))(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.0)
@@ -1336,15 +1321,9 @@ importers:
       '@tanstack/react-form':
         specifier: workspace:*
         version: link:../react-form
-      '@tanstack/react-store':
-        specifier: ^0.7.7
-        version: 0.7.7(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       decode-formdata:
         specifier: ^0.9.0
         version: 0.9.0
-      devalue:
-        specifier: ^5.3.2
-        version: 5.3.2
     devDependencies:
       '@tanstack/react-start':
         specifier: ^1.132.32
@@ -1352,9 +1331,6 @@ importers:
       '@types/react':
         specifier: ^19.0.7
         version: 19.1.6
-      '@types/react-dom':
-        specifier: ^19.0.3
-        version: 19.1.5(@types/react@19.1.6)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@7.1.6(@types/node@24.1.0)(jiti@2.5.1)(less@4.4.0)(sass@1.90.0)(sugarss@5.0.1(postcss@8.5.6))(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.0))
@@ -1364,9 +1340,6 @@ importers:
       react:
         specifier: ^19.0.0
         version: 19.1.0
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.1.0(react@19.1.0)
       vite:
         specifier: ^7.1.6
         version: 7.1.6(@types/node@24.1.0)(jiti@2.5.1)(less@4.4.0)(sass@1.90.0)(sugarss@5.0.1(postcss@8.5.6))(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.0)
@@ -1376,9 +1349,6 @@ importers:
       '@tanstack/react-form':
         specifier: workspace:*
         version: link:../react-form
-      '@tanstack/react-store':
-        specifier: ^0.7.7
-        version: 0.7.7(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       decode-formdata:
         specifier: ^0.9.0
         version: 0.9.0
