@@ -124,3 +124,122 @@ withForm: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync
 ##### Returns
 
 `Element`
+
+
+### withFieldGroup()
+
+```ts
+withFieldGroup: <TFieldGroupData, TSubmitMeta, TRenderProps>(__namedParameters) => <TFormData, TFields, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TFormSubmitMeta>(params) => Element;
+```
+
+#### Type Parameters
+
+• **TFieldGroupData**
+
+• **TSubmitMeta**
+
+• **TRenderProps** *extends* `Record`\<`string`, `unknown`\> = \{\}
+
+#### Parameters
+
+##### \_\_namedParameters
+
+[`WithFieldGroupProps`](../../interfaces/withfieldgroupprops.md)\<`TFieldGroupData`, `TComponents`, `TFormComponents`, `TSubmitMeta`, `TRenderProps`\>
+
+#### Returns
+
+`Function`
+
+##### Type Parameters
+
+• **TFormData**
+
+• **TFields** *extends* 
+  \| `string`
+  \| \{ \[K in string \| number \| symbol\]: DeepKeysOfType\<TFormData, TFieldGroupData\[K\]\> \}
+
+• **TOnMount** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnChange** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnChangeAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TOnBlur** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnBlurAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TOnSubmit** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnSubmitAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TOnDynamic** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnDynamicAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TOnServer** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TFormSubmitMeta**
+
+##### Parameters
+
+###### params
+
+`PropsWithChildren`\<`NoInfer`\<`TRenderProps`\> & `object`\>
+
+##### Returns
+
+`Element`
+
+### withForm()
+
+```ts
+withForm: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta, TRenderProps>(__namedParameters) => (props) => Element;
+```
+
+#### Type Parameters
+
+• **TFormData**
+
+• **TOnMount** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnChange** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnChangeAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TOnBlur** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnBlurAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TOnSubmit** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnSubmitAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TOnDynamic** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnDynamicAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TOnServer** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TSubmitMeta**
+
+• **TRenderProps** *extends* `object` = \{\}
+
+#### Parameters
+
+##### \_\_namedParameters
+
+[`WithFormProps`](../../interfaces/withformprops.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`, `TComponents`, `TFormComponents`, `TRenderProps`\>
+
+#### Returns
+
+`Function`
+
+##### Parameters
+
+###### props
+
+`PropsWithChildren`\<`NoInfer`\<`UnwrapOrAny`\<`TRenderProps`\>\> & `object`\>
+
+##### Returns
+
+`Element`
