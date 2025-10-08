@@ -1,5 +1,19 @@
 # @tanstack/vue-form
 
+## 1.23.6
+
+### Patch Changes
+
+- Updated dependencies [[`74af33e`](https://github.com/TanStack/form/commit/74af33eb80218b8cec8642b64ce7e69a62a65248)]:
+  - @tanstack/form-core@1.24.2: prevent runtime errors when using `deleteField` ([#1706](https://github.com/TanStack/form/pull/1706))
+
+## 1.23.5
+
+### Patch Changes
+
+- Updated dependencies [[`2cfe44c`](https://github.com/TanStack/form/commit/2cfe44ce1e35235ae37ee260dc943a94c9feb71d)]:
+  - @tanstack/form-core@1.24.1
+
 ## 1.23.4
 
 ### Patch Changes

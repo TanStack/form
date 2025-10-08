@@ -1642,6 +1642,11 @@ export class FormApi<
         for (const field of Object.keys(
           this.state.fieldMeta,
         ) as DeepKeys<TFormData>[]) {
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          if (this.baseStore.state.fieldMetaBase[field] === undefined) {
+            continue
+          }
+
           const fieldMeta = this.getFieldMeta(field)
           if (!fieldMeta) continue
 
@@ -1845,6 +1850,11 @@ export class FormApi<
           for (const field of Object.keys(
             this.state.fieldMeta,
           ) as DeepKeys<TFormData>[]) {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            if (this.baseStore.state.fieldMetaBase[field] === undefined) {
+              continue
+            }
+
             const fieldMeta = this.getFieldMeta(field)
             if (!fieldMeta) continue
 
@@ -2014,10 +2024,17 @@ export class FormApi<
       )
     })
 
-    if (!this.state.canSubmit && !this._devtoolsSubmissionOverride) return
-
     const submitMetaArg =
       submitMeta ?? (this.options.onSubmitMeta as TSubmitMeta)
+
+    if (!this.state.canSubmit && !this._devtoolsSubmissionOverride) {
+      this.options.onSubmitInvalid?.({
+        value: this.state.values,
+        formApi: this,
+        meta: submitMetaArg,
+      })
+      return
+    }
 
     this.baseStore.setState((d) => ({ ...d, isSubmitting: true }))
 
