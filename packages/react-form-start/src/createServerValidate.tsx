@@ -2,19 +2,20 @@ import {
   isGlobalFormValidationError,
   isStandardSchemaValidator,
   standardSchemaValidators,
-} from '@tanstack/form-core'
+} from '@tanstack/react-form'
 import { getRequestHeader } from '@tanstack/react-start/server'
 import { decode } from 'decode-formdata'
 import { ServerValidateError } from './error'
 import { setInternalTanStackCookie } from './utils'
-import type { ServerFormState } from '@tanstack/react-form'
+
 import type {
   FormAsyncValidateOrFn,
   FormOptions,
   FormValidateAsyncFn,
   FormValidateOrFn,
+  ServerFormState,
   UnwrapFormAsyncValidateOrFn,
-} from '@tanstack/form-core'
+} from '@tanstack/react-form'
 
 interface CreateServerValidateOptions<
   TFormData,
