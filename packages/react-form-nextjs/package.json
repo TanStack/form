@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/react-form-nextjs",
-  "version": "1.23.4",
+  "version": "1.23.6",
   "description": "Powerful, type-safe forms for React.",
   "author": "tannerlinsley",
   "license": "MIT",
