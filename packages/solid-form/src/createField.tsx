@@ -11,6 +11,7 @@ import type {
   DeepValue,
   FieldAsyncValidateOrFn,
   FieldValidateOrFn,
+  FieldValidators,
   FormAsyncValidateOrFn,
   FormValidateOrFn,
   Narrow,
@@ -539,6 +540,94 @@ export type FieldComponent<
   ExtendedApi
 >) => JSX.Element
 
+
+/**
+ * A type alias representing a field component for a form lens data type.
+ */
+export type LensFieldComponent<
+  in out TLensData,
+  in out TParentSubmitMeta,
+  in out ExtendedApi = {},
+> = <
+  const TName extends DeepKeys<TLensData>,
+  TData extends DeepValue<TLensData, TName>,
+  TOnMount extends undefined | FieldValidateOrFn<unknown, string, TData>,
+  TOnChange extends undefined | FieldValidateOrFn<unknown, string, TData>,
+  TOnChangeAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<unknown, string, TData>,
+  TOnBlur extends undefined | FieldValidateOrFn<unknown, string, TData>,
+  TOnBlurAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<unknown, string, TData>,
+  TOnSubmit extends undefined | FieldValidateOrFn<unknown, string, TData>,
+  TOnSubmitAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<unknown, string, TData>,
+  TOnDynamic extends undefined | FieldValidateOrFn<unknown, string, TData>,
+  TOnDynamicAsync extends
+    | undefined
+    | FieldAsyncValidateOrFn<unknown, string, TData>,
+>({
+  children,
+  ...fieldOptions
+}: Omit<
+  FieldComponentBoundProps<
+    unknown,
+    string,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    undefined | FormValidateOrFn<unknown>,
+    undefined | FormValidateOrFn<unknown>,
+    undefined | FormAsyncValidateOrFn<unknown>,
+    undefined | FormValidateOrFn<unknown>,
+    undefined | FormAsyncValidateOrFn<unknown>,
+    undefined | FormValidateOrFn<unknown>,
+    undefined | FormAsyncValidateOrFn<unknown>,
+    undefined | FormValidateOrFn<unknown>,
+    undefined | FormAsyncValidateOrFn<unknown>,
+    undefined | FormAsyncValidateOrFn<unknown>,
+    TParentSubmitMeta,
+    ExtendedApi
+  >,
+  'name' | 'validators'
+> & {
+  name: TName
+  validators?: Omit<
+    FieldValidators<
+      unknown,
+      string,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync
+    >,
+    'onChangeListenTo' | 'onBlurListenTo'
+  > & {
+    /**
+     * An optional list of field names that should trigger this field's `onChange` and `onChangeAsync` events when its value changes
+     */
+    onChangeListenTo?: DeepKeys<TLensData>[]
+    /**
+     * An optional list of field names that should trigger this field's `onBlur` and `onBlurAsync` events when its value changes
+     */
+    onBlurListenTo?: DeepKeys<TLensData>[]
+  }
+}) => JSXElement
 interface FieldComponentProps<
   TParentData,
   TName extends DeepKeys<TParentData>,
