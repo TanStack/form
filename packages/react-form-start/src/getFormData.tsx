@@ -2,7 +2,7 @@ import {
   deleteInternalTanStackCookie,
   getInternalTanStackCookie,
 } from './utils'
-import type { ServerFormState } from './types'
+import type { ServerFormState } from '@tanstack/react-form'
 
 export const initialFormState = {
   errorMap: {

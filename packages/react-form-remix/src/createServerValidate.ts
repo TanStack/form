@@ -1,20 +1,19 @@
+import { decode } from 'decode-formdata'
 import {
   isGlobalFormValidationError,
   isStandardSchemaValidator,
   standardSchemaValidators,
-} from '@tanstack/form-core'
-import { getHeader } from '@tanstack/react-start/server'
-import { decode } from 'decode-formdata'
+} from '@tanstack/react-form'
 import { ServerValidateError } from './error'
-import { setInternalTanStackCookie } from './utils'
-import type { ServerFormState } from './types'
+
 import type {
   FormAsyncValidateOrFn,
   FormOptions,
   FormValidateAsyncFn,
   FormValidateOrFn,
+  ServerFormState,
   UnwrapFormAsyncValidateOrFn,
-} from '@tanstack/form-core'
+} from '@tanstack/react-form'
 
 interface CreateServerValidateOptions<
   TFormData,
@@ -99,16 +98,14 @@ export const createServerValidate =
       })
     }
 
-    const referer = getHeader('referer')!
-
-    const data = decode(formData, info) as never as TFormData
+    const values = decode(formData, info) as never as TFormData
 
     const onServerError = (await runValidator({
-      value: data,
+      value: values,
       validationSource: 'form',
     })) as UnwrapFormAsyncValidateOrFn<TOnServer> | undefined
 
-    if (!onServerError) return data
+    if (!onServerError) return values
 
     const onServerErrorVal = (
       isGlobalFormValidationError(onServerError)
@@ -120,19 +117,19 @@ export const createServerValidate =
       errorMap: {
         onServer: onServerError,
       },
-      values: data,
+      values,
       errors: onServerErrorVal ? [onServerErrorVal] : [],
     }
 
-    setInternalTanStackCookie(formState)
-
     throw new ServerValidateError({
-      response: new Response('ok', {
-        headers: {
-          Location: referer,
-        },
-        status: 302,
-      }),
-      formState: formState,
+      formState,
     })
   }
+
+export const initialFormState: ServerFormState<any, undefined> = {
+  errorMap: {
+    onServer: undefined,
+  },
+  values: undefined,
+  errors: [],
+}
