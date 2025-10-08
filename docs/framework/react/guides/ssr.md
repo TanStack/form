@@ -326,7 +326,7 @@ Here, we're using [React's `useActionState` hook](https://playfulprogramming.com
 > x You're importing a component that needs `useState`. This React hook only works in a client component. To fix, mark the file (or its parent) with the `"use client"` directive.
 > ```
 >
-> This is because you're not importing server-side code from `@tanstack/react-form/nextjs`. Ensure you're importing the correct module based on the environment.
+> This is because you're not importing server-side code from `@tanstack/react-form-nextjs`. Ensure you're importing the correct module based on the environment.
 >
 > [This is a limitation of Next.js](https://github.com/phryneas/rehackt). Other meta-frameworks will likely not have this same problem.
 
@@ -422,7 +422,7 @@ import {
   createServerValidate,
   formOptions,
   initialFormState,
-} from '@tanstack/react-form/remix'
+} from '@tanstack/react-form-remix'
 
 import type { ActionFunctionArgs } from '@remix-run/node'
 
