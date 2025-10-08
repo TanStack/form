@@ -26,7 +26,7 @@ Let's start by creating a `formOption` that we'll use to share the form's shape 
 
 ```typescript
 // app/routes/index.tsx, but can be extracted to any other path
-import { formOptions } from '@tanstack/react-form'
+import { formOptions } from '@tanstack/react-form-start'
 
 // You can pass other form options here
 export const formOpts = formOptions({
@@ -44,7 +44,7 @@ Next, we can create [a Start Server Function](https://tanstack.com/start/latest/
 import {
   createServerValidate,
   ServerValidateError,
-} from '@tanstack/react-form/start'
+} from '@tanstack/react-form-start'
 
 const serverValidate = createServerValidate({
   ...formOpts,
@@ -93,7 +93,7 @@ Then we need to establish a way to grab the form data from `serverValidate`'s `r
 
 ```typescript
 // app/routes/index.tsx, but can be extracted to any other path
-import { getFormData } from '@tanstack/react-form/start'
+import { getFormData } from '@tanstack/react-form-start'
 
 export const getFormDataFromServer = createServerFn({ method: 'GET' }).handler(
   async () => {
@@ -106,13 +106,13 @@ Finally, we'll use `getFormDataFromServer` in our loader to get the state from o
 
 ```tsx
 // app/routes/index.tsx
-import { createFileRoute } from '@tanstack/react-router'
 import {
+  createFileRoute
   mergeForm,
   useForm,
   useStore,
   useTransform,
-} from '@tanstack/react-form'
+} from '@tanstack/react-form-start'
 
 export const Route = createFileRoute('/')({
   component: Home,
@@ -192,7 +192,7 @@ Let's start by creating a `formOption` that we'll use to share the form's shape 
 ```typescript
 // shared-code.ts
 // Notice the import path is different from the client
-import { formOptions } from '@tanstack/react-form/nextjs'
+import { formOptions } from '@tanstack/react-form-nextjs'
 
 // You can pass other form options here
 export const formOpts = formOptions({
@@ -213,7 +213,7 @@ Next, we can create [a React Server Action](https://playfulprogramming.com/posts
 import {
   ServerValidateError,
   createServerValidate,
-} from '@tanstack/react-form/nextjs'
+} from '@tanstack/react-form-nextjs'
 import { formOpts } from './shared-code'
 
 // Create the server action that will infer the types of the form from `formOpts`
@@ -255,14 +255,13 @@ Finally, we'll use `someAction` in our client-side form component.
 'use client'
 
 import { useActionState } from 'react'
-import { initialFormState } from '@tanstack/react-form/nextjs'
-// Notice the import is from `react-form`, not `react-form/nextjs`
 import {
+  initialFormState
   mergeForm,
   useForm,
   useStore,
   useTransform,
-} from '@tanstack/react-form'
+} from '@tanstack/react-form-nextjs'
 import someAction from './action'
 import { formOpts } from './shared-code'
 
@@ -347,7 +346,7 @@ Let's start by creating a `formOption` that we'll use to share the form's shape 
 
 ```typescript
 // routes/_index/route.tsx
-import { formOptions } from '@tanstack/react-form/remix'
+import { formOptions } from '@tanstack/react-form-remix'
 
 // You can pass other form options here
 export const formOpts = formOptions({
@@ -367,7 +366,7 @@ import {
   ServerValidateError,
   createServerValidate,
   formOptions,
-} from '@tanstack/react-form/remix'
+} from '@tanstack/react-form-remix'
 
 import type { ActionFunctionArgs } from '@remix-run/node'
 
@@ -410,10 +409,10 @@ Finally, the `action` will be called when the form submits.
 
 ```tsx
 // routes/_index/route.tsx
-import { Form, useActionData } from '@remix-run/react'
-
 import {
+  Form,
   mergeForm,
+  useActionData
   useForm,
   useStore,
   useTransform,
