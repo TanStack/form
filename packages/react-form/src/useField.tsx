@@ -1,4 +1,6 @@
-import React, { useMemo, useState } from 'react'
+'use client'
+
+import { useMemo, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
