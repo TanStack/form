@@ -1,7 +1,5 @@
 'use client'
 
-import * as Devtools from './core'
-
-export const FormDevtoolsCore = Devtools.FormDevtoolsCore
+export { FormDevtoolsCore } from './core'
 
 export type { FormDevtoolsInit } from './core'

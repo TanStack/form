@@ -116,7 +116,7 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
                       >
                         {fieldName}
                       </div>
-                      <JsonTree copyable value={fieldData} />
+                      <JsonTree copyable value={fieldData as unknown} />
                     </div>
                   )}
                 </For>
@@ -128,7 +128,7 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
               <div class={styles().detailSection}>
                 <div class={styles().detailSectionHeader}>{section.title}</div>
                 <div class={styles().stateContent}>
-                  <JsonTree copyable value={section.value} />
+                  <JsonTree copyable value={section.value as unknown} />
                 </div>
               </div>
             )}

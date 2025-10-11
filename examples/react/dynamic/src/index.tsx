@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { z } from 'zod'
 
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import { FormDevtoolsPlugin } from '@tanstack/react-form-devtools'
+import { formDevtoolsPlugin } from '@tanstack/react-form-devtools'
 import { revalidateLogic, useForm } from '@tanstack/react-form'
 
 import type { AnyFieldApi } from '@tanstack/react-form'
@@ -125,7 +125,7 @@ createRoot(rootElement).render(
 
     <TanStackDevtools
       config={{ hideUntilHover: true }}
-      plugins={[FormDevtoolsPlugin()]}
+      plugins={[formDevtoolsPlugin()]}
     />
   </React.StrictMode>,
 )

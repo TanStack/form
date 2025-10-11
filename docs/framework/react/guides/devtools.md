@@ -30,11 +30,11 @@ createRoot(document.getElementById('root')!).render(
 )
 ```
 
-Import the `FormDevtoolsPlugin` from **TanStack Form** and provide it to the `TanStackDevtools` component.
+Import the `formDevtoolsPlugin` from **TanStack Form** and provide it to the `TanStackDevtools` component.
 
 ```tsx
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import { FormDevtoolsPlugin } from '@tanstack/react-form-devtools'
+import { formDevtoolsPlugin } from '@tanstack/react-form-devtools'
 
 import App from './App'
 
@@ -42,7 +42,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
 
-    <TanStackDevtools plugins={[FormDevtoolsPlugin()]} />
+    <TanStackDevtools plugins={[formDevtoolsPlugin()]} />
   </StrictMode>,
 )
 ```
