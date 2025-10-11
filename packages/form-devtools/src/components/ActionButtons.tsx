@@ -6,7 +6,7 @@ import type { Accessor } from 'solid-js'
 import type { DevtoolsFormState } from '../contexts/eventClientContext'
 
 type ActionButtonsProps = {
-  selectedInstance: Accessor<DevtoolsFormState | null>
+  selectedInstance: Accessor<DevtoolsFormState | null | undefined>
 }
 
 export function ActionButtons(props: ActionButtonsProps) {

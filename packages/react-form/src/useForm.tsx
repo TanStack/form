@@ -1,6 +1,6 @@
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
@@ -182,6 +182,8 @@ export function useForm<
     TSubmitMeta
   >,
 ) {
+  const formId = useId()
+
   const [formApi] = useState(() => {
     const api = new FormApi<
       TFormData,
@@ -196,7 +198,7 @@ export function useForm<
       TOnDynamicAsync,
       TOnServer,
       TSubmitMeta
-    >(opts)
+    >({ ...opts, formId: formId })
 
     const extendedApi: ReactFormExtendedApi<
       TFormData,

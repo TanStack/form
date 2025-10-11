@@ -10,6 +10,9 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
 
-    <TanStackDevtools plugins={[FormDevtoolsPlugin()]} />
+    <TanStackDevtools
+      plugins={[FormDevtoolsPlugin()]}
+      // eventBusConfig={{ debug: true }}
+    />
   </StrictMode>,
 )
