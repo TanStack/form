@@ -2318,13 +2318,18 @@ export class FormApi<
       mergeOpts(options, { dontValidate: true }),
     )
 
-    // Validate the whole array + all fields that have shifted
-    await this.validateField(field, 'change')
+    const dontValidate = options?.dontValidate ?? false
+    if (!dontValidate) {
+      // Validate the whole array + all fields that have shifted
+      await this.validateField(field, 'change')
+    }
 
     // Shift down all meta after validating to make sure the new field has been mounted
     metaHelper(this).handleArrayFieldMetaShift(field, index, 'insert')
 
-    await this.validateArrayFieldsStartingFrom(field, index, 'change')
+    if (!dontValidate) {
+      await this.validateArrayFieldsStartingFrom(field, index, 'change')
+    }
   }
 
   /**
@@ -2348,9 +2353,12 @@ export class FormApi<
       mergeOpts(options, { dontValidate: true }),
     )
 
-    // Validate the whole array + all fields that have shifted
-    await this.validateField(field, 'change')
-    await this.validateArrayFieldsStartingFrom(field, index, 'change')
+    const dontValidate = options?.dontValidate ?? false
+    if (!dontValidate) {
+      // Validate the whole array + all fields that have shifted
+      await this.validateField(field, 'change')
+      await this.validateArrayFieldsStartingFrom(field, index, 'change')
+    }
   }
 
   /**
@@ -2385,9 +2393,12 @@ export class FormApi<
       this.deleteField(start as never)
     }
 
-    // Validate the whole array + all fields that have shifted
-    await this.validateField(field, 'change')
-    await this.validateArrayFieldsStartingFrom(field, index, 'change')
+    const dontValidate = options?.dontValidate ?? false
+    if (!dontValidate) {
+      // Validate the whole array + all fields that have shifted
+      await this.validateField(field, 'change')
+      await this.validateArrayFieldsStartingFrom(field, index, 'change')
+    }
   }
 
   /**
@@ -2412,11 +2423,14 @@ export class FormApi<
     // Swap meta
     metaHelper(this).handleArrayFieldMetaShift(field, index1, 'swap', index2)
 
-    // Validate the whole array
-    this.validateField(field, 'change')
-    // Validate the swapped fields
-    this.validateField(`${field}[${index1}]` as DeepKeys<TFormData>, 'change')
-    this.validateField(`${field}[${index2}]` as DeepKeys<TFormData>, 'change')
+    const dontValidate = options?.dontValidate ?? false
+    if (!dontValidate) {
+      // Validate the whole array
+      this.validateField(field, 'change')
+      // Validate the swapped fields
+      this.validateField(`${field}[${index1}]` as DeepKeys<TFormData>, 'change')
+      this.validateField(`${field}[${index2}]` as DeepKeys<TFormData>, 'change')
+    }
   }
 
   /**
@@ -2441,11 +2455,14 @@ export class FormApi<
     // Move meta between index1 and index2
     metaHelper(this).handleArrayFieldMetaShift(field, index1, 'move', index2)
 
-    // Validate the whole array
-    this.validateField(field, 'change')
-    // Validate the moved fields
-    this.validateField(`${field}[${index1}]` as DeepKeys<TFormData>, 'change')
-    this.validateField(`${field}[${index2}]` as DeepKeys<TFormData>, 'change')
+    const dontValidate = options?.dontValidate ?? false
+    if (!dontValidate) {
+      // Validate the whole array
+      this.validateField(field, 'change')
+      // Validate the moved fields
+      this.validateField(`${field}[${index1}]` as DeepKeys<TFormData>, 'change')
+      this.validateField(`${field}[${index2}]` as DeepKeys<TFormData>, 'change')
+    }
   }
 
   /**
@@ -2474,8 +2491,11 @@ export class FormApi<
       }
     }
 
-    // validate array change
-    this.validateField(field, 'change')
+    const dontValidate = options?.dontValidate ?? false
+    if (!dontValidate) {
+      // validate array change
+      this.validateField(field, 'change')
+    }
   }
 
   /**
