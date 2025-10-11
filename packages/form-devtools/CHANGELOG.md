@@ -1,5 +1,12 @@
 # @tanstack/form-devtools
 
+## 0.1.7
+
+### Patch Changes
+
+- Updated dependencies [[`33cce81`](https://github.com/TanStack/form/commit/33cce812cbfeb42aa7457bab220a807ff5c4ba7f)]:
+  - @tanstack/form-core@1.24.3: respect dontValidate option in formApi array modifiers ([#1775](https://github.com/TanStack/form/pull/1775))
+
 ## 0.1.6
 
 ### Patch Changes
