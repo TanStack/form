@@ -66,7 +66,7 @@ export default function Index() {
   return (
     <Form method="post" onSubmit={() => form.handleSubmit()}>
       {formErrors.map((error) => (
-        <p key={error as string}>{error}</p>
+        <p key={error as never as string}>{error}</p>
       ))}
 
       <form.Field
