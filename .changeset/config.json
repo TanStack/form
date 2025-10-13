@@ -18,7 +18,7 @@
       "@tanstack/angular-form",
       "@tanstack/vue-form",
       "@tanstack/solid-form",
-      "@tanstack/svelt-form"
+      "@tanstack/svelte-form"
     ]
   ],
   "linked": [],
