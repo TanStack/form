@@ -161,7 +161,7 @@ Defined in: [packages/form-core/src/FormApi.ts:953](https://github.com/TanStack/
 clearFieldValues<TField>(field, options?): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2454](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2454)
+Defined in: [packages/form-core/src/FormApi.ts:2471](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2471)
 
 Clear all values within an array field.
 
@@ -227,7 +227,7 @@ FieldManipulator.deleteField
 getAllErrors(): object
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2566](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2566)
+Defined in: [packages/form-core/src/FormApi.ts:2586](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2586)
 
 Returns form and field level errors
 
@@ -488,7 +488,7 @@ moveFieldValues<TField>(
    options?): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2425](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2425)
+Defined in: [packages/form-core/src/FormApi.ts:2439](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2439)
 
 Moves the value at the first specified index to the second specified index within an array field.
 
@@ -537,7 +537,7 @@ parseValuesWithSchema(schema):
 }
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2630](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2630)
+Defined in: [packages/form-core/src/FormApi.ts:2650](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2650)
 
 Parses the form's values with a given standard schema and returns
 issues (if any). This method does NOT set any internal errors.
@@ -571,7 +571,7 @@ parseValuesWithSchemaAsync(schema): Promise<
 }>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2642](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2642)
+Defined in: [packages/form-core/src/FormApi.ts:2662](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2662)
 
 Parses the form's values with a given standard schema and returns
 issues (if any). This method does NOT set any internal errors.
@@ -647,7 +647,7 @@ removeFieldValue<TField>(
 options?): Promise<void>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2359](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2359)
+Defined in: [packages/form-core/src/FormApi.ts:2367](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2367)
 
 Removes a value from an array field at the specified index.
 
@@ -691,7 +691,7 @@ replaceFieldValue<TField>(
 options?): Promise<void>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2333](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2333)
+Defined in: [packages/form-core/src/FormApi.ts:2338](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2338)
 
 Replaces a value into an array field at the specified index.
 
@@ -768,7 +768,7 @@ Optional options to control the reset behavior.
 resetField<TField>(field): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2484](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2484)
+Defined in: [packages/form-core/src/FormApi.ts:2504](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2504)
 
 Resets the field value and meta to default state
 
@@ -826,7 +826,7 @@ resets every field's meta
 setErrorMap(errorMap): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2502](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2502)
+Defined in: [packages/form-core/src/FormApi.ts:2522](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2522)
 
 Updates the form's errorMap
 
@@ -931,7 +931,7 @@ swapFieldValues<TField>(
    options?): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2396](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2396)
+Defined in: [packages/form-core/src/FormApi.ts:2407](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2407)
 
 Swaps the values at the specified indices within an array field.
 
