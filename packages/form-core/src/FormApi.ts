@@ -975,6 +975,12 @@ export class FormApi<
    * @private
    */
   private _devtoolsSubmissionOverride: boolean
+  /**
+   * @private
+   * Tracks fields that have been explicitly deleted via deleteField()
+   * to prevent them from being restored by field mount() with defaultValue
+   */
+  private _deletedFields: Set<string> = new Set()
 
   /**
    * Constructs a new `FormApi` instance with the given form options.
@@ -1468,6 +1474,8 @@ export class FormApi<
     const { fieldMeta: currentFieldMeta } = this.state
     const fieldMetaBase = this.resetFieldMeta(currentFieldMeta)
 
+    this._deletedFields.clear()
+
     if (values && !opts?.keepDefaultValues) {
       this.options = {
         ...this.options,
@@ -1642,6 +1650,11 @@ export class FormApi<
         for (const field of Object.keys(
           this.state.fieldMeta,
         ) as DeepKeys<TFormData>[]) {
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          if (this.baseStore.state.fieldMetaBase[field] === undefined) {
+            continue
+          }
+
           const fieldMeta = this.getFieldMeta(field)
           if (!fieldMeta) continue
 
@@ -1845,6 +1858,11 @@ export class FormApi<
           for (const field of Object.keys(
             this.state.fieldMeta,
           ) as DeepKeys<TFormData>[]) {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            if (this.baseStore.state.fieldMetaBase[field] === undefined) {
+              continue
+            }
+
             const fieldMeta = this.getFieldMeta(field)
             if (!fieldMeta) continue
 
@@ -2219,6 +2237,14 @@ export class FormApi<
     const dontRunListeners = opts?.dontRunListeners ?? false
     const dontValidate = opts?.dontValidate ?? false
 
+    if (this._deletedFields.has(field as string)) {
+      return
+    }
+
+    if (!opts?.dontUpdateMeta) {
+      this._deletedFields.delete(field as string)
+    }
+
     batch(() => {
       if (!dontUpdateMeta) {
         this.setFieldMeta(field, (prev) => ({
@@ -2250,6 +2276,14 @@ export class FormApi<
     }
   }
 
+  /**
+   * Checks if a field has been explicitly deleted and should not be restored
+   * @private
+   */
+  isFieldDeleted = <TField extends DeepKeys<TFormData>>(field: TField) => {
+    return this._deletedFields.has(field as string)
+  }
+
   deleteField = <TField extends DeepKeys<TFormData>>(field: TField) => {
     const subFieldsToDelete = Object.keys(this.fieldInfo).filter((f) => {
       const fieldStr = field.toString()
@@ -2257,6 +2291,10 @@ export class FormApi<
     })
 
     const fieldsToDelete = [...subFieldsToDelete, field]
+
+    fieldsToDelete.forEach((f) => {
+      this._deletedFields.add(f)
+    })
 
     // Cleanup the last fields
     this.baseStore.setState((prev) => {
@@ -2472,6 +2510,8 @@ export class FormApi<
    * Resets the field value and meta to default state
    */
   resetField = <TField extends DeepKeys<TFormData>>(field: TField) => {
+    this._deletedFields.delete(field as string)
+
     this.baseStore.setState((prev) => {
       return {
         ...prev,

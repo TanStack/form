@@ -1232,7 +1232,10 @@ export class FieldApi<
   mount = () => {
     const cleanup = this.store.mount()
 
-    if ((this.options.defaultValue as unknown) !== undefined) {
+    if (
+      (this.options.defaultValue as unknown) !== undefined &&
+      !this.form.isFieldDeleted(this.name)
+    ) {
       this.form.setFieldValue(this.name, this.options.defaultValue as never, {
         dontUpdateMeta: true,
       })
