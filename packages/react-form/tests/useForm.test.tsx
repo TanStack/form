@@ -864,7 +864,7 @@ describe('useForm', () => {
       return (
         <>
           <form
-            id={form.formId()}
+            id={form.formId}
             onSubmit={(e) => {
               e.preventDefault()
               form.handleSubmit()
@@ -878,12 +878,8 @@ describe('useForm', () => {
             )}
           />
 
-          <button
-            type="submit"
-            form={form.formId()}
-            data-testid="formId-target"
-          >
-            {form.formId()}
+          <button type="submit" form={form.formId} data-testid="formId-target">
+            {form.formId}
           </button>
         </>
       )
@@ -939,5 +935,71 @@ describe('useForm', () => {
 
     const target = getByTestId('removeField')
     await user.click(target)
+  })
+
+  it('should not error when using deleteField in edge cases', async () => {
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+        validators: {
+          onChange: ({ value }) => {
+            const fields: Record<string, string> = {}
+
+            if (value.firstName.length === 0) {
+              fields.firstName = 'Last Name is required'
+            }
+
+            return { fields }
+          },
+        },
+      })
+
+      return (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            form.handleSubmit()
+          }}
+        >
+          <h1>Personal Information</h1>
+          <form.Field
+            name="firstName"
+            children={(field) => (
+              <input
+                data-testid="input"
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            )}
+          />
+          <form.Field
+            name="lastName"
+            children={(field) => (
+              <input
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            )}
+          />
+          <button
+            type="button"
+            data-testid="remove"
+            onClick={() => form.deleteField('firstName')}
+          >
+            remove first name
+          </button>
+        </form>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    const removeButton = getByTestId('remove')
+    const input = getByTestId('input')
+
+    await user.type(input, 'a')
+    await user.click(removeButton)
   })
 })

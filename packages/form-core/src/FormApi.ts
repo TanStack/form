@@ -1,5 +1,5 @@
 import { Derived, Store, batch } from '@tanstack/store'
-import { v4 as uuidv4 } from 'uuid'
+
 import {
   deleteBy,
   determineFormLevelErrorSourceAndValue,
@@ -12,6 +12,7 @@ import {
   isNonEmptyArray,
   mergeOpts,
   setBy,
+  uuid,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
 
@@ -1000,7 +1001,7 @@ export class FormApi<
       formListeners: {} as Record<ListenerCause, never>,
     }
 
-    this._formId = opts?.formId ?? uuidv4()
+    this._formId = opts?.formId ?? uuid()
 
     this._devtoolsSubmissionOverride = false
 
@@ -1327,7 +1328,7 @@ export class FormApi<
     })
   }
 
-  formId(): string | undefined {
+  get formId(): string {
     return this._formId
   }
 
@@ -1639,6 +1640,11 @@ export class FormApi<
         for (const field of Object.keys(
           this.state.fieldMeta,
         ) as DeepKeys<TFormData>[]) {
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          if (this.baseStore.state.fieldMetaBase[field] === undefined) {
+            continue
+          }
+
           const fieldMeta = this.getFieldMeta(field)
           if (!fieldMeta) continue
 
@@ -1842,6 +1848,11 @@ export class FormApi<
           for (const field of Object.keys(
             this.state.fieldMeta,
           ) as DeepKeys<TFormData>[]) {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            if (this.baseStore.state.fieldMetaBase[field] === undefined) {
+              continue
+            }
+
             const fieldMeta = this.getFieldMeta(field)
             if (!fieldMeta) continue
 
@@ -2011,10 +2022,17 @@ export class FormApi<
       )
     })
 
-    if (!this.state.canSubmit && !this._devtoolsSubmissionOverride) return
-
     const submitMetaArg =
       submitMeta ?? (this.options.onSubmitMeta as TSubmitMeta)
+
+    if (!this.state.canSubmit && !this._devtoolsSubmissionOverride) {
+      this.options.onSubmitInvalid?.({
+        value: this.state.values,
+        formApi: this,
+        meta: submitMetaArg,
+      })
+      return
+    }
 
     this.baseStore.setState((d) => ({ ...d, isSubmitting: true }))
 
@@ -2298,13 +2316,18 @@ export class FormApi<
       mergeOpts(options, { dontValidate: true }),
     )
 
-    // Validate the whole array + all fields that have shifted
-    await this.validateField(field, 'change')
+    const dontValidate = options?.dontValidate ?? false
+    if (!dontValidate) {
+      // Validate the whole array + all fields that have shifted
+      await this.validateField(field, 'change')
+    }
 
     // Shift down all meta after validating to make sure the new field has been mounted
     metaHelper(this).handleArrayInsert(field, index)
 
-    await this.validateArrayFieldsStartingFrom(field, index, 'change')
+    if (!dontValidate) {
+      await this.validateArrayFieldsStartingFrom(field, index, 'change')
+    }
   }
 
   /**
@@ -2328,9 +2351,12 @@ export class FormApi<
       mergeOpts(options, { dontValidate: true }),
     )
 
-    // Validate the whole array + all fields that have shifted
-    await this.validateField(field, 'change')
-    await this.validateArrayFieldsStartingFrom(field, index, 'change')
+    const dontValidate = options?.dontValidate ?? false
+    if (!dontValidate) {
+      // Validate the whole array + all fields that have shifted
+      await this.validateField(field, 'change')
+      await this.validateArrayFieldsStartingFrom(field, index, 'change')
+    }
   }
 
   /**
@@ -2365,9 +2391,12 @@ export class FormApi<
       this.deleteField(start as never)
     }
 
-    // Validate the whole array + all fields that have shifted
-    await this.validateField(field, 'change')
-    await this.validateArrayFieldsStartingFrom(field, index, 'change')
+    const dontValidate = options?.dontValidate ?? false
+    if (!dontValidate) {
+      // Validate the whole array + all fields that have shifted
+      await this.validateField(field, 'change')
+      await this.validateArrayFieldsStartingFrom(field, index, 'change')
+    }
   }
 
   /**
@@ -2392,11 +2421,14 @@ export class FormApi<
     // Swap meta
     metaHelper(this).handleArraySwap(field, index1, index2)
 
-    // Validate the whole array
-    this.validateField(field, 'change')
-    // Validate the swapped fields
-    this.validateField(`${field}[${index1}]` as DeepKeys<TFormData>, 'change')
-    this.validateField(`${field}[${index2}]` as DeepKeys<TFormData>, 'change')
+    const dontValidate = options?.dontValidate ?? false
+    if (!dontValidate) {
+      // Validate the whole array
+      this.validateField(field, 'change')
+      // Validate the swapped fields
+      this.validateField(`${field}[${index1}]` as DeepKeys<TFormData>, 'change')
+      this.validateField(`${field}[${index2}]` as DeepKeys<TFormData>, 'change')
+    }
   }
 
   /**
@@ -2421,11 +2453,14 @@ export class FormApi<
     // Move meta between index1 and index2
     metaHelper(this).handleArrayMove(field, index1, index2)
 
-    // Validate the whole array
-    this.validateField(field, 'change')
-    // Validate the moved fields
-    this.validateField(`${field}[${index1}]` as DeepKeys<TFormData>, 'change')
-    this.validateField(`${field}[${index2}]` as DeepKeys<TFormData>, 'change')
+    const dontValidate = options?.dontValidate ?? false
+    if (!dontValidate) {
+      // Validate the whole array
+      this.validateField(field, 'change')
+      // Validate the moved fields
+      this.validateField(`${field}[${index1}]` as DeepKeys<TFormData>, 'change')
+      this.validateField(`${field}[${index2}]` as DeepKeys<TFormData>, 'change')
+    }
   }
 
   /**
@@ -2454,8 +2489,11 @@ export class FormApi<
       }
     }
 
-    // validate array change
-    this.validateField(field, 'change')
+    const dontValidate = options?.dontValidate ?? false
+    if (!dontValidate) {
+      // validate array change
+      this.validateField(field, 'change')
+    }
   }
 
   /**
