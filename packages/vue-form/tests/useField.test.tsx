@@ -312,7 +312,9 @@ describe('useField', () => {
     expect(fn).toHaveBeenCalledWith({ people: ['John'] })
   })
 
-  it('should handle array deletion', async () => {
+  it('should handle arrays with subvalues', async () => {
+    const fn = vi.fn()
+
     type CompVal = { people: Array<{ age: number; name: string }> }
 
     const Comp = defineComponent(() => {
@@ -320,6 +322,7 @@ describe('useField', () => {
         defaultValues: {
           people: [],
         } as CompVal,
+        onSubmit: ({ value }) => fn(value),
       })
 
       return () => (
@@ -337,27 +340,35 @@ describe('useField', () => {
                   {field.state.value.map((_: never, i: number) => {
                     return (
                       <form.Field key={i} name={`people[${i}].name`}>
-                        {({ field: subField }: { field: AnyFieldApi }) => {
-                          expect(subField.name).toBe(`people[${i}].name`)
-                          expect(field.state.value).not.toBeUndefined()
-                          return null
-                        }}
+                        {({ field: subField }: { field: AnyFieldApi }) => (
+                          <div>
+                            <label>
+                              <div>Name for person {i}</div>
+                              <input
+                                value={subField.state.value}
+                                onChange={(e) =>
+                                  subField.handleChange(
+                                    (e.target as HTMLInputElement).value,
+                                  )
+                                }
+                              />
+                            </label>
+                            <button
+                              onClick={() => field.removeValue(i)}
+                              type="button"
+                            >
+                              Remove person {i}
+                            </button>
+                          </div>
+                        )}
                       </form.Field>
                     )
                   })}
                   <button
-                    data-testid="addBtn"
                     onClick={() => field.pushValue({ name: '', age: 0 })}
                     type="button"
                   >
-                    Add
-                  </button>
-                  <button
-                    data-testid="removeBtn"
-                    onClick={() => field.removeValue(0)}
-                    type="button"
-                  >
-                    Remove
+                    Add person
                   </button>
                 </div>
               )}
@@ -368,10 +379,26 @@ describe('useField', () => {
       )
     })
 
-    const { getByTestId } = render(Comp)
-    const addBtn = getByTestId('addBtn')
-    const removeBtn = getByTestId('removeBtn')
-    await user.click(addBtn)
-    await user.click(removeBtn)
+    const { queryByText, getByText, findByLabelText, findByText } = render(Comp)
+    expect(queryByText('Name for person 0')).not.toBeInTheDocument()
+    expect(queryByText('Name for person 1')).not.toBeInTheDocument()
+    await user.click(getByText('Add person'))
+    const input = await findByLabelText('Name for person 0')
+    expect(input).toBeInTheDocument()
+    await user.type(input, 'John')
+
+    await user.click(getByText('Add person'))
+    const input2 = await findByLabelText('Name for person 1')
+    expect(input).toBeInTheDocument()
+    await user.type(input2, 'Jack')
+
+    expect(queryByText('Name for person 0')).toBeInTheDocument()
+    expect(queryByText('Name for person 1')).toBeInTheDocument()
+    await user.click(getByText('Remove person 1'))
+    expect(queryByText('Name for person 0')).toBeInTheDocument()
+    expect(queryByText('Name for person 1')).not.toBeInTheDocument()
+
+    await user.click(await findByText('Submit'))
+    expect(fn).toHaveBeenCalledWith({ people: [{ name: 'John', age: 0 }] })
   })
 })
