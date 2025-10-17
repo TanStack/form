@@ -1,4 +1,4 @@
-import { Derived, Store, batch } from '@tanstack/store'
+import { Derived, batch } from '@tanstack/store'
 import {
   isStandardSchemaValidator,
   standardSchemaValidators,
@@ -864,10 +864,6 @@ export type AnyFieldMeta = FieldMeta<
   any
 >
 
-export type FieldBaseState<TParentData, TName extends DeepKeys<TParentData>> = {
-  name: TName
-}
-
 /**
  * An object type representing the state of a field.
  */
@@ -1056,7 +1052,7 @@ export class FieldApi<
   /**
    * The field name.
    */
-  name: DeepKeys<TParentData>
+  name: TName
   /**
    * The field options.
    */
@@ -1319,10 +1315,7 @@ export class FieldApi<
 
     // Default Value
     if ((this.state.value as unknown) === undefined) {
-      const formDefault = getBy(
-        opts.form.options.defaultValues,
-        opts.name,
-      ).value
+      const formDefault = getBy(opts.form.options.defaultValues, opts.name)
     }
 
     // Default Meta

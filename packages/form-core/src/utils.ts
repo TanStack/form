@@ -31,24 +31,15 @@ export function functionalUpdate<TInput, TOutput = TInput>(
  * Get a value from an object using a path, including dot notation.
  * @private
  */
-export function getBy(
-  obj: unknown,
-  path: string | (string | number)[],
-): { found: boolean; value: any } {
+export function getBy(obj: unknown, path: string | (string | number)[]): any {
   const pathObj = makePathArray(path)
-  let current: unknown = obj
-  for (const pathPart of pathObj) {
-    // path is trying to access props of undefined/null, so it doesn't exist
-    if (typeof current === 'undefined' || current === null) {
-      return { found: false, value: undefined }
+  return pathObj.reduce((current: any, pathPart) => {
+    if (current === null) return null
+    if (typeof current !== 'undefined') {
+      return current[pathPart]
     }
-    if (typeof current === 'object' && pathPart in current) {
-      current = current[pathPart as never]
-    } else {
-      return { found: false, value: undefined }
-    }
-  }
-  return { found: true, value: current }
+    return undefined
+  }, obj)
 }
 
 /**
