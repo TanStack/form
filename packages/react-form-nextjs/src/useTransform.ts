@@ -1,10 +1,4 @@
-import type {
-  AnyFormApi,
-  FormApi,
-  FormAsyncValidateOrFn,
-  FormTransform,
-  FormValidateOrFn,
-} from '@tanstack/form-core'
+import type { AnyFormApi, FormTransform } from '@tanstack/react-form'
 
 export function useTransform(
   fn: (formBase: AnyFormApi) => AnyFormApi,
