@@ -51,7 +51,7 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/devtools-event-client": "^0.3.2",
+    "@tanstack/devtools-event-client": "^0.3.3",
     "@tanstack/pacer": "^0.15.3",
     "@tanstack/store": "^0.7.7"
   },

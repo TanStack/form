@@ -12,7 +12,7 @@ createRoot(document.getElementById('root')!).render(
 
     <TanStackDevtools
       plugins={[FormDevtoolsPlugin()]}
-      // eventBusConfig={{ debug: true }}
+      eventBusConfig={{ debug: true }}
     />
   </StrictMode>,
 )
