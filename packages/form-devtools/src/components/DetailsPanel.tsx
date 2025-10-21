@@ -37,8 +37,6 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
     errorMap: state()?.errorMap,
   }))
 
-  createEffect(() => console.log(selectedInstance()?.state))
-
   const individualFields = createMemo(() => {
     const fields: Record<string, { value: any; meta: any }> = {}
     const values = state()?.values || {}
