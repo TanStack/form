@@ -13,7 +13,12 @@ import type {
   FormOptions,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { ComponentType, Context, JSX, PropsWithChildren } from 'react'
+import type {
+  ComponentType,
+  Context,
+  PropsWithChildren,
+  ReactNode,
+} from 'react'
 import type { FieldComponent } from './useField'
 import type { ReactFormExtendedApi } from './useForm'
 import type { AppFieldExtendedReactFieldGroupApi } from './useFieldGroup'
@@ -241,7 +246,7 @@ export interface WithFormProps<
         >
       }
     >,
-  ) => JSX.Element
+  ) => ReactNode
 }
 
 export interface WithFieldGroupProps<
@@ -278,7 +283,7 @@ export interface WithFieldGroupProps<
         >
       }
     >,
-  ) => JSX.Element
+  ) => ReactNode
 }
 
 export function createFormHook<
@@ -515,7 +520,7 @@ export function createFormHook<
         fields: TFields
       }
     >,
-  ) => JSX.Element {
+  ) => ReactNode {
     return function Render(innerProps) {
       const fieldGroupProps = useMemo(() => {
         return {
