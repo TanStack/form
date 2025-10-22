@@ -21,12 +21,6 @@ Defined in: [packages/form-core/src/EventClient.ts:9](https://github.com/TanStac
 id: string;
 ```
 
-### options
-
-```ts
-options: AnyFormOptions;
-```
-
 ### state
 
 ```ts
