@@ -1,5 +1,5 @@
 import { Derived, Store, batch } from '@tanstack/store'
-
+import { throttle } from '@tanstack/pacer'
 import {
   deleteBy,
   determineFormLevelErrorSourceAndValue,
@@ -22,11 +22,6 @@ import {
 } from './standardSchemaValidator'
 import { defaultFieldMeta, metaHelper } from './metaHelper'
 import { formEventClient } from './EventClient'
-import type {
-  RequestFormForceReset,
-  RequestFormReset,
-  RequestFormState,
-} from './EventClient'
 import type { ValidationLogicFn } from './ValidationLogic'
 import type {
   StandardSchemaV1,
@@ -1297,17 +1292,26 @@ export class FormApi<
 
     this.update(opts || {})
 
+    const debouncedDevtoolState = throttle(
+      (state: AnyFormState) =>
+        formEventClient.emit('form-state', {
+          id: this._formId,
+          state: state,
+        }),
+      {
+        wait: 300,
+      },
+    )
+
+    // devtool broadcasts
     this.store.subscribe(() => {
-      formEventClient.emit('form-state-change', {
-        id: this._formId,
-        state: this.store.state,
-        options: this.options,
-      })
+      debouncedDevtoolState(this.store.state)
     })
 
+    // devtool requests
     formEventClient.on('request-form-state', (e) => {
       if (e.payload.id === this._formId) {
-        formEventClient.emit('form-state-change', {
+        formEventClient.emit('form-api', {
           id: this._formId,
           state: this.store.state,
           options: this.options,
@@ -1377,7 +1381,7 @@ export class FormApi<
     const { onMount } = this.options.validators || {}
 
     // broadcast form state for devtools on mounting
-    formEventClient.emit('form-state-change', {
+    formEventClient.emit('form-api', {
       id: this._formId,
       state: this.store.state,
       options: this.options,
@@ -1454,6 +1458,12 @@ export class FormApi<
           ),
         ),
       )
+    })
+
+    formEventClient.emit('form-api', {
+      id: this._formId,
+      state: this.store.state,
+      options: this.options,
     })
   }
 
@@ -2053,7 +2063,7 @@ export class FormApi<
         meta: submitMetaArg,
       })
 
-      formEventClient.emit('form-submission-state-change', {
+      formEventClient.emit('form-submission', {
         id: this._formId,
         submissionAttempt: this.state.submissionAttempts,
         successful: false,
@@ -2077,7 +2087,7 @@ export class FormApi<
         meta: submitMetaArg,
       })
 
-      formEventClient.emit('form-submission-state-change', {
+      formEventClient.emit('form-submission', {
         id: this._formId,
         submissionAttempt: this.state.submissionAttempts,
         successful: false,
@@ -2116,7 +2126,7 @@ export class FormApi<
           isSubmitSuccessful: true, // Set isSubmitSuccessful to true on successful submission
         }))
 
-        formEventClient.emit('form-submission-state-change', {
+        formEventClient.emit('form-submission', {
           id: this._formId,
           submissionAttempt: this.state.submissionAttempts,
           successful: true,
@@ -2130,7 +2140,7 @@ export class FormApi<
         isSubmitSuccessful: false, // Ensure isSubmitSuccessful is false if an error occurs
       }))
 
-      formEventClient.emit('form-submission-state-change', {
+      formEventClient.emit('form-submission', {
         id: this._formId,
         submissionAttempt: this.state.submissionAttempts,
         successful: false,
