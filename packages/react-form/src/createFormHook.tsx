@@ -249,7 +249,7 @@ export interface WithFieldGroupProps<
   TFieldComponents extends Record<string, ComponentType<any>>,
   TFormComponents extends Record<string, ComponentType<any>>,
   TSubmitMeta,
-  TRenderProps extends Record<string, unknown> = Record<string, never>,
+  TRenderProps extends object = Record<string, never>,
 > extends BaseFormOptions<TFieldGroupData, TSubmitMeta> {
   // Optional, but adds props to the `render` function outside of `form`
   props?: TRenderProps
@@ -445,7 +445,7 @@ export function createFormHook<
   function withFieldGroup<
     TFieldGroupData,
     TSubmitMeta,
-    TRenderProps extends Record<string, unknown> = {},
+    TRenderProps extends object = {},
   >({
     render,
     props,
