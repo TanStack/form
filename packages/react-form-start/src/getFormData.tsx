@@ -1,3 +1,4 @@
+import { createServerFn } from '@tanstack/react-start'
 import {
   deleteInternalTanStackCookie,
   getInternalTanStackCookie,
@@ -11,7 +12,7 @@ export const initialFormState = {
   errors: [],
 }
 
-export const getFormData = async () => {
+export const getFormData = createServerFn().handler(async () => {
   const data = getInternalTanStackCookie() as
     | undefined
     | ServerFormState<any, undefined>
@@ -19,4 +20,4 @@ export const getFormData = async () => {
   deleteInternalTanStackCookie()
   if (!data) return initialFormState
   return data
-}
+})
