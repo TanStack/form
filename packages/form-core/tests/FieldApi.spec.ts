@@ -2503,6 +2503,7 @@ describe('field api', () => {
 
   describe('delayed field mounting', () => {
     it('should display validation errors on fields mounted after form validation', async () => {
+      vi.useFakeTimers()
       const form = new FormApi({
         defaultValues: {
           existingField: '',
@@ -2530,7 +2531,7 @@ describe('field api', () => {
       })
       existingField.mount()
 
-      await new Promise((resolve) => setTimeout(resolve, 100))
+      await sleep(100)
 
       expect(form.state.fieldMeta.delayedField).toBeDefined()
       expect(form.state.fieldMeta.delayedField.errorMap.onMount).toBe(
@@ -2546,9 +2547,11 @@ describe('field api', () => {
       expect(delayedField.state.meta.errors).toContain(
         'Delayed field is required',
       )
+      vi.useRealTimers()
     })
 
     it('should handle multiple delayed fields with different error types', async () => {
+      vi.useFakeTimers()
       const form = new FormApi({
         defaultValues: {
           field1: '',
@@ -2570,7 +2573,7 @@ describe('field api', () => {
 
       form.mount()
 
-      await new Promise((resolve) => setTimeout(resolve, 50))
+      await sleep(50)
 
       // All fields should have fieldMeta with errors
       expect(form.state.fieldMeta.field1).toBeDefined()
@@ -2580,12 +2583,12 @@ describe('field api', () => {
       const field1 = new FieldApi({ form, name: 'field1' })
       field1.mount()
 
-      await new Promise((resolve) => setTimeout(resolve, 25))
+      await sleep(25)
 
       const field2 = new FieldApi({ form, name: 'field2' })
       field2.mount()
 
-      await new Promise((resolve) => setTimeout(resolve, 25))
+      await sleep(25)
 
       const field3 = new FieldApi({ form, name: 'field3' })
       field3.mount()
@@ -2593,6 +2596,7 @@ describe('field api', () => {
       expect(field1.state.meta.errors).toContain('Field 1 error')
       expect(field2.state.meta.errors).toContain('Field 2 error')
       expect(field3.state.meta.errors).toContain('Field 3 error')
+      vi.useRealTimers()
     })
   })
 
@@ -2779,6 +2783,7 @@ describe('field api', () => {
     })
 
     it('should maintain validation state consistency during field lifecycle', async () => {
+      vi.useFakeTimers()
       const form = new FormApi({
         defaultValues: {
           showField: false,
@@ -2805,7 +2810,7 @@ describe('field api', () => {
 
       showFieldApi.setValue(true)
 
-      await new Promise((resolve) => setTimeout(resolve, 50))
+      await sleep(50)
 
       expect(form.state.fieldMeta.conditionalField).toBeDefined()
       expect(form.state.fieldMeta.conditionalField.errorMap.onChange).toBe(
@@ -2821,12 +2826,13 @@ describe('field api', () => {
 
       showFieldApi.setValue(false)
 
-      await new Promise((resolve) => setTimeout(resolve, 50))
+      await sleep(50)
 
       form.deleteField('conditionalField')
 
       expect(form.fieldInfo.conditionalField).toBeUndefined()
       expect(form.state.fieldMeta.conditionalField).toBeUndefined()
+      vi.useRealTimers()
     })
   })
 
