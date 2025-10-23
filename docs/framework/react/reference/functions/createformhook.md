@@ -11,7 +11,7 @@ title: createFormHook
 function createFormHook<TComponents, TFormComponents>(__namedParameters): object
 ```
 
-Defined in: [packages/react-form/src/createFormHook.tsx:284](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L284)
+Defined in: [packages/react-form/src/createFormHook.tsx:289](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L289)
 
 ## Type Parameters
 
@@ -74,7 +74,7 @@ useAppForm: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsy
 ### withFieldGroup()
 
 ```ts
-withFieldGroup: <TFieldGroupData, TSubmitMeta, TRenderProps>(__namedParameters) => <TFormData, TFields, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TFormSubmitMeta>(params) => Element;
+withFieldGroup: <TFieldGroupData, TSubmitMeta, TRenderProps>(__namedParameters) => <TFormData, TFields, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TFormSubmitMeta>(params) => ReactNode;
 ```
 
 #### Type Parameters
@@ -133,12 +133,12 @@ withFieldGroup: <TFieldGroupData, TSubmitMeta, TRenderProps>(__namedParameters) 
 
 ##### Returns
 
-`Element`
+`ReactNode`
 
 ### withForm()
 
 ```ts
-withForm: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta, TRenderProps>(__namedParameters) => (props) => Element;
+withForm: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta, TRenderProps>(__namedParameters) => (props) => ReactNode;
 ```
 
 #### Type Parameters
@@ -187,4 +187,4 @@ withForm: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync
 
 ##### Returns
 
-`Element`
+`ReactNode`
