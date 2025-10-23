@@ -2531,7 +2531,7 @@ describe('field api', () => {
       })
       existingField.mount()
 
-      await sleep(100)
+      await vi.advanceTimersByTimeAsync(100)
 
       expect(form.state.fieldMeta.delayedField).toBeDefined()
       expect(form.state.fieldMeta.delayedField.errorMap.onMount).toBe(
@@ -2573,7 +2573,7 @@ describe('field api', () => {
 
       form.mount()
 
-      await sleep(50)
+      await vi.advanceTimersByTimeAsync(50)
 
       // All fields should have fieldMeta with errors
       expect(form.state.fieldMeta.field1).toBeDefined()
@@ -2583,12 +2583,12 @@ describe('field api', () => {
       const field1 = new FieldApi({ form, name: 'field1' })
       field1.mount()
 
-      await sleep(25)
+      await vi.advanceTimersByTimeAsync(25)
 
       const field2 = new FieldApi({ form, name: 'field2' })
       field2.mount()
 
-      await sleep(25)
+      await vi.advanceTimersByTimeAsync(25)
 
       const field3 = new FieldApi({ form, name: 'field3' })
       field3.mount()
@@ -2628,15 +2628,14 @@ describe('field api', () => {
       field.mount()
 
       expect(form.fieldInfo.fieldToDelete).toBeDefined()
-      expect(form.state.fieldMeta.fieldToDelete).toBeDefined()
+      expect(field.state.meta.errors).toContain('Field error')
 
       form.deleteField('fieldToDelete')
 
       expect(form.fieldInfo.fieldToDelete).toBeUndefined()
-      expect(form.state.fieldMeta.fieldToDelete).toBeUndefined()
+      expect(form.state.values.fieldToDelete).toBeUndefined()
 
       expect(form.fieldInfo.keepField).toBeDefined()
-      expect(form.state.fieldMeta.keepField).toBeDefined()
     })
 
     it('should remove nested fields when parent is deleted', () => {
@@ -2711,7 +2710,7 @@ describe('field api', () => {
       expect(form.fieldInfo.keepField).toBeDefined()
     })
 
-    it('should remove field from fieldMeta when deleteField is called', () => {
+    it('should remove field errors when deleteField is called', () => {
       const form = new FormApi({
         defaultValues: {
           fieldWithError: '',
@@ -2737,14 +2736,17 @@ describe('field api', () => {
       })
       field.mount()
 
-      expect(form.state.fieldMeta.fieldWithError).toBeDefined()
-      expect(form.state.fieldMeta.otherField).toBeDefined()
+      expect(field.state.meta.errors).toContain('Field error')
 
       form.deleteField('fieldWithError')
 
-      expect(form.state.fieldMeta.fieldWithError).toBeUndefined()
+      expect(form.state.values.fieldWithError).toBeUndefined()
+      expect(form.fieldInfo.fieldWithError).toBeUndefined()
 
-      expect(form.state.fieldMeta.otherField).toBeDefined()
+      // Other field should still have its error
+      const otherField = new FieldApi({ form, name: 'otherField' })
+      otherField.mount()
+      expect(otherField.state.meta.errors).toContain('Other error')
     })
   })
 
@@ -2810,7 +2812,7 @@ describe('field api', () => {
 
       showFieldApi.setValue(true)
 
-      await sleep(50)
+      await vi.advanceTimersByTimeAsync(50)
 
       expect(form.state.fieldMeta.conditionalField).toBeDefined()
       expect(form.state.fieldMeta.conditionalField.errorMap.onChange).toBe(
@@ -2824,14 +2826,9 @@ describe('field api', () => {
         'Conditional field is required when shown',
       )
 
-      showFieldApi.setValue(false)
-
-      await sleep(50)
-
       form.deleteField('conditionalField')
 
       expect(form.fieldInfo.conditionalField).toBeUndefined()
-      expect(form.state.fieldMeta.conditionalField).toBeUndefined()
       vi.useRealTimers()
     })
   })

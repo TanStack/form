@@ -1538,18 +1538,12 @@ export class FormApi<
         ] as DeepKeys<TFormData>[])
 
         for (const field of allFieldsToProcess) {
-          // Create fieldMeta for fields with errors if they don't exist yet
-          if (fieldErrors?.[field] && !this.state.fieldMeta[field]) {
-            this.setFieldMeta(field, () => defaultFieldMeta)
-          }
-
           const fieldMeta = this.getFieldMeta(field)
-          if (!fieldMeta) continue
-
+          
           const {
             errorMap: currentErrorMap,
             errorSourceMap: currentErrorMapSource,
-          } = fieldMeta
+          } = fieldMeta || { errorMap: {}, errorSourceMap: {} }
 
           const newFormValidatorError = fieldErrors?.[field]
 
@@ -1575,13 +1569,13 @@ export class FormApi<
             currentErrorMap?.[errorMapKey] !== newErrorValue
           ) {
             this.setFieldMeta(field, (prev) => ({
-              ...prev,
+              ...(prev || defaultFieldMeta),
               errorMap: {
-                ...prev.errorMap,
+                ...(prev?.errorMap || {}),
                 [errorMapKey]: newErrorValue,
               },
               errorSourceMap: {
-                ...prev.errorSourceMap,
+                ...(prev?.errorSourceMap || {}),
                 [errorMapKey]: newSource,
               },
             }))
