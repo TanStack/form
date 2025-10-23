@@ -2534,7 +2534,7 @@ describe('field api', () => {
       await vi.advanceTimersByTimeAsync(100)
 
       expect(form.state.fieldMeta.delayedField).toBeDefined()
-      expect(form.state.fieldMeta.delayedField.errorMap.onMount).toBe(
+      expect(form.state.fieldMeta.delayedField?.errorMap.onMount).toBe(
         'Delayed field is required',
       )
 
@@ -2815,7 +2815,7 @@ describe('field api', () => {
       await vi.advanceTimersByTimeAsync(50)
 
       expect(form.state.fieldMeta.conditionalField).toBeDefined()
-      expect(form.state.fieldMeta.conditionalField.errorMap.onChange).toBe(
+      expect(form.state.fieldMeta.conditionalField?.errorMap.onChange).toBe(
         'Conditional field is required when shown',
       )
 
