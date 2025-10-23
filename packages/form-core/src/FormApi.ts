@@ -623,7 +623,7 @@ export type BaseFormState<
   /**
    * A record of field metadata for each field in the form, not including the derived properties, like `errors` and such
    */
-  fieldMetaBase: Record<DeepKeys<TFormData>, AnyFieldMetaBase>
+  fieldMetaBase: Partial<Record<DeepKeys<TFormData>, AnyFieldMetaBase>>
   /**
    * A boolean indicating if the form is currently in the process of being submitted after `handleSubmit` is called.
    *
@@ -738,7 +738,7 @@ export type DerivedFormState<
   /**
    * A record of field metadata for each field in the form.
    */
-  fieldMeta: Record<DeepKeys<TFormData>, AnyFieldMeta | undefined>
+  fieldMeta: Partial<Record<DeepKeys<TFormData>, AnyFieldMeta>>
 }
 
 export interface FormState<
@@ -929,10 +929,22 @@ export class FormApi<
       TOnServer
     >
   >
-  fieldMetaDerived!: Derived<
-    Record<DeepKeys<TFormData>, AnyFieldMeta | undefined>
+  fieldMetaDerived: Derived<
+    FormState<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer
+    >['fieldMeta']
   >
-  store!: Derived<
+  store: Derived<
     FormState<
       TFormData,
       TOnMount,
@@ -1026,7 +1038,7 @@ export class FormApi<
 
         let originalMetaCount = 0
 
-        const fieldMeta = {} as FormState<
+        const fieldMeta: FormState<
           TFormData,
           TOnMount,
           TOnChange,
@@ -1038,7 +1050,7 @@ export class FormApi<
           TOnDynamic,
           TOnDynamicAsync,
           TOnServer
-        >['fieldMeta']
+        >['fieldMeta'] = {}
 
         for (const fieldName of Object.keys(
           currBaseStore.fieldMetaBase,
@@ -1644,7 +1656,6 @@ export class FormApi<
         for (const field of Object.keys(
           this.state.fieldMeta,
         ) as DeepKeys<TFormData>[]) {
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           if (this.baseStore.state.fieldMetaBase[field] === undefined) {
             continue
           }
@@ -1852,7 +1863,6 @@ export class FormApi<
           for (const field of Object.keys(
             this.state.fieldMeta,
           ) as DeepKeys<TFormData>[]) {
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (this.baseStore.state.fieldMetaBase[field] === undefined) {
               continue
             }
@@ -2207,15 +2217,15 @@ export class FormApi<
    * resets every field's meta
    */
   resetFieldMeta = <TField extends DeepKeys<TFormData>>(
-    fieldMeta: Record<TField, AnyFieldMeta | undefined>,
-  ): Record<TField, AnyFieldMeta | undefined> => {
+    fieldMeta: Partial<Record<TField, AnyFieldMeta>>,
+  ): Partial<Record<TField, AnyFieldMeta>> => {
     return Object.keys(fieldMeta).reduce(
-      (acc: Record<TField, AnyFieldMeta | undefined>, key) => {
+      (acc, key) => {
         const fieldKey = key as TField
         acc[fieldKey] = defaultFieldMeta
         return acc
       },
-      {} as Record<TField, AnyFieldMeta | undefined>,
+      {} as Partial<Record<TField, AnyFieldMeta>>,
     )
   }
 
