@@ -1669,12 +1669,15 @@ export class FormApi<
         ] as DeepKeys<TFormData>[])
 
         for (const field of allFieldsToProcess) {
-          if (this.baseStore.state.fieldMetaBase[field] === undefined && !fieldErrors?.[field]) {
+          if (
+            this.baseStore.state.fieldMetaBase[field] === undefined &&
+            !fieldErrors?.[field]
+          ) {
             continue
           }
 
           const fieldMeta = this.getFieldMeta(field)
-          
+
           const {
             errorMap: currentErrorMap,
             errorSourceMap: currentErrorMapSource,
