@@ -83,7 +83,7 @@ withFieldGroup: <TFieldGroupData, TSubmitMeta, TRenderProps>(__namedParameters) 
 
 • **TSubmitMeta**
 
-• **TRenderProps** *extends* `Record`\<`string`, `unknown`\> = \{\}
+• **TRenderProps** *extends* `object` = \{\}
 
 #### Parameters
 

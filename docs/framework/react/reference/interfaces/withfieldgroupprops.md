@@ -23,7 +23,7 @@ Defined in: [packages/react-form/src/createFormHook.tsx:247](https://github.com/
 
 • **TSubmitMeta**
 
-• **TRenderProps** *extends* `Record`\<`string`, `unknown`\> = `Record`\<`string`, `never`\>
+• **TRenderProps** *extends* `object` = `Record`\<`string`, `never`\>
 
 ## Properties
 
