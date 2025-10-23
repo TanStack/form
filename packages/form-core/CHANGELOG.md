@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.24.4
+
+### Patch Changes
+
+- Optimise Optimises event client emissions. Minor layout tweeks ([#1758](https://github.com/TanStack/form/pull/1758))
+
 ## 1.24.3
 
 ### Patch Changes
