@@ -30,4 +30,4 @@ type BroadcastFormSubmissionState =
 };
 ```
 
-Defined in: [packages/form-core/src/EventClient.ts:15](https://github.com/TanStack/form/blob/main/packages/form-core/src/EventClient.ts#L15)
+Defined in: [packages/form-core/src/EventClient.ts:20](https://github.com/TanStack/form/blob/main/packages/form-core/src/EventClient.ts#L20)
