@@ -632,11 +632,6 @@ export type BaseFormState<
    * @private, used to force a re-evaluation of the form state when options change
    */
   _force_re_eval?: boolean
-  /**
-   * @private, stores field errors for all fields (including unmounted ones)
-   * This allows delayed-mounted fields to sync with existing validation errors
-   */
-  _allFieldErrors?: Partial<Record<DeepKeys<TFormData>, ValidationErrorMap>>
 }
 
 export type DerivedFormState<
@@ -1537,33 +1532,15 @@ export class FormApi<
 
         const errorMapKey = getErrorMapKey(validateObj.cause)
 
-        if (fieldErrors) {
-          const allFieldErrors: Partial<
-            Record<DeepKeys<TFormData>, ValidationErrorMap>
-          > = this.state._allFieldErrors || {}
-          for (const [fieldName, fieldError] of Object.entries(fieldErrors)) {
-            if (fieldError) {
-              const typedFieldName = fieldName as DeepKeys<TFormData>
-              allFieldErrors[typedFieldName] = {
-                ...allFieldErrors[typedFieldName],
-                [errorMapKey]: fieldError,
-              }
-            }
-          }
-          this.baseStore.setState((prev) => ({
-            ...prev,
-            _allFieldErrors: allFieldErrors,
-          }))
-        }
-
         const allFieldsToProcess = new Set([
           ...Object.keys(this.state.fieldMeta),
           ...Object.keys(fieldErrors || {}),
         ] as DeepKeys<TFormData>[])
 
         for (const field of allFieldsToProcess) {
-          if (fieldErrors?.[field] && !this.fieldInfo[field]) {
-            this.getFieldInfo(field)
+          // Create fieldMeta for fields with errors if they don't exist yet
+          if (fieldErrors?.[field] && !this.state.fieldMeta[field]) {
+            this.setFieldMeta(field, () => defaultFieldMeta)
           }
 
           const fieldMeta = this.getFieldMeta(field)
@@ -2126,12 +2103,6 @@ export class FormApi<
         newState.values = deleteBy(newState.values, f)
         delete this.fieldInfo[f as never]
         delete newState.fieldMetaBase[f as never]
-
-        if (newState._allFieldErrors?.[f as never]) {
-          const newAllFieldErrors = { ...newState._allFieldErrors }
-          delete newAllFieldErrors[f as never]
-          newState._allFieldErrors = newAllFieldErrors
-        }
       })
 
       return newState
