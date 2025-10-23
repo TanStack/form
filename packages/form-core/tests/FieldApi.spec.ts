@@ -2500,4 +2500,18 @@ describe('field api', () => {
 
     expect(field.state.meta.errors).toStrictEqual(['Blur error'])
   })
+
+  it('should allow setting to explicitly undefined', () => {
+    const form = new FormApi({
+      defaultValues: { a: '' as string | undefined },
+    })
+    form.mount()
+
+    const field = new FieldApi({ form, name: 'a' })
+    field.mount()
+
+    expect(field.state.value).toBe('')
+    field.handleChange(undefined)
+    expect(field.state.value).toBeUndefined()
+  })
 })
