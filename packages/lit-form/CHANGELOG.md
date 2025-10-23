@@ -1,5 +1,14 @@
 # @tanstack/lit-form
 
+## 1.23.8
+
+### Patch Changes
+
+- form-core: Optimise event client emissions and minor layout tweaks ([#1758](https://github.com/TanStack/form/pull/1758))
+
+- Updated dependencies [[`94631cb`](https://github.com/TanStack/form/commit/94631cb97dea611de69a900c89b7e8dfe0eeee37)]:
+  - @tanstack/form-core@1.24.4
+
 ## 1.23.7
 
 ### Patch Changes
