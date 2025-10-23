@@ -431,6 +431,10 @@ export function evaluate<T>(objA: T, objB: T) {
     return false
   }
 
+  if (objA instanceof Date && objB instanceof Date) {
+    return objA.getTime() === objB.getTime()
+  }
+
   if (objA instanceof Map && objB instanceof Map) {
     if (objA.size !== objB.size) return false
     for (const [k, v] of objA) {
@@ -538,4 +542,61 @@ export function createFieldMap<T>(values: Readonly<T>): { [K in keyof T]: K } {
   }
 
   return output
+}
+
+/**
+ * Merge the first parameter with the given overrides.
+ * @private
+ */
+export function mergeOpts<T>(
+  originalOpts: T | undefined | null,
+  overrides: T,
+): T {
+  if (originalOpts === undefined || originalOpts === null) {
+    return overrides
+  }
+
+  return { ...originalOpts, ...overrides }
+}
+
+/*
+/ credit is due to https://github.com/lukeed/uuid for this code, with current npm
+/ attacks we didn't feel comfortable installing directly from npm. But big appreciation
+/ from the TanStack Form team <3.
+*/
+
+let IDX = 256
+const HEX: string[] = []
+let BUFFER: number[] | undefined
+
+while (IDX--) {
+  HEX[IDX] = (IDX + 256).toString(16).substring(1)
+}
+
+export function uuid(): string {
+  let i = 0
+  let num: number
+  let out = ''
+
+  if (!BUFFER || IDX + 16 > 256) {
+    BUFFER = new Array<number>(256)
+    i = 256
+    while (i--) {
+      BUFFER[i] = (256 * Math.random()) | 0
+    }
+    i = 0
+    IDX = 0
+  }
+
+  for (; i < 16; i++) {
+    num = BUFFER[IDX + i] as number
+    if (i === 6) out += HEX[(num & 15) | 64]
+    else if (i === 8) out += HEX[(num & 63) | 128]
+    else out += HEX[num]
+
+    if (i & 1 && i > 1 && i < 11) out += '-'
+  }
+
+  IDX++
+  return out
 }

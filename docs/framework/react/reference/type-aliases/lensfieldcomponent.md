@@ -14,7 +14,7 @@ type LensFieldComponent<TLensData, TParentSubmitMeta, ExtendedApi> = <TName, TDa
 }) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/useField.tsx:492](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L492)
+Defined in: [packages/react-form/src/useField.tsx:493](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L493)
 
 A type alias representing a field component for a form lens data type.
 
@@ -57,7 +57,7 @@ A type alias representing a field component for a form lens data type.
   ...fieldOptions
 \}
 
-`FieldComponentBoundProps`\<`unknown`, `string`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `undefined` \| `FormValidateOrFn`\<`unknown`\>, `undefined` \| `FormValidateOrFn`\<`unknown`\>, `undefined` \| `FormAsyncValidateOrFn`\<`unknown`\>, `undefined` \| `FormValidateOrFn`\<`unknown`\>, `undefined` \| `FormAsyncValidateOrFn`\<`unknown`\>, `undefined` \| `FormValidateOrFn`\<`unknown`\>, `undefined` \| `FormAsyncValidateOrFn`\<`unknown`\>, `undefined` \| `FormValidateOrFn`\<`unknown`\>, `undefined` \| `FormAsyncValidateOrFn`\<`unknown`\>, `undefined` \| `FormAsyncValidateOrFn`\<`unknown`\>, `TParentSubmitMeta`, `ExtendedApi`\> & `object`
+`Omit`\<`FieldComponentBoundProps`\<`unknown`, `string`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `undefined` \| `FormValidateOrFn`\<`unknown`\>, `undefined` \| `FormValidateOrFn`\<`unknown`\>, `undefined` \| `FormAsyncValidateOrFn`\<`unknown`\>, `undefined` \| `FormValidateOrFn`\<`unknown`\>, `undefined` \| `FormAsyncValidateOrFn`\<`unknown`\>, `undefined` \| `FormValidateOrFn`\<`unknown`\>, `undefined` \| `FormAsyncValidateOrFn`\<`unknown`\>, `undefined` \| `FormValidateOrFn`\<`unknown`\>, `undefined` \| `FormAsyncValidateOrFn`\<`unknown`\>, `undefined` \| `FormAsyncValidateOrFn`\<`unknown`\>, `TParentSubmitMeta`, `ExtendedApi`\>, `"name"` \| `"validators"`\> & `object`
 
 ## Returns
 

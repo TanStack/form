@@ -53,7 +53,7 @@ Defined in: [packages/form-core/src/FieldGroupApi.ts:112](https://github.com/Tan
 new FieldGroupApi<TFormData, TFieldGroupData, TFields, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta>(opts): FieldGroupApi<TFormData, TFieldGroupData, TFields, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta>
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:187](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L187)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:238](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L238)
 
 Constructs a new `FieldGroupApi` instance with the given form options.
 
@@ -97,7 +97,7 @@ The form that called this field group.
 store: Derived<FieldGroupState<TFieldGroupData>>;
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:178](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L178)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:229](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L229)
 
 ## Accessors
 
@@ -109,7 +109,7 @@ Defined in: [packages/form-core/src/FieldGroupApi.ts:178](https://github.com/Tan
 get state(): FieldGroupState<TFieldGroupData>
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:180](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L180)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:231](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L231)
 
 ##### Returns
 
@@ -123,7 +123,7 @@ Defined in: [packages/form-core/src/FieldGroupApi.ts:180](https://github.com/Tan
 clearFieldValues<TField>(field, opts?): void
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:459](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L459)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:510](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L510)
 
 #### Type Parameters
 
@@ -157,7 +157,7 @@ FieldManipulator.clearFieldValues
 deleteField<TField>(field): void
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:346](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L346)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:397](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L397)
 
 Delete a field and its subfields.
 
@@ -189,7 +189,7 @@ FieldManipulator.deleteField
 getFieldMeta<TField>(field): undefined | AnyFieldMeta
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:314](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L314)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:365](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L365)
 
 Gets the metadata of the specified field.
 
@@ -221,7 +221,7 @@ FieldManipulator.getFieldMeta
 getFieldValue<TField>(field): DeepValue<TFieldGroupData, TField>
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:302](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L302)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:353](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L353)
 
 Gets the value of the specified field.
 
@@ -255,7 +255,7 @@ FieldManipulator.getFieldValue
 handleSubmit(): Promise<void>
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:292](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L292)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:343](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L343)
 
 Handles the form submission, performs validation, and calls the appropriate onSubmit or onSubmitInvalid callbacks.
 
@@ -275,7 +275,7 @@ FieldManipulator.handleSubmit
 handleSubmit(submitMeta): Promise<void>
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:293](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L293)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:344](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L344)
 
 Handles the form submission, performs validation, and calls the appropriate onSubmit or onSubmitInvalid callbacks.
 
@@ -307,7 +307,7 @@ insertFieldValue<TField>(
 opts?): Promise<void>
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:371](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L371)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:422](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L422)
 
 Insert a value into an array field at the specified index.
 
@@ -351,7 +351,7 @@ FieldManipulator.insertFieldValue
 mount(): () => void
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:256](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L256)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:307](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L307)
 
 Mounts the field group instance to listen to value changes.
 
@@ -375,7 +375,7 @@ moveFieldValues<TField>(
    opts?): void
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:445](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L445)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:496](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L496)
 
 Moves the value at the first specified index to the second specified index within an array field.
 
@@ -422,7 +422,7 @@ pushFieldValue<TField>(
    opts?): void
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:353](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L353)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:404](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L404)
 
 Pushes a value into an array field.
 
@@ -465,7 +465,7 @@ removeFieldValue<TField>(
 opts?): Promise<void>
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:415](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L415)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:466](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L466)
 
 Removes a value from an array field at the specified index.
 
@@ -509,7 +509,7 @@ replaceFieldValue<TField>(
 opts?): Promise<void>
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:393](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L393)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:444](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L444)
 
 Replaces a value into an array field at the specified index.
 
@@ -553,7 +553,7 @@ FieldManipulator.replaceFieldValue
 resetField<TField>(field): void
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:469](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L469)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:520](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L520)
 
 Resets the field value and meta to default state
 
@@ -585,7 +585,7 @@ FieldManipulator.resetField
 setFieldMeta<TField>(field, updater): void
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:321](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L321)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:372](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L372)
 
 Updates the metadata of the specified field.
 
@@ -624,7 +624,7 @@ setFieldValue<TField>(
    opts?): void
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:331](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L331)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:382](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L382)
 
 Sets the value of the specified field and optionally updates the touched state.
 
@@ -668,7 +668,7 @@ swapFieldValues<TField>(
    opts?): void
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:428](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L428)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:479](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L479)
 
 Swaps the values at the specified indices within an array field.
 
@@ -712,7 +712,7 @@ FieldManipulator.swapFieldValues
 validateAllFields(cause): Promise<unknown[]>
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:473](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L473)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:524](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L524)
 
 #### Parameters
 
@@ -741,7 +741,7 @@ validateArrayFieldsStartingFrom<TField>(
 cause): Promise<unknown[]>
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:265](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L265)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:316](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L316)
 
 Validates the children of a specified array in the form starting from a given index until the end using the correct handlers for a given validation type.
 
@@ -781,7 +781,7 @@ FieldManipulator.validateArrayFieldsStartingFrom
 validateField<TField>(field, cause): unknown[] | Promise<unknown[]>
 ```
 
-Defined in: [packages/form-core/src/FieldGroupApi.ts:282](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L282)
+Defined in: [packages/form-core/src/FieldGroupApi.ts:333](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L333)
 
 Validates a specified field in the form using the correct handlers for a given validation type.
 

@@ -11,7 +11,7 @@ title: StandardSchemaV1
 type StandardSchemaV1<Input, Output> = object;
 ```
 
-Defined in: [packages/form-core/src/standardSchemaValidator.ts:98](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchemaValidator.ts#L98)
+Defined in: [packages/form-core/src/standardSchemaValidator.ts:118](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchemaValidator.ts#L118)
 
 The Standard Schema interface.
 

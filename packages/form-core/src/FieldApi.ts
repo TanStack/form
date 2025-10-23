@@ -9,6 +9,7 @@ import {
   getAsyncValidatorArray,
   getBy,
   getSyncValidatorArray,
+  mergeOpts,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
 import type { DeepKeys, DeepValue, UnwrapOneLevelOfArray } from './util-types'
@@ -1351,11 +1352,19 @@ export class FieldApi<
    * Sets the field value and run the `change` validator.
    */
   setValue = (updater: Updater<TData>, options?: UpdateMetaOptions) => {
-    this.form.setFieldValue(this.name, updater as never, options)
+    this.form.setFieldValue(
+      this.name,
+      updater as never,
+      mergeOpts(options, { dontRunListeners: true, dontValidate: true }),
+    )
 
-    this.triggerOnChangeListener()
+    if (!options?.dontRunListeners) {
+      this.triggerOnChangeListener()
+    }
 
-    this.validate('change')
+    if (!options?.dontValidate) {
+      this.validate('change')
+    }
   }
 
   getMeta = () => this.store.state.meta
@@ -1401,11 +1410,17 @@ export class FieldApi<
    */
   pushValue = (
     value: TData extends any[] ? TData[number] : never,
-    opts?: UpdateMetaOptions,
+    options?: UpdateMetaOptions,
   ) => {
-    this.form.pushFieldValue(this.name, value as any, opts)
+    this.form.pushFieldValue(
+      this.name,
+      value as any,
+      mergeOpts(options, { dontRunListeners: true }),
+    )
 
-    this.triggerOnChangeListener()
+    if (!options?.dontRunListeners) {
+      this.triggerOnChangeListener()
+    }
   }
 
   /**
@@ -1414,11 +1429,18 @@ export class FieldApi<
   insertValue = (
     index: number,
     value: TData extends any[] ? TData[number] : never,
-    opts?: UpdateMetaOptions,
+    options?: UpdateMetaOptions,
   ) => {
-    this.form.insertFieldValue(this.name, index, value as any, opts)
+    this.form.insertFieldValue(
+      this.name,
+      index,
+      value as any,
+      mergeOpts(options, { dontRunListeners: true }),
+    )
 
-    this.triggerOnChangeListener()
+    if (!options?.dontRunListeners) {
+      this.triggerOnChangeListener()
+    }
   }
 
   /**
@@ -1427,47 +1449,83 @@ export class FieldApi<
   replaceValue = (
     index: number,
     value: TData extends any[] ? TData[number] : never,
-    opts?: UpdateMetaOptions,
+    options?: UpdateMetaOptions,
   ) => {
-    this.form.replaceFieldValue(this.name, index, value as any, opts)
+    this.form.replaceFieldValue(
+      this.name,
+      index,
+      value as any,
+      mergeOpts(options, { dontRunListeners: true }),
+    )
 
-    this.triggerOnChangeListener()
+    if (!options?.dontRunListeners) {
+      this.triggerOnChangeListener()
+    }
   }
 
   /**
    * Removes a value at the specified index.
    */
-  removeValue = (index: number, opts?: UpdateMetaOptions) => {
-    this.form.removeFieldValue(this.name, index, opts)
+  removeValue = (index: number, options?: UpdateMetaOptions) => {
+    this.form.removeFieldValue(
+      this.name,
+      index,
+      mergeOpts(options, { dontRunListeners: true }),
+    )
 
-    this.triggerOnChangeListener()
+    if (!options?.dontRunListeners) {
+      this.triggerOnChangeListener()
+    }
   }
 
   /**
    * Swaps the values at the specified indices.
    */
-  swapValues = (aIndex: number, bIndex: number, opts?: UpdateMetaOptions) => {
-    this.form.swapFieldValues(this.name, aIndex, bIndex, opts)
+  swapValues = (
+    aIndex: number,
+    bIndex: number,
+    options?: UpdateMetaOptions,
+  ) => {
+    this.form.swapFieldValues(
+      this.name,
+      aIndex,
+      bIndex,
+      mergeOpts(options, { dontRunListeners: true }),
+    )
 
-    this.triggerOnChangeListener()
+    if (!options?.dontRunListeners) {
+      this.triggerOnChangeListener()
+    }
   }
 
   /**
    * Moves the value at the first specified index to the second specified index.
    */
-  moveValue = (aIndex: number, bIndex: number, opts?: UpdateMetaOptions) => {
-    this.form.moveFieldValues(this.name, aIndex, bIndex, opts)
+  moveValue = (aIndex: number, bIndex: number, options?: UpdateMetaOptions) => {
+    this.form.moveFieldValues(
+      this.name,
+      aIndex,
+      bIndex,
+      mergeOpts(options, { dontRunListeners: true }),
+    )
 
-    this.triggerOnChangeListener()
+    if (!options?.dontRunListeners) {
+      this.triggerOnChangeListener()
+    }
   }
 
   /**
    * Clear all values from the array.
    */
-  clearValues = (opts?: UpdateMetaOptions) => {
-    this.form.clearFieldValues(this.name, opts)
+  clearValues = (options?: UpdateMetaOptions) => {
+    this.form.clearFieldValues(
+      this.name,
+      mergeOpts(options, { dontRunListeners: true }),
+    )
 
-    this.triggerOnChangeListener()
+    if (!options?.dontRunListeners) {
+      this.triggerOnChangeListener()
+    }
   }
 
   /**
@@ -1937,7 +1995,10 @@ export class FieldApi<
     }
   }
 
-  private triggerOnChangeListener() {
+  /**
+   * @private
+   */
+  triggerOnChangeListener() {
     const formDebounceMs = this.form.options.listeners?.onChangeDebounceMs
     if (formDebounceMs && formDebounceMs > 0) {
       if (this.timeoutIds.formListeners.change) {
