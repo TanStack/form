@@ -81,9 +81,7 @@ export function mergeForm<TForm extends AnyFormApi>(
   mutateMergeDeep(baseForm.state, rest)
 
   if (errorMap !== undefined) {
-    baseForm.setErrorMap(
-      errorMap as Parameters<TForm['setErrorMap']>[0],
-    )
+    baseForm.setErrorMap(errorMap as Parameters<TForm['setErrorMap']>[0])
   }
 
   return baseForm
