@@ -1,11 +1,13 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "./dist",
+    "baseUrl": ".",
+
     "jsx": "react-jsx",
-    "moduleResolution": "Bundler",
-    "paths": {
-      "@tanstack/form-core": ["../form-core/src"]
-    }
+    "moduleResolution": "Bundler"
   },
-  "include": ["src", "tests", "eslint.config.js", "vite.config.ts"]
+  "include": ["src", "tests", "*.config.*", "package.json"],
+  "references": [{ "path": "../form-core" }]
 }
