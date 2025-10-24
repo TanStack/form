@@ -1677,8 +1677,10 @@ export class FormApi<
           }
 
           const fieldMeta = this.getFieldMeta(field) ?? defaultFieldMeta
-          const { errorMap: currentErrorMap, errorSourceMap: currentErrorMapSource } =
-            fieldMeta
+          const {
+            errorMap: currentErrorMap,
+            errorSourceMap: currentErrorMapSource,
+          } = fieldMeta
 
           const newFormValidatorError = fieldErrors?.[field]
 
