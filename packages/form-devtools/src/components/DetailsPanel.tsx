@@ -1,4 +1,4 @@
-import { For, Show, createEffect, createMemo } from 'solid-js'
+import { For, Show, createMemo } from 'solid-js'
 import { JsonTree } from '@tanstack/devtools-ui'
 import { useStyles } from '../styles/use-styles'
 import { useFormEventClient } from '../contexts/eventClientContext'

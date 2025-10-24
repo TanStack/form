@@ -1,8 +1,7 @@
 import { FormEventClientProvider } from '../contexts/eventClientContext'
-
 import { Shell } from './Shell'
 
-export function Devtools() {
+export default function Devtools() {
   return (
     <FormEventClientProvider>
       <Shell />
