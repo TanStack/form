@@ -1,8 +1,13 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
-import { FieldApi, FormApi, formEventClient } from '../src/index'
+import { FieldApi, FormApi, formEventClient, mergeForm } from '../src/index'
 import { sleep } from './utils'
-import type { AnyFieldApi, AnyFormApi } from '../src/index'
+import type {
+  AnyFieldApi,
+  AnyFormApi,
+  FormValidationErrorMap,
+  GlobalFormValidationError,
+} from '../src/index'
 
 describe('form api', () => {
   it('should get default form state when default values are passed', () => {
@@ -53,6 +58,44 @@ describe('form api', () => {
       },
       submissionAttempts: 300,
     })
+  })
+
+  it('should apply server validation errors to field meta when merging state', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    field.mount()
+
+    const serverError: GlobalFormValidationError<{ name: string }> = {
+      form: 'Form invalid',
+      fields: {
+        name: 'Name invalid',
+      },
+    }
+
+    const serverErrorMap = {
+      onServer: serverError,
+    } as FormValidationErrorMap
+
+    mergeForm(form as unknown as AnyFormApi, {
+      errorMap: serverErrorMap,
+      errors: ['Form invalid'],
+    })
+
+    expect(form.state.errorMap.onServer).toBe('Form invalid')
+    expect(field.state.meta.errorMap.onServer).toBe('Name invalid')
+    expect(field.state.meta.errorSourceMap.onServer).toBe('form')
+    expect(field.state.meta.errors).toContain('Name invalid')
   })
 
   it('should reset the form state properly', () => {
