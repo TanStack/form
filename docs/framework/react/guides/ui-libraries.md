@@ -156,3 +156,5 @@ The process for integrating shadcn/ui components is similar. Here's an example u
 - The integration approach is the same as with Mantine and Material UI.
 - The primary difference lies in the specific shadcn/ui component properties and styling options.
 - Note the onCheckedChange property of Checkbox instead of onChange.
+
+The ShadCN library includes a dedicated guide covering common scenarios for integrating TanStack Form with its components: https://ui.shadcn.com/docs/forms/tanstack-form
