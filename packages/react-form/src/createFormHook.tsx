@@ -65,6 +65,33 @@ type UnwrapDefaultOrAny<DefaultT, T> = [DefaultT] extends [T]
     : T
   : T
 
+function useFormContext() {
+  const form = useContext(formContext)
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (!form) {
+    throw new Error(
+      '`formContext` only works when within a `formComponent` passed to `createFormHook`',
+    )
+  }
+
+  return form as ReactFormExtendedApi<
+    // If you need access to the form data, you need to use `withForm` instead
+    Record<string, never>,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  >
+}
+
 export function createFormHookContexts() {
   function useFieldContext<TData>() {
     const field = useContext(fieldContext)
@@ -89,33 +116,6 @@ export function createFormHookContexts() {
       any,
       any,
       any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any
-    >
-  }
-
-  function useFormContext() {
-    const form = useContext(formContext)
-
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!form) {
-      throw new Error(
-        '`formContext` only works when within a `formComponent` passed to `createFormHook`',
-      )
-    }
-
-    return form as ReactFormExtendedApi<
-      // If you need access to the form data, you need to use `withForm` instead
-      Record<string, never>,
       any,
       any,
       any,
@@ -540,9 +540,65 @@ export function createFormHook<
     }
   }
 
+  /**
+   * ⚠️ **Use withForm whenever possible.**
+   *
+   * Gets a typed form from the `<form.AppForm />` context.
+   */
+  function useTypedAppFormContext<
+    TFormData,
+    TOnMount extends undefined | FormValidateOrFn<TFormData>,
+    TOnChange extends undefined | FormValidateOrFn<TFormData>,
+    TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+    TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+    TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+    TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TSubmitMeta,
+  >(
+    // @ts-expect-error Unused parameter
+    props: FormOptions<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer,
+      TSubmitMeta
+    >,
+  ): AppFieldExtendedReactFormApi<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TOnServer,
+    TSubmitMeta,
+    TComponents,
+    TFormComponents
+  > {
+    const form = useFormContext()
+
+    return form as never
+  }
+
   return {
     useAppForm,
     withForm,
     withFieldGroup,
+    useTypedAppFormContext,
   }
 }

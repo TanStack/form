@@ -31,16 +31,17 @@ function SubscribeButton({ label }: { label: string }) {
   )
 }
 
-const { useAppForm, withForm, withFieldGroup } = createFormHook({
-  fieldComponents: {
-    TextField,
-  },
-  formComponents: {
-    SubscribeButton,
-  },
-  fieldContext,
-  formContext,
-})
+const { useAppForm, withForm, withFieldGroup, useTypedAppFormContext } =
+  createFormHook({
+    fieldComponents: {
+      TextField,
+    },
+    formComponents: {
+      SubscribeButton,
+    },
+    fieldContext,
+    formContext,
+  })
 
 describe('createFormHook', () => {
   it('should allow to set default value', () => {
@@ -579,5 +580,48 @@ describe('createFormHook', () => {
 
     await user.click(target)
     expect(result).toHaveTextContent('1')
+  })
+
+  it('should allow using typed app form', () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    const formOpts = formOptions({
+      defaultValues: {
+        firstName: 'FirstName',
+        lastName: 'LastName',
+      } as Person,
+    })
+
+    function Child() {
+      const form = useTypedAppFormContext(formOpts)
+
+      return (
+        <form.AppField
+          name="firstName"
+          children={(field) => <field.TextField label="Testing" />}
+        />
+      )
+    }
+
+    function Parent() {
+      const form = useAppForm({
+        defaultValues: {
+          firstName: 'FirstName',
+          lastName: 'LastName',
+        } as Person,
+      })
+
+      return (
+        <form.AppForm>
+          <Child />
+        </form.AppForm>
+      )
+    }
+
+    const { getByLabelText } = render(<Parent />)
+    const input = getByLabelText('Testing')
+    expect(input).toHaveValue('FirstName')
   })
 })
