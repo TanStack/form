@@ -559,7 +559,7 @@ export function createFormHook<
     TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
     TSubmitMeta,
   >(
-    props: FormOptions<
+    _props: FormOptions<
       TFormData,
       TOnMount,
       TOnChange,
