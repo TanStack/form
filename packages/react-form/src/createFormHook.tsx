@@ -555,7 +555,6 @@ export function createFormHook<
     TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
     TSubmitMeta,
   >(
-    // @ts-expect-error Unused parameter
     props: FormOptions<
       TFormData,
       TOnMount,
