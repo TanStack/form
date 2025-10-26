@@ -1,5 +1,5 @@
 ---
-"@tanstack/react-form": patch
+'@tanstack/react-form': patch
 ---
 
 - add `useTypedAppFormContext`
