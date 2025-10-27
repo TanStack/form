@@ -60,7 +60,7 @@ The error map for the form itself.
 ### fieldMetaBase
 
 ```ts
-fieldMetaBase: Record<DeepKeys<TFormData>, AnyFieldMetaBase>;
+fieldMetaBase: Partial<Record<DeepKeys<TFormData>, AnyFieldMetaBase>>;
 ```
 
 A record of field metadata for each field in the form, not including the derived properties, like `errors` and such

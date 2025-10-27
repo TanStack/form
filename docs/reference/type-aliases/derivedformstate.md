@@ -68,7 +68,7 @@ The error array for the form itself.
 ### fieldMeta
 
 ```ts
-fieldMeta: Record<DeepKeys<TFormData>, AnyFieldMeta>;
+fieldMeta: Partial<Record<DeepKeys<TFormData>, AnyFieldMeta>>;
 ```
 
 A record of field metadata for each field in the form.

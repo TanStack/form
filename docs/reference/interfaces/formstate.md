@@ -126,7 +126,7 @@ DerivedFormState.errors
 ### fieldMeta
 
 ```ts
-fieldMeta: Record<DeepKeys<TFormData>, AnyFieldMeta>;
+fieldMeta: Partial<Record<DeepKeys<TFormData>, AnyFieldMeta>>;
 ```
 
 Defined in: [packages/form-core/src/FormApi.ts:736](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L736)
@@ -144,7 +144,7 @@ DerivedFormState.fieldMeta
 ### fieldMetaBase
 
 ```ts
-fieldMetaBase: Record<DeepKeys<TFormData>, AnyFieldMetaBase>;
+fieldMetaBase: Partial<Record<DeepKeys<TFormData>, AnyFieldMetaBase>>;
 ```
 
 Defined in: [packages/form-core/src/FormApi.ts:621](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L621)
