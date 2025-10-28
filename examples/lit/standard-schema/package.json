@@ -1,0 +1,34 @@
+{
+  "name": "@tanstack/form-example-lit-standard-schema",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port=3001",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:types": "tsc"
+  },
+  "dependencies": {
+    "@tanstack/lit-form": "^1.23.7",
+    "arktype": "^2.1.22",
+    "effect": "^3.17.14",
+    "lit": "^3.3.1",
+    "valibot": "^1.1.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "vite": "^7.1.6"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
-import { FieldApi, FormApi } from '../src/index'
+import { FieldApi, FormApi, formEventClient } from '../src/index'
 import { sleep } from './utils'
 import type { AnyFieldApi, AnyFormApi } from '../src/index'
 
@@ -118,6 +118,25 @@ describe('form api', () => {
         surname: 'reset surname',
       },
     })
+  })
+
+  it('form should reset default value when resetting in onSubmit', async () => {
+    const defaultValues = {
+      name: '',
+    }
+    const form = new FormApi({
+      defaultValues: defaultValues,
+      onSubmit: ({ value }) => {
+        form.reset(value)
+
+        expect(form.options.defaultValues).toMatchObject({
+          name: 'test',
+        })
+      },
+    })
+    form.mount()
+    form.setFieldValue('name', 'test')
+    form.handleSubmit()
   })
 
   it('should reset and set the new default values that are restored after an empty reset', () => {
@@ -3102,11 +3121,85 @@ describe('form api', () => {
     await form.handleSubmit({ dinosaur: 'Stegosaurus' })
   })
 
+  it('should pass the handleSubmit meta data to onSubmitInvalid', async () => {
+    const form = new FormApi({
+      onSubmitMeta: {} as { dinosaur: string },
+      onSubmitInvalid: async ({ meta }) => {
+        expect(meta.dinosaur).toEqual('Stegosaurus')
+      },
+    })
+
+    await form.handleSubmit({ dinosaur: 'Stegosaurus' })
+  })
+
+  it('should pass the handleSubmit meta data to the onSubmit listener', async () => {
+    const form = new FormApi({
+      onSubmitMeta: {} as { dinosaur: string },
+      listeners: {
+        onSubmit: ({ meta }) => {
+          expect(meta.dinosaur).toEqual('Stegosaurus')
+        },
+      },
+    })
+
+    await form.handleSubmit({ dinosaur: 'Stegosaurus' })
+  })
+
   it('should pass the handleSubmit default meta data to onSubmit', async () => {
     const form = new FormApi({
       onSubmitMeta: { dinosaur: 'Frank' } as { dinosaur: string },
       onSubmit: async ({ meta }) => {
         expect(meta.dinosaur).toEqual('Frank')
+      },
+    })
+
+    await form.handleSubmit()
+  })
+
+  it('should call onSubmitInvalid when submitting while canSubmit is false (e.g., onMount error present)', async () => {
+    const onInvalid = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: { name: '' },
+      validators: {
+        onMount: ({ value }) => (!value.name ? 'Name required' : undefined),
+      },
+      onSubmitInvalid: ({ value, formApi }) => {
+        onInvalid(value, formApi)
+      },
+    })
+
+    form.mount()
+
+    // Mount a field to participate in touched/dirty state
+    new FieldApi({ form, name: 'name' }).mount()
+
+    // With an onMount error present, the form is invalid and cannot submit
+    expect(form.state.canSubmit).toBe(false)
+
+    await form.handleSubmit()
+
+    expect(onInvalid).toHaveBeenCalledTimes(1)
+  })
+
+  it('should pass the handleSubmit default meta data to onSubmitInvalid', async () => {
+    const form = new FormApi({
+      onSubmitMeta: { dinosaur: 'Frank' } as { dinosaur: string },
+      onSubmitInvalid: async ({ meta }) => {
+        expect(meta.dinosaur).toEqual('Frank')
+      },
+    })
+
+    await form.handleSubmit()
+  })
+
+  it('should pass the handleSubmit default meta data to the onSubmit listener', async () => {
+    const form = new FormApi({
+      onSubmitMeta: { dinosaur: 'Frank' } as { dinosaur: string },
+      listeners: {
+        onSubmit: ({ meta }) => {
+          expect(meta.dinosaur).toEqual('Frank')
+        },
       },
     })
 
@@ -3820,4 +3913,156 @@ it('should preserve nested fields on resetField if defaultValues is not provided
 
   form.resetField('nested.field.name')
   expect(form.state.values.nested.field.name).toEqual('Nested')
+})
+
+it('should reset nested fields', () => {
+  const defaultValues = {
+    shallow: '',
+    nested: {
+      field: {
+        name: '',
+      },
+    },
+  }
+
+  const form = new FormApi({
+    defaultValues,
+  })
+  form.mount()
+
+  form.setFieldValue('shallow', 'Shallow')
+  form.setFieldValue('nested.field.name', 'Nested')
+
+  expect(form.state.values.shallow).toEqual('Shallow')
+  expect(form.state.values.nested.field.name).toEqual('Nested')
+
+  form.resetField('shallow')
+  expect(form.state.values.shallow).toEqual('')
+
+  form.resetField('nested.field.name')
+  expect(form.state.values.nested.field.name).toEqual('')
+})
+
+it('should preserve nested fields on resetField if defaultValues is not provided', () => {
+  const state = {
+    shallow: '',
+    nested: {
+      field: {
+        name: '',
+      },
+    },
+  }
+
+  const form = new FormApi({
+    defaultState: { values: state },
+  })
+  form.mount()
+
+  form.setFieldValue('shallow', 'Shallow')
+  form.setFieldValue('nested.field.name', 'Nested')
+
+  expect(form.state.values.shallow).toEqual('Shallow')
+  expect(form.state.values.nested.field.name).toEqual('Nested')
+
+  form.resetField('shallow')
+  expect(form.state.values.shallow).toEqual('Shallow')
+
+  form.resetField('nested.field.name')
+  expect(form.state.values.nested.field.name).toEqual('Nested')
+})
+
+it('should accept formId and return it', () => {
+  const form = new FormApi({
+    defaultValues: { age: 0 },
+    formId: 'age',
+  })
+  form.mount()
+
+  expect(form.formId).toEqual('age')
+})
+
+it('should call onSubmitInvalid when submitted with onMount error', async () => {
+  const onInvalidSpy = vi.fn()
+
+  const form = new FormApi({
+    defaultValues: { name: '' },
+    validators: {
+      onMount: () => ({ name: 'Name is required' }),
+    },
+    onSubmitInvalid: () => onInvalidSpy(),
+  })
+  form.mount()
+
+  const field = new FieldApi({ form, name: 'name' })
+  field.mount()
+
+  expect(form.state.canSubmit).toBe(false)
+
+  await form.handleSubmit()
+
+  expect(onInvalidSpy).toHaveBeenCalledTimes(1)
+})
+
+it('should not run submit validation when canSubmit is false', async () => {
+  const onSubmitValidatorSpy = vi
+    .fn()
+    .mockImplementation(() => 'Submit validation failed')
+  const onInvalidSpy = vi.fn()
+
+  const form = new FormApi({
+    defaultValues: { name: '' },
+    validators: {
+      onMount: () => 'Name required',
+      onSubmit: () => onSubmitValidatorSpy,
+    },
+    onSubmitInvalid: () => onInvalidSpy(),
+  })
+  form.mount()
+
+  const field = new FieldApi({ form, name: 'name' })
+  field.mount()
+
+  expect(form.state.canSubmit).toBe(false)
+
+  await form.handleSubmit()
+
+  expect(onSubmitValidatorSpy).not.toHaveBeenCalled()
+  expect(onInvalidSpy).toHaveBeenCalledTimes(1)
+})
+
+it('should respect canSubmitWhenInvalid option and run validation even when canSubmit is false', async () => {
+  const onSubmitValidatorSpy = vi
+    .fn()
+    .mockImplementation(() => 'Submit validation failed')
+  const onInvalidSpy = vi.fn()
+
+  const form = new FormApi({
+    defaultValues: { name: '' },
+    canSubmitWhenInvalid: true,
+    validators: {
+      onMount: () => 'Name required',
+      onSubmit: () => onSubmitValidatorSpy(),
+    },
+    onSubmitInvalid: () => onInvalidSpy(),
+  })
+  form.mount()
+
+  const field = new FieldApi({ form, name: 'name' })
+  field.mount()
+
+  expect(form.state.canSubmit).toBe(true)
+
+  await form.handleSubmit()
+
+  expect(onSubmitValidatorSpy).toHaveBeenCalledTimes(1)
+  expect(onInvalidSpy).toHaveBeenCalledTimes(1)
+})
+
+it('should generate a formId if not provided', () => {
+  const form = new FormApi({
+    defaultValues: { age: 0 },
+  })
+  form.mount()
+
+  expect(form.formId.length).toBeGreaterThan(1)
 })

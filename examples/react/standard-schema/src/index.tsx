@@ -1,10 +1,15 @@
-import { useForm } from '@tanstack/react-form'
-import { type } from 'arktype'
 import * as React from 'react'
 import { createRoot } from 'react-dom/client'
+
+import { type } from 'arktype'
+import { Schema as S } from 'effect'
 import * as v from 'valibot'
 import { z } from 'zod'
-import { Schema as S } from 'effect'
+
+import { TanStackDevtools } from '@tanstack/react-devtools'
+import { FormDevtoolsPlugin } from '@tanstack/react-form-devtools'
+import { useForm } from '@tanstack/react-form'
+
 import type { AnyFieldApi } from '@tanstack/react-form'
 
 function FieldInfo({ field }: { field: AnyFieldApi }) {
@@ -147,5 +152,10 @@ const rootElement = document.getElementById('root')!
 createRoot(rootElement).render(
   <React.StrictMode>
     <App />
+
+    <TanStackDevtools
+      config={{ hideUntilHover: true }}
+      plugins={[FormDevtoolsPlugin()]}
+    />
   </React.StrictMode>,
 )

@@ -8,10 +8,10 @@ title: Field
 # Function: Field()
 
 ```ts
-function Field<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnServer, TParentSubmitMeta>(props): Element
+function Field<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta>(props): Element
 ```
 
-Defined in: [packages/solid-form/src/createField.tsx:524](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L524)
+Defined in: [packages/solid-form/src/createField.tsx:628](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L628)
 
 ## Type Parameters
 
@@ -35,6 +35,10 @@ Defined in: [packages/solid-form/src/createField.tsx:524](https://github.com/Tan
 
 • **TOnSubmitAsync** *extends* `undefined` \| `FieldAsyncValidateOrFn`\<`TParentData`, `TName`, `TData`\>
 
+• **TOnDynamic** *extends* `undefined` \| `FieldValidateOrFn`\<`TParentData`, `TName`, `TData`\>
+
+• **TOnDynamicAsync** *extends* `undefined` \| `FieldAsyncValidateOrFn`\<`TParentData`, `TName`, `TData`\>
+
 • **TFormOnMount** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
 
 • **TFormOnChange** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
@@ -49,6 +53,10 @@ Defined in: [packages/solid-form/src/createField.tsx:524](https://github.com/Tan
 
 • **TFormOnSubmitAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
 
+• **TFormOnDynamic** *extends* `undefined` \| `FormValidateOrFn`\<`TParentData`\>
+
+• **TFormOnDynamicAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
+
 • **TFormOnServer** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TParentData`\>
 
 • **TParentSubmitMeta**
@@ -57,7 +65,7 @@ Defined in: [packages/solid-form/src/createField.tsx:524](https://github.com/Tan
 
 ### props
 
-`FieldComponentProps`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnServer`, `TParentSubmitMeta`\>
+`FieldComponentProps`\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TFormOnMount`, `TFormOnChange`, `TFormOnChangeAsync`, `TFormOnBlur`, `TFormOnBlurAsync`, `TFormOnSubmit`, `TFormOnSubmitAsync`, `TFormOnDynamic`, `TFormOnDynamicAsync`, `TFormOnServer`, `TParentSubmitMeta`\>
 
 ## Returns
 

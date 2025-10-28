@@ -794,4 +794,168 @@ describe('useForm', () => {
 
     expect(fn).toHaveBeenCalledTimes(1)
   })
+
+  it('form should reset default value when resetting in onSubmit', async () => {
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          name: '',
+        },
+        onSubmit: ({ value }) => {
+          expect(value).toEqual({ name: 'another-test' })
+
+          form.reset(value)
+        },
+      })
+
+      return (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            form.handleSubmit()
+          }}
+        >
+          <form.Field
+            name="name"
+            children={(field) => (
+              <input
+                data-testid="fieldinput"
+                name={field.name}
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            )}
+          />
+
+          <button type="submit" data-testid="submit">
+            submit
+          </button>
+
+          <button type="reset" data-testid="reset" onClick={() => form.reset()}>
+            Reset
+          </button>
+        </form>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    const input = getByTestId('fieldinput')
+    const submit = getByTestId('submit')
+    const reset = getByTestId('reset')
+
+    await user.type(input, 'test')
+    await waitFor(() => expect(input).toHaveValue('test'))
+
+    await user.click(reset)
+    await waitFor(() => expect(input).toHaveValue(''))
+
+    await user.type(input, 'another-test')
+    await user.click(submit)
+    await waitFor(() => expect(input).toHaveValue('another-test'))
+  })
+
+  it('should accept formId and return it', async () => {
+    function Comp() {
+      const form = useForm({
+        formId: 'test',
+      })
+
+      return (
+        <>
+          <form
+            id={form.formId}
+            onSubmit={(e) => {
+              e.preventDefault()
+              form.handleSubmit()
+            }}
+          ></form>
+
+          <form.Subscribe
+            selector={(state) => state.submissionAttempts}
+            children={(submissionAttempts) => (
+              <span data-testid="formId-result">{submissionAttempts}</span>
+            )}
+          />
+
+          <button type="submit" form={form.formId} data-testid="formId-target">
+            {form.formId}
+          </button>
+        </>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    const target = getByTestId('formId-target')
+    const result = getByTestId('formId-result')
+
+    await user.click(target)
+    expect(result).toHaveTextContent('1')
+  })
+
+  it('should not error when using deleteField in edge cases', async () => {
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          firstName: '',
+          lastName: '',
+        },
+        validators: {
+          onChange: ({ value }) => {
+            const fields: Record<string, string> = {}
+
+            if (value.firstName.length === 0) {
+              fields.firstName = 'Last Name is required'
+            }
+
+            return { fields }
+          },
+        },
+      })
+
+      return (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            form.handleSubmit()
+          }}
+        >
+          <h1>Personal Information</h1>
+          <form.Field
+            name="firstName"
+            children={(field) => (
+              <input
+                data-testid="input"
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            )}
+          />
+          <form.Field
+            name="lastName"
+            children={(field) => (
+              <input
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            )}
+          />
+          <button
+            type="button"
+            data-testid="remove"
+            onClick={() => form.deleteField('firstName')}
+          >
+            remove first name
+          </button>
+        </form>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    const removeButton = getByTestId('remove')
+    const input = getByTestId('input')
+
+    await user.type(input, 'a')
+    await user.click(removeButton)
+  })
 })

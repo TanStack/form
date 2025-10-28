@@ -8,7 +8,7 @@ title: useTransform
 # Function: useTransform()
 
 ```ts
-function useTransform(fn, deps): FormTransform<any, any, any, any, any, any, any, any, any, any>
+function useTransform(fn, deps): FormTransform<any, any, any, any, any, any, any, any, any, any, any, any>
 ```
 
 Defined in: [packages/react-form/src/useTransform.ts:9](https://github.com/TanStack/form/blob/main/packages/react-form/src/useTransform.ts#L9)
@@ -25,4 +25,4 @@ Defined in: [packages/react-form/src/useTransform.ts:9](https://github.com/TanSt
 
 ## Returns
 
-`FormTransform`\<`any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>
+`FormTransform`\<`any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>

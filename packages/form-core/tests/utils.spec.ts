@@ -1,12 +1,16 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, expectTypeOf, it } from 'vitest'
 import {
+  concatenatePaths,
+  createFieldMap,
   deleteBy,
   determineFieldLevelErrorSourceAndValue,
   determineFormLevelErrorSourceAndValue,
   evaluate,
   getBy,
   makePathArray,
+  mergeOpts,
   setBy,
+  uuid,
 } from '../src/index'
 
 describe('getBy', () => {
@@ -133,6 +137,16 @@ describe('setBy', () => {
       ],
     ])
   })
+
+  it('should correctly set a value on a key with leading zeros', () => {
+    const initial = { name: 'test' }
+    const result = setBy(initial, '01234', 'some-value')
+
+    expect(result).toHaveProperty('01234')
+    expect(result['01234']).toBe('some-value')
+
+    expect(result).not.toHaveProperty('1234')
+  })
 })
 
 describe('deleteBy', () => {
@@ -222,6 +236,15 @@ describe('makePathArray', () => {
     expect(makePathArray('[0][1]')).toEqual([0, 1])
     expect(makePathArray('[2][3].a')).toEqual([2, 3, 'a'])
     expect(makePathArray('[4][5][6].b[7]')).toEqual([4, 5, 6, 'b', 7])
+  })
+
+  it('should preserve leading zeros on purely numeric strings', () => {
+    expect(makePathArray('01234')).toEqual(['01234'])
+    expect(makePathArray('007')).toEqual(['007'])
+  })
+
+  it('should still convert non-leading-zero numbers to number types', () => {
+    expect(makePathArray('12345')).toEqual([12345])
   })
 })
 
@@ -626,5 +649,155 @@ describe('evaluate', () => {
       { test: { testTwo: '' }, arr: [[1]] },
     )
     expect(objComplexTrue).toEqual(true)
+  })
+
+  it('should test equality between Date objects', () => {
+    const date1 = new Date('2025-01-01T00:00:00.000Z')
+    const date2 = new Date('2025-01-01T00:00:00.000Z')
+    const date3 = new Date('2025-01-02T00:00:00.000Z')
+
+    const dateTrue = evaluate(date1, date2)
+    expect(dateTrue).toEqual(true)
+
+    const dateFalse = evaluate(date1, date3)
+    expect(dateFalse).toEqual(false)
+
+    const dateObjectTrue = evaluate({ date: date1 }, { date: date2 })
+    expect(dateObjectTrue).toEqual(true)
+
+    const dateObjectFalse = evaluate({ date: date1 }, { date: date3 })
+    expect(dateObjectFalse).toEqual(false)
+  })
+})
+
+describe('concatenatePaths', () => {
+  it('should concatenate two object accessors with dot', () => {
+    expect(concatenatePaths('user', 'name')).toBe('user.name')
+  })
+
+  it('should join array accessor and object path directly', () => {
+    expect(concatenatePaths('users', '[0]')).toBe('users[0]')
+  })
+
+  it('should join object accessor after array accessor with dot', () => {
+    expect(concatenatePaths('users[0]', 'name')).toBe('users[0].name')
+  })
+
+  it('should append array accessor after array accessor directly', () => {
+    expect(concatenatePaths('users[0]', '[1]')).toBe('users[0][1]')
+  })
+
+  it('should join object accessor after object accessor with dot', () => {
+    expect(concatenatePaths('profile', 'settings.theme')).toBe(
+      'profile.settings.theme',
+    )
+    expect(concatenatePaths('settings.theme', 'profile')).toBe(
+      'settings.theme.profile',
+    )
+  })
+
+  it('should handle empty paths', () => {
+    expect(concatenatePaths('', 'name')).toBe('name')
+    expect(concatenatePaths('user', '')).toBe('user')
+    expect(concatenatePaths('', '')).toBe('')
+  })
+
+  it('should handle complex nesting with array and object accessors', () => {
+    expect(concatenatePaths('data[0].items[2]', 'value')).toBe(
+      'data[0].items[2].value',
+    )
+    expect(concatenatePaths('data', '[1].value')).toBe('data[1].value')
+  })
+
+  it('should not duplicate dots if the second path starts with one', () => {
+    expect(concatenatePaths('foo', '.bar')).toBe('foo.bar')
+  })
+})
+
+describe('createFieldMap', () => {
+  it('should return an empty object when given an empty object', () => {
+    const result = createFieldMap({})
+    expect(result).toEqual({})
+    expectTypeOf(result).toEqualTypeOf<{}>()
+  })
+
+  it('should map each key to its own name as a string', () => {
+    const input = { a: 1, b: 2 }
+    const result = createFieldMap(input)
+    expect(result).toEqual({ a: 'a', b: 'b' })
+    expectTypeOf(result).toEqualTypeOf<{ a: 'a'; b: 'b' }>()
+  })
+
+  it('should handle keys with special characters or numbers', () => {
+    const input = { '1key': 42, 'space key': 'x' }
+    const result = createFieldMap(input)
+    expect(result).toEqual({ '1key': '1key', 'space key': 'space key' })
+    expectTypeOf(result).toEqualTypeOf<{
+      '1key': '1key'
+      'space key': 'space key'
+    }>()
+  })
+
+  it('should not mutate the input object', () => {
+    const input = { a: 1 }
+    const copy = { ...input }
+    createFieldMap(input)
+    expect(input).toEqual(copy)
+  })
+})
+
+describe('mergeOpts', () => {
+  type SomeOpts = {
+    foo?: string
+    bar?: boolean
+  }
+
+  it('should return the overrides if original object is undefined', () => {
+    expect(mergeOpts<SomeOpts>(undefined, { foo: 'test' })).toEqual({
+      foo: 'test',
+    })
+    expect(mergeOpts<SomeOpts>(null, { foo: 'test' })).toEqual({ foo: 'test' })
+  })
+
+  it('should preserve properties that were not overwritten', () => {
+    const original: SomeOpts = {
+      foo: 'test',
+    }
+    expect(mergeOpts(original, { bar: true })).toEqual({
+      foo: 'test',
+      bar: true,
+    })
+    expect(mergeOpts(original, {})).toEqual({ foo: 'test' })
+  })
+})
+
+describe('uuid', () => {
+  it('should return a string', () => {
+    const id = uuid()
+    expect(typeof id).toBe('string')
+  })
+
+  it('should match UUID v4 format', () => {
+    const id = uuid()
+    const uuidV4Regex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
+    expect(id).toMatch(uuidV4Regex)
+  })
+
+  it('should generate different values on multiple calls', () => {
+    const ids = new Set(Array.from({ length: 100 }, () => uuid()))
+    expect(ids.size).toBe(100)
+  })
+
+  it('should always produce 36 characters', () => {
+    const id = uuid()
+    expect(id.length).toBe(36)
+  })
+
+  it('should set correct version (4) and variant bits', () => {
+    const id = uuid()
+    const parts = id.split('-')
+    expect(parts[2]?.[0]).toBe('4')
+    expect(['8', '9', 'a', 'b']).toContain(parts[3]?.[0])
   })
 })

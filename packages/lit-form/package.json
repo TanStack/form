@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/lit-form",
-  "version": "1.12.4",
+  "version": "1.23.7",
   "description": "Powerful, type-safe forms for Lit.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -50,7 +50,7 @@
     "@tanstack/form-core": "workspace:*"
   },
   "devDependencies": {
-    "lit": "^3.3.0"
+    "lit": "^3.3.1"
   },
   "peerDependencies": {
     "lit": "^3.0.0"
