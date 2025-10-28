@@ -52,7 +52,7 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/devtools-ui": "^0.4.3",
+    "@tanstack/devtools-ui": "^0.4.4",
     "@tanstack/devtools-utils": "^0.0.4",
     "@tanstack/form-core": "workspace:*",
     "clsx": "^2.1.1",
