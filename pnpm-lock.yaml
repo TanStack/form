@@ -383,8 +383,8 @@ importers:
   examples/react/array:
     dependencies:
       '@tanstack/react-devtools':
-        specifier: ^0.7.7
-        version: 0.7.7(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.9)
+        specifier: ^0.7.8
+        version: 0.7.8(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.9)
       '@tanstack/react-form':
         specifier: ^1.23.8
         version: link:../../../packages/react-form
@@ -445,8 +445,8 @@ importers:
   examples/react/devtools:
     dependencies:
       '@tanstack/react-devtools':
-        specifier: ^0.7.7
-        version: 0.7.7(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.9)
+        specifier: ^0.7.8
+        version: 0.7.8(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.9)
       '@tanstack/react-form':
         specifier: ^1.23.8
         version: link:../../../packages/react-form
@@ -476,8 +476,8 @@ importers:
   examples/react/dynamic:
     dependencies:
       '@tanstack/react-devtools':
-        specifier: ^0.7.7
-        version: 0.7.7(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.9)
+        specifier: ^0.7.8
+        version: 0.7.8(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.9)
       '@tanstack/react-form':
         specifier: ^1.23.8
         version: link:../../../packages/react-form
@@ -510,8 +510,8 @@ importers:
   examples/react/field-errors-from-form-validators:
     dependencies:
       '@tanstack/react-devtools':
-        specifier: ^0.7.7
-        version: 0.7.7(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.9)
+        specifier: ^0.7.8
+        version: 0.7.8(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.9)
       '@tanstack/react-form':
         specifier: ^1.23.8
         version: link:../../../packages/react-form
@@ -5048,15 +5048,6 @@ packages:
 
   '@tanstack/query-core@5.90.5':
     resolution: {integrity: sha512-wLamYp7FaDq6ZnNehypKI5fNvxHPfTYylE0m/ZpuuzJfJqhR5Pxg9gvGBHZx4n7J+V5Rg5mZxHHTlv25Zt5u+w==}
-
-  '@tanstack/react-devtools@0.7.7':
-    resolution: {integrity: sha512-mJ7Ixa+AadGF1b13tLkC8lX0JrM7CrH/SJMOqcCWot9l80KZCWeFnDF1+Ww25QosVbZ1db611LNcgsGz8pv3Zg==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      '@types/react': '>=16.8'
-      '@types/react-dom': '>=16.8'
-      react: '>=16.8'
-      react-dom: '>=16.8'
 
   '@tanstack/react-devtools@0.7.8':
     resolution: {integrity: sha512-/G5Z6NOK5puJHpAykD0zEvmi+v53MfwsAbgSzrlLD1+UqKKh1BA63TdTqGz52mLxfQTfvW5jDRyCFV0fHZFqEw==}
@@ -15873,19 +15864,6 @@ snapshots:
       - supports-color
 
   '@tanstack/query-core@5.90.5': {}
-
-  '@tanstack/react-devtools@0.7.7(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.9)':
-    dependencies:
-      '@tanstack/devtools': 0.6.21(csstype@3.1.3)(solid-js@1.9.9)
-      '@types/react': 19.1.6
-      '@types/react-dom': 19.1.5(@types/react@19.1.6)
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
-    transitivePeerDependencies:
-      - bufferutil
-      - csstype
-      - solid-js
-      - utf-8-validate
 
   '@tanstack/react-devtools@0.7.8(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.9)':
     dependencies:
