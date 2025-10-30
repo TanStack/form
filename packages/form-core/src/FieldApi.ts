@@ -6,6 +6,7 @@ import {
 import { defaultFieldMeta } from './metaHelper'
 import {
   determineFieldLevelErrorSourceAndValue,
+  evaluate,
   getAsyncValidatorArray,
   getBy,
   getSyncValidatorArray,
@@ -1153,6 +1154,7 @@ export class FieldApi<
   ) {
     this.form = opts.form
     this.name = opts.name
+    this.options = opts
 
     this.timeoutIds = {
       validations: {} as Record<ValidationCause, never>,
@@ -1163,10 +1165,19 @@ export class FieldApi<
     this.store = new Derived({
       deps: [this.form.store],
       fn: () => {
-        const value = this.form.getFieldValue(this.name)
         const meta = this.form.getFieldMeta(this.name) ?? {
           ...defaultFieldMeta,
           ...opts.defaultMeta,
+        }
+
+        let value = this.form.getFieldValue(this.name)
+        if (
+          !meta.isTouched &&
+          (value as unknown) === undefined &&
+          this.options.defaultValue !== undefined &&
+          !evaluate(value, this.options.defaultValue)
+        ) {
+          value = this.options.defaultValue
         }
 
         return {
@@ -1197,8 +1208,6 @@ export class FieldApi<
         >
       },
     })
-
-    this.options = opts as never
   }
 
   /**
@@ -1233,8 +1242,8 @@ export class FieldApi<
   mount = () => {
     const cleanup = this.store.mount()
 
-    if ((this.options.defaultValue as unknown) !== undefined) {
-      this.form.setFieldValue(this.name, this.options.defaultValue as never, {
+    if (this.options.defaultValue !== undefined && !this.getMeta().isTouched) {
+      this.form.setFieldValue(this.name, this.options.defaultValue, {
         dontUpdateMeta: true,
       })
     }
@@ -1314,13 +1323,19 @@ export class FieldApi<
     this.name = opts.name
 
     // Default Value
-    if ((this.state.value as unknown) === undefined) {
-      const formDefault = getBy(opts.form.options.defaultValues, opts.name)
+    if (!this.state.meta.isTouched && this.options.defaultValue !== undefined) {
+      const formField = this.form.getFieldValue(this.name)
+      if (!evaluate(formField, opts.defaultValue)) {
+        this.form.setFieldValue(this.name, opts.defaultValue as never, {
+          dontUpdateMeta: true,
+          dontValidate: true,
+          dontRunListeners: true,
+        })
+      }
     }
 
-    // Default Meta
-    if (this.form.getFieldMeta(this.name) === undefined) {
-      this.setMeta(this.state.meta)
+    if (!this.form.getFieldMeta(this.name)) {
+      this.form.setFieldMeta(this.name, this.state.meta)
     }
   }
 
