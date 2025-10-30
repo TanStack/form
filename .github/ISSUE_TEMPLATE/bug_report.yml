@@ -103,9 +103,11 @@ body:
         Please let us know which adapter of TanStack Form you were using when the issue occurred.
       options:
         - react-form
+        - angular-form
         - solid-form
         - lit-form
         - vue-form
+        - svelte-form
         - vanilla
   - type: input
     id: rq-version
