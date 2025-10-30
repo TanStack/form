@@ -3,6 +3,7 @@
 import { useActionState } from 'react'
 import { mergeForm, useForm, useTransform } from '@tanstack/react-form'
 import { initialFormState } from '@tanstack/react-form/nextjs'
+import { useStore } from '@tanstack/react-store'
 import someAction from './action'
 import { formOpts } from './shared-code'
 
@@ -17,8 +18,14 @@ export const ClientComp = () => {
     ),
   })
 
+  const formErrors = useStore(form.store, (formState) => formState.errors)
+
   return (
     <form action={action as never} onSubmit={() => form.handleSubmit()}>
+      {formErrors.map((error) => (
+        <p key={error as unknown as string}>{error}</p>
+      ))}
+
       <form.Field
         name="age"
         validators={{
@@ -42,6 +49,33 @@ export const ClientComp = () => {
           )
         }}
       </form.Field>
+
+      <form.Field
+        name="score"
+        validators={{
+          onChange: ({ value }) =>
+            value <= 80
+              ? 'Client validation: Score must be over 80'
+              : undefined,
+        }}
+      >
+        {(field) => {
+          return (
+            <div>
+              <input
+                name={field.name}
+                type="number"
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+              />
+              {field.state.meta.errors.map((error) => (
+                <p key={error as string}>{error}</p>
+              ))}
+            </div>
+          )
+        }}
+      </form.Field>
+
       <form.Subscribe
         selector={(formState) => [formState.canSubmit, formState.isSubmitting]}
       >
