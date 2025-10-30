@@ -562,7 +562,7 @@ describe('field api', () => {
   it('should remove remove the last subfield from an array field correctly', async () => {
     const form = new FormApi({
       defaultValues: {
-        people: [] as Array<{ name: string }>,
+        people: [{ name: '' }],
       },
     })
 
@@ -579,7 +579,6 @@ describe('field api', () => {
     const subField1 = new FieldApi({
       form: field.form,
       name: 'people[0].name',
-      defaultValue: '',
       validators: subFieldValidators,
     })
 
