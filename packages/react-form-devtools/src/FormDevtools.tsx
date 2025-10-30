@@ -1,30 +1,12 @@
-import { useEffect, useRef } from 'react'
+import { createReactPanel } from '@tanstack/devtools-utils/react'
+import { FormDevtoolsCore } from '@tanstack/form-devtools'
 
-import type { FormDevtoolsCore } from '@tanstack/form-devtools'
+// type
+import type { DevtoolsPanelProps } from '@tanstack/devtools-utils/react'
 
-export interface FormDevtoolsReactInit {
-  theme?: 'light' | 'dark'
-}
+export interface FormDevtoolsReactInit extends DevtoolsPanelProps {}
 
-export const FormDevtools = (props?: FormDevtoolsReactInit) => {
-  const devToolRef = useRef<HTMLDivElement>(null)
-  const devtools = useRef<InstanceType<typeof FormDevtoolsCore> | null>(null)
+const [FormDevtoolsPanel, FormDevtoolsPanelNoOp] =
+  createReactPanel(FormDevtoolsCore)
 
-  useEffect(() => {
-    if (devtools.current) return
-
-    import('@tanstack/form-devtools').then(({ FormDevtoolsCore }) => {
-      devtools.current = new FormDevtoolsCore()
-
-      if (devToolRef.current) {
-        devtools.current.mount(devToolRef.current, props?.theme ?? 'dark')
-      }
-    })
-
-    return () => {
-      devtools.current?.unmount()
-    }
-  }, [props?.theme])
-
-  return <div style={{ height: '100%' }} ref={devToolRef} />
-}
+export { FormDevtoolsPanel, FormDevtoolsPanelNoOp }
