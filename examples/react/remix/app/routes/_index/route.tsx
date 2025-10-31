@@ -15,6 +15,7 @@ const formOpts = formOptions({
   defaultValues: {
     firstName: '',
     age: 0,
+    score: 0,
   },
 })
 
@@ -22,7 +23,16 @@ const serverValidate = createServerValidate({
   ...formOpts,
   onServerValidate: ({ value }) => {
     if (value.age < 12) {
-      return 'Server validation: You must be at least 12 to sign up'
+      return {
+        fields: {
+          age: 'Field level error: You must be at least 12 to sign up',
+        },
+        form: 'Form level error: You must be at least 12 to sign up', // Can be omitted or be a string for form-level errors
+      }
+    }
+
+    if (value.score <= 90) {
+      return 'Form level error: Score must be over 90' // Also valid; Form-level
     }
   },
 })
@@ -79,7 +89,32 @@ export default function Index() {
           return (
             <div>
               <input
-                name="age"
+                name={field.name}
+                type="number"
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+              />
+              {field.state.meta.errors.map((error) => (
+                <p key={error as string}>{error}</p>
+              ))}
+            </div>
+          )
+        }}
+      </form.Field>
+      <form.Field
+        name="score"
+        validators={{
+          onChange: ({ value }) =>
+            value < 80
+              ? 'Client validation: You must be at least 80'
+              : undefined,
+        }}
+      >
+        {(field) => {
+          return (
+            <div>
+              <input
+                name={field.name}
                 type="number"
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.valueAsNumber)}
