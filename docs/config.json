@@ -6,6 +6,11 @@
     "indexName": "tanstack-form"
   },
   "sections": [
+     {
+      "label": "Community Resources",
+      "children": [],
+      "frameworks": []
+    },
     {
       "label": "Getting Started",
       "children": [
@@ -516,25 +521,6 @@
             {
               "label": "Functions / injectStore",
               "to": "framework/angular/reference/functions/injectstore"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "label": "Community Resources",
-      "children": [],
-      "frameworks": [
-        {
-          "label": "react",
-          "children": [
-            {
-              "label": "Balastrong's Tutorial",
-              "to": "framework/react/community/balastrong-tutorial"
-            },
-            {
-              "label": "Community Tutorials",
-              "to": "framework/react/community/tutorials"
             }
           ]
         }
