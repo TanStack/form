@@ -562,7 +562,7 @@ describe('field api', () => {
   it('should remove remove the last subfield from an array field correctly', async () => {
     const form = new FormApi({
       defaultValues: {
-        people: [] as Array<{ name: string }>,
+        people: [{ name: '' }],
       },
     })
 
@@ -579,7 +579,6 @@ describe('field api', () => {
     const subField1 = new FieldApi({
       form: field.form,
       name: 'people[0].name',
-      defaultValue: '',
       validators: subFieldValidators,
     })
 
@@ -2499,5 +2498,19 @@ describe('field api', () => {
     field.handleBlur()
 
     expect(field.state.meta.errors).toStrictEqual(['Blur error'])
+  })
+
+  it('should allow setting to explicitly undefined', () => {
+    const form = new FormApi({
+      defaultValues: { a: '' as string | undefined },
+    })
+    form.mount()
+
+    const field = new FieldApi({ form, name: 'a' })
+    field.mount()
+
+    expect(field.state.value).toBe('')
+    field.handleChange(undefined)
+    expect(field.state.value).toBeUndefined()
   })
 })
