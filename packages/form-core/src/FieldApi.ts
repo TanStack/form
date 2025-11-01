@@ -1242,6 +1242,7 @@ export class FieldApi<
     info.instance = this as never
 
     this.update(this.options as never)
+
     const { onMount } = this.options.validators || {}
 
     if (onMount) {
