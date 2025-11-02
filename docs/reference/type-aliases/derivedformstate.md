@@ -11,7 +11,7 @@ title: DerivedFormState
 type DerivedFormState<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer> = object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:666](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L666)
+Defined in: [packages/form-core/src/FormApi.ts:661](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L661)
 
 ## Type Parameters
 
@@ -68,7 +68,7 @@ The error array for the form itself.
 ### fieldMeta
 
 ```ts
-fieldMeta: Record<DeepKeys<TFormData>, AnyFieldMeta>;
+fieldMeta: Partial<Record<DeepKeys<TFormData>, AnyFieldMeta>>;
 ```
 
 A record of field metadata for each field in the form.

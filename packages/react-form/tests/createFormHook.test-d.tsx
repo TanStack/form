@@ -820,7 +820,7 @@ describe('createFormHook', () => {
     const Component5 = <FieldGroup form={form} fields="nope2" />
   })
 
-  it('should allow interfaces without index signatures to be assigned to `props` in withForm', () => {
+  it('should allow interfaces without index signatures to be assigned to `props` in withForm and withFormGroup', () => {
     interface TestNoSignature {
       title: string
     }
@@ -842,20 +842,55 @@ describe('createFormHook', () => {
       render: () => <></>,
     })
 
+    const WithFieldGroupComponent1 = withFieldGroup({
+      defaultValues: { name: '' },
+      props: {} as TestNoSignature,
+      render: () => <></>,
+    })
+
+    const WithFieldGroupComponent2 = withFieldGroup({
+      defaultValues: { name: '' },
+      props: {} as TestWithSignature,
+      render: () => <></>,
+    })
+
     const appForm = useAppForm({ defaultValues: { name: '' } })
 
     const Component1 = <WithFormComponent1 title="" form={appForm} />
     const Component2 = (
       <WithFormComponent2 title="" something="else" form={appForm} />
     )
+
+    const FieldGroupComponent1 = (
+      <WithFieldGroupComponent1
+        title=""
+        form={appForm}
+        fields={{ name: 'name' }}
+      />
+    )
+    const FieldGroupComponent2 = (
+      <WithFieldGroupComponent2
+        title=""
+        something="else"
+        form={appForm}
+        fields={{ name: 'name' }}
+      />
+    )
   })
 
-  it('should not allow null as prop in withForm', () => {
+  it('should not allow null as prop in withForm and withFormGroup', () => {
     const WithFormComponent = withForm({
       defaultValues: { name: '' },
       // @ts-expect-error
       props: null,
       render: () => <></>,
     })
+  })
+
+  const WithFieldGroupComponent = withFieldGroup({
+    defaultValues: { name: '' },
+    // @ts-expect-error
+    props: null,
+    render: () => <></>,
   })
 })

@@ -11,7 +11,7 @@ title: BaseFormState
 type BaseFormState<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer> = object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:587](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L587)
+Defined in: [packages/form-core/src/FormApi.ts:582](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L582)
 
 An object representing the current state of the form.
 
@@ -60,7 +60,7 @@ The error map for the form itself.
 ### fieldMetaBase
 
 ```ts
-fieldMetaBase: Record<DeepKeys<TFormData>, AnyFieldMetaBase>;
+fieldMetaBase: Partial<Record<DeepKeys<TFormData>, AnyFieldMetaBase>>;
 ```
 
 A record of field metadata for each field in the form, not including the derived properties, like `errors` and such

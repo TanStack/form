@@ -7,7 +7,7 @@ title: WithFieldGroupProps
 
 # Interface: WithFieldGroupProps\<TFieldGroupData, TFieldComponents, TFormComponents, TSubmitMeta, TRenderProps\>
 
-Defined in: [packages/react-form/src/createFormHook.tsx:247](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L247)
+Defined in: [packages/react-form/src/createFormHook.tsx:252](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L252)
 
 ## Extends
 
@@ -23,7 +23,7 @@ Defined in: [packages/react-form/src/createFormHook.tsx:247](https://github.com/
 
 • **TSubmitMeta**
 
-• **TRenderProps** *extends* `Record`\<`string`, `unknown`\> = `Record`\<`string`, `never`\>
+• **TRenderProps** *extends* `object` = `Record`\<`string`, `never`\>
 
 ## Properties
 
@@ -33,17 +33,17 @@ Defined in: [packages/react-form/src/createFormHook.tsx:247](https://github.com/
 optional props: TRenderProps;
 ```
 
-Defined in: [packages/react-form/src/createFormHook.tsx:255](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L255)
+Defined in: [packages/react-form/src/createFormHook.tsx:260](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L260)
 
 ***
 
 ### render()
 
 ```ts
-render: (props) => Element;
+render: (props) => ReactNode;
 ```
 
-Defined in: [packages/react-form/src/createFormHook.tsx:256](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L256)
+Defined in: [packages/react-form/src/createFormHook.tsx:261](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L261)
 
 #### Parameters
 
@@ -53,4 +53,4 @@ Defined in: [packages/react-form/src/createFormHook.tsx:256](https://github.com/
 
 #### Returns
 
-`Element`
+`ReactNode`

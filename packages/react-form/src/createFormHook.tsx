@@ -14,7 +14,12 @@ import type {
   FormOptions,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { ComponentType, Context, JSX, PropsWithChildren } from 'react'
+import type {
+  ComponentType,
+  Context,
+  PropsWithChildren,
+  ReactNode,
+} from 'react'
 import type { FieldComponent } from './useField'
 import type { ReactFormExtendedApi } from './useForm'
 import type { AppFieldExtendedReactFieldGroupApi } from './useFieldGroup'
@@ -242,7 +247,7 @@ export interface WithFormProps<
         >
       }
     >,
-  ) => JSX.Element
+  ) => ReactNode
 }
 
 export interface WithFieldGroupProps<
@@ -250,7 +255,7 @@ export interface WithFieldGroupProps<
   TFieldComponents extends Record<string, ComponentType<any>>,
   TFormComponents extends Record<string, ComponentType<any>>,
   TSubmitMeta,
-  TRenderProps extends Record<string, unknown> = Record<string, never>,
+  TRenderProps extends object = Record<string, never>,
 > extends BaseFormOptions<TFieldGroupData, TSubmitMeta> {
   // Optional, but adds props to the `render` function outside of `form`
   props?: TRenderProps
@@ -279,7 +284,7 @@ export interface WithFieldGroupProps<
         >
       }
     >,
-  ) => JSX.Element
+  ) => ReactNode
 }
 
 export function createFormHook<
@@ -446,7 +451,7 @@ export function createFormHook<
   function withFieldGroup<
     TFieldGroupData,
     TSubmitMeta,
-    TRenderProps extends Record<string, unknown> = {},
+    TRenderProps extends object = {},
   >({
     render,
     props,
@@ -516,7 +521,7 @@ export function createFormHook<
         fields: TFields
       }
     >,
-  ) => JSX.Element {
+  ) => ReactNode {
     return function Render(innerProps) {
       const fieldGroupProps = useMemo(() => {
         return {
