@@ -150,26 +150,29 @@ export type DeepKeysAndValuesImpl<
             ? DeepKeyAndValueObject<TParent, T, TAcc>
             : TAcc
 
-type DeepRecordWithDynamicSuffix<T> = {
-  // DeepKeys uses a dot as reserved character, so the only way that it can be a suffix
-  // is if the suffix is a dynamic variable.
-  [TRecord in DeepKeysAndValues<T> as `${TRecord['key']}.` extends TRecord['key']
-    ? TRecord['key']
-    : never]: TRecord['value']
-}
-
-type DeepRecordWithStaticSuffix<T> = {
-  [TRecord in DeepKeysAndValues<T> as `${TRecord['key']}.` extends TRecord['key']
-    ? never
-    : TRecord['key']]: TRecord['value']
-}
-
 /**
  * The keys of an object or array, deeply nested.
  */
 export type DeepKeys<T> = unknown extends T
   ? string
   : DeepKeysAndValues<T>['key']
+
+export type ValueOfKey<
+  TValue extends AnyDeepKeyAndValue,
+  TAccessor extends string,
+> =
+  TValue extends AnyDeepKeyAndValue<infer ValueKey>
+    ? TAccessor extends ValueKey
+      ? TValue['value']
+      : never
+    : never
+
+/**
+ * Infer the type of a deeply nested property within an object or an array.
+ */
+export type DeepValue<TValue, TAccessor extends string> = unknown extends TValue
+  ? TValue
+  : ValueOfKey<DeepKeysAndValues<TValue>, TAccessor>
 
 /**
  * The keys of an object or array, deeply nested and only with a value of TValue

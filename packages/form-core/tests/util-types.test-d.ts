@@ -452,8 +452,13 @@ expectTypeOf(0 as never as AnyObjectExample4).toEqualTypeOf<any>()
 type AnyObjectExample5 = DeepValue<ObjectWithAny, 'obj.d'>
 expectTypeOf(0 as never as AnyObjectExample5).toEqualTypeOf<number>()
 
+type RecordValue = {
+  a: string
+  b: number
+  c: { d: string }
+}
 type RecordExample = {
-  records: Record<string, { a: string; b: number; c: { d: string } }>
+  records: Record<string, RecordValue>
 }
 
 expectTypeOf<DeepKeys<RecordExample>>().toEqualTypeOf<
@@ -468,25 +473,26 @@ expectTypeOf<DeepKeysOfType<RecordExample, string>>().toEqualTypeOf<
   `records.${string}.a` | `records.${string}.c.d`
 >()
 expectTypeOf<DeepValue<RecordExample, 'records'>>().toEqualTypeOf<
-  Record<string, { a: string; b: number; c: { d: string } }>
+  Record<string, RecordValue>
 >()
-expectTypeOf<DeepValue<RecordExample, 'records.something'>>().toEqualTypeOf<{
-  a: string
-  b: number
-  c: { d: string }
-}>()
 expectTypeOf<
-  DeepValue<RecordExample, 'records.something.a'>
->().toEqualTypeOf<string>()
-expectTypeOf<
-  DeepValue<RecordExample, 'records.something.b'>
->().toEqualTypeOf<number>()
-expectTypeOf<DeepValue<RecordExample, 'records.something.c'>>().toEqualTypeOf<{
-  d: string
-}>()
-expectTypeOf<
-  DeepValue<RecordExample, 'records.something.c.d'>
->().toEqualTypeOf<string>()
+  DeepValue<RecordExample, 'records.something'>
+>().toEqualTypeOf<RecordValue>()
+expectTypeOf<DeepValue<RecordExample, 'records.something.a'>>().toEqualTypeOf<
+  string | RecordValue
+>()
+expectTypeOf<DeepValue<RecordExample, 'records.something.b'>>().toEqualTypeOf<
+  number | RecordValue
+>()
+expectTypeOf<DeepValue<RecordExample, 'records.something.c'>>().toEqualTypeOf<
+  | {
+      d: string
+    }
+  | RecordValue
+>()
+expectTypeOf<DeepValue<RecordExample, 'records.something.c.d'>>().toEqualTypeOf<
+  string | RecordValue
+>()
 
 describe('FieldsMap', () => {
   it('should map to all available types', () => {
