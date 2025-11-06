@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
-import { FieldApi, FormApi } from '../src/index'
+import { FieldApi, FormApi, formEventClient } from '../src/index'
 import { sleep } from './utils'
 import type { AnyFieldApi, AnyFormApi } from '../src/index'
 
@@ -120,6 +120,25 @@ describe('form api', () => {
     })
   })
 
+  it('form should reset default value when resetting in onSubmit', async () => {
+    const defaultValues = {
+      name: '',
+    }
+    const form = new FormApi({
+      defaultValues: defaultValues,
+      onSubmit: ({ value }) => {
+        form.reset(value)
+
+        expect(form.options.defaultValues).toMatchObject({
+          name: 'test',
+        })
+      },
+    })
+    form.mount()
+    form.setFieldValue('name', 'test')
+    form.handleSubmit()
+  })
+
   it('should reset and set the new default values that are restored after an empty reset', () => {
     const form = new FormApi({ defaultValues: { name: 'initial' } })
     form.mount()
@@ -148,6 +167,35 @@ describe('form api', () => {
     field.handleChange('')
     form.reset()
     expect(form.state.values).toEqual({ name: 'initial' })
+  })
+
+  it('should handle multiple fields with mixed mount states', () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+        email: '',
+      },
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+
+    firstNameField.mount()
+
+    expect(form.state.fieldMeta.firstName).toBeDefined()
+
+    expect(form.state.fieldMeta.email).toBeUndefined()
+
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+    })
+    lastNameField.mount()
+
+    expect(form.state.fieldMeta.lastName).toBeDefined()
   })
 
   it("should get a field's value", () => {
@@ -986,6 +1034,42 @@ describe('form api', () => {
     expect(field2Surname.state.meta.isBlurred).toBe(false)
   })
 
+  it('should preserve array default values when manipulating array values', () => {
+    const defaultValues = {
+      names: ['one', 'two', 'three'],
+    }
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+    form.pushFieldValue('names', 'four')
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.insertFieldValue('names', 0, 'other')
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.replaceFieldValue('names', 1, 'other')
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.removeFieldValue('names', 1)
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.swapFieldValues('names', 1, 2)
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.moveFieldValues('names', 1, 2)
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+
+    form.reset()
+    form.clearFieldValues('names')
+    expect(form.options.defaultValues?.names).toStrictEqual(defaultValues.names)
+  })
+
   it('should handle fields inside an array', async () => {
     interface Employee {
       firstName: string
@@ -1636,10 +1720,10 @@ describe('form api', () => {
     await form.handleSubmit()
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
-    expect(form.state.fieldMeta['firstName'].errors).toEqual([
+    expect(form.state.fieldMeta['firstName']!.errors).toEqual([
       'first name is required',
     ])
-    expect(form.state.fieldMeta['lastName'].errors).toEqual([
+    expect(form.state.fieldMeta['lastName']!.errors).toEqual([
       'last name is required',
     ])
   })
@@ -1675,10 +1759,10 @@ describe('form api', () => {
     await form.handleSubmit()
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
-    expect(form.state.fieldMeta['person.firstName'].errors).toEqual([
+    expect(form.state.fieldMeta['person.firstName']!.errors).toEqual([
       'first name is required',
     ])
-    expect(form.state.fieldMeta['person.lastName'].errors).toEqual([
+    expect(form.state.fieldMeta['person.lastName']!.errors).toEqual([
       'last name is required',
     ])
   })
@@ -1709,7 +1793,7 @@ describe('form api', () => {
     await form.handleSubmit()
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
-    expect(form.state.fieldMeta['firstName'].errors).toEqual([
+    expect(form.state.fieldMeta['firstName']!.errors).toEqual([
       'first name is required',
       'first name must be longer than 3 characters',
     ])
@@ -1818,7 +1902,7 @@ describe('form api', () => {
     await vi.runAllTimersAsync()
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
-    expect(form.state.fieldMeta['firstName'].errorMap).toEqual({
+    expect(form.state.fieldMeta['firstName']!.errorMap).toEqual({
       onChange: 'first name is required',
       onBlur: 'first name must be longer than 3 characters',
     })
@@ -1845,14 +1929,14 @@ describe('form api', () => {
     await form.handleSubmit()
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
-    expect(form.state.fieldMeta['firstName'].errorMap['onSubmit']).toEqual(
+    expect(form.state.fieldMeta['firstName']!.errorMap['onSubmit']).toEqual(
       'first name is required',
     )
     field.handleChange('test')
     expect(form.state.isFieldsValid).toEqual(true)
     expect(form.state.canSubmit).toEqual(true)
     expect(
-      form.state.fieldMeta['firstName'].errorMap['onSubmit'],
+      form.state.fieldMeta['firstName']!.errorMap['onSubmit'],
     ).toBeUndefined()
   })
 
@@ -2154,6 +2238,45 @@ describe('form api', () => {
 
     await vi.advanceTimersByTimeAsync(500)
     expect(onBlurMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('should run both onBlur and onChange listeners when onBlurDebounceMs and onChangeDebounceMs are provided', async () => {
+    vi.useFakeTimers()
+    const onBlurMock = vi.fn()
+    const onChangeMock = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+        age: 0,
+      },
+      listeners: {
+        onBlur: onBlurMock,
+        onBlurDebounceMs: 500,
+        onChange: onChangeMock,
+        onChangeDebounceMs: 500,
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+    field.mount()
+    field.handleBlur()
+    field.handleChange('test')
+
+    await vi.advanceTimersByTimeAsync(500)
+    expect(onBlurMock).toHaveBeenCalledTimes(1)
+    expect(onChangeMock).toHaveBeenCalledTimes(1)
+
+    field.handleChange('test2')
+    field.handleBlur()
+
+    await vi.advanceTimersByTimeAsync(500)
+    expect(onBlurMock).toHaveBeenCalledTimes(2)
+    expect(onChangeMock).toHaveBeenCalledTimes(2)
   })
 
   it('should run the field listener onSubmit', async () => {
@@ -3027,11 +3150,85 @@ describe('form api', () => {
     await form.handleSubmit({ dinosaur: 'Stegosaurus' })
   })
 
+  it('should pass the handleSubmit meta data to onSubmitInvalid', async () => {
+    const form = new FormApi({
+      onSubmitMeta: {} as { dinosaur: string },
+      onSubmitInvalid: async ({ meta }) => {
+        expect(meta.dinosaur).toEqual('Stegosaurus')
+      },
+    })
+
+    await form.handleSubmit({ dinosaur: 'Stegosaurus' })
+  })
+
+  it('should pass the handleSubmit meta data to the onSubmit listener', async () => {
+    const form = new FormApi({
+      onSubmitMeta: {} as { dinosaur: string },
+      listeners: {
+        onSubmit: ({ meta }) => {
+          expect(meta.dinosaur).toEqual('Stegosaurus')
+        },
+      },
+    })
+
+    await form.handleSubmit({ dinosaur: 'Stegosaurus' })
+  })
+
   it('should pass the handleSubmit default meta data to onSubmit', async () => {
     const form = new FormApi({
       onSubmitMeta: { dinosaur: 'Frank' } as { dinosaur: string },
       onSubmit: async ({ meta }) => {
         expect(meta.dinosaur).toEqual('Frank')
+      },
+    })
+
+    await form.handleSubmit()
+  })
+
+  it('should call onSubmitInvalid when submitting while canSubmit is false (e.g., onMount error present)', async () => {
+    const onInvalid = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: { name: '' },
+      validators: {
+        onMount: ({ value }) => (!value.name ? 'Name required' : undefined),
+      },
+      onSubmitInvalid: ({ value, formApi }) => {
+        onInvalid(value, formApi)
+      },
+    })
+
+    form.mount()
+
+    // Mount a field to participate in touched/dirty state
+    new FieldApi({ form, name: 'name' }).mount()
+
+    // With an onMount error present, the form is invalid and cannot submit
+    expect(form.state.canSubmit).toBe(false)
+
+    await form.handleSubmit()
+
+    expect(onInvalid).toHaveBeenCalledTimes(1)
+  })
+
+  it('should pass the handleSubmit default meta data to onSubmitInvalid', async () => {
+    const form = new FormApi({
+      onSubmitMeta: { dinosaur: 'Frank' } as { dinosaur: string },
+      onSubmitInvalid: async ({ meta }) => {
+        expect(meta.dinosaur).toEqual('Frank')
+      },
+    })
+
+    await form.handleSubmit()
+  })
+
+  it('should pass the handleSubmit default meta data to the onSubmit listener', async () => {
+    const form = new FormApi({
+      onSubmitMeta: { dinosaur: 'Frank' } as { dinosaur: string },
+      listeners: {
+        onSubmit: ({ meta }) => {
+          expect(meta.dinosaur).toEqual('Frank')
+        },
       },
     })
 
@@ -3745,4 +3942,156 @@ it('should preserve nested fields on resetField if defaultValues is not provided
 
   form.resetField('nested.field.name')
   expect(form.state.values.nested.field.name).toEqual('Nested')
+})
+
+it('should reset nested fields', () => {
+  const defaultValues = {
+    shallow: '',
+    nested: {
+      field: {
+        name: '',
+      },
+    },
+  }
+
+  const form = new FormApi({
+    defaultValues,
+  })
+  form.mount()
+
+  form.setFieldValue('shallow', 'Shallow')
+  form.setFieldValue('nested.field.name', 'Nested')
+
+  expect(form.state.values.shallow).toEqual('Shallow')
+  expect(form.state.values.nested.field.name).toEqual('Nested')
+
+  form.resetField('shallow')
+  expect(form.state.values.shallow).toEqual('')
+
+  form.resetField('nested.field.name')
+  expect(form.state.values.nested.field.name).toEqual('')
+})
+
+it('should preserve nested fields on resetField if defaultValues is not provided', () => {
+  const state = {
+    shallow: '',
+    nested: {
+      field: {
+        name: '',
+      },
+    },
+  }
+
+  const form = new FormApi({
+    defaultState: { values: state },
+  })
+  form.mount()
+
+  form.setFieldValue('shallow', 'Shallow')
+  form.setFieldValue('nested.field.name', 'Nested')
+
+  expect(form.state.values.shallow).toEqual('Shallow')
+  expect(form.state.values.nested.field.name).toEqual('Nested')
+
+  form.resetField('shallow')
+  expect(form.state.values.shallow).toEqual('Shallow')
+
+  form.resetField('nested.field.name')
+  expect(form.state.values.nested.field.name).toEqual('Nested')
+})
+
+it('should accept formId and return it', () => {
+  const form = new FormApi({
+    defaultValues: { age: 0 },
+    formId: 'age',
+  })
+  form.mount()
+
+  expect(form.formId).toEqual('age')
+})
+
+it('should call onSubmitInvalid when submitted with onMount error', async () => {
+  const onInvalidSpy = vi.fn()
+
+  const form = new FormApi({
+    defaultValues: { name: '' },
+    validators: {
+      onMount: () => ({ name: 'Name is required' }),
+    },
+    onSubmitInvalid: () => onInvalidSpy(),
+  })
+  form.mount()
+
+  const field = new FieldApi({ form, name: 'name' })
+  field.mount()
+
+  expect(form.state.canSubmit).toBe(false)
+
+  await form.handleSubmit()
+
+  expect(onInvalidSpy).toHaveBeenCalledTimes(1)
+})
+
+it('should not run submit validation when canSubmit is false', async () => {
+  const onSubmitValidatorSpy = vi
+    .fn()
+    .mockImplementation(() => 'Submit validation failed')
+  const onInvalidSpy = vi.fn()
+
+  const form = new FormApi({
+    defaultValues: { name: '' },
+    validators: {
+      onMount: () => 'Name required',
+      onSubmit: () => onSubmitValidatorSpy,
+    },
+    onSubmitInvalid: () => onInvalidSpy(),
+  })
+  form.mount()
+
+  const field = new FieldApi({ form, name: 'name' })
+  field.mount()
+
+  expect(form.state.canSubmit).toBe(false)
+
+  await form.handleSubmit()
+
+  expect(onSubmitValidatorSpy).not.toHaveBeenCalled()
+  expect(onInvalidSpy).toHaveBeenCalledTimes(1)
+})
+
+it('should respect canSubmitWhenInvalid option and run validation even when canSubmit is false', async () => {
+  const onSubmitValidatorSpy = vi
+    .fn()
+    .mockImplementation(() => 'Submit validation failed')
+  const onInvalidSpy = vi.fn()
+
+  const form = new FormApi({
+    defaultValues: { name: '' },
+    canSubmitWhenInvalid: true,
+    validators: {
+      onMount: () => 'Name required',
+      onSubmit: () => onSubmitValidatorSpy(),
+    },
+    onSubmitInvalid: () => onInvalidSpy(),
+  })
+  form.mount()
+
+  const field = new FieldApi({ form, name: 'name' })
+  field.mount()
+
+  expect(form.state.canSubmit).toBe(true)
+
+  await form.handleSubmit()
+
+  expect(onSubmitValidatorSpy).toHaveBeenCalledTimes(1)
+  expect(onInvalidSpy).toHaveBeenCalledTimes(1)
+})
+
+it('should generate a formId if not provided', () => {
+  const form = new FormApi({
+    defaultValues: { age: 0 },
+  })
+  form.mount()
+
+  expect(form.formId.length).toBeGreaterThan(1)
 })

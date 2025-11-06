@@ -2479,4 +2479,25 @@ describe('field api', () => {
 
     expect(field.getMeta().errorSourceMap.onChange).toEqual('field')
   })
+
+  it('should not run onChange validation when onBlur is triggered', () => {
+    const form = new FormApi({
+      defaultValues: { a: '' },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'a',
+      validators: {
+        onChange: () => 'Change error',
+        onBlur: () => 'Blur error',
+      },
+    })
+    field.mount()
+
+    field.handleBlur()
+
+    expect(field.state.meta.errors).toStrictEqual(['Blur error'])
+  })
 })

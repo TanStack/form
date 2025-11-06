@@ -8,21 +8,45 @@ title: formOptions
 # Function: formOptions()
 
 ```ts
-function formOptions<T>(defaultOpts): T
+function formOptions<TOptions, TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta>(defaultOpts): TOptions
 ```
 
-Defined in: [packages/form-core/src/formOptions.ts:3](https://github.com/TanStack/form/blob/main/packages/form-core/src/formOptions.ts#L3)
+Defined in: [packages/form-core/src/formOptions.ts:23](https://github.com/TanStack/form/blob/main/packages/form-core/src/formOptions.ts#L23)
 
 ## Type Parameters
 
-• **T** *extends* `Partial`\<[`FormOptions`](../../interfaces/formoptions.md)\<`any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>\>
+• **TOptions** *extends* `Partial`\<[`FormOptions`](../../interfaces/formoptions.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>\>
+
+• **TFormData**
+
+• **TOnMount** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnChange** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnChangeAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TOnBlur** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnBlurAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TOnSubmit** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnSubmitAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TOnDynamic** *extends* `undefined` \| `FormValidateOrFn`\<`TFormData`\>
+
+• **TOnDynamicAsync** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TOnServer** *extends* `undefined` \| `FormAsyncValidateOrFn`\<`TFormData`\>
+
+• **TSubmitMeta** = `never`
 
 ## Parameters
 
 ### defaultOpts
 
-`T`
+`Partial`\<[`FormOptions`](../../interfaces/formoptions.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>\> & `TOptions`
 
 ## Returns
 
-`T`
+`TOptions`

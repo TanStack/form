@@ -179,14 +179,18 @@ export type DeepKeysOfType<TData, TValue> = Extract<
   AnyDeepKeyAndValue<string, TValue>
 >['key']
 
-type PickValue<T, K extends keyof T> = T[K]
 /**
- * Infer the type of a deeply nested property within an object or an array.
+ * Maps the deep keys of TFormData to the shallow keys of TFieldGroupData.
+ *  Since using template strings as keys is impractical, it relies on shallow keys only.
  */
-export type DeepValue<TValue, TAccessor> = unknown extends TValue
-  ? TValue
-  : TAccessor extends keyof DeepRecordWithStaticSuffix<TValue>
-    ? PickValue<DeepRecordWithStaticSuffix<TValue>, TAccessor>
-    : TAccessor extends keyof DeepRecordWithDynamicSuffix<TValue>
-      ? PickValue<DeepRecordWithDynamicSuffix<TValue>, TAccessor>
-      : never
+export type FieldsMap<TFormData, TFieldGroupData> =
+  TFieldGroupData extends any[]
+    ? never
+    : string extends keyof TFieldGroupData
+      ? never
+      : {
+          [K in keyof TFieldGroupData]: DeepKeysOfType<
+            TFormData,
+            TFieldGroupData[K]
+          >
+        }

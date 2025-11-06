@@ -8,14 +8,14 @@
     "_test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-form": "^1.12.1",
-    "@tanstack/react-store": "^0.7.1",
-    "next": "15.3.3",
+    "@tanstack/react-form": "^1.23.8",
+    "@tanstack/react-store": "^0.7.7",
+    "next": "15.5.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@types/node": "^22.10.6",
+    "@types/node": "^24.1.0",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "typescript": "5.8.2"

@@ -1,3 +1,5 @@
+import { defaultValidationLogic } from './ValidationLogic'
+import type { ValidationLogicProps } from './ValidationLogic'
 import type { FieldValidators } from './FieldApi'
 import type { FormValidators } from './FormApi'
 import type {
@@ -171,12 +173,37 @@ export function makePathArray(str: string | Array<string | number>) {
       .replace(reMultipleDots, '.')
       .split('.')
       .map((d) => {
-        if (d.indexOf(intPrefix) === 0) {
-          return parseInt(d.substring(intPrefix.length), 10)
+        if (d.startsWith(intPrefix)) {
+          const numStr = d.substring(intPrefix.length)
+          const num = parseInt(numStr, 10)
+
+          if (String(num) === numStr) {
+            return num
+          }
+          return numStr
         }
         return d
       })
   )
+}
+
+/**
+ * @private
+ */
+export function concatenatePaths(path1: string, path2: string): string {
+  if (path1.length === 0) return path2
+  if (path2.length === 0) return path1
+
+  if (path2.startsWith('[')) {
+    return path1 + path2
+  }
+
+  // In cases where parent and child withFieldGroup forms are both nested
+  if (path2.startsWith('.')) {
+    return path1 + path2
+  }
+
+  return `${path1}.${path2}`
 }
 
 /**
@@ -200,78 +227,6 @@ export interface AsyncValidator<T> {
   debounceMs: number
 }
 
-/**
- * @private
- */
-export function getAsyncValidatorArray<T>(
-  cause: ValidationCause,
-  options: AsyncValidatorArrayPartialOptions<T>,
-): T extends FieldValidators<any, any, any, any, any, any, any, any, any, any>
-  ? Array<
-      AsyncValidator<T['onChangeAsync'] | T['onBlurAsync'] | T['onSubmitAsync']>
-    >
-  : T extends FormValidators<any, any, any, any, any, any, any, any>
-    ? Array<
-        AsyncValidator<
-          T['onChangeAsync'] | T['onBlurAsync'] | T['onSubmitAsync']
-        >
-      >
-    : never {
-  const { asyncDebounceMs } = options
-  const {
-    onChangeAsync,
-    onBlurAsync,
-    onSubmitAsync,
-    onBlurAsyncDebounceMs,
-    onChangeAsyncDebounceMs,
-  } = (options.validators || {}) as
-    | FieldValidators<any, any, any, any, any, any, any, any, any, any>
-    | FormValidators<any, any, any, any, any, any, any, any>
-
-  const defaultDebounceMs = asyncDebounceMs ?? 0
-
-  const changeValidator = {
-    cause: 'change',
-    validate: onChangeAsync,
-    debounceMs: onChangeAsyncDebounceMs ?? defaultDebounceMs,
-  } as const
-
-  const blurValidator = {
-    cause: 'blur',
-    validate: onBlurAsync,
-    debounceMs: onBlurAsyncDebounceMs ?? defaultDebounceMs,
-  } as const
-
-  const submitValidator = {
-    cause: 'submit',
-    validate: onSubmitAsync,
-    debounceMs: 0,
-  } as const
-
-  const noopValidator = (
-    validator:
-      | typeof changeValidator
-      | typeof blurValidator
-      | typeof submitValidator,
-  ) => ({ ...validator, debounceMs: 0 }) as const
-
-  switch (cause) {
-    case 'submit':
-      return [
-        noopValidator(changeValidator),
-        noopValidator(blurValidator),
-        submitValidator,
-      ] as never
-    case 'blur':
-      return [blurValidator] as never
-    case 'change':
-      return [changeValidator] as never
-    case 'server':
-    default:
-      return [] as never
-  }
-}
-
 interface SyncValidatorArrayPartialOptions<T> {
   validators?: T
 }
@@ -289,51 +244,171 @@ export interface SyncValidator<T> {
  */
 export function getSyncValidatorArray<T>(
   cause: ValidationCause,
-  options: SyncValidatorArrayPartialOptions<T>,
-): T extends FieldValidators<any, any, any, any, any, any, any, any, any, any>
+  options: SyncValidatorArrayPartialOptions<T> & {
+    validationLogic?: any
+    form?: any
+  },
+): T extends FieldValidators<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
   ? Array<
-      SyncValidator<T['onChange'] | T['onBlur'] | T['onSubmit'] | T['onMount']>
+      SyncValidator<
+        | T['onChange']
+        | T['onBlur']
+        | T['onSubmit']
+        | T['onMount']
+        | T['onDynamic']
+      >
     >
-  : T extends FormValidators<any, any, any, any, any, any, any, any>
+  : T extends FormValidators<any, any, any, any, any, any, any, any, any, any>
     ? Array<
         SyncValidator<
-          T['onChange'] | T['onBlur'] | T['onSubmit'] | T['onMount']
+          | T['onChange']
+          | T['onBlur']
+          | T['onSubmit']
+          | T['onMount']
+          | T['onDynamic']
         >
       >
     : never {
-  const { onChange, onBlur, onSubmit, onMount } = (options.validators || {}) as
-    | FieldValidators<any, any, any, any, any, any, any, any, any, any>
-    | FormValidators<any, any, any, any, any, any, any, any>
-
-  const changeValidator = { cause: 'change', validate: onChange } as const
-  const blurValidator = { cause: 'blur', validate: onBlur } as const
-  const submitValidator = { cause: 'submit', validate: onSubmit } as const
-  const mountValidator = { cause: 'mount', validate: onMount } as const
-
-  // Allows us to clear onServer errors
-  const serverValidator = {
-    cause: 'server',
-    validate: () => undefined,
-  } as const
-
-  switch (cause) {
-    case 'mount':
-      return [mountValidator] as never
-    case 'submit':
-      return [
-        changeValidator,
-        blurValidator,
-        submitValidator,
-        serverValidator,
-      ] as never
-    case 'server':
-      return [serverValidator] as never
-    case 'blur':
-      return [blurValidator, serverValidator] as never
-    case 'change':
-    default:
-      return [changeValidator, serverValidator] as never
+  const runValidation = (
+    props: Parameters<ValidationLogicProps['runValidation']>[0],
+  ) => {
+    return props.validators.filter(Boolean).map((validator) => {
+      return {
+        cause: validator!.cause,
+        validate: validator!.fn,
+      }
+    })
   }
+
+  return options.validationLogic({
+    form: options.form,
+    validators: options.validators,
+    event: { type: cause, async: false },
+    runValidation,
+  })
+}
+
+/**
+ * @private
+ */
+export function getAsyncValidatorArray<T>(
+  cause: ValidationCause,
+  options: AsyncValidatorArrayPartialOptions<T> & {
+    validationLogic?: any
+    form?: any
+  },
+): T extends FieldValidators<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
+  ? Array<
+      AsyncValidator<
+        | T['onChangeAsync']
+        | T['onBlurAsync']
+        | T['onSubmitAsync']
+        | T['onDynamicAsync']
+      >
+    >
+  : T extends FormValidators<any, any, any, any, any, any, any, any, any, any>
+    ? Array<
+        AsyncValidator<
+          | T['onChangeAsync']
+          | T['onBlurAsync']
+          | T['onSubmitAsync']
+          | T['onDynamicAsync']
+        >
+      >
+    : never {
+  const { asyncDebounceMs } = options
+  const {
+    onBlurAsyncDebounceMs,
+    onChangeAsyncDebounceMs,
+    onDynamicAsyncDebounceMs,
+  } = (options.validators || {}) as
+    | FieldValidators<
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any,
+        any
+      >
+    | FormValidators<any, any, any, any, any, any, any, any, any, any>
+
+  const defaultDebounceMs = asyncDebounceMs ?? 0
+
+  const runValidation = (
+    props: Parameters<ValidationLogicProps['runValidation']>[0],
+  ) => {
+    return props.validators.filter(Boolean).map((validator) => {
+      const validatorCause = validator?.cause || cause
+
+      let debounceMs = defaultDebounceMs
+
+      switch (validatorCause) {
+        case 'change':
+          debounceMs = onChangeAsyncDebounceMs ?? defaultDebounceMs
+          break
+        case 'blur':
+          debounceMs = onBlurAsyncDebounceMs ?? defaultDebounceMs
+          break
+        case 'dynamic':
+          debounceMs = onDynamicAsyncDebounceMs ?? defaultDebounceMs
+          break
+        case 'submit':
+          debounceMs = 0 // submit validators are always run immediately
+          break
+        default:
+          break
+      }
+
+      if (cause === 'submit') {
+        debounceMs = 0
+      }
+
+      return {
+        cause: validatorCause,
+        validate: validator!.fn,
+        debounceMs: debounceMs,
+      }
+    })
+  }
+
+  return options.validationLogic({
+    form: options.form,
+    validators: options.validators,
+    event: { type: cause, async: true },
+    runValidation,
+  })
 }
 
 export const isGlobalFormValidationError = (
@@ -354,6 +429,10 @@ export function evaluate<T>(objA: T, objB: T) {
     objB === null
   ) {
     return false
+  }
+
+  if (objA instanceof Date && objB instanceof Date) {
+    return objA.getTime() === objB.getTime()
   }
 
   if (objA instanceof Map && objB instanceof Map) {
@@ -453,4 +532,71 @@ export const determineFieldLevelErrorSourceAndValue = ({
   }
 
   return { newErrorValue: undefined, newSource: undefined }
+}
+
+export function createFieldMap<T>(values: Readonly<T>): { [K in keyof T]: K } {
+  const output: { [K in keyof T]: K } = {} as any
+
+  for (const key in values) {
+    output[key] = key
+  }
+
+  return output
+}
+
+/**
+ * Merge the first parameter with the given overrides.
+ * @private
+ */
+export function mergeOpts<T>(
+  originalOpts: T | undefined | null,
+  overrides: T,
+): T {
+  if (originalOpts === undefined || originalOpts === null) {
+    return overrides
+  }
+
+  return { ...originalOpts, ...overrides }
+}
+
+/*
+/ credit is due to https://github.com/lukeed/uuid for this code, with current npm
+/ attacks we didn't feel comfortable installing directly from npm. But big appreciation
+/ from the TanStack Form team <3.
+*/
+
+let IDX = 256
+const HEX: string[] = []
+let BUFFER: number[] | undefined
+
+while (IDX--) {
+  HEX[IDX] = (IDX + 256).toString(16).substring(1)
+}
+
+export function uuid(): string {
+  let i = 0
+  let num: number
+  let out = ''
+
+  if (!BUFFER || IDX + 16 > 256) {
+    BUFFER = new Array<number>(256)
+    i = 256
+    while (i--) {
+      BUFFER[i] = (256 * Math.random()) | 0
+    }
+    i = 0
+    IDX = 0
+  }
+
+  for (; i < 16; i++) {
+    num = BUFFER[IDX + i] as number
+    if (i === 6) out += HEX[(num & 15) | 64]
+    else if (i === 8) out += HEX[(num & 63) | 128]
+    else out += HEX[num]
+
+    if (i & 1 && i > 1 && i < 11) out += '-'
+  }
+
+  IDX++
+  return out
 }

@@ -9,16 +9,22 @@ title: "@tanstack/solid-form"
 
 ## Interfaces
 
+- [CreateFieldOptions](../interfaces/createfieldoptions.md)
+- [CreateFieldOptionsBound](../interfaces/createfieldoptionsbound.md)
 - [SolidFormApi](../interfaces/solidformapi.md)
+- [WithFormProps](../interfaces/withformprops.md)
 
 ## Type Aliases
 
 - [CreateField](../type-aliases/createfield.md)
 - [FieldComponent](../type-aliases/fieldcomponent.md)
+- [SolidFormExtendedApi](../type-aliases/solidformextendedapi.md)
 
 ## Functions
 
 - [createField](../functions/createfield.md)
 - [createForm](../functions/createform.md)
+- [createFormHook](../functions/createformhook.md)
+- [createFormHookContexts](../functions/createformhookcontexts.md)
 - [Field](../functions/field.md)
 - [useStore](../functions/usestore.md)

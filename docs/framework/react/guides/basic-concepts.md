@@ -186,9 +186,10 @@ You can define a schema using any of the libraries implementing the specificatio
 
 Supported libraries include:
 
-- [Zod](https://zod.dev/)
-- [Valibot](https://valibot.dev/)
-- [ArkType](https://arktype.io/)
+- [Zod](https://zod.dev/) (v3.24.0 or higher)
+- [Valibot](https://valibot.dev/) (v1.0.0 or higher)
+- [ArkType](https://arktype.io/) (v2.1.20 or higher)
+- [Yup](https://github.com/jquense/yup) (v1.7.0 or higher)
 
 ```tsx
 import { z } from 'zod'
@@ -274,7 +275,7 @@ More information can be found at [Listeners](../listeners.md)
 
 Array fields allow you to manage a list of values within a form, such as a list of hobbies. You can create an array field using the `form.Field` component with the `mode="array"` prop.
 
-When working with array fields, you can use the fields `pushValue`, `removeValue`, `swapValues` and `moveValue` methods to add, remove, and swap values in the array.
+When working with array fields, you can use the fields `pushValue`, `removeValue`, `swapValues` and `moveValue` methods to add, remove, swap, and move a value from one index to another within the array, respectively. Additional helper methods such as `insertValue`, `replaceValue`, and `clearValues` are also available for inserting, replacing, and clearing array values.
 
 Example:
 

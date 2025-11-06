@@ -11,7 +11,7 @@ title: standardSchemaValidators
 const standardSchemaValidators: object;
 ```
 
-Defined in: [packages/form-core/src/standardSchemaValidator.ts:53](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchemaValidator.ts#L53)
+Defined in: [packages/form-core/src/standardSchemaValidator.ts:73](https://github.com/TanStack/form/blob/main/packages/form-core/src/standardSchemaValidator.ts#L73)
 
 ## Type declaration
 

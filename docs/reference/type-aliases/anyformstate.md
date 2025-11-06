@@ -8,7 +8,7 @@ title: AnyFormState
 # Type Alias: AnyFormState
 
 ```ts
-type AnyFormState = FormState<any, any, any, any, any, any, any, any, any>;
+type AnyFormState = FormState<any, any, any, any, any, any, any, any, any, any, any>;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:681](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L681)
+Defined in: [packages/form-core/src/FormApi.ts:778](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L778)
