@@ -32,14 +32,14 @@ export function functionalUpdate<TInput, TOutput = TInput>(
  * @private
  */
 export function getBy(obj: any, path: any) {
-  const pathObj = makePathArray(path)
-  return pathObj.reduce((current: any, pathPart: any) => {
-    if (current === null) return null
-    if (typeof current !== 'undefined') {
-      return current[pathPart]
-    }
-    return undefined
-  }, obj)
+  let current = obj
+
+  for (const pathPart of makePathArray(path)) {
+    if (current === null || current === undefined) return current
+    current = current[pathPart]
+  }
+
+  return current
 }
 
 /**
@@ -48,13 +48,14 @@ export function getBy(obj: any, path: any) {
  */
 export function setBy(obj: any, _path: any, updater: Updater<any>) {
   const path = makePathArray(_path)
+  let pathIndex = 0
+  const lastPathIndex = path.length - 1
 
   function doSet(parent?: any): any {
-    if (!path.length) {
-      return functionalUpdate(updater, parent)
-    }
+    if (pathIndex > lastPathIndex) return functionalUpdate(updater, parent)
 
-    const key = path.shift()
+    const key = path[pathIndex]!
+    pathIndex += 1
 
     if (
       typeof key === 'string' ||
@@ -62,8 +63,11 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
     ) {
       if (typeof parent === 'object') {
         if (parent === null) {
-          parent = {}
+          return {
+            [key]: doSet(),
+          }
         }
+
         return {
           ...parent,
           [key]: doSet(parent[key]),
@@ -77,12 +81,12 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
     if (Array.isArray(parent) && typeof key === 'number') {
       const prefix = parent.slice(0, key)
       return [
-        ...(prefix.length ? prefix : new Array(key)),
+        ...(prefix.length ? prefix : Array.from({ length: key })),
         doSet(parent[key]),
         ...parent.slice(key + 1),
       ]
     }
-    return [...new Array(key), doSet()]
+    return [...Array.from({ length: key }), doSet()]
   }
 
   return doSet(obj)
