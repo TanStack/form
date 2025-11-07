@@ -22,9 +22,11 @@ export type Narrow<A> = Try<A, [], NarrowRaw<A>>
 export interface AnyDeepKeyAndValue<
   K extends string = string,
   V extends any = any,
+  P extends unknown[] = unknown[],
 > {
   key: K
   value: V
+  priority: P
 }
 
 export type ArrayAccessor<TParent extends AnyDeepKeyAndValue> =
@@ -33,19 +35,22 @@ export type ArrayAccessor<TParent extends AnyDeepKeyAndValue> =
 export interface ArrayDeepKeyAndValue<
   in out TParent extends AnyDeepKeyAndValue,
   in out T extends ReadonlyArray<any>,
+  in out TPriority extends unknown[],
 > extends AnyDeepKeyAndValue {
   key: ArrayAccessor<TParent>
   value: T[number] | Nullable<TParent['value']>
+  priority: TPriority
 }
 
 export type DeepKeyAndValueArray<
   TParent extends AnyDeepKeyAndValue,
   T extends ReadonlyArray<any>,
   TAcc,
+  TPriority extends unknown[],
 > = DeepKeysAndValuesImpl<
   NonNullable<T[number]>,
-  ArrayDeepKeyAndValue<TParent, T>,
-  TAcc | ArrayDeepKeyAndValue<TParent, T>
+  ArrayDeepKeyAndValue<TParent, T, TPriority>,
+  TAcc | ArrayDeepKeyAndValue<TParent, T, TPriority>
 >
 
 export type TupleAccessor<
@@ -57,9 +62,11 @@ export interface TupleDeepKeyAndValue<
   in out TParent extends AnyDeepKeyAndValue,
   in out T,
   in out TKey extends AllTupleKeys<T>,
+  in out TPriority extends unknown[],
 > extends AnyDeepKeyAndValue {
   key: TupleAccessor<TParent, TKey>
   value: T[TKey] | Nullable<TParent['value']>
+  priority: TPriority
 }
 
 export type AllTupleKeys<T> = T extends any ? keyof T & `${number}` : never
@@ -68,12 +75,13 @@ export type DeepKeyAndValueTuple<
   TParent extends AnyDeepKeyAndValue,
   T extends ReadonlyArray<any>,
   TAcc,
+  TPriority extends unknown[],
   TAllKeys extends AllTupleKeys<T> = AllTupleKeys<T>,
 > = TAllKeys extends any
   ? DeepKeysAndValuesImpl<
       NonNullable<T[TAllKeys]>,
-      TupleDeepKeyAndValue<TParent, T, TAllKeys>,
-      TAcc | TupleDeepKeyAndValue<TParent, T, TAllKeys>
+      TupleDeepKeyAndValue<TParent, T, TAllKeys, TPriority>,
+      TAcc | TupleDeepKeyAndValue<TParent, T, TAllKeys, TPriority>
     >
   : never
 
@@ -98,22 +106,37 @@ export interface ObjectDeepKeyAndValue<
   in out TParent extends AnyDeepKeyAndValue,
   in out T,
   in out TKey extends AllObjectKeys<T>,
+  in out TPriority extends unknown[],
 > extends AnyDeepKeyAndValue {
   key: ObjectAccessor<TParent, TKey>
   value: ObjectValue<TParent, T, TKey>
+  priority: TPriority
 }
 
 export type DeepKeyAndValueObject<
   TParent extends AnyDeepKeyAndValue,
   T,
   TAcc,
+  TPriority extends unknown[],
   TAllKeys extends AllObjectKeys<T> = AllObjectKeys<T>,
 > = TAllKeys extends any
-  ? DeepKeysAndValuesImpl<
-      NonNullable<T[TAllKeys]>,
-      ObjectDeepKeyAndValue<TParent, T, TAllKeys>,
-      TAcc | ObjectDeepKeyAndValue<TParent, T, TAllKeys>
-    >
+  ? string extends TAllKeys
+    ? DeepKeysAndValuesImpl<
+        NonNullable<T[TAllKeys]>,
+        ObjectDeepKeyAndValue<TParent, T, TAllKeys, TPriority>,
+        TAcc | ObjectDeepKeyAndValue<TParent, T, TAllKeys, TPriority>,
+        // children of records risk causing mismatches because they are
+        // subtypes of the record parent.
+        // `foo.${string}.bar` is also assignable to `foo.${string}`,
+        // so we need higher priority for children.
+        [...TPriority, unknown]
+      >
+    : DeepKeysAndValuesImpl<
+        NonNullable<T[TAllKeys]>,
+        ObjectDeepKeyAndValue<TParent, T, TAllKeys, TPriority>,
+        TAcc | ObjectDeepKeyAndValue<TParent, T, TAllKeys, TPriority>,
+        TPriority
+      >
   : never
 
 export type UnknownAccessor<TParent extends AnyDeepKeyAndValue> =
@@ -123,6 +146,7 @@ export interface UnknownDeepKeyAndValue<TParent extends AnyDeepKeyAndValue>
   extends AnyDeepKeyAndValue {
   key: UnknownAccessor<TParent>
   value: unknown
+  priority: unknown[]
 }
 
 export type DeepKeysAndValues<T> =
@@ -134,6 +158,7 @@ export type DeepKeysAndValuesImpl<
   T,
   TParent extends AnyDeepKeyAndValue = never,
   TAcc = never,
+  TPriority extends unknown[] = [],
 > = unknown extends T
   ? TAcc | UnknownDeepKeyAndValue<TParent>
   : unknown extends T // this stops runaway recursion when T is any
@@ -142,12 +167,12 @@ export type DeepKeysAndValuesImpl<
       ? TAcc
       : T extends ReadonlyArray<any>
         ? number extends T['length']
-          ? DeepKeyAndValueArray<TParent, T, TAcc>
-          : DeepKeyAndValueTuple<TParent, T, TAcc>
+          ? DeepKeyAndValueArray<TParent, T, TAcc, TPriority>
+          : DeepKeyAndValueTuple<TParent, T, TAcc, TPriority>
         : keyof T extends never
           ? TAcc | UnknownDeepKeyAndValue<TParent>
           : T extends object
-            ? DeepKeyAndValueObject<TParent, T, TAcc>
+            ? DeepKeyAndValueObject<TParent, T, TAcc, TPriority>
             : TAcc
 
 /**
@@ -164,20 +189,18 @@ type ValueOfKey<TValue extends AnyDeepKeyAndValue, TAccessor extends string> =
       : never
     : never
 
-type MostSpecific<
+type HighestPriority<
   T extends AnyDeepKeyAndValue,
-  All extends AnyDeepKeyAndValue = T,
+  TAll extends AnyDeepKeyAndValue = T,
 > = T extends any
-  ? // If `Exclude<All, T>` is `never`, `T` is the sole union member.
-    // If only the key was used as check, it would not work because our keys
-    // are compatible with each other and would collapse.
-    // This check, however, is stable because `All` includes distinct `value` types,
-    // preventing unrelated members from collapsing into each other.
-    Exclude<All, T> extends never
+  ? // Check if no other member of the union has a longer element.
+    // If the union consists of one member, this will always result in never
+    Extract<
+      TAll,
+      { priority: [...T['priority'], unknown, ...unknown[]] }
+    > extends never
     ? T
-    : T['key'] extends Exclude<All, T>['key']
-      ? T
-      : never
+    : never
   : never
 
 /**
@@ -185,7 +208,7 @@ type MostSpecific<
  */
 export type DeepValue<TValue, TAccessor extends string> = unknown extends TValue
   ? TValue
-  : MostSpecific<ValueOfKey<DeepKeysAndValues<TValue>, TAccessor>>['value']
+  : HighestPriority<ValueOfKey<DeepKeysAndValues<TValue>, TAccessor>>['value']
 
 /**
  * The keys of an object or array, deeply nested and only with a value of TValue
