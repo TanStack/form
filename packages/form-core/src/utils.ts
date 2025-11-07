@@ -96,11 +96,13 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
  */
 export function deleteBy(obj: any, _path: any) {
   const path = makePathArray(_path)
+  const lastPathIndex = path.length - 1
+  let pathIndex = 0
 
   function doDelete(parent: any): any {
     if (!parent) return
-    if (path.length === 1) {
-      const finalPath = path[0]!
+    if (pathIndex === lastPathIndex) {
+      const finalPath = path[lastPathIndex]!
       if (Array.isArray(parent) && typeof finalPath === 'number') {
         return parent.filter((_, i) => i !== finalPath)
       }
@@ -108,7 +110,8 @@ export function deleteBy(obj: any, _path: any) {
       return rest
     }
 
-    const key = path.shift()
+    const key = path[pathIndex]!
+    pathIndex++
 
     if (typeof key === 'string') {
       if (typeof parent === 'object') {
@@ -126,7 +129,7 @@ export function deleteBy(obj: any, _path: any) {
         }
         const prefix = parent.slice(0, key)
         return [
-          ...(prefix.length ? prefix : new Array(key)),
+          ...(prefix.length ? prefix : Array.from({ length: key })),
           doDelete(parent[key]),
           ...parent.slice(key + 1),
         ]
