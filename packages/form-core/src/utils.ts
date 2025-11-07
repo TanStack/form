@@ -1,4 +1,3 @@
-import { defaultValidationLogic } from './ValidationLogic'
 import type { ValidationLogicProps } from './ValidationLogic'
 import type { FieldValidators } from './FieldApi'
 import type { FormValidators } from './FormApi'
@@ -80,12 +79,12 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
     if (Array.isArray(parent) && typeof key === 'number') {
       const prefix = parent.slice(0, key)
       return [
-        ...(prefix.length ? prefix : new Array(key)),
+        ...(prefix.length ? prefix : Array.from({ length: key })),
         doSet(parent[key]),
         ...parent.slice(key + 1),
       ]
     }
-    return [...new Array(key), doSet()]
+    return [...Array.from({ length: key }), doSet()]
   }
 
   return doSet(obj)
