@@ -157,22 +157,35 @@ export type DeepKeys<T> = unknown extends T
   ? string
   : DeepKeysAndValues<T>['key']
 
-export type ValueOfKey<
-  TValue extends AnyDeepKeyAndValue,
-  TAccessor extends string,
-> =
+type ValueOfKey<TValue extends AnyDeepKeyAndValue, TAccessor extends string> =
   TValue extends AnyDeepKeyAndValue<infer ValueKey>
     ? TAccessor extends ValueKey
-      ? TValue['value']
+      ? TValue
       : never
     : never
+
+type MostSpecific<
+  T extends AnyDeepKeyAndValue,
+  All extends AnyDeepKeyAndValue = T,
+> = T extends any
+  ? // If `Exclude<All, T>` is `never`, `T` is the sole union member.
+    // If only the key was used as check, it would not work because our keys
+    // are compatible with each other and would collapse.
+    // This check, however, is stable because `All` includes distinct `value` types,
+    // preventing unrelated members from collapsing into each other.
+    Exclude<All, T> extends never
+    ? T
+    : T['key'] extends Exclude<All, T>['key']
+      ? T
+      : never
+  : never
 
 /**
  * Infer the type of a deeply nested property within an object or an array.
  */
 export type DeepValue<TValue, TAccessor extends string> = unknown extends TValue
   ? TValue
-  : ValueOfKey<DeepKeysAndValues<TValue>, TAccessor>
+  : MostSpecific<ValueOfKey<DeepKeysAndValues<TValue>, TAccessor>>['value']
 
 /**
  * The keys of an object or array, deeply nested and only with a value of TValue
