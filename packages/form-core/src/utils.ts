@@ -32,6 +32,7 @@ export function functionalUpdate<TInput, TOutput = TInput>(
  * @private
  */
 export function getBy(obj: any, path: any) {
+  if (obj === null || obj === undefined) return obj
   let current = obj
 
   for (const pathPart of makePathArray(path)) {
@@ -52,10 +53,12 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
   const lastPathIndex = path.length - 1
 
   function doSet(parent?: any): any {
-    if (pathIndex > lastPathIndex) return functionalUpdate(updater, parent)
+    if (pathIndex > lastPathIndex) {
+      return functionalUpdate(updater, parent)
+    }
 
     const key = path[pathIndex]!
-    pathIndex += 1
+    pathIndex++
 
     if (
       typeof key === 'string' ||
@@ -63,11 +66,8 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
     ) {
       if (typeof parent === 'object') {
         if (parent === null) {
-          return {
-            [key]: doSet(),
-          }
+          parent = {}
         }
-
         return {
           ...parent,
           [key]: doSet(parent[key]),
@@ -77,16 +77,15 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
         [key]: doSet(),
       }
     }
-
     if (Array.isArray(parent) && typeof key === 'number') {
       const prefix = parent.slice(0, key)
       return [
-        ...(prefix.length ? prefix : Array.from({ length: key })),
+        ...(prefix.length ? prefix : new Array(key)),
         doSet(parent[key]),
         ...parent.slice(key + 1),
       ]
     }
-    return [...Array.from({ length: key }), doSet()]
+    return [...new Array(key), doSet()]
   }
 
   return doSet(obj)
