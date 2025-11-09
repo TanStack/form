@@ -1,4 +1,4 @@
-import { describe, expectTypeOf, it } from 'vitest'
+import { describe, expect, expectTypeOf, it } from 'vitest'
 import type {
   DeepKeys,
   DeepKeysOfType,
@@ -6,490 +6,679 @@ import type {
   FieldsMap,
 } from '../src/index'
 
-/**
- * Properly recognizes that `0` is not an object and should not have subkeys
- */
-type TupleSupport = { topUsers: [User, 0, User] }
-expectTypeOf(0 as never as DeepKeys<TupleSupport>).toEqualTypeOf<
-  | 'topUsers'
-  | 'topUsers[0]'
-  | 'topUsers[0].name'
-  | 'topUsers[0].id'
-  | 'topUsers[0].age'
-  | 'topUsers[1]'
-  | 'topUsers[2]'
-  | 'topUsers[2].name'
-  | 'topUsers[2].id'
-  | 'topUsers[2].age'
->()
-expectTypeOf(0 as never as DeepKeysOfType<TupleSupport, number>).toEqualTypeOf<
-  'topUsers[0].age' | 'topUsers[1]' | 'topUsers[2].age'
->()
-expectTypeOf(0 as never as DeepKeysOfType<TupleSupport, string>).toEqualTypeOf<
-  'topUsers[0].name' | 'topUsers[0].id' | 'topUsers[2].name' | 'topUsers[2].id'
->()
-expectTypeOf(0 as never as DeepKeysOfType<TupleSupport, User>).toEqualTypeOf<
-  'topUsers[0]' | 'topUsers[2]'
->()
-expectTypeOf(
-  0 as never as DeepKeysOfType<TupleSupport, Date>,
-).toEqualTypeOf<never>()
+describe('DeepKeys, DeepKeysOfType', () => {
+  it('should support tuples', () => {
+    type User = {
+      name: string
+      id: string
+      age: number
+    }
+    /**
+     * It should recognize that '0' does not have subkeys
+     */
+    type Tuple = { topUsers: [User, 0, User] }
 
-/**
- * Properly recognizes that a normal number index won't cut it and should be `[number]` prefixed instead
- */
-type ArraySupport = { users: User[] }
-expectTypeOf(0 as never as DeepKeys<ArraySupport>).toEqualTypeOf<
-  | 'users'
-  | `users[${number}]`
-  | `users[${number}].name`
-  | `users[${number}].id`
-  | `users[${number}].age`
->()
-expectTypeOf(
-  0 as never as DeepKeysOfType<ArraySupport, number>,
-).toEqualTypeOf<`users[${number}].age`>()
-expectTypeOf(0 as never as DeepKeysOfType<ArraySupport, string>).toEqualTypeOf<
-  `users[${number}].name` | `users[${number}].id`
->()
-expectTypeOf(
-  0 as never as DeepKeysOfType<ArraySupport, User>,
-).toEqualTypeOf<`users[${number}]`>()
-expectTypeOf(
-  0 as never as DeepKeysOfType<ArraySupport, Date>,
-).toEqualTypeOf<never>()
+    type Keys = DeepKeys<Tuple>
+    type WithNumber = DeepKeysOfType<Tuple, number>
+    type WithString = DeepKeysOfType<Tuple, string>
+    type WithDate = DeepKeysOfType<Tuple, Date>
+    type WithUser = DeepKeysOfType<Tuple, User>
 
-/**
- * Properly handles deep object nesting like so:
- */
-type NestedSupport = { meta: { mainUser: User } }
-expectTypeOf(0 as never as DeepKeys<NestedSupport>).toEqualTypeOf<
-  | 'meta'
-  | 'meta.mainUser'
-  | 'meta.mainUser.name'
-  | 'meta.mainUser.id'
-  | 'meta.mainUser.age'
->()
-expectTypeOf(
-  0 as never as DeepKeysOfType<NestedSupport, number>,
-).toEqualTypeOf<`meta.mainUser.age`>()
-expectTypeOf(0 as never as DeepKeysOfType<NestedSupport, string>).toEqualTypeOf<
-  `meta.mainUser.name` | `meta.mainUser.id`
->()
-expectTypeOf(
-  0 as never as DeepKeysOfType<NestedSupport, User>,
-).toEqualTypeOf<`meta.mainUser`>()
-expectTypeOf(
-  0 as never as DeepKeysOfType<NestedSupport, Date>,
-).toEqualTypeOf<never>()
+    expectTypeOf<Keys>().toEqualTypeOf<
+      | 'topUsers'
+      | 'topUsers[0]'
+      | 'topUsers[0].name'
+      | 'topUsers[0].id'
+      | 'topUsers[0].age'
+      | 'topUsers[1]'
+      | 'topUsers[2]'
+      | 'topUsers[2].name'
+      | 'topUsers[2].id'
+      | 'topUsers[2].age'
+    >()
 
-/**
- * Properly handles deep partial object nesting like so:
- */
-type NestedPartialSupport = { meta?: { mainUser?: User } }
-expectTypeOf(0 as never as DeepKeys<NestedPartialSupport>).toEqualTypeOf<
-  | 'meta'
-  | 'meta.mainUser'
-  | 'meta.mainUser.name'
-  | 'meta.mainUser.id'
-  | 'meta.mainUser.age'
->()
-expectTypeOf(
-  0 as never as DeepKeysOfType<NestedPartialSupport, number>,
-).toEqualTypeOf<never>()
-expectTypeOf(
-  0 as never as DeepKeysOfType<NestedPartialSupport, number | undefined>,
-).toEqualTypeOf<'meta.mainUser.age'>()
+    expectTypeOf<WithNumber>().toEqualTypeOf<
+      'topUsers[0].age' | 'topUsers[1]' | 'topUsers[2].age'
+    >()
 
-/**
- * Properly handles `object` edgecase nesting like so:
- */
-type ObjectNestedEdgecase = { meta: { mainUser: object } }
-expectTypeOf(0 as never as DeepKeys<ObjectNestedEdgecase>).toEqualTypeOf(
-  0 as never as 'meta' | 'meta.mainUser' | `meta.mainUser.${string}`,
-)
-expectTypeOf(
-  0 as never as DeepKeysOfType<ObjectNestedEdgecase, object>,
-).toEqualTypeOf<'meta' | 'meta.mainUser'>()
+    expectTypeOf<WithString>().toEqualTypeOf<
+      | 'topUsers[0].name'
+      | 'topUsers[0].id'
+      | 'topUsers[2].name'
+      | 'topUsers[2].id'
+    >()
 
-/**
- * Properly handles `object` edgecase like so:
- */
-type ObjectEdgecase = DeepKeys<object>
-expectTypeOf(0 as never as ObjectEdgecase).toEqualTypeOf<string>()
+    expectTypeOf<WithUser>().toEqualTypeOf<'topUsers[0]' | 'topUsers[2]'>()
 
-/**
- * Properly handles `object` edgecase nesting like so:
- */
-type UnknownNestedEdgecase = { meta: { mainUser: unknown } }
-expectTypeOf(
-  0 as never as 'meta' | 'meta.mainUser' | `meta.mainUser.${string}`,
-).toEqualTypeOf(0 as never as DeepKeys<UnknownNestedEdgecase>)
-expectTypeOf(
-  0 as never as DeepKeysOfType<UnknownNestedEdgecase, object>,
-).toEqualTypeOf<'meta'>()
+    expectTypeOf<WithDate>().toBeNever()
+  })
 
-/**
- * Properly handles discriminated unions like so:
- */
-type DiscriminatedUnion = { name: string } & (
-  | { variant: 'foo' }
-  | { variant: 'bar'; baz: boolean }
-)
-expectTypeOf(0 as never as DeepKeys<DiscriminatedUnion>).toEqualTypeOf<
-  'name' | 'variant' | 'baz'
->()
-expectTypeOf(
-  0 as never as DeepKeysOfType<DiscriminatedUnion, string>,
-).toEqualTypeOf<'name' | 'variant'>()
-expectTypeOf(
-  0 as never as DeepKeysOfType<DiscriminatedUnion, boolean>,
-).toEqualTypeOf<'baz'>()
+  it('should support arrays', () => {
+    type User = {
+      name: string
+      id: string
+      age: number
+    }
+    /**
+     * Properly recognizes that a normal number index won't cut it and should be `[number]` prefixed instead
+     */
+    type Array = { users: User[] }
 
-type DiscriminatedUnionValueShared = DeepValue<DiscriminatedUnion, 'variant'>
-expectTypeOf(0 as never as DiscriminatedUnionValueShared).toEqualTypeOf<
-  'foo' | 'bar'
->()
-type DiscriminatedUnionValueFixed = DeepValue<DiscriminatedUnion, 'baz'>
-expectTypeOf(
-  0 as never as DiscriminatedUnionValueFixed,
-).toEqualTypeOf<boolean>()
+    type Keys = DeepKeys<Array>
+    type WithNumber = DeepKeysOfType<Array, number>
+    type WithString = DeepKeysOfType<Array, string>
+    type WithUser = DeepKeysOfType<Array, User>
+    type WithDate = DeepKeysOfType<Array, Date>
 
-/**
- * Properly handles `unknown` edgecase like so:
- */
-type UnknownEdgecase = DeepKeys<unknown>
-expectTypeOf(0 as never as UnknownEdgecase).toEqualTypeOf<string>()
-expectTypeOf(
-  0 as never as DeepKeysOfType<unknown, unknown>,
-).toEqualTypeOf<string>()
-expectTypeOf(
-  0 as never as DeepKeysOfType<unknown, object>,
-).toEqualTypeOf<never>()
+    expectTypeOf<Keys>().toEqualTypeOf<
+      | 'users'
+      | `users[${number}]`
+      | `users[${number}].name`
+      | `users[${number}].id`
+      | `users[${number}].age`
+    >()
 
-type NestedKeysExample = DeepValue<
-  { meta: { mainUser: User } },
-  'meta.mainUser.age'
->
-expectTypeOf(0 as never as NestedKeysExample).toEqualTypeOf<number>()
+    expectTypeOf<WithNumber>().toEqualTypeOf<`users[${number}].age`>()
 
-type NestedNullableObjectCase = {
-  null: { mainUser: 'name' } | null
-  undefined: { mainUser: 'name' } | undefined
-  optional?: { mainUser: 'name' }
-  mixed: { mainUser: 'name' } | null | undefined
-}
+    expectTypeOf<WithString>().toEqualTypeOf<
+      `users[${number}].name` | `users[${number}].id`
+    >()
 
-type NestedNullableObjectCaseNull = DeepValue<
-  NestedNullableObjectCase,
-  'null.mainUser'
->
-expectTypeOf(0 as never as NestedNullableObjectCaseNull).toEqualTypeOf<
-  'name' | null
->()
-type NestedNullableObjectCaseUndefined = DeepValue<
-  NestedNullableObjectCase,
-  'undefined.mainUser'
->
-expectTypeOf(0 as never as NestedNullableObjectCaseUndefined).toEqualTypeOf<
-  'name' | undefined
->()
-type NestedNullableObjectCaseOptional = DeepValue<
-  NestedNullableObjectCase,
-  'undefined.mainUser'
->
-expectTypeOf(0 as never as NestedNullableObjectCaseOptional).toEqualTypeOf<
-  'name' | undefined
->()
-type NestedNullableObjectCaseMixed = DeepValue<
-  NestedNullableObjectCase,
-  'mixed.mainUser'
->
-expectTypeOf(0 as never as 'name' | null | undefined).toEqualTypeOf(
-  0 as never as NestedNullableObjectCaseMixed,
-)
+    expectTypeOf<WithUser>().toEqualTypeOf<`users[${number}]`>()
 
-type DoubleNestedNullableObjectCase = {
-  mixed?: { mainUser: { name: 'name' } } | null | undefined
-}
-type DoubleNestedNullableObjectA = DeepValue<
-  DoubleNestedNullableObjectCase,
-  'mixed.mainUser'
->
-expectTypeOf(0 as never as { name: 'name' } | null | undefined).toEqualTypeOf(
-  0 as never as DoubleNestedNullableObjectA,
-)
-type DoubleNestedNullableObjectB = DeepValue<
-  DoubleNestedNullableObjectCase,
-  'mixed.mainUser.name'
->
-expectTypeOf(0 as never as DoubleNestedNullableObjectB).toEqualTypeOf<
-  'name' | null | undefined
->()
+    expectTypeOf<WithDate>().toBeNever()
+  })
 
-type NestedObjectUnionCase = {
-  normal:
-    | { a: User }
-    | { a: string }
-    | { b: string }
-    | { c: { user: User } | { user: number } }
-}
-type NestedObjectUnionA = DeepValue<NestedObjectUnionCase, 'normal.a.age'>
-expectTypeOf(0 as never as NestedObjectUnionA).toEqualTypeOf<number>()
-type NestedObjectUnionB = DeepValue<NestedObjectUnionCase, 'normal.b'>
-expectTypeOf(0 as never as NestedObjectUnionB).toEqualTypeOf<string>()
-type NestedObjectUnionC = DeepValue<NestedObjectUnionCase, 'normal.c.user.id'>
-expectTypeOf(0 as never as NestedObjectUnionC).toEqualTypeOf<string>()
+  it('should support nested objects', () => {
+    type User = {
+      name: string
+      id: string
+      age: number
+    }
+    type Nested = { meta: { mainUser: User } }
 
-type NestedNullableObjectUnionCase = {
-  nullable:
-    | { a?: number; b?: { c: boolean } | null }
-    | { b?: { c: string; e: number } }
-}
-type NestedNullableObjectUnionA = DeepValue<
-  NestedNullableObjectUnionCase,
-  'nullable.a'
->
-expectTypeOf(0 as never as NestedNullableObjectUnionA).toEqualTypeOf<
-  number | undefined
->()
-type NestedNullableObjectUnionB = DeepValue<
-  NestedNullableObjectUnionCase,
-  'nullable.b.c'
->
-expectTypeOf(0 as never as string | boolean | null | undefined).toEqualTypeOf(
-  0 as never as NestedNullableObjectUnionB,
-)
-type NestedNullableObjectUnionC = DeepValue<
-  NestedNullableObjectUnionCase,
-  'nullable.b.e'
->
-expectTypeOf(0 as never as NestedNullableObjectUnionC).toEqualTypeOf<
-  number | undefined
->()
+    type Keys = DeepKeys<Nested>
+    type WithNumber = DeepKeysOfType<Nested, number>
+    type WithString = DeepKeysOfType<Nested, string>
+    type WithUser = DeepKeysOfType<Nested, User>
+    type WithDate = DeepKeysOfType<Nested, Date>
 
-type NestedArrayExample = DeepValue<{ users: User[] }, 'users[0].age'>
-expectTypeOf(0 as never as NestedArrayExample).toEqualTypeOf<number>()
+    expectTypeOf<Keys>().toEqualTypeOf<
+      | 'meta'
+      | 'meta.mainUser'
+      | 'meta.mainUser.name'
+      | 'meta.mainUser.id'
+      | 'meta.mainUser.age'
+    >()
+    expectTypeOf<WithNumber>().toEqualTypeOf<`meta.mainUser.age`>()
 
-type NestedLooseArrayExample = DeepValue<
-  { users: User[] },
-  `users[${number}].age`
->
-expectTypeOf(0 as never as NestedLooseArrayExample).toEqualTypeOf<number>()
+    expectTypeOf<WithString>().toEqualTypeOf<
+      `meta.mainUser.name` | `meta.mainUser.id`
+    >()
 
-type NestedArrayUnionExample = DeepValue<
-  { users: string | User[] },
-  'users[0].age'
->
-expectTypeOf(0 as never as NestedArrayUnionExample).toEqualTypeOf<number>()
+    expectTypeOf<WithUser>().toEqualTypeOf<`meta.mainUser`>()
 
-type NestedTupleExample = DeepValue<
-  { topUsers: [User, 0, User] },
-  'topUsers[0].age'
->
-expectTypeOf(0 as never as NestedTupleExample).toEqualTypeOf<number>()
+    expectTypeOf<WithDate>().toBeNever()
+  })
 
-type NestedTupleBroadExample = DeepValue<
-  { topUsers: User[] },
-  `topUsers[${number}].age`
->
-expectTypeOf(0 as never as NestedTupleBroadExample).toEqualTypeOf<number>()
+  it('should support nested partial objects', () => {
+    type User = {
+      name: string
+      id: string
+      age: number
+    }
+    type NestedPartial = { meta?: { mainUser?: User } }
 
-type DeeplyNestedTupleBroadExample = DeepValue<
-  { nested: { topUsers: User[] } },
-  `nested.topUsers[${number}].age`
->
-expectTypeOf(
-  0 as never as DeeplyNestedTupleBroadExample,
-).toEqualTypeOf<number>()
+    type Keys = DeepKeys<NestedPartial>
+    type WithNumber = DeepKeysOfType<NestedPartial, number>
+    type WithMaybeNumber = DeepKeysOfType<NestedPartial, number | undefined>
 
-type SimpleArrayExample = DeepValue<User[], `[${number}]`>
-expectTypeOf(0 as never as SimpleArrayExample).toEqualTypeOf<User>()
+    expectTypeOf<Keys>().toEqualTypeOf<
+      | 'meta'
+      | 'meta.mainUser'
+      | 'meta.mainUser.name'
+      | 'meta.mainUser.id'
+      | 'meta.mainUser.age'
+    >()
 
-type SimpleNestedArrayExample = DeepValue<User[], `[${number}].age`>
-expectTypeOf(0 as never as SimpleNestedArrayExample).toEqualTypeOf<number>()
+    expectTypeOf<WithNumber>().toBeNever()
 
-type NestedTupleItemExample = DeepValue<
-  { topUsers: [User, 0, User] },
-  'topUsers[1]'
->
-expectTypeOf(0 as never as NestedTupleItemExample).toEqualTypeOf<0>()
+    expectTypeOf<WithMaybeNumber>().toEqualTypeOf<'meta.mainUser.age'>()
+  })
 
-type ArrayExample = DeepValue<[1, 2, 3], '[1]'>
-expectTypeOf(0 as never as ArrayExample).toEqualTypeOf<2>()
+  it('should handle a `object`', () => {
+    type NestedObject = { meta: { mainUser: object } }
 
-type NonNestedObjExample = DeepValue<{ a: 1 }, 'a'>
-expectTypeOf(0 as never as NonNestedObjExample).toEqualTypeOf<1>()
+    type Keys = DeepKeys<NestedObject>
+    type WithObject = DeepKeysOfType<NestedObject, object>
 
-interface User {
-  name: string
-  id: string
-  age: number
-}
+    expectTypeOf<Keys>().toEqualTypeOf<
+      'meta' | 'meta.mainUser' | `meta.mainUser.${string}`
+    >()
 
-type FormDefinition = {
-  nested: {
-    people: User[]
-  }
-}
+    expectTypeOf<WithObject>().toEqualTypeOf<'meta' | 'meta.mainUser'>()
 
-type FormDefinitionValue = DeepValue<
-  FormDefinition,
-  `nested.people[${number}].name`
->
+    type ObjectKeys = DeepKeys<object>
+    expectTypeOf<ObjectKeys>().toBeString()
+  })
 
-expectTypeOf(0 as never as FormDefinitionValue).toEqualTypeOf<string>()
+  it('should handle `unknown`', () => {
+    type NestedUnknown = { meta: { mainUser: unknown } }
 
-type DoubleDeepArray = DeepValue<
-  {
-    people: {
-      parents: {
-        name: string
-        age: number
+    type Keys = DeepKeys<NestedUnknown>
+    type WithObject = DeepKeysOfType<NestedUnknown, object>
+
+    expectTypeOf<Keys>().toEqualTypeOf<
+      'meta' | 'meta.mainUser' | `meta.mainUser.${string}`
+    >()
+
+    expectTypeOf<WithObject>().toEqualTypeOf<'meta'>()
+
+    type UnknownKeys = DeepKeys<unknown>
+    type UnknownWithUnknown = DeepKeysOfType<unknown, unknown>
+    type UnknownWithObject = DeepKeysOfType<unknown, object>
+
+    expectTypeOf<UnknownKeys>().toBeString()
+
+    expectTypeOf<UnknownWithUnknown>().toBeString()
+
+    expectTypeOf<UnknownWithObject>().toBeNever()
+  })
+
+  it('should handle discriminated unions', () => {
+    type DiscriminatedUnion = { name: string } & (
+      | { variant: 'foo' }
+      | { variant: 'bar'; baz: boolean }
+    )
+
+    type Keys = DeepKeys<DiscriminatedUnion>
+    type WithString = DeepKeysOfType<DiscriminatedUnion, string>
+    type WithBoolean = DeepKeysOfType<DiscriminatedUnion, boolean>
+
+    expectTypeOf<Keys>().toEqualTypeOf<'name' | 'variant' | 'baz'>()
+
+    expectTypeOf<WithString>().toEqualTypeOf<'name' | 'variant'>()
+
+    expectTypeOf<WithBoolean>().toEqualTypeOf<'baz'>()
+  })
+
+  it('should handle records', () => {
+    type Value = {
+      a: string
+      b: number
+      c: { d: string }
+    }
+    type RecordExample = {
+      records: Record<string, Value>
+    }
+    type WithNumber = DeepKeysOfType<RecordExample, number>
+    type WithString = DeepKeysOfType<RecordExample, string>
+
+    expectTypeOf<DeepKeys<RecordExample>>().toEqualTypeOf<
+      | 'records'
+      | `records.${string}`
+      | `records.${string}.a`
+      | `records.${string}.b`
+      | `records.${string}.c`
+      | `records.${string}.c.d`
+    >()
+
+    expectTypeOf<WithNumber>().toEqualTypeOf<`records.${string}.b`>()
+
+    expectTypeOf<WithString>().toEqualTypeOf<
+      `records.${string}.a` | `records.${string}.c.d`
+    >()
+  })
+
+  it('should handle objects containing any', () => {
+    type ObjectWithAny = {
+      a: any
+      b: number
+      obj: {
+        c: any
+        d: number
+      }
+    }
+
+    type Keys = DeepKeys<ObjectWithAny>
+    type WithNumber = DeepKeysOfType<ObjectWithAny, number>
+    type WithString = DeepKeysOfType<ObjectWithAny, string>
+
+    expectTypeOf<Keys>().toEqualTypeOf<
+      'a' | 'b' | 'obj' | `a.${string}` | 'obj.c' | `obj.c.${string}` | 'obj.d'
+    >()
+    // since any can also be number, It's okay to be included
+    expectTypeOf<WithNumber>().toEqualTypeOf<'a' | 'b' | 'obj.c' | 'obj.d'>()
+    expectTypeOf<WithString>().toEqualTypeOf<'a' | 'obj.c'>()
+  })
+})
+
+describe('DeepValue', () => {
+  it('should handle discriminated unions', () => {
+    type DiscriminatedUnion = { name: string } & (
+      | { variant: 'foo' }
+      | { variant: 'bar'; baz: boolean }
+    )
+
+    type SharedValue = DeepValue<DiscriminatedUnion, 'variant'>
+    type FixedValue = DeepValue<DiscriminatedUnion, 'baz'>
+    type FixedValue2 = DeepValue<DiscriminatedUnion, 'name'>
+
+    expectTypeOf<SharedValue>().toEqualTypeOf<'foo' | 'bar'>()
+    // TODO this might have implications for high-level nullable / undefinable not cascading.
+    expectTypeOf<FixedValue>().toBeBoolean()
+    expectTypeOf<FixedValue2>().toBeString()
+  })
+
+  it('should handle nested objects', () => {
+    type User = {
+      name: string
+      id: string
+      age: number
+    }
+    type Nested = { meta: { mainUser: User } }
+
+    type ExpectNumber = DeepValue<Nested, 'meta.mainUser.age'>
+
+    expectTypeOf<ExpectNumber>().toBeNumber()
+  })
+
+  it('should handle undefined / nullable in objects', () => {
+    type NestedNullableObjectCase = {
+      null: { mainUser: 'name' } | null
+      undefined: { mainUser: 'name' } | undefined
+      optional?: { mainUser: 'name' }
+      mixed: { mainUser: 'name' } | null | undefined
+    }
+
+    type NameOrNullValue = DeepValue<NestedNullableObjectCase, 'null.mainUser'>
+    type NameOrUndefinedValue = DeepValue<
+      NestedNullableObjectCase,
+      'undefined.mainUser'
+    >
+    type NameOrUndefinedValue2 = DeepValue<
+      NestedNullableObjectCase,
+      'optional.mainUser'
+    >
+    type NameOrNil = DeepValue<NestedNullableObjectCase, 'mixed.mainUser'>
+
+    expectTypeOf<NameOrNullValue>().toEqualTypeOf<'name' | null>()
+
+    expectTypeOf<NameOrUndefinedValue>().toEqualTypeOf<'name' | undefined>()
+
+    expectTypeOf<NameOrUndefinedValue2>().toEqualTypeOf<'name' | undefined>()
+
+    expectTypeOf<NameOrNil>().toEqualTypeOf<'name' | null | undefined>()
+
+    type DoubleNestedNullableObjectCase = {
+      mixed?: { mainUser: { name: 'name' } } | null | undefined
+    }
+    type ObjectOrNil = DeepValue<
+      DoubleNestedNullableObjectCase,
+      'mixed.mainUser'
+    >
+    type NameOrNil2 = DeepValue<
+      DoubleNestedNullableObjectCase,
+      'mixed.mainUser.name'
+    >
+
+    expectTypeOf<ObjectOrNil>().toEqualTypeOf<
+      { name: 'name' } | null | undefined
+    >()
+
+    expectTypeOf<NameOrNil2>().toEqualTypeOf<'name' | null | undefined>()
+  })
+
+  it('should handle unions in objects', () => {
+    type User = {
+      name: string
+      id: string
+      age: number
+    }
+    type NestedUnion = {
+      normal:
+        | { a: User }
+        | { a: string }
+        | { b: string }
+        | { c: { user: User } | { user: number } }
+    }
+    type NumberValue = DeepValue<NestedUnion, 'normal.a.age'>
+    type StringValue = DeepValue<NestedUnion, 'normal.b'>
+    type StringValue2 = DeepValue<NestedUnion, 'normal.c.user.id'>
+
+    expectTypeOf<NumberValue>().toBeNumber()
+
+    expectTypeOf<StringValue>().toBeString()
+
+    expectTypeOf<StringValue2>().toBeString()
+
+    type NestedNullableUnion = {
+      mixed:
+        | { a?: number; b?: { c: boolean } | null }
+        | { b?: { c: string; e: number } }
+    }
+    type NumberOptional = DeepValue<NestedNullableUnion, 'mixed.a'>
+    type MixedValue = DeepValue<NestedNullableUnion, 'mixed.b.c'>
+    type NumberOptional2 = DeepValue<NestedNullableUnion, 'mixed.b.e'>
+
+    expectTypeOf<NumberOptional>().toEqualTypeOf<number | undefined>()
+
+    expectTypeOf<MixedValue>().toEqualTypeOf<
+      string | boolean | null | undefined
+    >()
+
+    expectTypeOf<NumberOptional2>().toEqualTypeOf<number | undefined>()
+  })
+
+  it('should handle nested arrays', () => {
+    type User = {
+      name: string
+      id: string
+      age: number
+    }
+    type NestedArray = { users: User[] }
+
+    type NumberValue = DeepValue<NestedArray, 'users[0].age'>
+    type NumberValue2 = DeepValue<NestedArray, `users[${number}].age`>
+
+    expectTypeOf<NumberValue>().toBeNumber()
+
+    expectTypeOf<NumberValue2>().toBeNumber()
+  })
+
+  it('should handle nested arrays with unions', () => {
+    type User = {
+      name: string
+      id: string
+      age: number
+    }
+    type NestedArrayUnion1 = { users: string | User[] }
+    type NestedArrayUnion2 = { users: (string | User)[] }
+
+    type NumberValue = DeepValue<NestedArrayUnion1, 'users[0].age'>
+    type NumberValue2 = DeepValue<NestedArrayUnion2, 'users[0].age'>
+    type UserValue = DeepValue<NestedArrayUnion1, 'users[0]'>
+    type UserOrString = DeepValue<NestedArrayUnion2, 'users[0]'>
+
+    expectTypeOf<NumberValue>().toBeNumber()
+
+    expectTypeOf<NumberValue2>().toBeNumber()
+
+    expectTypeOf<UserValue>().toEqualTypeOf<User>()
+
+    expectTypeOf<UserOrString>().toEqualTypeOf<User | string>()
+  })
+
+  it('should handle nested tuples', () => {
+    type User = {
+      name: string
+      id: string
+      age: number
+    }
+
+    type NestedTuple = { topUsers: [User, 0, User] }
+
+    type NumberValue = DeepValue<NestedTuple, 'topUsers[0].age'>
+    type NeverValue = DeepValue<NestedTuple, 'topUsers[1].age'>
+    type NumberValue2 = DeepValue<NestedTuple, 'topUsers[2].age'>
+    type UserValue = DeepValue<NestedTuple, 'topUsers[0]'>
+    type ZeroValue = DeepValue<NestedTuple, 'topUsers[1]'>
+    type UserValue2 = DeepValue<NestedTuple, 'topUsers[2]'>
+
+    expectTypeOf<NumberValue>().toBeNumber()
+
+    expectTypeOf<NeverValue>().toBeNever()
+
+    expectTypeOf<NumberValue2>().toBeNumber()
+
+    expectTypeOf<UserValue>().toEqualTypeOf<User>()
+
+    expectTypeOf<ZeroValue>().toEqualTypeOf(0 as const)
+
+    expectTypeOf<UserValue2>().toEqualTypeOf<User>()
+  })
+
+  it('should handle top-level arrays', () => {
+    type User = {
+      name: string
+      id: string
+      age: number
+    }
+
+    type UserValue = DeepValue<User[], '[5]'>
+    type NumberValue = DeepValue<User[], '[5].age'>
+
+    expectTypeOf<UserValue>().toEqualTypeOf<User>()
+
+    expectTypeOf<NumberValue>().toBeNumber()
+  })
+
+  it('should allow string and number literals', () => {
+    type Tuple = ['a', 'b', 'c']
+
+    type OneValue = DeepValue<{ a: 1 }, 'a'>
+
+    type AValue = DeepValue<Tuple, '[0]'>
+    type BValue = DeepValue<Tuple, '[1]'>
+    type CValue = DeepValue<Tuple, '[2]'>
+
+    expectTypeOf<OneValue>().toEqualTypeOf(1 as const)
+    expectTypeOf<AValue>().toEqualTypeOf('a' as const)
+    expectTypeOf<BValue>().toEqualTypeOf('b' as const)
+    expectTypeOf<CValue>().toEqualTypeOf('c' as const)
+  })
+
+  it('should handle 2-dimensional arrays', () => {
+    type User = {
+      name: string
+      id: string
+      age: number
+    }
+
+    type DoubleArray = {
+      people: {
+        parents: User[]
       }[]
-    }[]
-  },
-  `people[${0}].parents[${0}].name`
->
+    }
 
-expectTypeOf(0 as never as DoubleDeepArray).toEqualTypeOf<string>()
+    type StringValue = DeepValue<
+      DoubleArray,
+      `people[${number}].parents[${number}].name`
+    >
 
-// Deepness is infinite error check
-type Cart = {
-  id: number
-  product: {
-    id: string
-    description?: string
-    price_internet?: number
-    price_dealer_region?: number
-    price_dealer?: number
-    stock:
-      | {
-          id: string
-          quantity: number
-          isChecked: boolean
-        }[]
-      | null
-  }
-  quantity: number
-  isChecked: boolean
-}[]
+    expectTypeOf<StringValue>().toBeString()
+  })
 
-type Payment_types = {
-  id: string
-  title: string
-  name: string
-}[]
+  it('should handle records', () => {
+    type Foo = {
+      a: string
+      b: number
+      c: { d: string }
+    }
+    type RecordExample = {
+      records: Record<string, Foo>
+    }
 
-type Shipping_methods = {
-  id: string
-  title: string
-  name: string
-}[]
+    type RecordValue = DeepValue<RecordExample, 'records'>
+    type FooValue = DeepValue<RecordExample, `records.${string}`>
+    type StringValue = DeepValue<RecordExample, `records.${string}.a`>
+    type NumberValue = DeepValue<RecordExample, `records.${string}.b`>
+    type ObjectValue = DeepValue<RecordExample, `records.${string}.c`>
+    type StringValue2 = DeepValue<RecordExample, `records.${string}.c.d`>
 
-type Userr = {
-  id: string
-  first_name: string | null
-  email: string | null
-  avatar:
-    | string
-    | ({
-        url?: string
-      } & {
+    type FooValue2 = DeepValue<RecordExample, 'records.something'>
+    type StringValue3 = DeepValue<RecordExample, 'records.something.a'>
+    type NumberValue2 = DeepValue<RecordExample, 'records.something.b'>
+    type ObjectValue2 = DeepValue<RecordExample, 'records.something.c'>
+    type StringValue4 = DeepValue<RecordExample, 'records.something.c.d'>
+
+    expectTypeOf<RecordValue>().toEqualTypeOf<Record<string, Foo>>()
+
+    expectTypeOf<FooValue>().toEqualTypeOf<Foo>()
+    expectTypeOf<FooValue2>().toEqualTypeOf<Foo>()
+
+    expectTypeOf<StringValue>().toBeString()
+    expectTypeOf<StringValue2>().toBeString()
+    expectTypeOf<StringValue3>().toBeString()
+    expectTypeOf<StringValue4>().toBeString()
+
+    expectTypeOf<NumberValue>().toBeNumber()
+    expectTypeOf<NumberValue2>().toBeNumber()
+
+    expectTypeOf<ObjectValue>().toEqualTypeOf<{
+      d: string
+    }>()
+    expectTypeOf<ObjectValue2>().toEqualTypeOf<{
+      d: string
+    }>()
+  })
+
+  it('should handle nested records', () => {
+    type Foo = {
+      a: string
+      b: number
+      c: { d: string }
+    }
+    type NestedRecord = Record<string, Record<string, Foo>>
+    type RecordExample = {
+      records: NestedRecord
+    }
+
+    type RecordValue = DeepValue<RecordExample, 'records'>
+    type RecordValue2 = DeepValue<RecordExample, `records.${string}`>
+    type FooValue = DeepValue<RecordExample, `records.${string}.${string}`>
+    type StringValue = DeepValue<RecordExample, `records.${string}.${string}.a`>
+    type NumberValue = DeepValue<RecordExample, `records.${string}.${string}.b`>
+    type ObjectValue = DeepValue<RecordExample, `records.${string}.${string}.c`>
+    type StringValue2 = DeepValue<
+      RecordExample,
+      `records.${string}.${string}.c.d`
+    >
+
+    type RecordValue3 = DeepValue<RecordExample, 'records'>
+    type RecordValue4 = DeepValue<RecordExample, 'records.something'>
+    type FooValue2 = DeepValue<RecordExample, 'records.something.else'>
+    type StringValue3 = DeepValue<RecordExample, 'records.something.else.a'>
+    type NumberValue2 = DeepValue<RecordExample, 'records.something.else.b'>
+    type ObjectValue2 = DeepValue<RecordExample, 'records.something.else.c'>
+    type StringValue4 = DeepValue<RecordExample, 'records.something.else.c.d'>
+
+    expectTypeOf<RecordValue>().toEqualTypeOf<NestedRecord>()
+    expectTypeOf<RecordValue2>().toEqualTypeOf<Record<string, Foo>>()
+    expectTypeOf<RecordValue3>().toEqualTypeOf<NestedRecord>()
+    expectTypeOf<RecordValue4>().toEqualTypeOf<Record<string, Foo>>()
+
+    expectTypeOf<FooValue>().toEqualTypeOf<Foo>()
+    expectTypeOf<FooValue2>().toEqualTypeOf<Foo>()
+
+    expectTypeOf<StringValue>().toBeString()
+    expectTypeOf<StringValue2>().toBeString()
+    expectTypeOf<StringValue3>().toBeString()
+    expectTypeOf<StringValue4>().toBeString()
+
+    expectTypeOf<NumberValue>().toBeNumber()
+    expectTypeOf<NumberValue2>().toBeNumber()
+
+    expectTypeOf<ObjectValue>().toEqualTypeOf<{
+      d: string
+    }>()
+    expectTypeOf<ObjectValue2>().toEqualTypeOf<{
+      d: string
+    }>()
+  })
+
+  it('should not error for large objects', () => {
+    type Cart = {
+      id: number
+      product: {
         id: string
-        storage: string
-        filename_disk: string | null
-        filename_original: string | null
-        filename_download: string | null
-        filename_preview: string | null
-        filename_thumbnail: string | null
-        filename_medium: string | null
-        filename_large: string | null
-        filename_huge: string | null
-        filename_icon: string | null
-        filename_icon_large: string | null
-        focal_point_y: number | null
-      })
-    | null
-  // Reference Cart, Payment_types, Shipping_methods
-  cart: Cart | null
-  payment_types: Payment_types | null
-  shipping_methods: Shipping_methods | null
-}
+        description?: string
+        price_internet?: number
+        price_dealer_region?: number
+        price_dealer?: number
+        stock:
+          | {
+              id: string
+              quantity: number
+              isChecked: boolean
+            }[]
+          | null
+      }
+      quantity: number
+      isChecked: boolean
+    }[]
 
-type UserKeys = DeepValue<Userr, DeepKeys<Userr>>
+    type Payment_types = {
+      id: string
+      title: string
+      name: string
+    }[]
 
-type ObjectWithAny = {
-  a: any
-  b: number
-  obj: {
-    c: any
-    d: number
-  }
-}
+    type Shipping_methods = {
+      id: string
+      title: string
+      name: string
+    }[]
 
-expectTypeOf(0 as never as DeepKeys<ObjectWithAny>).toEqualTypeOf<
-  'a' | 'b' | 'obj' | `a.${string}` | 'obj.c' | `obj.c.${string}` | 'obj.d'
->()
-// since any can also be number, It's okay to be included
-expectTypeOf(0 as never as DeepKeysOfType<ObjectWithAny, number>).toEqualTypeOf<
-  'a' | 'b' | 'obj.c' | 'obj.d'
->()
-expectTypeOf(0 as never as DeepKeysOfType<ObjectWithAny, string>).toEqualTypeOf<
-  'a' | 'obj.c'
->()
-type AnyObjectExample = DeepValue<ObjectWithAny, 'a'>
-expectTypeOf(0 as never as AnyObjectExample).toEqualTypeOf<any>()
-type AnyObjectExample2 = DeepValue<ObjectWithAny, 'b'>
-expectTypeOf(0 as never as AnyObjectExample2).toEqualTypeOf<number>()
-type AnyObjectExample3 = DeepValue<ObjectWithAny, 'obj'>
-expectTypeOf(0 as never as AnyObjectExample3).toEqualTypeOf<{
-  c: any
-  d: number
-}>
-type AnyObjectExample4 = DeepValue<ObjectWithAny, 'obj.c'>
-expectTypeOf(0 as never as AnyObjectExample4).toEqualTypeOf<any>()
-type AnyObjectExample5 = DeepValue<ObjectWithAny, 'obj.d'>
-expectTypeOf(0 as never as AnyObjectExample5).toEqualTypeOf<number>()
+    type Userr = {
+      id: string
+      first_name: string | null
+      email: string | null
+      avatar:
+        | string
+        | ({
+            url?: string
+          } & {
+            id: string
+            storage: string
+            filename_disk: string | null
+            filename_original: string | null
+            filename_download: string | null
+            filename_preview: string | null
+            filename_thumbnail: string | null
+            filename_medium: string | null
+            filename_large: string | null
+            filename_huge: string | null
+            filename_icon: string | null
+            filename_icon_large: string | null
+            focal_point_y: number | null
+          })
+        | null
+      // Reference Cart, Payment_types, Shipping_methods
+      cart: Cart | null
+      payment_types: Payment_types | null
+      shipping_methods: Shipping_methods | null
+    }
 
-type RecordValue = {
-  a: string
-  b: number
-  c: { d: string }
-}
-type RecordExample = {
-  records: Record<string, RecordValue>
-}
+    type UserKeys = DeepValue<Userr, DeepKeys<Userr>>
+  })
 
-expectTypeOf<DeepKeys<RecordExample>>().toEqualTypeOf<
-  | 'records'
-  | `records.${string}`
-  | `records.${string}.a`
-  | `records.${string}.b`
-  | `records.${string}.c`
-  | `records.${string}.c.d`
->()
-expectTypeOf<DeepKeysOfType<RecordExample, string>>().toEqualTypeOf<
-  `records.${string}.a` | `records.${string}.c.d`
->()
-expectTypeOf<DeepValue<RecordExample, 'records'>>().toEqualTypeOf<
-  Record<string, RecordValue>
->()
-expectTypeOf<
-  DeepValue<RecordExample, 'records.something'>
->().toEqualTypeOf<RecordValue>()
-expectTypeOf<
-  DeepValue<RecordExample, 'records.something.a'>
->().toEqualTypeOf<string>()
-expectTypeOf<
-  DeepValue<RecordExample, 'records.something.b'>
->().toEqualTypeOf<number>()
-expectTypeOf<DeepValue<RecordExample, 'records.something.c'>>().toEqualTypeOf<{
-  d: string
-}>()
-expectTypeOf<
-  DeepValue<RecordExample, 'records.something.c.d'>
->().toEqualTypeOf<string>()
+  it('should handle objects containing any', () => {
+    type ObjectWithAny = {
+      a: any
+      b: number
+      obj: {
+        c: any
+        d: number
+      }
+    }
+
+    type AnyValue = DeepValue<ObjectWithAny, 'a'>
+    type NumberValue = DeepValue<ObjectWithAny, 'b'>
+    type ObjectValue = DeepValue<ObjectWithAny, 'obj'>
+    type AnyValue2 = DeepValue<ObjectWithAny, 'obj.c'>
+    type NumberValue2 = DeepValue<ObjectWithAny, 'obj.d'>
+
+    expectTypeOf<AnyValue>().toBeAny()
+    expectTypeOf<NumberValue>().toBeNumber()
+    expectTypeOf<ObjectValue>().toEqualTypeOf<{
+      c: any
+      d: number
+    }>
+    expectTypeOf<AnyValue2>().toBeAny()
+    expectTypeOf<NumberValue2>().toBeNumber()
+  })
+})
 
 describe('FieldsMap', () => {
   it('should map to all available types', () => {
