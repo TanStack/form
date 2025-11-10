@@ -174,9 +174,11 @@ type Maximals<
   U extends AnyDeepKeyAndValue,
   All extends AnyDeepKeyAndValue = U,
 > = U extends any
-  ? Extract<All, { key: `${U['key']}.${string}` }> extends never
+  ? [All] extends [U]
     ? U
-    : never
+    : Extract<All, { key: `${U['key']}.${string}` }> extends never
+      ? U
+      : never
   : never
 
 /**
