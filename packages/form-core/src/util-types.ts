@@ -168,9 +168,10 @@ export type DeepKeys<T> = unknown extends T
   ? string
   : DeepKeysAndValues<T>['key']
 
-type DeepRecord<T> = {
+type DeepRecordImpl<T> = {
   [K in DeepKeysAndValues<T> as K['lookup']]: K['value']
 }
+type DeepRecord<T> = DeepRecordImpl<T>
 
 type GetRecord<
   TRecord extends DeepRecord<unknown>,
@@ -179,10 +180,11 @@ type GetRecord<
   ? TRecord[TAccessor]
   : TRecord[AddEnd<TAccessor>]
 
-type DeepValueImpl<TValue, TAccessor extends string> =
-  TAccessor extends DeepKeys<TValue>
-    ? GetRecord<DeepRecord<TValue>, TAccessor>
-    : never
+type DeepValueImpl<TValue, TAccessor extends string> = [TAccessor] extends [
+  DeepKeys<TValue>,
+]
+  ? GetRecord<DeepRecord<TValue>, TAccessor>
+  : never
 
 /**
  * Infer the type of a deeply nested property within an object or an array.
