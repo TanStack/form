@@ -19,6 +19,11 @@ type Try<A1, A2, Catch = never> = A1 extends A2 ? A1 : Catch
  */
 export type Narrow<A> = Try<A, [], NarrowRaw<A>>
 
+type END = '\0'
+type StripEnd<T extends string> = T extends `${infer Rest}${END}` ? Rest : T
+type AddEnd<T extends string> = `${T}${END}`
+type AddEndIfDynamic<T extends string> = AddEnd<T> extends T ? AddEnd<T> : T
+
 export interface AnyDeepKeyAndValue<
   K extends string = string,
   V extends any = any,
@@ -157,37 +162,37 @@ export type DeepKeys<T> = unknown extends T
   ? string
   : DeepKeysAndValues<T>['key']
 
-type ValueOfKey<
-  TValue extends AnyDeepKeyAndValue,
-  TAccessor extends string,
-> = TValue extends any
-  ? TAccessor extends TValue['key']
-    ? TValue
-    : never
-  : never
+type DeepRecord<T> = {
+  [K in DeepKeysAndValues<T> as AddEndIfDynamic<K['key']>]: K['value']
+}
 
-type Maximals<
-  TValue extends AnyDeepKeyAndValue,
-  All extends AnyDeepKeyAndValue = TValue,
-> = TValue extends any
-  ? [All] extends [TValue]
-    ? TValue
-    : Extract<
-          All,
-          {
-            key: `${TValue['key']}.${string}` | `${TValue['key']}[${string}`
-          }
-        > extends never
-      ? TValue
-      : never
-  : never
+type DeepValueImpl<
+  TDeepRecord extends DeepRecord<unknown>,
+  TAccessor extends string,
+> = TAccessor extends keyof TDeepRecord
+  ? TDeepRecord[TAccessor]
+  : TDeepRecord[AddEnd<TAccessor>]
 
 /**
  * Infer the type of a deeply nested property within an object or an array.
  */
 export type DeepValue<TValue, TAccessor extends string> = unknown extends TValue
   ? TValue
-  : Maximals<ValueOfKey<DeepKeysAndValues<TValue>, TAccessor>>['value']
+  : DeepValueImpl<DeepRecord<TValue>, TAccessor>
+
+type Foo = {
+  a: string
+  b: number
+  c: { d: string }
+}
+type RecordExample = {
+  records: Record<string, Foo>
+}
+
+type E1 = DeepKeys<RecordExample>
+type E2 = DeepRecord<RecordExample>
+
+type FooValue2 = DeepValue<RecordExample, 'records.something'>
 
 /**
  * The keys of an object or array, deeply nested and only with a value of TValue
