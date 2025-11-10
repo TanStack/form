@@ -170,7 +170,10 @@ type Maximals<
 > = U extends any
   ? [All] extends [U]
     ? U
-    : Extract<All, { key: `${U['key']}.${string}` }> extends never
+    : Extract<
+          All,
+          { key: `${U['key']}.${string}` | `${U['key']}[${number}]${string}` }
+        > extends never
       ? U
       : never
   : never

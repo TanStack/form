@@ -533,6 +533,67 @@ describe('DeepValue', () => {
     }>()
   })
 
+  it('should handle records with arrays as values', () => {
+    type Foo = {
+      a: string
+      b: number
+      c: { d: string }
+    }
+    type RecordExample = {
+      records: Record<string, Foo[]>
+    }
+
+    type RecordValue = DeepValue<RecordExample, 'records'>
+    type FooArrayValue = DeepValue<RecordExample, `records.${string}`>
+    type FooValue = DeepValue<RecordExample, `records.${string}[${number}]`>
+    type StringValue = DeepValue<
+      RecordExample,
+      `records.${string}[${number}].a`
+    >
+    type NumberValue = DeepValue<
+      RecordExample,
+      `records.${string}[${number}].b`
+    >
+    type ObjectValue = DeepValue<
+      RecordExample,
+      `records.${string}[${number}].c`
+    >
+    type StringValue2 = DeepValue<
+      RecordExample,
+      `records.${string}[${number}].c.d`
+    >
+
+    type FooArrayValue2 = DeepValue<RecordExample, 'records.something'>
+    type FooValue2 = DeepValue<RecordExample, 'records.something[0]'>
+    type StringValue3 = DeepValue<RecordExample, 'records.something[0].a'>
+    type NumberValue2 = DeepValue<RecordExample, 'records.something[0].b'>
+    type ObjectValue2 = DeepValue<RecordExample, 'records.something[0].c'>
+    type StringValue4 = DeepValue<RecordExample, 'records.something[0].c.d'>
+
+    expectTypeOf<RecordValue>().toEqualTypeOf<Record<string, Foo[]>>()
+
+    expectTypeOf<FooArrayValue>().toEqualTypeOf<Foo[]>()
+    expectTypeOf<FooArrayValue2>().toEqualTypeOf<Foo[]>()
+
+    expectTypeOf<FooValue>().toEqualTypeOf<Foo>()
+    expectTypeOf<FooValue2>().toEqualTypeOf<Foo>()
+
+    expectTypeOf<StringValue>().toBeString()
+    expectTypeOf<StringValue2>().toBeString()
+    expectTypeOf<StringValue3>().toBeString()
+    expectTypeOf<StringValue4>().toBeString()
+
+    expectTypeOf<NumberValue>().toBeNumber()
+    expectTypeOf<NumberValue2>().toBeNumber()
+
+    expectTypeOf<ObjectValue>().toEqualTypeOf<{
+      d: string
+    }>()
+    expectTypeOf<ObjectValue2>().toEqualTypeOf<{
+      d: string
+    }>()
+  })
+
   it('should handle nested records', () => {
     type Foo = {
       a: string
