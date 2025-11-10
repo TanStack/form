@@ -109,17 +109,11 @@ export type DeepKeyAndValueObject<
   TAcc,
   TAllKeys extends AllObjectKeys<T> = AllObjectKeys<T>,
 > = TAllKeys extends any
-  ? string extends TAllKeys
-    ? DeepKeysAndValuesImpl<
-        NonNullable<T[TAllKeys]>,
-        ObjectDeepKeyAndValue<TParent, T, TAllKeys>,
-        TAcc | ObjectDeepKeyAndValue<TParent, T, TAllKeys>
-      >
-    : DeepKeysAndValuesImpl<
-        NonNullable<T[TAllKeys]>,
-        ObjectDeepKeyAndValue<TParent, T, TAllKeys>,
-        TAcc | ObjectDeepKeyAndValue<TParent, T, TAllKeys>
-      >
+  ? DeepKeysAndValuesImpl<
+      NonNullable<T[TAllKeys]>,
+      ObjectDeepKeyAndValue<TParent, T, TAllKeys>,
+      TAcc | ObjectDeepKeyAndValue<TParent, T, TAllKeys>
+    >
   : never
 
 export type UnknownAccessor<TParent extends AnyDeepKeyAndValue> =
