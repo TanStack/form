@@ -172,11 +172,16 @@ type DeepRecord<T> = {
   [K in DeepKeysAndValues<T> as K['lookup']]: K['value']
 }
 
+type GetRecord<
+  TRecord extends DeepRecord<unknown>,
+  TAccessor extends string,
+> = [TAccessor] extends [keyof TRecord]
+  ? TRecord[TAccessor]
+  : TRecord[AddEnd<TAccessor>]
+
 type DeepValueImpl<TValue, TAccessor extends string> =
   TAccessor extends DeepKeys<TValue>
-    ? TAccessor extends keyof DeepRecord<TValue>
-      ? DeepRecord<TValue>[TAccessor]
-      : DeepRecord<TValue>[AddEnd<TAccessor>]
+    ? GetRecord<DeepRecord<TValue>, TAccessor>
     : never
 
 /**
