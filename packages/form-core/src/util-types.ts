@@ -157,24 +157,28 @@ export type DeepKeys<T> = unknown extends T
   ? string
   : DeepKeysAndValues<T>['key']
 
-type ValueOfKey<TValue extends AnyDeepKeyAndValue, TAccessor extends string> =
-  TValue extends AnyDeepKeyAndValue<infer ValueKey>
-    ? TAccessor extends ValueKey
-      ? TValue
-      : never
+type ValueOfKey<
+  TValue extends AnyDeepKeyAndValue,
+  TAccessor extends string,
+> = TValue extends any
+  ? TAccessor extends TValue['key']
+    ? TValue
     : never
+  : never
 
 type Maximals<
-  U extends AnyDeepKeyAndValue,
-  All extends AnyDeepKeyAndValue = U,
-> = U extends any
-  ? [All] extends [U]
-    ? U
+  TValue extends AnyDeepKeyAndValue,
+  All extends AnyDeepKeyAndValue = TValue,
+> = TValue extends any
+  ? [All] extends [TValue]
+    ? TValue
     : Extract<
           All,
-          { key: `${U['key']}.${string}` | `${U['key']}[${number}]${string}` }
+          {
+            key: `${TValue['key']}.${string}` | `${TValue['key']}[${string}`
+          }
         > extends never
-      ? U
+      ? TValue
       : never
   : never
 

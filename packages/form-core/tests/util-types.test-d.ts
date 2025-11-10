@@ -446,6 +446,7 @@ describe('DeepValue', () => {
     }
 
     type UserValue = DeepValue<User[], '[5]'>
+    //   ^? actual: never
     type NumberValue = DeepValue<User[], '[5].age'>
 
     expectTypeOf<UserValue>().toEqualTypeOf<User>()
