@@ -27,8 +27,10 @@ type AddEndIfDynamic<T extends string> = AddEnd<T> extends T ? AddEnd<T> : T
 export interface AnyDeepKeyAndValue<
   K extends string = string,
   V extends any = any,
+  L extends string = string,
 > {
   key: K
+  lookup: L
   value: V
 }
 
@@ -40,6 +42,7 @@ export interface ArrayDeepKeyAndValue<
   in out T extends ReadonlyArray<any>,
 > extends AnyDeepKeyAndValue {
   key: ArrayAccessor<TParent>
+  lookup: ArrayAccessor<TParent>
   value: T[number] | Nullable<TParent['value']>
 }
 
@@ -64,6 +67,7 @@ export interface TupleDeepKeyAndValue<
   in out TKey extends AllTupleKeys<T>,
 > extends AnyDeepKeyAndValue {
   key: TupleAccessor<TParent, TKey>
+  lookup: TupleAccessor<TParent, TKey>
   value: T[TKey] | Nullable<TParent['value']>
 }
 
@@ -105,6 +109,7 @@ export interface ObjectDeepKeyAndValue<
   in out TKey extends AllObjectKeys<T>,
 > extends AnyDeepKeyAndValue {
   key: ObjectAccessor<TParent, TKey>
+  lookup: AddEndIfDynamic<ObjectAccessor<TParent, TKey>>
   value: ObjectValue<TParent, T, TKey>
 }
 
@@ -127,6 +132,7 @@ export type UnknownAccessor<TParent extends AnyDeepKeyAndValue> =
 export interface UnknownDeepKeyAndValue<TParent extends AnyDeepKeyAndValue>
   extends AnyDeepKeyAndValue {
   key: UnknownAccessor<TParent>
+  lookup: UnknownAccessor<TParent>
   value: unknown
 }
 
@@ -163,22 +169,24 @@ export type DeepKeys<T> = unknown extends T
   : DeepKeysAndValues<T>['key']
 
 type DeepRecord<T> = {
-  [K in DeepKeysAndValues<T> as AddEndIfDynamic<K['key']>]: K['value']
+  [K in DeepKeysAndValues<T> as K['lookup']]: K['value']
 }
 
 type DeepValueImpl<
   TDeepRecord extends DeepRecord<unknown>,
-  TAccessor extends string,
-> = [TAccessor] extends [keyof TDeepRecord]
-  ? TDeepRecord[TAccessor]
-  : TDeepRecord[AddEnd<TAccessor>]
+  TAccessor extends DeepKeys<unknown>,
+> = TDeepRecord[TAccessor] extends never
+  ? TDeepRecord[AddEnd<TAccessor>]
+  : TDeepRecord[TAccessor]
 
 /**
  * Infer the type of a deeply nested property within an object or an array.
  */
 export type DeepValue<TValue, TAccessor extends string> = unknown extends TValue
   ? TValue
-  : DeepValueImpl<DeepRecord<TValue>, TAccessor>
+  : TAccessor extends DeepKeys<TValue>
+    ? DeepValueImpl<DeepRecord<TValue>, TAccessor>
+    : never
 
 type Foo = {
   a: string
