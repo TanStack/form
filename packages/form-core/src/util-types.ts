@@ -169,7 +169,7 @@ type DeepRecord<T> = {
 type DeepValueImpl<
   TDeepRecord extends DeepRecord<unknown>,
   TAccessor extends string,
-> = TAccessor extends keyof TDeepRecord
+> = [TAccessor] extends [keyof TDeepRecord]
   ? TDeepRecord[TAccessor]
   : TDeepRecord[AddEnd<TAccessor>]
 
