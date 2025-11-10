@@ -172,35 +172,14 @@ type DeepRecord<T> = {
   [K in DeepKeysAndValues<T> as K['lookup']]: K['value']
 }
 
-type DeepValueImpl<
-  TDeepRecord extends DeepRecord<unknown>,
-  TAccessor extends DeepKeys<unknown>,
-> = TDeepRecord[TAccessor] extends never
-  ? TDeepRecord[AddEnd<TAccessor>]
-  : TDeepRecord[TAccessor]
-
 /**
  * Infer the type of a deeply nested property within an object or an array.
  */
 export type DeepValue<TValue, TAccessor extends string> = unknown extends TValue
   ? TValue
-  : TAccessor extends DeepKeys<TValue>
-    ? DeepValueImpl<DeepRecord<TValue>, TAccessor>
-    : never
-
-type Foo = {
-  a: string
-  b: number
-  c: { d: string }
-}
-type RecordExample = {
-  records: Record<string, Foo>
-}
-
-type E1 = DeepKeys<RecordExample>
-type E2 = DeepRecord<RecordExample>
-
-type FooValue2 = DeepValue<RecordExample, 'records.something'>
+  : TAccessor extends keyof DeepRecord<TValue>
+    ? DeepRecord<TValue>[TAccessor]
+    : DeepRecord<TValue>[AddEnd<TAccessor>]
 
 /**
  * The keys of an object or array, deeply nested and only with a value of TValue
@@ -225,3 +204,12 @@ export type FieldsMap<TFormData, TFieldGroupData> =
             TFieldGroupData[K]
           >
         }
+
+type Foo = {
+  a: string
+  b: number
+  c: { d: string }
+}
+type RecordExample = {
+  records: Record<string, Foo>
+}
