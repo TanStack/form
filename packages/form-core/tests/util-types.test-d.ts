@@ -627,11 +627,8 @@ describe('DeepValue', () => {
     expectTypeOf<RecordValue3>().toEqualTypeOf<NestedRecord>()
     expectTypeOf<RecordValue4>().toEqualTypeOf<Record<string, Foo>>()
 
-    // TODO double records have problems at the moment. Perhaps this can be
-    // solved in the future without blowing up type instantiations.
-
-    // expectTypeOf<FooValue>().toEqualTypeOf<Foo>()
-    // expectTypeOf<FooValue2>().toEqualTypeOf<Foo>()
+    expectTypeOf<FooValue>().toEqualTypeOf<Foo>()
+    expectTypeOf<FooValue2>().toEqualTypeOf<Foo>()
 
     expectTypeOf<StringValue>().toBeString()
     expectTypeOf<StringValue2>().toBeString()

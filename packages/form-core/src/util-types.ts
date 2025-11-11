@@ -19,18 +19,11 @@ type Try<A1, A2, Catch = never> = A1 extends A2 ? A1 : Catch
  */
 export type Narrow<A> = Try<A, [], NarrowRaw<A>>
 
-type END = '\0'
-type StripEnd<T extends string> = T extends `${infer Rest}${END}` ? Rest : T
-type AddEnd<T extends string> = `${T}${END}`
-type AddEndIfDynamic<T extends string> = AddEnd<T> extends T ? AddEnd<T> : T
-
 export interface AnyDeepKeyAndValue<
   K extends string = string,
   V extends any = any,
-  L extends string = string,
 > {
   key: K
-  lookup: L
   value: V
 }
 
@@ -42,7 +35,6 @@ export interface ArrayDeepKeyAndValue<
   in out T extends ReadonlyArray<any>,
 > extends AnyDeepKeyAndValue {
   key: ArrayAccessor<TParent>
-  lookup: ArrayAccessor<TParent>
   value: T[number] | Nullable<TParent['value']>
 }
 
@@ -67,7 +59,6 @@ export interface TupleDeepKeyAndValue<
   in out TKey extends AllTupleKeys<T>,
 > extends AnyDeepKeyAndValue {
   key: TupleAccessor<TParent, TKey>
-  lookup: TupleAccessor<TParent, TKey>
   value: T[TKey] | Nullable<TParent['value']>
 }
 
@@ -109,7 +100,6 @@ export interface ObjectDeepKeyAndValue<
   in out TKey extends AllObjectKeys<T>,
 > extends AnyDeepKeyAndValue {
   key: ObjectAccessor<TParent, TKey>
-  lookup: AddEndIfDynamic<ObjectAccessor<TParent, TKey>>
   value: ObjectValue<TParent, T, TKey>
 }
 
@@ -132,7 +122,6 @@ export type UnknownAccessor<TParent extends AnyDeepKeyAndValue> =
 export interface UnknownDeepKeyAndValue<TParent extends AnyDeepKeyAndValue>
   extends AnyDeepKeyAndValue {
   key: UnknownAccessor<TParent>
-  lookup: UnknownAccessor<TParent>
   value: unknown
 }
 
@@ -168,30 +157,44 @@ export type DeepKeys<T> = unknown extends T
   ? string
   : DeepKeysAndValues<T>['key']
 
-type DeepRecordImpl<T> = {
-  [K in DeepKeysAndValues<T> as K['lookup']]: K['value']
-}
-type DeepRecord<T> = DeepRecordImpl<T>
-
-type GetRecord<
-  TRecord extends DeepRecord<unknown>,
+type ValueMatchingAccessor<
+  TValue extends AnyDeepKeyAndValue,
   TAccessor extends string,
-> = [TAccessor] extends [keyof TRecord]
-  ? TRecord[TAccessor]
-  : TRecord[AddEnd<TAccessor>]
-
-type DeepValueImpl<TValue, TAccessor extends string> = [TAccessor] extends [
-  DeepKeys<TValue>,
-]
-  ? GetRecord<DeepRecord<TValue>, TAccessor>
+> = TValue extends TValue
+  ? TAccessor extends TValue['key']
+    ? TValue
+    : never
   : never
+
+type MostSpecificKey<TValue extends AnyDeepKeyAndValue> = MostSpecificKeyImpl<
+  TValue,
+  TValue
+>
+
+type LongerPrefix<K extends string> = `${K}.${string}` | `${K}[${string}`
+
+type HasLonger<TAll extends AnyDeepKeyAndValue, K extends string> =
+  Extract<TAll, { key: LongerPrefix<K> }> extends never ? false : true
+
+type MostSpecificKeyImpl<
+  TValue extends AnyDeepKeyAndValue,
+  TAll extends AnyDeepKeyAndValue,
+> = TValue extends TValue
+  ? HasLonger<TAll, TValue['key']> extends true
+    ? never
+    : TValue
+  : never
+
+type DeepValueImpl<TValue, TAccessor extends string> = MostSpecificKey<
+  ValueMatchingAccessor<DeepKeysAndValues<TValue>, TAccessor>
+>
 
 /**
  * Infer the type of a deeply nested property within an object or an array.
  */
 export type DeepValue<TValue, TAccessor extends string> = unknown extends TValue
   ? TValue
-  : DeepValueImpl<TValue, TAccessor>
+  : DeepValueImpl<TValue, TAccessor>['value']
 
 /**
  * The keys of an object or array, deeply nested and only with a value of TValue
@@ -216,12 +219,3 @@ export type FieldsMap<TFormData, TFieldGroupData> =
             TFieldGroupData[K]
           >
         }
-
-type Foo = {
-  a: string
-  b: number
-  c: { d: string }
-}
-type RecordExample = {
-  records: Record<string, Foo>
-}
