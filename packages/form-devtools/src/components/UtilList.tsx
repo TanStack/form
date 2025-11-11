@@ -1,4 +1,4 @@
-import { For, createEffect } from 'solid-js'
+import { For } from 'solid-js'
 import clsx from 'clsx'
 
 import { useStyles } from '../styles/use-styles'
@@ -15,9 +15,9 @@ export function UtilList(props: UtilListProps) {
 
   return (
     <div class={styles().utilList}>
-      {store.formState.length > 0 && (
+      {store().length > 0 && (
         <div class={styles().utilGroup}>
-          <For each={store.formState}>
+          <For each={store()}>
             {(instance) => {
               return (
                 <div

@@ -1,5 +1,28 @@
 # @tanstack/solid-form
 
+## 1.23.8
+
+### Patch Changes
+
+- form-core: Optimise event client emissions and minor layout tweaks ([#1758](https://github.com/TanStack/form/pull/1758))
+
+- Updated dependencies [[`94631cb`](https://github.com/TanStack/form/commit/94631cb97dea611de69a900c89b7e8dfe0eeee37)]:
+  - @tanstack/form-core@1.24.4
+
+## 1.23.7
+
+### Patch Changes
+
+- Updated dependencies [[`33cce81`](https://github.com/TanStack/form/commit/33cce812cbfeb42aa7457bab220a807ff5c4ba7f)]:
+  - @tanstack/form-core@1.24.3: respect dontValidate option in formApi array modifiers ([#1775](https://github.com/TanStack/form/pull/1775))
+
+## 1.23.6
+
+### Patch Changes
+
+- Updated dependencies [[`74af33e`](https://github.com/TanStack/form/commit/74af33eb80218b8cec8642b64ce7e69a62a65248)]:
+  - @tanstack/form-core@1.24.2: prevent runtime errors when using `deleteField` ([#1706](https://github.com/TanStack/form/pull/1706))
+
 ## 1.23.5
 
 ### Patch Changes

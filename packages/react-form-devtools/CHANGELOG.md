@@ -1,5 +1,28 @@
 # @tanstack/react-form-devtools
 
+## 0.1.8
+
+### Patch Changes
+
+- form-devtools: Optimise event client emissions and minor layout tweaks ([#1758](https://github.com/TanStack/form/pull/1758))
+
+- Updated dependencies [[`94631cb`](https://github.com/TanStack/form/commit/94631cb97dea611de69a900c89b7e8dfe0eeee37)]:
+  - @tanstack/form-devtools@0.1.8
+
+## 0.1.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.1.7
+
+## 0.1.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.1.6
+
 ## 0.1.5
 
 ### Patch Changes
