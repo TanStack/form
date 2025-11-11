@@ -182,7 +182,7 @@ type MostSpecificKeyImpl<
 > = TValue extends TValue
   ? HasLonger<TAll, TValue['key']> extends true
     ? never
-    : TValue
+    : TValue['value']
   : never
 
 type DeepValueImpl<TValue, TAccessor extends string> = MostSpecificKey<
@@ -194,7 +194,9 @@ type DeepValueImpl<TValue, TAccessor extends string> = MostSpecificKey<
  */
 export type DeepValue<TValue, TAccessor extends string> = unknown extends TValue
   ? TValue
-  : DeepValueImpl<TValue, TAccessor>['value']
+  : TAccessor extends DeepKeys<TValue>
+    ? DeepValueImpl<TValue, TAccessor>
+    : never
 
 /**
  * The keys of an object or array, deeply nested and only with a value of TValue
