@@ -1,8 +1,8 @@
 'use client'
 
-import { FormApi, functionalUpdate } from '@tanstack/form-core'
+import { FormApi, functionalUpdate, uuid } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
-import { useId, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
@@ -184,7 +184,7 @@ export function useForm<
     TSubmitMeta
   >,
 ) {
-  const formId = useId()
+  const formId = useMemo(() => uuid(), [])
 
   const [formApi] = useState(() => {
     const api = new FormApi<
