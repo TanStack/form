@@ -19,6 +19,11 @@
       "@tanstack/vue-form",
       "@tanstack/solid-form",
       "@tanstack/svelte-form"
+    ],
+    [
+      "@tanstack/form-devtools",
+      "@tanstack/react-form-devtools",
+      "@tanstack/solid-form-devtools"
     ]
   ],
   "linked": [],
