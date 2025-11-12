@@ -265,7 +265,7 @@ More information can be found at [Listeners](../listeners.md)
 
 Array fields allow you to manage a list of values within a form, such as a list of hobbies. You can create an array field using the `tanstackField` directive.
 
-When working with array fields, you can use the fields `pushValue`, `removeValue`, and `swapValues` methods to add, remove, and swap values in the array.
+When working with array fields, you can use the fields `pushValue`, `removeValue`, `swapValues` and `moveValue` methods to add, remove, swap, and move a value from one index to another within the array, respectively. Additional helper methods such as `insertValue`, `replaceValue`, and `clearValues` are also available for inserting, replacing, and clearing array values.
 
 Example:
 
