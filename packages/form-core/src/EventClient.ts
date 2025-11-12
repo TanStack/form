@@ -63,6 +63,7 @@ class FormEventClient extends EventClient<EventMap> {
     super({
       pluginId: 'form-devtools',
       debug: true,
+      reconnectEveryMs: 4000,
     })
   }
 }
