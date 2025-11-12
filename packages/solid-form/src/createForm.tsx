@@ -189,23 +189,23 @@ export type SolidFormExtendedApi<
     TSubmitMeta
   >
 
-  /**
-   * {@link SolidFormExtendedApi} with all generics set to `any` for convenience use in generic contexts.
-   */
-  export type AnySolidFormExtendedApi = SolidFormExtendedApi<
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any
-  >
+/**
+ * {@link SolidFormExtendedApi} with all generics set to `any` for convenience use in generic contexts.
+ */
+export type AnySolidFormExtendedApi = SolidFormExtendedApi<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
 
 export function createForm<
   TParentData,

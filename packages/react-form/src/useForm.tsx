@@ -91,8 +91,8 @@ export interface ReactFormApi<
 }
 
 /**
-   * {@link ReactFormApi} with all generics set to `any` for convenience use in generic contexts.
-   */
+ * {@link ReactFormApi} with all generics set to `any` for convenience use in generic contexts.
+ */
 export type AnyReactFormApi = ReactFormApi<
   any,
   any,
@@ -153,23 +153,23 @@ export type ReactFormExtendedApi<
     TSubmitMeta
   >
 
-  /**
-   * {@link ReactFormExtendedApi} with all generics set to `any` for convenience use in generic contexts.
-   */
-  export type AnyReactFormExtendedApi = ReactFormExtendedApi<
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any
-  >
+/**
+ * {@link ReactFormExtendedApi} with all generics set to `any` for convenience use in generic contexts.
+ */
+export type AnyReactFormExtendedApi = ReactFormExtendedApi<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
 
 function LocalSubscribe({
   form,
