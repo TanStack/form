@@ -214,6 +214,24 @@ export interface VueFormApi<
   >
 }
 
+/**
+ * {@link VueFormApi} with all generics set to `any` for convenience use in generic contexts.
+ */
+export type AnyVueFormApi = VueFormApi<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
+
 export function useForm<
   TParentData,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
