@@ -13,7 +13,7 @@ import type {
   FormAsyncValidateOrFn,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { FunctionComponent, ReactNode } from 'react'
+import type { FunctionComponent, ReactElement, ReactNode } from 'react'
 import type { UseFieldOptions, UseFieldOptionsBound } from './types'
 
 interface ReactFieldApi<
@@ -496,7 +496,7 @@ export type FieldComponent<
   TFormOnServer,
   TPatentSubmitMeta,
   ExtendedApi
->) => ReactNode
+>) => ReturnType<FunctionComponent>
 
 /**
  * A type alias representing a field component for a form lens data type.
@@ -584,7 +584,7 @@ export type LensFieldComponent<
      */
     onBlurListenTo?: DeepKeys<TLensData>[]
   }
-}) => ReactNode
+}) => ReturnType<FunctionComponent>
 
 /**
  * A function component that takes field options and a render function as children and returns a React component.
@@ -650,7 +650,7 @@ export const Field = (<
   TFormOnDynamicAsync,
   TFormOnServer,
   TPatentSubmitMeta
->): ReactNode => {
+>): ReturnType<FunctionComponent> => {
   const fieldApi = useField(fieldOptions as any)
 
   const jsxToDisplay = useMemo(
