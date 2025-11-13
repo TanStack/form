@@ -4095,3 +4095,21 @@ it('should generate a formId if not provided', () => {
 
   expect(form.formId.length).toBeGreaterThan(1)
 })
+
+describe('form api event client', () => {
+  it('should have debug disabled', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    form.mount()
+
+    expect(logSpy).not.toHaveBeenCalled()
+
+    logSpy.mockRestore()
+  })
+})
