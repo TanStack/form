@@ -191,8 +191,8 @@ export type AppFieldExtendedReactFormApi<
       NoInfer<TFieldComponents>
     >
     AppForm: ComponentType<
-        // PropsWithChildren<P> is not optional in React 17
-    PropsWithChildren<{}>
+      // PropsWithChildren<P> is not optional in React 17
+      PropsWithChildren<{}>
     >
   }
 
@@ -228,7 +228,8 @@ export interface WithFormProps<
   > {
   // Optional, but adds props to the `render` function outside of `form`
   props?: TRenderProps
-  render: FunctionComponent<PropsWithChildren<
+  render: FunctionComponent<
+    PropsWithChildren<
       NoInfer<TRenderProps> & {
         form: AppFieldExtendedReactFormApi<
           TFormData,
@@ -247,7 +248,8 @@ export interface WithFormProps<
           TFormComponents
         >
       }
-    >>
+    >
+  >
 }
 
 export interface WithFieldGroupProps<
@@ -259,7 +261,8 @@ export interface WithFieldGroupProps<
 > extends BaseFormOptions<TFieldGroupData, TSubmitMeta> {
   // Optional, but adds props to the `render` function outside of `form`
   props?: TRenderProps
-  render: FunctionComponent<PropsWithChildren<
+  render: FunctionComponent<
+    PropsWithChildren<
       NoInfer<TRenderProps> & {
         group: AppFieldExtendedReactFieldGroupApi<
           unknown,
@@ -282,7 +285,8 @@ export interface WithFieldGroupProps<
           TFormComponents
         >
       }
-    >>
+    >
+  >
 }
 
 export function createFormHook<
@@ -342,11 +346,11 @@ export function createFormHook<
 
     // PropsWithChildren<P> is not optional in React 17
     const AppForm = useMemo<ComponentType<PropsWithChildren<{}>>>(() => {
-      return (({ children }) => {
+      return ({ children }) => {
         return (
           <formContext.Provider value={form}>{children}</formContext.Provider>
         )
-      })
+      }
     }, [form])
 
     const AppField = useMemo(() => {

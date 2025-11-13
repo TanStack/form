@@ -11,7 +11,12 @@ import type {
   FormValidateOrFn,
 } from '@tanstack/form-core'
 import type { AppFieldExtendedReactFormApi } from './createFormHook'
-import type { ComponentType, FunctionComponent, PropsWithChildren, ReactNode } from 'react'
+import type {
+  ComponentType,
+  FunctionComponent,
+  PropsWithChildren,
+  ReactNode,
+} from 'react'
 import type { LensFieldComponent } from './useField'
 
 function LocalSubscribe({
