@@ -1,5 +1,16 @@
 # @tanstack/react-form
 
+## 1.25.0
+
+### Minor Changes
+
+- Update Start to Release Candidate version. Extracted start, remix and nextJs adapters to the respective libraries @tanstack/react-form-start, @tanstack/react-form-remix, and @tanstack/react-form-nextjs, ([#1771](https://github.com/TanStack/form/pull/1771))
+
+### Patch Changes
+
+- Updated dependencies [[`004835f`](https://github.com/TanStack/form/commit/004835fbc113f36ac32fc5691ad27bc00813f389)]:
+  - @tanstack/form-core@1.25.0
+
 ## 1.23.9
 
 ### Patch Changes

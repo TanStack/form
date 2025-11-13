@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.25.0
+
+### Patch Changes
+
+- Removes debug config from event client in form-core ([#1852](https://github.com/TanStack/form/pull/1852))
+
 ## 1.24.5
 
 ### Patch Changes
