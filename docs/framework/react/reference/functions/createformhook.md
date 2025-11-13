@@ -11,7 +11,7 @@ title: createFormHook
 function createFormHook<TComponents, TFormComponents>(__namedParameters): object
 ```
 
-Defined in: [packages/react-form/src/createFormHook.tsx:289](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L289)
+Defined in: [packages/react-form/src/createFormHook.tsx:290](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L290)
 
 ## Type Parameters
 

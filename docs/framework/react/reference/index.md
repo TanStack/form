@@ -20,6 +20,7 @@ title: "@tanstack/react-form"
 - [FieldComponent](../type-aliases/fieldcomponent.md)
 - [LensFieldComponent](../type-aliases/lensfieldcomponent.md)
 - [ReactFormExtendedApi](../type-aliases/reactformextendedapi.md)
+- [ServerFormState](../type-aliases/serverformstate.md)
 - [UseField](../type-aliases/usefield.md)
 
 ## Functions
@@ -31,4 +32,3 @@ title: "@tanstack/react-form"
 - [useFieldGroup](../functions/usefieldgroup.md)
 - [useForm](../functions/useform.md)
 - [useStore](../functions/usestore.md)
-- [useTransform](../functions/usetransform.md)
