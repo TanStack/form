@@ -22,9 +22,9 @@
     "@types/node": "^24.1.0",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
-    "@vitejs/plugin-react": "^5.0.4",
+    "@vitejs/plugin-react": "^5.1.1",
     "typescript": "5.8.2",
-    "vite": "^7.1.11",
+    "vite": "^7.2.2",
     "vite-tsconfig-paths": "^5.1.4"
   }
 }

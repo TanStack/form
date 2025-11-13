@@ -16,6 +16,6 @@
     "@tsconfig/svelte": "^5.0.5",
     "svelte": "^5.39.4",
     "typescript": "5.8.2",
-    "vite": "^7.1.11"
+    "vite": "^7.2.2"
   }
 }
