@@ -184,8 +184,7 @@ export function useForm<
     TSubmitMeta
   >,
 ) {
-  const formIdRef = useRef(uuid())
-  const formId = opts?.formId ?? formIdRef.current
+  const formId = useRef(opts?.formId ?? uuid())
 
   const [formApi] = useState(() => {
     const api = new FormApi<
@@ -201,7 +200,7 @@ export function useForm<
       TOnDynamicAsync,
       TOnServer,
       TSubmitMeta
-    >({ ...opts, formId: formId })
+    >({ ...opts, formId: formId.current })
 
     const extendedApi: ReactFormExtendedApi<
       TFormData,
