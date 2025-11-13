@@ -1,4 +1,3 @@
-import { defaultValidationLogic } from './ValidationLogic'
 import type { ValidationLogicProps } from './ValidationLogic'
 import type { FieldValidators } from './FieldApi'
 import type { FormValidators } from './FormApi'
@@ -32,14 +31,15 @@ export function functionalUpdate<TInput, TOutput = TInput>(
  * @private
  */
 export function getBy(obj: any, path: any) {
-  const pathObj = makePathArray(path)
-  return pathObj.reduce((current: any, pathPart: any) => {
-    if (current === null) return null
-    if (typeof current !== 'undefined') {
-      return current[pathPart]
-    }
-    return undefined
-  }, obj)
+  if (obj === null || obj === undefined) return obj
+  let current = obj
+
+  for (const pathPart of makePathArray(path)) {
+    if (current === null || current === undefined) return current
+    current = current[pathPart]
+  }
+
+  return current
 }
 
 /**
@@ -48,13 +48,16 @@ export function getBy(obj: any, path: any) {
  */
 export function setBy(obj: any, _path: any, updater: Updater<any>) {
   const path = makePathArray(_path)
+  let pathIndex = 0
+  const lastPathIndex = path.length - 1
 
   function doSet(parent?: any): any {
-    if (!path.length) {
+    if (pathIndex > lastPathIndex) {
       return functionalUpdate(updater, parent)
     }
 
-    const key = path.shift()
+    const key = path[pathIndex]!
+    pathIndex++
 
     if (
       typeof key === 'string' ||
@@ -73,16 +76,15 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
         [key]: doSet(),
       }
     }
-
     if (Array.isArray(parent) && typeof key === 'number') {
       const prefix = parent.slice(0, key)
       return [
-        ...(prefix.length ? prefix : new Array(key)),
+        ...(prefix.length ? prefix : Array.from({ length: key })),
         doSet(parent[key]),
         ...parent.slice(key + 1),
       ]
     }
-    return [...new Array(key), doSet()]
+    return [...Array.from({ length: key }), doSet()]
   }
 
   return doSet(obj)
@@ -94,11 +96,13 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
  */
 export function deleteBy(obj: any, _path: any) {
   const path = makePathArray(_path)
+  const lastPathIndex = path.length - 1
+  let pathIndex = 0
 
   function doDelete(parent: any): any {
     if (!parent) return
-    if (path.length === 1) {
-      const finalPath = path[0]!
+    if (pathIndex === lastPathIndex) {
+      const finalPath = path[lastPathIndex]!
       if (Array.isArray(parent) && typeof finalPath === 'number') {
         return parent.filter((_, i) => i !== finalPath)
       }
@@ -106,7 +110,8 @@ export function deleteBy(obj: any, _path: any) {
       return rest
     }
 
-    const key = path.shift()
+    const key = path[pathIndex]!
+    pathIndex++
 
     if (typeof key === 'string') {
       if (typeof parent === 'object') {
@@ -124,7 +129,7 @@ export function deleteBy(obj: any, _path: any) {
         }
         const prefix = parent.slice(0, key)
         return [
-          ...(prefix.length ? prefix : new Array(key)),
+          ...(prefix.length ? prefix : Array.from({ length: key })),
           doDelete(parent[key]),
           ...parent.slice(key + 1),
         ]
