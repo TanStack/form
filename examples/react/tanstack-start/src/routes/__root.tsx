@@ -17,7 +17,17 @@ export const Route = createRootRoute({
         title: 'TanStack Form + Start',
       },
     ],
+    links: [
+      {
+        rel: 'icon',
+        type: 'image/svg+xml',
+        href: '/emblem-light.svg',
+      },
+    ],
   }),
+  notFoundComponent: () => {
+    return <div>Not found</div>
+  },
   shellComponent: RootDocument,
 })
 

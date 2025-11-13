@@ -3,16 +3,17 @@ import {
   isGlobalFormValidationError,
   isStandardSchemaValidator,
   standardSchemaValidators,
-} from '@tanstack/form-core'
+} from '@tanstack/react-form'
 import { ServerValidateError } from './error'
+
 import type {
   FormAsyncValidateOrFn,
   FormOptions,
   FormValidateAsyncFn,
   FormValidateOrFn,
+  ServerFormState,
   UnwrapFormAsyncValidateOrFn,
-} from '@tanstack/form-core'
-import type { ServerFormState } from './types'
+} from '@tanstack/react-form'
 
 interface CreateServerValidateOptions<
   TFormData,
