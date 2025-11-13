@@ -571,9 +571,9 @@ importers:
 
   examples/react/next-server-actions:
     dependencies:
-      '@tanstack/react-form':
+      '@tanstack/react-form-nextjs':
         specifier: ^1.23.9
-        version: link:../../../packages/react-form
+        version: link:../../../packages/react-form-nextjs
       '@tanstack/react-store':
         specifier: ^0.7.7
         version: 0.7.7(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -645,9 +645,9 @@ importers:
       '@remix-run/serve':
         specifier: ^2.17.1
         version: 2.17.1(typescript@5.8.2)
-      '@tanstack/react-form':
+      '@tanstack/react-form-remix':
         specifier: ^1.23.9
-        version: link:../../../packages/react-form
+        version: link:../../../packages/react-form-remix
       '@tanstack/react-store':
         specifier: ^0.7.7
         version: 0.7.7(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
