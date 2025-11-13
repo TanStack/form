@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.24.5
+
+### Patch Changes
+
+- - Make `fieldMeta` record type `Partial<>` to reflect runtime behaviour ([#1787](https://github.com/TanStack/form/pull/1787))
+
 ## 1.24.4
 
 ### Patch Changes

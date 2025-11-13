@@ -1,5 +1,16 @@
 # @tanstack/form-devtools
 
+## 0.2.0
+
+### Minor Changes
+
+- Migrated to devtools utils, adds support for solid devtools. Renamed plugin to reflect tanstack plugin schema (FormDevtoolsPlugin to formDevtoolsPlugin) ([#1789](https://github.com/TanStack/form/pull/1789))
+
+### Patch Changes
+
+- Updated dependencies [[`8ede6d0`](https://github.com/TanStack/form/commit/8ede6d0bb5615a105f54c13d3160d0243ea6c041)]:
+  - @tanstack/form-core@1.24.5
+
 ## 0.1.8
 
 ### Patch Changes

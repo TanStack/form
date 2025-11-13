@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/react-form-devtools",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "description": "Devtools, for TanStack React form.",
   "author": "tannerlinsley",
   "license": "MIT",
