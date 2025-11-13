@@ -1296,6 +1296,35 @@ export class FormApi<
           this.options.transform?.fn(newObj)
           state = newObj.state
           this.prevTransformArray = transformArray
+
+          const serverErrorMap = this.store.state.errorMap['onServer'] as
+            | Record<string, string>
+            | undefined
+
+          if (!serverErrorMap) return state
+
+          batch(() => {
+            void (Object.values(this.fieldInfo) as FieldInfo<any>[]).forEach(
+              (field) => {
+                const fieldInstance = field.instance
+
+                if (!fieldInstance) return
+
+                if (fieldInstance.name in serverErrorMap) {
+                  fieldInstance.setMeta((prev) => ({
+                    ...prev,
+                    errorMap: {
+                      ...prev.errorMap,
+                      onServer: serverErrorMap[fieldInstance.name],
+                    },
+                  }))
+                  fieldInstance.mount()
+                }
+
+                this.validateField(fieldInstance.name, 'server')
+              },
+            )
+          })
         }
 
         return state
@@ -2261,6 +2290,7 @@ export class FormApi<
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             ...prev?.errorMap,
             onMount: undefined,
+            onServer: undefined,
           },
         }))
       }
