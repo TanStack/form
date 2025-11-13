@@ -11,7 +11,7 @@ import type {
   FormState,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { PropsWithChildren, ReactNode } from 'react'
+import type { FunctionComponent, PropsWithChildren, ReactElement, ReactNode } from 'react'
 import type { FieldComponent } from './useField'
 import type { NoInfer } from '@tanstack/react-store'
 
@@ -87,7 +87,7 @@ export interface ReactFormApi<
       >,
     ) => TSelected
     children: ((state: NoInfer<TSelected>) => ReactNode) | ReactNode
-  }) => ReactNode
+  }) => ReturnType<FunctionComponent>
 }
 
 /**
@@ -142,10 +142,10 @@ function LocalSubscribe({
 }: PropsWithChildren<{
   form: AnyFormApi
   selector: (state: AnyFormState) => AnyFormState
-}>) {
+}>): ReturnType<FunctionComponent> {
   const data = useStore(form.store, selector)
 
-  return functionalUpdate(children, data)
+  return <>{functionalUpdate(children, data)}</>
 }
 
 /**
