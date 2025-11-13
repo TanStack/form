@@ -1,6 +1,6 @@
-import { FormApi, functionalUpdate } from '@tanstack/form-core'
+import { FormApi, functionalUpdate, uuid } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
-import { useId, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
@@ -11,7 +11,12 @@ import type {
   FormState,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { PropsWithChildren, ReactNode } from 'react'
+import type {
+  FunctionComponent,
+  PropsWithChildren,
+  ReactElement,
+  ReactNode,
+} from 'react'
 import type { FieldComponent } from './useField'
 import type { NoInfer } from '@tanstack/react-store'
 
@@ -87,7 +92,7 @@ export interface ReactFormApi<
       >,
     ) => TSelected
     children: ((state: NoInfer<TSelected>) => ReactNode) | ReactNode
-  }) => ReactNode
+  }) => ReturnType<FunctionComponent>
 }
 
 /**
@@ -142,10 +147,10 @@ function LocalSubscribe({
 }: PropsWithChildren<{
   form: AnyFormApi
   selector: (state: AnyFormState) => AnyFormState
-}>) {
+}>): ReturnType<FunctionComponent> {
   const data = useStore(form.store, selector)
 
-  return functionalUpdate(children, data)
+  return <>{functionalUpdate(children, data)}</>
 }
 
 /**
@@ -182,7 +187,7 @@ export function useForm<
     TSubmitMeta
   >,
 ) {
-  const formId = useId()
+  const formId = useRef(opts?.formId ?? uuid())
 
   const [formApi] = useState(() => {
     const api = new FormApi<
@@ -198,7 +203,7 @@ export function useForm<
       TOnDynamicAsync,
       TOnServer,
       TSubmitMeta
-    >({ ...opts, formId: formId })
+    >({ ...opts, formId: formId.current })
 
     const extendedApi: ReactFormExtendedApi<
       TFormData,

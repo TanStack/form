@@ -11,7 +11,12 @@ import type {
   FormValidateOrFn,
 } from '@tanstack/form-core'
 import type { AppFieldExtendedReactFormApi } from './createFormHook'
-import type { ComponentType, PropsWithChildren, ReactNode } from 'react'
+import type {
+  ComponentType,
+  FunctionComponent,
+  PropsWithChildren,
+  ReactNode,
+} from 'react'
 import type { LensFieldComponent } from './useField'
 
 function LocalSubscribe({
@@ -21,10 +26,10 @@ function LocalSubscribe({
 }: PropsWithChildren<{
   lens: AnyFieldGroupApi
   selector: (state: FieldGroupState<any>) => FieldGroupState<any>
-}>) {
+}>): ReturnType<FunctionComponent> {
   const data = useStore(lens.store, selector)
 
-  return functionalUpdate(children, data)
+  return <>{functionalUpdate(children, data)}</>
 }
 
 /**
@@ -71,7 +76,7 @@ export type AppFieldExtendedReactFieldGroupApi<
       TSubmitMeta,
       NoInfer<TFieldComponents>
     >
-    AppForm: ComponentType<PropsWithChildren>
+    AppForm: ComponentType<PropsWithChildren<{}>>
     /**
      * A React component to render form fields. With this, you can render and manage individual form fields.
      */
@@ -83,7 +88,7 @@ export type AppFieldExtendedReactFieldGroupApi<
     Subscribe: <TSelected = NoInfer<FieldGroupState<TFieldGroupData>>>(props: {
       selector?: (state: NoInfer<FieldGroupState<TFieldGroupData>>) => TSelected
       children: ((state: NoInfer<TSelected>) => ReactNode) | ReactNode
-    }) => ReactNode
+    }) => ReturnType<FunctionComponent>
   }
 
 export function useFieldGroup<
