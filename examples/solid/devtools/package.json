@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@tanstack/solid-devtools": "^0.7.7",
-    "@tanstack/solid-form": "^1.23.9",
+    "@tanstack/solid-form": "^1.25.0",
     "@tanstack/solid-form-devtools": "workspace:*",
     "solid-js": "^1.9.9"
   },
