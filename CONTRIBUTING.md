@@ -131,11 +131,11 @@ https://github.com/fulopkovacs/form/assets/43729152/9d35a3c3-8153-4e74-9cb2-af27
 
 #### Note on standalone execution
 
-If you want to run an example without installing dependencies for the whole repo, just follow instructions from the example's README.md file. It will be then run against the latest TanStack Form release.
+If you want to run an example without installing dependencies for the whole repo, just follow the instructions from the example's README.md file. It will then be run against the latest TanStack Form release.
 
 ## Online one-click setup
 
-You can use Gitpod (An Online Open Source VS Code like IDE which is free for Open Source) for developing online. With a single click it will start a workspace and automatically:
+You can use Gitpod (An Online Open Source VS Code like IDE that is free for Open Source) for developing online. With a single click it will start a workspace and automatically:
 
 - clone the `TanStack/form` repo.
 - install all the dependencies in `/` and `/docs`.
@@ -191,16 +191,16 @@ Must be one of the following:
 
 ### Scope
 
-The scope could be anything specifying place of the commit change. For example `form-core`, `react-form` etc...
+The scope could be anything specifying the place of the commit change. For example `form-core`, `react-form` etc...
 
 You can use `*` when the change affects more than a single scope.
 
 ### Subject
 
-The subject contains succinct description of the change:
+The subject contains a succinct description of the change:
 
 - use the imperative, present tense: "change" not "changed" nor "changes"
-- don't capitalize first letter
+- don't capitalize the first letter
 - no dot (.) at the end
 
 ### Body
@@ -215,11 +215,11 @@ The footer should contain any information about **Breaking Changes** and is also
 
 ### Example
 
-Here is an example of the release type that will be done based on a commit messages:
+Here is an example of the release type that will be done based on a commit message:
 
 | Commit message                                                                                                                                                                                    | Release type               |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
-| fix(pencil): stop graphite breaking when too much pressure applied                                                                                                                                | Patch Release              |
+| fix(pencil): stop graphite breaking when too much pressure is applied                                                                                                                                | Patch Release              |
 | feat(pencil): add `graphiteWidth` option                                                                                                                                                          | ~~Minor~~ Feature Release  |
 | perf(pencil): remove `graphiteWidth` option<br/><br/>BREAKING CHANGE: The `graphiteWidth` option has been removed.<br/>The default graphite width of 10mm is always used for performance reasons. | ~~Major~~ Breaking Release |
 
