@@ -2347,7 +2347,7 @@ export class FormApi<
     }
 
     // Shift down all meta after validating to make sure the new field has been mounted
-    metaHelper(this).handleArrayFieldMetaShift(field, index, 'insert')
+    metaHelper(this).handleArrayInsert(field, index)
 
     if (!dontValidate) {
       await this.validateArrayFieldsStartingFrom(field, index, 'change')
@@ -2408,7 +2408,7 @@ export class FormApi<
     )
 
     // Shift up all meta
-    metaHelper(this).handleArrayFieldMetaShift(field, index, 'remove')
+    metaHelper(this).handleArrayRemove(field, index)
 
     if (lastIndex !== null) {
       const start = `${field}[${lastIndex}]`
@@ -2443,7 +2443,7 @@ export class FormApi<
     )
 
     // Swap meta
-    metaHelper(this).handleArrayFieldMetaShift(field, index1, 'swap', index2)
+    metaHelper(this).handleArraySwap(field, index1, index2)
 
     const dontValidate = options?.dontValidate ?? false
     if (!dontValidate) {
@@ -2475,7 +2475,7 @@ export class FormApi<
     )
 
     // Move meta between index1 and index2
-    metaHelper(this).handleArrayFieldMetaShift(field, index1, 'move', index2)
+    metaHelper(this).handleArrayMove(field, index1, index2)
 
     const dontValidate = options?.dontValidate ?? false
     if (!dontValidate) {
@@ -2484,6 +2484,83 @@ export class FormApi<
       // Validate the moved fields
       this.validateField(`${field}[${index1}]` as DeepKeys<TFormData>, 'change')
       this.validateField(`${field}[${index2}]` as DeepKeys<TFormData>, 'change')
+    }
+  }
+
+  /**
+   * Filter the array values by the provided predicate.
+   * @param field
+   * @param predicate — The predicate callback to pass to the array's filter function.
+   * @param opts
+   */
+  filterFieldValues = <
+    TField extends DeepKeysOfType<TFormData, any[]>,
+    TData extends DeepValue<TFormData, TField>,
+  >(
+    field: TField,
+    predicate: (
+      value: TData extends Array<any> ? TData[number] : never,
+      index: number,
+      array: TData,
+    ) => boolean,
+    opts?: UpdateMetaOptions & {
+      /** `thisArg` — An object to which the `this` keyword can refer in the predicate function. If thisArg is omitted, undefined is used as the `this` value. */
+      thisArg?: any
+    },
+  ) => {
+    const { thisArg, ...metaOpts } = opts ?? {}
+    const fieldValue = this.getFieldValue(field)
+
+    const arrayData = {
+      previousLength: Array.isArray(fieldValue)
+        ? (fieldValue as unknown[]).length
+        : null,
+      validateFromIndex: null as number | null,
+    }
+
+    const remainingIndeces: number[] = []
+
+    const filterFunction =
+      opts?.thisArg === undefined ? predicate : predicate.bind(opts.thisArg)
+
+    this.setFieldValue(
+      field,
+      (prev: any) =>
+        prev.filter((value: any, index: number, array: TData) => {
+          const keepElement = filterFunction(value, index, array)
+          if (!keepElement) {
+            // remember the first index that got filtered
+            arrayData.validateFromIndex ??= index
+            return false
+          }
+          remainingIndeces.push(index)
+          return true
+        }),
+      metaOpts,
+    )
+
+    // Shift meta accounting for filtered values
+    metaHelper(this).handleArrayFilter(field, remainingIndeces)
+
+    // remove dangling fields if the filter call reduced the length of the array
+    if (
+      arrayData.previousLength !== null &&
+      remainingIndeces.length !== arrayData.previousLength
+    ) {
+      for (let i = remainingIndeces.length; i < arrayData.previousLength; i++) {
+        const fieldKey = `${field}[${i}]`
+        this.deleteField(fieldKey as never)
+      }
+    }
+
+    // validate the array and the fields starting from the shifted elements
+    this.validateField(field, 'change')
+    if (arrayData.validateFromIndex !== null) {
+      this.validateArrayFieldsStartingFrom(
+        field,
+        arrayData.validateFromIndex,
+        'change',
+      )
     }
   }
 

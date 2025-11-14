@@ -1514,6 +1514,27 @@ export class FieldApi<
   }
 
   /**
+   * Filter values in the array using the provided predicate callback.
+   * @param predicate — The predicate callback to pass to the array's filter function.
+   * @param opts
+   */
+  filterValues = (
+    predicate: (
+      value: TData extends Array<any> ? TData[number] : never,
+      index: number,
+      array: TData,
+    ) => boolean,
+    opts?: UpdateMetaOptions & {
+      /** `thisArg` — An object to which the `this` keyword can refer in the predicate function. If thisArg is omitted, undefined is used as the `this` value. */
+      thisArg?: any
+    },
+  ) => {
+    this.form.filterFieldValues(this.name, predicate, opts)
+
+    this.triggerOnChangeListener()
+  }
+
+  /**
    * Clear all values from the array.
    */
   clearValues = (options?: UpdateMetaOptions) => {
