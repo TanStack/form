@@ -9,11 +9,11 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-devtools": "^0.7.8",
+    "@tanstack/react-devtools": "^0.8.1",
     "@tanstack/react-form": "^1.25.0",
     "@tanstack/react-form-devtools": "^0.2.1",
-    "arktype": "^2.1.22",
-    "effect": "^3.17.14",
+    "arktype": "^2.1.26",
+    "effect": "^3.19.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "valibot": "^1.1.0",

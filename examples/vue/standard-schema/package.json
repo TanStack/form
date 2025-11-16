@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@tanstack/vue-form": "^1.25.0",
-    "arktype": "^2.1.22",
-    "effect": "^3.17.14",
+    "arktype": "^2.1.26",
+    "effect": "^3.19.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "valibot": "^1.1.0",
