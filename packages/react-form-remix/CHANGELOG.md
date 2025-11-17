@@ -1,5 +1,12 @@
 # @tanstack/react-form-remix
 
+## 1.26.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.26.0
+
 ## 1.25.0
 
 ### Patch Changes
