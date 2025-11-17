@@ -11,4 +11,4 @@ title: formEventClient
 const formEventClient: FormEventClient;
 ```
 
-Defined in: [packages/form-core/src/EventClient.ts:69](https://github.com/TanStack/form/blob/main/packages/form-core/src/EventClient.ts#L69)
+Defined in: [packages/form-core/src/EventClient.ts:70](https://github.com/TanStack/form/blob/main/packages/form-core/src/EventClient.ts#L70)

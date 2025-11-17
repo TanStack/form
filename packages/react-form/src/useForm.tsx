@@ -1,3 +1,5 @@
+'use client'
+
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
 import { useId, useState } from 'react'
