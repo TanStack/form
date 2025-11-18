@@ -1272,4 +1272,28 @@ describe('useField', () => {
     // Should not log an error
     expect(consoleErrorSpy).not.toHaveBeenCalled()
   })
+
+  it('should allow field-level defaultValue', async () => {
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          name: undefined as string | undefined,
+        },
+      })
+
+      return (
+        <form.Field name="name" defaultValue="a">
+          {(field) => {
+            expect(field.state.value).toEqual('a')
+            return <span data-testid="fieldValue">{field.state.value}</span>
+          }}
+        </form.Field>
+      )
+    }
+
+    const { queryByText } = render(<Comp />)
+
+    expect(queryByText('a')).toBeInTheDocument()
+    expect(queryByText('never')).not.toBeInTheDocument()
+  })
 })
