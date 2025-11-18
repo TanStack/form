@@ -688,3 +688,5 @@ export class AppComponent {
   // ...
 }
 ```
+
+To prevent the form from being submitted before any interaction, combine `canSubmit` with `isPristine` flags. A simple condition like `!canSubmit || isPristine` effectively disables submissions until the user has made changes.

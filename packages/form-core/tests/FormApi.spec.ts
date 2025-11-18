@@ -169,6 +169,35 @@ describe('form api', () => {
     expect(form.state.values).toEqual({ name: 'initial' })
   })
 
+  it('should handle multiple fields with mixed mount states', () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+        email: '',
+      },
+    })
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+
+    firstNameField.mount()
+
+    expect(form.state.fieldMeta.firstName).toBeDefined()
+
+    expect(form.state.fieldMeta.email).toBeUndefined()
+
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+    })
+    lastNameField.mount()
+
+    expect(form.state.fieldMeta.lastName).toBeDefined()
+  })
+
   it("should get a field's value", () => {
     const form = new FormApi({
       defaultValues: {
@@ -1691,10 +1720,10 @@ describe('form api', () => {
     await form.handleSubmit()
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
-    expect(form.state.fieldMeta['firstName'].errors).toEqual([
+    expect(form.state.fieldMeta['firstName']!.errors).toEqual([
       'first name is required',
     ])
-    expect(form.state.fieldMeta['lastName'].errors).toEqual([
+    expect(form.state.fieldMeta['lastName']!.errors).toEqual([
       'last name is required',
     ])
   })
@@ -1730,10 +1759,10 @@ describe('form api', () => {
     await form.handleSubmit()
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
-    expect(form.state.fieldMeta['person.firstName'].errors).toEqual([
+    expect(form.state.fieldMeta['person.firstName']!.errors).toEqual([
       'first name is required',
     ])
-    expect(form.state.fieldMeta['person.lastName'].errors).toEqual([
+    expect(form.state.fieldMeta['person.lastName']!.errors).toEqual([
       'last name is required',
     ])
   })
@@ -1764,7 +1793,7 @@ describe('form api', () => {
     await form.handleSubmit()
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
-    expect(form.state.fieldMeta['firstName'].errors).toEqual([
+    expect(form.state.fieldMeta['firstName']!.errors).toEqual([
       'first name is required',
       'first name must be longer than 3 characters',
     ])
@@ -1873,7 +1902,7 @@ describe('form api', () => {
     await vi.runAllTimersAsync()
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
-    expect(form.state.fieldMeta['firstName'].errorMap).toEqual({
+    expect(form.state.fieldMeta['firstName']!.errorMap).toEqual({
       onChange: 'first name is required',
       onBlur: 'first name must be longer than 3 characters',
     })
@@ -1900,14 +1929,14 @@ describe('form api', () => {
     await form.handleSubmit()
     expect(form.state.isFieldsValid).toEqual(false)
     expect(form.state.canSubmit).toEqual(false)
-    expect(form.state.fieldMeta['firstName'].errorMap['onSubmit']).toEqual(
+    expect(form.state.fieldMeta['firstName']!.errorMap['onSubmit']).toEqual(
       'first name is required',
     )
     field.handleChange('test')
     expect(form.state.isFieldsValid).toEqual(true)
     expect(form.state.canSubmit).toEqual(true)
     expect(
-      form.state.fieldMeta['firstName'].errorMap['onSubmit'],
+      form.state.fieldMeta['firstName']!.errorMap['onSubmit'],
     ).toBeUndefined()
   })
 
@@ -4065,4 +4094,22 @@ it('should generate a formId if not provided', () => {
   form.mount()
 
   expect(form.formId.length).toBeGreaterThan(1)
+})
+
+describe('form api event client', () => {
+  it('should have debug disabled', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    form.mount()
+
+    expect(logSpy).not.toHaveBeenCalled()
+
+    logSpy.mockRestore()
+  })
 })

@@ -1,5 +1,5 @@
 import { Derived, Store, batch } from '@tanstack/store'
-
+import { throttle } from '@tanstack/pacer'
 import {
   deleteBy,
   determineFormLevelErrorSourceAndValue,
@@ -22,11 +22,6 @@ import {
 } from './standardSchemaValidator'
 import { defaultFieldMeta, metaHelper } from './metaHelper'
 import { formEventClient } from './EventClient'
-import type {
-  RequestFormForceReset,
-  RequestFormReset,
-  RequestFormState,
-} from './EventClient'
 import type { ValidationLogicFn } from './ValidationLogic'
 import type {
   StandardSchemaV1,
@@ -623,7 +618,7 @@ export type BaseFormState<
   /**
    * A record of field metadata for each field in the form, not including the derived properties, like `errors` and such
    */
-  fieldMetaBase: Record<DeepKeys<TFormData>, AnyFieldMetaBase>
+  fieldMetaBase: Partial<Record<DeepKeys<TFormData>, AnyFieldMetaBase>>
   /**
    * A boolean indicating if the form is currently in the process of being submitted after `handleSubmit` is called.
    *
@@ -738,7 +733,7 @@ export type DerivedFormState<
   /**
    * A record of field metadata for each field in the form.
    */
-  fieldMeta: Record<DeepKeys<TFormData>, AnyFieldMeta>
+  fieldMeta: Partial<Record<DeepKeys<TFormData>, AnyFieldMeta>>
 }
 
 export interface FormState<
@@ -929,8 +924,22 @@ export class FormApi<
       TOnServer
     >
   >
-  fieldMetaDerived!: Derived<Record<DeepKeys<TFormData>, AnyFieldMeta>>
-  store!: Derived<
+  fieldMetaDerived: Derived<
+    FormState<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer
+    >['fieldMeta']
+  >
+  store: Derived<
     FormState<
       TFormData,
       TOnMount,
@@ -1024,7 +1033,7 @@ export class FormApi<
 
         let originalMetaCount = 0
 
-        const fieldMeta = {} as FormState<
+        const fieldMeta: FormState<
           TFormData,
           TOnMount,
           TOnChange,
@@ -1036,7 +1045,7 @@ export class FormApi<
           TOnDynamic,
           TOnDynamicAsync,
           TOnServer
-        >['fieldMeta']
+        >['fieldMeta'] = {}
 
         for (const fieldName of Object.keys(
           currBaseStore.fieldMetaBase,
@@ -1295,17 +1304,26 @@ export class FormApi<
 
     this.update(opts || {})
 
+    const debouncedDevtoolState = throttle(
+      (state: AnyFormState) =>
+        formEventClient.emit('form-state', {
+          id: this._formId,
+          state: state,
+        }),
+      {
+        wait: 300,
+      },
+    )
+
+    // devtool broadcasts
     this.store.subscribe(() => {
-      formEventClient.emit('form-state-change', {
-        id: this._formId,
-        state: this.store.state,
-        options: this.options,
-      })
+      debouncedDevtoolState(this.store.state)
     })
 
+    // devtool requests
     formEventClient.on('request-form-state', (e) => {
       if (e.payload.id === this._formId) {
-        formEventClient.emit('form-state-change', {
+        formEventClient.emit('form-api', {
           id: this._formId,
           state: this.store.state,
           options: this.options,
@@ -1375,7 +1393,7 @@ export class FormApi<
     const { onMount } = this.options.validators || {}
 
     // broadcast form state for devtools on mounting
-    formEventClient.emit('form-state-change', {
+    formEventClient.emit('form-api', {
       id: this._formId,
       state: this.store.state,
       options: this.options,
@@ -1452,6 +1470,12 @@ export class FormApi<
           ),
         ),
       )
+    })
+
+    formEventClient.emit('form-api', {
+      id: this._formId,
+      state: this.store.state,
+      options: this.options,
     })
   }
 
@@ -1640,7 +1664,6 @@ export class FormApi<
         for (const field of Object.keys(
           this.state.fieldMeta,
         ) as DeepKeys<TFormData>[]) {
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           if (this.baseStore.state.fieldMetaBase[field] === undefined) {
             continue
           }
@@ -1848,7 +1871,6 @@ export class FormApi<
           for (const field of Object.keys(
             this.state.fieldMeta,
           ) as DeepKeys<TFormData>[]) {
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (this.baseStore.state.fieldMetaBase[field] === undefined) {
               continue
             }
@@ -2051,7 +2073,7 @@ export class FormApi<
         meta: submitMetaArg,
       })
 
-      formEventClient.emit('form-submission-state-change', {
+      formEventClient.emit('form-submission', {
         id: this._formId,
         submissionAttempt: this.state.submissionAttempts,
         successful: false,
@@ -2075,7 +2097,7 @@ export class FormApi<
         meta: submitMetaArg,
       })
 
-      formEventClient.emit('form-submission-state-change', {
+      formEventClient.emit('form-submission', {
         id: this._formId,
         submissionAttempt: this.state.submissionAttempts,
         successful: false,
@@ -2114,7 +2136,7 @@ export class FormApi<
           isSubmitSuccessful: true, // Set isSubmitSuccessful to true on successful submission
         }))
 
-        formEventClient.emit('form-submission-state-change', {
+        formEventClient.emit('form-submission', {
           id: this._formId,
           submissionAttempt: this.state.submissionAttempts,
           successful: true,
@@ -2128,7 +2150,7 @@ export class FormApi<
         isSubmitSuccessful: false, // Ensure isSubmitSuccessful is false if an error occurs
       }))
 
-      formEventClient.emit('form-submission-state-change', {
+      formEventClient.emit('form-submission', {
         id: this._formId,
         submissionAttempt: this.state.submissionAttempts,
         successful: false,
@@ -2203,15 +2225,15 @@ export class FormApi<
    * resets every field's meta
    */
   resetFieldMeta = <TField extends DeepKeys<TFormData>>(
-    fieldMeta: Record<TField, AnyFieldMeta>,
-  ): Record<TField, AnyFieldMeta> => {
+    fieldMeta: Partial<Record<TField, AnyFieldMeta>>,
+  ): Partial<Record<TField, AnyFieldMeta>> => {
     return Object.keys(fieldMeta).reduce(
-      (acc: Record<TField, AnyFieldMeta>, key) => {
+      (acc, key) => {
         const fieldKey = key as TField
         acc[fieldKey] = defaultFieldMeta
         return acc
       },
-      {} as Record<TField, AnyFieldMeta>,
+      {} as Partial<Record<TField, AnyFieldMeta>>,
     )
   }
 

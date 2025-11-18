@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import { FormDevtoolsPlugin } from '@tanstack/react-form-devtools'
+import { formDevtoolsPlugin } from '@tanstack/react-form-devtools'
 
 import { createRoot } from 'react-dom/client'
 import { createTheme } from '@mui/material/styles'
@@ -41,7 +41,7 @@ createRoot(rootElement).render(
 
     <TanStackDevtools
       config={{ hideUntilHover: true }}
-      plugins={[FormDevtoolsPlugin()]}
+      plugins={[formDevtoolsPlugin()]}
     />
   </React.StrictMode>,
 )

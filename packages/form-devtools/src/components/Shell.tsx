@@ -1,8 +1,10 @@
-import { createSignal, onCleanup, onMount } from 'solid-js'
+import { Show, createSignal, onCleanup, onMount } from 'solid-js'
 import { Header, HeaderLogo, MainPanel } from '@tanstack/devtools-ui'
 import { useStyles } from '../styles/use-styles'
 import { UtilList } from './UtilList'
 import { DetailsPanel } from './DetailsPanel'
+
+import type { Accessor } from 'solid-js'
 
 export function Shell() {
   const styles = useStyles()
@@ -52,7 +54,15 @@ export function Shell() {
   return (
     <MainPanel>
       <Header>
-        <HeaderLogo flavor={{ light: '#eeaf00', dark: '#eeaf00' }}>
+        <HeaderLogo
+          flavor={{ light: '#eeaf00', dark: '#eeaf00' }}
+          onClick={() => {
+            window.open(
+              'https://tanstack.com/form/latest/docs/overview',
+              '_blank',
+            )
+          }}
+        >
           TanStack Form
         </HeaderLogo>
       </Header>
@@ -75,8 +85,10 @@ export function Shell() {
         />
 
         <div class={styles().rightPanel} style={{ flex: 1 }}>
-          <div class={styles().panelHeader}>Details</div>
-          <DetailsPanel selectedKey={selectedKey} />
+          <Show when={selectedKey() != null}>
+            <div class={styles().panelHeader}>Details</div>
+            <DetailsPanel selectedKey={selectedKey as Accessor<string>} />
+          </Show>
         </div>
       </div>
     </MainPanel>

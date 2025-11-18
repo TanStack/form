@@ -1,5 +1,36 @@
 # @tanstack/react-form
 
+## 1.25.0
+
+### Minor Changes
+
+- Update Start to Release Candidate version. Extracted start, remix and nextJs adapters to the respective libraries @tanstack/react-form-start, @tanstack/react-form-remix, and @tanstack/react-form-nextjs, ([#1771](https://github.com/TanStack/form/pull/1771))
+
+### Patch Changes
+
+- Updated dependencies [[`004835f`](https://github.com/TanStack/form/commit/004835fbc113f36ac32fc5691ad27bc00813f389)]:
+  - @tanstack/form-core@1.25.0
+
+## 1.23.9
+
+### Patch Changes
+
+- Updated dependencies [[`8ede6d0`](https://github.com/TanStack/form/commit/8ede6d0bb5615a105f54c13d3160d0243ea6c041)]:
+  - @tanstack/form-core@1.24.5
+
+## 1.23.8
+
+### Patch Changes
+
+- Allow interfaces to be assigned to `withFieldGroup`'s `props`. ([#1816](https://github.com/TanStack/form/pull/1816))
+
+- Allow returning all other `ReactNode`s not just `JSX.Element` in the `render` function of `withForm` and `withFieldGroup`. ([#1817](https://github.com/TanStack/form/pull/1817))
+
+- form-core: Optimise event client emissions and minor layout tweaks ([#1758](https://github.com/TanStack/form/pull/1758))
+
+- Updated dependencies [[`94631cb`](https://github.com/TanStack/form/commit/94631cb97dea611de69a900c89b7e8dfe0eeee37)]:
+  - @tanstack/form-core@1.24.4
+
 ## 1.23.7
 
 ### Patch Changes

@@ -1,5 +1,23 @@
 # @tanstack/form-core
 
+## 1.25.0
+
+### Patch Changes
+
+- Removes debug config from event client in form-core ([#1852](https://github.com/TanStack/form/pull/1852))
+
+## 1.24.5
+
+### Patch Changes
+
+- - Make `fieldMeta` record type `Partial<>` to reflect runtime behaviour ([#1787](https://github.com/TanStack/form/pull/1787))
+
+## 1.24.4
+
+### Patch Changes
+
+- Optimise event client emissions and minor layout tweaks ([#1758](https://github.com/TanStack/form/pull/1758))
+
 ## 1.24.3
 
 ### Patch Changes

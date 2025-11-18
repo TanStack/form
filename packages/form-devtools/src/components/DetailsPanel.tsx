@@ -8,69 +8,34 @@ import { StateHeader } from './StateHeader'
 import type { Accessor } from 'solid-js'
 
 type DetailsPanelProps = {
-  selectedKey: Accessor<string | null>
+  selectedKey: Accessor<string>
 }
 
 export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
   const styles = useStyles()
   const { store } = useFormEventClient()
 
-  const selectedInstance = createMemo(() => {
-    const key = selectedKey()
-    return key
-      ? (store.formState.find((form) => form.id === key) ?? null)
-      : null
-  })
+  const selectedIndex = createMemo(() =>
+    store().findIndex((f) => f.id === selectedKey()),
+  )
+
+  const selectedInstance = createMemo(() =>
+    selectedIndex() > -1 ? store()[selectedIndex()] : null,
+  )
 
   const state = createMemo(() => selectedInstance()?.state)
-  const history = createMemo(() => selectedInstance()?.history)
 
-  const sections = createMemo(() => [
-    {
-      title: 'Form options',
-      value: selectedInstance()?.options,
-    },
-    {
-      title: 'Form values',
-      value: state()?.values,
-    },
-    {
-      title: 'Form Interactions',
-      value: {
-        isPristine: state()?.isPristine,
-        isTouched: state()?.isTouched,
-        isDirty: state()?.isDirty,
-        isDefaultValue: state()?.isDefaultValue,
-        isBlurred: state()?.isBlurred,
-      },
-    },
-    {
-      title: 'Form Status',
-      value: {
-        canSubmit: state()?.canSubmit,
-        isFormValid: state()?.isFormValid,
-        isFormValidating: state()?.isFormValidating,
-        isSubmitted: state()?.isSubmitted,
-        isSubmitting: state()?.isSubmitting,
-        isSubmitSuccessful: state()?.isSubmitSuccessful,
-        submissionAttempts: state()?.submissionAttempts,
-        errors: state()?.errors,
-        errorMap: state()?.errorMap,
-      },
-    },
-    {
-      title: 'Field Status',
-      value: {
-        isFieldsValid: state()?.isFieldsValid,
-        isFieldsValidating: state()?.isFieldsValidating,
-        fieldMeta: state()?.fieldMeta,
-      },
-    },
-    {
-      title: 'Submission history',
-      value: history(),
-    },
-  ])
+  const formStatus = createMemo(() => ({
+    canSubmit: state()?.canSubmit,
+    isFormValid: state()?.isFormValid,
+    isFormValidating: state()?.isFormValidating,
+    isSubmitted: state()?.isSubmitted,
+    isSubmitting: state()?.isSubmitting,
+    isSubmitSuccessful: state()?.isSubmitSuccessful,
+    submissionAttempts: state()?.submissionAttempts,
+    errors: state()?.errors,
+    errorMap: state()?.errorMap,
+  }))
 
   const individualFields = createMemo(() => {
     const fields: Record<string, { value: any; meta: any }> = {}
@@ -86,6 +51,7 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
 
     return fields
   })
+
   return (
     <div class={styles().stateDetails}>
       <Show when={selectedInstance()}>
@@ -96,43 +62,74 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
             <div class={styles().detailSectionHeader}>Actions</div>
             <ActionButtons selectedInstance={selectedInstance} />
           </div>
+
           <div class={styles().detailSection}>
             <div class={styles().detailSectionHeader}>Individual Fields</div>
-            <div class={styles().stateContent}>
-              <div
-                style={{
-                  display: 'flex',
-                  gap: '16px',
-                }}
-              >
-                <For each={Object.entries(individualFields())}>
-                  {([fieldName, fieldData]) => (
-                    <div style={{ 'margin-bottom': '16px' }}>
-                      <div
-                        style={{
-                          'font-weight': 'bold',
-                          'margin-bottom': '4px',
-                        }}
-                      >
-                        {fieldName}
-                      </div>
-                      <JsonTree copyable value={fieldData} />
+
+            <div
+              style={{
+                display: 'flex',
+                gap: '8px',
+              }}
+            >
+              <For each={Object.entries(individualFields())}>
+                {([fieldName, fieldData]) => (
+                  <div
+                    class={styles().stateContent}
+                    style={{ 'margin-bottom': '16px' }}
+                  >
+                    <div
+                      style={{
+                        'font-weight': 'bold',
+                        'margin-bottom': '4px',
+                      }}
+                    >
+                      {fieldName}
                     </div>
-                  )}
-                </For>
-              </div>
+                    <JsonTree copyable value={fieldData as unknown} />
+                  </div>
+                )}
+              </For>
             </div>
           </div>
-          <For each={sections()}>
-            {(section) => (
-              <div class={styles().detailSection}>
-                <div class={styles().detailSectionHeader}>{section.title}</div>
-                <div class={styles().stateContent}>
-                  <JsonTree copyable value={section.value} />
-                </div>
-              </div>
-            )}
-          </For>
+
+          <div class={styles().detailSection}>
+            <div class={styles().detailSectionHeader}>Form values</div>
+            <div class={styles().stateContent}>
+              <JsonTree
+                copyable
+                value={store()[selectedIndex()]!.state.values as unknown}
+              />
+            </div>
+          </div>
+
+          <div class={styles().detailSection}>
+            <div class={styles().detailSectionHeader}>Form status</div>
+            <div class={styles().stateContent}>
+              <JsonTree copyable value={formStatus() as unknown} />
+            </div>
+          </div>
+
+          <div class={styles().detailSection}>
+            <div class={styles().detailSectionHeader}>Form options</div>
+            <div class={styles().stateContent}>
+              <JsonTree
+                copyable
+                value={store()[selectedIndex()]?.options as unknown}
+                collapsePaths={['validators'] as unknown as never}
+              />
+            </div>
+          </div>
+
+          <div class={styles().detailSection}>
+            <div class={styles().detailSectionHeader}>Submission history</div>
+            <div class={styles().stateContent}>
+              <JsonTree
+                copyable
+                value={store()[selectedIndex()]?.history as unknown}
+              />
+            </div>
+          </div>
         </div>
       </Show>
     </div>

@@ -1,5 +1,32 @@
 # @tanstack/react-form-devtools
 
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.1
+
+## 0.2.0
+
+### Minor Changes
+
+- Migrated to devtools utils, adds support for solid devtools. Renamed plugin to reflect tanstack plugin schema (FormDevtoolsPlugin to formDevtoolsPlugin) ([#1789](https://github.com/TanStack/form/pull/1789))
+
+### Patch Changes
+
+- Updated dependencies [[`154ac18`](https://github.com/TanStack/form/commit/154ac183a63533227abc67838ca2ca5385a5551d)]:
+  - @tanstack/form-devtools@0.2.0
+
+## 0.1.8
+
+### Patch Changes
+
+- form-devtools: Optimise event client emissions and minor layout tweaks ([#1758](https://github.com/TanStack/form/pull/1758))
+
+- Updated dependencies [[`94631cb`](https://github.com/TanStack/form/commit/94631cb97dea611de69a900c89b7e8dfe0eeee37)]:
+  - @tanstack/form-devtools@0.1.8
+
 ## 0.1.7
 
 ### Patch Changes

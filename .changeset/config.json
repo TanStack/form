@@ -8,7 +8,24 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "fixed": [],
+  "fixed": [
+    [
+      "@tanstack/form-core",
+      "@tanstack/react-form",
+      "@tanstack/react-form-start",
+      "@tanstack/react-form-remix",
+      "@tanstack/react-form-nextjs",
+      "@tanstack/angular-form",
+      "@tanstack/vue-form",
+      "@tanstack/solid-form",
+      "@tanstack/svelte-form"
+    ],
+    [
+      "@tanstack/form-devtools",
+      "@tanstack/react-form-devtools",
+      "@tanstack/solid-form-devtools"
+    ]
+  ],
   "linked": [],
   "ignore": []
 }

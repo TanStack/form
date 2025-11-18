@@ -1,8 +1,12 @@
 'use client'
 
 import { useActionState } from 'react'
-import { mergeForm, useForm, useTransform } from '@tanstack/react-form'
-import { initialFormState } from '@tanstack/react-form/nextjs'
+import {
+  initialFormState,
+  mergeForm,
+  useForm,
+  useTransform,
+} from '@tanstack/react-form-nextjs'
 import { useStore } from '@tanstack/react-store'
 import someAction from './action'
 import { formOpts } from './shared-code'

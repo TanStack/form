@@ -7,7 +7,7 @@ title: UseFieldOptionsBound
 
 # Interface: UseFieldOptionsBound\<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync\>
 
-Defined in: [packages/react-form/src/types.ts:78](https://github.com/TanStack/form/blob/main/packages/react-form/src/types.ts#L78)
+Defined in: [packages/react-form/src/types.ts:79](https://github.com/TanStack/form/blob/main/packages/react-form/src/types.ts#L79)
 
 ## Extends
 
@@ -47,7 +47,7 @@ Defined in: [packages/react-form/src/types.ts:78](https://github.com/TanStack/fo
 optional mode: "value" | "array";
 ```
 
-Defined in: [packages/react-form/src/types.ts:13](https://github.com/TanStack/form/blob/main/packages/react-form/src/types.ts#L13)
+Defined in: [packages/react-form/src/types.ts:14](https://github.com/TanStack/form/blob/main/packages/react-form/src/types.ts#L14)
 
 #### Inherited from
 

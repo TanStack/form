@@ -1,5 +1,11 @@
 import dayjs from 'dayjs'
-import { createContext, createEffect, onCleanup, useContext } from 'solid-js'
+import {
+  createContext,
+  createEffect,
+  createMemo,
+  onCleanup,
+  useContext,
+} from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { formEventClient } from '@tanstack/form-core'
 
@@ -26,79 +32,85 @@ export type DevtoolsFormState = {
   history: Array<BroadcastFormSubmissionStateWithoutId>
 }
 
-type DevtoolsState = {
-  formState: Array<DevtoolsFormState>
-}
-
-const devtoolsStateInit: DevtoolsState = {
-  formState: [],
-}
-
 function useProviderValue() {
-  const [store, setStore] = createStore<DevtoolsState>(devtoolsStateInit)
+  const [store, setStore] = createStore<Array<DevtoolsFormState>>([])
 
   createEffect(() => {
-    const cleanup = formEventClient.on('form-state-change', (e) => {
-      setStore('formState', (prev) => {
-        const existing = prev.find((item) => item.id === e.payload.id)
+    const cleanup = formEventClient.on('form-api', (e) => {
+      const id = e.payload.id
+      const existingIndex = store.findIndex((item) => item.id === id)
 
-        if (existing) {
-          return prev.map((item) =>
-            item.id === e.payload.id
-              ? {
-                  ...item,
-                  state: e.payload.state,
-                  options: e.payload.options,
-                  date: dayjs(),
-                }
-              : item,
-          )
-        }
-
-        return [
+      if (existingIndex > -1) {
+        setStore(existingIndex, {
+          state: e.payload.state,
+          options: e.payload.options,
+          date: dayjs(),
+        })
+      } else {
+        setStore((prev) => [
           ...prev,
           {
-            id: e.payload.id,
+            id,
             state: e.payload.state,
             options: e.payload.options,
             date: dayjs(),
             history: [],
           },
-        ]
-      })
+        ])
+      }
     })
 
-    onCleanup(() => cleanup())
+    onCleanup(cleanup)
   })
 
   createEffect(() => {
-    const cleanup = formEventClient.on('form-submission-state-change', (e) => {
-      setStore('formState', (prev) =>
-        prev.map((item) => {
-          if (item.id !== e.payload.id) return item
+    const cleanup = formEventClient.on('form-state', (e) => {
+      const id = e.payload.id
+      const existingIndex = store.findIndex((item) => item.id === id)
 
-          const { id, ...rest } = e.payload
-          const newHistory = [rest, ...item.history].slice(0, 5)
-
-          return {
-            ...item,
-            history: newHistory,
-          }
-        }),
-      )
+      if (existingIndex > -1) {
+        setStore(existingIndex, {
+          state: e.payload.state,
+          date: dayjs(),
+        })
+      } else {
+        setStore((prev) => [
+          ...prev,
+          {
+            id,
+            state: e.payload.state,
+            options: {},
+            date: dayjs(),
+            history: [],
+          },
+        ])
+      }
     })
 
-    onCleanup(() => cleanup())
+    onCleanup(cleanup)
+  })
+
+  createEffect(() => {
+    const cleanup = formEventClient.on('form-submission', (e) => {
+      const id = e.payload.id
+      const existingIndex = store.findIndex((item) => item.id === id)
+
+      if (existingIndex > -1 && store[existingIndex]) {
+        const { id: _, ...rest } = e.payload
+        const newHistory = [rest, ...store[existingIndex].history].slice(0, 5)
+        setStore(existingIndex, 'history', newHistory)
+      }
+    })
+
+    onCleanup(cleanup)
   })
 
   createEffect(() => {
     const cleanup = formEventClient.on('form-unmounted', (e) => {
-      setStore('formState', (prev) =>
-        prev.filter((item) => item.id !== e.payload.id),
-      )
+      setStore((prev) => prev.filter((item) => item.id !== e.payload.id))
     })
 
-    onCleanup(() => cleanup())
+    onCleanup(cleanup)
   })
 
   return { store }
@@ -127,5 +139,6 @@ export function useFormEventClient() {
     )
   }
 
-  return context
+  const memoContext = createMemo(() => context.store)
+  return { store: memoContext }
 }
