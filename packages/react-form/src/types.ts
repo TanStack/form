@@ -9,6 +9,51 @@ import type {
   FormState,
   FormValidateOrFn,
 } from '@tanstack/form-core'
+import type { ComponentType } from 'react'
+
+declare const dataTagFieldValueSymbol: unique symbol
+
+type AnyDataTag = {
+  [dataTagFieldValueSymbol]: any
+}
+
+/**
+ * @private
+ */
+export type DataTag<TType, TFieldValue> = TType extends AnyDataTag
+  ? TType
+  : TType & {
+      [dataTagFieldValueSymbol]: TFieldValue
+    }
+/**
+ * @private
+ */
+export type AppFieldComponents = Record<
+  string,
+  ComponentType<any> | DataTag<ComponentType<any>, any>
+>
+
+/**
+ * @private
+ */
+export type AppFieldComponentsOfType<
+  TFieldValue,
+  TRecord extends AppFieldComponents,
+> = {
+  [K in keyof TRecord as TRecord[K] extends DataTag<
+    unknown,
+    infer TaggedFieldValue
+  >
+    ? TaggedFieldValue extends TFieldValue // does the brand match?
+      ? K
+      : never // brand doesn't match
+    : K]: TRecord[K]
+}
+
+/**
+ * @private
+ */
+export type AppFormComponents = Record<string, ComponentType<any>>
 
 interface FieldOptionsMode {
   mode?: 'value' | 'array'
