@@ -1618,7 +1618,9 @@ export class FormApi<
     const { fieldsErrorMap } = this.validateSync(cause)
 
     const fieldErrorMap = (fieldsErrorMap as any)?.[field] ?? {}
-    const hasSyncErrored = Object.values(fieldErrorMap).some((v) => v !== undefined)
+    const hasSyncErrored = Object.values(fieldErrorMap).some(
+      (v) => v !== undefined,
+    )
 
     // If sync validators found errors and asyncAlways is not set, return current errors
     if (hasSyncErrored && !(this.options.asyncAlways as boolean)) {
