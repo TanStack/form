@@ -3486,6 +3486,108 @@ describe('form api', () => {
     expect(form.getFieldMeta(`employees[0]`)).toBeUndefined()
     expect(form.state.values.employees).toStrictEqual([])
   })
+
+  it('should filter fields when calling filterFieldValues', () => {
+    const form = new FormApi({
+      defaultValues: {
+        items: ['a', 'b', 'c', 'd', 'e', 'f'],
+      },
+    })
+
+    const fields = new Array(5)
+      .fill(0)
+      .map((_, i) => new FieldApi({ form, name: `items[${i}]` }))
+
+    form.mount()
+    fields.forEach((field) => field.mount())
+
+    // Ensure the initial state has the fields
+    expect(form.getFieldValue('items')).toEqual(['a', 'b', 'c', 'd', 'e', 'f'])
+
+    // Reset the field to an empty array
+    form.filterFieldValues('items', (v) =>
+      [
+        'a',
+        'b',
+        // 'c',
+        'd',
+        // 'e',
+        'f',
+      ].includes(v),
+    )
+
+    // Verify that the field value is now an empty array
+    expect(form.getFieldValue('items')).toEqual(['a', 'b', 'd', 'f'])
+  })
+
+  it('should shift meta when calling filterFieldValues', () => {
+    const form = new FormApi({
+      defaultValues: {
+        items: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'],
+      },
+    })
+
+    const fields = new Array(10)
+      .fill(null)
+      .map((_, i) => new FieldApi({ form, name: `items[${i}]` }))
+
+    form.mount()
+    fields.forEach((field) => field.mount())
+
+    /*
+    Before the filter, achieve the following touched state:
+      [ 'items[0]', 'a', false ],
+      [ 'items[1]', 'b', true ],
+      [ 'items[2]', 'c', false ],
+      [ 'items[3]', 'd', true ],
+      [ 'items[4]', 'e', false ],
+      [ 'items[5]', 'f', false ],
+      [ 'items[6]', 'g', true ],
+      [ 'items[7]', 'h', false ],
+      [ 'items[8]', 'i', true ],
+      [ 'items[9]', 'j', false ]
+    */
+    function blurField(index: number) {
+      form.setFieldMeta(`items[${index}]`, (prev) => ({
+        ...prev,
+        isBlurred: true,
+      }))
+    }
+    blurField(1)
+    blurField(3)
+    blurField(6)
+    blurField(8)
+
+    form.filterFieldValues(
+      'items',
+      (letter) => !['c', 'f', 'g'].includes(letter),
+    )
+
+    /**
+     The resulting array should now be
+      [ 'items[0]', 'a', false ],
+      [ 'items[1]', 'b', true ],
+      [ 'items[2]', 'd', true ],
+      [ 'items[3]', 'e', false ],
+      [ 'items[4]', 'h', false ],
+      [ 'items[5]', 'i', true ],
+      [ 'items[6]', 'j', false ],
+     */
+    expect(form.getFieldValue(`items[${0}]`)).toBe('a')
+    expect(form.getFieldValue(`items[${1}]`)).toBe('b')
+    expect(form.getFieldValue(`items[${2}]`)).toBe('d')
+    expect(form.getFieldValue(`items[${3}]`)).toBe('e')
+    expect(form.getFieldValue(`items[${4}]`)).toBe('h')
+    expect(form.getFieldValue(`items[${5}]`)).toBe('i')
+    expect(form.getFieldValue(`items[${6}]`)).toBe('j')
+    expect(form.getFieldMeta(`items[${0}]`)?.isBlurred).toBe(false)
+    expect(form.getFieldMeta(`items[${1}]`)?.isBlurred).toBe(true)
+    expect(form.getFieldMeta(`items[${2}]`)?.isBlurred).toBe(true)
+    expect(form.getFieldMeta(`items[${3}]`)?.isBlurred).toBe(false)
+    expect(form.getFieldMeta(`items[${4}]`)?.isBlurred).toBe(false)
+    expect(form.getFieldMeta(`items[${5}]`)?.isBlurred).toBe(true)
+    expect(form.getFieldMeta(`items[${6}]`)?.isBlurred).toBe(false)
+  })
 })
 
 it('should reset the errorSourceMap for the field when the form is reset', () => {
