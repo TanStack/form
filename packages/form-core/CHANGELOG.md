@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.26.0
+
+### Patch Changes
+
+- fix stale fields on array changes ([#1872](https://github.com/TanStack/form/pull/1872))
+
 ## 1.25.0
 
 ### Patch Changes
