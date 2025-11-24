@@ -131,7 +131,7 @@ Defined in: [packages/form-core/src/FormApi.ts:942](https://github.com/TanStack/
 get formId(): string
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:1351](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1351)
+Defined in: [packages/form-core/src/FormApi.ts:1349](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1349)
 
 ##### Returns
 
@@ -161,7 +161,7 @@ Defined in: [packages/form-core/src/FormApi.ts:962](https://github.com/TanStack/
 clearFieldValues<TField>(field, options?): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2493](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2493)
+Defined in: [packages/form-core/src/FormApi.ts:2491](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2491)
 
 Clear all values within an array field.
 
@@ -197,7 +197,7 @@ FieldManipulator.clearFieldValues
 deleteField<TField>(field): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2285](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2285)
+Defined in: [packages/form-core/src/FormApi.ts:2283](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2283)
 
 #### Type Parameters
 
@@ -227,7 +227,7 @@ FieldManipulator.deleteField
 getAllErrors(): object
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2608](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2608)
+Defined in: [packages/form-core/src/FormApi.ts:2606](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2606)
 
 Returns form and field level errors
 
@@ -280,7 +280,7 @@ errors: (
 getFieldInfo<TField>(field): FieldInfo<TFormData>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2188](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2188)
+Defined in: [packages/form-core/src/FormApi.ts:2186](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2186)
 
 Gets the field info of the specified field.
 
@@ -306,7 +306,7 @@ Gets the field info of the specified field.
 getFieldMeta<TField>(field): undefined | AnyFieldMeta
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2179](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2179)
+Defined in: [packages/form-core/src/FormApi.ts:2177](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2177)
 
 Gets the metadata of the specified field.
 
@@ -338,7 +338,7 @@ FieldManipulator.getFieldMeta
 getFieldValue<TField>(field): DeepValue<TFormData, TField>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2172](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2172)
+Defined in: [packages/form-core/src/FormApi.ts:2170](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2170)
 
 Gets the value of the specified field.
 
@@ -372,7 +372,7 @@ FieldManipulator.getFieldValue
 handleSubmit(): Promise<void>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2024](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2024)
+Defined in: [packages/form-core/src/FormApi.ts:2022](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2022)
 
 Handles the form submission, performs validation, and calls the appropriate onSubmit or onSubmitInvalid callbacks.
 
@@ -392,7 +392,7 @@ FieldManipulator.handleSubmit
 handleSubmit(submitMeta): Promise<void>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2025](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2025)
+Defined in: [packages/form-core/src/FormApi.ts:2023](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2023)
 
 Handles the form submission, performs validation, and calls the appropriate onSubmit or onSubmitInvalid callbacks.
 
@@ -424,7 +424,7 @@ insertFieldValue<TField>(
 options?): Promise<void>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2323](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2323)
+Defined in: [packages/form-core/src/FormApi.ts:2321](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2321)
 
 #### Type Parameters
 
@@ -466,7 +466,7 @@ FieldManipulator.insertFieldValue
 mount(): () => void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:1380](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1380)
+Defined in: [packages/form-core/src/FormApi.ts:1378](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1378)
 
 #### Returns
 
@@ -488,7 +488,7 @@ moveFieldValues<TField>(
    options?): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2461](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2461)
+Defined in: [packages/form-core/src/FormApi.ts:2459](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2459)
 
 Moves the value at the first specified index to the second specified index within an array field.
 
@@ -537,7 +537,7 @@ parseValuesWithSchema(schema):
 }
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2672](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2672)
+Defined in: [packages/form-core/src/FormApi.ts:2670](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2670)
 
 Parses the form's values with a given standard schema and returns
 issues (if any). This method does NOT set any internal errors.
@@ -571,7 +571,7 @@ parseValuesWithSchemaAsync(schema): Promise<
 }>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2684](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2684)
+Defined in: [packages/form-core/src/FormApi.ts:2682](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2682)
 
 Parses the form's values with a given standard schema and returns
 issues (if any). This method does NOT set any internal errors.
@@ -604,7 +604,7 @@ pushFieldValue<TField>(
    options?): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2309](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2309)
+Defined in: [packages/form-core/src/FormApi.ts:2307](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2307)
 
 Pushes a value into an array field.
 
@@ -647,7 +647,7 @@ removeFieldValue<TField>(
 options?): Promise<void>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2389](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2389)
+Defined in: [packages/form-core/src/FormApi.ts:2387](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2387)
 
 Removes a value from an array field at the specified index.
 
@@ -691,7 +691,7 @@ replaceFieldValue<TField>(
 options?): Promise<void>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2360](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2360)
+Defined in: [packages/form-core/src/FormApi.ts:2358](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2358)
 
 Replaces a value into an array field at the specified index.
 
@@ -735,7 +735,7 @@ FieldManipulator.replaceFieldValue
 reset(values?, opts?): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:1491](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1491)
+Defined in: [packages/form-core/src/FormApi.ts:1489](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1489)
 
 Resets the form state to the default values.
 If values are provided, the form will be reset to those values instead and the default values will be updated.
@@ -768,7 +768,7 @@ Optional options to control the reset behavior.
 resetField<TField>(field): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2526](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2526)
+Defined in: [packages/form-core/src/FormApi.ts:2524](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2524)
 
 Resets the field value and meta to default state
 
@@ -800,7 +800,7 @@ FieldManipulator.resetField
 resetFieldMeta<TField>(fieldMeta): Partial<Record<TField, AnyFieldMeta>>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2229](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2229)
+Defined in: [packages/form-core/src/FormApi.ts:2227](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2227)
 
 resets every field's meta
 
@@ -826,7 +826,7 @@ resets every field's meta
 setErrorMap(errorMap): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2544](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2544)
+Defined in: [packages/form-core/src/FormApi.ts:2542](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2542)
 
 Updates the form's errorMap
 
@@ -848,7 +848,7 @@ Updates the form's errorMap
 setFieldMeta<TField>(field, updater): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2208](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2208)
+Defined in: [packages/form-core/src/FormApi.ts:2206](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2206)
 
 Updates the metadata of the specified field.
 
@@ -887,7 +887,7 @@ setFieldValue<TField>(
    opts?): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2245](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2245)
+Defined in: [packages/form-core/src/FormApi.ts:2243](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2243)
 
 Sets the value of the specified field and optionally updates the touched state.
 
@@ -931,7 +931,7 @@ swapFieldValues<TField>(
    options?): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:2429](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2429)
+Defined in: [packages/form-core/src/FormApi.ts:2427](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L2427)
 
 Swaps the values at the specified indices within an array field.
 
@@ -975,7 +975,7 @@ FieldManipulator.swapFieldValues
 update(options?): void
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:1415](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1415)
+Defined in: [packages/form-core/src/FormApi.ts:1413](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1413)
 
 Updates the form options and form state.
 
@@ -997,7 +997,7 @@ Updates the form options and form state.
 validateAllFields(cause): Promise<unknown[]>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:1517](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1517)
+Defined in: [packages/form-core/src/FormApi.ts:1515](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1515)
 
 Validates all fields using the correct handlers for a given validation cause.
 
@@ -1028,7 +1028,7 @@ validateArrayFieldsStartingFrom<TField>(
 cause): Promise<unknown[]>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:1547](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1547)
+Defined in: [packages/form-core/src/FormApi.ts:1545](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1545)
 
 Validates the children of a specified array in the form starting from a given index until the end using the correct handlers for a given validation type.
 
@@ -1068,7 +1068,7 @@ FieldManipulator.validateArrayFieldsStartingFrom
 validateField<TField>(field, cause): unknown[] | Promise<unknown[]>
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:1588](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1588)
+Defined in: [packages/form-core/src/FormApi.ts:1586](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L1586)
 
 Validates a specified field in the form using the correct handlers for a given validation type.
 

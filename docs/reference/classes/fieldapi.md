@@ -7,7 +7,7 @@ title: FieldApi
 
 # Class: FieldApi\<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta\>
 
-Defined in: [packages/form-core/src/FieldApi.ts:973](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L973)
+Defined in: [packages/form-core/src/FieldApi.ts:974](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L974)
 
 A class representing the API for managing a form field.
 
@@ -73,7 +73,7 @@ the `new FieldApi` constructor.
 new FieldApi<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta>(opts): FieldApi<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta>
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1127](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1127)
+Defined in: [packages/form-core/src/FieldApi.ts:1128](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1128)
 
 Initializes a new `FieldApi` instance.
 
@@ -95,7 +95,7 @@ Initializes a new `FieldApi` instance.
 form: FormApi<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1027](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1027)
+Defined in: [packages/form-core/src/FieldApi.ts:1028](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1028)
 
 A reference to the form API instance.
 
@@ -104,10 +104,10 @@ A reference to the form API instance.
 ### name
 
 ```ts
-name: DeepKeys<TParentData>;
+name: TName;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1055](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1055)
+Defined in: [packages/form-core/src/FieldApi.ts:1056](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1056)
 
 The field name.
 
@@ -119,7 +119,7 @@ The field name.
 options: FieldApiOptions<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TParentSubmitMeta>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1059](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1059)
+Defined in: [packages/form-core/src/FieldApi.ts:1060](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1060)
 
 The field options.
 
@@ -131,7 +131,7 @@ The field options.
 store: Derived<FieldState<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync>>;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1087](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1087)
+Defined in: [packages/form-core/src/FieldApi.ts:1088](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1088)
 
 The field state store.
 
@@ -143,7 +143,7 @@ The field state store.
 timeoutIds: object;
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1118](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1118)
+Defined in: [packages/form-core/src/FieldApi.ts:1119](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1119)
 
 #### formListeners
 
@@ -173,7 +173,7 @@ validations: Record<ValidationCause, null | Timeout>;
 get state(): FieldState<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync>
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1115](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1115)
+Defined in: [packages/form-core/src/FieldApi.ts:1116](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1116)
 
 The current field state.
 
@@ -332,7 +332,7 @@ Inserts a value at the specified index, shifting the subsequent values to the ri
 mount(): () => void
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1232](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1232)
+Defined in: [packages/form-core/src/FieldApi.ts:1242](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1242)
 
 Mounts the field instance to the form.
 
@@ -630,7 +630,7 @@ Swaps the values at the specified indices.
 update(opts): void
 ```
 
-Defined in: [packages/form-core/src/FieldApi.ts:1285](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1285)
+Defined in: [packages/form-core/src/FieldApi.ts:1295](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldApi.ts#L1295)
 
 Updates the field instance with new options.
 
