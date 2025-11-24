@@ -12,17 +12,20 @@ title: "@tanstack/solid-form"
 - [CreateFieldOptions](../interfaces/createfieldoptions.md)
 - [CreateFieldOptionsBound](../interfaces/createfieldoptionsbound.md)
 - [SolidFormApi](../interfaces/solidformapi.md)
+- [WithFieldGroupProps](../interfaces/withfieldgroupprops.md)
 - [WithFormProps](../interfaces/withformprops.md)
 
 ## Type Aliases
 
 - [CreateField](../type-aliases/createfield.md)
 - [FieldComponent](../type-aliases/fieldcomponent.md)
+- [LensFieldComponent](../type-aliases/lensfieldcomponent.md)
 - [SolidFormExtendedApi](../type-aliases/solidformextendedapi.md)
 
 ## Functions
 
 - [createField](../functions/createfield.md)
+- [createFieldGroup](../functions/createfieldgroup.md)
 - [createForm](../functions/createform.md)
 - [createFormHook](../functions/createformhook.md)
 - [createFormHookContexts](../functions/createformhookcontexts.md)
