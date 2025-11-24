@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useRef } from 'react'
 import { useStore } from '@tanstack/react-store'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
@@ -193,9 +193,14 @@ export function useField<
     TPatentSubmitMeta
   >,
 ) {
-  const [fieldApi] = useState(() => {
+  // Keep a snapshot of options so that React Compiler doesn't
+  // wrongly optimize fieldApi.
+  const optsRef = useRef(opts)
+  optsRef.current = opts
+
+  const fieldApi = useMemo(() => {
     const api = new FieldApi({
-      ...opts,
+      ...optsRef.current,
       form: opts.form,
       name: opts.name,
     })
@@ -219,7 +224,11 @@ export function useField<
     extendedApi.Field = Field as never
 
     return extendedApi
-  })
+    // We only want to
+    // update on name changes since those are at risk of becoming stale. The field
+    // state must be up to date for the internal JSX render.
+    // The other options can freely be in `fieldApi.update`
+  }, [opts.form, opts.name])
 
   useIsomorphicLayoutEffect(fieldApi.mount, [fieldApi])
 

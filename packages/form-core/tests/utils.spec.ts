@@ -23,6 +23,11 @@ describe('getBy', () => {
     mother: {
       name: 'Lisa',
     },
+    siblings: [
+      {
+        name: undefined,
+      },
+    ],
   }
 
   it('should get subfields by path', () => {
@@ -39,6 +44,7 @@ describe('getBy', () => {
     expect(getBy(structure, 'kids[0].hobbies[0]')).toBe(
       structure.kids[0]!.hobbies[0],
     )
+
     expect(getBy(structure, 'kids[0].hobbies[1]')).toBe(
       structure.kids[0]!.hobbies[1],
     )

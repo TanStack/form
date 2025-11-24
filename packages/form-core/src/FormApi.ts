@@ -1071,20 +1071,18 @@ export class FormApi<
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             fieldErrors = Object.values(currBaseMeta.errorMap ?? {}).filter(
               (val) => val !== undefined,
-            ) as never
+            )
 
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             const fieldInstance = this.getFieldInfo(fieldName)?.instance
 
             if (fieldInstance && !fieldInstance.options.disableErrorFlat) {
-              fieldErrors = (fieldErrors as undefined | string[])?.flat(
-                1,
-              ) as never
+              fieldErrors = fieldErrors.flat(1)
             }
           }
 
           // As primitives, we don't need to aggressively persist the same referential value for performance reasons
-          const isFieldValid = !isNonEmptyArray(fieldErrors ?? [])
+          const isFieldValid = !isNonEmptyArray(fieldErrors)
           const isFieldPristine = !currBaseMeta.isDirty
           const isDefaultValue =
             evaluate(
@@ -1112,11 +1110,11 @@ export class FormApi<
 
           fieldMeta[fieldName] = {
             ...currBaseMeta,
-            errors: fieldErrors,
+            errors: fieldErrors ?? [],
             isPristine: isFieldPristine,
             isValid: isFieldValid,
             isDefaultValue: isDefaultValue,
-          } as AnyFieldMeta
+          } satisfies AnyFieldMeta as AnyFieldMeta
         }
 
         if (!Object.keys(currBaseStore.fieldMetaBase).length) return fieldMeta
@@ -2347,7 +2345,7 @@ export class FormApi<
     }
 
     // Shift down all meta after validating to make sure the new field has been mounted
-    metaHelper(this).handleArrayFieldMetaShift(field, index, 'insert')
+    metaHelper(this).handleArrayInsert(field, index)
 
     if (!dontValidate) {
       await this.validateArrayFieldsStartingFrom(field, index, 'change')
@@ -2408,7 +2406,7 @@ export class FormApi<
     )
 
     // Shift up all meta
-    metaHelper(this).handleArrayFieldMetaShift(field, index, 'remove')
+    metaHelper(this).handleArrayRemove(field, index)
 
     if (lastIndex !== null) {
       const start = `${field}[${lastIndex}]`
@@ -2443,7 +2441,7 @@ export class FormApi<
     )
 
     // Swap meta
-    metaHelper(this).handleArrayFieldMetaShift(field, index1, 'swap', index2)
+    metaHelper(this).handleArraySwap(field, index1, index2)
 
     const dontValidate = options?.dontValidate ?? false
     if (!dontValidate) {
@@ -2475,7 +2473,7 @@ export class FormApi<
     )
 
     // Move meta between index1 and index2
-    metaHelper(this).handleArrayFieldMetaShift(field, index1, 'move', index2)
+    metaHelper(this).handleArrayMove(field, index1, index2)
 
     const dontValidate = options?.dontValidate ?? false
     if (!dontValidate) {
