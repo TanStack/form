@@ -584,4 +584,53 @@ describe('createForm', () => {
     const submitBtn = getByTestId('submitBtn')
     await user.click(submitBtn)
   })
+
+  it('should use the most up to date field names', async () => {
+    function Comp() {
+      const form = createForm(() => ({
+        defaultValues: {
+          foo: [
+            { name: 'nameA', id: 'a' },
+            { name: 'nameB', id: 'b' },
+            { name: 'nameC', id: 'c' },
+          ],
+        },
+      }))
+
+      return (
+        <>
+          <form.Field name="foo" mode="array">
+            {(arrayField) => (
+              // This unit test provides different result based on
+              // using For vs. Index. Unit test both
+              // once that's fixed.
+              <Index each={arrayField().state.value}>
+                {(_, i) => (
+                  <form.Field name={`foo[${i}].name`}>
+                    {(field) => {
+                      expect(field().name).toBe(`foo[${i}].name`)
+                      expect(field().state.value).not.toBeUndefined()
+                      return null
+                    }}
+                  </form.Field>
+                )}
+              </Index>
+            )}
+          </form.Field>
+          <button
+            type="button"
+            onClick={() => form.removeFieldValue('foo', 1)}
+            data-testid="removeField"
+          >
+            Remove
+          </button>
+        </>
+      )
+    }
+
+    const { getByTestId } = render(() => <Comp />)
+
+    const target = getByTestId('removeField')
+    await user.click(target)
+  })
 })
