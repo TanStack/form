@@ -29,14 +29,14 @@ describe('setFieldValue validation for fields without components', () => {
 
     // Set field value to empty string (should trigger validation and show error)
     form.setFieldValue('name', '')
-    
+
     // Form should now be invalid due to validation error
     expect(form.state.isValid).toBe(false)
     expect(form.state.fieldMeta.name?.errors).toEqual(['Name is required'])
 
     // Set field value to valid value (should clear validation error)
     form.setFieldValue('name', 'John')
-    
+
     // Form should now be valid again
     expect(form.state.isValid).toBe(true)
     expect(form.state.fieldMeta.name?.errors).toEqual([])
@@ -65,20 +65,20 @@ describe('setFieldValue validation for fields without components', () => {
 
     // Set field value to empty string (should trigger async validation)
     form.setFieldValue('email', '')
-    
+
     // Wait for async validation to complete
-    await new Promise(resolve => setTimeout(resolve, 100))
-    
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
     // Form should now be invalid due to validation error
     expect(form.state.isValid).toBe(false)
     expect(form.state.fieldMeta.email?.errors).toEqual(['Email is required'])
 
     // Set field value to valid value (should clear validation error)
     form.setFieldValue('email', 'john@example.com')
-    
+
     // Wait for async validation to complete
-    await new Promise(resolve => setTimeout(resolve, 100))
-    
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
     // Form should now be valid again
     expect(form.state.isValid).toBe(true)
     expect(form.state.fieldMeta.email?.errors).toEqual([])
