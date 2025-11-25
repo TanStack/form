@@ -1,5 +1,12 @@
 # @tanstack/form-core
 
+## 1.26.0
+
+### Patch Changes
+
+- fix stale fields on array changes ([#1729](https://github.com/TanStack/form/pull/1729))
+- allow explicitly setting `field.handleChange(undefined)` ([#1729](https://github.com/TanStack/form/pull/1729))
+
 ## 1.25.0
 
 ### Patch Changes
