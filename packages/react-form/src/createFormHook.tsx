@@ -22,6 +22,7 @@ import type {
 } from 'react'
 import type { FieldComponent } from './useField'
 import type { ReactFormExtendedApi } from './useForm'
+import type { AppFieldComponents, AppFormComponents, DataTag } from './types'
 import type { AppFieldExtendedReactFieldGroupApi } from './useFieldGroup'
 
 // We should never hit the `null` case here
@@ -64,6 +65,39 @@ type UnwrapDefaultOrAny<DefaultT, T> = [DefaultT] extends [T]
     ? any
     : T
   : T
+
+/**
+ * Create a field component based on a provided React component.
+ * If `TFieldValue` is provided, it will restrict its use to AppFields
+ * that extend that value.
+ *
+ * @example
+ * ```tsx
+ * interface TextFieldProps {
+ *   label: string;
+ * }
+ * function TextField(props: TextFieldProps) {
+ *   const field = useFieldContext<string>();
+ *   // ...
+ *   return <></>
+ * }
+ * // create a TextField component that may only be used in string AppFields
+ * const TextFieldComponent = createFieldComponent<string, TextFieldProps>(TextField);
+ *
+ * // in your form hook
+ * createFormHook({
+ *   // ...
+ *   fieldComponents: {
+ *     TextField: TextFieldComponent
+ *   }
+ * })
+ * ```
+ */
+function createFieldComponent<TFieldValue, TProps>(
+  component: ComponentType<TProps>,
+): DataTag<ComponentType<TProps>, TFieldValue> {
+  return component as never
+}
 
 export function createFormHookContexts() {
   function useFieldContext<TData>() {
@@ -130,12 +164,18 @@ export function createFormHookContexts() {
     >
   }
 
-  return { fieldContext, useFieldContext, useFormContext, formContext }
+  return {
+    fieldContext,
+    useFieldContext,
+    useFormContext,
+    formContext,
+    createFieldComponent,
+  }
 }
 
 interface CreateFormHookProps<
-  TFieldComponents extends Record<string, ComponentType<any>>,
-  TFormComponents extends Record<string, ComponentType<any>>,
+  TFieldComponents extends AppFieldComponents,
+  TFormComponents extends AppFormComponents,
 > {
   fieldComponents: TFieldComponents
   fieldContext: Context<AnyFieldApi>
@@ -159,8 +199,8 @@ export type AppFieldExtendedReactFormApi<
   TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta,
-  TFieldComponents extends Record<string, ComponentType<any>>,
-  TFormComponents extends Record<string, ComponentType<any>>,
+  TFieldComponents extends AppFieldComponents,
+  TFormComponents extends AppFormComponents,
 > = ReactFormExtendedApi<
   TFormData,
   TOnMount,
@@ -207,8 +247,8 @@ export interface WithFormProps<
   TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   TSubmitMeta,
-  TFieldComponents extends Record<string, ComponentType<any>>,
-  TFormComponents extends Record<string, ComponentType<any>>,
+  TFieldComponents extends AppFieldComponents,
+  TFormComponents extends AppFormComponents,
   TRenderProps extends object = Record<string, never>,
 > extends FormOptions<
     TFormData,
@@ -288,8 +328,8 @@ export interface WithFieldGroupProps<
 }
 
 export function createFormHook<
-  const TComponents extends Record<string, ComponentType<any>>,
-  const TFormComponents extends Record<string, ComponentType<any>>,
+  const TComponents extends AppFieldComponents,
+  const TFormComponents extends AppFormComponents,
 >({
   fieldComponents,
   fieldContext,
