@@ -11,7 +11,7 @@ title: createFormHook
 function createFormHook<TComponents, TFormComponents>(__namedParameters): object
 ```
 
-Defined in: [packages/react-form/src/createFormHook.tsx:290](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L290)
+Defined in: [packages/react-form/src/createFormHook.tsx:293](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L293)
 
 ## Type Parameters
 
@@ -74,7 +74,7 @@ useAppForm: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsy
 ### withFieldGroup()
 
 ```ts
-withFieldGroup: <TFieldGroupData, TSubmitMeta, TRenderProps>(__namedParameters) => <TFormData, TFields, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TFormSubmitMeta>(params) => ReactNode;
+withFieldGroup: <TFieldGroupData, TSubmitMeta, TRenderProps>(__namedParameters) => <TFormData, TFields, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TFormSubmitMeta>(params) => ReactNode | Promise<ReactNode>;
 ```
 
 #### Type Parameters
@@ -133,12 +133,12 @@ withFieldGroup: <TFieldGroupData, TSubmitMeta, TRenderProps>(__namedParameters) 
 
 ##### Returns
 
-`ReactNode`
+`ReactNode` \| `Promise`\<`ReactNode`\>
 
 ### withForm()
 
 ```ts
-withForm: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta, TRenderProps>(__namedParameters) => (props) => ReactNode;
+withForm: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta, TRenderProps>(__namedParameters) => FunctionComponent<PropsWithChildren<NoInfer<UnwrapOrAny<TRenderProps>> & object>>;
 ```
 
 #### Type Parameters
@@ -177,14 +177,4 @@ withForm: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync
 
 #### Returns
 
-`Function`
-
-##### Parameters
-
-###### props
-
-`PropsWithChildren`\<`NoInfer`\<`UnwrapOrAny`\<`TRenderProps`\>\> & `object`\>
-
-##### Returns
-
-`ReactNode`
+`FunctionComponent`\<`PropsWithChildren`\<`NoInfer`\<`UnwrapOrAny`\<`TRenderProps`\>\> & `object`\>\>

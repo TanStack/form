@@ -7,7 +7,7 @@ title: WithFieldGroupProps
 
 # Interface: WithFieldGroupProps\<TFieldGroupData, TFieldComponents, TFormComponents, TSubmitMeta, TRenderProps\>
 
-Defined in: [packages/react-form/src/createFormHook.tsx:253](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L253)
+Defined in: [packages/react-form/src/createFormHook.tsx:256](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L256)
 
 ## Extends
 
@@ -33,24 +33,14 @@ Defined in: [packages/react-form/src/createFormHook.tsx:253](https://github.com/
 optional props: TRenderProps;
 ```
 
-Defined in: [packages/react-form/src/createFormHook.tsx:261](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L261)
+Defined in: [packages/react-form/src/createFormHook.tsx:264](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L264)
 
 ***
 
-### render()
+### render
 
 ```ts
-render: (props) => ReactNode;
+render: FunctionComponent<PropsWithChildren<NoInfer<TRenderProps> & object>>;
 ```
 
-Defined in: [packages/react-form/src/createFormHook.tsx:262](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L262)
-
-#### Parameters
-
-##### props
-
-`PropsWithChildren`\<`NoInfer`\<`TRenderProps`\> & `object`\>
-
-#### Returns
-
-`ReactNode`
+Defined in: [packages/react-form/src/createFormHook.tsx:265](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L265)

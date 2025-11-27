@@ -11,7 +11,7 @@ title: LensFieldComponent
 type LensFieldComponent<TLensData, TParentSubmitMeta, ExtendedApi> = <TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync>({
   children,
   ...fieldOptions
-}) => ReactNode;
+}) => ReturnType<FunctionComponent>;
 ```
 
 Defined in: [packages/react-form/src/useField.tsx:504](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L504)
@@ -61,4 +61,4 @@ A type alias representing a field component for a form lens data type.
 
 ## Returns
 
-`ReactNode`
+`ReturnType`\<`FunctionComponent`\>

@@ -7,7 +7,7 @@ title: ReactFormApi
 
 # Interface: ReactFormApi\<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta\>
 
-Defined in: [packages/react-form/src/useForm.tsx:23](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L23)
+Defined in: [packages/react-form/src/useForm.tsx:28](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L28)
 
 Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`
 
@@ -45,7 +45,7 @@ Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned
 Field: FieldComponent<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta>;
 ```
 
-Defined in: [packages/react-form/src/useForm.tsx:40](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L40)
+Defined in: [packages/react-form/src/useForm.tsx:45](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L45)
 
 A React component to render form fields. With this, you can render and manage individual form fields.
 
@@ -54,10 +54,10 @@ A React component to render form fields. With this, you can render and manage in
 ### Subscribe()
 
 ```ts
-Subscribe: <TSelected>(props) => ReactNode;
+Subscribe: <TSelected>(props) => ReactNode | Promise<ReactNode>;
 ```
 
-Defined in: [packages/react-form/src/useForm.tsx:57](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L57)
+Defined in: [packages/react-form/src/useForm.tsx:62](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L62)
 
 A `Subscribe` function that allows you to listen and react to changes in the form's state. It's especially useful when you need to execute side effects or render specific components in response to state updates.
 
@@ -79,4 +79,4 @@ A `Subscribe` function that allows you to listen and react to changes in the for
 
 #### Returns
 
-`ReactNode`
+`ReactNode` \| `Promise`\<`ReactNode`\>

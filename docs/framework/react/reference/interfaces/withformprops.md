@@ -7,7 +7,7 @@ title: WithFormProps
 
 # Interface: WithFormProps\<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta, TFieldComponents, TFormComponents, TRenderProps\>
 
-Defined in: [packages/react-form/src/createFormHook.tsx:197](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L197)
+Defined in: [packages/react-form/src/createFormHook.tsx:200](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L200)
 
 ## Extends
 
@@ -53,24 +53,14 @@ Defined in: [packages/react-form/src/createFormHook.tsx:197](https://github.com/
 optional props: TRenderProps;
 ```
 
-Defined in: [packages/react-form/src/createFormHook.tsx:228](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L228)
+Defined in: [packages/react-form/src/createFormHook.tsx:231](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L231)
 
 ***
 
-### render()
+### render
 
 ```ts
-render: (props) => ReactNode;
+render: FunctionComponent<PropsWithChildren<NoInfer<TRenderProps> & object>>;
 ```
 
-Defined in: [packages/react-form/src/createFormHook.tsx:229](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L229)
-
-#### Parameters
-
-##### props
-
-`PropsWithChildren`\<`NoInfer`\<`TRenderProps`\> & `object`\>
-
-#### Returns
-
-`ReactNode`
+Defined in: [packages/react-form/src/createFormHook.tsx:232](https://github.com/TanStack/form/blob/main/packages/react-form/src/createFormHook.tsx#L232)

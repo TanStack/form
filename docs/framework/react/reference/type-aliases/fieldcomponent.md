@@ -11,7 +11,7 @@ title: FieldComponent
 type FieldComponent<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TPatentSubmitMeta, ExtendedApi> = <TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync>({
   children,
   ...fieldOptions
-}) => ReactNode;
+}) => ReturnType<FunctionComponent>;
 ```
 
 Defined in: [packages/react-form/src/useField.tsx:429](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L429)
@@ -81,4 +81,4 @@ A type alias representing a field component for a specific form data type.
 
 ## Returns
 
-`ReactNode`
+`ReturnType`\<`FunctionComponent`\>
