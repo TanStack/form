@@ -48,12 +48,12 @@ export class TestForm extends LitElement {
                 id="firstName"
                 type="text"
                 placeholder="First Name"
-                .value="${field.state.value}"
-                @blur="${() => field.handleBlur()}"
-                @input="${(e: Event) => {
+                .value=${field.state.value}
+                @blur=${() => field.handleBlur()}
+                @input=${(e: Event) => {
                   const target = e.target as HTMLInputElement
                   field.handleChange(target.value)
-                }}"
+                }}
               />
             </div>`
           },
@@ -73,12 +73,12 @@ export class TestForm extends LitElement {
                 id="lastName"
                 type="text"
                 placeholder="Last Name"
-                .value="${field.state.value}"
-                @blur="${() => field.handleBlur()}"
-                @input="${(e: Event) => {
+                .value=${field.state.value}
+                @blur=${() => field.handleBlur()}
+                @input=${(e: Event) => {
                   const target = e.target as HTMLInputElement
                   field.handleChange(target.value)
-                }}"
+                }}
               />
             </div>`
           },
@@ -87,14 +87,14 @@ export class TestForm extends LitElement {
           return html` <div>
             <label>Favorite Color</label>
             <select
-              .value="${field.state.value}"
-              @blur="${() => field.handleBlur()}"
-              @input="${(e: Event) => {
+              .value=${field.state.value}
+              @blur=${() => field.handleBlur()}
+              @input=${(e: Event) => {
                 const target = e.target as HTMLInputElement
                 field.handleChange(
                   target.value as '#FF0000' | '#00FF00' | '#0000FF',
                 )
-              }}"
+              }}
             >
               <option value="#FF0000">Red</option>
               <option value="#00FF00">Green</option>
@@ -107,9 +107,9 @@ export class TestForm extends LitElement {
             <div>
               <label>Employed?</label>
               <input
-                @input="${() => field.handleChange(!field.state.value)}"
-                .checked="${field.state.value}"
-                @blur="${() => field.handleBlur()}"
+                @input=${() => field.handleChange(!field.state.value)}
+                .checked=${field.state.value}
+                @blur=${() => field.handleBlur()}
                 id="employed"
                 .type=${'checkbox'}
               />
@@ -130,12 +130,12 @@ export class TestForm extends LitElement {
                         type="text"
                         id="jobTitle"
                         placeholder="Job Title"
-                        .value="${subField.state.value}"
-                        @blur="${() => subField.handleBlur()}"
-                        @input="${(e: Event) => {
+                        .value=${subField.state.value}
+                        @blur=${() => subField.handleBlur()}
+                        @input=${(e: Event) => {
                           const target = e.target as HTMLInputElement
                           subField.handleChange(target.value)
-                        }}"
+                        }}
                       />
                     </div>`
                   },

@@ -53,12 +53,12 @@ export class TanStackFormDemo extends LitElement {
                                 <input
                                   type="text"
                                   placeholder="First Name"
-                                  .value="${field.state.value}"
-                                  @blur="${() => field.handleBlur()}"
-                                  @input="${(e: Event) => {
+                                  .value=${field.state.value}
+                                  @blur=${() => field.handleBlur()}
+                                  @input=${(e: Event) => {
                                     const target = e.target as HTMLInputElement
                                     field.handleChange(target.value)
-                                  }}"
+                                  }}
                                 />
                               </label>
                             </div>

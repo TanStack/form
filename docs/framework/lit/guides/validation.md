@@ -27,16 +27,16 @@ import { html, nothing } from 'lit'
   },
   (field) => {
     return html`
-      <label for="${field.name}">Age:</label>
+      <label for=${field.name}>Age:</label>
       <input
-        id="${field.name}"
-        name="${field.name}"
-        .value="${field.state.value}"
+        id=${field.name}
+        name=${field.name}
+        .value=${field.state.value}
         type="number"
-        @input="${(e: Event) => {
+        @input=${(e: Event) => {
           const target = e.target as HTMLInputElement
           field.handleChange(target.valueAsNumber)
-        }}"
+        }}
       />
       ${!field.state.meta.isValid
         ? html`<em role="alert">${field.state.meta.errors.join(', ')}</em>`
@@ -60,17 +60,17 @@ import { html, nothing } from 'lit'
   },
   (field) => {
     return html`
-      <label for="${field.name}">Age:</label>
+      <label for=${field.name}>Age:</label>
       <input
-        id="${field.name}"
-        name="${field.name}"
-        .value="${field.state.value}"
+        id=${field.name}
+        name=${field.name}
+        .value=${field.state.value}
         type="number"
-        @blur="${() => field.handleBlur()}"
-        @input="${(e: Event) => {
+        @blur=${() => field.handleBlur()}
+        @input=${(e: Event) => {
           const target = e.target as HTMLInputElement
           field.handleChange(target.valueAsNumber)
-        }}"
+        }}
       />
       ${!field.state.meta.isValid
         ? html`<em role="alert">${field.state.meta.errors.join(', ')}</em>`
@@ -95,17 +95,17 @@ import { html, nothing } from 'lit'
   },
   (field) => {
     return html`
-      <label for="${field.name}">Age:</label>
+      <label for=${field.name}>Age:</label>
       <input
-        id="${field.name}"
-        name="${field.name}"
-        .value="${field.state.value}"
+        id=${field.name}
+        name=${field.name}
+        .value=${field.state.value}
         type="number"
-        @blur="${() => field.handleBlur()}"
-        @input="${(e: Event) => {
+        @blur=${() => field.handleBlur()}
+        @input=${(e: Event) => {
           const target = e.target as HTMLInputElement
           field.handleChange(target.valueAsNumber)
-        }}"
+        }}
       />
       ${!field.state.meta.isValid
         ? html`<em role="alert">${field.state.meta.errors.join(', ')}</em>`
@@ -286,25 +286,25 @@ export class MyForm extends LitElement {
     return html`
       <div>
         <form
-          @submit="${(e: Event) => {
+          @submit=${(e: Event) => {
             e.preventDefault()
             e.stopPropagation()
             this.#form.api.handleSubmit()
-          }}"
+          }}
         >
           ${this.#form.field(
             { name: 'age' },
             (field) => html`
-              <label for="${field.name}">Age:</label>
+              <label for=${field.name}>Age:</label>
               <input
-                id="${field.name}"
-                name="${field.name}"
-                .value="${field.state.value}"
+                id=${field.name}
+                name=${field.name}
+                .value=${field.state.value}
                 type="number"
-                @input="${(e: Event) => {
+                @input=${(e: Event) => {
                   const target = e.target as HTMLInputElement
                   field.handleChange(target.valueAsNumber)
-                }}"
+                }}
               />
               ${!field.state.meta.isValid
                 ? html`<em role="alert"
@@ -389,16 +389,16 @@ import { html, nothing } from 'lit'
   },
   (field) => {
     return html`
-      <label for="${field.name}">Age:</label>
+      <label for=${field.name}>Age:</label>
       <input
-        id="${field.name}"
-        name="${field.name}"
-        .value="${field.state.value}"
+        id=${field.name}
+        name=${field.name}
+        .value=${field.state.value}
         type="number"
-        @input="${(e: Event) => {
+        @input=${(e: Event) => {
           const target = e.target as HTMLInputElement
           field.handleChange(target.valueAsNumber)
-        }}"
+        }}
       />
       ${!field.state.meta.isValid
         ? html`<em role="alert">${field.state.meta.errors.join(', ')}</em>`
@@ -426,17 +426,17 @@ import { html, nothing } from 'lit'
   },
   (field) => {
     return html`
-      <label for="${field.name}">Age:</label>
+      <label for=${field.name}>Age:</label>
       <input
-        id="${field.name}"
-        name="${field.name}"
-        .value="${field.state.value}"
+        id=${field.name}
+        name=${field.name}
+        .value=${field.state.value}
         type="number"
-        @blur="${() => field.handleBlur()}"
-        @input="${(e: Event) => {
+        @blur=${() => field.handleBlur()}
+        @input=${(e: Event) => {
           const target = e.target as HTMLInputElement
           field.handleChange(target.valueAsNumber)
-        }}"
+        }}
       />
       ${!field.state.meta.isValid
         ? html`<em role="alert">${field.state.meta.errors.join(', ')}</em>`
@@ -622,7 +622,7 @@ class MyForm extends LitElement {
       <!-- ... -->
 
       <!-- Dynamic submit button -->
-      <button type="submit" ?disabled="${!this.#form.api.state.canSubmit}">
+      <button type="submit" ?disabled=${!this.#form.api.state.canSubmit}>
         ${this.#form.api.state.isSubmitting ? '...' : 'Submit'}
       </button>
     `

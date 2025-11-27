@@ -126,8 +126,7 @@ export class FieldGroupApi<
   in out TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TSubmitMeta = never,
-> implements FieldManipulator<TFieldGroupData, TSubmitMeta>
-{
+> implements FieldManipulator<TFieldGroupData, TSubmitMeta> {
   /**
    * The form that called this field group.
    */
