@@ -68,11 +68,11 @@ return html`
         <input
           type="text"
           placeholder="Name"
-          .value="${field.state.value}"
-          @input="${(e: Event) => {
+          .value=${field.state.value}
+          @input=${(e: Event) => {
             const target = e.target as HTMLInputElement
             field.handleChange(target.value)
-          }}"
+          }}
         />
       `
     },

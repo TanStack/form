@@ -48,16 +48,16 @@ export class TanStackFormDemo extends LitElement {
             },
             (field) => {
               return html` <div>
-                <label for="${field.name}">First Name:</label>
+                <label for=${field.name}>First Name:</label>
                 <input
-                  id="${field.name}"
-                  name="${field.name}"
-                  .value="${field.state.value}"
-                  @blur="${() => field.handleBlur()}"
-                  @input="${(e: Event) => {
+                  id=${field.name}
+                  name=${field.name}
+                  .value=${field.state.value}
+                  @blur=${() => field.handleBlur()}
+                  @input=${(e: Event) => {
                     const target = e.target as HTMLInputElement
                     field.handleChange(target.value)
-                  }}"
+                  }}
                 />
                 ${field.state.meta.isTouched && !field.state.meta.isValid
                   ? html`${repeat(
@@ -82,16 +82,16 @@ export class TanStackFormDemo extends LitElement {
             },
             (field) => {
               return html` <div>
-                <label for="${field.name}">Last Name:</label>
+                <label for=${field.name}>Last Name:</label>
                 <input
-                  id="${field.name}"
-                  name="${field.name}"
-                  .value="${field.state.value}"
-                  @blur="${() => field.handleBlur()}"
-                  @input="${(e: Event) => {
+                  id=${field.name}
+                  name=${field.name}
+                  .value=${field.state.value}
+                  @blur=${() => field.handleBlur()}
+                  @input=${(e: Event) => {
                     const target = e.target as HTMLInputElement
                     field.handleChange(target.value)
-                  }}"
+                  }}
                 />
               </div>`
             },

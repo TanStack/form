@@ -9,12 +9,12 @@
     "start": "node .output/server/index.mjs"
   },
   "dependencies": {
-    "@tanstack/react-devtools": "^0.7.8",
+    "@tanstack/react-devtools": "^0.8.2",
     "@tanstack/react-form-devtools": "^0.2.2",
     "@tanstack/react-form-start": "^1.26.0",
-    "@tanstack/react-router": "^1.134.9",
-    "@tanstack/react-start": "^1.134.9",
-    "@tanstack/react-store": "^0.7.7",
+    "@tanstack/react-router": "^1.139.7",
+    "@tanstack/react-start": "^1.139.8",
+    "@tanstack/react-store": "^0.8.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -24,7 +24,7 @@
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^5.1.1",
     "typescript": "5.8.2",
-    "vite": "^7.2.2",
+    "vite": "^7.2.4",
     "vite-tsconfig-paths": "^5.1.4"
   }
 }

@@ -10,17 +10,17 @@
   },
   "dependencies": {
     "@tanstack/solid-form": "^1.26.0",
-    "arktype": "^2.1.22",
-    "effect": "^3.17.14",
+    "arktype": "^2.1.27",
+    "effect": "^3.19.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "solid-js": "^1.9.9",
-    "valibot": "^1.1.0",
+    "solid-js": "^1.9.10",
+    "valibot": "^1.2.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {
     "typescript": "5.8.2",
-    "vite": "^7.2.2",
-    "vite-plugin-solid": "^2.11.8"
+    "vite": "^7.2.4",
+    "vite-plugin-solid": "^2.11.10"
   }
 }

@@ -9,21 +9,21 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-devtools": "^0.7.8",
+    "@tanstack/react-devtools": "^0.8.2",
     "@tanstack/react-form": "^1.26.0",
     "@tanstack/react-form-devtools": "^0.2.2",
-    "arktype": "^2.1.22",
-    "effect": "^3.17.14",
+    "arktype": "^2.1.27",
+    "effect": "^3.19.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "valibot": "^1.1.0",
+    "valibot": "^1.2.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^5.1.1",
-    "vite": "^7.2.2"
+    "vite": "^7.2.4"
   },
   "browserslist": {
     "production": [

@@ -65,17 +65,17 @@ export class TanStackFormDemo extends LitElement {
                           <md-filled-text-field
                             type="text"
                             placeholder="First Name"
-                            .value="${field.state.value}"
-                            @blur="${() => field.handleBlur()}"
-                            @input="${(e: Event) => {
+                            .value=${field.state.value}
+                            @blur=${() => field.handleBlur()}
+                            @input=${(e: Event) => {
                               const target = e.target as HTMLInputElement
                               field.handleChange(target.value)
-                            }}"
-                            .error="${!!(
+                            }}
+                            .error=${!!(
                               field.state.meta.isTouched &&
                               !field.state.meta.isValid
-                            )}"
-                            .errorText="${field.state.meta.errors.join(', ')}"
+                            )}
+                            .errorText=${field.state.meta.errors.join(', ')}
                           ></md-filled-text-field>
                         </div>`
                       },
@@ -88,19 +88,19 @@ export class TanStackFormDemo extends LitElement {
                           <md-filled-text-field
                             type="text"
                             placeholder="Last Name"
-                            .value="${lastNameField.state.value}"
-                            @blur="${() => lastNameField.handleBlur()}"
-                            @input="${(e: Event) => {
+                            .value=${lastNameField.state.value}
+                            @blur=${() => lastNameField.handleBlur()}
+                            @input=${(e: Event) => {
                               const target = e.target as HTMLInputElement
                               lastNameField.handleChange(target.value)
-                            }}"
-                            .error="${!!(
+                            }}
+                            .error=${!!(
                               lastNameField.state.meta.isTouched &&
                               !lastNameField.state.meta.isValid
-                            )}"
-                            .errorText="${lastNameField.state.meta.errors.join(
+                            )}
+                            .errorText=${lastNameField.state.meta.errors.join(
                               ', ',
-                            )}"
+                            )}
                           ></md-filled-text-field>
                         </div>`
                       },
@@ -112,12 +112,12 @@ export class TanStackFormDemo extends LitElement {
                             <label>Employed?</label>
                             <md-checkbox
                               type="checkbox"
-                              @input="${() =>
+                              @input=${() =>
                                 employedField.handleChange(
                                   !employedField.state.value,
-                                )}"
-                              .checked="${employedField.state.value}"
-                              @blur="${() => employedField.handleBlur()}"
+                                )}
+                              .checked=${employedField.state.value}
+                              @blur=${() => employedField.handleBlur()}
                             ></md-checkbox>
                           </div>
                           ${employedField.state.value
@@ -139,19 +139,18 @@ export class TanStackFormDemo extends LitElement {
                                     <md-filled-text-field
                                       type="text"
                                       placeholder="Job Title"
-                                      .value="${jobTitleField.state.value}"
-                                      @blur="${() =>
-                                        jobTitleField.handleBlur()}"
-                                      @input="${(e: Event) => {
+                                      .value=${jobTitleField.state.value}
+                                      @blur=${() => jobTitleField.handleBlur()}
+                                      @input=${(e: Event) => {
                                         const target =
                                           e.target as HTMLInputElement
                                         jobTitleField.handleChange(target.value)
-                                      }}"
-                                      .error="${!jobTitleField.state.meta
-                                        .isValid}"
-                                      .errorText="${jobTitleField.state.meta.errors.join(
+                                      }}
+                                      .error=${!jobTitleField.state.meta
+                                        .isValid}
+                                      .errorText=${jobTitleField.state.meta.errors.join(
                                         ', ',
-                                      )}"
+                                      )}
                                     ></md-filled-text-field>
                                   </div>`
                                 },

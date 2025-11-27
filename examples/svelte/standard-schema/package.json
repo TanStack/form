@@ -9,17 +9,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/svelte-form": "^1.23.0",
-    "arktype": "^2.1.22",
-    "effect": "^3.17.14",
-    "valibot": "^1.1.0",
+    "@tanstack/svelte-form": "^1.26.0",
+    "arktype": "^2.1.27",
+    "effect": "^3.19.7",
+    "valibot": "^1.2.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.1.1",
-    "@tsconfig/svelte": "^5.0.5",
-    "svelte": "^5.39.4",
+    "@tsconfig/svelte": "^5.0.6",
+    "svelte": "^5.45.2",
     "typescript": "5.8.2",
-    "vite": "^7.2.2"
+    "vite": "^7.2.4"
   }
 }
