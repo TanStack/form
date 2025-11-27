@@ -9,7 +9,7 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-devtools": "^0.7.8",
+    "@tanstack/react-devtools": "^0.8.2",
     "@tanstack/react-form": "^1.26.0",
     "@tanstack/react-form-devtools": "^0.2.2",
     "react": "^19.0.0",
@@ -19,7 +19,7 @@
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^5.1.1",
-    "vite": "^7.2.2",
+    "vite": "^7.2.4",
     "zod": "^3.25.76"
   },
   "browserslist": {

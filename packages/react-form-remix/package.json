@@ -50,12 +50,12 @@
     "decode-formdata": "^0.9.0"
   },
   "devDependencies": {
-    "@tanstack/react-start": "^1.134.9",
+    "@tanstack/react-start": "^1.139.8",
     "@types/react": "^19.0.7",
     "@vitejs/plugin-react": "^5.1.1",
     "eslint-plugin-react-compiler": "19.1.0-rc.2",
     "react": "^19.0.0",
-    "vite": "^7.2.2"
+    "vite": "^7.2.4"
   },
   "peerDependencies": {
     "@tanstack/react-start": "^1.134.9",

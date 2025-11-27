@@ -52,12 +52,12 @@
   ],
   "dependencies": {
     "@tanstack/devtools-event-client": "^0.3.5",
-    "@tanstack/pacer": "^0.15.3",
-    "@tanstack/store": "^0.7.7"
+    "@tanstack/pacer": "^0.16.3",
+    "@tanstack/store": "^0.8.0"
   },
   "devDependencies": {
-    "arktype": "^2.1.22",
-    "valibot": "^1.1.0",
+    "arktype": "^2.1.27",
+    "valibot": "^1.2.0",
     "zod": "^3.25.76"
   }
 }
