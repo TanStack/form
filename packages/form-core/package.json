@@ -34,6 +34,7 @@
   "module": "dist/esm/index.js",
   "exports": {
     ".": {
+      "@tanstack/custom-condition": "./src/index.ts",
       "import": {
         "types": "./dist/esm/index.d.ts",
         "default": "./dist/esm/index.js"
@@ -58,6 +59,7 @@
   "devDependencies": {
     "arktype": "^2.1.22",
     "valibot": "^1.1.0",
-    "zod": "^3.25.76"
+    "zod": "^3.25.76",
+    "vite-tsconfig-paths": "^5.1.4"
   }
 }

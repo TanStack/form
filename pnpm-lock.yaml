@@ -1218,6 +1218,9 @@ importers:
       valibot:
         specifier: ^1.1.0
         version: 1.1.0(typescript@5.9.3)
+      vite-tsconfig-paths:
+        specifier: ^5.1.4
+        version: 5.1.4(typescript@5.9.3)(vite@7.1.11(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.0)(sass@1.90.0)(sugarss@5.0.1(postcss@8.5.6))(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.1))
       zod:
         specifier: ^3.25.76
         version: 3.25.76
@@ -20615,6 +20618,10 @@ snapshots:
     optionalDependencies:
       typescript: 5.8.2
 
+  tsconfck@3.1.6(typescript@5.9.3):
+    optionalDependencies:
+      typescript: 5.9.3
+
   tsconfig-paths@4.2.0:
     dependencies:
       json5: 2.2.3
@@ -21018,6 +21025,17 @@ snapshots:
       tsconfck: 3.1.6(typescript@5.8.2)
     optionalDependencies:
       vite: 7.2.2(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.0)(sass@1.90.0)(sugarss@5.0.1(postcss@8.5.6))(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.1)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+
+  vite-tsconfig-paths@5.1.4(typescript@5.9.3)(vite@7.1.11(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.0)(sass@1.90.0)(sugarss@5.0.1(postcss@8.5.6))(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.1)):
+    dependencies:
+      debug: 4.4.3
+      globrex: 0.1.2
+      tsconfck: 3.1.6(typescript@5.9.3)
+    optionalDependencies:
+      vite: 7.1.11(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.0)(sass@1.90.0)(sugarss@5.0.1(postcss@8.5.6))(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
       - typescript
