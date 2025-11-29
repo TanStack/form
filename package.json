@@ -5,10 +5,11 @@
     "type": "git",
     "url": "https://github.com/tanstack/form.git"
   },
-  "packageManager": "pnpm@10.17.0",
+  "packageManager": "pnpm@10.24.0",
   "type": "module",
   "scripts": {
     "clean": "pnpm --filter \"./packages/**\" run clean",
+    "test": "pnpm run test:ci",
     "test:pr": "nx affected --targets=test:sherif,test:knip,test:docs,test:eslint,test:lib,test:types,test:build,build",
     "test:ci": "nx run-many --targets=test:sherif,test:knip,test:docs,test:eslint,test:lib,test:types,test:build,build",
     "test:eslint": "nx affected --target=test:eslint",
