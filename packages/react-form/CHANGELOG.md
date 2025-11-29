@@ -1,5 +1,14 @@
 # @tanstack/react-form
 
+## 1.26.1
+
+### Patch Changes
+
+- Remove useId for react 17 user compatibility, replaced with uuid ([#1850](https://github.com/TanStack/form/pull/1850))
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.26.1
+
 ## 1.26.0
 
 ### Patch Changes
