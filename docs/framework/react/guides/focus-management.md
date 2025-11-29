@@ -5,7 +5,7 @@ title: Focus Management
 
 In some instances, you may want to focus the first input with an error.
 
-[Because TanStack Form intentionally does not have insights into your markup](../../../philosophy.md), we cannot add a built-in focus management feature.
+[Because TanStack Form intentionally does not have insights into your markup](../../../../philosophy.md), we cannot add a built-in focus management feature.
 
 However, you can easily add this feature into your application without this hypothetical built-in feature.
 
