@@ -1,5 +1,7 @@
 # @tanstack/form-core
 
+## 1.26.1
+
 ## 1.26.0
 
 ### Patch Changes
