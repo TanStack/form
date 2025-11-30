@@ -1093,7 +1093,11 @@ export class FormApi<
             transformArray.some((val, i) => val !== this.prevTransformArray[i]))
 
         if (shouldTransform) {
-          const newObj = Object.assign({}, this, { state: currBaseStore })
+          const newObj = Object.assign({}, this, {
+            // structuredClone is required to avoid `state` being mutated outside of this block
+            // Commonly available since 2022 in all major browsers BUT NOT REACT NATIVE NOOOOOOO
+            state: structuredClone(currBaseStore),
+          })
           // This mutates the state
           this.options.transform?.fn(newObj)
           const state = newObj.state
