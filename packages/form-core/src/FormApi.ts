@@ -1273,6 +1273,12 @@ export class FormApi<
           errorMap = Object.assign(errorMap, { onMount: undefined })
         }
 
+        // Only run transform if state has shallowly changed - IE how React.useEffect works
+        const transformArray = this.options.transform?.deps ?? []
+        const shouldTransform =
+          transformArray.length !== this.prevTransformArray.length ||
+          transformArray.some((val, i) => val !== this.prevTransformArray[i])
+
         if (
           prevVal &&
           prevBaseStore &&
@@ -1289,6 +1295,7 @@ export class FormApi<
           prevVal.isPristine === isPristine &&
           prevVal.isDefaultValue === isDefaultValue &&
           prevVal.isDirty === isDirty &&
+          !shouldTransform &&
           evaluate(prevBaseStore, currBaseStore)
         ) {
           return prevVal
@@ -1323,18 +1330,12 @@ export class FormApi<
           TOnServer
         >
 
-        // Only run transform if state has shallowly changed - IE how React.useEffect works
-        const transformArray = this.options.transform?.deps ?? []
-        const shouldTransform =
-          transformArray.length !== this.prevTransformArray.length ||
-          transformArray.some((val, i) => val !== this.prevTransformArray[i])
-
         if (shouldTransform) {
           const newObj = Object.assign({}, this, { state })
           // This mutates the state
           this.options.transform?.fn(newObj)
           state = newObj.state
-          this.prevTransformArray = transformArray
+          this.prevTransformArray = [...transformArray]
         }
 
         return state
