@@ -2,7 +2,12 @@ import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { FieldApi, FormApi, formEventClient, mergeForm } from '../src/index'
 import { sleep } from './utils'
-import type { AnyFieldApi, AnyFormApi, AnyFormState, FormState } from '../src/index'
+import type {
+  AnyFieldApi,
+  AnyFormApi,
+  AnyFormState,
+  FormState,
+} from '../src/index'
 
 describe('form api', () => {
   it('should get default form state when default values are passed', () => {
@@ -4114,16 +4119,17 @@ describe('form api event client', () => {
   })
 })
 
-it("transform option does not invalidate state for the field", () => {
-  const state = {current: {}} as {current: Partial<AnyFormState>};
+it('transform option does not invalidate state for the field', () => {
+  const state = { current: {} } as { current: Partial<AnyFormState> }
+
   const form = new FormApi({
     defaultValues: {
       age: 0,
     },
     transform: {
-      fn: f => mergeForm(f as never, state.current) as never,
-      deps: [state.current]
-    }
+      fn: (f) => mergeForm(f as never, state.current) as never,
+      deps: [state.current],
+    },
   })
 
   form.mount()
@@ -4131,21 +4137,25 @@ it("transform option does not invalidate state for the field", () => {
   const ageField = new FieldApi({
     form,
     name: 'age',
-  });
+  })
 
   ageField.mount()
 
-  expect(ageField.state.meta.isValid).toBe(true);
+  expect(ageField.state.meta.isValid).toBe(true)
 
   state.current = {
     errorMap: {
       onServer: {
         fields: {
           age: 'Age is invalid from server',
-        }
-      }
-    }
-  };
-  
-  expect(ageField.state.meta.isValid).toBe(false);
+        },
+      },
+    },
+  }
+
+  console.log(form.options.transform)
+
+  form.options.transform!.deps[0] = state.current
+
+  expect(ageField.state.meta.isValid).toBe(false)
 })

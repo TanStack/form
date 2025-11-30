@@ -528,6 +528,37 @@ export type AnyFormOptions = FormOptions<
   any
 >
 
+function trackDeps(depz: unknown[], fn: () => void) {
+  // Track referential changes to items in the array
+  return new Proxy(depz, {
+    set(target, prop, value) {
+      const oldValue = target[prop as keyof typeof target]
+      const result = Reflect.set(target, prop, value)
+      // Check if the reference changed (not just the value)
+      if (oldValue !== value) {
+        fn()
+      }
+      return result
+    },
+    // Add a special `__IS_TANSTACK_FORM_PROXY__` property to identify the proxy
+    get(target, prop, receiver) {
+      if (prop === '__IS_TANSTACK_FORM_PROXY__') {
+        return true
+      }
+      return Reflect.get(target, prop, receiver)
+    },
+  })
+}
+
+function isTrackedDeps(depz: unknown[]) {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  return !!(
+    depz &&
+    typeof depz === 'object' &&
+    '__IS_TANSTACK_FORM_PROXY__' in depz
+  )
+}
+
 /**
  * An object representing the validation metadata for a field. Not intended for public usage.
  */
@@ -895,7 +926,7 @@ export class FormApi<
   /**
    * The options for the form.
    */
-  options: FormOptions<
+  private _options: FormOptions<
     TFormData,
     TOnMount,
     TOnChange,
@@ -909,6 +940,41 @@ export class FormApi<
     TOnServer,
     TSubmitMeta
   > = {}
+
+  get options() {
+    return Object.assign(
+      {},
+      this._options,
+      this._options.transform?.deps
+        ? {
+            transform: {
+              deps: this._prevTransformDeps,
+              fn: this._options.transform.fn,
+            },
+          }
+        : {},
+    )
+  }
+
+  set options(
+    val: FormOptions<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer,
+      TSubmitMeta
+    >,
+  ) {
+    this._options = val
+  }
+
   baseStore!: Store<
     BaseFormState<
       TFormData,
@@ -985,6 +1051,8 @@ export class FormApi<
    */
   private _devtoolsSubmissionOverride: boolean
 
+  private _prevTransformDeps: unknown[] | null = null
+
   /**
    * Constructs a new `FormApi` instance with the given form options.
    */
@@ -1013,6 +1081,15 @@ export class FormApi<
     this._formId = opts?.formId ?? uuid()
 
     this._devtoolsSubmissionOverride = false
+
+    if (opts?.transform?.deps) {
+      this._prevTransformDeps = trackDeps(opts.transform.deps, () => {
+        this.baseStore.setState((prevState) => ({
+          ...prevState,
+          _force_re_eval: !(prevState._force_re_eval ?? false),
+        }))
+      })
+    }
 
     this.baseStore = new Store(
       getDefaultFormState({
@@ -1446,6 +1523,15 @@ export class FormApi<
     const shouldUpdateState =
       !evaluate(options.defaultState, oldOptions.defaultState) &&
       !this.state.isTouched
+
+    if (options.transform?.deps && !isTrackedDeps(options.transform.deps)) {
+      this._prevTransformDeps = trackDeps(options.transform.deps, () => {
+        this.baseStore.setState((prevState) => ({
+          ...prevState,
+          _force_re_eval: !(prevState._force_re_eval ?? false),
+        }))
+      })
+    }
 
     if (!shouldUpdateValues && !shouldUpdateState && !shouldUpdateReeval) return
 
