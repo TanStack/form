@@ -1,24 +1,26 @@
-'use server'
+'use server';
 
 import {
   ServerValidateError,
   createServerValidate,
-} from '@tanstack/react-form-nextjs'
-import { formOpts } from './shared-code'
+} from '@tanstack/react-form-nextjs';
+import { formOpts } from './shared-code';
+import { z } from 'zod';
+
+const schema = z.object({
+  age: z.number().min(12),
+  firstName: z.string(),
+});
 
 const serverValidate = createServerValidate({
   ...formOpts,
-  onServerValidate: ({ value }) => {
-    if (value.age < 12) {
-      return 'Server validation: You must be at least 12 to sign up'
-    }
-  },
-})
+  onServerValidate: schema,
+});
 
 export default async function someAction(prev: unknown, formData: FormData) {
   try {
-    const validatedData = await serverValidate(formData)
-    console.log('validatedData', validatedData)
+    const validatedData = await serverValidate(formData);
+    console.log('validatedData', validatedData);
     // Persist the form data to the database
     // await sql`
     //   INSERT INTO users (name, email, password)
@@ -26,11 +28,11 @@ export default async function someAction(prev: unknown, formData: FormData) {
     // `
   } catch (e) {
     if (e instanceof ServerValidateError) {
-      return e.formState
+      return e.formState;
     }
 
     // Some other error occurred while validating your form
-    throw e
+    throw e;
   }
 
   // Your form has successfully validated!

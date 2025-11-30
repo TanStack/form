@@ -1,56 +1,47 @@
-'use client'
+'use client';
 
-import { useActionState } from 'react'
-import {
-  initialFormState,
-  mergeForm,
-  useForm,
-  useTransform,
-} from '@tanstack/react-form-nextjs'
-import { useStore } from '@tanstack/react-store'
-import someAction from './action'
-import { formOpts } from './shared-code'
+import { useActionState } from 'react';
+import { mergeForm, useForm } from '@tanstack/react-form-nextjs';
+import { initialFormState, useTransform } from '@tanstack/react-form-nextjs';
+import someAction from './action';
+import { formOpts } from './shared-code';
+import { z } from 'zod';
 
 export const ClientComp = () => {
-  const [state, action] = useActionState(someAction, initialFormState)
+  const [state, action] = useActionState(someAction, initialFormState);
+
+    debugger
 
   const form = useForm({
     ...formOpts,
     transform: useTransform(
       (baseForm) => mergeForm(baseForm, state ?? {}),
-      [state],
+      [state]
     ),
-  })
-
-  const formErrors = useStore(form.store, (formState) => formState.errors)
+  });
 
   return (
     <form action={action as never} onSubmit={() => form.handleSubmit()}>
-      {formErrors.map((error) => (
-        <p key={error as unknown as string}>{error}</p>
-      ))}
-
       <form.Field
         name="age"
         validators={{
-          onChange: ({ value }) =>
-            value < 8 ? 'Client validation: You must be at least 8' : undefined,
+          onChange: z.coerce.number().min(8),
         }}
       >
         {(field) => {
           return (
             <div>
               <input
-                name={field.name} // must explicitly set the name attribute for the POST request
+                name="age"
                 type="number"
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.valueAsNumber)}
               />
               {field.state.meta.errors.map((error) => (
-                <p key={error as string}>{error}</p>
+                <p key={error?.message ?? ''}>{error?.message}</p>
               ))}
             </div>
-          )
+          );
         }}
       </form.Field>
       <form.Subscribe
@@ -63,5 +54,5 @@ export const ClientComp = () => {
         )}
       </form.Subscribe>
     </form>
-  )
-}
+  );
+};
