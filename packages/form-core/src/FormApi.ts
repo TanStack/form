@@ -1080,14 +1080,17 @@ export class FormApi<
 
     this.mergedBaseStore = new Derived({
       deps: [this.baseStore],
-      fn: ({ currDepVals }) => {
+      fn: ({ currDepVals, prevDepVals }) => {
         const currBaseStore = currDepVals[0]
+        const prevBaseStore = prevDepVals?.[0]
 
         // Only run transform if state has shallowly changed - IE how React.useEffect works
-        const transformArray = this.options.transform?.deps ?? []
+        const transformArray = this.options.transform?.deps
         const shouldTransform =
-          transformArray.length !== this.prevTransformArray.length ||
-          transformArray.some((val, i) => val !== this.prevTransformArray[i])
+          transformArray &&
+          currBaseStore !== prevBaseStore &&
+          (transformArray.length !== this.prevTransformArray.length ||
+            transformArray.some((val, i) => val !== this.prevTransformArray[i]))
 
         if (shouldTransform) {
           const newObj = Object.assign({}, this, { state: currBaseStore })
