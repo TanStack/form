@@ -956,6 +956,21 @@ export class FormApi<
       TOnServer
     >
   >
+  mergedBaseStore!: Derived<
+    BaseFormState<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer
+    >
+  >
   fieldMetaDerived: Derived<
     FormState<
       TFormData,
@@ -1063,8 +1078,32 @@ export class FormApi<
       }),
     )
 
-    this.fieldMetaDerived = new Derived({
+    this.mergedBaseStore = new Derived({
       deps: [this.baseStore],
+      fn: ({ currDepVals }) => {
+        const currBaseStore = currDepVals[0]
+
+        // Only run transform if state has shallowly changed - IE how React.useEffect works
+        const transformArray = this.options.transform?.deps ?? []
+        const shouldTransform =
+          transformArray.length !== this.prevTransformArray.length ||
+          transformArray.some((val, i) => val !== this.prevTransformArray[i])
+
+        if (shouldTransform) {
+          const newObj = Object.assign({}, this, { state: currBaseStore })
+          // This mutates the state
+          this.options.transform?.fn(newObj)
+          const state = newObj.state
+          this.prevTransformArray = [...transformArray]
+          return state
+        }
+
+        return currBaseStore
+      },
+    })
+
+    this.fieldMetaDerived = new Derived({
+      deps: [this.mergedBaseStore],
       fn: ({ prevDepVals, currDepVals, prevVal: _prevVal }) => {
         const prevVal = _prevVal as
           | Record<DeepKeys<TFormData>, AnyFieldMeta>
@@ -1172,7 +1211,7 @@ export class FormApi<
     })
 
     this.store = new Derived({
-      deps: [this.baseStore, this.fieldMetaDerived],
+      deps: [this.mergedBaseStore, this.fieldMetaDerived],
       fn: ({ prevDepVals, currDepVals, prevVal: _prevVal }) => {
         const prevVal = _prevVal as
           | FormState<
@@ -1273,12 +1312,6 @@ export class FormApi<
           errorMap = Object.assign(errorMap, { onMount: undefined })
         }
 
-        // Only run transform if state has shallowly changed - IE how React.useEffect works
-        const transformArray = this.options.transform?.deps ?? []
-        const shouldTransform =
-          transformArray.length !== this.prevTransformArray.length ||
-          transformArray.some((val, i) => val !== this.prevTransformArray[i])
-
         if (
           prevVal &&
           prevBaseStore &&
@@ -1295,13 +1328,12 @@ export class FormApi<
           prevVal.isPristine === isPristine &&
           prevVal.isDefaultValue === isDefaultValue &&
           prevVal.isDirty === isDirty &&
-          !shouldTransform &&
           evaluate(prevBaseStore, currBaseStore)
         ) {
           return prevVal
         }
 
-        let state = {
+        const state = {
           ...currBaseStore,
           errorMap,
           fieldMeta: this.fieldMetaDerived.state,
@@ -1329,14 +1361,6 @@ export class FormApi<
           TOnDynamicAsync,
           TOnServer
         >
-
-        if (shouldTransform) {
-          const newObj = Object.assign({}, this, { state })
-          // This mutates the state
-          this.options.transform?.fn(newObj)
-          state = newObj.state
-          this.prevTransformArray = [...transformArray]
-        }
 
         return state
       },
@@ -1418,9 +1442,11 @@ export class FormApi<
   }
 
   mount = () => {
+    const cleanupMergedBaseStoreDerived = this.mergedBaseStore.mount()
     const cleanupFieldMetaDerived = this.fieldMetaDerived.mount()
     const cleanupStoreDerived = this.store.mount()
     const cleanup = () => {
+      cleanupMergedBaseStoreDerived()
       cleanupFieldMetaDerived()
       cleanupStoreDerived()
 
