@@ -4153,9 +4153,13 @@ it('transform option does not invalidate state for the field', () => {
     },
   }
 
-  console.log(form.options.transform)
+  console.log(form.mergedBaseStore.state.errorMap.onServer)
 
   form.options.transform!.deps[0] = state.current
+
+  console.log(form.mergedBaseStore.state.errorMap.onServer)
+
+  console.log(form.fieldMetaDerived)
 
   expect(ageField.state.meta.isValid).toBe(false)
 })
