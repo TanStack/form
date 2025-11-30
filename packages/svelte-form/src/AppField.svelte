@@ -1,6 +1,6 @@
 <!-- Take "form" as an prop, pass it to context, and render children -->
 <script lang="ts">
-  import { Snippet } from 'svelte'
+  import type { Snippet } from 'svelte'
   import InnerAppField from './InnerAppField.svelte'
 
   interface Props {
