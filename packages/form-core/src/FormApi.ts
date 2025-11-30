@@ -1087,10 +1087,12 @@ export class FormApi<
         // Only run transform if state has shallowly changed - IE how React.useEffect works
         const transformArray = this.options.transform?.deps
         const shouldTransform =
-          transformArray &&
-          currBaseStore !== prevBaseStore &&
-          (transformArray.length !== this.prevTransformArray.length ||
-            transformArray.some((val, i) => val !== this.prevTransformArray[i]))
+          (transformArray && currBaseStore !== prevBaseStore) ||
+          (transformArray &&
+            (transformArray.length !== this.prevTransformArray.length ||
+              transformArray.some(
+                (val, i) => val !== this.prevTransformArray[i],
+              )))
 
         if (shouldTransform) {
           const newObj = Object.assign({}, this, {
