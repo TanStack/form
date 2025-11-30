@@ -926,7 +926,7 @@ export class FormApi<
   /**
    * The options for the form.
    */
-  private _options: FormOptions<
+  options: FormOptions<
     TFormData,
     TOnMount,
     TOnChange,
@@ -940,40 +940,6 @@ export class FormApi<
     TOnServer,
     TSubmitMeta
   > = {}
-
-  get options() {
-    return Object.assign(
-      {},
-      this._options,
-      this._options.transform?.deps
-        ? {
-            transform: {
-              deps: this._prevTransformDeps,
-              fn: this._options.transform.fn,
-            },
-          }
-        : {},
-    )
-  }
-
-  set options(
-    val: FormOptions<
-      TFormData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnDynamic,
-      TOnDynamicAsync,
-      TOnServer,
-      TSubmitMeta
-    >,
-  ) {
-    this._options = val
-  }
 
   baseStore!: Store<
     BaseFormState<
@@ -1051,8 +1017,6 @@ export class FormApi<
    */
   private _devtoolsSubmissionOverride: boolean
 
-  private _prevTransformDeps: unknown[] | null = null
-
   /**
    * Constructs a new `FormApi` instance with the given form options.
    */
@@ -1083,7 +1047,7 @@ export class FormApi<
     this._devtoolsSubmissionOverride = false
 
     if (opts?.transform?.deps) {
-      this._prevTransformDeps = trackDeps(opts.transform.deps, () => {
+      opts.transform.deps = trackDeps(opts.transform.deps, () => {
         this.baseStore.setState((prevState) => ({
           ...prevState,
           _force_re_eval: !(prevState._force_re_eval ?? false),
@@ -1525,7 +1489,7 @@ export class FormApi<
       !this.state.isTouched
 
     if (options.transform?.deps && !isTrackedDeps(options.transform.deps)) {
-      this._prevTransformDeps = trackDeps(options.transform.deps, () => {
+      options.transform.deps = trackDeps(options.transform.deps, () => {
         this.baseStore.setState((prevState) => ({
           ...prevState,
           _force_re_eval: !(prevState._force_re_eval ?? false),
