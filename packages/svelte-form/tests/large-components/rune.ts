@@ -1,7 +1,7 @@
-import { createFormRune } from '../../src/createFormRune.svelte.js'
+import { createFormCreator } from '../../src/createFormCreator.svelte.js'
 import TextField from './text-field.svelte'
 
-export const { createAppForm } = createFormRune({
+export const { createAppForm } = createFormCreator({
   fieldComponents: {
     TextField,
   },

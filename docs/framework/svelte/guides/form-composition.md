@@ -11,23 +11,23 @@ As a result, while `form.Field` enables the most powerful and flexible usage of 
 
 The most powerful way to compose forms is to create custom form runes. This allows you to create a form rune that is tailored to your application's needs, including pre-bound custom UI components and more.
 
-At its most basic, `createFormRune` is a function that returns a `createAppForm` rune.
+At its most basic, `createFormCreator` is a function that returns a `createAppForm` rune.
 
-> This un-customized `createAppForm` rune is identical to `createForm`, but that will quickly change as we add more options to `createFormRune`.
+> This un-customized `createAppForm` rune is identical to `createForm`, but that will quickly change as we add more options to `createFormCreator`.
 
 ```ts
 // form-context.ts
-import { createFormRuneContexts } from '@tanstack/svelte-form'
+import { createFormCreatorContexts } from '@tanstack/svelte-form'
 
 // export useFieldContext and useFormContext for use in your custom components
-export const { useFieldContext, useFormContext } = createFormRuneContexts()
+export const { useFieldContext, useFormContext } = createFormCreatorContexts()
 ```
 
 ```ts
 // form.ts
-import { createFormRune } from '@tanstack/svelte-form'
+import { createFormCreator } from '@tanstack/svelte-form'
 
-export const { createAppForm } = createFormRune({
+export const { createAppForm } = createFormCreator({
   // We'll learn more about these options later
   fieldComponents: {},
   formComponents: {},
@@ -82,10 +82,10 @@ Once this scaffolding is in place, you can start adding custom field and form co
 You're then able to register this component with your form rune.
 
 ```ts
-import { createFormRune } from '@tanstack/svelte-form'
+import { createFormCreator } from '@tanstack/svelte-form'
 import TextField from './text-field.svelte'
 
-export const { createAppForm } = createFormRune({
+export const { createAppForm } = createFormCreator({
   fieldComponents: {
     TextField,
   },
@@ -144,11 +144,11 @@ In particular, being able to share instances of `form.Subscribe` for, say, a rea
 
 ```ts
 // form.ts
-import { createFormRune } from '@tanstack/svelte-form'
+import { createFormCreator } from '@tanstack/svelte-form'
 import TextField from './text-field.svelte'
 import SubscribeButton from './subscribe-button.svelte'
 
-export const { createAppForm } = createFormRune({
+export const { createAppForm } = createFormCreator({
   fieldComponents: {
     TextField,
   },
@@ -333,9 +333,9 @@ To solve this, you can use dynamic imports with Svelte's component loading:
 
 ```ts
 // src/runes/form-context.ts
-import { createFormRuneContexts } from '@tanstack/svelte-form'
+import { createFormCreatorContexts } from '@tanstack/svelte-form'
 
-export const { useFieldContext, useFormContext } = createFormRuneContexts()
+export const { useFieldContext, useFormContext } = createFormCreatorContexts()
 ```
 
 ```svelte
@@ -359,11 +359,11 @@ export const { useFieldContext, useFormContext } = createFormRuneContexts()
 
 ```ts
 // src/runes/form.ts
-import { createFormRune } from '@tanstack/svelte-form'
+import { createFormCreator } from '@tanstack/svelte-form'
 import TextField from '../components/text-field.svelte'
 import SubscribeButton from '../components/subscribe-button.svelte'
 
-export const { createAppForm } = createFormRune({
+export const { createAppForm } = createFormCreator({
   fieldComponents: {
     TextField,
   },
@@ -388,9 +388,9 @@ Now that we've covered the basics of creating custom form runes, let's put it al
 
 ```ts
 // /src/runes/form-context.ts, to be used across the entire app
-import { createFormRuneContexts } from '@tanstack/svelte-form'
+import { createFormCreatorContexts } from '@tanstack/svelte-form'
 
-export const { useFieldContext, useFormContext } = createFormRuneContexts()
+export const { useFieldContext, useFormContext } = createFormCreatorContexts()
 ```
 
 ```svelte
@@ -433,11 +433,11 @@ export const { useFieldContext, useFormContext } = createFormRuneContexts()
 
 ```ts
 // /src/runes/form.ts
-import { createFormRune } from '@tanstack/svelte-form'
+import { createFormCreator } from '@tanstack/svelte-form'
 import TextField from '../components/text-field.svelte'
 import SubscribeButton from '../components/subscribe-button.svelte'
 
-export const { createAppForm } = createFormRune({
+export const { createAppForm } = createFormCreator({
   fieldComponents: {
     TextField,
   },

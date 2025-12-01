@@ -52,14 +52,14 @@ type UnwrapDefaultOrAny<DefaultT, T> = [DefaultT] extends [T]
     : T
   : T
 
-export function createFormRuneContexts() {
+export function createFormCreatorContexts() {
   function useFieldContext<TData>() {
     const field = getContext(fieldContextKey) as AnyFieldApi
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!field) {
       throw new Error(
-        '`fieldContext` only works when within a `fieldComponent` passed to `createFormRune`',
+        '`fieldContext` only works when within a `fieldComponent` passed to `createFormCreator`',
       )
     }
 
@@ -96,7 +96,7 @@ export function createFormRuneContexts() {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!form) {
       throw new Error(
-        '`formContext` only works when within a `formComponent` passed to `createFormRune`',
+        '`formContext` only works when within a `formComponent` passed to `createFormCreator`',
       )
     }
 
@@ -179,7 +179,7 @@ type AppFieldExtendedSvelteFormApi<
     AppForm: Component<{ children: Snippet }>
   }
 
-export function createFormRune<
+export function createFormCreator<
   const TComponents extends Record<string, Component<any, any>>,
   const TFormComponents extends Record<string, Component<any, any>>,
 >({
