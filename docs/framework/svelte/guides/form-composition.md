@@ -14,6 +14,7 @@ The most powerful way to compose forms is to create custom form methods. This al
 At its most basic, `createFormCreator` is a function that returns a `createAppForm` method.
 
 > This un-customized `createAppForm` method is identical to `createForm`, but that will quickly change as we add more options to `createFormCreator`.
+
 ```ts
 // form-context.ts
 import { createFormCreatorContexts } from '@tanstack/svelte-form'
