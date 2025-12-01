@@ -4118,39 +4118,3 @@ describe('form api event client', () => {
     logSpy.mockRestore()
   })
 })
-
-it('transform option does not invalidate state for the field', () => {
-  const state: Partial<AnyFormState> = {
-    errorMap: {
-      onChange: {
-        fields: {
-          age: 'Age is required',
-        }
-      }
-    }
-  }
-
-  const form = new FormApi({
-    defaultValues: {
-      age: 0,
-    },
-    transform: {
-      fn: (f) => mergeForm(f as never, state) as never,
-    },
-  })
-
-  form.mount()
-
-  const ageField = new FieldApi({
-    form,
-    name: 'age',
-  })
-
-  ageField.mount()
-
-  expect(ageField.state.meta.isValid).toBe(true)
-
-  form.mergeAndUpdate()
-
-  expect(ageField.state.meta.isValid).toBe(false)
-})

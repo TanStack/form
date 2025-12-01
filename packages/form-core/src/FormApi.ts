@@ -217,54 +217,6 @@ export interface FormValidators<
   onDynamicAsyncDebounceMs?: number
 }
 
-/**
- * @private
- */
-export interface FormTransform<
-  TFormData,
-  TOnMount extends undefined | FormValidateOrFn<TFormData>,
-  TOnChange extends undefined | FormValidateOrFn<TFormData>,
-  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
-  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TSubmitMeta = never,
-> {
-  fn: (
-    formBase: FormApi<
-      TFormData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnDynamic,
-      TOnDynamicAsync,
-      TOnServer,
-      TSubmitMeta
-    >,
-  ) => FormApi<
-    TFormData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TOnServer,
-    TSubmitMeta
-  >
-}
-
 export interface FormListeners<
   TFormData,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
@@ -496,20 +448,6 @@ export interface FormOptions<
     >
     meta: TSubmitMeta
   }) => void
-  transform?: FormTransform<
-    NoInfer<TFormData>,
-    NoInfer<TOnMount>,
-    NoInfer<TOnChange>,
-    NoInfer<TOnChangeAsync>,
-    NoInfer<TOnBlur>,
-    NoInfer<TOnBlurAsync>,
-    NoInfer<TOnSubmit>,
-    NoInfer<TOnSubmitAsync>,
-    NoInfer<TOnDynamic>,
-    NoInfer<TOnDynamicAsync>,
-    NoInfer<TOnServer>,
-    NoInfer<TSubmitMeta>
-  >
 }
 
 export type AnyFormOptions = FormOptions<
@@ -657,7 +595,7 @@ export type BaseFormState<
   _force_re_eval?: boolean
 }
 
-type AnyBaseFormState = BaseFormState<
+export type AnyBaseFormState = BaseFormState<
   any,
   any,
   any,
@@ -976,11 +914,6 @@ export class FormApi<
   get state() {
     return this.store.state
   }
-
-  /**
-   * @private
-   */
-  prevTransformArray: unknown[] = []
 
   /**
    * @private
@@ -2588,62 +2521,6 @@ export class FormApi<
           }))
         }
       })
-    })
-  }
-
-  mergeAndUpdate = () => {
-    // Run the `transform` function on `this.state`, diff it, and update the relevant parts with what needs updating
-    if (!this.options.transform?.fn) return
-
-    const newObj = Object.assign({}, this, {
-      // structuredClone is required to avoid `state` being mutated outside of this block
-      // Commonly available since 2022 in all major browsers BUT NOT REACT NATIVE NOOOOOOO
-      state: structuredClone(this.state),
-    })
-
-    this.options.transform.fn(newObj)
-
-    if (newObj.fieldInfo !== this.fieldInfo) {
-      this.fieldInfo = newObj.fieldInfo
-    }
-
-    if (newObj.options !== this.options) {
-      this.options = newObj.options
-    }
-
-    const baseFormKeys = Object.keys({
-      values: null,
-      validationMetaMap: null,
-      fieldMetaBase: null,
-      isSubmitting: null,
-      isSubmitted: null,
-      isValidating: null,
-      submissionAttempts: null,
-      isSubmitSuccessful: null,
-      _force_re_eval: null,
-      // Do not remove this, it ensures that we have all the keys in `BaseFormState`
-    } satisfies Record<
-      // Exclude errorMap since we need to handle that uniquely
-      Exclude<keyof AnyBaseFormState, 'errorMap'>,
-      null
-    >) as Array<keyof AnyBaseFormState>
-
-    const diffedObject = baseFormKeys.reduce((prev, key) => {
-      if (this.state[key] !== newObj.state[key]) {
-        prev[key] = newObj.state[key]
-      }
-      return prev
-    }, {} as Partial<AnyBaseFormState>)
-
-    batch(() => {
-      if (Object.keys(diffedObject).length) {
-        this.baseStore.setState((prev) => ({ ...prev, ...diffedObject }))
-      }
-
-      if (newObj.state.errorMap !== this.state.errorMap) {
-        // Check if we need to update `fieldMetaBase` with `errorMaps` set by
-        this.setErrorMap(newObj.state.errorMap)
-      }
     })
   }
 

@@ -1,28 +1,28 @@
-'use client';
+'use client'
 
-import { useActionState, useLayoutEffect } from 'react'
-import { mergeForm, useForm } from '@tanstack/react-form-nextjs';
-import { initialFormState, useTransform } from '@tanstack/react-form-nextjs';
-import someAction from './action';
-import { formOpts } from './shared-code';
-import { z } from 'zod';
+import { useActionState } from 'react'
+import {
+  initialFormState,
+  mergeForm,
+  useForm,
+  useMerge,
+} from '@tanstack/react-form-nextjs'
+import { z } from 'zod'
+import someAction from './action'
+import { formOpts } from './shared-code'
 
 export const ClientComp = () => {
-  const [state, action] = useActionState(someAction, initialFormState);
-
-    // debugger
+  const [state, action] = useActionState(someAction, initialFormState)
 
   const form = useForm({
     ...formOpts,
-    transform: useTransform(
-      (baseForm) => mergeForm(baseForm, state ?? {}),
-      [state]
-    ),
-  });
+  })
 
-  useLayoutEffect(() => {
-    form.mergeAndUpdate()
-  }, [state])
+  useMerge({
+    form,
+    fn: (baseForm) => mergeForm(baseForm, state ?? {}),
+    deps: [state],
+  })
 
   return (
     <form action={action as never} onSubmit={() => form.handleSubmit()}>
@@ -45,7 +45,7 @@ export const ClientComp = () => {
                 <p key={error?.message ?? ''}>{error?.message}</p>
               ))}
             </div>
-          );
+          )
         }}
       </form.Field>
       <form.Subscribe
@@ -58,5 +58,5 @@ export const ClientComp = () => {
         )}
       </form.Subscribe>
     </form>
-  );
-};
+  )
+}
