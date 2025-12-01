@@ -6,7 +6,7 @@ import {
   formOptions,
   mergeForm,
   useForm,
-  useTransform,
+  useMerge,
 } from '@tanstack/react-form-remix'
 import { useStore } from '@tanstack/react-store'
 
@@ -56,11 +56,14 @@ export default function Index() {
 
   const form = useForm({
     ...formOpts,
-    transform: useTransform(
-      (baseForm) => mergeForm(baseForm, actionData ?? {}),
-      [actionData],
-    ),
   })
+
+  useMerge({
+    form,
+    fn: (baseForm) => mergeForm(baseForm, actionData ?? {}),
+    deps: [actionData],
+  })
+
   const formErrors = useStore(form.store, (formState) => formState.errors)
 
   return (
