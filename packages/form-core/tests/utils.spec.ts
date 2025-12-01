@@ -201,9 +201,9 @@ describe('deleteBy', () => {
       },
       d: {
         456: {
-          e: "f"
-        }
-      }
+          e: 'f',
+        },
+      },
     }
 
     expect(() => deleteBy(structure2, '123')).not.toThrow()
