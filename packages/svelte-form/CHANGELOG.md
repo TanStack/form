@@ -1,5 +1,16 @@
 # @tanstack/svelte-form
 
+## 1.27.0
+
+### Minor Changes
+
+- Add createFormCreator API ([#1713](https://github.com/TanStack/form/pull/1713))
+
+### Patch Changes
+
+- Updated dependencies [[`8afbfc3`](https://github.com/TanStack/form/commit/8afbfc39d7373ec2b516f7c8ff5585ca44098cc1), [`4e92a91`](https://github.com/TanStack/form/commit/4e92a913e109f54463be572cdc3f09232e9d2701)]:
+  - @tanstack/form-core@1.27.0
+
 ## 1.26.0
 
 ### Patch Changes
