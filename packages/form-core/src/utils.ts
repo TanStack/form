@@ -31,9 +31,9 @@ export function functionalUpdate<TInput, TOutput = TInput>(
  * Get a value from an object using a path, including dot notation.
  * @private
  */
-export function getBy(obj: any, path: any) {
+export function getBy(obj: unknown, path: string | (string | number)[]): any {
   const pathObj = makePathArray(path)
-  return pathObj.reduce((current: any, pathPart: any) => {
+  return pathObj.reduce((current: any, pathPart) => {
     if (current === null) return null
     if (typeof current !== 'undefined') {
       return current[pathPart]
@@ -108,7 +108,10 @@ export function deleteBy(obj: any, _path: any) {
 
     const key = path.shift()
 
-    if (typeof key === 'string') {
+    if (
+      typeof key === 'string' ||
+      (typeof key === 'number' && !Array.isArray(parent))
+    ) {
       if (typeof parent === 'object') {
         return {
           ...parent,

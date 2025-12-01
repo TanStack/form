@@ -33,7 +33,7 @@ jobs:
         run: pnpm prettier:write
       - name: Generate Docs
         if: ${{ github.event_name == 'push' || github.event.inputs.generate-docs == true }}
-        run: pnpm docs:generate
+        run: pnpm generate-docs
       - name: Apply fixes
         uses: autofix-ci/action@635ffb0c9798bd160680f18fd73371e355b85f27
         with:
