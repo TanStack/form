@@ -4120,15 +4120,22 @@ describe('form api event client', () => {
 })
 
 it('transform option does not invalidate state for the field', () => {
-  const state = { current: {} } as { current: Partial<AnyFormState> }
+  const state: Partial<AnyFormState> = {
+    errorMap: {
+      onChange: {
+        fields: {
+          age: 'Age is required',
+        }
+      }
+    }
+  }
 
   const form = new FormApi({
     defaultValues: {
       age: 0,
     },
     transform: {
-      fn: (f) => mergeForm(f as never, state.current) as never,
-      deps: [state.current],
+      fn: (f) => mergeForm(f as never, state) as never,
     },
   })
 
@@ -4143,23 +4150,7 @@ it('transform option does not invalidate state for the field', () => {
 
   expect(ageField.state.meta.isValid).toBe(true)
 
-  state.current = {
-    errorMap: {
-      onServer: {
-        fields: {
-          age: 'Age is invalid from server',
-        },
-      },
-    },
-  }
-
-  console.log(form.mergedBaseStore.state.errorMap.onServer)
-
-  form.options.transform!.deps[0] = state.current
-
-  console.log(form.mergedBaseStore.state.errorMap.onServer)
-
-  console.log(form.fieldMetaDerived)
+  form.mergeAndUpdate()
 
   expect(ageField.state.meta.isValid).toBe(false)
 })

@@ -263,7 +263,6 @@ export interface FormTransform<
     TOnServer,
     TSubmitMeta
   >
-  deps: unknown[]
 }
 
 export interface FormListeners<
@@ -528,37 +527,6 @@ export type AnyFormOptions = FormOptions<
   any
 >
 
-function trackDeps(depz: unknown[], fn: () => void) {
-  // Track referential changes to items in the array
-  return new Proxy(depz, {
-    set(target, prop, value) {
-      const oldValue = target[prop as keyof typeof target]
-      const result = Reflect.set(target, prop, value)
-      // Check if the reference changed (not just the value)
-      if (oldValue !== value) {
-        fn()
-      }
-      return result
-    },
-    // Add a special `__IS_TANSTACK_FORM_PROXY__` property to identify the proxy
-    get(target, prop, receiver) {
-      if (prop === '__IS_TANSTACK_FORM_PROXY__') {
-        return true
-      }
-      return Reflect.get(target, prop, receiver)
-    },
-  })
-}
-
-function isTrackedDeps(depz: unknown[]) {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  return !!(
-    depz &&
-    typeof depz === 'object' &&
-    '__IS_TANSTACK_FORM_PROXY__' in depz
-  )
-}
-
 /**
  * An object representing the validation metadata for a field. Not intended for public usage.
  */
@@ -688,6 +656,20 @@ export type BaseFormState<
    */
   _force_re_eval?: boolean
 }
+
+type AnyBaseFormState = BaseFormState<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
 
 export type DerivedFormState<
   in out TFormData,
@@ -956,21 +938,6 @@ export class FormApi<
       TOnServer
     >
   >
-  mergedBaseStore!: Derived<
-    BaseFormState<
-      TFormData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnDynamic,
-      TOnDynamicAsync,
-      TOnServer
-    >
-  >
   fieldMetaDerived: Derived<
     FormState<
       TFormData,
@@ -1061,15 +1028,6 @@ export class FormApi<
 
     this._devtoolsSubmissionOverride = false
 
-    if (opts?.transform?.deps) {
-      opts.transform.deps = trackDeps(opts.transform.deps, () => {
-        this.baseStore.setState((prevState) => ({
-          ...prevState,
-          _force_re_eval: !(prevState._force_re_eval ?? false),
-        }))
-      })
-    }
-
     this.baseStore = new Store(
       getDefaultFormState({
         ...(opts?.defaultState as any),
@@ -1078,41 +1036,8 @@ export class FormApi<
       }),
     )
 
-    this.mergedBaseStore = new Derived({
-      deps: [this.baseStore],
-      fn: ({ currDepVals, prevDepVals }) => {
-        const currBaseStore = currDepVals[0]
-        const prevBaseStore = prevDepVals?.[0]
-
-        // Only run transform if state has shallowly changed - IE how React.useEffect works
-        const transformArray = this.options.transform?.deps
-        const shouldTransform =
-          (transformArray && currBaseStore !== prevBaseStore) ||
-          (transformArray &&
-            (transformArray.length !== this.prevTransformArray.length ||
-              transformArray.some(
-                (val, i) => val !== this.prevTransformArray[i],
-              )))
-
-        if (shouldTransform) {
-          const newObj = Object.assign({}, this, {
-            // structuredClone is required to avoid `state` being mutated outside of this block
-            // Commonly available since 2022 in all major browsers BUT NOT REACT NATIVE NOOOOOOO
-            state: structuredClone(currBaseStore),
-          })
-          // This mutates the state
-          this.options.transform?.fn(newObj)
-          const state = newObj.state
-          this.prevTransformArray = [...transformArray]
-          return state
-        }
-
-        return currBaseStore
-      },
-    })
-
     this.fieldMetaDerived = new Derived({
-      deps: [this.mergedBaseStore],
+      deps: [this.baseStore],
       fn: ({ prevDepVals, currDepVals, prevVal: _prevVal }) => {
         const prevVal = _prevVal as
           | Record<DeepKeys<TFormData>, AnyFieldMeta>
@@ -1220,7 +1145,7 @@ export class FormApi<
     })
 
     this.store = new Derived({
-      deps: [this.mergedBaseStore, this.fieldMetaDerived],
+      deps: [this.baseStore, this.fieldMetaDerived],
       fn: ({ prevDepVals, currDepVals, prevVal: _prevVal }) => {
         const prevVal = _prevVal as
           | FormState<
@@ -1451,11 +1376,9 @@ export class FormApi<
   }
 
   mount = () => {
-    const cleanupMergedBaseStoreDerived = this.mergedBaseStore.mount()
     const cleanupFieldMetaDerived = this.fieldMetaDerived.mount()
     const cleanupStoreDerived = this.store.mount()
     const cleanup = () => {
-      cleanupMergedBaseStoreDerived()
       cleanupFieldMetaDerived()
       cleanupStoreDerived()
 
@@ -1510,11 +1433,6 @@ export class FormApi<
     // Options need to be updated first so that when the store is updated, the state is correct for the derived state
     this.options = options
 
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    const shouldUpdateReeval = !!options.transform?.deps?.some(
-      (val, i) => val !== this.prevTransformArray[i],
-    )
-
     const shouldUpdateValues =
       options.defaultValues &&
       !evaluate(options.defaultValues, oldOptions.defaultValues) &&
@@ -1524,16 +1442,7 @@ export class FormApi<
       !evaluate(options.defaultState, oldOptions.defaultState) &&
       !this.state.isTouched
 
-    if (options.transform?.deps && !isTrackedDeps(options.transform.deps)) {
-      options.transform.deps = trackDeps(options.transform.deps, () => {
-        this.baseStore.setState((prevState) => ({
-          ...prevState,
-          _force_re_eval: !(prevState._force_re_eval ?? false),
-        }))
-      })
-    }
-
-    if (!shouldUpdateValues && !shouldUpdateState && !shouldUpdateReeval) return
+    if (!shouldUpdateValues && !shouldUpdateState) return
 
     batch(() => {
       this.baseStore.setState(() =>
@@ -1548,10 +1457,6 @@ export class FormApi<
               ? {
                   values: options.defaultValues,
                 }
-              : {},
-
-            shouldUpdateReeval
-              ? { _force_re_eval: !this.state._force_re_eval }
               : {},
           ),
         ),
@@ -2683,6 +2588,62 @@ export class FormApi<
           }))
         }
       })
+    })
+  }
+
+  mergeAndUpdate = () => {
+    // Run the `transform` function on `this.state`, diff it, and update the relevant parts with what needs updating
+    if (!this.options.transform?.fn) return
+
+    const newObj = Object.assign({}, this, {
+      // structuredClone is required to avoid `state` being mutated outside of this block
+      // Commonly available since 2022 in all major browsers BUT NOT REACT NATIVE NOOOOOOO
+      state: structuredClone(this.state),
+    })
+
+    this.options.transform.fn(newObj)
+
+    if (newObj.fieldInfo !== this.fieldInfo) {
+      this.fieldInfo = newObj.fieldInfo
+    }
+
+    if (newObj.options !== this.options) {
+      this.options = newObj.options
+    }
+
+    const baseFormKeys = Object.keys({
+      values: null,
+      validationMetaMap: null,
+      fieldMetaBase: null,
+      isSubmitting: null,
+      isSubmitted: null,
+      isValidating: null,
+      submissionAttempts: null,
+      isSubmitSuccessful: null,
+      _force_re_eval: null,
+      // Do not remove this, it ensures that we have all the keys in `BaseFormState`
+    } satisfies Record<
+      // Exclude errorMap since we need to handle that uniquely
+      Exclude<keyof AnyBaseFormState, 'errorMap'>,
+      null
+    >) as Array<keyof AnyBaseFormState>
+
+    const diffedObject = baseFormKeys.reduce((prev, key) => {
+      if (this.state[key] !== newObj.state[key]) {
+        prev[key] = newObj.state[key]
+      }
+      return prev
+    }, {} as Partial<AnyBaseFormState>)
+
+    batch(() => {
+      if (Object.keys(diffedObject).length) {
+        this.baseStore.setState((prev) => ({ ...prev, ...diffedObject }))
+      }
+
+      if (newObj.state.errorMap !== this.state.errorMap) {
+        // Check if we need to update `fieldMetaBase` with `errorMaps` set by
+        this.setErrorMap(newObj.state.errorMap)
+      }
     })
   }
 
