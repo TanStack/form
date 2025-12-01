@@ -78,9 +78,11 @@ Example:
   )}
 />
 ```
+
 If you run into issues handing in children as props, make sure to check your linting rules.
 
 Example (ESLint):
+
 ```json
   "rules": {
     "react/no-children-prop": [
@@ -91,7 +93,6 @@ Example (ESLint):
     ],
   }
 ```
-
 
 ## Field State
 
