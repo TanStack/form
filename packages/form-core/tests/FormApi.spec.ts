@@ -1,8 +1,13 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
-import { FieldApi, FormApi, formEventClient } from '../src/index'
+import { FieldApi, FormApi, formEventClient, mergeForm } from '../src/index'
 import { sleep } from './utils'
-import type { AnyFieldApi, AnyFormApi } from '../src/index'
+import type {
+  AnyFieldApi,
+  AnyFormApi,
+  AnyFormState,
+  FormState,
+} from '../src/index'
 
 describe('form api', () => {
   it('should get default form state when default values are passed', () => {
