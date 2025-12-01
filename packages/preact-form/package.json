@@ -1,7 +1,7 @@
 {
   "name": "@tanstack/preact-form",
   "version": "1.25.0",
-  "description": "Powerful, type-safe forms for React.",
+  "description": "Powerful, type-safe forms for Preact.",
   "author": "tannerlinsley",
   "license": "MIT",
   "repository": {
@@ -52,12 +52,17 @@
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/react-store": "^0.7.7",
-    "preact": "^10.27.2"
+    "@tanstack/preact-store": "^0.10.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.2",
+    "eslint-config-preact": "^2.0.0",
+    "preact": "^10.27.2",
+    "typescript-eslint": "^8.48.0",
     "vite": "^7.2.2"
+  },
+  "peerDependencies": {
+    "preact": "^10.0.0"
   },
   "peerDependenciesMeta": {
     "@tanstack/react-start": {

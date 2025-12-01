@@ -1,7 +1,7 @@
 'use client'
 
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
-import { useStore } from '@tanstack/react-store'
+import { useStore } from '@tanstack/preact-store'
 import { useId, useState } from 'preact/hooks'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
@@ -15,7 +15,7 @@ import type {
 } from '@tanstack/form-core'
 import type { ComponentChildren } from 'preact'
 import type { FieldComponent } from './useField'
-import type { NoInfer } from '@tanstack/react-store'
+import type { NoInfer } from '@tanstack/preact-store'
 import type { PropsWithChildren } from './types'
 
 /**

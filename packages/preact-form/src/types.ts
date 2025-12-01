@@ -9,7 +9,7 @@ import type {
   FormState,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import { ComponentChildren } from 'preact'
+import type { ComponentChildren } from 'preact'
 
 interface FieldOptionsMode {
   mode?: 'value' | 'array'

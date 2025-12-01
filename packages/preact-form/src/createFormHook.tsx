@@ -1,5 +1,5 @@
 'use client'
-/* eslint-disable @eslint-react/no-context-provider */
+
 import { createContext } from 'preact'
 import { useContext, useMemo } from 'preact/hooks'
 import { useForm } from './useForm'
@@ -15,7 +15,7 @@ import type {
   FormOptions,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { ComponentType, Context, ComponentChildren } from 'preact'
+import type { ComponentChildren, ComponentType, Context } from 'preact'
 import type { FieldComponent } from './useField'
 import type { ReactFormExtendedApi } from './useForm'
 import type { AppFieldExtendedReactFieldGroupApi } from './useFieldGroup'
@@ -353,7 +353,6 @@ export function createFormHook<
         return (
           <form.Field {...props}>
             {(field) => (
-              // eslint-disable-next-line @eslint-react/no-context-provider
               <fieldContext.Provider value={field}>
                 {children(Object.assign(field, fieldComponents))}
               </fieldContext.Provider>

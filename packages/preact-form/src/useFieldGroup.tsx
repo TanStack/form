@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'preact/hooks'
-import { useStore } from '@tanstack/react-store'
+import { useStore } from '@tanstack/preact-store'
 import { FieldGroupApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
@@ -13,7 +13,7 @@ import type {
   FormValidateOrFn,
 } from '@tanstack/form-core'
 import type { AppFieldExtendedReactFormApi } from './createFormHook'
-import type { ComponentType, ComponentChildren } from 'preact'
+import type { ComponentChildren, ComponentType } from 'preact'
 import type { LensFieldComponent } from './useField'
 import type { PropsWithChildren } from './types'
 

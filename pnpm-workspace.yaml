@@ -10,3 +10,4 @@ packages:
   - examples/vue/**
   - examples/lit/**
   - examples/svelte/**
+  - examples/preact/**

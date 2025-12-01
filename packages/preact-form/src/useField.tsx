@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'preact/hooks'
-import { useStore } from '@tanstack/react-store'
+import { useStore } from '@tanstack/preact-store'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
@@ -13,7 +13,7 @@ import type {
   FormAsyncValidateOrFn,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { FunctionComponent, ComponentChildren } from 'preact'
+import type { ComponentChildren, FunctionComponent } from 'preact'
 import type { UseFieldOptions, UseFieldOptionsBound } from './types'
 
 interface ReactFieldApi<
