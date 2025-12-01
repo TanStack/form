@@ -215,19 +215,19 @@ export interface WithFormProps<
   TFormComponents extends Record<string, Component<any>>,
   TRenderProps extends Record<string, unknown> = Record<string, never>,
 > extends FormOptions<
-    TFormData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TOnServer,
-    TSubmitMeta
-  > {
+  TFormData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
+  TOnServer,
+  TSubmitMeta
+> {
   // Optional, but adds props to the `render` function outside of `form`
   props?: TRenderProps
   render: (
