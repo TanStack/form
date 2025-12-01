@@ -2,7 +2,7 @@
 
 import { useMemo, useRef } from 'react'
 import { useStore } from '@tanstack/react-store'
-import { FieldApi, functionalUpdate } from '@tanstack/form-core'
+import { AnyFieldMeta, FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
   DeepKeys,
@@ -205,7 +205,74 @@ export function useField<
       name: opts.name,
     })
 
-    const extendedApi: typeof api &
+    return api
+    // We only want to
+    // update on name changes since those are at risk of becoming stale. The field
+    // state must be up to date for the internal JSX render.
+    // The other options can freely be in `fieldApi.update`
+  }, [opts.form, opts.name])
+
+  const reactiveStateValue = useStore(fieldApi.store, (state) => state.value)
+  const reactiveMetaIsTouched = useStore(
+    fieldApi.store,
+    (state) => state.meta.isTouched,
+  )
+  const reactiveMetaIsBlurred = useStore(
+    fieldApi.store,
+    (state) => state.meta.isBlurred,
+  )
+  const reactiveMetaIsDirty = useStore(
+    fieldApi.store,
+    (state) => state.meta.isDirty,
+  )
+  const reactiveMetaErrorMap = useStore(
+    fieldApi.store,
+    (state) => state.meta.errorMap,
+  )
+  const reactiveMetaErrorSourceMap = useStore(
+    fieldApi.store,
+    (state) => state.meta.errorSourceMap,
+  )
+  const reactiveMetaIsValidating = useStore(
+    fieldApi.store,
+    (state) => state.meta.isValidating,
+  )
+
+  // This makes me sad, but if I understand correctly, this is what we have to do for reactivity to work properly with React compiler.
+  const reactiveFieldApi = useMemo(
+    () => ({
+      ...fieldApi,
+      get state() {
+        return {
+          value: reactiveStateValue,
+          get meta() {
+            return {
+              ...fieldApi.state.meta,
+              isTouched: reactiveMetaIsTouched,
+              isBlurred: reactiveMetaIsBlurred,
+              isDirty: reactiveMetaIsDirty,
+              errorMap: reactiveMetaErrorMap,
+              errorSourceMap: reactiveMetaErrorSourceMap,
+              isValidating: reactiveMetaIsValidating,
+            } satisfies AnyFieldMeta
+          },
+        } satisfies (typeof fieldApi)['state']
+      },
+    }),
+    [
+      fieldApi,
+      reactiveStateValue,
+      reactiveMetaIsTouched,
+      reactiveMetaIsBlurred,
+      reactiveMetaIsDirty,
+      reactiveMetaErrorMap,
+      reactiveMetaErrorSourceMap,
+      reactiveMetaIsValidating,
+    ],
+  )
+
+  const extendedFieldApi = useMemo(() => {
+    const extendedApi: typeof reactiveFieldApi &
       ReactFieldApi<
         TParentData,
         TFormOnMount,
@@ -219,16 +286,12 @@ export function useField<
         TFormOnDynamicAsync,
         TFormOnServer,
         TPatentSubmitMeta
-      > = api as never
+      > = reactiveFieldApi as never
 
     extendedApi.Field = Field as never
 
     return extendedApi
-    // We only want to
-    // update on name changes since those are at risk of becoming stale. The field
-    // state must be up to date for the internal JSX render.
-    // The other options can freely be in `fieldApi.update`
-  }, [opts.form, opts.name])
+  }, [reactiveFieldApi])
 
   useIsomorphicLayoutEffect(fieldApi.mount, [fieldApi])
 
@@ -252,7 +315,7 @@ export function useField<
       : undefined,
   )
 
-  return fieldApi
+  return extendedFieldApi
 }
 
 /**
