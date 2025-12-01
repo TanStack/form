@@ -7,14 +7,13 @@ A common criticism of TanStack Form is its verbosity out-of-the-box. While this 
 
 As a result, while `form.Field` enables the most powerful and flexible usage of TanStack Form, we provide APIs that wrap it and make your application code less verbose.
 
-## Custom Form Runes
+## Custom Form Methods
 
-The most powerful way to compose forms is to create custom form runes. This allows you to create a form rune that is tailored to your application's needs, including pre-bound custom UI components and more.
+The most powerful way to compose forms is to create custom form methods. This allows you to create a form method that is tailored to your application's needs, including pre-bound custom UI components and more.
 
-At its most basic, `createFormCreator` is a function that returns a `createAppForm` rune.
+At its most basic, `createFormCreator` is a function that returns a `createAppForm` method.
 
-> This un-customized `createAppForm` rune is identical to `createForm`, but that will quickly change as we add more options to `createFormCreator`.
-
+> This un-customized `createAppForm` method is identical to `createForm`, but that will quickly change as we add more options to `createFormCreator`.
 ```ts
 // form-context.ts
 import { createFormCreatorContexts } from '@tanstack/svelte-form'
@@ -55,7 +54,7 @@ export const { createAppForm } = createFormCreator({
 
 ### Pre-bound Field Components
 
-Once this scaffolding is in place, you can start adding custom field and form components to your form rune.
+Once this scaffolding is in place, you can start adding custom field and form components to your form method.
 
 > Note: the `useFieldContext` must be the same one exported from your custom form context
 
@@ -79,7 +78,7 @@ Once this scaffolding is in place, you can start adding custom field and form co
 </label>
 ```
 
-You're then able to register this component with your form rune.
+You're then able to register this component with your form method.
 
 ```ts
 import { createFormCreator } from '@tanstack/svelte-form'
@@ -327,12 +326,12 @@ We can now use these grouped fields in any form that implements the required fie
 ## Tree-shaking form and field components
 
 While the above examples are great for getting started, they're not ideal for certain use-cases where you might have hundreds of form and field components.
-In particular, you may not want to include all of your form and field components in the bundle of every file that uses your form rune.
+In particular, you may not want to include all of your form and field components in the bundle of every file that uses your form method.
 
 To solve this, you can use dynamic imports with Svelte's component loading:
 
 ```ts
-// src/runes/form-context.ts
+// src/utils/form-context.ts
 import { createFormCreatorContexts } from '@tanstack/svelte-form'
 
 export const { useFieldContext, useFormContext } = createFormCreatorContexts()
@@ -341,7 +340,7 @@ export const { useFieldContext, useFormContext } = createFormCreatorContexts()
 ```svelte
 <!-- src/components/text-field.svelte -->
 <script lang="ts">
-  import { useFieldContext } from '../runes/form-context.js'
+  import { useFieldContext } from '../utils/form-context.js'
 
   const field = useFieldContext<string>()
 
@@ -358,7 +357,7 @@ export const { useFieldContext, useFormContext } = createFormCreatorContexts()
 ```
 
 ```ts
-// src/runes/form.ts
+// src/utils/form.ts
 import { createFormCreator } from '@tanstack/svelte-form'
 import TextField from '../components/text-field.svelte'
 import SubscribeButton from '../components/subscribe-button.svelte'
@@ -384,10 +383,10 @@ export const { createAppForm } = createFormCreator({
 
 ## Putting it all together
 
-Now that we've covered the basics of creating custom form runes, let's put it all together in a single example.
+Now that we've covered the basics of creating custom form methods, let's put it all together in a single example.
 
 ```ts
-// /src/runes/form-context.ts, to be used across the entire app
+// /src/utils/form-context.ts, to be used across the entire app
 import { createFormCreatorContexts } from '@tanstack/svelte-form'
 
 export const { useFieldContext, useFormContext } = createFormCreatorContexts()
@@ -396,7 +395,7 @@ export const { useFieldContext, useFormContext } = createFormCreatorContexts()
 ```svelte
 <!-- /src/components/text-field.svelte -->
 <script lang="ts">
-  import { useFieldContext } from '../runes/form-context.js'
+  import { useFieldContext } from '../utils/form-context.js'
 
   const field = useFieldContext<string>()
 
@@ -415,7 +414,7 @@ export const { useFieldContext, useFormContext } = createFormCreatorContexts()
 ```svelte
 <!-- /src/components/subscribe-button.svelte -->
 <script lang="ts">
-  import { useFormContext } from '../runes/form-context.js'
+  import { useFormContext } from '../utils/form-context.js'
 
   const form = useFormContext()
 
@@ -432,7 +431,7 @@ export const { useFieldContext, useFormContext } = createFormCreatorContexts()
 ```
 
 ```ts
-// /src/runes/form.ts
+// /src/utils/form.ts
 import { createFormCreator } from '@tanstack/svelte-form'
 import TextField from '../components/text-field.svelte'
 import SubscribeButton from '../components/subscribe-button.svelte'
@@ -462,7 +461,7 @@ export const peopleFormOpts = formOptions({
 ```svelte
 <!-- /src/features/people/child-form.svelte, to be used in the `people` page -->
 <script lang="ts">
-  import type { createAppForm } from '../../runes/form.js'
+  import type { createAppForm } from '../../utils/form.js'
   import { peopleFormOpts } from './shared-form.js'
 
   type AppForm = ReturnType<typeof createAppForm<typeof peopleFormOpts.defaultValues>>
@@ -488,7 +487,7 @@ export const peopleFormOpts = formOptions({
 ```svelte
 <!-- /src/features/people/page.svelte -->
 <script lang="ts">
-  import { createAppForm } from '../../runes/form.js'
+  import { createAppForm } from '../../utils/form.js'
   import { peopleFormOpts } from './shared-form.js'
   import ChildForm from './child-form.svelte'
 
