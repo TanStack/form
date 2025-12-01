@@ -2,9 +2,11 @@
 
 import { useMemo, useRef } from 'react'
 import { useStore } from '@tanstack/react-store'
-import { AnyFieldMeta, FieldApi, functionalUpdate } from '@tanstack/form-core'
+import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
+  AnyFieldApi,
+  AnyFieldMeta,
   DeepKeys,
   DeepValue,
   FieldAsyncValidateOrFn,
@@ -256,7 +258,7 @@ export function useField<
               isValidating: reactiveMetaIsValidating,
             } satisfies AnyFieldMeta
           },
-        } satisfies (typeof fieldApi)['state']
+        } satisfies AnyFieldApi['state']
       },
     }),
     [
@@ -315,7 +317,45 @@ export function useField<
       : undefined,
   )
 
-  return extendedFieldApi
+  return extendedFieldApi as FieldApi<
+    TParentData,
+    TName,
+    TData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
+    TFormOnServer,
+    TPatentSubmitMeta
+  > &
+    ReactFieldApi<
+      TParentData,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
+      TFormOnServer,
+      TPatentSubmitMeta
+    >
 }
 
 /**
@@ -718,13 +758,7 @@ export const Field = (<
 
   const jsxToDisplay = useMemo(
     () => functionalUpdate(children, fieldApi as any),
-    /**
-     * The reason this exists is to fix an issue with the React Compiler.
-     * Namely, functionalUpdate is memoized where it checks for `fieldApi`, which is a static type.
-     * This means that when `state.value` changes, it does not trigger a re-render. The useMemo explicitly fixes this problem
-     */
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [children, fieldApi, fieldApi.state.value, fieldApi.state.meta],
+    [children, fieldApi],
   )
   return (<>{jsxToDisplay}</>) as never
 }) satisfies FunctionComponent<
