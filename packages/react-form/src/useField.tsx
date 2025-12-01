@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useRef } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
@@ -197,22 +197,29 @@ export function useField<
 ) {
   // Keep a snapshot of options so that React Compiler doesn't
   // wrongly optimize fieldApi.
-  const optsRef = useRef(opts)
-  optsRef.current = opts
+  const [prevOptions, setPrevOptions] = useState(() => ({
+    form: opts.form,
+    name: opts.name,
+  }))
 
-  const fieldApi = useMemo(() => {
-    const api = new FieldApi({
-      ...optsRef.current,
-      form: opts.form,
-      name: opts.name,
+  const [fieldApi, setFieldApi] = useState(() => {
+    return new FieldApi({
+      ...opts,
     })
+  })
 
-    return api
-    // We only want to
-    // update on name changes since those are at risk of becoming stale. The field
-    // state must be up to date for the internal JSX render.
-    // The other options can freely be in `fieldApi.update`
-  }, [opts.form, opts.name])
+  // We only want to
+  // update on name changes since those are at risk of becoming stale. The field
+  // state must be up to date for the internal JSX render.
+  // The other options can freely be in `fieldApi.update`
+  if (prevOptions.form !== opts.form || prevOptions.name !== opts.name) {
+    setFieldApi(
+      new FieldApi({
+        ...opts,
+      }),
+    )
+    setPrevOptions({ form: opts.form, name: opts.name })
+  }
 
   const reactiveStateValue = useStore(fieldApi.store, (state) => state.value)
   const reactiveMetaIsTouched = useStore(
@@ -241,8 +248,8 @@ export function useField<
   )
 
   // This makes me sad, but if I understand correctly, this is what we have to do for reactivity to work properly with React compiler.
-  const reactiveFieldApi = useMemo(
-    () => ({
+  const extendedFieldApi = useMemo(() => {
+    const reactiveFieldApi = {
       ...fieldApi,
       get state() {
         return {
@@ -260,21 +267,33 @@ export function useField<
           },
         } satisfies AnyFieldApi['state']
       },
-    }),
-    [
-      fieldApi,
-      reactiveStateValue,
-      reactiveMetaIsTouched,
-      reactiveMetaIsBlurred,
-      reactiveMetaIsDirty,
-      reactiveMetaErrorMap,
-      reactiveMetaErrorSourceMap,
-      reactiveMetaIsValidating,
-    ],
-  )
+    }
 
-  const extendedFieldApi = useMemo(() => {
-    const extendedApi: typeof reactiveFieldApi &
+    const extendedApi: FieldApi<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
+      TFormOnServer,
+      TPatentSubmitMeta
+    > &
       ReactFieldApi<
         TParentData,
         TFormOnMount,
@@ -293,7 +312,16 @@ export function useField<
     extendedApi.Field = Field as never
 
     return extendedApi
-  }, [reactiveFieldApi])
+  }, [
+    fieldApi,
+    reactiveStateValue,
+    reactiveMetaIsTouched,
+    reactiveMetaIsBlurred,
+    reactiveMetaIsDirty,
+    reactiveMetaErrorMap,
+    reactiveMetaErrorSourceMap,
+    reactiveMetaIsValidating,
+  ])
 
   useIsomorphicLayoutEffect(fieldApi.mount, [fieldApi])
 
@@ -317,45 +345,7 @@ export function useField<
       : undefined,
   )
 
-  return extendedFieldApi as FieldApi<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnDynamic,
-    TFormOnDynamicAsync,
-    TFormOnServer,
-    TPatentSubmitMeta
-  > &
-    ReactFieldApi<
-      TParentData,
-      TFormOnMount,
-      TFormOnChange,
-      TFormOnChangeAsync,
-      TFormOnBlur,
-      TFormOnBlurAsync,
-      TFormOnSubmit,
-      TFormOnSubmitAsync,
-      TFormOnDynamic,
-      TFormOnDynamicAsync,
-      TFormOnServer,
-      TPatentSubmitMeta
-    >
+  return extendedFieldApi
 }
 
 /**
