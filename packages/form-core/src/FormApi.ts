@@ -979,7 +979,7 @@ export class FormApi<
   /**
    * @private
    */
-  private _formId: string
+  _formId: string
   /**
    * @private
    */
