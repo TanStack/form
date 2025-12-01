@@ -1,4 +1,4 @@
-import { createSolidPlugin } from '@tanstack/devtools-utils/solid'
+import { createSolidPlugin } from './devtoolsUtils'
 import { FormDevtoolsPanel } from './FormDevtools'
 
 const [formDevtoolsPlugin, formDevtoolsNoOpPlugin] = createSolidPlugin(

@@ -1,7 +1,7 @@
-import { createSolidPanel } from '@tanstack/devtools-utils/solid'
+import { createSolidPanel } from './devtoolsUtils'
 import { FormDevtoolsCore } from '@tanstack/form-devtools'
 
-import type { DevtoolsPanelProps } from '@tanstack/devtools-utils/solid'
+import type { DevtoolsPanelProps } from './devtoolsUtils'
 
 const [FormDevtoolsPanel, FormDevtoolsPanelNoOp] =
   createSolidPanel(FormDevtoolsCore)

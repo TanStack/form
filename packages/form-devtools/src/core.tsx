@@ -1,5 +1,5 @@
 import { lazy } from 'solid-js'
-import { constructCoreClass } from '@tanstack/devtools-utils/solid'
+import { constructCoreClass } from './utils/constructCoreClass'
 
 const Component = lazy(() => import('./components'))
 

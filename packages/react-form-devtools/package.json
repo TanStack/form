@@ -52,7 +52,6 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/devtools-utils": "^0.0.4",
     "@tanstack/form-devtools": "workspace:*"
   },
   "devDependencies": {

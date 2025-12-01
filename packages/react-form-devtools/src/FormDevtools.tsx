@@ -1,8 +1,8 @@
-import { createReactPanel } from '@tanstack/devtools-utils/react'
+import { createReactPanel } from './devtoolsUtils'
 import { FormDevtoolsCore } from '@tanstack/form-devtools'
 
 // type
-import type { DevtoolsPanelProps } from '@tanstack/devtools-utils/react'
+import type { DevtoolsPanelProps } from './devtoolsUtils'
 
 export interface FormDevtoolsReactInit extends DevtoolsPanelProps {}
 

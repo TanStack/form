@@ -1,4 +1,4 @@
-import { createReactPlugin } from '@tanstack/devtools-utils/react'
+import { createReactPlugin } from './devtoolsUtils'
 import { FormDevtoolsPanel } from './FormDevtools'
 
 const [formDevtoolsPlugin, formDevtoolsNoOpPlugin] = createReactPlugin(
