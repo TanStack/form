@@ -909,8 +909,9 @@ describe('useForm', () => {
         <>
           <form.Field name="foo" mode="array">
             {(arrayField) =>
-              arrayField.state.value.map((row, i) => (
-                <form.Field key={row.id} name={`foo[${i}].name`}>
+              arrayField.state.value.map((_, i) => (
+                // eslint-disable-next-line @eslint-react/no-array-index-key
+                <form.Field key={i} name={`foo[${i}].name`}>
                   {(field) => {
                     expect(field.name).toBe(`foo[${i}].name`)
                     expect(field.state.value).not.toBeUndefined()
