@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useLayoutEffect } from 'react'
 import { mergeForm, useForm } from '@tanstack/react-form-nextjs';
 import { initialFormState, useTransform } from '@tanstack/react-form-nextjs';
 import someAction from './action';
@@ -10,7 +10,7 @@ import { z } from 'zod';
 export const ClientComp = () => {
   const [state, action] = useActionState(someAction, initialFormState);
 
-    debugger
+    // debugger
 
   const form = useForm({
     ...formOpts,
@@ -19,6 +19,10 @@ export const ClientComp = () => {
       [state]
     ),
   });
+
+  useLayoutEffect(() => {
+    form.mergeAndUpdate()
+  }, [state])
 
   return (
     <form action={action as never} onSubmit={() => form.handleSubmit()}>
