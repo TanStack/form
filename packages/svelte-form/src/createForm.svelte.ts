@@ -179,6 +179,24 @@ export interface SvelteFormApi<
     WithoutFunction<Component>
 }
 
+/**
+ * {@link SvelteFormApi} with all generics set to `any` for convenience use in generic contexts.
+ */
+export type AnySvelteFormApi = SvelteFormApi<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
+
 export function createForm<
   TParentData,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,

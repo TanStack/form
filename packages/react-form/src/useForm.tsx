@@ -98,6 +98,24 @@ export interface ReactFormApi<
 }
 
 /**
+ * {@link ReactFormApi} with all generics set to `any` for convenience use in generic contexts.
+ */
+export type AnyReactFormApi = ReactFormApi<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
+
+/**
  * An extended version of the `FormApi` class that includes React-specific functionalities from `ReactFormApi`
  */
 export type ReactFormExtendedApi<
@@ -141,6 +159,24 @@ export type ReactFormExtendedApi<
     TOnServer,
     TSubmitMeta
   >
+
+/**
+ * {@link ReactFormExtendedApi} with all generics set to `any` for convenience use in generic contexts.
+ */
+export type AnyReactFormExtendedApi = ReactFormExtendedApi<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
 
 function LocalSubscribe({
   form,

@@ -127,7 +127,25 @@ export interface SolidFormApi<
 }
 
 /**
- * An extended version of the `FormApi` class that includes React-specific functionalities from `ReactFormApi`
+ * {@link SolidFormApi} with all generics set to `any` for convenience use in generic contexts.
+ */
+export type AnySolidFormApi = SolidFormApi<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
+
+/**
+ * An extended version of the `FormApi` class that includes Solid-specific functionalities from `SolidFormApi`
  */
 export type SolidFormExtendedApi<
   TFormData,
@@ -170,6 +188,25 @@ export type SolidFormExtendedApi<
     TOnServer,
     TSubmitMeta
   >
+
+/**
+ * {@link SolidFormExtendedApi} with all generics set to `any` for convenience use in generic contexts.
+ */
+export type AnySolidFormExtendedApi = SolidFormExtendedApi<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
+
 export function createForm<
   TParentData,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
