@@ -1548,7 +1548,10 @@ export class FieldApi<
       if (cause === 'blur' && onBlurListenTo?.includes(this.name as string)) {
         linkedFields.push(field.instance)
       }
-      if (cause === 'dynamic' && onDynamicListenTo?.includes(this.name as string)) {
+      if (
+        cause === 'dynamic' &&
+        onDynamicListenTo?.includes(this.name as string)
+      ) {
         linkedFields.push(field.instance)
       }
     }
