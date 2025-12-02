@@ -370,6 +370,10 @@ export interface FieldValidators<
   onDynamic?: TOnDynamic
   onDynamicAsync?: TOnDynamicAsync
   onDynamicAsyncDebounceMs?: number
+  /**
+   * An optional list of field names that should trigger this field's `onDynamic` and `onDynamicAsync` events when its value changes
+   */
+  onDynamicListenTo?: DeepKeys<TParentData>[]
 }
 
 export interface FieldListeners<
@@ -1536,12 +1540,15 @@ export class FieldApi<
     const linkedFields: AnyFieldApi[] = []
     for (const field of fields) {
       if (!field.instance) continue
-      const { onChangeListenTo, onBlurListenTo } =
+      const { onChangeListenTo, onBlurListenTo, onDynamicListenTo } =
         field.instance.options.validators || {}
       if (cause === 'change' && onChangeListenTo?.includes(this.name)) {
         linkedFields.push(field.instance)
       }
       if (cause === 'blur' && onBlurListenTo?.includes(this.name as string)) {
+        linkedFields.push(field.instance)
+      }
+      if (cause === 'dynamic' && onDynamicListenTo?.includes(this.name as string)) {
         linkedFields.push(field.instance)
       }
     }
