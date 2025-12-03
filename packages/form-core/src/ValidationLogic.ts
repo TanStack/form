@@ -192,14 +192,22 @@ export const defaultValidationLogic: ValidationLogicFn = (props) => {
     case 'blur': {
       // Run blur, server validation, clear dynamic errors
       return props.runValidation({
-        validators: [onBlurValidator, onServerValidator, onDynamicClearValidator],
+        validators: [
+          onBlurValidator,
+          onServerValidator,
+          onDynamicClearValidator,
+        ],
         form: props.form,
       })
     }
     case 'change': {
       // Run change, server validation, clear dynamic errors
       return props.runValidation({
-        validators: [onChangeValidator, onServerValidator, onDynamicClearValidator],
+        validators: [
+          onChangeValidator,
+          onServerValidator,
+          onDynamicClearValidator,
+        ],
         form: props.form,
       })
     }
