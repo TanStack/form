@@ -1368,8 +1368,8 @@ export class FieldApi<
     if (!options?.dontValidate) {
       const dynamicErrKey = getErrorMapKey('dynamic')
       if (
-        this.state.meta.errorMap?.[dynamicErrKey] &&
-        this.state.meta.errorSourceMap?.[dynamicErrKey] === 'field'
+        this.state.meta.errorMap[dynamicErrKey] &&
+        this.state.meta.errorSourceMap[dynamicErrKey] === 'field'
       ) {
         this.setMeta((prev) => ({
           ...prev,
@@ -1672,7 +1672,7 @@ export class FieldApi<
         if (!fieldValidateObj.validate) continue
         if (fieldValidateObj.cause === 'dynamic') {
           const dynamicErrKey = getErrorMapKey('dynamic')
-          if (fieldValidateObj.field.state.meta.errorMap?.[dynamicErrKey]) {
+          if (fieldValidateObj.field.state.meta.errorMap[dynamicErrKey]) {
             fieldValidateObj.field.setMeta((prev) => ({
               ...prev,
               errorMap: {
@@ -1875,7 +1875,7 @@ export class FieldApi<
       if (!fieldValidateObj.validate) continue
       if (fieldValidateObj.cause === 'dynamic') {
         const dynamicErrKey = getErrorMapKey('dynamic')
-        if (fieldValidateObj.field.state.meta.errorMap?.[dynamicErrKey]) {
+        if (fieldValidateObj.field.state.meta.errorMap[dynamicErrKey]) {
           fieldValidateObj.field.setMeta((prev) => ({
             ...prev,
             errorMap: {
