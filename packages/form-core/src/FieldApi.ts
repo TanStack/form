@@ -1537,22 +1537,25 @@ export class FieldApi<
   getLinkedFields = (cause: ValidationCause) => {
     const fields = Object.values(this.form.fieldInfo) as FieldInfo<any>[]
 
-    const linkedFields: AnyFieldApi[] = []
+    const linkedFields: Array<{
+      field: AnyFieldApi
+      validatorCause: ValidationCause
+    }> = []
     for (const field of fields) {
       if (!field.instance) continue
       const { onChangeListenTo, onBlurListenTo, onDynamicListenTo } =
         field.instance.options.validators || {}
       if (cause === 'change' && onChangeListenTo?.includes(this.name)) {
-        linkedFields.push(field.instance)
+        linkedFields.push({ field: field.instance, validatorCause: 'change' })
       }
       if (cause === 'blur' && onBlurListenTo?.includes(this.name as string)) {
-        linkedFields.push(field.instance)
+        linkedFields.push({ field: field.instance, validatorCause: 'blur' })
       }
       if (
-        cause === 'dynamic' &&
+        (cause === 'change' || cause === 'blur') &&
         onDynamicListenTo?.includes(this.name as string)
       ) {
-        linkedFields.push(field.instance)
+        linkedFields.push({ field: field.instance, validatorCause: 'dynamic' })
       }
     }
 
@@ -1575,8 +1578,8 @@ export class FieldApi<
 
     const linkedFields = this.getLinkedFields(cause)
     const linkedFieldValidates = linkedFields.reduce(
-      (acc, field) => {
-        const fieldValidates = getSyncValidatorArray(cause, {
+      (acc, { field, validatorCause }) => {
+        const fieldValidates = getSyncValidatorArray(validatorCause, {
           ...field.options,
           form: field.form,
           validationLogic:
@@ -1714,8 +1717,8 @@ export class FieldApi<
 
     const linkedFields = this.getLinkedFields(cause)
     const linkedFieldValidates = linkedFields.reduce(
-      (acc, field) => {
-        const fieldValidates = getAsyncValidatorArray(cause, {
+      (acc, { field, validatorCause }) => {
+        const fieldValidates = getAsyncValidatorArray(validatorCause, {
           ...field.options,
           form: field.form,
           validationLogic:
@@ -1737,7 +1740,7 @@ export class FieldApi<
       this.setMeta((prev) => ({ ...prev, isValidating: true }))
     }
 
-    for (const linkedField of linkedFields) {
+    for (const { field: linkedField } of linkedFields) {
       linkedField.setMeta((prev) => ({ ...prev, isValidating: true }))
     }
 
@@ -1852,7 +1855,7 @@ export class FieldApi<
 
     this.setMeta((prev) => ({ ...prev, isValidating: false }))
 
-    for (const linkedField of linkedFields) {
+    for (const { field: linkedField } of linkedFields) {
       linkedField.setMeta((prev) => ({ ...prev, isValidating: false }))
     }
 
