@@ -26,7 +26,7 @@ export interface ValidationLogicProps {
     | undefined
     | null
   event: {
-    type: 'blur' | 'change' | 'submit' | 'mount' | 'server'
+    type: 'blur' | 'change' | 'submit' | 'mount' | 'server' | 'dynamic'
     fieldName?: string
     async: boolean
   }
@@ -157,11 +157,6 @@ export const defaultValidationLogic: ValidationLogicFn = (props) => {
     ? undefined
     : ({ fn: () => undefined, cause: 'server' } as const)
 
-  // Allows us to clear onDynamic errors
-  const onDynamicClearValidator = isAsync
-    ? undefined
-    : ({ fn: () => undefined, cause: 'dynamic' } as const)
-
   switch (props.event.type) {
     case 'mount': {
       // Run mount validation
@@ -190,24 +185,16 @@ export const defaultValidationLogic: ValidationLogicFn = (props) => {
       })
     }
     case 'blur': {
-      // Run blur, server validation, clear dynamic errors
+      // Run blur, server validation
       return props.runValidation({
-        validators: [
-          onBlurValidator,
-          onServerValidator,
-          onDynamicClearValidator,
-        ],
+        validators: [onBlurValidator, onServerValidator],
         form: props.form,
       })
     }
     case 'change': {
-      // Run change, server validation, clear dynamic errors
+      // Run change, server validation
       return props.runValidation({
-        validators: [
-          onChangeValidator,
-          onServerValidator,
-          onDynamicClearValidator,
-        ],
+        validators: [onChangeValidator, onServerValidator],
         form: props.form,
       })
     }
