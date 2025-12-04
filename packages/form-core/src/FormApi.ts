@@ -875,7 +875,6 @@ export type AnyFormApi = FormApi<
  * will break due to loss of the method when using spread.
  */
 
-
 /**
  * A class representing the Form API. It handles the logic and interactions with the form state.
  *
