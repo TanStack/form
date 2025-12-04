@@ -1,5 +1,14 @@
 # @tanstack/react-form
 
+## 1.27.1
+
+### Patch Changes
+
+- Fix issues with methods not being present in React adapter ([#1903](https://github.com/TanStack/form/pull/1903))
+
+- Updated dependencies [[`3b080ec`](https://github.com/TanStack/form/commit/3b080ec1faefa9894c0f73880dbff680888e6a9a)]:
+  - @tanstack/form-core@1.27.1
+
 ## 1.27.0
 
 ### Patch Changes
