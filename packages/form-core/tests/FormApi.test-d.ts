@@ -281,6 +281,12 @@ it('should only allow array fields for array-specific methods', () => {
   const validate2 = form.validateArrayFieldsStartingFrom<AllKeys>
   // @ts-expect-error too wide!
   const validate3 = form.validateArrayFieldsStartingFrom<RandomKeys>
+
+  const validate4 = form.validateArrayFields<OnlyArrayKeys>
+  // @ts-expect-error too wide!
+  const validate5 = form.validateArrayFields<AllKeys>
+  // @ts-expect-error too wide!
+  const validate6 = form.validateArrayFields<RandomKeys>
 })
 
 it('should infer full field name union for form.resetField parameters', () => {

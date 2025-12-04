@@ -1546,6 +1546,23 @@ export class FormApi<
   }
 
   /**
+   * @private
+   */
+  collectArrayFields = <TField extends DeepKeysOfType<TFormData, any[]>>(
+    field: TField,
+    index: number,
+  ) => {
+    const fieldKeysToCollect = [`${field}[${index}]`]
+
+    // We also have to include all fields that are nested in the array fields
+    const fieldsToCollect = Object.keys(this.fieldInfo).filter((fieldKey) =>
+      fieldKeysToCollect.some((key) => fieldKey.startsWith(key)),
+    ) as DeepKeys<TFormData>[]
+
+    return fieldsToCollect
+  }
+
+  /**
    * Validates the children of a specified array in the form starting from a given index until the end using the correct handlers for a given validation type.
    */
   validateArrayFieldsStartingFrom = async <
@@ -1561,16 +1578,32 @@ export class FormApi<
       ? Math.max((currentValue as Array<unknown>).length - 1, 0)
       : null
 
-    // We have to validate all fields that have shifted (at least the current field)
-    const fieldKeysToValidate = [`${field}[${index}]`]
-    for (let i = index + 1; i <= (lastIndex ?? 0); i++) {
-      fieldKeysToValidate.push(`${field}[${i}]`)
+    const fieldsToValidate: DeepKeys<TFormData>[] = []
+    for (let i = index; i <= (lastIndex ?? 0); i++) {
+      const collectedFields = this.collectArrayFields(field, i)
+      fieldsToValidate.push(...collectedFields)
     }
 
-    // We also have to include all fields that are nested in the shifted fields
-    const fieldsToValidate = Object.keys(this.fieldInfo).filter((fieldKey) =>
-      fieldKeysToValidate.some((key) => fieldKey.startsWith(key)),
-    ) as DeepKeys<TFormData>[]
+    // Validate the fields
+    const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
+    batch(() => {
+      fieldsToValidate.forEach((nestedField) => {
+        fieldValidationPromises.push(
+          Promise.resolve().then(() => this.validateField(nestedField, cause)),
+        )
+      })
+    })
+
+    const fieldErrorMapMap = await Promise.all(fieldValidationPromises)
+    return fieldErrorMapMap.flat()
+  }
+
+  validateArrayFields = async <TField extends DeepKeysOfType<TFormData, any[]>>(
+    field: TField,
+    index: number,
+    cause: ValidationCause,
+  ) => {
+    const fieldsToValidate = this.collectArrayFields(field, index)
 
     // Validate the fields
     const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any

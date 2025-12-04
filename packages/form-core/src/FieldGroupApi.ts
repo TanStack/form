@@ -327,6 +327,23 @@ export class FieldGroupApi<
   }
 
   /**
+   * Validates the children of a specified array in the form using the correct handlers for a given validation type.
+   */
+  validateArrayFields = async <
+    TField extends DeepKeysOfType<TFieldGroupData, any[]>,
+  >(
+    field: TField,
+    index: number,
+    cause: ValidationCause,
+  ) => {
+    return this.form.validateArrayFields(
+      this.getFormFieldName(field),
+      index,
+      cause,
+    )
+  }
+
+  /**
    * Validates a specified field in the form using the correct handlers for a given validation type.
    */
   validateField = <TField extends DeepKeys<TFieldGroupData>>(
