@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.27.1
+
+### Patch Changes
+
+- Fix issues with methods not being present in React adapter ([#1903](https://github.com/TanStack/form/pull/1903))
+
 ## 1.27.0
 
 ### Patch Changes
