@@ -871,6 +871,11 @@ export type AnyFormApi = FormApi<
 >
 
 /**
+ * We cannot use methods and must use arrow functions. Otherwise, our React adapters
+ * will break due to loss of the method when using spread.
+ */
+
+/**
  * A class representing the Form API. It handles the logic and interactions with the form state.
  *
  * Normally, you will not need to create a new `FormApi` instance directly. Instead, you will use a framework
@@ -2016,12 +2021,17 @@ export class FormApi<
     return this.validateAsync(cause)
   }
 
+  // Needs to edgecase in the React adapter specifically to avoid type errors
+  handleSubmit(): Promise<void>
+  handleSubmit(submitMeta: TSubmitMeta): Promise<void>
+  handleSubmit(submitMeta?: TSubmitMeta): Promise<void> {
+    return this._handleSubmit(submitMeta)
+  }
+
   /**
    * Handles the form submission, performs validation, and calls the appropriate onSubmit or onSubmitInvalid callbacks.
    */
-  handleSubmit(): Promise<void>
-  handleSubmit(submitMeta: TSubmitMeta): Promise<void>
-  async handleSubmit(submitMeta?: TSubmitMeta): Promise<void> {
+  _handleSubmit = async (submitMeta?: TSubmitMeta): Promise<void> => {
     this.baseStore.setState((old) => ({
       ...old,
       // Submission attempts mark the form as not submitted
@@ -2539,7 +2549,7 @@ export class FormApi<
   /**
    * Updates the form's errorMap
    */
-  setErrorMap(
+  setErrorMap = (
     errorMap: FormValidationErrorMap<
       TFormData,
       UnwrapFormValidateOrFn<TOnMount>,
@@ -2553,7 +2563,7 @@ export class FormApi<
       UnwrapFormAsyncValidateOrFn<TOnDynamicAsync>,
       UnwrapFormAsyncValidateOrFn<TOnServer>
     >,
-  ) {
+  ) => {
     batch(() => {
       Object.entries(errorMap).forEach(([key, value]) => {
         const errorMapKey = key as ValidationErrorMapKeys
