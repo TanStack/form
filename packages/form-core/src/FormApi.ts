@@ -2022,10 +2022,17 @@ export class FormApi<
     return this.validateAsync(cause)
   }
 
+  // Needs to edgecase in the React adapter specifically to avoid type errors
+  handleSubmit(): Promise<void>
+  handleSubmit(submitMeta: TSubmitMeta): Promise<void>
+  handleSubmit(submitMeta?: TSubmitMeta): Promise<void> {
+    return this._handleSubmit(submitMeta)
+  }
+
   /**
    * Handles the form submission, performs validation, and calls the appropriate onSubmit or onSubmitInvalid callbacks.
    */
-  handleSubmit = async (submitMeta?: TSubmitMeta): Promise<void> => {
+  _handleSubmit = async (submitMeta?: TSubmitMeta): Promise<void> => {
     this.baseStore.setState((old) => ({
       ...old,
       // Submission attempts mark the form as not submitted
