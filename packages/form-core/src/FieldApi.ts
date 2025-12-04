@@ -963,6 +963,11 @@ export type AnyFieldApi = FieldApi<
 >
 
 /**
+ * We cannot use methods and must use arrow functions. Otherwise, our React adapters
+ * will break due to loss of the method when using spread.
+ */
+
+/**
  * A class representing the API for managing a form field.
  *
  * Normally, you will not need to create a new `FieldApi` instance directly.
@@ -1908,7 +1913,7 @@ export class FieldApi<
   /**
    * Updates the field's errorMap
    */
-  setErrorMap(
+  setErrorMap = (
     errorMap: ValidationErrorMap<
       UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>,
       UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>,
@@ -1920,7 +1925,7 @@ export class FieldApi<
       UnwrapFieldValidateOrFn<TName, TOnDynamic, TFormOnDynamic>,
       UnwrapFieldAsyncValidateOrFn<TName, TOnDynamicAsync, TFormOnDynamicAsync>
     >,
-  ) {
+  ) => {
     this.setMeta((prev) => ({
       ...prev,
       errorMap: {
@@ -1997,7 +2002,7 @@ export class FieldApi<
   /**
    * @private
    */
-  triggerOnChangeListener() {
+  triggerOnChangeListener = () => {
     const formDebounceMs = this.form.options.listeners?.onChangeDebounceMs
     if (formDebounceMs && formDebounceMs > 0) {
       if (this.timeoutIds.formListeners.change) {
