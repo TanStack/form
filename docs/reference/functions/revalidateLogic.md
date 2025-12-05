@@ -27,4 +27,4 @@ When the form is submitted, it will run the validation logic on `change`
 
 ## Returns
 
-[`ValidationLogicFn`](../../type-aliases/ValidationLogicFn.md)
+[`ValidationLogicFn`](../type-aliases/ValidationLogicFn.md)

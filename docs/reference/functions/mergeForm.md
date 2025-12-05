@@ -21,12 +21,12 @@ Defined in: [packages/form-core/src/mergeForm.ts:73](https://github.com/TanStack
 
 ### baseForm
 
-[`FormApi`](../../classes/FormApi.md)\<`NoInfer`\<`TFormData`\>, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>
+[`FormApi`](../classes/FormApi.md)\<`NoInfer`\<`TFormData`\>, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>
 
 ### state
 
-`Partial`\<[`FormApi`](../../classes/FormApi.md)\<`TFormData`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>\[`"state"`\]\>
+`Partial`\<[`FormApi`](../classes/FormApi.md)\<`TFormData`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>\[`"state"`\]\>
 
 ## Returns
 
-[`FormApi`](../../classes/FormApi.md)\<`NoInfer`\<`TFormData`\>, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>
+[`FormApi`](../classes/FormApi.md)\<`NoInfer`\<`TFormData`\>, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>

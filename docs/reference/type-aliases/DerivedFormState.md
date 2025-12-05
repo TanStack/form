@@ -13,7 +13,7 @@ Defined in: [packages/form-core/src/FormApi.ts:661](https://github.com/TanStack/
 
 ## Extended by
 
-- [`FormState`](../../interfaces/FormState.md)
+- [`FormState`](../interfaces/FormState.md)
 
 ## Type Parameters
 

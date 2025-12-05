@@ -79,7 +79,7 @@ Constructs a new `FormApi` instance with the given form options.
 
 ##### opts?
 
-[`FormOptions`](../../interfaces/FormOptions.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>
+[`FormOptions`](../interfaces/FormOptions.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>
 
 #### Returns
 
@@ -169,7 +169,7 @@ Defined in: [packages/form-core/src/FormApi.ts:967](https://github.com/TanStack/
 
 ##### Returns
 
-[`FormState`](../../interfaces/FormState.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`\>
+[`FormState`](../interfaces/FormState.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`\>
 
 ## Methods
 
@@ -342,7 +342,7 @@ Gets the field info of the specified field.
 
 #### Returns
 
-[`FieldInfo`](../../type-aliases/FieldInfo.md)\<`TFormData`\>
+[`FieldInfo`](../type-aliases/FieldInfo.md)\<`TFormData`\>
 
 ***
 
@@ -370,7 +370,7 @@ Gets the metadata of the specified field.
 
 #### Returns
 
-[`AnyFieldMeta`](../../type-aliases/AnyFieldMeta.md) \| `undefined`
+[`AnyFieldMeta`](../type-aliases/AnyFieldMeta.md) \| `undefined`
 
 #### Implementation of
 
@@ -404,7 +404,7 @@ Gets the value of the specified field.
 
 #### Returns
 
-[`DeepValue`](../../type-aliases/DeepValue.md)\<`TFormData`, `TField`\>
+[`DeepValue`](../type-aliases/DeepValue.md)\<`TFormData`, `TField`\>
 
 #### Implementation of
 
@@ -492,7 +492,7 @@ Defined in: [packages/form-core/src/FormApi.ts:2331](https://github.com/TanStack
 
 ##### value
 
-[`DeepValue`](../../type-aliases/DeepValue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../../type-aliases/DeepValue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
+[`DeepValue`](../type-aliases/DeepValue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/DeepValue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
 
 ##### options?
 
@@ -600,15 +600,15 @@ issues (if any). This method does NOT set any internal errors.
 
 ##### schema
 
-[`StandardSchemaV1`](../../type-aliases/StandardSchemaV1.md)\<`TFormData`, `unknown`\>
+[`StandardSchemaV1`](../type-aliases/StandardSchemaV1.md)\<`TFormData`, `unknown`\>
 
 The standard schema to parse the form values with.
 
 #### Returns
 
   \| \{
-  `fields`: `Record`\<`string`, [`StandardSchemaV1Issue`](../../interfaces/StandardSchemaV1Issue.md)[]\>;
-  `form`: `Record`\<`string`, [`StandardSchemaV1Issue`](../../interfaces/StandardSchemaV1Issue.md)[]\>;
+  `fields`: `Record`\<`string`, [`StandardSchemaV1Issue`](../interfaces/StandardSchemaV1Issue.md)[]\>;
+  `form`: `Record`\<`string`, [`StandardSchemaV1Issue`](../interfaces/StandardSchemaV1Issue.md)[]\>;
 \}
   \| `undefined`
 
@@ -634,7 +634,7 @@ issues (if any). This method does NOT set any internal errors.
 
 ##### schema
 
-[`StandardSchemaV1`](../../type-aliases/StandardSchemaV1.md)\<`TFormData`, `unknown`\>
+[`StandardSchemaV1`](../type-aliases/StandardSchemaV1.md)\<`TFormData`, `unknown`\>
 
 The standard schema to parse the form values with.
 
@@ -642,8 +642,8 @@ The standard schema to parse the form values with.
 
 `Promise`\<
   \| \{
-  `fields`: `Record`\<`string`, [`StandardSchemaV1Issue`](../../interfaces/StandardSchemaV1Issue.md)[]\>;
-  `form`: `Record`\<`string`, [`StandardSchemaV1Issue`](../../interfaces/StandardSchemaV1Issue.md)[]\>;
+  `fields`: `Record`\<`string`, [`StandardSchemaV1Issue`](../interfaces/StandardSchemaV1Issue.md)[]\>;
+  `form`: `Record`\<`string`, [`StandardSchemaV1Issue`](../interfaces/StandardSchemaV1Issue.md)[]\>;
 \}
   \| `undefined`\>
 
@@ -676,7 +676,7 @@ Pushes a value into an array field.
 
 ##### value
 
-[`DeepValue`](../../type-aliases/DeepValue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../../type-aliases/DeepValue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
+[`DeepValue`](../type-aliases/DeepValue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/DeepValue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
 
 ##### options?
 
@@ -771,7 +771,7 @@ Replaces a value into an array field at the specified index.
 
 ##### value
 
-[`DeepValue`](../../type-aliases/DeepValue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../../type-aliases/DeepValue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
+[`DeepValue`](../type-aliases/DeepValue.md)\<`TFormData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/DeepValue.md)\<`TFormData`, `TField`\>\[`number`\] : `never`
 
 ##### options?
 
@@ -876,11 +876,11 @@ resets every field's meta
 
 ##### fieldMeta
 
-`Partial`\<`Record`\<`TField`, [`AnyFieldMeta`](../../type-aliases/AnyFieldMeta.md)\>\>
+`Partial`\<`Record`\<`TField`, [`AnyFieldMeta`](../type-aliases/AnyFieldMeta.md)\>\>
 
 #### Returns
 
-`Partial`\<`Record`\<`TField`, [`AnyFieldMeta`](../../type-aliases/AnyFieldMeta.md)\>\>
+`Partial`\<`Record`\<`TField`, [`AnyFieldMeta`](../type-aliases/AnyFieldMeta.md)\>\>
 
 ***
 
@@ -898,7 +898,7 @@ Updates the form's errorMap
 
 ##### errorMap
 
-`FormValidationErrorMap`\<`TFormData`, [`UnwrapFormValidateOrFn`](../../type-aliases/UnwrapFormValidateOrFn.md)\<`TOnMount`\>, [`UnwrapFormValidateOrFn`](../../type-aliases/UnwrapFormValidateOrFn.md)\<`TOnChange`\>, [`UnwrapFormAsyncValidateOrFn`](../../type-aliases/UnwrapFormAsyncValidateOrFn.md)\<`TOnChangeAsync`\>, [`UnwrapFormValidateOrFn`](../../type-aliases/UnwrapFormValidateOrFn.md)\<`TOnBlur`\>, [`UnwrapFormAsyncValidateOrFn`](../../type-aliases/UnwrapFormAsyncValidateOrFn.md)\<`TOnBlurAsync`\>, [`UnwrapFormValidateOrFn`](../../type-aliases/UnwrapFormValidateOrFn.md)\<`TOnSubmit`\>, [`UnwrapFormAsyncValidateOrFn`](../../type-aliases/UnwrapFormAsyncValidateOrFn.md)\<`TOnSubmitAsync`\>, [`UnwrapFormValidateOrFn`](../../type-aliases/UnwrapFormValidateOrFn.md)\<`TOnDynamic`\>, [`UnwrapFormAsyncValidateOrFn`](../../type-aliases/UnwrapFormAsyncValidateOrFn.md)\<`TOnDynamicAsync`\>, [`UnwrapFormAsyncValidateOrFn`](../../type-aliases/UnwrapFormAsyncValidateOrFn.md)\<`TOnServer`\>\>
+`FormValidationErrorMap`\<`TFormData`, [`UnwrapFormValidateOrFn`](../type-aliases/UnwrapFormValidateOrFn.md)\<`TOnMount`\>, [`UnwrapFormValidateOrFn`](../type-aliases/UnwrapFormValidateOrFn.md)\<`TOnChange`\>, [`UnwrapFormAsyncValidateOrFn`](../type-aliases/UnwrapFormAsyncValidateOrFn.md)\<`TOnChangeAsync`\>, [`UnwrapFormValidateOrFn`](../type-aliases/UnwrapFormValidateOrFn.md)\<`TOnBlur`\>, [`UnwrapFormAsyncValidateOrFn`](../type-aliases/UnwrapFormAsyncValidateOrFn.md)\<`TOnBlurAsync`\>, [`UnwrapFormValidateOrFn`](../type-aliases/UnwrapFormValidateOrFn.md)\<`TOnSubmit`\>, [`UnwrapFormAsyncValidateOrFn`](../type-aliases/UnwrapFormAsyncValidateOrFn.md)\<`TOnSubmitAsync`\>, [`UnwrapFormValidateOrFn`](../type-aliases/UnwrapFormValidateOrFn.md)\<`TOnDynamic`\>, [`UnwrapFormAsyncValidateOrFn`](../type-aliases/UnwrapFormAsyncValidateOrFn.md)\<`TOnDynamicAsync`\>, [`UnwrapFormAsyncValidateOrFn`](../type-aliases/UnwrapFormAsyncValidateOrFn.md)\<`TOnServer`\>\>
 
 #### Returns
 
@@ -930,7 +930,7 @@ Updates the metadata of the specified field.
 
 ##### updater
 
-[`Updater`](../../type-aliases/Updater.md)\<[`AnyFieldMetaBase`](../../type-aliases/AnyFieldMetaBase.md)\>
+[`Updater`](../type-aliases/Updater.md)\<[`AnyFieldMetaBase`](../type-aliases/AnyFieldMetaBase.md)\>
 
 #### Returns
 
@@ -971,7 +971,7 @@ Sets the value of the specified field and optionally updates the touched state.
 
 ##### updater
 
-[`Updater`](../../type-aliases/Updater.md)\<[`DeepValue`](../../type-aliases/DeepValue.md)\<`TFormData`, `TField`\>\>
+[`Updater`](../type-aliases/Updater.md)\<[`DeepValue`](../type-aliases/DeepValue.md)\<`TFormData`, `TField`\>\>
 
 ##### opts?
 
@@ -1053,7 +1053,7 @@ Updates the form options and form state.
 
 ##### options?
 
-[`FormOptions`](../../interfaces/FormOptions.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>
+[`FormOptions`](../interfaces/FormOptions.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>
 
 #### Returns
 

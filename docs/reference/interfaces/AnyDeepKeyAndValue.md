@@ -9,10 +9,10 @@ Defined in: [packages/form-core/src/util-types.ts:22](https://github.com/TanStac
 
 ## Extended by
 
-- [`ArrayDeepKeyAndValue`](../ArrayDeepKeyAndValue.md)
-- [`TupleDeepKeyAndValue`](../TupleDeepKeyAndValue.md)
-- [`ObjectDeepKeyAndValue`](../ObjectDeepKeyAndValue.md)
-- [`UnknownDeepKeyAndValue`](../UnknownDeepKeyAndValue.md)
+- [`ArrayDeepKeyAndValue`](ArrayDeepKeyAndValue.md)
+- [`TupleDeepKeyAndValue`](TupleDeepKeyAndValue.md)
+- [`ObjectDeepKeyAndValue`](ObjectDeepKeyAndValue.md)
+- [`UnknownDeepKeyAndValue`](UnknownDeepKeyAndValue.md)
 
 ## Type Parameters
 

@@ -9,7 +9,7 @@ Defined in: [tanstack-field.ts:37](https://github.com/TanStack/form/blob/main/pa
 
 ## Extended by
 
-- [`TanStackAppField`](../TanStackAppField.md)
+- [`TanStackAppField`](TanStackAppField.md)
 
 ## Type Parameters
 

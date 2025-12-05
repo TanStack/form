@@ -183,7 +183,7 @@ This section focuses on integrating TanStack Form with `Next.js`, particularly u
 
 - Start a new `Next.js` project, following the steps in the [Next.js Documentation](https://nextjs.org/docs/getting-started/installation). Ensure you select `yes` for `Would you like to use App Router?` during the setup to access all new features provided by Next.js.
 - Install `@tanstack/react-form`
-- Install any [form validator](../validation#validation-through-schema-libraries) of your choice. [Optional]
+- Install any [form validator](./validation#validation-through-schema-libraries) of your choice. [Optional]
 
 ## App Router integration
 
@@ -338,7 +338,7 @@ Here, we're using [React's `useActionState` hook](https://playfulprogramming.com
 
 - Start a new `Remix` project, following the steps in the [Remix Documentation](https://remix.run/docs/en/main/start/quickstart).
 - Install `@tanstack/react-form`
-- Install any [form validator](../validation#validation-through-schema-libraries) of your choice. [Optional]
+- Install any [form validator](./validation#validation-through-schema-libraries) of your choice. [Optional]
 
 ## Remix integration
 

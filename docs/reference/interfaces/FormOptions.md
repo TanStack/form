@@ -11,7 +11,7 @@ An object representing the options for a form.
 
 ## Extends
 
-- [`BaseFormOptions`](../BaseFormOptions.md)\<`TFormData`, `TSubmitMeta`\>
+- [`BaseFormOptions`](BaseFormOptions.md)\<`TFormData`, `TSubmitMeta`\>
 
 ## Type Parameters
 
@@ -125,7 +125,7 @@ Set initial values for your form.
 
 #### Inherited from
 
-[`BaseFormOptions`](../BaseFormOptions.md).[`defaultValues`](../BaseFormOptions.md#defaultvalues)
+[`BaseFormOptions`](BaseFormOptions.md).[`defaultValues`](BaseFormOptions.md#defaultvalues)
 
 ***
 
@@ -169,7 +169,7 @@ A function to be called when the form is submitted, what should happen once the 
 
 ###### formApi
 
-[`FormApi`](../../classes/FormApi.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>
+[`FormApi`](../classes/FormApi.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>
 
 ###### meta
 
@@ -201,7 +201,7 @@ Specify an action for scenarios where the user tries to submit an invalid form.
 
 ###### formApi
 
-[`FormApi`](../../classes/FormApi.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>
+[`FormApi`](../classes/FormApi.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>
 
 ###### meta
 
@@ -229,7 +229,7 @@ onSubmitMeta, the data passed from the handleSubmit handler, to the onSubmit fun
 
 #### Inherited from
 
-[`BaseFormOptions`](../BaseFormOptions.md).[`onSubmitMeta`](../BaseFormOptions.md#onsubmitmeta)
+[`BaseFormOptions`](BaseFormOptions.md).[`onSubmitMeta`](BaseFormOptions.md#onsubmitmeta)
 
 ***
 

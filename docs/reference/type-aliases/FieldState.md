@@ -21,11 +21,11 @@ An object type representing the state of a field.
 
 ### TName
 
-`TName` *extends* [`DeepKeys`](../DeepKeys.md)\<`TParentData`\>
+`TName` *extends* [`DeepKeys`](DeepKeys.md)\<`TParentData`\>
 
 ### TData
 
-`TData` *extends* [`DeepValue`](../DeepValue.md)\<`TParentData`, `TName`\>
+`TData` *extends* [`DeepValue`](DeepValue.md)\<`TParentData`, `TName`\>
 
 ### TOnMount
 
