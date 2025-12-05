@@ -370,6 +370,10 @@ export interface FieldValidators<
   onDynamic?: TOnDynamic
   onDynamicAsync?: TOnDynamicAsync
   onDynamicAsyncDebounceMs?: number
+  /**
+   * An optional list of field names that should trigger this field's `onDynamic` and `onDynamicAsync` events when its value changes
+   */
+  onDynamicListenTo?: DeepKeys<TParentData>[]
 }
 
 export interface FieldListeners<
@@ -1367,6 +1371,23 @@ export class FieldApi<
     }
 
     if (!options?.dontValidate) {
+      const dynamicErrKey = getErrorMapKey('dynamic')
+      if (
+        this.state.meta.errorMap[dynamicErrKey] &&
+        this.state.meta.errorSourceMap[dynamicErrKey] === 'field'
+      ) {
+        this.setMeta((prev) => ({
+          ...prev,
+          errorMap: {
+            ...prev.errorMap,
+            [dynamicErrKey]: undefined,
+          },
+          errorSourceMap: {
+            ...prev.errorSourceMap,
+            [dynamicErrKey]: undefined,
+          },
+        }))
+      }
       this.validate('change')
     }
   }
@@ -1538,16 +1559,25 @@ export class FieldApi<
   getLinkedFields = (cause: ValidationCause) => {
     const fields = Object.values(this.form.fieldInfo) as FieldInfo<any>[]
 
-    const linkedFields: AnyFieldApi[] = []
+    const linkedFields: Array<{
+      field: AnyFieldApi
+      validatorCause: ValidationCause
+    }> = []
     for (const field of fields) {
       if (!field.instance) continue
-      const { onChangeListenTo, onBlurListenTo } =
+      const { onChangeListenTo, onBlurListenTo, onDynamicListenTo } =
         field.instance.options.validators || {}
       if (cause === 'change' && onChangeListenTo?.includes(this.name)) {
-        linkedFields.push(field.instance)
+        linkedFields.push({ field: field.instance, validatorCause: 'change' })
       }
       if (cause === 'blur' && onBlurListenTo?.includes(this.name as string)) {
-        linkedFields.push(field.instance)
+        linkedFields.push({ field: field.instance, validatorCause: 'blur' })
+      }
+      if (
+        (cause === 'change' || cause === 'blur') &&
+        onDynamicListenTo?.includes(this.name as string)
+      ) {
+        linkedFields.push({ field: field.instance, validatorCause: 'dynamic' })
       }
     }
 
@@ -1570,8 +1600,8 @@ export class FieldApi<
 
     const linkedFields = this.getLinkedFields(cause)
     const linkedFieldValidates = linkedFields.reduce(
-      (acc, field) => {
-        const fieldValidates = getSyncValidatorArray(cause, {
+      (acc, { field, validatorCause }) => {
+        const fieldValidates = getSyncValidatorArray(validatorCause, {
           ...field.options,
           form: field.form,
           validationLogic:
@@ -1643,9 +1673,25 @@ export class FieldApi<
       for (const validateObj of validates) {
         validateFieldFn(this, validateObj)
       }
-      for (const fieldValitateObj of linkedFieldValidates) {
-        if (!fieldValitateObj.validate) continue
-        validateFieldFn(fieldValitateObj.field, fieldValitateObj)
+      for (const fieldValidateObj of linkedFieldValidates) {
+        if (!fieldValidateObj.validate) continue
+        if (fieldValidateObj.cause === 'dynamic') {
+          const dynamicErrKey = getErrorMapKey('dynamic')
+          if (fieldValidateObj.field.state.meta.errorMap[dynamicErrKey]) {
+            fieldValidateObj.field.setMeta((prev) => ({
+              ...prev,
+              errorMap: {
+                ...prev.errorMap,
+                [dynamicErrKey]: undefined,
+              },
+              errorSourceMap: {
+                ...prev.errorSourceMap,
+                [dynamicErrKey]: undefined,
+              },
+            }))
+          }
+        }
+        validateFieldFn(fieldValidateObj.field, fieldValidateObj)
       }
     })
 
@@ -1709,8 +1755,8 @@ export class FieldApi<
 
     const linkedFields = this.getLinkedFields(cause)
     const linkedFieldValidates = linkedFields.reduce(
-      (acc, field) => {
-        const fieldValidates = getAsyncValidatorArray(cause, {
+      (acc, { field, validatorCause }) => {
+        const fieldValidates = getAsyncValidatorArray(validatorCause, {
           ...field.options,
           form: field.form,
           validationLogic:
@@ -1732,7 +1778,7 @@ export class FieldApi<
       this.setMeta((prev) => ({ ...prev, isValidating: true }))
     }
 
-    for (const linkedField of linkedFields) {
+    for (const { field: linkedField } of linkedFields) {
       linkedField.setMeta((prev) => ({ ...prev, isValidating: true }))
     }
 
@@ -1830,11 +1876,27 @@ export class FieldApi<
       if (!validateObj.validate) continue
       validateFieldAsyncFn(this, validateObj, validatesPromises)
     }
-    for (const fieldValitateObj of linkedFieldValidates) {
-      if (!fieldValitateObj.validate) continue
+    for (const fieldValidateObj of linkedFieldValidates) {
+      if (!fieldValidateObj.validate) continue
+      if (fieldValidateObj.cause === 'dynamic') {
+        const dynamicErrKey = getErrorMapKey('dynamic')
+        if (fieldValidateObj.field.state.meta.errorMap[dynamicErrKey]) {
+          fieldValidateObj.field.setMeta((prev) => ({
+            ...prev,
+            errorMap: {
+              ...prev.errorMap,
+              [dynamicErrKey]: undefined,
+            },
+            errorSourceMap: {
+              ...prev.errorSourceMap,
+              [dynamicErrKey]: undefined,
+            },
+          }))
+        }
+      }
       validateFieldAsyncFn(
-        fieldValitateObj.field,
-        fieldValitateObj,
+        fieldValidateObj.field,
+        fieldValidateObj,
         linkedPromises,
       )
     }
@@ -1847,7 +1909,7 @@ export class FieldApi<
 
     this.setMeta((prev) => ({ ...prev, isValidating: false }))
 
-    for (const linkedField of linkedFields) {
+    for (const { field: linkedField } of linkedFields) {
       linkedField.setMeta((prev) => ({ ...prev, isValidating: false }))
     }
 
