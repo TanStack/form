@@ -73,4 +73,4 @@ This API encapsulates all the necessary functionalities related to the form. It 
 
 ## Returns
 
-[`ReactFormExtendedApi`](../../type-aliases/ReactFormExtendedApi.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>
+[`ReactFormExtendedApi`](../type-aliases/ReactFormExtendedApi.md)\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>

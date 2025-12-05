@@ -20,8 +20,8 @@ Defined in: [packages/form-core/src/FieldGroupApi.ts:112](https://github.com/Tan
 ### TFields
 
 `TFields` *extends* 
-  \| [`DeepKeysOfType`](../../type-aliases/DeepKeysOfType.md)\<`TFormData`, `TFieldGroupData` \| `null` \| `undefined`\>
-  \| [`FieldsMap`](../../type-aliases/FieldsMap.md)\<`TFormData`, `TFieldGroupData`\>
+  \| [`DeepKeysOfType`](../type-aliases/DeepKeysOfType.md)\<`TFormData`, `TFieldGroupData` \| `null` \| `undefined`\>
+  \| [`FieldsMap`](../type-aliases/FieldsMap.md)\<`TFormData`, `TFieldGroupData`\>
 
 ### TOnMount
 
@@ -83,7 +83,7 @@ Constructs a new `FieldGroupApi` instance with the given form options.
 
 ##### opts
 
-[`FieldGroupOptions`](../../interfaces/FieldGroupOptions.md)\<`TFormData`, `TFieldGroupData`, `TFields`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>
+[`FieldGroupOptions`](../interfaces/FieldGroupOptions.md)\<`TFormData`, `TFieldGroupData`, `TFields`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>
 
 #### Returns
 
@@ -135,7 +135,7 @@ Defined in: [packages/form-core/src/FieldGroupApi.ts:231](https://github.com/Tan
 
 ##### Returns
 
-[`FieldGroupState`](../../interfaces/FieldGroupState.md)\<`TFieldGroupData`\>
+[`FieldGroupState`](../interfaces/FieldGroupState.md)\<`TFieldGroupData`\>
 
 ## Methods
 
@@ -233,7 +233,7 @@ Gets the metadata of the specified field.
 
 #### Returns
 
-[`AnyFieldMeta`](../../type-aliases/AnyFieldMeta.md) \| `undefined`
+[`AnyFieldMeta`](../type-aliases/AnyFieldMeta.md) \| `undefined`
 
 #### Implementation of
 
@@ -267,7 +267,7 @@ Gets the value of the specified field.
 
 #### Returns
 
-[`DeepValue`](../../type-aliases/DeepValue.md)\<`TFieldGroupData`, `TField`\>
+[`DeepValue`](../type-aliases/DeepValue.md)\<`TFieldGroupData`, `TField`\>
 
 #### Implementation of
 
@@ -359,7 +359,7 @@ Insert a value into an array field at the specified index.
 
 ##### value
 
-[`DeepValue`](../../type-aliases/DeepValue.md)\<`TFieldGroupData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../../type-aliases/DeepValue.md)\<`TFieldGroupData`, `TField`\>\[`number`\] : `never`
+[`DeepValue`](../type-aliases/DeepValue.md)\<`TFieldGroupData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/DeepValue.md)\<`TFieldGroupData`, `TField`\>\[`number`\] : `never`
 
 ##### opts?
 
@@ -476,7 +476,7 @@ Pushes a value into an array field.
 
 ##### value
 
-[`DeepValue`](../../type-aliases/DeepValue.md)\<`TFieldGroupData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../../type-aliases/DeepValue.md)\<`TFieldGroupData`, `TField`\>\[`number`\] : `never`
+[`DeepValue`](../type-aliases/DeepValue.md)\<`TFieldGroupData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/DeepValue.md)\<`TFieldGroupData`, `TField`\>\[`number`\] : `never`
 
 ##### opts?
 
@@ -571,7 +571,7 @@ Replaces a value into an array field at the specified index.
 
 ##### value
 
-[`DeepValue`](../../type-aliases/DeepValue.md)\<`TFieldGroupData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../../type-aliases/DeepValue.md)\<`TFieldGroupData`, `TField`\>\[`number`\] : `never`
+[`DeepValue`](../type-aliases/DeepValue.md)\<`TFieldGroupData`, `TField`\> *extends* `any`[] ? `any`[] & [`DeepValue`](../type-aliases/DeepValue.md)\<`TFieldGroupData`, `TField`\>\[`number`\] : `never`
 
 ##### opts?
 
@@ -647,7 +647,7 @@ Updates the metadata of the specified field.
 
 ##### updater
 
-[`Updater`](../../type-aliases/Updater.md)\<[`AnyFieldMetaBase`](../../type-aliases/AnyFieldMetaBase.md)\>
+[`Updater`](../type-aliases/Updater.md)\<[`AnyFieldMetaBase`](../type-aliases/AnyFieldMetaBase.md)\>
 
 #### Returns
 
@@ -688,7 +688,7 @@ Sets the value of the specified field and optionally updates the touched state.
 
 ##### updater
 
-[`Updater`](../../type-aliases/Updater.md)\<[`DeepValue`](../../type-aliases/DeepValue.md)\<`TFieldGroupData`, `TField`\>\>
+[`Updater`](../type-aliases/Updater.md)\<[`DeepValue`](../type-aliases/DeepValue.md)\<`TFieldGroupData`, `TField`\>\>
 
 ##### opts?
 

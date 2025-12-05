@@ -115,7 +115,7 @@ A function that takes an optional object with a `name` property and field option
 
 ### opts
 
-[`UseFieldOptionsBound`](../../interfaces/UseFieldOptionsBound.md)\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`\>
+[`UseFieldOptionsBound`](../interfaces/UseFieldOptionsBound.md)\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`\>
 
 ## Returns
 

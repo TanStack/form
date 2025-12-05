@@ -23,7 +23,7 @@ Defined in: [packages/form-core/src/FormApi.ts:84](https://github.com/TanStack/f
 
 #### formApi
 
-[`FormApi`](../../classes/FormApi.md)\<`TFormData`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>
+[`FormApi`](../classes/FormApi.md)\<`TFormData`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`, `any`\>
 
 #### value
 

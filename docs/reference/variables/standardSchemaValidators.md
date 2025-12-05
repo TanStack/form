@@ -25,21 +25,21 @@ validate<TSource>(__namedParameters, schema):
 
 ##### TSource
 
-`TSource` *extends* [`ValidationSource`](../../type-aliases/ValidationSource.md) = [`ValidationSource`](../../type-aliases/ValidationSource.md)
+`TSource` *extends* [`ValidationSource`](../type-aliases/ValidationSource.md) = [`ValidationSource`](../type-aliases/ValidationSource.md)
 
 #### Parameters
 
 ##### \_\_namedParameters
 
-[`TStandardSchemaValidatorValue`](../../type-aliases/TStandardSchemaValidatorValue.md)\<`unknown`, `TSource`\>
+[`TStandardSchemaValidatorValue`](../type-aliases/TStandardSchemaValidatorValue.md)\<`unknown`, `TSource`\>
 
 ##### schema
 
-[`StandardSchemaV1`](../../type-aliases/StandardSchemaV1.md)
+[`StandardSchemaV1`](../type-aliases/StandardSchemaV1.md)
 
 #### Returns
 
-  \| [`TStandardSchemaValidatorIssue`](../../type-aliases/TStandardSchemaValidatorIssue.md)\<`TSource`\>
+  \| [`TStandardSchemaValidatorIssue`](../type-aliases/TStandardSchemaValidatorIssue.md)\<`TSource`\>
   \| `undefined`
 
 ### validateAsync()
@@ -54,20 +54,20 @@ validateAsync<TSource>(__namedParameters, schema): Promise<
 
 ##### TSource
 
-`TSource` *extends* [`ValidationSource`](../../type-aliases/ValidationSource.md)
+`TSource` *extends* [`ValidationSource`](../type-aliases/ValidationSource.md)
 
 #### Parameters
 
 ##### \_\_namedParameters
 
-[`TStandardSchemaValidatorValue`](../../type-aliases/TStandardSchemaValidatorValue.md)\<`unknown`, `TSource`\>
+[`TStandardSchemaValidatorValue`](../type-aliases/TStandardSchemaValidatorValue.md)\<`unknown`, `TSource`\>
 
 ##### schema
 
-[`StandardSchemaV1`](../../type-aliases/StandardSchemaV1.md)
+[`StandardSchemaV1`](../type-aliases/StandardSchemaV1.md)
 
 #### Returns
 
 `Promise`\<
-  \| [`TStandardSchemaValidatorIssue`](../../type-aliases/TStandardSchemaValidatorIssue.md)\<`TSource`\>
+  \| [`TStandardSchemaValidatorIssue`](../type-aliases/TStandardSchemaValidatorIssue.md)\<`TSource`\>
   \| `undefined`\>

@@ -17,7 +17,7 @@ Defined in: [packages/form-core/src/util-types.ts:67](https://github.com/TanStac
 
 ### TParent
 
-`TParent` *extends* [`AnyDeepKeyAndValue`](../../interfaces/AnyDeepKeyAndValue.md)
+`TParent` *extends* [`AnyDeepKeyAndValue`](../interfaces/AnyDeepKeyAndValue.md)
 
 ### T
 
@@ -29,4 +29,4 @@ Defined in: [packages/form-core/src/util-types.ts:67](https://github.com/TanStac
 
 ### TAllKeys
 
-`TAllKeys` *extends* [`AllTupleKeys`](../AllTupleKeys.md)\<`T`\> = [`AllTupleKeys`](../AllTupleKeys.md)\<`T`\>
+`TAllKeys` *extends* [`AllTupleKeys`](AllTupleKeys.md)\<`T`\> = [`AllTupleKeys`](AllTupleKeys.md)\<`T`\>

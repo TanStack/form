@@ -23,7 +23,7 @@ Defined in: [packages/form-core/src/util-types.ts:133](https://github.com/TanSta
 
 ### TParent
 
-`TParent` *extends* [`AnyDeepKeyAndValue`](../../interfaces/AnyDeepKeyAndValue.md) = `never`
+`TParent` *extends* [`AnyDeepKeyAndValue`](../interfaces/AnyDeepKeyAndValue.md) = `never`
 
 ### TAcc
 

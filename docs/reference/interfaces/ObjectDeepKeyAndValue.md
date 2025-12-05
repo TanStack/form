@@ -9,13 +9,13 @@ Defined in: [packages/form-core/src/util-types.ts:97](https://github.com/TanStac
 
 ## Extends
 
-- [`AnyDeepKeyAndValue`](../AnyDeepKeyAndValue.md)
+- [`AnyDeepKeyAndValue`](AnyDeepKeyAndValue.md)
 
 ## Type Parameters
 
 ### TParent
 
-`TParent` *extends* [`AnyDeepKeyAndValue`](../AnyDeepKeyAndValue.md)
+`TParent` *extends* [`AnyDeepKeyAndValue`](AnyDeepKeyAndValue.md)
 
 ### T
 
@@ -23,7 +23,7 @@ Defined in: [packages/form-core/src/util-types.ts:97](https://github.com/TanStac
 
 ### TKey
 
-`TKey` *extends* [`AllObjectKeys`](../../type-aliases/AllObjectKeys.md)\<`T`\>
+`TKey` *extends* [`AllObjectKeys`](../type-aliases/AllObjectKeys.md)\<`T`\>
 
 ## Properties
 
@@ -37,7 +37,7 @@ Defined in: [packages/form-core/src/util-types.ts:102](https://github.com/TanSta
 
 #### Overrides
 
-[`AnyDeepKeyAndValue`](../AnyDeepKeyAndValue.md).[`key`](../AnyDeepKeyAndValue.md#key)
+[`AnyDeepKeyAndValue`](AnyDeepKeyAndValue.md).[`key`](AnyDeepKeyAndValue.md#key)
 
 ***
 
@@ -51,4 +51,4 @@ Defined in: [packages/form-core/src/util-types.ts:103](https://github.com/TanSta
 
 #### Overrides
 
-[`AnyDeepKeyAndValue`](../AnyDeepKeyAndValue.md).[`value`](../AnyDeepKeyAndValue.md#value)
+[`AnyDeepKeyAndValue`](AnyDeepKeyAndValue.md).[`value`](AnyDeepKeyAndValue.md#value)

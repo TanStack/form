@@ -11,7 +11,7 @@ An object type representing the options for a field in a form.
 
 ## Extended by
 
-- [`FieldApiOptions`](../FieldApiOptions.md)
+- [`FieldApiOptions`](FieldApiOptions.md)
 
 ## Type Parameters
 
@@ -21,11 +21,11 @@ An object type representing the options for a field in a form.
 
 ### TName
 
-`TName` *extends* [`DeepKeys`](../../type-aliases/DeepKeys.md)\<`TParentData`\>
+`TName` *extends* [`DeepKeys`](../type-aliases/DeepKeys.md)\<`TParentData`\>
 
 ### TData
 
-`TData` *extends* [`DeepValue`](../../type-aliases/DeepValue.md)\<`TParentData`, `TName`\>
+`TData` *extends* [`DeepValue`](../type-aliases/DeepValue.md)\<`TParentData`, `TName`\>
 
 ### TOnMount
 
