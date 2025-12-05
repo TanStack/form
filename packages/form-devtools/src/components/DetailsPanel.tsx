@@ -7,6 +7,25 @@ import { StateHeader } from './StateHeader'
 
 import type { Accessor } from 'solid-js'
 
+const preprocessValue = (value: any): any => {
+  if (typeof value === 'number' && isNaN(value)) {
+    return 'NaN'
+  }
+  if (Array.isArray(value)) {
+    return value.map(preprocessValue)
+  }
+  if (value !== null && typeof value === 'object') {
+    const result: any = {}
+    for (const key in value) {
+      if (value.hasOwnProperty(key)) {
+        result[key] = preprocessValue(value[key])
+      }
+    }
+    return result
+  }
+  return value
+}
+
 type DetailsPanelProps = {
   selectedKey: Accessor<string>
 }
@@ -86,7 +105,7 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
                     >
                       {fieldName}
                     </div>
-                    <JsonTree copyable value={fieldData as unknown} />
+                    <JsonTree copyable value={preprocessValue(fieldData) as unknown} />
                   </div>
                 )}
               </For>
@@ -98,7 +117,7 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
             <div class={styles().stateContent}>
               <JsonTree
                 copyable
-                value={store()[selectedIndex()]!.state.values as unknown}
+                value={preprocessValue(store()[selectedIndex()]!.state.values) as unknown}
               />
             </div>
           </div>
@@ -106,7 +125,7 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
           <div class={styles().detailSection}>
             <div class={styles().detailSectionHeader}>Form status</div>
             <div class={styles().stateContent}>
-              <JsonTree copyable value={formStatus() as unknown} />
+              <JsonTree copyable value={preprocessValue(formStatus()) as unknown} />
             </div>
           </div>
 
@@ -115,7 +134,7 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
             <div class={styles().stateContent}>
               <JsonTree
                 copyable
-                value={store()[selectedIndex()]?.options as unknown}
+                value={preprocessValue(store()[selectedIndex()]?.options) as unknown}
                 collapsePaths={['validators'] as unknown as never}
               />
             </div>
@@ -126,7 +145,7 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
             <div class={styles().stateContent}>
               <JsonTree
                 copyable
-                value={store()[selectedIndex()]?.history as unknown}
+                value={preprocessValue(store()[selectedIndex()]?.history) as unknown}
               />
             </div>
           </div>
