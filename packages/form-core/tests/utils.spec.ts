@@ -1,4 +1,4 @@
-import { describe, expect, expectTypeOf, it } from 'vitest'
+import { describe, expect, expectTypeOf, it, vi } from 'vitest'
 import {
   concatenatePaths,
   createFieldMap,
@@ -10,6 +10,7 @@ import {
   makePathArray,
   mergeOpts,
   setBy,
+  throttle,
   uuid,
 } from '../src/index'
 
@@ -823,5 +824,18 @@ describe('uuid', () => {
     const parts = id.split('-')
     expect(parts[2]?.[0]).toBe('4')
     expect(['8', '9', 'a', 'b']).toContain(parts[3]?.[0])
+  })
+})
+
+describe('throttle', () => {
+  it('should throttle a function', async () => {
+    const fn = vi.fn()
+    vi.useFakeTimers()
+    const throttledFn = throttle(fn, 100)
+    throttledFn()
+    throttledFn()
+    await vi.runAllTimersAsync()
+    vi.useRealTimers()
+    expect(fn).toHaveBeenCalledTimes(1)
   })
 })

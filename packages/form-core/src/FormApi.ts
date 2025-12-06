@@ -1,5 +1,4 @@
 import { Derived, Store, batch } from '@tanstack/store'
-import { throttle } from '@tanstack/pacer'
 import {
   deleteBy,
   determineFormLevelErrorSourceAndValue,
@@ -12,6 +11,7 @@ import {
   isNonEmptyArray,
   mergeOpts,
   setBy,
+  throttle,
   uuid,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
@@ -1316,9 +1316,7 @@ export class FormApi<
           id: this._formId,
           state: state,
         }),
-      {
-        wait: 300,
-      },
+      300,
     )
 
     // devtool broadcasts

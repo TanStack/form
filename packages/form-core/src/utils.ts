@@ -603,3 +603,12 @@ export function uuid(): string {
   IDX++
   return out
 }
+
+export function throttle<TFn extends (...args: Array<any>) => any>(fn: TFn, delay: number) {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+
+  return function (...args: Parameters<TFn>) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
