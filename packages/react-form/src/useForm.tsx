@@ -184,7 +184,7 @@ export function useForm<
     TSubmitMeta
   >,
 ) {
-  const fallbackFormId = useState(() => uuid())[0]
+  const fallbackFormId = useState(() => opts?.formId ?? uuid())[0]
   const [prevFormId, setPrevFormId] = useState<string>(opts?.formId as never)
 
   const [formApi, setFormApi] = useState(() => {
