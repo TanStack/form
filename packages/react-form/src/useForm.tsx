@@ -5,7 +5,7 @@ import { useStore } from '@tanstack/react-store'
 import { useMemo, useState } from 'react'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
-import { useId } from './useId'
+import { useFormId } from './useId'
 import type {
   AnyFormApi,
   AnyFormState,
@@ -185,7 +185,7 @@ export function useForm<
     TSubmitMeta
   >,
 ) {
-  const fallbackFormId = useId()
+  const fallbackFormId = useFormId()
   const [prevFormId, setPrevFormId] = useState<string>(opts?.formId as never)
 
   const [formApi, setFormApi] = useState(() => {
