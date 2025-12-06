@@ -5,7 +5,7 @@ import { useStore } from '@tanstack/react-store'
 import { useMemo, useState } from 'react'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
-import { useFormId } from './useId'
+import { useFormId } from './useFormId'
 import type {
   AnyFormApi,
   AnyFormState,
