@@ -1,6 +1,6 @@
 ---
-'@tanstack/react-form': major
-'@tanstack/react-form-nextjs': major
+'@tanstack/react-form': patch
+'@tanstack/react-form-nextjs': patch
 ---
 
 uses the formId option by default as the initial fallback value, only calling Math.random() as a fallback if no formId is provided.
