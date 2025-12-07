@@ -11,6 +11,7 @@ import {
   isNonEmptyArray,
   mergeOpts,
   setBy,
+  throttleFormState,
   uuid,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
@@ -20,7 +21,6 @@ import {
 } from './standardSchemaValidator'
 import { defaultFieldMeta, metaHelper } from './metaHelper'
 import { formEventClient } from './EventClient'
-import { throttleFormState } from './throttles'
 
 // types
 import type { ValidationLogicFn } from './ValidationLogic'

@@ -1,6 +1,8 @@
+import { liteThrottle } from '@tanstack/pacer-lite'
+import { formEventClient } from './EventClient'
 import type { ValidationLogicProps } from './ValidationLogic'
 import type { FieldValidators } from './FieldApi'
-import type { FormValidators } from './FormApi'
+import type { AnyFormApi, FormValidators } from './FormApi'
 import type {
   GlobalFormValidationError,
   ValidationCause,
@@ -602,3 +604,14 @@ export function uuid(): string {
   IDX++
   return out
 }
+
+export const throttleFormState = liteThrottle(
+  (form: AnyFormApi) =>
+    formEventClient.emit('form-state', {
+      id: form.formId,
+      state: form.store.state,
+    }),
+  {
+    wait: 300,
+  },
+)
