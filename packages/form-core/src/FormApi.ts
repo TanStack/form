@@ -748,7 +748,9 @@ export interface FormState<
   in out TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
   in out TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-> extends BaseFormState<
+>
+  extends
+    BaseFormState<
       TFormData,
       TOnMount,
       TOnChange,
@@ -895,8 +897,7 @@ export class FormApi<
   in out TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TSubmitMeta = never,
-> implements FieldManipulator<TFormData, TSubmitMeta>
-{
+> implements FieldManipulator<TFormData, TSubmitMeta> {
   /**
    * The options for the form.
    */
@@ -1184,8 +1185,8 @@ export class FormApi<
         const hasOnMountError = Boolean(
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           currBaseStore.errorMap?.onMount ||
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            fieldMetaValues.some((f) => f?.errorMap?.onMount),
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          fieldMetaValues.some((f) => f?.errorMap?.onMount),
         )
 
         const isValidating = !!isFieldsValidating

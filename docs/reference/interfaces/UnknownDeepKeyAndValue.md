@@ -25,7 +25,7 @@ Defined in: [packages/form-core/src/util-types.ts:122](https://github.com/TanSta
 key: UnknownAccessor<TParent>;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:124](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L124)
+Defined in: [packages/form-core/src/util-types.ts:125](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L125)
 
 #### Overrides
 
@@ -39,7 +39,7 @@ Defined in: [packages/form-core/src/util-types.ts:124](https://github.com/TanSta
 value: unknown;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:125](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L125)
+Defined in: [packages/form-core/src/util-types.ts:126](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L126)
 
 #### Overrides
 

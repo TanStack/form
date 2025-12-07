@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TanStack/form.git",
+    "url": "git+https://github.com/TanStack/form.git",
     "directory": "packages/form"
   },
   "homepage": "https://tanstack.com/form",
@@ -54,7 +54,7 @@
     "solid-js": ">=1.9.7"
   },
   "dependencies": {
-    "@tanstack/devtools-utils": "^0.0.4",
+    "@tanstack/devtools-utils": "^0.0.9",
     "@tanstack/form-devtools": "workspace:*"
   },
   "devDependencies": {
