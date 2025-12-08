@@ -228,7 +228,7 @@ export function useForm<
     > = {
       ...formApi,
       handleSubmit: ((...props: never[]) => {
-        formApi._handleSubmit(...props)
+        return formApi._handleSubmit(...props)
       }) as typeof formApi.handleSubmit,
       // We must add all `get`ters from `core`'s `FormApi` here, as otherwise the spread operator won't catch those
       get formId(): string {
