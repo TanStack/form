@@ -1,5 +1,14 @@
 # @tanstack/react-form-nextjs
 
+## 1.27.2
+
+### Patch Changes
+
+- use React 18's useId hook by default for formId generation, only calling Math.random() as a fallback if no formId is provided. ([#1913](https://github.com/TanStack/form/pull/1913))
+
+- Updated dependencies [[`6a5e1c1`](https://github.com/TanStack/form/commit/6a5e1c1a4f0f0519705cc5fd15cbe8afb878a42d), [`9ce5f28`](https://github.com/TanStack/form/commit/9ce5f286a12fb0f1662f3eeeff14c75d8f3e4417)]:
+  - @tanstack/react-form@1.27.2
+
 ## 1.27.1
 
 ### Patch Changes
