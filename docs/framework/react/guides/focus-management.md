@@ -26,29 +26,17 @@ export default function App() {
     onSubmit() {
       alert('Submitted!')
     },
-    onSubmitInvalid({ formApi }) {
-      // This can be extracted to a function that takes the form ID and `formAPI` as arguments
-      const errorMap = formApi.state.errorMap.onChange!
-      const inputs = Array.from(
-        // Must match the selector used in your form
-        document.querySelectorAll('#myform input'),
-      ) as HTMLInputElement[]
+    onSubmitInvalid() {
+      const InvalidInput = document.querySelector(
+        '[aria-invalid="true"]',
+      ) as HTMLInputElement
 
-      let firstInput: HTMLInputElement | undefined
-      for (const input of inputs) {
-        if (!!errorMap[input.name]) {
-          firstInput = input
-          break
-        }
-      }
-      firstInput?.focus()
+      InvalidInput?.focus()
     },
   })
 
   return (
-    // The `id` here is used to isolate the focus management from the rest of the page
     <form
-      id="myform"
       onSubmit={(e) => {
         e.preventDefault()
         e.stopPropagation()
@@ -63,6 +51,9 @@ export default function App() {
             <input
               name={field.name}
               value={field.state.value}
+              aria-invalid={
+                !field.state.meta.isValid && field.state.meta.isTouched
+              }
               onChange={(e) => field.handleChange(e.target.valueAsNumber)}
               type="number"
             />
