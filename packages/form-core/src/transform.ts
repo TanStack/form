@@ -152,5 +152,5 @@ export function mergeAndUpdate<
     }
   })
 
-  return newObj;
+  return newObj
 }
