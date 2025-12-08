@@ -151,4 +151,6 @@ export function mergeAndUpdate<
       form.setErrorMap(newObj.state.errorMap)
     }
   })
+
+  return newObj;
 }

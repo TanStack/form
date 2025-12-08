@@ -1,11 +1,11 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useCallback } from 'react'
 import {
   initialFormState,
   mergeForm,
   useForm,
-  useMerge,
+  useTransform,
 } from '@tanstack/react-form-nextjs'
 import { z } from 'zod'
 import someAction from './action'
@@ -14,14 +14,14 @@ import { formOpts } from './shared-code'
 export const ClientComp = () => {
   const [state, action] = useActionState(someAction, initialFormState)
 
+  // debugger
+
   const form = useForm({
     ...formOpts,
-  })
-
-  useMerge({
-    form,
-    fn: (baseForm) => mergeForm(baseForm, state ?? {}),
-    deps: [state],
+    transform: useCallback(
+      (baseForm: unknown) => mergeForm(baseForm as never, state ?? {}),
+      [state],
+    ),
   })
 
   return (

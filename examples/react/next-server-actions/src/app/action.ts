@@ -4,8 +4,8 @@ import {
   ServerValidateError,
   createServerValidate,
 } from '@tanstack/react-form-nextjs'
-import { formOpts } from './shared-code'
 import { z } from 'zod'
+import { formOpts } from './shared-code'
 
 const schema = z.object({
   age: z.coerce.number().min(12),

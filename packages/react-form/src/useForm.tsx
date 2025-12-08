@@ -1,6 +1,6 @@
 'use client'
 
-import { FormApi, functionalUpdate } from '@tanstack/form-core'
+import { FormApi, functionalUpdate, mergeAndUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
 import { useMemo, useState } from 'react'
 import { Field } from './useField'
@@ -183,7 +183,10 @@ export function useForm<
     TOnDynamicAsync,
     TOnServer,
     TSubmitMeta
-  >,
+  > & {
+    // Made stable by `useTransform`
+    transform?: (data: unknown) => unknown
+  },
 ) {
   const fallbackFormId = useFormId()
   const [prevFormId, setPrevFormId] = useState<string>(opts?.formId as never)
@@ -210,6 +213,8 @@ export function useForm<
     setFormApi(new FormApi({ ...opts, formId }))
     setPrevFormId(formId)
   }
+
+  const transform = useMemo(() => opts?.transform, [opts?.transform])
 
   const extendedFormApi = useMemo(() => {
     const extendedApi: ReactFormExtendedApi<
@@ -239,6 +244,13 @@ export function useForm<
       },
     } as never
 
+    if (transform) {
+      // Cannot call synchronously, as otherwise we're setting state mid-render, which breaks React
+      setTimeout(() => {
+        mergeAndUpdate(extendedApi, transform as never)
+      }, 0)
+    }
+
     extendedApi.Field = function APIField(props) {
       return <Field {...props} form={formApi} />
     }
@@ -254,7 +266,7 @@ export function useForm<
     }
 
     return extendedApi
-  }, [formApi])
+  }, [formApi, transform])
 
   useIsomorphicLayoutEffect(formApi.mount, [])
 
