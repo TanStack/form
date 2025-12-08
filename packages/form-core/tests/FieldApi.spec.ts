@@ -1963,10 +1963,6 @@ describe('field api', () => {
 
   it('should run onDynamicAsync on a linked field', async () => {
     vi.useFakeTimers()
-    let resolve!: () => void
-    let promise = new Promise((r) => {
-      resolve = r as never
-    })
 
     const fn = vi.fn()
 
@@ -1990,7 +1986,7 @@ describe('field api', () => {
       validators: {
         onDynamicListenTo: ['password'],
         onChangeAsync: async ({ value, fieldApi }) => {
-          await promise
+          await new Promise((resolve) => setTimeout(resolve, 100))
           fn()
           if (value !== fieldApi.form.getFieldValue('password')) {
             return 'Passwords do not match'
@@ -1998,7 +1994,7 @@ describe('field api', () => {
           return undefined
         },
         onDynamicAsync: async ({ value, fieldApi }) => {
-          await promise
+          await new Promise((resolve) => setTimeout(resolve, 100))
           fn()
           if (value !== fieldApi.form.getFieldValue('password')) {
             return 'Passwords do not match'
@@ -2012,30 +2008,25 @@ describe('field api', () => {
     passconfirmField.mount()
 
     passField.setValue('one')
-    resolve()
-    await vi.runAllTimersAsync()
+    await vi.advanceTimersByTimeAsync(100)
     expect(passconfirmField.getMeta().isValid).toBe(false)
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
     ])
-    promise = new Promise((r) => {
-      resolve = r as never
-    })
+
     passconfirmField.setValue('one')
-    resolve()
-    await vi.runAllTimersAsync()
+    await vi.advanceTimersByTimeAsync(100)
     expect(passconfirmField.getMeta().isValid).toBe(true)
     expect(passconfirmField.state.meta.errors).toStrictEqual([])
-    promise = new Promise((r) => {
-      resolve = r as never
-    })
+
     passField.setValue('two')
-    resolve()
-    await vi.runAllTimersAsync()
+    await vi.advanceTimersByTimeAsync(100)
     expect(passconfirmField.getMeta().isValid).toBe(false)
     expect(passconfirmField.state.meta.errors).toStrictEqual([
       'Passwords do not match',
     ])
+
+    vi.useRealTimers()
   })
 
   it('should add  a new value to the fieldApi errorMap', () => {

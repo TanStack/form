@@ -124,32 +124,6 @@ export default function App() {
             )}
           />
         </div>
-        <div>
-          <form.Field
-            name="confirmPassword"
-            validators={{
-              onDynamic: ({ value, fieldApi }) => {
-                const password = fieldApi.form.getFieldValue('password')
-                return value !== password ? 'Passwords must match' : undefined
-              },
-              onDynamicListenTo: ['password'],
-            }}
-            children={(field) => (
-              <>
-                <label htmlFor={field.name}>Confirm Password:</label>
-                <input
-                  id={field.name}
-                  name={field.name}
-                  type="password"
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-                <FieldInfo field={field} />
-              </>
-            )}
-          />
-        </div>
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
           children={([canSubmit, isSubmitting]) => (
