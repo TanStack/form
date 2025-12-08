@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { mergeForm, useForm, useMerge } from '@tanstack/react-form-start'
+import { mergeForm, useForm, useTransform } from '@tanstack/react-form-start'
 import { useStore } from '@tanstack/react-store'
 import { getFormDataFromServer, handleForm } from 'src/utils/form'
 import { formOpts } from 'src/utils/form-isomorphic'
@@ -16,12 +16,7 @@ function Home() {
 
   const form = useForm({
     ...formOpts,
-  })
-
-  useMerge({
-    form,
-    fn: (baseForm) => mergeForm(baseForm, state),
-    deps: [state],
+    transform: useTransform((baseForm) => mergeForm(baseForm, state), [state]),
   })
 
   const formErrors = useStore(form.store, (formState) => formState.errors)
