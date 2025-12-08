@@ -111,7 +111,7 @@ Defined in: [packages/solid-form/src/createField.tsx:53](https://github.com/TanS
 
 ### opts
 
-() => `object` & [`CreateFieldOptionsBound`](../../interfaces/CreateFieldOptionsBound.md)\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`\>
+() => `object` & [`CreateFieldOptionsBound`](../interfaces/CreateFieldOptionsBound.md)\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`\>
 
 ## Returns
 

@@ -1,12 +1,12 @@
 {
   "name": "@tanstack/form-core",
-  "version": "1.26.0",
+  "version": "1.27.1",
   "description": "Powerful, type-safe, framework agnostic forms.",
   "author": "tannerlinsley",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TanStack/form.git",
+    "url": "git+https://github.com/TanStack/form.git",
     "directory": "packages/form-core"
   },
   "homepage": "https://tanstack.com/form",

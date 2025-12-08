@@ -15,11 +15,11 @@ Defined in: [packages/form-core/src/FieldApi.ts:375](https://github.com/TanStack
 
 ### TName
 
-`TName` *extends* [`DeepKeys`](../../type-aliases/DeepKeys.md)\<`TParentData`\>
+`TName` *extends* [`DeepKeys`](../type-aliases/DeepKeys.md)\<`TParentData`\>
 
 ### TData
 
-`TData` *extends* [`DeepValue`](../../type-aliases/DeepValue.md)\<`TParentData`, `TName`\> = [`DeepValue`](../../type-aliases/DeepValue.md)\<`TParentData`, `TName`\>
+`TData` *extends* [`DeepValue`](../type-aliases/DeepValue.md)\<`TParentData`, `TName`\> = [`DeepValue`](../type-aliases/DeepValue.md)\<`TParentData`, `TName`\>
 
 ## Properties
 

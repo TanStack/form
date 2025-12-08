@@ -19,11 +19,11 @@ Defined in: [packages/form-core/src/FieldApi.ts:659](https://github.com/TanStack
 
 ### TName
 
-`TName` *extends* [`DeepKeys`](../DeepKeys.md)\<`TParentData`\>
+`TName` *extends* [`DeepKeys`](DeepKeys.md)\<`TParentData`\>
 
 ### TData
 
-`TData` *extends* [`DeepValue`](../DeepValue.md)\<`TParentData`, `TName`\>
+`TData` *extends* [`DeepValue`](DeepValue.md)\<`TParentData`, `TName`\>
 
 ### TOnMount
 

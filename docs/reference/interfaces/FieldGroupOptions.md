@@ -22,8 +22,8 @@ An object representing the options for a field group.
 ### TFields
 
 `TFields` *extends* 
-  \| [`DeepKeysOfType`](../../type-aliases/DeepKeysOfType.md)\<`TFormData`, `TFieldGroupData` \| `null` \| `undefined`\>
-  \| [`FieldsMap`](../../type-aliases/FieldsMap.md)\<`TFormData`, `TFieldGroupData`\>
+  \| [`DeepKeysOfType`](../type-aliases/DeepKeysOfType.md)\<`TFormData`, `TFieldGroupData` \| `null` \| `undefined`\>
+  \| [`FieldsMap`](../type-aliases/FieldsMap.md)\<`TFormData`, `TFieldGroupData`\>
 
 ### TOnMount
 

@@ -535,19 +535,19 @@ export interface FieldApiOptions<
   in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   in out TParentSubmitMeta,
 > extends FieldOptions<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync
-  > {
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync
+> {
   form: FormApi<
     TParentData,
     TFormOnMount,
@@ -961,6 +961,11 @@ export type AnyFieldApi = FieldApi<
   any,
   any
 >
+
+/**
+ * We cannot use methods and must use arrow functions. Otherwise, our React adapters
+ * will break due to loss of the method when using spread.
+ */
 
 /**
  * A class representing the API for managing a form field.
@@ -1908,7 +1913,7 @@ export class FieldApi<
   /**
    * Updates the field's errorMap
    */
-  setErrorMap(
+  setErrorMap = (
     errorMap: ValidationErrorMap<
       UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>,
       UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>,
@@ -1920,7 +1925,7 @@ export class FieldApi<
       UnwrapFieldValidateOrFn<TName, TOnDynamic, TFormOnDynamic>,
       UnwrapFieldAsyncValidateOrFn<TName, TOnDynamicAsync, TFormOnDynamicAsync>
     >,
-  ) {
+  ) => {
     this.setMeta((prev) => ({
       ...prev,
       errorMap: {
@@ -1997,7 +2002,7 @@ export class FieldApi<
   /**
    * @private
    */
-  triggerOnChangeListener() {
+  triggerOnChangeListener = () => {
     const formDebounceMs = this.form.options.listeners?.onChangeDebounceMs
     if (formDebounceMs && formDebounceMs > 0) {
       if (this.timeoutIds.formListeners.change) {

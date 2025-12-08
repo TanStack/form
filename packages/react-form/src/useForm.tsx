@@ -1,10 +1,11 @@
 'use client'
 
-import { FormApi, functionalUpdate, uuid } from '@tanstack/form-core'
+import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
-import { useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
+import { useFormId } from './useFormId'
 import type {
   AnyFormApi,
   AnyFormState,
@@ -13,12 +14,7 @@ import type {
   FormState,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type {
-  FunctionComponent,
-  PropsWithChildren,
-  ReactElement,
-  ReactNode,
-} from 'react'
+import type { FunctionComponent, PropsWithChildren, ReactNode } from 'react'
 import type { FieldComponent } from './useField'
 import type { NoInfer } from '@tanstack/react-store'
 
@@ -189,14 +185,11 @@ export function useForm<
     TSubmitMeta
   >,
 ) {
-  const formId = useRef<string>(opts?.formId as never)
+  const fallbackFormId = useFormId()
+  const [prevFormId, setPrevFormId] = useState<string>(opts?.formId as never)
 
-  if (!formId.current) {
-    formId.current = uuid()
-  }
-
-  const [formApi] = useState(() => {
-    const api = new FormApi<
+  const [formApi, setFormApi] = useState(() => {
+    return new FormApi<
       TFormData,
       TOnMount,
       TOnChange,
@@ -209,8 +202,16 @@ export function useForm<
       TOnDynamicAsync,
       TOnServer,
       TSubmitMeta
-    >({ ...opts, formId: formId.current })
+    >({ ...opts, formId: opts?.formId ?? fallbackFormId })
+  })
 
+  if (prevFormId !== opts?.formId) {
+    const formId = opts?.formId ?? fallbackFormId
+    setFormApi(new FormApi({ ...opts, formId }))
+    setPrevFormId(formId)
+  }
+
+  const extendedFormApi = useMemo(() => {
     const extendedApi: ReactFormExtendedApi<
       TFormData,
       TOnMount,
@@ -224,16 +225,28 @@ export function useForm<
       TOnDynamicAsync,
       TOnServer,
       TSubmitMeta
-    > = api as never
+    > = {
+      ...formApi,
+      handleSubmit: ((...props: never[]) => {
+        formApi._handleSubmit(...props)
+      }) as typeof formApi.handleSubmit,
+      // We must add all `get`ters from `core`'s `FormApi` here, as otherwise the spread operator won't catch those
+      get formId(): string {
+        return formApi._formId
+      },
+      get state() {
+        return formApi.store.state
+      },
+    } as never
 
     extendedApi.Field = function APIField(props) {
-      return <Field {...props} form={api} />
+      return <Field {...props} form={formApi} />
     }
 
     extendedApi.Subscribe = function Subscribe(props: any) {
       return (
         <LocalSubscribe
-          form={api}
+          form={formApi}
           selector={props.selector}
           children={props.children}
         />
@@ -241,7 +254,7 @@ export function useForm<
     }
 
     return extendedApi
-  })
+  }, [formApi])
 
   useIsomorphicLayoutEffect(formApi.mount, [])
 
@@ -253,5 +266,5 @@ export function useForm<
     formApi.update(opts)
   })
 
-  return formApi
+  return extendedFormApi
 }

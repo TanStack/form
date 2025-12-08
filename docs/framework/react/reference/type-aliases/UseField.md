@@ -9,7 +9,7 @@ title: UseField
 type UseField<TParentData, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TPatentSubmitMeta> = <TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync>(opts) => FieldApi<TParentData, TName, TData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TFormOnMount, TFormOnChange, TFormOnChangeAsync, TFormOnBlur, TFormOnBlurAsync, TFormOnSubmit, TFormOnSubmitAsync, TFormOnDynamic, TFormOnDynamicAsync, TFormOnServer, TPatentSubmitMeta>;
 ```
 
-Defined in: [packages/react-form/src/useField.tsx:57](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L57)
+Defined in: [packages/react-form/src/useField.tsx:59](https://github.com/TanStack/form/blob/main/packages/react-form/src/useField.tsx#L59)
 
 A type representing a hook for using a field in a form with the given form data type.
 
@@ -115,7 +115,7 @@ A function that takes an optional object with a `name` property and field option
 
 ### opts
 
-[`UseFieldOptionsBound`](../../interfaces/UseFieldOptionsBound.md)\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`\>
+[`UseFieldOptionsBound`](../interfaces/UseFieldOptionsBound.md)\<`TParentData`, `TName`, `TData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`\>
 
 ## Returns
 

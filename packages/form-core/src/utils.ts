@@ -108,7 +108,10 @@ export function deleteBy(obj: any, _path: any) {
 
     const key = path.shift()
 
-    if (typeof key === 'string') {
+    if (
+      typeof key === 'string' ||
+      (typeof key === 'number' && !Array.isArray(parent))
+    ) {
       if (typeof parent === 'object') {
         return {
           ...parent,

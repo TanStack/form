@@ -15,7 +15,7 @@ An object representing the current state of the form.
 
 ## Extended by
 
-- [`FormState`](../../interfaces/FormState.md)
+- [`FormState`](../interfaces/FormState.md)
 
 ## Type Parameters
 

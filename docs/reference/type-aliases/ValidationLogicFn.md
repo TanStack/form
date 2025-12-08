@@ -15,7 +15,7 @@ Defined in: [packages/form-core/src/ValidationLogic.ts:56](https://github.com/Ta
 
 ### props
 
-[`ValidationLogicProps`](../../interfaces/ValidationLogicProps.md)
+[`ValidationLogicProps`](../interfaces/ValidationLogicProps.md)
 
 ## Returns
 

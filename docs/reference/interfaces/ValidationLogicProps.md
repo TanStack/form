@@ -61,7 +61,7 @@ Defined in: [packages/form-core/src/ValidationLogic.ts:33](https://github.com/Ta
 
 ###### form
 
-[`AnyFormApi`](../../type-aliases/AnyFormApi.md)
+[`AnyFormApi`](../type-aliases/AnyFormApi.md)
 
 ###### validators
 

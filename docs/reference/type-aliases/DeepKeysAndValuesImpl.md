@@ -13,7 +13,7 @@ type DeepKeysAndValuesImpl<T, TParent, TAcc> = unknown extends T ?
   | UnknownDeepKeyAndValue<TParent> : T extends object ? DeepKeyAndValueObject<TParent, T, TAcc> : TAcc;
 ```
 
-Defined in: [packages/form-core/src/util-types.ts:133](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L133)
+Defined in: [packages/form-core/src/util-types.ts:134](https://github.com/TanStack/form/blob/main/packages/form-core/src/util-types.ts#L134)
 
 ## Type Parameters
 
@@ -23,7 +23,7 @@ Defined in: [packages/form-core/src/util-types.ts:133](https://github.com/TanSta
 
 ### TParent
 
-`TParent` *extends* [`AnyDeepKeyAndValue`](../../interfaces/AnyDeepKeyAndValue.md) = `never`
+`TParent` *extends* [`AnyDeepKeyAndValue`](../interfaces/AnyDeepKeyAndValue.md) = `never`
 
 ### TAcc
 

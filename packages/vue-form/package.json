@@ -1,12 +1,12 @@
 {
   "name": "@tanstack/vue-form",
-  "version": "1.26.0",
+  "version": "1.27.1",
   "description": "Powerful, type-safe forms for Vue.",
   "author": "tannerlinsley",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TanStack/form.git",
+    "url": "git+https://github.com/TanStack/form.git",
     "directory": "packages/vue-form"
   },
   "homepage": "https://tanstack.com/form",

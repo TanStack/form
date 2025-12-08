@@ -11,7 +11,7 @@ An object representing the base properties of a form, unrelated to any validator
 
 ## Extended by
 
-- [`FormOptions`](../FormOptions.md)
+- [`FormOptions`](FormOptions.md)
 
 ## Type Parameters
 

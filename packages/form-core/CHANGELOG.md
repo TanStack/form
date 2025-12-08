@@ -1,5 +1,19 @@
 # @tanstack/form-core
 
+## 1.27.1
+
+### Patch Changes
+
+- Fix issues with methods not being present in React adapter ([#1903](https://github.com/TanStack/form/pull/1903))
+
+## 1.27.0
+
+### Patch Changes
+
+- Fixed issues with React Compiler ([#1893](https://github.com/TanStack/form/pull/1893))
+
+- Fix issue with deleteField and numeric keys ([#1891](https://github.com/TanStack/form/pull/1891))
+
 ## 1.26.0
 
 ### Patch Changes

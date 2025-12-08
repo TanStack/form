@@ -19,4 +19,4 @@ Defined in: [injectable.ts:39](https://github.com/TanStack/form/blob/main/packag
 
 ## Returns
 
-[`TanStackFieldInjectable`](../../classes/TanStackFieldInjectable.md)\<`T`\>
+[`TanStackFieldInjectable`](../classes/TanStackFieldInjectable.md)\<`T`\>
