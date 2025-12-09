@@ -1,5 +1,16 @@
 # @tanstack/react-form
 
+## 1.27.2
+
+### Patch Changes
+
+- use React 18's useId hook by default for formId generation, only calling Math.random() as a fallback if no formId is provided. ([#1913](https://github.com/TanStack/form/pull/1913))
+
+- fix(react-form): ensure `FormApi.handleSubmit` returns a promise again ([#1924](https://github.com/TanStack/form/pull/1924))
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.27.2
+
 ## 1.27.1
 
 ### Patch Changes

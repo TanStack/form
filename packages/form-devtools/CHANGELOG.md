@@ -1,5 +1,14 @@
 # @tanstack/form-devtools
 
+## 0.2.5
+
+### Patch Changes
+
+- Update @tanstack/devtools-utils to 0.0.9, fixes react 17 conflict ([#1892](https://github.com/TanStack/form/pull/1892))
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.27.2
+
 ## 0.2.4
 
 ### Patch Changes
