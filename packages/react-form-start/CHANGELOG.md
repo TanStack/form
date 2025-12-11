@@ -1,5 +1,12 @@
 # @tanstack/react-form-start
 
+## 1.27.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.27.3
+
 ## 1.27.2
 
 ### Patch Changes
