@@ -1,5 +1,37 @@
 # @tanstack/solid-form
 
+## 1.27.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.27.2
+
+## 1.27.1
+
+### Patch Changes
+
+- Updated dependencies [[`3b080ec`](https://github.com/TanStack/form/commit/3b080ec1faefa9894c0f73880dbff680888e6a9a)]:
+  - @tanstack/form-core@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`8afbfc3`](https://github.com/TanStack/form/commit/8afbfc39d7373ec2b516f7c8ff5585ca44098cc1), [`4e92a91`](https://github.com/TanStack/form/commit/4e92a913e109f54463be572cdc3f09232e9d2701)]:
+  - @tanstack/form-core@1.27.0
+
+## 1.26.0
+
+### Minor Changes
+
+- add withFieldGroup API Solid Form Composition ([#1783](https://github.com/TanStack/form/pull/1783))
+
+### Patch Changes
+
+- Updated dependencies [[`74f40e7`](https://github.com/TanStack/form/commit/74f40e7d0a862dcb4dbda3481b3a23482883a0a2)]:
+  - @tanstack/form-core@1.26.0
+
 ## 1.25.0
 
 ### Patch Changes

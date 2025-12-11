@@ -9,7 +9,7 @@ If you would like to access reactive values, you will need to subscribe to them 
 
 Some uses for these subscriptions are rendering up-to-date field values, determining what to render based on a condition, or using field values inside the logic of your component.
 
-> For situations where you want to "react" to triggers, check out the [listener](../listeners.md) API.
+> For situations where you want to "react" to triggers, check out the [listener](./listeners.md) API.
 
 ## useStore
 

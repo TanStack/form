@@ -6,6 +6,7 @@ import {
 import { defaultFieldMeta } from './metaHelper'
 import {
   determineFieldLevelErrorSourceAndValue,
+  evaluate,
   getAsyncValidatorArray,
   getBy,
   getSyncValidatorArray,
@@ -534,19 +535,19 @@ export interface FieldApiOptions<
   in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   in out TParentSubmitMeta,
 > extends FieldOptions<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync
-  > {
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync
+> {
   form: FormApi<
     TParentData,
     TFormOnMount,
@@ -962,6 +963,11 @@ export type AnyFieldApi = FieldApi<
 >
 
 /**
+ * We cannot use methods and must use arrow functions. Otherwise, our React adapters
+ * will break due to loss of the method when using spread.
+ */
+
+/**
  * A class representing the API for managing a form field.
  *
  * Normally, you will not need to create a new `FieldApi` instance directly.
@@ -1052,7 +1058,7 @@ export class FieldApi<
   /**
    * The field name.
    */
-  name!: DeepKeys<TParentData>
+  name: TName
   /**
    * The field options.
    */
@@ -1151,8 +1157,10 @@ export class FieldApi<
       TParentSubmitMeta
     >,
   ) {
-    this.form = opts.form as never
-    this.name = opts.name as never
+    this.form = opts.form
+    this.name = opts.name
+    this.options = opts
+
     this.timeoutIds = {
       validations: {} as Record<ValidationCause, never>,
       listeners: {} as Record<ListenerCause, never>,
@@ -1162,10 +1170,19 @@ export class FieldApi<
     this.store = new Derived({
       deps: [this.form.store],
       fn: () => {
-        const value = this.form.getFieldValue(this.name)
         const meta = this.form.getFieldMeta(this.name) ?? {
           ...defaultFieldMeta,
           ...opts.defaultMeta,
+        }
+
+        let value = this.form.getFieldValue(this.name)
+        if (
+          !meta.isTouched &&
+          (value as unknown) === undefined &&
+          this.options.defaultValue !== undefined &&
+          !evaluate(value, this.options.defaultValue)
+        ) {
+          value = this.options.defaultValue
         }
 
         return {
@@ -1196,8 +1213,6 @@ export class FieldApi<
         >
       },
     })
-
-    this.options = opts as never
   }
 
   /**
@@ -1232,8 +1247,8 @@ export class FieldApi<
   mount = () => {
     const cleanup = this.store.mount()
 
-    if ((this.options.defaultValue as unknown) !== undefined) {
-      this.form.setFieldValue(this.name, this.options.defaultValue as never, {
+    if (this.options.defaultValue !== undefined && !this.getMeta().isTouched) {
+      this.form.setFieldValue(this.name, this.options.defaultValue, {
         dontUpdateMeta: true,
       })
     }
@@ -1309,33 +1324,23 @@ export class FieldApi<
       TParentSubmitMeta
     >,
   ) => {
-    this.options = opts as never
-
-    const nameHasChanged = this.name !== opts.name
+    this.options = opts
     this.name = opts.name
 
     // Default Value
-    if ((this.state.value as unknown) === undefined) {
-      const formDefault = getBy(opts.form.options.defaultValues, opts.name)
-
-      const defaultValue = (opts.defaultValue as unknown) ?? formDefault
-
-      // The name is dynamic in array fields. It changes when the user performs operations like removing or reordering.
-      // In this case, we don't want to force a default value if the store managed to find an existing value.
-      if (nameHasChanged) {
-        this.setValue((val) => (val as unknown) || defaultValue, {
+    if (!this.state.meta.isTouched && this.options.defaultValue !== undefined) {
+      const formField = this.form.getFieldValue(this.name)
+      if (!evaluate(formField, opts.defaultValue)) {
+        this.form.setFieldValue(this.name, opts.defaultValue as never, {
           dontUpdateMeta: true,
-        })
-      } else if (defaultValue !== undefined) {
-        this.setValue(defaultValue as never, {
-          dontUpdateMeta: true,
+          dontValidate: true,
+          dontRunListeners: true,
         })
       }
     }
 
-    // Default Meta
-    if (this.form.getFieldMeta(this.name) === undefined) {
-      this.setMeta(this.state.meta)
+    if (!this.form.getFieldMeta(this.name)) {
+      this.form.setFieldMeta(this.name, this.state.meta)
     }
   }
 
@@ -1908,7 +1913,7 @@ export class FieldApi<
   /**
    * Updates the field's errorMap
    */
-  setErrorMap(
+  setErrorMap = (
     errorMap: ValidationErrorMap<
       UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>,
       UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>,
@@ -1920,7 +1925,7 @@ export class FieldApi<
       UnwrapFieldValidateOrFn<TName, TOnDynamic, TFormOnDynamic>,
       UnwrapFieldAsyncValidateOrFn<TName, TOnDynamicAsync, TFormOnDynamicAsync>
     >,
-  ) {
+  ) => {
     this.setMeta((prev) => ({
       ...prev,
       errorMap: {
@@ -1997,7 +2002,7 @@ export class FieldApi<
   /**
    * @private
    */
-  triggerOnChangeListener() {
+  triggerOnChangeListener = () => {
     const formDebounceMs = this.form.options.listeners?.onChangeDebounceMs
     if (formDebounceMs && formDebounceMs > 0) {
       if (this.timeoutIds.formListeners.change) {

@@ -79,6 +79,21 @@ Example:
 />
 ```
 
+If you run into issues handing in children as props, make sure to check your linting rules.
+
+Example (ESLint):
+
+```json
+  "rules": {
+    "react/no-children-prop": [
+      true,
+      {
+        "allowFunctions": true
+      }
+    ],
+  }
+```
+
 ## Field State
 
 Each field has its own state, which includes its current value, validation status, error messages, and other metadata. You can access a field's state using the `field.state` property.
@@ -269,7 +284,7 @@ Example:
 />
 ```
 
-More information can be found at [Listeners](../listeners.md)
+More information can be found at [Listeners](./listeners.md)
 
 ## Array Fields
 
