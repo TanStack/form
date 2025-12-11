@@ -1233,9 +1233,9 @@ importers:
       '@tanstack/devtools-event-client':
         specifier: ^0.3.5
         version: 0.3.5
-      '@tanstack/pacer':
-        specifier: ^0.15.3
-        version: 0.15.4
+      '@tanstack/pacer-lite':
+        specifier: ^0.1.1
+        version: 0.1.1
       '@tanstack/store':
         specifier: ^0.7.7
         version: 0.7.7
@@ -4791,8 +4791,8 @@ packages:
     resolution: {integrity: sha512-B7+x7eP2FFvi3fgd3rNH9o/Eixt+pp0zCIdGhnQbAJjFrlwIKGjGnwyJjhWJ5fMQlGks/E2LdDTqEV4W9Plx7g==}
     engines: {node: '>=12'}
 
-  '@tanstack/pacer@0.15.4':
-    resolution: {integrity: sha512-vGY+CWsFZeac3dELgB6UZ4c7OacwsLb8hvL2gLS6hTgy8Fl0Bm/aLokHaeDIP+q9F9HUZTnp360z9uv78eg8pg==}
+  '@tanstack/pacer-lite@0.1.1':
+    resolution: {integrity: sha512-y/xtNPNt/YeyoVxE/JCx+T7yjEzpezmbb+toK8DDD1P4m7Kzs5YR956+7OKexG3f8aXgC3rLZl7b1V+yNUSy5w==}
     engines: {node: '>=18'}
 
   '@tanstack/query-core@5.90.5':
@@ -14259,10 +14259,7 @@ snapshots:
 
   '@tanstack/history@1.133.28': {}
 
-  '@tanstack/pacer@0.15.4':
-    dependencies:
-      '@tanstack/devtools-event-client': 0.3.5
-      '@tanstack/store': 0.7.7
+  '@tanstack/pacer-lite@0.1.1': {}
 
   '@tanstack/query-core@5.90.5': {}
 
