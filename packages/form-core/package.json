@@ -52,6 +52,8 @@
   ],
   "dependencies": {
     "@tanstack/devtools-event-client": "^0.4.0",
+    "@tanstack/devtools-ui": "^0.4.4",
+    "@tanstack/devtools-utils": "^0.2.0",
     "@tanstack/pacer-lite": "^0.1.1",
     "@tanstack/store": "^0.7.7"
   },

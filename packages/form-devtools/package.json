@@ -53,7 +53,7 @@
   ],
   "dependencies": {
     "@tanstack/devtools-ui": "^0.4.4",
-    "@tanstack/devtools-utils": "^0.0.9",
+    "@tanstack/devtools-utils": "^0.2.0",
     "@tanstack/form-core": "workspace:*",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.18",
