@@ -1908,6 +1908,127 @@ describe('field api', () => {
     ])
   })
 
+  it('should run onDynamic on a linked field', () => {
+    const form = new FormApi({
+      defaultValues: {
+        password: '',
+        confirm_password: '',
+      },
+    })
+
+    form.mount()
+
+    const passField = new FieldApi({
+      form,
+      name: 'password',
+    })
+
+    const passconfirmField = new FieldApi({
+      form,
+      name: 'confirm_password',
+      validators: {
+        onDynamicListenTo: ['password'],
+        onChange: ({ value, fieldApi }) => {
+          if (value !== fieldApi.form.getFieldValue('password')) {
+            return 'Passwords do not match'
+          }
+          return undefined
+        },
+        onDynamic: ({ value, fieldApi }) => {
+          if (value !== fieldApi.form.getFieldValue('password')) {
+            return 'Passwords do not match'
+          }
+          return undefined
+        },
+      },
+    })
+
+    passField.mount()
+    passconfirmField.mount()
+
+    passField.setValue('one')
+    expect(passconfirmField.getMeta().isValid).toBe(false)
+    expect(passconfirmField.state.meta.errors).toStrictEqual([
+      'Passwords do not match',
+    ])
+    passconfirmField.setValue('one')
+    expect(passconfirmField.getMeta().isValid).toBe(true)
+    expect(passconfirmField.state.meta.errors).toStrictEqual([])
+    passField.setValue('two')
+    expect(passconfirmField.getMeta().isValid).toBe(false)
+    expect(passconfirmField.state.meta.errors).toStrictEqual([
+      'Passwords do not match',
+    ])
+  })
+
+  it('should run onDynamicAsync on a linked field', async () => {
+    vi.useFakeTimers()
+
+    const fn = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        password: '',
+        confirm_password: '',
+      },
+    })
+
+    form.mount()
+
+    const passField = new FieldApi({
+      form,
+      name: 'password',
+    })
+
+    const passconfirmField = new FieldApi({
+      form,
+      name: 'confirm_password',
+      validators: {
+        onDynamicListenTo: ['password'],
+        onChangeAsync: async ({ value, fieldApi }) => {
+          await new Promise((resolve) => setTimeout(resolve, 100))
+          fn()
+          if (value !== fieldApi.form.getFieldValue('password')) {
+            return 'Passwords do not match'
+          }
+          return undefined
+        },
+        onDynamicAsync: async ({ value, fieldApi }) => {
+          await new Promise((resolve) => setTimeout(resolve, 100))
+          fn()
+          if (value !== fieldApi.form.getFieldValue('password')) {
+            return 'Passwords do not match'
+          }
+          return undefined
+        },
+      },
+    })
+
+    passField.mount()
+    passconfirmField.mount()
+
+    passField.setValue('one')
+    await vi.advanceTimersByTimeAsync(100)
+    expect(passconfirmField.getMeta().isValid).toBe(false)
+    expect(passconfirmField.state.meta.errors).toStrictEqual([
+      'Passwords do not match',
+    ])
+
+    passconfirmField.setValue('one')
+    await vi.advanceTimersByTimeAsync(100)
+    expect(passconfirmField.getMeta().isValid).toBe(true)
+    expect(passconfirmField.state.meta.errors).toStrictEqual([])
+
+    passField.setValue('two')
+    await vi.advanceTimersByTimeAsync(100)
+    expect(passconfirmField.getMeta().isValid).toBe(false)
+    expect(passconfirmField.state.meta.errors).toStrictEqual([
+      'Passwords do not match',
+    ])
+
+    vi.useRealTimers()
+  })
+
   it('should add  a new value to the fieldApi errorMap', () => {
     interface Form {
       name: string

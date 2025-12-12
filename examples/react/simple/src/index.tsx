@@ -23,6 +23,8 @@ export default function App() {
     defaultValues: {
       firstName: '',
       lastName: '',
+      password: '',
+      confirmPassword: '',
     },
     onSubmit: async ({ value }) => {
       // Do something with form data
@@ -86,6 +88,33 @@ export default function App() {
                 <input
                   id={field.name}
                   name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                <FieldInfo field={field} />
+              </>
+            )}
+          />
+        </div>
+        <div>
+          <form.Field
+            name="password"
+            validators={{
+              onChange: ({ value }) =>
+                !value
+                  ? 'A password is required'
+                  : value.length < 6
+                    ? 'Password must be at least 6 characters'
+                    : undefined,
+            }}
+            children={(field) => (
+              <>
+                <label htmlFor={field.name}>Password:</label>
+                <input
+                  id={field.name}
+                  name={field.name}
+                  type="password"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
