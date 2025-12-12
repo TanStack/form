@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.27.3
+
+### Patch Changes
+
+- Bump TanStack pacer to pacer-lite for reduced custom event emissions. ([#1876](https://github.com/TanStack/form/pull/1876))
+
 ## 1.27.2
 
 ## 1.27.1
