@@ -218,55 +218,6 @@ export interface FormValidators<
   onDynamicAsyncDebounceMs?: number
 }
 
-/**
- * @private
- */
-export interface FormTransform<
-  TFormData,
-  TOnMount extends undefined | FormValidateOrFn<TFormData>,
-  TOnChange extends undefined | FormValidateOrFn<TFormData>,
-  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
-  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TSubmitMeta = never,
-> {
-  fn: (
-    formBase: FormApi<
-      TFormData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnDynamic,
-      TOnDynamicAsync,
-      TOnServer,
-      TSubmitMeta
-    >,
-  ) => FormApi<
-    TFormData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TOnServer,
-    TSubmitMeta
-  >
-  deps: unknown[]
-}
-
 export interface FormListeners<
   TFormData,
   TOnMount extends undefined | FormValidateOrFn<TFormData>,
@@ -498,20 +449,6 @@ export interface FormOptions<
     >
     meta: TSubmitMeta
   }) => void
-  transform?: FormTransform<
-    NoInfer<TFormData>,
-    NoInfer<TOnMount>,
-    NoInfer<TOnChange>,
-    NoInfer<TOnChangeAsync>,
-    NoInfer<TOnBlur>,
-    NoInfer<TOnBlurAsync>,
-    NoInfer<TOnSubmit>,
-    NoInfer<TOnSubmitAsync>,
-    NoInfer<TOnDynamic>,
-    NoInfer<TOnDynamicAsync>,
-    NoInfer<TOnServer>,
-    NoInfer<TSubmitMeta>
-  >
 }
 
 export type AnyFormOptions = FormOptions<
@@ -658,6 +595,20 @@ export type BaseFormState<
    */
   _force_re_eval?: boolean
 }
+
+export type AnyBaseFormState = BaseFormState<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
 
 export type DerivedFormState<
   in out TFormData,
@@ -916,6 +867,7 @@ export class FormApi<
     TOnServer,
     TSubmitMeta
   > = {}
+
   baseStore!: Store<
     BaseFormState<
       TFormData,
@@ -969,11 +921,6 @@ export class FormApi<
   get state() {
     return this.store.state
   }
-
-  /**
-   * @private
-   */
-  prevTransformArray: unknown[] = []
 
   /**
    * @private
@@ -1260,7 +1207,7 @@ export class FormApi<
           return prevVal
         }
 
-        let state = {
+        const state = {
           ...currBaseStore,
           errorMap,
           fieldMeta: this.fieldMetaDerived.state,
@@ -1288,20 +1235,6 @@ export class FormApi<
           TOnDynamicAsync,
           TOnServer
         >
-
-        // Only run transform if state has shallowly changed - IE how React.useEffect works
-        const transformArray = this.options.transform?.deps ?? []
-        const shouldTransform =
-          transformArray.length !== this.prevTransformArray.length ||
-          transformArray.some((val, i) => val !== this.prevTransformArray[i])
-
-        if (shouldTransform) {
-          const newObj = Object.assign({}, this, { state })
-          // This mutates the state
-          this.options.transform?.fn(newObj)
-          state = newObj.state
-          this.prevTransformArray = transformArray
-        }
 
         return state
       },
@@ -1429,11 +1362,6 @@ export class FormApi<
     // Options need to be updated first so that when the store is updated, the state is correct for the derived state
     this.options = options
 
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    const shouldUpdateReeval = !!options.transform?.deps?.some(
-      (val, i) => val !== this.prevTransformArray[i],
-    )
-
     const shouldUpdateValues =
       options.defaultValues &&
       !evaluate(options.defaultValues, oldOptions.defaultValues) &&
@@ -1443,7 +1371,7 @@ export class FormApi<
       !evaluate(options.defaultState, oldOptions.defaultState) &&
       !this.state.isTouched
 
-    if (!shouldUpdateValues && !shouldUpdateState && !shouldUpdateReeval) return
+    if (!shouldUpdateValues && !shouldUpdateState) return
 
     batch(() => {
       this.baseStore.setState(() =>
@@ -1458,10 +1386,6 @@ export class FormApi<
               ? {
                   values: options.defaultValues,
                 }
-              : {},
-
-            shouldUpdateReeval
-              ? { _force_re_eval: !this.state._force_re_eval }
               : {},
           ),
         ),
