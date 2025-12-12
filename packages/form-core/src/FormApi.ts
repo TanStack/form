@@ -1,5 +1,4 @@
 import { Derived, Store, batch } from '@tanstack/store'
-import { throttle } from '@tanstack/pacer'
 import {
   deleteBy,
   determineFormLevelErrorSourceAndValue,
@@ -12,16 +11,18 @@ import {
   isNonEmptyArray,
   mergeOpts,
   setBy,
+  throttleFormState,
   uuid,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
-
 import {
   isStandardSchemaValidator,
   standardSchemaValidators,
 } from './standardSchemaValidator'
 import { defaultFieldMeta, metaHelper } from './metaHelper'
 import { formEventClient } from './EventClient'
+
+// types
 import type { ValidationLogicFn } from './ValidationLogic'
 import type {
   StandardSchemaV1,
@@ -1310,20 +1311,9 @@ export class FormApi<
 
     this.update(opts || {})
 
-    const debouncedDevtoolState = throttle(
-      (state: AnyFormState) =>
-        formEventClient.emit('form-state', {
-          id: this._formId,
-          state: state,
-        }),
-      {
-        wait: 300,
-      },
-    )
-
     // devtool broadcasts
     this.store.subscribe(() => {
-      debouncedDevtoolState(this.store.state)
+      throttleFormState(this)
     })
 
     // devtool requests

@@ -9,7 +9,7 @@ title: useForm
 function useForm<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta>(opts?): ReactFormExtendedApi<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta>;
 ```
 
-Defined in: [packages/react-form/src/useForm.tsx:158](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L158)
+Defined in: [packages/react-form/src/useForm.tsx:159](https://github.com/TanStack/form/blob/main/packages/react-form/src/useForm.tsx#L159)
 
 A custom React Hook that returns an extended instance of the `FormApi` class.
 
