@@ -1,7 +1,3 @@
-import { createContext, splitProps, useContext } from 'solid-js'
-import { createForm } from './createForm'
-import { createFieldGroup } from './createFieldGroup'
-import type { AppFieldExtendedSolidFieldGroupApi } from './createFieldGroup'
 import type {
   AnyFieldApi,
   AnyFormApi,
@@ -20,9 +16,17 @@ import type {
   JSXElement,
   ParentProps,
 } from 'solid-js'
+import {
+  createComponent,
+  createContext,
+  splitProps,
+  useContext,
+} from 'solid-js'
 import type { FieldComponent } from './createField'
+import type { AppFieldExtendedSolidFieldGroupApi } from './createFieldGroup'
+import { createFieldGroup } from './createFieldGroup'
 import type { SolidFormExtendedApi } from './createForm'
-import { Dynamic } from 'solid-js/web'
+import { createForm } from './createForm'
 
 /**
  * TypeScript inferencing is weird.
@@ -358,13 +362,13 @@ export function createFormHook<
         <form.Field {...fieldProps}>
           {(field) => (
             <opts.fieldContext.Provider value={field}>
-              <Dynamic
-                component={() =>
+              {createComponent(
+                () =>
                   childProps.children(
                     Object.assign(field, opts.fieldComponents),
-                  )
-                }
-              />
+                  ),
+                {},
+              )}
             </opts.fieldContext.Provider>
           )}
         </form.Field>
