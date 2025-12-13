@@ -22,6 +22,7 @@ import type {
 } from 'solid-js'
 import type { FieldComponent } from './createField'
 import type { SolidFormExtendedApi } from './createForm'
+import { Dynamic } from 'solid-js/web'
 
 /**
  * TypeScript inferencing is weird.
@@ -357,7 +358,13 @@ export function createFormHook<
         <form.Field {...fieldProps}>
           {(field) => (
             <opts.fieldContext.Provider value={field}>
-              {childProps.children(Object.assign(field, opts.fieldComponents))}
+              <Dynamic
+                component={() =>
+                  childProps.children(
+                    Object.assign(field, opts.fieldComponents),
+                  )
+                }
+              />
             </opts.fieldContext.Provider>
           )}
         </form.Field>
