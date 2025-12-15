@@ -1,5 +1,15 @@
 # @tanstack/form-core
 
+## 1.27.4
+
+### Patch Changes
+
+- fix: prevent unnecessary re-renders when there are no async validators ([#1929](https://github.com/TanStack/form/pull/1929))
+
+  Fields were re-rendering twice on each keystroke because `isValidating` was being set to `true` then `false` even when there were no async validators to run. This fix checks if there are actual async validators before toggling the `isValidating` state.
+
+  Fixes #1130
+
 ## 1.27.3
 
 ### Patch Changes

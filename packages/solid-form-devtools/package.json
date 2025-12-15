@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/solid-form-devtools",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Solid adapter for devtools for Form.",
   "author": "Tanner Linsley",
   "license": "MIT",

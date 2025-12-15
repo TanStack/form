@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/form-core",
-  "version": "1.27.3",
+  "version": "1.27.4",
   "description": "Powerful, type-safe, framework agnostic forms.",
   "author": "tannerlinsley",
   "license": "MIT",
