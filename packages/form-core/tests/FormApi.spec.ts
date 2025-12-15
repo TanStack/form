@@ -4096,7 +4096,7 @@ it('should generate a formId if not provided', () => {
   expect(form.formId.length).toBeGreaterThan(1)
 })
 
-it('it should set a file value with uuid when setting a field value with File', () => {
+it('should set a file value with uuid when setting a field value with File', () => {
   const form = new FormApi({
     defaultValues: {
       avatar: undefined,
@@ -4114,7 +4114,7 @@ it('it should set a file value with uuid when setting a field value with File', 
   expect(firstValue.file instanceof File).toBe(true)
   expect(firstValue.file.name).toBe('first.png')
   expect(typeof firstValue.uuid).toBe('string')
-  expect(firstValue.uuid.length > 0).toBe(true)
+  expect(firstValue.uuid.length).toBeGreaterThan(0)
 
   const secondFile = new File(['second'], 'second.png', { type: 'image/png' })
   form.setFieldValue('avatar', secondFile)
@@ -4123,7 +4123,7 @@ it('it should set a file value with uuid when setting a field value with File', 
 
   expect(secondValue.file.name).toBe('second.png')
   expect(typeof secondValue.uuid).toBe('string')
-  expect(secondValue.uuid.length > 0).toBe(true)
+  expect(secondValue.uuid.length).toBeGreaterThan(0)
   expect(secondValue.uuid).not.toBe(firstValue.uuid)
 })
 
