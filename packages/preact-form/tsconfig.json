@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    // "jsxFactory": "h",
+    // "jsxFragmentFactory": "Fragment",
+    "moduleResolution": "Bundler",
+    "paths": {
+      "@tanstack/form-core": ["../form-core/src"]
+    }
+  },
+  "include": ["src", "tests", "eslint.config.js", "vite.config.ts"]
+}
