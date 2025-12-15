@@ -1,5 +1,5 @@
 ---
-"@tanstack/form-core": patch
+'@tanstack/form-core': patch
 ---
 
 fix: prevent unnecessary re-renders when there are no async validators
