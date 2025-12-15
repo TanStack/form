@@ -1,5 +1,5 @@
 ---
-"@tanstack/react-form": patch
+'@tanstack/react-form': patch
 ---
 
 fix(react-form): prevent array field re-render when child property changes
