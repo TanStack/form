@@ -1728,20 +1728,29 @@ export class FieldApi<
       >,
     )
 
-    if (!this.state.meta.isValidating) {
-      this.setMeta((prev) => ({ ...prev, isValidating: true }))
-    }
-
-    for (const linkedField of linkedFields) {
-      linkedField.setMeta((prev) => ({ ...prev, isValidating: true }))
-    }
-
     /**
      * We have to use a for loop and generate our promises this way, otherwise it won't be sync
      * when there are no validators needed to be run
      */
     const validatesPromises: Promise<ValidationError | undefined>[] = []
     const linkedPromises: Promise<ValidationError | undefined>[] = []
+
+    // Check if there are actual async validators to run before setting isValidating
+    // This prevents unnecessary re-renders when there are no async validators
+    // See: https://github.com/TanStack/form/issues/1130
+    const hasAsyncValidators =
+      validates.some((v) => v.validate) ||
+      linkedFieldValidates.some((v) => v.validate)
+
+    if (hasAsyncValidators) {
+      if (!this.state.meta.isValidating) {
+        this.setMeta((prev) => ({ ...prev, isValidating: true }))
+      }
+
+      for (const linkedField of linkedFields) {
+        linkedField.setMeta((prev) => ({ ...prev, isValidating: true }))
+      }
+    }
 
     const validateFieldAsyncFn = (
       field: AnyFieldApi,
@@ -1845,10 +1854,13 @@ export class FieldApi<
       await Promise.all(linkedPromises)
     }
 
-    this.setMeta((prev) => ({ ...prev, isValidating: false }))
+    // Only reset isValidating if we set it to true earlier
+    if (hasAsyncValidators) {
+      this.setMeta((prev) => ({ ...prev, isValidating: false }))
 
-    for (const linkedField of linkedFields) {
-      linkedField.setMeta((prev) => ({ ...prev, isValidating: false }))
+      for (const linkedField of linkedFields) {
+        linkedField.setMeta((prev) => ({ ...prev, isValidating: false }))
+      }
     }
 
     return results.filter(Boolean)
