@@ -1,5 +1,20 @@
 # @tanstack/react-form
 
+## 1.27.4
+
+### Patch Changes
+
+- fix(react-form): prevent array field re-render when child property changes ([#1930](https://github.com/TanStack/form/pull/1930))
+
+  Array fields with `mode="array"` were incorrectly re-rendering when a property on any array element was mutated. This was a regression introduced in v1.27.0 by the React Compiler compatibility changes.
+
+  The fix ensures that `mode="array"` fields only re-render when the array length changes (items added/removed), not when individual item properties are modified.
+
+  Fixes #1925
+
+- Updated dependencies [[`c753d5e`](https://github.com/TanStack/form/commit/c753d5eca5021c231bcdfd5f0a337156958fcde1)]:
+  - @tanstack/form-core@1.27.4
+
 ## 1.27.3
 
 ### Patch Changes
