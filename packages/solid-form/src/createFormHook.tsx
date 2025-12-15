@@ -1,3 +1,11 @@
+import {
+  createComponent,
+  createContext,
+  splitProps,
+  useContext,
+} from 'solid-js'
+import { createFieldGroup } from './createFieldGroup'
+import { createForm } from './createForm'
 import type {
   AnyFieldApi,
   AnyFormApi,
@@ -16,17 +24,9 @@ import type {
   JSXElement,
   ParentProps,
 } from 'solid-js'
-import {
-  createComponent,
-  createContext,
-  splitProps,
-  useContext,
-} from 'solid-js'
 import type { FieldComponent } from './createField'
 import type { AppFieldExtendedSolidFieldGroupApi } from './createFieldGroup'
-import { createFieldGroup } from './createFieldGroup'
 import type { SolidFormExtendedApi } from './createForm'
-import { createForm } from './createForm'
 
 /**
  * TypeScript inferencing is weird.
