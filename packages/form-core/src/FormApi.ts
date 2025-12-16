@@ -2249,7 +2249,6 @@ export class FormApi<
     const dontUpdateMeta = opts?.dontUpdateMeta ?? false
     const dontRunListeners = opts?.dontRunListeners ?? false
     const dontValidate = opts?.dontValidate ?? false
-    const isFile = updater instanceof File
 
     batch(() => {
       if (!dontUpdateMeta) {
@@ -2271,7 +2270,7 @@ export class FormApi<
           values: setBy(
             prev.values,
             field,
-            isFile ? { file: updater, uuid: uuid() } : updater,
+            updater
           ),
         }
       })

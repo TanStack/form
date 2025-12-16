@@ -48,11 +48,16 @@ export function getBy(obj: unknown, path: string | (string | number)[]): any {
  * @private
  */
 export function setBy(obj: any, _path: any, updater: Updater<any>) {
+  const isFile = updater instanceof File
+
   const path = makePathArray(_path)
 
   function doSet(parent?: any): any {
     if (!path.length) {
-      return functionalUpdate(updater, parent)
+      return functionalUpdate(
+        isFile ? { file: updater, uuid: uuid() } : updater,
+        parent,
+      )
     }
 
     const key = path.shift()
@@ -422,6 +427,15 @@ export const isGlobalFormValidationError = (
 }
 
 export function evaluate<T>(objA: T, objB: T) {
+  if (objA instanceof File && objB instanceof File) {
+    return (
+      objA.name === objB.name &&
+      objA.size === objB.size &&
+      objA.type === objB.type &&
+      objA.lastModified === objB.lastModified
+    )
+  }
+
   if (Object.is(objA, objB)) {
     return true
   }
