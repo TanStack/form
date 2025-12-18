@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/react-form-remix",
-  "version": "1.27.4",
+  "version": "1.27.5",
   "description": "Powerful, type-safe forms for React.",
   "author": "tannerlinsley",
   "license": "MIT",

@@ -1,5 +1,13 @@
 # @tanstack/form-core
 
+## 1.27.5
+
+### Patch Changes
+
+- fix(form-core): Resolve memory leaks for SSR / Devtools ([#1866](https://github.com/TanStack/form/pull/1866))
+
+- Ensure dynamically rendered fields receive form validation errors ([#1691](https://github.com/TanStack/form/pull/1691))
+
 ## 1.27.4
 
 ### Patch Changes
