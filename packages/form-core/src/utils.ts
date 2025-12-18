@@ -44,18 +44,30 @@ export function getBy(obj: unknown, path: string | (string | number)[]): any {
 }
 
 /**
+ * Check if an object is a File.
+ * @private
+ */
+export function isFile(obj: any) {
+  return (
+    obj &&
+    typeof obj === 'object' &&
+    'name' in obj &&
+    'size' in obj &&
+    'type' in obj
+  )
+}
+
+/**
  * Set a value on an object using a path, including dot notation.
  * @private
  */
 export function setBy(obj: any, _path: any, updater: Updater<any>) {
-  const isFile = updater instanceof File
-
   const path = makePathArray(_path)
 
   function doSet(parent?: any): any {
     if (!path.length) {
       return functionalUpdate(
-        isFile ? { file: updater, uuid: uuid() } : updater,
+        isFile(updater) ? { file: updater, uuid: uuid() } : updater,
         parent,
       )
     }

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
-import { FieldApi, FormApi, formEventClient } from '../src/index'
+import { FieldApi, FormApi, isFile } from '../src/index'
 import { sleep } from './utils'
 import type { AnyFieldApi, AnyFormApi } from '../src/index'
 
@@ -4111,7 +4111,7 @@ it('should set a file value with uuid when setting a field value with File', () 
   const firstValue = form.state.values.avatar as { file: File; uuid: string }
 
   expect(firstValue).toBeDefined()
-  expect(firstValue.file instanceof File).toBe(true)
+  expect(isFile(firstValue.file)).toBe(true)
   expect(firstValue.file.name).toBe('first.png')
   expect(typeof firstValue.uuid).toBe('string')
   expect(firstValue.uuid.length).toBeGreaterThan(0)
