@@ -1310,36 +1310,6 @@ export class FormApi<
     this.handleSubmit = this.handleSubmit.bind(this)
 
     this.update(opts || {})
-
-    // devtool broadcasts
-    this.store.subscribe(() => {
-      throttleFormState(this)
-    })
-
-    // devtool requests
-    formEventClient.on('request-form-state', (e) => {
-      if (e.payload.id === this._formId) {
-        formEventClient.emit('form-api', {
-          id: this._formId,
-          state: this.store.state,
-          options: this.options,
-        })
-      }
-    })
-
-    formEventClient.on('request-form-reset', (e) => {
-      if (e.payload.id === this._formId) {
-        this.reset()
-      }
-    })
-
-    formEventClient.on('request-form-force-submit', (e) => {
-      if (e.payload.id === this._formId) {
-        this._devtoolsSubmissionOverride = true
-        this.handleSubmit()
-        this._devtoolsSubmissionOverride = false
-      }
-    })
   }
 
   get formId(): string {
@@ -1374,7 +1344,51 @@ export class FormApi<
   mount = () => {
     const cleanupFieldMetaDerived = this.fieldMetaDerived.mount()
     const cleanupStoreDerived = this.store.mount()
+
+    // devtool broadcasts
+    const cleanupDevtoolBroadcast = this.store.subscribe(() => {
+      throttleFormState(this)
+    })
+
+    // devtool requests
+    const cleanupFormStateListener = formEventClient.on(
+      'request-form-state',
+      (e) => {
+        if (e.payload.id === this._formId) {
+          formEventClient.emit('form-api', {
+            id: this._formId,
+            state: this.store.state,
+            options: this.options,
+          })
+        }
+      },
+    )
+
+    const cleanupFormResetListener = formEventClient.on(
+      'request-form-reset',
+      (e) => {
+        if (e.payload.id === this._formId) {
+          this.reset()
+        }
+      },
+    )
+
+    const cleanupFormForceSubmitListener = formEventClient.on(
+      'request-form-force-submit',
+      (e) => {
+        if (e.payload.id === this._formId) {
+          this._devtoolsSubmissionOverride = true
+          this.handleSubmit()
+          this._devtoolsSubmissionOverride = false
+        }
+      },
+    )
+
     const cleanup = () => {
+      cleanupFormForceSubmitListener()
+      cleanupFormResetListener()
+      cleanupFormStateListener()
+      cleanupDevtoolBroadcast()
       cleanupFieldMetaDerived()
       cleanupStoreDerived()
 
