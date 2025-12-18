@@ -119,8 +119,9 @@ export type DeepKeyAndValueObject<
 export type UnknownAccessor<TParent extends AnyDeepKeyAndValue> =
   TParent['key'] extends never ? string : `${TParent['key']}.${string}`
 
-export interface UnknownDeepKeyAndValue<TParent extends AnyDeepKeyAndValue>
-  extends AnyDeepKeyAndValue {
+export interface UnknownDeepKeyAndValue<
+  TParent extends AnyDeepKeyAndValue,
+> extends AnyDeepKeyAndValue {
   key: UnknownAccessor<TParent>
   value: unknown
 }

@@ -562,7 +562,7 @@ describe('field api', () => {
   it('should remove remove the last subfield from an array field correctly', async () => {
     const form = new FormApi({
       defaultValues: {
-        people: [] as Array<{ name: string }>,
+        people: [{ name: '' }],
       },
     })
 
@@ -579,7 +579,6 @@ describe('field api', () => {
     const subField1 = new FieldApi({
       form: field.form,
       name: 'people[0].name',
-      defaultValue: '',
       validators: subFieldValidators,
     })
 
@@ -796,6 +795,47 @@ describe('field api', () => {
 
     expect(field.getMeta().isValid).toBe(true)
     expect(field.getMeta().errors.length).toBe(0)
+  })
+
+  it('should not toggle isValidating when there are no async validators', async () => {
+    // Test for https://github.com/TanStack/form/issues/1130
+    // Fields were re-rendering twice on each keystroke because isValidating
+    // was being set to true then false even when there were no async validators
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      // No async validators defined - only sync or none
+    })
+
+    field.mount()
+
+    // Track isValidating changes
+    const isValidatingStates: boolean[] = []
+    field.store.subscribe(() => {
+      isValidatingStates.push(field.getMeta().isValidating)
+    })
+
+    // Initial state
+    expect(field.getMeta().isValidating).toBe(false)
+
+    // Trigger validation by changing value
+    field.setValue('new value')
+    await vi.runAllTimersAsync()
+
+    // isValidating should never have been set to true since there are no async validators
+    // This prevents unnecessary re-renders
+    expect(isValidatingStates.every((state) => state === false)).toBe(true)
+    expect(field.getMeta().isValidating).toBe(false)
   })
 
   it('should run async validation onChange', async () => {
@@ -2882,5 +2922,17 @@ describe('field api', () => {
       expect(form.fieldInfo.field3).toBeDefined()
       expect(form.state.values.field3).toBe('new value')
     })
+  it('should allow setting to explicitly undefined', () => {
+    const form = new FormApi({
+      defaultValues: { a: '' as string | undefined },
+    })
+    form.mount()
+
+    const field = new FieldApi({ form, name: 'a' })
+    field.mount()
+
+    expect(field.state.value).toBe('')
+    field.handleChange(undefined)
+    expect(field.state.value).toBeUndefined()
   })
 })

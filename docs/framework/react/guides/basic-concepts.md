@@ -79,6 +79,21 @@ Example:
 />
 ```
 
+If you run into issues handing in children as props, make sure to check your linting rules.
+
+Example (ESLint):
+
+```json
+  "rules": {
+    "react/no-children-prop": [
+      true,
+      {
+        "allowFunctions": true
+      }
+    ],
+  }
+```
+
 ## Field State
 
 Each field has its own state, which includes its current value, validation status, error messages, and other metadata. You can access a field's state using the `field.state` property.
@@ -269,13 +284,13 @@ Example:
 />
 ```
 
-More information can be found at [Listeners](../listeners.md)
+More information can be found at [Listeners](./listeners.md)
 
 ## Array Fields
 
 Array fields allow you to manage a list of values within a form, such as a list of hobbies. You can create an array field using the `form.Field` component with the `mode="array"` prop.
 
-When working with array fields, you can use the fields `pushValue`, `removeValue`, `swapValues` and `moveValue` methods to add, remove, and swap values in the array.
+When working with array fields, you can use the fields `pushValue`, `removeValue`, `swapValues` and `moveValue` methods to add, remove, swap, and move a value from one index to another within the array, respectively. Additional helper methods such as `insertValue`, `replaceValue`, and `clearValues` are also available for inserting, replacing, and clearing array values.
 
 Example:
 

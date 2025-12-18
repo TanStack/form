@@ -1,12 +1,13 @@
 import { Form, useActionData } from '@remix-run/react'
 
-import { mergeForm, useForm, useTransform } from '@tanstack/react-form'
 import {
   ServerValidateError,
   createServerValidate,
   formOptions,
-  initialFormState,
-} from '@tanstack/react-form/remix'
+  mergeForm,
+  useForm,
+  useTransform,
+} from '@tanstack/react-form-remix'
 import { useStore } from '@tanstack/react-store'
 
 import type { ActionFunctionArgs } from '@remix-run/node'
@@ -65,7 +66,7 @@ export default function Index() {
   return (
     <Form method="post" onSubmit={() => form.handleSubmit()}>
       {formErrors.map((error) => (
-        <p key={error as string}>{error}</p>
+        <p key={error as never as string}>{error}</p>
       ))}
 
       <form.Field

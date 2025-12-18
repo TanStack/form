@@ -1,12 +1,12 @@
 {
   "name": "@tanstack/react-form",
-  "version": "1.23.8",
+  "version": "1.27.4",
   "description": "Powerful, type-safe forms for React.",
   "author": "tannerlinsley",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TanStack/form.git",
+    "url": "git+https://github.com/TanStack/form.git",
     "directory": "packages/react-form"
   },
   "homepage": "https://tanstack.com/form",
@@ -43,36 +43,6 @@
         "default": "./dist/cjs/index.cjs"
       }
     },
-    "./nextjs": {
-      "import": {
-        "types": "./dist/esm/nextjs/index.d.ts",
-        "default": "./dist/esm/nextjs/index.js"
-      },
-      "require": {
-        "types": "./dist/cjs/nextjs/index.d.cts",
-        "default": "./dist/cjs/nextjs/index.cjs"
-      }
-    },
-    "./remix": {
-      "import": {
-        "types": "./dist/esm/remix/index.d.ts",
-        "default": "./dist/esm/remix/index.js"
-      },
-      "require": {
-        "types": "./dist/cjs/remix/index.d.cts",
-        "default": "./dist/cjs/remix/index.cjs"
-      }
-    },
-    "./start": {
-      "import": {
-        "types": "./dist/esm/start/index.d.ts",
-        "default": "./dist/esm/start/index.js"
-      },
-      "require": {
-        "types": "./dist/cjs/start/index.d.cts",
-        "default": "./dist/cjs/start/index.cjs"
-      }
-    },
     "./package.json": "./package.json"
   },
   "sideEffects": false,
@@ -82,22 +52,18 @@
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/react-store": "^0.7.7",
-    "decode-formdata": "^0.9.0",
-    "devalue": "^5.3.2"
+    "@tanstack/react-store": "^0.8.0"
   },
   "devDependencies": {
-    "@tanstack/react-start": "1.131.50",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
-    "@vitejs/plugin-react": "^4.7.0",
+    "@vitejs/plugin-react": "^5.1.1",
     "eslint-plugin-react-compiler": "19.1.0-rc.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "vite": "^7.1.6"
+    "vite": "^7.2.2"
   },
   "peerDependencies": {
-    "@tanstack/react-start": "^1.130.10",
     "react": "^17.0.0 || ^18.0.0 || ^19.0.0"
   },
   "peerDependenciesMeta": {

@@ -1,12 +1,12 @@
 {
   "name": "@tanstack/lit-form",
-  "version": "1.23.8",
+  "version": "1.23.16",
   "description": "Powerful, type-safe forms for Lit.",
   "author": "tannerlinsley",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TanStack/form.git",
+    "url": "git+https://github.com/TanStack/form.git",
     "directory": "packages/lit-form"
   },
   "homepage": "https://tanstack.com/form",

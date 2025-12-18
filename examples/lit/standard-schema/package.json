@@ -9,7 +9,7 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/lit-form": "^1.23.8",
+    "@tanstack/lit-form": "^1.23.16",
     "arktype": "^2.1.22",
     "effect": "^3.17.14",
     "lit": "^3.3.1",
@@ -17,7 +17,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "vite": "^7.1.6"
+    "vite": "^7.2.2"
   },
   "browserslist": {
     "production": [

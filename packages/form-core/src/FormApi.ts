@@ -1,5 +1,4 @@
 import { Derived, Store, batch } from '@tanstack/store'
-import { throttle } from '@tanstack/pacer'
 import {
   deleteBy,
   determineFormLevelErrorSourceAndValue,
@@ -12,16 +11,18 @@ import {
   isNonEmptyArray,
   mergeOpts,
   setBy,
+  throttleFormState,
   uuid,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
-
 import {
   isStandardSchemaValidator,
   standardSchemaValidators,
 } from './standardSchemaValidator'
 import { defaultFieldMeta, metaHelper } from './metaHelper'
 import { formEventClient } from './EventClient'
+
+// types
 import type { ValidationLogicFn } from './ValidationLogic'
 import type {
   StandardSchemaV1,
@@ -748,7 +749,9 @@ export interface FormState<
   in out TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
   in out TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-> extends BaseFormState<
+>
+  extends
+    BaseFormState<
       TFormData,
       TOnMount,
       TOnChange,
@@ -871,6 +874,11 @@ export type AnyFormApi = FormApi<
 >
 
 /**
+ * We cannot use methods and must use arrow functions. Otherwise, our React adapters
+ * will break due to loss of the method when using spread.
+ */
+
+/**
  * A class representing the Form API. It handles the logic and interactions with the form state.
  *
  * Normally, you will not need to create a new `FormApi` instance directly. Instead, you will use a framework
@@ -890,8 +898,7 @@ export class FormApi<
   in out TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   in out TSubmitMeta = never,
-> implements FieldManipulator<TFormData, TSubmitMeta>
-{
+> implements FieldManipulator<TFormData, TSubmitMeta> {
   /**
    * The options for the form.
    */
@@ -979,7 +986,7 @@ export class FormApi<
   /**
    * @private
    */
-  private _formId: string
+  _formId: string
   /**
    * @private
    */
@@ -1071,20 +1078,18 @@ export class FormApi<
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             fieldErrors = Object.values(currBaseMeta.errorMap ?? {}).filter(
               (val) => val !== undefined,
-            ) as never
+            )
 
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             const fieldInstance = this.getFieldInfo(fieldName)?.instance
 
             if (fieldInstance && !fieldInstance.options.disableErrorFlat) {
-              fieldErrors = (fieldErrors as undefined | string[])?.flat(
-                1,
-              ) as never
+              fieldErrors = fieldErrors.flat(1)
             }
           }
 
           // As primitives, we don't need to aggressively persist the same referential value for performance reasons
-          const isFieldValid = !isNonEmptyArray(fieldErrors ?? [])
+          const isFieldValid = !isNonEmptyArray(fieldErrors)
           const isFieldPristine = !currBaseMeta.isDirty
           const isDefaultValue =
             evaluate(
@@ -1112,11 +1117,11 @@ export class FormApi<
 
           fieldMeta[fieldName] = {
             ...currBaseMeta,
-            errors: fieldErrors,
+            errors: fieldErrors ?? [],
             isPristine: isFieldPristine,
             isValid: isFieldValid,
             isDefaultValue: isDefaultValue,
-          } as AnyFieldMeta
+          } satisfies AnyFieldMeta as AnyFieldMeta
         }
 
         if (!Object.keys(currBaseStore.fieldMetaBase).length) return fieldMeta
@@ -1181,8 +1186,8 @@ export class FormApi<
         const hasOnMountError = Boolean(
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           currBaseStore.errorMap?.onMount ||
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            fieldMetaValues.some((f) => f?.errorMap?.onMount),
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          fieldMetaValues.some((f) => f?.errorMap?.onMount),
         )
 
         const isValidating = !!isFieldsValidating
@@ -1306,20 +1311,9 @@ export class FormApi<
 
     this.update(opts || {})
 
-    const debouncedDevtoolState = throttle(
-      (state: AnyFormState) =>
-        formEventClient.emit('form-state', {
-          id: this._formId,
-          state: state,
-        }),
-      {
-        wait: 300,
-      },
-    )
-
     // devtool broadcasts
     this.store.subscribe(() => {
-      debouncedDevtoolState(this.store.state)
+      throttleFormState(this)
     })
 
     // devtool requests
@@ -2017,12 +2011,17 @@ export class FormApi<
     return this.validateAsync(cause)
   }
 
+  // Needs to edgecase in the React adapter specifically to avoid type errors
+  handleSubmit(): Promise<void>
+  handleSubmit(submitMeta: TSubmitMeta): Promise<void>
+  handleSubmit(submitMeta?: TSubmitMeta): Promise<void> {
+    return this._handleSubmit(submitMeta)
+  }
+
   /**
    * Handles the form submission, performs validation, and calls the appropriate onSubmit or onSubmitInvalid callbacks.
    */
-  handleSubmit(): Promise<void>
-  handleSubmit(submitMeta: TSubmitMeta): Promise<void>
-  async handleSubmit(submitMeta?: TSubmitMeta): Promise<void> {
+  _handleSubmit = async (submitMeta?: TSubmitMeta): Promise<void> => {
     this.baseStore.setState((old) => ({
       ...old,
       // Submission attempts mark the form as not submitted
@@ -2346,7 +2345,7 @@ export class FormApi<
     }
 
     // Shift down all meta after validating to make sure the new field has been mounted
-    metaHelper(this).handleArrayFieldMetaShift(field, index, 'insert')
+    metaHelper(this).handleArrayInsert(field, index)
 
     if (!dontValidate) {
       await this.validateArrayFieldsStartingFrom(field, index, 'change')
@@ -2407,7 +2406,7 @@ export class FormApi<
     )
 
     // Shift up all meta
-    metaHelper(this).handleArrayFieldMetaShift(field, index, 'remove')
+    metaHelper(this).handleArrayRemove(field, index)
 
     if (lastIndex !== null) {
       const start = `${field}[${lastIndex}]`
@@ -2442,7 +2441,7 @@ export class FormApi<
     )
 
     // Swap meta
-    metaHelper(this).handleArrayFieldMetaShift(field, index1, 'swap', index2)
+    metaHelper(this).handleArraySwap(field, index1, index2)
 
     const dontValidate = options?.dontValidate ?? false
     if (!dontValidate) {
@@ -2474,7 +2473,7 @@ export class FormApi<
     )
 
     // Move meta between index1 and index2
-    metaHelper(this).handleArrayFieldMetaShift(field, index1, 'move', index2)
+    metaHelper(this).handleArrayMove(field, index1, index2)
 
     const dontValidate = options?.dontValidate ?? false
     if (!dontValidate) {
@@ -2540,7 +2539,7 @@ export class FormApi<
   /**
    * Updates the form's errorMap
    */
-  setErrorMap(
+  setErrorMap = (
     errorMap: FormValidationErrorMap<
       TFormData,
       UnwrapFormValidateOrFn<TOnMount>,
@@ -2554,7 +2553,7 @@ export class FormApi<
       UnwrapFormAsyncValidateOrFn<TOnDynamicAsync>,
       UnwrapFormAsyncValidateOrFn<TOnServer>
     >,
-  ) {
+  ) => {
     batch(() => {
       Object.entries(errorMap).forEach(([key, value]) => {
         const errorMapKey = key as ValidationErrorMapKeys

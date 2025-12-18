@@ -1,12 +1,12 @@
 {
   "name": "@tanstack/form-devtools",
-  "version": "0.1.8",
+  "version": "0.2.7",
   "description": "Devtools, for TanStack form.",
   "author": "tannerlinsley",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TanStack/form.git",
+    "url": "git+https://github.com/TanStack/form.git",
     "directory": "packages/form-devtools"
   },
   "homepage": "https://tanstack.com/form",
@@ -52,7 +52,8 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/devtools-ui": "^0.4.3",
+    "@tanstack/devtools-ui": "^0.4.4",
+    "@tanstack/devtools-utils": "^0.0.9",
     "@tanstack/form-core": "workspace:*",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.18",
@@ -60,7 +61,7 @@
   },
   "devDependencies": {
     "solid-js": "^1.9.9",
-    "vite": "^7.1.6",
+    "vite": "^7.2.2",
     "vite-plugin-solid": "^2.11.8"
   },
   "peerDependencies": {

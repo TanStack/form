@@ -23,6 +23,11 @@ describe('getBy', () => {
     mother: {
       name: 'Lisa',
     },
+    siblings: [
+      {
+        name: undefined,
+      },
+    ],
   }
 
   it('should get subfields by path', () => {
@@ -39,6 +44,7 @@ describe('getBy', () => {
     expect(getBy(structure, 'kids[0].hobbies[0]')).toBe(
       structure.kids[0]!.hobbies[0],
     )
+
     expect(getBy(structure, 'kids[0].hobbies[1]')).toBe(
       structure.kids[0]!.hobbies[1],
     )
@@ -185,6 +191,24 @@ describe('deleteBy', () => {
     expect(deleteBy(structure, 'nonexistent.nonexistent')).toEqual(structure)
     expect(deleteBy(structure, 'kids[3].name')).toEqual(structure)
     expect(deleteBy(structure, 'nonexistent[3].nonexistent')).toEqual(structure)
+  })
+
+  it('should now throw an error when deleting a path with numeric keys', () => {
+    const structure2 = {
+      123: 'a',
+      b: {
+        234: 'c',
+      },
+      d: {
+        456: {
+          e: 'f',
+        },
+      },
+    }
+
+    expect(() => deleteBy(structure2, '123')).not.toThrow()
+    expect(() => deleteBy(structure2, 'b.234')).not.toThrow()
+    expect(() => deleteBy(structure2, 'd.456.e')).not.toThrow()
   })
 })
 
