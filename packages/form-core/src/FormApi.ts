@@ -2267,11 +2267,7 @@ export class FormApi<
       this.baseStore.setState((prev) => {
         return {
           ...prev,
-          values: setBy(
-            prev.values,
-            field,
-            updater
-          ),
+          values: setBy(prev.values, field, updater),
         }
       })
     })
