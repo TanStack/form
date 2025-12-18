@@ -1671,16 +1671,20 @@ export class FormApi<
 
         const errorMapKey = getErrorMapKey(validateObj.cause)
 
-        for (const field of Object.keys(
-          this.state.fieldMeta,
-        ) as DeepKeys<TFormData>[]) {
-          if (this.baseStore.state.fieldMetaBase[field] === undefined) {
+        const allFieldsToProcess = new Set([
+          ...Object.keys(this.state.fieldMeta),
+          ...Object.keys(fieldErrors || {}),
+        ] as DeepKeys<TFormData>[])
+
+        for (const field of allFieldsToProcess) {
+          if (
+            this.baseStore.state.fieldMetaBase[field] === undefined &&
+            !fieldErrors?.[field]
+          ) {
             continue
           }
 
-          const fieldMeta = this.getFieldMeta(field)
-          if (!fieldMeta) continue
-
+          const fieldMeta = this.getFieldMeta(field) ?? defaultFieldMeta
           const {
             errorMap: currentErrorMap,
             errorSourceMap: currentErrorMapSource,
@@ -1692,10 +1696,8 @@ export class FormApi<
             determineFormLevelErrorSourceAndValue({
               newFormValidatorError,
               isPreviousErrorFromFormValidator:
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                currentErrorMapSource?.[errorMapKey] === 'form',
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              previousErrorValue: currentErrorMap?.[errorMapKey],
+                currentErrorMapSource[errorMapKey] === 'form',
+              previousErrorValue: currentErrorMap[errorMapKey],
             })
 
           if (newSource === 'form') {
@@ -1705,11 +1707,8 @@ export class FormApi<
             }
           }
 
-          if (
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            currentErrorMap?.[errorMapKey] !== newErrorValue
-          ) {
-            this.setFieldMeta(field, (prev) => ({
+          if (currentErrorMap[errorMapKey] !== newErrorValue) {
+            this.setFieldMeta(field, (prev = defaultFieldMeta) => ({
               ...prev,
               errorMap: {
                 ...prev.errorMap,
