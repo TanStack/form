@@ -2872,56 +2872,57 @@ describe('field api', () => {
       vi.useRealTimers()
     })
   })
+})
 
-  describe('edge cases and error handling', () => {
-    it('should handle deleteField on non-existent fields gracefully', () => {
-      const form = new FormApi({
-        defaultValues: {
-          existingField: 'value',
-        },
-      })
-
-      form.mount()
-
-      expect(() => {
-        form.deleteField('nonExistentField' as keyof typeof form.state.values)
-      }).not.toThrow()
-
-      expect(form.state.values.existingField).toBe('value')
+describe('edge cases and error handling', () => {
+  it('should handle deleteField on non-existent fields gracefully', () => {
+    const form = new FormApi({
+      defaultValues: {
+        existingField: 'value',
+      },
     })
 
-    it('should handle concurrent field operations correctly', async () => {
-      const form = new FormApi({
-        defaultValues: {
-          field1: 'value1',
-          field2: 'value2',
-          field3: 'value3',
-        },
-      })
+    form.mount()
 
-      form.mount()
+    expect(() => {
+      form.deleteField('nonExistentField' as keyof typeof form.state.values)
+    }).not.toThrow()
 
-      const field1 = new FieldApi({ form, name: 'field1' })
-      const field2 = new FieldApi({ form, name: 'field2' })
-      const field3 = new FieldApi({ form, name: 'field3' })
+    expect(form.state.values.existingField).toBe('value')
+  })
 
-      field1.mount()
-      field2.mount()
-      field3.mount()
-
-      const operations = [
-        () => form.deleteField('field1'),
-        () => form.deleteField('field2'),
-        () => form.setFieldValue('field3', 'new value'),
-      ]
-
-      await Promise.all(operations.map((op) => Promise.resolve(op())))
-
-      expect(form.fieldInfo.field1).toBeUndefined()
-      expect(form.fieldInfo.field2).toBeUndefined()
-      expect(form.fieldInfo.field3).toBeDefined()
-      expect(form.state.values.field3).toBe('new value')
+  it('should handle concurrent field operations correctly', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        field1: 'value1',
+        field2: 'value2',
+        field3: 'value3',
+      },
     })
+
+    form.mount()
+
+    const field1 = new FieldApi({ form, name: 'field1' })
+    const field2 = new FieldApi({ form, name: 'field2' })
+    const field3 = new FieldApi({ form, name: 'field3' })
+
+    field1.mount()
+    field2.mount()
+    field3.mount()
+
+    const operations = [
+      () => form.deleteField('field1'),
+      () => form.deleteField('field2'),
+      () => form.setFieldValue('field3', 'new value'),
+    ]
+
+    await Promise.all(operations.map((op) => Promise.resolve(op())))
+
+    expect(form.fieldInfo.field1).toBeUndefined()
+    expect(form.fieldInfo.field2).toBeUndefined()
+    expect(form.fieldInfo.field3).toBeDefined()
+    expect(form.state.values.field3).toBe('new value')
+  })
   it('should allow setting to explicitly undefined', () => {
     const form = new FormApi({
       defaultValues: { a: '' as string | undefined },
