@@ -7,7 +7,7 @@ This page introduces the basic concepts and terminology used in the `@tanstack/r
 
 ## Form Options
 
-You can create options for your form so that it can be shared between multiple forms by using the `formOptions` function.
+You can customize your form by creating configuration options with the `formOptions` function. These options can be shared between multiple forms.
 
 Example:
 
@@ -24,9 +24,11 @@ const formOpts = formOptions({
 })
 ```
 
+More information about `formOptions` can be found at [FormOptions](../../../reference/interfaces/FormOptions.md)
+
 ## Form Instance
 
-A Form Instance is an object that represents an individual form and provides methods and properties for working with the form. You create a form instance using the `useForm` hook provided by the form options. The hook accepts an object with an `onSubmit` function, which is called when the form is submitted.
+A Form instance is an object that represents an individual form and provides methods and properties for working with the form. You create a Form instance using the `useForm` hook provided by the form options. The hook accepts an object with an `onSubmit` function, which is called when the form is submitted.
 
 ```tsx
 const form = useForm({
@@ -38,7 +40,7 @@ const form = useForm({
 })
 ```
 
-You may also create a form instance without using `formOptions` by using the standalone `useForm` API:
+You may also create a Form instance without using `formOptions` by using the standalone `useForm` API:
 
 ```tsx
 interface User {
@@ -59,7 +61,7 @@ const form = useForm({
 
 ## Field
 
-A Field represents a single form input element, such as a text input or a checkbox. Fields are created using the form.Field component provided by the form instance. The component accepts a name prop, which should match a key in the form's default values. It also accepts a children prop, which is a render prop function that takes a field object as its argument.
+A Field represents a single form input element, such as a text input or a checkbox. Fields are created using the `form.Field` component provided by the Form instance. The component accepts a `name` prop, which should match a key in the form's default values. It also accepts a `children` prop, which is a render prop function that takes a `field` object as its argument.
 
 Example:
 
@@ -79,7 +81,7 @@ Example:
 />
 ```
 
-If you run into issues handing in children as props, make sure to check your linting rules.
+If you run into issues handling `children` as props, make sure to check your linting rules.
 
 Example (ESLint):
 
@@ -107,12 +109,12 @@ const {
 } = field.state
 ```
 
-There are four states in the metadata that can be useful to see how the user interacts with a field:
+There are four states in the metadata that can be useful for seeing how the user interacts with a field:
 
-- _"isTouched"_, after the user changes the field or blurs the field
-- _"isDirty"_, after the field's value has been changed, even if it's been reverted to the default. Opposite of `isPristine`
-- _"isPristine"_, until the user changes the field value. Opposite of `isDirty`
-- _"isBlurred"_, after the field has been blurred
+- **isTouched**: is `true` once the user changes or blurs the field
+- **isDirty**: is `true` once the field's value is changed, even if it's reverted to the default. Opposite of `isPristine`
+- **isPristine**: is `true` until the user changes the field's value. Opposite of `isDirty`
+- **isBlurred**: is `true` once the field loses focus (is blurred)
 
 ```ts
 const { isTouched, isDirty, isPristine, isBlurred } = field.state.meta
@@ -134,12 +136,12 @@ Persistent `dirty` state
 
 We have chosen the persistent 'dirty' state model. To also support a non-persistent 'dirty' state, we introduce an additional flag:
 
-- _"isDefaultValue"_, whether the field's current value is the default value
+- **isDefaultValue**: is `true` when the field's current value is the default value
 
 ```ts
 const { isDefaultValue, isTouched } = field.state.meta
 
-// The following line will re-create the non-Persistent `dirty` functionality.
+// The following line will re-create the non-persistent `dirty` functionality.
 const nonPersistentIsDirty = !isDefaultValue
 ```
 
@@ -158,6 +160,8 @@ Example:
   onChange={(e) => field.handleChange(e.target.value)}
 />
 ```
+
+More information on the Field API can be found at [FieldApi](../../../reference/classes/FieldApi#schema)
 
 ## Validation
 
@@ -290,7 +294,7 @@ More information can be found at [Listeners](./listeners.md)
 
 Array fields allow you to manage a list of values within a form, such as a list of hobbies. You can create an array field using the `form.Field` component with the `mode="array"` prop.
 
-When working with array fields, you can use the fields `pushValue`, `removeValue`, `swapValues` and `moveValue` methods to add, remove, swap, and move a value from one index to another within the array, respectively. Additional helper methods such as `insertValue`, `replaceValue`, and `clearValues` are also available for inserting, replacing, and clearing array values.
+When working with array fields, you can use the `pushValue`, `removeValue`, `swapValues`, and `moveValue` methods to add, remove, swap, and move a value from one index to another within the array, respectively. Additional helper methods such as `insertValue`, `replaceValue`, and `clearValues` are also available for inserting, replacing, and clearing array values.
 
 Example:
 
@@ -370,7 +374,7 @@ Example:
 
 ## Reset Buttons
 
-When using `<button type="reset">` in conjunction with TanStack Form's `form.reset()`, you need to prevent the default HTML reset behavior to avoid unexpected resets of form elements (especially `<select>` elements) to their initial HTML values.
+When using `<button type="reset">` with TanStack Form's `form.reset()`, you need to prevent the default HTML reset behavior to avoid unexpected resets of form elements (especially `<select>` elements) to their initial HTML values.
 Use `event.preventDefault()` inside the button's `onClick` handler to prevent the native form reset.
 
 Example:
