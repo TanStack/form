@@ -24,8 +24,6 @@ const formOpts = formOptions({
 })
 ```
 
-More information about `formOptions` can be found at [FormOptions](../../../reference/interfaces/FormOptions.md)
-
 ## Form Instance
 
 A Form instance is an object that represents an individual form and provides methods and properties for working with the form. You create a Form instance using the `useForm` hook provided by the form options. The hook accepts an object with an `onSubmit` function, which is called when the form is submitted.
@@ -115,6 +113,7 @@ There are four states in the metadata that can be useful for seeing how the user
 - **isDirty**: is `true` once the field's value is changed, even if it's reverted to the default. Opposite of `isPristine`
 - **isPristine**: is `true` until the user changes the field's value. Opposite of `isDirty`
 - **isBlurred**: is `true` once the field loses focus (is blurred)
+- **isDefaultValue**: is `true` when the field's current value is the default value
 
 ```ts
 const { isTouched, isDirty, isPristine, isBlurred } = field.state.meta
@@ -134,9 +133,8 @@ Persistent `dirty` state
 - **Libraries**: Angular Form, Vue FormKit.
 - **Behavior**: A field remains 'dirty' once changed, even if reverted to the default value.
 
-We have chosen the persistent 'dirty' state model. To also support a non-persistent 'dirty' state, we introduce an additional flag:
+We have chosen the persistent 'dirty' state model. However, we have introduced the `isDefaultValue` flag to also support a non-persistent 'dirty' state.
 
-- **isDefaultValue**: is `true` when the field's current value is the default value
 
 ```ts
 const { isDefaultValue, isTouched } = field.state.meta
@@ -160,8 +158,6 @@ Example:
   onChange={(e) => field.handleChange(e.target.value)}
 />
 ```
-
-More information on the Field API can be found at [FieldApi](../../../reference/classes/FieldApi#schema)
 
 ## Validation
 
