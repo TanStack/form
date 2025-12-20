@@ -135,7 +135,6 @@ Persistent `dirty` state
 
 We have chosen the persistent 'dirty' state model. However, we have introduced the `isDefaultValue` flag to also support a non-persistent 'dirty' state.
 
-
 ```ts
 const { isDefaultValue, isTouched } = field.state.meta
 
