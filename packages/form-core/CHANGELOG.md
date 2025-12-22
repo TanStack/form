@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.27.6
+
+### Patch Changes
+
+- fix(form-core): Prevent runtime errors during validation ([#1948](https://github.com/TanStack/form/pull/1948))
+
 ## 1.27.5
 
 ### Patch Changes
