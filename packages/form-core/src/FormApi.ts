@@ -1696,8 +1696,11 @@ export class FormApi<
             determineFormLevelErrorSourceAndValue({
               newFormValidatorError,
               isPreviousErrorFromFormValidator:
-                currentErrorMapSource[errorMapKey] === 'form',
-              previousErrorValue: currentErrorMap[errorMapKey],
+                // These conditional checks are required, otherwise we get runtime errors.
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                currentErrorMapSource?.[errorMapKey] === 'form',
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+              previousErrorValue: currentErrorMap?.[errorMapKey],
             })
 
           if (newSource === 'form') {
@@ -1707,7 +1710,9 @@ export class FormApi<
             }
           }
 
-          if (currentErrorMap[errorMapKey] !== newErrorValue) {
+          // This conditional check is required, otherwise we get runtime errors.
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          if (currentErrorMap?.[errorMapKey] !== newErrorValue) {
             this.setFieldMeta(field, (prev = defaultFieldMeta) => ({
               ...prev,
               errorMap: {
