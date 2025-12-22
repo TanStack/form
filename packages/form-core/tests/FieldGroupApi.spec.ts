@@ -213,6 +213,96 @@ describe('field group api', () => {
     expect(field3.state.meta.errors).toEqual(['Field 3'])
   })
 
+  it('should forward validateArrayFields to form', async () => {
+    vi.useFakeTimers()
+
+    const defaultValues = {
+      people: {
+        names: [
+          {
+            firstName: 'First one',
+            lastName: 'Last one',
+          },
+          {
+            firstName: 'Second one',
+            lastName: 'Last two',
+          },
+        ],
+      },
+    }
+
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const field1FirstName = new FieldApi({
+      form,
+      name: 'people.names[0].firstName',
+      validators: {
+        onChange: () => 'Field 1 - First Name',
+      },
+    })
+
+    const field1LastName = new FieldApi({
+      form,
+      name: 'people.names[0].lastName',
+      validators: {
+        onChange: () => 'Field 1 - Last Name',
+      },
+    })
+
+    const field2FirstName = new FieldApi({
+      form,
+      name: 'people.names[1].firstName',
+      validators: {
+        onChange: () => 'Field 2 - First Name',
+      },
+    })
+
+    const field2LastName = new FieldApi({
+      form,
+      name: 'people.names[1].lastName',
+      validators: {
+        onChange: () => 'Field 2 - Last Name',
+      },
+    })
+
+    field1FirstName.mount()
+    field1LastName.mount()
+    field2FirstName.mount()
+    field2LastName.mount()
+
+    const fieldGroup = new FieldGroupApi({
+      form,
+      defaultValues: {
+        names: [
+          {
+            firstName: '',
+            lastName: '',
+          },
+          {
+            firstName: '',
+            lastName: '',
+          },
+        ],
+      },
+      fields: 'people',
+    })
+
+    fieldGroup.mount()
+
+    fieldGroup.validateArrayFields('names', 0, 'change')
+
+    await vi.runAllTimersAsync()
+
+    expect(field1FirstName.state.meta.errors).toEqual(['Field 1 - First Name'])
+    expect(field1LastName.state.meta.errors).toEqual(['Field 1 - Last Name'])
+
+    expect(field2FirstName.state.meta.errors).toEqual([])
+    expect(field2LastName.state.meta.errors).toEqual([])
+  })
+
   it('should get the right field value from the nested field', () => {
     const defaultValues: FormValues = {
       name: '',
