@@ -1,5 +1,5 @@
 ---
-"@tanstack/form-core": patch
+'@tanstack/form-core': patch
 ---
 
 fix(form-core): Prevent runtime errors during validation
