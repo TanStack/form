@@ -993,6 +993,16 @@ export class FormApi<
   private _devtoolsSubmissionOverride: boolean
 
   /**
+   * @private
+   */
+  _hasMounted = false
+
+  /**
+   * @private
+   */
+  _isMounted = false
+
+  /**
    * Constructs a new `FormApi` instance with the given form options.
    */
   constructor(
@@ -1396,11 +1406,11 @@ export class FormApi<
       formEventClient.emit('form-unmounted', {
         id: this._formId,
       })
+
+      this._isMounted = false
     }
 
-    this.options.listeners?.onMount?.({ formApi: this })
-
-    const { onMount } = this.options.validators || {}
+    this._isMounted = true
 
     // broadcast form state for devtools on mounting
     formEventClient.emit('form-api', {
@@ -1408,6 +1418,18 @@ export class FormApi<
       state: this.store.state,
       options: this.options,
     })
+
+    if (
+      this.options.defaultValues === undefined ||
+      this.options.defaultValues === null
+    ) {
+      return cleanup
+    }
+
+    this.options.listeners?.onMount?.({ formApi: this })
+    this._hasMounted = true
+
+    const { onMount } = this.options.validators || {}
 
     // if no validation skip
     if (!onMount) return cleanup
@@ -1442,6 +1464,22 @@ export class FormApi<
 
     // Options need to be updated first so that when the store is updated, the state is correct for the derived state
     this.options = options
+
+    if (
+      this._isMounted &&
+      !this._hasMounted &&
+      options.defaultValues !== undefined &&
+      options.defaultValues !== null
+    ) {
+      this.options.listeners?.onMount?.({ formApi: this })
+      this._hasMounted = true
+
+      const { onMount } = this.options.validators || {}
+
+      if (onMount) {
+        this.validateSync('mount')
+      }
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const shouldUpdateReeval = !!options.transform?.deps?.some(
