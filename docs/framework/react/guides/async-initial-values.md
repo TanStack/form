@@ -16,36 +16,69 @@ As such, this guide shows you how you can mix-n-match TanStack Form with TanStac
 
 ## Basic Usage
 
+TanStack Form automatically handles async initial values by delaying `onMount` listeners and validation until `defaultValues` are provided (i.e. not `undefined` or `null`).
+
 ```tsx
 import { useForm } from '@tanstack/react-form'
 import { useQuery } from '@tanstack/react-query'
 
 export default function App() {
-  const {data, isLoading} = useQuery({
+  const { data } = useQuery({
     queryKey: ['data'],
     queryFn: async () => {
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      return {firstName: 'FirstName', lastName: "LastName"}
-    }
+      return { firstName: 'FirstName', lastName: 'LastName' }
+    },
   })
 
   const form = useForm({
-    defaultValues: {
-      firstName: data?.firstName ?? '',
-      lastName: data?.lastName ?? '',
-    },
+    defaultValues: data,
     onSubmit: async ({ value }) => {
       // Do something with form data
       console.log(value)
     },
   })
 
-  if (isLoading) return <p>Loading..</p>
+  // You can show a loading spinner while waiting for data
+  // The form's onMount validation/listeners will NOT run until data is available
+  if (!data) {
+    return <p>Loading...</p>
+  }
 
   return (
-    // ...
+    <form.Provider>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          form.handleSubmit()
+        }}
+      >
+        <form.Field
+          name="firstName"
+          children={(field) => (
+            <input
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={(e) => field.handleChange(e.target.value)}
+            />
+          )}
+        />
+        <form.Field
+          name="lastName"
+          children={(field) => (
+            <input
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={(e) => field.handleChange(e.target.value)}
+            />
+          )}
+        />
+        <button type="submit">Submit</button>
+      </form>
+    </form.Provider>
   )
 }
 ```
 
-This will show a loading spinner until the data is fetched, and then it will render the form with the fetched data as the initial values.
+In the example above, even though `useForm` is initialized immediately, the form validation and `onMount` effects will effectively "pause" until `data` is populated. This allows you to comfortably render a loading state without triggering premature validation errors or side effects.
