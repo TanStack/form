@@ -23,12 +23,12 @@ import { useForm } from '@tanstack/react-form'
 import { useQuery } from '@tanstack/react-query'
 
 export default function App() {
-  const {data} = useQuery({
+  const { data } = useQuery({
     queryKey: ['data'],
     queryFn: async () => {
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      return {firstName: 'FirstName', lastName: "LastName"}
-    }
+      return { firstName: 'FirstName', lastName: 'LastName' }
+    },
   })
 
   const form = useForm({
@@ -42,39 +42,41 @@ export default function App() {
   // You can show a loading spinner while waiting for data
   // The form's onMount validation/listeners will NOT run until data is available
   if (!data) {
-     return <p>Loading...</p>
+    return <p>Loading...</p>
   }
 
   return (
-     <form.Provider>
-       <form onSubmit={(e) => {
-         e.preventDefault()
-         e.stopPropagation()
-         form.handleSubmit()
-       }}>
+    <form.Provider>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          form.handleSubmit()
+        }}
+      >
         <form.Field
-            name="firstName"
-            children={(field) => (
-              <input
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-            )}
+          name="firstName"
+          children={(field) => (
+            <input
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={(e) => field.handleChange(e.target.value)}
+            />
+          )}
         />
         <form.Field
-            name="lastName"
-            children={(field) => (
-              <input
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-            )}
+          name="lastName"
+          children={(field) => (
+            <input
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={(e) => field.handleChange(e.target.value)}
+            />
+          )}
         />
         <button type="submit">Submit</button>
-       </form>
-     </form.Provider>
+      </form>
+    </form.Provider>
   )
 }
 ```
