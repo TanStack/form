@@ -1,4 +1,3 @@
-
 import { render, waitFor, screen } from '@testing-library/react'
 import React, { useEffect, useState } from 'react'
 import { useForm } from '../src/useForm'
@@ -81,24 +80,26 @@ describe('useForm deferred mounting', () => {
 
       return (
         <div>
-           <form.Field
-              name="firstName"
-              listeners={{
-                onMount: onMountFieldListener,
-              }}
-              validators={{
-                onMount: onMountFieldValidator,
-              }}
-              children={(field) => (
-                <input
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                />
-              )}
-           />
-           <button onClick={() => setData({ firstName: 'Test' })}>Load Data</button>
+          <form.Field
+            name="firstName"
+            listeners={{
+              onMount: onMountFieldListener,
+            }}
+            validators={{
+              onMount: onMountFieldValidator,
+            }}
+            children={(field) => (
+              <input
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            )}
+          />
+          <button onClick={() => setData({ firstName: 'Test' })}>
+            Load Data
+          </button>
         </div>
       )
     }
@@ -131,23 +132,23 @@ describe('useForm deferred mounting', () => {
 
       return (
         <div>
-           <form.Field
-              name="firstName"
-              listeners={{
-                onMount: onMountFieldListener,
-              }}
-              validators={{
-                onMount: onMountFieldValidator,
-              }}
-              children={(field) => (
-                <input
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                />
-              )}
-           />
+          <form.Field
+            name="firstName"
+            listeners={{
+              onMount: onMountFieldListener,
+            }}
+            validators={{
+              onMount: onMountFieldValidator,
+            }}
+            children={(field) => (
+              <input
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            )}
+          />
         </div>
       )
     }
