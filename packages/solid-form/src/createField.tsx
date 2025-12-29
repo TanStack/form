@@ -253,11 +253,11 @@ function makeFieldReactive<
   > {
   const [field, setField] = createSignal(fieldApi, { equals: false })
   // Handle shallow comparison to make sure that Derived doesn't create a new setField call every time
-  const store = useStore(fieldApi.store, store => store);
+  const store = useStore(fieldApi.store, (store) => store)
   // Run before initial render
   createComputed(() => {
     // Use the store to track dependencies
-    store();
+    store()
     setField(fieldApi)
   })
   return field
