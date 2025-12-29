@@ -1169,7 +1169,33 @@ export class FieldApi<
 
     this.store = new Derived({
       deps: [this.form.store],
-      fn: () => {
+      fn: ({ prevVal: _prevVal }) => {
+        const prevVal = _prevVal as
+          | FieldState<
+              TParentData,
+              TName,
+              TData,
+              TOnMount,
+              TOnChange,
+              TOnChangeAsync,
+              TOnBlur,
+              TOnBlurAsync,
+              TOnSubmit,
+              TOnSubmitAsync,
+              TOnDynamic,
+              TOnDynamicAsync,
+              TFormOnMount,
+              TFormOnChange,
+              TFormOnChangeAsync,
+              TFormOnBlur,
+              TFormOnBlurAsync,
+              TFormOnSubmit,
+              TFormOnSubmitAsync,
+              TFormOnDynamic,
+              TFormOnDynamicAsync
+            >
+          | undefined
+
         const meta = this.form.getFieldMeta(this.name) ?? {
           ...defaultFieldMeta,
           ...opts.defaultMeta,
@@ -1183,6 +1209,10 @@ export class FieldApi<
           !evaluate(value, this.options.defaultValue)
         ) {
           value = this.options.defaultValue
+        }
+
+        if (prevVal && prevVal.value === value && prevVal.meta === meta) {
+          return prevVal
         }
 
         return {
