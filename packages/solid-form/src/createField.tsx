@@ -19,6 +19,7 @@ import type {
 
 import type { Accessor, JSX, JSXElement } from 'solid-js'
 import type { CreateFieldOptions, CreateFieldOptionsBound } from './types'
+import { useStore } from '@tanstack/solid-store'
 
 interface SolidFieldApi<
   TParentData,
@@ -251,8 +252,14 @@ function makeFieldReactive<
     TParentSubmitMeta
   > {
   const [field, setField] = createSignal(fieldApi, { equals: false })
-  const unsubscribeStore = fieldApi.store.subscribe(() => setField(fieldApi))
-  onCleanup(unsubscribeStore)
+  // Handle shallow comparison to make sure that Derived doesn't create a new setField call every time
+  const store = useStore(fieldApi.store, store => store);
+  // Run before initial render
+  createComputed(() => {
+    // Use the store to track dependencies
+    store();
+    setField(fieldApi)
+  })
   return field
 }
 
