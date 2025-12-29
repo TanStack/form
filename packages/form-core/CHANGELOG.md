@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.27.7
+
+### Patch Changes
+
+- Fix double-rendering of Solid fields ([#1959](https://github.com/TanStack/form/pull/1959))
+
 ## 1.27.6
 
 ### Patch Changes
