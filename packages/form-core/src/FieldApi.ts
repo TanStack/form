@@ -1128,6 +1128,16 @@ export class FieldApi<
   }
 
   /**
+   * @private
+   */
+  _hasMounted = false
+
+  /**
+   * @private
+   */
+  _isMounted = false
+
+  /**
    * Initializes a new `FieldApi` instance.
    */
   constructor(
@@ -1277,6 +1287,8 @@ export class FieldApi<
   mount = () => {
     const cleanup = this.store.mount()
 
+    this._isMounted = true
+
     if (this.options.defaultValue !== undefined && !this.getMeta().isTouched) {
       this.form.setFieldValue(this.name, this.options.defaultValue, {
         dontUpdateMeta: true,
@@ -1288,41 +1300,10 @@ export class FieldApi<
 
     this.update(this.options as never)
 
-    const { onMount } = this.options.validators || {}
-
-    if (onMount) {
-      const error = this.runValidator({
-        validate: onMount,
-        value: {
-          value: this.state.value,
-          fieldApi: this,
-          validationSource: 'field',
-        },
-        type: 'validate',
-      })
-      if (error) {
-        this.setMeta(
-          (prev) =>
-            ({
-              ...prev,
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              errorMap: { ...prev?.errorMap, onMount: error },
-              errorSourceMap: {
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                ...prev?.errorSourceMap,
-                onMount: 'field',
-              },
-            }) as never,
-        )
-      }
+    return () => {
+      this._isMounted = false
+      cleanup()
     }
-
-    this.options.listeners?.onMount?.({
-      value: this.state.value,
-      fieldApi: this,
-    })
-
-    return cleanup
   }
 
   /**
@@ -1372,6 +1353,49 @@ export class FieldApi<
 
     if (!this.form.getFieldMeta(this.name)) {
       this.form.setFieldMeta(this.name, this.state.meta)
+    }
+
+    if (
+      this._isMounted &&
+      !this._hasMounted &&
+      this.form.options.defaultValues !== undefined &&
+      this.form.options.defaultValues !== null
+    ) {
+      this._hasMounted = true
+
+      const { onMount } = this.options.validators || {}
+
+      if (onMount) {
+        const error = this.runValidator({
+          validate: onMount,
+          value: {
+            value: this.state.value,
+            fieldApi: this,
+            validationSource: 'field',
+          },
+          type: 'validate',
+        })
+        if (error) {
+          this.setMeta(
+            (prev) =>
+              ({
+                ...prev,
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                errorMap: { ...prev?.errorMap, onMount: error },
+                errorSourceMap: {
+                  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                  ...prev?.errorSourceMap,
+                  onMount: 'field',
+                },
+              }) as never,
+          )
+        }
+      }
+
+      this.options.listeners?.onMount?.({
+        value: this.state.value,
+        fieldApi: this,
+      })
     }
   }
 
