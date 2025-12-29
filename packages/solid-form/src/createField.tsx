@@ -6,6 +6,7 @@ import {
   onCleanup,
   onMount,
 } from 'solid-js'
+import { useStore } from '@tanstack/solid-store'
 import type {
   DeepKeys,
   DeepValue,
@@ -19,7 +20,6 @@ import type {
 
 import type { Accessor, JSX, JSXElement } from 'solid-js'
 import type { CreateFieldOptions, CreateFieldOptionsBound } from './types'
-import { useStore } from '@tanstack/solid-store'
 
 interface SolidFieldApi<
   TParentData,
