@@ -181,6 +181,7 @@ It's worth mentioning that our `errors` array and the `errorMap` match the types
 ```
 
 ## Validation at field-level vs at form-level
+
 ## Validation at field-level vs at form-level
 
 As shown above, each `<Field>` accepts its own validation rules via the callbacks such as `onChange` and `onBlur`. It is also possible to define validation rules at the form-level (as opposed to field-by-field) by passing similar callbacks to the `useForm()` hook.
