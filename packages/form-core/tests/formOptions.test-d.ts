@@ -197,7 +197,8 @@ describe('formOptions', () => {
       FormAsyncValidateOrFn<FormData> | undefined,
       FormValidateOrFn<FormData> | undefined,
       FormAsyncValidateOrFn<FormData> | undefined,
-      FormAsyncValidateOrFn<FormData> | undefined
+      FormAsyncValidateOrFn<FormData> | undefined,
+      unknown
     >
 
     const formOpts = formOptions({
@@ -208,7 +209,7 @@ describe('formOptions', () => {
       listeners: {
         onSubmit: ({ formApi, meta }) => {
           expectTypeOf(formApi).toEqualTypeOf<ExpectedShape>()
-          expectTypeOf(meta).toEqualTypeOf<never>()
+          expectTypeOf(meta).toEqualTypeOf<unknown>()
         },
       },
     })
@@ -322,5 +323,19 @@ describe('formOptions', () => {
     expectTypeOf(form3.state.errors).toEqualTypeOf<
       (undefined | 'Too short!' | 'I just need an error')[]
     >()
+  })
+
+  it('should allow listeners', () => {
+    const options = formOptions({
+      defaultValues: { name: '' },
+      validators: {
+        onChange: () => 'Error',
+      },
+      listeners: {
+        onChange: ({ formApi }) => {
+          expectTypeOf(formApi.state.values).toEqualTypeOf<{ name: string }>()
+        },
+      },
+    })
   })
 })

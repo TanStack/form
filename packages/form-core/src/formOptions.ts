@@ -34,7 +34,11 @@ export function formOptions<
   TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
   TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TSubmitMeta = never,
+  /*
+    This is not guaranteed to be `never`. A user could spread
+    and add them later
+  */
+  TSubmitMeta,
 >(
   defaultOpts: FormOptions<
     TFormData,
