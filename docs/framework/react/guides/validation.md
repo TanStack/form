@@ -3,15 +3,15 @@ id: form-validation
 title: Form and Field Validation
 ---
 
-At the core of TanStack Form's functionalities is the concept of validation. TanStack Form makes validation highly customizable:
+At the core of TanStack Form's functionality is the concept of validation. TanStack Form makes validation highly customizable:
 
-- You can control when to perform the validation (on change, on input, on blur, on submit...)
-- Validation rules can be defined at the field level or at the form level
+- You can control when to perform the validation (on change, on input, on blur, on submit, etc.)
+- Validation rules can be defined at the field-level or at the form-level
 - Validation can be synchronous or asynchronous (for example, as a result of an API call)
 
 ## When is validation performed?
 
-It's up to you! The `<Field />` component accepts some callbacks as props such as `onChange` or `onBlur`. Those callbacks are passed the current value of the field, as well as the fieldAPI object, so that you can perform the validation. If you find a validation error, simply return the error message as string and it will be available in `field.state.meta.errors`.
+It's up to you! The `<Field />` component accepts some callbacks as props such as `onChange` or `onBlur`. Those callbacks are passed the current value of the field, as well as the Field API object, so that you can perform the validation. If you find a validation error, simply return the error message as a string, and it will be available in `field.state.meta.errors`.
 
 Here is an example:
 
@@ -72,7 +72,7 @@ In the example above, the validation is done at each keystroke (`onChange`). If,
 </form.Field>
 ```
 
-So you can control when the validation is done by implementing the desired callback. You can even perform different pieces of validation at different times:
+So, you can control when the validation is done by implementing the desired callback. You can even perform different pieces of validation at different times:
 
 ```tsx
 <form.Field
@@ -104,7 +104,7 @@ So you can control when the validation is done by implementing the desired callb
 </form.Field>
 ```
 
-In the example above, we are validating different things on the same field at different times (at each keystroke and when blurring the field). Since `field.state.meta.errors` is an array, all the relevant errors at a given time are displayed. You can also use `field.state.meta.errorMap` to get errors based on _when_ the validation was done (onChange, onBlur etc...). More info about displaying errors below.
+In the example above, we are validating different things on the same field at different times (at each keystroke and when blurring the field). Since `field.state.meta.errors` is an array, all the relevant errors at a given time are displayed. You can also use `field.state.meta.errorMap` to get errors based on _when_ the validation was done (onChange, onBlur, etc.). More information about displaying errors is below.
 
 ## Displaying Errors
 
@@ -152,7 +152,7 @@ Or use the `errorMap` property to access the specific error you're looking for:
 </form.Field>
 ```
 
-It's worth mentioning that our `errors` array and the `errorMap` matches the types returned by the validators. This means that:
+It's worth mentioning that our `errors` array and the `errorMap` match the types returned by the validators. This means that:
 
 ```tsx
 <form.Field
@@ -174,9 +174,9 @@ It's worth mentioning that our `errors` array and the `errorMap` matches the typ
 </form.Field>
 ```
 
-## Validation at field level vs at form level
+## Validation at field-level vs at form-level
 
-As shown above, each `<Field>` accepts its own validation rules via the `onChange`, `onBlur` etc... callbacks. It is also possible to define validation rules at the form level (as opposed to field by field) by passing similar callbacks to the `useForm()` hook.
+As shown above, each `<Field>` accepts its own validation rules via the callbacks such as `onChange` and `onBlur`. It is also possible to define validation rules at the form-level (as opposed to field-by-field) by passing similar callbacks to the `useForm()` hook.
 
 Example:
 
@@ -200,8 +200,8 @@ export default function App() {
     },
   })
 
-  // Subscribe to the form's error map so that updates to it will render
-  // alternately, you can use `form.Subscribe`
+  // Subscribe to the form's `errorMap` so that updates to it will cause re-renders
+  // Alternatively, you can use `form.Subscribe`
   const formErrorMap = useStore(form.store, (state) => state.errorMap)
 
   return (
@@ -329,11 +329,11 @@ export default function App() {
 > )
 > ```
 >
-> Will only show `'Must be odd!` even if the 'Too young!' error is returned by the form-level validation.
+> Will only show `'Must be odd!'` even if the 'Too young!' error is returned by the form-level validation.
 
 ## Asynchronous Functional Validation
 
-While we suspect most validations will be synchronous, there are many instances where a network call or some other async operation would be useful to validate against.
+While we suspect most validation will be synchronous, there are many instances where a network call or some other async operation would be useful to validate against.
 
 To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods that can be used to validate against:
 
@@ -365,7 +365,7 @@ To do this, we have dedicated `onChangeAsync`, `onBlurAsync`, and other methods 
 </form.Field>
 ```
 
-Synchronous and Asynchronous validations can coexist. For example, it is possible to define both `onBlur` and `onBlurAsync` on the same field:
+Synchronous and asynchronous validators can coexist. For example, it is possible to define both `onBlur` and `onBlurAsync` on the same field:
 
 ```tsx
 <form.Field
@@ -397,11 +397,11 @@ Synchronous and Asynchronous validations can coexist. For example, it is possibl
 </form.Field>
 ```
 
-The synchronous validation method (`onBlur`) is run first and the asynchronous method (`onBlurAsync`) is only run if the synchronous one (`onBlur`) succeeds. To change this behaviour, set the `asyncAlways` option to `true`, and the async method will be run regardless of the result of the sync method.
+The synchronous validation method (`onBlur`) is run first, and the asynchronous method (`onBlurAsync`) is only run if the synchronous one (`onBlur`) succeeds. To change this behaviour, set the `asyncAlways` option to `true`, and the async method will be run regardless of the result of the sync method.
 
 ### Built-in Debouncing
 
-While async calls are the way to go when validating against the database, running a network request on every keystroke is a good way to DDOS your database.
+While async calls are the way to go when validating against the database, running a network request on every keystroke is a good way to DDoS your database.
 
 Instead, we enable an easy method for debouncing your `async` calls by adding a single property:
 
@@ -441,11 +441,11 @@ This will debounce every async call with a 500ms delay. You can even override th
 />
 ```
 
-This will run `onChangeAsync` every 1500ms while `onBlurAsync` will run every 500ms.
+This will run `onChangeAsync` every 1500ms, whereas `onBlurAsync` will run every 500ms.
 
 ## Validation through Schema Libraries
 
-While functions provide more flexibility and customization over your validation, they can be a bit verbose. To help solve this, there are libraries that provide schema-based validation to make shorthand and type-strict validation substantially easier. You can also define a single schema for your entire form and pass it to the form level, errors will be automatically propagated to the fields.
+While functions provide more flexibility and customization over your validation, they can be a bit verbose. To help solve this, there are libraries that provide schema-based validation to make shorthand and type-strict validation substantially easier. You can also define a single schema for your entire form and pass it to the form-level validators; errors will automatically propagate to the fields.
 
 ### Standard Schema Libraries
 
@@ -489,7 +489,7 @@ function App() {
 }
 ```
 
-Async validations on form and field level are supported as well:
+Async validators at the form- and field-level are supported as well:
 
 ```tsx
 <form.Field
@@ -536,11 +536,11 @@ If you need even more control over your Standard Schema validation, you can comb
 
 ## Preventing invalid forms from being submitted
 
-The `onChange`, `onBlur` etc... callbacks are also run when the form is submitted and the submission is blocked if the form is invalid.
+The callbacks, such as `onChange` and `onBlur`, are also run when the form is submitted and the submission is blocked because the form is invalid.
 
-The form state object has a `canSubmit` flag that is false when any field is invalid and the form has been touched (`canSubmit` is true until the form has been touched, even if some fields are "technically" invalid based on their `onChange`/`onBlur` props).
+The form state object has a `canSubmit` flag that is `false` when any field is invalid and the form has been touched (`canSubmit` is true until the form has been touched, even if some fields are "technically" invalid based on their `onChange`/`onBlur` props).
 
-You can subscribe to it via `form.Subscribe` and use the value in order to, for example, disable the submit button when the form is invalid (in practice, disabled buttons are not accessible, use `aria-disabled` instead).
+You can subscribe to `canSubmit` via `form.Subscribe` and use the value in order to, for example, disable the submit button when the form is invalid (in practice, disabled buttons are not accessible, use `aria-disabled` instead).
 
 ```tsx
 const form = useForm(/* ... */)
