@@ -1,6 +1,10 @@
 import { describe, expectTypeOf, it } from 'vitest'
-import { FormApi, formOptions } from '../src/index'
-import type { FormAsyncValidateOrFn, FormValidateOrFn } from '../src/index'
+import { FieldApi, FormApi, formOptions } from '../src/index'
+import type {
+  AnyFieldApi,
+  FormAsyncValidateOrFn,
+  FormValidateOrFn,
+} from '../src/index'
 
 describe('formOptions', () => {
   it('types should be properly inferred', () => {
@@ -337,5 +341,85 @@ describe('formOptions', () => {
         },
       },
     })
+  })
+
+  it('should prevent overwriting onSubmitMeta if used', () => {
+    type FormData = {
+      firstName: string
+      lastName: string
+    }
+    type SubmitMeta = { bool: boolean }
+
+    const optsWithUsedMeta = formOptions({
+      defaultValues: { firstName: '', lastName: '' } as FormData,
+      onSubmitMeta: { bool: false } as SubmitMeta,
+      onSubmit: ({ meta }) => {
+        expectTypeOf(meta).toEqualTypeOf<SubmitMeta>()
+      },
+    })
+
+    const form1 = new FormApi(optsWithUsedMeta)
+    expectTypeOf(form1.handleSubmit).toBeCallableWith({ bool: true })
+    const form2 = new FormApi({
+      ...optsWithUsedMeta,
+      // @ts-expect-error cannot overwrite used submitMeta
+      onSubmitMeta: { change: 'value' },
+    })
+    expectTypeOf(form2.handleSubmit).toBeCallableWith({ bool: true })
+  })
+
+  it('should allow overwriting onSubmitMeta if unused', () => {
+    type FormData = {
+      firstName: string
+      lastName: string
+    }
+    type SubmitMeta = { bool: boolean }
+
+    const optsWithUnusedMeta = formOptions({
+      defaultValues: { firstName: '', lastName: '' } as FormData,
+      onSubmitMeta: { bool: false } as SubmitMeta,
+    })
+
+    const form1 = new FormApi({
+      ...optsWithUnusedMeta,
+    })
+
+    const form2 = new FormApi({
+      ...optsWithUnusedMeta,
+      onSubmitMeta: { change: 'value' },
+      onSubmit: ({ meta }) => {
+        expectTypeOf(meta).toEqualTypeOf<{ change: string }>()
+      },
+    })
+
+    expectTypeOf(form1.handleSubmit).toBeCallableWith({ bool: true })
+    // @ts-expect-error wrong meta shape
+    expectTypeOf(form2.handleSubmit).toBeCallableWith({ bool: true })
+    expectTypeOf(form2.handleSubmit).toBeCallableWith({ change: 'test' })
+  })
+
+  it('should allow assigning fields to be assignable to AnyFieldApi', () => {
+    const formOpts = formOptions({
+      defaultValues: { firstName: '' },
+      onSubmit: async ({ value }) => {
+        console.log(value)
+      },
+    })
+
+    const form = new FormApi({ ...formOpts })
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onChange: ({ value }) =>
+          !value
+            ? 'A first name is required'
+            : value.length < 3
+              ? 'First name must be at least 3 characters'
+              : undefined,
+      },
+    })
+
+    expectTypeOf(field).toExtend<AnyFieldApi>()
   })
 })

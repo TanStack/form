@@ -35,9 +35,9 @@ export function formOptions<
   TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
   TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
   /*
-    This is not guaranteed to be `never`. A user could spread
-    and add them later
-  */
+   Defaulting this to never makes it no longer assignable to `AnyFieldApi` when using listeners for some reason.
+   Stick to the default `unknown` instead, as it will still prevent unsafe overwrites of `onSubmitMeta`.
+   */
   TSubmitMeta,
 >(
   defaultOpts: FormOptions<
