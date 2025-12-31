@@ -1,18 +1,18 @@
 {
   "name": "@tanstack/svelte-form",
-  "version": "1.23.8",
+  "version": "1.27.7",
   "description": "Powerful, type-safe forms for Svelte.",
   "author": "tannerlinsley",
   "license": "MIT",
-  "keywords": [
-    "svelte"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TanStack/form.git",
     "directory": "packages/svelte-form"
   },
   "homepage": "https://tanstack.com/form",
+  "keywords": [
+    "svelte"
+  ],
   "scripts": {
     "clean": "premove ./dist ./coverage",
     "test:eslint": "eslint ./src ./tests",

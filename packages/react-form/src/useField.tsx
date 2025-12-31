@@ -1,8 +1,12 @@
-import React, { useMemo, useState } from 'react'
+'use client'
+
+import { useMemo, useRef, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import type {
+  AnyFieldApi,
+  AnyFieldMeta,
   DeepKeys,
   DeepValue,
   FieldAsyncValidateOrFn,
@@ -11,7 +15,7 @@ import type {
   FormAsyncValidateOrFn,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { FunctionComponent, ReactNode } from 'react'
+import type { FunctionComponent, ReactElement, ReactNode } from 'react'
 import type { UseFieldOptions, UseFieldOptionsBound } from './types'
 
 interface ReactFieldApi<
@@ -191,14 +195,117 @@ export function useField<
     TPatentSubmitMeta
   >,
 ) {
-  const [fieldApi] = useState(() => {
-    const api = new FieldApi({
-      ...opts,
-      form: opts.form,
-      name: opts.name,
-    })
+  // Keep a snapshot of options so that React Compiler doesn't
+  // wrongly optimize fieldApi.
+  const [prevOptions, setPrevOptions] = useState(() => ({
+    form: opts.form,
+    name: opts.name,
+  }))
 
-    const extendedApi: typeof api &
+  const [fieldApi, setFieldApi] = useState(() => {
+    return new FieldApi({
+      ...opts,
+    })
+  })
+
+  // We only want to
+  // update on name changes since those are at risk of becoming stale. The field
+  // state must be up to date for the internal JSX render.
+  // The other options can freely be in `fieldApi.update`
+  if (prevOptions.form !== opts.form || prevOptions.name !== opts.name) {
+    setFieldApi(
+      new FieldApi({
+        ...opts,
+      }),
+    )
+    setPrevOptions({ form: opts.form, name: opts.name })
+  }
+
+  // For array mode, only track length changes to avoid re-renders when child properties change
+  // See: https://github.com/TanStack/form/issues/1925
+  const reactiveStateValue = useStore(
+    fieldApi.store,
+    (opts.mode === 'array'
+      ? (state) => Object.keys((state.value as unknown) ?? []).length
+      : (state) => state.value) as (
+      state: typeof fieldApi.state,
+    ) => TData | number,
+  )
+  const reactiveMetaIsTouched = useStore(
+    fieldApi.store,
+    (state) => state.meta.isTouched,
+  )
+  const reactiveMetaIsBlurred = useStore(
+    fieldApi.store,
+    (state) => state.meta.isBlurred,
+  )
+  const reactiveMetaIsDirty = useStore(
+    fieldApi.store,
+    (state) => state.meta.isDirty,
+  )
+  const reactiveMetaErrorMap = useStore(
+    fieldApi.store,
+    (state) => state.meta.errorMap,
+  )
+  const reactiveMetaErrorSourceMap = useStore(
+    fieldApi.store,
+    (state) => state.meta.errorSourceMap,
+  )
+  const reactiveMetaIsValidating = useStore(
+    fieldApi.store,
+    (state) => state.meta.isValidating,
+  )
+
+  // This makes me sad, but if I understand correctly, this is what we have to do for reactivity to work properly with React compiler.
+  const extendedFieldApi = useMemo(() => {
+    const reactiveFieldApi = {
+      ...fieldApi,
+      get state() {
+        return {
+          // For array mode, reactiveStateValue is the length (for reactivity tracking),
+          // so we need to get the actual value from fieldApi
+          value:
+            opts.mode === 'array' ? fieldApi.state.value : reactiveStateValue,
+          get meta() {
+            return {
+              ...fieldApi.state.meta,
+              isTouched: reactiveMetaIsTouched,
+              isBlurred: reactiveMetaIsBlurred,
+              isDirty: reactiveMetaIsDirty,
+              errorMap: reactiveMetaErrorMap,
+              errorSourceMap: reactiveMetaErrorSourceMap,
+              isValidating: reactiveMetaIsValidating,
+            } satisfies AnyFieldMeta
+          },
+        } satisfies AnyFieldApi['state']
+      },
+    }
+
+    const extendedApi: FieldApi<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
+      TFormOnServer,
+      TPatentSubmitMeta
+    > &
       ReactFieldApi<
         TParentData,
         TFormOnMount,
@@ -212,12 +319,22 @@ export function useField<
         TFormOnDynamicAsync,
         TFormOnServer,
         TPatentSubmitMeta
-      > = api as never
+      > = reactiveFieldApi as never
 
     extendedApi.Field = Field as never
 
     return extendedApi
-  })
+  }, [
+    fieldApi,
+    opts.mode,
+    reactiveStateValue,
+    reactiveMetaIsTouched,
+    reactiveMetaIsBlurred,
+    reactiveMetaIsDirty,
+    reactiveMetaErrorMap,
+    reactiveMetaErrorSourceMap,
+    reactiveMetaIsValidating,
+  ])
 
   useIsomorphicLayoutEffect(fieldApi.mount, [fieldApi])
 
@@ -229,19 +346,7 @@ export function useField<
     fieldApi.update(opts)
   })
 
-  useStore(
-    fieldApi.store,
-    opts.mode === 'array'
-      ? (state) => {
-          return [
-            state.meta,
-            Object.keys((state.value as unknown) ?? []).length,
-          ]
-        }
-      : undefined,
-  )
-
-  return fieldApi
+  return extendedFieldApi
 }
 
 /**
@@ -281,30 +386,30 @@ interface FieldComponentProps<
   TPatentSubmitMeta,
   ExtendedApi = {},
 > extends UseFieldOptions<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnDynamic,
-    TFormOnDynamicAsync,
-    TFormOnServer,
-    TPatentSubmitMeta
-  > {
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
+  TFormOnMount,
+  TFormOnChange,
+  TFormOnChangeAsync,
+  TFormOnBlur,
+  TFormOnBlurAsync,
+  TFormOnSubmit,
+  TFormOnSubmitAsync,
+  TFormOnDynamic,
+  TFormOnDynamicAsync,
+  TFormOnServer,
+  TPatentSubmitMeta
+> {
   children: (
     fieldApi: FieldApi<
       TParentData,
@@ -369,19 +474,19 @@ interface FieldComponentBoundProps<
   TPatentSubmitMeta,
   ExtendedApi = {},
 > extends UseFieldOptionsBound<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync
-  > {
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync
+> {
   children: (
     fieldApi: FieldApi<
       TParentData,
@@ -485,7 +590,7 @@ export type FieldComponent<
   TFormOnServer,
   TPatentSubmitMeta,
   ExtendedApi
->) => ReactNode
+>) => ReturnType<FunctionComponent>
 
 /**
  * A type alias representing a field component for a form lens data type.
@@ -573,7 +678,7 @@ export type LensFieldComponent<
      */
     onBlurListenTo?: DeepKeys<TLensData>[]
   }
-}) => ReactNode
+}) => ReturnType<FunctionComponent>
 
 /**
  * A function component that takes field options and a render function as children and returns a React component.
@@ -639,18 +744,12 @@ export const Field = (<
   TFormOnDynamicAsync,
   TFormOnServer,
   TPatentSubmitMeta
->): ReactNode => {
+>): ReturnType<FunctionComponent> => {
   const fieldApi = useField(fieldOptions as any)
 
   const jsxToDisplay = useMemo(
     () => functionalUpdate(children, fieldApi as any),
-    /**
-     * The reason this exists is to fix an issue with the React Compiler.
-     * Namely, functionalUpdate is memoized where it checks for `fieldApi`, which is a static type.
-     * This means that when `state.value` changes, it does not trigger a re-render. The useMemo explicitly fixes this problem
-     */
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [children, fieldApi, fieldApi.state.value, fieldApi.state.meta],
+    [children, fieldApi],
   )
   return (<>{jsxToDisplay}</>) as never
 }) satisfies FunctionComponent<

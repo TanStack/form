@@ -6,6 +6,7 @@ import type {
   FieldOptions,
   FieldValidateOrFn,
   FormAsyncValidateOrFn,
+  FormState,
   FormValidateOrFn,
 } from '@tanstack/form-core'
 
@@ -48,7 +49,9 @@ export interface UseFieldOptions<
   TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TSubmitMeta,
-> extends FieldApiOptions<
+>
+  extends
+    FieldApiOptions<
       TParentData,
       TName,
       TData,
@@ -96,7 +99,9 @@ export interface UseFieldOptionsBound<
   TOnDynamicAsync extends
     | undefined
     | FieldAsyncValidateOrFn<TParentData, TName, TData>,
-> extends FieldOptions<
+>
+  extends
+    FieldOptions<
       TParentData,
       TName,
       TData,
@@ -111,3 +116,23 @@ export interface UseFieldOptionsBound<
       TOnDynamicAsync
     >,
     FieldOptionsMode {}
+
+export type ServerFormState<
+  TFormData,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+> = Pick<
+  FormState<
+    TFormData,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    TOnServer
+  >,
+  'values' | 'errors' | 'errorMap'
+>

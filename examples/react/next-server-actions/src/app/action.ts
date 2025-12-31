@@ -3,7 +3,7 @@
 import {
   ServerValidateError,
   createServerValidate,
-} from '@tanstack/react-form/nextjs'
+} from '@tanstack/react-form-nextjs'
 import { formOpts } from './shared-code'
 
 const serverValidate = createServerValidate({

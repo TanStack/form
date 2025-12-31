@@ -26,7 +26,7 @@ Let's start by creating a `formOption` that we'll use to share the form's shape 
 
 ```typescript
 // app/routes/index.tsx, but can be extracted to any other path
-import { formOptions } from '@tanstack/react-form'
+import { formOptions } from '@tanstack/react-form-start'
 
 // You can pass other form options here
 export const formOpts = formOptions({
@@ -44,7 +44,7 @@ Next, we can create [a Start Server Function](https://tanstack.com/start/latest/
 import {
   createServerValidate,
   ServerValidateError,
-} from '@tanstack/react-form/start'
+} from '@tanstack/react-form-start'
 
 const serverValidate = createServerValidate({
   ...formOpts,
@@ -93,7 +93,7 @@ Then we need to establish a way to grab the form data from `serverValidate`'s `r
 
 ```typescript
 // app/routes/index.tsx, but can be extracted to any other path
-import { getFormData } from '@tanstack/react-form/start'
+import { getFormData } from '@tanstack/react-form-start'
 
 export const getFormDataFromServer = createServerFn({ method: 'GET' }).handler(
   async () => {
@@ -106,13 +106,13 @@ Finally, we'll use `getFormDataFromServer` in our loader to get the state from o
 
 ```tsx
 // app/routes/index.tsx
-import { createFileRoute } from '@tanstack/react-router'
 import {
+  createFileRoute
   mergeForm,
   useForm,
   useStore,
   useTransform,
-} from '@tanstack/react-form'
+} from '@tanstack/react-form-start'
 
 export const Route = createFileRoute('/')({
   component: Home,
@@ -183,7 +183,7 @@ This section focuses on integrating TanStack Form with `Next.js`, particularly u
 
 - Start a new `Next.js` project, following the steps in the [Next.js Documentation](https://nextjs.org/docs/getting-started/installation). Ensure you select `yes` for `Would you like to use App Router?` during the setup to access all new features provided by Next.js.
 - Install `@tanstack/react-form`
-- Install any [form validator](../validation#validation-through-schema-libraries) of your choice. [Optional]
+- Install any [form validator](./validation#validation-through-schema-libraries) of your choice. [Optional]
 
 ## App Router integration
 
@@ -192,7 +192,7 @@ Let's start by creating a `formOption` that we'll use to share the form's shape 
 ```typescript
 // shared-code.ts
 // Notice the import path is different from the client
-import { formOptions } from '@tanstack/react-form/nextjs'
+import { formOptions } from '@tanstack/react-form-nextjs'
 
 // You can pass other form options here
 export const formOpts = formOptions({
@@ -213,7 +213,7 @@ Next, we can create [a React Server Action](https://playfulprogramming.com/posts
 import {
   ServerValidateError,
   createServerValidate,
-} from '@tanstack/react-form/nextjs'
+} from '@tanstack/react-form-nextjs'
 import { formOpts } from './shared-code'
 
 // Create the server action that will infer the types of the form from `formOpts`
@@ -255,14 +255,13 @@ Finally, we'll use `someAction` in our client-side form component.
 'use client'
 
 import { useActionState } from 'react'
-import { initialFormState } from '@tanstack/react-form/nextjs'
-// Notice the import is from `react-form`, not `react-form/nextjs`
 import {
+  initialFormState
   mergeForm,
   useForm,
   useStore,
   useTransform,
-} from '@tanstack/react-form'
+} from '@tanstack/react-form-nextjs'
 import someAction from './action'
 import { formOpts } from './shared-code'
 
@@ -327,7 +326,7 @@ Here, we're using [React's `useActionState` hook](https://playfulprogramming.com
 > x You're importing a component that needs `useState`. This React hook only works in a client component. To fix, mark the file (or its parent) with the `"use client"` directive.
 > ```
 >
-> This is because you're not importing server-side code from `@tanstack/react-form/nextjs`. Ensure you're importing the correct module based on the environment.
+> This is because you're not importing server-side code from `@tanstack/react-form-nextjs`. Ensure you're importing the correct module based on the environment.
 >
 > [This is a limitation of Next.js](https://github.com/phryneas/rehackt). Other meta-frameworks will likely not have this same problem.
 
@@ -339,7 +338,7 @@ Here, we're using [React's `useActionState` hook](https://playfulprogramming.com
 
 - Start a new `Remix` project, following the steps in the [Remix Documentation](https://remix.run/docs/en/main/start/quickstart).
 - Install `@tanstack/react-form`
-- Install any [form validator](../validation#validation-through-schema-libraries) of your choice. [Optional]
+- Install any [form validator](./validation#validation-through-schema-libraries) of your choice. [Optional]
 
 ## Remix integration
 
@@ -347,7 +346,7 @@ Let's start by creating a `formOption` that we'll use to share the form's shape 
 
 ```typescript
 // routes/_index/route.tsx
-import { formOptions } from '@tanstack/react-form/remix'
+import { formOptions } from '@tanstack/react-form-remix'
 
 // You can pass other form options here
 export const formOpts = formOptions({
@@ -367,7 +366,7 @@ import {
   ServerValidateError,
   createServerValidate,
   formOptions,
-} from '@tanstack/react-form/remix'
+} from '@tanstack/react-form-remix'
 
 import type { ActionFunctionArgs } from '@remix-run/node'
 
@@ -410,10 +409,10 @@ Finally, the `action` will be called when the form submits.
 
 ```tsx
 // routes/_index/route.tsx
-import { Form, useActionData } from '@remix-run/react'
-
 import {
+  Form,
   mergeForm,
+  useActionData
   useForm,
   useStore,
   useTransform,
@@ -423,7 +422,7 @@ import {
   createServerValidate,
   formOptions,
   initialFormState,
-} from '@tanstack/react-form/remix'
+} from '@tanstack/react-form-remix'
 
 import type { ActionFunctionArgs } from '@remix-run/node'
 
