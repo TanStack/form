@@ -401,4 +401,30 @@ describe('useField', () => {
     await user.click(await findByText('Submit'))
     expect(fn).toHaveBeenCalledWith({ people: [{ name: 'John', age: 0 }] })
   })
+
+  it('should support array mode', async () => {
+    const Comp = defineComponent(() => {
+      const form = useForm({
+        defaultValues: {
+          test: ['a'],
+        },
+      })
+
+      return () => (
+        <form.Field name="test" mode="array">
+          {({ field }: { field: AnyFieldApi }) => (
+            <div>
+              <div data-testid="val">{JSON.stringify(field.state.value)}</div>
+              <button onClick={() => field.pushValue('b')}>push</button>
+            </div>
+          )}
+        </form.Field>
+      )
+    })
+
+    const { getByTestId, getByText } = render(Comp)
+    expect(getByTestId('val')).toHaveTextContent('["a"]')
+    await user.click(getByText('push'))
+    await waitFor(() => expect(getByTestId('val')).toHaveTextContent('["a","b"]'))
+  })
 })
