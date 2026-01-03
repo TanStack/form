@@ -14,7 +14,7 @@ npm i @tanstack/react-devtools
 npm i @tanstack/react-form-devtools
 ```
 
-Next, in the root of your application import the `TanStackDevtools`.
+Next, in the root of your application, import the `TanStackDevtools`.
 
 ```tsx
 import { TanStackDevtools } from '@tanstack/react-devtools'

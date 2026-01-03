@@ -31,6 +31,7 @@ const form = useForm({
 })
 ```
 
+> [!IMPORTANT]
 > By default, `onDynamic` is not called; therefore you must pass `revalidateLogic()` to the `validationLogic` option of `useForm`.
 
 ## Revalidation Options
