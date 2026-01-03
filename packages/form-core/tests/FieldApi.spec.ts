@@ -3000,5 +3000,7 @@ describe('edge cases and error handling', () => {
     // Now validation is complete
     expect(field.getMeta().isValidating).toBe(false)
     expect(field.getMeta().errors).toContain('Server error')
+
+    vi.useRealTimers()
   })
 })

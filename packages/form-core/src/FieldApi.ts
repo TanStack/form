@@ -1782,8 +1782,13 @@ export class FieldApi<
     )
     const hasAsyncValidators = hasOwnAsyncValidators || hasLinkedAsyncValidators
 
-    // Set isValidating for linked fields (own field already set above before await)
+    // Set isValidating for linked fields and current field when linked fields are validating
+    // This preserves original behavior where current field shows validating
+    // when any of its linked fields are validating
     if (hasLinkedAsyncValidators) {
+      if (!this.state.meta.isValidating) {
+        this.setMeta((prev) => ({ ...prev, isValidating: true }))
+      }
       for (const linkedField of linkedFields) {
         linkedField.setMeta((prev) => ({ ...prev, isValidating: true }))
       }
