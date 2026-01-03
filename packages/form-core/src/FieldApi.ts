@@ -1735,6 +1735,14 @@ export class FieldApi<
         this.form.options.validationLogic || defaultValidationLogic,
     })
 
+    // Check if this field has its own async validators BEFORE any await
+    // This ensures isValidating is set synchronously when async validation is scheduled
+    // See: https://github.com/TanStack/form/issues/1833
+    const hasOwnAsyncValidators = validates.some((v) => v.validate)
+    if (hasOwnAsyncValidators && !this.state.meta.isValidating) {
+      this.setMeta((prev) => ({ ...prev, isValidating: true }))
+    }
+
     // Get the field-specific error messages that are coming from the form's validator
     const asyncFormValidationResults = await formValidationResultPromise
 
@@ -1766,18 +1774,16 @@ export class FieldApi<
     const validatesPromises: Promise<ValidationError | undefined>[] = []
     const linkedPromises: Promise<ValidationError | undefined>[] = []
 
-    // Check if there are actual async validators to run before setting isValidating
+    // Check if there are actual async validators to run (including linked fields)
     // This prevents unnecessary re-renders when there are no async validators
     // See: https://github.com/TanStack/form/issues/1130
-    const hasAsyncValidators =
-      validates.some((v) => v.validate) ||
-      linkedFieldValidates.some((v) => v.validate)
+    const hasLinkedAsyncValidators = linkedFieldValidates.some(
+      (v) => v.validate,
+    )
+    const hasAsyncValidators = hasOwnAsyncValidators || hasLinkedAsyncValidators
 
-    if (hasAsyncValidators) {
-      if (!this.state.meta.isValidating) {
-        this.setMeta((prev) => ({ ...prev, isValidating: true }))
-      }
-
+    // Set isValidating for linked fields (own field already set above before await)
+    if (hasLinkedAsyncValidators) {
       for (const linkedField of linkedFields) {
         linkedField.setMeta((prev) => ({ ...prev, isValidating: true }))
       }

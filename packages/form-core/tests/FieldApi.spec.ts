@@ -2936,4 +2936,69 @@ describe('edge cases and error handling', () => {
     field.handleChange(undefined)
     expect(field.state.value).toBeUndefined()
   })
+
+  // Test for https://github.com/TanStack/form/issues/1833
+  it('should keep isValidating true during async debounce period when sync validation passes', async () => {
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        // Sync validator that passes for 'error' value
+        onChange: ({ value }) => {
+          if (value.length < 3) return 'Too short'
+          return undefined
+        },
+        // Async validator with 500ms debounce
+        onChangeAsyncDebounceMs: 500,
+        onChangeAsync: async ({ value }) => {
+          await sleep(100)
+          if (value === 'error') return 'Server error'
+          return undefined
+        },
+      },
+    })
+
+    field.mount()
+
+    // Initially not validating
+    expect(field.getMeta().isValidating).toBe(false)
+    expect(form.state.canSubmit).toBe(true)
+
+    // Touch the field first
+    field.setMeta((prev) => ({ ...prev, isTouched: true }))
+
+    // Type a value that passes sync validation
+    field.setValue('error')
+
+    // Immediately after setValue, isValidating should be true
+    // because async validation is pending (even though debounce hasn't elapsed)
+    expect(field.getMeta().isValidating).toBe(true)
+
+    // Form's canSubmit should be false during validation
+    expect(form.state.canSubmit).toBe(false)
+
+    // Advance past debounce but not past async validator
+    await vi.advanceTimersByTimeAsync(500)
+
+    // Still validating (async validator is running)
+    expect(field.getMeta().isValidating).toBe(true)
+    expect(form.state.canSubmit).toBe(false)
+
+    // Finish all timers
+    await vi.runAllTimersAsync()
+
+    // Now validation is complete
+    expect(field.getMeta().isValidating).toBe(false)
+    expect(field.getMeta().errors).toContain('Server error')
+  })
 })
