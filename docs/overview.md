@@ -65,7 +65,7 @@ export default function App() {
         }}
       >
         <div>
-          {/* A type-safe field component*/}
+          {/* A type-safe field component */}
           <form.Field
             name="firstName"
             validators={{
@@ -139,4 +139,4 @@ createRoot(rootElement).render(<App />)
 
 ## You talked me into it, so what now?
 
-- Learn TanStack Form at your own pace with our thorough [Walkthrough Guide](./installation) and [API Reference](./reference/classes/FormApi)
+- Learn TanStack Form at your own pace with our thorough [Walkthrough Guide](./installation) and [API Reference](./reference/classes/FormApi).

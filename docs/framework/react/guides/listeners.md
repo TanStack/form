@@ -94,7 +94,7 @@ We enable an easy method for debouncing your listeners by adding a `onChangeDebo
 
 At a higher level, listeners are also available at the form level, allowing you access to the `onMount` and `onSubmit` events, and having `onChange` and `onBlur` propagated to all the form's children. Form-level listeners can also be debounced in the same way as previously discussed.
 
-`onMount` and `onSubmit` listeners have to following props:
+`onMount` and `onSubmit` listeners have the following props:
 
 - `formApi`
 

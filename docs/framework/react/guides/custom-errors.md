@@ -5,7 +5,7 @@ title: Custom Errors
 
 TanStack Form provides complete flexibility in the types of error values you can return from validators. String errors are the most common and easy to work with, but the library allows you to return any type of value from your validators.
 
-As a general rule, any truthy value is considered as an error and will mark the form or field as invalid, while falsy values (`false`, `undefined`, `null`, etc..) mean there is no error, the form or field is valid.
+As a general rule, any truthy value is considered as an error and will mark the form or field as invalid, while falsy values (`false`, `undefined`, `null`, etc.) mean there is no error, the form or field is valid.
 
 ## Return String Values from Forms
 
@@ -133,7 +133,7 @@ Display in UI:
 }
 ```
 
-in the example above it depends on the event error you want to display.
+In the example above it depends on the event error you want to display.
 
 ### Arrays
 

@@ -3,7 +3,7 @@ id: dynamic-validation
 title: Dynamic Validation
 ---
 
-In many cases, you want to change the validation rules based depending on the state of the form or other conditions. The most popular
+In many cases, you want to change the validation rules depending on the state of the form or other conditions. The most popular
 example of this is when you want to validate a field differently based on whether the user has submitted the form for the first time or not.
 
 We support this through our `onDynamic` validation function.

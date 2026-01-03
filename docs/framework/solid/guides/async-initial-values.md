@@ -42,7 +42,7 @@ export default function App() {
   }))
 
   return (
-    <Show when={!query.isLoading} fallback={<p>Loading..</p>}>
+    <Show when={!query.isLoading} fallback={<p>Loading...</p>}>
       <></>
     </Show>
   )

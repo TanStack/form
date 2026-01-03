@@ -11,7 +11,7 @@ At the core of TanStack Form's functionalities is the concept of validation. Tan
 
 ## When is validation performed?
 
-It's up to you! The `[tanstackField]` directive accepts some callbacks as props such as `onChange` or `onBlur`. Those callbacks are passed the current value of the field, as well as the fieldAPI object, so that you can perform the validation. If you find a validation error, simply return the error message as string and it will be available in `field.api.state.meta.errors`.
+It's up to you! The `[tanstackField]` directive accepts some callbacks as props such as `onChange` or `onBlur`. Those callbacks are passed the current value of the field, as well as the fieldAPI object, so that you can perform the validation. If you find a validation error, simply return the error message as a string and it will be available in `field.api.state.meta.errors`.
 
 Here is an example:
 
@@ -138,7 +138,7 @@ export class AppComponent {
 }
 ```
 
-In the example above, we are validating different things on the same field at different times (at each keystroke and when blurring the field). Since `field.state.meta.errors` is an array, all the relevant errors at a given time are displayed. You can also use `field.state.meta.errorMap` to get errors based on _when_ the validation was done (onChange, onBlur etc...). More info about displaying errors below.
+In the example above, we are validating different things on the same field at different times (at each keystroke and when blurring the field). Since `field.state.meta.errors` is an array, all the relevant errors at a given time are displayed. You can also use `field.state.meta.errorMap` to get errors based on _when_ the validation was done (onChange, onBlur etc.). More info about displaying errors below.
 
 ## Displaying Errors
 
@@ -204,7 +204,7 @@ export class AppComponent {
 }
 ```
 
-It's worth mentioning that our `errors` array and the `errorMap` matches the types returned by the validators. This means that:
+It's worth mentioning that our `errors` array and the `errorMap` match the types returned by the validators. This means that:
 
 ```angular-ts
 @Component({
@@ -505,7 +505,7 @@ The synchronous validation method (`onBlur`) is run first and the asynchronous m
 
 ### Built-in Debouncing
 
-While async calls are the way to go when validating against the database, running a network request on every keystroke is a good way to DDOS your database.
+While async calls are the way to go when validating against the database, running a network request on every keystroke is a good way to DDoS your database.
 
 Instead, we enable an easy method for debouncing your `async` calls by adding a single property:
 

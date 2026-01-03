@@ -3,7 +3,7 @@ id: reactivity
 title: Reactivity
 ---
 
-Tanstack Form doesn't cause re-renders when interacting with the form. So you might find yourself trying to use a form or field state value without success.
+TanStack Form doesn't cause re-renders when interacting with the form. So you might find yourself trying to use a form or field state value without success.
 
 If you would like to access reactive values, you will need to subscribe to them using one of two methods: `useStore` or the `form.Subscribe` component.
 

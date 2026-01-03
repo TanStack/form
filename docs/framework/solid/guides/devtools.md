@@ -3,11 +3,11 @@ id: devtools
 title: Devtools
 ---
 
-TanStack Form comes with a ready to go suit of devtools.
+TanStack Form comes with a ready to go suite of devtools.
 
 ## Setup
 
-Install the [TanStack Devtools](https://tanstack.com/devtools/latest/docs/quick-start) library and the [TanStack Form plugin](http://npmjs.com/package/@tanstack/solid-form-devtools), from the framework adapter that your working in (in this case `@tanstack/solid-devtools`, and `@tanstack/solid-form-devtools`).
+Install the [TanStack Devtools](https://tanstack.com/devtools/latest/docs/quick-start) library and the [TanStack Form plugin](http://npmjs.com/package/@tanstack/solid-form-devtools), from the framework adapter that you're working in (in this case `@tanstack/solid-devtools`, and `@tanstack/solid-form-devtools`).
 
 ```bash
 npm i @tanstack/solid-devtools
