@@ -58,7 +58,7 @@ const serverValidate = createServerValidate({
 export const handleForm = createServerFn({
   method: 'POST',
 })
-  .validator((data: unknown) => {
+  .inputValidator((data: unknown) => {
     if (!(data instanceof FormData)) {
       throw new Error('Invalid form data')
     }
