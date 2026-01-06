@@ -1256,8 +1256,8 @@ importers:
         specifier: ^0.4.4
         version: 0.4.4(csstype@3.1.3)(solid-js@1.9.9)
       '@tanstack/devtools-utils':
-        specifier: ^0.2.2
-        version: 0.2.2(@types/react@19.1.6)(csstype@3.1.3)(react@19.1.0)(solid-js@1.9.9)(vue@3.5.16(typescript@5.9.3))
+        specifier: ^0.2.3
+        version: 0.2.3(@types/react@19.1.6)(csstype@3.1.3)(react@19.1.0)(solid-js@1.9.9)(vue@3.5.16(typescript@5.9.3))
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../form-core
@@ -1325,8 +1325,8 @@ importers:
   packages/react-form-devtools:
     dependencies:
       '@tanstack/devtools-utils':
-        specifier: ^0.2.2
-        version: 0.2.2(@types/react@19.1.6)(csstype@3.1.3)(react@19.1.0)(solid-js@1.9.9)(vue@3.5.16(typescript@5.9.3))
+        specifier: ^0.2.3
+        version: 0.2.3(@types/react@19.1.6)(csstype@3.1.3)(react@19.1.0)(solid-js@1.9.9)(vue@3.5.16(typescript@5.9.3))
       '@tanstack/form-devtools':
         specifier: workspace:*
         version: link:../form-devtools
@@ -1462,8 +1462,8 @@ importers:
   packages/solid-form-devtools:
     dependencies:
       '@tanstack/devtools-utils':
-        specifier: ^0.2.2
-        version: 0.2.2(@types/react@19.1.6)(csstype@3.1.3)(react@19.1.0)(solid-js@1.9.9)(vue@3.5.16(typescript@5.9.3))
+        specifier: ^0.2.3
+        version: 0.2.3(@types/react@19.1.6)(csstype@3.1.3)(react@19.1.0)(solid-js@1.9.9)(vue@3.5.16(typescript@5.9.3))
       '@tanstack/form-devtools':
         specifier: workspace:*
         version: link:../form-devtools
@@ -4762,8 +4762,8 @@ packages:
     peerDependencies:
       solid-js: '>=1.9.7'
 
-  '@tanstack/devtools-utils@0.2.2':
-    resolution: {integrity: sha512-c9+e3UYijqAqX2vdBWWHcYKEV7UzRTM2BabqUQTRjobVifIffX200M1LDn7EW2cWeB2dXycDbdG2stphYs8NCQ==}
+  '@tanstack/devtools-utils@0.2.3':
+    resolution: {integrity: sha512-Ob7wAGTNs7SfOJWZlV+3fi7JGT8ApgeNKoaKV4trRk3TDjThm0w4EwbNDsfZu5NCvefSOY0sequp2qG8g7zG/g==}
     engines: {node: '>=18'}
     peerDependencies:
       '@types/react': '>=17.0.0'
@@ -14250,7 +14250,7 @@ snapshots:
     transitivePeerDependencies:
       - csstype
 
-  '@tanstack/devtools-utils@0.2.2(@types/react@19.1.6)(csstype@3.1.3)(react@19.1.0)(solid-js@1.9.9)(vue@3.5.16(typescript@5.9.3))':
+  '@tanstack/devtools-utils@0.2.3(@types/react@19.1.6)(csstype@3.1.3)(react@19.1.0)(solid-js@1.9.9)(vue@3.5.16(typescript@5.9.3))':
     dependencies:
       '@tanstack/devtools-ui': 0.4.4(csstype@3.1.3)(solid-js@1.9.9)
     optionalDependencies:
