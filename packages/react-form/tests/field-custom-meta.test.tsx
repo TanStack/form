@@ -1,8 +1,8 @@
-import { useForm } from '../src/index'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
-import { test, expect } from 'vitest'
+import { expect, test } from 'vitest'
+import { useForm } from '../src/index'
 
 function SimpleForm() {
   const form = useForm({
