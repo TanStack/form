@@ -1,5 +1,33 @@
 # @tanstack/react-form-remix
 
+## 1.27.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.27.7
+
+## 1.27.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.27.6
+
+## 1.27.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.27.5
+
+## 1.27.4
+
+### Patch Changes
+
+- Updated dependencies [[`35921c9`](https://github.com/TanStack/form/commit/35921c9a852848ca8920f6846c84144fa9538cbb)]:
+  - @tanstack/react-form@1.27.4
+
 ## 1.27.3
 
 ### Patch Changes

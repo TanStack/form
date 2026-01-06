@@ -9,7 +9,7 @@ title: createFormHook
 function createFormHook<TComponents, TFormComponents>(opts): object;
 ```
 
-Defined in: [packages/solid-form/src/createFormHook.tsx:294](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createFormHook.tsx#L294)
+Defined in: [packages/solid-form/src/createFormHook.tsx:299](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createFormHook.tsx#L299)
 
 ## Type Parameters
 

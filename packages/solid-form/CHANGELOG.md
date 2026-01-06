@@ -1,5 +1,37 @@
 # @tanstack/solid-form
 
+## 1.27.7
+
+### Patch Changes
+
+- Fix double-rendering of Solid fields ([#1959](https://github.com/TanStack/form/pull/1959))
+
+- Updated dependencies [[`3519cce`](https://github.com/TanStack/form/commit/3519cce63072e87989bfa1b83b845e8d645d2725)]:
+  - @tanstack/form-core@1.27.7
+
+## 1.27.6
+
+### Patch Changes
+
+- Updated dependencies [[`c526378`](https://github.com/TanStack/form/commit/c5263786ed8b12144837ddb87f43c87fa4efc2d4)]:
+  - @tanstack/form-core@1.27.6
+
+## 1.27.5
+
+### Patch Changes
+
+- Updated dependencies [[`36fa503`](https://github.com/TanStack/form/commit/36fa503f21c59e68138a21de7038bf941a579b55), [`01b24a9`](https://github.com/TanStack/form/commit/01b24a9aa54f7d908830af352cacd51fddf65bbe)]:
+  - @tanstack/form-core@1.27.5
+
+## 1.27.4
+
+### Patch Changes
+
+- Using any Signal inside the Form.AppField render function no longer causes the entire component to re-run whenever that Signal changes. ([#1934](https://github.com/TanStack/form/pull/1934))
+
+- Updated dependencies [[`c753d5e`](https://github.com/TanStack/form/commit/c753d5eca5021c231bcdfd5f0a337156958fcde1)]:
+  - @tanstack/form-core@1.27.4
+
 ## 1.27.3
 
 ### Patch Changes

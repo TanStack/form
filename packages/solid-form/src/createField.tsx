@@ -6,6 +6,7 @@ import {
   onCleanup,
   onMount,
 } from 'solid-js'
+import { useStore } from '@tanstack/solid-store'
 import type {
   DeepKeys,
   DeepValue,
@@ -251,8 +252,14 @@ function makeFieldReactive<
     TParentSubmitMeta
   > {
   const [field, setField] = createSignal(fieldApi, { equals: false })
-  const unsubscribeStore = fieldApi.store.subscribe(() => setField(fieldApi))
-  onCleanup(unsubscribeStore)
+  // Handle shallow comparison to make sure that Derived doesn't create a new setField call every time
+  const store = useStore(fieldApi.store, (store) => store)
+  // Run before initial render
+  createComputed(() => {
+    // Use the store to track dependencies
+    store()
+    setField(fieldApi)
+  })
   return field
 }
 

@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/solid-form": "^1.27.3",
+    "@tanstack/solid-form": "^1.27.7",
     "arktype": "^2.1.22",
     "effect": "^3.17.14",
     "react": "^19.0.0",

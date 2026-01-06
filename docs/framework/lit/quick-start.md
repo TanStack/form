@@ -46,7 +46,7 @@ export class TestForm extends LitElement {
     },
   })
   render() {
-    return html` <p>Please enter your first name></p>
+    return html` <p>Please enter your first name</p>
       ${this.#form.field(
         {
           name: `firstName`,
