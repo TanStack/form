@@ -6,6 +6,7 @@ import {
   onCleanup,
   onMount,
 } from 'solid-js'
+import { useStore } from '@tanstack/solid-store'
 import type {
   DeepKeys,
   DeepValue,
@@ -251,8 +252,14 @@ function makeFieldReactive<
     TParentSubmitMeta
   > {
   const [field, setField] = createSignal(fieldApi, { equals: false })
-  const unsubscribeStore = fieldApi.store.subscribe(() => setField(fieldApi))
-  onCleanup(unsubscribeStore)
+  // Handle shallow comparison to make sure that Derived doesn't create a new setField call every time
+  const store = useStore(fieldApi.store, (store) => store)
+  // Run before initial render
+  createComputed(() => {
+    // Use the store to track dependencies
+    store()
+    setField(fieldApi)
+  })
   return field
 }
 
@@ -420,19 +427,19 @@ interface FieldComponentBoundProps<
   TPatentSubmitMeta,
   ExtendedApi = {},
 > extends CreateFieldOptionsBound<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync
-  > {
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync
+> {
   children: (
     fieldApi: Accessor<
       FieldApi<
@@ -573,30 +580,30 @@ interface FieldComponentProps<
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TParentSubmitMeta,
 > extends CreateFieldOptions<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnDynamic,
-    TFormOnDynamicAsync,
-    TFormOnServer,
-    TParentSubmitMeta
-  > {
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
+  TFormOnMount,
+  TFormOnChange,
+  TFormOnChangeAsync,
+  TFormOnBlur,
+  TFormOnBlurAsync,
+  TFormOnSubmit,
+  TFormOnSubmitAsync,
+  TFormOnDynamic,
+  TFormOnDynamicAsync,
+  TFormOnServer,
+  TParentSubmitMeta
+> {
   children: (
     fieldApi: () => FieldApi<
       TParentData,

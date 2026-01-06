@@ -221,7 +221,16 @@ export function useField<
     setPrevOptions({ form: opts.form, name: opts.name })
   }
 
-  const reactiveStateValue = useStore(fieldApi.store, (state) => state.value)
+  // For array mode, only track length changes to avoid re-renders when child properties change
+  // See: https://github.com/TanStack/form/issues/1925
+  const reactiveStateValue = useStore(
+    fieldApi.store,
+    (opts.mode === 'array'
+      ? (state) => Object.keys((state.value as unknown) ?? []).length
+      : (state) => state.value) as (
+      state: typeof fieldApi.state,
+    ) => TData | number,
+  )
   const reactiveMetaIsTouched = useStore(
     fieldApi.store,
     (state) => state.meta.isTouched,
@@ -253,7 +262,10 @@ export function useField<
       ...fieldApi,
       get state() {
         return {
-          value: reactiveStateValue,
+          // For array mode, reactiveStateValue is the length (for reactivity tracking),
+          // so we need to get the actual value from fieldApi
+          value:
+            opts.mode === 'array' ? fieldApi.state.value : reactiveStateValue,
           get meta() {
             return {
               ...fieldApi.state.meta,
@@ -314,6 +326,7 @@ export function useField<
     return extendedApi
   }, [
     fieldApi,
+    opts.mode,
     reactiveStateValue,
     reactiveMetaIsTouched,
     reactiveMetaIsBlurred,
@@ -332,18 +345,6 @@ export function useField<
   useIsomorphicLayoutEffect(() => {
     fieldApi.update(opts)
   })
-
-  useStore(
-    fieldApi.store,
-    opts.mode === 'array'
-      ? (state) => {
-          return [
-            state.meta,
-            Object.keys((state.value as unknown) ?? []).length,
-          ]
-        }
-      : undefined,
-  )
 
   return extendedFieldApi
 }
@@ -385,30 +386,30 @@ interface FieldComponentProps<
   TPatentSubmitMeta,
   ExtendedApi = {},
 > extends UseFieldOptions<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnDynamic,
-    TFormOnDynamicAsync,
-    TFormOnServer,
-    TPatentSubmitMeta
-  > {
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
+  TFormOnMount,
+  TFormOnChange,
+  TFormOnChangeAsync,
+  TFormOnBlur,
+  TFormOnBlurAsync,
+  TFormOnSubmit,
+  TFormOnSubmitAsync,
+  TFormOnDynamic,
+  TFormOnDynamicAsync,
+  TFormOnServer,
+  TPatentSubmitMeta
+> {
   children: (
     fieldApi: FieldApi<
       TParentData,
@@ -473,19 +474,19 @@ interface FieldComponentBoundProps<
   TPatentSubmitMeta,
   ExtendedApi = {},
 > extends UseFieldOptionsBound<
-    TParentData,
-    TName,
-    TData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync
-  > {
+  TParentData,
+  TName,
+  TData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync
+> {
   children: (
     fieldApi: FieldApi<
       TParentData,

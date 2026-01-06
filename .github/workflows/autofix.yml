@@ -26,11 +26,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@v6.0.1
       - name: Setup Tools
         uses: tanstack/config/.github/setup@main
       - name: Fix formatting
-        run: pnpm prettier:write
+        run: pnpm format
       - name: Generate Docs
         if: ${{ github.event_name == 'push' || github.event.inputs.generate-docs == true }}
         run: pnpm generate-docs

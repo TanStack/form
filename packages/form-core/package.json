@@ -1,12 +1,12 @@
 {
   "name": "@tanstack/form-core",
-  "version": "1.27.1",
+  "version": "1.27.7",
   "description": "Powerful, type-safe, framework agnostic forms.",
   "author": "tannerlinsley",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TanStack/form.git",
+    "url": "git+https://github.com/TanStack/form.git",
     "directory": "packages/form-core"
   },
   "homepage": "https://tanstack.com/form",
@@ -51,8 +51,8 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/devtools-event-client": "^0.3.5",
-    "@tanstack/pacer": "^0.15.3",
+    "@tanstack/devtools-event-client": "^0.4.0",
+    "@tanstack/pacer-lite": "^0.1.1",
     "@tanstack/store": "^0.7.7"
   },
   "devDependencies": {

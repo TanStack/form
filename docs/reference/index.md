@@ -96,6 +96,7 @@ title: "@tanstack/form-core"
 - [defaultValidationLogic](variables/defaultValidationLogic.md)
 - [formEventClient](variables/formEventClient.md)
 - [standardSchemaValidators](variables/standardSchemaValidators.md)
+- [throttleFormState](variables/throttleFormState.md)
 
 ## Functions
 

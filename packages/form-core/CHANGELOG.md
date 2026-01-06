@@ -1,5 +1,43 @@
 # @tanstack/form-core
 
+## 1.27.7
+
+### Patch Changes
+
+- Fix double-rendering of Solid fields ([#1959](https://github.com/TanStack/form/pull/1959))
+
+## 1.27.6
+
+### Patch Changes
+
+- fix(form-core): Prevent runtime errors during validation ([#1948](https://github.com/TanStack/form/pull/1948))
+
+## 1.27.5
+
+### Patch Changes
+
+- fix(form-core): Resolve memory leaks for SSR / Devtools ([#1866](https://github.com/TanStack/form/pull/1866))
+
+- Ensure dynamically rendered fields receive form validation errors ([#1691](https://github.com/TanStack/form/pull/1691))
+
+## 1.27.4
+
+### Patch Changes
+
+- fix: prevent unnecessary re-renders when there are no async validators ([#1929](https://github.com/TanStack/form/pull/1929))
+
+  Fields were re-rendering twice on each keystroke because `isValidating` was being set to `true` then `false` even when there were no async validators to run. This fix checks if there are actual async validators before toggling the `isValidating` state.
+
+  Fixes #1130
+
+## 1.27.3
+
+### Patch Changes
+
+- Bump TanStack pacer to pacer-lite for reduced custom event emissions. ([#1876](https://github.com/TanStack/form/pull/1876))
+
+## 1.27.2
+
 ## 1.27.1
 
 ### Patch Changes

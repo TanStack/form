@@ -1,5 +1,59 @@
 # @tanstack/react-form
 
+## 1.27.7
+
+### Patch Changes
+
+- Updated dependencies [[`3519cce`](https://github.com/TanStack/form/commit/3519cce63072e87989bfa1b83b845e8d645d2725)]:
+  - @tanstack/form-core@1.27.7
+
+## 1.27.6
+
+### Patch Changes
+
+- Updated dependencies [[`c526378`](https://github.com/TanStack/form/commit/c5263786ed8b12144837ddb87f43c87fa4efc2d4)]:
+  - @tanstack/form-core@1.27.6
+
+## 1.27.5
+
+### Patch Changes
+
+- Updated dependencies [[`36fa503`](https://github.com/TanStack/form/commit/36fa503f21c59e68138a21de7038bf941a579b55), [`01b24a9`](https://github.com/TanStack/form/commit/01b24a9aa54f7d908830af352cacd51fddf65bbe)]:
+  - @tanstack/form-core@1.27.5
+
+## 1.27.4
+
+### Patch Changes
+
+- fix(react-form): prevent array field re-render when child property changes ([#1930](https://github.com/TanStack/form/pull/1930))
+
+  Array fields with `mode="array"` were incorrectly re-rendering when a property on any array element was mutated. This was a regression introduced in v1.27.0 by the React Compiler compatibility changes.
+
+  The fix ensures that `mode="array"` fields only re-render when the array length changes (items added/removed), not when individual item properties are modified.
+
+  Fixes #1925
+
+- Updated dependencies [[`c753d5e`](https://github.com/TanStack/form/commit/c753d5eca5021c231bcdfd5f0a337156958fcde1)]:
+  - @tanstack/form-core@1.27.4
+
+## 1.27.3
+
+### Patch Changes
+
+- Updated dependencies [[`c2ecf5d`](https://github.com/TanStack/form/commit/c2ecf5d6df0034d2db982f9b55aed963d94a76a3)]:
+  - @tanstack/form-core@1.27.3
+
+## 1.27.2
+
+### Patch Changes
+
+- use React 18's useId hook by default for formId generation, only calling Math.random() as a fallback if no formId is provided. ([#1913](https://github.com/TanStack/form/pull/1913))
+
+- fix(react-form): ensure `FormApi.handleSubmit` returns a promise again ([#1924](https://github.com/TanStack/form/pull/1924))
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.27.2
+
 ## 1.27.1
 
 ### Patch Changes

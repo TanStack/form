@@ -1,10 +1,11 @@
 'use client'
 
-import { FormApi, functionalUpdate, uuid } from '@tanstack/form-core'
+import { FormApi, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
 import { useMemo, useState } from 'react'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
+import { useFormId } from './useFormId'
 import type {
   AnyFormApi,
   AnyFormState,
@@ -184,7 +185,7 @@ export function useForm<
     TSubmitMeta
   >,
 ) {
-  const fallbackFormId = useState(() => uuid())[0]
+  const fallbackFormId = useFormId()
   const [prevFormId, setPrevFormId] = useState<string>(opts?.formId as never)
 
   const [formApi, setFormApi] = useState(() => {
@@ -227,7 +228,7 @@ export function useForm<
     > = {
       ...formApi,
       handleSubmit: ((...props: never[]) => {
-        formApi._handleSubmit(...props)
+        return formApi._handleSubmit(...props)
       }) as typeof formApi.handleSubmit,
       // We must add all `get`ters from `core`'s `FormApi` here, as otherwise the spread operator won't catch those
       get formId(): string {

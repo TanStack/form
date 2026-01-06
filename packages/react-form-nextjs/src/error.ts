@@ -11,9 +11,9 @@ interface ServerValidateErrorState<
 }
 
 export class ServerValidateError<
-    TFormData,
-    TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-  >
+  TFormData,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+>
   extends Error
   implements ServerValidateErrorState<TFormData, TOnServer>
 {
