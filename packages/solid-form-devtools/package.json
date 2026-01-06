@@ -54,7 +54,7 @@
     "solid-js": ">=1.9.7"
   },
   "dependencies": {
-    "@tanstack/devtools-utils": "^0.2.0",
+    "@tanstack/devtools-utils": "^0.2.3",
     "@tanstack/form-devtools": "workspace:*"
   },
   "devDependencies": {
