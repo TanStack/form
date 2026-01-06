@@ -27,7 +27,7 @@ As a result, TanStack Form supports multiple methods for validation:
 
 ## Controlled is Cool
 
-In a world where controlled vs uncontrolled inputs are a hot topic, TanStack Form is firmly in the controlled camp.
+In a world where controlled vs. uncontrolled inputs are a hot topic, TanStack Form is firmly in the controlled camp.
 
 This comes with a number of advantages:
 

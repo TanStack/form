@@ -58,7 +58,7 @@ const serverValidate = createServerValidate({
 export const handleForm = createServerFn({
   method: 'POST',
 })
-  .validator((data: unknown) => {
+  .inputValidator((data: unknown) => {
     if (!(data instanceof FormData)) {
       throw new Error('Invalid form data')
     }
@@ -183,7 +183,7 @@ This section focuses on integrating TanStack Form with `Next.js`, particularly u
 
 - Start a new `Next.js` project, following the steps in the [Next.js Documentation](https://nextjs.org/docs/getting-started/installation). Ensure you select `yes` for `Would you like to use App Router?` during the setup to access all new features provided by Next.js.
 - Install `@tanstack/react-form`
-- Install any [form validator](../validation#validation-through-schema-libraries) of your choice. [Optional]
+- Install any [form validator](./validation#validation-through-schema-libraries) of your choice. [Optional]
 
 ## App Router integration
 
@@ -256,7 +256,7 @@ Finally, we'll use `someAction` in our client-side form component.
 
 import { useActionState } from 'react'
 import {
-  initialFormState
+  initialFormState,
   mergeForm,
   useForm,
   useStore,
@@ -338,7 +338,7 @@ Here, we're using [React's `useActionState` hook](https://playfulprogramming.com
 
 - Start a new `Remix` project, following the steps in the [Remix Documentation](https://remix.run/docs/en/main/start/quickstart).
 - Install `@tanstack/react-form`
-- Install any [form validator](../validation#validation-through-schema-libraries) of your choice. [Optional]
+- Install any [form validator](./validation#validation-through-schema-libraries) of your choice. [Optional]
 
 ## Remix integration
 
@@ -412,7 +412,7 @@ Finally, the `action` will be called when the form submits.
 import {
   Form,
   mergeForm,
-  useActionData
+  useActionData,
   useForm,
   useStore,
   useTransform,

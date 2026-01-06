@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor } from '@solidjs/testing-library'
 import { userEvent } from '@testing-library/user-event'
-import { Show, createSignal, onCleanup } from 'solid-js'
+import { Index, Show, createSignal, onCleanup } from 'solid-js'
 import { createForm } from '../src/index'
 import { sleep } from './utils'
 import type { FormValidationErrorMap } from '../src/index'
@@ -476,5 +476,161 @@ describe('createForm', () => {
     expect(mockFn).toHaveBeenCalledTimes(0)
     await waitFor(() => getByText(error))
     expect(getByText(error)).toBeInTheDocument()
+  })
+
+  it('should stay up to date with field name inside arrays', async () => {
+    function Comp() {
+      const form = createForm(() => ({
+        defaultValues: {
+          foo: [
+            { name: 'nameA', id: 'a' },
+            { name: 'nameB', id: 'b' },
+            { name: 'nameC', id: 'c' },
+          ],
+        },
+      }))
+
+      return (
+        <>
+          <form.Field name="foo" mode="array">
+            {(arrayField) => (
+              <Index each={arrayField().state.value}>
+                {(_, i) => (
+                  <form.Field name={`foo[${i}].name`}>
+                    {(field) => {
+                      expect(field().name).toBe(`foo[${i}].name`)
+                      expect(field().state.value).not.toBeUndefined()
+                      return null
+                    }}
+                  </form.Field>
+                )}
+              </Index>
+            )}
+          </form.Field>
+          <button
+            type="button"
+            onClick={() => form.removeFieldValue('foo', 1)}
+            data-testid="removeField"
+          >
+            Remove
+          </button>
+        </>
+      )
+    }
+
+    const { getByTestId } = render(() => <Comp />)
+
+    const target = getByTestId('removeField')
+    await user.click(target)
+  })
+
+  it('should not have errors undefined on submit with arrays', async () => {
+    function Comp() {
+      const form = createForm(() => ({
+        defaultValues: {
+          items: ['item1'],
+        },
+      }))
+
+      return (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            form.handleSubmit()
+          }}
+        >
+          <div>
+            <form.Field mode="array" name="items">
+              {(fieldArray) => (
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => fieldArray().pushValue('test')}
+                    data-testid="addItemBtn"
+                  >
+                    Add Item
+                  </button>
+                  <div>
+                    <Index each={fieldArray().state.value}>
+                      {(_, index) => (
+                        <form.Field name={`items[${index}]`}>
+                          {(field) => (
+                            <div>
+                              {field().state.meta.isTouched &&
+                              field().state.meta.errors.length
+                                ? 'Some errors'
+                                : null}
+                            </div>
+                          )}
+                        </form.Field>
+                      )}
+                    </Index>
+                  </div>
+                </div>
+              )}
+            </form.Field>
+          </div>
+          <button type="submit" data-testid="submitBtn">
+            Submit
+          </button>
+        </form>
+      )
+    }
+
+    const { getByTestId } = render(() => <Comp />)
+    const addItemBtn = getByTestId('addItemBtn')
+    await user.click(addItemBtn)
+    const submitBtn = getByTestId('submitBtn')
+    await user.click(submitBtn)
+  })
+
+  it('should use the most up to date field names', async () => {
+    function Comp() {
+      const form = createForm(() => ({
+        defaultValues: {
+          foo: [
+            { name: 'nameA', id: 'a' },
+            { name: 'nameB', id: 'b' },
+            { name: 'nameC', id: 'c' },
+          ],
+        },
+      }))
+
+      return (
+        <>
+          <form.Field name="foo" mode="array">
+            {(arrayField) => (
+              // This unit test provides different result based on
+              // using For vs. Index. Unit test both
+              // once that's fixed.
+              <Index each={arrayField().state.value}>
+                {(_, i) => (
+                  <form.Field name={`foo[${i}].name`}>
+                    {(field) => {
+                      expect(field().name).toBe(`foo[${i}].name`)
+                      expect(field().state.value).not.toBeUndefined()
+                      return null
+                    }}
+                  </form.Field>
+                )}
+              </Index>
+            )}
+          </form.Field>
+          <button
+            type="button"
+            onClick={() => form.removeFieldValue('foo', 1)}
+            data-testid="removeField"
+          >
+            Remove
+          </button>
+        </>
+      )
+    }
+
+    const { getByTestId } = render(() => <Comp />)
+
+    const target = getByTestId('removeField')
+    await user.click(target)
   })
 })
