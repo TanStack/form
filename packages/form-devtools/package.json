@@ -52,8 +52,8 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/devtools-ui": "^0.4.4",
-    "@tanstack/devtools-utils": "^0.2.0",
+    "@tanstack/devtools-ui": "https://pkg.pr.new/TanStack/devtools/@tanstack/devtools-ui@305",
+    "@tanstack/devtools-utils": "https://pkg.pr.new/TanStack/devtools/@tanstack/devtools-utils@305",
     "@tanstack/form-core": "workspace:*",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.18",
