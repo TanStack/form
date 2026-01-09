@@ -3,6 +3,23 @@
  */
 export type UnwrapOneLevelOfArray<T> = T extends (infer U)[] ? U : T
 
+/**
+ * @private
+ * Helper type that rejects synchronous validators that return Promises.
+ * If the validator is a function returning a Promise, the type becomes `never`.
+ * Uses infer to extract the return type and handles `any` specially to avoid
+ * rejecting mock functions and other uses of `any`.
+ */
+export type RejectPromiseValidator<T> = T extends (...args: any[]) => infer R
+  ? // Check if R is `any` - if so, allow it (common with mocks)
+    0 extends 1 & R
+    ? T
+    : // Otherwise, reject if it's a Promise
+      [R] extends [Promise<any> | PromiseLike<any>]
+      ? never
+      : T
+  : T
+
 type Narrowable = string | number | bigint | boolean
 
 type NarrowRaw<A> =

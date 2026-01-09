@@ -47,7 +47,12 @@ import type {
   ValidationErrorMap,
   ValidationErrorMapKeys,
 } from './types'
-import type { DeepKeys, DeepKeysOfType, DeepValue } from './util-types'
+import type {
+  DeepKeys,
+  DeepKeysOfType,
+  DeepValue,
+  RejectPromiseValidator,
+} from './util-types'
 import type { Updater } from './utils'
 
 /**
@@ -186,11 +191,11 @@ export interface FormValidators<
   /**
    * Optional function that fires as soon as the component mounts.
    */
-  onMount?: TOnMount
+  onMount?: RejectPromiseValidator<TOnMount>
   /**
    * Optional function that checks the validity of your data whenever a value changes
    */
-  onChange?: TOnChange
+  onChange?: RejectPromiseValidator<TOnChange>
   /**
    * Optional onChange asynchronous counterpart to onChange. Useful for more complex validation logic that might involve server requests.
    */
@@ -202,7 +207,7 @@ export interface FormValidators<
   /**
    * Optional function that validates the form data when a field loses focus, returns a `FormValidationError`
    */
-  onBlur?: TOnBlur
+  onBlur?: RejectPromiseValidator<TOnBlur>
   /**
    * Optional onBlur asynchronous validation method for when a field loses focus returns a ` FormValidationError` or a promise of `Promise<FormValidationError>`
    */
@@ -211,9 +216,9 @@ export interface FormValidators<
    * The default time in milliseconds that if set to a number larger than 0, will debounce the async validation event by this length of time in milliseconds.
    */
   onBlurAsyncDebounceMs?: number
-  onSubmit?: TOnSubmit
+  onSubmit?: RejectPromiseValidator<TOnSubmit>
   onSubmitAsync?: TOnSubmitAsync
-  onDynamic?: TOnDynamic
+  onDynamic?: RejectPromiseValidator<TOnDynamic>
   onDynamicAsync?: TOnDynamicAsync
   onDynamicAsyncDebounceMs?: number
 }
