@@ -1,11 +1,7 @@
 import { expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
-import {
-  FieldApi,
-  FieldValidateFn,
-  FormApi,
-  StandardSchemaV1Issue,
-} from '../src/index'
+import { FieldApi, FormApi } from '../src'
+import type { StandardSchemaV1Issue } from '../src'
 
 it('should type value properly', () => {
   const form = new FormApi({
