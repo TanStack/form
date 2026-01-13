@@ -20,7 +20,7 @@ svelte: @tanstack/svelte-form
 
 # React
 
-# Meta-frameworks
+## Meta-frameworks
 
 If you're using a meta-framework, TanStack Form provides additional adapters to streamline integration:
 
