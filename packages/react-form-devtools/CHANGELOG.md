@@ -1,5 +1,14 @@
 # @tanstack/react-form-devtools
 
+## 0.2.11
+
+### Patch Changes
+
+- fix the issue of the devtools throwing an error in strict mode ([#1978](https://github.com/TanStack/form/pull/1978))
+
+- Updated dependencies [[`3f3d484`](https://github.com/TanStack/form/commit/3f3d4849087355d3b2759b46f34874ff75abb5ab)]:
+  - @tanstack/form-devtools@0.2.11
+
 ## 0.2.10
 
 ### Patch Changes
