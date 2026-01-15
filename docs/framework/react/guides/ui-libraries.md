@@ -5,14 +5,15 @@ title: UI Libraries
 
 ## Usage of TanStack Form with UI Libraries
 
-TanStack Form is a headless library, offering you complete flexibility to style it as you see fit. It's compatible with a wide range of UI libraries, including `Tailwind`, `Material UI`, `Mantine`, `shadcn/ui`, or even plain CSS.
+TanStack Form is a headless library, offering you complete flexibility to style it as you see fit. It's compatible with a wide range of UI libraries, including `Chakra UI`, `Tailwind`, `Material UI`, `Mantine`, `shadcn/ui`, or even plain CSS.
 
-This guide focuses on `Material UI`, `Mantine`, and `shadcn/ui`, but the concepts are applicable to any UI library of your choice.
+This guide focuses on `Chakra UI`, `Material UI`, `Mantine`, and `shadcn/ui`, but the concepts are applicable to any UI library of your choice.
 
 ### Prerequisites
 
 Before integrating TanStack Form with a UI library, ensure the necessary dependencies are installed in your project:
 
+- For `Chakra UI`, follow the installation instructions on their [official site](https://chakra-ui.com/docs/get-started/installation)
 - For `Material UI`, follow the installation instructions on their [official site](https://mui.com/material-ui/getting-started/).
 - For `Mantine`, refer to their [documentation](https://mantine.dev/).
 - For `shadcn/ui`, refer to their [official site](https://ui.shadcn.com/).
@@ -153,8 +154,63 @@ The process for integrating shadcn/ui components is similar. Here's an example u
 />
 ```
 
-- The integration approach is the same as with Mantine and Material UI.
+- The integration approach is the same as with Mantine, Material UI.
 - The primary difference lies in the specific shadcn/ui component properties and styling options.
 - Note the onCheckedChange property of Checkbox instead of onChange.
 
-The ShadCN library includes a dedicated guide covering common scenarios for integrating TanStack Form with its components: https://ui.shadcn.com/docs/forms/tanstack-form
+The ShadCN library includes a dedicated guide covering common scenarios for integrating TanStack Form with its components: [https://ui.shadcn.com/docs/forms/tanstack-form](https://ui.shadcn.com/docs/forms/tanstack-form)
+
+### Usage with Chakra UI
+
+The process for integrating Chakra UI components is similar. Here's an example using Input and Checkbox from Chakra UI:
+
+```tsx
+<Field
+  name="name"
+  children={({ state, handleChange, handleBlur }) => (
+    <Input
+      value={state.value}
+      onChange={(e) => handleChange(e.target.value)}
+      onBlur={handleBlur}
+      placeholder="Enter your name"
+    />
+  )}
+/>
+<Field
+  name="isChecked"
+  children={({ state, handleChange, handleBlur }) => (
+    <Checkbox.Root
+      checked={state.value}
+      onCheckedChange={(details) => handleChange(!!details.checked)}
+      onBlur={handleBlur}
+    >
+      <Checkbox.HiddenInput />
+      <Checkbox.Control />
+      <Checkbox.Label>Accept terms</Checkbox.Label>
+    </Checkbox.Root>
+  )}
+/>
+```
+
+- The integration approach is the same as with Mantine, Material UI, and shadcn/ui.
+- Chakra UI exposes its Checkbox as a composable component with separate `Checkbox.Root`, `Checkbox.Control`, `Checkbox.Label`, and `Checkbox.HiddenInput` parts that you wire together.
+- The double negation `!!` is used on `onCheckedChange` to coerce Chakra's `"indeterminate"` state to a boolean, ensuring it matches the form state. See the [Chakra UI Checkbox documentation](https://chakra-ui.com/docs/components/checkbox#indeterminate) for more details.
+- Alternatively, Chakra UI offers a pre-composed Checkbox component that works the same way as their standard examples, without requiring manual composition. You can learn more about this closed component approach in the [Chakra UI Checkbox documentation](https://chakra-ui.com/docs/components/checkbox#closed-component).
+- The TanStack Form integration works identically with either approach—simply attach the `checked`, `onCheckedChange`, and `onBlur` handlers to your chosen component.
+
+Example using the closed Checkbox component:
+
+```tsx
+<Field
+  name="isChecked"
+  children={({ state, handleChange, handleBlur }) => (
+    <Checkbox
+      checked={state.value}
+      onCheckedChange={(details) => handleChange(!!details.checked)}
+      onBlur={handleBlur}
+    >
+      Accept terms
+    </Checkbox>
+  )}
+/>
+```
