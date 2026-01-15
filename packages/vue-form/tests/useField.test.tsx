@@ -425,6 +425,8 @@ describe('useField', () => {
     const { getByTestId, getByText } = render(Comp)
     expect(getByTestId('val')).toHaveTextContent('["a"]')
     await user.click(getByText('push'))
-    await waitFor(() => expect(getByTestId('val')).toHaveTextContent('["a","b"]'))
+    await waitFor(() =>
+      expect(getByTestId('val')).toHaveTextContent('["a","b"]'),
+    )
   })
 })

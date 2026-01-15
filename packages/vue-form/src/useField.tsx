@@ -35,28 +35,28 @@ export type FieldComponent<
   TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TParentSubmitMeta,
-// This complex type comes from Vue's return type for `DefineSetupFnComponent` but with our own types sprinkled in
-// This allows us to pre-bind some generics while keeping the props type unbound generics for props-based inferencing
+  // This complex type comes from Vue's return type for `DefineSetupFnComponent` but with our own types sprinkled in
+  // This allows us to pre-bind some generics while keeping the props type unbound generics for props-based inferencing
 > = new <
   TName extends DeepKeys<TParentData>,
   TData extends DeepValue<TParentData, TName>,
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChangeAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnBlurAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnSubmitAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnDynamicAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
 >(
   props: FieldComponentBoundProps<
     TParentData,
@@ -205,20 +205,20 @@ export type UseField<
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChangeAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnBlurAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnSubmitAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnDynamicAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
 >(
   opts: UseFieldOptionsBound<
     TParentData,
@@ -260,20 +260,20 @@ export type UseField<
     TFormOnServer,
     TParentSubmitMeta
   > &
-  VueFieldApi<
-    TParentData,
-    TFormOnMount,
-    TFormOnChange,
-    TFormOnChangeAsync,
-    TFormOnBlur,
-    TFormOnBlurAsync,
-    TFormOnSubmit,
-    TFormOnSubmitAsync,
-    TFormOnDynamic,
-    TFormOnDynamicAsync,
-    TFormOnServer,
-    TParentSubmitMeta
-  >
+    VueFieldApi<
+      TParentData,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
+      TFormOnServer,
+      TParentSubmitMeta
+    >
   state: ComputedRef<
     FieldApi<
       TParentData,
@@ -310,20 +310,20 @@ export function useField<
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChangeAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnBlurAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnSubmitAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnDynamicAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
@@ -392,16 +392,13 @@ export function useField<
 
   // For array mode, only track length changes to avoid re-renders when child properties change
   // See: https://github.com/TanStack/form/issues/1925
-  const value = useStore(
-    fieldApi.store,
-    (state) => {
-      if (opts.mode === 'array') {
-        return (state.value as any)?.length
-      }
+  const value = useStore(fieldApi.store, (state) => {
+    if (opts.mode === 'array') {
+      return (state.value as any)?.length
+    }
 
-      return state.value
-    },
-  )
+    return state.value
+  })
   const isTouched = useStore(fieldApi.store, (state) => state.meta.isTouched)
   const isBlurred = useStore(fieldApi.store, (state) => state.meta.isBlurred)
   const isDirty = useStore(fieldApi.store, (state) => state.meta.isDirty)
@@ -419,7 +416,9 @@ export function useField<
     const valueValue = value.value
 
     return {
-      value: (opts.mode === 'array' ? fieldApi.state.value : valueValue) as TData,
+      value: (opts.mode === 'array'
+        ? fieldApi.state.value
+        : valueValue) as TData,
       meta: {
         ...fieldApi.state.meta,
         isTouched: isTouched.value,
@@ -459,20 +458,20 @@ export type FieldComponentProps<
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChangeAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnBlurAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnSubmitAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnDynamicAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
@@ -517,20 +516,20 @@ export type FieldComponentBoundProps<
   TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnChangeAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnBlurAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnSubmitAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
   TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
   TOnDynamicAsync extends
-  | undefined
-  | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+    | undefined
+    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
 > = UseFieldOptionsBound<
   TParentData,
   TName,
@@ -554,20 +553,20 @@ export const Field = defineComponent(
     TOnMount extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
     TOnChange extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
     TOnChangeAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+      | undefined
+      | FieldAsyncValidateOrFn<TParentData, TName, TData>,
     TOnBlur extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
     TOnBlurAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+      | undefined
+      | FieldAsyncValidateOrFn<TParentData, TName, TData>,
     TOnSubmit extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
     TOnSubmitAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+      | undefined
+      | FieldAsyncValidateOrFn<TParentData, TName, TData>,
     TOnDynamic extends undefined | FieldValidateOrFn<TParentData, TName, TData>,
     TOnDynamicAsync extends
-    | undefined
-    | FieldAsyncValidateOrFn<TParentData, TName, TData>,
+      | undefined
+      | FieldAsyncValidateOrFn<TParentData, TName, TData>,
     TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
     TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
     TFormOnChangeAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
