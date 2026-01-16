@@ -1,5 +1,16 @@
 # @tanstack/react-form-devtools
 
+## 0.2.12
+
+### Patch Changes
+
+- Bump devtools utils to latest versions. ([#1995](https://github.com/TanStack/form/pull/1995))
+
+- use explicit paths for the devtools production exports ([#1989](https://github.com/TanStack/form/pull/1989))
+
+- Updated dependencies [[`f1c23d0`](https://github.com/TanStack/form/commit/f1c23d01e6afaf5d945d662188fdeaef00151ceb)]:
+  - @tanstack/form-devtools@0.2.12
+
 ## 0.2.11
 
 ### Patch Changes
