@@ -1,5 +1,11 @@
 # @tanstack/form-devtools
 
+## 0.2.12
+
+### Patch Changes
+
+- Bump devtools utils to latest versions. ([#1995](https://github.com/TanStack/form/pull/1995))
+
 ## 0.2.11
 
 ### Patch Changes

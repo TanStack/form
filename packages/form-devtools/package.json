@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/form-devtools",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "description": "Devtools, for TanStack form.",
   "author": "tannerlinsley",
   "license": "MIT",
