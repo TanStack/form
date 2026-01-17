@@ -2270,16 +2270,24 @@ export class FormApi<
 
     batch(() => {
       if (!dontUpdateMeta) {
-        this.setFieldMeta(field, (prev) => ({
-          ...prev,
-          isTouched: true,
-          isDirty: true,
-          errorMap: {
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            ...prev?.errorMap,
-            onMount: undefined,
-          },
-        }))
+        const meta = this.getFieldMeta(field)
+
+        if (
+          !meta?.isTouched ||
+          !meta.isDirty ||
+          meta.errorMap.onMount !== undefined
+        ) {
+          this.setFieldMeta(field, (prev) => ({
+            ...prev,
+            isTouched: true,
+            isDirty: true,
+            errorMap: {
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+              ...prev?.errorMap,
+              onMount: undefined,
+            },
+          }))
+        }
       }
 
       this.baseStore.setState((prev) => {
