@@ -3,84 +3,65 @@ id: installation
 title: Installation
 ---
 
-TanStack Form is compatible with various front-end frameworks, including React, Vue, and Solid. To use TanStack Form with your desired framework, install the corresponding adapter via your preferred package manager:
+TanStack Form is compatible with various front-end frameworks, including React, Vue, and Solid. Install the corresponding adapter for your framework using your preferred package manager:
 
-### React Example
+<!-- ::start:tabs variant="package-managers" -->
 
-```bash
-# npm
-$ npm i @tanstack/react-form
-# pnpm
-$ pnpm add @tanstack/react-form
-# bun
-$ bun add @tanstack/react-form
-# yarn
-$ yarn add @tanstack/react-form
-```
+react: @tanstack/react-form
+vue: @tanstack/vue-form
+angular: @tanstack/angular-form
+solid: @tanstack/solid-form
+lit: @tanstack/lit-form
+svelte: @tanstack/svelte-form
 
-### Vue Example
+<!-- ::end:tabs -->
 
-```bash
-# npm
-$ npm i @tanstack/vue-form
-# pnpm
-$ pnpm add @tanstack/vue-form
-# bun
-$ bun add @tanstack/vue-form
-# yarn
-$ yarn add @tanstack/vue-form
-```
+<!-- ::start:framework -->
 
-### Angular Example
+# React
 
-```bash
-# npm
-$ npm i @tanstack/angular-form
-# pnpm
-$ pnpm add @tanstack/angular-form
-# bun
-$ bun add @tanstack/angular-form
-# yarn
-$ yarn add @tanstack/angular-form
-```
+## Meta-frameworks
 
-### Solid Example
+If you're using a meta-framework, TanStack Form provides additional adapters to streamline integration:
 
-```bash
-# npm
-$ npm i @tanstack/solid-form
-# pnpm
-$ pnpm add @tanstack/solid-form
-# bun
-$ bun add @tanstack/solid-form
-# yarn
-$ yarn add @tanstack/solid-form
-```
+- TanStack Start
+- Next.js
+- Remix
 
-### Lit Example
+<!-- ::end:framework -->
 
-```bash
-# npm
-$ npm i @tanstack/lit-form
-# pnpm
-$ pnpm add @tanstack/lit-form
-# bun
-$ bun add @tanstack/lit-form
-# yarn
-$ yarn add @tanstack/lit-form
-```
+<!-- ::start:tabs variant="package-manager" -->
 
-### Svelte Example
+react: @tanstack/react-form-start
+react: @tanstack/react-form-nextjs
+react: @tanstack/react-form-remix
 
-```bash
-# npm
-$ npm i @tanstack/svelte-form
-# pnpm
-$ pnpm add @tanstack/svelte-form
-# bun
-$ bun add @tanstack/svelte-form
-# yarn
-$ yarn add @tanstack/svelte-form
-```
+<!-- ::end:tabs -->
 
+<!-- ::start:framework -->
+
+# React
+
+## Devtools
+
+Developer tools are available using [TanStack Devtools](https://tanstack.com/devtools/latest). Install the devtools adapter for your framework to debug forms and inspect their state.
+
+# Solid
+
+## Devtools
+
+Developer tools are available using [TanStack Devtools](https://tanstack.com/devtools/latest). Install the devtools adapter for your framework to debug forms and inspect their state.
+
+<!-- ::end:framework -->
+
+<!-- ::start:tabs variant="package-manager" -->
+
+react: @tanstack/react-devtools
+react: @tanstack/react-form-devtools
+solid: @tanstack/solid-devtools
+solid: @tanstack/solid-form-devtools
+
+<!-- ::end:tabs -->
+
+> [!NOTE]- Polyfill requirements
 > Depending on your environment, you might need to add polyfills. If you want to support older browsers, you need to transpile the library from `node_modules` yourself.
