@@ -1599,7 +1599,18 @@ export class FormApi<
   ) => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const fieldInstance = this.fieldInfo[field]?.instance
-    if (!fieldInstance) return []
+
+    if (!fieldInstance) {
+      const { hasErrored } = this.validateSync(cause)
+
+      if (hasErrored && !this.options.asyncAlways) {
+        return this.getFieldMeta(field)?.errors ?? []
+      }
+
+      return this.validateAsync(cause).then(() => {
+        return this.getFieldMeta(field)?.errors ?? []
+      })
+    }
 
     // If the field is not touched (same logic as in validateAllFields)
     if (!fieldInstance.state.meta.isTouched) {
