@@ -1,7 +1,7 @@
 'use client'
 
-export { FormDevtoolsPanel } from './FormDevtools'
+export { FormDevtoolsPanel } from './production/FormDevtools'
 
-export type { FormDevtoolsReactInit } from './FormDevtools'
+export type { FormDevtoolsReactInit } from './production/FormDevtools'
 
-export { formDevtoolsPlugin } from './plugin'
+export { formDevtoolsPlugin } from './production/plugin'
