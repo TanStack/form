@@ -624,4 +624,79 @@ describe('createFormHook', () => {
     const input = getByLabelText('Testing')
     expect(input).toHaveValue('FirstName')
   })
+
+  it('should throw if `useTypedAppFormContext` is used without AppForm', () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    const formOpts = formOptions({
+      defaultValues: {
+        firstName: 'FirstName',
+        lastName: 'LastName',
+      } as Person,
+    })
+
+    function Child() {
+      const form = useTypedAppFormContext(formOpts)
+
+      return (
+        <form.AppField
+          name="firstName"
+          children={(field) => <field.TextField label="Testing" />}
+        />
+      )
+    }
+
+    function Parent() {
+      const form = useAppForm({
+        defaultValues: {
+          firstName: 'FirstName',
+          lastName: 'LastName',
+        } as Person,
+      })
+
+      return <Child />
+    }
+
+    expect(() => render(<Parent />)).toThrow()
+  })
+
+  it('should allow using typed app form with form components', () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    const formOpts = formOptions({
+      defaultValues: {
+        firstName: 'FirstName',
+        lastName: 'LastName',
+      } as Person,
+    })
+
+    function Child() {
+      const form = useTypedAppFormContext(formOpts)
+
+      return <form.SubscribeButton label="Testing" />
+    }
+
+    function Parent() {
+      const form = useAppForm({
+        defaultValues: {
+          firstName: 'FirstName',
+          lastName: 'LastName',
+        } as Person,
+      })
+
+      return (
+        <form.AppForm>
+          <Child />
+        </form.AppForm>
+      )
+    }
+
+    const { getByText } = render(<Parent />)
+    const button = getByText('Testing')
+    expect(button).toBeInTheDocument()
+  })
 })
