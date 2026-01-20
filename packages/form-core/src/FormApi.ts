@@ -1599,15 +1599,49 @@ export class FormApi<
   ) => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const fieldInstance = this.fieldInfo[field]?.instance
-    if (!fieldInstance) return []
 
-    // If the field is not touched (same logic as in validateAllFields)
-    if (!fieldInstance.state.meta.isTouched) {
-      // Mark it as touched
-      fieldInstance.setMeta((prev) => ({ ...prev, isTouched: true }))
+    // If there's a mounted field instance, delegate to the instance (normal flow)
+    if (fieldInstance) {
+      // If the field is not touched (same logic as in validateAllFields)
+      if (!fieldInstance.state.meta.isTouched) {
+        // Mark it as touched
+        fieldInstance.setMeta((prev) => ({ ...prev, isTouched: true }))
+      }
+
+      return fieldInstance.validate(cause)
     }
 
-    return fieldInstance.validate(cause)
+    // No mounted field instance: ensure we have base meta for the field
+    if (this.baseStore.state.fieldMetaBase[field] === undefined) {
+      this.setFieldMeta(field, () => defaultFieldMeta)
+    }
+
+    // If the field is not touched, mark as touched in base meta
+    const baseMeta = this.baseStore.state.fieldMetaBase[field]
+    if (!baseMeta?.isTouched) {
+      this.setFieldMeta(field, (prev) => ({ ...prev, isTouched: true }))
+    }
+
+    // Run form-level synchronous validation which will update field metas
+    const { fieldsErrorMap } = this.validateSync(cause)
+
+    const fieldErrorMap = (fieldsErrorMap as any)?.[field] ?? {}
+    const hasSyncErrored = Object.values(fieldErrorMap).some(
+      (v) => v !== undefined,
+    )
+
+    // If sync validators found errors and asyncAlways is not set, return current errors
+    if (hasSyncErrored && !(this.options.asyncAlways as boolean)) {
+      const meta = this.getFieldMeta(field)
+      return (meta?.errors ?? []) as ValidationError[]
+    }
+
+    // Otherwise, run async validators and return errors for this field
+    return (async () => {
+      const asyncFieldErrors = await this.validateAsync(cause)
+      const meta = this.getFieldMeta(field)
+      return (meta?.errors ?? []) as ValidationError[]
+    })()
   }
 
   /**
