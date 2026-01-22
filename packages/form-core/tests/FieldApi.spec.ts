@@ -2751,7 +2751,9 @@ describe('field api', () => {
       await vi.advanceTimersByTimeAsync(50)
 
       // Errors should NOT be flattened when disableErrorFlat is true
-      expect(field.state.meta.errors).toEqual([[['Error level 1', 'Error level 2']]])
+      expect(field.state.meta.errors).toEqual([
+        [['Error level 1', 'Error level 2']],
+      ])
 
       vi.useRealTimers()
     })
