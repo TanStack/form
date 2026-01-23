@@ -1083,7 +1083,7 @@ export class FormApi<
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             const fieldInstance = this.getFieldInfo(fieldName)?.instance
 
-            if (fieldInstance && !fieldInstance.options.disableErrorFlat) {
+            if (!fieldInstance || !fieldInstance.options.disableErrorFlat) {
               fieldErrors = fieldErrors.flat(1)
             }
           }

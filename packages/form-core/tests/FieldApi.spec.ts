@@ -2638,6 +2638,125 @@ describe('field api', () => {
       expect(field3.state.meta.errors).toContain('Field 3 error')
       vi.useRealTimers()
     })
+
+    it('should flatten errors when manually calling form.validate() before field mount', async () => {
+      vi.useFakeTimers()
+      const form = new FormApi({
+        defaultValues: {
+          name: '',
+        },
+        validators: {
+          onChange: ({ value }) => {
+            if (!value.name) {
+              return {
+                fields: {
+                  name: 'Name is required',
+                },
+              }
+            }
+            return undefined
+          },
+        },
+      })
+
+      form.mount()
+
+      // Manually validate BEFORE field mount
+      await form.validate('change')
+
+      // Now mount the field
+      const field = new FieldApi({ form, name: 'name' })
+      field.mount()
+
+      // Errors should be flattened [error], not [[error]]
+      expect(field.state.meta.errors).toEqual(['Name is required'])
+
+      vi.useRealTimers()
+    })
+
+    it('should flatten Zod errors when manually calling form.validate() before field mount (Issue #1993)', async () => {
+      vi.useFakeTimers()
+
+      // Exact scenario from issue #1993
+      const form = new FormApi({
+        defaultValues: {
+          show: false,
+          firstName: '',
+          lastName: '',
+        },
+        validators: {
+          onChange: z.object({
+            show: z.boolean(),
+            firstName: z.string().min(1, 'First name required'),
+            lastName: z.string().min(1, 'Last name required'),
+          }),
+        },
+      })
+
+      form.mount()
+
+      // Simulate checkbox onChange that triggers validation BEFORE conditional fields mount
+      // This is the exact bug scenario from issue #1993
+      await form.validate('change')
+
+      // Now mount the conditional field (like when show becomes true)
+      const firstNameField = new FieldApi({ form, name: 'firstName' })
+      firstNameField.mount()
+
+      // Errors should be flattened array of Zod error objects
+      // NOT: [[{ code: "too_small", message: "..." }]]
+      // BUT: [{ code: "too_small", message: "..." }]
+      expect(Array.isArray(firstNameField.state.meta.errors)).toBe(true)
+      expect(Array.isArray(firstNameField.state.meta.errors[0])).toBe(false)
+
+      // Should be able to access .message directly
+      expect(firstNameField.state.meta.errors[0]).toHaveProperty('message')
+      expect(firstNameField.state.meta.errors[0]).toHaveProperty('code')
+
+      vi.useRealTimers()
+    })
+
+    it('should respect disableErrorFlat option for mounted fields', async () => {
+      vi.useFakeTimers()
+      const form = new FormApi({
+        defaultValues: {
+          name: '',
+        },
+        validators: {
+          onChange: ({ value }) => {
+            if (!value.name) {
+              return {
+                fields: {
+                  name: [['Error level 1', 'Error level 2']],
+                },
+              }
+            }
+            return undefined
+          },
+        },
+      })
+
+      form.mount()
+
+      // Mount field with disableErrorFlat: true FIRST
+      const field = new FieldApi({
+        form,
+        name: 'name',
+        disableErrorFlat: true,
+      })
+      field.mount()
+
+      // Trigger validation after mount
+      field.setValue('')
+      await vi.advanceTimersByTimeAsync(50)
+
+      // Errors should NOT be flattened when disableErrorFlat is true
+      expect(field.state.meta.errors).toEqual([
+        [['Error level 1', 'Error level 2']],
+      ])
+
+      vi.useRealTimers()
+    })
   })
 
   describe('deleteField functionality', () => {
