@@ -29,8 +29,6 @@ Defined in: [packages/react-form/src/createFormHook.tsx:293](https://github.com/
 
 ## Returns
 
-`object`
-
 ### useAppForm()
 
 ```ts
@@ -90,6 +88,76 @@ useAppForm: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsy
 #### Parameters
 
 ##### props
+
+`FormOptions`\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>
+
+#### Returns
+
+`AppFieldExtendedReactFormApi`\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`, `TComponents`, `TFormComponents`\>
+
+### useTypedAppFormContext()
+
+```ts
+useTypedAppFormContext: <TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta>(_props) => AppFieldExtendedReactFormApi<TFormData, TOnMount, TOnChange, TOnChangeAsync, TOnBlur, TOnBlurAsync, TOnSubmit, TOnSubmitAsync, TOnDynamic, TOnDynamicAsync, TOnServer, TSubmitMeta, TComponents, TFormComponents>;
+```
+
+⚠️ **Use withForm whenever possible.**
+
+Gets a typed form from the `<form.AppForm />` context.
+
+#### Type Parameters
+
+##### TFormData
+
+`TFormData`
+
+##### TOnMount
+
+`TOnMount` *extends* `FormValidateOrFn`\<`TFormData`\> \| `undefined`
+
+##### TOnChange
+
+`TOnChange` *extends* `FormValidateOrFn`\<`TFormData`\> \| `undefined`
+
+##### TOnChangeAsync
+
+`TOnChangeAsync` *extends* `FormAsyncValidateOrFn`\<`TFormData`\> \| `undefined`
+
+##### TOnBlur
+
+`TOnBlur` *extends* `FormValidateOrFn`\<`TFormData`\> \| `undefined`
+
+##### TOnBlurAsync
+
+`TOnBlurAsync` *extends* `FormAsyncValidateOrFn`\<`TFormData`\> \| `undefined`
+
+##### TOnSubmit
+
+`TOnSubmit` *extends* `FormValidateOrFn`\<`TFormData`\> \| `undefined`
+
+##### TOnSubmitAsync
+
+`TOnSubmitAsync` *extends* `FormAsyncValidateOrFn`\<`TFormData`\> \| `undefined`
+
+##### TOnDynamic
+
+`TOnDynamic` *extends* `FormValidateOrFn`\<`TFormData`\> \| `undefined`
+
+##### TOnDynamicAsync
+
+`TOnDynamicAsync` *extends* `FormAsyncValidateOrFn`\<`TFormData`\> \| `undefined`
+
+##### TOnServer
+
+`TOnServer` *extends* `FormAsyncValidateOrFn`\<`TFormData`\> \| `undefined`
+
+##### TSubmitMeta
+
+`TSubmitMeta`
+
+#### Parameters
+
+##### \_props
 
 `FormOptions`\<`TFormData`, `TOnMount`, `TOnChange`, `TOnChangeAsync`, `TOnBlur`, `TOnBlurAsync`, `TOnSubmit`, `TOnSubmitAsync`, `TOnDynamic`, `TOnDynamicAsync`, `TOnServer`, `TSubmitMeta`\>
 
