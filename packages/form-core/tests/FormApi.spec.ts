@@ -169,6 +169,46 @@ describe('form api', () => {
     expect(form.state.values).toEqual({ name: 'initial' })
   })
 
+  it('should prioritize field-level defaultValue over form-level defaultValues on reset', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'form-default',
+        age: 25,
+      },
+    })
+    form.mount()
+
+    const nameField = new FieldApi({
+      form,
+      name: 'name',
+      defaultValue: 'field-default',
+    })
+    nameField.mount()
+
+    const ageField = new FieldApi({
+      form,
+      name: 'age',
+    })
+    ageField.mount()
+
+    // Change values
+    nameField.setValue('changed-name')
+    ageField.setValue(30)
+
+    expect(form.state.values).toEqual({
+      name: 'changed-name',
+      age: 30,
+    })
+
+    // Reset without arguments - field-level defaultValue should take priority
+    form.reset()
+
+    expect(form.state.values).toEqual({
+      name: 'field-default', // field's defaultValue, not form's
+      age: 25, // form's defaultValues (no field-level default)
+    })
+  })
+
   it('should handle multiple fields with mixed mount states', () => {
     const form = new FormApi({
       defaultValues: {
