@@ -2556,8 +2556,8 @@ export class FormApi<
    */
   resetField = <TField extends DeepKeys<TFormData>>(field: TField) => {
     this.baseStore.setState((prev) => {
-      const fieldDefault = this.getFieldInfo(field)?.instance?.options
-        .defaultValue
+      const fieldDefault =
+        this.getFieldInfo(field)?.instance?.options.defaultValue
       const formDefault = getBy(this.options.defaultValues, field)
       const targetValue = fieldDefault ?? formDefault
 
