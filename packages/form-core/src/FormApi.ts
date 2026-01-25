@@ -1091,16 +1091,11 @@ export class FormApi<
           // As primitives, we don't need to aggressively persist the same referential value for performance reasons
           const isFieldValid = !isNonEmptyArray(fieldErrors)
           const isFieldPristine = !currBaseMeta.isDirty
-          const isDefaultValue =
-            evaluate(
-              curFieldVal,
+          const isDefaultValue = evaluate(
+            curFieldVal,
+            this.getFieldInfo(fieldName)?.instance?.options.defaultValue ??
               getBy(this.options.defaultValues, fieldName),
-            ) ||
-            evaluate(
-              curFieldVal,
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              this.getFieldInfo(fieldName)?.instance?.options.defaultValue,
-            )
+          )
 
           if (
             prevFieldInfo &&
@@ -1507,16 +1502,35 @@ export class FormApi<
       }
     }
 
-    this.baseStore.setState(() =>
-      getDefaultFormState({
+    this.baseStore.setState(() => {
+      let nextValues =
+        values ??
+        this.options.defaultValues ??
+        this.options.defaultState?.values
+
+      if (!values) {
+        ;(Object.values(this.fieldInfo) as FieldInfo<any>[]).forEach(
+          (fieldInfo) => {
+            if (
+              fieldInfo.instance &&
+              fieldInfo.instance.options.defaultValue !== undefined
+            ) {
+              nextValues = setBy(
+                nextValues,
+                fieldInfo.instance.name,
+                fieldInfo.instance.options.defaultValue,
+              )
+            }
+          },
+        )
+      }
+
+      return getDefaultFormState({
         ...(this.options.defaultState as any),
-        values:
-          values ??
-          this.options.defaultValues ??
-          this.options.defaultState?.values,
+        values: nextValues,
         fieldMetaBase,
-      }),
-    )
+      })
+    })
   }
 
   /**
@@ -2542,15 +2556,21 @@ export class FormApi<
    */
   resetField = <TField extends DeepKeys<TFormData>>(field: TField) => {
     this.baseStore.setState((prev) => {
+      const fieldDefault = this.getFieldInfo(field)?.instance?.options
+        .defaultValue
+      const formDefault = getBy(this.options.defaultValues, field)
+      const targetValue = fieldDefault ?? formDefault
+
       return {
         ...prev,
         fieldMetaBase: {
           ...prev.fieldMetaBase,
           [field]: defaultFieldMeta,
         },
-        values: this.options.defaultValues
-          ? setBy(prev.values, field, getBy(this.options.defaultValues, field))
-          : prev.values,
+        values:
+          targetValue !== undefined
+            ? setBy(prev.values, field, targetValue)
+            : prev.values,
       }
     })
   }
