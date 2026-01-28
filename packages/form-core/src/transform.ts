@@ -5,6 +5,7 @@ import type {
   FormAsyncValidateOrFn,
   FormValidateOrFn,
 } from './FormApi'
+import { deepCopy } from './utils'
 
 /**
  * @private
@@ -102,9 +103,7 @@ export function mergeAndUpdate<
   if (!fn) return
 
   const newObj = Object.assign({}, form, {
-    // structuredClone is required to avoid `state` being mutated outside of this block
-    // Commonly available since 2022 in all major browsers BUT NOT REACT NATIVE NOOOOOOO
-    state: structuredClone(form.state),
+    state: deepCopy(form.state),
   })
 
   fn(newObj)
