@@ -2558,8 +2558,7 @@ export class FormApi<
   resetField = <TField extends DeepKeys<TFormData>>(field: TField) => {
     this.baseStore.setState((prev) => {
       const fieldDefault =
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        this.getFieldInfo(field)?.instance?.options.defaultValue
+        this.getFieldInfo(field).instance?.options.defaultValue
       const formDefault = getBy(this.options.defaultValues, field)
       const targetValue = fieldDefault ?? formDefault
 
