@@ -1,11 +1,11 @@
 import { batch } from '@tanstack/store'
+import { deepCopy } from './utils'
 import type {
   AnyBaseFormState,
   FormApi,
   FormAsyncValidateOrFn,
   FormValidateOrFn,
 } from './FormApi'
-import { deepCopy } from './utils'
 
 /**
  * @private
