@@ -592,6 +592,37 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.1.0(react@19.1.0)
+    devDependencies:
+      '@types/node':
+        specifier: ^24.1.0
+        version: 24.1.0
+      '@types/react':
+        specifier: ^19.0.7
+        version: 19.1.6
+      '@types/react-dom':
+        specifier: ^19.0.3
+        version: 19.1.5(@types/react@19.1.6)
+      typescript:
+        specifier: 5.8.2
+        version: 5.8.2
+
+  examples/react/next-server-actions-zod:
+    dependencies:
+      '@tanstack/react-form-nextjs':
+        specifier: ^1.28.0
+        version: link:../../../packages/react-form-nextjs
+      '@tanstack/react-store':
+        specifier: ^0.8.0
+        version: 0.8.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      next:
+        specifier: 16.0.5
+        version: 16.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.90.0)
+      react:
+        specifier: ^19.0.0
+        version: 19.1.0
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.1.0(react@19.1.0)
       zod:
         specifier: ^3.25.76
         version: 3.25.76

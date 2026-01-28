@@ -4,15 +4,17 @@ import {
   ServerValidateError,
   createServerValidate,
 } from '@tanstack/react-form-nextjs'
+import { z } from 'zod'
 import { formOpts } from './shared-code'
+
+const schema = z.object({
+  age: z.coerce.number().min(12),
+  firstName: z.string(),
+})
 
 const serverValidate = createServerValidate({
   ...formOpts,
-  onServerValidate: ({ value }) => {
-    if (value.age < 12) {
-      return 'Server validation: You must be at least 12 to sign up'
-    }
-  },
+  onServerValidate: schema,
 })
 
 export default async function someAction(prev: unknown, formData: FormData) {
