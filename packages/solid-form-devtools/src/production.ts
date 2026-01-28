@@ -1,5 +1,5 @@
 export { FormDevtoolsPanel } from './FormDevtools'
 
-export type { FormDevtoolsSolidInit } from './FormDevtools'
+export type { FormDevtoolsSolidInit } from './production/FormDevtools'
 
-export { formDevtoolsPlugin } from './plugin'
+export { formDevtoolsPlugin } from './production/plugin'

@@ -3,7 +3,7 @@ id: typescript
 title: TypeScript
 ---
 
-TanStack Form is written 100% in **TypeScript** with the highest quality generics, constraints and interfaces to make sure the library and your projects are as type-safe as possible!
+TanStack Form is written 100% in **TypeScript** with the highest quality generics, constraints, and interfaces to make sure the library and your projects are as type-safe as possible!
 
 Things to keep in mind:
 

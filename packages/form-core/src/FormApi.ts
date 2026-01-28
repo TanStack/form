@@ -1,5 +1,4 @@
 import { Derived, Store, batch } from '@tanstack/store'
-import { throttle } from '@tanstack/pacer'
 import {
   deleteBy,
   determineFormLevelErrorSourceAndValue,
@@ -12,16 +11,18 @@ import {
   isNonEmptyArray,
   mergeOpts,
   setBy,
+  throttleFormState,
   uuid,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
-
 import {
   isStandardSchemaValidator,
   standardSchemaValidators,
 } from './standardSchemaValidator'
 import { defaultFieldMeta, metaHelper } from './metaHelper'
 import { formEventClient } from './EventClient'
+
+// types
 import type { ValidationLogicFn } from './ValidationLogic'
 import type {
   StandardSchemaV1,
@@ -1029,7 +1030,7 @@ export class FormApi<
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             const fieldInstance = this.getFieldInfo(fieldName)?.instance
 
-            if (fieldInstance && !fieldInstance.options.disableErrorFlat) {
+            if (!fieldInstance || !fieldInstance.options.disableErrorFlat) {
               fieldErrors = fieldErrors.flat(1)
             }
           }
@@ -1242,47 +1243,6 @@ export class FormApi<
     this.handleSubmit = this.handleSubmit.bind(this)
 
     this.update(opts || {})
-
-    const debouncedDevtoolState = throttle(
-      (state: AnyFormState) =>
-        formEventClient.emit('form-state', {
-          id: this._formId,
-          state: state,
-        }),
-      {
-        wait: 300,
-      },
-    )
-
-    // devtool broadcasts
-    this.store.subscribe(() => {
-      debouncedDevtoolState(this.store.state)
-    })
-
-    // devtool requests
-    formEventClient.on('request-form-state', (e) => {
-      if (e.payload.id === this._formId) {
-        formEventClient.emit('form-api', {
-          id: this._formId,
-          state: this.store.state,
-          options: this.options,
-        })
-      }
-    })
-
-    formEventClient.on('request-form-reset', (e) => {
-      if (e.payload.id === this._formId) {
-        this.reset()
-      }
-    })
-
-    formEventClient.on('request-form-force-submit', (e) => {
-      if (e.payload.id === this._formId) {
-        this._devtoolsSubmissionOverride = true
-        this.handleSubmit()
-        this._devtoolsSubmissionOverride = false
-      }
-    })
   }
 
   get formId(): string {
@@ -1317,7 +1277,51 @@ export class FormApi<
   mount = () => {
     const cleanupFieldMetaDerived = this.fieldMetaDerived.mount()
     const cleanupStoreDerived = this.store.mount()
+
+    // devtool broadcasts
+    const cleanupDevtoolBroadcast = this.store.subscribe(() => {
+      throttleFormState(this)
+    })
+
+    // devtool requests
+    const cleanupFormStateListener = formEventClient.on(
+      'request-form-state',
+      (e) => {
+        if (e.payload.id === this._formId) {
+          formEventClient.emit('form-api', {
+            id: this._formId,
+            state: this.store.state,
+            options: this.options,
+          })
+        }
+      },
+    )
+
+    const cleanupFormResetListener = formEventClient.on(
+      'request-form-reset',
+      (e) => {
+        if (e.payload.id === this._formId) {
+          this.reset()
+        }
+      },
+    )
+
+    const cleanupFormForceSubmitListener = formEventClient.on(
+      'request-form-force-submit',
+      (e) => {
+        if (e.payload.id === this._formId) {
+          this._devtoolsSubmissionOverride = true
+          this.handleSubmit()
+          this._devtoolsSubmissionOverride = false
+        }
+      },
+    )
+
     const cleanup = () => {
+      cleanupFormForceSubmitListener()
+      cleanupFormResetListener()
+      cleanupFormStateListener()
+      cleanupDevtoolBroadcast()
       cleanupFieldMetaDerived()
       cleanupStoreDerived()
 
@@ -1519,7 +1523,18 @@ export class FormApi<
   ) => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const fieldInstance = this.fieldInfo[field]?.instance
-    if (!fieldInstance) return []
+
+    if (!fieldInstance) {
+      const { hasErrored } = this.validateSync(cause)
+
+      if (hasErrored && !this.options.asyncAlways) {
+        return this.getFieldMeta(field)?.errors ?? []
+      }
+
+      return this.validateAsync(cause).then(() => {
+        return this.getFieldMeta(field)?.errors ?? []
+      })
+    }
 
     // If the field is not touched (same logic as in validateAllFields)
     if (!fieldInstance.state.meta.isTouched) {
@@ -1591,16 +1606,20 @@ export class FormApi<
 
         const errorMapKey = getErrorMapKey(validateObj.cause)
 
-        for (const field of Object.keys(
-          this.state.fieldMeta,
-        ) as DeepKeys<TFormData>[]) {
-          if (this.baseStore.state.fieldMetaBase[field] === undefined) {
+        const allFieldsToProcess = new Set([
+          ...Object.keys(this.state.fieldMeta),
+          ...Object.keys(fieldErrors || {}),
+        ] as DeepKeys<TFormData>[])
+
+        for (const field of allFieldsToProcess) {
+          if (
+            this.baseStore.state.fieldMetaBase[field] === undefined &&
+            !fieldErrors?.[field]
+          ) {
             continue
           }
 
-          const fieldMeta = this.getFieldMeta(field)
-          if (!fieldMeta) continue
-
+          const fieldMeta = this.getFieldMeta(field) ?? defaultFieldMeta
           const {
             errorMap: currentErrorMap,
             errorSourceMap: currentErrorMapSource,
@@ -1612,6 +1631,7 @@ export class FormApi<
             determineFormLevelErrorSourceAndValue({
               newFormValidatorError,
               isPreviousErrorFromFormValidator:
+                // These conditional checks are required, otherwise we get runtime errors.
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 currentErrorMapSource?.[errorMapKey] === 'form',
               // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -1625,11 +1645,10 @@ export class FormApi<
             }
           }
 
-          if (
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            currentErrorMap?.[errorMapKey] !== newErrorValue
-          ) {
-            this.setFieldMeta(field, (prev) => ({
+          // This conditional check is required, otherwise we get runtime errors.
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          if (currentErrorMap?.[errorMapKey] !== newErrorValue) {
+            this.setFieldMeta(field, (prev = defaultFieldMeta) => ({
               ...prev,
               errorMap: {
                 ...prev.errorMap,

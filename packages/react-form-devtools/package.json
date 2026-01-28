@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/react-form-devtools",
-  "version": "0.2.4",
+  "version": "0.2.13",
   "description": "Devtools, for TanStack React form.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -52,7 +52,7 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/devtools-utils": "^0.0.9",
+    "@tanstack/devtools-utils": "^0.3.0",
     "@tanstack/form-devtools": "workspace:*"
   },
   "devDependencies": {

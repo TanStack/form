@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/form-devtools",
-  "version": "0.2.4",
+  "version": "0.2.13",
   "description": "Devtools, for TanStack form.",
   "author": "tannerlinsley",
   "license": "MIT",
@@ -53,7 +53,7 @@
   ],
   "dependencies": {
     "@tanstack/devtools-ui": "^0.4.4",
-    "@tanstack/devtools-utils": "^0.0.9",
+    "@tanstack/devtools-utils": "^0.3.0",
     "@tanstack/form-core": "workspace:*",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.18",

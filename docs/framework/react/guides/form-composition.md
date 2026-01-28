@@ -3,7 +3,7 @@ id: form-composition
 title: Form Composition
 ---
 
-A common criticism of TanStack Form is its verbosity out-of-the-box. While this _can_ be useful for educational purposes - helping enforce understanding our APIs - it's not ideal in production use cases.
+A common criticism of TanStack Form is that it is verbose out-of-the-box. While this verbosity _can_ be useful for educational purposes - helping to enforce understanding of our APIs - it's not ideal in production use cases.
 
 As a result, while `form.Field` enables the most powerful and flexible usage of TanStack Form, we provide APIs that wrap it and make your application code less verbose.
 
@@ -103,7 +103,7 @@ function App() {
 }
 ```
 
-This not only allows you to reuse the UI of your shared component, but retains the type-safety you'd expect from TanStack Form: Typo `name` and get a TypeScript error.
+This not only allows you to reuse the UI of your shared component, but retains the type-safety you'd expect from TanStack Form: Mistyping `name` will result in a TypeScript error.
 
 #### A note on performance
 
@@ -162,7 +162,7 @@ function App() {
 
 ## Breaking big forms into smaller pieces
 
-Sometimes forms get very large; it's just how it goes sometimes. While TanStack Form supports large forms well, it's never fun to work with hundreds or thousands of lines of code long files.
+Sometimes forms get very large; it's just how it goes sometimes. While TanStack Form supports large forms well, it's never fun to work with hundreds or thousands of lines of code in single files.
 
 To solve this, we support breaking forms into smaller pieces using the `withForm` higher-order component.
 
@@ -246,6 +246,61 @@ const ChildForm = withForm({
     // ...
   },
 })
+```
+
+### Context as a last resort
+
+There are cases where passing `form` with `withForm` is not feasible. You may encounter it with components that don't
+allow you to change their props.
+
+For example, consider the following TanStack Router usage:
+
+```ts
+function RouteComponent() {
+  const form = useAppForm({...formOptions, /* ... */ })
+  // <Outlet /> cannot be customized or receive additional props
+  return <Outlet />
+}
+```
+
+In edge cases like this, a context-based fallback is available to access the form instance.
+
+```ts
+const { useAppForm, useTypedAppFormContext } = createFormHook({
+  fieldContext,
+  formContext,
+  fieldComponents: {},
+  formComponents: {},
+})
+```
+
+> [!IMPORTANT] Type safety
+> This mechanism exists solely to bridge integration constraints and should be avoided whenever `withForm` is possible.
+> Context will not warn you when the types do not align. You risk runtime errors with this implementation.
+
+Usage:
+
+```tsx
+// sharedOpts.ts
+const formOpts = formOptions({
+  /* ... */
+})
+
+function ParentComponent() {
+  const form = useAppForm({ ...formOptions /* ... */ })
+
+  return (
+    <form.AppForm>
+      <ChildComponent />
+    </form.AppForm>
+  )
+}
+
+function ChildComponent() {
+  const form = useTypedAppFormContext({ ...formOptions })
+
+  // You now have access to form components, field components and fields
+}
 ```
 
 ## Reusing groups of fields in multiple forms

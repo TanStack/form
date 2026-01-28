@@ -1169,7 +1169,33 @@ export class FieldApi<
 
     this.store = new Derived({
       deps: [this.form.store],
-      fn: () => {
+      fn: ({ prevVal: _prevVal }) => {
+        const prevVal = _prevVal as
+          | FieldState<
+              TParentData,
+              TName,
+              TData,
+              TOnMount,
+              TOnChange,
+              TOnChangeAsync,
+              TOnBlur,
+              TOnBlurAsync,
+              TOnSubmit,
+              TOnSubmitAsync,
+              TOnDynamic,
+              TOnDynamicAsync,
+              TFormOnMount,
+              TFormOnChange,
+              TFormOnChangeAsync,
+              TFormOnBlur,
+              TFormOnBlurAsync,
+              TFormOnSubmit,
+              TFormOnSubmitAsync,
+              TFormOnDynamic,
+              TFormOnDynamicAsync
+            >
+          | undefined
+
         const meta = this.form.getFieldMeta(this.name) ?? {
           ...defaultFieldMeta,
           ...opts.defaultMeta,
@@ -1183,6 +1209,10 @@ export class FieldApi<
           !evaluate(value, this.options.defaultValue)
         ) {
           value = this.options.defaultValue
+        }
+
+        if (prevVal && prevVal.value === value && prevVal.meta === meta) {
+          return prevVal
         }
 
         return {
@@ -1257,6 +1287,7 @@ export class FieldApi<
     info.instance = this as never
 
     this.update(this.options as never)
+
     const { onMount } = this.options.validators || {}
 
     if (onMount) {
@@ -1728,20 +1759,29 @@ export class FieldApi<
       >,
     )
 
-    if (!this.state.meta.isValidating) {
-      this.setMeta((prev) => ({ ...prev, isValidating: true }))
-    }
-
-    for (const linkedField of linkedFields) {
-      linkedField.setMeta((prev) => ({ ...prev, isValidating: true }))
-    }
-
     /**
      * We have to use a for loop and generate our promises this way, otherwise it won't be sync
      * when there are no validators needed to be run
      */
     const validatesPromises: Promise<ValidationError | undefined>[] = []
     const linkedPromises: Promise<ValidationError | undefined>[] = []
+
+    // Check if there are actual async validators to run before setting isValidating
+    // This prevents unnecessary re-renders when there are no async validators
+    // See: https://github.com/TanStack/form/issues/1130
+    const hasAsyncValidators =
+      validates.some((v) => v.validate) ||
+      linkedFieldValidates.some((v) => v.validate)
+
+    if (hasAsyncValidators) {
+      if (!this.state.meta.isValidating) {
+        this.setMeta((prev) => ({ ...prev, isValidating: true }))
+      }
+
+      for (const linkedField of linkedFields) {
+        linkedField.setMeta((prev) => ({ ...prev, isValidating: true }))
+      }
+    }
 
     const validateFieldAsyncFn = (
       field: AnyFieldApi,
@@ -1845,10 +1885,13 @@ export class FieldApi<
       await Promise.all(linkedPromises)
     }
 
-    this.setMeta((prev) => ({ ...prev, isValidating: false }))
+    // Only reset isValidating if we set it to true earlier
+    if (hasAsyncValidators) {
+      this.setMeta((prev) => ({ ...prev, isValidating: false }))
 
-    for (const linkedField of linkedFields) {
-      linkedField.setMeta((prev) => ({ ...prev, isValidating: false }))
+      for (const linkedField of linkedFields) {
+        linkedField.setMeta((prev) => ({ ...prev, isValidating: false }))
+      }
     }
 
     return results.filter(Boolean)

@@ -1,5 +1,54 @@
 # @tanstack/react-form-start
 
+## 1.28.0
+
+### Patch Changes
+
+- Updated dependencies [[`41faffe`](https://github.com/TanStack/form/commit/41faffee657e753b37132275c2255d29fdd3f325), [`a7eda7a`](https://github.com/TanStack/form/commit/a7eda7a388f3dd38ed8b395d11034c6760aff84e)]:
+  - @tanstack/react-form@1.28.0
+
+## 1.27.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.27.7
+
+## 1.27.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.27.6
+
+## 1.27.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.27.5
+
+## 1.27.4
+
+### Patch Changes
+
+- Updated dependencies [[`35921c9`](https://github.com/TanStack/form/commit/35921c9a852848ca8920f6846c84144fa9538cbb)]:
+  - @tanstack/react-form@1.27.4
+
+## 1.27.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.27.3
+
+## 1.27.2
+
+### Patch Changes
+
+- Updated dependencies [[`6a5e1c1`](https://github.com/TanStack/form/commit/6a5e1c1a4f0f0519705cc5fd15cbe8afb878a42d), [`9ce5f28`](https://github.com/TanStack/form/commit/9ce5f286a12fb0f1662f3eeeff14c75d8f3e4417)]:
+  - @tanstack/react-form@1.27.2
+
 ## 1.27.1
 
 ### Patch Changes
