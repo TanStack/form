@@ -449,6 +449,13 @@ export interface FormOptions<
     >
     meta: TSubmitMeta
   }) => void
+  // Only runs in `core` for the first run on the Form, any additional transforms
+  // need to be handled at framework runtime due to complexity of comparison check
+  // and state merging
+  //
+  // Made intentionally type loose to avoid headaches with framework's individual
+  // `useTransform` hooks
+  transform?: (data: unknown) => unknown
 }
 
 export type AnyFormOptions = FormOptions<
@@ -968,13 +975,31 @@ export class FormApi<
 
     this._devtoolsSubmissionOverride = false
 
-    this.baseStore = new Store(
-      getDefaultFormState({
-        ...(opts?.defaultState as any),
-        values: opts?.defaultValues ?? opts?.defaultState?.values,
-        isFormValid: true,
-      }),
-    )
+    let baseStoreVal: BaseFormState<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer
+    > = getDefaultFormState({
+      ...(opts?.defaultState as any),
+      values: opts?.defaultValues ?? opts?.defaultState?.values,
+      isFormValid: true,
+    })
+
+    if (opts?.transform) {
+      baseStoreVal = (
+        opts.transform({ state: baseStoreVal }) as { state: unknown }
+      ).state as never
+    }
+
+    this.baseStore = new Store(baseStoreVal)
 
     this.fieldMetaDerived = new Derived({
       deps: [this.baseStore],

@@ -183,10 +183,7 @@ export function useForm<
     TOnDynamicAsync,
     TOnServer,
     TSubmitMeta
-  > & {
-    // Made stable by `useTransform`
-    transform?: (data: unknown) => unknown
-  },
+  >,
 ) {
   const fallbackFormId = useFormId()
   const [prevFormId, setPrevFormId] = useState<string>(opts?.formId as never)
