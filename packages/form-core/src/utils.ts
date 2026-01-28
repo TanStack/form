@@ -618,7 +618,7 @@ export const throttleFormState = liteThrottle(
 
 // Do not use a serialize and deserialize method like JSON.stringify/parse
 // as that will drop functions, dates, undefined, Infinity, NaN, etc.
-export function deepCopy<T>(obj: T): T{
+export function deepCopy<T>(obj: T): T {
   if (obj === null || typeof obj !== 'object') {
     return obj
   }
