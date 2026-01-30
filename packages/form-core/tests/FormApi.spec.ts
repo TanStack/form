@@ -4118,3 +4118,43 @@ describe('form api event client', () => {
     logSpy.mockRestore()
   })
 })
+
+describe('form transform', () => {
+  it('should transform state values on first load', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      transform: (baseForm) => {
+        return mergeForm(baseForm as AnyFormApi, {
+          values: {
+            name: 'Another',
+          },
+        })
+      },
+    })
+
+    form.mount()
+
+    expect(form.state.values.name).toBe('Another')
+  })
+
+  it('should transform error map on first load', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      transform: (baseForm) => {
+        return mergeForm(baseForm as AnyFormApi, {
+          errorMap: {
+            onChange: 'Error',
+          },
+        })
+      },
+    })
+
+    form.mount()
+
+    expect(form.state.errorMap.onChange).toBe('Error')
+  })
+})
