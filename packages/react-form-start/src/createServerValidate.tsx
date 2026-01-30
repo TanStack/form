@@ -55,7 +55,6 @@ const serverFn = createServerFn({ method: 'POST' })
     },
   )
   .handler(async ({ data, ...props }) => {
-    console.log({ props, data })
     const { formData, info, defaultOpts } = data as {
       formData: FormData
       info?: Parameters<typeof decode>[1]
