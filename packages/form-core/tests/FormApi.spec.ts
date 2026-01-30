@@ -4139,7 +4139,7 @@ describe('form transform', () => {
     expect(form.state.values.name).toBe('Another')
   })
 
-  it('should transform error map on first load', async () => {
+  it('should transform form error map on first load', async () => {
     const form = new FormApi({
       defaultValues: {
         name: 'test',
@@ -4156,5 +4156,31 @@ describe('form transform', () => {
     form.mount()
 
     expect(form.state.errorMap.onChange).toBe('Error')
+  })
+
+  it('should transform fields error map on first load', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      transform: (baseForm) => {
+        return mergeForm(baseForm as AnyFormApi, {
+          errorMap: {
+            onChange: { fields: { name: 'Error' } },
+          },
+        })
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      name: 'name',
+      form,
+    })
+
+    field.mount()
+
+    expect(field.state.meta.errorMap.onChange).toBe('Error')
   })
 })

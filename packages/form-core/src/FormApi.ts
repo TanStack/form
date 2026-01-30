@@ -40,6 +40,7 @@ import type {
   FieldManipulator,
   FormValidationError,
   FormValidationErrorMap,
+  GlobalFormValidationError,
   ListenerCause,
   UpdateMetaOptions,
   ValidationCause,
@@ -997,6 +998,42 @@ export class FormApi<
       baseStoreVal = (
         opts.transform({ state: baseStoreVal }) as { state: unknown }
       ).state as never
+      for (const errKey of Object.keys(baseStoreVal.errorMap)) {
+        const errKeyMap = baseStoreVal.errorMap[errKey as never] as
+          | GlobalFormValidationError<any>
+          | undefined
+        if (
+          errKeyMap === undefined ||
+          !isGlobalFormValidationError(errKeyMap)
+        ) {
+          continue
+        }
+
+        for (const fieldName of Object.keys(errKeyMap.fields)) {
+          const fieldErr = errKeyMap.fields[fieldName]
+          if (fieldErr === undefined) {
+            continue
+          }
+          const existingFieldMeta = baseStoreVal.fieldMetaBase[
+            fieldName as never
+          ] as AnyFieldMetaBase | undefined
+          baseStoreVal.fieldMetaBase[fieldName as never] = {
+            isTouched: false,
+            isValidating: false,
+            isBlurred: false,
+            isDirty: false,
+            ...(existingFieldMeta ?? {}),
+            errorSourceMap: {
+              ...(existingFieldMeta?.['errorSourceMap'] ?? {}),
+              onChange: 'form',
+            },
+            errorMap: {
+              ...(existingFieldMeta?.['errorMap'] ?? {}),
+              [errKey as never]: fieldErr,
+            },
+          } satisfies AnyFieldMetaBase as never
+        }
+      }
     }
 
     this.baseStore = new Store(baseStoreVal)
