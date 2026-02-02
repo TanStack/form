@@ -179,7 +179,6 @@ describe('mutateMergeDeep', () => {
 })
 
 describe('mergeForm', () => {
-
   // `as any` required: FormApi has 12 generic params with TSubmitMeta defaulting to `never`,
   // incompatible with mergeForm's `any` constraint. Type limitation only - runtime is correct.
   // Production usage via useTransform receives AnyFormApi, avoiding this.
