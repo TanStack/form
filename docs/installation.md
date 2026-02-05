@@ -44,13 +44,13 @@ react: @tanstack/react-form-remix
 
 ## Devtools
 
-Developer tools are available using [TanStack Devtools](https://tanstack.com/devtools/latest). Install the devtools adapter for your framework to debug forms and inspect their state.
+Developer tools are available using [TanStack Devtools](https://tanstack.com/devtools/latest). Install the devtools adapter for your framework as a dev dependency to debug forms and inspect their state.
 
 # Solid
 
 ## Devtools
 
-Developer tools are available using [TanStack Devtools](https://tanstack.com/devtools/latest). Install the devtools adapter for your framework to debug forms and inspect their state.
+Developer tools are available using [TanStack Devtools](https://tanstack.com/devtools/latest). Install the devtools adapter for your framework as a dev dependency to debug forms and inspect their state.
 
 <!-- ::end:framework -->
 
