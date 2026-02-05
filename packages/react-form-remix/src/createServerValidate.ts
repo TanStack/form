@@ -118,7 +118,9 @@ export const createServerValidate =
         onServer: onServerError,
       },
       values,
-      errors: onServerErrorVal ? [onServerErrorVal] : [],
+      errors: (onServerErrorVal ? [onServerErrorVal] : []) as Array<
+        Exclude<UnwrapFormAsyncValidateOrFn<TOnServer>, undefined>
+      >,
     }
 
     throw new ServerValidateError({
