@@ -1,5 +1,14 @@
 # @tanstack/react-form-start
 
+## 1.28.1
+
+### Patch Changes
+
+- Removed a console.log statement in `src/createServerValidate.tsx` that was logging the whole data object during server-side validation. ([#2010](https://github.com/TanStack/form/pull/2010))
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.28.1
+
 ## 1.28.0
 
 ### Patch Changes
