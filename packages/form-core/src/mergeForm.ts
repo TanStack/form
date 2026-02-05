@@ -1,4 +1,4 @@
-import type { FormApi } from './FormApi'
+import type { AnyFormApi } from './FormApi'
 
 function isValidKey(key: string | number | symbol): boolean {
   const dangerousProps = ['__proto__', 'constructor', 'prototype']
@@ -70,38 +70,19 @@ export function mutateMergeDeep(
   return target
 }
 
-export function mergeForm<TFormData>(
-  baseForm: FormApi<
-    NoInfer<TFormData>,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any,
-    any
-  >,
-  state: Partial<
-    FormApi<
-      TFormData,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any
-    >['state']
-  >,
+export function mergeForm<TForm extends AnyFormApi>(
+  baseForm: TForm,
+  state: Partial<TForm['state']> | undefined,
 ) {
-  mutateMergeDeep(baseForm.state, state)
+  if (!state) return baseForm
+
+  const { errorMap, ...rest } = state as Partial<TForm['state']>
+
+  mutateMergeDeep(baseForm.state, rest)
+
+  if (errorMap !== undefined) {
+    baseForm.setErrorMap(errorMap as Parameters<TForm['setErrorMap']>[0])
+  }
+
   return baseForm
 }
