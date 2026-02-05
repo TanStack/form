@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
-import { FieldApi, FormApi, formEventClient } from '../src/index'
+import { FieldApi, FormApi, isFile } from '../src/index'
 import { sleep } from './utils'
 import type { AnyFieldApi, AnyFormApi } from '../src/index'
 
@@ -4094,6 +4094,37 @@ it('should generate a formId if not provided', () => {
   form.mount()
 
   expect(form.formId.length).toBeGreaterThan(1)
+})
+
+it('should set a file value with uuid when setting a field value with File', () => {
+  const form = new FormApi({
+    defaultValues: {
+      avatar: undefined,
+    } as { avatar: unknown },
+  })
+
+  form.mount()
+
+  const firstFile = new File(['first'], 'first.png', { type: 'image/png' })
+  form.setFieldValue('avatar', firstFile)
+
+  const firstValue = form.state.values.avatar as { file: File; uuid: string }
+
+  expect(firstValue).toBeDefined()
+  expect(isFile(firstValue.file)).toBe(true)
+  expect(firstValue.file.name).toBe('first.png')
+  expect(typeof firstValue.uuid).toBe('string')
+  expect(firstValue.uuid.length).toBeGreaterThan(0)
+
+  const secondFile = new File(['second'], 'second.png', { type: 'image/png' })
+  form.setFieldValue('avatar', secondFile)
+
+  const secondValue = form.state.values.avatar as { file: File; uuid: string }
+
+  expect(secondValue.file.name).toBe('second.png')
+  expect(typeof secondValue.uuid).toBe('string')
+  expect(secondValue.uuid.length).toBeGreaterThan(0)
+  expect(secondValue.uuid).not.toBe(firstValue.uuid)
 })
 
 describe('form api event client', () => {
