@@ -398,6 +398,29 @@ export class FieldGroupApi<
   }
 
   /**
+   * Delete all fields that belong to this field group.
+   */
+  deleteAllFields = () => {
+    if (typeof this.fieldsMap === 'string') {
+      const subFieldsToDelete = Object.keys(this.form.fieldInfo).filter((f) => {
+        const fieldStr = this.fieldsMap.toString()
+        return f !== fieldStr && f.startsWith(fieldStr)
+      })
+
+      subFieldsToDelete.forEach((field) => {
+        this.form.deleteField(field)
+      })
+      return
+    }
+
+    const fieldsMap = this.fieldsMap as FieldsMap<TFormData, TFieldGroupData>
+
+    for (const key in fieldsMap) {
+      this.deleteField(key)
+    }
+  }
+
+  /**
    * Pushes a value into an array field.
    */
   pushFieldValue = <TField extends DeepKeysOfType<TFieldGroupData, any[]>>(
@@ -460,6 +483,20 @@ export class FieldGroupApi<
   }
 
   /**
+   * Replaces all field values in this field group with the provided values.
+   */
+  replaceAllFields = (fields: TFieldGroupData) => {
+    for (const fieldName of Object.keys(
+      fields as object,
+    ) as (keyof TFieldGroupData)[]) {
+      this.setFieldValue(
+        fieldName as unknown as DeepKeys<TFieldGroupData>,
+        fields[fieldName] as never,
+      )
+    }
+  }
+
+  /**
    * Removes a value from an array field at the specified index.
    */
   removeFieldValue = async <
@@ -514,10 +551,31 @@ export class FieldGroupApi<
   }
 
   /**
-   * Resets the field value and meta to default state
+   * Resets the field value and meta to default state.
    */
   resetField = <TField extends DeepKeys<TFieldGroupData>>(field: TField) => {
     return this.form.resetField(this.getFormFieldName(field))
+  }
+
+  /**
+   * Resets all field values and meta within this field group.
+   */
+  resetAllFields = () => {
+    if (typeof this.fieldsMap === 'string') {
+      const fieldsToReset = Object.keys(this.form.fieldInfo).filter((f) => {
+        const fieldStr = this.fieldsMap.toString()
+        return f !== fieldStr && f.startsWith(fieldStr)
+      })
+
+      fieldsToReset.forEach((f) => this.form.resetField(f))
+      return
+    }
+
+    const fieldsMap = this.fieldsMap as FieldsMap<TFormData, TFieldGroupData>
+
+    for (const key in fieldsMap) {
+      this.resetField(key)
+    }
   }
 
   validateAllFields = (cause: ValidationCause) =>
