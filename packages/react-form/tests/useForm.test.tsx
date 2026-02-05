@@ -2,8 +2,8 @@ import { describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import { useStore } from '@tanstack/react-store'
-import { useEffect, useState } from 'react'
-import { useForm } from '../src/index'
+import { useCallback, useEffect, useReducer, useState } from 'react'
+import { mergeForm, useForm } from '../src/index'
 import { sleep } from './utils'
 
 const user = userEvent.setup()
@@ -1002,5 +1002,77 @@ describe('useForm', () => {
 
     await user.type(input, 'a')
     await user.click(removeButton)
+  })
+
+  it('should handle stable transforms to update the base form on first render', async () => {
+    let renders = 0
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          test: 'Hello',
+        },
+        transform: useCallback((baseForm: unknown) => {
+          return mergeForm(baseForm as never, {
+            values: {
+              test: 'What',
+            },
+          })
+        }, []),
+      })
+
+      renders++
+
+      return (
+        <form.Field
+          name="test"
+          children={(field) => (
+            <p>
+              {field.state.value} {renders}
+            </p>
+          )}
+        />
+      )
+    }
+
+    const { getByText } = render(<Comp />)
+    getByText('What 1')
+  })
+
+  it('should handle stable transforms to update the base form on subsequent renders', async () => {
+    function Comp() {
+      const [renders, setRenders] = useState(0)
+      const form = useForm({
+        defaultValues: {
+          test: 'Hello',
+        },
+        transform: useCallback(
+          (baseForm: unknown) => {
+            return mergeForm(baseForm as never, {
+              values: {
+                test: renders === 0 ? 'First' : 'Another',
+              },
+            })
+          },
+          [renders],
+        ),
+      })
+
+      return (
+        <div>
+          <form.Field
+            name="test"
+            children={(field) => <p>{field.state.value}</p>}
+          />
+          <button onClick={() => setRenders((v) => v + 1)} type={'button'}>
+            Rerender
+          </button>
+        </div>
+      )
+    }
+
+    const { findByText, getByText } = render(<Comp />)
+    await findByText('First')
+    await user.click(getByText('Rerender'))
+    await findByText('Another')
   })
 })

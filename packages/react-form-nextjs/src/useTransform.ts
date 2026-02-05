@@ -1,11 +1,7 @@
-import type { AnyFormApi, FormTransform } from '@tanstack/react-form'
+import { useCallback } from 'react'
+import type { AnyFormApi } from '@tanstack/react-form'
 
-export function useTransform(
+export const useTransform: (
   fn: (formBase: AnyFormApi) => AnyFormApi,
-  deps: unknown[],
-): FormTransform<any, any, any, any, any, any, any, any, any, any, any, any> {
-  return {
-    fn,
-    deps,
-  }
-}
+  deps?: unknown[],
+) => (data: unknown) => unknown = useCallback as never
