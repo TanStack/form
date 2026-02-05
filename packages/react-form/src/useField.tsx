@@ -339,12 +339,21 @@ export function useField<
   useIsomorphicLayoutEffect(fieldApi.mount, [fieldApi])
 
   /**
-   * fieldApi.update should not have any side effects. Think of it like a `useRef`
-   * that we need to keep updated every render with the most up-to-date information.
+   * Keep options and name in sync every render (like a useRef).
+   *
+   * Previously this was done inside a layout effect with no dependency array,
+   * which caused fieldApi.update() — and its conditional setFieldValue /
+   * setFieldMeta calls — to run during every commit phase.  Any component
+   * that triggers a state update or ref change during commit (e.g. Radix UI
+   * composeRefs + React 19 cleanup refs) would re-trigger the effect,
+   * creating an infinite synchronous re-render loop that freezes the tab.
+   *
+   * The initialization side-effects in fieldApi.update() (default value and
+   * meta registration) are already handled by fieldApi.mount(), so the only
+   * thing that needs to happen every render is the property assignment.
    */
-  useIsomorphicLayoutEffect(() => {
-    fieldApi.update(opts)
-  })
+  fieldApi.options = opts
+  fieldApi.name = opts.name
 
   return extendedFieldApi
 }
