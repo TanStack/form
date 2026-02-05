@@ -691,37 +691,48 @@ export type FieldMetaDerived<
    * An array of errors related to the field value.
    */
   errors: Array<
-    | UnwrapOneLevelOfArray<
-        UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>
-      >
-    | UnwrapOneLevelOfArray<
-        UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>
-      >
-    | UnwrapOneLevelOfArray<
-        UnwrapFieldAsyncValidateOrFn<TName, TOnChangeAsync, TFormOnChangeAsync>
-      >
-    | UnwrapOneLevelOfArray<
-        UnwrapFieldValidateOrFn<TName, TOnBlur, TFormOnBlur>
-      >
-    | UnwrapOneLevelOfArray<
-        UnwrapFieldAsyncValidateOrFn<TName, TOnBlurAsync, TFormOnBlurAsync>
-      >
-    | UnwrapOneLevelOfArray<
-        UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>
-      >
-    | UnwrapOneLevelOfArray<
-        UnwrapFieldAsyncValidateOrFn<TName, TOnSubmitAsync, TFormOnSubmitAsync>
-      >
-    | UnwrapOneLevelOfArray<
-        UnwrapFieldValidateOrFn<TName, TOnDynamic, TFormOnDynamic>
-      >
-    | UnwrapOneLevelOfArray<
-        UnwrapFieldAsyncValidateOrFn<
-          TName,
-          TOnDynamicAsync,
-          TFormOnDynamicAsync
+    Exclude<
+      | UnwrapOneLevelOfArray<
+          UnwrapFieldValidateOrFn<TName, TOnMount, TFormOnMount>
         >
-      >
+      | UnwrapOneLevelOfArray<
+          UnwrapFieldValidateOrFn<TName, TOnChange, TFormOnChange>
+        >
+      | UnwrapOneLevelOfArray<
+          UnwrapFieldAsyncValidateOrFn<
+            TName,
+            TOnChangeAsync,
+            TFormOnChangeAsync
+          >
+        >
+      | UnwrapOneLevelOfArray<
+          UnwrapFieldValidateOrFn<TName, TOnBlur, TFormOnBlur>
+        >
+      | UnwrapOneLevelOfArray<
+          UnwrapFieldAsyncValidateOrFn<TName, TOnBlurAsync, TFormOnBlurAsync>
+        >
+      | UnwrapOneLevelOfArray<
+          UnwrapFieldValidateOrFn<TName, TOnSubmit, TFormOnSubmit>
+        >
+      | UnwrapOneLevelOfArray<
+          UnwrapFieldAsyncValidateOrFn<
+            TName,
+            TOnSubmitAsync,
+            TFormOnSubmitAsync
+          >
+        >
+      | UnwrapOneLevelOfArray<
+          UnwrapFieldValidateOrFn<TName, TOnDynamic, TFormOnDynamic>
+        >
+      | UnwrapOneLevelOfArray<
+          UnwrapFieldAsyncValidateOrFn<
+            TName,
+            TOnDynamicAsync,
+            TFormOnDynamicAsync
+          >
+        >,
+      undefined
+    >
   >
   /**
    * A flag that is `true` if the field's value has not been modified by the user. Opposite of `isDirty`.

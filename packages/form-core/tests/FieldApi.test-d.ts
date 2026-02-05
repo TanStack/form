@@ -221,9 +221,7 @@ it('should have the correct types returned from field validators in array', () =
     },
   })
 
-  expectTypeOf(field.state.meta.errors).toEqualTypeOf<
-    Array<'123' | undefined>
-  >()
+  expectTypeOf(field.state.meta.errors).toEqualTypeOf<Array<'123'>>()
 })
 
 it('should have the correct types returned from form validators in array', () => {
@@ -238,7 +236,7 @@ it('should have the correct types returned from form validators in array', () =>
     },
   } as const)
 
-  expectTypeOf(form.state.errors).toEqualTypeOf<Array<'123' | undefined>>()
+  expectTypeOf(form.state.errors).toEqualTypeOf<Array<'123'>>()
 })
 
 it('should handle "fields" return types added to the field\'s errorMap itself', () => {
@@ -288,9 +286,7 @@ it('should handle "fields" return types added to the field\'s error array itself
     name: 'firstName',
   })
 
-  expectTypeOf(field.getMeta().errors).toEqualTypeOf<
-    Array<'Testing' | undefined>
-  >()
+  expectTypeOf(field.getMeta().errors).toEqualTypeOf<Array<'Testing'>>()
 })
 
 it('should handle "fields" async return types added to the field\'s errorMap itself', () => {
@@ -340,9 +336,7 @@ it('should handle "fields" async return types added to the field\'s error array 
     name: 'firstName',
   })
 
-  expectTypeOf(field.getMeta().errors).toEqualTypeOf<
-    Array<'Testing' | undefined>
-  >()
+  expectTypeOf(field.getMeta().errors).toEqualTypeOf<Array<'Testing'>>()
 })
 
 it('should handle "sub-fields" async return types added to the field\'s error array itself', () => {
@@ -368,9 +362,7 @@ it('should handle "sub-fields" async return types added to the field\'s error ar
     name: 'person.firstName',
   })
 
-  expectTypeOf(field.getMeta().errors).toEqualTypeOf<
-    Array<'Testing' | undefined>
-  >()
+  expectTypeOf(field.getMeta().errors).toEqualTypeOf<Array<'Testing'>>()
 })
 
 it('should only have field-level error types returned from parseValueWithSchema and parseValueWithSchemaAsync', () => {
