@@ -231,30 +231,8 @@ export function useField<
       state: typeof fieldApi.state,
     ) => TData | number,
   )
-  const reactiveMetaIsTouched = useStore(
-    fieldApi.store,
-    (state) => state.meta.isTouched,
-  )
-  const reactiveMetaIsBlurred = useStore(
-    fieldApi.store,
-    (state) => state.meta.isBlurred,
-  )
-  const reactiveMetaIsDirty = useStore(
-    fieldApi.store,
-    (state) => state.meta.isDirty,
-  )
-  const reactiveMetaErrorMap = useStore(
-    fieldApi.store,
-    (state) => state.meta.errorMap,
-  )
-  const reactiveMetaErrorSourceMap = useStore(
-    fieldApi.store,
-    (state) => state.meta.errorSourceMap,
-  )
-  const reactiveMetaIsValidating = useStore(
-    fieldApi.store,
-    (state) => state.meta.isValidating,
-  )
+
+  const reactiveMeta = useStore(fieldApi.store, (state) => state.meta)
 
   // This makes me sad, but if I understand correctly, this is what we have to do for reactivity to work properly with React compiler.
   const extendedFieldApi = useMemo(() => {
@@ -266,17 +244,7 @@ export function useField<
           // so we need to get the actual value from fieldApi
           value:
             opts.mode === 'array' ? fieldApi.state.value : reactiveStateValue,
-          get meta() {
-            return {
-              ...fieldApi.state.meta,
-              isTouched: reactiveMetaIsTouched,
-              isBlurred: reactiveMetaIsBlurred,
-              isDirty: reactiveMetaIsDirty,
-              errorMap: reactiveMetaErrorMap,
-              errorSourceMap: reactiveMetaErrorSourceMap,
-              isValidating: reactiveMetaIsValidating,
-            } satisfies AnyFieldMeta
-          },
+          meta: reactiveMeta,
         } satisfies AnyFieldApi['state']
       },
     }
@@ -324,17 +292,7 @@ export function useField<
     extendedApi.Field = Field as never
 
     return extendedApi
-  }, [
-    fieldApi,
-    opts.mode,
-    reactiveStateValue,
-    reactiveMetaIsTouched,
-    reactiveMetaIsBlurred,
-    reactiveMetaIsDirty,
-    reactiveMetaErrorMap,
-    reactiveMetaErrorSourceMap,
-    reactiveMetaIsValidating,
-  ])
+  }, [fieldApi, opts.mode, reactiveStateValue, reactiveMeta])
 
   useIsomorphicLayoutEffect(fieldApi.mount, [fieldApi])
 
