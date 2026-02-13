@@ -891,21 +891,6 @@ export class FormApi<
       TOnServer
     >
   >
-  fieldMetaDerived: Store<
-    FormState<
-      TFormData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnDynamic,
-      TOnDynamicAsync,
-      TOnServer
-    >['fieldMeta']
-  >
   store: Store<
     FormState<
       TFormData,
@@ -1046,127 +1031,6 @@ export class FormApi<
 
     this.baseStore = createStore(baseStoreVal) as never
 
-    let prevBaseStore:
-      | BaseFormState<
-          TFormData,
-          TOnMount,
-          TOnChange,
-          TOnChangeAsync,
-          TOnBlur,
-          TOnBlurAsync,
-          TOnSubmit,
-          TOnSubmitAsync,
-          TOnDynamic,
-          TOnDynamicAsync,
-          TOnServer
-        >
-      | undefined = undefined
-
-    this.fieldMetaDerived = createStore(
-      (prevVal: Record<DeepKeys<TFormData>, AnyFieldMeta> | undefined) => {
-        const currBaseStore = this.baseStore.get()
-
-        let originalMetaCount = 0
-
-        const fieldMeta: FormState<
-          TFormData,
-          TOnMount,
-          TOnChange,
-          TOnChangeAsync,
-          TOnBlur,
-          TOnBlurAsync,
-          TOnSubmit,
-          TOnSubmitAsync,
-          TOnDynamic,
-          TOnDynamicAsync,
-          TOnServer
-        >['fieldMeta'] = {}
-
-        for (const fieldName of Object.keys(
-          currBaseStore.fieldMetaBase,
-        ) as Array<keyof typeof currBaseStore.fieldMetaBase>) {
-          const currBaseMeta = currBaseStore.fieldMetaBase[
-            fieldName as never
-          ] as AnyFieldMetaBase
-
-          const prevBaseMeta = prevBaseStore?.fieldMetaBase[
-            fieldName as never
-          ] as AnyFieldMetaBase | undefined
-
-          const prevFieldInfo =
-            prevVal?.[fieldName as never as keyof typeof prevVal]
-
-          const curFieldVal = getBy(currBaseStore.values, fieldName)
-
-          let fieldErrors = prevFieldInfo?.errors
-          if (
-            !prevBaseMeta ||
-            currBaseMeta.errorMap !== prevBaseMeta.errorMap
-          ) {
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            fieldErrors = Object.values(currBaseMeta.errorMap ?? {}).filter(
-              (val) => val !== undefined,
-            )
-
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            const fieldInstance = this.getFieldInfo(fieldName)?.instance
-
-            if (!fieldInstance || !fieldInstance.options.disableErrorFlat) {
-              fieldErrors = fieldErrors.flat(1)
-            }
-          }
-
-          // As primitives, we don't need to aggressively persist the same referential value for performance reasons
-          const isFieldValid = !isNonEmptyArray(fieldErrors)
-          const isFieldPristine = !currBaseMeta.isDirty
-          const isDefaultValue =
-            evaluate(
-              curFieldVal,
-              getBy(this.options.defaultValues, fieldName),
-            ) ||
-            evaluate(
-              curFieldVal,
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              this.getFieldInfo(fieldName)?.instance?.options.defaultValue,
-            )
-
-          if (
-            prevFieldInfo &&
-            prevFieldInfo.isPristine === isFieldPristine &&
-            prevFieldInfo.isValid === isFieldValid &&
-            prevFieldInfo.isDefaultValue === isDefaultValue &&
-            prevFieldInfo.errors === fieldErrors &&
-            currBaseMeta === prevBaseMeta
-          ) {
-            fieldMeta[fieldName] = prevFieldInfo
-            originalMetaCount++
-            continue
-          }
-
-          fieldMeta[fieldName] = {
-            ...currBaseMeta,
-            errors: fieldErrors ?? [],
-            isPristine: isFieldPristine,
-            isValid: isFieldValid,
-            isDefaultValue: isDefaultValue,
-          } satisfies AnyFieldMeta as AnyFieldMeta
-        }
-
-        if (!Object.keys(currBaseStore.fieldMetaBase).length) return fieldMeta
-
-        if (
-          prevVal &&
-          originalMetaCount === Object.keys(currBaseStore.fieldMetaBase).length
-        ) {
-          return prevVal
-        }
-
-        prevBaseStore = this.baseStore.get()
-
-        return fieldMeta
-      },
-    ) as never
-
     let prevBaseStoreForStore:
       | BaseFormState<
           TFormData,
@@ -1199,7 +1063,99 @@ export class FormApi<
       >
     >((prevVal) => {
       const currBaseStore = this.baseStore.get()
-      const currFieldMeta = this.fieldMetaDerived.get()
+
+      // Derive fieldMeta from baseStore.fieldMetaBase (inlined from former fieldMetaDerived)
+      let originalMetaCount = 0
+      const prevFieldMetaObj = prevVal?.fieldMeta
+
+      const currFieldMeta: FormState<
+        TFormData,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TOnDynamic,
+        TOnDynamicAsync,
+        TOnServer
+      >['fieldMeta'] = {}
+
+      for (const fieldName of Object.keys(
+        currBaseStore.fieldMetaBase,
+      ) as Array<keyof typeof currBaseStore.fieldMetaBase>) {
+        const currBaseMeta = currBaseStore.fieldMetaBase[
+          fieldName as never
+        ] as AnyFieldMetaBase
+
+        const prevBaseMeta = prevBaseStoreForStore?.fieldMetaBase[
+          fieldName as never
+        ] as AnyFieldMetaBase | undefined
+
+        const prevFieldInfo =
+          prevFieldMetaObj?.[fieldName as never as keyof typeof prevFieldMetaObj]
+
+        const curFieldVal = getBy(currBaseStore.values, fieldName)
+
+        let fieldErrors = prevFieldInfo?.errors
+        if (
+          !prevBaseMeta ||
+          currBaseMeta.errorMap !== prevBaseMeta.errorMap
+        ) {
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          fieldErrors = Object.values(currBaseMeta.errorMap ?? {}).filter(
+            (val) => val !== undefined,
+          )
+
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          const fieldInstance = this.getFieldInfo(fieldName)?.instance
+
+          if (!fieldInstance || !fieldInstance.options.disableErrorFlat) {
+            fieldErrors = fieldErrors.flat(1)
+          }
+        }
+
+        const isFieldValid = !isNonEmptyArray(fieldErrors)
+        const isFieldPristine = !currBaseMeta.isDirty
+        const isDefaultValue =
+          evaluate(
+            curFieldVal,
+            getBy(this.options.defaultValues, fieldName),
+          ) ||
+          evaluate(
+            curFieldVal,
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            this.getFieldInfo(fieldName)?.instance?.options.defaultValue,
+          )
+
+        if (
+          prevFieldInfo &&
+          prevFieldInfo.isPristine === isFieldPristine &&
+          prevFieldInfo.isValid === isFieldValid &&
+          prevFieldInfo.isDefaultValue === isDefaultValue &&
+          prevFieldInfo.errors === fieldErrors &&
+          currBaseMeta === prevBaseMeta
+        ) {
+          currFieldMeta[fieldName] = prevFieldInfo
+          originalMetaCount++
+          continue
+        }
+
+        currFieldMeta[fieldName] = {
+          ...currBaseMeta,
+          errors: fieldErrors ?? [],
+          isPristine: isFieldPristine,
+          isValid: isFieldValid,
+          isDefaultValue: isDefaultValue,
+        } satisfies AnyFieldMeta as AnyFieldMeta
+      }
+
+      const fieldMetaBaseKeyCount = Object.keys(currBaseStore.fieldMetaBase).length
+      const fieldMetaUnchanged =
+        fieldMetaBaseKeyCount > 0 &&
+        prevFieldMetaObj &&
+        originalMetaCount === fieldMetaBaseKeyCount
 
       // Computed state
       const fieldMetaValues = Object.values(currFieldMeta).filter(
@@ -1283,7 +1239,7 @@ export class FormApi<
         prevVal &&
         prevBaseStoreForStore &&
         prevVal.errorMap === errorMap &&
-        prevVal.fieldMeta === this.fieldMetaDerived.state &&
+        fieldMetaUnchanged &&
         prevVal.errors === errors &&
         prevVal.isFieldsValidating === isFieldsValidating &&
         prevVal.isFieldsValid === isFieldsValid &&
@@ -1303,7 +1259,7 @@ export class FormApi<
       const state = {
         ...currBaseStore,
         errorMap,
-        fieldMeta: this.fieldMetaDerived.state,
+        fieldMeta: fieldMetaUnchanged ? prevFieldMetaObj! : currFieldMeta,
         errors,
         isFieldsValidating,
         isFieldsValid,
