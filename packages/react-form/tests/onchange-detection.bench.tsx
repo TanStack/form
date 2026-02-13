@@ -13,20 +13,23 @@ import type { FieldProps } from 'formik/dist/Field'
 
 const arr = Array.from({ length: 100 }, (_, i) => i)
 
-const validators = {
-  onChange: z.number().min(3, 'Must be at least three'),
-}
+const validator = z.object({
+  num: z.array(z.number().min(3, 'Must be at least three')),
+})
 
 function TanStackFormOnChangeBenchmark() {
   const form = useTanStackForm({
     defaultValues: { num: arr },
+    validators: {
+      onChange: validator,
+    },
   })
 
   return (
     <>
       {arr.map((_num, i) => {
         return (
-          <form.Field key={i} name={`num[${i}]`} validators={validators}>
+          <form.Field key={i} name={`num[${i}]`}>
             {(field) => {
               return (
                 <div>
@@ -60,11 +63,7 @@ function FormikOnChangeBenchmark() {
       initialValues={{
         num: arr,
       }}
-      validationSchema={toFormikValidationSchema(
-        z.object({
-          num: z.array(z.number().min(3, 'Must be at least three')),
-        }),
-      )}
+      validationSchema={toFormikValidationSchema(validator)}
       onSubmit={() => {}}
     >
       {() => (
@@ -102,11 +101,7 @@ function ReactHookFormOnChangeBenchmark() {
       num: arr,
     },
     mode: 'onChange',
-    resolver: zodResolver(
-      z.object({
-        num: z.array(z.number().min(3, 'Must be at least three')),
-      }),
-    ),
+    resolver: zodResolver(validator),
   })
 
   return (
@@ -134,11 +129,7 @@ function ReactHookFormHeadlessOnChangeBenchmark() {
       num: arr,
     },
     mode: 'onChange',
-    resolver: zodResolver(
-      z.object({
-        num: z.array(z.number().min(3, 'Must be at least three')),
-      }),
-    ),
+    resolver: zodResolver(validator),
   })
 
   return (
