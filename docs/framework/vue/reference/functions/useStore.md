@@ -8,10 +8,13 @@ title: useStore
 ## Call Signature
 
 ```ts
-function useStore<TState, TSelected>(store, selector?): Readonly<Ref<TSelected>>;
+function useStore<TState, TSelected>(
+   store, 
+   selector?, 
+options?): Readonly<Ref<TSelected>>;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+vue-store@0.7.7\_vue@3.5.16\_typescript@5.9.3\_/node\_modules/@tanstack/vue-store/dist/esm/index.d.ts:8
+Defined in: node\_modules/.pnpm/@tanstack+vue-store@0.8.0\_vue@3.5.16\_typescript@5.9.3\_/node\_modules/@tanstack/vue-store/dist/esm/index.d.ts:12
 
 ### Type Parameters
 
@@ -33,6 +36,10 @@ Defined in: node\_modules/.pnpm/@tanstack+vue-store@0.7.7\_vue@3.5.16\_typescrip
 
 (`state`) => `TSelected`
 
+#### options?
+
+`UseStoreOptions`\<`TSelected`\>
+
 ### Returns
 
 `Readonly`\<`Ref`\<`TSelected`\>\>
@@ -40,10 +47,13 @@ Defined in: node\_modules/.pnpm/@tanstack+vue-store@0.7.7\_vue@3.5.16\_typescrip
 ## Call Signature
 
 ```ts
-function useStore<TState, TSelected>(store, selector?): Readonly<Ref<TSelected>>;
+function useStore<TState, TSelected>(
+   store, 
+   selector?, 
+options?): Readonly<Ref<TSelected>>;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+vue-store@0.7.7\_vue@3.5.16\_typescript@5.9.3\_/node\_modules/@tanstack/vue-store/dist/esm/index.d.ts:9
+Defined in: node\_modules/.pnpm/@tanstack+vue-store@0.8.0\_vue@3.5.16\_typescript@5.9.3\_/node\_modules/@tanstack/vue-store/dist/esm/index.d.ts:13
 
 ### Type Parameters
 
@@ -64,6 +74,10 @@ Defined in: node\_modules/.pnpm/@tanstack+vue-store@0.7.7\_vue@3.5.16\_typescrip
 #### selector?
 
 (`state`) => `TSelected`
+
+#### options?
+
+`UseStoreOptions`\<`TSelected`\>
 
 ### Returns
 
