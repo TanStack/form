@@ -259,8 +259,7 @@ export function useField<
         return {
           // For array mode, reactiveState.value is the length (for reactivity tracking),
           // so we need to get the actual value from fieldApi
-          value:
-            isArrayMode ? fieldApi.state.value : reactiveState.value,
+          value: isArrayMode ? fieldApi.state.value : reactiveState.value,
           get meta() {
             return {
               ...fieldApi.state.meta,
@@ -319,11 +318,7 @@ export function useField<
     extendedApi.Field = Field as never
 
     return extendedApi
-  }, [
-    fieldApi,
-    isArrayMode,
-    reactiveState,
-  ])
+  }, [fieldApi, isArrayMode, reactiveState])
 
   useIsomorphicLayoutEffect(fieldApi.mount, [fieldApi])
 

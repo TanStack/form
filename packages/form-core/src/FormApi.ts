@@ -918,8 +918,10 @@ export class FormApi<
    * Per-field mutable stores that hold { value, metaBase } for each registered field.
    * FieldApi instances subscribe to these instead of the full form store for O(1) reactivity.
    */
-  _perFieldStores: Record<string, Store<{ value: any; metaBase: AnyFieldMetaBase }>> =
-    {} as any
+  _perFieldStores: Record<
+    string,
+    Store<{ value: any; metaBase: AnyFieldMetaBase }>
+  > = {} as any
 
   get state() {
     return this.store.state
@@ -1084,9 +1086,9 @@ export class FormApi<
         TOnServer
       >['fieldMeta'] = {}
 
-      for (const fieldName of Object.keys(
-        currBaseStore.fieldMetaBase,
-      ) as Array<keyof typeof currBaseStore.fieldMetaBase>) {
+      for (const fieldName of Object.keys(currBaseStore.fieldMetaBase) as Array<
+        keyof typeof currBaseStore.fieldMetaBase
+      >) {
         const currBaseMeta = currBaseStore.fieldMetaBase[
           fieldName as never
         ] as AnyFieldMetaBase
@@ -1096,15 +1098,14 @@ export class FormApi<
         ] as AnyFieldMetaBase | undefined
 
         const prevFieldInfo =
-          prevFieldMetaObj?.[fieldName as never as keyof typeof prevFieldMetaObj]
+          prevFieldMetaObj?.[
+            fieldName as never as keyof typeof prevFieldMetaObj
+          ]
 
         const curFieldVal = getBy(currBaseStore.values, fieldName)
 
         let fieldErrors = prevFieldInfo?.errors
-        if (
-          !prevBaseMeta ||
-          currBaseMeta.errorMap !== prevBaseMeta.errorMap
-        ) {
+        if (!prevBaseMeta || currBaseMeta.errorMap !== prevBaseMeta.errorMap) {
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           fieldErrors = Object.values(currBaseMeta.errorMap ?? {}).filter(
             (val) => val !== undefined,
@@ -1121,10 +1122,7 @@ export class FormApi<
         const isFieldValid = !isNonEmptyArray(fieldErrors)
         const isFieldPristine = !currBaseMeta.isDirty
         const isDefaultValue =
-          evaluate(
-            curFieldVal,
-            getBy(this.options.defaultValues, fieldName),
-          ) ||
+          evaluate(curFieldVal, getBy(this.options.defaultValues, fieldName)) ||
           evaluate(
             curFieldVal,
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -1153,7 +1151,9 @@ export class FormApi<
         } satisfies AnyFieldMeta as AnyFieldMeta
       }
 
-      const fieldMetaBaseKeyCount = Object.keys(currBaseStore.fieldMetaBase).length
+      const fieldMetaBaseKeyCount = Object.keys(
+        currBaseStore.fieldMetaBase,
+      ).length
       const fieldMetaUnchanged =
         fieldMetaBaseKeyCount > 0 &&
         prevFieldMetaObj &&
@@ -1352,7 +1352,10 @@ export class FormApi<
     }
 
     // Update child paths (e.g., for 'items', update 'items[0]', 'items[0].name', etc.)
-    for (const childPath of getChildPaths(field, Object.keys(this._perFieldStores))) {
+    for (const childPath of getChildPaths(
+      field,
+      Object.keys(this._perFieldStores),
+    )) {
       updateStoreValue(childPath)
     }
   }
@@ -1367,10 +1370,9 @@ export class FormApi<
     for (const field of Object.keys(this._perFieldStores)) {
       this._perFieldStores[field]!.setState(() => ({
         value: getBy(state.values, field),
-        metaBase:
-          (state.fieldMetaBase[
-            field as keyof typeof state.fieldMetaBase
-          ] as AnyFieldMetaBase) ?? { ...defaultFieldMeta },
+        metaBase: (state.fieldMetaBase[
+          field as keyof typeof state.fieldMetaBase
+        ] as AnyFieldMetaBase) ?? { ...defaultFieldMeta },
       }))
     }
   }
@@ -2026,9 +2028,7 @@ export class FormApi<
               },
             }))
 
-            for (const [af, ameta] of Object.entries(
-              pendingAsyncMetaChanges,
-            )) {
+            for (const [af, ameta] of Object.entries(pendingAsyncMetaChanges)) {
               const perFieldStore = this._perFieldStores[af]
               if (perFieldStore) {
                 perFieldStore.setState((prev) => ({
@@ -2353,10 +2353,7 @@ export class FormApi<
   ) => {
     let newMeta: AnyFieldMetaBase
     this.baseStore.setState((prev) => {
-      newMeta = functionalUpdate(
-        updater,
-        prev.fieldMetaBase[field] as never,
-      )
+      newMeta = functionalUpdate(updater, prev.fieldMetaBase[field] as never)
       return {
         ...prev,
         fieldMetaBase: {
@@ -2410,7 +2407,9 @@ export class FormApi<
     this.baseStore.setState((prev) => {
       const newValues = setBy(prev.values, field, updater)
       if (!dontUpdateMeta) {
-        const prevMeta = prev.fieldMetaBase[field] as AnyFieldMetaBase | undefined
+        const prevMeta = prev.fieldMetaBase[field] as
+          | AnyFieldMetaBase
+          | undefined
         newFieldMeta = {
           ...prevMeta,
           isTouched: true,

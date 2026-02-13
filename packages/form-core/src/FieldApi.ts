@@ -1209,7 +1209,11 @@ export class FieldApi<
 
         // Compute derived meta with caching
         let meta: AnyFieldMeta
-        if (metaBase === prevMetaBase && rawValue === prevRawValue && cachedMeta) {
+        if (
+          metaBase === prevMetaBase &&
+          rawValue === prevRawValue &&
+          cachedMeta
+        ) {
           // Nothing changed, reuse cached meta
           meta = cachedMeta
         } else {
@@ -1231,8 +1235,7 @@ export class FieldApi<
             evaluate(
               rawValue,
               getBy(this.form.options.defaultValues, this.name),
-            ) ||
-            evaluate(rawValue, this.options.defaultValue)
+            ) || evaluate(rawValue, this.options.defaultValue)
 
           // Check if derived values actually changed - preserve reference if not
           if (
