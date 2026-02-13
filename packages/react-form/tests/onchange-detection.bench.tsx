@@ -101,7 +101,7 @@ function ReactHookFormOnChangeBenchmark() {
       num: arr,
     },
     mode: 'onChange',
-    resolver: zodResolver(validator),
+    resolver: zodResolver(validator as never),
   })
 
   return (
@@ -129,7 +129,7 @@ function ReactHookFormHeadlessOnChangeBenchmark() {
       num: arr,
     },
     mode: 'onChange',
-    resolver: zodResolver(validator),
+    resolver: zodResolver(validator as never),
   })
 
   return (

@@ -101,7 +101,7 @@ function ReactHookFormOnBlurBenchmark() {
       num: arr,
     },
     mode: 'onBlur',
-    resolver: zodResolver(validator),
+    resolver: zodResolver(validator as never),
   })
 
   return (
@@ -129,7 +129,7 @@ function ReactHookFormHeadlessOnBlurBenchmark() {
       num: arr,
     },
     mode: 'onBlur',
-    resolver: zodResolver(validator),
+    resolver: zodResolver(validator as never),
   })
 
   return (
