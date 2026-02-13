@@ -141,13 +141,11 @@ describe('fieldMeta accessing', () => {
       name: 'name',
     })
 
-    const cleanup = field.mount()
+    field.mount()
 
     field.setValue('test')
     expect(form.state.fieldMeta.name?.isTouched).toBe(true)
     expect(form.state.fieldMeta.name?.isDirty).toBe(true)
-
-    cleanup()
 
     const metaAfterCleanup = form.state.fieldMeta.name
 
