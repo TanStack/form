@@ -1779,7 +1779,7 @@ export class FormApi<
       const rawError = this.runValidator({
         validate: validateObj.validate,
         value: {
-          value: this.state.values,
+          value: this.baseStore.state.values,
           formApi: this,
           validationSource: 'form',
         },
@@ -1791,7 +1791,7 @@ export class FormApi<
       const errorMapKey = getErrorMapKey(validateObj.cause)
 
       const allFieldsToProcess = new Set([
-        ...Object.keys(this.state.fieldMeta),
+        ...Object.keys(this.baseStore.state.fieldMetaBase),
         ...Object.keys(fieldErrors || {}),
       ] as DeepKeys<TFormData>[])
 
@@ -1803,11 +1803,11 @@ export class FormApi<
           continue
         }
 
-        const fieldMeta = this.getFieldMeta(field) ?? defaultFieldMeta
+        const fieldMetaBase = this._getFieldMetaBase(field) ?? defaultFieldMeta
         const {
           errorMap: currentErrorMap,
           errorSourceMap: currentErrorMapSource,
-        } = fieldMeta
+        } = fieldMetaBase
 
         const newFormValidatorError = fieldErrors?.[field]
 
@@ -1847,7 +1847,7 @@ export class FormApi<
       }
 
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (this.state.errorMap?.[errorMapKey] !== formError) {
+      if (this.baseStore.state.errorMap?.[errorMapKey] !== formError) {
         this.baseStore.setState((prev) => ({
           ...prev,
           errorMap: {
@@ -1869,7 +1869,7 @@ export class FormApi<
     const submitErrKey = getErrorMapKey('submit')
     if (
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      this.state.errorMap?.[submitErrKey] &&
+      this.baseStore.state.errorMap?.[submitErrKey] &&
       cause !== 'submit' &&
       !hasErrored
     ) {
@@ -1889,7 +1889,7 @@ export class FormApi<
     const serverErrKey = getErrorMapKey('server')
     if (
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      this.state.errorMap?.[serverErrKey] &&
+      this.baseStore.state.errorMap?.[serverErrKey] &&
       cause !== 'server' &&
       !hasErrored
     ) {
@@ -1931,8 +1931,8 @@ export class FormApi<
       validationLogic: this.options.validationLogic || defaultValidationLogic,
     })
 
-    if (!this.state.isFormValidating) {
-      this.baseStore.setState((prev) => ({ ...prev, isFormValidating: true }))
+    if (!this.baseStore.state.isValidating) {
+      this.baseStore.setState((prev) => ({ ...prev, isValidating: true }))
     }
 
     /**
@@ -1948,12 +1948,12 @@ export class FormApi<
     for (const validateObj of validates) {
       if (!validateObj.validate) continue
       const key = getErrorMapKey(validateObj.cause)
-      const fieldValidatorMeta = this.state.validationMetaMap[key]
+      const fieldValidatorMeta = this.baseStore.state.validationMetaMap[key]
 
       fieldValidatorMeta?.lastAbortController.abort()
       const controller = new AbortController()
 
-      this.state.validationMetaMap[key] = {
+      this.baseStore.state.validationMetaMap[key] = {
         lastAbortController: controller,
       }
 
@@ -1972,7 +1972,7 @@ export class FormApi<
                     await this.runValidator({
                       validate: validateObj.validate!,
                       value: {
-                        value: this.state.values,
+                        value: this.baseStore.state.values,
                         formApi: this,
                         validationSource: 'form',
                         signal: controller.signal,
@@ -2002,19 +2002,19 @@ export class FormApi<
           const errorMapKey = getErrorMapKey(validateObj.cause)
 
           for (const field of Object.keys(
-            this.state.fieldMeta,
+            this.baseStore.state.fieldMetaBase,
           ) as DeepKeys<TFormData>[]) {
             if (this.baseStore.state.fieldMetaBase[field] === undefined) {
               continue
             }
 
-            const fieldMeta = this.getFieldMeta(field)
-            if (!fieldMeta) continue
+            const fieldMetaBase = this._getFieldMetaBase(field)
+            if (!fieldMetaBase) continue
 
             const {
               errorMap: currentErrorMap,
               errorSourceMap: currentErrorMapSource,
-            } = fieldMeta
+            } = fieldMetaBase
 
             const newFormValidatorError = fieldErrorsFromFormValidators?.[field]
 
@@ -2307,7 +2307,7 @@ export class FormApi<
    */
   getFieldValue = <TField extends DeepKeys<TFormData>>(
     field: TField,
-  ): DeepValue<TFormData, TField> => getBy(this.state.values, field)
+  ): DeepValue<TFormData, TField> => getBy(this.baseStore.state.values, field)
 
   /**
    * Gets the metadata of the specified field.
@@ -2316,6 +2316,19 @@ export class FormApi<
     field: TField,
   ): AnyFieldMeta | undefined => {
     return this.state.fieldMeta[field]
+  }
+
+  /**
+   * @private
+   * Gets field meta base directly from baseStore without triggering O(N) derived store.
+   * Used in validation hot paths.
+   */
+  _getFieldMetaBase = <TField extends DeepKeys<TFormData>>(
+    field: TField,
+  ): AnyFieldMetaBase | undefined => {
+    return this.baseStore.state.fieldMetaBase[
+      field as keyof typeof this.baseStore.state.fieldMetaBase
+    ] as AnyFieldMetaBase | undefined
   }
 
   /**
