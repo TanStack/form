@@ -1380,6 +1380,35 @@ export class FieldApi<
       value: this.state.value,
       fieldApi: this,
     })
+
+    // Only used so that `transform` works properly in the React adapter after first render
+    // This can be removed when `transform` is able to use the values directly from FormAPI instead of duplicate them
+    // @see https://github.com/TanStack/form-v2-private-discussions/blob/001-duplicated-error-map-keys/RFCs/001-duplicated-error-map-keys.md
+    const unsubFormListener = this.form.baseStore.subscribe(() => {
+      const perFieldStore = this.form._getOrCreatePerFieldStore(
+        this.name as string,
+        this.options.defaultMeta as any,
+      )
+
+      if (this.getValue() !== perFieldStore.get().value) {
+        perFieldStore.setState((prev) => ({
+          ...prev,
+          value: this.getValue(),
+        }))
+      }
+      if (
+        this.form._getFieldMetaBase(this.name) !== perFieldStore.get().metaBase
+      ) {
+        perFieldStore.setState((prev) => ({
+          ...prev,
+          meta: this.getMeta(),
+        }))
+      }
+    })
+
+    return () => {
+      unsubFormListener.unsubscribe()
+    }
   }
 
   /**

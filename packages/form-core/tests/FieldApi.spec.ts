@@ -1596,7 +1596,8 @@ describe('field api', () => {
       name: 'name',
     })
 
-    field.mount()
+    const unmount = field.mount()
+    unmount()
     expect(form.getFieldInfo(field.name).instance).toBeDefined()
     expect(form.getFieldInfo(field.name)).toBeDefined()
   })
