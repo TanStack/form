@@ -10,6 +10,7 @@ import {
   getAsyncValidatorArray,
   getBy,
   getSyncValidatorArray,
+  isNonEmptyArray,
   mergeOpts,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
@@ -1167,6 +1168,10 @@ export class FieldApi<
       formListeners: {} as Record<ListenerCause, never>,
     }
 
+    let prevMetaBase: AnyFieldMetaBase | undefined = undefined
+    let prevRawValue: unknown = undefined
+    let cachedMeta: AnyFieldMeta | undefined = undefined
+
     this.store = createStore(
       (
         prevVal:
@@ -1195,15 +1200,69 @@ export class FieldApi<
             >
           | undefined,
       ) => {
-        // Temp hack to subscribe to form.store
-        this.form.store.get()
+        // Subscribe to per-field store for fine-grained reactivity (O(1) instead of O(N))
+        const perFieldStore = this.form._getOrCreatePerFieldStore(
+          this.name as string,
+          opts.defaultMeta as any,
+        )
+        const { value: rawValue, metaBase } = perFieldStore.get()
 
-        const meta = this.form.getFieldMeta(this.name) ?? {
-          ...defaultFieldMeta,
-          ...opts.defaultMeta,
+        // Compute derived meta with caching
+        let meta: AnyFieldMeta
+        if (
+          metaBase === prevMetaBase &&
+          rawValue === prevRawValue &&
+          cachedMeta
+        ) {
+          // Nothing changed, reuse cached meta
+          meta = cachedMeta
+        } else {
+          // Recompute errors only if errorMap changed
+          let fieldErrors = cachedMeta?.errors ?? []
+          if (!prevMetaBase || metaBase.errorMap !== prevMetaBase.errorMap) {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            fieldErrors = Object.values(metaBase.errorMap ?? {}).filter(
+              (val: any) => val !== undefined,
+            )
+            if (!this.options.disableErrorFlat) {
+              fieldErrors = fieldErrors.flat(1)
+            }
+          }
+
+          const isFieldValid = !isNonEmptyArray(fieldErrors)
+          const isFieldPristine = !metaBase.isDirty
+          const isDefaultValue =
+            evaluate(
+              rawValue,
+              getBy(this.form.options.defaultValues, this.name),
+            ) || evaluate(rawValue, this.options.defaultValue)
+
+          // Check if derived values actually changed - preserve reference if not
+          if (
+            cachedMeta &&
+            cachedMeta.isPristine === isFieldPristine &&
+            cachedMeta.isValid === isFieldValid &&
+            cachedMeta.isDefaultValue === isDefaultValue &&
+            cachedMeta.errors === fieldErrors &&
+            metaBase === prevMetaBase
+          ) {
+            meta = cachedMeta
+          } else {
+            meta = {
+              ...metaBase,
+              errors: fieldErrors,
+              isPristine: isFieldPristine,
+              isValid: isFieldValid,
+              isDefaultValue: isDefaultValue,
+            }
+          }
+
+          prevMetaBase = metaBase
+          prevRawValue = rawValue
+          cachedMeta = meta
         }
 
-        let value = this.form.getFieldValue(this.name)
+        let value = rawValue
         if (
           !meta.isTouched &&
           (value as unknown) === undefined &&
@@ -1321,6 +1380,35 @@ export class FieldApi<
       value: this.state.value,
       fieldApi: this,
     })
+
+    // Only used so that `transform` works properly in the React adapter after first render
+    // This can be removed when `transform` is able to use the values directly from FormAPI instead of duplicate them
+    // @see https://github.com/TanStack/form-v2-private-discussions/blob/001-duplicated-error-map-keys/RFCs/001-duplicated-error-map-keys.md
+    const unsubFormListener = this.form.baseStore.subscribe(() => {
+      const perFieldStore = this.form._getOrCreatePerFieldStore(
+        this.name as string,
+        this.options.defaultMeta as any,
+      )
+
+      if (this.getValue() !== perFieldStore.get().value) {
+        perFieldStore.setState((prev) => ({
+          ...prev,
+          value: this.getValue(),
+        }))
+      }
+      if (
+        this.form._getFieldMetaBase(this.name) !== perFieldStore.get().metaBase
+      ) {
+        perFieldStore.setState((prev) => ({
+          ...prev,
+          meta: this.getMeta(),
+        }))
+      }
+    })
+
+    return () => {
+      unsubFormListener.unsubscribe()
+    }
   }
 
   /**
@@ -1368,7 +1456,7 @@ export class FieldApi<
       }
     }
 
-    if (!this.form.getFieldMeta(this.name)) {
+    if (!this.form._getFieldMetaBase(this.name)) {
       this.form.setFieldMeta(this.name, this.state.meta)
     }
   }
