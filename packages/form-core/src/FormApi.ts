@@ -6,6 +6,7 @@ import {
   functionalUpdate,
   getAsyncValidatorArray,
   getBy,
+  getChildPaths,
   getParentPaths,
   getSyncValidatorArray,
   isGlobalFormValidationError,
@@ -1326,48 +1327,33 @@ export class FormApi<
 
   /**
    * @private
-   * Notifies per-field value stores for the changed field AND any related parent/child fields.
+   * Notifies parent and child per-field value stores when a field's value changes.
    * Parent fields are affected because immutable updates create new references up the tree.
    * Child fields are affected because changing a parent value changes descendant values.
+   * Does NOT update the field itself — the caller is expected to handle that
+   * (often combined with a meta update in a single setState for performance).
    */
-  _notifyRelatedPerFieldValueStores = (
-    field: string,
-    skipSelf?: boolean,
-  ): void => {
+  _notifyRelatedPerFieldValueStores = (field: string): void => {
     const newValues = this.baseStore.state.values
 
-    // Update the specific field (skip if caller already handled it)
-    if (!skipSelf) {
-      const store = this._perFieldStores[field]
+    const updateStoreValue = (path: string) => {
+      const store = this._perFieldStores[path]
       if (store) {
         store.setState((prev) => ({
           ...prev,
-          value: getBy(newValues, field),
+          value: getBy(newValues, path),
         }))
       }
     }
 
     // Update parent paths (e.g., for 'items[0].name', update 'items' and 'items[0]')
     for (const parentPath of getParentPaths(field)) {
-      const parentStore = this._perFieldStores[parentPath]
-      if (parentStore) {
-        parentStore.setState((prev) => ({
-          ...prev,
-          value: getBy(newValues, parentPath),
-        }))
-      }
+      updateStoreValue(parentPath)
     }
 
     // Update child paths (e.g., for 'items', update 'items[0]', 'items[0].name', etc.)
-    const fieldDot = field + '.'
-    const fieldBracket = field + '['
-    for (const key of Object.keys(this._perFieldStores)) {
-      if (key.startsWith(fieldDot) || key.startsWith(fieldBracket)) {
-        this._perFieldStores[key]!.setState((prev) => ({
-          ...prev,
-          value: getBy(newValues, key),
-        }))
-      }
+    for (const childPath of getChildPaths(field, Object.keys(this._perFieldStores))) {
+      updateStoreValue(childPath)
     }
   }
 
@@ -2467,7 +2453,7 @@ export class FormApi<
       }
     }
     // Still notify parent/child per-field stores for value changes
-    this._notifyRelatedPerFieldValueStores(field as string, true)
+    this._notifyRelatedPerFieldValueStores(field as string)
 
     if (!dontRunListeners) {
       this.getFieldInfo(field).instance?.triggerOnChangeListener()

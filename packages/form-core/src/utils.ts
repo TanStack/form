@@ -108,6 +108,23 @@ export function getParentPaths(field: string): string[] {
 }
 
 /**
+ * Check whether `key` is a direct child path of `field`.
+ * E.g., for field 'items', keys 'items[0]' and 'items.foo' are children.
+ * @private
+ */
+export function isChildPath(field: string, key: string): boolean {
+  return key.startsWith(field + '.') || key.startsWith(field + '[')
+}
+
+/**
+ * Return all keys from `allKeys` that are child paths of `field`.
+ * @private
+ */
+export function getChildPaths(field: string, allKeys: string[]): string[] {
+  return allKeys.filter((key) => isChildPath(field, key))
+}
+
+/**
  * Delete a field on an object using a path, including dot notation.
  * @private
  */
