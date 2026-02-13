@@ -1,0 +1,24 @@
+{
+  "name": "@tanstack/form-example-react-next-server-actions-zod",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "_test:types": "tsc"
+  },
+  "dependencies": {
+    "@tanstack/react-form-nextjs": "^1.28.1",
+    "@tanstack/react-store": "^0.8.0",
+    "next": "16.0.5",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^24.1.0",
+    "@types/react": "^19.0.7",
+    "@types/react-dom": "^19.0.3",
+    "typescript": "5.8.2"
+  }
+}

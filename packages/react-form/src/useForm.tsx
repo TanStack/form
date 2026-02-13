@@ -1,8 +1,8 @@
 'use client'
 
-import { FormApi, functionalUpdate } from '@tanstack/form-core'
+import { FormApi, functionalUpdate, mergeAndUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import { useFormId } from './useFormId'
@@ -263,6 +263,18 @@ export function useForm<
    */
   useIsomorphicLayoutEffect(() => {
     formApi.update(opts)
+  })
+
+  const hasRan = useRef(false)
+
+  useIsomorphicLayoutEffect(() => {
+    if (!hasRan.current) return
+    if (!opts?.transform) return
+    mergeAndUpdate(formApi, opts.transform as never)
+  }, [formApi, opts?.transform])
+
+  useIsomorphicLayoutEffect(() => {
+    hasRan.current = true
   })
 
   return extendedFormApi
