@@ -52,7 +52,7 @@
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/react-store": "^0.8.0"
+    "@tanstack/react-store": "https://pkg.pr.new/@tanstack/react-store@265"
   },
   "devDependencies": {
     "@types/react": "^19.0.7",
