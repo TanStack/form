@@ -223,32 +223,37 @@ export function useField<
 
   // For array mode, only track length changes to avoid re-renders when child properties change
   // See: https://github.com/TanStack/form/issues/1925
-  // Consolidate all field state subscriptions into a single useStore call
-  // to reduce subscription overhead (1 subscription instead of 7)
-  const isArrayMode = opts.mode === 'array'
-  const reactiveState = useStore(
+  const reactiveStateValue = useStore(
     fieldApi.store,
-    (state) => {
-      return {
-        value: isArrayMode
-          ? Object.keys((state.value as unknown) ?? []).length
-          : state.value,
-        isTouched: state.meta.isTouched,
-        isBlurred: state.meta.isBlurred,
-        isDirty: state.meta.isDirty,
-        errorMap: state.meta.errorMap,
-        errorSourceMap: state.meta.errorSourceMap,
-        isValidating: state.meta.isValidating,
-      }
-    },
-    (a, b) =>
-      a.value === b.value &&
-      a.isTouched === b.isTouched &&
-      a.isBlurred === b.isBlurred &&
-      a.isDirty === b.isDirty &&
-      a.errorMap === b.errorMap &&
-      a.errorSourceMap === b.errorSourceMap &&
-      a.isValidating === b.isValidating,
+    (opts.mode === 'array'
+      ? (state) => Object.keys((state.value as unknown) ?? []).length
+      : (state) => state.value) as (
+      state: typeof fieldApi.state,
+    ) => TData | number,
+  )
+  const reactiveMetaIsTouched = useStore(
+    fieldApi.store,
+    (state) => state.meta.isTouched,
+  )
+  const reactiveMetaIsBlurred = useStore(
+    fieldApi.store,
+    (state) => state.meta.isBlurred,
+  )
+  const reactiveMetaIsDirty = useStore(
+    fieldApi.store,
+    (state) => state.meta.isDirty,
+  )
+  const reactiveMetaErrorMap = useStore(
+    fieldApi.store,
+    (state) => state.meta.errorMap,
+  )
+  const reactiveMetaErrorSourceMap = useStore(
+    fieldApi.store,
+    (state) => state.meta.errorSourceMap,
+  )
+  const reactiveMetaIsValidating = useStore(
+    fieldApi.store,
+    (state) => state.meta.isValidating,
   )
 
   // This makes me sad, but if I understand correctly, this is what we have to do for reactivity to work properly with React compiler.
@@ -257,18 +262,19 @@ export function useField<
       ...fieldApi,
       get state() {
         return {
-          // For array mode, reactiveState.value is the length (for reactivity tracking),
+          // For array mode, reactiveStateValue is the length (for reactivity tracking),
           // so we need to get the actual value from fieldApi
-          value: isArrayMode ? fieldApi.state.value : reactiveState.value,
+          value:
+            opts.mode === 'array' ? fieldApi.state.value : reactiveStateValue,
           get meta() {
             return {
               ...fieldApi.state.meta,
-              isTouched: reactiveState.isTouched,
-              isBlurred: reactiveState.isBlurred,
-              isDirty: reactiveState.isDirty,
-              errorMap: reactiveState.errorMap,
-              errorSourceMap: reactiveState.errorSourceMap,
-              isValidating: reactiveState.isValidating,
+              isTouched: reactiveMetaIsTouched,
+              isBlurred: reactiveMetaIsBlurred,
+              isDirty: reactiveMetaIsDirty,
+              errorMap: reactiveMetaErrorMap,
+              errorSourceMap: reactiveMetaErrorSourceMap,
+              isValidating: reactiveMetaIsValidating,
             } satisfies AnyFieldMeta
           },
         } satisfies AnyFieldApi['state']
@@ -318,7 +324,17 @@ export function useField<
     extendedApi.Field = Field as never
 
     return extendedApi
-  }, [fieldApi, isArrayMode, reactiveState])
+  }, [
+    fieldApi,
+    opts.mode,
+    reactiveStateValue,
+    reactiveMetaIsTouched,
+    reactiveMetaIsBlurred,
+    reactiveMetaIsDirty,
+    reactiveMetaErrorMap,
+    reactiveMetaErrorSourceMap,
+    reactiveMetaIsValidating,
+  ])
 
   useIsomorphicLayoutEffect(fieldApi.mount, [fieldApi])
 
