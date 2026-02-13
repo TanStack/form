@@ -1237,8 +1237,8 @@ importers:
         specifier: ^0.1.1
         version: 0.1.1
       '@tanstack/store':
-        specifier: ^0.7.7
-        version: 0.7.7
+        specifier: https://pkg.pr.new/@tanstack/store@265
+        version: https://pkg.pr.new/@tanstack/store@265
     devDependencies:
       arktype:
         specifier: ^2.1.22
@@ -1486,7 +1486,7 @@ importers:
     devDependencies:
       '@sveltejs/package':
         specifier: ^2.5.3
-        version: 2.5.4(svelte@5.41.1)(typescript@5.9.3)
+        version: 2.5.4(svelte@5.41.1)(typescript@5.8.2)
       '@sveltejs/vite-plugin-svelte':
         specifier: ^5.1.1
         version: 5.1.1(svelte@5.41.1)(vite@7.2.2(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.0)(sass@1.90.0)(sugarss@5.0.1(postcss@8.5.6))(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.1))
@@ -1498,7 +1498,7 @@ importers:
         version: 5.41.1
       svelte-check:
         specifier: ^4.3.1
-        version: 4.3.3(picomatch@4.0.3)(svelte@5.41.1)(typescript@5.9.3)
+        version: 4.3.3(picomatch@4.0.3)(svelte@5.41.1)(typescript@5.8.2)
 
   packages/vue-form:
     dependencies:
@@ -4936,6 +4936,10 @@ packages:
 
   '@tanstack/store@0.8.0':
     resolution: {integrity: sha512-Om+BO0YfMZe//X2z0uLF2j+75nQga6TpTJgLJQBiq85aOyZNIhkCgleNcud2KQg4k4v9Y9l+Uhru3qWMPGTOzQ==}
+
+  '@tanstack/store@https://pkg.pr.new/@tanstack/store@265':
+    resolution: {tarball: https://pkg.pr.new/@tanstack/store@265}
+    version: 0.8.0
 
   '@tanstack/svelte-store@0.7.7':
     resolution: {integrity: sha512-JeDyY7SxBi6EKzkf2wWoghdaC2bvmwNL9X/dgkx7LKEvJVle+te7tlELI3cqRNGbjXt9sx+97jx9M5dCCHcuog==}
@@ -9830,10 +9834,12 @@ packages:
   tar@6.2.1:
     resolution: {integrity: sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==}
     engines: {node: '>=10'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exhorbitant rates) by contacting i@izs.me
 
   tar@7.4.3:
     resolution: {integrity: sha512-5S7Va8hKfV7W5U6g3aYxXmlPoZVAwUMy9AOKyF2fVuZa2UD3qZjg578OrLRt8PcNN1PleVaL/5/yYATNL0ICUw==}
     engines: {node: '>=18'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exhorbitant rates) by contacting i@izs.me
 
   term-size@2.2.1:
     resolution: {integrity: sha512-wK0Ri4fOGjv/XPy8SBHZChl8CM7uMc5VML7SqiQ0zG7+J5Vr+RMQDoHa2CNT6KHUnTGIXH34UDMkPzAUyapBZg==}
@@ -14109,14 +14115,14 @@ snapshots:
     dependencies:
       acorn: 8.15.0
 
-  '@sveltejs/package@2.5.4(svelte@5.41.1)(typescript@5.9.3)':
+  '@sveltejs/package@2.5.4(svelte@5.41.1)(typescript@5.8.2)':
     dependencies:
       chokidar: 4.0.3
       kleur: 4.1.5
       sade: 1.8.1
       semver: 7.7.2
       svelte: 5.41.1
-      svelte2tsx: 0.7.43(svelte@5.41.1)(typescript@5.9.3)
+      svelte2tsx: 0.7.43(svelte@5.41.1)(typescript@5.8.2)
     transitivePeerDependencies:
       - typescript
 
@@ -14450,7 +14456,7 @@ snapshots:
       '@tanstack/react-router': 1.135.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       vite: 7.2.2(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.0)(sass@1.90.0)(sugarss@5.0.1(postcss@8.5.6))(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.1)
       vite-plugin-solid: 2.11.10(@testing-library/jest-dom@6.9.1)(solid-js@1.9.9)(vite@7.2.2(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.0)(sass@1.90.0)(sugarss@5.0.1(postcss@8.5.6))(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.1))
-      webpack: 5.101.2(@swc/core@1.13.5)(esbuild@0.25.9)
+      webpack: 5.101.2(@swc/core@1.13.5)
     transitivePeerDependencies:
       - supports-color
 
@@ -14556,6 +14562,8 @@ snapshots:
   '@tanstack/store@0.7.7': {}
 
   '@tanstack/store@0.8.0': {}
+
+  '@tanstack/store@https://pkg.pr.new/@tanstack/store@265': {}
 
   '@tanstack/svelte-store@0.7.7(svelte@5.41.1)':
     dependencies:
@@ -20324,7 +20332,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  svelte-check@4.3.3(picomatch@4.0.3)(svelte@5.41.1)(typescript@5.9.3):
+  svelte-check@4.3.3(picomatch@4.0.3)(svelte@5.41.1)(typescript@5.8.2):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.29
       chokidar: 4.0.3
@@ -20332,16 +20340,16 @@ snapshots:
       picocolors: 1.1.1
       sade: 1.8.1
       svelte: 5.41.1
-      typescript: 5.9.3
+      typescript: 5.8.2
     transitivePeerDependencies:
       - picomatch
 
-  svelte2tsx@0.7.43(svelte@5.41.1)(typescript@5.9.3):
+  svelte2tsx@0.7.43(svelte@5.41.1)(typescript@5.8.2):
     dependencies:
       dedent-js: 1.0.1
       pascal-case: 3.1.2
       svelte: 5.41.1
-      typescript: 5.9.3
+      typescript: 5.8.2
 
   svelte@5.41.1:
     dependencies:
@@ -20412,6 +20420,18 @@ snapshots:
     optionalDependencies:
       '@swc/core': 1.13.5
       esbuild: 0.25.9
+
+  terser-webpack-plugin@5.3.14(@swc/core@1.13.5)(webpack@5.101.2(@swc/core@1.13.5)(esbuild@0.25.9)):
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.29
+      jest-worker: 27.5.1
+      schema-utils: 4.3.2
+      serialize-javascript: 6.0.2
+      terser: 5.43.1
+      webpack: 5.101.2(@swc/core@1.13.5)
+    optionalDependencies:
+      '@swc/core': 1.13.5
+    optional: true
 
   terser@5.43.1:
     dependencies:
@@ -20598,7 +20618,8 @@ snapshots:
 
   typescript@5.9.2: {}
 
-  typescript@5.9.3: {}
+  typescript@5.9.3:
+    optional: true
 
   uc.micro@2.1.0: {}
 
@@ -21165,6 +21186,39 @@ snapshots:
       webpack: 5.101.2(@swc/core@1.13.5)(esbuild@0.25.9)
 
   webpack-virtual-modules@0.6.2: {}
+
+  webpack@5.101.2(@swc/core@1.13.5):
+    dependencies:
+      '@types/eslint-scope': 3.7.7
+      '@types/estree': 1.0.8
+      '@types/json-schema': 7.0.15
+      '@webassemblyjs/ast': 1.14.1
+      '@webassemblyjs/wasm-edit': 1.14.1
+      '@webassemblyjs/wasm-parser': 1.14.1
+      acorn: 8.15.0
+      acorn-import-phases: 1.0.4(acorn@8.15.0)
+      browserslist: 4.25.4
+      chrome-trace-event: 1.0.4
+      enhanced-resolve: 5.18.1
+      es-module-lexer: 1.7.0
+      eslint-scope: 5.1.1
+      events: 3.3.0
+      glob-to-regexp: 0.4.1
+      graceful-fs: 4.2.11
+      json-parse-even-better-errors: 2.3.1
+      loader-runner: 4.3.0
+      mime-types: 2.1.35
+      neo-async: 2.6.2
+      schema-utils: 4.3.2
+      tapable: 2.2.2
+      terser-webpack-plugin: 5.3.14(@swc/core@1.13.5)(webpack@5.101.2(@swc/core@1.13.5)(esbuild@0.25.9))
+      watchpack: 2.4.4
+      webpack-sources: 3.3.3
+    transitivePeerDependencies:
+      - '@swc/core'
+      - esbuild
+      - uglify-js
+    optional: true
 
   webpack@5.101.2(@swc/core@1.13.5)(esbuild@0.25.9):
     dependencies:

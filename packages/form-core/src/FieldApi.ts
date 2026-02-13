@@ -1,4 +1,4 @@
-import { Derived, batch } from '@tanstack/store'
+import { createStore, type Store } from '@tanstack/store'
 import {
   isStandardSchemaValidator,
   standardSchemaValidators,
@@ -1090,7 +1090,7 @@ export class FieldApi<
   /**
    * The field state store.
    */
-  store!: Derived<
+  store!: Store<
     FieldState<
       TParentData,
       TName,
@@ -1167,10 +1167,9 @@ export class FieldApi<
       formListeners: {} as Record<ListenerCause, never>,
     }
 
-    this.store = new Derived({
-      deps: [this.form.store],
-      fn: ({ prevVal: _prevVal }) => {
-        const prevVal = _prevVal as
+    this.store = createStore(
+      (
+        prevVal:
           | FieldState<
               TParentData,
               TName,
@@ -1194,7 +1193,10 @@ export class FieldApi<
               TFormOnDynamic,
               TFormOnDynamicAsync
             >
-          | undefined
+          | undefined,
+      ) => {
+        // Temp hack to subscribe to form.store
+        this.form.store.get()
 
         const meta = this.form.getFieldMeta(this.name) ?? {
           ...defaultFieldMeta,
@@ -1242,7 +1244,7 @@ export class FieldApi<
           TFormOnDynamicAsync
         >
       },
-    })
+    )
   }
 
   /**
@@ -1275,8 +1277,6 @@ export class FieldApi<
    * Mounts the field instance to the form.
    */
   mount = () => {
-    const cleanup = this.store.mount()
-
     if (this.options.defaultValue !== undefined && !this.getMeta().isTouched) {
       this.form.setFieldValue(this.name, this.options.defaultValue, {
         dontUpdateMeta: true,
@@ -1321,8 +1321,6 @@ export class FieldApi<
       value: this.state.value,
       fieldApi: this,
     })
-
-    return cleanup
   }
 
   /**
@@ -1623,62 +1621,62 @@ export class FieldApi<
     // Needs type cast as eslint errantly believes this is always falsy
     let hasErrored = false as boolean
 
-    batch(() => {
-      const validateFieldFn = (
-        field: AnyFieldApi,
-        validateObj: SyncValidator<any>,
-      ) => {
-        const errorMapKey = getErrorMapKey(validateObj.cause)
+    // batch(() => {
+    const validateFieldFn = (
+      field: AnyFieldApi,
+      validateObj: SyncValidator<any>,
+    ) => {
+      const errorMapKey = getErrorMapKey(validateObj.cause)
 
-        const fieldLevelError = validateObj.validate
-          ? normalizeError(
-              field.runValidator({
-                validate: validateObj.validate,
-                value: {
-                  value: field.store.state.value,
-                  validationSource: 'field',
-                  fieldApi: field,
-                },
-                type: 'validate',
-              }),
-            )
-          : undefined
+      const fieldLevelError = validateObj.validate
+        ? normalizeError(
+            field.runValidator({
+              validate: validateObj.validate,
+              value: {
+                value: field.store.state.value,
+                validationSource: 'field',
+                fieldApi: field,
+              },
+              type: 'validate',
+            }),
+          )
+        : undefined
 
-        const formLevelError = errorFromForm[errorMapKey]
+      const formLevelError = errorFromForm[errorMapKey]
 
-        const { newErrorValue, newSource } =
-          determineFieldLevelErrorSourceAndValue({
-            formLevelError,
-            fieldLevelError,
-          })
+      const { newErrorValue, newSource } =
+        determineFieldLevelErrorSourceAndValue({
+          formLevelError,
+          fieldLevelError,
+        })
 
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (field.state.meta.errorMap?.[errorMapKey] !== newErrorValue) {
-          field.setMeta((prev) => ({
-            ...prev,
-            errorMap: {
-              ...prev.errorMap,
-              [errorMapKey]: newErrorValue,
-            },
-            errorSourceMap: {
-              ...prev.errorSourceMap,
-              [errorMapKey]: newSource,
-            },
-          }))
-        }
-        if (newErrorValue) {
-          hasErrored = true
-        }
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (field.state.meta.errorMap?.[errorMapKey] !== newErrorValue) {
+        field.setMeta((prev) => ({
+          ...prev,
+          errorMap: {
+            ...prev.errorMap,
+            [errorMapKey]: newErrorValue,
+          },
+          errorSourceMap: {
+            ...prev.errorSourceMap,
+            [errorMapKey]: newSource,
+          },
+        }))
       }
+      if (newErrorValue) {
+        hasErrored = true
+      }
+    }
 
-      for (const validateObj of validates) {
-        validateFieldFn(this, validateObj)
-      }
-      for (const fieldValitateObj of linkedFieldValidates) {
-        if (!fieldValitateObj.validate) continue
-        validateFieldFn(fieldValitateObj.field, fieldValitateObj)
-      }
-    })
+    for (const validateObj of validates) {
+      validateFieldFn(this, validateObj)
+    }
+    for (const fieldValitateObj of linkedFieldValidates) {
+      if (!fieldValitateObj.validate) continue
+      validateFieldFn(fieldValitateObj.field, fieldValitateObj)
+    }
+    // })
 
     /**
      *  when we have an error for onSubmit in the state, we want
