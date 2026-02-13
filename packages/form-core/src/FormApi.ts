@@ -926,6 +926,14 @@ export class FormApi<
    */
   fieldInfo: Record<DeepKeys<TFormData>, FieldInfo<TFormData>> = {} as any
 
+  /**
+   * @private
+   * Per-field mutable stores that hold { value, metaBase } for each registered field.
+   * FieldApi instances subscribe to these instead of the full form store for O(1) reactivity.
+   */
+  _perFieldStores: Record<string, Store<{ value: any; metaBase: AnyFieldMetaBase }>> =
+    {} as any
+
   get state() {
     return this.store.state
   }
@@ -1337,6 +1345,95 @@ export class FormApi<
 
   /**
    * @private
+   * Gets or creates a per-field mutable store for the given field path.
+   * FieldApi instances subscribe to these for fine-grained reactivity.
+   */
+  _getOrCreatePerFieldStore = (
+    field: string,
+    overrideDefaultMeta?: Partial<AnyFieldMetaBase>,
+  ): Store<{ value: any; metaBase: AnyFieldMetaBase }> => {
+    if (!this._perFieldStores[field]) {
+      const baseMeta = this.baseStore.state.fieldMetaBase[
+        field as keyof typeof this.baseStore.state.fieldMetaBase
+      ] as AnyFieldMetaBase | undefined
+      this._perFieldStores[field] = createStore({
+        value: getBy(this.baseStore.state.values, field),
+        metaBase: baseMeta ?? {
+          ...defaultFieldMeta,
+          ...overrideDefaultMeta,
+        },
+      })
+    }
+    return this._perFieldStores[field]!
+  }
+
+  /**
+   * @private
+   * Notifies per-field value stores for the changed field AND any related parent/child fields.
+   * Parent fields are affected because immutable updates create new references up the tree.
+   * Child fields are affected because changing a parent value changes descendant values.
+   */
+  _notifyRelatedPerFieldValueStores = (field: string): void => {
+    const newValues = this.baseStore.state.values
+
+    // Update the specific field
+    const store = this._perFieldStores[field]
+    if (store) {
+      store.setState((prev) => ({
+        ...prev,
+        value: getBy(newValues, field),
+      }))
+    }
+
+    // Update parent paths (e.g., for 'items[0].name', update 'items' and 'items[0]')
+    let parentPath = ''
+    for (let i = 0; i < field.length; i++) {
+      const char = field[i]
+      if (char === '.' || char === '[') {
+        const parentStore = this._perFieldStores[parentPath]
+        if (parentStore) {
+          parentStore.setState((prev) => ({
+            ...prev,
+            value: getBy(newValues, parentPath),
+          }))
+        }
+      }
+      parentPath += char
+    }
+
+    // Update child paths (e.g., for 'items', update 'items[0]', 'items[0].name', etc.)
+    const fieldDot = field + '.'
+    const fieldBracket = field + '['
+    for (const key of Object.keys(this._perFieldStores)) {
+      if (key.startsWith(fieldDot) || key.startsWith(fieldBracket)) {
+        this._perFieldStores[key]!.setState((prev) => ({
+          ...prev,
+          value: getBy(newValues, key),
+        }))
+      }
+    }
+  }
+
+  /**
+   * @private
+   * Updates ALL per-field stores from the current baseStore state.
+   * Used after bulk operations like reset() and update().
+   */
+  _syncAllPerFieldStores = (): void => {
+    const state = this.baseStore.state
+    for (const field of Object.keys(this._perFieldStores)) {
+      this._perFieldStores[field]!.setState(() => ({
+        value: getBy(state.values, field),
+        metaBase:
+          (state.fieldMetaBase[
+            field as keyof typeof state.fieldMetaBase
+          ] as AnyFieldMetaBase) ?? { ...defaultFieldMeta },
+      }))
+    }
+  }
+
+  /**
+   * @private
    */
   runValidator<
     TValue extends TStandardSchemaValidatorValue<TFormData> & {
@@ -1487,6 +1584,9 @@ export class FormApi<
     )
     // })
 
+    // Sync per-field stores after bulk state update
+    this._syncAllPerFieldStores()
+
     formEventClient.emit('form-api', {
       id: this._formId,
       state: this.store.state,
@@ -1522,6 +1622,9 @@ export class FormApi<
         fieldMetaBase,
       }),
     )
+
+    // Sync all per-field stores after reset
+    this._syncAllPerFieldStores()
   }
 
   /**
@@ -2242,18 +2345,29 @@ export class FormApi<
     field: TField,
     updater: Updater<AnyFieldMetaBase>,
   ) => {
+    let newMeta: AnyFieldMetaBase
     this.baseStore.setState((prev) => {
+      newMeta = functionalUpdate(
+        updater,
+        prev.fieldMetaBase[field] as never,
+      )
       return {
         ...prev,
         fieldMetaBase: {
           ...prev.fieldMetaBase,
-          [field]: functionalUpdate(
-            updater,
-            prev.fieldMetaBase[field] as never,
-          ),
+          [field]: newMeta,
         },
       }
     })
+
+    // Also update the per-field store for fine-grained reactivity
+    const perFieldStore = this._perFieldStores[field as string]
+    if (perFieldStore) {
+      perFieldStore.setState((prev) => ({
+        ...prev,
+        metaBase: newMeta!,
+      }))
+    }
   }
 
   /**
@@ -2304,6 +2418,9 @@ export class FormApi<
         values: setBy(prev.values, field, updater),
       }
     })
+
+    // Notify per-field value stores for this field and related parent/child fields
+    this._notifyRelatedPerFieldValueStores(field as string)
     // })
 
     if (!dontRunListeners) {
@@ -2334,6 +2451,40 @@ export class FormApi<
 
       return newState
     })
+
+    // Clean up per-field stores for deleted fields:
+    // First, reset them to default state so any FieldApi instances still referencing them get updated.
+    // Then notify parent/related per-field stores whose values may have changed.
+    fieldsToDelete.forEach((f) => {
+      const perFieldStore = this._perFieldStores[f as string]
+      if (perFieldStore) {
+        perFieldStore.setState(() => ({
+          value: undefined,
+          metaBase: { ...defaultFieldMeta },
+        }))
+      }
+      delete this._perFieldStores[f as string]
+    })
+
+    // Notify parent per-field stores that their values may have changed
+    const newValues = this.baseStore.state.values
+    for (const f of fieldsToDelete) {
+      const fieldStr = f as string
+      let parentPath = ''
+      for (let i = 0; i < fieldStr.length; i++) {
+        const char = fieldStr[i]
+        if (char === '.' || char === '[') {
+          const parentStore = this._perFieldStores[parentPath]
+          if (parentStore) {
+            parentStore.setState((prev) => ({
+              ...prev,
+              value: getBy(newValues, parentPath),
+            }))
+          }
+        }
+        parentPath += char
+      }
+    }
   }
 
   /**
@@ -2569,6 +2720,15 @@ export class FormApi<
           : prev.values,
       }
     })
+
+    // Update per-field store for the reset field
+    const perFieldStore = this._perFieldStores[field as string]
+    if (perFieldStore) {
+      perFieldStore.setState(() => ({
+        value: getBy(this.baseStore.state.values, field as string),
+        metaBase: { ...defaultFieldMeta },
+      }))
+    }
   }
 
   /**

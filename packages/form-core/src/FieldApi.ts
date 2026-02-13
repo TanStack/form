@@ -10,6 +10,7 @@ import {
   getAsyncValidatorArray,
   getBy,
   getSyncValidatorArray,
+  isNonEmptyArray,
   mergeOpts,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
@@ -1167,6 +1168,10 @@ export class FieldApi<
       formListeners: {} as Record<ListenerCause, never>,
     }
 
+    let prevMetaBase: any = undefined
+    let prevRawValue: any = undefined
+    let cachedMeta: any = undefined
+
     this.store = createStore(
       (
         prevVal:
@@ -1195,15 +1200,66 @@ export class FieldApi<
             >
           | undefined,
       ) => {
-        // Temp hack to subscribe to form.store
-        this.form.store.get()
+        // Subscribe to per-field store for fine-grained reactivity (O(1) instead of O(N))
+        const perFieldStore = this.form._getOrCreatePerFieldStore(
+          this.name as string,
+          opts.defaultMeta as any,
+        )
+        const { value: rawValue, metaBase } = perFieldStore.get()
 
-        const meta = this.form.getFieldMeta(this.name) ?? {
-          ...defaultFieldMeta,
-          ...opts.defaultMeta,
+        // Compute derived meta with caching
+        let meta: any
+        if (metaBase === prevMetaBase && rawValue === prevRawValue && cachedMeta) {
+          // Nothing changed, reuse cached meta
+          meta = cachedMeta
+        } else {
+          // Recompute errors only if errorMap changed
+          let fieldErrors = cachedMeta?.errors ?? []
+          if (!prevMetaBase || metaBase.errorMap !== prevMetaBase.errorMap) {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            fieldErrors = Object.values(metaBase.errorMap ?? {}).filter(
+              (val: any) => val !== undefined,
+            )
+            if (!this.options.disableErrorFlat) {
+              fieldErrors = fieldErrors.flat(1)
+            }
+          }
+
+          const isFieldValid = !isNonEmptyArray(fieldErrors)
+          const isFieldPristine = !metaBase.isDirty
+          const isDefaultValue =
+            evaluate(
+              rawValue,
+              getBy(this.form.options.defaultValues, this.name),
+            ) ||
+            evaluate(rawValue, this.options.defaultValue)
+
+          // Check if derived values actually changed - preserve reference if not
+          if (
+            cachedMeta &&
+            cachedMeta.isPristine === isFieldPristine &&
+            cachedMeta.isValid === isFieldValid &&
+            cachedMeta.isDefaultValue === isDefaultValue &&
+            cachedMeta.errors === fieldErrors &&
+            metaBase === prevMetaBase
+          ) {
+            meta = cachedMeta
+          } else {
+            meta = {
+              ...metaBase,
+              errors: fieldErrors,
+              isPristine: isFieldPristine,
+              isValid: isFieldValid,
+              isDefaultValue: isDefaultValue,
+            }
+          }
+
+          prevMetaBase = metaBase
+          prevRawValue = rawValue
+          cachedMeta = meta
         }
 
-        let value = this.form.getFieldValue(this.name)
+        let value = rawValue
         if (
           !meta.isTouched &&
           (value as unknown) === undefined &&
