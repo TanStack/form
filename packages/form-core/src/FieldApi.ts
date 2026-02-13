@@ -1168,9 +1168,9 @@ export class FieldApi<
       formListeners: {} as Record<ListenerCause, never>,
     }
 
-    let prevMetaBase: any = undefined
-    let prevRawValue: any = undefined
-    let cachedMeta: any = undefined
+    let prevMetaBase: AnyFieldMetaBase | undefined = undefined
+    let prevRawValue: unknown = undefined
+    let cachedMeta: AnyFieldMeta | undefined = undefined
 
     this.store = createStore(
       (
@@ -1208,7 +1208,7 @@ export class FieldApi<
         const { value: rawValue, metaBase } = perFieldStore.get()
 
         // Compute derived meta with caching
-        let meta: any
+        let meta: AnyFieldMeta
         if (metaBase === prevMetaBase && rawValue === prevRawValue && cachedMeta) {
           // Nothing changed, reuse cached meta
           meta = cachedMeta
