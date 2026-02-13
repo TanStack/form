@@ -1424,7 +1424,7 @@ export class FieldApi<
       }
     }
 
-    if (!this.form.getFieldMeta(this.name)) {
+    if (!this.form._getFieldMetaBase(this.name)) {
       this.form.setFieldMeta(this.name, this.state.meta)
     }
   }

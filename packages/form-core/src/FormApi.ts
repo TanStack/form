@@ -1373,16 +1373,21 @@ export class FormApi<
    * Parent fields are affected because immutable updates create new references up the tree.
    * Child fields are affected because changing a parent value changes descendant values.
    */
-  _notifyRelatedPerFieldValueStores = (field: string): void => {
+  _notifyRelatedPerFieldValueStores = (
+    field: string,
+    skipSelf?: boolean,
+  ): void => {
     const newValues = this.baseStore.state.values
 
-    // Update the specific field
-    const store = this._perFieldStores[field]
-    if (store) {
-      store.setState((prev) => ({
-        ...prev,
-        value: getBy(newValues, field),
-      }))
+    // Update the specific field (skip if caller already handled it)
+    if (!skipSelf) {
+      const store = this._perFieldStores[field]
+      if (store) {
+        store.setState((prev) => ({
+          ...prev,
+          value: getBy(newValues, field),
+        }))
+      }
     }
 
     // Update parent paths (e.g., for 'items[0].name', update 'items' and 'items[0]')
@@ -1795,6 +1800,9 @@ export class FormApi<
         ...Object.keys(fieldErrors || {}),
       ] as DeepKeys<TFormData>[])
 
+      // Collect all field meta changes to batch into a single baseStore.setState
+      const pendingMetaChanges: Record<string, AnyFieldMetaBase> = {}
+
       for (const field of allFieldsToProcess) {
         if (
           this.baseStore.state.fieldMetaBase[field] === undefined &&
@@ -1832,17 +1840,39 @@ export class FormApi<
         // This conditional check is required, otherwise we get runtime errors.
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (currentErrorMap?.[errorMapKey] !== newErrorValue) {
-          this.setFieldMeta(field, (prev = defaultFieldMeta) => ({
-            ...prev,
+          pendingMetaChanges[field as string] = {
+            ...fieldMetaBase,
             errorMap: {
-              ...prev.errorMap,
+              ...fieldMetaBase.errorMap,
               [errorMapKey]: newErrorValue,
             },
             errorSourceMap: {
-              ...prev.errorSourceMap,
+              ...fieldMetaBase.errorSourceMap,
               [errorMapKey]: newSource,
             },
-          }))
+          }
+        }
+      }
+
+      // Apply all field meta changes in a single baseStore.setState
+      if (Object.keys(pendingMetaChanges).length > 0) {
+        this.baseStore.setState((prev) => ({
+          ...prev,
+          fieldMetaBase: {
+            ...prev.fieldMetaBase,
+            ...pendingMetaChanges,
+          },
+        }))
+
+        // Update per-field stores for affected fields
+        for (const [field, meta] of Object.entries(pendingMetaChanges)) {
+          const perFieldStore = this._perFieldStores[field]
+          if (perFieldStore) {
+            perFieldStore.setState((prev) => ({
+              ...prev,
+              metaBase: meta,
+            }))
+          }
         }
       }
 
@@ -1945,6 +1975,8 @@ export class FormApi<
       | Partial<Record<DeepKeys<TFormData>, ValidationError>>
       | undefined
 
+    const pendingAsyncMetaChanges: Record<string, AnyFieldMetaBase> = {}
+
     for (const validateObj of validates) {
       if (!validateObj.validate) continue
       const key = getErrorMapKey(validateObj.cause)
@@ -2032,17 +2064,40 @@ export class FormApi<
               // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
               currentErrorMap?.[errorMapKey] !== newErrorValue
             ) {
-              this.setFieldMeta(field, (prev) => ({
-                ...prev,
+              pendingAsyncMetaChanges[field as string] = {
+                ...fieldMetaBase,
                 errorMap: {
-                  ...prev.errorMap,
+                  ...fieldMetaBase.errorMap,
                   [errorMapKey]: newErrorValue,
                 },
                 errorSourceMap: {
-                  ...prev.errorSourceMap,
+                  ...fieldMetaBase.errorSourceMap,
                   [errorMapKey]: newSource,
                 },
-              }))
+              }
+            }
+          }
+
+          // Apply all field meta changes in a single baseStore.setState
+          if (Object.keys(pendingAsyncMetaChanges).length > 0) {
+            this.baseStore.setState((prev) => ({
+              ...prev,
+              fieldMetaBase: {
+                ...prev.fieldMetaBase,
+                ...pendingAsyncMetaChanges,
+              },
+            }))
+
+            for (const [af, ameta] of Object.entries(
+              pendingAsyncMetaChanges,
+            )) {
+              const perFieldStore = this._perFieldStores[af]
+              if (perFieldStore) {
+                perFieldStore.setState((prev) => ({
+                  ...prev,
+                  metaBase: ameta,
+                }))
+              }
             }
           }
 
@@ -2411,30 +2466,56 @@ export class FormApi<
     const dontRunListeners = opts?.dontRunListeners ?? false
     const dontValidate = opts?.dontValidate ?? false
 
-    // batch(() => {
-    if (!dontUpdateMeta) {
-      this.setFieldMeta(field, (prev) => ({
-        ...prev,
-        isTouched: true,
-        isDirty: true,
-        errorMap: {
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          ...prev?.errorMap,
-          onMount: undefined,
-        },
-      }))
-    }
-
+    // Combine meta + value update into a single baseStore.setState to avoid
+    // multiple derived store recomputations and signal propagation cycles
+    let newFieldMeta: AnyFieldMetaBase | undefined
     this.baseStore.setState((prev) => {
+      const newValues = setBy(prev.values, field, updater)
+      if (!dontUpdateMeta) {
+        const prevMeta = prev.fieldMetaBase[field] as AnyFieldMetaBase | undefined
+        newFieldMeta = {
+          ...prevMeta,
+          isTouched: true,
+          isDirty: true,
+          errorMap: {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            ...prevMeta?.errorMap,
+            onMount: undefined,
+          },
+        } as AnyFieldMetaBase
+        return {
+          ...prev,
+          values: newValues,
+          fieldMetaBase: {
+            ...prev.fieldMetaBase,
+            [field]: newFieldMeta,
+          },
+        }
+      }
       return {
         ...prev,
-        values: setBy(prev.values, field, updater),
+        values: newValues,
       }
     })
 
-    // Notify per-field value stores for this field and related parent/child fields
-    this._notifyRelatedPerFieldValueStores(field as string)
-    // })
+    // Notify per-field stores: combine meta + value in a single setState when possible
+    const perFieldStore = this._perFieldStores[field as string]
+    if (perFieldStore) {
+      const newValue = getBy(this.baseStore.state.values, field as string)
+      if (newFieldMeta) {
+        perFieldStore.setState(() => ({
+          value: newValue,
+          metaBase: newFieldMeta!,
+        }))
+      } else {
+        perFieldStore.setState((prev) => ({
+          ...prev,
+          value: newValue,
+        }))
+      }
+    }
+    // Still notify parent/child per-field stores for value changes
+    this._notifyRelatedPerFieldValueStores(field as string, true)
 
     if (!dontRunListeners) {
       this.getFieldInfo(field).instance?.triggerOnChangeListener()
