@@ -90,6 +90,24 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
 }
 
 /**
+ * Extract all parent paths from a field path string.
+ * E.g., for 'items[0].name' returns ['items', 'items[0]'].
+ * @private
+ */
+export function getParentPaths(field: string): string[] {
+  const parents: string[] = []
+  let parentPath = ''
+  for (let i = 0; i < field.length; i++) {
+    const char = field[i]
+    if (char === '.' || char === '[') {
+      parents.push(parentPath)
+    }
+    parentPath += char
+  }
+  return parents
+}
+
+/**
  * Delete a field on an object using a path, including dot notation.
  * @private
  */

@@ -6,6 +6,7 @@ import {
   functionalUpdate,
   getAsyncValidatorArray,
   getBy,
+  getParentPaths,
   getSyncValidatorArray,
   isGlobalFormValidationError,
   isNonEmptyArray,
@@ -1347,19 +1348,14 @@ export class FormApi<
     }
 
     // Update parent paths (e.g., for 'items[0].name', update 'items' and 'items[0]')
-    let parentPath = ''
-    for (let i = 0; i < field.length; i++) {
-      const char = field[i]
-      if (char === '.' || char === '[') {
-        const parentStore = this._perFieldStores[parentPath]
-        if (parentStore) {
-          parentStore.setState((prev) => ({
-            ...prev,
-            value: getBy(newValues, parentPath),
-          }))
-        }
+    for (const parentPath of getParentPaths(field)) {
+      const parentStore = this._perFieldStores[parentPath]
+      if (parentStore) {
+        parentStore.setState((prev) => ({
+          ...prev,
+          value: getBy(newValues, parentPath),
+        }))
       }
-      parentPath += char
     }
 
     // Update child paths (e.g., for 'items', update 'items[0]', 'items[0].name', etc.)
@@ -2519,20 +2515,14 @@ export class FormApi<
     // Notify parent per-field stores that their values may have changed
     const newValues = this.baseStore.state.values
     for (const f of fieldsToDelete) {
-      const fieldStr = f as string
-      let parentPath = ''
-      for (let i = 0; i < fieldStr.length; i++) {
-        const char = fieldStr[i]
-        if (char === '.' || char === '[') {
-          const parentStore = this._perFieldStores[parentPath]
-          if (parentStore) {
-            parentStore.setState((prev) => ({
-              ...prev,
-              value: getBy(newValues, parentPath),
-            }))
-          }
+      for (const parentPath of getParentPaths(f as string)) {
+        const parentStore = this._perFieldStores[parentPath]
+        if (parentStore) {
+          parentStore.setState((prev) => ({
+            ...prev,
+            value: getBy(newValues, parentPath),
+          }))
         }
-        parentPath += char
       }
     }
   }
