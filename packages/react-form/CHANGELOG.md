@@ -1,5 +1,16 @@
 # @tanstack/react-form
 
+## 1.28.1
+
+### Patch Changes
+
+- Fix compile error with webpack when using react v17 ([#1982](https://github.com/TanStack/form/pull/1982))
+
+- Fix various issues with SSR. Things should now work as-expected in many many more scenarios than before ([#1890](https://github.com/TanStack/form/pull/1890))
+
+- Updated dependencies [[`72d970a`](https://github.com/TanStack/form/commit/72d970add6ab682d733e35a95e5e1f44efb695d2)]:
+  - @tanstack/form-core@1.28.1
+
 ## 1.28.0
 
 ### Minor Changes

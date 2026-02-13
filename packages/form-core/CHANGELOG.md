@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.28.1
+
+### Patch Changes
+
+- Fix various issues with SSR. Things should now work as-expected in many many more scenarios than before ([#1890](https://github.com/TanStack/form/pull/1890))
+
 ## 1.28.0
 
 ### Patch Changes
