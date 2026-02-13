@@ -627,7 +627,7 @@ export function deepCopy<T>(obj: T): T {
     return new Date(obj.getTime()) as any
   }
 
-  if (obj instanceof Array) {
+  if (Array.isArray(obj)) {
     const arrCopy = [] as any[]
     for (let i = 0; i < obj.length; i++) {
       arrCopy[i] = deepCopy(obj[i])
