@@ -61,7 +61,7 @@ function FormikOnMountBenchmark() {
         num: arr,
       }}
       validationSchema={toFormikValidationSchema(validator)}
-      onSubmit={() => { }}
+      onSubmit={() => {}}
     >
       {() => (
         <>
@@ -93,9 +93,7 @@ describe('Validates onMount on 1,000 form items', () => {
   bench(
     'TanStack Form',
     async () => {
-      const { findAllByText } = render(
-        <TanStackFormOnMountBenchmark />,
-      )
+      const { findAllByText } = render(<TanStackFormOnMountBenchmark />)
 
       await findAllByText('Must be at least three')
     },
@@ -111,9 +109,7 @@ describe('Validates onMount on 1,000 form items', () => {
   bench(
     'Formik',
     async () => {
-      const { findAllByText } = render(
-        <FormikOnMountBenchmark />,
-      )
+      const { findAllByText } = render(<FormikOnMountBenchmark />)
 
       await findAllByText('Must be at least three')
     },
