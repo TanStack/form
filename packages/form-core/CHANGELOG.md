@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.28.3
+
+### Patch Changes
+
+- form arrays now work again ([#2041](https://github.com/TanStack/form/pull/2041))
+
 ## 1.28.2
 
 ### Patch Changes
