@@ -2119,6 +2119,105 @@ describe('field api', () => {
     expect(form.state.canSubmit).toBe(true)
   })
 
+  it('should not block onChangeAsync of a field when onChangeListenTo is used in another field', async () => {
+    const syncErrorMessage = 'Sync error triggered'
+    const asyncErrorMessage = 'An Async Error was triggered'
+
+    const nameValidators = {
+      onChange: ({ value }: { value: string }) => !value && syncErrorMessage,
+      onChangeAsyncDebounceMs: 500,
+      onChangeAsync: async ({ value }: { value: string }) =>
+        value.includes('error') && asyncErrorMessage,
+    } as const
+
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      },
+    })
+
+    form.mount()
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        ...nameValidators,
+      },
+    })
+
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+      validators: {
+        ...nameValidators,
+        onChangeListenTo: ['firstName'], // FIXME - commenting out this line will make the test pass
+      },
+    })
+
+    firstNameField.mount()
+    lastNameField.mount()
+
+    firstNameField.setValue('error')
+
+    await vi.runAllTimersAsync()
+
+    expect(firstNameField.getMeta().errors).toContain(asyncErrorMessage)
+  })
+
+  it('should not block onBlurAsync of a field when onBlurListenTo is used in another field', async () => {
+    const syncErrorMessage = 'Sync error triggered'
+    const asyncErrorMessage = 'An Async Error was triggered'
+
+    const nameValidators = {
+      onBlur: ({ value }: { value: string }) => !value && syncErrorMessage,
+      onBlurAsyncDebounceMs: 500,
+      onBlurAsync: async ({ value }: { value: string }) =>
+        value.includes('error') && asyncErrorMessage,
+    } as const
+
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      },
+    })
+
+    form.mount()
+
+    const firstNameField = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        ...nameValidators,
+      },
+    })
+
+    const lastNameField = new FieldApi({
+      form,
+      name: 'lastName',
+      validators: {
+        ...nameValidators,
+        onBlurListenTo: ['firstName'], // FIXME - commenting out this line will make the test pass
+      },
+    })
+
+    firstNameField.mount()
+    lastNameField.mount()
+
+    firstNameField.setValue('error')
+    firstNameField.handleBlur()
+
+    await vi.runAllTimersAsync()
+
+    expect(firstNameField.getMeta().errors).toContain(asyncErrorMessage)
+  })
+
   it('should debounce onChange listener', async () => {
     vi.useFakeTimers()
     const form = new FormApi({
