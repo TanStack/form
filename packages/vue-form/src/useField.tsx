@@ -1,6 +1,6 @@
 import { FieldApi } from '@tanstack/form-core'
 import { useStore } from '@tanstack/vue-store'
-import { defineComponent, onMounted, onUnmounted, watch } from 'vue'
+import { computed, defineComponent, onMounted, onUnmounted, watch } from 'vue'
 import type {
   DeepKeys,
   DeepValue,
@@ -11,6 +11,7 @@ import type {
 } from '@tanstack/form-core'
 import type {
   ComponentOptionsMixin,
+  ComputedRef,
   CreateComponentPublicInstanceWithMixins,
   EmitsOptions,
   EmitsToProps,
@@ -273,34 +274,32 @@ export type UseField<
       TFormOnServer,
       TParentSubmitMeta
     >
-  state: Readonly<
-    Ref<
-      FieldApi<
-        TParentData,
-        TName,
-        TData,
-        TOnMount,
-        TOnChange,
-        TOnChangeAsync,
-        TOnBlur,
-        TOnBlurAsync,
-        TOnSubmit,
-        TOnSubmitAsync,
-        TOnDynamic,
-        TOnDynamicAsync,
-        TFormOnMount,
-        TFormOnChange,
-        TFormOnChangeAsync,
-        TFormOnBlur,
-        TFormOnBlurAsync,
-        TFormOnSubmit,
-        TFormOnSubmitAsync,
-        TFormOnDynamic,
-        TFormOnDynamicAsync,
-        TFormOnServer,
-        TParentSubmitMeta
-      >['state']
-    >
+  state: ComputedRef<
+    FieldApi<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
+      TFormOnServer,
+      TParentSubmitMeta
+    >['state']
   >
 }
 
@@ -391,7 +390,46 @@ export function useField<
     return extendedApi
   })()
 
-  const fieldState = useStore(fieldApi.store, (state) => state)
+  // For array mode, only track length changes to avoid re-renders when child properties change
+  // See: https://github.com/TanStack/form/issues/1925
+  const value = useStore(fieldApi.store, (state) => {
+    if (opts.mode === 'array') {
+      return (state.value as any)?.length
+    }
+
+    return state.value
+  })
+  const isTouched = useStore(fieldApi.store, (state) => state.meta.isTouched)
+  const isBlurred = useStore(fieldApi.store, (state) => state.meta.isBlurred)
+  const isDirty = useStore(fieldApi.store, (state) => state.meta.isDirty)
+  const errorMap = useStore(fieldApi.store, (state) => state.meta.errorMap)
+  const errorSourceMap = useStore(
+    fieldApi.store,
+    (state) => state.meta.errorSourceMap,
+  )
+  const isValidating = useStore(
+    fieldApi.store,
+    (state) => state.meta.isValidating,
+  )
+
+  const fieldState = computed(() => {
+    const valueValue = value.value
+
+    return {
+      value: (opts.mode === 'array'
+        ? fieldApi.state.value
+        : valueValue) as TData,
+      meta: {
+        ...fieldApi.state.meta,
+        isTouched: isTouched.value,
+        isBlurred: isBlurred.value,
+        isDirty: isDirty.value,
+        errorMap: errorMap.value,
+        errorSourceMap: errorSourceMap.value,
+        isValidating: isValidating.value,
+      },
+    }
+  })
 
   let cleanup!: () => void
   onMounted(() => {
