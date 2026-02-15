@@ -447,3 +447,19 @@ it('listeners should be typed correctly when using formOptions', () => {
 
   form.handleSubmit()
 })
+
+it('should not allow promises to be returned from synchronous validators', () => {
+  const form = new FormApi({
+    defaultValues: { name: '' },
+    validators: {
+      // @ts-expect-error synchronous validators should not return promises
+      onBlur: () => Promise.resolve('error'),
+      // @ts-expect-error synchronous validators should not return promises
+      onChange: () => Promise.resolve('error'),
+      // @ts-expect-error synchronous validators should not return promises
+      onDynamic: () => Promise.resolve('error'),
+      // @ts-expect-error synchronous validators should not return promises
+      onChange: () => Promise.resolve('error'),
+    },
+  })
+})
