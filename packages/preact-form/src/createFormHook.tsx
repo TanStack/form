@@ -129,7 +129,12 @@ export function createFormHookContexts() {
     >
   }
 
-  return { fieldContext: FieldContext, useFieldContext, useFormContext, formContext: FormContext }
+  return {
+    fieldContext: FieldContext,
+    useFieldContext,
+    useFormContext,
+    formContext: FormContext,
+  }
 }
 
 interface CreateFormHookProps<

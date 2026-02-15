@@ -14,7 +14,11 @@ import type {
   FormState,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { FunctionComponent, PropsWithChildren, ReactNode } from 'preact/compat'
+import type {
+  FunctionComponent,
+  PropsWithChildren,
+  ReactNode,
+} from 'preact/compat'
 import type { FieldComponent } from './useField'
 import type { NoInfer } from '@tanstack/preact-store'
 

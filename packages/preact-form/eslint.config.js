@@ -12,6 +12,6 @@ export default [
   {
     rules: {
       '@eslint-react/no-use-context': 'off',
-    }
-  }
+    },
+  },
 ]
