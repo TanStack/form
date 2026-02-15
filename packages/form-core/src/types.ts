@@ -166,6 +166,15 @@ export interface FieldManipulator<TFormData, TSubmitMeta> {
   ) => Promise<unknown[]>
 
   /**
+   * Validates the children of a specified array in the form using the correct handlers for a given validation type.
+   */
+  validateArrayFields: <TField extends DeepKeysOfType<TFormData, any[]>>(
+    field: TField,
+    index: number,
+    cause: ValidationCause,
+  ) => Promise<unknown[]>
+
+  /**
    * Validates a specified field in the form using the correct handlers for a given validation type.
    */
   validateField: <TField extends DeepKeys<TFormData>>(
