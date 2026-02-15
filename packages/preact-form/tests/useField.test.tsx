@@ -549,7 +549,9 @@ describe('useField', () => {
                           name={field.name}
                           value={field.state.value}
                           onBlur={field.handleBlur}
-                          onChange={(e) => field.handleChange(e.currentTarget.value)}
+                          onChange={(e) =>
+                            field.handleChange(e.currentTarget.value)
+                          }
                         />
                         <FieldInfo field={field} />
                       </>
@@ -568,7 +570,9 @@ describe('useField', () => {
                       name={field.name}
                       value={field.state.value}
                       onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.currentTarget.value)}
+                      onChange={(e) =>
+                        field.handleChange(e.currentTarget.value)
+                      }
                     />
                     <FieldInfo field={field} />
                   </>
@@ -638,7 +642,9 @@ describe('useField', () => {
                                   <input
                                     value={subField.state.value}
                                     onChange={(e) =>
-                                      subField.handleChange(e.currentTarget.value)
+                                      subField.handleChange(
+                                        e.currentTarget.value,
+                                      )
                                     }
                                   />
                                 </label>
@@ -734,7 +740,9 @@ describe('useField', () => {
                                   <input
                                     value={subField.state.value}
                                     onChange={(e) =>
-                                      subField.handleChange(e.currentTarget.value)
+                                      subField.handleChange(
+                                        e.currentTarget.value,
+                                      )
                                     }
                                   />
                                 </label>
@@ -820,7 +828,9 @@ describe('useField', () => {
                     <div>Password</div>
                     <input
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.currentTarget.value)}
+                      onChange={(e) =>
+                        field.handleChange(e.currentTarget.value)
+                      }
                     />
                   </label>
                 </div>
@@ -846,7 +856,9 @@ describe('useField', () => {
                     <div>Confirm Password</div>
                     <input
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.currentTarget.value)}
+                      onChange={(e) =>
+                        field.handleChange(e.currentTarget.value)
+                      }
                     />
                   </label>
                   {field.state.meta.errors.map((err) => {
@@ -1259,7 +1271,9 @@ describe('useField', () => {
                         <input
                           data-testid={`person-${i}`}
                           value={field.state.value}
-                          onChange={(e) => field.handleChange(e.currentTarget.value)}
+                          onChange={(e) =>
+                            field.handleChange(e.currentTarget.value)
+                          }
                         />
                       )
                     }}
