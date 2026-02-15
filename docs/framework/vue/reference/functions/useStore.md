@@ -14,7 +14,7 @@ function useStore<TState, TSelected>(
 options?): Readonly<Ref<TSelected>>;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+vue-store@0.8.0\_vue@3.5.16\_typescript@5.9.3\_/node\_modules/@tanstack/vue-store/dist/esm/index.d.ts:12
+Defined in: node\_modules/.pnpm/@tanstack+vue-store@0.8.1\_vue@3.5.16\_typescript@5.9.3\_/node\_modules/@tanstack/vue-store/dist/esm/index.d.ts:12
 
 ### Type Parameters
 
@@ -53,7 +53,7 @@ function useStore<TState, TSelected>(
 options?): Readonly<Ref<TSelected>>;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+vue-store@0.8.0\_vue@3.5.16\_typescript@5.9.3\_/node\_modules/@tanstack/vue-store/dist/esm/index.d.ts:13
+Defined in: node\_modules/.pnpm/@tanstack+vue-store@0.8.1\_vue@3.5.16\_typescript@5.9.3\_/node\_modules/@tanstack/vue-store/dist/esm/index.d.ts:13
 
 ### Type Parameters
 
