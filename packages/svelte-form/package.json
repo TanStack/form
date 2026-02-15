@@ -41,7 +41,7 @@
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/svelte-store": "^0.8.0"
+    "@tanstack/svelte-store": "^0.9.1"
   },
   "devDependencies": {
     "@sveltejs/package": "^2.5.3",
