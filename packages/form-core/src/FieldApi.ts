@@ -1214,6 +1214,7 @@ export class FieldApi<
         // calls _update() without arguments on a mutable atom after it gets
         // unwatched during re-entrant flush cycles (e.g. array field removal
         // in frameworks with synchronous reactive updates like Solid).
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (!perFieldState) {
           return prevVal as any
         }
@@ -1414,6 +1415,7 @@ export class FieldApi<
       // frameworks with synchronous reactive updates like Solid), the
       // per-field store's atom snapshot can be corrupted to undefined.
       // Skip the sync — the field is being cleaned up.
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!currentState) {
         return
       }
