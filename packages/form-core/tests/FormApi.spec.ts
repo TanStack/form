@@ -3446,7 +3446,6 @@ describe('form api', () => {
       })
       .superRefine(async () => {
         await sleep(1000)
-        return true
       })
 
     const form = new FormApi({

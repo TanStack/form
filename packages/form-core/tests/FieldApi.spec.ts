@@ -2251,7 +2251,6 @@ describe('field api', () => {
   it('should throw an error when passing an async Standard Schema to parseValueWithSchema', async () => {
     const testSchema = z.string().superRefine(async () => {
       await sleep(1000)
-      return true
     })
 
     const form = new FormApi({
