@@ -8,7 +8,6 @@ import type {
   FormState,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { NoInfer } from '@tanstack/vue-store'
 import type {
   ComponentOptionsMixin,
   CreateComponentPublicInstanceWithMixins,

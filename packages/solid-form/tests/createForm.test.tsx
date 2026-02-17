@@ -214,7 +214,9 @@ describe('createForm', () => {
       }))
 
       const [errors, setErrors] = createSignal<FormValidationErrorMap>()
-      onCleanup(form.store.subscribe(() => setErrors(form.state.errorMap)))
+      onCleanup(
+        form.store.subscribe(() => setErrors(form.state.errorMap)).unsubscribe,
+      )
 
       return (
         <>
@@ -271,7 +273,9 @@ describe('createForm', () => {
       }))
 
       const [errors, setErrors] = createSignal<FormValidationErrorMap>()
-      onCleanup(form.store.subscribe(() => setErrors(form.state.errorMap)))
+      onCleanup(
+        form.store.subscribe(() => setErrors(form.state.errorMap)).unsubscribe,
+      )
 
       return (
         <>
@@ -325,7 +329,9 @@ describe('createForm', () => {
       }))
 
       const [errors, setErrors] = createSignal<FormValidationErrorMap>()
-      onCleanup(form.store.subscribe(() => setErrors(form.state.errorMap)))
+      onCleanup(
+        form.store.subscribe(() => setErrors(form.state.errorMap)).unsubscribe,
+      )
 
       return (
         <>
@@ -381,7 +387,9 @@ describe('createForm', () => {
       }))
 
       const [errors, setErrors] = createSignal<FormValidationErrorMap>()
-      onCleanup(form.store.subscribe(() => setErrors(form.state.errorMap)))
+      onCleanup(
+        form.store.subscribe(() => setErrors(form.state.errorMap)).unsubscribe,
+      )
 
       return (
         <>
@@ -444,7 +452,7 @@ describe('createForm', () => {
       onCleanup(
         form.store.subscribe(() =>
           setErrors(form.state.errorMap.onChange?.toString() || ''),
-        ),
+        ).unsubscribe,
       )
 
       return (

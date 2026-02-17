@@ -11,6 +11,13 @@ import { z } from 'zod'
 import someAction from './action'
 import { formOpts } from './shared-code'
 
+// Required as `z.coerce.number()` defined the type as `unknown`, so we need to do the coercion and validation manually
+const zodAtLeast8 = z
+  .custom<number>()
+  .refine((value) => Number.isFinite(Number(value)), 'Invalid number')
+  .transform((value) => Number(value))
+  .refine((value) => value >= 8, 'Age must be at least 8')
+
 export const ClientComp = () => {
   const [state, action] = useActionState(someAction, initialFormState)
 
@@ -27,7 +34,7 @@ export const ClientComp = () => {
       <form.Field
         name="age"
         validators={{
-          onChange: z.coerce.number().min(8),
+          onChange: zodAtLeast8,
         }}
       >
         {(field) => {

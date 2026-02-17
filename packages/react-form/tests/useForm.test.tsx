@@ -781,7 +781,7 @@ describe('useForm', () => {
         },
       })
 
-      const { values } = useStore(form.store)
+      const { values } = useStore(form.store, (v) => v)
 
       useEffect(() => {
         fn(values)

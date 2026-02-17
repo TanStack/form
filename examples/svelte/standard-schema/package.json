@@ -13,7 +13,7 @@
     "arktype": "^2.1.22",
     "effect": "^3.17.14",
     "valibot": "^1.1.0",
-    "zod": "^3.25.76"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.1.1",

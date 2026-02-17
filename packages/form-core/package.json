@@ -53,11 +53,11 @@
   "dependencies": {
     "@tanstack/devtools-event-client": "^0.4.0",
     "@tanstack/pacer-lite": "^0.1.1",
-    "@tanstack/store": "^0.8.1"
+    "@tanstack/store": "^0.9.1"
   },
   "devDependencies": {
     "arktype": "^2.1.22",
     "valibot": "^1.1.0",
-    "zod": "^3.25.76"
+    "zod": "^4.3.6"
   }
 }

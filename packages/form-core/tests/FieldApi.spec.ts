@@ -817,13 +817,13 @@ describe('field api', () => {
       // No async validators defined - only sync or none
     })
 
-    field.mount()
+    const unsub = field.mount()
 
     // Track isValidating changes
     const isValidatingStates: boolean[] = []
-    field.store.subscribe(() => {
+    const storeunsub = field.store.subscribe(() => {
       isValidatingStates.push(field.getMeta().isValidating)
-    })
+    }).unsubscribe
 
     // Initial state
     expect(field.getMeta().isValidating).toBe(false)
@@ -836,6 +836,8 @@ describe('field api', () => {
     // This prevents unnecessary re-renders
     expect(isValidatingStates.every((state) => state === false)).toBe(true)
     expect(field.getMeta().isValidating).toBe(false)
+    unsub()
+    storeunsub()
   })
 
   it('should run async validation onChange', async () => {
@@ -2249,7 +2251,6 @@ describe('field api', () => {
   it('should throw an error when passing an async Standard Schema to parseValueWithSchema', async () => {
     const testSchema = z.string().superRefine(async () => {
       await sleep(1000)
-      return true
     })
 
     const form = new FormApi({

@@ -7,8 +7,15 @@ import {
 import { z } from 'zod'
 import { formOpts } from './shared-code'
 
+// Required as `z.coerce.number()` defined the type as `unknown`, so we need to do the coercion and validation manually
+const zodAtLeast12 = z
+  .custom<number>()
+  .refine((value) => Number.isFinite(Number(value)), 'Invalid number')
+  .transform((value) => Number(value))
+  .refine((value) => value >= 12, 'Age must be at least 12')
+
 const schema = z.object({
-  age: z.coerce.number().min(12),
+  age: zodAtLeast12,
   firstName: z.string(),
 })
 

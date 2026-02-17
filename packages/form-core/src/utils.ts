@@ -90,6 +90,41 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
 }
 
 /**
+ * Extract all parent paths from a field path string.
+ * E.g., for 'items[0].name' returns ['items', 'items[0]'].
+ * @private
+ */
+export function getParentPaths(field: string): string[] {
+  const parents: string[] = []
+  let parentPath = ''
+  for (let i = 0; i < field.length; i++) {
+    const char = field[i]
+    if (char === '.' || char === '[') {
+      parents.push(parentPath)
+    }
+    parentPath += char
+  }
+  return parents
+}
+
+/**
+ * Check whether `key` is a direct child path of `field`.
+ * E.g., for field 'items', keys 'items[0]' and 'items.foo' are children.
+ * @private
+ */
+export function isChildPath(field: string, key: string): boolean {
+  return key.startsWith(field + '.') || key.startsWith(field + '[')
+}
+
+/**
+ * Return all keys from `allKeys` that are child paths of `field`.
+ * @private
+ */
+export function getChildPaths(field: string, allKeys: string[]): string[] {
+  return allKeys.filter((key) => isChildPath(field, key))
+}
+
+/**
  * Delete a field on an object using a path, including dot notation.
  * @private
  */
