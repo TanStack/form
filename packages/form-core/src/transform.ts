@@ -1,4 +1,4 @@
-// import { batch } from '@tanstack/store'
+import { batch } from '@tanstack/store'
 import { deepCopy } from './utils'
 import type {
   AnyBaseFormState,
@@ -140,16 +140,16 @@ export function mergeAndUpdate<
     return prev
   }, {} as Partial<AnyBaseFormState>)
 
-  // batch(() => {
-  if (Object.keys(diffedObject).length) {
-    form.baseStore.setState((prev) => ({ ...prev, ...diffedObject }))
-  }
+  batch(() => {
+    if (Object.keys(diffedObject).length) {
+      form.baseStore.setState((prev) => ({ ...prev, ...diffedObject }))
+    }
 
-  if (newObj.state.errorMap !== form.state.errorMap) {
-    // Check if we need to update `fieldMetaBase` with `errorMaps` set by
-    form.setErrorMap(newObj.state.errorMap)
-  }
-  // })
+    if (newObj.state.errorMap !== form.state.errorMap) {
+      // Check if we need to update `fieldMetaBase` with `errorMaps` set by
+      form.setErrorMap(newObj.state.errorMap)
+    }
+  })
 
   return newObj
 }

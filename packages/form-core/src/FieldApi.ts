@@ -1,9 +1,8 @@
-import { createStore, type Store } from '@tanstack/store'
+import { batch, createStore} from '@tanstack/store'
 import {
   isStandardSchemaValidator,
   standardSchemaValidators,
 } from './standardSchemaValidator'
-import { defaultFieldMeta } from './metaHelper'
 import {
   determineFieldLevelErrorSourceAndValue,
   evaluate,
@@ -14,6 +13,7 @@ import {
   mergeOpts,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
+import type {ReadonlyStore} from '@tanstack/store';
 import type { DeepKeys, DeepValue, UnwrapOneLevelOfArray } from './util-types'
 import type {
   StandardSchemaV1,
@@ -1091,7 +1091,7 @@ export class FieldApi<
   /**
    * The field state store.
    */
-  store!: Store<
+  store!: ReadonlyStore<
     FieldState<
       TParentData,
       TName,
@@ -1709,62 +1709,62 @@ export class FieldApi<
     // Needs type cast as eslint errantly believes this is always falsy
     let hasErrored = false as boolean
 
-    // batch(() => {
-    const validateFieldFn = (
-      field: AnyFieldApi,
-      validateObj: SyncValidator<any>,
-    ) => {
-      const errorMapKey = getErrorMapKey(validateObj.cause)
+    batch(() => {
+      const validateFieldFn = (
+        field: AnyFieldApi,
+        validateObj: SyncValidator<any>,
+      ) => {
+        const errorMapKey = getErrorMapKey(validateObj.cause)
 
-      const fieldLevelError = validateObj.validate
-        ? normalizeError(
-            field.runValidator({
-              validate: validateObj.validate,
-              value: {
-                value: field.store.state.value,
-                validationSource: 'field',
-                fieldApi: field,
-              },
-              type: 'validate',
-            }),
-          )
-        : undefined
+        const fieldLevelError = validateObj.validate
+          ? normalizeError(
+              field.runValidator({
+                validate: validateObj.validate,
+                value: {
+                  value: field.store.state.value,
+                  validationSource: 'field',
+                  fieldApi: field,
+                },
+                type: 'validate',
+              }),
+            )
+          : undefined
 
-      const formLevelError = errorFromForm[errorMapKey]
+        const formLevelError = errorFromForm[errorMapKey]
 
-      const { newErrorValue, newSource } =
-        determineFieldLevelErrorSourceAndValue({
-          formLevelError,
-          fieldLevelError,
-        })
+        const { newErrorValue, newSource } =
+          determineFieldLevelErrorSourceAndValue({
+            formLevelError,
+            fieldLevelError,
+          })
 
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (field.state.meta.errorMap?.[errorMapKey] !== newErrorValue) {
-        field.setMeta((prev) => ({
-          ...prev,
-          errorMap: {
-            ...prev.errorMap,
-            [errorMapKey]: newErrorValue,
-          },
-          errorSourceMap: {
-            ...prev.errorSourceMap,
-            [errorMapKey]: newSource,
-          },
-        }))
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (field.state.meta.errorMap?.[errorMapKey] !== newErrorValue) {
+          field.setMeta((prev) => ({
+            ...prev,
+            errorMap: {
+              ...prev.errorMap,
+              [errorMapKey]: newErrorValue,
+            },
+            errorSourceMap: {
+              ...prev.errorSourceMap,
+              [errorMapKey]: newSource,
+            },
+          }))
+        }
+        if (newErrorValue) {
+          hasErrored = true
+        }
       }
-      if (newErrorValue) {
-        hasErrored = true
-      }
-    }
 
-    for (const validateObj of validates) {
-      validateFieldFn(this, validateObj)
-    }
-    for (const fieldValitateObj of linkedFieldValidates) {
-      if (!fieldValitateObj.validate) continue
-      validateFieldFn(fieldValitateObj.field, fieldValitateObj)
-    }
-    // })
+      for (const validateObj of validates) {
+        validateFieldFn(this, validateObj)
+      }
+      for (const fieldValitateObj of linkedFieldValidates) {
+        if (!fieldValitateObj.validate) continue
+        validateFieldFn(fieldValitateObj.field, fieldValitateObj)
+      }
+    })
 
     /**
      *  when we have an error for onSubmit in the state, we want

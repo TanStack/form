@@ -53,7 +53,7 @@
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/react-store": "https://pkg.pr.new/@tanstack/react-store@265"
+    "@tanstack/react-store": "^0.9.1"
   },
   "devDependencies": {
     "@hookform/error-message": "^2.0.1",
