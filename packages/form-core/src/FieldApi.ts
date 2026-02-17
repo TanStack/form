@@ -1,4 +1,4 @@
-import { createStore, type Store } from '@tanstack/store'
+import { createStore } from '@tanstack/store'
 import {
   isStandardSchemaValidator,
   standardSchemaValidators,
@@ -13,6 +13,7 @@ import {
   mergeOpts,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
+import type { ReadonlyStore } from '@tanstack/store'
 import type { DeepKeys, DeepValue, UnwrapOneLevelOfArray } from './util-types'
 import type {
   StandardSchemaV1,
@@ -1090,7 +1091,7 @@ export class FieldApi<
   /**
    * The field state store.
    */
-  store!: Store<
+  store!: ReadonlyStore<
     FieldState<
       TParentData,
       TName,

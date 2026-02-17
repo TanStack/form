@@ -1,5 +1,6 @@
-import { createStore, type Store } from '@tanstack/store'
+import { createStore } from '@tanstack/store'
 import { concatenatePaths, getBy, makePathArray } from './utils'
+import type { ReadonlyStore } from '@tanstack/store';
 import type { Updater } from './utils'
 import type {
   FormApi,
@@ -225,7 +226,7 @@ export class FieldGroupApi<
     return newProps
   }
 
-  store: Store<FieldGroupState<TFieldGroupData>>
+  store: ReadonlyStore<FieldGroupState<TFieldGroupData>>
 
   get state() {
     return this.store.state

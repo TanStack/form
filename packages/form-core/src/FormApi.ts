@@ -1,4 +1,4 @@
-import { createStore, type Store } from '@tanstack/store'
+import {  createStore } from '@tanstack/store'
 import {
   deleteBy,
   determineFormLevelErrorSourceAndValue,
@@ -21,6 +21,7 @@ import {
 } from './standardSchemaValidator'
 import { defaultFieldMeta, metaHelper } from './metaHelper'
 import { formEventClient } from './EventClient'
+import type {ReadonlyStore, Store} from '@tanstack/store';
 
 // types
 import type { ValidationLogicFn } from './ValidationLogic'
@@ -906,7 +907,7 @@ export class FormApi<
       TOnServer
     >['fieldMeta']
   >
-  store: Store<
+  store: ReadonlyStore<
     FormState<
       TFormData,
       TOnMount,
