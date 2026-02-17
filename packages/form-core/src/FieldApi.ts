@@ -1172,6 +1172,10 @@ export class FieldApi<
     let prevRawValue: unknown = undefined
     let cachedMeta: AnyFieldMeta | undefined = undefined
 
+    // The type assertion is needed because when consumed from adapter packages
+    // (e.g. solid-form), duplicate @tanstack/store installations cause
+    // TypeScript to see separate declarations of the private 'atom' property
+    // in Store vs ReadonlyStore, making structural assignment fail.
     this.store = createStore(
       (
         prevVal:
@@ -1205,7 +1209,15 @@ export class FieldApi<
           this.name as string,
           opts.defaultMeta as any,
         )
-        const { value: rawValue, metaBase } = perFieldStore.get()
+        const perFieldState = perFieldStore.get()
+        // Guard against undefined state — can occur when the reactive system
+        // calls _update() without arguments on a mutable atom after it gets
+        // unwatched during re-entrant flush cycles (e.g. array field removal
+        // in frameworks with synchronous reactive updates like Solid).
+        if (!perFieldState) {
+          return prevVal as any
+        }
+        const { value: rawValue, metaBase } = perFieldState
 
         // Compute derived meta with caching
         let meta: AnyFieldMeta
@@ -1303,7 +1315,7 @@ export class FieldApi<
           TFormOnDynamicAsync
         >
       },
-    )
+    ) as any
   }
 
   /**
@@ -1390,18 +1402,43 @@ export class FieldApi<
         this.options.defaultMeta as any,
       )
 
-      if (this.getValue() !== perFieldStore.get().value) {
-        perFieldStore.setState((prev) => ({
-          ...prev,
-          value: this.getValue(),
-        }))
+      const currentState = perFieldStore.get()
+      // Guard: during re-entrant flush cycles (e.g. array field removal in
+      // frameworks with synchronous reactive updates like Solid), the
+      // per-field store's atom snapshot can be corrupted to undefined.
+      // Skip the sync — the field is being cleaned up.
+      if (!currentState) {
+        return
       }
-      if (
-        this.form._getFieldMetaBase(this.name) !== perFieldStore.get().metaBase
-      ) {
+
+      const currentValue = this.getValue()
+      const currentMetaBase = this.form._getFieldMetaBase(this.name)
+
+      // Compute what needs updating BEFORE calling setState.
+      // Avoid calling this.getMeta() inside setState updaters — it accesses
+      // this.store.state which triggers the computed store to recompute,
+      // reading perFieldStore.get() while the per-field store's atom is
+      // mid-update. This corrupts the reactive graph in frameworks with
+      // synchronous reactive systems (e.g. Solid).
+      const needsValueUpdate = currentValue !== currentState.value
+      const needsMetaUpdate = currentMetaBase !== currentState.metaBase
+
+      if (needsValueUpdate && needsMetaUpdate) {
+        // Combine both updates into a single setState to avoid double-flush
         perFieldStore.setState((prev) => ({
           ...prev,
-          meta: this.getMeta(),
+          value: currentValue,
+          metaBase: currentMetaBase ?? prev.metaBase,
+        }))
+      } else if (needsValueUpdate) {
+        perFieldStore.setState((prev) => ({
+          ...prev,
+          value: currentValue,
+        }))
+      } else if (needsMetaUpdate) {
+        perFieldStore.setState((prev) => ({
+          ...prev,
+          metaBase: currentMetaBase ?? prev.metaBase,
         }))
       }
     })
