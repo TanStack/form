@@ -8,10 +8,13 @@ title: useStore
 ## Call Signature
 
 ```ts
-function useStore<TState, TSelected>(store, selector?): Accessor<TSelected>;
+function useStore<TState, TSelected>(
+   store, 
+   selector?, 
+options?): Accessor<TSelected>;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.7.7\_solid-js@1.9.9/node\_modules/@tanstack/solid-store/dist/esm/index.d.ts:8
+Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.8.1\_solid-js@1.9.9/node\_modules/@tanstack/solid-store/dist/esm/index.d.ts:12
 
 ### Type Parameters
 
@@ -33,6 +36,10 @@ Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.7.7\_solid-js@1.9.9/node
 
 (`state`) => `TSelected`
 
+#### options?
+
+`UseStoreOptions`\<`TSelected`\>
+
 ### Returns
 
 `Accessor`\<`TSelected`\>
@@ -40,10 +47,13 @@ Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.7.7\_solid-js@1.9.9/node
 ## Call Signature
 
 ```ts
-function useStore<TState, TSelected>(store, selector?): Accessor<TSelected>;
+function useStore<TState, TSelected>(
+   store, 
+   selector?, 
+options?): Accessor<TSelected>;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.7.7\_solid-js@1.9.9/node\_modules/@tanstack/solid-store/dist/esm/index.d.ts:9
+Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.8.1\_solid-js@1.9.9/node\_modules/@tanstack/solid-store/dist/esm/index.d.ts:13
 
 ### Type Parameters
 
@@ -64,6 +74,10 @@ Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.7.7\_solid-js@1.9.9/node
 #### selector?
 
 (`state`) => `TSelected`
+
+#### options?
+
+`UseStoreOptions`\<`TSelected`\>
 
 ### Returns
 
