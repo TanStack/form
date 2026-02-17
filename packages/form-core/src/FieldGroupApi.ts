@@ -1,6 +1,6 @@
 import { createStore } from '@tanstack/store'
 import { concatenatePaths, getBy, makePathArray } from './utils'
-import type { ReadonlyStore } from '@tanstack/store';
+import type { ReadonlyStore } from '@tanstack/store'
 import type { Updater } from './utils'
 import type {
   FormApi,
@@ -303,7 +303,9 @@ export class FieldGroupApi<
    *
    * TODO: Remove
    */
-  mount = () => {}
+  mount = () => {
+    return () => {}
+  }
 
   /**
    * Validates the children of a specified array in the form starting from a given index until the end using the correct handlers for a given validation type.
