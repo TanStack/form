@@ -1,4 +1,4 @@
-import {  batch, createStore} from '@tanstack/store'
+import { batch, createStore } from '@tanstack/store'
 import {
   deleteBy,
   determineFormLevelErrorSourceAndValue,
@@ -23,7 +23,7 @@ import {
 } from './standardSchemaValidator'
 import { defaultFieldMeta, metaHelper } from './metaHelper'
 import { formEventClient } from './EventClient'
-import type {ReadonlyStore, Store} from '@tanstack/store';
+import type { ReadonlyStore, Store } from '@tanstack/store'
 
 // types
 import type { ValidationLogicFn } from './ValidationLogic'
@@ -2417,7 +2417,6 @@ export class FormApi<
           isTouched: true,
           isDirty: true,
           errorMap: {
-
             ...prevMeta?.errorMap,
             onMount: undefined,
           },

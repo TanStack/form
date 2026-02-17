@@ -1,4 +1,4 @@
-import { batch, createStore} from '@tanstack/store'
+import { batch, createStore } from '@tanstack/store'
 import {
   isStandardSchemaValidator,
   standardSchemaValidators,
@@ -13,7 +13,7 @@ import {
   mergeOpts,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
-import type {ReadonlyStore} from '@tanstack/store';
+import type { ReadonlyStore } from '@tanstack/store'
 import type { DeepKeys, DeepValue, UnwrapOneLevelOfArray } from './util-types'
 import type {
   StandardSchemaV1,
