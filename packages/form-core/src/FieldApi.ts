@@ -1,4 +1,4 @@
-import { Derived, batch } from '@tanstack/store'
+import { batch, createStore } from '@tanstack/store'
 import {
   isStandardSchemaValidator,
   standardSchemaValidators,
@@ -8,11 +8,11 @@ import {
   determineFieldLevelErrorSourceAndValue,
   evaluate,
   getAsyncValidatorArray,
-  getBy,
   getSyncValidatorArray,
   mergeOpts,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
+import type { ReadonlyStore } from '@tanstack/store'
 import type { DeepKeys, DeepValue, UnwrapOneLevelOfArray } from './util-types'
 import type {
   StandardSchemaV1,
@@ -1090,7 +1090,7 @@ export class FieldApi<
   /**
    * The field state store.
    */
-  store!: Derived<
+  store!: ReadonlyStore<
     FieldState<
       TParentData,
       TName,
@@ -1167,10 +1167,9 @@ export class FieldApi<
       formListeners: {} as Record<ListenerCause, never>,
     }
 
-    this.store = new Derived({
-      deps: [this.form.store],
-      fn: ({ prevVal: _prevVal }) => {
-        const prevVal = _prevVal as
+    this.store = createStore(
+      (
+        prevVal:
           | FieldState<
               TParentData,
               TName,
@@ -1194,7 +1193,10 @@ export class FieldApi<
               TFormOnDynamic,
               TFormOnDynamicAsync
             >
-          | undefined
+          | undefined,
+      ) => {
+        // Temp hack to subscribe to form.store
+        this.form.store.get()
 
         const meta = this.form.getFieldMeta(this.name) ?? {
           ...defaultFieldMeta,
@@ -1242,7 +1244,7 @@ export class FieldApi<
           TFormOnDynamicAsync
         >
       },
-    })
+    )
   }
 
   /**
@@ -1275,8 +1277,6 @@ export class FieldApi<
    * Mounts the field instance to the form.
    */
   mount = () => {
-    const cleanup = this.store.mount()
-
     if (this.options.defaultValue !== undefined && !this.getMeta().isTouched) {
       this.form.setFieldValue(this.name, this.options.defaultValue, {
         dontUpdateMeta: true,
@@ -1322,7 +1322,8 @@ export class FieldApi<
       fieldApi: this,
     })
 
-    return cleanup
+    // TODO: Remove
+    return () => {}
   }
 
   /**
