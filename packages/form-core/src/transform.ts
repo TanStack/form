@@ -141,14 +141,14 @@ export function mergeAndUpdate<
   }, {} as Partial<AnyBaseFormState>)
 
   // batch(() => {
-    if (Object.keys(diffedObject).length) {
-      form.baseStore.setState((prev) => ({ ...prev, ...diffedObject }))
-    }
+  if (Object.keys(diffedObject).length) {
+    form.baseStore.setState((prev) => ({ ...prev, ...diffedObject }))
+  }
 
-    if (newObj.state.errorMap !== form.state.errorMap) {
-      // Check if we need to update `fieldMetaBase` with `errorMaps` set by
-      form.setErrorMap(newObj.state.errorMap)
-    }
+  if (newObj.state.errorMap !== form.state.errorMap) {
+    // Check if we need to update `fieldMetaBase` with `errorMaps` set by
+    form.setErrorMap(newObj.state.errorMap)
+  }
   // })
 
   return newObj
