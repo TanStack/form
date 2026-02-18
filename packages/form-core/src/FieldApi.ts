@@ -1765,6 +1765,7 @@ export class FieldApi<
      */
     const validatesPromises: Promise<ValidationError | undefined>[] = []
     const linkedPromises: Promise<ValidationError | undefined>[] = []
+    const fieldControllers = new Map<AnyFieldApi, AbortController>()
 
     // Check if there are actual async validators to run before setting isValidating
     // This prevents unnecessary re-renders when there are no async validators
@@ -1793,8 +1794,9 @@ export class FieldApi<
 
       fieldValidatorMeta?.lastAbortController.abort()
       const controller = new AbortController()
+      fieldControllers.set(field, controller)
 
-      this.getInfo().validationMetaMap[errorMapKey] = {
+      field.getInfo().validationMetaMap[errorMapKey] = {
         lastAbortController: controller,
       }
 
@@ -1885,12 +1887,28 @@ export class FieldApi<
       await Promise.all(linkedPromises)
     }
 
-    // Only reset isValidating if we set it to true earlier
+    // Only reset isValidating if no newer async run has superseded this one.
+    // Each field is checked individually against the controller that was
+    // assigned to it during *this* run (captured in fieldControllers).
     if (hasAsyncValidators) {
-      this.setMeta((prev) => ({ ...prev, isValidating: false }))
-
+      const errorMapKey = getErrorMapKey(cause)
+      const thisRunController = fieldControllers.get(this)
+      const isSuperseded =
+        thisRunController !== undefined &&
+        this.getInfo().validationMetaMap[errorMapKey]?.lastAbortController !==
+          thisRunController
+      if (!isSuperseded) {
+        this.setMeta((prev) => ({ ...prev, isValidating: false }))
+      }
       for (const linkedField of linkedFields) {
-        linkedField.setMeta((prev) => ({ ...prev, isValidating: false }))
+        const linkedRunController = fieldControllers.get(linkedField)
+        const linkedIsSuperseded =
+          linkedRunController !== undefined &&
+          linkedField.getInfo().validationMetaMap[errorMapKey]
+            ?.lastAbortController !== linkedRunController
+        if (!linkedIsSuperseded) {
+          linkedField.setMeta((prev) => ({ ...prev, isValidating: false }))
+        }
       }
     }
 
@@ -1916,10 +1934,21 @@ export class FieldApi<
       fieldsErrorMap[this.name] ?? {},
     )
 
+    // Abort previous async validations and set isValidating to false
     if (hasErrored && !this.options.asyncAlways) {
-      this.getInfo().validationMetaMap[
-        getErrorMapKey(cause)
-      ]?.lastAbortController.abort()
+      const errorMapKey = getErrorMapKey(cause)
+      this.getInfo().validationMetaMap[errorMapKey]?.lastAbortController.abort()
+      if (this.state.meta.isValidating) {
+        this.setMeta((prev) => ({ ...prev, isValidating: false }))
+      }
+      for (const linkedField of this.getLinkedFields(cause)) {
+        linkedField
+          .getInfo()
+          .validationMetaMap[errorMapKey]?.lastAbortController.abort()
+        if (linkedField.state.meta.isValidating) {
+          linkedField.setMeta((prev) => ({ ...prev, isValidating: false }))
+        }
+      }
       return this.state.meta.errors
     }
 
