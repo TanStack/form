@@ -33,6 +33,7 @@ import type {
   ValidationCause,
   ValidationError,
   ValidationErrorMap,
+  ValidationErrorMapKeys,
   ValidationErrorMapSource,
 } from './types'
 import type { AsyncValidator, SyncValidator, Updater } from './utils'
@@ -1765,6 +1766,10 @@ export class FieldApi<
      */
     const validatesPromises: Promise<ValidationError | undefined>[] = []
     const linkedPromises: Promise<ValidationError | undefined>[] = []
+    const fieldControllers = new Map<
+      AnyFieldApi,
+      Map<ValidationErrorMapKeys, AbortController>
+    >()
 
     // Check if there are actual async validators to run before setting isValidating
     // This prevents unnecessary re-renders when there are no async validators
@@ -1793,8 +1798,16 @@ export class FieldApi<
 
       fieldValidatorMeta?.lastAbortController.abort()
       const controller = new AbortController()
+      if (!fieldControllers.has(field)) {
+        fieldControllers.set(field, new Map())
+      }
+      fieldControllers.get(field)!.set(errorMapKey, controller)
+      if (!fieldControllers.has(field)) {
+        fieldControllers.set(field, new Map())
+      }
+      fieldControllers.get(field)!.set(errorMapKey, controller)
 
-      this.getInfo().validationMetaMap[errorMapKey] = {
+      field.getInfo().validationMetaMap[errorMapKey] = {
         lastAbortController: controller,
       }
 
@@ -1865,18 +1878,21 @@ export class FieldApi<
       )
     }
 
-    // TODO: Dedupe this logic to reduce bundle size
-    for (const validateObj of validates) {
+    const allValidations = [
+      ...validates.map((v) => ({
+        field: this,
+        validateObj: v,
+        promises: validatesPromises,
+      })),
+      ...linkedFieldValidates.map((v) => ({
+        field: v.field,
+        validateObj: v,
+        promises: linkedPromises,
+      })),
+    ]
+    for (const { field, validateObj, promises } of allValidations) {
       if (!validateObj.validate) continue
-      validateFieldAsyncFn(this, validateObj, validatesPromises)
-    }
-    for (const fieldValitateObj of linkedFieldValidates) {
-      if (!fieldValitateObj.validate) continue
-      validateFieldAsyncFn(
-        fieldValitateObj.field,
-        fieldValitateObj,
-        linkedPromises,
-      )
+      validateFieldAsyncFn(field, validateObj, promises)
     }
 
     let results: ValidationError[] = []
@@ -1885,12 +1901,29 @@ export class FieldApi<
       await Promise.all(linkedPromises)
     }
 
-    // Only reset isValidating if we set it to true earlier
+    // Only reset isValidating if no newer async run has superseded this one.
     if (hasAsyncValidators) {
-      this.setMeta((prev) => ({ ...prev, isValidating: false }))
+      const checkSuperseded = (field: AnyFieldApi) => {
+        const keyedControllers = fieldControllers.get(field)
+        if (!keyedControllers) return false
+        for (const [key, controller] of keyedControllers.entries()) {
+          if (
+            field.getInfo().validationMetaMap[key]?.lastAbortController !==
+            controller
+          ) {
+            return true
+          }
+        }
+        return false
+      }
 
+      if (!checkSuperseded(this)) {
+        this.setMeta((prev) => ({ ...prev, isValidating: false }))
+      }
       for (const linkedField of linkedFields) {
-        linkedField.setMeta((prev) => ({ ...prev, isValidating: false }))
+        if (!checkSuperseded(linkedField)) {
+          linkedField.setMeta((prev) => ({ ...prev, isValidating: false }))
+        }
       }
     }
 
@@ -1916,10 +1949,21 @@ export class FieldApi<
       fieldsErrorMap[this.name] ?? {},
     )
 
+    // Abort previous async validations and set isValidating to false
     if (hasErrored && !this.options.asyncAlways) {
-      this.getInfo().validationMetaMap[
-        getErrorMapKey(cause)
-      ]?.lastAbortController.abort()
+      const errorMapKey = getErrorMapKey(cause)
+      this.getInfo().validationMetaMap[errorMapKey]?.lastAbortController.abort()
+      if (this.state.meta.isValidating) {
+        this.setMeta((prev) => ({ ...prev, isValidating: false }))
+      }
+      for (const linkedField of this.getLinkedFields(cause)) {
+        linkedField
+          .getInfo()
+          .validationMetaMap[errorMapKey]?.lastAbortController.abort()
+        if (linkedField.state.meta.isValidating) {
+          linkedField.setMeta((prev) => ({ ...prev, isValidating: false }))
+        }
+      }
       return this.state.meta.errors
     }
 
