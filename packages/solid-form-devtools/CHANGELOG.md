@@ -1,5 +1,44 @@
 # @tanstack/solid-form-devtools
 
+## 0.2.16
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.16
+
+## 0.2.15
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.15
+
+## 0.2.14
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.14
+
+## 0.2.13
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.13
+
+## 0.2.12
+
+### Patch Changes
+
+- Bump devtools utils to latest versions. ([#1995](https://github.com/TanStack/form/pull/1995))
+
+- use explicit paths for the devtools production exports ([#1989](https://github.com/TanStack/form/pull/1989))
+
+- Updated dependencies [[`f1c23d0`](https://github.com/TanStack/form/commit/f1c23d01e6afaf5d945d662188fdeaef00151ceb)]:
+  - @tanstack/form-devtools@0.2.12
+
 ## 0.2.11
 
 ### Patch Changes

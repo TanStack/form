@@ -830,7 +830,7 @@ FieldManipulator.validateArrayFieldsStartingFrom
 ### validateField()
 
 ```ts
-validateField<TField>(field, cause): unknown[] | Promise<unknown[]>;
+validateField<TField>(field, cause): any[] | Promise<any[]>;
 ```
 
 Defined in: [packages/form-core/src/FieldGroupApi.ts:332](https://github.com/TanStack/form/blob/main/packages/form-core/src/FieldGroupApi.ts#L332)
@@ -855,7 +855,7 @@ Validates a specified field in the form using the correct handlers for a given v
 
 #### Returns
 
-`unknown`[] \| `Promise`\<`unknown`[]\>
+`any`[] \| `Promise`\<`any`[]\>
 
 #### Implementation of
 

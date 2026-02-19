@@ -1,5 +1,47 @@
 # @tanstack/react-form
 
+## 1.28.3
+
+### Patch Changes
+
+- form arrays now work again ([#2041](https://github.com/TanStack/form/pull/2041))
+
+- Updated dependencies [[`0b3952d`](https://github.com/TanStack/form/commit/0b3952d9805b4f1756829faa012e4112c14859a7)]:
+  - @tanstack/form-core@1.28.3
+
+## 1.28.2
+
+### Patch Changes
+
+- Updated dependencies [[`a07862d`](https://github.com/TanStack/form/commit/a07862de23ea008c7dd3821edd880b6ebc569016)]:
+  - @tanstack/form-core@1.28.2
+
+## 1.28.1
+
+### Patch Changes
+
+- Fix compile error with webpack when using react v17 ([#1982](https://github.com/TanStack/form/pull/1982))
+
+- Fix various issues with SSR. Things should now work as-expected in many many more scenarios than before ([#1890](https://github.com/TanStack/form/pull/1890))
+
+- Updated dependencies [[`72d970a`](https://github.com/TanStack/form/commit/72d970add6ab682d733e35a95e5e1f44efb695d2)]:
+  - @tanstack/form-core@1.28.1
+
+## 1.28.0
+
+### Minor Changes
+
+- add `useTypedAppFormContext` ([#1826](https://github.com/TanStack/form/pull/1826))
+
+### Patch Changes
+
+- fix: flatten errors consistently when validating before field mount ([#2003](https://github.com/TanStack/form/pull/2003))
+
+  Fixed an issue where `field.errors` was incorrectly nested as `[[error]]` instead of `[error]` when `form.validate()` was called manually before a field was mounted. The `flat(1)` operation is now applied by default unless `disableErrorFlat` is explicitly set to true, ensuring consistent error structure regardless of when validation occurs.
+
+- Updated dependencies [[`41faffe`](https://github.com/TanStack/form/commit/41faffee657e753b37132275c2255d29fdd3f325), [`7f2453b`](https://github.com/TanStack/form/commit/7f2453baf8c852adfab2475fa3f110f597b24c52)]:
+  - @tanstack/form-core@1.28.0
+
 ## 1.27.7
 
 ### Patch Changes

@@ -36,6 +36,7 @@ title: "@tanstack/form-core"
 
 - [AllObjectKeys](type-aliases/AllObjectKeys.md)
 - [AllTupleKeys](type-aliases/AllTupleKeys.md)
+- [AnyBaseFormState](type-aliases/AnyBaseFormState.md)
 - [AnyFieldApi](type-aliases/AnyFieldApi.md)
 - [AnyFieldGroupApi](type-aliases/AnyFieldGroupApi.md)
 - [AnyFieldMeta](type-aliases/AnyFieldMeta.md)
@@ -101,6 +102,7 @@ title: "@tanstack/form-core"
 ## Functions
 
 - [createFieldMap](functions/createFieldMap.md)
+- [deepCopy](functions/deepCopy.md)
 - [evaluate](functions/evaluate.md)
 - [formOptions](functions/formOptions.md)
 - [isGlobalFormValidationError](functions/isGlobalFormValidationError.md)

@@ -1,5 +1,33 @@
 # @tanstack/form-core
 
+## 1.28.3
+
+### Patch Changes
+
+- form arrays now work again ([#2041](https://github.com/TanStack/form/pull/2041))
+
+## 1.28.2
+
+### Patch Changes
+
+- bump @tanstack/store dependency to 0.8.0 ([#2038](https://github.com/TanStack/form/pull/2038))
+
+## 1.28.1
+
+### Patch Changes
+
+- Fix various issues with SSR. Things should now work as-expected in many many more scenarios than before ([#1890](https://github.com/TanStack/form/pull/1890))
+
+## 1.28.0
+
+### Patch Changes
+
+- fix: flatten errors consistently when validating before field mount ([#2003](https://github.com/TanStack/form/pull/2003))
+
+  Fixed an issue where `field.errors` was incorrectly nested as `[[error]]` instead of `[error]` when `form.validate()` was called manually before a field was mounted. The `flat(1)` operation is now applied by default unless `disableErrorFlat` is explicitly set to true, ensuring consistent error structure regardless of when validation occurs.
+
+- run validation for fields without instances ([#2001](https://github.com/TanStack/form/pull/2001))
+
 ## 1.27.7
 
 ### Patch Changes

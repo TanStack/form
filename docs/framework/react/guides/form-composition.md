@@ -248,6 +248,61 @@ const ChildForm = withForm({
 })
 ```
 
+### Context as a last resort
+
+There are cases where passing `form` with `withForm` is not feasible. You may encounter it with components that don't
+allow you to change their props.
+
+For example, consider the following TanStack Router usage:
+
+```ts
+function RouteComponent() {
+  const form = useAppForm({...formOptions, /* ... */ })
+  // <Outlet /> cannot be customized or receive additional props
+  return <Outlet />
+}
+```
+
+In edge cases like this, a context-based fallback is available to access the form instance.
+
+```ts
+const { useAppForm, useTypedAppFormContext } = createFormHook({
+  fieldContext,
+  formContext,
+  fieldComponents: {},
+  formComponents: {},
+})
+```
+
+> [!IMPORTANT] Type safety
+> This mechanism exists solely to bridge integration constraints and should be avoided whenever `withForm` is possible.
+> Context will not warn you when the types do not align. You risk runtime errors with this implementation.
+
+Usage:
+
+```tsx
+// sharedOpts.ts
+const formOpts = formOptions({
+  /* ... */
+})
+
+function ParentComponent() {
+  const form = useAppForm({ ...formOptions /* ... */ })
+
+  return (
+    <form.AppForm>
+      <ChildComponent />
+    </form.AppForm>
+  )
+}
+
+function ChildComponent() {
+  const form = useTypedAppFormContext({ ...formOptions })
+
+  // You now have access to form components, field components and fields
+}
+```
+
 ## Reusing groups of fields in multiple forms
 
 Sometimes, a pair of fields are so closely related that it makes sense to group and reuse them — like the password example listed in the [linked fields guide](./linked-fields.md). Instead of repeating this logic across multiple forms, you can utilize the `withFieldGroup` higher-order component.
