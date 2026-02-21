@@ -120,5 +120,10 @@ export function mergeForm<
   >,
 ) {
   mutateMergeDeep(baseForm.state, state)
+
+  if (state.errorMap && typeof baseForm.setErrorMap === 'function') {
+    baseForm.setErrorMap(baseForm.state.errorMap as never)
+  }
+
   return baseForm
 }
