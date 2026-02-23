@@ -1,5 +1,3 @@
-'use client'
-
 import { useMemo, useState } from 'preact/hooks'
 import { useStore } from '@tanstack/preact-store'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
