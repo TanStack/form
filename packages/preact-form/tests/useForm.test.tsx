@@ -35,7 +35,7 @@ describe('useForm', () => {
                   data-testid="fieldinput"
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.currentTarget.value)}
+                  onInput={(e) => field.handleChange(e.currentTarget.value)}
                 />
               )
             }}
@@ -106,7 +106,7 @@ describe('useForm', () => {
                 <input
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.currentTarget.value)}
+                  onInput={(e) => field.handleChange(e.currentTarget.value)}
                   placeholder={'First name'}
                 />
               )
@@ -193,7 +193,7 @@ describe('useForm', () => {
                 name={field.name}
                 value={field.state.value}
                 onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.currentTarget.value)}
+                onInput={(e) => field.handleChange(e.currentTarget.value)}
               />
             )}
           />
@@ -241,7 +241,7 @@ describe('useForm', () => {
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) =>
+                  onInput={(e) =>
                     field.setValue(e.currentTarget.value, {
                       dontUpdateMeta: true,
                     })
@@ -292,7 +292,7 @@ describe('useForm', () => {
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.currentTarget.value)}
+                  onInput={(e) => field.handleChange(e.currentTarget.value)}
                 />
                 <p>{errors.onChange?.toString()}</p>
               </div>
@@ -343,7 +343,7 @@ describe('useForm', () => {
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.currentTarget.value)}
+                  onInput={(e) => field.handleChange(e.currentTarget.value)}
                 />
                 <p>{errors.onChange?.toString()}</p>
                 <p>{errors.onBlur?.toString()}</p>
@@ -401,7 +401,7 @@ describe('useForm', () => {
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.currentTarget.value)}
+                  onInput={(e) => field.handleChange(e.currentTarget.value)}
                 />
                 <p data-testid={'field-onchange'}>
                   {field.state.meta.errorMap.onChange}
@@ -467,7 +467,7 @@ describe('useForm', () => {
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.currentTarget.value)}
+                  onInput={(e) => field.handleChange(e.currentTarget.value)}
                 />
                 <p>{errors.onChange?.toString()}</p>
               </div>
@@ -522,7 +522,7 @@ describe('useForm', () => {
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.currentTarget.value)}
+                  onInput={(e) => field.handleChange(e.currentTarget.value)}
                 />
                 <p data-testid="field-error">
                   {field.state.meta.errorMap.onChange}
@@ -593,7 +593,7 @@ describe('useForm', () => {
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.currentTarget.value)}
+                  onInput={(e) => field.handleChange(e.currentTarget.value)}
                 />
                 <p>{errors.onChange?.toString()}</p>
                 <p>{errors.onBlur?.toString()}</p>
@@ -654,7 +654,7 @@ describe('useForm', () => {
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.currentTarget.value)}
+                  onInput={(e) => field.handleChange(e.currentTarget.value)}
                 />
                 <p>{errors}</p>
               </div>
@@ -706,7 +706,7 @@ describe('useForm', () => {
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.currentTarget.value)}
+                  onInput={(e) => field.handleChange(e.currentTarget.value)}
                 />
 
                 <p data-testid="field-error">
@@ -827,7 +827,7 @@ describe('useForm', () => {
                 data-testid="fieldinput"
                 name={field.name}
                 value={field.state.value}
-                onChange={(e) => field.handleChange(e.currentTarget.value)}
+                onInput={(e) => field.handleChange(e.currentTarget.value)}
               />
             )}
           />
@@ -977,7 +977,7 @@ describe('useForm', () => {
               <input
                 data-testid="input"
                 value={field.state.value}
-                onChange={(e) => field.handleChange(e.currentTarget.value)}
+                onInput={(e) => field.handleChange(e.currentTarget.value)}
               />
             )}
           />
@@ -986,7 +986,7 @@ describe('useForm', () => {
             children={(field) => (
               <input
                 value={field.state.value}
-                onChange={(e) => field.handleChange(e.currentTarget.value)}
+                onInput={(e) => field.handleChange(e.currentTarget.value)}
               />
             )}
           />
