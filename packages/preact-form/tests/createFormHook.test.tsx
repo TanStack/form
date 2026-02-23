@@ -20,7 +20,7 @@ function TextField({ label }: { label: string }) {
       <div>{label}</div>
       <input
         value={field.state.value}
-        onChange={(e) => field.handleChange(e.currentTarget.value)}
+        onInput={(e) => field.handleChange(e.currentTarget.value)}
       />
     </label>
   )
@@ -270,7 +270,7 @@ describe('createFormHook', () => {
                   <div>{field.name}</div>
                   <input
                     value={field.state.value}
-                    onChange={(e) => field.handleChange(e.currentTarget.value)}
+                    onInput={(e) => field.handleChange(e.currentTarget.value)}
                   />
                 </label>
               )}
@@ -323,7 +323,7 @@ describe('createFormHook', () => {
                   <div>{field.name}</div>
                   <input
                     value={field.state.value}
-                    onChange={(e) => field.handleChange(e.currentTarget.value)}
+                    onInput={(e) => field.handleChange(e.currentTarget.value)}
                   />
                 </label>
               )}
