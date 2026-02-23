@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/preact'
 import { userEvent } from '@testing-library/user-event'
 import { useStore } from '@tanstack/preact-store'
-import { useCallback, useEffect, useReducer, useState } from 'preact/compat'
+import { useCallback, useEffect, useState } from 'preact/hooks'
 import { mergeForm, useForm } from '../src/index'
 import { sleep } from './utils'
 

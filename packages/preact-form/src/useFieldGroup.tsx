@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'preact/compat'
+import { useState } from 'preact/hooks'
 import { useStore } from '@tanstack/preact-store'
 import { FieldGroupApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
@@ -14,12 +14,12 @@ import type {
 } from '@tanstack/form-core'
 import type { AppFieldExtendedReactFormApi } from './createFormHook'
 import type {
+  ComponentChild,
   ComponentType,
   FunctionComponent,
-  PropsWithChildren,
-  ReactNode,
-} from 'preact/compat'
+} from 'preact'
 import type { LensFieldComponent } from './useField'
+import type { PropsWithChildren } from './types'
 
 function LocalSubscribe({
   lens,
@@ -89,7 +89,7 @@ export type AppFieldExtendedReactFieldGroupApi<
      */
     Subscribe: <TSelected = NoInfer<FieldGroupState<TFieldGroupData>>>(props: {
       selector?: (state: NoInfer<FieldGroupState<TFieldGroupData>>) => TSelected
-      children: ((state: NoInfer<TSelected>) => ReactNode) | ReactNode
+      children: ((state: NoInfer<TSelected>) => ComponentChild) | ComponentChild
     }) => ReturnType<FunctionComponent>
   }
 

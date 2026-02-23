@@ -2,7 +2,7 @@
 
 import { FormApi, functionalUpdate, mergeAndUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/preact-store'
-import { useMemo, useRef, useState } from 'preact/compat'
+import { useMemo, useRef, useState } from 'preact/hooks'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import { useFormId } from './useFormId'
@@ -14,13 +14,10 @@ import type {
   FormState,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type {
-  FunctionComponent,
-  PropsWithChildren,
-  ReactNode,
-} from 'preact/compat'
+import type { ComponentChild, FunctionComponent } from 'preact'
 import type { FieldComponent } from './useField'
 import type { NoInfer } from '@tanstack/preact-store'
+import type { PropsWithChildren } from './types'
 
 /**
  * Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`
@@ -93,7 +90,7 @@ export interface ReactFormApi<
         >
       >,
     ) => TSelected
-    children: ((state: NoInfer<TSelected>) => ReactNode) | ReactNode
+    children: ((state: NoInfer<TSelected>) => ComponentChild) | ComponentChild
   }) => ReturnType<FunctionComponent>
 }
 

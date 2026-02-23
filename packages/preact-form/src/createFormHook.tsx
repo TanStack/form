@@ -1,5 +1,6 @@
 /* eslint-disable @eslint-react/no-context-provider */
-import { createContext, useContext, useMemo } from 'preact/compat'
+import { createContext } from 'preact'
+import { useContext, useMemo } from 'preact/hooks'
 import { useForm } from './useForm'
 import { useFieldGroup } from './useFieldGroup'
 import type {
@@ -17,8 +18,8 @@ import type {
   ComponentType,
   Context,
   FunctionComponent,
-  PropsWithChildren,
-} from 'preact/compat'
+} from 'preact'
+import type { PropsWithChildren } from './types'
 import type { FieldComponent } from './useField'
 import type { ReactFormExtendedApi } from './useForm'
 import type { AppFieldExtendedReactFieldGroupApi } from './useFieldGroup'
