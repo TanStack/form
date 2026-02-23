@@ -39,6 +39,13 @@ await generateReferenceDocs({
       exclude: ['packages/form-core/**/*'],
     },
     {
+      name: 'preact-form',
+      entryPoints: [resolve(__dirname, '../packages/preact-form/src/index.ts')],
+      tsconfig: resolve(__dirname, '../packages/preact-form/tsconfig.docs.json'),
+      outputDir: resolve(__dirname, '../docs/framework/preact/reference'),
+      exclude: ['packages/form-core/**/*'],
+    },
+    {
       name: 'solid-form',
       entryPoints: [resolve(__dirname, '../packages/solid-form/src/index.tsx')],
       tsconfig: resolve(__dirname, '../packages/solid-form/tsconfig.docs.json'),
