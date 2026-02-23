@@ -1,5 +1,3 @@
-'use client'
-
 import { useState } from 'preact/hooks'
 import { useStore } from '@tanstack/preact-store'
 import { FieldGroupApi, functionalUpdate } from '@tanstack/form-core'

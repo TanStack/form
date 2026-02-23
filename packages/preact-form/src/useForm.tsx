@@ -1,5 +1,3 @@
-'use client'
-
 import { FormApi, functionalUpdate, mergeAndUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/preact-store'
 import { useMemo, useRef, useState } from 'preact/hooks'
