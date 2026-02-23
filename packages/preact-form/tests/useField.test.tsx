@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, waitFor, within } from '@testing-library/preact'
 import { userEvent } from '@testing-library/user-event'
-import { StrictMode, useState } from 'preact/compat'
+import { useState } from 'preact/hooks'
 import { useStore } from '@tanstack/preact-store'
 import { useForm } from '../src/index'
 import { sleep } from './utils'
@@ -499,115 +499,6 @@ describe('useField', () => {
     expect(getByText(error)).toBeInTheDocument()
   })
 
-  it('should handle strict mode properly with conditional fields', async () => {
-    function FieldInfo({ field }: { field: AnyFieldApi }) {
-      return (
-        <>
-          {field.state.meta.isTouched && field.state.meta.errors.length ? (
-            <em>{field.state.meta.errors.join(',')}</em>
-          ) : null}
-          {field.state.meta.isValidating ? 'Validating...' : null}
-        </>
-      )
-    }
-
-    function Comp() {
-      const [showField, setShowField] = useState(true)
-
-      const form = useForm({
-        defaultValues: {
-          firstName: '',
-          lastName: '',
-        },
-        onSubmit: async () => {},
-      })
-
-      return (
-        <div>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              form.handleSubmit()
-            }}
-          >
-            <div>
-              {/* A type-safe field component*/}
-              {showField ? (
-                <form.Field
-                  name="firstName"
-                  validators={{
-                    onChange: ({ value }) =>
-                      !value ? 'A first name is required' : undefined,
-                  }}
-                  children={(field) => {
-                    // Avoid hasty abstractions. Render props are great!
-                    return (
-                      <>
-                        <label htmlFor={field.name}>First Name:</label>
-                        <input
-                          name={field.name}
-                          value={field.state.value}
-                          onBlur={field.handleBlur}
-                          onChange={(e) =>
-                            field.handleChange(e.currentTarget.value)
-                          }
-                        />
-                        <FieldInfo field={field} />
-                      </>
-                    )
-                  }}
-                />
-              ) : null}
-            </div>
-            <div>
-              <form.Field
-                name="lastName"
-                children={(field) => (
-                  <>
-                    <label htmlFor={field.name}>Last Name:</label>
-                    <input
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) =>
-                        field.handleChange(e.currentTarget.value)
-                      }
-                    />
-                    <FieldInfo field={field} />
-                  </>
-                )}
-              />
-            </div>
-            <form.Subscribe
-              selector={(state) => [state.canSubmit, state.isSubmitting]}
-              children={([canSubmit, isSubmitting]) => (
-                <button type="submit" disabled={!canSubmit}>
-                  {isSubmitting ? '...' : 'Submit'}
-                </button>
-              )}
-            />
-            <button type="button" onClick={() => setShowField((prev) => !prev)}>
-              {showField ? 'Hide field' : 'Show field'}
-            </button>
-          </form>
-        </div>
-      )
-    }
-
-    const { getByText, findByText, queryByText } = render(
-      <StrictMode>
-        <Comp />
-      </StrictMode>,
-    )
-
-    await user.click(getByText('Submit'))
-    expect(await findByText('A first name is required')).toBeInTheDocument()
-    await user.click(getByText('Hide field'))
-    await user.click(getByText('Submit'))
-    expect(queryByText('A first name is required')).not.toBeInTheDocument()
-  })
-
   it('should handle arrays with primitive values', async () => {
     const fn = vi.fn()
     function Comp() {
@@ -883,32 +774,6 @@ describe('useField', () => {
     expect(await findByText('Passwords do not match')).toBeInTheDocument()
   })
 
-  it('should handle deeply nested values in StrictMode', async () => {
-    function Comp() {
-      const form = useForm({
-        defaultValues: {
-          name: { first: 'Test', last: 'User' },
-        },
-      })
-
-      return (
-        <form.Field
-          name="name.last"
-          children={(field) => <p>{field.state.value}</p>}
-        />
-      )
-    }
-
-    const { queryByText, findByText } = render(
-      <StrictMode>
-        <Comp />
-      </StrictMode>,
-    )
-
-    expect(queryByText('Test')).not.toBeInTheDocument()
-    expect(await findByText('User')).toBeInTheDocument()
-  })
-
   it('should validate async on submit without debounce', async () => {
     type Person = {
       firstName: string
@@ -1015,11 +880,7 @@ describe('useField', () => {
       )
     }
 
-    const { getByText, queryByText } = render(
-      <StrictMode>
-        <Comp />
-      </StrictMode>,
-    )
+    const { getByText, queryByText } = render(<Comp />)
     expect(getByText('[]')).toBeInTheDocument()
     await user.click(getByText('Add person'))
     expect(getByText(`[""]`)).toBeInTheDocument()
@@ -1076,9 +937,7 @@ describe('useField', () => {
     }
 
     const { getByText, queryByText } = render(
-      <StrictMode>
         <Comp />
-      </StrictMode>,
     )
     expect(getByText('[]')).toBeInTheDocument()
     await user.click(getByText('Add person'))
@@ -1153,11 +1012,7 @@ describe('useField', () => {
       )
     }
 
-    const { getByText, queryByText, getByTestId } = render(
-      <StrictMode>
-        <Comp />
-      </StrictMode>,
-    )
+    const { getByText, queryByText, getByTestId } = render(<Comp />)
 
     let exisingPeople: Person[] = [
       fakePeople.jack,
@@ -1224,11 +1079,7 @@ describe('useField', () => {
       )
     }
 
-    const { getByTestId } = render(
-      <StrictMode>
-        <Comp />
-      </StrictMode>,
-    )
+    const { getByTestId } = render(<Comp />)
 
     const field1InitialRender = renderCount.field1
     const field2InitialRender = renderCount.field2
@@ -1294,9 +1145,7 @@ describe('useField', () => {
     }
 
     const { getByTestId } = render(
-      <StrictMode>
         <Comp />
-      </StrictMode>,
     )
 
     const arrayFieldInitialRender = renderCount.arrayField

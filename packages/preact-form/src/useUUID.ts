@@ -1,4 +1,4 @@
-import { useState } from 'preact/compat'
+import { useState } from 'preact/hooks'
 import { uuid } from '@tanstack/form-core'
 
 /** Generates a random UUID. and returns a stable reference to it. */
