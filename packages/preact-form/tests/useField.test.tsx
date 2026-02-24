@@ -719,9 +719,7 @@ describe('useField', () => {
                     <div>Password</div>
                     <input
                       value={field.state.value}
-                      onInput={(e) =>
-                        field.handleChange(e.currentTarget.value)
-                      }
+                      onInput={(e) => field.handleChange(e.currentTarget.value)}
                     />
                   </label>
                 </div>
@@ -747,9 +745,7 @@ describe('useField', () => {
                     <div>Confirm Password</div>
                     <input
                       value={field.state.value}
-                      onInput={(e) =>
-                        field.handleChange(e.currentTarget.value)
-                      }
+                      onInput={(e) => field.handleChange(e.currentTarget.value)}
                     />
                   </label>
                   {field.state.meta.errors.map((err) => {
@@ -936,9 +932,7 @@ describe('useField', () => {
       )
     }
 
-    const { getByText, queryByText } = render(
-        <Comp />
-    )
+    const { getByText, queryByText } = render(<Comp />)
     expect(getByText('[]')).toBeInTheDocument()
     await user.click(getByText('Add person'))
     expect(getByText(`["Test"]`)).toBeInTheDocument()
@@ -1144,9 +1138,7 @@ describe('useField', () => {
       )
     }
 
-    const { getByTestId } = render(
-        <Comp />
-    )
+    const { getByTestId } = render(<Comp />)
 
     const arrayFieldInitialRender = renderCount.arrayField
     const childFieldInitialRender = renderCount.childField
