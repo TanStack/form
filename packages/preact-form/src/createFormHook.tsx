@@ -14,11 +14,7 @@ import type {
   FormOptions,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type {
-  ComponentType,
-  Context,
-  FunctionComponent,
-} from 'preact'
+import type { ComponentType, Context, FunctionComponent } from 'preact'
 import type { PropsWithChildren } from './types'
 import type { FieldComponent } from './useField'
 import type { ReactFormExtendedApi } from './useForm'

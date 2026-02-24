@@ -11,11 +11,7 @@ import type {
   FormValidateOrFn,
 } from '@tanstack/form-core'
 import type { AppFieldExtendedReactFormApi } from './createFormHook'
-import type {
-  ComponentChild,
-  ComponentType,
-  FunctionComponent,
-} from 'preact'
+import type { ComponentChild, ComponentType, FunctionComponent } from 'preact'
 import type { LensFieldComponent } from './useField'
 import type { PropsWithChildren } from './types'
 

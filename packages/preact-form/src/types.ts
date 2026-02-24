@@ -9,7 +9,7 @@ import type {
   FormState,
   FormValidateOrFn,
 } from '@tanstack/form-core'
-import type { ComponentChildren } from 'preact';
+import type { ComponentChildren } from 'preact'
 
 interface FieldOptionsMode {
   mode?: 'value' | 'array'
@@ -139,5 +139,5 @@ export type ServerFormState<
 >
 
 export type PropsWithChildren<P = unknown> = P & {
-  children?: ComponentChildren | undefined;
-};
+  children?: ComponentChildren | undefined
+}
