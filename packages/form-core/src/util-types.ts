@@ -151,10 +151,6 @@ export type DeepKeysAndValuesImpl<
             ? DeepKeyAndValueObject<TParent, T, TAcc>
             : TAcc
 
-export type DeepRecord<T> = {
-  [TRecord in DeepKeysAndValues<T> as TRecord['key']]: TRecord['value']
-}
-
 /**
  * The keys of an object or array, deeply nested.
  */
@@ -162,13 +158,45 @@ export type DeepKeys<T> = unknown extends T
   ? string
   : DeepKeysAndValues<T>['key']
 
+type ValueMatchingAccessor<
+  TValue extends AnyDeepKeyAndValue,
+  TAccessor extends string,
+> = TValue extends TValue
+  ? TAccessor extends TValue['key']
+    ? TValue
+    : never
+  : never
+
+type MostSpecificKey<TValue extends AnyDeepKeyAndValue> = MostSpecificKeyImpl<
+  TValue,
+  TValue
+>
+
+type LongerPrefix<K extends string> = `${K}.${string}` | `${K}[${string}`
+
+type HasLonger<TAll extends AnyDeepKeyAndValue, K extends string> =
+  Extract<TAll, { key: LongerPrefix<K> }> extends never ? false : true
+
+type MostSpecificKeyImpl<
+  TValue extends AnyDeepKeyAndValue,
+  TAll extends AnyDeepKeyAndValue,
+> = TValue extends TValue
+  ? HasLonger<TAll, TValue['key']> extends true
+    ? never
+    : TValue['value']
+  : never
+
+type DeepValueImpl<TValue, TAccessor extends string> = MostSpecificKey<
+  ValueMatchingAccessor<DeepKeysAndValues<TValue>, TAccessor>
+>
+
 /**
  * Infer the type of a deeply nested property within an object or an array.
  */
-export type DeepValue<TValue, TAccessor> = unknown extends TValue
+export type DeepValue<TValue, TAccessor extends string> = unknown extends TValue
   ? TValue
   : TAccessor extends DeepKeys<TValue>
-    ? DeepRecord<TValue>[TAccessor]
+    ? DeepValueImpl<TValue, TAccessor>
     : never
 
 /**
