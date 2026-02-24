@@ -1,7 +1,8 @@
-import { defaultValidationLogic } from './ValidationLogic'
+import { liteThrottle } from '@tanstack/pacer-lite'
+import { formEventClient } from './EventClient'
 import type { ValidationLogicProps } from './ValidationLogic'
 import type { FieldValidators } from './FieldApi'
-import type { FormValidators } from './FormApi'
+import type { AnyFormApi, FormValidators } from './FormApi'
 import type {
   GlobalFormValidationError,
   ValidationCause,
@@ -31,9 +32,9 @@ export function functionalUpdate<TInput, TOutput = TInput>(
  * Get a value from an object using a path, including dot notation.
  * @private
  */
-export function getBy(obj: any, path: any) {
+export function getBy(obj: unknown, path: string | (string | number)[]): any {
   const pathObj = makePathArray(path)
-  return pathObj.reduce((current: any, pathPart: any) => {
+  return pathObj.reduce((current: any, pathPart) => {
     if (current === null) return null
     if (typeof current !== 'undefined') {
       return current[pathPart]
@@ -108,7 +109,10 @@ export function deleteBy(obj: any, _path: any) {
 
     const key = path.shift()
 
-    if (typeof key === 'string') {
+    if (
+      typeof key === 'string' ||
+      (typeof key === 'number' && !Array.isArray(parent))
+    ) {
       if (typeof parent === 'object') {
         return {
           ...parent,
@@ -599,4 +603,59 @@ export function uuid(): string {
 
   IDX++
   return out
+}
+
+export const throttleFormState = liteThrottle(
+  (form: AnyFormApi) =>
+    formEventClient.emit('form-state', {
+      id: form.formId,
+      state: form.store.state,
+    }),
+  {
+    wait: 300,
+  },
+)
+
+// Do not use a serialize and deserialize method like JSON.stringify/parse
+// as that will drop functions, dates, undefined, Infinity, NaN, etc.
+export function deepCopy<T>(obj: T): T {
+  if (obj === null || typeof obj !== 'object') {
+    return obj
+  }
+
+  if (obj instanceof Date) {
+    return new Date(obj.getTime()) as any
+  }
+
+  if (Array.isArray(obj)) {
+    const arrCopy = [] as any[]
+    for (let i = 0; i < obj.length; i++) {
+      arrCopy[i] = deepCopy(obj[i])
+    }
+    return arrCopy as any
+  }
+
+  if (obj instanceof Map) {
+    const mapCopy = new Map()
+    obj.forEach((value, key) => {
+      mapCopy.set(key, deepCopy(value))
+    })
+    return mapCopy as any
+  }
+
+  if (obj instanceof Set) {
+    const setCopy = new Set()
+    obj.forEach((value) => {
+      setCopy.add(deepCopy(value))
+    })
+    return setCopy as any
+  }
+
+  const copy: { [key: string]: any } = {}
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      copy[key] = deepCopy((obj as any)[key])
+    }
+  }
+  return copy as T
 }

@@ -232,8 +232,7 @@ export class TanStackFormController<
   TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TSubmitMeta,
-> implements ReactiveController
-{
+> implements ReactiveController {
   #host: ReactiveControllerHost
   #subscription?: () => void
 

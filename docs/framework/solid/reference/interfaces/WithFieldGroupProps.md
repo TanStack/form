@@ -1,0 +1,64 @@
+---
+id: WithFieldGroupProps
+title: WithFieldGroupProps
+---
+
+# Interface: WithFieldGroupProps\<TFieldGroupData, TFieldComponents, TFormComponents, TSubmitMeta, TRenderProps\>
+
+Defined in: [packages/solid-form/src/createFormHook.tsx:262](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createFormHook.tsx#L262)
+
+## Extends
+
+- `BaseFormOptions`\<`TFieldGroupData`, `TSubmitMeta`\>
+
+## Type Parameters
+
+### TFieldGroupData
+
+`TFieldGroupData`
+
+### TFieldComponents
+
+`TFieldComponents` *extends* `Record`\<`string`, `Component`\<`any`\>\>
+
+### TFormComponents
+
+`TFormComponents` *extends* `Record`\<`string`, `Component`\<`any`\>\>
+
+### TSubmitMeta
+
+`TSubmitMeta`
+
+### TRenderProps
+
+`TRenderProps` *extends* `Record`\<`string`, `unknown`\> = `Record`\<`string`, `never`\>
+
+## Properties
+
+### props?
+
+```ts
+optional props: TRenderProps;
+```
+
+Defined in: [packages/solid-form/src/createFormHook.tsx:270](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createFormHook.tsx#L270)
+
+***
+
+### render()
+
+```ts
+render: (props) => Element;
+```
+
+Defined in: [packages/solid-form/src/createFormHook.tsx:271](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createFormHook.tsx#L271)
+
+#### Parameters
+
+##### props
+
+`ParentProps`\<`NoInfer`\<`TRenderProps`\> & `object`\>
+
+#### Returns
+
+`Element`

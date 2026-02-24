@@ -1,3 +1,4 @@
+'use client'
 /* eslint-disable @eslint-react/no-context-provider */
 import { createContext, useContext, useMemo } from 'react'
 import { useForm } from './useForm'
@@ -16,8 +17,8 @@ import type {
 import type {
   ComponentType,
   Context,
+  FunctionComponent,
   PropsWithChildren,
-  ReactNode,
 } from 'react'
 import type { FieldComponent } from './useField'
 import type { ReactFormExtendedApi } from './useForm'
@@ -64,6 +65,33 @@ type UnwrapDefaultOrAny<DefaultT, T> = [DefaultT] extends [T]
     : T
   : T
 
+function useFormContext() {
+  const form = useContext(formContext)
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (!form) {
+    throw new Error(
+      '`formContext` only works when within a `formComponent` passed to `createFormHook`',
+    )
+  }
+
+  return form as ReactFormExtendedApi<
+    // If you need access to the form data, you need to use `withForm` instead
+    Record<string, never>,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  >
+}
+
 export function createFormHookContexts() {
   function useFieldContext<TData>() {
     const field = useContext(fieldContext)
@@ -88,33 +116,6 @@ export function createFormHookContexts() {
       any,
       any,
       any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any,
-      any
-    >
-  }
-
-  function useFormContext() {
-    const form = useContext(formContext)
-
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!form) {
-      throw new Error(
-        '`formContext` only works when within a `formComponent` passed to `createFormHook`',
-      )
-    }
-
-    return form as ReactFormExtendedApi<
-      // If you need access to the form data, you need to use `withForm` instead
-      Record<string, never>,
       any,
       any,
       any,
@@ -190,7 +191,10 @@ export type AppFieldExtendedReactFormApi<
       TSubmitMeta,
       NoInfer<TFieldComponents>
     >
-    AppForm: ComponentType<PropsWithChildren>
+    AppForm: ComponentType<
+      // PropsWithChildren<P> is not optional in React 17
+      PropsWithChildren<{}>
+    >
   }
 
 export interface WithFormProps<
@@ -210,23 +214,23 @@ export interface WithFormProps<
   TFormComponents extends Record<string, ComponentType<any>>,
   TRenderProps extends object = Record<string, never>,
 > extends FormOptions<
-    TFormData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TOnServer,
-    TSubmitMeta
-  > {
+  TFormData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnDynamic,
+  TOnDynamicAsync,
+  TOnServer,
+  TSubmitMeta
+> {
   // Optional, but adds props to the `render` function outside of `form`
   props?: TRenderProps
-  render: (
-    props: PropsWithChildren<
+  render: FunctionComponent<
+    PropsWithChildren<
       NoInfer<TRenderProps> & {
         form: AppFieldExtendedReactFormApi<
           TFormData,
@@ -245,8 +249,8 @@ export interface WithFormProps<
           TFormComponents
         >
       }
-    >,
-  ) => ReactNode
+    >
+  >
 }
 
 export interface WithFieldGroupProps<
@@ -258,8 +262,8 @@ export interface WithFieldGroupProps<
 > extends BaseFormOptions<TFieldGroupData, TSubmitMeta> {
   // Optional, but adds props to the `render` function outside of `form`
   props?: TRenderProps
-  render: (
-    props: PropsWithChildren<
+  render: FunctionComponent<
+    PropsWithChildren<
       NoInfer<TRenderProps> & {
         group: AppFieldExtendedReactFieldGroupApi<
           unknown,
@@ -282,8 +286,8 @@ export interface WithFieldGroupProps<
           TFormComponents
         >
       }
-    >,
-  ) => ReactNode
+    >
+  >
 }
 
 export function createFormHook<
@@ -341,13 +345,13 @@ export function createFormHook<
   > {
     const form = useForm(props)
 
-    const AppForm = useMemo(() => {
-      const AppForm = (({ children }) => {
+    // PropsWithChildren<P> is not optional in React 17
+    const AppForm = useMemo<ComponentType<PropsWithChildren<{}>>>(() => {
+      return ({ children }) => {
         return (
           <formContext.Provider value={form}>{children}</formContext.Provider>
         )
-      }) as ComponentType<PropsWithChildren>
-      return AppForm
+      }
     }, [form])
 
     const AppField = useMemo(() => {
@@ -520,7 +524,7 @@ export function createFormHook<
         fields: TFields
       }
     >,
-  ) => ReactNode {
+  ) => ReturnType<FunctionComponent> {
     return function Render(innerProps) {
       const fieldGroupProps = useMemo(() => {
         return {
@@ -536,9 +540,64 @@ export function createFormHook<
     }
   }
 
+  /**
+   * ⚠️ **Use withForm whenever possible.**
+   *
+   * Gets a typed form from the `<form.AppForm />` context.
+   */
+  function useTypedAppFormContext<
+    TFormData,
+    TOnMount extends undefined | FormValidateOrFn<TFormData>,
+    TOnChange extends undefined | FormValidateOrFn<TFormData>,
+    TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+    TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+    TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
+    TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+    TSubmitMeta,
+  >(
+    _props: FormOptions<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer,
+      TSubmitMeta
+    >,
+  ): AppFieldExtendedReactFormApi<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnDynamic,
+    TOnDynamicAsync,
+    TOnServer,
+    TSubmitMeta,
+    TComponents,
+    TFormComponents
+  > {
+    const form = useFormContext()
+
+    return form as never
+  }
+
   return {
     useAppForm,
     withForm,
     withFieldGroup,
+    useTypedAppFormContext,
   }
 }

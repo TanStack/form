@@ -123,6 +123,7 @@ export type FieldComponent<
   TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TParentSubmitMeta,
+  ExtendedApi = {},
 > =
   // This giant type allows the type
   // - to be used as a function (which they are now in Svelte 5)
@@ -178,7 +179,8 @@ export type FieldComponent<
         TFormOnDynamic,
         TFormOnDynamicAsync,
         TFormOnServer,
-        TParentSubmitMeta
+        TParentSubmitMeta,
+        ExtendedApi
       >,
       'form'
     >,
@@ -235,7 +237,8 @@ export type FieldComponent<
             TFormOnDynamic,
             TFormOnDynamicAsync,
             TFormOnServer,
-            TParentSubmitMeta
+            TParentSubmitMeta,
+            ExtendedApi
           >,
           'form'
         >
@@ -275,6 +278,7 @@ type FieldComponentProps<
   TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TParentSubmitMeta,
+  ExtendedApi = {},
 > = {
   children: Snippet<
     [
@@ -302,7 +306,8 @@ type FieldComponentProps<
         TFormOnDynamicAsync,
         TFormOnServer,
         TParentSubmitMeta
-      >,
+      > &
+        ExtendedApi,
     ]
   >
 } & Omit<

@@ -1226,6 +1226,84 @@ describe('useField', () => {
     expect(renderCount.field2).toBe(field2InitialRender)
   })
 
+  it('should not rerender array field when child field value changes', async () => {
+    // Test for https://github.com/TanStack/form/issues/1925
+    // Array fields should only re-render when the array length changes,
+    // not when a property on an array element is mutated
+    const renderCount = {
+      arrayField: 0,
+      childField: 0,
+    }
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          people: [{ name: 'John' }, { name: 'Jane' }],
+        },
+      })
+
+      return (
+        <form.Field name="people" mode="array">
+          {(arrayField) => {
+            renderCount.arrayField++
+            return (
+              <div>
+                {arrayField.state.value.map((_, i) => (
+                  <form.Field key={i} name={`people[${i}].name`}>
+                    {(field) => {
+                      if (i === 0) renderCount.childField++
+                      return (
+                        <input
+                          data-testid={`person-${i}`}
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                        />
+                      )
+                    }}
+                  </form.Field>
+                ))}
+                <button
+                  type="button"
+                  data-testid="add-person"
+                  onClick={() => arrayField.pushValue({ name: '' })}
+                >
+                  Add
+                </button>
+              </div>
+            )
+          }}
+        </form.Field>
+      )
+    }
+
+    const { getByTestId } = render(
+      <StrictMode>
+        <Comp />
+      </StrictMode>,
+    )
+
+    const arrayFieldInitialRender = renderCount.arrayField
+    const childFieldInitialRender = renderCount.childField
+
+    // Type into the first child field
+    await user.type(getByTestId('person-0'), 'ny')
+
+    // Child field should have rerendered
+    expect(renderCount.childField).toBeGreaterThan(childFieldInitialRender)
+    // Array field should NOT have rerendered (this was the bug in #1925)
+    expect(renderCount.arrayField).toBe(arrayFieldInitialRender)
+
+    // Verify typing still works
+    expect(getByTestId('person-0')).toHaveValue('Johnny')
+
+    // Now add a new item - this SHOULD trigger array field re-render
+    const arrayFieldBeforeAdd = renderCount.arrayField
+    await user.click(getByTestId('add-person'))
+
+    // Array field should have rerendered when length changes
+    expect(renderCount.arrayField).toBeGreaterThan(arrayFieldBeforeAdd)
+  })
+
   it('should handle defaultValue without setstate-in-render error', async () => {
     // Spy on console.error before rendering
     const consoleErrorSpy = vi.spyOn(console, 'error')
@@ -1271,5 +1349,29 @@ describe('useField', () => {
 
     // Should not log an error
     expect(consoleErrorSpy).not.toHaveBeenCalled()
+  })
+
+  it('should allow field-level defaultValue', async () => {
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          name: undefined as string | undefined,
+        },
+      })
+
+      return (
+        <form.Field name="name" defaultValue="a">
+          {(field) => {
+            expect(field.state.value).toEqual('a')
+            return <span data-testid="fieldValue">{field.state.value}</span>
+          }}
+        </form.Field>
+      )
+    }
+
+    const { queryByText } = render(<Comp />)
+
+    expect(queryByText('a')).toBeInTheDocument()
+    expect(queryByText('never')).not.toBeInTheDocument()
   })
 })

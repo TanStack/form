@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "moduleResolution": "Bundler",
+    "paths": {
+      "@tanstack/form-core": ["../form-core/src"],
+      "@tanstack/react-form": ["../react-form/dist/esm"]
+    }
+  },
+  "include": ["src", "tests", "eslint.config.js", "vite.config.ts"]
+}

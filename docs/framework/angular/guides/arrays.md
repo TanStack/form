@@ -66,7 +66,7 @@ Finally, you can use a subfield like so:
 </ng-container>
 ```
 
-Where `getPeopleName` is a method on the class like so
+Where `getPeopleName` is a method on the class like so:
 
 ```typescript
 export class AppComponent {

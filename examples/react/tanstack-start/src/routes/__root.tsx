@@ -1,7 +1,7 @@
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import { FormDevtoolsPlugin } from '@tanstack/react-form-devtools'
+import { formDevtoolsPlugin } from '@tanstack/react-form-devtools'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -17,7 +17,17 @@ export const Route = createRootRoute({
         title: 'TanStack Form + Start',
       },
     ],
+    links: [
+      {
+        rel: 'icon',
+        type: 'image/svg+xml',
+        href: '/emblem-light.svg',
+      },
+    ],
   }),
+  notFoundComponent: () => {
+    return <div>Not found</div>
+  },
   shellComponent: RootDocument,
 })
 
@@ -30,7 +40,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         {children}
         <Scripts />
-        <TanStackDevtools plugins={[FormDevtoolsPlugin()]} />
+        <TanStackDevtools plugins={[formDevtoolsPlugin()]} />
       </body>
     </html>
   )

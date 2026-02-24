@@ -54,7 +54,15 @@ export function Shell() {
   return (
     <MainPanel>
       <Header>
-        <HeaderLogo flavor={{ light: '#eeaf00', dark: '#eeaf00' }}>
+        <HeaderLogo
+          flavor={{ light: '#eeaf00', dark: '#eeaf00' }}
+          onClick={() => {
+            window.open(
+              'https://tanstack.com/form/latest/docs/overview',
+              '_blank',
+            )
+          }}
+        >
           TanStack Form
         </HeaderLogo>
       </Header>

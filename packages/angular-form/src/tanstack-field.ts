@@ -66,8 +66,7 @@ export class TanStackField<
   TFormOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TParentData>,
   TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
   TSubmitMeta,
-> implements OnInit
-{
+> implements OnInit {
   name = input.required<TName>()
   defaultValue = input<NoInfer<TData>>()
   asyncDebounceMs = input(undefined as never as number, {

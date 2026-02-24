@@ -19,9 +19,10 @@ As such, this guide shows you how you can mix-n-match TanStack Form with TanStac
 ```tsx
 import { createForm } from '@tanstack/solid-form'
 import { createQuery } from '@tanstack/solid-query'
+import { Show } from 'solid-js'
 
 export default function App() {
-  const { data, isLoading } = createQuery(() => ({
+  const query = createQuery(() => ({
     queryKey: ['data'],
     queryFn: async () => {
       await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -31,8 +32,8 @@ export default function App() {
 
   const form = createForm(() => ({
     defaultValues: {
-      firstName: data?.firstName ?? '',
-      lastName: data?.lastName ?? '',
+      firstName: query.data?.firstName ?? '',
+      lastName: query.data?.lastName ?? '',
     },
     onSubmit: async ({ value }) => {
       // Do something with form data
@@ -40,9 +41,11 @@ export default function App() {
     },
   }))
 
-  if (isLoading) return <p>Loading..</p>
-
-  return null
+  return (
+    <Show when={!query.isLoading} fallback={<p>Loading..</p>}>
+      <></>
+    </Show>
+  )
 }
 ```
 
