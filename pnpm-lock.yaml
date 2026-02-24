@@ -386,6 +386,22 @@ importers:
         specifier: ^7.2.2
         version: 7.3.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3)
 
+  examples/preact/simple:
+    dependencies:
+      '@tanstack/preact-form':
+        specifier: workspace:*
+        version: link:../../../packages/preact-form
+      preact:
+        specifier: ^10.26.4
+        version: 10.29.0
+    devDependencies:
+      '@preact/preset-vite':
+        specifier: ^2.10.2
+        version: 2.10.5(@babel/core@7.29.0)(preact@10.29.0)(rollup@4.60.1)(vite@7.3.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3))
+      vite:
+        specifier: ^7.2.2
+        version: 7.3.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3)
+
   examples/react/array:
     dependencies:
       '@tanstack/react-form':
