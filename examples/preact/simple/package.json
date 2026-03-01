@@ -1,0 +1,31 @@
+{
+  "name": "@tanstack/form-example-preact-simple",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port=3001",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:types": "tsc"
+  },
+  "dependencies": {
+    "@tanstack/preact-form": "workspace:*",
+    "preact": "^10.26.4"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.2",
+    "vite": "^7.2.2"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
