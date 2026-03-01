@@ -1357,7 +1357,7 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(preact@10.28.3)
       preact:
-        specifier: ^10.11.1
+        specifier: ^10.26.4
         version: 10.28.3
       vite:
         specifier: ^7.2.2
