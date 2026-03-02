@@ -1879,16 +1879,20 @@ export class FormApi<
           }
           const errorMapKey = getErrorMapKey(validateObj.cause)
 
-          for (const field of Object.keys(
-            this.state.fieldMeta,
-          ) as DeepKeys<TFormData>[]) {
-            if (this.baseStore.state.fieldMetaBase[field] === undefined) {
+          const allFieldsToProcess = new Set([
+            ...Object.keys(this.state.fieldMeta),
+            ...Object.keys(fieldErrorsFromFormValidators || {}),
+          ] as DeepKeys<TFormData>[])
+
+          for (const field of allFieldsToProcess) {
+            if (
+              this.baseStore.state.fieldMetaBase[field] === undefined &&
+              !fieldErrorsFromFormValidators?.[field]
+            ) {
               continue
             }
 
-            const fieldMeta = this.getFieldMeta(field)
-            if (!fieldMeta) continue
-
+            const fieldMeta = this.getFieldMeta(field) ?? defaultFieldMeta
             const {
               errorMap: currentErrorMap,
               errorSourceMap: currentErrorMapSource,
@@ -1910,7 +1914,7 @@ export class FormApi<
               // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
               currentErrorMap?.[errorMapKey] !== newErrorValue
             ) {
-              this.setFieldMeta(field, (prev) => ({
+              this.setFieldMeta(field, (prev = defaultFieldMeta) => ({
                 ...prev,
                 errorMap: {
                   ...prev.errorMap,
