@@ -270,6 +270,32 @@ describe('createFormHook', () => {
     )
   })
 
+  it('should preserve undefined for union-only field values', () => {
+    type UnionType =
+      | {
+          id: string
+        }
+      | {
+          id: undefined
+        }
+
+    const WithUnionForm = withForm({
+      defaultValues: {} as UnionType,
+      render: ({ form }) => {
+        return (
+          <form.AppField name="id">
+            {(field) => {
+              expectTypeOf(field.state.value).toEqualTypeOf<string | undefined>()
+              // @ts-expect-error id can be undefined
+              const unsafeLength = field.state.value.length
+              return unsafeLength
+            }}
+          </form.AppField>
+        )
+      },
+    })
+  })
+
   it('should infer subset values and props when calling withFieldGroup', () => {
     type Person = {
       firstName: string
