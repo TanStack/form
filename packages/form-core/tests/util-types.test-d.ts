@@ -134,6 +134,7 @@ expectTypeOf(
  */
 type DiscriminatedUnion = { name: string } & (
   | { variant: 'foo' }
+  | { variant: null }
   | { variant: 'bar'; baz: boolean }
 )
 expectTypeOf(0 as never as DeepKeys<DiscriminatedUnion>).toEqualTypeOf<
@@ -145,10 +146,13 @@ expectTypeOf(
 expectTypeOf(
   0 as never as DeepKeysOfType<DiscriminatedUnion, boolean>,
 ).toEqualTypeOf<'baz'>()
+expectTypeOf(
+  0 as never as DeepKeysOfType<DiscriminatedUnion, null>,
+).toEqualTypeOf<'variant'>()
 
 type DiscriminatedUnionValueShared = DeepValue<DiscriminatedUnion, 'variant'>
 expectTypeOf(0 as never as DiscriminatedUnionValueShared).toEqualTypeOf<
-  'foo' | 'bar'
+  'foo' | 'bar' | null
 >()
 type DiscriminatedUnionValueFixed = DeepValue<DiscriminatedUnion, 'baz'>
 expectTypeOf(
