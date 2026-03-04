@@ -469,10 +469,11 @@ export function createFormHook<
     UnwrapOrAny<TFormComponents>,
     UnwrapOrAny<TRenderProps>
   >['render'] {
-    return (innerProps) => createComponent(
-      render as Component<any>,
-      mergeProps(props ?? {}, innerProps)
-    );
+    return (innerProps) =>
+      createComponent(
+        render as Component<any>,
+        mergeProps(props ?? {}, innerProps),
+      )
   }
 
   function withFieldGroup<
@@ -559,7 +560,7 @@ export function createFormHook<
       const fieldGroupApi = createFieldGroup(() => fieldGroupProps)
       return createComponent(
         render as Component<any>,
-        mergeProps(props ?? {}, innerProps, { group: fieldGroupApi as any })
+        mergeProps(props ?? {}, innerProps, { group: fieldGroupApi as any }),
       )
     }
   }

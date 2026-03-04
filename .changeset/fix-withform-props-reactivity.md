@@ -1,5 +1,5 @@
 ---
-"@tanstack/solid-form": patch
+'@tanstack/solid-form': patch
 ---
 
 Fix props passed to `withForm` and `withFieldGroup` not being reactive.
