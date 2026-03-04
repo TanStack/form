@@ -361,7 +361,7 @@ importers:
         version: 3.3.2
       valibot:
         specifier: ^1.1.0
-        version: 1.3.1(typescript@5.9.2)
+        version: 1.3.1(typescript@5.9.3)
       zod:
         specifier: ^3.25.76
         version: 3.25.76
@@ -389,7 +389,7 @@ importers:
   examples/preact/simple:
     dependencies:
       '@tanstack/preact-form':
-        specifier: workspace:*
+        specifier: ^1.28.4
         version: link:../../../packages/preact-form
       preact:
         specifier: ^10.26.4
@@ -419,7 +419,7 @@ importers:
         version: 0.9.13(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(csstype@3.2.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(solid-js@1.9.12)
       '@tanstack/react-form-devtools':
         specifier: ^0.2.20
-        version: 0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.2))
+        version: 0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.3))
       '@types/react':
         specifier: ^19.0.7
         version: 19.2.14
@@ -481,7 +481,7 @@ importers:
         version: 0.9.13(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(csstype@3.2.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(solid-js@1.9.12)
       '@tanstack/react-form-devtools':
         specifier: ^0.2.20
-        version: 0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.2))
+        version: 0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.3))
       '@types/react':
         specifier: ^19.0.7
         version: 19.2.14
@@ -512,7 +512,7 @@ importers:
         version: 0.9.13(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(csstype@3.2.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(solid-js@1.9.12)
       '@tanstack/react-form-devtools':
         specifier: ^0.2.20
-        version: 0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.2))
+        version: 0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.3))
       '@types/react':
         specifier: ^19.0.7
         version: 19.2.14
@@ -546,7 +546,7 @@ importers:
         version: 0.9.13(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(csstype@3.2.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(solid-js@1.9.12)
       '@tanstack/react-form-devtools':
         specifier: ^0.2.20
-        version: 0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.2))
+        version: 0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.3))
       '@types/react':
         specifier: ^19.0.7
         version: 19.2.14
@@ -577,7 +577,7 @@ importers:
         version: 0.9.13(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(csstype@3.2.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(solid-js@1.9.12)
       '@tanstack/react-form-devtools':
         specifier: ^0.2.20
-        version: 0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.2))
+        version: 0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.3))
       '@types/react':
         specifier: ^19.0.7
         version: 19.2.14
@@ -676,7 +676,7 @@ importers:
         version: 0.9.13(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(csstype@3.2.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(solid-js@1.9.12)
       '@tanstack/react-form-devtools':
         specifier: ^0.2.20
-        version: 0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.2))
+        version: 0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.3))
       '@types/react':
         specifier: ^19.0.7
         version: 19.2.14
@@ -753,7 +753,7 @@ importers:
         version: 0.9.13(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(csstype@3.2.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(solid-js@1.9.12)
       '@tanstack/react-form-devtools':
         specifier: ^0.2.20
-        version: 0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.2))
+        version: 0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.3))
       '@types/react':
         specifier: ^19.0.7
         version: 19.2.14
@@ -786,7 +786,7 @@ importers:
         version: 19.2.4(react@19.2.4)
       valibot:
         specifier: ^1.1.0
-        version: 1.3.1(typescript@5.9.2)
+        version: 1.3.1(typescript@5.9.3)
       zod:
         specifier: ^3.25.76
         version: 3.25.76
@@ -796,7 +796,7 @@ importers:
         version: 0.9.13(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(csstype@3.2.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(solid-js@1.9.12)
       '@tanstack/react-form-devtools':
         specifier: ^0.2.20
-        version: 0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.2))
+        version: 0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.3))
       '@types/react':
         specifier: ^19.0.7
         version: 19.2.14
@@ -1240,10 +1240,10 @@ importers:
     devDependencies:
       '@analogjs/vite-plugin-angular':
         specifier: ^1.21.1
-        version: 1.22.5(ujyioiu7klbzzh3azsaf25zl4i)
+        version: 1.22.5(e23a6921a46a36c76be1a79212e45100)
       '@analogjs/vitest-angular':
         specifier: ^1.21.1
-        version: 1.22.5(@analogjs/vite-plugin-angular@1.22.5(ujyioiu7klbzzh3azsaf25zl4i))(@angular-devkit/architect@0.2003.22(chokidar@4.0.3))(vitest@3.2.4(@types/debug@4.1.13)(@types/node@24.12.0)(jiti@2.6.1)(jsdom@27.4.0)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3))
+        version: 1.22.5(@analogjs/vite-plugin-angular@1.22.5(e23a6921a46a36c76be1a79212e45100))(@angular-devkit/architect@0.2003.22(chokidar@4.0.3))(vitest@3.2.4(@types/debug@4.1.13)(@types/node@24.12.0)(jiti@2.6.1)(jsdom@27.4.0)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3))
       '@angular/common':
         specifier: ^20.3.1
         version: 20.3.18(@angular/core@20.3.18(@angular/compiler@20.3.18)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
@@ -1264,7 +1264,7 @@ importers:
         version: 20.3.18(@angular/common@20.3.18(@angular/core@20.3.18(@angular/compiler@20.3.18)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/compiler@20.3.18)(@angular/core@20.3.18(@angular/compiler@20.3.18)(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.3.18(@angular/animations@20.3.18(@angular/core@20.3.18(@angular/compiler@20.3.18)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.3.18(@angular/core@20.3.18(@angular/compiler@20.3.18)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.3.18(@angular/compiler@20.3.18)(rxjs@7.8.2)(zone.js@0.15.1)))
       '@testing-library/angular':
         specifier: ^17.4.0
-        version: 17.4.0(mievlit23wuh334zvv6ckjbrh4)
+        version: 17.4.0(50670c385eadbc8ca67ff50126e2c0f7)
       ng-packagr:
         specifier: ^20.3.0
         version: 20.3.2(@angular/compiler-cli@20.3.18(@angular/compiler@20.3.18)(typescript@5.8.2))(tslib@2.8.1)(typescript@5.8.2)
@@ -1295,7 +1295,7 @@ importers:
         version: 2.2.0
       valibot:
         specifier: ^1.1.0
-        version: 1.3.1(typescript@5.9.2)
+        version: 1.3.1(typescript@5.9.3)
       zod:
         specifier: ^3.25.76
         version: 3.25.76
@@ -1307,7 +1307,7 @@ importers:
         version: 0.5.1(csstype@3.2.3)(solid-js@1.9.12)
       '@tanstack/devtools-utils':
         specifier: ^0.4.0
-        version: 0.4.0(@types/react@19.2.14)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.2))
+        version: 0.4.0(@types/react@19.2.14)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.3))
       '@tanstack/form-core':
         specifier: workspace:*
         version: link:../form-core
@@ -1329,7 +1329,7 @@ importers:
         version: 1.9.12
       tsdown:
         specifier: ^0.21.1
-        version: 0.21.7(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(oxc-resolver@11.19.1(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1))(publint@0.3.18)(typescript@5.9.2)
+        version: 0.21.7(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(oxc-resolver@11.19.1(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1))(publint@0.3.18)(typescript@5.9.3)
       vite:
         specifier: ^7.2.2
         version: 7.3.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3)
@@ -1404,7 +1404,7 @@ importers:
     dependencies:
       '@tanstack/devtools-utils':
         specifier: ^0.4.0
-        version: 0.4.0(@types/react@19.2.14)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.2))
+        version: 0.4.0(@types/react@19.2.14)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.3))
       '@tanstack/form-devtools':
         specifier: workspace:*
         version: link:../form-devtools
@@ -1541,7 +1541,7 @@ importers:
     dependencies:
       '@tanstack/devtools-utils':
         specifier: ^0.4.0
-        version: 0.4.0(@types/react@19.2.14)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.2))
+        version: 0.4.0(@types/react@19.2.14)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.3))
       '@tanstack/form-devtools':
         specifier: workspace:*
         version: link:../form-devtools
@@ -1564,7 +1564,7 @@ importers:
     devDependencies:
       '@sveltejs/package':
         specifier: ^2.5.3
-        version: 2.5.7(svelte@5.55.1)(typescript@5.9.2)
+        version: 2.5.7(svelte@5.55.1)(typescript@5.9.3)
       '@sveltejs/vite-plugin-svelte':
         specifier: ^5.1.1
         version: 5.1.1(svelte@5.55.1)(vite@7.3.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3))
@@ -1576,7 +1576,7 @@ importers:
         version: 5.55.1
       svelte-check:
         specifier: ^4.3.1
-        version: 4.4.6(picomatch@4.0.4)(svelte@5.55.1)(typescript@5.9.2)
+        version: 4.4.6(picomatch@4.0.4)(svelte@5.55.1)(typescript@5.9.3)
 
   packages/vue-form:
     dependencies:
@@ -1585,17 +1585,17 @@ importers:
         version: link:../form-core
       '@tanstack/vue-store':
         specifier: ^0.9.1
-        version: 0.9.3(vue@3.5.31(typescript@5.9.2))
+        version: 0.9.3(vue@3.5.31(typescript@5.9.3))
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.2.4
-        version: 5.2.4(vite@7.3.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3))(vue@3.5.31(typescript@5.9.2))
+        version: 5.2.4(vite@7.3.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3))(vue@3.5.31(typescript@5.9.3))
       vite:
         specifier: ^7.2.2
         version: 7.3.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3)
       vue:
         specifier: ^3.5.13
-        version: 3.5.31(typescript@5.9.2)
+        version: 3.5.31(typescript@5.9.3)
 
 packages:
 
@@ -11006,6 +11006,11 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   uc.micro@2.1.0:
     resolution: {integrity: sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A==}
 
@@ -11385,6 +11390,14 @@ packages:
       tsx:
         optional: true
       yaml:
+        optional: true
+
+  vitefu@1.1.1:
+    resolution: {integrity: sha512-B/Fegf3i8zh0yFbpzZ21amWzHmuNlLlmJT6n7bu5e+pCHUKQIfXSYokrqOBGEMMe9UG2sostKQF9mml/vYaWJQ==}
+    peerDependencies:
+      vite: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0-beta.0
+    peerDependenciesMeta:
+      vite:
         optional: true
 
   vitefu@1.1.2:
@@ -11852,7 +11865,7 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
 
-  '@analogjs/vite-plugin-angular@1.22.5(ujyioiu7klbzzh3azsaf25zl4i)':
+  '@analogjs/vite-plugin-angular@1.22.5(e23a6921a46a36c76be1a79212e45100)':
     dependencies:
       ts-morph: 21.0.1
       vfile: 6.0.3
@@ -11860,9 +11873,9 @@ snapshots:
       '@angular-devkit/build-angular': 20.3.22(@angular/compiler-cli@20.3.18(@angular/compiler@20.3.18)(typescript@5.8.2))(@angular/compiler@20.3.18)(@angular/core@20.3.18(@angular/compiler@20.3.18)(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.3.18(@angular/animations@20.3.18(@angular/core@20.3.18(@angular/compiler@20.3.18)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.3.18(@angular/core@20.3.18(@angular/compiler@20.3.18)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.3.18(@angular/compiler@20.3.18)(rxjs@7.8.2)(zone.js@0.15.1)))(@swc/core@1.15.21)(@types/node@24.12.0)(chokidar@4.0.3)(jiti@2.6.1)(ng-packagr@20.3.2(@angular/compiler-cli@20.3.18(@angular/compiler@20.3.18)(typescript@5.8.2))(tslib@2.8.1)(typescript@5.8.2))(sugarss@5.0.1(postcss@8.5.8))(tsx@4.21.0)(typescript@5.8.2)(vitest@3.2.4(@types/debug@4.1.13)(@types/node@24.12.0)(jiti@2.6.1)(jsdom@27.4.0)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3))(yaml@2.8.3)
       '@angular/build': 20.3.22(@angular/compiler-cli@20.3.18(@angular/compiler@20.3.18)(typescript@5.8.2))(@angular/compiler@20.3.18)(@angular/core@20.3.18(@angular/compiler@20.3.18)(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.3.18(@angular/animations@20.3.18(@angular/core@20.3.18(@angular/compiler@20.3.18)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.3.18(@angular/core@20.3.18(@angular/compiler@20.3.18)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.3.18(@angular/compiler@20.3.18)(rxjs@7.8.2)(zone.js@0.15.1)))(@types/node@24.12.0)(chokidar@4.0.3)(jiti@2.6.1)(less@4.6.4)(ng-packagr@20.3.2(@angular/compiler-cli@20.3.18(@angular/compiler@20.3.18)(typescript@5.8.2))(tslib@2.8.1)(typescript@5.8.2))(postcss@8.5.8)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tslib@2.8.1)(tsx@4.21.0)(typescript@5.8.2)(vitest@3.2.4(@types/debug@4.1.13)(@types/node@24.12.0)(jiti@2.6.1)(jsdom@27.4.0)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3))(yaml@2.8.3)
 
-  '@analogjs/vitest-angular@1.22.5(@analogjs/vite-plugin-angular@1.22.5(ujyioiu7klbzzh3azsaf25zl4i))(@angular-devkit/architect@0.2003.22(chokidar@4.0.3))(vitest@3.2.4(@types/debug@4.1.13)(@types/node@24.12.0)(jiti@2.6.1)(jsdom@27.4.0)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3))':
+  '@analogjs/vitest-angular@1.22.5(@analogjs/vite-plugin-angular@1.22.5(e23a6921a46a36c76be1a79212e45100))(@angular-devkit/architect@0.2003.22(chokidar@4.0.3))(vitest@3.2.4(@types/debug@4.1.13)(@types/node@24.12.0)(jiti@2.6.1)(jsdom@27.4.0)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3))':
     dependencies:
-      '@analogjs/vite-plugin-angular': 1.22.5(ujyioiu7klbzzh3azsaf25zl4i)
+      '@analogjs/vite-plugin-angular': 1.22.5(e23a6921a46a36c76be1a79212e45100)
       '@angular-devkit/architect': 0.2003.22(chokidar@4.0.3)
       vitest: 3.2.4(@types/debug@4.1.13)(@types/node@24.12.0)(jiti@2.6.1)(jsdom@27.4.0)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3)
 
@@ -15695,14 +15708,14 @@ snapshots:
     dependencies:
       acorn: 8.16.0
 
-  '@sveltejs/package@2.5.7(svelte@5.55.1)(typescript@5.9.2)':
+  '@sveltejs/package@2.5.7(svelte@5.55.1)(typescript@5.9.3)':
     dependencies:
       chokidar: 5.0.0
       kleur: 4.1.5
       sade: 1.8.1
       semver: 7.7.4
       svelte: 5.55.1
-      svelte2tsx: 0.7.53(svelte@5.55.1)(typescript@5.9.2)
+      svelte2tsx: 0.7.53(svelte@5.55.1)(typescript@5.9.3)
     transitivePeerDependencies:
       - typescript
 
@@ -15724,7 +15737,7 @@ snapshots:
       magic-string: 0.30.21
       svelte: 5.55.1
       vite: 7.3.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3)
-      vitefu: 1.1.2(vite@7.3.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3))
+      vitefu: 1.1.1(vite@7.3.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3))
     transitivePeerDependencies:
       - supports-color
 
@@ -15854,13 +15867,13 @@ snapshots:
       solid-js: 1.9.12
       vue: 3.5.31(typescript@5.8.2)
 
-  '@tanstack/devtools-utils@0.4.0(@types/react@19.2.14)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.2))':
+  '@tanstack/devtools-utils@0.4.0(@types/react@19.2.14)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.3))':
     optionalDependencies:
       '@types/react': 19.2.14
       preact: 10.29.0
       react: 19.2.4
       solid-js: 1.9.12
-      vue: 3.5.31(typescript@5.9.2)
+      vue: 3.5.31(typescript@5.9.3)
 
   '@tanstack/devtools@0.10.14(csstype@3.2.3)(solid-js@1.9.12)':
     dependencies:
@@ -15916,10 +15929,10 @@ snapshots:
       - react
       - vue
 
-  '@tanstack/form-devtools@0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.2))':
+  '@tanstack/form-devtools@0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.3))':
     dependencies:
       '@tanstack/devtools-ui': 0.5.1(csstype@3.2.3)(solid-js@1.9.12)
-      '@tanstack/devtools-utils': 0.4.0(@types/react@19.2.14)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.2))
+      '@tanstack/devtools-utils': 0.4.0(@types/react@19.2.14)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.3))
       '@tanstack/form-core': 1.28.6
       clsx: 2.1.1
       dayjs: 1.11.20
@@ -15973,10 +15986,10 @@ snapshots:
       - solid-js
       - vue
 
-  '@tanstack/react-form-devtools@0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.2))':
+  '@tanstack/react-form-devtools@0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.3))':
     dependencies:
-      '@tanstack/devtools-utils': 0.4.0(@types/react@19.2.14)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.2))
-      '@tanstack/form-devtools': 0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.2))
+      '@tanstack/devtools-utils': 0.4.0(@types/react@19.2.14)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.3))
+      '@tanstack/form-devtools': 0.2.20(@types/react@19.2.14)(csstype@3.2.3)(preact@10.29.0)(react@19.2.4)(solid-js@1.9.12)(vue@3.5.31(typescript@5.9.3))
       react: 19.2.4
     transitivePeerDependencies:
       - '@types/react'
@@ -16360,13 +16373,13 @@ snapshots:
       vue: 3.5.31(typescript@5.8.2)
       vue-demi: 0.14.10(vue@3.5.31(typescript@5.8.2))
 
-  '@tanstack/vue-store@0.9.3(vue@3.5.31(typescript@5.9.2))':
+  '@tanstack/vue-store@0.9.3(vue@3.5.31(typescript@5.9.3))':
     dependencies:
       '@tanstack/store': 0.9.3
-      vue: 3.5.31(typescript@5.9.2)
-      vue-demi: 0.14.10(vue@3.5.31(typescript@5.9.2))
+      vue: 3.5.31(typescript@5.9.3)
+      vue-demi: 0.14.10(vue@3.5.31(typescript@5.9.3))
 
-  '@testing-library/angular@17.4.0(mievlit23wuh334zvv6ckjbrh4)':
+  '@testing-library/angular@17.4.0(50670c385eadbc8ca67ff50126e2c0f7)':
     dependencies:
       '@angular/animations': 20.3.18(@angular/core@20.3.18(@angular/compiler@20.3.18)(rxjs@7.8.2)(zone.js@0.15.1))
       '@angular/common': 20.3.18(@angular/core@20.3.18(@angular/compiler@20.3.18)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
@@ -16920,10 +16933,10 @@ snapshots:
       vite: 7.3.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3)
       vue: 3.5.31(typescript@5.8.2)
 
-  '@vitejs/plugin-vue@5.2.4(vite@7.3.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3))(vue@3.5.31(typescript@5.9.2))':
+  '@vitejs/plugin-vue@5.2.4(vite@7.3.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3))(vue@3.5.31(typescript@5.9.3))':
     dependencies:
       vite: 7.3.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3)
-      vue: 3.5.31(typescript@5.9.2)
+      vue: 3.5.31(typescript@5.9.3)
 
   '@vitest/coverage-istanbul@3.2.4(vitest@3.2.4(@types/debug@4.1.13)(@types/node@24.12.0)(jiti@2.6.1)(jsdom@27.4.0)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3))':
     dependencies:
@@ -17099,11 +17112,11 @@ snapshots:
       '@vue/shared': 3.5.31
       vue: 3.5.31(typescript@5.8.2)
 
-  '@vue/server-renderer@3.5.31(vue@3.5.31(typescript@5.9.2))':
+  '@vue/server-renderer@3.5.31(vue@3.5.31(typescript@5.9.3))':
     dependencies:
       '@vue/compiler-ssr': 3.5.31
       '@vue/shared': 3.5.31
-      vue: 3.5.31(typescript@5.9.2)
+      vue: 3.5.31(typescript@5.9.3)
 
   '@vue/shared@3.5.31': {}
 
@@ -21629,7 +21642,7 @@ snapshots:
 
   rfdc@1.4.1: {}
 
-  rolldown-plugin-dts@0.23.2(oxc-resolver@11.19.1(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1))(rolldown@1.0.0-rc.12(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1))(typescript@5.9.2):
+  rolldown-plugin-dts@0.23.2(oxc-resolver@11.19.1(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1))(rolldown@1.0.0-rc.12(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1))(typescript@5.9.3):
     dependencies:
       '@babel/generator': 8.0.0-rc.3
       '@babel/helper-validator-identifier': 8.0.0-rc.3
@@ -21643,7 +21656,7 @@ snapshots:
       picomatch: 4.0.4
       rolldown: 1.0.0-rc.12(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)
     optionalDependencies:
-      typescript: 5.9.2
+      typescript: 5.9.3
     transitivePeerDependencies:
       - oxc-resolver
 
@@ -22327,7 +22340,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  svelte-check@4.4.6(picomatch@4.0.4)(svelte@5.55.1)(typescript@5.9.2):
+  svelte-check@4.4.6(picomatch@4.0.4)(svelte@5.55.1)(typescript@5.9.3):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       chokidar: 4.0.3
@@ -22335,16 +22348,16 @@ snapshots:
       picocolors: 1.1.1
       sade: 1.8.1
       svelte: 5.55.1
-      typescript: 5.9.2
+      typescript: 5.9.3
     transitivePeerDependencies:
       - picomatch
 
-  svelte2tsx@0.7.53(svelte@5.55.1)(typescript@5.9.2):
+  svelte2tsx@0.7.53(svelte@5.55.1)(typescript@5.9.3):
     dependencies:
       dedent-js: 1.0.1
       scule: 1.3.0
       svelte: 5.55.1
-      typescript: 5.9.2
+      typescript: 5.9.3
 
   svelte@5.55.1:
     dependencies:
@@ -22538,7 +22551,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tsdown@0.21.7(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(oxc-resolver@11.19.1(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1))(publint@0.3.18)(typescript@5.9.2):
+  tsdown@0.21.7(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(oxc-resolver@11.19.1(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1))(publint@0.3.18)(typescript@5.9.3):
     dependencies:
       ansis: 4.2.0
       cac: 7.0.0
@@ -22549,7 +22562,7 @@ snapshots:
       obug: 2.1.1
       picomatch: 4.0.4
       rolldown: 1.0.0-rc.12(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)
-      rolldown-plugin-dts: 0.23.2(oxc-resolver@11.19.1(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1))(rolldown@1.0.0-rc.12(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1))(typescript@5.9.2)
+      rolldown-plugin-dts: 0.23.2(oxc-resolver@11.19.1(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1))(rolldown@1.0.0-rc.12(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1))(typescript@5.9.3)
       semver: 7.7.4
       tinyexec: 1.0.4
       tinyglobby: 0.2.15
@@ -22558,7 +22571,7 @@ snapshots:
       unrun: 0.2.34(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)
     optionalDependencies:
       publint: 0.3.18
-      typescript: 5.9.2
+      typescript: 5.9.3
     transitivePeerDependencies:
       - '@emnapi/core'
       - '@emnapi/runtime'
@@ -22640,6 +22653,8 @@ snapshots:
   typescript@5.8.2: {}
 
   typescript@5.9.2: {}
+
+  typescript@5.9.3: {}
 
   uc.micro@2.1.0: {}
 
@@ -22842,9 +22857,9 @@ snapshots:
     optionalDependencies:
       typescript: 5.8.2
 
-  valibot@1.3.1(typescript@5.9.2):
+  valibot@1.3.1(typescript@5.9.3):
     optionalDependencies:
-      typescript: 5.9.2
+      typescript: 5.9.3
 
   validate-npm-package-license@3.0.4:
     dependencies:
@@ -23176,6 +23191,10 @@ snapshots:
       tsx: 4.21.0
       yaml: 2.8.3
 
+  vitefu@1.1.1(vite@7.3.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3)):
+    optionalDependencies:
+      vite: 7.3.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.8))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3)
+
   vitefu@1.1.2(vite@7.3.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.6))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3)):
     optionalDependencies:
       vite: 7.3.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(sass@1.98.0)(sugarss@5.0.1(postcss@8.5.6))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.3)
@@ -23280,9 +23299,9 @@ snapshots:
     dependencies:
       vue: 3.5.31(typescript@5.8.2)
 
-  vue-demi@0.14.10(vue@3.5.31(typescript@5.9.2)):
+  vue-demi@0.14.10(vue@3.5.31(typescript@5.9.3)):
     dependencies:
-      vue: 3.5.31(typescript@5.9.2)
+      vue: 3.5.31(typescript@5.9.3)
 
   vue-eslint-parser@10.4.0(eslint@9.36.0(jiti@2.6.1)):
     dependencies:
@@ -23312,15 +23331,15 @@ snapshots:
     optionalDependencies:
       typescript: 5.8.2
 
-  vue@3.5.31(typescript@5.9.2):
+  vue@3.5.31(typescript@5.9.3):
     dependencies:
       '@vue/compiler-dom': 3.5.31
       '@vue/compiler-sfc': 3.5.31
       '@vue/runtime-dom': 3.5.31
-      '@vue/server-renderer': 3.5.31(vue@3.5.31(typescript@5.9.2))
+      '@vue/server-renderer': 3.5.31(vue@3.5.31(typescript@5.9.3))
       '@vue/shared': 3.5.31
     optionalDependencies:
-      typescript: 5.9.2
+      typescript: 5.9.3
 
   w3c-xmlserializer@5.0.0:
     dependencies:
