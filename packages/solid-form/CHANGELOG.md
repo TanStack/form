@@ -1,5 +1,18 @@
 # @tanstack/solid-form
 
+## 1.28.4
+
+### Patch Changes
+
+- Fix props passed to `withForm` and `withFieldGroup` not being reactive. ([#2058](https://github.com/TanStack/form/pull/2058))
+
+  Object spread (`{ ...props, ...innerProps }`) was eagerly evaluating SolidJS reactive getters, producing a static snapshot that broke signal tracking. Replaced with `mergeProps()` to preserve getter descriptors and `createComponent()` to maintain the correct reactive context.
+
+- Refactor internals for substancially faster performance ([#2035](https://github.com/TanStack/form/pull/2035))
+
+- Updated dependencies [[`f88faaf`](https://github.com/TanStack/form/commit/f88faaf72d265fdcbe99887421bd97dd03cb703e)]:
+  - @tanstack/form-core@1.28.4
+
 ## 1.28.3
 
 ### Patch Changes
