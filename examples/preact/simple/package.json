@@ -9,7 +9,7 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/preact-form": "workspace:*",
+    "@tanstack/preact-form": "^1.28.4",
     "preact": "^10.26.4"
   },
   "devDependencies": {
