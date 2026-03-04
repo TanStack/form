@@ -1,5 +1,14 @@
 # @tanstack/react-form-remix
 
+## 1.28.4
+
+### Patch Changes
+
+- Fixes bad inference from `decode-formdata`'s weird typing of the `decode` function, including handling how it incorrectly doesn't handle undefined values for the form info object. ([#2052](https://github.com/TanStack/form/pull/2052))
+
+- Updated dependencies [[`f88faaf`](https://github.com/TanStack/form/commit/f88faaf72d265fdcbe99887421bd97dd03cb703e)]:
+  - @tanstack/react-form@1.28.4
+
 ## 1.28.3
 
 ### Patch Changes

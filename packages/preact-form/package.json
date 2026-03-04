@@ -52,7 +52,7 @@
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/preact-store": "^0.10.2"
+    "@tanstack/preact-store": "^0.11.1"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.2",

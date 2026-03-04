@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.28.4
+
+### Patch Changes
+
+- Refactor internals for substancially faster performance ([#2035](https://github.com/TanStack/form/pull/2035))
+
 ## 1.28.3
 
 ### Patch Changes

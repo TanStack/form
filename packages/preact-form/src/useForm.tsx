@@ -14,7 +14,6 @@ import type {
 } from '@tanstack/form-core'
 import type { ComponentChild, FunctionComponent } from 'preact'
 import type { FieldComponent } from './useField'
-import type { NoInfer } from '@tanstack/preact-store'
 import type { PropsWithChildren } from './types'
 
 /**
