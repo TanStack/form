@@ -288,7 +288,7 @@ export class TanStackFormController<
   hostConnected() {
     this.#subscription = this.api.store.subscribe(() => {
       this.#host.requestUpdate()
-    })
+    }).unsubscribe
   }
 
   hostDisconnected() {
