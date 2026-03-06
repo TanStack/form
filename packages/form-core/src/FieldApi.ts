@@ -1275,6 +1275,7 @@ export class FieldApi<
 
   /**
    * Mounts the field instance to the form.
+   * @returns A function to unmount the field instance.
    */
   mount = () => {
     if (this.options.defaultValue !== undefined && !this.getMeta().isTouched) {
