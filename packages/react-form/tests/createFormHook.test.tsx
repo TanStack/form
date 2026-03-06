@@ -731,7 +731,9 @@ describe('createFormHook', () => {
             />
             <group.Subscribe
               children={(state) => (
-                <span data-testid="state-lastName">{state.values.lastName}</span>
+                <span data-testid="state-lastName">
+                  {state.values.lastName}
+                </span>
               )}
             />
           </div>
