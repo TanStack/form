@@ -1661,6 +1661,120 @@ describe('field api', () => {
     expect(remountedLastName.getValue()).toBe('abc')
   })
 
+  it('should not apply in-flight async validation results after unmount', async () => {
+    vi.useFakeTimers()
+
+    let resolveValidation!: () => void
+    const validationPromise = new Promise<void>((resolve) => {
+      resolveValidation = resolve
+    })
+
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChangeAsyncDebounceMs: 0,
+        onChangeAsync: async () => {
+          await validationPromise
+          return 'async error should be ignored after unmount'
+        },
+      },
+    })
+
+    const unmount = field.mount()
+
+    field.setValue('trigger')
+    await vi.runAllTimersAsync()
+
+    unmount()
+    resolveValidation()
+    await vi.runAllTimersAsync()
+
+    expect(form.state.fieldMeta.name).toMatchObject({
+      isTouched: false,
+      isValid: true,
+      errors: [],
+    })
+
+    vi.useRealTimers()
+  })
+
+  it('should cancel debounced field and form listeners on unmount', async () => {
+    vi.useFakeTimers()
+
+    const fieldListener = vi.fn()
+    const formListener = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+      listeners: {
+        onChange: formListener,
+        onChangeDebounceMs: 200,
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onChange: fieldListener,
+        onChangeDebounceMs: 200,
+      },
+    })
+
+    const unmount = field.mount()
+    field.setValue('trigger')
+    unmount()
+
+    await vi.advanceTimersByTimeAsync(500)
+
+    expect(fieldListener).toHaveBeenCalledTimes(0)
+    expect(formListener).toHaveBeenCalledTimes(0)
+
+    vi.useRealTimers()
+  })
+
+  it('should not clear newer instance state when older instance unmounts', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    form.mount()
+
+    const oldField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    const oldUnmount = oldField.mount()
+
+    const newField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    newField.mount()
+    newField.setValue('new value')
+
+    oldUnmount()
+
+    expect(form.getFieldInfo('name').instance).toBe(newField)
+    expect(newField.getValue()).toBe('new value')
+    expect(newField.getMeta().isTouched).toBe(true)
+  })
+
   it('should show onSubmit errors', async () => {
     const form = new FormApi({
       defaultValues: {
