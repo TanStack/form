@@ -1355,6 +1355,7 @@ export class FieldApi<
       }
 
       const fieldInfo = this.form.fieldInfo[this.name]
+      if (!fieldInfo) return
 
       for (const [key, validationMeta] of Object.entries(
         fieldInfo.validationMetaMap,
