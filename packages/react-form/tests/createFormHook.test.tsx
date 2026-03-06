@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { render } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 import { formOptions } from '@tanstack/form-core'
 import userEvent from '@testing-library/user-event'
 import { createFormHook, createFormHookContexts, useStore } from '../src'
@@ -698,5 +698,62 @@ describe('createFormHook', () => {
     const { getByText } = render(<Parent />)
     const button = getByText('Testing')
     expect(button).toBeInTheDocument()
+  })
+
+  it('should render FieldGroup Subscribe without selector (default identity)', async () => {
+    const formOpts = formOptions({
+      defaultValues: {
+        person: {
+          firstName: 'FirstName',
+          lastName: 'LastName',
+        },
+      },
+    })
+
+    const ChildFormAsField = withFieldGroup({
+      defaultValues: formOpts.defaultValues.person,
+      render: ({ group }) => {
+        return (
+          <div>
+            <group.Field
+              name="lastName"
+              children={(field) => (
+                <label>
+                  Last Name:
+                  <input
+                    data-testid="lastName"
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                </label>
+              )}
+            />
+            <group.Subscribe
+              children={(state) => (
+                <span data-testid="state-lastName">{state.values.lastName}</span>
+              )}
+            />
+          </div>
+        )
+      },
+    })
+
+    const Parent = () => {
+      const form = useAppForm({
+        ...formOpts,
+      })
+      return <ChildFormAsField form={form} fields="person" />
+    }
+
+    const { getByTestId } = render(<Parent />)
+    const input = getByTestId('lastName')
+    const stateLastName = getByTestId('state-lastName')
+
+    expect(stateLastName).toHaveTextContent('LastName')
+
+    await user.clear(input)
+    await user.type(input, 'Updated')
+    await waitFor(() => expect(stateLastName).toHaveTextContent('Updated'))
   })
 })
