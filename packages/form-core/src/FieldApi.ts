@@ -1324,41 +1324,44 @@ export class FieldApi<
 
     return () => {
       // Stop any in-flight async validation or listener work tied to this instance.
-      for (const key of Object.keys(
+      for (const [key, timeout] of Object.entries(
         this.timeoutIds.validations,
-      ) as ValidationCause[]) {
-        const timeout = this.timeoutIds.validations[key]
+      )) {
         if (timeout) {
           clearTimeout(timeout)
-          this.timeoutIds.validations[key] = null
+          this.timeoutIds.validations[
+            key as keyof typeof this.timeoutIds.validations
+          ] = null
         }
       }
-      for (const key of Object.keys(
-        this.timeoutIds.listeners,
-      ) as ListenerCause[]) {
-        const timeout = this.timeoutIds.listeners[key]
+      for (const [key, timeout] of Object.entries(this.timeoutIds.listeners)) {
         if (timeout) {
           clearTimeout(timeout)
-          this.timeoutIds.listeners[key] = null
+          this.timeoutIds.listeners[
+            key as keyof typeof this.timeoutIds.listeners
+          ] = null
         }
       }
-      for (const key of Object.keys(
+      for (const [key, timeout] of Object.entries(
         this.timeoutIds.formListeners,
-      ) as ListenerCause[]) {
-        const timeout = this.timeoutIds.formListeners[key]
+      )) {
         if (timeout) {
           clearTimeout(timeout)
-          this.timeoutIds.formListeners[key] = null
+          this.timeoutIds.formListeners[
+            key as keyof typeof this.timeoutIds.formListeners
+          ] = null
         }
       }
 
       const fieldInfo = this.form.fieldInfo[this.name]
 
-      for (const key of Object.keys(fieldInfo.validationMetaMap) as Array<
-        keyof typeof fieldInfo.validationMetaMap
-      >) {
-        fieldInfo.validationMetaMap[key]?.lastAbortController.abort()
-        fieldInfo.validationMetaMap[key] = undefined
+      for (const [key, validationMeta] of Object.entries(
+        fieldInfo.validationMetaMap,
+      )) {
+        validationMeta?.lastAbortController.abort()
+        fieldInfo.validationMetaMap[
+          key as keyof typeof fieldInfo.validationMetaMap
+        ] = undefined
       }
 
       // If a newer field instance has already been mounted for this name,
