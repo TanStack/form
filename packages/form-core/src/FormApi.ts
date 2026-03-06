@@ -644,16 +644,18 @@ export type DerivedFormState<
    * The error array for the form itself.
    */
   errors: Array<
-    | UnwrapFormValidateOrFn<TOnMount>
-    | UnwrapFormValidateOrFn<TOnChange>
-    | UnwrapFormAsyncValidateOrFn<TOnChangeAsync>
-    | UnwrapFormValidateOrFn<TOnBlur>
-    | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
-    | UnwrapFormValidateOrFn<TOnSubmit>
-    | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
-    | UnwrapFormValidateOrFn<TOnDynamic>
-    | UnwrapFormAsyncValidateOrFn<TOnDynamicAsync>
-    | UnwrapFormAsyncValidateOrFn<TOnServer>
+    NonNullable<
+      | UnwrapFormValidateOrFn<TOnMount>
+      | UnwrapFormValidateOrFn<TOnChange>
+      | UnwrapFormAsyncValidateOrFn<TOnChangeAsync>
+      | UnwrapFormValidateOrFn<TOnBlur>
+      | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
+      | UnwrapFormValidateOrFn<TOnSubmit>
+      | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
+      | UnwrapFormValidateOrFn<TOnDynamic>
+      | UnwrapFormAsyncValidateOrFn<TOnDynamicAsync>
+      | UnwrapFormAsyncValidateOrFn<TOnServer>
+    >
   >
   /**
    * A boolean indicating if any of the form fields are currently validating.
@@ -2642,16 +2644,18 @@ export class FormApi<
   getAllErrors = (): {
     form: {
       errors: Array<
-        | UnwrapFormValidateOrFn<TOnMount>
-        | UnwrapFormValidateOrFn<TOnChange>
-        | UnwrapFormAsyncValidateOrFn<TOnChangeAsync>
-        | UnwrapFormValidateOrFn<TOnBlur>
-        | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
-        | UnwrapFormValidateOrFn<TOnSubmit>
-        | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
-        | UnwrapFormValidateOrFn<TOnDynamic>
-        | UnwrapFormAsyncValidateOrFn<TOnDynamicAsync>
-        | UnwrapFormAsyncValidateOrFn<TOnServer>
+        NonNullable<
+          | UnwrapFormValidateOrFn<TOnMount>
+          | UnwrapFormValidateOrFn<TOnChange>
+          | UnwrapFormAsyncValidateOrFn<TOnChangeAsync>
+          | UnwrapFormValidateOrFn<TOnBlur>
+          | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
+          | UnwrapFormValidateOrFn<TOnSubmit>
+          | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
+          | UnwrapFormValidateOrFn<TOnDynamic>
+          | UnwrapFormAsyncValidateOrFn<TOnDynamicAsync>
+          | UnwrapFormAsyncValidateOrFn<TOnServer>
+        >
       >
       errorMap: ValidationErrorMap<
         UnwrapFormValidateOrFn<TOnMount>,
