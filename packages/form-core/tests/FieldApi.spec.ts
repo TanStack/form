@@ -1603,6 +1603,64 @@ describe('field api', () => {
     expect(form.getFieldInfo(field.name)).toBeDefined()
   })
 
+  it('should clear meta on unmount while preserving value', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: 'a',
+        lastName: 'abc',
+      },
+      onSubmit: () => {},
+    })
+
+    form.mount()
+
+    const firstName = new FieldApi({
+      form,
+      name: 'firstName',
+    })
+    const lastName = new FieldApi({
+      form,
+      name: 'lastName',
+      validators: {
+        onSubmit: ({ value }) =>
+          value.length >= 5 ? undefined : 'last name must be at least 5 chars',
+      },
+    })
+
+    firstName.mount()
+    const unmountLastName = lastName.mount()
+
+    await form.handleSubmit()
+    expect(form.state.canSubmit).toBe(false)
+    expect(lastName.getMeta().errors).toContain(
+      'last name must be at least 5 chars',
+    )
+
+    unmountLastName()
+
+    expect(form.getFieldValue('lastName')).toBe('abc')
+    expect(form.state.fieldMeta.lastName).toMatchObject({
+      isTouched: false,
+      isValid: true,
+      errors: [],
+    })
+    expect(form.state.canSubmit).toBe(true)
+
+    const remountedLastName = new FieldApi({
+      form,
+      name: 'lastName',
+      validators: {
+        onSubmit: ({ value }) =>
+          value.length >= 5 ? undefined : 'last name must be at least 5 chars',
+      },
+    })
+
+    remountedLastName.mount()
+    expect(remountedLastName.getMeta().errors).toStrictEqual([])
+    expect(remountedLastName.getMeta().isTouched).toBe(false)
+    expect(remountedLastName.getValue()).toBe('abc')
+  })
+
   it('should show onSubmit errors', async () => {
     const form = new FormApi({
       defaultValues: {
