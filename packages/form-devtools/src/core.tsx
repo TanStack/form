@@ -1,4 +1,3 @@
-import { lazy } from 'solid-js'
 import { constructCoreClass } from '@tanstack/devtools-utils/solid'
 
 export interface FormDevtoolsInit {}
