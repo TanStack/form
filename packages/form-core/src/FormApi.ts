@@ -1,4 +1,4 @@
-import { Derived, Store, batch } from '@tanstack/store'
+import { batch, createStore } from '@tanstack/store'
 import {
   deleteBy,
   determineFormLevelErrorSourceAndValue,
@@ -21,6 +21,7 @@ import {
 } from './standardSchemaValidator'
 import { defaultFieldMeta, metaHelper } from './metaHelper'
 import { formEventClient } from './EventClient'
+import type { ReadonlyStore, Store } from '@tanstack/store'
 
 // types
 import type { ValidationLogicFn } from './ValidationLogic'
@@ -40,6 +41,7 @@ import type {
   FieldManipulator,
   FormValidationError,
   FormValidationErrorMap,
+  GlobalFormValidationError,
   ListenerCause,
   UpdateMetaOptions,
   ValidationCause,
@@ -216,55 +218,6 @@ export interface FormValidators<
   onDynamic?: TOnDynamic
   onDynamicAsync?: TOnDynamicAsync
   onDynamicAsyncDebounceMs?: number
-}
-
-/**
- * @private
- */
-export interface FormTransform<
-  TFormData,
-  TOnMount extends undefined | FormValidateOrFn<TFormData>,
-  TOnChange extends undefined | FormValidateOrFn<TFormData>,
-  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnDynamic extends undefined | FormValidateOrFn<TFormData>,
-  TOnDynamicAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TSubmitMeta = never,
-> {
-  fn: (
-    formBase: FormApi<
-      TFormData,
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync,
-      TOnDynamic,
-      TOnDynamicAsync,
-      TOnServer,
-      TSubmitMeta
-    >,
-  ) => FormApi<
-    TFormData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnDynamic,
-    TOnDynamicAsync,
-    TOnServer,
-    TSubmitMeta
-  >
-  deps: unknown[]
 }
 
 export interface FormListeners<
@@ -498,20 +451,13 @@ export interface FormOptions<
     >
     meta: TSubmitMeta
   }) => void
-  transform?: FormTransform<
-    NoInfer<TFormData>,
-    NoInfer<TOnMount>,
-    NoInfer<TOnChange>,
-    NoInfer<TOnChangeAsync>,
-    NoInfer<TOnBlur>,
-    NoInfer<TOnBlurAsync>,
-    NoInfer<TOnSubmit>,
-    NoInfer<TOnSubmitAsync>,
-    NoInfer<TOnDynamic>,
-    NoInfer<TOnDynamicAsync>,
-    NoInfer<TOnServer>,
-    NoInfer<TSubmitMeta>
-  >
+  // Only runs in `core` for the first run on the Form, any additional transforms
+  // need to be handled at framework runtime due to complexity of comparison check
+  // and state merging
+  //
+  // Made intentionally type loose to avoid headaches with framework's individual
+  // `useTransform` hooks
+  transform?: (data: unknown) => unknown
 }
 
 export type AnyFormOptions = FormOptions<
@@ -658,6 +604,20 @@ export type BaseFormState<
    */
   _force_re_eval?: boolean
 }
+
+export type AnyBaseFormState = BaseFormState<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
 
 export type DerivedFormState<
   in out TFormData,
@@ -916,6 +876,7 @@ export class FormApi<
     TOnServer,
     TSubmitMeta
   > = {}
+
   baseStore!: Store<
     BaseFormState<
       TFormData,
@@ -931,7 +892,7 @@ export class FormApi<
       TOnServer
     >
   >
-  fieldMetaDerived: Derived<
+  fieldMetaDerived: Store<
     FormState<
       TFormData,
       TOnMount,
@@ -946,7 +907,7 @@ export class FormApi<
       TOnServer
     >['fieldMeta']
   >
-  store: Derived<
+  store: ReadonlyStore<
     FormState<
       TFormData,
       TOnMount,
@@ -969,11 +930,6 @@ export class FormApi<
   get state() {
     return this.store.state
   }
-
-  /**
-   * @private
-   */
-  prevTransformArray: unknown[] = []
 
   /**
    * @private
@@ -1021,22 +977,87 @@ export class FormApi<
 
     this._devtoolsSubmissionOverride = false
 
-    this.baseStore = new Store(
-      getDefaultFormState({
-        ...(opts?.defaultState as any),
-        values: opts?.defaultValues ?? opts?.defaultState?.values,
-        isFormValid: true,
-      }),
-    )
+    let baseStoreVal: BaseFormState<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer
+    > = getDefaultFormState({
+      ...(opts?.defaultState as any),
+      values: opts?.defaultValues ?? opts?.defaultState?.values,
+      isFormValid: true,
+    })
 
-    this.fieldMetaDerived = new Derived({
-      deps: [this.baseStore],
-      fn: ({ prevDepVals, currDepVals, prevVal: _prevVal }) => {
-        const prevVal = _prevVal as
-          | Record<DeepKeys<TFormData>, AnyFieldMeta>
+    if (opts?.transform) {
+      baseStoreVal = (
+        opts.transform({ state: baseStoreVal }) as { state: unknown }
+      ).state as never
+      for (const errKey of Object.keys(baseStoreVal.errorMap)) {
+        const errKeyMap = baseStoreVal.errorMap[errKey as never] as
+          | GlobalFormValidationError<any>
           | undefined
-        const prevBaseStore = prevDepVals?.[0]
-        const currBaseStore = currDepVals[0]
+        if (
+          errKeyMap === undefined ||
+          !isGlobalFormValidationError(errKeyMap)
+        ) {
+          continue
+        }
+
+        for (const fieldName of Object.keys(errKeyMap.fields)) {
+          const fieldErr = errKeyMap.fields[fieldName]
+          if (fieldErr === undefined) {
+            continue
+          }
+          const existingFieldMeta = baseStoreVal.fieldMetaBase[
+            fieldName as never
+          ] as AnyFieldMetaBase | undefined
+          baseStoreVal.fieldMetaBase[fieldName as never] = {
+            isTouched: false,
+            isValidating: false,
+            isBlurred: false,
+            isDirty: false,
+            ...(existingFieldMeta ?? {}),
+            errorSourceMap: {
+              ...(existingFieldMeta?.['errorSourceMap'] ?? {}),
+              onChange: 'form',
+            },
+            errorMap: {
+              ...(existingFieldMeta?.['errorMap'] ?? {}),
+              [errKey as never]: fieldErr,
+            },
+          } satisfies AnyFieldMetaBase as never
+        }
+      }
+    }
+
+    this.baseStore = createStore(baseStoreVal) as never
+
+    let prevBaseStore:
+      | BaseFormState<
+          TFormData,
+          TOnMount,
+          TOnChange,
+          TOnChangeAsync,
+          TOnBlur,
+          TOnBlurAsync,
+          TOnSubmit,
+          TOnSubmitAsync,
+          TOnDynamic,
+          TOnDynamicAsync,
+          TOnServer
+        >
+      | undefined = undefined
+
+    this.fieldMetaDerived = createStore(
+      (prevVal: Record<DeepKeys<TFormData>, AnyFieldMeta> | undefined) => {
+        const currBaseStore = this.baseStore.get()
 
         let originalMetaCount = 0
 
@@ -1133,149 +1154,14 @@ export class FormApi<
           return prevVal
         }
 
+        prevBaseStore = this.baseStore.get()
+
         return fieldMeta
       },
-    })
+    ) as never
 
-    this.store = new Derived({
-      deps: [this.baseStore, this.fieldMetaDerived],
-      fn: ({ prevDepVals, currDepVals, prevVal: _prevVal }) => {
-        const prevVal = _prevVal as
-          | FormState<
-              TFormData,
-              TOnMount,
-              TOnChange,
-              TOnChangeAsync,
-              TOnBlur,
-              TOnBlurAsync,
-              TOnSubmit,
-              TOnSubmitAsync,
-              TOnDynamic,
-              TOnDynamicAsync,
-              TOnServer
-            >
-          | undefined
-        const prevBaseStore = prevDepVals?.[0]
-        const currBaseStore = currDepVals[0]
-        const currFieldMeta = currDepVals[1]
-
-        // Computed state
-        const fieldMetaValues = Object.values(currFieldMeta).filter(
-          Boolean,
-        ) as AnyFieldMeta[]
-
-        const isFieldsValidating = fieldMetaValues.some(
-          (field) => field.isValidating,
-        )
-
-        const isFieldsValid = fieldMetaValues.every((field) => field.isValid)
-
-        const isTouched = fieldMetaValues.some((field) => field.isTouched)
-        const isBlurred = fieldMetaValues.some((field) => field.isBlurred)
-        const isDefaultValue = fieldMetaValues.every(
-          (field) => field.isDefaultValue,
-        )
-
-        const shouldInvalidateOnMount =
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          isTouched && currBaseStore.errorMap?.onMount
-
-        const isDirty = fieldMetaValues.some((field) => field.isDirty)
-        const isPristine = !isDirty
-
-        const hasOnMountError = Boolean(
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          currBaseStore.errorMap?.onMount ||
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          fieldMetaValues.some((f) => f?.errorMap?.onMount),
-        )
-
-        const isValidating = !!isFieldsValidating
-
-        // As `errors` is not a primitive, we need to aggressively persist the same referencial value for performance reasons
-        let errors = prevVal?.errors ?? []
-        if (
-          !prevBaseStore ||
-          currBaseStore.errorMap !== prevBaseStore.errorMap
-        ) {
-          errors = Object.values(currBaseStore.errorMap).reduce<
-            Array<
-              | UnwrapFormValidateOrFn<TOnMount>
-              | UnwrapFormValidateOrFn<TOnChange>
-              | UnwrapFormAsyncValidateOrFn<TOnChangeAsync>
-              | UnwrapFormValidateOrFn<TOnBlur>
-              | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
-              | UnwrapFormValidateOrFn<TOnSubmit>
-              | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
-              | UnwrapFormAsyncValidateOrFn<TOnServer>
-            >
-          >((prev, curr) => {
-            if (curr === undefined) return prev
-
-            if (curr && isGlobalFormValidationError(curr)) {
-              prev.push(curr.form as never)
-              return prev
-            }
-            prev.push(curr as never)
-            return prev
-          }, [])
-        }
-
-        const isFormValid = errors.length === 0
-        const isValid = isFieldsValid && isFormValid
-        const submitInvalid = this.options.canSubmitWhenInvalid ?? false
-        const canSubmit =
-          (currBaseStore.submissionAttempts === 0 &&
-            !isTouched &&
-            !hasOnMountError) ||
-          (!isValidating && !currBaseStore.isSubmitting && isValid) ||
-          submitInvalid
-
-        let errorMap = currBaseStore.errorMap
-        if (shouldInvalidateOnMount) {
-          errors = errors.filter(
-            (err) => err !== currBaseStore.errorMap.onMount,
-          )
-          errorMap = Object.assign(errorMap, { onMount: undefined })
-        }
-
-        if (
-          prevVal &&
-          prevBaseStore &&
-          prevVal.errorMap === errorMap &&
-          prevVal.fieldMeta === this.fieldMetaDerived.state &&
-          prevVal.errors === errors &&
-          prevVal.isFieldsValidating === isFieldsValidating &&
-          prevVal.isFieldsValid === isFieldsValid &&
-          prevVal.isFormValid === isFormValid &&
-          prevVal.isValid === isValid &&
-          prevVal.canSubmit === canSubmit &&
-          prevVal.isTouched === isTouched &&
-          prevVal.isBlurred === isBlurred &&
-          prevVal.isPristine === isPristine &&
-          prevVal.isDefaultValue === isDefaultValue &&
-          prevVal.isDirty === isDirty &&
-          evaluate(prevBaseStore, currBaseStore)
-        ) {
-          return prevVal
-        }
-
-        let state = {
-          ...currBaseStore,
-          errorMap,
-          fieldMeta: this.fieldMetaDerived.state,
-          errors,
-          isFieldsValidating,
-          isFieldsValid,
-          isFormValid,
-          isValid,
-          canSubmit,
-          isTouched,
-          isBlurred,
-          isPristine,
-          isDefaultValue,
-          isDirty,
-        } as FormState<
+    let prevBaseStoreForStore:
+      | BaseFormState<
           TFormData,
           TOnMount,
           TOnChange,
@@ -1288,23 +1174,157 @@ export class FormApi<
           TOnDynamicAsync,
           TOnServer
         >
+      | undefined = undefined
 
-        // Only run transform if state has shallowly changed - IE how React.useEffect works
-        const transformArray = this.options.transform?.deps ?? []
-        const shouldTransform =
-          transformArray.length !== this.prevTransformArray.length ||
-          transformArray.some((val, i) => val !== this.prevTransformArray[i])
+    this.store = createStore<
+      FormState<
+        TFormData,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TOnDynamic,
+        TOnDynamicAsync,
+        TOnServer
+      >
+    >((prevVal) => {
+      const currBaseStore = this.baseStore.get()
+      const currFieldMeta = this.fieldMetaDerived.get()
 
-        if (shouldTransform) {
-          const newObj = Object.assign({}, this, { state })
-          // This mutates the state
-          this.options.transform?.fn(newObj)
-          state = newObj.state
-          this.prevTransformArray = transformArray
-        }
+      // Computed state
+      const fieldMetaValues = Object.values(currFieldMeta).filter(
+        Boolean,
+      ) as AnyFieldMeta[]
 
-        return state
-      },
+      const isFieldsValidating = fieldMetaValues.some(
+        (field) => field.isValidating,
+      )
+
+      const isFieldsValid = fieldMetaValues.every((field) => field.isValid)
+
+      const isTouched = fieldMetaValues.some((field) => field.isTouched)
+      const isBlurred = fieldMetaValues.some((field) => field.isBlurred)
+      const isDefaultValue = fieldMetaValues.every(
+        (field) => field.isDefaultValue,
+      )
+
+      const shouldInvalidateOnMount =
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        isTouched && currBaseStore.errorMap?.onMount
+
+      const isDirty = fieldMetaValues.some((field) => field.isDirty)
+      const isPristine = !isDirty
+
+      const hasOnMountError = Boolean(
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        currBaseStore.errorMap?.onMount ||
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        fieldMetaValues.some((f) => f?.errorMap?.onMount),
+      )
+
+      const isValidating = !!isFieldsValidating
+
+      // As `errors` is not a primitive, we need to aggressively persist the same referencial value for performance reasons
+      let errors = prevVal?.errors ?? []
+      if (
+        !prevBaseStoreForStore ||
+        currBaseStore.errorMap !== prevBaseStoreForStore.errorMap
+      ) {
+        errors = Object.values(currBaseStore.errorMap).reduce<
+          Array<
+            | UnwrapFormValidateOrFn<TOnMount>
+            | UnwrapFormValidateOrFn<TOnChange>
+            | UnwrapFormAsyncValidateOrFn<TOnChangeAsync>
+            | UnwrapFormValidateOrFn<TOnBlur>
+            | UnwrapFormAsyncValidateOrFn<TOnBlurAsync>
+            | UnwrapFormValidateOrFn<TOnSubmit>
+            | UnwrapFormAsyncValidateOrFn<TOnSubmitAsync>
+            | UnwrapFormAsyncValidateOrFn<TOnServer>
+          >
+        >((prev, curr) => {
+          if (curr === undefined) return prev
+
+          if (curr && isGlobalFormValidationError(curr)) {
+            prev.push(curr.form as never)
+            return prev
+          }
+          prev.push(curr as never)
+          return prev
+        }, [])
+      }
+
+      const isFormValid = errors.length === 0
+      const isValid = isFieldsValid && isFormValid
+      const submitInvalid = this.options.canSubmitWhenInvalid ?? false
+      const canSubmit =
+        (currBaseStore.submissionAttempts === 0 &&
+          !isTouched &&
+          !hasOnMountError) ||
+        (!isValidating && !currBaseStore.isSubmitting && isValid) ||
+        submitInvalid
+
+      let errorMap = currBaseStore.errorMap
+      if (shouldInvalidateOnMount) {
+        errors = errors.filter((err) => err !== currBaseStore.errorMap.onMount)
+        errorMap = Object.assign(errorMap, { onMount: undefined })
+      }
+
+      if (
+        prevVal &&
+        prevBaseStoreForStore &&
+        prevVal.errorMap === errorMap &&
+        prevVal.fieldMeta === this.fieldMetaDerived.state &&
+        prevVal.errors === errors &&
+        prevVal.isFieldsValidating === isFieldsValidating &&
+        prevVal.isFieldsValid === isFieldsValid &&
+        prevVal.isFormValid === isFormValid &&
+        prevVal.isValid === isValid &&
+        prevVal.canSubmit === canSubmit &&
+        prevVal.isTouched === isTouched &&
+        prevVal.isBlurred === isBlurred &&
+        prevVal.isPristine === isPristine &&
+        prevVal.isDefaultValue === isDefaultValue &&
+        prevVal.isDirty === isDirty &&
+        evaluate(prevBaseStoreForStore, currBaseStore)
+      ) {
+        return prevVal
+      }
+
+      const state = {
+        ...currBaseStore,
+        errorMap,
+        fieldMeta: this.fieldMetaDerived.state,
+        errors,
+        isFieldsValidating,
+        isFieldsValid,
+        isFormValid,
+        isValid,
+        canSubmit,
+        isTouched,
+        isBlurred,
+        isPristine,
+        isDefaultValue,
+        isDirty,
+      } as FormState<
+        TFormData,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync,
+        TOnDynamic,
+        TOnDynamicAsync,
+        TOnServer
+      >
+
+      prevBaseStoreForStore = this.baseStore.get()
+
+      return state
     })
 
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -1342,9 +1362,6 @@ export class FormApi<
   }
 
   mount = () => {
-    const cleanupFieldMetaDerived = this.fieldMetaDerived.mount()
-    const cleanupStoreDerived = this.store.mount()
-
     // devtool broadcasts
     const cleanupDevtoolBroadcast = this.store.subscribe(() => {
       throttleFormState(this)
@@ -1388,9 +1405,7 @@ export class FormApi<
       cleanupFormForceSubmitListener()
       cleanupFormResetListener()
       cleanupFormStateListener()
-      cleanupDevtoolBroadcast()
-      cleanupFieldMetaDerived()
-      cleanupStoreDerived()
+      cleanupDevtoolBroadcast.unsubscribe()
 
       // broadcast form unmount for devtools
       formEventClient.emit('form-unmounted', {
@@ -1443,11 +1458,6 @@ export class FormApi<
     // Options need to be updated first so that when the store is updated, the state is correct for the derived state
     this.options = options
 
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    const shouldUpdateReeval = !!options.transform?.deps?.some(
-      (val, i) => val !== this.prevTransformArray[i],
-    )
-
     const shouldUpdateValues =
       options.defaultValues &&
       !evaluate(options.defaultValues, oldOptions.defaultValues) &&
@@ -1457,7 +1467,7 @@ export class FormApi<
       !evaluate(options.defaultState, oldOptions.defaultState) &&
       !this.state.isTouched
 
-    if (!shouldUpdateValues && !shouldUpdateState && !shouldUpdateReeval) return
+    if (!shouldUpdateValues && !shouldUpdateState) return
 
     batch(() => {
       this.baseStore.setState(() =>
@@ -1472,10 +1482,6 @@ export class FormApi<
               ? {
                   values: options.defaultValues,
                 }
-              : {},
-
-            shouldUpdateReeval
-              ? { _force_re_eval: !this.state._force_re_eval }
               : {},
           ),
         ),

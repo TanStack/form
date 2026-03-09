@@ -1,6 +1,7 @@
 import {
   createComponent,
   createContext,
+  mergeProps,
   splitProps,
   useContext,
 } from 'solid-js'
@@ -468,7 +469,11 @@ export function createFormHook<
     UnwrapOrAny<TFormComponents>,
     UnwrapOrAny<TRenderProps>
   >['render'] {
-    return (innerProps) => render({ ...props, ...innerProps })
+    return (innerProps) =>
+      createComponent(
+        render as Component<any>,
+        mergeProps(props ?? {}, innerProps),
+      )
   }
 
   function withFieldGroup<
@@ -553,8 +558,10 @@ export function createFormHook<
         formComponents: opts.formComponents,
       }
       const fieldGroupApi = createFieldGroup(() => fieldGroupProps)
-
-      return render({ ...props, ...innerProps, group: fieldGroupApi as any })
+      return createComponent(
+        render as Component<any>,
+        mergeProps(props ?? {}, innerProps, { group: fieldGroupApi as any }),
+      )
     }
   }
 

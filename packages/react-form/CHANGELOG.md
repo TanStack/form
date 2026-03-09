@@ -1,5 +1,41 @@
 # @tanstack/react-form
 
+## 1.28.4
+
+### Patch Changes
+
+- Refactor internals for substancially faster performance ([#2035](https://github.com/TanStack/form/pull/2035))
+
+- Updated dependencies [[`f88faaf`](https://github.com/TanStack/form/commit/f88faaf72d265fdcbe99887421bd97dd03cb703e)]:
+  - @tanstack/form-core@1.28.4
+
+## 1.28.3
+
+### Patch Changes
+
+- form arrays now work again ([#2041](https://github.com/TanStack/form/pull/2041))
+
+- Updated dependencies [[`0b3952d`](https://github.com/TanStack/form/commit/0b3952d9805b4f1756829faa012e4112c14859a7)]:
+  - @tanstack/form-core@1.28.3
+
+## 1.28.2
+
+### Patch Changes
+
+- Updated dependencies [[`a07862d`](https://github.com/TanStack/form/commit/a07862de23ea008c7dd3821edd880b6ebc569016)]:
+  - @tanstack/form-core@1.28.2
+
+## 1.28.1
+
+### Patch Changes
+
+- Fix compile error with webpack when using react v17 ([#1982](https://github.com/TanStack/form/pull/1982))
+
+- Fix various issues with SSR. Things should now work as-expected in many many more scenarios than before ([#1890](https://github.com/TanStack/form/pull/1890))
+
+- Updated dependencies [[`72d970a`](https://github.com/TanStack/form/commit/72d970add6ab682d733e35a95e5e1f44efb695d2)]:
+  - @tanstack/form-core@1.28.1
+
 ## 1.28.0
 
 ### Minor Changes

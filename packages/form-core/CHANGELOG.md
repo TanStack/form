@@ -1,5 +1,29 @@
 # @tanstack/form-core
 
+## 1.28.4
+
+### Patch Changes
+
+- Refactor internals for substancially faster performance ([#2035](https://github.com/TanStack/form/pull/2035))
+
+## 1.28.3
+
+### Patch Changes
+
+- form arrays now work again ([#2041](https://github.com/TanStack/form/pull/2041))
+
+## 1.28.2
+
+### Patch Changes
+
+- bump @tanstack/store dependency to 0.8.0 ([#2038](https://github.com/TanStack/form/pull/2038))
+
+## 1.28.1
+
+### Patch Changes
+
+- Fix various issues with SSR. Things should now work as-expected in many many more scenarios than before ([#1890](https://github.com/TanStack/form/pull/1890))
+
 ## 1.28.0
 
 ### Patch Changes

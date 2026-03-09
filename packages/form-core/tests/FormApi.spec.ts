@@ -1,8 +1,13 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
-import { FieldApi, FormApi, formEventClient } from '../src/index'
+import { FieldApi, FormApi, formEventClient, mergeForm } from '../src/index'
 import { sleep } from './utils'
-import type { AnyFieldApi, AnyFormApi } from '../src/index'
+import type {
+  AnyFieldApi,
+  AnyFormApi,
+  AnyFormState,
+  FormState,
+} from '../src/index'
 
 describe('form api', () => {
   it('should get default form state when default values are passed', () => {
@@ -4111,5 +4116,71 @@ describe('form api event client', () => {
     expect(logSpy).not.toHaveBeenCalled()
 
     logSpy.mockRestore()
+  })
+})
+
+describe('form transform', () => {
+  it('should transform state values on first load', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      transform: (baseForm) => {
+        return mergeForm(baseForm as AnyFormApi, {
+          values: {
+            name: 'Another',
+          },
+        })
+      },
+    })
+
+    form.mount()
+
+    expect(form.state.values.name).toBe('Another')
+  })
+
+  it('should transform form error map on first load', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      transform: (baseForm) => {
+        return mergeForm(baseForm as AnyFormApi, {
+          errorMap: {
+            onChange: 'Error',
+          },
+        })
+      },
+    })
+
+    form.mount()
+
+    expect(form.state.errorMap.onChange).toBe('Error')
+  })
+
+  it('should transform fields error map on first load', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      transform: (baseForm) => {
+        return mergeForm(baseForm as AnyFormApi, {
+          errorMap: {
+            onChange: { fields: { name: 'Error' } },
+          },
+        })
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      name: 'name',
+      form,
+    })
+
+    field.mount()
+
+    expect(field.state.meta.errorMap.onChange).toBe('Error')
   })
 })
