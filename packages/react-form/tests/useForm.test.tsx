@@ -1075,4 +1075,45 @@ describe('useForm', () => {
     await user.click(getByText('Rerender'))
     await findByText('Another')
   })
+
+  it('should render Subscribe without selector (default identity)', async () => {
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          name: 'test',
+        },
+      })
+
+      return (
+        <>
+          <form.Field
+            name="name"
+            children={(field) => (
+              <input
+                data-testid="input"
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            )}
+          />
+
+          <form.Subscribe
+            children={(state) => (
+              <span data-testid="state-value">{state.values.name}</span>
+            )}
+          />
+        </>
+      )
+    }
+
+    const { getByTestId } = render(<Comp />)
+    const input = getByTestId('input')
+    const stateValue = getByTestId('state-value')
+
+    expect(stateValue).toHaveTextContent('test')
+
+    await user.clear(input)
+    await user.type(input, 'updated')
+    await waitFor(() => expect(stateValue).toHaveTextContent('updated'))
+  })
 })
