@@ -69,6 +69,7 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
             <div
               style={{
                 display: 'flex',
+                'flex-wrap': 'wrap',
                 gap: '8px',
               }}
             >

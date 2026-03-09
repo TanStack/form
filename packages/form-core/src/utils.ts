@@ -607,7 +607,7 @@ export function uuid(): string {
 
 export const throttleFormState = liteThrottle(
   (form: AnyFormApi) =>
-    formEventClient.emit('form-state', {
+    formEventClient.emit('form-devtools:form-state', {
       id: form.formId,
       state: form.store.state,
     }),
