@@ -1369,10 +1369,10 @@ export class FormApi<
 
     // devtool requests
     const cleanupFormStateListener = formEventClient.on(
-      'form-devtools:request-form-state',
+      'request-form-state',
       (e) => {
         if (e.payload.id === this._formId) {
-          formEventClient.emit('form-devtools:form-api', {
+          formEventClient.emit('form-api', {
             id: this._formId,
             state: this.store.state,
             options: this.options,
@@ -1382,7 +1382,7 @@ export class FormApi<
     )
 
     const cleanupFormResetListener = formEventClient.on(
-      'form-devtools:request-form-reset',
+      'request-form-reset',
       (e) => {
         if (e.payload.id === this._formId) {
           this.reset()
@@ -1391,7 +1391,7 @@ export class FormApi<
     )
 
     const cleanupFormForceSubmitListener = formEventClient.on(
-      'form-devtools:request-form-force-submit',
+      'request-form-force-submit',
       (e) => {
         if (e.payload.id === this._formId) {
           this._devtoolsSubmissionOverride = true
@@ -1408,7 +1408,7 @@ export class FormApi<
       cleanupDevtoolBroadcast.unsubscribe()
 
       // broadcast form unmount for devtools
-      formEventClient.emit('form-devtools:form-unmounted', {
+      formEventClient.emit('form-unmounted', {
         id: this._formId,
       })
     }
@@ -1418,7 +1418,7 @@ export class FormApi<
     const { onMount } = this.options.validators || {}
 
     // broadcast form state for devtools on mounting
-    formEventClient.emit('form-devtools:form-api', {
+    formEventClient.emit('form-api', {
       id: this._formId,
       state: this.store.state,
       options: this.options,
@@ -1488,7 +1488,7 @@ export class FormApi<
       )
     })
 
-    formEventClient.emit('form-devtools:form-api', {
+    formEventClient.emit('form-api', {
       id: this._formId,
       state: this.store.state,
       options: this.options,
@@ -2109,7 +2109,7 @@ export class FormApi<
         meta: submitMetaArg,
       })
 
-      formEventClient.emit('form-devtools:form-submission', {
+      formEventClient.emit('form-submission', {
         id: this._formId,
         submissionAttempt: this.state.submissionAttempts,
         successful: false,
@@ -2133,7 +2133,7 @@ export class FormApi<
         meta: submitMetaArg,
       })
 
-      formEventClient.emit('form-devtools:form-submission', {
+      formEventClient.emit('form-submission', {
         id: this._formId,
         submissionAttempt: this.state.submissionAttempts,
         successful: false,
@@ -2172,7 +2172,7 @@ export class FormApi<
           isSubmitSuccessful: true, // Set isSubmitSuccessful to true on successful submission
         }))
 
-        formEventClient.emit('form-devtools:form-submission', {
+        formEventClient.emit('form-submission', {
           id: this._formId,
           submissionAttempt: this.state.submissionAttempts,
           successful: true,
@@ -2186,7 +2186,7 @@ export class FormApi<
         isSubmitSuccessful: false, // Ensure isSubmitSuccessful is false if an error occurs
       }))
 
-      formEventClient.emit('form-devtools:form-submission', {
+      formEventClient.emit('form-submission', {
         id: this._formId,
         submissionAttempt: this.state.submissionAttempts,
         successful: false,

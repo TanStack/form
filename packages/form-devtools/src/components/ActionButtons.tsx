@@ -17,7 +17,7 @@ export function ActionButtons(props: ActionButtonsProps) {
       <button
         class={styles().actionButton}
         onMouseDown={() => {
-          formEventClient.emit('form-devtools:request-form-state', {
+          formEventClient.emit('request-form-state', {
             id: props.selectedInstance()?.id as string,
           })
         }}
@@ -29,7 +29,7 @@ export function ActionButtons(props: ActionButtonsProps) {
       <button
         class={styles().actionButton}
         onMouseDown={() => {
-          formEventClient.emit('form-devtools:request-form-reset', {
+          formEventClient.emit('request-form-reset', {
             id: props.selectedInstance()?.id as string,
           })
         }}
@@ -41,7 +41,7 @@ export function ActionButtons(props: ActionButtonsProps) {
       <button
         class={styles().actionButton}
         onMouseDown={() => {
-          formEventClient.emit('form-devtools:request-form-force-submit', {
+          formEventClient.emit('request-form-force-submit', {
             id: props.selectedInstance()?.id as string,
           })
         }}
