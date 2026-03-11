@@ -1,5 +1,14 @@
 # @tanstack/form-devtools
 
+## 0.2.18
+
+### Patch Changes
+
+- Upgrade packages and fixed theme pacakge missmatch ([#2072](https://github.com/TanStack/form/pull/2072))
+
+- Updated dependencies [[`39932c1`](https://github.com/TanStack/form/commit/39932c1da28b5e4ea4b73f8b488d92fc100ccc41)]:
+  - @tanstack/form-core@1.28.5
+
 ## 0.2.17
 
 ### Patch Changes
