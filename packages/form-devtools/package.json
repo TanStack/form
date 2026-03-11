@@ -38,10 +38,6 @@
         "import": "./dist/server.js"
       },
       "browser": {
-        "development": {
-          "types": "./dist/index.d.ts",
-          "import": "./dist/dev.js"
-        },
         "types": "./dist/index.d.ts",
         "import": "./dist/index.js"
       },
@@ -58,10 +54,6 @@
         "import": "./dist/production/server.js"
       },
       "browser": {
-        "development": {
-          "types": "./dist/production/index.d.ts",
-          "import": "./dist/production/dev.js"
-        },
         "types": "./dist/production/index.d.ts",
         "import": "./dist/production/index.js"
       },

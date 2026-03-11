@@ -14,15 +14,6 @@ export default defineConfig([
     clean: true,
   },
   {
-    entry: { dev: 'src/index.ts' },
-    format: ['esm'],
-    outDir: 'dist',
-    fixedExtension: false,
-    plugins: [makeSolid()],
-    dts: false,
-    clean: false,
-  },
-  {
     entry: { server: 'src/index.ts' },
     format: ['esm'],
     outDir: 'dist',
@@ -37,15 +28,6 @@ export default defineConfig([
     outDir: 'dist',
     fixedExtension: false,
     plugins: [makeSolid()],
-    clean: false,
-  },
-  {
-    entry: { 'production/dev': 'src/production.ts' },
-    format: ['esm'],
-    outDir: 'dist',
-    fixedExtension: false,
-    plugins: [makeSolid()],
-    dts: false,
     clean: false,
   },
   {
