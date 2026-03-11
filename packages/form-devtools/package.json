@@ -26,23 +26,43 @@
     "test:lib": "vitest",
     "test:lib:dev": "pnpm run test:lib --watch",
     "test:build": "publint --strict",
-    "build": "vite build && tsc -p tsconfig.build.json"
+    "build": "tsdown"
   },
   "type": "module",
-  "types": "dist/esm/index.d.ts",
-  "module": "dist/esm/index.js",
+  "types": "./dist/index.d.ts",
+  "module": "./dist/index.js",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/esm/index.d.ts",
-        "default": "./dist/esm/index.js"
-      }
+      "workerd": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/server.js"
+      },
+      "browser": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "node": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/server.js"
+      },
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./production": {
-      "import": {
-        "types": "./dist/esm/production.d.ts",
-        "default": "./dist/esm/production.js"
-      }
+      "workerd": {
+        "types": "./dist/production/index.d.ts",
+        "import": "./dist/production/server.js"
+      },
+      "browser": {
+        "types": "./dist/production/index.d.ts",
+        "import": "./dist/production/index.js"
+      },
+      "node": {
+        "types": "./dist/production/index.d.ts",
+        "import": "./dist/production/server.js"
+      },
+      "types": "./dist/production/index.d.ts",
+      "import": "./dist/production/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -52,15 +72,17 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/devtools-ui": "^0.4.4",
-    "@tanstack/devtools-utils": "^0.3.0",
+    "@tanstack/devtools-ui": "^0.5.0",
+    "@tanstack/devtools-utils": "^0.3.2",
     "@tanstack/form-core": "workspace:*",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.18",
     "goober": "^2.1.16"
   },
   "devDependencies": {
+    "rolldown-plugin-solid": "^0.2.1",
     "solid-js": "^1.9.9",
+    "tsdown": "^0.21.1",
     "vite": "^7.2.2",
     "vite-plugin-solid": "^2.11.8"
   },
