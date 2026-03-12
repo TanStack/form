@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.28.5
+
+### Patch Changes
+
+- Upgrade packages and fixed theme pacakge missmatch ([#2072](https://github.com/TanStack/form/pull/2072))
+
 ## 1.28.4
 
 ### Patch Changes
