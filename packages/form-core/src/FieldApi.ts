@@ -1361,6 +1361,10 @@ export class FieldApi<
       const fieldInfo = this.form.fieldInfo[this.name]
       if (!fieldInfo) return
 
+      // If a newer field instance has already been mounted for this name,
+      // avoid touching its shared validation state during teardown.
+      if (fieldInfo.instance !== this) return
+
       for (const [key, validationMeta] of Object.entries(
         fieldInfo.validationMetaMap,
       )) {
@@ -1370,15 +1374,24 @@ export class FieldApi<
         ] = undefined
       }
 
-      // If a newer field instance has already been mounted for this name,
-      // avoid clearing its state during teardown of an older instance.
-      if (fieldInfo.instance !== this) return
-
       this.form.baseStore.setState((prev) => ({
+        // Preserve interaction flags so field-level defaultValue does not
+        // reseed user-entered values on remount.
         ...prev,
         fieldMetaBase: {
           ...prev.fieldMetaBase,
-          [this.name]: defaultFieldMeta,
+          [this.name]: {
+            ...defaultFieldMeta,
+            isTouched:
+              prev.fieldMetaBase[this.name]?.isTouched ??
+              defaultFieldMeta.isTouched,
+            isBlurred:
+              prev.fieldMetaBase[this.name]?.isBlurred ??
+              defaultFieldMeta.isBlurred,
+            isDirty:
+              prev.fieldMetaBase[this.name]?.isDirty ??
+              defaultFieldMeta.isDirty,
+          },
         },
       }))
 

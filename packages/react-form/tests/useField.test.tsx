@@ -420,7 +420,7 @@ describe('useField', () => {
     await waitFor(() => expect(submitButton).toBeEnabled())
 
     await user.click(submitButton)
-    expect(onSubmit).toHaveBeenCalledTimes(1)
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1))
 
     await user.clear(getByTestId('first-name'))
     await user.type(getByTestId('first-name'), 'a')

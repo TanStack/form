@@ -1671,7 +1671,7 @@ describe('field api', () => {
 
     expect(form.getFieldValue('lastName')).toBe('abc')
     expect(form.state.fieldMeta.lastName).toMatchObject({
-      isTouched: false,
+      isTouched: true,
       isValid: true,
       errors: [],
     })
@@ -1688,8 +1688,37 @@ describe('field api', () => {
 
     remountedLastName.mount()
     expect(remountedLastName.getMeta().errors).toStrictEqual([])
-    expect(remountedLastName.getMeta().isTouched).toBe(false)
+    expect(remountedLastName.getMeta().isTouched).toBe(true)
     expect(remountedLastName.getValue()).toBe('abc')
+  })
+
+  it('should preserve field-level defaultValue changes across unmount remount cleanup', () => {
+    const form = new FormApi({
+      defaultValues: {} as { name?: string },
+      cleanupFieldsOnUnmount: true,
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      defaultValue: 'initial',
+    })
+
+    const unmount = field.mount()
+    field.setValue('changed')
+    expect(unmount).toBeTypeOf('function')
+    unmount()
+
+    const remountedField = new FieldApi({
+      form,
+      name: 'name',
+      defaultValue: 'initial',
+    })
+
+    remountedField.mount()
+    expect(remountedField.getValue()).toBe('changed')
   })
 
   it('should not apply in-flight async validation results after unmount', async () => {
@@ -1732,7 +1761,7 @@ describe('field api', () => {
     await vi.runAllTimersAsync()
 
     expect(form.state.fieldMeta.name).toMatchObject({
-      isTouched: false,
+      isTouched: true,
       isValid: true,
       errors: [],
     })
@@ -1810,6 +1839,47 @@ describe('field api', () => {
     expect(form.getFieldInfo('name').instance).toBe(newField)
     expect(newField.getValue()).toBe('new value')
     expect(newField.getMeta().isTouched).toBe(true)
+  })
+
+  it('should not cancel newer instance async validation when older instance unmounts', async () => {
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+      cleanupFieldsOnUnmount: true,
+    })
+
+    form.mount()
+
+    const oldField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    const oldUnmount = oldField.mount()
+
+    const newField = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChangeAsyncDebounceMs: 10,
+        onChangeAsync: async ({ value }) =>
+          value === 'taken' ? 'name is taken' : undefined,
+      },
+    })
+
+    newField.mount()
+    newField.setValue('taken')
+
+    expect(oldUnmount).toBeTypeOf('function')
+    oldUnmount()
+
+    await vi.runAllTimersAsync()
+
+    expect(newField.getMeta().errors).toContain('name is taken')
+
+    vi.useRealTimers()
   })
 
   it('should show onSubmit errors', async () => {
