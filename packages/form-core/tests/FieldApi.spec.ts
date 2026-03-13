@@ -1603,12 +1603,42 @@ describe('field api', () => {
     expect(form.getFieldInfo(field.name)).toBeDefined()
   })
 
+  it('should keep field meta on unmount by default', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onSubmit: ({ value }) =>
+          value.length > 0 ? undefined : 'name is required',
+      },
+    })
+
+    const unmount = field.mount()
+
+    await form.handleSubmit()
+    expect(form.state.fieldMeta.name?.errors).toContain('name is required')
+
+    expect(unmount).toBeTypeOf('function')
+    unmount()
+    expect(form.state.fieldMeta.name?.errors).toContain('name is required')
+    expect(form.state.canSubmit).toBe(false)
+  })
+
   it('should clear meta on unmount while preserving value', async () => {
     const form = new FormApi({
       defaultValues: {
         firstName: 'a',
         lastName: 'abc',
       },
+      cleanupFieldsOnUnmount: true,
       onSubmit: () => {},
     })
 
@@ -1636,7 +1666,8 @@ describe('field api', () => {
       'last name must be at least 5 chars',
     )
 
-    unmountLastName()
+    expect(unmountLastName).toBeTypeOf('function')
+    unmountLastName?.()
 
     expect(form.getFieldValue('lastName')).toBe('abc')
     expect(form.state.fieldMeta.lastName).toMatchObject({
@@ -1673,6 +1704,7 @@ describe('field api', () => {
       defaultValues: {
         name: '',
       },
+      cleanupFieldsOnUnmount: true,
     })
 
     form.mount()
@@ -1694,7 +1726,8 @@ describe('field api', () => {
     field.setValue('trigger')
     await vi.runAllTimersAsync()
 
-    unmount()
+    expect(unmount).toBeTypeOf('function')
+    unmount?.()
     resolveValidation()
     await vi.runAllTimersAsync()
 
@@ -1717,6 +1750,7 @@ describe('field api', () => {
       defaultValues: {
         name: '',
       },
+      cleanupFieldsOnUnmount: true,
       listeners: {
         onChange: formListener,
         onChangeDebounceMs: 200,
@@ -1736,7 +1770,8 @@ describe('field api', () => {
 
     const unmount = field.mount()
     field.setValue('trigger')
-    unmount()
+    expect(unmount).toBeTypeOf('function')
+    unmount?.()
 
     await vi.advanceTimersByTimeAsync(500)
 
@@ -1751,6 +1786,7 @@ describe('field api', () => {
       defaultValues: {
         name: '',
       },
+      cleanupFieldsOnUnmount: true,
     })
 
     form.mount()
@@ -1768,7 +1804,8 @@ describe('field api', () => {
     newField.mount()
     newField.setValue('new value')
 
-    oldUnmount()
+    expect(oldUnmount).toBeTypeOf('function')
+    oldUnmount?.()
 
     expect(form.getFieldInfo('name').instance).toBe(newField)
     expect(newField.getValue()).toBe('new value')

@@ -337,6 +337,7 @@ describe('useField', () => {
           firstName: '',
           lastName: '',
         },
+        cleanupFieldsOnUnmount: true,
         onSubmit: ({ value }) => onSubmit(value),
       })
 
