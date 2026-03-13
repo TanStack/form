@@ -1667,7 +1667,7 @@ describe('field api', () => {
     )
 
     expect(unmountLastName).toBeTypeOf('function')
-    unmountLastName?.()
+    unmountLastName()
 
     expect(form.getFieldValue('lastName')).toBe('abc')
     expect(form.state.fieldMeta.lastName).toMatchObject({
@@ -1727,7 +1727,7 @@ describe('field api', () => {
     await vi.runAllTimersAsync()
 
     expect(unmount).toBeTypeOf('function')
-    unmount?.()
+    unmount()
     resolveValidation()
     await vi.runAllTimersAsync()
 
@@ -1771,7 +1771,7 @@ describe('field api', () => {
     const unmount = field.mount()
     field.setValue('trigger')
     expect(unmount).toBeTypeOf('function')
-    unmount?.()
+    unmount()
 
     await vi.advanceTimersByTimeAsync(500)
 
@@ -1805,7 +1805,7 @@ describe('field api', () => {
     newField.setValue('new value')
 
     expect(oldUnmount).toBeTypeOf('function')
-    oldUnmount?.()
+    oldUnmount()
 
     expect(form.getFieldInfo('name').instance).toBe(newField)
     expect(newField.getValue()).toBe('new value')
