@@ -448,7 +448,9 @@ export function createFormHook<
     UnwrapOrAny<TFormComponents>,
     UnwrapOrAny<TRenderProps>
   >['render'] {
-    return (innerProps) => render({ ...props, ...innerProps })
+    return function Render(innerProps) {
+      return render({ ...props, ...innerProps })
+    }
   }
 
   function withFieldGroup<
