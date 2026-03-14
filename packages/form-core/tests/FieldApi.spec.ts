@@ -1810,6 +1810,28 @@ describe('field api', () => {
     vi.useRealTimers()
   })
 
+  it('should ignore cleanup when fieldInfo was deleted before unmount', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+      cleanupFieldsOnUnmount: true,
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    const unmount = field.mount()
+    form.deleteField('name')
+
+    expect(unmount).toBeTypeOf('function')
+    expect(() => unmount()).not.toThrow()
+  })
+
   it('should not clear newer instance state when older instance unmounts', () => {
     const form = new FormApi({
       defaultValues: {
@@ -1878,6 +1900,84 @@ describe('field api', () => {
     await vi.runAllTimersAsync()
 
     expect(newField.getMeta().errors).toContain('name is taken')
+
+    vi.useRealTimers()
+  })
+
+  it('should ignore stale async validation results from an older remounted instance', async () => {
+    vi.useFakeTimers()
+
+    let resolve!: () => void
+    const promise = new Promise((r) => {
+      resolve = r as never
+    })
+
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+      cleanupFieldsOnUnmount: true,
+    })
+
+    form.mount()
+
+    const oldField = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChangeAsyncDebounceMs: 0,
+        onChangeAsync: async () => {
+          await promise
+          return 'stale error'
+        },
+      },
+    })
+
+    oldField.mount()
+    oldField.setValue('taken')
+    await vi.runAllTimersAsync()
+
+    const newField = new FieldApi({
+      form,
+      name: 'name',
+    })
+    newField.mount()
+
+    resolve()
+    await vi.runAllTimersAsync()
+
+    expect(newField.getMeta().errors).toStrictEqual([])
+
+    vi.useRealTimers()
+  })
+
+  it('should surface thrown async validator errors', async () => {
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      validators: {
+        onChangeAsyncDebounceMs: 0,
+        onChangeAsync: async () => {
+          throw 'async validation failed'
+        },
+      },
+    })
+
+    field.mount()
+    field.setValue('test')
+    await vi.runAllTimersAsync()
+
+    expect(field.getMeta().errors).toContain('async validation failed')
 
     vi.useRealTimers()
   })
