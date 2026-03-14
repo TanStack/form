@@ -2229,6 +2229,61 @@ describe('field api', () => {
     ])
   })
 
+  it('should cancel linked field async validation when the target field unmounts', async () => {
+    vi.useFakeTimers()
+
+    let resolve!: () => void
+    const promise = new Promise((r) => {
+      resolve = r as never
+    })
+
+    const form = new FormApi({
+      defaultValues: {
+        password: '',
+        confirm_password: '',
+      },
+      cleanupFieldsOnUnmount: true,
+    })
+
+    form.mount()
+
+    const passField = new FieldApi({
+      form,
+      name: 'password',
+    })
+
+    const passconfirmField = new FieldApi({
+      form,
+      name: 'confirm_password',
+      validators: {
+        onChangeListenTo: ['password'],
+        onChangeAsyncDebounceMs: 0,
+        onChangeAsync: async () => {
+          await promise
+          return 'Passwords do not match'
+        },
+      },
+    })
+
+    passField.mount()
+    const unmount = passconfirmField.mount()
+
+    passField.setValue('one')
+    await vi.runAllTimersAsync()
+
+    expect(unmount).toBeTypeOf('function')
+    unmount()
+    resolve()
+    await vi.runAllTimersAsync()
+
+    expect(form.state.fieldMeta.confirm_password).toMatchObject({
+      errors: [],
+      isValid: true,
+    })
+
+    vi.useRealTimers()
+  })
+
   it('should add  a new value to the fieldApi errorMap', () => {
     interface Form {
       name: string

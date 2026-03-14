@@ -1863,12 +1863,13 @@ export class FieldApi<
       promises: Promise<ValidationError | undefined>[],
     ) => {
       const errorMapKey = getErrorMapKey(validateObj.cause)
-      const fieldValidatorMeta = field.getInfo().validationMetaMap[errorMapKey]
+      const fieldInfo = field.getInfo()
+      const fieldValidatorMeta = fieldInfo.validationMetaMap[errorMapKey]
 
       fieldValidatorMeta?.lastAbortController.abort()
       const controller = new AbortController()
 
-      this.getInfo().validationMetaMap[errorMapKey] = {
+      fieldInfo.validationMetaMap[errorMapKey] = {
         lastAbortController: controller,
       }
 
@@ -1877,11 +1878,11 @@ export class FieldApi<
           let rawError!: ValidationError | undefined
           try {
             rawError = await new Promise((rawResolve, rawReject) => {
-              if (this.timeoutIds.validations[validateObj.cause]) {
-                clearTimeout(this.timeoutIds.validations[validateObj.cause]!)
+              if (field.timeoutIds.validations[validateObj.cause]) {
+                clearTimeout(field.timeoutIds.validations[validateObj.cause]!)
               }
 
-              this.timeoutIds.validations[validateObj.cause] = setTimeout(
+              field.timeoutIds.validations[validateObj.cause] = setTimeout(
                 async () => {
                   if (controller.signal.aborted) return rawResolve(undefined)
                   try {
@@ -1911,13 +1912,19 @@ export class FieldApi<
 
           const fieldLevelError = normalizeError(rawError)
           const formLevelError =
-            asyncFormValidationResults[this.name]?.[errorMapKey]
+            asyncFormValidationResults[
+              field.name as keyof typeof asyncFormValidationResults
+            ]?.[errorMapKey]
 
           const { newErrorValue, newSource } =
             determineFieldLevelErrorSourceAndValue({
               formLevelError,
               fieldLevelError,
             })
+
+          if (field.getInfo().instance !== field) {
+            return resolve(undefined)
+          }
 
           field.setMeta((prev) => {
             return {
