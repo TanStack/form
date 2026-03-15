@@ -913,7 +913,7 @@ importers:
         specifier: ^1.28.5
         version: link:../../../packages/solid-form
       solid-js:
-        specifier: ^1.9.10
+        specifier: ^1.9.9
         version: 1.9.11
     devDependencies:
       typescript:
@@ -938,7 +938,7 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/solid-form-devtools
       solid-js:
-        specifier: ^1.9.10
+        specifier: ^1.9.9
         version: 1.9.11
     devDependencies:
       typescript:
@@ -957,7 +957,7 @@ importers:
         specifier: ^1.28.5
         version: link:../../../packages/solid-form
       solid-js:
-        specifier: ^1.9.10
+        specifier: ^1.9.9
         version: 1.9.11
     devDependencies:
       typescript:
@@ -976,7 +976,7 @@ importers:
         specifier: ^1.28.5
         version: link:../../../packages/solid-form
       solid-js:
-        specifier: ^1.9.10
+        specifier: ^1.9.9
         version: 1.9.11
     devDependencies:
       typescript:
@@ -1007,7 +1007,7 @@ importers:
         specifier: ^19.0.0
         version: 19.1.0(react@19.1.0)
       solid-js:
-        specifier: ^1.9.10
+        specifier: ^1.9.9
         version: 1.9.11
       valibot:
         specifier: ^1.1.0
@@ -1490,7 +1490,7 @@ importers:
         version: 0.9.1(solid-js@1.9.11)
     devDependencies:
       solid-js:
-        specifier: ^1.9.10
+        specifier: ^1.9.9
         version: 1.9.11
       vite:
         specifier: ^7.2.2
@@ -1508,7 +1508,7 @@ importers:
         specifier: workspace:*
         version: link:../form-devtools
       solid-js:
-        specifier: '>=1.9.10'
+        specifier: '>=1.9.7'
         version: 1.9.11
     devDependencies:
       vite-plugin-solid:
