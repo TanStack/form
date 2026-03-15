@@ -1,5 +1,11 @@
 # @tanstack/form-devtools
 
+## 0.2.19
+
+### Patch Changes
+
+- Extract devtools theme to form devtools ([#2079](https://github.com/TanStack/form/pull/2079))
+
 ## 0.2.18
 
 ### Patch Changes

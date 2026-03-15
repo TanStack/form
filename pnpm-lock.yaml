@@ -402,7 +402,7 @@ importers:
         specifier: ^0.9.7
         version: 0.9.10(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.11)
       '@tanstack/react-form-devtools':
-        specifier: ^0.2.18
+        specifier: ^0.2.19
         version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.0.7
@@ -464,7 +464,7 @@ importers:
         specifier: ^0.9.7
         version: 0.9.10(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.11)
       '@tanstack/react-form-devtools':
-        specifier: ^0.2.18
+        specifier: ^0.2.19
         version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.0.7
@@ -495,7 +495,7 @@ importers:
         specifier: ^0.9.7
         version: 0.9.10(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.11)
       '@tanstack/react-form-devtools':
-        specifier: ^0.2.18
+        specifier: ^0.2.19
         version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.0.7
@@ -529,7 +529,7 @@ importers:
         specifier: ^0.9.7
         version: 0.9.10(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.11)
       '@tanstack/react-form-devtools':
-        specifier: ^0.2.18
+        specifier: ^0.2.19
         version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.0.7
@@ -560,7 +560,7 @@ importers:
         specifier: ^0.9.7
         version: 0.9.10(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.11)
       '@tanstack/react-form-devtools':
-        specifier: ^0.2.18
+        specifier: ^0.2.19
         version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.0.7
@@ -659,7 +659,7 @@ importers:
         specifier: ^0.9.7
         version: 0.9.10(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.11)
       '@tanstack/react-form-devtools':
-        specifier: ^0.2.18
+        specifier: ^0.2.19
         version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.0.7
@@ -736,7 +736,7 @@ importers:
         specifier: ^0.9.7
         version: 0.9.10(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.11)
       '@tanstack/react-form-devtools':
-        specifier: ^0.2.18
+        specifier: ^0.2.19
         version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.0.7
@@ -779,7 +779,7 @@ importers:
         specifier: ^0.9.7
         version: 0.9.10(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.11)
       '@tanstack/react-form-devtools':
-        specifier: ^0.2.18
+        specifier: ^0.2.19
         version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.0.7
@@ -819,7 +819,7 @@ importers:
         specifier: ^0.9.7
         version: 0.9.10(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.11)
       '@tanstack/react-form-devtools':
-        specifier: ^0.2.18
+        specifier: ^0.2.19
         version: link:../../../packages/react-form-devtools
       '@types/node':
         specifier: ^24.1.0
@@ -886,7 +886,7 @@ importers:
         specifier: ^0.9.7
         version: 0.9.10(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(solid-js@1.9.11)
       '@tanstack/react-form-devtools':
-        specifier: ^0.2.18
+        specifier: ^0.2.19
         version: link:../../../packages/react-form-devtools
       '@types/react':
         specifier: ^19.0.7

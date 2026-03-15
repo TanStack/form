@@ -1,5 +1,14 @@
 # @tanstack/solid-form-devtools
 
+## 0.2.19
+
+### Patch Changes
+
+- Extract devtools theme to form devtools ([#2079](https://github.com/TanStack/form/pull/2079))
+
+- Updated dependencies [[`458a9be`](https://github.com/TanStack/form/commit/458a9be617fe5ed3283795aca91f08d3b83412cd)]:
+  - @tanstack/form-devtools@0.2.19
+
 ## 0.2.18
 
 ### Patch Changes
