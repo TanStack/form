@@ -512,6 +512,127 @@ describe('field group api', () => {
     expect(form.state.values.nested.field.name).toBeUndefined()
   })
 
+  it('should deleteAllFields for string field groups', () => {
+    const defaultValues = {
+      nested: {
+        field: {
+          name: 'hello',
+        },
+      },
+    }
+
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'nested.field.name',
+    })
+    field.mount()
+
+    const group = new FieldGroupApi({
+      defaultValues: { name: '' },
+      form,
+      fields: 'nested.field',
+    })
+    group.mount()
+
+    group.deleteAllFields()
+
+    expect(form.state.values.nested.field).toEqual({})
+  })
+
+  it('should deleteAllFields for mapped field groups', () => {
+    type FormVals = {
+      a: string
+      b: string
+    }
+
+    const defaultValues: FormVals = { a: 'A', b: 'B' }
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const group = new FieldGroupApi({
+      form,
+      fields: {
+        firstName: 'a',
+        lastName: 'b',
+      },
+      defaultValues: { firstName: '', lastName: '' },
+    })
+    group.mount()
+
+    group.deleteAllFields()
+
+    expect(form.state.values.a).toBeUndefined()
+    expect(form.state.values.b).toBeUndefined()
+  })
+
+  it('should replaceAllFields for string field groups', () => {
+    const defaultValues: FormValues = {
+      name: '',
+      age: 0,
+      people: [],
+      relatives: {
+        father: {
+          name: 'father',
+          age: 10,
+        },
+      },
+    }
+
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const group = new FieldGroupApi({
+      defaultValues: {} as Person,
+      form,
+      fields: 'relatives.father',
+    })
+    group.mount()
+
+    group.replaceAllFields({ name: 'New name', age: 99 })
+
+    expect(form.state.values.relatives.father).toEqual({
+      name: 'New name',
+      age: 99,
+    })
+  })
+
+  it('should replaceAllFields for mapped field groups', () => {
+    type FormVals = {
+      a: string
+      b: string
+    }
+
+    const defaultValues: FormVals = { a: 'A', b: 'B' }
+    const form = new FormApi({
+      defaultValues,
+    })
+    form.mount()
+
+    const group = new FieldGroupApi({
+      form,
+      fields: {
+        firstName: 'a',
+        lastName: 'b',
+      },
+      defaultValues: { firstName: '', lastName: '' },
+    })
+    group.mount()
+
+    group.replaceAllFields({ firstName: 'X', lastName: 'Y' })
+
+    expect(form.state.values.a).toBe('X')
+    expect(form.state.values.b).toBe('Y')
+  })
+
   it('should forward array methods to the form', async () => {
     vi.useFakeTimers()
     const defaultValues = {
