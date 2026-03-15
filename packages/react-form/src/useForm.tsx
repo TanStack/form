@@ -236,6 +236,9 @@ export function useForm<
       get state() {
         return formApi.store.state
       },
+      get options() {
+        return formApi.options
+      },
     } as never
 
     extendedApi.Field = function APIField(props) {
