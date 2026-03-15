@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useReducer, useRef, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import { FieldApi, functionalUpdate } from '@tanstack/form-core'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
@@ -221,6 +221,14 @@ export function useField<
     setPrevOptions({ form: opts.form, name: opts.name })
   }
 
+  // For array mode, track a version counter that bumps on structural operations
+  // (swapValues/moveValue) so re-orders trigger re-renders even when length stays the same.
+  // See: https://github.com/TanStack/form/issues/2018
+  const [arrayStructuralVersion, bumpArrayStructuralVersion] = useReducer(
+    (v: number) => v + 1,
+    0,
+  )
+
   // For array mode, only track length changes to avoid re-renders when child properties change
   // See: https://github.com/TanStack/form/issues/1925
   const reactiveStateValue = useStore(
@@ -323,6 +331,26 @@ export function useField<
 
     extendedApi.Field = Field as never
 
+    // Wrap swapValues and moveValue for mode="array" so that re-ordering
+    // triggers a re-render even when the array length doesn't change.
+    // See: https://github.com/TanStack/form/issues/2018
+    if (opts.mode === 'array') {
+      const originalSwapValues = extendedApi.swapValues.bind(extendedApi)
+      extendedApi.swapValues = (
+        ...args: Parameters<typeof extendedApi.swapValues>
+      ) => {
+        originalSwapValues(...args)
+        bumpArrayStructuralVersion()
+      }
+      const originalMoveValue = extendedApi.moveValue.bind(extendedApi)
+      extendedApi.moveValue = (
+        ...args: Parameters<typeof extendedApi.moveValue>
+      ) => {
+        originalMoveValue(...args)
+        bumpArrayStructuralVersion()
+      }
+    }
+
     return extendedApi
   }, [
     fieldApi,
@@ -334,6 +362,8 @@ export function useField<
     reactiveMetaErrorMap,
     reactiveMetaErrorSourceMap,
     reactiveMetaIsValidating,
+    arrayStructuralVersion,
+    bumpArrayStructuralVersion,
   ])
 
   useIsomorphicLayoutEffect(fieldApi.mount, [fieldApi])
