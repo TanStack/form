@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@tanstack/react-devtools": "^0.9.7",
-    "@tanstack/react-form-devtools": "^0.2.18",
+    "@tanstack/react-form-devtools": "^0.2.19",
     "@types/node": "^24.1.0",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
