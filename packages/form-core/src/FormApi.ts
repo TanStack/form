@@ -374,6 +374,11 @@ export interface FormOptions<
    */
   canSubmitWhenInvalid?: boolean
   /**
+   * If true, mounted fields clean up their validation state when they unmount.
+   * Defaults to false.
+   */
+  cleanupFieldsOnUnmount?: boolean
+  /**
    * A list of validators to pass to the form
    */
   validators?: FormValidators<
@@ -925,7 +930,7 @@ export class FormApi<
   /**
    * A record of field information for each field in the form.
    */
-  fieldInfo: Record<DeepKeys<TFormData>, FieldInfo<TFormData>> = {} as any
+  fieldInfo: Partial<Record<DeepKeys<TFormData>, FieldInfo<TFormData>>> = {}
 
   get state() {
     return this.store.state
@@ -1603,7 +1608,6 @@ export class FormApi<
     field: TField,
     cause: ValidationCause,
   ) => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const fieldInstance = this.fieldInfo[field]?.instance
 
     if (!fieldInstance) {
@@ -2222,7 +2226,6 @@ export class FormApi<
   getFieldInfo = <TField extends DeepKeys<TFormData>>(
     field: TField,
   ): FieldInfo<TFormData> => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     return (this.fieldInfo[field] ||= {
       instance: null,
       validationMetaMap: {
