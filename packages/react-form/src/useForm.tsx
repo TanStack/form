@@ -1,8 +1,8 @@
 'use client'
 
-import { FormApi, functionalUpdate } from '@tanstack/form-core'
+import { FormApi, functionalUpdate, mergeAndUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/react-store'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import { useFormId } from './useFormId'
@@ -16,7 +16,6 @@ import type {
 } from '@tanstack/form-core'
 import type { FunctionComponent, PropsWithChildren, ReactNode } from 'react'
 import type { FieldComponent } from './useField'
-import type { NoInfer } from '@tanstack/react-store'
 
 /**
  * Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`
@@ -140,11 +139,11 @@ export type ReactFormExtendedApi<
 
 function LocalSubscribe({
   form,
-  selector,
+  selector = (state) => state,
   children,
 }: PropsWithChildren<{
   form: AnyFormApi
-  selector: (state: AnyFormState) => AnyFormState
+  selector?: (state: AnyFormState) => AnyFormState
 }>): ReturnType<FunctionComponent> {
   const data = useStore(form.store, selector)
 
@@ -264,6 +263,18 @@ export function useForm<
    */
   useIsomorphicLayoutEffect(() => {
     formApi.update(opts)
+  })
+
+  const hasRan = useRef(false)
+
+  useIsomorphicLayoutEffect(() => {
+    if (!hasRan.current) return
+    if (!opts?.transform) return
+    mergeAndUpdate(formApi, opts.transform as never)
+  }, [formApi, opts?.transform])
+
+  useIsomorphicLayoutEffect(() => {
+    hasRan.current = true
   })
 
   return extendedFormApi

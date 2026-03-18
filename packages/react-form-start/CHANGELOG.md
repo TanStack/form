@@ -1,5 +1,67 @@
 # @tanstack/react-form-start
 
+## 1.28.5
+
+### Patch Changes
+
+- Updated dependencies [[`704fefa`](https://github.com/TanStack/form/commit/704fefa8e9f178e49a36250d706756d8b3fd3cca), [`7ca9898`](https://github.com/TanStack/form/commit/7ca989800f697d94d3b5850e5204ea0a3b670461)]:
+  - @tanstack/react-form@1.28.5
+
+## 1.28.4
+
+### Patch Changes
+
+- Fixes bad inference from `decode-formdata`'s weird typing of the `decode` function, including handling how it incorrectly doesn't handle undefined values for the form info object. ([#2052](https://github.com/TanStack/form/pull/2052))
+
+- Updated dependencies [[`f88faaf`](https://github.com/TanStack/form/commit/f88faaf72d265fdcbe99887421bd97dd03cb703e)]:
+  - @tanstack/react-form@1.28.4
+
+## 1.28.3
+
+### Patch Changes
+
+- Updated dependencies [[`0b3952d`](https://github.com/TanStack/form/commit/0b3952d9805b4f1756829faa012e4112c14859a7)]:
+  - @tanstack/react-form@1.28.3
+
+## 1.28.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.28.2
+
+## 1.28.1
+
+### Patch Changes
+
+- Removed a console.log statement in `src/createServerValidate.tsx` that was logging the whole data object during server-side validation. ([#2010](https://github.com/TanStack/form/pull/2010))
+
+- Fix various issues with SSR. Things should now work as-expected in many many more scenarios than before ([#1890](https://github.com/TanStack/form/pull/1890))
+
+- Updated dependencies [[`e954177`](https://github.com/TanStack/form/commit/e9541771b5204efa43fb9f00c38e36cef9964fb4), [`72d970a`](https://github.com/TanStack/form/commit/72d970add6ab682d733e35a95e5e1f44efb695d2)]:
+  - @tanstack/react-form@1.28.1
+
+## 1.28.0
+
+### Patch Changes
+
+- Updated dependencies [[`41faffe`](https://github.com/TanStack/form/commit/41faffee657e753b37132275c2255d29fdd3f325), [`a7eda7a`](https://github.com/TanStack/form/commit/a7eda7a388f3dd38ed8b395d11034c6760aff84e)]:
+  - @tanstack/react-form@1.28.0
+
+## 1.27.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.27.7
+
+## 1.27.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.27.6
+
 ## 1.27.5
 
 ### Patch Changes

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { render } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 import { formOptions } from '@tanstack/form-core'
 import userEvent from '@testing-library/user-event'
 import { createFormHook, createFormHookContexts, useStore } from '../src'
@@ -31,16 +31,17 @@ function SubscribeButton({ label }: { label: string }) {
   )
 }
 
-const { useAppForm, withForm, withFieldGroup } = createFormHook({
-  fieldComponents: {
-    TextField,
-  },
-  formComponents: {
-    SubscribeButton,
-  },
-  fieldContext,
-  formContext,
-})
+const { useAppForm, withForm, withFieldGroup, useTypedAppFormContext } =
+  createFormHook({
+    fieldComponents: {
+      TextField,
+    },
+    formComponents: {
+      SubscribeButton,
+    },
+    fieldContext,
+    formContext,
+  })
 
 describe('createFormHook', () => {
   it('should allow to set default value', () => {
@@ -579,5 +580,182 @@ describe('createFormHook', () => {
 
     await user.click(target)
     expect(result).toHaveTextContent('1')
+  })
+
+  it('should allow using typed app form', () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    const formOpts = formOptions({
+      defaultValues: {
+        firstName: 'FirstName',
+        lastName: 'LastName',
+      } as Person,
+    })
+
+    function Child() {
+      const form = useTypedAppFormContext(formOpts)
+
+      return (
+        <form.AppField
+          name="firstName"
+          children={(field) => <field.TextField label="Testing" />}
+        />
+      )
+    }
+
+    function Parent() {
+      const form = useAppForm({
+        defaultValues: {
+          firstName: 'FirstName',
+          lastName: 'LastName',
+        } as Person,
+      })
+
+      return (
+        <form.AppForm>
+          <Child />
+        </form.AppForm>
+      )
+    }
+
+    const { getByLabelText } = render(<Parent />)
+    const input = getByLabelText('Testing')
+    expect(input).toHaveValue('FirstName')
+  })
+
+  it('should throw if `useTypedAppFormContext` is used without AppForm', () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    const formOpts = formOptions({
+      defaultValues: {
+        firstName: 'FirstName',
+        lastName: 'LastName',
+      } as Person,
+    })
+
+    function Child() {
+      const form = useTypedAppFormContext(formOpts)
+
+      return (
+        <form.AppField
+          name="firstName"
+          children={(field) => <field.TextField label="Testing" />}
+        />
+      )
+    }
+
+    function Parent() {
+      const form = useAppForm({
+        defaultValues: {
+          firstName: 'FirstName',
+          lastName: 'LastName',
+        } as Person,
+      })
+
+      return <Child />
+    }
+
+    expect(() => render(<Parent />)).toThrow()
+  })
+
+  it('should allow using typed app form with form components', () => {
+    type Person = {
+      firstName: string
+      lastName: string
+    }
+    const formOpts = formOptions({
+      defaultValues: {
+        firstName: 'FirstName',
+        lastName: 'LastName',
+      } as Person,
+    })
+
+    function Child() {
+      const form = useTypedAppFormContext(formOpts)
+
+      return <form.SubscribeButton label="Testing" />
+    }
+
+    function Parent() {
+      const form = useAppForm({
+        defaultValues: {
+          firstName: 'FirstName',
+          lastName: 'LastName',
+        } as Person,
+      })
+
+      return (
+        <form.AppForm>
+          <Child />
+        </form.AppForm>
+      )
+    }
+
+    const { getByText } = render(<Parent />)
+    const button = getByText('Testing')
+    expect(button).toBeInTheDocument()
+  })
+
+  it('should render FieldGroup Subscribe without selector (default identity)', async () => {
+    const formOpts = formOptions({
+      defaultValues: {
+        person: {
+          firstName: 'FirstName',
+          lastName: 'LastName',
+        },
+      },
+    })
+
+    const ChildFormAsField = withFieldGroup({
+      defaultValues: formOpts.defaultValues.person,
+      render: ({ group }) => {
+        return (
+          <div>
+            <group.Field
+              name="lastName"
+              children={(field) => (
+                <label>
+                  Last Name:
+                  <input
+                    data-testid="lastName"
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                </label>
+              )}
+            />
+            <group.Subscribe
+              children={(state) => (
+                <span data-testid="state-lastName">
+                  {state.values.lastName}
+                </span>
+              )}
+            />
+          </div>
+        )
+      },
+    })
+
+    const Parent = () => {
+      const form = useAppForm({
+        ...formOpts,
+      })
+      return <ChildFormAsField form={form} fields="person" />
+    }
+
+    const { getByTestId } = render(<Parent />)
+    const input = getByTestId('lastName')
+    const stateLastName = getByTestId('state-lastName')
+
+    expect(stateLastName).toHaveTextContent('LastName')
+
+    await user.clear(input)
+    await user.type(input, 'Updated')
+    await waitFor(() => expect(stateLastName).toHaveTextContent('Updated'))
   })
 })

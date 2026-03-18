@@ -27,7 +27,7 @@ As a result, TanStack Form supports multiple methods for validation:
 
 ## Controlled is Cool
 
-In a world where controlled vs uncontrolled inputs are a hot topic, TanStack Form is firmly in the controlled camp.
+In a world where controlled vs. uncontrolled inputs are a hot topic, TanStack Form is firmly in the controlled camp.
 
 This comes with a number of advantages:
 
@@ -45,13 +45,13 @@ When writing sufficiently correct TanStack Form code, you should not be able to 
 
 Instead of:
 
-```typescript
+```ts
 useForm<MyForm>()
 ```
 
 You should do:
 
-```typescript
+```ts
 interface Person {
   name: string
   age: number
@@ -70,7 +70,7 @@ One of the main objectives of TanStack Form is that you should be wrapping it in
 
 To support this, we have a number of utilities that make it easier to build your own components and customized hooks:
 
-```typescript
+```ts
 // Exported from your own library with pre-bound components for your forms.
 export const { useAppForm, withForm } = createFormHook(/* options */)
 ```

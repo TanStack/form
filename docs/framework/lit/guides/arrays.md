@@ -86,7 +86,7 @@ return html`
 export class TestForm extends LitElement {
   #form = new TanStackFormController(this, {
     defaultValues: {
-      people: [] as Array<{ name: string}>,
+      people: [] as Array<{ name: string }>,
     },
   });
   render() {

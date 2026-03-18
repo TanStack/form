@@ -9,16 +9,16 @@
     "start": "node .output/server/index.mjs"
   },
   "dependencies": {
-    "@tanstack/react-devtools": "^0.7.8",
-    "@tanstack/react-form-devtools": "^0.2.8",
-    "@tanstack/react-form-start": "^1.27.5",
+    "@tanstack/react-form-start": "^1.28.5",
     "@tanstack/react-router": "^1.134.9",
     "@tanstack/react-start": "^1.134.9",
-    "@tanstack/react-store": "^0.8.0",
+    "@tanstack/react-store": "^0.9.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@tanstack/react-devtools": "^0.9.7",
+    "@tanstack/react-form-devtools": "^0.2.19",
     "@types/node": "^24.1.0",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",

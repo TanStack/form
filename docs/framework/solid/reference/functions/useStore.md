@@ -5,66 +5,39 @@ title: useStore
 
 # Function: useStore()
 
-## Call Signature
-
 ```ts
-function useStore<TState, TSelected>(store, selector?): Accessor<TSelected>;
+function useStore<TState, TSelected>(
+   store, 
+   selector?, 
+options?): Accessor<TSelected>;
 ```
 
-Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.7.7\_solid-js@1.9.9/node\_modules/@tanstack/solid-store/dist/esm/index.d.ts:8
+Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.9.1\_solid-js@1.9.11/node\_modules/@tanstack/solid-store/dist/esm/index.d.ts:8
 
-### Type Parameters
+## Type Parameters
 
-#### TState
+### TState
 
 `TState`
 
-#### TSelected
+### TSelected
 
 `TSelected` = `NoInfer`\<`TState`\>
 
-### Parameters
+## Parameters
 
-#### store
+### store
 
-`Store`\<`TState`, `any`\>
+`Atom`\<`TState`\> | `ReadonlyAtom`\<`TState`\>
 
-#### selector?
-
-(`state`) => `TSelected`
-
-### Returns
-
-`Accessor`\<`TSelected`\>
-
-## Call Signature
-
-```ts
-function useStore<TState, TSelected>(store, selector?): Accessor<TSelected>;
-```
-
-Defined in: node\_modules/.pnpm/@tanstack+solid-store@0.7.7\_solid-js@1.9.9/node\_modules/@tanstack/solid-store/dist/esm/index.d.ts:9
-
-### Type Parameters
-
-#### TState
-
-`TState`
-
-#### TSelected
-
-`TSelected` = `NoInfer`\<`TState`\>
-
-### Parameters
-
-#### store
-
-`Derived`\<`TState`, `any`\>
-
-#### selector?
+### selector?
 
 (`state`) => `TSelected`
 
-### Returns
+### options?
+
+`UseStoreOptions`\<`TSelected`\>
+
+## Returns
 
 `Accessor`\<`TSelected`\>

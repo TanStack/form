@@ -1,5 +1,92 @@
 # @tanstack/react-form-devtools
 
+## 0.2.19
+
+### Patch Changes
+
+- Extract devtools theme to form devtools ([#2079](https://github.com/TanStack/form/pull/2079))
+
+- Updated dependencies [[`458a9be`](https://github.com/TanStack/form/commit/458a9be617fe5ed3283795aca91f08d3b83412cd)]:
+  - @tanstack/form-devtools@0.2.19
+
+## 0.2.18
+
+### Patch Changes
+
+- Upgrade packages and fixed theme pacakge missmatch ([#2072](https://github.com/TanStack/form/pull/2072))
+
+- Updated dependencies [[`39932c1`](https://github.com/TanStack/form/commit/39932c1da28b5e4ea4b73f8b488d92fc100ccc41)]:
+  - @tanstack/form-devtools@0.2.18
+
+## 0.2.17
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.17
+
+## 0.2.16
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.16
+
+## 0.2.15
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.15
+
+## 0.2.14
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.14
+
+## 0.2.13
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.13
+
+## 0.2.12
+
+### Patch Changes
+
+- Bump devtools utils to latest versions. ([#1995](https://github.com/TanStack/form/pull/1995))
+
+- use explicit paths for the devtools production exports ([#1989](https://github.com/TanStack/form/pull/1989))
+
+- Updated dependencies [[`f1c23d0`](https://github.com/TanStack/form/commit/f1c23d01e6afaf5d945d662188fdeaef00151ceb)]:
+  - @tanstack/form-devtools@0.2.12
+
+## 0.2.11
+
+### Patch Changes
+
+- fix the issue of the devtools throwing an error in strict mode ([#1978](https://github.com/TanStack/form/pull/1978))
+
+- Updated dependencies [[`3f3d484`](https://github.com/TanStack/form/commit/3f3d4849087355d3b2759b46f34874ff75abb5ab)]:
+  - @tanstack/form-devtools@0.2.11
+
+## 0.2.10
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.10
+
+## 0.2.9
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.9
+
 ## 0.2.8
 
 ### Patch Changes

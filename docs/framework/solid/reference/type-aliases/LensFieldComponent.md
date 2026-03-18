@@ -12,7 +12,7 @@ type LensFieldComponent<TLensData, TParentSubmitMeta, ExtendedApi> = <TName, TDa
 }) => JSX.Element;
 ```
 
-Defined in: [packages/solid-form/src/createField.tsx:632](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L632)
+Defined in: [packages/solid-form/src/createField.tsx:639](https://github.com/TanStack/form/blob/main/packages/solid-form/src/createField.tsx#L639)
 
 A type alias representing a field component for a form lens data type.
 

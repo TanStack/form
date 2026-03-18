@@ -58,7 +58,7 @@ const serverValidate = createServerValidate({
 export const handleForm = createServerFn({
   method: 'POST',
 })
-  .validator((data: unknown) => {
+  .inputValidator((data: unknown) => {
     if (!(data instanceof FormData)) {
       throw new Error('Invalid form data')
     }
@@ -106,8 +106,8 @@ Finally, we'll use `getFormDataFromServer` in our loader to get the state from o
 
 ```tsx
 // app/routes/index.tsx
+import { createFileRoute } from '@tanstack/react-router'
 import {
-  createFileRoute
   mergeForm,
   useForm,
   useStore,
@@ -256,7 +256,7 @@ Finally, we'll use `someAction` in our client-side form component.
 
 import { useActionState } from 'react'
 import {
-  initialFormState
+  initialFormState,
   mergeForm,
   useForm,
   useStore,
@@ -412,7 +412,7 @@ Finally, the `action` will be called when the form submits.
 import {
   Form,
   mergeForm,
-  useActionData
+  useActionData,
   useForm,
   useStore,
   useTransform,

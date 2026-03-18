@@ -9,7 +9,7 @@ title: ValidationMeta
 type ValidationMeta = object;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:535](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L535)
+Defined in: [packages/form-core/src/FormApi.ts:481](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L481)
 
 An object representing the validation metadata for a field. Not intended for public usage.
 
@@ -21,6 +21,6 @@ An object representing the validation metadata for a field. Not intended for pub
 lastAbortController: AbortController;
 ```
 
-Defined in: [packages/form-core/src/FormApi.ts:539](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L539)
+Defined in: [packages/form-core/src/FormApi.ts:485](https://github.com/TanStack/form/blob/main/packages/form-core/src/FormApi.ts#L485)
 
 An abort controller stored in memory to cancel previous async validation attempts.
