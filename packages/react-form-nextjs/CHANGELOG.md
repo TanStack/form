@@ -1,5 +1,12 @@
 # @tanstack/react-form-nextjs
 
+## 1.27.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/react-form@1.27.5
+
 ## 1.27.4
 
 ### Patch Changes
