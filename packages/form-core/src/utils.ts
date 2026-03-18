@@ -44,20 +44,6 @@ export function getBy(obj: unknown, path: string | (string | number)[]): any {
 }
 
 /**
- * Check if an object is a File.
- * @private
- */
-export function isFile(obj: any) {
-  return (
-    obj &&
-    typeof obj === 'object' &&
-    'name' in obj &&
-    'size' in obj &&
-    'type' in obj
-  )
-}
-
-/**
  * Set a value on an object using a path, including dot notation.
  * @private
  */
@@ -66,10 +52,7 @@ export function setBy(obj: any, _path: any, updater: Updater<any>) {
 
   function doSet(parent?: any): any {
     if (!path.length) {
-      return functionalUpdate(
-        isFile(updater) ? { file: updater, uuid: uuid() } : updater,
-        parent,
-      )
+      return functionalUpdate(updater, parent)
     }
 
     const key = path.shift()
@@ -439,15 +422,6 @@ export const isGlobalFormValidationError = (
 }
 
 export function evaluate<T>(objA: T, objB: T) {
-  if (objA instanceof File && objB instanceof File) {
-    return (
-      objA.name === objB.name &&
-      objA.size === objB.size &&
-      objA.type === objB.type &&
-      objA.lastModified === objB.lastModified
-    )
-  }
-
   if (Object.is(objA, objB)) {
     return true
   }
@@ -457,6 +431,18 @@ export function evaluate<T>(objA: T, objB: T) {
     objA === null ||
     typeof objB !== 'object' ||
     objB === null
+  ) {
+    return false
+  }
+
+  // Blob (and File, which extends Blob) objects have no own enumerable keys,
+  // so the generic key-comparison below would incorrectly consider any two
+  // Blob/File instances as equal. Fall back to referential identity (already
+  // handled by Object.is above, which returned false).
+  if (
+    typeof Blob !== 'undefined' &&
+    objA instanceof Blob &&
+    objB instanceof Blob
   ) {
     return false
   }

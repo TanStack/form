@@ -4101,35 +4101,30 @@ it('should generate a formId if not provided', () => {
   expect(form.formId.length).toBeGreaterThan(1)
 })
 
-it('should set a file value with uuid when setting a field value with File', () => {
+it('should detect file value changes when setting a different File', () => {
   const form = new FormApi({
     defaultValues: {
-      avatar: undefined,
-    } as { avatar: unknown },
+      avatar: undefined as File | undefined,
+    },
   })
 
   form.mount()
 
   const firstFile = new File(['first'], 'first.png', { type: 'image/png' })
   form.setFieldValue('avatar', firstFile)
-
-  const firstValue = form.state.values.avatar as { file: File; uuid: string }
-
-  expect(firstValue).toBeDefined()
-  expect(isFile(firstValue.file)).toBe(true)
-  expect(firstValue.file.name).toBe('first.png')
-  expect(typeof firstValue.uuid).toBe('string')
-  expect(firstValue.uuid.length).toBeGreaterThan(0)
+  expect(form.getFieldValue('avatar')).toBe(firstFile)
+  expect(form.getFieldValue('avatar')).toBeInstanceOf(File)
+  expect(form.getFieldValue('avatar')!.name).toBe('first.png')
 
   const secondFile = new File(['second'], 'second.png', { type: 'image/png' })
   form.setFieldValue('avatar', secondFile)
+  expect(form.getFieldValue('avatar')).toBe(secondFile)
+  expect(form.getFieldValue('avatar')).toBeInstanceOf(File)
+  expect(form.getFieldValue('avatar')!.name).toBe('second.png')
 
-  const secondValue = form.state.values.avatar as { file: File; uuid: string }
-
-  expect(secondValue.file.name).toBe('second.png')
-  expect(typeof secondValue.uuid).toBe('string')
-  expect(secondValue.uuid.length).toBeGreaterThan(0)
-  expect(secondValue.uuid).not.toBe(firstValue.uuid)
+  // Setting the same file reference again should keep the same value
+  form.setFieldValue('avatar', secondFile)
+  expect(form.getFieldValue('avatar')).toBe(secondFile)
 })
 
 describe('form api event client', () => {
