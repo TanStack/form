@@ -1,5 +1,5 @@
 import { useStore as _useStore } from '@tanstack/react-store'
-import type { AnyAtom } from '@tanstack/store'
+import type { AnyAtom } from '@tanstack/react-store'
 
 type AtomSnapshot<TAtom> = TAtom extends { get: () => infer TSnapshot }
   ? TSnapshot
