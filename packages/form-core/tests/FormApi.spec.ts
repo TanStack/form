@@ -1873,6 +1873,37 @@ describe('form api', () => {
     expect(formSubmit).toHaveBeenCalledOnce()
   })
 
+  it('should create field meta from form async submit validation errors', async () => {
+    vi.useFakeTimers()
+
+    const form = new FormApi({
+      defaultValues: {
+        age: 0,
+      },
+      validators: {
+        onSubmitAsync: async ({ value }) => {
+          await sleep(1)
+          return value.age > 0
+            ? undefined
+            : { fields: { age: 'age must be greater than 0' } }
+        },
+      },
+      asyncDebounceMs: 1,
+    })
+
+    form.mount()
+
+    expect(form.state.fieldMeta.age).toBeUndefined()
+
+    form.handleSubmit()
+    await vi.runAllTimersAsync()
+
+    expect(form.state.fieldMeta.age).toBeDefined()
+    expect(form.state.fieldMeta.age?.errorMap.onSubmit).toBe(
+      'age must be greater than 0',
+    )
+  })
+
   it('should run all types of async validation on fields during submit', async () => {
     vi.useFakeTimers()
 
