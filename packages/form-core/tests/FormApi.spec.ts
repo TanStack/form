@@ -1873,6 +1873,53 @@ describe('form api', () => {
     expect(formSubmit).toHaveBeenCalledOnce()
   })
 
+  it('should run field-level onBlur validators on re-submission to clear stale errors', async () => {
+    // Regression: stale onBlur errors could prevent re-submission because
+    // canSubmit became false and _handleSubmit returned early before running
+    // validateAllFields, which would have re-evaluated and cleared the error.
+    // See: https://github.com/TanStack/form/issues/2034
+    const onSubmit = vi.fn()
+    const onSubmitInvalid = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: { type: 'PIN', pin: '' },
+      onSubmit,
+      onSubmitInvalid,
+    })
+    form.mount()
+
+    // PIN field with an onBlur validator that is only required when type === 'PIN'
+    const pinField = new FieldApi({
+      form,
+      name: 'pin',
+      validators: {
+        onBlur: ({ value }) =>
+          form.getFieldValue('type') === 'PIN' && !value
+            ? 'PIN is required'
+            : undefined,
+      },
+    })
+    pinField.mount()
+
+    // Simulate user touching and blurring the PIN field while type is 'PIN'
+    pinField.handleBlur()
+    expect(pinField.state.meta.errorMap.onBlur).toBe('PIN is required')
+
+    // First submit: form is invalid, onSubmitInvalid is called
+    await form.handleSubmit()
+    expect(onSubmitInvalid).toHaveBeenCalledTimes(1)
+    expect(onSubmit).not.toHaveBeenCalled()
+
+    // User switches type to 'Card' — PIN is no longer required
+    form.setFieldValue('type', 'Card')
+
+    // Second submit: the onBlur error is stale (PIN field still has it), but
+    // re-running validators on submit should clear it since type !== 'PIN'
+    await form.handleSubmit()
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+    expect(onSubmitInvalid).toHaveBeenCalledTimes(1) // not called again
+  })
+
   it('should run all types of async validation on fields during submit', async () => {
     vi.useFakeTimers()
 
