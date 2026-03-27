@@ -391,11 +391,6 @@ You can subscribe to it via `form.Subscribe` and use the value in order to, for 
     canSubmit: state.canSubmit,
     isSubmitting: state.isSubmitting,
   })}
-  children={(state) => (
-    <button type="submit" disabled={!state().canSubmit}>
-      {state().isSubmitting ? '...' : 'Submit'}
-    </button>
-  )}
 >
   {#snippet children(state)}
     <button type="submit" disabled={!state.canSubmit}>
