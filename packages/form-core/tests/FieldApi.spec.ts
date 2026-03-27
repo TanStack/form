@@ -120,7 +120,7 @@ describe('field api', () => {
     expect(field.getMeta().isDefaultValue).toBe(false)
 
     field.setValue('test')
-    expect(field.getMeta().isDefaultValue).toBe(true)
+    expect(field.getMeta().isDefaultValue).toBe(false)
 
     form.resetField('name')
     expect(field.getMeta().isDefaultValue).toBe(true)
@@ -128,6 +128,54 @@ describe('field api', () => {
     // checks the defaultValue provided to the field
     field.setValue('another-test')
     expect(field.getMeta().isDefaultValue).toBe(true)
+  })
+
+  it('should be false when value is undefined and a default value is specified in form-level only', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'foo',
+      },
+    })
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+    field.mount()
+
+    expect(field.getMeta().isDefaultValue).toBe(true)
+
+    // Set to undefined - should be false because 'foo' is the default
+    field.setValue(undefined as any)
+    expect(field.getMeta().isDefaultValue).toBe(false)
+  })
+
+  it('should handle falsy values correctly in isDefaultValue', () => {
+    const form = new FormApi({
+      defaultValues: {
+        count: 0,
+        active: false,
+        text: '',
+      },
+    })
+    form.mount()
+
+    const countField = new FieldApi({ form, name: 'count' })
+    const activeField = new FieldApi({ form, name: 'active' })
+    const textField = new FieldApi({ form, name: 'text' })
+    countField.mount()
+    activeField.mount()
+    textField.mount()
+
+    expect(countField.getMeta().isDefaultValue).toBe(true)
+    expect(activeField.getMeta().isDefaultValue).toBe(true)
+    expect(textField.getMeta().isDefaultValue).toBe(true)
+
+    countField.setValue(1)
+    expect(countField.getMeta().isDefaultValue).toBe(false)
+    countField.setValue(0)
+    expect(countField.getMeta().isDefaultValue).toBe(true)
   })
 
   it('should update the fields meta isDefaultValue with arrays - simple', () => {
