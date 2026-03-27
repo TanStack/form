@@ -1603,42 +1603,12 @@ describe('field api', () => {
     expect(form.getFieldInfo(field.name)).toBeDefined()
   })
 
-  it('should keep field meta on unmount by default', async () => {
-    const form = new FormApi({
-      defaultValues: {
-        name: '',
-      },
-    })
-
-    form.mount()
-
-    const field = new FieldApi({
-      form,
-      name: 'name',
-      validators: {
-        onSubmit: ({ value }) =>
-          value.length > 0 ? undefined : 'name is required',
-      },
-    })
-
-    const unmount = field.mount()
-
-    await form.handleSubmit()
-    expect(form.state.fieldMeta.name?.errors).toContain('name is required')
-
-    expect(unmount).toBeTypeOf('function')
-    unmount()
-    expect(form.state.fieldMeta.name?.errors).toContain('name is required')
-    expect(form.state.canSubmit).toBe(false)
-  })
-
   it('should clear meta on unmount while preserving value', async () => {
     const form = new FormApi({
       defaultValues: {
         firstName: 'a',
         lastName: 'abc',
       },
-      cleanupFieldsOnUnmount: true,
       onSubmit: () => {},
     })
 
@@ -1695,7 +1665,6 @@ describe('field api', () => {
   it('should preserve field-level defaultValue changes across unmount remount cleanup', () => {
     const form = new FormApi({
       defaultValues: {} as { name?: string },
-      cleanupFieldsOnUnmount: true,
     })
 
     form.mount()
@@ -1733,7 +1702,6 @@ describe('field api', () => {
       defaultValues: {
         name: '',
       },
-      cleanupFieldsOnUnmount: true,
     })
 
     form.mount()
@@ -1779,7 +1747,6 @@ describe('field api', () => {
       defaultValues: {
         name: '',
       },
-      cleanupFieldsOnUnmount: true,
       listeners: {
         onChange: formListener,
         onChangeDebounceMs: 200,
@@ -1815,7 +1782,6 @@ describe('field api', () => {
       defaultValues: {
         name: '',
       },
-      cleanupFieldsOnUnmount: true,
     })
 
     form.mount()
@@ -1837,7 +1803,6 @@ describe('field api', () => {
       defaultValues: {
         name: '',
       },
-      cleanupFieldsOnUnmount: true,
     })
 
     form.mount()
@@ -1870,7 +1835,6 @@ describe('field api', () => {
       defaultValues: {
         name: '',
       },
-      cleanupFieldsOnUnmount: true,
     })
 
     form.mount()
@@ -1916,7 +1880,6 @@ describe('field api', () => {
       defaultValues: {
         name: '',
       },
-      cleanupFieldsOnUnmount: true,
     })
 
     form.mount()
@@ -2342,7 +2305,6 @@ describe('field api', () => {
         password: '',
         confirm_password: '',
       },
-      cleanupFieldsOnUnmount: true,
     })
 
     form.mount()

@@ -374,11 +374,6 @@ export interface FormOptions<
    */
   canSubmitWhenInvalid?: boolean
   /**
-   * If true, mounted fields clean up their validation state when they unmount.
-   * Defaults to false.
-   */
-  cleanupFieldsOnUnmount?: boolean
-  /**
    * A list of validators to pass to the form
    */
   validators?: FormValidators<

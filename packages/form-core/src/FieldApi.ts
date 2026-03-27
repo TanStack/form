@@ -1323,10 +1323,6 @@ export class FieldApi<
       fieldApi: this,
     })
 
-    if (!this.form.options.cleanupFieldsOnUnmount) {
-      return () => {}
-    }
-
     return () => {
       // Stop any in-flight async validation or listener work tied to this instance.
       for (const [key, timeout] of Object.entries(
