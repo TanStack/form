@@ -753,6 +753,37 @@ describe('evaluate', () => {
     const setB = new Set([1, 2, 4])
     expect(evaluate(setA, setB)).toEqual(false)
   })
+
+  it('should test equality between File/Blob objects', () => {
+    // Same reference should be equal
+    const file1 = new File(['content'], 'test.txt', { type: 'text/plain' })
+    expect(evaluate(file1, file1)).toEqual(true)
+
+    // Different File objects with same metadata should NOT be equal
+    // (referential identity — the user picked a new file)
+    const file2 = new File(['content'], 'test.txt', { type: 'text/plain' })
+    expect(evaluate(file1, file2)).toEqual(false)
+
+    // Different File objects with different metadata
+    const file3 = new File(['other'], 'other.txt', { type: 'image/png' })
+    expect(evaluate(file1, file3)).toEqual(false)
+
+    // Blob objects
+    const blob1 = new Blob(['data'], { type: 'application/octet-stream' })
+    const blob2 = new Blob(['data'], { type: 'application/octet-stream' })
+    expect(evaluate(blob1, blob1)).toEqual(true)
+    expect(evaluate(blob1, blob2)).toEqual(false)
+
+    // File inside an object structure
+    const obj1 = { avatar: file1 }
+    const obj2 = { avatar: file2 }
+    expect(evaluate(obj1, obj2)).toEqual(false)
+
+    // Same file ref inside an object structure
+    const obj3 = { avatar: file1 }
+    const obj4 = { avatar: file1 }
+    expect(evaluate(obj3, obj4)).toEqual(true)
+  })
 })
 
 describe('concatenatePaths', () => {
