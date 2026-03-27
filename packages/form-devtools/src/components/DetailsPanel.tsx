@@ -66,25 +66,11 @@ export function DetailsPanel({ selectedKey }: DetailsPanelProps) {
           <div class={styles().detailSection}>
             <div class={styles().detailSectionHeader}>Individual Fields</div>
 
-            <div
-              style={{
-                display: 'flex',
-                'flex-wrap': 'wrap',
-                gap: '8px',
-              }}
-            >
+            <div class={styles().fieldWrapper}>
               <For each={Object.entries(individualFields())}>
                 {([fieldName, fieldData]) => (
-                  <div
-                    class={styles().stateContent}
-                    style={{ 'margin-bottom': '16px' }}
-                  >
-                    <div
-                      style={{
-                        'font-weight': 'bold',
-                        'margin-bottom': '4px',
-                      }}
-                    >
+                  <div class={`${styles().stateContent} ${styles().fieldItem}`}>
+                    <div class={styles().fieldName}>
                       {fieldName}
                     </div>
                     <JsonTree copyable value={fieldData} />
