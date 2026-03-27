@@ -460,10 +460,7 @@ describe('useField', () => {
           <form.Subscribe selector={(s) => s.values.show}>
             {(show) =>
               show ? (
-                <form.Field
-                  name="name"
-                  listeners={{ onUnmount: fieldUnmount }}
-                >
+                <form.Field name="name" listeners={{ onUnmount: fieldUnmount }}>
                   {(field) => (
                     <input
                       data-testid="name"
