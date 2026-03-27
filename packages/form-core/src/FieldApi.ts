@@ -382,6 +382,7 @@ export interface FieldListeners<
   onBlur?: FieldListenerFn<TParentData, TName, TData>
   onBlurDebounceMs?: number
   onMount?: FieldListenerFn<TParentData, TName, TData>
+  onUnmount?: FieldListenerFn<TParentData, TName, TData>
   onSubmit?: FieldListenerFn<TParentData, TName, TData>
 }
 
@@ -1392,6 +1393,16 @@ export class FieldApi<
       }))
 
       fieldInfo.instance = null
+
+      this.options.listeners?.onUnmount?.({
+        value: this.state.value,
+        fieldApi: this,
+      })
+
+      this.form.options.listeners?.onFieldUnmount?.({
+        formApi: this.form,
+        fieldApi: this,
+      })
     }
   }
 

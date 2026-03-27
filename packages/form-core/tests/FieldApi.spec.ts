@@ -1489,6 +1489,83 @@ describe('field api', () => {
     expect(triggered).toStrictEqual('test')
   })
 
+  it('should run listener onUnmount', () => {
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+    })
+
+    let triggered: string | undefined
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: {
+        onUnmount: ({ value }) => {
+          triggered = value
+        },
+      },
+    })
+
+    const unmount = field.mount()
+    expect(triggered).toBeUndefined()
+
+    unmount()
+    expect(triggered).toStrictEqual('test')
+  })
+
+  it('should run form listener onFieldUnmount', () => {
+    let capturedName: string | undefined
+
+    const form = new FormApi({
+      defaultValues: {
+        name: 'test',
+      },
+      listeners: {
+        onFieldUnmount: ({ fieldApi }) => {
+          capturedName = fieldApi.name as string
+        },
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+    })
+
+    const unmount = field.mount()
+    expect(capturedName).toBeUndefined()
+
+    unmount()
+    expect(capturedName).toStrictEqual('name')
+  })
+
+  it('should not run onUnmount listener if fieldInfo was already deleted', () => {
+    const onUnmount = vi.fn()
+
+    const form = new FormApi({
+      defaultValues: {
+        name: '',
+      },
+    })
+
+    form.mount()
+
+    const field = new FieldApi({
+      form,
+      name: 'name',
+      listeners: { onUnmount },
+    })
+
+    const unmount = field.mount()
+    form.deleteField('name')
+
+    expect(() => unmount()).not.toThrow()
+    expect(onUnmount).not.toHaveBeenCalled()
+  })
+
   it('should contain multiple errors when running validation onBlur and onChange', () => {
     const form = new FormApi({
       defaultValues: {

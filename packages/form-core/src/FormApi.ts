@@ -306,6 +306,24 @@ export interface FormListeners<
     >
     meta: TSubmitMeta
   }) => void
+
+  onFieldUnmount?: (props: {
+    formApi: FormApi<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer,
+      TSubmitMeta
+    >
+    fieldApi: AnyFieldApi
+  }) => void
 }
 
 /**
