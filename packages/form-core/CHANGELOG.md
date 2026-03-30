@@ -1,5 +1,11 @@
 # @tanstack/form-core
 
+## 1.28.6
+
+### Patch Changes
+
+- fix(core): field unmount ([#2068](https://github.com/TanStack/form/pull/2068))
+
 ## 1.28.5
 
 ### Patch Changes
