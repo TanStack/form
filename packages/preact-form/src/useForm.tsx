@@ -1,9 +1,9 @@
 import { FormApi, functionalUpdate, mergeAndUpdate } from '@tanstack/form-core'
-import { useStore } from '@tanstack/preact-store'
 import { useMemo, useRef, useState } from 'preact/hooks'
 import { Field } from './useField'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import { useFormId } from './useFormId'
+import { useStore } from './useStore'
 import type {
   AnyFormApi,
   AnyFormState,
@@ -14,8 +14,8 @@ import type {
 } from '@tanstack/form-core'
 import type { ComponentChild, FunctionComponent } from 'preact'
 import type { FieldComponent } from './useField'
-import type { NoInfer } from '@tanstack/preact-store'
 import type { PropsWithChildren } from './types'
+import type { NoInfer } from './useStore'
 
 /**
  * Fields that are added onto the `FormAPI` from `@tanstack/form-core` and returned from `useForm`

@@ -1,9 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/preact'
 import { userEvent } from '@testing-library/user-event'
-import { useStore } from '@tanstack/preact-store'
 import { useCallback, useEffect, useState } from 'preact/hooks'
-import { mergeForm, useForm } from '../src/index'
+import { mergeForm, useForm, useStore } from '../src/index'
 import { sleep } from './utils'
 
 let user: ReturnType<typeof userEvent.setup>
