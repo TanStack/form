@@ -8,10 +8,8 @@ import {
   determineFieldLevelErrorSourceAndValue,
   evaluate,
   getAsyncValidatorArray,
-  getBy,
   getSyncValidatorArray,
   mergeOpts,
-  setBy,
 } from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
 import type { ReadonlyStore } from '@tanstack/store'
