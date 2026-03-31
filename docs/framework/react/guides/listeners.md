@@ -13,7 +13,7 @@ Imagine the following user flow:
 
 In this example, when the user changes the country, the selected province needs to be reset as it's no longer valid. With the listener API, we can subscribe to the `onChange` event and dispatch a reset to the "province" field when the listener is fired.
 
-Events that can be "listened" to are:
+Field level events that can be "listened" to are:
 
 - `onChange`
 - `onBlur`
@@ -94,9 +94,9 @@ We enable an easy method for debouncing your listeners by adding a `onChangeDebo
 
 ### Form listeners
 
-At a higher level, listeners are also available at the form level, allowing you access to the `onMount` and `onSubmit` events, and having `onChange` and `onBlur` propagated to all the form's children. Form-level listeners can also be debounced in the same way as previously discussed.
+At a higher level, listeners are also available at the form level, allowing you access to the `onMount`, `onSubmit`, and `onReset` events, and having `onChange` and `onBlur` propagated to all the form's children. Form-level listeners can also be debounced in the same way as previously discussed.
 
-`onMount` and `onSubmit` listeners have the following parameters:
+`onMount`, `onSubmit`, `onReset` listeners have the following parameters:
 
 - `formApi`
 
