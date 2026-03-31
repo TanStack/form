@@ -20,6 +20,7 @@ Events that can be "listened" to are:
 - `onMount`
 - `onSubmit`
 - `onUnmount`
+- `onReset`
 
 ```tsx
 function App() {
