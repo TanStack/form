@@ -21,7 +21,13 @@ export type ValidationCause =
 /**
  * @private
  */
-export type ListenerCause = 'change' | 'blur' | 'submit' | 'mount'
+export type ListenerCause =
+  | 'change'
+  | 'blur'
+  | 'submit'
+  | 'mount'
+  | 'reset'
+  | 'unmount'
 
 /**
  * @private
