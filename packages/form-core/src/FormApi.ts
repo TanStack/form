@@ -324,6 +324,23 @@ export interface FormListeners<
     >
     fieldApi: AnyFieldApi
   }) => void
+
+  onReset?: (props: {
+    formApi: FormApi<
+      TFormData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TOnServer,
+      TSubmitMeta
+    >
+  }) => void
 }
 
 /**
@@ -1541,6 +1558,8 @@ export class FormApi<
         fieldMetaBase,
       }),
     )
+
+    this.options.listeners?.onReset?.({ formApi: this })
   }
 
   /**
