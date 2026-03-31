@@ -76,7 +76,9 @@ We enable an easy method for debouncing your listeners by adding a `onChangeDebo
   :listeners="{
     onChangeDebounceMs: 500,
     onChange: ({ value }) => {
-      console.log(`Country changed to: ${value} without a change within 500ms, resetting province`)
+      console.log(
+        `Country changed to: ${value} without a change within 500ms, resetting province`,
+      )
       form.setFieldValue('province', '')
     },
   }"
