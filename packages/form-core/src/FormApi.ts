@@ -307,7 +307,7 @@ export interface FormListeners<
     meta: TSubmitMeta
   }) => void
 
-  onFieldUnmount?: (props: {
+  onUnmount?: (props: {
     formApi: FormApi<
       TFormData,
       TOnMount,

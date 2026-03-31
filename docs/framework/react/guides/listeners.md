@@ -93,13 +93,13 @@ We enable an easy method for debouncing your listeners by adding a `onChangeDebo
 
 ### Form listeners
 
-At a higher level, listeners are also available at the form level, allowing you access to the `onMount` and `onSubmit` events, and having `onChange` and `onBlur` propagated to all the form's children. Form-level listeners can also be debounced in the same way as previously discussed.
+At a higher level, listeners are also available at the form level, allowing you access to the `onMount` and `onSubmit` events, and having `onChange`, `onBlur`, and `onUnmount` propagated to all the form's children. Form-level listeners can also be debounced in the same way as previously discussed.
 
 `onMount` and `onSubmit` listeners have the following parameters:
 
 - `formApi`
 
-`onChange` and `onBlur` listeners have access to:
+`onChange`, `onBlur`, and `onUnmount` listeners have access to:
 
 - `fieldApi`
 - `formApi`

@@ -21,48 +21,50 @@ Events that can be "listened" to are:
 - `onSubmit`
 - `onUnmount`
 
-```vue
-<script setup>
-import { useForm } from '@tanstack/vue-form'
-
-const form = useForm({
-  defaultValues: {
-    country: '',
-    province: '',
+```ts
+${this.#form.field(
+  {
+    name: 'country',
+    listeners: {
+      onChange: ({ value }) => {
+        console.log(`Country changed to: ${value}, resetting province`)
+        this.#form.api.setFieldValue('province', '')
+      },
+    },
   },
-  // ...
-})
-</script>
-
-<template>
-  <div>
-    <form.Field
-      name="country"
-      :listeners="{
-        onChange: ({ value }) => {
-          console.log(`Country changed to: ${value}, resetting province`)
-          form.setFieldValue('province', '')
-        },
-      }"
-    >
-      <template v-slot="{ field }">
+  (field) => {
+    return html`
+      <label>
+        <div>Country</div>
         <input
-          :value="field.state.value"
-          @input="(e) => field.handleChange(e.target.value)"
+          .value="${field.state.value}"
+          @input="${(e: Event) => {
+            const target = e.target as HTMLInputElement
+            field.handleChange(target.value)
+          }}"
         />
-      </template>
-    </form.Field>
+      </label>
+    `
+  },
+)}
 
-    <form.Field name="province">
-      <template v-slot="{ field }">
+${this.#form.field(
+  { name: 'province' },
+  (field) => {
+    return html`
+      <label>
+        <div>Province</div>
         <input
-          :value="field.state.value"
-          @input="(e) => field.handleChange(e.target.value)"
+          .value="${field.state.value}"
+          @input="${(e: Event) => {
+            const target = e.target as HTMLInputElement
+            field.handleChange(target.value)
+          }}"
         />
-      </template>
-    </form.Field>
-  </div>
-</template>
+      </label>
+    `
+  },
+)}
 ```
 
 ## Built-in Debouncing
@@ -70,21 +72,22 @@ const form = useForm({
 If you are making an API request inside a listener, you may want to debounce the calls as it can lead to performance issues.
 We enable an easy method for debouncing your listeners by adding a `onChangeDebounceMs` or `onBlurDebounceMs`.
 
-```vue
-<form.Field
-  name="country"
-  :listeners="{
-    onChangeDebounceMs: 500,
-    onChange: ({ value }) => {
-      console.log(`Country changed to: ${value} without a change within 500ms, resetting province`)
-      form.setFieldValue('province', '')
+```ts
+${this.#form.field(
+  {
+    name: 'country',
+    listeners: {
+      onChangeDebounceMs: 500, // 500ms debounce
+      onChange: ({ value }) => {
+        console.log(`Country changed to: ${value} without a change within 500ms, resetting province`)
+        this.#form.api.setFieldValue('province', '')
+      },
     },
-  }"
->
-  <template v-slot="{ field }">
-    <!-- ... -->
-  </template>
-</form.Field>
+  },
+  (field) => {
+    return html`<!-- ... -->`
+  },
+)}
 ```
 
 ## Form listeners
@@ -100,11 +103,8 @@ At a higher level, listeners are also available at the form level, allowing you 
 - `fieldApi`
 - `formApi`
 
-```vue
-<script setup>
-import { useForm } from '@tanstack/vue-form'
-
-const form = useForm({
+```ts
+#form = new TanStackFormController(this, {
   listeners: {
     onMount: ({ formApi }) => {
       // custom logging service
@@ -123,5 +123,4 @@ const form = useForm({
     onChangeDebounceMs: 500,
   },
 })
-</script>
 ```
