@@ -1,5 +1,14 @@
 # @tanstack/svelte-form
 
+## 1.28.7
+
+### Patch Changes
+
+- Fix infinite recursion in AppField during SSR caused by children prop shadowing ([#2093](https://github.com/TanStack/form/pull/2093))
+
+- Updated dependencies []:
+  - @tanstack/form-core@1.28.7
+
 ## 1.28.6
 
 ### Patch Changes
