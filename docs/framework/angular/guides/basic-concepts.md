@@ -121,20 +121,19 @@ Example:
   `,
 })
 export class AppComponent {
-  firstNameValidator: FieldValidateFn<any, any, string, any> = ({
-                                                                       value,
-                                                                     }) =>
+  firstNameValidator: FieldValidateFn<any, any, string, any> = ({ value }) =>
     !value
       ? 'A first name is required'
       : value.length < 3
         ? 'First name must be at least 3 characters'
         : undefined
 
-  firstNameAsyncValidator: FieldValidateAsyncFn<any, string, any> =
-    async ({ value }) => {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      return value.includes('error') && 'No "error" allowed in first name'
-    }
+  firstNameAsyncValidator: FieldValidateAsyncFn<any, string, any> = async ({
+    value,
+  }) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    return value.includes('error') && 'No "error" allowed in first name'
+  }
 
   form = injectForm({
     defaultValues: {
@@ -176,7 +175,7 @@ import { z } from 'zod'
       [validators]="{
         onChange: z.string().min(3, 'First name must be at least 3 characters'),
         onChangeAsyncDebounceMs: 500,
-        onChangeAsync: firstNameAsyncValidator
+        onChangeAsync: firstNameAsyncValidator,
       }"
       #firstName="field"
     >
@@ -343,8 +342,8 @@ export class AppComponent {
     yearsOfExperience: 0,
   }
 
-  getHobbyName = (idx: number) => `hobbies[${idx}].name` as const;
-  getHobbyDesc = (idx: number) => `hobbies[${idx}].description` as const;
+  getHobbyName = (idx: number) => `hobbies[${idx}].name` as const
+  getHobbyDesc = (idx: number) => `hobbies[${idx}].description` as const
 
   form = injectForm({
     defaultValues: {

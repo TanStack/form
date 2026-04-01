@@ -5,14 +5,13 @@ title: Submission handling
 
 ## Passing additional data to submission handling
 
-You may have multiple types of submission behaviour, for example, going back to another page or staying on the form.
+You may have multiple types of submission behaviour, for example, going back to the previous page or staying on the form.
 You can accomplish this by specifying the `onSubmitMeta` property. This meta data will be passed to the `onSubmit` function.
 
 > Note: if `form.handleSubmit()` is called without metadata, it will use the provided default.
 
-```angular-ts
-import { Component } from '@angular/core'
-import { injectForm } from '@tanstack/angular-form'
+```tsx
+import { useForm } from '@tanstack/preact-form'
 
 type FormMeta = {
   submitAction: 'continue' | 'backToMenu' | null
@@ -24,24 +23,8 @@ const defaultMeta: FormMeta = {
   submitAction: null,
 }
 
-@Component({
-  selector: 'app-root',
-  template: `
-    <form (submit)="handleSubmit($event)">
-      <button type="submit" (click)="handleClick({ submitAction: 'continue' })">
-        Submit and continue
-      </button>
-      <button
-        type="submit"
-        (click)="handleClick({ submitAction: 'backToMenu' })"
-      >
-        Submit and back to menu
-      </button>
-    </form>
-  `,
-})
-export class AppComponent {
-  form = injectForm({
+function App() {
+  const form = useForm({
     defaultValues: {
       data: '',
     },
@@ -53,15 +36,29 @@ export class AppComponent {
     },
   })
 
-  handleSubmit(event: SubmitEvent) {
-    event.preventDefault()
-    event.stopPropagation()
-  }
-
-  handleClick(meta: FormMeta) {
-    // Overwrites the default specified in onSubmitMeta
-    this.form.handleSubmit(meta)
-  }
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+      }}
+    >
+      {/* ... */}
+      <button
+        type="submit"
+        // Overwrites the default specified in onSubmitMeta
+        onClick={() => form.handleSubmit({ submitAction: 'continue' })}
+      >
+        Submit and continue
+      </button>
+      <button
+        type="submit"
+        onClick={() => form.handleSubmit({ submitAction: 'backToMenu' })}
+      >
+        Submit and back to menu
+      </button>
+    </form>
+  )
 }
 ```
 
@@ -72,9 +69,6 @@ While Tanstack Form provides [Standard Schema support](./validation.md) for vali
 The value passed to the `onSubmit` function will always be the input data. To receive the output data of a Standard Schema, parse it in the `onSubmit` function:
 
 ```tsx
-import { z } from 'zod'
-// ...
-
 const schema = z.object({
   age: z.string().transform((age) => Number(age)),
 })
@@ -84,23 +78,16 @@ const defaultValues: z.input<typeof schema> = {
   age: '13',
 }
 
-// ...
-
-@Component({
-  // ...
+const form = useForm({
+  defaultValues,
+  validators: {
+    onChange: schema,
+  },
+  onSubmit: ({ value }) => {
+    const inputAge: string = value.age
+    // Pass it through the schema to get the transformed value
+    const result = schema.parse(value)
+    const outputAge: number = result.age
+  },
 })
-export class AppComponent {
-  form = injectForm({
-    defaultValues,
-    validators: {
-      onChange: schema,
-    },
-    onSubmit: ({ value }) => {
-      const inputAge: string = value.age
-      // Pass it through the schema to get the transformed value
-      const result = schema.parse(value)
-      const outputAge: number = result.age
-    },
-  })
-}
 ```

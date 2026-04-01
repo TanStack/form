@@ -21,11 +21,7 @@ import { TanStackField, injectForm, injectStore } from '@tanstack/angular-form'
   imports: [TanStackField],
   template: `
     <div>
-      <ng-container
-        [tanstackField]="form"
-        name="firstName"
-        #firstName="field"
-      >
+      <ng-container [tanstackField]="form" name="firstName" #firstName="field">
         <label [for]="firstName.api.name">First Name:</label>
         <input
           [id]="firstName.api.name"
@@ -47,11 +43,7 @@ import { TanStackField, injectForm, injectStore } from '@tanstack/angular-form'
       </ng-container>
     </div>
     <div>
-      <ng-container
-        [tanstackField]="form"
-        name="lastName"
-        #lastName="field"
-      >
+      <ng-container [tanstackField]="form" name="lastName" #lastName="field">
         <label [for]="lastName.api.name">Last Name:</label>
         <input
           [id]="lastName.api.name"
@@ -91,7 +83,7 @@ export class AppComponent {
 This is functionally correct, but introduces a _lot_ of repeated templating behavior over and over. Instead, let's move the error handling, label to input binding, and other repeated logic into a component:
 
 ```angular-ts
-import {injectField} from '@tanstack/angular-form'
+import { injectField } from '@tanstack/angular-form'
 
 @Component({
   selector: 'app-text-field',

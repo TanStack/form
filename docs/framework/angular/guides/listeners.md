@@ -31,7 +31,7 @@ Events that can be "listened" to are:
       [tanstackField]="form"
       name="country"
       [listeners]="{
-        onChange: onCountryChange
+        onChange: onCountryChange,
       }"
       #country="field"
     ></ng-container>
@@ -43,7 +43,6 @@ Events that can be "listened" to are:
     ></ng-container>
   `,
 })
-
 export class AppComponent {
   form = injectForm({
     defaultValues: {
