@@ -22,14 +22,14 @@ Events that can be "listened" to are:
 - `onUnmount`
 
 ```tsx
-function App() {
-  const form = useForm({
+export default function App() {
+  const form = createForm(() => ({
     defaultValues: {
       country: '',
       province: '',
     },
     // ...
-  })
+  }))
 
   return (
     <div>
@@ -46,8 +46,8 @@ function App() {
           <label>
             <div>Country</div>
             <input
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
+              value={field().state.value}
+              onChange={(e) => field().handleChange(e.target.value)}
             />
           </label>
         )}
@@ -58,8 +58,8 @@ function App() {
           <label>
             <div>Province</div>
             <input
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
+              value={field().state.value}
+              onChange={(e) => field().handleChange(e.target.value)}
             />
           </label>
         )}
@@ -69,7 +69,7 @@ function App() {
 }
 ```
 
-### Built-in Debouncing
+## Built-in Debouncing
 
 If you are making an API request inside a listener, you may want to debounce the calls as it can lead to performance issues.
 We enable an easy method for debouncing your listeners by adding a `onChangeDebounceMs` or `onBlurDebounceMs`.
@@ -91,7 +91,7 @@ We enable an easy method for debouncing your listeners by adding a `onChangeDebo
 </form.Field>
 ```
 
-### Form listeners
+## Form listeners
 
 At a higher level, listeners are also available at the form level, allowing you access to the `onMount` and `onSubmit` events, and having `onChange`, `onBlur`, and `onUnmount` propagated to all the form's children. Form-level listeners can also be debounced in the same way as previously discussed.
 
@@ -105,7 +105,7 @@ At a higher level, listeners are also available at the form level, allowing you 
 - `formApi`
 
 ```tsx
-const form = useForm({
+const form = createForm(() => ({
   listeners: {
     onMount: ({ formApi }) => {
       // custom logging service
@@ -123,5 +123,5 @@ const form = useForm({
     },
     onChangeDebounceMs: 500,
   },
-})
+}))
 ```

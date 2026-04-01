@@ -21,44 +21,52 @@ Events that can be "listened" to are:
 - `onSubmit`
 - `onUnmount`
 
-```angular-ts
-@Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [TanStackField],
-  template: `
-    <ng-container
-      [tanstackField]="form"
-      name="country"
-      [listeners]="{
-        onChange: onCountryChange
-      }"
-      #country="field"
-    ></ng-container>
+```svelte
+<script>
+  import { createForm } from '@tanstack/svelte-form'
 
-    <ng-container
-      [tanstackField]="form"
-      name="province"
-      #province="field"
-    ></ng-container>
-  `,
-})
-
-export class AppComponent {
-  form = injectForm({
+  const form = createForm(() => ({
     defaultValues: {
       country: '',
       province: '',
     },
-  })
+    // ...
+  }))
+</script>
 
-  onCountryChange: FieldListenerFn<any, any, any, any, string> = ({
-    value,
-  }) => {
-    console.log(`Country changed to: ${value}, resetting province`)
-    this.form.setFieldValue('province', '')
-  }
-}
+<div>
+  <form.Field
+    name="country"
+    listeners={{
+      onChange: ({ value }) => {
+        console.log(`Country changed to: ${value}, resetting province`)
+        form.setFieldValue('province', '')
+      },
+    }}
+  >
+    {#snippet children(field)}
+      <label>
+        <div>Country</div>
+        <input
+          value={field.state.value}
+          onchange={(e) => field.handleChange(e.target.value)}
+        />
+      </label>
+    {/snippet}
+  </form.Field>
+
+  <form.Field name="province">
+    {#snippet children(field)}
+      <label>
+        <div>Province</div>
+        <input
+          value={field.state.value}
+          onchange={(e) => field.handleChange(e.target.value)}
+        />
+      </label>
+    {/snippet}
+  </form.Field>
+</div>
 ```
 
 ## Built-in Debouncing
@@ -66,38 +74,21 @@ export class AppComponent {
 If you are making an API request inside a listener, you may want to debounce the calls as it can lead to performance issues.
 We enable an easy method for debouncing your listeners by adding a `onChangeDebounceMs` or `onBlurDebounceMs`.
 
-```angular-ts
-@Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [TanStackField],
-  template: `
-    <ng-container
-      [tanstackField]="form"
-      name="country"
-      [listeners]="{
-        onChangeDebounceMs: 500,
-        onChange: onCountryChange
-      }"
-      #country="field"
-    ></ng-container>
-  `,
-})
-export class AppComponent {
-  form = injectForm({
-    defaultValues: {
-      country: '',
-      province: '',
+```svelte
+<form.Field
+  name="country"
+  listeners={{
+    onChangeDebounceMs: 500,
+    onChange: ({ value }) => {
+      console.log(`Country changed to: ${value} without a change within 500ms, resetting province`)
+      form.setFieldValue('province', '')
     },
-  })
-
-  onCountryChange: FieldListenerFn<any, any, any, any, string> = ({
-    value,
-  }) => {
-    console.log(`Country changed to: ${value} without a change within 500ms, resetting province`)
-    this.form.setFieldValue('province', '')
-  }
-}
+  }}
+>
+  {#snippet children(field)}
+    <!-- ... -->
+  {/snippet}
+</form.Field>
 ```
 
 ## Form listeners
@@ -113,9 +104,11 @@ At a higher level, listeners are also available at the form level, allowing you 
 - `fieldApi`
 - `formApi`
 
-```angular-ts
-export class AppComponent {
-  form = injectForm({
+```svelte
+<script>
+  import { createForm } from '@tanstack/svelte-form'
+
+  const form = createForm(() => ({
     listeners: {
       onMount: ({ formApi }) => {
         // custom logging service
@@ -133,6 +126,6 @@ export class AppComponent {
       },
       onChangeDebounceMs: 500,
     },
-  })
-}
+  }))
+</script>
 ```
