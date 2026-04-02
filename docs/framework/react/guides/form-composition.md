@@ -103,7 +103,7 @@ function App() {
 }
 ```
 
-This not only allows you to reuse the UI of your shared component, but retains the type-safety you'd expect from TanStack Form: Mistyping `name` will result in a TypeScript error.
+This not only allows you to reuse the UI of your shared component, but retains the type-safety you'd expect from TanStack Form: Mistyping `firstName` will result in a TypeScript error.
 
 #### A note on performance
 
@@ -159,6 +159,68 @@ function App() {
   )
 }
 ```
+
+### Extending custom appForm
+
+It is quite common for platform teams to ship pre built appForms. It can be exported from a library in a monorepo or as a standalone package on npm.
+
+```tsx weyland-yutan-corp/forms.tsx
+import { createFormHook, createFormHookContexts } from '@tanstack/react-form'
+
+// fields
+import { UserIdField } from './FieldComponents/UserIdField'
+
+// components
+import { SubmitButton } from './FormComponents/SubmitButton'
+
+export const { fieldContext, formContext, useFieldContext, useFormContext } =
+  createFormHookContexts()
+
+const ProfileForm = createFormHook({
+  fieldContext,
+  formContext,
+  fieldComponents: { UserIdField },
+  formComponents: { SubmitButton },
+})
+
+export default ProfileForm
+```
+
+There is a situation that you might have a field exclusive to a downstream dev team, in such a case you can extend the AppForm like so.
+
+1 - Create new AppForm fields
+
+```tsx AppForm.tsx
+// imported from the same AppForm you want to extend
+import { useFieldContext } from 'weyland-yutan-corp/forms'
+
+export function CustomTextField({ label }: { label: string }) {
+  const field = useFieldContext<string>()
+  return (
+    <div>
+      <label>{/* rest of component */}</label>
+    </div>
+  )
+}
+```
+
+2 - Extend the AppForm
+
+```tsx AppForm.tsx
+// notice the same import as above
+import ProfileForm from 'Weyland-Yutan-corp/forms'
+
+import { CustomTextField } from './FieldComponents/CustomTextField'
+import { CustomSubmit } from './FormComponents/CustomSubmit'
+
+export const { useAppForm } = ProfileForm.extendForm({
+  fieldComponents: { CustomTextField },
+  // Ts will error since the parent appForm already has a component called CustomSubmit
+  formComponents: { CustomSubmit },
+})
+```
+
+This way you can add extra fields that are unique to your team without bloating the upstream AppForm.
 
 ## Breaking big forms into smaller pieces
 
