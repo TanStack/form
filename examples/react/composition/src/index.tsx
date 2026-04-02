@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { formDevtoolsPlugin } from '@tanstack/react-form-devtools'
 
-import { useAppForm } from './ExtendedAppForm/ExtendedAppForm'
+import useAppForm from './AppForm/AppForm'
 
 export default function App() {
   const form = useAppForm({
