@@ -70,11 +70,7 @@ export function Shell() {
       <div class={styles().mainContainer}>
         <div
           class={styles().leftPanel}
-          style={{
-            width: `${leftPanelWidth()}px`,
-            'min-width': '150px',
-            'max-width': '800px',
-          }}
+          style={`--left-panel-width: ${leftPanelWidth()}px`}
         >
           <UtilList selectedKey={selectedKey} setSelectedKey={setSelectedKey} />
         </div>
@@ -84,7 +80,7 @@ export function Shell() {
           onMouseDown={handleMouseDown}
         />
 
-        <div class={styles().rightPanel} style={{ flex: 1 }}>
+        <div class={styles().rightPanel}>
           <Show when={selectedKey() != null}>
             <div class={styles().panelHeader}>Details</div>
             <DetailsPanel selectedKey={selectedKey as Accessor<string>} />
