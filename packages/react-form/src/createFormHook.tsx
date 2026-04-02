@@ -603,10 +603,7 @@ export function createFormHook<
     const TNewForm extends Record<string, ComponentType<any>> & {
       [K in keyof TFormComponents]?: 'Error: form component names must be unique — this key already exists in the base form'
     },
-  >(extension: {
-    fieldComponents?: TNewField
-    formComponents?: TNewForm
-  }) {
+  >(extension: { fieldComponents?: TNewField; formComponents?: TNewForm }) {
     return createFormHook({
       fieldContext,
       formContext,
