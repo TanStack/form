@@ -1,4 +1,3 @@
-import { extendForm } from '@tanstack/react-form'
 import appForm from '../AppForm/AppForm'
 
 //
@@ -6,7 +5,7 @@ import appForm from '../AppForm/AppForm'
 //
 import { CustomTextField } from './FieldComponents/CustomTextField'
 
-const extendedAppForm = extendForm(appForm, {
+const extendedAppForm = appForm.extendForm({
   // field name must be unique
   fieldComponents: { CustomTextField },
 })

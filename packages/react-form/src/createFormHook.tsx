@@ -596,47 +596,36 @@ export function createFormHook<
     return form as never
   }
 
+  function extendForm<
+    const TNewField extends Record<string, ComponentType<any>> & {
+      [K in keyof TComponents]?: 'Error: field component names must be unique — this key already exists in the base form'
+    },
+    const TNewForm extends Record<string, ComponentType<any>> & {
+      [K in keyof TFormComponents]?: 'Error: form component names must be unique — this key already exists in the base form'
+    },
+  >(extension: {
+    fieldComponents?: TNewField
+    formComponents?: TNewForm
+  }) {
+    return createFormHook({
+      fieldContext,
+      formContext,
+      fieldComponents: {
+        ...fieldComponents,
+        ...extension.fieldComponents,
+      } as TComponents & TNewField,
+      formComponents: {
+        ...formComponents,
+        ...extension.formComponents,
+      } as TFormComponents & TNewForm,
+    })
+  }
+
   return {
     useAppForm,
     withForm,
     withFieldGroup,
     useTypedAppFormContext,
-    /** @internal used by `extendForm` */
-    _internals: {
-      fieldContext,
-      formContext,
-      fieldComponents,
-      formComponents,
-    },
+    extendForm,
   }
-}
-
-export function extendForm<
-  const TExistingField extends Record<string, ComponentType<any>>,
-  const TExistingForm extends Record<string, ComponentType<any>>,
-  const TNewField extends Record<string, ComponentType<any>> & {
-    [K in keyof TExistingField]?: 'Error: field component names must be unique — this key already exists in the base form'
-  },
-  const TNewForm extends Record<string, ComponentType<any>> & {
-    [K in keyof TExistingForm]?: 'Error: form component names must be unique — this key already exists in the base form'
-  },
->(
-  base: { _internals: CreateFormHookProps<TExistingField, TExistingForm> },
-  extension: {
-    fieldComponents?: TNewField
-    formComponents?: TNewForm
-  },
-) {
-  return createFormHook({
-    fieldContext: base._internals.fieldContext,
-    formContext: base._internals.formContext,
-    fieldComponents: {
-      ...base._internals.fieldComponents,
-      ...extension.fieldComponents,
-    },
-    formComponents: {
-      ...base._internals.formComponents,
-      ...extension.formComponents,
-    },
-  })
 }
