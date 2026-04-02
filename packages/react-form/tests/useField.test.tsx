@@ -1470,6 +1470,82 @@ describe('useField', () => {
     expect(renderCount.arrayField).toBeGreaterThan(arrayFieldBeforeAdd)
   })
 
+  it('should rerender array field when swapValues or moveValue is called', async () => {
+    // Test for https://github.com/TanStack/form/issues/2018
+    // swapValues and moveValue don't change array length, but the displayed
+    // order should update — meaning the array field must re-render.
+    let arrayFieldRenderCount = 0
+
+    function Comp() {
+      const form = useForm({
+        defaultValues: {
+          fruits: ['apple', 'banana', 'cherry'],
+        },
+      })
+
+      return (
+        <form.Field name="fruits" mode="array">
+          {(field) => {
+            arrayFieldRenderCount++
+            return (
+              <div>
+                <ul data-testid="list">
+                  {field.state.value.map((fruit, i) => (
+                    <li key={i} data-testid={`item-${i}`}>
+                      {fruit}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  type="button"
+                  data-testid="swap"
+                  onClick={() => field.swapValues(0, 2)}
+                >
+                  Swap 0 and 2
+                </button>
+                <button
+                  type="button"
+                  data-testid="move"
+                  onClick={() => field.moveValue(0, 1)}
+                >
+                  Move 0 to 1
+                </button>
+              </div>
+            )
+          }}
+        </form.Field>
+      )
+    }
+
+    const { getByTestId } = render(
+      <StrictMode>
+        <Comp />
+      </StrictMode>,
+    )
+
+    const initialRender = arrayFieldRenderCount
+
+    // Swap first and last item — length stays the same but order changes
+    await user.click(getByTestId('swap'))
+
+    await waitFor(() => {
+      expect(arrayFieldRenderCount).toBeGreaterThan(initialRender)
+      expect(getByTestId('item-0')).toHaveTextContent('cherry')
+      expect(getByTestId('item-2')).toHaveTextContent('apple')
+    })
+
+    const afterSwapRender = arrayFieldRenderCount
+
+    // Move first item to index 1 — again, no length change
+    await user.click(getByTestId('move'))
+
+    await waitFor(() => {
+      expect(arrayFieldRenderCount).toBeGreaterThan(afterSwapRender)
+      expect(getByTestId('item-0')).toHaveTextContent('banana')
+      expect(getByTestId('item-1')).toHaveTextContent('cherry')
+    })
+  })
+
   it('should handle defaultValue without setstate-in-render error', async () => {
     // Spy on console.error before rendering
     const consoleErrorSpy = vi.spyOn(console, 'error')
