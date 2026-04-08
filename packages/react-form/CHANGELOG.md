@@ -1,5 +1,14 @@
 # @tanstack/react-form
 
+## 1.28.6
+
+### Patch Changes
+
+- fix(core): field unmount ([#2068](https://github.com/TanStack/form/pull/2068))
+
+- Updated dependencies [[`7a1428d`](https://github.com/TanStack/form/commit/7a1428d6ce2806069b3d7b8f8b2aacc26315b771)]:
+  - @tanstack/form-core@1.28.6
+
 ## 1.28.5
 
 ### Patch Changes

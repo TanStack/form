@@ -1,5 +1,12 @@
 # @tanstack/solid-form-devtools
 
+## 0.2.20
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @tanstack/form-devtools@0.2.20
+
 ## 0.2.19
 
 ### Patch Changes
