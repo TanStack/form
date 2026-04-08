@@ -580,6 +580,10 @@
             {
               "label": "Devtools",
               "to": "framework/react/examples/devtools"
+            },
+            {
+              "label": "Multistep Form",
+              "to": "framework/react/examples/multistep"
             }
           ]
         },
