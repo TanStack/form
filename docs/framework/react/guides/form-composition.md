@@ -208,15 +208,15 @@ export function CustomTextField({ label }: { label: string }) {
 
 ```tsx AppForm.tsx
 // notice the same import as above
-import ProfileForm from 'Weyland-Yutan-corp/forms'
+import ProfileForm from 'weyland-yutan-corp/forms'
 
 import { CustomTextField } from './FieldComponents/CustomTextField'
-import { CustomSubmit } from './FormComponents/CustomSubmit'
+import { SubmitButton } from './FormComponents/SubmitButton'
 
 export const { useAppForm } = ProfileForm.extendForm({
   fieldComponents: { CustomTextField },
-  // Ts will error since the parent appForm already has a component called CustomSubmit
-  formComponents: { CustomSubmit },
+  // Ts will error since the parent appForm already has a component called SubmitButton
+  formComponents: { SubmitButton },
 })
 ```
 

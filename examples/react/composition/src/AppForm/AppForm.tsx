@@ -13,11 +13,12 @@ import { SubmitButton } from './FormComponents/SubmitButton'
 export const { fieldContext, formContext, useFieldContext, useFormContext } =
   createFormHookContexts()
 
-const { useAppForm } = createFormHook({
+const { useAppForm, extendForm } = createFormHook({
   fieldContext,
   formContext,
-  fieldComponents: { TextField: TextField },
+  fieldComponents: { TextField },
   formComponents: { SubmitButton },
 })
 
+export { extendForm }
 export default useAppForm

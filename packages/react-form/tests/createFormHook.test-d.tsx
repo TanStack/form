@@ -995,11 +995,12 @@ describe('createFormHook', () => {
         return null
       }
 
-      const { useAppForm: useDoublyExtended } = baseHook
-        .extendForm({ fieldComponents: { ExtendedField } })
-        .extendForm({ fieldComponents: { ThirdField } })
+      const { useAppForm: useDoublyExtended, withForm: withDoublyExtendedForm } =
+        baseHook
+          .extendForm({ fieldComponents: { ExtendedField } })
+          .extendForm({ fieldComponents: { ThirdField } })
 
-      withExtendedForm({
+      withDoublyExtendedForm({
         defaultValues: { name: '' },
         render: ({ form }) => {
           return (
@@ -1007,6 +1008,7 @@ describe('createFormHook', () => {
               {(field) => {
                 expectTypeOf(field.Test).toBeFunction()
                 expectTypeOf(field.ExtendedField).toBeFunction()
+                expectTypeOf(field.ThirdField).toBeFunction()
                 return null
               }}
             </form.AppField>

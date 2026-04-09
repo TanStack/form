@@ -604,6 +604,40 @@ export function createFormHook<
       [K in keyof TFormComponents]?: 'Error: form component names must be unique — this key already exists in the base form'
     },
   >(extension: { fieldComponents?: TNewField; formComponents?: TNewForm }) {
+    const reservedNames = new Set([
+      'AppField',
+      'AppForm',
+      'Field',
+      'Subscribe',
+      'handleChange',
+      'handleBlur',
+      'handleSubmit',
+      'reset',
+      'setFieldValue',
+      'getFieldValue',
+      'state',
+      'store',
+      'mount',
+    ])
+
+    const conflictingField = Object.keys(extension.fieldComponents ?? {}).find(
+      (k) => reservedNames.has(k),
+    )
+    if (conflictingField) {
+      throw new Error(
+        `extendForm: "${conflictingField}" is a reserved name and cannot be used as a field component key.`,
+      )
+    }
+
+    const conflictingForm = Object.keys(extension.formComponents ?? {}).find(
+      (k) => reservedNames.has(k),
+    )
+    if (conflictingForm) {
+      throw new Error(
+        `extendForm: "${conflictingForm}" is a reserved name and cannot be used as a form component key.`,
+      )
+    }
+
     return createFormHook({
       fieldContext,
       formContext,

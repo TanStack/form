@@ -42,17 +42,17 @@ export default function App() {
             onChangeAsyncDebounceMs: 500,
             onChangeAsync: async ({ value }) => {
               await new Promise((resolve) => setTimeout(resolve, 1000))
-              return (
-                value.includes('error') && 'No "error" allowed in first name'
-              )
+              return value.includes('error')
+                ? 'No "error" allowed in first name'
+                : undefined
             },
           }}
         >
-          {(f) => <f.TextField label="last name" />}
+          {(f) => <f.TextField label="First Name" />}
         </form.AppField>
 
         <form.AppField name="lastName">
-          {(f) => <f.TextField label="last name" />}
+          {(f) => <f.TextField label="Last Name" />}
         </form.AppField>
 
         <form.AppForm>

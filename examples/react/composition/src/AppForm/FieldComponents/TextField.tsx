@@ -9,6 +9,7 @@ export function TextField({ label }: { label: string }) {
       <input
         value={field.state.value}
         onChange={(e) => field.handleChange(e.target.value)}
+        onBlur={field.handleBlur}
       />
 
       <>
