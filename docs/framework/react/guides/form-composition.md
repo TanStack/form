@@ -15,12 +15,17 @@ At it's most basic, `createFormHook` is a function that takes a `fieldContext` a
 
 > This un-customized `useAppForm` hook is identical to `useForm`, but that will quickly change as we add more options to `createFormHook`.
 
-```tsx
-import { createFormHookContexts, createFormHook } from '@tanstack/react-form'
+```tsx AppFormContext.tsx
+import { createFormHookContexts } from '@tanstack/react-form'
 
 // export useFieldContext for use in your custom components
 export const { fieldContext, formContext, useFieldContext } =
   createFormHookContexts()
+```
+
+```tsx AppForm.tsx
+import { createFormHook } from '@tanstack/react-form'
+import { createFormHookContexts } from './AppFormContext'
 
 const { useAppForm } = createFormHook({
   fieldContext,
@@ -164,17 +169,20 @@ function App() {
 
 It is quite common for platform teams to ship pre built appForms. It can be exported from a library in a monorepo or as a standalone package on npm.
 
+```tsx weyland-yutan-corp/forms-context.tsx
+export const { fieldContext, formContext, useFieldContext, useFormContext } =
+  createFormHookContexts()
+```
+
 ```tsx weyland-yutan-corp/forms.tsx
-import { createFormHook, createFormHookContexts } from '@tanstack/react-form'
+import { createFormHook } from '@tanstack/react-form'
+import { fieldContext, formContext } from 'weyland-yutan-corp/forms-context'
 
 // fields
 import { UserIdField } from './FieldComponents/UserIdField'
 
 // components
 import { SubmitButton } from './FormComponents/SubmitButton'
-
-export const { fieldContext, formContext, useFieldContext, useFormContext } =
-  createFormHookContexts()
 
 const ProfileForm = createFormHook({
   fieldContext,
@@ -192,7 +200,7 @@ There is a situation that you might have a field exclusive to a downstream dev t
 
 ```tsx AppForm.tsx
 // imported from the same AppForm you want to extend
-import { useFieldContext } from 'weyland-yutan-corp/forms'
+import { useFieldContext } from 'weyland-yutan-corp/forms-context'
 
 export function CustomTextField({ label }: { label: string }) {
   const field = useFieldContext<string>()
@@ -208,15 +216,15 @@ export function CustomTextField({ label }: { label: string }) {
 
 ```tsx AppForm.tsx
 // notice the same import as above
-import ProfileForm from 'Weyland-Yutan-corp/forms'
+import ProfileForm from 'weyland-yutan-corp/forms'
 
 import { CustomTextField } from './FieldComponents/CustomTextField'
-import { CustomSubmit } from './FormComponents/CustomSubmit'
+import { SubmitButton } from './FormComponents/SubmitButton'
 
 export const { useAppForm } = ProfileForm.extendForm({
   fieldComponents: { CustomTextField },
   // Ts will error since the parent appForm already has a component called CustomSubmit
-  formComponents: { CustomSubmit },
+  formComponents: { SubmitButton },
 })
 ```
 
@@ -279,6 +287,9 @@ function App() {
   return <ChildForm form={form} title={'Testing'} />
 }
 ```
+
+> Something worth mentioning, is that while multiple chaining of `AppForm` extensions is possible it is can lead to decreases in TypeScript performance.
+> For most users that may only extend an appForm once this isn't a problem, however we recommend limiting it to 3-5 extensions.
 
 ### `withForm` FAQ
 

@@ -48,7 +48,7 @@ export default function App() {
             },
           }}
         >
-          {(f) => <f.TextField label="last name" />}
+          {(f) => <f.TextField label="first name" />}
         </form.AppField>
 
         <form.AppField name="lastName">
