@@ -1544,15 +1544,18 @@ export class FormApi<
   }
 
   /**
-   * Validates all fields using the correct handlers for a given validation cause.
+   * Validates all fields according to the FIELD level validators.
+   * This will ignore FORM level validators, use form.validate({ValidationCause}) for a complete validation
    */
   validateAllFields = async (cause: ValidationCause) => {
     const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
+
     batch(() => {
       void (Object.values(this.fieldInfo) as FieldInfo<any>[]).forEach(
         (field) => {
           if (!field.instance) return
           const fieldInstance = field.instance
+
           // Validate the field
           fieldValidationPromises.push(
             // Remember, `validate` is either a sync operation or a promise
@@ -1560,6 +1563,7 @@ export class FormApi<
               fieldInstance.validate(cause, { skipFormValidation: true }),
             ),
           )
+
           // If any fields are not touched
           if (!field.instance.state.meta.isTouched) {
             // Mark them as touched
