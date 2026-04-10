@@ -1945,7 +1945,7 @@ describe('form api', () => {
     ).toBeUndefined()
   })
 
-  it('should validate all fields consistently', async () => {
+  it('should validate all fields consistently - field level onChange validators', async () => {
     const form = new FormApi({
       defaultValues: {
         firstName: '',
@@ -1957,8 +1957,7 @@ describe('form api', () => {
       form,
       name: 'firstName',
       validators: {
-        onChange: ({ value }) =>
-          value.length > 0 ? undefined : 'first name is required',
+        onChange: ({ value }) => (value.length > 0 ? undefined : 'is required'),
       },
     })
 
@@ -1966,9 +1965,30 @@ describe('form api', () => {
     field.mount()
 
     await form.validateAllFields('change')
-    expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
-    await form.validateAllFields('change')
-    expect(field.getMeta().errorMap.onChange).toEqual('first name is required')
+    expect(field.getMeta().errorMap.onChange).toEqual('is required')
+  })
+
+  it('should validate all fields consistently - field level onSubmit validators', async () => {
+    const form = new FormApi({
+      defaultValues: {
+        firstName: '',
+        lastName: '',
+      },
+    })
+
+    const field = new FieldApi({
+      form,
+      name: 'firstName',
+      validators: {
+        onSubmit: ({ value }) => (value.length > 0 ? undefined : 'is required'),
+      },
+    })
+
+    form.mount()
+    field.mount()
+
+    await form.validateAllFields('submit')
+    expect(field.getMeta().errorMap.onSubmit).toEqual('is required')
   })
 
   it('should validate a single field consistently if touched', async () => {
