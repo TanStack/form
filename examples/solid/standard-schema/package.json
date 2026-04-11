@@ -14,13 +14,14 @@
     "effect": "^3.17.14",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "solid-js": "^1.9.9",
+    "solid-js": "2.0.0-beta.6",
     "valibot": "^1.1.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@solidjs/web": "2.0.0-beta.6",
     "typescript": "5.8.2",
     "vite": "^7.2.2",
-    "vite-plugin-solid": "^2.11.8"
+    "vite-plugin-solid": "3.0.0-next.4"
   }
 }

@@ -1,5 +1,5 @@
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
-import { createComputed, onMount } from 'solid-js'
+import { createRenderEffect, onSettled } from 'solid-js'
 import { useStore } from '@tanstack/solid-store'
 import { Field, createField } from './createField'
 import type {
@@ -230,22 +230,28 @@ export function createForm<
       TSubmitMeta
     > = api as never
 
-  extendedApi.Field = (props) => <Field {...props} form={api} />
-  extendedApi.createField = (props) =>
+  extendedApi.Field = (props: any) => <Field {...props} form={api} />
+  extendedApi.createField = (props: any) =>
     createField(() => {
       return { ...props(), form: api }
     }) as never
-  extendedApi.useStore = (selector) => useStore(api.store, selector)
-  extendedApi.Subscribe = (props) =>
+  extendedApi.useStore = (selector: any) => useStore(api.store, selector)
+  extendedApi.Subscribe = (props: any) =>
     functionalUpdate(props.children, useStore(api.store, props.selector))
 
-  onMount(api.mount)
+  onSettled(api.mount)
 
   /**
    * formApi.update should not have any side effects. Think of it like a `useRef`
    * that we need to keep updated every render with the most up-to-date information.
    */
-  createComputed(() => api.update(opts?.()))
+  createRenderEffect(
+    () => opts?.(),
+    (options) => {
+      api.update(options)
+      return undefined
+    },
+  )
 
   return extendedApi
 }

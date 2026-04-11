@@ -1,6 +1,6 @@
 import { FieldGroupApi, functionalUpdate } from '@tanstack/form-core'
 import { useStore } from '@tanstack/solid-store'
-import { onCleanup, onMount } from 'solid-js'
+import { onSettled } from 'solid-js'
 import type { Component, JSX, ParentProps } from 'solid-js'
 import type {
   DeepKeysOfType,
@@ -193,27 +193,28 @@ export function createFieldGroup<
     TFormComponents
   > = api as never
 
-  extendedApi.AppForm = (appFormProps) => <form.AppForm {...appFormProps} />
-  extendedApi.AppField = (props) => (
-    <form.AppField {...(api.getFormFieldOptions(props) as any)} />
+  extendedApi.AppForm = (appFormProps: any) => (
+    <form.AppForm {...appFormProps} />
   )
-  extendedApi.Field = (props) => (
-    <form.Field {...(api.getFormFieldOptions(props) as any)} />
-  )
-  extendedApi.Subscribe = (props) => {
+  extendedApi.AppField = (props: any) => {
+    const fieldOptions = () => api.getFormFieldOptions(props)
+    return <form.AppField {...(fieldOptions() as any)} />
+  }
+  extendedApi.Field = (props: any) => {
+    const fieldOptions = () => api.getFormFieldOptions(props)
+    return <form.Field {...(fieldOptions() as any)} />
+  }
+  extendedApi.Subscribe = (props: any) => {
     const data = useStore(api.store, props.selector)
 
     return functionalUpdate(props.children, data()) as Element
   }
 
-  let mounted = false
-  onMount(() => {
+  onSettled(() => {
     const cleanupFn = api.mount()
-    mounted = true
-    onCleanup(() => {
+    return () => {
       cleanupFn()
-      mounted = false
-    })
+    }
   })
 
   return Object.assign(extendedApi, {
