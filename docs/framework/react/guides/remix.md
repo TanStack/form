@@ -1,5 +1,5 @@
 ---
-id: ssr
+id: remix
 title: TanStack Form - Remix
 ---
 
@@ -10,7 +10,7 @@ title: TanStack Form - Remix
 ### Remix Prerequisites
 
 - Start a new `Remix` project, following the steps in the [Remix Documentation](https://remix.run/docs/en/main/start/quickstart).
-- Install `@tanstack/react-form`
+- Install `@tanstack/react-form-start`
 - Install any [form validator](./validation#validation-through-schema-libraries) of your choice. [Optional]
 
 ## Remix integration
@@ -145,7 +145,7 @@ export default function Index() {
 
 ### useTransform
 
-you may have noticed util function `useTransform` being used throughout these examples, it's primary responsibility is the merging of the server and client state. Under the hood it is a useCallback whose deps are that of the server state, when the server state changes it will automatically patch the client state.
+you may have noticed util function `useTransform` being used throughout these examples, its primary responsibility is the merging of the server and client state. Under the hood it is a useCallback whose deps are that of the server state, when the server state changes it will automatically patch the client state.
 
 ```tsx
 const form = useForm({

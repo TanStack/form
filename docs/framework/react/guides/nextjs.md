@@ -1,5 +1,5 @@
 ---
-id: ssr
+id: nextjs
 title: TanStack Form - NextJs
 ---
 

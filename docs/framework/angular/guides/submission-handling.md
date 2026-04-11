@@ -103,7 +103,7 @@ export class AppComponent {
 }
 ```
 
-> In a situation where you want to be able to submit in a invalid state `canSubmitWhenInvalid` boolean flag can be provided to useForm.
+> In a situation where you want to be able to submit in an invalid state `canSubmitWhenInvalid` boolean flag can be provided to useForm.
 
 ```angular-ts
 import { injectForm } from '@tanstack/angular-form';

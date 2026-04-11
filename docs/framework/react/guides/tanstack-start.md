@@ -1,5 +1,5 @@
 ---
-id: ssr
+id: tanstack-start
 title: TanStack Form - TanStack Start
 ---
 
