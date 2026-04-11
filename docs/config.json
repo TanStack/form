@@ -156,8 +156,16 @@
               "to": "framework/react/guides/react-native"
             },
             {
-              "label": "SSR/TanStack Start/Next.js",
-              "to": "framework/react/guides/ssr"
+              "label": "TanStack Start",
+              "to": "framework/react/guides/tanstack-start"
+            },
+            {
+              "label": "Next.js",
+              "to": "framework/react/guides/nextjs"
+            },
+            {
+              "label": "Remix",
+              "to": "framework/react/guides/remix"
             },
             {
               "label": "Debugging",
@@ -417,10 +425,6 @@
             {
               "label": "Functions / useForm",
               "to": "framework/react/reference/functions/useForm"
-            },
-            {
-              "label": "Functions / useTransform",
-              "to": "framework/react/reference/functions/useTransform"
             },
             {
               "label": "Types / FieldComponent",
