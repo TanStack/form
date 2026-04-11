@@ -1,5 +1,5 @@
 import { FormApi, functionalUpdate } from '@tanstack/form-core'
-import { createComputed, onMount } from 'solid-js'
+import { createRenderEffect, onSettled } from 'solid-js'
 import { useStore } from '@tanstack/solid-store'
 import { Field, createField } from './createField'
 import type {
@@ -239,13 +239,19 @@ export function createForm<
   extendedApi.Subscribe = (props) =>
     functionalUpdate(props.children, useStore(api.store, props.selector))
 
-  onMount(api.mount)
+  onSettled(api.mount)
 
   /**
    * formApi.update should not have any side effects. Think of it like a `useRef`
    * that we need to keep updated every render with the most up-to-date information.
    */
-  createComputed(() => api.update(opts?.()))
+  createRenderEffect(
+    () => opts?.(),
+    (options) => {
+      api.update(options)
+      return undefined
+    },
+  )
 
   return extendedApi
 }

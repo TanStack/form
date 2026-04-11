@@ -1,10 +1,9 @@
 import { FieldApi } from '@tanstack/form-core'
 import {
   createComponent,
-  createComputed,
+  createRenderEffect,
   createSignal,
-  onCleanup,
-  onMount,
+  onSettled,
 } from 'solid-js'
 import { useStore } from '@tanstack/solid-store'
 import type {
@@ -254,12 +253,16 @@ function makeFieldReactive<
   const [field, setField] = createSignal(fieldApi, { equals: false })
   // Handle shallow comparison to make sure that Derived doesn't create a new setField call every time
   const store = useStore(fieldApi.store, (store) => store)
-  // Run before initial render
-  createComputed(() => {
-    // Use the store to track dependencies
-    store()
-    setField(fieldApi)
-  })
+  createRenderEffect(
+    () => {
+      // Use the store to track dependencies
+      store()
+      return fieldApi
+    },
+    (nextFieldApi) => {
+      setField(() => nextFieldApi)
+    },
+  )
   return field
 }
 
@@ -346,25 +349,35 @@ export function createField<
 
   let mounted = false
   // Instantiates field meta and removes it when unrendered
-  onMount(() => {
+  onSettled(() => {
+    api.update(opts())
     const cleanupFn = api.mount()
     mounted = true
-    onCleanup(() => {
-      cleanupFn()
+    return () => {
       mounted = false
-    })
+      cleanupFn()
+    }
   })
 
   /**
    * fieldApi.update should not have any side effects. Think of it like a `useRef`
    * that we need to keep updated every render with the most up-to-date information.
    *
-   * createComputed to make sure this effect runs before render effects
+   * createRenderEffect keeps the api options in sync before user effects run.
    */
-  createComputed(() => {
-    if (!mounted) return
-    api.update(opts())
-  })
+  createRenderEffect(
+    () => {
+      const nextOptions = opts()
+      return mounted ? nextOptions : undefined
+    },
+    (options) => {
+      if (options) {
+        api.update(options)
+      }
+
+      return undefined
+    },
+  )
 
   return makeFieldReactive<
     TParentData,

@@ -1,8 +1,8 @@
 import {
   createComponent,
   createContext,
-  mergeProps,
-  splitProps,
+  merge,
+  omit,
   useContext,
 } from 'solid-js'
 import { createFieldGroup } from './createFieldGroup'
@@ -351,26 +351,18 @@ export function createFormHook<
 
     const AppForm = ((formProps) => {
       return (
-        <opts.formContext.Provider value={form}>
-          {formProps.children}
-        </opts.formContext.Provider>
+        <opts.formContext value={form}>{formProps.children}</opts.formContext>
       )
     }) as Component<ParentProps>
 
     const AppField = ((_props) => {
-      const [childProps, fieldProps] = splitProps(_props, ['children'])
+      const fieldProps = omit(_props, 'children')
       return (
         <form.Field {...fieldProps}>
           {(field) => (
-            <opts.fieldContext.Provider value={field}>
-              {createComponent(
-                () =>
-                  childProps.children(
-                    Object.assign(field, opts.fieldComponents),
-                  ),
-                {},
-              )}
-            </opts.fieldContext.Provider>
+            <opts.fieldContext value={field}>
+              {_props.children(Object.assign(field, opts.fieldComponents))}
+            </opts.fieldContext>
           )}
         </form.Field>
       )
@@ -472,7 +464,7 @@ export function createFormHook<
     return (innerProps) =>
       createComponent(
         render as Component<any>,
-        mergeProps(props ?? {}, innerProps),
+        props ? merge(props, innerProps) : innerProps,
       )
   }
 
@@ -560,7 +552,7 @@ export function createFormHook<
       const fieldGroupApi = createFieldGroup(() => fieldGroupProps)
       return createComponent(
         render as Component<any>,
-        mergeProps(props ?? {}, innerProps, { group: fieldGroupApi as any }),
+        merge(props ?? {}, innerProps, { group: fieldGroupApi as any }),
       )
     }
   }
