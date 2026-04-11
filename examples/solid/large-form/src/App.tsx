@@ -1,10 +1,10 @@
-import { Suspense } from 'solid-js'
+import { Loading } from 'solid-js'
 import { PeoplePage } from './features/people/page.tsx'
 
 export default function App() {
   return (
-    <Suspense fallback={<p>Loading...</p>}>
+    <Loading fallback={<p>Loading...</p>}>
       <PeoplePage />
-    </Suspense>
+    </Loading>
   )
 }

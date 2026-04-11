@@ -1,8 +1,9 @@
 import { FieldApi } from '@tanstack/form-core'
 import {
   createComponent,
+  createMemo,
   createRenderEffect,
-  createSignal,
+  omit,
   onSettled,
 } from 'solid-js'
 import { useStore } from '@tanstack/solid-store'
@@ -250,20 +251,17 @@ function makeFieldReactive<
     TFormOnServer,
     TParentSubmitMeta
   > {
-  const [field, setField] = createSignal(fieldApi, { equals: false })
   // Handle shallow comparison to make sure that Derived doesn't create a new setField call every time
   const store = useStore(fieldApi.store, (store) => store)
-  createRenderEffect(
+  return createMemo(
     () => {
       // Use the store to track dependencies
       store()
       return fieldApi
     },
-    (nextFieldApi) => {
-      setField(() => nextFieldApi)
-    },
+    undefined,
+    { equals: false },
   )
-  return field
 }
 
 export function createField<
@@ -818,8 +816,7 @@ export function Field<
     TFormOnServer,
     TParentSubmitMeta
   >(() => {
-    const { children, ...fieldOptions } = props
-    return fieldOptions
+    return omit(props, 'children')
   })
 
   return <>{createComponent(() => props.children(fieldApi), {})}</>

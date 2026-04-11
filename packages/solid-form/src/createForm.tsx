@@ -230,13 +230,13 @@ export function createForm<
       TSubmitMeta
     > = api as never
 
-  extendedApi.Field = (props) => <Field {...props} form={api} />
-  extendedApi.createField = (props) =>
+  extendedApi.Field = (props: any) => <Field {...props} form={api} />
+  extendedApi.createField = (props: any) =>
     createField(() => {
       return { ...props(), form: api }
     }) as never
-  extendedApi.useStore = (selector) => useStore(api.store, selector)
-  extendedApi.Subscribe = (props) =>
+  extendedApi.useStore = (selector: any) => useStore(api.store, selector)
+  extendedApi.Subscribe = (props: any) =>
     functionalUpdate(props.children, useStore(api.store, props.selector))
 
   onSettled(api.mount)

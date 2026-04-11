@@ -30,21 +30,21 @@
   },
   "type": "module",
   "types": "dist/esm/index.d.ts",
-  "main": "dist/cjs/index.cjs",
-  "module": "dist/esm/index.js",
+  "main": "dist/cjs/packages/solid-form/src/index.cjs",
+  "module": "dist/esm/packages/solid-form/src/index.js",
   "exports": {
     ".": {
       "solid": {
-        "types": "./dist/source/index.d.ts",
-        "default": "./dist/source/index.jsx"
+        "types": "./dist/source/solid-form/src/index.d.ts",
+        "default": "./dist/source/solid-form/src/index.jsx"
       },
       "import": {
         "types": "./dist/esm/index.d.ts",
-        "default": "./dist/esm/index.js"
+        "default": "./dist/esm/packages/solid-form/src/index.js"
       },
       "require": {
         "types": "./dist/cjs/index.d.cts",
-        "default": "./dist/cjs/index.cjs"
+        "default": "./dist/cjs/packages/solid-form/src/index.cjs"
       }
     },
     "./package.json": "./package.json"

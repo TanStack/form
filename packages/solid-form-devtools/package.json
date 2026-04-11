@@ -51,13 +51,15 @@
     "build": "vite build"
   },
   "peerDependencies": {
-    "solid-js": ">=1.9.7"
+    "solid-js": ">=2.0.0-beta.6 <2.0.0-experimental.0"
   },
   "dependencies": {
     "@tanstack/devtools-utils": "^0.4.0",
     "@tanstack/form-devtools": "workspace:*"
   },
   "devDependencies": {
-    "vite-plugin-solid": "^2.11.8"
+    "@solidjs/web": "2.0.0-beta.6",
+    "solid-js": "2.0.0-beta.6",
+    "vite-plugin-solid": "3.0.0-next.4"
   }
 }

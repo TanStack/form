@@ -1,8 +1,8 @@
 /* @refresh reload */
-import { render } from 'solid-js/web'
+import { render } from '@solidjs/web'
 
 import { createForm } from '@tanstack/solid-form'
-import { Index, Show } from 'solid-js'
+import { Repeat, Show } from 'solid-js'
 
 function App() {
   const form = createForm(() => ({
@@ -26,8 +26,8 @@ function App() {
             <div>
               <Show when={field().state.value.length > 0}>
                 {/* Do not change this to For or the test will fail */}
-                <Index each={field().state.value}>
-                  {(_, i) => (
+                <Repeat count={field().state.value.length}>
+                  {(i) => (
                     <form.Field name={`people[${i}].name`}>
                       {(subField) => (
                         <div>
@@ -44,7 +44,7 @@ function App() {
                       )}
                     </form.Field>
                   )}
-                </Index>
+                </Repeat>
               </Show>
 
               <button

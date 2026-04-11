@@ -359,7 +359,7 @@ export function createFormHook<
       const fieldProps = omit(_props, 'children')
       return (
         <form.Field {...fieldProps}>
-          {(field) => (
+          {(field: any) => (
             <opts.fieldContext value={field}>
               {_props.children(Object.assign(field, opts.fieldComponents))}
             </opts.fieldContext>
