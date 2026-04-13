@@ -58,6 +58,6 @@
     "@tanstack/form-devtools": "workspace:*"
   },
   "devDependencies": {
-    "vite-plugin-solid": "^2.11.8"
+    "vite-plugin-solid": "^2.11.12"
   }
 }

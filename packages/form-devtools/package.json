@@ -76,15 +76,15 @@
     "@tanstack/devtools-utils": "^0.4.0",
     "@tanstack/form-core": "workspace:*",
     "clsx": "^2.1.1",
-    "dayjs": "^1.11.18",
-    "goober": "^2.1.16"
+    "dayjs": "^1.11.20",
+    "goober": "^2.1.18"
   },
   "devDependencies": {
     "rolldown-plugin-solid": "^0.2.1",
-    "solid-js": "^1.9.9",
-    "tsdown": "^0.21.1",
-    "vite": "^7.2.2",
-    "vite-plugin-solid": "^2.11.8"
+    "solid-js": "^1.9.12",
+    "tsdown": "^0.21.7",
+    "vite": "^7.3.2",
+    "vite-plugin-solid": "^2.11.12"
   },
   "peerDependencies": {
     "solid-js": ">=1.9.9"

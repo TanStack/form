@@ -56,12 +56,12 @@
   ],
   "dependencies": {
     "@tanstack/form-core": "workspace:*",
-    "@tanstack/solid-store": "^0.9.1"
+    "@tanstack/solid-store": "^0.10.0"
   },
   "devDependencies": {
-    "solid-js": "^1.9.9",
-    "vite": "^7.2.2",
-    "vite-plugin-solid": "^2.11.8"
+    "solid-js": "^1.9.12",
+    "vite": "^7.3.2",
+    "vite-plugin-solid": "^2.11.12"
   },
   "peerDependencies": {
     "solid-js": ">=1.9.9"

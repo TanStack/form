@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@tanstack/react-form-nextjs": "^1.29.0",
-    "@tanstack/react-store": "^0.9.1",
-    "next": "16.0.5",
+    "@tanstack/react-store": "^0.10.0",
+    "next": "16.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
