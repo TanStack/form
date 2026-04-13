@@ -17,11 +17,7 @@ import { TanStackField, injectForm } from '@tanstack/angular-form'
   template: `
     <form (submit)="handleSubmit($event)">
       <div>
-        <ng-container
-          [tanstackField]="form"
-          name="fullName"
-          #fullName="field"
-        >
+        <ng-container [tanstackField]="form" name="fullName" #fullName="field">
           <label [for]="fullName.api.name">First Name:</label>
           <input
             [name]="fullName.api.name"
