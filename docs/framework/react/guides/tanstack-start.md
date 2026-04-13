@@ -10,7 +10,7 @@ title: TanStack Form - TanStack Start
 ### TanStack Start Prerequisites
 
 - Start a new `TanStack Start` project, following the steps in the [TanStack Start Quickstart Guide](https://tanstack.com/router/latest/docs/framework/react/guide/tanstack-start)
-- Install `@tanstack/react-form`
+- Install `@tanstack/react-form-start`
 - Install any [form validator](./validation#validation-through-schema-libraries) of your choice. [Optional]
 
 ### Start integration
