@@ -223,7 +223,7 @@ import { SubmitButton } from './FormComponents/SubmitButton'
 
 export const { useAppForm } = ProfileForm.extendForm({
   fieldComponents: { CustomTextField },
-  // Ts will error since the parent appForm already has a component called CustomSubmit
+  // Ts will error since the parent appForm already has a component called SubmitButton
   formComponents: { SubmitButton },
 })
 ```
