@@ -2284,6 +2284,17 @@ export class FormApi<
     const dontUpdateMeta = opts?.dontUpdateMeta ?? false
     const dontRunListeners = opts?.dontRunListeners ?? false
     const dontValidate = opts?.dontValidate ?? false
+    const fieldString = field.toString()
+    const descendantFields = Object.keys(this.fieldInfo).filter((fieldKey) => {
+      if (fieldKey === fieldString) {
+        return false
+      }
+
+      return (
+        fieldKey.startsWith(`${fieldString}.`) ||
+        fieldKey.startsWith(`${fieldString}[`)
+      )
+    }) as DeepKeys<TFormData>[]
 
     batch(() => {
       if (!dontUpdateMeta) {
@@ -2313,6 +2324,10 @@ export class FormApi<
 
     if (!dontValidate) {
       this.validateField(field, 'change')
+
+      descendantFields.forEach((descendantField) => {
+        this.getFieldInfo(descendantField).instance?.validate('change')
+      })
     }
   }
 
