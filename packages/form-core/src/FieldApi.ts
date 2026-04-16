@@ -384,6 +384,7 @@ export interface FieldListeners<
   onMount?: FieldListenerFn<TParentData, TName, TData>
   onUnmount?: FieldListenerFn<TParentData, TName, TData>
   onSubmit?: FieldListenerFn<TParentData, TName, TData>
+  onGroupSubmit?: FieldListenerFn<TParentData, TName, TData>
 }
 
 /**
