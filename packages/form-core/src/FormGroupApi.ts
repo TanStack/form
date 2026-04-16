@@ -1603,7 +1603,10 @@ export class FormGroupApi<
     // Attempt to sync validate first
     const { fieldsErrorMap } = opts?.skipFormValidation
       ? { fieldsErrorMap: {} as never }
-      : this.form.validateSync(cause)
+      : this.form.validateSync(cause, {
+          dontUpdateFormErrorMap: true,
+          filterFieldNames: (fieldName) => fieldName.startsWith(this.name),
+        })
     const { hasErrored } = this.validateSync(
       cause,
       fieldsErrorMap[this.name] ?? {},
@@ -1620,7 +1623,10 @@ export class FormGroupApi<
     // No error? Attempt async validation
     const formValidationResultPromise = opts?.skipFormValidation
       ? Promise.resolve({})
-      : this.form.validateAsync(cause)
+      : this.form.validateAsync(cause, {
+          dontUpdateFormErrorMap: true,
+          filterFieldNames: (fieldName) => fieldName.startsWith(this.name),
+        })
     return this.validateAsync(cause, formValidationResultPromise, {
       skipRelatedFieldValidation: opts?.skipRelatedFieldValidation,
     })
