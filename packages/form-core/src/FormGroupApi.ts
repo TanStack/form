@@ -1276,7 +1276,7 @@ export class FormGroupApi<
   }
 
   mount() {
-    // TODO: Absorb from FieldApi
+    this.update(this.options as never)
     return () => {}
   }
 
