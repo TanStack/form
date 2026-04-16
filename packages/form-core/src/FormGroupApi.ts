@@ -1,19 +1,29 @@
 import { batch, createStore } from '@tanstack/store'
-import { evaluate, getSyncValidatorArray, mergeOpts } from './utils'
+import {
+  determineFieldLevelErrorSourceAndValue,
+  evaluate,
+  getAsyncValidatorArray,
+  getSyncValidatorArray,
+  mergeOpts,
+} from './utils'
 import { defaultValidationLogic } from './ValidationLogic'
 import {
   isStandardSchemaValidator,
   standardSchemaValidators,
 } from './standardSchemaValidator'
 import { defaultFieldMeta } from './metaHelper'
-import type { Updater } from './utils'
-import type { ReadonlyStore } from '@tanstack/store'
+import { FieldApi } from './FieldApi'
+import type { FormAsyncValidateOrFn, FormValidateOrFn } from './FormApi'
+import type { AnyFieldApi } from './FieldApi'
 import type {
   StandardSchemaV1,
-  StandardSchemaV1Issue,
   TStandardSchemaValidatorValue,
 } from './standardSchemaValidator'
+import type { AsyncValidator, SyncValidator, Updater } from './utils'
+import type { ReadonlyStore, Store } from '@tanstack/store'
 import type {
+  FieldErrorMapFromValidator,
+  FieldInfo,
   FieldLikeAPI,
   FieldLikeApiOptions,
   FieldLikeMetaBase,
@@ -25,50 +35,7 @@ import type {
   ValidationError,
   ValidationErrorMap,
 } from './types'
-import type {
-  AnyFormApi,
-  FormAsyncValidateOrFn,
-  FormValidateAsyncFn,
-  FormValidateFn,
-  FormValidateOrFn,
-} from './FormApi'
 import type { DeepKeys, DeepValue } from './util-types'
-
-/**
- * @private
- */
-// TODO: Add the `Unwrap` type to the errors
-type FormGroupErrorMapFromValidator<
-  TFormData,
-  TName extends DeepKeys<TFormData>,
-  TData extends DeepValue<TFormData, TName>,
-  TOnMount extends undefined | FormGroupValidateOrFn<TFormData, TName, TData>,
-  TOnChange extends undefined | FormGroupValidateOrFn<TFormData, TName, TData>,
-  TOnChangeAsync extends
-    | undefined
-    | FormGroupAsyncValidateOrFn<TFormData, TName, TData>,
-  TOnBlur extends undefined | FormGroupValidateOrFn<TFormData, TName, TData>,
-  TOnBlurAsync extends
-    | undefined
-    | FormGroupAsyncValidateOrFn<TFormData, TName, TData>,
-  TOnSubmit extends undefined | FormGroupValidateOrFn<TFormData, TName, TData>,
-  TOnSubmitAsync extends
-    | undefined
-    | FormGroupAsyncValidateOrFn<TFormData, TName, TData>,
-> = Partial<
-  Record<
-    DeepKeys<TFormData>,
-    ValidationErrorMap<
-      TOnMount,
-      TOnChange,
-      TOnChangeAsync,
-      TOnBlur,
-      TOnBlurAsync,
-      TOnSubmit,
-      TOnSubmitAsync
-    >
-  >
->
 
 /**
  * @private
@@ -104,6 +71,7 @@ export type FormGroupValidateFn<
     any,
     any,
     any,
+    any,
     any
   >
 }) => unknown
@@ -118,44 +86,6 @@ export type FormGroupValidateOrFn<
 > =
   | FormGroupValidateFn<TParentData, TName, TData>
   | StandardSchemaV1<TData, unknown>
-
-type StandardBrandedSchemaV1<T> = T & { __standardSchemaV1: true }
-
-type UnwrapFormValidateOrFnForInner<
-  TValidateOrFn extends undefined | FormValidateOrFn<any>,
-> = [TValidateOrFn] extends [FormValidateFn<any>]
-  ? ReturnType<TValidateOrFn>
-  : [TValidateOrFn] extends [StandardSchemaV1<infer TOut, any>]
-    ? StandardBrandedSchemaV1<TOut>
-    : undefined
-
-export type UnwrapFormGroupValidateOrFn<
-  TName extends string,
-  TValidateOrFn extends undefined | FormGroupValidateOrFn<any, any, any>,
-  TFormValidateOrFn extends undefined | FormValidateOrFn<any>,
-> =
-  | ([TFormValidateOrFn] extends [StandardSchemaV1<any, infer TStandardOut>]
-      ? TName extends keyof TStandardOut
-        ? StandardSchemaV1Issue[]
-        : undefined
-      : undefined)
-  | (UnwrapFormValidateOrFnForInner<TFormValidateOrFn> extends infer TFormValidateVal
-      ? TFormValidateVal extends { __standardSchemaV1: true }
-        ? [DeepValue<TFormValidateVal, TName>] extends [never]
-          ? undefined
-          : StandardSchemaV1Issue[]
-        : TFormValidateVal extends { fields: any }
-          ? TName extends keyof TFormValidateVal['fields']
-            ? TFormValidateVal['fields'][TName]
-            : undefined
-          : undefined
-      : never)
-  | ([TValidateOrFn] extends [FormGroupValidateFn<any, any, any>]
-      ? ReturnType<TValidateOrFn>
-      : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
-        ? // TODO: Check if `disableErrorFlat` is enabled, if so, return StandardSchemaV1Issue[][]
-          StandardSchemaV1Issue[]
-        : undefined)
 
 /**
  * @private
@@ -191,6 +121,7 @@ export type FormGroupValidateAsyncFn<
     any,
     any,
     any,
+    any,
     any
   >
   signal: AbortSignal
@@ -207,42 +138,6 @@ export type FormGroupAsyncValidateOrFn<
   | FormGroupValidateAsyncFn<TParentData, TName, TData>
   | StandardSchemaV1<TData, unknown>
 
-type UnwrapFormAsyncValidateOrFnForInner<
-  TValidateOrFn extends undefined | FormAsyncValidateOrFn<any>,
-> = [TValidateOrFn] extends [FormValidateAsyncFn<any>]
-  ? Awaited<ReturnType<TValidateOrFn>>
-  : [TValidateOrFn] extends [StandardSchemaV1<infer TOut, any>]
-    ? StandardBrandedSchemaV1<TOut>
-    : undefined
-
-export type UnwrapFormGroupAsyncValidateOrFn<
-  TName extends string,
-  TValidateOrFn extends undefined | FormGroupAsyncValidateOrFn<any, any, any>,
-  TFormValidateOrFn extends undefined | FormAsyncValidateOrFn<any>,
-> =
-  | ([TFormValidateOrFn] extends [StandardSchemaV1<any, infer TStandardOut>]
-      ? TName extends keyof TStandardOut
-        ? StandardSchemaV1Issue[]
-        : undefined
-      : undefined)
-  | (UnwrapFormAsyncValidateOrFnForInner<TFormValidateOrFn> extends infer TFormValidateVal
-      ? TFormValidateVal extends { __standardSchemaV1: true }
-        ? [DeepValue<TFormValidateVal, TName>] extends [never]
-          ? undefined
-          : StandardSchemaV1Issue[]
-        : TFormValidateVal extends { fields: any }
-          ? TName extends keyof TFormValidateVal['fields']
-            ? TFormValidateVal['fields'][TName]
-            : undefined
-          : undefined
-      : never)
-  | ([TValidateOrFn] extends [FormGroupValidateAsyncFn<any, any, any>]
-      ? Awaited<ReturnType<TValidateOrFn>>
-      : [TValidateOrFn] extends [StandardSchemaV1<any, any>]
-        ? // TODO: Check if `disableErrorFlat` is enabled, if so, return StandardSchemaV1Issue[][]
-          StandardSchemaV1Issue[]
-        : undefined)
-
 /**
  * @private
  */
@@ -258,6 +153,7 @@ export type FormGroupListenerFn<
     TData,
     // This is technically an edge-type; which we try to keep non-`any`, but in this case
     // It's referring to an inaccessible type from the group listener function inner types, so it's not a big deal
+    any,
     any,
     any,
     any,
@@ -391,32 +287,56 @@ export interface FormGroupListeners<
 }
 
 interface FormGroupExtraOptions<
-  TParentData,
-  TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName>,
-  TOnMount extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
-  TOnChange extends
+  in out TParentData,
+  in out TName extends DeepKeys<TParentData>,
+  in out TData extends DeepValue<TParentData, TName>,
+  in out TOnMount extends
     | undefined
     | FormGroupValidateOrFn<TParentData, TName, TData>,
-  TOnChangeAsync extends
-    | undefined
-    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnBlur extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
-  TOnBlurAsync extends
-    | undefined
-    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnSubmit extends
+  in out TOnChange extends
     | undefined
     | FormGroupValidateOrFn<TParentData, TName, TData>,
-  TOnSubmitAsync extends
+  in out TOnChangeAsync extends
     | undefined
     | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnDynamic extends
+  in out TOnBlur extends
     | undefined
     | FormGroupValidateOrFn<TParentData, TName, TData>,
-  TOnDynamicAsync extends
+  in out TOnBlurAsync extends
     | undefined
     | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnSubmit extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnSubmitAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnDynamic extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnDynamicAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TSubmitMeta,
+  in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChangeAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnBlurAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnSubmitAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnDynamicAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TParentSubmitMeta,
 > {
   /**
    * A list of validators to pass to the field
@@ -440,38 +360,135 @@ interface FormGroupExtraOptions<
    * A list of listeners which attach to the corresponding events
    */
   listeners?: FormGroupListeners<TParentData, TName, TData>
+
+  defaultState?: FormGroupState
+  /**
+   * onSubmitMeta, the data passed from the handleSubmit handler, to the onSubmit function props
+   */
+  onSubmitMeta?: TSubmitMeta
+
+  /**
+   * A function to be called when the form is submitted, what should happen once the user submits a valid form returns `any` or a promise `Promise<any>`
+   */
+  onGroupSubmit?: (props: {
+    value: TData
+    groupApi: FormGroupApi<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TSubmitMeta,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
+      TFormOnServer,
+      TParentSubmitMeta
+    >
+    meta: TSubmitMeta
+  }) => any | Promise<any>
+  /**
+   * Specify an action for scenarios where the user tries to submit an invalid form.
+   */
+  onGroupSubmitInvalid?: (props: {
+    value: TData
+    groupApi: FormGroupApi<
+      TParentData,
+      TName,
+      TData,
+      TOnMount,
+      TOnChange,
+      TOnChangeAsync,
+      TOnBlur,
+      TOnBlurAsync,
+      TOnSubmit,
+      TOnSubmitAsync,
+      TOnDynamic,
+      TOnDynamicAsync,
+      TSubmitMeta,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
+      TFormOnServer,
+      TParentSubmitMeta
+    >
+    meta: TSubmitMeta
+  }) => void
 }
 
 /**
  * An object type representing the options for a field in a form.
  */
 export interface FieldOptions<
-  TParentData,
-  TName extends DeepKeys<TParentData>,
-  TData extends DeepValue<TParentData, TName>,
-  TOnMount extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
-  TOnChange extends
+  in out TParentData,
+  in out TName extends DeepKeys<TParentData>,
+  in out TData extends DeepValue<TParentData, TName>,
+  in out TOnMount extends
     | undefined
     | FormGroupValidateOrFn<TParentData, TName, TData>,
-  TOnChangeAsync extends
-    | undefined
-    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnBlur extends undefined | FormGroupValidateOrFn<TParentData, TName, TData>,
-  TOnBlurAsync extends
-    | undefined
-    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnSubmit extends
+  in out TOnChange extends
     | undefined
     | FormGroupValidateOrFn<TParentData, TName, TData>,
-  TOnSubmitAsync extends
+  in out TOnChangeAsync extends
     | undefined
     | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
-  TOnDynamic extends
+  in out TOnBlur extends
     | undefined
     | FormGroupValidateOrFn<TParentData, TName, TData>,
-  TOnDynamicAsync extends
+  in out TOnBlurAsync extends
     | undefined
     | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnSubmit extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnSubmitAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TOnDynamic extends
+    | undefined
+    | FormGroupValidateOrFn<TParentData, TName, TData>,
+  in out TOnDynamicAsync extends
+    | undefined
+    | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TSubmitMeta,
+  in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnChangeAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnBlur extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnBlurAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnSubmit extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnSubmitAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnDynamic extends undefined | FormValidateOrFn<TParentData>,
+  in out TFormOnDynamicAsync extends
+    | undefined
+    | FormAsyncValidateOrFn<TParentData>,
+  in out TFormOnServer extends undefined | FormAsyncValidateOrFn<TParentData>,
+  in out TParentSubmitMeta,
 >
   extends
     FormGroupExtraOptions<
@@ -486,7 +503,19 @@ export interface FieldOptions<
       TOnSubmit,
       TOnSubmitAsync,
       TOnDynamic,
-      TOnDynamicAsync
+      TOnDynamicAsync,
+      TSubmitMeta,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
+      TFormOnServer,
+      TParentSubmitMeta
     >,
     FieldLikeOptions<
       TParentData,
@@ -534,6 +563,7 @@ interface FormGroupApiOptions<
   in out TOnDynamicAsync extends
     | undefined
     | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TSubmitMeta,
   in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnChangeAsync extends
@@ -592,8 +622,100 @@ interface FormGroupApiOptions<
       TOnSubmit,
       TOnSubmitAsync,
       TOnDynamic,
-      TOnDynamicAsync
+      TOnDynamicAsync,
+      TSubmitMeta,
+      TFormOnMount,
+      TFormOnChange,
+      TFormOnChangeAsync,
+      TFormOnBlur,
+      TFormOnBlurAsync,
+      TFormOnSubmit,
+      TFormOnSubmitAsync,
+      TFormOnDynamic,
+      TFormOnDynamicAsync,
+      TFormOnServer,
+      TParentSubmitMeta
     > {}
+
+interface FormGroupState {
+  /**
+   * A boolean indicating if the form is currently in the process of being submitted after `handleSubmit` is called.
+   *
+   * Goes back to `false` when submission completes for one of the following reasons:
+   * - the validation step returned errors.
+   * - the `onSubmit` function has completed.
+   *
+   * Note: if you're running async operations in your `onSubmit` function make sure to await them to ensure `isSubmitting` is set to `false` only when the async operation completes.
+   *
+   * This is useful for displaying loading indicators or disabling form inputs during submission.
+   *
+   */
+  isSubmitting: boolean
+  /**
+   * A boolean indicating if the `onSubmit` function has completed successfully.
+   *
+   * Goes back to `false` at each new submission attempt.
+   *
+   * Note: you can use isSubmitting to check if the form is currently submitting.
+   */
+  isSubmitted: boolean
+  /**
+   * A boolean indicating if the form or any of its fields are currently validating.
+   */
+  isValidating: boolean
+  /**
+   * A counter for tracking the number of submission attempts.
+   */
+  submissionAttempts: number
+  /**
+   * A boolean indicating if the last submission was successful.
+   */
+  isSubmitSuccessful: boolean
+}
+
+function getDefaultFormGroupState(
+  defaultState: Partial<FormGroupState>,
+): FormGroupState {
+  return {
+    isSubmitted: defaultState.isSubmitted ?? false,
+    isSubmitting: defaultState.isSubmitting ?? false,
+    isValidating: defaultState.isValidating ?? false,
+    submissionAttempts: defaultState.submissionAttempts ?? 0,
+    isSubmitSuccessful: defaultState.isSubmitSuccessful ?? false,
+  }
+}
+
+/**
+ * @public
+ *
+ * A type representing the FormGroup API with all generics set to `any` for convenience.
+ */
+export type AnyFormGroupApi = FormGroupApi<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>
 
 export class FormGroupApi<
   in out TParentData,
@@ -626,6 +748,7 @@ export class FormGroupApi<
   in out TOnDynamicAsync extends
     | undefined
     | FormGroupAsyncValidateOrFn<TParentData, TName, TData>,
+  in out TSubmitMeta,
   in out TFormOnMount extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnChange extends undefined | FormValidateOrFn<TParentData>,
   in out TFormOnChangeAsync extends
@@ -681,7 +804,19 @@ export class FormGroupApi<
     TOnSubmit,
     TOnSubmitAsync,
     TOnDynamic,
-    TOnDynamicAsync
+    TOnDynamicAsync,
+    TSubmitMeta,
+    TFormOnMount,
+    TFormOnChange,
+    TFormOnChangeAsync,
+    TFormOnBlur,
+    TFormOnBlurAsync,
+    TFormOnSubmit,
+    TFormOnSubmitAsync,
+    TFormOnDynamic,
+    TFormOnDynamicAsync,
+    TFormOnServer,
+    TParentSubmitMeta
   >
 > {
   /**
@@ -700,6 +835,7 @@ export class FormGroupApi<
     TOnSubmitAsync,
     TOnDynamic,
     TOnDynamicAsync,
+    TSubmitMeta,
     TFormOnMount,
     TFormOnChange,
     TFormOnChangeAsync,
@@ -732,6 +868,7 @@ export class FormGroupApi<
     TOnSubmitAsync,
     TOnDynamic,
     TOnDynamicAsync,
+    TSubmitMeta,
     TFormOnMount,
     TFormOnChange,
     TFormOnChangeAsync,
@@ -778,6 +915,13 @@ export class FormGroupApi<
   get state() {
     return this.store.state
   }
+
+  formStateStore: Store<FormGroupState>
+
+  get formState() {
+    return this.formStateStore.state
+  }
+
   timeoutIds: {
     validations: Record<ValidationCause, ReturnType<typeof setTimeout> | null>
     listeners: Record<ListenerCause, ReturnType<typeof setTimeout> | null>
@@ -798,6 +942,7 @@ export class FormGroupApi<
       TOnSubmitAsync,
       TOnDynamic,
       TOnDynamicAsync,
+      TSubmitMeta,
       TFormOnMount,
       TFormOnChange,
       TFormOnChangeAsync,
@@ -820,6 +965,12 @@ export class FormGroupApi<
       listeners: {} as Record<ListenerCause, never>,
       formListeners: {} as Record<ListenerCause, never>,
     }
+
+    const formStateStoreVal: FormGroupState = getDefaultFormGroupState({
+      ...(opts.defaultState as any),
+    })
+
+    this.formStateStore = createStore(formStateStoreVal) as never
 
     this.store = createStore(
       (
@@ -920,6 +1071,7 @@ export class FormGroupApi<
       TOnSubmitAsync,
       TOnDynamic,
       TOnDynamicAsync,
+      TSubmitMeta,
       TFormOnMount,
       TFormOnChange,
       TFormOnChangeAsync,
@@ -951,6 +1103,34 @@ export class FormGroupApi<
     if (!this.form.getFieldMeta(this.name)) {
       this.form.setFieldMeta(this.name, this.state.meta)
     }
+  }
+
+  /**
+   * @private
+   */
+  runValidator<
+    TValue extends TStandardSchemaValidatorValue<TData> & {
+      groupApi: AnyFormGroupApi
+    },
+    TType extends 'validate' | 'validateAsync',
+  >(props: {
+    validate: TType extends 'validate'
+      ? FormGroupValidateOrFn<any, any, any>
+      : FormGroupAsyncValidateOrFn<any, any, any>
+    value: TValue
+    type: TType
+    // When `api` is 'field', the return type cannot be `FormValidationError`
+  }): unknown {
+    if (isStandardSchemaValidator(props.validate)) {
+      return standardSchemaValidators[props.type](
+        props.value,
+        props.validate,
+      ) as never
+    }
+
+    return (props.validate as FormGroupValidateFn<any, any>)(
+      props.value,
+    ) as never
   }
 
   mount() {
@@ -1015,38 +1195,372 @@ export class FormGroupApi<
    */
   getInfo = () => this.form.getFieldInfo(this.name)
 
-  _isFieldNamePartOfGroup = (fieldName: string) => {
-    // TODO: Does this `startWith` capture sub-field names properly? Probably not. :(
-    return fieldName.startsWith(this.options.name)
-  }
+  /**
+   * @private
+   */
+  getRelatedFields = () => {
+    const fields = Object.values(this.form.fieldInfo) as FieldInfo<any>[]
 
-  _getRelatedFieldInfos = () => {
-    return Object.entries(this.options.form.fieldInfo).reduce(
-      (prev, [fieldName, fieldInfo]) => {
-        if (this._isFieldNamePartOfGroup(fieldName) && fieldInfo) {
-          prev[fieldName] = fieldInfo
-        }
-        return prev
-      },
-      {} as typeof this.options.form.fieldInfo,
-    )
-  }
+    const relatedFields: AnyFieldApi[] = []
+    for (const field of fields) {
+      if (!field.instance) continue
+      // TODO: How to handle FormGroups?
+      if (!(field.instance instanceof FieldApi)) continue
+      if (field.instance.name.startsWith(this.name)) {
+        relatedFields.push(field.instance)
+      }
+    }
 
-  _isFieldsValid = () => {
-    return Object.values(this._getRelatedFieldInfos()).every(
-      (field) => field && field.instance && field.instance.state.meta.isValid,
-    )
+    return relatedFields
   }
 
   /**
-   * Validates all fields using the correct handlers for a given validation cause.
+   * @private
+   */
+  validateSync = (
+    cause: ValidationCause,
+    errorFromForm: ValidationErrorMap,
+    opts: {
+      skipRelatedFieldValidation?: boolean
+    } = {},
+  ) => {
+    const validates = getSyncValidatorArray(cause, {
+      ...this.options,
+      form: this.form,
+      validationLogic:
+        this.form.options.validationLogic || defaultValidationLogic,
+    })
+
+    const relatedFields = opts.skipRelatedFieldValidation
+      ? []
+      : this.getRelatedFields()
+    const relatedFieldValidates = relatedFields.reduce(
+      (acc, field) => {
+        const fieldValidates = getSyncValidatorArray(cause, {
+          ...field.options,
+          form: field.form,
+          validationLogic:
+            field.form.options.validationLogic || defaultValidationLogic,
+        })
+        fieldValidates.forEach((validate) => {
+          ;(validate as any).field = field
+        })
+        return acc.concat(fieldValidates as never)
+      },
+      [] as Array<
+        SyncValidator<any> & {
+          field: AnyFieldApi
+        }
+      >,
+    )
+
+    // Needs type cast as eslint errantly believes this is always falsy
+    let hasErrored = false as boolean
+
+    batch(() => {
+      const validateFieldOrGroupFn = (
+        fieldOrGroup: AnyFieldApi | AnyFormGroupApi,
+        validateObj: SyncValidator<any>,
+      ) => {
+        const errorMapKey = getErrorMapKey(validateObj.cause)
+
+        const fieldLevelError = validateObj.validate
+          ? normalizeError(
+              // TODO: Remove `any` cast
+              (fieldOrGroup as any).runValidator({
+                validate: validateObj.validate,
+                value: {
+                  value: fieldOrGroup.store.state.value,
+                  validationSource: 'field',
+                  ...(fieldOrGroup instanceof FormGroupApi
+                    ? {
+                        groupApi: fieldOrGroup,
+                      }
+                    : { fieldApi: fieldOrGroup }),
+                } as never,
+                type: 'validate',
+              }),
+            )
+          : undefined
+
+        const formLevelError = errorFromForm[errorMapKey]
+
+        const { newErrorValue, newSource } =
+          determineFieldLevelErrorSourceAndValue({
+            formLevelError,
+            fieldLevelError,
+          })
+
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (fieldOrGroup.state.meta.errorMap?.[errorMapKey] !== newErrorValue) {
+          fieldOrGroup.setMeta((prev) => ({
+            ...prev,
+            errorMap: {
+              ...prev.errorMap,
+              [errorMapKey]: newErrorValue,
+            },
+            errorSourceMap: {
+              ...prev.errorSourceMap,
+              [errorMapKey]: newSource,
+            },
+          }))
+        }
+        if (newErrorValue) {
+          hasErrored = true
+        }
+      }
+
+      for (const validateObj of validates) {
+        validateFieldOrGroupFn(this, validateObj)
+      }
+      for (const fieldValitateObj of relatedFieldValidates) {
+        if (!fieldValitateObj.validate) continue
+        validateFieldOrGroupFn(fieldValitateObj.field, fieldValitateObj)
+      }
+    })
+
+    /**
+     *  when we have an error for onSubmit in the state, we want
+     *  to clear the error as soon as the user enters a valid value in the field
+     */
+    const submitErrKey = getErrorMapKey('submit')
+
+    if (
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      this.state.meta.errorMap?.[submitErrKey] &&
+      cause !== 'submit' &&
+      !hasErrored
+    ) {
+      this.setMeta((prev) => ({
+        ...prev,
+        errorMap: {
+          ...prev.errorMap,
+          [submitErrKey]: undefined,
+        },
+        errorSourceMap: {
+          ...prev.errorSourceMap,
+          [submitErrKey]: undefined,
+        },
+      }))
+    }
+
+    return { hasErrored }
+  }
+
+  /**
+   * @private
+   */
+  validateAsync = async (
+    cause: ValidationCause,
+    formValidationResultPromise: Promise<
+      FieldErrorMapFromValidator<
+        TParentData,
+        TName,
+        TData,
+        TOnMount,
+        TOnChange,
+        TOnChangeAsync,
+        TOnBlur,
+        TOnBlurAsync,
+        TOnSubmit,
+        TOnSubmitAsync
+      >
+    >,
+    opts: {
+      skipRelatedFieldValidation?: boolean
+    } = {},
+  ) => {
+    const validates = getAsyncValidatorArray(cause, {
+      ...this.options,
+      form: this.form,
+      validationLogic:
+        this.form.options.validationLogic || defaultValidationLogic,
+    })
+
+    // Get the field-specific error messages that are coming from the form's validator
+    const asyncFormValidationResults = await formValidationResultPromise
+
+    const relatedFields = opts.skipRelatedFieldValidation
+      ? []
+      : this.getRelatedFields()
+    const relatedFieldValidates = relatedFields.reduce(
+      (acc, field) => {
+        const fieldValidates = getAsyncValidatorArray(cause, {
+          ...field.options,
+          form: field.form,
+          validationLogic:
+            field.form.options.validationLogic || defaultValidationLogic,
+        })
+        fieldValidates.forEach((validate) => {
+          ;(validate as any).field = field
+        })
+        return acc.concat(fieldValidates as never)
+      },
+      [] as Array<
+        AsyncValidator<any> & {
+          field: AnyFieldApi
+        }
+      >,
+    )
+
+    /**
+     * We have to use a for loop and generate our promises this way, otherwise it won't be sync
+     * when there are no validators needed to be run
+     */
+    const validatesPromises: Promise<ValidationError | undefined>[] = []
+    const linkedPromises: Promise<ValidationError | undefined>[] = []
+
+    // Check if there are actual async validators to run before setting isValidating
+    // This prevents unnecessary re-renders when there are no async validators
+    // See: https://github.com/TanStack/form/issues/1130
+    const hasAsyncValidators =
+      validates.some((v) => v.validate) ||
+      relatedFieldValidates.some((v) => v.validate)
+
+    if (hasAsyncValidators) {
+      if (!this.state.meta.isValidating) {
+        this.setMeta((prev) => ({ ...prev, isValidating: true }))
+      }
+
+      for (const linkedField of relatedFields) {
+        linkedField.setMeta((prev) => ({ ...prev, isValidating: true }))
+      }
+    }
+
+    const validateFieldOrGroupAsyncFn = (
+      fieldOrGroup: AnyFieldApi | AnyFormGroupApi,
+      validateObj: AsyncValidator<any>,
+      promises: Promise<ValidationError | undefined>[],
+    ) => {
+      const errorMapKey = getErrorMapKey(validateObj.cause)
+      const fieldInfo = fieldOrGroup.getInfo()
+      const fieldValidatorMeta = fieldInfo.validationMetaMap[errorMapKey]
+
+      fieldValidatorMeta?.lastAbortController.abort()
+      const controller = new AbortController()
+
+      fieldInfo.validationMetaMap[errorMapKey] = {
+        lastAbortController: controller,
+      }
+
+      promises.push(
+        new Promise<ValidationError | undefined>(async (resolve) => {
+          let rawError!: ValidationError | undefined
+          try {
+            rawError = await new Promise((rawResolve, rawReject) => {
+              if (fieldOrGroup.timeoutIds.validations[validateObj.cause]) {
+                clearTimeout(
+                  fieldOrGroup.timeoutIds.validations[validateObj.cause]!,
+                )
+              }
+
+              fieldOrGroup.timeoutIds.validations[validateObj.cause] =
+                setTimeout(async () => {
+                  if (controller.signal.aborted) return rawResolve(undefined)
+                  try {
+                    rawResolve(
+                      await this.runValidator({
+                        validate: validateObj.validate,
+                        value: {
+                          value: fieldOrGroup.store.state.value,
+                          signal: controller.signal,
+                          validationSource: 'field',
+                          ...(fieldOrGroup instanceof FormGroupApi
+                            ? {
+                                groupApi: fieldOrGroup,
+                              }
+                            : { fieldApi: fieldOrGroup }),
+                        } as never,
+                        type: 'validateAsync',
+                      }),
+                    )
+                  } catch (e) {
+                    rawReject(e)
+                  }
+                }, validateObj.debounceMs)
+            })
+          } catch (e: unknown) {
+            rawError = e as ValidationError
+          }
+          if (controller.signal.aborted) return resolve(undefined)
+
+          const fieldLevelError = normalizeError(rawError)
+          const formLevelError =
+            asyncFormValidationResults[
+              fieldOrGroup.name as keyof typeof asyncFormValidationResults
+            ]?.[errorMapKey]
+
+          const { newErrorValue, newSource } =
+            determineFieldLevelErrorSourceAndValue({
+              formLevelError,
+              fieldLevelError,
+            })
+
+          if (fieldOrGroup.getInfo().instance !== fieldOrGroup) {
+            return resolve(undefined)
+          }
+
+          fieldOrGroup.setMeta((prev) => {
+            return {
+              ...prev,
+              errorMap: {
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                ...prev?.errorMap,
+                [errorMapKey]: newErrorValue,
+              },
+              errorSourceMap: {
+                ...prev.errorSourceMap,
+                [errorMapKey]: newSource,
+              },
+            }
+          })
+
+          resolve(newErrorValue)
+        }),
+      )
+    }
+
+    // TODO: Dedupe this logic to reduce bundle size
+    for (const validateObj of validates) {
+      if (!validateObj.validate) continue
+      validateFieldOrGroupAsyncFn(this, validateObj, validatesPromises)
+    }
+    for (const fieldValitateObj of relatedFieldValidates) {
+      if (!fieldValitateObj.validate) continue
+      validateFieldOrGroupAsyncFn(
+        fieldValitateObj.field,
+        fieldValitateObj,
+        linkedPromises,
+      )
+    }
+
+    let results: ValidationError[] = []
+    if (validatesPromises.length || linkedPromises.length) {
+      results = await Promise.all(validatesPromises)
+      await Promise.all(linkedPromises)
+    }
+
+    // Only reset isValidating if we set it to true earlier
+    if (hasAsyncValidators) {
+      this.setMeta((prev) => ({ ...prev, isValidating: false }))
+
+      for (const linkedField of relatedFields) {
+        linkedField.setMeta((prev) => ({ ...prev, isValidating: false }))
+      }
+    }
+
+    return results.filter(Boolean)
+  }
+
+  /**
+   * Validates all fields according to the FIELD level validators.
+   * This will ignore FORM level validators, use form.validate({ValidationCause}) for a complete validation
    */
   validateAllFields = async (cause: ValidationCause) => {
     const fieldValidationPromises: Promise<ValidationError[]>[] = [] as any
+
     batch(() => {
-      void Object.values(this._getRelatedFieldInfos()).forEach((field) => {
-        if (!field || !field.instance) return
-        const fieldInstance = field.instance
+      void Object.values(this.getRelatedFields()).forEach((fieldInstance) => {
         // Validate the field
         fieldValidationPromises.push(
           // Remember, `validate` is either a sync operation or a promise
@@ -1054,10 +1568,11 @@ export class FormGroupApi<
             fieldInstance.validate(cause, { skipFormValidation: true }),
           ),
         )
+
         // If any fields are not touched
-        if (!field.instance.state.meta.isTouched) {
+        if (!fieldInstance.store.state.meta.isTouched) {
           // Mark them as touched
-          field.instance.setMeta((prev) => ({ ...prev, isTouched: true }))
+          fieldInstance.setMeta((prev) => ({ ...prev, isTouched: true }))
         }
       })
     })
@@ -1066,148 +1581,49 @@ export class FormGroupApi<
     return fieldErrorMapMap.flat()
   }
 
-  /**
-   * @private
-   */
-  runValidator<
-    TValue extends TStandardSchemaValidatorValue<any /* TFormData */> & {
-      formApi: AnyFormApi
-    },
-    TType extends 'validate' | 'validateAsync',
-  >(props: {
-    validate: TType extends 'validate'
-      ? FormValidateOrFn<any /* TFormData */>
-      : FormAsyncValidateOrFn<any /* TFormData */>
-    value: TValue
-    type: TType
-  }): unknown {
-    if (isStandardSchemaValidator(props.validate)) {
-      return standardSchemaValidators[props.type](
-        props.value,
-        props.validate,
-      ) as never
-    }
-
-    return (props.validate as FormValidateFn<any>)(props.value) as never
+  areRelatedFieldsValid = () => {
+    return Object.values(this.getRelatedFields()).every(
+      (field) => field.state.meta.isValid,
+    )
   }
 
   /**
-   * TODO: This code is mostly copied from FormApi, we should refactor to share
-   *
-   * This does not need to validate fields or the base form, as that's done elsewhere
-   *
-   * @private
-   */
-  validateSync = (cause: ValidationCause) => {
-    const validates = getSyncValidatorArray(cause, {
-      ...this.options,
-      form: this,
-      validationLogic: this.options.validationLogic || defaultValidationLogic,
-    })
-
-    let hasErrored = false as boolean
-
-    batch(() => {
-      for (const validateObj of validates) {
-        if (!validateObj.validate) continue
-
-        const rawError = this.runValidator({
-          validate: validateObj.validate,
-          value: {
-            value: 0 /* this.state.values */,
-            formApi: this.options.form as never,
-            validationSource: 'field',
-          },
-          type: 'validate',
-        })
-
-        // TODO: Support form group error maps like so:
-        /*
-        {
-          group: "Error on group",
-          fields: {
-            firstName: "Other error"
-          }
-        }
-         */
-        // const { formError, fieldErrors } = normalizeError<TFormData>(rawError)
-
-        const groupError = normalizeError(rawError)
-        const errorMapKey = getErrorMapKey(validateObj.cause)
-
-        if (this.state.errorMap[errorMapKey] !== groupError) {
-          this.baseStore.setState((prev) => ({
-            ...prev,
-            errorMap: {
-              ...prev.errorMap,
-              [errorMapKey]: groupError,
-            },
-          }))
-        }
-
-        if (groupError /* || fieldErrors */) {
-          hasErrored = true
-        }
-      }
-
-      /**
-       *  when we have an error for onSubmit in the state, we want
-       *  to clear the error as soon as the user enters a valid value in the field
-       */
-      const submitErrKey = getErrorMapKey('submit')
-      if (
-        this.state.errorMap[submitErrKey] &&
-        cause !== 'submit' &&
-        !hasErrored
-      ) {
-        this.baseStore.setState((prev) => ({
-          ...prev,
-          errorMap: {
-            ...prev.errorMap,
-            [submitErrKey]: undefined,
-          },
-        }))
-      }
-
-      /**
-       *  when we have an error for onServer in the state, we want
-       *  to clear the error as soon as the user enters a valid value in the field
-       */
-      const serverErrKey = getErrorMapKey('server')
-      if (
-        this.state.errorMap[serverErrKey] &&
-        cause !== 'server' &&
-        !hasErrored
-      ) {
-        this.baseStore.setState((prev) => ({
-          ...prev,
-          errorMap: {
-            ...prev.errorMap,
-            [serverErrKey]: undefined,
-          },
-        }))
-      }
-    })
-
-    return { hasErrored }
-  }
-
-  /**
-   * @private
+   * Validates the form group and all related children.
    */
   validate = (
     cause: ValidationCause,
-    // TODO: Handle return type?
-  ) => {
+    opts?: {
+      skipFormValidation?: boolean
+      skipRelatedFieldValidation?: boolean
+    },
+  ): ValidationError[] | Promise<ValidationError[]> => {
+    // If the field is pristine, do not validate
+    if (!this.state.meta.isTouched) return []
+
     // Attempt to sync validate first
-    const { hasErrored /* fieldsErrorMap */ } = this.validateSync(cause)
+    const { fieldsErrorMap } = opts?.skipFormValidation
+      ? { fieldsErrorMap: {} as never }
+      : this.form.validateSync(cause)
+    const { hasErrored } = this.validateSync(
+      cause,
+      fieldsErrorMap[this.name] ?? {},
+      { skipRelatedFieldValidation: opts?.skipRelatedFieldValidation },
+    )
 
     if (hasErrored && !this.options.asyncAlways) {
-      return fieldsErrorMap
+      this.getInfo().validationMetaMap[
+        getErrorMapKey(cause)
+      ]?.lastAbortController.abort()
+      return this.state.meta.errors
     }
 
     // No error? Attempt async validation
-    return this.validateAsync(cause)
+    const formValidationResultPromise = opts?.skipFormValidation
+      ? Promise.resolve({})
+      : this.form.validateAsync(cause)
+    return this.validateAsync(cause, formValidationResultPromise, {
+      skipRelatedFieldValidation: opts?.skipRelatedFieldValidation,
+    })
   }
 
   /**
@@ -1264,8 +1680,18 @@ export class FormGroupApi<
     })
   }
 
-  _handleSubmit = async (): Promise<void> => {
-    this.baseStore.setState((old) => ({
+  // Needs to edgecase in the React adapter specifically to avoid type errors
+  handleSubmit(): Promise<void>
+  handleSubmit(submitMeta: TSubmitMeta): Promise<void>
+  handleSubmit(submitMeta?: TSubmitMeta): Promise<void> {
+    return this._handleSubmit(submitMeta)
+  }
+
+  /**
+   * Handles the form submission, performs validation, and calls the appropriate onSubmit or onSubmitInvalid callbacks.
+   */
+  _handleSubmit = async (submitMeta?: TSubmitMeta): Promise<void> => {
+    this.formStateStore.setState((old) => ({
       ...old,
       // Submission attempts mark the form as not submitted
       isSubmitted: false,
@@ -1275,44 +1701,54 @@ export class FormGroupApi<
     }))
 
     batch(() => {
-      void Object.values(this._getRelatedFieldInfos()).forEach((field) => {
-        if (!field || !field.instance) return
+      void Object.values(this.getRelatedFields()).forEach((field) => {
         // If any fields are not touched
-        if (!field.instance.state.meta.isTouched) {
+        if (!field.state.meta.isTouched) {
           // Mark them as touched
-          field.instance.setMeta((prev) => ({ ...prev, isTouched: true }))
+          field.setMeta((prev) => ({ ...prev, isTouched: true }))
         }
       })
     })
 
-    // // TODO: Add support for meta
-    // const submitMetaArg =
-    //   submitMeta ?? (this.options.onSubmitMeta as TSubmitMeta)
+    const submitMetaArg =
+      submitMeta ?? (this.options.onSubmitMeta as TSubmitMeta)
 
-    this.baseStore.setState((d) => ({ ...d, isSubmitting: true }))
+    // TODO: Handle this
+    /*
+    if (!this.formState.canSubmit) {
+      this.options.onSubmitInvalid?.({
+        value: this.state.value,
+        formApi: this,
+        meta: submitMetaArg,
+      })
+      return
+    }
+     */
+
+    this.formStateStore.setState((d) => ({ ...d, isSubmitting: true }))
 
     const done = () => {
-      this.baseStore.setState((prev) => ({ ...prev, isSubmitting: false }))
+      this.formStateStore.setState((prev) => ({ ...prev, isSubmitting: false }))
     }
 
     await this.validateAllFields('submit')
 
     // Fields are invalid, do not submit
-    if (!this._isFieldsValid()) {
+    if (!this.areRelatedFieldsValid()) {
       done()
 
       this.options.onGroupSubmitInvalid?.({
-        value: 0 /* this.state.values */,
-        formApi: this.options.form,
-        meta: {} as never /* submitMetaArg */,
+        value: this.state.value,
+        groupApi: this,
+        meta: submitMetaArg,
       })
 
       return
     }
 
-    await this.options.form.validate('submit', {
-      dontUpdateFormErrorMap: true,
-      filterFieldNames: this._isFieldNamePartOfGroup as never,
+    await this.validate('submit', {
+      // This has already happened in the previous step
+      skipRelatedFieldValidation: true,
     })
 
     // Form is invalid, do not submit
@@ -1320,60 +1756,44 @@ export class FormGroupApi<
       done()
 
       this.options.onGroupSubmitInvalid?.({
-        value: 0 /* this.state.values */,
-        formApi: this.options.form,
-        meta: {} as never /* submitMetaArg */,
+        value: this.state.value,
+        groupApi: this,
+        meta: submitMetaArg,
       })
 
       return
     }
 
-    // TODO: Handle validators on the FormGroup itself
-    // await this.validate('submit')
-    //
-    // if (!this.state.isValid) {
-    //   done()
-    //
-    //   this.options.onGroupSubmitInvalid?.({
-    //     value: 0 /* this.state.values */,
-    //     formApi: this.options.form,
-    //     meta: {} as never /* submitMetaArg */,
-    //   })
-    //
-    //   return
-    // }
-
     batch(() => {
-      void Object.values(this._getRelatedFieldInfos()).forEach((field) => {
-        if (!field || !field.instance) return
-        field.instance.options.listeners?.onGroupSubmit?.({
-          value: field.instance.state.value,
-          fieldApi: field.instance,
+      void Object.values(this.getRelatedFields()).forEach((field) => {
+        field.options.listeners?.onGroupSubmit?.({
+          value: field.state.value,
+          fieldApi: field,
         })
       })
     })
 
     this.options.listeners?.onSubmit?.({
-      formApi: this.options.form,
-      meta: {} as never /* submitMetaArg */,
+      groupApi: this,
+      value: this.state.value,
     })
 
     try {
       await this.options.onGroupSubmit?.({
-        value: 0,
-        formApi: this.options.form,
-        meta: {},
+        value: this.state.value,
+        groupApi: this,
+        meta: submitMetaArg,
       })
 
       // Run the submit code
       await this.options.onGroupSubmit?.({
-        value: 0, // this.state.values,
-        formApi: this.options.form,
-        meta: {}, // submitMetaArg,
+        value: this.state.value,
+        groupApi: this,
+        meta: submitMetaArg,
       })
 
       batch(() => {
-        this.baseStore.setState((prev) => ({
+        this.formStateStore.setState((prev) => ({
           ...prev,
           isSubmitted: true,
           isSubmitSuccessful: true, // Set isSubmitSuccessful to true on successful submission
@@ -1382,7 +1802,7 @@ export class FormGroupApi<
         done()
       })
     } catch (err) {
-      this.baseStore.setState((prev) => ({
+      this.formStateStore.setState((prev) => ({
         ...prev,
         isSubmitSuccessful: false, // Ensure isSubmitSuccessful is false if an error occurs
       }))
@@ -1391,10 +1811,6 @@ export class FormGroupApi<
 
       throw err
     }
-  }
-
-  handleSubmit(): Promise<void> {
-    return this._handleSubmit()
   }
 }
 
